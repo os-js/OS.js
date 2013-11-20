@@ -713,7 +713,7 @@
 
   Textarea.prototype.setText = function(t) {
     if ( this.$area ) {
-      this.$area.innerHTML = (t || '');
+      this.$area.value = (t || '');
       return true;
     }
     return false;
