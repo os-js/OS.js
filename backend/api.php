@@ -233,7 +233,7 @@ function getApplicationData($name, $args) {
     ),
     'ApplicationTextpad'  => Array(
       'name'    => "Textpad",
-      'mime'    => Array('^text\/'),
+      'mime'    => Array('^text\/', '^application\/x\-empty'),
       'icon'    => "apps/accessories-text-editor.png",
       'preload' => Array(
         Array('src' => '/apps/Textpad/main.js', 'type' => 'javascript'),
