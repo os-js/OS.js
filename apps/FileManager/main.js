@@ -12,6 +12,7 @@
     this.menuBar  = null;
 
     this._title = this.title;
+    this._properties.allow_drop = true;
   };
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -31,18 +32,7 @@
       return false;
     };
     this.fileView.onFilesDropped = function(ev, el, files) {
-      if ( files && files.length ) {
-        var dest = self.fileView.getPath();
-
-        for ( var i = 0; i < files.length; i++ ) {
-          OSjs.Dialogs.createFileUploadDialog(dest, function() {
-            if ( self.fileView ) {
-              self.fileView.refresh();
-            }
-          }, files[i]);
-        }
-      }
-      return false;
+      return self.onDropUpload(ev, el, files);
     };
     this.fileView.onFinished = function(dir) {
       self._toggleLoading(false);
@@ -130,6 +120,38 @@
     }
 
     Window.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationFileManagerWindow.prototype._onDndAction = function(ev, type, item, args) {
+    Window.prototype._onDndAction.apply(this, arguments);
+    if ( type === 'filesDrop' && item ) {
+      return this.onDropUpload(ev, null, item);
+    }
+    return true;
+  };
+
+  ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, el, files) {
+    var self = this;
+    if ( files && files.length ) {
+      var dest = this.fileView.getPath();
+
+      var _onUploaded = function(file) {
+        if ( self.fileView ) {
+          self.fileView.refresh(function() {
+            self.fileView.setSelected(file.name, 'filename');
+          });
+        }
+      };
+
+      for ( var i = 0; i < files.length; i++ ) {
+        OSjs.Dialogs.createFileUploadDialog(dest, (function(f) {
+          return function() {
+            _onUploaded(f);
+          };
+        })(files[i]), files[i]);
+      }
+    }
+    return false;
   };
 
   /**

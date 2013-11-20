@@ -85,6 +85,7 @@
 
     el.addEventListener('dragover', function(ev) {
       ev.preventDefault();
+      ev.stopPropagation();
       ev.dataTransfer.dropEffect = args.effect;
       return args.onOver.call(this, ev, this, args);
     }, false);
@@ -627,11 +628,13 @@
     ListView.prototype.render.apply(this, []);
   };
 
-  FileView.prototype.refresh = function() {
-    return this.chdir(this.path);
+  FileView.prototype.refresh = function(onRefreshed) {
+    return this.chdir(this.path, onRefreshed);
   };
 
-  FileView.prototype.chdir = function(dir) {
+  FileView.prototype.chdir = function(dir, onRefreshed) {
+    onRefreshed = onRefreshed || function() {};
+
     var self = this;
     this.onRefresh.call(this);
 
@@ -655,6 +658,8 @@
         }
 
         self.onFinished(dir);
+
+        onRefreshed.call(this);
       }
     }, function(error) {
       self.onError(error);
