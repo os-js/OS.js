@@ -22,6 +22,8 @@ OS.js is a light-weight HTML based desktop solution.
 
 You can have a look here: http://osjsv2.0o.no
 
+This site may not always be up to date, and can be unavailable at times.
+
 # Compability
 
 ## Server
