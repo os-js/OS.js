@@ -720,7 +720,7 @@
   };
 
   Textarea.prototype.getText = function() {
-    return this.$area ? this.$area.innerHTML : '';
+    return this.$area ? this.$area.value : '';
   };
 
   //

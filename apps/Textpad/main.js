@@ -74,7 +74,7 @@
     Window.prototype._onDndAction.apply(this, arguments);
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
-      if ( data && data.type === 'file' && data.mime && (data.mime.match(/^text\//) || data.mime == 'application/x-empty') ) {
+      if ( data && data.type === 'file' && data.mime && (data.mime.match(/^text\//) ) ) {
         this._appRef.action('open', data.path);
       }
     }
