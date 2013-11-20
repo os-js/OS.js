@@ -1,0 +1,201 @@
+
+/**
+ * Theme
+ */
+@font-face {
+  font-family:OSjsFont;
+  src:url('/fonts/Sansation.ttf');
+}
+body {
+  /*
+  background-image: radial-gradient(circle closest-corner at center, #0B615E 0%, #09524F 100%);
+  */
+  background : #0B615E;
+  font-family:OSjsFont, Arial;
+}
+.Window {
+  border : 1px solid rgba(34, 34, 34, .5);
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .1);
+  opacity : 0.8;
+  overflow : hidden;
+  color : #333;
+}
+.Window.WindowHintFocused {
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+  opacity : 1.0;
+}
+.WindowTop {
+  border-bottom : 1px solid rgba(34, 34, 34, .5);
+  background: linear-gradient(to bottom, #737373 0%, #4F4F4F 100%);
+}
+.WindowTop:active,
+.WindowTitle:active {
+  cursor : move;
+}
+.WindowTitle {
+  color : #777777;
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  line-height : 28px;
+}
+.Window.WindowHintFocused .WindowTop {
+  background: linear-gradient(to bottom, #41454d 0%, #31363d 100%);
+}
+.Window.WindowHintFocused .WindowTitle {
+  color : #fff;
+  text-shadow: 0px 0px 2px rgba(0, 0, 0, .9);
+}
+.WindowWrapper {
+  background : #e6e6e6;
+  overflow : hidden;
+}
+.WindowButton {
+  cursor : pointer;
+}
+
+.WindowButtonMaximize {
+  background : url('/themes/default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('/themes/default/wm/maximize_unfocused.png') no-repeat 2px 2px;
+}
+.WindowButtonMaximize:hover {
+  background : url('/themes/default/wm/prelight.png') no-repeat 2px 2px,
+               url('/themes/default/wm/maximize.png') no-repeat 2px 2px !important;
+}
+.WindowButtonMaximize:active {
+  background : url('/themes/default/wm/pressed.png') no-repeat 2px 2px,
+               url('/themes/default/wm/maximize.png') no-repeat 2px 2px !important;
+}
+.Window.WindowHintFocused .WindowButtonMaximize {
+  background : url('/themes/default/wm/maximize.png') no-repeat 2px 2px;
+}
+
+.WindowButtonMinimize {
+  background : url('/themes/default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('/themes/default/wm/minimize_unfocused.png') no-repeat 2px 2px;
+}
+.WindowButtonMinimize:hover {
+  background : url('/themes/default/wm/prelight.png') no-repeat 2px 2px,
+               url('/themes/default/wm/minimize.png') no-repeat 2px 2px !important;
+}
+.WindowButtonMinimize:active {
+  background : url('/themes/default/wm/pressed.png') no-repeat 2px 2px,
+               url('/themes/default/wm/minimize.png') no-repeat 2px 2px !important;
+}
+.Window.WindowHintFocused .WindowButtonMinimize {
+  background : url('/themes/default/wm/minimize.png') no-repeat 2px 2px;
+}
+
+.WindowButtonClose {
+  background : url('/themes/default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('/themes/default/wm/close_unfocused.png') no-repeat 2px 2px;
+}
+.WindowButtonClose:hover {
+  background : url('/themes/default/wm/prelight.png') no-repeat 2px 2px,
+               url('/themes/default/wm/close.png') no-repeat 2px 2px !important;
+}
+.WindowButtonClose:active {
+  background : url('/themes/default/wm/pressed.png') no-repeat 2px 2px,
+               url('/themes/default/wm/close.png') no-repeat 2px 2px !important;
+}
+.Window.WindowHintFocused .WindowButtonClose {
+  background : url('/themes/default/wm/close.png') no-repeat 2px 2px;
+}
+
+.WindowResize {
+  cursor : se-resize;
+  background : rgba(34, 34, 34, .2);
+}
+.WindowTop, .WindowTop > * {
+  cursor : default;
+}
+.WindowLoading {
+  background : #fff; /*rgba(0, 0, 0, .9);*/
+}
+.WindowLoadingIndicator {
+  background : url('/themes/default/loading.gif');
+}
+
+body .Menu {
+  background : #e6e6e6;
+  color : #000;
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+  border : 1px solid rgba(34, 34, 34, .5);
+}
+
+body .Menu li {
+  cursor : pointer;
+}
+
+body .Menu li:hover {
+  background : #333;
+  color : #fff;
+}
+body .Menu li.Disabled {
+  color : #aaa;
+}
+
+/**
+ * CoreWM (external)
+ */
+
+body #WindowList li {
+  background : #333333;
+  margin-top : -1px;
+  border : 1px solid #333333;
+  cursor : pointer;
+  color : #777777;
+}
+body #WindowList li.Focused {
+  color : #fff !important;
+}
+body #WindowList li:hover {
+  border : 1px solid #444444;
+  background : #555;
+  color : #999;
+}
+body #WindowList li:active {
+  border : 1px solid #666;
+  background : #555;
+  color : #eee;
+}
+body #WindowList .Background {
+  background : #333333;
+  border-bottom : 1px solid #222;
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+}
+
+/**
+ * GUI
+ */
+.MenuBar {
+  background : #c2c2c2;
+}
+.MenuBar > ul > li {
+  cursor : pointer;
+}
+.MenuBar > ul > li:hover {
+  background : #333;
+  color : #fff;
+}
+
+
+.GUIListView {
+  border : 1px solid rgba(34, 34, 34, .5);
+  background : #fff;
+}
+.GUIListView tr {
+  background : #fff;
+}
+.GUIListView thead tr {
+  background : #e6e6e6;
+  font-weight : bold;
+}
+
+.GUIListView tbody tr:nth-child(2n+1) {
+  background : #aaa;
+}
+
+.GUIListView tr.active td {
+  background : #333;
+  color : #fff;
+}
+

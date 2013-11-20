@@ -1,0 +1,10 @@
+.Window_ApplicationTextpadWindow .WindowWrapper {
+}
+
+.Window_ApplicationTextpadWindow .WindowWrapper .GUITextarea {
+  position : absolute;
+  top : 31px;
+  left : 5px;
+  bottom : 5px;
+  right : 5px;
+}

@@ -1,0 +1,5 @@
+Right now only a PHP+Apache solution is available. It requires very little setup
+
+# Apache
+Set up apache with mod_rewrite support and allow override (htaccess)
+Clone this project, and run :)

@@ -1,0 +1,3 @@
+[submodule "themes/default/icons"]
+	path = themes/default/icons
+	url = https://github.com/andersevenrud/osjs-icon-theme.git

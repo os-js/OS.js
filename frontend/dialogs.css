@@ -1,0 +1,176 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2013, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+.FileDialog {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+}
+
+.FileDialog .GUIListView {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 30px;
+}
+
+.FileDialog.FileSaveDialog .GUIListView {
+  bottom : 60px;
+}
+.FileDialog.FileSaveDialog input {
+  display : block;
+  position : absolute;
+  left : 5px;
+  right : 5px;
+  bottom : 30px;
+}
+
+.FileDialog button.OK {
+  position : absolute;
+  right : 110px;
+  bottom : 5px;
+  width : 100px;
+}
+
+.FileDialog button.Cancel {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+  width : 100px;
+}
+
+/* FileUpload */
+
+.FileUploadDialog {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+.FileUploadDialog .Description {
+  margin-bottom : 10px;
+}
+.FileUploadDialog .OK {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+}
+
+/* FileProgress */
+.FileProgressDialog {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+.FileProgressDialog .Description {
+  margin-bottom : 10px;
+}
+.FileProgressDialog .BarContainer {
+  position : relative;
+  height : 20px;
+
+  background : #e6e6e6;
+  border : 1px solid;
+}
+.FileProgressDialog .Bar {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  height : 20px;
+  line-height : 20px;
+  width : 0%;
+
+  text-align : center;
+  background : #fff;
+  color : #000;
+}
+
+/* Other */
+
+.InputDialog {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+.InputDialog .OK {
+  position : absolute;
+  right : 120px;
+  bottom : 5px;
+  width : 100px;
+}
+.InputDialog .Cancel {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+  width : 100px;
+}
+.InputDialog input[type=text] {
+}
+
+.ConfirmDialog {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+.ConfirmDialog .OK {
+  position : absolute;
+  right : 120px;
+  bottom : 5px;
+  width : 100px;
+}
+.ConfirmDialog .Cancel {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+  width : 100px;
+}
+
+.AlertDialog {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+.AlertDialog .OK {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+  width : 100px;
+}

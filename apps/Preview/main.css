@@ -1,0 +1,13 @@
+.Window_ApplicationPreviewWindow .WindowWrapper {
+  overflow : auto;
+}
+.Window_ApplicationPreviewWindow .WindowWrapper audio,
+.Window_ApplicationPreviewWindow .WindowWrapper video {
+  position : absolute;
+  display : block;
+  top : 30px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+

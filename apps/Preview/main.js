@@ -1,0 +1,173 @@
+(function(Application, Window) {
+
+  /**
+   * Main Window
+   */
+  var ApplicationPreviewWindow = function(app, opts) {
+    Window.apply(this, ['ApplicationPreviewWindow', opts, app]);
+
+    this.menuBar = null;
+    this.previewElement = null;
+    this.title = "Preview";
+
+    this._title = this.title;
+    this._icon = "/themes/default/icons/16x16/mimetypes/image.png";
+    this._properties.allow_drop = true;
+  };
+
+  ApplicationPreviewWindow.prototype = Object.create(Window.prototype);
+
+  ApplicationPreviewWindow.prototype.init = function() {
+    Window.prototype.init.apply(this, arguments);
+
+    var app = this._appRef;
+    this.menuBar = new OSjs.GUI.MenuBar();
+    this.menuBar.addItem("File", [
+      {title: 'Open', onClick: function() {
+        app.action('open');
+      }},
+      {title: 'Close', onClick: function() {
+        app.action('close');
+      }}
+    ]);
+
+    this._getRoot().appendChild(this.menuBar.$element);
+  };
+
+  ApplicationPreviewWindow.prototype.destroy = function() {
+    if ( this.menuBar ) {
+      this.menuBar.destroy();
+      this.menuBar = null;
+    }
+    if ( this.previewElement && this.previewElement.parentNode ) {
+      this.previewElement.parentNode.removeChild(this.previewElement);
+      this.previewElement = null;
+    }
+    Window.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationPreviewWindow.prototype._onDndAction = function(ev, type, item, args) {
+    Window.prototype._onDndAction.apply(this, arguments);
+    if ( type === 'itemDrop' && item ) {
+      var data = item.data;
+      if ( data && data.type === 'file' && data.mime ) {
+        this._appRef.action('open', data.path, data.mime);
+      }
+    }
+  };
+
+  ApplicationPreviewWindow.prototype.setPreview = function(t, mime) {
+    if ( this.previewElement && this.previewElement.parentNode ) {
+      this.previewElement.parentNode.removeChild(this.previewElement);
+      this.previewElement = null;
+    }
+
+    var el;
+    if ( mime ) {
+      if ( !mime.match(/^(image|video|audio)/) ) {
+        OSjs.API.error("Preview", "Cannot open file", "Not supported!");
+        return;
+      }
+
+      if ( t ) {
+        try {
+          var src = OSjs.API.getFilesystemURL(t);
+          if ( mime.match(/^image/) ) {
+            el = document.createElement('img');
+            el.alt = t;
+            el.src = src;
+          } else if ( mime.match(/^audio/) ) {
+            el = document.createElement('audio');
+            el.src = src;
+          } else if ( mime.match(/^video/) ) {
+            el = document.createElement('video');
+            el.src = src;
+          }
+        } catch ( e ) {
+          console.warn("Preview error: " + e);
+        }
+      }
+    }
+    console.warn("XXX");
+
+    console.warn("XXX");
+    console.log(el, t, mime);
+    console.warn("XXX");
+    if ( el ) {
+      this.previewElement = el;
+      this._getRoot().appendChild(this.previewElement);
+    }
+
+    this._setTitle(t ? (this.title + " - " + t) : this.title);
+  };
+
+  /**
+   * Application
+   */
+  var ApplicationPreview = function(args, metadata) {
+    Application.apply(this, ['ApplicationPreview', args, metadata]);
+  };
+
+  ApplicationPreview.prototype = Object.create(Application.prototype);
+
+  ApplicationPreview.prototype.destroy = function() {
+    return Application.prototype.destroy.apply(this, []);
+  };
+
+  ApplicationPreview.prototype.init = function(core, session) {
+    Application.prototype.init.apply(this, arguments);
+
+    this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}));
+
+    var open = this._getArgument('file');
+    var mime = this._getArgument('mime');
+    if ( open ) {
+      this.action('open', open, mime);
+    }
+  };
+
+  ApplicationPreview.prototype._onMessage = function(obj, msg, args) {
+    Application.prototype._onMessage.apply(this, arguments);
+
+    if ( msg == 'destroyWindow' && obj._name === 'ApplicationPreviewWindow' ) {
+      this.destroy();
+    }
+  };
+
+  ApplicationPreview.prototype.action = function(action, fname, mime) {
+    var w = this._getWindow('ApplicationPreviewWindow');
+    if ( !w ) return;
+    var self = this;
+    switch ( action ) {
+      case 'close' :
+        this.destroy();
+      break;
+
+      case 'open' :
+        var _open = function(fname) {
+          if ( fname ) {
+            w.setPreview(fname, mime || null);
+            self._setArgument('file', fname);
+            self._setArgument('mime', mime || null);
+          }
+        };
+
+        if ( fname ) {
+          _open(fname);
+        } else {
+          OSjs.Dialogs.createFileDialog({type: 'open'}, function(fname) {
+            _open(fname);
+          });
+        }
+      break;
+    }
+  };
+
+
+  //
+  // EXPORTS
+  //
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationPreview = ApplicationPreview;
+
+})(OSjs.Core.Application, OSjs.Core.Window);

@@ -1,0 +1,148 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2013, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+/**
+ * Menu
+ */
+.Menu {
+  z-index : 9999999;
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  min-width : 60px;
+}
+.Menu ul {
+  list-style-type : none;
+  margin : 0;
+  padding : 0;
+}
+.Menu li {
+  margin : 0;
+  padding : 0;
+  padding-left : 5px;
+  padding-right : 5px;
+  height : 26px;
+  line-height : 26px;
+}
+.Menu li img {
+  vertical-align : middle;
+  margin-right : 5px;
+  pointer-events: none;
+}
+
+.Menu li > ul {
+  position : absolute;
+  display : none;
+}
+.Menu li:hover > ul {
+  display : block;
+}
+
+/**
+ * MenuBar
+ */
+.MenuBar {
+}
+.MenuBar > ul {
+  margin : 0;
+  padding : 0;
+  height : 26px;
+  list-style-type : none;
+}
+.MenuBar ul > li {
+  padding : 0;
+  margin : 0;
+  padding-left : 5px;
+  padding-right : 5px;
+  height : 26px;
+  line-height : 26px;
+  float : left;
+}
+
+/**
+ * ListView
+ */
+.GUIListView {
+  border : 1px solid rgba(34, 34, 34, .5);
+  overflow : auto;
+}
+
+.GUIListView table {
+  border-collapse : collapse;
+  margin : 0;
+  padding : 0;
+  position : relative;
+  width : 100%;
+}
+
+.GUIListView tr {
+  margin : 0;
+  padding : 0;
+  padding-left : 5px;
+  padding-right : 5px;
+  height : 26px;
+  line-height : 26px;
+  cursor : pointer;
+}
+
+.GUIListView td {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.GUIListView td img {
+  margin-right : 5px;
+  vertical-align : text-bottom;
+}
+
+/**
+ * Text area
+ */
+.GUITextarea {
+  position : relative;
+}
+
+.GUITextarea textarea {
+  display : block;
+  position : absolute;
+  height : 100%;
+  width : 100%;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  top : 0px;
+  resize : none;
+  font-family : Monospace;
+  box-sizing: border-box;
+}

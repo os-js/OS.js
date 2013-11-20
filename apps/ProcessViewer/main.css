@@ -1,0 +1,10 @@
+.Window_ApplicationProcessViewerWindow .GUIListView {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  bottom : 5px;
+  right : 5px;
+  margin : 0;
+  padding : 0;
+  overflow : auto;
+}

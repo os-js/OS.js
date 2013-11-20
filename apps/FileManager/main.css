@@ -1,0 +1,31 @@
+.Window_ApplicationFileManagerWindow {
+}
+.Window_ApplicationFileManagerWindow .WindowWrapper {
+}
+.Window_ApplicationFileManagerWindow .GUIListView.sideView {
+  position : absolute;
+  top : 30px;
+  left : 5px;
+  bottom : 5px;
+  width : 140px;
+}
+.Window_ApplicationFileManagerWindow .GUIListView.sideView thead {
+  display : none;
+}
+.Window_ApplicationFileManagerWindow .GUIListView.sideView tr {
+  background : inherit;
+  background-color : inherit;
+}
+.Window_ApplicationFileManagerWindow .GUIListView.sideView td:first-child {
+  padding-left : 5px;
+}
+.Window_ApplicationFileManagerWindow .GUIListView.fileView {
+  position : absolute;
+  top : 30px;
+  left : 155px;
+  bottom : 5px;
+  right : 5px;
+  margin : 0;
+  padding : 0;
+  overflow : auto;
+}
