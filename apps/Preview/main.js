@@ -1,6 +1,5 @@
 (function(Application, Window) {
 
-  // TODO: Add container for overflowing content/scrolling
   // TODO: Mime check from metadata
 
   /**
@@ -12,6 +11,7 @@
     this.menuBar = null;
     this.previewElement = null;
     this.title = "Preview";
+    this.$frame = null;
 
     this._title = this.title;
     this._icon = "/themes/default/icons/16x16/mimetypes/image.png";
@@ -21,9 +21,9 @@
   ApplicationPreviewWindow.prototype = Object.create(Window.prototype);
 
   ApplicationPreviewWindow.prototype.init = function() {
-    Window.prototype.init.apply(this, arguments);
-
+    var root = Window.prototype.init.apply(this, arguments);
     var app = this._appRef;
+
     this.menuBar = new OSjs.GUI.MenuBar();
     this.menuBar.addItem("File", [
       {title: 'Open', onClick: function() {
@@ -34,7 +34,11 @@
       }}
     ]);
 
-    this._getRoot().appendChild(this.menuBar.$element);
+    this.$frame = document.createElement('div');
+    this.$frame.className = "Frame";
+
+    root.appendChild(this.menuBar.getRoot());
+    root.appendChild(this.$frame);
   };
 
   ApplicationPreviewWindow.prototype.destroy = function() {
@@ -45,6 +49,10 @@
     if ( this.previewElement && this.previewElement.parentNode ) {
       this.previewElement.parentNode.removeChild(this.previewElement);
       this.previewElement = null;
+    }
+    if ( this.$frame && this.$frame.parentNode ) {
+      this.$frame.parentNode.removeChild(this.$frame);
+      this.$frame = null;
     }
     Window.prototype.destroy.apply(this, arguments);
   };
@@ -91,14 +99,10 @@
         }
       }
     }
-    console.warn("XXX");
 
-    console.warn("XXX");
-    console.log(el, t, mime);
-    console.warn("XXX");
     if ( el ) {
       this.previewElement = el;
-      this._getRoot().appendChild(this.previewElement);
+      this.$frame.appendChild(this.previewElement);
     }
 
     this._setTitle(t ? (this.title + " - " + t) : this.title);
