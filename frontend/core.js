@@ -816,13 +816,21 @@
 
     this._state.focused = false;
 
+    // TODO: Finish gravities
     if ( this._properties.gravity === 'center' ) {
       this._position.y = (window.innerHeight / 2) - (this._dimension.h / 2);
       this._position.x = (window.innerWidth / 2) - (this._dimension.w / 2);
     }
 
-    var main        = document.createElement('div');
-    main.className  = 'Window';
+    var main            = document.createElement('div');
+    main.className      = 'Window';
+    main.oncontextmenu  = function(ev) {
+      OSjs.GUI.blurMenu();
+      if ( ev.target && (ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'INPUT') ) {
+        return true;
+      }
+      return false;
+    };
 
     if ( this._properties.allow_drop && cpb.dnd ) {
       var border = document.createElement('div');
@@ -876,9 +884,6 @@
 
     var windowTop           = document.createElement('div');
     windowTop.className     = 'WindowTop';
-    windowTop.oncontextmenu = function(ev) {
-      return false;
-    };
 
     var windowIcon        = document.createElement('div');
     windowIcon.className  = 'WindowIcon';

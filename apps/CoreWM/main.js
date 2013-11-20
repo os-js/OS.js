@@ -8,6 +8,10 @@
 
     var root = document.createElement('div');
     root.id = 'WindowList';
+    root.oncontextmenu = function(ev) {
+      OSjs.GUI.blurMenu();
+      return false;
+    };
 
     var el = document.createElement('ul');
 
