@@ -1,5 +1,8 @@
 (function(Application, Window) {
 
+  // TODO: Add container for overflowing content/scrolling
+  // TODO: Mime check from metadata
+
   /**
    * Main Window
    */

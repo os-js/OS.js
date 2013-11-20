@@ -31,6 +31,9 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
+  // TODO: Color Dialog
+  // TODO: Font Dialog
+
   /**
    * ErrorMessageBox implementation
    */
