@@ -1287,10 +1287,18 @@
 
   Window.prototype._resize = function(w, h) {
     if ( !this._properties.allow_resize ) return false;
-    this._$element.style.width = w + "px";
-    this._$element.style.height = h + "px";
-    this._dimension.w = w;
-    this._dimension.h = h;
+    if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
+
+
+    if ( w ) {
+      this._$element.style.width = w + "px";
+      this._dimension.w = w;
+    }
+
+    if ( h ) {
+      this._$element.style.height = h + "px";
+      this._dimension.h = h;
+    }
     return true;
   };
 

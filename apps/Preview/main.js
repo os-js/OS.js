@@ -91,9 +91,13 @@
             el.src = src;
           } else if ( mime.match(/^audio/) ) {
             el = document.createElement('audio');
+            el.controls = "controls";
+            el.autoplay = "autoplay";
             el.src = src;
           } else if ( mime.match(/^video/) ) {
             el = document.createElement('video');
+            el.controls = "controls";
+            el.autoplay = "autoplay";
             el.src = src;
           }
         } catch ( e ) {
@@ -105,9 +109,26 @@
     if ( el ) {
       this.previewElement = el;
       this.$frame.appendChild(this.previewElement);
+
+      if ( el.tagName !== 'IMG' ) {
+        this._resize(500, 400);
+      }
     }
 
     this._setTitle(t ? (this.title + " - " + t) : this.title);
+  };
+
+  ApplicationPreviewWindow.prototype._resize = function(w, h) {
+    if ( !Window.prototype._resize.apply(this, arguments) ) return false;
+
+    if ( this.previewElement && this.previewElement.tagName !== 'IMG' ) {
+      if ( this.previewElement.parentNode ) {
+        this.previewElement.width  = this.previewElement.parentNode.offsetWidth;
+        this.previewElement.height = this.previewElement.parentNode.offsetHeight;
+      }
+    }
+
+    return true;
   };
 
   /**

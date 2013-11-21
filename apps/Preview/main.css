@@ -14,9 +14,9 @@
 .Window_ApplicationPreviewWindow .WindowWrapper video {
   position : absolute;
   display : block;
-  top : 30px;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
 }
 

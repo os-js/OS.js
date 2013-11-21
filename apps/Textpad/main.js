@@ -192,6 +192,8 @@
         var _open = function(fname) {
           if ( fname ) {
             OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname]}, function(res) {
+              if ( !res ) return;
+
               if ( res.result ) {
                 w.setText(res.result, fname);
                 self._setArgument('file', fname);
