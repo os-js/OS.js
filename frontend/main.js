@@ -36,6 +36,12 @@
   }
 
   function onInitialized(core) {
+    /*
+    var wm = OSjs.API.getWMInstance();
+    wm.addWindow(new OSjs.Dialogs.File({}, function(btn, val, val2) {
+      alert(btn + ' ' + val + ' ' + val2);
+    }));
+    */
   }
 
   window.onload = function() {

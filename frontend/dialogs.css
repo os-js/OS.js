@@ -61,21 +61,22 @@
  * File Dialog
  */
 
-.FileDialog {
+.FileSaveDialog,
+.FileOpenDialog{
 }
 
-.FileDialog .GUIListView {
+.FileOpenDialog .GUIListView,
+.FileSaveDialog .GUIListView {
   position : absolute;
   top : 5px;
   left : 5px;
   right : 5px;
   bottom : 30px;
 }
-
-.FileDialog.FileSaveDialog .GUIListView {
-  bottom : 60px;
+.FileSaveDialog .GUIListView {
+  bottom : 60px !important;
 }
-.FileDialog.FileSaveDialog input {
+.FileSaveDialog input {
   display : block;
   position : absolute;
   left : 0px;
@@ -87,23 +88,6 @@
 /* FileUpload */
 
 .FileUploadDialog {
-  position : absolute;
-  top : 5px;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
-  padding-top : 10px;
-}
-.FileUploadDialog .Description {
-  margin-bottom : 10px;
-}
-.FileUploadDialog .Description span {
-  font-weight : bold;
-}
-.FileUploadDialog .OK {
-  position : absolute;
-  right : 0px;
-  bottom : 0px;
 }
 
 /* FileProgress */

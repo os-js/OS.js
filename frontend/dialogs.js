@@ -34,8 +34,7 @@
   // TODO: Color Dialog
   // TODO: Font Dialog
 
-  // FIXME: Clean File up dialogs
-  // FIXME: Use StandardDialog in File dialogs
+  // FIXME: Cleanups
 
   var StandardDialog = function(className, args, opts, onClose) {
     this.$element       = null;
@@ -45,7 +44,7 @@
 
     this.className      = className;
     this.args           = args || {};
-    this.message        = args.message || 'undefined';
+    this.message        = args.message || null;
     this.onClose        = onClose || function() {};
 
     DialogWindow.apply(this, [className, opts]);
@@ -58,6 +57,11 @@
   };
 
   StandardDialog.prototype = Object.create(DialogWindow.prototype);
+
+  StandardDialog.prototype.destroy = function() {
+    this.onClose.apply(this, ['destroy']);
+    DialogWindow.prototype.destroy.apply(this, arguments);
+  };
 
   StandardDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
@@ -78,6 +82,7 @@
       this.$buttonCancel.className = 'Cancel';
       this.$buttonCancel.innerHTML = this.args.buttonCancelLabel || 'Cancel';
       this.$buttonCancel.onclick = function(ev) {
+        if ( this.getAttribute("disabled") == "disabled" ) return;
         self.onCancelClick(ev);
       };
       this.$element.appendChild(this.$buttonCancel);
@@ -88,6 +93,7 @@
       this.$buttonConfirm.className = 'OK';
       this.$buttonConfirm.innerHTML = this.args.buttonOkLabel || 'OK';
       this.$buttonConfirm.onclick = function(ev) {
+        if ( this.getAttribute("disabled") == "disabled" ) return;
         self.onConfirmClick(ev);
       };
       this.$element.appendChild(this.$buttonConfirm);
@@ -230,33 +236,23 @@
   /**
    * File Upload Dialog
    */
-  var FileUploadDialog = function(dest, file, onDone) {
-    DialogWindow.apply(this, ['FileUploadDialog', {width:400, height:120}]);
+  var FileUploadDialog = function(dest, file, onClose) {
+    this.dest     = dest;
+    this.file     = file || null;
+    this.$file    = null;
+    this.dialog   = null;
+    this._wmref   = null;
 
-    this.dest   = dest;
-    this.dialog = null;
-    this.button = null;
-    this.file   = file || null;
-    this.onDone = onDone || function() { };
-    this._wmref = null;
-    this._title = "Upload File";
+    var msg = 'Upload file to <span>' + this.dest + '</span>';
+    StandardDialog.apply(this, ['FileUploadDialog', {title: "Upload Dialog", message: msg, buttonOk: false}, {width:400, height:120}, onClose]);
   };
 
-  FileUploadDialog.prototype = Object.create(DialogWindow.prototype);
+  FileUploadDialog.prototype = Object.create(StandardDialog.prototype);
 
   FileUploadDialog.prototype.init = function(wm) {
-    var root = DialogWindow.prototype.init.apply(this, arguments);
-
-    this._wmref = wm;
-
     var self = this;
-
-    var el = document.createElement('div');
-    el.className = 'FileUploadDialog';
-
-    var desc = document.createElement('div');
-    desc.className = 'Description';
-    desc.innerHTML = 'Upload file to <span>' + this.dest + '</span>';
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+    this._wmref = wm;
 
     var file = document.createElement('input');
     file.type = 'file';
@@ -264,64 +260,46 @@
     file.onchange = function(ev) {
       self.onFileSelected(ev, file.files[0]);
     };
-    root.appendChild(file);
 
-    var ok = document.createElement('button');
-    ok.innerHTML = 'Close';
-    ok.className = "OK";
-    ok.onclick = function() {
-      if ( this.getAttribute("disabled") == "disabled" ) return;
-      self._close();
-    };
-
-    el.appendChild(desc);
-    el.appendChild(file);
-    el.appendChild(ok);
-    root.appendChild(el);
-
-    this.button = ok;
-
+    this.$file = file;
+    this.$element.appendChild(file);
     if ( this.file ) {
       this.onFileSelected(null, this.file);
     }
   };
 
   FileUploadDialog.prototype.destroy = function() {
-    this.onDone.call(this, 'close');
-
     this._wmref = null;
     if ( this.dialog ) {
       this.dialog._close();
       this.dialog = null;
     }
 
-    DialogWindow.prototype.destroy.apply(this, arguments);
+    StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
-  FileUploadDialog.prototype._onKeyEvent = function(ev) {
-    DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
-      this.onDone.call(this, 'escape', ev);
-
-      if ( this.dialog ) {
-        this.dialog._close();
-        this.dialog = null;
-      }
-      this._close();
-    }
-  };
-
-  FileUploadDialog.prototype._close = function(ev) {
-    if ( this.button && (this.button.disabled === "disabled") ) {
+  FileUploadDialog.prototype._close = function() {
+    if ( this.$buttonCancel && (this.$buttonCancel.disabled === "disabled") ) {
       return;
     }
-    return DialogWindow.prototype._close.apply(this, arguments);
+    StandardDialog.prototype._close.apply(this, arguments);
+  };
+
+  FileUploadDialog.prototype.end = function() {
+    if ( this.dialog ) {
+      this.dialog._close();
+      this.dialog = null;
+    }
+
+    this.onClose.apply(this, arguments);
+    this._close();
   };
 
   FileUploadDialog.prototype.upload = function(file, size) {
     var self = this;
 
-    this.button.disabled = "disabled";
+    this.$file.disabled = 'disabled';
+    this.$buttonCancel.disabled = "disabled";
 
     this.dialog = this._wmref.addWindow(new FileProgressDialog());
     this.dialog.setDescription("Uploading '" + file.name + "' (" + file.type + " " + size + ") to " + this.dest);
@@ -340,6 +318,10 @@
     xhr.addEventListener("abort", function(evt) { self.onUploadCanceled(evt); }, false);
     xhr.open("POST", OSjs.API.getFilesystemURL());
     xhr.send(fd);
+
+    setTimeout(function() {
+      self.dialog._focus();
+    }, 10);
   };
 
   FileUploadDialog.prototype.onFileSelected = function(evt, file) {
@@ -367,105 +349,81 @@
 
   FileUploadDialog.prototype.onUploadComplete = function(evt) {
     console.log("FileUploadDialog::onUploadComplete()");
-    this.onDone.call(this, 'complete', evt);
-    if ( this.dialog ) {
-      this.dialog._close();
-      this.dialog = null;
-    }
-    this._close();
+
+    this.$buttonCancel.removeAttribute("disabled");
+    this.end('complete', evt);
   };
 
   FileUploadDialog.prototype.onUploadFailed = function(evt) {
     console.log("FileUploadDialog::onUploadFailed()");
     OSjs.API.error("Upload failed", "The upload has failed", "Reason unknown...");
-    this.onDone.call(this, 'fail', evt);
-    if ( this.dialog ) {
-      this.dialog._close();
-      this.dialog = null;
-    }
-    this._close();
+    this.$buttonCancel.removeAttribute("disabled");
+    this.end('fail', evt);
   };
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
     console.log("FileUploadDialog::onUploadCanceled()");
     OSjs.API.error("Upload failed", "The upload has failed", "Cancelled by user...");
-    this.onDone.call(this, 'cancel', evt);
-    if ( this.dialog ) {
-      this.dialog._close();
-      this.dialog = null;
-    }
-    this._close();
+    this.$buttonCancel.removeAttribute("disabled");
+    this.end('cancelled', evt);
   };
 
   /**
    * File Dialog Class
    */
-  var FileDialog = function(args, onClose, onCancel) {
+  var FileDialog = function(args, onClose) {
     args = args || {};
-    DialogWindow.apply(this, ['FileDialog', {width:400, height:300}]);
 
-    this.onCancel         = onCancel || function() {};
-    this.onOK             = onClose || function() {};
     this.currentPath      = args.path || OSjs.API.getDefaultPath('/');
     this.currentFilename  = args.filename || '';
     this.type             = args.type || 'open';
     this.mime             = args.mime || null;
+    this.fileList         = null;
     this.$input           = null;
-    this._title           = this.type == "save" ? "Save" : "Open";
 
-    this.fileList = new OSjs.GUI.FileView();
-    this._addGUIElement(this.filelist);
+    var title     = this.type == "save" ? "Save" : "Open";
+    var className = this.type == "save" ? 'FileSaveDialog' : 'FileOpenDialog';
+
+    StandardDialog.apply(this, [className, {title: title}, {width:400, height:300}, onClose]);
   };
 
-  FileDialog.prototype = Object.create(DialogWindow.prototype);
+  FileDialog.prototype = Object.create(StandardDialog.prototype);
 
   FileDialog.prototype.destroy = function() {
     if ( this.fileList ) {
       this.fileList.destroy();
       this.fileList = null;
     }
-    DialogWindow.prototype.destroy.apply(this, arguments);
+    StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
   FileDialog.prototype.init = function() {
-    DialogWindow.prototype.init.apply(this, arguments);
-
     var self = this;
-    var root = this._$root;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var el = document.createElement('div');
-    el.className = 'FileDialog';
-
-    var buttonOK = document.createElement('button');
-    buttonOK.className = 'OK';
-    buttonOK.innerHTML = 'OK';
-    buttonOK.onclick = function() {
-      self.dialogOK();
-    };
-
-    var buttonCancel = document.createElement('button');
-    buttonCancel.className = 'Cancel';
-    buttonCancel.innerHTML = 'Cancel';
-    buttonCancel.onclick = function() {
-      self.onCancel.call(self);
-      self._close();
-    };
-
-    el.appendChild(this.fileList.getRoot());
+    this.fileList = new OSjs.GUI.FileView();
+    this._addGUIElement(this.filelist);
+    this.$element.appendChild(this.fileList.getRoot());
 
     if ( this.type === 'save' ) {
-      var input = document.createElement('input');
       var start = true;
       var curval = this.currentFilename ? this.currentFilename : '';
 
-      el.className += ' FileSaveDialog';
-      el.value = curval;
+      this.$input = document.createElement('input');
+      this.$input.type = 'text';
+      this.$input.value = curval;
+      this.$input.onkeypress  = function(ev) {
+        if ( ev.keyCode === 13 ) {
+          self.$buttonConfirm.onclick(ev);
+          return;
+        }
+      };
 
       this.fileList.onSelected = function(item) {
         if ( !item || item.type == 'dir' ) {
-          input.value = '';
+          self.$input.value = '';
         } else {
-          input.value = item.filename;
+          self.$input.value = item.filename;
         }
       };
 
@@ -480,21 +438,14 @@
 
       this.fileList.onRefresh = function() {
         if ( start ) {
-          input.value = curval;
+          self.$input.value = curval;
         } else {
-          input.value = '';
+          self.$input.value = '';
         }
       };
 
-      el.appendChild(input);
-      this.$input = input;
-    } else {
-      el.className += ' FileOpenDialog';
+      this.$element.appendChild(this.$input);
     }
-
-    el.appendChild(buttonOK);
-    el.appendChild(buttonCancel);
-    root.appendChild(el);
 
     this.fileList.chdir(this.currentPath);
 
@@ -502,28 +453,24 @@
       if ( type === 'file' ) {
         if ( self.type === 'save' ) {
           if ( confirm("Are you sure you want to overwrite the file '" + OSjs.Utils.filename(path) + "'?") ) {
-            self.dialogOK(path, mime);
+            self.dialogOK.call(self, path, mime);
           }
         } else {
-          self.dialogOK(path, mime);
+          self.dialogOK.call(self, path, mime);
         }
       }
     };
+
+    return root;
   };
 
-  FileDialog.prototype._onKeyEvent = function(ev) {
-    DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
-      this.onCancel.call(this);
-      this._close();
-    }
+  FileDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.$buttonConfirm ) return;
+    this.dialogOK();
   };
 
   FileDialog.prototype.dialogOK = function(forcepath, forcemime) {
-    var curr;
-    var mime = null;
-    var item;
-
+    var curr, item, mime = null;
     if ( forcepath ) {
       curr = forcepath;
       mime = forcemime;
@@ -554,9 +501,7 @@
     }
 
     if ( curr ) {
-      this.onOK.call(this, curr, mime);
-
-      this._close();
+      this.end('ok', curr, mime);
     } else {
       if ( this.type === 'save' ) {
         alert('You need to select a file or enter new filename!'); // FIXME
