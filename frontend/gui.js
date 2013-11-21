@@ -556,6 +556,7 @@
           self.selected = {
             path: path,
             type: t.getAttribute('data-type'),
+            mime: t.getAttribute('data-mime'),
             filename: t.getAttribute('data-filename')
           };
 

@@ -290,13 +290,14 @@
     args = args || {};
     DialogWindow.apply(this, ['FileDialog', {width:400, height:300}]);
 
-    this.onCancel = onCancel || function() {};
-    this.onOK = onClose || function() {};
-    this.currentPath = args.path || OSjs.API.getDefaultPath('/');
-    this.currentFilename = args.filename || '';
-    this.type = args.type || 'open';
-    this.$input = null;
-    this._title = this.type == "save" ? "Save" : "Open";
+    this.onCancel         = onCancel || function() {};
+    this.onOK             = onClose || function() {};
+    this.currentPath      = args.path || OSjs.API.getDefaultPath('/');
+    this.currentFilename  = args.filename || '';
+    this.type             = args.type || 'open';
+    this.mime             = args.mime || null;
+    this.$input           = null;
+    this._title           = this.type == "save" ? "Save" : "Open";
 
     this.fileList = new OSjs.GUI.FileView();
   };
@@ -384,38 +385,50 @@
     this.fileList.onActivated = function(path, type, mime) {
       if ( type === 'file' ) {
         if ( self.type === 'save' ) {
-          if ( confirm('Are you sure you want to overwrite this file?') ) {
-            self.dialogOK(path);
+          if ( confirm("Are you sure you want to overwrite the file '" + OSjs.Utils.filename(path) + "'?") ) {
+            self.dialogOK(path, mime);
           }
         } else {
-          self.dialogOK(path);
+          self.dialogOK(path, mime);
         }
       }
     };
   };
 
-  FileDialog.prototype.dialogOK = function(forcepath) {
+  FileDialog.prototype.dialogOK = function(forcepath, forcemime) {
     var curr;
+    var mime = null;
+    var item;
+
     if ( forcepath ) {
       curr = forcepath;
+      mime = forcemime;
     } else {
-      curr = this.fileList.getSelected();
-      if ( this.type === 'save' && this.$input ) {
-        curr = this.$input.value;
-        var item = this.fileList.getItemByKey('filename', curr);
-        if ( item !== null ) {
-          if ( !confirm("This file already exists. Overwrite?") ) {
-            return;
+      if ( this.type == 'save' ) {
+        var check = this.$input ? check = this.$input.value : '';
+        if ( check ) {
+          item = this.fileList.getItemByKey('filename', check);
+          if ( item !== null ) {
+            if ( confirm("The file '" + check + "' already exists. Overwrite?") ) {
+              mime = item.getAttribute('data-mime');
+              curr = item.getAttribute('data-path');
+            }
           }
         }
-        if ( curr ) {
-          curr = this.fileList.getPath() + '/' + curr;
+
+        if ( !mime && check ) mime = this.mime;
+        if ( !curr && check ) this.fileList.getPath() + '/' + check
+      } else {
+        item = this.fileList.getSelected();
+        if ( item !== null ) {
+          mime = item.mime;
+          curr = item.path;
         }
       }
     }
 
     if ( curr ) {
-      this.onOK.call(this, curr);
+      this.onOK.call(this, curr, mime);
 
       this._close();
     } else {

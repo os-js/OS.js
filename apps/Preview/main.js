@@ -68,6 +68,8 @@
   };
 
   ApplicationPreviewWindow.prototype.setPreview = function(t, mime) {
+    console.log("ApplicationPreviewWindow::setPreview()", t, mime);
+
     if ( this.previewElement && this.previewElement.parentNode ) {
       this.previewElement.parentNode.removeChild(this.previewElement);
       this.previewElement = null;
@@ -151,19 +153,19 @@
       break;
 
       case 'open' :
-        var _open = function(fname) {
+        var _open = function(fname, rmime) {
           if ( fname ) {
-            w.setPreview(fname, mime || null);
+            w.setPreview(fname, (mime || rmime) || null);
             self._setArgument('file', fname);
-            self._setArgument('mime', mime || null);
+            self._setArgument('mime', (mime || rmime) || null);
           }
         };
 
         if ( fname ) {
           _open(fname);
         } else {
-          this._createDialog('File', [{type: 'open'}, function(fname) {
-            _open(fname);
+          this._createDialog('File', [{type: 'open'}, function(fname, rmime) {
+            _open(fname, (mime || rmime));
           }], w);
         }
       break;
