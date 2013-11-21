@@ -345,9 +345,10 @@
   };
 
   GUIElement.prototype.focus = function() {
-    if ( this.focused ) return;
+    if ( this.focused ) return false;
     console.log("GUIElement::focus()", this.id);
     this.focused = true;
+    return true;
   };
 
   GUIElement.prototype.blur = function() {
@@ -636,7 +637,11 @@
           idx--;
         } else if ( ev.keyCode === 40 ) {
           idx++;
+        } else if ( ev.keyCode === 13 ) {
+          this.onActivate(ev, this, this.selectedDOMItem);
+          return true;
         }
+
         if ( idx != tidx ) {
           this.setSelectedIndex(idx);
         }
@@ -793,6 +798,12 @@
 
   Textarea.prototype.getText = function() {
     return this.$area ? this.$area.value : '';
+  };
+
+  Textarea.prototype.focus = function() {
+    if ( !GUIElement.prototype.focus.apply(this, arguments) ) return false;
+    if ( this.$area ) this.$area.focus();
+    return true;
   };
 
   /**

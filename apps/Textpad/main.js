@@ -101,6 +101,13 @@
     this._setTitle(this.title + " - " + name);
   };
 
+  ApplicationTextpadWindow.prototype._focus = function() {
+    Window.prototype._focus.apply(this, arguments);
+    if ( this.textArea ) {
+      this.textArea.focus();
+    }
+  };
+
   /**
    * Application
    */
