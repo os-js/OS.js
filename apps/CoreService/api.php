@@ -1,3 +1,4 @@
+<?php
 /*!
  * OS.js - JavaScript Operating System
  *
@@ -28,25 +29,27 @@
  * @licence Simplified BSD License
  */
 
-(function() {
-
-  window.OSjs = window.OSjs || {};
-
-  function onContentLoaded(core) {
+class CoreService
+{
+  public static function call($method, Array $args) {
+    $result = null;
+    if ( $method == 'getCache' ) {
+      $result = Array(
+        'applications' => getApplicationData(null, null)
+      );
+    } else if ( $method == 'getSession' ) {
+      $result = getSessionData();
+    } else if ( $method == 'setSession' ) {
+      $data = empty($args['data']) ? Array() : $args['data'];
+      $result = setSessionData($data);
+    } else if ( $method == 'setSettings' ) {
+      $data = empty($args['data']) ? Array() : $args['data'];
+      $result = setUserSettings($data);
+    } else {
+      throw new Exception("Invalid CoreService call");
+    }
+    return $result;
   }
+}
 
-  function onInitialized(core) {
-  }
-
-  window.onload = function() {
-    console.info("window::onload()");
-    OSjs.initialize(onContentLoaded, onInitialized);
-  };
-
-  window.onunload = function() {
-    console.info("window::onunload()");
-    OSjs.shutdown(false, true);
-  };
-
-})();
-
+?>

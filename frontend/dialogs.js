@@ -131,6 +131,7 @@
 
   /**
    * ErrorMessageBox implementation
+   * TODO: Refactor
    */
   var ErrorMessageBox = function() {
     this.data = {title: 'No title', message: 'No message', error: ''};

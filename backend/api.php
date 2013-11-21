@@ -29,8 +29,11 @@
  * @licence Simplified BSD License
  */
 
+// TODO: Rewrite
+
 define("SESSIONNAME", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']);
 define("HOMEDIR", "/opt/OSjs");
+define("APPDIR", realpath(dirname(__FILE__) . "/../apps"));
 
 class FS
 {
@@ -336,6 +339,7 @@ function out($json) {
   print json_encode($json);
 }
 
+
 $method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
 $json   = Array("result" => false, "error" => null);
 $error  = null;
@@ -432,30 +436,21 @@ if ( empty($data) ) {
         $am = empty($arguments['method']) ? null : $arguments['method'];
         $aa = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
 
-        switch ( $an ) {
-          case "CoreService" :
-            if ( $am == 'getCache' ) {
-              $result = Array(
-                'applications' => getApplicationData(null, null)
-              );
-            } else if ( $am == 'getSession' ) {
-              $result = getSessionData();
-            } else if ( $am == 'setSession' ) {
-              $data = empty($aa['data']) ? Array() : $aa['data'];
-              $result = setSessionData($data);
-            } else if ( $am == 'setSettings' ) {
-              $data = empty($aa['data']) ? Array() : $aa['data'];
-              $result = setUserSettings($data);
-            } else {
-              $error = "Invalid CoreService call";
+        $apath = sprintf("%s/%s/%s", APPDIR, $an, "api.php");
+        if ( strstr($apath, APPDIR) === false || !file_exists($apath) ) {
+          $error = "No such application or API file not available!";
+        } else {
+          require $apath;
+          if ( !class_exists($an) || !method_exists($an, 'call') ) {
+            $error = "Application API missing!";
+          } else {
+            try {
+              $result = $an::call($am, $aa);//call_user_func_array(Array($an, 'call'), $aa);
+            } catch ( Exception $e ) {
+              $error = "Application API exception: {$e->getMessage()}";
             }
-          break;
-
-          default :
-            $error = "No such application";
-          break;
+          }
         }
-
       break;
 
       case 'fs' :

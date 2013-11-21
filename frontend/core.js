@@ -743,7 +743,9 @@
 
   Application.prototype._call = function(method, args, onSuccess, onError) {
     onSuccess = onSuccess || function() {};
-    onError = onError || function() {};
+    onError = onError || function() {
+      // TODO: Default error
+    };
     return APICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 

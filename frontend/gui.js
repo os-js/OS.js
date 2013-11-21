@@ -31,7 +31,16 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
-  // TODO: Blur selected element when changing containers' focus
+  // TODO: ProgressBar
+  // TODO: Slider
+  // TODO: Select + SelectList
+  // TODO: Button
+  // TODO: Option
+  // TODO: Checkbox
+  // TODO: Image
+  // TODO: Video, Audio => Media
+  // TODO: IconView
+  // TODO: TreeView
 
   function createDroppable(el, args) {
     args = args || {};
