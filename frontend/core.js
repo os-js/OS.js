@@ -190,6 +190,27 @@
     console.log(OSjs.Utils.getCompability());
     console.groupEnd();
 
+    window.onscroll = function () {
+      window.scrollTo(0,0);
+    };
+
+    document.addEventListener('keydown', function(ev) {
+      var doPrevent = false;
+      if ( ev.keyCode === 8 ) {
+        var d = ev.srcElement || ev.target;
+        if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) 
+            || d.tagName.toUpperCase() === 'TEXTAREA') {
+              doPrevent = d.readOnly || d.disabled;
+            }
+        else {
+          doPrevent = true;
+        }
+      }
+      if ( doPrevent ) {
+        ev.preventDefault();
+      }
+    });
+
     this._$root = document.createElement('div');
     this._$root.id = "Background";
     this._$root.oncontextmenu = function(ev) {
