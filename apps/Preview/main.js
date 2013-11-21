@@ -162,9 +162,9 @@
         if ( fname ) {
           _open(fname);
         } else {
-          OSjs.Dialogs.createFileDialog({type: 'open'}, function(fname) {
+          this._createDialog('File', [{type: 'open'}, function(fname) {
             _open(fname);
-          });
+          }], w);
         }
       break;
     }

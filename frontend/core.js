@@ -731,6 +731,22 @@
     return APICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
+  Application.prototype._createDialog = function(className, args, parentClass) {
+    if ( OSjs.Dialogs[className] ) {
+
+      var w = Object.create(OSjs.Dialogs[className].prototype);
+      OSjs.Dialogs[className].apply(w, args);
+
+      if ( parentClass && (parentClass instanceof Window) ) {
+        parentClass._addChild(w);
+      }
+
+      this._addWindow(w);
+      return w;
+    }
+    return false;
+  };
+
   Application.prototype._addWindow = function(w) {
     if ( !(w instanceof Window) ) throw "Application::_addWindow() expects Window";
     console.log("OSjs::Core::Application::_addWindow()");
@@ -797,6 +813,8 @@
     this._lastDimension = this._dimension;
     this._lastPosition  = this._position;
     this._tmpPosition   = null;
+    this._children      = [];
+    this._parent        = null;
     this._properties    = {
       gravity         : null,
       allow_move      : true,
@@ -1121,6 +1139,21 @@
       this._appRef._onMessage(this, 'destroyWindow', {});
     }
 
+    if ( this._parent ) {
+      this._parent._removeChild(this);
+    }
+    this._parent = null;
+
+    if ( this._children.length ) {
+      var i = 0, l = this._children.length;
+      for ( i; i < l; i++ ) {
+        if ( this._children[i] ) {
+          this._children[i].destroy();
+        }
+      }
+    }
+    this._children = [];
+
     if ( _WM ) {
       _WM.removeWindow(this);
     }
@@ -1132,6 +1165,25 @@
     }
 
     this._appRef = null;
+  };
+
+  Window.prototype._addChild = function(w) {
+    console.log("OSjs::Core::Window::_addChild()");
+    w._parent = this;
+    this._children.push(w);
+  };
+
+  Window.prototype._removeChild = function(w) {
+    var i = 0, l = this._children.length;
+    for ( i; i < l; i++ ) {
+      if ( this._children[i] && this._children[i]._wid === w._wid ) {
+        console.log("OSjs::Core::Window::_removeChild()");
+
+        this._children[i].destroy();
+        this._children[i] = null;
+        break;
+      }
+    }
   };
 
   Window.prototype._close = function() {

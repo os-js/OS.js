@@ -137,14 +137,14 @@
   /**
    * File Upload Dialog
    */
-  var FileUploadDialog = function(dest, file) {
+  var FileUploadDialog = function(dest, file, onDone) {
     DialogWindow.apply(this, ['FileUploadDialog', {width:250, height:150}]);
 
     this.dest   = dest;
     this.dialog = null;
     this.button = null;
     this.file   = file || null;
-    this.onDone = function() { };
+    this.onDone = onDone || function() { };
     this._wmref = null;
     this._title = "Upload File";
   };
@@ -286,12 +286,12 @@
   /**
    * File Dialog Class
    */
-  var FileDialog = function(args) {
+  var FileDialog = function(args, onClose, onCancel) {
     args = args || {};
     DialogWindow.apply(this, ['FileDialog', {width:400, height:300}]);
 
-    this.onCancel = function() {};
-    this.onOK = function() {};
+    this.onCancel = onCancel || function() {};
+    this.onOK = onClose || function() {};
     this.currentPath = args.path || OSjs.API.getDefaultPath('/');
     this.currentFilename = args.filename || '';
     this.type = args.type || 'open';
@@ -435,9 +435,9 @@
   /**
    * Alert/Message Dialog
    */
-  var AlertDialog = function(msg) {
+  var AlertDialog = function(msg, onClose) {
     DialogWindow.apply(this, ['AlertDialog', {width:250, height:100}]);
-    this.onClose = function() {};
+    this.onClose = onClose || function() {};
     this.message = msg || 'undefined';
   };
   AlertDialog.prototype = Object.create(DialogWindow.prototype);
@@ -468,9 +468,9 @@
   /**
    * Confirmation Dialog
    */
-  var ConfirmDialog = function(msg) {
+  var ConfirmDialog = function(msg, onClose) {
     DialogWindow.apply(this, ['ConfirmDialog', {width:250, height:120}]);
-    this.onClose = function() {};
+    this.onClose = onClose || function() {};
     this.message = msg || 'undefined';
   };
   ConfirmDialog.prototype = Object.create(DialogWindow.prototype);
@@ -509,11 +509,11 @@
   /**
    * Input Dialog
    */
-  var InputDialog = function(msg, val) {
+  var InputDialog = function(msg, val, onClose) {
     DialogWindow.apply(this, ['InputDialog', {width:300, height:150}]);
     this.message = msg || 'undefined';
     this.value = val || '';
-    this.onClose = function() {};
+    this.onClose = onClose || function() {};
   };
   InputDialog.prototype = Object.create(DialogWindow.prototype);
   InputDialog.prototype.init = function() {
@@ -563,48 +563,43 @@
   OSjs.Dialogs.FileProgress   = FileProgressDialog;
   OSjs.Dialogs.FileUpload     = FileUploadDialog;
   OSjs.Dialogs.ErrorMessage   = ErrorMessageBox;
-  OSjs.Dialogs.AlertDialog    = AlertDialog;
-  OSjs.Dialogs.ConfirmDialog  = ConfirmDialog;
-  OSjs.Dialogs.InputDialog    = InputDialog;
+  OSjs.Dialogs.Alert          = AlertDialog;
+  OSjs.Dialogs.Confirm        = ConfirmDialog;
+  OSjs.Dialogs.Input          = InputDialog;
 
-  var _createDialog = function(d) {
-    var wm = OSjs.API.getWMInstance();
-    if ( d && wm ) {
-      wm.addWindow(d);
-      return d;
+  var _createDialog = function(d, p) {
+    if ( d ) {
+      if ( p && (p instanceof OSjs.Core.Window) ) {
+        p._addChild(d);
+      }
+
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        wm.addWindow(d);
+        return d;
+      }
     }
     return null;
   };
 
-  OSjs.Dialogs.createAlertDialog = function(msg, onClose) {
-    var d = new AlertDialog(msg);
-    d.onClose = onClose;
-    return _createDialog(d);
+  OSjs.Dialogs.createAlertDialog = function(msg, onClose, parentWindow) {
+    return _createDialog(new AlertDialog(msg, onClose), parentClass);
   };
 
-  OSjs.Dialogs.createConfirmDialog = function(msg, onClose) {
-    var d = new ConfirmDialog(msg);
-    d.onClose = onClose;
-    return _createDialog(d);
+  OSjs.Dialogs.createConfirmDialog = function(msg, onClose, parentClass) {
+    return _createDialog(new ConfirmDialog(msg, onClose), parentClass);
   };
 
-  OSjs.Dialogs.createInputDialog = function(msg, val, onClose) {
-    var d = new InputDialog(msg, val);
-    d.onClose = onClose;
-    return _createDialog(d);
+  OSjs.Dialogs.createInputDialog = function(msg, val, onClose, parentClass) {
+    return _createDialog(new InputDialog(msg, val, onClose), parentClass);
   };
 
-  OSjs.Dialogs.createFileUploadDialog = function(dest, onDone, file) {
-    var d = new FileUploadDialog(dest, file);
-    d.onDone = onDone || function() {};
-    return _createDialog(d);
+  OSjs.Dialogs.createFileUploadDialog = function(dest, onDone, file, parentClass) {
+    return _createDialog(new FileUploadDialog(dest, file, onClose), parentClass);
   };
 
-  OSjs.Dialogs.createFileDialog = function(args, onOK, onCancel) {
-    var d = new FileDialog(args);
-    d.onOK = onOK || function() {};
-    d.onCancel = onCancel || function() {};
-    return _createDialog(d);
+  OSjs.Dialogs.createFileDialog = function(args, onOK, onCancel, parentClass) {
+    return _createDialog(new FileDialog(args, onClose, onCancel), parentClass);
   };
 
 })(OSjs.Core.DialogWindow, OSjs.GUI);

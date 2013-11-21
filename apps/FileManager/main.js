@@ -56,7 +56,7 @@
     this.menuBar.addItem("File", [
       {title: 'Create directory', onClick: function() {
         var cur = self.fileView.getPath();
-        OSjs.Dialogs.createInputDialog("Create a new directory in '" + cur + "'", '', function(btn, value) {
+        app._createDialog('Input', ["Create a new directory in '" + cur + "'", '', function(btn, value) {
           if ( btn !== 'ok' || !value ) return;
 
           app.mkdir((cur + '/' + value), function() {
@@ -64,14 +64,14 @@
               self.fileView.refresh();
             }
           });
-        });
+        }], self);
       }},
       {title: 'Upload', onClick: function() {
-        OSjs.Dialogs.createFileUploadDialog(self.fileView.getPath(), function() {
+        app._createDialog('FileUpload', [self.fileView.getPath(), null, function() {
           if ( self.fileView ) {
             self.fileView.refresh();
           }
-        });
+        }], self);
       }},
       {title: 'Close', onClick: function() {
         self._close();
@@ -82,8 +82,7 @@
         var cur = self.fileView.getSelected();
         if ( !cur ) return;
         var fname = OSjs.Utils.filename(cur.path);
-
-        OSjs.Dialogs.createInputDialog("Rename '" + fname + "'", fname, function(btn, value) {
+        app._createDialog('Input', ["Rename '" + fname + "'", fname, function(btn, value) {
           if ( btn !== 'ok' || !value ) return;
           var newpath = OSjs.Utils.dirname(cur.path) + '/' + value;
 
@@ -92,21 +91,21 @@
               self.fileView.refresh();
             }
           });
-        });
+        }], self);
       }},
       {name: 'Delete', title: 'Delete', onClick: function() {
         var cur = self.fileView.getSelected();
         if ( !cur ) return;
         var fname = OSjs.Utils.filename(cur.path);
 
-        OSjs.Dialogs.createConfirmDialog("Delete '" + fname + "' ?", function(btn) {
+        app._createDialog('Confirm', ["Delete '" + fname + "' ?", function(btn) {
           if ( btn !== 'ok' ) return;
           app.unlink(cur.path, function() {
             if ( self.fileView ) {
               self.fileView.refresh();
             }
           });
-        });
+        }]);
       }}
     ]);
     this.menuBar.addItem("View", [
@@ -197,6 +196,7 @@
   ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, el, files) {
     var self = this;
     if ( files && files.length ) {
+      var app = this._appRef;
       var dest = this.fileView.getPath();
 
       var _onUploaded = function(file) {
@@ -208,11 +208,11 @@
       };
 
       for ( var i = 0; i < files.length; i++ ) {
-        OSjs.Dialogs.createFileUploadDialog(dest, (function(f) {
+        app._createDialog('FileUpload', [dest, files[i], (function(f) {
           return function() {
             _onUploaded(f);
           };
-        })(files[i]), files[i]);
+        })(files[i])], this);
       }
     }
     return false;
