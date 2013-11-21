@@ -132,12 +132,15 @@ class FS
   public static function delete($fname) {
     $fname = unrealpath($fname);
 
-    if ( !is_file($fname) ) throw new Exception("File does not exist");
-    if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
     if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
-    if ( is_dir($fname) ) {
+    if ( is_file($fname) ) {
+      if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
+    } else if ( is_dir($fname) ) {
+      if ( !is_writeable(dirname($fname)) ) throw new Exception("Read permission denied");
       return destroy_dir($fname);
+    } else {
+      throw new exception("No such file or directory!");
     }
 
     return unlink($fname);
@@ -147,7 +150,7 @@ class FS
     $src = unrealpath($src);
     $dest = unrealpath($dest);
 
-    if ( !is_file($src) ) throw new Exception("File does not exist");
+    if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
     if ( preg_match("/^\/tmp/", $src) === false || strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
     if ( preg_match("/^\/tmp/", $dest) === false || strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");

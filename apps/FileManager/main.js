@@ -64,7 +64,7 @@
               self.fileView.refresh();
             }
           });
-        })
+        });
       }},
       {title: 'Upload', onClick: function() {
         OSjs.Dialogs.createFileUploadDialog(self.fileView.getPath(), function() {
@@ -77,11 +77,63 @@
         self._close();
       }}
     ]);
+    this.menuBar.addItem("Edit", [
+      {name: 'Rename', title: 'Rename', onClick: function() {
+        var cur = self.fileView.getSelected();
+        if ( !cur ) return;
+        var fname = OSjs.Utils.filename(cur.path);
+
+        OSjs.Dialogs.createInputDialog("Rename '" + fname + "'", fname, function(btn, value) {
+          if ( btn !== 'ok' || !value ) return;
+          var newpath = OSjs.Utils.dirname(cur.path) + '/' + value;
+
+          app.move(cur.path, newpath, function() {
+            if ( self.fileView ) {
+              self.fileView.refresh();
+            }
+          });
+        });
+      }},
+      {name: 'Delete', title: 'Delete', onClick: function() {
+        var cur = self.fileView.getSelected();
+        if ( !cur ) return;
+        var fname = OSjs.Utils.filename(cur.path);
+
+        OSjs.Dialogs.createConfirmDialog("Delete '" + fname + "' ?", function(btn) {
+          if ( btn !== 'ok' ) return;
+          app.unlink(cur.path, function() {
+            if ( self.fileView ) {
+              self.fileView.refresh();
+            }
+          });
+        });
+      }}
+    ]);
     this.menuBar.addItem("View", [
       {title: 'Refresh', onClick: function() {
         self.fileView.refresh();
       }}
     ]);
+    this.menuBar.onMenuOpen = function(menu) {
+      var sel = self.fileView.getSelected();
+      var el1 = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0];
+      var el2 = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0];
+      var cur = sel ? sel.filename != '..' : false;
+      if ( el1 ) {
+        if ( cur ) {
+          el1.className = el1.className.replace(/\s?Disabled/, '');
+        } else {
+          el1.className += ' Disabled';
+        }
+      }
+      if ( el2 ) {
+        if ( cur ) {
+          el2.className = el2.className.replace(/\s?Disabled/, '');
+        } else {
+          el2.className += ' Disabled';
+        }
+      }
+    };
 
     this.sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
