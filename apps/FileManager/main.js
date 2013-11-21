@@ -54,6 +54,18 @@
     };
 
     this.menuBar.addItem("File", [
+      {title: 'Create directory', onClick: function() {
+        var cur = self.fileView.getPath();
+        OSjs.Dialogs.createInputDialog("Create a new directory in '" + cur + "'", '', function(btn, value) {
+          if ( btn !== 'ok' || !value ) return;
+
+          app.mkdir((cur + '/' + value), function() {
+            if ( self.fileView ) {
+              self.fileView.refresh();
+            }
+          });
+        })
+      }},
       {title: 'Upload', onClick: function() {
         OSjs.Dialogs.createFileUploadDialog(self.fileView.getPath(), function() {
           if ( self.fileView ) {
@@ -193,6 +205,27 @@
   ApplicationFileManager.prototype.go = function(dir, w) {
     this._setArgument('path', dir);
     w._setTitle(w.title + ' - ' + (dir || '/'));
+  };
+
+  ApplicationFileManager.prototype.mkdir = function(name, callback) {
+    callback = callback || function() {};
+
+    var _onError = function(error) {
+      // FIXME
+      OSjs.API.error("File Manager error", "An error occured while handling your request", error);
+
+      callback(false);
+    };
+
+    OSjs.API.call('fs', {'method': 'mkdir', 'arguments': [name]}, function(res) {
+      if ( !res || (typeof res.result === 'undefined') || res.error ) {
+        _onError(res.error || 'Fatal error');
+      } else {
+        callback(res.result);
+      }
+    }, function(error) {
+      _onError(error);
+    });
   };
 
   //

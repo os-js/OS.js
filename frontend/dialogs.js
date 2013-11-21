@@ -513,6 +513,7 @@
     DialogWindow.apply(this, ['InputDialog', {width:300, height:150}]);
     this.message = msg || 'undefined';
     this.value = val || '';
+    this.onClose = function() {};
   };
   InputDialog.prototype = Object.create(DialogWindow.prototype);
   InputDialog.prototype.init = function() {

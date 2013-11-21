@@ -80,7 +80,7 @@ class FS
       $fpath = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
       $ftype = is_dir($fpath) ? 'dir' : 'file';
 
-      $fsize = ($ftype == 'dir' ? 0 : @filesize($fname));
+      $fsize = @(($ftype == 'dir' ? 0 : filesize($fpath)));
       if ( $fsize === false ) $fsize = '';
 
       $iter = Array(
@@ -123,6 +123,30 @@ class FS
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
     if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     return file_get_contents($fname);
+  }
+
+  public static function delete($fname) {
+    if ( !is_file($fname) ) throw new Exception("File does not exist");
+    if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
+    if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    return unlink($fname);
+  }
+
+  public static function move($src, $dest) {
+    if ( !is_file($src) ) throw new Exception("File does not exist");
+    if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
+    if ( preg_match("/^\/tmp/", $src) === false || strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
+    if ( preg_match("/^\/tmp/", $dest) === false || strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
+    if ( file_exists($dest) ) throw new Exception("Destination file already exist");
+
+    return rename($src, $dest);
+  }
+
+  public static function mkdir($dname) {
+    if ( file_exists($dname) ) throw new Exception("Destination already exists");
+    if ( preg_match("/^\/tmp/", $dname) === false || strstr($dname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+
+    return mkdir($dname);
   }
 }
 
