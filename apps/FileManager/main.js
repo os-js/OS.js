@@ -36,7 +36,11 @@
     };
     this.fileView.onFinished = function(dir) {
       self._toggleLoading(false);
-      if ( self._appRef ) self._appRef.go(dir, self);
+      try {
+        self._appRef.go(dir, self);
+      } catch ( e ) {
+        console.warn("ApplicationFileManagerWindow->onFinished()", e);
+      }
     };
     this.fileView.onRefresh = function() {
       self._toggleLoading(true);

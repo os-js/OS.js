@@ -283,6 +283,7 @@
   var GUIElement = function(opts) {
     this.opts = opts || {};
     this.id = _GUIElementCount;
+    this.destroyed = false;
 
     if ( typeof this.opts.dnd === 'undefined' ) {
       this.opts.dnd     = false;
@@ -335,6 +336,7 @@
   };
 
   GUIElement.prototype.destroy = function() {
+    this.destroyed = true;
     if ( this.$element && this.$element.parentNode ) {
       this.$element.parentNode.removeChild(this.$element);
     }
@@ -634,6 +636,7 @@
   };
 
   FileView.prototype.onKeyPress = function(ev) {
+    if ( this.destroyed ) return false;
     if ( !ListView.prototype.onKeyPress.apply(this, arguments) ) return;
 
     ev.preventDefault();
@@ -660,6 +663,7 @@
   };
 
   FileView.prototype.render = function(list, dir) {
+    if ( this.destroyed ) return;
     this.selected = null;
     this.selectedDOMItem = null;
 
@@ -702,16 +706,20 @@
   };
 
   FileView.prototype.refresh = function(onRefreshed) {
+    if ( this.destroyed ) return;
     return this.chdir(this.path, onRefreshed);
   };
 
   FileView.prototype.chdir = function(dir, onRefreshed) {
+    if ( this.destroyed ) return;
     onRefreshed = onRefreshed || function() {};
 
     var self = this;
     this.onRefresh.call(this);
 
     OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir]}, function(res) {
+      if ( self.destroyed ) return;
+
       var error = null;
       var rendered = false;
       if ( res ) {
@@ -740,6 +748,7 @@
   };
 
   FileView.prototype._onRowClick = function(el, ev) {
+    if ( this.destroyed ) return;
     ListView.prototype._onRowClick.apply(this, arguments);
     this.selectedDOMItem = el;
     this.onSelect(ev, this, el);
@@ -763,6 +772,7 @@
   };
 
   FileView.prototype.setSelectedIndex = function(idx) {
+    if ( this.destroyed ) return;
     var row = this.$table.tBodies[0].rows[idx];
     if ( row ) {
       this._onRowClick(row, null);
@@ -770,6 +780,7 @@
   };
 
   FileView.prototype.setSelected = function(val, key) {
+    if ( this.destroyed ) return;
     var row = this.getItemByKey(key, val);
     if ( row ) {
       this._onRowClick(row, null);
