@@ -207,7 +207,7 @@
     w._setTitle(w.title + ' - ' + (dir || '/'));
   };
 
-  ApplicationFileManager.prototype.mkdir = function(name, callback) {
+  ApplicationFileManager.prototype._action = function(name, args, callback) {
     callback = callback || function() {};
 
     var _onError = function(error) {
@@ -217,7 +217,7 @@
       callback(false);
     };
 
-    OSjs.API.call('fs', {'method': 'mkdir', 'arguments': [name]}, function(res) {
+    OSjs.API.call('fs', {'method': name, 'arguments': args}, function(res) {
       if ( !res || (typeof res.result === 'undefined') || res.error ) {
         _onError(res.error || 'Fatal error');
       } else {
@@ -226,6 +226,18 @@
     }, function(error) {
       _onError(error);
     });
+  };
+
+  ApplicationFileManager.prototype.move = function(src, dest, callback) {
+    return this._action('move', [src, dest], callback);
+  };
+
+  ApplicationFileManager.prototype.unlink = function(name, callback) {
+    return this._action('delete', [name], callback);
+  };
+
+  ApplicationFileManager.prototype.mkdir = function(name, callback) {
+    return this._action('mkdir', [name], callback);
   };
 
   //

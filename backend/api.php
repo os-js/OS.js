@@ -108,6 +108,8 @@ class FS
   }
 
   public static function file_put_contents($fname, $content) {
+    $fname = unrealpath($fname);
+
     if ( is_file($fname) ) {
       if ( !is_file($fname) ) throw new Exception("You are writing to a invalid resource");
       if ( !is_writable($fname) ) throw new Exception("Write permission denied");
@@ -119,6 +121,8 @@ class FS
   }
 
   public static function file_get_contents($fname) {
+    $fname = unrealpath($fname);
+
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
     if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
@@ -126,13 +130,23 @@ class FS
   }
 
   public static function delete($fname) {
+    $fname = unrealpath($fname);
+
     if ( !is_file($fname) ) throw new Exception("File does not exist");
     if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
     if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+
+    if ( is_dir($fname) ) {
+      return destroy_dir($fname);
+    }
+
     return unlink($fname);
   }
 
   public static function move($src, $dest) {
+    $src = unrealpath($src);
+    $dest = unrealpath($dest);
+
     if ( !is_file($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
     if ( preg_match("/^\/tmp/", $src) === false || strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
@@ -143,11 +157,25 @@ class FS
   }
 
   public static function mkdir($dname) {
+    $dname = unrealpath($dname);
+
     if ( file_exists($dname) ) throw new Exception("Destination already exists");
     if ( preg_match("/^\/tmp/", $dname) === false || strstr($dname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
     return mkdir($dname);
   }
+}
+
+function destroy_dir($dir) {
+  if (!is_dir($dir) || is_link($dir)) return unlink($dir);
+  foreach (scandir($dir) as $file) {
+    if ($file == '.' || $file == '..') continue; 
+    if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) {
+      chmod($dir . DIRECTORY_SEPARATOR . $file, 0777);
+      if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) return false;
+    }
+  }
+  return rmdir($dir);
 }
 
 function setUserSettings($data) {
@@ -172,6 +200,10 @@ function getUserSettings() {
       )
     )
   );
+}
+
+function unrealpath($p) {
+  return str_replace(Array("../", "./"), "", $p);
 }
 
 function getSessionData() {
