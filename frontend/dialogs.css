@@ -76,9 +76,13 @@
   left : 5px;
   right : 5px;
   bottom : 5px;
+  padding-top : 10px;
 }
 .FileUploadDialog .Description {
   margin-bottom : 10px;
+}
+.FileUploadDialog .Description span {
+  font-weight : bold;
 }
 .FileUploadDialog .OK {
   position : absolute;
@@ -93,9 +97,13 @@
   left : 5px;
   right : 5px;
   bottom : 5px;
+  padding-top : 10px;
 }
 .FileProgressDialog .Description {
   margin-bottom : 10px;
+}
+.FileProgressDialog .Description span {
+  font-weight : bold;
 }
 .FileProgressDialog .BarContainer {
   position : relative;
@@ -129,6 +137,10 @@
   left : 5px;
   right : 5px;
   bottom : 5px;
+  padding-top : 10px;
+}
+.InputDialog span {
+  font-weight : bold;
 }
 .InputDialog .OK {
   position : absolute;
@@ -143,6 +155,10 @@
   width : 100px;
 }
 .InputDialog input[type=text] {
+  position : absolute;
+  bottom : 30px;
+  left : 0px;
+  right : 0px;
 }
 
 .ConfirmDialog {
@@ -151,6 +167,7 @@
   left : 5px;
   right : 5px;
   bottom : 5px;
+  padding-top : 10px;
 }
 .ConfirmDialog .OK {
   position : absolute;
@@ -171,6 +188,7 @@
   left : 5px;
   right : 5px;
   bottom : 5px;
+  padding-top : 10px;
 }
 .AlertDialog .OK {
   position : absolute;

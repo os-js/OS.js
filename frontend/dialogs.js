@@ -40,7 +40,7 @@
   var ErrorMessageBox = function() {
     this.data = {title: 'No title', message: 'No message', error: ''};
 
-    DialogWindow.apply(this, ['ErrorMessageBox', {width:400, height:200}]);
+    DialogWindow.apply(this, ['ErrorMessageBox', {width:300, height:150}]);
   };
 
   ErrorMessageBox.prototype = Object.create(DialogWindow.prototype);
@@ -79,7 +79,7 @@
    * File Progress dialog
    */
   var FileProgressDialog = function() {
-    DialogWindow.apply(this, ['FileUploadDialog', {width:200, height:100}]);
+    DialogWindow.apply(this, ['FileUploadDialog', {width:400, height:120}]);
 
     this.$desc = null;
     this.$barContainer = null;
@@ -138,7 +138,7 @@
    * File Upload Dialog
    */
   var FileUploadDialog = function(dest, file, onDone) {
-    DialogWindow.apply(this, ['FileUploadDialog', {width:250, height:150}]);
+    DialogWindow.apply(this, ['FileUploadDialog', {width:400, height:120}]);
 
     this.dest   = dest;
     this.dialog = null;
@@ -163,7 +163,7 @@
 
     var desc = document.createElement('div');
     desc.className = 'Description';
-    desc.innerHTML = 'Upload file to ' + this.dest;
+    desc.innerHTML = 'Upload file to <span>' + this.dest + '</span>';
 
     var file = document.createElement('input');
     file.type = 'file';
@@ -454,6 +454,7 @@
     DialogWindow.apply(this, ['AlertDialog', {width:250, height:100}]);
     this.onClose = onClose || function() {};
     this.message = msg || 'undefined';
+    this._title = "Alert Dialog";
   };
   AlertDialog.prototype = Object.create(DialogWindow.prototype);
   AlertDialog.prototype.init = function() {
@@ -487,6 +488,7 @@
     DialogWindow.apply(this, ['ConfirmDialog', {width:250, height:120}]);
     this.onClose = onClose || function() {};
     this.message = msg || 'undefined';
+    this._title = "Confirm Dialog";
   };
   ConfirmDialog.prototype = Object.create(DialogWindow.prototype);
   ConfirmDialog.prototype.init = function() {
@@ -529,6 +531,7 @@
     this.message = msg || 'undefined';
     this.value = val || '';
     this.onClose = onClose || function() {};
+    this._title = "Input Dialog";
   };
   InputDialog.prototype = Object.create(DialogWindow.prototype);
   InputDialog.prototype.init = function() {
@@ -581,40 +584,5 @@
   OSjs.Dialogs.Alert          = AlertDialog;
   OSjs.Dialogs.Confirm        = ConfirmDialog;
   OSjs.Dialogs.Input          = InputDialog;
-
-  var _createDialog = function(d, p) {
-    if ( d ) {
-      if ( p && (p instanceof OSjs.Core.Window) ) {
-        p._addChild(d);
-      }
-
-      var wm = OSjs.API.getWMInstance();
-      if ( wm ) {
-        wm.addWindow(d);
-        return d;
-      }
-    }
-    return null;
-  };
-
-  OSjs.Dialogs.createAlertDialog = function(msg, onClose, parentWindow) {
-    return _createDialog(new AlertDialog(msg, onClose), parentClass);
-  };
-
-  OSjs.Dialogs.createConfirmDialog = function(msg, onClose, parentClass) {
-    return _createDialog(new ConfirmDialog(msg, onClose), parentClass);
-  };
-
-  OSjs.Dialogs.createInputDialog = function(msg, val, onClose, parentClass) {
-    return _createDialog(new InputDialog(msg, val, onClose), parentClass);
-  };
-
-  OSjs.Dialogs.createFileUploadDialog = function(dest, onDone, file, parentClass) {
-    return _createDialog(new FileUploadDialog(dest, file, onClose), parentClass);
-  };
-
-  OSjs.Dialogs.createFileDialog = function(args, onOK, onCancel, parentClass) {
-    return _createDialog(new FileDialog(args, onClose, onCancel), parentClass);
-  };
 
 })(OSjs.Core.DialogWindow, OSjs.GUI);

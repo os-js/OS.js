@@ -56,7 +56,7 @@
     this.menuBar.addItem("File", [
       {title: 'Create directory', onClick: function() {
         var cur = self.fileView.getPath();
-        app._createDialog('Input', ["Create a new directory in '" + cur + "'", '', function(btn, value) {
+        app._createDialog('Input', ["Create a new directory in <span>" + cur + "</span>", '', function(btn, value) {
           if ( btn !== 'ok' || !value ) return;
 
           app.mkdir((cur + '/' + value), function() {
@@ -82,7 +82,7 @@
         var cur = self.fileView.getSelected();
         if ( !cur ) return;
         var fname = OSjs.Utils.filename(cur.path);
-        app._createDialog('Input', ["Rename '" + fname + "'", fname, function(btn, value) {
+        app._createDialog('Input', ["Rename <span>" + fname + "</span>", fname, function(btn, value) {
           if ( btn !== 'ok' || !value ) return;
           var newpath = OSjs.Utils.dirname(cur.path) + '/' + value;
 
@@ -98,7 +98,7 @@
         if ( !cur ) return;
         var fname = OSjs.Utils.filename(cur.path);
 
-        app._createDialog('Confirm', ["Delete '" + fname + "' ?", function(btn) {
+        app._createDialog('Confirm', ["Delete <span>" + fname + "</span> ?", function(btn) {
           if ( btn !== 'ok' ) return;
           app.unlink(cur.path, function() {
             if ( self.fileView ) {
