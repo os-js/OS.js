@@ -442,16 +442,37 @@
           }
         }
 
-        // TODO try/catch, then destroy app on fail
-        var a = new OSjs.Applications[n](arg, result);
-        a.__sname = n;
-        if ( singular ) {
-          _SPROCS[n] = true;
+        var a = null, err = false;
+        try {
+          var a = new OSjs.Applications[n](arg, result);
+          a.__sname = n;
+          if ( singular ) {
+            _SPROCS[n] = true;
+          }
+
+          onConstructed(a);
+        } catch ( e ) {
+          _error("Application construct failed: " + e);
+          err = true;
         }
 
-        onConstructed(a);
-        a.init(self);
-        onFinished(a);
+        if ( err ) {
+          if ( a ) {
+            try {
+              a.destroy();
+              a = null;
+            } catch ( e ) {
+              console.warn("Something awful happened when trying to clean up failed launch Oo");
+            }
+          }
+        } else {
+          try {
+            a.init(self);
+            onFinished(a);
+          } catch ( e ) {
+            _error("Application init() failed: " + e);
+          }
+        }
       } else {
         _error("Application resource not found!");
       }
@@ -871,80 +892,97 @@
 
   Window.prototype.init = function(_wm) {
     var self = this;
-    var cpb = OSjs.Utils.getCompability();
 
     console.log("OSjs::Core::Window::init()");
 
     this._state.focused = false;
 
-    // TODO: Finish gravities
-    if ( this._properties.gravity === 'center' ) {
-      this._position.y = (window.innerHeight / 2) - (this._dimension.h / 2);
-      this._position.x = (window.innerWidth / 2) - (this._dimension.w / 2);
+    var grav = this._properties.gravity;
+    if ( grav ) {
+      if ( grav === 'center' ) {
+        this._position.y = (window.innerHeight / 2) - (this._dimension.h / 2);
+        this._position.x = (window.innerWidth / 2) - (this._dimension.w / 2);
+      } else {
+        var space = getWindowSpace();
+        if ( grav.match(/^south/) ) {
+          this._position.y = space.height - this._dimension.h;
+        } else {
+          this._position.y = space.top;
+        }
+        if ( grav.match(/west$/) ) {
+          this._position.x = space.left;
+        } else {
+          this._position.x = space.width - this._dimension.w;
+        }
+      }
     }
 
     var main            = document.createElement('div');
     main.className      = 'Window';
     main.oncontextmenu  = function(ev) {
       OSjs.GUI.blurMenu();
+      // FIXME: Copy code from backspace prevention
       if ( ev.target && (ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'INPUT') ) {
         return true;
       }
       return false;
     };
 
-    if ( this._properties.allow_drop && cpb.dnd ) {
-      var border = document.createElement('div');
-      border.className = 'WindowDropRect';
+    if ( this._properties.allow_drop ) {
+      var cpb = OSjs.Utils.getCompability();
+      if ( cpb.dnd ) {
+        var border = document.createElement('div');
+        border.className = 'WindowDropRect';
 
-      var _showBorder = function() {
-        if ( !border.parentNode ) { document.body.appendChild(border); }
-        border.style.top = main.offsetTop + "px";
-        border.style.left = main.offsetLeft + "px";
-        border.style.width = main.offsetWidth + "px";
-        border.style.height = main.offsetHeight + "px";
-        border.style.zIndex = main.style.zIndex-1;
-        border.style.display = 'block';
+        var _showBorder = function() {
+          if ( !border.parentNode ) { document.body.appendChild(border); }
+          border.style.top = main.offsetTop + "px";
+          border.style.left = main.offsetLeft + "px";
+          border.style.width = main.offsetWidth + "px";
+          border.style.height = main.offsetHeight + "px";
+          border.style.zIndex = main.style.zIndex-1;
+          border.style.display = 'block';
 
-        if ( !main.className.match('WindowHintDnD') ) {
-          main.className += ' WindowHintDnD';
-        }
-      };
-      var _hideBorder = function() {
-        border.style.top = 0 + "px";
-        border.style.left = 0 + "px";
-        border.style.width = 0 + "px";
-        border.style.height = 0 + "px";
-        border.style.display = 'none';
+          if ( !main.className.match('WindowHintDnD') ) {
+            main.className += ' WindowHintDnD';
+          }
+        };
+        var _hideBorder = function() {
+          border.style.top = 0 + "px";
+          border.style.left = 0 + "px";
+          border.style.width = 0 + "px";
+          border.style.height = 0 + "px";
+          border.style.display = 'none';
 
-        if ( border.parentNode ) { border.parentNode.removeChild(border); }
-        if ( main.className.match('WindowHintDnD') ) {
-          main.className = main.className.replace(' WindowHintDnD', '');
-        }
-      };
+          if ( border.parentNode ) { border.parentNode.removeChild(border); }
+          if ( main.className.match('WindowHintDnD') ) {
+            main.className = main.className.replace(' WindowHintDnD', '');
+          }
+        };
 
-      OSjs.GUI.createDroppable(main, {
-        onOver: function() {
-          _showBorder();
-        },
+        OSjs.GUI.createDroppable(main, {
+          onOver: function() {
+            _showBorder();
+          },
 
-        onLeave : function() {
-          _hideBorder();
-        },
+          onLeave : function() {
+            _hideBorder();
+          },
 
-        onDrop : function() {
-          _hideBorder();
-        },
+          onDrop : function() {
+            _hideBorder();
+          },
 
-        onItemDropped: function(ev, el, item, args) {
-          _hideBorder();
-          return self._onDndEvent(ev, 'itemDrop', item, args);
-        },
-        onFilesDropped: function(ev, el, files, args) {
-          _hideBorder();
-          return self._onDndEvent(ev, 'filesDrop', files, args);
-        }
-      });
+          onItemDropped: function(ev, el, item, args) {
+            _hideBorder();
+            return self._onDndEvent(ev, 'itemDrop', item, args);
+          },
+          onFilesDropped: function(ev, el, files, args) {
+            _hideBorder();
+            return self._onDndEvent(ev, 'filesDrop', files, args);
+          }
+        });
+      }
     }
 
     var windowTop           = document.createElement('div');

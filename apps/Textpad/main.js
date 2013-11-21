@@ -4,11 +4,12 @@
    * Main Window
    */
   var ApplicationTextpadWindow = function(app, opts) {
-    Window.apply(this, ['ApplicationTextpadWindow', opts, app]);
     this.menuBar = null;
     this.textView = null;
     this.textArea = null;
     this.title = "Textpad";
+
+    Window.apply(this, ['ApplicationTextpadWindow', opts, app]);
     this._icon = "/themes/default/icons/16x16/apps/accessories-text-editor.png";
     this._title = this.title;
     this._properties.allow_drop = true;

@@ -190,23 +190,3 @@ body {
   margin : -2px;
 }
 
-/**
- * Dialogs
- */
-.Window_ErrorMessageBox .WindowWrapper .message {
-  margin : 10px;
-}
-.Window_ErrorMessageBox .WindowWrapper .summary {
-  margin : 10px;
-  background : #fff;
-  border : 1px solid #555;
-  padding : 10px;
-}
-.Window_ErrorMessageBox .WindowWrapper button {
-  position : absolute;
-  width : 100px;
-  left : 50%;
-  bottom : 10px;
-  margin-left : -50px;
-}
-

@@ -144,7 +144,8 @@
   ErrorDialog.prototype.init = function() {
     this._title = this.data.title;
 
-    DialogWindow.prototype.init.apply(this, arguments);
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    root.className += ' ErrorDialog';
 
     var messagel = document.createElement('div');
     messagel.className = 'message';
@@ -164,7 +165,7 @@
       self._close();
     };
 
-    this._$root.appendChild(ok);
+    root.appendChild(ok);
   };
 
   ErrorDialog.prototype.setError = function(title, message, error) {
