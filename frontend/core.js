@@ -989,7 +989,7 @@
     main.style.height = this._dimension.h + "px";
     main.style.top    = this._position.y + "px";
     main.style.left   = this._position.x + "px";
-    main.style.zIndex = getNextZindex(this._state.ontop);
+    main.style.zIndex = getNextZindex(this._state.ontop); // FIXME: Not working -- ontop ?!
 
     windowIcon.appendChild(windowIconImage);
 

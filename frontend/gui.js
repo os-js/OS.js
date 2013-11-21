@@ -608,6 +608,8 @@
             icon = 'mimetypes/sound.png';
           } else if ( iter.mime.match(/^video\//) ) {
             icon = 'mimetypes/video.png';
+          } else if ( iter.mime.match(/^image\//) ) {
+            icon = 'mimetypes/image.png';
           } else if ( iter.mime.match(/^application\//) ) {
             icon = 'mimetypes/binary.png';
           }
