@@ -199,3 +199,6 @@ body #WindowList .Background {
   color : #fff;
 }
 
+.GUIColorSwatch {
+  border : 1px solid rgba(34, 34, 34, .5);
+}

@@ -49,22 +49,22 @@
 .FileDialog.FileSaveDialog input {
   display : block;
   position : absolute;
-  left : 5px;
-  right : 5px;
+  left : 0px;
+  right : 0px;
   bottom : 30px;
 }
 
 .FileDialog button.OK {
   position : absolute;
   right : 110px;
-  bottom : 5px;
+  bottom : 0px;
   width : 100px;
 }
 
 .FileDialog button.Cancel {
   position : absolute;
-  right : 5px;
-  bottom : 5px;
+  right : 0px;
+  bottom : 0px;
   width : 100px;
 }
 
@@ -86,8 +86,8 @@
 }
 .FileUploadDialog .OK {
   position : absolute;
-  right : 5px;
-  bottom : 5px;
+  right : 0px;
+  bottom : 0px;
 }
 
 /* FileProgress */
@@ -126,6 +126,47 @@
 }
 
 /* ColorDialog */
+.ColorDialog {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+.ColorDialog .GUIColorSwatch {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+}
+.ColorDialog .ColorSliders {
+  position : absolute;
+  top : 0px;
+  left : 205px;
+  height : 150px;
+  right : 0px;
+}
+.ColorDialog .ColorSelected {
+  position : absolute;
+  left : 0px;
+  height : 20px;
+  width : 200px;
+  top : 210px;
+  background : #fff;
+  border : 1px solid rgba(34, 34, 34, .5);
+}
+
+.ColorDialog .OK {
+  position : absolute;
+  right : 120px;
+  bottom : 0px;
+  width : 100px;
+}
+.ColorDialog .Cancel {
+  position : absolute;
+  right : 0px;
+  bottom : 0px;
+  width : 100px;
+}
 
 /* FontDialog */
 
@@ -145,13 +186,13 @@
 .InputDialog .OK {
   position : absolute;
   right : 120px;
-  bottom : 5px;
+  bottom : 0px;
   width : 100px;
 }
 .InputDialog .Cancel {
   position : absolute;
-  right : 5px;
-  bottom : 5px;
+  right : 0px;
+  bottom : 0px;
   width : 100px;
 }
 .InputDialog input[type=text] {
@@ -172,13 +213,13 @@
 .ConfirmDialog .OK {
   position : absolute;
   right : 120px;
-  bottom : 5px;
+  bottom : 0px;
   width : 100px;
 }
 .ConfirmDialog .Cancel {
   position : absolute;
-  right : 5px;
-  bottom : 5px;
+  right : 0px;
+  bottom : 0px;
   width : 100px;
 }
 
@@ -192,7 +233,7 @@
 }
 .AlertDialog .OK {
   position : absolute;
-  right : 5px;
-  bottom : 5px;
+  right : 0px;
+  bottom : 0px;
   width : 100px;
 }

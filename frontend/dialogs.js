@@ -40,7 +40,7 @@
   var ErrorMessageBox = function() {
     this.data = {title: 'No title', message: 'No message', error: ''};
 
-    DialogWindow.apply(this, ['ErrorMessageBox', {width:300, height:150}]);
+    DialogWindow.apply(this, ['ErrorMessageBox', {width:400, height:200}]);
   };
 
   ErrorMessageBox.prototype = Object.create(DialogWindow.prototype);
@@ -574,6 +574,77 @@
     root.appendChild(el);
   };
 
+  /**
+   * Color Dialog
+   */
+  var ColorDialog = function(color, onClose) {
+    DialogWindow.apply(this, ['ColorDialog', {width:450, height:270}]);
+    this.onClose = onClose || function() {};
+    this._title = "Color Dialog";
+
+    if ( typeof color === 'object' ) {
+      this.currentRGB = color;
+    } else {
+      this.currentRGB = OSjs.Utils.hexToRGB(color || '#ffffff');
+    }
+    this.$color = null;
+
+    var self = this;
+    this.swatch = new OSjs.GUI.ColorSwatch(200, 200, function(r, g, b) {
+      self.setColor(r, g, b);
+    });
+  };
+
+  ColorDialog.prototype = Object.create(DialogWindow.prototype);
+
+  ColorDialog.prototype.init = function() {
+    var self = this;
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    var el = document.createElement('div');
+    el.className = 'ColorDialog';
+
+    var sliders = document.createElement('div');
+    sliders.className = 'ColorSliders';
+    sliders.innerHTML = 'TODO: Sliders'; // TODO
+
+    var selected = document.createElement('div');
+    selected.className = 'ColorSelected';
+
+    var cancel = document.createElement('button');
+    cancel.innerHTML = 'Cancel';
+    cancel.className = 'Cancel';
+    cancel.onclick = function() {
+      self.onClose('cancel');
+      self._close();
+    };
+
+    var ok = document.createElement('button');
+    ok.className = 'OK';
+    ok.innerHTML = 'OK';
+    ok.onclick = function() {
+      self.onClose('ok', self.currentRGB, OSjs.Utils.RGBtoHex(self.currentRGB));
+      self._close();
+    };
+
+    el.appendChild(this.swatch.$element);
+    el.appendChild(sliders);
+    el.appendChild(selected);
+    el.appendChild(cancel);
+    el.appendChild(ok);
+    root.appendChild(el);
+
+    this.$color = selected;
+
+    var rgb = this.currentRGB;
+    this.setColor(rgb.r, rgb.g, rgb.b);
+  };
+
+  ColorDialog.prototype.setColor = function(r, g, b) {
+    this.currentRGB = {r:r, g:g, b:b};
+    this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
+  };
+
   //
   // EXPORTS
   //
@@ -584,5 +655,6 @@
   OSjs.Dialogs.Alert          = AlertDialog;
   OSjs.Dialogs.Confirm        = ConfirmDialog;
   OSjs.Dialogs.Input          = InputDialog;
+  OSjs.Dialogs.Color          = ColorDialog;
 
 })(OSjs.Core.DialogWindow, OSjs.GUI);

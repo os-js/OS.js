@@ -108,6 +108,40 @@
     return (p||'').split("/").pop();
   };
 
+  OSjs.Utils.hexToRGB = function(hex) {
+    var rgb = parseInt(hex.replace("#", ""), 16);
+    return {
+      r : (rgb & (255 << 16)) >> 16,
+      g : (rgb & (255 << 8)) >> 8,
+      b : (rgb & 255)
+    };
+  };
+
+
+  OSjs.Utils.RGBtoHex = function(r, g, b) {
+    if ( typeof r === 'object' ) {
+      g = r.g;
+      b = r.b;
+      r = r.r;
+    }
+
+    var hex = [
+      (r).toString( 16 ),
+      (g).toString( 16 ),
+      (b).toString( 16 )
+    ];
+
+    for ( var i in hex ) {
+      if ( hex.hasOwnProperty(i) ) {
+        if ( hex[i].length === 1 ) {
+          hex[i] = "0" + hex[i];
+        }
+      }
+    }
+
+    return '#' + hex.join("").toUpperCase();
+  };
+
   OSjs.Utils.$ = function(id) {
     return document.getElementById(id);
   };

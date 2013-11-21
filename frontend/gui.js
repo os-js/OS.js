@@ -731,13 +731,77 @@
     return this.$area ? this.$area.value : '';
   };
 
+  /**
+   * Color Swatch
+   */
+  var ColorSwatch = function(w, h, onSelect) {
+    this.$element = null;
+    this.$canvas  = null;
+    this.width    = w || 100;
+    this.height   = h || 100;
+    this.onSelect = onSelect || function(r, g, b) {};
+
+    if ( !OSjs.Utils.getCompability()['canvas'] ) {
+      throw "Canvas is not supported on your platform!";
+    }
+
+    this.init();
+  };
+
+  ColorSwatch.prototype.init = function() {
+    var el        = document.createElement('div');
+    el.className  = 'GUIColorSwatch';
+
+    var cv        = document.createElement('canvas');
+    cv.width      = this.width;
+    cv.height     = this.height;
+
+    var ctx       = cv.getContext('2d');
+    var gradient  = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+
+    // Create color gradient
+    gradient.addColorStop(0,    "rgb(255,   0,   0)");
+    gradient.addColorStop(0.15, "rgb(255,   0, 255)");
+    gradient.addColorStop(0.33, "rgb(0,     0, 255)");
+    gradient.addColorStop(0.49, "rgb(0,   255, 255)");
+    gradient.addColorStop(0.67, "rgb(0,   255,   0)");
+    gradient.addColorStop(0.84, "rgb(255, 255,   0)");
+    gradient.addColorStop(1,    "rgb(255,   0,   0)");
+
+    // Apply gradient to canvas
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    // Create semi transparent gradient (white -> trans. -> black)
+    gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+    gradient.addColorStop(0,   "rgba(255, 255, 255, 1)");
+    gradient.addColorStop(0.5, "rgba(255, 255, 255, 0)");
+    gradient.addColorStop(0.5, "rgba(0,     0,   0, 0)");
+    gradient.addColorStop(1,   "rgba(0,     0,   0, 1)");
+
+    // Apply gradient to canvas
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    var self = this;
+    cv.addEventListener('click', function(e) {
+      var data = ctx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
+      self.onSelect.call(self, data[0], data[1], data[2]);
+    }, false);
+
+    el.appendChild(cv);
+    this.$element = el;
+    this.$canvas = cv;
+  };
+
   //
   // EXPORTS
   //
-  OSjs.GUI.MenuBar    = MenuBar;
-  OSjs.GUI.ListView   = ListView;
-  OSjs.GUI.FileView   = FileView;
-  OSjs.GUI.Textarea   = Textarea;
+  OSjs.GUI.MenuBar      = MenuBar;
+  OSjs.GUI.ListView     = ListView;
+  OSjs.GUI.FileView     = FileView;
+  OSjs.GUI.Textarea     = Textarea;
+  OSjs.GUI.ColorSwatch  = ColorSwatch;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;
