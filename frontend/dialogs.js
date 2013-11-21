@@ -130,18 +130,18 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * ErrorMessageBox implementation
+   * ErrorDialog implementation
    * TODO: Refactor
    */
-  var ErrorMessageBox = function() {
+  var ErrorDialog = function() {
     this.data = {title: 'No title', message: 'No message', error: ''};
 
-    DialogWindow.apply(this, ['ErrorMessageBox', {width:400, height:200}]);
+    DialogWindow.apply(this, ['ErrorDialog', {width:400, height:200}]);
   };
 
-  ErrorMessageBox.prototype = Object.create(DialogWindow.prototype);
+  ErrorDialog.prototype = Object.create(DialogWindow.prototype);
 
-  ErrorMessageBox.prototype.init = function() {
+  ErrorDialog.prototype.init = function() {
     this._title = this.data.title;
 
     DialogWindow.prototype.init.apply(this, arguments);
@@ -167,7 +167,7 @@
     this._$root.appendChild(ok);
   };
 
-  ErrorMessageBox.prototype.setError = function(title, message, error) {
+  ErrorDialog.prototype.setError = function(title, message, error) {
     this.data = {title: title, message: message, error: error};
   };
 
@@ -643,13 +643,14 @@
   //
   // EXPORTS
   //
-  OSjs.Dialogs.File           = FileDialog;
-  OSjs.Dialogs.FileProgress   = FileProgressDialog;
-  OSjs.Dialogs.FileUpload     = FileUploadDialog;
-  OSjs.Dialogs.ErrorMessage   = ErrorMessageBox;
-  OSjs.Dialogs.Alert          = AlertDialog;
-  OSjs.Dialogs.Confirm        = ConfirmDialog;
-  OSjs.Dialogs.Input          = InputDialog;
-  OSjs.Dialogs.Color          = ColorDialog;
+  OSjs.Dialogs._StandardDialog  = StandardDialog;
+  OSjs.Dialogs.File             = FileDialog;
+  OSjs.Dialogs.FileProgress     = FileProgressDialog;
+  OSjs.Dialogs.FileUpload       = FileUploadDialog;
+  OSjs.Dialogs.ErrorMessage     = ErrorDialog;
+  OSjs.Dialogs.Alert            = AlertDialog;
+  OSjs.Dialogs.Confirm          = ConfirmDialog;
+  OSjs.Dialogs.Input            = InputDialog;
+  OSjs.Dialogs.Color            = ColorDialog;
 
 })(OSjs.Core.DialogWindow, OSjs.GUI);
