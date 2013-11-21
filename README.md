@@ -12,11 +12,11 @@ OS.js is a light-weight HTML based desktop solution.
 
 ## Features
 
-* Fast and light-weight
+* Fast and light-weight, easy to extend
 * Window Managment
 * Session Handling (save, restore application states)
-* Package Managment
-* GUI Library with support for drag-and-drop
+* Package Managment (User-installable applications)
+* GUI and Dialog Library (drag-and-drop support included)
 
 ### Demo
 
@@ -26,15 +26,11 @@ This site may not always be up to date, and can be unavailable at times.
 
 # Compability
 
-## Server
-Should run on anything that can host web-pages
+Can run on anything that can host web-pages. Currently only Apache has been tested on Mac and Linux.
 
-### Tested operating systems
-* Mac OSX - Apache
-* Linux - Apache
+## Browser support
 
-## Client
-Supports all modern browsers
+Runs in any modern browser. Tested:
 
 * Gecko - Mozilla Firefox
 * WebKit - Google Chrome, Opera, Safari
