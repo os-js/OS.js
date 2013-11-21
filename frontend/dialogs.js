@@ -412,12 +412,14 @@
             if ( confirm("The file '" + check + "' already exists. Overwrite?") ) {
               mime = item.getAttribute('data-mime');
               curr = item.getAttribute('data-path');
+            } else {
+              return;
             }
           }
         }
 
         if ( !mime && check ) mime = this.mime;
-        if ( !curr && check ) this.fileList.getPath() + '/' + check
+        if ( !curr && check ) curr = this.fileList.getPath() + '/' + check
       } else {
         item = this.fileList.getSelected();
         if ( item !== null ) {
