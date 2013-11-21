@@ -27,12 +27,41 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-.FileDialog {
+
+/**
+ * Standard Dialog
+ */
+.StandardDialog {
   position : absolute;
-  top : 0px;
-  left : 0px;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+}
+.StandardDialog button.OK {
+  position : absolute;
+  right : 110px;
+  bottom : 0px;
+  width : 100px;
+}
+.StandardDialog button.Cancel {
+  position : absolute;
   right : 0px;
   bottom : 0px;
+  width : 100px;
+}
+.StandardDialog span {
+  font-weight : bold;
+}
+.StandardDialog .Message {
+  padding-top : 10px;
+}
+
+/**
+ * File Dialog
+ */
+
+.FileDialog {
 }
 
 .FileDialog .GUIListView {
@@ -54,19 +83,6 @@
   bottom : 30px;
 }
 
-.FileDialog button.OK {
-  position : absolute;
-  right : 110px;
-  bottom : 0px;
-  width : 100px;
-}
-
-.FileDialog button.Cancel {
-  position : absolute;
-  right : 0px;
-  bottom : 0px;
-  width : 100px;
-}
 
 /* FileUpload */
 
@@ -127,11 +143,6 @@
 
 /* ColorDialog */
 .ColorDialog {
-  position : absolute;
-  top : 5px;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
 }
 .ColorDialog .GUIColorSwatch {
   position : absolute;
@@ -155,45 +166,11 @@
   border : 1px solid rgba(34, 34, 34, .5);
 }
 
-.ColorDialog .OK {
-  position : absolute;
-  right : 120px;
-  bottom : 0px;
-  width : 100px;
-}
-.ColorDialog .Cancel {
-  position : absolute;
-  right : 0px;
-  bottom : 0px;
-  width : 100px;
-}
-
 /* FontDialog */
 
 /* Other */
 
 .InputDialog {
-  position : absolute;
-  top : 5px;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
-  padding-top : 10px;
-}
-.InputDialog span {
-  font-weight : bold;
-}
-.InputDialog .OK {
-  position : absolute;
-  right : 120px;
-  bottom : 0px;
-  width : 100px;
-}
-.InputDialog .Cancel {
-  position : absolute;
-  right : 0px;
-  bottom : 0px;
-  width : 100px;
 }
 .InputDialog input[type=text] {
   position : absolute;
@@ -201,39 +178,10 @@
   left : 0px;
   right : 0px;
 }
-
 .ConfirmDialog {
-  position : absolute;
-  top : 5px;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
-  padding-top : 10px;
 }
-.ConfirmDialog .OK {
-  position : absolute;
-  right : 120px;
-  bottom : 0px;
-  width : 100px;
-}
-.ConfirmDialog .Cancel {
-  position : absolute;
-  right : 0px;
-  bottom : 0px;
-  width : 100px;
-}
-
 .AlertDialog {
-  position : absolute;
-  top : 5px;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
-  padding-top : 10px;
 }
 .AlertDialog .OK {
-  position : absolute;
   right : 0px;
-  bottom : 0px;
-  width : 100px;
 }

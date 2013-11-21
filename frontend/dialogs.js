@@ -33,8 +33,95 @@
 
   // TODO: Color Dialog
   // TODO: Font Dialog
-  // FIXME: Clean up dialogs
-  // FIXME: Merge common dialog stuff into CommonDialog and inherit
+
+  // FIXME: Clean File up dialogs
+  // FIXME: Use StandardDialog in File dialogs
+
+  var StandardDialog = function(className, args, opts, onClose) {
+    this.$element       = null;
+    this.$message       = null;
+    this.$buttonConfirm = null;
+    this.$buttonCancel  = null;
+
+    this.className      = className;
+    this.args           = args || {};
+    this.message        = args.message || 'undefined';
+    this.onClose        = onClose || function() {};
+
+    DialogWindow.apply(this, [className, opts]);
+    if ( this.args.title ) {
+      this._title = this.args.title;
+    }
+    if ( this.args.icon ) {
+      this._icon = this.args.icon;
+    }
+  };
+
+  StandardDialog.prototype = Object.create(DialogWindow.prototype);
+
+  StandardDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    var self = this;
+
+    this.$element = document.createElement('div');
+    this.$element.className = 'StandardDialog ' + this.className;
+
+    if ( this.message ) {
+      this.$message = document.createElement('div');
+      this.$message.className = 'Message';
+      this.$message.innerHTML = this.message;
+      this.$element.appendChild(this.$message);
+    }
+
+    if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
+      this.$buttonCancel = document.createElement('button');
+      this.$buttonCancel.className = 'Cancel';
+      this.$buttonCancel.innerHTML = this.args.buttonCancelLabel || 'Cancel';
+      this.$buttonCancel.onclick = function(ev) {
+        self.onCancelClick(ev);
+      };
+      this.$element.appendChild(this.$buttonCancel);
+    }
+
+    if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
+      this.$buttonConfirm = document.createElement('button');
+      this.$buttonConfirm.className = 'OK';
+      this.$buttonConfirm.innerHTML = this.args.buttonOkLabel || 'OK';
+      this.$buttonConfirm.onclick = function(ev) {
+        self.onConfirmClick(ev);
+      };
+      this.$element.appendChild(this.$buttonConfirm);
+    }
+
+    root.appendChild(this.$element);
+    return root;
+  };
+
+  StandardDialog.prototype.onCancelClick = function(ev) {
+    if ( !this.$buttonCancel ) return;
+    this.end('cancel');
+  };
+
+  StandardDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.$buttonConfirm ) return;
+    this.end('ok');
+  };
+
+  StandardDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this.end('cancel');
+    }
+  };
+
+  StandardDialog.prototype.end = function() {
+    this.onClose.apply(this, arguments);
+    this._close();
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // SPECIAL
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * ErrorMessageBox implementation
@@ -76,6 +163,10 @@
   ErrorMessageBox.prototype.setError = function(title, message, error) {
     this.data = {title: title, message: message, error: error};
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // FILES
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * File Progress dialog
@@ -475,183 +566,81 @@
     }
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // STANDARD
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * Alert/Message Dialog
    */
   var AlertDialog = function(msg, onClose) {
-    DialogWindow.apply(this, ['AlertDialog', {width:250, height:100}]);
-    this.onClose = onClose || function() {};
-    this.message = msg || 'undefined';
-    this._title = "Alert Dialog";
+    StandardDialog.apply(this, ['AlertDialog', {title: "Alert Dialog", message: msg, buttonCancel: false, buttonOkLabel: "Close"}, {width:250, height:100}, onClose]);
   };
-  AlertDialog.prototype = Object.create(DialogWindow.prototype);
-  AlertDialog.prototype.init = function() {
-    var root = DialogWindow.prototype.init.apply(this, arguments);
-
-    var el = document.createElement('div');
-    el.className = 'AlertDialog';
-
-    var messaged = document.createElement('div');
-    messaged.innerHTML = this.message;
-
-    var ok = document.createElement('button');
-    ok.innerHTML = 'Close';
-    ok.className = 'OK';
-
-    var self = this;
-    ok.onclick = function() {
-      self.onClose.call(self, 'close');
-      self._close();
-    };
-
-    el.appendChild(messaged);
-    el.appendChild(ok);
-    root.appendChild(el);
-  };
-
-  AlertDialog.prototype._onKeyEvent = function(ev) {
-    DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
-      this.onClose.call(this, 'escape');
-      this._close();
-    }
-  };
+  AlertDialog.prototype = Object.create(StandardDialog.prototype);
 
   /**
    * Confirmation Dialog
    */
   var ConfirmDialog = function(msg, onClose) {
-    DialogWindow.apply(this, ['ConfirmDialog', {width:250, height:120}]);
-    this.onClose = onClose || function() {};
-    this.message = msg || 'undefined';
-    this._title = "Confirm Dialog";
+    StandardDialog.apply(this, ['ConfirmDialog', {title: "Confirm Dialog", message: msg}, {width:350, height:120}, onClose]);
   };
-  ConfirmDialog.prototype = Object.create(DialogWindow.prototype);
-  ConfirmDialog.prototype.init = function() {
-    var self = this;
-    var root = DialogWindow.prototype.init.apply(this, arguments);
-
-    var el = document.createElement('div');
-    el.className = 'ConfirmDialog';
-
-    var messaged = document.createElement('div');
-    messaged.innerHTML = this.message;
-
-    var cancel = document.createElement('button');
-    cancel.innerHTML = 'Cancel';
-    cancel.className = 'Cancel';
-    cancel.onclick = function() {
-      self.onClose('cancel');
-      self._close();
-    };
-
-    var ok = document.createElement('button');
-    ok.className = 'OK';
-    ok.innerHTML = 'OK';
-    ok.onclick = function() {
-      self.onClose('ok');
-      self._close();
-    };
-
-    el.appendChild(messaged);
-    el.appendChild(cancel);
-    el.appendChild(ok);
-    root.appendChild(el);
-  };
-
-  ConfirmDialog.prototype._onKeyEvent = function(ev) {
-    DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
-      this.onClose('escape');
-      this._close();
-    }
-  };
+  ConfirmDialog.prototype = Object.create(StandardDialog.prototype);
 
   /**
    * Input Dialog
    */
   var InputDialog = function(msg, val, onClose) {
-    DialogWindow.apply(this, ['InputDialog', {width:300, height:150}]);
-    this.message = msg || 'undefined';
-    this.value = val || '';
-    this.opened = false;
-    this.onClose = onClose || function() {};
+    StandardDialog.apply(this, ['InputDialog', {title: "Input Dialog", message: msg}, {width:300, height:150}, onClose]);
+
+    this.value  = val || '';
     this.$input = null;
-    this._title = "Input Dialog";
   };
-  InputDialog.prototype = Object.create(DialogWindow.prototype);
+
+  InputDialog.prototype = Object.create(StandardDialog.prototype);
+
   InputDialog.prototype.init = function() {
     var self = this;
-    var root = DialogWindow.prototype.init.apply(this, arguments);
+    var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var el = document.createElement('div');
-    el.className = 'InputDialog';
-
-    var messaged = document.createElement('div');
-    messaged.innerHTML = this.message;
-
-    var cancel = document.createElement('button');
-    cancel.innerHTML = 'Cancel';
-    cancel.className = 'Cancel';
-    cancel.onclick = function() {
-      self.onClose('cancel', null); //input.value);
-      self._close();
-    };
-
-    var ok = document.createElement('button');
-    ok.className = 'OK';
-    ok.innerHTML = 'OK';
-    ok.onclick = function() {
-      self.onClose('ok', input.value);
-      self._close();
-    };
-
-    var inputd = document.createElement('div');
-    var input = document.createElement('input');
-
-    input.type = "text";
-    input.value = this.value;
-    input.onkeypress = function(ev) {
+    this.$input             = document.createElement('input');
+    this.$input.type        = "text";
+    this.$input.value       = this.value;
+    this.$input.onkeypress  = function(ev) {
       if ( ev.keyCode === 13 ) {
-        ok.onclick(ev);
+        self.$buttonConfirm.onclick(ev);
         return;
       }
     };
 
-    inputd.appendChild(input);
-
-    el.appendChild(messaged);
-    el.appendChild(inputd);
-    el.appendChild(cancel);
-    el.appendChild(ok);
-    root.appendChild(el);
-
-    this.$input = input;
+    var inputd = document.createElement('div');
+    inputd.appendChild(this.$input);
+    this.$element.appendChild(inputd);
+    return root;
   };
 
   InputDialog.prototype._focus = function() {
-    DialogWindow.prototype._focus.apply(this, arguments);
+    StandardDialog.prototype._focus.apply(this, arguments);
     if ( this.$input ) {
       this.$input.focus();
       this.$input.select();
     }
   };
 
-  InputDialog.prototype._onKeyEvent = function(ev) {
-    DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
-      this.onClose('escape', null);
-      this._close();
-    }
+  InputDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.$buttonConfirm ) return;
+    this.end('ok', this.$input.value);
   };
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  // OTHER
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Color Dialog
    */
   var ColorDialog = function(color, onClose) {
-    DialogWindow.apply(this, ['ColorDialog', {width:450, height:270}]);
-    this.onClose = onClose || function() {};
-    this._title = "Color Dialog";
+    StandardDialog.apply(this, ['ColorDialog', {title: "Color Dialog"}, {width:450, height:270}, onClose]);
 
     if ( typeof color === 'object' ) {
       this.currentRGB = color;
@@ -666,11 +655,11 @@
     });
   };
 
-  ColorDialog.prototype = Object.create(DialogWindow.prototype);
+  ColorDialog.prototype = Object.create(StandardDialog.prototype);
 
   ColorDialog.prototype.init = function() {
     var self = this;
-    var root = DialogWindow.prototype.init.apply(this, arguments);
+    var root = StandardDialog.prototype.init.apply(this, arguments);
 
     var el = document.createElement('div');
     el.className = 'ColorDialog';
@@ -679,33 +668,12 @@
     sliders.className = 'ColorSliders';
     sliders.innerHTML = 'TODO: Sliders'; // TODO
 
-    var selected = document.createElement('div');
-    selected.className = 'ColorSelected';
+    this.$color = document.createElement('div');
+    this.$color.className = 'ColorSelected';
 
-    var cancel = document.createElement('button');
-    cancel.innerHTML = 'Cancel';
-    cancel.className = 'Cancel';
-    cancel.onclick = function() {
-      self.onClose('cancel');
-      self._close();
-    };
-
-    var ok = document.createElement('button');
-    ok.className = 'OK';
-    ok.innerHTML = 'OK';
-    ok.onclick = function() {
-      self.onClose('ok', self.currentRGB, OSjs.Utils.RGBtoHex(self.currentRGB));
-      self._close();
-    };
-
-    el.appendChild(this.swatch.$element);
-    el.appendChild(sliders);
-    el.appendChild(selected);
-    el.appendChild(cancel);
-    el.appendChild(ok);
-    root.appendChild(el);
-
-    this.$color = selected;
+    this.$element.appendChild(this.swatch.$element);
+    this.$element.appendChild(sliders);
+    this.$element.appendChild(this.$color);
 
     var rgb = this.currentRGB;
     this.setColor(rgb.r, rgb.g, rgb.b);
@@ -716,12 +684,14 @@
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
   };
 
-  ColorDialog.prototype._onKeyEvent = function(ev) {
-    DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
-      this.onClose('escape', null, null);
-      this._close();
-    }
+  ColorDialog.prototype.onCancelClick = function(ev) {
+    if ( !this.$buttonCancel ) return;
+    this.end('cancel', null, null);
+  };
+
+  ColorDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.$buttonConfirm ) return;
+    this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHex(this.currentRGB));
   };
 
   //
