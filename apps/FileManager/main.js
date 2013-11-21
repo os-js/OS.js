@@ -165,6 +165,10 @@
     root.appendChild(this.sideView.getRoot());
     root.appendChild(this.fileView.getRoot());
 
+
+    this._addGUIElement(this.sideView);
+    this._addGUIElement(this.fileView);
+
     this.sideView.render();
   };
 
@@ -183,6 +187,13 @@
     }
 
     Window.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev) {
+    Window.prototype._onKeyEvent.apply(this, arguments);
+    if ( this.fileView ) {
+      this.fileView.onKeyPress(ev);
+    }
   };
 
   ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {

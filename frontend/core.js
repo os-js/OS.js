@@ -219,7 +219,13 @@
       if ( _WIN ) {
         _WIN._onKeyEvent(ev);
       }
-    });
+    }, false);
+
+    document.addEventListener('mousedown', function(ev) {
+      if ( _WIN ) {
+        _WIN._blur();
+      }
+    }, false);
 
     this._$root = document.createElement('div');
     this._$root.id = "Background";
@@ -842,6 +848,10 @@
       ontop     : false,
       onbottom  : false
     };
+    this._hooks     = {
+      focus : [],
+      blur  : []
+    };
 
     if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
       var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
@@ -1181,6 +1191,35 @@
     this._appRef = null;
   };
 
+  Window.prototype._addHook = function(k, func) {
+    if ( typeof func === 'function' && this._hooks[k] ) {
+      this._hooks[k].push(func);
+    }
+  };
+
+  Window.prototype._fireHook = function(k, args) {
+    args = args || {};
+    if ( this._hooks[k] ) {
+      for ( var i = 0, l = this._hooks[k].length; i < l; i++ ) {
+        if ( !this._hooks[k][i] ) continue;
+        try {
+          this._hooks[k][i].apply(this, args);
+        } catch ( e ) {
+          console.warn("Window::_fireHook() failed to run hook", k, i, e);
+        }
+      }
+    }
+  };
+
+  Window.prototype._addGUIElement = function(gel) {
+    if ( gel instanceof OSjs.GUI.GUIElement ) {
+      console.log("OSjs::Core::Window::_addGUIElement()");
+      this._addHook('blur', function() {
+        gel.blur();
+      });
+    }
+  };
+
   Window.prototype._addChild = function(w) {
     console.log("OSjs::Core::Window::_addChild()");
     w._parent = this;
@@ -1286,6 +1325,7 @@
     _WIN = this;
 
     this._onChange('focus');
+    this._fireHook('focus');
 
     return true;
   };
@@ -1297,6 +1337,7 @@
     this._state.focused = false;
 
     this._onChange('blur');
+    this._fireHook('blur');
 
     return true;
   };

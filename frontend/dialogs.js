@@ -235,7 +235,7 @@
     this.dialog = this._wmref.addWindow(new FileProgressDialog());
     this.dialog.setDescription("Uploading '" + file.name + "' (" + file.type + " " + size + ") to " + this.dest);
     this.dialog.setProgress(0);
-    //this._addChild(this.dialog); // Importante!
+    this._addChild(this.dialog); // Importante!
 
     var xhr = new XMLHttpRequest();
     var fd  = new FormData();
@@ -323,6 +323,7 @@
     this._title           = this.type == "save" ? "Save" : "Open";
 
     this.fileList = new OSjs.GUI.FileView();
+    this._addGUIElement(this.filelist);
   };
 
   FileDialog.prototype = Object.create(DialogWindow.prototype);

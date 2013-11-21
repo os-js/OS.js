@@ -156,6 +156,12 @@
     return el.getBoundingClientRect();
   };
 
+  OSjs.Utils.$index = function(el, parentEl) {
+    var nodeList = Array.prototype.slice.call(parentEl.children);
+    var nodeIndex = nodeList.indexOf(el, parentEl);
+    return nodeIndex;
+  }
+
   OSjs.Utils.Ajax = function(url, onSuccess, onError, opts) {
     if ( !url ) throw "No URL given";
 

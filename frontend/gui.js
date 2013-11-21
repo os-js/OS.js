@@ -31,6 +31,8 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  // TODO: Blur selected element when changing containers' focus
+
   function createDroppable(el, args) {
     args = args || {};
 
@@ -268,8 +270,10 @@
   /**
    * GUI Element
    */
+  var _GUIElementCount = 0;
   var GUIElement = function(opts) {
     this.opts = opts || {};
+    this.id = _GUIElementCount;
 
     if ( typeof this.opts.dnd === 'undefined' ) {
       this.opts.dnd     = false;
@@ -289,6 +293,7 @@
 
     this.$element = null;
     this.init();
+    _GUIElementCount++;
   };
 
   GUIElement.prototype.init = function(className) {
@@ -312,11 +317,10 @@
       createDroppable(this.$element, opts);
     }
 
-    var _onKeyDown = function() {
-    };
-
-    this.$element.addEventListener('keydown', function(ev) {
-    });
+    var self = this;
+    this.$element.addEventListener('mousedown', function(ev) {
+      self.focus();
+    }, false);
 
     return this.$element;
   };
@@ -333,6 +337,22 @@
 
   GUIElement.prototype.onDndDrop = function(ev) {
     return true;
+  };
+
+  GUIElement.prototype.onKeyPress = function(ev) {
+    if ( !this.focused ) return false;
+    return true;
+  };
+
+  GUIElement.prototype.focus = function() {
+    if ( this.focused ) return;
+    console.log("GUIElement::focus()", this.id);
+    this.focused = true;
+  };
+
+  GUIElement.prototype.blur = function() {
+    if ( !this.focused ) return;
+    this.focused = false;
   };
 
   /**
@@ -497,7 +517,13 @@
       last = el;
 
       if ( !ev ) {
-        this.$element.scrollTop = el.offsetTop; // FIXME
+        var viewHeight = this.$element.offsetHeight - (this.$head.style.visible === 'none' ? 0 : this.$head.offsetHeight);
+        var viewBottom = this.$element.scrollTop;
+        if ( el.offsetTop > (viewHeight + this.$element.scrollTop) ) {
+          this.$element.scrollTop = el.offsetTop;
+        } else if ( el.offsetTop < viewBottom ) {
+          this.$element.scrollTop = el.offsetTop;
+        }
       }
     };
   })();
@@ -528,6 +554,7 @@
 
     var self = this;
     this.selected = null;
+    this.selectedDOMItem = null;
     this.path = path || '/';
     this.lastPath = this.path;
     this.onActivated = function(path, type, mime) {};
@@ -555,6 +582,7 @@
       if ( t ) {
         var path = t.getAttribute('data-path');
         if ( path ) {
+          self.selectedDOMItem = t;
           self.selected = {
             path: path,
             type: t.getAttribute('data-type'),
@@ -595,8 +623,31 @@
     }
   };
 
+  FileView.prototype.onKeyPress = function(ev) {
+    if ( !ListView.prototype.onKeyPress.apply(this, arguments) ) return;
+
+    ev.preventDefault();
+    if ( this.selected ) {
+
+      var idx = OSjs.Utils.$index(this.selectedDOMItem, this.$body);
+      var tidx = idx;
+      if ( idx >= 0 && idx < this.$body.childNodes.length ) {
+        if ( ev.keyCode === 38 ) {
+          idx--;
+        } else if ( ev.keyCode === 40 ) {
+          idx++;
+        }
+        if ( idx != tidx ) {
+          this.setSelectedIndex(idx);
+        }
+      }
+    }
+    return true;
+  };
+
   FileView.prototype.render = function(list, dir) {
     this.selected = null;
+    this.selectedDOMItem = null;
 
     var _callback = function(iter) {
       var icon = 'status/gtk-dialog-question.png';
@@ -674,6 +725,12 @@
     });
   };
 
+  FileView.prototype._onRowClick = function(el, ev) {
+    ListView.prototype._onRowClick.apply(this, arguments);
+    this.selectedDOMItem = el;
+    this.onSelect(ev, this, el);
+  };
+
   FileView.prototype.getSelected = function() {
     return this.selected;
   };
@@ -691,10 +748,17 @@
     return null;
   };
 
+  FileView.prototype.setSelectedIndex = function(idx) {
+    var row = this.$table.tBodies[0].rows[idx];
+    if ( row ) {
+      this._onRowClick(row, null);
+    }
+  };
+
   FileView.prototype.setSelected = function(val, key) {
     var row = this.getItemByKey(key, val);
     if ( row ) {
-      this._onRowClick(row);
+      this._onRowClick(row, null);
     }
   };
 
@@ -797,6 +861,8 @@
   //
   // EXPORTS
   //
+  OSjs.GUI.GUIElement   = GUIElement;
+
   OSjs.GUI.MenuBar      = MenuBar;
   OSjs.GUI.ListView     = ListView;
   OSjs.GUI.FileView     = FileView;
