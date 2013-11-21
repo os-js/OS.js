@@ -33,6 +33,8 @@
 
   // TODO: Color Dialog
   // TODO: Font Dialog
+  // FIXME: Clean up dialogs
+  // FIXME: Merge common dialog stuff into CommonDialog and inherit
 
   /**
    * ErrorMessageBox implementation
@@ -205,6 +207,26 @@
     DialogWindow.prototype.destroy.apply(this, arguments);
   };
 
+  FileUploadDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this.onDone.call(this, 'escape', ev);
+
+      if ( this.dialog ) {
+        this.dialog._close();
+        this.dialog = null;
+      }
+      this._close();
+    }
+  };
+
+  FileUploadDialog.prototype._close = function(ev) {
+    if ( this.button && (this.button.disabled === "disabled") ) {
+      return;
+    }
+    return DialogWindow.prototype._close.apply(this, arguments);
+  };
+
   FileUploadDialog.prototype.upload = function(file, size) {
     var self = this;
 
@@ -213,6 +235,7 @@
     this.dialog = this._wmref.addWindow(new FileProgressDialog());
     this.dialog.setDescription("Uploading '" + file.name + "' (" + file.type + " " + size + ") to " + this.dest);
     this.dialog.setProgress(0);
+    //this._addChild(this.dialog); // Importante!
 
     var xhr = new XMLHttpRequest();
     var fd  = new FormData();
@@ -332,7 +355,8 @@
     buttonCancel.className = 'Cancel';
     buttonCancel.innerHTML = 'Cancel';
     buttonCancel.onclick = function() {
-      self.dialogCancel();
+      self.onCancel.call(self);
+      self._close();
     };
 
     el.appendChild(this.fileList.getRoot());
@@ -395,6 +419,14 @@
     };
   };
 
+  FileDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this.onCancel.call(this);
+      this._close();
+    }
+  };
+
   FileDialog.prototype.dialogOK = function(forcepath, forcemime) {
     var curr;
     var mime = null;
@@ -442,11 +474,6 @@
     }
   };
 
-  FileDialog.prototype.dialogCancel = function() {
-    this.onCancel.call(this);
-    this._close();
-  };
-
   /**
    * Alert/Message Dialog
    */
@@ -472,13 +499,21 @@
 
     var self = this;
     ok.onclick = function() {
-      self.onClose('close');
+      self.onClose.call(self, 'close');
       self._close();
     };
 
     el.appendChild(messaged);
     el.appendChild(ok);
     root.appendChild(el);
+  };
+
+  AlertDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this.onClose.call(this, 'escape');
+      this._close();
+    }
   };
 
   /**
@@ -523,6 +558,14 @@
     root.appendChild(el);
   };
 
+  ConfirmDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this.onClose('escape');
+      this._close();
+    }
+  };
+
   /**
    * Input Dialog
    */
@@ -530,7 +573,9 @@
     DialogWindow.apply(this, ['InputDialog', {width:300, height:150}]);
     this.message = msg || 'undefined';
     this.value = val || '';
+    this.opened = false;
     this.onClose = onClose || function() {};
+    this.$input = null;
     this._title = "Input Dialog";
   };
   InputDialog.prototype = Object.create(DialogWindow.prototype);
@@ -544,18 +589,11 @@
     var messaged = document.createElement('div');
     messaged.innerHTML = this.message;
 
-    var inputd = document.createElement('div');
-    var input = document.createElement('input');
-    input.type = "text";
-    input.value = this.value;
-
-    inputd.appendChild(input);
-
     var cancel = document.createElement('button');
     cancel.innerHTML = 'Cancel';
     cancel.className = 'Cancel';
     cancel.onclick = function() {
-      self.onClose('cancel', input.value);
+      self.onClose('cancel', null); //input.value);
       self._close();
     };
 
@@ -567,11 +605,43 @@
       self._close();
     };
 
+    var inputd = document.createElement('div');
+    var input = document.createElement('input');
+
+    input.type = "text";
+    input.value = this.value;
+    input.onkeypress = function(ev) {
+      if ( ev.keyCode === 13 ) {
+        ok.onclick(ev);
+        return;
+      }
+    };
+
+    inputd.appendChild(input);
+
     el.appendChild(messaged);
     el.appendChild(inputd);
     el.appendChild(cancel);
     el.appendChild(ok);
     root.appendChild(el);
+
+    this.$input = input;
+  };
+
+  InputDialog.prototype._focus = function() {
+    DialogWindow.prototype._focus.apply(this, arguments);
+    if ( this.$input ) {
+      this.$input.focus();
+      this.$input.select();
+    }
+  };
+
+  InputDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this.onClose('escape', null);
+      this._close();
+    }
   };
 
   /**
@@ -643,6 +713,14 @@
   ColorDialog.prototype.setColor = function(r, g, b) {
     this.currentRGB = {r:r, g:g, b:b};
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
+  };
+
+  ColorDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this.onClose('escape', null, null);
+      this._close();
+    }
   };
 
   //

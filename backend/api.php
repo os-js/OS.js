@@ -150,6 +150,7 @@ class FS
     $src = unrealpath($src);
     $dest = unrealpath($dest);
 
+    if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
     if ( preg_match("/^\/tmp/", $src) === false || strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");

@@ -57,8 +57,8 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationPreviewWindow.prototype._onDndAction = function(ev, type, item, args) {
-    Window.prototype._onDndAction.apply(this, arguments);
+  ApplicationPreviewWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    Window.prototype._onDndEvent.apply(this, arguments);
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {

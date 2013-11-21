@@ -118,6 +118,8 @@
   }
 
   function createErrorDialog(title, message, error) {
+    OSjs.GUI.blurMenu();
+
     var ex = null;
     if ( _WM ) {
       try {
@@ -195,19 +197,27 @@
     };
 
     document.addEventListener('keydown', function(ev) {
+      var isHTMLInput = false;
       var doPrevent = false;
+
+      var d = ev.srcElement || ev.target;
+      if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) 
+          || d.tagName.toUpperCase() === 'TEXTAREA') {
+            isHTMLInput = d.readOnly || d.disabled;
+      }
+
       if ( ev.keyCode === 8 ) {
-        var d = ev.srcElement || ev.target;
-        if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) 
-            || d.tagName.toUpperCase() === 'TEXTAREA') {
-              doPrevent = d.readOnly || d.disabled;
-            }
-        else {
+        if ( isHTMLInput ) {
           doPrevent = true;
         }
       }
+
       if ( doPrevent ) {
         ev.preventDefault();
+      }
+
+      if ( _WIN ) {
+        _WIN._onKeyEvent(ev);
       }
     });
 
@@ -916,11 +926,11 @@
 
         onItemDropped: function(ev, el, item, args) {
           _hideBorder();
-          return self._onDndAction(ev, 'itemDrop', item, args);
+          return self._onDndEvent(ev, 'itemDrop', item, args);
         },
         onFilesDropped: function(ev, el, files, args) {
           _hideBorder();
-          return self._onDndAction(ev, 'filesDrop', files, args);
+          return self._onDndEvent(ev, 'filesDrop', files, args);
         }
       });
     }
@@ -1148,7 +1158,7 @@
     }
     this._parent = null;
 
-    if ( this._children.length ) {
+    if ( this._children && this._children.length ) {
       var i = 0, l = this._children.length;
       for ( i; i < l; i++ ) {
         if ( this._children[i] ) {
@@ -1316,8 +1326,11 @@
     return true;
   };
 
-  Window.prototype._onDndAction = function(ev, type) {
-    console.log("OSjs::Core::Window::_onDndAction()", type);
+  Window.prototype._onDndEvent = function(ev, type) {
+    console.log("OSjs::Core::Window::_onDndEvent()", type);
+  };
+
+  Window.prototype._onKeyEvent = function(ev) {
   };
 
   Window.prototype._onWindowIconClick = function(ev, el) {

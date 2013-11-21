@@ -185,8 +185,8 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationFileManagerWindow.prototype._onDndAction = function(ev, type, item, args) {
-    Window.prototype._onDndAction.apply(this, arguments);
+  ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    Window.prototype._onDndEvent.apply(this, arguments);
     if ( type === 'filesDrop' && item ) {
       return this.onDropUpload(ev, null, item);
     }
