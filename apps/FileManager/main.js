@@ -36,7 +36,7 @@
     };
     this.fileView.onFinished = function(dir) {
       self._toggleLoading(false);
-      self._appRef.go(dir, self);
+      if ( self._appRef ) self._appRef.go(dir, self);
     };
     this.fileView.onRefresh = function() {
       self._toggleLoading(true);
@@ -213,7 +213,7 @@
       var _onUploaded = function(file) {
         if ( self.fileView ) {
           self.fileView.refresh(function() {
-            self.fileView.setSelected(file.name, 'filename');
+            self.fileView.setSelected(file.name, 'filename'); // FIXME: Not working !?
           });
         }
       };
