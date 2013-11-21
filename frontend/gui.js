@@ -337,6 +337,8 @@
    * List View Class
    */
   var ListView = function(opts) {
+    opts = opts || {};
+    this.singleClick = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     this.rows = [];
     this.columns = [];
     this.$head = null;
@@ -385,8 +387,9 @@
       activate(ev, 'select');
     };
 
-    table.addEventListener('dblclick', onDblClick, false);
     table.addEventListener('click', onClick, false);
+    table.addEventListener(this.singleClick ? 'click' : 'dblclick', onDblClick, false);
+
     table.appendChild(head);
     table.appendChild(body);
     el.appendChild(table);

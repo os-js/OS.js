@@ -23,7 +23,7 @@
     var root  = Window.prototype.init.apply(this, arguments);
 
     this.fileView = new OSjs.GUI.FileView('/', {dnd: true, className: 'fileView'});
-    this.sideView = new OSjs.GUI.ListView({className: 'sideView', dnd: false});
+    this.sideView = new OSjs.GUI.ListView({className: 'sideView', dnd: false, singleClick: true});
     this.menuBar  = new OSjs.GUI.MenuBar();
 
     this.fileView.onItemDropped = function(ev, el, item) {
