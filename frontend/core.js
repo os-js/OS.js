@@ -910,6 +910,10 @@
           _hideBorder();
         },
 
+        onDrop : function() {
+          _hideBorder();
+        },
+
         onItemDropped: function(ev, el, item, args) {
           _hideBorder();
           return self._onDndAction(ev, 'itemDrop', item, args);

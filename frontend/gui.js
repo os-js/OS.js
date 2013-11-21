@@ -44,11 +44,13 @@
     args.onEnter        = args.onEnter        || function() { return true; };
     args.onOver         = args.onOver         || function() { return true; };
     args.onLeave        = args.onLeave        || function() { return true; };
+    args.onDrop         = args.onDrop         || function() { return true; };
 
     var _onDrop = function(ev, el) {
       ev.stopPropagation();
       ev.preventDefault();
 
+      args.onDrop.call(this, ev, el);
       if ( !ev.dataTransfer ) return true;
 
       if ( args.files ) {
