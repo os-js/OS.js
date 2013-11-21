@@ -1230,6 +1230,8 @@
 
     this._onChange('maximize');
 
+    this._resize();
+
     this._focus();
 
     return true;
@@ -1287,8 +1289,7 @@
 
   Window.prototype._resize = function(w, h) {
     if ( !this._properties.allow_resize ) return false;
-    if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
-
+    //if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
 
     if ( w ) {
       this._$element.style.width = w + "px";
