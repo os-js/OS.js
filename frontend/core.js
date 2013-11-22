@@ -428,7 +428,7 @@
           }
         }
       } else {
-        OSjs.API.error("Error opening file", "The file '" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
+        OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
       }
     }
 
@@ -696,7 +696,7 @@
   WindowManager.prototype.setWallpaper = function(name, type) {
     console.log("OSjs::Core::WindowManager::setWallpaper", name, type);
     if ( name && type.match(/^image/) ) {
-      var path = getRealPath(name);
+      var path = name.match(/^\/themes\/wallpapers/) ? name : getRealPath(name); // FIXME
       document.body.style.backgroundImage = "url('" + path + "')";
 
       switch ( type ) {
