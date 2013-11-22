@@ -380,6 +380,7 @@
     this.currentFilename  = args.filename || '';
     this.type             = args.type || 'open';
     this.mime             = args.mime || null;
+    this.allowMimes       = args.mimes || null; // TODO
     this.fileList         = null;
     this.$input           = null;
 

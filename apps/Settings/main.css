@@ -1,4 +1,31 @@
-.Window_ApplicationPreviewWindow .WindowWrapper {
+.Window_ApplicationSettingsWindow .WindowWrapper {
   overflow : auto;
+  padding : 10px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting {
+  position : relative;
+  height : 40px;
 }
 
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting label {
+  display : block;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting input[type=text],
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting select {
+  position : absolute;
+  left : 0px;
+  right : 30px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
+  right : 0px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting button {
+  position : absolute;
+  right : 0px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper button.Save {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+}

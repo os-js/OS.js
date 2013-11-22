@@ -551,8 +551,20 @@
     name = name || 'WindowManager';
     ref = ref || this;
 
-    this._windows = [];
-    this._name = name;
+    this._windows     = [];
+    this._name        = name;
+    //this._wallpaper   = 'osjs:///themes/wallpapers/noise_red.png';
+    this._wallpaper   = '/themes/wallpapers/noise_red.png';
+    this._theme       = 'default';
+    this._background  = 'image-repeat';
+    this._style       = {
+      backgroundColor  : '#0B615E',
+      color            : '#333',
+      fontWeight       : 'normal',
+      textDecoration   : 'none',
+      backgroundRepeat : 'repeat'
+    };
+
     Process.apply(this, [name]);
 
     _WM = ref;
@@ -636,30 +648,71 @@
     settings = settings || {};
     console.log("OSjs::Core::WindowManager::applySettings", settings);
 
-    if ( settings.theme ) {
-      this.setTheme(settings.theme);
-    }
-    this.setWallpaper(settings.wallpaper, settings.background);
-  };
+    var opts        = settings.style      || {};
+    var theme       = settings.theme      || this._theme;
+    var wallpaper   = settings.wallpaper  || this._wallpaper;
+    var background  = settings.background || this._background;
 
-  WindowManager.prototype.setWallpaper = function(name, opts) {
-    opts                  = opts || {};
-    opts.backgroundColor  = opts.backgroundColor  || '#0B615E';
-    opts.color            = opts.color            || '#333';
-    opts.fontWeight       = opts.fontWeight       || 'normal';
-    opts.textDecoration   = opts.textDecoration   || 'none';
-    opts.backgroundRepeat = opts.backgroundRepeat || 'repeat';
-
-    console.log("OSjs::Core::WindowManager::setWallpaper", name, opts);
-    if ( name ) {
-      var path = getRealPath(name);
-      document.body.style.backgroundImage = "url('" + path + "')";
+    for ( var x in this._style ) {
+      if ( this._style.hasOwnProperty(x) ) {
+        if ( !opts[x] ) {
+          opts[x] = this._style[x];
+        }
+      }
     }
 
     for ( var i in opts ) {
       if ( opts.hasOwnProperty(i) ) {
         document.body.style[i] = opts[i];
       }
+    }
+
+    this.setTheme(theme);
+    this.setWallpaper(wallpaper, background);
+  };
+
+  WindowManager.prototype.setWallpaper = function(name, type) {
+    console.log("OSjs::Core::WindowManager::setWallpaper", name, type);
+    if ( name && type.match(/^image/) ) {
+      var path = name; //getRealPath(name);
+      document.body.style.backgroundImage = "url('" + path + "')";
+
+      switch ( type ) {
+        case 'image' :
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundPosition  = '';
+        break;
+
+        case 'image-center':
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundPosition  = 'center center';
+        break;
+
+        case 'image-fill' :
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundSize      = 'cover';
+          document.body.style.backgroundPosition  = 'center center fixed';
+        break;
+
+        case 'image-strech':
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundSize      = '100% auto';
+          document.body.style.backgroundPosition  = '';
+        break;
+
+        default:
+          document.body.style.backgroundRepeat    = 'repeat';
+          document.body.style.backgroundPosition  = '';
+        break;
+      }
+      this._wallpaper = path;
+      this._background = type;
+    } else {
+      document.body.style.backgroundImage     = '';
+      document.body.style.backgroundRepeat    = 'no-repeat';
+      document.body.style.backgroundPosition  = '';
+      this._wallpaper = null;
+      this._background = 'color';
     }
   };
 
@@ -668,6 +721,7 @@
 
     var url = '/themes/' + name + '.css';
     document.getElementById("_OSjsTheme").setAttribute('href', url);
+    this._theme = name;
   };
 
   WindowManager.prototype.getWindowSpace = function() {
@@ -682,6 +736,15 @@
       return {x: _LNEWX+=10, y: _LNEWY+=10};
     };
   })();
+
+  WindowManager.prototype.getSettings = function() {
+    return {
+      theme:      this._theme,
+      wallpaper:  this._wallpaper,
+      background: this._background,
+      style:      this._style
+    };
+  };
 
   /**
    * Service Class

@@ -202,8 +202,11 @@ function getUserSettings() {
   return Array(
     'WM' => Array(
       'CoreWM' => Array(
-        'theme'     => 'default',
-        'wallpaper' => 'osjs:///themes/wallpapers/noise_red.png'
+        'theme'       => null,
+        'wallpaper'   => null,
+        'background'  => null,
+        'style'       => Array(
+        )
       )
     )
   );

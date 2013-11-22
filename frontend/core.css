@@ -27,6 +27,9 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+html, body {
+  height : 100%;
+}
 body {
   font-size : 12px;
   font-family : Sans-serif, Arial;
