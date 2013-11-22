@@ -713,7 +713,7 @@
       {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
       {key: 'filename', title: 'Filename'},
       {key: 'mime', title: 'Mime', domProperties: {width: "150"}},
-      {key: 'size', title: 'Size', domProperties: {width: "100", textAlign: "right"}},
+      {key: 'size', title: 'Size', domProperties: {width: "80"}},
       {key: 'path', title: 'Path', visible: false},
       {key: 'type', title: 'Type', visible: false}
      ]);
@@ -735,7 +735,7 @@
     var self = this;
     this.onRefresh.call(this);
 
-    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
+    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter, hrsize: true}]}, function(res) {
       if ( self.destroyed ) return;
 
       var error = null;

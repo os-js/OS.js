@@ -88,6 +88,9 @@ class FS
 
       $fsize = @(($ftype == 'dir' ? 0 : filesize($fpath)));
       if ( $fsize === false ) $fsize = '';
+      if ( strlen($fsize) && (isset($opts['hrsize']) && $opts['hrsize']) ) {
+        $fsize = humanFileSize($fsize);
+      }
 
       $iter = Array(
         'filename' => $fname,
@@ -187,6 +190,16 @@ class FS
 
     return mkdir($dname);
   }
+}
+
+function humanFileSize($size,$unit="") {
+  if( (!$unit && $size >= 1<<30) || $unit == "GB")
+    return number_format($size/(1<<30),2)."GB";
+  if( (!$unit && $size >= 1<<20) || $unit == "MB")
+    return number_format($size/(1<<20),2)."MB";
+  if( (!$unit && $size >= 1<<10) || $unit == "KB")
+    return number_format($size/(1<<10),2)."KB";
+  return number_format($size)." bytes";
 }
 
 function return_bytes($val) {

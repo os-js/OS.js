@@ -41,6 +41,7 @@
 
   // TODO: Optimize
   // FIXME: Destroy DOM events
+  // FIXME: Prevent duplicate loading of resources
 
   var _CALLURL  = "/API";
   var _FSURL    = "/FS";

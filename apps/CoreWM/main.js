@@ -1,6 +1,7 @@
 (function(WindowManager, GUI) {
   // TODO: Panel
   // TODO: PanelItem's
+  // TODO: Window List name update from title.. implement in onChange()
 
   /**
    * Application
