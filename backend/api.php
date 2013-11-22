@@ -71,7 +71,7 @@ class FS
     if ( !is_readable($dirname) ) {
       throw new Exception("Permission denied");
     }
-    if ( preg_match("/^\/tmp/", $dirname) === false || strstr($dirname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($dirname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
     $list = Array();
     $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
@@ -134,7 +134,7 @@ class FS
     } else {
       if ( !is_writable(dirname($fname)) ) throw new Exception("Write permission denied in folder");
     }
-    if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     return file_put_contents($fname, $content) !== false;
   }
 
@@ -143,14 +143,14 @@ class FS
 
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
-    if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     return file_get_contents($fname);
   }
 
   public static function delete($fname) {
     $fname = unrealpath($fname);
 
-    if ( preg_match("/^\/tmp/", $fname) === false || strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
     if ( is_file($fname) ) {
       if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
@@ -171,8 +171,8 @@ class FS
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
-    if ( preg_match("/^\/tmp/", $src) === false || strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
-    if ( preg_match("/^\/tmp/", $dest) === false || strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
+    if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
+    if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
     if ( file_exists($dest) ) throw new Exception("Destination file already exist");
 
     return rename($src, $dest);
@@ -182,7 +182,7 @@ class FS
     $dname = unrealpath($dname);
 
     if ( file_exists($dname) ) throw new Exception("Destination already exists");
-    if ( preg_match("/^\/tmp/", $dname) === false || strstr($dname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($dname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
     return mkdir($dname);
   }
@@ -371,7 +371,7 @@ if ( $method === 'GET' ) {
     try {
       if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
       if ( !is_readable($file) ) throw new Exception("Read permission denied");
-      if ( preg_match("/^\/tmp/", $file) === false || strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+      if ( strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
       $continue = true;
     } catch ( Exception $e ) {
       header("HTTP/1.0 500 Internal Server Error");
@@ -400,7 +400,13 @@ if ( $method === 'GET' ) {
 
 if ( isset($_GET['upload']) ) {
   if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
-    move_uploaded_file($_FILES['upload']['tmp_name'], $_POST['path'] . '/' . $_FILES['upload']['name']);
+    $dest = unrealpath($_POST['path'] . '/' . $_FILES['upload']['name']);
+
+    // FIXME
+    if ( strstr($dest, HOMEDIR) === false ) exit;
+    if ( file_exists($dest) ) exit;
+
+    move_uploaded_file($_FILES['upload']['tmp_name'], $dest);
   }
   exit;
 }
