@@ -384,6 +384,16 @@
     this.fileList         = null;
     this.$input           = null;
 
+    var self = this;
+    this.onError          = function(err) {
+      if ( err ) {
+        if ( self.fileList ) {
+          self.fileList.chdir(OSjs.API.getDefaultPath('/'));
+        }
+        OSjs.API.error("FileDialog Error", "Failed listing directory because an error occured", err);
+      }
+    };
+
     var title     = this.type == "save" ? "Save" : "Open";
     var className = this.type == "save" ? 'FileSaveDialog' : 'FileOpenDialog';
 
@@ -411,6 +421,7 @@
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
     this.fileList = new OSjs.GUI.FileView();
+    this.fileList.onError = this.onError;
     this._addGUIElement(this.filelist);
     this.$element.appendChild(this.fileList.getRoot());
 

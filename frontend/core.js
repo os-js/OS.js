@@ -553,8 +553,8 @@
 
     this._windows     = [];
     this._name        = name;
-    //this._wallpaper   = 'osjs:///themes/wallpapers/noise_red.png';
-    this._wallpaper   = '/themes/wallpapers/noise_red.png';
+    this._wallpaper   = 'osjs:///themes/wallpapers/noise_red.png';
+    //this._wallpaper   = '/themes/wallpapers/noise_red.png';
     this._theme       = 'default';
     this._background  = 'image-repeat';
     this._style       = {
@@ -674,7 +674,7 @@
   WindowManager.prototype.setWallpaper = function(name, type) {
     console.log("OSjs::Core::WindowManager::setWallpaper", name, type);
     if ( name && type.match(/^image/) ) {
-      var path = name; //getRealPath(name);
+      var path = getRealPath(name);
       document.body.style.backgroundImage = "url('" + path + "')";
 
       switch ( type ) {

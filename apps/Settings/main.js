@@ -1,28 +1,25 @@
 (function(Application, Window) {
 
-  var _tmp = 0;
-
   /**
    * Main Window
    */
-  var ApplicationSettingsWindow = function(app, opts) {
-    Window.apply(this, ['ApplicationSettingsWindow', opts, app]);
+  var ApplicationSettingsWindow = function(app) {
+    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 200}, app]);
 
-    this._title = "Settings";
-    this._icon  = "/themes/default/icons/16x16/categories/applications-system.png";
+    this._title                   = "Settings";
+    this._icon                    = "/themes/default/icons/16x16/categories/applications-system.png";
+    this._properties.allow_resize = false;
   };
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
 
   ApplicationSettingsWindow.prototype.init = function(wm) {
-    var root = Window.prototype.init.apply(this, arguments);
-    var app  = this._appRef;
-    var cs   = OSjs.API.getCoreService();
-    var _tmp = (typeof window.___tmp === 'undefined') ? 0 : (window.___tmp++);
-    var self = this;
-
-
-    var settings = wm.getSettings();
+    var self      = this;
+    var root      = Window.prototype.init.apply(this, arguments);
+    var app       = this._appRef;
+    var cs        = OSjs.API.getCoreService();
+    var _tmp      = (typeof window.___tmp === 'undefined') ? 0 : (window.___tmp++);
+    var settings  = wm.getSettings();
 
     var container = document.createElement('div');
     var outer, label, input, button, tmp;
@@ -148,7 +145,6 @@
       });
     };
 
-
     root.appendChild(container);
     root.appendChild(button);
   };
@@ -192,7 +188,7 @@
   ApplicationSettings.prototype.init = function(core, session) {
     Application.prototype.init.apply(this, arguments);
 
-    this._addWindow(new ApplicationSettingsWindow(this, {width: 400, height: 200}));
+    this._addWindow(new ApplicationSettingsWindow(this));
   };
 
   ApplicationSettings.prototype._onMessage = function(obj, msg, args) {

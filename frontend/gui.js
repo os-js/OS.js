@@ -724,7 +724,7 @@
       var rendered = false;
       if ( res ) {
         if ( res.error ) {
-          self.onError(res.error);
+          self.onError.call(self, res.error);
         } else {
           self.lastPath = self.path;
           self.path = dir;
@@ -743,7 +743,7 @@
         onRefreshed.call(this);
       }
     }, function(error) {
-      self.onError(error);
+      self.onError.call(self, error);
     });
   };
 
