@@ -204,10 +204,9 @@
     };
 
     document.addEventListener('keydown', function(ev) {
-      var isHTMLInput = false;
-      var doPrevent = false;
-
       var d = ev.srcElement || ev.target;
+      var doPrevent = d.tagName === 'BODY' ? true : false;
+      var isHTMLInput = false;
       if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) 
           || d.tagName.toUpperCase() === 'TEXTAREA') {
             isHTMLInput = d.readOnly || d.disabled;
@@ -1159,101 +1158,95 @@
     main.appendChild(windowResize);
     main.appendChild(windowLoading);
 
-    // FIXME
-    var self = this;
-    (function() {
-      var sx = 0;
-      var sy = 0;
-      var px = 0;
-      var py = 0;
-      var action = null;
+    var sx = 0;
+    var sy = 0;
+    var px = 0;
+    var py = 0;
+    var action = null;
 
-      var onMouseDown = function(ev, a) {
-        ev.preventDefault();
+    var onMouseDown = function(ev, a) {
+      ev.preventDefault();
 
-        if ( a === 'move' ) {
-          px = self._position.x;
-          py = self._position.y;
-        } else {
-          px = self._dimension.w;
-          py = self._dimension.h;
-        }
+      if ( a === 'move' ) {
+        px = self._position.x;
+        py = self._position.y;
+      } else {
+        px = self._dimension.w;
+        py = self._dimension.h;
+      }
 
-        sx = ev.clientX;
-        sy = ev.clientY;
-        action = a;
+      sx = ev.clientX;
+      sy = ev.clientY;
+      action = a;
 
-        document.addEventListener('mousemove', onMouseMove, false);
-        document.addEventListener('mouseup', onMouseUp, false);
+      document.addEventListener('mousemove', onMouseMove, false);
+      document.addEventListener('mouseup', onMouseUp, false);
 
-        return false;
-      };
-      var onMouseUp = function(ev) {
-        if ( _WM ) {
-          if ( action === 'move' ) {
-            self._onChange('move');
-          } else if ( action === 'resize' ) {
-            self._onChange('resize');
-          }
-        }
-        document.removeEventListener('mousemove', onMouseMove, false);
-        document.removeEventListener('mouseup', onMouseUp, false);
-        action = null;
-        sx = 0;
-        sy = 0;
-      };
-      var onMouseMove = function(ev) {
-        if ( action === null ) return;
-        var dx = ev.clientX - sx;
-        var dy = ev.clientY - sy;
-        var rx = px + dx;
-        var ry = py + dy;
-
+      return false;
+    };
+    var onMouseUp = function(ev) {
+      if ( _WM ) {
         if ( action === 'move' ) {
-          //if ( rx < 1 ) rx = 1;
-          if ( ry < 1 ) ry = 1;
-          //if ( rx > (window.innerWidth-1) ) rx = (window.innerWidth - 1);
-          //if ( ry > (window.innerHeight-1) ) ry = (window.innerHeight - 1);
-
-          self._move(rx, ry);
-        } else {
-          if ( rx < _MINIMUM_WINDOW_WIDTH ) rx = _MINIMUM_WINDOW_WIDTH;
-          if ( ry < _MINIMUM_WINDOW_HEIGHT ) ry = _MINIMUM_WINDOW_HEIGHT;
-
-          self._resize(rx, ry);
+          self._onChange('move');
+        } else if ( action === 'resize' ) {
+          self._onChange('resize');
         }
-      };
-
-      if ( self._properties.allow_move ) {
-        windowTop.addEventListener('mousedown', function(ev) {
-          onMouseDown(ev, 'move');
-        }, false);
       }
-      if ( self._properties.allow_resize ) {
-        windowResize.addEventListener('mousedown', function(ev) {
-          onMouseDown(ev, 'resize');
-        }, false);
+      document.removeEventListener('mousemove', onMouseMove, false);
+      document.removeEventListener('mouseup', onMouseUp, false);
+      action = null;
+      sx = 0;
+      sy = 0;
+    };
+    var onMouseMove = function(ev) {
+      if ( action === null ) return;
+      var dx = ev.clientX - sx;
+      var dy = ev.clientY - sy;
+      var rx = px + dx;
+      var ry = py + dy;
+
+      if ( action === 'move' ) {
+        //if ( rx < 1 ) rx = 1;
+        if ( ry < 1 ) ry = 1;
+        //if ( rx > (window.innerWidth-1) ) rx = (window.innerWidth - 1);
+        //if ( ry > (window.innerHeight-1) ) ry = (window.innerHeight - 1);
+
+        self._move(rx, ry);
+      } else {
+        if ( rx < _MINIMUM_WINDOW_WIDTH ) rx = _MINIMUM_WINDOW_WIDTH;
+        if ( ry < _MINIMUM_WINDOW_HEIGHT ) ry = _MINIMUM_WINDOW_HEIGHT;
+
+        self._resize(rx, ry);
       }
+    };
 
-      main.addEventListener('mousedown', function(ev) {
-        self._focus();
-        return stopPropagation(ev);
-      });
+    if ( this._properties.allow_move ) {
+      windowTop.addEventListener('mousedown', function(ev) {
+        onMouseDown(ev, 'move');
+      }, false);
+    }
+    if ( this._properties.allow_resize ) {
+      windowResize.addEventListener('mousedown', function(ev) {
+        onMouseDown(ev, 'resize');
+      }, false);
+    }
 
-    })();
-
+    main.addEventListener('mousedown', function(ev) {
+      self._focus();
+      return stopPropagation(ev);
+    });
 
     this._$element = main;
     this._$root    = windowWrapper;
     this._$loading = windowLoading;
 
-    setTimeout(function() {
-      self._toggleLoading(false);
-    }, 100);
-
     document.body.appendChild(this._$element);
 
     self._onChange('create');
+
+    setTimeout(function() {
+      self._toggleLoading(false);
+    }, 100);
 
     return this._$root;
   };
