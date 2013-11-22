@@ -31,8 +31,9 @@
 
 // TODO: Rewrite
 
-define("SESSIONNAME", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']);
-define("HOMEDIR", "/opt/OSjs");
+define("SESSIONNAME", preg_replace("/[^0-9]/", "", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']));
+define("HOMEDIR", "/opt/OSjs/home");
+define("TMPDIR", "/opt/OSjs/tmp");
 define("APPDIR", realpath(dirname(__FILE__) . "/../apps"));
 
 class FS
@@ -65,13 +66,13 @@ class FS
   }
 
   public static function scandir($dirname, Array $opts = Array()) {
+    if ( strstr($dirname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_dir($dirname) ) {
       throw new Exception("Invalid directory");
     }
     if ( !is_readable($dirname) ) {
       throw new Exception("Permission denied");
     }
-    if ( strstr($dirname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
     $list = Array();
     $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
@@ -128,22 +129,22 @@ class FS
   public static function file_put_contents($fname, $content) {
     $fname = unrealpath($fname);
 
+    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( is_file($fname) ) {
       if ( !is_file($fname) ) throw new Exception("You are writing to a invalid resource");
       if ( !is_writable($fname) ) throw new Exception("Write permission denied");
     } else {
       if ( !is_writable(dirname($fname)) ) throw new Exception("Write permission denied in folder");
     }
-    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     return file_put_contents($fname, $content) !== false;
   }
 
   public static function file_get_contents($fname) {
     $fname = unrealpath($fname);
 
+    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
-    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     return file_get_contents($fname);
   }
 
@@ -168,11 +169,11 @@ class FS
     $src = unrealpath($src);
     $dest = unrealpath($dest);
 
+    if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
+    if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
-    if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
-    if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
     if ( file_exists($dest) ) throw new Exception("Destination file already exist");
 
     return rename($src, $dest);
@@ -181,8 +182,8 @@ class FS
   public static function mkdir($dname) {
     $dname = unrealpath($dname);
 
-    if ( file_exists($dname) ) throw new Exception("Destination already exists");
     if ( strstr($dname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( file_exists($dname) ) throw new Exception("Destination already exists");
 
     return mkdir($dname);
   }
@@ -232,7 +233,7 @@ function unrealpath($p) {
 }
 
 function getSessionData() {
-  $file = "/tmp/___sessiondata-" . SESSIONNAME;
+  $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
   if ( file_exists($file) ) {
     if ( $c = file_get_contents($file) ) {
       return json_decode($c);
@@ -242,7 +243,7 @@ function getSessionData() {
 }
 
 function setSessionData(Array $a) {
-  $file = "/tmp/___sessiondata-" . SESSIONNAME;
+  $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
   $d = json_encode($a);
   return file_put_contents($file, $d) ? true : false;
 }
@@ -369,9 +370,9 @@ if ( $method === 'GET' ) {
     // FIXME
     $continue = false;
     try {
+      if ( strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
       if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
       if ( !is_readable($file) ) throw new Exception("Read permission denied");
-      if ( strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
       $continue = true;
     } catch ( Exception $e ) {
       header("HTTP/1.0 500 Internal Server Error");
@@ -379,7 +380,7 @@ if ( $method === 'GET' ) {
     }
 
     if ( $continue && file_exists($file) ) {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $file);
         finfo_close($finfo);
 
