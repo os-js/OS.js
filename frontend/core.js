@@ -409,7 +409,7 @@
     if ( cs ) {
       app = cs.getApplicationNameByMime(mime, fname);
       console.log("Found", app.length, "applications supporting this mime");
-      if ( app.length ) { // FIXME
+      if ( app.length ) {
         var self = this;
         var _launch = function(name) {
           if ( name ) {

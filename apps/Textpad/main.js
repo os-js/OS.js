@@ -227,11 +227,11 @@
           }
         };
 
-        // FIXME: Send relative path
         if ( fname ) {
           _open(fname, mime);
         } else {
-          this._createDialog('File', [{type: 'open', mime: 'text/plain'}, function(btn, fname, fmime) {
+          var path = (this.currentFile) ? OSjs.Utils.dirname(this.currentFile) : null;
+          this._createDialog('File', [{type: 'open', mime: 'text/plain', path: path}, function(btn, fname, fmime) {
             if ( btn !== 'ok' ) return;
             _open(fname, fmime);
           }], w);
