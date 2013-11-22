@@ -308,6 +308,7 @@
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
 
+    // FIXME: Move to utils
     var xhr = new XMLHttpRequest();
     var fd  = new FormData();
     fd.append("upload", 1);
@@ -318,6 +319,26 @@
     xhr.addEventListener("load", function(evt) { self.onUploadComplete(evt); }, false);
     xhr.addEventListener("error", function(evt) { self.onUploadFailed(evt); }, false);
     xhr.addEventListener("abort", function(evt) { self.onUploadCanceled(evt); }, false);
+    xhr.onreadystatechange = function(evt) {
+      if ( xhr.readyState === 4 ) {
+        if ( xhr.status !== 200 ) {
+          var err = "Unknown error";
+          try {
+            var tmp = JSON.parse(xhr.responseText);
+            if ( tmp.error ) {
+              err = tmp.error;
+            }
+          } catch ( e ) {
+            if ( xhr.responseText ) {
+              err = xhr.responseText;
+            } else {
+              err = e;
+            }
+          }
+          self.onUploadFailed(evt, err);
+        }
+      }
+    };
     xhr.open("POST", OSjs.API.getFilesystemURL());
     xhr.send(fd);
 
@@ -356,11 +377,15 @@
     this.end('complete', evt);
   };
 
-  FileUploadDialog.prototype.onUploadFailed = function(evt) {
+  FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
     console.log("FileUploadDialog::onUploadFailed()");
-    OSjs.API.error("Upload failed", "The upload has failed", "Reason unknown...");
+    if ( error ) {
+      OSjs.API.error("Upload failed", "The upload has failed", error);
+    } else {
+      OSjs.API.error("Upload failed", "The upload has failed", "Reason unknown...");
+    }
     this.$buttonCancel.removeAttribute("disabled");
-    this.end('fail', evt);
+    this.end('fail', evt, error);
   };
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {

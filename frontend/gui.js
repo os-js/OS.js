@@ -563,6 +563,7 @@
 
   /**
    * FileView
+   * FIXME: Fix exessive calls to chdir/refresh
    */
   var FileView = function(path, opts) {
     opts = opts || {};

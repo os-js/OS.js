@@ -358,6 +358,67 @@ function out($json) {
   print json_encode($json);
 }
 
+function error() {
+  if ( !is_null($e = error_get_last()) ) {
+    if ( ob_get_level() ) ob_end_clean();
+
+    $type = 'UNKNOWN';
+    switch ((int)$e['type']) {
+      case E_ERROR: // 1
+        $type = 'E_ERROR';
+      break;
+      case E_WARNING: // 2
+        $type = 'E_WARNING';
+      break;
+      case E_PARSE: // 4
+        $type = 'E_PARSE';
+      break;
+      case E_NOTICE: // 8
+        $type = 'E_NOTICE';
+      break;
+      case E_CORE_ERROR: // 16
+        $type = 'E_CORE_ERROR';
+      break;
+      case E_CORE_WARNING: // 32
+        $type = 'E_CORE_WARNING';
+      break;
+      case E_CORE_ERROR: // 64
+        $type = 'E_COMPILE_ERROR';
+      break;
+      case E_CORE_WARNING: // 128
+        $type = 'E_COMPILE_WARNING';
+      break;
+      case E_USER_ERROR: // 256
+        $type = 'E_USER_ERROR';
+      break;
+      case E_USER_WARNING: // 512
+        $type = 'E_USER_WARNING';
+      break;
+      case E_USER_NOTICE: // 1024
+        $type = 'E_USER_NOTICE';
+      break;
+      case E_STRICT: // 2048
+        $type = 'E_STRICT';
+      break;
+      case E_RECOVERABLE_ERROR: // 4096
+        $type = 'E_RECOVERABLE_ERROR';
+      break;
+      case E_DEPRECATED: // 8192
+        $type = 'E_DEPRECATED';
+      break;
+      case E_USER_DEPRECATED: // 16384
+        $type = 'E_USER_DEPRECATED';
+      break;
+    }
+
+    header("HTTP/1.0 500 Internal Server Error");
+    print $e['message'];
+    exit;
+  }
+}
+
+register_shutdown_function('error');
+
 
 $method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
 $json   = Array("result" => false, "error" => null);
@@ -526,4 +587,5 @@ if ( $error ) {
 }
 
 print out($json);
+exit;
 ?>
