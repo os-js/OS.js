@@ -30,11 +30,11 @@
  */
 
 // TODO: Rewrite
-
 define("SESSIONNAME", preg_replace("/[^0-9]/", "", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']));
 define("HOMEDIR", "/opt/OSjs/home");
 define("TMPDIR", "/opt/OSjs/tmp");
 define("APPDIR", realpath(dirname(__FILE__) . "/../apps"));
+define("MAXUPLOAD", return_bytes(ini_get('upload_max_filesize')));
 
 class FS
 {
@@ -188,6 +188,22 @@ class FS
     return mkdir($dname);
   }
 }
+
+function return_bytes($val) {
+  $val = trim($val);
+  $last = strtolower($val[strlen($val)-1]);
+  switch($last) {
+    case 'g':
+      $val *= 1024;
+    case 'm':
+      $val *= 1024;
+    case 'k':
+      $val *= 1024;
+  }
+
+  return $val;
+}
+
 
 function destroy_dir($dir) {
   if (!is_dir($dir) || is_link($dir)) return unlink($dir);
@@ -475,7 +491,7 @@ if ( isset($_GET['upload']) ) {
       print "Destination already exist!";
       exit;
     }
-    if ( $_FILES['upload']['size'] <= 0 || $_FILES['upload']['size'] > ini_get('upload_max_filesize') ) {
+    if ( $_FILES['upload']['size'] <= 0 || $_FILES['upload']['size'] > MAXUPLOAD ) {
       header("HTTP/1.0 500 Internal Server Error");
       print "The upload request is either empty or too large!";
       exit;
