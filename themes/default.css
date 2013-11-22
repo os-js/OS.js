@@ -6,6 +6,16 @@
   font-family:OSjsFont;
   src:url('/themes/default/fonts/Sansation.ttf');
 }
+@font-face {
+  font-family:OSjsFont;
+  font-weight:bold;
+  src:url('/themes/default/fonts/SansationBold.ttf');
+}
+@font-face {
+  font-family:OSjsFont;
+  font-style:italic;
+  src:url('/themes/default/fonts/SansationOblique.ttf');
+}
 body {
   /*
   background-image: radial-gradient(circle closest-corner at center, #0B615E 0%, #09524F 100%);
