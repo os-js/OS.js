@@ -401,6 +401,8 @@
       if ( t && t.tagName != 'TR' ) {
         if ( t.parentNode.tagName == 'TR' ) {
           t = t.parentNode;
+        } else if ( t.parentNode.parentNode.tagName == 'TR' ) {
+          t = t.parentNode.parentNode;
         }
       }
 
