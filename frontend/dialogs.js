@@ -397,7 +397,7 @@
     var title     = this.type == "save" ? "Save" : "Open";
     var className = this.type == "save" ? 'FileSaveDialog' : 'FileOpenDialog';
 
-    StandardDialog.apply(this, [className, {title: title}, {width:400, height:300}, onClose]);
+    StandardDialog.apply(this, [className, {title: title}, {width:600, height:350}, onClose]);
 
     if ( this.type === 'open' ) {
       this._icon = '/themes/default/icons/16x16/actions/gtk-open.png';

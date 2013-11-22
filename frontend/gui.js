@@ -439,7 +439,7 @@
     OSjs.Utils.$empty(this.$body);
 
     var self = this;
-    var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d;
+    var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span;
 
     row = document.createElement('tr');
     for ( i = 0, l = this.columns.length; i < l; i++ ) {
@@ -467,6 +467,8 @@
       iter = this.rows[i];
 
       for ( ii = 0, ll = this.columns.length; ii < ll; ii++ ) {
+        span = null;
+
         colref = this.columns[ii];
         row.setAttribute('data-' + colref.key, iter[colref.key]);
 
@@ -503,8 +505,11 @@
           col.appendChild(tmp);
           row.removeAttribute('data-' + colref.key);
         } else {
-          col.innerHTML = val;
+          span = document.createElement('span');
+          span.innerHTML = val;
+          col.appendChild(span);
         }
+
         row.onclick = function(ev) {
           self._onRowClick.call(self, this, ev);
         };
@@ -703,10 +708,10 @@
     this.setColumns([
       {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
       {key: 'filename', title: 'Filename'},
-      {key: 'mime', title: 'Mime'},
-      {key: 'size', title: 'Size'},
-      {key: 'path', title: 'Path', visible: false, domProperties: {width: "70"}},
-      {key: 'type', title: 'Type', visible: false, domProperties: {width: "50"}}
+      {key: 'mime', title: 'Mime', domProperties: {width: "150"}},
+      {key: 'size', title: 'Size', domProperties: {width: "100", textAlign: "right"}},
+      {key: 'path', title: 'Path', visible: false},
+      {key: 'type', title: 'Type', visible: false}
      ]);
 
     this.setRows(list);

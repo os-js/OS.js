@@ -96,6 +96,7 @@
 
 .GUIListView table {
   border-collapse : collapse;
+  table-layout : fixed;
   margin : 0;
   padding : 0;
   position : relative;
@@ -119,6 +120,15 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  white-space : nowrap;
+
+}
+.GUIListView td span {
+  display : block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  width : 100%;
 }
 
 .GUIListView td img {
