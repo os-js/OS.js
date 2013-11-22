@@ -124,7 +124,6 @@
     button.innerHTML = "...";
     button.onclick = (function(inp) {
       return function(ev) {
-        self.openBackgroundSelect(ev, inp);
         self.openBackgroundColorSelect(ev, inp);
       };
     })(input);
