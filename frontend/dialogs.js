@@ -244,8 +244,9 @@
     this.dialog   = null;
     this._wmref   = null;
 
-    var msg = 'Upload file to <span>' + this.dest + '</span>';
-    StandardDialog.apply(this, ['FileUploadDialog', {title: "Upload Dialog", message: msg, buttonOk: false}, {width:400, height:120}, onClose]);
+    var maxSize = OSjs.API.getConfig('MaxUploadSize');
+    var msg = 'Upload file to <span>' + this.dest + '</span>.<br />Maximum size: ' + maxSize + ' bytes';
+    StandardDialog.apply(this, ['FileUploadDialog', {title: "Upload Dialog", message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
     this._icon = '/themes/default/icons/16x16/actions/filenew.png';
   };
 

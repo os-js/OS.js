@@ -1549,6 +1549,7 @@
   OSjs.API.getWMInstance    = function() { return _WM; };
   OSjs.API.getCoreInstance  = function() { return _CORE; };
   OSjs.API.getCoreService   = function() { return _CORE.getProcess('CoreService'); };
+  OSjs.API.getConfig        = function(key) { var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig(key); } return null; };
   OSjs.API.getDefaultPath   = function(def) { def = def || '/'; var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig('Home') || def; } return def; };
   OSjs.API.getCallURL       = function() { return _CALLURL; };
   OSjs.API.getFilesystemURL = getFilesystemURL;

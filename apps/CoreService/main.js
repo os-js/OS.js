@@ -6,7 +6,8 @@
     this.applicationCache = {};
     this.skipNext = false;
     this.config = {
-      'Home' : '/'
+      'Home' : '/',
+      'MaxUploadSize' : -1
     };
 
     if ( typeof args.settings !== 'undefined' && typeof args.settings === 'object' ) {

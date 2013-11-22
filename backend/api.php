@@ -272,7 +272,8 @@ function getPreloadList() {
 function getCoreSettings() {
   return Array(
     'Core' => Array(
-      'Home' => HOMEDIR
+      'Home' => HOMEDIR,
+      'MaxUploadSize' => MAXUPLOAD
     ),
 
     'WM' => Array(
