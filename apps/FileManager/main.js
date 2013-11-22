@@ -3,8 +3,8 @@
   /**
    * Main Window
    */
-  var ApplicationFileManagerWindow = function(app, opts) {
-    Window.apply(this, ['ApplicationFileManagerWindow', opts, app]);
+  var ApplicationFileManagerWindow = function(app) {
+    Window.apply(this, ['ApplicationFileManagerWindow', {width: 650, height: 420}, app]);
 
     this.title    = "File Manager";
     this.fileView = null;
@@ -247,7 +247,7 @@
   ApplicationFileManager.prototype.init = function(core, session) {
     Application.prototype.init.apply(this, arguments);
 
-    this._addWindow(new ApplicationFileManagerWindow(this, {width: 500, height: 400}));
+    this._addWindow(new ApplicationFileManagerWindow(this));
 
     var path = this._getArgument('path') || OSjs.API.getDefaultPath('/');
     var w = this._getWindow('ApplicationFileManagerWindow');
