@@ -404,8 +404,21 @@ if ( isset($_GET['upload']) ) {
     $dest = unrealpath($_POST['path'] . '/' . $_FILES['upload']['name']);
 
     // FIXME
-    if ( strstr($dest, HOMEDIR) === false ) exit;
-    if ( file_exists($dest) ) exit;
+    if ( strstr($dest, HOMEDIR) === false ) {
+      header("HTTP/1.0 500 Internal Server Error");
+      print "Invalid destination!";
+      exit;
+    }
+    if ( file_exists($dest) ) {
+      header("HTTP/1.0 500 Internal Server Error");
+      print "Destination already exist!";
+      exit;
+    }
+    if ( $_FILES['size'] <= 0 || $_FILES['size'] > ini_get('upload_max_filesize') ) {
+      header("HTTP/1.0 500 Internal Server Error");
+      print "The upload request is either empty or too large!";
+      exit;
+    }
 
     if ( move_uploaded_file($_FILES['upload']['tmp_name'], $dest) ) {
       chmod($dest, 0600);
