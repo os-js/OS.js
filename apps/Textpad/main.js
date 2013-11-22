@@ -75,8 +75,8 @@
     Window.prototype._onDndEvent.apply(this, arguments);
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
-      if ( data && data.type === 'file' && data.mime && (data.mime.match(/^text\//) ) ) {
-        this._appRef.action('open', data.path);
+      if ( data && data.type === 'file' && data.mime ) {
+        this._appRef.action('open', data.path, data.mime);
       }
     }
   };
@@ -142,7 +142,7 @@
     }
   };
 
-  ApplicationTextpad.prototype.action = function(action, fname) {
+  ApplicationTextpad.prototype.action = function(action, fname, mime) {
     var self = this;
     var w = this._getWindow('ApplicationTextpadWindow');
     if ( !w ) return;
@@ -198,7 +198,12 @@
       break;
 
       case 'open' :
-        var _open = function(fname) {
+        var _open = function(fname, mime) {
+          if ( mime && !mime.match(/^text/) ) {
+            OSjs.API.error("Textpad", "Cannot open file", "Not supported!");
+            return;
+          }
+
           if ( fname ) {
             OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname]}, function(res) {
               if ( !res ) return;
@@ -224,11 +229,11 @@
 
         // FIXME: Send relative path
         if ( fname ) {
-          _open(fname);
+          _open(fname, mime);
         } else {
-          this._createDialog('File', [{type: 'open', mime: 'text/plain'}, function(btn, fname) {
+          this._createDialog('File', [{type: 'open', mime: 'text/plain'}, function(btn, fname, fmime) {
             if ( btn !== 'ok' ) return;
-            _open(fname);
+            _open(fname, fmime);
           }], w);
         }
       break;
