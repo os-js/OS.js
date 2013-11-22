@@ -185,7 +185,7 @@
         if ( fname ) {
           _open(fname);
         } else {
-          this._createDialog('File', [{type: 'open'}, function(btn, fname, rmime) {
+          this._createDialog('File', [{type: 'open', mimes: ['^image', '^audio', '^video']}, function(btn, fname, rmime) {
             if ( btn !== 'ok' ) return;
             _open(fname, (mime || rmime));
           }], w);
