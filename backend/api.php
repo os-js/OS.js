@@ -88,7 +88,7 @@ class FS
 
       $fsize = @(($ftype == 'dir' ? 0 : filesize($fpath)));
       if ( $fsize === false ) $fsize = '';
-      if ( strlen($fsize) && (isset($opts['hrsize']) && $opts['hrsize']) ) {
+      if ( $ftype !== 'dir' && strlen($fsize) && (isset($opts['hrsize']) && $opts['hrsize']) ) {
         $fsize = humanFileSize($fsize);
       }
 
