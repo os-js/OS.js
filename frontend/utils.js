@@ -163,6 +163,10 @@
   };
 
   OSjs.Utils.AjaxUpload = function(file, size, dest, callbacks) {
+    if ( !OSjs.Utils.getCompability().upload ) {
+      throw "File upload is not supported on your platform";
+    }
+
     callbacks           = callbacks           || {};
     callbacks.progress  = callbacks.progress  || function() {};
     callbacks.complete  = callbacks.complete  || function() {};

@@ -41,6 +41,7 @@
   // TODO: Video, Audio => Media
   // TODO: IconView
   // TODO: TreeView
+  // TODO: Canvas
 
   function createDroppable(el, args) {
     args = args || {};

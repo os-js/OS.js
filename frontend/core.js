@@ -39,6 +39,8 @@
   console.group     = console.group     || console.log;
   console.groupEnd  = console.groupEnd  || console.log;
 
+  // TODO: Optimize
+
   var _CALLURL  = "/API";
   var _FSURL    = "/FS";
   var _PROCS    = [];
@@ -47,6 +49,11 @@
   var _PID      = 0;
   var _LZINDEX  = 1;
   var _LTZINDEX = 100000;
+
+  var _DEFAULT_WINDOW_WIDTH = 200;
+  var _DEFAULT_WINDOW_HEIGHT = 200;
+  var _MINIMUM_WINDOW_WIDTH = 100;
+  var _MINIMUM_WINDOW_HEIGHT = 50;
 
   var _WM;
   var _WIN;
@@ -60,7 +67,7 @@
   }
 
   function getNextZindex(ontop) {
-    if ( typeof ontop !== 'undefined' ) {
+    if ( typeof ontop !== 'undefined' && ontop === true ) {
       return (_LTZINDEX+=2);
     }
     return (_LZINDEX+=2);
@@ -405,7 +412,7 @@
       if ( app.length ) { // FIXME
         this.launch(app[0], args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
       } else {
-        alert("Found no application supporting this file type!"); // FIXME
+        OSjs.API.error("Error opening file", "The file '" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
       }
     }
 
@@ -582,7 +589,6 @@
   WindowManager.prototype.destroy = function() {
     console.log("OSjs::Core::WindowManager::destroy()");
 
-    // FIXME: Optimize
     var i = 0;
     var l = this._windows.length;
     for ( i; i < l; i++ ) {
@@ -827,8 +833,9 @@
 
   Application.prototype._call = function(method, args, onSuccess, onError) {
     onSuccess = onSuccess || function() {};
-    onError = onError || function() {
-      // TODO: Default error
+    onError = onError || function(err) {
+      err = err || "Unknown error";
+      OSjs.API.error("Application API error", "Application " + this.__name + " failed to perform operation '" + method + "'", err);
     };
     return APICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
   };
@@ -911,7 +918,7 @@
     this._name          = name;
     this._title         = name;
     this._position      = {x:opts.x, y:opts.y};
-    this._dimension     = {w:opts.width||150, h:opts.height||150}; // FIXME
+    this._dimension     = {w:opts.width||_DEFAULT_WINDOW_WIDTH, h:opts.height||_DEFAULT_WINDOW_HEIGHT};
     this._lastDimension = this._dimension;
     this._lastPosition  = this._position;
     this._tmpPosition   = null;
@@ -984,7 +991,6 @@
     main.className      = 'Window';
     main.oncontextmenu  = function(ev) {
       OSjs.GUI.blurMenu();
-      // FIXME: Copy code from backspace prevention
       if ( ev.target && (ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'INPUT') ) {
         return true;
       }
@@ -1134,7 +1140,7 @@
     main.style.height = this._dimension.h + "px";
     main.style.top    = this._position.y + "px";
     main.style.left   = this._position.x + "px";
-    main.style.zIndex = getNextZindex(this._state.ontop); // FIXME: Not working -- ontop ?!
+    main.style.zIndex = getNextZindex(this._state.ontop);
 
     windowIcon.appendChild(windowIconImage);
 
@@ -1211,8 +1217,8 @@
 
           self._move(rx, ry);
         } else {
-          if ( rx < 100 ) rx = 100;
-          if ( ry < 50 ) ry = 50;
+          if ( rx < _MINIMUM_WINDOW_WIDTH ) rx = _MINIMUM_WINDOW_WIDTH;
+          if ( ry < _MINIMUM_WINDOW_HEIGHT ) ry = _MINIMUM_WINDOW_HEIGHT;
 
           self._resize(rx, ry);
         }
@@ -1230,9 +1236,6 @@
       }
 
       main.addEventListener('mousedown', function(ev) {
-        //ev.preventDefault();
-        //ev.stopPropagation();
-
         self._focus();
         return stopPropagation(ev);
       });
