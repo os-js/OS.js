@@ -160,7 +160,50 @@
     var nodeList = Array.prototype.slice.call(parentEl.children);
     var nodeIndex = nodeList.indexOf(el, parentEl);
     return nodeIndex;
-  }
+  };
+
+  OSjs.Utils.AjaxUpload = function(file, size, dest, callbacks) {
+    callbacks           = callbacks           || {};
+    callbacks.progress  = callbacks.progress  || function() {};
+    callbacks.complete  = callbacks.complete  || function() {};
+    callbacks.failed    = callbacks.failed    || function() {};
+    callbacks.canceled  = callbacks.canceled  || function() {};
+
+    var xhr = new XMLHttpRequest();
+    var fd  = new FormData();
+    fd.append("upload", 1);
+    fd.append("path",   dest);
+    fd.append("upload", file);
+
+    xhr.upload.addEventListener("progress", function(evt) { callbacks.progress(evt); }, false);
+    xhr.addEventListener("load", function(evt) { callbacks.complete(evt); }, false);
+    xhr.addEventListener("error", function(evt) { callbacks.failed(evt); }, false);
+    xhr.addEventListener("abort", function(evt) { callbacks.canceled(evt); }, false);
+    xhr.onreadystatechange = function(evt) {
+      if ( xhr.readyState === 4 ) {
+        if ( xhr.status !== 200 ) {
+          var err = "Unknown error";
+          try {
+            var tmp = JSON.parse(xhr.responseText);
+            if ( tmp.error ) {
+              err = tmp.error;
+            }
+          } catch ( e ) {
+            if ( xhr.responseText ) {
+              err = xhr.responseText;
+            } else {
+              err = e;
+            }
+          }
+          callbacks.failed(evt, err);
+        }
+      }
+    };
+    xhr.open("POST", OSjs.API.getFilesystemURL());
+    xhr.send(fd);
+
+    return xhr;
+  };
 
   OSjs.Utils.Ajax = function(url, onSuccess, onError, opts) {
     if ( !url ) throw "No URL given";

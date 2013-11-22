@@ -298,8 +298,6 @@
   };
 
   FileUploadDialog.prototype.upload = function(file, size) {
-    var self = this;
-
     this.$file.disabled = 'disabled';
     this.$buttonCancel.disabled = "disabled";
 
@@ -308,39 +306,13 @@
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
 
-    // FIXME: Move to utils
-    var xhr = new XMLHttpRequest();
-    var fd  = new FormData();
-    fd.append("upload", 1);
-    fd.append("path",   this.dest);
-    fd.append("upload", file);
-
-    xhr.upload.addEventListener("progress", function(evt) { self.onUploadProgress(evt); }, false);
-    xhr.addEventListener("load", function(evt) { self.onUploadComplete(evt); }, false);
-    xhr.addEventListener("error", function(evt) { self.onUploadFailed(evt); }, false);
-    xhr.addEventListener("abort", function(evt) { self.onUploadCanceled(evt); }, false);
-    xhr.onreadystatechange = function(evt) {
-      if ( xhr.readyState === 4 ) {
-        if ( xhr.status !== 200 ) {
-          var err = "Unknown error";
-          try {
-            var tmp = JSON.parse(xhr.responseText);
-            if ( tmp.error ) {
-              err = tmp.error;
-            }
-          } catch ( e ) {
-            if ( xhr.responseText ) {
-              err = xhr.responseText;
-            } else {
-              err = e;
-            }
-          }
-          self.onUploadFailed(evt, err);
-        }
-      }
-    };
-    xhr.open("POST", OSjs.API.getFilesystemURL());
-    xhr.send(fd);
+    var self = this;
+    OSjs.Utils.AjaxUpload(file, size, this.dest, {
+      progress: function() { self.onUploadProgress.apply(self, arguments); },
+      complete: function() { self.onUploadComplete.apply(self, arguments); },
+      failed:   function() { self.onUploadFailed.apply(self, arguments); },
+      canceled: function() { self.onUploadCanceled.apply(self, arguments); }
+    });
 
     setTimeout(function() {
       self.dialog._focus();
