@@ -385,12 +385,12 @@
     this.$input           = null;
 
     var self = this;
-    this.onError          = function(err) {
+    this.onError          = function(err, dirname) {
       if ( err ) {
         if ( self.fileList ) {
           self.fileList.chdir(OSjs.API.getDefaultPath('/'));
         }
-        OSjs.API.error("FileDialog Error", "Failed listing directory because an error occured", err);
+        OSjs.API.error("FileDialog Error", "Failed listing directory '" + dirname + "' because an error occured", err);
       }
     };
 
