@@ -66,12 +66,12 @@ class FS
   }
 
   public static function scandir($dirname, Array $opts = Array()) {
-    if ( strstr($dirname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($dirname, HOMEDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
     if ( !is_dir($dirname) ) {
-      throw new Exception("Invalid directory");
+      throw new Exception("Invalid directory '{$dirname}'");
     }
     if ( !is_readable($dirname) ) {
-      throw new Exception("Permission denied");
+      throw new Exception("Permission denied in '{$dirname}'");
     }
 
     $list = Array();
