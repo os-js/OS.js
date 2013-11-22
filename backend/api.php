@@ -407,7 +407,9 @@ if ( isset($_GET['upload']) ) {
     if ( strstr($dest, HOMEDIR) === false ) exit;
     if ( file_exists($dest) ) exit;
 
-    move_uploaded_file($_FILES['upload']['tmp_name'], $dest);
+    if ( move_uploaded_file($_FILES['upload']['tmp_name'], $dest) ) {
+      chmod($dest, 0600);
+    }
   }
   exit;
 }
