@@ -74,6 +74,8 @@ class FS
     if ( preg_match("/^\/tmp/", $dirname) === false || strstr($dirname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
     $list = Array();
+    $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
+
 
     $files = scandir($dirname);
     foreach ( $files as $fname ) {
@@ -97,8 +99,21 @@ class FS
       if ( empty($opts['mime']) || $opts['mime'] === true ) {
         if ( $ftype == 'file' ) {
           $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-          $mime = finfo_file($finfo, $fpath);
+          $mime  = finfo_file($finfo, $fpath);
           finfo_close($finfo);
+
+          if ( $mimeFilter ) {
+            $skip = true;
+            if ( $mime ) {
+              foreach ( $mimeFilter as $mf ) {
+                if ( preg_match("/{$mf}/", $mime) === 1 ) {
+                  $skip = false;
+                  break;
+                }
+              }
+            }
+            if ( $skip ) continue;
+          }
 
           $iter['mime'] = $mime;
         }

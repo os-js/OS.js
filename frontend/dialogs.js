@@ -380,7 +380,7 @@
     this.currentFilename  = args.filename || '';
     this.type             = args.type || 'open';
     this.mime             = args.mime || null;
-    this.allowMimes       = args.mimes || null; // TODO
+    this.allowMimes       = args.mimes || null;
     this.fileList         = null;
     this.$input           = null;
 
@@ -420,7 +420,7 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    this.fileList = new OSjs.GUI.FileView();
+    this.fileList = new OSjs.GUI.FileView(null, {mimeFilter: this.allowMimes});
     this.fileList.onError = this.onError;
     this._addGUIElement(this.filelist);
     this.$element.appendChild(this.fileList.getRoot());

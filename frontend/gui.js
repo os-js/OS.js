@@ -561,6 +561,14 @@
    */
   var FileView = function(path, opts) {
     opts = opts || {};
+    var mimeFilter = [];
+    if ( opts.mimeFilter ) {
+      mimeFilter = opts.mimeFilter || null;
+      if ( !mimeFilter || Object.prototype.toString.call(mimeFilter) !== '[object Array]' ) {
+        mimeFilter = [];
+      }
+    }
+
     ListView.apply(this, [opts]);
     this.opts.dnd = true;
 
@@ -569,6 +577,7 @@
     this.selectedDOMItem = null;
     this.path = path || '/';
     this.lastPath = this.path;
+    this.mimeFilter = mimeFilter;
     this.onActivated = function(path, type, mime) {};
     this.onError = function(error) {};
     this.onFinished = function() {};
@@ -717,7 +726,7 @@
     var self = this;
     this.onRefresh.call(this);
 
-    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir]}, function(res) {
+    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
       if ( self.destroyed ) return;
 
       var error = null;
