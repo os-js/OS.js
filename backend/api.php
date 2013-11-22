@@ -475,7 +475,7 @@ if ( isset($_GET['upload']) ) {
       print "Destination already exist!";
       exit;
     }
-    if ( $_FILES['size'] <= 0 || $_FILES['size'] > ini_get('upload_max_filesize') ) {
+    if ( $_FILES['upload']['size'] <= 0 || $_FILES['upload']['size'] > ini_get('upload_max_filesize') ) {
       header("HTTP/1.0 500 Internal Server Error");
       print "The upload request is either empty or too large!";
       exit;
