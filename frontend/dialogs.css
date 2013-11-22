@@ -50,7 +50,7 @@
   bottom : 0px;
   width : 100px;
 }
-.StandardDialog span {
+.StandardDialog > div > span {
   font-weight : bold;
 }
 .StandardDialog .Message {

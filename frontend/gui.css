@@ -129,6 +129,7 @@
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   width : 100%;
+  font-weight : none;
 }
 
 .GUIListView td img {
