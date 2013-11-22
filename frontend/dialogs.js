@@ -91,7 +91,7 @@
       this.$buttonConfirm.innerHTML = this.args.buttonOkLabel || 'OK';
       this.$buttonConfirm.onclick = function(ev) {
         if ( this.getAttribute("disabled") == "disabled" ) return;
-        self.onConfirmClick(ev);
+        self.onConfirmClick.call(self, ev);
       };
       this.$element.appendChild(this.$buttonConfirm);
     }
@@ -168,6 +168,95 @@
 
   ErrorDialog.prototype.setError = function(title, message, error) {
     this.data = {title: title, message: message, error: error};
+  };
+
+  /**
+   * Application Chooser Dialog
+   * TODO: Get more application info (like) icons from metadata
+   */
+  var ApplicationChooserDialog = function(filename, mime, list, onClose) {
+    this.filename = OSjs.Utils.filename(filename);
+    this.mime = mime;
+    this.list = list;
+    this.listView = null;
+    this.selectedApp = null;
+
+    var msg = (["Choose an application to open<br />", "<span>"+this.filename+"</span>", "("+this.mime+")"]).join(" ");
+    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: "Choose Application", message: msg}, {width:400, height:300}, onClose]);
+  };
+
+  ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
+
+  ApplicationChooserDialog.prototype.destroy = function(wm) {
+    if ( this.listView ) {
+      this.listView.destroy();
+      this.listView = null;
+    }
+    StandardDialog.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationChooserDialog.prototype.onConfirmClick = function(ev, val) {
+    if ( !this.$buttonConfirm ) return;
+    var val  = this.selectedApp;
+    if ( !val ) {
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        var d = new AlertDialog("You need to select an application");
+        wm.addWindow(d);
+        this._addChild(d);
+      }
+      return;
+    }
+    this.end('ok', val);
+  };
+
+  ApplicationChooserDialog.prototype.init = function(wm) {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var container = this.$element;
+    var list = [];
+
+    for ( var i = 0, l = this.list.length; i < l; i++ ) {
+      list.push({
+        image: null,
+        name: this.list[i]
+      });
+    }
+
+    var _callback = function(iter) {
+      var icon = 'status/gtk-dialog-question.png';
+      return  '/themes/default/icons/16x16/' + icon;
+    };
+
+    this.listView = new OSjs.GUI.ListView();
+    this.listView.setColumns([
+      {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
+      {key: 'name', title: 'Name'}
+     ]);
+
+    this.listView.setRows(list);
+
+    this.listView.onActivate = function(ev, listView, t) {
+      if ( t ) {
+        var name = t.getAttribute('data-name');
+        if ( name ) {
+          self.end('ok', name);
+        }
+      }
+    };
+    this.listView.onSelect = function(ev, listView, t) {
+      if ( t ) {
+        var name = t.getAttribute('data-name');
+        if ( name ) {
+          self.selectedApp = name;
+        }
+      }
+    };
+
+    this.listView.render();
+    container.appendChild(this.listView.getRoot());
+
+    return root;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -664,14 +753,15 @@
   //
   // EXPORTS
   //
-  OSjs.Dialogs._StandardDialog  = StandardDialog;
-  OSjs.Dialogs.File             = FileDialog;
-  OSjs.Dialogs.FileProgress     = FileProgressDialog;
-  OSjs.Dialogs.FileUpload       = FileUploadDialog;
-  OSjs.Dialogs.ErrorMessage     = ErrorDialog;
-  OSjs.Dialogs.Alert            = AlertDialog;
-  OSjs.Dialogs.Confirm          = ConfirmDialog;
-  OSjs.Dialogs.Input            = InputDialog;
-  OSjs.Dialogs.Color            = ColorDialog;
+  OSjs.Dialogs._StandardDialog    = StandardDialog;
+  OSjs.Dialogs.File               = FileDialog;
+  OSjs.Dialogs.FileProgress       = FileProgressDialog;
+  OSjs.Dialogs.FileUpload         = FileUploadDialog;
+  OSjs.Dialogs.ErrorMessage       = ErrorDialog;
+  OSjs.Dialogs.Alert              = AlertDialog;
+  OSjs.Dialogs.Confirm            = ConfirmDialog;
+  OSjs.Dialogs.Input              = InputDialog;
+  OSjs.Dialogs.Color              = ColorDialog;
+  OSjs.Dialogs.ApplicationChooser = ApplicationChooserDialog;
 
 })(OSjs.Core.DialogWindow, OSjs.GUI);

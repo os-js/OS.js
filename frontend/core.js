@@ -40,6 +40,7 @@
   console.groupEnd  = console.groupEnd  || console.log;
 
   // TODO: Optimize
+  // FIXME: Destroy DOM events
 
   var _CALLURL  = "/API";
   var _FSURL    = "/FS";
@@ -409,7 +410,23 @@
       app = cs.getApplicationNameByMime(mime, fname);
       console.log("Found", app.length, "applications supporting this mime");
       if ( app.length ) { // FIXME
-        this.launch(app[0], args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
+        var self = this;
+        var _launch = function(name) {
+          if ( name ) {
+            self.launch(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
+          }
+        };
+
+        if ( app.length === 1 ) {
+          _launch(app[0]);
+        } else {
+          if ( _WM ) {
+            _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
+              if ( btn != 'ok' ) return;
+              _launch(appname);
+            }));
+          }
+        }
       } else {
         OSjs.API.error("Error opening file", "The file '" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
       }
