@@ -71,9 +71,12 @@
         }], self);
       }},
       {title: 'Upload', onClick: function() {
-        app._createDialog('FileUpload', [self.fileView.getPath(), null, function() {
+        app._createDialog('FileUpload', [self.fileView.getPath(), null, function(btn, filename, mime, size) {
+          if ( btn != 'ok' && btn != 'complete' ) return;
           if ( self.fileView ) {
-            self.fileView.refresh();
+            self.fileView.refresh(function() {
+              self.fileView.setSelected(filename, 'filename');
+            });
           }
         }], self);
       }},
@@ -214,20 +217,15 @@
       var app = this._appRef;
       var dest = this.fileView.getPath();
 
-      var _onUploaded = function(file) {
-        if ( self.fileView ) {
-          self.fileView.refresh(function() {
-            self.fileView.setSelected(file.name, 'filename'); // FIXME: Not working !?
-          });
-        }
-      };
-
       for ( var i = 0; i < files.length; i++ ) {
-        app._createDialog('FileUpload', [dest, files[i], (function(f) {
-          return function() {
-            _onUploaded(f);
-          };
-        })(files[i])], this);
+        app._createDialog('FileUpload', [dest, files[i], function(btn, filename, mime, size) {
+          if ( btn != 'ok' && btn != 'complete' ) return;
+          if ( self.fileView ) {
+            self.fileView.refresh(function() {
+              self.fileView.setSelected(filename, 'filename');
+            });
+          }
+        }], this);
       }
     }
     return false;

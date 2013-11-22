@@ -333,6 +333,10 @@
     this.dialog   = null;
     this._wmref   = null;
 
+    this.uploadName = null;
+    this.uploadSize = null;
+    this.uploadMime = null;
+
     var maxSize = OSjs.API.getConfig('MaxUploadSize');
     var msg = 'Upload file to <span>' + this.dest + '</span>.<br />Maximum size: ' + maxSize + ' bytes';
     StandardDialog.apply(this, ['FileUploadDialog', {title: "Upload Dialog", message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
@@ -396,6 +400,10 @@
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
 
+    this.uploadName = file.name;
+    this.uploadSize = size;
+    this.uploadMime = file.type;
+
     var self = this;
     OSjs.Utils.AjaxUpload(file, size, this.dest, {
       progress: function() { self.onUploadProgress.apply(self, arguments); },
@@ -436,7 +444,7 @@
     console.log("FileUploadDialog::onUploadComplete()");
 
     this.$buttonCancel.removeAttribute("disabled");
-    this.end('complete', evt);
+    this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
   };
 
   FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
@@ -447,7 +455,7 @@
       OSjs.API.error("Upload failed", "The upload has failed", "Reason unknown...");
     }
     this.$buttonCancel.removeAttribute("disabled");
-    this.end('fail', evt, error);
+    this.end('fail', error);
   };
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
