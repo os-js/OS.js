@@ -636,6 +636,7 @@
     this._name        = name;
     this._wallpaper   = 'osjs:///themes/wallpapers/noise_red.png';
     //this._wallpaper   = '/themes/wallpapers/noise_red.png';
+    this._themes      = args.themes || [{'default': {title: 'Default'}}];
     this._theme       = 'default';
     this._background  = 'image-repeat';
     this._style       = {
@@ -828,6 +829,10 @@
 
   WindowManager.prototype.getTheme = function() {
     return this._theme;
+  };
+
+  WindowManager.prototype.getThemes = function() {
+    return this._themes;
   };
 
   /////////////////////////////////////////////////////////////////////////////

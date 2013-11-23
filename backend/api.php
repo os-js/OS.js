@@ -317,7 +317,9 @@ function getCoreSettings() {
 
     'WM' => Array(
       'exec'      => 'CoreWM',
-      'args'      => Array()
+      'args'      => Array(
+        'themes' => Array('default' => Array('title' => 'Default'))
+      )
     )
   );
 }

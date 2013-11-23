@@ -4,7 +4,7 @@
    * Main Window
    */
   var ApplicationSettingsWindow = function(app) {
-    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 200}, app]);
+    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 230}, app]);
 
     this._title                   = "Settings";
     this._icon                    = "categories/applications-system.png";
@@ -20,9 +20,41 @@
     var cs        = OSjs.API.getCoreService();
     var _tmp      = (typeof window.___tmp === 'undefined') ? 0 : (window.___tmp++);
     var settings  = wm.getSettings();
+    var themes    = wm.getThemes();
+    var theme     = wm.getTheme();
 
     var container = document.createElement('div');
     var outer, label, input, button, tmp;
+    var i, l;
+
+    // Theme
+    outer = document.createElement('div');
+    outer.className = "Setting SettingsNoButton Setting_Theme";
+
+    label = document.createElement('label');
+    label.innerHTML = "Theme";
+
+    input = document.createElement('select');
+    input.name = "theme_" + _tmp;
+
+
+    l = 0;
+    for ( i in themes ) {
+      if ( themes.hasOwnProperty(i) ) {
+        tmp = document.createElement('option');
+        tmp.value = i;
+        tmp.innerHTML = themes[i].title;
+        if ( theme == i ) {
+          input.selectedIndex = l;
+        }
+        input.appendChild(tmp);
+        l++;
+      }
+    }
+
+    outer.appendChild(label);
+    outer.appendChild(input);
+    container.appendChild(outer);
 
     // Background Type
     outer = document.createElement('div');
@@ -64,7 +96,7 @@
     tmp.innerHTML = 'Color';
     input.appendChild(tmp);
 
-    for ( var i = 0; i < input.childNodes.length; i++ ) {
+    for ( i = 0; i < input.childNodes.length; i++ ) {
       if ( input.childNodes[i].value == settings.background ) {
         //input.childNodes[i].selected = "selected";
         input.selectedIndex = i;
@@ -138,6 +170,7 @@
     button.innerHTML = "Apply";
     button.onclick = function(ev) {
       app.save(ev, self, {
+        theme: document.getElementsByName('theme_' + _tmp)[0].value,
         backgroundType: document.getElementsByName('backgroundType_' + _tmp)[0].value,
         backgroundImage: document.getElementsByName('backgroundImage_' + _tmp)[0].value,
         backgroundColor: document.getElementsByName('backgroundColor_' + _tmp)[0].value
@@ -207,6 +240,7 @@
     var wm = OSjs.API.getWMInstance();
     if ( wm ) {
       wm.applySettings({
+        theme      : settings.theme,
         wallpaper  : settings.backgroundImage,
         background : settings.backgroundType,
         style      : {
