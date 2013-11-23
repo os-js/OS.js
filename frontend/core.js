@@ -30,7 +30,12 @@
 (function() {
 
   window.OSjs = window.OSjs || {};
-  OSjs.Core   = {};
+
+  OSjs.Core         = {};
+  OSjs.API          = {};
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Dialogs      = OSjs.Dialogs      || {};
+  OSjs.GUI          = OSjs.GUI          || {};
 
   window.console    = window.console    || {};
   console.log       = console.log       || function() {};
@@ -147,6 +152,142 @@
       throw ex;
     }
   }
+
+  function LaunchFile(fname, mime, launchArgs) {
+    launchArgs = launchArgs || {};
+
+    console.group("LaunchFile()");
+    console.log("Filename", fname);
+    console.log("MIME", mime);
+
+    var cs = OSjs.API.getCoreService();
+    var app = [];
+    var args = {file: fname, mime: mime};
+
+    if ( launchArgs.args ) {
+      for ( var i in launchArgs.args ) {
+        if ( launchArgs.args.hasOwnProperty(i) ) {
+          args[i] = launchArgs.args[i];
+        }
+      }
+    }
+
+    if ( cs ) {
+      app = cs.getApplicationNameByMime(mime, fname);
+      console.log("Found", app.length, "applications supporting this mime");
+      if ( app.length ) {
+        var self = this;
+        var _launch = function(name) {
+          if ( name ) {
+            LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
+          }
+        };
+
+        if ( app.length === 1 ) {
+          _launch(app[0]);
+        } else {
+          if ( _WM ) {
+            _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
+              if ( btn != 'ok' ) return;
+              _launch(appname);
+            }));
+          }
+        }
+      } else {
+        OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
+      }
+    }
+
+    console.groupEnd();
+
+    return app.length > 0;
+  }
+
+  function LaunchProcess(n, arg, onFinished, onError, onConstructed) {
+    onFinished = onFinished || function() {};
+    onError = onError || function() {};
+    onConstructed = onConstructed || function() {};
+
+    arg = arg || {};
+
+    console.group("LaunchProcess()");
+    console.log("Name", n);
+    console.log("Arguments", arg);
+
+    var self = this;
+    var _error = function(msg) {
+      createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg);
+
+      onError(msg, n, arg);
+    };
+
+    var _callback = function(result) {
+      if ( typeof OSjs.Applications[n] != 'undefined' ) {
+        var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
+        if ( singular ) {
+          if ( _SPROCS[n] ) {
+            _error("This application is already launched and allows only one instance!");
+            return;
+          }
+        }
+
+        var a = null, err = false;
+        try {
+          var a = new OSjs.Applications[n](arg, result);
+          a.__sname = n;
+          if ( singular ) {
+            _SPROCS[n] = true;
+          }
+
+          onConstructed(a);
+        } catch ( e ) {
+          _error("Application construct failed: " + e);
+          err = true;
+        }
+
+        if ( err ) {
+          if ( a ) {
+            try {
+              a.destroy();
+              a = null;
+            } catch ( e ) {
+              console.warn("Something awful happened when trying to clean up failed launch Oo");
+            }
+          }
+        } else {
+          try {
+            a.init(self);
+            onFinished(a);
+          } catch ( e ) {
+            _error("Application init() failed: " + e);
+          }
+        }
+      } else {
+        _error("Application resource not found!");
+      }
+    };
+
+    var _preload = function(result) {
+      var lst = result.preload;
+      new OSjs.Utils.Preloader({list: lst, onFinished: function(total, errors, failed) {
+        if ( errors ) {
+          _error("Application preloading failed: \n" + failed.join(","));
+          return;
+        }
+
+        _callback(result);
+      }});
+    };
+
+    APICall('launch', {application: n, 'arguments': arg}, function(res) {
+      _preload(res.result);
+    }, function() {
+      _error("Failed to launch -- communication error!");
+    });
+
+    console.groupEnd();
+  }
+
 
   /**
    * Process Template Class
@@ -281,7 +422,7 @@
         return;
       }
 
-      self.launch(wm.exec, wm.args || {}, function() {
+      LaunchProcess(wm.exec, wm.args || {}, function() {
         _finished();
       }, function(error) {
         _error("Failed to launch Window Manager: " + error);
@@ -289,7 +430,7 @@
     };
 
     var _launchCoreService = function(wm, settings) {
-      self.launch('CoreService', {settings: settings}, function() {
+      LaunchProcess('CoreService', {settings: settings}, function() {
         _launchWM(wm);
       }, function(error) {
         _error("Failed to launch Core Service: " + error);
@@ -386,143 +527,6 @@
     }
 
     _PROCS = [];
-  };
-
-  // FIXME: Move this to a standalone function and move to OSjs.API.open()
-  Main.prototype.open = function(fname, mime, launchArgs) {
-    launchArgs = launchArgs || {};
-
-    console.group("OSjs::Core::Main::open()");
-    console.log("Filename", fname);
-    console.log("MIME", mime);
-
-    var cs = OSjs.API.getCoreService();
-    var app = [];
-    var args = {file: fname, mime: mime};
-
-    if ( launchArgs.args ) {
-      for ( var i in launchArgs.args ) {
-        if ( launchArgs.args.hasOwnProperty(i) ) {
-          args[i] = launchArgs.args[i];
-        }
-      }
-    }
-
-    if ( cs ) {
-      app = cs.getApplicationNameByMime(mime, fname);
-      console.log("Found", app.length, "applications supporting this mime");
-      if ( app.length ) {
-        var self = this;
-        var _launch = function(name) {
-          if ( name ) {
-            self.launch(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
-          }
-        };
-
-        if ( app.length === 1 ) {
-          _launch(app[0]);
-        } else {
-          if ( _WM ) {
-            _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
-              if ( btn != 'ok' ) return;
-              _launch(appname);
-            }));
-          }
-        }
-      } else {
-        OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
-      }
-    }
-
-    console.groupEnd();
-
-    return app.length > 0;
-  };
-
-  // FIXME: Move this to a standalone function and move to OSjs.API.launch()
-  Main.prototype.launch = function(n, arg, onFinished, onError, onConstructed) {
-    onFinished = onFinished || function() {};
-    onError = onError || function() {};
-    onConstructed = onConstructed || function() {};
-
-    arg = arg || {};
-
-    console.group("OSjs::Core::Main::launch()");
-    console.log("Name", n);
-    console.log("Arguments", arg);
-
-    var self = this;
-    var _error = function(msg) {
-      createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg);
-
-      onError(msg, n, arg);
-    };
-
-    var _callback = function(result) {
-      if ( typeof OSjs.Applications[n] != 'undefined' ) {
-        var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
-        if ( singular ) {
-          if ( _SPROCS[n] ) {
-            _error("This application is already launched and allows only one instance!");
-            return;
-          }
-        }
-
-        var a = null, err = false;
-        try {
-          var a = new OSjs.Applications[n](arg, result);
-          a.__sname = n;
-          if ( singular ) {
-            _SPROCS[n] = true;
-          }
-
-          onConstructed(a);
-        } catch ( e ) {
-          _error("Application construct failed: " + e);
-          err = true;
-        }
-
-        if ( err ) {
-          if ( a ) {
-            try {
-              a.destroy();
-              a = null;
-            } catch ( e ) {
-              console.warn("Something awful happened when trying to clean up failed launch Oo");
-            }
-          }
-        } else {
-          try {
-            a.init(self);
-            onFinished(a);
-          } catch ( e ) {
-            _error("Application init() failed: " + e);
-          }
-        }
-      } else {
-        _error("Application resource not found!");
-      }
-    };
-
-    var _preload = function(result) {
-      var lst = result.preload;
-      new OSjs.Utils.Preloader({list: lst, onFinished: function(total, errors, failed) {
-        if ( errors ) {
-          _error("Application preloading failed: \n" + failed.join(","));
-          return;
-        }
-
-        _callback(result);
-      }});
-    };
-
-    APICall('launch', {application: n, 'arguments': arg}, function(res) {
-      _preload(res.result);
-    }, function() {
-      _error("Failed to launch -- communication error!");
-    });
-
-    console.groupEnd();
   };
 
   Main.prototype.kill = function(pid) {
@@ -1561,7 +1565,6 @@
   OSjs.Core.DialogWindow  = DialogWindow;
   OSjs.Core.WindowManager = WindowManager;
 
-  OSjs.API                  = {};
   OSjs.API.getWMInstance    = function() { return _WM; };
   OSjs.API.getCoreInstance  = function() { return _CORE; };
   OSjs.API.getCoreService   = function() { return _CORE.getProcess('CoreService'); };
@@ -1571,10 +1574,8 @@
   OSjs.API.getFilesystemURL = getFilesystemURL;
   OSjs.API.call             = APICall;
   OSjs.API.error            = createErrorDialog;
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Dialogs      = OSjs.Dialogs || {};
-  OSjs.GUI          = OSjs.GUI || {};
+  OSjs.API.launch           = LaunchProcess;
+  OSjs.API.open             = LaunchFile;
 
   OSjs.initialize = function(onContentLoaded, onInitialized) {
     console.log('-- ');

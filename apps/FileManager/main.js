@@ -264,7 +264,7 @@
   };
 
   ApplicationFileManager.prototype.open = function(filename, mime) {
-    OSjs.API.getCoreInstance().open(filename, mime);
+    OSjs.API.open(filename, mime);
   };
 
   ApplicationFileManager.prototype.go = function(dir, w) {
