@@ -203,6 +203,7 @@
 
   ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev) {
     Window.prototype._onKeyEvent.apply(this, arguments);
+    var fileView = this._getGUIElement('FileManagerFileView');
     if ( fileView ) {
       fileView.onKeyPress(ev);
     }
@@ -220,6 +221,7 @@
     var self = this;
     if ( files && files.length ) {
       var app = this._appRef;
+      var fileView = this._getGUIElement('FileManagerFileView');
       var dest = fileView.getPath();
 
       for ( var i = 0; i < files.length; i++ ) {
