@@ -370,6 +370,8 @@
 
   /**
    * List View Class
+   * FIXME: Move getSelected/setSelected from FileView
+   * FIXME: Refactor ^ selected code to (now both DOM and JSON is used ... kind of bleh)
    */
   var ListView = function(opts) {
     opts = opts || {};
