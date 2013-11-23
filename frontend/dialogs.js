@@ -530,7 +530,7 @@
       fileList.onFinished = function() {
         if ( start ) {
           if ( self.currentFilename ) {
-            self.fileList.setSelected(self.currentFilename, 'filename');
+            fileList.setSelected(self.currentFilename, 'filename');
           }
         }
         start = false;
