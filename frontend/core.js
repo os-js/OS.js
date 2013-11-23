@@ -66,15 +66,35 @@
   var _CORE;
 
   function getThemeResource(name, type, args) {
+    type = type || null;
+    args = args || null;
+
     var theme = (_WM ? _WM.getTheme() : 'default') || 'default';
-    type = type || 'icon';
-    if ( type == 'icon' ) {
-      if ( !name.match(/^\//) ) {
+    if ( !name.match(/^\//) ) {
+      if ( type == 'icon' ) {
         var size = args || '16x16';
         name = '/themes/' + theme + '/icons/' + size + '/' + name;
+      } else if ( type == 'sound' ) {
+        var ext = 'oga';
+        if ( !OSjs.Utils.getCompability().audioTypes.ogg ) {
+          ext = 'mp3';
+        }
+        name = '/themes/' + theme + '/sounds/' + name + '.' + ext;
       }
     }
+
     return name;
+  }
+
+  function playSound(name) {
+    if ( OSjs.Utils.getCompability().audio ) {
+      var f = getThemeResource(name, 'sound');
+      console.log("playSound()", name, f);
+      var a = new Audio(f);
+      a.play();
+      return a;
+    }
+    return false;
   }
 
   function getFilesystemURL(t) {
@@ -143,6 +163,8 @@
   }
 
   function createErrorDialog(title, message, error) {
+    playSound('dialog-warning');
+
     OSjs.GUI.blurMenu();
 
     var ex = null;
@@ -484,6 +506,7 @@
       }
 
       var _finished = function() {
+        playSound('service-login');
         onFinished(self);
       };
 
@@ -504,6 +527,7 @@
 
     var _finished = function() {
       APICall('logout', {}, function() {
+        playSound('service-logout');
         onFinished(self);
       }, function(error) {
         createErrorDialog('Failed to log out of OS.js', 'An error occured while logging out', error);
@@ -1004,7 +1028,7 @@
     console.log("OSjs::Core::Window::init()");
 
     this._state.focused = false;
-    this._icon = getThemeResource(this._icon);
+    this._icon = getThemeResource(this._icon, 'icon');
 
     var grav = this._properties.gravity;
     if ( grav ) {
@@ -1595,6 +1619,7 @@
   OSjs.API.error            = createErrorDialog;
   OSjs.API.launch           = LaunchProcess;
   OSjs.API.open             = LaunchFile;
+  OSjs.API.playSound        = playSound;
 
   OSjs.initialize = function(onContentLoaded, onInitialized) {
     console.log('-- ');
