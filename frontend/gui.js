@@ -32,7 +32,6 @@
   OSjs.GUI = OSjs.GUI || {};
 
   // TODO: ProgressBar
-  // TODO: Slider
   // TODO: Select + SelectList
   // TODO: Button
   // TODO: Option
@@ -891,6 +890,7 @@
 
   /**
    * Color Swatch
+   * FIXME: Refactor - GUIElement
    */
   var ColorSwatch = function(w, h, onSelect) {
     this.$element = null;
@@ -978,6 +978,129 @@
     this.$contents.appendChild(el);
   };
 
+  /**
+   * Slider Element
+   * TODO: Mouse click react
+   */
+  var Slider = function(name, opts, onUpdate) {
+    this.min      = opts.min || 0;
+    this.max      = opts.max || 0;
+    this.val      = opts.val || 0;
+    this.steps    = opts.steps || 1;
+    this.type     = opts.type || 'horizontal';
+    this.$root    = null;
+    this.$button  = null;
+
+    this.onUpdate = onUpdate || function(val, perc) { console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)'); };
+
+    GUIElement.apply(this, [name, {}]);
+  };
+
+  Slider.prototype = Object.create(GUIElement.prototype);
+
+  Slider.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUISlider']);
+    el.className += ' ' + this.type;
+
+    this.$root = document.createElement('div');
+    this.$root.className = 'Root';
+
+    this.$button = document.createElement('div');
+    this.$button.className = 'Button';
+
+    var scrolling = false;
+    var startX = 0;
+    var startY = 0;
+    var elX = 0;
+    var elY = 0;
+    var maxX = 0;
+    var maxY = 0;
+    var self = this;
+
+    var _onMouseMove = function(ev) {
+      if ( !scrolling ) return;
+
+      var newX, newY;
+      if ( self.type == 'horizontal' ) {
+        var diffX = (ev.clientX - startX);
+        newX = elX + diffX;
+        if ( newX < 0 ) newX = 0;
+        if ( newX > maxX ) newX = maxX;
+
+        self.$button.style.left = newX + 'px';
+      } else {
+        var diffY = (ev.clientY - startY);
+        newY = elY + diffY;
+        if ( newY < 0 ) newY = 0;
+        if ( newY > maxY ) newY = maxY;
+        self.$button.style.top = newY + 'px';
+      }
+
+      self.onSliderUpdate(newX, newY, maxX, maxY);
+    };
+
+    var _onMouseUp = function(ev) {
+      scrolling = false;
+      document.removeEventListener('mousemove', _onMouseMove, false);
+      document.removeEventListener('mouseup', _onMouseUp, false);
+    };
+
+    this.$button.addEventListener('mousedown', function(ev) {
+      ev.preventDefault();
+
+      scrolling = true;
+      if ( self.type == 'horizontal' ) {
+        startX  = ev.clientX;
+        elX     = self.$button.offsetLeft;
+        maxX    = self.$element.offsetWidth - self.$button.offsetWidth;
+      } else {
+        startY  = ev.clientY;
+        elY     = self.$button.offsetTop;
+        maxY    = self.$element.offsetHeight - self.$button.offsetHeight;
+      }
+      document.addEventListener('mousemove', _onMouseMove, false);
+      document.addEventListener('mouseup', _onMouseUp, false);
+    }, false);
+
+    el.appendChild(this.$root);
+    el.appendChild(this.$button);
+
+    return el;
+  };
+
+  Slider.prototype.setPercentage = function(p) {
+    var cd = (this.max - this.min);
+    var val = (cd*(p/100)) << 0;
+    this.onUpdate.call(this, val, p);
+  };
+
+  Slider.prototype.onSliderUpdate = function(x, y, maxX, maxY) {
+    var p = null;
+    if ( typeof x !== 'undefined' ) {
+      p = (x/maxX) * 100;
+    } else if ( typeof y !== 'undefined' ) {
+      p = (y/maxY) * 100;
+    }
+    if ( p !== null ) {
+      this.setPercentage(p);
+    }
+  };
+
+  Slider.prototype.setValue = function(val) {
+    if ( val < this.min || val > this.max ) return;
+    this.val = val;
+
+    var rw = this.$element.offsetWidth;
+    var bw = this.$button.offsetWidth;
+    var dw = (rw - bw);
+
+    var cd = (this.max - this.min);
+    var cp = this.val / (cd/100);
+
+    var left = (dw/100)*cp;
+    this.$button.style.left = left + 'px';
+  };
+
   //
   // EXPORTS
   //
@@ -989,6 +1112,7 @@
   OSjs.GUI.Textarea     = Textarea;
   OSjs.GUI.ColorSwatch  = ColorSwatch;
   OSjs.GUI.StatusBar    = StatusBar;
+  OSjs.GUI.Slider       = Slider;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

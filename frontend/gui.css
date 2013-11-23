@@ -191,3 +191,34 @@
   padding : 5px;
   line-height : 15px;
 }
+
+/**
+ * Slider
+ */
+.GUISlider {
+  position : relative;
+  height : 20px;
+}
+.GUISlider .Root {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : 1;
+}
+.GUISlider .Button {
+  position : absolute;
+  top : 0px;
+  left : 0%;
+  width : 20px;
+  height : 20px;
+  z-index : 2;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

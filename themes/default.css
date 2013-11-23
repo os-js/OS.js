@@ -215,3 +215,20 @@ body #WindowList .Background {
 .GUIColorSwatch {
   border : 1px solid rgba(34, 34, 34, .5);
 }
+
+
+.GUISlider {
+}
+.GUISlider .Root {
+  background : #c2c2c2;
+}
+.GUISlider .Button {
+  width : 18px;
+  height : 18px;
+  background : #333333;
+  cursor : pointer;
+  border : 1px solid #333333;
+}
+.GUISlider .Button:hover {
+  border : 1px solid #444444;
+}

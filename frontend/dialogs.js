@@ -31,7 +31,6 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
-  // TODO: Color Dialog
   // TODO: Font Dialog
 
   // FIXME: Cleanups
@@ -711,13 +710,37 @@
   ColorDialog.prototype.init = function() {
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
+    var color = this.currentRGB;
 
     var el = document.createElement('div');
     el.className = 'ColorDialog';
 
     var sliders = document.createElement('div');
     sliders.className = 'ColorSliders';
-    sliders.innerHTML = 'TODO: Sliders'; // TODO
+
+    var label = document.createElement('div');
+    label.className = 'Label LabelR';
+    label.innerHTML = 'Red: 0';
+    sliders.appendChild(label);
+    this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, cur: color.r}, function(value, percentage) {
+      self.setColor(value, self.currentRGB.g, self.currentRGB.b);
+    }), sliders);
+
+    label = document.createElement('div');
+    label.className = 'Label LabelG';
+    label.innerHTML = 'Green: 0';
+    sliders.appendChild(label);
+    this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, cur: color.g}, function(value, percentage) {
+      self.setColor(self.currentRGB.r, value, self.currentRGB.b);
+    }), sliders);
+
+    label = document.createElement('div');
+    label.className = 'Label LabelB';
+    label.innerHTML = 'Blue: 0';
+    sliders.appendChild(label);
+    this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, cur: color.b}, function(value, percentage) {
+      self.setColor(self.currentRGB.r, self.currentRGB.g, value);
+    }), sliders);
 
     this.$color = document.createElement('div');
     this.$color.className = 'ColorSelected';
@@ -733,6 +756,14 @@
   ColorDialog.prototype.setColor = function(r, g, b) {
     this.currentRGB = {r:r, g:g, b:b};
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
+
+    this._getGUIElement('SliderR').setValue(r);
+    this._getGUIElement('SliderG').setValue(g);
+    this._getGUIElement('SliderB').setValue(b);
+
+    this.$element.getElementsByClassName('LabelR')[0].innerHTML = 'Red: ' + r;
+    this.$element.getElementsByClassName('LabelG')[0].innerHTML = 'Green: ' + g;
+    this.$element.getElementsByClassName('LabelB')[0].innerHTML = 'Blue: ' + b;
   };
 
   ColorDialog.prototype.onCancelClick = function(ev) {

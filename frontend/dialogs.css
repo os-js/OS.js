@@ -152,6 +152,30 @@
   background : #fff;
   border : 1px solid rgba(34, 34, 34, .5);
 }
+.ColorDialog .GUISlider,
+.ColorDialog .Label {
+  position : absolute;
+  left : 0px;
+  right : 0px;
+}
+.ColorDialog .LabelR {
+  top : 0px;
+}
+.ColorDialog .LabelG {
+  top : 50px;
+}
+.ColorDialog .LabelB {
+  top : 100px;
+}
+.ColorDialog .SliderR {
+  top : 20px;
+}
+.ColorDialog .SliderG {
+  top : 70px;
+}
+.ColorDialog .SliderB {
+  top : 120px;
+}
 
 /* FontDialog */
 
