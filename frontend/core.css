@@ -117,7 +117,7 @@ body {
   position : absolute;
   top : 0px;
   left : 20px;
-  right : 0px;
+  right : 20px;
   height : 26px;
   z-index : 1;
   overflow : hidden;
@@ -125,6 +125,11 @@ body {
 
   line-height : 26px;
   padding-left : 8px;
+
+  display : block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
 .WindowTop .WindowButtons {
   position : absolute;

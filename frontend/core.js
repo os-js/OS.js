@@ -1058,7 +1058,6 @@
 
   Window.prototype.init = function(_wm) {
     var self = this;
-
     console.log("OSjs::Core::Window::init()");
 
     this._state.focused = false;
@@ -1339,6 +1338,19 @@
     this._$loading = windowLoading;
 
     document.body.appendChild(this._$element);
+    var buttonsWidth = 0;
+
+    if ( this._properties.allow_maximize ) {
+      buttonsWidth += buttonMaximize.offsetWidth;
+    }
+    if ( this._properties.allow_minimize ) {
+      buttonsWidth += buttonMinimize.offsetWidth;
+    }
+    if ( this._properties.allow_close ) {
+      buttonsWidth += buttonClose.offsetWidth;
+    }
+    windowTitle.style.marginRight = buttonsWidth + 'px';
+
 
     self._onChange('create');
 
