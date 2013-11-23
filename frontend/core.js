@@ -389,10 +389,6 @@
     console.log(OSjs.Utils.getCompability());
     console.groupEnd();
 
-    window.onscroll = function () {
-      window.scrollTo(0,0);
-    };
-
     document.addEventListener('keydown', function(ev) {
       var d = ev.srcElement || ev.target;
       var doPrevent = d.tagName === 'BODY' ? true : false;
