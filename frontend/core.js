@@ -385,61 +385,42 @@
 
     Process.apply(this, ['Main']);
 
-    console.group("Compability");
-    console.log(OSjs.Utils.getCompability());
-    console.groupEnd();
-
-    document.addEventListener('keydown', function(ev) {
-      var d = ev.srcElement || ev.target;
-      var doPrevent = d.tagName === 'BODY' ? true : false;
-      var isHTMLInput = false;
-      if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) 
-          || d.tagName.toUpperCase() === 'TEXTAREA') {
-            isHTMLInput = d.readOnly || d.disabled;
-      }
-
-      if ( ev.keyCode === 8 ) {
-        if ( isHTMLInput ) {
-          doPrevent = true;
-        }
-      }
-
-      if ( doPrevent ) {
-        ev.preventDefault();
-      }
-
-      if ( _WIN ) {
-        _WIN._onKeyEvent(ev);
-      }
-    }, false);
-
-    document.addEventListener('mousedown', function(ev) {
-      if ( _WIN ) {
-        _WIN._blur();
-      }
-    }, false);
-
-    this._$root = document.createElement('div');
-    this._$root.id = "Background";
-    this._$root.oncontextmenu = function(ev) {
-      return false;
-    };
-    this._$root.onmousedown = function(ev) {
-      OSjs.GUI.blurMenu();
-    };
-    document.body.appendChild(this._$root);
-
     this.__session = {
       applications : [],
       settings     : []
     };
 
+    console.group("Compability");
+    console.log(OSjs.Utils.getCompability());
+    console.groupEnd();
+
+    // Override error handling
     window.onerror = function(message, url, linenumber) {
       var msg = JSON.stringify({message: message, url: url, linenumber: linenumber}, null, '\t');
       createErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg);
       return false;
     };
 
+    // Events
+    var self = this;
+    document.addEventListener('keydown', function(ev) {
+      self._onKeyDown.apply(self, arguments);
+    }, false);
+    document.addEventListener('mousedown', function(ev) {
+      self._onMouseDown.apply(self, arguments);
+    }, false);
+
+    // Background element
+    this._$root = document.createElement('div');
+    this._$root.id = "Background";
+    this._$root.addEventListener('contextmenu', function(ev) {
+      return false;
+    }, false);
+    this._$root.addEventListener('mousedown', function(ev) {
+      OSjs.GUI.blurMenu();
+    }, false);
+
+    document.body.appendChild(this._$root);
 
     console.groupEnd();
   };
@@ -558,6 +539,23 @@
 
     OSjs.GUI.blurMenu();
 
+    var self = this;
+    document.removeEventListener('keydown', function(ev) {
+      self._onKeyDown.apply(self, arguments);
+    }, false);
+    document.removeEventListener('mousedown', function(ev) {
+      self._onMouseDown.apply(self, arguments);
+    }, false);
+
+    if ( this._$root ) {
+      this._$root.removeEventListener('contextmenu', function(ev) {
+        return false;
+      }, false);
+      this._$root.removeEventListener('mousedown', function(ev) {
+        OSjs.GUI.blurMenu();
+      }, false);
+    }
+
     var i = 0;
     var l = _PROCS.length;
     for ( i; i < l; i++ ) {
@@ -572,6 +570,8 @@
     }
 
     _PROCS = [];
+
+    window.onerror = function() {};
   };
 
   Main.prototype.kill = function(pid) {
@@ -601,6 +601,36 @@
       });
     }
     return lst;
+  };
+
+  Main.prototype._onKeyDown = function(ev) {
+    var d = ev.srcElement || ev.target;
+    var doPrevent = d.tagName === 'BODY' ? true : false;
+    var isHTMLInput = false;
+    if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) 
+        || d.tagName.toUpperCase() === 'TEXTAREA') {
+          isHTMLInput = d.readOnly || d.disabled;
+    }
+
+    if ( ev.keyCode === 8 ) {
+      if ( isHTMLInput ) {
+        doPrevent = true;
+      }
+    }
+
+    if ( doPrevent ) {
+      ev.preventDefault();
+    }
+
+    if ( _WIN ) {
+      _WIN._onKeyEvent(ev);
+    }
+  };
+
+  Main.prototype._onMouseDown = function(ev) {
+    if ( _WIN ) {
+      _WIN._blur();
+    }
   };
 
   Main.prototype.getProcesses = function() {
