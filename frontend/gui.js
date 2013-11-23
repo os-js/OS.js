@@ -535,7 +535,7 @@
           row.removeAttribute('data-' + colref.key);
         } else {
           span = document.createElement('span');
-          span.innerHTML = val;
+          span.innerHTML = val || '';
           col.appendChild(span);
         }
 
