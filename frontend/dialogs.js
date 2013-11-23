@@ -458,6 +458,7 @@
 
   /**
    * File Dialog Class
+   * TODO: Loading when waiting for files
    */
   var FileDialog = function(args, onClose) {
     args = args || {};

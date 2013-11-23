@@ -1,5 +1,5 @@
 # OS.js Version 2.0
-OS.js is a light-weight HTML based desktop solution.
+OS.js is a light-weight JavaScript based desktop solution.
 
 **This is a work in progress and API is not final. Changes will be made!**
 
@@ -13,7 +13,7 @@ OS.js is a light-weight HTML based desktop solution.
 ## Features
 
 * Fast and light-weight, easy to extend
-* Window Managment
+* Window Manager and Desktop Environment
 * Session Handling (save, restore application states)
 * Package Managment (User-installable applications)
 * GUI and Dialog Library (drag-and-drop support included)
@@ -23,6 +23,20 @@ OS.js is a light-weight HTML based desktop solution.
 You can have a look here: http://osjsv2.0o.no
 
 This site may not always be up to date, and can be unavailable at times.
+
+# Documentation
+
+## Installation
+
+See the `INSTALL` file
+
+## General
+
+You can read more about OS.js on the Github project page Wiki. Source documentation and examples are located in the `doc/` folder.
+
+## Development
+
+See the Wiki on the Github progject page.
 
 # Compability
 
