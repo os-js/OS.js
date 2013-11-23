@@ -1,7 +1,9 @@
 * Login screen and handler
+* Finish settings and session storage
 * Finish backend API calls
 * Localization
 * Panels in VM
 * PanelItems in VM
-
+* Finish GUI Elements
+* Finish Dialogs
 * Write Node.js backend
