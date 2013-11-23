@@ -49,3 +49,4 @@ Runs in any modern browser. Tested:
 * **Gecko** Mozilla Firefox
 * **WebKit** Google Chrome, Opera, Safari
 * Internet Explorer 10+
+* Android and iOS is working, but no mobile version is implemented yet
