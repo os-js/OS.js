@@ -18,9 +18,10 @@
 
     var el = document.createElement('ul');
 
+    var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
     var sel;
     sel = document.createElement('li');
-    sel.innerHTML = '<img alt="" src="/themes/default/icons/16x16/categories/applications-other.png" />';
+    sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function(ev) {
       var p = OSjs.API.getCoreService();
       if ( p ) {
@@ -45,8 +46,9 @@
     };
     el.appendChild(sel);
 
+    icon = OSjs.API.getThemeResource('actions/exit.png', 'icon');
     sel = document.createElement('li');
-    sel.innerHTML = '<img alt="" src="/themes/default/icons/16x16/actions/exit.png" />';
+    sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function() {
       var t = confirm("Do you want to save current session?");
       OSjs.shutdown(t, false);

@@ -14,6 +14,7 @@
 
     this._title = this.title;
     this._properties.allow_drop = true;
+    this._icon = 'apps/file-manager.png';
   };
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -157,6 +158,10 @@
       }
     };
 
+    var _getFileIcon = function(r) {
+      return OSjs.API.getThemeResource(r, 'icon');
+    };
+
     this.sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
       {key: 'filename', title: 'Filename'},
@@ -166,9 +171,9 @@
       {key: 'type', title: 'Type', visible: false, domProperties: {width: "50"}}
      ]);
     this.sideView.setRows([
-      {image: '/themes/default/icons/16x16/places/folder_home.png', filename: 'Home', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
-      {image: '/themes/default/icons/16x16/places/folder.png', filename: 'Temp', mime: null, size: 0, type: 'link', path: '/tmp'},
-      {image: '/themes/default/icons/16x16/devices/drive-harddisk.png', filename: 'Filesystem', mime: null, size: 0, type: 'link', path: '/'}
+      {image: _getFileIcon('places/folder_home.png'), filename: 'Home', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
+      {image: _getFileIcon('places/folder.png'), filename: 'Temp', mime: null, size: 0, type: 'link', path: '/tmp'},
+      {image: _getFileIcon('devices/drive-harddisk.png'), filename: 'Filesystem', mime: null, size: 0, type: 'link', path: '/'}
     ]);
     this.sideView.onActivate = function(ev, listView, t) {
       if ( t ) {

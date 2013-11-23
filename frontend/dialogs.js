@@ -134,7 +134,7 @@
     this.data = {title: 'No title', message: 'No message', error: ''};
 
     DialogWindow.apply(this, ['ErrorDialog', {width:400, height:200}]);
-    this._icon = '/themes/default/icons/16x16/status/dialog-error.png';
+    this._icon = 'status/dialog-error.png';
   };
 
   ErrorDialog.prototype = Object.create(DialogWindow.prototype);
@@ -225,7 +225,7 @@
 
     var _callback = function(iter) {
       var icon = 'status/gtk-dialog-question.png';
-      return  '/themes/default/icons/16x16/' + icon;
+      return  '' + icon;
     };
 
     this.listView = new OSjs.GUI.ListView();
@@ -274,7 +274,7 @@
     this.$barInner = null;
     this._title = "Upload Progress";
     this._properties.allow_close = false;
-    this._icon = '/themes/default/icons/16x16/actions/document-send.png';
+    this._icon = 'actions/document-send.png';
   };
 
   FileProgressDialog.prototype = Object.create(DialogWindow.prototype);
@@ -340,7 +340,7 @@
     var maxSize = OSjs.API.getConfig('MaxUploadSize');
     var msg = 'Upload file to <span>' + this.dest + '</span>.<br />Maximum size: ' + maxSize + ' bytes';
     StandardDialog.apply(this, ['FileUploadDialog', {title: "Upload Dialog", message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
-    this._icon = '/themes/default/icons/16x16/actions/filenew.png';
+    this._icon = 'actions/filenew.png';
   };
 
   FileUploadDialog.prototype = Object.create(StandardDialog.prototype);
@@ -495,9 +495,9 @@
     StandardDialog.apply(this, [className, {title: title}, {width:600, height:350}, onClose]);
 
     if ( this.type === 'open' ) {
-      this._icon = '/themes/default/icons/16x16/actions/gtk-open.png';
+      this._icon = 'actions/gtk-open.png';
     } else {
-      this._icon = '/themes/default/icons/16x16/actions/gtk-save-as.png';
+      this._icon = 'actions/gtk-save-as.png';
     }
   };
 
@@ -635,7 +635,7 @@
    */
   var AlertDialog = function(msg, onClose) {
     StandardDialog.apply(this, ['AlertDialog', {title: "Alert Dialog", message: msg, buttonCancel: false, buttonOkLabel: "Close"}, {width:250, height:100}, onClose]);
-    this._icon = '/themes/default/icons/16x16/status/dialog-warning.png';
+    this._icon = 'status/dialog-warning.png';
   };
   AlertDialog.prototype = Object.create(StandardDialog.prototype);
 
@@ -644,7 +644,7 @@
    */
   var ConfirmDialog = function(msg, onClose) {
     StandardDialog.apply(this, ['ConfirmDialog', {title: "Confirm Dialog", message: msg}, {width:350, height:120}, onClose]);
-    this._icon = '/themes/default/icons/16x16/status/dialog-question.png';
+    this._icon = 'status/dialog-question.png';
   };
   ConfirmDialog.prototype = Object.create(StandardDialog.prototype);
 
@@ -653,7 +653,7 @@
    */
   var InputDialog = function(msg, val, onClose) {
     StandardDialog.apply(this, ['InputDialog', {title: "Input Dialog", message: msg}, {width:300, height:150}, onClose]);
-    this._icon = '/themes/default/icons/16x16/status/dialog-information.png';
+    this._icon = 'status/dialog-information.png';
 
     this.value  = val || '';
     this.$input = null;
@@ -704,7 +704,7 @@
    */
   var ColorDialog = function(color, onClose) {
     StandardDialog.apply(this, ['ColorDialog', {title: "Color Dialog"}, {width:450, height:270}, onClose]);
-    this._icon = '/themes/default/icons/16x16/apps/gnome-settings-theme.png';
+    this._icon = 'apps/gnome-settings-theme.png';
 
     if ( typeof color === 'object' ) {
       this.currentRGB = color;

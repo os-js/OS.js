@@ -7,7 +7,7 @@
     Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 200}, app]);
 
     this._title                   = "Settings";
-    this._icon                    = "/themes/default/icons/16x16/categories/applications-system.png";
+    this._icon                    = "categories/applications-system.png";
     this._properties.allow_resize = false;
   };
 
@@ -156,7 +156,9 @@
     var curf = input.value ? OSjs.Utils.dirname(input.value) : OSjs.API.getDefaultPath('/');
     var curn = input.value ? OSjs.Utils.filename(input.value) : '';
 
+    var self = this;
     this._appRef._createDialog('File', [{type: 'open', path: curf, filename: curn, mimes: ['^image']}, function(btn, fname, rmime) {
+      self._focus();
       if ( btn !== 'ok' ) return;
       input.value = fname;
     }], this);
@@ -164,7 +166,9 @@
 
   ApplicationSettingsWindow.prototype.openBackgroundColorSelect = function(ev, input) {
     var cur = input.value;
+    var self = this;
     this._appRef._createDialog('Color', [cur, function(btn, rgb, hex) {
+      self._focus();
       if ( btn != 'ok' ) return;
       input.value = hex;
       input.style.backgroundColor = hex;

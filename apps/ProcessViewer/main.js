@@ -15,7 +15,7 @@
     ]);
 
     this._title = "Process Viewer";
-    this._icon = "/themes/default/icons/16x16/apps/gnome-monitor.png";
+    this._icon = "apps/gnome-monitor.png";
   };
 
   ApplicationProcessViewerWindow.prototype = Object.create(Window.prototype);

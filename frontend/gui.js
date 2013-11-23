@@ -174,7 +174,7 @@
         if ( list[i].icon ) {
           img = document.createElement('img');
           img.alt = '';
-          img.src = list[i].icon.match(/^\//) ? list[i].icon : ('/themes/default/icons/16x16/' + list[i].icon);
+          img.src = OSjs.API.getThemeResource(list[i].icon, 'icon');
           m.appendChild(img);
         }
 
@@ -733,7 +733,7 @@
         }
       }
 
-      return  '/themes/default/icons/16x16/' + icon;
+      return OSjs.API.getThemeResource(icon, 'icon');
     };
 
     this.setColumns([

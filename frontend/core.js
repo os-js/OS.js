@@ -65,6 +65,18 @@
   var _WIN;
   var _CORE;
 
+  function getThemeResource(name, type, args) {
+    var theme = (_WM ? _WM.getTheme() : 'default') || 'default';
+    type = type || 'icon';
+    if ( type == 'icon' ) {
+      if ( !name.match(/^\//) ) {
+        var size = args || '16x16';
+        name = '/themes/' + theme + '/icons/' + size + '/' + name;
+      }
+    }
+    return name;
+  }
+
   function getFilesystemURL(t) {
     if ( t ) {
       return _FSURL + '/' + t; //encodeURIComponent(t);
@@ -774,6 +786,10 @@
     };
   };
 
+  WindowManager.prototype.getTheme = function() {
+    return this._theme;
+  };
+
   /**
    * Service Class
    */
@@ -988,6 +1004,7 @@
     console.log("OSjs::Core::Window::init()");
 
     this._state.focused = false;
+    this._icon = getThemeResource(this._icon);
 
     var grav = this._properties.gravity;
     if ( grav ) {
@@ -1573,6 +1590,7 @@
   OSjs.API.getDefaultPath   = function(def) { def = def || '/'; var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig('Home') || def; } return def; };
   OSjs.API.getCallURL       = function() { return _CALLURL; };
   OSjs.API.getFilesystemURL = getFilesystemURL;
+  OSjs.API.getThemeResource = getThemeResource;
   OSjs.API.call             = APICall;
   OSjs.API.error            = createErrorDialog;
   OSjs.API.launch           = LaunchProcess;

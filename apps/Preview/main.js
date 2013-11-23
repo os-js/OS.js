@@ -14,7 +14,7 @@
     this.$frame = null;
 
     this._title = this.title;
-    this._icon = "/themes/default/icons/16x16/mimetypes/image.png";
+    this._icon = "mimetypes/image.png";
     this._properties.allow_drop = true;
   };
 
