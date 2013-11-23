@@ -195,7 +195,6 @@ class FS
 }
 
 function getPackageInfo() {
-  // FIXME: Fix paths in package.json files (preload) -- currently absolute
   $list = Array();
   if ( $files = scandir(APPDIR) ) {
     foreach ( $files as $f ) {
