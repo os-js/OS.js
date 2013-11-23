@@ -1,6 +1,6 @@
 * Login screen and handler
-* Finish settings and session storage
 * Finish backend API calls
+* Crate storage for user settings+session data
 * Localization
 * Panels in VM
 * PanelItems in VM

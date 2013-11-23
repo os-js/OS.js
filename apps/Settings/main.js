@@ -239,7 +239,7 @@
   ApplicationSettings.prototype.save = function(ev, win, settings) {
     var wm = OSjs.API.getWMInstance();
     if ( wm ) {
-      wm.applySettings({
+      var res = wm.applySettings({
         theme      : settings.theme,
         wallpaper  : settings.backgroundImage,
         background : settings.backgroundType,
@@ -248,6 +248,12 @@
         }
       });
 
+      if ( res ) {
+        var cs = OSjs.API.getCoreService();
+        if ( cs ) {
+          cs.saveSettings();
+        }
+      }
     }
   };
 

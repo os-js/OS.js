@@ -752,6 +752,8 @@
 
     this.setTheme(theme);
     this.setWallpaper(wallpaper, background);
+
+    return true;
   };
 
   WindowManager.prototype.setWallpaper = function(name, type) {
@@ -788,14 +790,14 @@
           document.body.style.backgroundPosition  = '';
         break;
       }
-      this._wallpaper = path;
-      this._background = type;
+      this._wallpaper   = name;
+      this._background  = type;
     } else {
       document.body.style.backgroundImage     = '';
       document.body.style.backgroundRepeat    = 'no-repeat';
       document.body.style.backgroundPosition  = '';
-      this._wallpaper = null;
-      this._background = 'color';
+      this._wallpaper   = null;
+      this._background  = 'color';
     }
   };
 

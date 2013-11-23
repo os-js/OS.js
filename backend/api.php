@@ -257,20 +257,13 @@ function destroy_dir($dir) {
 }
 
 function setUserSettings($data) {
-  return true;
+  $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
+  $d = json_encode($data);
+  return ($d && file_put_contents($file, $d)) ? true : false;
 }
 
 function getUserSettings() {
-  /*
-  $file = "/tmp/___settingsdata";
-  if ( file_exists($file) ) {
-    if ( $c = file_get_contents($file) ) {
-      return json_decode($c);
-    }
-  }
-  return false;
-   */
-  return Array(
+  $default = Array(
     'WM' => Array(
       'CoreWM' => Array(
         'theme'       => null,
@@ -281,6 +274,16 @@ function getUserSettings() {
       )
     )
   );
+
+  $data = null;
+  $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
+  if ( file_exists($file) ) {
+    if ( $c = file_get_contents($file) ) {
+      $data = json_decode($c);
+    }
+  }
+
+  return $data ? $data : $default;
 }
 
 function unrealpath($p) {

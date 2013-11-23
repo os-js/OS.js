@@ -108,6 +108,32 @@
     });
   };
 
+  CoreService.prototype.saveSettings = function(onComplete, onError) {
+    onComplete = onComplete || function() {};
+    onError = onError || function(error) {
+      OSjs.API.error("CoreService Error", "Failed to save settings", error);
+    };
+
+    var data = {};
+    var wm = OSjs.API.getWMInstance();
+    if ( !wm ) {
+      onError("No window manager instance running");
+      return;
+    }
+    data['WM'] = {};
+    data['WM'][wm._name] = wm.getSettings();
+
+    this._call('setSettings', {name: name, data: data}, function(res) {
+      if ( res.error ) {
+        onError(res.error);
+      } else if ( res.result ) {
+        onComplete();
+      }
+    }, function(error) {
+      onError(error);
+    });
+  };
+
   CoreService.prototype.saveSession = function(name, procs, onFinished) {
     name = name || 'default';
 
