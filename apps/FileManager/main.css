@@ -2,27 +2,27 @@
 }
 .Window_ApplicationFileManagerWindow .WindowWrapper {
 }
-.Window_ApplicationFileManagerWindow .GUIListView.sideView {
+.Window_ApplicationFileManagerWindow .FileManagerSideView {
   position : absolute;
   top : 30px;
   left : 5px;
   bottom : 30px;
   width : 140px;
 }
-.Window_ApplicationFileManagerWindow .GUIListView.sideView .Header {
+.Window_ApplicationFileManagerWindow .FileManagerSideView .Header {
   display : none;
 }
-.Window_ApplicationFileManagerWindow .GUIListView.sideView .Scroll {
+.Window_ApplicationFileManagerWindow .FileManagerSideView .Scroll {
   top : 0px;
 }
-.Window_ApplicationFileManagerWindow .GUIListView.sideView tr {
+.Window_ApplicationFileManagerWindow .FileManagerSideView tr {
   background : inherit;
   background-color : inherit;
 }
-.Window_ApplicationFileManagerWindow .GUIListView.sideView td:first-child {
+.Window_ApplicationFileManagerWindow .FileManagerSideView td:first-child {
   padding-left : 5px;
 }
-.Window_ApplicationFileManagerWindow .GUIListView.fileView {
+.Window_ApplicationFileManagerWindow .FileManagerFileView {
   position : absolute;
   top : 30px;
   left : 155px;

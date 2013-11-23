@@ -6,14 +6,6 @@
   var ApplicationProcessViewerWindow = function(app, opts) {
     Window.apply(this, ['ApplicationProcessViewerWindow', {width: 400, height: 400}, app]);
 
-    this.listView = new OSjs.GUI.ListView();
-    this.listView.setColumns([
-      {key: 'pid',    title: 'PID', domProperties: {width: "50"}},
-      {key: 'name',   title: 'Name'},
-      {key: 'alive',  title: 'Alive', domProperties: {width: "100"}},
-      {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
-    ]);
-
     this._title = "Process Viewer";
     this._icon = "apps/gnome-monitor.png";
   };
@@ -21,22 +13,30 @@
   ApplicationProcessViewerWindow.prototype = Object.create(Window.prototype);
 
   ApplicationProcessViewerWindow.prototype.init = function() {
-    Window.prototype.init.apply(this, arguments);
+    var root = Window.prototype.init.apply(this, arguments);
 
-    this._$root.appendChild(this.listView.getRoot());
+    var listView = this._addGUIElement(new OSjs.GUI.ListView('ProcessViewListView'), root);
+    listView.setColumns([
+      {key: 'pid',    title: 'PID', domProperties: {width: "50"}},
+      {key: 'name',   title: 'Name'},
+      {key: 'alive',  title: 'Alive', domProperties: {width: "100"}},
+      {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
+    ]);
+
+
+    return root;
   };
 
   ApplicationProcessViewerWindow.prototype.destroy = function() {
-    if ( this.listView ) {
-      this.listView.destroy();
-      this.listView = null;
-    }
     Window.prototype.destroy.apply(this, arguments);
   };
 
   ApplicationProcessViewerWindow.prototype.refresh = function(rows) {
-    this.listView.setRows(rows);
-    this.listView.render();
+    var listView = this._getGUIElement('ProcessViewListView');
+    if ( listView ) {
+      listView.setRows(rows);
+      listView.render();
+    }
   };
 
   /**

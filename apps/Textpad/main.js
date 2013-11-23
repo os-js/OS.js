@@ -4,9 +4,6 @@
    * Main Window
    */
   var ApplicationTextpadWindow = function(app, opts) {
-    this.menuBar = null;
-    this.textView = null;
-    this.textArea = null;
     this.title = "Textpad";
 
     Window.apply(this, ['ApplicationTextpadWindow', opts, app]);
@@ -21,8 +18,8 @@
     var root = Window.prototype.init.apply(this, arguments);
     var app = this._appRef;
 
-    this.menuBar = new OSjs.GUI.MenuBar();
-    this.menuBar.addItem("File", [
+    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationTextpadMenuBar'), root);
+    menuBar.addItem("File", [
       {title: 'New', name: 'New', onClick: function() {
         app.action('new');
       }},
@@ -40,7 +37,7 @@
       }}
     ]);
 
-    this.menuBar.onMenuOpen = function(menu) {
+    menuBar.onMenuOpen = function(menu) {
       var el = menu.getRoot().getElementsByClassName("MenuItem_Save")[0];
       if ( el ) {
         if ( app.currentFile ) {
@@ -51,23 +48,12 @@
       }
     };
 
-    this.textArea = new OSjs.GUI.Textarea();
-
-    root.appendChild(this.menuBar.getRoot());
-    root.appendChild(this.textArea.getRoot());
+    this._addGUIElement(new OSjs.GUI.Textarea('TextpadTextarea'), root);
 
     this.setText(null);
   };
 
   ApplicationTextpadWindow.prototype.destroy = function() {
-    if ( this.textArea ) {
-      this.textArea.destroy();
-      this.textArea = null;
-    }
-    if ( this.menuBar ) {
-      this.menuBar.destroy();
-      this.menuBar = null;
-    }
     Window.prototype.destroy.apply(this, arguments);
   };
 
@@ -82,20 +68,22 @@
   };
 
   ApplicationTextpadWindow.prototype.setText = function(t, name) {
-    if ( !this.textArea ) return;
+    var txt = this._getGUIElement('TextpadTextarea');
+    if ( !txt ) return;
 
     if ( t === null ) {
-      this.textArea.setText("");
+      txt.setText("");
       this.refresh("New file");
       return;
     }
 
-    this.textArea.setText(t);
+   txt.setText(t);
     this.refresh(name);
   };
 
   ApplicationTextpadWindow.prototype.getText = function() {
-    return this.textArea ? this.textArea.getText() : '';
+    var txt = this._getGUIElement('TextpadTextarea');
+    return txt ? txt.getText() : '';
   };
 
   ApplicationTextpadWindow.prototype.refresh = function(name) {
@@ -104,8 +92,9 @@
 
   ApplicationTextpadWindow.prototype._focus = function() {
     Window.prototype._focus.apply(this, arguments);
-    if ( this.textArea ) {
-      this.textArea.focus();
+    var txt = this._getGUIElement('TextpadTextarea');
+    if ( txt ) {
+      txt.focus();
     }
   };
 

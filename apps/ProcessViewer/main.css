@@ -1,4 +1,4 @@
-.Window_ApplicationProcessViewerWindow .GUIListView {
+.Window_ApplicationProcessViewerWindow .ProcessViewListView {
   position : absolute;
   top : 5px;
   left : 5px;

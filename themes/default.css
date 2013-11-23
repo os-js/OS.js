@@ -176,13 +176,13 @@ body #WindowList .Background {
 /**
  * GUI
  */
-.MenuBar {
+.GUIMenuBar {
   background : #c2c2c2;
 }
-.MenuBar > ul > li {
+.GUIMenuBar > ul > li {
   cursor : pointer;
 }
-.MenuBar > ul > li:hover {
+.GUIMenuBar > ul > li:hover {
   background : #333;
   color : #fff;
 }

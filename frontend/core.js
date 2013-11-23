@@ -1015,6 +1015,7 @@
     this._tmpPosition   = null;
     this._children      = [];
     this._parent        = null;
+    this._guiElements   = [];
     this._properties    = {
       gravity         : null,
       allow_move      : true,
@@ -1360,6 +1361,16 @@
     }
     this._parent = null;
 
+    if ( this._guiElements && this._guiElements.length ) {
+      for ( var e = 0, s = this._guiElements.length; e < s; e++ ) {
+        if ( this._guiElements[e] ) {
+          this._guiElements[e].destroy();
+          this._guiElements[e] = null;
+        }
+      }
+    }
+    this._guiElements = [];
+
     if ( this._children && this._children.length ) {
       var i = 0, l = this._children.length;
       for ( i; i < l; i++ ) {
@@ -1403,15 +1414,29 @@
     }
   };
 
-  Window.prototype._addGUIElement = function(gel) {
-    if ( gel instanceof OSjs.GUI.GUIElement ) {
-      if ( gel.focusable ) {
-        console.log("OSjs::Core::Window::_addGUIElement()");
-        this._addHook('blur', function() {
-          gel.blur();
-        });
-      }
+  Window.prototype._addGUIElement = function(gel, parentNode) {
+    if ( !parentNode ) {
+      throw "Adding a GUI Element requires a parentNode";
     }
+    if ( gel instanceof OSjs.GUI.GUIElement ) {
+      console.log("OSjs::Core::Window::_addGUIElement()");
+      if ( gel.focusable ) {
+        if ( gel.opts.focusable ) {
+          this._addHook('blur', function() {
+            gel.blur();
+          });
+        }
+      }
+
+      this._guiElements.push(gel);
+      if ( parentNode ) {
+        parentNode.appendChild(gel.getRoot());
+      }
+
+      return gel;
+    }
+
+    return false;
   };
 
   Window.prototype._addChild = function(w) {
@@ -1597,6 +1622,15 @@
 
   Window.prototype._getRoot = function() {
     return this._$root;
+  };
+
+  Window.prototype._getGUIElement = function(n) {
+    for ( var i = 0, l = this._guiElements.length; i < l; i++ ) {
+      if ( this._guiElements[i] && this._guiElements[i].name === n ) {
+        return this._guiElements[i];
+      }
+    }
+    return null;
   };
 
   Window.prototype._setTitle = function(t) {

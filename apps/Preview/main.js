@@ -8,7 +8,6 @@
   var ApplicationPreviewWindow = function(app, opts) {
     Window.apply(this, ['ApplicationPreviewWindow', opts, app]);
 
-    this.menuBar = null;
     this.previewElement = null;
     this.title = "Preview";
     this.$frame = null;
@@ -24,8 +23,8 @@
     var root = Window.prototype.init.apply(this, arguments);
     var app = this._appRef;
 
-    this.menuBar = new OSjs.GUI.MenuBar();
-    this.menuBar.addItem("File", [
+    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationPreviewMenuBar'), root);
+    menuBar.addItem("File", [
       {title: 'Open', onClick: function() {
         app.action('open');
       }},
@@ -37,15 +36,10 @@
     this.$frame = document.createElement('div');
     this.$frame.className = "Frame";
 
-    root.appendChild(this.menuBar.getRoot());
     root.appendChild(this.$frame);
   };
 
   ApplicationPreviewWindow.prototype.destroy = function() {
-    if ( this.menuBar ) {
-      this.menuBar.destroy();
-      this.menuBar = null;
-    }
     if ( this.previewElement && this.previewElement.parentNode ) {
       this.previewElement.parentNode.removeChild(this.previewElement);
       this.previewElement = null;

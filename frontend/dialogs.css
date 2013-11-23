@@ -65,15 +65,15 @@
 .FileOpenDialog{
 }
 
-.FileOpenDialog .GUIListView,
-.FileSaveDialog .GUIListView {
+.FileOpenDialog .FileDialogFileView,
+.FileSaveDialog .FileDialogFileView {
   position : absolute;
   top : 5px;
   left : 5px;
   right : 5px;
   bottom : 30px;
 }
-.FileSaveDialog .GUIListView {
+.FileSaveDialog .FileDialogFileView {
   bottom : 60px !important;
 }
 .FileSaveDialog input {

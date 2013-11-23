@@ -66,17 +66,17 @@
 }
 
 /**
- * MenuBar
+ * GUIMenuBar
  */
-.MenuBar {
+.GUIMenuBar {
 }
-.MenuBar > ul {
+.GUIMenuBar > ul {
   margin : 0;
   padding : 0;
   height : 26px;
   list-style-type : none;
 }
-.MenuBar ul > li {
+.GUIMenuBar ul > li {
   padding : 0;
   margin : 0;
   padding-left : 5px;

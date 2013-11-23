@@ -154,6 +154,103 @@
     }, false);
   }
 
+  /**
+   * GUI Element
+   */
+  var _GUIElementCount = 0;
+  var GUIElement = function(name, opts) {
+    this.name       = name;
+    this.opts       = opts || {};
+    this.id         = _GUIElementCount;
+    this.destroyed  = false;
+
+    if ( typeof this.opts.dnd === 'undefined' ) {
+      this.opts.dnd     = false;
+    }
+    if ( typeof this.opts.dndDrop === 'undefined' ) {
+      this.opts.dndDrop = this.opts.dnd;
+    }
+    if ( typeof this.opts.dndDrag === 'undefined' ) {
+      this.opts.dndDrag = this.opts.dnd;
+    }
+    if ( typeof this.opts.dndOpts === 'undefined' ) {
+      this.opts.dndOpts = {};
+    }
+    if ( typeof this.opts.focusable === 'undefined' ) {
+      this.opts.focusable = true;
+    }
+
+    this.onItemDropped  = function() {};
+    this.onFilesDropped = function() {};
+
+    this.$element = null;
+    this.init();
+    _GUIElementCount++;
+  };
+
+  GUIElement.prototype.init = function(className) {
+    this.$element = document.createElement('div');
+    this.$element.className = 'GUIElement ' + this.name + ' GUIElement_' + this.id;
+    if ( className ) {
+      this.$element.className += ' ' + className;
+    }
+
+    var cpb = OSjs.Utils.getCompability();
+    if ( this.opts.dnd && this.opts.dndDrop && cpb.dnd ) {
+      var opts = this.opts.dndOpts;
+      var self = this;
+      opts.onItemDropped = function(ev, el, item) {
+        return self.onItemDropped.call(self, ev, el, item);
+      };
+      opts.onFilesDropped = function(ev, el, files) {
+        return self.onFilesDropped.call(self, ev, el, files);
+      };
+
+      createDroppable(this.$element, opts);
+    }
+
+    if ( this.opts.focusable ) {
+      var self = this;
+      this.$element.addEventListener('mousedown', function(ev) {
+        self.focus();
+      }, false);
+    }
+
+    return this.$element;
+  };
+
+  GUIElement.prototype.destroy = function() {
+    this.destroyed = true;
+    if ( this.$element && this.$element.parentNode ) {
+      this.$element.parentNode.removeChild(this.$element);
+    }
+  };
+
+  GUIElement.prototype.getRoot = function() {
+    return this.$element;
+  };
+
+  GUIElement.prototype.onDndDrop = function(ev) {
+    return true;
+  };
+
+  GUIElement.prototype.onKeyPress = function(ev) {
+    if ( !this.focused ) return false;
+    return true;
+  };
+
+  GUIElement.prototype.focus = function() {
+    if ( this.focused ) return false;
+    console.log("GUIElement::focus()", this.id);
+    this.focused = true;
+    return true;
+  };
+
+  GUIElement.prototype.blur = function() {
+    if ( !this.focused ) return;
+    this.focused = false;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -243,27 +340,25 @@
   /**
    * MenuBar Class
    */
-  var MenuBar = function() {
-    this.$element = document.createElement('div');
-    this.$element.className = 'MenuBar';
-    this.$ul = document.createElement('ul');
-    this.$element.appendChild(this.$ul);
+  var MenuBar = function(name, opts) {
+    this.$ul = null;
     this.onMenuOpen = function() {};
+    GUIElement.apply(this, [name, opts]);
+  };
+  MenuBar.prototype = Object.create(GUIElement.prototype);
 
-    this.$element.oncontextmenu = function(ev) {
+  MenuBar.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIMenuBar']);
+    this.$ul = document.createElement('ul');
+    el.appendChild(this.$ul);
+    el.oncontextmenu = function(ev) {
       return false;
     };
-  };
-
-  MenuBar.prototype.destroy = function() {
-    if ( this.$element && this.$element.parentNode) {
-      this.$element.parentNode.removeChild(this.$element);
-    }
-    this.$element = null;
-    this.$ul = null;
+    return el;
   };
 
   MenuBar.prototype.addItem = function(title, menu, pos) {
+    if ( !this.$ul ) return;
     var self = this;
     var el = document.createElement('li');
     el.innerHTML = title;
@@ -281,112 +376,12 @@
     this.$ul.appendChild(el);
   };
 
-  MenuBar.prototype.getRoot = function() {
-    return this.$element;
-  };
-
-  /**
-   * GUI Element
-   */
-  var _GUIElementCount = 0;
-  var GUIElement = function(opts) {
-    this.opts = opts || {};
-    this.id = _GUIElementCount;
-    this.destroyed = false;
-
-    if ( typeof this.opts.dnd === 'undefined' ) {
-      this.opts.dnd     = false;
-    }
-    if ( typeof this.opts.dndDrop === 'undefined' ) {
-      this.opts.dndDrop = this.opts.dnd;
-    }
-    if ( typeof this.opts.dndDrag === 'undefined' ) {
-      this.opts.dndDrag = this.opts.dnd;
-    }
-    if ( typeof this.opts.dndOpts === 'undefined' ) {
-      this.opts.dndOpts = {};
-    }
-    if ( typeof this.opts.focusable === 'undefined' ) {
-      this.opts.focusable = true;
-    }
-
-    this.onItemDropped  = function() {};
-    this.onFilesDropped = function() {};
-
-    this.$element = null;
-    this.init();
-    _GUIElementCount++;
-  };
-
-  GUIElement.prototype.init = function(className) {
-    this.$element = document.createElement('div');
-    this.$element.className = className;
-    if ( this.opts.className ) {
-      this.$element.className += ' ' + this.opts.className;
-    }
-
-    var cpb = OSjs.Utils.getCompability();
-    if ( this.opts.dnd && this.opts.dndDrop && cpb.dnd ) {
-      var opts = this.opts.dndOpts;
-      var self = this;
-      opts.onItemDropped = function(ev, el, item) {
-        return self.onItemDropped.call(self, ev, el, item);
-      };
-      opts.onFilesDropped = function(ev, el, files) {
-        return self.onFilesDropped.call(self, ev, el, files);
-      };
-
-      createDroppable(this.$element, opts);
-    }
-
-    if ( this.opts.focusable ) {
-      var self = this;
-      this.$element.addEventListener('mousedown', function(ev) {
-        self.focus();
-      }, false);
-    }
-
-    return this.$element;
-  };
-
-  GUIElement.prototype.destroy = function() {
-    this.destroyed = true;
-    if ( this.$element && this.$element.parentNode ) {
-      this.$element.parentNode.removeChild(this.$element);
-    }
-  };
-
-  GUIElement.prototype.getRoot = function() {
-    return this.$element;
-  };
-
-  GUIElement.prototype.onDndDrop = function(ev) {
-    return true;
-  };
-
-  GUIElement.prototype.onKeyPress = function(ev) {
-    if ( !this.focused ) return false;
-    return true;
-  };
-
-  GUIElement.prototype.focus = function() {
-    if ( this.focused ) return false;
-    console.log("GUIElement::focus()", this.id);
-    this.focused = true;
-    return true;
-  };
-
-  GUIElement.prototype.blur = function() {
-    if ( !this.focused ) return;
-    this.focused = false;
-  };
-
   /**
    * List View Class
    * FIXME: Move getSelected/setSelected from FileView
    * FIXME: Refactor ^ selected code to (now both DOM and JSON is used ... kind of bleh)
    */
-  var ListView = function(opts) {
+  var ListView = function(name, opts) {
     opts = opts || {};
     this.singleClick = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     this.rows = [];
@@ -402,7 +397,7 @@
     this.onSelect = function() {};
     this.onCreateRow = function() {};
 
-    GUIElement.apply(this, [opts]);
+    GUIElement.apply(this, arguments);
   };
 
   ListView.prototype = Object.create(GUIElement.prototype);
@@ -602,7 +597,7 @@
    * FileView
    * FIXME: Fix exessive calls to chdir/refresh
    */
-  var FileView = function(path, opts) {
+  var FileView = function(name, path, opts) {
     opts = opts || {};
     var mimeFilter = [];
     if ( opts.mimeFilter ) {
@@ -612,7 +607,7 @@
       }
     }
 
-    ListView.apply(this, [opts]);
+    ListView.apply(this, [name, opts]);
     this.opts.dnd = true;
 
     var self = this;
@@ -862,7 +857,7 @@
   /**
    * Textarea
    */
-  var Textarea = function() {
+  var Textarea = function(name, opts) {
     this.$area = null;
     GUIElement.apply(this, arguments);
   };
@@ -957,9 +952,12 @@
     this.$canvas = cv;
   };
 
-  var StatusBar = function() {
+  /**
+   * Status Bar Element
+   */
+  var StatusBar = function(name) {
     this.$contents = null;
-    GUIElement.apply(this, [{focusable: false}]);
+    GUIElement.apply(this, [name, {focusable: false}]);
   };
 
   StatusBar.prototype = Object.create(GUIElement.prototype);

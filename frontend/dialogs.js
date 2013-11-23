@@ -178,7 +178,6 @@
     this.filename = OSjs.Utils.filename(filename);
     this.mime = mime;
     this.list = list;
-    this.listView = null;
     this.selectedApp = null;
 
     var msg = (["Choose an application to open<br />", "<span>"+this.filename+"</span>", "("+this.mime+")"]).join(" ");
@@ -188,10 +187,6 @@
   ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
 
   ApplicationChooserDialog.prototype.destroy = function(wm) {
-    if ( this.listView ) {
-      this.listView.destroy();
-      this.listView = null;
-    }
     StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
@@ -228,15 +223,12 @@
       return  '' + icon;
     };
 
-    this.listView = new OSjs.GUI.ListView();
-    this.listView.setColumns([
+    var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
+    listView.setColumns([
       {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
       {key: 'name', title: 'Name'}
      ]);
-
-    this.listView.setRows(list);
-
-    this.listView.onActivate = function(ev, listView, t) {
+    listView.onActivate = function(ev, listView, t) {
       if ( t ) {
         var name = t.getAttribute('data-name');
         if ( name ) {
@@ -244,7 +236,7 @@
         }
       }
     };
-    this.listView.onSelect = function(ev, listView, t) {
+    listView.onSelect = function(ev, listView, t) {
       if ( t ) {
         var name = t.getAttribute('data-name');
         if ( name ) {
@@ -253,8 +245,8 @@
       }
     };
 
-    this.listView.render();
-    container.appendChild(this.listView.getRoot());
+    listView.setRows(list);
+    listView.render();
 
     return root;
   };
@@ -476,14 +468,14 @@
     this.type             = args.type || 'open';
     this.mime             = args.mime || null;
     this.allowMimes       = args.mimes || null;
-    this.fileList         = null;
     this.$input           = null;
 
     var self = this;
     this.onError          = function(err, dirname) {
       if ( err ) {
-        if ( self.fileList ) {
-          self.fileList.chdir(OSjs.API.getDefaultPath('/'));
+        var fileList = self._getGUIElement('FileDialogFileView');
+        if ( fileList ) {
+          fileList.chdir(OSjs.API.getDefaultPath('/'));
         }
         OSjs.API.error("FileDialog Error", "Failed listing directory '" + dirname + "' because an error occured", err);
       }
@@ -504,10 +496,6 @@
   FileDialog.prototype = Object.create(StandardDialog.prototype);
 
   FileDialog.prototype.destroy = function() {
-    if ( this.fileList ) {
-      this.fileList.destroy();
-      this.fileList = null;
-    }
     StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
@@ -515,10 +503,8 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    this.fileList = new OSjs.GUI.FileView(null, {mimeFilter: this.allowMimes});
-    this.fileList.onError = this.onError;
-    this._addGUIElement(this.filelist);
-    this.$element.appendChild(this.fileList.getRoot());
+    fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', null, {mimeFilter: this.allowMimes}), this.$element);
+    fileList.onError = this.onError;
 
     if ( this.type === 'save' ) {
       var start = true;
@@ -534,7 +520,7 @@
         }
       };
 
-      this.fileList.onSelected = function(item) {
+      fileList.onSelected = function(item) {
         if ( !item || item.type == 'dir' ) {
           self.$input.value = '';
         } else {
@@ -542,7 +528,7 @@
         }
       };
 
-      this.fileList.onFinished = function() {
+      fileList.onFinished = function() {
         if ( start ) {
           if ( self.currentFilename ) {
             self.fileList.setSelected(self.currentFilename, 'filename');
@@ -551,7 +537,7 @@
         start = false;
       };
 
-      this.fileList.onRefresh = function() {
+      fileList.onRefresh = function() {
         if ( start ) {
           self.$input.value = curval;
         } else {
@@ -562,9 +548,9 @@
       this.$element.appendChild(this.$input);
     }
 
-    this.fileList.chdir(this.currentPath);
+    fileList.chdir(this.currentPath);
 
-    this.fileList.onActivated = function(path, type, mime) {
+    fileList.onActivated = function(path, type, mime) {
       if ( type === 'file' ) {
         if ( self.type === 'save' ) {
           if ( confirm("Are you sure you want to overwrite the file '" + OSjs.Utils.filename(path) + "'?") ) {
@@ -590,10 +576,11 @@
       curr = forcepath;
       mime = forcemime;
     } else {
+      var fileList = this._getGUIElement('FileDialogFileView');
       if ( this.type == 'save' ) {
         var check = this.$input ? check = this.$input.value : '';
         if ( check ) {
-          item = this.fileList.getItemByKey('filename', check);
+          item = fileList.getItemByKey('filename', check);
           if ( item !== null ) {
             if ( confirm("The file '" + check + "' already exists. Overwrite?") ) {
               mime = item.getAttribute('data-mime');
@@ -605,9 +592,9 @@
         }
 
         if ( !mime && check ) mime = this.mime;
-        if ( !curr && check ) curr = this.fileList.getPath() + '/' + check
+        if ( !curr && check ) curr = fileList.getPath() + '/' + check
       } else {
-        item = this.fileList.getSelected();
+        item = fileList.getSelected();
         if ( item !== null ) {
           mime = item.mime;
           curr = item.path;
