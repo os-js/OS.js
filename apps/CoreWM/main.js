@@ -1,7 +1,6 @@
 (function(WindowManager, GUI) {
   // TODO: Panel
   // TODO: PanelItem's
-  // TODO: Window List name update from title.. implement in onChange()
 
   /**
    * Application
@@ -84,8 +83,7 @@
   CoreWM.prototype.eventWindow = function(ev, win) {
     console.log("OSjs::Applications::CoreWM::eventWindow", ev, win._name);
 
-    var cn;
-
+    var cn = 'WindowList_Window_' + win._wid;
     var self = this;
     var _change = function(cn, callback) {
       var els = self._$element.getElementsByClassName(cn);
@@ -107,19 +105,20 @@
       };
       this._$element.appendChild(el);
     } else if ( ev == 'close' ) {
-      cn = 'WindowList_Window_' + win._wid;
       _change(cn, function(el) {
         el.parentNode.removeChild(el);
       });
     } else if ( ev == 'focus' ) {
-      cn = 'WindowList_Window_' + win._wid;
       _change(cn, function(el) {
         el.className += ' Focused';
       });
     } else if ( ev == 'blur' ) {
-      cn = 'WindowList_Window_' + win._wid;
       _change(cn, function(el) {
         el.className = el.className.replace(' Focused', '');
+      });
+    } else if ( ev == 'title' ) {
+      _change(cn, function(el) {
+        el.getElementsByTagName('span')[0].innerHTML = win._title;
       });
     }
   };

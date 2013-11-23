@@ -1655,6 +1655,7 @@
       tel.innerHTML = t;
     }
     this._title = t;
+    this._onChange('title');
   };
 
   /**

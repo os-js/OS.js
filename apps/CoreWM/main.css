@@ -20,6 +20,7 @@
   right : 5px;
   z-index : 2;
 
+  overflow : hidden;
   list-style-type : none;
   padding : 0;
   margin : 0;
@@ -34,6 +35,13 @@
   height : 26px;
   line-height : 26px;
   float : left;
+  max-width : 150px;
+
+  white-space : nowrap;
+  display : block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
 #WindowList li:last-child {
   margin-right : 0;
