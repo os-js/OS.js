@@ -7,6 +7,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^API backend/api.php
 RewriteRule ^FS/(.*) backend/api.php?file=/$1
 RewriteRule ^FS backend/api.php?upload
+RewriteRule ^(bin|doc) - [F,L,NC]
 
 <FilesMatch "\.(html|htm|js|css)$">
   FileETag None
