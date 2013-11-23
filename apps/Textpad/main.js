@@ -231,7 +231,7 @@
           _open(fname, mime);
         } else {
           var path = (this.currentFile) ? OSjs.Utils.dirname(this.currentFile) : null;
-          this._createDialog('File', [{type: 'open', mime: 'text/plain', path: path}, function(btn, fname, fmime) {
+          this._createDialog('File', [{type: 'open', mime: 'text/plain', mimes: ['^text'], path: path}, function(btn, fname, fmime) {
             if ( btn !== 'ok' ) return;
             _open(fname, fmime);
           }], w);

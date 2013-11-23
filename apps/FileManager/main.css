@@ -6,7 +6,7 @@
   position : absolute;
   top : 30px;
   left : 5px;
-  bottom : 35px;
+  bottom : 30px;
   width : 140px;
 }
 .Window_ApplicationFileManagerWindow .GUIListView.sideView thead {
@@ -23,7 +23,7 @@
   position : absolute;
   top : 30px;
   left : 155px;
-  bottom : 35px;
+  bottom : 30px;
   right : 5px;
   margin : 0;
   padding : 0;
