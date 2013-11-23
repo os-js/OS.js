@@ -388,6 +388,7 @@
     _PROCS = [];
   };
 
+  // FIXME: Move this to a standalone function and move to OSjs.API.open()
   Main.prototype.open = function(fname, mime, launchArgs) {
     launchArgs = launchArgs || {};
 
@@ -438,6 +439,7 @@
     return app.length > 0;
   };
 
+  // FIXME: Move this to a standalone function and move to OSjs.API.launch()
   Main.prototype.launch = function(n, arg, onFinished, onError, onConstructed) {
     onFinished = onFinished || function() {};
     onError = onError || function() {};
