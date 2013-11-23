@@ -234,3 +234,7 @@ body #WindowList .Background {
 .GUISlider .Button:hover {
   border : 1px solid #444444;
 }
+
+.GUIToolbar > .Container {
+  background : #c2c2c2;
+}

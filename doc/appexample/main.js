@@ -32,8 +32,8 @@
   /**
    * Main Window
    */
-  var ApplicationEXAMPLEWindow = function(app, opts) {
-    Window.apply(this, ['ApplicationEXAMPLEWindow', opts, app]);
+  var ApplicationEXAMPLEWindow = function(app) {
+    Window.apply(this, ['ApplicationEXAMPLEWindow', {width: 400, height: 200}, app]);
 
     // Set window properties here
   };
@@ -42,6 +42,7 @@
 
   ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app) {
     var root = Window.prototype.init.apply(this, arguments);
+    var self = this;
     // Create window contents here
 
     return root;
@@ -68,8 +69,9 @@
 
   ApplicationEXAMPLE.prototype.init = function(core, session) {
     Application.prototype.init.apply(this, arguments);
+    var self = this;
 
-    this._addWindow(new ApplicationEXAMPLEWindow(this, {width: 400, height: 200}));
+    this._addWindow(new ApplicationEXAMPLEWindow(this));
   };
 
   ApplicationEXAMPLE.prototype._onMessage = function(obj, msg, args) {

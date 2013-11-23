@@ -1110,6 +1110,83 @@
     this.$button.style.left = left + 'px';
   };
 
+  /**
+   * Toolbar Element
+   */
+  var ToolBar = function(name, opts) {
+    this.$container = null;
+    this.$active = null;
+
+    this.items = {};
+    GUIElement.apply(this, [name, {}]);
+  };
+
+  ToolBar.prototype = Object.create(GUIElement.prototype);
+
+  ToolBar.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIToolbar']);
+    this.$container = document.createElement('ul');
+    this.$container.className = 'Container';
+    el.appendChild(this.$container);
+    return el;
+  };
+
+  ToolBar.prototype.addItem = function(name, opts) {
+    this.items[name] = opts;
+  };
+
+  ToolBar.prototype.render = function() {
+    if ( !this.$container ) return;
+
+    var el, btn, img, span, item;
+    var self = this;
+    for ( var i in this.items ) {
+      if ( this.items.hasOwnProperty(i) ) {
+        item = this.items[i];
+        el = document.createElement('li');
+        el.className = i;
+
+        btn = document.createElement('button');
+        if ( item.icon ) {
+          img = document.createElement('img');
+          img.alt = item.icon;
+          img.src = item.icon;
+          btn.appendChild(img);
+          el.className += ' HasIcon';
+        }
+        if ( item.title ) {
+          span = document.createElement('span');
+          span.innerHTML = item.title;
+          btn.appendChild(span);
+          el.className += ' HasTitle';
+        }
+
+        btn.onclick = (function(key, itm) {
+          return function(ev) {
+            if ( itm.toggleable ) {
+              if ( self.$active ) {
+                self.$active.className = self.$active.className.replace(/\s?Active/, '');
+              }
+              self.$active = this;
+              self.$active.className += ' Active';
+
+              self._onItemSelect(ev, this, key, itm);
+            }
+          };
+        })(i, item);
+
+        el.appendChild(btn);
+        this.$container.appendChild(el);
+      }
+    }
+  };
+
+  ToolBar.prototype._onItemSelect = function(ev, el, name, item) {
+    if ( item && item.onClick ) {
+      item.onClick(ev, el, name, item);
+    }
+  };
+
   //
   // EXPORTS
   //
@@ -1122,6 +1199,7 @@
   OSjs.GUI.ColorSwatch  = ColorSwatch;
   OSjs.GUI.StatusBar    = StatusBar;
   OSjs.GUI.Slider       = Slider;
+  OSjs.GUI.ToolBar      = ToolBar;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

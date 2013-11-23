@@ -222,3 +222,41 @@
   -ms-user-select: none;
   user-select: none;
 }
+
+/**
+ * ToolBar
+ */
+.GUIToolbar {
+  position : relative;
+}
+.GUIToolbar > .Container {
+  margin : 0;
+  padding : 0;
+  list-style-type : none;
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+}
+.GUIToolbar li {
+  margin : 0;
+  padding : 5px;
+  position : relative;
+  float : left;
+}
+.GUIToolbar button {
+  display : inline;
+  position : relative;
+  margin : 0;
+  padding : 5px;
+  overflow : hidden;
+  text-align : center;
+  border-style : outset;
+}
+.GUIToolbar button.Active {
+  border-style : inset;
+}
+.GUIToolbar img {
+  vertical-align : center;
+}
