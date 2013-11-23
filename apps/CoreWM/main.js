@@ -34,7 +34,7 @@
               icon: apps[a].icon,
               onClick: (function(name, iter) {
                 return function() {
-                  OSjs.API.getCoreInstance().launch(name);
+                  OSjs.API.launch(name);
                 };
               })(a, apps[a])
             });

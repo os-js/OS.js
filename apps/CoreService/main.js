@@ -87,7 +87,7 @@
         sargs = s.args || {};
         if ( typeof sargs.length !== 'undefined' ) sargs = {};
 
-        OSjs.API.getCoreInstance().launch(s.name, sargs, (function(data) {
+        OSjs.API.launch(s.name, sargs, (function(data) {
           return function(a) {
             onSuccess(data, a);
           };
