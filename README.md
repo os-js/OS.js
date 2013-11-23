@@ -46,6 +46,6 @@ Can run on anything that can host web-pages. Currently only Apache has been test
 
 Runs in any modern browser. Tested:
 
-* Gecko - Mozilla Firefox
-* WebKit - Google Chrome, Opera, Safari
+* **Gecko** Mozilla Firefox
+* **WebKit** Google Chrome, Opera, Safari
 * Internet Explorer 10+
