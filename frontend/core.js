@@ -69,6 +69,7 @@
   var _WM;
   var _WIN;
   var _CORE;
+  var _LOADING;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -197,10 +198,10 @@
 
   function LaunchFile(fname, mime, launchArgs) {
     launchArgs = launchArgs || {};
+    if ( !fname ) throw "Cannot LaunchFile() without a filename";
+    if ( !mime )  throw "Cannot LaunchFile() without a mime type";
 
-    console.group("LaunchFile()");
-    console.log("Filename", fname);
-    console.log("MIME", mime);
+    console.group("LaunchFile()", fname, mime);
 
     var cs = OSjs.API.getCoreService();
     var app = [];
@@ -246,15 +247,14 @@
   }
 
   function LaunchProcess(n, arg, onFinished, onError, onConstructed) {
-    onFinished = onFinished || function() {};
-    onError = onError || function() {};
+    arg           = arg           || {};
+    onFinished    = onFinished    || function() {};
+    onError       = onError       || function() {};
     onConstructed = onConstructed || function() {};
 
-    arg = arg || {};
+    if ( !n ) throw "Cannot LaunchProcess() witout a application name";
 
-    console.group("LaunchProcess()");
-    console.log("Name", n);
-    console.log("Arguments", arg);
+    console.group("LaunchProcess()", n, arg);
 
     var self = this;
     var _error = function(msg) {

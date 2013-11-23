@@ -16,8 +16,8 @@
   top : 0px;
 }
 .Window_ApplicationFileManagerWindow .FileManagerSideView tr {
-  background : inherit;
-  background-color : inherit;
+  background : inherit !important;
+  background-color : inherit !important;
 }
 .Window_ApplicationFileManagerWindow .FileManagerSideView td:first-child {
   padding-left : 5px;
