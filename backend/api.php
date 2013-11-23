@@ -458,19 +458,17 @@ $data   = $method === 'POST' ? file_get_contents("php://input") : (empty($_SERVE
 
 if ( $method === 'GET' ) {
   if ( isset($_GET['file']) && ($file = $_GET['file']) ) {
-    // FIXME
-    $continue = false;
     try {
       if ( strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
       if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
       if ( !is_readable($file) ) throw new Exception("Read permission denied");
-      $continue = true;
     } catch ( Exception $e ) {
       header("HTTP/1.0 500 Internal Server Error");
       print $e->getMessage();
+      exit;
     }
 
-    if ( $continue && file_exists($file) ) {
+    if ( file_exists($file) ) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $file);
         finfo_close($finfo);
@@ -494,7 +492,6 @@ if ( isset($_GET['upload']) ) {
   if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
     $dest = unrealpath($_POST['path'] . '/' . $_FILES['upload']['name']);
 
-    // FIXME
     if ( strstr($dest, HOMEDIR) === false ) {
       header("HTTP/1.0 500 Internal Server Error");
       print "Invalid destination!";

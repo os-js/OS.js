@@ -592,7 +592,7 @@
     this.onFinished = function() {};
     this.onSelected = function(item, el) {};
     this.onRefresh = function() {};
-    this.onDropped = function() { console.warn("Not implemented yet!"); /* FIXME */ };
+    this.onDropped = function() { console.warn("Not implemented yet!"); };
 
     this.onActivate = function(ev, listView, t) {
       if ( t ) {
