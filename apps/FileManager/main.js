@@ -50,10 +50,11 @@
       self._toggleLoading(true);
     };
     this.fileView.onActivated = function(name, type, mime) {
-      self.statusBar.setText("Loading...");
       if ( name ) {
         if ( type === 'file' ) {
           app.open(name, mime);
+        } else {
+          self.statusBar.setText("Loading...");
         }
       }
     };
