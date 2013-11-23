@@ -8,10 +8,10 @@
 
     this.listView = new OSjs.GUI.ListView();
     this.listView.setColumns([
-      {key: 'pid',    title: 'PID'},
+      {key: 'pid',    title: 'PID', domProperties: {width: "50"}},
       {key: 'name',   title: 'Name'},
-      {key: 'alive',  title: 'Alive'},
-      {key: 'kill',   title: '', type: 'button'}
+      {key: 'alive',  title: 'Alive', domProperties: {width: "100"}},
+      {key: 'kill',   title: '', type: 'button', domProperties: {width: "35"}}
     ]);
 
     this._title = "Process Viewer";
