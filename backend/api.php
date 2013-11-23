@@ -195,15 +195,21 @@ class FS
 }
 
 function getPackageInfo() {
+  // FIXME: Fix paths in package.json files (preload) -- currently absolute
   $list = Array();
   if ( $files = scandir(APPDIR) ) {
     foreach ( $files as $f ) {
       $name = sprintf("%s/%s/package.json", APPDIR, $f);
       if ( file_exists($name) ) {
         if ( $content = file_get_contents($name) ) {
-          if ( $data = json_decode($content) ) {
+          if ( $data = json_decode($content, true) ) {
             $key = key($data);
             $val = current($data);
+
+            foreach ( $val['preload'] as $k => $v ) {
+              $val['preload'][$k]['src'] = sprintf("/apps/%s/%s", $f, $v['src']);
+            }
+
             $list[$key] = $val;
           }
         }

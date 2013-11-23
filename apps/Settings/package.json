@@ -4,8 +4,8 @@
     "mime":       null,
     "icon":       "categories/applications-system.png",
     "preload":    [
-      {"src": "/apps/Settings/main.js", "type": "javascript"},
-      {"src": "/apps/Settings/main.css", "type": "stylesheet"}
+      {"src": "main.js", "type": "javascript"},
+      {"src": "main.css", "type": "stylesheet"}
     ]
   }
 }

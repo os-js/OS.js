@@ -5,8 +5,8 @@
     "mime":       null,
     "icon":       null,
     "preload":    [
-      {"src": "/apps/CoreWM/main.js", "type": "javascript"},
-      {"src": "/apps/CoreWM/main.css", "type": "stylesheet"}
+      {"src": "main.js", "type": "javascript"},
+      {"src": "main.css", "type": "stylesheet"}
     ]
   }
 }

@@ -5,7 +5,7 @@
     "mime":       null,
     "icon":       null,
     "preload":    [
-      {"src": "/apps/CoreService/main.js", "type": "javascript"}
+      {"src": "main.js", "type": "javascript"}
     ]
   }
 }
