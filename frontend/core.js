@@ -299,7 +299,7 @@
           }
         } else {
           try {
-            a.init(self);
+            a.init(_CORE);
             onFinished(a);
           } catch ( e ) {
             _error("Application init() failed: " + e);
@@ -691,7 +691,7 @@
     }
     console.log("OSjs::Core::WindowManager::addWindow()");
 
-    w.init(this);
+    w.init(this, w._appRef);
     this._windows.push(w);
     if ( focus === true || (w instanceof DialogWindow) ) {
       w._focus();
