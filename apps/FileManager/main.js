@@ -179,16 +179,14 @@
       {image: _getFileIcon('places/folder.png'), filename: 'Temp', mime: null, size: 0, type: 'link', path: '/tmp'},
       {image: _getFileIcon('devices/drive-harddisk.png'), filename: 'Filesystem', mime: null, size: 0, type: 'link', path: '/'}
     ]);
-    sideView.onActivate = function(ev, listView, t) {
-      if ( t ) {
-        var path = t.getAttribute('data-path');
-        var type = t.getAttribute('data-type');
-        if ( path ) {
-          if ( type === 'file' ) {
-            app.open(path, t.getAttribute('data-mime'));
-          } else {
-            var fileView = self._getGUIElement('FileManagerFileView');
-            fileView.chdir(path);
+    sideView.onActivate = function(ev, el, item) {
+      if ( el && item && item.path ) {
+        if ( item.type === 'file' ) {
+          app.open(item.path, item.mime);
+        } else {
+          var fileView = self._getGUIElement('FileManagerFileView');
+          if ( fileView ) {
+            fileView.chdir(item.path);
           }
         }
       }
