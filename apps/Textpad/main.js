@@ -166,6 +166,7 @@
             _onError("Failed to save file: " + fname, "Fatal error");
           }
         }
+        w._focus();
       }, function(error) {
         _onError("Failed to save file (call): " + fname, error);
       });
@@ -221,6 +222,7 @@
                 self._setArgument('file', null);
                 self.currentFile = null;
               }
+              w._focus();
             }, function(error) {
               _onError("Failed to open file (call): " + fname, error);
             });

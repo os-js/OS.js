@@ -67,21 +67,25 @@
       {title: 'Create directory', onClick: function() {
         var cur = self.fileView.getPath();
         app._createDialog('Input', ["Create a new directory in <span>" + cur + "</span>", '', function(btn, value) {
+          self._focus();
           if ( btn !== 'ok' || !value ) return;
 
           app.mkdir((cur + '/' + value), function() {
             if ( self.fileView ) {
               self.fileView.refresh();
+              self._focus();
             }
           });
         }], self);
       }},
       {title: 'Upload', onClick: function() {
         app._createDialog('FileUpload', [self.fileView.getPath(), null, function(btn, filename, mime, size) {
+          self._focus();
           if ( btn != 'ok' && btn != 'complete' ) return;
           if ( self.fileView ) {
             self.fileView.refresh(function() {
               self.fileView.setSelected(filename, 'filename');
+              self._focus();
             });
           }
         }], self);
@@ -96,22 +100,27 @@
         if ( !cur ) return;
         var fname = OSjs.Utils.filename(cur.path);
         app._createDialog('Input', ["Rename <span>" + fname + "</span>", fname, function(btn, value) {
+          self._focus();
           if ( btn !== 'ok' || !value ) return;
           var newpath = OSjs.Utils.dirname(cur.path) + '/' + value;
 
           app.move(cur.path, newpath, function() {
             if ( self.fileView ) {
               self.fileView.refresh();
+              self._focus();
             }
           });
         }], self);
       }},
       {name: 'Delete', title: 'Delete', onClick: function() {
+        self._focus();
+
         var cur = self.fileView.getSelected();
         if ( !cur ) return;
         var fname = OSjs.Utils.filename(cur.path);
 
         app._createDialog('Confirm', ["Delete <span>" + fname + "</span> ?", function(btn) {
+          self._focus();
           if ( btn !== 'ok' ) return;
           app.unlink(cur.path, function() {
             if ( self.fileView ) {
@@ -124,6 +133,7 @@
     this.menuBar.addItem("View", [
       {title: 'Refresh', onClick: function() {
         self.fileView.refresh();
+        self._focus();
       }}
     ]);
     this.menuBar.onMenuOpen = function(menu) {
@@ -234,6 +244,7 @@
           if ( self.fileView ) {
             self.fileView.refresh(function() {
               self.fileView.setSelected(filename, 'filename');
+              self._focus();
             });
           }
         }], this);

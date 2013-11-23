@@ -180,6 +180,7 @@
             self._setArgument('file', fname);
             self._setArgument('mime', (mime || rmime) || null);
           }
+          w._focus();
         };
 
         if ( fname ) {
