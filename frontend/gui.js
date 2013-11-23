@@ -384,8 +384,11 @@
     this.rows = [];
     this.columns = [];
     this.$head = null;
+    this.$headTop = null;
     this.$body = null;
     this.$table = null;
+    this.$tableTop = null;
+    this.$scroll = null;
 
     this.onActivate = function() {};
     this.onSelect = function() {};
@@ -400,6 +403,8 @@
     var el = GUIElement.prototype.init.apply(this, ['GUIListView']);
 
     var table = document.createElement('table');
+    table.className = 'Body';
+
     var head = document.createElement('thead');
     var body = document.createElement('tbody');
 
@@ -436,17 +441,30 @@
 
     table.appendChild(head);
     table.appendChild(body);
-    el.appendChild(table);
+
+    var tableTop = document.createElement('table');
+    var headTop = document.createElement('thead');
+    tableTop.className = 'Header';
+    tableTop.appendChild(headTop);
+    el.appendChild(tableTop);
+
+    this.$scroll = document.createElement('div');
+    this.$scroll.className = 'Scroll';
+    this.$scroll.appendChild(table);
+    el.appendChild(this.$scroll);
 
     this.$head = head;
+    this.$headTop = headTop;
     this.$body = body;
     this.$table = table;
+    this.$tableTop = tableTop;
     this.callback = function() {};
   };
 
   ListView.prototype.render = function() {
     OSjs.Utils.$empty(this.$head);
     OSjs.Utils.$empty(this.$body);
+    OSjs.Utils.$empty(this.$headTop);
 
     var self = this;
     var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span;
@@ -471,6 +489,7 @@
       row.appendChild(col);
     }
     this.$head.appendChild(row);
+    this.$headTop.appendChild(row);
 
     for ( i = 0, l = this.rows.length; i < l; i++ ) {
       row = document.createElement('tr');
@@ -530,7 +549,7 @@
       this.onCreateRow(row, iter, colref);
     }
 
-    this.$element.scrollTop = 0;
+    this.$scroll.scrollTop = 0;
   };
 
   ListView.prototype._onRowClick = (function() {
@@ -544,12 +563,12 @@
       last = el;
 
       if ( !ev ) {
-        var viewHeight = this.$element.offsetHeight - (this.$head.style.visible === 'none' ? 0 : this.$head.offsetHeight);
-        var viewBottom = this.$element.scrollTop;
-        if ( el.offsetTop > (viewHeight + this.$element.scrollTop) ) {
-          this.$element.scrollTop = el.offsetTop;
+        var viewHeight = this.$scroll.offsetHeight - (this.$head.style.visible === 'none' ? 0 : this.$head.offsetHeight);
+        var viewBottom = this.$scroll.scrollTop;
+        if ( el.offsetTop > (viewHeight + this.$scroll.scrollTop) ) {
+          this.$scroll.scrollTop = el.offsetTop;
         } else if ( el.offsetTop < viewBottom ) {
-          this.$element.scrollTop = el.offsetTop;
+          this.$scroll.scrollTop = el.offsetTop;
         }
       }
     };

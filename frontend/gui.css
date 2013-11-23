@@ -91,6 +91,15 @@
  */
 .GUIListView {
   border : 1px solid rgba(34, 34, 34, .5);
+  position : relative;
+}
+
+.GUIListView .Scroll {
+  position : absolute;
+  top : 28px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
   overflow : auto;
 }
 
@@ -101,6 +110,12 @@
   padding : 0;
   position : relative;
   width : 100%;
+}
+.GUIListView table.Header {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
 }
 
 .GUIListView tr {
