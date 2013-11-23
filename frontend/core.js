@@ -47,6 +47,11 @@
   // FIXME: Destroy DOM events
   // FIXME: Prevent duplicate loading of resources
 
+  /////////////////////////////////////////////////////////////////////////////
+  // INTERNAL VARIABLES
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _INITED   = false;
   var _CALLURL  = "/API";
   var _FSURL    = "/FS";
   var _PROCS    = [];
@@ -56,14 +61,18 @@
   var _LZINDEX  = 1;
   var _LTZINDEX = 100000;
 
-  var _DEFAULT_WINDOW_WIDTH = 200;
-  var _DEFAULT_WINDOW_HEIGHT = 200;
-  var _MINIMUM_WINDOW_WIDTH = 100;
-  var _MINIMUM_WINDOW_HEIGHT = 50;
+  var _DEFAULT_WINDOW_WIDTH   = 200;
+  var _DEFAULT_WINDOW_HEIGHT  = 200;
+  var _MINIMUM_WINDOW_WIDTH   = 100;
+  var _MINIMUM_WINDOW_HEIGHT  = 50;
 
   var _WM;
   var _WIN;
   var _CORE;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
   function getThemeResource(name, type, args) {
     type = type || null;
@@ -321,6 +330,9 @@
     console.groupEnd();
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // BASE CLASSES
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Process Template Class
@@ -607,6 +619,10 @@
     return null;
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // MISC PROCESSES
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * WindowManager Process Class
    */
@@ -814,6 +830,10 @@
     return this._theme;
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATIONS
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * Service Class
    */
@@ -964,6 +984,10 @@
   Application.prototype._setArgument = function(k, v) {
     this.__args[k] = v;
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Window Class
@@ -1622,6 +1646,9 @@
   OSjs.API.playSound        = playSound;
 
   OSjs.initialize = function(onContentLoaded, onInitialized) {
+    if ( _INITED ) return;
+    _INITED = true;
+
     console.log('-- ');
     console.log('-- Launching OS.js v2');
     console.log('-- ');
@@ -1635,6 +1662,8 @@
   };
 
   OSjs.shutdown = function(save, onunload) {
+    if ( !_INITED ) return;
+    _INITED = false;
     window.onunload = null;
 
     var _shutdown = function() {

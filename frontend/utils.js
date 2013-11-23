@@ -32,6 +32,10 @@
   window.OSjs = window.OSjs || {};
   OSjs.Utils = OSjs.Utils || {};
 
+  /////////////////////////////////////////////////////////////////////////////
+  // MISC
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Utils.getCompability = (function() {
     var canvas_supported  = !!document.createElement('canvas').getContext   ? document.createElement('canvas')  : null;
     var video_supported   = !!document.createElement('video').canPlayType   ? document.createElement('video')   : null;
@@ -98,6 +102,10 @@
 
   })();
 
+  /////////////////////////////////////////////////////////////////////////////
+  // FS
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Utils.dirname = function(f) {
     var tmp = f.split("/");
     tmp.pop();
@@ -107,6 +115,10 @@
   OSjs.Utils.filename = function(p) {
     return (p||'').split("/").pop();
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // COLORS
+  /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Utils.hexToRGB = function(hex) {
     var rgb = parseInt(hex.replace("#", ""), 16);
@@ -142,6 +154,10 @@
     return '#' + hex.join("").toUpperCase();
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // DOM
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Utils.$ = function(id) {
     return document.getElementById(id);
   };
@@ -161,6 +177,10 @@
     var nodeIndex = nodeList.indexOf(el, parentEl);
     return nodeIndex;
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // XHR
+  /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Utils.AjaxUpload = function(file, size, dest, callbacks) {
     if ( !OSjs.Utils.getCompability().upload ) {

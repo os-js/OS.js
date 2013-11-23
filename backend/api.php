@@ -29,12 +29,11 @@
  * @licence Simplified BSD License
  */
 
-// TODO: Rewrite
 define("SESSIONNAME", preg_replace("/[^0-9]/", "", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']));
-define("HOMEDIR", "/opt/OSjs/home");
-define("TMPDIR", "/opt/OSjs/tmp");
-define("APPDIR", realpath(dirname(__FILE__) . "/../apps"));
-define("MAXUPLOAD", return_bytes(ini_get('upload_max_filesize')));
+define("HOMEDIR",     "/opt/OSjs/home");
+define("TMPDIR",      "/opt/OSjs/tmp");
+define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
+define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
 
 class FS
 {
@@ -105,7 +104,7 @@ class FS
 
       if ( empty($opts['mime']) || $opts['mime'] === true ) {
         if ( $ftype == 'file' ) {
-          $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+          $finfo = finfo_open(FILEINFO_MIME_TYPE);
           $mime  = finfo_file($finfo, $fpath);
           finfo_close($finfo);
 
