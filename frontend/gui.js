@@ -298,6 +298,9 @@
     if ( typeof this.opts.dndOpts === 'undefined' ) {
       this.opts.dndOpts = {};
     }
+    if ( typeof this.opts.focusable === 'undefined' ) {
+      this.opts.focusable = true;
+    }
 
     this.onItemDropped  = function() {};
     this.onFilesDropped = function() {};
@@ -328,10 +331,12 @@
       createDroppable(this.$element, opts);
     }
 
-    var self = this;
-    this.$element.addEventListener('mousedown', function(ev) {
-      self.focus();
-    }, false);
+    if ( this.opts.focusable ) {
+      var self = this;
+      this.$element.addEventListener('mousedown', function(ev) {
+        self.focus();
+      }, false);
+    }
 
     return this.$element;
   };
@@ -589,6 +594,7 @@
     this.path = path || '/';
     this.lastPath = this.path;
     this.mimeFilter = mimeFilter;
+    this.summary = opts.summary || false;
     this.onActivated = function(path, type, mime) {};
     this.onError = function(error) {};
     this.onFinished = function() {};
@@ -715,7 +721,8 @@
       {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
       {key: 'filename', title: 'Filename'},
       {key: 'mime', title: 'Mime', domProperties: {width: "150"}},
-      {key: 'size', title: 'Size', domProperties: {width: "80"}},
+      {key: 'size', title: 'Size', visible: false},
+      {key: 'hrsize', title: 'Size', domProperties: {width: "80"}},
       {key: 'path', title: 'Path', visible: false},
       {key: 'type', title: 'Type', visible: false}
      ]);
@@ -737,11 +744,14 @@
     var self = this;
     this.onRefresh.call(this);
 
-    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter, hrsize: true}]}, function(res) {
+    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
       if ( self.destroyed ) return;
 
       var error = null;
       var rendered = false;
+      var num = 0;
+      var size = 0;
+
       if ( res ) {
         if ( res.error ) {
           self.onError.call(self, res.error, dir);
@@ -749,6 +759,17 @@
           self.lastPath = self.path;
           self.path = dir;
           if ( res.result /* && res.result.length*/ ) {
+            if ( self.summary && res.result.length ) {
+              for ( var i = 0, l = res.result.length; i < l; i++ ) {
+                if ( res.result[i].filename !== ".." ) {
+                  if ( res.result[i].size ) {
+                    size += (res.result[i].size << 0);
+                  }
+                  num++;
+                }
+              }
+            }
+
             self.render(res.result, dir);
             rendered = true;
           }
@@ -758,7 +779,7 @@
           self.render([], dir);
         }
 
-        self.onFinished(dir);
+        self.onFinished(dir, num, size);
 
         onRefreshed.call(this);
       }
@@ -909,6 +930,29 @@
     this.$canvas = cv;
   };
 
+  var StatusBar = function() {
+    this.$contents = null;
+    GUIElement.apply(this, [{focusable: false}]);
+  };
+
+  StatusBar.prototype = Object.create(GUIElement.prototype);
+
+  StatusBar.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIStatusBar']);
+    this.$contents = document.createElement('div');
+    this.$contents.className = "Contents";
+    el.appendChild(this.$contents);
+    return el;
+  };
+
+  StatusBar.prototype.setText = function(t) {
+    this.$contents.innerHTML = t;
+  };
+
+  StatusBar.prototype.appendChild = function(el) {
+    this.$contents.appendChild(el);
+  };
+
   //
   // EXPORTS
   //
@@ -919,6 +963,7 @@
   OSjs.GUI.FileView     = FileView;
   OSjs.GUI.Textarea     = Textarea;
   OSjs.GUI.ColorSwatch  = ColorSwatch;
+  OSjs.GUI.StatusBar    = StatusBar;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

@@ -87,15 +87,18 @@ class FS
       $ftype = is_dir($fpath) ? 'dir' : 'file';
 
       $fsize = @(($ftype == 'dir' ? '' : filesize($fpath)));
+      $hrsize = '';
+
       if ( $fsize === false ) $fsize = '';
-      if ( $ftype !== 'dir' && strlen($fsize) && (isset($opts['hrsize']) && $opts['hrsize']) ) {
-        $fsize = humanFileSize($fsize);
+      if ( $ftype !== 'dir' && strlen($fsize) ) {
+        $hrsize = humanFileSize($fsize);
       }
 
       $iter = Array(
         'filename' => $fname,
         'path'     => $fpath,
         'size'     => $fsize,
+        'hrsize'   => $hrsize,
         'mime'     => null,
         'type'     => $ftype
       );

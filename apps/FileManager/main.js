@@ -6,10 +6,11 @@
   var ApplicationFileManagerWindow = function(app) {
     Window.apply(this, ['ApplicationFileManagerWindow', {width: 650, height: 420}, app]);
 
-    this.title    = "File Manager";
-    this.fileView = null;
-    this.sideView = null;
-    this.menuBar  = null;
+    this.title      = "File Manager";
+    this.fileView   = null;
+    this.sideView   = null;
+    this.menuBar    = null;
+    this.statusBar  = null;
 
     this._title = this.title;
     this._properties.allow_drop = true;
@@ -22,9 +23,10 @@
     var app   = this._appRef;
     var root  = Window.prototype.init.apply(this, arguments);
 
-    this.fileView = new OSjs.GUI.FileView('/', {dnd: true, className: 'fileView'});
-    this.sideView = new OSjs.GUI.ListView({className: 'sideView', dnd: false, singleClick: true});
-    this.menuBar  = new OSjs.GUI.MenuBar();
+    this.fileView   = new OSjs.GUI.FileView('/', {dnd: true, className: 'fileView', summary: true});
+    this.sideView   = new OSjs.GUI.ListView({className: 'sideView', dnd: false, singleClick: true});
+    this.menuBar    = new OSjs.GUI.MenuBar();
+    this.statusBar  = new OSjs.GUI.StatusBar();
 
     this.fileView.onItemDropped = function(ev, el, item) {
       // TODO
@@ -34,7 +36,8 @@
     this.fileView.onFilesDropped = function(ev, el, files) {
       return self.onDropUpload(ev, el, files);
     };
-    this.fileView.onFinished = function(dir) {
+    this.fileView.onFinished = function(dir, numItems, totalBytes) {
+      self.statusBar.setText("Showing " + numItems + " item(s), " + totalBytes + " byte(s)");
       self._toggleLoading(false);
       try {
         self._appRef.go(dir, self);
@@ -43,9 +46,11 @@
       }
     };
     this.fileView.onRefresh = function() {
+      self.statusBar.setText("Refreshing...");
       self._toggleLoading(true);
     };
     this.fileView.onActivated = function(name, type, mime) {
+      self.statusBar.setText("Loading...");
       if ( name ) {
         if ( type === 'file' ) {
           app.open(name, mime);
@@ -171,15 +176,20 @@
     root.appendChild(this.menuBar.getRoot());
     root.appendChild(this.sideView.getRoot());
     root.appendChild(this.fileView.getRoot());
-
+    root.appendChild(this.statusBar.getRoot());
 
     this._addGUIElement(this.sideView);
     this._addGUIElement(this.fileView);
+    this._addGUIElement(this.statusBar);
 
     this.sideView.render();
   };
 
   ApplicationFileManagerWindow.prototype.destroy = function() {
+    if ( this.statusBar ) {
+      this.statusBar.destroy();
+      this.statusBar = null;
+    }
     if ( this.menuBar ) {
       this.menuBar.destroy();
       this.menuBar = null;

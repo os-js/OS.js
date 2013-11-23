@@ -30,7 +30,6 @@
 (function() {
 
   window.OSjs = window.OSjs || {};
-
   OSjs.Core         = {};
   OSjs.API          = {};
   OSjs.Applications = OSjs.Applications || {};
@@ -1336,10 +1335,12 @@
 
   Window.prototype._addGUIElement = function(gel) {
     if ( gel instanceof OSjs.GUI.GUIElement ) {
-      console.log("OSjs::Core::Window::_addGUIElement()");
-      this._addHook('blur', function() {
-        gel.blur();
-      });
+      if ( gel.focusable ) {
+        console.log("OSjs::Core::Window::_addGUIElement()");
+        this._addHook('blur', function() {
+          gel.blur();
+        });
+      }
     }
   };
 

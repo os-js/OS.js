@@ -187,6 +187,9 @@ body #WindowList .Background {
   color : #fff;
 }
 
+.GUIStatusBar {
+  border-top : 1px solid #c2c2c2;
+}
 
 .GUIListView {
   border : 1px solid rgba(34, 34, 34, .5);
