@@ -36,6 +36,7 @@ body {
 }
 .WindowTop {
   border-bottom : 1px solid rgba(34, 34, 34, .5);
+  background-color: #737373;
   background: linear-gradient(to bottom, #737373 0%, #4F4F4F 100%);
 }
 .WindowTop:active,
@@ -48,6 +49,7 @@ body {
   line-height : 28px;
 }
 .Window.WindowHintFocused .WindowTop {
+  background-color: #41454d;
   background: linear-gradient(to bottom, #41454d 0%, #31363d 100%);
 }
 .Window.WindowHintFocused .WindowTitle {
