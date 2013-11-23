@@ -1,0 +1,11 @@
+{
+  "ApplicationFileManager":  {
+    "name":       "File Manager",
+    "mime":       null,
+    "icon":       "apps/file-manager.png",
+    "preload":    [
+      {"src": "/apps/FileManager/main.js", "type": "javascript"},
+      {"src": "/apps/FileManager/main.css", "type": "stylesheet"}
+    ]
+  }
+}

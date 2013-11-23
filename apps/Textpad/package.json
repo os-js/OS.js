@@ -1,0 +1,11 @@
+{
+  "ApplicationTextpad":  {
+    "name":       "Textpad",
+    "mime":       ["^text\/"],
+    "icon":       "apps/accessories-text-editor.png",
+    "preload":    [
+      {"src": "/apps/Textpad/main.js", "type": "javascript"},
+      {"src": "/apps/Textpad/main.css", "type": "stylesheet"}
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "ApplicationProcessViewer":  {
+    "name":       "Process Viewer",
+    "mime":       null,
+    "icon":       "apps/gnome-monitor.png",
+    "preload":    [
+      {"src": "/apps/ProcessViewer/main.js", "type": "javascript"},
+      {"src": "/apps/ProcessViewer/main.css", "type": "stylesheet"}
+    ]
+  }
+}
+
+

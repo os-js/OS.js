@@ -195,6 +195,25 @@ class FS
   }
 }
 
+function getPackageInfo() {
+  $list = Array();
+  if ( $files = scandir(APPDIR) ) {
+    foreach ( $files as $f ) {
+      $name = sprintf("%s/%s/package.json", APPDIR, $f);
+      if ( file_exists($name) ) {
+        if ( $content = file_get_contents($name) ) {
+          if ( $data = json_decode($content) ) {
+            $key = key($data);
+            $val = current($data);
+            $list[$key] = $val;
+          }
+        }
+      }
+    }
+  }
+  return $list;
+}
+
 function humanFileSize($size,$unit="") {
   if( (!$unit && $size >= 1<<30) || $unit == "GB")
     return number_format($size/(1<<30),2)."GB";
@@ -308,73 +327,7 @@ function doFSOperation($method, $args) {
 }
 
 function getApplicationData($name, $args) {
-  $apps = Array(
-    'CoreWM'                    => Array(
-      'name'      => "OS.js Window Manager",
-      'singular'  => true,
-      'mime'      => null,
-      'icon'      => null,
-      'preload'   => Array(
-        Array('src' => '/apps/CoreWM/main.js', 'type' => 'javascript'),
-        Array('src' => '/apps/CoreWM/main.css', 'type' => 'stylesheet')
-      )
-    ),
-    'CoreService'               => Array(
-      'name'      => "OS.js Core Service",
-      'singular'  => true,
-      'mime'      => null,
-      'icon'      => null,
-      'preload'   => Array(
-        Array('src' => '/apps/CoreService/main.js', 'type' => 'javascript')
-      )
-    ),
-    'ApplicationProcessViewer'  => Array(
-      'name'    => "Process Viewer",
-      'mime'    => null,
-      'icon'    => "apps/gnome-monitor.png",
-      'preload' => Array(
-        Array('src' => '/apps/ProcessViewer/main.js', 'type' => 'javascript'),
-        Array('src' => '/apps/ProcessViewer/main.css', 'type' => 'stylesheet')
-      )
-    ),
-    'ApplicationPreview'  => Array(
-      'name'    => "Preview",
-      'mime'    => Array('^image\/', '^video\/', '^audio\/'),
-      'icon'    => "mimetypes/image.png",
-      'preload' => Array(
-        Array('src' => '/apps/Preview/main.js', 'type' => 'javascript'),
-        Array('src' => '/apps/Preview/main.css', 'type' => 'stylesheet')
-      )
-    ),
-    'ApplicationTextpad'  => Array(
-      'name'    => "Textpad",
-      'mime'    => Array('^text\/'),
-      'icon'    => "apps/accessories-text-editor.png",
-      'preload' => Array(
-        Array('src' => '/apps/Textpad/main.js', 'type' => 'javascript'),
-        Array('src' => '/apps/Textpad/main.css', 'type' => 'stylesheet')
-      )
-    ),
-    'ApplicationFileManager'    => Array(
-      'name'    => "File Manager",
-      'mime'    => null,
-      'icon'    => "apps/file-manager.png",
-      'preload' => Array(
-        Array('src' => '/apps/FileManager/main.js', 'type' => 'javascript'),
-        Array('src' => '/apps/FileManager/main.css', 'type' => 'stylesheet')
-      )
-    ),
-    'ApplicationSettings'    => Array(
-      'name'    => "Settings",
-      'mime'    => null,
-      'icon'    => "categories/applications-system.png",
-      'preload' => Array(
-        Array('src' => '/apps/Settings/main.js', 'type' => 'javascript'),
-        Array('src' => '/apps/Settings/main.css', 'type' => 'stylesheet')
-      )
-    )
-  );
-
+  $apps = getPackageInfo();
   if ( $name === null && $args === null ) {
     return $apps;
   }

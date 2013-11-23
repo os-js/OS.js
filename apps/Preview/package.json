@@ -1,0 +1,12 @@
+{
+  "ApplicationPreview":  {
+    "name":       "Preview",
+    "mime":       ["^image\/", "^video\/", "^audio\/"],
+    "icon":       "mimetypes/image.png",
+    "preload":    [
+      {"src": "/apps/Preview/main.js", "type": "javascript"},
+      {"src": "/apps/Preview/main.css", "type": "stylesheet"}
+    ]
+  }
+}
+

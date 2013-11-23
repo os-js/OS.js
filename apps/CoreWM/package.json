@@ -1,0 +1,13 @@
+{
+  "CoreWM":  {
+    "name":       "OS.js Window Manager",
+    "singular":   true,
+    "mime":       null,
+    "icon":       null,
+    "preload":    [
+      {"src": "/apps/CoreWM/main.js", "type": "javascript"},
+      {"src": "/apps/CoreWM/main.css", "type": "stylesheet"}
+    ]
+  }
+}
+

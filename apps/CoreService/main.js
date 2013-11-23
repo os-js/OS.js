@@ -21,7 +21,7 @@
         return;
       }
       self.tick();
-    }, (60*1000));
+    }, (60*1000) * 15);
   };
 
   CoreService.prototype = Object.create(Service.prototype);
