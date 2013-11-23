@@ -258,6 +258,7 @@
 
     var self = this;
     var _error = function(msg) {
+      console.groupEnd(); // !!!
       createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg);
 
       onError(msg, n, arg);
@@ -303,6 +304,8 @@
           } catch ( e ) {
             _error("Application init() failed: " + e);
           }
+
+          console.groupEnd(); // !!!
         }
       } else {
         _error("Application resource not found!");
@@ -327,7 +330,6 @@
       _error("Failed to launch -- communication error!");
     });
 
-    console.groupEnd();
   }
 
   /////////////////////////////////////////////////////////////////////////////
