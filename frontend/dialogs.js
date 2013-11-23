@@ -31,8 +31,7 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
-  // TODO: Font Dialog
-
+  // FIXME: Destroy DOM events
   // FIXME: Cleanups
 
   var StandardDialog = function(className, args, opts, onClose) {

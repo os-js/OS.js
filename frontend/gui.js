@@ -31,16 +31,7 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
-  // TODO: ProgressBar
-  // TODO: Select + SelectList
-  // TODO: Button
-  // TODO: Option
-  // TODO: Checkbox
-  // TODO: Image
-  // TODO: Video, Audio => Media
-  // TODO: IconView
-  // TODO: TreeView
-  // TODO: Canvas
+  // FIXME: Destroy DOM events
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS

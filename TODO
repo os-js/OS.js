@@ -5,5 +5,16 @@
 * Panels in VM
 * PanelItems in VM
 * Finish GUI Elements
+  - ProgressBar
+  - Select + SelectList
+  - Button
+  - Option
+  - Checkbox
+  - Image
+  - Video, Audio => Media
+  - IconView
+  - TreeView
+  - Canvas
 * Finish Dialogs
+  - Fonts
 * Write Node.js backend
