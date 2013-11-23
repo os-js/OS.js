@@ -377,8 +377,6 @@
 
   /**
    * List View Class
-   * FIXME: Move getSelected/setSelected from FileView
-   * FIXME: Refactor ^ selected code to (now both DOM and JSON is used ... kind of bleh)
    */
   var ListView = function(name, opts) {
     opts = opts || {};
@@ -391,10 +389,12 @@
     this.$table = null;
     this.$tableTop = null;
     this.$scroll = null;
+    this.selected = null;
+    this.selectedDOMItem = null;
 
-    this.onActivate = function() {};
-    this.onSelect = function() {};
     this.onCreateRow = function() {};
+    this.onSelect = function() {};
+    this.onActivate = function() {};
 
     GUIElement.apply(this, arguments);
   };
@@ -423,9 +423,9 @@
 
       if ( t && t.tagName == 'TR' ) {
         if ( type == 'activate' ) {
-          self.onActivate(ev, self, t);
+          self._onActivate(ev, t);
         } else if ( type == 'select' ) {
-          self.onSelect(ev, self, t);
+          self._onSelect(ev, t);
         }
       }
     };
@@ -464,6 +464,9 @@
   };
 
   ListView.prototype.render = function() {
+    this.selected = null;
+    this.selectedDOMItem = null;
+
     OSjs.Utils.$empty(this.$head);
     OSjs.Utils.$empty(this.$body);
     OSjs.Utils.$empty(this.$headTop);
@@ -542,7 +545,7 @@
         }
 
         row.onclick = function(ev) {
-          self._onRowClick.call(self, this, ev);
+          self._onRowClick.call(self, ev, this);
         };
         row.appendChild(col);
       }
@@ -554,10 +557,61 @@
     this.$scroll.scrollTop = 0;
   };
 
+  ListView.prototype.onKeyPress = function(ev) {
+    if ( this.destroyed ) return false;
+    if ( !GUIElement.prototype.onKeyPress.apply(this, arguments) ) return;
+
+    ev.preventDefault();
+    if ( this.selected ) {
+
+      var idx = OSjs.Utils.$index(this.selectedDOMItem, this.$body);
+      var tidx = idx;
+      if ( idx >= 0 && idx < this.$body.childNodes.length ) {
+        if ( ev.keyCode === 38 ) {
+          idx--;
+        } else if ( ev.keyCode === 40 ) {
+          idx++;
+        } else if ( ev.keyCode === 13 ) {
+          this._onActivate(ev, this.selectedDOMItem);
+          return true;
+        }
+
+        if ( idx != tidx ) {
+          this.setSelectedIndex(idx);
+        }
+      }
+    }
+    return true;
+  };
+
+  ListView.prototype._onSelect = function(ev, el) {
+    this.selectedDOMItem = null;
+    this.selected = null;
+
+    var iter = false;
+    if ( el ) {
+      var iter = this._getRowData(el);
+      this.selectedDOMItem = el;
+      this.selected = iter;
+      this.onSelect.call(this, ev, el, iter);
+    }
+    return iter;
+  };
+
+  ListView.prototype._onActivate = function(ev, el) {
+    var iter = this._getRowData(el);
+    this.selectedDOMItem = el;
+    this.selected = iter;
+    this.onActivate.call(this, ev, el, iter);
+    return iter;
+  };
+
   ListView.prototype._onRowClick = (function() {
     var last;
 
-    return function(el, ev) {
+    return function(ev, el) {
+      this.selectedDOMItem = el;
+
       if ( last ) {
         last.className = '';
       }
@@ -592,6 +646,48 @@
     this.rows = rows || [];
   };
 
+  ListView.prototype._getRowData = function(row) {
+    var iter = {};
+    var cols = this.columns;
+    for ( var i = 0; i < cols.length; i++ ) {
+      iter[cols[i].key] = row.getAttribute('data-' + cols[i].key);
+    }
+    return iter;
+  };
+
+  ListView.prototype.getItemByKey = function(key, val) {
+    var rows = this.$table.tBodies[0].rows;
+    var tmp, row;
+    for ( var i = 0, l = rows.length; i < l; i++ ) {
+      row = rows[i];
+      tmp = row.getAttribute('data-' + key);
+      if ( tmp == val ) {
+        return row;
+      }
+    }
+    return null;
+  };
+
+  ListView.prototype.setSelectedIndex = function(idx) {
+    if ( this.destroyed ) return;
+    var row = this.$table.tBodies[0].rows[idx];
+    if ( row ) {
+      this._onRowClick(null, row);
+    }
+  };
+
+  ListView.prototype.setSelected = function(val, key) {
+    if ( this.destroyed ) return;
+    var row = this.getItemByKey(key, val);
+    if ( row ) {
+      this._onRowClick(null, row);
+    }
+  };
+
+  ListView.prototype.getSelected = function() {
+    return this.selected;
+  };
+
   /**
    * FileView
    * FIXME: Fix exessive calls to chdir/refresh
@@ -610,8 +706,6 @@
     this.opts.dnd = true;
 
     var self = this;
-    this.selected = null;
-    this.selectedDOMItem = null;
     this.path = path || '/';
     this.lastPath = this.path;
     this.mimeFilter = mimeFilter;
@@ -622,37 +716,6 @@
     this.onSelected = function(item, el) {};
     this.onRefresh = function() {};
     this.onDropped = function() { console.warn("Not implemented yet!"); };
-
-    this.onActivate = function(ev, listView, t) {
-      if ( t ) {
-        var path = t.getAttribute('data-path');
-        var type = t.getAttribute('data-type');
-        if ( path ) {
-          if ( type === 'file' ) {
-            self.onActivated(path, type, t.getAttribute('data-mime'));
-          } else {
-            self.chdir(path);
-          }
-        }
-      }
-    };
-
-    this.onSelect = function(ev, listView, t) {
-      if ( t ) {
-        var path = t.getAttribute('data-path');
-        if ( path ) {
-          self.selectedDOMItem = t;
-          self.selected = {
-            path: path,
-            type: t.getAttribute('data-type'),
-            mime: t.getAttribute('data-mime'),
-            filename: t.getAttribute('data-filename')
-          };
-
-          self.onSelected(self.selected, t);
-        }
-      }
-    };
   };
 
   FileView.prototype = Object.create(ListView.prototype);
@@ -682,37 +745,8 @@
     }
   };
 
-  FileView.prototype.onKeyPress = function(ev) {
-    if ( this.destroyed ) return false;
-    if ( !ListView.prototype.onKeyPress.apply(this, arguments) ) return;
-
-    ev.preventDefault();
-    if ( this.selected ) {
-
-      var idx = OSjs.Utils.$index(this.selectedDOMItem, this.$body);
-      var tidx = idx;
-      if ( idx >= 0 && idx < this.$body.childNodes.length ) {
-        if ( ev.keyCode === 38 ) {
-          idx--;
-        } else if ( ev.keyCode === 40 ) {
-          idx++;
-        } else if ( ev.keyCode === 13 ) {
-          this.onActivate(ev, this, this.selectedDOMItem);
-          return true;
-        }
-
-        if ( idx != tidx ) {
-          this.setSelectedIndex(idx);
-        }
-      }
-    }
-    return true;
-  };
-
   FileView.prototype.render = function(list, dir) {
     if ( this.destroyed ) return;
-    this.selected = null;
-    this.selectedDOMItem = null;
 
     var _callback = function(iter) {
       var icon = 'status/gtk-dialog-question.png';
@@ -809,44 +843,28 @@
     });
   };
 
-  FileView.prototype._onRowClick = function(el, ev) {
-    if ( this.destroyed ) return;
-    ListView.prototype._onRowClick.apply(this, arguments);
-    this.selectedDOMItem = el;
-    this.onSelect(ev, this, el);
-  };
-
-  FileView.prototype.getSelected = function() {
-    return this.selected;
-  };
-
-  FileView.prototype.getItemByKey = function(key, val) {
-    var rows = this.$table.tBodies[0].rows;
-    var tmp, row;
-    for ( var i = 0, l = rows.length; i < l; i++ ) {
-      row = rows[i];
-      tmp = row.getAttribute('data-' + key);
-      if ( tmp == val ) {
-        return row;
+  FileView.prototype._onActivate = function(ev, el) {
+    var item = ListView.prototype._onActivate.apply(this, arguments);
+    if ( item && item.path ) {
+      if ( item.type === 'file' ) {
+        this.onActivated(item.path, item.type, item.mime);
+      } else {
+        this.chdir(item.path);
       }
     }
-    return null;
   };
 
-  FileView.prototype.setSelectedIndex = function(idx) {
-    if ( this.destroyed ) return;
-    var row = this.$table.tBodies[0].rows[idx];
-    if ( row ) {
-      this._onRowClick(row, null);
+  FileView.prototype._onSelect = function(ev, el) {
+    var item = ListView.prototype._onSelect.apply(this, arguments);
+    if ( item && item.path ) {
+      this.onSelected(item, el);
     }
   };
 
-  FileView.prototype.setSelected = function(val, key) {
+  FileView.prototype._onRowClick = function(ev, el) {
     if ( this.destroyed ) return;
-    var row = this.getItemByKey(key, val);
-    if ( row ) {
-      this._onRowClick(row, null);
-    }
+    ListView.prototype._onRowClick.apply(this, arguments);
+    this._onSelect(ev, el);
   };
 
   FileView.prototype.getPath = function() {

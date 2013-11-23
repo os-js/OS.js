@@ -218,8 +218,8 @@
     }
 
     var _callback = function(iter) {
-      var icon = 'status/gtk-dialog-question.png';
-      return  '' + icon;
+      var icon = OSjs.API.getThemeResource('status/gtk-dialog-question.png', 'icon');
+      return '' + icon;
     };
 
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
@@ -227,22 +227,21 @@
       {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
       {key: 'name', title: 'Name'}
      ]);
-    listView.onActivate = function(ev, listView, t) {
-      if ( t ) {
-        var name = t.getAttribute('data-name');
-        if ( name ) {
-          self.end('ok', name);
-        }
+    listView.onActivate = function(ev, el, item) {
+      if ( item && item.name ) {
+        self.selectedApp = item.name;
+        self.$buttonConfirm.removeAttribute("disabled");
+        self.end('ok', item.name);
       }
     };
-    listView.onSelect = function(ev, listView, t) {
-      if ( t ) {
-        var name = t.getAttribute('data-name');
-        if ( name ) {
-          self.selectedApp = name;
-        }
+    listView.onSelect = function(ev, el, item) {
+      if ( item && item.name ) {
+        self.selectedApp = item.name;
+        self.$buttonConfirm.removeAttribute("disabled");
       }
     };
+
+    this.$buttonConfirm.setAttribute("disabled", "disabled");
 
     listView.setRows(list);
     listView.render();

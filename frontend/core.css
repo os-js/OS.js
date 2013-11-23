@@ -121,6 +121,7 @@ body {
   height : 26px;
   z-index : 1;
   overflow : hidden;
+  white-space : nowrap;
 
   line-height : 26px;
   padding-left : 8px;

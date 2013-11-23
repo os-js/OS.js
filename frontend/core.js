@@ -229,7 +229,7 @@
         if ( app.length === 1 ) {
           _launch(app[0]);
         } else {
-          if ( _WM ) {
+          if ( _WM ) { // FIXME: Error on else
             _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
               if ( btn != 'ok' ) return;
               _launch(appname);
