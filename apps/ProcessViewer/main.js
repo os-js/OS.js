@@ -11,7 +11,7 @@
       {key: 'pid',    title: 'PID', domProperties: {width: "50"}},
       {key: 'name',   title: 'Name'},
       {key: 'alive',  title: 'Alive', domProperties: {width: "100"}},
-      {key: 'kill',   title: '', type: 'button', domProperties: {width: "35"}}
+      {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
     ]);
 
     this._title = "Process Viewer";
