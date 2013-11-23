@@ -9,8 +9,11 @@
   bottom : 30px;
   width : 140px;
 }
-.Window_ApplicationFileManagerWindow .GUIListView.sideView thead {
+.Window_ApplicationFileManagerWindow .GUIListView.sideView .Header {
   display : none;
+}
+.Window_ApplicationFileManagerWindow .GUIListView.sideView .Scroll {
+  top : 0px;
 }
 .Window_ApplicationFileManagerWindow .GUIListView.sideView tr {
   background : inherit;
