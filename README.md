@@ -18,31 +18,31 @@ OS.js is a light-weight JavaScript based desktop solution.
 * Package Managment (User-installable applications)
 * GUI and Dialog Library (drag-and-drop support included)
 
-### Demo
+## Demo
 
 You can have a look here: http://osjsv2.0o.no
 
 This site may not always be up to date, and can be unavailable at times.
 
-# Documentation
+## Documentation
 
-## Installation
+### Installation
 
 See the `INSTALL` file
 
-## General
+### General
 
 You can read more about OS.js on the Github project page Wiki. Source documentation and examples are located in the `doc/` folder.
 
-## Development
+### Development
 
 See the Wiki on the Github progject page.
 
-# Compability
+## Compability
 
 Can run on anything that can host web-pages. Currently only Apache has been tested on Mac and Linux.
 
-## Browser support
+### Browser support
 
 Runs in any modern browser. Tested:
 
