@@ -1160,7 +1160,16 @@
         }
 
         el.className = 'Item ' + i;
-        btn = document.createElement('button');
+        switch ( item.type ) {
+          case 'custom' :
+            btn = document.createElement('div');
+          break;
+
+          default :
+            btn = document.createElement('button');
+          break;
+        }
+
         if ( typeof item.onCreate === 'function' ) {
           item.onCreate.call(this, i, item, el, btn);
         } else {
@@ -1264,6 +1273,13 @@
   Canvas.prototype.fillColor = function(color) {
     this.$context.fillStyle = color;
     this.$context.fillRect(0, 0, this.width, this.height);
+  };
+
+  Canvas.prototype.resize = function(w, h) {
+    this.width = w;
+    this.height = h;
+    this.$canvas.width = w;
+    this.$canvas.height = h;
   };
 
   Canvas.prototype.func = function(f, args) {
