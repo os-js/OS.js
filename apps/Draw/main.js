@@ -658,12 +658,12 @@
       var _openFileFinished = function(name, data) {
         self.currentFilename = name;
         if ( win ) {
-          win.setTitle('Loading...');
           win.setData(data, name);
           win._focus();
         }
       };
 
+      win.setTitle('Loading...');
       win._toggleLoading(true);
       OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: true}]}, function(res) {
         if ( res && res.result ) {

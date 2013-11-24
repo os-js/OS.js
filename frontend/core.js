@@ -1380,9 +1380,7 @@
 
     self._onChange('create');
 
-    setTimeout(function() {
-      self._toggleLoading(false);
-    }, 100);
+    self._toggleLoading(false);
 
     return this._$root;
   };
