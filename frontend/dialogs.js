@@ -457,6 +457,7 @@
   /**
    * File Dialog Class
    * TODO: Loading when waiting for files
+   * TODO: Focus input element on save dialog
    */
   var FileDialog = function(args, onClose) {
     args = args || {};

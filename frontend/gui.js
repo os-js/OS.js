@@ -1241,7 +1241,38 @@
     return null;
   };
 
-  Canvas.prototype.setImageData = function(data, width, height) {
+  Canvas.prototype.setImageData = function(src, onDone, onError) {
+    if ( !this.$context ) return;
+
+    onDone = onDone || function() {};
+    onError = onError || function() {};
+    var self = this;
+    var img = new Image();
+    var can = this.$canvas;
+    var ctx = this.$context;
+    var mime = null;
+
+    try {
+      mime = src.split(/;/)[0].replace(/^data\:/, '');
+    } catch ( e ) {
+      throw "Cannot setImageData() invalid or no mime";
+      return;
+    }
+
+    this.type = mime;
+
+    img.onload = function() {
+      can.width = this.width;
+      can.height = this.height;
+      self.width = can.width;
+      self.height = can.height;
+      ctx.drawImage(img, 0, 0);
+      onDone.apply(self, arguments);
+    };
+    img.onerror = function() {
+      onError.apply(self, arguments);
+    };
+    img.src = src;
   };
 
   Canvas.prototype.getCanvas = function() {
@@ -1250,6 +1281,10 @@
 
   Canvas.prototype.getContext = function() {
     return this.$context;
+  };
+
+  Canvas.prototype.getColorAt = function(x, y) {
+    return null; // TODO
   };
 
   Canvas.prototype.getImageData = function(type) {
