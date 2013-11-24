@@ -518,6 +518,8 @@
     var self = this;
     var canvas = this._getGUIElement('ApplicationDrawCanvas');
     if ( canvas ) {
+      this._toggleLoading(false);
+
       this.createNew();
       console.log("ApplicationDrawWindow::setData()");
 
@@ -528,8 +530,11 @@
 
         self._getGUIElement('ApplicationDrawCanvasOverlay').resize(canvas.width, canvas.height);
         self._getGUIElement('ApplicationDrawCanvasOverlay').clear();
-      });
 
+        self._toggleLoading(false);
+      }, function() {
+        self._toggleLoading(false);
+      });
     }
   };
 
@@ -677,7 +682,10 @@
           _openFile(filename, mime);
         } else {
           var path = (this.currentFilename) ? OSjs.Utils.dirname(this.currentFilename) : null;
+
+          win._toggleLoading(false);
           this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image'], path: path}, function(btn, fname, fmime) {
+            win._toggleLoading(false);
             if ( btn !== 'ok' ) return;
             _openFile(fname, fmime);
           }], win);

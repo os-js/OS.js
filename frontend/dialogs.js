@@ -534,6 +534,7 @@
           }
         }
         start = false;
+        self._toggleLoading(false);
       };
 
       fileList.onRefresh = function() {
@@ -542,6 +543,7 @@
         } else {
           self.$input.value = '';
         }
+        self._toggleLoading(true);
       };
 
       this.$element.appendChild(this.$input);
