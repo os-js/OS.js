@@ -529,8 +529,6 @@
     var self = this;
     var canvas = this._getGUIElement('ApplicationDrawCanvas');
     if ( canvas ) {
-      this._toggleLoading(true);
-
       this.createNew();
       console.log("ApplicationDrawWindow::setData()");
 
@@ -660,8 +658,6 @@
       var _openFileFinished = function(name, data) {
         self.currentFilename = name;
         if ( win ) {
-          win._toggleLoading(false);
-
           win.setTitle('Loading...');
           win.setData(data, name);
           win._focus();
@@ -705,9 +701,7 @@
         } else {
           var path = (this.currentFilename) ? OSjs.Utils.dirname(this.currentFilename) : null;
 
-          win._toggleLoading(false);
           this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image'], path: path}, function(btn, fname, fmime) {
-            win._toggleLoading(false);
             if ( btn !== 'ok' ) return;
             _openFile(fname, fmime);
           }], win);
