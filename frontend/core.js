@@ -691,6 +691,8 @@
   WindowManager.prototype.destroy = function() {
     console.log("OSjs::Core::WindowManager::destroy()");
 
+    // TODO: Reset styles
+
     var i = 0;
     var l = this._windows.length;
     for ( i; i < l; i++ ) {

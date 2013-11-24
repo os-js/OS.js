@@ -175,7 +175,6 @@
 
   /**
    * Application Chooser Dialog
-   * TODO: Get more application info (like) icons from metadata
    */
   var ApplicationChooserDialog = function(filename, mime, list, onClose) {
     this.filename = OSjs.Utils.filename(filename);
@@ -213,22 +212,33 @@
     var root = StandardDialog.prototype.init.apply(this, arguments);
     var container = this.$element;
     var list = [];
+    var refs = {};
+    var cs = OSjs.API.getCoreService();
+    if ( cs ) {
+      refs = cs.getApplicationCache();
+    }
 
+    var image, name, iter;
     for ( var i = 0, l = this.list.length; i < l; i++ ) {
+      name = this.list[i];
+      icon = null;
+      if ( refs[this.list[i]] ) {
+        iter = refs[this.list[i]];
+        if ( iter ) {
+          name = iter.name || name;
+          icon = OSjs.API.getThemeResource(iter.icon, 'icon') || icon;
+        }
+      }
+
       list.push({
-        image: null,
-        name: this.list[i]
+        image: icon,
+        name: name
       });
     }
 
-    var _callback = function(iter) {
-      var icon = OSjs.API.getThemeResource('status/gtk-dialog-question.png', 'icon');
-      return '' + icon;
-    };
-
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
     listView.setColumns([
-      {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
+      {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
       {key: 'name', title: 'Name'}
      ]);
     listView.onActivate = function(ev, el, item) {
