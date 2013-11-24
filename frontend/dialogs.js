@@ -612,6 +612,14 @@
     }
   };
 
+  FileDialog.prototype._focus = function() {
+    StandardDialog.prototype._focus.apply(this, arguments);
+    if ( this.$input ) {
+      this.$input.focus();
+      this.$input.select();
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // STANDARD
   /////////////////////////////////////////////////////////////////////////////
