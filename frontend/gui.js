@@ -1118,6 +1118,7 @@
     this.$active = null;
 
     this.items = {};
+    this.oriantation = opts.orientation || 'horizontal';
     GUIElement.apply(this, [name, {}]);
   };
 
@@ -1126,7 +1127,7 @@
   ToolBar.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIToolbar']);
     this.$container = document.createElement('ul');
-    this.$container.className = 'Container';
+    this.$container.className = 'Container ' + this.orientation;
     el.appendChild(this.$container);
     return el;
   };
@@ -1134,6 +1135,13 @@
   ToolBar.prototype.addItem = function(name, opts) {
     this.items[name] = opts;
   };
+
+  ToolBar.prototype.addSeparator = (function() {
+    var _sid = 0;
+    return function() {
+      this.items['separator_' + (_sid++)] = null;
+    };
+  })();
 
   ToolBar.prototype.render = function() {
     if ( !this.$container ) return;
@@ -1144,21 +1152,31 @@
       if ( this.items.hasOwnProperty(i) ) {
         item = this.items[i];
         el = document.createElement('li');
-        el.className = i;
 
-        btn = document.createElement('button');
-        if ( item.icon ) {
-          img = document.createElement('img');
-          img.alt = item.icon;
-          img.src = item.icon;
-          btn.appendChild(img);
-          el.className += ' HasIcon';
+        if ( item === null ) {
+          el.className = 'Separator ' + i;
+          this.$container.appendChild(el);
+          continue;
         }
-        if ( item.title ) {
-          span = document.createElement('span');
-          span.innerHTML = item.title;
-          btn.appendChild(span);
-          el.className += ' HasTitle';
+
+        el.className = 'Item ' + i;
+        btn = document.createElement('button');
+        if ( typeof item.onCreate === 'function' ) {
+          item.onCreate.call(this, i, item, el, btn);
+        } else {
+          if ( item.icon ) {
+            img = document.createElement('img');
+            img.alt = item.icon;
+            img.src = item.icon;
+            btn.appendChild(img);
+            el.className += ' HasIcon';
+          }
+          if ( item.title ) {
+            span = document.createElement('span');
+            span.innerHTML = item.title;
+            btn.appendChild(span);
+            el.className += ' HasTitle';
+          }
         }
 
         btn.onclick = (function(key, itm) {
@@ -1169,9 +1187,9 @@
               }
               self.$active = this;
               self.$active.className += ' Active';
-
-              self._onItemSelect(ev, this, key, itm);
             }
+
+            self._onItemSelect(ev, this, key, itm);
           };
         })(i, item);
 
@@ -1185,6 +1203,18 @@
     if ( item && item.onClick ) {
       item.onClick(ev, el, name, item);
     }
+  };
+
+  ToolBar.prototype.getItem = function(name) {
+    if ( this.$container ) {
+      var children = this.$container.childNodes;
+      for ( var i = 0, l = children.length; i < l; i++ ) {
+        if ( (new RegExp(name)).test(children[i].className) ) {
+          return children[i];
+        }
+      }
+    }
+    return null;
   };
 
   /**
@@ -1229,6 +1259,11 @@
       return true;
     }
     return false;
+  };
+
+  Canvas.prototype.fillColor = function(color) {
+    this.$context.fillStyle = color;
+    this.$context.fillRect(0, 0, this.width, this.height);
   };
 
   Canvas.prototype.func = function(f, args) {
@@ -1284,7 +1319,12 @@
   };
 
   Canvas.prototype.getColorAt = function(x, y) {
-    return null; // TODO
+    var imageData = this.$context.getImageData(0, 0, this.$canvas.width, this.$canvas.height).data;
+    var index = ((x + y * this.$canvas.width) * 4);
+
+    var rgb = {r:imageData[index + 0], g:imageData[index + 1], b:imageData[index + 2], a:imageData[index + 3]};
+    var hex = OSjs.Utils.RGBtoHex(rgb);
+    return {rgb: rgb, hex:  hex};
   };
 
   Canvas.prototype.getImageData = function(type) {

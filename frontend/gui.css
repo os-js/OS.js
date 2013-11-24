@@ -239,7 +239,7 @@
   right : 0px;
   bottom : 0px;
 }
-.GUIToolbar li {
+.GUIToolbar li.Item {
   margin : 0;
   padding : 5px;
   position : relative;
@@ -260,6 +260,9 @@
 .GUIToolbar img {
   vertical-align : center;
 }
+.GUIToolbar li.Separator {
+  clear : both;
+}
 
 /**
  * Canvas Element
@@ -270,3 +273,4 @@
 .GUICanvas canvas {
   position : relative;
 }
+
