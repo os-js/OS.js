@@ -1270,6 +1270,47 @@
   };
 
   /**
+   * ProgressBar Element
+   */
+  var ProgressBar = function(name, percentage) {
+    this.$container = null;
+    this.$bar = null;
+    this.$label = null;
+    this.percentage = percentage || 0;
+
+    GUIElement.apply(this, [name, {}]);
+  };
+
+  ProgressBar.prototype = Object.create(GUIElement.prototype);
+
+  ProgressBar.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIProgressBar']);
+    this.$container = document.createElement('div');
+    this.$container.className = 'Container';
+
+    this.$bar = document.createElement('div');
+    this.$bar.className = 'Bar';
+    this.$container.appendChild(this.$bar);
+
+    this.$label = document.createElement('div');
+    this.$label.className = 'Label';
+    this.$container.appendChild(this.$label);
+
+    el.appendChild(this.$container);
+
+    this.setPercentage(this.percentage);
+    return el;
+  };
+
+  ProgressBar.prototype.setPercentage = function(p) {
+    if ( p < 0 || p > 100 ) return;
+    this.percentage = (p << 0);
+    this.$bar.style.width = this.percentage + '%';
+    this.$label.innerHTML = this.percentage + '%';
+  };
+
+
+  /**
    * Canvas Element
    */
   var Canvas = function(name, opts) {
@@ -1408,6 +1449,7 @@
   OSjs.GUI.Slider       = Slider;
   OSjs.GUI.ToolBar      = ToolBar;
   OSjs.GUI.Canvas       = Canvas;
+  OSjs.GUI.ProgressBar  = ProgressBar;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

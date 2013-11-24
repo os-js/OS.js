@@ -240,3 +240,18 @@ body #WindowList .Background {
 .GUIToolbar > .Container {
   background : #c2c2c2;
 }
+
+/* GUIProgressBar */
+.GUIProgressBar .Container {
+  background : #333333;
+  border : 1px solid #333333;
+}
+.GUIProgressBar .Bar {
+  text-align : center;
+  background : #fff;
+}
+.GUIProgressBar .Label {
+  color : #aaa;
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+}
+

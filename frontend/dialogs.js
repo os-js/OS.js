@@ -276,8 +276,6 @@
     DialogWindow.apply(this, ['FileUploadDialog', {width:400, height:120}]);
 
     this.$desc = null;
-    this.$barContainer = null;
-    this.$barInner = null;
     this._title = "Upload Progress";
     this._properties.allow_close = false;
     this._icon = 'actions/document-send.png';
@@ -302,20 +300,12 @@
     desc.className = 'Description';
     desc.innerHTML = 'Loading...';
 
-    var outer = document.createElement('div');
-    outer.className = 'BarContainer';
 
-    var inner = document.createElement('div');
-    inner.className = 'Bar';
-
-    outer.appendChild(inner);
     el.appendChild(desc);
-    el.appendChild(outer);
+    this._addGUIElement(new OSjs.GUI.ProgressBar('FileProgressBar', 0), el);
     root.appendChild(el);
 
     this.$desc = desc;
-    this.$barContainer = outer;
-    this.$bar = inner;
   };
 
   FileProgressDialog.prototype.setDescription = function(d) {
@@ -324,9 +314,10 @@
   };
 
   FileProgressDialog.prototype.setProgress = function(p) {
-    if ( !this.$barContainer ) return;
-    this.$bar.innerHTML = p + "%";
-    this.$bar.style.width = p + "%";
+    var el = this._getGUIElement('FileProgressBar');
+    if ( el ) {
+      el.setPercentage(p);
+    }
   };
 
   /**
