@@ -32,6 +32,8 @@
   window.OSjs = window.OSjs || {};
   OSjs.Utils = OSjs.Utils || {};
 
+  var _LOADED = {};
+
 
   /**
    * Preloader -- Construct a new Preloader
@@ -71,6 +73,8 @@
     };
 
     this._onSuccess   = function(src) {
+      _LOADED[src] = true;
+
       if ( self._finished )
         return;
 
@@ -134,6 +138,8 @@
     if ( this._list.length ) {
       for ( var i = 0; i < this._parallel; i++ ) {
         var item = this._list.shift();
+        if ( _LOADED[item.src] ) continue;
+
         if ( item.type == "image" ) {
           this._loadImage(item.src);
         } else if ( item.type == "video" || item.type == "film") {
