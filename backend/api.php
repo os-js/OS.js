@@ -131,7 +131,8 @@ class FS
     return self::sortdir($list);
   }
 
-  public static function file_put_contents($fname, $content) {
+  public static function file_put_contents($fname, $content, $opts = null) {
+    if ( !$opts || !is_array($opts) ) $opts = Array();
     $fname = unrealpath($fname);
 
     if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
@@ -141,15 +142,42 @@ class FS
     } else {
       if ( !is_writable(dirname($fname)) ) throw new Exception("Write permission denied in folder");
     }
+
+    if ( !empty($opts['dataSource']) && $opts['dataSource'] ) {
+      $dcontent = preg_replace("/^data\:(.*);base64\,/", "", $content);
+      if ( $dcontent === false ) {
+        $dcontent = '';
+      } else {
+        $dcontent = base64_decode($dcontent);
+      }
+      return file_put_contents($fname, $dcontent) !== false;
+    }
+
     return file_put_contents($fname, $content) !== false;
   }
 
-  public static function file_get_contents($fname) {
+  public static function file_get_contents($fname, $opts = null) {
+    if ( !$opts || !is_array($opts) ) $opts = Array();
     $fname = unrealpath($fname);
 
     if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
+
+    if ( !empty($opts['dataSource']) && $opts['dataSource'] ) {
+      $finfo = finfo_open(FILEINFO_MIME_TYPE);
+      $mime  = finfo_file($finfo, $fname);
+      finfo_close($finfo);
+
+      if ( $mime ) {
+        $data = file_get_contents($fname);
+        $out  = null;
+        return sprintf("data:%s;base64,%s", $mime, base64_encode($data));
+      }
+
+      throw new Exception("Failed to read file");
+    }
+
     return file_get_contents($fname);
   }
 
