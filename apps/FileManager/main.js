@@ -289,7 +289,6 @@
     callback = callback || function() {};
 
     var _onError = function(error) {
-      // FIXME
       OSjs.API.error("File Manager error", "An error occured while handling your request", error);
 
       callback(false);

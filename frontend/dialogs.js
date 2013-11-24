@@ -464,8 +464,6 @@
 
   /**
    * File Dialog Class
-   * TODO: Loading when waiting for files
-   * TODO: Focus input element on save dialog
    */
   var FileDialog = function(args, onClose) {
     args = args || {};
@@ -625,10 +623,16 @@
     if ( curr ) {
       this.end('ok', curr, mime);
     } else {
-      if ( this.type === 'save' ) {
-        alert('You need to select a file or enter new filename!'); // FIXME
-      } else {
-        alert('You need to select a file!'); // FIXME
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        var dwin;
+        if ( this.type === 'save' ) {
+          dwin = new AlertDialog('You need to select a file or enter new filename!');
+        } else {
+          dwin = new AlertDialog('You need to select a file!');
+        }
+        wm.addWindow(dwin);
+        this._addChild(dwin);
       }
     }
   };

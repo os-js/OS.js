@@ -629,7 +629,6 @@
           win.setTitle(name);
           win._focus();
         }
-        console.warn("TODO --- onSaveFinished()");
       };
 
       var canvas = win._getGUIElement('ApplicationDrawCanvas');

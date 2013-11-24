@@ -241,11 +241,13 @@
         if ( app.length === 1 ) {
           _launch(app[0]);
         } else {
-          if ( _WM ) { // FIXME: Error on else
+          if ( _WM ) {
             _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
               if ( btn != 'ok' ) return;
               _launch(appname);
             }));
+          } else {
+            OSjs.API.error("Error opening file", "Fatal Error", "No window manager is running");
           }
         }
       } else {

@@ -1,7 +1,5 @@
 (function(Application, Window) {
 
-  // TODO: Mime check from metadata
-
   /**
    * Main Window
    */

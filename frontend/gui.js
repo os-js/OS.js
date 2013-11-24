@@ -475,7 +475,7 @@
     };
 
     var onContextMenu = function(ev) {
-      ev.stopPropagation();
+      ev.stopPropagation(); // Or else eventual ContextMenu is blurred
       ev.preventDefault();
       var cel = activate(ev, 'select');
       if ( cel ) {
