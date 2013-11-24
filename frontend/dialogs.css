@@ -170,12 +170,16 @@
   left : 0px;
   right : 0px;
 }
+
 .ConfirmDialog {
 }
+
 .AlertDialog {
 }
 .AlertDialog .OK {
-  right : 0px;
+  right : auto !important;
+  left : 50% !important;
+  margin-left : -50px !important;
 }
 
 /**
