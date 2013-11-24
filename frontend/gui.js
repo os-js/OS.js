@@ -783,9 +783,10 @@
     return this.chdir(this.path, onRefreshed);
   };
 
-  FileView.prototype.chdir = function(dir, onRefreshed) {
+  FileView.prototype.chdir = function(dir, onRefreshed, onError) {
     if ( this.destroyed ) return;
     onRefreshed = onRefreshed || function() {};
+    onError = onError || function() {};
 
     var self = this;
     this.onRefresh.call(this);
@@ -831,6 +832,7 @@
       }
     }, function(error) {
       self.onError.call(self, error, dir);
+      onError.call(self, error, dir);
     });
   };
 

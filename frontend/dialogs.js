@@ -503,7 +503,10 @@
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
     fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', null, {mimeFilter: this.allowMimes}), this.$element);
-    fileList.onError = this.onError;
+    fileList.onError = function() {
+      self._toggleLoading(false);
+      this.onError.apply(this, arguments);
+    };
 
     if ( this.type === 'save' ) {
       var start = true;
@@ -528,25 +531,32 @@
       };
 
       fileList.onFinished = function() {
+        self._toggleLoading(false);
         if ( start ) {
           if ( self.currentFilename ) {
             fileList.setSelected(self.currentFilename, 'filename');
           }
         }
         start = false;
-        self._toggleLoading(false);
       };
 
       fileList.onRefresh = function() {
+        self._toggleLoading(true);
         if ( start ) {
           self.$input.value = curval;
         } else {
           self.$input.value = '';
         }
-        self._toggleLoading(true);
       };
 
       this.$element.appendChild(this.$input);
+    } else {
+      fileList.onFinished = function() {
+        self._toggleLoading(false);
+      };
+      fileList.onRefresh = function() {
+        self._toggleLoading(true);
+      };
     }
 
     fileList.chdir(this.currentPath);
