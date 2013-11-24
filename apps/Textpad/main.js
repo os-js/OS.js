@@ -181,7 +181,7 @@
       case 'saveas' :
         var dir = this.currentFile ? OSjs.Utils.dirname(this.currentFile) : null;
         var fnm = this.currentFile ? OSjs.Utils.filename(this.currentFile) : null;
-        this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'text/plain', mimes: ['^text']}, function(btn, fname) {
+        this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'text/plain', mimes: ['^text'], defaultFilename: "New Text File.txt"}, function(btn, fname) {
             if ( btn !== 'ok' ) return;
           _save(fname);
         }], w);

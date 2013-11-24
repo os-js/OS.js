@@ -464,6 +464,7 @@
 
     this.currentPath      = args.path || OSjs.API.getDefaultPath('/');
     this.currentFilename  = args.filename || '';
+    this.defaultFilename  = args.defaultFilename || '';
     this.type             = args.type || 'open';
     this.mime             = args.mime || null;
     this.allowMimes       = args.mimes || null;
@@ -510,7 +511,7 @@
 
     if ( this.type === 'save' ) {
       var start = true;
-      var curval = this.currentFilename ? this.currentFilename : '';
+      var curval = this.currentFilename ? this.currentFilename : this.defaultFilename;
 
       this.$input = document.createElement('input');
       this.$input.type = 'text';

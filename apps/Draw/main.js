@@ -717,7 +717,7 @@
       case 'saveas' :
         var dir = this.currentFilename ? OSjs.Utils.dirname(this.currentFilename) : null;
         var fnm = this.currentFilename ? OSjs.Utils.filename(this.currentFilename) : null;
-        this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image']}, function(btn, fname) {
+        this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png'}, function(btn, fname) {
             if ( btn !== 'ok' ) return;
           _saveFile(fname);
         }], win);
