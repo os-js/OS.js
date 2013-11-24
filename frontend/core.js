@@ -67,6 +67,22 @@
   var _CORE;
   var _LOADING;
 
+  var _DEFAULT_SETTINGS = {
+    WM : {
+      wallpaper   : 'osjs:///themes/wallpapers/noise_red.png',
+      themes      : [{'default': {title: 'Default'}}],
+      theme       : 'default',
+      background  : 'image-repeat',
+      style       : {
+        backgroundColor  : '#0B615E',
+        color            : '#333',
+        fontWeight       : 'normal',
+        textDecoration   : 'none',
+        backgroundRepeat : 'repeat'
+      }
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -655,21 +671,15 @@
 
     name = name || 'WindowManager';
     ref = ref || this;
+    var dsettings = _DEFAULT_SETTINGS.WM;
 
     this._windows     = [];
     this._name        = name;
-    this._wallpaper   = 'osjs:///themes/wallpapers/noise_red.png';
-    //this._wallpaper   = '/themes/wallpapers/noise_red.png';
-    this._themes      = args.themes || [{'default': {title: 'Default'}}];
-    this._theme       = 'default';
-    this._background  = 'image-repeat';
-    this._style       = {
-      backgroundColor  : '#0B615E',
-      color            : '#333',
-      fontWeight       : 'normal',
-      textDecoration   : 'none',
-      backgroundRepeat : 'repeat'
-    };
+    this._wallpaper   = dsettings.wallpaper;
+    this._themes      = args.themes || dsettings.themes;
+    this._theme       = dsettings.theme;
+    this._background  = dsettings.background;
+    this._style       = dsettings.style;
 
     Process.apply(this, [name]);
 
@@ -688,8 +698,15 @@
   WindowManager.prototype.destroy = function() {
     console.log("OSjs::Core::WindowManager::destroy()");
 
-    // TODO: Reset styles
+    // Reset styles
+    var defaults = _DEFAULT_SETTINGS.WM;
+    defaults.theme = null;
+    delete defaults.themes;
 
+    this.applySettings();
+    this.setWallpaper(defaults.wallpaper, defaults.background);
+
+    // Destroy all windows
     var i = 0;
     var l = this._windows.length;
     for ( i; i < l; i++ ) {
@@ -828,8 +845,12 @@
   WindowManager.prototype.setTheme = function(name) {
     console.log("OSjs::Core::WindowManager::setTheme", name);
 
-    var url = '/themes/' + name + '.css';
-    document.getElementById("_OSjsTheme").setAttribute('href', url);
+    if ( name === null ) {
+      document.getElementById("_OSjsTheme").setAttribute('href', '/frontend/blank.css');
+    } else {
+      var url = '/themes/' + name + '.css';
+      document.getElementById("_OSjsTheme").setAttribute('href', url);
+    }
     this._theme = name;
   };
 
