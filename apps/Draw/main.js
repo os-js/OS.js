@@ -525,7 +525,7 @@
     }
   };
 
-  ApplicationDrawWindow.prototype.setData = function(data) {
+  ApplicationDrawWindow.prototype.setData = function(data, filename) {
     var self = this;
     var canvas = this._getGUIElement('ApplicationDrawCanvas');
     if ( canvas ) {
@@ -534,19 +534,23 @@
       this.createNew();
       console.log("ApplicationDrawWindow::setData()");
 
-      canvas.clear();
-      canvas.setImageData(data, function() {
-        self.$canvasContainer.style.width = canvas.width + 'px';
-        self.$canvasContainer.style.height = canvas.height + 'px';
+      setTimeout(function() { // To make loading show correctly
+        canvas.clear();
+        canvas.setImageData(data, function() {
+          self.$canvasContainer.style.width = canvas.width + 'px';
+          self.$canvasContainer.style.height = canvas.height + 'px';
 
-        self._getGUIElement('ApplicationDrawCanvasOverlay').resize(canvas.width, canvas.height);
-        self._getGUIElement('ApplicationDrawCanvasOverlay').clear();
+          self._getGUIElement('ApplicationDrawCanvasOverlay').resize(canvas.width, canvas.height);
+          self._getGUIElement('ApplicationDrawCanvasOverlay').clear();
 
-        self._toggleLoading(false);
-      }, function() {
-        self._toggleLoading(false);
-      });
+          self._toggleLoading(false);
+        }, function() {
+          self._toggleLoading(false);
+        });
+      }, 10);
     }
+
+    this.setTitle(filename);
   };
 
   ApplicationDrawWindow.prototype.createNew = function(w, h) {
@@ -658,8 +662,8 @@
         if ( win ) {
           win._toggleLoading(false);
 
-          win.setTitle(fname);
-          win.setData(data);
+          win.setTitle('Loading...');
+          win.setData(data, name);
           win._focus();
         }
       };
