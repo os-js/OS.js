@@ -1187,6 +1187,79 @@
     }
   };
 
+  /**
+   * Canvas Element
+   */
+  var Canvas = function(name, opts) {
+    opts = opts || {};
+    if ( !OSjs.Utils.getCompability().canvas ) {
+      throw "Your platform does not support canvas :/";
+    }
+
+    this.$canvas    = null;
+    this.$context   = null;
+    this.width      = opts.width  || null;
+    this.height     = opts.height || null;
+    this.type       = opts.type   || 'image/png';
+
+    GUIElement.apply(this, [name, {}]);
+  };
+
+  Canvas.prototype = Object.create(GUIElement.prototype);
+
+  Canvas.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUICanvas']);
+
+    this.$canvas = document.createElement('canvas');
+    if ( this.width !== null ) {
+      this.$canvas.width = this.width;
+    }
+    if ( this.height !== null ) {
+      this.$canvas.height = this.height;
+    }
+    this.$context = this.$canvas.getContext('2d');
+
+    el.appendChild(this.$canvas);
+    return el;
+  };
+
+  Canvas.prototype.clear = function() {
+    if ( this.$context ) {
+      this.$context.clearRect(0, 0, this.width, this.height);
+      return true;
+    }
+    return false;
+  };
+
+  Canvas.prototype.func = function(f, args) {
+    if ( !f || !args ) {
+      throw "Canvas::func() expects a function name and arguments";
+    }
+    if ( this.$canvas && this.$context ) {
+      return this.$context[f].apply(this.$context, args);
+    }
+    return null;
+  };
+
+  Canvas.prototype.setImageData = function(data, width, height) {
+  };
+
+  Canvas.prototype.getCanvas = function() {
+    return this.$canvas;
+  };
+
+  Canvas.prototype.getContext = function() {
+    return this.$context;
+  };
+
+  Canvas.prototype.getImageData = function(type) {
+    if ( this.$context && this.$canvas ) {
+      type = type || this.type;
+      return this.$canvas.toDataURL(type);
+    }
+    return null;
+  };
+
   //
   // EXPORTS
   //
@@ -1200,6 +1273,7 @@
   OSjs.GUI.StatusBar    = StatusBar;
   OSjs.GUI.Slider       = Slider;
   OSjs.GUI.ToolBar      = ToolBar;
+  OSjs.GUI.Canvas       = Canvas;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

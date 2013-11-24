@@ -260,3 +260,13 @@
 .GUIToolbar img {
   vertical-align : center;
 }
+
+/**
+ * Canvas Element
+ */
+.GUICanvas {
+  position : relative;
+}
+.GUICanvas canvas {
+  position : relative;
+}
