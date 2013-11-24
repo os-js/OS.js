@@ -413,8 +413,12 @@
       self.onMouseClick(ev, ev.clientX-pos.x, ev.clientY-pos.y, canvas);
     };
 
-    this.$canvasContainer.addEventListener('mousedown', _onMouseDown, false);
-    this.$canvasContainer.addEventListener('click', _onMouseClick, false);
+    self.$canvasContainer.addEventListener('mousedown', _onMouseDown, false);
+    self.$canvasContainer.addEventListener('click', _onMouseClick, false);
+    this._addHook('destroy', function() {
+      self.$canvasContainer.removeEventListener('mousedown', _onMouseDown, false);
+      self.$canvasContainer.removeEventListener('click', _onMouseClick, false);
+    });
 
 
     root.appendChild(this.$canvasContainer);

@@ -31,7 +31,6 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
-  // FIXME: Destroy DOM events
   // FIXME: Cleanups
 
   var StandardDialog = function(className, args, opts, onClose) {
@@ -80,6 +79,9 @@
         if ( this.getAttribute("disabled") == "disabled" ) return;
         self.onCancelClick(ev);
       };
+      this._addHook('destroy', function() {
+        self.$buttonCancel.onclick = function() {};
+      });
       this.$element.appendChild(this.$buttonCancel);
     }
 
@@ -91,6 +93,9 @@
         if ( this.getAttribute("disabled") == "disabled" ) return;
         self.onConfirmClick.call(self, ev);
       };
+      this._addHook('destroy', function() {
+        self.$buttonConfirm.onclick = function() {};
+      });
       this.$element.appendChild(this.$buttonConfirm);
     }
 

@@ -44,7 +44,6 @@
   console.groupEnd  = console.groupEnd  || console.log;
 
   // TODO: Optimize
-  // FIXME: Destroy DOM events
   // FIXME: Prevent duplicate loading of resources
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1064,8 +1063,9 @@
       onbottom  : false
     };
     this._hooks     = {
-      focus : [],
-      blur  : []
+      focus   : [],
+      blur    : [],
+      destroy : []
     };
 
     if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
@@ -1118,6 +1118,9 @@
       }
       return false;
     };
+    this._addHook('destroy', function() {
+      main.oncontextmenu = function() {};
+    });
 
     if ( this._properties.allow_drop ) {
       var cpb = OSjs.Utils.getCompability();
@@ -1190,6 +1193,9 @@
     windowIconImage.onclick     = function(ev) {
       self._onWindowIconClick(ev, this);
     };
+    this._addHook('destroy', function() {
+      windowIconImage.onclick = function() {};
+    });
 
     var windowTitle       = document.createElement('div');
     windowTitle.className = 'WindowTitle';
@@ -1201,6 +1207,9 @@
       ev.preventDefault();
       return stopPropagation(ev);
     };
+    this._addHook('destroy', function() {
+      windowButtons.onmousedown = function() {};
+    });
 
     var buttonMinimize        = document.createElement('div');
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
@@ -1210,6 +1219,9 @@
       self._onWindowButtonClick(ev, this, 'minimize');
       return false;
     };
+    this._addHook('destroy', function() {
+      buttonMinimize.onclick = function() {};
+    });
     if ( !this._properties.allow_minimize ) {
       buttonMinimize.style.display = 'none';
     }
@@ -1222,6 +1234,9 @@
       self._onWindowButtonClick(ev, this, 'maximize');
       return false;
     };
+    this._addHook('destroy', function() {
+      buttonMaximize.onclick = function() {};
+    });
     if ( !this._properties.allow_maximize ) {
       buttonMaximize.style.display = 'none';
     }
@@ -1234,6 +1249,10 @@
       self._onWindowButtonClick(ev, this, 'close');
       return false;
     };
+    this._addHook('destroy', function() {
+      buttonClose.onclick = function() {};
+    });
+
     if ( !this._properties.allow_close ) {
       buttonClose.style.display = 'none';
     }
@@ -1253,6 +1272,9 @@
       ev.preventDefault();
       return false;
     };
+    this._addHook('destroy', function() {
+      windowLoading.onclick = function() {};
+    });
 
     var windowLoadingImage        = document.createElement('div');
     windowLoadingImage.className  = 'WindowLoadingIndicator';
@@ -1347,16 +1369,34 @@
       windowTop.addEventListener('mousedown', function(ev) {
         onMouseDown(ev, 'move');
       }, false);
+
+      this._addHook('destroy', function() {
+        windowTop.removeEventListener('mousedown', function(ev) {
+          onMouseDown(ev, 'move');
+        }, false);
+      });
     }
     if ( this._properties.allow_resize ) {
       windowResize.addEventListener('mousedown', function(ev) {
         onMouseDown(ev, 'resize');
       }, false);
+
+      this._addHook('destroy', function() {
+        windowResize.removeEventListener('mousedown', function(ev) {
+          onMouseDown(ev, 'resize');
+        }, false);
+      });
     }
 
     main.addEventListener('mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
+    });
+    this._addHook('destroy', function() {
+      main.removeEventListener('mousedown', function(ev) {
+        self._focus();
+        return stopPropagation(ev);
+      });
     });
 
     this._$element = main;
@@ -1377,21 +1417,23 @@
     }
     windowTitle.style.marginRight = buttonsWidth + 'px';
 
-
-    self._onChange('create');
-
-    self._toggleLoading(false);
+    this._onChange('create');
+    this._toggleLoading(false);
 
     return this._$root;
   };
 
   Window.prototype.destroy = function() {
+    var self = this;
     if ( this._destroyed ) return;
     this._destroyed = true;
     console.log("OSjs::Core::Window::destroy()");
 
     this._onChange('close');
 
+    this._fireHook('destroy');
+
+    // Children
     if ( this._appRef ) {
       this._appRef._onMessage(this, 'destroyWindow', {});
     }
@@ -1421,6 +1463,7 @@
     }
     this._children = [];
 
+    // Instance
     if ( _WM ) {
       _WM.removeWindow(this);
     }
@@ -1432,6 +1475,7 @@
     }
 
     this._appRef = null;
+    this._hooks = {};
   };
 
   Window.prototype._addHook = function(k, func) {
@@ -1449,6 +1493,8 @@
           this._hooks[k][i].apply(this, args);
         } catch ( e ) {
           console.warn("Window::_fireHook() failed to run hook", k, i, e);
+          //console.log(e, e.prototype);
+          //throw e;
         }
       }
     }

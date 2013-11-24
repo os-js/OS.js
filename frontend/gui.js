@@ -31,8 +31,6 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
-  // FIXME: Destroy DOM events
-
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -153,6 +151,11 @@
     this.opts       = opts || {};
     this.id         = _GUIElementCount;
     this.destroyed  = false;
+    this._hooks     = {
+      focus : [],
+      blur : [],
+      destroy : []
+    };
 
     if ( typeof this.opts.dnd === 'undefined' ) {
       this.opts.dnd     = false;
@@ -204,15 +207,44 @@
       this.$element.addEventListener('mousedown', function(ev) {
         self.focus();
       }, false);
+      this._addHook('destroy', function() {
+        this.$element.removeEventListener('mousedown', function(ev) {
+          self.focus();
+        }, false);
+      });
     }
 
     return this.$element;
   };
 
   GUIElement.prototype.destroy = function() {
+    if ( this.destroyed ) return;
+
     this.destroyed = true;
+    this._fireHook('destroy');
     if ( this.$element && this.$element.parentNode ) {
       this.$element.parentNode.removeChild(this.$element);
+    }
+    this._hooks = {};
+  };
+
+  GUIElement.prototype._addHook = function(k, func) {
+    if ( typeof func === 'function' && this._hooks[k] ) {
+      this._hooks[k].push(func);
+    }
+  };
+
+  GUIElement.prototype._fireHook = function(k, args) {
+    args = args || {};
+    if ( this._hooks[k] ) {
+      for ( var i = 0, l = this._hooks[k].length; i < l; i++ ) {
+        if ( !this._hooks[k][i] ) continue;
+        try {
+          this._hooks[k][i].apply(this, args);
+        } catch ( e ) {
+          console.warn("GUIElement::_fireHook() failed to run hook", k, i, e);
+        }
+      }
     }
   };
 
@@ -431,6 +463,10 @@
 
     table.addEventListener('click', onClick, false);
     table.addEventListener(this.singleClick ? 'click' : 'dblclick', onDblClick, false);
+    this._addHook('destroy', function() {
+      table.removeEventListener('click', onClick, false);
+      table.removeEventListener(this.singleClick ? 'click' : 'dblclick', onDblClick, false);
+    });
 
     table.appendChild(head);
     table.appendChild(body);
@@ -1056,7 +1092,7 @@
       document.removeEventListener('mouseup', _onMouseUp, false);
     };
 
-    this.$button.addEventListener('mousedown', function(ev) {
+    var _onMouseDown = function(ev) {
       ev.preventDefault();
 
       scrolling = true;
@@ -1071,7 +1107,12 @@
       }
       document.addEventListener('mousemove', _onMouseMove, false);
       document.addEventListener('mouseup', _onMouseUp, false);
-    }, false);
+    };
+
+    this.$button.addEventListener('mousedown', _onMouseDown, false);
+    this._addHook('destroy', function() {
+      this.$button.removeEventListener('mousedown', _onMouseDown, false);
+    });
 
     el.appendChild(this.$root);
     el.appendChild(this.$button);
