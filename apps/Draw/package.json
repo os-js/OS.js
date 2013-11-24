@@ -1,0 +1,14 @@
+{
+  "ApplicationDraw":  {
+    "name":       "Draw",
+    "mime":       ["^image"],
+    "icon":       "categories/gnome-graphics.png",
+    "preload":    [
+      {"src": "main.js", "type": "javascript"},
+      {"src": "main.css", "type": "stylesheet"}
+    ]
+  }
+}
+
+
+
