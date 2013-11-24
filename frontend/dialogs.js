@@ -231,6 +231,7 @@
       }
 
       list.push({
+        key: this.list[i],
         image: icon,
         name: name
       });
@@ -239,18 +240,19 @@
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
     listView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'name', title: 'Name'}
+      {key: 'name', title: 'Name'},
+      {key: 'key', title: 'Key', visible: false}
      ]);
     listView.onActivate = function(ev, el, item) {
-      if ( item && item.name ) {
-        self.selectedApp = item.name;
+      if ( item && item.key ) {
+        self.selectedApp = item.key;
         self.$buttonConfirm.removeAttribute("disabled");
-        self.end('ok', item.name);
+        self.end('ok', item.key);
       }
     };
     listView.onSelect = function(ev, el, item) {
-      if ( item && item.name ) {
-        self.selectedApp = item.name;
+      if ( item && item.key ) {
+        self.selectedApp = item.key;
         self.$buttonConfirm.removeAttribute("disabled");
       }
     };
