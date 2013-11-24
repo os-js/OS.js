@@ -209,6 +209,7 @@
 
     // Set window properties here
     this._icon = 'categories/gnome-graphics.png';
+    this._properties.allow_drop = true;
   };
 
   ApplicationDrawWindow.prototype = Object.create(Window.prototype);
@@ -435,6 +436,16 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
+  ApplicationDrawWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    Window.prototype._onDndEvent.apply(this, arguments);
+    if ( type === 'itemDrop' && item ) {
+      var data = item.data;
+      if ( data && data.type === 'file' && data.mime ) {
+        this._appRef.action('open', data.path, data.mime);
+      }
+    }
+  };
+
   ApplicationDrawWindow.prototype.onMouseClick = function(ev, clickX, clickY, canvas, canvasImage) {
     if ( canvas && this.currentTool && Tools[this.currentTool] ) {
       if ( Tools[this.currentTool].click ) {
@@ -518,7 +529,7 @@
     var self = this;
     var canvas = this._getGUIElement('ApplicationDrawCanvas');
     if ( canvas ) {
-      this._toggleLoading(false);
+      this._toggleLoading(true);
 
       this.createNew();
       console.log("ApplicationDrawWindow::setData()");
@@ -598,6 +609,7 @@
       OSjs.API.error("Draw Application Error", "Failed to perform action '" + action + "'", error);
       if ( win ) {
         win.setTitle('');
+        win._toggleLoading(false);
       }
     };
 
@@ -606,6 +618,8 @@
       var _onSaveFinished = function(name) {
         self.currentFilename = name;
         if ( win ) {
+          win._toggleLoading(false);
+
           win.setTitle(name);
           win._focus();
         }
@@ -616,6 +630,7 @@
       if ( !canvas ) return;
       var data = canvas.getImageData();
 
+      win._toggleLoading(true);
       OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, data, {dataSource: true}]}, function(res) {
         if ( res && res.result ) {
           _onSaveFinished(fname);
@@ -641,12 +656,15 @@
       var _openFileFinished = function(name, data) {
         self.currentFilename = name;
         if ( win ) {
+          win._toggleLoading(false);
+
           win.setTitle(fname);
           win.setData(data);
           win._focus();
         }
       };
 
+      win._toggleLoading(true);
       OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: true}]}, function(res) {
         if ( res && res.result ) {
           _openFileFinished(fname, res.result);
