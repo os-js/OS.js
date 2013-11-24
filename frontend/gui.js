@@ -365,6 +365,7 @@
   var MenuBar = function(name, opts) {
     this.$ul = null;
     this.onMenuOpen = function() {};
+    this.lid = 0;
     GUIElement.apply(this, [name, opts]);
   };
   MenuBar.prototype = Object.create(GUIElement.prototype);
@@ -383,19 +384,27 @@
     if ( !this.$ul ) return;
     var self = this;
     var el = document.createElement('li');
+    el.className = 'MenuItem_' + this.lid;
     el.innerHTML = title;
-    el.onclick = function(ev) {
+    el.onclick = function(ev, mpos) {
       var pos = {x: ev.clientX, y: ev.clientY};
-      var tpos = OSjs.Utils.$position(this);
-      if ( tpos ) {
-        pos.x = tpos.left;
-        pos.y = tpos.top;
+      if ( !mpos ) {
+        var tpos = OSjs.Utils.$position(this);
+        if ( tpos ) {
+          pos.x = tpos.left;
+          pos.y = tpos.top;
+        }
       }
       var elm = OSjs.GUI.createMenu(menu, pos);
       self.onMenuOpen.call(this, elm, pos);
     };
 
     this.$ul.appendChild(el);
+    this.lid++;
+  };
+
+  MenuBar.prototype.createContextMenu = function(ev, idx) {
+    this.$ul.childNodes[idx].onclick(ev, true);
   };
 
   /**
@@ -418,6 +427,7 @@
     this.onCreateRow = function() {};
     this.onSelect = function() {};
     this.onActivate = function() {};
+    this.onContextMenu = function() {};
 
     GUIElement.apply(this, arguments);
   };
@@ -450,7 +460,10 @@
         } else if ( type == 'select' ) {
           self._onSelect(ev, t);
         }
+
+        return t;
       }
+      return null;
     };
 
     var onDblClick = function(ev) {
@@ -461,10 +474,22 @@
       activate(ev, 'select');
     };
 
+    var onContextMenu = function(ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+      var cel = activate(ev, 'select');
+      if ( cel ) {
+        cel.onclick(ev);
+        self.onContextMenu.call(self, ev, cel, self.selected);
+      }
+    };
+
     table.addEventListener('click', onClick, false);
+    table.addEventListener('contextmenu', onContextMenu, false);
     table.addEventListener(this.singleClick ? 'click' : 'dblclick', onDblClick, false);
     this._addHook('destroy', function() {
       table.removeEventListener('click', onClick, false);
+      table.remvoeEventListener('contextmenu', onContextMenu, false);
       table.removeEventListener(this.singleClick ? 'click' : 'dblclick', onDblClick, false);
     });
 

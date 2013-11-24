@@ -27,6 +27,12 @@
     var statusBar  = this._addGUIElement(new OSjs.GUI.StatusBar('FileManagerStatusBar'), root);
     var menuBar    = this._addGUIElement(new OSjs.GUI.MenuBar('FileManagerMenuBar'), root);
 
+    fileView.onContextMenu = function(ev, el, item) {
+      if ( menuBar ) {
+        menuBar.createContextMenu(ev, 1);
+      }
+    };
+
     fileView.onItemDropped = function(ev, el, item) {
       // TODO
       console.warn("Not implemented yet!");
