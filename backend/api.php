@@ -104,10 +104,7 @@ class FS
 
       if ( empty($opts['mime']) || $opts['mime'] === true ) {
         if ( $ftype == 'file' ) {
-          $finfo = finfo_open(FILEINFO_MIME_TYPE);
-          $mime  = finfo_file($finfo, $fpath);
-          finfo_close($finfo);
-
+          $mime = fileMime($fpath);
           if ( $mimeFilter ) {
             $skip = true;
             if ( $mime ) {
@@ -165,11 +162,7 @@ class FS
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 
     if ( !empty($opts['dataSource']) && $opts['dataSource'] ) {
-      $finfo = finfo_open(FILEINFO_MIME_TYPE);
-      $mime  = finfo_file($finfo, $fname);
-      finfo_close($finfo);
-
-      if ( $mime ) {
+      if ( ($mime = fileMime($fname)) ) {
         $data = file_get_contents($fname);
         $out  = null;
         return sprintf("data:%s;base64,%s", $mime, base64_encode($data));
@@ -220,6 +213,24 @@ class FS
 
     return mkdir($dname);
   }
+
+  public static function fileinfo($fname) {
+    $fname = unrealpath($fname);
+
+    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
+    if ( !is_readable($fname) ) throw new Exception("Read permission denied");
+
+    $data = Array(
+      'path'          => dirname($fname),
+      'filename'      => basename($fname),
+      'size'          => filesize($fname),
+      'mime'          => fileMime($fname),
+      'permissions'   => filePermissions($fname)
+    );
+
+    return $data;
+  }
 }
 
 function getPackageInfo() {
@@ -244,6 +255,68 @@ function getPackageInfo() {
     }
   }
   return $list;
+}
+
+function fileMime($fname) {
+  $finfo = finfo_open(FILEINFO_MIME_TYPE);
+  $mime = finfo_file($finfo, $fname);
+  finfo_close($finfo);
+  return $mime;
+}
+
+function filePermissions($fname) {
+  $perms = fileperms($fname);
+  $info  = '';
+
+  if (($perms & 0xC000) == 0xC000) {
+      // Socket
+      $info = 's';
+  } elseif (($perms & 0xA000) == 0xA000) {
+      // Symbolic Link
+      $info = 'l';
+  } elseif (($perms & 0x8000) == 0x8000) {
+      // Regular
+      $info = '-';
+  } elseif (($perms & 0x6000) == 0x6000) {
+      // Block special
+      $info = 'b';
+  } elseif (($perms & 0x4000) == 0x4000) {
+      // Directory
+      $info = 'd';
+  } elseif (($perms & 0x2000) == 0x2000) {
+      // Character special
+      $info = 'c';
+  } elseif (($perms & 0x1000) == 0x1000) {
+      // FIFO pipe
+      $info = 'p';
+  } else {
+      // Unknown
+      $info = 'u';
+  }
+
+  // Owner
+  $info .= (($perms & 0x0100) ? 'r' : '-');
+  $info .= (($perms & 0x0080) ? 'w' : '-');
+  $info .= (($perms & 0x0040) ?
+              (($perms & 0x0800) ? 's' : 'x' ) :
+              (($perms & 0x0800) ? 'S' : '-'));
+
+  // Group
+  $info .= (($perms & 0x0020) ? 'r' : '-');
+  $info .= (($perms & 0x0010) ? 'w' : '-');
+  $info .= (($perms & 0x0008) ?
+              (($perms & 0x0400) ? 's' : 'x' ) :
+              (($perms & 0x0400) ? 'S' : '-'));
+
+  // World
+  $info .= (($perms & 0x0004) ? 'r' : '-');
+  $info .= (($perms & 0x0002) ? 'w' : '-');
+  $info .= (($perms & 0x0001) ?
+              (($perms & 0x0200) ? 't' : 'x' ) :
+              (($perms & 0x0200) ? 'T' : '-'));
+
+
+  return $info;
 }
 
 function humanFileSize($size, $unit = "") {
@@ -462,11 +535,7 @@ if ( $method === 'GET' ) {
     }
 
     if ( file_exists($file) ) {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $file);
-        finfo_close($finfo);
-
-        if ( $mime ) {
+        if ( ($mime = fileMime($file)) ) {
           header("Content-type: {$mime}");
           print file_get_contents($file);
         } else {

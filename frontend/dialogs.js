@@ -678,6 +678,57 @@
     }
   };
 
+  /**
+   * File Information Dialog
+   */
+  var FileInformationDialog = function(path, onClose) {
+    this.path = path;
+    onClose = onClose || function() {};
+    StandardDialog.apply(this, ['FileInformationDialog', {title: "File Information", buttonCancel: false, buttonOkLabel: "Close"}, {width:300, height:400}, onClose]);
+  };
+  FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
+
+  FileInformationDialog.prototype.init = function() {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+
+    var txt = document.createElement('textarea');
+    txt.value = "Loading file information for: " + this.path;
+    this.$element.appendChild(txt);
+
+    var _onError = function(err) {
+      var fname = OSjs.Utils.filename(self.path);
+      self._error("FileInformationDialog Error", "Failed to get file information for <span>" + fname + "</span>", err);
+      txt.value = "Failed to get file information for: " + self.path;
+    };
+
+    var _onSuccess = function(data) {
+      var info = [];
+      for ( var i in data ) {
+        if ( data.hasOwnProperty(i) ) {
+          info.push(i + ":\n\t" + data[i]);
+        }
+      }
+      txt.value = info.join("\n\n");
+    };
+
+    OSjs.API.call('fs', {method: 'fileinfo', 'arguments' : [this.path]}, function(res) {
+      if ( res ) {
+        if ( res.error ) {
+          _onError(res.error);
+          return;
+        }
+        if ( res.result ) {
+          _onSuccess(res.result);
+        }
+      }
+    }, function(error) {
+      _onError(error);
+    });
+
+    return root;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // STANDARD
   /////////////////////////////////////////////////////////////////////////////
@@ -873,6 +924,7 @@
   OSjs.Dialogs.File               = FileDialog;
   OSjs.Dialogs.FileProgress       = FileProgressDialog;
   OSjs.Dialogs.FileUpload         = FileUploadDialog;
+  OSjs.Dialogs.FileInfo           = FileInformationDialog;
   OSjs.Dialogs.ErrorMessage       = ErrorDialog;
   OSjs.Dialogs.Alert              = AlertDialog;
   OSjs.Dialogs.Confirm            = ConfirmDialog;

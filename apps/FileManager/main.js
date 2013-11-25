@@ -66,6 +66,7 @@
       self._error("File Manager error", "An error occured while handling your request", error);
     };
 
+    // FIXME: Cleanup
     menuBar.addItem("File", [
       {title: 'Create directory', onClick: function() {
         var fileView = self._getGUIElement('FileManagerFileView');
@@ -134,6 +135,17 @@
               fileView.refresh();
             }
           });
+        }]);
+      }},
+      {name: 'Information', title: 'Information', onClick: function() {
+        self._focus();
+
+        var fileView = self._getGUIElement('FileManagerFileView');
+        var cur = fileView.getSelected();
+        if ( !cur ) return;
+
+        app._createDialog('FileInfo', [cur.path, function(btn) {
+          self._focus();
         }]);
       }}
     ]);
