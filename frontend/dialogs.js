@@ -208,6 +208,7 @@
       };
       var _onBugSuccess = function() {
         alert("The error was reported and will be looked into");
+        ok.onclick();
       };
 
       var sendBug = document.createElement('button');
