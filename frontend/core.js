@@ -65,7 +65,7 @@
   var _WM;
   var _WIN;
   var _CORE;
-  var _LOADING;
+  var _$LOADING;
 
   var _DEFAULT_SETTINGS = {
     WM : {
@@ -181,7 +181,14 @@
       }
     };
 
-    return OSjs.Utils.Ajax(_CALLURL, cok, cerror, opts);
+    _$LOADING.style.display = 'block';
+    return OSjs.Utils.Ajax(_CALLURL, function() {
+      _$LOADING.style.display = 'none';
+      cok.apply(this, arguments);
+    }, function() {
+      _$LOADING.style.display = 'none';
+      cerror.apply(this, arguments);
+    }, opts);
   }
 
   function createErrorDialog(title, message, error, exception) {
@@ -1810,6 +1817,13 @@
 
     window.onload = null;
 
+    // Loading indicator
+    _$LOADING = document.createElement('img');
+    _$LOADING.id = "Loading";
+    _$LOADING.src = '/themes/default/loading_small.gif';
+
+    document.body.appendChild(_$LOADING);
+
     _CORE = new Main();
     if ( _CORE ) {
       _CORE.init(onContentLoaded, onInitialized);
@@ -1834,5 +1848,7 @@
     } else {
       _CORE.logout(save, _shutdown);
     }
+
+    document.body.removeChild(_$LOADING);
   };
 })();

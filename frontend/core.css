@@ -76,6 +76,16 @@ body {
   z-index : 1;
 }
 
+#Loading {
+  display : block;
+  width : 16px;
+  height : 16px;
+  position : absolute;
+  top : 8px;
+  right : 8px;
+  z-index : 999999999;
+}
+
 /**
  * Window
  */
