@@ -129,7 +129,6 @@
 }
 
 .GUIListView td {
-  -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -146,7 +145,7 @@
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
   width : 100%;
-  font-weight : none;
+  font-weight : normal;
 }
 
 .GUIListView td img {
@@ -217,7 +216,6 @@
   height : 20px;
   z-index : 2;
 
-  -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -260,7 +258,6 @@
   border-style : inset;
 }
 .GUIToolbar img {
-  vertical-align : center;
 }
 .GUIToolbar li.Separator {
   clear : both;

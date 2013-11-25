@@ -309,7 +309,7 @@
               a.destroy();
               a = null;
             } catch ( e ) {
-              console.warn("Something awful happened when trying to clean up failed launch Oo");
+              console.warn("Something awful happened when trying to clean up failed launch Oo", e);
             }
           }
         } else {
@@ -410,9 +410,9 @@
     console.groupEnd();
 
     // Override error handling
-    window.onerror = function(message, url, linenumber) {
-      var msg = JSON.stringify({message: message, url: url, linenumber: linenumber}, null, '\t');
-      createErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg);
+    window.onerror = function(message, url, linenumber, column, exception) {
+      var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
+      createErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg, exception);
       return false;
     };
 
