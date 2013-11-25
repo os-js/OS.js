@@ -118,8 +118,9 @@
     this._addWindow(new ApplicationTextpadWindow(this, {width: 400, height: 200}));
 
     var open = this._getArgument('file');
+    var mime = this._getArgument('mime');
     if ( open ) {
-      this.action('open', open);
+      this.action('open', open, mime);
     }
   };
 
@@ -151,6 +152,7 @@
         if ( res.result ) {
           self.currentFile = fname;
           self._setArgument('file', fname);
+          self._setArgument('mime', mime || null);
           w.refresh(fname);
         } else {
           if ( res.error ) {
@@ -170,6 +172,7 @@
         this.currentFile = null;
         w.setText(null);
         this._setArgument('file', null);
+        this._setArgument('mime', null);
       break;
 
       case 'close' :
@@ -205,6 +208,7 @@
               if ( res.result ) {
                 w.setText(res.result, fname);
                 self._setArgument('file', fname);
+                self._setArgument('mime', mime || null);
                 self.currentFile = fname;
               } else {
                 if ( res.error ) {
@@ -213,6 +217,7 @@
 
                 w.setText(null);
                 self._setArgument('file', null);
+                self._setArgument('mime', null);
                 self.currentFile = null;
               }
               w._focus();

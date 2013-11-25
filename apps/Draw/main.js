@@ -37,6 +37,7 @@
     picker : {
       click : function(ev, clickX, clickY, canvas) {
         var leftClick = ev.which <= 1;
+        console.warn(clickX, clickY);
         var color = canvas.getColorAt(clickX, clickY);
         this.setColor(leftClick ? 'foreground' : 'background', color.hex);
       }
@@ -594,8 +595,9 @@
     this._addWindow(new ApplicationDrawWindow(this));
 
     var open = this._getArgument('file');
+    var mime = this._getArgument('mime');
     if ( open ) {
-      this.action('open', open);
+      this.action('open', open, mime);
     }
   };
 
@@ -612,6 +614,8 @@
     var win = this._getWindow('ApplicationDrawWindow');
 
     var _onError = function(error) {
+      self._setArgument('file', null);
+      self._setArgument('mime', null);
       if ( win ) {
         win.setTitle('');
         win._toggleLoading(false);
@@ -625,6 +629,8 @@
     var _saveFile = function(fname) {
       var _onSaveFinished = function(name) {
         self.currentFilename = name;
+        self._setArgument('file', name);
+        self._setArgument('mime', mime || null);
         if ( win ) {
           win._toggleLoading(false);
 
@@ -662,6 +668,8 @@
 
       var _openFileFinished = function(name, data) {
         self.currentFilename = name;
+        self._setArgument('file', name);
+        self._setArgument('mime', (mime || fmime || null));
         if ( win ) {
           win.setData(data, name);
           win._focus();
