@@ -142,7 +142,7 @@
 
         var fileView = self._getGUIElement('FileManagerFileView');
         var cur = fileView.getSelected();
-        if ( !cur ) return;
+        if ( !cur || cur.path === 'dir' ) return;
 
         app._createDialog('FileInfo', [cur.path, function(btn) {
           self._focus();
@@ -159,23 +159,30 @@
     menuBar.onMenuOpen = function(menu) {
       var fileView = self._getGUIElement('FileManagerFileView');
       var sel = fileView.getSelected();
-      var el1 = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0];
-      var el2 = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0];
+      var el;
       var cur = sel ? sel.filename != '..' : false;
-      if ( el1 ) {
-        if ( cur ) {
-          el1.className = el1.className.replace(/\s?Disabled/, '');
-        } else {
-          el1.className += ' Disabled';
-        }
+      if ( cur ) {
+        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0],
+        el.className = el.className.replace(/\s?Disabled/, '');
+
+        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0],
+        el.className = el.className.replace(/\s?Disabled/, '');
+      } else {
+        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0],
+        el.className += ' Disabled';
+
+        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0],
+        el.className += ' Disabled';
       }
-      if ( el2 ) {
-        if ( cur ) {
-          el2.className = el2.className.replace(/\s?Disabled/, '');
-        } else {
-          el2.className += ' Disabled';
-        }
+
+      if ( cur && sel.type === 'file' ) {
+        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0]
+        el.className = el.className.replace(/\s?Disabled/, '');
+      } else {
+        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0]
+        el.className += ' Disabled';
       }
+
     };
 
     var _getFileIcon = function(r) {
