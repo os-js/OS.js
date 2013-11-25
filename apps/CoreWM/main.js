@@ -81,6 +81,9 @@
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {
+    if ( win && win._properties.allow_windowlist === false ) {
+      return;
+    }
     console.log("OSjs::Applications::CoreWM::eventWindow", ev, win._name);
 
     var cn = 'WindowList_Window_' + win._wid;

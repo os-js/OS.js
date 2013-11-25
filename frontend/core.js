@@ -1068,13 +1068,14 @@
     this._parent        = null;
     this._guiElements   = [];
     this._properties    = {
-      gravity         : null,
-      allow_move      : true,
-      allow_resize    : true,
-      allow_minimize  : true,
-      allow_maximize  : true,
-      allow_close     : true,
-      allow_drop      : false
+      gravity           : null,
+      allow_move        : true,
+      allow_resize      : true,
+      allow_minimize    : true,
+      allow_maximize    : true,
+      allow_close       : true,
+      allow_windowlist  : true,
+      allow_drop        : false
     };
     this._state     = {
       focused   : false,
@@ -1109,6 +1110,7 @@
     console.log("OSjs::Core::Window::init()");
 
     this._state.focused = false;
+
     this._icon = getThemeResource(this._icon, 'icon');
 
     var grav = this._properties.gravity;
@@ -1756,11 +1758,12 @@
   var DialogWindow = function(/* See Window */) {
     Window.apply(this, arguments);
 
-    this._properties.gravity        = 'center';
-    this._properties.allow_resize   = false;
-    this._properties.allow_minimize = false;
-    this._properties.allow_maximize = false;
-    this._state.ontop               = true;
+    this._properties.gravity          = 'center';
+    this._properties.allow_resize     = false;
+    this._properties.allow_minimize   = false;
+    this._properties.allow_maximize   = false;
+    this._properties.allow_windowlist = false;
+    this._state.ontop                 = true;
   };
 
   DialogWindow.prototype = Object.create(Window.prototype);
