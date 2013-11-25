@@ -1,6 +1,6 @@
 .Window_ApplicationSettingsWindow .WindowWrapper {
   overflow : auto;
-  padding : 10px;
+  padding : 5px;
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting {
   position : relative;
@@ -14,7 +14,7 @@
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting select {
   position : absolute;
   left : 0px;
-  right : 30px;
+  right : 35px;
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {

@@ -68,9 +68,9 @@
 .FileOpenDialog .FileDialogFileView,
 .FileSaveDialog .FileDialogFileView {
   position : absolute;
-  top : 5px;
-  left : 5px;
-  right : 5px;
+  top : 0px;
+  left : 0px;
+  right : 0px;
   bottom : 30px;
 }
 .FileSaveDialog .FileDialogFileView {
@@ -199,7 +199,7 @@
   width : 100px;
   left : 50%;
   bottom : 10px;
-  margin-left : -50px;
+  margin-left : -50px !important;
 }
 
 /**

@@ -145,6 +145,71 @@ body .Menu li.Disabled {
   color : #aaa;
 }
 
+.Window input[type=text],
+.Window select,
+.Window textarea {
+  background : #fff;
+  color : #000;
+  border : 1px solid rgba(34, 34, 34, .5);
+  margin : 0;
+  padding : 0;
+  padding-left : 2px;
+  padding-right : 2px;
+  outline : none;
+  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .05);
+}
+.Window select {
+  -webkit-appearance: button;
+  -webkit-border-radius: 0px;
+  height : 22px;
+}
+.Window input[type=text] {
+  height : 20px;
+}
+.Window textarea {
+  padding : 2px !important;
+}
+.Window.WindowHintFocused input[type=text],
+.Window.WindowHintFocused select,
+.Window.WindowHintFocused textarea {
+  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .1);
+  border : 1px solid rgba(34, 34, 34, .5);
+  color : #000;
+}
+
+.Window button,
+.Window input[type=button],
+.Window input[type=submit] {
+  background : #555555;
+  border : 1px solid #444444;
+  color : #eeeeee;
+  margin : 0;
+  padding : 0;
+  padding-left : 5px;
+  padding-right : 5px;
+  height : 22px;
+  min-width : 30px;
+  vertical-align : middle;
+  outline : none;
+  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .05);
+}
+
+.Window.WindowHintFocused button,
+.Window.WindowHintFocused input[type=button],
+.Window.WindowHintFocused input[type=submit] {
+  background : #444444;
+  border : 1px solid #333333;
+  color : #fff;
+  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .1);
+}
+.Window button:active,
+.Window input[type=button]:active,
+.Window input[type=submit]:active {
+  background : #333333;
+  border : 1px solid #222222;
+  box-shadow : 0px 0px 1px 1px rgba(100, 100, 100, .3);
+}
+
 /**
  * CoreWM (external)
  */
@@ -178,6 +243,8 @@ body #WindowList .Background {
 /**
  * GUI
  */
+
+/* GUIMenuBar */
 .GUIMenuBar {
   background : #c2c2c2;
 }
@@ -241,10 +308,24 @@ body #WindowList .Background {
   background : #c2c2c2;
 }
 
+.Window .GUIToolbar button {
+  background : #e6e6e6;
+  border : 1px solid #333;
+}
+.Window .GUIToolbar button:hover {
+  border : 1px solid #777;
+}
+.Window .GUIToolbar button:active,
+.Window .GUIToolbar button.Active {
+  border : 1px solid #999;
+  background : #c2c2c2;
+}
+
 /* GUIProgressBar */
 .GUIProgressBar .Container {
   background : #333333;
   border : 1px solid #333333;
+  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .05);
 }
 .GUIProgressBar .Bar {
   text-align : center;
@@ -254,4 +335,6 @@ body #WindowList .Background {
   color : #aaa;
   text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
 }
-
+.Window.WindowHintFocused .GUIProgressBar .Container {
+  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .1);
+}
