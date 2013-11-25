@@ -725,6 +725,10 @@
           _saveFile(fname);
         }], win);
       break;
+
+      case 'close' :
+        this.destroy();
+      break;
     }
   };
 
