@@ -15,10 +15,12 @@
   position : absolute;
   left : 0px;
   right : 35px;
+  width : 450px;
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
   right : 0px;
+  width : 490px;
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting button {
   position : absolute;
