@@ -1,22 +1,28 @@
 # OS.js Version 2.0
 OS.js is a light-weight JavaScript based desktop solution.
 
-**This is a work in progress and API is not final. Changes will be made!**
+**Alpha 1 is to be announced soon. API not final yet**
 
 ## Changes
 
 * Completely rewritten (API breakage)
+* Easier to extend and implement Applications
 * Smaller and faster
-* Does not require any setup
+* Very simple setup (requires only a web-server using PHP or Node)
 * No 3rd party libraries
 
 ## Features
 
-* Fast and light-weight, easy to extend
-* Window Manager and Desktop Environment
-* Session Handling (save, restore application states)
-* Package Managment (User-installable applications)
-* GUI and Dialog Library (drag-and-drop support included)
+* Window Manager
+* Desktop Environment
+* Session Handling (Support for resuming previous workspaces)
+* Package Management (User-installable applications)
+* User Management (Custom login and settings storage)
+* GUI Library (With Drag-and-drop support)
+* Dialog Library
+* Supports both Applications and Background-services
+* File System functions
+* A basic Theme implementation (icons, sounds and CSS styles)
 
 ## Demo
 
@@ -50,3 +56,6 @@ Runs in any modern browser. Tested:
 * **WebKit** Google Chrome, Opera, Safari
 * Internet Explorer 10+
 * Android and iOS is working, but no mobile version is implemented yet
+
+# Links
+* **Wiki** https://github.com/andersevenrud/OS.js-v2/wiki
