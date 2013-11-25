@@ -219,6 +219,7 @@
           if ( res ) {
             if ( res.result ) {
               _onBugSuccess();
+              return;
             } else if ( res.error ) {
               _onBugError(res.error);
               return;
