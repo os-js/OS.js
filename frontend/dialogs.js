@@ -141,7 +141,9 @@
 
   ErrorDialog.prototype = Object.create(DialogWindow.prototype);
 
-  ErrorDialog.prototype.init = function() {
+  ErrorDialog.prototype.init = function(wmRef) {
+    var bugData = this.data;
+    var self = this;
     this._title = this.data.title;
 
     var label;
@@ -180,6 +182,8 @@
         }
       }
 
+      bugData.exceptionDetail = '' + error;
+
       label = document.createElement('div');
       label.className = 'Label';
       label.innerHTML = 'Trace';
@@ -192,18 +196,46 @@
     }
 
     var ok = document.createElement('button');
+    ok.className = "OK";
     ok.innerHTML = 'Close';
-
-    var self = this;
     ok.onclick = function() {
       self._close();
     };
 
+    if ( this.data.bugreport ) {
+      var _onBugError = function(error) {
+        alert("Bugreport failed: " + error);
+      };
+      var _onBugSuccess = function() {
+        alert("The error was reported and will be looked into");
+      };
+
+      var sendBug = document.createElement('button');
+      sendBug.className = "Bug";
+      sendBug.innerHTML = "Send Bugreport";
+      sendBug.onclick = function() {
+        OSjs.API.call('bugreport', {data: bugData}, function(res) {
+          if ( res ) {
+            if ( res.result ) {
+              _onBugSuccess();
+            } else if ( res.error ) {
+              _onBugError(res.error);
+              return;
+            }
+          }
+          _onBugError("Something went wrong during reporting. You can mail it to andersevenrud@gmail.com");
+        }, function(error) {
+          _onBugError(error);
+        });
+      };
+      root.appendChild(sendBug);
+    }
+
     root.appendChild(ok);
   };
 
-  ErrorDialog.prototype.setError = function(title, message, error, exception) {
-    this.data = {title: title, message: message, error: error, exception: exception};
+  ErrorDialog.prototype.setError = function(title, message, error, exception, bugreport) {
+    this.data = {title: title, message: message, error: error, exception: exception, bugreport: bugreport};
   };
 
   /**

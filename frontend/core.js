@@ -191,7 +191,8 @@
     }, opts);
   }
 
-  function createErrorDialog(title, message, error, exception) {
+  function createErrorDialog(title, message, error, exception, bugreport) {
+    bugreport = typeof bugreport == 'undefined' ? false : (bugreport ? true : false);
     playSound('dialog-warning');
 
     OSjs.GUI.blurMenu();
@@ -200,7 +201,7 @@
     if ( _WM ) {
       try {
         var w = new OSjs.Dialogs.ErrorMessage();
-        w.setError(title, message, error, exception);
+        w.setError(title, message, error, exception, bugreport);
         _WM.addWindow(w);
 
         return w;
@@ -281,7 +282,7 @@
     var self = this;
     var _error = function(msg, exception) {
       console.groupEnd(); // !!!
-      createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg, exception);
+      createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg, exception, true);
 
       onError(msg, n, arg);
     };
@@ -419,7 +420,7 @@
     // Override error handling
     window.onerror = function(message, url, linenumber, column, exception) {
       var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-      createErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg, exception);
+      createErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg, exception, true);
       return false;
     };
 
@@ -459,7 +460,7 @@
     };
 
     var _error = function(msg) {
-      createErrorDialog('Failed to initialize OS.js', 'An error occured while initializing OS.js', msg);
+      createErrorDialog('Failed to initialize OS.js', 'An error occured while initializing OS.js', msg, null, true);
     };
 
     var _launchWM = function(wm) {
@@ -531,7 +532,7 @@
       }
 
     }, function(error) {
-      createErrorDialog('Failed to login to OS.js', 'An error occured while logging in', error);
+      createErrorDialog('Failed to login to OS.js', 'An error occured while logging in', error, null, true);
     });
   };
 
@@ -543,7 +544,7 @@
         playSound('service-logout');
         onFinished(self);
       }, function(error) {
-        createErrorDialog('Failed to log out of OS.js', 'An error occured while logging out', error);
+        createErrorDialog('Failed to log out of OS.js', 'An error occured while logging out', error, null, true);
       });
     };
 
@@ -1732,8 +1733,8 @@
     }
   };
 
-  Window.prototype._error = function(title, description, message, exception) {
-    var w = createErrorDialog(title, description, message, exception);
+  Window.prototype._error = function(title, description, message, exception, bugreport) {
+    var w = createErrorDialog(title, description, message, exception, bugreport);
     this._addChild(w);
   };
 

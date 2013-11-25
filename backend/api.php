@@ -514,7 +514,7 @@ function error() {
 }
 
 register_shutdown_function('error');
-
+date_default_timezone_set('Europe/Oslo');
 
 $method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
 $json   = Array("result" => false, "error" => null);
@@ -657,6 +657,21 @@ if ( empty($data) ) {
               $result = doFSOperation($m, $a);
             } catch ( Exception $e ) {
               $error = "FS operaion error: {$e->getMessage()}";
+            }
+          }
+        }
+      break;
+
+      case 'bugreport' :
+        if ( isset($arguments['data']) && ($data = $arguments['data']) ) {
+          if ( $data = json_encode($data) ) {
+            if ( file_exists("bugreport.php") ) {
+              try {
+                require "bugreport.php";
+                $result = BugReport::send($data);
+              } catch ( Exception $e ) {
+                $error = $e->getMessage();
+              }
             }
           }
         }

@@ -220,24 +220,29 @@
   border : 1px solid #555;
   padding : 10px;
   display : block;
-  width : 380px;
+  width : 385px;
   height : 165px;
   resize : none;
   outline : none;
 }
 .ErrorDialog .Trace {
   display : block;
-  width : 380px;
+  width : 385px;
   height : 80px;
   resize : none;
   outline : none;
 }
-.ErrorDialog button {
+.ErrorDialog .OK {
   position : absolute;
-  width : 100px;
-  left : 50%;
   bottom : 5px;
-  margin-left : -50px !important;
+  right : 5px;
+  width : 100px;
+}
+.ErrorDialog .Bug {
+  position : absolute;
+  bottom : 5px;
+  right : 115px;
+  width : 100px;
 }
 .ErrorDialog .Label {
   font-weight : bold;

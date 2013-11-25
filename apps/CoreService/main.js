@@ -111,7 +111,7 @@
   CoreService.prototype.saveSettings = function(onComplete, onError) {
     onComplete = onComplete || function() {};
     onError = onError || function(error) {
-      OSjs.API.error("CoreService Error", "Failed to save settings", error);
+      OSjs.API.error("CoreService Error", "Failed to save settings", error, null, true);
     };
 
     var data = {};
