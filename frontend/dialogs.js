@@ -512,7 +512,7 @@
     fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', null, {mimeFilter: this.allowMimes}), this.$element);
     fileList.onError = function() {
       self._toggleLoading(false);
-      this.onError.apply(this, arguments);
+      self.onError.apply(this, arguments);
     };
 
     if ( this.type === 'save' ) {
