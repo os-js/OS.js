@@ -740,7 +740,11 @@
       var info = [];
       for ( var i in data ) {
         if ( data.hasOwnProperty(i) ) {
-          info.push(i + ":\n\t" + data[i]);
+          if ( i === 'exif' ) {
+            info.push(i + ":\n\n" + data[i]);
+          } else {
+            info.push(i + ":\n\t" + data[i]);
+          }
         }
       }
       txt.value = info.join("\n\n");

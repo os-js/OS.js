@@ -221,13 +221,40 @@ class FS
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 
+    $mime = fileMime($fname);
     $data = Array(
       'path'          => dirname($fname),
       'filename'      => basename($fname),
       'size'          => filesize($fname),
-      'mime'          => fileMime($fname),
+      'mime'          => $mime,
       'permissions'   => filePermissions($fname)
     );
+
+    if ( $mime && preg_match("/^image/", $mime) ) {
+      if ( function_exists('exif_read_data') ) {
+        if ( $exif = exif_read_data($fname) ) {
+          if ( $exif !== false ) {
+            if ( is_array($exif) ) {
+              $tmp = Array();
+              foreach ( $exif as $key => $section ) {
+                if ( is_array($section) ) {
+                  foreach ( $section as $name => $val ) {
+                    $tmp[] = "$key.$name: $val";
+                  }
+                }
+              }
+              $data['exif'] = implode("\n", $tmp);
+            }
+          }
+        }
+      } else {
+        $data['exif'] = "No EXIF data could be extracted. Missing 'exif_read_data'";
+      }
+
+      if ( !$data['exif'] ) {
+        $data['exif'] = "No EXIF data found";
+      }
+    }
 
     return $data;
   }
