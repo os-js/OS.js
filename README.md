@@ -34,7 +34,7 @@ This site may not always be up to date, and can be unavailable at times.
 
 ### Installation
 
-See the `INSTALL` file
+See the `INSTALL.md` file
 
 ### General
 
