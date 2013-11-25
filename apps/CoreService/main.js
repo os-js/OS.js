@@ -75,7 +75,7 @@
           w._resize(r.dimension.w, r.dimension.h);
           // TODO: State
 
-          console.warn('Restored window "' + r.name + '" from session');
+          console.log('CoreService::loadSession->onSuccess()()', 'Restored window "' + r.name + '" from session');
         }
       }
     };
@@ -208,7 +208,7 @@
   };
 
   CoreService.prototype._setConfig = function(k, v) {
-    console.warn("CoreService::_setConfig()", k, v);
+    console.log("CoreService::_setConfig()", k, v);
 
     if ( typeof this.config[k] !== 'undefined' ) {
       this.config[k] = v;

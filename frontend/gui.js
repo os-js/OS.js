@@ -962,25 +962,25 @@
 
   /**
    * Color Swatch
-   * FIXME: Refactor - GUIElement
    */
-  var ColorSwatch = function(w, h, onSelect) {
+  var ColorSwatch = function(name, w, h, onSelect) {
     this.$element = null;
     this.$canvas  = null;
     this.width    = w || 100;
     this.height   = h || 100;
     this.onSelect = onSelect || function(r, g, b) {};
 
-    if ( !OSjs.Utils.getCompability()['canvas'] ) {
+    if ( !OSjs.Utils.getCompability().canvas ) {
       throw "Canvas is not supported on your platform!";
     }
 
-    this.init();
+    GUIElement.apply(this, [name, {}]);
   };
 
+  ColorSwatch.prototype = Object.create(GUIElement.prototype);
+
   ColorSwatch.prototype.init = function() {
-    var el        = document.createElement('div');
-    el.className  = 'GUIColorSwatch';
+    var el        = GUIElement.prototype.init.apply(this, ['GUIColorSwatch']);
 
     var cv        = document.createElement('canvas');
     cv.width      = this.width;
@@ -1025,6 +1025,8 @@
     el.appendChild(cv);
     this.$element = el;
     this.$canvas = cv;
+
+    return el;
   };
 
   /**

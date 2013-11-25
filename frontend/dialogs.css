@@ -185,21 +185,42 @@
 /**
  * Error Dialog
  */
-.ErrorDialog .message {
-  margin : 10px;
+.ErrorDialog {
+  padding : 5px;
 }
-.ErrorDialog .summary {
-  margin : 10px;
+.ErrorDialog .Message {
+  height : 20px;
+}
+.ErrorDialog .Summary {
   background : #fff;
   border : 1px solid #555;
   padding : 10px;
+  display : block;
+  width : 380px;
+  height : 165px;
+  resize : none;
+  outline : none;
+}
+.ErrorDialog .Trace {
+  display : block;
+  width : 380px;
+  height : 80px;
+  resize : none;
+  outline : none;
 }
 .ErrorDialog button {
   position : absolute;
   width : 100px;
   left : 50%;
-  bottom : 10px;
+  bottom : 5px;
   margin-left : -50px !important;
+}
+.ErrorDialog .Label {
+  font-weight : bold;
+  margin-top : 10px;
+}
+.ErrorDialog.WithTrace .Summary {
+  height : 50px;
 }
 
 /**

@@ -131,12 +131,11 @@
 
   /**
    * ErrorDialog implementation
-   * TODO: Refactor
    */
   var ErrorDialog = function() {
     this.data = {title: 'No title', message: 'No message', error: ''};
 
-    DialogWindow.apply(this, ['ErrorDialog', {width:400, height:200}]);
+    DialogWindow.apply(this, ['ErrorDialog', {width:400, height:280}]);
     this._icon = 'status/dialog-error.png';
   };
 
@@ -145,18 +144,52 @@
   ErrorDialog.prototype.init = function() {
     this._title = this.data.title;
 
+    var label;
+
     var root = DialogWindow.prototype.init.apply(this, arguments);
     root.className += ' ErrorDialog';
 
     var messagel = document.createElement('div');
-    messagel.className = 'message';
+    messagel.className = 'Message';
     messagel.innerHTML = this.data.message;
-    this._$root.appendChild(messagel);
+    root.appendChild(messagel);
 
-    var messaged = document.createElement('div');
-    messaged.className = 'summary';
-    messaged.innerHTML = this.data.error;
-    this._$root.appendChild(messaged);
+    label = document.createElement('div');
+    label.className = 'Label';
+    label.innerHTML = 'Summary';
+    root.appendChild(label);
+
+    var messaged = document.createElement('textarea');
+    messaged.className = 'Summary';
+    messaged.value = this.data.error;
+    root.appendChild(messaged);
+
+    var exception = this.data.exception;
+    if ( exception ) {
+      root.className += ' WithTrace';
+      var error = '';
+      if ( exception.stack ) {
+        error = exception.stack;
+      } else {
+        error = exception.name;
+        error += "\nFilename: " + exception.fileName || '<unknown>';
+        error += "\nLine: " + exception.lineNumber;
+        error += "\nMessage: " + exception.message;
+        if ( exception.extMessage ) {
+          error += "\n" + exception.extMessage;
+        }
+      }
+
+      label = document.createElement('div');
+      label.className = 'Label';
+      label.innerHTML = 'Trace';
+      root.appendChild(label);
+
+      var traced = document.createElement('textarea');
+      traced.className = 'Trace';
+      traced.value = error;
+      this._$root.appendChild(traced);
+    }
 
     var ok = document.createElement('button');
     ok.innerHTML = 'Close';
@@ -169,8 +202,8 @@
     root.appendChild(ok);
   };
 
-  ErrorDialog.prototype.setError = function(title, message, error) {
-    this.data = {title: title, message: message, error: error};
+  ErrorDialog.prototype.setError = function(title, message, error, exception) {
+    this.data = {title: title, message: message, error: error, exception: exception};
   };
 
   /**
@@ -731,11 +764,6 @@
       this.currentRGB = OSjs.Utils.hexToRGB(color || '#ffffff');
     }
     this.$color = null;
-
-    var self = this;
-    this.swatch = new OSjs.GUI.ColorSwatch(200, 200, function(r, g, b) {
-      self.setColor(r, g, b);
-    });
   };
 
   ColorDialog.prototype = Object.create(StandardDialog.prototype);
@@ -778,7 +806,10 @@
     this.$color = document.createElement('div');
     this.$color.className = 'ColorSelected';
 
-    this.$element.appendChild(this.swatch.$element);
+    this._addGUIElement(new OSjs.GUI.ColorSwatch('ColorDialogColorSwatch', 200, 200, function(r, g, b) {
+      self.setColor(r, g, b);
+    }), this.$element);
+
     this.$element.appendChild(sliders);
     this.$element.appendChild(this.$color);
 

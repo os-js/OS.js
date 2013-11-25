@@ -184,7 +184,7 @@
     return OSjs.Utils.Ajax(_CALLURL, cok, cerror, opts);
   }
 
-  function createErrorDialog(title, message, error) {
+  function createErrorDialog(title, message, error, exception) {
     playSound('dialog-warning');
 
     OSjs.GUI.blurMenu();
@@ -193,7 +193,7 @@
     if ( _WM ) {
       try {
         var w = new OSjs.Dialogs.ErrorMessage();
-        w.setError(title, message, error);
+        w.setError(title, message, error, exception);
         _WM.addWindow(w);
 
         return w;
@@ -272,9 +272,9 @@
     console.group("LaunchProcess()", n, arg);
 
     var self = this;
-    var _error = function(msg) {
+    var _error = function(msg, exception) {
       console.groupEnd(); // !!!
-      createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg);
+      createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg, exception);
 
       onError(msg, n, arg);
     };
@@ -299,7 +299,7 @@
 
           onConstructed(a);
         } catch ( e ) {
-          _error("Application construct failed: " + e);
+          _error("Application construct failed: " + e, e);
           err = true;
         }
 
@@ -317,7 +317,7 @@
             a.init(_CORE);
             onFinished(a);
           } catch ( e ) {
-            _error("Application init() failed: " + e);
+            _error("Application init() failed: " + e, e);
           }
 
           console.groupEnd(); // !!!
@@ -1540,9 +1540,7 @@
       }
 
       this._guiElements.push(gel);
-      if ( parentNode ) {
-        parentNode.appendChild(gel.getRoot());
-      }
+      parentNode.appendChild(gel.getRoot());
 
       return gel;
     }
@@ -1727,8 +1725,8 @@
     }
   };
 
-  Window.prototype._error = function(title, description, message) {
-    var w = createErrorDialog(title, description, message);
+  Window.prototype._error = function(title, description, message, exception) {
+    var w = createErrorDialog(title, description, message, exception);
     this._addChild(w);
   };
 

@@ -136,7 +136,9 @@
   -ms-user-select: none;
   user-select: none;
   white-space : nowrap;
-
+}
+.GUIListView td:first-child {
+  padding-left : 2px;
 }
 .GUIListView td span {
   display : block;
@@ -148,7 +150,7 @@
 }
 
 .GUIListView td img {
-  margin-right : 5px;
+  padding-right : 2px;
   vertical-align : text-bottom;
 }
 
