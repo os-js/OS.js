@@ -35,10 +35,9 @@
 
   var Tools = {
     picker : {
-      click : function(ev, clickX, clickY, canvas) {
+      click : function(ev, clickX, clickY, canvas, canvasImage) {
         var leftClick = ev.which <= 1;
-        console.warn(clickX, clickY);
-        var color = canvas.getColorAt(clickX, clickY);
+        var color = canvasImage.getColorAt(clickX, clickY);
         this.setColor(leftClick ? 'foreground' : 'background', color.hex);
       }
     },
@@ -411,7 +410,7 @@
 
     var _onMouseClick = function(ev) {
       var pos = _getPosition(ev);
-      self.onMouseClick(ev, ev.clientX-pos.x, ev.clientY-pos.y, canvas);
+      self.onMouseClick(ev, pos.x, pos.y, canvas, canvasImage);
     };
 
     self.$canvasContainer.addEventListener('mousedown', _onMouseDown, false);
@@ -454,7 +453,7 @@
   ApplicationDrawWindow.prototype.onMouseClick = function(ev, clickX, clickY, canvas, canvasImage) {
     if ( canvas && this.currentTool && Tools[this.currentTool] ) {
       if ( Tools[this.currentTool].click ) {
-        Tools[this.currentTool].click.call(this, ev, clickX, clickY, canvas);
+        Tools[this.currentTool].click.call(this, ev, clickX, clickY, canvas, canvasImage);
       }
     }
   };

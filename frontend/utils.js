@@ -150,6 +150,10 @@
       r = r.r;
     }
 
+    if ( typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined' ) {
+      throw "Invalid RGB supplied to RGBtoHEX()";
+    }
+
     var hex = [
       (r).toString( 16 ),
       (g).toString( 16 ),
