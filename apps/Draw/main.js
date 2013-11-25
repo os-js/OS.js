@@ -520,7 +520,7 @@
       _select(color);
     } else {
       var current = what === 'foreground' ? this.currentForegroundColor : this.currentBackgroundColor;
-      this._appRef._createDialog('Color', [current, function(btn, rgb, hex) {
+      this._appRef._createDialog('Color', [{color: current}, function(btn, rgb, hex) {
         self._focus();
         if ( btn !== 'ok' ) return;
 

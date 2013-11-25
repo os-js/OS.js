@@ -148,6 +148,9 @@
 .ColorDialog .LabelB {
   top : 100px;
 }
+.ColorDialog .LabelA {
+  top : 150px;
+}
 .ColorDialog .SliderR {
   top : 20px;
 }
@@ -156,6 +159,9 @@
 }
 .ColorDialog .SliderB {
   top : 120px;
+}
+.ColorDialog .SliderA {
+  top : 170px;
 }
 
 /* FontDialog */

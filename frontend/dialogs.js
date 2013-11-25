@@ -754,15 +754,22 @@
   /**
    * Color Dialog
    */
-  var ColorDialog = function(color, onClose) {
+  var ColorDialog = function(opts, onClose) {
+    opts = opts || {};
+    if ( typeof opts.alpha === 'undefined' ) {
+      opts.alpha = 1.0;
+    }
+
     StandardDialog.apply(this, ['ColorDialog', {title: "Color Dialog"}, {width:450, height:270}, onClose]);
     this._icon = 'apps/gnome-settings-theme.png';
 
-    if ( typeof color === 'object' ) {
-      this.currentRGB = color;
+    if ( typeof opts.color === 'object' ) {
+      this.currentRGB = opts.color;
     } else {
-      this.currentRGB = OSjs.Utils.HEXtoRGB(color || '#ffffff');
+      this.currentRGB = OSjs.Utils.HEXtoRGB(opts.color || '#ffffff');
     }
+    this.showAlpha = opts.showAlpha ? true : false;
+    this.currentAlpha = opts.alpha * 100;
     this.$color = null;
   };
 
@@ -783,7 +790,7 @@
     label.className = 'Label LabelR';
     label.innerHTML = 'Red: 0';
     sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, cur: color.r}, function(value, percentage) {
+    this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, val: color.r}, function(value, percentage) {
       self.setColor(value, self.currentRGB.g, self.currentRGB.b);
     }), sliders);
 
@@ -791,7 +798,7 @@
     label.className = 'Label LabelG';
     label.innerHTML = 'Green: 0';
     sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, cur: color.g}, function(value, percentage) {
+    this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, val: color.g}, function(value, percentage) {
       self.setColor(self.currentRGB.r, value, self.currentRGB.b);
     }), sliders);
 
@@ -799,9 +806,19 @@
     label.className = 'Label LabelB';
     label.innerHTML = 'Blue: 0';
     sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, cur: color.b}, function(value, percentage) {
+    this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, val: color.b}, function(value, percentage) {
       self.setColor(self.currentRGB.r, self.currentRGB.g, value);
     }), sliders);
+
+    if ( this.showAlpha ) {
+      label = document.createElement('div');
+      label.className = 'Label LabelA';
+      label.innerHTML = 'Alpha: 0';
+      sliders.appendChild(label);
+      this._addGUIElement(new OSjs.GUI.Slider('SliderA', {min: 0, max: 100, val: this.currentAlpha}, function(value, percentage) {
+        self.setColor(self.currentRGB.r, self.currentRGB.g, self.currentRGB.b, value);
+      }), sliders);
+    }
 
     this.$color = document.createElement('div');
     this.$color.className = 'ColorSelected';
@@ -814,20 +831,29 @@
     this.$element.appendChild(this.$color);
 
     var rgb = this.currentRGB;
-    this.setColor(rgb.r, rgb.g, rgb.b);
+    this.setColor(rgb.r, rgb.g, rgb.b, this.currentAlpha);
   };
 
-  ColorDialog.prototype.setColor = function(r, g, b) {
+  ColorDialog.prototype.setColor = function(r, g, b, a) {
+    this.currentAlpha = (typeof a === 'undefined' ? this.currentAlpha : a);
     this.currentRGB = {r:r, g:g, b:b};
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
 
     this._getGUIElement('SliderR').setValue(r);
-    this._getGUIElement('SliderG').setValue(g);
-    this._getGUIElement('SliderB').setValue(b);
-
     this.$element.getElementsByClassName('LabelR')[0].innerHTML = 'Red: ' + r;
+
+    this._getGUIElement('SliderG').setValue(g);
     this.$element.getElementsByClassName('LabelG')[0].innerHTML = 'Green: ' + g;
+
+    this._getGUIElement('SliderB').setValue(b);
     this.$element.getElementsByClassName('LabelB')[0].innerHTML = 'Blue: ' + b;
+
+    if ( this.showAlpha ) {
+      var ca = (this.currentAlpha/100);
+      this._getGUIElement('SliderA').setValue(this.currentAlpha);
+      this.$element.getElementsByClassName('LabelA')[0].innerHTML = 'Alpha: ' + ca;
+    }
+
   };
 
   ColorDialog.prototype.onCancelClick = function(ev) {
@@ -837,7 +863,7 @@
 
   ColorDialog.prototype.onConfirmClick = function(ev) {
     if ( !this.$buttonConfirm ) return;
-    this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHEX(this.currentRGB));
+    this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHEX(this.currentRGB), (this.currentAlpha/100));
   };
 
   //

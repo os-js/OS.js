@@ -200,7 +200,7 @@
   ApplicationSettingsWindow.prototype.openBackgroundColorSelect = function(ev, input) {
     var cur = input.value;
     var self = this;
-    this._appRef._createDialog('Color', [cur, function(btn, rgb, hex) {
+    this._appRef._createDialog('Color', [{color: cur}, function(btn, rgb, hex) {
       self._focus();
       if ( btn != 'ok' ) return;
       input.value = hex;
