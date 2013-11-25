@@ -196,7 +196,7 @@
         w.setError(title, message, error);
         _WM.addWindow(w);
 
-        return;
+        return w;
       } catch ( e ) {
         ex = e;
       } // FIXME
@@ -206,6 +206,7 @@
     if ( ex ) {
       throw ex;
     }
+    return null;
   }
 
   function LaunchFile(fname, mime, launchArgs) {
@@ -1724,6 +1725,11 @@
     if ( _WM ) {
       _WM.eventWindow(ev, this);
     }
+  };
+
+  Window.prototype._error = function(title, description, message) {
+    var w = createErrorDialog(title, description, message);
+    this._addChild(w);
   };
 
   Window.prototype._toggleLoading = function(t) {

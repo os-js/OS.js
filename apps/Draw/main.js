@@ -612,10 +612,12 @@
     var win = this._getWindow('ApplicationDrawWindow');
 
     var _onError = function(error) {
-      OSjs.API.error("Draw Application Error", "Failed to perform action '" + action + "'", error);
       if ( win ) {
         win.setTitle('');
         win._toggleLoading(false);
+        win._error("Draw Application Error", "Failed to perform action '" + action + "'", error);
+      } else {
+        OSjs.API.error("Draw Application Error", "Failed to perform action '" + action + "'", error);
       }
     };
 

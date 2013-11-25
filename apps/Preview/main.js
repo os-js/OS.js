@@ -62,6 +62,7 @@
   ApplicationPreviewWindow.prototype.setPreview = function(t, mime) {
     console.log("ApplicationPreviewWindow::setPreview()", t, mime);
 
+    var self = this;
     if ( this.previewElement && this.previewElement.parentNode ) {
       this.previewElement.parentNode.removeChild(this.previewElement);
       this.previewElement = null;
@@ -70,7 +71,7 @@
     var el;
     if ( mime ) {
       if ( !mime.match(/^(image|video|audio)/) ) {
-        OSjs.API.error("Preview", "Cannot open file", "Not supported!");
+        self._error("Preview", "Cannot open file", "Not supported!");
         return;
       }
 

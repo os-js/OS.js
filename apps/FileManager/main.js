@@ -65,7 +65,7 @@
     };
     fileView.onError = function(error) {
       self._toggleLoading(false);
-      OSjs.API.error("File Manager error", "An error occured while handling your request", error);
+      self._error("File Manager error", "An error occured while handling your request", error);
     };
 
     menuBar.addItem("File", [
@@ -288,8 +288,14 @@
   ApplicationFileManager.prototype._action = function(name, args, callback) {
     callback = callback || function() {};
 
+    var self = this;
     var _onError = function(error) {
-      OSjs.API.error("File Manager error", "An error occured while handling your request", error);
+      var win = self._getWindow('ApplicationFileManagerWindow');
+      if ( win ) {
+        win._error("File Manager error", "An error occured while handling your request", error);
+      } else {
+        OSjs.API.error("File Manager error", "An error occured while handling your request", error);
+      }
 
       callback(false);
     };

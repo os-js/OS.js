@@ -137,7 +137,11 @@
     if ( !w ) return;
 
     var _onError = function(msg, err) {
-      OSjs.API.error("Textpad error", msg, err);
+      if ( w ) {
+        w._error("Textpad error", msg, err);
+      } else {
+        OSjs.API.error("Textpad error", msg, err);
+      }
     };
 
     var _save = function(fname) {
@@ -190,7 +194,7 @@
       case 'open' :
         var _open = function(fname, mime) {
           if ( mime && !mime.match(/^text/) ) {
-            OSjs.API.error("Textpad", "Cannot open file", "Not supported!");
+            _onError("Cannot open file", "Not supported!");
             return;
           }
 

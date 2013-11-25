@@ -447,9 +447,9 @@
   FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
     console.log("FileUploadDialog::onUploadFailed()");
     if ( error ) {
-      OSjs.API.error("Upload failed", "The upload has failed", error);
+      this._error("Upload failed", "The upload has failed", error);
     } else {
-      OSjs.API.error("Upload failed", "The upload has failed", "Reason unknown...");
+      this._error("Upload failed", "The upload has failed", "Reason unknown...");
     }
     this.$buttonCancel.removeAttribute("disabled");
     this.end('fail', error);
@@ -457,7 +457,7 @@
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
     console.log("FileUploadDialog::onUploadCanceled()");
-    OSjs.API.error("Upload failed", "The upload has failed", "Cancelled by user...");
+    this._error("Upload failed", "The upload has failed", "Cancelled by user...");
     this.$buttonCancel.removeAttribute("disabled");
     this.end('cancelled', evt);
   };
@@ -483,7 +483,7 @@
         if ( fileList ) {
           fileList.chdir(OSjs.API.getDefaultPath('/'));
         }
-        OSjs.API.error("FileDialog Error", "Failed listing directory '" + dirname + "' because an error occured", err);
+        self._error("FileDialog Error", "Failed listing directory '" + dirname + "' because an error occured", err);
       }
     };
 
