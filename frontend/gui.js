@@ -396,7 +396,7 @@
         }
       }
       var elm = OSjs.GUI.createMenu(menu, pos);
-      self.onMenuOpen.call(this, elm, pos);
+      self.onMenuOpen.call(this, elm, pos, title);
     };
 
     this.$ul.appendChild(el);

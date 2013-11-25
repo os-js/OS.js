@@ -156,31 +156,33 @@
         self._focus();
       }}
     ]);
-    menuBar.onMenuOpen = function(menu) {
+    menuBar.onMenuOpen = function(menu, mpos, mtitle) {
+      if ( mtitle !== 'Edit' ) return;
+
       var fileView = self._getGUIElement('FileManagerFileView');
       var sel = fileView.getSelected();
       var el;
       var cur = sel ? sel.filename != '..' : false;
       if ( cur ) {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0],
-        el.className = el.className.replace(/\s?Disabled/, '');
+        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0];
+        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
 
-        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0],
-        el.className = el.className.replace(/\s?Disabled/, '');
+        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0];
+        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
       } else {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0],
-        el.className += ' Disabled';
+        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0];
+        if ( el ) el.className += ' Disabled';
 
-        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0],
-        el.className += ' Disabled';
+        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0];
+        if ( el ) el.className += ' Disabled';
       }
 
       if ( cur && sel.type === 'file' ) {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0]
-        el.className = el.className.replace(/\s?Disabled/, '');
+        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0];
+        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
       } else {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0]
-        el.className += ' Disabled';
+        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0];
+        if ( el ) el.className += ' Disabled';
       }
 
     };
