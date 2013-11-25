@@ -6,13 +6,10 @@
   var ApplicationFileManagerWindow = function(app) {
     Window.apply(this, ['ApplicationFileManagerWindow', {width: 650, height: 420}, app]);
 
-    this.title      = "File Manager";
-    fileView   = null;
-    sideView   = null;
-
-    this._title = this.title;
+    this.title                  = "File Manager";
+    this._title                 = this.title;
     this._properties.allow_drop = true;
-    this._icon = 'apps/file-manager.png';
+    this._icon                  = 'apps/file-manager.png';
   };
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
