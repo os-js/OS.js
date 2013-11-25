@@ -761,7 +761,7 @@
     if ( typeof color === 'object' ) {
       this.currentRGB = color;
     } else {
-      this.currentRGB = OSjs.Utils.hexToRGB(color || '#ffffff');
+      this.currentRGB = OSjs.Utils.HEXtoRGB(color || '#ffffff');
     }
     this.$color = null;
   };
@@ -837,7 +837,7 @@
 
   ColorDialog.prototype.onConfirmClick = function(ev) {
     if ( !this.$buttonConfirm ) return;
-    this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHex(this.currentRGB));
+    this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHEX(this.currentRGB));
   };
 
   //

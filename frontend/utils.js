@@ -133,7 +133,7 @@
   // COLORS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Utils.hexToRGB = function(hex) {
+  OSjs.Utils.HEXtoRGB = function(hex) {
     var rgb = parseInt(hex.replace("#", ""), 16);
     return {
       r : (rgb & (255 << 16)) >> 16,
@@ -143,7 +143,7 @@
   };
 
 
-  OSjs.Utils.RGBtoHex = function(r, g, b) {
+  OSjs.Utils.RGBtoHEX = function(r, g, b) {
     if ( typeof r === 'object' ) {
       g = r.g;
       b = r.b;

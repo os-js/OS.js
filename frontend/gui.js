@@ -1453,7 +1453,7 @@
     var index = ((x + y * this.$canvas.width) * 4);
 
     var rgb = {r:imageData[index + 0], g:imageData[index + 1], b:imageData[index + 2], a:imageData[index + 3]};
-    var hex = OSjs.Utils.RGBtoHex(rgb);
+    var hex = OSjs.Utils.RGBtoHEX(rgb);
     return {rgb: rgb, hex:  hex};
   };
 
