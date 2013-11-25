@@ -39,7 +39,8 @@
       return self.onDropUpload(ev, el, files);
     };
     fileView.onFinished = function(dir, numItems, totalBytes) {
-      statusBar.setText("Showing " + numItems + " item(s), " + totalBytes + " byte(s)");
+      var hifs = OSjs.Utils.humanFileSize(totalBytes);
+      statusBar.setText("Showing " + numItems + " item(s), " + hifs);
       self._toggleLoading(false);
       try {
         self._appRef.go(dir, self);

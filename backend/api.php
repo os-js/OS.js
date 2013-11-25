@@ -246,13 +246,13 @@ function getPackageInfo() {
   return $list;
 }
 
-function humanFileSize($size,$unit="") {
-  if( (!$unit && $size >= 1<<30) || $unit == "GB")
-    return number_format($size/(1<<30),2)."GB";
-  if( (!$unit && $size >= 1<<20) || $unit == "MB")
-    return number_format($size/(1<<20),2)."MB";
-  if( (!$unit && $size >= 1<<10) || $unit == "KB")
-    return number_format($size/(1<<10),2)."KB";
+function humanFileSize($size, $unit = "") {
+  if( (!$unit && $size >= 1<<30) || $unit == "GiB")
+    return number_format($size/(1<<30),2)." GiB";
+  if( (!$unit && $size >= 1<<20) || $unit == "MiB")
+    return number_format($size/(1<<20),2)." MiB";
+  if( (!$unit && $size >= 1<<10) || $unit == "KiB")
+    return number_format($size/(1<<10),2)." KiB";
   return number_format($size)." bytes";
 }
 
