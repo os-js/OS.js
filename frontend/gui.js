@@ -1015,7 +1015,10 @@
 
     var self = this;
     cv.addEventListener('click', function(e) {
-      var data = ctx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
+      var pos = OSjs.Utils.$position(cv);
+      var cx = typeof e.offsetX === 'undefined' ? (e.clientX - pos.left) : e.offsetX;
+      var cy = typeof e.offsetY === 'undefined' ? (e.clientY - pos.top) : e.offsetY;
+      var data = ctx.getImageData(cx, cy, 1, 1).data;
       self.onSelect.call(self, data[0], data[1], data[2]);
     }, false);
 
