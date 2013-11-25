@@ -161,6 +161,8 @@ body .Menu li.Disabled {
 .Window select {
   -webkit-appearance: button;
   -webkit-border-radius: 0px;
+  -moz-appearance: button;
+  -moz-border-radius: 0px;
   height : 22px;
 }
 .Window input[type=text] {
