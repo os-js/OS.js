@@ -337,15 +337,33 @@
   margin : 0px;
   padding : 0;
 }
+
 .GUIIconView ul > li {
   float : left;
   margin : 5px;
   padding : 5px;
   text-align : center;
+  width : 34px;
+  height : 34px;
+}
+.GUIIconView.IconSize32x32 ul > li {
   width : 50px;
   height : 50px;
 }
+.GUIIconView.IconSize64x64 ul > li {
+  width : 82px;
+  height : 82px;
+}
+
 .GUIIconView img {
+  width : 16px;
+  height : 16px;
+}
+.GUIIconView.IconSize32x32 img {
   width : 32px;
   height : 32px;
+}
+.GUIIconView.IconSize64x64 img {
+  width : 64px;
+  height : 64px;
 }
