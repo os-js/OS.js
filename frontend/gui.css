@@ -317,7 +317,6 @@
 
 /**
  * Icon View
- * FIXME: IconSize32x32, IconSize64x64, IconSize16x16 classes
  */
 .GUIIconView {
   position : relative;

@@ -66,25 +66,31 @@
       self._error("File Manager error", "An error occured while handling your request", error);
     };
 
-    // FIXME: Cleanup
-    menuBar.addItem("File", [
-      {title: 'Create directory', onClick: function() {
-        var fileView = self._getGUIElement('FileManagerFileView');
-        var cur = fileView.getPath();
-        app._createDialog('Input', ["Create a new directory in <span>" + cur + "</span>", '', function(btn, value) {
+    var menuAction = function(action, check) {
+      self._focus();
+      var fileView = self._getGUIElement('FileManagerFileView');
+      var cur = fileView.getSelected();
+      var dir = fileView.getPath();
+      if ( check ) {
+        if ( !cur || !cur.path ) return;
+      }
+      var fname = cur ? OSjs.Utils.filename(cur.path) : null;
+
+      if ( action == 'mkdir' ) {
+        app._createDialog('Input', ["Create a new directory in <span>" + dir + "</span>", '', function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
 
-          app.mkdir((cur + '/' + value), function() {
+          app.mkdir((dir + '/' + value), function() {
             if ( fileView ) {
               fileView.refresh();
               self._focus();
             }
           });
         }], self);
-      }},
-      {title: 'Upload', onClick: function() {
-        var fileView = self._getGUIElement('FileManagerFileView');
+      }
+
+      else if ( action == 'upload' ) {
         app._createDialog('FileUpload', [fileView.getPath(), null, function(btn, filename, mime, size) {
           self._focus();
           if ( btn != 'ok' && btn != 'complete' ) return;
@@ -95,17 +101,9 @@
             });
           }
         }], self);
-      }},
-      {title: 'Close', onClick: function() {
-        self._close();
-      }}
-    ]);
-    menuBar.addItem("Edit", [
-      {name: 'Rename', title: 'Rename', onClick: function() {
-        var fileView = self._getGUIElement('FileManagerFileView');
-        var cur = fileView.getSelected();
-        if ( !cur ) return;
-        var fname = OSjs.Utils.filename(cur.path);
+      }
+
+      else if ( action == 'rename' ) {
         app._createDialog('Input', ["Rename <span>" + fname + "</span>", fname, function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
@@ -113,20 +111,16 @@
 
           app.move(cur.path, newpath, function() {
             if ( fileView ) {
-              fileView.refresh();
+              fileView.refresh(function() {
+                if ( fileView ) fileView.setSelected(value, 'filename');
+              });
               self._focus();
             }
           });
         }], self);
-      }},
-      {name: 'Delete', title: 'Delete', onClick: function() {
-        self._focus();
+      }
 
-        var fileView = self._getGUIElement('FileManagerFileView');
-        var cur = fileView.getSelected();
-        if ( !cur ) return;
-        var fname = OSjs.Utils.filename(cur.path);
-
+      else if ( action == 'delete' ) {
         app._createDialog('Confirm', ["Delete <span>" + fname + "</span> ?", function(btn) {
           self._focus();
           if ( btn !== 'ok' ) return;
@@ -136,19 +130,40 @@
             }
           });
         }]);
-      }},
-      {name: 'Information', title: 'Information', onClick: function() {
-        self._focus();
+      }
 
-        var fileView = self._getGUIElement('FileManagerFileView');
-        var cur = fileView.getSelected();
-        if ( !cur || cur.path === 'dir' ) return;
-
+      else if ( action == 'info' ) {
+        if ( cur.type === 'dir' ) return;
         app._createDialog('FileInfo', [cur.path, function(btn) {
           self._focus();
         }]);
+      }
+    };
+
+    menuBar.addItem("File", [
+      {title: 'Create directory', onClick: function() {
+        menuAction('mkdir');
+      }},
+      {title: 'Upload', onClick: function() {
+        menuAction('upload');
+      }},
+      {title: 'Close', onClick: function() {
+        self._close();
       }}
     ]);
+
+    menuBar.addItem("Edit", [
+      {name: 'Rename', title: 'Rename', onClick: function() {
+        menuAction('rename', true);
+      }},
+      {name: 'Delete', title: 'Delete', onClick: function() {
+        menuAction('delete', true);
+      }},
+      {name: 'Information', title: 'Information', onClick: function() {
+        menuAction('info', true);
+      }}
+    ]);
+
     menuBar.addItem("View", [
       {title: 'Refresh', onClick: function() {
         var fileView = self._getGUIElement('FileManagerFileView');
@@ -156,6 +171,7 @@
         self._focus();
       }}
     ]);
+
     menuBar.onMenuOpen = function(menu, mpos, mtitle) {
       if ( mtitle !== 'Edit' ) return;
 
