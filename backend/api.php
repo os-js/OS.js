@@ -86,18 +86,13 @@ class FS
       $ftype = is_dir($fpath) ? 'dir' : 'file';
 
       $fsize = @(($ftype == 'dir' ? '' : filesize($fpath)));
-      $hrsize = '';
 
       if ( $fsize === false ) $fsize = '';
-      if ( $ftype !== 'dir' && strlen($fsize) ) {
-        $hrsize = humanFileSize($fsize);
-      }
 
       $iter = Array(
         'filename' => $fname,
         'path'     => $fpath,
         'size'     => $fsize,
-        'hrsize'   => $hrsize,
         'mime'     => null,
         'type'     => $ftype
       );
@@ -358,16 +353,6 @@ function filePermissions($fname) {
 
 
   return $info;
-}
-
-function humanFileSize($size, $unit = "") {
-  if( (!$unit && $size >= 1<<30) || $unit == "GiB")
-    return number_format($size/(1<<30),2)." GiB";
-  if( (!$unit && $size >= 1<<20) || $unit == "MiB")
-    return number_format($size/(1<<20),2)." MiB";
-  if( (!$unit && $size >= 1<<10) || $unit == "KiB")
-    return number_format($size/(1<<10),2)." KiB";
-  return number_format($size)." bytes";
 }
 
 function return_bytes($val) {

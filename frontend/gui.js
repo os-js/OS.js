@@ -757,17 +757,18 @@
     ListView.apply(this, [name, opts]);
     this.opts.dnd = true;
 
-    var self = this;
-    this.path = path || '/';
-    this.lastPath = this.path;
+    this.path       = path || '/';
+    this.lastPath   = this.path;
     this.mimeFilter = mimeFilter;
-    this.summary = opts.summary || false;
-    this.onActivated = function(path, type, mime) {};
-    this.onError = function(error) {};
-    this.onFinished = function() {};
-    this.onSelected = function(item, el) {};
-    this.onRefresh = function() {};
-    this.onDropped = function() { console.warn("Not implemented yet!"); };
+    this.summary    = opts.summary || false;
+    this.humanSize  = (typeof opts.humanSize === 'undefined' || opts.humanSize);
+
+    this.onActivated  = function(path, type, mime) {};
+    this.onError      = function(error) {};
+    this.onFinished   = function() {};
+    this.onSelected   = function(item, el) {};
+    this.onRefresh    = function() {};
+    this.onDropped    = function() { console.warn("Not implemented yet!"); };
   };
 
   FileView.prototype = Object.create(ListView.prototype);
@@ -803,8 +804,9 @@
 
   FileView.prototype.render = function(list, dir) {
     if ( this.destroyed ) return;
+    var self = this;
 
-    var _callback = function(iter) {
+    var _callbackIcon = function(iter) {
       var icon = 'status/gtk-dialog-question.png';
 
       if ( iter.type == 'dir' ) {
@@ -828,12 +830,19 @@
       return OSjs.API.getThemeResource(icon, 'icon');
     };
 
+    var _callbackSize = function(iter) {
+      if ( iter.size === '' ) return '';
+      if ( self.humanSize ) {
+        return OSjs.Utils.humanFileSize(iter.size);
+      }
+      return iter.size;
+    };
+
     this.setColumns([
-      {key: 'image', title: '', type: 'image', callback: _callback, domProperties: {width: "16"}},
+      {key: 'image', title: '', type: 'image', callback: _callbackIcon, domProperties: {width: "16"}},
       {key: 'filename', title: 'Filename'},
       {key: 'mime', title: 'Mime', domProperties: {width: "150"}},
-      {key: 'size', title: 'Size', visible: false},
-      {key: 'hrsize', title: 'Size', domProperties: {width: "80"}},
+      {key: 'size', title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},
       {key: 'path', title: 'Path', visible: false},
       {key: 'type', title: 'Type', visible: false}
      ]);
