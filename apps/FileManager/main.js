@@ -101,10 +101,11 @@
           self._focus();
           if ( btn !== 'ok' || !value ) return;
 
-          app.mkdir((dir + '/' + value), function() {
-            if ( fileView ) {
-              fileView.refresh();
-              self._focus();
+          app.mkdir((dir + '/' + value), function(result) {
+            if ( result && fileView ) {
+              fileView.refresh(function() {
+                fileView.setSelected('filename', value);
+              });
             }
           });
         }], self);
@@ -112,13 +113,13 @@
 
       else if ( action == 'upload' ) {
         app._createDialog('FileUpload', [fileView.getPath(), null, function(btn, filename, mime, size) {
-          self._focus();
-          if ( btn != 'ok' && btn != 'complete' ) return;
-          if ( fileView ) {
-            fileView.refresh(function() {
-              fileView.setSelected(filename, 'filename');
-              self._focus();
-            });
+          if ( btn == 'complete' ) {
+            self._focus();
+            if ( fileView ) {
+              fileView.refresh(function() {
+                fileView.setSelected(filename, 'filename');
+              });
+            }
           }
         }], self);
       }
@@ -129,8 +130,8 @@
           if ( btn !== 'ok' || !value ) return;
           var newpath = OSjs.Utils.dirname(cur.path) + '/' + value;
 
-          app.move(cur.path, newpath, function() {
-            if ( fileView ) {
+          app.move(cur.path, newpath, function(result) {
+            if ( result && fileView ) {
               fileView.refresh(function() {
                 if ( fileView ) fileView.setSelected(value, 'filename');
               });
@@ -144,8 +145,8 @@
         app._createDialog('Confirm', ["Delete <span>" + fname + "</span> ?", function(btn) {
           self._focus();
           if ( btn !== 'ok' ) return;
-          app.unlink(cur.path, function() {
-            if ( fileView ) {
+          app.unlink(cur.path, function(result) {
+            if ( result && fileView ) {
               fileView.refresh();
             }
           });

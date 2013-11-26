@@ -529,6 +529,10 @@
     this.end('cancelled', evt);
   };
 
+  FileUploadDialog.prototype._error = function() {
+    OSjs.API.error.apply(this, arguments); // Because this window may close automatically, and that will remove errors
+  };
+
   /**
    * File Dialog Class
    */
