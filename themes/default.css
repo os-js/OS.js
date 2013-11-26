@@ -4,17 +4,17 @@
  */
 @font-face {
   font-family:OSjsFont;
-  src:url('/themes/default/fonts/Sansation.ttf');
+  src:url('default/fonts/Sansation.ttf');
 }
 @font-face {
   font-family:OSjsFont;
   font-weight:bold;
-  src:url('/themes/default/fonts/SansationBold.ttf');
+  src:url('default/fonts/SansationBold.ttf');
 }
 @font-face {
   font-family:OSjsFont;
   font-style:italic;
-  src:url('/themes/default/fonts/SansationOblique.ttf');
+  src:url('default/fonts/SansationOblique.ttf');
 }
 body {
   font-family:OSjsFont, Arial;
@@ -61,51 +61,51 @@ body {
 }
 
 .WindowButtonMaximize {
-  background : url('/themes/default/wm/prelight_unfocused.png') no-repeat 2px 2px,
-               url('/themes/default/wm/maximize_unfocused.png') no-repeat 2px 2px;
+  background : url('default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('default/wm/maximize_unfocused.png') no-repeat 2px 2px;
 }
 .WindowButtonMaximize:hover {
-  background : url('/themes/default/wm/prelight.png') no-repeat 2px 2px,
-               url('/themes/default/wm/maximize.png') no-repeat 2px 2px !important;
+  background : url('default/wm/prelight.png') no-repeat 2px 2px,
+               url('default/wm/maximize.png') no-repeat 2px 2px !important;
 }
 .WindowButtonMaximize:active {
-  background : url('/themes/default/wm/pressed.png') no-repeat 2px 2px,
-               url('/themes/default/wm/maximize.png') no-repeat 2px 2px !important;
+  background : url('default/wm/pressed.png') no-repeat 2px 2px,
+               url('default/wm/maximize.png') no-repeat 2px 2px !important;
 }
 .Window.WindowHintFocused .WindowButtonMaximize {
-  background : url('/themes/default/wm/maximize.png') no-repeat 2px 2px;
+  background : url('default/wm/maximize.png') no-repeat 2px 2px;
 }
 
 .WindowButtonMinimize {
-  background : url('/themes/default/wm/prelight_unfocused.png') no-repeat 2px 2px,
-               url('/themes/default/wm/minimize_unfocused.png') no-repeat 2px 2px;
+  background : url('default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('default/wm/minimize_unfocused.png') no-repeat 2px 2px;
 }
 .WindowButtonMinimize:hover {
-  background : url('/themes/default/wm/prelight.png') no-repeat 2px 2px,
-               url('/themes/default/wm/minimize.png') no-repeat 2px 2px !important;
+  background : url('default/wm/prelight.png') no-repeat 2px 2px,
+               url('default/wm/minimize.png') no-repeat 2px 2px !important;
 }
 .WindowButtonMinimize:active {
-  background : url('/themes/default/wm/pressed.png') no-repeat 2px 2px,
-               url('/themes/default/wm/minimize.png') no-repeat 2px 2px !important;
+  background : url('default/wm/pressed.png') no-repeat 2px 2px,
+               url('default/wm/minimize.png') no-repeat 2px 2px !important;
 }
 .Window.WindowHintFocused .WindowButtonMinimize {
-  background : url('/themes/default/wm/minimize.png') no-repeat 2px 2px;
+  background : url('default/wm/minimize.png') no-repeat 2px 2px;
 }
 
 .WindowButtonClose {
-  background : url('/themes/default/wm/prelight_unfocused.png') no-repeat 2px 2px,
-               url('/themes/default/wm/close_unfocused.png') no-repeat 2px 2px;
+  background : url('default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('default/wm/close_unfocused.png') no-repeat 2px 2px;
 }
 .WindowButtonClose:hover {
-  background : url('/themes/default/wm/prelight.png') no-repeat 2px 2px,
-               url('/themes/default/wm/close.png') no-repeat 2px 2px !important;
+  background : url('default/wm/prelight.png') no-repeat 2px 2px,
+               url('default/wm/close.png') no-repeat 2px 2px !important;
 }
 .WindowButtonClose:active {
-  background : url('/themes/default/wm/pressed.png') no-repeat 2px 2px,
-               url('/themes/default/wm/close.png') no-repeat 2px 2px !important;
+  background : url('default/wm/pressed.png') no-repeat 2px 2px,
+               url('default/wm/close.png') no-repeat 2px 2px !important;
 }
 .Window.WindowHintFocused .WindowButtonClose {
-  background : url('/themes/default/wm/close.png') no-repeat 2px 2px;
+  background : url('default/wm/close.png') no-repeat 2px 2px;
 }
 
 .WindowResize {
@@ -119,7 +119,7 @@ body {
   background : #fff; /*rgba(0, 0, 0, .9);*/
 }
 .WindowLoadingIndicator {
-  background : url('/themes/default/loading.gif');
+  background : url('default/loading.gif');
 }
 
 body .Menu {

@@ -240,7 +240,7 @@
         }
       }
     };
-    xhr.open("POST", OSjs.API.getFilesystemURL());
+    xhr.open("POST", OSjs.API.getResourceURL());
     xhr.send(fd);
 
     return xhr;

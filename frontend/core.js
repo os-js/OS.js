@@ -69,7 +69,7 @@
 
   var _DEFAULT_SETTINGS = {
     WM : {
-      wallpaper   : 'osjs:///themes/wallpapers/noise_red.png',
+      wallpaper   : '/themes/wallpapers/noise_red.png',
       themes      : [{'default': {title: 'Default'}}],
       theme       : 'default',
       background  : 'image-repeat',
@@ -84,7 +84,7 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
+  // RESOURCE HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
   function getThemeResource(name, type, args) {
@@ -102,10 +102,28 @@
           ext = 'mp3';
         }
         name = '/themes/' + theme + '/sounds/' + name + '.' + ext;
+      } else if ( type == 'wm' ) {
+        name = '/themes/' + theme + '/wm/' + name;
+      } else if ( type == 'base' ) {
+        name = '/themes/' + theme + '/' + name;
       }
     }
 
     return name;
+  }
+
+  function getThemeCSS(name) {
+    if ( name === null ) {
+      return '/frontend/blank.css';
+    }
+    return '/themes/' + name + '.css';
+  }
+
+  function getResourceURL(path) {
+    if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
+      return path;
+    }
+    return path ? (_FSURL + path) : _FSURL;
   }
 
   function playSound(name) {
@@ -119,28 +137,15 @@
     return false;
   }
 
-  function getFilesystemURL(t) {
-    if ( t ) {
-      return _FSURL + '/' + t; //encodeURIComponent(t);
-    }
-    return _FSURL;
-  }
+  /////////////////////////////////////////////////////////////////////////////
+  // DOM HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
   function getNextZindex(ontop) {
     if ( typeof ontop !== 'undefined' && ontop === true ) {
       return (_LTZINDEX+=2);
     }
     return (_LZINDEX+=2);
-  }
-
-  function getRealPath(path) {
-    if ( path.match(/^osjs\:\/\//) ) {
-      return path.replace(/^osjs\:\/\//, "");
-    } else if ( path.match(/^(https?|ftp)\:\/\//) ) {
-      return path;
-    }
-
-    return _FSURL + path;
   }
 
   function stopPropagation(ev) {
@@ -164,6 +169,10 @@
     }
     return _getWindowSpace();
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // API HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
   function APICall(m, a, cok, cerror) {
     a = a || {};
@@ -818,7 +827,7 @@
   WindowManager.prototype.setWallpaper = function(name, type) {
     console.log("OSjs::Core::WindowManager::setWallpaper", name, type);
     if ( name && type.match(/^image/) ) {
-      var path = name.match(/^\/themes\/wallpapers/) ? name : getRealPath(name); // FIXME
+      var path = getResourceURL(name);
       document.body.style.backgroundImage = "url('" + path + "')";
 
       switch ( type ) {
@@ -863,12 +872,7 @@
   WindowManager.prototype.setTheme = function(name) {
     console.log("OSjs::Core::WindowManager::setTheme", name);
 
-    if ( name === null ) {
-      document.getElementById("_OSjsTheme").setAttribute('href', '/frontend/blank.css');
-    } else {
-      var url = '/themes/' + name + '.css';
-      document.getElementById("_OSjsTheme").setAttribute('href', url);
-    }
+    document.getElementById("_OSjsTheme").setAttribute('href', getThemeCSS(name));
     this._theme = name;
   };
 
@@ -1084,7 +1088,7 @@
     this._appRef        = appRef || null;
     this._destroyed     = false;
     this._wid           = _WID;
-    this._icon          = "/themes/default/wm/wm.png";
+    this._icon          = getThemeResource('wm.png', 'wm');
     this._name          = name;
     this._title         = name;
     this._position      = {x:opts.x, y:opts.y};
@@ -1819,7 +1823,7 @@
   OSjs.API.getConfig        = function(key) { var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig(key); } return null; };
   OSjs.API.getDefaultPath   = function(def) { def = def || '/'; var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig('Home') || def; } return def; };
   OSjs.API.getCallURL       = function() { return _CALLURL; };
-  OSjs.API.getFilesystemURL = getFilesystemURL;
+  OSjs.API.getResourceURL   = getResourceURL;
   OSjs.API.getThemeResource = getThemeResource;
   OSjs.API.call             = APICall;
   OSjs.API.error            = createErrorDialog;
@@ -1840,7 +1844,7 @@
     // Loading indicator
     _$LOADING = document.createElement('img');
     _$LOADING.id = "Loading";
-    _$LOADING.src = '/themes/default/loading_small.gif';
+    _$LOADING.src = getThemeResource('loading_small.gif', 'base');
 
     document.body.appendChild(_$LOADING);
 

@@ -77,7 +77,7 @@
 
       if ( t ) {
         try {
-          var src = OSjs.API.getFilesystemURL(t);
+          var src = OSjs.API.getResourceURL(t);
           if ( mime.match(/^image/) ) {
             el = document.createElement('img');
             el.alt = t;
