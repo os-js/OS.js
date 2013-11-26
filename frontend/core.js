@@ -206,7 +206,6 @@
 
     OSjs.GUI.blurMenu();
 
-    var ex = null;
     if ( _WM ) {
       try {
         var w = new OSjs.Dialogs.ErrorMessage();
@@ -215,14 +214,11 @@
 
         return w;
       } catch ( e ) {
-        ex = e;
-      } // FIXME
+        console.warn("An error occured while creating error Window", ex);
+      }
     }
 
     alert(title + "\n\n" + message + "\n\n" + error);
-    if ( ex ) {
-      throw ex;
-    }
     return null;
   }
 
