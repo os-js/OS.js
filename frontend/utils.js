@@ -36,6 +36,13 @@
   // MISC
   /////////////////////////////////////////////////////////////////////////////
 
+  OSjs.Utils.inArray = function(arr, val) {
+    for ( var i = 0, l = arr.length; i < l; i++ ) {
+      if ( arr[i] === val ) return true;
+    }
+    return false;
+  };
+
   OSjs.Utils.getCompability = (function() {
     var canvas_supported  = !!document.createElement('canvas').getContext   ? document.createElement('canvas')  : null;
     var video_supported   = !!document.createElement('video').canPlayType   ? document.createElement('video')   : null;
@@ -105,6 +112,11 @@
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Utils.filext = function(d) {
+    var ext = OSjs.Utils.filename(d).split(".").pop();
+    return ext ? ext.toLowerCase() : null;
+  };
 
   OSjs.Utils.dirname = function(f) {
     var tmp = f.split("/");

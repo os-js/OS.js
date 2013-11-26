@@ -142,6 +142,33 @@
     }, false);
   }
 
+  function getFileIcon(filename, mime, type, icon) {
+    if ( !filename ) throw "Filename is required for getFileIcon()";
+    type = type || 'file';
+    icon = icon || 'mimetypes/gnome-fs-regular.png';
+
+    //var ext = OSjs.Utils.filext(filename); // TODO: Check using filext when no mime matched
+    if ( type == 'dir' ) {
+      icon = 'places/folder.png';
+    } else if ( type == 'file' ) {
+      if ( mime ) {
+        if ( mime.match(/^text\//) ) {
+          icon = 'mimetypes/txt.png';
+        } else if ( mime.match(/^audio\//) ) {
+          icon = 'mimetypes/sound.png';
+        } else if ( mime.match(/^video\//) ) {
+          icon = 'mimetypes/video.png';
+        } else if ( mime.match(/^image\//) ) {
+          icon = 'mimetypes/image.png';
+        } else if ( mime.match(/^application\//) ) {
+          icon = 'mimetypes/binary.png';
+        }
+      }
+    }
+
+    return OSjs.API.getThemeResource(icon, 'icon');
+  }
+
   /**
    * GUI Element
    */
@@ -808,26 +835,7 @@
 
     var _callbackIcon = function(iter) {
       var icon = 'status/gtk-dialog-question.png';
-
-      if ( iter.type == 'dir' ) {
-        icon = 'places/folder.png';
-      } else if ( iter.type == 'file' ) {
-        if ( iter.mime ) {
-          if ( iter.mime.match(/^text\//) ) {
-            icon = 'mimetypes/txt.png';
-          } else if ( iter.mime.match(/^audio\//) ) {
-            icon = 'mimetypes/sound.png';
-          } else if ( iter.mime.match(/^video\//) ) {
-            icon = 'mimetypes/video.png';
-          } else if ( iter.mime.match(/^image\//) ) {
-            icon = 'mimetypes/image.png';
-          } else if ( iter.mime.match(/^application\//) ) {
-            icon = 'mimetypes/binary.png';
-          }
-        }
-      }
-
-      return OSjs.API.getThemeResource(icon, 'icon');
+      return getFileIcon(iter.filename, iter.mime, iter.type, icon);
     };
 
     var _callbackSize = function(iter) {
@@ -839,12 +847,12 @@
     };
 
     this.setColumns([
-      {key: 'image', title: '', type: 'image', callback: _callbackIcon, domProperties: {width: "16"}},
+      {key: 'image',    title: '',     type: 'image', callback: _callbackIcon, domProperties: {width: "16"}},
       {key: 'filename', title: 'Filename'},
-      {key: 'mime', title: 'Mime', domProperties: {width: "150"}},
-      {key: 'size', title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},
-      {key: 'path', title: 'Path', visible: false},
-      {key: 'type', title: 'Type', visible: false}
+      {key: 'mime',     title: 'Mime', domProperties: {width: "150"}},
+      {key: 'size',     title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},
+      {key: 'path',     title: 'Path', visible: false},
+      {key: 'type',     title: 'Type', visible: false}
      ]);
 
     this.setRows(list);
@@ -1622,6 +1630,7 @@
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;
+  OSjs.GUI.getFileIcon      = getFileIcon;
 
   var _MENU;
   OSjs.GUI.createMenu = function(items, pos) {
