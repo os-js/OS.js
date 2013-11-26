@@ -339,11 +339,11 @@
   /**
    * File Progress dialog
    */
-  var FileProgressDialog = function() {
+  var FileProgressDialog = function(title) {
     DialogWindow.apply(this, ['FileUploadDialog', {width:400, height:120}]);
 
     this.$desc = null;
-    this._title = "Upload Progress";
+    this._title = title || "File Operation Progress";
     this._properties.allow_close = false;
     this._icon = 'actions/document-send.png';
   };
@@ -459,7 +459,7 @@
     this.$file.disabled = 'disabled';
     this.$buttonCancel.disabled = "disabled";
 
-    this.dialog = this._wmref.addWindow(new FileProgressDialog());
+    this.dialog = this._wmref.addWindow(new FileProgressDialog("Uploading file..."));
     this.dialog.setDescription("Uploading '" + file.name + "' (" + file.type + " " + size + ") to " + this.dest);
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!

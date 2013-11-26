@@ -108,8 +108,8 @@
     args.data   = args.data   || null;
     args.mime   = args.mime   || 'application/json';
 
-    args.onStart  = args.onStart  || function() { return true; };
-    args.onEnd    = args.onEnd    || function() { return true; };
+    args.onStart    = args.onStart    || function() { return true; };
+    args.onEnd      = args.onEnd      || function() { return true; };
 
     var _toString = function(mime) {
       return JSON.stringify({
@@ -779,19 +779,23 @@
     if ( this.opts.dnd && this.opts.dndDrag && cpb.dnd ) {
       this.onCreateRow = function(el, item, column) {
         var self = this;
-        createDraggable(el, {
-          type: 'file',
-          data: item
-        });
+        if ( item.filename == '..' ) return;
 
-        createDroppable(el, {
-          onItemDropped: function(ev, el, item, args) {
-            return self.onItemDropped.call(self, ev, el, item, args);
-          },
-          onFilesDropped: function(ev, el, files, args) {
-            return self.onFilesDropped.call(self, ev, el, item, args);
-          }
-        });
+        if ( item.type === 'file' ) {
+          createDraggable(el, {
+            type: 'file',
+            data: item
+          });
+        } else if ( item.type == 'dir' ) {
+          createDroppable(el, {
+            onItemDropped: function(ev, el, item, args) {
+              return self.onItemDropped.call(self, ev, el, item, args);
+            },
+            onFilesDropped: function(ev, el, files, args) {
+              return self.onFilesDropped.call(self, ev, el, item, args);
+            }
+          });
+        }
 
       };
     }

@@ -31,8 +31,28 @@
     };
 
     fileView.onItemDropped = function(ev, el, item) {
-      // TODO
-      console.warn("Not implemented yet!");
+      if ( item && item.type === "file" && item.data ) {
+        var dir = fileView.getPath();
+        var fnm = item.data.filename;
+        var src = item.data.path;
+        var dst = dir + '/' + fnm;
+
+        var d = app._createDialog('FileProgress', ['Copying file...'], self);
+        d.setDescription("Copying <span>" + fnm + "</span> to <span>" + dir + "</span>");
+
+        app.copy(src, dst, function(result) {
+          d.setProgress(100);
+          if ( result ) {
+            fileView.refresh(function() {
+              fileView.setSelected(fnm, 'filename');
+            });
+            self._focus();
+          }
+          d._close();
+        });
+
+        return true;
+      }
       return false;
     };
     fileView.onFilesDropped = function(ev, el, files) {
@@ -356,6 +376,10 @@
 
   ApplicationFileManager.prototype.mkdir = function(name, callback) {
     return this._action('mkdir', [name], callback);
+  };
+
+  ApplicationFileManager.prototype.copy = function(src, dest, callback) {
+    return this._action('copy', [src, dest], callback);
   };
 
   //

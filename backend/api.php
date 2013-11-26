@@ -191,6 +191,20 @@ class FS
     return unlink($fname);
   }
 
+  public static function copy($src, $dest) {
+    $src = unrealpath($src);
+    $dest = unrealpath($dest);
+
+    if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
+    if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
+    if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
+    if ( !file_exists($src) ) throw new Exception("File does not exist");
+    if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
+    if ( file_exists($dest) ) throw new Exception("Destination file already exist");
+
+    return copy($src, $dest);
+  }
+
   public static function move($src, $dest) {
     $src = unrealpath($src);
     $dest = unrealpath($dest);
