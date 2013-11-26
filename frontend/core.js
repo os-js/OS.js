@@ -292,6 +292,13 @@
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
           if ( _SPROCS[n] ) {
+            if ( _SPROCS[n] === 'Application' ) {
+              var proc = _CORE.getProcess(n);
+              if ( proc ) {
+                proc._message('attention');
+                return;
+              }
+            }
             _error("This application is already launched and allows only one instance!");
             return;
           }
@@ -302,7 +309,7 @@
           var a = new OSjs.Applications[n](arg, result);
           a.__sname = n;
           if ( singular ) {
-            _SPROCS[n] = true;
+            _SPROCS[n] = (a instanceof Service) ? 'Service' : 'Application';
           }
 
           onConstructed(a);
@@ -985,6 +992,18 @@
       OSjs.API.error("Application API error", "Application " + this.__name + " failed to perform operation '" + method + "'", err);
     };
     return APICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
+  };
+
+  Application.prototype._message = function(msg, args) {
+    if ( msg === 'attention' ) {
+      if ( this.__windows.length ) {
+        if ( this.__windows[0] ) {
+          this.__windows[0]._focus();
+          return true;
+        }
+      }
+    }
+    return false;
   };
 
   Application.prototype._createDialog = function(className, args, parentClass) {
