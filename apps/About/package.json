@@ -1,0 +1,15 @@
+{
+  "ApplicationAbout":  {
+    "name":       "About",
+    "singular":   true,
+    "mime":       null,
+    "icon":       "apps/help-browser.png",
+    "preload":    [
+      {"src": "main.js", "type": "javascript"},
+      {"src": "main.css", "type": "stylesheet"}
+    ]
+  }
+}
+
+
+
