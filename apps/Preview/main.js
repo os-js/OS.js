@@ -108,7 +108,7 @@
       }
     }
 
-    this._setTitle(t ? (this.title + " - " + t) : this.title);
+    this._setTitle(t ? (this.title + " - " + OSjs.Utils.filename(t)) : this.title);
   };
 
   ApplicationPreviewWindow.prototype._resize = function(w, h) {

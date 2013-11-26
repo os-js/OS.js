@@ -29,6 +29,7 @@
         for ( var a in apps ) {
           if ( apps.hasOwnProperty(a) ) {
             //if ( a.match(/^Core/) ) continue;
+            if ( apps[a].type === "service" || apps[a].type === "special" ) continue;
             list.push({
               title: apps[a].name,
               icon: apps[a].icon,

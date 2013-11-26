@@ -486,7 +486,7 @@
   };
 
   ApplicationDrawWindow.prototype.setTitle = function(t) {
-    var title = this.title + (t ? (' - ' + t) : ' - New File');
+    var title = this.title + (t ? (' - ' + OSjs.Utils.filename(t)) : ' - New File');
     return this._setTitle(title);
   };
 

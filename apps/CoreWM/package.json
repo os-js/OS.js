@@ -2,6 +2,7 @@
   "CoreWM":  {
     "name":       "OS.js Window Manager",
     "singular":   true,
+    "type":       "special",
     "mime":       null,
     "icon":       null,
     "preload":    [

@@ -87,7 +87,7 @@
   };
 
   ApplicationTextpadWindow.prototype.refresh = function(name) {
-    this._setTitle(this.title + " - " + name);
+    this._setTitle(this.title + " - " + OSjs.Utils.filename(name));
   };
 
   ApplicationTextpadWindow.prototype._focus = function() {
