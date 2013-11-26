@@ -41,9 +41,9 @@
 
     // Set window properties here
     this._icon    = 'apps/help-browser.png';
-    this._gravity = 'center';
     this._title   = 'About OS.js';
 
+    this._properties.gravity = 'center';
     this._properties.allow_resize = false;
     this._properties.allow_maximize = false;
   };
