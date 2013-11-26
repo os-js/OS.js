@@ -561,7 +561,7 @@
     var title     = this.type == "save" ? "Save" : "Open";
     var className = this.type == "save" ? 'FileSaveDialog' : 'FileOpenDialog';
 
-    StandardDialog.apply(this, [className, {title: title}, {width:600, height:350}, onClose]);
+    StandardDialog.apply(this, [className, {title: title}, {width:600, height:380}, onClose]);
 
     if ( this.type === 'open' ) {
       this._icon = 'actions/gtk-open.png';
@@ -580,11 +580,14 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', null, {mimeFilter: this.allowMimes}), this.$element);
+    var fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', null, {mimeFilter: this.allowMimes}), this.$element);
     fileList.onError = function() {
       self._toggleLoading(false);
       self.onError.apply(this, arguments);
     };
+
+    var statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
+    statusBar.setText("");
 
     if ( this.type === 'save' ) {
       var start = true;
@@ -609,6 +612,7 @@
       };
 
       fileList.onFinished = function() {
+        statusBar.setText(fileList.getPath());
         self._toggleLoading(false);
         if ( start ) {
           if ( self.currentFilename ) {
@@ -619,6 +623,7 @@
       };
 
       fileList.onRefresh = function() {
+        statusBar.setText(fileList.getPath());
         self._toggleLoading(true);
         if ( start ) {
           self.$input.value = curval;
@@ -630,9 +635,11 @@
       this.$element.appendChild(this.$input);
     } else {
       fileList.onFinished = function() {
+        statusBar.setText(fileList.getPath());
         self._toggleLoading(false);
       };
       fileList.onRefresh = function() {
+        statusBar.setText(fileList.getPath());
         self._toggleLoading(true);
       };
     }

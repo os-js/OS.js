@@ -84,6 +84,13 @@
   bottom : 30px;
 }
 
+.FileSaveDialog .GUIStatusBar,
+.FileOpenDialog .GUIStatusBar {
+  border : 0 none !important;
+  right : 230px;
+  bottom : -2px !important;
+}
+
 
 /* FileUpload */
 
