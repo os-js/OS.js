@@ -449,6 +449,7 @@
     this._$root = document.createElement('div');
     this._$root.id = "Background";
     this._$root.addEventListener('contextmenu', function(ev) {
+      ev.preventDefault();
       return false;
     }, false);
     this._$root.addEventListener('mousedown', function(ev) {

@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // TODO: Rewrite this -- it's a copy/paste from v1
 
   window.OSjs = window.OSjs || {};
   OSjs.Utils = OSjs.Utils || {};
