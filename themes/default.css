@@ -17,10 +17,6 @@
   src:url('/themes/default/fonts/SansationOblique.ttf');
 }
 body {
-  /*
-  background-image: radial-gradient(circle closest-corner at center, #0B615E 0%, #09524F 100%);
-  */
-  background : #0B615E;
   font-family:OSjsFont, Arial;
 }
 .Window {
