@@ -1490,7 +1490,7 @@
 
   IconView.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIIconView']);
-    el.className = ' IconSize' + this.iconSize;
+    el.className += ' IconSize' + this.iconSize;
 
     this.$view = document.createElement('div');
 
