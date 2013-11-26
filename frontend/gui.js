@@ -1465,6 +1465,131 @@
     return null;
   };
 
+  /**
+   * Icon View Element
+   * TODO : DnD support
+   */
+  var IconView = function(name, opts) {
+    opts = opts || {};
+
+    this.$view = null;
+    this.$ul = null;
+    this.$selected = null;
+    this.selected = null;
+    this.iconSize = opts.size || '32x32';
+    this.data = [];
+
+    this.onSelect = function() {};
+    this.onActivate = function() {};
+    this.onContextMenu = function() {};
+
+    GUIElement.apply(this, [name, {}]);
+  };
+
+  IconView.prototype = Object.create(GUIElement.prototype);
+
+  IconView.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIIconView']);
+    el.className = ' IconSize' + this.iconSize;
+
+    this.$view = document.createElement('div');
+
+    this.$ul = document.createElement('ul');
+
+    this.$view.appendChild(this.$ul);
+
+    el.appendChild(this.$view);
+
+    return el;
+  };
+
+  IconView.prototype._onContextMenu = function(ev, item, el) {
+    this.onContextMenu.apply(this, arguments);
+  };
+
+  IconView.prototype._onSelect = function(ev, item, el) {
+    if ( this.$selected ) {
+      this.$selected.className = this.$selected.className.replace(/\s?active/, '');
+    }
+    this.$selected = null;
+
+    if ( !el ) return;
+
+    this.$selected = el;
+    this.$selected.className += ' active';
+    this.onSelect.apply(this, arguments);
+  };
+
+  IconView.prototype._onActivate = function(ev, item, el) {
+    this.onActivate.apply(this, arguments);
+  };
+
+  IconView.prototype.render = function() {
+    var _createImage = function(i) {
+      return OSjs.API.getThemeResource(i, 'icon');
+    };
+
+    this._onSelect(null, null, null);
+
+    OSjs.Utils.$empty(this.$ul);
+
+    // TODO: Destroy events
+    var i, l, iter, li, imgContainer, img, lblContainer, lbl;
+    var k, j;
+    var self = this;
+    for ( i = 0, l = this.data.length; i < l; i++ ) {
+      iter = this.data[i];
+      iter.data = iter.data || {};
+
+      li = document.createElement('li');
+      li.oncontextmenu = (function(item, el) {
+        return function(ev) {
+          self._onSelect(ev, item, el);
+          self._onContextMenu(ev, item, el);
+        };
+      })(iter.data, li);
+      li.onclick = (function(item, el) {
+        return function(ev) {
+          self._onSelect(ev, item, el);
+        };
+      })(iter.data, li);
+      li.ondblclick = (function(item, el) {
+        return function() {
+          self._onActivate(ev, item, el);
+        };
+      })(iter.data, li);
+
+      if ( iter.data ) {
+        for ( k in iter.data ) {
+          if ( iter.data.hasOwnProperty(k) ) {
+            li.setAttribute("data-" + k, iter.data[k]);
+          }
+        }
+      }
+
+      imgContainer = document.createElement('div');
+      img = document.createElement('img');
+      img.alt = iter.label || '';
+      img.title = iter.label || ''; // FIXME
+      img.src = _createImage(iter.icon);
+      imgContainer.appendChild(img);
+
+      lblContainer = document.createElement('div');
+      lbl = document.createElement('span');
+      lbl.innerHTML = iter.label;
+      lblContainer.appendChild(lbl);
+
+      li.appendChild(imgContainer);
+      li.appendChild(lblContainer);
+
+      this.$ul.appendChild(li);
+    }
+  };
+
+  IconView.prototype.setData = function(data) {
+    this.data = data;
+  };
+
   //
   // EXPORTS
   //
@@ -1480,6 +1605,7 @@
   OSjs.GUI.ToolBar      = ToolBar;
   OSjs.GUI.Canvas       = Canvas;
   OSjs.GUI.ProgressBar  = ProgressBar;
+  OSjs.GUI.IconView     = IconView;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

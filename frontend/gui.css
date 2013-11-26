@@ -314,3 +314,38 @@
   z-index : 2;
   line-height : 20px;
 }
+
+/**
+ * Icon View
+ * FIXME: IconSize32x32, IconSize64x64, IconSize16x16 classes
+ */
+.GUIIconView {
+  position : relative;
+  min-width : 100px;
+  min-height : 100px;
+}
+.GUIIconView > div {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  overflow : auto;
+}
+.GUIIconView div > ul {
+  list-style-type : none;
+  margin : 0px;
+  padding : 0;
+}
+.GUIIconView ul > li {
+  float : left;
+  margin : 5px;
+  padding : 5px;
+  text-align : center;
+  width : 50px;
+  height : 50px;
+}
+.GUIIconView img {
+  width : 32px;
+  height : 32px;
+}
