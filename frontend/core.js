@@ -1522,6 +1522,7 @@
     }
 
     if ( this._$element ) {
+      this._$element.style.display = "none";
       if ( this._$element.parentNode ) {
         this._$element.parentNode.removeChild(this._$element);
       }
@@ -1598,6 +1599,10 @@
   Window.prototype._close = function() {
     console.log("OSjs::Core::Window::_close()");
 
+    if ( this._$element ) {
+      this._$element.className += " WindowHintClosing";
+    }
+
     this.destroy();
   };
 
@@ -1612,6 +1617,10 @@
     this._blur();
 
     this._state.minimized = true;
+    if ( !this._$element.className.match(/WindowHintMinimized/) ) {
+      this._$element.className += ' WindowHintMinimized';
+    }
+
     this._$element.style.display = 'none';
 
     this._onChange('minimize');
@@ -1636,6 +1645,9 @@
     this._$element.style.left = s.left + "px";
     this._$element.style.width = s.width + "px";
     this._$element.style.height = s.height + "px";
+    if ( !this._$element.className.match(/WindowHintMaximized/) ) {
+      this._$element.className += ' WindowHintMaximized';
+    }
 
     this._onChange('maximize');
 
@@ -1651,15 +1663,18 @@
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
 
+    var cn = this._$element.className;
     if ( max && this._state.maximized ) {
       this._move(this._lastPosition.x, this._lastPosition.y);
       this._resize(this._lastDimension.w, this._lastDimension.h);
       this._state.maximized = false;
+      this._$element.className = cn.replace(/\s?WindowHintMaximized/, '');
     }
 
     if ( min && this._state.minimized ) {
       this._$element.style.display = 'block';
       this._state.minimized = false;
+      this._$element.className = cn.replace(/\s?WindowHintMinimized/, '');
     }
 
     this._onChange('restore');
@@ -1672,7 +1687,7 @@
     console.log("OSjs::Core::Window::_focus()");
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    this._$element.className = 'Window WindowHintFocused Window_' + this._name.replace(/[^a-zA-Z0-9]/g, '_');
+    this._$element.className += ' WindowHintFocused';
     this._state.focused = true;
 
     if ( _WIN && _WIN._wid != this._wid ) {
@@ -1689,7 +1704,8 @@
   Window.prototype._blur = function() {
     if ( !this._state.focused ) return false;
     console.log("OSjs::Core::Window::_blur()");
-    this._$element.className = 'Window Window_' + this._name.replace(/[^a-zA-Z0-9]/g, '_');
+    var cn = this._$element.className;
+    this._$element.className = cn.replace(/\s?WindowHintFocused/, '');
     this._state.focused = false;
 
     this._onChange('blur');

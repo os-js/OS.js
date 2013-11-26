@@ -65,3 +65,10 @@
 #WindowList li img {
   vertical-align : middle;
 }
+
+.Window {
+ transition: opacity .20s ease-in-out;
+ -moz-transition: opacity .20s ease-in-out;
+ -webkit-transition: opacity .20s ease-in-out;
+}
+
