@@ -423,11 +423,6 @@
 
     Process.apply(this, ['Main']);
 
-    this.__session = {
-      applications : [],
-      settings     : []
-    };
-
     console.group("Compability");
     console.log(OSjs.Utils.getCompability());
     console.groupEnd();
@@ -699,6 +694,7 @@
 
   /**
    * WindowManager Process Class
+   * The default implementation of this is in apps/CoreWM/main.js
    */
   var WindowManager = function(name, ref, args, metadata) {
     console.group("OSjs::Core::WindowManager::__construct()");
@@ -1224,7 +1220,6 @@
 
         OSjs.GUI.createDroppable(main, {
           onOver: function(ev, el, args) {
-            console.warn(ev, el, args);
             _showBorder();
           },
 
