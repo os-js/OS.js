@@ -179,11 +179,11 @@ body {
 
 .WindowLoading {
   position : absolute;
-  top : 20px;
+  top : 27px;
   left : 0px;
   right : 0px;
   bottom : 0px;
-  z-index : 3;
+  z-index : 999999;
 }
 
 .WindowLoadingIndicator {
@@ -194,6 +194,18 @@ body {
   margin-top : -32px;
   width : 64px;
   height : 64px;
+}
+
+.WindowDisabledOverlay {
+  position : absolute;
+  top : 27px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : 999998;
+  background : #000;
+  opacity : 0.5;
+  cursor : not-allowed;
 }
 
 .WindowDropRect {

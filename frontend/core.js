@@ -783,8 +783,7 @@
 
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
-
-    console.group("OSjs::Core::WindowManager::applySettings");
+    console.log("OSjs::Core::WindowManager::applySettings");
 
     if ( force ) {
       this._settings = settings;
@@ -795,69 +794,6 @@
         }
       }
     }
-
-    // Styles
-    var opts = this.getSetting('style');
-    console.log("Styles", opts);
-    for ( var i in opts ) {
-      if ( opts.hasOwnProperty(i) ) {
-        document.body.style[i] = opts[i];
-      }
-    }
-
-    // Wallpaper
-    var name = this.getSetting('wallpaper');
-    var type = this.getSetting('background');
-    console.log("Wallpaper name", name);
-    console.log("Wallpaper type", type);
-    if ( name && type.match(/^image/) ) {
-      var path = getResourceURL(name);
-      document.body.style.backgroundImage = "url('" + path + "')";
-
-      switch ( type ) {
-        case 'image' :
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundPosition  = '';
-        break;
-
-        case 'image-center':
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundPosition  = 'center center';
-        break;
-
-        case 'image-fill' :
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundSize      = 'cover';
-          document.body.style.backgroundPosition  = 'center center fixed';
-        break;
-
-        case 'image-strech':
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundSize      = '100% auto';
-          document.body.style.backgroundPosition  = '';
-        break;
-
-        default:
-          document.body.style.backgroundRepeat    = 'repeat';
-          document.body.style.backgroundPosition  = '';
-        break;
-      }
-      this.setSetting('background', type);
-      this.setSetting('wallpaper', name);
-    } else {
-      document.body.style.backgroundImage     = '';
-      document.body.style.backgroundRepeat    = 'no-repeat';
-      document.body.style.backgroundPosition  = '';
-      this.setSetting('background', 'color');
-      this.setSetting('wallpaper', null);
-    }
-
-    // Theme
-    var theme = this.getSetting('theme');
-    console.log("theme", theme);
-    document.getElementById("_OSjsTheme").setAttribute('href', getThemeCSS(theme));
-
-    console.groupEnd();
 
     return true;
   };
@@ -1093,6 +1029,7 @@
     this._$element      = null;
     this._$root         = null;
     this._$loading      = null;
+    this._$disabled     = null;
     this._appRef        = appRef || null;
     this._destroyed     = false;
     this._wid           = _WID;
@@ -1107,6 +1044,7 @@
     this._children      = [];
     this._parent        = null;
     this._guiElements   = [];
+    this._disabled      = true;
     this._properties    = {
       gravity           : null,
       allow_move        : true,
@@ -1343,6 +1281,17 @@
     var windowLoadingImage        = document.createElement('div');
     windowLoadingImage.className  = 'WindowLoadingIndicator';
 
+    var windowDisabled            = document.createElement('div');
+    windowDisabled.className      = 'WindowDisabledOverlay';
+    //windowDisabled.style.display  = 'none';
+    windowDisabled.onmousedown    = function(ev) {
+      ev.preventDefault();
+      return false;
+    };
+    this._addHook('destroy', function() {
+      windowDisabled.onmousedown = function() {};
+    });
+
     main.className    = 'Window Window_' + this._name.replace(/[^a-zA-Z0-9]/g, '_');
     main.style.width  = this._dimension.w + "px";
     main.style.height = this._dimension.h + "px";
@@ -1366,6 +1315,7 @@
     main.appendChild(windowWrapper);
     main.appendChild(windowResize);
     main.appendChild(windowLoading);
+    main.appendChild(windowDisabled);
 
     var sx = 0;
     var sy = 0;
@@ -1463,9 +1413,10 @@
       });
     });
 
-    this._$element = main;
-    this._$root    = windowWrapper;
-    this._$loading = windowLoading;
+    this._$element  = main;
+    this._$root     = windowWrapper;
+    this._$loading  = windowLoading;
+    this._$disabled = windowDisabled;
 
     document.body.appendChild(this._$element);
     var buttonsWidth = 0;
@@ -1483,6 +1434,7 @@
 
     this._onChange('create');
     this._toggleLoading(false);
+    this._toggleDisabled(false);
 
     return this._$root;
   };
@@ -1611,6 +1563,7 @@
 
   Window.prototype._close = function() {
     console.log("OSjs::Core::Window::_close()");
+    if ( this._disabled ) return;
 
     if ( this._$element ) {
       this._$element.className += " WindowHintClosing";
@@ -1622,6 +1575,7 @@
   Window.prototype._minimize = function() {
     console.log("OSjs::Core::Window::_minimize()");
     if ( !this._properties.allow_minimize ) return false;
+    //if ( this._disabled ) return false;
     if ( this._state.minimized ) {
       this._restore(false, true);
       return true;
@@ -1644,6 +1598,7 @@
   Window.prototype._maximize = function() {
     console.log("OSjs::Core::Window::_maximize()");
     if ( !this._properties.allow_maximize ) return false;
+    //if ( this._disabled ) return false;
     if ( this._state.maximized ) {
       this._restore(true, false);
       return true;
@@ -1673,6 +1628,7 @@
 
   Window.prototype._restore = function(max, min) {
     console.log("OSjs::Core::Window::_restore()");
+    //if ( this._disabled ) return ;
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
 
@@ -1785,6 +1741,11 @@
   Window.prototype._error = function(title, description, message, exception, bugreport) {
     var w = createErrorDialog(title, description, message, exception, bugreport);
     this._addChild(w);
+  };
+
+  Window.prototype._toggleDisabled = function(t) {
+    this._$disabled.style.display = t ? 'block' : 'none';
+    this._disabled = t ? true : false;
   };
 
   Window.prototype._toggleLoading = function(t) {

@@ -179,6 +179,7 @@
     this.id         = _GUIElementCount;
     this.destroyed  = false;
     this.wid        = 0; // Set in Window::_addGUIElement()
+    this.hasChanged = false;
     this._hooks     = {
       focus : [],
       blur : [],
@@ -960,13 +961,18 @@
   Textarea.prototype = Object.create(GUIElement.prototype);
 
   Textarea.prototype.init = function() {
+    var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUITextarea']);
     this.$area = document.createElement('textarea');
+    this.$area.onchange = function() {
+      self.hasChanged = true;
+    };
     el.appendChild(this.$area);
     return el;
   };
 
   Textarea.prototype.setText = function(t) {
+    this.hasChanged = false;
     if ( this.$area ) {
       this.$area.value = (t || '');
       return true;

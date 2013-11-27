@@ -7,6 +7,12 @@
    */
   var CoreWM = function(args, metadata) {
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
+  };
+
+  CoreWM.prototype = Object.create(WindowManager.prototype);
+
+  CoreWM.prototype.init = function() {
+    WindowManager.prototype.init.apply(this, arguments);
 
     var root = document.createElement('div');
     root.id = 'WindowList';
@@ -15,8 +21,8 @@
       return false;
     };
 
+    // Application Menu
     var el = document.createElement('ul');
-
     var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
     var sel;
     sel = document.createElement('li');
@@ -28,7 +34,6 @@
         var list = [];
         for ( var a in apps ) {
           if ( apps.hasOwnProperty(a) ) {
-            //if ( a.match(/^Core/) ) continue;
             if ( apps[a].type === "service" || apps[a].type === "special" ) continue;
             list.push({
               title: apps[a].name,
@@ -46,6 +51,7 @@
     };
     el.appendChild(sel);
 
+    // Quit button
     icon = OSjs.API.getThemeResource('actions/exit.png', 'icon');
     sel = document.createElement('li');
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
@@ -55,9 +61,11 @@
     };
     el.appendChild(sel);
 
+    // Background
     var back = document.createElement('div');
     back.className = 'Background';
 
+    // Append
     root.appendChild(el);
     root.appendChild(back);
 
@@ -66,8 +74,6 @@
 
     document.body.appendChild(this._$root);
   };
-
-  CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.destroy = function(kill) {
     if ( kill && !confirm("Killing this process will stop things from working!") ) {
@@ -127,11 +133,76 @@
     }
   };
 
-  CoreWM.prototype.applySettings = function() {
+  CoreWM.prototype.applySettings = function(settings, force) {
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
       return false;
     }
 
+    console.group("OSjs::Applications::CoreWM::applySettings");
+
+    // Styles
+    var opts = this.getSetting('style');
+    console.log("Styles", opts);
+    for ( var i in opts ) {
+      if ( opts.hasOwnProperty(i) ) {
+        document.body.style[i] = opts[i];
+      }
+    }
+
+    // Wallpaper
+    var name = this.getSetting('wallpaper');
+    var type = this.getSetting('background');
+    console.log("Wallpaper name", name);
+    console.log("Wallpaper type", type);
+    if ( name && type.match(/^image/) ) {
+      var path = getResourceURL(name);
+      document.body.style.backgroundImage = "url('" + path + "')";
+
+      switch ( type ) {
+        case 'image' :
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundPosition  = '';
+        break;
+
+        case 'image-center':
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundPosition  = 'center center';
+        break;
+
+        case 'image-fill' :
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundSize      = 'cover';
+          document.body.style.backgroundPosition  = 'center center fixed';
+        break;
+
+        case 'image-strech':
+          document.body.style.backgroundRepeat    = 'no-repeat';
+          document.body.style.backgroundSize      = '100% auto';
+          document.body.style.backgroundPosition  = '';
+        break;
+
+        default:
+          document.body.style.backgroundRepeat    = 'repeat';
+          document.body.style.backgroundPosition  = '';
+        break;
+      }
+      this.setSetting('background', type);
+      this.setSetting('wallpaper', name);
+    } else {
+      document.body.style.backgroundImage     = '';
+      document.body.style.backgroundRepeat    = 'no-repeat';
+      document.body.style.backgroundPosition  = '';
+      this.setSetting('background', 'color');
+      this.setSetting('wallpaper', null);
+    }
+
+    // Theme
+    var theme = this.getSetting('theme');
+    console.log("theme", theme);
+    document.getElementById("_OSjsTheme").setAttribute('href', getThemeCSS(theme));
+
+
+    // Misc
     var classNames = [];
     var opts = this.getSetting('taskbar');
     if ( opts ) {
@@ -143,6 +214,7 @@
 
     this._$root.className = classNames.join(' ');
 
+    console.groupEnd();
     return true;
   };
 
