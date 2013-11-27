@@ -155,7 +155,7 @@
     console.log("Wallpaper name", name);
     console.log("Wallpaper type", type);
     if ( name && type.match(/^image/) ) {
-      var path = getResourceURL(name);
+      var path = OSjs.API.getResourceURL(name);
       document.body.style.backgroundImage = "url('" + path + "')";
 
       switch ( type ) {
@@ -199,7 +199,7 @@
     // Theme
     var theme = this.getSetting('theme');
     console.log("theme", theme);
-    document.getElementById("_OSjsTheme").setAttribute('href', getThemeCSS(theme));
+    document.getElementById("_OSjsTheme").setAttribute('href', OSjs.API.getThemeCSS(theme));
 
 
     // Misc

@@ -1810,6 +1810,7 @@
   OSjs.API.getConfig        = function(key) { var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig(key); } return null; };
   OSjs.API.getDefaultPath   = function(def) { def = def || '/'; var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig('Home') || def; } return def; };
   OSjs.API.getCallURL       = function()    { return _CALLURL; };
+  OSjs.API.getThemeCSS      = getThemeCSS;
   OSjs.API.getResourceURL   = getResourceURL;
   OSjs.API.getThemeResource = getThemeResource;
   OSjs.API.call             = APICall;
