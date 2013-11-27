@@ -127,12 +127,45 @@
     }
   };
 
+  CoreWM.prototype.applySettings = function() {
+    if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
+      return false;
+    }
+
+    var classNames = [];
+    var opts = this.getSetting('taskbar');
+    if ( opts ) {
+      if ( opts.ontop ) {
+        classNames.push('Ontop');
+      }
+      classNames.push(opts.position == 'top' ? 'Top' : 'Button');
+    }
+
+    this._$root.className = classNames.join(' ');
+
+    return true;
+  };
+
   CoreWM.prototype.getWindowSpace = function() {
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
-    s.left += 10;
-    s.top += 50;
-    s.width -= 20;
-    s.height -= 60;
+    var t = this.getSetting('taskbar');
+    if ( t.ontop ) {
+      if ( t.position == 'top' ) {
+        s.top += 35;
+        s.height -= 35;
+      } else {
+        s.height -= 70;
+      }
+    }
+
+    var d = this.getSetting('desktop');
+    if ( d.margin ) {
+      s.top += d.margin;
+      s.left += d.margin;
+      s.width -= (d.margin * 2);
+      s.height -= (d.margin * 2);
+    }
+
     return s;
   };
 

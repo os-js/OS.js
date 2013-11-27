@@ -4,11 +4,12 @@
    * Main Window
    */
   var ApplicationSettingsWindow = function(app) {
-    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 230}, app]);
+    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 260}, app]);
 
     this._title                   = "Settings";
     this._icon                    = "categories/applications-system.png";
-    this._properties.allow_resize = false;
+    this._properties.allow_resize   = false;
+    this._properties.allow_maximize = false;
   };
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
@@ -19,9 +20,10 @@
     var app       = this._appRef;
     var cs        = OSjs.API.getCoreService();
     var _tmp      = (typeof window.___tmp === 'undefined') ? 0 : (window.___tmp++);
+
     var settings  = wm.getSettings();
     var themes    = wm.getThemes();
-    var theme     = wm.getTheme();
+    var theme     = wm.getSetting('theme');
 
     var container = document.createElement('div');
     var outer, label, input, button, tmp;
@@ -165,15 +167,35 @@
     outer.appendChild(button);
     container.appendChild(outer);
 
+    // WM Opts
+    outer = document.createElement('div');
+    outer.className = "Setting Setting_TaskBarOntop";
+
+    label = document.createElement('label');
+    label.innerHTML = "Taskbar ontop ?";
+
+    input = document.createElement('input');
+    input.name = "taskbarOntop_" + _tmp;
+    input.type = "checkbox";
+    if ( settings.taskbar.ontop ) {
+      input.checked = "checked";
+    }
+
+    outer.appendChild(label);
+    outer.appendChild(input);
+    container.appendChild(outer);
+
+    // Buttons
     button = document.createElement('button');
     button.className = "Save";
     button.innerHTML = "Apply";
     button.onclick = function(ev) {
       app.save(ev, self, {
-        theme: document.getElementsByName('theme_' + _tmp)[0].value,
-        backgroundType: document.getElementsByName('backgroundType_' + _tmp)[0].value,
-        backgroundImage: document.getElementsByName('backgroundImage_' + _tmp)[0].value,
-        backgroundColor: document.getElementsByName('backgroundColor_' + _tmp)[0].value
+        taskbarOntop:     document.getElementsByName('taskbarOntop_' + _tmp)[0].checked,
+        theme:            document.getElementsByName('theme_' + _tmp)[0].value,
+        backgroundType:   document.getElementsByName('backgroundType_' + _tmp)[0].value,
+        backgroundImage:  document.getElementsByName('backgroundImage_' + _tmp)[0].value,
+        backgroundColor:  document.getElementsByName('backgroundColor_' + _tmp)[0].value
       });
     };
 
@@ -240,6 +262,7 @@
     var wm = OSjs.API.getWMInstance();
     if ( wm ) {
       var res = wm.applySettings({
+        taskbar    : {ontop: settings.taskbarOntop},
         theme      : settings.theme,
         wallpaper  : settings.backgroundImage,
         background : settings.backgroundType,

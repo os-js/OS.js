@@ -69,11 +69,13 @@
 
   var _DEFAULT_SETTINGS = {
     WM : {
-      wallpaper   : '/themes/wallpapers/noise_red.png',
-      themes      : [{'default': {title: 'Default'}}],
-      theme       : 'default',
-      background  : 'image-repeat',
-      style       : {
+      fullscreen    : false,
+      taskbar       : {position: 'top', ontop: true},
+      desktop       : {margin: 5},
+      wallpaper     : '/themes/wallpapers/noise_red.png',
+      theme         : 'default',
+      background    : 'image-repeat',
+      style         : {
         backgroundColor  : '#0B615E',
         color            : '#333',
         fontWeight       : 'normal',
@@ -91,7 +93,7 @@
     type = type || null;
     args = args || null;
 
-    var theme = (_WM ? _WM.getTheme() : 'default') || 'default';
+    var theme = (_WM ? _WM.getSetting('theme') : 'default') || 'default';
     if ( !name.match(/^\//) ) {
       if ( type == 'icon' ) {
         var size = args || '16x16';
@@ -319,6 +321,7 @@
 
           onConstructed(a);
         } catch ( e ) {
+          console.warn("Error on constructing application", e, e.stack);
           _error("Application construct failed: " + e, e);
           err = true;
         }
@@ -700,28 +703,16 @@
   var WindowManager = function(name, ref, args, metadata) {
     console.group("OSjs::Core::WindowManager::__construct()");
 
-    name = name || 'WindowManager';
-    ref = ref || this;
-    var dsettings = _DEFAULT_SETTINGS.WM;
-
     this._windows     = [];
-    this._name        = name;
-    this._wallpaper   = dsettings.wallpaper;
-    this._themes      = args.themes || dsettings.themes;
-    this._theme       = dsettings.theme;
-    this._background  = dsettings.background;
-    this._style       = dsettings.style;
+    this._name        = (name || 'WindowManager');
+    this._settings    = _DEFAULT_SETTINGS.WM;
+    this._themes      = args.themes || [{'default': {title: 'Default'}}];
 
-    Process.apply(this, [name]);
+    Process.apply(this, [this._name]);
 
-    _WM = ref;
+    _WM = (ref || this);
 
     console.groupEnd();
-
-    var self = this;
-    window.foo = function() {
-      console.log(self._windows);
-    };
   };
 
   WindowManager.prototype = Object.create(Process.prototype);
@@ -730,12 +721,7 @@
     console.log("OSjs::Core::WindowManager::destroy()");
 
     // Reset styles
-    var defaults = _DEFAULT_SETTINGS.WM;
-    defaults.theme = null;
-    delete defaults.themes;
-
-    this.applySettings();
-    this.setWallpaper(defaults.wallpaper, defaults.background);
+    this.applySettings(_DEFAULT_SETTINGS.WM, true);
 
     // Destroy all windows
     var i = 0;
@@ -799,37 +785,35 @@
     console.log("OSjs::Core::WindowManager::eventWindow", ev, win._name);
   };
 
-  WindowManager.prototype.applySettings = function(settings) {
+  WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
-    console.log("OSjs::Core::WindowManager::applySettings", settings);
 
-    var opts        = settings.style      || {};
-    var theme       = settings.theme      || this._theme;
-    var wallpaper   = settings.wallpaper  || this._wallpaper;
-    var background  = settings.background || this._background;
+    console.group("OSjs::Core::WindowManager::applySettings");
 
-    for ( var x in this._style ) {
-      if ( this._style.hasOwnProperty(x) ) {
-        if ( !opts[x] ) {
-          opts[x] = this._style[x];
+    if ( force ) {
+      this._settings = settings;
+    } else {
+      for ( var s in settings ) {
+        if ( settings.hasOwnProperty(s) ) {
+          this.setSetting(s, settings[s]);
         }
       }
     }
 
+    // Styles
+    var opts = this.getSetting('style');
+    console.log("Styles", opts);
     for ( var i in opts ) {
       if ( opts.hasOwnProperty(i) ) {
         document.body.style[i] = opts[i];
       }
     }
 
-    this.setTheme(theme);
-    this.setWallpaper(wallpaper, background);
-
-    return true;
-  };
-
-  WindowManager.prototype.setWallpaper = function(name, type) {
-    console.log("OSjs::Core::WindowManager::setWallpaper", name, type);
+    // Wallpaper
+    var name = this.getSetting('wallpaper');
+    var type = this.getSetting('background');
+    console.log("Wallpaper name", name);
+    console.log("Wallpaper type", type);
     if ( name && type.match(/^image/) ) {
       var path = getResourceURL(name);
       document.body.style.backgroundImage = "url('" + path + "')";
@@ -862,22 +846,47 @@
           document.body.style.backgroundPosition  = '';
         break;
       }
-      this._wallpaper   = name;
-      this._background  = type;
+      this.setSetting('background', type);
+      this.setSetting('wallpaper', name);
     } else {
       document.body.style.backgroundImage     = '';
       document.body.style.backgroundRepeat    = 'no-repeat';
       document.body.style.backgroundPosition  = '';
-      this._wallpaper   = null;
-      this._background  = 'color';
+      this.setSetting('background', 'color');
+      this.setSetting('wallpaper', null);
     }
+
+    // Theme
+    var theme = this.getSetting('theme');
+    console.log("theme", theme);
+    document.getElementById("_OSjsTheme").setAttribute('href', getThemeCSS(theme));
+
+    console.groupEnd();
+
+    return true;
   };
 
-  WindowManager.prototype.setTheme = function(name) {
-    console.log("OSjs::Core::WindowManager::setTheme", name);
-
-    document.getElementById("_OSjsTheme").setAttribute('href', getThemeCSS(name));
-    this._theme = name;
+  WindowManager.prototype.setSetting = function(k, v) {
+    if ( v !== null ) {
+      if ( this._settings[k] ) {
+        if ( typeof this._settings[k] === 'object' ) {
+          if ( typeof v === 'object' ) {
+            for ( var i in v ) {
+              if ( this._settings[k].hasOwnProperty(i) ) {
+                if ( v[i] !== null ) {
+                  this._settings[k][i] = v[i];
+                }
+              }
+            }
+            return true;
+          }
+        } else {
+          this._settings[k] = v;
+          return true;
+        }
+      }
+    }
+    return false;
   };
 
   WindowManager.prototype.getWindowSpace = function() {
@@ -893,18 +902,17 @@
     };
   })();
 
-  WindowManager.prototype.getSettings = function() {
-    return {
-      theme:      this._theme,
-      wallpaper:  this._wallpaper,
-      background: this._background,
-      style:      this._style
-    };
+  WindowManager.prototype.getSetting = function(k) {
+    if ( this._settings[k] ) {
+      return this._settings[k];
+    }
+    return _DEFAULT_SETTINGS.WM[k];
   };
 
-  WindowManager.prototype.getTheme = function() {
-    return this._theme;
+  WindowManager.prototype.getSettings = function() {
+    return this._settings;
   };
+
 
   WindowManager.prototype.getThemes = function() {
     return this._themes;
