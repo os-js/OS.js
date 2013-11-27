@@ -673,14 +673,21 @@
     return _PROCS;
   };
 
-  Main.prototype.getProcess = function(name) {
+  Main.prototype.getProcess = function(name, first) {
     var p;
+    var result = first ? null : [];
     for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
       p = _PROCS[i];
       if ( !p ) continue;
-      if ( p.__pname === name ) return p;
+      if ( p.__pname === name ) {
+        if ( first ) {
+          result = p;
+          break;
+        }
+        result.push(p);
+      }
     }
-    return null;
+    return result;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1183,10 +1190,10 @@
 
         var _showBorder = function() {
           if ( !border.parentNode ) { document.body.appendChild(border); }
-          border.style.top = main.offsetTop + "px";
-          border.style.left = main.offsetLeft + "px";
-          border.style.width = main.offsetWidth + "px";
-          border.style.height = main.offsetHeight + "px";
+          border.style.top = (main.offsetTop+2) + "px";
+          border.style.left = (main.offsetLeft+2) + "px";
+          border.style.width = (main.offsetWidth-4) + "px";
+          border.style.height = (main.offsetHeight-4) + "px";
           border.style.zIndex = main.style.zIndex-1;
           border.style.display = 'block';
 
@@ -1208,7 +1215,8 @@
         };
 
         OSjs.GUI.createDroppable(main, {
-          onOver: function() {
+          onOver: function(ev, el, args) {
+            console.warn(ev, el, args);
             _showBorder();
           },
 
@@ -1559,6 +1567,8 @@
       throw "Adding a GUI Element requires a parentNode";
     }
     if ( gel instanceof OSjs.GUI.GUIElement ) {
+      gel.wid = this._wid;
+
       console.log("OSjs::Core::Window::_addGUIElement()");
       if ( gel.focusable ) {
         if ( gel.opts.focusable ) {
@@ -1832,7 +1842,7 @@
 
   OSjs.API.getWMInstance    = function()    { return _WM; };
   OSjs.API.getCoreInstance  = function()    { return _CORE; };
-  OSjs.API.getCoreService   = function()    { return _CORE.getProcess('CoreService'); };
+  OSjs.API.getCoreService   = function()    { return _CORE.getProcess('CoreService', true); };
   OSjs.API.getConfig        = function(key) { var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig(key); } return null; };
   OSjs.API.getDefaultPath   = function(def) { def = def || '/'; var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig('Home') || def; } return def; };
   OSjs.API.getCallURL       = function()    { return _CALLURL; };

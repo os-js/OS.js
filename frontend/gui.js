@@ -178,6 +178,7 @@
     this.opts       = opts || {};
     this.id         = _GUIElementCount;
     this.destroyed  = false;
+    this.wid        = 0; // Set in Window::_addGUIElement()
     this._hooks     = {
       focus : [],
       blur : [],
@@ -804,6 +805,7 @@
     ListView.prototype.init.apply(this, arguments);
 
     var cpb = OSjs.Utils.getCompability();
+    var self = this;
     if ( this.opts.dnd && this.opts.dndDrag && cpb.dnd ) {
       this.onCreateRow = function(el, item, column) {
         var self = this;
@@ -811,8 +813,9 @@
 
         if ( item.type === 'file' ) {
           createDraggable(el, {
-            type: 'file',
-            data: item
+            type   : 'file',
+            source : {wid: self.wid},
+            data   : item
           });
         } else if ( item.type == 'dir' ) {
           createDroppable(el, {
@@ -1387,9 +1390,11 @@
     this.$canvas = document.createElement('canvas');
     if ( this.width !== null ) {
       this.$canvas.width = this.width;
+      this.$element.style.width = this.width + 'px';
     }
     if ( this.height !== null ) {
       this.$canvas.height = this.height;
+      this.$element.style.height = this.height + 'px';
     }
     this.$context = this.$canvas.getContext('2d');
 
@@ -1415,6 +1420,8 @@
     this.height = h;
     this.$canvas.width = w;
     this.$canvas.height = h;
+    this.$element.style.width = w + 'px';
+    this.$element.style.height = h + 'px';
   };
 
   Canvas.prototype.func = function(f, args) {
@@ -1448,10 +1455,7 @@
     this.type = mime;
 
     img.onload = function() {
-      can.width = this.width;
-      can.height = this.height;
-      self.width = can.width;
-      self.height = can.height;
+      self.resize(this.width, this.height);
       ctx.drawImage(img, 0, 0);
       onDone.apply(self, arguments);
     };
