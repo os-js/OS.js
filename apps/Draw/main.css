@@ -75,8 +75,7 @@
   right : 5px;
   top : 31px;
   left : 90px;
-  background : #000 url('/apps/Draw/checkerboard.png');
-  overflow : hidden;
+  overflow : auto;
 }
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawCanvas {
   position : absolute;
@@ -84,8 +83,8 @@
   left : 0px;
   right : 0px;
   bottom : 0px;
-  overflow : auto;
   z-index : 1;
+  background : #000 url('/apps/Draw/checkerboard.png');
 }
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawCanvasOverlay {
   position : absolute;
@@ -93,6 +92,5 @@
   left : 0px;
   right : 0px;
   bottom : 0px;
-  overflow : auto;
   z-index : 2;
 }

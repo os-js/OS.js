@@ -66,9 +66,31 @@
   vertical-align : middle;
 }
 
+/* Animations */
+
 .Window {
  transition: opacity .20s ease-in-out;
  -moz-transition: opacity .20s ease-in-out;
  -webkit-transition: opacity .20s ease-in-out;
 }
 
+@-webkit-keyframes pulse {
+  0% {-webkit-transform: scale(0.95); opacity: 0;}
+  8% {-webkit-transform: scale(1.0); opacity: 0;}
+  15% {-webkit-transform: scale(1.001); opacity: 1;}
+  30% {-webkit-transform: scale(1.005); opacity: 1;}
+  100% {opacity: 0; -webkit-transform: scale(1);}
+}
+@-moz-keyframes pulse {
+  0% {-moz-transform: scale(0.95); opacity: 0;}
+  8% {-moz-transform: scale(1.0); opacity: 0;}
+  15% {-moz-transform: scale(1.001); opacity: 1;}
+  30% {-moz-transform: scale(1.005); opacity: 1;}
+  100% {opacity: 0; -moz-transform: scale(1);}
+}
+
+.WindowDropRect {
+  -webkit-animation: pulse 2s linear infinite;
+  -moz-animation: pulse 2s linear infinite; 
+  border-image: initial;
+}

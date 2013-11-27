@@ -364,8 +364,8 @@
     var canvasImage = this._addGUIElement(new OSjs.GUI.Canvas('ApplicationDrawCanvas', {width: 640, height:480}), this.$canvasContainer);
     var canvas = this._addGUIElement(new OSjs.GUI.Canvas('ApplicationDrawCanvasOverlay', {width: 640, height:480}), this.$canvasContainer);
 
-    this.$canvasContainer.style.width = '640px';
-    this.$canvasContainer.style.height = '480px';
+    //this.$canvasContainer.style.width = '640px';
+    //this.$canvasContainer.style.height = '480px';
 
     var mouseDown = false;
     var startX, startY;
@@ -539,8 +539,8 @@
       setTimeout(function() { // To make loading show correctly
         canvas.clear();
         canvas.setImageData(data, function() {
-          self.$canvasContainer.style.width = canvas.width + 'px';
-          self.$canvasContainer.style.height = canvas.height + 'px';
+          //self.$canvasContainer.style.width = canvas.width + 'px';
+          //self.$canvasContainer.style.height = canvas.height + 'px';
 
           self._getGUIElement('ApplicationDrawCanvasOverlay').resize(canvas.width, canvas.height);
           self._getGUIElement('ApplicationDrawCanvasOverlay').clear();
@@ -559,8 +559,8 @@
     w = w || 640;
     h = h || 480;
 
-    this.$canvasContainer.style.width = w + 'px';
-    this.$canvasContainer.style.height = h + 'px';
+    //this.$canvasContainer.style.width = w + 'px';
+    //this.$canvasContainer.style.height = h + 'px';
 
     this._getGUIElement('ApplicationDrawCanvasOverlay').resize(w, h);
     this._getGUIElement('ApplicationDrawCanvasOverlay').clear();
