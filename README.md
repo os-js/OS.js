@@ -60,4 +60,9 @@ Runs in any modern browser. Tested:
 * Android and iOS is working, but no mobile version is implemented yet
 
 # Links
-* **Wiki** https://github.com/andersevenrud/OS.js-v2/wiki
+* [Github Wiki Pages](https://github.com/andersevenrud/OS.js-v2/wiki)
+* [Github Project Page](https://github.com/andersevenrud/OS.js-v2)
+* [Demo Page](http://osjsv2.0o.no/)
+* [Author Homepage](http://andersevenrud.github.io/)
+* [Author Blog](http://anderse.wordpress.com)
+* [OS.js v1](http://andersevenrud.github.com/OS.js)
