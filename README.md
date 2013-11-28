@@ -26,6 +26,8 @@ OS.js is a light-weight JavaScript based desktop solution.
 * File System functions
 * A basic Theme implementation (icons, sounds and CSS styles)
 
+Comes bundeled with the default theme and some applications.
+
 ## Demo
 
 You can have a look here: http://osjsv2.0o.no
@@ -40,11 +42,9 @@ See the `INSTALL.md` file
 
 ### General
 
-You can read more about OS.js on the Github project page Wiki. Source documentation and examples are located in the `doc/` folder.
+Source documentation and examples are located in the `doc/` folder.
 
-### Development
-
-See the Wiki on the Github progject page.
+Everything else is in the GitHub Project Wiki pages (linked below).
 
 ## Compability
 

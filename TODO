@@ -1,9 +1,18 @@
+Alpha-1:
 * Login screen and handler
 * Finish backend API calls
 * Crate storage for user settings+session data
+
+Beta-1:
+* Node.js backend
+
+Future releases:
 * Localization
-* Panels in VM
-* PanelItems in VM
+* Optimizations
+* Mobile version
+* Panels with items in CoreWM
+
+Misc TODOs:
 * Finish GUI Elements
   - Select + SelectList
   - Button
@@ -14,7 +23,3 @@
   - TreeView
 * Finish Dialogs
   - Fonts
-* Write Node.js backend
-
-* Optimizations
-* Mobile version
