@@ -8,6 +8,8 @@ OS.js is a light-weight JavaScript based desktop solution.
 * Completely rewritten (API breakage)
 * Easier to extend and implement Applications
 * Smaller and faster
+* Tons of improvements
+* Dropped support for legacy browsers
 * Very simple setup (requires only a web-server using PHP or Node)
 * No 3rd party libraries
 

@@ -32,15 +32,9 @@
 
   window.OSjs = window.OSjs || {};
 
-  function onContentLoaded(core) {
-  }
-
-  function onInitialized(core) {
-  }
-
   window.onload = function() {
     console.info("window::onload()");
-    OSjs.initialize(onContentLoaded, onInitialized);
+    OSjs.initialize();
   };
 
   window.onunload = function() {

@@ -1,6 +1,3 @@
-* Apps: Prevent from opening a new file when changes are made
-  - Implement into GUIElement
-
 * Login screen and handler
 * Finish backend API calls
 * Crate storage for user settings+session data

@@ -460,15 +460,10 @@
   };
   Main.prototype = Object.create(Process.prototype);
 
-  Main.prototype.init = function(onContentLoaded, onInitialized) {
+  Main.prototype.init = function() {
     console.log("OSjs::Core::Main::init()");
 
     var self = this;
-
-    var _finished = function() {
-      onContentLoaded(self);
-      self.login(onInitialized);
-    };
 
     var _error = function(msg) {
       createErrorDialog('Failed to initialize OS.js', 'An error occured while initializing OS.js', msg, null, true);
@@ -481,7 +476,7 @@
       }
 
       LaunchProcess(wm.exec, wm.args || {}, function() {
-        _finished();
+        self.login();
       }, function(error) {
         _error("Failed to launch Window Manager: " + error);
       });
@@ -517,7 +512,7 @@
     });
   };
 
-  Main.prototype.login = function(onFinished) {
+  Main.prototype.login = function() {
     var self = this;
 
     APICall('login', {username: 'foo', password: 'bar'}, function(res) {
@@ -532,7 +527,6 @@
 
       var _finished = function() {
         playSound('service-login');
-        onFinished(self);
       };
 
       var cs = OSjs.API.getCoreService();
@@ -1830,7 +1824,7 @@
   OSjs.API.open             = LaunchFile;
   OSjs.API.playSound        = playSound;
 
-  OSjs.initialize = function(onContentLoaded, onInitialized) {
+  OSjs.initialize = function() {
     if ( _INITED ) return;
     _INITED = true;
 
@@ -1849,7 +1843,7 @@
 
     _CORE = new Main();
     if ( _CORE ) {
-      _CORE.init(onContentLoaded, onInitialized);
+      _CORE.init();
     }
   };
 
@@ -1862,7 +1856,6 @@
       if ( _CORE ) {
         _CORE.destroy();
         _CORE = null;
-        //document.body.innerHTML = '';
       }
     };
 
