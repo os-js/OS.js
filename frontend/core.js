@@ -33,6 +33,7 @@
   window.OSjs = window.OSjs || {};
   OSjs.Core         = {};
   OSjs.API          = {};
+  OSjs.Settings     = OSjs.Settings     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
@@ -68,27 +69,38 @@
   var _CORE;
   var _$LOADING;
 
-  var _DEFAULT_SETTINGS = {
-    WM : {
-      fullscreen    : false,
-      taskbar       : {position: 'top', ontop: true},
-      desktop       : {margin: 5},
-      wallpaper     : '/themes/wallpapers/noise_red.png',
-      theme         : 'default',
-      background    : 'image-repeat',
-      style         : {
-        backgroundColor  : '#0B615E',
-        color            : '#333',
-        fontWeight       : 'normal',
-        textDecoration   : 'none',
-        backgroundRepeat : 'repeat'
-      }
-    }
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // RESOURCE HELPERS
   /////////////////////////////////////////////////////////////////////////////
+
+  var _DEFAULT_SETTINGS = function() {
+    return {
+      WM : {
+        fullscreen    : false,
+        taskbar       : {position: 'top', ontop: true},
+        desktop       : {margin: 5},
+        wallpaper     : '/themes/wallpapers/noise_red.png',
+        theme         : 'default',
+        background    : 'image-repeat',
+        style         : {
+          backgroundColor  : '#0B615E',
+          color            : '#333',
+          fontWeight       : 'normal',
+          textDecoration   : 'none',
+          backgroundRepeat : 'repeat'
+        }
+      }
+    };
+  };
+
+
+  OSjs.Settings.getSetting = function(cat, key) {
+    var set = _DEFAULT_SETTINGS()[cat];
+    if ( key ) {
+      return set[key];
+    }
+    return set;
+  };
 
   function getThemeResource(name, type, args) {
     type = type || null;
@@ -696,7 +708,7 @@
 
     this._windows     = [];
     this._name        = (name || 'WindowManager');
-    this._settings    = _DEFAULT_SETTINGS.WM;
+    this._settings    = OSjs.Settings.getSetting('WM');
     this._themes      = args.themes || [{'default': {title: 'Default'}}];
 
     Process.apply(this, [this._name]);
@@ -712,7 +724,8 @@
     console.log("OSjs::Core::WindowManager::destroy()");
 
     // Reset styles
-    this.applySettings(_DEFAULT_SETTINGS.WM, true);
+    var set = OSjs.Settings.getSetting('WM');
+    this.applySettings(set, true);
 
     // Destroy all windows
     var i = 0;
@@ -833,7 +846,7 @@
     if ( this._settings[k] ) {
       return this._settings[k];
     }
-    return _DEFAULT_SETTINGS.WM[k];
+    return OSjs.Settings.getSetting('WM', k);
   };
 
   WindowManager.prototype.getSettings = function() {
