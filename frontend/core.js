@@ -1,3 +1,4 @@
+"use strict";
 /*!
  * OS.js - JavaScript Operating System
  *

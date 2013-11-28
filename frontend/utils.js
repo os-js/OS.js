@@ -1,3 +1,4 @@
+"use strict";
 /*!
  * OS.js - JavaScript Operating System
  *
@@ -99,9 +100,7 @@
     try {
       var xhr = new XMLHttpRequest();
       compability.upload = (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
-    } finally {
-      delete xhr;
-    }
+    } catch ( e ) {}
 
     return function() {
       return compability;
