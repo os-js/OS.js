@@ -1,5 +1,7 @@
 (function(Application, Window) {
 
+  // TODO: Refactor
+
   /**
    * Main Window
    */
@@ -98,6 +100,25 @@
     }
   };
 
+  ApplicationTextpadWindow.prototype._close = function() {
+    var gel = this._getGUIElement('TextpadTextarea');
+    if ( gel && gel.hasChanged ) {
+      var self = this;
+      this._toggleDisabled(true);
+      this._appRef._createDialog('Confirm', ['Quit without saving?', function(btn) {
+        self._toggleDisabled(false);
+        if ( btn == "ok" ) {
+          gel.hasChanged = false;
+          self._close();
+        }
+      }]);
+      return false;
+    }
+
+    return Window.prototype._close.apply(this, arguments);
+  };
+
+
   /**
    * Application
    */
@@ -171,6 +192,8 @@
       case 'new' :
         this.currentFile = null;
         w.setText(null);
+        w._focus();
+
         this._setArgument('file', null);
         this._setArgument('mime', null);
       break;

@@ -955,6 +955,7 @@
    */
   var Textarea = function(name, opts) {
     this.$area = null;
+    this.strLen = 0;
     GUIElement.apply(this, arguments);
   };
 
@@ -964,10 +965,13 @@
     var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUITextarea']);
     this.$area = document.createElement('textarea');
-    this.$area.onchange = function() {
-      self.hasChanged = true;
+
+    this.$area.onkeypress = function() { // FIXME: Remove event
+      var cur = this.value.length;
+      self.hasChanged = (cur != self.strLen);
     };
     el.appendChild(this.$area);
+
     return el;
   };
 
@@ -975,6 +979,7 @@
     this.hasChanged = false;
     if ( this.$area ) {
       this.$area.value = (t || '');
+      this.strLen = this.$area.value.length;
       return true;
     }
     return false;
@@ -987,6 +992,12 @@
   Textarea.prototype.focus = function() {
     if ( !GUIElement.prototype.focus.apply(this, arguments) ) return false;
     if ( this.$area ) this.$area.focus();
+    return true;
+  };
+
+  Textarea.prototype.blur = function() {
+    if ( !GUIElement.prototype.blur.apply(this, arguments) ) return false;
+    if ( this.$area ) this.$area.blur();
     return true;
   };
 
@@ -1217,11 +1228,13 @@
    * Toolbar Element
    */
   var ToolBar = function(name, opts) {
+    opts = opts || {};
+
     this.$container = null;
     this.$active = null;
 
     this.items = {};
-    this.oriantation = opts.orientation || 'horizontal';
+    this.orientation = opts.orientation || 'horizontal';
     GUIElement.apply(this, [name, {}]);
   };
 
@@ -1230,7 +1243,8 @@
   ToolBar.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIToolbar']);
     this.$container = document.createElement('ul');
-    this.$container.className = 'Container ' + this.orientation;
+    this.$container.className = 'Container';
+    el.className += ' ' + this.orientation;
     el.appendChild(this.$container);
     return el;
   };
@@ -1293,7 +1307,7 @@
 
         btn.onclick = (function(key, itm) {
           return function(ev) {
-            if ( itm.toggleable ) {
+            if ( itm.grouped ) {
               if ( self.$active ) {
                 self.$active.className = self.$active.className.replace(/\s?Active/, '');
               }
@@ -1621,6 +1635,60 @@
     this.data = data;
   };
 
+  /**
+   * Richt Text Element
+   */
+  var RichText = function(name) {
+    this.$view = null;
+    GUIElement.apply(this, [name, {}]);
+    this.focusable = true;
+  };
+
+  RichText.prototype = Object.create(GUIElement.prototype);
+
+  RichText.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
+
+    this.$view = document.createElement('iframe');
+    this.$view.setAttribute("border", "0");
+    this.$view.src = '/frontend/richtext.html';
+    el.appendChild(this.$view);
+
+    return el;
+  };
+
+  RichText.prototype.command = function(cmd, defaultUI, args) {
+    var d = this.getDocument();
+    if ( d ) {
+      return d.execCommand(cmd, defaultUI, args);
+    }
+    return false;
+  };
+
+  RichText.prototype.setContent = function(c) {
+    var d = this.getDocument();
+    if ( d ) {
+      d.body.innerHTML = c;
+      return true;
+    }
+    return false;
+  };
+
+  RichText.prototype.getContent = function() {
+    var d = this.getDocument();
+    if ( d ) {
+      return d.body.innerHTML;
+    }
+    return null;
+  };
+
+  RichText.prototype.getDocument = function() {
+    if ( this.$view ) {
+      return this.$view.contentDocument || this.$view.contentWindow.document;
+    }
+    return null;
+  };
+
   //
   // EXPORTS
   //
@@ -1637,6 +1705,7 @@
   OSjs.GUI.Canvas       = Canvas;
   OSjs.GUI.ProgressBar  = ProgressBar;
   OSjs.GUI.IconView     = IconView;
+  OSjs.GUI.RichText     = RichText;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

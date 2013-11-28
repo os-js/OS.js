@@ -363,3 +363,9 @@ body #WindowList .Background {
 .Window.WindowHintFocused .GUIProgressBar .Container {
   box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .1);
 }
+
+/* GUIRichtText */
+.GUIRichText {
+  border : 1px solid rgba(34, 34, 34, .5);
+  background : #fff;
+}

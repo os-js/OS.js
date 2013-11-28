@@ -237,6 +237,13 @@
  */
 .GUIToolbar {
   position : relative;
+  width : 100%;
+}
+.GUIToolbar.vertical {
+  min-width : 32px;
+}
+.GUIToolbar.horizontal {
+  min-height : 32px;
 }
 .GUIToolbar > .Container {
   margin : 0;
@@ -268,7 +275,7 @@
 }
 .GUIToolbar img {
 }
-.GUIToolbar li.Separator {
+.GUIToolbar.vertical li.Separator {
   clear : both;
 }
 
@@ -367,4 +374,30 @@
 .GUIIconView.IconSize64x64 img {
   width : 64px;
   height : 64px;
+}
+
+/* Rich Text */
+.GUIRichText {
+  position : relative;
+  min-width : 100px;
+  min-height : 100px;
+}
+.GUIRichText iframe {
+  border : 0 none !important;
+  margin : 0 !important;
+  padding : 0 !important;
+  outline : none;
+  resize : none;
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  width : 100%;
+  height : 100%;
+  display : block;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }

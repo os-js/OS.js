@@ -1053,7 +1053,11 @@
       allow_maximize    : true,
       allow_close       : true,
       allow_windowlist  : true,
-      allow_drop        : false
+      allow_drop        : false,
+      min_width         : _MINIMUM_WINDOW_WIDTH,
+      min_height        : _MINIMUM_WINDOW_HEIGHT,
+      max_width         : null,
+      max_height        : null
     };
     this._state     = {
       focused   : false,
@@ -1372,9 +1376,6 @@
 
         self._move(rx, ry);
       } else {
-        if ( rx < _MINIMUM_WINDOW_WIDTH ) rx = _MINIMUM_WINDOW_WIDTH;
-        if ( ry < _MINIMUM_WINDOW_HEIGHT ) ry = _MINIMUM_WINDOW_HEIGHT;
-
         self._resize(rx, ry);
       }
     };
@@ -1685,6 +1686,16 @@
 
   Window.prototype._resize = function(w, h) {
     if ( !this._properties.allow_resize ) return false;
+
+    if ( w < this._properties.min_width ) w = this._properties.min_width;
+    if ( h < this._properties.min_height ) w = this._properties.min_height;
+
+    if ( this._properties.max_width !== null ) {
+      if ( w > this._properties.max_width ) w = this._properties.max_width;
+    }
+    if ( this._properties.max_height !== null ) {
+      if ( h > this._properties.max_height ) h = this._properties.max_height;
+    }
     //if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
 
     if ( w ) {

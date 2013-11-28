@@ -245,18 +245,18 @@
 
     var toolBar = this._addGUIElement(new OSjs.GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
 
-    toolBar.addItem('pointer',    {toggleable: true, title: 'Pointer',   icon: _createIcon('stock-cursor'),                  onClick: _onClick});
-    toolBar.addItem('picker',     {toggleable: true, title: 'Picker',    icon: _createIcon('stock-color-pick-from-screen'),  onClick: _onClick});
-    toolBar.addItem('bucket',     {toggleable: true, title: 'Bucket',    icon: _createIcon('stock-tool-bucket-fill'),        onClick: _onClick});
-    //toolBar.addItem('eraser',     {toggleable: true, title: 'Eraser',    icon: _createIcon('stock-tool-eraser'),             onClick: _onClick});
+    toolBar.addItem('pointer',    {grouped: true, title: 'Pointer',   icon: _createIcon('stock-cursor'),                  onClick: _onClick});
+    toolBar.addItem('picker',     {grouped: true, title: 'Picker',    icon: _createIcon('stock-color-pick-from-screen'),  onClick: _onClick});
+    toolBar.addItem('bucket',     {grouped: true, title: 'Bucket',    icon: _createIcon('stock-tool-bucket-fill'),        onClick: _onClick});
+    //toolBar.addItem('eraser',     {grouped: true, title: 'Eraser',    icon: _createIcon('stock-tool-eraser'),             onClick: _onClick});
 
-    toolBar.addItem('pencil',     {toggleable: true, title: 'Pencil',    icon: _createIcon('stock-tool-pencil'),             onClick: _onClick});
-    toolBar.addItem('path',       {toggleable: true, title: 'Path',      icon: _createIcon('stock-tool-path'),               onClick: _onClick});
-    toolBar.addItem('rectangle',  {toggleable: true, title: 'Rectangle', icon: _createIcon('stock-shape-rectangle'),         onClick: _onClick});
-    toolBar.addItem('square',     {toggleable: true, title: 'Square',    icon: _createIcon('stock-shape-square'),            onClick: _onClick});
-    toolBar.addItem('ellipse',    {toggleable: true, title: 'Ellipse',   icon: _createIcon('stock-shape-ellipse'),           onClick: _onClick});
-    toolBar.addItem('circle',     {toggleable: true, title: 'Circle',    icon: _createIcon('stock-shape-circle'),            onClick: _onClick});
-    //toolBar.addItem('text',       {toggleable: true, title: 'Text',      icon: _createIcon('stock-tool-text'),               onClick: _onClick});
+    toolBar.addItem('pencil',     {grouped: true, title: 'Pencil',    icon: _createIcon('stock-tool-pencil'),             onClick: _onClick});
+    toolBar.addItem('path',       {grouped: true, title: 'Path',      icon: _createIcon('stock-tool-path'),               onClick: _onClick});
+    toolBar.addItem('rectangle',  {grouped: true, title: 'Rectangle', icon: _createIcon('stock-shape-rectangle'),         onClick: _onClick});
+    toolBar.addItem('square',     {grouped: true, title: 'Square',    icon: _createIcon('stock-shape-square'),            onClick: _onClick});
+    toolBar.addItem('ellipse',    {grouped: true, title: 'Ellipse',   icon: _createIcon('stock-shape-ellipse'),           onClick: _onClick});
+    toolBar.addItem('circle',     {grouped: true, title: 'Circle',    icon: _createIcon('stock-shape-circle'),            onClick: _onClick});
+    //toolBar.addItem('text',       {grouped: true, title: 'Text',      icon: _createIcon('stock-tool-text'),               onClick: _onClick});
 
     toolBar.addSeparator();
 
