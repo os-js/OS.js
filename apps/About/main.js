@@ -65,7 +65,8 @@
     textarea.innerHTML += 'Icon Theme is from <b>Gnome</b><br />';
     textarea.innerHTML += 'Sound Themes is from <b>Freedesktop</b><br />';
     textarea.innerHTML += '<br />';
-    textarea.innerHTML += '<a href="https://github.com/andersevenrud/OS.js-v2" target="_blank">Visit GitHub project page</a>';
+    //textarea.innerHTML += '<a href="https://github.com/andersevenrud/OS.js-v2" target="_blank">Visit GitHub project page</a>';
+    textarea.innerHTML += '<a href="http://andersevenrud.github.io/OS.js-v2/" target="_blank">Visit GitHub project page</a>';
 
     root.appendChild(header);
     root.appendChild(textarea);
