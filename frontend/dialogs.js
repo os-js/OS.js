@@ -286,7 +286,7 @@
       refs = cs.getApplicationCache();
     }
 
-    var image, name, iter;
+    var image, icon, name, iter;
     for ( var i = 0, l = this.list.length; i < l; i++ ) {
       name = this.list[i];
       icon = null;
