@@ -63,6 +63,7 @@ Runs in any modern browser. Tested:
 See the `LICENSE` file.
 
 # Links
+* [Homepage](http://andersevenrud.github.io/OS.js-v2/)
 * [Github Wiki Pages](https://github.com/andersevenrud/OS.js-v2/wiki)
 * [Github Project Page](https://github.com/andersevenrud/OS.js-v2)
 * [Demo Page](http://osjsv2.0o.no/)
