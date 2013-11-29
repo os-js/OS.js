@@ -278,7 +278,7 @@
         if ( singular ) {
           if ( _SPROCS[n] ) {
             if ( _SPROCS[n] === 'Application' ) {
-              var proc = _CORE.getProcess(n);
+              var proc = _CORE.getProcess(n, true);
               if ( proc ) {
                 proc._message('attention');
                 return;
