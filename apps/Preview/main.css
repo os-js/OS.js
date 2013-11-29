@@ -1,5 +1,5 @@
 .Window_ApplicationPreviewWindow .WindowWrapper {
-  overflow : none;
+  overflow : hidden;
 }
 .Window_ApplicationPreviewWindow .WindowWrapper .Frame {
   position : absolute;
