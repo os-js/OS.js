@@ -1008,6 +1008,7 @@
 
   /**
    * Window Class
+   * TODO: Instead of adding DOM event unload on hooks, just make a wrapper to bind events+destruct
    */
   var Window = function(name, opts, appRef) {
     console.group("OSjs::Core::Window::__construct()");
