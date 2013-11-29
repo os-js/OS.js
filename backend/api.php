@@ -32,9 +32,76 @@
 require "functions.php";
 if ( file_exists("config.php") ) require "config.php";
 
+function out($json) {
+  header("Content-type: application/json");
+  print json_encode($json);
+}
+
+function error() {
+  if ( !is_null($e = error_get_last()) ) {
+    if ( ob_get_level() ) ob_end_clean();
+
+    $type = 'UNKNOWN';
+    switch ((int)$e['type']) {
+      case E_ERROR: // 1
+        $type = 'E_ERROR';
+      break;
+      case E_WARNING: // 2
+        $type = 'E_WARNING';
+      break;
+      case E_PARSE: // 4
+        $type = 'E_PARSE';
+      break;
+      case E_NOTICE: // 8
+        $type = 'E_NOTICE';
+      break;
+      case E_CORE_ERROR: // 16
+        $type = 'E_CORE_ERROR';
+      break;
+      case E_CORE_WARNING: // 32
+        $type = 'E_CORE_WARNING';
+      break;
+      case E_CORE_ERROR: // 64
+        $type = 'E_COMPILE_ERROR';
+      break;
+      case E_CORE_WARNING: // 128
+        $type = 'E_COMPILE_WARNING';
+      break;
+      case E_USER_ERROR: // 256
+        $type = 'E_USER_ERROR';
+      break;
+      case E_USER_WARNING: // 512
+        $type = 'E_USER_WARNING';
+      break;
+      case E_USER_NOTICE: // 1024
+        $type = 'E_USER_NOTICE';
+      break;
+      case E_STRICT: // 2048
+        $type = 'E_STRICT';
+      break;
+      case E_RECOVERABLE_ERROR: // 4096
+        $type = 'E_RECOVERABLE_ERROR';
+      break;
+      case E_DEPRECATED: // 8192
+        $type = 'E_DEPRECATED';
+      break;
+      case E_USER_DEPRECATED: // 16384
+        $type = 'E_USER_DEPRECATED';
+      break;
+    }
+
+    header("HTTP/1.0 500 Internal Server Error");
+    print $e['message'];
+    exit;
+  }
+}
+
 define("SESSIONNAME", preg_replace("/[^0-9]/", "", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']));
 define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
 
+//
+// Default settings
+//
 if ( !defined("HOMEDIR") )  define("HOMEDIR",     "/opt/OSjs/home");
 if ( !defined("TMPDIR") )   define("TMPDIR",      "/opt/OSjs/tmp");
 if ( !defined("APPDIR") )   define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
@@ -42,12 +109,18 @@ if ( !defined("APPDIR") )   define("APPDIR",      realpath(dirname(__FILE__) . "
 register_shutdown_function('error');
 date_default_timezone_set('Europe/Oslo');
 
+//
+// Collect request data
+//
 $method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
 $json   = Array("result" => false, "error" => null);
 $error  = null;
 $result = null;
 $data   = $method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $_SERVER['REQUEST_URI']);;
 
+//
+// GET file request wrapper
+//
 if ( $method === 'GET' ) {
   if ( isset($_GET['file']) && ($file = $_GET['file']) ) {
     try {
@@ -76,6 +149,9 @@ if ( $method === 'GET' ) {
   exit;
 }
 
+//
+// Upload file
+//
 if ( isset($_GET['upload']) ) {
   if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
     $dest = unrealpath($_POST['path'] . '/' . $_FILES['upload']['name']);
@@ -103,6 +179,9 @@ if ( isset($_GET['upload']) ) {
   exit;
 }
 
+//
+// Normal API call
+//
 if ( empty($data) ) {
   $error = "No call given";
 } else {
@@ -113,40 +192,45 @@ if ( empty($data) ) {
     $method = $data['method'];
     $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
     switch ( $method ) {
+      // OS.js initialization step 1
       case 'boot' :
         $result = Array(
-          "preload" => getPreloadList(),
-          "settings" => getCoreSettings()
+          "preload" => OSjs::getPreloadList(),
+          "settings" => OSjs::getCoreSettings()
         );
       break;
 
+      // OS.js initialization step 2
       case 'login' :
-        if ( doLogin($arguments['username'], $arguments['password']) ) {
+        if ( OSjs::login($arguments['username'], $arguments['password']) ) {
           $result = Array(
             "success" => true,
-            "settings" => getUserSettings()
+            "settings" => OSjs::getUserSettings()
           );
         } else {
           $error = "Invalid login credentials!";
         }
       break;
 
+      // Log out the user
       case 'logout' :
         $result = Array(
-          "success" => true
+          "success" => OSjs::logout()
         );
       break;
 
+      // Prepare launch for application
       case 'launch' :
         $an = empty($arguments['application']) ? null : $arguments['application'];
         $aa = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
-        if ( !($d = getApplicationData($an, $aa)) ) {
+        if ( !($d = OSjs::getApplicationData($an, $aa)) ) {
           $error = "Failed to launch '{$an}'";
         } else {
           $result = $d;
         }
       break;
 
+      // API call via application
       case 'application' :
         $an = empty($arguments['application']) ? null : $arguments['application'];
         $am = empty($arguments['method']) ? null : $arguments['method'];
@@ -169,6 +253,7 @@ if ( empty($data) ) {
         }
       break;
 
+      // Filesystem operations
       case 'fs' :
         $m = $arguments['method'];
         $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
@@ -180,7 +265,7 @@ if ( empty($data) ) {
             $error = "Supply argument for FS operaion: {$m}";
           } else {
             try {
-              $result = doFSOperation($m, $a);
+              $result = OSjs::vfs($m, $a);
             } catch ( Exception $e ) {
               $error = "FS operaion error: {$e->getMessage()}";
             }
@@ -188,6 +273,7 @@ if ( empty($data) ) {
         }
       break;
 
+      // Bugreporting
       case 'bugreport' :
         if ( isset($arguments['data']) && ($data = $arguments['data']) ) {
           if ( $data = json_encode($data) ) {
@@ -203,6 +289,7 @@ if ( empty($data) ) {
         }
       break;
 
+      // Default Error
       default :
         $error = "No such API method: {$method}";
       break;

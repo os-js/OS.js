@@ -29,6 +29,136 @@
  * @licence Simplified BSD License
  */
 
+/**
+ * OSjs API Helpers
+ */
+class OSjs
+{
+  public static $defaultPreloads = Array(
+
+  );
+
+  public static $defaultCoreSettings = Array(
+    'Core' => Array(
+      'Home'          => HOMEDIR,
+      'MaxUploadSize' => MAXUPLOAD
+    ),
+
+    'WM' => Array(
+      'exec'      => 'CoreWM',
+      'args'      => Array(
+        'themes'      => Array('default' => Array('title' => 'Default'))
+      )
+    )
+  );
+
+  public static $defaultUserSettings = Array(
+    'WM' => Array(
+      'CoreWM' => Array(
+        'theme'       => null,
+        'wallpaper'   => null,
+        'background'  => null,
+        'style'       => Array(
+        )
+      )
+    )
+  );
+
+  public static function getPackageInfo() {
+    $list = Array();
+    if ( $files = scandir(APPDIR) ) {
+      foreach ( $files as $f ) {
+        $name = sprintf("%s/%s/package.json", APPDIR, $f);
+        if ( file_exists($name) ) {
+          if ( $content = file_get_contents($name) ) {
+            if ( $data = json_decode($content, true) ) {
+              $key = key($data);
+              $val = current($data);
+
+              foreach ( $val['preload'] as $k => $v ) {
+                $val['preload'][$k]['src'] = sprintf("/apps/%s/%s", $f, $v['src']);
+              }
+
+              $list[$key] = $val;
+            }
+          }
+        }
+      }
+    }
+    return $list;
+  }
+
+  public static function getApplicationData($name, $args) {
+    $apps = self::getPackageInfo();
+    if ( $name === null && $args === null ) {
+      return $apps;
+    }
+
+    if ( isset($apps[$name]) ) {
+      return $apps[$name];
+    }
+
+    return false;
+  }
+
+  public static function login($username, $password) {
+    return true;
+  }
+
+  public static function logout() {
+    return true;
+  }
+
+  public static function vfs($method, $args) {
+    return call_user_func_array(Array("FS", $method), $args);
+  }
+
+  public static function getUserSettings() {
+    $data = null;
+    $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
+    if ( file_exists($file) ) {
+      if ( $c = file_get_contents($file) ) {
+        $data = json_decode($c);
+      }
+    }
+
+    return $data ? $data : self::$defaultUserSettings;
+  }
+
+  public static function getPreloadList() {
+    return self::$defaultPreloads;
+  }
+
+  public static function getCoreSettings() {
+    return self::$defaultCoreSettings;
+  }
+
+  public static function setUserSettings($data) {
+    $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
+    $d = json_encode($data);
+    return ($d && file_put_contents($file, $d)) ? true : false;
+  }
+
+  public static function getSessionData() {
+    $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
+    if ( file_exists($file) ) {
+      if ( $c = file_get_contents($file) ) {
+        return json_decode($c);
+      }
+    }
+    return false;
+  }
+
+  public static function setSessionData(Array $a) {
+    $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
+    $d = json_encode($a);
+    return file_put_contents($file, $d) ? true : false;
+  }
+}
+
+/**
+ * Filesystem Helpers
+ */
 class FS
 {
   protected static function sortdir($list) {
@@ -263,29 +393,6 @@ class FS
   }
 }
 
-function getPackageInfo() {
-  $list = Array();
-  if ( $files = scandir(APPDIR) ) {
-    foreach ( $files as $f ) {
-      $name = sprintf("%s/%s/package.json", APPDIR, $f);
-      if ( file_exists($name) ) {
-        if ( $content = file_get_contents($name) ) {
-          if ( $data = json_decode($content, true) ) {
-            $key = key($data);
-            $val = current($data);
-
-            foreach ( $val['preload'] as $k => $v ) {
-              $val['preload'][$k]['src'] = sprintf("/apps/%s/%s", $f, $v['src']);
-            }
-
-            $list[$key] = $val;
-          }
-        }
-      }
-    }
-  }
-  return $list;
-}
 
 function fileMime($fname) {
   $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -377,160 +484,8 @@ function destroy_dir($dir) {
   return rmdir($dir);
 }
 
-function setUserSettings($data) {
-  $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
-  $d = json_encode($data);
-  return ($d && file_put_contents($file, $d)) ? true : false;
-}
-
-function getUserSettings() {
-  $default = Array(
-    'WM' => Array(
-      'CoreWM' => Array(
-        'theme'       => null,
-        'wallpaper'   => null,
-        'background'  => null,
-        'style'       => Array(
-        )
-      )
-    )
-  );
-
-  $data = null;
-  $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
-  if ( file_exists($file) ) {
-    if ( $c = file_get_contents($file) ) {
-      $data = json_decode($c);
-    }
-  }
-
-  return $data ? $data : $default;
-}
-
 function unrealpath($p) {
   return str_replace(Array("../", "./"), "", $p);
-}
-
-function getSessionData() {
-  $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
-  if ( file_exists($file) ) {
-    if ( $c = file_get_contents($file) ) {
-      return json_decode($c);
-    }
-  }
-  return false;
-}
-
-function setSessionData(Array $a) {
-  $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
-  $d = json_encode($a);
-  return file_put_contents($file, $d) ? true : false;
-}
-
-function getPreloadList() {
-  return Array(
-  );
-}
-
-function getCoreSettings() {
-  return Array(
-    'Core' => Array(
-      'Home' => HOMEDIR,
-      'MaxUploadSize' => MAXUPLOAD
-    ),
-
-    'WM' => Array(
-      'exec'      => 'CoreWM',
-      'args'      => Array(
-        'themes' => Array('default' => Array('title' => 'Default'))
-      )
-    )
-  );
-}
-
-function doLogin($username, $password) {
-  return true;
-}
-
-function doFSOperation($method, $args) {
-  return call_user_func_array(Array("FS", $method), $args);
-}
-
-function getApplicationData($name, $args) {
-  $apps = getPackageInfo();
-  if ( $name === null && $args === null ) {
-    return $apps;
-  }
-
-  if ( isset($apps[$name]) ) {
-    return $apps[$name];
-  }
-
-  return false;
-}
-
-function out($json) {
-  header("Content-type: application/json");
-  print json_encode($json);
-}
-
-function error() {
-  if ( !is_null($e = error_get_last()) ) {
-    if ( ob_get_level() ) ob_end_clean();
-
-    $type = 'UNKNOWN';
-    switch ((int)$e['type']) {
-      case E_ERROR: // 1
-        $type = 'E_ERROR';
-      break;
-      case E_WARNING: // 2
-        $type = 'E_WARNING';
-      break;
-      case E_PARSE: // 4
-        $type = 'E_PARSE';
-      break;
-      case E_NOTICE: // 8
-        $type = 'E_NOTICE';
-      break;
-      case E_CORE_ERROR: // 16
-        $type = 'E_CORE_ERROR';
-      break;
-      case E_CORE_WARNING: // 32
-        $type = 'E_CORE_WARNING';
-      break;
-      case E_CORE_ERROR: // 64
-        $type = 'E_COMPILE_ERROR';
-      break;
-      case E_CORE_WARNING: // 128
-        $type = 'E_COMPILE_WARNING';
-      break;
-      case E_USER_ERROR: // 256
-        $type = 'E_USER_ERROR';
-      break;
-      case E_USER_WARNING: // 512
-        $type = 'E_USER_WARNING';
-      break;
-      case E_USER_NOTICE: // 1024
-        $type = 'E_USER_NOTICE';
-      break;
-      case E_STRICT: // 2048
-        $type = 'E_STRICT';
-      break;
-      case E_RECOVERABLE_ERROR: // 4096
-        $type = 'E_RECOVERABLE_ERROR';
-      break;
-      case E_DEPRECATED: // 8192
-        $type = 'E_DEPRECATED';
-      break;
-      case E_USER_DEPRECATED: // 16384
-        $type = 'E_USER_DEPRECATED';
-      break;
-    }
-
-    header("HTTP/1.0 500 Internal Server Error");
-    print $e['message'];
-    exit;
-  }
 }
 
 ?>

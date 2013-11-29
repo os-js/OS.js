@@ -35,16 +35,16 @@ class CoreService
     $result = null;
     if ( $method == 'getCache' ) {
       $result = Array(
-        'applications' => getApplicationData(null, null)
+        'applications' => OSjs::getApplicationData(null, null)
       );
     } else if ( $method == 'getSession' ) {
-      $result = getSessionData();
+      $result = OSjs::getSessionData();
     } else if ( $method == 'setSession' ) {
       $data = empty($args['data']) ? Array() : $args['data'];
-      $result = setSessionData($data);
+      $result = OSjs::setSessionData($data);
     } else if ( $method == 'setSettings' ) {
       $data = empty($args['data']) ? Array() : $args['data'];
-      $result = setUserSettings($data);
+      $result = OSjs::setUserSettings($data);
     } else {
       throw new Exception("Invalid CoreService call");
     }
