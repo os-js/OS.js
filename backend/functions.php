@@ -30,6 +30,55 @@
  */
 
 /**
+ * Default handler.
+ */
+if ( !class_exists("OSjsHandler") ) {
+  class OSjsHandler {
+    public static function login($username, $password) {
+      return self::getUserSettings();
+    }
+
+    public static function logout() {
+      return true;
+    }
+
+    public static function getUserSettings() {
+      $data = null;
+      $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
+      if ( file_exists($file) ) {
+        if ( $c = file_get_contents($file) ) {
+          $data = json_decode($c);
+        }
+      }
+
+      return $data ? $data : OSjs::$defaultUserSettings;
+    }
+
+    public static function setUserSettings($data) {
+      $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
+      $d = json_encode($data);
+      return ($d && file_put_contents($file, $d)) ? true : false;
+    }
+
+    public static function getSessionData() {
+      $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
+      if ( file_exists($file) ) {
+        if ( $c = file_get_contents($file) ) {
+          return json_decode($c);
+        }
+      }
+      return false;
+    }
+
+    public static function setSessionData(Array $a) {
+      $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
+      $d = json_encode($a);
+      return file_put_contents($file, $d) ? true : false;
+    }
+  }
+}
+
+/**
  * OSjs API Helpers
  */
 class OSjs
@@ -101,28 +150,8 @@ class OSjs
     return false;
   }
 
-  public static function login($username, $password) {
-    return true;
-  }
-
-  public static function logout() {
-    return true;
-  }
-
   public static function vfs($method, $args) {
     return call_user_func_array(Array("FS", $method), $args);
-  }
-
-  public static function getUserSettings() {
-    $data = null;
-    $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
-    if ( file_exists($file) ) {
-      if ( $c = file_get_contents($file) ) {
-        $data = json_decode($c);
-      }
-    }
-
-    return $data ? $data : self::$defaultUserSettings;
   }
 
   public static function getPreloadList() {
@@ -131,28 +160,6 @@ class OSjs
 
   public static function getCoreSettings() {
     return self::$defaultCoreSettings;
-  }
-
-  public static function setUserSettings($data) {
-    $file = TMPDIR . "/___settingsdata-" . SESSIONNAME;
-    $d = json_encode($data);
-    return ($d && file_put_contents($file, $d)) ? true : false;
-  }
-
-  public static function getSessionData() {
-    $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
-    if ( file_exists($file) ) {
-      if ( $c = file_get_contents($file) ) {
-        return json_decode($c);
-      }
-    }
-    return false;
-  }
-
-  public static function setSessionData(Array $a) {
-    $file = TMPDIR . "/___sessiondata-" . SESSIONNAME;
-    $d = json_encode($a);
-    return file_put_contents($file, $d) ? true : false;
   }
 }
 

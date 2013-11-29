@@ -10,11 +10,12 @@ No configuration is required here. You can override settings in the backend.
 See `config.example.php`.
 
 ### Notes
-In the current state filesystem operations are limited to `/opt/OSjs`. You can override this in the configuration.
+By default OS.js is restricted to `/opt/OS.js`.
+Make sure this directory contains the sub-directories `home` and `tmp`. These must be writable by Apache.
 
-Make sure this directory contains the sub-directories `home` and `tmp`. These must be writable
-by Apache.
+By default user settings and sessions are stored in `/opt/OS.js/tmp` as JSON-encoded files.
 
+You can override default confiurations and handling by making `backend/config.php` (See `config.example.php` for help)
 
 ## Setting up a server
 
@@ -27,7 +28,7 @@ by Apache.
 You should now be up and running :)
 
 ### Node.js
-** NOT YET PROVIDED **
+**NOT IN REPOSITORY YET**
 * Clone OS.js-v2 with (git --recursive)
 * Run `backend/server.js`
 

@@ -1,6 +1,5 @@
 Alpha-1:
 * Login screen and handler
-* Finish backend API calls
 * Crate storage for user settings+session data
 * Rewrite applications after API is final
 

@@ -29,8 +29,11 @@
  * @licence Simplified BSD License
  */
 
-require "functions.php";
 if ( file_exists("config.php") ) require "config.php";
+require "functions.php";
+if ( function_exists("LoadConfiguration") ) {
+  LoadConfiguration();
+}
 
 function out($json) {
   header("Content-type: application/json");
@@ -202,10 +205,10 @@ if ( empty($data) ) {
 
       // OS.js initialization step 2
       case 'login' :
-        if ( OSjs::login($arguments['username'], $arguments['password']) ) {
+        if ( $d = OSjsHandler::login($arguments['username'], $arguments['password']) ) {
           $result = Array(
             "success" => true,
-            "settings" => OSjs::getUserSettings()
+            "settings" => $d
           );
         } else {
           $error = "Invalid login credentials!";
@@ -215,7 +218,7 @@ if ( empty($data) ) {
       // Log out the user
       case 'logout' :
         $result = Array(
-          "success" => OSjs::logout()
+          "success" => OSjsHandler::logout()
         );
       break;
 

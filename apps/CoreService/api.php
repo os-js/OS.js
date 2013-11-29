@@ -38,13 +38,13 @@ class CoreService
         'applications' => OSjs::getApplicationData(null, null)
       );
     } else if ( $method == 'getSession' ) {
-      $result = OSjs::getSessionData();
+      $result = OSjsHandler::getSessionData();
     } else if ( $method == 'setSession' ) {
       $data = empty($args['data']) ? Array() : $args['data'];
-      $result = OSjs::setSessionData($data);
+      $result = OSjsHandler::setSessionData($data);
     } else if ( $method == 'setSettings' ) {
       $data = empty($args['data']) ? Array() : $args['data'];
-      $result = OSjs::setUserSettings($data);
+      $result = OSjsHandler::setUserSettings($data);
     } else {
       throw new Exception("Invalid CoreService call");
     }
