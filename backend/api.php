@@ -29,11 +29,14 @@
  * @licence Simplified BSD License
  */
 
+if ( file_exists("config.php") ) require "config.php";
+
 define("SESSIONNAME", preg_replace("/[^0-9]/", "", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']));
-define("HOMEDIR",     "/opt/OSjs/home");
-define("TMPDIR",      "/opt/OSjs/tmp");
-define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
 define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
+
+if ( !defined("HOMEDIR") )  define("HOMEDIR",     "/opt/OSjs/home");
+if ( !defined("TMPDIR") )   define("TMPDIR",      "/opt/OSjs/tmp");
+if ( !defined("APPDIR") )   define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
 
 class FS
 {

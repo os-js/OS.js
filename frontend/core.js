@@ -34,16 +34,10 @@
   OSjs.Core         = {};
   OSjs.API          = {};
   OSjs.Settings     = OSjs.Settings     || {};
+  OSjs.Bindings     = OSjs.Bindings     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
-
-  window.console    = window.console    || {};
-  console.log       = console.log       || function() {};
-  console.error     = console.error     || console.log;
-  console.warn      = console.warn      || console.log;
-  console.group     = console.group     || console.log;
-  console.groupEnd  = console.groupEnd  || console.log;
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
@@ -72,35 +66,6 @@
   /////////////////////////////////////////////////////////////////////////////
   // RESOURCE HELPERS
   /////////////////////////////////////////////////////////////////////////////
-
-  var _DEFAULT_SETTINGS = function() {
-    return {
-      WM : {
-        fullscreen    : false,
-        taskbar       : {position: 'top', ontop: true},
-        desktop       : {margin: 5},
-        wallpaper     : '/themes/wallpapers/noise_red.png',
-        theme         : 'default',
-        background    : 'image-repeat',
-        style         : {
-          backgroundColor  : '#0B615E',
-          color            : '#333',
-          fontWeight       : 'normal',
-          textDecoration   : 'none',
-          backgroundRepeat : 'repeat'
-        }
-      }
-    };
-  };
-
-
-  OSjs.Settings.getSetting = function(cat, key) {
-    var set = _DEFAULT_SETTINGS()[cat];
-    if ( key ) {
-      return set[key];
-    }
-    return set;
-  };
 
   function getThemeResource(name, type, args) {
     type = type || null;
@@ -519,7 +484,9 @@
         return;
       }
 
-      _preload(res.result.preload, res.result.settings.Core, res.result.settings.WM);
+      OSjs.Bindings.onBooted(function() { // main.js
+        _preload(res.result.preload, res.result.settings.Core, res.result.settings.WM);
+      });
     }, function(error) {
       _error("Failed to initialize -- " + error);
     });
@@ -542,12 +509,18 @@
         playSound('service-login');
       };
 
-      var cs = OSjs.API.getCoreService();
-      if ( cs ) {
-        cs.loadSession(_finished);
-      } else {
-        _finished();
-      }
+      var _loadSession = function() {
+        var cs = OSjs.API.getCoreService();
+        if ( cs ) {
+          cs.loadSession(_finished);
+        } else {
+          _finished();
+        }
+      };
+
+      OSjs.Bindings.onLoggedIn(function() { // main.js
+        _loadSession();
+      });
 
     }, function(error) {
       createErrorDialog('Failed to login to OS.js', 'An error occured while logging in', error, null, true);
@@ -559,8 +532,10 @@
 
     var _finished = function() {
       APICall('logout', {}, function() {
-        playSound('service-logout');
-        onFinished(self);
+        OSjs.Bindings.onLoggedOut(function() { // main.js
+          playSound('service-logout');
+          onFinished(self);
+        });
       }, function(error) {
         createErrorDialog('Failed to log out of OS.js', 'An error occured while logging out', error, null, true);
       });
@@ -749,6 +724,7 @@
 
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
+      console.warn("OSjs::Core::WindowManager::addWindow()", "Got", w);
       throw ("addWindow() expects a 'Window' class");
     }
     console.log("OSjs::Core::WindowManager::addWindow()");
@@ -764,6 +740,7 @@
 
   WindowManager.prototype.removeWindow = function(w) {
     if ( !(w instanceof Window) ) {
+      console.warn("OSjs::Core::WindowManager::removeWindow()", "Got", w);
       throw ("removeWindow() expects a 'Window' class");
     }
     console.log("OSjs::Core::WindowManager::removeWindow()");
@@ -1551,9 +1528,12 @@
     return false;
   };
 
-  Window.prototype._addChild = function(w) {
+  Window.prototype._addChild = function(w, wmAdd) {
     console.log("OSjs::Core::Window::_addChild()");
     w._parent = this;
+    if ( wmAdd && _WM ) {
+      _WM.addWindow(w);
+    }
     this._children.push(w);
   };
 

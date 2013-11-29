@@ -3,7 +3,7 @@ when the API has been finalized.
 
 # Notes
 In the current state OS.js filesystem operations is restricted to a path defined in `api.php`.
-The default value is `/opt/OS.js`.
+The default value is `/opt/OS.js`. To override see the *Configuration* section below.
 
 Make sure this directory contains the sub-directories `home` and `tmp`. These must be writable
 by Apache.
@@ -14,7 +14,7 @@ No configuration is required here. You can override settings in the backend.
 # Backend
 
 ## Configuration
-This is not yet finished, but you can modify the settings manually in `api.php`.
+You can override the default definitions in `api.php` by creating a the file `backend/config.php`.
 
 ## Setting up a server
 

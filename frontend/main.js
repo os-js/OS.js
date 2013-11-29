@@ -31,7 +31,83 @@
 
 (function() {
 
-  window.OSjs = window.OSjs || {};
+  window.OSjs   = window.OSjs   || {};
+  OSjs.Settings = OSjs.Settings || {};
+  OSjs.Bindings = OSjs.Bindings || {};
+
+  window.console    = window.console    || {};
+  console.log       = console.log       || function() {};
+  console.error     = console.error     || console.log;
+  console.warn      = console.warn      || console.log;
+  console.group     = console.group     || console.log;
+  console.groupEnd  = console.groupEnd  || console.log;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Bindings code
+  /////////////////////////////////////////////////////////////////////////////
+
+  //
+  // To override these, just add a preload file to the backend and update the
+  // bindings. Remember to allways call the 'continueCallback' function!
+  //
+
+  /**
+   * Called when OS.js has booted
+   */
+  OSjs.Bindings.onBooted = function(continueCallback) {
+    continueCallback();
+  };
+
+  /**
+   * Called when OS.js has logged the user in
+   */
+  OSjs.Bindings.onLoggedIn = function(continueCallback) {
+    continueCallback();
+  };
+
+  /**
+   * Called when OS.js has logged the user out
+   */
+  OSjs.Bindings.onLoggedOut = function(continueCallback) {
+    continueCallback();
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Settings code
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _DEFAULT_SETTINGS = function() {
+    return {
+      WM : {
+        fullscreen    : false,
+        taskbar       : {position: 'top', ontop: true},
+        desktop       : {margin: 5},
+        wallpaper     : '/themes/wallpapers/noise_red.png',
+        theme         : 'default',
+        background    : 'image-repeat',
+        style         : {
+          backgroundColor  : '#0B615E',
+          color            : '#333',
+          fontWeight       : 'normal',
+          textDecoration   : 'none',
+          backgroundRepeat : 'repeat'
+        }
+      }
+    };
+  };
+
+
+  OSjs.Settings.getSetting = function(cat, key) {
+    var set = _DEFAULT_SETTINGS()[cat];
+    if ( key ) {
+      return set[key];
+    }
+    return set;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Main initialization code
+  /////////////////////////////////////////////////////////////////////////////
 
   window.onload = function() {
     console.info("window::onload()");
