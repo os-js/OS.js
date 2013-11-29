@@ -109,7 +109,7 @@
   function playSound(name) {
     if ( OSjs.Utils.getCompability().audio ) {
       var f = getThemeResource(name, 'sound');
-      console.log("playSound()", name, f);
+      console.info("playSound()", name, f);
       var a = new Audio(f);
       a.play();
       return a;
@@ -223,7 +223,7 @@
 
     if ( cs ) {
       app = cs.getApplicationNameByMime(mime, fname);
-      console.log("Found", app.length, "applications supporting this mime");
+      console.info("Found", app.length, "applications supporting this mime");
       if ( app.length ) {
         var self = this;
         var _launch = function(name) {
@@ -958,7 +958,7 @@
 
   Application.prototype._addWindow = function(w) {
     if ( !(w instanceof Window) ) throw "Application::_addWindow() expects Window";
-    console.log("OSjs::Core::Application::_addWindow()");
+    console.info("OSjs::Core::Application::_addWindow()");
     this.__windows.push(w);
 
     if ( this.__inited ) {
@@ -975,7 +975,7 @@
     var l = this.__windows.length;
     for ( i; i < l; i++ ) {
       if ( this.__windows[i]._wid === w._wid ) {
-        console.log("OSjs::Core::Application::_removeWindow()", w._wid);
+        console.info("OSjs::Core::Application::_removeWindow()", w._wid);
         this.__windows[i].destroy();
         this.__windows.splice(i, 1);
         break;
@@ -1532,7 +1532,7 @@
   };
 
   Window.prototype._addChild = function(w, wmAdd) {
-    console.log("OSjs::Core::Window::_addChild()");
+    console.info("OSjs::Core::Window::_addChild()");
     w._parent = this;
     if ( wmAdd && _WM ) {
       _WM.addWindow(w);
@@ -1544,7 +1544,7 @@
     var i = 0, l = this._children.length;
     for ( i; i < l; i++ ) {
       if ( this._children[i] && this._children[i]._wid === w._wid ) {
-        console.log("OSjs::Core::Window::_removeChild()");
+        console.info("OSjs::Core::Window::_removeChild()");
 
         this._children[i].destroy();
         this._children[i] = null;
@@ -1554,7 +1554,7 @@
   };
 
   Window.prototype._close = function() {
-    console.log("OSjs::Core::Window::_close()");
+    console.info("OSjs::Core::Window::_close()");
     if ( this._disabled ) return;
 
     if ( this._$element ) {
@@ -1712,7 +1712,7 @@
   };
 
   Window.prototype._onDndEvent = function(ev, type) {
-    console.log("OSjs::Core::Window::_onDndEvent()", type);
+    console.info("OSjs::Core::Window::_onDndEvent()", type);
   };
 
   Window.prototype._onKeyEvent = function(ev) {

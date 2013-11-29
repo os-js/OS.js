@@ -483,7 +483,7 @@
   };
 
   FileUploadDialog.prototype.onFileSelected = function(evt, file) {
-    console.log("FileUploadDialog::onFileSelected()", evt, file);
+    console.info("FileUploadDialog::onFileSelected()", evt, file);
     if ( file ) {
       var fileSize = 0;
       if ( file.size > 1024 * 1024 ) {
@@ -506,14 +506,14 @@
   };
 
   FileUploadDialog.prototype.onUploadComplete = function(evt) {
-    console.log("FileUploadDialog::onUploadComplete()");
+    console.info("FileUploadDialog::onUploadComplete()");
 
     this.$buttonCancel.removeAttribute("disabled");
     this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
   };
 
   FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
-    console.log("FileUploadDialog::onUploadFailed()");
+    console.info("FileUploadDialog::onUploadFailed()");
     if ( error ) {
       this._error("Upload failed", "The upload has failed", error);
     } else {
@@ -524,7 +524,7 @@
   };
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
-    console.log("FileUploadDialog::onUploadCanceled()");
+    console.info("FileUploadDialog::onUploadCanceled()");
     this._error("Upload failed", "The upload has failed", "Cancelled by user...");
     this.$buttonCancel.removeAttribute("disabled");
     this.end('cancelled', evt);

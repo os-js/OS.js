@@ -293,13 +293,14 @@
 
   GUIElement.prototype.focus = function() {
     if ( this.focused ) return false;
-    console.log("GUIElement::focus()", this.id);
+    console.debug("GUIElement::focus()", this.id, this.name);
     this.focused = true;
     return true;
   };
 
   GUIElement.prototype.blur = function() {
     if ( !this.focused ) return;
+    console.debug("GUIElement::blur()", this.id, this.name);
     this.focused = false;
   };
 
