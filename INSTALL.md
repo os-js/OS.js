@@ -7,13 +7,13 @@ No configuration is required here. You can override settings in the backend.
 # Backend
 
 ## Configuration
-See `config.example.php`.
+See `config.example.php`. Configuration is not required if you can use the settings in the notes below.
 
 ### Notes
 By default OS.js is restricted to `/opt/OS.js`.
 Make sure this directory contains the sub-directories `home` and `tmp`. These must be writable by Apache.
 
-By default user settings and sessions are stored in `/opt/OS.js/tmp` as JSON-encoded files.
+By default user settings and sessions are stored in `/opt/OS.js/tmp` as JSON-encoded files. Alpha-1 will have a real handler using another method.
 
 You can override default confiurations and handling by making `backend/config.php` (See `config.example.php` for help)
 
