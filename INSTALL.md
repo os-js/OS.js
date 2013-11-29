@@ -1,31 +1,27 @@
-For now only a PHP backend is provided. A Node.js version will be provided in the future
-when the API has been finalized.
+# Installation
+Installation only requires a few small steps. You have to be running a BSD, Linux server or something similar to run the web-server.
 
-# Frontend
-No configuration is required here. You can override settings in the backend.
+## Frontend
+You can override default configurations for the frontend using backend.
 
-# Backend
+## Backend
+By default OS.js stores all temporary data, user sessions and settings in `/opt/OS.js/tmp` (will be changed in *Alpha-1*).
+File storage is restricted to `/opt/OS.js/home` by default.
 
-## Configuration
-See `config.example.php`. Configuration is not required if you can use the settings in the notes below.
+Make sure these directories exist and are readable+writable by the running web-server process.
 
-### Notes
-By default OS.js is restricted to `/opt/OS.js`.
-Make sure this directory contains the sub-directories `home` and `tmp`. These must be writable by Apache.
-
-By default user settings and sessions are stored in `/opt/OS.js/tmp` as JSON-encoded files. Alpha-1 will have a real handler using another method.
-
-You can override default confiurations and handling by making `backend/config.php` (See `config.example.php` for help)
-
-## Setting up a server
+You can modify these paths in the configuration file (more info below).
 
 ### Apache + PHP
 * Clone OS.js-v2 with (git --recursive)
-* Set up an Apache vhost and point to cloned directory (If you have a "web hosting service", skip this)
-* Make sure .htaccess is allowed (With "Allow override", normally allowed by default)
-* Make sure mod_rewrite is enabled (Normally allowed by default)
+* Set up an Apache vhost and point to cloned directory (If you have a "web hosting service", you can most likely skip this)
+  * Make sure .htaccess is allowed
+  * Make sure mod_rewrite is enabled
 
 You should now be up and running :)
+
+#### Configuration
+See `config.example.php` if you want to set up a custom configuration, settings and handlers (not required unless the restrictions notes in the *Backend* section is a problem for your server).
 
 ### Node.js
 **NOT IN REPOSITORY YET**
