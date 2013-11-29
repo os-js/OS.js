@@ -1,7 +1,7 @@
 # OS.js Version 2.0
-OS.js is a light-weight JavaScript based desktop solution.
+OS.js is a light-weight JavaScript based web/cloud desktop solution.
 
-**Alpha 1 is to be announced soon. API not final yet**
+**Alpha 1 is to be announced soon**
 
 ## Changes
 
@@ -11,7 +11,7 @@ OS.js is a light-weight JavaScript based desktop solution.
 * Tons of improvements
 * Dropped support for legacy browsers
 * Very simple setup (requires only a web-server using PHP or Node)
-* No 3rd party libraries
+* No 3rd party libraries (runs on native browser libs)
 
 ## Features
 
@@ -58,6 +58,9 @@ Runs in any modern browser. Tested:
 * **WebKit** Google Chrome, Opera, Safari
 * Internet Explorer 10+
 * Android and iOS is working, but no mobile version is implemented yet
+
+# License
+See the `LICENSE` file.
 
 # Links
 * [Github Wiki Pages](https://github.com/andersevenrud/OS.js-v2/wiki)
