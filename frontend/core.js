@@ -1558,6 +1558,7 @@
       this._$element.className += " WindowHintClosing";
     }
 
+    this._blur();
     this.destroy();
   };
 

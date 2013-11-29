@@ -17,6 +17,7 @@
   ApplicationTextpadWindow.prototype = Object.create(Window.prototype);
 
   ApplicationTextpadWindow.prototype.init = function() {
+    var self = this;
     var root = Window.prototype.init.apply(this, arguments);
     var app = this._appRef;
 
@@ -35,7 +36,7 @@
         app.action('saveas');
       }},
       {title: 'Close', name: 'Close', onClick: function() {
-        app.action('close');
+        self._close();
       }}
     ]);
 
@@ -196,10 +197,6 @@
 
         this._setArgument('file', null);
         this._setArgument('mime', null);
-      break;
-
-      case 'close' :
-        this.destroy();
       break;
 
       case 'save' :
