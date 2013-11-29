@@ -1,5 +1,5 @@
 # Installation
-Installation only requires a few small steps. You have to be running a BSD, Linux server or something similar to run the web-server.
+Installation only requires a few small steps. You have to be running a BSD, Linux or something similar to run the server.
 
 ## Frontend
 You can override default configurations for the frontend using backend.
