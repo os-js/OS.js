@@ -277,6 +277,7 @@
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
           if ( _SPROCS[n] ) {
+            console.debug("LaunchProcess()", "detected that this application is a singular and already running...");
             if ( _SPROCS[n] === 'Application' ) {
               var proc = _CORE.getProcess(n, true);
               if ( proc ) {
