@@ -75,7 +75,7 @@
           w._resize(r.dimension.w, r.dimension.h);
           // TODO: State
 
-          console.log('CoreService::loadSession->onSuccess()()', 'Restored window "' + r.name + '" from session');
+          console.info('CoreService::loadSession->onSuccess()()', 'Restored window "' + r.name + '" from session');
         }
       }
     };
@@ -205,6 +205,13 @@
     }
 
     return list;
+  };
+
+  CoreService.prototype.getApplicationMetadata = function(name) {
+    if ( this.applicationCache && this.applicationCache[name] ) {
+      return this.applicationCache[name];
+    }
+    return null;
   };
 
   CoreService.prototype._setConfig = function(k, v) {

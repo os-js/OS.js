@@ -346,7 +346,6 @@
     }, function() {
       _error("Failed to launch -- communication error!");
     });
-
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1566,7 +1565,7 @@
   };
 
   Window.prototype._minimize = function() {
-    console.debug("OSjs::Core::Window::_minimize()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_minimize()");
     if ( !this._properties.allow_minimize ) return false;
     //if ( this._disabled ) return false;
     if ( this._state.minimized ) {
@@ -1589,7 +1588,7 @@
   };
 
   Window.prototype._maximize = function() {
-    console.debug("OSjs::Core::Window::_maximize()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_maximize()");
     if ( !this._properties.allow_maximize ) return false;
     //if ( this._disabled ) return false;
     if ( this._state.maximized ) {
@@ -1620,7 +1619,7 @@
   };
 
   Window.prototype._restore = function(max, min) {
-    console.debug("OSjs::Core::Window::_restore()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_restore()");
     //if ( this._disabled ) return ;
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
@@ -1646,7 +1645,7 @@
 
   Window.prototype._focus = function() {
     if ( this._state.focused ) return false;
-    console.debug("OSjs::Core::Window::_focus()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     this._$element.className += ' WindowHintFocused';
@@ -1665,7 +1664,7 @@
 
   Window.prototype._blur = function() {
     if ( !this._state.focused ) return false;
-    console.debug("OSjs::Core::Window::_blur()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_blur()");
     var cn = this._$element.className;
     this._$element.className = cn.replace(/\s?WindowHintFocused/, '');
     this._state.focused = false;
@@ -1719,11 +1718,11 @@
   };
 
   Window.prototype._onWindowIconClick = function(ev, el) {
-    console.debug("OSjs::Core::Window::_onWindowIconClick()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_onWindowIconClick()");
   };
 
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
-    console.debug("OSjs::Core::Window::_onWindowButtonClick()", btn);
+    console.debug(this._name, '>' , "OSjs::Core::Window::_onWindowButtonClick()", btn);
 
     if ( btn === 'close' ) {
       this._close();
@@ -1735,26 +1734,26 @@
   };
 
   Window.prototype._onChange = function(ev) {
-    console.debug("OSjs::Core::Window::_onChange()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_onChange()");
     if ( _WM ) {
       _WM.eventWindow(ev, this);
     }
   };
 
   Window.prototype._error = function(title, description, message, exception, bugreport) {
-    console.debug("OSjs::Core::Window::_error()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_error()");
     var w = createErrorDialog(title, description, message, exception, bugreport);
     this._addChild(w);
   };
 
   Window.prototype._toggleDisabled = function(t) {
-    console.debug("OSjs::Core::Window::_toggleDisabled()", t);
+    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleDisabled()", t);
     this._$disabled.style.display = t ? 'block' : 'none';
     this._disabled = t ? true : false;
   };
 
   Window.prototype._toggleLoading = function(t) {
-    console.debug("OSjs::Core::Window::_toggleLoading()", t);
+    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleLoading()", t);
     this._$loading.style.display = t ? 'block' : 'none';
   };
 
