@@ -80,7 +80,7 @@
       if ( self._finished )
         return;
 
-      console.log("Preloader::_onSuccess()", src);
+      console.debug("Preloader::_onSuccess()", src);
 
       (args.onSuccess || function() {})(src);
 
@@ -93,7 +93,7 @@
 
       self._errors.push(src);
 
-      console.log("Preloader::_onError()", src);
+      console.debug("Preloader::_onError()", src);
 
       (args.onError || function() {})(src);
 
@@ -112,8 +112,6 @@
    * @destructor
    */
   Preloader.prototype.destroy = function() {
-    console.log("Preloader::destroy()");
-
     this._finished    = false;
     this._list        = [];
     this._errors      = [];
