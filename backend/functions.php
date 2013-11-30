@@ -124,6 +124,10 @@ class OSjs
               $key = key($data);
               $val = current($data);
 
+              if ( !empty($val['enabled']) && ($val['enabled'] === false) ) {
+                continue;
+              }
+
               foreach ( $val['preload'] as $k => $v ) {
                 $val['preload'][$k]['src'] = sprintf("/apps/%s/%s", $f, $v['src']);
               }

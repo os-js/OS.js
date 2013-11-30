@@ -1,6 +1,4 @@
 (function(WindowManager, GUI) {
-  // TODO: Panel
-  // TODO: PanelItem's
 
   /**
    * Application
