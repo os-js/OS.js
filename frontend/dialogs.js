@@ -967,6 +967,116 @@
     this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHEX(this.currentRGB), (this.currentAlpha/100));
   };
 
+  /**
+   * Font Dialog
+   */
+  var FontDialog = function(args, onClose) {
+    args = args || {};
+    this.fontName   = args.name       || 'Arial';
+    this.fontSize   = args.size       || 12;
+    this.background = args.background || '#ffffff';
+    this.color      = args.color      || '#000000';
+    this.fonts      = args.list       || ['OSjsFont', 'Arial', 'Arial Black', 'Sans-serif', 'Serif', 'Trebuchet MS', 'Impact', 'Georgia', 'Courier New', 'Comic Sans MS', 'Monospace', 'Symbol', 'Webdings'];
+    this.minSize    = args.minSize    || 6;
+    this.maxSize    = args.maxSize    || 30;
+    this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
+
+    this.$selectFonts = null;
+    this.$selectSize  = null;
+
+    StandardDialog.apply(this, ['FontDialog', {title: "Font Dialog"}, {width:450, height:270}, onClose]);
+  };
+
+  FontDialog.prototype = Object.create(StandardDialog.prototype);
+
+  FontDialog.prototype.init = function() {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var option;
+
+    var rt = this._addGUIElement(new OSjs.GUI.RichText('GUIRichText'), this.$element);
+
+    var updateFont = function(name, size) {
+      if ( name !== null && name ) {
+        self.fontName = name;
+      }
+      if ( size !== null && size ) {
+        self.fontSize = size << 0;
+      }
+
+      var styles = [
+        'font-family: ' + self.fontName,
+        'font-size: ' + self.fontSize + 'px',
+        'background: ' + self.background,
+        'color: ' + self.color
+      ];
+      rt.setContent('<div style="' + styles.join(";") + '">' + self.text + '</div>');
+    };
+
+    this.$selectFont = document.createElement('select');
+    this.$selectFont.className = 'SelectFont';
+    this.$selectFont.setAttribute("size", "7");
+
+    for ( var f = 0; f < this.fonts.length; f++ ) {
+      option = document.createElement('option');
+      option.value = f;
+      option.innerHTML = this.fonts[f];
+      this.$selectFont.appendChild(option);
+      if ( this.fontName.toLowerCase() == this.fonts[f].toLowerCase() ) {
+        this.$selectFont.selectedIndex = f;
+      }
+    }
+
+    this.$selectFont.onchange = function() {
+      var i = this.selectedIndex;
+      if ( self.fonts[i] ) {
+        updateFont(self.fonts[i], null);
+      }
+    };
+    this._addHook('destroy', function() {
+      self.$selectFont.onchange = function() {};
+    });
+
+    this.$selectSize = document.createElement('select');
+    this.$selectSize.className = 'SelectSize';
+    this.$selectSize.setAttribute("size", "7");
+
+    var i = 0;
+    for ( var s = this.minSize; s <= this.maxSize; s++ ) {
+      option = document.createElement('option');
+      option.value = s;
+      option.innerHTML = s;
+      this.$selectSize.appendChild(option);
+      if ( this.fontSize == s ) {
+        this.$selectSize.selectedIndex = i;
+      }
+      i++;
+    }
+
+    this.$selectSize.onchange = function() {
+      var i = this.selectedIndex;
+      var o = this.options[i];
+      if ( o ) {
+        updateFont(null, o.value);
+      }
+    };
+    this._addHook('destroy', function() {
+      self.$selectSize.onchange = function() {};
+    });
+
+    this.$element.appendChild(this.$selectFont);
+    this.$element.appendChild(this.$selectSize);
+
+    updateFont();
+
+    return root;
+  };
+
+  FontDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.$buttonConfirm ) return;
+    this.end('ok', this.fontName, this.fontSize);
+  };
+
   //
   // EXPORTS
   //
@@ -980,6 +1090,7 @@
   OSjs.Dialogs.Confirm            = ConfirmDialog;
   OSjs.Dialogs.Input              = InputDialog;
   OSjs.Dialogs.Color              = ColorDialog;
+  OSjs.Dialogs.Font               = FontDialog;
   OSjs.Dialogs.ApplicationChooser = ApplicationChooserDialog;
 
 })(OSjs.Core.DialogWindow, OSjs.GUI);

@@ -279,6 +279,8 @@
   overflow : hidden;
   text-align : center;
   border-style : outset;
+  min-width : 16px;
+  min-height : 16px;
 }
 .GUIToolbar button.Active {
   border-style : inset;
