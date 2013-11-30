@@ -336,6 +336,7 @@ body #WindowList .Background {
 .Window .GUIToolbar button {
   background : #e6e6e6;
   border : 1px solid #333;
+  color : #333;
 }
 .Window .GUIToolbar button:hover {
   border : 1px solid #777;
@@ -344,6 +345,9 @@ body #WindowList .Background {
 .Window .GUIToolbar button.Active {
   border : 1px solid #999;
   background : #c2c2c2;
+}
+.GUIToolbar.horizontal li.Separator {
+  border-left : 1px solid #333333;
 }
 
 /* GUIProgressBar */

@@ -266,6 +266,11 @@
   position : relative;
   float : left;
 }
+.GUIToolbar.horizontal li.Separator {
+  float : left;
+  min-height : 22px;
+  margin : 5px;
+}
 .GUIToolbar button {
   display : inline;
   position : relative;
