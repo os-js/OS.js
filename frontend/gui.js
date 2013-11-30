@@ -200,7 +200,7 @@
       this.opts.dndOpts = {};
     }
     if ( typeof this.opts.focusable === 'undefined' ) {
-      this.opts.focusable = true;
+      this.opts.focusable = false;
     }
 
     this.onItemDropped  = function() {};
@@ -295,13 +295,16 @@
     if ( this.focused ) return false;
     console.debug("GUIElement::focus()", this.id, this.name);
     this.focused = true;
+    this._fireHook('focus');
     return true;
   };
 
   GUIElement.prototype.blur = function() {
-    if ( !this.focused ) return;
+    if ( !this.focused ) return false;
     console.debug("GUIElement::blur()", this.id, this.name);
     this.focused = false;
+    this._fireHook('blur');
+    return true;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -443,22 +446,24 @@
    */
   var ListView = function(name, opts) {
     opts = opts || {};
-    this.singleClick = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
-    this.rows = [];
-    this.columns = [];
-    this.$head = null;
-    this.$headTop = null;
-    this.$body = null;
-    this.$table = null;
-    this.$tableTop = null;
-    this.$scroll = null;
-    this.selected = null;
-    this.selectedDOMItem = null;
+    opts.focusable = true;
 
-    this.onCreateRow = function() {};
-    this.onSelect = function() {};
-    this.onActivate = function() {};
-    this.onContextMenu = function() {};
+    this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
+    this.rows             = [];
+    this.columns          = [];
+    this.$head            = null;
+    this.$headTop         = null;
+    this.$body            = null;
+    this.$table           = null;
+    this.$tableTop        = null;
+    this.$scroll          = null;
+    this.selected         = null;
+    this.selectedDOMItem  = null;
+
+    this.onCreateRow    = function() {};
+    this.onSelect       = function() {};
+    this.onActivate     = function() {};
+    this.onContextMenu  = function() {};
 
     GUIElement.apply(this, arguments);
   };
@@ -774,6 +779,8 @@
   /**
    * FileView
    * FIXME: Fix exessive calls to chdir/refresh
+   * TODO: Implement IconView view
+   * TODO: Implement switching between view types
    */
   var FileView = function(name, path, opts) {
     opts = opts || {};
@@ -956,9 +963,12 @@
    * Textarea
    */
   var Textarea = function(name, opts) {
+    opts = opts || {};
+    opts.focusable = true;
+
     this.$area = null;
     this.strLen = 0;
-    GUIElement.apply(this, arguments);
+    GUIElement.apply(this, [name, opts]);
   };
 
   Textarea.prototype = Object.create(GUIElement.prototype);
@@ -1077,7 +1087,7 @@
    */
   var StatusBar = function(name) {
     this.$contents = null;
-    GUIElement.apply(this, [name, {focusable: false}]);
+    GUIElement.apply(this, [name]);
   };
 
   StatusBar.prototype = Object.create(GUIElement.prototype);
@@ -1518,6 +1528,7 @@
    */
   var IconView = function(name, opts) {
     opts = opts || {};
+    opts.focusable = true;
 
     this.$view = null;
     this.$ul = null;
@@ -1642,19 +1653,29 @@
    */
   var RichText = function(name) {
     this.$view = null;
-    GUIElement.apply(this, [name, {}]);
-    this.focusable = true;
+    GUIElement.apply(this, [name, {focusable: true}]);
   };
 
   RichText.prototype = Object.create(GUIElement.prototype);
 
   RichText.prototype.init = function() {
+    var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
+    var doc = '<!DOCTYPE html><html><head><script type="text/javascript">function init() {window.document.designMode = "On";}</script><style type="text/css">body {font-family: Arial;font-size : 100%;}</style></head><body contentEditable="true" onload="init()"></body></html>';
 
     this.$view = document.createElement('iframe');
     this.$view.setAttribute("border", "0");
-    this.$view.src = '/frontend/richtext.html';
+    this.$view.src = "javascript:'" + doc + "'";
     el.appendChild(this.$view);
+
+    setTimeout(function() {
+      self.$view.contentWindow.onfocus = function() {
+        self.focus();
+      };
+      self.$view.contentWindow.onblur = function() {
+        self.blur();
+      };
+    }, 0);
 
     return el;
   };
@@ -1669,7 +1690,7 @@
 
   RichText.prototype.setContent = function(c) {
     var d = this.getDocument();
-    if ( d ) {
+    if ( d && d.body ) {
       d.body.innerHTML = c;
       return true;
     }
@@ -1678,7 +1699,7 @@
 
   RichText.prototype.getContent = function() {
     var d = this.getDocument();
-    if ( d ) {
+    if ( d && d.body ) {
       return d.body.innerHTML;
     }
     return null;

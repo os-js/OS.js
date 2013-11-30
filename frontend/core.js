@@ -1506,6 +1506,7 @@
   };
 
   Window.prototype._addGUIElement = function(gel, parentNode) {
+    var self = this;
     if ( !parentNode ) {
       throw "Adding a GUI Element requires a parentNode";
     }
@@ -1519,6 +1520,11 @@
             gel.blur();
           });
         }
+      }
+      if ( (gel instanceof OSjs.GUI.RichText) ) {
+        gel._addHook('focus', function() {
+          self._focus();
+        });
       }
 
       this._guiElements.push(gel);
