@@ -94,7 +94,7 @@ function error() {
     }
 
     header("HTTP/1.0 500 Internal Server Error");
-    out(Array("result" => false, "error" => $e['message']));
+    print $e['message'];
     exit;
   }
 }
