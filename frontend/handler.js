@@ -64,6 +64,7 @@
     this.storage  = new DefaultStorage();
     this.packages = {};
     this.config   = OSjs.Settings.DefaultConfig();
+    this.userData = {};
   };
 
   DefaultHandler.prototype.call = function(opts, cok, cerror) {
@@ -75,33 +76,47 @@
   };
 
   DefaultHandler.prototype.init = function(callback) {
-    var self = this;
+    var self      = this;
+    var container = document.getElementById('Login');
+    var login     = document.getElementById('LoginForm');
+    var u         = document.getElementById('LoginUsername');
+    var p         = document.getElementById('LoginPassword');
+    var s         = document.getElementById('LoginSubmit');
+
+    var _restore = function() {
+      s.removeAttribute("disabled");
+      u.removeAttribute("disabled");
+      p.removeAttribute("disabled");
+    };
+
+    var _lock = function() {
+      s.setAttribute("disabled", "disabled");
+      u.setAttribute("disabled", "disabled");
+      p.setAttribute("disabled", "disabled");
+    };
+
     var _login = function(username, password) {
-      self.login(username, password, function() {
+      self.login(username, password, function(result, error) {
+        if ( error ) {
+          alert(error);
+          _restore();
+          return;
+        }
+        self.userData = result;
+
         container.parentNode.removeChild(container);
         callback();
       });
     };
 
-    var container = document.getElementById('Login');
     /*
-    var login = document.getElementById('LoginForm');
-    var u = document.getElementById('LoginUsername');
-    var p = document.getElementById('LoginPassword');
-    var s = document.getElementById('LoginSubmit');
-
-
     login.onsubmit = function(ev) {
-      p.setAttribute("disabled", "disabled");
+      _lock();
       if ( ev ) ev.preventDefault();
       _login(u.value, p.value);
     };
-
-    u.setAttribute("disabled", "disabled");
-    p.setAttribute("disabled", "disabled");
-
-    container.parentNode.removeChild(container);
     */
+
     _login("demo", "demo");
   };
 
@@ -126,7 +141,18 @@
   };
 
   DefaultHandler.prototype.login = function(username, password, callback) {
-    callback(true);
+    if ( username === 'demo' && password === 'demo' ) {
+      var userData = {
+        id:         1,
+        username:   'demo',
+        name:       'Demo User',
+        groups:     ['demo']
+      };
+
+      callback(userData);
+      return;
+    }
+    callback(false, "Invalid login");
   };
 
   DefaultHandler.prototype.logout = function(session, callback) {
@@ -209,6 +235,10 @@
 
   DefaultHandler.prototype.getConfig = function(key) {
     return key ? this.config[key] : this.config;
+  };
+
+  DefaultHandler.prototype.getUserData = function() {
+    return this.userData;
   };
 
   OSjs.Handlers.Default = DefaultHandler;

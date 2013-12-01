@@ -88,7 +88,8 @@
     sel = document.createElement('li');
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function() {
-      var t = confirm("Do you want to save current session?");
+      var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
+      var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");
       OSjs.shutdown(t, false);
     };
     el.appendChild(sel);
