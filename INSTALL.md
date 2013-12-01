@@ -1,14 +1,14 @@
 # Installation
-Installation only requires a few small steps. You have to be running a BSD, Linux or something similar to run the server.
+Installation only requires a few small steps.
 
 ## Frontend
-You can override default settings by creating your own `settings.js` file. More information in wiki
+You can override default settings by creating your own `settings.js` file. More information in Wiki
 
 ## Backend
 By default OS.js filesystem is restricted to `/opt/OSjs/tmp` and `/opt/OSjs/home`.
 Make sure these directories exist and are readable+writable by the running web-server process.
 
-You can modify these paths in the configuration file (more info below).
+More information on configuring the backend on Wiki.
 
 ### Apache + PHP
 * Clone OS.js-v2 with (git --recursive)
@@ -17,9 +17,6 @@ You can modify these paths in the configuration file (more info below).
   * Make sure mod_rewrite is enabled
 
 You should now be up and running :)
-
-#### Configuration
-See `config.example.php` if you want to set up a custom configuration
 
 ### Node.js
 **NOT IN REPOSITORY YET**
