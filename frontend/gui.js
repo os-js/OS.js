@@ -44,6 +44,10 @@
     args.mime   = args.mime   || 'application/json';
     args.files  = args.files  || true;
 
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = "text";
+    }
+
     args.onFilesDropped = args.onFilesDropped || function() { return true; };
     args.onItemDropped  = args.onItemDropped  || function() { return true; };
     args.onEnter        = args.onEnter        || function() { return true; };
@@ -111,6 +115,10 @@
 
     args.onStart    = args.onStart    || function() { return true; };
     args.onEnd      = args.onEnd      || function() { return true; };
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = "text";
+    }
 
     var _toString = function(mime) {
       return JSON.stringify({
