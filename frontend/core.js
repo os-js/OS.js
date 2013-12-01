@@ -484,7 +484,7 @@
             w._resize(r.dimension.w, r.dimension.h);
             // TODO: State
 
-            console.info('CoreService::loadSession->onSuccess()()', 'Restored window "' + r.name + '" from session');
+            console.info('CoreService::loadSession()->onSuccess()', 'Restored window "' + r.name + '" from session');
           }
         }
 
@@ -503,6 +503,7 @@
             };
           })(s.windows), function(err) {
             console.warn("_loadSession() error", err);
+            onNext();
           });
         }
       };
