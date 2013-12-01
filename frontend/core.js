@@ -63,21 +63,6 @@
   var _$LOADING;
 
   /////////////////////////////////////////////////////////////////////////////
-  // RESOURCE HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function playSound(name) {
-    if ( OSjs.Utils.getCompability().audio ) {
-      var f = OSjs.API.getThemeResource(name, 'sound');
-      console.info("playSound()", name, f);
-      var a = new Audio(f);
-      a.play();
-      return a;
-    }
-    return false;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // DOM HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -140,14 +125,14 @@
     });
   }
 
-  function createErrorDialog(title, message, error, exception, bugreport) {
+  function ErrorDialog(title, message, error, exception, bugreport) {
     if ( _HANDLER.getConfig('Core').BugReporting ) {
       bugreport = typeof bugreport == 'undefined' ? false : (bugreport ? true : false);
     } else {
       bugreport = false;
     }
 
-    playSound('dialog-warning');
+    PlaySound('dialog-warning');
 
     OSjs.GUI.blurMenu();
 
@@ -228,7 +213,7 @@
     var self = this;
     var _error = function(msg, exception) {
       console.groupEnd(); // !!!
-      createErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg, exception, true);
+      ErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg, exception, true);
 
       onError(msg, n, arg);
     };
@@ -312,6 +297,17 @@
     _preload(data);
   }
 
+  function PlaySound(name) {
+    if ( OSjs.Utils.getCompability().audio ) {
+      var f = OSjs.API.getThemeResource(name, 'sound');
+      console.info("PlaySound()", name, f);
+      var a = new Audio(f);
+      a.play();
+      return a;
+    }
+    return false;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -372,7 +368,7 @@
     // Override error handling
     window.onerror = function(message, url, linenumber, column, exception) {
       var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-      createErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg, exception, true);
+      ErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg, exception, true);
       return false;
     };
 
@@ -408,7 +404,7 @@
     var self = this;
 
     var _error = function(msg) {
-      createErrorDialog('Failed to initialize OS.js', 'An error occured while initializing OS.js', msg, null, true);
+      ErrorDialog('Failed to initialize OS.js', 'An error occured while initializing OS.js', msg, null, true);
     };
 
     var _launchWM = function(callback) {
@@ -485,7 +481,7 @@
       _preload(preloads, function() {
         _launchWM(function(app) {
           _$LOADING.style.display = 'none';
-          playSound('service-login');
+          PlaySound('service-login');
 
           _loadSession();
         });
@@ -524,7 +520,7 @@
     }
 
     _HANDLER.logout(session, function() {
-      playSound('service-logout');
+      PlaySound('service-logout');
       onFinished(self);
     });
   };
@@ -1799,7 +1795,7 @@
 
   Window.prototype._error = function(title, description, message, exception, bugreport) {
     console.debug(this._name, '>' , "OSjs::Core::Window::_error()");
-    var w = createErrorDialog(title, description, message, exception, bugreport);
+    var w = ErrorDialog(title, description, message, exception, bugreport);
     this._addChild(w);
   };
 
@@ -1883,10 +1879,10 @@
 
   // Common API functions
   OSjs.API.call               = APICall;
-  OSjs.API.error              = createErrorDialog;
+  OSjs.API.error              = ErrorDialog;
   OSjs.API.launch             = LaunchProcess;
   OSjs.API.open               = LaunchFile;
-  OSjs.API.playSound          = playSound;
+  OSjs.API.playSound          = PlaySound;
 
   /////////////////////////////////////////////////////////////////////////////
   // STARTUP / SHUTDOWN FUNCTIONS
