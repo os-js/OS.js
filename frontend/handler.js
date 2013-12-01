@@ -242,6 +242,47 @@
     return this.userData;
   };
 
+  DefaultHandler.prototype.getThemeResource = function(name, type, args) {
+    type = type || null;
+    args = args || null;
+
+    var wm = OSjs.API.getWMInstance();
+    var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
+    if ( !name.match(/^\//) ) {
+      if ( type == 'icon' ) {
+        var size = args || '16x16';
+        name = '/themes/' + theme + '/icons/' + size + '/' + name;
+      } else if ( type == 'sound' ) {
+        var ext = 'oga';
+        if ( !OSjs.Utils.getCompability().audioTypes.ogg ) {
+          ext = 'mp3';
+        }
+        name = '/themes/' + theme + '/sounds/' + name + '.' + ext;
+      } else if ( type == 'wm' ) {
+        name = '/themes/' + theme + '/wm/' + name;
+      } else if ( type == 'base' ) {
+        name = '/themes/' + theme + '/' + name;
+      }
+    }
+
+    return name;
+  };
+
+  DefaultHandler.prototype.getThemeCSS = function(name) {
+    if ( name === null ) {
+      return '/frontend/blank.css';
+    }
+    return '/themes/' + name + '.css';
+  }
+
+  DefaultHandler.prototype.getResourceURL = function(path) {
+    if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
+      return path;
+    }
+    var fsuri = this.getConfig('Core').FSURI;
+    return path ? (fsuri + path) : fsuri;
+  }
+
   OSjs.Handlers.Default = DefaultHandler;
 
 })();

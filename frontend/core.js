@@ -66,49 +66,9 @@
   // RESOURCE HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function getThemeResource(name, type, args) {
-    type = type || null;
-    args = args || null;
-
-    var theme = (_WM ? _WM.getSetting('theme') : 'default') || 'default';
-    if ( !name.match(/^\//) ) {
-      if ( type == 'icon' ) {
-        var size = args || '16x16';
-        name = '/themes/' + theme + '/icons/' + size + '/' + name;
-      } else if ( type == 'sound' ) {
-        var ext = 'oga';
-        if ( !OSjs.Utils.getCompability().audioTypes.ogg ) {
-          ext = 'mp3';
-        }
-        name = '/themes/' + theme + '/sounds/' + name + '.' + ext;
-      } else if ( type == 'wm' ) {
-        name = '/themes/' + theme + '/wm/' + name;
-      } else if ( type == 'base' ) {
-        name = '/themes/' + theme + '/' + name;
-      }
-    }
-
-    return name;
-  }
-
-  function getThemeCSS(name) {
-    if ( name === null ) {
-      return '/frontend/blank.css';
-    }
-    return '/themes/' + name + '.css';
-  }
-
-  function getResourceURL(path) {
-    if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
-      return path;
-    }
-    var fsuri = _HANDLER.getConfig('Core').FSURI;
-    return path ? (fsuri + path) : fsuri;
-  }
-
   function playSound(name) {
     if ( OSjs.Utils.getCompability().audio ) {
-      var f = getThemeResource(name, 'sound');
+      var f = OSjs.API.getThemeResource(name, 'sound');
       console.info("playSound()", name, f);
       var a = new Audio(f);
       a.play();
@@ -1034,7 +994,7 @@
     this._appRef        = appRef || null;
     this._destroyed     = false;
     this._wid           = _WID;
-    this._icon          = getThemeResource('wm.png', 'wm');
+    this._icon          = OSjs.API.getThemeResource('wm.png', 'wm');
     this._name          = name;
     this._title         = name;
     this._position      = {x:opts.x, y:opts.y};
@@ -1096,7 +1056,7 @@
 
     this._state.focused = false;
 
-    this._icon = getThemeResource(this._icon, 'icon');
+    this._icon = OSjs.API.getThemeResource(this._icon, 'icon');
 
     var grav = this._properties.gravity;
     if ( grav ) {
@@ -1913,19 +1873,20 @@
   OSjs.API.getCoreInstance    = function()    { return _CORE; };
   OSjs.API.getDefaultPath     = function(def) { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
 
-  OSjs.API.getThemeCSS      = getThemeCSS;
-  OSjs.API.getResourceURL   = getResourceURL;
-  OSjs.API.getThemeResource = getThemeResource;
-  OSjs.API.call             = APICall;
-  OSjs.API.error            = createErrorDialog;
-  OSjs.API.launch           = LaunchProcess;
-  OSjs.API.open             = LaunchFile;
-  OSjs.API.playSound        = playSound;
+  OSjs.API.getThemeCSS        = function(name)              { return _HANDLER.getThemeCSS(name); };
+  OSjs.API.getResourceURL     = function(path)              { return _HANDLER.getResourceURL(path); };
+  OSjs.API.getThemeResource   = function(name, type, args)  { return _HANDLER.getThemeResource(name, type, args); };
+
+  OSjs.API.call               = APICall;
+  OSjs.API.error              = createErrorDialog;
+  OSjs.API.launch             = LaunchProcess;
+  OSjs.API.open               = LaunchFile;
+  OSjs.API.playSound          = playSound;
 
   var __initialize = function() {
     _$LOADING = document.createElement('img');
     _$LOADING.id = "Loading";
-    _$LOADING.src = getThemeResource('loading_small.gif', 'base');
+    _$LOADING.src = OSjs.API.getThemeResource('loading_small.gif', 'base');
     document.body.appendChild(_$LOADING);
 
     _CORE = new Main();
