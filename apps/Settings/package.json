@@ -1,6 +1,7 @@
 {
   "ApplicationSettings":  {
     "name":       "Settings",
+    "singular":   true,
     "mime":       null,
     "icon":       "categories/applications-system.png",
     "preload":    [

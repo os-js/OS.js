@@ -254,16 +254,26 @@
     return false;
   };
 
-  DefaultHandler.prototype.setUserSettings = function(settings, callback) {
+  DefaultHandler.prototype.setUserSettings = function(key, opts, callback) {
     callback = callback || function() {};
+    var settings = this.storage.get("userSettings");
+    if ( typeof settings !== 'object' ) {
+      settings = {};
+    }
+    settings[key] = opts;
+
     this.storage.set("userSettings", settings);
     callback(true);
   };
 
-  DefaultHandler.prototype.getUserSettings = function(callback) {
+  DefaultHandler.prototype.getUserSettings = function(key, callback) {
     callback = callback || function() {};
-    var s = this.storage.get("userSettings");
-    callback(s);
+    var s = this.storage.get("userSettings") || {};
+    if ( s[key] ) {
+      callback(s[key]);
+      return;
+    }
+    callback(false);
   };
 
   DefaultHandler.prototype.setUserSession = function(session, callback) {

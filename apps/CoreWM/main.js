@@ -108,7 +108,7 @@
     document.body.appendChild(this._$root);
 
     var self = this;
-    OSjs.API.getHandlerInstance().getUserSettings(function(s) {
+    OSjs.API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
       if ( s ) {
         self.applySettings(s);
       } else {
@@ -260,7 +260,7 @@
     this._$root.className = classNames.join(' ');
 
     if ( save ) {
-      OSjs.API.getHandlerInstance().setUserSettings(this.getSettings());
+      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
     }
 
     console.groupEnd();
