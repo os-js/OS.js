@@ -34,6 +34,7 @@
   OSjs.Core         = {};
   OSjs.API          = {};
   OSjs.Handlers     = OSjs.Handlers     || {};
+  OSjs.Settings     = OSjs.Settings     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
@@ -101,7 +102,8 @@
     if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
       return path;
     }
-    return path ? ('/FS' + path) : '/FS'; // FIXME
+    var fsuri = _HANDLER.getConfig('Core').FSURI;
+    return path ? (fsuri + path) : fsuri;
   }
 
   function playSound(name) {
@@ -512,7 +514,7 @@
       });
     };
 
-    _HANDLER.init(function() {
+    _HANDLER.boot(function() {
       var preloads = _HANDLER.getConfig('Core').Preloads;
       _preload(preloads, function() {
         _launchWM(function(app) {
@@ -1818,9 +1820,19 @@
   OSjs.API.open             = LaunchFile;
   OSjs.API.playSound        = playSound;
 
-  OSjs.initialize = function() {
-    _HANDLER = new OSjs.Handlers.Default(); // TODO: Support for custom handlers
+  var __initialize = function() {
+    _$LOADING = document.createElement('img');
+    _$LOADING.id = "Loading";
+    _$LOADING.src = getThemeResource('loading_small.gif', 'base');
+    document.body.appendChild(_$LOADING);
 
+    _CORE = new Main();
+    if ( _CORE ) {
+      _CORE.init();
+    }
+  };
+
+  OSjs.initialize = function() {
     if ( _INITED ) return;
     _INITED = true;
 
@@ -1830,17 +1842,13 @@
 
     window.onload = null;
 
-    // Loading indicator
-    _$LOADING = document.createElement('img');
-    _$LOADING.id = "Loading";
-    _$LOADING.src = getThemeResource('loading_small.gif', 'base');
+    // Launch handler
+    var hname = OSjs.Settings.DefaultConfig().Handler.name;
+    _HANDLER  = new OSjs.Handlers[hname](); // TODO: Support for custom handlers
 
-    document.body.appendChild(_$LOADING);
-
-    _CORE = new Main();
-    if ( _CORE ) {
-      _CORE.init();
-    }
+    _HANDLER.init(function() {
+      __initialize();
+    });
   };
 
   OSjs.shutdown = function(save, onunload) {

@@ -38,12 +38,14 @@
     <link rel="shortcut icon" href="/favicon.ico" />
 
     <!-- Styles -->
+    <link type="text/css" rel="stylesheet" href="/frontend/main.css" />
     <link type="text/css" rel="stylesheet" href="/frontend/core.css" />
     <link type="text/css" rel="stylesheet" href="/frontend/gui.css" />
     <link type="text/css" rel="stylesheet" href="/frontend/dialogs.css" />
 
     <!-- Scripts -->
     <script type="text/javascript" charset="utf-8" src="/frontend/core.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/frontend/handler.js"></script>
     <script type="text/javascript" charset="utf-8" src="/frontend/gui.js"></script>
     <script type="text/javascript" charset="utf-8" src="/frontend/dialogs.js"></script>
     <script type="text/javascript" charset="utf-8" src="/frontend/utils.js"></script>
@@ -55,6 +57,22 @@
 
   </head>
   <body>
-    <div id="DebugNotice">OS.js version 2.x Development Snapshot (WIP) - Copyright &copy; 2013 <a href="mailto:andersevenrud@gmail.com">Anders Evenrud</a></div>
+    <div id="Login">
+      <form method="post" id="LoginForm">
+        <div>
+          <label for="LoginUsername">Username</label>
+          <input type="text" name="LoginUsername" id="LoginUsername" value="" placeholder="Username" />
+        </div>
+        <div>
+          <label for="LoginPassword">Password</label>
+          <input type="text" name="LoginPassword" id="LoginPassword" value="" placeholder="Password" />
+        </div>
+        <div class="Submit">
+          <input type="submit" name="LoginSubmit" id="LoginSubmit" value="Login" />
+        </div>
+      </form>
+    </div>
+
+    <div id="DebugNotice">OS.js version 2.0-wip - Copyright &copy; 2013 <a href="mailto:andersevenrud@gmail.com">Anders Evenrud</a></div>
   </body>
 </html>

@@ -28,136 +28,87 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-
-/**
- * Window
- */
-.Window {
-  position : absolute;
-  top : 0px;
-  left : 0px;
+html, body {
+  height : 100%;
+}
+body {
+  font-size : 12px;
+  font-family : Sans-serif, Arial;
+  margin : 0;
+  padding : 0;
+  background-color : #000;
+  overflow : hidden;
 }
 
-.WindowTop {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  height : 26px;
-  z-index : 5;
-}
-.WindowTop, .WindowTop > * {
-  -webkit-user-select: none;
-  -khtml-user-select: none;
+[draggable] {
   -moz-user-select: none;
-  -ms-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
   user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
 }
-.WindowTop .WindowIcon {
+
+#DebugNotice {
   position : absolute;
-  top : 0px;
-  left : 0px;
+  bottom : 5px;
+  right : 5px;
+  font-size : 12px;
+  color : #fff;
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  text-align : right;
+  line-height : 20px;
   z-index : 2;
 }
-.WindowTop .WindowIcon > img {
-  margin : 5px;
-  padding : 0px;
-  border : 0 none;
-  pointer-events: none;
+
+#DebugNotice a {
+  color : #fff;
+  text-decoration : underline;
+  font-weight : normal;
 }
-.WindowTop .WindowTitle {
+
+#Background {
   position : absolute;
   top : 0px;
-  left : 20px;
-  right : 20px;
-  height : 26px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
   z-index : 1;
-  overflow : hidden;
-  white-space : nowrap;
+}
 
-  line-height : 26px;
-  padding-left : 8px;
-
+#Loading {
   display : block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-}
-.WindowTop .WindowButtons {
+  width : 16px;
+  height : 16px;
   position : absolute;
-  top : 0px;
-  right : 2px;
-  z-index : 3;
-  height : 20px;
-  margin : 1px;
-}
-.WindowButton {
-  padding : 0;
-  margin : 2px;
-  width : 18px;
-  height : 18px;
-  line-height : 18px;
-  text-align : center;
-  display : inline-block;
+  top : 8px;
+  right : 8px;
+  z-index : 999999999;
 }
 
-.WindowWrapper {
-  position : absolute;
-  top : 26px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  overflow : hidden;
-  z-index : 1;
-}
-
-.WindowResize {
-  position : absolute;
-  bottom : 0px;
-  right : 0px;
-  width : 10px;
-  height : 10px;
-  z-index : 10;
-}
-
-.WindowLoading {
-  position : absolute;
-  top : 27px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 999999;
-}
-
-.WindowLoadingIndicator {
+#Login {
+  background : #fff;
+  width : 400px;
+  height : 120px;
   position : absolute;
   left : 50%;
   top : 50%;
-  margin-left : -32px;
-  margin-top : -32px;
-  width : 64px;
-  height : 64px;
+  margin-left : -200px;
+  margin-top : -60px;
+  box-shadow : 0px 0px 5px 5px rgba(255, 255, 255, .9);
 }
-
-.WindowDisabledOverlay {
-  position : absolute;
-  top : 27px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 999998;
-  background : #000;
-  opacity : 0.5;
-  cursor : not-allowed;
+#Login label {
+  font-weight : bold;
 }
-
-.WindowDropRect {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  width : 0px;
-  height : 0px;
-  display : none;
-  /*z-index : 10;*/
+#Login label, input[type=text], input[type=password] {
+  display : block;
+  width : 380px;
+  margin : 5px;
 }
-
+#Login input[type=submit] {
+  margin : 5px;
+}
+#Login .Submit {
+  text-align : right;
+}
