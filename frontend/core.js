@@ -1863,7 +1863,7 @@
 
     // Launch handler
     var hname = OSjs.Settings.DefaultConfig().Handler.name;
-    _HANDLER  = new OSjs.Handlers[hname](); // TODO: Support for custom handlers
+    _HANDLER  = new OSjs.Handlers[hname]();
 
     _HANDLER.init(function() {
       __initialize();

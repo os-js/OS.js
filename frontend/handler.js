@@ -168,7 +168,8 @@
   DefaultHandler.prototype.pollPackages = function(callback) {
     callback = callback || function() {};
 
-    return OSjs.Utils.Ajax('/packages.json', function(response, httpRequest, url) { // FIXME
+    var uri = this.getConfig('Core').PACKAGEURI;
+    return OSjs.Utils.Ajax(uri, function(response, httpRequest, url) {
       if ( response ) {
         callback(response);
       } else {
