@@ -181,7 +181,7 @@
   };
 
   DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname) {
-    var i, a;
+    var j, i, a;
     var list = [];
     for ( i in this.packages ) {
       if ( this.packages.hasOwnProperty(i) ) {
