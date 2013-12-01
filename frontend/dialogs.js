@@ -32,8 +32,6 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
-  // FIXME: Cleanups
-
   var StandardDialog = function(className, args, opts, onClose) {
     this.$element       = null;
     this.$message       = null;
@@ -76,13 +74,12 @@
       this.$buttonCancel = document.createElement('button');
       this.$buttonCancel.className = 'Cancel';
       this.$buttonCancel.innerHTML = this.args.buttonCancelLabel || 'Cancel';
-      this.$buttonCancel.onclick = function(ev) {
+
+      this._addEvent(this.$buttonCancel, 'onclick', function(ev) {
         if ( this.getAttribute("disabled") == "disabled" ) return;
         self.onCancelClick(ev);
-      };
-      this._addHook('destroy', function() {
-        self.$buttonCancel.onclick = function() {};
       });
+
       this.$element.appendChild(this.$buttonCancel);
     }
 
@@ -90,12 +87,9 @@
       this.$buttonConfirm = document.createElement('button');
       this.$buttonConfirm.className = 'OK';
       this.$buttonConfirm.innerHTML = this.args.buttonOkLabel || 'OK';
-      this.$buttonConfirm.onclick = function(ev) {
+      this._addEvent(this.$buttonConfirm, 'onclick', function(ev) {
         if ( this.getAttribute("disabled") == "disabled" ) return;
         self.onConfirmClick.call(self, ev);
-      };
-      this._addHook('destroy', function() {
-        self.$buttonConfirm.onclick = function() {};
       });
       this.$element.appendChild(this.$buttonConfirm);
     }
@@ -1023,14 +1017,11 @@
       }
     }
 
-    this.$selectFont.onchange = function() {
+    this._addEvent(this.$selectFont, 'onchange', function(ev) {
       var i = this.selectedIndex;
       if ( self.fonts[i] ) {
         updateFont(self.fonts[i], null);
       }
-    };
-    this._addHook('destroy', function() {
-      self.$selectFont.onchange = function() {};
     });
 
     this.$selectSize = document.createElement('select');
@@ -1049,15 +1040,12 @@
       i++;
     }
 
-    this.$selectSize.onchange = function() {
+    this._addEvent(this.$selectSize, 'onchange', function(ev) {
       var i = this.selectedIndex;
       var o = this.options[i];
       if ( o ) {
         updateFont(null, o.value);
       }
-    };
-    this._addHook('destroy', function() {
-      self.$selectSize.onchange = function() {};
     });
 
     this.$element.appendChild(this.$selectFont);

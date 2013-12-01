@@ -242,13 +242,8 @@
 
     if ( this.opts.focusable ) {
       var self = this;
-      this.$element.addEventListener('mousedown', function(ev) {
+      this._addEventListener(this.$element, 'mousedown', function(ev) {
         self.focus();
-      }, false);
-      this._addHook('destroy', function() {
-        this.$element.removeEventListener('mousedown', function(ev) {
-          self.focus();
-        }, false);
       });
     }
 
@@ -264,6 +259,21 @@
       this.$element.parentNode.removeChild(this.$element);
     }
     this._hooks = {};
+  };
+
+  GUIElement.prototype._addEvent = function(el, ev, callback) {
+    el[ev] = callback;
+    this._addHook('destroy', function() {
+      el[ev] = null;
+    });
+  };
+
+  GUIElement.prototype._addEventListener = function(el, ev, callback) {
+    el.addEventListener(ev, callback, false);
+
+    this._addHook('destroy', function() {
+      el.removeEventListener(ev, callback, false);
+    });
   };
 
   GUIElement.prototype._addHook = function(k, func) {
@@ -528,13 +538,14 @@
       }
     };
 
-    table.addEventListener('click', onClick, false);
-    table.addEventListener('contextmenu', onContextMenu, false);
-    table.addEventListener(this.singleClick ? 'click' : 'dblclick', onDblClick, false);
-    this._addHook('destroy', function() {
-      table.removeEventListener('click', onClick, false);
-      table.remvoeEventListener('contextmenu', onContextMenu, false);
-      table.removeEventListener(this.singleClick ? 'click' : 'dblclick', onDblClick, false);
+    this._addEventListener(table, 'click', function(ev) {
+      return onClick(ev);
+    });
+    this._addEventListener(table, 'contextmenu', function(ev) {
+      return onContextMenu(ev);
+    });
+    this._addEventListener(table, (this.singleClick ? 'click' : 'dblclick'), function(ev) {
+      return onDblClick(ev);
     });
 
     table.appendChild(head);
@@ -982,12 +993,19 @@
 
   Textarea.prototype = Object.create(GUIElement.prototype);
 
+  Textarea.prototype.destroy = function() {
+    if ( this.$area ) {
+      this.$area.onkeypress = null;
+    }
+    GUIElement.prototype.destroy.apply(this, arguments);
+  };
+
   Textarea.prototype.init = function() {
     var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUITextarea']);
     this.$area = document.createElement('textarea');
 
-    this.$area.onkeypress = function() { // FIXME: Remove event
+    this.$area.onkeypress = function() {
       var cur = this.value.length;
       self.hasChanged = (cur != self.strLen);
     };
@@ -1201,9 +1219,8 @@
       document.addEventListener('mouseup', _onMouseUp, false);
     };
 
-    this.$button.addEventListener('mousedown', _onMouseDown, false);
-    this._addHook('destroy', function() {
-      this.$button.removeEventListener('mousedown', _onMouseDown, false);
+    this._addEventListener(this.$button, 'mousedown', function(ev) {
+      return _onMouseDown(ev);
     });
 
     el.appendChild(this.$root);
@@ -1637,7 +1654,7 @@
       imgContainer = document.createElement('div');
       img = document.createElement('img');
       img.alt = iter.label || '';
-      img.title = iter.label || ''; // FIXME
+      img.title = iter.label || '';
       img.src = _createImage(iter.icon);
       imgContainer.appendChild(img);
 

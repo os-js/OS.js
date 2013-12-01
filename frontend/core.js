@@ -487,7 +487,6 @@
           if ( w ) {
             w._move(r.position.x, r.position.y);
             w._resize(r.dimension.w, r.dimension.h);
-            // TODO: State
 
             console.info('CoreService::loadSession()->onSuccess()', 'Restored window "' + r.name + '" from session');
           }
@@ -1025,8 +1024,6 @@
 
   /**
    * Window Class
-   * TODO: Instead of adding DOM event unload on hooks, just make a wrapper to bind events+destruct
-   * TODO: removeGUIElement()
    */
   var Window = function(name, opts, appRef) {
     console.group("OSjs::Core::Window::__construct()");
@@ -1121,16 +1118,15 @@
 
     var main            = document.createElement('div');
     main.className      = 'Window';
-    main.oncontextmenu  = function(ev) {
+
+    this._addEvent(main, 'oncontextmenu', function(ev) {
       OSjs.GUI.blurMenu();
       if ( ev.target && (ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'INPUT') ) {
         return true;
       }
       return false;
-    };
-    this._addHook('destroy', function() {
-      main.oncontextmenu = function() {};
     });
+
 
     if ( this._properties.allow_drop ) {
       var cpb = OSjs.Utils.getCompability();
@@ -1200,11 +1196,8 @@
     windowIconImage.src         = this._icon;
     windowIconImage.width       = 16;
     windowIconImage.height      = 16;
-    windowIconImage.onclick     = function(ev) {
+    this._addEvent(windowIconImage, 'onclick', function(ev) {
       self._onWindowIconClick(ev, this);
-    };
-    this._addHook('destroy', function() {
-      windowIconImage.onclick = function() {};
     });
 
     var windowTitle       = document.createElement('div');
@@ -1213,24 +1206,18 @@
 
     var windowButtons       = document.createElement('div');
     windowButtons.className = 'WindowButtons';
-    windowButtons.onmousedown = function(ev) {
+    this._addEvent(windowButtons, 'onmousedown', function(ev) {
       ev.preventDefault();
       return stopPropagation(ev);
-    };
-    this._addHook('destroy', function() {
-      windowButtons.onmousedown = function() {};
     });
 
     var buttonMinimize        = document.createElement('div');
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
     buttonMinimize.innerHTML  = "&nbsp;";
-    buttonMinimize.onclick = function(ev) {
+    this._addEvent(buttonMinimize, 'onclick', function(ev) {
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'minimize');
       return false;
-    };
-    this._addHook('destroy', function() {
-      buttonMinimize.onclick = function() {};
     });
     if ( !this._properties.allow_minimize ) {
       buttonMinimize.style.display = 'none';
@@ -1239,13 +1226,10 @@
     var buttonMaximize        = document.createElement('div');
     buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
     buttonMaximize.innerHTML  = "&nbsp;";
-    buttonMaximize.onclick = function(ev) {
+    this._addEvent(buttonMaximize, 'onclick', function(ev) {
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'maximize');
       return false;
-    };
-    this._addHook('destroy', function() {
-      buttonMaximize.onclick = function() {};
     });
     if ( !this._properties.allow_maximize ) {
       buttonMaximize.style.display = 'none';
@@ -1254,13 +1238,10 @@
     var buttonClose       = document.createElement('div');
     buttonClose.className = 'WindowButton WindowButtonClose';
     buttonClose.innerHTML = "&nbsp;";
-    buttonClose.onclick = function(ev) {
+    this._addEvent(buttonClose, 'onclick', function(ev) {
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'close');
       return false;
-    };
-    this._addHook('destroy', function() {
-      buttonClose.onclick = function() {};
     });
 
     if ( !this._properties.allow_close ) {
@@ -1278,12 +1259,9 @@
 
     var windowLoading       = document.createElement('div');
     windowLoading.className = 'WindowLoading';
-    windowLoading.onclick = function(ev) {
+    this._addEvent(windowLoading, 'onclick', function(ev) {
       ev.preventDefault();
       return false;
-    };
-    this._addHook('destroy', function() {
-      windowLoading.onclick = function() {};
     });
 
     var windowLoadingImage        = document.createElement('div');
@@ -1292,12 +1270,9 @@
     var windowDisabled            = document.createElement('div');
     windowDisabled.className      = 'WindowDisabledOverlay';
     //windowDisabled.style.display  = 'none';
-    windowDisabled.onmousedown    = function(ev) {
+    this._addEvent(windowDisabled, 'onmousedown', function(ev) {
       ev.preventDefault();
       return false;
-    };
-    this._addHook('destroy', function() {
-      windowDisabled.onmousedown = function() {};
     });
 
     main.className    = 'Window Window_' + this._name.replace(/[^a-zA-Z0-9]/g, '_');
@@ -1385,37 +1360,19 @@
     };
 
     if ( this._properties.allow_move ) {
-      windowTop.addEventListener('mousedown', function(ev) {
+      this._addEventListener(windowTop, 'mousedown', function(ev) {
         onMouseDown(ev, 'move');
-      }, false);
-
-      this._addHook('destroy', function() {
-        windowTop.removeEventListener('mousedown', function(ev) {
-          onMouseDown(ev, 'move');
-        }, false);
       });
     }
     if ( this._properties.allow_resize ) {
-      windowResize.addEventListener('mousedown', function(ev) {
+      this._addEventListener(windowResize, 'mousedown', function(ev) {
         onMouseDown(ev, 'resize');
-      }, false);
-
-      this._addHook('destroy', function() {
-        windowResize.removeEventListener('mousedown', function(ev) {
-          onMouseDown(ev, 'resize');
-        }, false);
       });
     }
 
-    main.addEventListener('mousedown', function(ev) {
+    this._addEventListener(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
-    });
-    this._addHook('destroy', function() {
-      main.removeEventListener('mousedown', function(ev) {
-        self._focus();
-        return stopPropagation(ev);
-      });
     });
 
     this._$element  = main;
@@ -1500,6 +1457,21 @@
     this._hooks = {};
   };
 
+  Window.prototype._addEvent = function(el, ev, callback) {
+    el[ev] = callback;
+    this._addHook('destroy', function() {
+      el[ev] = null;
+    });
+  };
+
+  Window.prototype._addEventListener = function(el, ev, callback) {
+    el.addEventListener(ev, callback, false);
+
+    this._addHook('destroy', function() {
+      el.removeEventListener(ev, callback, false);
+    });
+  };
+
   Window.prototype._addHook = function(k, func) {
     if ( typeof func === 'function' && this._hooks[k] ) {
       this._hooks[k].push(func);
@@ -1518,6 +1490,32 @@
           //console.log(e, e.prototype);
           //throw e;
         }
+      }
+    }
+  };
+
+  Window.prototype._removeGUIElement = function(gel) {
+    var iter, destroy;
+    for ( var i = 0; i < this._guiElements.length; i++ ) {
+      iter = this._guiElements[i];
+      destroy = false;
+
+      if ( iter ) {
+        if ( gel instanceof OSjs.GUI.GUIElement ) {
+          if ( iter.id === gel.id ) {
+            destroy = i;
+          }
+        } else {
+          if ( iter.id === gel || iter.name === gel ) {
+            destroy = i;
+          }
+        }
+      }
+
+      if ( destroy !== false ) {
+        this._guiElements[destroy].destroy();
+        this._guiElements[destroy] = null;
+        break;
       }
     }
   };
@@ -1785,9 +1783,11 @@
   };
 
   Window.prototype._getGUIElement = function(n) {
+    var iter;
     for ( var i = 0, l = this._guiElements.length; i < l; i++ ) {
-      if ( this._guiElements[i] && this._guiElements[i].name === n ) {
-        return this._guiElements[i];
+      iter = this._guiElements[i];
+      if (iter && (iter.id === n || iter.name === n) ) {
+        return iter;
       }
     }
     return null;
