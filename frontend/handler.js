@@ -90,6 +90,8 @@
     var p = document.getElementById('LoginPassword');
     var s = document.getElementById('LoginSubmit');
 
+    container.style.display = 'none';
+
     login.onsubmit = function(ev) {
       p.setAttribute("disabled", "disabled");
       if ( ev ) ev.preventDefault();
