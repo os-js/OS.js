@@ -1,8 +1,14 @@
 Alpha-1:
 * Clean up applications
+* Go over error messages and rewrite
+* Go over all error handling
 
 Beta-1:
 * Node.js backend
+* Better application generation from example
+
+Release:
+* Source code documentation
 
 Future releases:
 * Localization
@@ -17,3 +23,9 @@ Future releases:
   - Image
   - Video, Audio => Media
   - TreeView
+* Applications
+  - WebRTC (in dev.)
+  - New Draw application with layer support (in dev.)
+  - Word Application (in dev.)
+  - Excel Application
+  - PDF Application
