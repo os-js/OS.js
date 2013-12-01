@@ -472,6 +472,8 @@
     };
 
     var _loadSession = function() {
+      var _list = [];
+
       var onSuccess = function(data, a) {
         var w, r;
         for ( var i = 0, l = data.length; i < l; i++ ) {
@@ -485,20 +487,21 @@
             console.info('CoreService::loadSession->onSuccess()()', 'Restored window "' + r.name + '" from session');
           }
         }
+
+        onNext();
       };
 
-      var onLoaded = function(session) {
-        var s, sargs;
-        for ( var i = 0, l = session.length; i < l; i++ ) {
-          s = session[i];
-          sargs = s.args || {};
+      var onNext = function() {
+        if ( _list.length ) {
+          var s = _list.pop();
+          var sargs = s.args || {};
           if ( typeof sargs.length !== 'undefined' ) sargs = {};
 
           OSjs.API.launch(s.name, sargs, (function(data) {
             return function(a) {
               onSuccess(data, a);
             };
-          })(session[i].windows), function(err) {
+          })(s.windows), function(err) {
             console.warn("_loadSession() error", err);
           });
         }
@@ -506,7 +509,8 @@
 
       _HANDLER.getUserSession(function(res) {
         if ( res ) {
-          onLoaded(res);
+          _list = session;
+          onNext();
         }
       });
     };
