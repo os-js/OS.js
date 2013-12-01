@@ -260,7 +260,7 @@
     if ( typeof settings !== 'object' ) {
       settings = {};
     }
-    if ( !settings[key] || typeof settings[key] !== 'object' ) {
+    if ( typeof settings[key] !== 'object' || !settings[key] ) {
       settings[key] = {};
     }
     settings[key] = opts;
