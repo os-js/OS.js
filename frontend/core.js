@@ -30,14 +30,14 @@
  */
 (function() {
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core         = {};
-  OSjs.API          = {};
+  window.OSjs       = window.OSjs       || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Settings     = OSjs.Settings     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
+  OSjs.Core         = {};
+  OSjs.API          = {};
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
