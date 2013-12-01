@@ -65,9 +65,25 @@
     this.packages = {};
     this.config   = OSjs.Settings.DefaultConfig();
     this.userData = {};
+    this.offline  = false;
+
+    var self = this;
+    if ( typeof navigator.onLine !== 'undefined' ) {
+      window.addEventListener("offline", function(ev) {
+        self.onOffline();
+      });
+      window.addEventListener("online", function(ev) {
+        self.onOnline();
+      });
+    }
   };
 
   DefaultHandler.prototype.call = function(opts, cok, cerror) {
+    if ( this.offline ) {
+      cerror("You are currently off-line and cannot perform this operation!");
+      return;
+    }
+
     return OSjs.Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
       cok.apply(this, arguments);
     }, function(error, response, httpRequest, url) {
@@ -207,6 +223,16 @@
         onNext();
       }
     });
+  };
+
+  DefaultHandler.prototype.onOnline = function() {
+    console.warn("DefaultHandler::onOnline()", "Going online...");
+    this.offline = false;
+  };
+
+  DefaultHandler.prototype.onOffline = function() {
+    console.warn("DefaultHandler::onOffline()", "Going offline...");
+    this.offline = true;
   };
 
   DefaultHandler.prototype.pollPackages = function(callback) {
