@@ -48,7 +48,7 @@ Everything else is in the GitHub Project Wiki pages (linked below).
 
 ## Compability
 
-Can run on anything that can host web-pages. Currently only Apache has been tested on Mac and Linux.
+The backend runs on Mac, BSD and Linux. Frontend only requires a modern browser with HTML5 support.
 
 ### Browser support
 
