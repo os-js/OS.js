@@ -311,14 +311,17 @@
             }
           }
         } else {
+          var clr = false;
           try {
             a.init(_CORE);
             onFinished(a);
+            clr = true;
           } catch ( e ) {
             _error("Application init() failed: " + e, e);
           }
-
-          console.groupEnd(); // !!!
+          if ( clr ) {
+            console.groupEnd(); // !!!
+          }
         }
       } else {
         _error("Application resource not found!");
@@ -326,15 +329,14 @@
     };
 
     var _preload = function(result) {
-      var lst = result.preload;
-      new OSjs.Utils.Preloader({list: lst, onFinished: function(total, errors, failed) {
+      OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
         if ( errors ) {
           _error("Application preloading failed: \n" + failed.join(","));
           return;
         }
 
         _callback(result);
-      }});
+      });
     };
 
     var data = _HANDLER.getApplicationMetadata(n);
@@ -459,19 +461,14 @@
     };
 
     var _preload = function(list, callback) {
-      if ( !list || !list.length ) {
-        callback();
-        return;
-      }
-
-      new OSjs.Utils.Preloader({list: list, onFinished: function(total, errors) {
+      OSjs.Utils.Preload(list, function(total, errors) {
         if ( errors ) {
           _error("Failed to preload resources...");
           return;
         }
 
         callback();
-      }});
+      });
     };
 
     var _loadSession = function() {
