@@ -34,14 +34,6 @@
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
 
-  window.console    = window.console    || {};
-  console.log       = console.log       || function() {};
-  console.debug     = console.debug     || console.log;
-  console.error     = console.error     || console.log;
-  console.warn      = console.warn      || console.log;
-  console.group     = console.group     || console.log;
-  console.groupEnd  = console.groupEnd  || console.log;
-
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HANDLING CODE
   /////////////////////////////////////////////////////////////////////////////
