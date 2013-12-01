@@ -1307,6 +1307,7 @@
     var px = 0;
     var py = 0;
     var action = null;
+    var moved = false;
 
     var onMouseDown = function(ev, a) {
       ev.preventDefault();
@@ -1329,11 +1330,13 @@
       return false;
     };
     var onMouseUp = function(ev) {
-      if ( _WM ) {
-        if ( action === 'move' ) {
-          self._onChange('move');
-        } else if ( action === 'resize' ) {
-          self._onChange('resize');
+      if ( moved ) {
+        if ( _WM ) {
+          if ( action === 'move' ) {
+            self._onChange('move');
+          } else if ( action === 'resize' ) {
+            self._onChange('resize');
+          }
         }
       }
       document.removeEventListener('mousemove', onMouseMove, false);
@@ -1359,6 +1362,8 @@
       } else {
         self._resize(rx, ry);
       }
+
+      moved = true;
     };
 
     if ( this._properties.allow_move ) {
@@ -1825,7 +1830,7 @@
   };
 
   Window.prototype._onChange = function(ev) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_onChange()");
+    console.debug(this._name, '>' , "OSjs::Core::Window::_onChange()", ev);
     if ( _WM ) {
       _WM.eventWindow(ev, this);
     }
