@@ -1858,30 +1858,39 @@
     return Window.prototype.init.apply(this, arguments);
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
-  OSjs.Core.Process       = Process;
-  OSjs.Core.Application   = Application;
-  OSjs.Core.Service       = Service;
-  OSjs.Core.Window        = Window;
-  OSjs.Core.DialogWindow  = DialogWindow;
-  OSjs.Core.WindowManager = WindowManager;
+  /////////////////////////////////////////////////////////////////////////////
 
+  // Classes
+  OSjs.Core.Process           = Process;
+  OSjs.Core.Application       = Application;
+  OSjs.Core.Service           = Service;
+  OSjs.Core.Window            = Window;
+  OSjs.Core.DialogWindow      = DialogWindow;
+  OSjs.Core.WindowManager     = WindowManager;
+
+  // Running instances
   OSjs.API.getHandlerInstance = function()    { return _HANDLER; };
   OSjs.API.getWMInstance      = function()    { return _WM; };
   OSjs.API.getCoreInstance    = function()    { return _CORE; };
-  OSjs.API.getDefaultPath     = function(def) { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
 
+  // Handler shortcuts
+  OSjs.API.getDefaultPath     = function(def)               { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
   OSjs.API.getThemeCSS        = function(name)              { return _HANDLER.getThemeCSS(name); };
   OSjs.API.getResourceURL     = function(path)              { return _HANDLER.getResourceURL(path); };
   OSjs.API.getThemeResource   = function(name, type, args)  { return _HANDLER.getThemeResource(name, type, args); };
 
+  // Common API functions
   OSjs.API.call               = APICall;
   OSjs.API.error              = createErrorDialog;
   OSjs.API.launch             = LaunchProcess;
   OSjs.API.open               = LaunchFile;
   OSjs.API.playSound          = playSound;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // STARTUP / SHUTDOWN FUNCTIONS
+  /////////////////////////////////////////////////////////////////////////////
 
   var __initialize = function() {
     _$LOADING = document.createElement('img');
