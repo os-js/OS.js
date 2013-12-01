@@ -461,6 +461,7 @@
 
   /**
    * List View Class
+   * TODO: Resizable columns
    */
   var ListView = function(name, opts) {
     opts = opts || {};
