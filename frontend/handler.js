@@ -131,36 +131,11 @@
     callback(true);
   };
 
-  DefaultHandler.prototype.logout = function(save, procs, callback) {
-    if ( save ) {
-      var getSessionSaveData = function(app) {
-        var args = app.__args;
-        var wins = app.__windows;
-        var data = {name: app.__name, args: args, windows: []};
-
-        for ( var i = 0, l = wins.length; i < l; i++ ) {
-          data.windows.push({
-            name      : wins[i]._name,
-            dimension : wins[i]._dimension,
-            position  : wins[i]._position,
-            state     : wins[i]._state
-          });
-        }
-
-        return data;
-      };
-
-      var data = [];
-      for ( var i = 0, l = procs.length; i < l; i++ ) {
-        if ( procs[i] && (procs[i] instanceof OSjs.Core.Application) ) {
-          data.push(getSessionSaveData(procs[i]));
-        }
-      }
-
-      this.setUserSession(data, function() {
+  DefaultHandler.prototype.logout = function(session, callback) {
+    if ( session !== null ) {
+      this.setUserSession(session, function() {
         callback(true);
       });
-
       return;
     }
     callback(true);

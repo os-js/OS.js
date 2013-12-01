@@ -529,18 +529,37 @@
 
   Main.prototype.shutdown = function(save, onFinished) {
     var self = this;
+    var session = null;
+    if ( save ) {
+      var getSessionSaveData = function(app) {
+        var args = app.__args;
+        var wins = app.__windows;
+        var data = {name: app.__name, args: args, windows: []};
 
-    var _finished = function() {
-      APICall('logout', {}, function() {
-        playSound('service-logout');
-        onFinished(self);
-      }, function(error) {
-        createErrorDialog('Failed to log out of OS.js', 'An error occured while logging out', error, null, true);
-      });
-    };
+        for ( var i = 0, l = wins.length; i < l; i++ ) {
+          data.windows.push({
+            name      : wins[i]._name,
+            dimension : wins[i]._dimension,
+            position  : wins[i]._position,
+            state     : wins[i]._state
+          });
+        }
 
-    _HANDLER.logout(save, _PROCS, function() {
-      _finished();
+        return data;
+      };
+
+      var data = [];
+      for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
+        if ( _PROCS[i] && (_PROCS[i] instanceof OSjs.Core.Application) ) {
+          data.push(getSessionSaveData(_PROCS[i]));
+        }
+      }
+      session = data;
+    }
+
+    _HANDLER.logout(session, function() {
+      playSound('service-logout');
+      onFinished(self);
     });
   };
 
