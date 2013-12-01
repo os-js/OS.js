@@ -268,6 +268,7 @@
   };
 
   CoreWM.prototype.getWindowSpace = function() {
+    // TODO: Rewrite this
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
     var t = this.getSetting('taskbar');
     if ( t.ontop ) {

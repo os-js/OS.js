@@ -1,6 +1,9 @@
 Alpha-1:
 * Clean up applications
 * Clean up dialogs
+* Settings: Panel position
+* Settings: Margin adjustment
+* Settings: Font selection
 
 Beta-1:
 * Go over error messages and rewrite
@@ -10,6 +13,7 @@ Beta-1:
 
 Release:
 * Source code documentation
+* Replace code with dom queries where doable
 
 Future releases:
 * Localization
