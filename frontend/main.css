@@ -97,6 +97,7 @@ body {
   margin-left : -200px;
   margin-top : -60px;
   box-shadow : 0px 0px 5px 5px rgba(255, 255, 255, .9);
+  display : none;
 }
 #Login label {
   font-weight : bold;
