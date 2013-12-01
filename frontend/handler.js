@@ -84,29 +84,33 @@
 
   DefaultHandler.prototype.init = function(callback) {
     var self = this;
-    var container = document.getElementById('Login');
-    var login = document.getElementById('LoginForm');
-    var u = document.getElementById('LoginUsername');
-    var p = document.getElementById('LoginPassword');
-    var s = document.getElementById('LoginSubmit');
-
-    container.style.display = 'none';
-
-    login.onsubmit = function(ev) {
-      p.setAttribute("disabled", "disabled");
-      if ( ev ) ev.preventDefault();
-      self.login(u.value, p.value, function() {
+    var _login = function(username, password) {
+      self.login(username, password, function() {
         container.parentNode.removeChild(container);
         callback();
       });
     };
 
+    var container = document.getElementById('Login');
+    /*
+    var login = document.getElementById('LoginForm');
+    var u = document.getElementById('LoginUsername');
+    var p = document.getElementById('LoginPassword');
+    var s = document.getElementById('LoginSubmit');
+
+
+    login.onsubmit = function(ev) {
+      p.setAttribute("disabled", "disabled");
+      if ( ev ) ev.preventDefault();
+      _login(u.value, p.value);
+    };
+
     u.setAttribute("disabled", "disabled");
     p.setAttribute("disabled", "disabled");
 
-    setTimeout(function() {
-      login.onsubmit();
-    }, 10);
+    container.parentNode.removeChild(container);
+    */
+    _login("demo", "demo");
   };
 
   DefaultHandler.prototype.boot = function(callback) {
