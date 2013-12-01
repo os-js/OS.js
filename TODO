@@ -1,5 +1,6 @@
 Alpha-1:
-* Rewrite applications after API is final
+* Investigate infinite loop when trying VFS with empty path
+* Clean up applications
 
 Beta-1:
 * Node.js backend
@@ -9,8 +10,6 @@ Future releases:
 * Optimizations
 * Mobile version
 * Panels with items in CoreWM
-
-Misc TODOs:
 * Finish GUI Elements
   - Select + SelectList
   - Button

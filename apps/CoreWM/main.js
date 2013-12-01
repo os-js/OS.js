@@ -1,7 +1,7 @@
 (function(WindowManager, GUI) {
 
-  function DefaultSettings() {
-    return {
+  function DefaultSettings(defaults) {
+    var cfg = {
       fullscreen    : false,
       taskbar       : {position: 'top', ontop: true},
       desktop       : {margin: 5},
@@ -16,6 +16,24 @@
         backgroundRepeat : 'repeat'
       }
     };
+
+    var _check = function(iter) {
+      for ( var i in iter ) {
+        if ( cfg.hasOwnProperty(i) ) {
+          if ( typeof cfg[i] === 'object' ) {
+            _check(iter[i]);
+          } else {
+            cfg[i] = iter[i];
+          }
+        }
+      }
+    };
+
+    if ( defaults ) {
+      _check(defaults);
+    }
+
+    return cfg;
   }
 
   /**
@@ -23,7 +41,7 @@
    */
   var CoreWM = function(args, metadata) {
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
-    this._settings = DefaultSettings();
+    this._settings = DefaultSettings(args.defaults || {});
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);

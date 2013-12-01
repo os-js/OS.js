@@ -67,7 +67,7 @@
 
           WM : {
             exec: 'CoreWM',
-            args: {themes: {'default': {title: 'Default'}}}
+            args: {themes: {'default': {title: 'Default'}}, defaults: null}
           }
         };
       };
