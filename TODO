@@ -10,6 +10,8 @@ Beta-1:
 * Go over all error handling
 * Node.js backend
 * Better application generation from example
+* Bundle a websocker handler
+* Bundle a settings/session storage handler
 
 Release:
 * Source code documentation
