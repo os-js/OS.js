@@ -373,7 +373,7 @@
 
     var _getPosition = function(ev) {
       var cpos = OSjs.Utils.$position(self.$canvasContainer);
-      return {x: (ev.clientX-cpos.left), y: (ev.clientY-cpos.top)};
+      return {x: (ev.clientX-cpos.left) + self.$canvasContainer.scrollLeft, y: (ev.clientY-cpos.top) + self.$canvasContainer.scrollTop};
     };
 
     var _onMouseMove = function(ev) {
