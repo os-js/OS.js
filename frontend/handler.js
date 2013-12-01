@@ -257,7 +257,7 @@
   DefaultHandler.prototype.setUserSettings = function(key, opts, callback) {
     callback = callback || function() {};
     var settings = this.storage.get("userSettings");
-    if ( typeof settings !== 'object' ) {
+    if ( typeof settings !== 'object' || !settings ) {
       settings = {};
     }
     if ( typeof settings[key] !== 'object' || !settings[key] ) {
