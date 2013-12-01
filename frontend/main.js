@@ -56,6 +56,7 @@
             PACKAGEURI:     '/packages.json',
             Home:           '/opt/OSjs/home',
             MaxUploadSize:  2097152,
+            BugReporting:   true,
             Preloads: [
               {type: 'javascript', src: '/apps/CoreWM/main.js'},
               {type: 'stylesheet', src: '/apps/CoreWM/main.css'}

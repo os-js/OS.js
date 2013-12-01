@@ -181,7 +181,12 @@
   }
 
   function createErrorDialog(title, message, error, exception, bugreport) {
-    bugreport = typeof bugreport == 'undefined' ? false : (bugreport ? true : false);
+    if ( _HANDLER.getConfig('Core').BugReporting ) {
+      bugreport = typeof bugreport == 'undefined' ? false : (bugreport ? true : false);
+    } else {
+      bugreport = false;
+    }
+
     playSound('dialog-warning');
 
     OSjs.GUI.blurMenu();

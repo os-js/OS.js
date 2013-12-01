@@ -2,6 +2,9 @@ Alpha-1:
 * Clean up applications
 * Go over error messages and rewrite
 * Go over all error handling
+* Fix DnD in IE
+  - http://msdn.microsoft.com/en-us/library/ms536744(v=vs.85).aspx
+  - ev.dataTransfer.setData("Text", "data");
 
 Beta-1:
 * Node.js backend
