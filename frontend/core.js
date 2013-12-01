@@ -1344,6 +1344,7 @@
       action = null;
       sx = 0;
       sy = 0;
+      moved = false;
     };
     var onMouseMove = function(ev) {
       if ( action === null ) return;
