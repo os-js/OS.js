@@ -260,6 +260,9 @@
     if ( typeof settings !== 'object' ) {
       settings = {};
     }
+    if ( !settings[key] || typeof settings[key] !== 'object' ) {
+      settings[key] = {};
+    }
     settings[key] = opts;
 
     this.storage.set("userSettings", settings);
