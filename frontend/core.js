@@ -509,7 +509,7 @@
 
       _HANDLER.getUserSession(function(res) {
         if ( res ) {
-          _list = session;
+          _list = res;
           onNext();
         }
       });
