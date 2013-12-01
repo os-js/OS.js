@@ -1,7 +1,5 @@
 (function(Application, Window) {
 
-  // TODO: Refactor
-
   /**
    * Main Window
    */
@@ -80,7 +78,7 @@
       return;
     }
 
-   txt.setText(t);
+    txt.setText(t);
     this.refresh(name);
   };
 
@@ -159,6 +157,18 @@
     var w = this._getWindow('ApplicationTextpadWindow');
     if ( !w ) return;
 
+    var _setSession = function(name, mime, content) {
+      self.currentFile = name;
+      self._setArgument('file', name);
+      self._setArgument('mime', mime || null);
+      w.refresh(name);
+
+      if ( typeof content !== 'undefined' ) {
+        w.setText(content, self.currentFile);
+        w._focus();
+      }
+    };
+
     var _onError = function(msg, err) {
       if ( w ) {
         w._error("Textpad error", msg, err);
@@ -167,15 +177,12 @@
       }
     };
 
-    var _save = function(fname) {
+    var _writeFile = function(fname) {
       var data = w.getText();
 
       OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, data]}, function(res) {
         if ( res.result ) {
-          self.currentFile = fname;
-          self._setArgument('file', fname);
-          self._setArgument('mime', mime || null);
-          w.refresh(fname);
+          _setSession(fname);
         } else {
           if ( res.error ) {
             _onError("An error occured while handling your request", res.error);
@@ -191,17 +198,12 @@
 
     switch ( action ) {
       case 'new' :
-        this.currentFile = null;
-        w.setText(null);
-        w._focus();
-
-        this._setArgument('file', null);
-        this._setArgument('mime', null);
+        _setSession(null, null, null);
       break;
 
       case 'save' :
         if ( this.currentFile ) {
-          _save(this.currentFile);
+          _writeFile(this.currentFile);
         }
       break;
 
@@ -210,7 +212,7 @@
         var fnm = this.currentFile ? OSjs.Utils.filename(this.currentFile) : null;
         this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'text/plain', mimes: ['^text'], defaultFilename: "New Text File.txt"}, function(btn, fname) {
             if ( btn !== 'ok' ) return;
-          _save(fname);
+          _writeFile(fname);
         }], w);
       break;
 
@@ -226,19 +228,12 @@
               if ( !res ) return;
 
               if ( res.result ) {
-                w.setText(res.result, fname);
-                self._setArgument('file', fname);
-                self._setArgument('mime', mime || null);
-                self.currentFile = fname;
+                _setSession(fname, mime, res.result);
               } else {
                 if ( res.error ) {
                   _onError("Failed to open file: " + fname, res.error);
                 }
-
-                w.setText(null);
-                self._setArgument('file', null);
-                self._setArgument('mime', null);
-                self.currentFile = null;
+                _setSession(null, null, null);
               }
               w._focus();
             }, function(error) {

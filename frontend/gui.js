@@ -879,6 +879,7 @@
   };
 
   FileView.prototype.chdir = function(dir, onRefreshed, onError) {
+    if ( !dir ) throw "Cannot chdir() in FileView without a directory!";
     if ( this.destroyed ) return;
     onRefreshed = onRefreshed || function() {};
     onError = onError || function() {};

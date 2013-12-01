@@ -1,5 +1,4 @@
 Alpha-1:
-* Investigate infinite loop when trying VFS with empty path
 * Clean up applications
 
 Beta-1:
