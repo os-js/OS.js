@@ -1,6 +1,6 @@
 Alpha-1:
-* Login screen and handler
-* Crate storage for user settings+session data
+* Support for setting custom core settings
+* Support for writing custom core handler
 * Rewrite applications after API is final
 
 Beta-1:

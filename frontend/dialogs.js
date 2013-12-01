@@ -280,11 +280,7 @@
     var root = StandardDialog.prototype.init.apply(this, arguments);
     var container = this.$element;
     var list = [];
-    var refs = {};
-    var cs = OSjs.API.getCoreService();
-    if ( cs ) {
-      refs = cs.getApplicationCache();
-    }
+    var refs = OSjs.API.getHandlerInstance().getApplicationsMetadata();
 
     var image, icon, name, iter;
     for ( var i = 0, l = this.list.length; i < l; i++ ) {
@@ -402,7 +398,7 @@
     this.uploadSize = null;
     this.uploadMime = null;
 
-    var maxSize = OSjs.API.getConfig('MaxUploadSize');
+    var maxSize = OSjs.API.getHandlerInstance().getConfig('Core').MaxUploadSize;
     var msg = 'Upload file to <span>' + this.dest + '</span>.<br />Maximum size: ' + maxSize + ' bytes';
     StandardDialog.apply(this, ['FileUploadDialog', {title: "Upload Dialog", message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
     this._icon = 'actions/filenew.png';

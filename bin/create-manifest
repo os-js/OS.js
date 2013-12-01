@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+$combined = Array();
+foreach ( scandir('apps') as $i ) {
+  if ( $i == "." || $i == ".." ) continue;
+  $file = "apps/{$i}/package.json";
+  if ( file_exists($file) && ($c = file_get_contents($file)) ) {
+    if ( $j = json_decode($c, true) ) {
+      $k = key($j);
+      $data = current($j);
+
+      if ( !empty($data['enabled']) && $data['enabled'] === false ) {
+        continue;
+      }
+
+      foreach ( $data['preload'] as $pi => $pp ) {
+        $data['preload'][$pi]['src'] = "/apps/{$i}/{$pp['src']}";
+      }
+      $combined[$k] = $data;
+    }
+  }
+}
+
+file_put_contents("packages.json", json_encode($combined));
+
+?>

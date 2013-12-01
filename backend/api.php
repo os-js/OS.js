@@ -30,10 +30,7 @@
  */
 
 if ( file_exists("config.php") ) require "config.php";
-require "functions.php";
-if ( function_exists("LoadConfiguration") ) {
-  LoadConfiguration();
-}
+require "vfs.php";
 
 function out($json) {
   header("Content-type: application/json");
@@ -195,43 +192,6 @@ if ( empty($data) ) {
     $method = $data['method'];
     $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
     switch ( $method ) {
-      // OS.js initialization step 1
-      case 'boot' :
-        $result = Array(
-          "preload" => OSjs::getPreloadList(),
-          "settings" => OSjs::getCoreSettings()
-        );
-      break;
-
-      // OS.js initialization step 2
-      case 'login' :
-        if ( $d = OSjsHandler::login($arguments['username'], $arguments['password']) ) {
-          $result = Array(
-            "success" => true,
-            "settings" => $d
-          );
-        } else {
-          $error = "Invalid login credentials!";
-        }
-      break;
-
-      // Log out the user
-      case 'logout' :
-        $result = Array(
-          "success" => OSjsHandler::logout()
-        );
-      break;
-
-      // Prepare launch for application
-      case 'launch' :
-        $an = empty($arguments['application']) ? null : $arguments['application'];
-        $aa = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
-        if ( !($d = OSjs::getApplicationData($an, $aa)) ) {
-          $error = "Failed to launch '{$an}'";
-        } else {
-          $result = $d;
-        }
-      break;
 
       // API call via application
       case 'application' :
@@ -268,7 +228,7 @@ if ( empty($data) ) {
             $error = "Supply argument for FS operaion: {$m}";
           } else {
             try {
-              $result = OSjs::vfs($m, $a);
+              $result = call_user_func_array(Array("FS", $m), $a);
             } catch ( Exception $e ) {
               $error = "FS operaion error: {$e->getMessage()}";
             }

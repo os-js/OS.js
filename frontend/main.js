@@ -32,8 +32,7 @@
 (function() {
 
   window.OSjs   = window.OSjs   || {};
-  OSjs.Settings = OSjs.Settings || {};
-  OSjs.Bindings = OSjs.Bindings || {};
+  OSjs.Handlers = OSjs.Handlers || {};
 
   window.console    = window.console    || {};
   console.log       = console.log       || function() {};
@@ -44,67 +43,198 @@
   console.groupEnd  = console.groupEnd  || console.log;
 
   /////////////////////////////////////////////////////////////////////////////
-  // Bindings code
+  // DEFAULT HANDLING CODE
   /////////////////////////////////////////////////////////////////////////////
 
-  //
-  // To override these, just add a preload file to the backend and update the
-  // bindings. Remember to allways call the 'continueCallback' function!
-  //
-
   /**
-   * Called when OS.js has booted
+   * Settings
    */
-  OSjs.Bindings.onBooted = function(continueCallback) {
-    continueCallback();
-  };
-
-  /**
-   * Called when OS.js has logged the user in
-   */
-  OSjs.Bindings.onLoggedIn = function(continueCallback) {
-    continueCallback();
-  };
-
-  /**
-   * Called when OS.js has logged the user out
-   */
-  OSjs.Bindings.onLoggedOut = function(continueCallback) {
-    continueCallback();
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Settings code
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _DEFAULT_SETTINGS = function() {
+  var DefaultConfig = function() {
     return {
+      Core : {
+        Home:           '/opt/OSjs/home',
+        MaxUploadSize:  2097152, // FIXME
+        Preloads: [
+          {type: 'javascript', src: '/apps/CoreWM/main.js'},
+          {type: 'stylesheet', src: '/apps/CoreWM/main.css'}
+        ]
+      },
+
       WM : {
-        fullscreen    : false,
-        taskbar       : {position: 'top', ontop: true},
-        desktop       : {margin: 5},
-        wallpaper     : '/themes/wallpapers/noise_red.png',
-        theme         : 'default',
-        background    : 'image-repeat',
-        style         : {
-          backgroundColor  : '#0B615E',
-          color            : '#333',
-          fontWeight       : 'normal',
-          textDecoration   : 'none',
-          backgroundRepeat : 'repeat'
-        }
+        exec: 'CoreWM',
+        args: {themes: {'default': {title: 'Default'}}}
       }
     };
   };
 
-
-  OSjs.Settings.getSetting = function(cat, key) {
-    var set = _DEFAULT_SETTINGS()[cat];
-    if ( key ) {
-      return set[key];
+  /**
+   * Storage
+   */
+  var DefaultStorage = function() {
+    if ( !OSjs.Utils.getCompability().localStorage ) {
+      throw "Your browser does not support localStorage :(";
     }
-    return set;
+    this.prefix = 'andersevenrud.github.io/OS.js-v2/';
   };
+
+  DefaultStorage.prototype.set = function(k, v) {
+    localStorage.setItem(this.prefix + k, JSON.stringify(v));
+  };
+
+  DefaultStorage.prototype.get = function(k) {
+    var val = localStorage.getItem(this.prefix + k);
+    return val ? JSON.parse(val) : null;
+  };
+
+  /**
+   * Handler
+   */
+  var DefaultHandler = function() {
+    this.storage  = new DefaultStorage();
+    this.packages = {};
+    this.config   = DefaultConfig();
+  };
+
+  DefaultHandler.prototype.call = function(opts, cok, cerror) {
+    return OSjs.Utils.Ajax('/API', function(response, httpRequest, url) { // FIXME
+      cok.apply(this, arguments);
+    }, function(error, response, httpRequest, url) {
+      cerror.apply(this, arguments);
+    }, opts);
+  };
+
+  DefaultHandler.prototype.init = function(callback) {
+    callback = callback || {};
+    var self = this;
+
+    this.pollPackages(function(result, error) {
+      if ( error ) {
+        callback(false, error);
+        return;
+      }
+
+      if ( result ) {
+        self.packages = result;
+        callback(true);
+        return;
+      }
+
+      callback(false);
+    });
+  };
+
+  DefaultHandler.prototype.login = function(username, password, callback) {
+    callback(true);
+  };
+
+  DefaultHandler.prototype.logout = function(save, procs, callback) {
+    if ( save ) {
+      var getSessionSaveData = function(app) {
+        var args = app.__args;
+        var wins = app.__windows;
+        var data = {name: app.__name, args: args, windows: []};
+
+        for ( var i = 0, l = wins.length; i < l; i++ ) {
+          data.windows.push({
+            name      : wins[i]._name,
+            dimension : wins[i]._dimension,
+            position  : wins[i]._position,
+            state     : wins[i]._state
+          });
+        }
+
+        return data;
+      };
+
+      var data = [];
+      for ( var i = 0, l = procs.length; i < l; i++ ) {
+        if ( procs[i] && (procs[i] instanceof OSjs.Core.Application) ) {
+          data.push(getSessionSaveData(procs[i]));
+        }
+      }
+
+      this.setUserSession(data, function() {
+        callback(true);
+      });
+
+      return;
+    }
+    callback(true);
+  };
+
+  DefaultHandler.prototype.pollPackages = function(callback) {
+    callback = callback || function() {};
+
+    return OSjs.Utils.Ajax('/packages.json', function(response, httpRequest, url) { // FIXME
+      if ( response ) {
+        callback(response);
+      } else {
+        callback(false, "No packages found!");
+      }
+    }, function(error) {
+      callback(false, error);
+    }, {method: 'GET', parse: true});
+  };
+
+  DefaultHandler.prototype.getApplicationsMetadata = function() {
+    return this.packages;
+  };
+
+  DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname) {
+    var i, a;
+    var list = [];
+    for ( i in this.packages ) {
+      if ( this.packages.hasOwnProperty(i) ) {
+        a = this.packages[i];
+        if ( a && a.mime ) {
+          for ( j = 0; j < a.mime.length; j++ ) {
+            if ( (new RegExp(a.mime[j])).test(mime) === true ) {
+              list.push(i);
+            }
+          }
+        }
+      }
+    }
+
+    return list;
+  };
+
+  DefaultHandler.prototype.getApplicationMetadata = function(name) {
+    if ( this.packages[name] ) {
+      return this.packages[name];
+    }
+    return false;
+  };
+
+  DefaultHandler.prototype.setUserSettings = function(settings, callback) {
+    callback = callback || function() {};
+    this.storage.set("userSettings", settings);
+    callback(true);
+  };
+
+  DefaultHandler.prototype.getUserSettings = function(callback) {
+    callback = callback || function() {};
+    var s = this.storage.get("userSettings");
+    callback(s);
+  };
+
+  DefaultHandler.prototype.setUserSession = function(session, callback) {
+    callback = callback || function() {};
+    this.storage.set("userSession", session);
+    callback(true);
+  };
+
+  DefaultHandler.prototype.getUserSession = function(callback) {
+    callback = callback || function() {};
+    var s = this.storage.get("userSession");
+    callback(s);
+  };
+
+  DefaultHandler.prototype.getConfig = function(key) {
+    return key ? this.config[key] : this.config;
+  };
+
+  OSjs.Handlers.Default = DefaultHandler;
 
   /////////////////////////////////////////////////////////////////////////////
   // Main initialization code

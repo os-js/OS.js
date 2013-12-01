@@ -1,10 +1,29 @@
 (function(WindowManager, GUI) {
 
+  function DefaultSettings() {
+    return {
+      fullscreen    : false,
+      taskbar       : {position: 'top', ontop: true},
+      desktop       : {margin: 5},
+      wallpaper     : '/themes/wallpapers/noise_red.png',
+      theme         : 'default',
+      background    : 'image-repeat',
+      style         : {
+        backgroundColor  : '#0B615E',
+        color            : '#333',
+        fontWeight       : 'normal',
+        textDecoration   : 'none',
+        backgroundRepeat : 'repeat'
+      }
+    };
+  }
+
   /**
    * Application
    */
   var CoreWM = function(args, metadata) {
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
+    this._settings = DefaultSettings();
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
@@ -26,26 +45,23 @@
     sel = document.createElement('li');
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function(ev) {
-      var p = OSjs.API.getCoreService();
-      if ( p ) {
-        var apps = p.getApplicationCache();
-        var list = [];
-        for ( var a in apps ) {
-          if ( apps.hasOwnProperty(a) ) {
-            if ( apps[a].type === "service" || apps[a].type === "special" ) continue;
-            list.push({
-              title: apps[a].name,
-              icon: apps[a].icon,
-              onClick: (function(name, iter) {
-                return function() {
-                  OSjs.API.launch(name);
-                };
-              })(a, apps[a])
-            });
-          }
+      var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
+      var list = [];
+      for ( var a in apps ) {
+        if ( apps.hasOwnProperty(a) ) {
+          if ( apps[a].type === "service" || apps[a].type === "special" ) continue;
+          list.push({
+            title: apps[a].name,
+            icon: apps[a].icon,
+            onClick: (function(name, iter) {
+              return function() {
+                OSjs.API.launch(name);
+              };
+            })(a, apps[a])
+          });
         }
-        GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
       }
+      GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
     };
     el.appendChild(sel);
 
@@ -71,12 +87,24 @@
     this._$root = root;
 
     document.body.appendChild(this._$root);
+
+    var self = this;
+    OSjs.API.getHandlerInstance().getUserSettings(function(s) {
+      if ( s ) {
+        self.applySettings(s);
+      } else {
+        self.applySettings(DefaultSettings(), true);
+      }
+    });
   };
 
   CoreWM.prototype.destroy = function(kill) {
     if ( kill && !confirm("Killing this process will stop things from working!") ) {
       return false;
     }
+
+    // Reset styles
+    this.applySettings(DefaultSettings(), true);
 
     if ( this._$root && this._$root.parentNode ) {
       this._$root.parentNode.removeChild(this._$root);
@@ -131,7 +159,7 @@
     }
   };
 
-  CoreWM.prototype.applySettings = function(settings, force) {
+  CoreWM.prototype.applySettings = function(settings, force, save) {
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
       return false;
     }
@@ -212,6 +240,10 @@
 
     this._$root.className = classNames.join(' ');
 
+    if ( save ) {
+      OSjs.API.getHandlerInstance().setUserSettings(this.getSettings());
+    }
+
     console.groupEnd();
     return true;
   };
@@ -245,6 +277,14 @@
       pos.y += (60 - pos.y);
     }
     return pos;
+  };
+
+  CoreWM.prototype.getSetting = function(k) {
+    var val = WindowManager.prototype.getSetting.apply(this, arguments);
+    if ( val === null ) {
+      return DefaultSettings()[k];
+    }
+    return val;
   };
 
 

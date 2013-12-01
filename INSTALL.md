@@ -2,12 +2,10 @@
 Installation only requires a few small steps. You have to be running a BSD, Linux or something similar to run the server.
 
 ## Frontend
-You can override default configurations for the frontend using backend.
+You can override default settings by creating your own `settings.js` file. More information in wiki
 
 ## Backend
-By default OS.js stores all temporary data, user sessions and settings in `/opt/OS.js/tmp` (will be changed in *Alpha-1*).
-File storage is restricted to `/opt/OS.js/home` by default.
-
+By default OS.js filesystem is restricted to `/opt/OSjs/tmp` and `/opt/OSjs/home`.
 Make sure these directories exist and are readable+writable by the running web-server process.
 
 You can modify these paths in the configuration file (more info below).
@@ -21,7 +19,7 @@ You can modify these paths in the configuration file (more info below).
 You should now be up and running :)
 
 #### Configuration
-See `config.example.php` if you want to set up a custom configuration, settings and handlers (not required unless the restrictions notes in the *Backend* section is a problem for your server).
+See `config.example.php` if you want to set up a custom configuration
 
 ### Node.js
 **NOT IN REPOSITORY YET**

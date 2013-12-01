@@ -33,8 +33,7 @@
   window.OSjs = window.OSjs || {};
   OSjs.Core         = {};
   OSjs.API          = {};
-  OSjs.Settings     = OSjs.Settings     || {};
-  OSjs.Bindings     = OSjs.Bindings     || {};
+  OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
@@ -44,8 +43,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _INITED   = false;
-  var _CALLURL  = "/API";
-  var _FSURL    = "/FS";
   var _PROCS    = [];
   var _SPROCS   = {};
   var _WID      = 0;
@@ -61,6 +58,7 @@
   var _WM;
   var _WIN;
   var _CORE;
+  var _HANDLER;
   var _$LOADING;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -103,7 +101,7 @@
     if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
       return path;
     }
-    return path ? (_FSURL + path) : _FSURL;
+    return path ? ('/FS' + path) : '/FS'; // FIXME
   }
 
   function playSound(name) {
@@ -171,13 +169,13 @@
     };
 
     _$LOADING.style.display = 'block';
-    return OSjs.Utils.Ajax(_CALLURL, function() {
+    return _HANDLER.call(opts, function() {
       _$LOADING.style.display = 'none';
       cok.apply(this, arguments);
     }, function() {
       _$LOADING.style.display = 'none';
       cerror.apply(this, arguments);
-    }, opts);
+    });
   }
 
   function createErrorDialog(title, message, error, exception, bugreport) {
@@ -209,8 +207,6 @@
 
     console.group("LaunchFile()", fname, mime);
 
-    var cs = OSjs.API.getCoreService();
-    var app = [];
     var args = {file: fname, mime: mime};
 
     if ( launchArgs.args ) {
@@ -221,32 +217,30 @@
       }
     }
 
-    if ( cs ) {
-      app = cs.getApplicationNameByMime(mime, fname);
-      console.info("Found", app.length, "applications supporting this mime");
-      if ( app.length ) {
-        var self = this;
-        var _launch = function(name) {
-          if ( name ) {
-            LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
-          }
-        };
-
-        if ( app.length === 1 ) {
-          _launch(app[0]);
-        } else {
-          if ( _WM ) {
-            _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
-              if ( btn != 'ok' ) return;
-              _launch(appname);
-            }));
-          } else {
-            OSjs.API.error("Error opening file", "Fatal Error", "No window manager is running");
-          }
+    var app = _HANDLER.getApplicationNameByMime(mime, fname);
+    console.info("Found", app.length, "applications supporting this mime");
+    if ( app.length ) {
+      var self = this;
+      var _launch = function(name) {
+        if ( name ) {
+          LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
         }
+      };
+
+      if ( app.length === 1 ) {
+        _launch(app[0]);
       } else {
-        OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
+        if ( _WM ) {
+          _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
+            if ( btn != 'ok' ) return;
+            _launch(appname);
+          }));
+        } else {
+          OSjs.API.error("Error opening file", "Fatal Error", "No window manager is running");
+        }
       }
+    } else {
+      OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
     }
 
     console.groupEnd();
@@ -341,11 +335,12 @@
       }});
     };
 
-    APICall('launch', {application: n, 'arguments': arg}, function(res) {
-      _preload(res.result);
-    }, function() {
-      _error("Failed to launch -- communication error!");
-    });
+    var data = _HANDLER.getApplicationMetadata(n);
+    if ( !data ) {
+      _error("Failed to launch -- application manifest not found!");
+      return;
+    }
+    _preload(data);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -447,106 +442,104 @@
       createErrorDialog('Failed to initialize OS.js', 'An error occured while initializing OS.js', msg, null, true);
     };
 
-    var _launchWM = function(wm) {
-      if ( !wm.exec ) {
+    var _launchWM = function(callback) {
+      var wm = _HANDLER.getConfig('WM');
+      if ( !wm || !wm.exec ) {
         _error("No window manager defined!");
         return;
       }
 
       LaunchProcess(wm.exec, wm.args || {}, function() {
-        self.login();
+        callback();
       }, function(error) {
         _error("Failed to launch Window Manager: " + error);
       });
     };
 
-    var _launchCoreService = function(wm, settings) {
-      LaunchProcess('CoreService', {settings: settings}, function() {
-        _launchWM(wm);
-      }, function(error) {
-        _error("Failed to launch Core Service: " + error);
-      });
-    };
+    var _preload = function(list, callback) {
+      if ( !list || !list.length ) {
+        callback();
+        return;
+      }
 
-    var _preload = function(prelist, settings, wm) {
-      new OSjs.Utils.Preloader({list: prelist, onFinished: function(total, errors) {
+      new OSjs.Utils.Preloader({list: list, onFinished: function(total, errors) {
         if ( errors ) {
           _error("Failed to preload resources...");
           return;
         }
-        _launchCoreService(wm, settings);
+
+        callback();
       }});
     };
 
-    APICall('boot', {}, function(res) {
-      if ( !res || !res.result || !res.result.preload || !res.result.settings ) {
-        alert("Booting failed... probably server error!");
-        return;
-      }
+    var _loadSession = function() {
+      var onSuccess = function(data, a) {
+        var w, r;
+        for ( var i = 0, l = data.length; i < l; i++ ) {
+          r = data[i];
+          w = a._getWindow(r.name);
+          if ( w ) {
+            w._move(r.position.x, r.position.y);
+            w._resize(r.dimension.w, r.dimension.h);
+            // TODO: State
 
-      OSjs.Bindings.onBooted(function() { // main.js
-        _preload(res.result.preload, res.result.settings.Core, res.result.settings.WM);
-      });
-    }, function(error) {
-      _error("Failed to initialize -- " + error);
-    });
-  };
-
-  Main.prototype.login = function() {
-    var self = this;
-
-    APICall('login', {username: 'foo', password: 'bar'}, function(res) {
-      var settings = res.result.settings || {};
-
-      if ( _WM ) {
-        var s = settings.WM[_WM._name];
-        if ( s ) {
-          _WM.applySettings(s);
-        }
-      }
-
-      var _finished = function() {
-        playSound('service-login');
-      };
-
-      var _loadSession = function() {
-        var cs = OSjs.API.getCoreService();
-        if ( cs ) {
-          cs.loadSession(_finished);
-        } else {
-          _finished();
+            console.info('CoreService::loadSession->onSuccess()()', 'Restored window "' + r.name + '" from session');
+          }
         }
       };
 
-      OSjs.Bindings.onLoggedIn(function() { // main.js
-        _loadSession();
-      });
+      var onLoaded = function(session) {
+        var s, sargs;
+        for ( var i = 0, l = session.length; i < l; i++ ) {
+          s = session[i];
+          sargs = s.args || {};
+          if ( typeof sargs.length !== 'undefined' ) sargs = {};
 
-    }, function(error) {
-      createErrorDialog('Failed to login to OS.js', 'An error occured while logging in', error, null, true);
+          OSjs.API.launch(s.name, sargs, (function(data) {
+            return function(a) {
+              onSuccess(data, a);
+            };
+          })(session[i].windows), function(err) {
+            console.warn("_loadSession() error", err);
+          });
+        }
+      };
+
+      _HANDLER.getUserSession(function(res) {
+        if ( res ) {
+          onLoaded(res);
+        }
+      });
+    };
+
+    _HANDLER.init(function() {
+      var preloads = _HANDLER.getConfig('Core').Preloads;
+      _preload(preloads, function() {
+        _launchWM(function(app) {
+          _$LOADING.style.display = 'none';
+          playSound('service-login');
+
+          _loadSession();
+        });
+      });
     });
   };
 
-  Main.prototype.logout = function(save, onFinished) {
+  Main.prototype.shutdown = function(save, onFinished) {
     var self = this;
 
     var _finished = function() {
       APICall('logout', {}, function() {
-        OSjs.Bindings.onLoggedOut(function() { // main.js
-          playSound('service-logout');
-          onFinished(self);
-        });
+        playSound('service-logout');
+        onFinished(self);
       }, function(error) {
         createErrorDialog('Failed to log out of OS.js', 'An error occured while logging out', error, null, true);
       });
     };
 
-    var cs = OSjs.API.getCoreService();
-    if ( cs && save ) {
-      cs.saveSession(null, _PROCS, _finished);
-    } else {
+    _HANDLER.logout(save, _PROCS, function() {
       _finished();
-    }
+    });
   };
 
   Main.prototype.destroy = function() {
@@ -683,7 +676,7 @@
 
     this._windows     = [];
     this._name        = (name || 'WindowManager');
-    this._settings    = OSjs.Settings.getSetting('WM');
+    this._settings    = {};
     this._themes      = args.themes || [{'default': {title: 'Default'}}];
 
     Process.apply(this, [this._name]);
@@ -697,10 +690,6 @@
 
   WindowManager.prototype.destroy = function() {
     console.log("OSjs::Core::WindowManager::destroy()");
-
-    // Reset styles
-    var set = OSjs.Settings.getSetting('WM');
-    this.applySettings(set, true);
 
     // Destroy all windows
     var i = 0;
@@ -823,7 +812,7 @@
     if ( this._settings[k] ) {
       return this._settings[k];
     }
-    return OSjs.Settings.getSetting('WM', k);
+    return null;
   };
 
   WindowManager.prototype.getSettings = function() {
@@ -1815,12 +1804,11 @@
   OSjs.Core.DialogWindow  = DialogWindow;
   OSjs.Core.WindowManager = WindowManager;
 
-  OSjs.API.getWMInstance    = function()    { return _WM; };
-  OSjs.API.getCoreInstance  = function()    { return _CORE; };
-  OSjs.API.getCoreService   = function()    { return _CORE.getProcess('CoreService', true); };
-  OSjs.API.getConfig        = function(key) { var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig(key); } return null; };
-  OSjs.API.getDefaultPath   = function(def) { def = def || '/'; var cs = OSjs.API.getCoreService(); if ( cs ) { return cs.getConfig('Home') || def; } return def; };
-  OSjs.API.getCallURL       = function()    { return _CALLURL; };
+  OSjs.API.getHandlerInstance = function()    { return _HANDLER; };
+  OSjs.API.getWMInstance      = function()    { return _WM; };
+  OSjs.API.getCoreInstance    = function()    { return _CORE; };
+  OSjs.API.getDefaultPath     = function(def) { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
+
   OSjs.API.getThemeCSS      = getThemeCSS;
   OSjs.API.getResourceURL   = getResourceURL;
   OSjs.API.getThemeResource = getThemeResource;
@@ -1831,6 +1819,8 @@
   OSjs.API.playSound        = playSound;
 
   OSjs.initialize = function() {
+    _HANDLER = new OSjs.Handlers.Default(); // TODO: Support for custom handlers
+
     if ( _INITED ) return;
     _INITED = true;
 
@@ -1868,7 +1858,7 @@
     if ( onunload ) {
       _shutdown();
     } else {
-      _CORE.logout(save, _shutdown);
+      _CORE.shutdown(save, _shutdown);
     }
 
     document.body.removeChild(_$LOADING);

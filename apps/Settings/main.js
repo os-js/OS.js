@@ -18,7 +18,6 @@
     var self      = this;
     var root      = Window.prototype.init.apply(this, arguments);
     var app       = this._appRef;
-    var cs        = OSjs.API.getCoreService();
     var _tmp      = (typeof window.___tmp === 'undefined') ? 0 : (window.___tmp++);
 
     var settings  = wm.getSettings();
@@ -269,14 +268,7 @@
         style      : {
           backgroundColor  : settings.backgroundColor
         }
-      });
-
-      if ( res ) {
-        var cs = OSjs.API.getCoreService();
-        if ( cs ) {
-          cs.saveSettings();
-        }
-      }
+      }, false, true);
     }
   };
 
