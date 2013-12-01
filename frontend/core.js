@@ -1055,6 +1055,8 @@
       allow_close       : true,
       allow_windowlist  : true,
       allow_drop        : false,
+      allow_iconmenu    : true,
+      allow_ontop       : true,
       min_width         : _MINIMUM_WINDOW_WIDTH,
       min_height        : _MINIMUM_WINDOW_HEIGHT,
       max_width         : null,
@@ -1196,7 +1198,7 @@
     windowIconImage.src         = this._icon;
     windowIconImage.width       = 16;
     windowIconImage.height      = 16;
-    this._addEvent(windowIconImage, 'onclick', function(ev) {
+    this._addEvent(windowIcon, 'onclick', function(ev) {
       self._onWindowIconClick(ev, this);
     });
 
@@ -1740,6 +1742,74 @@
 
   Window.prototype._onWindowIconClick = function(ev, el) {
     console.debug(this._name, '>' , "OSjs::Core::Window::_onWindowIconClick()");
+    if ( !this._properties.allow_iconmenu ) return;
+
+    var self = this;
+    var list = [];
+
+    if ( this._properties.allow_minimize ) {
+      list.push({
+        title:    'Mimimize',
+        icon:     'actions/stock_up.png',
+        onClick:  function(name, iter) {
+          self._minimize();
+        }
+      });
+    }
+    if ( this._properties.allow_maximize ) {
+      list.push({
+        title:    'Maximize',
+        icon:     'actions/window_fullscreen.png',
+        onClick:  function(name, iter) {
+          self._maximize();
+          self._focus();
+        }
+      });
+    }
+    if ( this._state.maximized ) {
+      list.push({
+        title:    'Restore',
+        icon:     'actions/view-restore.png',
+        onClick:  function(name, iter) {
+          self._restore();
+          self._focus();
+        }
+      });
+    }
+    if ( this._properties.allow_ontop ) {
+      if ( this._state.ontop ) {
+        list.push({
+          title:    'On Top - Disable',
+          icon:     'actions/window-new.png',
+          onClick:  function(name, iter) {
+            self._state.ontop = false;
+            self._$element.style.zIndex = getNextZindex(false);
+            self._focus();
+          }
+        });
+      } else {
+        list.push({
+          title:    'On Top - Enable',
+          icon:     'actions/window-new.png',
+          onClick:  function(name, iter) {
+            self._state.ontop = true;
+            self._$element.style.zIndex = getNextZindex(true);
+            self._focus();
+          }
+        });
+      }
+    }
+    if ( this._properties.allow_close ) {
+      list.push({
+        title:    'Close',
+        icon:     'actions/window-close.png',
+        onClick:  function(name, iter) {
+          self._close();
+        }
+      });
+    }
+
+    OSjs.GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
   };
 
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {

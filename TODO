@@ -1,13 +1,11 @@
 Alpha-1:
 * Clean up applications
 * Clean up dialogs
-* Go over error messages and rewrite
-* Go over all error handling
 * Add correct DnD "effect"
-* Context menu on window icon
-  - Ontop toggling
 
 Beta-1:
+* Go over error messages and rewrite
+* Go over all error handling
 * Node.js backend
 * Better application generation from example
 

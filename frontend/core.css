@@ -68,15 +68,14 @@
 .WindowTop .WindowTitle {
   position : absolute;
   top : 0px;
-  left : 20px;
+  left : 28px;
   right : 20px;
   height : 26px;
   z-index : 1;
   overflow : hidden;
   white-space : nowrap;
 
-  line-height : 26px;
-  padding-left : 8px;
+  line-height : 28px;
 
   display : block;
   overflow: hidden;
