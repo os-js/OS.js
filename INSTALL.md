@@ -1,14 +1,12 @@
 # Installation
 Installation only requires a few small steps.
 
-## Frontend
-You can override default settings by creating your own `settings.js` file. More information in Wiki
+## Notes
 
-## Backend
 By default OS.js filesystem is restricted to `/opt/OSjs/tmp` and `/opt/OSjs/home`.
 Make sure these directories exist and are readable+writable by the running web-server process.
 
-More information on configuring the backend on Wiki.
+More information on configuring the backend and frontend on Wiki.
 
 ### Apache + PHP
 * Clone OS.js-v2 with (git --recursive)
