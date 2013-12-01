@@ -215,19 +215,5 @@
 
   OSjs.Handlers.Default = DefaultHandler;
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Main initialization code
-  /////////////////////////////////////////////////////////////////////////////
-
-  window.onload = function() {
-    console.info("window::onload()");
-    OSjs.initialize();
-  };
-
-  window.onunload = function() {
-    console.info("window::onunload()");
-    OSjs.shutdown(false, true);
-  };
-
 })();
 
