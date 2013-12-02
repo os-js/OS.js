@@ -814,10 +814,12 @@
 
     if ( this.__windows.length ) {
       if ( _WM ) {
+        var last = null;
         for ( var i = 0, l = this.__windows.length; i < l; i++ ) {
           _WM.addWindow(this.__windows[i]);
+          last = this.__windows[i];
         }
-        this.__windows[i]._focus();
+        if ( last ) last._focus();
       }
     }
 
