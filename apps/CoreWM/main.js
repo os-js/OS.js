@@ -90,7 +90,7 @@
     sel.onclick = function() {
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
       var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");
-      OSjs.shutdown(t, false);
+      OSjs._shutdown(t, false);
     };
     el.appendChild(sel);
 

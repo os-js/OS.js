@@ -75,9 +75,9 @@
 
   function _getWindowSpace() {
     return {
-      top : 0,
-      left : 0,
-      width : window.innerWidth,
+      top    : 0,
+      left   : 0,
+      width  : window.innerWidth,
       height : window.innerHeight
     };
   }
@@ -102,10 +102,10 @@
     console.groupEnd();
 
     var opts = {
-      method: 'POST',
-      post: {
-        'method': m,
-        'arguments': a
+      method : 'POST',
+      post   : {
+        'method'    : m,
+        'arguments' : a
       }
     };
 
@@ -603,10 +603,10 @@
   var WindowManager = function(name, ref, args, metadata) {
     console.group("OSjs::Core::WindowManager::__construct()");
 
-    this._windows         = [];
-    this._name            = (name || 'WindowManager');
-    this._settings        = {};
-    this._themes          = args.themes || [{'default': {title: 'Default'}}];
+    this._windows  = [];
+    this._name     = (name || 'WindowManager');
+    this._settings = {};
+    this._themes   = args.themes || [{'default': {title: 'Default'}}];
 
     Process.apply(this, [this._name]);
 
@@ -1926,8 +1926,8 @@
   var __initialize  = function() {
     console.info('=== Launching OS.js v2 ===');
 
-    _$LOADING = document.createElement('img');
-    _$LOADING.id = "Loading";
+    _$LOADING     = document.createElement('img');
+    _$LOADING.id  = "Loading";
     _$LOADING.src = OSjs.API.getThemeResource('loading_small.gif', 'base');
     document.body.appendChild(_$LOADING);
 
@@ -1937,7 +1937,7 @@
     }
   };
 
-  OSjs.initialize = function() {
+  OSjs._initialize = function() {
     if ( __initialized ) return;
     __initialized = true;
 
@@ -1952,7 +1952,7 @@
     });
   };
 
-  OSjs.shutdown = function(save, onunload) {
+  OSjs._shutdown = function(save, onunload) {
     if ( !__initialized ) return;
     __initialized = false;
     window.onunload = null;

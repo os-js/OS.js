@@ -82,11 +82,11 @@
 
   window.onload = function() {
     _checkConfig();
-    OSjs.initialize();
+    OSjs._initialize();
   };
 
   window.onunload = function() {
-    OSjs.shutdown(false, true);
+    OSjs._shutdown(false, true);
   };
 
 })();
