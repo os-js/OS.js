@@ -52,6 +52,7 @@
     this.defaultActionWindow  = null;
     this.allowedActions       = ['new', 'open', 'save', 'saveas'];
     this.openAction           = 'raw';
+    this.getSaveData          = function() { return null; };
   };
 
   DefaultApplication.prototype = Object.create(Application.prototype);
@@ -138,7 +139,8 @@
 
     var _saveFile = function(fname, fmime) {
       fmime = fmime || mime;
-      OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, data]}, function(res) {
+      var fdata = self.getSaveData();
+      OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, fdata]}, function(res) {
         if ( res && res.result ) {
           self.setCurrentFile(fname, fmime);
           self.defaultActionSuccess('save', self.currentFile);

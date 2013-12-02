@@ -30,7 +30,7 @@
         app.defaultAction('save');
       }},
       {title: 'Save As...', name: 'SaveAs', onClick: function() {
-        app.action('saveas');
+        app.defaultAction('saveas');
       }},
       {title: 'Close', name: 'Close', onClick: function() {
         self._close();
@@ -122,6 +122,10 @@
     this.defaultFilename      = "New text file.txt";
     this.defaultMime          = 'text/plain';
     this.acceptMime           = ['^text'];
+    this.getSaveData          = function() {
+      var w = self._getWindow('ApplicationTextpadWindow');
+      return w ? w.getText() : null;
+    };
 
     this.defaultActionError = function(action, error) {
       var w = self._getWindow('ApplicationTextpadWindow');
