@@ -96,18 +96,21 @@ function error() {
   }
 }
 
-define("SESSIONNAME", preg_replace("/[^0-9]/", "", empty($_SERVER['REMOTE_ADDR']) ? '127.0.0.1' : $_SERVER['REMOTE_ADDR']));
-define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
 
 //
 // Default settings
 //
-if ( !defined("HOMEDIR") )  define("HOMEDIR",     "/opt/OSjs/home");
-if ( !defined("TMPDIR") )   define("TMPDIR",      "/opt/OSjs/tmp");
-if ( !defined("APPDIR") )   define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
+if ( !defined("HOMEDIR") )   define("HOMEDIR",     "/opt/OSjs/home");
+if ( !defined("TMPDIR") )    define("TMPDIR",      "/opt/OSjs/tmp");
+if ( !defined("APPDIR") )    define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
+if ( !defined("MAXUPLOAD") ) define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
 
 register_shutdown_function('error');
 date_default_timezone_set('Europe/Oslo');
+
+if ( php_sapi_name() == "cli" ) {
+  return;
+}
 
 //
 // Collect request data
