@@ -3,7 +3,13 @@ if [[ -d "apps/$1" ]]; then
   echo "Target directory already exist :("
   exit
 fi
-mkdir apps/$1
-cat doc/appexample/package.json | sed -e "s/EXAMPLE/$1/g" > apps/$1/package.json
-cat doc/appexample/main.js | sed -e "s/EXAMPLE/$1/g" > apps/$1/main.js
-cat doc/appexample/main.css | sed -e "s/EXAMPLE/$1/g" > apps/$1/main.css
+
+DIR="apps"
+if [ -n "$2" ]; then
+  DIR="$2"
+fi
+
+mkdir $DIR/$1
+cat doc/appexample/package.json | sed -e "s/EXAMPLE/$1/g" > $DIR/$1/package.json
+cat doc/appexample/main.js | sed -e "s/EXAMPLE/$1/g" > $DIR/$1/main.js
+cat doc/appexample/main.css | sed -e "s/EXAMPLE/$1/g" > $DIR/$1/main.css

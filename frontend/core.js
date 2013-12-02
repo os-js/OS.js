@@ -39,6 +39,7 @@
   OSjs.GUI          = OSjs.GUI          || {};
   OSjs.Core         = {};
   OSjs.API          = {};
+  OSjs.Version      = '2.0-wip';
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
@@ -1412,7 +1413,7 @@
     this._fireHook('destroy');
 
     // Children
-    if ( this._appRef ) {
+    if ( this._appRef ) { // FIXME: Should this be moved to bottom ?!
       this._appRef._onMessage(this, 'destroyWindow', {});
     }
 

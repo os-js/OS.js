@@ -40,7 +40,7 @@
     Window.apply(this, ['ApplicationEXAMPLEWindow', {width: 400, height: 200}, app]);
 
     // Set window properties here
-    var metadata = OSjs.API.getHandlerInstance().getApplicationMetadata('ApplicationEXAMPLEWindow');
+    var metadata = OSjs.API.getHandlerInstance().getApplicationMetadata('ApplicationEXAMPLE');
     this._title = metadata.title;
     this._icon  = metadata.icon;
   };

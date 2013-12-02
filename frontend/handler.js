@@ -336,25 +336,28 @@
   };
 
   DefaultHandler.prototype.getThemeResource = function(name, type, args) {
+    name = name || null;
     type = type || null;
     args = args || null;
 
-    var wm = OSjs.API.getWMInstance();
-    var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-    if ( !name.match(/^\//) ) {
-      if ( type == 'icon' ) {
-        var size = args || '16x16';
-        name = '/themes/' + theme + '/icons/' + size + '/' + name;
-      } else if ( type == 'sound' ) {
-        var ext = 'oga';
-        if ( !OSjs.Utils.getCompability().audioTypes.ogg ) {
-          ext = 'mp3';
+    if ( name ) {
+      var wm = OSjs.API.getWMInstance();
+      var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
+      if ( !name.match(/^\//) ) {
+        if ( type == 'icon' ) {
+          var size = args || '16x16';
+          name = '/themes/' + theme + '/icons/' + size + '/' + name;
+        } else if ( type == 'sound' ) {
+          var ext = 'oga';
+          if ( !OSjs.Utils.getCompability().audioTypes.ogg ) {
+            ext = 'mp3';
+          }
+          name = '/themes/' + theme + '/sounds/' + name + '.' + ext;
+        } else if ( type == 'wm' ) {
+          name = '/themes/' + theme + '/wm/' + name;
+        } else if ( type == 'base' ) {
+          name = '/themes/' + theme + '/' + name;
         }
-        name = '/themes/' + theme + '/sounds/' + name + '.' + ext;
-      } else if ( type == 'wm' ) {
-        name = '/themes/' + theme + '/wm/' + name;
-      } else if ( type == 'base' ) {
-        name = '/themes/' + theme + '/' + name;
       }
     }
 

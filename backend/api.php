@@ -29,7 +29,8 @@
  * @licence Simplified BSD License
  */
 
-if ( file_exists("config.php") ) require "config.php";
+$_dir = dirname(__FILE__);
+if ( file_exists("{$_dir}/config.php") ) require "{$_dir}/config.php";
 require "vfs.php";
 
 function out($json) {
