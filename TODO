@@ -5,7 +5,6 @@ Alpha-1:
 * Settings: Margin adjustment
 * Settings: Font selection
 * Implement correct DnD "effect" (remember: allow)
-* Settings application: Remove code that makes names allowing for multiple instances (was not working anyways)
 
 Beta-1:
 * Go over error messages and rewrite

@@ -18,7 +18,6 @@
     var self      = this;
     var root      = Window.prototype.init.apply(this, arguments);
     var app       = this._appRef;
-    var _tmp      = (typeof window.___tmp === 'undefined') ? 0 : (window.___tmp++);
 
     var settings  = wm.getSettings();
     var themes    = wm.getThemes();
@@ -36,7 +35,7 @@
     label.innerHTML = "Theme";
 
     input = document.createElement('select');
-    input.name = "theme_" + _tmp;
+    input.name = "theme";
 
 
     l = 0;
@@ -65,7 +64,7 @@
     label.innerHTML = "Background Type";
 
     input = document.createElement('select');
-    input.name = "backgroundType_" + _tmp;
+    input.name = "backgroundType";
 
     tmp = document.createElement('option');
     tmp.value = 'image';
@@ -119,7 +118,7 @@
     input = document.createElement('input');
     input.type = "text";
     input.disabled = "disabled";
-    input.name = "backgroundImage_" + _tmp;
+    input.name = "backgroundImage";
     input.value = settings.wallpaper;
 
     button = document.createElement('button');
@@ -148,7 +147,7 @@
     input = document.createElement('input');
     input.type = "text";
     input.disabled = "disabled";
-    input.name = "backgroundColor_" + _tmp;
+    input.name = "backgroundColor";
     input.style.backgroundColor = settings.style.backgroundColor;
     input.style.color = "#fff";
     input.value = settings.style.backgroundColor;
@@ -174,7 +173,7 @@
     label.innerHTML = "Taskbar ontop ?";
 
     input = document.createElement('input');
-    input.name = "taskbarOntop_" + _tmp;
+    input.name = "taskbarOntop";
     input.type = "checkbox";
     if ( settings.taskbar.ontop ) {
       input.checked = "checked";
@@ -190,11 +189,11 @@
     button.innerHTML = "Apply";
     button.onclick = function(ev) {
       app.save(ev, self, {
-        taskbarOntop:     document.getElementsByName('taskbarOntop_' + _tmp)[0].checked,
-        theme:            document.getElementsByName('theme_' + _tmp)[0].value,
-        backgroundType:   document.getElementsByName('backgroundType_' + _tmp)[0].value,
-        backgroundImage:  document.getElementsByName('backgroundImage_' + _tmp)[0].value,
-        backgroundColor:  document.getElementsByName('backgroundColor_' + _tmp)[0].value
+        taskbarOntop:     document.getElementsByName('taskbarOntop')[0].checked,
+        theme:            document.getElementsByName('theme')[0].value,
+        backgroundType:   document.getElementsByName('backgroundType')[0].value,
+        backgroundImage:  document.getElementsByName('backgroundImage')[0].value,
+        backgroundColor:  document.getElementsByName('backgroundColor')[0].value
       });
     };
 
