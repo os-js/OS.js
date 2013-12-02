@@ -1977,8 +1977,6 @@
     } else {
       _CORE.shutdown(save, _shutdown);
     }
-
-    document.body.removeChild(_$LOADING);
   };
 
 })();
