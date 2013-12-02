@@ -614,16 +614,20 @@
   var WindowManager = function(name, ref, args, metadata) {
     console.group("OSjs::Core::WindowManager::__construct()");
 
-    this._windows     = [];
-    this._name        = (name || 'WindowManager');
-    this._settings    = {};
-    this._themes      = args.themes || [{'default': {title: 'Default'}}];
+    this._windows         = [];
+    this._name            = (name || 'WindowManager');
+    this._settings        = {};
+    this._themes          = args.themes || [{'default': {title: 'Default'}}];
 
     Process.apply(this, [this._name]);
 
     _WM = (ref || this);
 
     console.groupEnd();
+
+    this._$notifications  = document.createElement('div');
+    this._$notifications.id = 'Notifications';
+    document.body.appendChild(this._$notifications);
   };
 
   WindowManager.prototype = Object.create(Process.prototype);
@@ -650,6 +654,84 @@
   WindowManager.prototype.init = function() {
     console.log("OSjs::Core::WindowManager::init()");
   };
+
+  WindowManager.prototype.notification = (function() {
+    var _visible = 0;
+
+    return function(opts) {
+      opts          = opts          || {};
+      opts.icon     = opts.icon     || null;
+      opts.title    = opts.title    || null;
+      opts.message  = opts.message  || "";
+      opts.timeout  = opts.timeout  || 5000;
+      opts.onClick  = opts.onClick  || function() {};
+
+      console.log("OSjs::Core::WindowManager::notification()", opts);
+
+      var container  = document.createElement('div');
+      var classNames = ['Notification'];
+      var self       = this;
+      var timeout    = null;
+
+      var _remove = function() {
+        if ( timeout ) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+
+        container.onclick = null;
+        if ( container.parentNode ) {
+          container.parentNode.removeChild(container);
+        }
+        _visible--;
+        if ( _visible <= 0 ) {
+          self._$notifications.style.display = 'none';
+        }
+      };
+
+      if ( opts.icon ) {
+        var icon = document.createElement('img');
+        icon.alt = '';
+        icon.src = OSjs.API.getThemeResource(opts.icon, 'icon', '32x32');
+        classNames.push('HasIcon');
+        container.appendChild(icon);
+      }
+
+      if ( opts.title ) {
+        var title = document.createElement('div');
+        title.className = 'Title';
+        title.innerHTML = opts.title;
+        classNames.push('HasTitle');
+        container.appendChild(title);
+      }
+
+      if ( opts.message ) {
+        var message = document.createElement('div');
+        message.className = 'Message';
+        message.innerHTML = opts.message;
+        classNames.push('HasMessage');
+        container.appendChild(message);
+      }
+
+      _visible++;
+      if ( _visible > 0 ) {
+        this._$notifications.style.display = 'block';
+      }
+
+      container.className = classNames.join(' ');
+      container.onclick = function(ev) {
+        _remove();
+
+        opts.onClick(ev);
+      };
+
+      this._$notifications.appendChild(container);
+
+      setTimeout(function() {
+        _remove();
+      }, opts.timeout);
+    };
+  })();
 
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
