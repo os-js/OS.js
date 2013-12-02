@@ -82,13 +82,10 @@
 
   window.onload = function() {
     _checkConfig();
-
-    console.info("window::onload()");
     OSjs.initialize();
   };
 
   window.onunload = function() {
-    console.info("window::onunload()");
     OSjs.shutdown(false, true);
   };
 

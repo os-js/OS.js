@@ -1924,7 +1924,7 @@
 
   var __initialized = false;
   var __initialize  = function() {
-    console.info('Launching OS.js v2');
+    console.info('=== Launching OS.js v2 ===');
 
     _$LOADING = document.createElement('img');
     _$LOADING.id = "Loading";
