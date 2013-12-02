@@ -44,9 +44,7 @@
   // INTERNAL VARIABLES
   /////////////////////////////////////////////////////////////////////////////
 
-  var _INITED   = false;
-  var _PROCS    = [];
-
+  var _PROCS = [];
   var _WM;
   var _WIN;
   var _CORE;
@@ -1924,7 +1922,8 @@
   // STARTUP / SHUTDOWN FUNCTIONS
   /////////////////////////////////////////////////////////////////////////////
 
-  var __initialize = function() {
+  var __initialized = false;
+  var __initialize  = function() {
     console.info('Launching OS.js v2');
 
     _$LOADING = document.createElement('img');
@@ -1939,8 +1938,8 @@
   };
 
   OSjs.initialize = function() {
-    if ( _INITED ) return;
-    _INITED = true;
+    if ( __initialized ) return;
+    __initialized = true;
 
     window.onload = null;
 
@@ -1954,8 +1953,8 @@
   };
 
   OSjs.shutdown = function(save, onunload) {
-    if ( !_INITED ) return;
-    _INITED = false;
+    if ( !__initialized ) return;
+    __initialized = false;
     window.onunload = null;
 
     var _shutdown = function() {
@@ -1963,6 +1962,14 @@
         _CORE.destroy();
         _CORE = null;
       }
+      _HANDLER = null;
+      _WIN = null;
+      _WM = null;
+
+      if ( _$LOADING && _$LOADING.parentNode ) {
+        _$LOADING.parentNode.removeChild(_$LOADING);
+      }
+      _$LOADING = null;
     };
 
     if ( onunload ) {
