@@ -46,16 +46,6 @@
 
   var _INITED   = false;
   var _PROCS    = [];
-  var _SPROCS   = {};
-  var _WID      = 0;
-  var _PID      = 0;
-  var _LZINDEX  = 1;
-  var _LTZINDEX = 100000;
-
-  var _DEFAULT_WINDOW_WIDTH   = 200;
-  var _DEFAULT_WINDOW_HEIGHT  = 200;
-  var _MINIMUM_WINDOW_WIDTH   = 100;
-  var _MINIMUM_WINDOW_HEIGHT  = 50;
 
   var _WM;
   var _WIN;
@@ -67,12 +57,17 @@
   // DOM HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function getNextZindex(ontop) {
-    if ( typeof ontop !== 'undefined' && ontop === true ) {
-      return (_LTZINDEX+=2);
-    }
-    return (_LZINDEX+=2);
-  }
+  var getNextZindex = (function() {
+    var _lzindex  = 1;
+    var _ltzindex = 100000;
+
+    return function(ontop) {
+      if ( typeof ontop !== 'undefined' && ontop === true ) {
+        return (_ltzindex+=2);
+      }
+      return (_lzindex+=2);
+    };
+  })();
 
   function stopPropagation(ev) {
     OSjs.GUI.blurMenu();
@@ -223,16 +218,14 @@
       if ( typeof OSjs.Applications[n] != 'undefined' ) {
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
-          if ( _SPROCS[n] ) {
+          var sproc = _CORE.getProcess(n, true);
+          if ( sproc ) {
             console.debug("LaunchProcess()", "detected that this application is a singular and already running...");
-            if ( _SPROCS[n] === 'Application' ) {
-              var proc = _CORE.getProcess(n, true);
-              if ( proc ) {
-                proc._message('attention');
-                return;
-              }
+            if ( sproc instanceof Application ) {
+              sproc._message('attention');
+            } else {
+              _error("The application '" + n + "' is already launched and allows only one instance!");
             }
-            _error("This application is already launched and allows only one instance!");
             return;
           }
         }
@@ -241,14 +234,11 @@
         try {
           var a = new OSjs.Applications[n](arg, result);
           a.__sname = n;
-          if ( singular ) {
-            _SPROCS[n] = (a instanceof Service) ? 'Service' : 'Application';
-          }
 
           onConstructed(a);
         } catch ( e ) {
           console.warn("Error on constructing application", e, e.stack);
-          _error("Application construct failed: " + e, e);
+          _error("Application '" + n + "'construct failed: " + e, e);
           err = true;
         }
 
@@ -268,21 +258,21 @@
             onFinished(a);
             clr = true;
           } catch ( e ) {
-            _error("Application init() failed: " + e, e);
+            _error("Application '" + n + "' init() failed: " + e, e);
           }
           if ( clr ) {
             console.groupEnd(); // !!!
           }
         }
       } else {
-        _error("Application resource not found!");
+        _error("Application resources missing for '" + n + "' or it failed to load!");
       }
     };
 
     var _preload = function(result) {
       OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
         if ( errors ) {
-          _error("Application preloading failed: \n" + failed.join(","));
+          _error("Application '" + n + "' preloading failed: \n" + failed.join(","));
           return;
         }
 
@@ -292,7 +282,7 @@
 
     var data = _HANDLER.getApplicationMetadata(n);
     if ( !data ) {
-      _error("Failed to launch -- application manifest not found!");
+      _error("Failed to launch '" + n + "'. Application manifest data not found!");
       return;
     }
     _preload(data);
@@ -316,26 +306,30 @@
   /**
    * Process Template Class
    */
-  var Process = function(name) {
-    this.__pid      = _PID;
-    this.__pname    = name;
-    this.__sname    = name; // Used internall only
-    this.__state    = 0;
-    this.__started  = new Date();
-    this.__index    = -1;
+  var Process = (function() {
+    var _PID = 0;
 
-    console.group("OSjs::Core::Process::__construct()");
-    console.log("pid",    this.__pid);
-    console.log("pname",  this.__pname);
-    console.log("started",this.__started);
-    console.groupEnd();
+    return function(name) {
+      this.__pid      = _PID;
+      this.__pname    = name;
+      this.__sname    = name; // Used internall only
+      this.__state    = 0;
+      this.__started  = new Date();
+      this.__index    = -1;
 
-    if ( _PID > 0 ) {
-      this.__index = _PROCS.push(this) - 1;
-    }
+      console.group("OSjs::Core::Process::__construct()");
+      console.log("pid",    this.__pid);
+      console.log("pname",  this.__pname);
+      console.log("started",this.__started);
+      console.groupEnd();
 
-    _PID++;
-  };
+      if ( _PID > 0 ) {
+        this.__index = _PROCS.push(this) - 1;
+      }
+
+      _PID++;
+    };
+  })();
 
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
@@ -346,11 +340,6 @@
         _PROCS[this.__index] = null;
       }
     }
-
-    if ( typeof _SPROCS[this.__sname] !== 'undefined' ) {
-      delete _SPROCS[this.__sname];
-    }
-
     return true;
   };
 
@@ -369,7 +358,7 @@
     // Override error handling
     window.onerror = function(message, url, linenumber, column, exception) {
       var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-      ErrorDialog('JavaScript Error Report', 'An error has been detected :(', msg, exception, true);
+      ErrorDialog('JavaScript Error Report', 'An unexpected error occured, maybe a bug.', msg, exception, true);
       return false;
     };
 
@@ -411,21 +400,21 @@
     var _launchWM = function(callback) {
       var wm = _HANDLER.getConfig('WM');
       if ( !wm || !wm.exec ) {
-        _error("No window manager defined!");
+        _error("Cannot launch OS.js: No window manager defined!");
         return;
       }
 
       LaunchProcess(wm.exec, wm.args || {}, function() {
         callback();
       }, function(error) {
-        _error("Failed to launch Window Manager: " + error);
+        _error("Cannot launch OS.js: Failed to launch Window Manager: " + error);
       });
     };
 
     var _preload = function(list, callback) {
       OSjs.Utils.Preload(list, function(total, errors) {
         if ( errors ) {
-          _error("Failed to preload resources...");
+          _error("Cannot launch OS.js: Failed to preload resources...");
           return;
         }
 
@@ -454,13 +443,15 @@
         var args = app.__args;
         var wins = app.__windows;
         var data = {name: app.__name, args: args, windows: []};
+        var win;
 
         for ( var i = 0, l = wins.length; i < l; i++ ) {
+          win = wins[i];
           data.windows.push({
-            name      : wins[i]._name,
-            dimension : wins[i]._dimension,
-            position  : wins[i]._position,
-            state     : wins[i]._state
+            name      : win._name,
+            dimension : win._dimension,
+            position  : win._position,
+            state     : win._state
           });
         }
 
@@ -638,6 +629,7 @@
     // Destroy all windows
     var i = 0;
     var l = this._windows.length;
+    var w;
     for ( i; i < l; i++ ) {
       if ( this._windows[i] !== null ) {
         this._windows[i].destroy();
@@ -898,7 +890,8 @@
     if ( this.__windows.length ) {
       if ( _WM ) {
         var last = null;
-        for ( var i = 0, l = this.__windows.length; i < l; i++ ) {
+        var i = 0, l = this.__windows.length;
+        for ( i; i < l; i++ ) {
           _WM.addWindow(this.__windows[i]);
           last = this.__windows[i];
         }
@@ -1022,70 +1015,74 @@
   /**
    * Window Class
    */
-  var Window = function(name, opts, appRef) {
-    console.group("OSjs::Core::Window::__construct()");
-    this._$element      = null;
-    this._$root         = null;
-    this._$loading      = null;
-    this._$disabled     = null;
-    this._appRef        = appRef || null;
-    this._destroyed     = false;
-    this._wid           = _WID;
-    this._icon          = OSjs.API.getThemeResource('wm.png', 'wm');
-    this._name          = name;
-    this._title         = name;
-    this._position      = {x:opts.x, y:opts.y};
-    this._dimension     = {w:opts.width||_DEFAULT_WINDOW_WIDTH, h:opts.height||_DEFAULT_WINDOW_HEIGHT};
-    this._lastDimension = this._dimension;
-    this._lastPosition  = this._position;
-    this._tmpPosition   = null;
-    this._children      = [];
-    this._parent        = null;
-    this._guiElements   = [];
-    this._disabled      = true;
-    this._properties    = {
-      gravity           : null,
-      allow_move        : true,
-      allow_resize      : true,
-      allow_minimize    : true,
-      allow_maximize    : true,
-      allow_close       : true,
-      allow_windowlist  : true,
-      allow_drop        : false,
-      allow_iconmenu    : true,
-      allow_ontop       : true,
-      min_width         : _MINIMUM_WINDOW_WIDTH,
-      min_height        : _MINIMUM_WINDOW_HEIGHT,
-      max_width         : null,
-      max_height        : null
+  var Window = (function() {
+    var _WID = 0;
+
+    return function(name, opts, appRef) {
+      console.group("OSjs::Core::Window::__construct()");
+      this._$element      = null;
+      this._$root         = null;
+      this._$loading      = null;
+      this._$disabled     = null;
+      this._appRef        = appRef || null;
+      this._destroyed     = false;
+      this._wid           = _WID;
+      this._icon          = OSjs.API.getThemeResource('wm.png', 'wm');
+      this._name          = name;
+      this._title         = name;
+      this._position      = {x:opts.x, y:opts.y};
+      this._dimension     = {w:opts.width||200, h:opts.height||200};
+      this._lastDimension = this._dimension;
+      this._lastPosition  = this._position;
+      this._tmpPosition   = null;
+      this._children      = [];
+      this._parent        = null;
+      this._guiElements   = [];
+      this._disabled      = true;
+      this._properties    = {
+        gravity           : null,
+        allow_move        : true,
+        allow_resize      : true,
+        allow_minimize    : true,
+        allow_maximize    : true,
+        allow_close       : true,
+        allow_windowlist  : true,
+        allow_drop        : false,
+        allow_iconmenu    : true,
+        allow_ontop       : true,
+        min_width         : 100,
+        min_height        : 50,
+        max_width         : null,
+        max_height        : null
+      };
+      this._state     = {
+        focused   : false,
+        modal     : false,
+        minimized : false,
+        maximized : false,
+        ontop     : false,
+        onbottom  : false
+      };
+      this._hooks     = {
+        focus   : [],
+        blur    : [],
+        destroy : []
+      };
+
+      if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
+        var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
+        this._position.x = np.x;
+        this._position.y = np.y;
+      }
+
+      console.log('name', this._name);
+      console.log('wid',  this._wid);
+
+      _WID++;
+
+      console.groupEnd();
     };
-    this._state     = {
-      focused   : false,
-      modal     : false,
-      minimized : false,
-      maximized : false,
-      ontop     : false,
-      onbottom  : false
-    };
-    this._hooks     = {
-      focus   : [],
-      blur    : [],
-      destroy : []
-    };
-
-    if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
-      var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
-      this._position.x = np.x;
-      this._position.y = np.y;
-    }
-
-    console.log('name', this._name);
-    console.log('wid',  this._wid);
-
-    _WID++;
-
-    console.groupEnd();
-  };
+  })();
 
   Window.prototype.init = function(_wm) {
     var self = this;
@@ -1135,23 +1132,23 @@
 
         var _showBorder = function() {
           if ( !border.parentNode ) { document.body.appendChild(border); }
-          border.style.top = (main.offsetTop+2) + "px";
-          border.style.left = (main.offsetLeft+2) + "px";
-          border.style.width = (main.offsetWidth-4) + "px";
-          border.style.height = (main.offsetHeight-4) + "px";
-          border.style.zIndex = main.style.zIndex-1;
-          border.style.display = 'block';
+          border.style.top      = (main.offsetTop+2) + "px";
+          border.style.left     = (main.offsetLeft+2) + "px";
+          border.style.width    = (main.offsetWidth-4) + "px";
+          border.style.height   = (main.offsetHeight-4) + "px";
+          border.style.zIndex   = main.style.zIndex-1;
+          border.style.display  = 'block';
 
           if ( !main.className.match('WindowHintDnD') ) {
             main.className += ' WindowHintDnD';
           }
         };
         var _hideBorder = function() {
-          border.style.top = 0 + "px";
-          border.style.left = 0 + "px";
-          border.style.width = 0 + "px";
-          border.style.height = 0 + "px";
-          border.style.display = 'none';
+          border.style.top      = 0 + "px";
+          border.style.left     = 0 + "px";
+          border.style.width    = 0 + "px";
+          border.style.height   = 0 + "px";
+          border.style.display  = 'none';
 
           if ( border.parentNode ) { border.parentNode.removeChild(border); }
           if ( main.className.match('WindowHintDnD') ) {
@@ -1187,8 +1184,8 @@
     var windowTop           = document.createElement('div');
     windowTop.className     = 'WindowTop';
 
-    var windowIcon        = document.createElement('div');
-    windowIcon.className  = 'WindowIcon';
+    var windowIcon          = document.createElement('div');
+    windowIcon.className    = 'WindowIcon';
 
     var windowIconImage         = document.createElement('img');
     windowIconImage.alt         = this._title;
@@ -1621,24 +1618,22 @@
       this._restore(true, false);
       return true;
     }
-    this._lastPosition = this._position;
-    this._lastDimension = this._dimension;
+    this._lastPosition    = this._position;
+    this._lastDimension   = this._dimension;
     this._state.maximized = true;
 
     var s = getWindowSpace();
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    this._$element.style.top = s.top + "px";
-    this._$element.style.left = s.left + "px";
-    this._$element.style.width = s.width + "px";
+    this._$element.style.top    = s.top + "px";
+    this._$element.style.left   = s.left + "px";
+    this._$element.style.width  = s.width + "px";
     this._$element.style.height = s.height + "px";
     if ( !this._$element.className.match(/WindowHintMaximized/) ) {
       this._$element.className += ' WindowHintMaximized';
     }
 
     this._onChange('maximize');
-
     this._resize();
-
     this._focus();
 
     return true;
@@ -1729,10 +1724,10 @@
 
   Window.prototype._move = function(x, y) {
     if ( !this._properties.allow_move ) return false;
-    this._$element.style.top = y + "px";
+    this._$element.style.top  = y + "px";
     this._$element.style.left = x + "px";
-    this._position.x = x;
-    this._position.y = y;
+    this._position.x          = x;
+    this._position.y          = y;
     return true;
   };
 
@@ -1930,6 +1925,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var __initialize = function() {
+    console.info('Launching OS.js v2');
+
     _$LOADING = document.createElement('img');
     _$LOADING.id = "Loading";
     _$LOADING.src = OSjs.API.getThemeResource('loading_small.gif', 'base');
@@ -1944,10 +1941,6 @@
   OSjs.initialize = function() {
     if ( _INITED ) return;
     _INITED = true;
-
-    console.log('-- ');
-    console.log('-- Launching OS.js v2');
-    console.log('-- ');
 
     window.onload = null;
 
