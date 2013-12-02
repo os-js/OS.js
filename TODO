@@ -4,6 +4,7 @@ Alpha-1:
 * Settings: Margin adjustment
 * Settings: Font selection
 * Include new Draw app (With support for layers, effects etc.)
+* Application settings in Handler
 
 Beta-1:
 * Go over error messages and rewrite
