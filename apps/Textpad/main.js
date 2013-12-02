@@ -163,4 +163,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationTextpad = ApplicationTextpad;
 
-})(OSjs.Core.DefaultApplication, OSjs.Core.Window);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window);

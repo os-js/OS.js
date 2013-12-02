@@ -31,6 +31,7 @@
 (function() {
 
   window.OSjs       = window.OSjs       || {};
+  OSjs.Helpers      = OSjs.Helpers      || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Settings     = OSjs.Settings     || {};
   OSjs.Applications = OSjs.Applications || {};

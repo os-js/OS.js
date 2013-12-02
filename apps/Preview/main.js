@@ -164,4 +164,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationPreview = ApplicationPreview;
 
-})(OSjs.Core.DefaultApplication, OSjs.Core.Window);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window);

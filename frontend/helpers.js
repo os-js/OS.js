@@ -31,8 +31,8 @@
 
 (function() {
 
-  window.OSjs   = window.OSjs   || {};
-  OSjs.Core     = OSjs.Core     || {};
+  window.OSjs       = window.OSjs       || {};
+  OSjs.Helpers      = OSjs.Helpers      || {};
 
   var Application = OSjs.Core.Application;
 
@@ -197,6 +197,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.DefaultApplication = DefaultApplication;
+  OSjs.Helpers.DefaultApplication = DefaultApplication;
 })();
 
