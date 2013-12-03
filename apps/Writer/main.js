@@ -44,7 +44,7 @@
     this._title = "Writer (WIP)";
 
     this.font       = 'Arial';
-    this.fontSize   = 12;
+    this.fontSize   = 3;
     this.textColor  = '#000000';
     this.backColor  = '#ffffff';
   };
@@ -71,7 +71,7 @@
     };
 
     var _createFontDialog = function(callback, currentName, currentSize) {
-      app._createDialog('Font', [{name: self.font, size: self.fontSize, color: self.textColor, background: self.backColor}, function(btn, fname, fsize) {
+      app._createDialog('Font', [{name: self.font, size: self.fontSize, color: self.textColor, background: self.backColor, minSize: 1, maxSize: 7, sizeType: 'internal'}, function(btn, fname, fsize) {
         if ( btn !== 'ok' ) return;
         callback(fname, fsize);
       }], self);
@@ -83,7 +83,7 @@
       self.font = name;
       self.fontSize = size;
       tb.getItem('font').getElementsByTagName('span')[0].style.fontFamily = name;
-      tb.getItem('font').getElementsByTagName('span')[0].innerHTML = name + ' (' + size + 'px)';
+      tb.getItem('font').getElementsByTagName('span')[0].innerHTML = name + ' (' + size + ')';
     };
     var _setTextColor = function(hex) {
       self.command('foreColor', hex);
@@ -199,7 +199,7 @@
         self.command('insertUnorderedList');
       }},
       {title: 'Image', name: 'IMG', onClick: function() {
-        self._appRef._createDialog('File', [{type: 'open'}, function(btn, fname, fmime) {
+        self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, fname, fmime) {
           if ( btn !== 'ok' || !fmime.match(/^image/) ) return;
           var src = OSjs.API.getResourceURL(fname);
           self.command('insertImage', src);
@@ -258,6 +258,10 @@
     if ( rt ) {
       rt.command(name, false, value);
       this._focus();
+      var rt = this._getGUIElement('WriterRichText');
+      if ( rt ) {
+        rt.focus();
+      }
       return true;
     }
     return false;

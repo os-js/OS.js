@@ -969,6 +969,7 @@
     this.fonts      = args.list       || ['OSjsFont', 'Arial', 'Arial Black', 'Sans-serif', 'Serif', 'Trebuchet MS', 'Impact', 'Georgia', 'Courier New', 'Comic Sans MS', 'Monospace', 'Symbol', 'Webdings'];
     this.minSize    = args.minSize    || 6;
     this.maxSize    = args.maxSize    || 30;
+    this.sizeType   = args.sizeType   || 'px';
     this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
 
     this.$selectFonts = null;
@@ -994,13 +995,23 @@
         self.fontSize = size << 0;
       }
 
-      var styles = [
-        'font-family: ' + self.fontName,
-        'font-size: ' + self.fontSize + 'px',
-        'background: ' + self.background,
-        'color: ' + self.color
-      ];
-      rt.setContent('<div style="' + styles.join(";") + '">' + self.text + '</div>');
+      var styles = [];
+      if ( self.sizeType == 'internal' ) {
+        styles = [
+          'font-family: ' + self.fontName,
+          'background: ' + self.background,
+          'color: ' + self.color
+        ];
+        rt.setContent('<font size="' + self.fontSize + '" style="' + styles.join(";") + '">' + self.text + '</font>');
+      } else {
+        styles = [
+          'font-family: ' + self.fontName,
+          'font-size: ' + self.fontSize + 'px',
+          'background: ' + self.background,
+          'color: ' + self.color
+        ];
+        rt.setContent('<div style="' + styles.join(";") + '">' + self.text + '</div>');
+      }
     };
 
     this.$selectFont = document.createElement('select');

@@ -1688,7 +1688,7 @@
   RichText.prototype.init = function() {
     var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
-    var doc = '<!DOCTYPE html><html><head><script type="text/javascript">function init() {window.document.designMode = "On";}</script><style type="text/css">body {font-family: Arial;font-size : 100%;}</style></head><body contentEditable="true" onload="init()"></body></html>';
+    var doc = '<!DOCTYPE html><html><head><script type="text/javascript">function init() {window.document.designMode = "On";}</script><style type="text/css">body {font-family: Arial;/*font-size : 12px;*/}</style></head><body contentEditable="true" onload="init()"></body></html>';
 
     this.$view = document.createElement('iframe');
     this.$view.setAttribute("border", "0");
@@ -1737,6 +1737,22 @@
       return this.$view.contentDocument || this.$view.contentWindow.document;
     }
     return null;
+  };
+
+  RichText.prototype.blur = function() {
+    if ( !GUIElement.prototype.blur.apply(this, arguments) ) return false;
+    if ( this.$view && this.$view.contentWindow ) {
+      this.$view.contentWindow.blur();
+    }
+    return true;
+  };
+
+  RichText.prototype.focus = function() {
+    if ( !GUIElement.prototype.focus.apply(this, arguments) ) return false;
+    if ( this.$view && this.$view.contentWindow ) {
+      this.$view.contentWindow.focus();
+    }
+    return true;
   };
 
   //
