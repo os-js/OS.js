@@ -1,4 +1,6 @@
 Alpha-1:
+* Backend errors just shows the JSON parsing error, not actual error
+  - Ex: bugreport on localhost
 * Clean up dialogs
 * Settings: Panel position
 * Settings: Margin adjustment

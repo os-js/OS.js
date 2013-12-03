@@ -1,0 +1,14 @@
+{
+  "ApplicationWriter":  {
+    "name":       "Writer",
+    "mime":       ["^text\/"],
+    "icon":       "apps/libreoffice34-writer.png",
+    "preload":    [
+      {"src": "main.js", "type": "javascript"},
+      {"src": "main.css", "type": "stylesheet"}
+    ]
+  }
+}
+
+
+
