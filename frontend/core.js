@@ -1539,6 +1539,7 @@
       }
       if ( (gel instanceof OSjs.GUI.RichText) ) {
         gel._addHook('focus', function() {
+          OSjs.GUI.blurMenu();
           self._focus();
         });
       }
