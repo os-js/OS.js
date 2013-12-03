@@ -102,7 +102,9 @@ body {
 #Login label {
   font-weight : bold;
 }
-#Login label, input[type=text], input[type=password] {
+#Login label,
+#Login input[type=text],
+#Login input[type=password] {
   display : block;
   width : 380px;
   margin : 5px;
