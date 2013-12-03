@@ -10,7 +10,8 @@ OS.js is a light-weight JavaScript based web/cloud desktop solution.
 * Smaller and faster
 * Tons of improvements
 * Dropped support for legacy browsers
-* Very simple setup (requires only a web-server using PHP or Node)
+* Runs standalone on any web-server (Filesystem APIs requires using the PHP or Node backend)
+* Very simple setup
 * No 3rd party libraries (runs on native browser libs)
 
 ## Features
