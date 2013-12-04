@@ -1750,7 +1750,13 @@
   RichText.prototype.command = function(cmd, defaultUI, args) {
     var d = this.getDocument();
     if ( d ) {
-      return d.execCommand(cmd, defaultUI, args);
+      var argss = [];
+      if ( typeof cmd         !== 'undefined' ) argss.push(cmd);
+      if ( typeof defaultUI   !== 'undefined' ) argss.push(defaultUI);
+      if ( typeof args        !== 'undefined' ) argss.push(args);
+
+      //return d.execCommand(cmd, defaultUI, args);
+      return d.execCommand.apply(d, argss);
     }
     return false;
   };
