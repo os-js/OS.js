@@ -1,14 +1,12 @@
 Alpha-1:
 * Clean up dialogs
 * Include new Draw app (With support for layers, effects etc.)
+* GUI - RichText: Cannot use OSjsFont atm
 
 Beta-1:
 * Go over error messages and rewrite
 * Go over all error handling
 * Node.js backend
-* Better application generation from example
-* Bundle a websocker handler
-* Bundle a settings/session storage handler
 * Offline usage
 
 Release:
@@ -17,9 +15,10 @@ Release:
 
 Future releases:
 * Localization
-* Optimizations
 * Mobile version
 * Panels with items in CoreWM
+* Investigate the Array.splice() loaded with Class instances -- breaks stuff?!
+  - Fixed for now with just nulling
 * Finish GUI Elements
   - Select + SelectList
   - Button
