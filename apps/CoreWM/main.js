@@ -277,7 +277,7 @@
         s.top += 35;
         s.height -= 35;
       } else {
-        s.height -= 70;
+        s.height -= 35;
       }
     }
 
