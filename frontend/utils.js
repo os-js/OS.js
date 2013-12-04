@@ -346,4 +346,158 @@
     return true;
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // MISC
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _LOADED = {};
+
+  var checkLoadedStyle = function(path) {
+    var lst = document.styleSheet || [];
+    if ( lst.length ) {
+      for ( var i = 0; i < lst.length; i++ ) {
+        if ( lst[i].href.indexOf(path) !== -1 ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  var createStyle = function(src, callback, opts) {
+    opts = opts || {};
+
+    if ( typeof opts.check === 'undefined' ) {
+      opts.check = true;
+    }
+
+    var interval  = opts.interval || 50;
+    var maxTries  = opts.maxTries || 10;
+
+    var _finished = function(result) {
+      _LOADED[src] = result;
+      console.info("Preloader->createStyle()", result ? 'success' : 'error', src);
+      callback(result);
+    };
+
+    if ( document.createStyleSheet ) {
+      document.createStyleSheet(src);
+      _finished(true);
+    } else {
+      var res    = document.createElement("link");
+      res.rel    = "stylesheet";
+      res.type   = "text/css";
+      res.href   = src;
+      document.getElementsByTagName("head")[0].appendChild(res);
+
+      if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
+        _finished(true);
+      } else if ( !checkLoadedStyle(src) ) {
+        var ival;
+
+        var _clear = function(result) {
+          if ( ival ) {
+            clearInterval(ival);
+            ival = null;
+          }
+          _finished(result);
+        };
+
+        ival = setInterval(function() {
+          console.debug("Preloader->createStyle()", 'check', src);
+          if ( checkLoadedStyle(src) ) {
+            return _clear(true);
+          } else if ( maxTries <= 0 ) {
+            return _clear(false);
+          }
+          maxTries--;
+        }, interval);
+      }
+    }
+  };
+
+  var createScript = function(src, callback) {
+    var _finished = function(result) {
+      _LOADED[src] = result;
+      console.info("Preloader->createScript()", result ? 'success' : 'error', src);
+      callback(result);
+    };
+
+    var loaded  = false;
+    var res     = document.createElement("script");
+    res.type    = "text/javascript";
+    res.charset = "utf-8";
+    res.onreadystatechange = function() {
+      if ( (this.readyState == 'complete' || this.readyState == 'loaded') && !loaded) {
+        loaded = true;
+        _finished(true);
+      }
+    };
+    res.onload = function() {
+      if ( loaded ) return;
+      loaded = true;
+      _finished(true);
+    };
+    res.onerror = function() {
+      if ( loaded ) return;
+      loaded = true;
+
+      _finished(false);
+    };
+    res.src = src;
+
+    document.getElementsByTagName("head")[0].appendChild(res);
+  };
+
+  OSjs.Utils.Preload = function(list, callback) {
+    list     = list     || [];
+    callback = callback || function() {};
+
+    var count       = list.length;
+    var successes   = 0;
+    var failed      = [];
+
+    var _finished = function() {
+      callback(count, failed.length, failed);
+    };
+
+    var _loaded = function(success, src) {
+      if ( success ) {
+        successes++;
+      } else {
+        failed.push(src);
+      }
+
+
+      if ( list.length ) {
+        _next();
+      } else {
+        _finished();
+      }
+    };
+
+    var _next = function() {
+      if ( list.length ) {
+        var item = list.pop();
+        if ( _LOADED[item.src] === true ) {
+          _loaded(true);
+          return;
+        }
+
+        if ( item.type.match(/^style/) ) {
+          createStyle(item.src, _loaded);
+        } else if ( item.type.match(/script$/) ) {
+          createScript(item.src, _loaded);
+        }
+      }
+    };
+
+    if ( list.length ) {
+      console.log("Preloader", count, "file(s)", list);
+      _next();
+    } else {
+      _finished();
+    }
+  };
+
 })();
