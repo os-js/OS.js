@@ -35,25 +35,75 @@
 
   var _LOADED = {};
 
-  var createStyle = function(src, callback) {
-    var interval  = 10;
-    var timeout   = 7500;
+  var checkLoadedStyle = function(path) {
+    var lst = document.styleSheet || [];
+    if ( lst.length ) {
+      for ( var i = 0; i < lst.length; i++ ) {
+        if ( lst[i].href.indexOf(path) !== -1 ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
 
-    // TODO: Implement detection from v1
+  var createStyle = function(src, callback, opts) {
+    opts = opts || {};
+
+    if ( typeof opts.check === 'undefined' ) {
+      opts.check = true;
+    }
+
+    var interval  = opts.interval || 50;
+    var maxTries  = opts.maxTries || 10;
+
+    var _finished = function(result) {
+      console.info("Preloader->createStyle()", result ? 'success' : 'error', src);
+      callback(result);
+    };
+
     if ( document.createStyleSheet ) {
       document.createStyleSheet(src);
+      _finished(true);
     } else {
       var res    = document.createElement("link");
       res.rel    = "stylesheet";
       res.type   = "text/css";
       res.href   = src;
       document.getElementsByTagName("head")[0].appendChild(res);
-    }
 
-    callback(true);
+      if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
+        _finished(true);
+      } else if ( !checkLoadedStyle(src) ) {
+        var ival;
+
+        var _clear = function(result) {
+          if ( ival ) {
+            clearInterval(ival);
+            ival = null;
+          }
+          _finished(result);
+        };
+
+        ival = setInterval(function() {
+          console.debug("Preloader->createStyle()", 'check', src);
+          if ( checkLoadedStyle(src) ) {
+            return _clear(true);
+          } else if ( maxTries <= 0 ) {
+            return _clear(false);
+          }
+          maxTries--;
+        }, interval);
+      }
+    }
   };
 
   var createScript = function(src, callback) {
+    var _finished = function(result) {
+      console.info("Preloader->createScript()", result ? 'success' : 'error', src);
+      callback(result);
+    };
+
     var loaded  = false;
     var res     = document.createElement("script");
     res.type    = "text/javascript";
@@ -61,19 +111,19 @@
     res.onreadystatechange = function() {
       if ( (this.readyState == 'complete' || this.readyState == 'loaded') && !loaded) {
         loaded = true;
-        callback(true);
+        _finished(true);
       }
     };
     res.onload = function() {
       if ( loaded ) return;
       loaded = true;
-      callback(true);
+      _finished(true);
     };
     res.onerror = function() {
       if ( loaded ) return;
       loaded = true;
 
-      callback(false);
+      _finished(false);
     };
     res.src = src;
 
