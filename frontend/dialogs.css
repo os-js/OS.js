@@ -198,6 +198,10 @@
   height : 160px;
   width : 135px;
 }
+.FontDialog.NoFontSizes .SelectFont {
+  right : 0px;
+  width : 440px;
+}
 
 /* FileInformationDialog */
 .FileInformationDialog textarea {

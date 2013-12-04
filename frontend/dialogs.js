@@ -967,10 +967,11 @@
     this.background = args.background || '#ffffff';
     this.color      = args.color      || '#000000';
     this.fonts      = args.list       || ['OSjsFont', 'Arial', 'Arial Black', 'Sans-serif', 'Serif', 'Trebuchet MS', 'Impact', 'Georgia', 'Courier New', 'Comic Sans MS', 'Monospace', 'Symbol', 'Webdings'];
-    this.minSize    = args.minSize    || 6;
-    this.maxSize    = args.maxSize    || 30;
     this.sizeType   = args.sizeType   || 'px';
     this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
+
+    this.minSize    = typeof args.minSize === 'undefined' ? 6  : args.minSize;
+    this.maxSize    = typeof args.maxSize === 'undefined' ? 30 : args.maxSize;
 
     this.$selectFonts = null;
     this.$selectSize  = null;
@@ -1064,7 +1065,7 @@
 
       this.$element.appendChild(this.$selectSize);
     } else {
-      this.$element.className += 'NoFontSizes';
+      this.$element.className += ' NoFontSizes';
     }
 
     updateFont();

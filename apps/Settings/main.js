@@ -333,7 +333,7 @@
   ApplicationSettingsWindow.prototype.openFontSelect = function(ev, input) {
     var cur = input.value;
     var self = this;
-    this._appRef._createDialog('Font', [{fontName: cur}, function(btn, fontName, fontSize) {
+    this._appRef._createDialog('Font', [{fontName: cur, minSize: 0, maxSize: 0}, function(btn, fontName, fontSize) {
       self._focus();
       if ( btn != 'ok' ) return;
       input.value = fontName;

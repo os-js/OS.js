@@ -1,7 +1,6 @@
 Alpha-1:
 * Clean up dialogs
 * Include new Draw app (With support for layers, effects etc.)
-* GUI - RichText: Cannot use OSjsFont atm
 
 Beta-1:
 * Go over error messages and rewrite

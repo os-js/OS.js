@@ -1695,7 +1695,7 @@
   RichText.prototype.init = function() {
     var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
-    var doc = '<!DOCTYPE html><html><head><script type="text/javascript">function init() {window.document.designMode = "On";}</script><style type="text/css">body {font-family: Arial;/*font-size : 12px;*/}</style></head><body contentEditable="true" onload="init()"></body></html>';
+    var doc = '<!DOCTYPE html><html><head><style type="text/css">body {font-family: Arial;/*font-size : 12px;*/}</style></head><body contentEditable="true"></body></html>';
 
     this.$view = document.createElement('iframe');
     this.$view.setAttribute("border", "0");
@@ -1703,12 +1703,31 @@
     el.appendChild(this.$view);
 
     setTimeout(function() {
-      self.$view.contentWindow.onfocus = function() {
-        self.focus();
-      };
-      self.$view.contentWindow.onblur = function() {
-        self.blur();
-      };
+      var doc = self.getDocument();
+      var src = "/themes/default.css";
+      if ( doc ) {
+        doc.designMode = "On";
+        if ( doc.createStyleSheet ) {
+          doc.createStyleSheet(src);
+        } else {
+          var res    = doc.createElement("link");
+          res.rel    = "stylesheet";
+          res.type   = "text/css";
+          res.href   = src;
+          doc.getElementsByTagName("head")[0].appendChild(res);
+        }
+      }
+
+      try {
+        self.$view.contentWindow.onfocus = function() {
+          self.focus();
+        };
+        self.$view.contentWindow.onblur = function() {
+          self.blur();
+        };
+      } catch ( e ) {
+        console.warn("Failed to bind focus/blur on richtext", e);
+      }
     }, 0);
 
     return el;
