@@ -190,6 +190,7 @@ body .Menu li.Disabled {
   padding-left : 5px;
   padding-right : 5px;
   height : 22px;
+  line-height : 22px;
   min-width : 30px;
   vertical-align : middle;
   outline : none;
