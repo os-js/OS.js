@@ -58,6 +58,7 @@
     var maxTries  = opts.maxTries || 10;
 
     var _finished = function(result) {
+      _LOADED[src] = result;
       console.info("Preloader->createStyle()", result ? 'success' : 'error', src);
       callback(result);
     };
@@ -100,6 +101,7 @@
 
   var createScript = function(src, callback) {
     var _finished = function(result) {
+      _LOADED[src] = result;
       console.info("Preloader->createScript()", result ? 'success' : 'error', src);
       callback(result);
     };
@@ -160,11 +162,10 @@
     var _next = function() {
       if ( list.length ) {
         var item = list.pop();
-        if ( _LOADED[item.src] ) {
+        if ( _LOADED[item.src] === true ) {
           _loaded(true);
           return;
         }
-        _LOADED[item.src] = true;
 
         if ( item.type.match(/^style/) ) {
           createStyle(item.src, _loaded);
