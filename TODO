@@ -7,7 +7,6 @@ Alpha-1:
 * Settings: Font selection
 * Include new Draw app (With support for layers, effects etc.)
 * Application settings in Handler
-* Add filechange event message for applications on FSop success
 
 Beta-1:
 * Go over error messages and rewrite

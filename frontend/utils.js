@@ -256,6 +256,7 @@
         }
       }
     };
+
     xhr.open("POST", OSjs.API.getResourceURL());
     xhr.send(fd);
 

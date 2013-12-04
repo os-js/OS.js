@@ -221,7 +221,7 @@
           if ( sproc ) {
             console.debug("LaunchProcess()", "detected that this application is a singular and already running...");
             if ( sproc instanceof Application ) {
-              sproc._message('attention');
+              sproc._onMessage(null, 'attention');
             } else {
               _error("The application '" + n + "' is already launched and allows only one instance!");
             }
@@ -511,6 +511,14 @@
     _PROCS = [];
 
     window.onerror = function() {};
+  };
+
+  Main.prototype.message = function(msg, opts) {
+    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
+      if ( _PROCS[i] && _PROCS[i] instanceof Application ) {
+        _PROCS[i]._onMessage(null, msg, opts);
+      }
+    }
   };
 
   Main.prototype.kill = function(pid) {
@@ -918,8 +926,16 @@
   };
 
   Application.prototype._onMessage = function(obj, msg, args) {
+    if ( !msg ) return;
+
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
+    } else if ( msg === 'attention' ) {
+      if ( this.__windows.length ) {
+        if ( this.__windows[0] ) {
+          this.__windows[0]._focus();
+        }
+      }
     }
   };
 
@@ -930,18 +946,6 @@
       OSjs.API.error("Application API error", "Application " + this.__name + " failed to perform operation '" + method + "'", err);
     };
     return APICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
-  };
-
-  Application.prototype._message = function(msg, args) {
-    if ( msg === 'attention' ) {
-      if ( this.__windows.length ) {
-        if ( this.__windows[0] ) {
-          this.__windows[0]._focus();
-          return true;
-        }
-      }
-    }
-    return false;
   };
 
   Application.prototype._createDialog = function(className, args, parentClass) {

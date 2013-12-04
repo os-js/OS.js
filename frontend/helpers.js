@@ -144,6 +144,8 @@
         if ( res && res.result ) {
           self.setCurrentFile(fname, fmime);
           self.defaultActionSuccess('save', self.currentFile);
+
+          OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(fname), filename: OSjs.Utils.filename(fname), source: self.__pid});
           return;
         }
 
