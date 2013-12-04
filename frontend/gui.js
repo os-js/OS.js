@@ -1756,7 +1756,11 @@
       if ( typeof args        !== 'undefined' ) argss.push(args);
 
       //return d.execCommand(cmd, defaultUI, args);
-      return d.execCommand.apply(d, argss);
+      try {
+        return d.execCommand.apply(d, argss);
+      } catch ( e ) {
+        console.warn("OSjs.GUI.RichText::command() failed", cmd, defaultUI, args, e);
+      }
     }
     return false;
   };
