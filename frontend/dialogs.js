@@ -1035,32 +1035,37 @@
       }
     });
 
-    this.$selectSize = document.createElement('select');
-    this.$selectSize.className = 'SelectSize';
-    this.$selectSize.setAttribute("size", "7");
-
-    var i = 0;
-    for ( var s = this.minSize; s <= this.maxSize; s++ ) {
-      option = document.createElement('option');
-      option.value = s;
-      option.innerHTML = s;
-      this.$selectSize.appendChild(option);
-      if ( this.fontSize == s ) {
-        this.$selectSize.selectedIndex = i;
-      }
-      i++;
-    }
-
-    this._addEvent(this.$selectSize, 'onchange', function(ev) {
-      var i = this.selectedIndex;
-      var o = this.options[i];
-      if ( o ) {
-        updateFont(null, o.value);
-      }
-    });
-
     this.$element.appendChild(this.$selectFont);
-    this.$element.appendChild(this.$selectSize);
+
+    if ( this.maxSize > 0 ) {
+      this.$selectSize = document.createElement('select');
+      this.$selectSize.className = 'SelectSize';
+      this.$selectSize.setAttribute("size", "7");
+
+      var i = 0;
+      for ( var s = this.minSize; s <= this.maxSize; s++ ) {
+        option = document.createElement('option');
+        option.value = s;
+        option.innerHTML = s;
+        this.$selectSize.appendChild(option);
+        if ( this.fontSize == s ) {
+          this.$selectSize.selectedIndex = i;
+        }
+        i++;
+      }
+
+      this._addEvent(this.$selectSize, 'onchange', function(ev) {
+        var i = this.selectedIndex;
+        var o = this.options[i];
+        if ( o ) {
+          updateFont(null, o.value);
+        }
+      });
+
+      this.$element.appendChild(this.$selectSize);
+    } else {
+      this.$element.className += 'NoFontSizes';
+    }
 
     updateFont();
 

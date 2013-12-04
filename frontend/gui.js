@@ -250,6 +250,9 @@
     return this.$element;
   };
 
+  GUIElement.prototype.update = function() {
+  };
+
   GUIElement.prototype.destroy = function() {
     if ( this.destroyed ) return;
 
@@ -1228,6 +1231,10 @@
     el.appendChild(this.$button);
 
     return el;
+  };
+
+  Slider.prototype.update = function() {
+    this.setValue(this.val);
   };
 
   Slider.prototype.setPercentage = function(p) {

@@ -1551,6 +1551,10 @@
       this._guiElements.push(gel);
       parentNode.appendChild(gel.getRoot());
 
+      setTimeout(function() {
+        gel.update();
+      }, 10);
+
       return gel;
     }
 

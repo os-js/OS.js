@@ -4,7 +4,7 @@
    * Main Window
    */
   var ApplicationSettingsWindow = function(app) {
-    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 260}, app]);
+    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 390}, app]);
 
     this._title                   = "Settings";
     this._icon                    = "categories/applications-system.png";
@@ -19,9 +19,10 @@
     var root      = Window.prototype.init.apply(this, arguments);
     var app       = this._appRef;
 
-    var settings  = wm.getSettings();
-    var themes    = wm.getThemes();
-    var theme     = wm.getSetting('theme');
+    var settings      = wm.getSettings();
+    var themes        = wm.getThemes();
+    var theme         = wm.getSetting('theme');
+    var desktopMargin = settings.desktop.margin;
 
     var container = document.createElement('div');
     var outer, label, input, button, tmp;
@@ -56,7 +57,9 @@
     outer.appendChild(input);
     container.appendChild(outer);
 
+    //
     // Background Type
+    //
     outer = document.createElement('div');
     outer.className = "Setting SettingsNoButton Setting_BackgroundType";
 
@@ -108,7 +111,9 @@
     outer.appendChild(input);
     container.appendChild(outer);
 
+    //
     // Background Image
+    //
     outer = document.createElement('div');
     outer.className = "Setting Setting_BackgroundImage";
 
@@ -137,7 +142,9 @@
     outer.appendChild(button);
     container.appendChild(outer);
 
+    //
     // Background Color
+    //
     outer = document.createElement('div');
     outer.className = "Setting Setting_BackgroundColor";
 
@@ -165,31 +172,126 @@
     outer.appendChild(button);
     container.appendChild(outer);
 
-    // WM Opts
+    //
+    // Font
+    //
     outer = document.createElement('div');
-    outer.className = "Setting Setting_TaskBarOntop";
+    outer.className = "Setting Setting_Font";
 
     label = document.createElement('label');
-    label.innerHTML = "Taskbar ontop ?";
+    label.innerHTML = "Font";
 
     input = document.createElement('input');
-    input.name = "taskbarOntop";
-    input.type = "checkbox";
-    if ( settings.taskbar.ontop ) {
-      input.checked = "checked";
+    input.type = "text";
+    input.disabled = "disabled";
+    input.name = "font";
+    input.value = settings.style.fontFamily;
+    input.style.fontFamily = settings.style.fontFamily;
+
+    button = document.createElement('button');
+    button.innerHTML = "...";
+    button.onclick = (function(inp) {
+      return function(ev) {
+        self.openFontSelect(ev, inp);
+      };
+    })(input);
+
+    outer.appendChild(label);
+    outer.appendChild(input);
+    outer.appendChild(button);
+    container.appendChild(outer);
+
+    //
+    // Taskbar Position
+    //
+    outer = document.createElement('div');
+    outer.className = "Setting SettingsNoButton Setting_TaskbarPosition";
+
+    label = document.createElement('label');
+    label.innerHTML = "Taskbar Position";
+
+    input = document.createElement('select');
+    input.name = "taskbarPosition";
+
+    tmp = document.createElement('option');
+    tmp.value = 'top';
+    tmp.innerHTML = 'Top';
+    input.appendChild(tmp);
+
+    tmp = document.createElement('option');
+    tmp.value = 'bottom';
+    tmp.innerHTML = 'Bottom';
+    input.appendChild(tmp);
+
+    for ( i = 0; i < input.childNodes.length; i++ ) {
+      if ( input.childNodes[i].value == settings.taskbar.position ) {
+        //input.childNodes[i].selected = "selected";
+        input.selectedIndex = i;
+        break;
+      }
     }
 
     outer.appendChild(label);
     outer.appendChild(input);
     container.appendChild(outer);
 
+    //
+    // Taskbar Ontop
+    //
+    outer = document.createElement('div');
+    outer.className = "Setting SettingsNoButton Setting_TaskBarOntop";
+
+    label = document.createElement('label');
+    label.innerHTML = "Taskbar ontop ?";
+
+    input = document.createElement('select');
+    input.name = "taskbarOntop";
+
+    tmp = document.createElement('option');
+    tmp.value = 'yes';
+    tmp.innerHTML = 'Yes';
+    input.appendChild(tmp);
+
+    tmp = document.createElement('option');
+    tmp.value = 'no';
+    tmp.innerHTML = 'No';
+    input.appendChild(tmp);
+
+    input.selectedIndex = settings.taskbar.ontop ? 0 : 1;
+
+    outer.appendChild(label);
+    outer.appendChild(input);
+    container.appendChild(outer);
+
+    //
+    // Desktop Margin
+    //
+    outer = document.createElement('div');
+    outer.className = "Setting Setting_DesktopMargin";
+
+    label = document.createElement('label');
+    label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
+
+    outer.appendChild(label);
+    var slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin}, function(value, percentage) {
+      desktopMargin = value;
+      label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
+    }), outer);
+    container.appendChild(outer);
+    slider.setValue(desktopMargin);
+
+    //
     // Buttons
+    //
     button = document.createElement('button');
     button.className = "Save";
     button.innerHTML = "Apply";
     button.onclick = function(ev) {
       app.save(ev, self, {
-        taskbarOntop:     document.getElementsByName('taskbarOntop')[0].checked,
+        taskbarOntop:     document.getElementsByName('taskbarOntop')[0].value == 'yes',
+        taskbarPosition:  document.getElementsByName('taskbarPosition')[0].value,
+        desktopMargin:    desktopMargin,
+        desktopFont:      document.getElementsByName('font')[0].value,
         theme:            document.getElementsByName('theme')[0].value,
         backgroundType:   document.getElementsByName('backgroundType')[0].value,
         backgroundImage:  document.getElementsByName('backgroundImage')[0].value,
@@ -228,6 +330,17 @@
     }], this);
   };
 
+  ApplicationSettingsWindow.prototype.openFontSelect = function(ev, input) {
+    var cur = input.value;
+    var self = this;
+    this._appRef._createDialog('Font', [{fontName: cur}, function(btn, fontName, fontSize) {
+      self._focus();
+      if ( btn != 'ok' ) return;
+      input.value = fontName;
+      input.style.fontFamily = fontName;
+    }], this);
+  };
+
   /**
    * Application
    */
@@ -258,13 +371,16 @@
 
   ApplicationSettings.prototype.save = function(ev, win, settings) {
     var wm = OSjs.API.getWMInstance();
+    console.warn("ApplicationSettings::save()", settings);
     if ( wm ) {
       var res = wm.applySettings({
-        taskbar    : {ontop: settings.taskbarOntop},
+        taskbar    : {ontop: settings.taskbarOntop, position: settings.taskbarPosition},
+        desktop    : {margin: settings.desktopMargin},
         theme      : settings.theme,
         wallpaper  : settings.backgroundImage,
         background : settings.backgroundType,
         style      : {
+          fontFamily       : settings.desktopFont,
           backgroundColor  : settings.backgroundColor
         }
       }, false, true);

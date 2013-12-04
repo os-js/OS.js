@@ -290,9 +290,8 @@
     return false;
   };
 
-  DefaultHandler.prototype.setUserSettings = function(key, opts, callback) {
-    callback = callback || function() {};
-    var settings = this.storage.get("userSettings");
+  DefaultHandler.prototype._setSettings = function(cat, key, opts, callback) {
+    var settings = this.storage.get(cat);
     if ( typeof settings !== 'object' || !settings ) {
       settings = {};
     }
@@ -301,18 +300,37 @@
     }
     settings[key] = opts;
 
-    this.storage.set("userSettings", settings);
+    this.storage.set(cat, settings);
     callback(true);
   };
 
-  DefaultHandler.prototype.getUserSettings = function(key, callback) {
-    callback = callback || function() {};
-    var s = this.storage.get("userSettings") || {};
+  DefaultHandler.prototype._getSettings = function(cat, key, callback) {
+    var s = this.storage.get(cat) || {};
     if ( s[key] ) {
       callback(s[key]);
       return;
     }
     callback(false);
+  };
+
+  DefaultHandler.prototype.setUserSettings = function(key, opts, callback) {
+    callback = callback || function() {};
+    this._setSettings('userSettings', key, opts, callback);
+  };
+
+  DefaultHandler.prototype.getUserSettings = function(key, callback) {
+    callback = callback || function() {};
+    this._getSettings('userSettings', key, callback);
+  };
+
+  DefaultHandler.prototype.setApplicationSettings = function(app, key, opts, callback) {
+    callback = callback || function() {};
+    this._setSettings(app, key, opts, callback);
+  };
+
+  DefaultHandler.prototype.getApplicationSettings = function(app, key, callback) {
+    callback = callback || function() {};
+    this._getSettings(app, key, callback);
   };
 
   DefaultHandler.prototype.setUserSession = function(session, callback) {

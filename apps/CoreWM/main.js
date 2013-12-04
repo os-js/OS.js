@@ -13,6 +13,7 @@
         color            : '#333',
         fontWeight       : 'normal',
         textDecoration   : 'none',
+        fontFamily       : 'OSjsFont',
         backgroundRepeat : 'repeat'
       }
     };
@@ -254,7 +255,7 @@
       if ( opts.ontop ) {
         classNames.push('Ontop');
       }
-      classNames.push(opts.position == 'top' ? 'Top' : 'Button');
+      classNames.push(opts.position == 'top' ? 'Top' : 'Bottom');
     }
 
     this._$root.className = classNames.join(' ');
