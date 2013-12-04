@@ -297,20 +297,26 @@
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
         var response = httpRequest.responseText;
-        var error = "An error occured";
+        var error = "";
+        var ctype = this.getResponseHeader('content-type');
 
-        if ( opts.parse ) {
-          try {
-            response = JSON.parse(httpRequest.responseText);
-          } catch ( e ) {
-            response = null;
-            error = "An error occured while parsing: " + e;
+        if ( ctype === 'application/json' ) {
+          if ( opts.parse ) {
+            try {
+              response = JSON.parse(httpRequest.responseText);
+            } catch ( e ) {
+              response = null;
+              error = "An error occured while parsing: " + e;
+            }
           }
         }
 
         if ( httpRequest.status === 200 ) {
           onSuccess(response, httpRequest, url);
         } else {
+          if ( !error && (ctype !== 'application/json') ) {
+            error = "Backend error: " + (httpRequest.responseText || "Fatal Error");
+          }
           onError(error, response, httpRequest, url);
         }
       }
