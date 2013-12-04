@@ -1704,19 +1704,32 @@
     el.appendChild(this.$view);
 
     setTimeout(function() {
-      var doc = self.getDocument();
-      var src = "/themes/default.css";
-      if ( doc ) {
-        doc.designMode = "On";
-        if ( doc.createStyleSheet ) {
-          doc.createStyleSheet(src);
-        } else {
-          var res    = doc.createElement("link");
-          res.rel    = "stylesheet";
-          res.type   = "text/css";
-          res.href   = src;
-          doc.getElementsByTagName("head")[0].appendChild(res);
+      try {
+        var doc = self.getDocument();
+        var src = "/themes/default.css";
+        if ( doc ) {
+          doc.designMode = "On";
+
+          var _createCSS = function(src) {
+            var res    = doc.createElement("link");
+            res.rel    = "stylesheet";
+            res.type   = "text/css";
+            res.href   = src;
+            doc.getElementsByTagName("head")[0].appendChild(res);
+          };
+
+          if ( doc.createStyleSheet ) {
+            try {
+                doc.createStyleSheet(src);
+            } catch ( e ) {
+              _createCSS(src);
+            }
+          } else {
+            _createCSS(src);
+          }
         }
+      } catch ( e ) {
+        console.warn("Failed to attach stylesheet to iframe. Running IE?!", e);
       }
 
       try {
