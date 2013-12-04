@@ -1686,6 +1686,7 @@
    * Richt Text Element
    */
   var RichText = function(name) {
+    if ( !OSjs.Utils.getCompability().richtext ) throw "Your platform does not support RichText editing";
     this.$view = null;
     GUIElement.apply(this, [name, {focusable: true}]);
   };

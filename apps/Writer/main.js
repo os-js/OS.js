@@ -281,6 +281,8 @@
    * Application
    */
   var ApplicationWriter = function(args, metadata) {
+    if ( !OSjs.Utils.getCompability().richtext ) throw "Your platform does not support RichText editing";
+
     Application.apply(this, ['ApplicationWriter', args, metadata]);
 
     var self = this;
