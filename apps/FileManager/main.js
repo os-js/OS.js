@@ -328,7 +328,7 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationFileManager.prototype.init = function(core, session) {
+  ApplicationFileManager.prototype.init = function(core, settings) {
     Application.prototype.init.apply(this, arguments);
 
     this._addWindow(new ApplicationFileManagerWindow(this));

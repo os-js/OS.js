@@ -354,7 +354,7 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationSettings.prototype.init = function(core, session) {
+  ApplicationSettings.prototype.init = function(core, settings) {
     Application.prototype.init.apply(this, arguments);
 
     this._addWindow(new ApplicationSettingsWindow(this));

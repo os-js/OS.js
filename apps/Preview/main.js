@@ -152,7 +152,7 @@
 
   ApplicationPreview.prototype = Object.create(Application.prototype);
 
-  ApplicationPreview.prototype.init = function(core, session) {
+  ApplicationPreview.prototype.init = function(core, settings) {
     this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}));
     Application.prototype.init.apply(this, arguments);
   };

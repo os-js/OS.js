@@ -251,16 +251,14 @@
             }
           }
         } else {
-          var clr = false;
           try {
-            a.init(_CORE);
-            onFinished(a);
-            clr = true;
+            _HANDLER.getApplicationSettings(a.__name, function(settings) {
+              a.init(_CORE, settings);
+              onFinished(a);
+              console.groupEnd();
+            });
           } catch ( e ) {
             _error("Application '" + n + "' init() failed: " + e, e);
-          }
-          if ( clr ) {
-            console.groupEnd(); // !!!
           }
         }
       } else {
@@ -881,6 +879,8 @@
     this.__inited     = false;
     this.__windows    = [];
     this.__args       = args || {};
+    this.__settings   = {};
+
 
     Process.apply(this, [name]);
 
@@ -891,8 +891,10 @@
 
   Application.prototype = Object.create(Process.prototype);
 
-  Application.prototype.init = function(core) {
+  Application.prototype.init = function(core, settings) {
     console.log("OSjs::Core::Application::init()", this.__name);
+
+    this.__settings = settings || {};
 
     if ( this.__windows.length ) {
       if ( _WM ) {
@@ -1001,6 +1003,18 @@
       }
     }
     return null;
+  };
+
+  Application.prototype._getSetting = function(k) {
+    return this.__settings[k];
+  };
+
+  Application.prototype._setSetting = function(k, v, save) {
+    save = (typeof save === 'undefined' || save === true);
+    this.__settings[k] = v;
+    if ( save && _HANDLER ) {
+      _HANDLER.setApplicationSettings(this.__name, this.__settings);
+    }
   };
 
   Application.prototype._getArgument = function(k) {

@@ -290,6 +290,11 @@
     return false;
   };
 
+  DefaultHandler.prototype._setSetting = function(cat, values, callback) {
+    this.storage.set(cat, values);
+    callback(true);
+  };
+
   DefaultHandler.prototype._setSettings = function(cat, key, opts, callback) {
     var settings = this.storage.get(cat);
     if ( typeof settings !== 'object' || !settings ) {
@@ -306,7 +311,10 @@
 
   DefaultHandler.prototype._getSettings = function(cat, key, callback) {
     var s = this.storage.get(cat) || {};
-    if ( s[key] ) {
+    if ( key === null ) {
+      callback(s);
+      return;
+    } else if ( s[key] ) {
       callback(s[key]);
       return;
     }
@@ -323,14 +331,14 @@
     this._getSettings('userSettings', key, callback);
   };
 
-  DefaultHandler.prototype.setApplicationSettings = function(app, key, opts, callback) {
+  DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
     callback = callback || function() {};
-    this._setSettings(app, key, opts, callback);
+    this._setSetting(app, settings, callback);
   };
 
-  DefaultHandler.prototype.getApplicationSettings = function(app, key, callback) {
+  DefaultHandler.prototype.getApplicationSettings = function(app, callback) {
     callback = callback || function() {};
-    this._getSettings(app, key, callback);
+    this._getSettings(app, null, callback);
   };
 
   DefaultHandler.prototype.setUserSession = function(session, callback) {

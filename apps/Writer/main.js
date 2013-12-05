@@ -323,7 +323,7 @@
 
   ApplicationWriter.prototype = Object.create(Application.prototype);
 
-  ApplicationWriter.prototype.init = function(core, session) {
+  ApplicationWriter.prototype.init = function(core, settings) {
     this._addWindow(new ApplicationWriterWindow(this));
     Application.prototype.init.apply(this, arguments);
   };
