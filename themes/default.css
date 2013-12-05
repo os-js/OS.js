@@ -17,7 +17,7 @@
   src:url('default/fonts/SansationOblique.ttf');
 }
 body {
-  font-family:OSjsFont, Arial;
+  font-family:OSjsFont, Sans-serif;
 }
 .Window {
   border : 1px solid rgba(34, 34, 34, .5);

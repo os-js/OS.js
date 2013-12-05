@@ -32,6 +32,14 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
+  function getFonts() {
+    return ['OSjsFont', 'Arial', 'Arial Black', 'Sans-serif', 'Serif', 'Trebuchet MS', 'Impact', 'Georgia', 'Courier New', 'Comic Sans MS', 'Monospace', 'Symbol', 'Webdings'];
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
   var StandardDialog = function(className, args, opts, onClose) {
     this.$element       = null;
     this.$message       = null;
@@ -64,16 +72,16 @@
     this.$element.className = 'StandardDialog ' + this.className;
 
     if ( this.message ) {
-      this.$message = document.createElement('div');
+      this.$message           = document.createElement('div');
       this.$message.className = 'Message';
       this.$message.innerHTML = this.message;
       this.$element.appendChild(this.$message);
     }
 
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
-      this.$buttonCancel = document.createElement('button');
-      this.$buttonCancel.className = 'Cancel';
-      this.$buttonCancel.innerHTML = this.args.buttonCancelLabel || 'Cancel';
+      this.$buttonCancel            = document.createElement('button');
+      this.$buttonCancel.className  = 'Cancel';
+      this.$buttonCancel.innerHTML  = this.args.buttonCancelLabel || 'Cancel';
 
       this._addEvent(this.$buttonCancel, 'onclick', function(ev) {
         if ( this.getAttribute("disabled") == "disabled" ) return;
@@ -84,7 +92,7 @@
     }
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
-      this.$buttonConfirm = document.createElement('button');
+      this.$buttonConfirm           = document.createElement('button');
       this.$buttonConfirm.className = 'OK';
       this.$buttonConfirm.innerHTML = this.args.buttonOkLabel || 'OK';
       this._addEvent(this.$buttonConfirm, 'onclick', function(ev) {
@@ -143,15 +151,15 @@
 
     var label;
 
-    var root = DialogWindow.prototype.init.apply(this, arguments);
+    var root        = DialogWindow.prototype.init.apply(this, arguments);
     root.className += ' ErrorDialog';
 
-    var messagel = document.createElement('div');
-    messagel.className = 'Message';
-    messagel.innerHTML = this.data.message;
+    var messagel        = document.createElement('div');
+    messagel.className  = 'Message';
+    messagel.innerHTML  = this.data.message;
     root.appendChild(messagel);
 
-    label = document.createElement('div');
+    label           = document.createElement('div');
     label.className = 'Label';
     label.innerHTML = 'Summary';
     root.appendChild(label);
@@ -179,14 +187,14 @@
 
       bugData.exceptionDetail = '' + error;
 
-      label = document.createElement('div');
+      label           = document.createElement('div');
       label.className = 'Label';
       label.innerHTML = 'Trace';
       root.appendChild(label);
 
-      var traced = document.createElement('textarea');
-      traced.className = 'Trace';
-      traced.value = error;
+      var traced        = document.createElement('textarea');
+      traced.className  = 'Trace';
+      traced.value      = error;
       this._$root.appendChild(traced);
     }
 
@@ -206,10 +214,10 @@
         ok.onclick();
       };
 
-      var sendBug = document.createElement('button');
+      var sendBug       = document.createElement('button');
       sendBug.className = "Bug";
-      sendBug.innerHTML = "Send Bugreport";
-      sendBug.onclick = function() {
+      sendBug.innerHTML = "Bugreport";
+      sendBug.onclick   = function() {
         OSjs.API.call('bugreport', {data: bugData}, function(res) {
           if ( res ) {
             if ( res.result ) {
@@ -239,10 +247,10 @@
    * Application Chooser Dialog
    */
   var ApplicationChooserDialog = function(filename, mime, list, onClose) {
-    this.filename = OSjs.Utils.filename(filename);
-    this.mime = mime;
-    this.list = list;
-    this.selectedApp = null;
+    this.filename     = OSjs.Utils.filename(filename);
+    this.mime         = mime;
+    this.list         = list;
+    this.selectedApp  = null;
 
     var msg = (["Choose an application to open<br />", "<span>"+this.filename+"</span>", "("+this.mime+")"]).join(" ");
     StandardDialog.apply(this, ['ApplicationChooserDialog', {title: "Choose Application", message: msg}, {width:400, height:300}, onClose]);
@@ -289,17 +297,17 @@
       }
 
       list.push({
-        key: this.list[i],
+        key:   this.list[i],
         image: icon,
-        name: name
+        name:  name
       });
     }
 
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
     listView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'name', title: 'Name'},
-      {key: 'key', title: 'Key', visible: false}
+      {key: 'name',  title: 'Name'},
+      {key: 'key',   title: 'Key', visible: false}
      ]);
     listView.onActivate = function(ev, el, item) {
       if ( item && item.key ) {
@@ -333,10 +341,10 @@
   var FileProgressDialog = function(title) {
     DialogWindow.apply(this, ['FileUploadDialog', {width:400, height:120}]);
 
-    this.$desc = null;
-    this._title = title || "File Operation Progress";
-    this._properties.allow_close = false;
-    this._icon = 'actions/document-send.png';
+    this.$desc                    = null;
+    this._title                   = title || "File Operation Progress";
+    this._properties.allow_close  = false;
+    this._icon                    = 'actions/document-send.png';
   };
 
   FileProgressDialog.prototype = Object.create(DialogWindow.prototype);
@@ -351,12 +359,12 @@
     var self = this;
     var root = this._$root;
 
-    var el = document.createElement('div');
-    el.className = 'FileProgressDialog';
+    var el          = document.createElement('div');
+    el.className    = 'FileProgressDialog';
 
-    var desc = document.createElement('div');
-    desc.className = 'Description';
-    desc.innerHTML = 'Loading...';
+    var desc        = document.createElement('div');
+    desc.className  = 'Description';
+    desc.innerHTML  = 'Loading...';
 
 
     el.appendChild(desc);
@@ -530,12 +538,12 @@
   var FileDialog = function(args, onClose) {
     args = args || {};
 
-    this.currentPath      = args.path || OSjs.API.getDefaultPath('/');
-    this.currentFilename  = args.filename || '';
-    this.defaultFilename  = args.defaultFilename || '';
-    this.type             = args.type || 'open';
-    this.mime             = args.mime || null;
-    this.allowMimes       = args.mimes || null;
+    this.currentPath      = args.path             || OSjs.API.getDefaultPath('/');
+    this.currentFilename  = args.filename         || '';
+    this.defaultFilename  = args.defaultFilename  || '';
+    this.type             = args.type             || 'open';
+    this.mime             = args.mime             || null;
+    this.allowMimes       = args.mimes            || null;
     this.$input           = null;
 
     var self = this;
@@ -859,25 +867,25 @@
     } else {
       this.currentRGB = OSjs.Utils.HEXtoRGB(opts.color || '#ffffff');
     }
-    this.showAlpha = opts.showAlpha ? true : false;
+    this.showAlpha    = opts.showAlpha ? true : false;
     this.currentAlpha = opts.alpha * 100;
-    this.$color = null;
+    this.$color       = null;
   };
 
   ColorDialog.prototype = Object.create(StandardDialog.prototype);
 
   ColorDialog.prototype.init = function() {
-    var self = this;
-    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var self  = this;
+    var root  = StandardDialog.prototype.init.apply(this, arguments);
     var color = this.currentRGB;
 
-    var el = document.createElement('div');
-    el.className = 'ColorDialog';
+    var el        = document.createElement('div');
+    el.className  = 'ColorDialog';
 
-    var sliders = document.createElement('div');
+    var sliders       = document.createElement('div');
     sliders.className = 'ColorSliders';
 
-    var label = document.createElement('div');
+    var label       = document.createElement('div');
     label.className = 'Label LabelR';
     label.innerHTML = 'Red: 0';
     sliders.appendChild(label);
@@ -885,7 +893,7 @@
       self.setColor(value, self.currentRGB.g, self.currentRGB.b);
     }), sliders);
 
-    label = document.createElement('div');
+    label           = document.createElement('div');
     label.className = 'Label LabelG';
     label.innerHTML = 'Green: 0';
     sliders.appendChild(label);
@@ -893,7 +901,7 @@
       self.setColor(self.currentRGB.r, value, self.currentRGB.b);
     }), sliders);
 
-    label = document.createElement('div');
+    label           = document.createElement('div');
     label.className = 'Label LabelB';
     label.innerHTML = 'Blue: 0';
     sliders.appendChild(label);
@@ -902,7 +910,7 @@
     }), sliders);
 
     if ( this.showAlpha ) {
-      label = document.createElement('div');
+      label           = document.createElement('div');
       label.className = 'Label LabelA';
       label.innerHTML = 'Alpha: 0';
       sliders.appendChild(label);
@@ -911,7 +919,7 @@
       }), sliders);
     }
 
-    this.$color = document.createElement('div');
+    this.$color           = document.createElement('div');
     this.$color.className = 'ColorSelected';
 
     this._addGUIElement(new OSjs.GUI.ColorSwatch('ColorDialogColorSwatch', 200, 200, function(r, g, b) {
@@ -927,7 +935,8 @@
 
   ColorDialog.prototype.setColor = function(r, g, b, a) {
     this.currentAlpha = (typeof a === 'undefined' ? this.currentAlpha : a);
-    this.currentRGB = {r:r, g:g, b:b};
+    this.currentRGB   = {r:r, g:g, b:b};
+
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
 
     this._getGUIElement('SliderR').setValue(r);
@@ -966,7 +975,7 @@
     this.fontSize   = args.size       || 12;
     this.background = args.background || '#ffffff';
     this.color      = args.color      || '#000000';
-    this.fonts      = args.list       || ['OSjsFont', 'Arial', 'Arial Black', 'Sans-serif', 'Serif', 'Trebuchet MS', 'Impact', 'Georgia', 'Courier New', 'Comic Sans MS', 'Monospace', 'Symbol', 'Webdings'];
+    this.fonts      = args.list       || getFonts();
     this.sizeType   = args.sizeType   || 'px';
     this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
 
@@ -1000,16 +1009,16 @@
       if ( self.sizeType == 'internal' ) {
         styles = [
           'font-family: ' + self.fontName,
-          'background: ' + self.background,
-          'color: ' + self.color
+          'background: '  + self.background,
+          'color: '       + self.color
         ];
         rt.setContent('<font size="' + self.fontSize + '" style="' + styles.join(";") + '">' + self.text + '</font>');
       } else {
         styles = [
           'font-family: ' + self.fontName,
-          'font-size: ' + self.fontSize + 'px',
-          'background: ' + self.background,
-          'color: ' + self.color
+          'font-size: '   + self.fontSize + 'px',
+          'background: '  + self.background,
+          'color: '       + self.color
         ];
         rt.setContent('<div style="' + styles.join(";") + '">' + self.text + '</div>');
       }
@@ -1020,9 +1029,9 @@
     this.$selectFont.setAttribute("size", "7");
 
     for ( var f = 0; f < this.fonts.length; f++ ) {
-      option = document.createElement('option');
-      option.value = f;
-      option.innerHTML = this.fonts[f];
+      option            = document.createElement('option');
+      option.value      = f;
+      option.innerHTML  = this.fonts[f];
       this.$selectFont.appendChild(option);
       if ( this.fontName.toLowerCase() == this.fonts[f].toLowerCase() ) {
         this.$selectFont.selectedIndex = f;
@@ -1045,9 +1054,9 @@
 
       var i = 0;
       for ( var s = this.minSize; s <= this.maxSize; s++ ) {
-        option = document.createElement('option');
-        option.value = s;
-        option.innerHTML = s;
+        option            = document.createElement('option');
+        option.value      = s;
+        option.innerHTML  = s;
         this.$selectSize.appendChild(option);
         if ( this.fontSize == s ) {
           this.$selectSize.selectedIndex = i;

@@ -34,11 +34,11 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
 
-  var Application = OSjs.Core.Application;
-
   /////////////////////////////////////////////////////////////////////////////
   // Default Application Helper
   /////////////////////////////////////////////////////////////////////////////
+
+  var Application = OSjs.Core.Application;
 
   var DefaultApplication = function() {
     Application.apply(this, arguments);

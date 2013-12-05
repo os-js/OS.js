@@ -40,7 +40,7 @@
     menuBar.onMenuOpen = function(menu) {
       var el = menu.getRoot().getElementsByClassName("MenuItem_Save")[0];
       if ( el ) {
-        if ( app.currentFile ) {
+        if ( app.currentFile.path ) {
           el.className = el.className.replace(/\s?Disabled/, '');
         } else {
           el.className += ' Disabled';
