@@ -1141,7 +1141,6 @@
 
   /**
    * Slider Element
-   * TODO: Mouse click react
    */
   var Slider = function(name, opts, onUpdate) {
     this.min      = opts.min || 0;
@@ -1227,6 +1226,16 @@
       return _onMouseDown(ev);
     });
 
+    this._addEventListener(el, 'click', function(ev) {
+      if ( ev.target && ev.target.className === 'Button' ) return;
+
+      var p = OSjs.Utils.$position(el);
+      var cx = ev.clientX - p.left;
+      var cy = ev.clientY - p.top;
+
+      self.onSliderClick(ev, cx, cy, (self.$element.offsetWidth - (self.$button.offsetWidth/2)), (self.$element.offsetHeight - (self.$button.offsetHeight/2)));
+    });
+
     el.appendChild(this.$root);
     el.appendChild(this.$button);
 
@@ -1241,6 +1250,21 @@
     var cd = (this.max - this.min);
     var val = (cd*(p/100)) << 0;
     this.onUpdate.call(this, val, p);
+  };
+
+  Slider.prototype.onSliderClick = function(ev, cx, cy, tw, th) {
+    var cd = (this.max - this.min);
+    var tmp;
+
+    if ( this.type == 'horizontal' ) {
+      tmp = (cx/tw)*100;
+    } else {
+      tmp = (cy/th)*100;
+    }
+
+    var val = (cd*(tmp/100)) << 0;
+    this.setValue(val);
+    this.setPercentage(tmp);
   };
 
   Slider.prototype.onSliderUpdate = function(x, y, maxX, maxY) {
@@ -1259,15 +1283,24 @@
     if ( val < this.min || val > this.max ) return;
     this.val = val;
 
-    var rw = this.$element.offsetWidth;
-    var bw = this.$button.offsetWidth;
-    var dw = (rw - bw);
-
     var cd = (this.max - this.min);
     var cp = this.val / (cd/100);
 
-    var left = (dw/100)*cp;
-    this.$button.style.left = left + 'px';
+    if ( this.type == 'horizontal' ) {
+      var rw    = this.$element.offsetWidth;
+      var bw    = this.$button.offsetWidth;
+      var dw    = (rw - bw);
+      var left  = (dw/100)*cp;
+
+      this.$button.style.left = left + 'px';
+    } else {
+      var rh    = this.$element.offsetHeight;
+      var bh    = this.$button.offsetHeight;
+      var dh    = (rh - bh);
+      var top   = (dh/100)*cp;
+
+      this.$button.style.top = top + 'px';
+    }
   };
 
   /**
