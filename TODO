@@ -1,4 +1,5 @@
 Alpha-1:
+* Fix TODO and FIXME marks in gui.js
 * Include new Draw app (With support for layers, effects etc.)
 
 Beta-1:
