@@ -1432,11 +1432,7 @@
 
     this._fireHook('destroy');
 
-    // Children
-    if ( this._appRef ) { // FIXME: Should this be moved to bottom ?!
-      this._appRef._onMessage(this, 'destroyWindow', {});
-    }
-
+    // Children etc
     if ( this._parent ) {
       this._parent._removeChild(this);
     }
@@ -1472,6 +1468,11 @@
       if ( this._$element.parentNode ) {
         this._$element.parentNode.removeChild(this._$element);
       }
+    }
+
+    // App messages
+    if ( this._appRef ) {
+      this._appRef._onMessage(this, 'destroyWindow', {});
     }
 
     this._appRef = null;
