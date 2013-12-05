@@ -269,23 +269,23 @@
   };
 
   CoreWM.prototype.getWindowSpace = function() {
-    // TODO: Rewrite this
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
     var t = this.getSetting('taskbar');
+    var d = this.getSetting('desktop');
+
     if ( t.ontop ) {
       if ( t.position == 'top' ) {
-        s.top += 35;
+        s.top    += 35;
         s.height -= 35;
       } else {
         s.height -= 35;
       }
     }
 
-    var d = this.getSetting('desktop');
     if ( d.margin ) {
-      s.top += d.margin;
-      s.left += d.margin;
-      s.width -= (d.margin * 2);
+      s.top    += d.margin;
+      s.left   += d.margin;
+      s.width  -= (d.margin * 2);
       s.height -= (d.margin * 2);
     }
 
@@ -294,9 +294,14 @@
 
   CoreWM.prototype.getWindowPosition = function() {
     var pos = WindowManager.prototype.getWindowPosition.apply(this, arguments);
-    if ( pos.y < 60 ) {
-      pos.y += (60 - pos.y);
+    var t   = this.getSetting('taskbar');
+
+    if ( t.ontop ) {
+      if ( t.position == 'top' ) {
+        pos.y += 35;
+      }
     }
+
     return pos;
   };
 

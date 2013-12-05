@@ -65,7 +65,7 @@
     this._setArgument('mime', this.currentFile.mime);
   };
 
-  DefaultApplication.prototype.init = function(core, session) {
+  DefaultApplication.prototype.init = function(core, settings) {
     Application.prototype.init.apply(this, arguments);
 
     var filename = this._getArgument('file');

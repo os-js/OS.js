@@ -823,6 +823,8 @@
     var _LNEWY = 0;
 
     return function() {
+      if ( _LNEWY >= (window.innerHeight - 100) ) _LNEWY = 0;
+      if ( _LNEWX >= (window.innerWidth - 100) ) _LNEWX = 0;
       return {x: _LNEWX+=10, y: _LNEWY+=10};
     };
   })();
