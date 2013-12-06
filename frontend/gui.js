@@ -418,10 +418,13 @@
    * MenuBar Class
    */
   var MenuBar = function(name, opts) {
-    this.$ul = null;
+    opts = opts || {};
+
+    this.$ul        = null;
     this.onMenuOpen = function() {};
-    this.lid = 0;
-    GUIElement.apply(this, [name, opts]);
+    this.lid        = 0;
+
+    GUIElement.apply(this, [name, {}]);
   };
   MenuBar.prototype = Object.create(GUIElement.prototype);
 
@@ -447,7 +450,8 @@
         var tpos = OSjs.Utils.$position(this);
         if ( tpos ) {
           pos.x = tpos.left;
-          pos.y = tpos.top;
+          //pos.y = tpos.top + (el.offsetHeight || 0);
+          pos.y = tpos.top + (el.offsetHeight || 0);
         }
       }
       var elm = OSjs.GUI.createMenu(menu, pos);
