@@ -1085,7 +1085,9 @@
       this._hooks     = {
         focus   : [],
         blur    : [],
-        destroy : []
+        destroy : [],
+        resize  : [], // Called inside the mousemove event
+        resized : []  // Called inside the mouseup event
       };
 
       if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
@@ -1349,6 +1351,7 @@
             self._onChange('move');
           } else if ( action === 'resize' ) {
             self._onChange('resize');
+            self._fireHook('resized');
           }
         }
       }
@@ -1375,6 +1378,7 @@
         self._move(rx, ry);
       } else {
         self._resize(rx, ry);
+        self._fireHook('resize');
       }
 
       moved = true;
@@ -1558,10 +1562,37 @@
           });
         }
       }
+
+      // NOTE: Fixes for Iframe "bugs"
       if ( (gel instanceof OSjs.GUI.RichText) ) {
         gel._addHook('focus', function() {
           OSjs.GUI.blurMenu();
           self._focus();
+        });
+
+        var overlay = null, elpos;
+        this._addHook('resize', function() {
+          if ( !overlay ) {
+            elpos = OSjs.Utils.$position(gel.$element);
+
+            overlay                   = document.createElement('div');
+            overlay.className         = 'IFrameResizeFixer';
+            overlay.style.position    = 'absolute';
+            overlay.style.zIndex      = 9999999999;
+            overlay.style.background  = 'transparent';
+            document.body.appendChild(overlay);
+          }
+          overlay.style.top      = elpos.top + 'px';
+          overlay.style.left     = elpos.left + 'px';
+          overlay.style.width    = (gel.$element.offsetWidth||0) + 'px';
+          overlay.style.height   = (gel.$element.offsetHeight||0) + 'px';
+        });
+
+        this._addHook('resized', function() {
+          if ( overlay && overlay.parentNode ) {
+            overlay.parentNode.removeChild(overlay);
+            overlay = null;
+          }
         });
       }
 
@@ -1744,6 +1775,7 @@
       this._$element.style.height = h + "px";
       this._dimension.h = h;
     }
+
     return true;
   };
 
