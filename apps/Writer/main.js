@@ -42,6 +42,7 @@
     // Set window properties here
     this._icon = 'apps/libreoffice34-writer.png';
     this._title = "Writer (WIP)";
+    this._properties.allow_drop = true;
 
     this.font       = 'Arial';
     this.fontSize   = 3;
@@ -272,6 +273,15 @@
     return rt ? rt.getContent() : '';
   };
 
+  ApplicationWriterWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    Window.prototype._onDndEvent.apply(this, arguments);
+    if ( type === 'itemDrop' && item ) {
+      var data = item.data;
+      if ( data && data.type === 'file' && data.mime ) {
+        this._appRef.defaultAction('open', data.path, data.mime);
+      }
+    }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
