@@ -52,6 +52,9 @@
 
     var root = document.createElement('div');
     root.id = 'WindowList';
+    root.onclick = function(ev) {
+      OSjs.GUI.blurMenu();
+    };
     root.oncontextmenu = function(ev) {
       OSjs.GUI.blurMenu();
       return false;
@@ -64,6 +67,8 @@
     sel = document.createElement('li');
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function(ev) {
+      ev.stopPropagation();
+
       var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
       var list = [];
       for ( var a in apps ) {
@@ -81,6 +86,7 @@
         }
       }
       GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
+      return false;
     };
     el.appendChild(sel);
 
