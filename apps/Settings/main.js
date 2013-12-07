@@ -4,7 +4,7 @@
    * Main Window
    */
   var ApplicationSettingsWindow = function(app) {
-    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 390}, app]);
+    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 400}, app]);
 
     this._title                   = "Settings";
     this._icon                    = "categories/applications-system.png";

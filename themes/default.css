@@ -142,6 +142,7 @@ body .Menu li.Disabled {
 }
 
 .Window input[type=text],
+.Window input[type=password],
 .Window select,
 .Window textarea {
   background : #fff;
@@ -149,27 +150,29 @@ body .Menu li.Disabled {
   border : 1px solid rgba(34, 34, 34, .5);
   margin : 0;
   padding : 0;
-  padding-left : 2px;
-  padding-right : 2px;
   outline : none;
   box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .05);
+  min-height : 24px;
+  padding-left : 2px;
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+.Window textarea {
+  padding : 2px;
 }
 .Window select {
   -webkit-appearance: button;
   -webkit-border-radius: 0px;
   -moz-appearance: button;
   -moz-border-radius: 0px;
-  height : 22px;
+  padding-right : 0px;
 }
-.Window input[type=text] {
-  height : 20px;
-}
-.Window textarea {
-  padding : 2px !important;
+.Window input[type=text],
+.Window input[type=password] {
+  padding-left : 2px;
+  padding-right : 2px;
 }
 .Window.WindowHintFocused input[type=text],
 .Window.WindowHintFocused select,

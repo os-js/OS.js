@@ -4,7 +4,7 @@
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting {
   position : relative;
-  height : 40px;
+  height : 42px;
 }
 
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting label {
