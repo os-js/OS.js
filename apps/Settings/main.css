@@ -10,6 +10,7 @@
 
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting label {
   display : block;
+  height : 16px;
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting input[type=text],
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting select {
