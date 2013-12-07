@@ -122,6 +122,27 @@
         self.applySettings(DefaultSettings(), true);
       }
     });
+
+    var back = document.getElementById("Background");
+    OSjs.GUI.createDroppable(back, {
+      onOver: function(ev, el, args) {
+      },
+
+      onLeave : function() {
+      },
+
+      onDrop : function() {
+      },
+
+      onItemDropped: function(ev, el, item, args) {
+        if ( item ) {
+          var data = item.data;
+          if ( data && data.type === 'file' && data.mime && data.mime.match(/^image/) ) {
+            self.applySettings({wallpaper: data.path});
+          }
+        }
+      }
+    });
   };
 
   CoreWM.prototype.destroy = function(kill) {
