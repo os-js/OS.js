@@ -43,17 +43,15 @@
     input.name = "theme";
 
 
-    l = 0;
     for ( i in themes ) {
       if ( themes.hasOwnProperty(i) ) {
         tmp = document.createElement('option');
         tmp.value = i;
         tmp.innerHTML = themes[i].title;
         if ( theme == i ) {
-          input.selectedIndex = l;
+          tmp.selected = "selected";
         }
         input.appendChild(tmp);
-        l++;
       }
     }
 
@@ -105,7 +103,7 @@
 
     for ( i = 0; i < input.childNodes.length; i++ ) {
       if ( input.childNodes[i].value == settings.background ) {
-        //input.childNodes[i].selected = "selected";
+        input.childNodes[i].selected = "selected";
         input.selectedIndex = i;
         break;
       }

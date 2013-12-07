@@ -1,0 +1,79 @@
+@import url('default.css');
+
+/**
+ * CoreWM (external)
+ */
+body #WindowList li {
+  background : #777777;
+  color : #999;
+}
+body #WindowList li.Focused {
+  color : #fff !important;
+}
+body #WindowList li:hover {
+  background : #555;
+  color : #999;
+}
+body #WindowList li:active {
+  background : #555;
+  color : #eee;
+}
+body #WindowList .Background {
+  background : #777777;
+  border-bottom : 1px solid rgba(90, 90, 90, .5);
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+}
+
+.Notification {
+  background : #777777;
+  border : 1px solid rgba(90, 90, 90, .5);
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+  color : #333;
+}
+
+/**
+ * Window
+ */
+.Window {
+  border : 1px solid rgba(90, 90, 90, .5);
+  box-shadow : 0px 0px 10px 1px rgba(45, 45, 45, .1);
+}
+.Window.WindowHintFocused {
+  box-shadow : 0px 0px 10px 1px rgba(90, 90, 90, .3);
+}
+.WindowTop {
+  border-bottom : 1px solid rgba(90, 90, 90, .5);
+  background-color: #999999;
+  background: linear-gradient(to bottom, #aaaaaa 0%, #999999 100%);
+}
+.Window.WindowHintFocused .WindowTop {
+  background: linear-gradient(to bottom, #959595 0%, #777777 100%);
+}
+.Window.WindowHintFocused .WindowTitle {
+  color : #fff;
+  text-shadow: 0px 0px 2px rgba(0, 0, 0, .9);
+}
+.WindowWrapper {
+  background : #e6e6e6;
+  overflow : hidden;
+}
+
+/**
+ * GUIMenu
+ */
+body .Menu {
+  background : #e6e6e6;
+  color : #000;
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+  border : 1px solid rgba(34, 34, 34, .5);
+}
+body .Menu li:hover {
+  background : #555;
+}
+
+/**
+ * GUIMenuBar
+ */
+.GUIMenuBar > ul > li:hover {
+  background : #555;
+}

@@ -257,7 +257,6 @@ body .Menu li.Disabled {
 /**
  * CoreWM (external)
  */
-
 body #WindowList li {
   background : #303030;
   margin-top : -1px;
