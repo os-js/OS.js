@@ -1,9 +1,9 @@
 {
   "ApplicationProcessViewer":  {
     "name":       "Process Viewer",
+    "singular":   true,
     "mime":       null,
     "icon":       "apps/gnome-monitor.png",
-    "singular":   true,
     "preload":    [
       {"src": "main.js", "type": "javascript"},
       {"src": "main.css", "type": "stylesheet"}
