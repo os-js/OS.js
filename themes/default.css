@@ -163,10 +163,9 @@ body .Menu li.Disabled {
 .Window select,
 .Window textarea {
   margin : 0;
-  padding : 0;
+  padding : 2px;
   outline : none;
   min-height : 24px;
-  padding-left : 2px;
 
   box-shadow : 0px 0px 1px 1px #cecece;
   background : #fff;
@@ -187,15 +186,12 @@ body .Menu li.Disabled {
 .Window textarea.Disabled {
   color : #a0a0a0;
 }
-.Window textarea {
-  padding : 2px;
-}
 .Window select {
   -webkit-appearance: button;
   -webkit-border-radius: 0px;
   -moz-appearance: button;
   -moz-border-radius: 0px;
-  padding-right : 0px;
+  padding : 3px 0 2px 2px;
 }
 .Window input[type=text],
 .Window input[type=password] {

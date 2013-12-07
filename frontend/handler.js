@@ -91,6 +91,36 @@
     }, opts);
   };
 
+  //
+  // Events
+  //
+
+  DefaultHandler.prototype.onOnline = function() {
+    console.warn("DefaultHandler::onOnline()", "Going online...");
+    this.offline = false;
+
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      wm.notification({title: "Warning!", message: "You are Offline!"});
+    }
+  };
+
+  DefaultHandler.prototype.onOffline = function() {
+    console.warn("DefaultHandler::onOffline()", "Going offline...");
+    this.offline = true;
+
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      wm.notification({title: "Warning!", message: "You are On-line!"});
+    }
+  };
+
+  DefaultHandler.prototype.onInitialized = function() {
+  };
+
+  //
+  // Main
+  //
   DefaultHandler.prototype.init = function(callback) {
     var self      = this;
     var container = document.getElementById('Login');
@@ -225,26 +255,6 @@
     });
   };
 
-  DefaultHandler.prototype.onOnline = function() {
-    console.warn("DefaultHandler::onOnline()", "Going online...");
-    this.offline = false;
-
-    var wm = OSjs.API.getWMInstance();
-    if ( wm ) {
-      wm.notification({title: "Warning!", message: "You are Offline!"});
-    }
-  };
-
-  DefaultHandler.prototype.onOffline = function() {
-    console.warn("DefaultHandler::onOffline()", "Going offline...");
-    this.offline = true;
-
-    var wm = OSjs.API.getWMInstance();
-    if ( wm ) {
-      wm.notification({title: "Warning!", message: "You are On-line!"});
-    }
-  };
-
   DefaultHandler.prototype.pollPackages = function(callback) {
     callback = callback || function() {};
 
@@ -259,6 +269,10 @@
       callback(false, error);
     }, {method: 'GET', parse: true});
   };
+
+  //
+  // Settings / Sessions
+  //
 
   DefaultHandler.prototype.getApplicationsMetadata = function() {
     return this.packages;
@@ -360,6 +374,10 @@
   DefaultHandler.prototype.getUserData = function() {
     return this.userData;
   };
+
+  //
+  // Resources
+  //
 
   DefaultHandler.prototype.getThemeResource = function(name, type, args) {
     name = name || null;

@@ -427,6 +427,7 @@
           PlaySound('service-login');
 
           _HANDLER.loadSession();
+          _HANDLER.onInitialized();
         });
       });
     });
