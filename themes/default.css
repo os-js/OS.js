@@ -4,17 +4,23 @@
  */
 @font-face {
   font-family:OSjsFont;
-  src:url('default/fonts/Sansation.ttf');
+  src:url('default/fonts/Karla-Regular.ttf');
 }
 @font-face {
   font-family:OSjsFont;
   font-weight:bold;
-  src:url('default/fonts/SansationBold.ttf');
+  src:url('default/fonts/Karla-Bold.ttf');
 }
 @font-face {
   font-family:OSjsFont;
   font-style:italic;
-  src:url('default/fonts/SansationOblique.ttf');
+  src:url('default/fonts/Karla-Italic.ttf');
+}
+@font-face {
+  font-family:OSjsFont;
+  font-style:italic;
+  font-weight:bold;
+  src:url('default/fonts/Karla-BoldItalic.ttf');
 }
 body {
   font-family:OSjsFont, Sans-serif;
