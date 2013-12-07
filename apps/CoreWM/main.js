@@ -124,25 +124,42 @@
     });
 
     var back = document.getElementById("Background");
-    OSjs.GUI.createDroppable(back, {
-      onOver: function(ev, el, args) {
-      },
+    if ( back ) {
+      var _addBlink = function() {
+        if ( !back.className.match(/Blinking/) ) {
+          back.className += ' Blinking';
+        }
+      };
+      var _remBlink = function() {
+        if ( back.className.match(/Blinking/) ) {
+          back.className = back.className.replace(/\s?Blinking/, '');
+        }
+      };
 
-      onLeave : function() {
-      },
+      OSjs.GUI.createDroppable(back, {
+        onOver: function(ev, el, args) {
+          _addBlink();
+        },
 
-      onDrop : function() {
-      },
+        onLeave : function() {
+          _remBlink();
+        },
 
-      onItemDropped: function(ev, el, item, args) {
-        if ( item ) {
-          var data = item.data;
-          if ( data && data.type === 'file' && data.mime && data.mime.match(/^image/) ) {
-            self.applySettings({wallpaper: data.path});
+        onDrop : function() {
+          _remBlink();
+        },
+
+        onItemDropped: function(ev, el, item, args) {
+          _remBlink();
+          if ( item ) {
+            var data = item.data;
+            if ( data && data.type === 'file' && data.mime && data.mime.match(/^image/) ) {
+              self.applySettings({wallpaper: data.path});
+            }
           }
         }
-      }
-    });
+      });
+    }
   };
 
   CoreWM.prototype.destroy = function(kill) {
