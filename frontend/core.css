@@ -51,7 +51,7 @@
   left : 0px;
 }
 
-.WindowTop {
+.Window > .WindowTop {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -59,26 +59,27 @@
   height : 26px;
   z-index : 5;
 }
-.WindowTop, .WindowTop > * {
+.Window > .WindowTop,
+.Window > .WindowTop > * {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
-.WindowTop .WindowIcon {
+.Window > .WindowTop > .WindowIcon {
   position : absolute;
   top : 0px;
   left : 0px;
   z-index : 2;
 }
-.WindowTop .WindowIcon > img {
+.Window > .WindowTop > .WindowIcon > img {
   margin : 5px;
   padding : 0px;
   border : 0 none;
   pointer-events: none;
 }
-.WindowTop .WindowTitle {
+.Window > .WindowTop > .WindowTitle {
   position : absolute;
   top : 0px;
   left : 28px;
@@ -94,7 +95,7 @@
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
 }
-.WindowTop .WindowButtons {
+.Window > .WindowTop > .WindowButtons {
   position : absolute;
   top : 0px;
   right : 2px;
@@ -102,7 +103,7 @@
   height : 20px;
   margin : 1px;
 }
-.WindowButton {
+.WindowButtons > .WindowButton {
   padding : 0;
   margin : 2px;
   width : 18px;
@@ -112,7 +113,7 @@
   display : inline-block;
 }
 
-.WindowWrapper {
+.Window > .WindowWrapper {
   position : absolute;
   top : 26px;
   left : 0px;
@@ -122,7 +123,7 @@
   z-index : 1;
 }
 
-.WindowResize {
+.Window > .WindowResize {
   position : absolute;
   bottom : 0px;
   right : 0px;
@@ -131,7 +132,7 @@
   z-index : 10;
 }
 
-.WindowLoading {
+.Window > .WindowLoading {
   position : absolute;
   top : 27px;
   left : 0px;
@@ -140,7 +141,7 @@
   z-index : 999999;
 }
 
-.WindowLoadingIndicator {
+.WindowLoading > .WindowLoadingIndicator {
   position : absolute;
   left : 50%;
   top : 50%;
@@ -150,7 +151,7 @@
   height : 64px;
 }
 
-.WindowDisabledOverlay {
+.Window > .WindowDisabledOverlay {
   position : absolute;
   top : 27px;
   left : 0px;
@@ -196,7 +197,7 @@
   max-width : 600px;
 }
 
-.Notification {
+#Notifications .Notification {
   position : relative;
   min-height : 10px;
   padding : 5px;
@@ -204,14 +205,14 @@
   overflow : hidden;
   white-space : nowrap;
 }
-.Notification.HasIcon {
+#Notifications .Notification.HasIcon {
   min-height : 32px;
 }
-.Notification.HasIcon img {
+#Notifications .Notification.HasIcon img {
   position : absolute;
 }
-.Notification.HasIcon .Title,
-.Notification.HasIcon .Message {
+#Notifications .Notification.HasIcon .Title,
+#Notifications .Notification.HasIcon .Message {
   margin-left : 32px;
   padding-left : 5px;
 }
