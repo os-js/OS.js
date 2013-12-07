@@ -432,13 +432,16 @@ body .GUIToolbar button {
   z-index : 2;
 }
 .GUITabs .Tabs .Tab {
-  height : 26px;
+  height : 24px;
+  margin-top : 2px;
   float : left;
   padding-left : 5px;
   padding-right : 5px;
   line-height : 26px;
 }
 .GUITabs .Tabs .Tab.Active {
+  height : 26px;
+  margin : 0;
 }
 .GUITabs .TabContents {
   position : absolute;
