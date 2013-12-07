@@ -1887,14 +1887,32 @@
       if ( lastIdx !== null ) {
         this.$container.childNodes[lastIdx].className = 'TabContent';
         this.$tabs.childNodes[lastIdx].className = 'Tab';
+        lastIdx = null;
       }
 
-      this.$container.childNodes[idx].className = 'TabContent Active';
-      this.$tabs.childNodes[idx].className = 'Tab Active';
+      var $c = this.$container.childNodes[idx];
+      var $t = this.$tabs.childNodes[idx];
 
-      lastIdx = idx;
+      if ( $c ) $c.className = 'TabContent Active';
+      if ( $t ) $t.className = 'Tab Active';
+
+      if ( $c || $t ) lastIdx = idx;
     };
+
   })();
+
+  Tabs.prototype.removeTab = function(idx) {
+    var $c = this.$container.childNodes[idx];
+    if ( $c && $c.parentNode ) {
+      $c.parentNode.removeChild($c);
+    }
+    var $t = this.$tabs.childNodes[idx];
+    if ( $t && $t.parentNode ) {
+      $t.parentNode.removeChild($t);
+    }
+
+    this.setTab(0);
+  };
 
   Tabs.prototype.addTab = (function() {
     var index = 0;
