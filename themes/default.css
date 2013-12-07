@@ -237,8 +237,11 @@ body .Menu li.Disabled {
 }
 
 .Window button:active,
+.Window button.Active,
 .Window input[type=button]:active,
-.Window input[type=submit]:active {
+.Window input[type=button].Active,
+.Window input[type=submit]:active,
+.Window input[type=submit].Active {
   background : #333333;
   background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
   border : 1px solid #717171;
