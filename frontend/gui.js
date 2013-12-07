@@ -1724,9 +1724,11 @@
   /**
    * Richt Text Element
    */
-  var RichText = function(name) {
+  var RichText = function(name, opts) {
     if ( !OSjs.Utils.getCompability().richtext ) throw "Your platform does not support RichText editing";
     this.$view = null;
+    this.opts = opts || {};
+    this.opts.fontName = this.opts.fontName || 'Arial';
     GUIElement.apply(this, [name, {focusable: true}]);
   };
 
@@ -1735,7 +1737,7 @@
   RichText.prototype.init = function() {
     var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
-    var doc = '<!DOCTYPE html><html><head><style type="text/css">body {font-family: Arial;/*font-size : 12px;*/}</style></head><body contentEditable="true"></body></html>';
+    var doc = '<!DOCTYPE html><html><head></head><body contentEditable="true"></body></html>';
 
     this.$view = document.createElement('iframe');
     this.$view.setAttribute("border", "0");
@@ -1743,8 +1745,9 @@
     el.appendChild(this.$view);
 
     setTimeout(function() {
+      var doc = self.getDocument();
+
       try {
-        var doc = self.getDocument();
         var src = "/themes/default.css";
         if ( doc ) {
           doc.designMode = "On";
@@ -1771,6 +1774,8 @@
         console.warn("Failed to attach stylesheet to iframe. Running IE?!", e);
       }
 
+      doc.body.style.fontFamily = self.opts.fontName;
+
       try {
         self.$view.contentWindow.onfocus = function() {
           self.focus();
@@ -1781,6 +1786,7 @@
       } catch ( e ) {
         console.warn("Failed to bind focus/blur on richtext", e);
       }
+
     }, 0);
 
     return el;

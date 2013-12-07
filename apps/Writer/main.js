@@ -225,9 +225,9 @@
       }
     };
 
-    _setFont(this.font, this.fontSize);
-    _setTextColor(this.textColor);
-    _setBackColor(this.backColor);
+    _setFont(self.font, self.fontSize);
+    _setTextColor(self.textColor);
+    _setBackColor(self.backColor);
 
     return root;
   };
