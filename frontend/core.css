@@ -30,6 +30,19 @@
  */
 
 /**
+ * Misc
+ */
+#Loading {
+  display : block;
+  width : 16px;
+  height : 16px;
+  position : absolute;
+  top : 8px;
+  right : 8px;
+  z-index : 999999999;
+}
+
+/**
  * Window
  */
 .Window {
@@ -157,6 +170,18 @@
   height : 0px;
   display : none;
   /*z-index : 10;*/
+}
+
+/**
+ * WM
+ */
+#Background {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : 1;
 }
 
 /**

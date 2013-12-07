@@ -28,6 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
 html, body {
   height : 100%;
 }
@@ -40,6 +41,9 @@ body {
   overflow : hidden;
 }
 
+/**
+ * Misc
+ */
 [draggable] {
   -moz-user-select: none;
   -khtml-user-select: none;
@@ -50,6 +54,9 @@ body {
   -webkit-user-drag: element;
 }
 
+/**
+ * Debug Notification
+ */
 #DebugNotice {
   position : absolute;
   bottom : 5px;
@@ -68,25 +75,9 @@ body {
   font-weight : normal;
 }
 
-#Background {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 1;
-}
-
-#Loading {
-  display : block;
-  width : 16px;
-  height : 16px;
-  position : absolute;
-  top : 8px;
-  right : 8px;
-  z-index : 999999999;
-}
-
+/**
+ * Login
+ */
 #Login {
   background : #fff;
   width : 400px;
