@@ -42,9 +42,11 @@
   console.group     = console.group     || console.log;
   console.groupEnd  = console.groupEnd  || console.log;
 
+  /*
   window.indexedDB      = window.indexedDB      || window.mozIndexedDB          || window.webkitIndexedDB   || window.msIndexedDB;
   window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;
   window.IDBKeyRange    = window.IDBKeyRange    || window.webkitIDBKeyRange     || window.msIDBKeyRange;
+  */
 
   /////////////////////////////////////////////////////////////////////////////
   // Default settings
