@@ -5,6 +5,7 @@
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting {
   position : relative;
   height : 42px;
+  margin : 5px;
 }
 
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting label {
@@ -15,12 +16,12 @@
   position : absolute;
   left : 0px;
   right : 35px;
-  width : 450px;
+  width : 440px;
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
   right : 0px;
-  width : 490px;
+  width : 475px;
 }
 .Window_ApplicationSettingsWindow .WindowWrapper .Setting button {
   position : absolute;
@@ -32,3 +33,11 @@
   bottom : 5px;
 }
 
+.Window_ApplicationSettingsWindow .WindowWrapper .SettingTabs {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 34px;
+  z-index : 9999;
+}

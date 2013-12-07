@@ -414,3 +414,45 @@ body .GUIToolbar button {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+
+/**
+ * GUITabs
+ */
+.GUITabs {
+  position : relative;
+  min-width : 100px;
+  min-height : 100px;
+}
+.GUITabs .Tabs {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  height : 26px;
+  z-index : 2;
+}
+.GUITabs .Tabs .Tab {
+  height : 26px;
+  float : left;
+  padding-left : 5px;
+  padding-right : 5px;
+  line-height : 26px;
+}
+.GUITabs .Tabs .Tab.Active {
+}
+.GUITabs .TabContents {
+  position : absolute;
+  top : 27px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  overflow : hidden;
+  z-index : 1;
+}
+.GUITabs .TabContents .TabContent {
+  display : none;
+}
+.GUITabs .TabContents .TabContent.Active {
+  display : block;
+}
+

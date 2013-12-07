@@ -4,7 +4,7 @@
    * Main Window
    */
   var ApplicationSettingsWindow = function(app) {
-    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 400}, app]);
+    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 300}, app]);
 
     this._title                   = "Settings";
     this._icon                    = "categories/applications-system.png";
@@ -24,9 +24,13 @@
     var theme         = wm.getSetting('theme');
     var desktopMargin = settings.desktop.margin;
 
-    var container = document.createElement('div');
+    var tabs = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
+
     var outer, label, input, button, tmp;
     var i, l;
+
+    var tabStyles = tabs.addTab('Theme and Background');
+    var tabOther = tabs.addTab('Desktop Settings');
 
     // Theme
     outer = document.createElement('div');
@@ -55,7 +59,7 @@
 
     outer.appendChild(label);
     outer.appendChild(input);
-    container.appendChild(outer);
+    tabStyles.appendChild(outer);
 
     //
     // Background Type
@@ -109,7 +113,7 @@
 
     outer.appendChild(label);
     outer.appendChild(input);
-    container.appendChild(outer);
+    tabStyles.appendChild(outer);
 
     //
     // Background Image
@@ -140,7 +144,7 @@
     outer.appendChild(label);
     outer.appendChild(input);
     outer.appendChild(button);
-    container.appendChild(outer);
+    tabStyles.appendChild(outer);
 
     //
     // Background Color
@@ -170,7 +174,7 @@
     outer.appendChild(label);
     outer.appendChild(input);
     outer.appendChild(button);
-    container.appendChild(outer);
+    tabStyles.appendChild(outer);
 
     //
     // Font
@@ -199,7 +203,7 @@
     outer.appendChild(label);
     outer.appendChild(input);
     outer.appendChild(button);
-    container.appendChild(outer);
+    tabOther.appendChild(outer);
 
     //
     // Taskbar Position
@@ -233,7 +237,7 @@
 
     outer.appendChild(label);
     outer.appendChild(input);
-    container.appendChild(outer);
+    tabOther.appendChild(outer);
 
     //
     // Taskbar Ontop
@@ -261,7 +265,7 @@
 
     outer.appendChild(label);
     outer.appendChild(input);
-    container.appendChild(outer);
+    tabOther.appendChild(outer);
 
     //
     // Desktop Margin
@@ -277,7 +281,7 @@
       desktopMargin = value;
       label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
     }), outer);
-    container.appendChild(outer);
+    tabOther.appendChild(outer);
     slider.setValue(desktopMargin);
 
     //
@@ -299,7 +303,6 @@
       });
     };
 
-    root.appendChild(container);
     root.appendChild(button);
   };
 

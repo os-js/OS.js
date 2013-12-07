@@ -1850,6 +1850,84 @@
     return true;
   };
 
+  /**
+   * Tabs Container
+   */
+  var Tabs = function(name, opts) {
+    opts = opts || {};
+
+    this.$container   = null;
+    this.$tabs        = null;
+    this.orientation  = opts.orientation || 'horizontal';
+
+    GUIElement.apply(this, [name, {focusable: true}]);
+  };
+
+  Tabs.prototype = Object.create(GUIElement.prototype);
+
+  Tabs.prototype.init = function() {
+    var self = this;
+    var el = GUIElement.prototype.init.apply(this, ['GUITabs ' + this.orientation]);
+
+    this.$container = document.createElement('div');
+    this.$container.className = 'TabContents';
+
+    this.$tabs = document.createElement('div');
+    this.$tabs.className = 'Tabs';
+
+    el.appendChild(this.$tabs);
+    el.appendChild(this.$container);
+
+    return el;
+  };
+
+  Tabs.prototype.setTab = (function() {
+    var lastIdx = null;
+    return function(idx) {
+      if ( lastIdx !== null ) {
+        this.$container.childNodes[lastIdx].className = 'TabContent';
+        this.$tabs.childNodes[lastIdx].className = 'Tab';
+      }
+
+      this.$container.childNodes[idx].className = 'TabContent Active';
+      this.$tabs.childNodes[idx].className = 'Tab Active';
+
+      lastIdx = idx;
+    };
+  })();
+
+  Tabs.prototype.addTab = (function() {
+    var index = 0;
+
+    return function(title) {
+      var self = this;
+
+      var $c = document.createElement('div');
+      $c.className = 'TabContent';
+
+      var $t = document.createElement('div');
+      $t.className = 'Tab';
+      $t.innerHTML = title;
+      $t.onclick = (function(i) {
+        return function() {
+          self.setTab(i);
+        };
+      })(index);
+
+
+      this.$tabs.appendChild($t);
+      this.$container.appendChild($c);
+
+      if ( index === 0 ) {
+        this.setTab(index);
+      }
+
+      index++;
+
+      return $c;
+    };
+  })();
+
   //
   // EXPORTS
   //
@@ -1867,6 +1945,7 @@
   OSjs.GUI.ProgressBar  = ProgressBar;
   OSjs.GUI.IconView     = IconView;
   OSjs.GUI.RichText     = RichText;
+  OSjs.GUI.Tabs         = Tabs;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

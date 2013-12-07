@@ -423,3 +423,19 @@ body #WindowList .Background {
   background : #fff;
   color : #000;
 }
+
+/* GUITabs */
+.GUITabs .TabContents {
+  background : #ececec;
+  border : 1px solid #9d9d9d;
+}
+.GUITabs .Tabs .Tab.Active {
+  background : #ececec;
+  border : 1px solid #9d9d9d;
+  border-bottom : 1px solid #ececec;
+}
+.GUITabs .Tabs .Tab {
+  cursor : pointer;
+  background : #dedede;
+  border : 1px solid #b1b1b1;
+}
