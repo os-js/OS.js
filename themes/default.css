@@ -19,6 +19,10 @@
 body {
   font-family:OSjsFont, Sans-serif;
 }
+
+/**
+ * Window
+ */
 .Window {
   border : 1px solid rgba(34, 34, 34, .5);
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .1);
@@ -53,7 +57,7 @@ body {
   text-shadow: 0px 0px 2px rgba(0, 0, 0, .9);
 }
 .WindowWrapper {
-  background : #e6e6e6;
+  background : #d6d6d6;
   overflow : hidden;
 }
 .WindowButton {
@@ -122,6 +126,10 @@ body {
   background : url('default/loading.gif');
 }
 
+/**
+ * GUI Menu
+ */
+
 body .Menu {
   background : #e6e6e6;
   color : #000;
@@ -141,23 +149,37 @@ body .Menu li.Disabled {
   color : #aaa;
 }
 
+/**
+ * GUI Inputs
+ */
 .Window input[type=text],
 .Window input[type=password],
 .Window select,
 .Window textarea {
-  background : #fff;
-  color : #000;
-  border : 1px solid rgba(34, 34, 34, .5);
   margin : 0;
   padding : 0;
   outline : none;
-  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .05);
   min-height : 24px;
   padding-left : 2px;
+
+  box-shadow : 0px 0px 1px 1px #cecece;
+  background : #fff;
+  border : 1px solid #a0a0a0;
+  color : #000;
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+.Window input[type=text]:disabled,
+.Window input[type=text].Disabled,
+.Window input[type=password]:disabled,
+.Window input[type=password].Disabled,
+.Window select:disabled,
+.Window select.Disabled,
+.Window textarea:disabled,
+.Window textarea.Disabled {
+  color : #a0a0a0;
 }
 .Window textarea {
   padding : 2px;
@@ -177,17 +199,12 @@ body .Menu li.Disabled {
 .Window.WindowHintFocused input[type=text],
 .Window.WindowHintFocused select,
 .Window.WindowHintFocused textarea {
-  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .1);
-  border : 1px solid rgba(34, 34, 34, .5);
-  color : #000;
+  border : 1px solid #6a6a6a;
 }
 
 .Window button,
 .Window input[type=button],
 .Window input[type=submit] {
-  background : #555555;
-  border : 1px solid #444444;
-  color : #eeeeee;
   margin : 0;
   padding : 0;
   padding-left : 5px;
@@ -196,23 +213,29 @@ body .Menu li.Disabled {
   min-width : 30px;
   vertical-align : middle;
   outline : none;
-  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .05);
+
+  cursor : pointer;
+  box-shadow : 0px 0px 1px 1px #cecece;
+  background : #555555;
+  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
+  border : 1px solid #a0a0a0;
+  color : #000;
+}
+.Window button.Disabled,
+.Window button:disabled,
+.Window input[type=button].Disabled
+.Window input[type=button]:disabled,
+.Window input[type=submit].Disabled,
+.Window input[type=submit]:disabled {
+  background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
 }
 
-.Window.WindowHintFocused button,
-.Window.WindowHintFocused input[type=button],
-.Window.WindowHintFocused input[type=submit] {
-  background : #444444;
-  border : 1px solid #333333;
-  color : #fff;
-  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .1);
-}
 .Window button:active,
 .Window input[type=button]:active,
 .Window input[type=submit]:active {
   background : #333333;
-  border : 1px solid #222222;
-  box-shadow : 0px 0px 1px 1px rgba(100, 100, 100, .3);
+  background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
+  border : 1px solid #717171;
 }
 
 .WindowDropRect {
@@ -227,9 +250,8 @@ body .Menu li.Disabled {
  */
 
 body #WindowList li {
-  background : #333333;
+  background : #303030;
   margin-top : -1px;
-  border : 1px solid #333333;
   cursor : pointer;
   color : #777777;
 }
@@ -237,24 +259,22 @@ body #WindowList li.Focused {
   color : #fff !important;
 }
 body #WindowList li:hover {
-  border : 1px solid #444444;
   background : #555;
   color : #999;
 }
 body #WindowList li:active {
-  border : 1px solid #666;
   background : #555;
   color : #eee;
 }
 body #WindowList .Background {
-  background : #333333;
-  border-bottom : 1px solid #222;
+  background : #303030;
+  border-bottom : 1px solid #242424;
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
 }
 
 .Notification {
-  background : #333333;
-  border : 1px solid #222;
+  background : #3c3c3c;
+  border : 1px solid #313131;
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   color : #fff;
 }
@@ -287,7 +307,8 @@ body #WindowList .Background {
 
 /* GUIListView */
 .GUIListView {
-  border : 1px solid rgba(34, 34, 34, .5);
+  box-shadow : 0px 0px 1px 1px #cecece;
+  border : 1px solid #8d8d8d;
   background : #fff;
 }
 .GUIListView tr {
@@ -307,8 +328,9 @@ body #WindowList .Background {
 
 /* GUIIconView */
 .GUIIconView {
-  border : 1px solid rgba(34, 34, 34, .5);
   background : #fff;
+  box-shadow : 0px 0px 1px 1px #cecece;
+  border : 1px solid #8d8d8d;
 }
 .GUIIconView li {
   cursor : pointer;
@@ -330,14 +352,22 @@ body #WindowList .Background {
 .GUISlider {
 }
 .GUISlider .Root {
-  background : #c2c2c2;
+  background : #b6b6b6;
+  height : 6px;
+  top : 50%;
+  margin-top : -4px;
+  border : 1px solid #777777;
 }
 .GUISlider .Button {
   width : 18px;
   height : 18px;
-  background : #333333;
   cursor : pointer;
-  border : 1px solid #333333;
+
+  cursor : pointer;
+  background : #555555;
+  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
+  border : 1px solid #a0a0a0;
+  color : #000;
 }
 .GUISlider .Button:hover {
   border : 1px solid #444444;
@@ -349,17 +379,11 @@ body #WindowList .Background {
 }
 
 .Window .GUIToolbar button {
-  background : #e6e6e6;
-  border : 1px solid #333;
-  color : #333;
 }
 .Window .GUIToolbar button:hover {
-  border : 1px solid #777;
 }
 .Window .GUIToolbar button:active,
 .Window .GUIToolbar button.Active {
-  border : 1px solid #999;
-  background : #c2c2c2;
 }
 .GUIToolbar.horizontal li.Separator {
   border-left : 1px solid #333333;
@@ -367,9 +391,9 @@ body #WindowList .Background {
 
 /* GUIProgressBar */
 .GUIProgressBar .Container {
-  background : #c2c2c2;
-  border : 1px solid #333333;
-  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .05);
+  background : #b6b6b6;
+  border : 1px solid #777777;
+  box-shadow : 0px 0px 1px 1px #cecece;
 }
 .GUIProgressBar .Bar {
   text-align : center;
@@ -385,6 +409,8 @@ body #WindowList .Background {
 
 /* GUIRichtText */
 .GUIRichText {
-  border : 1px solid rgba(34, 34, 34, .5);
+  box-shadow : 0px 0px 1px 1px #cecece;
+  border : 1px solid #8d8d8d;
   background : #fff;
+  color : #000;
 }

@@ -1,5 +1,6 @@
 Alpha-1:
 * Fix TODO and FIXME marks in gui.js
+* Lock application on open/save dialogs
 * Include new Draw app (With support for layers, effects etc.)
 
 Beta-1:
@@ -7,6 +8,7 @@ Beta-1:
 * Go over all error handling
 * Node.js backend
 * Offline usage
+* VFS via IndexedDB
 
 Release:
 * Source code documentation
