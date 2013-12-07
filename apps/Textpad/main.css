@@ -8,3 +8,7 @@
   bottom : 5px;
   right : 5px;
 }
+.Window_ApplicationTextpadWindow .WindowWrapper .GUITextarea > textarea {
+  font-family : Monospace !important;
+  font-size : 13px !important;
+}
