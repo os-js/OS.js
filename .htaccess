@@ -9,7 +9,7 @@ RewriteRule ^FS/(.*) backend/api.php?file=/$1
 RewriteRule ^FS backend/api.php?upload
 RewriteRule ^(bin|doc) - [F,L,NC]
 
-<FilesMatch "\.(html|htm|js|css)$">
+<FilesMatch "\.(html|htm|js|css|json)$">
   FileETag None
   <ifModule mod_headers.c>
     Header unset ETag
