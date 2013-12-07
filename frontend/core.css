@@ -82,7 +82,7 @@
 .Window > .WindowTop > .WindowTitle {
   position : absolute;
   top : 0px;
-  left : 28px;
+  left : 26px;
   right : 20px;
   height : 26px;
   z-index : 1;
