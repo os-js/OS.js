@@ -451,7 +451,7 @@
         if ( tpos ) {
           pos.x = tpos.left;
           //pos.y = tpos.top + (el.offsetHeight || 0);
-          pos.y = tpos.top + (el.offsetHeight || 0);
+          pos.y = tpos.top;
         }
       }
       var elm = OSjs.GUI.createMenu(menu, pos);
