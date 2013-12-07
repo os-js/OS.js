@@ -181,43 +181,45 @@
   /**
    * GUI Element
    */
-  var _GUIElementCount = 0;
-  var GUIElement = function(name, opts) {
-    this.name       = name;
-    this.opts       = opts || {};
-    this.id         = _GUIElementCount;
-    this.destroyed  = false;
-    this.wid        = 0; // Set in Window::_addGUIElement()
-    this.hasChanged = false;
-    this._hooks     = {
-      focus : [],
-      blur : [],
-      destroy : []
+  var GUIElement = (function() {
+    var _Count = 0;
+
+    return function(name, opts) {
+      this.name           = name;
+      this.opts           = opts || {};
+      this.id             = _Count;
+      this.destroyed      = false;
+      this.wid            = 0; // Set in Window::_addGUIElement()
+      this.hasChanged     = false;
+      this.onItemDropped  = function() {};
+      this.onFilesDropped = function() {};
+      this.$element       = null;
+      this._hooks         = {
+        focus   : [],
+        blur    : [],
+        destroy : []
+      };
+
+      if ( typeof this.opts.dnd === 'undefined' ) {
+        this.opts.dnd     = false;
+      }
+      if ( typeof this.opts.dndDrop === 'undefined' ) {
+        this.opts.dndDrop = this.opts.dnd;
+      }
+      if ( typeof this.opts.dndDrag === 'undefined' ) {
+        this.opts.dndDrag = this.opts.dnd;
+      }
+      if ( typeof this.opts.dndOpts === 'undefined' ) {
+        this.opts.dndOpts = {};
+      }
+      if ( typeof this.opts.focusable === 'undefined' ) {
+        this.opts.focusable = false;
+      }
+
+      this.init();
+      _Count++;
     };
-
-    if ( typeof this.opts.dnd === 'undefined' ) {
-      this.opts.dnd     = false;
-    }
-    if ( typeof this.opts.dndDrop === 'undefined' ) {
-      this.opts.dndDrop = this.opts.dnd;
-    }
-    if ( typeof this.opts.dndDrag === 'undefined' ) {
-      this.opts.dndDrag = this.opts.dnd;
-    }
-    if ( typeof this.opts.dndOpts === 'undefined' ) {
-      this.opts.dndOpts = {};
-    }
-    if ( typeof this.opts.focusable === 'undefined' ) {
-      this.opts.focusable = false;
-    }
-
-    this.onItemDropped  = function() {};
-    this.onFilesDropped = function() {};
-
-    this.$element = null;
-    this.init();
-    _GUIElementCount++;
-  };
+  })();
 
   GUIElement.prototype.init = function(className) {
     this.$element = document.createElement('div');
