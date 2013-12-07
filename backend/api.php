@@ -126,7 +126,7 @@ $data   = $method === 'POST' ? file_get_contents("php://input") : (empty($_SERVE
 // GET file request wrapper
 //
 if ( $method === 'GET' ) {
-  if ( isset($_GET['file']) && ($file = $_GET['file']) ) {
+  if ( isset($_GET['file']) && ($file = unrealpath($_GET['file'])) ) {
     try {
       if ( strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
       if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
