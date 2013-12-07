@@ -243,6 +243,13 @@
     this.data = {title: title, message: message, error: error, exception: exception, bugreport: bugreport};
   };
 
+  ErrorDialog.prototype._onKeyEvent = function(ev) {
+    DialogWindow.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this._close();
+    }
+  };
+
   /**
    * Application Chooser Dialog
    */
