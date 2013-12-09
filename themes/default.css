@@ -120,7 +120,7 @@ body {
 
 .WindowResize {
   cursor : se-resize;
-  background : rgba(34, 34, 34, .2);
+  background : rgba(34, 34, 34, .1);
 }
 .WindowTop, .WindowTop > * {
   cursor : default;
@@ -230,6 +230,13 @@ body .Menu li.Disabled {
 .Window input[type=submit].Disabled,
 .Window input[type=submit]:disabled {
   background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
+}
+
+.Window button:focus,
+.Window input[type=button]:focus,
+.Window input[type=submit]:focus {
+  box-shadow : 0px 0px 1px 1px #ffffff;
+  border-color : 909090;
 }
 
 .Window button:active,

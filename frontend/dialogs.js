@@ -78,6 +78,7 @@
       this.$element.appendChild(this.$message);
     }
 
+    var focus = null;
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
       this.$buttonCancel            = document.createElement('button');
       this.$buttonCancel.className  = 'Cancel';
@@ -104,6 +105,17 @@
 
     root.appendChild(this.$element);
     return root;
+  };
+
+  StandardDialog.prototype._inited = function() {
+    DialogWindow.prototype._inited.apply(this, arguments);
+    if ( this.$buttonConfirm ) {
+      this.$buttonConfirm.focus();
+    } else {
+      if ( this.$buttonCancel ) {
+        this.$buttonCancel.focus();
+      }
+    }
   };
 
   StandardDialog.prototype.onCancelClick = function(ev) {

@@ -744,6 +744,8 @@
       w._focus();
     }
 
+    w._inited();
+
     return w;
   };
 
@@ -1425,6 +1427,9 @@
     this._toggleDisabled(false);
 
     return this._$root;
+  };
+
+  Window.prototype._inited = function() {
   };
 
   Window.prototype.destroy = function() {

@@ -2,6 +2,8 @@ Alpha-1:
 * Fix TODO and FIXME marks in gui.js
 * Lock application on open/save dialogs
 * Include new Draw app (With support for layers, effects etc.)
+* Settings: Animations (Just add another style with ID)
+* Preview: Automatic resize/fit on open
 
 Beta-1:
 * Go over error messages and rewrite
