@@ -1,0 +1,71 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2013, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper {
+}
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Container {
+  margin : 10px;
+}
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons {
+  margin : -5px;
+}
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info {
+}
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info .Label {
+  font-weight : bold;
+  display : inline-block;
+  width : 70px;
+}
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info span:last-child {
+  width : 230px;
+  display : inline-block;
+  white-space : nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons button {
+  margin : 5px;
+  width : 42px;
+  height : 42px;
+  text-align : center;
+}
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons button img {
+  vertical-align : middle;
+}
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .GUISlider {
+  margin-bottom : 10px;
+  margin-top : 10px;
+}

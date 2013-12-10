@@ -1147,6 +1147,7 @@
 
   /**
    * Slider Element
+   * TODO: Slider stepping
    */
   var Slider = function(name, opts, onUpdate) {
     this.min      = opts.min || 0;

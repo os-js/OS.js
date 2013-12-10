@@ -221,7 +221,7 @@
           if ( sproc ) {
             console.debug("LaunchProcess()", "detected that this application is a singular and already running...");
             if ( sproc instanceof Application ) {
-              sproc._onMessage(null, 'attention');
+              sproc._onMessage(null, 'attention', arg);
             } else {
               _error("The application '" + n + "' is already launched and allows only one instance!");
             }
@@ -879,6 +879,7 @@
   var Application = function(name, args, metadata) {
     console.group("OSjs::Core::Application::__construct()");
     this.__name       = name;
+    this.__dname      = name;
     this.__destroyed  = false;
     this.__running    = true;
     this.__inited     = false;
@@ -947,12 +948,13 @@
   };
 
   Application.prototype._call = function(method, args, onSuccess, onError) {
+    var self = this;
     onSuccess = onSuccess || function() {};
     onError = onError || function(err) {
       err = err || "Unknown error";
-      OSjs.API.error("Application API error", "Application " + this.__name + " failed to perform operation '" + method + "'", err);
+      OSjs.API.error("Application API error", "Application " + self.__name + " failed to perform operation '" + method + "'", err);
     };
-    return APICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
+    return APICall('application', {'application': this.__dname, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
   Application.prototype._createDialog = function(className, args, parentClass) {

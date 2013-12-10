@@ -1,7 +1,7 @@
 {
   "ApplicationPreview":  {
     "name":       "Preview",
-    "mime":       ["^image\/", "^video\/", "^audio\/"],
+    "mime":       ["^image\/", "^video\/"],
     "icon":       "mimetypes/image.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

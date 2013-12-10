@@ -87,8 +87,8 @@ class FS
       if ( $fsize === false ) $fsize = '';
 
       $iter = Array(
-        'filename' => $fname,
-        'path'     => $fpath,
+        'filename' => htmlspecialchars($fname),
+        'path'     => htmlspecialchars($fpath),
         'size'     => $fsize,
         'mime'     => null,
         'type'     => $ftype
@@ -96,7 +96,7 @@ class FS
 
       if ( empty($opts['mime']) || $opts['mime'] === true ) {
         if ( $ftype == 'file' ) {
-          $mime = fileMime($fpath);
+          $mime = is_writable($fpath) ? fileMime($fpath) : null;
           if ( $mimeFilter ) {
             $skip = true;
             if ( $mime ) {

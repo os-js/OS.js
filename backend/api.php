@@ -199,13 +199,13 @@ if ( empty($data) ) {
 
       // API call via application
       case 'application' :
-        $an = empty($arguments['application']) ? null : $arguments['application'];
-        $am = empty($arguments['method']) ? null : $arguments['method'];
-        $aa = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
+        $an = empty($arguments['application']) ? null     : $arguments['application'];
+        $am = empty($arguments['method'])      ? null     : $arguments['method'];
+        $aa = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
 
         $apath = sprintf("%s/%s/%s", APPDIR, $an, "api.php");
         if ( strstr($apath, APPDIR) === false || !file_exists($apath) ) {
-          $error = "No such application or API file not available!";
+          $error = "No such application or API file not available ({$an})!";
         } else {
           require $apath;
           if ( !class_exists($an) || !method_exists($an, 'call') ) {
