@@ -252,9 +252,13 @@
     if ( this.seeking ) return;
     if ( !this.$audio ) return;
     info = info || {};
-    this.$labels.Artist.innerHTML = info.Artist || OSjs.Utils.filename(this.currentFilename);
+    var msg = '-';
+    if ( !info.Artist && !info.Album && !info.Track ) {
+      msg = "<i>Media information query failed</i>";
+    }
+    this.$labels.Artist.innerHTML = info.Artist || msg;
     this.$labels.Album.innerHTML  = info.Album  || OSjs.Utils.dirname(this.currentFilename);
-    this.$labels.Track.innerHTML  = info.Track  || '-';
+    this.$labels.Track.innerHTML  = info.Track  || OSjs.Utils.filename(this.currentFilename);
     this.updateTime(ev, slider);
 
     if ( slider ) {
@@ -282,7 +286,7 @@
     var ftotal   = formatTime(total);
     var fcurrent = formatTime(current);
     if ( unknown ) {
-      ftotal = '-' + ftotal + ' (seek unavailable in format)';
+      ftotal = '-' + ftotal + ' <i>(seek unavailable in format)</i>';
     }
     this.$labels.Time.innerHTML = fcurrent  + " / " + ftotal;
 

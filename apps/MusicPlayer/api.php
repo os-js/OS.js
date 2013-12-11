@@ -30,9 +30,9 @@ class MusicPlayer
       if ( $xml !== null ) {
         if ( isset($xml->File[0]) && isset($xml->File[0]->track) && ($node = $xml->File->track) ) {
           return Array(
-            'Artist'  => isset($node->Performer)  ? htmlspecialchars($node->Performer)   : '',
-            'Album'   => isset($node->Album)      ? htmlspecialchars($node->Album)       : '',
-            'Track'   => isset($node->Track_name) ? htmlspecialchars($node->Track_name)  : ''
+            'Artist'  => isset($node->Performer)  ? htmlspecialchars($node->Performer)   : null,
+            'Album'   => isset($node->Album)      ? htmlspecialchars($node->Album)       : null,
+            'Track'   => isset($node->Track_name) ? htmlspecialchars($node->Track_name)  : null
           );
         }
       }
