@@ -52,7 +52,7 @@
    * Main Window
    */
   var ApplicationMusicPlayerWindow = function(app) {
-    Window.apply(this, ['ApplicationMusicPlayerWindow', {width: 322, height: 220}, app]);
+    Window.apply(this, ['ApplicationMusicPlayerWindow', {width: 322, height: 225}, app]);
 
     this.title            = "Music Player";
     this.$buttons         = {};

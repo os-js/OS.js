@@ -38,16 +38,20 @@
   margin : -5px;
 }
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Info {
+  height : 70px;
+}
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info span {
+  float : left;
+  margin-bottom : 5px;
 }
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Info .Label {
   font-weight : bold;
-  display : inline-block;
   width : 50px;
+  clear : left;
 }
 
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Info span:last-child {
   width : 250px;
-  display : inline-block;
   white-space : nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
