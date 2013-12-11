@@ -198,7 +198,32 @@
     });
     this.$audio.addEventListener("error", function(ev) {
       self.updateInfo(ev, null, slider);
-    });
+
+      var msg;
+      try {
+        switch ( ev.target.error.code ) {
+          case ev.target.error.MEDIA_ERR_ABORTED:
+            msg = 'You aborted the video playback.';
+            break;
+          case ev.target.error.MEDIA_ERR_NETWORK:
+            msg = 'A network error caused the audio download to fail.';
+            break;
+          case ev.target.error.MEDIA_ERR_DECODE:
+            msg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
+            break;
+          case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            msg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
+            break;
+          default:
+            msg = "Unknown error";
+            break;
+        }
+      } catch ( e ) {
+        msg = "Fatal error: " + e;
+      }
+
+      self._error("Music Player error", "Failed to play file", msg);
+    }, true);
 
     root.appendChild(container);
     root.appendChild(this.$audio);
@@ -354,7 +379,9 @@
   ApplicationMusicPlayer.prototype.play = function(filename, mime) {
     mime = mime || '';
     if ( !mime.match(/^audio/) ) {
-      throw "The audio type is not supported: " + mime;
+      var msg = "The audio type is not supported: " + mime;
+      this._error("Music Player error", "Failed to play file", msg);
+      return;
     }
 
     var win = this._getWindow('ApplicationMusicPlayerWindow');
