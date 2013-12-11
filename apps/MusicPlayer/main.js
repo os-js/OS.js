@@ -189,11 +189,14 @@
     container.appendChild(buttons);
 
     this.$audio.addEventListener("loadeddata", function(ev) {
-      self.updateInfo(ev, slider);
+      self.updateInfo(ev, null, slider);
       app.info(self.currentFilename);
     });
     this.$audio.addEventListener("timeupdate", function(ev) {
       self.updateTime(ev, slider);
+    });
+    this.$audio.addEventListener("error", function(ev) {
+      self.updateInfo(ev, null, slider);
     });
 
     root.appendChild(container);
@@ -260,13 +263,13 @@
     }
   };
 
-  ApplicationMusicPlayerWindow.prototype.updateTime = function(ev, slider) {
+  ApplicationMusicPlayerWindow.prototype.updateTime = function(ev, slider, error) {
     if ( this.seeking ) return;
     if ( !this.$audio ) return;
     ev = ev || window.event;
 
-    var total   = this.$audio.duration;
-    var current = this.$audio.currentTime;
+    var total   = error ? 0 : this.$audio.duration;
+    var current = error ? 0 : this.$audio.currentTime;
 
     if ( isNaN(current) || !isFinite(current) ) current = 0.0;
     if ( isNaN(total) || !isFinite(total) ) total = current;
