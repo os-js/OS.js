@@ -4,6 +4,7 @@ Alpha-1:
 * Include new Draw app (With support for layers, effects etc.)
 * Settings: Animations (Just add another style with ID)
 * Preview: Automatic resize/fit on open
+* MusicPlayer: Finish playlist and viewing of supported formats
 
 Beta-1:
 * Go over error messages and rewrite
@@ -30,12 +31,3 @@ Future releases:
   - Image
   - Video, Audio => Media
   - TreeView
-* Applications
-  - WebRTC (in dev.)
-  - New Draw application with layer support (in dev.)
-  - Word Application (in dev.)
-  - Excel Application
-  - PDF Application
-
-Misc:
-* There are some TODOs and FIXMEs spread around the code
