@@ -1,5 +1,7 @@
 <?php
 
+if ( !defined("MusicPlayerCommand") ) define("MusicPlayerCommand", "/usr/bin/mediainfo");
+
 class MusicPlayer
 {
 
@@ -15,7 +17,7 @@ class MusicPlayer
         throw new Exception("Cannot get media information -- Exec not allowed");
       }
 
-      $cmd = sprintf("mediainfo --Output=XML %s", escapeshellcmd($fname));
+      $cmd = sprintf("%s --Output=XML %s", MusicPlayerCommand, escapeshellcmd($fname));
       @exec($cmd, $content);
       if ( !$content ) {
         throw new Exception("Cannot get media information -- Query failed");

@@ -30,7 +30,8 @@ OS.js is a light-weight JavaScript based web/cloud desktop solution.
 Comes bundeled with the default theme and some applications:
 * **Draw** - A simple drawing application
 * **File Manager** - File Management
-* **Preview** - For viewing images, videos and listening to audio files
+* **Preview** - For viewing images and videos
+* **Music Player** - For listening to audio files
 * **Process Viewer** - View running processes (shows stats and has an option for killing)
 * **Settings** - Customize the Window Manager and Desktop
 * **Textpad** - A notepad-type application
