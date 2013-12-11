@@ -211,7 +211,7 @@
           case ev.target.error.MEDIA_ERR_DECODE:
             msg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
             break;
-          case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+          case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
             msg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
             break;
           default:
