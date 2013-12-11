@@ -73,3 +73,12 @@
   margin-bottom : 10px;
   margin-top : 10px;
 }
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .MusicPlayerPlaylist {
+  position : absolute;
+  left : 10px;
+  right : 10px;
+  bottom : 10px;
+  top : 200px;
+}
+

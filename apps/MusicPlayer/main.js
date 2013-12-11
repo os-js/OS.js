@@ -60,6 +60,7 @@
     this.$audio           = null;
     this.currentFilename  = '';
     this.seeking          = false;
+    this.showPlaylist     = false;
 
     // Set window properties here
     this._title = this.title;
@@ -90,18 +91,34 @@
       return b;
     };
 
-    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationTextpadMenuBar'), root);
+    var _openFile = function(playlist) {
+      app._createDialog('File', [{type: 'open', mimes: ['^audio']}, function(btn, fname, fmime) {
+        if ( btn !== 'ok' ) return;
+        app.play(fname, fmime);
+      }], self);
+    };
+
+    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('MusicPlayerMenuBar'), root);
     menuBar.addItem("File", [
       {title: 'Open', name: 'Open', onClick: function() {
-        app._createDialog('File', [{type: 'open', mimes: ['^audio']}, function(btn, fname, fmime) {
-          if ( btn !== 'ok' ) return;
-          app.play(fname, fmime);
-        }], self);
+        _openFile(false);
       }},
+      /*
+      {title: 'Add', name: 'Add', onClick: function() {
+        _openFile(true);
+      }},
+      */
       {title: 'Close', name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
+    menuBar.addItem("Playlist", []);
+
+    menuBar.onMenuOpen = function(menu, pos, title) {
+      if ( title == "Playlist" ) {
+        self.togglePlaylist();
+      }
+    };
 
     var container = document.createElement('div');
     container.className = 'Container';
@@ -227,6 +244,20 @@
 
     root.appendChild(container);
     root.appendChild(this.$audio);
+
+    var pl = this._addGUIElement(new OSjs.GUI.ListView('MusicPlayerPlaylist'), root);
+    pl.setColumns([
+      {key: 'name',     title: 'Name'},
+      {key: 'filename', title: 'Filename', visible: false},
+      {key: 'mime',     title: 'Mime', visible: false}
+     ]);
+
+    pl.onActivate = function(ev, el, item) {
+      if ( item && item.filename ) {
+        app.play(item.filename, item.mime);
+      }
+    };
+
     return root;
   };
 
@@ -246,11 +277,11 @@
     }
   };
 
-  ApplicationMusicPlayerWindow.prototype.play = function(filename, mime) {
+  ApplicationMusicPlayerWindow.prototype.play = function(filename, mime, opened) {
     this.currentFilename = filename;
 
     try {
-      this.$labels.Arist.innerHTML = filename;
+      this.$labels.Artist.innerHTML = filename;
       this.$labels.Album.innerHTML = mime;
     } catch ( e ) {
       console.warn("Failed to set labels", e);
@@ -264,11 +295,28 @@
     }
 
     this.$audio.src         = OSjs.API.getResourceURL(filename);
-    this.$audio.volume      = 1.0;
+    this.$audio.volume      = .0;
 
     this.$audio.play();
 
     this._setTitle(this.title + ' - ' + OSjs.Utils.filename(filename));
+
+    var pl = this._getGUIElement('MusicPlayerPlaylist');
+    if ( pl ) {
+      if ( opened ) {
+        var row = {
+          name:       filename,
+          filename:   filename,
+          mime:       mime
+        };
+
+        pl.setRows([row]);
+      } else {
+        pl.setRows([]);
+      }
+
+      pl.render();
+    }
 
     return true;
   };
@@ -332,6 +380,25 @@
     this.seeking = false;
   };
 
+  ApplicationMusicPlayerWindow.prototype.togglePlaylist = (function() {
+    var _lastDimension = null;
+
+    return function() {
+      if ( _lastDimension === null ) {
+        _lastDimension = {w: this._dimension.w, h: this._dimension.h};
+      }
+
+      this.showPlaylist = !this.showPlaylist;
+      console.info("MusicPlayer::togglePlaylist()", this.showPlaylist);
+
+      if ( this.showPlaylist ) {
+        this._resize(_lastDimension.w, _lastDimension.h + 200, true);
+      } else {
+        this._resize(_lastDimension.w, _lastDimension.h, true);
+      }
+    };
+  })();
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
@@ -387,7 +454,7 @@
 
     var win = this._getWindow('ApplicationMusicPlayerWindow');
     if ( win ) {
-      if ( win.play(filename, mime) ) {
+      if ( win.play(filename, mime, true) ) {
         (function() {})();
       }
     }

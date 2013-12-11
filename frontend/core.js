@@ -1760,17 +1760,19 @@
     return true;
   };
 
-  Window.prototype._resize = function(w, h) {
-    if ( !this._properties.allow_resize ) return false;
+  Window.prototype._resize = function(w, h, force) {
+    if ( !force ) {
+      if ( !this._properties.allow_resize ) return false;
 
-    if ( w < this._properties.min_width ) w = this._properties.min_width;
-    if ( this._properties.max_width !== null ) {
-      if ( w > this._properties.max_width ) w = this._properties.max_width;
-    }
+      if ( w < this._properties.min_width ) w = this._properties.min_width;
+      if ( this._properties.max_width !== null ) {
+        if ( w > this._properties.max_width ) w = this._properties.max_width;
+      }
 
-    if ( h < this._properties.min_height ) h = this._properties.min_height;
-    if ( this._properties.max_height !== null ) {
-      if ( h > this._properties.max_height ) h = this._properties.max_height;
+      if ( h < this._properties.min_height ) h = this._properties.min_height;
+      if ( this._properties.max_height !== null ) {
+        if ( h > this._properties.max_height ) h = this._properties.max_height;
+      }
     }
     //if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
 

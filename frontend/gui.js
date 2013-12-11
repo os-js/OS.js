@@ -456,7 +456,10 @@
           pos.y = tpos.top;
         }
       }
-      var elm = OSjs.GUI.createMenu(menu, pos);
+      var elm = null;
+      if ( menu && menu.length ) {
+        elm = OSjs.GUI.createMenu(menu, pos);
+      }
       self.onMenuOpen.call(this, elm, pos, title);
     };
 
