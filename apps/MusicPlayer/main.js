@@ -295,7 +295,7 @@
     }
 
     this.$audio.src         = OSjs.API.getResourceURL(filename);
-    this.$audio.volume      = .0;
+    //this.$audio.volume      = .0;
 
     this.$audio.play();
 
