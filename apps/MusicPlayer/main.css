@@ -42,11 +42,11 @@
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Info .Label {
   font-weight : bold;
   display : inline-block;
-  width : 70px;
+  width : 50px;
 }
 
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Info span:last-child {
-  width : 230px;
+  width : 250px;
   display : inline-block;
   white-space : nowrap;
   overflow: hidden;

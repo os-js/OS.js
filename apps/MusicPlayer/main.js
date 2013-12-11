@@ -188,6 +188,7 @@
     }), container);
     container.appendChild(buttons);
 
+    // FIXME: Remove event listeners
     this.$audio.addEventListener("loadeddata", function(ev) {
       self.updateInfo(ev, null, slider);
       app.info(self.currentFilename);
@@ -270,13 +271,19 @@
 
     var total   = error ? 0 : this.$audio.duration;
     var current = error ? 0 : this.$audio.currentTime;
+    var unknown = false;
 
     if ( isNaN(current) || !isFinite(current) ) current = 0.0;
-    if ( isNaN(total) || !isFinite(total) ) total = current;
+    if ( isNaN(total) || !isFinite(total) ) {
+      total = current;
+      unknown = true;
+    }
 
     var ftotal   = formatTime(total);
     var fcurrent = formatTime(current);
-
+    if ( unknown ) {
+      ftotal = '-' + ftotal + ' (seek unavailable in format)';
+    }
     this.$labels.Time.innerHTML = fcurrent  + " / " + ftotal;
 
     if ( slider ) {
