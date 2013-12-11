@@ -380,7 +380,8 @@
     mime = mime || '';
     if ( !mime.match(/^audio/) ) {
       var msg = "The audio type is not supported: " + mime;
-      this._error("Music Player error", "Failed to play file", msg);
+      var win = this._getWindow('ApplicationMusicPlayerWindow');
+      win._error("Music Player error", "Failed to play file", msg);
       return;
     }
 
