@@ -40,7 +40,6 @@ function out($json) {
 
 function error() {
   if ( !is_null($e = error_get_last()) ) {
-    if ( ob_get_level() ) ob_end_clean();
 
     $type = 'UNKNOWN';
     switch ((int)$e['type']) {
@@ -91,6 +90,11 @@ function error() {
       break;
     }
 
+    if ( !ERRHANDLER && !in_array($type, Array('E_ERROR', 'E_PARSE', 'E_CORE_ERROR', 'E_RECOVERABLE_ERROR')) ) {
+      return;
+    }
+
+    if ( ob_get_level() ) ob_end_clean();
     header("HTTP/1.0 500 Internal Server Error");
     print $e['message'];
     exit;
@@ -101,12 +105,12 @@ function error() {
 //
 // Default settings
 //
-if ( !defined("HOMEDIR") )    define("HOMEDIR",     "/opt/OSjs/home");
-if ( !defined("TMPDIR") )     define("TMPDIR",      "/opt/OSjs/tmp");
-if ( !defined("APPDIR") )     define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
-if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
-if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);
-if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");
+if ( !defined("HOMEDIR") )    define("HOMEDIR",     "/opt/OSjs/home");                                // Filesystem API default dir
+if ( !defined("TMPDIR") )     define("TMPDIR",      "/opt/OSjs/tmp");                                 // Temporary files
+if ( !defined("APPDIR") )     define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));        // Default apps dir
+if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));    // Upload size limit
+if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
+if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 
 date_default_timezone_set(TIMEZONE);
 
@@ -114,9 +118,7 @@ if ( php_sapi_name() == "cli" ) {
   return;
 }
 
-if ( ERRHANDLER ) {
-  register_shutdown_function('error');
-}
+register_shutdown_function('error');
 
 //
 // Collect request data

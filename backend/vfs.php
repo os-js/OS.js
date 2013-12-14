@@ -74,10 +74,9 @@ class FS
     $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
 
     // We need to test for errors here!
-    // FIXME: Disable global shutdown function here.. or at least disable until done
     $tmp = Array();
     foreach ( $mimeFilter as $m ) {
-      if ( @preg_match("/{$m}/", null) !== false ) {
+      if ( preg_match("/{$m}/", null) !== false ) {
         $tmp[] = $m;
       }
     }
