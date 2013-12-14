@@ -18,3 +18,10 @@ RewriteRule ^(bin|doc) - [F,L,NC]
     Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
   </ifModule>
 </FilesMatch>
+
+AddType audio/mpeg mp3
+AddType audio/mp4 m4a
+AddType audio/ogg ogg
+AddType audio/ogg oga
+AddType audio/webm webma
+AddType audio/wav wav

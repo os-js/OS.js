@@ -152,7 +152,6 @@
     if ( !fname ) throw "Cannot LaunchFile() without a filename";
     if ( !mime )  throw "Cannot LaunchFile() without a mime type";
 
-    console.group("LaunchFile()", fname, mime);
 
     var args = {file: fname, mime: mime};
 
@@ -165,7 +164,11 @@
     }
 
     var app = _HANDLER.getApplicationNameByMime(mime, fname);
+
+    console.group("LaunchFile()", fname, mime);
     console.info("Found", app.length, "applications supporting this mime");
+    console.groupEnd();
+
     if ( app.length ) {
       var self = this;
       var _launch = function(name) {
@@ -190,7 +193,6 @@
       OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
     }
 
-    console.groupEnd();
 
     return app.length > 0;
   }

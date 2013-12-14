@@ -44,6 +44,234 @@
     return min + ':' + sec;
   }
 
+  /**
+   * Playlist Class
+   */
+  var Playlist = function() {
+    this.list   = [];
+    this.index  = -1;
+    this.length = 0;
+    this.loop   = true;
+  };
+
+  Playlist.prototype.add = function(item) {
+    this.list.push(item);
+    this.length = this.list.length;
+    return this.length - 1;
+  };
+
+  Playlist.prototype.set = function(i) {
+    this.index = i;
+  };
+
+  Playlist.prototype.remove = function(i) {
+    if ( this.list[i] ) {
+      this.list.splice(i, 1);
+    }
+    if ( this.index === i ) {
+      this.index = -1;
+    }
+
+    this.length = this.list.length;
+  };
+
+  Playlist.prototype.first = function() {
+    if ( this.list.length ) {
+      this.index = 0;
+      return this.list[this.index];
+    }
+    return null;
+  };
+
+  Playlist.prototype.last = function() {
+    if ( this.list.length ) {
+      this.index = this.list.length-1;
+      return this.list[this.index];
+    }
+    return null;
+  };
+
+  Playlist.prototype.next = function() {
+    var item = null;
+    if ( this.list.length ) {
+      this.index++;
+      if ( this.index >= this.list.length ) {
+        if ( this.loop ) {
+          this.index = 0;
+        } else {
+          this.index = this.list.length - 1;
+        }
+      }
+      item = this.list[this.index];
+    }
+
+    return item;
+  };
+
+  Playlist.prototype.prev = function() {
+    var item = null;
+    if ( this.list.length ) {
+      this.index--;
+      if ( this.index < 0 ) {
+        if ( this.loop ) {
+          this.index = this.list.length - 1;
+        } else {
+          this.index = 0;
+        }
+      }
+      item = this.list[this.index];
+    }
+
+    return item;
+  };
+
+  Playlist.prototype.clear = function() {
+    this.index = -1;
+    this.list  = [];
+  };
+
+  Playlist.prototype.load = function(list) {
+    this.clear();
+    this.list = list;
+  };
+
+  Playlist.prototype.isFirst = function() {
+    return this.index === 0;
+  };
+
+  Playlist.prototype.isLast = function() {
+    return this.index === (this.length-1);
+  };
+
+  Playlist.prototype.isEmpty = function() {
+    return this.length === 0;
+  };
+
+  /**
+   * AudioPlayer Class
+   */
+  var AudioPlayer = function() {
+    this.$audio                 = document.createElement('audio');
+    this.$audio.style.display   = 'none';
+    this.$audio.style.position  = 'absolute';
+    this.$audio.style.top       = '-10000px';
+    this.$audio.style.left      = '-10000px';
+
+    this.currentFilename        = null;
+    this.paused                 = true;
+
+    this.onLoadedData           = function() {};
+    this.onTimeUpdate           = function() {};
+    this.onTrackEnded           = function() {};
+    this.onTrackStarted         = function() {};
+    this.onTrackPaused          = function() {};
+    this.onError                = function() {};
+
+    // FIXME: Remove event listeners
+    var self = this;
+    this.$audio.addEventListener("play", function(ev) {
+      self.paused = false;
+      self.onTrackStarted(ev, self);
+    });
+
+    this.$audio.addEventListener("ended", function(ev) {
+      self.onTrackEnded(ev, self);
+    });
+
+    this.$audio.addEventListener("pause", function(ev) {
+      self.paused = true;
+      self.onTrackPaused(ev, self);
+    });
+
+    this.$audio.addEventListener("loadeddata", function(ev) {
+      self.onLoadedData(ev, self);
+    });
+
+    this.$audio.addEventListener("timeupdate", function(ev) {
+      self.onTimeUpdate(ev, self);
+    });
+
+    this.$audio.addEventListener("error", function(ev) {
+      var msg;
+      try {
+        switch ( ev.target.error.code ) {
+          case ev.target.error.MEDIA_ERR_ABORTED:
+            msg = 'You aborted the video playback.';
+            break;
+          case ev.target.error.MEDIA_ERR_NETWORK:
+            msg = 'A network error caused the audio download to fail.';
+            break;
+          case ev.target.error.MEDIA_ERR_DECODE:
+            msg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
+            break;
+          case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            msg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
+            break;
+          default:
+            msg = "Unknown error";
+            break;
+        }
+      } catch ( e ) {
+        msg = "Fatal error: " + e;
+      }
+      self.onError(ev, self, msg);
+    }, true);
+  };
+
+  AudioPlayer.prototype.destroy = function() {
+    if ( this.$audio ) {
+      if ( this.$audio.parentNode ) {
+        this.$audio.parentNode.removeChild(this.$audio);
+      }
+      this.$audio = null;
+    }
+  };
+
+  AudioPlayer.prototype.open = function(filename) {
+    if ( !this.$audio ) return false;
+
+    this.currentFilename = filename;
+    this.$audio.src      = OSjs.API.getResourceURL(filename);
+    //this.$audio.volume   = .0;
+    this.$audio.play();
+
+
+    return true;
+  };
+
+  AudioPlayer.prototype.seek = function(to) {
+    if ( to < 0 ) return;
+    try {
+      this.$audio.currentTime = to;
+    } catch ( e ) {
+      console.warn("Failed to seek", e, to);
+    }
+  };
+
+  AudioPlayer.prototype.play = function() {
+    this.$audio.play();
+  };
+
+  AudioPlayer.prototype.pause = function() {
+    this.$audio.pause();
+  };
+
+  AudioPlayer.prototype.getTimes = function(error) {
+    var total   = error ? 0 : this.$audio.duration;
+    var current = error ? 0 : this.$audio.currentTime;
+    var unknown = false;
+
+    if ( isNaN(current) || !isFinite(current) ) current = 0.0;
+    if ( isNaN(total) || !isFinite(total) ) {
+      total = current;
+      unknown = true;
+    }
+
+    var ftotal   = formatTime(total);
+    var fcurrent = formatTime(current);
+    return {total: total, totalStamp: ftotal, current: current, currentStamp: fcurrent, unknown: unknown};
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -57,10 +285,11 @@
     this.title            = "Music Player";
     this.$buttons         = {};
     this.$labels          = {};
-    this.$audio           = null;
-    this.currentFilename  = '';
     this.seeking          = false;
     this.showPlaylist     = false;
+
+    this.playlist         = new Playlist();
+    this.player           = new AudioPlayer();
 
     // Set window properties here
     this._title = this.title;
@@ -78,12 +307,13 @@
     var self = this;
 
     var _createButton = function(img, onclick) {
-      var b = document.createElement('button');
       var i = document.createElement('img');
       i.alt = '';
       i.src = OSjs.API.getThemeResource('actions/' + img + '.png', 'icon', '32x32');
-      b.onclick = onclick;
-      b.disabled = "disabled";
+
+      var b       = document.createElement('button');
+      b.onclick   = onclick;
+      b.disabled  = "disabled";
       b.appendChild(i);
 
       self.$buttons[img.split('_')[1]] = b;
@@ -91,10 +321,17 @@
       return b;
     };
 
-    var _openFile = function(playlist) {
+    var _buttonAction = function(i) {
+      if ( i ) {
+        self.play(i.filename, i.mime);
+      }
+      self.updateButtons();
+    };
+
+    var _openFile = function(append) {
       app._createDialog('File', [{type: 'open', mimes: ['^audio']}, function(btn, fname, fmime) {
         if ( btn !== 'ok' ) return;
-        app.play(fname, fmime);
+        app.play(fname, fmime, append);
       }], self);
     };
 
@@ -103,11 +340,9 @@
       {title: 'Open', name: 'Open', onClick: function() {
         _openFile(false);
       }},
-      /*
       {title: 'Add', name: 'Add', onClick: function() {
         _openFile(true);
       }},
-      */
       {title: 'Close', name: 'Close', onClick: function() {
         self._close();
       }}
@@ -122,13 +357,6 @@
 
     var container = document.createElement('div');
     container.className = 'Container';
-
-    // Audio
-    this.$audio = document.createElement('audio');
-    this.$audio.style.display = 'none';
-    this.$audio.style.position = 'absolute';
-    this.$audio.style.top = '-10000px';
-    this.$audio.style.left = '-10000px';
 
     // Info
     var info = document.createElement('div');
@@ -183,86 +411,92 @@
     buttons.className = 'Buttons';
 
     buttons.appendChild(_createButton('player_start', function(ev) {
+      _buttonAction(self.playlist.first());
     }));
     buttons.appendChild(_createButton('player_rew', function(ev) {
+      _buttonAction(self.playlist.prev());
     }));
     buttons.appendChild(_createButton('player_play', function(ev) {
-      self.$audio.play();
+      if ( self.playlist.length ) {
+        if ( self.playlist.index == -1 ) {
+          _buttonAction(self.playlist.first());
+          return;
+        }
+        self.player.play();
+      }
     }));
     buttons.appendChild(_createButton('player_pause', function(ev) {
-      self.$audio.pause();
+      if ( self.playlist.length ) {
+        self.player.pause();
+      }
     }));
     buttons.appendChild(_createButton('player_fwd', function(ev) {
+      _buttonAction(self.playlist.next());
     }));
     buttons.appendChild(_createButton('player_end', function(ev) {
+      _buttonAction(self.playlist.last());
     }));
 
     // Containers
     container.appendChild(info);
     var slider = this._addGUIElement(new OSjs.GUI.Slider('MusicPlayerSlider', {min:0, max:100, val:0}, function(val) {
-      if ( val < 0 ) return;
-      self.seek(val);
+      self.player.seek(val);
     }), container);
     container.appendChild(buttons);
 
-    // FIXME: Remove event listeners
-    this.$audio.addEventListener("loadeddata", function(ev) {
+    this.player.onLoadedData = function(ev, player) {
       self.updateInfo(ev, null, slider);
-      app.info(self.currentFilename);
-    });
-    this.$audio.addEventListener("timeupdate", function(ev) {
+    };
+    this.player.onTimeUpdate = function(ev, player) {
       self.updateTime(ev, slider);
-    });
-    this.$audio.addEventListener("error", function(ev) {
+    };
+    this.player.onError = function(ev, player, msg) {
       self.updateInfo(ev, null, slider);
-
-      var msg;
-      try {
-        switch ( ev.target.error.code ) {
-          case ev.target.error.MEDIA_ERR_ABORTED:
-            msg = 'You aborted the video playback.';
-            break;
-          case ev.target.error.MEDIA_ERR_NETWORK:
-            msg = 'A network error caused the audio download to fail.';
-            break;
-          case ev.target.error.MEDIA_ERR_DECODE:
-            msg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
-            break;
-          case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            msg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
-            break;
-          default:
-            msg = "Unknown error";
-            break;
-        }
-      } catch ( e ) {
-        msg = "Fatal error: " + e;
-      }
-
       self._error("Music Player error", "Failed to play file", msg);
-    }, true);
+    };
+    this.player.onTrackEnded = function(ev, player) {
+      if ( self.playlist.isLast() ) return;
+      _buttonAction(self.playlist.next());
+      self.updateInfo(ev, null, slider);
+      self.updateButtons();
+    };
+    this.player.onTrackStarted = function(ev, player) {
+      app.info(player.currentFilename);
+      self.updateButtons();
+    };
+    this.player.onTrackPaused = function(ev, player) {
+      self.updateButtons();
+    };
 
     root.appendChild(container);
-    root.appendChild(this.$audio);
+    root.appendChild(this.player.$audio);
 
     var pl = this._addGUIElement(new OSjs.GUI.ListView('MusicPlayerPlaylist'), root);
     pl.setColumns([
       {key: 'name',     title: 'Name'},
-      {key: 'filename', title: 'Filename', visible: false},
-      {key: 'mime',     title: 'Mime', visible: false}
+      {key: 'filename', title: 'Filename',  visible: false},
+      {key: 'mime',     title: 'Mime',      visible: false},
+      {key: 'index',    title: 'Index',     visible: false}
      ]);
 
     pl.onActivate = function(ev, el, item) {
       if ( item && item.filename ) {
-        app.play(item.filename, item.mime);
+        self.playlist.set(item.index);
+        self.play(item.filename, item.mime);
       }
     };
+
+    this.updateButtons();
 
     return root;
   };
 
   ApplicationMusicPlayerWindow.prototype.destroy = function() {
     // Destroy custom objects etc. here
+    if ( this.player ) {
+      this.player.destroy();
+      this.player = null;
+    }
 
     Window.prototype.destroy.apply(this, arguments);
   };
@@ -272,14 +506,41 @@
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
-        this._appRef.play(data.path, data.mime);
+        this._appRef.play(data.path, data.mime, true);
       }
     }
   };
 
-  ApplicationMusicPlayerWindow.prototype.play = function(filename, mime, opened) {
-    this.currentFilename = filename;
+  ApplicationMusicPlayerWindow.prototype.open = function(filename, mime, append) {
 
+    if ( !append ) {
+      this.playlist.clear();
+    }
+    var row = {
+      index:      this.playlist.length,
+      name:       filename,
+      filename:   filename,
+      mime:       mime
+    };
+    var idx = this.playlist.add(row);
+
+    var pl = this._getGUIElement('MusicPlayerPlaylist');
+    if ( pl ) {
+      pl.setRows(this.playlist.list);
+      pl.render();
+    }
+
+    if ( !append ) {
+      this.play(filename, mime);
+      if ( idx >= 0 ) {
+        this.playlist.set(idx);
+      }
+    }
+
+    this.updateButtons();
+  };
+
+  ApplicationMusicPlayerWindow.prototype.play = function(filename, mime) {
     try {
       this.$labels.Artist.innerHTML = filename;
       this.$labels.Album.innerHTML = mime;
@@ -287,51 +548,60 @@
       console.warn("Failed to set labels", e);
     }
 
-    try {
-      this.$buttons.play.removeAttribute('disabled');
-      this.$buttons.pause.removeAttribute('disabled');
-    } catch ( e ) {
-      console.warn("Failed toggle buttons", e);
-    }
-
-    this.$audio.src         = OSjs.API.getResourceURL(filename);
-    //this.$audio.volume      = .0;
-
-    this.$audio.play();
+    this.player.open(filename);
 
     this._setTitle(this.title + ' - ' + OSjs.Utils.filename(filename));
 
-    var pl = this._getGUIElement('MusicPlayerPlaylist');
-    if ( pl ) {
-      if ( opened ) {
-        var row = {
-          name:       filename,
-          filename:   filename,
-          mime:       mime
-        };
-
-        pl.setRows([row]);
-      } else {
-        pl.setRows([]);
-      }
-
-      pl.render();
-    }
+    this.updateButtons();
 
     return true;
   };
 
+  ApplicationMusicPlayerWindow.prototype.updateButtons = function() {
+    try {
+      this.$buttons.play.setAttribute('disabled', 'disabled');
+      this.$buttons.pause.setAttribute('disabled', 'disabled');
+
+      this.$buttons.start.setAttribute('disabled', 'disabled');
+      this.$buttons.end.setAttribute('disabled', 'disabled');
+
+      this.$buttons.rew.setAttribute('disabled', 'disabled');
+      this.$buttons.fwd.setAttribute('disabled', 'disabled');
+
+      if ( !this.playlist.isEmpty() ) {
+        if ( this.playlist.length > 1 ) {
+          if ( !this.playlist.isFirst() ) {
+            this.$buttons.rew.removeAttribute('disabled');
+            this.$buttons.start.removeAttribute('disabled');
+          }
+          if ( !this.playlist.isLast() ) {
+            this.$buttons.fwd.removeAttribute('disabled');
+            this.$buttons.end.removeAttribute('disabled');
+          }
+        }
+
+        if ( this.player.paused ) {
+          this.$buttons.play.removeAttribute('disabled');
+        } else {
+          this.$buttons.pause.removeAttribute('disabled');
+        }
+      }
+    } catch ( e ) {
+      console.warn("Failed toggle buttons", e);
+    }
+  };
+
   ApplicationMusicPlayerWindow.prototype.updateInfo = function(ev, info, slider) {
     if ( this.seeking ) return;
-    if ( !this.$audio ) return;
+    if ( !this.player ) return;
     info = info || {};
     var msg = '-';
     if ( !info.Artist && !info.Album && !info.Track ) {
       msg = "<i>Media information query failed</i>";
     }
     this.$labels.Artist.innerHTML = info.Artist || msg;
-    this.$labels.Album.innerHTML  = info.Album  || OSjs.Utils.dirname(this.currentFilename);
-    this.$labels.Track.innerHTML  = info.Track  || OSjs.Utils.filename(this.currentFilename);
+    this.$labels.Album.innerHTML  = info.Album  || OSjs.Utils.dirname(this.player.currentFilename);
+    this.$labels.Track.innerHTML  = info.Track  || OSjs.Utils.filename(this.player.currentFilename);
     this.updateTime(ev, slider);
 
     if ( slider ) {
@@ -343,40 +613,26 @@
 
   ApplicationMusicPlayerWindow.prototype.updateTime = function(ev, slider, error) {
     if ( this.seeking ) return;
-    if ( !this.$audio ) return;
+    if ( !this.player ) return;
     ev = ev || window.event;
 
-    var total   = error ? 0 : this.$audio.duration;
-    var current = error ? 0 : this.$audio.currentTime;
-    var unknown = false;
 
-    if ( isNaN(current) || !isFinite(current) ) current = 0.0;
-    if ( isNaN(total) || !isFinite(total) ) {
-      total = current;
-      unknown = true;
+    var times = this.player.getTimes(error);
+    if ( times.unknown ) {
+      this.$labels.Time.innerHTML = times.currentStamp  + " / -" + times.totalStamp + ' <i>(seek unavailable in format)</i>';
+    } else {
+      this.$labels.Time.innerHTML = times.currentStamp  + " / " + times.totalStamp;
     }
-
-    var ftotal   = formatTime(total);
-    var fcurrent = formatTime(current);
-    if ( unknown ) {
-      ftotal = '-' + ftotal + ' <i>(seek unavailable in format)</i>';
-    }
-    this.$labels.Time.innerHTML = fcurrent  + " / " + ftotal;
 
     if ( slider ) {
-      slider.max = Math.round(total);
-      slider.setValue(Math.round(current));
+      slider.max = Math.round(times.total);
+      slider.setValue(Math.round(times.current));
     }
   };
 
   ApplicationMusicPlayerWindow.prototype.seek = function(val) {
     this.seeking = true;
-    try {
-      this.$audio.currentTime = val;
-    } catch ( e ) {
-      console.warn("Failed to seek", e, val);
-    }
-
+    this.player.seek(val);
     this.seeking = false;
   };
 
@@ -429,7 +685,7 @@
     var path = this._getArgument('file');
     var mime = this._getArgument('mime');
     if ( path ) {
-      this.play(path, mime);
+      this.play(path, mime, false);
     }
   };
 
@@ -439,11 +695,11 @@
     if ( msg == 'destroyWindow' && obj._name === 'ApplicationMusicPlayerWindow' ) {
       this.destroy();
     } else if ( msg == 'attention' && args ) {
-      this.play(args.file, args.mime);
+      this.play(args.file, args.mime, true);
     }
   };
 
-  ApplicationMusicPlayer.prototype.play = function(filename, mime) {
+  ApplicationMusicPlayer.prototype.play = function(filename, mime, append) {
     mime = mime || '';
     if ( !mime.match(/^audio/) ) {
       var msg = "The audio type is not supported: " + mime;
@@ -454,13 +710,15 @@
 
     var win = this._getWindow('ApplicationMusicPlayerWindow');
     if ( win ) {
-      if ( win.play(filename, mime, true) ) {
+      if ( win.open(filename, mime, append) ) {
         (function() {})();
       }
     }
 
-    this._setArgument('file', filename);
-    this._setArgument('mime', mime);
+    if ( !append ) {
+      this._setArgument('file', filename);
+      this._setArgument('mime', mime);
+    }
   };
 
   ApplicationMusicPlayer.prototype.info = function(filename) {
