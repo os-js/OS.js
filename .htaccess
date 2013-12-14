@@ -19,9 +19,15 @@ RewriteRule ^(bin|doc) - [F,L,NC]
   </ifModule>
 </FilesMatch>
 
-AddType audio/mpeg mp3
-AddType audio/mp4 m4a
-AddType audio/ogg ogg
-AddType audio/ogg oga
-AddType audio/webm webma
-AddType audio/wav wav
+AddType audio/aac .aac
+AddType audio/mp4 .mp4 .m4a
+AddType audio/mpeg .mp1 .mp2 .mp3 .mpg .mpeg
+AddType audio/ogg .oga .ogg
+AddType audio/wav .wav
+AddType audio/webm .webm
+
+AddType video/mp4 .mp4 .m4v
+AddType video/ogg .ogv
+AddType video/webm .webm
+AddType video/x-msvideo .avi
+AddType video/x-flv .flv
