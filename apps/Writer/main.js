@@ -251,7 +251,7 @@
       t = OSjs.Utils.filename(file.path);
     }
 
-    this._setTitle("Writer - " + t);
+    this._setTitle("Writer (WIP) - " + t);
   };
 
   ApplicationWriterWindow.prototype.command = function(name, value) {
@@ -298,9 +298,9 @@
     var self = this;
 
     this.defaultActionWindow  = 'ApplicationWriterWindow';
-    this.defaultFilename      = "New text document.doc";
-    this.defaultMime          = 'text/plain';
-    this.acceptMime           = ['^text'];
+    this.defaultFilename      = "New text document.odoc";
+    this.defaultMime          = 'osjs/document';
+    this.acceptMime           = ['^text', '^osjs\\/document'];
     this.getSaveData          = function() {
       var w = self._getWindow('ApplicationWriterWindow');
       return w ? w.getRichTextData() : '';

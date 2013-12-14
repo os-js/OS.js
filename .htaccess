@@ -19,15 +19,28 @@ RewriteRule ^(bin|doc) - [F,L,NC]
   </ifModule>
 </FilesMatch>
 
-AddType audio/aac .aac
-AddType audio/mp4 .mp4 .m4a
-AddType audio/mpeg .mp1 .mp2 .mp3 .mpg .mpeg
-AddType audio/ogg .oga .ogg
-AddType audio/wav .wav
-AddType audio/webm .webm
+<ifModule mod_mime.c>
+  AddType audio/aac .aac
+  AddType audio/mp4 .mp4
+  AddType audio/mp4 .m4a
+  AddType audio/mpeg .mp1
+  AddType audio/mpeg .mp2
+  AddType audio/mpeg .mp3
+  AddType audio/mpeg .mpg
+  AddType audio/mpeg .mpeg
+  AddType audio/ogg .oga
+  AddType audio/ogg .ogg
+  AddType audio/wav .wav
+  AddType audio/webm .webm
 
-AddType video/mp4 .mp4 .m4v
-AddType video/ogg .ogv
-AddType video/webm .webm
-AddType video/x-msvideo .avi
-AddType video/x-flv .flv
+  AddType video/mp4 .mp4
+  AddType video/mp4 .m4v
+  AddType video/ogg .ogv
+  AddType video/webm .webm
+  AddType video/x-msvideo .avi
+  AddType video/x-flv .flv
+
+  AddType text/plain .txt
+  AddType text/plain .doc
+  AddType osjs/document .odoc
+</ifModule>

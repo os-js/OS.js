@@ -171,6 +171,8 @@
           icon = 'mimetypes/image.png';
         } else if ( mime.match(/^application\//) ) {
           icon = 'mimetypes/binary.png';
+        } else if ( mime.match(/^osjs\/document/) ) {
+          icon = 'mimetypes/gnome-mime-application-msword.png';
         }
       }
     }

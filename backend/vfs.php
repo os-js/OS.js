@@ -73,6 +73,16 @@ class FS
     $list = Array();
     $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
 
+    // We need to test for errors here!
+    // FIXME: Disable global shutdown function here.. or at least disable until done
+    $tmp = Array();
+    foreach ( $mimeFilter as $m ) {
+      if ( @preg_match("/{$m}/", null) !== false ) {
+        $tmp[] = $m;
+      }
+    }
+    $mimeFilter = $tmp;
+
 
     $files = scandir($dirname);
     foreach ( $files as $fname ) {
@@ -268,10 +278,48 @@ class FS
 
 
 function fileMime($fname) {
-  $finfo = finfo_open(FILEINFO_MIME_TYPE);
-  $mime = finfo_file($finfo, $fname);
-  finfo_close($finfo);
-  return $mime;
+  $force = Array(
+    'aac'      => 'audio/aac',
+    'mp4'      => 'audio/mp4',
+    'm4a'      => 'audio/mp4',
+    'mp1'      => 'audio/mpeg',
+    'mp2'      => 'audio/mpeg',
+    'mp3'      => 'audio/mpeg',
+    'mpg'      => 'audio/mpeg',
+    'mpeg'     => 'audio/mpeg',
+    'oga'      => 'audio/ogg',
+    'ogg'      => 'audio/ogg',
+    'wav'      => 'audio/wav',
+    'webm'     => 'audio/webm',
+
+    'mp4'      => 'video/mp4',
+    'm4v'      => 'video/mp4',
+    'ogv'      => 'video/ogg',
+    'webm'     => 'video/webm',
+    'avi'      => 'video/x-ms-video',
+    'flv'      => 'video/x-flv',
+
+    'txt'      => 'text/plain',
+    'doc'      => 'text/plain',
+    'odoc'     => 'osjs/document'
+  );
+
+  if ( function_exists('pathinfo') ) {
+  if ( $ext = pathinfo($fname, PATHINFO_EXTENSION) ) {
+    $ext = strtolower($ext);
+    if ( isset($force[$ext]) ) {
+      return $force[$ext];
+    }
+  }
+  }
+
+  if ( function_exists('finfo_open') ) {
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $fname);
+    finfo_close($finfo);
+    return $mime;
+  }
+  return null;
 }
 
 function filePermissions($fname) {

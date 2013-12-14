@@ -1,7 +1,7 @@
 {
   "ApplicationWriter":  {
     "name":       "Writer",
-    "mime":       ["^text\/"],
+    "mime":       ["^text\/", "^osjs\/document"],
     "icon":       "apps/libreoffice34-writer.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},
