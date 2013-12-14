@@ -101,16 +101,21 @@ function error() {
 //
 // Default settings
 //
-if ( !defined("HOMEDIR") )   define("HOMEDIR",     "/opt/OSjs/home");
-if ( !defined("TMPDIR") )    define("TMPDIR",      "/opt/OSjs/tmp");
-if ( !defined("APPDIR") )    define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
-if ( !defined("MAXUPLOAD") ) define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
+if ( !defined("HOMEDIR") )    define("HOMEDIR",     "/opt/OSjs/home");
+if ( !defined("TMPDIR") )     define("TMPDIR",      "/opt/OSjs/tmp");
+if ( !defined("APPDIR") )     define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));
+if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));
+if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);
+if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");
 
-register_shutdown_function('error');
-date_default_timezone_set('Europe/Oslo');
+date_default_timezone_set(TIMEZONE);
 
 if ( php_sapi_name() == "cli" ) {
   return;
+}
+
+if ( ERRHANDLER ) {
+  register_shutdown_function('error');
 }
 
 //
