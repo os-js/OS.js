@@ -163,6 +163,11 @@
           self._focus();
         }]);
       }
+
+      else if ( action == 'openWith' ) {
+        if ( cur.type === 'dir' ) return;
+        app.open(cur.path, cur.mime, true);
+      }
     };
 
     menuBar.addItem("File", [
@@ -186,6 +191,9 @@
       }},
       {name: 'Information', title: 'Information', onClick: function() {
         menuAction('info', true);
+      }},
+      {name: 'OpenWith', title: 'Open With ...', onClick: function() {
+        menuAction('openWith', true);
       }}
     ]);
 
@@ -221,8 +229,14 @@
       if ( cur && sel.type === 'file' ) {
         el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0];
         if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
+
+        el = menu.getRoot().getElementsByClassName("MenuItem_OpenWith")[0];
+        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
       } else {
         el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0];
+        if ( el ) el.className += ' Disabled';
+
+        el = menu.getRoot().getElementsByClassName("MenuItem_OpenWith")[0];
         if ( el ) el.className += ' Disabled';
       }
 
@@ -354,8 +368,8 @@
     }
   };
 
-  ApplicationFileManager.prototype.open = function(filename, mime) {
-    OSjs.API.open(filename, mime);
+  ApplicationFileManager.prototype.open = function(filename, mime, forceList) {
+    OSjs.API.open(filename, mime, {forceList: (forceList?true:false)});
   };
 
   ApplicationFileManager.prototype.go = function(dir, w) {

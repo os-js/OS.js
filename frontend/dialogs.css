@@ -303,5 +303,12 @@
   top : 60px;
   left : 0px;
   right : 0px;
-  bottom : 30px;
+  bottom : 60px;
+}
+
+.ApplicationChooserDialog .Checkbox {
+  position : absolute;
+  left : 0px;
+  right : 0px;
+  bottom : 35px;
 }

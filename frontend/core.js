@@ -163,38 +163,40 @@
       }
     }
 
-    var app = _HANDLER.getApplicationNameByMime(mime, fname);
+    console.group("LaunchFile()");
+    console.log("Filename", fname);
+    console.log("MIME", mime);
 
-    console.group("LaunchFile()", fname, mime);
-    console.info("Found", app.length, "applications supporting this mime");
-    console.groupEnd();
+    var _onDone = function(app) {
+      console.info("Found", app.length, "applications supporting this mime");
+      console.groupEnd();
+      if ( app.length ) {
+        var _launch = function(name) {
+          if ( name ) {
+            LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
+          }
+        };
 
-    if ( app.length ) {
-      var self = this;
-      var _launch = function(name) {
-        if ( name ) {
-          LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
-        }
-      };
-
-      if ( app.length === 1 ) {
-        _launch(app[0]);
-      } else {
-        if ( _WM ) {
-          _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname) {
-            if ( btn != 'ok' ) return;
-            _launch(appname);
-          }));
+        if ( app.length === 1 ) {
+          _launch(app[0]);
         } else {
-          OSjs.API.error("Error opening file", "Fatal Error", "No window manager is running");
+          if ( _WM ) {
+            _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname, setDefault) {
+              if ( btn != 'ok' ) return;
+              _launch(appname);
+
+              _HANDLER.setDefaultApplication(mime, setDefault ? appname : null);
+            }));
+          } else {
+            OSjs.API.error("Error opening file", "Fatal Error", "No window manager is running");
+          }
         }
+      } else {
+        OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
       }
-    } else {
-      OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
-    }
+    };
 
-
-    return app.length > 0;
+    _HANDLER.getApplicationNameByMime(mime, fname, launchArgs.forceList, _onDone);
   }
 
   function LaunchProcess(n, arg, onFinished, onError, onConstructed) {

@@ -278,23 +278,45 @@
     return this.packages;
   };
 
-  DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname) {
-    var j, i, a;
-    var list = [];
-    for ( i in this.packages ) {
-      if ( this.packages.hasOwnProperty(i) ) {
-        a = this.packages[i];
-        if ( a && a.mime ) {
-          for ( j = 0; j < a.mime.length; j++ ) {
-            if ( (new RegExp(a.mime[j])).test(mime) === true ) {
-              list.push(i);
+  DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
+    var self = this;
+    var packages = this.packages;
+
+    var _createList = function() {
+      var j, i, a;
+      var list = [];
+      for ( i in packages ) {
+        if ( packages.hasOwnProperty(i) ) {
+          a = packages[i];
+          if ( a && a.mime ) {
+            for ( j = 0; j < a.mime.length; j++ ) {
+              if ( (new RegExp(a.mime[j])).test(mime) === true ) {
+                list.push(i);
+              }
             }
           }
         }
       }
-    }
 
-    return list;
+      return list;
+    };
+
+    this._getSettings('defaultApplication', mime, function(val) {
+      console.debug("OSjs::DefaultHandler::getApplicationNameByMime()", "default application", val);
+      if ( !forceList && val ) {
+        if ( packages[val] ) {
+          callback([val]);
+          return;
+        }
+      }
+      callback(_createList());
+    });
+  };
+
+  DefaultHandler.prototype.setDefaultApplication = function(mime, app, callback) {
+    callback = callback || function() {};
+    console.debug("OSjs::DefaultHandler::setDefaultApplication()", mime, app);
+    this._setSettings('defaultApplication', mime, app, callback);
   };
 
   DefaultHandler.prototype.getApplicationMetadata = function(name) {
