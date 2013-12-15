@@ -274,13 +274,26 @@
   };
 
   ApplicationWriterWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    Window.prototype._onDndEvent.apply(this, arguments);
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
         this._appRef.defaultAction('open', data.path, data.mime);
       }
     }
+  };
+
+  ApplicationWriterWindow.prototype._close = function() {
+    var self = this;
+    var gel  = this._getGUIElement('WriterRichText');
+    if ( gel && gel.hasChanged ) {
+      return this._appRef.defaultConfirmClose(this, function() {
+        gel.hasChanged = false;
+        self._close();
+      });
+    }
+    return Window.prototype._close.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////

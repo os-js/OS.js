@@ -58,7 +58,8 @@
   };
 
   ApplicationTextpadWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    Window.prototype._onDndEvent.apply(this, arguments);
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
@@ -93,23 +94,16 @@
   };
 
   ApplicationTextpadWindow.prototype._close = function() {
-    var gel = this._getGUIElement('TextpadTextarea');
+    var self = this;
+    var gel  = this._getGUIElement('TextpadTextarea');
     if ( gel && gel.hasChanged ) {
-      var self = this;
-      this._toggleDisabled(true);
-      this._appRef._createDialog('Confirm', ['Quit without saving?', function(btn) {
-        self._toggleDisabled(false);
-        if ( btn == "ok" ) {
-          gel.hasChanged = false;
-          self._close();
-        }
-      }]);
-      return false;
+      return this._appRef.defaultConfirmClose(this, function() {
+        gel.hasChanged = false;
+        self._close();
+      });
     }
-
     return Window.prototype._close.apply(this, arguments);
   };
-
 
   /**
    * Application
@@ -143,7 +137,11 @@
         if ( action === 'open' ) {
           w.setText(arg1, arg2.path);
         } else {
-          w.setTitle(arg1 ? arg1.path : null);
+          if ( action === 'new' ) {
+            w.setText('', null);
+          } else {
+            w.setTitle(arg1 ? arg1.path : null);
+          }
         }
         w._focus();
       }

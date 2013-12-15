@@ -1817,6 +1817,8 @@
   };
 
   RichText.prototype.setContent = function(c) {
+    this.hasChanged = false;
+
     var d = this.getDocument();
     if ( d && d.body ) {
       d.body.innerHTML = c;

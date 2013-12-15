@@ -305,12 +305,12 @@ function fileMime($fname) {
   );
 
   if ( function_exists('pathinfo') ) {
-  if ( $ext = pathinfo($fname, PATHINFO_EXTENSION) ) {
-    $ext = strtolower($ext);
-    if ( isset($force[$ext]) ) {
-      return $force[$ext];
+    if ( $ext = pathinfo($fname, PATHINFO_EXTENSION) ) {
+      $ext = strtolower($ext);
+      if ( isset($force[$ext]) ) {
+        return $force[$ext];
+      }
     }
-  }
   }
 
   if ( function_exists('finfo_open') ) {

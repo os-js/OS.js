@@ -50,7 +50,8 @@
   };
 
   ApplicationPreviewWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    Window.prototype._onDndEvent.apply(this, arguments);
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {

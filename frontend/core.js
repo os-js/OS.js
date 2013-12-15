@@ -1804,6 +1804,8 @@
 
   Window.prototype._onDndEvent = function(ev, type) {
     console.info("OSjs::Core::Window::_onDndEvent()", type);
+    if ( this._disabled ) return false;
+    return true;
   };
 
   Window.prototype._onKeyEvent = function(ev) {

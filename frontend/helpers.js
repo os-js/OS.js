@@ -85,8 +85,20 @@
     }
   };
 
+  DefaultApplication.prototype.defaultConfirmClose = function(win, callback) {
+    win._toggleDisabled(true);
+    this._createDialog('Confirm', ['Quit without saving?', function(btn) {
+      win._toggleDisabled(false);
+      if ( btn == "ok" ) {
+        callback();
+      }
+    }]);
+    return false;
+  };
+
   DefaultApplication.prototype.defaultAction = function(action, filename, mime) {
     var self = this;
+    var win  = this.defaultActionWindow ? this._getWindow(this.defaultActionWindow) : null;
 
     if ( !action ) throw "Action was expected...";
     if ( action && !OSjs.Utils.inArray(this.allowedActions, action) ) {
@@ -167,11 +179,15 @@
         if ( filename ) {
           _openFile(filename, mime);
         } else {
-          if ( !this.defaultActionWindow ) throw "Cannot show a dialog without assigned Window";
+          if ( !win ) throw "Cannot show a dialog without assigned Window";
+          win._toggleDisabled(true);
+
           this._createDialog('File', [{type: 'open', mime: this.defaultMime, mimes: this.acceptMime, path: currentPath}, function(btn, fname, fmime) {
+            win._toggleDisabled(false);
+
             if ( btn !== 'ok' ) return;
             _openFile(fname, fmime);
-          }], this._getWindow(this.defaultActionWindow));
+          }], win);
         }
       break;
 
@@ -182,11 +198,15 @@
       break;
 
       case 'saveas' :
-        if ( !this.defaultActionWindow ) throw "Cannot show a dialog without assigned Window";
+        if ( !win ) throw "Cannot show a dialog without assigned Window";
+        win._toggleDisabled(true);
+
         this._createDialog('File', [{type: 'save', path: currentPath, filename: currentFile, mime: this.defaultMime, mimes: this.acceptMime, defaultFilename: this.defaultFilename}, function(btn, fname, fmime) {
+          win._toggleDisabled(false);
+
           if ( btn !== 'ok' ) return;
           _saveFile(fname, fmime);
-        }], this._getWindow(this.defaultActionWindow));
+        }], win);
       break;
 
       default :
