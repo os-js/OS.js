@@ -39,6 +39,7 @@ RewriteRule ^(bin|doc) - [F,L,NC]
   AddType video/webm .webm
   AddType video/x-msvideo .avi
   AddType video/x-flv .flv
+  AddType video/x-matroska .mkv
 
   AddType text/plain .txt
   AddType text/plain .doc

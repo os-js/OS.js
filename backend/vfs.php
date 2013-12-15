@@ -297,6 +297,7 @@ function fileMime($fname) {
     'webm'     => 'video/webm',
     'avi'      => 'video/x-ms-video',
     'flv'      => 'video/x-flv',
+    'mkv'      => 'video/x-matroska',
 
     'txt'      => 'text/plain',
     'doc'      => 'text/plain',
