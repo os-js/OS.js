@@ -364,11 +364,19 @@ body #WindowList .Background {
   margin-top : 2px;
   margin-bottom : 2px;
 }
-.GUISlider .Root {
+.GUISlider.horizontal .Root {
   background : #b6b6b6;
   height : 6px;
   top : 50%;
   margin-top : -4px;
+  border : 1px solid #777777;
+}
+.GUISlider.vertical .Root {
+  background : #b6b6b6;
+  width : 6px;
+  top : 0px;
+  left : 50%;
+  margin-left : -4px;
   border : 1px solid #777777;
 }
 .GUISlider .Button {

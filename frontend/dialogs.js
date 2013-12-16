@@ -377,7 +377,7 @@
    * File Progress dialog
    */
   var FileProgressDialog = function(title) {
-    DialogWindow.apply(this, ['FileUploadDialog', {width:400, height:120}]);
+    DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
 
     this.$desc                    = null;
     this._title                   = title || "File Operation Progress";

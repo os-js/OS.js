@@ -1159,7 +1159,7 @@
     this.max      = opts.max || 0;
     this.val      = opts.val || 0;
     this.steps    = opts.steps || 1;
-    this.type     = opts.type || 'horizontal';
+    this.type     = opts.orientation || 'horizontal';
     this.$root    = null;
     this.$button  = null;
 
@@ -1358,7 +1358,7 @@
     var self = this;
     for ( var i in this.items ) {
       if ( this.items.hasOwnProperty(i) ) {
-        item = this.items[i];
+        item = this.items[i] || {};
         el = document.createElement('li');
 
         if ( item === null ) {
@@ -1474,6 +1474,9 @@
     this.$label.innerHTML = this.percentage + '%';
   };
 
+  ProgressBar.prototype.setProgress = function(p) {
+    this.setPercentage(p);
+  };
 
   /**
    * Canvas Element
@@ -1704,12 +1707,14 @@
         }
       }
 
-      imgContainer = document.createElement('div');
-      img = document.createElement('img');
-      img.alt = iter.label || '';
-      img.title = iter.label || '';
-      img.src = _createImage(iter.icon);
-      imgContainer.appendChild(img);
+      if ( iter.icon ) {
+        imgContainer = document.createElement('div');
+        img = document.createElement('img');
+        img.alt = iter.label || '';
+        img.title = iter.label || '';
+        img.src = _createImage(iter.icon);
+        imgContainer.appendChild(img);
+      }
 
       lblContainer = document.createElement('div');
       lbl = document.createElement('span');
@@ -1735,6 +1740,8 @@
     this.$view = null;
     this.opts = opts || {};
     this.opts.fontName = this.opts.fontName || 'Arial';
+    this.opts.onInited = this.opts.onInited || function() {};
+
     GUIElement.apply(this, [name, {focusable: true}]);
   };
 
@@ -1793,7 +1800,11 @@
         console.warn("Failed to bind focus/blur on richtext", e);
       }
 
+      if ( self.opts.onInited ) {
+        self.opts.onInited.apply(this, []);
+      }
     }, 0);
+
 
     return el;
   };

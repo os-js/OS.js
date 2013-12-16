@@ -212,7 +212,6 @@
  */
 .GUISlider {
   position : relative;
-  height : 20px;
 }
 .GUISlider .Root {
   position : absolute;
@@ -237,12 +236,20 @@
   user-select: none;
 }
 
+.GUISlider.horizontal {
+  height : 20px;
+  min-width : 100px;
+}
+.GUISlider.vertical {
+  width : 20px;
+  min-height : 100px;
+}
+
 /**
  * ToolBar
  */
 .GUIToolbar {
   position : relative;
-  width : 100%;
 }
 .GUIToolbar.vertical {
   min-width : 36px;
