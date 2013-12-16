@@ -1640,6 +1640,44 @@
 
     el.appendChild(this.$view);
 
+    var self = this;
+    var _onItem = function(ev, type) {
+      var t = ev.target;
+      if ( t && t.tagName != 'LI' ) {
+        if ( t.parentNode.tagName == 'LI' ) {
+          t = t.parentNode;
+        } else if ( t.parentNode.parentNode.tagName == 'LI' ) {
+          t = t.parentNode.parentNode;
+        }
+      }
+
+      if ( t.tagName === 'LI' ) {
+        var idx = t.getAttribute('data-index') << 0;
+        if ( idx >= 0 ) {
+          var item = self.data[idx];
+          if ( type === 'dblclick' ) {
+            self._onActivate(ev, item, t);
+          } else {
+            self._onSelect(ev, item, t);
+          }
+
+          if ( type === 'contextmenu' ) {
+            self._onContextMenu(ev, item, t);
+          }
+        }
+      }
+    };
+
+    this._addEventListener(this.$view, 'contextmenu', function(ev) {
+      _onItem(ev, 'contextmenu');
+    });
+    this._addEventListener(this.$view, 'click', function(ev) {
+      _onItem(ev, 'click');
+    });
+    this._addEventListener(this.$view, 'dblclick', function(ev) {
+      _onItem(ev, 'dblclick');
+    });
+
     return el;
   };
 
@@ -1673,7 +1711,6 @@
 
     OSjs.Utils.$empty(this.$ul);
 
-    // TODO: Destroy events
     var i, l, iter, li, imgContainer, img, lblContainer, lbl;
     var k, j;
     var self = this;
@@ -1682,22 +1719,7 @@
       iter.data = iter.data || {};
 
       li = document.createElement('li');
-      li.oncontextmenu = (function(item, el) {
-        return function(ev) {
-          self._onSelect(ev, item, el);
-          self._onContextMenu(ev, item, el);
-        };
-      })(iter.data, li);
-      li.onclick = (function(item, el) {
-        return function(ev) {
-          self._onSelect(ev, item, el);
-        };
-      })(iter.data, li);
-      li.ondblclick = (function(item, el) {
-        return function() {
-          self._onActivate(ev, item, el);
-        };
-      })(iter.data, li);
+      li.setAttribute("data-index", i);
 
       if ( iter.data ) {
         for ( k in iter.data ) {
