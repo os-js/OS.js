@@ -70,19 +70,25 @@
     }
 
     var el;
+    var resizeTo = null;
     if ( t ) {
       try {
         var src = OSjs.API.getResourceURL(t);
         if ( mime.match(/^image/) ) {
           el = document.createElement('img');
           el.alt = t;
+          el.onload = function() {
+            self._resizeTo(this.width, this.height, self.$frame);
+          };
           el.src = src;
         } else if ( mime.match(/^audio/) ) {
+          resizeTo = [640, 480];
           el = document.createElement('audio');
           el.controls = "controls";
           el.autoplay = "autoplay";
           el.src = src;
         } else if ( mime.match(/^video/) ) {
+          resizeTo = [640, 480];
           el = document.createElement('video');
           el.controls = "controls";
           el.autoplay = "autoplay";
@@ -96,13 +102,13 @@
     if ( el ) {
       this.previewElement = el;
       this.$frame.appendChild(this.previewElement);
-
-      if ( el.tagName !== 'IMG' ) {
-        this._resize(500, 400);
-      }
     }
 
     this._setTitle(t ? (this.title + " - " + OSjs.Utils.filename(t)) : this.title);
+
+    if ( resizeTo ) {
+      this._resize.apply(this, resizeTo);
+    }
   };
 
   ApplicationPreviewWindow.prototype._resize = function(w, h) {

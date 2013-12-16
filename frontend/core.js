@@ -1764,6 +1764,41 @@
     return true;
   };
 
+  Window.prototype._resizeTo = function(dw, dh, container, limit) {
+    if ( dw <= 0 || dh <= 0 ) return;
+
+    limit = (typeof limit === 'undefined' || limit === true);
+    var posi  = OSjs.Utils.$position(container);
+    var poso  = OSjs.Utils.$position(this._$root);
+
+    var rx   = posi.left - poso.left;
+    var ry   = posi.top - poso.top;
+    var ex   = poso.right - posi.right;
+    var ey   = poso.bottom - posi.bottom;
+    var ow   = this._$element.offsetWidth;
+    var oh   = this._$element.offsetHeight;
+    var dx   = (ow - this._$root.offsetWidth);
+    var dy   = (oh - this._$root.offsetHeight);
+
+    var newW = dw + dx + rx + ex;
+    var newH = dh + dy + ry + ey;
+
+    if ( limit ) {
+      var rect = _getWindowSpace();
+      var x    = this._position.x;
+      var y    = this._position.y;
+
+      if ( (newW + x) > rect.width ) {
+        newW = (rect.width - x - 10);
+      }
+      if ( (newH + y) > rect.height ) {
+        newH = (rect.height - y - 10);
+      }
+    }
+
+    this._resize(newW, newH);
+  };
+
   Window.prototype._resize = function(w, h, force) {
     if ( !force ) {
       if ( !this._properties.allow_resize ) return false;
