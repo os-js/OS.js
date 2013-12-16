@@ -156,7 +156,6 @@
     type = type || 'file';
     icon = icon || 'mimetypes/gnome-fs-regular.png';
 
-    //var ext = OSjs.Utils.filext(filename); // TODO: Check using filext when no mime matched
     if ( type == 'dir' ) {
       icon = 'places/folder.png';
     } else if ( type == 'file' ) {
