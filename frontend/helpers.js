@@ -137,7 +137,7 @@
       }
 
       OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname]}, function(res) {
-        if ( res && res.result ) {
+        if ( res && (res.result !== false) ) {
           self.setCurrentFile(fname, fmime);
           self.defaultActionSuccess('open', res.result, self.currentFile);
           return;
