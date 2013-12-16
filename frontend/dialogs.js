@@ -60,6 +60,8 @@
   StandardDialog.prototype = Object.create(DialogWindow.prototype);
 
   StandardDialog.prototype.destroy = function() {
+    if ( this._destroyed ) return;
+
     this.onClose.apply(this, ['destroy']);
     DialogWindow.prototype.destroy.apply(this, arguments);
   };
