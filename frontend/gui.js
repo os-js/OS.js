@@ -1906,6 +1906,7 @@
     this.$container   = null;
     this.$tabs        = null;
     this.orientation  = opts.orientation || 'horizontal';
+    this.lastIdx      = null;
 
     GUIElement.apply(this, [name, {focusable: true}]);
   };
@@ -1928,25 +1929,22 @@
     return el;
   };
 
-  Tabs.prototype.setTab = (function() {
-    var lastIdx = null;
-    return function(idx) {
-      if ( lastIdx !== null ) {
-        this.$container.childNodes[lastIdx].className = 'TabContent';
-        this.$tabs.childNodes[lastIdx].className = 'Tab';
-        lastIdx = null;
-      }
+  Tabs.prototype.setTab = function(idx) {
+    if ( this.lastIdx !== null ) {
+      this.$container.childNodes[this.lastIdx].className = 'TabContent';
+      this.$tabs.childNodes[this.lastIdx].className = 'Tab';
+      this.lastIdx = null;
+    }
 
-      var $c = this.$container.childNodes[idx];
-      var $t = this.$tabs.childNodes[idx];
+    var $c = this.$container.childNodes[idx];
+    var $t = this.$tabs.childNodes[idx];
 
-      if ( $c ) $c.className = 'TabContent Active';
-      if ( $t ) $t.className = 'Tab Active';
+    if ( $c ) $c.className = 'TabContent Active';
+    if ( $t ) $t.className = 'Tab Active';
 
-      if ( $c || $t ) lastIdx = idx;
-    };
+    if ( $c || $t ) this.lastIdx = idx;
+  };
 
-  })();
 
   Tabs.prototype.removeTab = function(idx) {
     var $c = this.$container.childNodes[idx];
@@ -1961,37 +1959,35 @@
     this.setTab(0);
   };
 
-  Tabs.prototype.addTab = (function() {
-    var index = 0;
+  Tabs.prototype.addTab = function(title) {
+    var self = this;
+    var len = this.$tabs.childNodes.length;
 
-    return function(title) {
-      var self = this;
+    var $c = document.createElement('div');
+    $c.className = 'TabContent';
 
-      var $c = document.createElement('div');
-      $c.className = 'TabContent';
-
-      var $t = document.createElement('div');
-      $t.className = 'Tab';
-      $t.innerHTML = title;
-      $t.onclick = (function(i) {
-        return function() {
-          self.setTab(i);
-        };
-      })(index);
+    var $t = document.createElement('div');
+    $t.className = 'Tab';
+    $t.innerHTML = title;
+    $t.onclick = (function(i) {
+      return function() {
+        self.setTab(i);
+      };
+    })(len);
 
 
-      this.$tabs.appendChild($t);
-      this.$container.appendChild($c);
+    if ( len <= 0 ) {
+      this.lastIdx = len;
+      $t.className += ' Active';
+      $c.className += ' Active';
+    }
 
-      if ( index === 0 ) {
-        this.setTab(index);
-      }
+    this.$tabs.appendChild($t);
+    this.$container.appendChild($c);
 
-      index++;
 
-      return $c;
-    };
-  })();
+    return $c;
+  };
 
   //
   // EXPORTS
