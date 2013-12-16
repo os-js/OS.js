@@ -15,7 +15,7 @@ foreach ( $dirs as $path ) {
         $k = key($j);
         $data = current($j);
 
-        if ( !empty($data['enabled']) && $data['enabled'] === false ) {
+        if ( isset($data['enabled']) && ($data['enabled'] === false || $data['enabled'] === 'false' ) ) {
           continue;
         }
 
