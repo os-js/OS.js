@@ -1152,14 +1152,13 @@
 
   /**
    * Slider Element
-   * TODO: Slider stepping
    */
   var Slider = function(name, opts, onUpdate) {
     this.min      = opts.min || 0;
     this.max      = opts.max || 0;
     this.val      = opts.val || 0;
-    this.steps    = opts.steps || 1;
     this.type     = opts.orientation || 'horizontal';
+    this.steps    = opts.steps || 10;
     this.$root    = null;
     this.$button  = null;
 
@@ -1181,13 +1180,14 @@
     this.$button.className = 'Button';
 
     var scrolling = false;
-    var startX = 0;
-    var startY = 0;
-    var elX = 0;
-    var elY = 0;
-    var maxX = 0;
-    var maxY = 0;
-    var self = this;
+    var startX    = 0;
+    var startY    = 0;
+    var elX       = 0;
+    var elY       = 0;
+    var maxX      = 0;
+    var maxY      = 0;
+    var snapping  = 0;
+    var self      = this;
 
     var _onMouseMove = function(ev) {
       if ( !scrolling ) return;
@@ -1196,13 +1196,16 @@
       if ( self.type == 'horizontal' ) {
         var diffX = (ev.clientX - startX);
         newX = elX + diffX;
+        newX = snapping * Math.round(newX / snapping);
+
         if ( newX < 0 ) newX = 0;
         if ( newX > maxX ) newX = maxX;
-
         self.$button.style.left = newX + 'px';
       } else {
         var diffY = (ev.clientY - startY);
         newY = elY + diffY;
+        newY = snapping * Math.round(newY / snapping);
+
         if ( newY < 0 ) newY = 0;
         if ( newY > maxY ) newY = maxY;
         self.$button.style.top = newY + 'px';
@@ -1222,14 +1225,17 @@
 
       scrolling = true;
       if ( self.type == 'horizontal' ) {
-        startX  = ev.clientX;
-        elX     = self.$button.offsetLeft;
-        maxX    = self.$element.offsetWidth - self.$button.offsetWidth;
+        startX    = ev.clientX;
+        elX       = self.$button.offsetLeft;
+        maxX      = self.$element.offsetWidth - self.$button.offsetWidth;
+        snapping  = (self.$element.offsetWidth / ((self.max - self.min) / self.steps));
       } else {
-        startY  = ev.clientY;
-        elY     = self.$button.offsetTop;
-        maxY    = self.$element.offsetHeight - self.$button.offsetHeight;
+        startY    = ev.clientY;
+        elY       = self.$button.offsetTop;
+        maxY      = self.$element.offsetHeight - self.$button.offsetHeight;
+        snapping  = (self.$element.offsetHeight / ((self.max - self.min) / self.steps));
       }
+
       document.addEventListener('mousemove', _onMouseMove, false);
       document.addEventListener('mouseup', _onMouseUp, false);
     };
