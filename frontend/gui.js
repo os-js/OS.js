@@ -1158,7 +1158,7 @@
     this.max      = opts.max || 0;
     this.val      = opts.val || 0;
     this.type     = opts.orientation || 'horizontal';
-    this.steps    = opts.steps || 10;
+    this.steps    = opts.steps || 1;
     this.$root    = null;
     this.$button  = null;
 
