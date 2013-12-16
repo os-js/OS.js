@@ -153,7 +153,7 @@
       fmime = fmime || mime;
       var fdata = self.getSaveData();
       OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, fdata]}, function(res) {
-        if ( res && res.result ) {
+        if ( res && res.result !== false ) {
           self.setCurrentFile(fname, fmime);
           self.defaultActionSuccess('save', self.currentFile);
 
