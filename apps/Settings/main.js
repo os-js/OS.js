@@ -31,6 +31,7 @@
 
     var tabStyles = tabs.addTab('Theme and Background');
     var tabOther = tabs.addTab('Desktop Settings');
+    var tabMisc = tabs.addTab('Misc');
 
     // Theme
     outer = document.createElement('div');
@@ -283,6 +284,34 @@
     slider.setValue(desktopMargin);
 
     //
+    // Misc
+    //
+    outer = document.createElement('div');
+    outer.className = "Setting SettingsNoButton Setting_Animations";
+
+    label = document.createElement('label');
+    label.innerHTML = "Use Animations ?";
+
+    input = document.createElement('select');
+    input.name = "useanimations";
+
+    tmp = document.createElement('option');
+    tmp.value = 'yes';
+    tmp.innerHTML = 'Yes';
+    input.appendChild(tmp);
+
+    tmp = document.createElement('option');
+    tmp.value = 'no';
+    tmp.innerHTML = 'No';
+    input.appendChild(tmp);
+
+    input.selectedIndex = settings.animations === true ? 0 : 1;
+
+    outer.appendChild(label);
+    outer.appendChild(input);
+    tabMisc.appendChild(outer);
+
+    //
     // Buttons
     //
     button = document.createElement('button');
@@ -290,6 +319,7 @@
     button.innerHTML = "Apply";
     button.onclick = function(ev) {
       app.save(ev, self, {
+        animations:       document.getElementsByName('useanimations')[0].value == 'yes',
         taskbarOntop:     document.getElementsByName('taskbarOntop')[0].value == 'yes',
         taskbarPosition:  document.getElementsByName('taskbarPosition')[0].value,
         desktopMargin:    desktopMargin,
@@ -375,6 +405,7 @@
     console.warn("ApplicationSettings::save()", settings);
     if ( wm ) {
       var res = wm.applySettings({
+        animations : settings.animations,
         taskbar    : {ontop: settings.taskbarOntop, position: settings.taskbarPosition},
         desktop    : {margin: settings.desktopMargin},
         theme      : settings.theme,

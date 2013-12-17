@@ -401,6 +401,10 @@
   // Resources
   //
 
+  DefaultHandler.prototype.getApplicationResource = function(app, name) {
+    return '/' + (['apps', app, name]).join('/');
+  };
+
   DefaultHandler.prototype.getThemeResource = function(name, type, args) {
     name = name || null;
     type = type || null;

@@ -52,6 +52,8 @@
   var _HANDLER;
   var _$LOADING;
 
+  var ANIMDURATION = 300;
+
   /////////////////////////////////////////////////////////////////////////////
   // DOM HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -783,7 +785,7 @@
 
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
-    console.log("OSjs::Core::WindowManager::applySettings");
+    console.log("OSjs::Core::WindowManager::applySettings", "forced?", force);
 
     if ( force ) {
       this._settings = settings;
@@ -800,7 +802,7 @@
 
   WindowManager.prototype.setSetting = function(k, v) {
     if ( v !== null ) {
-      if ( this._settings[k] ) {
+      if ( typeof this._settings[k] !== 'undefined' ) {
         if ( typeof this._settings[k] === 'object' ) {
           if ( typeof v === 'object' ) {
             for ( var i in v ) {
@@ -813,6 +815,7 @@
             return true;
           }
         } else {
+          console.warn(k, v);
           this._settings[k] = v;
           return true;
         }
@@ -837,7 +840,7 @@
   })();
 
   WindowManager.prototype.getSetting = function(k) {
-    if ( this._settings[k] ) {
+    if ( typeof this._settings[k] !== 'undefined' ) {
       return this._settings[k];
     }
     return null;
@@ -1480,9 +1483,21 @@
     }
 
     if ( this._$element ) {
-      this._$element.style.display = "none";
-      if ( this._$element.parentNode ) {
-        this._$element.parentNode.removeChild(this._$element);
+      var _removeDOM = function() {
+        if ( self._$element.parentNode ) {
+          self._$element.parentNode.removeChild(self._$element);
+        }
+      };
+
+      var anim = _WM ? _WM.getSetting('animations') : false;
+      if ( anim ) {
+        this._$element.className += ' WindowHintClosing';
+        setTimeout(function() {
+          _removeDOM();
+        }, ANIMDURATION);
+      } else {
+        this._$element.style.display = "none";
+        _removeDOM();
       }
     }
 
@@ -1656,6 +1671,7 @@
   };
 
   Window.prototype._minimize = function() {
+    var self = this;
     console.debug(this._name, '>' , "OSjs::Core::Window::_minimize()");
     if ( !this._properties.allow_minimize ) return false;
     //if ( this._disabled ) return false;
@@ -1671,7 +1687,18 @@
       this._$element.className += ' WindowHintMinimized';
     }
 
-    this._$element.style.display = 'none';
+    var _hideDOM = function() {
+      self._$element.style.display = 'none';
+    };
+
+    var anim = _WM ? _WM.getSetting('animations') : false;
+    if ( anim ) {
+      setTimeout(function() {
+        _hideDOM();
+      }, ANIMDURATION);
+    } else {
+      _hideDOM();
+    }
 
     this._onChange('minimize');
 
@@ -2016,10 +2043,11 @@
   OSjs.API.getCoreInstance    = function()    { return _CORE; };
 
   // Handler shortcuts
-  OSjs.API.getDefaultPath     = function(def)               { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
-  OSjs.API.getThemeCSS        = function(name)              { return _HANDLER.getThemeCSS(name); };
-  OSjs.API.getResourceURL     = function(path)              { return _HANDLER.getResourceURL(path); };
-  OSjs.API.getThemeResource   = function(name, type, args)  { return _HANDLER.getThemeResource(name, type, args); };
+  OSjs.API.getDefaultPath         = function(def)               { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
+  OSjs.API.getThemeCSS            = function(name)              { return _HANDLER.getThemeCSS(name); };
+  OSjs.API.getResourceURL         = function(path)              { return _HANDLER.getResourceURL(path); };
+  OSjs.API.getThemeResource       = function(name, type, args)  { return _HANDLER.getThemeResource(name, type, args); };
+  OSjs.API.getApplicationResource = function(app, name)         { return _HANDLER.getApplicationResource(app, name); };
 
   // Common API functions
   OSjs.API.call               = APICall;

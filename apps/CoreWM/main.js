@@ -2,6 +2,7 @@
 
   function DefaultSettings(defaults) {
     var cfg = {
+      animations    : true,
       fullscreen    : false,
       taskbar       : {position: 'top', ontop: true},
       desktop       : {margin: 5},
@@ -227,7 +228,6 @@
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
       return false;
     }
-
     console.group("OSjs::Applications::CoreWM::applySettings");
 
     // Styles
@@ -276,21 +276,27 @@
           document.body.style.backgroundPosition  = '';
         break;
       }
-      this.setSetting('background', type);
-      this.setSetting('wallpaper', name);
     } else {
       document.body.style.backgroundImage     = '';
       document.body.style.backgroundRepeat    = 'no-repeat';
       document.body.style.backgroundPosition  = '';
-      this.setSetting('background', 'color');
-      this.setSetting('wallpaper', null);
     }
 
     // Theme
     var theme = this.getSetting('theme');
+    var tlink = document.getElementById("_OSjsTheme");
     console.log("theme", theme);
-    document.getElementById("_OSjsTheme").setAttribute('href', OSjs.API.getThemeCSS(theme));
+    tlink.setAttribute('href', OSjs.API.getThemeCSS(theme));
 
+    // Animations
+    var anim  = this.getSetting('animations');
+    var alink = document.getElementById("_OSjsAnimations");
+    console.log("animations", anim);
+    if ( anim ) {
+      alink.setAttribute('href', OSjs.API.getApplicationResource('CoreWM', 'animations.css')); // FIXME
+    } else {
+      alink.setAttribute('href', '/frontend/blank.css'); // FIXME
+    }
 
     // Misc
     var classNames = [];
@@ -351,7 +357,7 @@
 
   CoreWM.prototype.getSetting = function(k) {
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
-    if ( val === null ) {
+    if ( typeof val === 'undefined' || val === null ) {
       return DefaultSettings()[k];
     }
     return val;
