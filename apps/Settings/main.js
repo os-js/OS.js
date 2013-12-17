@@ -41,7 +41,7 @@
     label.innerHTML = "Theme";
 
     input = document.createElement('select');
-    input.name = "theme";
+    input.className = "SettingsInput_theme";
 
 
     for ( i in themes ) {
@@ -70,7 +70,7 @@
     label.innerHTML = "Background Type";
 
     input = document.createElement('select');
-    input.name = "backgroundType";
+    input.className = "SettingsInput_backgroundType";
 
     tmp = document.createElement('option');
     tmp.value = 'image';
@@ -126,7 +126,7 @@
     input = document.createElement('input');
     input.type = "text";
     input.disabled = "disabled";
-    input.name = "backgroundImage";
+    input.className = "SettingsInput_backgroundImage";
     input.value = settings.wallpaper;
 
     button = document.createElement('button');
@@ -157,7 +157,7 @@
     input = document.createElement('input');
     input.type = "text";
     input.disabled = "disabled";
-    input.name = "backgroundColor";
+    input.className = "SettingsInput_backgroundColor";
     input.style.backgroundColor = settings.style.backgroundColor;
     input.style.color = "#fff";
     input.value = settings.style.backgroundColor;
@@ -187,7 +187,7 @@
     input = document.createElement('input');
     input.type = "text";
     input.disabled = "disabled";
-    input.name = "font";
+    input.className = "SettingsInput_font";
     input.value = settings.style.fontFamily;
     input.style.fontFamily = settings.style.fontFamily;
 
@@ -214,7 +214,7 @@
     label.innerHTML = "Taskbar Position";
 
     input = document.createElement('select');
-    input.name = "taskbarPosition";
+    input.className = "SettingsInput_taskbarPosition";
 
     tmp = document.createElement('option');
     tmp.value = 'top';
@@ -248,7 +248,7 @@
     label.innerHTML = "Taskbar ontop ?";
 
     input = document.createElement('select');
-    input.name = "taskbarOntop";
+    input.className = "SettingsInput_taskbarOntop";
 
     tmp = document.createElement('option');
     tmp.value = 'yes';
@@ -293,7 +293,7 @@
     label.innerHTML = "Use Animations ?";
 
     input = document.createElement('select');
-    input.name = "useanimations";
+    input.className = "SettingsInput_useanimations";
 
     tmp = document.createElement('option');
     tmp.value = 'yes';
@@ -319,15 +319,15 @@
     button.innerHTML = "Apply";
     button.onclick = function(ev) {
       app.save(ev, self, {
-        animations:       document.getElementsByName('useanimations')[0].value == 'yes',
-        taskbarOntop:     document.getElementsByName('taskbarOntop')[0].value == 'yes',
-        taskbarPosition:  document.getElementsByName('taskbarPosition')[0].value,
+        animations:       root.getElementsByClassName('SettingsInput_useanimations')[0].value == 'yes',
+        taskbarOntop:     root.getElementsByClassName('SettingsInput_taskbarOntop')[0].value == 'yes',
+        taskbarPosition:  root.getElementsByClassName('SettingsInput_taskbarPosition')[0].value,
         desktopMargin:    desktopMargin,
-        desktopFont:      document.getElementsByName('font')[0].value,
-        theme:            document.getElementsByName('theme')[0].value,
-        backgroundType:   document.getElementsByName('backgroundType')[0].value,
-        backgroundImage:  document.getElementsByName('backgroundImage')[0].value,
-        backgroundColor:  document.getElementsByName('backgroundColor')[0].value
+        desktopFont:      root.getElementsByClassName('SettingsInput_font')[0].value,
+        theme:            root.getElementsByClassName('SettingsInput_theme')[0].value,
+        backgroundType:   root.getElementsByClassName('SettingsInput_backgroundType')[0].value,
+        backgroundImage:  root.getElementsByClassName('SettingsInput_backgroundImage')[0].value,
+        backgroundColor:  root.getElementsByClassName('SettingsInput_backgroundColor')[0].value
       });
     };
 
