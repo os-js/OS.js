@@ -1,8 +1,10 @@
 (function(WindowManager, GUI) {
 
   function DefaultSettings(defaults) {
+    var anim = OSjs.Utils.getCompability().css.transition;
+
     var cfg = {
-      animations    : true,
+      animations    : anim,
       fullscreen    : false,
       taskbar       : {position: 'top', ontop: true},
       desktop       : {margin: 5},

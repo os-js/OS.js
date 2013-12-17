@@ -49,6 +49,28 @@
     var video_supported   = !!document.createElement('video').canPlayType   ? document.createElement('video')   : null;
     var audio_supported   = !!document.createElement('audio').canPlayType   ? document.createElement('audio')   : null;
 
+    function detectCSSFeature(featurename) {
+      var feature             = false,
+          domPrefixes         = 'Webkit Moz ms O'.split(' '),
+          elm                 = document.createElement('div'),
+          featurenameCapital  = null;
+
+      featurename = featurename.toLowerCase();
+
+      if ( elm.style[featurename] ) { feature = true; }
+
+      if ( feature === false ) {
+        featurenameCapital = featurename.charAt(0).toUpperCase() + featurename.substr(1);
+        for( var i = 0; i < domPrefixes.length; i++ ) {
+          if( elm.style[domPrefixes[i] + featurenameCapital ] !== undefined ) {
+            feature = true;
+            break;
+          }
+        }
+      }
+      return feature;
+    }
+
     var compability = {
       upload         : false,
       fileSystem     : (('requestFileSystem' in window) || ('webkitRequestFileSystem' in window)),
@@ -62,6 +84,9 @@
       dnd            : ('draggable' in document.createElement('span')),
       touch          : ('ontouchstart' in window),
       orientation    : ('onorientationchange' in window),
+      css            : {
+        transition : detectCSSFeature('transition')
+      },
 
       canvas         : (!!canvas_supported),
       canvasContext  : [],
