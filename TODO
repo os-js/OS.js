@@ -21,7 +21,7 @@ Future releases:
 * Investigate the Array.splice() loaded with Class instances -- breaks stuff?!
   - Fixed for now with just nulling
 * Finish GUI Elements
-  - Select + SelectList
+  - SelectList
   - Button
   - Option
   - Checkbox

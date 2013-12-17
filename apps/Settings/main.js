@@ -23,114 +23,63 @@
     var themes        = wm.getThemes();
     var theme         = wm.getSetting('theme');
     var desktopMargin = settings.desktop.margin;
+    var themelist     = {};
 
-    var tabs = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
-
-    var outer, label, input, button, tmp;
-    var i, l;
-
-    var tabStyles = tabs.addTab('Theme and Background');
-    var tabOther = tabs.addTab('Desktop Settings');
-    var tabMisc = tabs.addTab('Misc');
-
-    // Theme
-    outer = document.createElement('div');
-    outer.className = "Setting SettingsNoButton Setting_Theme";
-
-    label = document.createElement('label');
-    label.innerHTML = "Theme";
-
-    input = document.createElement('select');
-    input.className = "SettingsInput_theme";
-
-
-    for ( i in themes ) {
+    for ( var i in themes ) {
       if ( themes.hasOwnProperty(i) ) {
-        tmp = document.createElement('option');
-        tmp.value = i;
-        tmp.innerHTML = themes[i].title;
-        if ( theme == i ) {
-          tmp.selected = "selected";
-        }
-        input.appendChild(tmp);
+        themelist[i] = themes[i].title;
       }
     }
 
-    outer.appendChild(label);
-    outer.appendChild(input);
+    var _createContainer = function(name, lbl) {
+      var outer = document.createElement('div');
+      outer.className = "Setting Setting_" + name;
+
+      if ( lbl ) {
+        var label = document.createElement('label');
+        label.innerHTML = lbl;
+        outer.appendChild(label);
+      }
+      return outer;
+    };
+
+    var outer, button, slider;
+
+    var tabs      = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
+    var tabStyles = tabs.addTab('Theme and Background');
+    var tabOther  = tabs.addTab('Desktop Settings', function(c) {
+      slider.setValue(desktopMargin);
+    });
+    var tabMisc   = tabs.addTab('Misc');
+
+    // Theme
+    outer = _createContainer('Theme SettingsNoButton', 'Theme');
+    var themeName = this._addGUIElement(new OSjs.GUI.Select('SettingsThemeName'), outer);
+    themeName.addItems(themelist);
+    themeName.setSelected(theme);
     tabStyles.appendChild(outer);
 
     //
     // Background Type
     //
-    outer = document.createElement('div');
-    outer.className = "Setting SettingsNoButton Setting_BackgroundType";
-
-    label = document.createElement('label');
-    label.innerHTML = "Background Type";
-
-    input = document.createElement('select');
-    input.className = "SettingsInput_backgroundType";
-
-    tmp = document.createElement('option');
-    tmp.value = 'image';
-    tmp.innerHTML = 'Image';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'image-repeat';
-    tmp.innerHTML = 'Image (Repeat)';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'image-center';
-    tmp.innerHTML = 'Image (Center)';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'image-fill';
-    tmp.innerHTML = 'Image (Fill)';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'image-strech';
-    tmp.innerHTML = 'Image (Strech)';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'color';
-    tmp.innerHTML = 'Color';
-    input.appendChild(tmp);
-
-    for ( i = 0; i < input.childNodes.length; i++ ) {
-      if ( input.childNodes[i].value == settings.background ) {
-        input.childNodes[i].selected = "selected";
-        input.selectedIndex = i;
-        break;
-      }
-    }
-
-    outer.appendChild(label);
-    outer.appendChild(input);
+    outer = _createContainer('BackgroundType SettingsNoButton', 'Background Type');
+    var backgroundType = this._addGUIElement(new OSjs.GUI.Select('SettingsBackgroundType'), outer);
+    backgroundType.addItems({
+      'image':        'Image',
+      'image-repeat': 'Image (Repeat)',
+      'image-center': 'Image (Centered)',
+      'image-fill':   'Image (Fill)',
+      'image-strech': 'Image (Streched)',
+      'color':        'Color'
+    });
+    backgroundType.setSelected(settings.background);
     tabStyles.appendChild(outer);
 
     //
     // Background Image
     //
-    outer = document.createElement('div');
-    outer.className = "Setting Setting_BackgroundImage";
-
-    label = document.createElement('label');
-    label.innerHTML = "Background Image";
-
-    input = document.createElement('input');
-    input.type = "text";
-    input.disabled = "disabled";
-    input.className = "SettingsInput_backgroundImage";
-    input.value = settings.wallpaper;
-
-    button = document.createElement('button');
-    button.innerHTML = "...";
+    outer = _createContainer('BackgroundImage', 'Background Image');
+    var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
 
     button = document.createElement('button');
     button.innerHTML = "...";
@@ -138,29 +87,19 @@
       return function(ev) {
         self.openBackgroundSelect(ev, inp);
       };
-    })(input);
+    })(backgroundImage);
 
-    outer.appendChild(label);
-    outer.appendChild(input);
     outer.appendChild(button);
     tabStyles.appendChild(outer);
 
     //
     // Background Color
     //
-    outer = document.createElement('div');
-    outer.className = "Setting Setting_BackgroundColor";
+    outer = _createContainer('BackgroundColor', 'Background Color');
 
-    label = document.createElement('label');
-    label.innerHTML = "Background Color";
-
-    input = document.createElement('input');
-    input.type = "text";
-    input.disabled = "disabled";
-    input.className = "SettingsInput_backgroundColor";
-    input.style.backgroundColor = settings.style.backgroundColor;
-    input.style.color = "#fff";
-    input.value = settings.style.backgroundColor;
+    var backgroundColor = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundColor', {disabled: true, value: settings.style.backgroundColor}), outer);
+    backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
+    backgroundColor.$input.style.color = "#fff";
 
     button = document.createElement('button');
     button.innerHTML = "...";
@@ -168,28 +107,18 @@
       return function(ev) {
         self.openBackgroundColorSelect(ev, inp);
       };
-    })(input);
+    })(backgroundColor);
 
-    outer.appendChild(label);
-    outer.appendChild(input);
     outer.appendChild(button);
     tabStyles.appendChild(outer);
 
     //
     // Font
     //
-    outer = document.createElement('div');
-    outer.className = "Setting Setting_Font";
+    outer = _createContainer('Font', 'Font');
 
-    label = document.createElement('label');
-    label.innerHTML = "Font";
-
-    input = document.createElement('input');
-    input.type = "text";
-    input.disabled = "disabled";
-    input.className = "SettingsInput_font";
-    input.value = settings.style.fontFamily;
-    input.style.fontFamily = settings.style.fontFamily;
+    var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
+    fontName.$input.style.fontFamily = settings.style.fontFamily;
 
     button = document.createElement('button');
     button.innerHTML = "...";
@@ -197,73 +126,33 @@
       return function(ev) {
         self.openFontSelect(ev, inp);
       };
-    })(input);
+    })(fontName);
 
-    outer.appendChild(label);
-    outer.appendChild(input);
     outer.appendChild(button);
     tabOther.appendChild(outer);
 
     //
     // Taskbar Position
     //
-    outer = document.createElement('div');
-    outer.className = "Setting SettingsNoButton Setting_TaskbarPosition";
-
-    label = document.createElement('label');
-    label.innerHTML = "Taskbar Position";
-
-    input = document.createElement('select');
-    input.className = "SettingsInput_taskbarPosition";
-
-    tmp = document.createElement('option');
-    tmp.value = 'top';
-    tmp.innerHTML = 'Top';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'bottom';
-    tmp.innerHTML = 'Bottom';
-    input.appendChild(tmp);
-
-    for ( i = 0; i < input.childNodes.length; i++ ) {
-      if ( input.childNodes[i].value == settings.taskbar.position ) {
-        //input.childNodes[i].selected = "selected";
-        input.selectedIndex = i;
-        break;
-      }
-    }
-
-    outer.appendChild(label);
-    outer.appendChild(input);
+    outer = _createContainer('TaskbarPosition SettingsNoButton', 'Taskbar Position');
+    var taskbarPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarPosition'), outer);
+    taskbarPosition.addItems({
+      'top':      'Top',
+      'bottom':   'Bottom'
+    });
+    taskbarPosition.setSelected(settings.taskbar.position);
     tabOther.appendChild(outer);
 
     //
     // Taskbar Ontop
     //
-    outer = document.createElement('div');
-    outer.className = "Setting SettingsNoButton Setting_TaskBarOntop";
-
-    label = document.createElement('label');
-    label.innerHTML = "Taskbar ontop ?";
-
-    input = document.createElement('select');
-    input.className = "SettingsInput_taskbarOntop";
-
-    tmp = document.createElement('option');
-    tmp.value = 'yes';
-    tmp.innerHTML = 'Yes';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'no';
-    tmp.innerHTML = 'No';
-    input.appendChild(tmp);
-
-    input.selectedIndex = settings.taskbar.ontop ? 0 : 1;
-
-    outer.appendChild(label);
-    outer.appendChild(input);
+    outer = _createContainer('TaskbarOntop SettingsNoButton', 'Taskbar Ontop ?');
+    var taskbarOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarOntop'), outer);
+    taskbarOntop.addItems({
+      'yes':  'Yes',
+      'no':   'No'
+    });
+    taskbarOntop.setSelected(settings.taskbar.ontop ? 'yes' : 'no');
     tabOther.appendChild(outer);
 
     //
@@ -272,43 +161,26 @@
     outer = document.createElement('div');
     outer.className = "Setting Setting_DesktopMargin";
 
-    label = document.createElement('label');
+    var label = document.createElement('label');
     label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
 
     outer.appendChild(label);
-    var slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin}, function(value, percentage) {
+    slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin}, function(value, percentage) {
       desktopMargin = value;
       label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
     }), outer);
     tabOther.appendChild(outer);
-    slider.setValue(desktopMargin);
 
     //
     // Misc
     //
-    outer = document.createElement('div');
-    outer.className = "Setting SettingsNoButton Setting_Animations";
-
-    label = document.createElement('label');
-    label.innerHTML = "Use Animations ?";
-
-    input = document.createElement('select');
-    input.className = "SettingsInput_useanimations";
-
-    tmp = document.createElement('option');
-    tmp.value = 'yes';
-    tmp.innerHTML = 'Yes';
-    input.appendChild(tmp);
-
-    tmp = document.createElement('option');
-    tmp.value = 'no';
-    tmp.innerHTML = 'No';
-    input.appendChild(tmp);
-
-    input.selectedIndex = settings.animations === true ? 0 : 1;
-
-    outer.appendChild(label);
-    outer.appendChild(input);
+    outer = _createContainer('Animations SettingsNoButton', 'Use animations ?');
+    var useAnimations = this._addGUIElement(new OSjs.GUI.Select('SettingsUseAnimations'), outer);
+    useAnimations.addItems({
+      'yes':  'Yes',
+      'no':   'No'
+    });
+    useAnimations.setSelected(settings.animations ? 'yes' : 'no');
     tabMisc.appendChild(outer);
 
     //
@@ -319,15 +191,15 @@
     button.innerHTML = "Apply";
     button.onclick = function(ev) {
       app.save(ev, self, {
-        animations:       root.getElementsByClassName('SettingsInput_useanimations')[0].value == 'yes',
-        taskbarOntop:     root.getElementsByClassName('SettingsInput_taskbarOntop')[0].value == 'yes',
-        taskbarPosition:  root.getElementsByClassName('SettingsInput_taskbarPosition')[0].value,
+        animations:       useAnimations.getValue() == 'yes',
+        taskbarOntop:     taskbarOntop.getValue() == 'yes',
+        taskbarPosition:  taskbarPosition.getValue(),
         desktopMargin:    desktopMargin,
-        desktopFont:      root.getElementsByClassName('SettingsInput_font')[0].value,
-        theme:            root.getElementsByClassName('SettingsInput_theme')[0].value,
-        backgroundType:   root.getElementsByClassName('SettingsInput_backgroundType')[0].value,
-        backgroundImage:  root.getElementsByClassName('SettingsInput_backgroundImage')[0].value,
-        backgroundColor:  root.getElementsByClassName('SettingsInput_backgroundColor')[0].value
+        desktopFont:      fontName.getValue(),
+        theme:            themeName.getValue(),
+        backgroundType:   backgroundType.getValue(),
+        backgroundImage:  backgroundImage.getValue(),
+        backgroundColor:  backgroundColor.getValue()
       });
     };
 
@@ -346,7 +218,7 @@
     this._appRef._createDialog('File', [{type: 'open', path: curf, filename: curn, mimes: ['^image']}, function(btn, fname, rmime) {
       self._focus();
       if ( btn !== 'ok' ) return;
-      input.value = fname;
+      input.setValue(fname);
     }], this);
   };
 
@@ -356,8 +228,10 @@
     this._appRef._createDialog('Color', [{color: cur}, function(btn, rgb, hex) {
       self._focus();
       if ( btn != 'ok' ) return;
-      input.value = hex;
-      input.style.backgroundColor = hex;
+
+      input.setValue(hex);
+      input.$input.style.backgroundColor = hex;
+      input.$input.style.color = "#fff";
     }], this);
   };
 
@@ -367,8 +241,8 @@
     this._appRef._createDialog('Font', [{name: cur, minSize: 0, maxSize: 0}, function(btn, fontName, fontSize) {
       self._focus();
       if ( btn != 'ok' ) return;
-      input.value = fontName;
-      input.style.fontFamily = fontName;
+      input.setValue(fontName);
+      input.$input.style.fontFamily = fontName;
     }], this);
   };
 

@@ -815,7 +815,6 @@
             return true;
           }
         } else {
-          console.warn(k, v);
           this._settings[k] = v;
           return true;
         }
@@ -1055,6 +1054,7 @@
       this._$root         = null;
       this._$loading      = null;
       this._$disabled     = null;
+      this._rendered      = false;
       this._appRef        = appRef || null;
       this._destroyed     = false;
       this._wid           = _WID;
@@ -1439,6 +1439,14 @@
   };
 
   Window.prototype._inited = function() {
+    if ( !this._rendered ) {
+      for ( var i = 0; i < this._guiElements.length; i++ ) {
+        if ( this._guiElements[i] ) {
+          this._guiElements[i].update();
+        }
+      }
+    }
+    this._rendered = true;
   };
 
   Window.prototype.destroy = function() {
@@ -1626,9 +1634,9 @@
       this._guiElements.push(gel);
       parentNode.appendChild(gel.getRoot());
 
-      setTimeout(function() {
+      if ( this._rendered ) {
         gel.update();
-      }, 10);
+      }
 
       return gel;
     }

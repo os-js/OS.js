@@ -195,6 +195,7 @@
       this.onItemDropped  = function() {};
       this.onFilesDropped = function() {};
       this.$element       = null;
+      this.inited         = false;
       this._hooks         = {
         focus   : [],
         blur    : [],
@@ -254,6 +255,7 @@
   };
 
   GUIElement.prototype.update = function() {
+    this.inited = true;
   };
 
   GUIElement.prototype.destroy = function() {
@@ -1260,6 +1262,7 @@
   };
 
   Slider.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
     this.setValue(this.val);
   };
 
@@ -1297,6 +1300,8 @@
   };
 
   Slider.prototype.setValue = function(val) {
+    if ( !this.inited ) return;
+
     if ( val < this.min || val > this.max ) return;
     this.val = val;
 
@@ -1958,7 +1963,9 @@
     this.setTab(0);
   };
 
-  Tabs.prototype.addTab = function(title) {
+  Tabs.prototype.addTab = function(title, onShow) {
+    onShow = onShow || function() {};
+
     var self = this;
     var len = this.$tabs.childNodes.length;
 
@@ -1971,6 +1978,8 @@
     $t.onclick = (function(i) {
       return function() {
         self.setTab(i);
+
+        onShow($c);
       };
     })(len);
 
@@ -1986,6 +1995,110 @@
 
 
     return $c;
+  };
+
+  /**
+   * Text
+   */
+  var Text = function(name, opts) {
+    opts = opts || {};
+    this.$input = null;
+    this.type = opts.type || 'text';
+    this.disabled = opts.disabled || false;
+    this.value = opts.value || '';
+    GUIElement.apply(this, [name]);
+  };
+
+  Text.prototype = Object.create(GUIElement.prototype);
+
+  Text.prototype.init = function() {
+    var self = this;
+    var el = GUIElement.prototype.init.apply(this, ['GUIText ' + this.orientation]);
+    this.$input = document.createElement('input');
+    this.$input.type = this.type;
+    el.appendChild(this.$input);
+
+    this.setDisabled(this.disabled);
+    this.setValue(this.value);
+    return el;
+  };
+
+  Text.prototype.setDisabled = function(d) {
+    this.disabled = d;
+    if ( d ) {
+      this.$input.setAttribute("disabled", "disabled");
+    } else {
+      this.$input.removeAttribute("disabled");
+    }
+  };
+
+  Text.prototype.setValue = function(val) {
+    this.value = val;
+    this.$input.value = val;
+  };
+
+  Text.prototype.getValue = function() {
+    return this.$input.value;
+  };
+
+  /**
+   * Select
+   */
+  var Select = function(name, opts) {
+    opts = opts || {};
+
+    this.$select = null;
+
+    GUIElement.apply(this, [name]);
+  };
+
+  Select.prototype = Object.create(GUIElement.prototype);
+
+  Select.prototype.init = function() {
+    var self = this;
+    var el = GUIElement.prototype.init.apply(this, ['GUISelect ' + this.orientation]);
+
+    this.$select = document.createElement('select');
+
+    el.appendChild(this.$select);
+
+    return el;
+  };
+
+  Select.prototype.addItems = function(items) {
+    for ( var i in items ) {
+      if ( items.hasOwnProperty(i) ) {
+        this.addItem(i, items[i]);
+      }
+    }
+  };
+
+  Select.prototype.addItem = function(value, label) {
+    var el = document.createElement('option');
+    el.value = value;
+    el.innerHTML = label;
+    this.$select.appendChild(el);
+  };
+
+  Select.prototype.setSelected = function(val) {
+    var i = 0;
+    var l = this.$select.childNodes.length;
+    var found = false;
+
+    for ( i; i < l; i++ ) {
+      if ( i === val || this.$select.childNodes[i].value == val ) {
+        found = i;
+        break;
+      }
+    }
+
+    if ( found !== false ) {
+      this.$select.selectedIndex = found;
+    }
+  };
+
+  Select.prototype.getValue = function() {
+    return this.$select.value;
   };
 
   //
@@ -2006,6 +2119,8 @@
   OSjs.GUI.IconView     = IconView;
   OSjs.GUI.RichText     = RichText;
   OSjs.GUI.Tabs         = Tabs;
+  OSjs.GUI.Select       = Select;
+  OSjs.GUI.Text         = Text;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;
