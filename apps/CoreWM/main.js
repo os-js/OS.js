@@ -345,15 +345,13 @@
   };
 
   CoreWM.prototype.getWindowPosition = function() {
-    var pos = WindowManager.prototype.getWindowPosition.apply(this, arguments);
     var t   = this.getSetting('taskbar');
-
+    var pos = {x: 10, y: 10};
     if ( t.ontop ) {
       if ( t.position == 'top' ) {
         pos.y += 35;
       }
     }
-
     return pos;
   };
 
