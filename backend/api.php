@@ -107,6 +107,7 @@ function error() {
 //
 if ( !defined("HOMEDIR") )    define("HOMEDIR",     "/opt/OSjs/home");                                // Filesystem API default dir
 if ( !defined("TMPDIR") )     define("TMPDIR",      "/opt/OSjs/tmp");                                 // Temporary files
+if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(dirname(__FILE__) . '/../'));                     // This path
 if ( !defined("APPDIR") )     define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));        // Default apps dir
 if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));    // Upload size limit
 if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
@@ -206,11 +207,12 @@ if ( empty($data) ) {
 
       // API call via application
       case 'application' :
-        $an = empty($arguments['application']) ? null     : $arguments['application'];
-        $am = empty($arguments['method'])      ? null     : $arguments['method'];
-        $aa = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
+        $path = empty($arguments['path'])        ? null     : $arguments['path'];
+        $an   = empty($arguments['application']) ? null     : $arguments['application'];
+        $am   = empty($arguments['method'])      ? null     : $arguments['method'];
+        $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
 
-        $apath = sprintf("%s/%s/%s", APPDIR, $an, "api.php");
+        $apath = sprintf("%s/%s/%s", ROOTDIR, $path, "api.php");
         if ( strstr($apath, APPDIR) === false || !file_exists($apath) ) {
           $error = "No such application or API file not available ({$an})!";
         } else {

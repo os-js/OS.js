@@ -295,9 +295,9 @@
     var alink = document.getElementById("_OSjsAnimations");
     console.log("animations", anim);
     if ( anim ) {
-      alink.setAttribute('href', OSjs.API.getApplicationResource('CoreWM', 'animations.css')); // FIXME
+      alink.setAttribute('href', OSjs.API.getApplicationResource(this, 'animations.css'));
     } else {
-      alink.setAttribute('href', '/frontend/blank.css'); // FIXME
+      alink.setAttribute('href', OSjs.API.getResourceURL('/frontend/blank.css'));
     }
 
     // Misc

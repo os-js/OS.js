@@ -402,7 +402,7 @@
   //
 
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
-    return '/' + (['apps', app, name]).join('/');
+    return '/' + app.__path + '/' + name;
   };
 
   DefaultHandler.prototype.getThemeResource = function(name, type, args) {

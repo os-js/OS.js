@@ -668,7 +668,6 @@
       throw "Your platform does not support Audio :(";
     }
     Application.apply(this, ['ApplicationMusicPlayer', args, metadata]);
-    this.__dname = 'MusicPlayer';
   };
 
   ApplicationMusicPlayer.prototype = Object.create(Application.prototype);

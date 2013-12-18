@@ -618,11 +618,15 @@
     console.group("OSjs::Core::WindowManager::__construct()");
 
     this._windows  = [];
-    this._name     = (name || 'WindowManager');
     this._settings = {};
     this._themes   = args.themes || [{'default': {title: 'Default'}}];
 
-    Process.apply(this, [this._name]);
+    // Important for usage as "Application"
+    this.__name    = (name || 'WindowManager');
+    this.__path    = metadata.path;
+    this.__iter    = metadata.iter;
+
+    Process.apply(this, [this.__name]);
 
     _WM = (ref || this);
 
@@ -885,7 +889,8 @@
   var Application = function(name, args, metadata) {
     console.group("OSjs::Core::Application::__construct()");
     this.__name       = name;
-    this.__dname      = name;
+    this.__path       = metadata.path;
+    this.__iter       = metadata.iter;
     this.__destroyed  = false;
     this.__running    = true;
     this.__inited     = false;
@@ -960,7 +965,7 @@
       err = err || "Unknown error";
       OSjs.API.error("Application API error", "Application " + self.__name + " failed to perform operation '" + method + "'", err);
     };
-    return APICall('application', {'application': this.__dname, 'method': method, 'arguments': args}, onSuccess, onError);
+    return APICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
   Application.prototype._createDialog = function(className, args, parentClass) {
