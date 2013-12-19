@@ -1346,6 +1346,10 @@
       } else {
         px = self._dimension.w;
         py = self._dimension.h;
+
+        if ( !main.className.match(/WindowHintResizing/) ) {
+          main.className += ' WindowHintResizing';
+        }
       }
 
       sx = ev.clientX;
@@ -1365,6 +1369,8 @@
           } else if ( action === 'resize' ) {
             self._onChange('resize');
             self._fireHook('resized');
+
+            main.className = main.className.replace(/\s?WindowHintResizing/, '');
           }
         }
       }

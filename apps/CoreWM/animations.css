@@ -50,6 +50,13 @@
       -o-transition: height 0.3s ease-in-out, width 0.3s;
          transition: height 0.3s ease-in-out, width 0.3s;
 }
+.WindowHintResizing {
+ -webkit-transition: none;
+    -moz-transition: none;
+      -o-transition: none;
+         transition: none;
+}
+
 .WindowHintClosing,
 .WindowHintMinimized {
  -webkit-animation: hide .3s;
@@ -64,6 +71,7 @@
 
   border-image: initial;
 }
+
 
 /* Desktop */
 #Background.Blinking {
