@@ -25,14 +25,13 @@
 
 ### Release
 * Source code documentation
-
-## Future releases
-
 * Localization
-* Mobile version
-* Panels with items in CoreWM
 * Finish GUI Elements
   - Option
   - Image
   - Video, Audio => Media
   - TreeView
+
+## Future releases
+* Mobile version
+* Panels with items in CoreWM
