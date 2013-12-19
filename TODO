@@ -11,14 +11,11 @@ Beta-1:
 
 Release:
 * Source code documentation
-* Replace code with dom queries where doable
 
 Future releases:
 * Localization
 * Mobile version
 * Panels with items in CoreWM
-* Investigate the Array.splice() loaded with Class instances -- breaks stuff?!
-  - Fixed for now with just nulling
 * Finish GUI Elements
   - SelectList
   - Button

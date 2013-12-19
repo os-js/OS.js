@@ -962,8 +962,8 @@
         onRefreshed.call(this);
       }
     }, function(error) {
-      self.onError.call(self, error, dir);
-      onError.call(self, error, dir);
+      self.onError.call(self, error, dir, true);
+      onError.call(self, error, dir, true);
     });
   };
 

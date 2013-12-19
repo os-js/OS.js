@@ -2051,16 +2051,16 @@
   OSjs.Core.WindowManager     = WindowManager;
 
   // Running instances
-  OSjs.API.getHandlerInstance = function()    { return _HANDLER; };
-  OSjs.API.getWMInstance      = function()    { return _WM; };
-  OSjs.API.getCoreInstance    = function()    { return _CORE; };
+  OSjs.API.getHandlerInstance     = function() { return _HANDLER; };
+  OSjs.API.getWMInstance          = function() { return _WM; };
+  OSjs.API.getCoreInstance        = function() { return _CORE; };
 
   // Handler shortcuts
-  OSjs.API.getDefaultPath         = function(def)               { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
-  OSjs.API.getThemeCSS            = function(name)              { return _HANDLER.getThemeCSS(name); };
-  OSjs.API.getResourceURL         = function(path)              { return _HANDLER.getResourceURL(path); };
-  OSjs.API.getThemeResource       = function(name, type, args)  { return _HANDLER.getThemeResource(name, type, args); };
-  OSjs.API.getApplicationResource = function(app, name)         { return _HANDLER.getApplicationResource(app, name); };
+  OSjs.API.getDefaultPath         = function(def)              { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
+  OSjs.API.getThemeCSS            = function(name)             { return _HANDLER.getThemeCSS(name); };
+  OSjs.API.getResourceURL         = function(path)             { return _HANDLER.getResourceURL(path); };
+  OSjs.API.getThemeResource       = function(name, type, args) { return _HANDLER.getThemeResource(name, type, args); };
+  OSjs.API.getApplicationResource = function(app, name)        { return _HANDLER.getApplicationResource(app, name); };
 
   // Common API functions
   OSjs.API.call               = APICall;

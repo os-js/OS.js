@@ -96,7 +96,11 @@ function error() {
 
     if ( ob_get_level() ) ob_end_clean();
     header("HTTP/1.0 500 Internal Server Error");
-    print $e['message'];
+    if ( SHOWERRORS ) {
+      print implode("\n", Array($e['message'], "Type: {$type}", "Line: {$e['line']}", "File: {$e['file']}"));
+    } else {
+      print $e['message'];
+    }
     exit;
   }
 }
@@ -107,11 +111,12 @@ function error() {
 //
 if ( !defined("HOMEDIR") )    define("HOMEDIR",     "/opt/OSjs/home");                                // Filesystem API default dir
 if ( !defined("TMPDIR") )     define("TMPDIR",      "/opt/OSjs/tmp");                                 // Temporary files
-if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(dirname(__FILE__) . '/../'));                     // This path
+if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(dirname(__FILE__) . '/../'));            // The path to root dir
 if ( !defined("APPDIR") )     define("APPDIR",      realpath(dirname(__FILE__) . "/../apps"));        // Default apps dir
 if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));    // Upload size limit
 if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
+if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
 
 date_default_timezone_set(TIMEZONE);
 
