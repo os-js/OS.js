@@ -10,6 +10,9 @@
 * GUI Elements:
   * GUIButton
   * GUISelectList
+  * GUIOption
+  * GUIOptionGroup
+  * GUITreeView
 * GUI Misc:
   * Implement GUIText in dialogs.js
   * Implement GUIButton in dialogs.js
@@ -20,17 +23,13 @@
 * Go over error messages and rewrite
 * Go over all error handling
 * Node.js backend
-* Offline usage
-* VFS via IndexedDB
 
 ### Release
+
+* VFS via IndexedDB
+* Offline usage
 * Source code documentation
 * Localization
-* Finish GUI Elements
-  - Option
-  - Image
-  - Video, Audio => Media
-  - TreeView
 
 ## Future releases
 * Mobile version
