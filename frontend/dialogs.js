@@ -273,8 +273,6 @@
     this.list         = list;
     this.selectedApp  = null;
     this.useDefault   = false;
-    this.$checkbox    = null;
-    this.$label       = null;
 
     var msg = (["Choose an application to open<br />", "<span>"+this.filename+"</span>", "("+this.mime+")"]).join(" ");
     StandardDialog.apply(this, ['ApplicationChooserDialog', {title: "Choose Application", message: msg}, {width:400, height:360}, onClose]);
@@ -352,21 +350,10 @@
     listView.setRows(list);
     listView.render();
 
-    this.$checkbox = document.createElement('input');
-    this.$checkbox.type = 'checkbox';
-    if ( this.useDefault ) {
-      this.$checkbox.setAttribute("checked", "checked");
-    }
-    this.$checkbox.onchange = function() {
-      self.useDefault = this.checked ? true : false;
-    };
-
-    this.$label = document.createElement('label');
-    this.$label.className = 'Checkbox';
-    this.$label.appendChild(this.$checkbox);
-    this.$label.appendChild(document.createTextNode('Use as default application for ' + this.mime));
-
-    container.appendChild(this.$label);
+    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: 'Use as default application for ' + this.mime, value: this.useDefault, onChange: function(el, ev, value) {
+      console.warn('ccc', value);
+      self.useDefault = value ? true : false;
+    }}), container);
 
     return root;
   };

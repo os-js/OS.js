@@ -332,6 +332,60 @@
     return true;
   };
 
+  /**
+   * _Input
+   */
+  var _Input = function(className, tagName, name, opts) {
+    opts = opts || {};
+    this.$input    = null;
+    this.type      = tagName === 'input' ? (opts.type || 'text') : null;
+    this.disabled  = opts.disabled || false;
+    this.value     = opts.value    || '';
+    this.className = className;
+    this.tagName   = tagName;
+    this.onChange  = opts.onChange || function() {};
+    GUIElement.apply(this, [name]);
+  };
+
+  _Input.prototype = Object.create(GUIElement.prototype);
+
+  _Input.prototype.init = function() {
+    var self = this;
+    var el = GUIElement.prototype.init.apply(this, [this.className]);
+    this.$input = document.createElement(this.tagName);
+
+    if ( this.tagName == 'input' ) {
+      this.$input.type = this.type;
+    }
+    this._addEvent(this.$input, 'onchange', function(ev) {
+      self.onChange.apply(self, [this, ev, self.getValue()]);
+    });
+
+    el.appendChild(this.$input);
+
+    this.setDisabled(this.disabled);
+    this.setValue(this.value);
+    return el;
+  };
+
+  _Input.prototype.setDisabled = function(d) {
+    this.disabled = d;
+    if ( d ) {
+      this.$input.setAttribute("disabled", "disabled");
+    } else {
+      this.$input.removeAttribute("disabled");
+    }
+  };
+
+  _Input.prototype.setValue = function(val) {
+    this.value = val;
+    this.$input.value = val;
+  };
+
+  _Input.prototype.getValue = function() {
+    return this.$input.value;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -1999,69 +2053,80 @@
    * Text
    */
   var Text = function(name, opts) {
-    opts = opts || {};
-    this.$input = null;
-    this.type = opts.type || 'text';
-    this.disabled = opts.disabled || false;
-    this.value = opts.value || '';
-    GUIElement.apply(this, [name]);
+    _Input.apply(this, ['GUIText', 'input', name, opts]);
   };
+  Text.prototype = Object.create(_Input.prototype);
 
-  Text.prototype = Object.create(GUIElement.prototype);
+  /**
+   * Password
+   */
+  var Password = function(name, opts) {
+    opts = opts || {};
+    opts.type = 'password';
+    _Input.apply(this, ['GUIText', 'input', name, opts]);
+  };
+  Password.prototype = Object.create(_Input.prototype);
 
-  Text.prototype.init = function() {
+  /**
+   * Checkbox
+   */
+  var Checkbox = function(name, opts) {
+    opts = opts || {};
+    opts.type = 'checkbox';
+    this.label  = opts.label || 'GUICheckbox Label';
+    this.$label = null;
+
+    _Input.apply(this, ['GUICheckbox', 'input', name, opts]);
+  };
+  Checkbox.prototype = Object.create(_Input.prototype);
+
+  Checkbox.prototype.init = function() {
     var self = this;
-    var el = GUIElement.prototype.init.apply(this, ['GUIText ' + this.orientation]);
-    this.$input = document.createElement('input');
+    var el = GUIElement.prototype.init.apply(this, [this.className]);
+
+    this.$input = document.createElement(this.tagName);
     this.$input.type = this.type;
-    el.appendChild(this.$input);
+    this._addEvent(this.$input, 'onchange', function(ev) {
+      self.onChange.apply(self, [this, ev, self.getValue()]);
+    });
+
+    this.$label = document.createElement('label');
+    this.$label.appendChild(this.$input);
+    this.$label.appendChild(document.createTextNode(this.label));
+
+    el.appendChild(this.$label);
 
     this.setDisabled(this.disabled);
     this.setValue(this.value);
+
     return el;
   };
 
-  Text.prototype.setDisabled = function(d) {
-    this.disabled = d;
-    if ( d ) {
-      this.$input.setAttribute("disabled", "disabled");
+  Checkbox.prototype.setChecked = function(val) {
+    this.setValue(val);
+  };
+
+  Checkbox.prototype.setValue = function(val) {
+    this.value = val ? true : false;
+    if ( this.value ) {
+      this.$input.setAttribute("checked", "checked");
     } else {
-      this.$input.removeAttribute("disabled");
+      this.$input.removeAttribute("checked");
     }
   };
 
-  Text.prototype.setValue = function(val) {
-    this.value = val;
-    this.$input.value = val;
-  };
-
-  Text.prototype.getValue = function() {
-    return this.$input.value;
+  Checkbox.prototype.getValue = function() {
+    return this.$input.checked ? true : false;
   };
 
   /**
    * Select
    */
   var Select = function(name, opts) {
-    opts = opts || {};
-
-    this.$select = null;
-
-    GUIElement.apply(this, [name]);
+    _Input.apply(this, ['GUISelect', 'select', name, opts]);
   };
 
-  Select.prototype = Object.create(GUIElement.prototype);
-
-  Select.prototype.init = function() {
-    var self = this;
-    var el = GUIElement.prototype.init.apply(this, ['GUISelect ' + this.orientation]);
-
-    this.$select = document.createElement('select');
-
-    el.appendChild(this.$select);
-
-    return el;
-  };
+  Select.prototype = Object.create(_Input.prototype);
 
   Select.prototype.addItems = function(items) {
     for ( var i in items ) {
@@ -2075,28 +2140,29 @@
     var el = document.createElement('option');
     el.value = value;
     el.innerHTML = label;
-    this.$select.appendChild(el);
+    this.$input.appendChild(el);
+  };
+
+  Select.prototype.setValue = function(val) {
+    this.setSelected(val);
   };
 
   Select.prototype.setSelected = function(val) {
     var i = 0;
-    var l = this.$select.childNodes.length;
+    var l = this.$input.childNodes.length;
     var found = false;
 
     for ( i; i < l; i++ ) {
-      if ( i === val || this.$select.childNodes[i].value == val ) {
+      if ( i === val || this.$input.childNodes[i].value == val ) {
         found = i;
         break;
       }
     }
 
     if ( found !== false ) {
-      this.$select.selectedIndex = found;
+      this.$input.selectedIndex = found;
+      this.value = found;
     }
-  };
-
-  Select.prototype.getValue = function() {
-    return this.$select.value;
   };
 
   //
@@ -2119,6 +2185,8 @@
   OSjs.GUI.Tabs         = Tabs;
   OSjs.GUI.Select       = Select;
   OSjs.GUI.Text         = Text;
+  OSjs.GUI.Password     = Password;
+  OSjs.GUI.Checkbox     = Checkbox;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;
