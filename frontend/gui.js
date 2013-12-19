@@ -1049,7 +1049,6 @@
 
   /**
    * Textarea
-   * FIXME: Use _Input
    */
   var Textarea = function(name, opts) {
     opts = opts || {};
@@ -1057,55 +1056,55 @@
 
     this.$area = null;
     this.strLen = 0;
-    GUIElement.apply(this, [name, opts]);
+
+    _Input.apply(this, ['GUITextarea', 'textarea', name, opts]);
   };
 
-  Textarea.prototype = Object.create(GUIElement.prototype);
-
-  Textarea.prototype.destroy = function() {
-    if ( this.$area ) {
-      this.$area.onkeypress = null;
-    }
-    GUIElement.prototype.destroy.apply(this, arguments);
-  };
+  Textarea.prototype = Object.create(_Input.prototype);
 
   Textarea.prototype.init = function() {
     var self = this;
-    var el = GUIElement.prototype.init.apply(this, ['GUITextarea']);
-    this.$area = document.createElement('textarea');
+    var el = _Input.prototype.init.apply(this, ['GUITextarea']);
 
-    this.$area.onkeypress = function() {
+    this._addEvent(this.$input, 'onkeypress', function(ev) {
       var cur = this.value.length;
       self.hasChanged = (cur != self.strLen);
-    };
-    el.appendChild(this.$area);
+    });
 
     return el;
   };
 
+  Textarea.prototype.setValue = function(t) {
+    return this.setText(t);
+  };
+
   Textarea.prototype.setText = function(t) {
     this.hasChanged = false;
-    if ( this.$area ) {
-      this.$area.value = (t || '');
-      this.strLen = this.$area.value.length;
+    if ( this.$input ) {
+      this.$input.value = (t || '');
+      this.strLen = this.$input.value.length;
       return true;
     }
     return false;
   };
 
+  Textarea.prototype.getValue = function() {
+    return this.getText();
+  };
+
   Textarea.prototype.getText = function() {
-    return this.$area ? this.$area.value : '';
+    return this.$input ? this.$input.value : '';
   };
 
   Textarea.prototype.focus = function() {
     if ( !GUIElement.prototype.focus.apply(this, arguments) ) return false;
-    if ( this.$area ) this.$area.focus();
+    if ( this.$input ) this.$input.focus();
     return true;
   };
 
   Textarea.prototype.blur = function() {
     if ( !GUIElement.prototype.blur.apply(this, arguments) ) return false;
-    if ( this.$area ) this.$area.blur();
+    if ( this.$input ) this.$input.blur();
     return true;
   };
 

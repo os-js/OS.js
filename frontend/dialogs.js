@@ -772,14 +772,13 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var txt = document.createElement('textarea');
-    txt.value = "Loading file information for: " + this.path;
-    this.$element.appendChild(txt);
+    var desc = "Loading file information for: " + this.path;
+    var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
 
     var _onError = function(err) {
       var fname = OSjs.Utils.filename(self.path);
       self._error("FileInformationDialog Error", "Failed to get file information for <span>" + fname + "</span>", err);
-      txt.value = "Failed to get file information for: " + self.path;
+      txt.setValue("Failed to get file information for: " + self.path);
     };
 
     var _onSuccess = function(data) {
@@ -793,7 +792,7 @@
           }
         }
       }
-      txt.value = info.join("\n\n");
+      txt.setValue(info.join("\n\n"));
     };
 
     OSjs.API.call('fs', {method: 'fileinfo', 'arguments' : [this.path]}, function(res) {
