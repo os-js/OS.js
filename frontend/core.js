@@ -31,6 +31,7 @@
 (function() {
 
   window.OSjs       = window.OSjs       || {};
+  OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Settings     = OSjs.Settings     || {};
@@ -292,7 +293,7 @@
   }
 
   function PlaySound(name) {
-    if ( OSjs.Utils.getCompability().audio ) {
+    if ( OSjs.Compability.audio ) {
       var f = OSjs.API.getThemeResource(name, 'sound');
       console.info("PlaySound()", name, f);
       var a = new Audio(f);
@@ -353,10 +354,6 @@
     console.group("OSjs::Core::Main::__construct()");
 
     Process.apply(this, ['Main']);
-
-    console.group("Compability");
-    console.log(OSjs.Utils.getCompability());
-    console.groupEnd();
 
     // Override error handling
     window.onerror = function(message, url, linenumber, column, exception) {
@@ -1163,8 +1160,7 @@
 
 
     if ( this._properties.allow_drop ) {
-      var cpb = OSjs.Utils.getCompability();
-      if ( cpb.dnd ) {
+      if ( OSjs.Compability.dnd ) {
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
@@ -2093,6 +2089,8 @@
     __initialized = true;
 
     window.onload = null;
+
+    OSjs.Compability = OSjs.Utils.getCompability();
 
     // Launch handler
     var hname = OSjs.Settings.DefaultConfig().Handler.name;

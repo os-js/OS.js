@@ -42,7 +42,7 @@
    * Storage
    */
   var DefaultStorage = function() {
-    if ( !OSjs.Utils.getCompability().localStorage ) {
+    if ( !OSjs.Compability.localStorage ) {
       throw "Your browser does not support localStorage :(";
     }
     this.prefix = 'andersevenrud.github.io/OS.js-v2/';
@@ -419,7 +419,7 @@
           name = '/themes/' + theme + '/icons/' + size + '/' + name;
         } else if ( type == 'sound' ) {
           var ext = 'oga';
-          if ( !OSjs.Utils.getCompability().audioTypes.ogg ) {
+          if ( !OSjs.Compability.audioTypes.ogg ) {
             ext = 'mp3';
           }
           name = '/themes/' + theme + '/sounds/' + name + '.' + ext;

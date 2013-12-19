@@ -230,8 +230,7 @@
       this.$element.className += ' ' + className;
     }
 
-    var cpb = OSjs.Utils.getCompability();
-    if ( this.opts.dnd && this.opts.dndDrop && cpb.dnd ) {
+    if ( this.opts.dnd && this.opts.dndDrop && OSjs.Compability.dnd ) {
       var opts = this.opts.dndOpts;
       var self = this;
       opts.onItemDropped = function(ev, el, item) {
@@ -849,9 +848,8 @@
   FileView.prototype.init = function() {
     ListView.prototype.init.apply(this, arguments);
 
-    var cpb = OSjs.Utils.getCompability();
     var self = this;
-    if ( this.opts.dnd && this.opts.dndDrag && cpb.dnd ) {
+    if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
       this.onCreateRow = function(el, item, column) {
         var self = this;
         if ( item.filename == '..' ) return;
@@ -1066,7 +1064,7 @@
     this.height   = h || 100;
     this.onSelect = onSelect || function(r, g, b) {};
 
-    if ( !OSjs.Utils.getCompability().canvas ) {
+    if ( !OSjs.Compability.canvas ) {
       throw "Canvas is not supported on your platform!";
     }
 
@@ -1368,10 +1366,10 @@
     var self = this;
     for ( var i in this.items ) {
       if ( this.items.hasOwnProperty(i) ) {
-        item = this.items[i] || {};
+        item = this.items[i] || null;
         el = document.createElement('li');
 
-        if ( item === null ) {
+        if ( !item ) {
           el.className = 'Separator ' + i;
           this.$container.appendChild(el);
           continue;
@@ -1493,7 +1491,7 @@
    */
   var Canvas = function(name, opts) {
     opts = opts || {};
-    if ( !OSjs.Utils.getCompability().canvas ) {
+    if ( !OSjs.Compability.canvas ) {
       throw "Your platform does not support canvas :/";
     }
 
@@ -1768,7 +1766,7 @@
    * Richt Text Element
    */
   var RichText = function(name, opts) {
-    if ( !OSjs.Utils.getCompability().richtext ) throw "Your platform does not support RichText editing";
+    if ( !OSjs.Compability.richtext ) throw "Your platform does not support RichText editing";
     this.$view = null;
     this.opts = opts || {};
     this.opts.fontName = this.opts.fontName || 'Arial';

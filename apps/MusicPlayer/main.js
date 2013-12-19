@@ -664,7 +664,7 @@
    * Application
    */
   var ApplicationMusicPlayer = function(args, metadata) {
-    if ( !OSjs.Utils.getCompability().audio ) {
+    if ( !OSjs.Compability.audio ) {
       throw "Your platform does not support Audio :(";
     }
     Application.apply(this, ['ApplicationMusicPlayer', args, metadata]);
