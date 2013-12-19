@@ -37,7 +37,7 @@
    * Main Window
    */
   var ApplicationAboutWindow = function(app) {
-    Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 240}, app]);
+    Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 260}, app]);
 
     // Set window properties here
     this._icon    = 'apps/help-browser.png';
@@ -64,6 +64,7 @@
     textarea.innerHTML += '<br />';
     textarea.innerHTML += 'Icon Theme is from <b>Gnome</b><br />';
     textarea.innerHTML += 'Sound Themes is from <b>Freedesktop</b><br />';
+    textarea.innerHTML += 'OSS Font <i>Karla</i> by <b>Jonathan Pinhorn</b><br />';
     textarea.innerHTML += '<br />';
     //textarea.innerHTML += '<a href="https://github.com/andersevenrud/OS.js-v2" target="_blank">Visit GitHub project page</a>';
     textarea.innerHTML += '<a href="http://andersevenrud.github.io/OS.js-v2/" target="_blank">Visit GitHub project page</a>';
