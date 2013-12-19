@@ -1825,6 +1825,7 @@
     this.opts = opts || {};
     this.opts.fontName = this.opts.fontName || 'Arial';
     this.opts.onInited = this.opts.onInited || function() {};
+    this.loadContent = null;
 
     GUIElement.apply(this, [name, {focusable: true}]);
   };
@@ -1832,65 +1833,67 @@
   RichText.prototype = Object.create(GUIElement.prototype);
 
   RichText.prototype.init = function() {
-    var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
-    var doc = '<!DOCTYPE html><html><head></head><body contentEditable="true"></body></html>';
 
     this.$view = document.createElement('iframe');
     this.$view.setAttribute("border", "0");
-    this.$view.src = "javascript:'" + doc + "'";
+
     el.appendChild(this.$view);
 
-    setTimeout(function() {
-      var doc = self.getDocument();
+    return el;
+  };
+
+  RichText.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+
+    var self = this;
+    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="/themes/default.css" /></head><body contentEditable="true"></body></html>';
+    var doc;
+    try {
+      doc = this.getDocument();
+      doc.open();
+      doc.write(template);
+      doc.close();
+    } catch (error) {
+      console.error("Failed to write RichText template", error);
+    }
+
+    if ( doc ) {
+      doc.body.style.fontFamily = this.opts.fontName;
 
       try {
-        var src = "/themes/default.css";
-        if ( doc ) {
-          doc.designMode = "On";
-
-          var _createCSS = function(src) {
-            var res    = doc.createElement("link");
-            res.rel    = "stylesheet";
-            res.type   = "text/css";
-            res.href   = src;
-            doc.getElementsByTagName("head")[0].appendChild(res);
-          };
-
-          if ( doc.createStyleSheet ) {
-            try {
-                doc.createStyleSheet(src);
-            } catch ( e ) {
-              _createCSS(src);
-            }
-          } else {
-            _createCSS(src);
+        this.$view.execCommand('styleWithCSS', false, false);
+      } catch(e) {
+        try {
+          this.$view.execCommand('useCSS', false, null);
+        } catch(e) {
+          try {
+            this.$view.execCommand('styleWithCSS', false, false);
+          } catch(e) {
           }
         }
-      } catch ( e ) {
-        console.warn("Failed to attach stylesheet to iframe. Running IE?!", e);
       }
 
-      doc.body.style.fontFamily = self.opts.fontName;
-
       try {
-        self.$view.contentWindow.onfocus = function() {
+        this.$view.contentWindow.onfocus = function() {
           self.focus();
         };
-        self.$view.contentWindow.onblur = function() {
+        this.$view.contentWindow.onblur = function() {
           self.blur();
         };
       } catch ( e ) {
         console.warn("Failed to bind focus/blur on richtext", e);
       }
 
-      if ( self.opts.onInited ) {
-        self.opts.onInited.apply(this, []);
+      if ( this.opts.onInited ) {
+        this.opts.onInited.apply(this, []);
       }
-    }, 0);
 
-
-    return el;
+      if ( this.loadContent ) {
+        this.loadContent();
+        this.loadContent = null;
+      }
+    }
   };
 
   RichText.prototype.command = function(cmd, defaultUI, args) {
@@ -1901,7 +1904,6 @@
       if ( typeof defaultUI   !== 'undefined' ) argss.push(defaultUI);
       if ( typeof args        !== 'undefined' ) argss.push(args);
 
-      //return d.execCommand(cmd, defaultUI, args);
       try {
         return d.execCommand.apply(d, argss);
       } catch ( e ) {
@@ -1923,11 +1925,20 @@
   };
 
   RichText.prototype.getContent = function() {
-    var d = this.getDocument();
-    if ( d && d.body ) {
-      return d.body.innerHTML;
+    var self = this;
+    function _getContent() {
+      var d = self.getDocument();
+      if ( d && d.body ) {
+        return d.body.innerHTML;
+      }
+      return null;
     }
-    return null;
+
+    if ( !this.inited ) {
+      this.loadContent = _getContent;
+      return;
+    }
+    return _getContent();
   };
 
   RichText.prototype.getDocument = function() {
