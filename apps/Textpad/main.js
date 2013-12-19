@@ -71,6 +71,7 @@
   ApplicationTextpadWindow.prototype.setText = function(t, name) {
     var txt = this._getGUIElement('TextpadTextarea');
     if ( !txt ) return;
+    txt.hasChanged = false;
     txt.setText(t);
     this.setTitle(name);
   };
@@ -95,14 +96,25 @@
 
   ApplicationTextpadWindow.prototype._close = function() {
     var self = this;
-    var gel  = this._getGUIElement('TextpadTextarea');
-    if ( gel && gel.hasChanged ) {
-      return this._appRef.defaultConfirmClose(this, function() {
-        gel.hasChanged = false;
-        self._close();
-      });
+    var callback = function() {
+      self._close();
+    };
+
+    if ( this.checkChanged(callback) !== false ) {
+      return false;
     }
     return Window.prototype._close.apply(this, arguments);
+  };
+
+  ApplicationTextpadWindow.prototype.checkChanged = function(callback, msg) {
+    var gel  = this._getGUIElement('TextpadTextarea');
+    if ( gel && gel.hasChanged ) {
+      return this._appRef.defaultConfirmClose(this, msg, function() {
+        gel.hasChanged = false;
+        callback();
+      });
+    }
+    return false;
   };
 
   /**
@@ -138,7 +150,13 @@
           w.setText(arg1, arg2.path);
         } else {
           if ( action === 'new' ) {
-            w.setText('', null);
+            var _new = function() {
+              w.setText('', null);
+            };
+            var msg = "Discard current document ?";
+            if ( w.checkChanged(function() { _new(); }, msg) !== false ) {
+              _new();
+            }
           } else {
             w.setTitle(arg1 ? arg1.path : null);
           }

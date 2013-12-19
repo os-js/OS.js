@@ -990,7 +990,9 @@
       if ( _WM ) {
         _WM.addWindow(w);
       }
-      w._focus();
+      setTimeout(function() {
+        w._focus();
+      }, 5);
     }
   };
 

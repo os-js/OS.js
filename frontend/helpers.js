@@ -85,9 +85,10 @@
     }
   };
 
-  DefaultApplication.prototype.defaultConfirmClose = function(win, callback) {
+  DefaultApplication.prototype.defaultConfirmClose = function(win, msg, callback) {
+    msg = msg || 'Quit without saving?';
     win._toggleDisabled(true);
-    this._createDialog('Confirm', ['Quit without saving?', function(btn) {
+    this._createDialog('Confirm', [msg, function(btn) {
       win._toggleDisabled(false);
       if ( btn == "ok" ) {
         callback();
@@ -119,7 +120,7 @@
       if ( fmime && (self.acceptMime !== null) ) {
         var found = false;
         for ( var i = 0; i < self.acceptMime.length; i++ ) {
-          if ( (new RegExp(self.acceptMime[i])).test(fmime) !== false ) {
+          if ( (new RegExp(self.acceptMime[i])).test(fmime) === false ) {
             found = true;
             break;
           }

@@ -242,6 +242,7 @@
     if ( typeof contents !== 'undefined' ) {
       var rt = this._getGUIElement('WriterRichText');
       if ( rt ) {
+        rt.hasChanged = false;
         rt.setContent(contents || '');
       }
     }
@@ -286,14 +287,25 @@
 
   ApplicationWriterWindow.prototype._close = function() {
     var self = this;
-    var gel  = this._getGUIElement('WriterRichText');
-    if ( gel && gel.hasChanged ) {
-      return this._appRef.defaultConfirmClose(this, function() {
-        gel.hasChanged = false;
-        self._close();
-      });
+    var callback = function() {
+      self._close();
+    };
+
+    if ( this.checkChanged(callback) !== false ) {
+      return false;
     }
     return Window.prototype._close.apply(this, arguments);
+  };
+
+  ApplicationWriterWindow.prototype.checkChanged = function(callback, msg) {
+    var gel  = this._getGUIElement('WriterRichText');
+    if ( gel && gel.hasChanged ) {
+      return this._appRef.defaultConfirmClose(this, msg, function() {
+        gel.hasChanged = false;
+        callback();
+      });
+    }
+    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -335,7 +347,13 @@
         if ( action === 'open' ) {
           w.update(arg2, arg1);
         } else if ( action === 'new' ) {
-          w.update(null, '');
+          var _new = function() {
+            w.update(null, '');
+          };
+          var msg = "Discard current document ?";
+          if ( w.checkChanged(function() { _new(); }, msg) === false ) {
+            _new();
+          }
         } else {
           w.update(arg1);
         }
