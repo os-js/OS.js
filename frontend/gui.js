@@ -1049,6 +1049,7 @@
 
   /**
    * Textarea
+   * FIXME: Use _Input
    */
   var Textarea = function(name, opts) {
     opts = opts || {};
@@ -1207,11 +1208,11 @@
    * Slider Element
    */
   var Slider = function(name, opts, onUpdate) {
-    this.min      = opts.min || 0;
-    this.max      = opts.max || 0;
-    this.val      = opts.val || 0;
-    this.type     = opts.orientation || 'horizontal';
-    this.steps    = opts.steps || 1;
+    this.min      = opts.min          || 0;
+    this.max      = opts.max          || 0;
+    this.val      = opts.val          || 0;
+    this.type     = opts.orientation  || 'horizontal';
+    this.steps    = opts.steps        || 1;
     this.$root    = null;
     this.$button  = null;
 
@@ -1223,14 +1224,14 @@
   Slider.prototype = Object.create(GUIElement.prototype);
 
   Slider.prototype.init = function() {
-    var el = GUIElement.prototype.init.apply(this, ['GUISlider']);
+    var el        = GUIElement.prototype.init.apply(this, ['GUISlider']);
     el.className += ' ' + this.type;
 
-    this.$root = document.createElement('div');
-    this.$root.className = 'Root';
+    this.$root            = document.createElement('div');
+    this.$root.className  = 'Root';
 
-    this.$button = document.createElement('div');
-    this.$button.className = 'Button';
+    this.$button            = document.createElement('div');
+    this.$button.className  = 'Button';
 
     var scrolling = false;
     var startX    = 0;
@@ -1300,7 +1301,7 @@
     this._addEventListener(el, 'click', function(ev) {
       if ( ev.target && ev.target.className === 'Button' ) return;
 
-      var p = OSjs.Utils.$position(el);
+      var p  = OSjs.Utils.$position(el);
       var cx = ev.clientX - p.left;
       var cy = ev.clientY - p.top;
 
@@ -1319,7 +1320,7 @@
   };
 
   Slider.prototype.setPercentage = function(p) {
-    var cd = (this.max - this.min);
+    var cd  = (this.max - this.min);
     var val = (cd*(p/100)) << 0;
     this.onUpdate.call(this, val, p);
   };
@@ -1384,10 +1385,11 @@
     opts = opts || {};
 
     this.$container = null;
-    this.$active = null;
+    this.$active    = null;
 
-    this.items = {};
-    this.orientation = opts.orientation || 'horizontal';
+    this.items        = {};
+    this.orientation  = opts.orientation || 'horizontal';
+
     GUIElement.apply(this, [name, {}]);
   };
 
@@ -1501,8 +1503,8 @@
    */
   var ProgressBar = function(name, percentage) {
     this.$container = null;
-    this.$bar = null;
-    this.$label = null;
+    this.$bar       = null;
+    this.$label     = null;
     this.percentage = percentage || 0;
 
     GUIElement.apply(this, [name, {}]);
@@ -1512,14 +1514,15 @@
 
   ProgressBar.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIProgressBar']);
-    this.$container = document.createElement('div');
+
+    this.$container           = document.createElement('div');
     this.$container.className = 'Container';
 
-    this.$bar = document.createElement('div');
+    this.$bar           = document.createElement('div');
     this.$bar.className = 'Bar';
     this.$container.appendChild(this.$bar);
 
-    this.$label = document.createElement('div');
+    this.$label           = document.createElement('div');
     this.$label.className = 'Label';
     this.$container.appendChild(this.$label);
 
@@ -1531,7 +1534,7 @@
 
   ProgressBar.prototype.setPercentage = function(p) {
     if ( p < 0 || p > 100 ) return;
-    this.percentage = (p << 0);
+    this.percentage       = (p << 0);
     this.$bar.style.width = this.percentage + '%';
     this.$label.innerHTML = this.percentage + '%';
   };
@@ -1592,12 +1595,14 @@
   };
 
   Canvas.prototype.resize = function(w, h) {
-    this.width = w;
+    this.width  = w;
     this.height = h;
-    this.$canvas.width = w;
+
+    this.$canvas.width  = w;
     this.$canvas.height = h;
-    this.$element.style.width = w + 'px';
-    this.$element.style.height = h + 'px';
+
+    this.$element.style.width   = w + 'px';
+    this.$element.style.height  = h + 'px';
   };
 
   Canvas.prototype.func = function(f, args) {
@@ -1615,11 +1620,11 @@
 
     onDone = onDone || function() {};
     onError = onError || function() {};
-    var self = this;
-    var img = new Image();
-    var can = this.$canvas;
-    var ctx = this.$context;
-    var mime = null;
+    var self  = this;
+    var img   = new Image();
+    var can   = this.$canvas;
+    var ctx   = this.$context;
+    var mime  = null;
 
     try {
       mime = src.split(/;/)[0].replace(/^data\:/, '');
@@ -1671,18 +1676,18 @@
    * TODO : DnD support
    */
   var IconView = function(name, opts) {
-    opts = opts || {};
-    opts.focusable = true;
+    opts            = opts || {};
+    opts.focusable  = true;
 
-    this.$view = null;
-    this.$ul = null;
-    this.$selected = null;
-    this.selected = null;
-    this.iconSize = opts.size || '32x32';
-    this.data = [];
+    this.$view      = null;
+    this.$ul        = null;
+    this.$selected  = null;
+    this.selected   = null;
+    this.iconSize   = opts.size || '32x32';
+    this.data       = [];
 
-    this.onSelect = function() {};
-    this.onActivate = function() {};
+    this.onSelect      = function() {};
+    this.onActivate    = function() {};
     this.onContextMenu = function() {};
 
     GUIElement.apply(this, [name, {}]);
@@ -1691,12 +1696,11 @@
   IconView.prototype = Object.create(GUIElement.prototype);
 
   IconView.prototype.init = function() {
-    var el = GUIElement.prototype.init.apply(this, ['GUIIconView']);
+    var el        = GUIElement.prototype.init.apply(this, ['GUIIconView']);
     el.className += ' IconSize' + this.iconSize;
 
-    this.$view = document.createElement('div');
-
-    this.$ul = document.createElement('ul');
+    this.$view  = document.createElement('div');
+    this.$ul    = document.createElement('ul');
 
     this.$view.appendChild(this.$ul);
 
@@ -1821,11 +1825,12 @@
    */
   var RichText = function(name, opts) {
     if ( !OSjs.Compability.richtext ) throw "Your platform does not support RichText editing";
-    this.$view = null;
-    this.opts = opts || {};
-    this.opts.fontName = this.opts.fontName || 'Arial';
-    this.opts.onInited = this.opts.onInited || function() {};
-    this.loadContent = null;
+
+    this.$view          = null;
+    this.opts           = opts || {};
+    this.opts.fontName  = this.opts.fontName || 'Arial';
+    this.opts.onInited  = this.opts.onInited || function() {};
+    this.loadContent    = null;
 
     GUIElement.apply(this, [name, {focusable: true}]);
   };
@@ -2029,16 +2034,16 @@
   Tabs.prototype.addTab = function(title, onShow) {
     onShow = onShow || function() {};
 
-    var self = this;
-    var len = this.$tabs.childNodes.length;
+    var self  = this;
+    var len   = this.$tabs.childNodes.length;
 
-    var $c = document.createElement('div');
-    $c.className = 'TabContent';
+    var $c        = document.createElement('div');
+    $c.className  = 'TabContent';
 
-    var $t = document.createElement('div');
-    $t.className = 'Tab';
-    $t.innerHTML = title;
-    $t.onclick = (function(i) {
+    var $t        = document.createElement('div');
+    $t.className  = 'Tab';
+    $t.innerHTML  = title;
+    $t.onclick    = (function(i) {
       return function() {
         self.setTab(i);
 
@@ -2095,8 +2100,8 @@
     var self = this;
     var el = GUIElement.prototype.init.apply(this, [this.className]);
 
-    this.$input = document.createElement(this.tagName);
-    this.$input.type = this.type;
+    this.$input       = document.createElement(this.tagName);
+    this.$input.type  = this.type;
     this._addEvent(this.$input, 'onchange', function(ev) {
       self.onChange.apply(self, [this, ev, self.getValue()]);
     });
@@ -2148,9 +2153,9 @@
   };
 
   Select.prototype.addItem = function(value, label) {
-    var el = document.createElement('option');
-    el.value = value;
-    el.innerHTML = label;
+    var el        = document.createElement('option');
+    el.value      = value;
+    el.innerHTML  = label;
     this.$input.appendChild(el);
   };
 
