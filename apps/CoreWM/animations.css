@@ -17,26 +17,6 @@
   100% { opacity: 0; -moz-transform: scale(0.90);  }
 }
 
-.Window {
- -webkit-transition: opacity .10s ease-in-out;
-    -moz-transition: opacity .10s ease-in-out;
-         transition: opacity .10s ease-in-out;
-
- -webkit-animation: show .3s;
-    -moz-animation: show .3s;
-         animation: show .3s;
-}
-.WindowHintClosing,
-.WindowHintMinimized {
- -webkit-transition: opacity .10s ease-in-out;
-    -moz-transition: opacity .10s ease-in-out;
-         transition: opacity .10s ease-in-out;
-
- -webkit-animation: hide .3s;
-    -moz-animation: hide .3s;
-         animation: hide .3s;
-}
-
 @-webkit-keyframes pulse {
   0%   {-webkit-transform: scale(0.95); opacity: 0;}
   8%   {-webkit-transform: scale(1.0); opacity: 0;}
@@ -51,12 +31,6 @@
   30%  {-moz-transform: scale(1.005); opacity: 1;}
   100% {opacity: 0; -moz-transform: scale(1);}
 }
-.WindowDropRect {
-  -webkit-animation: pulse 2s linear infinite;
-     -moz-animation: pulse 2s linear infinite;
-
-  border-image: initial;
-}
 
 @-webkit-keyframes pulseback {
   50% { opacity: .35; }
@@ -64,6 +38,34 @@
 @-moz-keyframes pulseback {
   50% { opacity: .35; }
 }
+
+/* Windows */
+.Window {
+ -webkit-animation: show .3s;
+    -moz-animation: show .3s;
+         animation: show .3s;
+
+ -webkit-transition: height 0.3s ease-in-out, width 0.3s;
+    -moz-transition: height 0.3s ease-in-out, width 0.3s;
+      -o-transition: height 0.3s ease-in-out, width 0.3s;
+         transition: height 0.3s ease-in-out, width 0.3s;
+}
+.WindowHintClosing,
+.WindowHintMinimized {
+ -webkit-animation: hide .3s;
+    -moz-animation: hide .3s;
+         animation: hide .3s;
+}
+
+.WindowDropRect {
+  -webkit-animation: pulse 2s linear infinite;
+     -moz-animation: pulse 2s linear infinite;
+          animation: pulse 2s linear infinite;
+
+  border-image: initial;
+}
+
+/* Desktop */
 #Background.Blinking {
   background : #fff;
   opacity : 0;

@@ -236,7 +236,7 @@ body .Menu li.Disabled {
 .Window input[type=button]:focus,
 .Window input[type=submit]:focus {
   box-shadow : 0px 0px 1px 1px #ffffff;
-  border-color : 909090;
+  border-color : #909090;
 }
 
 .Window button:active,
