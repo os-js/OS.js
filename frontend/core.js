@@ -1342,6 +1342,8 @@
     var onMouseDown = function(ev, a) {
       ev.preventDefault();
 
+      if ( self._state.maximized ) return;
+
       if ( a === 'move' ) {
         px = self._position.x;
         py = self._position.y;
