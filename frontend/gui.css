@@ -467,9 +467,37 @@ body .GUIToolbar button {
 }
 
 /**
+ * GUIButton
+ */
+.GUIButton {
+  position : relative;
+}
+.GUIButton input,
+.GUIButton button {
+  width : 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/**
+ * GUIText
+ */
+.GUIText {
+  position : relative;
+}
+.GUIText input {
+  width : 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/**
  * GUICheckbox
  */
 .GUICheckbox {
+  position : relative;
 }
 
 /**

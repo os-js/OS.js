@@ -81,7 +81,7 @@
 .FileSaveDialog .FileDialogFileView {
   bottom : 60px !important;
 }
-.FileSaveDialog input {
+.FileSaveDialog .GUIText {
   display : block;
   position : absolute;
   left : 0px;
