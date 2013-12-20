@@ -1025,39 +1025,41 @@
 
   FontDialog.prototype = Object.create(StandardDialog.prototype);
 
+  FontDialog.prototype.updateFont = function(name, size) {
+    var rt = this._getGUIElement('GUIRichText');
+
+    if ( name !== null && name ) {
+      this.fontName = name;
+    }
+    if ( size !== null && size ) {
+      this.fontSize = size << 0;
+    }
+
+    var styles = [];
+    if ( this.sizeType == 'internal' ) {
+      styles = [
+        'font-family: ' + this.fontName,
+        'background: '  + this.background,
+        'color: '       + this.color
+      ];
+      rt.setContent('<font size="' + this.fontSize + '" style="' + styles.join(";") + '">' + this.text + '</font>');
+    } else {
+      styles = [
+        'font-family: ' + this.fontName,
+        'font-size: '   + this.fontSize + 'px',
+        'background: '  + this.background,
+        'color: '       + this.color
+      ];
+      rt.setContent('<div style="' + styles.join(";") + '">' + this.text + '</div>');
+    }
+  };
+
   FontDialog.prototype.init = function() {
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
     var option;
 
     var rt = this._addGUIElement(new OSjs.GUI.RichText('GUIRichText'), this.$element);
-
-    var updateFont = function(name, size) {
-      if ( name !== null && name ) {
-        self.fontName = name;
-      }
-      if ( size !== null && size ) {
-        self.fontSize = size << 0;
-      }
-
-      var styles = [];
-      if ( self.sizeType == 'internal' ) {
-        styles = [
-          'font-family: ' + self.fontName,
-          'background: '  + self.background,
-          'color: '       + self.color
-        ];
-        rt.setContent('<font size="' + self.fontSize + '" style="' + styles.join(";") + '">' + self.text + '</font>');
-      } else {
-        styles = [
-          'font-family: ' + self.fontName,
-          'font-size: '   + self.fontSize + 'px',
-          'background: '  + self.background,
-          'color: '       + self.color
-        ];
-        rt.setContent('<div style="' + styles.join(";") + '">' + self.text + '</div>');
-      }
-    };
 
     this.$selectFont = document.createElement('select');
     this.$selectFont.className = 'SelectFont';
@@ -1076,7 +1078,7 @@
     this._addEvent(this.$selectFont, 'onchange', function(ev) {
       var i = this.selectedIndex;
       if ( self.fonts[i] ) {
-        updateFont(self.fonts[i], null);
+        self.updateFont(self.fonts[i], null);
       }
     });
 
@@ -1103,7 +1105,7 @@
         var i = this.selectedIndex;
         var o = this.options[i];
         if ( o ) {
-          updateFont(null, o.value);
+          self.updateFont(null, o.value);
         }
       });
 
@@ -1112,9 +1114,12 @@
       this.$element.className += ' NoFontSizes';
     }
 
-    updateFont();
-
     return root;
+  };
+
+  FontDialog.prototype._inited = function() {
+    StandardDialog.prototype._inited.apply(this, arguments);
+    this.updateFont();
   };
 
   FontDialog.prototype.onConfirmClick = function(ev) {
