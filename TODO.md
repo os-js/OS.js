@@ -10,8 +10,6 @@
 * GUI Elements:
   * GUIButton
   * GUISelectList
-  * GUIOption
-  * GUIOptionGroup
   * GUITreeView
 * GUI Misc:
   * Implement GUIText in dialogs.js

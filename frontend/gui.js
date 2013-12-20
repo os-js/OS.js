@@ -337,13 +337,15 @@
    */
   var _Input = function(className, tagName, name, opts) {
     opts = opts || {};
-    this.$input    = null;
-    this.type      = tagName === 'input' ? (opts.type || 'text') : null;
-    this.disabled  = opts.disabled || false;
-    this.value     = opts.value    || '';
-    this.className = className;
-    this.tagName   = tagName;
-    this.onChange  = opts.onChange || function() {};
+    this.$input       = null;
+    this.type         = tagName === 'input' ? (opts.type || 'text') : null;
+    this.disabled     = opts.disabled     || false;
+    this.value        = opts.value        || '';
+    this.placeholder  = opts.placeholder  || '';
+    this.className    = className;
+    this.tagName      = tagName;
+    this.onChange     = opts.onChange     || function() {};
+    this.onClick      = opts.onClick      || function() {};
 
     GUIElement.apply(this, [name]);
   };
@@ -357,10 +359,20 @@
 
     if ( this.tagName == 'input' ) {
       this.$input.type = this.type;
+      if ( this.type === 'text' && this.placeholder ) {
+        this.$input.setAttribute('placeholder', this.placeholder);
+      }
     }
-    this._addEvent(this.$input, 'onchange', function(ev) {
-      self.onChange.apply(self, [this, ev, self.getValue()]);
-    });
+
+    if ( this.tagName == 'button' ) {
+      this._addEvent(this.$input, 'onclick', function(ev) {
+        self.onClick.apply(self, [this, ev]);
+      });
+    } else {
+      this._addEvent(this.$input, 'onchange', function(ev) {
+        self.onChange.apply(self, [this, ev, self.getValue()]);
+      });
+    }
 
     el.appendChild(this.$input);
 
@@ -2082,8 +2094,9 @@
    * Checkbox
    */
   var Checkbox = function(name, opts) {
-    opts = opts || {};
+    opts      = opts || {};
     opts.type = 'checkbox';
+
     this.label  = opts.label || 'GUICheckbox Label';
     this.$label = null;
 
@@ -2129,6 +2142,20 @@
   Checkbox.prototype.getValue = function() {
     return this.$input.checked ? true : false;
   };
+
+  /**
+   * Radio
+   */
+  var Radio = function(name, opts) {
+    opts      = opts || {};
+    opts.type = 'radio';
+
+    this.label  = opts.label || 'GUIRadio Label';
+    this.$label = null;
+
+    _Input.apply(this, ['GUICheckbox', 'input', name, opts]);
+  };
+  Radio.prototype = Object.create(_Checkbox.prototype);
 
   /**
    * Select
@@ -2197,6 +2224,7 @@
   OSjs.GUI.Select       = Select;
   OSjs.GUI.Text         = Text;
   OSjs.GUI.Checkbox     = Checkbox;
+  OSjs.GUI.Radio        = Radio;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

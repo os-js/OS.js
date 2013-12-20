@@ -466,3 +466,15 @@ body .GUIToolbar button {
   display : block;
 }
 
+/**
+ * GUICheckbox
+ */
+.GUICheckbox {
+}
+
+/**
+ * GUIRadio
+ */
+.GUIRadio {
+}
+
