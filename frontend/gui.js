@@ -341,6 +341,7 @@
     this.type         = tagName === 'input' ? (opts.type || 'text') : null;
     this.disabled     = opts.disabled     || false;
     this.value        = opts.value        || '';
+    this.label        = opts.label        || 'GUIButton';
     this.placeholder  = opts.placeholder  || '';
     this.className    = className;
     this.tagName      = tagName;
@@ -365,6 +366,7 @@
     }
 
     if ( this.tagName == 'button' ) {
+      this.$input.innerHTML = this.value || this.label;
       this._addEvent(this.$input, 'onclick', function(ev) {
         self.onClick.apply(self, [this, ev]);
       });
@@ -391,11 +393,17 @@
   };
 
   _Input.prototype.setValue = function(val) {
+    if ( this.tagName === 'button' ) {
+      return;
+    }
     this.value = val;
     this.$input.value = val;
   };
 
   _Input.prototype.getValue = function() {
+    if ( this.tagName === 'button' ) {
+      return null;
+    }
     return this.$input.value;
   };
 
@@ -2155,7 +2163,7 @@
 
     _Input.apply(this, ['GUICheckbox', 'input', name, opts]);
   };
-  Radio.prototype = Object.create(_Checkbox.prototype);
+  Radio.prototype = Object.create(Checkbox.prototype);
 
   /**
    * Select
@@ -2203,6 +2211,14 @@
     }
   };
 
+  /**
+   * Button
+   */
+  var Button = function(name, opts) {
+    _Input.apply(this, ['GUIButton', 'button', name, opts]);
+  };
+  Button.prototype = Object.create(_Input.prototype);
+
   //
   // EXPORTS
   //
@@ -2225,6 +2241,7 @@
   OSjs.GUI.Text         = Text;
   OSjs.GUI.Checkbox     = Checkbox;
   OSjs.GUI.Radio        = Radio;
+  OSjs.GUI.Button       = Button;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

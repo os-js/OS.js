@@ -28,7 +28,7 @@
   position : absolute;
   right : 0px;
 }
-.Window_ApplicationSettingsWindow .WindowWrapper button.Save {
+.Window_ApplicationSettingsWindow .WindowWrapper .GUIButton.Save {
   position : absolute;
   right : 5px;
   bottom : 5px;

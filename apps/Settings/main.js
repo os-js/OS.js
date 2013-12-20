@@ -43,7 +43,7 @@
       return outer;
     };
 
-    var outer, button, slider;
+    var outer, slider;
 
     var tabs      = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
     var tabStyles = tabs.addTab('Theme and Background');
@@ -81,15 +81,10 @@
     outer = _createContainer('BackgroundImage', 'Background Image');
     var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
 
-    button = document.createElement('button');
-    button.innerHTML = "...";
-    button.onclick = (function(inp) {
-      return function(ev) {
-        self.openBackgroundSelect(ev, inp);
-      };
-    })(backgroundImage);
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(ev) {
+      self.openBackgroundSelect(ev, backgroundImage);
+    }}), outer);
 
-    outer.appendChild(button);
     tabStyles.appendChild(outer);
 
     //
@@ -101,15 +96,10 @@
     backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
     backgroundColor.$input.style.color = "#fff";
 
-    button = document.createElement('button');
-    button.innerHTML = "...";
-    button.onclick = (function(inp) {
-      return function(ev) {
-        self.openBackgroundColorSelect(ev, inp);
-      };
-    })(backgroundColor);
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(ev) {
+      self.openBackgroundColorSelect(ev, backgroundColor);
+    }}), outer);
 
-    outer.appendChild(button);
     tabStyles.appendChild(outer);
 
     //
@@ -120,15 +110,10 @@
     var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
     fontName.$input.style.fontFamily = settings.style.fontFamily;
 
-    button = document.createElement('button');
-    button.innerHTML = "...";
-    button.onclick = (function(inp) {
-      return function(ev) {
-        self.openFontSelect(ev, inp);
-      };
-    })(fontName);
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(ev) {
+      self.openFontSelect(ev, fontName);
+    }}), outer);
 
-    outer.appendChild(button);
     tabOther.appendChild(outer);
 
     //
@@ -186,10 +171,7 @@
     //
     // Buttons
     //
-    button = document.createElement('button');
-    button.className = "Save";
-    button.innerHTML = "Apply";
-    button.onclick = function(ev) {
+    this._addGUIElement(new OSjs.GUI.Button('Save', {label: 'Apply', onClick: function(ev) {
       app.save(ev, self, {
         animations:       useAnimations.getValue() == 'yes',
         taskbarOntop:     taskbarOntop.getValue() == 'yes',
@@ -201,9 +183,7 @@
         backgroundImage:  backgroundImage.getValue(),
         backgroundColor:  backgroundColor.getValue()
       });
-    };
-
-    root.appendChild(button);
+    }}), root);
   };
 
   ApplicationSettingsWindow.prototype.destroy = function() {
