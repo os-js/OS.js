@@ -8,12 +8,10 @@
 * Applications:
   * New Draw codebase -- layer, effect support etc.
 * GUI Elements:
-  * GUIButton
   * GUISelectList
   * GUITreeView
 * GUI Misc:
   * Implement GUIText in dialogs.js
-  * Implement GUIButton in dialogs.js
   * Implement GUIButton in applications
 
 ### Beta

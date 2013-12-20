@@ -43,13 +43,13 @@
   var StandardDialog = function(className, args, opts, onClose) {
     this.$element       = null;
     this.$message       = null;
-    this.$buttonConfirm = null;
-    this.$buttonCancel  = null;
+    this.buttonConfirm  = null;
+    this.buttonCancel   = null;
 
     this.className      = className;
-    this.args           = args || {};
-    this.message        = args.message || null;
-    this.onClose        = onClose || function() {};
+    this.args           = args          || {};
+    this.message        = args.message  || null;
+    this.onClose        = onClose       || function() {};
 
     DialogWindow.apply(this, [className, opts]);
     if ( this.args.title ) {
@@ -80,29 +80,23 @@
       this.$element.appendChild(this.$message);
     }
 
-    var focus = null;
+    var lbl;
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
-      this.$buttonCancel            = document.createElement('button');
-      this.$buttonCancel.className  = 'Cancel';
-      this.$buttonCancel.innerHTML  = this.args.buttonCancelLabel || 'Cancel';
-
-      this._addEvent(this.$buttonCancel, 'onclick', function(ev) {
-        if ( this.getAttribute("disabled") == "disabled" ) return;
-        self.onCancelClick(ev);
-      });
-
-      this.$element.appendChild(this.$buttonCancel);
+      lbl = (this.args.buttonCancelLabel || 'Cancel');
+      this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(ev, el) {
+        if ( !this.isDisabled() ) {
+          self.onCancelClick(ev);
+        }
+      }}), this.$element);
     }
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
-      this.$buttonConfirm           = document.createElement('button');
-      this.$buttonConfirm.className = 'OK';
-      this.$buttonConfirm.innerHTML = this.args.buttonOkLabel || 'OK';
-      this._addEvent(this.$buttonConfirm, 'onclick', function(ev) {
-        if ( this.getAttribute("disabled") == "disabled" ) return;
-        self.onConfirmClick.call(self, ev);
-      });
-      this.$element.appendChild(this.$buttonConfirm);
+      lbl = (this.args.buttonOkLabel || 'OK');
+      this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: lbl, onClick: function(ev, el) {
+        if ( !this.isDisabled() ) {
+          self.onConfirmClick.call(self, ev);
+        }
+      }}), this.$element);
     }
 
     root.appendChild(this.$element);
@@ -111,22 +105,22 @@
 
   StandardDialog.prototype._inited = function() {
     DialogWindow.prototype._inited.apply(this, arguments);
-    if ( this.$buttonConfirm ) {
-      this.$buttonConfirm.focus();
+    if ( this.buttonConfirm ) {
+      this.buttonConfirm.focus();
     } else {
-      if ( this.$buttonCancel ) {
-        this.$buttonCancel.focus();
+      if ( this.buttonCancel ) {
+        this.buttonCancel.focus();
       }
     }
   };
 
   StandardDialog.prototype.onCancelClick = function(ev) {
-    if ( !this.$buttonCancel ) return;
+    if ( !this.buttonCancel ) return;
     this.end('cancel');
   };
 
   StandardDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.$buttonConfirm ) return;
+    if ( !this.buttonConfirm ) return;
     this.end('ok');
   };
 
@@ -285,7 +279,7 @@
   };
 
   ApplicationChooserDialog.prototype.onConfirmClick = function(ev, val) {
-    if ( !this.$buttonConfirm ) return;
+    if ( !this.buttonConfirm ) return;
     var val  = this.selectedApp;
     if ( !val ) {
       var wm = OSjs.API.getWMInstance();
@@ -334,18 +328,18 @@
     listView.onActivate = function(ev, el, item) {
       if ( item && item.key ) {
         self.selectedApp = item.key;
-        self.$buttonConfirm.removeAttribute("disabled");
+        self.buttonConfirm.setDisabled(false);
         self.end('ok', item.key, self.useDefault);
       }
     };
     listView.onSelect = function(ev, el, item) {
       if ( item && item.key ) {
         self.selectedApp = item.key;
-        self.$buttonConfirm.removeAttribute("disabled");
+        self.buttonConfirm.setDisabled(false);
       }
     };
 
-    this.$buttonConfirm.setAttribute("disabled", "disabled");
+    this.buttonConfirm.setDisabled(true);
 
     listView.setRows(list);
     listView.render();
@@ -465,7 +459,7 @@
   };
 
   FileUploadDialog.prototype._close = function() {
-    if ( this.$buttonCancel && (this.$buttonCancel.disabled === "disabled") ) {
+    if ( this.buttonCancel && (this.buttonCancel.isDisabled()) ) {
       return;
     }
     StandardDialog.prototype._close.apply(this, arguments);
@@ -483,7 +477,7 @@
 
   FileUploadDialog.prototype.upload = function(file, size) {
     this.$file.disabled = 'disabled';
-    this.$buttonCancel.disabled = "disabled";
+    this.buttonCancel.setDisabled(true);
 
     this.dialog = this._wmref.addWindow(new FileProgressDialog("Uploading file..."));
     this.dialog.setDescription("Uploading '" + file.name + "' (" + file.type + " " + size + ") to " + this.dest);
@@ -533,7 +527,7 @@
   FileUploadDialog.prototype.onUploadComplete = function(evt) {
     console.info("FileUploadDialog::onUploadComplete()");
 
-    this.$buttonCancel.removeAttribute("disabled");
+    this.buttonCancel.setDisabled(false);
     this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
   };
 
@@ -544,14 +538,14 @@
     } else {
       this._error("Upload failed", "The upload has failed", "Reason unknown...");
     }
-    this.$buttonCancel.removeAttribute("disabled");
+    this.buttonCancel.setDisabled(false);
     this.end('fail', error);
   };
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
     console.info("FileUploadDialog::onUploadCanceled()");
     this._error("Upload failed", "The upload has failed", "Cancelled by user...");
-    this.$buttonCancel.removeAttribute("disabled");
+    this.buttonCancel.setDisabled(false);
     this.end('cancelled', evt);
   };
 
@@ -624,6 +618,21 @@
     var statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
     statusBar.setText("");
 
+    this.buttonConfirm.setDisabled(true);
+
+    fileList.onSelected = function(item) {
+      if ( !item || item.type == 'dir' ) {
+        if ( self.$input ) {
+          self.$input.value = '';
+        }
+      } else {
+        self.buttonConfirm.setDisabled(false);
+        if ( self.$input ) {
+          self.$input.value = item.filename;
+        }
+      }
+    };
+
     if ( this.type === 'save' ) {
       var start = true;
       var curval = this.currentFilename ? this.currentFilename : this.defaultFilename;
@@ -633,16 +642,8 @@
       this.$input.value = curval;
       this.$input.onkeypress  = function(ev) {
         if ( ev.keyCode === 13 ) {
-          self.$buttonConfirm.onclick(ev);
+          self.buttonConfirm.onClick(ev);
           return;
-        }
-      };
-
-      fileList.onSelected = function(item) {
-        if ( !item || item.type == 'dir' ) {
-          self.$input.value = '';
-        } else {
-          self.$input.value = item.filename;
         }
       };
 
@@ -658,6 +659,8 @@
       };
 
       fileList.onRefresh = function() {
+        self.buttonConfirm.setDisabled(true);
+
         statusBar.setText(fileList.getPath());
         self._toggleLoading(true);
         if ( start ) {
@@ -683,6 +686,8 @@
 
     fileList.onActivated = function(path, type, mime) {
       if ( type === 'file' ) {
+        self.buttonConfirm.setDisabled(false);
+
         if ( self.type === 'save' ) {
           if ( confirm("Are you sure you want to overwrite the file '" + OSjs.Utils.filename(path) + "'?") ) {
             self.dialogOK.call(self, path, mime);
@@ -697,7 +702,7 @@
   };
 
   FileDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.$buttonConfirm ) return;
+    if ( !this.buttonConfirm ) return;
     this.dialogOK();
   };
 
@@ -856,7 +861,7 @@
     this.$input.value       = this.value;
     this.$input.onkeypress  = function(ev) {
       if ( ev.keyCode === 13 ) {
-        self.$buttonConfirm.onclick(ev);
+        self.buttonConfirm.onClick(ev);
         return;
       }
     };
@@ -876,7 +881,7 @@
   };
 
   InputDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.$buttonConfirm ) return;
+    if ( !this.buttonConfirm ) return;
     this.end('ok', this.$input.value);
   };
 
@@ -992,12 +997,12 @@
   };
 
   ColorDialog.prototype.onCancelClick = function(ev) {
-    if ( !this.$buttonCancel ) return;
+    if ( !this.buttonCancel ) return;
     this.end('cancel', null, null);
   };
 
   ColorDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.$buttonConfirm ) return;
+    if ( !this.buttonConfirm ) return;
     this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHEX(this.currentRGB), (this.currentAlpha/100));
   };
 
@@ -1118,7 +1123,7 @@
   };
 
   FontDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.$buttonConfirm ) return;
+    if ( !this.buttonConfirm ) return;
     this.end('ok', this.fontName, this.fontSize);
   };
 

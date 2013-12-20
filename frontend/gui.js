@@ -368,6 +368,7 @@
     if ( this.tagName == 'button' ) {
       this.$input.innerHTML = this.value || this.label;
       this._addEvent(this.$input, 'onclick', function(ev) {
+        if ( self.isDisabled() ) return;
         self.onClick.apply(self, [this, ev]);
       });
     } else {
@@ -383,6 +384,20 @@
     return el;
   };
 
+  _Input.prototype.blur = function() {
+    if ( GUIElement.prototype.blur.apply(this, arguments) ) {
+      this.$input.blur();
+    }
+    return false;
+  };
+
+  _Input.prototype.focus = function() {
+    if ( GUIElement.prototype.focus.apply(this, arguments) ) {
+      this.$input.focus();
+    }
+    return false;
+  };
+
   _Input.prototype.setDisabled = function(d) {
     this.disabled = d;
     if ( d ) {
@@ -390,6 +405,10 @@
     } else {
       this.$input.removeAttribute("disabled");
     }
+  };
+
+  _Input.prototype.isDisabled = function() {
+    return this.disabled;
   };
 
   _Input.prototype.setValue = function(val) {

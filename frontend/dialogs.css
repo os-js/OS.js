@@ -39,18 +39,22 @@
   right : 5px;
   bottom : 5px;
 }
-.StandardDialog button.OK {
+.StandardDialog .GUIButton.OK {
   position : absolute;
   right : 110px;
   bottom : 0px;
   width : 100px;
 }
-.StandardDialog button.Cancel {
+.StandardDialog .GUIButton.Cancel {
   position : absolute;
   right : 0px;
   bottom : 0px;
   width : 100px;
 }
+.StandardDialog .GUIButton button {
+  width : 100px;
+}
+
 .StandardDialog > div > span {
   font-weight : bold;
 }

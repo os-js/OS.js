@@ -24,7 +24,7 @@
   right : 0px;
   width : 475px;
 }
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting button {
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting .GUIButton {
   position : absolute;
   right : 0px;
 }
