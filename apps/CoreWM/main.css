@@ -27,7 +27,7 @@
   position : absolute;
   top : 5px;
   bottom : 5px;
-  right : 5px;
+  right : 10px;
   z-index : 3;
   width : 70px;
   overflow : hidden;
@@ -38,7 +38,7 @@
   top : 5px;
   left : 5px;
   bottom : 5px;
-  right : 75px;
+  right : 80px;
   z-index : 2;
 
   overflow : hidden;
