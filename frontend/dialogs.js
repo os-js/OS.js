@@ -847,7 +847,7 @@
 
     var inputd = document.createElement('div');
 
-    this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(el, ev) {
+    this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(el, ev) {
       if ( ev.keyCode === 13 ) {
         self.buttonConfirm.onClick(ev);
         return;
