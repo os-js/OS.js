@@ -7,6 +7,7 @@
   * TODO/FIXMEs in gui.js
 * Applications:
   * New Draw codebase -- layer, effect support etc.
+  * Finish Music Player
 * Move (old) CSS styles to .GUI[Element] > DOMElement in theme
 
 ### Beta
