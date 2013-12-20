@@ -23,12 +23,22 @@
   bottom : 0px;
 }
 
+#WindowList .Clock {
+  position : absolute;
+  top : 5px;
+  bottom : 5px;
+  right : 5px;
+  z-index : 3;
+  width : 70px;
+  overflow : hidden;
+}
+
 #WindowList ul {
   position : absolute;
   top : 5px;
   left : 5px;
   bottom : 5px;
-  right : 5px;
+  right : 75px;
   z-index : 2;
 
   overflow : hidden;

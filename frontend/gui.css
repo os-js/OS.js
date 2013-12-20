@@ -508,5 +508,6 @@ body .GUIToolbar button {
  * GUIRadio
  */
 .GUIRadio {
+  position : relative;
 }
 

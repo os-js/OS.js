@@ -18,6 +18,7 @@
 * Go over all error handling
 * Node.js backend
 * GUI Elements:
+  * Custom styling for GUISelect
   * GUISelectList
   * GUITreeView
 

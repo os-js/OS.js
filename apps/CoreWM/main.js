@@ -44,6 +44,7 @@
   var CoreWM = function(args, metadata) {
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
     this._settings = DefaultSettings(args.defaults || {});
+    this.clockInterval = null;
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
@@ -106,6 +107,17 @@
     var back = document.createElement('div');
     back.className = 'Background';
 
+    // Clock
+    var clock = document.createElement('div');
+    clock.className = 'Clock';
+    clock.innerHTML = '00:00';
+    var _updateClock = function() {
+      clock.innerHTML = (new Date()).toLocaleTimeString();
+    };
+    this.clockInterval = setInterval(_updateClock, 1000);
+    _updateClock();
+    root.appendChild(clock);
+
     // Append
     root.appendChild(el);
     root.appendChild(back);
@@ -166,6 +178,11 @@
   CoreWM.prototype.destroy = function(kill) {
     if ( kill && !confirm("Killing this process will stop things from working!") ) {
       return false;
+    }
+
+    if ( this.clockInterval ) {
+      clearInterval(this.clockInterval);
+      this.clockInterval = null;
     }
 
     // Reset styles
