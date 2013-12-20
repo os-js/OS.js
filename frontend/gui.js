@@ -344,6 +344,7 @@
     this.className = className;
     this.tagName   = tagName;
     this.onChange  = opts.onChange || function() {};
+
     GUIElement.apply(this, [name]);
   };
 
@@ -869,6 +870,7 @@
    * FIXME: Fix exessive calls to chdir/refresh
    * TODO: Implement IconView view
    * TODO: Implement switching between view types
+   * TODO: Sorting by clicking column headers
    */
   var FileView = function(name, path, opts) {
     opts = opts || {};
@@ -2068,19 +2070,13 @@
    * Text
    */
   var Text = function(name, opts) {
+    opts            = opts || {};
+    opts.focusable  = true;
+    opts.type       = opts.type || 'text';
+
     _Input.apply(this, ['GUIText', 'input', name, opts]);
   };
   Text.prototype = Object.create(_Input.prototype);
-
-  /**
-   * Password
-   */
-  var Password = function(name, opts) {
-    opts = opts || {};
-    opts.type = 'password';
-    _Input.apply(this, ['GUIText', 'input', name, opts]);
-  };
-  Password.prototype = Object.create(_Input.prototype);
 
   /**
    * Checkbox
@@ -2200,7 +2196,6 @@
   OSjs.GUI.Tabs         = Tabs;
   OSjs.GUI.Select       = Select;
   OSjs.GUI.Text         = Text;
-  OSjs.GUI.Password     = Password;
   OSjs.GUI.Checkbox     = Checkbox;
 
   OSjs.GUI.createDraggable  = createDraggable;
