@@ -7,9 +7,7 @@
   * TODO/FIXMEs in gui.js
 * Applications:
   * New Draw codebase -- layer, effect support etc.
-* GUI Misc:
-  * Implement GUIButton in applications
-  * Move theme styles to 'GUIxxx > input'
+* Move (old) CSS styles to .GUI[Element] > DOMElement in theme
 
 ### Beta
 
