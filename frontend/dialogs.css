@@ -231,7 +231,7 @@
 
 .InputDialog {
 }
-.InputDialog input[type=text] {
+.InputDialog .GUIText {
   position : absolute;
   bottom : 30px;
   left : 0px;

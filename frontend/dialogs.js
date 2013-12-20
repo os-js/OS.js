@@ -83,7 +83,7 @@
     var lbl;
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
       lbl = (this.args.buttonCancelLabel || 'Cancel');
-      this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(ev, el) {
+      this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onCancelClick(ev);
         }
@@ -92,7 +92,7 @@
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
       lbl = (this.args.buttonOkLabel || 'OK');
-      this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: lbl, onClick: function(ev, el) {
+      this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onConfirmClick.call(self, ev);
         }
@@ -565,7 +565,7 @@
     this.type             = args.type             || 'open';
     this.mime             = args.mime             || null;
     this.allowMimes       = args.mimes            || null;
-    this.$input           = null;
+    this.input            = null;
 
     var self = this;
 
@@ -618,34 +618,17 @@
     var statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
     statusBar.setText("");
 
-    this.buttonConfirm.setDisabled(true);
-
-    fileList.onSelected = function(item) {
-      if ( !item || item.type == 'dir' ) {
-        if ( self.$input ) {
-          self.$input.value = '';
-        }
-      } else {
-        self.buttonConfirm.setDisabled(false);
-        if ( self.$input ) {
-          self.$input.value = item.filename;
-        }
-      }
-    };
-
     if ( this.type === 'save' ) {
       var start = true;
       var curval = this.currentFilename ? this.currentFilename : this.defaultFilename;
 
-      this.$input = document.createElement('input');
-      this.$input.type = 'text';
-      this.$input.value = curval;
-      this.$input.onkeypress  = function(ev) {
+      this.input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(el, ev) {
+        self.buttonConfirm.setDisabled(el.value.length <= 0);
         if ( ev.keyCode === 13 ) {
           self.buttonConfirm.onClick(ev);
           return;
         }
-      };
+      }}), this.$element);
 
       fileList.onFinished = function() {
         statusBar.setText(fileList.getPath());
@@ -659,19 +642,34 @@
       };
 
       fileList.onRefresh = function() {
-        self.buttonConfirm.setDisabled(true);
+        //self.buttonConfirm.setDisabled(true);
 
         statusBar.setText(fileList.getPath());
         self._toggleLoading(true);
         if ( start ) {
-          self.$input.value = curval;
+          self.input.setValue(curval);
         } else {
-          self.$input.value = '';
+          self.input.setValue('');
         }
       };
 
-      this.$element.appendChild(this.$input);
+      fileList.onSelected = function(item) {
+        if ( !item || item.type == 'dir' ) {
+          self.input.setValue('');
+        } else {
+          self.input.setValue(item.filename);
+        }
+      };
+
     } else {
+      this.buttonConfirm.setDisabled(true);
+
+      fileList.onSelected = function(item) {
+        if ( item && item.type != 'dir' ) {
+          self.buttonConfirm.setDisabled(false);
+        }
+      };
+
       fileList.onFinished = function() {
         statusBar.setText(fileList.getPath());
         self._toggleLoading(false);
@@ -679,6 +677,7 @@
       fileList.onRefresh = function() {
         statusBar.setText(fileList.getPath());
         self._toggleLoading(true);
+        self.buttonConfirm.setDisabled(true);
       };
     }
 
@@ -714,7 +713,7 @@
     } else {
       var fileList = this._getGUIElement('FileDialogFileView');
       if ( this.type == 'save' ) {
-        var check = this.$input ? check = this.$input.value : '';
+        var check = this.input ? check = this.input.getValue() : '';
         if ( check ) {
           item = fileList.getItemByKey('filename', check);
           if ( item !== null ) {
@@ -757,9 +756,9 @@
 
   FileDialog.prototype._focus = function() {
     StandardDialog.prototype._focus.apply(this, arguments);
-    if ( this.$input ) {
-      this.$input.focus();
-      this.$input.select();
+    if ( this.input ) {
+      this.input.focus();
+      this.input.select();
     }
   };
 
@@ -846,8 +845,8 @@
     StandardDialog.apply(this, ['InputDialog', {title: "Input Dialog", message: msg}, {width:300, height:150}, onClose]);
     this._icon = 'status/dialog-information.png';
 
-    this.value  = val || '';
-    this.$input = null;
+    this.value = val || '';
+    this.input = null;
   };
 
   InputDialog.prototype = Object.create(StandardDialog.prototype);
@@ -856,33 +855,29 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    this.$input             = document.createElement('input');
-    this.$input.type        = "text";
-    this.$input.value       = this.value;
-    this.$input.onkeypress  = function(ev) {
+    var inputd = document.createElement('div');
+
+    this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(el, ev) {
       if ( ev.keyCode === 13 ) {
         self.buttonConfirm.onClick(ev);
         return;
       }
-    };
-
-    var inputd = document.createElement('div');
-    inputd.appendChild(this.$input);
+    }}), inputd);
     this.$element.appendChild(inputd);
     return root;
   };
 
   InputDialog.prototype._focus = function() {
     StandardDialog.prototype._focus.apply(this, arguments);
-    if ( this.$input ) {
-      this.$input.focus();
-      this.$input.select();
+    if ( this.input ) {
+      this.input.focus();
+      this.input.select();
     }
   };
 
   InputDialog.prototype.onConfirmClick = function(ev) {
     if ( !this.buttonConfirm ) return;
-    this.end('ok', this.$input.value);
+    this.end('ok', this.input.getValue());
   };
 
 

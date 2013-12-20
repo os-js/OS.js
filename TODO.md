@@ -11,7 +11,6 @@
   * GUISelectList
   * GUITreeView
 * GUI Misc:
-  * Implement GUIText in dialogs.js
   * Implement GUIButton in applications
 
 ### Beta

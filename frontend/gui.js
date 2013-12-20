@@ -347,6 +347,7 @@
     this.tagName      = tagName;
     this.onChange     = opts.onChange     || function() {};
     this.onClick      = opts.onClick      || function() {};
+    this.onKeyPress   = opts.onKeyPress   || function() {};
 
     GUIElement.apply(this, [name]);
   };
@@ -360,8 +361,14 @@
 
     if ( this.tagName == 'input' ) {
       this.$input.type = this.type;
-      if ( this.type === 'text' && this.placeholder ) {
-        this.$input.setAttribute('placeholder', this.placeholder);
+      if ( this.type === 'text' || this.type === 'password' ) {
+        if ( this.placeholder ) {
+          this.$input.setAttribute('placeholder', this.placeholder);
+        }
+
+        this._addEventListener(this.$input, 'keypress', function(ev) {
+          self.onKeyPress.apply(self, [this, ev]);
+        });
       }
     }
 
@@ -2116,6 +2123,12 @@
     _Input.apply(this, ['GUIText', 'input', name, opts]);
   };
   Text.prototype = Object.create(_Input.prototype);
+
+  Text.prototype.select = function() {
+    if ( this.$input ) {
+      this.$input.select();
+    }
+  };
 
   /**
    * Checkbox

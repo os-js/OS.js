@@ -81,7 +81,7 @@
     outer = _createContainer('BackgroundImage', 'Background Image');
     var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
 
-    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(ev) {
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
       self.openBackgroundSelect(ev, backgroundImage);
     }}), outer);
 
@@ -96,7 +96,7 @@
     backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
     backgroundColor.$input.style.color = "#fff";
 
-    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(ev) {
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
       self.openBackgroundColorSelect(ev, backgroundColor);
     }}), outer);
 
@@ -110,7 +110,7 @@
     var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
     fontName.$input.style.fontFamily = settings.style.fontFamily;
 
-    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(ev) {
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
       self.openFontSelect(ev, fontName);
     }}), outer);
 
@@ -171,7 +171,7 @@
     //
     // Buttons
     //
-    this._addGUIElement(new OSjs.GUI.Button('Save', {label: 'Apply', onClick: function(ev) {
+    this._addGUIElement(new OSjs.GUI.Button('Save', {label: 'Apply', onClick: function(el, ev) {
       app.save(ev, self, {
         animations:       useAnimations.getValue() == 'yes',
         taskbarOntop:     taskbarOntop.getValue() == 'yes',
