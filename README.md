@@ -34,7 +34,7 @@ Comes bundeled with the default theme and some applications:
 * **File Manager** - File Management
 * **Preview** - For viewing images and videos
 * **Music Player** - For listening to audio files
-* **Process Viewer** - View running processes (shows stats and has an option for killing)
+* **Process Viewer** - View running processes
 * **Settings** - Customize the Window Manager and Desktop
 * **Textpad** - A notepad-type application
 * **Writer** - Richtext editor
