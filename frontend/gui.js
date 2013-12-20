@@ -913,7 +913,6 @@
 
   /**
    * FileView
-   * FIXME: Fix exessive calls to chdir/refresh
    * TODO: Implement IconView view
    * TODO: Implement switching between view types
    * TODO: Sorting by clicking column headers

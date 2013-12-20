@@ -345,7 +345,6 @@
     listView.render();
 
     this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: 'Use as default application for ' + this.mime, value: this.useDefault, onChange: function(el, ev, value) {
-      console.warn('ccc', value);
       self.useDefault = value ? true : false;
     }}), container);
 

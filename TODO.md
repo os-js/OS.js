@@ -7,9 +7,6 @@
   * TODO/FIXMEs in gui.js
 * Applications:
   * New Draw codebase -- layer, effect support etc.
-* GUI Elements:
-  * GUISelectList
-  * GUITreeView
 * GUI Misc:
   * Implement GUIButton in applications
 
@@ -18,6 +15,9 @@
 * Go over error messages and rewrite
 * Go over all error handling
 * Node.js backend
+* GUI Elements:
+  * GUISelectList
+  * GUITreeView
 
 ### Release
 
