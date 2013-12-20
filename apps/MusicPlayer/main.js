@@ -306,15 +306,13 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    var _createButton = function(img, onclick) {
+    var _createButton = function(container, img, onclick) {
       var i = document.createElement('img');
       i.alt = '';
       i.src = OSjs.API.getThemeResource('actions/' + img + '.png', 'icon', '32x32');
 
-      var b       = document.createElement('button');
-      b.onclick   = onclick;
-      b.disabled  = "disabled";
-      b.appendChild(i);
+      var b = self._addGUIElement(new OSjs.GUI.Button('ControllerButton', {label: '', onClick: onclick}), container);
+      b.$input.appendChild(i);
 
       self.$buttons[img.split('_')[1]] = b;
 
@@ -410,13 +408,13 @@
     var buttons = document.createElement('div');
     buttons.className = 'Buttons';
 
-    buttons.appendChild(_createButton('player_start', function(ev) {
+    _createButton(buttons, 'player_start', function(ev) {
       _buttonAction(self.playlist.first());
-    }));
-    buttons.appendChild(_createButton('player_rew', function(ev) {
+    });
+    _createButton(buttons, 'player_rew', function(ev) {
       _buttonAction(self.playlist.prev());
-    }));
-    buttons.appendChild(_createButton('player_play', function(ev) {
+    });
+    _createButton(buttons, 'player_play', function(ev) {
       if ( self.playlist.length ) {
         if ( self.playlist.index == -1 ) {
           _buttonAction(self.playlist.first());
@@ -424,18 +422,18 @@
         }
         self.player.play();
       }
-    }));
-    buttons.appendChild(_createButton('player_pause', function(ev) {
+    });
+    _createButton(buttons, 'player_pause', function(ev) {
       if ( self.playlist.length ) {
         self.player.pause();
       }
-    }));
-    buttons.appendChild(_createButton('player_fwd', function(ev) {
+    });
+    _createButton(buttons, 'player_fwd', function(ev) {
       _buttonAction(self.playlist.next());
-    }));
-    buttons.appendChild(_createButton('player_end', function(ev) {
+    });
+    _createButton(buttons, 'player_end', function(ev) {
       _buttonAction(self.playlist.last());
-    }));
+    });
 
     // Containers
     container.appendChild(info);
@@ -560,31 +558,31 @@
 
   ApplicationMusicPlayerWindow.prototype.updateButtons = function() {
     try {
-      this.$buttons.play.setAttribute('disabled', 'disabled');
-      this.$buttons.pause.setAttribute('disabled', 'disabled');
+      this.$buttons.play.setDisabled(true);
+      this.$buttons.pause.setDisabled(true);
 
-      this.$buttons.start.setAttribute('disabled', 'disabled');
-      this.$buttons.end.setAttribute('disabled', 'disabled');
+      this.$buttons.start.setDisabled(true);
+      this.$buttons.end.setDisabled(true);
 
-      this.$buttons.rew.setAttribute('disabled', 'disabled');
-      this.$buttons.fwd.setAttribute('disabled', 'disabled');
+      this.$buttons.rew.setDisabled(true);
+      this.$buttons.fwd.setDisabled(true);
 
       if ( !this.playlist.isEmpty() ) {
         if ( this.playlist.length > 1 ) {
           if ( !this.playlist.isFirst() ) {
-            this.$buttons.rew.removeAttribute('disabled');
-            this.$buttons.start.removeAttribute('disabled');
+            this.$buttons.rew.setDisabled(false);
+            this.$buttons.start.setDisabled(false);
           }
           if ( !this.playlist.isLast() ) {
-            this.$buttons.fwd.removeAttribute('disabled');
-            this.$buttons.end.removeAttribute('disabled');
+            this.$buttons.fwd.setDisabled(false);
+            this.$buttons.end.setDisabled(false);
           }
         }
 
         if ( this.player.paused ) {
-          this.$buttons.play.removeAttribute('disabled');
+          this.$buttons.play.setDisabled(false);
         } else {
-          this.$buttons.pause.removeAttribute('disabled');
+          this.$buttons.pause.setDisabled(false);
         }
       }
     } catch ( e ) {

@@ -9,6 +9,7 @@
   * New Draw codebase -- layer, effect support etc.
 * GUI Misc:
   * Implement GUIButton in applications
+  * Move theme styles to 'GUIxxx > input'
 
 ### Beta
 

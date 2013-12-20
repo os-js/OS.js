@@ -58,14 +58,20 @@
   -o-text-overflow: ellipsis;
 }
 
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons button {
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton {
+  float : left;
   margin : 5px;
+  width : 42px;
+  height : 42px;
+}
+
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton > button {
   width : 42px;
   height : 42px;
   text-align : center;
 }
 
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons button img {
+.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton img {
   vertical-align : middle;
 }
 

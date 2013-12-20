@@ -341,7 +341,7 @@
     this.type         = tagName === 'input' ? (opts.type || 'text') : null;
     this.disabled     = opts.disabled     || false;
     this.value        = opts.value        || '';
-    this.label        = opts.label        || 'GUIButton';
+    this.label        = opts.label        || '';
     this.placeholder  = opts.placeholder  || '';
     this.className    = className;
     this.tagName      = tagName;

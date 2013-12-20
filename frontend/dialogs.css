@@ -51,9 +51,6 @@
   bottom : 0px;
   width : 100px;
 }
-.StandardDialog .GUIButton button {
-  width : 100px;
-}
 
 .StandardDialog > div > span {
   font-weight : bold;

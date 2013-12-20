@@ -472,8 +472,11 @@ body .GUIToolbar button {
 .GUIButton {
   position : relative;
 }
-.GUIButton input,
+.GUIButton input {
+  display : block;
+}
 .GUIButton button {
+  display : block;
   width : 100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -487,6 +490,7 @@ body .GUIToolbar button {
   position : relative;
 }
 .GUIText input {
+  display : block;
   width : 100%;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;

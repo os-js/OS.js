@@ -206,12 +206,9 @@
       this._$root.appendChild(traced);
     }
 
-    var ok = document.createElement('button');
-    ok.className = "OK";
-    ok.innerHTML = 'Close';
-    ok.onclick = function() {
+    var ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: 'Close', onClick: function() {
       self._close();
-    };
+    }}), root);
 
     if ( this.data.bugreport ) {
       var _onBugError = function(error) {
@@ -219,13 +216,10 @@
       };
       var _onBugSuccess = function() {
         alert("The error was reported and will be looked into");
-        ok.onclick();
+        ok.onClick();
       };
 
-      var sendBug       = document.createElement('button');
-      sendBug.className = "Bug";
-      sendBug.innerHTML = "Bugreport";
-      sendBug.onclick   = function() {
+      var sendBug = this._addGUIElement(new OSjs.GUI.Button('Bug', {label: 'Bugreport', onClick: function() {
         OSjs.API.call('bugreport', {data: bugData}, function(res) {
           if ( res ) {
             if ( res.result ) {
@@ -240,11 +234,8 @@
         }, function(error) {
           _onBugError(error);
         });
-      };
-      root.appendChild(sendBug);
+      }}), root);
     }
-
-    root.appendChild(ok);
   };
 
   ErrorDialog.prototype.setError = function(title, message, error, exception, bugreport) {
