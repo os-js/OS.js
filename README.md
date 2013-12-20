@@ -7,7 +7,8 @@ Current version: **Alpha** (Stable. If you find any bugs report them back to me 
 ## Changes
 
 * Completely rewritten (API breakage)
-* Easier to extend and implement Applications
+* Easier to extend core and deploy custom builds
+* Easier to create custom applications
 * Smaller and faster
 * Tons of improvements
 * Dropped support for legacy browsers
