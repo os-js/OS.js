@@ -71,6 +71,7 @@
 
     var el;
     if ( t ) {
+      this.$frame.style.overflow = 'hidden';
       try {
         var src = OSjs.API.getResourceURL(t);
         if ( mime.match(/^image/) ) {
@@ -80,6 +81,8 @@
             self._resizeTo(this.width, this.height, self.$frame);
           };
           el.src = src;
+
+          this.$frame.style.overflow = 'auto';
         } else if ( mime.match(/^audio/) ) {
           el = document.createElement('audio');
           el.controls = "controls";
