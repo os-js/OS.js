@@ -85,7 +85,8 @@
       touch          : ('ontouchstart' in window),
       orientation    : ('onorientationchange' in window),
       css            : {
-        transition : detectCSSFeature('transition')
+        transition : detectCSSFeature('transition'),
+        animation : detectCSSFeature('animation')
       },
 
       canvas         : (!!canvas_supported),

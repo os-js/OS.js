@@ -2,7 +2,7 @@
 
   function DefaultSettings(defaults) {
     var cfg = {
-      animations    : OSjs.Compability.css.transition,
+      animations    : OSjs.Compability.css.animation,
       fullscreen    : false,
       taskbar       : {position: 'top', ontop: true},
       desktop       : {margin: 5},
