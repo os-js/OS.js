@@ -359,12 +359,17 @@
     return s;
   };
 
-  CoreWM.prototype.getWindowPosition = function() {
+  CoreWM.prototype.getWindowPosition = function(borders) {
+    borders = (typeof borders === 'undefined') || (borders === true);
+
     var t   = this.getSetting('taskbar');
-    var pos = {x: 10, y: 10};
+    var b   = borders ? 10 : 0;
+    var pos = {x: b, y: b};
     if ( t.ontop ) {
       if ( t.position == 'top' ) {
-        pos.y += 35;
+        if ( t.ontop ) {
+          pos.y += 35;
+        }
       }
     }
     return pos;

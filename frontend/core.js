@@ -1338,11 +1338,13 @@
     var py = 0;
     var action = null;
     var moved = false;
+    var startRect = null;
 
     var onMouseDown = function(ev, a) {
       ev.preventDefault();
 
       if ( self._state.maximized ) return;
+      startRect = _WM.getWindowPosition(false);
 
       if ( a === 'move' ) {
         px = self._position.x;
@@ -1384,6 +1386,7 @@
       sx = 0;
       sy = 0;
       moved = false;
+      startRect = null;
     };
     var onMouseMove = function(ev) {
       if ( action === null ) return;
@@ -1393,10 +1396,7 @@
       var ry = py + dy;
 
       if ( action === 'move' ) {
-        //if ( rx < 1 ) rx = 1;
-        if ( ry < 1 ) ry = 1;
-        //if ( rx > (window.innerWidth-1) ) rx = (window.innerWidth - 1);
-        //if ( ry > (window.innerHeight-1) ) ry = (window.innerHeight - 1);
+        if ( ry < startRect.y ) ry = startRect.y;
 
         self._move(rx, ry);
       } else {
@@ -1876,6 +1876,7 @@
 
   Window.prototype._move = function(x, y) {
     if ( !this._properties.allow_move ) return false;
+
     this._$element.style.top  = y + "px";
     this._$element.style.left = x + "px";
     this._position.x          = x;
