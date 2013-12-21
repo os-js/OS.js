@@ -800,6 +800,8 @@
       }
     }
 
+    // TODO: Reload element src here (theme changes)
+
     return true;
   };
 

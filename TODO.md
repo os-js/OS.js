@@ -8,7 +8,6 @@
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player
-  * Preview needs resizable video player
 * Finish GUI::IconView
 * Core elements using theme resources needs to be reloaded (src) on theme change
 
