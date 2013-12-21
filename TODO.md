@@ -9,6 +9,7 @@
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player
   * Preview needs resizable video player
+* Finish GUI::IconView
 * Move (old) CSS styles to .GUI[Element] > DOMElement in theme
 * Core elements using theme resources needs to be reloaded (src) on theme change
 
