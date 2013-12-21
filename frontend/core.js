@@ -142,7 +142,8 @@
 
         return w;
       } catch ( e ) {
-        console.warn("An error occured while creating error Window", ex);
+        console.warn("An error occured while creating error Window", e);
+        console.warn('stack', e.stack);
       }
     }
 

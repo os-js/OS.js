@@ -258,13 +258,9 @@
 }
 .ErrorDialog .Summary {
   background : #fff;
-  border : 1px solid #555;
-  padding : 5px;
   display : block;
   width : 390px;
   height : 165px;
-  resize : none;
-  outline : none;
 }
 .ErrorDialog .Trace {
   display : block;

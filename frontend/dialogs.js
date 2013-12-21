@@ -172,10 +172,8 @@
     label.innerHTML = 'Summary';
     root.appendChild(label);
 
-    var messaged = document.createElement('textarea');
-    messaged.className = 'Summary';
-    messaged.value = this.data.error;
-    root.appendChild(messaged);
+    var messaged = this._addGUIElement(new OSjs.GUI.Textarea('Summary'), root);
+    messaged.setValue(this.data.error);
 
     var exception = this.data.exception;
     if ( exception ) {
@@ -200,10 +198,8 @@
       label.innerHTML = 'Trace';
       root.appendChild(label);
 
-      var traced        = document.createElement('textarea');
-      traced.className  = 'Trace';
-      traced.value      = error;
-      this._$root.appendChild(traced);
+      var traced = this._addGUIElement(new OSjs.GUI.Textarea('Trace'), root);
+      traced.setValue(error);
     }
 
     var ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: 'Close', onClick: function() {

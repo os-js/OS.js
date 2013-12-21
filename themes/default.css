@@ -132,6 +132,12 @@ body {
   background : url('default/loading.gif');
 }
 
+.WindowDropRect {
+  border : 4px solid rgba(255, 255, 255, .7);
+  margin : -4px;
+  border-radius : 1px;
+}
+
 /**
  * GUI Menu
  */
@@ -154,108 +160,6 @@ body .Menu li:hover {
 body .Menu li.Disabled {
   color : #aaa;
 }
-
-/**
- * GUI Inputs
- */
-.Window input[type=text],
-.Window input[type=password],
-.Window select,
-.Window textarea {
-  margin : 0;
-  padding : 2px;
-  outline : none;
-  min-height : 24px;
-
-  box-shadow : 0px 0px 1px 1px #cecece;
-  background : #fff;
-  border : 1px solid #a0a0a0;
-  color : #000;
-
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-.Window input[type=text]:disabled,
-.Window input[type=text].Disabled,
-.Window input[type=password]:disabled,
-.Window input[type=password].Disabled,
-.Window select:disabled,
-.Window select.Disabled,
-.Window textarea:disabled,
-.Window textarea.Disabled {
-  color : #a0a0a0;
-}
-.Window select {
-  -webkit-appearance: button;
-  -webkit-border-radius: 0px;
-  -moz-appearance: button;
-  -moz-border-radius: 0px;
-  padding : 3px 0 2px 2px;
-}
-.Window input[type=text],
-.Window input[type=password] {
-  padding-left : 2px;
-  padding-right : 2px;
-}
-.Window.WindowHintFocused input[type=text],
-.Window.WindowHintFocused select,
-.Window.WindowHintFocused textarea {
-  border : 1px solid #6a6a6a;
-}
-
-.Window button,
-.Window input[type=button],
-.Window input[type=submit] {
-  margin : 0;
-  padding : 0;
-  padding-left : 5px;
-  padding-right : 5px;
-  height : 24px;
-  min-width : 30px;
-  vertical-align : middle;
-  outline : none;
-
-  cursor : pointer;
-  box-shadow : 0px 0px 1px 1px #cecece;
-  background : #555555;
-  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
-  border : 1px solid #a0a0a0;
-  color : #000;
-}
-.Window button.Disabled,
-.Window button:disabled,
-.Window input[type=button].Disabled
-.Window input[type=button]:disabled,
-.Window input[type=submit].Disabled,
-.Window input[type=submit]:disabled {
-  background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
-}
-
-.Window button:focus,
-.Window input[type=button]:focus,
-.Window input[type=submit]:focus {
-  box-shadow : 0px 0px 1px 1px #ffffff;
-  border-color : #909090;
-}
-
-.Window button:active,
-.Window button.Active,
-.Window input[type=button]:active,
-.Window input[type=button].Active,
-.Window input[type=submit]:active,
-.Window input[type=submit].Active {
-  background : #333333;
-  background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
-  border : 1px solid #717171;
-}
-
-.WindowDropRect {
-  border : 4px solid rgba(255, 255, 255, .7);
-  margin : -4px;
-  border-radius : 1px;
-}
-
 
 /**
  * CoreWM (external)
@@ -404,14 +308,6 @@ body #WindowList .Clock {
 .GUIToolbar > .Container {
   background : #c2c2c2;
 }
-
-.Window .GUIToolbar button {
-}
-.Window .GUIToolbar button:hover {
-}
-.Window .GUIToolbar button:active,
-.Window .GUIToolbar button.Active {
-}
 .GUIToolbar.horizontal li.Separator {
   border-left : 1px solid #333333;
 }
@@ -456,4 +352,94 @@ body #WindowList .Clock {
   cursor : pointer;
   background : #dedede;
   border : 1px solid #b1b1b1;
+}
+
+/* GUIText & GUITextarea & GUISelect */
+
+.GUITextarea textarea,
+.GUIText input,
+.GUISelect select {
+  margin : 0;
+  padding : 2px;
+  outline : none;
+  min-height : 24px;
+
+  box-shadow : 0px 0px 1px 1px #cecece;
+  background : #fff;
+  border : 1px solid #a0a0a0;
+  color : #000;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
+  resize : none;
+  outline : none;
+}
+
+.GUITextarea textarea[disabled],
+.GUIText input[disabled] {
+  color : #a0a0a0;
+}
+
+.GUITextarea textarea:focus,
+.GUIText input:focus,
+.GUISelect select:focus {
+  border : 1px solid #6a6a6a;
+}
+
+/* GUISelect */
+.GUISelect select {
+  -webkit-appearance: button;
+  -webkit-border-radius: 0px;
+  -moz-appearance: button;
+  -moz-border-radius: 0px;
+  padding : 3px 0 2px 2px;
+}
+
+/* GUIButton */
+.GUIButton button,
+.GUIToolbar button {
+  margin : 0;
+  padding : 0;
+  padding-left : 5px;
+  padding-right : 5px;
+  height : 24px;
+  min-width : 30px;
+  vertical-align : middle;
+  outline : none;
+
+  cursor : pointer;
+  box-shadow : 0px 0px 1px 1px #cecece;
+  background : #555555;
+  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
+  border : 1px solid #a0a0a0;
+  color : #000;
+  outline : none;
+}
+
+.GUIButton button[disabled],
+.GUIButton button[disabled]:active,
+.GUIButton button[disabled].Active,
+.GUIToolbar button[disabled],
+.GUIToolbar button.Disabled,
+.GUIToolbar button.Disabled:active,
+.GUIToolbar button[disabled]:active,
+.GUIToolbar button[disabled].Active {
+  background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
+}
+
+.GUIButton button:focus,
+.GUIToolbar button:focus {
+  box-shadow : 0px 0px 1px 1px #ffffff;
+  border-color : #909090;
+}
+
+.GUIButton button:active,
+.GUIButton button.Active,
+.GUIToolbar button:active,
+.GUIToolbar button.Active {
+  background : #333333;
+  background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
+  border : 1px solid #717171;
 }
