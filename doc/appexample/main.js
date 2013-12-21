@@ -34,12 +34,12 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Main Window
+   * Main Window Constructor
    */
   var ApplicationEXAMPLEWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationEXAMPLEWindow', {width: 400, height: 200}, app]);
 
-    // Set window properties here
+    // Set window properties and other stuff here
     this._title = metadata.name;
     this._icon  = metadata.icon;
   };
@@ -49,9 +49,18 @@
   ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
-    // Create window contents here
+
+    // Create window contents (GUI) here
 
     return root;
+  };
+
+  ApplicationEXAMPLEWindow.prototype._inited = function() {
+    Window.prototype.init._inited(this, arguments);
+
+    // Window has been successfully created and displayed.
+    // You can start communications, handle files etc. here
+
   };
 
   ApplicationEXAMPLEWindow.prototype.destroy = function() {
@@ -65,28 +74,38 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Application
+   * Application constructor
    */
   var ApplicationEXAMPLE = function(args, metadata) {
     Application.apply(this, ['ApplicationEXAMPLE', args, metadata]);
+
+    // You can set application variables here
   };
 
   ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
 
   ApplicationEXAMPLE.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, []);
+    // Destroy communication, timers, objects etc. here
+
+    return Application.prototype.destroy.apply(this, arguments);
   };
 
   ApplicationEXAMPLE.prototype.init = function(core, session, metadata) {
-    Application.prototype.init.apply(this, arguments);
     var self = this;
 
-    this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
+    Application.prototype.init.apply(this, arguments);
+
+    // Create your main window
+    var mainWindow = this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
+
+    // Do other stuff here
+    // See 'DefaultApplication' sample in 'helpers.js' for more code
   };
 
   ApplicationEXAMPLE.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
 
+    // Make sure we kill our application if main window was closed
     if ( msg == 'destroyWindow' && obj._name === 'ApplicationEXAMPLEWindow' ) {
       this.destroy();
     }
