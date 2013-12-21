@@ -77,11 +77,11 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationEXAMPLE.prototype.init = function(core, session) {
+  ApplicationEXAMPLE.prototype.init = function(core, session, metadata) {
     Application.prototype.init.apply(this, arguments);
     var self = this;
 
-    this._addWindow(new ApplicationEXAMPLEWindow(this));
+    this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
   };
 
   ApplicationEXAMPLE.prototype._onMessage = function(obj, msg, args) {
