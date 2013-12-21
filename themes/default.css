@@ -246,6 +246,10 @@ body #WindowList .Clock {
   background : #333;
   color : #fff;
 }
+.GUIListView .Resizer {
+  background : #c2c2c2;
+  cursor : ew-resize;
+}
 
 /* GUIIconView */
 .GUIIconView {

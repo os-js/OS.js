@@ -162,6 +162,17 @@
   vertical-align : text-bottom;
 }
 
+.GUIListView td > div {
+  position : relative;
+}
+.GUIListView .Resizer {
+  position : absolute;
+  top : 0px;
+  right : 0px;
+  bottom : 0px;
+  width : 1px;
+}
+
 /**
  * Text area
  */

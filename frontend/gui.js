@@ -585,11 +585,10 @@
 
   /**
    * List View Class
-   * TODO: Resizable columns
    */
   var ListView = function(name, opts) {
-    opts = opts || {};
-    opts.focusable = true;
+    opts            = opts || {};
+    opts.focusable  = true;
 
     this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     this.rows             = [];
@@ -602,6 +601,7 @@
     this.$scroll          = null;
     this.selected         = null;
     this.selectedDOMItem  = null;
+    this.sortColumn       = null;
 
     this.onCreateRow    = function() {};
     this.onSelect       = function() {};
@@ -615,12 +615,6 @@
 
   ListView.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIListView']);
-
-    var table = document.createElement('table');
-    table.className = 'Body';
-
-    var head = document.createElement('thead');
-    var body = document.createElement('tbody');
 
     var self = this;
     var activate = function(ev, type) {
@@ -663,6 +657,61 @@
       }
     };
 
+    var startW = 0;
+    var startX = 0;
+    var column = null;
+
+    var onResizeMove = function(ev) {
+      var newW = startW + (ev.clientX - startX);
+      if ( column >= 0 && newW >= 16 ) {
+        self.$headTop.rows[0].childNodes[column].width = newW;
+        self.$body.rows[0].childNodes[column].width = newW;
+      }
+    };
+
+    var onResizeEnd = function(ev) {
+      document.removeEventListener('mouseup',   onResizeEnd,  false);
+      document.removeEventListener('mousemove', onResizeMove, false);
+    };
+
+    var onResizeStart = function(ev, col) {
+      startX = ev.clientX;
+      startW = col.offsetWidth;
+      column = col.parentNode.getAttribute("data-index");
+
+      document.addEventListener('mouseup',    onResizeEnd,  false);
+      document.addEventListener('mousemove',  onResizeMove, false);
+    };
+
+    var onHeaderAction = function(ev, type) {
+      ev.preventDefault();
+      var t = ev.target;
+      if ( t.tagName === 'DIV' ) {
+        if ( type === 'mousedown' && t.className === 'Resizer' ) {
+          onResizeStart(ev, t.parentNode);
+        } else if ( type === 'click' && t.className === 'Label' ) {
+          var col = t.parentNode.className.replace('Column_', '');
+          self.setSort(col, true);
+        }
+        return false;
+      }
+      return true;
+    };
+
+    var table = document.createElement('table');
+    table.className = 'Body';
+
+    var head = document.createElement('thead');
+    var body = document.createElement('tbody');
+
+    var tableTop        = document.createElement('table');
+    var headTop         = document.createElement('thead');
+    tableTop.className  = 'Header';
+
+    this.$scroll            = document.createElement('div');
+    this.$scroll.className  = 'Scroll';
+    this.$scroll.appendChild(table);
+
     this._addEventListener(table, 'click', function(ev) {
       return onClick(ev);
     });
@@ -672,27 +721,25 @@
     this._addEventListener(table, (this.singleClick ? 'click' : 'dblclick'), function(ev) {
       return onDblClick(ev);
     });
+    this._addEventListener(tableTop, 'mousedown', function(ev) {
+      return onHeaderAction(ev, 'mousedown');
+    });
+    this._addEventListener(tableTop, 'click', function(ev) {
+      return onHeaderAction(ev, 'click');
+    });
 
     table.appendChild(head);
     table.appendChild(body);
-
-    var tableTop = document.createElement('table');
-    var headTop = document.createElement('thead');
-    tableTop.className = 'Header';
     tableTop.appendChild(headTop);
     el.appendChild(tableTop);
-
-    this.$scroll = document.createElement('div');
-    this.$scroll.className = 'Scroll';
-    this.$scroll.appendChild(table);
     el.appendChild(this.$scroll);
 
-    this.$head = head;
-    this.$headTop = headTop;
-    this.$body = body;
-    this.$table = table;
-    this.$tableTop = tableTop;
-    this.callback = function() {};
+    this.$head      = head;
+    this.$headTop   = headTop;
+    this.$body      = body;
+    this.$table     = table;
+    this.$tableTop  = tableTop;
+    this.callback   = function() {};
   };
 
   ListView.prototype.render = function() {
@@ -704,16 +751,27 @@
     OSjs.Utils.$empty(this.$headTop);
 
     var self = this;
-    var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span;
+    var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span, label, resizer;
 
     row = document.createElement('tr');
     for ( i = 0, l = this.columns.length; i < l; i++ ) {
       colref = this.columns[i];
       if ( typeof colref.visible !== 'undefined' && colref.visible === false ) continue;
 
-      col = document.createElement('td');
+      col           = document.createElement('td');
       col.className = 'Column_' + colref.key;
-      col.innerHTML = colref.title;
+      col.setAttribute("data-index", i);
+
+      label           = document.createElement('div');
+      label.className = 'Label';
+      label.innerHTML = colref.title;
+
+      if ( i < (l-i) ) {
+        resizer           = document.createElement('div');
+        resizer.className = 'Resizer';
+        label.appendChild(resizer);
+      }
+      col.appendChild(label);
 
       if ( colref.domProperties ) {
         for ( d in colref.domProperties ) {
@@ -722,11 +780,12 @@
           }
         }
       }
-
       row.appendChild(col);
     }
     this.$head.appendChild(row);
     this.$headTop.appendChild(row);
+
+    // TODO Sorting here
 
     for ( i = 0, l = this.rows.length; i < l; i++ ) {
       row = document.createElement('tr');
@@ -870,6 +929,14 @@
     this.rows.push(r);
   };
 
+  ListView.prototype.setSort = function(col, render) {
+    return; // TODO
+    this.sortColumn = col || null;
+    if ( render ) {
+      this.render();
+    }
+  };
+
   ListView.prototype.setColumns = function(cols) {
     this.columns = cols || [];
   };
@@ -924,7 +991,6 @@
    * FileView
    * TODO: Implement IconView view
    * TODO: Implement switching between view types
-   * TODO: Sorting by clicking column headers
    */
   var FileView = function(name, path, opts) {
     opts = opts || {};
