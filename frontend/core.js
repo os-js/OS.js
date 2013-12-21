@@ -379,6 +379,7 @@
       return false;
     }, false);
     this._$root.addEventListener('mousedown', function(ev) {
+      ev.preventDefault();
       OSjs.GUI.blurMenu();
     }, false);
 
@@ -1228,6 +1229,9 @@
     windowIconImage.src         = this._icon;
     windowIconImage.width       = 16;
     windowIconImage.height      = 16;
+    this._addEvent(windowIcon, 'ondblclick', function(ev) {
+      ev.preventDefault();
+    });
     this._addEvent(windowIcon, 'onclick', function(ev) {
       self._onWindowIconClick(ev, this);
     });

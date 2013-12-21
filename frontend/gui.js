@@ -444,6 +444,11 @@
     var el = document.createElement('div');
     el.className = 'Menu';
 
+    el.onmousedown = function(ev) {
+      ev.preventDefault();
+      return false;
+    };
+
     var ul = document.createElement('ul');
 
     var _onclick = function(ev, func) {
@@ -537,6 +542,10 @@
     var el = GUIElement.prototype.init.apply(this, ['GUIMenuBar']);
     this.$ul = document.createElement('ul');
     el.appendChild(this.$ul);
+    el.onmousedown = function(ev) {
+      ev.preventDefault();
+      return false;
+    };
     el.oncontextmenu = function(ev) {
       return false;
     };

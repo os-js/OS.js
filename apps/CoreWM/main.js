@@ -54,6 +54,10 @@
 
     var root = document.createElement('div');
     root.id = 'WindowList';
+    root.onmousedown = function(ev) {
+      ev.preventDefault();
+      return false;
+    };
     root.onclick = function(ev) {
       OSjs.GUI.blurMenu();
     };
