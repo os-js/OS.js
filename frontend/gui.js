@@ -691,7 +691,7 @@
           onResizeStart(ev, t.parentNode);
         } else if ( type === 'click' && t.className === 'Label' ) {
           var col = t.parentNode.className.replace('Column_', '');
-          self.setSort(col, true);
+          self.setSort(col);
         }
         return false;
       }
@@ -740,6 +740,10 @@
     this.$table     = table;
     this.$tableTop  = tableTop;
     this.callback   = function() {};
+  };
+
+  ListView.prototype.refresh = function() {
+    console.warn("OSjs::GUI::ListView::refresh()", "Not implemented for normal lists yet"); // TODO
   };
 
   ListView.prototype.render = function() {
@@ -929,12 +933,9 @@
     this.rows.push(r);
   };
 
-  ListView.prototype.setSort = function(col, render) {
-    return; // TODO
+  ListView.prototype.setSort = function(col) {
     this.sortColumn = col || null;
-    if ( render ) {
-      this.render();
-    }
+    this.refresh();
   };
 
   ListView.prototype.setColumns = function(cols) {
@@ -1163,6 +1164,10 @@
     if ( this.destroyed ) return;
     ListView.prototype._onRowClick.apply(this, arguments);
     this._onSelect(ev, el);
+  };
+
+  FileView.prototype.setSort = function(col) {
+    // FIXME
   };
 
   FileView.prototype.getPath = function() {

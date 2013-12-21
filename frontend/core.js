@@ -261,7 +261,7 @@
         } else {
           try {
             _HANDLER.getApplicationSettings(a.__name, function(settings) {
-              a.init(_CORE, settings);
+              a.init(_CORE, settings, result);
               onFinished(a);
               console.groupEnd();
             });
