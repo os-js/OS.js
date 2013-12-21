@@ -288,6 +288,9 @@
 .ErrorDialog.WithTrace .Summary {
   height : 50px;
 }
+.ErrorDialog textarea {
+  white-space : pre;
+}
 
 /**
  * File Chooser Dialog
