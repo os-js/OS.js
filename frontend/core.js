@@ -998,6 +998,8 @@
         w._focus();
       }, 5);
     }
+
+    return w;
   };
 
   Application.prototype._removeWindow = function(w) {

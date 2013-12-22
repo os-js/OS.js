@@ -24,10 +24,21 @@
     var statusBar  = this._addGUIElement(new OSjs.GUI.StatusBar('FileManagerStatusBar'), root);
     var menuBar    = this._addGUIElement(new OSjs.GUI.MenuBar('FileManagerMenuBar'), root);
 
+    var defaultStatusText = '';
+
     fileView.onContextMenu = function(ev, el, item) {
       if ( menuBar ) {
         menuBar.createContextMenu(ev, 1);
       }
+    };
+
+    fileView.onCreateRow = function(row, iter, colref) {
+      row.title = ([
+        "Filename: "  + iter.filename,
+        "Path: "      + iter.path,
+        "Size: "      + iter.size,
+        "MIME: "      + iter.mime || 'none'
+      ]).join("\n");
     };
 
     fileView.onItemDropped = function(ev, el, item) {
@@ -58,9 +69,12 @@
     fileView.onFilesDropped = function(ev, el, files) {
       return self.onDropUpload(ev, el, files);
     };
+
     fileView.onFinished = function(dir, numItems, totalBytes) {
       var hifs = OSjs.Utils.humanFileSize(totalBytes);
-      statusBar.setText("Showing " + numItems + " item(s), " + hifs);
+      defaultStatusText = "Showing " + numItems + " item(s), " + hifs;
+      statusBar.setText(defaultStatusText);
+
       self._toggleLoading(false);
       try {
         self._appRef.go(dir, self);
@@ -81,6 +95,18 @@
         }
       }
     };
+
+    /*
+    fileView.onSelected = function(item, el) {
+      if ( !item || item.type === 'dir' ) {
+        statusBar.setText(defaultStatusText);
+        return;
+      }
+      var hifs = OSjs.Utils.humanFileSize(item.size);
+      statusBar.setText('1 item: ' + item.filename + ' (' + hifs + ')');
+    };
+    */
+
     fileView.onError = function(error) {
       self._toggleLoading(false);
       self._error("File Manager error", "An error occured while handling your request", error);

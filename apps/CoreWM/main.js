@@ -71,6 +71,7 @@
     var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
     var sel;
     sel = document.createElement('li');
+    sel.title = "Applications";
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function(ev) {
       ev.stopPropagation();
@@ -99,6 +100,7 @@
     // Quit button
     icon = OSjs.API.getThemeResource('actions/exit.png', 'icon');
     sel = document.createElement('li');
+    sel.title = 'Log out (Exit)';
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function() {
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
@@ -116,7 +118,9 @@
     clock.className = 'Clock';
     clock.innerHTML = '00:00';
     var _updateClock = function() {
-      clock.innerHTML = (new Date()).toLocaleTimeString();
+      var d = new Date();
+      clock.innerHTML = d.toLocaleTimeString();
+      clock.title     = d.toLocaleDateString();
     };
     this.clockInterval = setInterval(_updateClock, 1000);
     _updateClock();
@@ -222,6 +226,7 @@
       var el = document.createElement('li');
       el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
       el.className = 'WindowList_Window_' + win._wid;
+      el.title = win._title;
       el.onclick = function() {
         win._restore();
       };
@@ -241,6 +246,7 @@
     } else if ( ev == 'title' ) {
       _change(cn, function(el) {
         el.getElementsByTagName('span')[0].innerHTML = win._title;
+        el.title = win._title;
       });
     }
   };

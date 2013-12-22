@@ -31,6 +31,7 @@
   z-index : 3;
   width : 70px;
   overflow : hidden;
+  cursor : default;
 }
 
 #WindowList ul {
