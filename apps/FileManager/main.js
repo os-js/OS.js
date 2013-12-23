@@ -18,8 +18,10 @@
     var self  = this;
     var app   = this._appRef;
     var root  = Window.prototype.init.apply(this, arguments);
+    //var vt    = app._getSetting('viewType');
+    var vt    = app._getArgument('viewType');
 
-    var fileView   = this._addGUIElement(new OSjs.GUI.FileView('FileManagerFileView', '/', {dnd: true, summary: true}), root);
+    var fileView   = this._addGUIElement(new OSjs.GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), root);
     var sideView   = this._addGUIElement(new OSjs.GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), root);
     var statusBar  = this._addGUIElement(new OSjs.GUI.StatusBar('FileManagerStatusBar'), root);
     var menuBar    = this._addGUIElement(new OSjs.GUI.MenuBar('FileManagerMenuBar'), root);
@@ -105,7 +107,7 @@
 
     var menuAction = function(action, check) {
       self._focus();
-      var fileView = self._getGUIElement('FileManagerFileView');
+      //var fileView = self._getGUIElement('FileManagerFileView');
       var cur = fileView.getSelected();
       var dir = fileView.getPath();
       if ( check ) {
@@ -216,10 +218,21 @@
 
     menuBar.addItem("View", [
       {title: 'Refresh', onClick: function() {
-        var fileView = self._getGUIElement('FileManagerFileView');
         fileView.refresh();
         self._focus();
-      }}
+      }},
+      {name: 'ListView', title: 'List View', onClick: function() {
+        fileView.setViewType('ListView');
+        self._focus();
+        app._setArgument('viewType', 'ListView');
+        //app._setSetting('viewType', 'ListView');
+      }},
+      {name: 'IconView', title: 'Icon View', onClick: function() {
+        fileView.setViewType('IconView');
+        self._focus();
+        app._setArgument('viewType', 'IconView');
+        //app._setSetting('viewType', 'IconView');
+      }},
     ]);
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle) {

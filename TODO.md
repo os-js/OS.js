@@ -8,7 +8,7 @@
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player
-* Finish GUI::IconView
+  * Finish File Manager
 
 ### Beta
 

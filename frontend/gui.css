@@ -377,6 +377,9 @@ body .GUIToolbar button {
   margin : 0px;
   padding : 0;
 }
+.GUIIconView li > div {
+  position : relative;
+}
 
 .GUIIconView ul > li {
   float : left;
@@ -406,6 +409,25 @@ body .GUIToolbar button {
 .GUIIconView.IconSize64x64 img {
   width : 64px;
   height : 64px;
+}
+.GUIIconView li span {
+  position : absolute;
+  display : block;
+  left : 0px;
+  right : 0px;
+  top : 0px;
+
+  white-space : nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+}
+.GUIIconView li.active span {
+  overflow: visible;
+  white-space : pre-wrap;
+  word-wrap : break-word;
+  text-overflow: inherit;
+  -o-text-overflow: inherit;
 }
 
 /* Rich Text */
@@ -523,3 +545,15 @@ body .GUIToolbar button {
   position : relative;
 }
 
+
+/* GUIFileView */
+.GUIFileView {
+  position : relative;
+}
+.GUIFileView > .GUIElement {
+  position : absolute;
+  top : 0px;
+  right : 0px;
+  bottom : 0px;
+  left : 0px;
+}

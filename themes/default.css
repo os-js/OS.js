@@ -461,6 +461,7 @@ body #WindowList .Clock {
 .GUIToolbar button[disabled]:active,
 .GUIToolbar button[disabled].Active {
   background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
+  color : #a0a0a0;
 }
 
 .GUIButton button:focus,

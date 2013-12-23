@@ -484,7 +484,7 @@
 
     setTimeout(function() {
       self.dialog._focus();
-    }, 10);
+    }, 100);
   };
 
   FileUploadDialog.prototype.onFileSelected = function(evt, file) {
@@ -667,8 +667,6 @@
       };
     }
 
-    fileList.chdir(this.currentPath);
-
     fileList.onActivated = function(path, type, mime) {
       if ( type === 'file' ) {
         self.buttonConfirm.setDisabled(false);
@@ -686,6 +684,15 @@
     return root;
   };
 
+  FileDialog.prototype._inited = function() {
+    StandardDialog.prototype._inited.apply(this, arguments);
+
+    var fileList = this._getGUIElement('FileDialogFileView');
+    if ( fileList ) {
+      fileList.chdir(this.currentPath);
+    }
+  };
+
   FileDialog.prototype.onConfirmClick = function(ev) {
     if ( !this.buttonConfirm ) return;
     this.dialogOK();
@@ -701,7 +708,7 @@
       if ( this.type == 'save' ) {
         var check = this.input ? check = this.input.getValue() : '';
         if ( check ) {
-          item = fileList.getItemByKey('filename', check);
+          item = fileList.$view.getItemByKey('filename', check);
           if ( item !== null ) {
             if ( confirm("The file '" + check + "' already exists. Overwrite?") ) {
               mime = item.getAttribute('data-mime');

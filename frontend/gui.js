@@ -151,10 +151,11 @@
     }, false);
   }
 
-  function getFileIcon(filename, mime, type, icon) {
+  function getFileIcon(filename, mime, type, icon, size) {
     if ( !filename ) throw "Filename is required for getFileIcon()";
     type = type || 'file';
     icon = icon || 'mimetypes/gnome-fs-regular.png';
+    size = size || '16x16';
 
     if ( type == 'dir' ) {
       icon = 'places/folder.png';
@@ -176,7 +177,7 @@
       }
     }
 
-    return OSjs.API.getThemeResource(icon, 'icon');
+    return OSjs.API.getThemeResource(icon, 'icon', size);
   }
 
   /**
@@ -989,202 +990,6 @@
   };
 
   /**
-   * FileView
-   * TODO: Implement IconView view
-   * TODO: Implement switching between view types
-   * TODO: Add hooks
-   */
-  var FileView = function(name, path, opts) {
-    opts = opts || {};
-    var mimeFilter = [];
-    if ( opts.mimeFilter ) {
-      mimeFilter = opts.mimeFilter || null;
-      if ( !mimeFilter || Object.prototype.toString.call(mimeFilter) !== '[object Array]' ) {
-        mimeFilter = [];
-      }
-    }
-
-    ListView.apply(this, [name, opts]);
-    this.opts.dnd = true;
-
-    this.path       = path || '/';
-    this.lastPath   = this.path;
-    this.mimeFilter = mimeFilter;
-    this.summary    = opts.summary || false;
-    this.humanSize  = (typeof opts.humanSize === 'undefined' || opts.humanSize);
-
-    this.onActivated  = function(path, type, mime) {};
-    this.onError      = function(error) {};
-    this.onFinished   = function() {};
-    this.onSelected   = function(item, el) {};
-    this.onRefresh    = function() {};
-    this.onDropped    = function() { console.warn("Not implemented yet!"); };
-  };
-
-  FileView.prototype = Object.create(ListView.prototype);
-
-  FileView.prototype.init = function() {
-    ListView.prototype.init.apply(this, arguments);
-
-    var self = this;
-    if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
-      this.onCreateRow = function(el, item, column) {
-        var self = this;
-        if ( item.filename == '..' ) return;
-
-        if ( item.type === 'file' ) {
-          el.title = ([
-            "Filename: "  + item.filename,
-            "Path: "      + item.path,
-            "Size: "      + item.size || 0,
-            "MIME: "      + item.mime || 'none'
-          ]).join("\n");
-
-          createDraggable(el, {
-            type   : 'file',
-            source : {wid: self.wid},
-            data   : item
-          });
-        } else if ( item.type == 'dir' ) {
-          el.title = item.path;
-
-          createDroppable(el, {
-            onItemDropped: function(ev, el, item, args) {
-              return self.onItemDropped.call(self, ev, el, item, args);
-            },
-            onFilesDropped: function(ev, el, files, args) {
-              return self.onFilesDropped.call(self, ev, el, item, args);
-            }
-          });
-        }
-
-      };
-    }
-  };
-
-  FileView.prototype.render = function(list, dir) {
-    if ( this.destroyed ) return;
-    var self = this;
-
-    var _callbackIcon = function(iter) {
-      var icon = 'status/gtk-dialog-question.png';
-      return getFileIcon(iter.filename, iter.mime, iter.type, icon);
-    };
-
-    var _callbackSize = function(iter) {
-      if ( iter.size === '' ) return '';
-      if ( self.humanSize ) {
-        return OSjs.Utils.humanFileSize(iter.size);
-      }
-      return iter.size;
-    };
-
-    this.setColumns([
-      {key: 'image',    title: '',     type: 'image', callback: _callbackIcon, domProperties: {width: "16"}},
-      {key: 'filename', title: 'Filename'},
-      {key: 'mime',     title: 'Mime', domProperties: {width: "150"}},
-      {key: 'size',     title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},
-      {key: 'path',     title: 'Path', visible: false},
-      {key: 'type',     title: 'Type', visible: false}
-     ]);
-
-    this.setRows(list);
-
-    ListView.prototype.render.apply(this, []);
-  };
-
-  FileView.prototype.refresh = function(onRefreshed) {
-    if ( this.destroyed ) return;
-    return this.chdir(this.path, onRefreshed);
-  };
-
-  FileView.prototype.chdir = function(dir, onRefreshed, onError) {
-    if ( !dir ) throw "Cannot chdir() in FileView without a directory!";
-    if ( this.destroyed ) return;
-    onRefreshed = onRefreshed || function() {};
-    onError = onError || function() {};
-
-    var self = this;
-    this.onRefresh.call(this);
-
-    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
-      if ( self.destroyed ) return;
-
-      var error = null;
-      var rendered = false;
-      var num = 0;
-      var size = 0;
-
-      if ( res ) {
-        if ( res.error ) {
-          self.onError.call(self, res.error, dir);
-        } else {
-          self.lastPath = self.path;
-          self.path = dir;
-          if ( res.result /* && res.result.length*/ ) {
-            if ( self.summary && res.result.length ) {
-              for ( var i = 0, l = res.result.length; i < l; i++ ) {
-                if ( res.result[i].filename !== ".." ) {
-                  if ( res.result[i].size ) {
-                    size += (res.result[i].size << 0);
-                  }
-                  num++;
-                }
-              }
-            }
-
-            self.render(res.result, dir);
-            rendered = true;
-          }
-        }
-
-        if ( !rendered ) {
-          self.render([], dir);
-        }
-
-        self.onFinished(dir, num, size);
-
-        onRefreshed.call(this);
-      }
-    }, function(error) {
-      self.onError.call(self, error, dir, true);
-      onError.call(self, error, dir, true);
-    });
-  };
-
-  FileView.prototype._onActivate = function(ev, el) {
-    var item = ListView.prototype._onActivate.apply(this, arguments);
-    if ( item && item.path ) {
-      if ( item.type === 'file' ) {
-        this.onActivated(item.path, item.type, item.mime);
-      } else {
-        this.chdir(item.path);
-      }
-    }
-  };
-
-  FileView.prototype._onSelect = function(ev, el) {
-    var item = ListView.prototype._onSelect.apply(this, arguments);
-    if ( item && item.path ) {
-      this.onSelected(item, el);
-    }
-  };
-
-  FileView.prototype._onRowClick = function(ev, el) {
-    if ( this.destroyed ) return;
-    ListView.prototype._onRowClick.apply(this, arguments);
-    this._onSelect(ev, el);
-  };
-
-  FileView.prototype.setSort = function(col) {
-    // FIXME
-  };
-
-  FileView.prototype.getPath = function() {
-    return this.path;
-  };
-
-  /**
    * Textarea
    */
   var Textarea = function(name, opts) {
@@ -1824,9 +1629,10 @@
 
     this.onSelect      = function() {};
     this.onActivate    = function() {};
+    this.onCreateItem  = function() {};
     this.onContextMenu = function() {};
 
-    GUIElement.apply(this, [name, {}]);
+    GUIElement.apply(this, [name, opts]);
   };
 
   IconView.prototype = Object.create(GUIElement.prototype);
@@ -1871,7 +1677,10 @@
     };
 
     this._addEventListener(this.$view, 'contextmenu', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation(); // Or else eventual ContextMenu is blurred
       _onItem(ev, 'contextmenu');
+      return false;
     });
     this._addEventListener(this.$view, 'click', function(ev) {
       _onItem(ev, 'click');
@@ -1904,7 +1713,11 @@
     this.onActivate.apply(this, arguments);
   };
 
-  IconView.prototype.render = function() {
+  IconView.prototype.render = function(data) {
+    if ( data ) {
+      this.setData(data);
+    }
+
     var _createImage = function(i) {
       return OSjs.API.getThemeResource(i, 'icon');
     };
@@ -1949,11 +1762,43 @@
       li.appendChild(lblContainer);
 
       this.$ul.appendChild(li);
+
+      this.onCreateItem(li, iter, iter.data);
     }
   };
 
   IconView.prototype.setData = function(data) {
     this.data = data;
+  };
+
+  IconView.prototype.getItemByKey = function(key, val) {
+    var items = this.$ul.childNodes;
+    var tmp, item;
+    for ( var i = 0, l = items.length; i < l; i++ ) {
+      item = items[i];
+      tmp = item.getAttribute('data-' + key);
+      if ( tmp == val ) {
+        return item;
+      }
+    }
+    return null;
+  };
+
+  IconView.prototype.setSelected = function(val, key) {
+    if ( this.destroyed ) return;
+    var item = this.getItemByKey(key, val);
+    var data = {};
+    if ( item ) {
+      var attrs = item.attributes;
+      var tmp;
+      for ( var i = 0; i < attrs.length; i++ ) {
+        tmp = attrs.item(i);
+        if ( tmp && tmp.nodeName.match(/^data\-/) ) {
+          tmp[tmp.nodeName.replace(/^data\-/, '')] = tmp.nodeValue;
+        }
+      }
+      this._onSelect(null, data, item);
+    }
   };
 
   /**
@@ -2340,9 +2185,423 @@
   };
   Button.prototype = Object.create(_Input.prototype);
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
+  // FileView
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * FileView > IconView
+   */
+  var FileIconView = function(name, opts) {
+    opts = opts || {};
+    opts.dnd = true;
+    IconView.apply(this, [name, opts]);
+
+    this.selected     = null;
+
+    this.onActivated  = function(path, type, mime) {};
+    this.onSelected   = function(item, el) {};
+    this.onDropped    = function() { console.warn("Not implemented yet!"); };
+
+    var self = this;
+    this.onActivate = function(ev, item, el) {
+      item = item.data || null;
+      if ( item && item.path ) {
+        self.onActivated(item.path, item.type, item.mime);
+      }
+    };
+
+    this.onSelect = function(ev, item, el) {
+      self.selected = null;
+
+      item = item.data || null;
+      if ( item && item.path ) {
+        self.selected = item;
+        self.onSelected(item.path, item.type, item.mime);
+      }
+    };
+  };
+
+  FileIconView.prototype = Object.create(IconView.prototype);
+
+  FileIconView.prototype.init = function() {
+    IconView.prototype.init.apply(this, arguments);
+
+    var self = this;
+    if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
+      this.onCreateItem = function(el, iter, item) {
+        var self = this;
+        if ( item.filename == '..' ) return;
+
+        if ( item.type === 'file' ) {
+          el.title = ([
+            "Filename: "  + item.filename,
+            "Path: "      + item.path,
+            "Size: "      + item.size || 0,
+            "MIME: "      + item.mime || 'none'
+          ]).join("\n");
+
+          createDraggable(el, {
+            type   : 'file',
+            source : {wid: self.wid},
+            data   : item
+          });
+        } else if ( item.type == 'dir' ) {
+          el.title = item.path;
+
+          createDroppable(el, {
+            onItemDropped: function(ev, el, item, args) {
+              return self.onItemDropped.call(self, ev, el, item, args);
+            },
+            onFilesDropped: function(ev, el, files, args) {
+              return self.onFilesDropped.call(self, ev, el, item, args);
+            }
+          });
+        }
+
+      };
+    }
+  };
+
+  FileIconView.prototype.render = function(list, dir) {
+    if ( this.destroyed ) return;
+
+    var fileList = [];
+    var _createIcon = function(iter) {
+      var defIcon = 'status/gtk-dialog-question.png';
+      return getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '32x32');
+    };
+
+    var iter;
+    for ( var i = 0; i < list.length; i++ ) {
+      iter = list[i];
+      fileList.push({
+        label: iter.filename,
+        data:  iter,
+        icon:  _createIcon(iter)
+      });
+    }
+
+    IconView.prototype.render.apply(this, [fileList]);
+  };
+
+  FileIconView.prototype._onContextMenu = function(ev, item, el) {
+    item = item.data || null;
+    this.onContextMenu.apply(this, [ev, item, el]);
+  };
+
+  FileIconView.prototype.setSort = function(col) {
+    // FIXME
+  };
+
+  FileIconView.prototype.getSelected = function() {
+    return this.selected;
+  };
+
+  /**
+   * FileView > ListView
+   */
+  var FileListView = function(name, opts) {
+    opts = opts || {};
+    opts.dnd = true;
+
+    ListView.apply(this, [name, opts]);
+
+    this.humanSize  = (typeof opts.humanSize === 'undefined' || opts.humanSize);
+
+    this.onActivated  = function(path, type, mime) {};
+    this.onSelected   = function(item, el) {};
+    this.onDropped    = function() { console.warn("Not implemented yet!"); };
+  };
+
+  FileListView.prototype = Object.create(ListView.prototype);
+
+  FileListView.prototype.init = function() {
+    ListView.prototype.init.apply(this, arguments);
+
+    var self = this;
+    if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
+      this.onCreateRow = function(el, item, column) {
+        var self = this;
+        if ( item.filename == '..' ) return;
+
+        if ( item.type === 'file' ) {
+          el.title = ([
+            "Filename: "  + item.filename,
+            "Path: "      + item.path,
+            "Size: "      + item.size || 0,
+            "MIME: "      + item.mime || 'none'
+          ]).join("\n");
+
+          createDraggable(el, {
+            type   : 'file',
+            source : {wid: self.wid},
+            data   : item
+          });
+        } else if ( item.type == 'dir' ) {
+          el.title = item.path;
+
+          createDroppable(el, {
+            onItemDropped: function(ev, el, item, args) {
+              return self.onItemDropped.call(self, ev, el, item, args);
+            },
+            onFilesDropped: function(ev, el, files, args) {
+              return self.onFilesDropped.call(self, ev, el, item, args);
+            }
+          });
+        }
+
+      };
+    }
+  };
+
+  FileListView.prototype.render = function(list, dir) {
+    if ( this.destroyed ) return;
+    var self = this;
+
+    var _callbackIcon = function(iter) {
+      var icon = 'status/gtk-dialog-question.png';
+      return getFileIcon(iter.filename, iter.mime, iter.type, icon);
+    };
+
+    var _callbackSize = function(iter) {
+      if ( iter.size === '' ) return '';
+      if ( self.humanSize ) {
+        return OSjs.Utils.humanFileSize(iter.size);
+      }
+      return iter.size;
+    };
+
+    this.setColumns([
+      {key: 'image',    title: '',     type: 'image', callback: _callbackIcon, domProperties: {width: "16"}},
+      {key: 'filename', title: 'Filename'},
+      {key: 'mime',     title: 'Mime', domProperties: {width: "150"}},
+      {key: 'size',     title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},
+      {key: 'path',     title: 'Path', visible: false},
+      {key: 'type',     title: 'Type', visible: false}
+     ]);
+
+    this.setRows(list);
+
+    ListView.prototype.render.apply(this, []);
+  };
+
+  FileListView.prototype._onActivate = function(ev, el) {
+    var item = ListView.prototype._onActivate.apply(this, arguments);
+    if ( item && item.path ) {
+      this.onActivated(item.path, item.type, item.mime);
+    }
+  };
+
+  FileListView.prototype._onSelect = function(ev, el) {
+    var item = ListView.prototype._onSelect.apply(this, arguments);
+    if ( item && item.path ) {
+      this.onSelected(item, el);
+    }
+  };
+
+  FileListView.prototype._onRowClick = function(ev, el) {
+    if ( this.destroyed ) return;
+    ListView.prototype._onRowClick.apply(this, arguments);
+    this._onSelect(ev, el);
+  };
+
+  FileListView.prototype.setSort = function(col) {
+    // FIXME
+  };
+
+  /**
+   * FileView
+   */
+  var FileView = function(name, opts) {
+    opts = opts || {};
+    var mimeFilter = [];
+    if ( opts.mimeFilter ) {
+      mimeFilter = opts.mimeFilter || null;
+      if ( !mimeFilter || Object.prototype.toString.call(mimeFilter) !== '[object Array]' ) {
+        mimeFilter = [];
+      }
+    }
+
+    var viewOpts        = {};
+    viewOpts.summary    = opts.summary || false;
+    viewOpts.humanSize  = (typeof opts.humanSize === 'undefined' || opts.humanSize);
+
+    this.startViewType  = opts.viewType || 'ListView';
+    this.viewType       = null;
+    this.viewOpts       = viewOpts;
+    this.lastDir        = viewOpts.path;
+    this.lastList       = [];
+    this.mimeFilter     = mimeFilter;
+    this.wasUpdated     = false;
+    this.$view          = null;
+
+    this.onActivated    = function(path, type, mime) {};
+    this.onError        = function(error) {};
+    this.onFinished     = function() {};
+    this.onSelected     = function(item, el) {};
+    this.onRefresh      = function() {};
+    this.onDropped      = function() { console.warn("Not implemented yet!"); };
+    this.onContextMenu  = function(ev, el, item) {};
+    this.onItemDropped  = function(ev, el, item) {};
+
+    GUIElement.apply(this, arguments);
+  };
+
+  FileView.prototype = Object.create(GUIElement.prototype);
+
+  FileView.prototype.destroy = function() {
+    if ( this.$view ) {
+      this.$view.destroy();
+      this.$view = null;
+    }
+
+    GUIElement.prototype.destroy.apply(this, arguments);
+  };
+
+  FileView.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIFileView']);
+
+    this.createView(this.startViewType, el);
+
+    return el;
+  };
+
+  FileView.prototype.createView = function(v, root) {
+    var self = this;
+
+    if ( v != this.viewType ) {
+      if ( this.$view ) {
+        this.$view.destroy();
+        this.$view = null;
+      }
+
+      if ( v === 'ListView' ) {
+        this.$view = new FileListView('FileListView', this.viewOpts);
+      } else if ( v === 'IconView' ) {
+        this.$view = new FileIconView('FileIconView', this.viewOpts);
+      }
+
+      this.$view.onActivated  = function(path, type, mime) {
+        if ( type === 'dir' ) {
+          self.chdir(path);
+        } else {
+          self.onActivated.apply(this, arguments);
+        }
+      };
+
+      this.$view.onSelected     = function() { return self.onSelected.apply(this, arguments); };
+      this.$view.onDropped      = function() { return self.onDropped.apply(this, arguments); };
+      this.$view.onContextMenu  = function() { return self.onContextMenu.apply(this, arguments); };
+      this.$view.onItemDropped  = function() { return self.onItemDropped.apply(this, arguments); };
+
+      (root || this.$element).appendChild(this.$view.getRoot());
+      this.viewType = v;
+
+      if ( !this.rendered ) {
+        this.$view.update();
+      }
+    }
+  };
+
+  FileView.prototype.refresh = function(onRefreshed, onError) {
+    if ( this.$view ) {
+      this.chdir(this.getPath(), onRefreshed, onError);
+    }
+  };
+
+  FileView.prototype.chdir = function(dir, onRefreshed, onError) {
+    if ( this.destroyed ) return;
+
+    onRefreshed = onRefreshed || function() {};
+    onError     = onError     || function() {};
+
+    if ( !this.$view ) {
+      throw "FileView has no GUI element attached!";
+    }
+
+    var self = this;
+    this.onRefresh.call(this);
+
+    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
+      if ( self.destroyed ) return;
+
+      var error     = null;
+      var rendered  = false;
+      var num       = 0;
+      var size      = 0;
+
+      if ( res ) {
+        if ( res.error ) {
+          self.onError.call(self, res.error, dir);
+        } else {
+          if ( res.result /* && res.result.length*/ ) {
+            if ( self.summary && res.result.length ) {
+              for ( var i = 0, l = res.result.length; i < l; i++ ) {
+                if ( res.result[i].filename !== ".." ) {
+                  if ( res.result[i].size ) {
+                    size += (res.result[i].size << 0);
+                  }
+                  num++;
+                }
+              }
+            }
+
+            self.wasUpdated = true;
+            self.lastList   = res.result;
+            self.lastDir    = dir;
+            rendered = true;
+
+            self.$view.render(res.result, dir);
+          }
+        }
+
+        if ( !rendered ) {
+          self.$view.render([], dir);
+        }
+
+        self.onFinished(dir, num, size);
+
+        onRefreshed.call(this);
+      }
+    }, function(error) {
+      self.onError.call(self, error, dir, true);
+      onError.call(self, error, dir, true);
+    });
+  };
+
+  FileView.prototype.setViewType = function(v) {
+    this.createView(v);
+
+    if ( this.wasUpdated ) {
+      this.refresh();
+    }
+  };
+
+  FileView.prototype.setSort = function(col) {
+    if ( this.$view ) {
+      this.$view.setSort(col);
+    }
+  };
+
+  FileView.prototype.setSelected = function() {
+    if ( this.$view ) {
+      this.$view.setSelected.apply(this.$view, arguments);
+    }
+  };
+
+  FileView.prototype.getPath = function() {
+    return this.lastDir;
+  };
+
+  FileView.prototype.getSelected = function() {
+    return this.$view ? this.$view.getSelected() : null;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.GUI.GUIElement   = GUIElement;
 
   OSjs.GUI.MenuBar      = MenuBar;
