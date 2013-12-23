@@ -992,6 +992,7 @@
    * FileView
    * TODO: Implement IconView view
    * TODO: Implement switching between view types
+   * TODO: Add hooks
    */
   var FileView = function(name, path, opts) {
     opts = opts || {};
@@ -1045,6 +1046,8 @@
             data   : item
           });
         } else if ( item.type == 'dir' ) {
+          el.title = item.path;
+
           createDroppable(el, {
             onItemDropped: function(ev, el, item, args) {
               return self.onItemDropped.call(self, ev, el, item, args);

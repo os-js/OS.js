@@ -277,7 +277,7 @@ body #WindowList .Clock {
   color : #fff;
 }
 .GUIListView .Resizer {
-  background : #c2c2c2;
+  border-color : #c2c2c2;
   cursor : ew-resize;
 }
 

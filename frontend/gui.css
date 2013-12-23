@@ -170,7 +170,8 @@
   top : 0px;
   right : 0px;
   bottom : 0px;
-  width : 1px;
+  width : 4px;
+  border-right : 1px solid transparent;
 }
 
 /**
