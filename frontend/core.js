@@ -800,7 +800,9 @@
       }
     }
 
-    // TODO: Reload element src here (theme changes)
+    if ( _$LOADING ) {
+      _$LOADING.src = OSjs.API.getThemeResource('loading_small.gif', 'base');
+    }
 
     return true;
   };
