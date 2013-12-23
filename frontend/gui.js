@@ -1032,6 +1032,13 @@
         if ( item.filename == '..' ) return;
 
         if ( item.type === 'file' ) {
+          el.title = ([
+            "Filename: "  + item.filename,
+            "Path: "      + item.path,
+            "Size: "      + item.size || 0,
+            "MIME: "      + item.mime || 'none'
+          ]).join("\n");
+
           createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},

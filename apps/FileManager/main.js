@@ -32,17 +32,6 @@
       }
     };
 
-    /*
-    fileView.onCreateRow = function(row, iter, colref) {
-      row.title = ([
-        "Filename: "  + iter.filename,
-        "Path: "      + iter.path,
-        "Size: "      + iter.size,
-        "MIME: "      + iter.mime || 'none'
-      ]).join("\n");
-    };
-    */
-
     fileView.onItemDropped = function(ev, el, item) {
       if ( item && item.type === "file" && item.data ) {
         var dir = fileView.getPath();
