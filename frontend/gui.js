@@ -602,7 +602,6 @@
     this.$scroll          = null;
     this.selected         = null;
     this.selectedDOMItem  = null;
-    this.sortColumn       = null;
 
     this.onCreateRow    = function() {};
     this.onSelect       = function() {};
@@ -692,7 +691,7 @@
           onResizeStart(ev, t.parentNode);
         } else if ( type === 'click' && t.className === 'Label' ) {
           var col = t.parentNode.className.replace('Column_', '');
-          self.setSort(col);
+          self._onColumnClick(ev, col);
         }
         return false;
       }
@@ -743,10 +742,6 @@
     this.callback   = function() {};
   };
 
-  ListView.prototype.refresh = function() {
-    console.warn("OSjs::GUI::ListView::refresh()", "Not implemented for normal lists yet"); // TODO
-  };
-
   ListView.prototype.render = function() {
     this.selected = null;
     this.selectedDOMItem = null;
@@ -771,10 +766,12 @@
       label.className = 'Label';
       label.innerHTML = colref.title;
 
-      if ( i < (l-i) ) {
-        resizer           = document.createElement('div');
-        resizer.className = 'Resizer';
-        label.appendChild(resizer);
+      if ( typeof colref.resizable === 'undefined' || colref.resizable === true ) {
+        if ( i < (l-i) ) {
+          resizer           = document.createElement('div');
+          resizer.className = 'Resizer';
+          label.appendChild(resizer);
+        }
       }
       col.appendChild(label);
 
@@ -789,8 +786,6 @@
     }
     this.$head.appendChild(row);
     this.$headTop.appendChild(row);
-
-    // TODO Sorting here
 
     for ( i = 0, l = this.rows.length; i < l; i++ ) {
       row = document.createElement('tr');
@@ -880,6 +875,9 @@
     return true;
   };
 
+  ListView.prototype._onColumnClick = function(ev, col) {
+  };
+
   ListView.prototype._onSelect = function(ev, el) {
     this.selectedDOMItem = null;
     this.selected = null;
@@ -932,11 +930,6 @@
 
   ListView.prototype.addRow = function(r) {
     this.rows.push(r);
-  };
-
-  ListView.prototype.setSort = function(col) {
-    this.sortColumn = col || null;
-    this.refresh();
   };
 
   ListView.prototype.setColumns = function(cols) {
@@ -1614,7 +1607,6 @@
 
   /**
    * Icon View Element
-   * FIXME: Implement events like in ListView
    */
   var IconView = function(name, opts) {
     opts            = opts || {};
@@ -1707,10 +1699,13 @@
     this.$selected = el;
     this.$selected.className += ' active';
     this.onSelect.apply(this, arguments);
+
+    return item;
   };
 
   IconView.prototype._onActivate = function(ev, item, el) {
     this.onActivate.apply(this, arguments);
+    return item;
   };
 
   IconView.prototype.render = function(data) {
@@ -2204,22 +2199,6 @@
     this.onDropped    = function() { console.warn("Not implemented yet!"); };
 
     var self = this;
-    this.onActivate = function(ev, item, el) {
-      item = item.data || null;
-      if ( item && item.path ) {
-        self.onActivated(item.path, item.type, item.mime);
-      }
-    };
-
-    this.onSelect = function(ev, item, el) {
-      self.selected = null;
-
-      item = item.data || null;
-      if ( item && item.path ) {
-        self.selected = item;
-        self.onSelected(item.path, item.type, item.mime);
-      }
-    };
   };
 
   FileIconView.prototype = Object.create(IconView.prototype);
@@ -2290,8 +2269,24 @@
     this.onContextMenu.apply(this, [ev, item, el]);
   };
 
-  FileIconView.prototype.setSort = function(col) {
-    // FIXME
+  FileIconView.prototype._onSelect = function(ev, item, el) {
+    var item = IconView.prototype._onSelect.apply(this, arguments);
+    item = item && item.data || null;
+
+    this.selected = null;
+    if ( item && item.path ) {
+      this.selected = item;
+      this.onSelected(item.path, item.type, item.mime);
+    }
+  };
+
+  FileIconView.prototype._onActivate = function(ev, item, el) {
+    var item = IconView.prototype._onActivate.apply(this, arguments);
+    item = item && item.data || null;
+
+    if ( item && item.path ) {
+      this.onActivated(item.path, item.type, item.mime);
+    }
   };
 
   FileIconView.prototype.getSelected = function() {
@@ -2312,6 +2307,7 @@
     this.onActivated  = function(path, type, mime) {};
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn("Not implemented yet!"); };
+    this.onSort       = function() { console.warn("Not implemented yet!"); };
   };
 
   FileListView.prototype = Object.create(ListView.prototype);
@@ -2373,7 +2369,7 @@
     };
 
     this.setColumns([
-      {key: 'image',    title: '',     type: 'image', callback: _callbackIcon, domProperties: {width: "16"}},
+      {key: 'image',    title: '&nbsp;',     type: 'image', callback: _callbackIcon, domProperties: {width: "16"}, resizable: false},
       {key: 'filename', title: 'Filename'},
       {key: 'mime',     title: 'Mime', domProperties: {width: "150"}},
       {key: 'size',     title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},
@@ -2384,6 +2380,11 @@
     this.setRows(list);
 
     ListView.prototype.render.apply(this, []);
+  };
+
+  FileListView.prototype._onColumnClick = function(ev, col) {
+    ListView.prototype._onColumnClick.apply(this, arguments);
+    this.onSort(col);
   };
 
   FileListView.prototype._onActivate = function(ev, el) {
@@ -2406,15 +2407,13 @@
     this._onSelect(ev, el);
   };
 
-  FileListView.prototype.setSort = function(col) {
-    // FIXME
-  };
-
   /**
    * FileView
    */
   var FileView = function(name, opts) {
     opts = opts || {};
+
+    var self = this;
     var mimeFilter = [];
     if ( opts.mimeFilter ) {
       mimeFilter = opts.mimeFilter || null;
@@ -2431,9 +2430,10 @@
     this.viewType       = null;
     this.viewOpts       = viewOpts;
     this.lastDir        = viewOpts.path;
-    this.lastList       = [];
     this.mimeFilter     = mimeFilter;
     this.wasUpdated     = false;
+    this.sortKey        = null;
+    this.sortDir        = true; // true = asc, false = desc
     this.$view          = null;
 
     this.onActivated    = function(path, type, mime) {};
@@ -2444,6 +2444,12 @@
     this.onDropped      = function() { console.warn("Not implemented yet!"); };
     this.onContextMenu  = function(ev, el, item) {};
     this.onItemDropped  = function(ev, el, item) {};
+
+    this.onColumnSort   = function(column) {
+      if ( column === 'image' ) column = null;
+
+      self.setSort(column);
+    };
 
     GUIElement.apply(this, arguments);
   };
@@ -2494,6 +2500,7 @@
       this.$view.onDropped      = function() { return self.onDropped.apply(this, arguments); };
       this.$view.onContextMenu  = function() { return self.onContextMenu.apply(this, arguments); };
       this.$view.onItemDropped  = function() { return self.onItemDropped.apply(this, arguments); };
+      this.$view.onSort         = function() { return self.onColumnSort.apply(this, arguments); };
 
       (root || this.$element).appendChild(this.$view.getRoot());
       this.viewType = v;
@@ -2523,6 +2530,34 @@
     var self = this;
     this.onRefresh.call(this);
 
+    function sortList(list, key, asc) {
+      if ( !key ) return list;
+
+      var first = null;
+      if ( list.length && list[0].filename === '..' ) {
+        first = list.shift();
+      }
+
+      var lst = list.sort(function(a, b) {
+        var keyA = new Date(a[key]),
+            keyB = new Date(b[key]);
+
+        if(keyA < keyB) return -1;
+        if(keyA > keyB) return 1;
+        return 0;
+      });
+
+      if ( !asc ) {
+        lst.reverse();
+      }
+
+      if ( first ) {
+        lst.unshift(first);
+      }
+
+      return lst;
+    }
+
     OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
       if ( self.destroyed ) return;
 
@@ -2548,11 +2583,11 @@
             }
 
             self.wasUpdated = true;
-            self.lastList   = res.result;
             self.lastDir    = dir;
             rendered = true;
 
-            self.$view.render(res.result, dir);
+            var lst = self.sortKey ? sortList(res.result, self.sortKey, self.sortDir) : res.result;
+            self.$view.render(lst, dir);
           }
         }
 
@@ -2579,8 +2614,14 @@
   };
 
   FileView.prototype.setSort = function(col) {
-    if ( this.$view ) {
-      this.$view.setSort(col);
+    if ( this.wasUpdated ) {
+      if ( col === this.sortKey ) {
+        this.sortDir = !this.sortDir;
+      } else {
+        this.sortDir = true;
+      }
+      this.sortKey = col;
+      this.refresh();
     }
   };
 

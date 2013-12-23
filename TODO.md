@@ -3,8 +3,6 @@
 
 ### Alpha
 
-* Misc:
-  * TODO/FIXMEs in gui.js
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player
