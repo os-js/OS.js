@@ -32,6 +32,7 @@
       }
     };
 
+    /*
     fileView.onCreateRow = function(row, iter, colref) {
       row.title = ([
         "Filename: "  + iter.filename,
@@ -40,6 +41,7 @@
         "MIME: "      + iter.mime || 'none'
       ]).join("\n");
     };
+    */
 
     fileView.onItemDropped = function(ev, el, item) {
       if ( item && item.type === "file" && item.data ) {
