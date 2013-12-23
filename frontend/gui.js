@@ -1614,7 +1614,7 @@
 
   /**
    * Icon View Element
-   * TODO : DnD support
+   * FIXME: Implement events like in ListView
    */
   var IconView = function(name, opts) {
     opts            = opts || {};

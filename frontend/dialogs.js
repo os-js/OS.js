@@ -595,7 +595,7 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', null, {mimeFilter: this.allowMimes}), this.$element);
+    var fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {mimeFilter: this.allowMimes}), this.$element);
     fileList.onError = function() {
       self._toggleLoading(false);
       self.onError.apply(this, arguments);
