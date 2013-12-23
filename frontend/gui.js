@@ -1388,7 +1388,7 @@
         } else {
           if ( item.icon ) {
             img = document.createElement('img');
-            img.alt = item.icon;
+            img.alt = ''; //item.icon;
             img.src = item.icon;
             btn.appendChild(img);
             el.className += ' HasIcon';
@@ -1747,8 +1747,8 @@
       if ( iter.icon ) {
         imgContainer = document.createElement('div');
         img = document.createElement('img');
-        img.alt = iter.label || '';
-        img.title = iter.label || '';
+        img.alt = ''; //iter.label || '';
+        img.title = ''; //iter.label || '';
         img.src = _createImage(iter.icon);
         imgContainer.appendChild(img);
       }
