@@ -294,6 +294,9 @@ body #WindowList .Clock {
   background : #333;
   color : #fff;
 }
+.GUIIconView li.active div span {
+  background : #333;
+}
 
 /* GUIColorSwatch */
 .GUIColorSwatch {

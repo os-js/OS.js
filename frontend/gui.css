@@ -413,9 +413,11 @@ body .GUIToolbar button {
 .GUIIconView li span {
   position : absolute;
   display : block;
-  left : 0px;
-  right : 0px;
+  left : -5px;
+  right : -5px;
   top : 0px;
+  padding : 5px;
+  z-index : 9999;
 
   white-space : nowrap;
   overflow: hidden;
