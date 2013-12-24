@@ -2477,9 +2477,13 @@
     var self = this;
 
     if ( v != this.viewType ) {
+
       if ( this.$view ) {
         this.$view.destroy();
         this.$view = null;
+
+        this.sortKey = null;
+        this.sortDir = true;
       }
 
       if ( v === 'ListView' ) {
