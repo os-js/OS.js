@@ -50,6 +50,7 @@
   position : absolute;
   top : 0px;
   left : 0px;
+  overflow : hidden;
 }
 
 .Window > .WindowTop {
@@ -159,9 +160,6 @@
   right : 0px;
   bottom : 0px;
   z-index : 999998;
-  background : #000;
-  opacity : 0.5;
-  cursor : not-allowed;
 }
 
 .WindowDropRect {
