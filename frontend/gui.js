@@ -727,6 +727,9 @@
     this._addEventListener(tableTop, 'click', function(ev) {
       return onHeaderAction(ev, 'click');
     });
+    this._addEventListener(this.$scroll, 'scroll', function(ev) {
+      tableTop.style.left = -this.scrollLeft + 'px';
+    });
 
     table.appendChild(head);
     table.appendChild(body);

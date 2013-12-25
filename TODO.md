@@ -3,6 +3,7 @@
 
 ### Alpha
 
+* GUI::Menu Subitems
 * GUI::ListView needs sorting image in column
 * Applications:
   * New Draw codebase -- layer, effect support etc.
