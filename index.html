@@ -18,6 +18,16 @@
     <script type="text/javascript" src="http://s.sharethis.com/loader.js"></script>
   </head>
   <body>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
     <div class="wrapper">
       <header>
         <h1>Os.js-v2</h1>
@@ -195,7 +205,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/andersevenrud">andersevenrud</a></p>
+        <p>This project is maintained by Anders Evenrud on <a href="https://github.com/andersevenrud">GitHub</a>, <a href="https://plus.google.com/101576798387217383063?rel=author">Google+</a></p>
+
+        <!-- Place this tag where you want the +1 button to render. -->
+        <div style="margin:10px;">
+          <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="250"></div>
+        </div>
+        <div style="margin:10px;">
+          <div class="fb-like" data-href="http://andersevenrud.github.com/OS.js/" data-send="true" data-layout="button_count" data-width="250" data-show-faces="false"></div>
+        </div>
+
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
@@ -218,6 +237,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script>
 var options={ "publisher": "a51d3e3b-d804-4abe-9952-113e8cb776a1", "position": "right", "ad": { "visible": false, "openDelay": 5, "closeDelay": 0}, "chicklets": { "items": ["facebook", "googleplus", "twitter", "linkedin", "pinterest", "wordpress", "reddit", "email", "sharethis"]}};
 var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
+</script>
+
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
 </script>
   </body>
 </html>
