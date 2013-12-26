@@ -440,58 +440,81 @@
 
   /**
    * Menu class
+   * FIXME: Events are not destroyed
    */
-  var Menu = function(list) {
-    var el = document.createElement('div');
-    el.className = 'Menu';
-
-    el.onmousedown = function(ev) {
-      ev.preventDefault();
-      return false;
-    };
-
-    var ul = document.createElement('ul');
+  var Menu = function(menuList) {
 
     var _onclick = function(ev, func) {
+      func = func || function() { console.warn("Warning -- you forgot to implement a handler"); };
       func();
       OSjs.GUI.blurMenu();
     };
 
-    if ( list ) {
-      var m;
-      var img;
-      var span;
-      for ( var i = 0, l = list.length; i < l; i++ ) {
-        img = null;
-        m = document.createElement('li');
-        if ( list[i].icon ) {
-          img = document.createElement('img');
-          img.alt = '';
-          img.src = OSjs.API.getThemeResource(list[i].icon, 'icon');
-          m.appendChild(img);
+    var _createMenu = function(list) {
+      var el          = document.createElement('div');
+      el.className    = 'Menu';
+      el.onmousedown  = function(ev) {
+        ev.preventDefault();
+        return false;
+      };
+
+      if ( list ) {
+        var ul = document.createElement('ul');
+        var m, img, span, smenu, arrow;
+        for ( var i = 0, l = list.length; i < l; i++ ) {
+          img = null;
+
+          m           = document.createElement('li');
+          m.className = '';
+
+          if ( list[i].icon ) {
+            img     = document.createElement('img');
+            img.alt = '';
+            img.src = OSjs.API.getThemeResource(list[i].icon, 'icon');
+            m.appendChild(img);
+          }
+
+          if ( list[i].name ) {
+            m.className = 'MenuItem_' + list[i].name;
+          }
+
+          span            = document.createElement('span');
+          span.innerHTML  = list[i].title;
+          m.appendChild(span);
+
+          if ( list[i].menu ) {
+            m.className += ' HasSubMenu';
+
+            arrow           = document.createElement('div');
+            arrow.className = 'Arrow';
+
+            smenu = _createMenu(list[i].menu);
+            m.appendChild(smenu);
+            m.onmouseover = function() {
+              smenu.style.marginLeft = this.offsetWidth + 'px';
+            };
+            m.appendChild(arrow);
+          } else {
+            m.onclick = (function(ref) {
+              return function(ev) {
+                if ( this.className.match(/Disabled/) ) return;
+                if ( this.getAttribute("disabled") == "disabled" ) return;
+
+                _onclick(ev, ref.onClick);
+              };
+            })(list[i]);
+          }
+
+          ul.appendChild(m);
         }
 
-        if ( list[i].name ) {
-          m.className = 'MenuItem_' + list[i].name;
-        }
-
-        span = document.createElement('span');
-        span.innerHTML = list[i].title;
-        m.appendChild(span);
-
-        m.onclick = (function(ref) {
-          return function(ev) {
-            if ( this.getAttribute("disabled") == "disabled" ) return;
-            _onclick(ev, ref.onClick);
-          };
-        })(list[i]);
-        ul.appendChild(m);
+        el.appendChild(ul);
       }
-    }
 
-    el.appendChild(ul);
+      return el;
+    };
 
-    this.$element = el;
+    this.$element = _createMenu(menuList);
   };
 
   Menu.prototype.destroy = function() {
@@ -523,6 +546,23 @@
 
   Menu.prototype.getRoot = function() {
     return this.$element;
+  };
+
+  Menu.prototype.setItemDisabled = function(name, d) {
+    var root = this.getRoot();
+    var el = root.getElementsByClassName("MenuItem_" + name);
+    el = (el && el.length) ? el[0] : null;
+    if ( el ) {
+      if ( d ) {
+        if ( !el.className.match(/Disabled/) ) {
+          el.className += ' Disabled';
+        }
+      } else {
+        el.className = el.className.replace(/\s?Disabled/g, '');
+      }
+      return true;
+    }
+    return false;
   };
 
   /**
@@ -573,7 +613,7 @@
       if ( menu && menu.length ) {
         elm = OSjs.GUI.createMenu(menu, pos);
       }
-      self.onMenuOpen.call(this, elm, pos, title);
+      self.onMenuOpen.call(self, elm, pos, title, self);
     };
 
     this.$ul.appendChild(el);
@@ -2644,6 +2684,10 @@
 
   FileView.prototype.getSelected = function() {
     return this.$view ? this.$view.getSelected() : null;
+  };
+
+  FileView.prototype.getViewType = function() {
+    return this.viewType;
   };
 
   /////////////////////////////////////////////////////////////////////////////

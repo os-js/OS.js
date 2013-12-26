@@ -46,6 +46,7 @@
   top : 0px;
   left : 0px;
   min-width : 60px;
+  max-width : 500px;
 }
 .Menu ul {
   list-style-type : none;
@@ -59,6 +60,8 @@
   padding-right : 5px;
   height : 26px;
   line-height : 26px;
+  white-space : nowrap;
+  position : relative;
 }
 .Menu li img {
   vertical-align : middle;
@@ -66,12 +69,21 @@
   pointer-events: none;
 }
 
-.Menu li > ul {
+.Menu li > .Menu {
   position : absolute;
   display : none;
 }
-.Menu li:hover > ul {
+.Menu li:hover > .Menu {
   display : block;
+}
+
+.Menu .Arrow {
+  position : absolute;
+  right : 5px;
+  top : 9px;
+}
+.Menu li.HasSubMenu {
+  padding-right : 21px;
 }
 
 /**

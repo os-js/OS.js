@@ -216,11 +216,7 @@
       }}
     ]);
 
-    menuBar.addItem("View", [
-      {title: 'Refresh', onClick: function() {
-        fileView.refresh();
-        self._focus();
-      }},
+    var viewTypeMenu = [
       {name: 'ListView', title: 'List View', onClick: function() {
         fileView.setViewType('ListView');
         self._focus();
@@ -232,44 +228,47 @@
         self._focus();
         app._setArgument('viewType', 'IconView');
         //app._setSetting('viewType', 'IconView');
+      }}
+    ];
+
+    menuBar.addItem("View", [
+      {title: 'Refresh', onClick: function() {
+        fileView.refresh();
+        self._focus();
       }},
+      {title: 'View type', menu: viewTypeMenu}
     ]);
 
-    menuBar.onMenuOpen = function(menu, mpos, mtitle) {
-      if ( mtitle !== 'Edit' ) return;
+    menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {
+      if ( mtitle === 'File' ) return;
 
       var fileView = self._getGUIElement('FileManagerFileView');
       var sel = fileView.getSelected();
-      var el;
       var cur = sel ? sel.filename != '..' : false;
+
       if ( cur ) {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0];
-        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
-
-        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0];
-        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
+        menu.setItemDisabled("Rename", false);
+        menu.setItemDisabled("Delete", false);
       } else {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Rename")[0];
-        if ( el ) el.className += ' Disabled';
-
-        el = menu.getRoot().getElementsByClassName("MenuItem_Delete")[0];
-        if ( el ) el.className += ' Disabled';
+        menu.setItemDisabled("Rename", true);
+        menu.setItemDisabled("Delete", true);
       }
 
       if ( cur && sel.type === 'file' ) {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0];
-        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
-
-        el = menu.getRoot().getElementsByClassName("MenuItem_OpenWith")[0];
-        if ( el ) el.className = el.className.replace(/\s?Disabled/, '');
+        menu.setItemDisabled("Information", false);
+        menu.setItemDisabled("OpenWith", false);
       } else {
-        el = menu.getRoot().getElementsByClassName("MenuItem_Information")[0];
-        if ( el ) el.className += ' Disabled';
-
-        el = menu.getRoot().getElementsByClassName("MenuItem_OpenWith")[0];
-        if ( el ) el.className += ' Disabled';
+        menu.setItemDisabled("Information", true);
+        menu.setItemDisabled("OpenWith", true);
       }
 
+      if ( fileView.getViewType() === 'IconView' ) {
+        menu.setItemDisabled("ListView", false);
+        menu.setItemDisabled("IconView", true);
+      } else {
+        menu.setItemDisabled("ListView", true);
+        menu.setItemDisabled("IconView", false);
+      }
     };
 
     var _getFileIcon = function(r) {
