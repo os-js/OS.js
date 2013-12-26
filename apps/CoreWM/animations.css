@@ -80,13 +80,14 @@
      -ms-animation: show .3s;
          animation: show .3s;
 
- -webkit-transition: height 0.3s ease-in-out, width 0.3s;
-    -moz-transition: height 0.3s ease-in-out, width 0.3s;
-     -ms-transition: height 0.3s ease-in-out, width 0.3s;
-      -o-transition: height 0.3s ease-in-out, width 0.3s;
-         transition: height 0.3s ease-in-out, width 0.3s;
+ -webkit-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+    -moz-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+     -ms-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+      -o-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+         transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
 }
-.WindowHintResizing {
+.WindowHintResizing,
+.WindowHintMoving {
  -webkit-transition: none;
     -moz-transition: none;
      -ms-transition: none;

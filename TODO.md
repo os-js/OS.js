@@ -3,6 +3,7 @@
 
 ### Alpha
 
+* HTML Escaping!
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player

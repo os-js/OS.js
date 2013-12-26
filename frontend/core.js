@@ -1360,6 +1360,10 @@
       if ( a === 'move' ) {
         px = self._position.x;
         py = self._position.y;
+
+        if ( !main.className.match(/WindowHintMoving/) ) {
+          main.className += ' WindowHintMoving';
+        }
       } else {
         px = self._dimension.w;
         py = self._dimension.h;
@@ -1383,6 +1387,8 @@
         if ( _WM ) {
           if ( action === 'move' ) {
             self._onChange('move');
+
+            main.className = main.className.replace(/\s?WindowHintMoving/, '');
           } else if ( action === 'resize' ) {
             self._onChange('resize');
             self._fireHook('resized');
