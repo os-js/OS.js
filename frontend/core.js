@@ -1387,16 +1387,17 @@
         if ( _WM ) {
           if ( action === 'move' ) {
             self._onChange('move');
-
-            main.className = main.className.replace(/\s?WindowHintMoving/, '');
           } else if ( action === 'resize' ) {
             self._onChange('resize');
             self._fireHook('resized');
 
-            main.className = main.className.replace(/\s?WindowHintResizing/, '');
           }
         }
       }
+
+      main.className = main.className.replace(/\s?WindowHintMoving/, '');
+      main.className = main.className.replace(/\s?WindowHintResizing/, '');
+
       document.removeEventListener('mousemove', onMouseMove, false);
       document.removeEventListener('mouseup', onMouseUp, false);
       action = null;
