@@ -348,14 +348,7 @@
     ]);
 
     menuBar.onMenuOpen = function(menu) {
-      var el = menu.getRoot().getElementsByClassName("MenuItem_Save")[0];
-      if ( el ) {
-        if ( app.currentFilename ) {
-          el.className = el.className.replace(/\s?Disabled/, '');
-        } else {
-          el.className += ' Disabled';
-        }
-      }
+      menu.setItemDisabled("Save", app.currentFile.path ? false : true);
     };
 
     this.$canvasContainer = document.createElement('div');

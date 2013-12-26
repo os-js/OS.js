@@ -215,14 +215,7 @@
     ]);
 
     mb.onMenuOpen = function(menu) {
-      var el = menu.getRoot().getElementsByClassName("MenuItem_Save")[0];
-      if ( el ) {
-        if ( app.currentFile.path ) {
-          el.className = el.className.replace(/\s?Disabled/, '');
-        } else {
-          el.className += ' Disabled';
-        }
-      }
+      menu.setItemDisabled("Save", app.currentFile.path ? false : true);
     };
 
     _setFont(self.font, self.fontSize);
