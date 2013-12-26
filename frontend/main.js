@@ -87,7 +87,9 @@
 
     if ( OSjs.Settings.DefaultConfig ) {
       var cur = OSjs.Settings.DefaultConfig();
-      OSjs.Settings.DefaultConfig = OSjs.Utils.mergeObject(_default, cur);
+      OSjs.Settings.DefaultConfig = function() {
+        return OSjs.Utils.mergeObject(_default(), cur);
+      };
     } else {
       OSjs.Settings.DefaultConfig = _default;
     }
