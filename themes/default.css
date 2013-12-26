@@ -494,3 +494,20 @@ body #WindowList .Clock {
   background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
   border : 1px solid #717171;
 }
+
+/* GUIFileView */
+.GUIFileView .GUIListView .Arrow {
+  width: 0;
+  height: 0;
+  opacity : .9;
+}
+.GUIFileView .GUIListView .Arrow.Ascending {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 8px solid #000;
+}
+.GUIFileView .GUIListView .Arrow.Descending {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid #000;
+}

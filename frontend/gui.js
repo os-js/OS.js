@@ -2605,6 +2605,22 @@
       return lst;
     }
 
+    function _onRefreshed() {
+      if ( self.$view && self.getViewType() === 'ListView' ) {
+        if ( self.sortKey ) {
+          var col = self.$view.$headTop.getElementsByClassName("Column_" + self.sortKey);
+          col = (col && col.length) ? col[0] : null;
+          if ( col ) {
+            //col.className += 'Sorted';
+            var arrow = document.createElement('div');
+            arrow.className = 'Arrow ' + (self.sortDir ? 'Ascending' : 'Descending');
+            col.firstChild.appendChild(arrow);
+          }
+        }
+      }
+      onRefreshed.call(self);
+    };
+
     OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
       if ( self.destroyed ) return;
 
@@ -2644,7 +2660,7 @@
 
         self.onFinished(dir, num, size);
 
-        onRefreshed.call(this);
+        _onRefreshed();
       }
     }, function(error) {
       self.onError.call(self, error, dir, true);

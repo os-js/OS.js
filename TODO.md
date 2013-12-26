@@ -3,7 +3,6 @@
 
 ### Alpha
 
-* GUI::ListView needs sorting image in column
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player
@@ -18,6 +17,9 @@
   * Custom styling for GUISelect
   * GUISelectList
   * GUITreeView
+  * PanedView
+  * ScrollView
+  * Label
 
 ### Release
 
