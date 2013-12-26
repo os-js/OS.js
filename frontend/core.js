@@ -2102,6 +2102,12 @@
   var __initialize  = function() {
     console.info('=== Launching OS.js v2 ===');
 
+    if ( typeof OSjs.Hooks !== 'undefined' ) {
+      if ( typeof OSjs.Hooks.onInitialize === 'function' ) {
+        OSjs.Hooks.onInitialize();
+      }
+    }
+
     _$LOADING     = document.createElement('img');
     _$LOADING.id  = "Loading";
     _$LOADING.src = OSjs.API.getThemeResource('loading_small.gif', 'base');
