@@ -53,39 +53,46 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _checkConfig = function() {
-    if ( !OSjs.Settings.DefaultConfig ) {
-      OSjs.Settings.DefaultConfig = function() {
-        return {
-          Core : {
-            APIURI:         '/API',
-            FSURI:          '/FS',
-            PACKAGEURI:     '/packages.json',
-            Home:           '/opt/OSjs/home',
-            MaxUploadSize:  2097152,
-            BugReporting:   true,
-            Preloads: [
-              {type: 'javascript', src: '/apps/CoreWM/main.js'},
-              {type: 'stylesheet', src: '/apps/CoreWM/main.css'}
-            ]
-          },
+    var _default = function() {
+      return {
+        Core : {
+          APIURI:         '/API',
+          FSURI:          '/FS',
+          PACKAGEURI:     '/packages.json',
+          Home:           '/opt/OSjs/home',
+          MaxUploadSize:  2097152,
+          BugReporting:   true,
+          Preloads: [
+            {type: 'javascript', src: '/apps/CoreWM/main.js'},
+            {type: 'stylesheet', src: '/apps/CoreWM/main.css'}
+          ]
+        },
 
-          Handler : {
-            name : 'Default'
-          },
+        Handler : {
+          name : 'Default'
+        },
 
-          WM : {
-            exec: 'CoreWM',
-            args: {
-              themes: {
-                'default': {title: 'Default'},
-                'default-light': {title: 'Default (Lighter)'}
-              },
-              defaults: null
-            }
+        WM : {
+          exec: 'CoreWM',
+          args: {
+            themes: {
+              'default': {title: 'Default'},
+              'default-light': {title: 'Default (Lighter)'}
+            },
+            defaults: null
           }
-        };
+        }
       };
+    };
+
+    if ( OSjs.Settings.DefaultConfig ) {
+      var cur = OSjs.Settings.DefaultConfig();
+      OSjs.Settings.DefaultConfig = OSjs.Utils.mergeObject(_default, cur);
+    } else {
+      OSjs.Settings.DefaultConfig = _default;
     }
+
+    return _default();
   };
 
   /////////////////////////////////////////////////////////////////////////////

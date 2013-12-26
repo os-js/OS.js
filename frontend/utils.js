@@ -37,6 +37,21 @@
   // MISC
   /////////////////////////////////////////////////////////////////////////////
 
+  OSjs.Utils.mergeObject = function(obj1, obj2) {
+    for ( var p in obj2 ) {
+      try {
+        if ( obj2[p].constructor == Object ) {
+          obj1[p] = OSjs.Utils.mergeObject(obj1[p], obj2[p]);
+        } else {
+          obj1[p] = obj2[p];
+        }
+      } catch(e) {
+        obj1[p] = obj2[p];
+      }
+    }
+    return obj1;
+  };
+
   OSjs.Utils.inArray = function(arr, val) {
     for ( var i = 0, l = arr.length; i < l; i++ ) {
       if ( arr[i] === val ) return true;
