@@ -52,6 +52,29 @@
   CoreWM.prototype.init = function() {
     WindowManager.prototype.init.apply(this, arguments);
 
+    var _openDesktopSettings = function() {
+      OSjs.API.launch('ApplicationSettings');
+    };
+
+    var _openDesktopMenu = function(ev) {
+      var h = OSjs.API.getHandlerInstance();
+      if ( h ) {
+        var app = h.getApplicationMetadata('ApplicationSettings');
+        if ( app ) {
+          OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], ev);
+        }
+      }
+    };
+
+    var background = document.getElementById('Background');
+    if ( background ) {
+      background.oncontextmenu = function(ev) {
+        ev.preventDefault();
+        _openDesktopMenu(ev);
+        return false;
+      };
+    };
+
     var root = document.createElement('div');
     root.id = 'WindowList';
     root.onmousedown = function(ev) {
