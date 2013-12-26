@@ -151,6 +151,8 @@
    * AudioPlayer Class
    */
   var AudioPlayer = function() {
+    this.destroyed = false;
+
     this.$audio                 = document.createElement('audio');
     this.$audio.style.display   = 'none';
     this.$audio.style.position  = 'absolute';
@@ -170,28 +172,34 @@
     // FIXME: Remove event listeners
     var self = this;
     this.$audio.addEventListener("play", function(ev) {
+      if ( self.destroyed ) return;
       self.paused = false;
       self.onTrackStarted(ev, self);
     });
 
     this.$audio.addEventListener("ended", function(ev) {
+      if ( self.destroyed ) return;
       self.onTrackEnded(ev, self);
     });
 
     this.$audio.addEventListener("pause", function(ev) {
+      if ( self.destroyed ) return;
       self.paused = true;
       self.onTrackPaused(ev, self);
     });
 
     this.$audio.addEventListener("loadeddata", function(ev) {
+      if ( self.destroyed ) return;
       self.onLoadedData(ev, self);
     });
 
     this.$audio.addEventListener("timeupdate", function(ev) {
+      if ( self.destroyed ) return;
       self.onTimeUpdate(ev, self);
     });
 
     this.$audio.addEventListener("error", function(ev) {
+      if ( self.destroyed ) return;
       var msg;
       try {
         switch ( ev.target.error.code ) {
@@ -219,8 +227,12 @@
   };
 
   AudioPlayer.prototype.destroy = function() {
+    this.destroyed = true;
+
     if ( this.$audio ) {
       if ( this.$audio.parentNode ) {
+        this.$audio.pause();
+        this.$audio.src = 'about:blank';
         this.$audio.parentNode.removeChild(this.$audio);
       }
       this.$audio = null;
