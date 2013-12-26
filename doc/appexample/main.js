@@ -56,7 +56,7 @@
   };
 
   ApplicationEXAMPLEWindow.prototype._inited = function() {
-    Window.prototype._inited(this, arguments);
+    Window.prototype._inited.apply(this, arguments);
 
     // Window has been successfully created and displayed.
     // You can start communications, handle files etc. here
