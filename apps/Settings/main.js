@@ -25,10 +25,10 @@
     var desktopMargin = settings.desktop.margin;
     var themelist     = {};
 
-    for ( var i in themes ) {
-      if ( themes.hasOwnProperty(i) ) {
-        themelist[i] = themes[i].title;
-      }
+    var iter;
+    for ( var i = 0, l = themes.length; i < l; i++ ) {
+      iter = themes[i];
+      themelist[iter.name] = iter.title;
     }
 
     var _createContainer = function(name, lbl) {

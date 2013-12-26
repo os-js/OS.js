@@ -75,10 +75,10 @@
         WM : {
           exec: 'CoreWM',
           args: {
-            themes: {
-              'default': {title: 'Default'},
-              'default-light': {title: 'Default (Lighter)'}
-            },
+            themes: [
+              {name: 'default', title: 'Default'},
+              {name: 'default-light', title: 'Default (Lighter)'}
+            ],
             defaults: null
           }
         }
