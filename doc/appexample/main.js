@@ -117,4 +117,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationEXAMPLE = ApplicationEXAMPLE;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Core.GUI, OSjs.Core.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
