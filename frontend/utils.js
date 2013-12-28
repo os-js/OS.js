@@ -243,7 +243,7 @@
   };
 
   OSjs.Utils.$position = function(el) {
-    return el.getBoundingClientRect();
+    return el ? el.getBoundingClientRect() : null;
   };
 
   OSjs.Utils.$index = function(el, parentEl) {

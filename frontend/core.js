@@ -266,6 +266,7 @@
               console.groupEnd();
             });
           } catch ( e ) {
+            console.warn("Error on init() application", e, e.stack);
             _error("Application '" + n + "' init() failed: " + e, e);
           }
         }
@@ -1834,6 +1835,10 @@
     limit = (typeof limit === 'undefined' || limit === true);
     var posi  = OSjs.Utils.$position(container);
     var poso  = OSjs.Utils.$position(this._$root);
+
+    if ( posi === null || poso === null ) {
+      throw "Window resize failed, missing measure of element.";
+    }
 
     var rx   = posi.left - poso.left;
     var ry   = posi.top - poso.top;

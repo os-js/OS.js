@@ -551,6 +551,7 @@
     this.type             = args.type             || 'open';
     this.mime             = args.mime             || null;
     this.allowMimes       = args.mimes            || null;
+    this.select           = args.select           || 'file';
     this.input            = null;
 
     var self = this;
@@ -595,7 +596,8 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {mimeFilter: this.allowMimes}), this.$element);
+    var typeFilter = this.select === 'path' ? 'dir' : null;
+    var fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {mimeFilter: this.allowMimes, typeFilter: typeFilter}), this.$element);
     fileList.onError = function() {
       self._toggleLoading(false);
       self.onError.apply(this, arguments);
@@ -648,11 +650,15 @@
       };
 
     } else {
-      this.buttonConfirm.setDisabled(true);
+      if ( this.select === 'file' ) {
+        this.buttonConfirm.setDisabled(true);
+      }
 
       fileList.onSelected = function(item) {
-        if ( item && item.type != 'dir' ) {
-          self.buttonConfirm.setDisabled(false);
+        if ( item ) {
+          if ( (this.select === 'path' && item.type == 'dir') || (this.select === 'file' && item.type != 'dir' && item.filename !== '..') ) {
+            self.buttonConfirm.setDisabled(false);
+          }
         }
       };
 
@@ -663,12 +669,15 @@
       fileList.onRefresh = function() {
         statusBar.setText(fileList.getPath());
         self._toggleLoading(true);
-        self.buttonConfirm.setDisabled(true);
+
+        if ( self.select === 'file' ) {
+          self.buttonConfirm.setDisabled(true);
+        }
       };
     }
 
     fileList.onActivated = function(path, type, mime) {
-      if ( type === 'file' ) {
+      if ( self.select === 'file' && type === 'file' ) {
         self.buttonConfirm.setDisabled(false);
 
         if ( self.type === 'save' ) {
@@ -678,6 +687,8 @@
         } else {
           self.dialogOK.call(self, path, mime);
         }
+      } else if ( self.select === 'path' && type === 'dir' && OSjs.Utils.filename(path) != '..' ) {
+        self.buttonConfirm.setDisabled(false);
       }
     };
 
@@ -722,10 +733,21 @@
         if ( !mime && check ) mime = this.mime;
         if ( !curr && check ) curr = fileList.getPath() + '/' + check
       } else {
-        item = fileList.getSelected();
-        if ( item !== null ) {
-          mime = item.mime;
-          curr = item.path;
+        if ( this.select === 'path' ) {
+          item =  fileList.getSelected();
+          if ( item !== null ) {
+            mime = item.mime;
+            curr = item.path;
+          } else {
+            curr = fileList.getPath();
+            mime = null;
+          }
+        } else {
+          item =  fileList.getSelected();
+          if ( item !== null ) {
+            mime = item.mime;
+            curr = item.path;
+          }
         }
       }
     }

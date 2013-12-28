@@ -72,6 +72,7 @@ class FS
 
     $list = Array();
     $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
+    $typeFilter = empty($opts['typeFilter']) ? null    : $opts['typeFilter'];
 
     // We need to test for errors here!
     $tmp = Array();
@@ -90,6 +91,8 @@ class FS
 
       $fpath = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
       $ftype = is_dir($fpath) ? 'dir' : 'file';
+
+      if ( $typeFilter && $ftype !== $typeFilter ) continue;
 
       $fsize = @(($ftype == 'dir' ? '' : filesize($fpath)));
 

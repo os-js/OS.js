@@ -2066,7 +2066,7 @@
       return function() {
         self.setTab(i);
 
-        onShow($c);
+        onShow($c, $t);
       };
     })(len);
 
@@ -2232,7 +2232,9 @@
    */
   var FileIconView = function(name, opts) {
     opts = opts || {};
-    opts.dnd = true;
+    if ( typeof opts.dnd === 'undefined' ) {
+      opts.dnd = true;
+    }
     IconView.apply(this, [name, opts]);
 
     this.selected     = null;
@@ -2341,7 +2343,9 @@
    */
   var FileListView = function(name, opts) {
     opts = opts || {};
-    opts.dnd = true;
+    if ( typeof opts.dnd === 'undefined' ) {
+      opts.dnd = true;
+    }
 
     ListView.apply(this, [name, opts]);
 
@@ -2466,6 +2470,7 @@
     }
 
     var viewOpts        = {};
+    viewOpts.dnd        = (typeof opts.dnd === 'undefined' || opts.dnd === true);
     viewOpts.summary    = opts.summary || false;
     viewOpts.humanSize  = (typeof opts.humanSize === 'undefined' || opts.humanSize);
 
@@ -2474,9 +2479,11 @@
     this.viewOpts       = viewOpts;
     this.lastDir        = viewOpts.path;
     this.mimeFilter     = mimeFilter;
+    this.typeFilter     = opts.typeFilter || null;
     this.wasUpdated     = false;
     this.sortKey        = null;
     this.sortDir        = true; // true = asc, false = desc
+    this.locked         = opts.locked || false;
     this.$view          = null;
 
     this.onActivated    = function(path, type, mime) {};
@@ -2621,7 +2628,7 @@
       onRefreshed.call(self);
     };
 
-    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter}]}, function(res) {
+    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter}]}, function(res) {
       if ( self.destroyed ) return;
 
       var error     = null;
@@ -2634,6 +2641,13 @@
           self.onError.call(self, res.error, dir);
         } else {
           if ( res.result /* && res.result.length*/ ) {
+            if ( self.locked ) {
+              if ( res.result.length > 0 ) {
+                if ( res.result[0].filename == '..' ) {
+                  res.result.shift();
+                }
+              }
+            }
             if ( self.summary && res.result.length ) {
               for ( var i = 0, l = res.result.length; i < l; i++ ) {
                 if ( res.result[i].filename !== ".." ) {
