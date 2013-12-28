@@ -81,7 +81,9 @@
           el = document.createElement('img');
           el.alt = t;
           el.onload = function() {
-            self._resizeTo(this.width, this.height, self.$frame);
+            if ( self.$frame ) {
+              self._resizeTo(this.width, this.height, self.$frame);
+            }
           };
           el.src = src;
 
@@ -99,7 +101,9 @@
           el.autoplay = "autoplay";
 
           el.addEventListener("loadedmetadata", function(ev) {
-            self._resizeTo(this.offsetWidth, this.offsetHeight, self.$frame);
+            if ( self.$frame ) {
+              self._resizeTo(this.offsetWidth, this.offsetHeight, self.$frame);
+            }
             self.loaded = true;
           });
           el.src = src;
