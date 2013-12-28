@@ -656,10 +656,14 @@
 
       fileList.onSelected = function(item) {
         if ( item ) {
-          if ( (this.select === 'path' && item.type == 'dir') || (this.select === 'file' && item.type != 'dir' && item.filename !== '..') ) {
-            self.buttonConfirm.setDisabled(false);
-          } else if ( this.select === 'file' && item.type === 'file' ) {
-            self.buttonConfirm.setDisabled(false);
+          if ( this.select === 'path' ) {
+            if ( item.type == 'dir' || (this.select === 'file' && item.type != 'dir' && item.filename !== '..') ) {
+              self.buttonConfirm.setDisabled(false);
+            }
+          } else {
+            if ( item.type === 'file' ) {
+              self.buttonConfirm.setDisabled(false);
+            }
           }
         }
       };
