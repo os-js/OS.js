@@ -16,7 +16,7 @@ foreach ( $dirs as $path ) {
 
   foreach ( scandir($path) as $i ) {
     if ( $i == "." || $i == ".." ) continue;
-    $file = "{$basedir}/{$i}/package.json";
+    $file = "{$path}/{$i}/package.json";
     if ( file_exists($file) && ($c = file_get_contents($file)) ) {
       if ( $j = json_decode($c, true) ) {
         $k = key($j);
