@@ -60,7 +60,7 @@
       ev.preventDefault();
 
       args.onDrop.call(this, ev, el);
-      if ( !ev.dataTransfer ) return true;
+      if ( !ev.dataTransfer ) { return true; }
 
       if ( args.files ) {
         var files = ev.dataTransfer.files;
@@ -152,7 +152,7 @@
   }
 
   function getFileIcon(filename, mime, type, icon, size) {
-    if ( !filename ) throw "Filename is required for getFileIcon()";
+    if ( !filename ) { throw "Filename is required for getFileIcon()"; }
     type = type || 'file';
     icon = icon || 'mimetypes/gnome-fs-regular.png';
     size = size || '16x16';
@@ -225,6 +225,8 @@
   })();
 
   GUIElement.prototype.init = function(className) {
+    var self = this;
+
     this.$element = document.createElement('div');
     this.$element.className = 'GUIElement ' + this.name + ' GUIElement_' + this.id;
     if ( className ) {
@@ -233,7 +235,6 @@
 
     if ( this.opts.dnd && this.opts.dndDrop && OSjs.Compability.dnd ) {
       var opts = this.opts.dndOpts;
-      var self = this;
       opts.onItemDropped = function(ev, el, item) {
         return self.onItemDropped.call(self, ev, el, item);
       };
@@ -245,7 +246,6 @@
     }
 
     if ( this.opts.focusable ) {
-      var self = this;
       this._addEventListener(this.$element, 'mousedown', function(ev) {
         self.focus();
       });
@@ -259,7 +259,7 @@
   };
 
   GUIElement.prototype.destroy = function() {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
 
     this.destroyed = true;
     this._fireHook('destroy');
@@ -294,7 +294,7 @@
     args = args || {};
     if ( this._hooks[k] ) {
       for ( var i = 0, l = this._hooks[k].length; i < l; i++ ) {
-        if ( !this._hooks[k][i] ) continue;
+        if ( !this._hooks[k][i] ) { continue; }
         try {
           this._hooks[k][i].apply(this, args);
         } catch ( e ) {
@@ -313,12 +313,12 @@
   };
 
   GUIElement.prototype.onKeyPress = function(ev) {
-    if ( !this.focused ) return false;
+    if ( !this.focused ) { return false; }
     return true;
   };
 
   GUIElement.prototype.focus = function() {
-    if ( this.focused ) return false;
+    if ( this.focused ) { return false; }
     console.debug("GUIElement::focus()", this.id, this.name);
     this.focused = true;
     this._fireHook('focus');
@@ -326,7 +326,7 @@
   };
 
   GUIElement.prototype.blur = function() {
-    if ( !this.focused ) return false;
+    if ( !this.focused ) { return false; }
     console.debug("GUIElement::blur()", this.id, this.name);
     this.focused = false;
     this._fireHook('blur');
@@ -376,7 +376,7 @@
     if ( this.tagName == 'button' ) {
       this.$input.innerHTML = this.value || this.label;
       this._addEvent(this.$input, 'onclick', function(ev) {
-        if ( self.isDisabled() ) return;
+        if ( self.isDisabled() ) { return; }
         self.onClick.apply(self, [this, ev]);
       });
     } else {
@@ -497,8 +497,8 @@
           } else {
             m.onclick = (function(ref) {
               return function(ev) {
-                if ( this.className.match(/Disabled/) ) return;
-                if ( this.getAttribute("disabled") == "disabled" ) return;
+                if ( this.className.match(/Disabled/) ) { return; }
+                if ( this.getAttribute("disabled") == "disabled" ) { return; }
 
                 _onclick(ev, ref.onClick);
               };
@@ -594,7 +594,7 @@
   };
 
   MenuBar.prototype.addItem = function(title, menu, pos) {
-    if ( !this.$ul ) return;
+    if ( !this.$ul ) { return; }
     var self = this;
     var el = document.createElement('li');
     el.className = 'MenuItem_' + this.lid;
@@ -799,7 +799,7 @@
     row = document.createElement('tr');
     for ( i = 0, l = this.columns.length; i < l; i++ ) {
       colref = this.columns[i];
-      if ( typeof colref.visible !== 'undefined' && colref.visible === false ) continue;
+      if ( typeof colref.visible !== 'undefined' && colref.visible === false ) { continue; }
 
       col           = document.createElement('td');
       col.className = 'Column_' + colref.key;
@@ -840,7 +840,7 @@
         colref = this.columns[ii];
         row.setAttribute('data-' + colref.key, iter[colref.key]);
 
-        if ( (typeof colref.visible !== 'undefined' && colref.visible === false) ) continue;
+        if ( (typeof colref.visible !== 'undefined' && colref.visible === false) ) { continue; }
         type = (typeof colref.type === 'undefined') ? 'text' : colref.type;
         col = document.createElement('td');
         col.className = 'Column_' + colref.key;
@@ -892,8 +892,8 @@
   };
 
   ListView.prototype.onKeyPress = function(ev) {
-    if ( this.destroyed ) return false;
-    if ( !GUIElement.prototype.onKeyPress.apply(this, arguments) ) return;
+    if ( this.destroyed ) { return false; }
+    if ( !GUIElement.prototype.onKeyPress.apply(this, arguments) ) { return false; }
 
     ev.preventDefault();
     if ( this.selected ) {
@@ -927,7 +927,7 @@
 
     var iter = false;
     if ( el ) {
-      var iter = this._getRowData(el);
+      iter = this._getRowData(el);
       this.selectedDOMItem = el;
       this.selected = iter;
       this.onSelect.call(this, ev, el, iter);
@@ -1006,7 +1006,7 @@
   };
 
   ListView.prototype.setSelectedIndex = function(idx) {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
     var row = this.$table.tBodies[0].rows[idx];
     if ( row ) {
       this._onRowClick(null, row);
@@ -1014,7 +1014,7 @@
   };
 
   ListView.prototype.setSelected = function(val, key) {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
     var row = this.getItemByKey(key, val);
     if ( row ) {
       this._onRowClick(null, row);
@@ -1075,14 +1075,14 @@
   };
 
   Textarea.prototype.focus = function() {
-    if ( !GUIElement.prototype.focus.apply(this, arguments) ) return false;
-    if ( this.$input ) this.$input.focus();
+    if ( !GUIElement.prototype.focus.apply(this, arguments) ) { return false; }
+    if ( this.$input ) { this.$input.focus(); }
     return true;
   };
 
   Textarea.prototype.blur = function() {
-    if ( !GUIElement.prototype.blur.apply(this, arguments) ) return false;
-    if ( this.$input ) this.$input.blur();
+    if ( !GUIElement.prototype.blur.apply(this, arguments) ) { return false; }
+    if ( this.$input ) { this.$input.blur(); }
     return true;
   };
 
@@ -1221,7 +1221,7 @@
     var self      = this;
 
     var _onMouseMove = function(ev) {
-      if ( !scrolling ) return;
+      if ( !scrolling ) { return; }
 
       var newX, newY;
       if ( self.type == 'horizontal' ) {
@@ -1229,16 +1229,16 @@
         newX = elX + diffX;
         newX = snapping * Math.round(newX / snapping);
 
-        if ( newX < 0 ) newX = 0;
-        if ( newX > maxX ) newX = maxX;
+        if ( newX < 0 ) { newX = 0; }
+        if ( newX > maxX ) { newX = maxX; }
         self.$button.style.left = newX + 'px';
       } else {
         var diffY = (ev.clientY - startY);
         newY = elY + diffY;
         newY = snapping * Math.round(newY / snapping);
 
-        if ( newY < 0 ) newY = 0;
-        if ( newY > maxY ) newY = maxY;
+        if ( newY < 0 ) { newY = 0; }
+        if ( newY > maxY ) { newY = maxY; }
         self.$button.style.top = newY + 'px';
       }
 
@@ -1276,7 +1276,7 @@
     });
 
     this._addEventListener(el, 'click', function(ev) {
-      if ( ev.target && ev.target.className === 'Button' ) return;
+      if ( ev.target && ev.target.className === 'Button' ) { return; }
 
       var p  = OSjs.Utils.$position(el);
       var cx = ev.clientX - p.left;
@@ -1330,9 +1330,9 @@
   };
 
   Slider.prototype.setValue = function(val) {
-    if ( !this.inited ) return;
+    if ( !this.inited ) { return; }
 
-    if ( val < this.min || val > this.max ) return;
+    if ( val < this.min || val > this.max ) { return; }
     this.val = val;
 
     var cd = (this.max - this.min);
@@ -1386,14 +1386,15 @@
   };
 
   ToolBar.prototype.addSeparator = (function() {
-    var _sid = 0;
+    var _sid = 1;
     return function() {
-      this.items['separator_' + (_sid++)] = null;
+      this.items['separator_' + _sid] = null;
+      sid++;
     };
   })();
 
   ToolBar.prototype.render = function() {
-    if ( !this.$container ) return;
+    if ( !this.$container ) { return; }
 
     var el, btn, img, span, item;
     var self = this;
@@ -1510,7 +1511,7 @@
   };
 
   ProgressBar.prototype.setPercentage = function(p) {
-    if ( p < 0 || p > 100 ) return;
+    if ( p < 0 || p > 100 ) { return; }
     this.percentage       = (p << 0);
     this.$bar.style.width = this.percentage + '%';
     this.$label.innerHTML = this.percentage + '%';
@@ -1593,7 +1594,7 @@
   };
 
   Canvas.prototype.setImageData = function(src, onDone, onError) {
-    if ( !this.$context ) return;
+    if ( !this.$context ) { return; }
 
     onDone = onDone || function() {};
     onError = onError || function() {};
@@ -1607,7 +1608,7 @@
       mime = src.split(/;/)[0].replace(/^data\:/, '');
     } catch ( e ) {
       throw "Cannot setImageData() invalid or no mime";
-      return;
+      //return;
     }
 
     this.type = mime;
@@ -1737,7 +1738,7 @@
     }
     this.$selected = null;
 
-    if ( !el ) return;
+    if ( !el ) { return false; }
 
     this.$selected = el;
     this.$selected.className += ' active';
@@ -1823,7 +1824,7 @@
   };
 
   IconView.prototype.setSelected = function(val, key) {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
     var item = this.getItemByKey(key, val);
     var data = {};
     if ( item ) {
@@ -1843,7 +1844,7 @@
    * Richt Text Element
    */
   var RichText = function(name, opts) {
-    if ( !OSjs.Compability.richtext ) throw "Your platform does not support RichText editing";
+    if ( !OSjs.Compability.richtext ) { throw "Your platform does not support RichText editing"; }
 
     this.$view          = null;
     this.opts           = opts || {};
@@ -1924,9 +1925,9 @@
     var d = this.getDocument();
     if ( d ) {
       var argss = [];
-      if ( typeof cmd         !== 'undefined' ) argss.push(cmd);
-      if ( typeof defaultUI   !== 'undefined' ) argss.push(defaultUI);
-      if ( typeof args        !== 'undefined' ) argss.push(args);
+      if ( typeof cmd         !== 'undefined' ) { argss.push(cmd); }
+      if ( typeof defaultUI   !== 'undefined' ) { argss.push(defaultUI); }
+      if ( typeof args        !== 'undefined' ) { argss.push(args); }
 
       try {
         return d.execCommand.apply(d, argss);
@@ -1960,7 +1961,7 @@
 
     if ( !this.inited ) {
       this.loadContent = _getContent;
-      return;
+      return null;
     }
     return _getContent();
   };
@@ -1973,7 +1974,7 @@
   };
 
   RichText.prototype.blur = function() {
-    if ( !GUIElement.prototype.blur.apply(this, arguments) ) return false;
+    if ( !GUIElement.prototype.blur.apply(this, arguments) ) { return false; }
     if ( this.$view && this.$view.contentWindow ) {
       this.$view.contentWindow.blur();
     }
@@ -1981,7 +1982,7 @@
   };
 
   RichText.prototype.focus = function() {
-    if ( !GUIElement.prototype.focus.apply(this, arguments) ) return false;
+    if ( !GUIElement.prototype.focus.apply(this, arguments) ) { return false; }
     if ( this.$view && this.$view.contentWindow ) {
       this.$view.contentWindow.focus();
     }
@@ -2030,10 +2031,10 @@
     var $c = this.$container.childNodes[idx];
     var $t = this.$tabs.childNodes[idx];
 
-    if ( $c ) $c.className = 'TabContent Active';
-    if ( $t ) $t.className = 'Tab Active';
+    if ( $c ) { $c.className = 'TabContent Active'; }
+    if ( $t ) { $t.className = 'Tab Active'; }
 
-    if ( $c || $t ) this.lastIdx = idx;
+    if ( $c || $t ) { this.lastIdx = idx; }
   };
 
 
@@ -2242,8 +2243,6 @@
     this.onActivated  = function(path, type, mime) {};
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn("Not implemented yet!"); };
-
-    var self = this;
   };
 
   FileIconView.prototype = Object.create(IconView.prototype);
@@ -2255,7 +2254,7 @@
     if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
       this.onCreateItem = function(el, iter, item) {
         var self = this;
-        if ( item.filename == '..' ) return;
+        if ( item.filename == '..' ) { return; }
 
         if ( item.type === 'file' ) {
           el.title = ([
@@ -2288,7 +2287,7 @@
   };
 
   FileIconView.prototype.render = function(list, dir) {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
 
     var fileList = [];
     var _createIcon = function(iter) {
@@ -2315,7 +2314,7 @@
   };
 
   FileIconView.prototype._onSelect = function(ev, item, el) {
-    var item = IconView.prototype._onSelect.apply(this, arguments);
+    item = IconView.prototype._onSelect.apply(this, arguments);
     item = item && item.data || null;
 
     this.selected = null;
@@ -2326,7 +2325,7 @@
   };
 
   FileIconView.prototype._onActivate = function(ev, item, el) {
-    var item = IconView.prototype._onActivate.apply(this, arguments);
+    item = IconView.prototype._onActivate.apply(this, arguments);
     item = item && item.data || null;
 
     if ( item && item.path ) {
@@ -2366,7 +2365,7 @@
     if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
       this.onCreateRow = function(el, item, column) {
         var self = this;
-        if ( item.filename == '..' ) return;
+        if ( item.filename == '..' ) { return; }
 
         if ( item.type === 'file' ) {
           el.title = ([
@@ -2399,7 +2398,7 @@
   };
 
   FileListView.prototype.render = function(list, dir) {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
     var self = this;
 
     var _callbackIcon = function(iter) {
@@ -2408,7 +2407,7 @@
     };
 
     var _callbackSize = function(iter) {
-      if ( iter.size === '' ) return '';
+      if ( iter.size === '' ) { return ''; }
       if ( self.humanSize ) {
         return OSjs.Utils.humanFileSize(iter.size);
       }
@@ -2449,7 +2448,7 @@
   };
 
   FileListView.prototype._onRowClick = function(ev, el) {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
     ListView.prototype._onRowClick.apply(this, arguments);
     this._onSelect(ev, el);
   };
@@ -2496,7 +2495,7 @@
     this.onItemDropped  = function(ev, el, item) {};
 
     this.onColumnSort   = function(column) {
-      if ( column === 'image' ) column = null;
+      if ( column === 'image' ) { column = null; }
 
       self.setSort(column);
     };
@@ -2572,7 +2571,7 @@
   };
 
   FileView.prototype.chdir = function(dir, onRefreshed, onError) {
-    if ( this.destroyed ) return;
+    if ( this.destroyed ) { return; }
 
     onRefreshed = onRefreshed || function() {};
     onError     = onError     || function() {};
@@ -2585,7 +2584,7 @@
     this.onRefresh.call(this);
 
     function sortList(list, key, asc) {
-      if ( !key ) return list;
+      if ( !key ) { return list; }
 
       var first = null;
       if ( list.length && list[0].filename === '..' ) {
@@ -2596,8 +2595,8 @@
         var keyA = new Date(a[key]),
             keyB = new Date(b[key]);
 
-        if(keyA < keyB) return -1;
-        if(keyA > keyB) return 1;
+        if(keyA < keyB) { return -1; }
+        if(keyA > keyB) { return 1; }
         return 0;
       });
 
@@ -2626,10 +2625,10 @@
         }
       }
       onRefreshed.call(self);
-    };
+    }
 
     OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter}]}, function(res) {
-      if ( self.destroyed ) return;
+      if ( self.destroyed ) { return; }
 
       var error     = null;
       var rendered  = false;

@@ -153,8 +153,8 @@
 
   function LaunchFile(fname, mime, launchArgs) {
     launchArgs = launchArgs || {};
-    if ( !fname ) throw "Cannot LaunchFile() without a filename";
-    if ( !mime )  throw "Cannot LaunchFile() without a mime type";
+    if ( !fname ) { throw "Cannot LaunchFile() without a filename"; }
+    if ( !mime )  { throw "Cannot LaunchFile() without a mime type"; }
 
 
     var args = {file: fname, mime: mime};
@@ -186,7 +186,7 @@
         } else {
           if ( _WM ) {
             _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname, setDefault) {
-              if ( btn != 'ok' ) return;
+              if ( btn != 'ok' ) { return; }
               _launch(appname);
 
               _HANDLER.setDefaultApplication(mime, setDefault ? appname : null);
@@ -209,7 +209,7 @@
     onError       = onError       || function() {};
     onConstructed = onConstructed || function() {};
 
-    if ( !n ) throw "Cannot LaunchProcess() witout a application name";
+    if ( !n ) { throw "Cannot LaunchProcess() witout a application name"; }
 
     console.group("LaunchProcess()", n, arg);
 
@@ -239,7 +239,7 @@
 
         var a = null, err = false;
         try {
-          var a = new OSjs.Applications[n](arg, result);
+          a = new OSjs.Applications[n](arg, result);
           a.__sname = n;
 
           onConstructed(a);
@@ -516,7 +516,7 @@
     var i = 0;
     var l = _PROCS.length;
     for ( i; i < l; i++ ) {
-      if ( !_PROCS[i] ) continue;
+      if ( !_PROCS[i] ) { continue; }
       _PROCS[i].destroy(false);
       _PROCS[i] = null;
     }
@@ -557,7 +557,7 @@
     var p;
     for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
       p = _PROCS[i];
-      if ( !p ) continue;
+      if ( !p ) { continue; }
 
       lst.push({
         pid     : p.__pid,
@@ -572,8 +572,7 @@
     var d = ev.srcElement || ev.target;
     var doPrevent = d.tagName === 'BODY' ? true : false;
     var isHTMLInput = false;
-    if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) 
-        || d.tagName.toUpperCase() === 'TEXTAREA') {
+    if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) || d.tagName.toUpperCase() === 'TEXTAREA') {
           isHTMLInput = d.readOnly || d.disabled;
     }
 
@@ -607,7 +606,7 @@
     var result = first ? null : [];
     for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
       p = _PROCS[i];
-      if ( !p ) continue;
+      if ( !p ) { continue; }
       if ( p.__pname === name ) {
         if ( first ) {
           result = p;
@@ -782,10 +781,10 @@
     var i = 0;
     var l = this._windows.length;
     for ( i; i < l; i++ ) {
-      if ( !this._windows[i] ) continue;
+      if ( !this._windows[i] ) { continue; }
 
       if ( this._windows[i]._wid == w._wid ) {
-        if ( !this._windows[i] ) break;
+        if ( !this._windows[i] ) { break; }
         this._windows[i] = null;
         //this._windows.splice(i, 1);
         return true;
@@ -853,8 +852,8 @@
     var _LNEWY = 0;
 
     return function() {
-      if ( _LNEWY >= (window.innerHeight - 100) ) _LNEWY = 0;
-      if ( _LNEWX >= (window.innerWidth - 100) ) _LNEWX = 0;
+      if ( _LNEWY >= (window.innerHeight - 100) ) { _LNEWY = 0; }
+      if ( _LNEWX >= (window.innerWidth - 100) )  { _LNEWX = 0; }
       return {x: _LNEWX+=10, y: _LNEWY+=10};
     };
   })();
@@ -938,7 +937,7 @@
           _WM.addWindow(this.__windows[i]);
           last = this.__windows[i];
         }
-        if ( last ) last._focus();
+        if ( last ) { last._focus(); }
       }
     }
 
@@ -946,7 +945,7 @@
   };
 
   Application.prototype.destroy = function(kill) {
-    if ( this.__destroyed ) return;
+    if ( this.__destroyed ) { return true; }
     this.__destroyed = true;
     console.log("OSjs::Core::Application::destroy()", this.__name);
 
@@ -962,7 +961,7 @@
   };
 
   Application.prototype._onMessage = function(obj, msg, args) {
-    if ( !msg ) return;
+    if ( !msg ) { return; }
 
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
@@ -1002,7 +1001,7 @@
   };
 
   Application.prototype._addWindow = function(w) {
-    if ( !(w instanceof Window) ) throw "Application::_addWindow() expects Window";
+    if ( !(w instanceof Window) ) { throw "Application::_addWindow() expects Window"; }
     console.info("OSjs::Core::Application::_addWindow()");
     this.__windows.push(w);
 
@@ -1019,7 +1018,7 @@
   };
 
   Application.prototype._removeWindow = function(w) {
-    if ( !(w instanceof Window) ) throw "Application::_removeWindow() expects Window";
+    if ( !(w instanceof Window) ) { throw "Application::_removeWindow() expects Window"; }
     var i = 0;
     var l = this.__windows.length;
     for ( i; i < l; i++ ) {
@@ -1038,7 +1037,7 @@
     for ( i; i < l; i++ ) {
       if ( this.__windows[i]._name === name ) {
         return this.__windows[i];
-        break;
+        //break;
       }
     }
     return null;
@@ -1368,7 +1367,7 @@
     var onMouseDown = function(ev, a) {
       ev.preventDefault();
 
-      if ( self._state.maximized ) return;
+      if ( self._state.maximized ) { return false; }
       startRect = _WM.getWindowPosition(false);
 
       if ( a === 'move' ) {
@@ -1421,14 +1420,14 @@
       startRect = null;
     };
     var onMouseMove = function(ev) {
-      if ( action === null ) return;
+      if ( action === null ) { return; }
       var dx = ev.clientX - sx;
       var dy = ev.clientY - sy;
       var rx = px + dx;
       var ry = py + dy;
 
       if ( action === 'move' ) {
-        if ( ry < startRect.y ) ry = startRect.y;
+        if ( ry < startRect.y ) { ry = startRect.y; }
 
         self._move(rx, ry);
       } else {
@@ -1494,7 +1493,7 @@
 
   Window.prototype.destroy = function() {
     var self = this;
-    if ( this._destroyed ) return;
+    if ( this._destroyed ) { return; }
     this._destroyed = true;
     console.log("OSjs::Core::Window::destroy()");
 
@@ -1586,7 +1585,7 @@
     args = args || {};
     if ( this._hooks[k] ) {
       for ( var i = 0, l = this._hooks[k].length; i < l; i++ ) {
-        if ( !this._hooks[k][i] ) continue;
+        if ( !this._hooks[k][i] ) { continue; }
         try {
           this._hooks[k][i].apply(this, args);
         } catch ( e ) {
@@ -1711,7 +1710,7 @@
 
   Window.prototype._close = function() {
     console.info("OSjs::Core::Window::_close()");
-    if ( this._disabled ) return;
+    if ( this._disabled ) { return; }
 
     if ( this._$element ) {
       this._$element.className += " WindowHintClosing";
@@ -1724,7 +1723,7 @@
   Window.prototype._minimize = function() {
     var self = this;
     console.debug(this._name, '>' , "OSjs::Core::Window::_minimize()");
-    if ( !this._properties.allow_minimize ) return false;
+    if ( !this._properties.allow_minimize ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.minimized ) {
       this._restore(false, true);
@@ -1758,7 +1757,7 @@
 
   Window.prototype._maximize = function() {
     console.debug(this._name, '>' , "OSjs::Core::Window::_maximize()");
-    if ( !this._properties.allow_maximize ) return false;
+    if ( !this._properties.allow_maximize ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.maximized ) {
       this._restore(true, false);
@@ -1811,7 +1810,7 @@
   };
 
   Window.prototype._focus = function() {
-    if ( this._state.focused ) return false;
+    if ( this._state.focused ) { return false; }
     console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
@@ -1830,7 +1829,7 @@
   };
 
   Window.prototype._blur = function() {
-    if ( !this._state.focused ) return false;
+    if ( !this._state.focused ) { return false; }
     console.debug(this._name, '>' , "OSjs::Core::Window::_blur()");
     var cn = this._$element.className;
     this._$element.className = cn.replace(/\s?WindowHintFocused/, '');
@@ -1843,7 +1842,7 @@
   };
 
   Window.prototype._resizeTo = function(dw, dh, container, limit) {
-    if ( dw <= 0 || dh <= 0 ) return;
+    if ( dw <= 0 || dh <= 0 ) { return; }
 
     limit = (typeof limit === 'undefined' || limit === true);
     var posi  = OSjs.Utils.$position(container);
@@ -1883,16 +1882,16 @@
 
   Window.prototype._resize = function(w, h, force) {
     if ( !force ) {
-      if ( !this._properties.allow_resize ) return false;
+      if ( !this._properties.allow_resize ) { return false; }
 
-      if ( w < this._properties.min_width ) w = this._properties.min_width;
+      if ( w < this._properties.min_width ) { w = this._properties.min_width; }
       if ( this._properties.max_width !== null ) {
-        if ( w > this._properties.max_width ) w = this._properties.max_width;
+        if ( w > this._properties.max_width ) { w = this._properties.max_width; }
       }
 
-      if ( h < this._properties.min_height ) h = this._properties.min_height;
+      if ( h < this._properties.min_height ) { h = this._properties.min_height; }
       if ( this._properties.max_height !== null ) {
-        if ( h > this._properties.max_height ) h = this._properties.max_height;
+        if ( h > this._properties.max_height ) { h = this._properties.max_height; }
       }
     }
     //if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
@@ -1911,7 +1910,7 @@
   };
 
   Window.prototype._move = function(x, y) {
-    if ( !this._properties.allow_move ) return false;
+    if ( !this._properties.allow_move ) { return false; }
 
     this._$element.style.top  = y + "px";
     this._$element.style.left = x + "px";
@@ -1922,7 +1921,7 @@
 
   Window.prototype._onDndEvent = function(ev, type) {
     console.info("OSjs::Core::Window::_onDndEvent()", type);
-    if ( this._disabled ) return false;
+    if ( this._disabled ) { return false; }
     return true;
   };
 
@@ -1931,7 +1930,7 @@
 
   Window.prototype._onWindowIconClick = function(ev, el) {
     console.debug(this._name, '>' , "OSjs::Core::Window::_onWindowIconClick()");
-    if ( !this._properties.allow_iconmenu ) return;
+    if ( !this._properties.allow_iconmenu ) { return; }
 
     var self = this;
     var list = [];
@@ -2138,7 +2137,7 @@
   };
 
   OSjs._initialize = function() {
-    if ( __initialized ) return;
+    if ( __initialized ) { return; }
     __initialized = true;
 
     window.onload = null;
@@ -2155,7 +2154,7 @@
   };
 
   OSjs._shutdown = function(save, onunload) {
-    if ( !__initialized ) return;
+    if ( !__initialized ) { return; }
     __initialized = false;
     window.onunload = null;
 

@@ -60,7 +60,7 @@
   StandardDialog.prototype = Object.create(DialogWindow.prototype);
 
   StandardDialog.prototype.destroy = function() {
-    if ( this._destroyed ) return;
+    if ( this._destroyed ) { return; }
 
     this.onClose.apply(this, ['destroy']);
     DialogWindow.prototype.destroy.apply(this, arguments);
@@ -115,12 +115,12 @@
   };
 
   StandardDialog.prototype.onCancelClick = function(ev) {
-    if ( !this.buttonCancel ) return;
+    if ( !this.buttonCancel ) { return; }
     this.end('cancel');
   };
 
   StandardDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) return;
+    if ( !this.buttonConfirm ) { return; }
     this.end('ok');
   };
 
@@ -266,8 +266,8 @@
   };
 
   ApplicationChooserDialog.prototype.onConfirmClick = function(ev, val) {
-    if ( !this.buttonConfirm ) return;
-    var val  = this.selectedApp;
+    if ( !this.buttonConfirm ) { return; }
+    /*var*/ val  = this.selectedApp;
     if ( !val ) {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
@@ -382,7 +382,7 @@
   };
 
   FileProgressDialog.prototype.setDescription = function(d) {
-    if ( !this.$desc ) return;
+    if ( !this.$desc ) { return; }
     this.$desc.innerHTML = d;
   };
 
@@ -711,7 +711,7 @@
   };
 
   FileDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) return;
+    if ( !this.buttonConfirm ) { return; }
     this.dialogOK();
   };
 
@@ -736,8 +736,8 @@
           }
         }
 
-        if ( !mime && check ) mime = this.mime;
-        if ( !curr && check ) curr = fileList.getPath() + '/' + check
+        if ( !mime && check ) { mime = this.mime; }
+        if ( !curr && check ) { curr = fileList.getPath() + '/' + check; }
       } else {
         if ( this.select === 'path' ) {
           item =  fileList.getSelected();
@@ -897,7 +897,7 @@
   };
 
   InputDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) return;
+    if ( !this.buttonConfirm ) { return; }
     this.end('ok', this.input.getValue());
   };
 
@@ -1013,12 +1013,12 @@
   };
 
   ColorDialog.prototype.onCancelClick = function(ev) {
-    if ( !this.buttonCancel ) return;
+    if ( !this.buttonCancel ) { return; }
     this.end('cancel', null, null);
   };
 
   ColorDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) return;
+    if ( !this.buttonConfirm ) { return; }
     this.end('ok', this.currentRGB, OSjs.Utils.RGBtoHEX(this.currentRGB), (this.currentAlpha/100));
   };
 
@@ -1144,7 +1144,7 @@
   };
 
   FontDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) return;
+    if ( !this.buttonConfirm ) { return; }
     this.end('ok', this.fontName, this.fontSize);
   };
 

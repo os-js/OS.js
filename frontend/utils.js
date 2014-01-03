@@ -54,7 +54,7 @@
 
   OSjs.Utils.inArray = function(arr, val) {
     for ( var i = 0, l = arr.length; i < l; i++ ) {
-      if ( arr[i] === val ) return true;
+      if ( arr[i] === val ) { return true; }
     }
     return false;
   };
@@ -151,7 +151,7 @@
 
   OSjs.Utils.isIE = function() {
     var myNav = navigator.userAgent.toLowerCase();
-    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1], 10) : false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@
   // Kudos: http://stackoverflow.com/users/65387/mark
   OSjs.Utils.humanFileSize = function(bytes, si) {
     var thresh = si ? 1000 : 1024;
-    if(bytes < thresh) return bytes + ' B';
+    if(bytes < thresh) { return bytes + ' B'; }
     var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
     var u = -1;
     do {
@@ -305,15 +305,15 @@
   };
 
   OSjs.Utils.Ajax = function(url, onSuccess, onError, opts) {
-    if ( !url ) throw "No URL given";
+    if ( !url ) { throw "No URL given"; }
 
     onSuccess = onSuccess || function() {};
     onError = onError || function() {};
 
-    if ( !opts ) opts = {};
-    if ( !opts.method ) opts.method = 'GET';
-    if ( !opts.post ) opts.post = {};
-    if ( !opts.parse ) opts.parse = true;
+    if ( !opts )        { opts = {}; }
+    if ( !opts.method ) { opts.method = 'GET'; }
+    if ( !opts.post )   { opts.post = {}; }
+    if ( !opts.parse )  { opts.parse = true; }
 
     var httpRequest;
     if (window.XMLHttpRequest) {
@@ -447,9 +447,11 @@
         ival = setInterval(function() {
           console.debug("Preloader->createStyle()", 'check', src);
           if ( checkLoadedStyle(src) ) {
-            return _clear(true);
+            _clear(true);
+            return;
           } else if ( maxTries <= 0 ) {
-            return _clear(false);
+            _clear(false);
+            return;
           }
           maxTries--;
         }, interval);
@@ -475,12 +477,12 @@
       }
     };
     res.onload = function() {
-      if ( loaded ) return;
+      if ( loaded ) { return; }
       loaded = true;
       _finished(true);
     };
     res.onerror = function() {
-      if ( loaded ) return;
+      if ( loaded ) { return; }
       loaded = true;
 
       _finished(false);

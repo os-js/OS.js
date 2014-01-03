@@ -81,7 +81,7 @@
   DefaultHandler.prototype.call = function(opts, cok, cerror) {
     if ( this.offline ) {
       cerror("You are currently off-line and cannot perform this operation!");
-      return;
+      return false;
     }
 
     return OSjs.Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
@@ -234,7 +234,7 @@
       if ( _list.length ) {
         var s = _list.pop();
         var sargs = s.args || {};
-        if ( typeof sargs.length !== 'undefined' ) sargs = {};
+        if ( typeof sargs.length !== 'undefined' ) { sargs = {}; }
 
         OSjs.API.launch(s.name, sargs, (function(data) {
           return function(a) {
@@ -442,7 +442,7 @@
       return '/frontend/blank.css';
     }
     return '/themes/' + name + '.css';
-  }
+  };
 
   DefaultHandler.prototype.getResourceURL = function(path) {
     if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
@@ -450,7 +450,7 @@
     }
     var fsuri = this.getConfig('Core').FSURI;
     return path ? (fsuri + path) : fsuri;
-  }
+  };
 
   OSjs.Handlers.Default = DefaultHandler;
 
