@@ -1,6 +1,13 @@
 #!/usr/bin/env php
 <?php
-require 'backend/api.php';
+define('__CLI_SCRIPT', true);
+$is_cli = php_sapi_name();
+
+if ( $is_cli == "cli" ) {
+  require 'backend/api.php';
+} else {
+  require '../backend/api.php';
+}
 
 $combined = Array();
 $dirs = explode(":", APPDIR);
@@ -31,6 +38,12 @@ foreach ( $dirs as $path ) {
   }
 }
 
-file_put_contents("packages.json", json_encode($combined));
+if ( $size = file_put_contents(ROOTDIR . "/packages.json", json_encode($combined)) ) {
+  print "Wrote package manifest: {$size}b\n";
+  exit(0);
+}
+
+print "Failed creating manifest :/\n";
+exit(1);
 
 ?>

@@ -7,7 +7,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^API backend/api.php
 RewriteRule ^FS/(.*) backend/api.php?file=/$1
 RewriteRule ^FS backend/api.php?upload
-RewriteRule ^(bin|doc) - [F,L,NC]
+
+# Comment this line if you want to be able to run bin/ from web-server
+#RewriteRule ^(bin|doc) - [F,L,NC]
 
 <ifModule mod_headers.c>
   <FilesMatch "\.(html|htm|js|css|json)$">

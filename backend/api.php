@@ -120,7 +120,7 @@ if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                      
 
 date_default_timezone_set(TIMEZONE);
 
-if ( php_sapi_name() == "cli" ) {
+if ( php_sapi_name() == "cli" || defined('__CLI_SCRIPT') ) {
   return;
 }
 
