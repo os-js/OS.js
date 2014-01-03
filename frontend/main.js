@@ -62,7 +62,7 @@
           Home:           '/opt/OSjs/home',
           MaxUploadSize:  2097152,
           BugReporting:   true,
-          Preloads: []
+          Preloads:       []
         },
 
         Handler : {
@@ -76,7 +76,7 @@
               {name: 'default', title: 'Default'},
               {name: 'default-light', title: 'Default (Lighter)'}
             ],
-            defaults: null
+            defaults: null // Settings tuple (see apps/CoreWM/main.js)
           }
         }
       };
