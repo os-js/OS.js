@@ -34,6 +34,8 @@ RewriteRule ^FS backend/api.php?upload
 </ifModule>
 
 <ifModule mod_mime.c>
+  AddType application/json .json
+
   AddType audio/aac .aac
   AddType audio/mp4 .mp4
   AddType audio/mp4 .m4a
