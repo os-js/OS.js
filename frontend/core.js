@@ -282,7 +282,9 @@
           return;
         }
 
-        _callback(result);
+        setTimeout(function() {
+          _callback(result);
+        }, 0);
       });
     };
 
@@ -425,6 +427,16 @@
       });
     };
 
+    var _loaded = function() {
+      _launchWM(function(app) {
+        _$LOADING.style.display = 'none';
+        PlaySound('service-login');
+
+        _HANDLER.loadSession();
+        _HANDLER.onInitialized();
+      });
+    };
+
     _HANDLER.boot(function(result, error) {
       if ( error ) {
         _error(error);
@@ -433,13 +445,9 @@
 
       var preloads = _HANDLER.getConfig('Core').Preloads;
       _preload(preloads, function() {
-        _launchWM(function(app) {
-          _$LOADING.style.display = 'none';
-          PlaySound('service-login');
-
-          _HANDLER.loadSession();
-          _HANDLER.onInitialized();
-        });
+        setTimeout(function() {
+          _loaded();
+        }, 0);
       });
     });
   };
