@@ -425,7 +425,12 @@
       });
     };
 
-    _HANDLER.boot(function() {
+    _HANDLER.boot(function(result, error) {
+      if ( error ) {
+        _error(error);
+        return;
+      }
+
       var preloads = _HANDLER.getConfig('Core').Preloads;
       _preload(preloads, function() {
         _launchWM(function(app) {

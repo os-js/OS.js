@@ -265,7 +265,10 @@
       } else {
         callback(false, "No packages found!");
       }
-    }, function(error) {
+    }, function(error, response, httpRequest) {
+      if ( httpRequest && httpRequest.status != 200 ) {
+        error = 'Failed to load package manifest from ' + uri + ' - HTTP Error: ' + httpRequest.status;
+      }
       callback(false, error);
     }, {method: 'GET', parse: true});
   };
