@@ -323,7 +323,7 @@
   };
 
   DefaultHandler.prototype.getApplicationMetadata = function(name) {
-    if ( this.packages[name] ) {
+    if ( typeof this.packages[name] !== 'undefined' ) {
       return this.packages[name];
     }
     return false;
