@@ -453,6 +453,10 @@
     var _createMenu = function(list) {
       var el          = document.createElement('div');
       el.className    = 'Menu';
+      el.oncontextmenu= function(ev) {
+        ev.preventDefault();
+        return false;
+      };
       el.onmousedown  = function(ev) {
         ev.preventDefault();
         return false;

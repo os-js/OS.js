@@ -61,7 +61,7 @@
       if ( h ) {
         var app = h.getApplicationMetadata('ApplicationSettings');
         if ( app ) {
-          OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], ev);
+          OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
         }
       }
     };
