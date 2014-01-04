@@ -521,7 +521,8 @@
 
     var _next = function() {
       if ( list.length ) {
-        var item = list.pop();
+        //var item = list.pop();
+        var item = list.shift();
         if ( _LOADED[item.src] === true ) {
           _loaded(true);
           return;
