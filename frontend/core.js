@@ -1819,7 +1819,16 @@
     }
 
     this._onChange('restore');
-    this._fireHook('restore');
+
+    var anim = _WM ? _WM.getSetting('animations') : false;
+    if ( anim ) {
+      var self = this;
+      setTimeout(function() {
+        self._fireHook('restore');
+      }, ANIMDURATION);
+    } else {
+      this._fireHook('restore');
+    }
 
     this._focus();
   };
