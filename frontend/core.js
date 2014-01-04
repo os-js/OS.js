@@ -1120,11 +1120,14 @@
         onbottom  : false
       };
       this._hooks     = {
-        focus   : [],
-        blur    : [],
-        destroy : [],
-        resize  : [], // Called inside the mousemove event
-        resized : []  // Called inside the mouseup event
+        focus     : [],
+        blur      : [],
+        destroy   : [],
+        maximize  : [],
+        minimize  : [],
+        restore   : [],
+        resize    : [], // Called inside the mousemove event
+        resized   : []  // Called inside the mouseup event
       };
 
       if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
@@ -1751,6 +1754,7 @@
     }
 
     this._onChange('minimize');
+    this._fireHook('minimize');
 
     return true;
   };
@@ -1778,6 +1782,7 @@
     }
 
     this._onChange('maximize');
+    this._fireHook('maximize');
     this._resize();
     this._focus();
 
@@ -1805,6 +1810,7 @@
     }
 
     this._onChange('restore');
+    this._fireHook('restore');
 
     this._focus();
   };
