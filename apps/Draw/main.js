@@ -348,7 +348,7 @@
     ]);
 
     menuBar.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFile.path ? false : true);
+      menu.setItemDisabled("Save", app.currentFile && app.currentFile.path ? false : true);
     };
 
     this.$canvasContainer = document.createElement('div');
