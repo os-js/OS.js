@@ -1782,9 +1782,18 @@
     }
 
     this._onChange('maximize');
-    this._fireHook('maximize');
     this._resize();
     this._focus();
+
+    var anim = _WM ? _WM.getSetting('animations') : false;
+    if ( anim ) {
+      var self = this;
+      setTimeout(function() {
+        self._fireHook('maximize');
+      }, ANIMDURATION);
+    } else {
+      this._fireHook('maximize');
+    }
 
     return true;
   };
