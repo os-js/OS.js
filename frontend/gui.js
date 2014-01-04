@@ -1393,7 +1393,7 @@
     var _sid = 1;
     return function() {
       this.items['separator_' + _sid] = null;
-      sid++;
+      _sid++;
     };
   })();
 
