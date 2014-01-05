@@ -1442,6 +1442,10 @@
           }
         }
 
+        if ( item.tooltip && !btn.title ) {
+          btn.title = item.tooltip;
+        }
+
         btn.onclick = (function(key, itm) {
           return function(ev) {
             if ( itm.grouped ) {
