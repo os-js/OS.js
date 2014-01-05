@@ -39,45 +39,65 @@
 
   var DefaultLocale = 'en_US';
   var CurrentLocale = 'en_US';
-  var Locales = {};
+  var Locales       = {};
 
+  /*
+   * English
+   */
   Locales.en_US = {
 
   };
 
+  /**
+   * Norwegian
+   */
   Locales.no_NO = {
 
   };
 
+  /**
+   * German
+   */
   Locales.de_DE = {
 
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function _(s) {
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  OSjs.Locale.Strings = Locales[DefaultLocale];
+
+  /**
+   * Translate given string
+   * @param  String   s     Translation key/string
+   * @return String
+   */
   OSjs._ = function(s) {
     return Locales[CurrentLocale][s] || s;
   };
 
+  /**
+   * Get current locale
+   * @return String
+   */
   OSjs.Locale.getLocale = function() {
     return CurrentLocale;
   };
 
+  /**
+   * Set locale
+   * @param  String   s     Locale name
+   * @return void
+   */
   OSjs.Locale.setLocale = function(l) {
     if ( Locales[l] ) {
       CurrentLocale = l;
     } else {
       CurrentLocale = DefaultLocale;
     }
+
+    OSjs.Locale.Strings = Locales[CurrentLocale];
   };
 
 })();

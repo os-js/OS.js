@@ -221,7 +221,7 @@
 
     // FIXME: Use API
     var _createIcon = function(i) {
-      return '/apps/Draw/icons/' + i + '-16.png';
+      return OSjs.API.getApplicationResource(app, 'icons/' + i + '-16.png');
     };
 
     var _onClick = function(ev, el, name, item) {
