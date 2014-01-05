@@ -38,6 +38,7 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
+  OSjs.Locale       = OSjs.Locale       || {};
   OSjs.Core         = {};
   OSjs.API          = {};
   OSjs.Version      = '2.0-wip';

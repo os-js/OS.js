@@ -219,6 +219,7 @@
     var self = this;
     // Create window contents here
 
+    // FIXME: Use API
     var _createIcon = function(i) {
       return '/apps/Draw/icons/' + i + '-16.png';
     };

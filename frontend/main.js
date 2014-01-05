@@ -62,7 +62,8 @@
           Home:           '/opt/OSjs/home',
           MaxUploadSize:  2097152,
           BugReporting:   true,
-          Preloads:       []
+          Preloads:       [],
+          Locale:         'en_US'
         },
 
         Handler : {

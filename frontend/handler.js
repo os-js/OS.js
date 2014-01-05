@@ -163,6 +163,7 @@
     };
     */
 
+    OSjs.Locale.setLocale(this.config.Core.Locale);
     _login("demo", "demo");
   };
 
@@ -394,6 +395,11 @@
 
   DefaultHandler.prototype.getConfig = function(key) {
     return key ? this.config[key] : this.config;
+  };
+
+  DefaultHandler.prototype.getUserConfig = function(key) {
+    var cfg = this.config.User || {};
+    return key ? cfg[key] : cfg;
   };
 
   DefaultHandler.prototype.getUserData = function() {
