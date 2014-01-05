@@ -45,6 +45,8 @@
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
     this._settings = DefaultSettings(args.defaults || {});
     this.clockInterval = null;
+    this.$switcher = null;
+    this.switcherIndex = -1;
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
@@ -224,6 +226,111 @@
     }
 
     return WindowManager.prototype.destroy.apply(this, []);
+  };
+
+  CoreWM.prototype.hideWindowSwitcher = function(win) {
+    if ( this.$switcher && this.$switcher.parentNode ) {
+      this.$switcher.parentNode.removeChild(this.$switcher);
+    }
+
+    if ( this.switcherIndex >= 0 ) {
+      if ( this._windows[this.switcherIndex] ) {
+        this._windows[this.switcherIndex]._focus();
+        return;
+      }
+
+      if ( win ) {
+        win._focus();
+      }
+    }
+  };
+
+  CoreWM.prototype.showWindowSwitcher = function(index, win) {
+    if ( !this.$switcher || !this.$switcher.parentNode ) {
+      this.switcherIndex = -1;
+    }
+
+    var list = [];
+    var i = 0, l = this._windows.length, iter;
+
+    console.debug("CoreWM::showWindowSwitcher()", index);
+
+    for ( i; i < l; i++ ) {
+      iter = this._windows[i];
+
+      list.push({
+        title:    iter._title,
+        icon:     iter._icon
+      });
+
+      if ( this.switcherIndex === -1 ) {
+        if ( (win && win._wid === iter._wid) ) {
+           this.switcherIndex = i;
+        }
+      }
+    }
+
+    if ( !this.$switcher ) {
+      this.$switcher = document.createElement('div');
+      this.$switcher.id = 'WindowSwitcher';
+    }
+
+    var height = 0;
+    var root = this.$switcher;
+    OSjs.Utils.$empty(root);
+
+    if ( this.switcherIndex >= 0 ) {
+      this.switcherIndex += index;
+      if ( this.switcherIndex < 0 || (this.switcherIndex > (list.length-1)) ) {
+        this.switcherIndex = 0;
+      }
+
+      var container, image, label;
+      for ( i = 0; i < l; i++ ) {
+        iter = list[i];
+
+        container       = document.createElement('div');
+
+        image           = document.createElement('img');
+        image.src       = iter.icon;
+
+        label           = document.createElement('span');
+        label.innerHTML = iter.title;
+
+        if ( i === this.switcherIndex ) {
+          container.className = 'Active';
+        }
+
+        container.appendChild(image);
+        container.appendChild(label);
+        root.appendChild(container);
+
+        height += 32;
+      }
+    }
+
+    if ( !root.parentNode ) {
+      document.body.appendChild(root);
+    }
+
+    root.style.height = height + 'px';
+    root.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
+  };
+
+  CoreWM.prototype.onKeyUp = function(ev, win) {
+    if ( ev && !ev.shiftKey ) {
+      this.hideWindowSwitcher(win);
+    }
+  };
+
+  CoreWM.prototype.onKeyDown = function(ev, win) {
+    if ( ev && ev.shiftKey ) {
+      if ( ev.keyCode === 9 ) {
+        ev.preventDefault();
+
+        this.showWindowSwitcher(1/*ev.shiftKey ? -1 : 1*/, win);
+      }
+    }
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {

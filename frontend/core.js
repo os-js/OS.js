@@ -372,6 +372,9 @@
     document.addEventListener('keydown', function(ev) {
       self._onKeyDown.apply(self, arguments);
     }, false);
+    document.addEventListener('keyup', function(ev) {
+      self._onKeyUp.apply(self, arguments);
+    }, false);
     document.addEventListener('mousedown', function(ev) {
       self._onMouseDown.apply(self, arguments);
     }, false);
@@ -501,6 +504,9 @@
     document.removeEventListener('keydown', function(ev) {
       self._onKeyDown.apply(self, arguments);
     }, false);
+    document.removeEventListener('keyup', function(ev) {
+      self._onKeyUp.apply(self, arguments);
+    }, false);
     document.removeEventListener('mousedown', function(ev) {
       self._onMouseDown.apply(self, arguments);
     }, false);
@@ -569,6 +575,12 @@
     return lst;
   };
 
+  Main.prototype._onKeyUp = function(ev) {
+    if ( _WM ) {
+      _WM.onKeyUp(ev, _WIN);
+    }
+  };
+
   Main.prototype._onKeyDown = function(ev) {
     var d = ev.srcElement || ev.target;
     var doPrevent = d.tagName === 'BODY' ? true : false;
@@ -589,6 +601,9 @@
 
     if ( _WIN ) {
       _WIN._onKeyEvent(ev);
+    }
+    if ( _WM ) {
+      _WM.onKeyDown(ev, _WIN);
     }
   };
 

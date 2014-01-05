@@ -82,3 +82,28 @@
 #WindowList li img {
   vertical-align : middle;
 }
+
+#WindowSwitcher {
+  position : absolute;
+  top : 50%;
+  left : 50%;
+  width : 256px;
+  z-index : 999999;
+  overflow : hidden;
+  margin-left : -128px;
+}
+#WindowSwitcher > div {
+  width : 256px;
+  height : 32px;
+  line-height : 32px;
+  overflow : hidden;
+}
+#WindowSwitcher > div > img {
+  vertical-align : middle;
+  margin-right : 5px;
+  margin-left : 5px;
+}
+#WindowSwitcher > div > span {
+}
+#WindowSwitcher > div.Active {
+}
