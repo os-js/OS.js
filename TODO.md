@@ -4,6 +4,8 @@
 ### Alpha
 
 * HTML Escaping!
+* Keyboard shortcuts for window actions
+* Splash Screen for applications (must be via Metadata.. something simple)
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player
