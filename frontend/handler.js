@@ -411,7 +411,7 @@
   //
 
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
-    var aname = (app instanceof OSjs.Core.Application) ? app.__path : app;
+    var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
     return '/' + aname + '/' + name;
   };
 
