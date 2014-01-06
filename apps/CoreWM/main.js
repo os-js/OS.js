@@ -95,6 +95,14 @@
     var el = document.createElement('ul');
     var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
     var sel;
+
+    var _createIcon = function(aiter, aname) {
+      if ( aiter.icon.match(/\.\//) ) {
+        return OSjs.API.getApplicationResource(aiter.path, aiter.icon);
+      }
+      return aiter.icon;
+    };
+
     sel = document.createElement('li');
     sel.title = "Applications";
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
@@ -108,7 +116,7 @@
           if ( apps[a].type === "service" || apps[a].type === "special" ) continue;
           list.push({
             title: apps[a].name,
-            icon: apps[a].icon,
+            icon: _createIcon(apps[a], a),
             onClick: (function(name, iter) {
               return function() {
                 OSjs.API.launch(name);

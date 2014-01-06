@@ -411,7 +411,8 @@
   //
 
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
-    return '/' + app.__path + '/' + name;
+    var aname = (app instanceof OSjs.Core.Application) ? app.__path : app;
+    return '/' + aname + '/' + name;
   };
 
   DefaultHandler.prototype.getThemeResource = function(name, type, args) {
