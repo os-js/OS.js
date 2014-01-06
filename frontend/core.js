@@ -1167,7 +1167,13 @@
 
     this._state.focused = false;
 
-    this._icon = OSjs.API.getThemeResource(this._icon, 'icon');
+    if ( this._icon.match(/\.\//) ) {
+      if ( this._appRef ) {
+        this._icon = OSjs.API.getApplicationResource(this._appRef, this._icon);
+      }
+    } else {
+      this._icon = OSjs.API.getThemeResource(this._icon, 'icon');
+    }
 
     var grav = this._properties.gravity;
     if ( grav ) {
