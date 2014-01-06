@@ -57,6 +57,8 @@ RewriteRule ^FS backend/api.php?upload
   AddType video/x-flv .flv
   AddType video/x-matroska .mkv
 
+  AddType application/x-python .py
+
   AddType text/plain .txt
   AddType text/plain .doc
   AddType osjs/document .odoc

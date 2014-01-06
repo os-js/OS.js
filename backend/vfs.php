@@ -302,6 +302,8 @@ function fileMime($fname) {
     'flv'      => 'video/x-flv',
     'mkv'      => 'video/x-matroska',
 
+    'py'       => 'application/x-python',
+
     'txt'      => 'text/plain',
     'doc'      => 'text/plain',
     'odoc'     => 'osjs/document'
