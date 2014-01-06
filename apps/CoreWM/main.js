@@ -265,6 +265,7 @@
 
     for ( i; i < l; i++ ) {
       iter = this._windows[i];
+      if ( !iter ) { continue; }
 
       list.push({
         title:    iter._title,
