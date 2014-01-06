@@ -120,7 +120,7 @@
     this.defaultActionWindow  = 'ApplicationTextpadWindow';
     this.defaultFilename      = "New text file.txt";
     this.defaultMime          = 'text/plain';
-    this.acceptMime           = ['^text', 'inode\\/x\-empty'];
+    this.acceptMime           = ['^text', 'inode\\/x\-empty', 'application\\/x\-python'];
     this.getSaveData          = function() {
       var w = self._getWindow('ApplicationTextpadWindow');
       return w ? w.getText() : null;
