@@ -2543,10 +2543,12 @@
         this.sortDir = true;
       }
 
-      if ( v === 'ListView' ) {
+      if ( v === 'ListView' || v === 'listview' ) {
         this.$view = new FileListView('FileListView', this.viewOpts);
-      } else if ( v === 'IconView' ) {
+      } else if ( v === 'IconView' || v === 'iconview' ) {
         this.$view = new FileIconView('FileIconView', this.viewOpts);
+      } else {
+        throw "Invalid view type: " + v;
       }
 
       this.$view.onActivated  = function(path, type, mime) {
