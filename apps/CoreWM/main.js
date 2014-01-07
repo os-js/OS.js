@@ -328,12 +328,14 @@
   };
 
   CoreWM.prototype.onKeyUp = function(ev, win) {
+    return; // TODO
     if ( ev && !ev.shiftKey ) {
       this.hideWindowSwitcher(win);
     }
   };
 
   CoreWM.prototype.onKeyDown = function(ev, win) {
+    return; // TODO
     if ( ev && ev.shiftKey ) {
       if ( ev.keyCode === 9 ) {
         ev.preventDefault();
