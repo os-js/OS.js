@@ -120,11 +120,12 @@
       if ( fmime && (self.acceptMime !== null) ) {
         var found = false;
         for ( var i = 0; i < self.acceptMime.length; i++ ) {
-          if ( (new RegExp(self.acceptMime[i])).test(fmime) === false ) {
-            found = true;
+          if ( (new RegExp(self.acceptMime[i])).test(fmime) !== false ) {
+            found = self.acceptMime[i];
             break;
           }
         }
+
         if ( !found ) {
           _onError('open', "The requested file MIME is not accepted by this application.");
           return;
