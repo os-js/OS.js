@@ -204,6 +204,10 @@
     _HANDLER.getApplicationNameByMime(mime, fname, launchArgs.forceList, _onDone);
   }
 
+  function CreateSplash() {
+
+  }
+
   function LaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
     onFinished    = onFinished    || function() {};
@@ -215,7 +219,59 @@
     console.group("LaunchProcess()", n, arg);
 
     var self = this;
+    var splash = null;
+    var splashBar = null;
+
+    var _updateSplash = function(p, c) {
+      if ( !splash || !splashBar ) { return; }
+      var len = p ? p.length : 0;
+      var per = len ? 0 : 100;
+
+      if ( len ) {
+        per = (len / 100) * c;
+      }
+
+      splashBar.setProgress(per);
+    };
+
+    var _createSplash = function(data) {
+      if ( !data.splash ) { return; }
+
+      splash = document.createElement('div');
+      splash.className = 'ProcessSplash';
+
+      var icon = document.createElement('img');
+      icon.alt = n;
+      icon.src = data.icon.match(/\.\//) ? OSjs.API.getApplicationResource(data.path, data.icon) : OSjs.API.getThemeResource(data.icon, 'icon');
+
+      var title = document.createElement('span');
+      title.innerHTML = 'Launching <b>' + data.name + '</b> ...';
+
+      splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
+
+      splash.appendChild(icon);
+      splash.appendChild(title);
+      splash.appendChild(splashBar.getRoot());
+
+      document.body.appendChild(splash);
+    };
+
+    var _removeSplash = function() {
+      if ( splashBar ) {
+        splashBar.destroy();
+        splashBar = null;
+      }
+
+      if ( splash ) {
+        if ( splash.parentNode ) {
+          splash.parentNode.removeChild(splash);
+        }
+        splash = null;
+      }
+    };
+
     var _error = function(msg, exception) {
+      _removeSplash();
       console.groupEnd(); // !!!
       ErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg, exception, true);
 
@@ -223,6 +279,8 @@
     };
 
     var _callback = function(result) {
+      _removeSplash();
+
       if ( typeof OSjs.Applications[n] != 'undefined' ) {
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
@@ -276,6 +334,7 @@
       }
     };
 
+
     var _preload = function(result) {
       OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
         if ( errors ) {
@@ -286,6 +345,8 @@
         setTimeout(function() {
           _callback(result);
         }, 0);
+      }, function(progress) {
+        _updateSplash(result.preload, progress);
       });
     };
 
@@ -294,6 +355,8 @@
       _error("Failed to launch '" + n + "'. Application manifest data not found!");
       return;
     }
+
+    _createSplash(data);
     _preload(data);
   }
 

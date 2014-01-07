@@ -215,3 +215,39 @@
   margin-left : 32px;
   padding-left : 5px;
 }
+
+/**
+ * Misc
+ */
+.ProcessSplash {
+  position : absolute;
+  top : 50%;
+  left : 50%;
+  width : 300px;
+  height : 55px;
+  margin-left : -150px;
+  margin-top : -28px;
+  z-index : 99999999;
+}
+.ProcessSplash > img {
+  display : block;
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  width : 16px;
+  height : 16px;
+}
+.ProcessSplash > span {
+  display : block;
+  position : absolute;
+  top : 5px;
+  left : 26px;
+  height : 16px;
+  line-height : 16px;
+}
+.ProcessSplash > .GUIProgressBar {
+  position : absolute;
+  bottom : 5px;
+  left : 5px;
+  right : 5px;
+}

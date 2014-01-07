@@ -492,12 +492,14 @@
     document.getElementsByTagName("head")[0].appendChild(res);
   };
 
-  OSjs.Utils.Preload = function(list, callback) {
-    list     = list     || [];
-    callback = callback || function() {};
+  OSjs.Utils.Preload = function(list, callback, callbackProgress) {
+    list              = list              || [];
+    callback          = callback          || function() {};
+    callbackProgress  = callbackProgress  || function() {};
 
     var count       = list.length;
     var successes   = 0;
+    var progress    = 0;
     var failed      = [];
 
     var _finished = function() {
@@ -505,6 +507,10 @@
     };
 
     var _loaded = function(success, src) {
+      progress++;
+
+      callbackProgress(progress);
+
       if ( success ) {
         successes++;
       } else {
