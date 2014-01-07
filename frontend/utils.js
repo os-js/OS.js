@@ -418,7 +418,7 @@
     var _finished = function(result) {
       _LOADED[src] = result;
       console.info("Preloader->createStyle()", result ? 'success' : 'error', src);
-      callback(result);
+      callback(result, src);
     };
 
     if ( document.createStyleSheet ) {
@@ -463,7 +463,7 @@
     var _finished = function(result) {
       _LOADED[src] = result;
       console.info("Preloader->createScript()", result ? 'success' : 'error', src);
-      callback(result);
+      callback(result, src);
     };
 
     var loaded  = false;
