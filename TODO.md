@@ -5,6 +5,8 @@
 
 * HTML Escaping!
 * Keyboard shortcuts for window actions
+* CoreWM: Application categories
+* CoreWM: Sort application list
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles
   * When DnD hide
 * Applications:
