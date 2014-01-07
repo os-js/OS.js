@@ -53,17 +53,18 @@
 
     this.currentFile          = {path: null, mime: null};
 
-    // User-defineable variables.
-    // Put these in your class
-    this.defaultFilename      = "New file";
-    this.defaultMime          = null;
-    this.acceptMime           = null;
-    this.defaultActionError   = function() {};
-    this.defaultActionSuccess = function() {};
-    this.defaultActionWindow  = null;
-    this.allowedActions       = ['new', 'open', 'save', 'saveas'];
-    this.openAction           = 'raw';
-    this.getSaveData          = function() { return null; };
+    //
+    // User-defineable variables. Put these in your class
+    //
+    this.defaultFilename      = "New file";                         // Default filename used in Save dialog
+    this.defaultMime          = null;                               // Default mime for files (can leave blank)
+    this.acceptMime           = null;                               // Array of mime types to accept (can be blank, or filled with RegExp strings)
+    this.defaultActionError   = function() {};                      // Callback on action error
+    this.defaultActionSuccess = function() {};                      // Callback on action success
+    this.defaultActionWindow  = null;                               // Name of your "main window" in application
+    this.allowedActions       = ['new', 'open', 'save', 'saveas'];  // Array of actions this application uses
+    this.openAction           = 'raw';                              // 'raw' for getting file contents, 'filename' to just handle filenames
+    this.getSaveData          = function() { return null; };        // Callback for getting what file-data to save
   };
 
   DefaultApplication.prototype = Object.create(Application.prototype);
