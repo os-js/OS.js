@@ -421,11 +421,13 @@
         case 'image' :
           document.body.style.backgroundRepeat    = 'no-repeat';
           document.body.style.backgroundPosition  = '';
+          document.body.style.backgroundSize      = 'auto';
         break;
 
         case 'image-center':
           document.body.style.backgroundRepeat    = 'no-repeat';
           document.body.style.backgroundPosition  = 'center center';
+          document.body.style.backgroundSize      = 'auto';
         break;
 
         case 'image-fill' :
@@ -443,12 +445,14 @@
         default:
           document.body.style.backgroundRepeat    = 'repeat';
           document.body.style.backgroundPosition  = '';
+          document.body.style.backgroundSize      = 'auto';
         break;
       }
     } else {
       document.body.style.backgroundImage     = '';
       document.body.style.backgroundRepeat    = 'no-repeat';
       document.body.style.backgroundPosition  = '';
+      document.body.style.backgroundSize      = 'auto';
     }
 
     // Theme

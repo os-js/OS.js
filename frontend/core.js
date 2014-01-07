@@ -224,13 +224,10 @@
 
     var _updateSplash = function(p, c) {
       if ( !splash || !splashBar ) { return; }
-      var len = p ? p.length : 0;
-      var per = len ? 0 : 100;
-
-      if ( len ) {
-        per = (len / 100) * c;
+      var per = c ? 0 : 100;
+      if ( c ) {
+        per = (p / c) * 100;
       }
-
       splashBar.setProgress(per);
     };
 
@@ -345,8 +342,8 @@
         setTimeout(function() {
           _callback(result);
         }, 0);
-      }, function(progress) {
-        _updateSplash(result.preload, progress);
+      }, function(progress, count) {
+        _updateSplash(progress, count);
       });
     };
 

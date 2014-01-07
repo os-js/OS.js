@@ -497,7 +497,13 @@
     callback          = callback          || function() {};
     callbackProgress  = callbackProgress  || function() {};
 
-    var count       = list.length;
+    // Make a copy!
+    var newList = [];
+    for ( var i = 0; i < list.length; i++ ) {
+      newList.push(list[i]);
+    }
+
+    var count       = newList.length;
     var successes   = 0;
     var progress    = 0;
     var failed      = [];
@@ -509,7 +515,7 @@
     var _loaded = function(success, src) {
       progress++;
 
-      callbackProgress(progress);
+      callbackProgress(progress, count);
 
       if ( success ) {
         successes++;
@@ -518,7 +524,7 @@
       }
 
 
-      if ( list.length ) {
+      if ( newList.length ) {
         _next();
       } else {
         _finished();
@@ -526,9 +532,9 @@
     };
 
     var _next = function() {
-      if ( list.length ) {
-        //var item = list.pop();
-        var item = list.shift();
+      if ( newList.length ) {
+        //var item = newList.pop();
+        var item = newList.shift();
         if ( _LOADED[item.src] === true ) {
           _loaded(true);
           return;
@@ -542,8 +548,8 @@
       }
     };
 
-    if ( list.length ) {
-      console.log("Preloader", count, "file(s)", list);
+    if ( newList.length ) {
+      console.log("Preloader", count, "file(s)", newList);
       _next();
     } else {
       _finished();
