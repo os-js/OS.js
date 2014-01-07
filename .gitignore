@@ -1,6 +1,13 @@
+# Unwanted files
 *.sw*
 .DS_Store
 .git-old
-apps-extras
-backend/bugreport.php
 *-tmp.*
+
+# External repositories
+apps-extras
+
+# Override files can be ignored
+backend/bugreport.php
+backend/config.php
+frontend/settings.js
