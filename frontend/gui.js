@@ -448,8 +448,9 @@
 
     var _onclick = function(ev, func) {
       func = func || function() { console.warn("Warning -- you forgot to implement a handler"); };
-      func();
-      OSjs.GUI.blurMenu();
+      if ( !func(ev) ) {
+        OSjs.GUI.blurMenu();
+      }
     };
 
     var _createMenu = function(list) {
@@ -468,25 +469,27 @@
         var ul = document.createElement('ul');
         var m, img, span, smenu, arrow;
         for ( var i = 0, l = list.length; i < l; i++ ) {
-          img = null;
-
           m           = document.createElement('li');
           m.className = '';
-
-          if ( list[i].icon ) {
-            img     = document.createElement('img');
-            img.alt = '';
-            img.src = OSjs.API.getThemeResource(list[i].icon, 'icon');
-            m.appendChild(img);
-          }
 
           if ( list[i].name ) {
             m.className = 'MenuItem_' + list[i].name;
           }
 
-          span            = document.createElement('span');
-          span.innerHTML  = list[i].title;
-          m.appendChild(span);
+          if ( typeof list[i].onCreate === 'function' ) {
+            list[i].onCreate(m, list[i]);
+          } else {
+            if ( list[i].icon ) {
+              img     = document.createElement('img');
+              img.alt = '';
+              img.src = OSjs.API.getThemeResource(list[i].icon, 'icon');
+              m.appendChild(img);
+            }
+
+            span            = document.createElement('span');
+            span.innerHTML  = list[i].title;
+            m.appendChild(span);
+          }
 
           if ( list[i].menu ) {
             m.className += ' HasSubMenu';
