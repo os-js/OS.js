@@ -40,10 +40,21 @@
 
   var Application = OSjs.Core.Application;
 
+  /**
+   * This class is a basic implementation of OSjs.Core.Application
+   * with support for creating/opening/saving files via drag-and-drop
+   * and/or dialogs.
+   *
+   * You should use this if your application handles files. For example
+   * implementation see the Writer application
+   */
   var DefaultApplication = function() {
     Application.apply(this, arguments);
 
     this.currentFile          = {path: null, mime: null};
+
+    // User-defineable variables.
+    // Put these in your class
     this.defaultFilename      = "New file";
     this.defaultMime          = null;
     this.acceptMime           = null;
@@ -57,6 +68,10 @@
 
   DefaultApplication.prototype = Object.create(Application.prototype);
 
+  /**
+   * Set current file to application storage.
+   * This makes sure session restore works properly
+   */
   DefaultApplication.prototype.setCurrentFile = function(filename, mime) {
     this.currentFile.path = filename || null;
     this.currentFile.mime = mime     || null;
@@ -68,6 +83,7 @@
   DefaultApplication.prototype.init = function(core, settings) {
     Application.prototype.init.apply(this, arguments);
 
+    // Get launch/restore argument(s)
     var filename = this._getArgument('file');
     var mime     = this._getArgument('mime');
 
@@ -78,6 +94,8 @@
 
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
+
+    // Make sure we destroy our application when main window closes
     if ( this.defaultActionWindow ) {
       if ( msg == 'destroyWindow' && obj._name === this.defaultActionWindow ) {
         this.destroy();
@@ -85,6 +103,10 @@
     }
   };
 
+  /**
+   * Display confirmation dialog
+   * Used to prevent accidental removal of changes in file(s)
+   */
   DefaultApplication.prototype.defaultConfirmClose = function(win, msg, callback) {
     msg = msg || 'Quit without saving?';
     win._toggleDisabled(true);
@@ -97,6 +119,13 @@
     return true;
   };
 
+  /**
+   * Perform default file handling action
+   *
+   * Actions: new, open, save, saveas
+   *
+   * To show the dialog for 'open' action ignore the filename argument.
+   */
   DefaultApplication.prototype.defaultAction = function(action, filename, mime) {
     var self = this;
     var win  = this.defaultActionWindow ? this._getWindow(this.defaultActionWindow) : null;
@@ -117,6 +146,8 @@
 
     var _openFile = function(fname, fmime) {
       fmime = fmime || mime;
+
+      // Check if our application accepts this MIME type
       if ( fmime && (self.acceptMime !== null) ) {
         var found = false;
         for ( var i = 0; i < self.acceptMime.length; i++ ) {
@@ -138,6 +169,7 @@
         return;
       }
 
+      // Read file from server
       OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname]}, function(res) {
         if ( res && (res.result !== false) ) {
           self.setCurrentFile(fname, fmime);
@@ -154,6 +186,8 @@
     var _saveFile = function(fname, fmime) {
       fmime = fmime || mime;
       var fdata = self.getSaveData();
+
+      // Write file to server
       OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, fdata]}, function(res) {
         if ( res && res.result !== false ) {
           self.setCurrentFile(fname, fmime);
