@@ -306,6 +306,7 @@ function fileMime($fname) {
     'html'     => 'text/html',
     'xml'      => 'text/xml',
     'js'       => 'application/javascript',
+    'css'      => 'text/css',
 
     'txt'      => 'text/plain',
     'doc'      => 'text/plain',

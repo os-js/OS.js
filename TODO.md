@@ -6,9 +6,9 @@
 * HTML Escaping!
 * Keyboard shortcuts for window actions
 * Splash Screen for applications (must be via Metadata.. something simple)
+* DefaultApplication needs to do automatic check of MIME -- remove from applications
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles
   * When DnD hide
-* Bugfix: ApplicationChooser needs update for local icons
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Writer - Check for changes before opening/new file

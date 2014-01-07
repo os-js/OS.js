@@ -59,6 +59,7 @@ RewriteRule ^FS backend/api.php?upload
 
   AddType text/html .html
   AddType text/xml .xml
+  AddType text/css .css
   AddType application/javascript .js
   AddType application/x-python .py
 

@@ -161,7 +161,9 @@
       icon = 'places/folder.png';
     } else if ( type == 'file' ) {
       if ( mime ) {
-        if ( mime.match(/^text\//) ) {
+        if ( mime.match(/^application\/(x\-python|javascript)/) || mime.match(/^text\/(html|xml|css)/) ) {
+          icon = 'mimetypes/stock_script.png';
+        } else if ( mime.match(/^text\//) ) {
           icon = 'mimetypes/txt.png';
         } else if ( mime.match(/^audio\//) ) {
           icon = 'mimetypes/sound.png';

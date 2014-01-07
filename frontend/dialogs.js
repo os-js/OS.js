@@ -287,6 +287,13 @@
     var list = [];
     var refs = OSjs.API.getHandlerInstance().getApplicationsMetadata();
 
+    var _createIcon = function(icon, appname) {
+      if ( icon.match(/\.\//) ) {
+        return OSjs.API.getApplicationResource(appname, iter.icon);
+      }
+      return OSjs.API.getThemeResource(iter.icon, 'icon') || icon;
+    };
+
     var image, icon, name, iter;
     for ( var i = 0, l = this.list.length; i < l; i++ ) {
       name = this.list[i];
@@ -295,7 +302,7 @@
         iter = refs[this.list[i]];
         if ( iter ) {
           name = iter.name || name;
-          icon = OSjs.API.getThemeResource(iter.icon, 'icon') || icon;
+          icon = _createIcon(iter.icon, iter.path);
         }
       }
 
