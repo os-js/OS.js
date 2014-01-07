@@ -144,7 +144,7 @@
     Application.apply(this, ['ApplicationPreview', args, metadata]);
 
     this.defaultActionWindow  = 'ApplicationPreviewWindow';
-    this.acceptMime           = ['^image', '^video', '^audio'];
+    this.acceptMime           = metadata.mime || null;
     this.allowedActions       = ['open'];
     this.openAction           = 'filename';
 

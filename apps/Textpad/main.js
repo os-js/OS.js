@@ -9,7 +9,6 @@
     this.title  = "Textpad";
     this._icon  = "apps/accessories-text-editor.png";
     this._title = this.title;
-    this._properties.allow_drop = true;
   };
 
   ApplicationTextpadWindow.prototype = Object.create(Window.prototype);
@@ -46,21 +45,6 @@
     this.setText(null);
   };
 
-  ApplicationTextpadWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationTextpadWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
-
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        this._appRef.defaultAction('open', data.path, data.mime);
-      }
-    }
-  };
-
   ApplicationTextpadWindow.prototype.setText = function(t, name) {
     var txt = this._getGUIElement('TextpadTextarea');
     if ( !txt ) return;
@@ -87,18 +71,6 @@
     }
   };
 
-  ApplicationTextpadWindow.prototype._close = function() {
-    var self = this;
-    var callback = function() {
-      self._close();
-    };
-
-    if ( this.checkChanged(callback) !== false ) {
-      return false;
-    }
-    return Window.prototype._close.apply(this, arguments);
-  };
-
   ApplicationTextpadWindow.prototype.checkChanged = function(callback, msg) {
     var gel  = this._getGUIElement('TextpadTextarea');
     if ( gel && gel.hasChanged ) {
@@ -120,7 +92,7 @@
     this.defaultActionWindow  = 'ApplicationTextpadWindow';
     this.defaultFilename      = "New text file.txt";
     this.defaultMime          = 'text/plain';
-    this.acceptMime           = ['^text', 'inode\\/x\-empty', 'application\\/x\-python'];
+    this.acceptMime           = metadata.mime || null;
     this.getSaveData          = function() {
       var w = self._getWindow('ApplicationTextpadWindow');
       return w ? w.getText() : null;
@@ -177,4 +149,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationTextpad = ApplicationTextpad;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow);

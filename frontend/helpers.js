@@ -34,16 +34,72 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
 
+  var Application = OSjs.Core.Application;
+  var Window      = OSjs.Core.Window;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Default Application Window Helper
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * This class is a basic implementation of OSjs.Core.Window
+   * with support for file handling and drag-and-drop
+   *
+   * Use this in combination with 'DefaultApplication'
+   */
+  var DefaultApplicationWindow = function(name, opts, app) {
+    Window.apply(this, arguments);
+
+    this._properties.allow_drop = true;
+  };
+
+  DefaultApplicationWindow.prototype = Object.create(Window.prototype);
+
+  /**
+   * You need to implement this in your application.
+   * For an example see the 'Textpad' application
+   */
+  DefaultApplicationWindow.prototype.checkChanged = function() {
+    return false;
+  };
+
+  /**
+   * Default DnD event
+   */
+  DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+
+    if ( type === 'itemDrop' && item ) {
+      var data = item.data;
+      if ( data && data.type === 'file' && data.mime ) {
+        this._appRef.defaultAction('open', data.path, data.mime);
+      }
+    }
+  };
+
+  /**
+   * Display confirmation dialog of out file has changed
+   * Prevent closing of window
+   */
+  DefaultApplicationWindow.prototype._close = function() {
+    var self = this;
+    var callback = function() {
+      self._close();
+    };
+
+    if ( this.checkChanged(callback) !== false ) {
+      return false;
+    }
+    return Window.prototype._close.apply(this, arguments);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // Default Application Helper
   /////////////////////////////////////////////////////////////////////////////
 
-  var Application = OSjs.Core.Application;
-
   /**
    * This class is a basic implementation of OSjs.Core.Application
-   * with support for creating/opening/saving files via drag-and-drop
-   * and/or dialogs.
+   * with support for creating/opening/saving files.
    *
    * You should use this if your application handles files.
    *
@@ -262,5 +318,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Helpers.DefaultApplication = DefaultApplication;
+  OSjs.Helpers.DefaultApplicationWindow = DefaultApplicationWindow;
+
 })();
 

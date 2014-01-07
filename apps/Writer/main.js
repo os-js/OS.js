@@ -318,7 +318,7 @@
     this.defaultActionWindow  = 'ApplicationWriterWindow';
     this.defaultFilename      = "New text document.odoc";
     this.defaultMime          = 'osjs/document';
-    this.acceptMime           = ['^text', 'osjs\\/document'];
+    this.acceptMime           = metadata.mime || null;
     this.getSaveData          = function() {
       var w = self._getWindow('ApplicationWriterWindow');
       return w ? w.getRichTextData() : '';
