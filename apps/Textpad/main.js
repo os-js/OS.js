@@ -139,15 +139,20 @@
     this.defaultActionSuccess = function(action, arg1, arg2) {
       var w = self._getWindow('ApplicationTextpadWindow');
       if ( w ) {
-        if ( action === 'open' ) {
+        var msg = "Discard current document ?";
+        var _new = function() {
+          w.setText('', null);
+        };
+        var _open = function() {
           w.setText(arg1, arg2.path);
+        };
+        if ( action === 'open' ) {
+          if ( w.checkChanged(function() { _open(); }, msg) === false ) {
+            _open();
+          }
         } else {
           if ( action === 'new' ) {
-            var _new = function() {
-              w.setText('', null);
-            };
-            var msg = "Discard current document ?";
-            if ( w.checkChanged(function() { _new(); }, msg) !== false ) {
+            if ( w.checkChanged(function() { _new(); }, msg) === false ) {
               _new();
             }
           } else {

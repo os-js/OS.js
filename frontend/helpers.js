@@ -94,7 +94,7 @@
         callback();
       }
     }]);
-    return false;
+    return true;
   };
 
   DefaultApplication.prototype.defaultAction = function(action, filename, mime) {
