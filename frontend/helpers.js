@@ -51,7 +51,7 @@
    * from:  })(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
    * to:    })(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
    *
-   * For example implementation see the 'Writer' application
+   * For example implementation see the 'Texpad' application
    */
   var DefaultApplication = function() {
     Application.apply(this, arguments);
