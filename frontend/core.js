@@ -204,10 +204,6 @@
     _HANDLER.getApplicationNameByMime(mime, fname, launchArgs.forceList, _onDone);
   }
 
-  function CreateSplash() {
-
-  }
-
   function LaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
     onFinished    = onFinished    || function() {};
