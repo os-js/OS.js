@@ -45,8 +45,13 @@
    * with support for creating/opening/saving files via drag-and-drop
    * and/or dialogs.
    *
-   * You should use this if your application handles files. For example
-   * implementation see the Writer application
+   * You should use this if your application handles files.
+   *
+   * To do so change your wrapper (located in bottom of your application script)
+   * from:  })(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+   * to:    })(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+   *
+   * For example implementation see the 'Writer' application
    */
   var DefaultApplication = function() {
     Application.apply(this, arguments);
