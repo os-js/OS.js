@@ -6,6 +6,8 @@
 * HTML Escaping!
 * Keyboard shortcuts for window actions
 * Splash Screen for applications (must be via Metadata.. something simple)
+* Unfocused windows should have a transparent overlay to prevent clicks+iframe probles
+  * When DnD hide
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Finish Music Player

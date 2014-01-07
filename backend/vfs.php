@@ -303,6 +303,9 @@ function fileMime($fname) {
     'mkv'      => 'video/x-matroska',
 
     'py'       => 'application/x-python',
+    'html'     => 'text/html',
+    'xml'      => 'text/xml',
+    'js'       => 'application/javascript',
 
     'txt'      => 'text/plain',
     'doc'      => 'text/plain',
