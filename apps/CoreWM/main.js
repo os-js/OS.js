@@ -297,6 +297,7 @@
       var container, image, label;
       for ( i = 0; i < l; i++ ) {
         iter = list[i];
+        if ( !iter ) { continue; }
 
         container       = document.createElement('div');
 
