@@ -4,6 +4,7 @@
 ### Alpha
 
 * HTML Escaping!
+* FS: Remove invalid chracters
 * Keyboard shortcuts for window actions
 * CoreWM: Application categories
 * CoreWM: Sort application list
