@@ -18,8 +18,6 @@
 
 ### Beta
 
-* Go over error messages and rewrite
-* Go over all error handling
 * Node.js backend
 * GUI Elements:
   * Custom styling for GUISelect
@@ -33,9 +31,9 @@
 
 * VFS via IndexedDB
 * Offline usage
-* Source code documentation
 * Localization
 
 ## Future releases
+* Full Source code documentation
 * Mobile version
 * Panels with items in CoreWM
