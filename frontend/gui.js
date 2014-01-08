@@ -2035,23 +2035,37 @@
   };
 
   Tabs.prototype.setTab = function(idx) {
+    console.debug("OSjs::GUI::Tabs::setTab()", idx);
+
+    var l;
     if ( this.lastIdx !== null ) {
-      this.$container.childNodes[this.lastIdx].className = 'TabContent';
-      this.$tabs.childNodes[this.lastIdx].className = 'Tab';
+      l = this.$container.childNodes[this.lastIdx];
+      if ( l ) {
+        l.className = l.className.replace(/\s?Active/, '');
+      }
+
+      l = this.$tabs.childNodes[this.lastIdx];
+      if ( l ) {
+        l.className = l.className.replace(/\s?Active/, '');
+      }
       this.lastIdx = null;
     }
 
     var $c = this.$container.childNodes[idx];
     var $t = this.$tabs.childNodes[idx];
 
-    if ( $c ) { $c.className = 'TabContent Active'; }
-    if ( $t ) { $t.className = 'Tab Active'; }
+    if ( $c ) { $c.className += ' Active'; }
+    if ( $t ) { $t.className += ' Active'; }
 
     if ( $c || $t ) { this.lastIdx = idx; }
+
+    if ( $t ) { $t.onclick(null); }
   };
 
 
   Tabs.prototype.removeTab = function(idx) {
+    console.debug("OSjs::GUI::Tabs::removeTab()", idx);
+
     var $c = this.$container.childNodes[idx];
     if ( $c && $c.parentNode ) {
       $c.parentNode.removeChild($c);
@@ -2064,38 +2078,67 @@
     this.setTab(0);
   };
 
-  Tabs.prototype.addTab = function(title, onShow) {
+  Tabs.prototype.addTab = function(title, opts, onShow) {
+    opts = opts || function() {};
     onShow = onShow || function() {};
 
     var self  = this;
     var len   = this.$tabs.childNodes.length;
+
+    console.debug("OSjs::GUI::Tabs::addTab()", title, opts, len);
 
     var $c        = document.createElement('div');
     $c.className  = 'TabContent';
 
     var $t        = document.createElement('div');
     $t.className  = 'Tab';
-    $t.innerHTML  = title;
+    $t.innerHTML  = '<span>' + title + '</span>';
     $t.onclick    = (function(i) {
-      return function() {
-        self.setTab(i);
-
+      return function(ev) {
+        if ( ev ) {
+          self.setTab(i);
+        }
         onShow($c, $t);
       };
     })(len);
 
+    if ( opts.closeable ) {
+      var $close = document.createElement('span');
+      $close.innerHTML = 'X';
+      $close.className = 'Close';
 
-    if ( len <= 0 ) {
-      this.lastIdx = len;
-      $t.className += ' Active';
-      $c.className += ' Active';
+      if ( typeof opts.onClose === 'function' ) {
+        $close.onclick = function(ev) {
+          ev.stopPropagation();
+          opts.onClose(ev, $t, $c, $close, len);
+        };
+      } else {
+        $close.onclick = function(ev) {
+          ev.stopPropagation();
+          self.removeTab(len);
+        };
+      }
+      $t.className += ' HasClose';
+      $t.appendChild($close);
     }
 
     this.$tabs.appendChild($t);
     this.$container.appendChild($c);
 
+    if ( this.inited && len === 0 ) {
+      this.setTab(0);
+    }
 
-    return $c;
+    return {tab: $t, content: $c};
+  };
+
+  Tabs.prototype.update = function() {
+    if ( !this.inited ) {
+      if ( this.$tabs && this.$tabs.childNodes.length ) {
+        this.setTab(0);
+      }
+    }
+    GUIElement.prototype.update.apply(this, arguments);
   };
 
   /**

@@ -494,10 +494,23 @@ body .GUIToolbar button {
   padding-left : 5px;
   padding-right : 5px;
   line-height : 26px;
+  position : relative;
 }
 .GUITabs .Tabs .Tab.Active {
   height : 26px;
   margin : 0;
+}
+.GUITabs .Tabs .Tab.HasClose {
+  padding-right : 15px;
+}
+.GUITabs .Tabs .Tab .Close {
+  position : absolute;
+  top : 8px;
+  right : 2px;
+  height : 8px;
+  width : 8px;
+  line-height : 8px;
+  text-align : center;
 }
 .GUITabs .TabContents {
   position : absolute;

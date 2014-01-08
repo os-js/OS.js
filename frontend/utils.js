@@ -247,6 +247,7 @@
   };
 
   OSjs.Utils.$index = function(el, parentEl) {
+    parentEl = parentEl || el.parentNode;
     var nodeList = Array.prototype.slice.call(parentEl.children);
     var nodeIndex = nodeList.indexOf(el, parentEl);
     return nodeIndex;

@@ -429,6 +429,17 @@ body #WindowList .Clock {
   background : #dedede;
   border : 1px solid #b1b1b1;
 }
+.GUITabs .Tabs .Tab .Close {
+  border : 1px solid transparent;
+  font-size : 10px;
+}
+.GUITabs .Tabs .Tab .Close:hover {
+  background : #e6e6e6;
+}
+.GUITabs .Tabs .Tab .Close:active {
+  background : #e6e6e6;
+  border-color : #333;
+}
 
 /* GUIText & GUITextarea & GUISelect */
 
