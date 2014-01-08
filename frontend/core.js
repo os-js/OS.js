@@ -1911,8 +1911,8 @@
     this._focus();
   };
 
-  Window.prototype._focus = function() {
-    if ( this._state.focused ) { return false; }
+  Window.prototype._focus = function(force) {
+    if ( !force && this._state.focused ) { return false; }
     console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
@@ -1930,8 +1930,8 @@
     return true;
   };
 
-  Window.prototype._blur = function() {
-    if ( !this._state.focused ) { return false; }
+  Window.prototype._blur = function(force) {
+    if ( !force && !this._state.focused ) { return false; }
     console.debug(this._name, '>' , "OSjs::Core::Window::_blur()");
     var cn = this._$element.className;
     this._$element.className = cn.replace(/\s?WindowHintFocused/, '');
