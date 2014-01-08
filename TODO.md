@@ -8,6 +8,9 @@
 * Keyboard shortcuts for window actions
 * CoreWM: Application categories
 * CoreWM: Sort application list
+* GUI:
+  * Rewrite Tabs - needs a custom Tab class for containing DOM etc.
+                   > simpler implementation
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Writer - Check for changes before opening/new file
