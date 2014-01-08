@@ -1622,7 +1622,9 @@
 
       var anim = _WM ? _WM.getSetting('animations') : false;
       if ( anim ) {
-        this._$element.className += ' WindowHintClosing';
+        if ( !this._$element.className.match(/WindowHintClosing/) ) {
+          this._$element.className += ' WindowHintClosing';
+        }
         setTimeout(function() {
           _removeDOM();
         }, ANIMDURATION);
@@ -1794,7 +1796,9 @@
     if ( this._disabled ) { return; }
 
     if ( this._$element ) {
-      this._$element.className += " WindowHintClosing";
+      if ( !this._$element.className.match(/WindowHintClosing/) ) {
+        this._$element.className += " WindowHintClosing";
+      }
     }
 
     this._blur();
@@ -1916,7 +1920,9 @@
     console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    this._$element.className += ' WindowHintFocused';
+    if ( !this._$element.className.match(/WindowHintFocused/) ) {
+      this._$element.className += ' WindowHintFocused';
+    }
     this._state.focused = true;
 
     if ( _WIN && _WIN._wid != this._wid ) {
