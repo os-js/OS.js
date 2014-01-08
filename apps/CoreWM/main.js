@@ -39,7 +39,7 @@
     return cfg;
   }
 
-  var  __categories = {
+  var  DefaultCategories = {
     'development': {icon: 'categories/package_development.png', title: 'Development'},
     'education'  : {icon: 'categories/applications-sience.png', title: 'Education'},
     'games'      : {icon: 'categories/package_games.png',       title: 'Games'},
@@ -52,12 +52,16 @@
     'unknown'    : {icon: 'categories/applications-other.png',  title: 'Other'}
   };
 
-  var _createIcon = function(aiter, aname) {
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function _createIcon(aiter, aname) {
     if ( aiter.icon.match(/\.\//) ) {
       return OSjs.API.getApplicationResource(aiter.path, aiter.icon);
     }
     return aiter.icon;
-  };
+  }
 
   function BuildMenu(ev) {
     var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
@@ -86,8 +90,8 @@
 
     var c, a, iter, cat, submenu;
 
-    for ( c in __categories ) {
-      if ( __categories.hasOwnProperty(c) ) {
+    for ( c in DefaultCategories ) {
+      if ( DefaultCategories.hasOwnProperty(c) ) {
         cats[c] = [];
       }
     }
@@ -119,8 +123,8 @@
 
         if ( submenu.length ) {
           list.push({
-            title: __categories[c].title,
-            icon:  OSjs.API.getThemeResource(__categories[c].icon, 'icon', '16x16'),
+            title: DefaultCategories[c].title,
+            icon:  OSjs.API.getThemeResource(DefaultCategories[c].icon, 'icon', '16x16'),
             menu:  submenu
           });
         }
@@ -129,6 +133,10 @@
 
     GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATION
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Application

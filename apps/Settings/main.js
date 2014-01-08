@@ -46,11 +46,12 @@
     var outer, slider;
 
     var tabs      = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
-    var tabStyles = tabs.addTab('Theme and Background').content;
-    var tabOther  = tabs.addTab('Desktop Settings', {}, function(c) {
+    var tabStyles = tabs.addTab('tab1', {title: 'Theme and Background'});
+
+    var tabOther  = tabs.addTab('tab2', {title: 'Desktop Settings', onSelect: function() {
       slider.setValue(desktopMargin);
-    }).content;
-    var tabMisc   = tabs.addTab('Misc').content;
+    }});
+    var tabMisc   = tabs.addTab('tab3', {title: 'Misc'});
 
     // Theme
     outer = _createContainer('Theme SettingsNoButton', 'Theme');

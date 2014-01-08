@@ -2005,8 +2005,111 @@
   };
 
   /**
+   * Tabs > Tab Container
+   */
+  var Tab = function(name, opts, index, $tabs, $container, _tabs) {
+    var self = this;
+
+    opts            = opts            || {};
+    opts.title      = opts.title      || {};
+    opts.onCreate   = opts.onCreate   || function() {};
+    opts.onSelect   = opts.onSelect   || function() {};
+    opts.onUnselect = opts.onUnselect || function() {};
+    opts.onDestroy  = opts.onDestroy  || function() {};
+    opts.onClose    = opts.onClose    || function() { return true; };
+
+    this.$c           = document.createElement('div');
+    this.$c.className = 'TabContent';
+
+    this.$t           = document.createElement('div');
+    this.$t.className = 'Tab';
+    this.$t.innerHTML = '<span>&nbsp;</span>';
+    this.$t.onclick = function(ev) {
+      _tabs.setTab(name);
+    };
+
+    this.$x               = null;
+    if ( opts.closeable ) {
+      this.$x             = document.createElement('span');
+      this.$x.className   = 'Close';
+      this.$x.innerHTML   = 'X';
+      this.$x.onclick     = function(ev) {
+        ev.stopPropagation();
+        if ( opts.onClose(ev, self) === true ) {
+          _tabs.removeTab(name);
+        }
+      };
+      this.$t.appendChild(this.$x);
+      this.$t.className += ' HasClose';
+    }
+
+    this.name     = name;
+    this.selected = false;
+    this.index    = index;
+    this.params   = opts;
+
+    this.setTitle(opts.title);
+    $tabs.appendChild(this.$t);
+    $container.appendChild(this.$c);
+
+    this.params.onCreate.call(this);
+  };
+  Tab.prototype.destroy = function() {
+    this.params.onDestroy.call(this);
+
+    if ( this.$x ) {
+      this.$x.onclick = null;
+      if ( this.$x.parentNode ) {
+        this.$x.parentNode.removeChild(this.$x);
+      }
+      this.$x = null;
+    }
+
+    if ( this.$c ) {
+      if ( this.$c.parentNode ) {
+        this.$c.parentNode.removeChild(this.$c);
+      }
+      this.$c = null;
+    }
+    if ( this.$t ) {
+      this.$t.onclick = null;
+      if ( this.$t.parentNode ) {
+        this.$t.parentNode.removeChild(this.$t);
+      }
+      this.$t = null;
+    }
+  };
+  Tab.prototype.select = function() {
+    if ( this.selected || !this.$c || !this.$t ) { return; }
+    if ( !this.$c.className.match(/Active/) ) { this.$c.className += ' Active'}
+    if ( !this.$t.className.match(/Active/) ) { this.$t.className += ' Active'}
+    this.selected = true;
+    this.params.onSelect.call(this);
+  };
+  Tab.prototype.unselect = function() {
+    if ( !this.selected || !this.$c || !this.$t ) { return; }
+    this.$c.className = this.$c.className.replace(/\s?Active/, '');
+    this.$t.className = this.$t.className.replace(/\s?Active/, '');
+    this.selected = false;
+    this.params.onUnselect.call(this);
+  };
+  Tab.prototype.appendChild = function(c) {
+    if ( this.$c ) {
+      this.$c.appendChild(c);
+    }
+  };
+  Tab.prototype.setTitle = function(t) {
+    this.params.title = t;
+    if ( this.$t ) {
+      this.$t.firstChild.innerHTML = this.params.title;
+    }
+  };
+  Tab.prototype.getTitle = function(t) {
+    return this.params.title;
+  };
+
+  /**
    * Tabs Container
-   * TODO: Rewrite, more in TODO.md
    */
   var Tabs = function(name, opts) {
     opts = opts || {};
@@ -2014,7 +2117,9 @@
     this.$container   = null;
     this.$tabs        = null;
     this.orientation  = opts.orientation || 'horizontal';
-    this.lastIdx      = null;
+    this.tabs         = {};
+    this.tabCount     = 0;
+    this.currentTab   = null;
 
     GUIElement.apply(this, [name, {focusable: true}]);
   };
@@ -2037,109 +2142,81 @@
     return el;
   };
 
-  Tabs.prototype.setTab = function(idx) {
-    console.debug("OSjs::GUI::Tabs::setTab()", idx);
-
-    var l;
-    if ( this.lastIdx !== null ) {
-      l = this.$container.childNodes[this.lastIdx];
-      if ( l ) {
-        l.className = l.className.replace(/\s?Active/, '');
+  Tabs.prototype.destroy = function() {
+    for ( var i in this.tabs ) {
+      if ( this.tabs.hasOwnProperty(i) && this.tabs[i] ) {
+        this.tabs[i].destroy();
       }
-
-      l = this.$tabs.childNodes[this.lastIdx];
-      if ( l ) {
-        l.className = l.className.replace(/\s?Active/, '');
-      }
-      this.lastIdx = null;
     }
+    this.tabs = {};
+    GUIElement.prototype.destroy.apply(this, arguments);
 
-    var $c = this.$container.childNodes[idx];
-    var $t = this.$tabs.childNodes[idx];
-
-    if ( $c ) { $c.className += ' Active'; }
-    if ( $t ) { $t.className += ' Active'; }
-
-    if ( $c || $t ) { this.lastIdx = idx; }
-
-    if ( $t ) { $t.onclick(null); }
   };
 
+  Tabs.prototype.setTab = function(idx) {
+    console.debug("OSjs::GUI::Tabs::setTab()", idx);
+    if ( this.currentTab ) {
+      this.currentTab.unselect();
+      this.currentTab = null;
+    }
+
+    if ( this.tabs[idx] ) {
+      this.currentTab = this.tabs[idx];
+      this.currentTab.select();
+    }
+  };
 
   Tabs.prototype.removeTab = function(idx) {
     console.debug("OSjs::GUI::Tabs::removeTab()", idx);
 
-    var $c = this.$container.childNodes[idx];
-    if ( $c && $c.parentNode ) {
-      $c.parentNode.removeChild($c);
-    }
-    var $t = this.$tabs.childNodes[idx];
-    if ( $t && $t.parentNode ) {
-      $t.parentNode.removeChild($t);
+    if ( idx instanceof Tab ) {
+      idx = idx.name;
     }
 
-    this.setTab(0);
+    if ( this.tabs[idx] ) {
+      this.tabs[idx].destroy();
+      delete this.tabs[idx];
+      this.tabCount--;
+    }
+
+    this.selectFirstTab();
   };
 
-  Tabs.prototype.addTab = function(title, opts, onShow) {
-    opts = opts || function() {};
-    onShow = onShow || function() {};
+  Tabs.prototype.selectFirstTab = function() {
+    if ( !this.$tabs || !this.$container ) { return; }
 
-    var self  = this;
-    var len   = this.$tabs.childNodes.length;
-
-    console.debug("OSjs::GUI::Tabs::addTab()", title, opts, len);
-
-    var $c        = document.createElement('div');
-    $c.className  = 'TabContent';
-
-    var $t        = document.createElement('div');
-    $t.className  = 'Tab';
-    $t.innerHTML  = '<span>' + title + '</span>';
-    $t.onclick    = (function(i) {
-      return function(ev) {
-        if ( ev ) {
-          self.setTab(i);
-        }
-        onShow($c, $t);
-      };
-    })(len);
-
-    if ( opts.closeable ) {
-      var $close = document.createElement('span');
-      $close.innerHTML = 'X';
-      $close.className = 'Close';
-
-      if ( typeof opts.onClose === 'function' ) {
-        $close.onclick = function(ev) {
-          ev.stopPropagation();
-          opts.onClose(ev, $t, $c, $close, len);
-        };
-      } else {
-        $close.onclick = function(ev) {
-          ev.stopPropagation();
-          self.removeTab(len);
-        };
+    var found = false;
+    for ( var i in this.tabs ) {
+      if ( this.tabs.hasOwnProperty(i) && this.tabs[i] !== null ) {
+        found = i;
+        break
       }
-      $t.className += ' HasClose';
-      $t.appendChild($close);
     }
 
-    this.$tabs.appendChild($t);
-    this.$container.appendChild($c);
+    if ( found !== false ) {
+      this.setTab(found);
+    }
+  };
 
-    if ( this.inited && len === 0 ) {
-      this.setTab(0);
+  Tabs.prototype.addTab = function(name, opts) {
+    var self  = this;
+
+    console.debug("OSjs::GUI::Tabs::addTab()", name, opts);
+
+    var tab = new Tab(name, opts, this.tabCount, this.$tabs, this.$container, this);
+    this.tabs[name] = tab;
+    this.tabCount++;
+
+    if ( this.inited && this.tabCount > 0 ) {
+      this.setTab(name);
     }
 
-    return {tab: $t, content: $c};
+    return tab;
   };
 
   Tabs.prototype.update = function() {
     if ( !this.inited ) {
-      if ( this.$tabs && this.$tabs.childNodes.length ) {
-        this.setTab(0);
-      }
+      this.selectFirstTab();
     }
     GUIElement.prototype.update.apply(this, arguments);
   };
