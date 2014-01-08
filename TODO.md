@@ -7,6 +7,7 @@
 * FS: Remove invalid chracters
 * Keyboard shortcuts for window actions
 * CoreWM: Sort application list
+* CoreWM: Finish window-swicher and re-enable
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Writer - Check for changes before opening/new file
