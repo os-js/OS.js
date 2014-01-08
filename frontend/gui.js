@@ -442,7 +442,6 @@
 
   /**
    * Menu class
-   * FIXME: Events are not destroyed
    */
   var Menu = function(menuList) {
 
@@ -467,7 +466,7 @@
 
       if ( list ) {
         var ul = document.createElement('ul');
-        var m, img, span, smenu, arrow;
+        var m, img, span, arrow;
         for ( var i = 0, l = list.length; i < l; i++ ) {
           m           = document.createElement('li');
           m.className = '';
@@ -497,13 +496,7 @@
             arrow           = document.createElement('div');
             arrow.className = 'Arrow';
 
-            smenu = _createMenu(list[i].menu);
-            /* Fixed with CSS
-            m.onmouseover = function() {
-              //smenu.style.marginLeft = m.offsetWidth + 'px';
-            };*/
-
-            m.appendChild(smenu);
+            m.appendChild(_createMenu(list[i].menu));
             m.appendChild(arrow);
           } else {
             m.onclick = (function(ref) {
@@ -529,8 +522,17 @@
   };
 
   Menu.prototype.destroy = function() {
-    if ( this.$element && this.$element.parentNode ) {
-      this.$element.parentNode.removeChild(this.$element);
+    if ( this.$element ) {
+      var ul = this.$element.getElementsByTagName('UL')[0];
+      if ( ul ) {
+        var i = 0, l = ul.childNodes.length;
+        for ( i; i < l; i++ ) {
+          ul.childNodes[i].onclick = null;
+        }
+      }
+      if ( this.$element.parentNode ) {
+        this.$element.parentNode.removeChild(this.$element);
+      }
     }
     this.$element = null;
   };
