@@ -72,6 +72,7 @@
 .Menu li > .Menu {
   position : absolute;
   display : none;
+  left : 100%;
 }
 .Menu li:hover > .Menu {
   display : block;

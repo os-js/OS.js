@@ -2,6 +2,7 @@
   "ApplicationPreview":  {
     "name":       "Preview",
     "mime":       ["^image", "^video"],
+    "category":   "multimedia",
     "icon":       "mimetypes/image.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

@@ -2,6 +2,7 @@
   "ApplicationMusicPlayer":  {
     "name":       "Music Player",
     "mime":       ["^audio"],
+    "category":   "multimedia",
     "icon":       "status/audio-volume-high.png",
     "singular":   true,
     "preload":    [

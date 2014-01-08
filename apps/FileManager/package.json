@@ -2,6 +2,7 @@
   "ApplicationFileManager":  {
     "name":       "File Manager",
     "mime":       null,
+    "category":   "utilities",
     "icon":       "apps/file-manager.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

@@ -2,6 +2,7 @@
   "ApplicationTextpad":  {
     "name":       "Textpad",
     "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript"],
+    "category":   "utilities",
     "icon":       "apps/accessories-text-editor.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

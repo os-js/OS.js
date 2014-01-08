@@ -3,6 +3,7 @@
     "name":       "Settings",
     "singular":   true,
     "mime":       null,
+    "category":   "system",
     "icon":       "categories/applications-system.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

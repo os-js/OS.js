@@ -3,6 +3,7 @@
     "name":       "About",
     "singular":   true,
     "mime":       null,
+    "category":   "system",
     "icon":       "apps/help-browser.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

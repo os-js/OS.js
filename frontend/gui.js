@@ -498,10 +498,12 @@
             arrow.className = 'Arrow';
 
             smenu = _createMenu(list[i].menu);
-            m.appendChild(smenu);
+            /* Fixed with CSS
             m.onmouseover = function() {
-              smenu.style.marginLeft = this.offsetWidth + 'px';
-            };
+              //smenu.style.marginLeft = m.offsetWidth + 'px';
+            };*/
+
+            m.appendChild(smenu);
             m.appendChild(arrow);
           } else {
             m.onclick = (function(ref) {
@@ -2004,6 +2006,7 @@
 
   /**
    * Tabs Container
+   * TODO: Rewrite, more in TODO.md
    */
   var Tabs = function(name, opts) {
     opts = opts || {};

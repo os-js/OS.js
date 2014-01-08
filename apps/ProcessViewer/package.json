@@ -3,6 +3,7 @@
     "name":       "Process Viewer",
     "singular":   true,
     "mime":       null,
+    "category":   "system",
     "icon":       "apps/gnome-monitor.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

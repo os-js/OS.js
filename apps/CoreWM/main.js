@@ -9,6 +9,7 @@
       wallpaper     : '/themes/wallpapers/noise_red.png',
       theme         : 'default',
       background    : 'image-repeat',
+      menuCategories: true,
       style         : {
         backgroundColor  : '#0B615E',
         color            : '#333',
@@ -36,6 +37,97 @@
     }
 
     return cfg;
+  }
+
+  var  __categories = {
+    'development': {icon: 'categories/package_development.png', title: 'Development'},
+    'education'  : {icon: 'categories/applications-sience.png', title: 'Education'},
+    'games'      : {icon: 'categories/package_games.png',       title: 'Games'},
+    'graphics'   : {icon: 'categories/package_graphics.png',    title: 'Graphics'},
+    'network'    : {icon: 'categories/package_network.png',     title: 'Network'},
+    'multimedia' : {icon: 'categories/package_multimedia.png',  title: 'Multimedia'},
+    'office'     : {icon: 'categories/package_office.png',      title: 'Office'},
+    'system'     : {icon: 'categories/package_system.png',      title: 'System'},
+    'utilities'  : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
+    'unknown'    : {icon: 'categories/applications-other.png',  title: 'Other'}
+  };
+
+  var _createIcon = function(aiter, aname) {
+    if ( aiter.icon.match(/\.\//) ) {
+      return OSjs.API.getApplicationResource(aiter.path, aiter.icon);
+    }
+    return aiter.icon;
+  };
+
+  function BuildMenu(ev) {
+    var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
+    var list = [];
+    for ( var a in apps ) {
+      if ( apps.hasOwnProperty(a) ) {
+        if ( apps[a].type === "service" || apps[a].type === "special" ) { continue; }
+        list.push({
+          title: apps[a].name,
+          icon: _createIcon(apps[a], a),
+          onClick: (function(name, iter) {
+            return function() {
+              OSjs.API.launch(name);
+            };
+          })(a, apps[a])
+        });
+      }
+    }
+    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
+  }
+
+  function BuildCategoryMenu(ev) {
+    var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
+    var list = [];
+    var cats = {};
+
+    var c, a, iter, cat, submenu;
+
+    for ( c in __categories ) {
+      if ( __categories.hasOwnProperty(c) ) {
+        cats[c] = [];
+      }
+    }
+
+    for ( a in apps ) {
+      if ( apps.hasOwnProperty(a) ) {
+        iter = apps[a];
+        if ( iter.type === "service" || iter.type === "special" ) { continue; }
+        cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
+        cats[cat].push({name: a, data: iter})
+      }
+    }
+
+    for ( c in cats ) {
+      if ( cats.hasOwnProperty(c) ) {
+        submenu = [];
+        for ( a = 0; a < cats[c].length; a++ ) {
+          iter = cats[c][a];
+          submenu.push({
+            title: iter.data.name,
+            icon: _createIcon(iter.data, iter.name),
+            onClick: (function(name, iter) {
+              return function() {
+                OSjs.API.launch(name);
+              };
+            })(iter.name, iter.data)
+          });
+        }
+
+        if ( submenu.length ) {
+          list.push({
+            title: __categories[c].title,
+            icon:  OSjs.API.getThemeResource(__categories[c].icon, 'icon', '16x16'),
+            menu:  submenu
+          });
+        }
+      }
+    }
+
+    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
   }
 
   /**
@@ -96,36 +188,16 @@
     var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
     var sel;
 
-    var _createIcon = function(aiter, aname) {
-      if ( aiter.icon.match(/\.\//) ) {
-        return OSjs.API.getApplicationResource(aiter.path, aiter.icon);
-      }
-      return aiter.icon;
-    };
-
     sel = document.createElement('li');
     sel.title = "Applications";
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function(ev) {
       ev.stopPropagation();
-
-      var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
-      var list = [];
-      for ( var a in apps ) {
-        if ( apps.hasOwnProperty(a) ) {
-          if ( apps[a].type === "service" || apps[a].type === "special" ) continue;
-          list.push({
-            title: apps[a].name,
-            icon: _createIcon(apps[a], a),
-            onClick: (function(name, iter) {
-              return function() {
-                OSjs.API.launch(name);
-              };
-            })(a, apps[a])
-          });
-        }
+      if ( self.getSetting('menuCategories') ) {
+        BuildCategoryMenu(ev);
+      } else {
+        BuildMenu(ev);
       }
-      GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
       return false;
     };
     el.appendChild(sel);

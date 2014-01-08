@@ -2,6 +2,7 @@
   "ApplicationDraw":  {
     "name":       "Draw",
     "mime":       ["^image"],
+    "category":   "graphics",
     "icon":       "categories/gnome-graphics.png",
     "preload":    [
       {"src": "main.js", "type": "javascript"},

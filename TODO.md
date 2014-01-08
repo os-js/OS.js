@@ -6,7 +6,6 @@
 * HTML Escaping!
 * FS: Remove invalid chracters
 * Keyboard shortcuts for window actions
-* CoreWM: Application categories
 * CoreWM: Sort application list
 * GUI:
   * Rewrite Tabs - needs a custom Tab class for containing DOM etc.
