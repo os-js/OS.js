@@ -615,7 +615,7 @@
 
     if ( this.type === 'save' ) {
       var start = true;
-      var curval = this.currentFilename ? this.currentFilename : this.defaultFilename;
+      var curval = OSjs.Utils.escapeFilename(this.currentFilename ? this.currentFilename : this.defaultFilename);
 
       this.input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(el, ev) {
         self.buttonConfirm.setDisabled(el.value.length <= 0);
@@ -730,7 +730,7 @@
     } else {
       var fileList = this._getGUIElement('FileDialogFileView');
       if ( this.type == 'save' ) {
-        var check = this.input ? check = this.input.getValue() : '';
+        var check = this.input ? check = OSjs.Utils.escapeFilename(this.input.getValue()) : '';
         if ( check ) {
           item = fileList.$view.getItemByKey('filename', check);
           if ( item !== null ) {
@@ -786,7 +786,21 @@
     StandardDialog.prototype._focus.apply(this, arguments);
     if ( this.input ) {
       this.input.focus();
-      this.input.select();
+
+      var val = this.input.getValue();
+      var range = {
+        min: 0,
+        max: val.length - 1
+      };
+
+      if ( val.match(/\.(\w+)$/) ) {
+        var m = val.split(/\.(\w+)$/);
+        if ( m ) {
+          range.max -= (m.length);
+        }
+      }
+
+      this.input.select(range);
     }
   };
 

@@ -2235,9 +2235,21 @@
   };
   Text.prototype = Object.create(_Input.prototype);
 
-  Text.prototype.select = function() {
+  Text.prototype.select = function(range) {
     if ( this.$input ) {
-      this.$input.select();
+      if ( range ) {
+        try {
+          if ( typeof range !== 'object' ) { range = {}; }
+          if ( typeof range.min === 'undefined' || !range.min) { range.min = 0; }
+          if ( typeof range.max === 'undefined' || !range.max || range.max < range.min ) { range.max = this.getValue().length - 1; }
+          OSjs.Utils.$selectRange(this.$input, range.min, range.max);
+        } catch ( e ) {
+          console.warn("OSjs::GUI::Text::select()", "exception", e);
+          this.$input.select();
+        }
+      } else {
+        this.$input.select();
+      }
     }
   };
 

@@ -186,6 +186,10 @@
     return bytes.toFixed(1)+' '+units[u];
   };
 
+  OSjs.Utils.escapeFilename = function(n) {
+    return (n || '').replace(/[\|&;\$%@"<>\(\)\+,\*\/]/g, '').trim();
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // COLORS
   /////////////////////////////////////////////////////////////////////////////
@@ -251,6 +255,27 @@
     var nodeList = Array.prototype.slice.call(parentEl.children);
     var nodeIndex = nodeList.indexOf(el, parentEl);
     return nodeIndex;
+  };
+
+  OSjs.Utils.$selectRange = function(field, start, end) {
+    if ( !field ) { throw "Cannot select range: missing element"; }
+    if ( typeof start === 'undefined' || typeof end === 'undefined' ) { throw "Cannot select range: mising start/end"; }
+
+    if ( field.createTextRange ) {
+      var selRange = field.createTextRange();
+      selRange.collapse(true);
+      selRange.moveStart('character', start);
+      selRange.moveEnd('character', end);
+      selRange.select();
+      field.focus();
+    } else if ( field.setSelectionRange ) {
+      field.focus();
+      field.setSelectionRange(start, end);
+    } else if ( typeof field.selectionStart != 'undefined' ) {
+      field.selectionStart = start;
+      field.selectionEnd = end;
+      field.focus();
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
