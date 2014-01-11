@@ -40,16 +40,16 @@
   }
 
   var  DefaultCategories = {
-    'development': {icon: 'categories/package_development.png', title: 'Development'},
-    'education'  : {icon: 'categories/applications-sience.png', title: 'Education'},
-    'games'      : {icon: 'categories/package_games.png',       title: 'Games'},
-    'graphics'   : {icon: 'categories/package_graphics.png',    title: 'Graphics'},
-    'network'    : {icon: 'categories/package_network.png',     title: 'Network'},
-    'multimedia' : {icon: 'categories/package_multimedia.png',  title: 'Multimedia'},
-    'office'     : {icon: 'categories/package_office.png',      title: 'Office'},
-    'system'     : {icon: 'categories/package_system.png',      title: 'System'},
-    'utilities'  : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
-    'unknown'    : {icon: 'categories/applications-other.png',  title: 'Other'}
+    development : {icon: 'categories/package_development.png', title: 'Development'},
+    education   : {icon: 'categories/applications-sience.png', title: 'Education'},
+    games       : {icon: 'categories/package_games.png',       title: 'Games'},
+    graphics    : {icon: 'categories/package_graphics.png',    title: 'Graphics'},
+    network     : {icon: 'categories/package_network.png',     title: 'Network'},
+    multimedia  : {icon: 'categories/package_multimedia.png',  title: 'Multimedia'},
+    office      : {icon: 'categories/package_office.png',      title: 'Office'},
+    system      : {icon: 'categories/package_system.png',      title: 'System'},
+    utilities   : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
+    unknown     : {icon: 'categories/applications-other.png',  title: 'Other'}
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -57,10 +57,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function _createIcon(aiter, aname) {
-    if ( aiter.icon.match(/\.\//) ) {
-      return OSjs.API.getApplicationResource(aiter.path, aiter.icon);
-    }
-    return aiter.icon;
+    return OSjs.API.getIcon(aiter.icon, aiter);
   }
 
   function BuildMenu(ev) {

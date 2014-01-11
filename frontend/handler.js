@@ -444,6 +444,19 @@
     return name;
   };
 
+  DefaultHandler.prototype.getIcon = function(name, app, args) {
+    if ( name.match(/\.\//) ) {
+      if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
+          return OSjs.API.getApplicationResource(app, name);
+      } else {
+        if ( typeof app === 'object' ) {
+          return OSjs.API.getApplicationResource(app.path, name);
+        }
+      }
+    }
+    return OSjs.API.getThemeResource(name, 'icon', args);
+  };
+
   DefaultHandler.prototype.getThemeCSS = function(name) {
     if ( name === null ) {
       return '/frontend/blank.css';

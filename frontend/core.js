@@ -235,7 +235,7 @@
 
       var icon = document.createElement('img');
       icon.alt = n;
-      icon.src = data.icon.match(/\.\//) ? OSjs.API.getApplicationResource(data.path, data.icon) : OSjs.API.getThemeResource(data.icon, 'icon');
+      icon.src = OSjs.API.getIcon(data.icon, data);
 
       var titleText = document.createElement('b');
       titleText.appendChild(document.createTextNode(data.name));
@@ -1228,13 +1228,7 @@
 
     this._state.focused = false;
 
-    if ( this._icon.match(/\.\//) ) {
-      if ( this._appRef ) {
-        this._icon = OSjs.API.getApplicationResource(this._appRef, this._icon);
-      }
-    } else {
-      this._icon = OSjs.API.getThemeResource(this._icon, 'icon');
-    }
+    this._icon = OSjs.API.getIcon(this._icon, this._appRef);
 
     var grav = this._properties.gravity;
     if ( grav ) {
@@ -2217,6 +2211,7 @@
   OSjs.API.getResourceURL         = function(path)             { return _HANDLER.getResourceURL(path); };
   OSjs.API.getThemeResource       = function(name, type, args) { return _HANDLER.getThemeResource(name, type, args); };
   OSjs.API.getApplicationResource = function(app, name)        { return _HANDLER.getApplicationResource(app, name); };
+  OSjs.API.getIcon                = function(name, app)        { return _HANDLER.getIcon(name, app); };
 
   // Common API functions
   OSjs.API.call               = APICall;

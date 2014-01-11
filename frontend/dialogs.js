@@ -288,10 +288,7 @@
     var refs = OSjs.API.getHandlerInstance().getApplicationsMetadata();
 
     var _createIcon = function(icon, appname) {
-      if ( icon.match(/\.\//) ) {
-        return OSjs.API.getApplicationResource(appname, iter.icon);
-      }
-      return OSjs.API.getThemeResource(iter.icon, 'icon') || icon;
+      return OSjs.API.getIcon(icon, appname);
     };
 
     var image, icon, name, iter;
