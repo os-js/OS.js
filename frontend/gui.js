@@ -376,7 +376,7 @@
     }
 
     if ( this.tagName == 'button' ) {
-      this.$input.innerHTML = this.value || this.label;
+      this.$input.appendChild(document.createTextNode(this.value || this.label));
       this._addEvent(this.$input, 'onclick', function(ev) {
         if ( self.isDisabled() ) { return; }
         self.onClick.apply(self, [this, ev]);
@@ -486,7 +486,7 @@
             }
 
             span            = document.createElement('span');
-            span.innerHTML  = list[i].title;
+            span.appendChild(document.createTextNode(list[i].title));
             m.appendChild(span);
           }
 
@@ -611,7 +611,7 @@
     var self = this;
     var el = document.createElement('li');
     el.className = 'MenuItem_' + this.lid;
-    el.innerHTML = title;
+    el.appendChild(document.createTextNode(title));
     el.onclick = function(ev, mpos) {
       var pos = {x: ev.clientX, y: ev.clientY};
       if ( !mpos ) {
@@ -820,7 +820,7 @@
 
       label           = document.createElement('div');
       label.className = 'Label';
-      label.innerHTML = colref.title;
+      label.appendChild(document.createTextNode(colref.title));
 
       if ( typeof colref.resizable === 'undefined' || colref.resizable === true ) {
         if ( i < (l-i) ) {
@@ -881,13 +881,13 @@
           row.removeAttribute('data-' + colref.key);
         } else if ( type === 'button' ) {
           tmp = document.createElement('button');
-          tmp.innerHTML = val;
+          tmp.appendChild(document.createTextNode(val || ''));
           tmp.onclick = iter.customEvent;
           col.appendChild(tmp);
           row.removeAttribute('data-' + colref.key);
         } else {
           span = document.createElement('span');
-          span.innerHTML = val || '';
+          span.appendChild(document.createTextNode(val || ''));
           col.appendChild(span);
         }
 
@@ -1445,7 +1445,7 @@
           }
           if ( item.title ) {
             span = document.createElement('span');
-            span.innerHTML = item.title;
+            span.appendChild(document.createTextNode(item.title));
             btn.appendChild(span);
             el.className += ' HasTitle';
           }
@@ -1811,7 +1811,7 @@
 
       lblContainer = document.createElement('div');
       lbl = document.createElement('span');
-      lbl.innerHTML = iter.label;
+      lbl.appendChild(document.createTextNode(iter.label));
       lblContainer.appendChild(lbl);
 
       li.appendChild(imgContainer);
@@ -2103,7 +2103,8 @@
   Tab.prototype.setTitle = function(t) {
     this.params.title = t;
     if ( this.$t ) {
-      this.$t.firstChild.innerHTML = this.params.title;
+      this.$t.firstChild.innerHTML = '';
+      this.$t.firstChild.appendChild(document.createTextNode(this.params.title));
     }
   };
   Tab.prototype.getTitle = function(t) {
@@ -2340,7 +2341,7 @@
   Select.prototype.addItem = function(value, label) {
     var el        = document.createElement('option');
     el.value      = value;
-    el.innerHTML  = label;
+    el.appendChild(document.createTextNode(label));
     this.$input.appendChild(el);
   };
 
@@ -2565,7 +2566,7 @@
     };
 
     this.setColumns([
-      {key: 'image',    title: '&nbsp;',     type: 'image', callback: _callbackIcon, domProperties: {width: "16"}, resizable: false},
+      {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: "16"}, resizable: false},
       {key: 'filename', title: 'Filename'},
       {key: 'mime',     title: 'Mime', domProperties: {width: "150"}},
       {key: 'size',     title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},

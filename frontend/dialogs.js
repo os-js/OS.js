@@ -1110,7 +1110,7 @@
     for ( var f = 0; f < this.fonts.length; f++ ) {
       option            = document.createElement('option');
       option.value      = f;
-      option.innerHTML  = this.fonts[f];
+      option.appendChild(document.createTextNode(this.fonts[f]));
       this.$selectFont.appendChild(option);
       if ( this.fontName.toLowerCase() == this.fonts[f].toLowerCase() ) {
         this.$selectFont.selectedIndex = f;

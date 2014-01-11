@@ -237,8 +237,13 @@
       icon.alt = n;
       icon.src = data.icon.match(/\.\//) ? OSjs.API.getApplicationResource(data.path, data.icon) : OSjs.API.getThemeResource(data.icon, 'icon');
 
+      var titleText = document.createElement('b');
+      titleText.appendChild(document.createTextNode(data.name));
+
       var title = document.createElement('span');
-      title.innerHTML = 'Launching <b>' + data.name + '</b> ...';
+      title.appendChild(document.createTextNode('Launching'));
+      title.appendChild(titleText);
+      title.appendChild(document.createTextNode('...'));
 
       splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
 
@@ -792,7 +797,7 @@
       if ( opts.title ) {
         var title = document.createElement('div');
         title.className = 'Title';
-        title.innerHTML = opts.title;
+        title.appendChild(document.createTextNode(opts.title));
         classNames.push('HasTitle');
         container.appendChild(title);
       }
@@ -800,7 +805,7 @@
       if ( opts.message ) {
         var message = document.createElement('div');
         message.className = 'Message';
-        message.innerHTML = opts.message;
+        message.appendChild(document.createTextNode(opts.message));
         classNames.push('HasMessage');
         container.appendChild(message);
       }
@@ -1339,7 +1344,7 @@
 
     var windowTitle       = document.createElement('div');
     windowTitle.className = 'WindowTitle';
-    windowTitle.innerHTML = this._title;
+    windowTitle.appendChild(document.createTextNode(this._title));
 
     var windowButtons       = document.createElement('div');
     windowButtons.className = 'WindowButtons';
@@ -2162,7 +2167,8 @@
   Window.prototype._setTitle = function(t) {
     var tel = this._$element.getElementsByClassName('WindowTitle')[0];
     if ( tel ) {
-      tel.innerHTML = t;
+      tel.innerHTML = '';
+      tel.appendChild(document.createTextNode(t));
     }
     this._title = t;
     this._onChange('title');

@@ -3,7 +3,6 @@
 
 ### Alpha
 
-* HTML Escaping!
 * Keyboard shortcuts for window actions
 * CoreWM: Sort application list
 * CoreWM: Finish window-swicher and re-enable
