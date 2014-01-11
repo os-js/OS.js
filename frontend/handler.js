@@ -58,7 +58,11 @@
   };
 
   /**
-   * Handler
+   * Default Handler Implementation
+   *
+   * Used for communication, resources, settings and session handling
+   *
+   * You can implement your own, see documentation on Wiki.
    */
   var DefaultHandler = function() {
     this.storage  = new DefaultStorage();
@@ -78,6 +82,9 @@
     }
   };
 
+  /**
+   * Default method to perform a call to the backend
+   */
   DefaultHandler.prototype.call = function(opts, cok, cerror) {
     if ( this.offline ) {
       cerror("You are currently off-line and cannot perform this operation!");
@@ -95,6 +102,9 @@
   // Events
   //
 
+  /**
+   * Event when browser goes on-line (again)
+   */
   DefaultHandler.prototype.onOnline = function() {
     console.warn("DefaultHandler::onOnline()", "Going online...");
     this.offline = false;
@@ -105,6 +115,9 @@
     }
   };
 
+  /**
+   * Event when browser gies off-line
+   */
   DefaultHandler.prototype.onOffline = function() {
     console.warn("DefaultHandler::onOffline()", "Going offline...");
     this.offline = true;
@@ -115,12 +128,19 @@
     }
   };
 
+  /**
+   * Event when OS.js has successfully initialized
+   */
   DefaultHandler.prototype.onInitialized = function() {
   };
 
   //
   // Main
   //
+
+  /**
+   * Called upon window loaded
+   */
   DefaultHandler.prototype.init = function(callback) {
     var self      = this;
     var container = document.getElementById('Login');
@@ -167,6 +187,9 @@
     _login("demo", "demo");
   };
 
+  /**
+   * Called after successfull login
+   */
   DefaultHandler.prototype.boot = function(callback) {
     callback = callback || {};
     var self = this;
@@ -187,6 +210,9 @@
     });
   };
 
+  /**
+   * Default login method
+   */
   DefaultHandler.prototype.login = function(username, password, callback) {
     if ( username === 'demo' && password === 'demo' ) {
       var userData = {
@@ -202,6 +228,9 @@
     callback(false, "Invalid login");
   };
 
+  /**
+   * Default logout method
+   */
   DefaultHandler.prototype.logout = function(session, callback) {
     if ( session !== null ) {
       this.setUserSession(session, function() {
@@ -212,6 +241,9 @@
     callback(true);
   };
 
+  /**
+   * Default method to restore last running session
+   */
   DefaultHandler.prototype.loadSession = function() {
     var _list = [];
 
@@ -256,6 +288,9 @@
     });
   };
 
+  /**
+   * Default method to pull package manifest
+   */
   DefaultHandler.prototype.pollPackages = function(callback) {
     callback = callback || function() {};
 
@@ -278,10 +313,16 @@
   // Settings / Sessions
   //
 
+  /**
+   * Get all package metadata
+   */
   DefaultHandler.prototype.getApplicationsMetadata = function() {
     return this.packages;
   };
 
+  /**
+   * Get a list of application supporting mime type
+   */
   DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
     var self = this;
     var packages = this.packages;
@@ -317,12 +358,18 @@
     });
   };
 
+  /**
+   * Set the default application for given mime type
+   */
   DefaultHandler.prototype.setDefaultApplication = function(mime, app, callback) {
     callback = callback || function() {};
     console.debug("OSjs::DefaultHandler::setDefaultApplication()", mime, app);
     this._setSettings('defaultApplication', mime, app, callback);
   };
 
+  /**
+   * Get metadata for application by class-name
+   */
   DefaultHandler.prototype.getApplicationMetadata = function(name) {
     if ( typeof this.packages[name] !== 'undefined' ) {
       return this.packages[name];
@@ -330,11 +377,17 @@
     return false;
   };
 
+  /**
+   * Internal method for setting a value in category (wrapper)
+   */
   DefaultHandler.prototype._setSetting = function(cat, values, callback) {
     this.storage.set(cat, values);
     callback(true);
   };
 
+  /**
+   * Internal method for setting settings (wrapper)
+   */
   DefaultHandler.prototype._setSettings = function(cat, key, opts, callback) {
     var settings = this.storage.get(cat);
     if ( typeof settings !== 'object' || !settings ) {
@@ -349,6 +402,9 @@
     callback(true);
   };
 
+  /**
+   * Internal method for getting settings (wrapper)
+   */
   DefaultHandler.prototype._getSettings = function(cat, key, callback) {
     var s = this.storage.get(cat) || {};
     if ( key === null ) {
@@ -361,47 +417,74 @@
     callback(false);
   };
 
+  /**
+   * Set the users settings
+   */
   DefaultHandler.prototype.setUserSettings = function(key, opts, callback) {
     callback = callback || function() {};
     this._setSettings('userSettings', key, opts, callback);
   };
 
+  /**
+   * Get the users settings
+   */
   DefaultHandler.prototype.getUserSettings = function(key, callback) {
     callback = callback || function() {};
     this._getSettings('userSettings', key, callback);
   };
 
+  /**
+   * Set settings for an application
+   */
   DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
     callback = callback || function() {};
     this._setSetting(app, settings, callback);
   };
 
+  /**
+   * Get settings for an application
+   */
   DefaultHandler.prototype.getApplicationSettings = function(app, callback) {
     callback = callback || function() {};
     this._getSettings(app, null, callback);
   };
 
+  /**
+   * Set user session
+   */
   DefaultHandler.prototype.setUserSession = function(session, callback) {
     callback = callback || function() {};
     this.storage.set("userSession", session);
     callback(true);
   };
 
+  /**
+   * Get user session
+   */
   DefaultHandler.prototype.getUserSession = function(callback) {
     callback = callback || function() {};
     var s = this.storage.get("userSession");
     callback(s);
   };
 
+  /**
+   * Get entire configuration
+   */
   DefaultHandler.prototype.getConfig = function(key) {
     return key ? this.config[key] : this.config;
   };
 
+  /**
+   * Get configuration from logged in user
+   */
   DefaultHandler.prototype.getUserConfig = function(key) {
     var cfg = this.config.User || {};
     return key ? cfg[key] : cfg;
   };
 
+  /**
+   * Get data for logged in user
+   */
   DefaultHandler.prototype.getUserData = function() {
     return this.userData;
   };
@@ -410,11 +493,17 @@
   // Resources
   //
 
+  /**
+   * Default method for getting a resource from application
+   */
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
     return '/' + aname + '/' + name;
   };
 
+  /**
+   * Default method for getting a resource from theme
+   */
   DefaultHandler.prototype.getThemeResource = function(name, type, args) {
     name = name || null;
     type = type || null;
@@ -444,6 +533,9 @@
     return name;
   };
 
+  /**
+   * Default method for getting a icon (wrapper for above methods)
+   */
   DefaultHandler.prototype.getIcon = function(name, app, args) {
     if ( name.match(/\.\//) ) {
       if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
@@ -457,6 +549,9 @@
     return OSjs.API.getThemeResource(name, 'icon', args);
   };
 
+  /**
+   * Default method for getting path to css theme
+   */
   DefaultHandler.prototype.getThemeCSS = function(name) {
     if ( name === null ) {
       return '/frontend/blank.css';
@@ -464,6 +559,9 @@
     return '/themes/' + name + '.css';
   };
 
+  /**
+   * Default method for getting path to a resource
+   */
   DefaultHandler.prototype.getResourceURL = function(path) {
     if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
       return path;
