@@ -89,7 +89,7 @@
   /**
    * File Output
    */
-  var readfile = function(path, request, response) {
+  var respondFile = function(path, request, response) {
     var fullPath = _path.join(config.directory, path);
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
@@ -210,9 +210,9 @@
         });
       } else {
         if ( path.match(/^\/FS/) ) {
-          readfile(path.replace(/^\/FS/, ''), request, response);
+          respondFile(path.replace(/^\/FS/, ''), request, response);
         } else {
-          readfile(path, request, response);
+          respondFile(path, request, response);
         }
       }
   }).listen(config.port);
