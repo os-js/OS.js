@@ -13,10 +13,7 @@
       style         : {
         backgroundColor  : '#0B615E',
         color            : '#333',
-        fontWeight       : 'normal',
-        textDecoration   : 'none',
-        fontFamily       : 'OSjsFont',
-        backgroundRepeat : 'repeat'
+        fontFamily       : 'OSjsFont'
       }
     };
 
@@ -485,52 +482,32 @@
       }
     }
 
-    // Wallpaper
+    // Wallpaper and Background
     var name = this.getSetting('wallpaper');
     var type = this.getSetting('background');
+
+    var className = 'Color';
+    var back      = 'none';
+
+    if ( name && type.match(/^image/) ) {
+      back = "url('" + OSjs.API.getResourceURL(name) + "')";
+      switch ( type ) {
+        case     'image' :        className = 'Normal';   break;
+        case     'image-center':  className = 'Center';   break;
+        case     'image-fill' :   className = 'Fill';     break;
+        case     'image-strech':  className = 'Strech';   break;
+        default:                  className = 'Default';  break;
+      }
+    }
+
     console.log("Wallpaper name", name);
     console.log("Wallpaper type", type);
-    if ( name && type.match(/^image/) ) {
-      var path = OSjs.API.getResourceURL(name);
-      document.body.style.backgroundImage = "url('" + path + "')";
+    console.log("Wallpaper className", className);
 
-      switch ( type ) {
-        case 'image' :
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundPosition  = '';
-          document.body.style.backgroundSize      = 'auto';
-        break;
-
-        case 'image-center':
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundPosition  = 'center center';
-          document.body.style.backgroundSize      = 'auto';
-        break;
-
-        case 'image-fill' :
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundSize      = 'cover';
-          document.body.style.backgroundPosition  = 'center center fixed';
-        break;
-
-        case 'image-strech':
-          document.body.style.backgroundRepeat    = 'no-repeat';
-          document.body.style.backgroundSize      = '100% auto';
-          document.body.style.backgroundPosition  = '';
-        break;
-
-        default:
-          document.body.style.backgroundRepeat    = 'repeat';
-          document.body.style.backgroundPosition  = '';
-          document.body.style.backgroundSize      = 'auto';
-        break;
-      }
-    } else {
-      document.body.style.backgroundImage     = '';
-      document.body.style.backgroundRepeat    = 'no-repeat';
-      document.body.style.backgroundPosition  = '';
-      document.body.style.backgroundSize      = 'auto';
-    }
+    var cn = document.body.className;
+    var nc = 'Wallpaper' + className + ' ';
+    document.body.className             = cn.replace(/(Wallpaper(.*)\s?)?/, nc);
+    document.body.style.backgroundImage = back;
 
     // Theme
     var theme = this.getSetting('theme');
