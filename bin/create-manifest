@@ -38,6 +38,8 @@ foreach ( $dirs as $path ) {
   }
 }
 
+ksort($combined);
+
 if ( $size = file_put_contents(ROOTDIR . "/packages.json", json_encode($combined)) ) {
   $count = sizeof($combined);
   print "Wrote package manifest: {$size}b ($count apps)\n";

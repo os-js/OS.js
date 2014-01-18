@@ -4,7 +4,6 @@
 ### Alpha
 
 * Keyboard shortcuts for window actions
-* CoreWM: Sort application list
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Writer - Check for changes before opening/new file
