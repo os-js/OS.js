@@ -3,9 +3,9 @@
 
 ### Alpha
 
+* Method for launching multiple applications (queued -- from session restore)
 * Keyboard shortcuts for window actions
 * CoreWM: Sort application list
-* CoreWM: Finish window-swicher and re-enable
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Writer - Check for changes before opening/new file
