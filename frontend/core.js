@@ -299,7 +299,7 @@
           a = new OSjs.Applications[n](arg, result);
           a.__sname = n;
 
-          onConstructed(a);
+          onConstructed(a, result);
         } catch ( e ) {
           console.warn("Error on constructing application", e, e.stack);
           _error("Application '" + n + "'construct failed: " + e, e);
@@ -319,7 +319,7 @@
           try {
             _HANDLER.getApplicationSettings(a.__name, function(settings) {
               a.init(_CORE, settings, result);
-              onFinished(a);
+              onFinished(a, result);
               console.groupEnd();
             });
           } catch ( e ) {
@@ -367,6 +367,49 @@
       return a;
     }
     return false;
+  }
+
+  function LaunchProcessList(list, onSuccess, onError) {
+    list      = list      || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
+    onSuccess = onSuccess || function() {};
+    onError   = onError   || function() {};
+
+    var _onSuccess = function(app, metadata, sname, sargs, sdata) {
+      onSuccess(app, metadata, sname, sargs, sdata);
+      _onNext();
+    };
+
+    var _onError = function(err, name, args) {
+      console.warn("LaunchProcessList() _onError()", err);
+      onError(err, name, args);
+      _onNext();
+    };
+
+    var _onNext = function() {
+      if ( list.length ) {
+        var s = list.pop();
+        if ( typeof s !== 'object' ) { return; }
+
+        var sname = s.name;
+        var sargs = s.args || {};
+        var sdata = s.data || {};
+
+        if ( !sname ) {
+          console.warn("LaunchProcessList() _onNext()", "No application name defined");
+          return;
+        }
+
+        if ( typeof sargs.length !== 'undefined' ) { sargs = {}; }
+
+        OSjs.API.launch(sname, sargs, function(app, metadata) {
+          _onSuccess(app, metadata, sname, sargs, sdata);
+        }, function(err, name, args) {
+          _onError(err, name, args);
+        });
+      }
+    };
+
+    _onNext();
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -2217,6 +2260,7 @@
   OSjs.API.call               = APICall;
   OSjs.API.error              = ErrorDialog;
   OSjs.API.launch             = LaunchProcess;
+  OSjs.API.launchList         = LaunchProcessList;
   OSjs.API.open               = LaunchFile;
   OSjs.API.playSound          = PlaySound;
 

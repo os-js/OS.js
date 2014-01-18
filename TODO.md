@@ -3,7 +3,6 @@
 
 ### Alpha
 
-* Method for launching multiple applications (queued -- from session restore)
 * Keyboard shortcuts for window actions
 * CoreWM: Sort application list
 * Applications:

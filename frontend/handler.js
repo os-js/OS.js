@@ -245,45 +245,27 @@
    * Default method to restore last running session
    */
   DefaultHandler.prototype.loadSession = function() {
-    var _list = [];
-
-    var onSuccess = function(data, a) {
-      var w, r;
-      for ( var i = 0, l = data.length; i < l; i++ ) {
-        r = data[i];
-        w = a._getWindow(r.name);
-        if ( w ) {
-          w._move(r.position.x, r.position.y);
-          w._resize(r.dimension.w, r.dimension.h);
-
-          console.info('DefaultHandler::loadSession()->onSuccess()', 'Restored window "' + r.name + '" from session');
-        }
-      }
-
-      onNext();
-    };
-
-    var onNext = function() {
-      if ( _list.length ) {
-        var s = _list.pop();
-        var sargs = s.args || {};
-        if ( typeof sargs.length !== 'undefined' ) { sargs = {}; }
-
-        OSjs.API.launch(s.name, sargs, (function(data) {
-          return function(a) {
-            onSuccess(data, a);
-          };
-        })(s.windows), function(err) {
-          console.warn("_loadSession() error", err);
-          onNext();
-        });
-      }
-    };
-
     this.getUserSession(function(res) {
       if ( res ) {
-        _list = res;
-        onNext();
+        var list = [];
+        for ( var i = 0; i < res.length; i++ ) {
+          list.push({name: res[i].name, args: res[i].args, data: {windows: res[i].windows || []}});
+        }
+
+        OSjs.API.launchList(list, function(app, metadata, sname, sargs, sdata) {
+          var data = ((sdata || {}).windows) || [];
+          var w, r;
+          for ( var i = 0, l = data.length; i < l; i++ ) {
+            r = data[i];
+            w = app._getWindow(r.name);
+            if ( w ) {
+              w._move(r.position.x, r.position.y);
+              w._resize(r.dimension.w, r.dimension.h);
+
+              console.info('DefaultHandler::loadSession()->onSuccess()', 'Restored window "' + r.name + '" from session');
+            }
+          }
+        });
       }
     });
   };
