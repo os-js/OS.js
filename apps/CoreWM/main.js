@@ -129,6 +129,68 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
+  // PANELS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * This is a work in progress
+   */
+  var Panel = function(name) {
+    this._name = name;
+    this._$element = null;
+    this._$container = null;
+  };
+
+  Panel.prototype.init = function(root) {
+    var self = this;
+
+    this._$container = document.createElement('ul');
+
+    this._$element = document.createElement('div');
+    this._$element.className = 'WMPanel';
+
+    this._$element.onmousedown = function(ev) {
+      ev.preventDefault();
+      return false;
+    };
+    this._$element.onclick = function(ev) {
+      OSjs.GUI.blurMenu();
+    };
+    this._$element.oncontextmenu = function(ev) {
+      OSjs.GUI.blurMenu();
+      return false;
+    };
+
+    this._$element.appendChild(this._$container);
+    root.appendChild(this._$element);
+  };
+
+  Panel.prototype.destroy = function() {
+    if ( this._$element && this._$element.parentNode ) {
+      this._$element.onmousedown = null;
+      this._$element.onclick = null;
+      this._$element.oncontextmenu = null;
+      this._$element.parentNode.removeChild(this._$element);
+      this._$element = null;
+    }
+  };
+
+  Panel.prototype.addItem = function(callback) {
+    var self = this;
+    var el = document.createElement('li');
+    el.className = 'PanelItem';
+    this._$container.appendChild(el);
+
+    setTimeout(function() {
+      callback.call(self, self._$element, el);
+    }, 0);
+  };
+
+  Panel.prototype.getRoot = function() {
+    return this._$element;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
@@ -137,10 +199,12 @@
    */
   var CoreWM = function(args, metadata) {
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
-    this._settings = DefaultSettings(args.defaults || {});
-    this.clockInterval = null;
-    this.$switcher = null;
-    this.switcherIndex = -1;
+
+    this._settings      = DefaultSettings(args.defaults || {});
+    this.clockInterval  = null;
+    this.$switcher      = null;
+    this.switcherIndex  = -1;
+    this.panels         = [];
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
@@ -148,100 +212,12 @@
   CoreWM.prototype.init = function() {
     WindowManager.prototype.init.apply(this, arguments);
 
-    var _openDesktopSettings = function() {
-      OSjs.API.launch('ApplicationSettings');
-    };
+    this.initDesktop();
+    this.initPanels();
+    this.initWM();
+  };
 
-    var _openDesktopMenu = function(ev) {
-      var h = OSjs.API.getHandlerInstance();
-      if ( h ) {
-        var app = h.getApplicationMetadata('ApplicationSettings');
-        if ( app ) {
-          OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
-        }
-      }
-    };
-
-    var background = document.getElementById('Background');
-    if ( background ) {
-      background.oncontextmenu = function(ev) {
-        ev.preventDefault();
-        _openDesktopMenu(ev);
-        return false;
-      };
-    };
-
-    var root = document.createElement('div');
-    root.id = 'WindowList';
-    root.onmousedown = function(ev) {
-      ev.preventDefault();
-      return false;
-    };
-    root.onclick = function(ev) {
-      OSjs.GUI.blurMenu();
-    };
-    root.oncontextmenu = function(ev) {
-      OSjs.GUI.blurMenu();
-      return false;
-    };
-
-    // Application Menu
-    var el = document.createElement('ul');
-    var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
-    var sel;
-
-    sel = document.createElement('li');
-    sel.title = "Applications";
-    sel.innerHTML = '<img alt="" src="' + icon + '" />';
-    sel.onclick = function(ev) {
-      ev.stopPropagation();
-      if ( self.getSetting('menuCategories') ) {
-        BuildCategoryMenu(ev);
-      } else {
-        BuildMenu(ev);
-      }
-      return false;
-    };
-    el.appendChild(sel);
-
-    // Quit button
-    icon = OSjs.API.getThemeResource('actions/exit.png', 'icon');
-    sel = document.createElement('li');
-    sel.title = 'Log out (Exit)';
-    sel.innerHTML = '<img alt="" src="' + icon + '" />';
-    sel.onclick = function() {
-      var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
-      var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");
-      OSjs._shutdown(t, false);
-    };
-    el.appendChild(sel);
-
-    // Background
-    var back = document.createElement('div');
-    back.className = 'Background';
-
-    // Clock
-    var clock = document.createElement('div');
-    clock.className = 'Clock';
-    clock.innerHTML = '00:00';
-    var _updateClock = function() {
-      var d = new Date();
-      clock.innerHTML = d.toLocaleTimeString();
-      clock.title     = d.toLocaleDateString();
-    };
-    this.clockInterval = setInterval(_updateClock, 1000);
-    _updateClock();
-    root.appendChild(clock);
-
-    // Append
-    root.appendChild(el);
-    root.appendChild(back);
-
-    this._$element = el;
-    this._$root = root;
-
-    document.body.appendChild(this._$root);
-
+  CoreWM.prototype.initWM = function() {
     var self = this;
     OSjs.API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
       if ( s ) {
@@ -290,9 +266,112 @@
     }
   };
 
+  CoreWM.prototype.initDesktop = function() {
+    var _openDesktopSettings = function() {
+      OSjs.API.launch('ApplicationSettings');
+    };
+
+    var _openDesktopMenu = function(ev) {
+      var h = OSjs.API.getHandlerInstance();
+      if ( h ) {
+        var app = h.getApplicationMetadata('ApplicationSettings');
+        if ( app ) {
+          OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
+        }
+      }
+    };
+
+    var background = document.getElementById('Background');
+    if ( background ) {
+      background.oncontextmenu = function(ev) {
+        ev.preventDefault();
+        _openDesktopMenu(ev);
+        return false;
+      };
+    };
+  };
+
+  CoreWM.prototype.initPanels = function() {
+    var self = this;
+    var p = new Panel('Default');
+
+    p.init(document.body);
+
+    // Buttons
+    p.addItem(function(root, elem) {
+      var el = document.createElement('ul');
+      var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
+      var sel = document.createElement('li');
+      sel.className = 'Button';
+      sel.title = "Applications";
+      sel.innerHTML = '<img alt="" src="' + icon + '" />';
+      sel.onclick = function(ev) {
+        ev.stopPropagation();
+        if ( self.getSetting('menuCategories') ) {
+          BuildCategoryMenu(ev);
+        } else {
+          BuildMenu(ev);
+        }
+        return false;
+      };
+
+      el.appendChild(sel);
+
+      icon = OSjs.API.getThemeResource('actions/exit.png', 'icon');
+      sel = document.createElement('li');
+      sel.className = 'Button';
+      sel.title = 'Log out (Exit)';
+      sel.innerHTML = '<img alt="" src="' + icon + '" />';
+      sel.onclick = function() {
+        var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
+        var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");
+        OSjs._shutdown(t, false);
+      };
+      el.appendChild(sel);
+
+      elem.className += ' PanelItemButtons';
+      elem.appendChild(el);
+    });
+
+    // Window List
+    p.addItem(function(root, elem) {
+      var el = document.createElement('ul');
+      el.id = 'WindowList';
+
+      // Updated dynamically
+
+      elem.className += ' PanelItemWindowList';
+      elem.appendChild(el);
+    });
+
+    // Clock
+    p.addItem(function(root, elem) {
+      var clock = document.createElement('div');
+      clock.innerHTML = '00:00';
+      var _updateClock = function() {
+        var d = new Date();
+        clock.innerHTML = d.toLocaleTimeString();
+        clock.title     = d.toLocaleDateString();
+      };
+      self.clockInterval = setInterval(_updateClock, 1000);
+      _updateClock();
+      elem.className += ' PanelItemClock';
+      elem.appendChild(clock);
+    });
+
+    this.panels.push(p);
+  };
+
   CoreWM.prototype.destroy = function(kill) {
     if ( kill && !confirm("Killing this process will stop things from working!") ) {
       return false;
+    }
+
+    if ( this.panels.length ) {
+      for ( var i = 0; i < this.panels.length; i++ ) {
+        this.panels[i].destroy();
+      }
+      this.panels = [];
     }
 
     if ( this.clockInterval ) {
@@ -302,10 +381,6 @@
 
     // Reset styles
     this.applySettings(DefaultSettings(), true);
-
-    if ( this._$root && this._$root.parentNode ) {
-      this._$root.parentNode.removeChild(this._$root);
-    }
 
     return WindowManager.prototype.destroy.apply(this, []);
   };
@@ -423,12 +498,16 @@
     if ( win && win._properties.allow_windowlist === false ) {
       return;
     }
+    // TODO: Move this code into a custom class
     //console.log("OSjs::Applications::CoreWM::eventWindow", ev, win._name);
+    var $el = document.getElementById('WindowList');
+    if ( !$el ) {
+      return;
+    }
 
     var cn = 'WindowList_Window_' + win._wid;
-    var self = this;
     var _change = function(cn, callback) {
-      var els = self._$element.getElementsByClassName(cn);
+      var els = $el.getElementsByClassName(cn);
       if ( els.length ) {
         for ( var i = 0, l = els.length; i < l; i++ ) {
           if ( els[i] && els[i].parentNode ) {
@@ -441,12 +520,12 @@
     if ( ev == 'create' ) {
       var el = document.createElement('li');
       el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
-      el.className = 'WindowList_Window_' + win._wid;
+      el.className = 'Button WindowList_Window_' + win._wid;
       el.title = win._title;
       el.onclick = function() {
         win._restore();
       };
-      this._$element.appendChild(el);
+      $el.appendChild(el);
     } else if ( ev == 'close' ) {
       _change(cn, function(el) {
         el.parentNode.removeChild(el);
@@ -457,7 +536,7 @@
       });
     } else if ( ev == 'blur' ) {
       _change(cn, function(el) {
-        el.className = el.className.replace(' Focused', '');
+        el.className = el.className.replace(/\s?Focused/, '');
       });
     } else if ( ev == 'title' ) {
       _change(cn, function(el) {
@@ -535,7 +614,9 @@
       classNames.push(opts.position == 'top' ? 'Top' : 'Bottom');
     }
 
-    this._$root.className = classNames.join(' ');
+    if ( this.panels.length ) {
+      this.panels[0].getRoot().className = 'WMPanel ' + classNames.join(' ');
+    }
 
     if ( save ) {
       OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());

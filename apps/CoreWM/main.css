@@ -1,7 +1,7 @@
 /**
- * WindowManager
+ * WindowManager Panels
  */
-#WindowList {
+.WMPanel {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -15,40 +15,29 @@
   -ms-user-select: none;
   user-select: none;
 }
-#WindowList.Ontop {
+.WMPanel.Ontop {
   z-index : 9999998;
 }
-#WindowList.Bottom {
+.WMPanel.Bottom {
   top : auto;
   bottom : 0px;
 }
-
-#WindowList .Clock {
-  position : absolute;
-  top : 5px;
-  bottom : 5px;
-  right : 10px;
-  z-index : 3;
-  width : 70px;
-  overflow : hidden;
-  cursor : default;
-}
-
-#WindowList ul {
-  position : absolute;
-  top : 5px;
-  left : 5px;
-  bottom : 5px;
-  right : 80px;
-  z-index : 2;
-
-  overflow : hidden;
-  list-style-type : none;
-  padding : 0;
+.WMPanel ul {
   margin : 0;
+  padding : 0;
+  list-style-type : none;
 }
+.WMPanel > ul {
+  position : absolute;
+  top : 5px;
+  right : 5px;
+  bottom : 5px;
+  left : 5px;
 
-#WindowList li {
+  /* FIXME: Static for now! */
+  right : 100px;
+}
+.WMPanel ul > li.Button {
   margin : 0;
   padding : 0;
   padding-left : 5px;
@@ -56,18 +45,52 @@
   margin-left : 5px;
   height : 26px;
   line-height : 26px;
-  float : left;
   max-width : 150px;
 
   white-space : nowrap;
-  display : block;
+  display : inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
 }
-#WindowList li:last-child {
+.WMPanel ul > li.Button:last-child {
   margin-right : 0;
 }
+.WMPanel ul > li.Button span {
+  padding-left : 5px;
+}
+.WMPanel ul > li.Button img {
+  vertical-align : middle;
+}
+.WMPanel > ul > li,
+.WMPanel > ul > li ul {
+  display : inline-block;
+}
+
+/**
+ * WindowManager Panel Items
+ */
+
+.WMPanel .PanelItemClock {
+  position : absolute;
+  top : 0px;
+  bottom : 0px;
+  right : -75px; /* FIXME Static for now */
+  z-index : 3;
+  width : 70px;
+  cursor : default;
+}
+.WMPanel .PanelItemWindowList {
+  /* FIXME Static for now */
+  position : absolute;
+  top : 0px;
+  bottom : 0px;
+  right : 0px;
+  left : 65px;
+  overflow : hidden;
+}
+
+/*
 #WindowList .Background {
   position : absolute;
   top : 0px;
@@ -76,13 +99,11 @@
   right : 0px;
   z-index : 1;
 }
-#WindowList li span {
-  padding-left : 5px;
-}
-#WindowList li img {
-  vertical-align : middle;
-}
+*/
 
+/**
+ * Window Switcher
+ */
 #WindowSwitcher {
   position : absolute;
   top : 50%;
