@@ -47,19 +47,23 @@
   // INTERNAL VARIABLES
   /////////////////////////////////////////////////////////////////////////////
 
-  var _PROCS = [];
-  var _WM;
-  var _WIN;
-  var _CORE;
-  var _HANDLER;
-  var _$LOADING;
+  var _PROCS = [];        // Running processes
+  var _WM;                // Running Window Manager process
+  var _WIN;               // Currently selected Window
+  var _CORE;              // Running Core process
+  var _HANDLER;           // Running Handler process
+  var _$LOADING;          // Loading DOM Element
 
-  var ANIMDURATION = 300;
+  var ANIMDURATION = 300; // Animation duration constant
 
   /////////////////////////////////////////////////////////////////////////////
   // DOM HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Get next z-index for Window
+   * @return integer
+   */
   var getNextZindex = (function() {
     var _lzindex  = 1;
     var _ltzindex = 100000;
@@ -72,12 +76,20 @@
     };
   })();
 
+  /**
+   * Wrapper for stopPropagation()
+   * @return boolean
+   */
   function stopPropagation(ev) {
     OSjs.GUI.blurMenu();
     ev.stopPropagation();
     return false;
   }
 
+  /**
+   * Get viewport
+   * @return Object
+   */
   function _getWindowSpace() {
     return {
       top    : 0,
@@ -87,6 +99,10 @@
     };
   }
 
+  /**
+   * Get viewport (Wrapper)
+   * @return Object
+   */
   function getWindowSpace() {
     if ( _WM ) {
       return _WM.getWindowSpace();
@@ -98,6 +114,15 @@
   // API HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Global function for calling API (backend)
+   *
+   * @param   String    m       Method name
+   * @param   Object    a       Method arguments
+   * @param   Function  cok     Callback on success
+   * @param   Function  cerror  Callback on error
+   * @return  void
+   */
   function APICall(m, a, cok, cerror) {
     a = a || {};
 
@@ -124,6 +149,16 @@
     });
   }
 
+  /**
+   * Global function for showing an error dialog
+   *
+   * @param   String    title       Dialog title
+   * @param   String    message     Dialog message
+   * @param   String    error       Error message
+   * @param   Object    exception   Exception reference (optional)
+   * @param   boolean   bugreport   Enable bugreporting for this error (default=fale)
+   * @return  null
+   */
   function ErrorDialog(title, message, error, exception, bugreport) {
     if ( _HANDLER.getConfig('Core').BugReporting ) {
       bugreport = typeof bugreport == 'undefined' ? false : (bugreport ? true : false);
@@ -152,6 +187,15 @@
     return null;
   }
 
+  /**
+   * Open a file
+   *
+   * @param   String          fname         Full path to file
+   * @param   String          mime          File MIME type
+   * @param   Object          launchArgs    Arguments to send to process launch function
+   * @see     LaunchProcess
+   * @return  void
+   */
   function LaunchFile(fname, mime, launchArgs) {
     launchArgs = launchArgs || {};
     if ( !fname ) { throw "Cannot LaunchFile() without a filename"; }
@@ -204,6 +248,16 @@
     _HANDLER.getApplicationNameByMime(mime, fname, launchArgs.forceList, _onDone);
   }
 
+  /**
+   * Launch a Process
+   *
+   * @param   String      n               Application Name
+   * @param   Object      arg             Launch arguments
+   * @param   Function    onFinished      Callback on success
+   * @param   Function    onError         Callback on error
+   * @param   Function    onConstructed   Callback on application init
+   * @return  void
+   */
   function LaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
     onFinished    = onFinished    || function() {};
@@ -358,6 +412,62 @@
     _preload(data);
   }
 
+  /**
+   * Launch Processes from a List
+   *
+   * @param   Array         list        List of launch application arguments
+   * @param   Function      onSuccess   Callback on success
+   * @param   Function      onError     Callback on error
+   * @see     LaunchProcess
+   * @return  void
+   */
+  function LaunchProcessList(list, onSuccess, onError) {
+    list      = list      || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
+    onSuccess = onSuccess || function() {};
+    onError   = onError   || function() {};
+
+    var _onSuccess = function(app, metadata, appName, appArgs, queueData) {
+      onSuccess(app, metadata, appName, appArgs, queueData);
+      _onNext();
+    };
+
+    var _onError = function(err, appName, appArgs) {
+      console.warn("LaunchProcessList() _onError()", err);
+      onError(err, appName, appArgs);
+      _onNext();
+    };
+
+    var _onNext = function() {
+      if ( list.length ) {
+        var s = list.pop();
+        if ( typeof s !== 'object' ) { return; }
+
+        var aname = s.name;
+        var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
+        var adata = s.data || {};
+
+        if ( !aname ) {
+          console.warn("LaunchProcessList() _onNext()", "No application name defined");
+          return;
+        }
+
+        OSjs.API.launch(aname, aargs, function(app, metadata) {
+          _onSuccess(app, metadata, aname, aargs, adata);
+        }, function(err, name, args) {
+          _onError(err, name, args);
+        });
+      }
+    };
+
+    _onNext();
+  }
+
+  /**
+   * Global function for playing a sound
+   *
+   * @param   String      name      Sound name
+   * @return  DOMAudio
+   */
   function PlaySound(name) {
     if ( OSjs.Compability.audio ) {
       var f = OSjs.API.getThemeResource(name, 'sound');
@@ -367,49 +477,6 @@
       return a;
     }
     return false;
-  }
-
-  function LaunchProcessList(list, onSuccess, onError) {
-    list      = list      || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
-    onSuccess = onSuccess || function() {};
-    onError   = onError   || function() {};
-
-    var _onSuccess = function(app, metadata, sname, sargs, sdata) {
-      onSuccess(app, metadata, sname, sargs, sdata);
-      _onNext();
-    };
-
-    var _onError = function(err, name, args) {
-      console.warn("LaunchProcessList() _onError()", err);
-      onError(err, name, args);
-      _onNext();
-    };
-
-    var _onNext = function() {
-      if ( list.length ) {
-        var s = list.pop();
-        if ( typeof s !== 'object' ) { return; }
-
-        var sname = s.name;
-        var sargs = s.args || {};
-        var sdata = s.data || {};
-
-        if ( !sname ) {
-          console.warn("LaunchProcessList() _onNext()", "No application name defined");
-          return;
-        }
-
-        if ( typeof sargs.length !== 'undefined' ) { sargs = {}; }
-
-        OSjs.API.launch(sname, sargs, function(app, metadata) {
-          _onSuccess(app, metadata, sname, sargs, sdata);
-        }, function(err, name, args) {
-          _onError(err, name, args);
-        });
-      }
-    };
-
-    _onNext();
   }
 
   /////////////////////////////////////////////////////////////////////////////

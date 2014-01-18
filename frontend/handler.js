@@ -252,8 +252,8 @@
           list.push({name: res[i].name, args: res[i].args, data: {windows: res[i].windows || []}});
         }
 
-        OSjs.API.launchList(list, function(app, metadata, sname, sargs, sdata) {
-          var data = ((sdata || {}).windows) || [];
+        OSjs.API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
+          var data = ((queueData || {}).windows) || [];
           var w, r;
           for ( var i = 0, l = data.length; i < l; i++ ) {
             r = data[i];
