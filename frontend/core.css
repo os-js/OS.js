@@ -30,6 +30,32 @@
  */
 
 /**
+ * Default Wallpaper stuff
+ */
+body.WallpaperColor {
+  background-image : none;
+}
+body.WallpaperDefault {
+  background-repeat : repeat;
+}
+body.WallpaperNormal {
+  background-repeat : no-repeat;
+}
+body.WallpaperCenter {
+  background-repeat : no-repeat;
+  background-position : center center;
+}
+body.WallpaperFill {
+  background-repeat : no-repeat;
+  background-size : cover;
+  background-position : center center fixed;
+}
+body.WallpaperStrech {
+  background-repeat : no-repeat;
+  background-size : 100% auto;
+}
+
+/**
  * Misc
  */
 
