@@ -1293,6 +1293,7 @@
         allow_drop        : false,
         allow_iconmenu    : true,
         allow_ontop       : true,
+        allow_hotkeys     : true, // FIXME
         min_width         : 100,
         min_height        : 50,
         max_width         : null,

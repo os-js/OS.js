@@ -180,7 +180,7 @@
       this.index = index;
     } else {
       this.index++;
-      if ( this.index > (l-1) ) {
+      if ( this.index >= l ) {
         this.index = 0;
       }
 
