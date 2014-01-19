@@ -1946,6 +1946,11 @@
     this._onChange('minimize');
     this._fireHook('minimize');
 
+    // FIXME: Select next visible window instead
+    if ( _WIN && _WIN._wid == this._wid ) {
+      _WIN = null;
+    }
+
     return true;
   };
 
