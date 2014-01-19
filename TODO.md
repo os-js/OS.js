@@ -3,7 +3,6 @@
 
 ### Alpha
 
-* GUI: When changing panel position, check windows and move them into view if crash with bar
 * CoreWM: Keyboard shortcuts for window actions
 * CoreWM: Custom keyboard binding shortcuts
 * Applications:
