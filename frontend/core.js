@@ -1825,12 +1825,10 @@
       gel.wid = this._wid;
 
       //console.log("OSjs::Core::Window::_addGUIElement()");
-      if ( gel.focusable ) {
-        if ( gel.opts.focusable ) {
-          this._addHook('blur', function() {
-            gel.blur();
-          });
-        }
+      if ( gel.opts && gel.opts.focusable ) {
+        this._addHook('blur', function() {
+          gel.blur();
+        });
       }
 
       // NOTE: Fixes for Iframe "bugs"

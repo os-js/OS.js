@@ -352,7 +352,7 @@
     this.onClick      = opts.onClick      || function() {};
     this.onKeyPress   = opts.onKeyPress   || function() {};
 
-    GUIElement.apply(this, [name]);
+    GUIElement.apply(this, [name, opts]);
   };
 
   _Input.prototype = Object.create(GUIElement.prototype);
