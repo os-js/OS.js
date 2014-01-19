@@ -1293,7 +1293,7 @@
         allow_drop        : false,
         allow_iconmenu    : true,
         allow_ontop       : true,
-        allow_hotkeys     : true, // FIXME
+        allow_hotkeys     : true,
         min_width         : 100,
         min_height        : 50,
         max_width         : null,
@@ -2127,8 +2127,27 @@
     return true;
   };
 
+  Window.prototype._moveTo = function(pos) {
+    if ( !_WM ) { return; }
+
+    var s = _WM.getWindowSpace();
+    var cx = this._position.x;
+    var cy = this._position.y;
+
+    if ( pos == 'left' ) {
+      this._move(s.left, cy);
+    } else if ( pos == 'right' ) {
+      this._move((s.width - this._dimension.w), cy);
+    } else if ( pos == 'top' ) {
+      this._move(cx, s.top);
+    } else if ( pos == 'bottom' ) {
+      this._move(cx, (s.height - this._dimension.h));
+    }
+  };
+
   Window.prototype._move = function(x, y) {
     if ( !this._properties.allow_move ) { return false; }
+    if ( typeof x === 'undefined' || typeof y === 'undefined') { return; }
 
     this._$element.style.top  = y + "px";
     this._$element.style.left = x + "px";

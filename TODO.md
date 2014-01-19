@@ -3,7 +3,6 @@
 
 ### Alpha
 
-* CoreWM: Keyboard shortcuts for window actions
 * CoreWM: Custom keyboard binding shortcuts
 * Applications:
   * New Draw codebase -- layer, effect support etc.

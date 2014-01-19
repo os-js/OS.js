@@ -524,7 +524,9 @@
   //
 
   CoreWM.prototype.onKeyUp = function(ev, win) {
-    if ( ev && !ev.shiftKey ) {
+    if ( !ev ) { return; }
+
+    if ( !ev.shiftKey ) {
       if ( this.switcher ) {
         this.switcher.hide(ev, win, this);
       }
@@ -532,9 +534,30 @@
   };
 
   CoreWM.prototype.onKeyDown = function(ev, win) {
-    if ( ev && ev.shiftKey && ev.keyCode === 9 ) {
+    if ( !ev ) { return; }
+    // TODO: Custom key bindings
+
+    if ( ev.shiftKey && ev.keyCode === 9 ) { // Toggle Window switcher
       if ( this.switcher ) {
         this.switcher.show(ev, win, this);
+      }
+    } else if ( ev.altKey ) {
+      if ( win && win._properties.allow_hotkeys ) {
+        if ( ev.keyCode === 72 ) { // Hide window [H]
+          win._minimize();
+        } else if ( ev.keyCode === 77 ) { // Maximize window [M]
+          win._maximize();
+        } else if ( ev.keyCode === 82 ) { // Restore window [R]
+          win._restore();
+        } else if ( ev.keyCode === 37 ) { // Pin Window Left [Left]
+          win._moveTo('left');
+        } else if ( ev.keyCode === 39 ) { // Pin Window Right [Right]
+          win._moveTo('right');
+        } else if ( ev.keyCode === 38 ) { // Pin Window Top [Up]
+          win._moveTo('top');
+        } else if ( ev.keyCode === 40 ) { // Pin Window Bottom [Down]
+          win._moveTo('bottom');
+        }
       }
     }
   };
