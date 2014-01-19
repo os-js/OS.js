@@ -444,6 +444,7 @@
    * Menu class
    */
   var Menu = function(menuList) {
+    var self = this;
 
     var _onclick = function(ev, func) {
       func = func || function() { console.warn("Warning -- you forgot to implement a handler"); };
@@ -466,7 +467,7 @@
 
       if ( list ) {
         var ul = document.createElement('ul');
-        var m, img, span, arrow;
+        var m, img, span, arrow, sub;
         for ( var i = 0, l = list.length; i < l; i++ ) {
           m           = document.createElement('li');
           m.className = '';
@@ -496,8 +497,18 @@
             arrow           = document.createElement('div');
             arrow.className = 'Arrow';
 
-            m.appendChild(_createMenu(list[i].menu));
+            sub = _createMenu(list[i].menu);
+            m.appendChild(sub);
             m.appendChild(arrow);
+
+            m.onmouseover = (function(s) {
+              return function(ev) {
+                var elem = this;
+                setTimeout(function() {
+                  self.show(elem, s);
+                }, 0);
+              };
+            })(sub);
           } else {
             m.onclick = (function(ref) {
               return function(ev) {
@@ -528,6 +539,7 @@
         var i = 0, l = ul.childNodes.length;
         for ( i; i < l; i++ ) {
           ul.childNodes[i].onclick = null;
+          ul.childNodes[i].onmousedown = null;
         }
       }
       if ( this.$element.parentNode ) {
@@ -537,24 +549,35 @@
     this.$element = null;
   };
 
-  Menu.prototype.show = function(pos) {
+  // TODO: We also need to check left/right some time around
+  Menu.prototype.show = function(pos, submenu) {
+    var tw, th, px, py;
+    if ( submenu ) {
+      var off = OSjs.Utils.$position(submenu);
+      if ( off.bottom > window.innerHeight ) {
+        submenu.style.top = (window.innerHeight-off.bottom) + 'px';
+      }
+      return;
+    }
+
     this.$element.style.top = -10000 + 'px';
     this.$element.style.left = -10000 + 'px';
     document.body.appendChild(this.$element);
 
-    var tw = pos.x + this.$element.offsetWidth;
-    var th = pos.y + this.$element.offsetHeight;
-    var px = pos.x;
-    var py = pos.y;
+    tw = pos.x + this.$element.offsetWidth;
+    th = pos.y + this.$element.offsetHeight;
+    px = pos.x;
+    py = pos.y;
+
     if ( tw > window.innerWidth ) {
       px = window.innerWidth - this.$element.offsetWidth;
     }
+    this.$element.style.left = px + 'px';
+
     if ( th > window.innerHeight ) {
       py = window.innerHeight - this.$element.offsetHeight;
     }
-
     this.$element.style.top = py + 'px';
-    this.$element.style.left = px + 'px';
   };
 
   Menu.prototype.getRoot = function() {
