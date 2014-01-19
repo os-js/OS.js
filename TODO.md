@@ -23,14 +23,14 @@
 
 ### Release
 
-* VFS via IndexedDB
-* Offline usage
-* Localization
+* Offline resource pre-loading
+* Offline VFS
+* Localization (Translations)
 
 ## Future releases
 * Full Source code documentation
 * Mobile version
-* Panels with items in CoreWM
+* PanelItems in CoreWM
 
 ## Ideas for solving misc problems
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles

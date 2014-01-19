@@ -2,17 +2,18 @@
 
   function DefaultSettings(defaults) {
     var cfg = {
-      animations    : OSjs.Compability.css.animation,
-      fullscreen    : false,
-      taskbar       : {position: 'top', ontop: true},
-      desktop       : {margin: 5},
-      wallpaper     : '/themes/wallpapers/noise_red.png',
-      theme         : 'default',
-      background    : 'image-repeat',
-      menuCategories: true,
-      style         : {
+      animations      : OSjs.Compability.css.animation,
+      fullscreen      : false,
+      taskbar         : {position: 'top', ontop: true},
+      desktop         : {margin: 5},
+      wallpaper       : '/themes/wallpapers/noise_red.png',
+      theme           : 'default',
+      background      : 'image-repeat',
+      menuCategories  : true,
+      enableSwitcher  : true, // FIXME
+      enableHotkeys   : true, // FIXME
+      style           : {
         backgroundColor  : '#0B615E',
-        color            : '#333',
         fontFamily       : 'OSjsFont'
       }
     };
