@@ -657,6 +657,20 @@
         classNames.push('Ontop');
       }
       classNames.push(opts.position == 'top' ? 'Top' : 'Bottom');
+
+      // Workaround for windows appearing behind panel
+      if ( opts.position === 'top' ) {
+        var iter;
+        var space = this.getWindowSpace();
+        for ( var i = 0; i < this._windows.length; i++ ) {
+          iter = this._windows[i];
+          if ( !iter ) { continue; }
+          if ( iter._position.y < space.top ) {
+            console.warn("CoreWM::applySettings()", "I moved this window because it overlapped with a panel!", iter);
+            iter._move(iter._position.x, space.top);
+          }
+        }
+      }
     }
 
     if ( this.panels.length ) {
