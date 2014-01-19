@@ -75,7 +75,7 @@
   position : absolute;
   top : 0px;
   bottom : 0px;
-  right : -75px; /* FIXME Static for now */
+  right : -90px; /* FIXME Static for now */
   z-index : 3;
   width : 70px;
   cursor : default;
