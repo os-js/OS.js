@@ -10,8 +10,9 @@
       theme           : 'default',
       background      : 'image-repeat',
       menuCategories  : true,
-      enableSwitcher  : true, // FIXME
-      enableHotkeys   : true, // FIXME
+      enableSwitcher  : true,
+      enableHotkeys   : true,
+      moveOnResize    : true,       // Move windows into viewport on resize
       style           : {
         backgroundColor  : '#0B615E',
         fontFamily       : 'OSjsFont'
@@ -523,6 +524,32 @@
   // Events
   //
 
+  CoreWM.prototype.resize = function(ev, rect) {
+    if ( !this.getSetting('moveOnResize') ) { return; }
+
+    var space = this.getWindowSpace();
+    var i = 0, l = this._windows.length, iter, wrect;
+    var mx, my;
+    for ( i; i < l; i++ ) {
+      iter = this._windows[i];
+      if ( !iter ) { continue; }
+      wrect = iter._getViewRect();
+      if ( wrect === null ) { continue; }
+
+      mx = iter._position.x;
+      my = iter._position.y;
+
+      if ( wrect.right > rect.width ) {
+        mx = space.width - iter._dimension.w;
+      }
+      if ( wrect.bottom > rect.height ) {
+        my = space.height - iter._dimension.h;
+      }
+
+      iter._move(mx, my);
+    }
+  };
+
   CoreWM.prototype.onKeyUp = function(ev, win) {
     if ( !ev ) { return; }
 
@@ -538,10 +565,14 @@
     // TODO: Custom key bindings
 
     if ( ev.shiftKey && ev.keyCode === 9 ) { // Toggle Window switcher
+      if ( !this.getSetting('enableSwitcher') ) { return; }
+
       if ( this.switcher ) {
         this.switcher.show(ev, win, this);
       }
     } else if ( ev.altKey ) {
+      if ( !this.getSetting('enableHotkeys') ) { return; }
+
       if ( win && win._properties.allow_hotkeys ) {
         if ( ev.keyCode === 72 ) { // Hide window [H]
           win._minimize();

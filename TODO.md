@@ -3,7 +3,6 @@
 
 ### Alpha
 
-* CoreWM: On window resize, make sure windows are pulled back into view
 * CoreWM: Custom keyboard binding shortcuts
 * Applications:
   * New Draw codebase -- layer, effect support etc.

@@ -549,6 +549,9 @@
     document.addEventListener('mousedown', function(ev) {
       self._onMouseDown.apply(self, arguments);
     }, false);
+    window.addEventListener('resize', function(ev) {
+      self._onResize.apply(self, arguments);
+    }, false);
 
     // Background element
     this._$root = document.createElement('div');
@@ -681,6 +684,9 @@
     document.removeEventListener('mousedown', function(ev) {
       self._onMouseDown.apply(self, arguments);
     }, false);
+    window.removeEventListener('resize', function(ev) {
+      self._onResize.apply(self, arguments);
+    }, false);
 
     if ( this._$root ) {
       this._$root.removeEventListener('contextmenu', function(ev) {
@@ -784,6 +790,28 @@
     }
   };
 
+  Main.prototype._onResize = (function() {
+    var _timeout;
+
+    var _resize = function(ev) {
+      if ( !_WM ) { return; }
+      _WM.resize(ev, _getWindowSpace());
+    };
+
+    return function(ev) {
+      if ( _timeout ) {
+        clearTimeout(_timeout);
+        _timeout = null;
+      }
+
+
+      var self = this;
+      _timeout = setTimeout(function() {
+        _resize.call(self, ev);
+      }, 100);
+    };
+  })();
+
   Main.prototype.getProcesses = function() {
     return _PROCS;
   };
@@ -860,6 +888,9 @@
 
   WindowManager.prototype.init = function() {
     console.log("OSjs::Core::WindowManager::init()");
+  };
+
+  WindowManager.prototype.resize = function(ev, rect) {
   };
 
   WindowManager.prototype.notification = (function() {
@@ -2274,6 +2305,10 @@
   Window.prototype._toggleLoading = function(t) {
     console.debug(this._name, '>' , "OSjs::Core::Window::_toggleLoading()", t);
     this._$loading.style.display = t ? 'block' : 'none';
+  };
+
+  Window.prototype._getViewRect = function() {
+    return this._$element ? OSjs.Utils.$position(this._$element) : null;
   };
 
   Window.prototype._getRoot = function() {
