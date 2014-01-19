@@ -546,6 +546,9 @@
         my = space.height - iter._dimension.h;
       }
 
+      if ( mx < space.left ) { mx = space.left; }
+      if ( my < space.top  ) { my = space.top;  }
+
       iter._move(mx, my);
     }
   };
