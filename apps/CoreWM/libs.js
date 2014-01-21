@@ -71,7 +71,6 @@
       slider.setValue(desktopMargin);
     }});
     var tabPanels = tabs.addTab('Panels', {title: 'Panels'});
-    var tabMisc   = tabs.addTab('Misc', {title: 'Misc'});
 
     // Theme
     outer = _createContainer('Theme SettingsNoButton', 'Theme');
@@ -221,7 +220,7 @@
       'no':   'No'
     });
     useAnimations.setSelected(settings.animations ? 'yes' : 'no');
-    tabMisc.appendChild(outer);
+    tabStyles.appendChild(outer);
 
     //
     // Buttons
