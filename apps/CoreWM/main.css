@@ -6,14 +6,17 @@
   top : 0px;
   left : 0px;
   right : 0px;
-  height : 36px;
+  height : 26px;
   overflow : visible;
   z-index : 2;
+  padding : 5px;
+  margin : 0;
+
   -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+   -khtml-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 .WMPanel.Ontop {
   z-index : 9999998;
@@ -28,14 +31,22 @@
   list-style-type : none;
 }
 .WMPanel > ul {
-  position : absolute;
-  top : 5px;
-  right : 5px;
-  bottom : 5px;
-  left : 5px;
+  margin : 0;
+  padding : 0;
+  list-style-type : none;
+  height : 26px;
 
-  /* FIXME: Static for now! */
-  right : 100px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-flex-wrap: nowrap;
+     -moz-flex-wrap: nowrap;
+      -ms-flex-wrap: nowrap;
+       -o-flex-wrap: nowrap;
+          flex-wrap: nowrap;
 }
 .WMPanel ul > li.Button {
   margin : 0;
@@ -62,9 +73,37 @@
 .WMPanel ul > li.Button img {
   vertical-align : middle;
 }
-.WMPanel > ul > li,
 .WMPanel > ul > li ul {
   display : inline-block;
+}
+
+.WMPanel .PanelItem {
+  min-width : 26px;
+  min-height : 26px;
+}
+.WMPanel .PanelItemStatic {
+}
+.WMPanel .PanelItemFill {
+  -webkit-flex: 0 0 auto;
+     -moz-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+       -o-flex: 0 0 auto;
+          flex: 0 0 auto;
+}
+.WMPanel .PanelItemWide {
+  -webkit-flex: 1 1 auto;
+     -moz-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+       -o-flex: 1 1 auto;
+          flex: 1 1 auto;
+}
+
+.WMPanel .PanelItemRight {
+  -webkit-align-self : flex-end;
+     -moz-align-self : flex-end;
+      -ms-align-self : flex-end;
+       -o-align-self : flex-end;
+          align-self : flex-end;
 }
 
 /**
@@ -72,34 +111,12 @@
  */
 
 .WMPanel .PanelItemClock {
-  position : absolute;
-  top : 0px;
-  bottom : 0px;
-  right : -90px; /* FIXME Static for now */
-  z-index : 3;
   width : 70px;
   cursor : default;
 }
 .WMPanel .PanelItemWindowList {
-  /* FIXME Static for now */
-  position : absolute;
-  top : 0px;
-  bottom : 0px;
-  right : 0px;
-  left : 95px;
   overflow : hidden;
 }
-
-/*
-#WindowList .Background {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  bottom : 0px;
-  right : 0px;
-  z-index : 1;
-}
-*/
 
 /**
  * Window Switcher
@@ -128,7 +145,6 @@
 }
 #WindowSwitcher > div.Active {
 }
-
 
 /**
  * Settings Window

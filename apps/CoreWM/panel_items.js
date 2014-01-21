@@ -1,5 +1,8 @@
 (function(CoreWM, Panel, PanelItem) {
 
+  OSjs.CoreWM                   = OSjs.CoreWM             || {};
+  OSjs.CoreWM.PanelItems        = OSjs.CoreWM.PanelItems  || {};
+
   /**
    * PanelItem: Buttons
    */
@@ -15,6 +18,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$container = document.createElement('ul');
+    root.className += ' PanelItemFill';
     root.appendChild(this.$container);
 
     this.addButton('Applications', 'categories/applications-other.png', function(ev) {
@@ -77,6 +81,7 @@
 
     this.$element = document.createElement('ul');
 
+    root.className += ' PanelItemWide';
     root.appendChild(this.$element);
     return root;
   };
@@ -155,6 +160,7 @@
     this.clockInterval = setInterval(_updateClock, 1000);
     _updateClock();
 
+    root.className += ' PanelItemFill PanelItemRight';
     root.appendChild(clock);
 
     return root;
@@ -172,8 +178,6 @@
   //
   // EXPORTS
   //
-  OSjs.CoreWM                   = OSjs.CoreWM             || {};
-  OSjs.CoreWM.PanelItems        = OSjs.CoreWM.PanelItems  || {};
 
   OSjs.CoreWM.PanelItems.Buttons    = PanelItemButtons;
   OSjs.CoreWM.PanelItems.WindowList = PanelItemWindowList;
