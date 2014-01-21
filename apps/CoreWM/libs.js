@@ -491,8 +491,8 @@
     return this._options.ontop;
   };
 
-  Panel.prototype.getPosition = function() {
-    return this._options.position;
+  Panel.prototype.getPosition = function(pos) {
+    return pos ? (this._options.position === 'top') : this._options.position;
   };
 
   Panel.prototype.getRoot = function() {

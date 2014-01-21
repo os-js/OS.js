@@ -7,7 +7,7 @@
    * PanelItem: Buttons
    */
   var PanelItemButtons = function() {
-    PanelItem.apply(this, ['PanelItemButtons']);
+    PanelItem.apply(this, ['PanelItemButtons PanelItemFill']);
 
     this.$container = null;
   };
@@ -18,7 +18,6 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$container = document.createElement('ul');
-    root.className += ' PanelItemFill';
     root.appendChild(this.$container);
 
     this.addButton('Applications', 'categories/applications-other.png', function(ev) {
@@ -69,7 +68,7 @@
    * PanelItem: WindowList
    */
   var PanelItemWindowList = function() {
-    PanelItem.apply(this, ['PanelItemWindowList']);
+    PanelItem.apply(this, ['PanelItemWindowList PanelItemWide']);
 
     this.$element = null;
   };
@@ -81,7 +80,6 @@
 
     this.$element = document.createElement('ul');
 
-    root.className += ' PanelItemWide';
     root.appendChild(this.$element);
     return root;
   };
@@ -141,7 +139,7 @@
    * PanelItem: Clock
    */
   var PanelItemClock = function() {
-    PanelItem.apply(this, ['PanelItemClock']);
+    PanelItem.apply(this, ['PanelItemClock PanelItemFill PanelItemRight']);
     this.clockInterval  = null;
   };
 
@@ -160,7 +158,6 @@
     this.clockInterval = setInterval(_updateClock, 1000);
     _updateClock();
 
-    root.className += ' PanelItemFill PanelItemRight';
     root.appendChild(clock);
 
     return root;

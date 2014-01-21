@@ -234,7 +234,7 @@
     if ( applySettings ) {
       // Workaround for windows appearing behind panel
       var p = this.panels[0];
-      if ( p && p.getOntop() && p.getPosition() === 'top' ) {
+      if ( p && p.getOntop() && p.getPosition('top') ) {
         var iter;
         var space = this.getWindowSpace();
         for ( var i = 0; i < this._windows.length; i++ ) {
@@ -446,7 +446,7 @@
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
       if ( p && p.getOntop() ) {
-        if ( p.getPosition() == 'top' ) {
+        if ( p.getPosition('top') ) {
           s.top    += 35;
           s.height -= 35;
         } else {
@@ -474,7 +474,7 @@
     var p;
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
-      if ( p && p.getOntop() && p.getPosition() == 'top' ) {
+      if ( p && p.getOntop() && p.getPosition('top') ) {
         pos.y += 35;
       }
     }
