@@ -110,10 +110,28 @@
     return WindowManager.prototype.destroy.apply(this, []);
   };
 
+  // Copy from Application
   CoreWM.prototype._onMessage = function(obj, msg, args) {
     if ( msg == 'destroyWindow' && obj._name === 'CoreWMSettingsWindow' ) {
       this.settingsWindow = null;
     }
+  };
+
+  // Copy from Application
+  CoreWM.prototype._createDialog = function(className, args, parentClass) {
+    if ( OSjs.Dialogs[className] ) {
+
+      var w = Object.create(OSjs.Dialogs[className].prototype);
+      OSjs.Dialogs[className].apply(w, args);
+
+      if ( parentClass && (parentClass instanceof Window) ) {
+        parentClass._addChild(w);
+      }
+
+      this.addWindow(w);
+      return w;
+    }
+    return false;
   };
 
   //
