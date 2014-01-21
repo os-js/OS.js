@@ -559,13 +559,18 @@
         iter._move(mx, my);
       }
 
-      // Restore maximized windows if they overflow
+      // Restore maximized windows
       if ( iter._state.maximized ) {
-        mw = (mx + iter._dimension.w);
-        mh = (my + iter._dimension.h);
+        iter._restore(true, false);
+        /* FIXME Better solution
+        mw = (iter._position.x + iter._dimension.w);
+        mh = (iter._position.y + iter._dimension.h);
+        console.log([mw, mh], [space.width, space.height]);
         if ( mw > space.width || mh > space.height ) {
-          iter._restore(true, false);
+        } else {
+          iter._state.maximized = false;
         }
+        */
       }
     }
   };

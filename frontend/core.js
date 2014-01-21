@@ -2016,10 +2016,13 @@
       this._$element.className += ' WindowHintMaximized';
     }
 
-    this._onChange('maximize');
     //this._resize();
     this._dimension.w = s.width;
     this._dimension.h = s.height;
+    this._position.x  = s.left;
+    this._position.y  = s.top;
+
+    this._onChange('maximize');
     this._focus();
 
     var anim = _WM ? _WM.getSetting('animations') : false;
