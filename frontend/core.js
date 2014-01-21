@@ -53,6 +53,7 @@
   var _CORE;              // Running Core process
   var _HANDLER;           // Running Handler process
   var _$LOADING;          // Loading DOM Element
+  var _MOUSELOCK = true;  // Mouse inside view ?!
 
   var ANIMDURATION = 300; // Animation duration constant
 
@@ -557,6 +558,13 @@
       self._onResize.apply(self, arguments);
     }, false);
 
+    document.addEventListener('mouseout', function(ev) {
+      self._onLeave(ev);
+    }, false);
+    document.addEventListener('mouseenter', function(ev) {
+      self._onEnter(ev);
+    }, false);
+
     // Background element
     this._$root = document.createElement('div');
     this._$root.id = "Background";
@@ -696,6 +704,13 @@
       self._onResize.apply(self, arguments);
     }, false);
 
+    document.removeEventListener('mouseout', function(ev) {
+      self._onLeave(ev);
+    }, false);
+    document.removeEventListener('mouseenter', function(ev) {
+      self._onEnter(ev);
+    }, false);
+
     if ( this._$root ) {
       this._$root.removeEventListener('contextmenu', function(ev) {
         return false;
@@ -790,6 +805,19 @@
     if ( _WM ) {
       _WM.onKeyDown(ev, _WIN);
     }
+  };
+
+  Main.prototype._onLeave = function(ev) {
+    var from = ev.relatedTarget || ev.toElement;
+    if ( !from || from.nodeName == "HTML" ) {
+      _MOUSELOCK = false;
+    } else {
+      _MOUSELOCK = true;
+    }
+  };
+
+  Main.prototype._onEnter = function(ev) {
+    _MOUSELOCK = true;
   };
 
   Main.prototype._onMouseDown = function(ev) {
@@ -1650,6 +1678,7 @@
       startRect = null;
     };
     var onMouseMove = function(ev) {
+      if ( !_MOUSELOCK ) { return; }
       if ( action === null ) { return; }
       var dx = ev.clientX - sx;
       var dy = ev.clientY - sy;
