@@ -261,13 +261,13 @@
             r = data[i];
             w = app._getWindow(r.name);
             if ( w ) {
-              w._move(r.position.x, r.position.y);
-              w._resize(r.dimension.w, r.dimension.h);
+              w._move(r.position.x, r.position.y, true);
+              w._resize(r.dimension.w, r.dimension.h, true);
 
               console.info('DefaultHandler::loadSession()->onSuccess()', 'Restored window "' + r.name + '" from session');
             }
           }
-        }, callback);
+        }, null, callback);
       }
     });
   };

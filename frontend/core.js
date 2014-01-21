@@ -615,7 +615,9 @@
         PlaySound('service-login');
 
         _HANDLER.loadSession(function() {
-          self._onResize();
+          setTimeout(function() {
+            self._onResize();
+          }, ANIMDURATION);
         });
         _HANDLER.onInitialized();
       });
