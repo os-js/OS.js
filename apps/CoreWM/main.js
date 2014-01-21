@@ -80,8 +80,6 @@
 
     this.switcher = new OSjs.CoreWM.WindowSwitcher();
     this.switcher.init();
-
-    this.showSettings('Panels');
   };
 
   CoreWM.prototype.destroy = function(kill) {
