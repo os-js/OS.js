@@ -9,7 +9,6 @@
 * Finish Node.js backend
 * CoreWM: Custom keyboard binding shortcuts
 * CoreWM: Finish Panel implementation
-* CoreWM: Create PanelItem implementation
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Writer - Check for changes before opening/new file

@@ -1,5 +1,8 @@
 (function(WindowManager, GUI) {
 
+  OSjs.CoreWM       = OSjs.CoreWM       || {};
+  OSjs.Applications = OSjs.Applications || {};
+
   function DefaultSettings(defaults) {
     var cfg = {
       animations      : OSjs.Compability.css.animation,
@@ -38,282 +41,6 @@
     return cfg;
   }
 
-  var  DefaultCategories = {
-    development : {icon: 'categories/package_development.png', title: 'Development'},
-    education   : {icon: 'categories/applications-sience.png', title: 'Education'},
-    games       : {icon: 'categories/package_games.png',       title: 'Games'},
-    graphics    : {icon: 'categories/package_graphics.png',    title: 'Graphics'},
-    network     : {icon: 'categories/package_network.png',     title: 'Network'},
-    multimedia  : {icon: 'categories/package_multimedia.png',  title: 'Multimedia'},
-    office      : {icon: 'categories/package_office.png',      title: 'Office'},
-    system      : {icon: 'categories/package_system.png',      title: 'System'},
-    utilities   : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
-    unknown     : {icon: 'categories/applications-other.png',  title: 'Other'}
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function _createIcon(aiter, aname) {
-    return OSjs.API.getIcon(aiter.icon, aiter);
-  }
-
-  function BuildMenu(ev) {
-    var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
-    var list = [];
-    for ( var a in apps ) {
-      if ( apps.hasOwnProperty(a) ) {
-        if ( apps[a].type === "service" || apps[a].type === "special" ) { continue; }
-        list.push({
-          title: apps[a].name,
-          icon: _createIcon(apps[a], a),
-          onClick: (function(name, iter) {
-            return function() {
-              OSjs.API.launch(name);
-            };
-          })(a, apps[a])
-        });
-      }
-    }
-    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
-  }
-
-  function BuildCategoryMenu(ev) {
-    var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
-    var list = [];
-    var cats = {};
-
-    var c, a, iter, cat, submenu;
-
-    for ( c in DefaultCategories ) {
-      if ( DefaultCategories.hasOwnProperty(c) ) {
-        cats[c] = [];
-      }
-    }
-
-    for ( a in apps ) {
-      if ( apps.hasOwnProperty(a) ) {
-        iter = apps[a];
-        if ( iter.type === "service" || iter.type === "special" ) { continue; }
-        cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
-        cats[cat].push({name: a, data: iter})
-      }
-    }
-
-    for ( c in cats ) {
-      if ( cats.hasOwnProperty(c) ) {
-        submenu = [];
-        for ( a = 0; a < cats[c].length; a++ ) {
-          iter = cats[c][a];
-          submenu.push({
-            title: iter.data.name,
-            icon: _createIcon(iter.data, iter.name),
-            onClick: (function(name, iter) {
-              return function() {
-                OSjs.API.launch(name);
-              };
-            })(iter.name, iter.data)
-          });
-        }
-
-        if ( submenu.length ) {
-          list.push({
-            title: DefaultCategories[c].title,
-            icon:  OSjs.API.getThemeResource(DefaultCategories[c].icon, 'icon', '16x16'),
-            menu:  submenu
-          });
-        }
-      }
-    }
-
-    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Window Switcher
-  /////////////////////////////////////////////////////////////////////////////
-
-  var WindowSwitcher = function() {
-    this.$switcher      = null;
-    this.showing        = false;
-    this.index          = -1;
-  };
-
-  WindowSwitcher.prototype.init = function() {
-    this.$switcher = document.createElement('div');
-    this.$switcher.id = 'WindowSwitcher';
-  };
-
-  WindowSwitcher.prototype.destroy = function() {
-    if ( this.$switcher ) {
-      if ( this.$switcher.parentNode ) {
-        this.$switcher.parentNode.removeChild(this.$switcher);
-      }
-      this.$switcher = null;
-    }
-  };
-
-  WindowSwitcher.prototype.show = function(ev, win, wm) {
-    ev.preventDefault();
-
-    var list  = [];
-    var index = 0;
-    var i = 0, l = wm._windows.length, iter;
-
-    for ( i; i < l; i++ ) {
-      iter = wm._windows[i];
-      if ( !iter ) { continue; }
-
-      list.push({
-        title:    iter._title,
-        icon:     iter._icon
-      });
-
-      if ( index === 0 ) {
-        if ( (win && win._wid === iter._wid) ) {
-           index = i;
-        }
-      }
-    }
-
-    if ( this.index === -1 ) {
-      this.index = index;
-    } else {
-      this.index++;
-      if ( this.index >= l ) {
-        this.index = 0;
-      }
-
-      index = this.index;
-    }
-
-    var height = 0;
-    var root = this.$switcher;
-    OSjs.Utils.$empty(root);
-
-    var container, image, label;
-    for ( i = 0; i < l; i++ ) {
-      iter = list[i];
-      if ( !iter ) { continue; }
-
-      container       = document.createElement('div');
-
-      image           = document.createElement('img');
-      image.src       = iter.icon;
-
-      label           = document.createElement('span');
-      label.innerHTML = iter.title;
-
-      if ( i === index ) {
-        container.className = 'Active';
-      }
-
-      container.appendChild(image);
-      container.appendChild(label);
-      root.appendChild(container);
-
-      height += 32;
-    }
-
-    if ( !root.parentNode ) {
-      document.body.appendChild(root);
-    }
-
-    root.style.height = height + 'px';
-    root.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
-
-    this.showing = true;
-    this.index = index;
-  };
-
-  WindowSwitcher.prototype.hide = function(ev, win, wm) {
-    if ( !this.showing ) { return; }
-
-    ev.preventDefault();
-
-    if ( this.$switcher && this.$switcher.parentNode ) {
-      this.$switcher.parentNode.removeChild(this.$switcher);
-    }
-
-    if ( this.index >= 0 ) {
-      var found = false;
-      if ( wm._windows[this.index] ) {
-        wm._windows[this.index]._focus();
-        found = true;
-      }
-
-      if ( !found && win ) {
-        win._focus();
-      }
-    }
-
-    this.index   = -1;
-    this.showing = false;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // PANELS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * This is a work in progress
-   */
-  var Panel = function(name) {
-    this._name = name;
-    this._$element = null;
-    this._$container = null;
-  };
-
-  Panel.prototype.init = function(root) {
-    var self = this;
-
-    this._$container = document.createElement('ul');
-
-    this._$element = document.createElement('div');
-    this._$element.className = 'WMPanel';
-
-    this._$element.onmousedown = function(ev) {
-      ev.preventDefault();
-      return false;
-    };
-    this._$element.onclick = function(ev) {
-      OSjs.GUI.blurMenu();
-    };
-    this._$element.oncontextmenu = function(ev) {
-      OSjs.GUI.blurMenu();
-      return false;
-    };
-
-    this._$element.appendChild(this._$container);
-    root.appendChild(this._$element);
-  };
-
-  Panel.prototype.destroy = function() {
-    if ( this._$element && this._$element.parentNode ) {
-      this._$element.onmousedown = null;
-      this._$element.onclick = null;
-      this._$element.oncontextmenu = null;
-      this._$element.parentNode.removeChild(this._$element);
-      this._$element = null;
-    }
-  };
-
-  Panel.prototype.addItem = function(callback) {
-    var self = this;
-    var el = document.createElement('li');
-    el.className = 'PanelItem';
-    this._$container.appendChild(el);
-
-    setTimeout(function() {
-      callback.call(self, self._$element, el);
-    }, 0);
-  };
-
-  Panel.prototype.getRoot = function() {
-    return this._$element;
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
@@ -325,7 +52,6 @@
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
 
     this._settings      = DefaultSettings(args.defaults || {});
-    this.clockInterval  = null; // FIXME
     this.panels         = [];
     this.switcher       = null;
   };
@@ -339,7 +65,7 @@
     this.initPanels();
     this.initWM();
 
-    this.switcher = new WindowSwitcher();
+    this.switcher = new OSjs.CoreWM.WindowSwitcher();
     this.switcher.init();
   };
 
@@ -358,11 +84,6 @@
         this.panels[i].destroy();
       }
       this.panels = [];
-    }
-
-    if ( this.clockInterval ) { // FIXME
-      clearInterval(this.clockInterval);
-      this.clockInterval = null;
     }
 
     // Reset styles
@@ -451,71 +172,12 @@
 
   CoreWM.prototype.initPanels = function() {
     var self = this;
-    var p = new Panel('Default');
+    var p = new OSjs.CoreWM.Panel('Default');
 
     p.init(document.body);
-
-    // Buttons
-    p.addItem(function(root, elem) {
-      var el = document.createElement('ul');
-      var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
-      var sel = document.createElement('li');
-      sel.className = 'Button';
-      sel.title = "Applications";
-      sel.innerHTML = '<img alt="" src="' + icon + '" />';
-      sel.onclick = function(ev) {
-        ev.stopPropagation();
-        if ( self.getSetting('menuCategories') ) {
-          BuildCategoryMenu(ev);
-        } else {
-          BuildMenu(ev);
-        }
-        return false;
-      };
-
-      el.appendChild(sel);
-
-      icon = OSjs.API.getThemeResource('actions/exit.png', 'icon');
-      sel = document.createElement('li');
-      sel.className = 'Button';
-      sel.title = 'Log out (Exit)';
-      sel.innerHTML = '<img alt="" src="' + icon + '" />';
-      sel.onclick = function() {
-        var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
-        var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");
-        OSjs._shutdown(t, false);
-      };
-      el.appendChild(sel);
-
-      elem.className += ' PanelItemButtons';
-      elem.appendChild(el);
-    });
-
-    // Window List
-    p.addItem(function(root, elem) {
-      var el = document.createElement('ul');
-      el.id = 'WindowList';
-
-      // Updated dynamically
-
-      elem.className += ' PanelItemWindowList';
-      elem.appendChild(el);
-    });
-
-    // Clock
-    p.addItem(function(root, elem) {
-      var clock = document.createElement('div');
-      clock.innerHTML = '00:00';
-      var _updateClock = function() {
-        var d = new Date();
-        clock.innerHTML = d.toLocaleTimeString();
-        clock.title     = d.toLocaleDateString();
-      };
-      self.clockInterval = setInterval(_updateClock, 1000);
-      _updateClock();
-      elem.className += ' PanelItemClock';
-      elem.appendChild(clock);
-    });
+    p.addItem(new OSjs.CoreWM.PanelItems.Buttons());
+    p.addItem(new OSjs.CoreWM.PanelItems.WindowList());
+    p.addItem(new OSjs.CoreWM.PanelItems.Clock());
 
     this.panels.push(p);
   };
@@ -619,54 +281,9 @@
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {
-    if ( win && win._properties.allow_windowlist === false ) {
-      return;
-    }
-    // TODO: Move this code into a custom class
-    //console.log("OSjs::Applications::CoreWM::eventWindow", ev, win._name);
-    var $el = document.getElementById('WindowList');
-    if ( !$el ) {
-      return;
-    }
-
-    var cn = 'WindowList_Window_' + win._wid;
-    var _change = function(cn, callback) {
-      var els = $el.getElementsByClassName(cn);
-      if ( els.length ) {
-        for ( var i = 0, l = els.length; i < l; i++ ) {
-          if ( els[i] && els[i].parentNode ) {
-            callback(els[i]);
-          }
-        }
-      }
-    };
-
-    if ( ev == 'create' ) {
-      var el = document.createElement('li');
-      el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
-      el.className = 'Button WindowList_Window_' + win._wid;
-      el.title = win._title;
-      el.onclick = function() {
-        win._restore();
-      };
-      $el.appendChild(el);
-    } else if ( ev == 'close' ) {
-      _change(cn, function(el) {
-        el.parentNode.removeChild(el);
-      });
-    } else if ( ev == 'focus' ) {
-      _change(cn, function(el) {
-        el.className += ' Focused';
-      });
-    } else if ( ev == 'blur' ) {
-      _change(cn, function(el) {
-        el.className = el.className.replace(/\s?Focused/, '');
-      });
-    } else if ( ev == 'title' ) {
-      _change(cn, function(el) {
-        el.getElementsByTagName('span')[0].innerHTML = win._title;
-        el.title = win._title;
-      });
+    var panelItem = this.panels[0] ? this.panels[0].getItem(OSjs.CoreWM.PanelItems.WindowList) : null;
+    if ( panelItem ) {
+      panelItem.update(ev, win);
     }
   };
 
@@ -821,7 +438,6 @@
   //
   // EXPORTS
   //
-  OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.CoreWM = CoreWM;
 
 })(OSjs.Core.WindowManager, OSjs.GUI);

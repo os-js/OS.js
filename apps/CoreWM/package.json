@@ -6,6 +6,8 @@
     "mime":       null,
     "icon":       null,
     "preload":    [
+      {"src": "libs.js", "type": "javascript"},
+      {"src": "panel_items.js", "type": "javascript"},
       {"src": "main.js", "type": "javascript"},
       {"src": "main.css", "type": "stylesheet"}
     ]
