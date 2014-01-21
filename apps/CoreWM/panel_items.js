@@ -28,6 +28,14 @@
       return false;
     });
 
+    this.addButton('Settings', 'categories/applications-system.png', function(ev) {
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        wm.showSettings();
+      }
+      return false;
+    });
+
     this.addButton('Log out (Exit)', 'actions/exit.png', function(ev) {
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
       var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");

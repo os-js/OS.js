@@ -86,7 +86,7 @@
   top : 0px;
   bottom : 0px;
   right : 0px;
-  left : 65px;
+  left : 95px;
   overflow : hidden;
 }
 
@@ -127,4 +127,53 @@
 #WindowSwitcher > div > span {
 }
 #WindowSwitcher > div.Active {
+}
+
+
+/**
+ * Settings Window
+ */
+.Window_CoreWMSettingsWindow .WindowWrapper {
+  overflow : auto;
+  padding : 5px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .Setting {
+  position : relative;
+  height : 42px;
+  margin : 5px;
+}
+
+.Window_CoreWMSettingsWindow .WindowWrapper .Setting label {
+  display : block;
+  height : 16px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .Setting input[type=text],
+.Window_CoreWMSettingsWindow .WindowWrapper .Setting select {
+  position : absolute;
+  left : 0px;
+  right : 35px;
+  width : 440px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
+.Window_CoreWMSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
+  right : 0px;
+  width : 475px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .Setting .GUIButton {
+  position : absolute;
+  right : 0px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .GUIButton.Save {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+}
+
+.Window_CoreWMSettingsWindow .WindowWrapper .SettingTabs {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 34px;
+  z-index : 9999;
 }

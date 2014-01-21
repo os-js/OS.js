@@ -66,6 +66,7 @@
     this._settings      = DefaultSettings(args.defaults || {});
     this.panels         = [];
     this.switcher       = null;
+    this.settingsWindow = null;
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
@@ -86,6 +87,11 @@
       return false;
     }
 
+    if ( this.settingsWindow ) {
+      this.settingsWindow.destroy();
+      this.settingsWindow = null;
+    }
+
     if ( this.switcher ) {
       this.switcher.destroy();
       this.switcher = null;
@@ -102,6 +108,12 @@
     this.applySettings(DefaultSettings(), true);
 
     return WindowManager.prototype.destroy.apply(this, []);
+  };
+
+  CoreWM.prototype._onMessage = function(obj, msg, args) {
+    if ( msg == 'destroyWindow' && obj._name === 'CoreWMSettingsWindow' ) {
+      this.settingsWindow = null;
+    }
   };
 
   //
@@ -158,18 +170,13 @@
   };
 
   CoreWM.prototype.initDesktop = function() {
+    var self = this;
     var _openDesktopSettings = function() {
-      OSjs.API.launch('ApplicationSettings');
+      self.showSettings();
     };
 
     var _openDesktopMenu = function(ev) {
-      var h = OSjs.API.getHandlerInstance();
-      if ( h ) {
-        var app = h.getApplicationMetadata('ApplicationSettings');
-        if ( app ) {
-          OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
-        }
-      }
+      OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
     };
 
     var background = document.getElementById('Background');
@@ -184,7 +191,6 @@
 
   CoreWM.prototype.initPanels = function(applySettings) {
     var ps = this.getSetting('panels');
-    console.warn(ps);
     if ( ps && ps.length ) {
       var p, j, n;
       for ( var i = 0; i < ps.length; i++ ) {
@@ -217,7 +223,7 @@
           iter = this._windows[i];
           if ( !iter ) { continue; }
           if ( iter._position.y < space.top ) {
-            console.warn("CoreWM::applySettings()", "I moved this window because it overlapped with a panel!", iter);
+            console.warn("CoreWM::initPanels()", "I moved this window because it overlapped with a panel!", iter);
             iter._move(iter._position.x, space.top);
           }
         }
@@ -323,6 +329,16 @@
     }
   };
 
+  CoreWM.prototype.showSettings = function() {
+    if ( this.settingsWindow ) {
+      this.settingsWindow._restore();
+      return;
+    }
+
+    this.settingsWindow = this.addWindow(new OSjs.CoreWM.SettingsWindow(this));
+    this.settingsWindow._focus();
+  };
+
   CoreWM.prototype.eventWindow = function(ev, win) {
     var panelItem = this.panels[0] ? this.panels[0].getItem(OSjs.CoreWM.PanelItems.WindowList) : null;
     if ( panelItem ) {
@@ -411,7 +427,7 @@
     var p;
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
-      if ( p.getOntop() ) {
+      if ( p && p.getOntop() ) {
         if ( p.getPosition() == 'top' ) {
           s.top    += 35;
           s.height -= 35;
@@ -440,7 +456,7 @@
     var p;
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
-      if ( p.getOntop() && p.getPosition() == 'top' ) {
+      if ( p && p.getOntop() && p.getPosition() == 'top' ) {
         pos.y += 35;
       }
     }

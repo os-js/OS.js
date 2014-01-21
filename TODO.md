@@ -25,10 +25,9 @@
   * ScrollView
   * Label
 * Localization (Translations)
-* Offline resource pre-loading
-* Offline VFS
-* PanelItems in CoreWM
-* Full Source code documentation (on release)
+* Offline resource pre-loading (not prioritized)
+* Offline VFS (not prioritized)
+* Full Source code documentation (not prioritized)
 * Mobile version (not prioritized)
 
 ### Ideas for solving misc problems

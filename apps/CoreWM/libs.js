@@ -1,4 +1,4 @@
-(function(WindowManager, GUI) {
+(function(WindowManager, Window, GUI) {
 
   var DefaultCategories = {
     development : {icon: 'categories/package_development.png', title: 'Development'},
@@ -11,6 +11,266 @@
     system      : {icon: 'categories/package_system.png',      title: 'System'},
     utilities   : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
     unknown     : {icon: 'categories/applications-other.png',  title: 'Other'}
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Settings Window
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * TODO: Finish Panels
+   */
+  var SettingsWindow = function(app) {
+    Window.apply(this, ['CoreWMSettingsWindow', {width: 500, height: 300}, app]);
+
+    this._title                     = "CoreWM Settings";
+    this._icon                      = "categories/applications-system.png";
+    this._properties.allow_resize   = false;
+    this._properties.allow_maximize = false;
+  };
+
+  SettingsWindow.prototype = Object.create(Window.prototype);
+
+  SettingsWindow.prototype.init = function(wm) {
+    var self      = this;
+    var root      = Window.prototype.init.apply(this, arguments);
+    var app       = this._appRef;
+
+    var settings      = wm.getSettings();
+    var themes        = wm.getThemes();
+    var theme         = wm.getSetting('theme');
+    var desktopMargin = settings.desktop.margin;
+    var themelist     = {};
+
+    var iter;
+    for ( var i = 0, l = themes.length; i < l; i++ ) {
+      iter = themes[i];
+      themelist[iter.name] = iter.title;
+    }
+
+    var _createContainer = function(name, lbl) {
+      var outer = document.createElement('div');
+      outer.className = "Setting Setting_" + name;
+
+      if ( lbl ) {
+        var label = document.createElement('label');
+        label.innerHTML = lbl;
+        outer.appendChild(label);
+      }
+      return outer;
+    };
+
+    var outer, slider;
+
+    var tabs      = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
+    var tabStyles = tabs.addTab('tab1', {title: 'Theme and Background'});
+
+    var tabOther  = tabs.addTab('tab2', {title: 'Desktop Settings', onSelect: function() {
+      slider.setValue(desktopMargin);
+    }});
+    var tabMisc   = tabs.addTab('tab3', {title: 'Misc'});
+
+    // Theme
+    outer = _createContainer('Theme SettingsNoButton', 'Theme');
+    var themeName = this._addGUIElement(new OSjs.GUI.Select('SettingsThemeName'), outer);
+    themeName.addItems(themelist);
+    themeName.setSelected(theme);
+    tabStyles.appendChild(outer);
+
+    //
+    // Background Type
+    //
+    outer = _createContainer('BackgroundType SettingsNoButton', 'Background Type');
+    var backgroundType = this._addGUIElement(new OSjs.GUI.Select('SettingsBackgroundType'), outer);
+    backgroundType.addItems({
+      'image':        'Image',
+      'image-repeat': 'Image (Repeat)',
+      'image-center': 'Image (Centered)',
+      'image-fill':   'Image (Fill)',
+      'image-strech': 'Image (Streched)',
+      'color':        'Color'
+    });
+    backgroundType.setSelected(settings.background);
+    tabStyles.appendChild(outer);
+
+    //
+    // Background Image
+    //
+    outer = _createContainer('BackgroundImage', 'Background Image');
+    var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
+
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
+      self.openBackgroundSelect(ev, backgroundImage);
+    }}), outer);
+
+    tabStyles.appendChild(outer);
+
+    //
+    // Background Color
+    //
+    outer = _createContainer('BackgroundColor', 'Background Color');
+
+    var backgroundColor = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundColor', {disabled: true, value: settings.style.backgroundColor}), outer);
+    backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
+    backgroundColor.$input.style.color = "#fff";
+
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
+      self.openBackgroundColorSelect(ev, backgroundColor);
+    }}), outer);
+
+    tabStyles.appendChild(outer);
+
+    //
+    // Font
+    //
+    outer = _createContainer('Font', 'Font');
+
+    var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
+    fontName.$input.style.fontFamily = settings.style.fontFamily;
+
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
+      self.openFontSelect(ev, fontName);
+    }}), outer);
+
+    tabOther.appendChild(outer);
+
+    //
+    // Taskbar Position
+    //
+    outer = _createContainer('TaskbarPosition SettingsNoButton', 'Panel Position');
+    var taskbarPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarPosition'), outer);
+    taskbarPosition.addItems({
+      'top':      'Top',
+      'bottom':   'Bottom'
+    });
+    taskbarPosition.setSelected(settings.panels[0].options.position);
+    tabOther.appendChild(outer);
+
+    //
+    // Taskbar Ontop
+    //
+    outer = _createContainer('TaskbarOntop SettingsNoButton', 'Panel Ontop ?');
+    var taskbarOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarOntop'), outer);
+    taskbarOntop.addItems({
+      'yes':  'Yes',
+      'no':   'No'
+    });
+    taskbarOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
+    tabOther.appendChild(outer);
+
+    //
+    // Desktop Margin
+    //
+    outer = document.createElement('div');
+    outer.className = "Setting Setting_DesktopMargin";
+
+    var label = document.createElement('label');
+    label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
+
+    outer.appendChild(label);
+    slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin}, function(value, percentage) {
+      desktopMargin = value;
+      label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
+    }), outer);
+    tabOther.appendChild(outer);
+
+    //
+    // Misc
+    //
+    outer = _createContainer('Animations SettingsNoButton', 'Use animations ?');
+    var useAnimations = this._addGUIElement(new OSjs.GUI.Select('SettingsUseAnimations'), outer);
+    useAnimations.addItems({
+      'yes':  'Yes',
+      'no':   'No'
+    });
+    useAnimations.setSelected(settings.animations ? 'yes' : 'no');
+    tabMisc.appendChild(outer);
+
+    //
+    // Buttons
+    //
+    this._addGUIElement(new OSjs.GUI.Button('Save', {label: 'Apply', onClick: function(el, ev) {
+      var settings = {
+        animations:       useAnimations.getValue() == 'yes',
+        taskbarOntop:     taskbarOntop.getValue() == 'yes',
+        taskbarPosition:  taskbarPosition.getValue(),
+        desktopMargin:    desktopMargin,
+        desktopFont:      fontName.getValue(),
+        theme:            themeName.getValue(),
+        backgroundType:   backgroundType.getValue(),
+        backgroundImage:  backgroundImage.getValue(),
+        backgroundColor:  backgroundColor.getValue()
+      };
+
+      var wm = OSjs.API.getWMInstance();
+      console.warn("CoreWM::SettingsWindow::save()", settings);
+      if ( wm ) {
+        var res = wm.applySettings({
+          animations : settings.animations,
+          desktop    : {margin: settings.desktopMargin},
+          theme      : settings.theme,
+          wallpaper  : settings.backgroundImage,
+          background : settings.backgroundType,
+          panels     : [
+            {
+              options: {
+                position: settings.taskbarPosition,
+                ontop:    settings.taskbarOntop,
+              },
+              items:    [
+                {name: 'Buttons'},
+                {name: 'WindowList'},
+                {name: 'Clock'}
+              ]
+            }
+          ],
+          style      : {
+            fontFamily       : settings.desktopFont,
+            backgroundColor  : settings.backgroundColor
+          }
+        }, false, true);
+      }
+    }}), root);
+  };
+
+  SettingsWindow.prototype.destroy = function() {
+    Window.prototype.destroy.apply(this, arguments);
+  };
+
+  SettingsWindow.prototype.openBackgroundSelect = function(ev, input) {
+    var curf = input.value ? OSjs.Utils.dirname(input.value) : OSjs.API.getDefaultPath('/');
+    var curn = input.value ? OSjs.Utils.filename(input.value) : '';
+
+    var self = this;
+    this._appRef._createDialog('File', [{type: 'open', path: curf, filename: curn, mimes: ['^image']}, function(btn, fname, rmime) {
+      self._focus();
+      if ( btn !== 'ok' ) return;
+      input.setValue(fname);
+    }], this);
+  };
+
+  SettingsWindow.prototype.openBackgroundColorSelect = function(ev, input) {
+    var cur = input.value;
+    var self = this;
+    this._appRef._createDialog('Color', [{color: cur}, function(btn, rgb, hex) {
+      self._focus();
+      if ( btn != 'ok' ) return;
+
+      input.setValue(hex);
+      input.$input.style.backgroundColor = hex;
+      input.$input.style.color = "#fff";
+    }], this);
+  };
+
+  SettingsWindow.prototype.openFontSelect = function(ev, input) {
+    var cur = input.value;
+    var self = this;
+    this._appRef._createDialog('Font', [{name: cur, minSize: 0, maxSize: 0}, function(btn, fontName, fontSize) {
+      self._focus();
+      if ( btn != 'ok' ) return;
+      input.setValue(fontName);
+      input.$input.style.fontFamily = fontName;
+    }], this);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -357,6 +617,7 @@
   // EXPORTS
   //
   OSjs.CoreWM                   = OSjs.CoreWM       || {};
+  OSjs.CoreWM.SettingsWindow    = SettingsWindow;
   OSjs.CoreWM.BuildMenu         = BuildMenu;
   OSjs.CoreWM.BuildCategoryMenu = BuildCategoryMenu;
   OSjs.CoreWM.Panel             = Panel;
@@ -364,4 +625,4 @@
   OSjs.CoreWM.PanelItems        = {};
   OSjs.CoreWM.WindowSwitcher    = WindowSwitcher;
 
-})(OSjs.Core.WindowManager, OSjs.GUI);
+})(OSjs.Core.WindowManager, OSjs.Core.Window, OSjs.GUI);
