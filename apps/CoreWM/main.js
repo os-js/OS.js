@@ -528,28 +528,45 @@
     if ( !this.getSetting('moveOnResize') ) { return; }
 
     var space = this.getWindowSpace();
+    var margin = 10;
     var i = 0, l = this._windows.length, iter, wrect;
-    var mx, my;
+    var mx, my, mw, mh, moved;
+
     for ( i; i < l; i++ ) {
       iter = this._windows[i];
       if ( !iter ) { continue; }
       wrect = iter._getViewRect();
       if ( wrect === null ) { continue; }
+      if ( iter._state.mimimized ) { continue; }
 
+      // Move the window into view if outside of view
       mx = iter._position.x;
       my = iter._position.y;
+      moved = false;
 
-      if ( wrect.right > rect.width ) {
+      if ( (wrect.left + margin) > rect.width ) {
         mx = space.width - iter._dimension.w;
+        moved = true;
       }
-      if ( wrect.bottom > rect.height ) {
+      if ( (wrect.top + margin) > rect.height ) {
         my = space.height - iter._dimension.h;
+        moved = true;
       }
 
-      if ( mx < space.left ) { mx = space.left; }
-      if ( my < space.top  ) { my = space.top;  }
+      if ( moved ) {
+        if ( mx < space.left ) { mx = space.left; }
+        if ( my < space.top  ) { my = space.top;  }
+        iter._move(mx, my);
+      }
 
-      iter._move(mx, my);
+      // Restore maximized windows if they overflow
+      if ( iter._state.maximized ) {
+        mw = (mx + iter._dimension.w);
+        mh = (my + iter._dimension.h);
+        if ( mw > space.width || mh > space.height ) {
+          iter._restore(true, false);
+        }
+      }
     }
   };
 

@@ -418,13 +418,15 @@
    * @param   Array         list        List of launch application arguments
    * @param   Function      onSuccess   Callback on success
    * @param   Function      onError     Callback on error
+   * @param   Function      onFinished  Callback on finished running
    * @see     LaunchProcess
    * @return  void
    */
-  function LaunchProcessList(list, onSuccess, onError) {
-    list      = list      || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
-    onSuccess = onSuccess || function() {};
-    onError   = onError   || function() {};
+  function LaunchProcessList(list, onSuccess, onError, onFinished) {
+    list        = list        || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
+    onSuccess   = onSuccess   || function() {};
+    onError     = onError     || function() {};
+    onFinished  = onFinished  || function() {};
 
     var _onSuccess = function(app, metadata, appName, appArgs, queueData) {
       onSuccess(app, metadata, appName, appArgs, queueData);
@@ -456,6 +458,8 @@
         }, function(err, name, args) {
           _onError(err, name, args);
         });
+      } else {
+        onFinished();
       }
     };
 
@@ -610,7 +614,9 @@
         _$LOADING.style.display = 'none';
         PlaySound('service-login');
 
-        _HANDLER.loadSession();
+        _HANDLER.loadSession(function() {
+          self._onResize();
+        });
         _HANDLER.onInitialized();
       });
     };
@@ -1993,11 +1999,12 @@
       this._restore(true, false);
       return true;
     }
-    this._lastPosition    = this._position;
-    this._lastDimension   = this._dimension;
+    this._lastPosition    = {x: this._position.x,  y: this._position.y};
+    this._lastDimension   = {w: this._dimension.w, h: this._dimension.h};
     this._state.maximized = true;
 
     var s = getWindowSpace();
+
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     this._$element.style.top    = s.top + "px";
     this._$element.style.left   = s.left + "px";
@@ -2008,7 +2015,9 @@
     }
 
     this._onChange('maximize');
-    this._resize();
+    //this._resize();
+    this._dimension.w = s.width;
+    this._dimension.h = s.height;
     this._focus();
 
     var anim = _WM ? _WM.getSetting('animations') : false;

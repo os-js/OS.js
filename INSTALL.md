@@ -9,7 +9,7 @@ Make sure these directories exist and are readable+writable by the running web-s
 More information on configuring the backend and frontend on Wiki.
 
 ### Apache + PHP
-* Clone OS.js-v2 with (git --recursive)
+* Clone OS.js-v2 (use `git --recursive` to pull dependency packages automatically)
 * Set up an Apache vhost and point to cloned directory (If you have a "web hosting service", you can most likely skip this)
   * Make sure .htaccess is allowed
   * Make sure mod_rewrite is enabled

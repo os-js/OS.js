@@ -244,7 +244,9 @@
   /**
    * Default method to restore last running session
    */
-  DefaultHandler.prototype.loadSession = function() {
+  DefaultHandler.prototype.loadSession = function(callback) {
+    callback = callback || function() {};
+
     this.getUserSession(function(res) {
       if ( res ) {
         var list = [];
@@ -265,7 +267,7 @@
               console.info('DefaultHandler::loadSession()->onSuccess()', 'Restored window "' + r.name + '" from session');
             }
           }
-        });
+        }, callback);
       }
     });
   };
