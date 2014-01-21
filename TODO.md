@@ -12,9 +12,10 @@
 * Applications:
   * New Draw codebase -- layer, effect support etc.
   * Writer - Check for changes before opening/new file
-  * Settings - Implement hotkey toggle
-  * Settings - Implement hotkey customization
-  * Settings - Implement windowswitcher toggle
+  * CoreWM/Settings - Implement hotkey toggle
+  * CoreWM/Settings - Implement hotkey customization
+  * CoreWM/Settings - Implement windowswitcher toggle
+  * CoreWM/Settings - Implement panel managment
   * Finish Music Player
   * Finish File Manager
 * GUI Elements:
