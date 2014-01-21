@@ -5,50 +5,52 @@
    */
   var PanelItemButtons = function() {
     PanelItem.apply(this, ['PanelItemButtons']);
+
+    this.$container = null;
   };
 
   PanelItemButtons.prototype = Object.create(PanelItem.prototype);
 
   PanelItemButtons.prototype.init = function() {
-    var wm = OSjs.API.getWMInstance();
     var root = PanelItem.prototype.init.apply(this, arguments);
 
-    var el = document.createElement('ul');
-    var icon = OSjs.API.getThemeResource('categories/applications-other.png', 'icon');
-    var sel = document.createElement('li');
-    sel.className = 'Button';
-    sel.title = "Applications";
-    sel.innerHTML = '<img alt="" src="' + icon + '" />';
-    sel.onclick = function(ev) {
+    this.$container = document.createElement('ul');
+    root.appendChild(this.$container);
+
+    this.addButton('Applications', 'categories/applications-other.png', function(ev) {
       ev.stopPropagation();
-      if ( wm.getSetting('menuCategories') ) {
+      var wm = OSjs.API.getWMInstance();
+      if ( wm && wm.getSetting('menuCategories') ) {
         OSjs.CoreWM.BuildCategoryMenu(ev);
       } else {
         OSjs.CoreWM.BuildMenu(ev);
       }
       return false;
-    };
-    el.appendChild(sel);
+    });
 
-    icon = OSjs.API.getThemeResource('actions/exit.png', 'icon');
-    sel = document.createElement('li');
-    sel.className = 'Button';
-    sel.title = 'Log out (Exit)';
-    sel.innerHTML = '<img alt="" src="' + icon + '" />';
-    sel.onclick = function() {
+    this.addButton('Log out (Exit)', 'actions/exit.png', function(ev) {
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
       var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");
       OSjs._shutdown(t, false);
-    };
-    el.appendChild(sel);
-
-    root.appendChild(el);
+    });
 
     return root;
   };
 
   PanelItemButtons.prototype.destroy = function() {
     PanelItem.prototype.destroy.apply(this, arguments);
+  };
+
+  PanelItemButtons.prototype.addButton = function(title, icon, callback) {
+    icon = OSjs.API.getThemeResource(icon, 'icon');
+
+    var sel = document.createElement('li');
+    sel.className = 'Button';
+    sel.title = title;
+    sel.innerHTML = '<img alt="" src="' + icon + '" />';
+    sel.onclick = callback;
+
+    this.$container.appendChild(sel);
   };
 
   /**

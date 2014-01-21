@@ -139,10 +139,6 @@
   // PANELS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is a work in progress
-   * TODO: Finish
-   */
   var Panel = function(name, options) {
     options = options || {};
 
@@ -280,6 +276,9 @@
     return OSjs.API.getIcon(aiter.icon, aiter);
   }
 
+  /**
+   * Create default application menu
+   */
   function BuildMenu(ev) {
     var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
     var list = [];
@@ -300,6 +299,9 @@
     GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
   }
 
+  /**
+   * Create default application menu with categories (sub-menus)
+   */
   function BuildCategoryMenu(ev) {
     var apps = OSjs.API.getHandlerInstance().getApplicationsMetadata();
     var list = [];
