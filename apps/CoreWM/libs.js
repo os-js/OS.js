@@ -141,12 +141,19 @@
 
   /**
    * This is a work in progress
+   * TODO: Finish
    */
-  var Panel = function(name) {
+  var Panel = function(name, options) {
+    options = options || {};
+
     this._name = name;
     this._$element = null;
     this._$container = null;
     this._items = [];
+    this._options = {
+      position: options.position || 'top',
+      ontop:    options.ontop === true
+    };
   };
 
   Panel.prototype.init = function(root) {
@@ -171,6 +178,10 @@
 
     this._$element.appendChild(this._$container);
     root.appendChild(this._$element);
+
+    setTimeout(function() {
+      self.update();
+    }, 0);
   };
 
   Panel.prototype.destroy = function() {
@@ -186,6 +197,20 @@
       this._$element.parentNode.removeChild(this._$element);
       this._$element = null;
     }
+  };
+
+  Panel.prototype.update = function(options) {
+    options = options || this._options;
+
+    var cn = ['WMPanel'];
+    if ( options.ontop ) {
+      cn.push('Ontop');
+    }
+    if ( options.position ) {
+      cn.push(options.position == 'top' ? 'Top' : 'Bottom');
+    }
+    this._$element.className = cn.join(' ');
+    this._options = options;
   };
 
   Panel.prototype.addItem = function(item) {
@@ -204,6 +229,14 @@
       }
     }
     return null;
+  };
+
+  Panel.prototype.getOntop = function() {
+    return this._options.ontop;
+  };
+
+  Panel.prototype.getPosition = function() {
+    return this._options.position;
   };
 
   Panel.prototype.getRoot = function() {

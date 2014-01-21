@@ -120,25 +120,25 @@
     //
     // Taskbar Position
     //
-    outer = _createContainer('TaskbarPosition SettingsNoButton', 'Taskbar Position');
+    outer = _createContainer('TaskbarPosition SettingsNoButton', 'Panel Position');
     var taskbarPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarPosition'), outer);
     taskbarPosition.addItems({
       'top':      'Top',
       'bottom':   'Bottom'
     });
-    taskbarPosition.setSelected(settings.taskbar.position);
+    taskbarPosition.setSelected(settings.panels[0].options.position);
     tabOther.appendChild(outer);
 
     //
     // Taskbar Ontop
     //
-    outer = _createContainer('TaskbarOntop SettingsNoButton', 'Taskbar Ontop ?');
+    outer = _createContainer('TaskbarOntop SettingsNoButton', 'Panel Ontop ?');
     var taskbarOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarOntop'), outer);
     taskbarOntop.addItems({
       'yes':  'Yes',
       'no':   'No'
     });
-    taskbarOntop.setSelected(settings.taskbar.ontop ? 'yes' : 'no');
+    taskbarOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
     tabOther.appendChild(outer);
 
     //
@@ -261,11 +261,23 @@
     if ( wm ) {
       var res = wm.applySettings({
         animations : settings.animations,
-        taskbar    : {ontop: settings.taskbarOntop, position: settings.taskbarPosition},
         desktop    : {margin: settings.desktopMargin},
         theme      : settings.theme,
         wallpaper  : settings.backgroundImage,
         background : settings.backgroundType,
+        panels     : [
+          {
+            options: {
+              position: settings.taskbarPosition,
+              ontop:    settings.taskbarOntop,
+            },
+            items:    [
+              {name: 'Buttons'},
+              {name: 'WindowList'},
+              {name: 'Clock'}
+            ]
+          }
+        ],
         style      : {
           fontFamily       : settings.desktopFont,
           backgroundColor  : settings.backgroundColor

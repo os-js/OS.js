@@ -7,7 +7,6 @@
     var cfg = {
       animations      : OSjs.Compability.css.animation,
       fullscreen      : false,
-      taskbar         : {position: 'top', ontop: true},
       desktop         : {margin: 5},
       wallpaper       : '/themes/wallpapers/noise_red.png',
       theme           : 'default',
@@ -16,6 +15,19 @@
       enableSwitcher  : true,
       enableHotkeys   : true,
       moveOnResize    : true,       // Move windows into viewport on resize
+      panels          : [
+        {
+          options: {
+            position: 'top',
+            ontop:    true,
+          },
+          items:    [
+            {name: 'Buttons'},
+            {name: 'WindowList'},
+            {name: 'Clock'}
+          ]
+        }
+      ],
       style           : {
         backgroundColor  : '#0B615E',
         fontFamily       : 'OSjsFont'
@@ -170,16 +182,47 @@
     };
   };
 
-  CoreWM.prototype.initPanels = function() {
-    var self = this;
-    var p = new OSjs.CoreWM.Panel('Default');
+  CoreWM.prototype.initPanels = function(applySettings) {
+    var ps = this.getSetting('panels');
+    console.warn(ps);
+    if ( ps && ps.length ) {
+      var p, j, n;
+      for ( var i = 0; i < ps.length; i++ ) {
 
-    p.init(document.body);
-    p.addItem(new OSjs.CoreWM.PanelItems.Buttons());
-    p.addItem(new OSjs.CoreWM.PanelItems.WindowList());
-    p.addItem(new OSjs.CoreWM.PanelItems.Clock());
+        if ( applySettings ) {
+          p = this.panels[i];
+          if ( p ) {
+            p.update(ps[i].options);
+          }
+        } else {
+          p = new OSjs.CoreWM.Panel('Default', ps[i].options);
+          p.init(document.body);
+          for ( j = 0; j < ps[i].items.length; j++ ) {
+            n = ps[i].items[j];
+            p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
+          }
 
-    this.panels.push(p);
+          this.panels.push(p);
+        }
+      }
+    }
+
+    if ( applySettings ) {
+      // Workaround for windows appearing behind panel
+      var p = this.panels[0];
+      if ( p && p.getOntop() && p.getPosition() === 'top' ) {
+        var iter;
+        var space = this.getWindowSpace();
+        for ( var i = 0; i < this._windows.length; i++ ) {
+          iter = this._windows[i];
+          if ( !iter ) { continue; }
+          if ( iter._position.y < space.top ) {
+            console.warn("CoreWM::applySettings()", "I moved this window because it overlapped with a panel!", iter);
+            iter._move(iter._position.x, space.top);
+          }
+        }
+      }
+    }
   };
 
   //
@@ -346,32 +389,7 @@
     }
 
     // Misc
-    var classNames = [];
-    var opts = this.getSetting('taskbar');
-    if ( opts ) {
-      if ( opts.ontop ) {
-        classNames.push('Ontop');
-      }
-      classNames.push(opts.position == 'top' ? 'Top' : 'Bottom');
-
-      // Workaround for windows appearing behind panel
-      if ( opts.position === 'top' ) {
-        var iter;
-        var space = this.getWindowSpace();
-        for ( var i = 0; i < this._windows.length; i++ ) {
-          iter = this._windows[i];
-          if ( !iter ) { continue; }
-          if ( iter._position.y < space.top ) {
-            console.warn("CoreWM::applySettings()", "I moved this window because it overlapped with a panel!", iter);
-            iter._move(iter._position.x, space.top);
-          }
-        }
-      }
-    }
-
-    if ( this.panels.length ) {
-      this.panels[0].getRoot().className = 'WMPanel ' + classNames.join(' ');
-    }
+    this.initPanels(true);
 
     if ( save ) {
       OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
@@ -388,15 +406,18 @@
 
   CoreWM.prototype.getWindowSpace = function() {
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
-    var t = this.getSetting('taskbar');
     var d = this.getSetting('desktop');
 
-    if ( t.ontop ) {
-      if ( t.position == 'top' ) {
-        s.top    += 35;
-        s.height -= 35;
-      } else {
-        s.height -= 35;
+    var p;
+    for ( var i = 0; i < this.panels.length; i++ ) {
+      p = this.panels[i];
+      if ( p.getOntop() ) {
+        if ( p.getPosition() == 'top' ) {
+          s.top    += 35;
+          s.height -= 35;
+        } else {
+          s.height -= 35;
+        }
       }
     }
 
@@ -413,16 +434,17 @@
   CoreWM.prototype.getWindowPosition = function(borders) {
     borders = (typeof borders === 'undefined') || (borders === true);
 
-    var t   = this.getSetting('taskbar');
     var b   = borders ? 10 : 0;
     var pos = {x: b, y: b};
-    if ( t.ontop ) {
-      if ( t.position == 'top' ) {
-        if ( t.ontop ) {
-          pos.y += 35;
-        }
+
+    var p;
+    for ( var i = 0; i < this.panels.length; i++ ) {
+      p = this.panels[i];
+      if ( p.getOntop() && p.getPosition() == 'top' ) {
+        pos.y += 35;
       }
     }
+
     return pos;
   };
 

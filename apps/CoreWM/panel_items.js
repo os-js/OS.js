@@ -10,6 +10,7 @@
   PanelItemButtons.prototype = Object.create(PanelItem.prototype);
 
   PanelItemButtons.prototype.init = function() {
+    var wm = OSjs.API.getWMInstance();
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     var el = document.createElement('ul');
@@ -20,7 +21,7 @@
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = function(ev) {
       ev.stopPropagation();
-      if ( self.getSetting('menuCategories') ) {
+      if ( wm.getSetting('menuCategories') ) {
         OSjs.CoreWM.BuildCategoryMenu(ev);
       } else {
         OSjs.CoreWM.BuildMenu(ev);
