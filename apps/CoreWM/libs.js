@@ -17,11 +17,8 @@
   // Settings Window
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * TODO: Finish Panels
-   */
   var SettingsWindow = function(app) {
-    Window.apply(this, ['CoreWMSettingsWindow', {width: 500, height: 300}, app]);
+    Window.apply(this, ['CoreWMSettingsWindow', {width: 500, height: 400}, app]);
 
     this._title                     = "CoreWM Settings";
     this._icon                      = "categories/applications-system.png";
@@ -41,6 +38,11 @@
     var theme         = wm.getSetting('theme');
     var desktopMargin = settings.desktop.margin;
     var themelist     = {};
+    var panelItems    = [
+                          {name: 'Buttons'},
+                          {name: 'WindowList'},
+                          {name: 'Clock'}
+                        ];
 
     var iter;
     for ( var i = 0, l = themes.length; i < l; i++ ) {
@@ -63,12 +65,13 @@
     var outer, slider;
 
     var tabs      = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
-    var tabStyles = tabs.addTab('tab1', {title: 'Theme and Background'});
+    var tabStyles = tabs.addTab('Theme', {title: 'Theme and Background'});
 
-    var tabOther  = tabs.addTab('tab2', {title: 'Desktop Settings', onSelect: function() {
+    var tabOther  = tabs.addTab('Desktop', {title: 'Desktop Settings', onSelect: function() {
       slider.setValue(desktopMargin);
     }});
-    var tabMisc   = tabs.addTab('tab3', {title: 'Misc'});
+    var tabPanels = tabs.addTab('Panels', {title: 'Panels'});
+    var tabMisc   = tabs.addTab('Misc', {title: 'Misc'});
 
     // Theme
     outer = _createContainer('Theme SettingsNoButton', 'Theme');
@@ -132,31 +135,7 @@
       self.openFontSelect(ev, fontName);
     }}), outer);
 
-    tabOther.appendChild(outer);
-
-    //
-    // Taskbar Position
-    //
-    outer = _createContainer('TaskbarPosition SettingsNoButton', 'Panel Position');
-    var taskbarPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarPosition'), outer);
-    taskbarPosition.addItems({
-      'top':      'Top',
-      'bottom':   'Bottom'
-    });
-    taskbarPosition.setSelected(settings.panels[0].options.position);
-    tabOther.appendChild(outer);
-
-    //
-    // Taskbar Ontop
-    //
-    outer = _createContainer('TaskbarOntop SettingsNoButton', 'Panel Ontop ?');
-    var taskbarOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsTaskbarOntop'), outer);
-    taskbarOntop.addItems({
-      'yes':  'Yes',
-      'no':   'No'
-    });
-    taskbarOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
-    tabOther.appendChild(outer);
+    tabStyles.appendChild(outer);
 
     //
     // Desktop Margin
@@ -173,6 +152,64 @@
       label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
     }), outer);
     tabOther.appendChild(outer);
+
+    //
+    // Panel Position
+    //
+    outer = _createContainer('PanelPosition SettingsNoButton', 'Panel Position');
+    var panelPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelPosition'), outer);
+    panelPosition.addItems({
+      'top':      'Top',
+      'bottom':   'Bottom'
+    });
+    panelPosition.setSelected(settings.panels[0].options.position);
+    tabPanels.appendChild(outer);
+
+    //
+    // Panel Ontop
+    //
+    outer = _createContainer('PanelOntop SettingsNoButton', 'Panel Ontop ?');
+    var panelOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelOntop'), outer);
+    panelOntop.addItems({
+      'yes':  'Yes',
+      'no':   'No'
+    });
+    panelOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
+    tabPanels.appendChild(outer);
+
+    //
+    // Panel items
+    //
+    outer = _createContainer('PanelItems SettingsNoButton', 'Panel Items');
+    var panelItemContainer = document.createElement('div');
+    panelItemContainer.className = 'PanelItemsContainer';
+
+    var panelItemButtons = document.createElement('div');
+    panelItemButtons.className = 'PanelItemButtons';
+
+    var panelItemButtonAdd = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonAdd', {disabled: true, icon: OSjs.API.getIcon('actions/add.png'), onClick: function(el, ev) {
+    }}), panelItemButtons);
+
+    var panelItemButtonRemove = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonRemove', {disabled: true, icon: OSjs.API.getIcon('actions/remove.png'), onClick: function(el, ev) {
+    }}), panelItemButtons);
+
+    var panelItemButtonUp = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonUp', {disabled: true, icon: OSjs.API.getIcon('actions/up.png'), onClick: function(el, ev) {
+    }}), panelItemButtons);
+
+    var panelItemButtonDown = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonDown', {disabled: true, icon: OSjs.API.getIcon('actions/down.png'), onClick: function(el, ev) {
+    }}), panelItemButtons);
+
+    var panelItemList = this._addGUIElement(new OSjs.GUI.ListView('PanelItemListView'), panelItemContainer);
+    var addItems = [];
+    for ( var j = 0; j < panelItems.length; j++ ) {
+      addItems.push({name: panelItems[j].name});
+    }
+    panelItemList.setColumns([{key: 'name', title: 'Name'}]);
+    panelItemList.setRows(addItems);
+    panelItemContainer.appendChild(panelItemButtons);
+    outer.appendChild(panelItemContainer);
+    tabPanels.appendChild(outer);
+    panelItemList.render();
 
     //
     // Misc
@@ -192,8 +229,9 @@
     this._addGUIElement(new OSjs.GUI.Button('Save', {label: 'Apply', onClick: function(el, ev) {
       var settings = {
         animations:       useAnimations.getValue() == 'yes',
-        taskbarOntop:     taskbarOntop.getValue() == 'yes',
-        taskbarPosition:  taskbarPosition.getValue(),
+        panelOntop:       panelOntop.getValue() == 'yes',
+        panelPosition:    panelPosition.getValue(),
+        panelItems:       panelItems,
         desktopMargin:    desktopMargin,
         desktopFont:      fontName.getValue(),
         theme:            themeName.getValue(),
@@ -214,14 +252,10 @@
           panels     : [
             {
               options: {
-                position: settings.taskbarPosition,
-                ontop:    settings.taskbarOntop,
+                position: settings.panelPosition,
+                ontop:    settings.panelOntop,
               },
-              items:    [
-                {name: 'Buttons'},
-                {name: 'WindowList'},
-                {name: 'Clock'}
-              ]
+              items:    settings.panelItems
             }
           ],
           style      : {
@@ -235,6 +269,12 @@
 
   SettingsWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
+  };
+
+  SettingsWindow.prototype.setTab = function(tab) {
+    var tabs = this._getGUIElement('SettingTabs');
+    if ( !tab || !tabs ) { return; }
+    tabs.setTab(tab);
   };
 
   SettingsWindow.prototype.openBackgroundSelect = function(ev, input) {

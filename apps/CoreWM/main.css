@@ -193,3 +193,39 @@
   bottom : 34px;
   z-index : 9999;
 }
+
+
+.Window_CoreWMSettingsWindow .WindowWrapper .PanelItemsContainer {
+  height : 200px;
+  position : relative;
+}
+
+.Window_CoreWMSettingsWindow .WindowWrapper .PanelItemListView {
+  height : 180px;
+  width : 440px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .PanelItemListView .Header {
+  display : none;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .PanelItemListView .Scroll {
+  top : 0;
+  margin-top : 0;
+}
+
+.Window_CoreWMSettingsWindow .WindowWrapper .PanelItemButtons {
+  position : absolute;
+  right : 0px;
+  top : 0px;
+  bottom : 0px;
+  width : 30px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .PanelItemButtons > .GUIButton {
+  display : block;
+  position : relative;
+  margin-bottom : 5px;
+  height : 30px;
+}
+.Window_CoreWMSettingsWindow .WindowWrapper .PanelItemButtons > .GUIButton button {
+  height : 30px;
+  text-align : center;
+}

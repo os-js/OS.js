@@ -458,6 +458,8 @@ body {
 
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+       -o-box-sizing: border-box;
           box-sizing: border-box;
 
   resize : none;
@@ -515,6 +517,17 @@ body {
 .GUIToolbar button[disabled].Active {
   background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
   color : #a0a0a0;
+}
+
+.GUIButton button[disabled] img,
+.GUIButton button[disabled]:active img,
+.GUIButton button[disabled].Active img,
+.GUIToolbar button[disabled] img,
+.GUIToolbar button.Disabled img,
+.GUIToolbar button.Disabled:active img,
+.GUIToolbar button[disabled]:active img,
+.GUIToolbar button[disabled].Active img {
+  opacity : .5;
 }
 
 .GUIButton button:focus,

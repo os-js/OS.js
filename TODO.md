@@ -15,7 +15,6 @@
   * CoreWM/Settings - Implement hotkey toggle
   * CoreWM/Settings - Implement hotkey customization
   * CoreWM/Settings - Implement windowswitcher toggle
-  * CoreWM/Settings - Implement panel managment
   * Finish Music Player
   * Finish File Manager
 * GUI Elements:

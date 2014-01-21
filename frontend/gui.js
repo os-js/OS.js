@@ -376,6 +376,12 @@
     }
 
     if ( this.tagName == 'button' ) {
+      if ( this.opts.icon ) {
+        var img = document.createElement('img');
+        img.alt = '';
+        img.src = this.opts.icon;
+        this.$input.appendChild(img);
+      }
       this.$input.appendChild(document.createTextNode(this.value || this.label));
       this._addEvent(this.$input, 'onclick', function(ev) {
         if ( self.isDisabled() ) { return; }
@@ -2181,12 +2187,13 @@
 
   Tabs.prototype.setTab = function(idx) {
     console.debug("OSjs::GUI::Tabs::setTab()", idx);
-    if ( this.currentTab ) {
-      this.currentTab.unselect();
-      this.currentTab = null;
-    }
 
     if ( this.tabs[idx] ) {
+      if ( this.currentTab ) {
+        this.currentTab.unselect();
+        this.currentTab = null;
+      }
+
       this.currentTab = this.tabs[idx];
       this.currentTab.select();
     }

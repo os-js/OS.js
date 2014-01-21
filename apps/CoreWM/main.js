@@ -80,6 +80,8 @@
 
     this.switcher = new OSjs.CoreWM.WindowSwitcher();
     this.switcher.init();
+
+    this.showSettings('Panels');
   };
 
   CoreWM.prototype.destroy = function(kill) {
@@ -259,7 +261,7 @@
     var space = this.getWindowSpace();
     var margin = 10;
     var i = 0, l = this._windows.length, iter, wrect;
-    var mx, my, mw, mh, moved;
+    var mx, my, moved;
 
     for ( i; i < l; i++ ) {
       iter = this._windows[i];
@@ -288,18 +290,9 @@
         iter._move(mx, my);
       }
 
-      // Restore maximized windows
+      // Restore maximized windows (FIXME: Better solution?)
       if ( iter._state.maximized ) {
         iter._restore(true, false);
-        /* FIXME Better solution
-        mw = (iter._position.x + iter._dimension.w);
-        mh = (iter._position.y + iter._dimension.h);
-        console.log([mw, mh], [space.width, space.height]);
-        if ( mw > space.width || mh > space.height ) {
-        } else {
-          iter._state.maximized = false;
-        }
-        */
       }
     }
   };
@@ -347,14 +340,21 @@
     }
   };
 
-  CoreWM.prototype.showSettings = function() {
+  CoreWM.prototype.showSettings = function(tab) {
+    var self = this;
     if ( this.settingsWindow ) {
       this.settingsWindow._restore();
+      setTimeout(function() {
+        self.settingsWindow.setTab(tab);
+      }, 10);
       return;
     }
 
     this.settingsWindow = this.addWindow(new OSjs.CoreWM.SettingsWindow(this));
     this.settingsWindow._focus();
+    setTimeout(function() {
+      self.settingsWindow.setTab(tab);
+    }, 10);
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {

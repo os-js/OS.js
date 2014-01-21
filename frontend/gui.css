@@ -468,8 +468,10 @@ body .GUIToolbar button {
   display : block;
 
   -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+     -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
 /**
@@ -542,8 +544,13 @@ body .GUIToolbar button {
   display : block;
   width : 100%;
   -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+     -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.GUIButton button img {
+  vertical-align : center;
 }
 
 /**
@@ -555,9 +562,12 @@ body .GUIToolbar button {
 .GUIText input {
   display : block;
   width : 100%;
+
   -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+     -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
 }
 
 /**
