@@ -29,13 +29,11 @@
  */
 (function(_http, _path, _url, _fs, _qs) {
 
-  /*
-   * THIS IS NOT READY FOR USE
-   */
-
+  // You can create your own 'settings.json' in this directory
+  // to override these vaules
   var config = {
     port:       8000,
-    directory:  '/Users/anders/Projects/OSjsNew',
+    directory:  null,
     vfsdir:     '/opt/OSjs/home',
     tmpdir:     '/opt/OSjs/tmp',
     mimes:      {
@@ -49,6 +47,7 @@
       '.js'     : 'application/javascript',
       '.json'   : 'application/json',
       '.otf'    : 'font/opentype',
+      '.ttf'    : 'font/opentype',
       '.png'    : 'image/png',
 
       '.aac'    : 'audio/aac',
@@ -109,7 +108,7 @@
     headers = headers || [];
     mime    = mime    || "text/html";
 
-    console.log('>>>', mime, data.length);
+    //console.log(">>>", 'respond()', mime, data.length);
 
     for ( var i = 0; i < headers.length; i++ ) {
       response.writeHead.apply(response, headers[i]);
@@ -121,28 +120,31 @@
   };
 
   var respondJSON = function(data, response, headers) {
-    console.log('>>>', 'application/json', data.length);
-
-    respond(JSON.stringify(data), 'application/json', response, headers);
+    data = JSON.stringify(data);
+    console.log(">>>", 'application/json', data.length || 0);
+    respond(data, 'application/json', response, headers);
   };
 
   /**
    * File Output
    */
   var respondFile = function(path, request, response, jpath) {
-    console.log('>>>', path);
-
     var fullPath = jpath ? _path.join(config.directory, path) : path;
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
         _fs.readFile(fullPath, function(error, data) {
           if ( error ) {
+            console.log(">>>", '500', fullPath);
+            console.warn(error);
             respond("500 Internal Server Error", null, response);
           } else {
-            respond(data, getMime(fullPath), response);
+            var mime = getMime(fullPath);
+            console.log(">>>", '200', mime, fullPath, data.length);
+            respond(data, mime, response);
           }
         });
       } else {
+        console.log('!!!', '404', fullPath);
         respond("404 Not Found", null, response, [[404, {}]]);
       }
     });
@@ -157,10 +159,12 @@
    */
   var api = {
     application : function(path, name, method, args, request, response) {
+      // TODO
       respondJSON({result: null, error: 'Not implemented yet!'}, response);
     },
 
     bugreport : function() {
+      // TODO
       respondJSON({result: null, error: 'Not implemented!'}, response);
     }
   };
@@ -215,8 +219,24 @@
     },
 
     'delete' : function(args, request, response) {
-      // TODO
-      respondJSON({result: null, error: 'Not implemented yet!'}, response);
+      var path = args[0];
+      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
+
+      var fullPath = path;//_path.join(config.vfsdir, path);
+      _fs.exists(fullPath, function(exists) {
+        if ( !exists ) {
+          respondJSON({result: null, error: 'Target does not exist!'}, response);
+        } else {
+          // FIXME : Recursive + Directory
+          _fs.unlink(fullPath, function(error, data) {
+            if ( error ) {
+              respondJSON({result: false, error: 'Error deleting: ' + error}, response);
+            } else {
+              respondJSON({result: true, error: null}, response);
+            }
+          });
+        }
+      });
     },
 
     copy : function(args, request, response) {
@@ -225,13 +245,51 @@
     },
 
     move : function(args, request, response) {
-      // TODO
-      respondJSON({result: null, error: 'Not implemented yet!'}, response);
+      var src  = args[0];
+      var dst  = args[1];
+      var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
+
+      var srcPath = src;
+      var dstPath = dst;//_path.join(config.vfsdir, path);
+      _fs.exists(srcPath, function(exists) {
+        if ( exists ) {
+          _fs.exists(dstPath, function(exists) {
+            if ( exists ) {
+              respondJSON({result: null, error: 'Target already exist!'}, response);
+            } else {
+              _fs.rename(srcPath, dstPath, function(error, data) {
+                if ( error ) {
+                  respondJSON({result: false, error: 'Error renaming/moving: ' + error}, response);
+                } else {
+                  respondJSON({result: true, error: null}, response);
+                }
+              });
+            }
+          });
+        } else {
+          respondJSON({result: null, error: 'Source does not exist!'}, response);
+        }
+      });
     },
 
     mkdir : function(args, request, response) {
-      // TODO
-      respondJSON({result: null, error: 'Not implemented yet!'}, response);
+      var path = args[0];
+      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
+
+      var fullPath = path;//_path.join(config.vfsdir, path);
+      _fs.exists(fullPath, function(exists) {
+        if ( exists ) {
+          respondJSON({result: null, error: 'Target already exist!'}, response);
+        } else {
+          _fs.mkdir(fullPath, function(error, data) {
+            if ( error ) {
+              respondJSON({result: false, error: 'Error creating directory: ' + error}, response);
+            } else {
+              respondJSON({result: true, error: null}, response);
+            }
+          });
+        }
+      });
     },
 
     fileinfo : function(args, request, response) {
@@ -274,7 +332,33 @@
   // MAIN
   /////////////////////////////////////////////////////////////////////////////
 
-  console.log('>>>', 'Configured port', config.port);
+  var spath = _path.dirname(__filename);
+  spath = _path.join(spath, 'settings.json');
+
+  if ( _fs.existsSync(spath) ) {
+    try {
+      var data = _fs.readFileSync(spath);
+      if ( data ) {
+        console.log('!!!', 'Found configuration file...');
+        data = JSON.parse(data.toString());
+        for ( var i in data ) {
+          if ( data.hasOwnProperty(i) && config.hasOwnProperty(i) ) {
+            config[i] = data[i];
+          }
+        }
+      }
+    } catch ( e ) {
+      console.warn('!!!', 'Failed to parse settings JSON file', e);
+    }
+  }
+
+  if ( !config.directory ) {
+    config.directory = _fs.realpathSync('.');
+  }
+
+  console.log('===', 'Configured port', config.port);
+  console.log('===', 'Configured directory', config.directory);
+  console.log('===', 'VFS path', config.vfsdir);
 
   /**
    * Server instance
@@ -308,7 +392,6 @@
 
               switch ( method ) {
                 case 'application' :
-                  // TODO
                   var apath = args.path || null;
                   var aname = args.application || null;
                   var ameth = args.method || null;
@@ -339,6 +422,7 @@
               respondJSON({result: null, error: "500 Internal Server Error: " + e}, response);
             }
           } else {
+            console.log(">>>", '404', path);
             respond("404 Not Found", null, response, [[404, {}]]);
           }
         });
