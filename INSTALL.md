@@ -17,7 +17,8 @@ More information on configuring the backend and frontend on Wiki.
 You should now be up and running :)
 
 ### Node.js
-**Please do not use -- not finished until Beta**
+* Please note that the node server is not finished yet, but is working for development purposes*
+
 * Clone OS.js-v2 with (git --recursive)
 * Run `backend/server.js`
 

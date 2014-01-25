@@ -332,6 +332,10 @@
   // MAIN
   /////////////////////////////////////////////////////////////////////////////
 
+  console.log('***');
+  console.log('***', 'THIS IS A WORK IN PROGRESS!!!');
+  console.log('***');
+
   var spath = _path.dirname(__filename);
   spath = _path.join(spath, 'settings.json');
 
@@ -356,9 +360,10 @@
     config.directory = _fs.realpathSync('.');
   }
 
-  console.log('===', 'Configured port', config.port);
-  console.log('===', 'Configured directory', config.directory);
-  console.log('===', 'VFS path', config.vfsdir);
+  console.log('---', 'Configuration:');
+  console.log('    Configured port', config.port);
+  console.log('    Configured directory', config.directory);
+  console.log('    VFS path', config.vfsdir);
 
   /**
    * Server instance
