@@ -9,7 +9,7 @@ RewriteRule ^FS/(.*) backend/api.php?file=/$1
 RewriteRule ^FS backend/api.php?upload
 
 # Comment this line if you want to be able to run bin/ from web-server
-#RewriteRule ^(bin|doc) - [F,L,NC]
+RewriteRule ^(bin|doc) - [F,L,NC]
 
 <ifModule mod_headers.c>
   <FilesMatch "\.(html|htm|js|css|json)$">
