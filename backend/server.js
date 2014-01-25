@@ -33,7 +33,8 @@
   // to override these vaules
   var config = {
     port:       8000,
-    directory:  null,
+    directory:  null, // Automatic
+    appdirs:    null, // Automatic, but overrideable
     vfsdir:     '/opt/OSjs/home',
     tmpdir:     '/opt/OSjs/tmp',
     mimes:      {
@@ -336,8 +337,11 @@
   console.log('***', 'THIS IS A WORK IN PROGRESS!!!');
   console.log('***');
 
-  var spath = _path.dirname(__filename);
-  spath = _path.join(spath, 'settings.json');
+  var spath = _path.join(_path.dirname(__filename), 'settings.json');
+  var apath = _path.join(_path.dirname(__filename), 'apps');
+  if ( (config.appdirs === null) || !(config.appdirs instanceof Array) ) {
+    config.appdirs = [apath];
+  }
 
   if ( _fs.existsSync(spath) ) {
     try {
@@ -364,6 +368,7 @@
   console.log('    Configured port', config.port);
   console.log('    Configured directory', config.directory);
   console.log('    VFS path', config.vfsdir);
+  console.log('    App dirs', config.appdirs);
 
   /**
    * Server instance
