@@ -74,35 +74,3 @@ body {
   text-decoration : underline;
   font-weight : normal;
 }
-
-/**
- * Login
- */
-#Login {
-  background : #fff;
-  width : 400px;
-  height : 120px;
-  position : absolute;
-  left : 50%;
-  top : 50%;
-  margin-left : -200px;
-  margin-top : -60px;
-  box-shadow : 0px 0px 5px 5px rgba(255, 255, 255, .9);
-  display : none;
-}
-#Login label {
-  font-weight : bold;
-}
-#Login label,
-#Login input[type=text],
-#Login input[type=password] {
-  display : block;
-  width : 380px;
-  margin : 5px;
-}
-#Login input[type=submit] {
-  margin : 5px;
-}
-#Login .Submit {
-  text-align : right;
-}

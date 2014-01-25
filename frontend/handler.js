@@ -92,6 +92,7 @@
     }
 
     return OSjs.Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
+      response = response || {};
       cok.apply(this, arguments);
     }, function(error, response, httpRequest, url) {
       cerror.apply(this, arguments);
@@ -142,49 +143,10 @@
    * Called upon window loaded
    */
   DefaultHandler.prototype.init = function(callback) {
-    var self      = this;
-    var container = document.getElementById('Login');
-    var login     = document.getElementById('LoginForm');
-    var u         = document.getElementById('LoginUsername');
-    var p         = document.getElementById('LoginPassword');
-    var s         = document.getElementById('LoginSubmit');
-
-    var _restore = function() {
-      s.removeAttribute("disabled");
-      u.removeAttribute("disabled");
-      p.removeAttribute("disabled");
-    };
-
-    var _lock = function() {
-      s.setAttribute("disabled", "disabled");
-      u.setAttribute("disabled", "disabled");
-      p.setAttribute("disabled", "disabled");
-    };
-
-    var _login = function(username, password) {
-      self.login(username, password, function(result, error) {
-        if ( error ) {
-          alert(error);
-          _restore();
-          return;
-        }
-        self.userData = result;
-
-        container.parentNode.removeChild(container);
-        callback();
-      });
-    };
-
-    /*
-    login.onsubmit = function(ev) {
-      _lock();
-      if ( ev ) ev.preventDefault();
-      _login(u.value, p.value);
-    };
-    */
-
     OSjs.Locale.setLocale(this.config.Core.Locale);
-    _login("demo", "demo");
+    if ( callback ) {
+      callback();
+    }
   };
 
   /**
