@@ -8,7 +8,7 @@
 
     this.previewElement = null;
     this.title          = "Preview";
-    this.$frame         = null;
+    this.frame          = null;
     this.loaded         = false;
 
     this._title = this.title;
@@ -32,20 +32,13 @@
       }}
     ]);
 
-    this.$frame = document.createElement('div');
-    this.$frame.className = "Frame";
-
-    root.appendChild(this.$frame);
+    this.frame = this._addGUIElement(new OSjs.GUI.ScrollView('Frame'), root);
   };
 
   ApplicationPreviewWindow.prototype.destroy = function() {
     if ( this.previewElement && this.previewElement.parentNode ) {
       this.previewElement.parentNode.removeChild(this.previewElement);
       this.previewElement = null;
-    }
-    if ( this.$frame && this.$frame.parentNode ) {
-      this.$frame.parentNode.removeChild(this.$frame);
-      this.$frame = null;
     }
     Window.prototype.destroy.apply(this, arguments);
   };
@@ -74,20 +67,20 @@
 
     var el;
     if ( t ) {
-      this.$frame.style.overflow = 'hidden';
+      this.frame.setScroll(false, false);
       try {
         var src = OSjs.API.getResourceURL(t);
         if ( mime.match(/^image/) ) {
           el = document.createElement('img');
           el.alt = t;
           el.onload = function() {
-            if ( self.$frame ) {
-              self._resizeTo(this.width, this.height, self.$frame);
+            if ( self.frame ) {
+              self._resizeTo(this.width, this.height, self.frame.getRoot());
             }
           };
           el.src = src;
 
-          this.$frame.style.overflow = 'auto';
+          this.frame.setScroll(true, true);
         } else if ( mime.match(/^audio/) ) {
           el = document.createElement('audio');
           el.controls = "controls";
@@ -101,8 +94,8 @@
           el.autoplay = "autoplay";
 
           el.addEventListener("loadedmetadata", function(ev) {
-            if ( self.$frame ) {
-              self._resizeTo(this.offsetWidth, this.offsetHeight, self.$frame);
+            if ( self.frame ) {
+              self._resizeTo(this.offsetWidth, this.offsetHeight, self.frame.getRoot());
             }
             self.loaded = true;
           });
@@ -115,7 +108,7 @@
 
     if ( el ) {
       this.previewElement = el;
-      this.$frame.appendChild(this.previewElement);
+      this.frame.addElement(this.previewElement, true);
     }
 
     this._setTitle(t ? (this.title + " - " + OSjs.Utils.filename(t)) : this.title);

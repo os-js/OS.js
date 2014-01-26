@@ -2405,6 +2405,52 @@
   };
   Button.prototype = Object.create(_Input.prototype);
 
+  /**
+   * ScrollView
+   */
+  var ScrollView = function(name, opts) {
+    opts      = opts || {};
+
+    if ( typeof opts.scrollX === 'undefined' ) {
+      opts.scrollX = true;
+    }
+    if ( typeof opts.scrollY === 'undefined' ) {
+      opts.scrollY = true;
+    }
+
+    GUIElement.apply(this, [name, opts]);
+  };
+  ScrollView.prototype = Object.create(GUIElement.prototype);
+
+  ScrollView.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIScrollView ' + this.name]);
+    return el;
+  };
+
+  ScrollView.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+
+    this.setScroll(this.opts.scrollX, this.opts.scrollY);
+  };
+
+  ScrollView.prototype.addElement = function(el, clear) {
+    if ( clear ) {
+      OSjs.Utils.$empty(this.$element);
+    }
+    this.$element.appendChild(el);
+  };
+
+  ScrollView.prototype.setScroll = function(x, y) {
+    var classNames = ['GUIScrollView', this.name];
+    if ( x ) { classNames.push('ScrollX'); }
+    if ( y ) { classNames.push('ScrollY'); }
+
+    this.opts.scrollX = x;
+    this.opts.scrollY = y;
+
+    this.getRoot().className = classNames.join(' ');
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FileView
   /////////////////////////////////////////////////////////////////////////////
@@ -2926,6 +2972,7 @@
   OSjs.GUI.Checkbox     = Checkbox;
   OSjs.GUI.Radio        = Radio;
   OSjs.GUI.Button       = Button;
+  OSjs.GUI.ScrollView   = ScrollView;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

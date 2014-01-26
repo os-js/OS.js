@@ -23,7 +23,6 @@
   * GUISelectList
   * GUITreeView
   * PanedView
-  * ScrollView
   * Label
 * Localization (Translations)
 * Offline resource pre-loading (not prioritized)
