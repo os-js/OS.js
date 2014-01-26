@@ -21,8 +21,11 @@
     //var vt    = app._getSetting('viewType');
     var vt    = app._getArgument('viewType');
 
-    var fileView   = this._addGUIElement(new OSjs.GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), root);
-    var sideView   = this._addGUIElement(new OSjs.GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), root);
+    var panedView  = this._addGUIElement(new OSjs.GUI.PanedView('FileManagerPanedView'), root);
+    var viewSide   = panedView.createView('Side');
+    var viewFile   = panedView.createView('File');
+    var sideView   = this._addGUIElement(new OSjs.GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), viewSide);
+    var fileView   = this._addGUIElement(new OSjs.GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), viewFile);
     var statusBar  = this._addGUIElement(new OSjs.GUI.StatusBar('FileManagerStatusBar'), root);
     var menuBar    = this._addGUIElement(new OSjs.GUI.MenuBar('FileManagerMenuBar'), root);
 

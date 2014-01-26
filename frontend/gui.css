@@ -601,8 +601,83 @@ body .GUIToolbar button {
   overflow : auto;
 }
 
+/**
+ * GUIPanedView
+ */
+.GUIPanedView {
+  position : relative;
+  overflow : hidden;
+}
+.GUIPanedView > ul {
+  margin : 0;
+  padding : 0;
+  list-style-type : none;
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
 
-/* GUIFileView */
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-flex-wrap: nowrap;
+     -moz-flex-wrap: nowrap;
+      -ms-flex-wrap: nowrap;
+       -o-flex-wrap: nowrap;
+          flex-wrap: nowrap;
+}
+.GUIPanedView.Horizontal > ul {
+  -webkit-flex-direction: row;
+     -moz-flex-direction: row;
+      -ms-flex-direction: row;
+       -o-flex-direction: row;
+          flex-direction: row;
+}
+.GUIPanedView.Vertical > ul {
+  -webkit-flex-direction: column;
+     -moz-flex-direction: column;
+      -ms-flex-direction: column;
+       -o-flex-direction: column;
+          flex-direction: column;
+}
+.GUIPanedView > ul > .View {
+  overflow : hidden;
+  position : relative;
+}
+.GUIPanedView > ul > .View:nth-child(3) {
+  -webkit-flex: 1 0 auto;
+     -moz-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+       -o-flex: 1 0 auto;
+          flex: 1 0 auto;
+}
+.GUIPanedView.Horizontal > ul > .View {
+  height : 100%;
+  min-width : 10px;
+}
+.GUIPanedView.Vertical > ul > .View {
+  width : 100%;
+  min-height : 10px;
+}
+.GUIPanedView > ul > .Separator {
+  overflow : hidden;
+  position : relative;
+  width : 5px;
+}
+.GUIPanedView.Horizontal > ul > .Separator {
+  cursor : ew-resize;
+}
+.GUIPanedView.Vertical > ul > .Separator {
+  cursor : ns-resize;
+}
+
+/**
+ * GUIFileView
+ */
 .GUIFileView {
   position : relative;
 }

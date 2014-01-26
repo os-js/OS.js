@@ -22,8 +22,7 @@
   * Custom styling for GUISelect
   * GUISelectList
   * GUITreeView
-  * PanedView
-  * Label
+  * GUILabel
 * Localization (Translations)
 * Offline resource pre-loading (not prioritized)
 * Offline VFS (not prioritized)

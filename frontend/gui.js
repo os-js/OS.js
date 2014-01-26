@@ -2451,6 +2451,90 @@
     this.getRoot().className = classNames.join(' ');
   };
 
+  /**
+   * PanedView
+   * FIXME: When more than two Views manual CSS is required
+   */
+  var PanedView = function(name, opts) {
+    opts            = opts            || {};
+    opts.direction  = opts.direction  || 'horizontal';
+
+    this.$container = null;
+
+    GUIElement.apply(this, [name, opts]);
+  };
+  PanedView.prototype = Object.create(GUIElement.prototype);
+
+  PanedView.prototype.init = function() {
+    var type = this.opts.direction === 'horizontal' ? 'Horizontal' : 'Vertical';
+    var classNames = ['GUIPanedView', type, this.name];
+    var el = GUIElement.prototype.init.apply(this, [classNames.join(' ')]);
+    this.$container = document.createElement('ul');
+    el.appendChild(this.$container);
+    return el;
+  };
+
+  PanedView.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+
+  };
+
+  PanedView.prototype.createView = function(name) {
+    if ( this.$container.childNodes.length % 2 ) {
+      var separator = document.createElement('li');
+      separator.className = 'Separator';
+
+
+      // FIXME: Vertical
+      var startW = 0;
+      var startX = 0;
+      var idx    = this.$container.childNodes.length - 1;
+      var column = this.$container.childNodes[idx];
+
+      var onResizeMove = function(ev) {
+        var newW = startW + (ev.clientX - startX);
+        column.style.width = newW + 'px';
+      };
+
+      var onResizeEnd = function(ev) {
+        document.removeEventListener('mouseup',   onResizeEnd,  false);
+        document.removeEventListener('mousemove', onResizeMove, false);
+      };
+
+      var onResizeStart = function(ev, col) {
+        startX = ev.clientX;
+        startW = column.offsetWidth;
+
+        document.addEventListener('mouseup',    onResizeEnd,  false);
+        document.addEventListener('mousemove',  onResizeMove, false);
+      };
+
+      this._addEventListener(separator, 'mousedown', function(ev) {
+        ev.preventDefault();
+        return onResizeStart(ev);
+      });
+
+      this.$container.appendChild(separator);
+    }
+
+    var container = document.createElement('li');
+    container.className = 'View ' + name;
+    this.$container.appendChild(container);
+    return container;
+  };
+
+  PanedView.prototype.addItem = function(el, name) {
+    var container = this.createView(name);
+
+    if ( el ) {
+      if ( el instanceof GUIElement ) {
+        container.appendChild(el.getRoot());
+      } else {
+        container.appendChild(el);
+      }
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FileView
   /////////////////////////////////////////////////////////////////////////////
@@ -2973,6 +3057,7 @@
   OSjs.GUI.Radio        = Radio;
   OSjs.GUI.Button       = Button;
   OSjs.GUI.ScrollView   = ScrollView;
+  OSjs.GUI.PanedView    = PanedView;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

@@ -2,12 +2,22 @@
 }
 .Window_ApplicationFileManagerWindow .WindowWrapper {
 }
-.Window_ApplicationFileManagerWindow .FileManagerSideView {
+.Window_ApplicationFileManagerWindow .FileManagerPanedView {
   position : absolute;
   top : 30px;
   left : 5px;
   bottom : 30px;
+  right : 5px;
+}
+.Window_ApplicationFileManagerWindow .FileManagerPanedView .View.Side {
   width : 140px;
+}
+.Window_ApplicationFileManagerWindow .FileManagerSideView {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  bottom : 0px;
+  right : 0px;
 }
 .Window_ApplicationFileManagerWindow .FileManagerSideView .Header {
   display : none;
@@ -24,10 +34,10 @@
 }
 .Window_ApplicationFileManagerWindow .FileManagerFileView {
   position : absolute;
-  top : 30px;
-  left : 155px;
-  bottom : 30px;
-  right : 5px;
+  top : 0px;
+  left : 0px;
+  bottom : 0px;
+  right : 0px;
   margin : 0;
   padding : 0;
 }
