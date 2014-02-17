@@ -163,7 +163,24 @@
       }
 
       if ( result ) {
-        self.packages = result;
+        // Make sure we apply correct locale
+        var currLocale = OSjs.Locale.getLocale();
+        var resulted = {};
+        var newIter;
+        for ( var i in result ) {
+          if ( result.hasOwnProperty(i) ) {
+            newIter = result[i];
+            if ( typeof newIter.names !== 'undefined' ) {
+              if ( newIter.names[currLocale] ) {
+                newIter.name = newIter.names[currLocale];
+              }
+            }
+            resulted[i] = newIter;
+          }
+        }
+
+        self.packages = resulted;
+        //self.packages = result;
         callback(true);
         return;
       }

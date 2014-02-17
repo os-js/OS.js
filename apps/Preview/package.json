@@ -1,6 +1,9 @@
 {
   "ApplicationPreview":  {
     "name":       "Preview",
+    "names":      {
+      "no_NO":      "Forhåndsviser"
+    },
     "mime":       ["^image", "^video"],
     "category":   "multimedia",
     "icon":       "mimetypes/image.png",

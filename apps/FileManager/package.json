@@ -1,6 +1,9 @@
 {
   "ApplicationFileManager":  {
     "name":       "File Manager",
+    "names":      {
+      "no_NO":      "Fil-håndtering"
+    },
     "mime":       null,
     "category":   "utilities",
     "icon":       "apps/file-manager.png",

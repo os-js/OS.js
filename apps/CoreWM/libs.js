@@ -1,5 +1,53 @@
 (function(WindowManager, Window, GUI) {
 
+  var _Locales = {
+    no_NO : {
+      'CoreWM Settings' : 'CoreWM Instillinger',
+      'Theme and Background' : 'Tema og Bakgrunn',
+      'Desktop Settings' : 'Skrivebord Instillinger',
+      'Panels' : 'Panel',
+      'Theme' : 'Tema',
+      'Background Type' : 'Bakgrunn type',
+      'Image' : 'Bilde',
+      'Image (Repeat)' : 'Bilde (Gjenta)',
+      'Image (Centered)' : 'Bilde (Sentrert)',
+      'Image (Fill)' : 'Bilde (Fyll)',
+      'Image (Streched)' : 'Bilde (Strekk)',
+      'Color' : 'Farge',
+      'Background Image' : 'Bakgrunn Bilde',
+      'Background Color' : 'Bakgrunn Farge',
+      'Font' : 'Skrift-type',
+      "Desktop Margin ({0}px)" : 'Skrivebord Margin ({0}px)',
+      'Panel Position' : 'Panel Posisjon',
+      'Top' : 'Topp',
+      'Bottom' : 'Bunn',
+      'Panel Ontop ?' : 'Panel på topp?',
+      'Yes' : 'Ja',
+      'No' : 'Nei',
+      'Panel Items' : 'Panel objekter',
+      'Name' : 'Navn',
+      'Use animations ?' : 'Bruk animasjoner ?',
+      'Apply' : 'Bruk',
+
+      'Development' : 'Utvikling',
+      'Education' : 'Utdanning',
+      'Games' : 'Spill',
+      'Graphics' : 'Grafikk',
+      'Network' : 'Nettverk',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Kontor',
+      'System' : 'System',
+      'Utilities' : 'Verktøy',
+      'Other' : 'Andre'
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   var DefaultCategories = {
     development : {icon: 'categories/package_development.png', title: 'Development'},
     education   : {icon: 'categories/applications-sience.png', title: 'Education'},
@@ -20,7 +68,7 @@
   var SettingsWindow = function(app) {
     Window.apply(this, ['CoreWMSettingsWindow', {width: 500, height: 400}, app]);
 
-    this._title                     = "CoreWM Settings";
+    this._title                     = _("CoreWM Settings");
     this._icon                      = "categories/applications-system.png";
     this._properties.allow_resize   = false;
     this._properties.allow_maximize = false;
@@ -65,15 +113,15 @@
     var outer, slider;
 
     var tabs      = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
-    var tabStyles = tabs.addTab('Theme', {title: 'Theme and Background'});
+    var tabStyles = tabs.addTab('Theme', {title: _('Theme and Background')});
 
-    var tabOther  = tabs.addTab('Desktop', {title: 'Desktop Settings', onSelect: function() {
+    var tabOther  = tabs.addTab('Desktop', {title: _('Desktop Settings'), onSelect: function() {
       slider.setValue(desktopMargin);
     }});
-    var tabPanels = tabs.addTab('Panels', {title: 'Panels'});
+    var tabPanels = tabs.addTab('Panels', {title: _('Panels')});
 
     // Theme
-    outer = _createContainer('Theme SettingsNoButton', 'Theme');
+    outer = _createContainer('Theme SettingsNoButton', _('Theme'));
     var themeName = this._addGUIElement(new OSjs.GUI.Select('SettingsThemeName'), outer);
     themeName.addItems(themelist);
     themeName.setSelected(theme);
@@ -82,15 +130,15 @@
     //
     // Background Type
     //
-    outer = _createContainer('BackgroundType SettingsNoButton', 'Background Type');
+    outer = _createContainer('BackgroundType SettingsNoButton', _('Background Type'));
     var backgroundType = this._addGUIElement(new OSjs.GUI.Select('SettingsBackgroundType'), outer);
     backgroundType.addItems({
-      'image':        'Image',
-      'image-repeat': 'Image (Repeat)',
-      'image-center': 'Image (Centered)',
-      'image-fill':   'Image (Fill)',
-      'image-strech': 'Image (Streched)',
-      'color':        'Color'
+      'image':        _('Image'),
+      'image-repeat': _('Image (Repeat)'),
+      'image-center': _('Image (Centered)'),
+      'image-fill':   _('Image (Fill)'),
+      'image-strech': _('Image (Streched)'),
+      'color':        _('Color')
     });
     backgroundType.setSelected(settings.background);
     tabStyles.appendChild(outer);
@@ -98,7 +146,7 @@
     //
     // Background Image
     //
-    outer = _createContainer('BackgroundImage', 'Background Image');
+    outer = _createContainer('BackgroundImage', _('Background Image'));
     var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
 
     this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
@@ -110,7 +158,7 @@
     //
     // Background Color
     //
-    outer = _createContainer('BackgroundColor', 'Background Color');
+    outer = _createContainer('BackgroundColor', _('Background Color'));
 
     var backgroundColor = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundColor', {disabled: true, value: settings.style.backgroundColor}), outer);
     backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
@@ -125,7 +173,7 @@
     //
     // Font
     //
-    outer = _createContainer('Font', 'Font');
+    outer = _createContainer('Font', _('Font'));
 
     var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
     fontName.$input.style.fontFamily = settings.style.fontFamily;
@@ -143,23 +191,23 @@
     outer.className = "Setting Setting_DesktopMargin";
 
     var label = document.createElement('label');
-    label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
+    label.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
 
     outer.appendChild(label);
     slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin}, function(value, percentage) {
       desktopMargin = value;
-      label.innerHTML = "Desktop Margin (" + desktopMargin + "px)";
+      label.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
     }), outer);
     tabOther.appendChild(outer);
 
     //
     // Panel Position
     //
-    outer = _createContainer('PanelPosition SettingsNoButton', 'Panel Position');
+    outer = _createContainer('PanelPosition SettingsNoButton', _('Panel Position'));
     var panelPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelPosition'), outer);
     panelPosition.addItems({
-      'top':      'Top',
-      'bottom':   'Bottom'
+      'top':      _('Top'),
+      'bottom':   _('Bottom')
     });
     panelPosition.setSelected(settings.panels[0].options.position);
     tabPanels.appendChild(outer);
@@ -167,11 +215,11 @@
     //
     // Panel Ontop
     //
-    outer = _createContainer('PanelOntop SettingsNoButton', 'Panel Ontop ?');
+    outer = _createContainer('PanelOntop SettingsNoButton', _('Panel Ontop ?'));
     var panelOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelOntop'), outer);
     panelOntop.addItems({
-      'yes':  'Yes',
-      'no':   'No'
+      'yes':  _('Yes'),
+      'no':   _('No')
     });
     panelOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
     tabPanels.appendChild(outer);
@@ -179,7 +227,7 @@
     //
     // Panel items
     //
-    outer = _createContainer('PanelItems SettingsNoButton', 'Panel Items');
+    outer = _createContainer('PanelItems SettingsNoButton', _('Panel Items'));
     var panelItemContainer = document.createElement('div');
     panelItemContainer.className = 'PanelItemsContainer';
 
@@ -203,7 +251,7 @@
     for ( var j = 0; j < panelItems.length; j++ ) {
       addItems.push({name: panelItems[j].name});
     }
-    panelItemList.setColumns([{key: 'name', title: 'Name'}]);
+    panelItemList.setColumns([{key: 'name', title: _('Name')}]);
     panelItemList.setRows(addItems);
     panelItemContainer.appendChild(panelItemButtons);
     outer.appendChild(panelItemContainer);
@@ -213,11 +261,11 @@
     //
     // Misc
     //
-    outer = _createContainer('Animations SettingsNoButton', 'Use animations ?');
+    outer = _createContainer('Animations SettingsNoButton', _('Use animations ?'));
     var useAnimations = this._addGUIElement(new OSjs.GUI.Select('SettingsUseAnimations'), outer);
     useAnimations.addItems({
-      'yes':  'Yes',
-      'no':   'No'
+      'yes':  _('Yes'),
+      'no':   _('No')
     });
     useAnimations.setSelected(settings.animations ? 'yes' : 'no');
     tabStyles.appendChild(outer);
@@ -225,7 +273,7 @@
     //
     // Buttons
     //
-    this._addGUIElement(new OSjs.GUI.Button('Save', {label: 'Apply', onClick: function(el, ev) {
+    this._addGUIElement(new OSjs.GUI.Button('Save', {label: _('Apply'), onClick: function(el, ev) {
       var settings = {
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
@@ -641,7 +689,7 @@
 
         if ( submenu.length ) {
           list.push({
-            title: DefaultCategories[c].title,
+            title: _(DefaultCategories[c].title),
             icon:  OSjs.API.getThemeResource(DefaultCategories[c].icon, 'icon', '16x16'),
             menu:  submenu
           });

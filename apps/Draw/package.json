@@ -1,6 +1,9 @@
 {
   "ApplicationDraw":  {
     "name":       "Draw",
+    "names":      {
+      "no_NO":      "Tegne"
+    },
     "mime":       ["^image"],
     "category":   "graphics",
     "icon":       "categories/gnome-graphics.png",

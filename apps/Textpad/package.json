@@ -1,6 +1,9 @@
 {
   "ApplicationTextpad":  {
     "name":       "Textpad",
+    "names":      {
+      "no_NO":      "Tekstblokk"
+    },
     "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript"],
     "category":   "utilities",
     "icon":       "apps/accessories-text-editor.png",

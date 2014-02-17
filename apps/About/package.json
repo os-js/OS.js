@@ -1,6 +1,9 @@
 {
   "ApplicationAbout":  {
-    "name":       "About",
+    "name":       "About OS.js",
+    "names":      {
+      "no_NO":      "Om OS.js"
+    },
     "singular":   true,
     "mime":       null,
     "category":   "system",

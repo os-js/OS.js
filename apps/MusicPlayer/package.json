@@ -1,6 +1,9 @@
 {
   "ApplicationMusicPlayer":  {
     "name":       "Music Player",
+    "names":      {
+      "no_NO":      "Musikkspiller"
+    },
     "mime":       ["^audio"],
     "category":   "multimedia",
     "icon":       "status/audio-volume-high.png",

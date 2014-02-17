@@ -1,6 +1,9 @@
 {
   "CoreWM":  {
     "name":       "OS.js Window Manager",
+    "names":      {
+      "no_NO":      "OS.js Vinduhåndterer"
+    },
     "singular":   true,
     "type":       "special",
     "mime":       null,

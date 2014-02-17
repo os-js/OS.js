@@ -167,6 +167,18 @@
   };
 
   /**
+   * Same as _ only you can supply the list as first argument
+   */
+  OSjs.__ = function() {
+    var l = arguments[0];
+    var s = arguments[1];
+    var a = Array.prototype.slice.call(arguments, 1);
+    a[0] = l[CurrentLocale] ? (l[CurrentLocale][s] || s) : s;
+
+    return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
+  };
+
+  /**
    * Get current locale
    * @return String
    */

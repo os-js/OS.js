@@ -1,6 +1,9 @@
 {
   "ApplicationProcessViewer":  {
     "name":       "Process Viewer",
+    "names":      {
+      "no_NO":      "Prosess oversikt"
+    },
     "singular":   true,
     "mime":       null,
     "category":   "system",

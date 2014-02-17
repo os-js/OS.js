@@ -1,6 +1,9 @@
 {
   "ApplicationWriter":  {
     "name":       "Writer",
+    "names":      {
+      "no_NO":      "Skriver"
+    },
     "mime":       ["^text", "osjs\\/document"],
     "category":   "office",
     "icon":       "apps/libreoffice34-writer.png",
