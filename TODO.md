@@ -8,7 +8,6 @@
 ## TODOs
 * Finish Node.js backend
 * Metadata descriptions
-* CoreWM: Custom keyboard binding shortcuts
 * CoreWM: Finish Panel implementation
 * Create bin/ scripts for nodejs (redo create-application for PHP)
 * Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
@@ -16,12 +15,6 @@
 * Abstraction for Handlers
   - Create frontend/handlers/demo.js
   - Create frontend/handlers/example.js
-
-### Not prioritized
-* Offline resource pre-loading
-* Offline VFS
-* Full Source code documentation
-* Mobile version
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
@@ -40,9 +33,19 @@
 * GUILabel
 
 ### Localization (Translations)
-* MusicPlayer
-* Writer
-* Draw
+* Languages
+  - de_DE
+* Applications
+  - MusicPlayer
+  - Writer
+  - Draw
+
+### Not prioritized
+* Offline resource pre-loading
+* Offline VFS
+* Full Source code documentation
+* Mobile version
+* CoreWM: Custom keyboard binding shortcuts
 
 ## Ideas for solving misc problems
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles
