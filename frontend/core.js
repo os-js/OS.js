@@ -2259,7 +2259,7 @@
 
     if ( this._properties.allow_minimize ) {
       list.push({
-        title:    OSjs._('Mimimize'),
+        title:    OSjs._('Minimize'),
         icon:     'actions/stock_up.png',
         onClick:  function(name, iter) {
           self._minimize();
