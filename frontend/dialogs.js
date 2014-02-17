@@ -152,6 +152,7 @@
     DialogWindow.apply(this, ['ErrorDialog', {width:400, height:280}]);
     this._icon = 'status/dialog-error.png';
     this._sound = 'dialog-warning';
+    this._soundVolume = 1.0;
   };
 
   ErrorDialog.prototype = Object.create(DialogWindow.prototype);
