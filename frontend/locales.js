@@ -54,6 +54,12 @@
   Locales.no_NO = {
 
     // core.js
+    'Minimize'          : 'Minimiser',
+    'Maximize'          : 'Maksimiser',
+    'Restore'           : 'Gjenopprett',
+    'On Top - Disable'  : 'På Topp - Skru av',
+    'On Top - Enable'   : 'På Topp - Skru på',
+
     "Error opening file" : "Feil ved åpning av fil",
     "No window manager is running" : "Ingen vinubehandler kjørende",
     "The file '<span>{0}</span>' could not be opened" : "Filen '<span>{0}</span>' kunne ikke åpnes",
@@ -122,21 +128,21 @@
     "Font Dialog" : 'Skriftype-dialog',
 
     // Common
-    'Loading...' : 'Laster...',
-    'Message' : 'Melding',
-    'Summary' : 'Oppsummering',
-    'Trace' : 'Trace',
-    'Name' : 'Navn',
-    "Save" : 'Lagre',
-    "Open" : 'Åpne',
-    "Close" : 'Lukk',
-    'Cancel' : 'Avbryt',
-    'OK' : 'OK',
-    'Filename' : 'Filnavn',
-    'Type' : 'Type',
-    'MIME' : 'MIME',
-    'Path' : 'Sti',
-    'Size' : 'Størrelse'
+    'Loading...'  : 'Laster...',
+    'Message'     : 'Melding',
+    'Summary'     : 'Oppsummering',
+    'Trace'       : 'Trace',
+    'Name'        : 'Navn',
+    'Save'        : 'Lagre',
+    'Open'        : 'Åpne',
+    'Close'       : 'Lukk',
+    'Cancel'      : 'Avbryt',
+    'OK'          : 'OK',
+    'Filename'    : 'Filnavn',
+    'Type'        : 'Type',
+    'MIME'        : 'MIME',
+    'Path'        : 'Sti',
+    'Size'        : 'Størrelse'
   };
 
   /**

@@ -6,7 +6,6 @@
 * Finish Applications
 
 ## TODOs
-* Refactor for Utils.format()
 * Finish Node.js backend
 * CoreWM: Custom keyboard binding shortcuts
 * CoreWM: Finish Panel implementation
