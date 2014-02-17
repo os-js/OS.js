@@ -11,11 +11,12 @@
 * CoreWM: Custom keyboard binding shortcuts
 * CoreWM: Finish Panel implementation
 * Create bin/ scripts for nodejs (redo create-application for PHP)
+* Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
+
 * Offline resource pre-loading (not prioritized)
 * Offline VFS (not prioritized)
 * Full Source code documentation (not prioritized)
 * Mobile version (not prioritized)
-* Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
 
 * Applications:
   * New Draw codebase -- layer, effect support etc.
