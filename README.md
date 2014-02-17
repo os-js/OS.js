@@ -2,6 +2,7 @@
 OS.js is a light-weight JavaScript based web/cloud desktop solution.
 
 Current version: **Alpha**
+
 *Application API is stable. FS and Handler API is subject to change.*
 
 **If you find any bugs report them back to me and I'll have them squashed**
