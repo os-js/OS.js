@@ -27,6 +27,7 @@
 * Localization (Translations)
   - MusicPlayer
   - Writer
+  - Draw
 * Offline resource pre-loading (not prioritized)
 * Offline VFS (not prioritized)
 * Full Source code documentation (not prioritized)

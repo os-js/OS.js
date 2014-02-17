@@ -143,10 +143,32 @@
    * Called upon window loaded
    */
   DefaultHandler.prototype.init = function(callback) {
-    OSjs.Locale.setLocale(this.config.Core.Locale);
-    if ( callback ) {
-      callback();
-    }
+    var self = this;
+    var _finished = function(locale) {
+      OSjs.Locale.setLocale(locale || self.config.Core.Locale);
+      if ( callback ) {
+        callback();
+      }
+    };
+
+    // NOTE: This is just for demo usage! 
+    this.login('demo', 'demo', function(userData) {
+      userData = userData || {};
+
+      self.setUserSettings('User', userData, function() {
+
+        // Ensure we get the user-selected locale
+        self.getUserSettings('Core', function(result) {
+          var locale = null;
+          if ( result ) {
+            if ( (typeof result.Locale !== 'undefined') && result.Locale ) {
+              locale = result.Locale;
+            }
+          }
+          _finished(locale);
+        });
+      });
+    });
   };
 
   /**
@@ -191,6 +213,7 @@
 
   /**
    * Default login method
+   * NOTE: This is unused
    */
   DefaultHandler.prototype.login = function(username, password, callback) {
     if ( username === 'demo' && password === 'demo' ) {
@@ -198,7 +221,8 @@
         id:         1,
         username:   'demo',
         name:       'Demo User',
-        groups:     ['demo']
+        groups:     ['demo'],
+        settings:   {}
       };
 
       callback(userData);

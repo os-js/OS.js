@@ -17,7 +17,7 @@
       'Background Image' : 'Bakgrunn Bilde',
       'Background Color' : 'Bakgrunn Farge',
       'Font' : 'Skrift-type',
-      "Desktop Margin ({0}px)" : 'Skrivebord Margin ({0}px)',
+      'Desktop Margin ({0}px)' : 'Skrivebord Margin ({0}px)',
       'Panel Position' : 'Panel Posisjon',
       'Top' : 'Topp',
       'Bottom' : 'Bunn',
@@ -28,6 +28,8 @@
       'Name' : 'Navn',
       'Use animations ?' : 'Bruk animasjoner ?',
       'Apply' : 'Bruk',
+      'Locales' : 'Lokalisering',
+      'Language (requires restart)' : 'Språk (krever omstart)',
 
       'Development' : 'Utvikling',
       'Education' : 'Utdanning',
@@ -118,7 +120,9 @@
     var tabOther  = tabs.addTab('Desktop', {title: _('Desktop Settings'), onSelect: function() {
       slider.setValue(desktopMargin);
     }});
+
     var tabPanels = tabs.addTab('Panels', {title: _('Panels')});
+    var tabLocale = tabs.addTab('Locales', {title: _('Locales')});
 
     // Theme
     outer = _createContainer('Theme SettingsNoButton', _('Theme'));
@@ -271,10 +275,29 @@
     tabStyles.appendChild(outer);
 
     //
+    // Localization
+    //
+    outer = document.createElement('div');
+    outer.className = "Setting Setting_Localization";
+
+    var label = document.createElement('label');
+    label.innerHTML = _("Language (requires restart)", outer);
+
+    outer.appendChild(label);
+    var useLanguage = this._addGUIElement(new OSjs.GUI.Select('SettingsUseLanguage'), outer);
+    useLanguage.addItems({
+      'en_US': 'English',
+      'no_NO': 'Norsk (Norwegian)'
+    });
+    useLanguage.setSelected(OSjs.Locale.getLocale());
+    tabLocale.appendChild(outer);
+
+    //
     // Buttons
     //
     this._addGUIElement(new OSjs.GUI.Button('Save', {label: _('Apply'), onClick: function(el, ev) {
       var settings = {
+        language:         useLanguage.getValue(),
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
         panelPosition:    panelPosition.getValue(),
@@ -291,6 +314,7 @@
       console.warn("CoreWM::SettingsWindow::save()", settings);
       if ( wm ) {
         var res = wm.applySettings({
+          language   : settings.language,
           animations : settings.animations,
           desktop    : {margin: settings.desktopMargin},
           theme      : settings.theme,
