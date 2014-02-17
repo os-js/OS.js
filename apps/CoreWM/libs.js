@@ -194,13 +194,13 @@
     outer = document.createElement('div');
     outer.className = "Setting Setting_DesktopMargin";
 
-    var label = document.createElement('label');
-    label.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
+    var labelMargin = document.createElement('label');
+    labelMargin.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
 
-    outer.appendChild(label);
+    outer.appendChild(labelMargin);
     slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin}, function(value, percentage) {
       desktopMargin = value;
-      label.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
+      labelMargin.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
     }), outer);
     tabOther.appendChild(outer);
 
