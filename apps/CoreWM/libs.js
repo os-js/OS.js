@@ -281,7 +281,7 @@
     outer.className = "Setting SettingsNoButton Setting_Localization";
 
     var label = document.createElement('label');
-    label.innerHTML = _("Language (requires restart)", outer);
+    label.innerHTML = _("Language (requires restart)");
 
     outer.appendChild(label);
     var useLanguage = this._addGUIElement(new OSjs.GUI.Select('SettingsUseLanguage'), outer);
