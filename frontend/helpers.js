@@ -220,7 +220,7 @@
         }
 
         if ( !found ) {
-          _onError('open', OSjs._("The requested file MIME is not accepted by this application."));
+          _onError('open', OSjs._("The requested file MIME '{0}' is not accepted by this application.", fmime || 'unknown'));
           return;
         }
       }

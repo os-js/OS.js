@@ -86,7 +86,7 @@
     "Application {0} failed to perform operation '{1}'" : "Applikasjonen {0} klarte ikke utføre operasjon '{1}'",
 
     // helpers.js
-    "The requested file MIME is not accepted by this application." : 'Denne applikasjonen støtter ikke filer med denne MIME-typen',
+    "The requested file MIME '{0}' is not accepted by this application." : "Denne applikasjonen støtter ikke filer med denne MIME-typen '{0}'",
     'Fatal error on open file!' : 'Fatal feil under åpning av fil!',
     "Failed to open file: {0}" : 'Klarte ikke åpne filen: {0}',
     'Fatal error on save file!' : 'Fatal feil under lagring av fil!',
