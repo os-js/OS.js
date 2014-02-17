@@ -296,6 +296,7 @@
     this._addGUIElement(new OSjs.GUI.Button('Save', {label: _('Apply'), onClick: function(el, ev) {
       var settings = {
         language:         useLanguage.getValue(),
+        sounds:           useSounds.getValue() == 'yes',
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
         panelPosition:    panelPosition.getValue(),

@@ -12,6 +12,7 @@
 * CoreWM: Finish Panel implementation
 * Create bin/ scripts for nodejs (redo create-application for PHP)
 * Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
+* Cache user settings after login (like core settings)
 
 * Offline resource pre-loading (not prioritized)
 * Offline VFS (not prioritized)
@@ -24,6 +25,7 @@
   * CoreWM/Settings - Implement hotkey toggle
   * CoreWM/Settings - Implement hotkey customization
   * CoreWM/Settings - Implement windowswitcher toggle
+  * CoreWM/Settings - Sounds toggle
   * Finish Music Player
   * Finish File Manager
 

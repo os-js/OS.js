@@ -475,13 +475,21 @@
    * Global function for playing a sound
    *
    * @param   String      name      Sound name
+   * @param   float       volume    Sound volume (0.0 - 1.0)
    * @return  DOMAudio
    */
-  function PlaySound(name) {
-    if ( OSjs.Compability.audio ) {
+  function PlaySound(name, volume) {
+    if ( typeof volume === 'undefined' ) {
+      volume = 1.0;
+    }
+
+    var enabled = OSjs.API.getHandlerInstance().getConfig('Core').Sounds;
+
+    if ( OSjs.Compability.audio && enabled ) {
       var f = OSjs.API.getThemeResource(name, 'sound');
       console.info("PlaySound()", name, f);
       var a = new Audio(f);
+      a.volume = volume;
       a.play();
       return a;
     }
@@ -1356,6 +1364,7 @@
       this._guiElements   = [];
       this._disabled      = true;
       this._sound         = null; //'dialog-information';
+      this._soundVolume   = 1.0;
       this._properties    = {
         gravity           : null,
         allow_move        : true,
@@ -1744,7 +1753,7 @@
     this._toggleDisabled(false);
 
     if ( this._sound ) {
-      PlaySound(this._sound);
+      PlaySound(this._sound, this._soundVolume);
     }
 
     return this._$root;

@@ -57,6 +57,7 @@
     }
 
     this._sound = 'dialog-information';
+    this._soundVolume = 0.5;
   };
 
   StandardDialog.prototype = Object.create(DialogWindow.prototype);
