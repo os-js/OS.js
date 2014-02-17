@@ -63,6 +63,10 @@
           MaxUploadSize:  2097152,
           BugReporting:   true,
           Preloads:       [],
+          Languages:      {
+            'en_US': 'English',
+            'no_NO': 'Norsk (Norwegian)'
+          },
           Locale:         'en_US'
         },
 

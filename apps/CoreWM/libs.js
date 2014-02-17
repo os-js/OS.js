@@ -285,10 +285,8 @@
 
     outer.appendChild(label);
     var useLanguage = this._addGUIElement(new OSjs.GUI.Select('SettingsUseLanguage'), outer);
-    useLanguage.addItems({
-      'en_US': 'English',
-      'no_NO': 'Norsk (Norwegian)'
-    });
+    var languages = OSjs.API.getHandlerInstance().getConfig('Core').Languages;
+    useLanguage.addItems(languages);
     useLanguage.setSelected(OSjs.Locale.getLocale());
     tabLocale.appendChild(outer);
 
