@@ -278,7 +278,7 @@
     // Localization
     //
     outer = document.createElement('div');
-    outer.className = "Setting Setting_Localization";
+    outer.className = "Setting SettingsNoButton Setting_Localization";
 
     var label = document.createElement('label');
     label.innerHTML = _("Language (requires restart)", outer);
