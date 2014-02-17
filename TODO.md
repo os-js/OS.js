@@ -6,6 +6,7 @@
 * Finish Applications
 
 ## TODOs
+* Refactor for Utils.format()
 * Finish Node.js backend
 * CoreWM: Custom keyboard binding shortcuts
 * CoreWM: Finish Panel implementation
@@ -24,6 +25,7 @@
   * GUITreeView
   * GUILabel
 * Localization (Translations)
+  - Applications
 * Offline resource pre-loading (not prioritized)
 * Offline VFS (not prioritized)
 * Full Source code documentation (not prioritized)

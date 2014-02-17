@@ -82,7 +82,7 @@
 
     var lbl;
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
-      lbl = (this.args.buttonCancelLabel || 'Cancel');
+      lbl = (this.args.buttonCancelLabel || OSjs._('Cancel'));
       this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onCancelClick(ev);
@@ -91,7 +91,7 @@
     }
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
-      lbl = (this.args.buttonOkLabel || 'OK');
+      lbl = (this.args.buttonOkLabel || OSjs._('OK'));
       this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onConfirmClick.call(self, ev);
@@ -163,13 +163,13 @@
     root.className += ' ErrorDialog';
 
     var messagel        = document.createElement('div');
-    messagel.className  = 'Message';
+    messagel.className  = OSjs._('Message');
     messagel.innerHTML  = this.data.message;
     root.appendChild(messagel);
 
     label           = document.createElement('div');
     label.className = 'Label';
-    label.innerHTML = 'Summary';
+    label.innerHTML = OSjs._('Summary');
     root.appendChild(label);
 
     var messaged = this._addGUIElement(new OSjs.GUI.Textarea('Summary'), root);
@@ -195,7 +195,7 @@
 
       label           = document.createElement('div');
       label.className = 'Label';
-      label.innerHTML = 'Trace';
+      label.innerHTML = OSjs._('Trace');
       root.appendChild(label);
 
       var traced = this._addGUIElement(new OSjs.GUI.Textarea('Trace'), root);
@@ -255,8 +255,8 @@
     this.selectedApp  = null;
     this.useDefault   = false;
 
-    var msg = (["Choose an application to open<br />", "<span>"+this.filename+"</span>", "("+this.mime+")"]).join(" ");
-    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: "Choose Application", message: msg}, {width:400, height:360}, onClose]);
+    var msg = ([OSjs._("Choose an application to open"), "<br />" ,OSjs.Utils.format("<span>{0}</span>", this.filename), OSjs.Utils.format("({0})", this.mime)]).join(" ");
+    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: OSjs._("Choose Application"), message: msg}, {width:400, height:360}, onClose]);
   };
 
   ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
@@ -271,7 +271,7 @@
     if ( !val ) {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
-        var d = new AlertDialog("You need to select an application");
+        var d = new AlertDialog(OSjs._("You need to select an application"));
         wm.addWindow(d);
         this._addChild(d);
       }
@@ -313,7 +313,7 @@
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
     listView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'name',  title: 'Name'},
+      {key: 'name',  title: OSjs._('Name')},
       {key: 'key',   title: 'Key', visible: false}
      ]);
     listView.onActivate = function(ev, el, item) {
@@ -335,7 +335,7 @@
     listView.setRows(list);
     listView.render();
 
-    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: 'Use as default application for ' + this.mime, value: this.useDefault, onChange: function(el, ev, value) {
+    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: OSjs._('Use as default application for {0}', this.mime), value: this.useDefault, onChange: function(el, ev, value) {
       self.useDefault = value ? true : false;
     }}), container);
 
@@ -353,7 +353,7 @@
     DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
 
     this.$desc                    = null;
-    this._title                   = title || "File Operation Progress";
+    this._title                   = title || OSjs._("File Operation Progress");
     this._properties.allow_close  = false;
     this._icon                    = 'actions/document-send.png';
   };
@@ -375,7 +375,7 @@
 
     var desc        = document.createElement('div');
     desc.className  = 'Description';
-    desc.innerHTML  = 'Loading...';
+    desc.innerHTML  = OSjs._('Loading...');
 
 
     el.appendChild(desc);
@@ -412,8 +412,8 @@
     this.uploadMime = null;
 
     var maxSize = OSjs.API.getHandlerInstance().getConfig('Core').MaxUploadSize;
-    var msg = 'Upload file to <span>' + this.dest + '</span>.<br />Maximum size: ' + maxSize + ' bytes';
-    StandardDialog.apply(this, ['FileUploadDialog', {title: "Upload Dialog", message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
+    var msg = OSjs._('Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes', this.dest, maxSize);
+    StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs._("Upload Dialog"), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
     this._icon = 'actions/filenew.png';
   };
 
@@ -469,8 +469,8 @@
     this.$file.disabled = 'disabled';
     this.buttonCancel.setDisabled(true);
 
-    this.dialog = this._wmref.addWindow(new FileProgressDialog("Uploading file..."));
-    this.dialog.setDescription("Uploading '" + file.name + "' (" + file.type + " " + size + ") to " + this.dest);
+    this.dialog = this._wmref.addWindow(new FileProgressDialog(OSjs._("Uploading file...")));
+    this.dialog.setDescription(OSjs._("Uploading '{0}' ({1} {2}) to {3}" + file.name, file.type, size, this.dest));
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
 
@@ -524,9 +524,9 @@
   FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
     console.info("FileUploadDialog::onUploadFailed()");
     if ( error ) {
-      this._error("Upload failed", "The upload has failed", error);
+      this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), error);
     } else {
-      this._error("Upload failed", "The upload has failed", "Reason unknown...");
+      this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), OSjs._("Reason unknown..."));
     }
     this.buttonCancel.setDisabled(false);
     this.end('fail', error);
@@ -534,7 +534,7 @@
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
     console.info("FileUploadDialog::onUploadCanceled()");
-    this._error("Upload failed", "The upload has failed", "Cancelled by user...");
+    this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), OSjs._("Cancelled by user..."));
     this.buttonCancel.setDisabled(false);
     this.end('cancelled', evt);
   };
@@ -574,11 +574,11 @@
           }
           errors++;
         }
-        self._error("FileDialog Error", "Failed listing directory '" + dirname + "' because an error occured", err);
+        self._error(OSjs._("FileDialog Error"), OSjs._("Failed listing directory '{0}' because an error occured", dirname), err);
       }
     };
 
-    var title     = this.type == "save" ? "Save" : "Open";
+    var title     = OSjs._(this.type == "save" ? "Save" : "Open");
     var className = this.type == "save" ? 'FileSaveDialog' : 'FileOpenDialog';
 
     StandardDialog.apply(this, [className, {title: title}, {width:600, height:380}, onClose]);
@@ -691,7 +691,7 @@
         self.buttonConfirm.setDisabled(false);
 
         if ( self.type === 'save' ) {
-          if ( confirm("Are you sure you want to overwrite the file '" + OSjs.Utils.filename(path) + "'?") ) {
+          if ( confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path))) ) { // FIXME
             self.dialogOK.call(self, path, mime);
           }
         } else {
@@ -731,7 +731,7 @@
         if ( check ) {
           item = fileList.$view.getItemByKey('filename', check);
           if ( item !== null ) {
-            if ( confirm("The file '" + check + "' already exists. Overwrite?") ) {
+            if ( confirm(OSjs._("The file '{0}' already exists. Overwrite?", check)) ) { // FIXME
               mime = item.getAttribute('data-mime');
               curr = item.getAttribute('data-path');
             } else {
@@ -769,9 +769,9 @@
       if ( wm ) {
         var dwin;
         if ( this.type === 'save' ) {
-          dwin = new AlertDialog('You need to select a file or enter new filename!');
+          dwin = new AlertDialog(OSjs._('You need to select a file or enter new filename!'));
         } else {
-          dwin = new AlertDialog('You need to select a file!');
+          dwin = new AlertDialog(OSjs._('You need to select a file!'));
         }
         wm.addWindow(dwin);
         this._addChild(dwin);
@@ -807,7 +807,7 @@
   var FileInformationDialog = function(path, onClose) {
     this.path = path;
     onClose = onClose || function() {};
-    StandardDialog.apply(this, ['FileInformationDialog', {title: "File Information", buttonCancel: false, buttonOkLabel: "Close"}, {width:300, height:400}, onClose]);
+    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._("File Information"), buttonCancel: false, buttonOkLabel: OSjs._("Close")}, {width:300, height:400}, onClose]);
   };
   FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
 
@@ -815,13 +815,13 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var desc = "Loading file information for: " + this.path;
+    var desc = OSjs._("Loading file information for: {0}", this.path);
     var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
 
     var _onError = function(err) {
       var fname = OSjs.Utils.filename(self.path);
-      self._error("FileInformationDialog Error", "Failed to get file information for <span>" + fname + "</span>", err);
-      txt.setValue("Failed to get file information for: " + self.path);
+      self._error(OSjs._("FileInformationDialog Error"), OSjs._("Failed to get file information for <span>{0}</span>", fname), err);
+      txt.setValue(OSjs._("Failed to get file information for: {0}", self.path));
     };
 
     var _onSuccess = function(data) {
@@ -863,7 +863,7 @@
    * Alert/Message Dialog
    */
   var AlertDialog = function(msg, onClose) {
-    StandardDialog.apply(this, ['AlertDialog', {title: "Alert Dialog", message: msg, buttonCancel: false, buttonOkLabel: "Close"}, {width:250, height:100}, onClose]);
+    StandardDialog.apply(this, ['AlertDialog', {title: OSjs._("Alert Dialog"), message: msg, buttonCancel: false, buttonOkLabel: OSjs._("Close")}, {width:250, height:100}, onClose]);
     this._icon = 'status/dialog-warning.png';
   };
   AlertDialog.prototype = Object.create(StandardDialog.prototype);
@@ -872,7 +872,7 @@
    * Confirmation Dialog
    */
   var ConfirmDialog = function(msg, onClose) {
-    StandardDialog.apply(this, ['ConfirmDialog', {title: "Confirm Dialog", message: msg}, {width:350, height:120}, onClose]);
+    StandardDialog.apply(this, ['ConfirmDialog', {title: OSjs._("Confirm Dialog"), message: msg}, {width:350, height:120}, onClose]);
     this._icon = 'status/dialog-question.png';
   };
   ConfirmDialog.prototype = Object.create(StandardDialog.prototype);
@@ -881,7 +881,7 @@
    * Input Dialog
    */
   var InputDialog = function(msg, val, onClose) {
-    StandardDialog.apply(this, ['InputDialog', {title: "Input Dialog", message: msg}, {width:300, height:150}, onClose]);
+    StandardDialog.apply(this, ['InputDialog', {title: OSjs._("Input Dialog"), message: msg}, {width:300, height:150}, onClose]);
     this._icon = 'status/dialog-information.png';
 
     this.value = val || '';
@@ -933,7 +933,7 @@
       opts.alpha = 1.0;
     }
 
-    StandardDialog.apply(this, ['ColorDialog', {title: "Color Dialog"}, {width:450, height:270}, onClose]);
+    StandardDialog.apply(this, ['ColorDialog', {title: OSjs._("Color Dialog")}, {width:450, height:270}, onClose]);
     this._icon = 'apps/gnome-settings-theme.png';
 
     if ( typeof opts.color === 'object' ) {
@@ -961,7 +961,7 @@
 
     var label       = document.createElement('div');
     label.className = 'Label LabelR';
-    label.innerHTML = 'Red: 0';
+    label.innerHTML = OSjs._('Red: {0}', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, val: color.r}, function(value, percentage) {
       self.setColor(value, self.currentRGB.g, self.currentRGB.b);
@@ -969,7 +969,7 @@
 
     label           = document.createElement('div');
     label.className = 'Label LabelG';
-    label.innerHTML = 'Green: 0';
+    label.innerHTML = OSjs._('Green: {0}', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, val: color.g}, function(value, percentage) {
       self.setColor(self.currentRGB.r, value, self.currentRGB.b);
@@ -977,7 +977,7 @@
 
     label           = document.createElement('div');
     label.className = 'Label LabelB';
-    label.innerHTML = 'Blue: 0';
+    label.innerHTML = OSjs._('Blue: {0}', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, val: color.b}, function(value, percentage) {
       self.setColor(self.currentRGB.r, self.currentRGB.g, value);
@@ -986,7 +986,7 @@
     if ( this.showAlpha ) {
       label           = document.createElement('div');
       label.className = 'Label LabelA';
-      label.innerHTML = 'Alpha: 0';
+      label.innerHTML = OSjs._('Alpha: {0}', 0);
       sliders.appendChild(label);
       this._addGUIElement(new OSjs.GUI.Slider('SliderA', {min: 0, max: 100, val: this.currentAlpha}, function(value, percentage) {
         self.setColor(self.currentRGB.r, self.currentRGB.g, self.currentRGB.b, value);
@@ -1014,18 +1014,18 @@
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
 
     this._getGUIElement('SliderR').setValue(r);
-    this.$element.getElementsByClassName('LabelR')[0].innerHTML = 'Red: ' + r;
+    this.$element.getElementsByClassName('LabelR')[0].innerHTML = OSjs._('Red: {0}', r);
 
     this._getGUIElement('SliderG').setValue(g);
-    this.$element.getElementsByClassName('LabelG')[0].innerHTML = 'Green: ' + g;
+    this.$element.getElementsByClassName('LabelG')[0].innerHTML = OSjs._('Green: {0}', g);
 
     this._getGUIElement('SliderB').setValue(b);
-    this.$element.getElementsByClassName('LabelB')[0].innerHTML = 'Blue: ' + b;
+    this.$element.getElementsByClassName('LabelB')[0].innerHTML = OSjs._('Blue: {0}', b);
 
     if ( this.showAlpha ) {
       var ca = (this.currentAlpha/100);
       this._getGUIElement('SliderA').setValue(this.currentAlpha);
-      this.$element.getElementsByClassName('LabelA')[0].innerHTML = 'Alpha: ' + ca;
+      this.$element.getElementsByClassName('LabelA')[0].innerHTML = OSjs._('Alpha: {0}', ca);
     }
 
   };
@@ -1059,7 +1059,7 @@
     this.$selectFonts = null;
     this.$selectSize  = null;
 
-    StandardDialog.apply(this, ['FontDialog', {title: "Font Dialog"}, {width:450, height:270}, onClose]);
+    StandardDialog.apply(this, ['FontDialog', {title: OSjs._("Font Dialog")}, {width:450, height:270}, onClose]);
   };
 
   FontDialog.prototype = Object.create(StandardDialog.prototype);

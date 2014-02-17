@@ -220,7 +220,7 @@
         }
 
         if ( !found ) {
-          _onError('open', "The requested file MIME is not accepted by this application.");
+          _onError('open', OSjs._("The requested file MIME is not accepted by this application."));
           return;
         }
       }
@@ -239,9 +239,9 @@
           return;
         }
 
-        _onError('open', (res && res.error) ? res.error : 'Fatal error on open file!');
+        _onError('open', (res && res.error) ? res.error : OSjs._('Fatal error on open file!'));
       }, function(error) {
-        _onError('open', "Failed to open file (call): " + fname, error);
+        _onError('open', OSjs._("Failed to open file: {0}", fname), error);
       });
     };
 
@@ -259,9 +259,9 @@
           return;
         }
 
-        _onError('save', (res && res.error) ? res.error : 'Fatal error on save file!');
+        _onError('save', (res && res.error) ? res.error : OSjs._('Fatal error on save file!'));
       }, function(error) {
-        _onError('save', "Failed to save file (call): " + fname, error);
+        _onError('save', OSjs._("Failed to save file: {0}", fname), error);
       });
     };
 

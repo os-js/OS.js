@@ -2569,10 +2569,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            "Filename: "  + item.filename,
-            "Path: "      + item.path,
-            "Size: "      + item.size || 0,
-            "MIME: "      + item.mime || 'none'
+            OSjs._("Filename") + ": "  + item.filename,
+            OSjs._("Path")     + ": "  + item.path,
+            OSjs._("Size")     + ": "  + item.size || 0,
+            OSjs._("MIME")     + ": "  + item.mime || 'none'
           ]).join("\n");
 
           createDraggable(el, {
@@ -2680,10 +2680,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            "Filename: "  + item.filename,
-            "Path: "      + item.path,
-            "Size: "      + item.size || 0,
-            "MIME: "      + item.mime || 'none'
+            OSjs._("Filename") + ": "  + item.filename,
+            OSjs._("Path")     + ": "  + item.path,
+            OSjs._("Size")     + ": "  + item.size || 0,
+            OSjs._("MIME")     + ": "  + item.mime || 'none'
           ]).join("\n");
 
           createDraggable(el, {
@@ -2727,11 +2727,11 @@
 
     this.setColumns([
       {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: "16"}, resizable: false},
-      {key: 'filename', title: 'Filename'},
-      {key: 'mime',     title: 'Mime', domProperties: {width: "150"}},
-      {key: 'size',     title: 'Size', callback: _callbackSize, domProperties: {width: "80"}},
-      {key: 'path',     title: 'Path', visible: false},
-      {key: 'type',     title: 'Type', visible: false}
+      {key: 'filename', title: OSjs._('Filename')},
+      {key: 'mime',     title: OSjs._('MIME'), domProperties: {width: "150"}},
+      {key: 'size',     title: OSjs._('Size'), callback: _callbackSize, domProperties: {width: "80"}},
+      {key: 'path',     title: OSjs._('Path'), visible: false},
+      {key: 'type',     title: OSjs._('Type'), visible: false}
      ]);
 
     this.setRows(list);

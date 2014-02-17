@@ -28,6 +28,7 @@ Current version: **Alpha** (Stable. If you find any bugs report them back to me 
 * Supports both Applications and Background-services
 * File System functions
 * A basic Theme implementation (icons, sounds and CSS styles)
+* Multi-user environment support
 
 Comes bundeled with the default theme and some applications:
 * **Draw** - A simple drawing application

@@ -238,11 +238,15 @@
               _HANDLER.setDefaultApplication(mime, setDefault ? appname : null);
             }));
           } else {
-            OSjs.API.error("Error opening file", "Fatal Error", "No window manager is running");
+            OSjs.API.error(OSjs._("Error opening file"),
+                           OSjs._("The file '<span>{0}</span>' could not be opened", fname),
+                           OSjs._("No window manager is running") );
           }
         }
       } else {
-        OSjs.API.error("Error opening file", "The file <span>" + fname + "' could not be opened", "Could not find any Applications with support for '" + mime + "'files");
+        OSjs.API.error(OSjs._("Error opening file"),
+                       OSjs._("The file '<span>{0}</span>' could not be opened", fname),
+                       OSjs._("Could not find any Applications with support for '{0}' files", mime) );
       }
     };
 
@@ -326,7 +330,9 @@
     var _error = function(msg, exception) {
       _removeSplash();
       console.groupEnd(); // !!!
-      ErrorDialog('Failed to launch Application', 'An error occured while trying to launch: ' + n, msg, exception, true);
+      ErrorDialog(OSjs._('Failed to launch Application'),
+                  OSjs._('An error occured while trying to launch: {0}', n),
+                  msg, exception, true);
 
       onError(msg, n, arg);
     };
@@ -343,7 +349,7 @@
             if ( sproc instanceof Application ) {
               sproc._onMessage(null, 'attention', arg);
             } else {
-              _error("The application '" + n + "' is already launched and allows only one instance!");
+              _error(OSjs._("The application '{0}' is already launched and allows only one instance!", n));
             }
             return;
           }
@@ -357,7 +363,7 @@
           onConstructed(a, result);
         } catch ( e ) {
           console.warn("Error on constructing application", e, e.stack);
-          _error("Application '" + n + "'construct failed: " + e, e);
+          _error(OSjs._("Application '{0}' construct failed: {1}", n, e), e);
           err = true;
         }
 
@@ -379,11 +385,11 @@
             });
           } catch ( e ) {
             console.warn("Error on init() application", e, e.stack);
-            _error("Application '" + n + "' init() failed: " + e, e);
+            _error(OSjs._("Application '{0}' init() failed: {1}", n, e), e);
           }
         }
       } else {
-        _error("Application resources missing for '" + n + "' or it failed to load!");
+        _error(OSjs._("Application resources missing for '{0}' or it failed to load!", n));
       }
     };
 
@@ -391,7 +397,7 @@
     var _preload = function(result) {
       OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
         if ( errors ) {
-          _error("Application '" + n + "' preloading failed: \n" + failed.join(","));
+          _error(OSjs._("Application '{0}' preloading failed: \n{1}", n, failed.join(",")));
           return;
         }
 
@@ -405,7 +411,7 @@
 
     var data = _HANDLER.getApplicationMetadata(n);
     if ( !data ) {
-      _error("Failed to launch '" + n + "'. Application manifest data not found!");
+      _error(OSjs._("Failed to launch '{0}'. Application manifest data not found!", n));
       return;
     }
 
@@ -539,7 +545,7 @@
     // Override error handling
     window.onerror = function(message, url, linenumber, column, exception) {
       var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-      ErrorDialog('JavaScript Error Report', 'An unexpected error occured, maybe a bug.', msg, exception, true);
+      ErrorDialog(OSjs._('JavaScript Error Report'), OSjs._('An unexpected error occured, maybe a bug.'), msg, exception, true);
       return false;
     };
 
@@ -589,27 +595,27 @@
     var self = this;
 
     var _error = function(msg) {
-      ErrorDialog('Failed to initialize OS.js', 'An error occured while initializing OS.js', msg, null, true);
+      ErrorDialog(OSjs._('Failed to initialize OS.js'), OSjs._('An error occured while initializing OS.js'), msg, null, true);
     };
 
     var _launchWM = function(callback) {
       var wm = _HANDLER.getConfig('WM');
       if ( !wm || !wm.exec ) {
-        _error("Cannot launch OS.js: No window manager defined!");
+        _error(OSjs._("Cannot launch OS.js: No window manager defined!"));
         return;
       }
 
       LaunchProcess(wm.exec, wm.args || {}, function() {
         callback();
       }, function(error) {
-        _error("Cannot launch OS.js: Failed to launch Window Manager: " + error);
+        _error(OSjs._("Cannot launch OS.js: Failed to launch Window Manager: {0}", error));
       });
     };
 
     var _preload = function(list, callback) {
       OSjs.Utils.Preload(list, function(total, errors) {
         if ( errors ) {
-          _error("Cannot launch OS.js: Failed to preload resources...");
+          _error(OSjs._("Cannot launch OS.js: Failed to preload resources..."));
           return;
         }
 
@@ -1233,7 +1239,9 @@
     onSuccess = onSuccess || function() {};
     onError = onError || function(err) {
       err = err || "Unknown error";
-      OSjs.API.error("Application API error", "Application " + self.__name + " failed to perform operation '" + method + "'", err);
+      OSjs.API.error(OSjs._("Application API error"),
+                     OSjs._("Application {0} failed to perform operation '{1}'", self.__name, method),
+                     err);
     };
     return APICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
   };
