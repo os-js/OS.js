@@ -167,8 +167,6 @@
       bugreport = false;
     }
 
-    PlaySound('dialog-warning');
-
     OSjs.GUI.blurMenu();
 
     if ( _WM ) {
@@ -1357,6 +1355,7 @@
       this._parent        = null;
       this._guiElements   = [];
       this._disabled      = true;
+      this._sound         = null; //'dialog-information';
       this._properties    = {
         gravity           : null,
         allow_move        : true,
@@ -1743,6 +1742,10 @@
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
+
+    if ( this._sound ) {
+      PlaySound(this._sound);
+    }
 
     return this._$root;
   };

@@ -55,6 +55,8 @@
     if ( this.args.title ) {
       this._title = this.args.title;
     }
+
+    this._sound = 'dialog-information';
   };
 
   StandardDialog.prototype = Object.create(DialogWindow.prototype);
@@ -148,6 +150,7 @@
 
     DialogWindow.apply(this, ['ErrorDialog', {width:400, height:280}]);
     this._icon = 'status/dialog-error.png';
+    this._sound = 'dialog-warning';
   };
 
   ErrorDialog.prototype = Object.create(DialogWindow.prototype);
