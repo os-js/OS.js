@@ -291,10 +291,10 @@
   /**
    * Main Window
    */
-  var ApplicationMusicPlayerWindow = function(app) {
+  var ApplicationMusicPlayerWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationMusicPlayerWindow', {width: 322, height: 225}, app]);
 
-    this.title            = "Music Player";
+    this.title            = metadata.name;
     this.$buttons         = {};
     this.$labels          = {};
     this.seeking          = false;
@@ -305,7 +305,7 @@
 
     // Set window properties here
     this._title = this.title;
-    this._icon  = "status/audio-volume-high.png";
+    this._icon  = metadata.icon;
 
     this._properties.allow_drop     = true;
     this._properties.allow_resize   = false;
@@ -686,11 +686,11 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationMusicPlayer.prototype.init = function(core, session) {
+  ApplicationMusicPlayer.prototype.init = function(core, session, metadata) {
     Application.prototype.init.apply(this, arguments);
     var self = this;
 
-    this._addWindow(new ApplicationMusicPlayerWindow(this));
+    this._addWindow(new ApplicationMusicPlayerWindow(this, metadata));
 
     var path = this._getArgument('file');
     var mime = this._getArgument('mime');

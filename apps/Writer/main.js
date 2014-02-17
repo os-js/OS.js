@@ -36,12 +36,12 @@
   /**
    * Main Window
    */
-  var ApplicationWriterWindow = function(app) {
+  var ApplicationWriterWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationWriterWindow', {width: 800, height: 450}, app]);
 
     // Set window properties here
-    this._icon = 'apps/libreoffice34-writer.png';
-    this._title = "Writer (WIP)";
+    this._icon = metadata.icon;
+    this._title = metadata.name + ' (WIP)';
     this._properties.allow_drop = true;
 
     this.font       = 'Arial';
@@ -357,8 +357,8 @@
 
   ApplicationWriter.prototype = Object.create(Application.prototype);
 
-  ApplicationWriter.prototype.init = function(core, settings) {
-    this._addWindow(new ApplicationWriterWindow(this));
+  ApplicationWriter.prototype.init = function(core, session, metadata) {
+    this._addWindow(new ApplicationWriterWindow(this, metadata));
     Application.prototype.init.apply(this, arguments);
   };
 

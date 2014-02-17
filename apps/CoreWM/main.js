@@ -3,6 +3,19 @@
   OSjs.CoreWM       = OSjs.CoreWM       || {};
   OSjs.Applications = OSjs.Applications || {};
 
+  var _Locales = {
+    no_NO : {
+      "Killing this process will stop things from working!" : "Dreping av denne prosessen vil få konsekvenser!",
+      'Open settings' : 'Åpne instillinger'
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   function DefaultSettings(defaults) {
     var cfg = {
       animations      : OSjs.Compability.css.animation,
@@ -83,7 +96,7 @@
   };
 
   CoreWM.prototype.destroy = function(kill) {
-    if ( kill && !confirm("Killing this process will stop things from working!") ) {
+    if ( kill && !confirm(_("Killing this process will stop things from working!")) ) {
       return false;
     }
 
@@ -194,7 +207,7 @@
     };
 
     var _openDesktopMenu = function(ev) {
-      OSjs.GUI.createMenu([{title: 'Open settings', onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
+      OSjs.GUI.createMenu([{title: _('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
     };
 
     var background = document.getElementById('Background');

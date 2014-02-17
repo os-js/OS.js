@@ -3,11 +3,11 @@
   /**
    * Main Window
    */
-  var ApplicationProcessViewerWindow = function(app, opts) {
+  var ApplicationProcessViewerWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationProcessViewerWindow', {width: 400, height: 400}, app]);
 
-    this._title = "Process Viewer";
-    this._icon = "apps/gnome-monitor.png";
+    this._title = metadata.name;
+    this._icon = metadata.icon;
   };
 
   ApplicationProcessViewerWindow.prototype = Object.create(Window.prototype);
@@ -56,10 +56,10 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationProcessViewer.prototype.init = function(core, settings) {
+  ApplicationProcessViewer.prototype.init = function(core, session, metadata) {
     Application.prototype.init.apply(this, arguments);
 
-    this._addWindow(new ApplicationProcessViewerWindow(this));
+    this._addWindow(new ApplicationProcessViewerWindow(this, metadata));
 
     var self = this;
     this.timer = setInterval(function() {

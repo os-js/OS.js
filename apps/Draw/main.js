@@ -196,10 +196,10 @@
   /**
    * Main Window
    */
-  var ApplicationDrawWindow = function(app) {
+  var ApplicationDrawWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationDrawWindow', {width: 800, height: 450}, app]);
 
-    this.title                  = 'Draw';
+    this.title                  = metadata.name;
     this.$canvasContainer       = null;
     this.currentTool            = 'pointer';
     this.currentForegroundColor = '#000000';
@@ -208,7 +208,7 @@
     this.strokeStyle            = 'round';
 
     // Set window properties here
-    this._icon = 'categories/gnome-graphics.png';
+    this._icon = metadata.icon;
     this._properties.allow_drop = true;
   };
 
@@ -582,10 +582,10 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationDraw.prototype.init = function(core, settings) {
+  ApplicationDraw.prototype.init = function(core, session, metadata) {
     Application.prototype.init.apply(this, arguments);
 
-    this._addWindow(new ApplicationDrawWindow(this));
+    this._addWindow(new ApplicationDrawWindow(this, metadata));
 
     var open = this._getArgument('file');
     var mime = this._getArgument('mime');

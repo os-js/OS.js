@@ -3,16 +3,16 @@
   /**
    * Main Window
    */
-  var ApplicationPreviewWindow = function(app, opts) {
+  var ApplicationPreviewWindow = function(app, opts, metadata) {
     Window.apply(this, ['ApplicationPreviewWindow', opts, app]);
 
     this.previewElement = null;
-    this.title          = "Preview";
+    this.title          = metadata.name;
     this.frame          = null;
     this.loaded         = false;
 
     this._title = this.title;
-    this._icon  = "mimetypes/image.png";
+    this._icon  = metadata.icon;
     this._properties.allow_drop = true;
   };
 
@@ -164,8 +164,8 @@
 
   ApplicationPreview.prototype = Object.create(Application.prototype);
 
-  ApplicationPreview.prototype.init = function(core, settings) {
-    this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}));
+  ApplicationPreview.prototype.init = function(core, session, metadata) {
+    this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}, metadata));
     Application.prototype.init.apply(this, arguments);
   };
 

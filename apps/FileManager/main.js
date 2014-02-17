@@ -3,13 +3,13 @@
   /**
    * Main Window
    */
-  var ApplicationFileManagerWindow = function(app) {
+  var ApplicationFileManagerWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationFileManagerWindow', {width: 650, height: 420}, app]);
 
-    this.title                  = "File Manager";
+    this.title                  = metadata.name;
     this._title                 = this.title;
     this._properties.allow_drop = true;
-    this._icon                  = 'apps/file-manager.png';
+    this._icon                  = metadata.icon;
   };
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -375,10 +375,10 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationFileManager.prototype.init = function(core, settings) {
+  ApplicationFileManager.prototype.init = function(core, session, metadata) {
     Application.prototype.init.apply(this, arguments);
 
-    this._addWindow(new ApplicationFileManagerWindow(this));
+    this._addWindow(new ApplicationFileManagerWindow(this, metadata));
 
     var path = this._getArgument('path') || OSjs.API.getDefaultPath('/');
     var w = this._getWindow('ApplicationFileManagerWindow');

@@ -36,12 +36,12 @@
   /**
    * Main Window
    */
-  var ApplicationAboutWindow = function(app) {
+  var ApplicationAboutWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 260}, app]);
 
     // Set window properties here
-    this._icon    = 'apps/help-browser.png';
-    this._title   = 'About OS.js';
+    this._icon    = metadata.icon;
+    this._title   = metadata.name;
 
     this._properties.gravity = 'center';
     this._properties.allow_resize = false;
@@ -98,11 +98,11 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationAbout.prototype.init = function(core, settings) {
+  ApplicationAbout.prototype.init = function(core, session, metadata) {
     Application.prototype.init.apply(this, arguments);
     var self = this;
 
-    this._addWindow(new ApplicationAboutWindow(this));
+    this._addWindow(new ApplicationAboutWindow(this, metadata));
   };
 
   ApplicationAbout.prototype._onMessage = function(obj, msg, args) {
