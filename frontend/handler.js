@@ -140,7 +140,9 @@
   //
 
   /**
-   * Called upon window loaded
+   * Called upon window loaded from 'main.js'
+   * @see main.js
+   * @see OSjs._initialize
    */
   DefaultHandler.prototype.init = function(callback) {
     var self = this;
@@ -155,6 +157,7 @@
     this.login('demo', 'demo', function(userData) {
       userData = userData || {};
 
+      // You would normally use 'userData.settings' here!
       self.setUserSettings('User', userData, function() {
 
         // Ensure we get the user-selected locale
@@ -172,7 +175,8 @@
   };
 
   /**
-   * Called after successfull login
+   * Called after successfull login in 'core.js'
+   * @see Core::Main::init()
    */
   DefaultHandler.prototype.boot = function(callback) {
     callback = callback || {};
@@ -213,7 +217,8 @@
 
   /**
    * Default login method
-   * NOTE: This is unused
+   * NOTE: This is just a placeholder for demo usage.
+   *       To implement your own login handler, see the Wiki :)
    */
   DefaultHandler.prototype.login = function(username, password, callback) {
     if ( username === 'demo' && password === 'demo' ) {
@@ -222,7 +227,11 @@
         username:   'demo',
         name:       'Demo User',
         groups:     ['demo'],
-        settings:   {}
+        settings:   {
+          Core : {
+            Locale: 'en_US'
+          }
+        }
       };
 
       callback(userData);
