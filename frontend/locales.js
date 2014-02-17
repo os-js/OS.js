@@ -142,7 +142,8 @@
     'Type'        : 'Type',
     'MIME'        : 'MIME',
     'Path'        : 'Sti',
-    'Size'        : 'Størrelse'
+    'Size'        : 'Størrelse',
+    'Bugreport'   : 'Meld feil'
   };
 
   /**

@@ -207,20 +207,20 @@
       traced.setValue(error);
     }
 
-    var ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: 'Close', onClick: function() {
+    var ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs._('Close'), onClick: function() {
       self._close();
     }}), root);
 
     if ( this.data.bugreport ) {
       var _onBugError = function(error) {
-        alert("Bugreport failed: " + error);
+        alert("Bugreport failed: " + error); // FIXME
       };
       var _onBugSuccess = function() {
-        alert("The error was reported and will be looked into");
+        alert("The error was reported and will be looked into"); // FIXME
         ok.onClick();
       };
 
-      var sendBug = this._addGUIElement(new OSjs.GUI.Button('Bug', {label: 'Bugreport', onClick: function() {
+      var sendBug = this._addGUIElement(new OSjs.GUI.Button('Bug', {label: OSjs._('Bugreport'), onClick: function() {
         OSjs.API.call('bugreport', {data: bugData}, function(res) {
           if ( res ) {
             if ( res.result ) {
@@ -231,7 +231,7 @@
               return;
             }
           }
-          _onBugError("Something went wrong during reporting. You can mail it to andersevenrud@gmail.com");
+          _onBugError("Something went wrong during reporting. You can mail it to andersevenrud@gmail.com"); // FIXME
         }, function(error) {
           _onBugError(error);
         });
