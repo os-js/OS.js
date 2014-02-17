@@ -29,6 +29,7 @@ Current version: **Alpha** (Stable. If you find any bugs report them back to me 
 * File System functions
 * A basic Theme implementation (icons, sounds and CSS styles)
 * Multi-user environment support
+* Localization and translations
 
 Comes bundeled with the default theme and some applications:
 * **Draw** - A simple drawing application
