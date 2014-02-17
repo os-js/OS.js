@@ -2446,8 +2446,6 @@
 
   var __initialized = false;
   var __initialize  = function() {
-    console.info('=== Launching OS.js v2 ===');
-
     if ( typeof OSjs.Hooks !== 'undefined' ) {
       if ( typeof OSjs.Hooks.onInitialize === 'function' ) {
         OSjs.Hooks.onInitialize();
@@ -2468,6 +2466,17 @@
   OSjs._initialize = function() {
     if ( __initialized ) { return; }
     __initialized = true;
+
+    console.log("");
+    console.log(" .--.  .--.     _               .---.   ");
+    console.log(": ,. :: .--'   :_;              `--. :  ");
+    console.log(": :: :`. `.    .-. .--.   .-..-.  ,','  ");
+    console.log(": :; : _`, : _ : :`._-.'  : `; :.'.'_   ");
+    console.log("`.__.'`.__.':_;: :`.__.'  `.__.':____;  ");
+    console.log("             .-. :                      ");
+    console.log("             `._.'                      ");
+    console.log("");
+
 
     window.onload = null;
 

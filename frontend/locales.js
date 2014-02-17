@@ -156,8 +156,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Locale.Strings = Locales[DefaultLocale];
-
   /**
    * Translate given string
    * @param  String   s     Translation key/string
@@ -201,10 +199,11 @@
     if ( Locales[l] ) {
       CurrentLocale = l;
     } else {
+      console.warn("OSjs::Locale::setLocale()", "Invalid locale", l, "(Using default)");
       CurrentLocale = DefaultLocale;
     }
 
-    OSjs.Locale.Strings = Locales[CurrentLocale];
+    console.log("OSjs::Locale::setLocale()", CurrentLocale);
   };
 
 })();

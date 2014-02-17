@@ -133,6 +133,7 @@
    * Event when OS.js has successfully initialized
    */
   DefaultHandler.prototype.onInitialized = function() {
+    console.debug("OSjs::DefaultHandler::onInitialized()");
   };
 
   //
@@ -145,6 +146,8 @@
    * @see OSjs._initialize
    */
   DefaultHandler.prototype.init = function(callback) {
+    console.info("OSjs::DefaultHandler::init()");
+
     var self = this;
     var _finished = function(locale) {
       OSjs.Locale.setLocale(locale || self.config.Core.Locale);
@@ -179,6 +182,8 @@
    * @see Core::Main::init()
    */
   DefaultHandler.prototype.boot = function(callback) {
+    console.info("OSjs::DefaultHandler::boot()");
+
     callback = callback || {};
     var self = this;
 
@@ -221,6 +226,8 @@
    *       To implement your own login handler, see the Wiki :)
    */
   DefaultHandler.prototype.login = function(username, password, callback) {
+    console.info("OSjs::DefaultHandler::login()", username);
+
     if ( username === 'demo' && password === 'demo' ) {
       var userData = {
         id:         1,
@@ -244,6 +251,8 @@
    * Default logout method
    */
   DefaultHandler.prototype.logout = function(session, callback) {
+    console.info("OSjs::DefaultHandler::logout()");
+
     if ( session !== null ) {
       this.setUserSession(session, function() {
         callback(true);
@@ -257,6 +266,8 @@
    * Default method to restore last running session
    */
   DefaultHandler.prototype.loadSession = function(callback) {
+    console.info("OSjs::DefaultHandler::loadSession()");
+
     callback = callback || function() {};
 
     this.getUserSession(function(res) {
@@ -288,6 +299,8 @@
    * Default method to pull package manifest
    */
   DefaultHandler.prototype.pollPackages = function(callback) {
+    console.info("OSjs::DefaultHandler::pollPackages()");
+
     callback = callback || function() {};
 
     var uri = this.getConfig('Core').PACKAGEURI;
