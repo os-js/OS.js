@@ -159,6 +159,7 @@
     // NOTE: This is just for demo usage! 
     this.login('demo', 'demo', function(userData) {
       userData = userData || {};
+      self.userData = userData;
 
       // You would normally use 'userData.settings' here!
       self.setUserSettings('User', userData, function() {

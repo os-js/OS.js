@@ -3,6 +3,18 @@
   OSjs.CoreWM                   = OSjs.CoreWM             || {};
   OSjs.CoreWM.PanelItems        = OSjs.CoreWM.PanelItems  || {};
 
+  var _Locales = {
+    no_NO : {
+      "Logging out user '{0}'.\nDo you want to save current session?" : "Logger ut bruker '{0}'.\nVil du lagre gjeldende sessjon?"
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   /**
    * PanelItem: Buttons
    */
@@ -41,7 +53,7 @@
 
     this.addButton('Log out (Exit)', 'actions/exit.png', function(ev) {
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
-      var t = confirm("Logging out user '" + user.name + "'.\nDo you want to save current session?");
+      var t = confirm(_("Logging out user '{0}'.\nDo you want to save current session?", user.name)); // FIXME
       OSjs._shutdown(t, false);
     });
 

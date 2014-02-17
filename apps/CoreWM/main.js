@@ -5,7 +5,7 @@
 
   var _Locales = {
     no_NO : {
-      "Killing this process will stop things from working!" : "Dreping av denne prosessen vil få konsekvenser!",
+      'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
       'Open settings' : 'Åpne instillinger'
     }
   };
