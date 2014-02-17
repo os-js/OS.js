@@ -25,7 +25,8 @@
   * GUITreeView
   * GUILabel
 * Localization (Translations)
-  - Applications
+  - MusicPlayer
+  - Writer
 * Offline resource pre-loading (not prioritized)
 * Offline VFS (not prioritized)
 * Full Source code documentation (not prioritized)

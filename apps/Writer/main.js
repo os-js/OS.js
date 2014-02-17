@@ -29,6 +29,23 @@
  */
 (function(Application, Window, GUI, Dialogs) {
 
+  var _Locales = {
+    no_NO : {
+      'File'        : 'Fil',
+      'New'         : 'Ny',
+      'Open'        : 'Åpne',
+      'Save'        : 'Lagre',
+      'Save As...'  : 'Lagre Som...',
+      'Close'       : 'Lukk'
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -150,20 +167,20 @@
     sb.setText("THIS IS A WORK IN PROGRESS");
     */
 
-    mb.addItem("File", [
-      {title: 'New', name: 'New', onClick: function() {
+    mb.addItem(_("File"), [
+      {title: _('New'), name: 'New', onClick: function() {
         app.defaultAction('new');
       }},
-      {title: 'Open', name: 'Open', onClick: function() {
+      {title: _('Open'), name: 'Open', onClick: function() {
         app.defaultAction('open');
       }},
-      {title: 'Save', name: 'Save', onClick: function() {
+      {title: _('Save'), name: 'Save', onClick: function() {
         app.defaultAction('save');
       }},
-      {title: 'Save As...', name: 'SaveAs', onClick: function() {
+      {title: _('Save As...'), name: 'SaveAs', onClick: function() {
         app.defaultAction('saveas');
       }},
-      {title: 'Close', name: 'Close', onClick: function() {
+      {title: _('Close'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);

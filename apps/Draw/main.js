@@ -29,6 +29,53 @@
  */
 (function(Application, Window, GUI, Dialogs) {
 
+  var _Locales = {
+    no_NO : {
+      'Pointer'     : 'Peker',
+      'Picker'      : 'Velger',
+      'Bucket'      : 'Bøtte',
+      'Eraser'      : 'Hvisker',
+      'Pencil'      : 'Blyant',
+      'Path'        : 'Sti',
+      'Rectangle'   : 'Rektangel',
+      'Square'      : 'Firkant',
+      'Ellipse'     : 'Oval',
+      'Circle'      : 'Sirkel',
+      'Text'        : 'Tekst',
+      'Background'  : 'Bakgrunn',
+      'Foreground'  : 'Fremgrunn',
+      'Stroke Width': 'Strøk-bredde',
+      'Stroke'      : 'Strøk',
+      'Line Join'   : 'Linje-stil',
+      'Bevel'       : 'Kant',
+      'Round'       : 'Rund',
+      'Miter'       : 'Miter',
+      'File'        : 'Fil',
+      'New'         : 'Ny',
+      'Open'        : 'Åpne',
+      'Save'        : 'Lagre',
+      'Save As...'  : 'Lagre Som...',
+      'Close'       : 'Lukk',
+
+      "Draw Application Error" : "Tegne Applikasjon Feil",
+      "Failed to perform action '{0}'" : "Klarte ikke utføre '{0}'",
+      "Failed to save file: {0}" : "Klarte ikke lagre filen: {0}",
+      "Failed to save file (call): {0}" : "Klarte ikke lagre filen (call): {0}",
+      "Draw" : 'Tegne',
+      "Cannot open file" : 'Kan ikke åpne filen',
+      "Not supported!" : 'Ikke støttet!',
+      "Unknown Error" : "Unkjent Feil",
+      "Failed to open file: {0}" : "Klarte ikke åpne filen: {0}",
+      "Failed to open file (call): {0}" : "Klarte ikke åpne filen (call): {0}",
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -246,25 +293,25 @@
 
     var toolBar = this._addGUIElement(new OSjs.GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
 
-    toolBar.addItem('pointer',    {grouped: true, title: 'Pointer',   icon: _createIcon('stock-cursor'),                  onClick: _onClick});
-    toolBar.addItem('picker',     {grouped: true, title: 'Picker',    icon: _createIcon('stock-color-pick-from-screen'),  onClick: _onClick});
-    toolBar.addItem('bucket',     {grouped: true, title: 'Bucket',    icon: _createIcon('stock-tool-bucket-fill'),        onClick: _onClick});
-    //toolBar.addItem('eraser',     {grouped: true, title: 'Eraser',    icon: _createIcon('stock-tool-eraser'),             onClick: _onClick});
+    toolBar.addItem('pointer',    {grouped: true, title: _('Pointer'),   icon: _createIcon('stock-cursor'),                  onClick: _onClick});
+    toolBar.addItem('picker',     {grouped: true, title: _('Picker'),    icon: _createIcon('stock-color-pick-from-screen'),  onClick: _onClick});
+    toolBar.addItem('bucket',     {grouped: true, title: _('Bucket'),    icon: _createIcon('stock-tool-bucket-fill'),        onClick: _onClick});
+    //toolBar.addItem('eraser',     {grouped: true, title: _('Eraser'),    icon: _createIcon('stock-tool-eraser'),             onClick: _onClick});
 
-    toolBar.addItem('pencil',     {grouped: true, title: 'Pencil',    icon: _createIcon('stock-tool-pencil'),             onClick: _onClick});
-    toolBar.addItem('path',       {grouped: true, title: 'Path',      icon: _createIcon('stock-tool-path'),               onClick: _onClick});
-    toolBar.addItem('rectangle',  {grouped: true, title: 'Rectangle', icon: _createIcon('stock-shape-rectangle'),         onClick: _onClick});
-    toolBar.addItem('square',     {grouped: true, title: 'Square',    icon: _createIcon('stock-shape-square'),            onClick: _onClick});
-    toolBar.addItem('ellipse',    {grouped: true, title: 'Ellipse',   icon: _createIcon('stock-shape-ellipse'),           onClick: _onClick});
-    toolBar.addItem('circle',     {grouped: true, title: 'Circle',    icon: _createIcon('stock-shape-circle'),            onClick: _onClick});
-    //toolBar.addItem('text',       {grouped: true, title: 'Text',      icon: _createIcon('stock-tool-text'),               onClick: _onClick});
+    toolBar.addItem('pencil',     {grouped: true, title: _('Pencil'),    icon: _createIcon('stock-tool-pencil'),             onClick: _onClick});
+    toolBar.addItem('path',       {grouped: true, title: _('Path'),      icon: _createIcon('stock-tool-path'),               onClick: _onClick});
+    toolBar.addItem('rectangle',  {grouped: true, title: _('Rectangle'), icon: _createIcon('stock-shape-rectangle'),         onClick: _onClick});
+    toolBar.addItem('square',     {grouped: true, title: _('Square'),    icon: _createIcon('stock-shape-square'),            onClick: _onClick});
+    toolBar.addItem('ellipse',    {grouped: true, title: _('Ellipse'),   icon: _createIcon('stock-shape-ellipse'),           onClick: _onClick});
+    toolBar.addItem('circle',     {grouped: true, title: _('Circle'),    icon: _createIcon('stock-shape-circle'),            onClick: _onClick});
+    //toolBar.addItem('text',       {grouped: true, title: _('Text'),      icon: _createIcon('stock-tool-text'),               onClick: _onClick});
 
     toolBar.addSeparator();
 
-    toolBar.addItem('foregroundColor',       {title: 'Foreground', onClick: _onClick, onCreate: _createColorButton});
-    toolBar.addItem('backgroundColor',       {title: 'Background', onClick: _onClick, onCreate: _createColorButton});
+    toolBar.addItem('foregroundColor',       {title: _('Foreground'), onClick: _onClick, onCreate: _createColorButton});
+    toolBar.addItem('backgroundColor',       {title: _('Background'), onClick: _onClick, onCreate: _createColorButton});
 
-    toolBar.addItem('strokeWidth',          {title: 'Stroke Width', type: 'custom', onClick: function(ev, el, name, item) {
+    toolBar.addItem('strokeWidth',          {title: _('Stroke Width'), type: 'custom', onClick: function(ev, el, name, item) {
     }, onCreate: function(name, item, container, button) {
       container.className += ' Long';
 
@@ -277,7 +324,7 @@
       };
       var option;
       var label = document.createElement('label');
-      label.innerHTML = 'Stroke';
+      label.innerHTML = _('Stroke');
 
       for ( var i = 0, l = 15; i < l; i++ ) {
         option = document.createElement('option');
@@ -293,7 +340,7 @@
       button.appendChild(select);
     }});
 
-    toolBar.addItem('lineJoin',          {title: 'Line Join', type: 'custom', onClick: function(ev, el, name, item) {
+    toolBar.addItem('lineJoin',          {title: _('Line Join'), type: 'custom', onClick: function(ev, el, name, item) {
     }, onCreate: function(name, item, container, button) {
       container.className += ' Long';
 
@@ -306,22 +353,22 @@
       };
       var option;
       var label = document.createElement('label');
-      label.innerHTML = 'Line Join';
+      label.innerHTML = _('Line Join');
 
       option = document.createElement('option');
       option.value = 'bevel';
-      option.innerHTML = 'Bevel';
+      option.innerHTML = _('Bevel');
       select.appendChild(option);
 
       option = document.createElement('option');
       option.value = 'round';
-      option.innerHTML = 'Round';
+      option.innerHTML = _('Round');
       option.selected = "selected";
       select.appendChild(option);
 
       option = document.createElement('option');
       option.value = 'miter';
-      option.innerHTML = 'Miter';
+      option.innerHTML = _('Miter');
       select.appendChild(option);
 
       button.appendChild(label);
@@ -330,20 +377,20 @@
     }});
 
     var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationDrawMenuBar'), root);
-    menuBar.addItem("File", [
-      {title: 'New', name: 'New', onClick: function() {
+    menuBar.addItem(_("File"), [
+      {title: _('New'), name: 'New', onClick: function() {
         app.action('new');
       }},
-      {title: 'Open', name: 'Open', onClick: function() {
+      {title: _('Open'), name: 'Open', onClick: function() {
         app.action('open');
       }},
-      {title: 'Save', name: 'Save', onClick: function() {
+      {title: _('Save'), name: 'Save', onClick: function() {
         app.action('save');
       }},
-      {title: 'Save As...', name: 'SaveAs', onClick: function() {
+      {title: _('Save As...'), name: 'SaveAs', onClick: function() {
         app.action('saveas');
       }},
-      {title: 'Close', name: 'Close', onClick: function() {
+      {title: _('Close'), name: 'Close', onClick: function() {
         app.action('close');
       }}
     ]);
@@ -612,9 +659,9 @@
       if ( win ) {
         win.setTitle('');
         win._toggleLoading(false);
-        win._error("Draw Application Error", "Failed to perform action '" + action + "'", error);
+        win._error(_("Draw Application Error"), _("Failed to perform action '{0}'", action), error);
       } else {
-        OSjs.API.error("Draw Application Error", "Failed to perform action '" + action + "'", error);
+        OSjs.API.error(_("Draw Application Error"), _("Failed to perform action '{0}'", action), error);
       }
     };
 
@@ -642,20 +689,20 @@
           _onSaveFinished(fname);
         } else {
           if ( res && res.error ) {
-            _onError("Failed to save file: " + fname, res.error);
+            _onError(_("Failed to save file: {0}", fname), res.error);
             return;
           }
-          _onError("Failed to save file: " + fname, "Unknown error");
+          _onError(_("Failed to save file: {0}", fname), "Unknown error");
         }
       }, function(error) {
-        _onError("Failed to save file (call): " + fname, error);
+        _onError(_("Failed to save file (call): {0}", fname), error);
       });
     };
 
     // Open
     var _openFile = function(fname, fmime) {
       if ( fmime && !fmime.match(/^image/) ) {
-        OSjs.API.error("Draw", "Cannot open file", "Not supported!");
+        OSjs.API.error(_("Draw"), _("Cannot open file"), _("Not supported!"));
         return;
       }
 
@@ -676,13 +723,13 @@
           _openFileFinished(fname, res.result);
         } else {
           if ( res && res.error ) {
-            _onError("Failed to open file: " + fname, res.error);
+            _onError(_("Failed to open file: {0}", fname), res.error);
             return;
           }
-          _onError("Failed to open file: " + fname, "Unknown error");
+          _onError(_("Failed to open file: {0}", fname), _("Unknown error"));
         }
       }, function(error) {
-        _onError("Failed to open file (call): " + fname, error);
+        _onError(_("Failed to open file (call): {0}", fname), error);
       });
     };
 

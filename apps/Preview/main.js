@@ -1,5 +1,21 @@
 (function(Application, Window) {
 
+  var _Locales = {
+    no_NO : {
+      'File'        : 'Fil',
+      'Open'        : 'Åpne',
+      'Close'       : 'Lukk',
+      "An error occured in action: {0}" : "En feil oppstod under forespursel: {0}",
+      "Preview error" : "Forhåndsvisning feil"
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   /**
    * Main Window
    */
@@ -23,11 +39,11 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationPreviewMenuBar'), root);
-    menuBar.addItem("File", [
-      {title: 'Open', onClick: function() {
+    menuBar.addItem(_("File"), [
+      {title: _('Open'), onClick: function() {
         app.defaultAction('open');
       }},
-      {title: 'Close', onClick: function() {
+      {title: _('Close'), onClick: function() {
         self._close();
       }}
     ]);
@@ -143,11 +159,11 @@
 
     this.defaultActionError = function(action, error) {
       var w = self._getWindow('ApplicationPreviewWindow');
-      var msg = "An error occured in action: " + action;
+      var msg = _("An error occured in action: {0}", action);
       if ( w ) {
-        w._error("Preview error", msg, error);
+        w._error(_("Preview error"), msg, error);
       } else {
-        OSjs.API.error("Preview error", msg, error);
+        OSjs.API.error(_("Preview error"), msg, error);
       }
     };
 

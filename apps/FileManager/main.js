@@ -1,5 +1,41 @@
 (function(Application, Window) {
 
+  var _Locales = {
+    no_NO : {
+      'Create directory' : 'Opprett mappe',
+      'File' : 'Fil',
+      'Edit' : 'Rediger',
+      'View' : 'Visning',
+      'Upload' : 'Last opp',
+      'Close' : 'Lukk',
+      'Rename' : 'Navngi',
+      'Delete' : 'Slett',
+      'Information' : 'Informasjon',
+      'Open With...' : 'Åpne Med...',
+      'List View' : 'Liste-visning',
+      'Icon View' : 'Ikon-visning',
+      'Refresh' : 'Gjennoppfrisk',
+      'View type' : 'Visnings type',
+
+      'Copying file...' : 'Kopierer fil...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopierer <span>{0}</span> to <span>{1}</span>",
+      "Showing {0} item(s), {1}" : "Viser {0} objekt(er), {1}",
+      "Refreshing..." : "Gjenoppfrisker...",
+      "Loading..." : "Laster...",
+      "File Manager error" : "Filbehandler Feil",
+      "An error occured while handling your request" : "En feil oppstod under handling av din forespursel",
+      "Create a new directory in <span>{0}</span>" : "Opprett ny mappe i <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Navngi <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   /**
    * Main Window
    */
@@ -44,8 +80,8 @@
         var src = item.data.path;
         var dst = dir + '/' + fnm;
 
-        var d = app._createDialog('FileProgress', ['Copying file...'], self);
-        d.setDescription("Copying <span>" + fnm + "</span> to <span>" + dir + "</span>");
+        var d = app._createDialog('FileProgress', [_('Copying file...')], self);
+        d.setDescription(_("Copying <span>{0}</span> to <span>{1}</span>", fnm, dir));
 
         app.copy(src, dst, function(result) {
           d.setProgress(100);
@@ -68,7 +104,7 @@
 
     fileView.onFinished = function(dir, numItems, totalBytes) {
       var hifs = OSjs.Utils.humanFileSize(totalBytes);
-      defaultStatusText = "Showing " + numItems + " item(s), " + hifs;
+      defaultStatusText = _("Showing {0} item(s), {1}", numItems, hifs);
       statusBar.setText(defaultStatusText);
 
       self._toggleLoading(false);
@@ -79,7 +115,7 @@
       }
     };
     fileView.onRefresh = function() {
-      statusBar.setText("Refreshing...");
+      statusBar.setText(_("Refreshing..."));
       self._toggleLoading(true);
     };
     fileView.onActivated = function(name, type, mime) {
@@ -87,7 +123,7 @@
         if ( type === 'file' ) {
           app.open(name, mime);
         } else {
-          statusBar.setText("Loading...");
+          statusBar.setText(_("Loading..."));
         }
       }
     };
@@ -105,7 +141,7 @@
 
     fileView.onError = function(error) {
       self._toggleLoading(false);
-      self._error("File Manager error", "An error occured while handling your request", error);
+      self._error(_("File Manager error"), _("An error occured while handling your request"), error);
     };
 
     var menuAction = function(action, check) {
@@ -119,7 +155,7 @@
       var fname = cur ? OSjs.Utils.filename(cur.path) : null;
 
       if ( action == 'mkdir' ) {
-        app._createDialog('Input', ["Create a new directory in <span>" + dir + "</span>", '', function(btn, value) {
+        app._createDialog('Input', [_("Create a new directory in <span>{0}</span>", dir), '', function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
 
@@ -149,7 +185,7 @@
       }
 
       else if ( action == 'rename' ) {
-        app._createDialog('Input', ["Rename <span>" + fname + "</span>", fname, function(btn, value) {
+        app._createDialog('Input', [_("Rename <span>{0}</span>", fname), fname, function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
           var newpath = OSjs.Utils.dirname(cur.path) + '/' + value;
@@ -167,7 +203,7 @@
       }
 
       else if ( action == 'delete' ) {
-        app._createDialog('Confirm', ["Delete <span>" + fname + "</span> ?", function(btn) {
+        app._createDialog('Confirm', [_("Delete <span>{0}</span> ?", fname), function(btn) {
           self._focus();
           if ( btn !== 'ok' ) return;
           app.unlink(cur.path, function(result) {
@@ -192,41 +228,41 @@
       }
     };
 
-    menuBar.addItem("File", [
-      {title: 'Create directory', onClick: function() {
+    menuBar.addItem(_("File"), [
+      {title: _('Create directory'), onClick: function() {
         menuAction('mkdir');
       }},
-      {title: 'Upload', onClick: function() {
+      {title: _('Upload'), onClick: function() {
         menuAction('upload');
       }},
-      {title: 'Close', onClick: function() {
+      {title: _('Close'), onClick: function() {
         self._close();
       }}
     ]);
 
-    menuBar.addItem("Edit", [
-      {name: 'Rename', title: 'Rename', onClick: function() {
+    menuBar.addItem(_("Edit"), [
+      {name: 'Rename', title: _('Rename'), onClick: function() {
         menuAction('rename', true);
       }},
-      {name: 'Delete', title: 'Delete', onClick: function() {
+      {name: 'Delete', title: _('Delete'), onClick: function() {
         menuAction('delete', true);
       }},
-      {name: 'Information', title: 'Information', onClick: function() {
+      {name: 'Information', title: _('Information'), onClick: function() {
         menuAction('info', true);
       }},
-      {name: 'OpenWith', title: 'Open With ...', onClick: function() {
+      {name: 'OpenWith', title: _('Open With ...'), onClick: function() {
         menuAction('openWith', true);
       }}
     ]);
 
     var viewTypeMenu = [
-      {name: 'ListView', title: 'List View', onClick: function() {
+      {name: 'ListView', title: _('List View'), onClick: function() {
         fileView.setViewType('ListView');
         self._focus();
         app._setArgument('viewType', 'ListView');
         //app._setSetting('viewType', 'ListView');
       }},
-      {name: 'IconView', title: 'Icon View', onClick: function() {
+      {name: 'IconView', title: _('Icon View'), onClick: function() {
         fileView.setViewType('IconView');
         self._focus();
         app._setArgument('viewType', 'IconView');
@@ -234,12 +270,12 @@
       }}
     ];
 
-    menuBar.addItem("View", [
-      {title: 'Refresh', onClick: function() {
+    menuBar.addItem(_("View"), [
+      {title: _('Refresh'), onClick: function() {
         fileView.refresh();
         self._focus();
       }},
-      {title: 'View type', menu: viewTypeMenu}
+      {title: _('View type'), menu: viewTypeMenu}
     ]);
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {
@@ -280,11 +316,11 @@
 
     sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'filename', title: 'Filename'},
-      {key: 'mime', title: 'Mime', visible: false},
-      {key: 'size', title: 'Size', visible: false},
-      {key: 'path', title: 'Path', visible: false, domProperties: {width: "70"}},
-      {key: 'type', title: 'Type', visible: false, domProperties: {width: "50"}}
+      {key: 'filename', title: OSjs._('Filename')},
+      {key: 'mime', title: OSjs._('Mime'), visible: false},
+      {key: 'size', title: OSjs._('Size'), visible: false},
+      {key: 'path', title: OSjs._('Path'), visible: false, domProperties: {width: "70"}},
+      {key: 'type', title: OSjs._('Type'), visible: false, domProperties: {width: "50"}}
      ]);
     sideView.setRows([
       {image: _getFileIcon('places/folder_home.png'), filename: 'Home', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
@@ -417,9 +453,9 @@
     var _onError = function(error) {
       var win = self._getWindow('ApplicationFileManagerWindow');
       if ( win ) {
-        win._error("File Manager error", "An error occured while handling your request", error);
+        win._error(_("File Manager error"), _("An error occured while handling your request"), error);
       } else {
-        OSjs.API.error("File Manager error", "An error occured while handling your request", error);
+        OSjs.API.error(_("File Manager error"), _("An error occured while handling your request"), error);
       }
 
       callback(false);

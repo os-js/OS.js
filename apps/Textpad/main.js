@@ -1,5 +1,26 @@
 (function(Application, Window) {
 
+  var _Locales = {
+    no_NO : {
+      'File'        : 'Fil',
+      'New'         : 'Ny',
+      'Open'        : 'Åpne',
+      'Save'        : 'Lagre',
+      'Save As...'  : 'Lagre Som...',
+      'Close'       : 'Lukk',
+
+      "An error occured in action: {0}" : "Feil oppstod i forespursel: {0}",
+      "Textpad error" : "Notisblokk feil",
+      "Discard current document ?" : "Forkaste gjeldende dokument ?"
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   /**
    * Main Window
    */
@@ -18,20 +39,20 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationTextpadMenuBar'), root);
-    menuBar.addItem("File", [
-      {title: 'New', name: 'New', onClick: function() {
+    menuBar.addItem(_("File"), [
+      {title: _('New'), name: 'New', onClick: function() {
         app.defaultAction('new');
       }},
-      {title: 'Open', name: 'Open', onClick: function() {
+      {title: _('Open'), name: 'Open', onClick: function() {
         app.defaultAction('open');
       }},
-      {title: 'Save', name: 'Save', onClick: function() {
+      {title: _('Save'), name: 'Save', onClick: function() {
         app.defaultAction('save');
       }},
-      {title: 'Save As...', name: 'SaveAs', onClick: function() {
+      {title: _('Save As...'), name: 'SaveAs', onClick: function() {
         app.defaultAction('saveas');
       }},
-      {title: 'Close', name: 'Close', onClick: function() {
+      {title: _('Close'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
@@ -100,18 +121,18 @@
 
     this.defaultActionError = function(action, error) {
       var w = self._getWindow('ApplicationTextpadWindow');
-      var msg = "An error occured in action: " + action;
+      var msg = _("An error occured in action: {0}", action);
       if ( w ) {
-        w._error("Textpad error", msg, error);
+        w._error(_("Textpad error"), msg, error);
       } else {
-        OSjs.API.error("Textpad error", msg, error);
+        OSjs.API.error(_("Textpad error"), msg, error);
       }
     };
 
     this.defaultActionSuccess = function(action, arg1, arg2) {
       var w = self._getWindow('ApplicationTextpadWindow');
       if ( w ) {
-        var msg = "Discard current document ?";
+        var msg = _("Discard current document ?");
         var _new = function() {
           w.setText('', null);
         };
