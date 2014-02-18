@@ -670,6 +670,8 @@
 
         for ( var i = 0, l = wins.length; i < l; i++ ) {
           win = wins[i];
+          if ( !win || !win._properties.allow_session ) continue;
+
           data.windows.push({
             name      : win._name,
             dimension : win._dimension,
@@ -1377,6 +1379,7 @@
         allow_iconmenu    : true,
         allow_ontop       : true,
         allow_hotkeys     : true,
+        allow_session     : true,
         min_width         : 100,
         min_height        : 50,
         max_width         : null,
@@ -2410,6 +2413,7 @@
     this._properties.allow_minimize   = false;
     this._properties.allow_maximize   = false;
     this._properties.allow_windowlist = false;
+    this._properties.allow_session    = false;
     this._state.ontop                 = true;
   };
 
