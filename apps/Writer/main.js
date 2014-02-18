@@ -31,8 +31,7 @@
 
   var _Locales = {
     no_NO : {
-      'Insert URL' : 'Sett inn URL',
-
+      'Insert URL' : 'Sett inn URL'
     }
   };
 
