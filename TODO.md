@@ -31,10 +31,6 @@
 ### Localization (Translations)
 * Languages
   - de_DE
-* Applications
-  - MusicPlayer
-  - Writer
-  - Draw
 
 ### Not prioritized
 * Offline resource pre-loading

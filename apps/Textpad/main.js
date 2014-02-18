@@ -2,13 +2,6 @@
 
   var _Locales = {
     no_NO : {
-      'File'        : 'Fil',
-      'New'         : 'Ny',
-      'Open'        : 'Åpne',
-      'Save'        : 'Lagre',
-      'Save As...'  : 'Lagre Som...',
-      'Close'       : 'Lukk',
-
       "An error occured in action: {0}" : "Feil oppstod i forespursel: {0}",
       "Textpad error" : "Notisblokk feil",
       "Discard current document ?" : "Forkaste gjeldende dokument ?"
@@ -39,20 +32,20 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationTextpadMenuBar'), root);
-    menuBar.addItem(_("File"), [
-      {title: _('New'), name: 'New', onClick: function() {
+    menuBar.addItem(OSjs._("File"), [
+      {title: OSjs._('New'), name: 'New', onClick: function() {
         app.defaultAction('new');
       }},
-      {title: _('Open'), name: 'Open', onClick: function() {
+      {title: OSjs._('Open'), name: 'Open', onClick: function() {
         app.defaultAction('open');
       }},
-      {title: _('Save'), name: 'Save', onClick: function() {
+      {title: OSjs._('Save'), name: 'Save', onClick: function() {
         app.defaultAction('save');
       }},
-      {title: _('Save As...'), name: 'SaveAs', onClick: function() {
+      {title: OSjs._('Save As...'), name: 'SaveAs', onClick: function() {
         app.defaultAction('saveas');
       }},
-      {title: _('Close'), name: 'Close', onClick: function() {
+      {title: OSjs._('Close'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);

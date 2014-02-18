@@ -1,18 +1,5 @@
 (function(Application, Window) {
 
-  var _Locales = {
-    no_NO : {
-      'PID' : 'PID',
-      'Name' : 'Navn',
-      'Alive' : 'Levetid'
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
-  }
 
   /**
    * Main Window
@@ -31,9 +18,9 @@
 
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ProcessViewListView'), root);
     listView.setColumns([
-      {key: 'pid',    title: _('PID'), domProperties: {width: "50"}},
-      {key: 'name',   title: _('Name')},
-      {key: 'alive',  title: _('Alive'), domProperties: {width: "100"}},
+      {key: 'pid',    title: OSjs._('PID'), domProperties: {width: "50"}},
+      {key: 'name',   title: OSjs._('Name')},
+      {key: 'alive',  title: OSjs._('Alive'), domProperties: {width: "100"}},
       {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
     ]);
 

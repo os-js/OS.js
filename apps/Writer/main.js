@@ -31,12 +31,11 @@
 
   var _Locales = {
     no_NO : {
-      'File'        : 'Fil',
-      'New'         : 'Ny',
-      'Open'        : 'Åpne',
-      'Save'        : 'Lagre',
-      'Save As...'  : 'Lagre Som...',
-      'Close'       : 'Lukk'
+      "An error occured in action: {0}" : "Feil oppstod i forespursel: {0}",
+      "Writer error" : "Skriver feil",
+      "Discard current document ?" : "Forkaste gjeldende dokument ?",
+      'Insert URL' : 'Sett inn URL',
+
     }
   };
 
@@ -56,15 +55,16 @@
   var ApplicationWriterWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationWriterWindow', {width: 800, height: 450}, app]);
 
-    // Set window properties here
-    this._icon = metadata.icon;
-    this._title = metadata.name + ' (WIP)';
-    this._properties.allow_drop = true;
-
     this.font       = 'Arial';
     this.fontSize   = 3;
     this.textColor  = '#000000';
     this.backColor  = '#ffffff';
+    this.title      = metadata.name + ' (WIP)';
+
+    // Set window properties here
+    this._icon = metadata.icon;
+    this._title = this.title;
+    this._properties.allow_drop = true;
   };
 
   ApplicationWriterWindow.prototype = Object.create(Window.prototype);
@@ -140,25 +140,25 @@
       }
     };
 
-    tb.addItem('bold',          {toggleable: true, title: 'Bold',       onClick: _action, icon: _createIcon('actions/format-text-bold.png')});
-    tb.addItem('italic',        {toggleable: true, title: 'Italic',     onClick: _action, icon: _createIcon('actions/format-text-italic.png')});
-    tb.addItem('underline',     {toggleable: true, title: 'Underline',  onClick: _action, icon: _createIcon('actions/format-text-underline.png')});
-    tb.addItem('strikeThrough', {toggleable: true, title: 'Strike',     onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
+    tb.addItem('bold',          {toggleable: true, title: OSjs._('Bold'),       onClick: _action, icon: _createIcon('actions/format-text-bold.png')});
+    tb.addItem('italic',        {toggleable: true, title: OSjs._('Italic'),     onClick: _action, icon: _createIcon('actions/format-text-italic.png')});
+    tb.addItem('underline',     {toggleable: true, title: OSjs._('Underline'),  onClick: _action, icon: _createIcon('actions/format-text-underline.png')});
+    tb.addItem('strikeThrough', {toggleable: true, title: OSjs._('Strike'),     onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
     //tb.addItem('subscript',     {toggleable: true, title: 'Sub',        onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
     //tb.addItem('superscript',   {toggleable: true, title: 'Super',      onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
     tb.addSeparator();
-    tb.addItem('justifyLeft',   {toggleable: true, title: 'Left',       onClick: _action, icon: _createIcon('actions/format-justify-left.png')});
-    tb.addItem('justifyCenter', {toggleable: true, title: 'Center',     onClick: _action, icon: _createIcon('actions/format-justify-center.png')});
-    tb.addItem('justifyRight',  {toggleable: true, title: 'Right',      onClick: _action, icon: _createIcon('actions/format-justify-right.png')});
+    tb.addItem('justifyLeft',   {toggleable: true, title: OSjs._('Left'),       onClick: _action, icon: _createIcon('actions/format-justify-left.png')});
+    tb.addItem('justifyCenter', {toggleable: true, title: OSjs._('Center'),     onClick: _action, icon: _createIcon('actions/format-justify-center.png')});
+    tb.addItem('justifyRight',  {toggleable: true, title: OSjs._('Right'),      onClick: _action, icon: _createIcon('actions/format-justify-right.png')});
     tb.addSeparator();
-    tb.addItem('indent',        {title: 'Indent',                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
-    tb.addItem('outdent',       {title: 'Outdent',                      onClick: _action, icon: _createIcon('actions/gtk-unindent-ltr.png')});
+    tb.addItem('indent',        {title: OSjs._('Indent'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
+    tb.addItem('outdent',       {title: OSjs._('Outdent'),                      onClick: _action, icon: _createIcon('actions/gtk-unindent-ltr.png')});
     tb.addSeparator();
-    tb.addItem('textColor',     {title: 'Text Color',                   onClick: _action});
-    tb.addItem('backColor',     {title: 'Back Color',                   onClick: _action});
-    tb.addItem('font',          {title: 'Font',                         onClick: _action});
+    tb.addItem('textColor',     {title: OSjs._('Text Color'),                   onClick: _action});
+    tb.addItem('backColor',     {title: OSjs._('Back Color'),                   onClick: _action});
+    tb.addItem('font',          {title: OSjs._('Font'),                         onClick: _action});
     tb.render();
-    tb.addItem('indent',        {title: 'Indent',                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
+    tb.addItem('indent',        {title: OSjs._('Indent'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
 
     var rt = this._addGUIElement(new OSjs.GUI.RichText('WriterRichText'), root);
 
@@ -167,64 +167,64 @@
     sb.setText("THIS IS A WORK IN PROGRESS");
     */
 
-    mb.addItem(_("File"), [
-      {title: _('New'), name: 'New', onClick: function() {
+    mb.addItem(OSjs._("File"), [
+      {title: OSjs._('New'), name: 'New', onClick: function() {
         app.defaultAction('new');
       }},
-      {title: _('Open'), name: 'Open', onClick: function() {
+      {title: OSjs._('Open'), name: 'Open', onClick: function() {
         app.defaultAction('open');
       }},
-      {title: _('Save'), name: 'Save', onClick: function() {
+      {title: OSjs._('Save'), name: 'Save', onClick: function() {
         app.defaultAction('save');
       }},
-      {title: _('Save As...'), name: 'SaveAs', onClick: function() {
+      {title: OSjs._('Save As...'), name: 'SaveAs', onClick: function() {
         app.defaultAction('saveas');
       }},
-      {title: _('Close'), name: 'Close', onClick: function() {
+      {title: OSjs._('Close'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
 
-    mb.addItem("Edit", [
-      {title: 'Undo', name: 'undo', onClick: function() {
+    mb.addItem(OSjs._("Edit"), [
+      {title: OSjs._('Undo'), name: 'undo', onClick: function() {
         self.command('undo');
       }},
-      {title: 'Redo', name: 'redo', onClick: function() {
+      {title: OSjs._('Redo'), name: 'redo', onClick: function() {
         self.command('redo');
       }},
-      {title: 'Copy', name: 'copy', onClick: function() {
+      {title: OSjs._('Copy'), name: 'copy', onClick: function() {
         self.command('copy');
       }},
-      {title: 'Cut', name: 'cut', onClick: function() {
+      {title: OSjs._('Cut'), name: 'cut', onClick: function() {
         self.command('cut');
       }},
-      {title: 'Delete', name: 'delete', onClick: function() {
+      {title: OSjs._('Delete'), name: 'delete', onClick: function() {
         self.command('delete');
       }},
-      {title: 'Paste', name: 'paste', onClick: function() {
+      {title: OSjs._('Paste'), name: 'paste', onClick: function() {
         self.command('paste');
       }},
-      {title: 'Unlink', name: 'unlink', onClick: function() {
+      {title: OSjs._('Unlink'), name: 'unlink', onClick: function() {
         self.command('unlink');
       }}
     ]);
 
-    mb.addItem("Insert", [
-      {title: 'Ordered List', name: 'OL', onClick: function() {
+    mb.addItem(OSjs._("Insert"), [
+      {title: OSjs._('Ordered List'), name: 'OL', onClick: function() {
         self.command('insertOrderedList');
       }},
-      {title: 'Unordered List', name: 'UL', onClick: function() {
+      {title: OSjs._('Unordered List'), name: 'UL', onClick: function() {
         self.command('insertUnorderedList');
       }},
-      {title: 'Image', name: 'IMG', onClick: function() {
+      {title: OSjs._('Image'), name: 'IMG', onClick: function() {
         self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, fname, fmime) {
           if ( btn !== 'ok' || !fmime.match(/^image/) ) return;
           var src = OSjs.API.getResourceURL(fname);
           self.command('insertImage', src);
         }]);
       }},
-      {title: 'Link', name: 'A', onClick: function() {
-        self._appRef._createDialog('Input', ['Insert URL', 'http://', function(btn, val) {
+      {title: OSjs._('Link'), name: 'A', onClick: function() {
+        self._appRef._createDialog('Input', [_('Insert URL'), 'http://', function(btn, val) {
           if ( btn !== 'ok' || ! val ) return;
           self.command('createLink', val);
         }]);
@@ -262,7 +262,7 @@
       t = OSjs.Utils.filename(file.path);
     }
 
-    this._setTitle("Writer (WIP) - " + t);
+    this._setTitle(this.title + " - " + t);
   };
 
   ApplicationWriterWindow.prototype.command = function(name, value) {
@@ -343,9 +343,9 @@
 
     this.defaultActionError = function(action, error) {
       var w = self._getWindow('ApplicationWriterWindow');
-      var msg = "An error occured in action: " + action;
+      var msg = _("An error occured in action: {0}", action);
       if ( w ) {
-        w._error("Writer error", msg, error);
+        w._error(_("Writer error"), msg, error);
       } else {
         OSjs.API.error("Writer error", msg, error);
       }
@@ -360,7 +360,7 @@
           var _new = function() {
             w.update(null, '');
           };
-          var msg = "Discard current document ?";
+          var msg = _("Discard current document ?");
           if ( w.checkChanged(function() { _new(); }, msg) === false ) {
             _new();
           }

@@ -50,12 +50,6 @@
       'Bevel'       : 'Kant',
       'Round'       : 'Rund',
       'Miter'       : 'Miter',
-      'File'        : 'Fil',
-      'New'         : 'Ny',
-      'Open'        : 'Åpne',
-      'Save'        : 'Lagre',
-      'Save As...'  : 'Lagre Som...',
-      'Close'       : 'Lukk',
 
       "Draw Application Error" : "Tegne Applikasjon Feil",
       "Failed to perform action '{0}'" : "Klarte ikke utføre '{0}'",
@@ -377,20 +371,20 @@
     }});
 
     var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationDrawMenuBar'), root);
-    menuBar.addItem(_("File"), [
-      {title: _('New'), name: 'New', onClick: function() {
+    menuBar.addItem(OSjs._("File"), [
+      {title: OSjs._('New'), name: 'New', onClick: function() {
         app.action('new');
       }},
-      {title: _('Open'), name: 'Open', onClick: function() {
+      {title: OSjs._('Open'), name: 'Open', onClick: function() {
         app.action('open');
       }},
-      {title: _('Save'), name: 'Save', onClick: function() {
+      {title: OSjs._('Save'), name: 'Save', onClick: function() {
         app.action('save');
       }},
-      {title: _('Save As...'), name: 'SaveAs', onClick: function() {
+      {title: OSjs._('Save As...'), name: 'SaveAs', onClick: function() {
         app.action('saveas');
       }},
-      {title: _('Close'), name: 'Close', onClick: function() {
+      {title: OSjs._('Close'), name: 'Close', onClick: function() {
         app.action('close');
       }}
     ]);

@@ -2,9 +2,6 @@
 
   var _Locales = {
     no_NO : {
-      'File'        : 'Fil',
-      'Open'        : 'Åpne',
-      'Close'       : 'Lukk',
       "An error occured in action: {0}" : "En feil oppstod under forespursel: {0}",
       "Preview error" : "Forhåndsvisning feil"
     }
@@ -15,6 +12,10 @@
     args.unshift(_Locales);
     return OSjs.__.apply(this, args);
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Main Window
@@ -39,11 +40,11 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationPreviewMenuBar'), root);
-    menuBar.addItem(_("File"), [
-      {title: _('Open'), onClick: function() {
+    menuBar.addItem(OSjs._("File"), [
+      {title: OSjs._('Open'), onClick: function() {
         app.defaultAction('open');
       }},
-      {title: _('Close'), onClick: function() {
+      {title: OSjs._('Close'), onClick: function() {
         self._close();
       }}
     ]);
@@ -145,6 +146,10 @@
     return true;
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATION
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * Application
    */
@@ -185,10 +190,10 @@
     Application.prototype.init.apply(this, arguments);
   };
 
-
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationPreview = ApplicationPreview;
 

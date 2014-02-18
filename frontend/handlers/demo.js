@@ -137,6 +137,7 @@
    * Sets a list of settings in given category
    */
   DemoHandler.prototype._setSettings = function(cat, key, opts, callback) {
+    console.debug('OSjs::Handlers::DemoHandler::_setSettings()', cat, key, opts);
     if ( key === null ) {
       this.storage.set(cat, opts);
     } else {

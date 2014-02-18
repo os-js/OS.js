@@ -29,6 +29,38 @@
  */
 (function(Application, Window, GUI, Dialogs) {
 
+  var _Locales = {
+    no_NO : {
+'Playlist' : 'Spilleliste',
+'Playback aborted' : 'Avspilling avbrutt',
+'Network or communication error' : 'Nettverks- eller kommunikasjonsfeil',
+'Decoding failed. Corruption or unsupported media' : 'Dekoding feilet. Korrupt eller ustøttet media',
+'Media source not supported' : 'Media-kilde ikke støttet',
+'Unknown error' : 'Ukjent feil',
+'Fatal error: {0}' : 'Fatal feil: {0}',
+'Music Player error' : 'Musikkspiller feil',
+'Failed to play file' : 'Klarte ikke spille av fil',
+'Artist' : 'Artist',
+'Album' : 'Album',
+'Track' : 'Låt',
+'Time' : 'Tid',
+'Media information query failed' : 'Media-informasjon forespursel feil',
+'seek unavailable in format' : 'spoling utilgjenglig i format',
+'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}',
+
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
   function formatTime(secs) {
     var hr  = Math.floor(secs / 3600);
     var min = Math.floor((secs - (hr * 3600))/60);
@@ -204,23 +236,23 @@
       try {
         switch ( ev.target.error.code ) {
           case ev.target.error.MEDIA_ERR_ABORTED:
-            msg = 'You aborted the video playback.';
+            msg = _('Playback aborted');
             break;
           case ev.target.error.MEDIA_ERR_NETWORK:
-            msg = 'A network error caused the audio download to fail.';
+            msg = _('Network or communication error');
             break;
           case ev.target.error.MEDIA_ERR_DECODE:
-            msg = 'The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.';
+            msg = _('Decoding failed. Corruption or unsupported media');
             break;
           case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            msg = 'The video audio not be loaded, either because the server or network failed or because the format is not supported.';
+            msg = _('Media source not supported');
             break;
           default:
-            msg = "Unknown error";
+            msg = _('Unknown error');
             break;
         }
       } catch ( e ) {
-        msg = "Fatal error: " + e;
+        msg = _('Fatal error: {0}', e);
       }
       self.onError(ev, self, msg);
     }, true);
@@ -346,21 +378,21 @@
     };
 
     var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('MusicPlayerMenuBar'), root);
-    menuBar.addItem("File", [
-      {title: 'Open', name: 'Open', onClick: function() {
+    menuBar.addItem(OSjs._("File"), [
+      {title: OSjs._('Open'), name: 'Open', onClick: function() {
         _openFile(false);
       }},
-      {title: 'Add', name: 'Add', onClick: function() {
+      {title: OSjs._('Add'), name: 'Add', onClick: function() {
         _openFile(true);
       }},
-      {title: 'Close', name: 'Close', onClick: function() {
+      {title: OSjs._('Close'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
-    menuBar.addItem("Playlist", []);
+    menuBar.addItem(_("Playlist"), []);
 
     menuBar.onMenuOpen = function(menu, pos, title) {
-      if ( title == "Playlist" ) {
+      if ( title == _("Playlist") ) {
         self.togglePlaylist();
       }
     };
@@ -376,7 +408,7 @@
     var spanArtist = document.createElement('span');
     var infoArtist = document.createElement('span');
     spanArtist.className = 'Label';
-    spanArtist.innerHTML = 'Artist';
+    spanArtist.innerHTML = _('Artist');
     infoArtist.innerHTML = '-';
     lblArtist.appendChild(spanArtist);
     lblArtist.appendChild(infoArtist);
@@ -387,7 +419,7 @@
     var spanAlbum = document.createElement('span');
     var infoAlbum = document.createElement('span');
     spanAlbum.className = 'Label';
-    spanAlbum.innerHTML = 'Album';
+    spanAlbum.innerHTML = _('Album');
     infoAlbum.innerHTML = '-';
     lblAlbum.appendChild(spanAlbum);
     lblAlbum.appendChild(infoAlbum);
@@ -398,7 +430,7 @@
     var spanTrack = document.createElement('span');
     var infoTrack = document.createElement('span');
     spanTrack.className = 'Label';
-    spanTrack.innerHTML = 'Track';
+    spanTrack.innerHTML = _('Track');
     infoTrack.innerHTML = '-';
     lblTrack.appendChild(spanTrack);
     lblTrack.appendChild(infoTrack);
@@ -409,7 +441,7 @@
     var spanTime = document.createElement('span');
     var infoTime = document.createElement('span');
     spanTime.className = 'Label';
-    spanTime.innerHTML = 'Time';
+    spanTime.innerHTML = _('Time');
     infoTime.innerHTML = '00:00 / 00:00';
     lblTime.appendChild(spanTime);
     lblTime.appendChild(infoTime);
@@ -462,7 +494,7 @@
     };
     this.player.onError = function(ev, player, msg) {
       self.updateInfo(ev, null, slider);
-      self._error("Music Player error", "Failed to play file", msg);
+      self._error(_('Music Player error'), _('Failed to play file'), msg);
     };
     this.player.onTrackEnded = function(ev, player) {
       if ( self.playlist.isLast() ) return;
@@ -483,10 +515,10 @@
 
     var pl = this._addGUIElement(new OSjs.GUI.ListView('MusicPlayerPlaylist'), root);
     pl.setColumns([
-      {key: 'name',     title: 'Name'},
-      {key: 'filename', title: 'Filename',  visible: false},
-      {key: 'mime',     title: 'Mime',      visible: false},
-      {key: 'index',    title: 'Index',     visible: false}
+      {key: 'name',     title: OSjs._('Name')},
+      {key: 'filename', title: OSjs._('Filename'),  visible: false},
+      {key: 'mime',     title: OSjs._('MIME'),      visible: false},
+      {key: 'index',    title: OSjs._('Index'),     visible: false}
      ]);
 
     pl.onActivate = function(ev, el, item) {
@@ -608,7 +640,7 @@
     info = info || {};
     var msg = '-';
     if ( !info.Artist && !info.Album && !info.Track ) {
-      msg = "<i>Media information query failed</i>";
+      msg = "<i>" + _("Media information query failed") + "</i>";
     }
     this.$labels.Artist.innerHTML = info.Artist || msg;
     this.$labels.Album.innerHTML  = info.Album  || OSjs.Utils.dirname(this.player.currentFilename);
@@ -630,7 +662,7 @@
 
     var times = this.player.getTimes(error);
     if ( times.unknown ) {
-      this.$labels.Time.innerHTML = times.currentStamp  + " / -" + times.totalStamp + ' <i>(seek unavailable in format)</i>';
+      this.$labels.Time.innerHTML = times.currentStamp  + " / -" + times.totalStamp + ' <i>(' + _('seek unavailable in format') + ')</i>';
     } else {
       this.$labels.Time.innerHTML = times.currentStamp  + " / " + times.totalStamp;
     }
@@ -712,9 +744,9 @@
   ApplicationMusicPlayer.prototype.play = function(filename, mime, append) {
     mime = mime || '';
     if ( !mime.match(/^audio/) ) {
-      var msg = "The audio type is not supported: " + mime;
+      var msg = _('The audio type is not supported: {0}', mime);
       var win = this._getWindow('ApplicationMusicPlayerWindow');
-      win._error("Music Player error", "Failed to play file", msg);
+      win._error(_("Music Player error"), _("Failed to play file"), msg);
       return;
     }
 
@@ -741,9 +773,10 @@
     }
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationMusicPlayer = ApplicationMusicPlayer;
 

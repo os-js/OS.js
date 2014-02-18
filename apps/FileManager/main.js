@@ -2,21 +2,6 @@
 
   var _Locales = {
     no_NO : {
-      'Create directory' : 'Opprett mappe',
-      'File' : 'Fil',
-      'Edit' : 'Rediger',
-      'View' : 'Visning',
-      'Upload' : 'Last opp',
-      'Close' : 'Lukk',
-      'Rename' : 'Navngi',
-      'Delete' : 'Slett',
-      'Information' : 'Informasjon',
-      'Open With...' : 'Åpne Med...',
-      'List View' : 'Liste-visning',
-      'Icon View' : 'Ikon-visning',
-      'Refresh' : 'Gjennoppfrisk',
-      'View type' : 'Visnings type',
-
       'Copying file...' : 'Kopierer fil...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopierer <span>{0}</span> to <span>{1}</span>",
       "Showing {0} item(s), {1}" : "Viser {0} objekt(er), {1}",
@@ -228,41 +213,41 @@
       }
     };
 
-    menuBar.addItem(_("File"), [
-      {title: _('Create directory'), onClick: function() {
+    menuBar.addItem(OSjs._("File"), [
+      {title: OSjs._('Create directory'), onClick: function() {
         menuAction('mkdir');
       }},
-      {title: _('Upload'), onClick: function() {
+      {title: OSjs._('Upload'), onClick: function() {
         menuAction('upload');
       }},
-      {title: _('Close'), onClick: function() {
+      {title: OSjs._('Close'), onClick: function() {
         self._close();
       }}
     ]);
 
-    menuBar.addItem(_("Edit"), [
-      {name: 'Rename', title: _('Rename'), onClick: function() {
+    menuBar.addItem(OSjs._("Edit"), [
+      {name: 'Rename', title: OSjs._('Rename'), onClick: function() {
         menuAction('rename', true);
       }},
-      {name: 'Delete', title: _('Delete'), onClick: function() {
+      {name: 'Delete', title: OSjs._('Delete'), onClick: function() {
         menuAction('delete', true);
       }},
-      {name: 'Information', title: _('Information'), onClick: function() {
+      {name: 'Information', title: OSjs._('Information'), onClick: function() {
         menuAction('info', true);
       }},
-      {name: 'OpenWith', title: _('Open With ...'), onClick: function() {
+      {name: 'OpenWith', title: OSjs._('Open With ...'), onClick: function() {
         menuAction('openWith', true);
       }}
     ]);
 
     var viewTypeMenu = [
-      {name: 'ListView', title: _('List View'), onClick: function() {
+      {name: 'ListView', title: OSjs._('List View'), onClick: function() {
         fileView.setViewType('ListView');
         self._focus();
         app._setArgument('viewType', 'ListView');
         //app._setSetting('viewType', 'ListView');
       }},
-      {name: 'IconView', title: _('Icon View'), onClick: function() {
+      {name: 'IconView', title: OSjs._('Icon View'), onClick: function() {
         fileView.setViewType('IconView');
         self._focus();
         app._setArgument('viewType', 'IconView');
@@ -270,16 +255,16 @@
       }}
     ];
 
-    menuBar.addItem(_("View"), [
-      {title: _('Refresh'), onClick: function() {
+    menuBar.addItem(OSjs._("View"), [
+      {title: OSjs._('Refresh'), onClick: function() {
         fileView.refresh();
         self._focus();
       }},
-      {title: _('View type'), menu: viewTypeMenu}
+      {title: OSjs._('View type'), menu: viewTypeMenu}
     ]);
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {
-      if ( mtitle === 'File' ) return;
+      if ( mtitle === OSjs._('File') ) return;
 
       var fileView = self._getGUIElement('FileManagerFileView');
       var sel = fileView.getSelected();
