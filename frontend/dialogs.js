@@ -303,7 +303,7 @@
       if ( refs[this.list[i]] ) {
         iter = refs[this.list[i]];
         if ( iter ) {
-          name = iter.name || name;
+          name = OSjs.Utils.format("{0} - {1}", (iter.name || name), (iter.description || '<no description>')); // FIXME
           icon = _createIcon(iter.icon, iter.path);
         }
       }

@@ -1,8 +1,12 @@
 {
   "ApplicationPreview":  {
     "name":       "Preview",
+    "description":"Preview image files",
     "names":      {
       "no_NO":      "Forhåndsviser"
+    },
+    "descriptions":      {
+      "no_NO":      "Forhåndsvisning av bilde-filer"
     },
     "mime":       ["^image", "^video"],
     "category":   "multimedia",

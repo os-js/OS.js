@@ -1,7 +1,11 @@
 {
   "ApplicationAbout":  {
-    "name":       "About OS.js",
+    "name":         "About OS.js",
+    "description":  "About OS.js",
     "names":      {
+      "no_NO":      "Om OS.js"
+    },
+    "descriptions": {
       "no_NO":      "Om OS.js"
     },
     "singular":   true,

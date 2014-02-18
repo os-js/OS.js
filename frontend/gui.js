@@ -485,6 +485,9 @@
           if ( typeof list[i].onCreate === 'function' ) {
             list[i].onCreate(m, list[i]);
           } else {
+            if ( list[i].tooltip ) {
+              m.title = list[i].tooltip;
+            }
             if ( list[i].icon ) {
               img     = document.createElement('img');
               img.alt = '';

@@ -1,8 +1,12 @@
 {
   "ApplicationDraw":  {
     "name":       "Draw",
+    "description":"Simple drawing application",
     "names":      {
       "no_NO":      "Tegne"
+    },
+    "descriptions":      {
+      "no_NO":      "Simpelt tegne-program"
     },
     "mime":       ["^image"],
     "category":   "graphics",

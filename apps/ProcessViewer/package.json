@@ -1,8 +1,12 @@
 {
   "ApplicationProcessViewer":  {
     "name":       "Process Viewer",
+    "description":"View running processes",
     "names":      {
       "no_NO":      "Prosess oversikt"
+    },
+    "descriptions":      {
+      "no_NO":      "Se oversikt over kjørende prosesser"
     },
     "singular":   true,
     "mime":       null,

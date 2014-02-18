@@ -1,8 +1,12 @@
 {
   "ApplicationWriter":  {
     "name":       "Writer",
+    "description":"Write rich text documents",
     "names":      {
-      "no_NO":      "Skriver"
+      "no_NO":      "Writer"
+    },
+    "descriptions":      {
+      "no_NO":      "Skriv riktekst dokumenter"
     },
     "mime":       ["^text", "osjs\\/document"],
     "category":   "office",

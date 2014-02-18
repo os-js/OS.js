@@ -162,6 +162,7 @@
 
       if ( result ) {
         // Make sure we apply correct locale
+        // Also sets correct descriptions
         var currLocale = OSjs.Locale.getLocale();
         var resulted = {};
         var newIter;
@@ -173,6 +174,16 @@
                 newIter.name = newIter.names[currLocale];
               }
             }
+            if ( typeof newIter.descriptions !== 'undefined' ) {
+              if ( newIter.descriptions[currLocale] ) {
+                newIter.description = newIter.descriptions[currLocale];
+              }
+            }
+
+            if ( !newIter.description ) {
+              newIter.description = newIter.name;
+            }
+
             resulted[i] = newIter;
           }
         }

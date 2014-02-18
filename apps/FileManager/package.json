@@ -1,8 +1,12 @@
 {
   "ApplicationFileManager":  {
     "name":       "File Manager",
+    "description":"The default file manager",
     "names":      {
       "no_NO":      "Fil-håndtering"
+    },
+    "descriptions":      {
+      "no_NO":      "Standard Fil-håndtering program"
     },
     "mime":       null,
     "category":   "utilities",

@@ -1,8 +1,12 @@
 {
   "ApplicationTextpad":  {
     "name":       "Textpad",
+    "description":"Simple text editor",
     "names":      {
       "no_NO":      "Tekstblokk"
+    },
+    "descriptions":      {
+      "no_NO":      "Simpel tekst redigering"
     },
     "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript"],
     "category":   "utilities",

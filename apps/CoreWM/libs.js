@@ -658,6 +658,7 @@
         list.push({
           title: apps[a].name,
           icon: _createIcon(apps[a], a),
+          tooltip : iter.description,
           onClick: (function(name, iter) {
             return function() {
               OSjs.API.launch(name);
@@ -702,6 +703,7 @@
           submenu.push({
             title: iter.data.name,
             icon: _createIcon(iter.data, iter.name),
+            tooltip : iter.data.description,
             onClick: (function(name, iter) {
               return function() {
                 OSjs.API.launch(name);
