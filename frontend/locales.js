@@ -127,6 +127,19 @@
     'Alpha: {0}' : 'Alpha: {0}',
     "Font Dialog" : 'Skriftype-dialog',
 
+    // Application-specific
+    '{0} Application Error' : '{0} Applikasjon Feil',
+    "Failed to perform action '{0}'" : "Klarte ikke utføre '{0}'",
+    'Failed to save file (call): {0}' : 'Klarte ikke lagre filen (call): {0}',
+    'Cannot open file' : 'Kan ikke åpne filen',
+    'Not supported!' : 'Ikke støttet!',
+    'Unknown Error' : 'Unkjent Feil',
+    'Failed to open file (call): {0}' : 'Klarte ikke åpne filen (call): {0}',
+    'An error occured while handling your request' : 'En feil oppstod under handling av din forespursel',
+    'Fatal error: {0}' : 'Fatal feil: {0}',
+    'An error occured in action: {0}' : 'En feil oppstod under forespursel: {0}',
+    'Discard current document ?' : 'Forkaste gjeldende dokument ?',
+
     // Common
     'Loading...'        : 'Laster...',
     'Message'           : 'Melding',
@@ -184,7 +197,8 @@
     'Indent'            : 'Indenter',
     'Outdent'           : 'Utdenter',
     'Text Color'        : 'Tekst farge',
-    'Back Color'        : 'Bakgrunns farge'
+    'Back Color'        : 'Bakgrunns farge',
+    'Fatal error'       : 'Fatal feil'
   };
 
   /**

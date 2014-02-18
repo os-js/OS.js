@@ -36,9 +36,6 @@
 'Network or communication error' : 'Nettverks- eller kommunikasjonsfeil',
 'Decoding failed. Corruption or unsupported media' : 'Dekoding feilet. Korrupt eller ustøttet media',
 'Media source not supported' : 'Media-kilde ikke støttet',
-'Unknown error' : 'Ukjent feil',
-'Fatal error: {0}' : 'Fatal feil: {0}',
-'Music Player error' : 'Musikkspiller feil',
 'Failed to play file' : 'Klarte ikke spille av fil',
 'Artist' : 'Artist',
 'Album' : 'Album',
@@ -248,11 +245,11 @@
             msg = _('Media source not supported');
             break;
           default:
-            msg = _('Unknown error');
+            msg = OSjs._('Unknown error');
             break;
         }
       } catch ( e ) {
-        msg = _('Fatal error: {0}', e);
+        msg = OSjs._('Fatal error: {0}', e);
       }
       self.onError(ev, self, msg);
     }, true);
@@ -494,7 +491,7 @@
     };
     this.player.onError = function(ev, player, msg) {
       self.updateInfo(ev, null, slider);
-      self._error(_('Music Player error'), _('Failed to play file'), msg);
+      self._error(OSjs._('{0} Application Error', self.title), _('Failed to play file'), msg);
     };
     this.player.onTrackEnded = function(ev, player) {
       if ( self.playlist.isLast() ) return;
@@ -746,7 +743,7 @@
     if ( !mime.match(/^audio/) ) {
       var msg = _('The audio type is not supported: {0}', mime);
       var win = this._getWindow('ApplicationMusicPlayerWindow');
-      win._error(_("Music Player error"), _("Failed to play file"), msg);
+      win._error(OSjs._("{0} Application Error", win.title), _("Failed to play file"), msg);
       return;
     }
 

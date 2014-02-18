@@ -1,6 +1,5 @@
 (function(Application, Window) {
 
-
   /**
    * Main Window
    */

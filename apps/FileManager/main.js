@@ -7,8 +7,6 @@
       "Showing {0} item(s), {1}" : "Viser {0} objekt(er), {1}",
       "Refreshing..." : "Gjenoppfrisker...",
       "Loading..." : "Laster...",
-      "File Manager error" : "Filbehandler Feil",
-      "An error occured while handling your request" : "En feil oppstod under handling av din forespursel",
       "Create a new directory in <span>{0}</span>" : "Opprett ny mappe i <span>{0}</span>",
       "Rename <span>{0}</span>" : "Navngi <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"
@@ -126,7 +124,7 @@
 
     fileView.onError = function(error) {
       self._toggleLoading(false);
-      self._error(_("File Manager error"), _("An error occured while handling your request"), error);
+      self._error(OSjs._("{0} Application Error", self.title), OSjs._("An error occured while handling your request"), error);
     };
 
     var menuAction = function(action, check) {
@@ -438,9 +436,9 @@
     var _onError = function(error) {
       var win = self._getWindow('ApplicationFileManagerWindow');
       if ( win ) {
-        win._error(_("File Manager error"), _("An error occured while handling your request"), error);
+        win._error(OSjs._("{0} Application Error", self.__label), OSjs._("An error occured while handling your request"), error);
       } else {
-        OSjs.API.error(_("File Manager error"), _("An error occured while handling your request"), error);
+        OSjs.API.error(OSjs._("{0} Application Error", self.__label), OSjs._("An error occured while handling your request"), error);
       }
 
       callback(false);
@@ -448,7 +446,7 @@
 
     OSjs.API.call('fs', {'method': name, 'arguments': args}, function(res) {
       if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        _onError(res.error || 'Fatal error');
+        _onError(res.error || OSjs._('Fatal error'));
       } else {
         callback(res.result);
       }

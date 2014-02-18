@@ -31,9 +31,6 @@
 
   var _Locales = {
     no_NO : {
-      "An error occured in action: {0}" : "Feil oppstod i forespursel: {0}",
-      "Writer error" : "Skriver feil",
-      "Discard current document ?" : "Forkaste gjeldende dokument ?",
       'Insert URL' : 'Sett inn URL',
 
     }
@@ -343,11 +340,11 @@
 
     this.defaultActionError = function(action, error) {
       var w = self._getWindow('ApplicationWriterWindow');
-      var msg = _("An error occured in action: {0}", action);
+      var msg = OSjs._("An error occured in action: {0}", action);
       if ( w ) {
-        w._error(_("Writer error"), msg, error);
+        w._error(OSjs._("{0} Application Error", self.__label), msg, error);
       } else {
-        OSjs.API.error("Writer error", msg, error);
+        OSjs.API.error(OSjs._("{0} Application Error", self.__label), msg, error);
       }
     };
 
@@ -360,7 +357,7 @@
           var _new = function() {
             w.update(null, '');
           };
-          var msg = _("Discard current document ?");
+          var msg = OSjs._("Discard current document ?");
           if ( w.checkChanged(function() { _new(); }, msg) === false ) {
             _new();
           }

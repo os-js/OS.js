@@ -49,18 +49,7 @@
       'Line Join'   : 'Linje-stil',
       'Bevel'       : 'Kant',
       'Round'       : 'Rund',
-      'Miter'       : 'Miter',
-
-      "Draw Application Error" : "Tegne Applikasjon Feil",
-      "Failed to perform action '{0}'" : "Klarte ikke utføre '{0}'",
-      "Failed to save file: {0}" : "Klarte ikke lagre filen: {0}",
-      "Failed to save file (call): {0}" : "Klarte ikke lagre filen (call): {0}",
-      "Draw" : 'Tegne',
-      "Cannot open file" : 'Kan ikke åpne filen',
-      "Not supported!" : 'Ikke støttet!',
-      "Unknown Error" : "Unkjent Feil",
-      "Failed to open file: {0}" : "Klarte ikke åpne filen: {0}",
-      "Failed to open file (call): {0}" : "Klarte ikke åpne filen (call): {0}",
+      'Miter'       : 'Miter'
     }
   };
 
@@ -653,9 +642,9 @@
       if ( win ) {
         win.setTitle('');
         win._toggleLoading(false);
-        win._error(_("Draw Application Error"), _("Failed to perform action '{0}'", action), error);
+        win._error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
       } else {
-        OSjs.API.error(_("Draw Application Error"), _("Failed to perform action '{0}'", action), error);
+        OSjs.API.error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
       }
     };
 
@@ -683,20 +672,20 @@
           _onSaveFinished(fname);
         } else {
           if ( res && res.error ) {
-            _onError(_("Failed to save file: {0}", fname), res.error);
+            _onError(OSjs._("Failed to save file: {0}", fname), res.error);
             return;
           }
-          _onError(_("Failed to save file: {0}", fname), "Unknown error");
+          _onError(OSjs._("Failed to save file: {0}", fname), OSjs._("Unknown error"));
         }
       }, function(error) {
-        _onError(_("Failed to save file (call): {0}", fname), error);
+        _onError(OSjs._("Failed to save file (call): {0}", fname), error);
       });
     };
 
     // Open
     var _openFile = function(fname, fmime) {
       if ( fmime && !fmime.match(/^image/) ) {
-        OSjs.API.error(_("Draw"), _("Cannot open file"), _("Not supported!"));
+        OSjs.API.error(self.__label, OSjs._("Cannot open file"), OSjs._("Not supported!"));
         return;
       }
 
@@ -717,13 +706,13 @@
           _openFileFinished(fname, res.result);
         } else {
           if ( res && res.error ) {
-            _onError(_("Failed to open file: {0}", fname), res.error);
+            _onError(OSjs._("Failed to open file: {0}", fname), res.error);
             return;
           }
-          _onError(_("Failed to open file: {0}", fname), _("Unknown error"));
+          _onError(OSjs._("Failed to open file: {0}", fname), OSjs._("Unknown error"));
         }
       }, function(error) {
-        _onError(_("Failed to open file (call): {0}", fname), error);
+        _onError(OSjs._("Failed to open file (call): {0}", fname), error);
       });
     };
 

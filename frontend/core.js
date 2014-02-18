@@ -1173,6 +1173,7 @@
   var Application = function(name, args, metadata) {
     console.group("OSjs::Core::Application::__construct()");
     this.__name       = name;
+    this.__label      = metadata.name;
     this.__path       = metadata.path;
     this.__iter       = metadata.iter;
     this.__destroyed  = false;
@@ -1181,6 +1182,7 @@
     this.__windows    = [];
     this.__args       = args || {};
     this.__settings   = {};
+    this.__metadata   = metadata;
 
 
     Process.apply(this, [name]);

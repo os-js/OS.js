@@ -1,18 +1,5 @@
 (function(Application, Window) {
 
-  var _Locales = {
-    no_NO : {
-      "An error occured in action: {0}" : "En feil oppstod under forespursel: {0}",
-      "Preview error" : "Forhåndsvisning feil"
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -164,11 +151,11 @@
 
     this.defaultActionError = function(action, error) {
       var w = self._getWindow('ApplicationPreviewWindow');
-      var msg = _("An error occured in action: {0}", action);
+      var msg = OSjs._("An error occured in action: {0}", action);
       if ( w ) {
-        w._error(_("Preview error"), msg, error);
+        w._error(OSjs._("{0} Application Error", self.__label), msg, error);
       } else {
-        OSjs.API.error(_("Preview error"), msg, error);
+        OSjs.API.error(OSjs._("{0} Application Error", self.__label), msg, error);
       }
     };
 
