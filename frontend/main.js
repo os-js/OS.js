@@ -119,14 +119,24 @@
   // Main initialization code
   /////////////////////////////////////////////////////////////////////////////
 
-  window.onload = function() {
+  var _onLoad = function() {
     _checkConfig();
     OSjs._initialize();
   };
 
-  window.onunload = function() {
+  var _onUnload = function() {
     OSjs._shutdown(false, true);
   };
+
+  var jQuery = window.$ || window.jQuery;
+  if ( typeof jQuery !== 'undefined' ) {
+    console.warn("Using jQuery initialization");
+    jQuery(window).on('load', _onLoad);
+    jQuery(window).on('unload', _onUnload);
+  } else {
+    window.onload   = _onLoad;
+    window.onunload = _onUnload;
+  }
 
 })();
 
