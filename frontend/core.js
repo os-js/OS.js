@@ -2495,9 +2495,7 @@
     OSjs.Compability = OSjs.Utils.getCompability();
 
     // Launch handler
-    var hname = OSjs.Settings.DefaultConfig().Handler.name;
-    _HANDLER  = new OSjs.Handlers[hname]();
-
+    _HANDLER = new OSjs.Handlers.Current();
     _HANDLER.init(function() {
       __initialize();
     });

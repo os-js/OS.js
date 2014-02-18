@@ -39,25 +39,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Storage
-   */
-  var DefaultStorage = function() {
-    if ( !OSjs.Compability.localStorage ) {
-      throw "Your browser does not support localStorage :(";
-    }
-    this.prefix = 'andersevenrud.github.io/OS.js-v2/';
-  };
-
-  DefaultStorage.prototype.set = function(k, v) {
-    localStorage.setItem(this.prefix + k, JSON.stringify(v));
-  };
-
-  DefaultStorage.prototype.get = function(k) {
-    var val = localStorage.getItem(this.prefix + k);
-    return val ? JSON.parse(val) : null;
-  };
-
-  /**
    * Default Handler Implementation
    *
    * Used for communication, resources, settings and session handling
@@ -65,10 +46,20 @@
    * You can implement your own, see documentation on Wiki.
    */
   var DefaultHandler = function() {
-    this.storage  = new DefaultStorage();
+    this.storage  = null;
     this.packages = {};
     this.config   = OSjs.Settings.DefaultConfig();
-    this.userData = {};
+    this.userData = {
+      id: 0,
+      username: 'root',
+      name: 'root user',
+      groups: ['root'],
+      settings: {
+        Core : {
+          Locale: this.config.Core.Locale
+        }
+      }
+    };
     this.offline  = false;
 
     var self = this;
@@ -148,34 +139,9 @@
   DefaultHandler.prototype.init = function(callback) {
     console.info("OSjs::DefaultHandler::init()");
 
-    var self = this;
-    var _finished = function(locale) {
-      OSjs.Locale.setLocale(locale || self.config.Core.Locale);
-      if ( callback ) {
-        callback();
-      }
-    };
+    OSjs.Locale.setLocale(this.config.Core.Locale);
 
-    // NOTE: This is just for demo usage! 
-    this.login('demo', 'demo', function(userData) {
-      userData = userData || {};
-      self.userData = userData;
-
-      // You would normally use 'userData.settings' here!
-      self.setUserSettings('User', userData, function() {
-
-        // Ensure we get the user-selected locale
-        self.getUserSettings('Core', function(result) {
-          var locale = null;
-          if ( result ) {
-            if ( (typeof result.Locale !== 'undefined') && result.Locale ) {
-              locale = result.Locale;
-            }
-          }
-          _finished(locale);
-        });
-      });
-    });
+    callback();
   };
 
   /**
@@ -223,33 +189,18 @@
 
   /**
    * Default login method
-   * NOTE: This is just a placeholder for demo usage.
+   * NOTE: This is just a placeholder.
    *       To implement your own login handler, see the Wiki :)
    */
   DefaultHandler.prototype.login = function(username, password, callback) {
     console.info("OSjs::DefaultHandler::login()", username);
-
-    if ( username === 'demo' && password === 'demo' ) {
-      var userData = {
-        id:         1,
-        username:   'demo',
-        name:       'Demo User',
-        groups:     ['demo'],
-        settings:   {
-          Core : {
-            Locale: 'en_US'
-          }
-        }
-      };
-
-      callback(userData);
-      return;
-    }
-    callback(false, "Invalid login");
+    callback(true);
   };
 
   /**
    * Default logout method
+   * NOTE: This is just a placeholder.
+   *       To implement your own login handler, see the Wiki :)
    */
   DefaultHandler.prototype.logout = function(session, callback) {
     console.info("OSjs::DefaultHandler::logout()");
@@ -389,41 +340,25 @@
 
   /**
    * Internal method for setting a value in category (wrapper)
+   * NOTE: This is just a placeholder
    */
   DefaultHandler.prototype._setSetting = function(cat, values, callback) {
-    this.storage.set(cat, values);
-    callback(true);
+    callback(false);
   };
 
   /**
    * Internal method for setting settings (wrapper)
+   * NOTE: This is just a placeholder
    */
   DefaultHandler.prototype._setSettings = function(cat, key, opts, callback) {
-    var settings = this.storage.get(cat);
-    if ( typeof settings !== 'object' || !settings ) {
-      settings = {};
-    }
-    if ( typeof settings[key] !== 'object' || !settings[key] ) {
-      settings[key] = {};
-    }
-    settings[key] = opts;
-
-    this.storage.set(cat, settings);
-    callback(true);
+    callback(false);
   };
 
   /**
    * Internal method for getting settings (wrapper)
+   * NOTE: This is just a placeholder
    */
   DefaultHandler.prototype._getSettings = function(cat, key, callback) {
-    var s = this.storage.get(cat) || {};
-    if ( key === null ) {
-      callback(s);
-      return;
-    } else if ( s[key] ) {
-      callback(s[key]);
-      return;
-    }
     callback(false);
   };
 
@@ -464,8 +399,9 @@
    */
   DefaultHandler.prototype.setUserSession = function(session, callback) {
     callback = callback || function() {};
-    this.storage.set("userSession", session);
-    callback(true);
+    this._setSettings("userSession", null, session, function(result) {
+      callback(result);
+    });
   };
 
   /**
@@ -473,8 +409,9 @@
    */
   DefaultHandler.prototype.getUserSession = function(callback) {
     callback = callback || function() {};
-    var s = this.storage.get("userSession");
-    callback(s);
+    this._getSettings("userSession", null, function(result) {
+      callback(result);
+    });
   };
 
   /**
@@ -482,14 +419,6 @@
    */
   DefaultHandler.prototype.getConfig = function(key) {
     return key ? this.config[key] : this.config;
-  };
-
-  /**
-   * Get configuration from logged in user
-   */
-  DefaultHandler.prototype.getUserConfig = function(key) {
-    var cfg = this.config.User || {};
-    return key ? cfg[key] : cfg;
   };
 
   /**

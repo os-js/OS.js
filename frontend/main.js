@@ -71,10 +71,6 @@
           Locale:         'en_US'
         },
 
-        Handler : {
-          name : 'Default'
-        },
-
         WM : {
           exec: 'CoreWM',
           args: {

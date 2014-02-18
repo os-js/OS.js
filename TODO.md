@@ -11,10 +11,6 @@
 * CoreWM: Finish Panel implementation
 * Create bin/ scripts for nodejs (redo create-application for PHP)
 * Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
-* Cache user settings after login (like core settings)
-* Abstraction for Handlers
-  - Create frontend/handlers/demo.js
-  - Create frontend/handlers/example.js
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
