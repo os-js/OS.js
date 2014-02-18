@@ -492,7 +492,9 @@
     });
 
     setTimeout(function() {
-      self.dialog._focus();
+      if ( self.dialog ) {
+        self.dialog._focus();
+      }
     }, 100);
   };
 
