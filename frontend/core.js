@@ -285,6 +285,8 @@
     };
 
     var _createSplash = function(data) {
+      _$LOADING.style.display = 'block';
+
       if ( !data.splash ) { return; }
 
       splash = document.createElement('div');
@@ -394,6 +396,8 @@
 
     var _preload = function(result) {
       OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
+        _$LOADING.style.display = 'none';
+
         if ( errors ) {
           _error(OSjs._("Application '{0}' preloading failed: \n{1}", n, failed.join(",")));
           return;
