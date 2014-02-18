@@ -71,21 +71,24 @@
           Locale:         'en_US'
         },
 
-        Fonts : [
-          'OSjsFont',
-          'Arial',
-          'Arial Black',
-          'Sans-serif',
-          'Serif',
-          'Trebuchet MS',
-          'Impact',
-          'Georgia',
-          'Courier New',
-          'Comic Sans MS',
-          'Monospace',
-          'Symbol',
-          'Webdings'
-        ],
+        Fonts : {
+          'default' : 'OSjsFont',
+          'list'    : [
+            'OSjsFont',
+            'Arial',
+            'Arial Black',
+            'Sans-serif',
+            'Serif',
+            'Trebuchet MS',
+            'Impact',
+            'Georgia',
+            'Courier New',
+            'Comic Sans MS',
+            'Monospace',
+            'Symbol',
+            'Webdings'
+          ]
+        },
 
         WM : {
           exec: 'CoreWM',

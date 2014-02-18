@@ -1048,11 +1048,11 @@
    */
   var FontDialog = function(args, onClose) {
     args = args || {};
-    this.fontName   = args.name       || 'Arial';
+    this.fontName   = args.name       || OSjs.API.getHandlerInstance().getConfig('Fonts')['default'];
     this.fontSize   = args.size       || 12;
     this.background = args.background || '#ffffff';
     this.color      = args.color      || '#000000';
-    this.fonts      = args.list       || OSjs.API.getHandlerInstance().getConfig('Fonts');
+    this.fonts      = args.list       || OSjs.API.getHandlerInstance().getConfig('Fonts').list;
     this.sizeType   = args.sizeType   || 'px';
     this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
 
