@@ -32,10 +32,6 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
-  function getFonts() {
-    return ['OSjsFont', 'Arial', 'Arial Black', 'Sans-serif', 'Serif', 'Trebuchet MS', 'Impact', 'Georgia', 'Courier New', 'Comic Sans MS', 'Monospace', 'Symbol', 'Webdings'];
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -1056,7 +1052,7 @@
     this.fontSize   = args.size       || 12;
     this.background = args.background || '#ffffff';
     this.color      = args.color      || '#000000';
-    this.fonts      = args.list       || getFonts();
+    this.fonts      = args.list       || OSjs.API.getHandlerInstance().getConfig('Fonts');
     this.sizeType   = args.sizeType   || 'px';
     this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
 
