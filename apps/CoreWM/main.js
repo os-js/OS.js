@@ -192,7 +192,7 @@
           if ( item ) {
             var data = item.data;
             if ( data && data.type === 'file' && data.mime && data.mime.match(/^image/) ) {
-              self.applySettings({wallpaper: data.path});
+              self.applySettings({wallpaper: data.path}, false, true);
             }
           }
         }
