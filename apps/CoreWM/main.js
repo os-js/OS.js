@@ -88,8 +88,9 @@
     WindowManager.prototype.init.apply(this, arguments);
 
     this.initDesktop();
-    this.initPanels();
-    this.initWM();
+    this.initWM(function() {
+      this.initPanels();
+    });
 
     this.switcher = new OSjs.CoreWM.WindowSwitcher();
     this.switcher.init();
@@ -160,15 +161,8 @@
   // Initialization
   //
 
-  CoreWM.prototype.initWM = function() {
-    var self = this;
-    OSjs.API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
-      if ( s ) {
-        self.applySettings(s);
-      } else {
-        self.applySettings(DefaultSettings(), true);
-      }
-    });
+  CoreWM.prototype.initWM = function(callback) {
+    callback = callback || function() {};
 
     var back = document.getElementById("Background");
     if ( back ) {
@@ -207,6 +201,17 @@
         }
       });
     }
+
+    var self = this;
+    OSjs.API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
+      if ( s ) {
+        self.applySettings(s);
+      } else {
+        self.applySettings(DefaultSettings(), true);
+      }
+
+      callback.call(self);
+    });
   };
 
   CoreWM.prototype.initDesktop = function() {
@@ -249,9 +254,11 @@
         } else {
           p = new OSjs.CoreWM.Panel('Default', ps[i].options);
           p.init(document.body);
-          for ( j = 0; j < ps[i].items.length; j++ ) {
-            n = ps[i].items[j];
-            p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
+          if ( ps[i].items ) {
+            for ( j = 0; j < ps[i].items.length; j++ ) {
+              n = ps[i].items[j];
+              p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
+            }
           }
 
           this.panels.push(p);
@@ -391,26 +398,36 @@
   };
 
   CoreWM.prototype.addPanelItem = function(name) {
+    console.debug("CoreWM::addPanelItem()", name);
+
     var panels = this.getSetting('panels');
     if ( panels.length ) {
       panels[0].items.push({name: name});
 
       this.setSetting('panels', panels);
       this.initPanels(false, true);
+
+      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
     }
   };
 
   CoreWM.prototype.removePanelItem = function(iter) {
+    console.debug("CoreWM::removePanelItem()", iter);
+
     var panels = this.getSetting('panels');
     if ( panels.length ) {
       panels[0].items.splice(iter.index, 1);
 
       this.setSetting('panels', panels);
       this.initPanels(false, true);
+
+      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
     }
   };
 
   CoreWM.prototype.movePanelItem = function(iter, pos) {
+    console.debug("CoreWM::movePanelItem()", iter, pos);
+
     var panels = this.getSetting('panels');
     if ( panels.length ) {
       var items = panels[0].items;
@@ -429,7 +446,19 @@
 
       this.setSetting('panels', panels);
       this.initPanels(false, true);
+
+      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
     }
+  };
+
+  CoreWM.prototype.resetPanelItems = function() {
+    var defaults = this.getDefaultSetting('panels');
+    console.debug("CoreWM::resetPanelItems()", defaults);
+
+    this.setSetting('panels', defaults);
+    this.initPanels(false, true);
+
+    OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save) {

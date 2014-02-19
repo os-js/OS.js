@@ -201,7 +201,8 @@
     'Outdent'           : 'Utdenter',
     'Text Color'        : 'Tekst farge',
     'Back Color'        : 'Bakgrunns farge',
-    'Fatal error'       : 'Fatal feil'
+    'Fatal error'       : 'Fatal feil',
+    'Reset to defaults' : 'Nullstill til standard'
   };
 
   /**

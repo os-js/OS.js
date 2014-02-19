@@ -1082,11 +1082,14 @@
     if ( force ) {
       this._settings = settings;
     } else {
+      this._settings = OSjs.Utils.mergeObject(this._settings, settings);
+      /*
       for ( var s in settings ) {
         if ( settings.hasOwnProperty(s) ) {
           this.setSetting(s, settings[s]);
         }
       }
+      */
     }
 
     if ( _$LOADING ) {

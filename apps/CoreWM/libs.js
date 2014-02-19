@@ -345,6 +345,10 @@
       }
     }}), panelItemButtons);
 
+    var panelItemButtonReset = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonReset', {tooltop: OSjs._('Reset to defaults'), icon: OSjs.API.getIcon('actions/revert.png'), onClick: function(el, ev) {
+      self.resetPanelItems();
+    }}), panelItemButtons);
+
     var panelItemList = this._addGUIElement(new OSjs.GUI.ListView('PanelItemListView'), panelItemContainer);
 
     panelItemList.onSelect = function(ev, el, item) {
@@ -405,7 +409,6 @@
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
         panelPosition:    panelPosition.getValue(),
-        panelItems:       panelItems,
         desktopMargin:    desktopMargin,
         desktopFont:      fontName.getValue(),
         theme:            themeName.getValue(),
@@ -429,8 +432,7 @@
               options: {
                 position: settings.panelPosition,
                 ontop:    settings.panelOntop,
-              },
-              items:    settings.panelItems
+              }
             }
           ],
           style      : {
@@ -452,8 +454,10 @@
     var panelItemList = this._getGUIElement('PanelItemListView');
     var panelItems = this._appRef.getSetting('panels')[0].items;
     var addItems = [];
-    for ( var j = 0; j < panelItems.length; j++ ) {
-      addItems.push({name: panelItems[j].name, index: j});
+    if ( panelItems ) {
+      for ( var j = 0; j < panelItems.length; j++ ) {
+        addItems.push({name: panelItems[j].name, index: j});
+      }
     }
     panelItemList.setColumns([{key: 'name', title: _('Name')}, {key: 'index', title: 'Index', visible: false}]);
     panelItemList.setRows(addItems);
@@ -474,9 +478,12 @@
     if ( !this.panelItemWindow ) {
       this.panelItemWindow = new PanelItemWindow(this._appRef, this);
       this._addChild(this.panelItemWindow, true);
-    } else {
-      this.panelItemWindow._restore();
     }
+
+    var self = this;
+    setTimeout(function() {
+      self.panelItemWindow._restore();
+    }, 10);
   };
 
   SettingsWindow.prototype.openBackgroundSelect = function(ev, input) {
@@ -516,21 +523,27 @@
   };
 
   SettingsWindow.prototype.addPanelItem = function(name) {
-    console.debug("CoreWM::SettingsWindow::addPanelItem()", name);
     this._appRef.addPanelItem.apply(this._appRef, arguments);
     this.refreshPanelItems();
+    this._focus();
   };
 
   SettingsWindow.prototype.removePanelItem = function(iter) {
-    console.debug("CoreWM::SettingsWindow::removePanelItem()", iter);
     this._appRef.removePanelItem.apply(this._appRef, arguments);
     this.refreshPanelItems();
+    this._focus();
   };
 
   SettingsWindow.prototype.movePanelItem = function(iter, pos) {
-    console.debug("CoreWM::SettingsWindow::movePanelItem()", iter, pos);
     this._appRef.movePanelItem.apply(this._appRef, arguments);
     this.refreshPanelItems();
+    this._focus();
+  };
+
+  SettingsWindow.prototype.resetPanelItems = function() {
+    this._appRef.resetPanelItems.apply(this._appRef, arguments);
+    this.refreshPanelItems();
+    this._focus();
   };
 
   /////////////////////////////////////////////////////////////////////////////
