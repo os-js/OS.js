@@ -256,10 +256,13 @@ body {
   border : 1px solid #313131;
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   color : #fff;
+  cursor : pointer;
+}
+.Notification .Title {
+  font-weight : bold;
 }
 .Notification .Title,
 .Notification .Message {
-  font-weight : bold;
   line-height : 16px;
 }
 

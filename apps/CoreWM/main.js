@@ -415,18 +415,8 @@
     }
   };
 
+  /*
   CoreWM.prototype.addPanelItem = function(name) {
-    console.debug("CoreWM::addPanelItem()", name);
-
-    var panels = this.getSetting('panels');
-    if ( panels.length ) {
-      panels[0].items.push({name: name});
-
-      this.setSetting('panels', panels);
-      this.initPanels(false, true);
-
-      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
-    }
   };
 
   CoreWM.prototype.removePanelItem = function(iter) {
@@ -478,6 +468,7 @@
 
     OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
   };
+  */
 
   CoreWM.prototype.applySettings = function(settings, force, save) {
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
@@ -538,7 +529,7 @@
     }
 
     // Misc
-    this.initPanels(true);
+    this.initPanels(false, true);
 
     if ( save ) {
       OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());

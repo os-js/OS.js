@@ -168,6 +168,7 @@
 
     this.panelItemWindow = null;
     this.currentPanelItem = null;
+    this.panelItems = [];
   };
 
   SettingsWindow.prototype = Object.create(Window.prototype);
@@ -182,6 +183,14 @@
     var theme         = wm.getSetting('theme');
     var desktopMargin = settings.desktop.margin;
     var themelist     = {};
+
+    var panels = this._appRef.getSetting('panels');
+    if ( !panels || !panels[0] ) {
+      panels = this._appRef.getDefaultSetting('panels');
+    }
+    var panel = panels[0];
+
+    this.panelItems = panel.items;
 
     var iter;
     for ( var i = 0, l = themes.length; i < l; i++ ) {
@@ -411,9 +420,12 @@
     // Buttons
     //
     this._addGUIElement(new OSjs.GUI.Button('Save', {label: _('Apply'), onClick: function(el, ev) {
+      var panelItems = self.panelItems;
+
       var settings = {
         language:         useLanguage.getValue(),
         //sounds:           useSounds.getValue() == 'yes',
+        panelItems:       panelItems,
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
         panelPosition:    panelPosition.getValue(),
@@ -440,7 +452,8 @@
               options: {
                 position: settings.panelPosition,
                 ontop:    settings.panelOntop,
-              }
+              },
+              items: panelItems
             }
           ],
           style      : {
@@ -460,12 +473,9 @@
     this.currentPanelItem = null;
 
     var panelItemList = this._getGUIElement('PanelItemListView');
-    var panelItems = this._appRef.getSetting('panels')[0].items;
     var addItems = [];
-    if ( panelItems ) {
-      for ( var j = 0; j < panelItems.length; j++ ) {
-        addItems.push({name: panelItems[j].name, index: j});
-      }
+    for ( var j = 0; j < this.panelItems.length; j++ ) {
+      addItems.push({name: this.panelItems[j].name, index: j});
     }
     panelItemList.setColumns([{key: 'name', title: _('Name')}, {key: 'index', title: 'Index', visible: false}]);
     panelItemList.setRows(addItems);
@@ -531,25 +541,43 @@
   };
 
   SettingsWindow.prototype.addPanelItem = function(name) {
-    this._appRef.addPanelItem.apply(this._appRef, arguments);
+    console.debug("CoreWM::addPanelItem()", name);
+
+    this.panelItems.push({name: name});
+
     this.refreshPanelItems();
     this._focus();
   };
 
   SettingsWindow.prototype.removePanelItem = function(iter) {
-    this._appRef.removePanelItem.apply(this._appRef, arguments);
+    this.panelItems.splice(iter.index, 1);
+
     this.refreshPanelItems();
     this._focus();
   };
 
   SettingsWindow.prototype.movePanelItem = function(iter, pos) {
-    this._appRef.movePanelItem.apply(this._appRef, arguments);
+    if ( iter.index === 0 && pos < 0 ) { return; } // At top
+    if ( pos > 0 && (iter.index >= (items.length-1)) ) { return; } // At bottom
+
+    var value = this.panelItems[iter.index];
+    this.panelItems.splice(iter.index, 1);
+    if ( pos > 0 ) {
+      this.panelItems.splice(iter.index + 1, 0, value);
+    } else if ( pos < 0 ) {
+      this.panelItems.splice(iter.index - 1, 0, value);
+    }
+
     this.refreshPanelItems();
     this._focus();
   };
 
   SettingsWindow.prototype.resetPanelItems = function() {
-    this._appRef.resetPanelItems.apply(this._appRef, arguments);
+    var defaults = this.getDefaultSetting('panels');
+    console.debug("CoreWM::resetPanelItems()", defaults);
+
+    this.panelItems = defaults[0].items;
+
     this.refreshPanelItems();
     this._focus();
   };
