@@ -1235,10 +1235,15 @@
     this.val      = opts.val          || 0;
     this.type     = opts.orientation  || 'horizontal';
     this.steps    = opts.steps        || 1;
+    this.onChange = opts.onChange     || function() {};
     this.$root    = null;
     this.$button  = null;
 
-    this.onUpdate = onUpdate || function(val, perc) { console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)'); };
+    var self = this;
+    this.onUpdate = function(val, perc) {
+      (onUpdate || function(val, perc) { console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)'); }).apply(self, arguments);
+      self.onChange.apply(this, arguments);
+    };
 
     GUIElement.apply(this, [name, {}]);
   };
@@ -1287,13 +1292,16 @@
         self.$button.style.top = newY + 'px';
       }
 
-      self.onSliderUpdate(newX, newY, maxX, maxY);
+      self.onSliderUpdate(newX, newY, maxX, maxY, 'mousemove');
     };
 
     var _onMouseUp = function(ev) {
       scrolling = false;
       document.removeEventListener('mousemove', _onMouseMove, false);
       document.removeEventListener('mouseup', _onMouseUp, false);
+
+      var p = (self.max / self.val) * 100;
+      self.onChange.call(self, self.val, p, 'mouseup');
     };
 
     var _onMouseDown = function(ev) {
@@ -1341,10 +1349,10 @@
     this.setValue(this.val);
   };
 
-  Slider.prototype.setPercentage = function(p) {
+  Slider.prototype.setPercentage = function(p, evt) {
     var cd  = (this.max - this.min);
     var val = (cd*(p/100)) << 0;
-    this.onUpdate.call(this, val, p);
+    this.onUpdate.call(this, val, p, evt);
   };
 
   Slider.prototype.onSliderClick = function(ev, cx, cy, tw, th) {
@@ -1359,10 +1367,10 @@
 
     var val = (cd*(tmp/100)) << 0;
     this.setValue(val);
-    this.setPercentage(tmp);
+    this.setPercentage(tmp, 'click');
   };
 
-  Slider.prototype.onSliderUpdate = function(x, y, maxX, maxY) {
+  Slider.prototype.onSliderUpdate = function(x, y, maxX, maxY, evt) {
     var p = null;
     if ( typeof x !== 'undefined' ) {
       p = (x/maxX) * 100;
@@ -1370,7 +1378,7 @@
       p = (y/maxY) * 100;
     }
     if ( p !== null ) {
-      this.setPercentage(p);
+      this.setPercentage(p, evt);
     }
   };
 
@@ -1398,6 +1406,10 @@
 
       this.$button.style.top = top + 'px';
     }
+  };
+
+  Slider.prototype.getValue = function() {
+    return this.val;
   };
 
   /**
