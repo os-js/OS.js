@@ -55,7 +55,9 @@
         if ( obj2[p].constructor == Object ) {
           obj1[p] = OSjs.Utils.mergeObject(obj1[p], obj2[p]);
         } else {
-          obj1[p] = obj2[p];
+          if ( typeof obj2[p] !== 'undefined' ) {
+            obj1[p] = obj2[p];
+          }
         }
       } catch(e) {
         obj1[p] = obj2[p];
