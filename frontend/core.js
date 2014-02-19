@@ -483,21 +483,29 @@
    * @return  DOMAudio
    */
   function PlaySound(name, volume) {
+    if ( !OSjs.Compability.audio ) {
+      console.debug("PlaySound()", "Browser has no support for sounds!");
+      return false;
+    }
+    if ( _HANDLER && !_HANDLER.getConfig('Core').Sounds ) {
+      console.debug("PlaySound()", "Core Config has disabled sounds!");
+      return false;
+    }
+    if ( _WM && !_WM.getSetting('enableSounds') ) {
+      console.debug("PlaySound()", "Window Manager has disabled sounds!");
+      return false;
+    }
+
     if ( typeof volume === 'undefined' ) {
       volume = 1.0;
     }
 
-    var enabled = OSjs.API.getHandlerInstance().getConfig('Core').Sounds;
-
-    if ( OSjs.Compability.audio && enabled ) {
-      var f = OSjs.API.getThemeResource(name, 'sound');
-      console.info("PlaySound()", name, f);
-      var a = new Audio(f);
-      a.volume = volume;
-      a.play();
-      return a;
-    }
-    return false;
+    var f = OSjs.API.getThemeResource(name, 'sound');
+    console.info("PlaySound()", name, f);
+    var a = new Audio(f);
+    a.volume = volume;
+    a.play();
+    return a;
   }
 
   /////////////////////////////////////////////////////////////////////////////

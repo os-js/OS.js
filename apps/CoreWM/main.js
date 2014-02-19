@@ -28,6 +28,7 @@
       menuCategories  : true,
       enableSwitcher  : true,
       enableHotkeys   : true,
+      enableSounds    : OSjs.Settings.DefaultConfig().Core.Sounds,
       moveOnResize    : true,       // Move windows into viewport on resize
       panels          : [
         {

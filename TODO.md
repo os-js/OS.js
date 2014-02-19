@@ -13,10 +13,6 @@
 ### Applications
 * New Draw codebase -- layer, effect support etc.
 * Writer - Check for changes before opening/new file
-* CoreWM/Settings - Implement hotkey toggle
-* CoreWM/Settings - Implement hotkey customization
-* CoreWM/Settings - Implement windowswitcher toggle
-* CoreWM/Settings - Sounds toggle
 * Finish Music Player
 * Finish File Manager
 

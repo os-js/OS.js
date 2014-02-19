@@ -31,6 +31,9 @@
       'Locales' : 'Lokalisering',
       'Language (requires restart)' : 'Språk (krever omstart)',
       'Open Panel Settings' : 'Åpne panel-instillinger',
+      'Enable sounds' : 'Skru på lyder',
+      'Enable Window Switcher' : 'Skru på Vindu-bytter',
+      'Enable Hotkeys' : 'Skru på Hurtigtaster',
 
       'Development' : 'Utvikling',
       'Education' : 'Utdanning',
@@ -222,6 +225,10 @@
     var tabPanels = tabs.addTab('Panels', {title: _('Panels')});
     var tabLocale = tabs.addTab('Locales', {title: _('Locales')});
 
+    //
+    // Tab: Theme
+    //
+
     // Theme
     outer = _createContainer('Theme SettingsNoButton', _('Theme'));
     var themeName = this._addGUIElement(new OSjs.GUI.Select('SettingsThemeName'), outer);
@@ -229,9 +236,7 @@
     themeName.setSelected(theme);
     tabStyles.appendChild(outer);
 
-    //
     // Background Type
-    //
     outer = _createContainer('BackgroundType SettingsNoButton', _('Background Type'));
     var backgroundType = this._addGUIElement(new OSjs.GUI.Select('SettingsBackgroundType'), outer);
     backgroundType.addItems({
@@ -245,9 +250,7 @@
     backgroundType.setSelected(settings.background);
     tabStyles.appendChild(outer);
 
-    //
     // Background Image
-    //
     outer = _createContainer('BackgroundImage', _('Background Image'));
     var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
 
@@ -257,9 +260,7 @@
 
     tabStyles.appendChild(outer);
 
-    //
     // Background Color
-    //
     outer = _createContainer('BackgroundColor', _('Background Color'));
 
     var backgroundColor = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundColor', {disabled: true, value: settings.style.backgroundColor}), outer);
@@ -272,9 +273,7 @@
 
     tabStyles.appendChild(outer);
 
-    //
     // Font
-    //
     outer = _createContainer('Font', _('Font'));
 
     var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
@@ -286,9 +285,21 @@
 
     tabStyles.appendChild(outer);
 
+    // Misc
+    outer = _createContainer('Animations SettingsNoButton', _('Use animations ?'));
+    var useAnimations = this._addGUIElement(new OSjs.GUI.Select('SettingsUseAnimations'), outer);
+    useAnimations.addItems({
+      'yes':  _('Yes'),
+      'no':   _('No')
+    });
+    useAnimations.setSelected(settings.animations ? 'yes' : 'no');
+    tabStyles.appendChild(outer);
+
     //
+    // Tab: Desktop
+    //
+
     // Desktop Margin
-    //
     outer = document.createElement('div');
     outer.className = "Setting Setting_DesktopMargin";
 
@@ -302,9 +313,42 @@
     }), outer);
     tabOther.appendChild(outer);
 
+    // Switcher
+    outer = _createContainer('Switcher SettingsNoButton', _('Enable Window Switcher'));
+    var useSwitcher = this._addGUIElement(new OSjs.GUI.Select('SettingsUseSwitcher'), outer);
+    useSwitcher.addItems({
+      'yes':  _('Yes'),
+      'no':   _('No')
+    });
+    useSwitcher.setSelected(settings.enableSwitcher ? 'yes' : 'no');
+    tabOther.appendChild(outer);
+
+    // Hotkeys
+    outer = _createContainer('Hotkeys SettingsNoButton', _('Enable Hotkeys'));
+    var useHotkeys = this._addGUIElement(new OSjs.GUI.Select('SettingsUseHotkeys'), outer);
+    useHotkeys.addItems({
+      'yes':  _('Yes'),
+      'no':   _('No')
+    });
+    useHotkeys.setSelected(settings.enableHotkeys ? 'yes' : 'no');
+    tabOther.appendChild(outer);
+
+    // Sounds
+    outer = _createContainer('Sounds SettingsNoButton', _('Enable sounds'));
+    var useSounds = this._addGUIElement(new OSjs.GUI.Select('SettingsUseSounds'), outer);
+    useSounds.addItems({
+      'yes':  _('Yes'),
+      'no':   _('No')
+    });
+    useSounds.setSelected(settings.enableSounds ? 'yes' : 'no');
+    tabOther.appendChild(outer);
+
+
     //
+    // Tab: Panels
+    //
+
     // Panel Position
-    //
     outer = _createContainer('PanelPosition SettingsNoButton', _('Panel Position'));
     var panelPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelPosition'), outer);
     panelPosition.addItems({
@@ -314,9 +358,7 @@
     panelPosition.setSelected(settings.panels[0].options.position);
     tabPanels.appendChild(outer);
 
-    //
     // Panel Ontop
-    //
     outer = _createContainer('PanelOntop SettingsNoButton', _('Panel Ontop ?'));
     var panelOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelOntop'), outer);
     panelOntop.addItems({
@@ -326,9 +368,7 @@
     panelOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
     tabPanels.appendChild(outer);
 
-    //
     // Panel items
-    //
     outer = _createContainer('PanelItems SettingsNoButton', _('Panel Items'));
     var panelItemContainer = document.createElement('div');
     panelItemContainer.className = 'PanelItemsContainer';
@@ -389,18 +429,6 @@
     this.refreshPanelItems();
 
     //
-    // Misc
-    //
-    outer = _createContainer('Animations SettingsNoButton', _('Use animations ?'));
-    var useAnimations = this._addGUIElement(new OSjs.GUI.Select('SettingsUseAnimations'), outer);
-    useAnimations.addItems({
-      'yes':  _('Yes'),
-      'no':   _('No')
-    });
-    useAnimations.setSelected(settings.animations ? 'yes' : 'no');
-    tabStyles.appendChild(outer);
-
-    //
     // Localization
     //
     outer = document.createElement('div');
@@ -424,11 +452,13 @@
 
       var settings = {
         language:         useLanguage.getValue(),
-        //sounds:           useSounds.getValue() == 'yes',
         panelItems:       panelItems,
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
         panelPosition:    panelPosition.getValue(),
+        enableSwitcher:   useSwitcher.getValue() == 'yes',
+        enableHotkeys:    useHotkeys.getValue() == 'yes',
+        enableSounds:     useSounds.getValue() == 'yes',
         desktopMargin:    desktopMargin,
         desktopFont:      fontName.getValue(),
         theme:            themeName.getValue(),
@@ -459,7 +489,10 @@
           style      : {
             fontFamily       : settings.desktopFont,
             backgroundColor  : settings.backgroundColor
-          }
+          },
+          enableSwitcher: settings.enableSwitcher,
+          enableHotkeys: settings.enableHotkeys,
+          enableSounds: settings.enableSounds
         }, false, true);
       }
     }}), root);
