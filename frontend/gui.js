@@ -1228,7 +1228,6 @@
 
   /**
    * Slider Element
-   * FIXME: Something is wrong with onChange percentage when mousemove
    */
   var Slider = function(name, opts, onUpdate) {
     this.min      = opts.min          || 0;
@@ -1301,7 +1300,7 @@
       document.removeEventListener('mousemove', _onMouseMove, false);
       document.removeEventListener('mouseup', _onMouseUp, false);
 
-      var p = (self.max / self.val) * 100;
+      var p = (self.max / 100) * self.val; //self.val) * 100;
       self.onChange.call(self, self.val, p, 'mouseup');
     };
 
@@ -1353,6 +1352,7 @@
   Slider.prototype.setPercentage = function(p, evt) {
     var cd  = (this.max - this.min);
     var val = (cd*(p/100)) << 0;
+    this.val = val;
     this.onUpdate.call(this, val, p, evt);
   };
 
