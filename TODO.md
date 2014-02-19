@@ -9,6 +9,8 @@
 * Finish Node.js backend
 * Create bin/ scripts for nodejs (redo create-application for PHP)
 * Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
+* Misc FIXME and TODO in source-code
+  - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
