@@ -46,19 +46,15 @@
    * You can implement your own, see documentation on Wiki.
    */
   var DefaultHandler = function() {
-    this.storage  = null;
-    this.packages = {};
-    this.config   = OSjs.Settings.DefaultConfig();
-    this.userData = {
-      id: 0,
+    this.storage  = null;                           // Storage handler
+    this.packages = {};                             // Package cache
+    this.settings = {};                             // Settings cache
+    this.config   = OSjs.Settings.DefaultConfig();  // Main configuration copy
+    this.userData = {                               // User Session data
+      id      : 0,
       username: 'root',
-      name: 'root user',
-      groups: ['root'],
-      settings: {
-        Core : {
-          Locale: this.config.Core.Locale
-        }
-      }
+      name    : 'root user',
+      groups  : ['root']
     };
     this.offline  = false;
 
@@ -351,26 +347,44 @@
 
   /**
    * Internal method for setting a value in category (wrapper)
-   * NOTE: This is just a placeholder
+   * NOTE: This is should be called from the implemented handler
+   *       See 'demo' handler for example
    */
   DefaultHandler.prototype._setSetting = function(cat, values, callback) {
-    callback(false);
+    this.settings[cat] = values;
+    callback.call(this, false);
   };
 
   /**
    * Internal method for setting settings (wrapper)
-   * NOTE: This is just a placeholder
+   * NOTE: This is should be called from the implemented handler
+   *       See 'demo' handler for example
    */
   DefaultHandler.prototype._setSettings = function(cat, key, opts, callback) {
-    callback(false);
+    if ( key === null ) {
+      this.settings[cat] = opts;
+    } else {
+      if ( !this.settings[cat] ) {
+        this.settings[cat] = {};
+      }
+      this.settings[cat][key] = opts;
+    }
+    callback.call(this, true);
   };
 
   /**
    * Internal method for getting settings (wrapper)
-   * NOTE: This is just a placeholder
    */
   DefaultHandler.prototype._getSettings = function(cat, key, callback) {
-    callback(false);
+    if ( this.settings[cat] ) {
+      if ( key === null ) {
+        callback(this.settings[cat]);
+      } else {
+        callback(this.settings[cat][key]);
+      }
+      return;
+    }
+    callback.call(this, false);
   };
 
   /**

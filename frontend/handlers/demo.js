@@ -47,6 +47,24 @@
     this.prefix = 'andersevenrud.github.io/OS.js-v2/';
   };
 
+  DefaultStorage.prototype.store = function(o) {
+    for ( var i in o ) {
+      if ( o.hasOwnProperty(i) ) {
+        this.set(i, o[i]);
+      }
+    }
+  };
+
+  DefaultStorage.prototype.load = function() {
+    var ret = {};
+    for ( var i in localStorage ) {
+      if ( localStorage.hasOwnProperty(i) ) {
+        ret[i.replace(this.prefix, '')] = JSON.parse(localStorage[i]) || null;
+      }
+    }
+    return ret;
+  };
+
   DefaultStorage.prototype.set = function(k, v) {
     localStorage.setItem(this.prefix + k, JSON.stringify(v));
   };
@@ -80,29 +98,27 @@
       }
     };
 
+    // Use the 'demo' user
     this.login('demo', 'demo', function(userData) {
       userData = userData || {};
-      self.userData = userData;
+      self.userData = userData;            // Set our user session info
+      self.settings = self.storage.load(); // Load previously used settings
 
-      // You would normally use 'userData.settings' here!
-      self.setUserSettings('User', userData, function() {
-
-        // Ensure we get the user-selected locale
-        self.getUserSettings('Core', function(result) {
-          var locale = null;
-          if ( result ) {
-            if ( (typeof result.Locale !== 'undefined') && result.Locale ) {
-              locale = result.Locale;
-            }
+      // Ensure we get the user-selected locale configured from WM
+      self.getUserSettings('Core', function(result) {
+        var locale = null;
+        if ( result ) {
+          if ( (typeof result.Locale !== 'undefined') && result.Locale ) {
+            locale = result.Locale;
           }
-          _finished(locale);
-        });
+        }
+        _finished(locale);
       });
     });
   };
 
   /**
-   * Demo login
+   * Demo login. Just an example
    */
   DemoHandler.prototype.login = function(username, password, callback) {
     console.info("OSjs::DemoHandler::login()", username);
@@ -111,26 +127,24 @@
         id:         1,
         username:   'demo',
         name:       'Demo User',
-        groups:     ['demo'],
-        settings:   {
-          Core : {
-            Locale: 'en_US'
-          }
-        }
+        groups:     ['demo']
       };
 
       callback(userData);
       return;
     }
-    callback(false, "Invalid login");
+    callback.call(this, false, "Invalid login");
   };
 
   /**
    * Sets a setting in given category
    */
   DemoHandler.prototype._setSetting = function(cat, values, callback) {
-    this.storage.set(cat, values);
-    callback(true);
+    console.debug('OSjs::Handlers::DemoHandler::_setSetting()', cat, values);
+    OSjs.Handlers.Default.prototype._setSetting.call(this, cat, values, function() {
+      this.storage.set(cat, values);
+      callback.call(this, true);
+    });
   };
 
   /**
@@ -138,36 +152,10 @@
    */
   DemoHandler.prototype._setSettings = function(cat, key, opts, callback) {
     console.debug('OSjs::Handlers::DemoHandler::_setSettings()', cat, key, opts);
-    if ( key === null ) {
-      this.storage.set(cat, opts);
-    } else {
-      var settings = this.storage.get(cat);
-      if ( typeof settings !== 'object' || !settings ) {
-        settings = {};
-      }
-      if ( typeof settings[key] !== 'object' || !settings[key] ) {
-        settings[key] = {};
-      }
-      settings[key] = opts;
-
-      this.storage.set(cat, settings);
-    }
-    callback(true);
-  };
-
-  /**
-   * Gets settings from given category
-   */
-  DemoHandler.prototype._getSettings = function(cat, key, callback) {
-    var s = this.storage.get(cat) || {};
-    if ( key === null ) {
-      callback(s);
-      return;
-    } else if ( s[key] ) {
-      callback(s[key]);
-      return;
-    }
-    callback(false);
+    OSjs.Handlers.Default.prototype._setSettings.call(this, cat, key, opts, function() {
+      this.storage.store(this.settings);
+      callback(true);
+    });
   };
 
   OSjs.Handlers.Current  = DemoHandler; // Set this as the default handler
