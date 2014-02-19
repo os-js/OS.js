@@ -1146,6 +1146,10 @@
     return this._themes;
   };
 
+  WindowManager.prototype.getWindows = function() {
+    return this._windows;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATIONS
   /////////////////////////////////////////////////////////////////////////////
@@ -2097,6 +2101,8 @@
   };
 
   Window.prototype._restore = function(max, min) {
+    if ( !this._$element ) { return; }
+
     console.debug(this._name, '>' , "OSjs::Core::Window::_restore()");
     //if ( this._disabled ) return ;
     max = (typeof max === 'undefined') ? true : (max === true);

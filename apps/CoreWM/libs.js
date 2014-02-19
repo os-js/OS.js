@@ -64,6 +64,88 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // Panel Item Window
+  /////////////////////////////////////////////////////////////////////////////
+
+  var PanelItemWindow = function(app, parentWindow) {
+    Window.apply(this, ['CoreWMPanelItemWindow', {width:400, height:360}, app]);
+
+    this._title                     = _("CoreWM Panel Item Chooser");
+    this._icon                      = "categories/applications-system.png";
+    this._properties.allow_resize   = false;
+    this._properties.allow_maximize = false;
+    this._properties.gravity        = 'center';
+
+    this.parentWindow = parentWindow;
+    this.buttonConfirm = null;
+    this.selectedItem = null;
+  };
+
+  PanelItemWindow.prototype = Object.create(Window.prototype);
+
+  PanelItemWindow.prototype.init = function(wmRef, app) {
+    var root = Window.prototype.init.apply(this, arguments);
+    var self = this;
+
+    var list = [];
+    var items = OSjs.CoreWM.PanelItems;
+    for ( var i in items ) {
+      if ( items.hasOwnProperty(i) ) {
+        list.push({
+          key:   i,
+          image: '',
+          name:  i
+        });
+      }
+    }
+
+    var _onActivate = function() {
+      if ( self.selectedItem && self.parentWindow ) {
+        self.parentWindow.addPanelItem(self.selectedItem.key);
+      }
+      self._close();
+    };
+
+    var listView = this._addGUIElement(new OSjs.GUI.ListView('PanelItemChooserDialogListView'), root);
+    listView.setColumns([
+      {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
+      {key: 'name',  title: OSjs._('Name')},
+      {key: 'key',   title: 'Key', visible: false}
+     ]);
+    listView.onActivate = function(ev, el, item) {
+      if ( item && item.key ) {
+        self.selectedItem = item;
+        self.buttonConfirm.setDisabled(false);
+        _onActivate();
+      }
+    };
+    listView.onSelect = function(ev, el, item) {
+      if ( item && item.key ) {
+        self.selectedItem = item;
+        self.buttonConfirm.setDisabled(false);
+      }
+    };
+
+    this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs._('Add'), onClick: function(el, ev) {
+      if ( !this.isDisabled() ) {
+        _onActivate();
+      }
+    }}), root);
+    this.buttonConfirm.setDisabled(true);
+
+    listView.setRows(list);
+    listView.render();
+
+    return root;
+  };
+
+  PanelItemWindow.prototype.destroy = function() {
+    // Destroy custom objects etc. here
+
+    Window.prototype.destroy.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // Settings Window
   /////////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +156,9 @@
     this._icon                      = "categories/applications-system.png";
     this._properties.allow_resize   = false;
     this._properties.allow_maximize = false;
+
+    this.panelItemWindow = null;
+    this.currentPanelItem = null;
   };
 
   SettingsWindow.prototype = Object.create(Window.prototype);
@@ -88,11 +173,6 @@
     var theme         = wm.getSetting('theme');
     var desktopMargin = settings.desktop.margin;
     var themelist     = {};
-    var panelItems    = [
-                          {name: 'Buttons'},
-                          {name: 'WindowList'},
-                          {name: 'Clock'}
-                        ];
 
     var iter;
     for ( var i = 0, l = themes.length; i < l; i++ ) {
@@ -238,29 +318,53 @@
     var panelItemButtons = document.createElement('div');
     panelItemButtons.className = 'PanelItemButtons';
 
-    var panelItemButtonAdd = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonAdd', {disabled: true, icon: OSjs.API.getIcon('actions/add.png'), onClick: function(el, ev) {
+    var panelItemButtonAdd = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonAdd', {icon: OSjs.API.getIcon('actions/add.png'), onClick: function(el, ev) {
+      self.showPanelItemWindow();
+      self.currentPanelItem = null;
+      panelItemButtonRemove.setDisabled(true);
+      panelItemButtonUp.setDisabled(true);
+      panelItemButtonDown.setDisabled(true);
     }}), panelItemButtons);
 
     var panelItemButtonRemove = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonRemove', {disabled: true, icon: OSjs.API.getIcon('actions/remove.png'), onClick: function(el, ev) {
+      if ( self.currentPanelItem ) {
+        self.removePanelItem(self.currentPanelItem);
+      }
     }}), panelItemButtons);
 
     var panelItemButtonUp = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonUp', {disabled: true, icon: OSjs.API.getIcon('actions/up.png'), onClick: function(el, ev) {
+      if ( self.currentPanelItem ) {
+        self.movePanelItem(self.currentPanelItem, -1);
+      }
     }}), panelItemButtons);
 
     var panelItemButtonDown = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonDown', {disabled: true, icon: OSjs.API.getIcon('actions/down.png'), onClick: function(el, ev) {
+      if ( self.currentPanelItem ) {
+        self.movePanelItem(self.currentPanelItem, 1);
+      }
     }}), panelItemButtons);
 
     var panelItemList = this._addGUIElement(new OSjs.GUI.ListView('PanelItemListView'), panelItemContainer);
-    var addItems = [];
-    for ( var j = 0; j < panelItems.length; j++ ) {
-      addItems.push({name: panelItems[j].name});
-    }
-    panelItemList.setColumns([{key: 'name', title: _('Name')}]);
-    panelItemList.setRows(addItems);
+
+    panelItemList.onSelect = function(ev, el, item) {
+      if ( item ) {
+        panelItemButtonRemove.setDisabled(false);
+        panelItemButtonUp.setDisabled(false);
+        panelItemButtonDown.setDisabled(false);
+        self.currentPanelItem = item;
+      } else {
+        panelItemButtonRemove.setDisabled(true);
+        panelItemButtonUp.setDisabled(true);
+        panelItemButtonDown.setDisabled(true);
+        self.currentPanelItem = null;
+      }
+    };
+
     panelItemContainer.appendChild(panelItemButtons);
     outer.appendChild(panelItemContainer);
     tabPanels.appendChild(outer);
-    panelItemList.render();
+
+    this.refreshPanelItems();
 
     //
     // Misc
@@ -341,10 +445,37 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
+  SettingsWindow.prototype.refreshPanelItems = function() {
+    this.currentPanelItem = null;
+
+    var panelItemList = this._getGUIElement('PanelItemListView');
+    var panelItems = this._appRef.getSetting('panels')[0].items;
+    var addItems = [];
+    for ( var j = 0; j < panelItems.length; j++ ) {
+      addItems.push({name: panelItems[j].name, index: j});
+    }
+    panelItemList.setColumns([{key: 'name', title: _('Name')}, {key: 'index', title: 'Index', visible: false}]);
+    panelItemList.setRows(addItems);
+    panelItemList.render();
+
+    this._getGUIElement('PanelItemButtonRemove').setDisabled(true);
+    this._getGUIElement('PanelItemButtonUp').setDisabled(true);
+    this._getGUIElement('PanelItemButtonDown').setDisabled(true);
+  };
+
   SettingsWindow.prototype.setTab = function(tab) {
     var tabs = this._getGUIElement('SettingTabs');
     if ( !tab || !tabs ) { return; }
     tabs.setTab(tab);
+  };
+
+  SettingsWindow.prototype.showPanelItemWindow = function() {
+    if ( !this.panelItemWindow ) {
+      this.panelItemWindow = new PanelItemWindow(this._appRef, this);
+      this._addChild(this.panelItemWindow, true);
+    } else {
+      this.panelItemWindow._restore();
+    }
   };
 
   SettingsWindow.prototype.openBackgroundSelect = function(ev, input) {
@@ -381,6 +512,24 @@
       input.setValue(fontName);
       input.$input.style.fontFamily = fontName;
     }], this);
+  };
+
+  SettingsWindow.prototype.addPanelItem = function(name) {
+    console.debug("CoreWM::SettingsWindow::addPanelItem()", name);
+    this._appRef.addPanelItem.apply(this._appRef, arguments);
+    this.refreshPanelItems();
+  };
+
+  SettingsWindow.prototype.removePanelItem = function(iter) {
+    console.debug("CoreWM::SettingsWindow::removePanelItem()", iter);
+    this._appRef.removePanelItem.apply(this._appRef, arguments);
+    this.refreshPanelItems();
+  };
+
+  SettingsWindow.prototype.movePanelItem = function(iter, pos) {
+    console.debug("CoreWM::SettingsWindow::movePanelItem()", iter, pos);
+    this._appRef.movePanelItem.apply(this._appRef, arguments);
+    this.refreshPanelItems();
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -730,6 +879,7 @@
   //
   OSjs.CoreWM                   = OSjs.CoreWM       || {};
   OSjs.CoreWM.SettingsWindow    = SettingsWindow;
+  OSjs.CoreWM.PanleItemWindow   = PanelItemWindow;
   OSjs.CoreWM.BuildMenu         = BuildMenu;
   OSjs.CoreWM.BuildCategoryMenu = BuildCategoryMenu;
   OSjs.CoreWM.Panel             = Panel;

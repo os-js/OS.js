@@ -229,3 +229,13 @@
   height : 30px;
   text-align : center;
 }
+
+.Window_CoreWMPanelItemWindow .WindowWrapper {
+  padding : 5px;
+}
+.Window_CoreWMPanelItemWindow .GUIListView {
+  height : 293px;
+}
+.Window_CoreWMPanelItemWindow .GUIButton {
+  margin-top : 5px;
+}

@@ -110,12 +110,7 @@
       this.switcher = null;
     }
 
-    if ( this.panels.length ) {
-      for ( var i = 0; i < this.panels.length; i++ ) {
-        this.panels[i].destroy();
-      }
-      this.panels = [];
-    }
+    this.destroyPanels();
 
     // Reset styles
     this.applySettings(DefaultSettings(), true);
@@ -123,10 +118,24 @@
     return WindowManager.prototype.destroy.apply(this, []);
   };
 
+  CoreWM.prototype.destroyPanels = function() {
+    if ( this.panels.length ) {
+      for ( var i = 0; i < this.panels.length; i++ ) {
+        this.panels[i].destroy();
+      }
+      this.panels = [];
+    }
+  };
+
   // Copy from Application
   CoreWM.prototype._onMessage = function(obj, msg, args) {
     if ( msg == 'destroyWindow' && obj._name === 'CoreWMSettingsWindow' ) {
       this.settingsWindow = null;
+    }
+    if ( msg == 'destroyWindow' && obj._name === 'CoreWMPanelItemWindow' ) {
+      if ( this.settingsWindow ) {
+        this.settingsWindow.panelItemWindow = null;
+      }
     }
   };
 
@@ -218,9 +227,15 @@
         return false;
       };
     };
+
+    //this.showSettings('Panels');
   };
 
-  CoreWM.prototype.initPanels = function(applySettings) {
+  CoreWM.prototype.initPanels = function(applySettings, reset) {
+    if ( reset ) {
+      this.destroyPanels();
+    }
+
     var ps = this.getSetting('panels');
     if ( ps && ps.length ) {
       var p, j, n;
@@ -375,6 +390,48 @@
     }
   };
 
+  CoreWM.prototype.addPanelItem = function(name) {
+    var panels = this.getSetting('panels');
+    if ( panels.length ) {
+      panels[0].items.push({name: name});
+
+      this.setSetting('panels', panels);
+      this.initPanels(false, true);
+    }
+  };
+
+  CoreWM.prototype.removePanelItem = function(iter) {
+    var panels = this.getSetting('panels');
+    if ( panels.length ) {
+      panels[0].items.splice(iter.index, 1);
+
+      this.setSetting('panels', panels);
+      this.initPanels(false, true);
+    }
+  };
+
+  CoreWM.prototype.movePanelItem = function(iter, pos) {
+    var panels = this.getSetting('panels');
+    if ( panels.length ) {
+      var items = panels[0].items;
+      if ( iter.index === 0 && pos < 0 ) { return; } // At top
+      if ( pos > 0 && (iter.index >= (items.length-1)) ) { return; } // At bottom
+
+      var value = items[iter.index];
+      items.splice(iter.index, 1);
+      if ( pos > 0 ) {
+        items.splice(iter.index + 1, 0, value);
+      } else if ( pos < 0 ) {
+        items.splice(iter.index - 1, 0, value);
+      }
+
+      panels[0].items = items;
+
+      this.setSetting('panels', panels);
+      this.initPanels(false, true);
+    }
+  };
+
   CoreWM.prototype.applySettings = function(settings, force, save) {
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
       return false;
@@ -504,6 +561,14 @@
       return DefaultSettings()[k];
     }
     return val;
+  };
+
+  CoreWM.prototype.getDefaultSetting = function(k) {
+    var settings = DefaultSettings();
+    if ( typeof k !== 'undefined' ) {
+      return settings[k];
+    }
+    return settings;
   };
 
 

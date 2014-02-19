@@ -91,8 +91,18 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$element = document.createElement('ul');
-
     root.appendChild(this.$element);
+
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      var wins = wm.getWindows();
+      for ( var i = 0; i < wins.length; i++ ) {
+        if ( wins[i] ) {
+          this.update('create', wins[i]);
+        }
+      }
+    }
+
     return root;
   };
 
@@ -119,13 +129,20 @@
     };
 
     if ( ev == 'create' ) {
+      var className = className = 'Button WindowList_Window_' + win._wid;
+      if ( this.$element.getElementsByClassName(className).length ) { return; }
+
       var el = document.createElement('li');
       el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
-      el.className = 'Button WindowList_Window_' + win._wid;
+      el.className = className;
       el.title = win._title;
       el.onclick = function() {
         win._restore();
       };
+
+      if ( win._state.focused ) {
+        el.className += ' Focused';
+      }
       this.$element.appendChild(el);
     } else if ( ev == 'close' ) {
       _change(cn, function(el) {
