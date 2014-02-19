@@ -378,9 +378,9 @@
   DefaultHandler.prototype._getSettings = function(cat, key, callback) {
     if ( this.settings[cat] ) {
       if ( key === null ) {
-        callback(this.settings[cat]);
+        callback.call(this, this.settings[cat]);
       } else {
-        callback(this.settings[cat][key]);
+        callback.call(this, this.settings[cat][key]);
       }
       return;
     }
@@ -425,7 +425,7 @@
   DefaultHandler.prototype.setUserSession = function(session, callback) {
     callback = callback || function() {};
     this._setSettings("userSession", null, session, function(result) {
-      callback(result);
+      callback.call(this, result);
     });
   };
 
@@ -435,7 +435,7 @@
   DefaultHandler.prototype.getUserSession = function(callback) {
     callback = callback || function() {};
     this._getSettings("userSession", null, function(result) {
-      callback(result);
+      callback.call(this, result);
     });
   };
 

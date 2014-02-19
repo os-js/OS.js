@@ -130,7 +130,7 @@
         groups:     ['demo']
       };
 
-      callback(userData);
+      callback.call(this, userData);
       return;
     }
     callback.call(this, false, "Invalid login");
@@ -154,7 +154,7 @@
     console.debug('OSjs::Handlers::DemoHandler::_setSettings()', cat, key, opts);
     OSjs.Handlers.Default.prototype._setSettings.call(this, cat, key, opts, function() {
       this.storage.store(this.settings);
-      callback(true);
+      callback.call(this, true);
     });
   };
 
