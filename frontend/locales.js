@@ -141,6 +141,9 @@
     'Discard current document ?' : 'Forkaste gjeldende dokument ?',
 
     // Common
+    'Application'       : 'Applikasjon',
+    'Settings'          : 'Instillinger',
+    'Log out (Exit)'    : 'Logg ut (Avslutt)',
     'Loading...'        : 'Laster...',
     'Message'           : 'Melding',
     'Summary'           : 'Oppsummering',

@@ -32,7 +32,7 @@
     this.$container = document.createElement('ul');
     root.appendChild(this.$container);
 
-    this.addButton('Applications', 'categories/applications-other.png', function(ev) {
+    this.addButton(OSjs._('Applications'), 'categories/applications-other.png', function(ev) {
       ev.stopPropagation();
       var wm = OSjs.API.getWMInstance();
       if ( wm && wm.getSetting('menuCategories') ) {
@@ -43,7 +43,7 @@
       return false;
     });
 
-    this.addButton('Settings', 'categories/applications-system.png', function(ev) {
+    this.addButton(OSjs._('Settings'), 'categories/applications-system.png', function(ev) {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
         wm.showSettings();
@@ -51,7 +51,7 @@
       return false;
     });
 
-    this.addButton('Log out (Exit)', 'actions/exit.png', function(ev) {
+    this.addButton(OSjs._('Log out (Exit)'), 'actions/exit.png', function(ev) {
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
       var t = confirm(_("Logging out user '{0}'.\nDo you want to save current session?", user.name)); // FIXME
       OSjs._shutdown(t, false);
