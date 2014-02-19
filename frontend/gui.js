@@ -1350,6 +1350,8 @@
   };
 
   Slider.prototype.setPercentage = function(p, evt) {
+    p = p << 0;
+
     var cd  = (this.max - this.min);
     var val = (cd*(p/100)) << 0;
     this.val = val;
