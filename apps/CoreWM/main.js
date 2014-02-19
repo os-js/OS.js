@@ -238,7 +238,7 @@
     //this.showSettings('Panels');
   };
 
-  CoreWM.prototype.initPanels = function() {
+  CoreWM.prototype.initPanels = function(applySettings) {
     this.destroyPanels();
 
     var ps = this.getSetting('panels');
@@ -275,17 +275,19 @@
       });
     }
 
-    // Workaround for windows appearing behind panel
-    var p = this.panels[0];
-    if ( p && p.getOntop() && p.getPosition('top') ) {
-      var iter;
-      var space = this.getWindowSpace();
-      for ( var i = 0; i < this._windows.length; i++ ) {
-        iter = this._windows[i];
-        if ( !iter ) { continue; }
-        if ( iter._position.y < space.top ) {
-          console.warn("CoreWM::initPanels()", "I moved this window because it overlapped with a panel!", iter);
-          iter._move(iter._position.x, space.top);
+    if ( applySettings ) {
+      // Workaround for windows appearing behind panel
+      var p = this.panels[0];
+      if ( p && p.getOntop() && p.getPosition('top') ) {
+        var iter;
+        var space = this.getWindowSpace();
+        for ( var i = 0; i < this._windows.length; i++ ) {
+          iter = this._windows[i];
+          if ( !iter ) { continue; }
+          if ( iter._position.y < space.top ) {
+            console.warn("CoreWM::initPanels()", "I moved this window because it overlapped with a panel!", iter);
+            iter._move(iter._position.x, space.top);
+          }
         }
       }
     }
@@ -463,7 +465,7 @@
     }
 
     if ( save ) {
-      this.initPanels();
+      this.initPanels(true);
 
       OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
 

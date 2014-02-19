@@ -2446,6 +2446,8 @@
   };
 
   SelectList.prototype.setSelected = function(val) {
+    if ( !this.$input ) { return; }
+
     var sel = [];
     if ( val instanceof Array ) {
       sel = val;
