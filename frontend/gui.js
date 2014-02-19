@@ -2410,6 +2410,74 @@
   };
 
   /**
+   * SelectList
+   */
+  var SelectList = function(name, opts) {
+    _Input.apply(this, ['GUISelectList', 'select', name, opts]);
+  };
+
+  SelectList.prototype = Object.create(_Input.prototype);
+
+  SelectList.prototype.init = function() {
+    var el = _Input.prototype.init.apply(this, [this.className]);
+
+    this.$input.multiple = 'multiple';
+
+    return el;
+  };
+
+  SelectList.prototype.addItems = function(items) {
+    for ( var i in items ) {
+      if ( items.hasOwnProperty(i) ) {
+        this.addItem(i, items[i]);
+      }
+    }
+  };
+
+  SelectList.prototype.addItem = function(value, label) {
+    var el        = document.createElement('option');
+    el.value      = value;
+    el.appendChild(document.createTextNode(label));
+    this.$input.appendChild(el);
+  };
+
+  SelectList.prototype.setValue = function(val) {
+    this.setSelected(val);
+  };
+
+  SelectList.prototype.setSelected = function(val) {
+    var sel = [];
+    if ( val instanceof Array ) {
+      sel = val;
+    } else {
+      sel = [val];
+    }
+
+    var i = 0;
+    var l = this.$input.childNodes.length;
+    for ( i; i < l; i++ ) {
+      this.$input.childNodes[i].removeAttribute("selected");
+      if ( OSjs.Utils.inArray(sel, this.$input.childNodes[i].value) ) {
+        this.$input.childNodes[i].setAttribute("selected", "selected");
+      }
+    }
+  };
+
+  SelectList.prototype.getValue = function() {
+    var selected = [];
+    if ( this.$input ) {
+      var i = 0;
+      var l = this.$input.childNodes.length;
+      for ( i; i < l; i++ ) {
+        if ( this.$input.childNodes[i].selected ) {
+          selected.push(this.$input.childNodes[i].value);
+        }
+      }
+    }
+    return selected;
+  };
+
+  /**
    * Button
    */
   var Button = function(name, opts) {
@@ -3064,6 +3132,7 @@
   OSjs.GUI.RichText     = RichText;
   OSjs.GUI.Tabs         = Tabs;
   OSjs.GUI.Select       = Select;
+  OSjs.GUI.SelectList   = SelectList;
   OSjs.GUI.Text         = Text;
   OSjs.GUI.Checkbox     = Checkbox;
   OSjs.GUI.Radio        = Radio;
