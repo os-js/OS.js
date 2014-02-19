@@ -1235,6 +1235,7 @@
     this.val      = opts.val          || 0;
     this.type     = opts.orientation  || 'horizontal';
     this.steps    = opts.steps        || 1;
+    this.onChange = opts.onChange     || function() {};
     this.$root    = null;
     this.$button  = null;
 
