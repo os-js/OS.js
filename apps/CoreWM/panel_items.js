@@ -15,6 +15,10 @@
     return OSjs.__.apply(this, args);
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // ITEM
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * PanelItem: Buttons
    */
@@ -25,6 +29,9 @@
   };
 
   PanelItemButtons.prototype = Object.create(PanelItem.prototype);
+  PanelItemButtons.Name = 'Buttons'; // Static name
+  PanelItemButtons.Description = 'Button Bar'; // Static description
+  PanelItemButtons.Icon = 'actions/stock_about.png'; // Static icon
 
   PanelItemButtons.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
@@ -80,6 +87,10 @@
     this.$container.appendChild(sel);
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // ITEM
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * PanelItem: WindowList
    */
@@ -90,6 +101,9 @@
   };
 
   PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
+  PanelItemWindowList.Name = 'Window List'; // Static name
+  PanelItemWindowList.Description = 'Toggle between open windows'; // Static description
+  PanelItemWindowList.Icon = 'apps/xfwm4.png'; // Static icon
 
   PanelItemWindowList.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
@@ -174,6 +188,10 @@
     }
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // ITEM
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * PanelItem: Clock
    */
@@ -183,6 +201,9 @@
   };
 
   PanelItemClock.prototype = Object.create(PanelItem.prototype);
+  PanelItemClock.Name = 'Clock'; // Static name
+  PanelItemClock.Description = 'View the time'; // Static description
+  PanelItemClock.Icon = 'status/appointment-soon.png'; // Static icon
 
   PanelItemClock.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
@@ -215,9 +236,9 @@
     PanelItem.prototype.destroy.apply(this, arguments);
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
 
   OSjs.CoreWM.PanelItems.Buttons    = PanelItemButtons;
   OSjs.CoreWM.PanelItems.WindowList = PanelItemWindowList;

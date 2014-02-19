@@ -7,7 +7,6 @@
 
 ## TODOs
 * Finish Node.js backend
-* CoreWM: Finish Panel implementation
 * Create bin/ scripts for nodejs (redo create-application for PHP)
 * Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
 

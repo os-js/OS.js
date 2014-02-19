@@ -75,6 +75,7 @@
     this._icon                      = "categories/applications-system.png";
     this._properties.allow_resize   = false;
     this._properties.allow_maximize = false;
+    this._properties.allow_minimize = false;
     this._properties.gravity        = 'center';
 
     this.parentWindow = parentWindow;
@@ -94,8 +95,8 @@
       if ( items.hasOwnProperty(i) ) {
         list.push({
           key:   i,
-          image: '',
-          name:  i
+          image: OSjs.API.getThemeResource(items[i].Icon, 'icon', '16x16'),
+          name:  OSjs.Utils.format("{0} ({1})", items[i].Name, items[i].Description)
         });
       }
     }
@@ -144,6 +145,13 @@
     // Destroy custom objects etc. here
 
     Window.prototype.destroy.apply(this, arguments);
+  };
+
+  PanelItemWindow.prototype._onKeyEvent = function(ev) {
+    Window.prototype._onKeyEvent(this, arguments);
+    if ( ev.keyCode === 27 ) {
+      this._close();
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -785,6 +793,10 @@
     this._$root = null;
     this._className = className || 'Unknown';
   };
+
+  PanelItem.Name = 'PanelItem'; // Static name
+  PanelItem.Description = 'PanelItem Description'; // Static description
+  PanelItem.Icon = 'actions/stock_about.png'; // Static icon
 
   PanelItem.prototype.init = function() {
     this._$root = document.createElement('li');
