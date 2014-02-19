@@ -1071,6 +1071,10 @@
     //console.debug("OSjs::Core::WindowManager::eventWindow", ev, win._name);
   };
 
+  WindowManager.prototype.showSettings = function() {
+    // Placeholder
+  };
+
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
     console.log("OSjs::Core::WindowManager::applySettings", "forced?", force);

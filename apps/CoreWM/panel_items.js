@@ -72,6 +72,10 @@
     sel.title = title;
     sel.innerHTML = '<img alt="" src="' + icon + '" />';
     sel.onclick = callback;
+    sel.oncontextmenu = function(ev) {
+      ev.stopPropagation();
+      return false;
+    };
 
     this.$container.appendChild(sel);
   };
@@ -139,6 +143,10 @@
       el.onclick = function() {
         win._restore();
       };
+      el.oncontextmenu = function(ev) {
+        ev.stopPropagation();
+        return false;
+      };
 
       if ( win._state.focused ) {
         el.className += ' Focused';
@@ -146,6 +154,8 @@
       this.$element.appendChild(el);
     } else if ( ev == 'close' ) {
       _change(cn, function(el) {
+        el.onclick = null;
+        el.oncontextmenu = null;
         el.parentNode.removeChild(el);
       });
     } else if ( ev == 'focus' ) {
@@ -179,6 +189,10 @@
 
     var clock = document.createElement('div');
     clock.innerHTML = '00:00';
+    clock.oncontextmenu = function(ev) {
+      ev.stopPropagation();
+      return false;
+    };
     var _updateClock = function() {
       var d = new Date();
       clock.innerHTML = d.toLocaleTimeString();

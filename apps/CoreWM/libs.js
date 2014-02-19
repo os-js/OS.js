@@ -30,6 +30,7 @@
       'Apply' : 'Bruk',
       'Locales' : 'Lokalisering',
       'Language (requires restart)' : 'Språk (krever omstart)',
+      'Open Panel Settings' : 'Åpne panel-instillinger',
 
       'Development' : 'Utvikling',
       'Education' : 'Utdanning',
@@ -687,7 +688,12 @@
       OSjs.GUI.blurMenu();
     };
     this._$element.oncontextmenu = function(ev) {
-      OSjs.GUI.blurMenu();
+      OSjs.GUI.createMenu([{title: _('Open Panel Settings'), onClick: function(ev) {
+        var wm = OSjs.API.getWMInstance();
+        if ( wm ) {
+          wm.showSettings('Panels');
+        }
+      }}], {x: ev.clientX, y: ev.clientY});
       return false;
     };
 
