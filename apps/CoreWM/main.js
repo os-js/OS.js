@@ -6,7 +6,8 @@
   var _Locales = {
     no_NO : {
       'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
-      'Open settings' : 'Åpne instillinger'
+      'Open settings' : 'Åpne instillinger',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)'
     }
   };
 
@@ -242,6 +243,7 @@
     }
 
     var ps = this.getSetting('panels');
+    var added = applySettings === true;
     if ( ps && ps.length ) {
       var p, j, n;
       for ( var i = 0; i < ps.length; i++ ) {
@@ -254,16 +256,32 @@
         } else {
           p = new OSjs.CoreWM.Panel('Default', ps[i].options);
           p.init(document.body);
-          if ( ps[i].items ) {
-            for ( j = 0; j < ps[i].items.length; j++ ) {
-              n = ps[i].items[j];
-              p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
+
+          try {
+            if ( ps[i].items ) {
+              for ( j = 0; j < ps[i].items.length; j++ ) {
+                n = ps[i].items[j];
+                p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
+                added = true;
+              }
             }
+          } catch ( e ) {
+            console.warn("An error occured while creating PanelItem", e);
+            console.warn('stack', e.stack);
           }
 
           this.panels.push(p);
         }
       }
+    }
+
+    if ( !added ) {
+      this.notification({
+        timeout : 0,
+        icon: 'status/important.png',
+        title: "CoreWM",
+        message: _("Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)")
+      });
     }
 
     if ( applySettings ) {

@@ -177,7 +177,7 @@
 
         return w;
       } catch ( e ) {
-        console.warn("An error occured while creating error Window", e);
+        console.warn("An error occured while creating Dialogs.ErrorMessage", e);
         console.warn('stack', e.stack);
       }
     }
@@ -955,8 +955,11 @@
       opts.icon     = opts.icon     || null;
       opts.title    = opts.title    || null;
       opts.message  = opts.message  || "";
-      opts.timeout  = opts.timeout  || 5000;
       opts.onClick  = opts.onClick  || function() {};
+
+      if ( typeof opts.timeout === 'undefined' ) {
+        opts.timeout  = 5000;
+      }
 
       console.log("OSjs::Core::WindowManager::notification()", opts);
 
@@ -1019,9 +1022,11 @@
 
       this._$notifications.appendChild(container);
 
-      setTimeout(function() {
-        _remove();
-      }, opts.timeout);
+      if ( opts.timeout ) {
+        timeout = setTimeout(function() {
+          _remove();
+        }, opts.timeout);
+      }
     };
   })();
 

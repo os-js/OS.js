@@ -240,6 +240,11 @@ body.WallpaperStrech {
 #Notifications .Notification.HasIcon .Message {
   margin-left : 32px;
   padding-left : 5px;
+  white-space: -moz-pre-wrap;
+  white-space:   -o-pre-wrap;
+  white-space:     -pre-wrap;
+  white-space:      pre-wrap;
+  word-wrap: break-word;
 }
 
 /**
