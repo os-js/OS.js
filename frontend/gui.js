@@ -1228,6 +1228,7 @@
 
   /**
    * Slider Element
+   * FIXME: Something is wrong with onChange percentage when mousemove
    */
   var Slider = function(name, opts, onUpdate) {
     this.min      = opts.min          || 0;
