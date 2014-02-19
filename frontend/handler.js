@@ -369,7 +369,7 @@
       }
       this.settings[cat][key] = opts;
     }
-    callback.call(this, true);
+    callback.call(this, false);
   };
 
   /**

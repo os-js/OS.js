@@ -141,7 +141,7 @@
    */
   DemoHandler.prototype._setSetting = function(cat, values, callback) {
     console.debug('OSjs::Handlers::DemoHandler::_setSetting()', cat, values);
-    OSjs.Handlers.Default.prototype._setSetting.call(this, cat, values, function() {
+    OSjs.Handlers.Default.prototype._setSetting.call(this, cat, values, function(/* ignore result*/) {
       this.storage.set(cat, values);
       callback.call(this, true);
     });
@@ -152,7 +152,7 @@
    */
   DemoHandler.prototype._setSettings = function(cat, key, opts, callback) {
     console.debug('OSjs::Handlers::DemoHandler::_setSettings()', cat, key, opts);
-    OSjs.Handlers.Default.prototype._setSettings.call(this, cat, key, opts, function() {
+    OSjs.Handlers.Default.prototype._setSettings.call(this, cat, key, opts, function(/* ignore result*/) {
       this.storage.store(this.settings);
       callback.call(this, true);
     });

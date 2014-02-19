@@ -2344,15 +2344,24 @@
    * Radio
    */
   var Radio = function(name, opts) {
-    opts      = opts || {};
-    opts.type = 'radio';
+    opts        = opts || {};
+    opts.type   = 'radio';
 
+    this.group  = opts.group || 'GUIRadioDefaultGroup';
     this.label  = opts.label || 'GUIRadio Label';
     this.$label = null;
 
     _Input.apply(this, ['GUICheckbox', 'input', name, opts]);
   };
   Radio.prototype = Object.create(Checkbox.prototype);
+
+  Radio.prototype.init = function() {
+    var el = Checkbox.prototype.init.apply(this, [this.className]);
+
+    this.$input.name = this.group;
+
+    return el;
+  };
 
   /**
    * Select
