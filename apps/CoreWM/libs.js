@@ -1,5 +1,6 @@
 (function(WindowManager, Window, GUI) {
 
+  // TODO: Move some translations over to locales.js (global)
   var _Locales = {
     no_NO : {
       'CoreWM Settings' : 'CoreWM Instillinger',
@@ -410,9 +411,19 @@
 
     panelItemList.onSelect = function(ev, el, item) {
       if ( item ) {
+        if ( item.index <= 0 ) {
+          panelItemButtonUp.setDisabled(true);
+        } else {
+          panelItemButtonUp.setDisabled(false);
+        }
+
+        if ( item.index >= (self.panelItems.length-1) ) {
+          panelItemButtonDown.setDisabled(true);
+        } else {
+          panelItemButtonDown.setDisabled(false);
+        }
+
         panelItemButtonRemove.setDisabled(false);
-        panelItemButtonUp.setDisabled(false);
-        panelItemButtonDown.setDisabled(false);
         self.currentPanelItem = item;
       } else {
         panelItemButtonRemove.setDisabled(true);
@@ -429,7 +440,7 @@
     this.refreshPanelItems();
 
     //
-    // Localization
+    // Tab: Localization
     //
     outer = document.createElement('div');
     outer.className = "Setting SettingsNoButton Setting_Localization";
@@ -448,11 +459,10 @@
     // Buttons
     //
     this._addGUIElement(new OSjs.GUI.Button('Save', {label: _('Apply'), onClick: function(el, ev) {
-      var panelItems = self.panelItems;
-
+      // First validate
       var settings = {
         language:         useLanguage.getValue(),
-        panelItems:       panelItems,
+        panelItems:       self.panelItems,
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
         panelPosition:    panelPosition.getValue(),
@@ -467,6 +477,7 @@
         backgroundColor:  backgroundColor.getValue()
       };
 
+      // Then apply
       var wm = OSjs.API.getWMInstance();
       console.warn("CoreWM::SettingsWindow::save()", settings);
       if ( wm ) {
@@ -483,7 +494,7 @@
                 position: settings.panelPosition,
                 ontop:    settings.panelOntop,
               },
-              items: panelItems
+              items: settings.panelItems
             }
           ],
           style      : {
@@ -590,8 +601,8 @@
   };
 
   SettingsWindow.prototype.movePanelItem = function(iter, pos) {
-    if ( iter.index === 0 && pos < 0 ) { return; } // At top
-    if ( pos > 0 && (iter.index >= (items.length-1)) ) { return; } // At bottom
+    if ( iter.index <= 0 && pos < 0 ) { return; } // At top
+    if ( pos > 0 && (iter.index >= (this.panelItems.length-1)) ) { return; } // At bottom
 
     var value = this.panelItems[iter.index];
     this.panelItems.splice(iter.index, 1);
@@ -606,7 +617,7 @@
   };
 
   SettingsWindow.prototype.resetPanelItems = function() {
-    var defaults = this.getDefaultSetting('panels');
+    var defaults = this._appRef.getDefaultSetting('panels');
     console.debug("CoreWM::resetPanelItems()", defaults);
 
     this.panelItems = defaults[0].items;
