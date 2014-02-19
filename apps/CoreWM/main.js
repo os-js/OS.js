@@ -237,41 +237,31 @@
     //this.showSettings('Panels');
   };
 
-  CoreWM.prototype.initPanels = function(applySettings, reset) {
-    if ( reset ) {
-      this.destroyPanels();
-    }
+  CoreWM.prototype.initPanels = function() {
+    this.destroyPanels();
 
     var ps = this.getSetting('panels');
-    var added = applySettings === true;
+    var added = false;
     if ( ps && ps.length ) {
       var p, j, n;
       for ( var i = 0; i < ps.length; i++ ) {
+        p = new OSjs.CoreWM.Panel('Default', ps[i].options);
+        p.init(document.body);
 
-        if ( applySettings ) {
-          p = this.panels[i];
-          if ( p ) {
-            p.update(ps[i].options);
-          }
-        } else {
-          p = new OSjs.CoreWM.Panel('Default', ps[i].options);
-          p.init(document.body);
-
-          try {
-            if ( ps[i].items ) {
-              for ( j = 0; j < ps[i].items.length; j++ ) {
-                n = ps[i].items[j];
-                p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
-                added = true;
-              }
+        try {
+          if ( ps[i].items ) {
+            for ( j = 0; j < ps[i].items.length; j++ ) {
+              n = ps[i].items[j];
+              p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
+              added = true;
             }
-          } catch ( e ) {
-            console.warn("An error occured while creating PanelItem", e);
-            console.warn('stack', e.stack);
           }
-
-          this.panels.push(p);
+        } catch ( e ) {
+          console.warn("An error occured while creating PanelItem", e);
+          console.warn('stack', e.stack);
         }
+
+        this.panels.push(p);
       }
     }
 
@@ -284,19 +274,17 @@
       });
     }
 
-    if ( applySettings ) {
-      // Workaround for windows appearing behind panel
-      var p = this.panels[0];
-      if ( p && p.getOntop() && p.getPosition('top') ) {
-        var iter;
-        var space = this.getWindowSpace();
-        for ( var i = 0; i < this._windows.length; i++ ) {
-          iter = this._windows[i];
-          if ( !iter ) { continue; }
-          if ( iter._position.y < space.top ) {
-            console.warn("CoreWM::initPanels()", "I moved this window because it overlapped with a panel!", iter);
-            iter._move(iter._position.x, space.top);
-          }
+    // Workaround for windows appearing behind panel
+    var p = this.panels[0];
+    if ( p && p.getOntop() && p.getPosition('top') ) {
+      var iter;
+      var space = this.getWindowSpace();
+      for ( var i = 0; i < this._windows.length; i++ ) {
+        iter = this._windows[i];
+        if ( !iter ) { continue; }
+        if ( iter._position.y < space.top ) {
+          console.warn("CoreWM::initPanels()", "I moved this window because it overlapped with a panel!", iter);
+          iter._move(iter._position.x, space.top);
         }
       }
     }
@@ -415,61 +403,6 @@
     }
   };
 
-  /*
-  CoreWM.prototype.addPanelItem = function(name) {
-  };
-
-  CoreWM.prototype.removePanelItem = function(iter) {
-    console.debug("CoreWM::removePanelItem()", iter);
-
-    var panels = this.getSetting('panels');
-    if ( panels.length ) {
-      panels[0].items.splice(iter.index, 1);
-
-      this.setSetting('panels', panels);
-      this.initPanels(false, true);
-
-      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
-    }
-  };
-
-  CoreWM.prototype.movePanelItem = function(iter, pos) {
-    console.debug("CoreWM::movePanelItem()", iter, pos);
-
-    var panels = this.getSetting('panels');
-    if ( panels.length ) {
-      var items = panels[0].items;
-      if ( iter.index === 0 && pos < 0 ) { return; } // At top
-      if ( pos > 0 && (iter.index >= (items.length-1)) ) { return; } // At bottom
-
-      var value = items[iter.index];
-      items.splice(iter.index, 1);
-      if ( pos > 0 ) {
-        items.splice(iter.index + 1, 0, value);
-      } else if ( pos < 0 ) {
-        items.splice(iter.index - 1, 0, value);
-      }
-
-      panels[0].items = items;
-
-      this.setSetting('panels', panels);
-      this.initPanels(false, true);
-
-      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
-    }
-  };
-
-  CoreWM.prototype.resetPanelItems = function() {
-    var defaults = this.getDefaultSetting('panels');
-    console.debug("CoreWM::resetPanelItems()", defaults);
-
-    this.setSetting('panels', defaults);
-    this.initPanels(false, true);
-
-    OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
-  };
-  */
-
   CoreWM.prototype.applySettings = function(settings, force, save) {
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
       return false;
@@ -528,10 +461,9 @@
       alink.setAttribute('href', OSjs.API.getResourceURL('/frontend/blank.css'));
     }
 
-    // Misc
-    this.initPanels(false, true);
-
     if ( save ) {
+      this.initPanels();
+
       OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
 
       // NOTE FIXME: This is mostly for demo-usage
