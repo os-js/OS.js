@@ -966,34 +966,34 @@
     label.className = 'Label LabelR';
     label.innerHTML = OSjs._('Red: {0}', 0);
     sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, val: color.r}, function(value, percentage) {
+    this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, val: color.r, onUpdate: function(value, percentage) {
       self.setColor(value, self.currentRGB.g, self.currentRGB.b);
-    }), sliders);
+    }}), sliders);
 
     label           = document.createElement('div');
     label.className = 'Label LabelG';
     label.innerHTML = OSjs._('Green: {0}', 0);
     sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, val: color.g}, function(value, percentage) {
+    this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, val: color.g, onUpdate: function(value, percentage) {
       self.setColor(self.currentRGB.r, value, self.currentRGB.b);
-    }), sliders);
+    }}), sliders);
 
     label           = document.createElement('div');
     label.className = 'Label LabelB';
     label.innerHTML = OSjs._('Blue: {0}', 0);
     sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, val: color.b}, function(value, percentage) {
+    this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, val: color.b, onUpdate: function(value, percentage) {
       self.setColor(self.currentRGB.r, self.currentRGB.g, value);
-    }), sliders);
+    }}), sliders);
 
     if ( this.showAlpha ) {
       label           = document.createElement('div');
       label.className = 'Label LabelA';
       label.innerHTML = OSjs._('Alpha: {0}', 0);
       sliders.appendChild(label);
-      this._addGUIElement(new OSjs.GUI.Slider('SliderA', {min: 0, max: 100, val: this.currentAlpha}, function(value, percentage) {
+      this._addGUIElement(new OSjs.GUI.Slider('SliderA', {min: 0, max: 100, val: this.currentAlpha, onUpdate: function(value, percentage) {
         self.setColor(self.currentRGB.r, self.currentRGB.g, self.currentRGB.b, value);
-      }), sliders);
+      }}), sliders);
     }
 
     this.$color           = document.createElement('div');

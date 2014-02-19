@@ -1229,7 +1229,7 @@
   /**
    * Slider Element
    */
-  var Slider = function(name, opts, onUpdate) {
+  var Slider = function(name, opts) {
     this.min      = opts.min          || 0;
     this.max      = opts.max          || 0;
     this.val      = opts.val          || 0;
@@ -1241,7 +1241,7 @@
 
     var self = this;
     this.onUpdate = function(val, perc) {
-      (onUpdate || function(val, perc) { console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)'); }).apply(self, arguments);
+      (opts.onUpdate || function(val, perc) { console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)'); }).apply(self, arguments);
       self.onChange.apply(this, arguments);
     };
 
