@@ -1846,6 +1846,9 @@
     if ( _WM ) {
       _WM.removeWindow(this);
     }
+    if ( _WIN && _WIN._wid == this._wid ) {
+      _WIN = null;
+    }
 
     if ( this._$element ) {
       var _removeDOM = function() {
@@ -2070,7 +2073,6 @@
     this._onChange('minimize');
     this._fireHook('minimize');
 
-    // FIXME: Select next visible window instead
     if ( _WIN && _WIN._wid == this._wid ) {
       _WIN = null;
     }
@@ -2173,6 +2175,7 @@
     if ( _WIN && _WIN._wid != this._wid ) {
       _WIN._blur();
     }
+
     _WIN = this;
 
     this._onChange('focus');
