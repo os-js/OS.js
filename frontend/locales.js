@@ -202,7 +202,19 @@
     'Text Color'        : 'Tekst farge',
     'Back Color'        : 'Bakgrunns farge',
     'Fatal error'       : 'Fatal feil',
-    'Reset to defaults' : 'Nullstill til standard'
+    'Reset to defaults' : 'Nullstill til standard',
+    'Panels'            : 'Panel',
+    'Theme'             : 'Tema',
+    'Color'             : 'Farge',
+    'Font'              : 'Skrift-type',
+    'Background Image'  : 'Bakgrunn Bilde',
+    'Background Color'  : 'Bakgrunn Farge',
+    'Apply'             : 'Bruk',
+    'Locales'           : 'Lokalisering',
+    'Top'               : 'Topp',
+    'Bottom'            : 'Bunn',
+    'Yes'               : 'Ja',
+    'No'                : 'Nei'
   };
 
   /**

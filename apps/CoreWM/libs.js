@@ -1,35 +1,20 @@
 (function(WindowManager, Window, GUI) {
 
-  // TODO: Move some translations over to locales.js (global)
   var _Locales = {
     no_NO : {
       'CoreWM Settings' : 'CoreWM Instillinger',
       'Theme and Background' : 'Tema og Bakgrunn',
       'Desktop Settings' : 'Skrivebord Instillinger',
-      'Panels' : 'Panel',
-      'Theme' : 'Tema',
       'Background Type' : 'Bakgrunn type',
-      'Image' : 'Bilde',
       'Image (Repeat)' : 'Bilde (Gjenta)',
       'Image (Centered)' : 'Bilde (Sentrert)',
       'Image (Fill)' : 'Bilde (Fyll)',
       'Image (Streched)' : 'Bilde (Strekk)',
-      'Color' : 'Farge',
-      'Background Image' : 'Bakgrunn Bilde',
-      'Background Color' : 'Bakgrunn Farge',
-      'Font' : 'Skrift-type',
       'Desktop Margin ({0}px)' : 'Skrivebord Margin ({0}px)',
       'Panel Position' : 'Panel Posisjon',
-      'Top' : 'Topp',
-      'Bottom' : 'Bunn',
       'Panel Ontop ?' : 'Panel på topp?',
-      'Yes' : 'Ja',
-      'No' : 'Nei',
       'Panel Items' : 'Panel objekter',
-      'Name' : 'Navn',
       'Use animations ?' : 'Bruk animasjoner ?',
-      'Apply' : 'Bruk',
-      'Locales' : 'Lokalisering',
       'Language (requires restart)' : 'Språk (krever omstart)',
       'Open Panel Settings' : 'Åpne panel-instillinger',
       'Enable sounds' : 'Skru på lyder',
@@ -223,7 +208,7 @@
       slider.setValue(desktopMargin);
     }});
 
-    var tabPanels = tabs.addTab('Panels', {title: _('Panels')});
+    var tabPanels = tabs.addTab('Panels', {title: OSjs._('Panels')});
     var tabLocale = tabs.addTab('Locales', {title: _('Locales')});
 
     //
@@ -231,7 +216,7 @@
     //
 
     // Theme
-    outer = _createContainer('Theme SettingsNoButton', _('Theme'));
+    outer = _createContainer('Theme SettingsNoButton', OSjs._('Theme'));
     var themeName = this._addGUIElement(new OSjs.GUI.Select('SettingsThemeName'), outer);
     themeName.addItems(themelist);
     themeName.setSelected(theme);
@@ -241,18 +226,18 @@
     outer = _createContainer('BackgroundType SettingsNoButton', _('Background Type'));
     var backgroundType = this._addGUIElement(new OSjs.GUI.Select('SettingsBackgroundType'), outer);
     backgroundType.addItems({
-      'image':        _('Image'),
+      'image':        OSjs._('Image'),
       'image-repeat': _('Image (Repeat)'),
       'image-center': _('Image (Centered)'),
       'image-fill':   _('Image (Fill)'),
       'image-strech': _('Image (Streched)'),
-      'color':        _('Color')
+      'color':        OSjs._('Color')
     });
     backgroundType.setSelected(settings.background);
     tabStyles.appendChild(outer);
 
     // Background Image
-    outer = _createContainer('BackgroundImage', _('Background Image'));
+    outer = _createContainer('BackgroundImage', OSjs._('Background Image'));
     var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
 
     this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
@@ -262,7 +247,7 @@
     tabStyles.appendChild(outer);
 
     // Background Color
-    outer = _createContainer('BackgroundColor', _('Background Color'));
+    outer = _createContainer('BackgroundColor', OSjs._('Background Color'));
 
     var backgroundColor = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundColor', {disabled: true, value: settings.style.backgroundColor}), outer);
     backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
@@ -275,7 +260,7 @@
     tabStyles.appendChild(outer);
 
     // Font
-    outer = _createContainer('Font', _('Font'));
+    outer = _createContainer('Font', OSjs._('Font'));
 
     var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
     fontName.$input.style.fontFamily = settings.style.fontFamily;
@@ -290,8 +275,8 @@
     outer = _createContainer('Animations SettingsNoButton', _('Use animations ?'));
     var useAnimations = this._addGUIElement(new OSjs.GUI.Select('SettingsUseAnimations'), outer);
     useAnimations.addItems({
-      'yes':  _('Yes'),
-      'no':   _('No')
+      'yes':  OSjs._('Yes'),
+      'no':   OSjs._('No')
     });
     useAnimations.setSelected(settings.animations ? 'yes' : 'no');
     tabStyles.appendChild(outer);
@@ -318,8 +303,8 @@
     outer = _createContainer('Switcher SettingsNoButton', _('Enable Window Switcher'));
     var useSwitcher = this._addGUIElement(new OSjs.GUI.Select('SettingsUseSwitcher'), outer);
     useSwitcher.addItems({
-      'yes':  _('Yes'),
-      'no':   _('No')
+      'yes':  OSjs._('Yes'),
+      'no':   OSjs._('No')
     });
     useSwitcher.setSelected(settings.enableSwitcher ? 'yes' : 'no');
     tabOther.appendChild(outer);
@@ -328,8 +313,8 @@
     outer = _createContainer('Hotkeys SettingsNoButton', _('Enable Hotkeys'));
     var useHotkeys = this._addGUIElement(new OSjs.GUI.Select('SettingsUseHotkeys'), outer);
     useHotkeys.addItems({
-      'yes':  _('Yes'),
-      'no':   _('No')
+      'yes':  OSjs._('Yes'),
+      'no':   OSjs._('No')
     });
     useHotkeys.setSelected(settings.enableHotkeys ? 'yes' : 'no');
     tabOther.appendChild(outer);
@@ -338,8 +323,8 @@
     outer = _createContainer('Sounds SettingsNoButton', _('Enable sounds'));
     var useSounds = this._addGUIElement(new OSjs.GUI.Select('SettingsUseSounds'), outer);
     useSounds.addItems({
-      'yes':  _('Yes'),
-      'no':   _('No')
+      'yes':  OSjs._('Yes'),
+      'no':   OSjs._('No')
     });
     useSounds.setSelected(settings.enableSounds ? 'yes' : 'no');
     tabOther.appendChild(outer);
@@ -353,8 +338,8 @@
     outer = _createContainer('PanelPosition SettingsNoButton', _('Panel Position'));
     var panelPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelPosition'), outer);
     panelPosition.addItems({
-      'top':      _('Top'),
-      'bottom':   _('Bottom')
+      'top':      OSjs._('Top'),
+      'bottom':   OSjs._('Bottom')
     });
     panelPosition.setSelected(settings.panels[0].options.position);
     tabPanels.appendChild(outer);
@@ -363,8 +348,8 @@
     outer = _createContainer('PanelOntop SettingsNoButton', _('Panel Ontop ?'));
     var panelOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelOntop'), outer);
     panelOntop.addItems({
-      'yes':  _('Yes'),
-      'no':   _('No')
+      'yes':  OSjs._('Yes'),
+      'no':   OSjs._('No')
     });
     panelOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
     tabPanels.appendChild(outer);
@@ -458,7 +443,7 @@
     //
     // Buttons
     //
-    this._addGUIElement(new OSjs.GUI.Button('Save', {label: _('Apply'), onClick: function(el, ev) {
+    this._addGUIElement(new OSjs.GUI.Button('Save', {label: OSjs._('Apply'), onClick: function(el, ev) {
       // First validate
       var settings = {
         language:         useLanguage.getValue(),
