@@ -59,7 +59,9 @@
     var ret = {};
     for ( var i in localStorage ) {
       if ( localStorage.hasOwnProperty(i) ) {
-        ret[i.replace(this.prefix, '')] = JSON.parse(localStorage[i]) || null;
+        if ( i.indexOf(this.prefix) === 0 ) {
+          ret[i.replace(this.prefix, '')] = JSON.parse(localStorage[i]) || null;
+        }
       }
     }
     return ret;
