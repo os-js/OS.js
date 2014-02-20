@@ -308,10 +308,10 @@
     labelMargin.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
 
     outer.appendChild(labelMargin);
-    slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin}, function(value, percentage) {
+    slider = this._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: desktopMargin, onChange: function(value, percentage) {
       desktopMargin = value;
       labelMargin.innerHTML = _("Desktop Margin ({0}px)", desktopMargin);
-    }), outer);
+    }}), outer);
     tabOther.appendChild(outer);
 
     // Switcher
