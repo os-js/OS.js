@@ -141,6 +141,12 @@
   };
 
   /**
+   * Called upon unload
+   */
+  DefaultHandler.prototype.destroy = function() {
+  };
+
+  /**
    * Called after successfull login in 'core.js'
    * @see Core::Main::init()
    */

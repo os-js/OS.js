@@ -117,6 +117,7 @@ if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload
 if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
+if ( !defined("HANDLER") )    define("HANDLER",     null);
 
 date_default_timezone_set(TIMEZONE);
 
@@ -125,6 +126,8 @@ if ( php_sapi_name() == "cli" || defined('__CLI_SCRIPT') ) {
 }
 
 register_shutdown_function('error');
+
+session_start();
 
 //
 // Collect request data
@@ -278,9 +281,27 @@ if ( empty($data) ) {
         }
       break;
 
-      // Default Error
+      // Default
       default :
-        $error = "No such API method: {$method}";
+        $found = false;
+        if ( HANDLER ) {
+          $hdir = sprintf("%s/handlers/%s.php", ROOTDIR, HANDLER);
+          if ( file_exists($hdir) ) {
+            require $hdir;
+            if ( class_exists('APIHandler') && method_exists('APIHandler', 'call') ) {
+              $found = true;
+              try {
+                $result = APIHandler::call($method, $arguments);
+              } catch ( Exception $e ) {
+                $error = "API Handler call error: {$e->getMessage()}";
+              }
+            }
+          }
+        }
+
+        if ( !$found ) {
+          $error = "No such API method: {$method}";
+        }
       break;
     }
   }

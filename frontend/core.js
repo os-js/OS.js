@@ -2553,7 +2553,10 @@
         _CORE.destroy();
         _CORE = null;
       }
-      _HANDLER = null;
+      if ( _HANDLER ) {
+        _HANDLER.destroy();
+        _HANDLER = null;
+      }
       _WIN = null;
       _WM = null;
 

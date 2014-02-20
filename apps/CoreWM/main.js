@@ -469,7 +469,6 @@
 
       OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
 
-      // NOTE FIXME: This is mostly for demo-usage
       if ( settings.language ) {
         OSjs.API.getHandlerInstance().setUserSettings('Core', {Locale: settings.language});
       }
