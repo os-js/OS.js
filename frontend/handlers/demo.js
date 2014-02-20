@@ -44,7 +44,7 @@
     if ( !OSjs.Compability.localStorage ) {
       throw "Your browser does not support localStorage :(";
     }
-    this.prefix = 'andersevenrud.github.io/OS.js-v2/';
+    this.prefix = 'OS.js-v2/DemoHandler/';
   };
 
   DefaultStorage.prototype.store = function(o) {
