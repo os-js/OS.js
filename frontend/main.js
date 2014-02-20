@@ -66,7 +66,8 @@
           Sounds:         true,
           Languages:      {
             'en_US': 'English',
-            'no_NO': 'Norsk (Norwegian)'
+            'no_NO': 'Norsk (Norwegian)',
+            'de_DE': 'Deutsch (German)'
           },
           Locale:         'en_US'
         },

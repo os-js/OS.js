@@ -25,7 +25,7 @@
 
 ### Localization (Translations)
 * Languages
-  - de_DE
+  - de_DE for Applications
 
 ### Not prioritized
 * Offline resource pre-loading
