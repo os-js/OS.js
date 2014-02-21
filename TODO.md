@@ -1,30 +1,23 @@
 
 ## Roadmap
 
-### Alpha
-* Squash all the remaining bugs
-* Finish Applications
-
 ## TODOs
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
+* Misc FIXME and TODO in source-code
+  - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
 * Writer - Check for changes before opening/new file
 * Finish Music Player
 * Finish File Manager
-
-Remember to refactor application .currentFile + .currentMime > .CurrentFile = {name: '', mime: ''}
+* Refactor from currentX to currentFile.x for file stuff
 
 ### GUI Elements
 * Custom styling for GUISelect
 * GUITreeView
 * GUILabel
-
-### Localization (Translations)
-* Languages
-  - de_DE for Applications
 
 ### Not prioritized
 * Create bin/ scripts for nodejs (redo create-application for PHP)
@@ -33,8 +26,6 @@ Remember to refactor application .currentFile + .currentMime > .CurrentFile = {n
 * Full Source code documentation
 * Mobile version
 * CoreWM: Custom keyboard binding shortcuts
-* Misc FIXME and TODO in source-code
-  - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 
 ## Ideas for solving misc problems
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles
