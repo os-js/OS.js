@@ -84,7 +84,7 @@
           self.userData = result.userData;
           var locale = null;
           if ( result.userSettings ) {
-            self.settings = result.userSettings;
+            self.settings.load(result.userSettings);
             if ( result.userSettings.Core ) {
               locale = result.userSettings.Core.Locale || null;
             }
@@ -176,7 +176,8 @@
     }
   };
 
-  DemoHandler.prototype.saveSettings = function(callback) {
+  ExampleHandler.prototype.saveSettings = function(callback) {
+    // TODO: You should do an interval here so you don't do stuff multiple times in a row
     console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
 
     var self = this;
