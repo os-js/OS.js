@@ -46,11 +46,10 @@
    * You can implement your own, see documentation on Wiki.
    */
   var DefaultHandler = function() {
-    this.storage  = null;                           // Storage handler
-    this.packages = {};                             // Package cache
-    this.settings = {};                             // Settings cache
-    this.config   = OSjs.Settings.DefaultConfig();  // Main configuration copy
-    this.userData = {                               // User Session data
+    this.packages = {};                                   // Package cache
+    this.settings = new OSjs.Helpers.SettingsManager();   // Settings cache
+    this.config   = OSjs.Settings.DefaultConfig();        // Main configuration copy
+    this.userData = {                                     // User Session data
       id      : 0,
       username: 'root',
       name    : 'root user',
@@ -320,7 +319,7 @@
       return list;
     };
 
-    this._getSettings('defaultApplication', mime, function(val) {
+    this.getSetting('defaultApplication', mime, function(val) {
       console.debug("OSjs::DefaultHandler::getApplicationNameByMime()", "default application", val);
       if ( !forceList && val ) {
         if ( packages[val] ) {
@@ -352,97 +351,82 @@
   };
 
   /**
-   * Internal method for setting a value in category (wrapper)
+   * Internal method for saving settings (wrapper)
    * NOTE: This is should be called from the implemented handler
    *       See 'demo' handler for example
    */
-  DefaultHandler.prototype._setSetting = function(cat, values, callback) {
-    this.settings[cat] = values;
-    callback.call(this, false);
+  DefaultHandler.prototype.saveSettings = function(callback) {
+    console.debug('OSjs::DefaultHandler::saveSettings()');
+    callback.call(this, true);
   };
 
   /**
-   * Internal method for setting settings (wrapper)
-   * NOTE: This is should be called from the implemented handler
-   *       See 'demo' handler for example
+   * Sets a setting
+   * @see OSjs.Helpers.SettingsManager
    */
-  DefaultHandler.prototype._setSettings = function(cat, key, opts, callback) {
-    if ( key === null ) {
-      this.settings[cat] = opts;
-    } else {
-      if ( !this.settings[cat] ) {
-        this.settings[cat] = {};
-      }
-      this.settings[cat][key] = opts;
-    }
-    callback.call(this, false);
-  };
-
-  /**
-   * Internal method for getting settings (wrapper)
-   */
-  DefaultHandler.prototype._getSettings = function(cat, key, callback) {
-    if ( this.settings[cat] ) {
-      if ( key === null ) {
-        callback.call(this, this.settings[cat]);
-      } else {
-        callback.call(this, this.settings[cat][key]);
-      }
-      return;
-    }
-    callback.call(this, false);
-  };
-
-  /**
-   * Set the users settings
-   */
-  DefaultHandler.prototype.setUserSettings = function(key, opts, callback) {
+  DefaultHandler.prototype.setSetting = function(category, name, value, callback) {
     callback = callback || function() {};
-    this._setSettings('userSettings', key, opts, callback);
+    var stored = this.settings.set(category, name, value);
+    this.saveSettings(function() {
+      callback.call(this, stored);
+    });
   };
 
   /**
-   * Get the users settings
+   * Gets a setting
+   * @see OSjs.Helpers.SettingsManager
    */
-  DefaultHandler.prototype.getUserSettings = function(key, callback) {
+  DefaultHandler.prototype.getSetting = function(category, name, callback) {
     callback = callback || function() {};
-    this._getSettings('userSettings', key, callback);
+    callback.call(this, this.settings.get(category, name));
   };
 
   /**
-   * Set settings for an application
+   * Wrapper for setting user settings
    */
-  DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
+  DefaultHandler.prototype.setUserSettings = function(name, values, callback) {
     callback = callback || function() {};
-    this._setSetting(app, settings, callback);
+    this.setSetting('userSettings', name, values, callback);
   };
 
   /**
-   * Get settings for an application
+   * Wrapper for getting user settings
    */
-  DefaultHandler.prototype.getApplicationSettings = function(app, callback) {
+  DefaultHandler.prototype.getUserSettings = function(name, callback) {
     callback = callback || function() {};
-    this._getSettings(app, null, callback);
+    this.getSetting('userSettings', name, callback);
   };
 
   /**
-   * Set user session
+   * Wrapper for setting user session
    */
   DefaultHandler.prototype.setUserSession = function(session, callback) {
     callback = callback || function() {};
-    this._setSettings("userSession", null, session, function(result) {
-      callback.call(this, result);
-    });
+    this.setSetting('userSession', null, session, callback);
   };
 
   /**
-   * Get user session
+   * Wrapper for getting user session
    */
   DefaultHandler.prototype.getUserSession = function(callback) {
     callback = callback || function() {};
-    this._getSettings("userSession", null, function(result) {
-      callback.call(this, result);
-    });
+    this.getSetting('userSession', null, callback);
+  };
+
+  /**
+   * Wrapper for setting application settings
+   */
+  DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
+    callback = callback || function() {};
+    this.setSetting(app, settings, callback);
+  };
+
+  /**
+   * Wrapper for getting application settings
+   */
+  DefaultHandler.prototype.getApplicationSettings = function(app, callback) {
+    callback = callback || function() {};
+    this.getSetting(app, null, callback);
   };
 
   /**
@@ -457,6 +441,13 @@
    */
   DefaultHandler.prototype.getUserData = function() {
     return this.userData;
+  };
+
+  /**
+   * Get the settings manager
+   */
+  DefaultHandler.prototype.getSettings = function() {
+    return this.settings;
   };
 
   //

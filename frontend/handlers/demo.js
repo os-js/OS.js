@@ -47,15 +47,15 @@
     this.prefix = 'OS.js-v2/DemoHandler/';
   };
 
-  DefaultStorage.prototype.store = function(o) {
+  DefaultStorage.prototype.set = function(o) {
     for ( var i in o ) {
       if ( o.hasOwnProperty(i) ) {
-        this.set(i, o[i]);
+        localStorage.setItem(this.prefix + i, JSON.stringify(o[i]));
       }
     }
   };
 
-  DefaultStorage.prototype.load = function() {
+  DefaultStorage.prototype.get = function() {
     var ret = {};
     for ( var i in localStorage ) {
       if ( localStorage.hasOwnProperty(i) ) {
@@ -67,22 +67,13 @@
     return ret;
   };
 
-  DefaultStorage.prototype.set = function(k, v) {
-    localStorage.setItem(this.prefix + k, JSON.stringify(v));
-  };
-
-  DefaultStorage.prototype.get = function(k) {
-    var val = localStorage.getItem(this.prefix + k);
-    return val ? JSON.parse(val) : null;
-  };
-
   /**
    * Demo handler - Uses localStorage for sessions, for testing purposes
    */
   var DemoHandler = function() {
     OSjs.Handlers.Default.apply(this, arguments);
 
-    this.storage  = new DefaultStorage();
+    this.storage = new DefaultStorage();
   };
   DemoHandler.prototype = Object.create(OSjs.Handlers.Default.prototype);
 
@@ -103,8 +94,8 @@
     // Use the 'demo' user
     this.login('demo', 'demo', function(userData) {
       userData = userData || {};
-      self.userData = userData;            // Set our user session info
-      self.settings = self.storage.load(); // Load previously used settings
+      self.userData = userData;                 // Set our user session info
+      self.settings.load(self.storage.get());   // Load previously used settings
 
       // Ensure we get the user-selected locale configured from WM
       self.getUserSettings('Core', function(result) {
@@ -138,27 +129,12 @@
     callback.call(this, false, "Invalid login");
   };
 
-  /**
-   * Sets a setting in given category
-   */
-  DemoHandler.prototype._setSetting = function(cat, values, callback) {
-    console.debug('OSjs::Handlers::DemoHandler::_setSetting()', cat, values);
-    OSjs.Handlers.Default.prototype._setSetting.call(this, cat, values, function(/* ignore result*/) {
-      this.storage.set(cat, values);
-      callback.call(this, true);
-    });
+  DemoHandler.prototype.saveSettings = function(callback) {
+    console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
+    this.storage.set(this.settings.get());
+    callback.call(this, true);
   };
 
-  /**
-   * Sets a list of settings in given category
-   */
-  DemoHandler.prototype._setSettings = function(cat, key, opts, callback) {
-    console.debug('OSjs::Handlers::DemoHandler::_setSettings()', cat, key, opts);
-    OSjs.Handlers.Default.prototype._setSettings.call(this, cat, key, opts, function(/* ignore result*/) {
-      this.storage.store(this.settings);
-      callback.call(this, true);
-    });
-  };
 
   OSjs.Handlers.Current  = DemoHandler; // Set this as the default handler
 })();

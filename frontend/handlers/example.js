@@ -47,15 +47,15 @@
     this.prefix = 'OS.js-v2/ExampleHandler/';
   };
 
-  DefaultStorage.prototype.store = function(o) {
+  DefaultStorage.prototype.set = function(o) {
     for ( var i in o ) {
       if ( o.hasOwnProperty(i) ) {
-        this.set(i, o[i]);
+        localStorage.setItem(this.prefix + i, JSON.stringify(o[i]));
       }
     }
   };
 
-  DefaultStorage.prototype.load = function() {
+  DefaultStorage.prototype.get = function() {
     var ret = {};
     for ( var i in localStorage ) {
       if ( localStorage.hasOwnProperty(i) ) {
@@ -65,15 +65,6 @@
       }
     }
     return ret;
-  };
-
-  DefaultStorage.prototype.set = function(k, v) {
-    localStorage.setItem(this.prefix + k, JSON.stringify(v));
-  };
-
-  DefaultStorage.prototype.get = function(k) {
-    var val = localStorage.getItem(this.prefix + k);
-    return val ? JSON.parse(val) : null;
   };
 
   /**
@@ -217,9 +208,12 @@
     }
   };
 
-  ExampleHandler.prototype.syncSettings = function(callback) {
+  DemoHandler.prototype.saveSettings = function(callback) {
+    console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
+    this.storage.set(this.settings.get());
+
     var self = this;
-    var settings = this.storage.load();
+    var settings = this.storage.get();
     var opts = {
       method : 'POST',
       post   : {
@@ -238,26 +232,6 @@
     }, function(error) {
       console.warn("ExampleHandler::syncSettings()", "Call error", error);
       callback.call(self, false);
-    });
-  };
-
-  ExampleHandler.prototype._setSetting = function(cat, values, callback) {
-    console.debug('OSjs::Handlers::ExampleHandler::_setSetting()', cat, values);
-    OSjs.Handlers.Default.prototype._setSetting.call(this, cat, values, function(/* ignore result*/) {
-      this.storage.set(cat, values);
-      this.syncSettings(function() {
-        callback.call(this, true);
-      });
-    });
-  };
-
-  ExampleHandler.prototype._setSettings = function(cat, key, opts, callback) {
-    console.debug('OSjs::Handlers::ExampleHandler::_setSettings()', cat, key, opts);
-    OSjs.Handlers.Default.prototype._setSettings.call(this, cat, key, opts, function(/* ignore result*/) {
-      this.storage.store(this.settings);
-      this.syncSettings(function() {
-        callback.call(this, true);
-      });
     });
   };
 
