@@ -377,22 +377,27 @@
    * Sets a setting
    * @see OSjs.Helpers.SettingsManager
    */
-  DefaultHandler.prototype.setSetting = function(category, name, value, callback) {
+  DefaultHandler.prototype.setSetting = function(category, name, value, callback, save) {
+    save = (typeof save === 'undefined' || save === true);
     callback = callback || function() {};
     var stored = this.settings.set(category, name, value);
-    this.saveSettings(function() {
+
+    if ( save ) {
+      this.saveSettings(function() {
+        callback.call(this, stored);
+      });
+    } else {
       callback.call(this, stored);
-    });
+    }
   };
 
   /**
    * Gets a setting
    * @see OSjs.Helpers.SettingsManager
    */
-  DefaultHandler.prototype.getSetting = function(category, name, callback) {
-    // TODO: Default value - also in methods below
+  DefaultHandler.prototype.getSetting = function(category, name, callback, defaultValue) {
     callback = callback || function() {};
-    callback.call(this, this.settings.get(category, name));
+    callback.call(this, this.settings.get(category, name, defaultValue));
   };
 
   /**
@@ -400,7 +405,19 @@
    */
   DefaultHandler.prototype.setUserSettings = function(name, values, callback) {
     callback = callback || function() {};
-    this.setSetting('userSettings', name, values, callback);
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        if ( name.hasOwnProperty(i) ) {
+          this.setSetting('userSettings', i, name[i], null, false);
+        }
+      }
+
+      this.saveSettings(function() {
+        callback.call(this, true);
+      });
+    } else {
+      this.setSetting('userSettings', name, values, callback);
+    }
   };
 
   /**

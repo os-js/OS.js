@@ -360,6 +360,9 @@
   };
 
   SettingsManager.prototype._mergeSettings = function(obj1, obj2) {
+    if ( ((typeof obj2) !== (typeof obj1)) && (!obj2 && obj1) ) {
+      return obj1;
+    }
     if ( (typeof obj2) !== (typeof obj1) ) {
       return obj2;
     }

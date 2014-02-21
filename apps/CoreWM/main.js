@@ -469,17 +469,18 @@
       alink.setAttribute('href', OSjs.API.getResourceURL('/frontend/blank.css'));
     }
 
+    console.groupEnd();
+
     if ( save ) {
       this.initPanels(true);
 
-      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
-
+      var store = { WindowManager: this.getSettings() };
       if ( settings.language ) {
-        OSjs.API.getHandlerInstance().setUserSettings('Core', {Locale: settings.language});
+        store.Core = { Locale: settings.language };
       }
+      OSjs.API.getHandlerInstance().setUserSettings(store);
     }
 
-    console.groupEnd();
     return true;
   };
 
