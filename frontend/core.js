@@ -1095,17 +1095,7 @@
     if ( force ) {
       this._settings = settings;
     } else {
-      // FIXME: Custom merger here -- to make sure we only write what we need
-      //        I had some problems here when not reffering panel items...
-      //        had to refactor something and that sucked
       this._settings = OSjs.Utils.mergeObject(this._settings, settings);
-      /*
-      for ( var s in settings ) {
-        if ( settings.hasOwnProperty(s) ) {
-          this.setSetting(s, settings[s]);
-        }
-      }
-      */
     }
 
     if ( _$LOADING ) {
