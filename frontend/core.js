@@ -1164,7 +1164,6 @@
     return this._settings;
   };
 
-
   WindowManager.prototype.getThemes = function() {
     return this._themes;
   };
@@ -1214,7 +1213,6 @@
     this.__args       = args || {};
     this.__settings   = {};
     this.__metadata   = metadata;
-
 
     Process.apply(this, [name]);
 

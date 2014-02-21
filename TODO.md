@@ -7,10 +7,9 @@
 
 ## TODOs
 * Finish Node.js backend
-* Create bin/ scripts for nodejs (redo create-application for PHP)
 * Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
-* Misc FIXME and TODO in source-code
-  - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
+* Create reserved strings for locales in `locales.js` (for core messages etc)
+* Refactor settings handling code
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
@@ -28,11 +27,15 @@
   - de_DE for Applications
 
 ### Not prioritized
+* Shorten the code with the references from wrappers (Like OSjs.GUI.x -> GUI.x) in all apps
+* Create bin/ scripts for nodejs (redo create-application for PHP)
 * Offline resource pre-loading
 * Offline VFS
 * Full Source code documentation
 * Mobile version
 * CoreWM: Custom keyboard binding shortcuts
+* Misc FIXME and TODO in source-code
+  - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 
 ## Ideas for solving misc problems
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles
