@@ -1,4 +1,8 @@
-(function(Application, Window) {
+(function(Application, Window, GUI) {
+
+  /////////////////////////////////////////////////////////////////////////////
+  // LOCALES
+  /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
     no_NO : {
@@ -18,6 +22,10 @@
     args.unshift(_Locales);
     return OSjs.__.apply(this, args);
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Main Window
@@ -40,13 +48,13 @@
     //var vt    = app._getSetting('viewType');
     var vt    = app._getArgument('viewType');
 
-    var panedView  = this._addGUIElement(new OSjs.GUI.PanedView('FileManagerPanedView'), root);
+    var panedView  = this._addGUIElement(new GUI.PanedView('FileManagerPanedView'), root);
     var viewSide   = panedView.createView('Side');
     var viewFile   = panedView.createView('File');
-    var sideView   = this._addGUIElement(new OSjs.GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), viewSide);
-    var fileView   = this._addGUIElement(new OSjs.GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), viewFile);
-    var statusBar  = this._addGUIElement(new OSjs.GUI.StatusBar('FileManagerStatusBar'), root);
-    var menuBar    = this._addGUIElement(new OSjs.GUI.MenuBar('FileManagerMenuBar'), root);
+    var sideView   = this._addGUIElement(new GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), viewSide);
+    var fileView   = this._addGUIElement(new GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), viewFile);
+    var statusBar  = this._addGUIElement(new GUI.StatusBar('FileManagerStatusBar'), root);
+    var menuBar    = this._addGUIElement(new GUI.MenuBar('FileManagerMenuBar'), root);
 
     var defaultStatusText = '';
 
@@ -381,6 +389,10 @@
     }
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATION
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * Application
    */
@@ -471,10 +483,11 @@
     return this._action('copy', [src, dest], callback);
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationFileManager = ApplicationFileManager;
 
-})(OSjs.Core.Application, OSjs.Core.Window);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI);

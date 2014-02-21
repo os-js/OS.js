@@ -29,6 +29,10 @@
  */
 (function(Application, Window, GUI, Dialogs) {
 
+  /////////////////////////////////////////////////////////////////////////////
+  // LOCALES
+  /////////////////////////////////////////////////////////////////////////////
+
   var _Locales = {
     no_NO : {
       'Insert URL' : 'Sett inn URL'
@@ -70,8 +74,8 @@
     var self = this;
 
     // Create window contents here
-    var mb = this._addGUIElement(new OSjs.GUI.MenuBar('WriterMenuBar'), root);
-    var tb = this._addGUIElement(new OSjs.GUI.ToolBar('WriterToolBar'), root);
+    var mb = this._addGUIElement(new GUI.MenuBar('WriterMenuBar'), root);
+    var tb = this._addGUIElement(new GUI.ToolBar('WriterToolBar'), root);
 
     var _createIcon = function(i) {
       return OSjs.API.getThemeResource(i, 'icon');
@@ -156,10 +160,10 @@
     tb.render();
     tb.addItem('indent',        {title: OSjs._('Indent'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
 
-    var rt = this._addGUIElement(new OSjs.GUI.RichText('WriterRichText'), root);
+    var rt = this._addGUIElement(new GUI.RichText('WriterRichText'), root);
 
     /*
-    var sb = this._addGUIElement(new OSjs.GUI.StatusBar('WriterStatusBar'), root);
+    var sb = this._addGUIElement(new GUI.StatusBar('WriterStatusBar'), root);
     sb.setText("THIS IS A WORK IN PROGRESS");
     */
 
@@ -375,10 +379,11 @@
     Application.prototype.init.apply(this, arguments);
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationWriter = ApplicationWriter;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.Core.GUI, OSjs.Core.Dialogs);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);

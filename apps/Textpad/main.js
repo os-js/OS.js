@@ -1,4 +1,8 @@
-(function(Application, Window) {
+(function(Application, Window, GUI) {
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Main Window
@@ -17,7 +21,7 @@
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
 
-    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationTextpadMenuBar'), root);
+    var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationTextpadMenuBar'), root);
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('New'), name: 'New', onClick: function() {
         app.defaultAction('new');
@@ -40,7 +44,7 @@
       menu.setItemDisabled("Save", app.currentFile.path ? false : true);
     };
 
-    this._addGUIElement(new OSjs.GUI.Textarea('TextpadTextarea'), root);
+    this._addGUIElement(new GUI.Textarea('TextpadTextarea'), root);
 
     this.setText(null);
   };
@@ -81,6 +85,10 @@
     }
     return false;
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATION
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Application
@@ -143,10 +151,11 @@
     Application.prototype.init.apply(this, arguments);
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationTextpad = ApplicationTextpad;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI);

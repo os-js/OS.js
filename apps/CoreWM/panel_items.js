@@ -3,6 +3,10 @@
   OSjs.CoreWM                   = OSjs.CoreWM             || {};
   OSjs.CoreWM.PanelItems        = OSjs.CoreWM.PanelItems  || {};
 
+  /////////////////////////////////////////////////////////////////////////////
+  // LOCALES
+  /////////////////////////////////////////////////////////////////////////////
+
   var _Locales = {
     no_NO : {
       "Logging out user '{0}'.\nDo you want to save current session?" : "Logger ut bruker '{0}'.\nVil du lagre gjeldende sessjon?"

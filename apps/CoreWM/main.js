@@ -3,6 +3,10 @@
   OSjs.CoreWM       = OSjs.CoreWM       || {};
   OSjs.Applications = OSjs.Applications || {};
 
+  /////////////////////////////////////////////////////////////////////////////
+  // LOCALES
+  /////////////////////////////////////////////////////////////////////////////
+
   var _Locales = {
     no_NO : {
       'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
@@ -21,6 +25,10 @@
     args.unshift(_Locales);
     return OSjs.__.apply(this, args);
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // SETTINGS
+  /////////////////////////////////////////////////////////////////////////////
 
   function DefaultSettings(defaults) {
     var cfg = {
@@ -466,7 +474,7 @@
     if ( anim ) {
       alink.setAttribute('href', OSjs.API.getApplicationResource(this, 'animations.css'));
     } else {
-      alink.setAttribute('href', OSjs.API.getResourceURL('/frontend/blank.css'));
+      alink.setAttribute('href', OSjs.API.getThemeCSS(null));
     }
 
     console.groupEnd();
@@ -497,6 +505,7 @@
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
       if ( p && p.getOntop() ) {
+        // FIXME: Check for real values -- remove the static
         if ( p.getPosition('top') ) {
           s.top    += 35;
           s.height -= 35;
@@ -526,6 +535,7 @@
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
       if ( p && p.getOntop() && p.getPosition('top') ) {
+        // FIXME: Check for real values -- remove the static
         pos.y += 35;
       }
     }
@@ -549,10 +559,10 @@
     return settings;
   };
 
-
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications.CoreWM = CoreWM;
 
 })(OSjs.Core.WindowManager, OSjs.GUI);

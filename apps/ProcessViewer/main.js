@@ -1,4 +1,8 @@
-(function(Application, Window) {
+(function(Application, Window, GUI) {
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Main Window
@@ -15,7 +19,7 @@
   ApplicationProcessViewerWindow.prototype.init = function() {
     var root = Window.prototype.init.apply(this, arguments);
 
-    var listView = this._addGUIElement(new OSjs.GUI.ListView('ProcessViewListView'), root);
+    var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView'), root);
     listView.setColumns([
       {key: 'pid',    title: OSjs._('PID'), domProperties: {width: "50"}},
       {key: 'name',   title: OSjs._('Name')},
@@ -38,6 +42,10 @@
       listView.render();
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATION
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Application
@@ -112,11 +120,11 @@
     }
   };
 
-
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationProcessViewer = ApplicationProcessViewer;
 
-})(OSjs.Core.Application, OSjs.Core.Window);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI);

@@ -29,6 +29,10 @@
  */
 (function(Application, Window, GUI, Dialogs) {
 
+  /////////////////////////////////////////////////////////////////////////////
+  // LOCALES
+  /////////////////////////////////////////////////////////////////////////////
+
   var _Locales = {
     no_NO : {
       'Pointer'     : 'Peker',
@@ -274,7 +278,7 @@
       button.appendChild(color);
     };
 
-    var toolBar = this._addGUIElement(new OSjs.GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
+    var toolBar = this._addGUIElement(new GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
 
     toolBar.addItem('pointer',    {grouped: true, title: _('Pointer'),   icon: _createIcon('stock-cursor'),                  onClick: _onClick});
     toolBar.addItem('picker',     {grouped: true, title: _('Picker'),    icon: _createIcon('stock-color-pick-from-screen'),  onClick: _onClick});
@@ -359,7 +363,7 @@
       option.selectedIndex = 1;
     }});
 
-    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationDrawMenuBar'), root);
+    var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationDrawMenuBar'), root);
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('New'), name: 'New', onClick: function() {
         app.action('new');
@@ -385,8 +389,8 @@
     this.$canvasContainer = document.createElement('div');
     this.$canvasContainer.className = 'CanvasContainer';
 
-    var canvasImage = this._addGUIElement(new OSjs.GUI.Canvas('ApplicationDrawCanvas', {width: 640, height:480}), this.$canvasContainer);
-    var canvas = this._addGUIElement(new OSjs.GUI.Canvas('ApplicationDrawCanvasOverlay', {width: 640, height:480}), this.$canvasContainer);
+    var canvasImage = this._addGUIElement(new GUI.Canvas('ApplicationDrawCanvas', {width: 640, height:480}), this.$canvasContainer);
+    var canvas = this._addGUIElement(new GUI.Canvas('ApplicationDrawCanvasOverlay', {width: 640, height:480}), this.$canvasContainer);
 
     //this.$canvasContainer.style.width = '640px';
     //this.$canvasContainer.style.height = '480px';
@@ -765,10 +769,11 @@
     }
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationDraw = ApplicationDraw;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Core.GUI, OSjs.Core.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);

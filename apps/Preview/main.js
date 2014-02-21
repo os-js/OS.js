@@ -1,4 +1,4 @@
-(function(Application, Window) {
+(function(Application, Window, GUI) {
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -26,7 +26,7 @@
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
 
-    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('ApplicationPreviewMenuBar'), root);
+    var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationPreviewMenuBar'), root);
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('Open'), onClick: function() {
         app.defaultAction('open');
@@ -36,7 +36,7 @@
       }}
     ]);
 
-    this.frame = this._addGUIElement(new OSjs.GUI.ScrollView('Frame'), root);
+    this.frame = this._addGUIElement(new GUI.ScrollView('Frame'), root);
   };
 
   ApplicationPreviewWindow.prototype.destroy = function() {
@@ -184,4 +184,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationPreview = ApplicationPreview;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI);

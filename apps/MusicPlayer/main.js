@@ -29,22 +29,25 @@
  */
 (function(Application, Window, GUI, Dialogs) {
 
+  /////////////////////////////////////////////////////////////////////////////
+  // LOCALES
+  /////////////////////////////////////////////////////////////////////////////
+
   var _Locales = {
     no_NO : {
-'Playlist' : 'Spilleliste',
-'Playback aborted' : 'Avspilling avbrutt',
-'Network or communication error' : 'Nettverks- eller kommunikasjonsfeil',
-'Decoding failed. Corruption or unsupported media' : 'Dekoding feilet. Korrupt eller ustøttet media',
-'Media source not supported' : 'Media-kilde ikke støttet',
-'Failed to play file' : 'Klarte ikke spille av fil',
-'Artist' : 'Artist',
-'Album' : 'Album',
-'Track' : 'Låt',
-'Time' : 'Tid',
-'Media information query failed' : 'Media-informasjon forespursel feil',
-'seek unavailable in format' : 'spoling utilgjenglig i format',
-'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}',
-
+      'Playlist' : 'Spilleliste',
+      'Playback aborted' : 'Avspilling avbrutt',
+      'Network or communication error' : 'Nettverks- eller kommunikasjonsfeil',
+      'Decoding failed. Corruption or unsupported media' : 'Dekoding feilet. Korrupt eller ustøttet media',
+      'Media source not supported' : 'Media-kilde ikke støttet',
+      'Failed to play file' : 'Klarte ikke spille av fil',
+      'Artist' : 'Artist',
+      'Album' : 'Album',
+      'Track' : 'Låt',
+      'Time' : 'Tid',
+      'Media information query failed' : 'Media-informasjon forespursel feil',
+      'seek unavailable in format' : 'spoling utilgjenglig i format',
+      'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}',
     }
   };
 
@@ -352,7 +355,7 @@
       i.alt = '';
       i.src = OSjs.API.getThemeResource('actions/' + img + '.png', 'icon', '32x32');
 
-      var b = self._addGUIElement(new OSjs.GUI.Button('ControllerButton', {label: '', onClick: onclick}), container);
+      var b = self._addGUIElement(new GUI.Button('ControllerButton', {label: '', onClick: onclick}), container);
       b.$input.appendChild(i);
 
       self.$buttons[img.split('_')[1]] = b;
@@ -374,7 +377,7 @@
       }], self);
     };
 
-    var menuBar = this._addGUIElement(new OSjs.GUI.MenuBar('MusicPlayerMenuBar'), root);
+    var menuBar = this._addGUIElement(new GUI.MenuBar('MusicPlayerMenuBar'), root);
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('Open'), name: 'Open', onClick: function() {
         _openFile(false);
@@ -478,7 +481,7 @@
 
     // Containers
     container.appendChild(info);
-    var slider = this._addGUIElement(new OSjs.GUI.Slider('MusicPlayerSlider', {min:0, max:100, val:0}, function(val) {
+    var slider = this._addGUIElement(new GUI.Slider('MusicPlayerSlider', {min:0, max:100, val:0}, function(val) {
       self.player.seek(val);
     }), container);
     container.appendChild(buttons);
@@ -510,7 +513,7 @@
     root.appendChild(container);
     root.appendChild(this.player.$audio);
 
-    var pl = this._addGUIElement(new OSjs.GUI.ListView('MusicPlayerPlaylist'), root);
+    var pl = this._addGUIElement(new GUI.ListView('MusicPlayerPlaylist'), root);
     pl.setColumns([
       {key: 'name',     title: OSjs._('Name')},
       {key: 'filename', title: OSjs._('Filename'),  visible: false},
@@ -777,4 +780,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationMusicPlayer = ApplicationMusicPlayer;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Core.GUI, OSjs.Core.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);

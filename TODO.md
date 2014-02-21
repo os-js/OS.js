@@ -7,16 +7,15 @@
 
 ## TODOs
 * Finish Node.js backend
-* Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
 * Create reserved strings for locales in `locales.js` (for core messages etc)
-* Create auto/manual save property for Handler
-* Refactor CoreWM/WindowManager Settings Managment
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
 * Writer - Check for changes before opening/new file
 * Finish Music Player
 * Finish File Manager
+
+Remember to refactor application .currentFile + .currentMime > .CurrentFile = {name: '', mime: ''}
 
 ### GUI Elements
 * Custom styling for GUISelect
@@ -28,7 +27,6 @@
   - de_DE for Applications
 
 ### Not prioritized
-* Shorten the code with the references from wrappers (Like OSjs.GUI.x -> GUI.x) in all apps
 * Create bin/ scripts for nodejs (redo create-application for PHP)
 * Offline resource pre-loading
 * Offline VFS
