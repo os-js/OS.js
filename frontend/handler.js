@@ -58,7 +58,6 @@
     this.offline  = false;
 
     var self = this;
-    // FIXME : Remove these on destroy()
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.addEventListener("offline", function(ev) {
         self.onOffline();
@@ -144,6 +143,15 @@
    * Called upon unload
    */
   DefaultHandler.prototype.destroy = function() {
+    var self = this;
+    if ( typeof navigator.onLine !== 'undefined' ) {
+      window.removeEventListener("offline", function(ev) {
+        self.onOffline();
+      });
+      window.removeEventListener("online", function(ev) {
+        self.onOnline();
+      });
+    }
   };
 
   /**
