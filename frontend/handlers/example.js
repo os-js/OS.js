@@ -38,42 +38,10 @@
   OSjs.Handlers = OSjs.Handlers || {};
 
   /**
-   * Storage
-   */
-  var DefaultStorage = function() {
-    if ( !OSjs.Compability.localStorage ) {
-      throw "Your browser does not support localStorage :(";
-    }
-    this.prefix = 'OS.js-v2/ExampleHandler/';
-  };
-
-  DefaultStorage.prototype.set = function(o) {
-    for ( var i in o ) {
-      if ( o.hasOwnProperty(i) ) {
-        localStorage.setItem(this.prefix + i, JSON.stringify(o[i]));
-      }
-    }
-  };
-
-  DefaultStorage.prototype.get = function() {
-    var ret = {};
-    for ( var i in localStorage ) {
-      if ( localStorage.hasOwnProperty(i) ) {
-        if ( i.indexOf(this.prefix) === 0 ) {
-          ret[i.replace(this.prefix, '')] = JSON.parse(localStorage[i]) || null;
-        }
-      }
-    }
-    return ret;
-  };
-
-  /**
    * Handler
    */
   var ExampleHandler = function() {
     OSjs.Handlers.Default.apply(this, arguments);
-
-    this.storage  = new DefaultStorage();
   };
   ExampleHandler.prototype = Object.create(OSjs.Handlers.Default.prototype);
 
@@ -210,10 +178,9 @@
 
   DemoHandler.prototype.saveSettings = function(callback) {
     console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
-    this.storage.set(this.settings.get());
 
     var self = this;
-    var settings = this.storage.get();
+    var settings = this.settings.get();
     var opts = {
       method : 'POST',
       post   : {
