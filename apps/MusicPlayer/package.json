@@ -2,7 +2,8 @@
   "ApplicationMusicPlayer":  {
     "name":       "Music Player",
     "names":      {
-      "no_NO":      "Musikkspiller"
+      "no_NO":      "Musikkspiller",
+      "de_DE":      "Musikspieler"
     },
     "mime":       ["^audio"],
     "category":   "multimedia",

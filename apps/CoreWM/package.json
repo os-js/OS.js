@@ -2,7 +2,8 @@
   "CoreWM":  {
     "name":       "OS.js Window Manager",
     "names":      {
-      "no_NO":      "OS.js Vinduhåndterer"
+      "no_NO":      "OS.js Vinduhåndterer",
+      "de_DE":      "OS.js Fenster-Manager"
     },
     "singular":   true,
     "type":       "special",

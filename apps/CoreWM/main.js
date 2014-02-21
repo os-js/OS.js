@@ -8,6 +8,11 @@
       'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
       'Open settings' : 'Åpne instillinger',
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)'
+    },
+    de_DE : {
+      'Killing this process will stop things from working!' : 'Durch das Beenden dieses Prozesses werden andere Programme aufhören zu arbeiten!',
+      'Open settings' : 'Öffne Einstellungen',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ihr Panel enthält keine Elemente. Gehen Sie in die Einstellungen und setzen Sie OS.js auf Werkseinstellungen zurück oder bearbeiten Sie das Panel manuell.\n(Dies kann nach einem Update von OS.js passieren.)'
     }
   };
 

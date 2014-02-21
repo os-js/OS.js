@@ -6,6 +6,9 @@
   var _Locales = {
     no_NO : {
       "Logging out user '{0}'.\nDo you want to save current session?" : "Logger ut bruker '{0}'.\nVil du lagre gjeldende sessjon?"
+    },
+    de_DE : {
+      "Logging out user '{0}'.\nDo you want to save current session?" : "Benutzer wird abgemeldet '{0}'.\nWollen Sie die aktuelle Sitzung speichern?"
     }
   };
 

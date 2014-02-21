@@ -343,7 +343,7 @@
   };
 
   SettingsManager.prototype.set = function(category, name, value, merge) {
-    if ( name === null ) {
+    if ( !name ) {
       return this.setCategory(category, value, merge);
     }
     return this.setCategoryItem(category, name, value, merge);

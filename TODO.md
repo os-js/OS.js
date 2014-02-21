@@ -9,6 +9,7 @@
 * Finish Node.js backend
 * Create OSjs.Core.File for abstraction (we can then remove filename/mime var combinations)
 * Create reserved strings for locales in `locales.js` (for core messages etc)
+* Create auto/manual save property for Handler
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.

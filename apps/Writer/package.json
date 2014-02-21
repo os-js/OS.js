@@ -3,10 +3,12 @@
     "name":       "Writer",
     "description":"Write rich text documents",
     "names":      {
-      "no_NO":      "Writer"
+      "no_NO":      "Writer",
+      "de_DE":      "Writer"
     },
     "descriptions":      {
-      "no_NO":      "Skriv riktekst dokumenter"
+      "no_NO":      "Skriv riktekst dokumenter",
+      "de_DE":      "Verfassen Sie Rich-Text-Dokumente"
     },
     "mime":       ["^text", "osjs\\/document"],
     "category":   "office",

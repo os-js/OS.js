@@ -3,10 +3,12 @@
     "name":       "Draw",
     "description":"Simple drawing application",
     "names":      {
-      "no_NO":      "Tegne"
+      "no_NO":      "Tegne",
+      "de_DE":      "Zeichnen"
     },
     "descriptions":      {
-      "no_NO":      "Simpelt tegne-program"
+      "no_NO":      "Simpelt tegne-program",
+      "de_DE":      "Einfaches Zeichen-Programm"
     },
     "mime":       ["^image"],
     "category":   "graphics",

@@ -58,6 +58,7 @@
     this.offline  = false;
 
     var self = this;
+    // FIXME : Remove these on destroy()
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.addEventListener("offline", function(ev) {
         self.onOffline();
@@ -377,6 +378,7 @@
    * @see OSjs.Helpers.SettingsManager
    */
   DefaultHandler.prototype.getSetting = function(category, name, callback) {
+    // TODO: Default value - also in methods below
     callback = callback || function() {};
     callback.call(this, this.settings.get(category, name));
   };
