@@ -292,7 +292,7 @@
   };
 
   //
-  // Settings / Sessions
+  // Packages
   //
 
   /**
@@ -340,13 +340,17 @@
     });
   };
 
+  //
+  // Settings and Sessions
+  //
+
   /**
    * Set the default application for given mime type
    */
   DefaultHandler.prototype.setDefaultApplication = function(mime, app, callback) {
     callback = callback || function() {};
     console.debug("OSjs::DefaultHandler::setDefaultApplication()", mime, app);
-    this._setSettings('defaultApplication', mime, app, callback);
+    this.setSetting('defaultApplication', mime, app, callback);
   };
 
   /**
