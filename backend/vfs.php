@@ -61,13 +61,15 @@ class FS
     return $result;
   }
 
-  public static function scandir($dirname, Array $opts = Array()) {
+  public static function scandir($orgdir, Array $opts = Array()) {
+    $dirname = HOMEDIR . $orgdir;
+
     if ( strstr($dirname, HOMEDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
     if ( !is_dir($dirname) ) {
-      throw new Exception("Invalid directory '{$dirname}'");
+      throw new Exception("Invalid directory '{$orgdir}'");
     }
     if ( !is_readable($dirname) ) {
-      throw new Exception("Permission denied in '{$dirname}'");
+      throw new Exception("Permission denied in '{$orgdir}'");
     }
 
     $list = Array();
@@ -83,14 +85,14 @@ class FS
     }
     $mimeFilter = $tmp;
 
-
     $files = scandir($dirname);
     foreach ( $files as $fname ) {
-      if ( $dirname == "/" && $fname == ".." ) continue;
+      if ( $orgdir == "/" && $fname == ".." ) continue;
       if ( $fname == "." ) continue;
 
-      $fpath = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
-      $ftype = is_dir($fpath) ? 'dir' : 'file';
+      $ofpath = truepath(str_replace("//", "/", sprintf("%s/%s", $orgdir, $fname)));
+      $fpath  = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
+      $ftype  = is_dir($fpath) ? 'dir' : 'file';
 
       if ( $typeFilter && $ftype !== $typeFilter ) continue;
 
@@ -100,7 +102,7 @@ class FS
 
       $iter = Array(
         'filename' => htmlspecialchars($fname),
-        'path'     => htmlspecialchars($fpath),
+        'path'     => htmlspecialchars($ofpath),
         'size'     => $fsize,
         'mime'     => null,
         'type'     => $ftype
@@ -134,7 +136,7 @@ class FS
 
   public static function file_put_contents($fname, $content, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
-    $fname = unrealpath($fname);
+    $fname = unrealpath(HOMEDIR . $fname);
 
     if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( is_file($fname) ) {
@@ -159,7 +161,7 @@ class FS
 
   public static function file_get_contents($fname, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
-    $fname = unrealpath($fname);
+    $fname = unrealpath(HOMEDIR . $fname);
 
     if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
@@ -179,7 +181,7 @@ class FS
   }
 
   public static function delete($fname) {
-    $fname = unrealpath($fname);
+    $fname = unrealpath(HOMEDIR . $fname);
 
     if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
@@ -196,8 +198,8 @@ class FS
   }
 
   public static function copy($src, $dest) {
-    $src = unrealpath($src);
-    $dest = unrealpath($dest);
+    $src = unrealpath(HOMEDIR . $src);
+    $dest = unrealpath(HOMEDIR . $dest);
 
     if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
     if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
@@ -210,8 +212,8 @@ class FS
   }
 
   public static function move($src, $dest) {
-    $src = unrealpath($src);
-    $dest = unrealpath($dest);
+    $src = unrealpath(HOMEDIR . $src);
+    $dest = unrealpath(HOMEDIR . $dest);
 
     if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
     if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
@@ -224,7 +226,7 @@ class FS
   }
 
   public static function mkdir($dname) {
-    $dname = unrealpath($dname);
+    $dname = unrealpath(HOMEDIR . $dname);
 
     if ( strstr($dname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( file_exists($dname) ) throw new Exception("Destination already exists");
@@ -233,7 +235,7 @@ class FS
   }
 
   public static function fileinfo($fname) {
-    $fname = unrealpath($fname);
+    $fname = unrealpath(HOMEDIR . $fname);
 
     if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
@@ -416,6 +418,32 @@ function destroy_dir($dir) {
 
 function unrealpath($p) {
   return str_replace(Array("../", "./"), "", $p);
+}
+
+function truepath($path){
+    // whether $path is unix or not
+    $unipath=strlen($path)==0 || $path{0}!='/';
+    // attempts to detect if path is relative in which case, add cwd
+    if(strpos($path,':')===false && $unipath)
+        $path=getcwd().DIRECTORY_SEPARATOR.$path;
+    // resolve path parts (single dot, double dot and double delimiters)
+    $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+    $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
+    $absolutes = array();
+    foreach ($parts as $part) {
+        if ('.'  == $part) continue;
+        if ('..' == $part) {
+            array_pop($absolutes);
+        } else {
+            $absolutes[] = $part;
+        }
+    }
+    $path=implode(DIRECTORY_SEPARATOR, $absolutes);
+    // resolve any symlinks
+    if(file_exists($path) && linkinfo($path)>0)$path=readlink($path);
+    // put initial separator that could have been lost
+    $path=!$unipath ? '/'.$path : $path;
+    return $path;
 }
 
 ?>

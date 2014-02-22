@@ -59,7 +59,7 @@
           APIURI:         '/API',
           FSURI:          '/FS',
           PACKAGEURI:     '/packages.json',
-          Home:           '/opt/OSjs/home',
+          Home:           '/',
           MaxUploadSize:  2097152,
           BugReporting:   true,
           Preloads:       [],

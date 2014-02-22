@@ -142,7 +142,7 @@ $data   = $method === 'POST' ? file_get_contents("php://input") : (empty($_SERVE
 // GET file request wrapper
 //
 if ( $method === 'GET' ) {
-  if ( isset($_GET['file']) && ($file = unrealpath($_GET['file'])) ) {
+  if ( isset($_GET['file']) && ($file = (HOMEDIR . unrealpath($_GET['file']))) ) {
     try {
       if ( strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
       if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
@@ -174,7 +174,7 @@ if ( $method === 'GET' ) {
 //
 if ( isset($_GET['upload']) ) {
   if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
-    $dest = unrealpath($_POST['path'] . '/' . $_FILES['upload']['name']);
+    $dest = unrealpath(HOMEDIR . $_POST['path'] . '/' . $_FILES['upload']['name']);
 
     if ( strstr($dest, HOMEDIR) === false ) {
       header("HTTP/1.0 500 Internal Server Error");

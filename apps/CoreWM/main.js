@@ -35,7 +35,7 @@
       animations      : OSjs.Compability.css.animation,
       fullscreen      : false,
       desktop         : {margin: 5},
-      wallpaper       : '/themes/wallpapers/noise_red.png',
+      wallpaper       : 'osjs:///themes/wallpapers/noise_red.png',
       theme           : 'default',
       background      : 'image-repeat',
       menuCategories  : true,

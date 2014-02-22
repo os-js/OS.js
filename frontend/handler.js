@@ -555,8 +555,8 @@
    * Default method for getting path to a resource
    */
   DefaultHandler.prototype.getResourceURL = function(path) {
-    if ( path && path.match(/^\/(themes|frontend|apps)/) ) {
-      return path;
+    if ( path.match(/^osjs\:\/\//) ) {
+      return path.replace(/^osjs\:\/\//, '');
     }
     var fsuri = this.getConfig('Core').FSURI;
     return path ? (fsuri + path) : fsuri;
