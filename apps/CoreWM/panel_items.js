@@ -69,7 +69,7 @@
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
-        var conf = new ConfirmDialog(_("Logging out user '{0}'.\nDo you want to save current session?", user.name), function(btn) {
+        var conf = new OSjs.Dialogs.Confirm(_("Logging out user '{0}'.\nDo you want to save current session?", user.name), function(btn) {
           if ( btn == 'ok' ) {
             OSjs._shutdown(true, false);
           } else {
