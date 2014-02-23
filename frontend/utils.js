@@ -31,11 +31,26 @@
 (function() {
 
   window.OSjs = window.OSjs || {};
-  OSjs.Utils = OSjs.Utils || {};
+  OSjs.Utils  = OSjs.Utils  || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // MISC
   /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Utils.Keys = {
+    H: 72,
+    M: 77,
+    R: 82,
+
+    BACKSPACE:  8,
+    TAB:        9,
+    ENTER:      13,
+    ESC:        27,
+    LEFT:       37,
+    RIGHT:      39,
+    UP:         38,
+    DOWN:       40
+  };
 
   // Kudos: http://stackoverflow.com/a/4673436
   OSjs.Utils.format = function(format) {
@@ -406,12 +421,6 @@
     if ( opts.method === 'GET' ) {
       httpRequest.send();
     } else {
-      /*
-      console.group("Ajax::POST()");
-      console.log("Args", opts.post);
-      console.groupEnd();
-      */
-
       var args = opts.post;
       if ( !(typeof opts.post === 'String') ) {
         args = (JSON.stringify(opts.post));

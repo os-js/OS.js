@@ -125,7 +125,7 @@
 
   StandardDialog.prototype._onKeyEvent = function(ev) {
     DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
+    if ( ev.keyCode === OSjs.Utils.Keys.ESC ) {
       this.end('cancel');
     }
   };
@@ -209,10 +209,14 @@
 
     if ( this.data.bugreport ) {
       var _onBugError = function(error) {
-        alert("Bugreport failed: " + error); // FIXME
+        self._error(self._title, "Bugreport error", error, null, false);
       };
       var _onBugSuccess = function() {
-        alert("The error was reported and will be looked into"); // FIXME
+        var wm = OSjs.API.getWMInstance();
+        if ( wm ) {
+          wm.addWindow(new AlertDialog("The error was reported and will be looked into"));
+        }
+
         ok.onClick();
       };
 
@@ -227,7 +231,7 @@
               return;
             }
           }
-          _onBugError("Something went wrong during reporting. You can mail it to andersevenrud@gmail.com"); // FIXME
+          _onBugError("Something went wrong during reporting. You can mail it to andersevenrud@gmail.com");
         }, function(error) {
           _onBugError(error);
         });
@@ -241,7 +245,7 @@
 
   ErrorDialog.prototype._onKeyEvent = function(ev) {
     DialogWindow.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
+    if ( ev.keyCode === OSjs.Utils.Keys.ESC ) {
       this._close();
     }
   };
@@ -299,7 +303,7 @@
       if ( refs[this.list[i]] ) {
         iter = refs[this.list[i]];
         if ( iter ) {
-          name = OSjs.Utils.format("{0} - {1}", (iter.name || name), (iter.description || '<no description>')); // FIXME
+          name = OSjs.Utils.format("{0} - {1}", (iter.name || name), (iter.description || name));
           icon = _createIcon(iter.icon, iter.path);
         }
       }
@@ -619,7 +623,7 @@
 
       this.input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(el, ev) {
         self.buttonConfirm.setDisabled(el.value.length <= 0);
-        if ( ev.keyCode === 13 ) {
+        if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
           self.buttonConfirm.onClick(ev);
           return;
         }
@@ -694,9 +698,20 @@
         self.buttonConfirm.setDisabled(false);
 
         if ( self.type === 'save' ) {
-          if ( confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path))) ) { // FIXME
-            self.dialogOK.call(self, path, mime);
+
+          var wm = OSjs.API.getWMInstance();
+          if ( wm ) {
+            self._toggleDisabled(true);
+            var conf = new ConfirmDialog(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path)), function(btn) {
+              self._toggleDisabled(false);
+              if ( btn == 'ok' ) {
+                self.dialogOK.call(self, path, mime);
+              }
+            });
+            wm.addWindow(conf);
+            self._addChild(conf);
           }
+
         } else {
           self.dialogOK.call(self, path, mime);
         }
@@ -723,6 +738,26 @@
   };
 
   FileDialog.prototype.dialogOK = function(forcepath, forcemime) {
+
+    var _ok = function(curr, mime) {
+      if ( curr ) {
+        this.end('ok', curr, mime);
+      } else {
+        var wm = OSjs.API.getWMInstance();
+        if ( wm ) {
+          var dwin;
+          if ( this.type === 'save' ) {
+            dwin = new AlertDialog(OSjs._('You need to select a file or enter new filename!'));
+          } else {
+            dwin = new AlertDialog(OSjs._('You need to select a file!'));
+          }
+          wm.addWindow(dwin);
+          this._addChild(dwin);
+        }
+      }
+    };
+
+
     var curr, item, mime = null;
     if ( forcepath ) {
       curr = forcepath;
@@ -734,12 +769,21 @@
         if ( check ) {
           item = fileList.$view.getItemByKey('filename', check);
           if ( item !== null ) {
-            if ( confirm(OSjs._("The file '{0}' already exists. Overwrite?", check)) ) { // FIXME
-              mime = item.getAttribute('data-mime');
-              curr = item.getAttribute('data-path');
-            } else {
-              return;
+            var wm = OSjs.API.getWMInstance();
+            var self = this;
+            if ( wm ) {
+              self._toggleDisabled(true);
+              var conf = new ConfirmDialog(OSjs._("Are you sure you want to overwrite the file '{0}'?", check), function(btn) {
+                self._toggleDisabled(false);
+                if ( btn == 'ok' ) {
+                  _ok.call(self, item.getAttribute('data-path'), item.getAttribute('data-mime'));
+                }
+              });
+              wm.addWindow(conf);
+              this._addChild(conf);
             }
+
+            return;
           }
         }
 
@@ -765,21 +809,7 @@
       }
     }
 
-    if ( curr ) {
-      this.end('ok', curr, mime);
-    } else {
-      var wm = OSjs.API.getWMInstance();
-      if ( wm ) {
-        var dwin;
-        if ( this.type === 'save' ) {
-          dwin = new AlertDialog(OSjs._('You need to select a file or enter new filename!'));
-        } else {
-          dwin = new AlertDialog(OSjs._('You need to select a file!'));
-        }
-        wm.addWindow(dwin);
-        this._addChild(dwin);
-      }
-    }
+    _ok.call(this, curr, mime);
   };
 
   FileDialog.prototype._focus = function() {
@@ -900,7 +930,7 @@
     var inputd = document.createElement('div');
 
     this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(el, ev) {
-      if ( ev.keyCode === 13 ) {
+      if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
         self.buttonConfirm.onClick(ev);
         return;
       }

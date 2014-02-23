@@ -125,23 +125,8 @@
    * @return  void
    */
   function APICall(m, a, cok, cerror) {
-    a = a || {};
-
-    console.group("API Call");
-    console.log("Method", m);
-    console.log("Arguments", a);
-    console.groupEnd();
-
-    var opts = {
-      method : 'POST',
-      post   : {
-        'method'    : m,
-        'arguments' : a
-      }
-    };
-
     _$LOADING.style.display = 'block';
-    return _HANDLER.call(opts, function() {
+    return _HANDLER.callAPI(m, a, function() {
       _$LOADING.style.display = 'none';
       cok.apply(this, arguments);
     }, function() {
@@ -815,7 +800,7 @@
           isHTMLInput = d.readOnly || d.disabled;
     }
 
-    if ( ev.keyCode === 8 ) {
+    if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
       if ( isHTMLInput ) {
         doPrevent = true;
       }

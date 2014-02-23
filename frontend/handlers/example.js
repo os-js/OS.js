@@ -124,14 +124,8 @@
 
   ExampleHandler.prototype.login = function(username, password, callback) {
     console.debug('OSjs::Handlers::ExampleHandler::login()');
-    var opts = {
-      method : 'POST',
-      post   : {
-        'method'    : 'login',
-        'arguments' : {username: username, password: password}
-      }
-    };
-    this.call(opts, function(response) {
+    var opts = {username: username, password: password};
+    this.callAPI('login', opts, function(response) {
       if ( response.result ) { // This contains an object with user data
         callback(response.result);
       } else {
@@ -148,15 +142,8 @@
     var self = this;
 
     var _finished = function() {
-      var opts = {
-        method : 'POST',
-        post   : {
-          'method'    : 'logout',
-          'arguments' : {}
-        }
-      };
-
-      self.call(opts, function(response) {
+      var opts = {};
+      self.callAPI('logout', opts, function(response) {
         if ( response.result ) {
           callback(true);
         } else {
@@ -182,15 +169,8 @@
 
     var self = this;
     var settings = this.settings.get();
-    var opts = {
-      method : 'POST',
-      post   : {
-        'method'    : 'settings',
-        'arguments' : {settings: settings}
-      }
-    };
-
-    this.call(opts, function(response) {
+    var opts = {settings: settings};
+    this.callAPI('settings', opts, function(response) {
       console.debug("ExampleHandler::syncSettings()", response);
       if ( response.result ) {
         callback.call(self, true);

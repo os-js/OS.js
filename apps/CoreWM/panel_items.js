@@ -67,8 +67,17 @@
 
     this.addButton(OSjs._('Log out (Exit)'), 'actions/exit.png', function(ev) {
       var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
-      var t = confirm(_("Logging out user '{0}'.\nDo you want to save current session?", user.name)); // FIXME
-      OSjs._shutdown(t, false);
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        var conf = new ConfirmDialog(_("Logging out user '{0}'.\nDo you want to save current session?", user.name), function(btn) {
+          if ( btn == 'ok' ) {
+            OSjs._shutdown(true, false);
+          } else {
+            OSjs._shutdown(false, false);
+          }
+        });
+        wm.addWindow(conf);
+      }
     });
 
     return root;

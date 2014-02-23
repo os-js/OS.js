@@ -315,7 +315,8 @@
      ]);
     sideView.setRows([
       {image: _getFileIcon('places/folder_home.png'), filename: 'Home', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
-      {image: _getFileIcon('places/folder-documents.png'), filename: 'Documents', mime: null, size: 0, type: 'link', path: '/Documents'}/*,
+      {image: _getFileIcon('places/folder-documents.png'), filename: 'Documents', mime: null, size: 0, type: 'link', path: '/Documents'}
+      /*,
       {image: _getFileIcon('places/folder.png'), filename: 'Temp', mime: null, size: 0, type: 'link', path: '/tmp'},
       {image: _getFileIcon('devices/drive-harddisk.png'), filename: 'Filesystem', mime: null, size: 0, type: 'link', path: '/'}*/
     ]);

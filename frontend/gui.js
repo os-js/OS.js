@@ -946,11 +946,11 @@
       var idx = OSjs.Utils.$index(this.selectedDOMItem, this.$body);
       var tidx = idx;
       if ( idx >= 0 && idx < this.$body.childNodes.length ) {
-        if ( ev.keyCode === 38 ) {
+        if ( ev.keyCode === OSjs.Utils.Keys.UP ) {
           idx--;
-        } else if ( ev.keyCode === 40 ) {
+        } else if ( ev.keyCode === OSjs.Utils.Keys.DOWN ) {
           idx++;
-        } else if ( ev.keyCode === 13 ) {
+        } else if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
           this._onActivate(ev, this.selectedDOMItem);
           return true;
         }

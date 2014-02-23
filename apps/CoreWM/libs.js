@@ -178,7 +178,7 @@
 
   PanelItemWindow.prototype._onKeyEvent = function(ev) {
     Window.prototype._onKeyEvent(this, arguments);
-    if ( ev.keyCode === 27 ) {
+    if ( ev.keyCode === OSjs.Utils.Keys.ESC ) {
       this._close();
     }
   };
@@ -880,6 +880,10 @@
 
   Panel.prototype.getRoot = function() {
     return this._$element;
+  };
+
+  Panel.prototype.getHeight = function() {
+    return this._$element ? this._$element.offsetHeight : 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////

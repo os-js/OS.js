@@ -69,9 +69,9 @@
   };
 
   /**
-   * Default method to perform a call to the backend
+   * Default method to perform a call to the backend (Wrapper)
    */
-  DefaultHandler.prototype.call = function(opts, cok, cerror) {
+  DefaultHandler.prototype._call = function(opts, cok, cerror) {
     if ( this.offline ) {
       cerror("You are currently off-line and cannot perform this operation!");
       return false;
@@ -83,6 +83,29 @@
     }, function(error, response, httpRequest, url) {
       cerror.apply(this, arguments);
     }, opts);
+  };
+
+  /**
+   * Default method to perform a call to the backend (API)
+   * Use this shorthand method: OSjs.API.call() instead :)
+   */
+  DefaultHandler.prototype.callAPI = function(method, args, cok, cerror) {
+    args = args || {};
+
+    console.group("DefaultHandler::callAPI()");
+    console.log("Method", method);
+    console.log("Arguments", args);
+    console.groupEnd();
+
+    var opts = {
+      method : 'POST',
+      post   : {
+        'method'    : method,
+        'arguments' : args
+      }
+    };
+
+    return this._call(opts, cok, cerror);
   };
 
   //

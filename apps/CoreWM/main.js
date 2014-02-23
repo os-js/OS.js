@@ -314,7 +314,7 @@
     if ( !this.getSetting('moveOnResize') ) { return; }
 
     var space = this.getWindowSpace();
-    var margin = 10;
+    var margin = this.getSetting('desktop').margin;
     var i = 0, l = this._windows.length, iter, wrect;
     var mx, my, moved;
 
@@ -364,9 +364,9 @@
 
   CoreWM.prototype.onKeyDown = function(ev, win) {
     if ( !ev ) { return; }
-    // TODO: Custom key bindings
 
-    if ( ev.shiftKey && ev.keyCode === 9 ) { // Toggle Window switcher
+    var keys = OSjs.Utils.Keys;
+    if ( ev.shiftKey && ev.keyCode === keys.TAB ) { // Toggle Window switcher
       if ( !this.getSetting('enableSwitcher') ) { return; }
 
       if ( this.switcher ) {
@@ -376,19 +376,19 @@
       if ( !this.getSetting('enableHotkeys') ) { return; }
 
       if ( win && win._properties.allow_hotkeys ) {
-        if ( ev.keyCode === 72 ) { // Hide window [H]
+        if ( ev.keyCode === keys.H ) { // Hide window [H]
           win._minimize();
-        } else if ( ev.keyCode === 77 ) { // Maximize window [M]
+        } else if ( ev.keyCode === keys.M ) { // Maximize window [M]
           win._maximize();
-        } else if ( ev.keyCode === 82 ) { // Restore window [R]
+        } else if ( ev.keyCode === keys.R ) { // Restore window [R]
           win._restore();
-        } else if ( ev.keyCode === 37 ) { // Pin Window Left [Left]
+        } else if ( ev.keyCode === keys.LEFT ) { // Pin Window Left [Left]
           win._moveTo('left');
-        } else if ( ev.keyCode === 39 ) { // Pin Window Right [Right]
+        } else if ( ev.keyCode === keys.RIGHT ) { // Pin Window Right [Right]
           win._moveTo('right');
-        } else if ( ev.keyCode === 38 ) { // Pin Window Top [Up]
+        } else if ( ev.keyCode === keys.UP ) { // Pin Window Top [Up]
           win._moveTo('top');
-        } else if ( ev.keyCode === 40 ) { // Pin Window Bottom [Down]
+        } else if ( ev.keyCode === keys.DOWN ) { // Pin Window Bottom [Down]
           win._moveTo('bottom');
         }
       }
@@ -501,16 +501,16 @@
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
     var d = this.getSetting('desktop');
 
-    var p;
+    var p, ph;
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
       if ( p && p.getOntop() ) {
-        // FIXME: Check for real values -- remove the static
+        ph = p.getHeight();
         if ( p.getPosition('top') ) {
-          s.top    += 35;
-          s.height -= 35;
+          s.top    += ph;
+          s.height -= ph;
         } else {
-          s.height -= 35;
+          s.height -= ph;
         }
       }
     }
@@ -528,15 +528,14 @@
   CoreWM.prototype.getWindowPosition = function(borders) {
     borders = (typeof borders === 'undefined') || (borders === true);
 
-    var b   = borders ? 10 : 0;
+    var b   = borders ? this.getSetting('desktop').margin : 0;
     var pos = {x: b, y: b};
 
     var p;
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
       if ( p && p.getOntop() && p.getPosition('top') ) {
-        // FIXME: Check for real values -- remove the static
-        pos.y += 35;
+        pos.y += p.getHeight();
       }
     }
 
