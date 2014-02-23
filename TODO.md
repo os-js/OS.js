@@ -11,7 +11,6 @@
 * New Draw codebase -- layer, effect support etc.
 * Writer - Check for changes before opening/new file
 * Finish Music Player
-* Finish File Manager
 * Refactor from currentX to currentFile.x for file stuff
 
 ### GUI Elements

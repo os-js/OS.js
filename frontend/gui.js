@@ -2560,6 +2560,7 @@
     opts.direction  = opts.direction  || 'horizontal';
 
     this.$container = null;
+    this.$separator = null;
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -2614,6 +2615,7 @@
       });
 
       this.$container.appendChild(separator);
+      this.$separator = separator;
     }
 
     var container = document.createElement('li');

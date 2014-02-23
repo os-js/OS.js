@@ -48,6 +48,7 @@
   };
 
   DefaultStorage.prototype.set = function(o) {
+    console.debug("DefaultStorage::set()", o);
     for ( var i in o ) {
       if ( o.hasOwnProperty(i) ) {
         localStorage.setItem(this.prefix + i, JSON.stringify(o[i]));
@@ -130,8 +131,9 @@
   };
 
   DemoHandler.prototype.saveSettings = function(callback) {
-    console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
-    this.storage.set(this.settings.get());
+    var settings = this.settings.get();
+    console.debug('OSjs::Handlers::DemoHandler::saveSettings()', settings);
+    this.storage.set(settings);
     callback.call(this, true);
   };
 

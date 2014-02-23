@@ -6,6 +6,7 @@
 
   var _Locales = {
     no_NO : {
+      'Show Sidebar' : 'Vis Sidebar',
       'Copying file...' : 'Kopierer fil...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopierer <span>{0}</span> to <span>{1}</span>",
       "Showing {0} item(s), {1}" : "Viser {0} objekt(er), {1}",
@@ -45,8 +46,8 @@
     var self  = this;
     var app   = this._appRef;
     var root  = Window.prototype.init.apply(this, arguments);
-    //var vt    = app._getSetting('viewType');
     var vt    = app._getArgument('viewType');
+    var vs    = true;
 
     var panedView  = this._addGUIElement(new GUI.PanedView('FileManagerPanedView'), root);
     var viewSide   = panedView.createView('Side');
@@ -57,6 +58,13 @@
     var menuBar    = this._addGUIElement(new GUI.MenuBar('FileManagerMenuBar'), root);
 
     var defaultStatusText = '';
+
+    var _toggleSidebar = function(val) {
+      vs = val;
+      app._setArgument('viewSidebar', vs);
+      viewSide.style.display = vs ? 'block' : 'none';
+      panedView.$separator.style.display = vs ? 'block' : 'none';
+    };
 
     fileView.onContextMenu = function(ev, el, item) {
       if ( menuBar ) {
@@ -261,11 +269,37 @@
       }}
     ];
 
+    var chk;
     menuBar.addItem(OSjs._("View"), [
       {title: OSjs._('Refresh'), onClick: function() {
         fileView.refresh();
         self._focus();
       }},
+      {title: _('Show Sidebar'),
+        onCreate: function(menu, item) {
+          var span = document.createElement('span');
+          chk  = document.createElement('input');
+          chk.type = 'checkbox';
+          if ( vs ) {
+            chk.setAttribute('checked', 'checked');
+          }
+          span.appendChild(document.createTextNode(item.title));
+          span.appendChild(chk);
+          menu.appendChild(span);
+        }, onClick: function() {
+          fileView.refresh();
+          if ( chk ) {
+            if ( chk.checked ) {
+              chk.removeAttribute('checked');
+              _toggleSidebar(false);
+            } else {
+              chk.setAttribute('checked', 'checked');
+              _toggleSidebar(true);
+            }
+          }
+          self._focus();
+        }
+      },
       {title: OSjs._('View type'), menu: viewTypeMenu}
     ]);
 
@@ -334,6 +368,10 @@
     };
 
     sideView.render();
+
+    if ( app._getArgument('viewSidebar') === false ) {
+      _toggleSidebar(false);
+    }
   };
 
   ApplicationFileManagerWindow.prototype.destroy = function() {

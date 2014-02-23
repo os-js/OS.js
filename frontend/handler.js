@@ -417,11 +417,10 @@
    * Sets a setting
    * @see OSjs.Helpers.SettingsManager
    */
-  DefaultHandler.prototype.setSetting = function(category, name, value, callback, save) {
+  DefaultHandler.prototype.setSetting = function(category, name, value, callback, save, merge) {
     save = (typeof save === 'undefined' || save === true);
     callback = callback || function() {};
-    var stored = this.settings.set(category, name, value);
-
+    var stored = this.settings.set(category, name, value, merge);
     if ( save ) {
       this.saveSettings(function() {
         callback.call(this, stored);
@@ -473,7 +472,7 @@
    */
   DefaultHandler.prototype.setUserSession = function(session, callback) {
     callback = callback || function() {};
-    this.setSetting('userSession', null, session, callback);
+    this.setSetting('userSession', null, session, callback, true, false);
   };
 
   /**
@@ -489,7 +488,7 @@
    */
   DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
     callback = callback || function() {};
-    this.setSetting(app, settings, callback);
+    this.setSetting(app, settings, callback, true, false);
   };
 
   /**

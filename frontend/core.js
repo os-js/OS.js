@@ -1332,7 +1332,7 @@
   };
 
   Application.prototype._getArgument = function(k) {
-    return this.__args[k] || null;
+    return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
   };
 
   Application.prototype._setArgument = function(k, v) {
