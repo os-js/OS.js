@@ -41,6 +41,7 @@
     this.$message       = null;
     this.buttonConfirm  = null;
     this.buttonCancel   = null;
+    this.buttonClose    = null;
 
     this.className      = className;
     this.args           = args          || {};
@@ -69,6 +70,9 @@
     var root = DialogWindow.prototype.init.apply(this, arguments);
     var self = this;
 
+    var buttonContainer = document.createElement('div');
+    buttonContainer.className = 'Buttons';
+
     this.$element = document.createElement('div');
     this.$element.className = 'StandardDialog ' + this.className;
 
@@ -80,13 +84,22 @@
     }
 
     var lbl;
+    if ( (typeof this.args.buttonClose !== 'undefined') && (this.args.buttonClose === true) ) {
+      lbl = (this.args.buttonCloseLabel || OSjs._('Close'));
+      this.buttonClose = this._addGUIElement(new OSjs.GUI.Button('Close', {label: lbl, onClick: function(el, ev) {
+        if ( !this.isDisabled() ) {
+          self.onCloseClick(ev);
+        }
+      }}), buttonContainer);
+    }
+
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
       lbl = (this.args.buttonCancelLabel || OSjs._('Cancel'));
       this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onCancelClick(ev);
         }
-      }}), this.$element);
+      }}), buttonContainer);
     }
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
@@ -95,9 +108,10 @@
         if ( !this.isDisabled() ) {
           self.onConfirmClick.call(self, ev);
         }
-      }}), this.$element);
+      }}), buttonContainer);
     }
 
+    this.$element.appendChild(buttonContainer);
     root.appendChild(this.$element);
     return root;
   };
@@ -113,6 +127,11 @@
     }
   };
 
+  StandardDialog.prototype.onCloseClick = function(ev) {
+    if ( !this.buttonClose ) { return; }
+    this.end('close');
+  };
+
   StandardDialog.prototype.onCancelClick = function(ev) {
     if ( !this.buttonCancel ) { return; }
     this.end('cancel');
@@ -126,7 +145,11 @@
   StandardDialog.prototype._onKeyEvent = function(ev) {
     DialogWindow.prototype._onKeyEvent(this, arguments);
     if ( ev.keyCode === OSjs.Utils.Keys.ESC ) {
-      this.end('cancel');
+      if ( this.args.buttonClose ) {
+        this.end('close');
+      } else {
+        this.end('cancel');
+      }
     }
   };
 
@@ -895,8 +918,9 @@
   /**
    * Alert/Message Dialog
    */
-  var AlertDialog = function(msg, onClose) {
-    StandardDialog.apply(this, ['AlertDialog', {title: OSjs._("Alert Dialog"), message: msg, buttonCancel: false, buttonOkLabel: OSjs._("Close")}, {width:250, height:100}, onClose]);
+  var AlertDialog = function(msg, onClose, args) {
+    args = OSjs.Utils.mergeObject({title: OSjs._("Alert Dialog"), message: msg, buttonCancel: false, buttonOkLabel: OSjs._("Close")}, (args || {}));
+    StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
     this._icon = 'status/dialog-warning.png';
   };
   AlertDialog.prototype = Object.create(StandardDialog.prototype);
@@ -904,8 +928,9 @@
   /**
    * Confirmation Dialog
    */
-  var ConfirmDialog = function(msg, onClose) {
-    StandardDialog.apply(this, ['ConfirmDialog', {title: OSjs._("Confirm Dialog"), message: msg}, {width:350, height:120}, onClose]);
+  var ConfirmDialog = function(msg, onClose, args) {
+    args = OSjs.Utils.mergeObject({title: OSjs._("Confirm Dialog"), message: msg}, (args || {}));
+    StandardDialog.apply(this, ['ConfirmDialog', args, {width:350, height:120}, onClose]);
     this._icon = 'status/dialog-question.png';
   };
   ConfirmDialog.prototype = Object.create(StandardDialog.prototype);

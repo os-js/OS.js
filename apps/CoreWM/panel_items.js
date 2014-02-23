@@ -72,10 +72,10 @@
         var conf = new OSjs.Dialogs.Confirm(_("Logging out user '{0}'.\nDo you want to save current session?", user.name), function(btn) {
           if ( btn == 'ok' ) {
             OSjs._shutdown(true, false);
-          } else {
+          } else if ( btn == 'cancel' ) {
             OSjs._shutdown(false, false);
           }
-        });
+        }, {title: OSjs._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs._('Cancel'), buttonOkLabel: OSjs._('Yes'), buttonCancelLabel: OSjs._('No')});
         wm.addWindow(conf);
       }
     });
