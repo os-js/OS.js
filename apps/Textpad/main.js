@@ -86,6 +86,13 @@
     return false;
   };
 
+  ApplicationTextpadWindow.prototype.setChanged = function(c) {
+    var gel  = this._getGUIElement('TextpadTextarea');
+    if ( gel ) {
+      gel.hasChanged = false;
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
@@ -138,6 +145,8 @@
           } else {
             w.setTitle(arg1 ? arg1.path : null);
           }
+
+          w.setChanged(false);
         }
         w._focus();
       }
