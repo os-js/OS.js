@@ -65,9 +65,9 @@
  * File Dialog
  */
 
-.FileSaveDialog,
-.FileOpenDialog{
-}
+/*.FileSaveDialog,
+.FileOpenDialog {
+}*/
 
 .FileOpenDialog .FileDialogFileView,
 .FileSaveDialog .FileDialogFileView {
@@ -99,8 +99,8 @@
 
 /* FileUpload */
 
-.FileUploadDialog {
-}
+/*.FileUploadDialog {
+}*/
 .FileUploadDialog input[type=file] {
   margin-top : 10px;
 }
@@ -122,8 +122,8 @@
 }
 
 /* ColorDialog */
-.ColorDialog {
-}
+/*.ColorDialog {
+}*/
 .ColorDialog .GUIColorSwatch {
   position : absolute;
   top : 0px;
@@ -177,8 +177,8 @@
 }
 
 /* FontDialog */
-.FontDialog {
-}
+/*.FontDialog {
+}*/
 .FontDialog .GUIRichText {
   position : absolute;
   left : 0px;
@@ -228,8 +228,8 @@
 
 /* Other */
 
-.InputDialog {
-}
+/*.InputDialog {
+}*/
 .InputDialog .GUIText {
   position : absolute;
   bottom : 30px;
@@ -238,11 +238,11 @@
   width : 290px;
 }
 
-.ConfirmDialog {
+/*.ConfirmDialog {
 }
-
 .AlertDialog {
 }
+*/
 .AlertDialog .Buttons .OK {
   float : none;
   position : absolute;

@@ -90,8 +90,8 @@
 /**
  * GUIMenuBar
  */
-.GUIMenuBar {
-}
+/*.GUIMenuBar {
+}*/
 .GUIMenuBar > ul {
   margin : 0;
   padding : 0;
@@ -215,8 +215,8 @@
 /**
  * Color Swatch
  */
-.GUIColorSwatch {
-}
+/*.GUIColorSwatch {
+}*/
 
 /**
  * Status Bar
