@@ -201,70 +201,56 @@
     this.onTrackPaused          = function() {};
     this.onError                = function() {};
 
-    // FIXME: Remove event listeners
     var self = this;
     this.$audio.addEventListener("play", function(ev) {
-      if ( self.destroyed ) return;
-      self.paused = false;
-      self.onTrackStarted(ev, self);
+      self._event('play', ev);
     });
-
     this.$audio.addEventListener("ended", function(ev) {
-      if ( self.destroyed ) return;
-      self.onTrackEnded(ev, self);
+      self._event('ended', ev);
     });
-
     this.$audio.addEventListener("pause", function(ev) {
-      if ( self.destroyed ) return;
-      self.paused = true;
-      self.onTrackPaused(ev, self);
+      self._event('pause', ev);
     });
-
     this.$audio.addEventListener("loadeddata", function(ev) {
-      if ( self.destroyed ) return;
-      self.onLoadedData(ev, self);
+      self._event('loadeddata', ev);
     });
-
     this.$audio.addEventListener("timeupdate", function(ev) {
-      if ( self.destroyed ) return;
-      self.onTimeUpdate(ev, self);
+      self._event('timeupdate', ev);
     });
-
     this.$audio.addEventListener("error", function(ev) {
-      if ( self.destroyed ) return;
-      var msg;
-      try {
-        switch ( ev.target.error.code ) {
-          case ev.target.error.MEDIA_ERR_ABORTED:
-            msg = _('Playback aborted');
-            break;
-          case ev.target.error.MEDIA_ERR_NETWORK:
-            msg = _('Network or communication error');
-            break;
-          case ev.target.error.MEDIA_ERR_DECODE:
-            msg = _('Decoding failed. Corruption or unsupported media');
-            break;
-          case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            msg = _('Media source not supported');
-            break;
-          default:
-            msg = OSjs._('Unknown error');
-            break;
-        }
-      } catch ( e ) {
-        msg = OSjs._('Fatal error: {0}', e);
-      }
-      self.onError(ev, self, msg);
+      self._event('error', ev);
     }, true);
   };
 
   AudioPlayer.prototype.destroy = function() {
+    var self = this;
+
     this.destroyed = true;
 
     if ( this.$audio ) {
       if ( this.$audio.parentNode ) {
         this.$audio.pause();
         this.$audio.src = 'about:blank';
+
+        this.$audio.removeEventListener("play", function(ev) {
+          self._event('play', ev);
+        });
+        this.$audio.removeEventListener("ended", function(ev) {
+          self._event('ended', ev);
+        });
+        this.$audio.removeEventListener("pause", function(ev) {
+          self._event('pause', ev);
+        });
+        this.$audio.removeEventListener("loadeddata", function(ev) {
+          self._event('loadeddata', ev);
+        });
+        this.$audio.removeEventListener("timeupdate", function(ev) {
+          self._event('timeupdate', ev);
+        });
+        this.$audio.removeEventListener("error", function(ev) {
+          self._event('error', ev);
+        }, true);
+
         this.$audio.parentNode.removeChild(this.$audio);
       }
       this.$audio = null;
@@ -281,6 +267,65 @@
 
 
     return true;
+  };
+
+  AudioPlayer.prototype._event = function(name, ev) {
+    if ( this.destroyed ) { return; }
+
+    switch ( name ) {
+
+      case 'play' :
+        this.paused = false;
+        this.onTrackStarted(ev, this);
+        break;
+
+      case 'ended' :
+        this.onTrackEnded(ev, this);
+        break;
+
+      case 'pause' :
+        this.paused = true;
+        this.onTrackPaused(ev, this);
+        break;
+
+      case 'loadeddata' :
+        this.onLoadedData(ev, this);
+        break;
+
+      case 'timeupdate' :
+        this.onTimeUpdate(ev, this);
+        break;
+
+      case 'error' :
+        var msg;
+        try {
+          switch ( ev.target.error.code ) {
+            case ev.target.error.MEDIA_ERR_ABORTED:
+              msg = _('Playback aborted');
+              break;
+            case ev.target.error.MEDIA_ERR_NETWORK:
+              msg = _('Network or communication error');
+              break;
+            case ev.target.error.MEDIA_ERR_DECODE:
+              msg = _('Decoding failed. Corruption or unsupported media');
+              break;
+            case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+              msg = _('Media source not supported');
+              break;
+            default:
+              msg = OSjs._('Unknown error');
+              break;
+          }
+        } catch ( e ) {
+          msg = OSjs._('Fatal error: {0}', e);
+        }
+
+        this.onError(ev, this, msg);
+        break;
+
+      default:
+        break;
+    }
   };
 
   AudioPlayer.prototype.seek = function(to) {
