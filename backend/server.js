@@ -178,7 +178,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var fullPath = path;//_path.join(config.vfsdir, path);
+      var fullPath = _path.join(config.vfsdir, path);
       _fs.exists(fullPath, function(exists) {
         if ( exists ) {
           _fs.readFile(fullPath, function(error, data) {
@@ -203,7 +203,7 @@
       var data = args[1] || '';
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var fullPath = path;//_path.join(config.vfsdir, path);
+      var fullPath = _path.join(config.vfsdir, path);
 
       if ( opts.dataSource ) {
         data = data.replace(/^data\:(.*);base64\,/, "") || '';
@@ -223,7 +223,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var fullPath = path;//_path.join(config.vfsdir, path);
+      var fullPath = _path.join(config.vfsdir, path);
       _fs.exists(fullPath, function(exists) {
         if ( !exists ) {
           respondJSON({result: null, error: 'Target does not exist!'}, response);
@@ -250,8 +250,8 @@
       var dst  = args[1];
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var srcPath = src;
-      var dstPath = dst;//_path.join(config.vfsdir, path);
+      var srcPath = _path.join(config.vfsdir, src);
+      var dstPath = _path.join(config.vfsdir, dst);
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {
           _fs.exists(dstPath, function(exists) {
@@ -277,7 +277,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var fullPath = path;//_path.join(config.vfsdir, path);
+      var fullPath = _path.join(config.vfsdir, path);
       _fs.exists(fullPath, function(exists) {
         if ( exists ) {
           respondJSON({result: null, error: 'Target already exist!'}, response);
@@ -302,22 +302,23 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var fullPath = path;//_path.join(config.vfsdir, path);
+      var fullPath = _path.join(config.vfsdir, path);
 
       _fs.readdir(fullPath, function(error, files) {
         if ( error ) {
           respondJSON({result: null, error: 'Error reading directory: ' + error}, response);
         } else {
           var result = [];
-          var fpath, ftype, fsize;
+          var ofpath, fpath, ftype, fsize;
           for ( var i = 0; i < files.length; i++ ) {
-            fpath = _path.join(path, files[i]);
+            ofpath = _path.join(path, files[i]);
+            fpath = _path.join(fullPath, files[i]);
             ftype = _fs.statSync(fpath).isFile() ? 'file' : 'dir'; // FIXME
             fsize = 0; // FIXME
 
             result.push({
               filename: files[i],
-              path:     fpath,
+              path:     ofpath,
               size:     fsize,
               mime:     ftype === 'file' ? getMime(files[i]) : '',
               type:     ftype
