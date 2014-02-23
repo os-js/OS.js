@@ -558,13 +558,15 @@
     this.$element = null;
   };
 
-  // TODO: We also need to check left/right some time around
   Menu.prototype.show = function(pos, submenu) {
     var tw, th, px, py;
     if ( submenu ) {
       var off = OSjs.Utils.$position(submenu);
       if ( off.bottom > window.innerHeight ) {
         submenu.style.top = (window.innerHeight-off.bottom) + 'px';
+      }
+      if ( off.right > window.innerWidth ) {
+        submenu.style.left = (window.innerWidth-off.right) + 'px';
       }
       return;
     }
@@ -2550,7 +2552,8 @@
 
   /**
    * PanedView
-   * FIXME: When more than two Views manual CSS is required
+   * FIXME: PanedView - When more than two Views manual CSS is required
+   * FIXME: PanedView - Vertical orientation (direction)
    */
   var PanedView = function(name, opts) {
     opts            = opts            || {};
@@ -2582,7 +2585,6 @@
       separator.className = 'Separator';
 
 
-      // FIXME: Vertical
       var startW = 0;
       var startX = 0;
       var idx    = this.$container.childNodes.length - 1;
