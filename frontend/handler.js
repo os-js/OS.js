@@ -35,6 +35,111 @@
   OSjs.Handlers = OSjs.Handlers || {};
 
   /////////////////////////////////////////////////////////////////////////////
+  // DEFAULT PACKAGE MANAGER
+  /////////////////////////////////////////////////////////////////////////////
+
+  var PackageManager = function(uri) {
+    this.packages = {};
+    this.uri = uri;
+  };
+
+  /**
+   * Load Metadata from server and set packages
+   */
+  PackageManager.prototype.load = function(callback) {
+    var self = this;
+    callback = callback || {};
+
+    console.info("PackageManager::load()");
+
+    OSjs.Utils.Ajax(this.uri, function(response, httpRequest, url) {
+      if ( response ) {
+        self._setPackages(response);
+        callback(true);
+      } else {
+        callback(false, "No packages found!");
+      }
+    }, function(error, response, httpRequest) {
+      if ( httpRequest && httpRequest.status != 200 ) {
+        error = 'Failed to load package manifest from ' + uri + ' - HTTP Error: ' + httpRequest.status;
+      }
+      callback(false, error);
+    }, {method: 'GET', parse: true});
+  };
+
+  /**
+   * Set package list (does some corrections for locale)
+   */
+  PackageManager.prototype._setPackages = function(result) {
+    console.debug("PackageManager::_setPackages()", result);
+    var currLocale = OSjs.Locale.getLocale();
+    var resulted = {};
+    var newIter;
+    for ( var i in result ) {
+      if ( result.hasOwnProperty(i) ) {
+        newIter = result[i];
+        if ( typeof newIter.names !== 'undefined' ) {
+          if ( newIter.names[currLocale] ) {
+            newIter.name = newIter.names[currLocale];
+          }
+        }
+        if ( typeof newIter.descriptions !== 'undefined' ) {
+          if ( newIter.descriptions[currLocale] ) {
+            newIter.description = newIter.descriptions[currLocale];
+          }
+        }
+
+        if ( !newIter.description ) {
+          newIter.description = newIter.name;
+        }
+
+        resulted[i] = newIter;
+      }
+    }
+
+    this.packages = resulted;
+  };
+
+  /**
+   * Get package by name
+   */
+  PackageManager.prototype.getPackage = function(name) {
+    if ( typeof this.packages[name] !== 'undefined' ) {
+      return this.packages[name];
+    }
+    return false;
+  };
+
+  /**
+   * Get all packages
+   */
+  PackageManager.prototype.getPackages = function() {
+    return this.packages;
+  };
+
+  /**
+   * Get packages by Mime support type
+   */
+  PackageManager.prototype.getPackagesByMime = function(mime) {
+    var j, i, a;
+    var list = [];
+    for ( i in this.packages ) {
+      if ( this.packages.hasOwnProperty(i) ) {
+        a = this.packages[i];
+        if ( a && a.mime ) {
+          for ( j = 0; j < a.mime.length; j++ ) {
+            if ( (new RegExp(a.mime[j])).test(mime) === true ) {
+              list.push(i);
+            }
+          }
+        }
+      }
+    }
+
+    return list;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HANDLING CODE
   /////////////////////////////////////////////////////////////////////////////
 
@@ -46,18 +151,20 @@
    * You can implement your own, see documentation on Wiki.
    */
   var DefaultHandler = function() {
-    this.packages = {};                                   // Package cache
-    this.settings = new OSjs.Helpers.SettingsManager();   // Settings cache
-    this.config   = OSjs.Settings.DefaultConfig();        // Main configuration copy
-    this.userData = {                                     // User Session data
+    var self = this;
+    var cfg = OSjs.Settings.DefaultConfig();
+
+    this.offline  = false;
+    this.settings = new OSjs.Helpers.SettingsManager();      // Settings cache
+    this.config   = cfg;                                     // Main configuration copy
+    this.packages = new PackageManager(cfg.Core.PACKAGEURI); // Package manager
+    this.userData = {                                        // User Session data
       id      : 0,
       username: 'root',
       name    : 'root user',
       groups  : ['root']
     };
-    this.offline  = false;
 
-    var self = this;
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.addEventListener("offline", function(ev) {
         self.onOffline();
@@ -183,51 +290,8 @@
    */
   DefaultHandler.prototype.boot = function(callback) {
     console.info("OSjs::DefaultHandler::boot()");
-
-    callback = callback || {};
-    var self = this;
-
-    this.pollPackages(function(result, error) {
-      if ( error ) {
-        callback(false, error);
-        return;
-      }
-
-      if ( result ) {
-        // Make sure we apply correct locale
-        // Also sets correct descriptions
-        var currLocale = OSjs.Locale.getLocale();
-        var resulted = {};
-        var newIter;
-        for ( var i in result ) {
-          if ( result.hasOwnProperty(i) ) {
-            newIter = result[i];
-            if ( typeof newIter.names !== 'undefined' ) {
-              if ( newIter.names[currLocale] ) {
-                newIter.name = newIter.names[currLocale];
-              }
-            }
-            if ( typeof newIter.descriptions !== 'undefined' ) {
-              if ( newIter.descriptions[currLocale] ) {
-                newIter.description = newIter.descriptions[currLocale];
-              }
-            }
-
-            if ( !newIter.description ) {
-              newIter.description = newIter.name;
-            }
-
-            resulted[i] = newIter;
-          }
-        }
-
-        self.packages = resulted;
-        //self.packages = result;
-        callback(true);
-        return;
-      }
-
-      callback(false);
+    this.packages.load(function() {
+      callback(true);
     });
   };
 
@@ -291,75 +355,38 @@
     });
   };
 
-  /**
-   * Default method to pull package manifest
-   */
-  DefaultHandler.prototype.pollPackages = function(callback) {
-    console.info("OSjs::DefaultHandler::pollPackages()");
-
-    callback = callback || function() {};
-
-    var uri = this.getConfig('Core').PACKAGEURI;
-    return OSjs.Utils.Ajax(uri, function(response, httpRequest, url) {
-      if ( response ) {
-        callback(response);
-      } else {
-        callback(false, "No packages found!");
-      }
-    }, function(error, response, httpRequest) {
-      if ( httpRequest && httpRequest.status != 200 ) {
-        error = 'Failed to load package manifest from ' + uri + ' - HTTP Error: ' + httpRequest.status;
-      }
-      callback(false, error);
-    }, {method: 'GET', parse: true});
-  };
-
   //
   // Packages
   //
 
   /**
+   * Get metadata for application by class-name
+   */
+  DefaultHandler.prototype.getApplicationMetadata = function(name) {
+    return this.packages.getPackage(name);
+  };
+
+  /**
    * Get all package metadata
    */
   DefaultHandler.prototype.getApplicationsMetadata = function() {
-    return this.packages;
+    return this.packages.getPackages();
   };
 
   /**
    * Get a list of application supporting mime type
    */
   DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
-    var self = this;
-    var packages = this.packages;
-
-    var _createList = function() {
-      var j, i, a;
-      var list = [];
-      for ( i in packages ) {
-        if ( packages.hasOwnProperty(i) ) {
-          a = packages[i];
-          if ( a && a.mime ) {
-            for ( j = 0; j < a.mime.length; j++ ) {
-              if ( (new RegExp(a.mime[j])).test(mime) === true ) {
-                list.push(i);
-              }
-            }
-          }
-        }
-      }
-
-      return list;
-    };
-
+    var pacman = this.packages;
     this.getSetting('defaultApplication', mime, function(val) {
       console.debug("OSjs::DefaultHandler::getApplicationNameByMime()", "default application", val);
       if ( !forceList && val ) {
-        if ( packages[val] ) {
+        if ( pacman.getPackage(val) ) {
           callback([val]);
           return;
         }
       }
-      callback(_createList());
+      callback(pacman.getPackagesByMime(mime));
     });
   };
 
@@ -374,16 +401,6 @@
     callback = callback || function() {};
     console.debug("OSjs::DefaultHandler::setDefaultApplication()", mime, app);
     this.setSetting('defaultApplication', mime, app, callback);
-  };
-
-  /**
-   * Get metadata for application by class-name
-   */
-  DefaultHandler.prototype.getApplicationMetadata = function(name) {
-    if ( typeof this.packages[name] !== 'undefined' ) {
-      return this.packages[name];
-    }
-    return false;
   };
 
   /**
