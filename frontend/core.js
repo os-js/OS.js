@@ -2154,14 +2154,13 @@
   };
 
   Window.prototype._focus = function(force) {
-    if ( !force && this._state.focused ) { return false; }
+    //if ( !force && this._state.focused ) { return false; }
     console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     if ( !this._$element.className.match(/WindowHintFocused/) ) {
       this._$element.className += ' WindowHintFocused';
     }
-    this._state.focused = true;
 
     if ( _WIN && _WIN._wid != this._wid ) {
       _WIN._blur();
@@ -2169,8 +2168,12 @@
 
     _WIN = this;
 
-    this._onChange('focus');
-    this._fireHook('focus');
+    if ( !this._state.focused || force) {
+      this._onChange('focus');
+      this._fireHook('focus');
+    }
+
+    this._state.focused = true;
 
     return true;
   };
