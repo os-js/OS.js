@@ -1410,10 +1410,12 @@
         resized   : []  // Called inside the mouseup event
       };
 
-      if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
-        var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
-        this._position.x = np.x;
-        this._position.y = np.y;
+      if ( !this._properties.gravity ) {
+        if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
+          var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
+          this._position.x = np.x;
+          this._position.y = np.y;
+        }
       }
 
       console.log('name', this._name);
@@ -1805,15 +1807,7 @@
     }
     this._guiElements = [];
 
-    if ( this._children && this._children.length ) {
-      var i = 0, l = this._children.length;
-      for ( i; i < l; i++ ) {
-        if ( this._children[i] ) {
-          this._children[i].destroy();
-        }
-      }
-    }
-    this._children = [];
+    this._removeChildren();
 
     // Instance
     if ( _WM ) {
@@ -2007,6 +2001,18 @@
       }
     }
     return null;
+  };
+
+  Window.prototype._removeChildren = function() {
+    if ( this._children && this._children.length ) {
+      var i = 0, l = this._children.length;
+      for ( i; i < l; i++ ) {
+        if ( this._children[i] ) {
+          this._children[i].destroy();
+        }
+      }
+    }
+    this._children = [];
   };
 
   Window.prototype._close = function() {
