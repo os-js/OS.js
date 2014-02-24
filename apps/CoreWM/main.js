@@ -527,9 +527,11 @@
 
   CoreWM.prototype.getWindowPosition = function(borders) {
     borders = (typeof borders === 'undefined') || (borders === true);
+    var pos = WindowManager.prototype.getWindowPosition.apply(this, arguments);
 
-    var b   = borders ? this.getSetting('desktop').margin : 0;
-    var pos = {x: b, y: b};
+    var m = borders ? this.getSetting('desktop').margin : 0;
+    pos.x += m || 0;
+    pos.y += m || 0;
 
     var p;
     for ( var i = 0; i < this.panels.length; i++ ) {

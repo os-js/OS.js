@@ -1651,7 +1651,7 @@
       ev.preventDefault();
 
       if ( self._state.maximized ) { return false; }
-      startRect = _WM.getWindowPosition(false);
+      startRect = _WM.getWindowSpace();
 
       if ( a === 'move' ) {
         px = self._position.x;
@@ -1711,7 +1711,7 @@
       var ry = py + dy;
 
       if ( action === 'move' ) {
-        if ( ry < startRect.y ) { ry = startRect.y; }
+        if ( ry < startRect.top ) { ry = startRect.top; }
 
         self._move(rx, ry);
       } else {
