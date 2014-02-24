@@ -1350,7 +1350,6 @@
     var _WID = 0;
 
     return function(name, opts, appRef) {
-      console.group("OSjs::Core::Window::__construct()");
       this._$element      = null;
       this._$root         = null;
       this._$loading      = null;
@@ -1418,18 +1417,15 @@
         }
       }
 
-      console.log('name', this._name);
-      console.log('wid',  this._wid);
+      console.info("OSjs::Core::Window::__construct()", this._wid, this._name);
 
       _WID++;
-
-      console.groupEnd();
     };
   })();
 
   Window.prototype.init = function(_wm) {
     var self = this;
-    console.log("OSjs::Core::Window::init()");
+    console.group("OSjs::Core::Window::init()");
 
     this._state.focused = false;
 
@@ -1454,6 +1450,10 @@
         }
       }
     }
+
+    console.log('Properties', this._properties);
+    console.log('Position', this._position);
+    console.log('Dimension', this._dimension);
 
     var main            = document.createElement('div');
     main.className      = 'Window';
@@ -1766,6 +1766,8 @@
     if ( this._sound ) {
       PlaySound(this._sound, this._soundVolume);
     }
+
+    console.groupEnd();
 
     return this._$root;
   };
