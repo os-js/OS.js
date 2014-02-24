@@ -525,30 +525,22 @@
     return s;
   };
 
-  CoreWM.prototype.getWindowPosition = (function() {
-    var _newX = 0;
-    var _newY = 0;
+  CoreWM.prototype.getWindowPosition = function(borders) {
+    borders = (typeof borders === 'undefined') || (borders === true);
 
-    return function(borders) {
-      borders = (typeof borders === 'undefined') || (borders === true);
+    var b   = borders ? this.getSetting('desktop').margin : 0;
+    var pos = {x: b, y: b};
 
-      var b   = borders ? this.getSetting('desktop').margin : 0;
-      var pos = {x: b, y: b};
-
-      if ( _newX >= 200 ) { _newX = 0; } else { _newX += 10; }
-      if ( _newY >= 200 ) { _newY = 0; } else { _newY += 10; }
-
-      var p;
-      for ( var i = 0; i < this.panels.length; i++ ) {
-        p = this.panels[i];
-        if ( p && p.getOntop() && p.getPosition('top') ) {
-          pos.y += p.getHeight();
-        }
+    var p;
+    for ( var i = 0; i < this.panels.length; i++ ) {
+      p = this.panels[i];
+      if ( p && p.getOntop() && p.getPosition('top') ) {
+        pos.y += p.getHeight();
       }
+    }
 
-      return {x: pos.x + _newX, y: pos.y + _newY};
-    };
-  })();
+    return pos;
+  };
 
   CoreWM.prototype.getSetting = function(k) {
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
