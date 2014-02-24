@@ -204,7 +204,8 @@ body {
   background : #333;
   color : #fff;
 }
-.Menu li.Disabled {
+.Menu li.Disabled,
+.Menu li[disabled] {
   color : #aaa;
 }
 .Menu .Arrow {
@@ -294,6 +295,10 @@ body {
 .GUIMenuBar > ul > li:hover {
   background : #333;
   color : #fff;
+}
+.GUIMenuBar > ul > li.Disabled,
+.GUIMenuBar > ul > li[disabled] {
+  color : #aaa;
 }
 
 /* GUIStatusBar */

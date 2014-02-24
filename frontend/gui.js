@@ -621,6 +621,7 @@
     this.$ul        = null;
     this.onMenuOpen = function() {};
     this.lid        = 0;
+    this.items      = [];
 
     GUIElement.apply(this, [name, {}]);
   };
@@ -640,13 +641,27 @@
     return el;
   };
 
-  MenuBar.prototype.addItem = function(title, menu, pos) {
+  MenuBar.prototype.addItem = function(item, menu, pos) {
     if ( !this.$ul ) { return; }
     var self = this;
+    var nitem = {name: '', title: '', element: null};
+
+    if ( typeof item === 'string' ) {
+      nitem.title = item;
+      nitem.name = item;
+    } else {
+      nitem.title = item.title || '<undefined>';
+      nitem.name = item.name  || nitem.title;
+    }
+
     var el = document.createElement('li');
     el.className = 'MenuItem_' + this.lid;
-    el.appendChild(document.createTextNode(title));
+    el.appendChild(document.createTextNode(nitem.title));
     el.onclick = function(ev, mpos) {
+      if ( this.hasAttribute('disabled') || this.className.match(/disabled/g) ) {
+        return;
+      }
+
       var pos = {x: ev.clientX, y: ev.clientY};
       if ( !mpos ) {
         var tpos = OSjs.Utils.$position(this);
@@ -660,15 +675,27 @@
       if ( menu && menu.length ) {
         elm = OSjs.GUI.createMenu(menu, pos);
       }
-      self.onMenuOpen.call(self, elm, pos, title, self);
+      self.onMenuOpen.call(self, elm, pos, (typeof item === 'string' ? item : nitem), self);
     };
+
+    nitem.element = el;
 
     this.$ul.appendChild(el);
     this.lid++;
+    this.items.push(nitem);
   };
 
   MenuBar.prototype.createContextMenu = function(ev, idx) {
     this.$ul.childNodes[idx].onclick(ev, true);
+  };
+
+  MenuBar.prototype.getItem = function(name) {
+    for ( var i = 0; i < this.items.length; i++ ) {
+      if ( this.items[i].name == name ) {
+        return this.items[i];
+      }
+    }
+    return null;
   };
 
   /**
