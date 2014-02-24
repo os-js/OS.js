@@ -1999,6 +1999,16 @@
     }
   };
 
+  Window.prototype._getChild = function(id) {
+    var i = 0, l = this._children.length;
+    for ( i; i < l; i++ ) {
+      if ( this._children[i] && (this._children[i]._wid === id || this._children[i]._name === id) ) {
+        return this._children[i];
+      }
+    }
+    return null;
+  };
+
   Window.prototype._close = function() {
     console.info("OSjs::Core::Window::_close()");
     if ( this._disabled ) { return; }
