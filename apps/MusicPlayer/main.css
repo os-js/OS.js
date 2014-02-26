@@ -61,7 +61,7 @@
 
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton {
   display : inline-block;
-  margin : 5px;
+  margin : 2px;
   width : 42px;
   height : 42px;
 }
