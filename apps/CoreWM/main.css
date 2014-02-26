@@ -29,6 +29,8 @@
   margin : 0;
   padding : 0;
   list-style-type : none;
+  position : relative;
+  z-index : 10;
 }
 .WMPanel > ul {
   margin : 0;
@@ -114,6 +116,10 @@
   width : 70px;
   cursor : default;
 }
+.WMPanel .PanelItemClock > div {
+  display : inline-block;
+  vertical-align : middle;
+}
 .WMPanel .PanelItemWindowList {
   overflow : hidden;
 }
@@ -167,13 +173,12 @@
 .Window_CoreWMSettingsWindow .WindowWrapper .Setting select {
   position : absolute;
   left : 0px;
-  right : 35px;
-  width : 440px;
+  width : 100%;
 }
 .Window_CoreWMSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
 .Window_CoreWMSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
   right : 0px;
-  width : 470px;
+  width : 100%;
 }
 .Window_CoreWMSettingsWindow .WindowWrapper .Setting .GUIButton {
   position : absolute;
@@ -202,7 +207,7 @@
 
 .Window_CoreWMSettingsWindow .WindowWrapper .PanelItemListView {
   height : 168px;
-  width : 440px;
+  width : 435px;
 }
 .Window_CoreWMSettingsWindow .WindowWrapper .PanelItemListView .Header {
   display : none;

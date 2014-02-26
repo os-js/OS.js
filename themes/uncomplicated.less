@@ -1,5 +1,11 @@
 @import "_base.less";
 
+/**
+ * Original theme by Rafa Cobreros
+ * From Gnome
+ * http://gnome-look.org/content/show.php/?content=157986
+ */
+
 @theme_base_bg_color          : #ebebeb;
 @theme_base_fg_color          : #242424;
 @theme_base_border_color      : #d4d4d4;
@@ -21,6 +27,15 @@
           border-radius: @radius;
 }
 
+.theme_border_bottom(@radius) {
+  -webkit-border-bottom-left-radius: @radius;
+     -moz-border-bottom-left-radius: @radius;
+          border-bottom-left-radius: @radius;
+  -webkit-border-bottom-right-radius: @radius;
+     -moz-border-bottom-right-radius: @radius;
+          border-bottom-right-radius: @radius;
+}
+
 .theme_base_shadow_unfocused {
   box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 }
@@ -37,16 +52,25 @@
 /**
  * WM
  */
-.WMPanel {
+body > .WMPanel {
   height : 32px;
+  left : 10px;
+  right : 10px;
+  background : transparent;
 }
-.WMPanel ul {
+body > .WMPanel:before {
+  content : '';
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  background : @theme_base_bg_color;
+  z-index : 1;
+  .theme_border_bottom(3px);
+}
+body > .WMPanel > ul {
   margin : 3px;
-}
-
-.Notification .Title,
-.Notification .Message {
-  line-height : 16px;
 }
 
 /**
@@ -97,7 +121,7 @@
 }
 
 .Window.WindowHintFocused .WindowButtonMaximize {
-  background : url('uncomplicated/wm/maximize_focused.png') no-repeat 0px 0px,
+  background : url('uncomplicated/wm/maximize_focused_normal.png') no-repeat 0px 0px,
                url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
 }
 .Window.WindowHintFocused .WindowButtonMaximize:hover {
@@ -124,7 +148,7 @@
 }
 
 .Window.WindowHintFocused .WindowButtonMinimize {
-  background : url('uncomplicated/wm/minimize_focused.png') no-repeat 0px 0px,
+  background : url('uncomplicated/wm/minimize_focused_normal.png') no-repeat 0px 0px,
                url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
 }
 .Window.WindowHintFocused .WindowButtonMinimize:hover {
@@ -151,7 +175,7 @@
 }
 
 .Window.WindowHintFocused .WindowButtonClose {
-  background : url('uncomplicated/wm/close_focused.png') no-repeat 0px 0px,
+  background : url('uncomplicated/wm/close_focused_normal.png') no-repeat 0px 0px,
                url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
 }
 .Window.WindowHintFocused .WindowButtonClose:hover {
@@ -161,4 +185,17 @@
 .Window.WindowHintFocused .WindowButtonClose:active {
   background : url('uncomplicated/wm/close_focused_pressed.png') no-repeat 0px 0px,
                url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+
+.GUIToolbar .Container {
+  background : transparent;
+}
+body .GUIToolbar button {
+  border : 0 none;
+  background : transparent;
+}
+body .GUIToolbar button:hover {
+  border : 0 none;
+  background : @theme_selected_bg_color;
+  color : @theme_selected_fg_color;
 }

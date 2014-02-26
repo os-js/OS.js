@@ -95,7 +95,7 @@
           exec: 'CoreWM',
           args: {
             themes: [
-              {name: 'default', title: 'Default'},
+              {name: 'default', title: 'Default OS.js Theme'},
               {name: 'uncomplicated', title: 'Uncomplicated'}
             ],
             defaults: null // Settings tuple (see apps/CoreWM/main.js)

@@ -2,10 +2,10 @@
 
 @theme_base_bg_color          : #e6e6e6;
 @theme_base_fg_color          : #333333;
-@theme_base_border_color      : #b1b1b1;
+@theme_base_border_color      : #c2c2c2;
 
 @theme_secondary_bg_color     : #dedede;
-@theme_secondary_fg_color     : #777777;
+@theme_secondary_fg_color     : #aaaaaa;
 @theme_secondary_border_color : #b1b1b1;
 
 @theme_selected_bg_color      : #333333;
@@ -16,7 +16,13 @@
 
 @theme_input_bg_color         : #ffffff;
 
-@theme_window_border_color    : #242424;
+@theme_window_fg_color        : #ffffff;
+@theme_window_ffg_color       : #777777;
+@theme_window_border_color    : #333333;
+@theme_window_gradient_from   : #737373;
+@theme_window_gradient_to     : #4F4F4F;
+@theme_window_fgradient_from  : #41454d;
+@theme_window_fgradient_to    : #31363d;
 
 .theme_base_shadow_unfocused {
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .1);
@@ -46,40 +52,37 @@
   color : #fff !important;
 }
 .WMPanel li.Button:hover {
-  background : #555;
-  color : #999;
+  background : @theme_selected_bg_color;
+  color : @theme_selected_fg_color;
 }
 .WMPanel li.Button:active {
   background : #555;
   color : #eee;
 }
 .WMPanel .PanelItemClock {
-  color : #fff;
+  color : @theme_window_fg_color;
   text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
-  text-align : right;
-  line-height : 26px;
 }
 
 .Window {
   border : 1px solid @theme_window_border_color;
 }
 .WindowTop {
-  border-bottom : 1px solid rgba(34, 34, 34, .5);
-  background-color: #737373;
-  background: linear-gradient(to bottom, #737373 0%, #4F4F4F 100%);
+  border-bottom : 1px solid @theme_window_border_color;
+  background-color: @theme_window_gradient_from;
+  background: linear-gradient(to bottom, @theme_window_gradient_to 0%, @theme_window_gradient_to 100%);
 }
 .WindowTitle {
-  color : #777777;
   text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
-  line-height : 28px;
+  color : @theme_window_fg_color;
 }
 .Window.WindowHintFocused .WindowTop {
-  background-color: #41454d;
-  background: linear-gradient(to bottom, #41454d 0%, #31363d 100%);
+  background-color: @theme_window_fgradient_from;
+  background: linear-gradient(to bottom, @theme_window_fgradient_from 0%, @theme_window_fgradient_to 100%);
 }
 .Window.WindowHintFocused .WindowTitle {
-  color : #fff;
-  text-shadow: 0px 0px 2px rgba(0, 0, 0, .9);
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  color : @theme_window_fg_color;
 }
 
 .WindowButtonMaximize {
@@ -130,9 +133,13 @@
   background : url('default/wm/close.png') no-repeat 2px 2px;
 }
 
+.Menu {
+  border : 1px solid @theme_window_border_color;
+}
+
 /* GUIStatusBar */
 .GUIStatusBar {
-  border-top : 1px solid #c2c2c2;
+  border-top : 1px solid @theme_base_border_color;
 }
 
 /* GUIText */
@@ -197,5 +204,11 @@
 }
 
 .GUIMenuBar {
-  background : #c2c2c2;
+  background : @theme_base_border_color;
+}
+
+.GUISlider.horizontal .Root,
+.GUISlider.vertical .Root {
+  background : #b6b6b6;
+  border : 1px solid #777777;
 }
