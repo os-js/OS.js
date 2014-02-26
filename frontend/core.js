@@ -1348,8 +1348,6 @@
    */
   var Window = (function() {
     var _WID                = 0;
-    var _DEFAULT_X          = 0;
-    var _DEFAULT_Y          = 0;
     var _DEFAULT_WIDTH      = 200;
     var _DEFAULT_HEIGHT     = 200;
     var _DEFAULT_MIN_HEIGHT = 100;
@@ -1368,7 +1366,7 @@
       this._icon          = OSjs.API.getThemeResource('wm.png', 'wm');
       this._name          = name;
       this._title         = name;
-      this._position      = {x:(opts.x || _DEFAULT_X), y:(opts.y || _DEFAULT_Y)};
+      this._position      = {x:(opts.x), y:(opts.y)};
       this._dimension     = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
       this._lastDimension = this._dimension;
       this._lastPosition  = this._position;
