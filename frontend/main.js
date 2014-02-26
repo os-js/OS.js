@@ -96,7 +96,7 @@
           args: {
             themes: [
               {name: 'default', title: 'Default'},
-              {name: 'default-light', title: 'Default (Lighter)'}
+              {name: 'uncomplicated', title: 'Uncomplicated'}
             ],
             defaults: null // Settings tuple (see apps/CoreWM/main.js)
           }

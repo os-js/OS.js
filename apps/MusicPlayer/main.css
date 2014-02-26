@@ -36,6 +36,7 @@
 }
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons {
   margin : -5px;
+  text-align : center;
 }
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Info {
   height : 70px;
@@ -51,7 +52,7 @@
 }
 
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Info span:last-child {
-  width : 250px;
+  width : auto; /*250px;*/
   white-space : nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -59,7 +60,7 @@
 }
 
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton {
-  float : left;
+  display : inline-block;
   margin : 5px;
   width : 42px;
   height : 42px;

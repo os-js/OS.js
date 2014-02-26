@@ -173,7 +173,7 @@
 .Window_CoreWMSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
 .Window_CoreWMSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
   right : 0px;
-  width : 475px;
+  width : 470px;
 }
 .Window_CoreWMSettingsWindow .WindowWrapper .Setting .GUIButton {
   position : absolute;

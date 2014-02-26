@@ -1,0 +1,286 @@
+@charset "UTF-8";
+
+@import url('default.css');
+
+body {
+  color : #242424;
+}
+
+/**
+ * CoreWM (external)
+ */
+.WMPanel {
+  background : #ebebeb;
+  border : 0 none;
+  box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+  height : 32px;
+
+  /*
+  -webkit-border-bottom-right-radius: 4px;
+     -moz-border-bottom-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+
+  -webkit-border-bottom-left-radius: 4px;
+     -moz-border-bottom-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+          */
+}
+.WMPanel ul {
+  margin : 3px;
+}
+.WMPanel li.Button {
+  background : transparent !important;
+  color : #bbbbbb;
+  text-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+}
+.WMPanel li.Button.Focused {
+  color : #242424 !important;
+  font-weight : bold;
+}
+.WMPanel li.Button:hover {
+  color : #fff !important;
+  background : #2d73d2 !important;
+}
+.WMPanel li.Button:active {
+  color : #242424;
+}
+.WMPanel .PanelItemClock {
+  color : #242424;
+  text-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+  font-weight : bold;
+}
+
+.Notification,
+.ProcessSplash {
+  background : #ebebeb;
+  color : #242424;
+  box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+}
+
+/**
+ * Window
+ */
+.Window {
+  border : 0 none;
+  box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+  background : #ebebeb;
+
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+.Window > .WindowWrapper {
+  margin : 3px;
+  top : 29px;
+  overflow : hidden;
+  background : transparent;
+}
+.Window.WindowHintFocused {
+  box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+}
+.Window > .WindowTop {
+  margin : 3px;
+  border : 0 none;
+}
+.Window > .WindowTop,
+.Window.WindowHintFocused > .WindowTop {
+  background : transparent;
+}
+.Window > .WindowTop > .WindowIcon {
+  position : relative;
+  top : auto;
+  left : auto;
+  right : auto;
+  height : auto;
+  display : inline-block;
+  vertical-align : middle;
+}
+.Window > .WindowTop > .WindowTitle {
+  text-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+  color : #bbbbbb;
+  font-weight : bold;
+  text-align : center;
+
+
+}
+.Window.WindowHintFocused .WindowTitle {
+  color : #242424;
+}
+
+/* Max */
+.WindowButtonMaximize {
+  background : url('uncomplicated/wm/unmaximize_unfocused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMaximize:hover {
+  background : url('uncomplicated/wm/unmaximize_unfocused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMaximize:active {
+  background : url('uncomplicated/wm/unmaximize_unfocused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+
+.Window.WindowHintFocused .WindowButtonMaximize {
+  background : url('uncomplicated/wm/unmaximize_focused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMaximize:hover {
+  background : url('uncomplicated/wm/unmaximize_focused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMaximize:active {
+  background : url('uncomplicated/wm/unmaximize_focused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+
+/* Min */
+.WindowButtonMinimize {
+  background : url('uncomplicated/wm/minimize_unfocused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMinimize:hover {
+  background : url('uncomplicated/wm/minimize_unfocused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMinimize:active {
+  background : url('uncomplicated/wm/minimize_unfocused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+
+.Window.WindowHintFocused .WindowButtonMinimize {
+  background : url('uncomplicated/wm/minimize_focused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMinimize:hover {
+  background : url('uncomplicated/wm/minimize_focused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMinimize:active {
+  background : url('uncomplicated/wm/minimize_focused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+
+/* Close */
+.WindowButtonClose {
+  background : url('uncomplicated/wm/close_unfocused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.WindowButtonClose:hover {
+  background : url('uncomplicated/wm/close_unfocused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.WindowButtonClose:active {
+  background : url('uncomplicated/wm/close_unfocused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+
+.Window.WindowHintFocused .WindowButtonClose {
+  background : url('uncomplicated/wm/close_focused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonClose:hover {
+  background : url('uncomplicated/wm/close_focused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonClose:active {
+  background : url('uncomplicated/wm/close_focused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+
+/**
+ * GUIMenu
+ */
+.Menu {
+  background : #ebebeb;
+  color : #242424;
+  box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+  border : 0 none;
+}
+.Menu li:hover {
+  background : #2d73d2;
+}
+
+/**
+ * GUIMenuBar
+ */
+.GUIMenuBar {
+  background : transparent;
+  border-bottom : 1px solid #d4d4d4;
+}
+.GUIMenuBar > ul > li:hover {
+  background : #2d73d2;
+}
+
+/**
+ * GUIStatusBar
+ */
+.GUIStatusBar {
+  background : transparent;
+  border-top : 1px solid #d4d4d4;
+}
+
+/**
+ * GUITabs
+ */
+.GUITabs .TabContent {
+  background : transparent;
+  border-color : #b2b2b2;
+}
+.GUITabs .Tabs .Tab {
+  border-color : #b2b2b2;
+  background : #d9d9d9;
+}
+
+/**
+ * GUIToolBar
+ */
+.GUIToolbar .Container {
+  background : transparent;
+}
+body .GUIToolbar button {
+  border : 0 none;
+  background : transparent;
+}
+body .GUIToolbar button:hover {
+  border : 0 none;
+  background : #2d73d2;
+}
+
+/**
+ * GUIListView
+ */
+.GUIListView tbody tr:nth-child(2n+1) {
+  background : transparent;
+}
+.GUIListView tr.active td {
+  color : #fff;
+  background : #2d73d2;
+}
+.GUIListView thead tr {
+  background : #d9d9d9;
+}
+
+/**
+ * GUIIconView
+ */
+.GUIIconView .active {
+  background : #2d73d2;
+  color : #fff;
+}
+.GUIIconView li.active div span {
+  background : #2d73d2;
+}
+
+.GUIListView,
+.GUIIconView,
+.GUIProgressBar,
+.GUITextarea textarea,
+.GUIText input,
+.GUISelect select {
+  border-color : #b2b2b2;
+  box-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+}
+.GUIButton button {
+  box-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+}

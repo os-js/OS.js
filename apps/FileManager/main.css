@@ -4,9 +4,9 @@
 }
 .Window_ApplicationFileManagerWindow .FileManagerPanedView {
   position : absolute;
-  top : 30px;
+  top : 32px;
   left : 5px;
-  bottom : 30px;
+  bottom : 32px;
   right : 5px;
 }
 .Window_ApplicationFileManagerWindow .FileManagerPanedView .View.Side {
