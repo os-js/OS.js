@@ -1347,7 +1347,14 @@
    * Window Class
    */
   var Window = (function() {
-    var _WID = 0;
+    var _WID                = 0;
+    var _DEFAULT_X          = 0;
+    var _DEFAULT_Y          = 0;
+    var _DEFAULT_WIDTH      = 200;
+    var _DEFAULT_HEIGHT     = 200;
+    var _DEFAULT_MIN_HEIGHT = 100;
+    var _DEFAULT_MIN_WIDTH  = 100;
+    var _DEFAULT_SND_VOLUME = 1.0;
 
     return function(name, opts, appRef) {
       this._$element      = null;
@@ -1361,8 +1368,8 @@
       this._icon          = OSjs.API.getThemeResource('wm.png', 'wm');
       this._name          = name;
       this._title         = name;
-      this._position      = {x:opts.x, y:opts.y};
-      this._dimension     = {w:opts.width||200, h:opts.height||200};
+      this._position      = {x:(opts.x || _DEFAULT_X), y:(opts.y || _DEFAULT_Y)};
+      this._dimension     = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
       this._lastDimension = this._dimension;
       this._lastPosition  = this._position;
       this._tmpPosition   = null;
@@ -1371,7 +1378,7 @@
       this._guiElements   = [];
       this._disabled      = true;
       this._sound         = null; //'dialog-information';
-      this._soundVolume   = 1.0;
+      this._soundVolume   = _DEFAULT_SND_VOLUME;
       this._properties    = {
         gravity           : null,
         allow_move        : true,
@@ -1385,10 +1392,10 @@
         allow_ontop       : true,
         allow_hotkeys     : true,
         allow_session     : true,
-        min_width         : 100,
-        min_height        : 50,
-        max_width         : null,
-        max_height        : null
+        min_width         : opts.min_height || _DEFAULT_MIN_HEIGHT,
+        min_height        : opts.min_width  || _DEFAULT_MIN_WIDTH,
+        max_width         : opts.max_width  || null,
+        max_height        : opts.max_height || null
       };
       this._state     = {
         focused   : false,
@@ -1409,14 +1416,6 @@
         resized   : []  // Called inside the mouseup event
       };
 
-      if ( !this._properties.gravity ) {
-        if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
-          var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
-          this._position.x = np.x;
-          this._position.y = np.y;
-        }
-      }
-
       console.info("OSjs::Core::Window::__construct()", this._wid, this._name);
 
       _WID++;
@@ -1431,6 +1430,38 @@
 
     this._icon = OSjs.API.getIcon(this._icon, this._appRef);
 
+    // Initial position
+    if ( !this._properties.gravity ) {
+      if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
+        var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
+        this._position.x = np.x;
+        this._position.y = np.y;
+      }
+    }
+
+    // Clamp (FIXME: Create a clamp function)
+    if ( this._properties.min_height ) {
+      if ( this._dimension.h < this._properties.min_height ) {
+        this._dimension.h = this._properties.min_height;
+      }
+    }
+    if ( this._properties.max_width ) {
+      if ( this._dimension.w < this._properties.max_width ) {
+        this._dimension.w = this._properties.max_width;
+      }
+    }
+    if ( this._properties.max_height ) {
+      if ( this._dimension.h > this._properties.max_height ) {
+        this._dimension.h = this._properties.max_height;
+      }
+    }
+    if ( this._properties.max_width ) {
+      if ( this._dimension.w > this._properties.max_width ) {
+        this._dimension.w = this._properties.max_width;
+      }
+    }
+
+    // Gravity
     var grav = this._properties.gravity;
     if ( grav ) {
       if ( grav === 'center' ) {
@@ -1704,6 +1735,8 @@
       moved = false;
       startRect = null;
     };
+
+    // FIXME: Do a timeout here to spare CPU
     var onMouseMove = function(ev) {
       if ( !_MOUSELOCK ) { return; }
       if ( action === null ) { return; }

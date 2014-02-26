@@ -37,7 +37,7 @@
    * Main Window
    */
   var ApplicationAboutWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 260}, app]);
+    Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 280, min_height: 280}, app]);
 
     // Set window properties here
     this._icon    = metadata.icon;
@@ -60,13 +60,14 @@
 
     var textarea = document.createElement('div');
     textarea.innerHTML = '<span>Created by Anders Evenrud</span><br />';
-    textarea.innerHTML += '<a href="mailto:andersevenrud@gmail.com">andersevenrud@gmail.com</a><br />';
+    textarea.innerHTML += '<a href="mailto:andersevenrud@gmail.com">Send e-mail</a> | ';
+    textarea.innerHTML += '<a href="http://andersevenrud.github.io/">Author homepage</a>';
+    textarea.innerHTML += '<br />';
     textarea.innerHTML += '<br />';
     textarea.innerHTML += 'Icon Theme is from <b>Gnome</b><br />';
     textarea.innerHTML += 'Sound Themes is from <b>Freedesktop</b><br />';
     textarea.innerHTML += 'OSS Font <i>Karla</i> by <b>Jonathan Pinhorn</b><br />';
     textarea.innerHTML += '<br />';
-    //textarea.innerHTML += '<a href="https://github.com/andersevenrud/OS.js-v2" target="_blank">Visit GitHub project page</a>';
     textarea.innerHTML += '<a href="http://andersevenrud.github.io/OS.js-v2/" target="_blank">Visit GitHub project page</a>';
 
     root.appendChild(header);
