@@ -525,7 +525,8 @@ body > .WMPanel > ul {
 .Window > .WindowTop {
   margin: 3px;
 }
-.Window > .WindowTop > .WindowIcon {
+.Window > .WindowTop > .WindowIcon,
+.Window > .WindowTop > .WindowTitle {
   position: relative;
   top: auto;
   left: auto;
@@ -535,13 +536,6 @@ body > .WMPanel > ul {
   vertical-align: middle;
 }
 .Window > .WindowTop > .WindowTitle {
-  position: relative;
-  top: auto;
-  left: auto;
-  right: auto;
-  height: auto;
-  display: inline-block;
-  vertical-align: middle;
   text-align: center;
 }
 /* Max */
@@ -608,7 +602,9 @@ body .GUIToolbar button {
   border: 0 none;
   background: transparent;
 }
-body .GUIToolbar button:hover {
+body .GUIToolbar button:hover,
+body .GUIToolbar button:active,
+body .GUIToolbar button.Active {
   border: 0 none;
   background: #2d73d2;
   color: #ffffff;

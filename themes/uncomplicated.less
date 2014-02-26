@@ -189,7 +189,9 @@ body .GUIToolbar button {
   border : 0 none;
   background : transparent;
 }
-body .GUIToolbar button:hover {
+body .GUIToolbar button:hover,
+body .GUIToolbar button:active,
+body .GUIToolbar button.Active {
   border : 0 none;
   background : @theme_selected_bg_color;
   color : @theme_selected_fg_color;

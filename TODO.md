@@ -4,7 +4,7 @@
 ## TODOs
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
-* Finish themes and add more!
+* More Themes!
 * Misc FIXME and TODO in source-code
   - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 
