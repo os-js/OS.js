@@ -1,0 +1,164 @@
+@import "_base.less";
+
+@theme_base_bg_color          : #ebebeb;
+@theme_base_fg_color          : #242424;
+@theme_base_border_color      : #d4d4d4;
+
+@theme_secondary_bg_color     : #d9d9d9;
+@theme_secondary_fg_color     : #bbbbbb;
+@theme_secondary_border_color : #b2b2b2;
+
+@theme_selected_bg_color      : #2d73d2;
+@theme_selected_fg_color      : #ffffff;
+@theme_even_row               : #ffffff;
+@theme_odd_row                : #ffffff;
+
+@theme_input_bg_color         : #ffffff;
+
+.theme_border(@radius) {
+  -webkit-border-radius: @radius;
+     -moz-border-radius: @radius;
+          border-radius: @radius;
+}
+
+.theme_base_shadow_unfocused {
+  box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+}
+.theme_base_shadow_focused {
+  box-shadow : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+}
+.theme_input_shadow {
+  box-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+}
+.theme_text_shadow {
+  text-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+}
+
+/**
+ * WM
+ */
+.WMPanel {
+  height : 32px;
+}
+.WMPanel ul {
+  margin : 3px;
+}
+
+.Notification .Title,
+.Notification .Message {
+  line-height : 16px;
+}
+
+/**
+ * Window
+ */
+.Window {
+  .theme_border(3px);
+}
+.Window > .WindowWrapper {
+  margin : 3px;
+  top : 29px;
+}
+.Window > .WindowTop {
+  margin : 3px;
+}
+.Window > .WindowTop > .WindowIcon {
+  position : relative;
+  top : auto;
+  left : auto;
+  right : auto;
+  height : auto;
+  display : inline-block;
+  vertical-align : middle;
+}
+.Window > .WindowTop > .WindowTitle {
+  position : relative;
+  top : auto;
+  left : auto;
+  right : auto;
+  height : auto;
+  display : inline-block;
+  vertical-align : middle;
+  text-align : center;
+}
+
+/* Max */
+.WindowButtonMaximize {
+  background : url('uncomplicated/wm/maximize_unfocused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMaximize:hover {
+  background : url('uncomplicated/wm/maximize_unfocused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMaximize:active {
+  background : url('uncomplicated/wm/maximize_unfocused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+
+.Window.WindowHintFocused .WindowButtonMaximize {
+  background : url('uncomplicated/wm/maximize_focused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMaximize:hover {
+  background : url('uncomplicated/wm/maximize_focused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMaximize:active {
+  background : url('uncomplicated/wm/maximize_focused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+}
+
+/* Min */
+.WindowButtonMinimize {
+  background : url('uncomplicated/wm/minimize_unfocused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMinimize:hover {
+  background : url('uncomplicated/wm/minimize_unfocused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.WindowButtonMinimize:active {
+  background : url('uncomplicated/wm/minimize_unfocused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+
+.Window.WindowHintFocused .WindowButtonMinimize {
+  background : url('uncomplicated/wm/minimize_focused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMinimize:hover {
+  background : url('uncomplicated/wm/minimize_focused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonMinimize:active {
+  background : url('uncomplicated/wm/minimize_focused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+}
+
+/* Close */
+.WindowButtonClose {
+  background : url('uncomplicated/wm/close_unfocused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.WindowButtonClose:hover {
+  background : url('uncomplicated/wm/close_unfocused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.WindowButtonClose:active {
+  background : url('uncomplicated/wm/close_unfocused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+
+.Window.WindowHintFocused .WindowButtonClose {
+  background : url('uncomplicated/wm/close_focused.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonClose:hover {
+  background : url('uncomplicated/wm/close_focused_prelight.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}
+.Window.WindowHintFocused .WindowButtonClose:active {
+  background : url('uncomplicated/wm/close_focused_pressed.png') no-repeat 0px 0px,
+               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+}

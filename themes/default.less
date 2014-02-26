@@ -1,0 +1,201 @@
+@import "_base.less";
+
+@theme_base_bg_color          : #e6e6e6;
+@theme_base_fg_color          : #333333;
+@theme_base_border_color      : #b1b1b1;
+
+@theme_secondary_bg_color     : #dedede;
+@theme_secondary_fg_color     : #777777;
+@theme_secondary_border_color : #b1b1b1;
+
+@theme_selected_bg_color      : #333333;
+@theme_selected_fg_color      : #ffffff;
+
+@theme_even_row               : #ffffff;
+@theme_odd_row                : #aaaaaa;
+
+@theme_input_bg_color         : #ffffff;
+
+@theme_window_border_color    : #242424;
+
+.theme_base_shadow_unfocused {
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .1);
+}
+.theme_base_shadow_focused {
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+}
+.theme_input_shadow {
+  box-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+}
+.theme_text_shadow {
+  text-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
+}
+
+.WMPanel {
+  background : #303030;
+  border-bottom : 1px solid #242424;
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+}
+.WMPanel li.Button {
+  background : #303030;
+  margin-top : -1px;
+  cursor : pointer;
+  color : #777777;
+}
+.WMPanel li.Button.Focused {
+  color : #fff !important;
+}
+.WMPanel li.Button:hover {
+  background : #555;
+  color : #999;
+}
+.WMPanel li.Button:active {
+  background : #555;
+  color : #eee;
+}
+.WMPanel .PanelItemClock {
+  color : #fff;
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  text-align : right;
+  line-height : 26px;
+}
+
+.Window {
+  border : 1px solid @theme_window_border_color;
+}
+.WindowTop {
+  border-bottom : 1px solid rgba(34, 34, 34, .5);
+  background-color: #737373;
+  background: linear-gradient(to bottom, #737373 0%, #4F4F4F 100%);
+}
+.WindowTitle {
+  color : #777777;
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  line-height : 28px;
+}
+.Window.WindowHintFocused .WindowTop {
+  background-color: #41454d;
+  background: linear-gradient(to bottom, #41454d 0%, #31363d 100%);
+}
+.Window.WindowHintFocused .WindowTitle {
+  color : #fff;
+  text-shadow: 0px 0px 2px rgba(0, 0, 0, .9);
+}
+
+.WindowButtonMaximize {
+  background : url('default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('default/wm/maximize_unfocused.png') no-repeat 2px 2px;
+}
+.WindowButtonMaximize:hover {
+  background : url('default/wm/prelight.png') no-repeat 2px 2px,
+               url('default/wm/maximize.png') no-repeat 2px 2px !important;
+}
+.WindowButtonMaximize:active {
+  background : url('default/wm/pressed.png') no-repeat 2px 2px,
+               url('default/wm/maximize.png') no-repeat 2px 2px !important;
+}
+.Window.WindowHintFocused .WindowButtonMaximize {
+  background : url('default/wm/maximize.png') no-repeat 2px 2px;
+}
+
+.WindowButtonMinimize {
+  background : url('default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('default/wm/minimize_unfocused.png') no-repeat 2px 2px;
+}
+.WindowButtonMinimize:hover {
+  background : url('default/wm/prelight.png') no-repeat 2px 2px,
+               url('default/wm/minimize.png') no-repeat 2px 2px !important;
+}
+.WindowButtonMinimize:active {
+  background : url('default/wm/pressed.png') no-repeat 2px 2px,
+               url('default/wm/minimize.png') no-repeat 2px 2px !important;
+}
+.Window.WindowHintFocused .WindowButtonMinimize {
+  background : url('default/wm/minimize.png') no-repeat 2px 2px;
+}
+
+.WindowButtonClose {
+  background : url('default/wm/prelight_unfocused.png') no-repeat 2px 2px,
+               url('default/wm/close_unfocused.png') no-repeat 2px 2px;
+}
+.WindowButtonClose:hover {
+  background : url('default/wm/prelight.png') no-repeat 2px 2px,
+               url('default/wm/close.png') no-repeat 2px 2px !important;
+}
+.WindowButtonClose:active {
+  background : url('default/wm/pressed.png') no-repeat 2px 2px,
+               url('default/wm/close.png') no-repeat 2px 2px !important;
+}
+.Window.WindowHintFocused .WindowButtonClose {
+  background : url('default/wm/close.png') no-repeat 2px 2px;
+}
+
+/* GUIStatusBar */
+.GUIStatusBar {
+  border-top : 1px solid #c2c2c2;
+}
+
+/* GUIText */
+.GUITextarea textarea[disabled],
+.GUIText input[disabled] {
+  color : #a0a0a0;
+}
+
+.GUITextarea textarea:focus,
+.GUIText input:focus,
+.GUISelect select:focus {
+  border : 1px solid #6a6a6a;
+}
+
+/* GUIButton */
+.GUIButton button,
+.GUIToolbar button {
+  box-shadow : 0px 0px 1px 1px #cecece;
+  background : #555555;
+  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
+  border : 1px solid #a0a0a0;
+  color : #000;
+  outline : none;
+}
+
+.GUIButton button[disabled],
+.GUIButton button[disabled]:active,
+.GUIButton button[disabled].Active,
+.GUIToolbar button[disabled],
+.GUIToolbar button.Disabled,
+.GUIToolbar button.Disabled:active,
+.GUIToolbar button[disabled]:active,
+.GUIToolbar button[disabled].Active {
+  background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
+  color : #a0a0a0;
+}
+
+.GUIButton button[disabled] img,
+.GUIButton button[disabled]:active img,
+.GUIButton button[disabled].Active img,
+.GUIToolbar button[disabled] img,
+.GUIToolbar button.Disabled img,
+.GUIToolbar button.Disabled:active img,
+.GUIToolbar button[disabled]:active img,
+.GUIToolbar button[disabled].Active img {
+  opacity : .5;
+}
+
+.GUIButton button:focus,
+.GUIToolbar button:focus {
+  box-shadow : 0px 0px 1px 1px #ffffff;
+  border-color : #909090;
+}
+
+.GUIButton button:active,
+.GUIButton button.Active,
+.GUIToolbar button:active,
+.GUIToolbar button.Active {
+  background : #333333;
+  background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
+  border : 1px solid #717171;
+}
+
+.GUIMenuBar {
+  background : #c2c2c2;
+}

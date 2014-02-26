@@ -1,0 +1,512 @@
+@charset "UTF-8";
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2013, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+/**
+ * Base
+ */
+@font-face {
+  font-family:OSjsFont;
+  src:url('default/fonts/Karla-Regular.ttf');
+}
+@font-face {
+  font-family:OSjsFont;
+  font-weight:bold;
+  src:url('default/fonts/Karla-Bold.ttf');
+}
+@font-face {
+  font-family:OSjsFont;
+  font-style:italic;
+  src:url('default/fonts/Karla-Italic.ttf');
+}
+@font-face {
+  font-family:OSjsFont;
+  font-style:italic;
+  font-weight:bold;
+  src:url('default/fonts/Karla-BoldItalic.ttf');
+}
+body {
+  font-family:OSjsFont, Sans-serif;
+  color: @theme_base_fg_color;
+}
+
+/**
+ * WM
+ */
+.WMPanel {
+  &:extend(.theme_base_shadow_unfocused);
+  background : @theme_base_bg_color;
+}
+.WMPanel li.Button {
+  background : transparent !important;
+  color : @theme_secondary_fg_color;
+  &:extend(.theme_text_shadow);
+}
+.WMPanel li.Button.Focused {
+  color : @theme_base_bg_color !important;
+  font-weight : bold;
+}
+.WMPanel li.Button:hover {
+  color : @theme_selected_fg_color !important;
+  background : @theme_selected_bg_color !important;
+}
+.WMPanel li.Button:active {
+  color : @theme_base_bg_color;
+}
+.WMPanel .PanelItemClock {
+  font-weight : bold;
+}
+
+/* Notifications */
+.Notification,
+.ProcessSplash {
+  &:extend(.theme_base_shadow_unfocused);
+  background : @theme_base_bg_color;
+  cursor : pointer;
+}
+.Notification .Title {
+  font-weight : bold;
+}
+
+/* Window Switcher */
+#WindowSwitcher {
+  opacity : 0.8;
+  &:extend(.theme_base_shadow_unfocused);
+  background : @theme_base_bg_color;
+}
+#WindowSwitcher > div.Active {
+  background : @theme_selected_bg_color;
+}
+#WindowSwitcher > div.Active > span {
+  color : @theme_selected_fg_color;
+}
+
+/**
+ * Window
+ */
+.Window {
+  &:extend(.theme_base_shadow_unfocused);
+  background : @theme_base_bg_color;
+  opacity : 0.8;
+}
+.Window.WindowHintFocused {
+  &:extend(.theme_base_shadow_focused);
+  opacity : 1.0;
+}
+.Window > .WindowWrapper {
+  overflow : hidden;
+}
+.Window > .WindowTop:active {
+  cursor : move;
+}
+.Window > .WindowTop > .WindowTitle {
+  &:extend(.theme_text_shadow);
+  color : @theme_secondary_fg_color;
+  font-weight : bold;
+}
+.Window > .WindowTop > .WindowTitle:active {
+  cursor : move;
+}
+.Window.WindowHintFocused .WindowTitle {
+  color : @theme_base_fg_color;
+}
+.WindowButton {
+  cursor : pointer;
+}
+.WindowResize {
+  cursor : se-resize;
+  background : rgba(34, 34, 34, .1);
+}
+.WindowTop, .WindowTop > * {
+  cursor : default;
+}
+.WindowLoading {
+  background : #fff;
+}
+.WindowLoadingIndicator {
+  background : url('default/loading.gif');
+}
+.WindowDropRect {
+  border : 4px solid rgba(255, 255, 255, .7);
+  margin : -4px;
+  border-radius : 1px;
+}
+.WindowDisabledOverlay {
+  background : #000;
+  opacity : 0.5;
+  cursor : not-allowed;
+}
+
+/**
+ * GUIMenu
+ */
+.Menu {
+  &:extend(.theme_base_shadow_unfocused);
+  background : @theme_base_bg_color;
+}
+.Menu li {
+  cursor : pointer;
+}
+.Menu li:hover {
+  background : @theme_selected_bg_color;
+  color : @theme_selected_fg_color;
+}
+.Menu li.Disabled,
+.Menu li[disabled] {
+  color : @theme_secondary_fg_color;
+}
+.Menu .Arrow {
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 8px solid @theme_base_fg_color;
+  opacity : .9;
+}
+.Menu li:hover .Arrow {
+  border-left: 8px solid @theme_selected_bg_color;
+}
+
+/**
+ * GUIMenuBar
+ */
+.GUIMenuBar {
+  border-bottom : 1px solid @theme_base_border_color;
+}
+.GUIMenuBar > ul > li {
+  cursor : pointer;
+}
+.GUIMenuBar > ul > li:hover {
+  background : @theme_selected_bg_color;
+  color : @theme_selected_fg_color;
+}
+.GUIMenuBar > ul > li.Disabled,
+.GUIMenuBar > ul > li[disabled] {
+  color : @theme_secondary_fg_color;
+}
+
+/**
+ * GUIStatusBar
+ */
+.GUIStatusBar {
+  border-top : 1px solid @theme_base_border_color;
+}
+
+/**
+ * GUITabs (FIXME)
+ */
+.GUITabs .TabContents {
+  border : 1px solid @theme_base_border_color;
+}
+.GUITabs .Tabs .Tab.Active {
+  background : @theme_base_bg_color;
+  border : 1px solid @theme_base_border_color;
+  border-bottom : 1px solid @theme_base_bg_color;
+}
+.GUITabs .Tabs .Tab {
+  cursor : pointer;
+  background : @theme_secondary_bg_color;
+  border : 1px solid @theme_base_border_color;
+}
+.GUITabs .Tabs .Tab .Close {
+  border : 1px solid transparent;
+  font-size : 10px;
+}
+.GUITabs .Tabs .Tab .Close:hover {
+  background : #e6e6e6;
+}
+.GUITabs .Tabs .Tab .Close:active {
+  background : #e6e6e6;
+  border-color : #333;
+}
+
+/**
+ * GUIToolBar
+ */
+.GUIToolbar .Container {
+  background : transparent;
+}
+body .GUIToolbar button {
+  border : 0 none;
+  background : transparent;
+}
+body .GUIToolbar button:hover {
+  border : 0 none;
+  background : @theme_selected_bg_color;
+  color : @theme_selected_fg_color;
+}
+
+/**
+ * GUIListView
+ */
+.GUIListView {
+  background : @theme_input_bg_color;
+  border : 1px solid @theme_secondary_border_color;
+  &:extend(.theme_input_shadow);
+}
+.GUIListView tbody tr:nth-child(2n+2) {
+  background : @theme_odd_row;
+}
+.GUIListView tbody tr:nth-child(2n+1) {
+  background : @theme_even_row;
+}
+.GUIListView tr.active td {
+  color : @theme_selected_fg_color;
+  background : @theme_selected_bg_color;
+}
+.GUIListView thead tr {
+  background : @theme_secondary_bg_color;
+}
+.GUIListView .Resizer {
+  border-color : @theme_secondary_border_color;
+  cursor : ew-resize;
+}
+
+/**
+ * GUIColorSwatch
+ */
+.GUIColorSwatch {
+  border : 1px solid @theme_secondary_border_color;
+}
+
+/**
+ * GUIIconView
+ */
+.GUIIconView {
+  background : @theme_input_bg_color;
+  border : 1px solid @theme_secondary_border_color;
+  &:extend(.theme_input_shadow);
+}
+.GUIIconView .active {
+  background : @theme_selected_bg_color;
+  color : @theme_selected_fg_color;
+}
+.GUIIconView li.active div span {
+  background : @theme_selected_bg_color;
+}
+.GUIIconView li {
+  cursor : pointer;
+}
+
+/**
+ * GUISlider (FIXME)
+ */
+.GUISlider {
+  margin-top : 2px;
+  margin-bottom : 2px;
+}
+.GUISlider.horizontal .Root {
+  background : #b6b6b6;
+  height : 6px;
+  top : 50%;
+  margin-top : -4px;
+  border : 1px solid #777777;
+}
+.GUISlider.vertical .Root {
+  background : #b6b6b6;
+  width : 6px;
+  top : 0px;
+  left : 50%;
+  margin-left : -4px;
+  border : 1px solid #777777;
+}
+.GUISlider .Button {
+  width : 18px;
+  height : 18px;
+  cursor : pointer;
+
+  cursor : pointer;
+  background : #555555;
+  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
+  border : 1px solid #a0a0a0;
+  color : #000;
+}
+.GUISlider .Button:hover {
+  border : 1px solid #444444;
+}
+
+/**
+ * GUIProgressBar (FIXME)
+ */
+.GUIProgressBar .Container {
+  background : @theme_input_bg_color;
+  border : 1px solid @theme_secondary_border_color;
+  &:extend(.theme_input_shadow);
+}
+.GUIProgressBar .Bar {
+  text-align : center;
+  background : #fff url('default/gui/progressbar.png') repeat-x center;
+}
+.GUIProgressBar .Label {
+  color : #fff;
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+}
+.Window.WindowHintFocused .GUIProgressBar .Container {
+  box-shadow : 0px 0px 1px 1px rgba(34, 34, 34, .1);
+}
+
+/**
+ * GUIRichtText
+ */
+.GUIRichText {
+  background : @theme_input_bg_color;
+  border : 1px solid @theme_secondary_border_color;
+  &:extend(.theme_input_shadow);
+}
+
+/**
+ * GUIFileView
+ */
+.GUIFileView .GUIListView .Arrow {
+  width: 0;
+  height: 0;
+  opacity : .9;
+}
+.GUIFileView .GUIListView .Arrow.Ascending {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 8px solid @theme_base_fg_color;
+}
+.GUIFileView .GUIListView .Arrow.Descending {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid @theme_base_fg_color;
+}
+
+/*
+ * GUIText & GUITextarea & GUISelect
+ */
+.GUITextarea textarea,
+.GUIText input,
+.GUISelect select {
+  margin : 0;
+  padding : 2px;
+  outline : none;
+  min-height : 24px;
+
+  background : @theme_input_bg_color;
+  border : 1px solid @theme_secondary_border_color;
+  &:extend(.theme_input_shadow);
+
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
+
+  resize : none;
+  outline : none;
+}
+
+.GUITextarea textarea[disabled],
+.GUIText input[disabled] {
+  color : @theme_secondary_fg_color;
+}
+
+/*
+.GUITextarea textarea:focus,
+.GUIText input:focus,
+.GUISelect select:focus {
+  border : 1px solid #6a6a6a;
+}
+*/
+
+/**
+ * GUISelect
+ */
+.GUISelect select {
+  -webkit-appearance: button;
+  -webkit-border-radius: 0px;
+  -moz-appearance: button;
+  -moz-border-radius: 0px;
+  padding : 3px 0 2px 2px;
+}
+
+/**
+ * GUIButton (FIXME)
+ */
+.GUIButton button,
+.GUIToolbar button {
+  margin : 0;
+  padding : 0;
+  padding-left : 5px;
+  padding-right : 5px;
+  height : 24px;
+  min-width : 30px;
+  vertical-align : middle;
+  outline : none;
+
+  cursor : pointer;
+  background : #555555;
+  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
+  border : 1px solid #a0a0a0;
+  color : #000;
+  outline : none;
+
+  &:extend(.theme_input_shadow);
+}
+
+.GUIButton button[disabled],
+.GUIButton button[disabled]:active,
+.GUIButton button[disabled].Active,
+.GUIToolbar button[disabled],
+.GUIToolbar button.Disabled,
+.GUIToolbar button.Disabled:active,
+.GUIToolbar button[disabled]:active,
+.GUIToolbar button[disabled].Active {
+  background: linear-gradient(to bottom, #dfdfdf 0%, #d0d0d0 100%);
+  color : #a0a0a0;
+}
+
+.GUIButton button[disabled] img,
+.GUIButton button[disabled]:active img,
+.GUIButton button[disabled].Active img,
+.GUIToolbar button[disabled] img,
+.GUIToolbar button.Disabled img,
+.GUIToolbar button.Disabled:active img,
+.GUIToolbar button[disabled]:active img,
+.GUIToolbar button[disabled].Active img {
+  opacity : .5;
+}
+
+.GUIButton button:focus,
+.GUIToolbar button:focus {
+  box-shadow : 0px 0px 1px 1px #ffffff;
+  border-color : #909090;
+}
+
+.GUIButton button:active,
+.GUIButton button.Active,
+.GUIToolbar button:active,
+.GUIToolbar button.Active {
+  background : #333333;
+  background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
+  border : 1px solid #717171;
+}
