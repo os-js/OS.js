@@ -498,6 +498,10 @@
             span            = document.createElement('span');
             span.appendChild(document.createTextNode(list[i].title));
             m.appendChild(span);
+
+            if ( list[i].disabled ) {
+              m.className += ' Disabled';
+            }
           }
 
           if ( list[i].menu ) {
@@ -644,7 +648,7 @@
   MenuBar.prototype.addItem = function(item, menu, pos) {
     if ( !this.$ul ) { return; }
     var self = this;
-    var nitem = {name: '', title: '', element: null};
+    var nitem = {name: '', title: '', disabled: false, element: null};
 
     if ( typeof item === 'string' ) {
       nitem.title = item;
@@ -652,11 +656,15 @@
     } else {
       nitem.title = item.title || '<undefined>';
       nitem.name = item.name  || nitem.title;
+      nitem.disabled = item.disabled === true;
     }
 
     var el = document.createElement('li');
     el.className = 'MenuItem_' + this.lid;
     el.appendChild(document.createTextNode(nitem.title));
+    if ( nitem.disabled ) {
+      el.setAttribute('disabled', 'disabled');
+    }
     el.onclick = function(ev, mpos) {
       if ( this.hasAttribute('disabled') || this.className.match(/disabled/g) ) {
         return;
