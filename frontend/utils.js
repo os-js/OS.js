@@ -305,6 +305,18 @@
     }
   };
 
+  OSjs.Utils.$addClass = function(el, name) {
+    var re = new RegExp("/\s?" + name + "/");
+    if ( !re.test(el.className) ) {
+      el.className += (el.className ? ' ' : '') + name;
+    }
+  };
+
+  OSjs.Utils.$removeClass = function(el, name) {
+    var re = new RegExp("/\s?" + name + "/");
+    el.className = el.className.replace(re, '');
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // XHR
   /////////////////////////////////////////////////////////////////////////////
