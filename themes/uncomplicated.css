@@ -140,6 +140,10 @@ body {
 .Notification .Message {
   line-height: 16px;
 }
+/* Desktop drop wallpaper effect */
+#Background.Blinking {
+  background: #fff;
+}
 /* Window Switcher */
 #WindowSwitcher {
   opacity: 0.8;
@@ -199,9 +203,8 @@ body {
   background: url('default/loading.gif');
 }
 .WindowDropRect {
-  border: 4px solid rgba(255, 255, 255, 0.7);
-  margin: -4px;
-  border-radius: 1px;
+  border: 2px solid #000;
+  margin: -2px;
 }
 .WindowDisabledOverlay {
   background: #000;
@@ -510,6 +513,9 @@ body > .WMPanel:before {
 body > .WMPanel > ul {
   margin: 3px;
 }
+#Background.Blinking {
+  background: #242424;
+}
 /**
  * Window
  */
@@ -527,6 +533,14 @@ body > .WMPanel > ul {
 }
 .Window > .WindowTop > .WindowTitle {
   text-align: center;
+}
+.WindowDropRect {
+  border: 4px solid rgba(0, 0, 0, 0.7);
+  margin: -4px;
+  border-radius: 1px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 /* Max */
 .WindowButtonMaximize {

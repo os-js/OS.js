@@ -115,7 +115,6 @@
 
 /* Desktop */
 #Background.Blinking {
-  background : #fff;
   opacity : 0;
 
   -webkit-animation: pulseback 2s linear infinite;
