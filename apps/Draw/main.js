@@ -483,6 +483,8 @@
       if ( Tools[this.currentTool].click ) {
         Tools[this.currentTool].click.call(this, ev, clickX, clickY, canvas, canvasImage);
       }
+      canvasImage.$context.drawImage(canvas.$canvas, 0, 0);
+      canvas.clear();
     }
   };
 
