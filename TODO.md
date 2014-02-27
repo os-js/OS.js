@@ -10,9 +10,10 @@
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
-* Writer - Check for changes before opening/new file
+* Writer -- Check for changes before opening/new file
 * Finish Music Player
 * Refactor from currentX to currentFile.x for file stuff
+* CoreWM -- Finish panel item options
 
 ### GUI Elements
 * Custom styling for GUISelect

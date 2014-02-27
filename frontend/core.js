@@ -890,6 +890,8 @@
    */
   var WindowManager = function(name, ref, args, metadata) {
     console.group("OSjs::Core::WindowManager::__construct()");
+    console.log("Name", name);
+    console.log("Arguments", args);
 
     this._windows  = [];
     this._settings = {};

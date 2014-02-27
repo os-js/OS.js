@@ -63,22 +63,9 @@
       }
     };
 
-    var _check = function(iter) {
-      for ( var i in iter ) {
-        if ( cfg.hasOwnProperty(i) ) {
-          if ( typeof cfg[i] === 'object' ) {
-            _check(iter[i]);
-          } else {
-            cfg[i] = iter[i];
-          }
-        }
-      }
-    };
-
     if ( defaults ) {
-      _check(defaults);
+      return OSjs.Utils.mergeObject(cfg, defaults);
     }
-
     return cfg;
   }
 
