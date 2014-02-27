@@ -14,6 +14,7 @@
 * Finish Music Player
 * Refactor from currentX to currentFile.x for file stuff
 * CoreWM -- Finish panel item options
+* CoreWM -- Window Switcher is bugged
 
 ### GUI Elements
 * Custom styling for GUISelect

@@ -1177,7 +1177,7 @@
   /**
    * Application Class
    */
-  var Application = function(name, args, metadata) {
+  var Application = function(name, args, metadata, settings) {
     console.group("OSjs::Core::Application::__construct()");
     this.__name       = name;
     this.__label      = metadata.name;
@@ -1188,7 +1188,7 @@
     this.__inited     = false;
     this.__windows    = [];
     this.__args       = args || {};
-    this.__settings   = {};
+    this.__settings   = settings || {};
     this.__metadata   = metadata;
 
     Process.apply(this, [name]);
@@ -1203,7 +1203,9 @@
   Application.prototype.init = function(core, settings) {
     console.log("OSjs::Core::Application::init()", this.__name);
 
-    this.__settings = settings || {};
+    if ( settings ) {
+      this.__settings = OSjs.Utils.mergeObject(this.__settings, settings);
+    }
 
     if ( this.__windows.length ) {
       if ( _WM ) {
