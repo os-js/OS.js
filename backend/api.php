@@ -154,8 +154,17 @@ if ( $method === 'GET' ) {
     }
 
     if ( file_exists($file) ) {
+        session_write_close();
         if ( ($mime = fileMime($file)) ) {
+          $length = filesize($file);
+          $fp = fopen($file, "r");
+          $etag = md5(serialize(fstat($fp)));
+          fclose($fp);
+
+          header("Etag: {$etag}");
           header("Content-type: {$mime}");
+          header("Content-length: {$length}");
+
           print file_get_contents($file);
         } else {
           header("HTTP/1.0 500 Internal Server Error");

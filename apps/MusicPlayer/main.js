@@ -186,6 +186,7 @@
     this.destroyed = false;
 
     this.$audio                 = document.createElement('audio');
+    //this.$audio.preload         = 'none';
     this.$audio.style.display   = 'none';
     this.$audio.style.position  = 'absolute';
     this.$audio.style.top       = '-10000px';
