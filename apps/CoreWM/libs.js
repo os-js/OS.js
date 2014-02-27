@@ -188,16 +188,16 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var SettingsWindow = function(app) {
-    Window.apply(this, ['CoreWMSettingsWindow', {width: 500, height: 400}, app]);
+    Window.apply(this, ['CoreWMSettingsWindow', {width: 500, height: 450}, app]);
 
     this._title                     = _("CoreWM Settings");
     this._icon                      = "categories/applications-system.png";
     this._properties.allow_resize   = false;
     this._properties.allow_maximize = false;
 
-    this.panelItemWindow = null;
+    this.panelItemWindow  = null;
     this.currentPanelItem = null;
-    this.panelItems = [];
+    this.panelItems       = [];
   };
 
   SettingsWindow.prototype = Object.create(Window.prototype);

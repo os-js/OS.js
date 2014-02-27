@@ -33,28 +33,28 @@
 .GUIButton button,
 .GUIToolbar button {
   cursor: pointer;
-  background: #555555;
-  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
-  border: 1px solid #a0a0a0;
-  color: #555555;
+  background: #f8f8f8;
+  background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+  border: 1px solid #c1c1c1;
+  color: #242424;
 }
 .theme_gui_button_hover,
 .GUIButton button:focus,
 .GUIToolbar button:focus {
-  background: #555555;
-  background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
+  background: #f8f8f8;
+  background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
   border: 1px solid #909090;
-  color: #555555;
+  color: #242424;
 }
 .theme_gui_button_active,
 .GUIButton button:active,
 .GUIButton button.Active,
 .GUIToolbar button:active,
 .GUIToolbar button.Active {
-  background: #333333;
+  background: #f8f8f8;
   background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
   border: 1px solid #717171;
-  color: #333333;
+  color: #242424;
 }
 .theme_gui_button_disabled,
 .GUIButton button[disabled],
@@ -65,10 +65,10 @@
 .GUIToolbar button.Disabled:active,
 .GUIToolbar button[disabled]:active,
 .GUIToolbar button[disabled].Active {
-  background: #a0a0a0;
-  background: linear-gradient(to bottom, #dfdfdf 0%, #e1e1e1 100%);
+  background: #c1c1c1;
+  background: linear-gradient(to bottom, #ededed 0%, #e6e6e6 100%);
   border: 1px solid #909090;
-  color: #a0a0a0;
+  color: #333333;
 }
 /**
  * Base
@@ -533,9 +533,12 @@ body .WMPanel.Bottom.Autohide {
  * Window
  */
 .Window {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-top-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  -moz-border-top-right-radius: 3px;
+  border-top-right-radius: 3px;
 }
 .Window > .WindowWrapper {
   margin: 3px;
@@ -551,9 +554,12 @@ body .WMPanel.Bottom.Autohide {
   border: 4px solid rgba(0, 0, 0, 0.7);
   margin: -4px;
   border-radius: 1px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-top-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  -moz-border-top-right-radius: 3px;
+  border-top-right-radius: 3px;
 }
 /* Max */
 .WindowButtonMaximize {

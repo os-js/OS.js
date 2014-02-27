@@ -1309,16 +1309,37 @@
     }
   };
 
-  Application.prototype._getWindow = function(name) {
+  Application.prototype._getWindow = function(checkfor, key) {
+    key = key || 'name';
+
     var i = 0;
     var l = this.__windows.length;
+    var result = key === 'tag' ? [] : null;
+
     for ( i; i < l; i++ ) {
-      if ( this.__windows[i]._name === name ) {
-        return this.__windows[i];
-        //break;
+      if ( this.__windows[i]['_' + key] === checkfor ) {
+        if ( key === 'tag' ) {
+          result.push(this.__windows[i]);
+        } else {
+          result = this.__windows[i];
+          break;
+        }
       }
     }
-    return null;
+
+    return result;
+  };
+
+  Application.prototype._getWindowByName = function(name) {
+    return this._getWindow(name);
+  };
+
+  Application.prototype._getWindowByTags = function(tag) {
+    return this._getWindow(name, 'tag');
+  };
+
+  Application.prototype._getWindows = function() {
+    return this.__windows;
   };
 
   Application.prototype._getSetting = function(k) {
@@ -1355,8 +1376,13 @@
     var _DEFAULT_MIN_HEIGHT = 100;
     var _DEFAULT_MIN_WIDTH  = 100;
     var _DEFAULT_SND_VOLUME = 1.0;
+    var _NAMES              = [];
 
     return function(name, opts, appRef) {
+      if ( OSjs.Utils.inArray(_NAMES, name) ) {
+        throw OSjs.Utils.format("You already have a Window named '{0}'", name);
+      }
+
       this._$element      = null;
       this._$root         = null;
       this._$loading      = null;
@@ -1368,6 +1394,7 @@
       this._icon          = OSjs.API.getThemeResource('wm.png', 'wm');
       this._name          = name;
       this._title         = name;
+      this._tag           = opts.tag || name;
       this._position      = {x:(opts.x), y:(opts.y)};
       this._dimension     = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
       this._lastDimension = this._dimension;
@@ -1882,6 +1909,10 @@
     this._hooks = {};
   };
 
+  //
+  // GUI And Event Hooks
+  //
+
   Window.prototype._addEvent = function(el, ev, callback) {
     el[ev] = callback;
     this._addHook('destroy', function() {
@@ -2006,6 +2037,10 @@
     return false;
   };
 
+  //
+  // Children (Windows)
+  //
+
   Window.prototype._addChild = function(w, wmAdd) {
     console.info("OSjs::Core::Window::_addChild()");
     w._parent = this;
@@ -2028,14 +2063,40 @@
     }
   };
 
-  Window.prototype._getChild = function(id) {
+  Window.prototype._getChild = function(id, key) {
+    key = key || 'wid';
+
+    var result = key === 'tag' ? [] : null;
     var i = 0, l = this._children.length;
     for ( i; i < l; i++ ) {
-      if ( this._children[i] && (this._children[i]._wid === id || this._children[i]._name === id) ) {
-        return this._children[i];
+      if ( this._children[i] ) {
+        if ( key === 'tag' ) {
+          result.push(this._children[i]);
+        } else {
+          if ( this._children[i]['_' + key] === id ) {
+            result = this._children[i];
+            break;
+          }
+        }
       }
     }
-    return null;
+    return result;
+  };
+
+  Window.prototype._getChildById = function(id) {
+    return this._getChild(id, 'wid');
+  };
+
+  Window.prototype._getChildByName = function(name) {
+    return this._getChild(name, 'name');
+  };
+
+  Window.prototype._getChildrenByTag = function(tag) {
+    return this._getChild(tag, 'tag');
+  };
+
+  Window.prototype._getChildren = function() {
+    return this._children;
   };
 
   Window.prototype._removeChildren = function() {
@@ -2049,6 +2110,10 @@
     }
     this._children = [];
   };
+
+  //
+  // Actions
+  //
 
   Window.prototype._close = function() {
     console.info("OSjs::Core::Window::_close()");
@@ -2321,6 +2386,27 @@
     return true;
   };
 
+  Window.prototype._error = function(title, description, message, exception, bugreport) {
+    console.debug(this._name, '>' , "OSjs::Core::Window::_error()");
+    var w = ErrorDialog(title, description, message, exception, bugreport);
+    this._addChild(w);
+  };
+
+  Window.prototype._toggleDisabled = function(t) {
+    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleDisabled()", t);
+    this._$disabled.style.display = t ? 'block' : 'none';
+    this._disabled = t ? true : false;
+  };
+
+  Window.prototype._toggleLoading = function(t) {
+    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleLoading()", t);
+    this._$loading.style.display = t ? 'block' : 'none';
+  };
+
+  //
+  // Events
+  //
+
   Window.prototype._onDndEvent = function(ev, type) {
     console.info("OSjs::Core::Window::_onDndEvent()", type);
     if ( this._disabled ) { return false; }
@@ -2421,22 +2507,9 @@
     }
   };
 
-  Window.prototype._error = function(title, description, message, exception, bugreport) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_error()");
-    var w = ErrorDialog(title, description, message, exception, bugreport);
-    this._addChild(w);
-  };
-
-  Window.prototype._toggleDisabled = function(t) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleDisabled()", t);
-    this._$disabled.style.display = t ? 'block' : 'none';
-    this._disabled = t ? true : false;
-  };
-
-  Window.prototype._toggleLoading = function(t) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleLoading()", t);
-    this._$loading.style.display = t ? 'block' : 'none';
-  };
+  //
+  // Getters
+  //
 
   Window.prototype._getViewRect = function() {
     return this._$element ? OSjs.Utils.$position(this._$element) : null;
@@ -2466,6 +2539,10 @@
     this._title = t;
     this._onChange('title');
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // DIALOG WINDOW
+  /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Dialog Window

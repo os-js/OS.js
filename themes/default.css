@@ -36,7 +36,7 @@
   background: #555555;
   background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
   border: 1px solid #a0a0a0;
-  color: #555555;
+  color: #000000;
 }
 .theme_gui_button_hover,
 .GUIButton button:focus,
@@ -44,7 +44,7 @@
   background: #555555;
   background: linear-gradient(to bottom, #fefefe 0%, #e1e1e1 100%);
   border: 1px solid #909090;
-  color: #555555;
+  color: #000000;
 }
 .theme_gui_button_active,
 .GUIButton button:active,
@@ -54,7 +54,7 @@
   background: #333333;
   background: linear-gradient(to bottom, #c8c8c8 0%, #a8a8a8 100%);
   border: 1px solid #717171;
-  color: #333333;
+  color: #000000;
 }
 .theme_gui_button_disabled,
 .GUIButton button[disabled],
@@ -68,7 +68,7 @@
   background: #a0a0a0;
   background: linear-gradient(to bottom, #dfdfdf 0%, #e1e1e1 100%);
   border: 1px solid #909090;
-  color: #a0a0a0;
+  color: #000000;
 }
 /**
  * Base

@@ -34,31 +34,40 @@
   background : @theme_gui_button_bg_color;
   background: linear-gradient(to bottom, @theme_gui_button_bg_from 0%, @theme_gui_button_gb_to 100%);
   border : 1px solid @theme_gui_button_border_color;
-  color : @theme_gui_button_bg_color;
+  color : @theme_gui_button_fg_color;
 }
 .theme_gui_button_hover {
   background : @theme_gui_hbutton_bg_color;
   background: linear-gradient(to bottom, @theme_gui_hbutton_bg_from 0%, @theme_gui_hbutton_gb_to 100%);
   border : 1px solid @theme_gui_hbutton_border_color;
-  color : @theme_gui_hbutton_bg_color;
+  color : @theme_gui_hbutton_fg_color;
 }
 .theme_gui_button_active {
   background : @theme_gui_abutton_bg_color;
   background: linear-gradient(to bottom, @theme_gui_abutton_bg_from 0%, @theme_gui_abutton_gb_to 100%);
   border : 1px solid @theme_gui_abutton_border_color;
-  color : @theme_gui_abutton_bg_color;
+  color : @theme_gui_abutton_fg_color;
 }
 .theme_gui_button_disabled {
   background : @theme_gui_dbutton_bg_color;
   background: linear-gradient(to bottom, @theme_gui_dbutton_bg_from 0%, @theme_gui_dbutton_gb_to 100%);
   border : 1px solid @theme_gui_dbutton_border_color;
-  color : @theme_gui_dbutton_bg_color;
+  color : @theme_gui_dbutton_fg_color;
 }
 
 .theme_border(@radius) {
   -webkit-border-radius: @radius;
      -moz-border-radius: @radius;
           border-radius: @radius;
+}
+
+.theme_border_top(@radius) {
+  -webkit-border-top-left-radius: @radius;
+     -moz-border-top-left-radius: @radius;
+          border-top-left-radius: @radius;
+  -webkit-border-top-right-radius: @radius;
+     -moz-border-top-right-radius: @radius;
+          border-top-right-radius: @radius;
 }
 
 .theme_border_bottom(@radius) {

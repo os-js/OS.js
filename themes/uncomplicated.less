@@ -21,11 +21,11 @@
 
 @theme_input_bg_color         : #ffffff;
 
-@theme_gui_button_bg_color    : #555555;
-@theme_gui_button_fg_color    : #000000;
-@theme_gui_button_bg_from     : #fefefe;
-@theme_gui_button_gb_to       : #e1e1e1;
-@theme_gui_button_border_color: #a0a0a0;
+@theme_gui_button_bg_color    : #f8f8f8;
+@theme_gui_button_fg_color    : #242424;
+@theme_gui_button_bg_from     : #f8f8f8;
+@theme_gui_button_gb_to       : #f4f4f4;
+@theme_gui_button_border_color: #c1c1c1;
 
 @theme_gui_hbutton_bg_color    : @theme_gui_button_bg_color;
 @theme_gui_hbutton_fg_color    : @theme_gui_button_fg_color;
@@ -33,16 +33,16 @@
 @theme_gui_hbutton_gb_to       : @theme_gui_button_gb_to;
 @theme_gui_hbutton_border_color: #909090;
 
-@theme_gui_abutton_bg_color    : #333333;
+@theme_gui_abutton_bg_color    : @theme_gui_button_bg_color;
 @theme_gui_abutton_fg_color    : @theme_gui_button_fg_color;
 @theme_gui_abutton_bg_from     : #c8c8c8;
 @theme_gui_abutton_gb_to       : #a8a8a8;
 @theme_gui_abutton_border_color: #717171;
 
 @theme_gui_dbutton_bg_color    : @theme_gui_button_border_color;
-@theme_gui_dbutton_fg_color    : @theme_gui_button_fg_color;
-@theme_gui_dbutton_bg_from     : #dfdfdf;
-@theme_gui_dbutton_gb_to       : @theme_gui_button_gb_to;
+@theme_gui_dbutton_fg_color    : #333333;
+@theme_gui_dbutton_bg_from     : #ededed;
+@theme_gui_dbutton_gb_to       : #e6e6e6;
 @theme_gui_dbutton_border_color: @theme_gui_hbutton_border_color;
 
 @theme_base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
@@ -90,7 +90,7 @@ body .WMPanel.Bottom.Autohide {
  * Window
  */
 .Window {
-  .theme_border(3px);
+  .theme_border_top(3px);
 }
 .Window > .WindowWrapper {
   margin : 3px;
@@ -106,7 +106,7 @@ body .WMPanel.Bottom.Autohide {
   border : 4px solid rgba(0, 0, 0, .7);
   margin : -4px;
   border-radius : 1px;
-  .theme_border(3px);
+  .theme_border_top(3px);
 }
 
 /* Max */
