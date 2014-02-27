@@ -1348,11 +1348,11 @@
     return this.__settings[k];
   };
 
-  Application.prototype._setSetting = function(k, v, save) {
+  Application.prototype._setSetting = function(k, v, save, saveCallback) {
     save = (typeof save === 'undefined' || save === true);
     this.__settings[k] = v;
     if ( save && _HANDLER ) {
-      _HANDLER.setApplicationSettings(this.__name, this.__settings);
+      _HANDLER.setApplicationSettings(this.__name, this.__settings, saveCallback);
     }
   };
 

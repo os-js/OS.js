@@ -488,7 +488,7 @@
    */
   DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
     callback = callback || function() {};
-    this.setSetting(app, settings, callback, true, false);
+    this.setSetting(app, null, settings, callback, true, false);
   };
 
   /**
