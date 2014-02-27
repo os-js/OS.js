@@ -1383,30 +1383,36 @@
         throw OSjs.Utils.format("You already have a Window named '{0}'", name);
       }
 
-      this._$element      = null;
-      this._$root         = null;
-      this._$loading      = null;
-      this._$disabled     = null;
-      this._rendered      = false;
-      this._appRef        = appRef || null;
-      this._destroyed     = false;
-      this._wid           = _WID;
-      this._icon          = OSjs.API.getThemeResource('wm.png', 'wm');
-      this._name          = name;
-      this._title         = name;
-      this._tag           = opts.tag || name;
-      this._position      = {x:(opts.x), y:(opts.y)};
-      this._dimension     = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
-      this._lastDimension = this._dimension;
-      this._lastPosition  = this._position;
+      var icon      = OSjs.API.getThemeResource('wm.png', 'wm');
+      var position  = {x:(opts.x), y:(opts.y)};
+      var dimension = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
+
+      this._$element      = null;                 // DOMElement: Window Outer container
+      this._$root         = null;                 // DOMElement: Window Inner container (for content)
+      this._$loading      = null;                 // DOMElement: Window Loading overlay
+      this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
+
+      this._rendered      = false;                // If Window has been initially rendered
+      this._appRef        = appRef || null;       // Reference to Application Window was created from
+      this._destroyed     = false;                // If Window has been destroyed
+      this._wid           = _WID;                 // Window ID (Internal)
+      this._icon          = icon;                 // Window Icon
+      this._name          = name;                 // Window Name (Unique identifier)
+      this._title         = name;                 // Window Title
+      this._tag           = opts.tag || name;     // Window Tag (ex. Use this when you have a group of windows)
+      this._position      = position;             // Window Position
+      this._dimension     = dimension;            // Window Dimension
+      this._lastDimension = this._dimension;      // Last Window Dimension
+      this._lastPosition  = this._position;       // Last Window Position
       this._tmpPosition   = null;
-      this._children      = [];
-      this._parent        = null;
-      this._guiElements   = [];
-      this._disabled      = true;
-      this._sound         = null; //'dialog-information';
-      this._soundVolume   = _DEFAULT_SND_VOLUME;
-      this._properties    = {
+      this._children      = [];                   // Child Windows
+      this._parent        = null;                 // Parent Window reference
+      this._guiElements   = [];                   // Added GUI Elements
+      this._disabled      = true;                 // If Window is currently disabled
+      this._sound         = null;                 // Play this sound when window opens
+      this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
+
+      this._properties    = {                     // Window Properties
         gravity           : null,
         allow_move        : true,
         allow_resize      : true,
@@ -1424,7 +1430,8 @@
         max_width         : opts.max_width  || null,
         max_height        : opts.max_height || null
       };
-      this._state     = {
+
+      this._state     = {                         // Window State
         focused   : false,
         modal     : false,
         minimized : false,
@@ -1432,7 +1439,8 @@
         ontop     : false,
         onbottom  : false
       };
-      this._hooks     = {
+
+      this._hooks     = {                         // Window Hooks (Events)
         focus     : [],
         blur      : [],
         destroy   : [],
@@ -1513,8 +1521,8 @@
     console.log('Position', this._position);
     console.log('Dimension', this._dimension);
 
-    var main            = document.createElement('div');
-    main.className      = 'Window';
+    // Main outer container
+    var main = document.createElement('div');
 
     this._addEvent(main, 'oncontextmenu', function(ev) {
       OSjs.GUI.blurMenu();
@@ -1581,9 +1589,11 @@
       }
     }
 
+    // Window -> Top
     var windowTop           = document.createElement('div');
     windowTop.className     = 'WindowTop';
 
+    // Window -> Top -> Icon
     var windowIcon          = document.createElement('div');
     windowIcon.className    = 'WindowIcon';
 
@@ -1599,10 +1609,12 @@
       self._onWindowIconClick(ev, this);
     });
 
+    // Window -> Top -> Title
     var windowTitle       = document.createElement('div');
     windowTitle.className = 'WindowTitle';
     windowTitle.appendChild(document.createTextNode(this._title));
 
+    // Window -> Top -> Buttons
     var windowButtons       = document.createElement('div');
     windowButtons.className = 'WindowButtons';
     this._addEvent(windowButtons, 'onmousedown', function(ev) {
@@ -1647,15 +1659,18 @@
       buttonClose.style.display = 'none';
     }
 
+    // Window -> Top -> Content Container (Wrapper)
     var windowWrapper       = document.createElement('div');
     windowWrapper.className = 'WindowWrapper';
 
+    // Window -> Resize handle
     var windowResize        = document.createElement('div');
     windowResize.className  = 'WindowResize';
     if ( !this._properties.allow_resize ) {
       windowResize.style.display = 'none';
     }
 
+    // Window -> Loading Indication
     var windowLoading       = document.createElement('div');
     windowLoading.className = 'WindowLoading';
     this._addEvent(windowLoading, 'onclick', function(ev) {
@@ -1666,6 +1681,7 @@
     var windowLoadingImage        = document.createElement('div');
     windowLoadingImage.className  = 'WindowLoadingIndicator';
 
+    // Window -> Disabled Overlay
     var windowDisabled            = document.createElement('div');
     windowDisabled.className      = 'WindowDisabledOverlay';
     //windowDisabled.style.display  = 'none';
@@ -1674,7 +1690,14 @@
       return false;
     });
 
-    main.className    = 'Window Window_' + this._name.replace(/[^a-zA-Z0-9]/g, '_');
+    // Append stuff
+    var classNames = ['Window'];
+    classNames.push('Window_' + this._name.replace(/[^a-zA-Z0-9]/g, '_'));
+    if ( this._tag && (this._name != this._tag) ) {
+      classNames.push(this._tag.replace(/[^a-zA-Z0-9]/g, '_'));
+    }
+
+    main.className    = classNames.join(' ');
     main.style.width  = this._dimension.w + "px";
     main.style.height = this._dimension.h + "px";
     main.style.top    = this._position.y + "px";
