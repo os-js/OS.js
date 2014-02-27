@@ -171,7 +171,7 @@
       el.className = className;
       el.title = win._title;
       el.onclick = function() {
-        win._restore();
+        win._focus(true);
       };
       el.oncontextmenu = function(ev) {
         ev.stopPropagation();
