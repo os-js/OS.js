@@ -764,7 +764,7 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationMusicPlayer.prototype.init = function(core, session, metadata) {
+  ApplicationMusicPlayer.prototype.init = function(core, settings, metadata) {
     Application.prototype.init.apply(this, arguments);
     var self = this;
 

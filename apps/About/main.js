@@ -99,7 +99,7 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationAbout.prototype.init = function(core, session, metadata) {
+  ApplicationAbout.prototype.init = function(core, settings, metadata) {
     Application.prototype.init.apply(this, arguments);
     var self = this;
 

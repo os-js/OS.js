@@ -618,7 +618,7 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationDraw.prototype.init = function(core, session, metadata) {
+  ApplicationDraw.prototype.init = function(core, settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     this._addWindow(new ApplicationDrawWindow(this, metadata));
