@@ -264,12 +264,12 @@
 .ErrorDialog .Summary {
   background : #fff;
   display : block;
-  width : 390px;
+  width : 100%;
   height : 165px;
 }
 .ErrorDialog .Trace {
   display : block;
-  width : 390px;
+  width : 100%;
   height : 80px;
   resize : none;
   outline : none;

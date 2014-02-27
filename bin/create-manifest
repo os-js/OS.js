@@ -27,7 +27,9 @@ foreach ( $dirs as $path ) {
         }
 
         foreach ( $data['preload'] as $pi => $pp ) {
-          $data['preload'][$pi]['src'] = "/{$basedir}/{$i}/{$pp['src']}";
+          if ( !preg_match("/^(ftp|https?\:)?\/\//", $pp['src']) ) {
+            $data['preload'][$pi]['src'] = "/{$basedir}/{$i}/{$pp['src']}";
+          }
         }
 
         $data['path']    = "{$basedir}/{$i}";
