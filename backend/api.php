@@ -201,6 +201,7 @@ if ( isset($_GET['upload']) ) {
       exit;
     }
 
+    session_write_close();
     if ( move_uploaded_file($_FILES['upload']['tmp_name'], $dest) ) {
       chmod($dest, 0600);
     }
