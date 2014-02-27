@@ -25,6 +25,12 @@
   top : auto;
   bottom : 0px;
 }
+.WMPanel.Top.Autohide {
+  top : -30px;
+}
+.WMPanel.Bottom.Autohide {
+  bottom : -30px;
+}
 .WMPanel ul {
   margin : 0;
   padding : 0;

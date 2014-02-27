@@ -48,6 +48,7 @@
           options: {
             position: 'top',
             ontop:    true,
+            autohide: false
           },
           items:    [
             {name: 'Buttons'},
@@ -506,7 +507,11 @@
       p = this.panels[i];
       if ( p && p.getOntop() ) {
         ph = p.getHeight();
-        if ( p.getPosition('top') ) {
+        if ( p.getAutohide() ) {
+          // FIXME: Replace with a constant ?!
+          s.top    += 10;
+          s.height -= 10;
+        } else if ( p.getPosition('top') ) {
           s.top    += ph;
           s.height -= ph;
         } else {
@@ -536,8 +541,15 @@
     var p;
     for ( var i = 0; i < this.panels.length; i++ ) {
       p = this.panels[i];
-      if ( p && p.getOntop() && p.getPosition('top') ) {
-        pos.y += p.getHeight();
+      if ( p && p.getOntop() ) {
+        if ( p.getPosition('top') ) {
+          if ( p.getAutohide() ) {
+            pos.y += 10; // FIXME: Replace with a constant ?!
+          } else {
+            pos.y += p.getHeight();
+          }
+
+        }
       }
     }
 

@@ -490,9 +490,15 @@ body {
  */
 body > .WMPanel {
   height: 32px;
-  left: 10px;
-  right: 10px;
+  left: 5px;
+  right: 5px;
   background: transparent;
+  -webkit-border-bottom-left-radius: 3px;
+  -moz-border-bottom-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-bottom-right-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 body > .WMPanel:before {
   content: '';
@@ -501,17 +507,24 @@ body > .WMPanel:before {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  background: #ebebeb;
   z-index: 1;
+  background: #ebebeb;
   -webkit-border-bottom-left-radius: 3px;
   -moz-border-bottom-left-radius: 3px;
   border-bottom-left-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -moz-border-bottom-right-radius: 3px;
   border-bottom-right-radius: 3px;
+  opacity: .9;
 }
 body > .WMPanel > ul {
   margin: 3px;
+}
+body .WMPanel.Top.Autohide {
+  top: -33px;
+}
+body .WMPanel.Bottom.Autohide {
+  bottom: -33px;
 }
 #Background.Blinking {
   background: #242424;

@@ -55,9 +55,10 @@
  */
 body > .WMPanel {
   height : 32px;
-  left : 10px;
-  right : 10px;
+  left : 5px;
+  right : 5px;
   background : transparent;
+  .theme_border_bottom(3px);
 }
 body > .WMPanel:before {
   content : '';
@@ -66,12 +67,19 @@ body > .WMPanel:before {
   left : 0px;
   right : 0px;
   bottom : 0px;
-  background : @theme_base_bg_color;
   z-index : 1;
+  background : @theme_base_bg_color;
   .theme_border_bottom(3px);
+  opacity : .9;
 }
 body > .WMPanel > ul {
   margin : 3px;
+}
+body .WMPanel.Top.Autohide {
+  top : -33px;
+}
+body .WMPanel.Bottom.Autohide {
+  bottom : -33px;
 }
 #Background.Blinking {
   background : #242424;

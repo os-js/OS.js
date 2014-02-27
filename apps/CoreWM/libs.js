@@ -98,7 +98,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var PanelItemWindow = function(app, parentWindow) {
-    Window.apply(this, ['CoreWMPanelItemWindow', {width:400, height:360}, app]);
+    Window.apply(this, ['CoreWMPanelItemWindow', {width:400, height:390}, app]);
 
     this._title                     = _("CoreWM Panel Item Chooser");
     this._icon                      = "categories/applications-system.png";
@@ -384,6 +384,16 @@
     panelPosition.setSelected(settings.panels[0].options.position);
     tabPanels.appendChild(outer);
 
+    // Panel Autohide
+    outer = _createContainer('PanelAutohide SettingsNoButton', _('Panel Autohide ?'));
+    var panelAutohide = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelAutohide'), outer);
+    panelAutohide.addItems({
+      'yes':  OSjs._('Yes'),
+      'no':   OSjs._('No')
+    });
+    panelAutohide.setSelected(settings.panels[0].options.autohide ? 'yes' : 'no');
+    tabPanels.appendChild(outer);
+
     // Panel Ontop
     outer = _createContainer('PanelOntop SettingsNoButton', _('Panel Ontop ?'));
     var panelOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelOntop'), outer);
@@ -490,6 +500,7 @@
         panelItems:       self.panelItems,
         animations:       useAnimations.getValue() == 'yes',
         panelOntop:       panelOntop.getValue() == 'yes',
+        panelAutohide:    panelAutohide.getValue() == 'yes',
         panelPosition:    panelPosition.getValue(),
         enableSwitcher:   useSwitcher.getValue() == 'yes',
         enableHotkeys:    useHotkeys.getValue() == 'yes',
@@ -518,6 +529,7 @@
               options: {
                 position: settings.panelPosition,
                 ontop:    settings.panelOntop,
+                autohide: settings.panelAutohide
               },
               items: settings.panelItems
             }
@@ -784,9 +796,11 @@
     this._$element = null;
     this._$container = null;
     this._items = [];
+    this._timeout = null;
     this._options = {
       position: options.position || 'top',
-      ontop:    options.ontop === true
+      ontop:    options.ontop === true,
+      autohide: options.autohide === true
     };
   };
 
@@ -801,6 +815,12 @@
     this._$element.onmousedown = function(ev) {
       ev.preventDefault();
       return false;
+    };
+    this._$element.onmouseover = function(ev) {
+      self.onMouseOver(ev);
+    };
+    this._$element.onmouseout = function(ev) {
+      self.onMouseOut(ev);
     };
     this._$element.onclick = function(ev) {
       OSjs.GUI.blurMenu();
@@ -824,6 +844,11 @@
   };
 
   Panel.prototype.destroy = function() {
+    if ( this._timeout ) {
+      clearTimeout(this._timeout);
+      this._timeout = null;
+    }
+
     for ( var i = 0; i < this._items.length; i++ ) {
       this._items[i].destroy();
     }
@@ -848,8 +873,43 @@
     if ( options.position ) {
       cn.push(options.position == 'top' ? 'Top' : 'Bottom');
     }
+    if ( options.autohide ) {
+      this.onMouseOut();
+    }
     this._$element.className = cn.join(' ');
     this._options = options;
+  };
+
+  Panel.prototype.autohide = function(hide) {
+    if ( !this._options.autohide || !this._$element ) {
+      return;
+    }
+
+    if ( hide ) {
+      this._$element.className = this._$element.className.replace(/\s?Visible/, '');
+      if ( !this._$element.className.match(/Autohide/) ) {
+        this._$element.className += ' Autohide';
+      }
+    } else {
+      this._$element.className = this._$element.className.replace(/\s?Autohide/, '');
+      if ( !this._$element.className.match(/Visible/) ) {
+        this._$element.className += ' Visible';
+      }
+    }
+  };
+
+  Panel.prototype.onMouseOver = function() {
+    if ( this._timeout ) {
+      clearTimeout(this._timeout);
+    }
+    this.autohide(false);
+  };
+
+  Panel.prototype.onMouseOut = function() {
+    var self = this;
+    this._timeout = setTimeout(function() {
+      self.autohide(true);
+    }, 1000);
   };
 
   Panel.prototype.addItem = function(item) {
@@ -876,6 +936,10 @@
 
   Panel.prototype.getPosition = function(pos) {
     return pos ? (this._options.position == pos) : this._options.position;
+  };
+
+  Panel.prototype.getAutohide = function() {
+    return this._options.autohide;
   };
 
   Panel.prototype.getRoot = function() {
