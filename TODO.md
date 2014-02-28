@@ -5,6 +5,7 @@
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
 * More Themes!
+* Application compability checking stuff
 * Misc FIXME and TODO in source-code
   - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 

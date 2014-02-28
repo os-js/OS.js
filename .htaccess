@@ -9,7 +9,14 @@ RewriteRule ^FS/(.*) backend/api.php?file=/$1
 RewriteRule ^FS backend/api.php?upload
 
 # Comment this line if you want to be able to run bin/ from web-server
-RewriteRule ^(bin|doc) - [F,L,NC]
+RewriteRule ^(bin|doc) - [F,NC]
+
+# For binding to other services
+<ifModule mod_proxy.c>
+  <ifModule mod_proxy_http.c>
+    RewriteRule http-bind-jabber/ http://localhost:5280/http-bind/ [P]
+  </ifModule>
+</ifModule>
 
 <ifModule mod_headers.c>
   <FilesMatch "\.(html|htm|js|css|json)$">

@@ -478,6 +478,10 @@
           m           = document.createElement('li');
           m.className = '';
 
+          if ( !list[i].name ) {
+            list[i].name = (list[i].title || '').replace(/\s/, '_');
+          }
+
           if ( list[i].name ) {
             m.className = 'MenuItem_' + list[i].name;
           }
