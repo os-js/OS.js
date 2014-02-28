@@ -594,6 +594,7 @@
    * Default method for getting path to a resource
    */
   DefaultHandler.prototype.getResourceURL = function(path) {
+    path = path || '';
     if ( path.match(/^osjs\:\/\//) ) {
       return path.replace(/^osjs\:\/\//, '');
     }
