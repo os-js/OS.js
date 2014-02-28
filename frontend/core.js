@@ -1212,8 +1212,10 @@
         var last = null;
         var i = 0, l = this.__windows.length;
         for ( i; i < l; i++ ) {
-          _WM.addWindow(this.__windows[i]);
-          last = this.__windows[i];
+          if ( this.__windows[i] ) {
+            _WM.addWindow(this.__windows[i]);
+            last = this.__windows[i];
+          }
         }
         if ( last ) { last._focus(); }
       }
@@ -1302,11 +1304,14 @@
     var i = 0;
     var l = this.__windows.length;
     for ( i; i < l; i++ ) {
-      if ( this.__windows[i]._wid === w._wid ) {
-        console.info("OSjs::Core::Application::_removeWindow()", w._wid);
-        this.__windows[i].destroy();
-        this.__windows.splice(i, 1);
-        break;
+      if ( this.__windows[i] ) {
+        if ( this.__windows[i]._wid === w._wid ) {
+          console.info("OSjs::Core::Application::_removeWindow()", w._wid);
+          this.__windows[i].destroy();
+          //this.__windows[i] = null;
+          this.__windows.splice(i, 1);
+          break;
+        }
       }
     }
   };
@@ -1319,12 +1324,14 @@
     var result = key === 'tag' ? [] : null;
 
     for ( i; i < l; i++ ) {
-      if ( this.__windows[i]['_' + key] === checkfor ) {
-        if ( key === 'tag' ) {
-          result.push(this.__windows[i]);
-        } else {
-          result = this.__windows[i];
-          break;
+      if ( this.__windows[i] ) {
+        if ( this.__windows[i]['_' + key] === checkfor ) {
+          if ( key === 'tag' ) {
+            result.push(this.__windows[i]);
+          } else {
+            result = this.__windows[i];
+            break;
+          }
         }
       }
     }
@@ -1336,8 +1343,8 @@
     return this._getWindow(name);
   };
 
-  Application.prototype._getWindowByTags = function(tag) {
-    return this._getWindow(name, 'tag');
+  Application.prototype._getWindowsByTag = function(tag) {
+    return this._getWindow(tag, 'tag');
   };
 
   Application.prototype._getWindows = function() {
