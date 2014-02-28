@@ -370,7 +370,7 @@
         }
 
         this._addEventListener(this.$input, 'keypress', function(ev) {
-          self.onKeyPress.apply(self, [this, ev]);
+          self.onKeyPress.apply(self, [ev]);
         });
       }
     }

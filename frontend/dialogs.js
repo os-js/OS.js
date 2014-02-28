@@ -644,8 +644,8 @@
       var start = true;
       var curval = OSjs.Utils.escapeFilename(this.currentFilename ? this.currentFilename : this.defaultFilename);
 
-      this.input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(el, ev) {
-        self.buttonConfirm.setDisabled(el.value.length <= 0);
+      this.input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(ev) {
+        self.buttonConfirm.setDisabled(this.value.length <= 0);
         if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
           self.buttonConfirm.onClick(ev);
           return;
@@ -954,7 +954,7 @@
 
     var inputd = document.createElement('div');
 
-    this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(el, ev) {
+    this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(ev) {
       if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
         self.buttonConfirm.onClick(ev);
         return;
