@@ -789,6 +789,9 @@
   // PANELS
   /////////////////////////////////////////////////////////////////////////////
 
+  var PANEL_SHOW_TIMEOUT = 100;
+  var PANEL_HIDE_TIMEOUT = 500;
+
   var Panel = function(name, options) {
     options = options || {};
 
@@ -796,7 +799,8 @@
     this._$element = null;
     this._$container = null;
     this._items = [];
-    this._timeout = null;
+    this._outtimeout = null;
+    this._intimeout = null;
     this._options = {
       position: options.position || 'top',
       ontop:    options.ontop === true,
@@ -844,9 +848,13 @@
   };
 
   Panel.prototype.destroy = function() {
-    if ( this._timeout ) {
-      clearTimeout(this._timeout);
-      this._timeout = null;
+    if ( this._outtimeout ) {
+      clearTimeout(this._outtimeout);
+      this._outtimeout = null;
+    }
+    if ( this._intimeout ) {
+      clearTimeout(this._intimeout);
+      this._intimeout = null;
     }
 
     for ( var i = 0; i < this._items.length; i++ ) {
@@ -899,17 +907,31 @@
   };
 
   Panel.prototype.onMouseOver = function() {
-    if ( this._timeout ) {
-      clearTimeout(this._timeout);
+    if ( this._outtimeout ) {
+      clearTimeout(this._outtimeout);
+      this._outtimeout = null;
     }
-    this.autohide(false);
+    if ( this._intimeout ) {
+      clearTimeout(this._intimeout);
+      this._intimeout = null;
+    }
+
+    var self = this;
+    this._intimeout = setTimeout(function() {
+      self.autohide(false);
+    }, PANEL_SHOW_TIMEOUT);
   };
 
   Panel.prototype.onMouseOut = function() {
+    if ( this._intimeout ) {
+      clearTimeout(this._intimeout);
+      this._intimeout = null;
+    }
+
     var self = this;
-    this._timeout = setTimeout(function() {
+    this._outtimeout = setTimeout(function() {
       self.autohide(true);
-    }, 1000);
+    }, PANEL_HIDE_TIMEOUT);
   };
 
   Panel.prototype.addItem = function(item) {
