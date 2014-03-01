@@ -1043,7 +1043,7 @@
     this.$scroll.scrollTop = 0;
 
     if ( reselect >= 0 ) {
-      this._onRowClick(null, this.rows[reselect]._element);
+      this._onRowClick(null, this.rows[reselect]._element, this.rows[reselect]);
       this._onSelect(null, this.rows[reselect]);
     } else {
       this.selected = null;
@@ -1094,7 +1094,7 @@
     return item;
   };
 
-  ListView.prototype._onRowClick = function(ev, el) {
+  ListView.prototype._onRowClick = function(ev, el, item) {
     if ( !el ) {
       console.warn("ListView::_onRowClick()", "did not get a element");
       return;
@@ -1150,7 +1150,7 @@
   ListView.prototype.setSelectedIndex = function(idx) {
     if ( this.destroyed ) { return; }
     if ( this.rows[idx] ) {
-      this._onRowClick(null, this.rows[idx]._element);
+      this._onRowClick(null, this.rows[idx]._element, this.rows[idx]);
       this._onSelect(null, this.rows[idx]);
     }
   };
@@ -1159,7 +1159,7 @@
     if ( this.destroyed ) { return; }
     var row = this.getItemByKey(key, val);
     if ( row ) {
-      this._onRowClick(null, row._element);
+      this._onRowClick(null, row._element, row);
       this._onSelect(null, row);
     }
   };
@@ -2985,7 +2985,12 @@
           createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
-            data   : item
+            data   : {
+              filename: item.filename,
+              path: item.path,
+              size : item.size,
+              mime: item.mime
+            }
           });
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
@@ -3040,24 +3045,24 @@
     this.onSort(col);
   };
 
-  FileListView.prototype._onActivate = function(ev, el) {
+  FileListView.prototype._onActivate = function(ev, item) {
     var item = ListView.prototype._onActivate.apply(this, arguments);
     if ( item && item.path ) {
       this.onActivated(item.path, item.type, item.mime);
     }
   };
 
-  FileListView.prototype._onSelect = function(ev, el) {
+  FileListView.prototype._onSelect = function(ev, item) {
     var item = ListView.prototype._onSelect.apply(this, arguments);
     if ( item && item.path ) {
-      this.onSelected(item, el);
+      this.onSelected(item, item._element);
     }
   };
 
-  FileListView.prototype._onRowClick = function(ev, el) {
+  FileListView.prototype._onRowClick = function(ev, el, item) {
     if ( this.destroyed ) { return; }
     ListView.prototype._onRowClick.apply(this, arguments);
-    this._onSelect(ev, el);
+    this._onSelect(ev, item);
   };
 
   /**
