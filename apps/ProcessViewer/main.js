@@ -19,7 +19,7 @@
   ApplicationProcessViewerWindow.prototype.init = function() {
     var root = Window.prototype.init.apply(this, arguments);
 
-    var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView'), root);
+    var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView', {indexKey: 'pid'}), root);
     listView.setColumns([
       {key: 'pid',    title: OSjs._('PID'), domProperties: {width: "50"}},
       {key: 'name',   title: OSjs._('Name')},

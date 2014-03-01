@@ -939,6 +939,9 @@
     console.log("OSjs::Core::WindowManager::init()");
   };
 
+  WindowManager.prototype.onKeyDown = function(ev, win) {
+  };
+
   WindowManager.prototype.resize = function(ev, rect) {
   };
 
@@ -1418,6 +1421,7 @@
       this._children      = [];                   // Child Windows
       this._parent        = null;                 // Parent Window reference
       this._guiElements   = [];                   // Added GUI Elements
+      this._guiElement    = null;                 // Currently selected GUI Element
       this._disabled      = true;                 // If Window is currently disabled
       this._sound         = null;                 // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
@@ -2018,6 +2022,15 @@
     if ( gel instanceof OSjs.GUI.GUIElement ) {
       gel.wid = this._wid;
 
+      gel._addHook('focus', function() {
+        self._guiElement = this;
+      });
+      /*
+      gel._addHook('blur', function() {
+        self._guiElement = null;
+      });
+      */
+
       //console.log("OSjs::Core::Window::_addGUIElement()");
       if ( gel.opts && gel.opts.focusable ) {
         this._addHook('blur', function() {
@@ -2287,7 +2300,7 @@
 
   Window.prototype._focus = function(force) {
     //if ( !force && this._state.focused ) { return false; }
-    console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
+    //console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     if ( !this._$element.className.match(/WindowHintFocused/) ) {
@@ -2312,7 +2325,7 @@
 
   Window.prototype._blur = function(force) {
     if ( !force && !this._state.focused ) { return false; }
-    console.debug(this._name, '>' , "OSjs::Core::Window::_blur()");
+    //console.debug(this._name, '>' , "OSjs::Core::Window::_blur()");
     var cn = this._$element.className;
     this._$element.className = cn.replace(/\s?WindowHintFocused/, '');
     this._state.focused = false;
@@ -2448,6 +2461,11 @@
   };
 
   Window.prototype._onKeyEvent = function(ev) {
+    if ( this._guiElement ) {
+      if ( ev.type == "keydown" ) {
+        this._guiElement.onKeyPress(ev);
+      }
+    }
   };
 
   Window.prototype._onWindowIconClick = function(ev, el) {

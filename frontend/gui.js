@@ -747,6 +747,7 @@
    *  columns           Object          Columns
    *  rows              Array           Rows
    *  render            bool            Render on create (default = true when columns and rows are supplied)
+   *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
    */
   var ListView = function(name, opts) {
     opts            = opts || {};
@@ -762,7 +763,8 @@
     this.$tableTop        = null;
     this.$scroll          = null;
     this.selected         = null;
-    this.selectedDOMItem  = null;
+    this.lastSelectedDOM  = null;
+    this.indexKey         = opts.indexKey || null;
 
     this.onCreateRow    = opts.onCreateRow    || function() {};
     this.onSelect       = opts.onSelect       || function() {};
@@ -807,10 +809,14 @@
       }
 
       if ( t && t.tagName == 'TR' ) {
-        if ( type == 'activate' ) {
-          self._onActivate(ev, t);
-        } else if ( type == 'select' ) {
-          self._onSelect(ev, t);
+        var idx = OSjs.Utils.$index(t, self.$body);
+        var item = self.rows[idx];
+        if ( item ) {
+          if ( type == 'activate' ) {
+            self._onActivate(ev, item);
+          } else if ( type == 'select' ) {
+            self._onSelect(ev, item);
+          }
         }
 
         return t;
@@ -925,8 +931,8 @@
   };
 
   ListView.prototype.render = function() {
-    this.selected = null;
-    this.selectedDOMItem = null;
+    var selected = this.selected;
+    var reselect = -1;
 
     OSjs.Utils.$empty(this.$head);
     OSjs.Utils.$empty(this.$body);
@@ -1018,16 +1024,30 @@
         }
 
         row.onclick = function(ev) {
-          self._onRowClick.call(self, ev, this);
+          self._onRowClick(ev, this);
         };
         row.appendChild(col);
       }
       this.$body.appendChild(row);
 
       this.onCreateRow(row, iter, colref);
+
+      if ( reselect < 0 && (selected && (iter[this.indexKey] == selected[this.indexKey])) ) {
+        reselect = i;
+      }
+
+      this.rows[i]._index   = i;
+      this.rows[i]._element = row;
     }
 
     this.$scroll.scrollTop = 0;
+
+    if ( reselect >= 0 ) {
+      this._onRowClick(null, this.rows[reselect]._element);
+      this._onSelect(null, this.rows[reselect]);
+    } else {
+      this.selected = null;
+    }
   };
 
   ListView.prototype.onKeyPress = function(ev) {
@@ -1037,15 +1057,17 @@
     ev.preventDefault();
     if ( this.selected ) {
 
-      var idx = OSjs.Utils.$index(this.selectedDOMItem, this.$body);
+      var idx  = this.selected._index;
       var tidx = idx;
-      if ( idx >= 0 && idx < this.$body.childNodes.length ) {
+      var len  = this.rows.length;
+
+      if ( idx >= 0 && idx < len  ) {
         if ( ev.keyCode === OSjs.Utils.Keys.UP ) {
           idx--;
         } else if ( ev.keyCode === OSjs.Utils.Keys.DOWN ) {
           idx++;
         } else if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
-          this._onActivate(ev, this.selectedDOMItem);
+          this._onActivate(ev, this.rows[idx]);
           return true;
         }
 
@@ -1060,51 +1082,40 @@
   ListView.prototype._onColumnClick = function(ev, col) {
   };
 
-  ListView.prototype._onSelect = function(ev, el) {
-    this.selectedDOMItem = null;
-    this.selected = null;
+  ListView.prototype._onSelect = function(ev, item) {
+    this.selected = item;
+    this.onSelect.call(this, ev, item._element, item);
+    return item;
+  };
 
-    var iter = false;
-    if ( el ) {
-      iter = this._getRowData(el);
-      this.selectedDOMItem = el;
-      this.selected = iter;
-      this.onSelect.call(this, ev, el, iter);
+  ListView.prototype._onActivate = function(ev, item) {
+    this.selected = item;
+    this.onActivate.call(this, ev, item._element, item);
+    return item;
+  };
+
+  ListView.prototype._onRowClick = function(ev, el) {
+    if ( !el ) {
+      console.warn("ListView::_onRowClick()", "did not get a element");
+      return;
     }
-    return iter;
-  };
 
-  ListView.prototype._onActivate = function(ev, el) {
-    var iter = this._getRowData(el);
-    this.selectedDOMItem = el;
-    this.selected = iter;
-    this.onActivate.call(this, ev, el, iter);
-    return iter;
-  };
+    if ( this.lastSelectedDOM ) {
+      this.lastSelectedDOM.className = '';
+    }
+    el.className = 'active';
+    this.lastSelectedDOM = el;
 
-  ListView.prototype._onRowClick = (function() {
-    var last;
-
-    return function(ev, el) {
-      this.selectedDOMItem = el;
-
-      if ( last ) {
-        last.className = '';
+    if ( !ev ) {
+      var viewHeight = this.$scroll.offsetHeight - (this.$head.style.visible === 'none' ? 0 : this.$head.offsetHeight);
+      var viewBottom = this.$scroll.scrollTop;
+      if ( el.offsetTop > (viewHeight + this.$scroll.scrollTop) ) {
+        this.$scroll.scrollTop = el.offsetTop;
+      } else if ( el.offsetTop < viewBottom ) {
+        this.$scroll.scrollTop = el.offsetTop;
       }
-      el.className = 'active';
-      last = el;
-
-      if ( !ev ) {
-        var viewHeight = this.$scroll.offsetHeight - (this.$head.style.visible === 'none' ? 0 : this.$head.offsetHeight);
-        var viewBottom = this.$scroll.scrollTop;
-        if ( el.offsetTop > (viewHeight + this.$scroll.scrollTop) ) {
-          this.$scroll.scrollTop = el.offsetTop;
-        } else if ( el.offsetTop < viewBottom ) {
-          this.$scroll.scrollTop = el.offsetTop;
-        }
-      }
-    };
-  })();
+    }
+  };
 
   ListView.prototype.addColumn = function(c) {
     this.columns.push(c);
@@ -1118,27 +1129,19 @@
     this.columns = cols || [];
   };
 
-  ListView.prototype.setRows = function(rows) {
+  ListView.prototype.setRows = function(rows, render) {
     this.rows = rows || [];
-  };
 
-  ListView.prototype._getRowData = function(row) {
-    var iter = {};
-    var cols = this.columns;
-    for ( var i = 0; i < cols.length; i++ ) {
-      iter[cols[i].key] = row.getAttribute('data-' + cols[i].key);
+    if ( render ) {
+      this.render();
     }
-    return iter;
   };
 
   ListView.prototype.getItemByKey = function(key, val) {
-    var rows = this.$table.tBodies[0].rows;
-    var tmp, row;
+    var rows = this.rows;
     for ( var i = 0, l = rows.length; i < l; i++ ) {
-      row = rows[i];
-      tmp = row.getAttribute('data-' + key);
-      if ( tmp == val ) {
-        return row;
+      if ( rows[i][key] == val ) {
+        return rows[i];
       }
     }
     return null;
@@ -1146,9 +1149,9 @@
 
   ListView.prototype.setSelectedIndex = function(idx) {
     if ( this.destroyed ) { return; }
-    var row = this.$table.tBodies[0].rows[idx];
-    if ( row ) {
-      this._onRowClick(null, row);
+    if ( this.rows[idx] ) {
+      this._onRowClick(null, this.rows[idx]._element);
+      this._onSelect(null, this.rows[idx]);
     }
   };
 
@@ -1156,7 +1159,8 @@
     if ( this.destroyed ) { return; }
     var row = this.getItemByKey(key, val);
     if ( row ) {
-      this._onRowClick(null, row);
+      this._onRowClick(null, row._element);
+      this._onSelect(null, row);
     }
   };
 
