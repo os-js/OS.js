@@ -2461,6 +2461,7 @@
   };
 
   Window.prototype._onKeyEvent = function(ev) {
+    return; // FIXME -- Duplicate events!
     if ( this._guiElement ) {
       if ( ev.type == "keydown" ) {
         this._guiElement.onKeyPress(ev);
