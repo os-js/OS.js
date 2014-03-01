@@ -189,6 +189,8 @@
     var _Count = 0;
 
     return function(name, opts) {
+      opts = opts || {};
+
       this.name           = name;
       this.opts           = opts || {};
       this.id             = _Count;
