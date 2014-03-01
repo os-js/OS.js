@@ -789,8 +789,8 @@
   // PANELS
   /////////////////////////////////////////////////////////////////////////////
 
-  var PANEL_SHOW_TIMEOUT = 100;
-  var PANEL_HIDE_TIMEOUT = 500;
+  var PANEL_SHOW_TIMEOUT = 150;
+  var PANEL_HIDE_TIMEOUT = 600;
 
   var Panel = function(name, options) {
     options = options || {};
@@ -839,6 +839,10 @@
       return false;
     };
 
+    document.addEventListener('mouseout', function(ev) {
+      self.onMouseLeave(ev);
+    }, false);
+
     this._$element.appendChild(this._$container);
     root.appendChild(this._$element);
 
@@ -848,14 +852,12 @@
   };
 
   Panel.prototype.destroy = function() {
-    if ( this._outtimeout ) {
-      clearTimeout(this._outtimeout);
-      this._outtimeout = null;
-    }
-    if ( this._intimeout ) {
-      clearTimeout(this._intimeout);
-      this._intimeout = null;
-    }
+    this._clearTimeouts();
+
+    var self = this;
+    document.removeEventListener('mouseout', function(ev) {
+      self.onMouseLeave(ev);
+    }, false);
 
     for ( var i = 0; i < this._items.length; i++ ) {
       this._items[i].destroy();
@@ -906,7 +908,7 @@
     }
   };
 
-  Panel.prototype.onMouseOver = function() {
+  Panel.prototype._clearTimeouts = function() {
     if ( this._outtimeout ) {
       clearTimeout(this._outtimeout);
       this._outtimeout = null;
@@ -915,20 +917,26 @@
       clearTimeout(this._intimeout);
       this._intimeout = null;
     }
+  };
 
+  Panel.prototype.onMouseLeave = function(ev) {
+    var from = ev.relatedTarget || ev.toElement;
+    if ( !from || from.nodeName == "HTML" ) {
+      this.onMouseOut(ev);
+    }
+  };
+
+  Panel.prototype.onMouseOver = function() {
     var self = this;
+    this._clearTimeouts();
     this._intimeout = setTimeout(function() {
       self.autohide(false);
     }, PANEL_SHOW_TIMEOUT);
   };
 
   Panel.prototype.onMouseOut = function() {
-    if ( this._intimeout ) {
-      clearTimeout(this._intimeout);
-      this._intimeout = null;
-    }
-
     var self = this;
+    this._clearTimeouts();
     this._outtimeout = setTimeout(function() {
       self.autohide(true);
     }, PANEL_HIDE_TIMEOUT);
