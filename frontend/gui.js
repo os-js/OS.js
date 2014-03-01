@@ -195,8 +195,8 @@
       this.destroyed      = false;
       this.wid            = 0; // Set in Window::_addGUIElement()
       this.hasChanged     = false;
-      this.onItemDropped  = function() {};
-      this.onFilesDropped = function() {};
+      this.onItemDropped  = opts.onItemDropped  || function() {};
+      this.onFilesDropped = opts.onFilesDropped || function() {};
       this.$element       = null;
       this.inited         = false;
       this._hooks         = {
@@ -627,7 +627,7 @@
     opts = opts || {};
 
     this.$ul        = null;
-    this.onMenuOpen = function() {};
+    this.onMenuOpen = opts.onMenuOpen || function() {};
     this.lid        = 0;
     this.items      = [];
 
