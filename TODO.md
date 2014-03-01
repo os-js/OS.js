@@ -7,7 +7,6 @@
 * More Themes!
 * Application compability checking stuff
 * Trigger Window focus on GUIElement focus (when not focused)
-* Bubble key press events to GUI Elements -- This was lost somehow
 * Misc FIXME and TODO in source-code
   - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 
