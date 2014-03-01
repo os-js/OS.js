@@ -184,6 +184,15 @@
 
   /**
    * GUI Element
+   *
+   * options:
+   *  onItemDropped   Function      Callback - When internal object dropped (requires dnd enabled)
+   *  onFilesDropped  Function      Callback - When external file object dropped (requires dnd enabled)
+   *  dnd             bool          Enable DnD (Default = false)
+   *  dndDrop         bool          Enable DnD Droppable (Default = DnD)
+   *  dndDrag         bool          Enable DnD Draggable (Default = DnD)
+   *  dndOpts         Object        DnD Options
+   *  focusable       bool          If element is focusable (Default = false)
    */
   var GUIElement = (function() {
     var _Count = 0;
@@ -191,7 +200,7 @@
     return function(name, opts) {
       opts = opts || {};
 
-      this.name           = name;
+      this.name           = name || ('Unknown_' + _Count);
       this.opts           = opts || {};
       this.id             = _Count;
       this.destroyed      = false;
@@ -339,6 +348,18 @@
 
   /**
    * _Input
+   *
+   * options: (See GUIElement for more)
+   *  disabled        bool          HTML Input disabled ?
+   *  value           String        HTML Input value
+   *  label           String        Label value
+   *  placeholder     String        Placeholder value (HTML5)
+   *  onChange        Function      Callback - When value changed
+   *  onClick         Function      Callback - When clicked
+   *  onKeyPress      Function      Callback - When key pressed
+   *
+   *  Please not that not all of these options applies to all
+   *  implemented input elements!
    */
   var _Input = function(className, tagName, name, opts) {
     opts = opts || {};
@@ -624,6 +645,9 @@
 
   /**
    * MenuBar Class
+   *
+   * options: (See GUIElement for more)
+   *  onMenuOpen    Function      Callback - When menu is opened
    */
   var MenuBar = function(name, opts) {
     opts = opts || {};
@@ -714,6 +738,15 @@
 
   /**
    * List View Class
+   *
+   * options: (See GUIElement for more)
+   *  onCreateRow       Function        Callback - When row is created
+   *  onSelect          Function        Callback - When row is selected (clicked)
+   *  onActivate        Function        Callback - When row is activated (dblclick)
+   *  onContextMenu     Function        Callback - When row menu is activated (rightclick)
+   *  columns           Object          Columns
+   *  rows              Array           Rows
+   *  render            bool            Render on create (default = true when columns and rows are supplied)
    */
   var ListView = function(name, opts) {
     opts            = opts || {};
@@ -737,9 +770,27 @@
     this.onContextMenu  = opts.onContextMenu  || function() {};
 
     GUIElement.apply(this, arguments);
+
+    if ( opts.columns ) {
+      this.setColumns(opts.columns);
+    }
+    if ( opts.rows ) {
+      this.setRows(opts.rows);
+    }
   };
 
   ListView.prototype = Object.create(GUIElement.prototype);
+
+  ListView.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+
+    // Automatic render when user supplies rows and columns
+    if ( this.opts.columns &&  this.opts.rows ) {
+      if ( typeof this.opts.row === 'undefined' || this.opts.render === true ) {
+        this.render();
+      }
+    }
+  };
 
   ListView.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIListView']);
@@ -1115,6 +1166,8 @@
 
   /**
    * Textarea
+   *
+   * options: (See _Input for more)
    */
   var Textarea = function(name, opts) {
     opts = opts || {};
@@ -1245,6 +1298,9 @@
 
   /**
    * Status Bar Element
+   *
+   * options: (See GUIElement for more)
+   *  value   String      Initial value
    */
   var StatusBar = function(name) {
     this.$contents = null;
@@ -1258,6 +1314,11 @@
     this.$contents = document.createElement('div');
     this.$contents.className = "Contents";
     el.appendChild(this.$contents);
+
+    if ( this.opts.value ) {
+      this.setText(value);
+    }
+
     return el;
   };
 
@@ -1271,6 +1332,15 @@
 
   /**
    * Slider Element
+   *
+   * options: (See GUIElement for more)
+   *  min             int           Minimum value
+   *  max             int           Maximim value
+   *  val             int           Current value
+   *  orientation     String        Orientation (Default = horizontal)
+   *  steps           int           Stepping value (Default = 1)
+   *  onChange        Function      Callback - When value has changed (on drag)
+   *  onUpdate        Function      Callback - When value is updated (finished)
    */
   var Slider = function(name, opts) {
     this.min      = opts.min          || 0;
@@ -1460,6 +1530,9 @@
 
   /**
    * Toolbar Element
+   *
+   * options: (See GUIElement for more)
+   *  orientation     String        Orientation (Default = horizontal)
    */
   var ToolBar = function(name, opts) {
     opts = opts || {};
@@ -1585,6 +1658,8 @@
 
   /**
    * ProgressBar Element
+   *
+   * options: (See GUIElement for more)
    */
   var ProgressBar = function(name, percentage) {
     this.$container = null;
@@ -1630,6 +1705,11 @@
 
   /**
    * Canvas Element
+   *
+   * options: (See GUIElement for more)
+   *  width   int       Canvas width
+   *  height  int       Canvas height
+   *  type    String    Image type (Default = image/png)
    */
   var Canvas = function(name, opts) {
     opts = opts || {};
@@ -1758,6 +1838,14 @@
 
   /**
    * Icon View Element
+   *
+   * options: (See GUIElement for more)
+   *  onCreateItem      Function        Callback - When item is created
+   *  onSelect          Function        Callback - When item is selected (clicked)
+   *  onActivate        Function        Callback - When item is activated (dblclick)
+   *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
+   *  data              Array           Data (Items)
+   *  render            bool            Render on create (default = true when data is supplied)
    */
   var IconView = function(name, opts) {
     opts            = opts || {};
@@ -1779,6 +1867,17 @@
   };
 
   IconView.prototype = Object.create(GUIElement.prototype);
+
+  IconView.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+
+    // Automatic render when user supplies data
+    if ( this.opts.data ) {
+      if ( typeof this.opts.row === 'undefined' || this.opts.render === true ) {
+        this.render(this.opts.data);
+      }
+    }
+  };
 
   IconView.prototype.init = function() {
     var el        = GUIElement.prototype.init.apply(this, ['GUIIconView']);
@@ -1944,11 +2043,19 @@
         }
       }
       this._onSelect(null, data, item);
+
+      return true;
     }
+
+    return false;
   };
 
   /**
    * Richt Text Element
+   *
+   * options: (See GUIElement for more)
+   *  fontName      String        Font name (default)
+   *  onInited      Function      Callback - When initialized
    */
   var RichText = function(name, opts) {
     if ( !OSjs.Compability.richtext ) { throw "Your platform does not support RichText editing"; }
@@ -2098,6 +2205,14 @@
 
   /**
    * Tabs > Tab Container
+   *
+   * options:
+   *  title           String        Tab title/label
+   *  onCreate        Function      Callback - On creation
+   *  onSelect        Function      Callback - On selected
+   *  onUnselect      Function      Callback - On unselected
+   *  onDestroy       Function      Callback - When destroyed
+   *  onClose         Function      Callback - When closed
    */
   var Tab = function(name, opts, index, $tabs, $container, _tabs) {
     var self = this;
@@ -2203,6 +2318,9 @@
 
   /**
    * Tabs Container
+   *
+   * options: (See GUIElement for more)
+   *  orientation     String        Orientation (Default = horizontal)
    */
   var Tabs = function(name, opts) {
     opts = opts || {};
@@ -2317,6 +2435,9 @@
 
   /**
    * Text
+   *
+   * options: (See _Input for more)
+   *  type      String        Input text type (Default = text)
    */
   var Text = function(name, opts) {
     opts            = opts || {};
@@ -2347,6 +2468,9 @@
 
   /**
    * Checkbox
+   *
+   * options: (See _Input for more)
+   *  label           String        Label value
    */
   var Checkbox = function(name, opts) {
     opts      = opts || {};
@@ -2400,6 +2524,10 @@
 
   /**
    * Radio
+   *
+   * options: (See GUIElement for more)
+   *  group           String        Group name
+   *  label           String        Label value
    */
   var Radio = function(name, opts) {
     opts        = opts || {};
@@ -2423,6 +2551,8 @@
 
   /**
    * Select
+   *
+   * options: (See _Input for more)
    */
   var Select = function(name, opts) {
     _Input.apply(this, ['GUISelect', 'select', name, opts]);
@@ -2469,6 +2599,8 @@
 
   /**
    * SelectList
+   *
+   * options: (See _Input for more)
    */
   var SelectList = function(name, opts) {
     _Input.apply(this, ['GUISelectList', 'select', name, opts]);
@@ -2539,6 +2671,8 @@
 
   /**
    * Button
+   *
+   * options: (See _Input for more)
    */
   var Button = function(name, opts) {
     _Input.apply(this, ['GUIButton', 'button', name, opts]);
@@ -2547,6 +2681,8 @@
 
   /**
    * ScrollView
+   *
+   * options: (See GUIElement for more)
    */
   var ScrollView = function(name, opts) {
     opts      = opts || {};
@@ -2595,10 +2731,13 @@
    * PanedView
    * FIXME: PanedView - When more than two Views manual CSS is required
    * FIXME: PanedView - Vertical orientation (direction)
+   *
+   * options: (See GUIElement for more)
+   *  orientation     String        Orientation (Default = horizontal)
    */
   var PanedView = function(name, opts) {
     opts            = opts            || {};
-    opts.direction  = opts.direction  || 'horizontal';
+    opts.direction  = (opts.direction || opts.orientation)  || 'horizontal';
 
     this.$container = null;
     this.$separator = null;
@@ -2683,6 +2822,11 @@
 
   /**
    * FileView > IconView
+   *
+   * options: (See GUIElement for more)
+   *  onSelected        Function        Callback - When item is selected (clicked)
+   *  onActivated       Function        Callback - When item is activated (dblclick)
+   *  onDropped         Function        Callback - When item has been dropped
    */
   var FileIconView = function(name, opts) {
     opts = opts || {};
@@ -2792,6 +2936,12 @@
 
   /**
    * FileView > ListView
+   *
+   * options: (See GUIElement for more)
+   *  onSelected        Function        Callback - When item is selected (clicked)
+   *  onActivated       Function        Callback - When item is activated (dblclick)
+   *  onDropped         Function        Callback - When item has been dropped
+   *  humanSize         bool            Show human-readable sized (default = True)
    */
   var FileListView = function(name, opts) {
     opts = opts || {};
@@ -2908,6 +3058,20 @@
 
   /**
    * FileView
+   *
+   * options: (See GUIElement for more)
+   *  startViewType     String          Default view type (Default = ListView)
+   *  locked            bool            Locked (Default = false)
+   *  humanSize         bool            Show human-readable sized (default = True)
+   *  summary           bool            Return statistics for onFinished() (Default = False)
+   *  onSelected        Function        Callback - When item is selected (clicked)
+   *  onActivated       Function        Callback - When item is activated (dblclick)
+   *  onItemDropped     Function        Callback - When item has been dropped
+   *  onDropped         Function        Callback - When item has been dropped (FIXME)
+   *  onError           Function        Callback - When error happened
+   *  onRefresh         Function        Callback - On refresh
+   *  onContextMenu     Function        Callback - On context menu
+   *  onColumnSort      Function        Callback - On sort
    */
   var FileView = function(name, opts) {
     opts = opts || {};

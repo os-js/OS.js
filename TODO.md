@@ -20,6 +20,9 @@
 
 ### GUI Elements
 * Custom styling for GUISelect
+* Custom styling for GUISelectList
+* Custom styling for GUICheckbox
+* Custom styling for GUIRadio
 * GUITreeView
 * GUILabel
 

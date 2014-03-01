@@ -36,6 +36,9 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Standard Base Dialog
+   */
   var StandardDialog = function(className, args, opts, onClose) {
     this.$element       = null;
     this.$message       = null;
