@@ -401,6 +401,7 @@
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {
+    // FIXME
     var panelItem = this.panels[0] ? this.panels[0].getItem(OSjs.CoreWM.PanelItems.WindowList) : null;
     if ( panelItem ) {
       panelItem.update(ev, win);

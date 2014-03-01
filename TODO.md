@@ -4,11 +4,9 @@
 ## TODOs
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
-* More Themes!
-* Application compability checking stuff
+* Application compability check list (like in v1 -- metadata)
 * Trigger Window focus on GUIElement focus (when not focused)
-* Misc FIXME and TODO in source-code
-  - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
+* Window alerts (blinking)
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.
@@ -18,7 +16,8 @@
 * CoreWM -- Finish panel item options
 * CoreWM -- Window Switcher is bugged
 
-### GUI Elements
+### GUI
+* More Themes
 * Custom styling for GUISelect
 * Custom styling for GUISelectList
 * Custom styling for GUICheckbox
@@ -33,6 +32,8 @@
 * Full Source code documentation
 * Mobile version
 * CoreWM: Custom keyboard binding shortcuts
+* Misc FIXME and TODO in source-code
+  - `grep -e 'TODO\|FIXME' frontend/* apps/*/*`
 
 ## Ideas for solving misc problems
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles

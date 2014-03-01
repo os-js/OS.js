@@ -201,6 +201,10 @@
         el.getElementsByTagName('span')[0].innerHTML = win._title;
         el.title = win._title;
       });
+    } else if ( ev == 'icon' ) {
+      _change(cn, function(el) {
+        el.getElementsByTagName('img')[0].src = win._icon;
+      });
     }
   };
 
