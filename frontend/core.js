@@ -1398,6 +1398,7 @@
 
       this._$element      = null;                 // DOMElement: Window Outer container
       this._$root         = null;                 // DOMElement: Window Inner container (for content)
+      this._$winicon      = null;                 // DOMElement: Window Icon
       this._$loading      = null;                 // DOMElement: Window Loading overlay
       this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
 
@@ -1835,6 +1836,7 @@
     this._$element  = main;
     this._$root     = windowWrapper;
     this._$loading  = windowLoading;
+    this._$winicon  = windowIconImage;
     this._$disabled = windowDisabled;
 
     document.body.appendChild(this._$element);
@@ -2563,6 +2565,7 @@
   };
 
   Window.prototype._setTitle = function(t) {
+    if ( !this._$element ) { return; }
     var tel = this._$element.getElementsByClassName('WindowTitle')[0];
     if ( tel ) {
       tel.innerHTML = '';
@@ -2570,6 +2573,12 @@
     }
     this._title = t;
     this._onChange('title');
+  };
+
+  Window.prototype._setIcon = function(i) {
+    if ( this._$winicon ) {
+      this._$winicon.src = i;
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
