@@ -1083,14 +1083,18 @@
   };
 
   ListView.prototype._onSelect = function(ev, item) {
-    this.selected = item;
-    this.onSelect.call(this, ev, item._element, item);
+    if ( item ) {
+      this.selected = item;
+      this.onSelect.call(this, ev, item._element, item);
+    }
     return item;
   };
 
   ListView.prototype._onActivate = function(ev, item) {
-    this.selected = item;
-    this.onActivate.call(this, ev, item._element, item);
+    if ( item ) {
+      this.selected = item;
+      this.onActivate.call(this, ev, item._element, item);
+    }
     return item;
   };
 
