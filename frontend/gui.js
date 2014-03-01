@@ -729,10 +729,10 @@
     this.selected         = null;
     this.selectedDOMItem  = null;
 
-    this.onCreateRow    = function() {};
-    this.onSelect       = function() {};
-    this.onActivate     = function() {};
-    this.onContextMenu  = function() {};
+    this.onCreateRow    = opts.onCreateRow    || function() {};
+    this.onSelect       = opts.onSelect       || function() {};
+    this.onActivate     = opts.onActivate     || function() {};
+    this.onContextMenu  = opts.onContextMenu  || function() {};
 
     GUIElement.apply(this, arguments);
   };
@@ -1768,10 +1768,10 @@
     this.iconSize   = opts.size || '32x32';
     this.data       = [];
 
-    this.onSelect      = function() {};
-    this.onActivate    = function() {};
-    this.onCreateItem  = function() {};
-    this.onContextMenu = function() {};
+    this.onSelect       = opts.onSelect       || function() {};
+    this.onActivate     = opts.onActivate     || function() {};
+    this.onCreateItem   = opts.onCreateItem   || function() {};
+    this.onContextMenu  = opts.onContextMenu  || function() {};
 
     GUIElement.apply(this, [name, opts]);
   };
