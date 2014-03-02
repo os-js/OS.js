@@ -12,3 +12,6 @@ backend/bugreport.php
 backend/config.php
 backend/settings.json
 frontend/settings.js
+
+# Minimized files
+frontend/_all*

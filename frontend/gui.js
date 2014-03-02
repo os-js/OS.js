@@ -1368,7 +1368,9 @@
 
     var self = this;
     this.onUpdate = function(val, perc) {
-      (opts.onUpdate || function(val, perc) { console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)'); }).apply(self, arguments);
+      (opts.onUpdate || function(val, perc) {
+        console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)');
+      }).apply(self, arguments);
       self.onChange.apply(this, arguments);
     };
 

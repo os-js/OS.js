@@ -20,6 +20,8 @@
 * Custom styling for GUISelectList
 * Custom styling for GUICheckbox
 * Custom styling for GUIRadio
+* Refactor GUIIconView
+* Abstraction for data list elements (IconView, ListView and TreeView)
 * GUITreeView
 * GUILabel
 

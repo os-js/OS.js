@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
-header("Content-type: text/plain; charset=utf-8");
+define('__CLI_SCRIPT', true);
+require 'backend/api.php';
+$yui_path = "/opt/yuicompressor-2.4.8.jar";
 
 $header = <<<EOPHP
 
@@ -36,45 +38,108 @@ $header = <<<EOPHP
 
 EOPHP;
 
-$dryrun = sizeof($argv) > 1 && $argv[1] === '--dry';
-$dirs = Array('frontend');
-
-foreach ( $dirs as $fdir ) {
-  print sprintf("In '%s':\n", $fdir);
-  foreach ( scandir($fdir) as $i ) {
-    if ( substr($i, 0, 1) === "." ) continue;
-    if ( $i == 'settings.js' ) continue;
-
-    $isCss = preg_match("/\.css$/i", $i) !== 0;
-    $fname = "{$fdir}/{$i}";
-
-    if ( $file = file_get_contents($fname) ) {
-      $minimized = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\)\/\/.*))/', "", $file);
-      if ( $isCss ) {
-        $minimized = preg_replace("/^\@charset(.*)/", "", $minimized);
-      } else {
-        $minimized = preg_replace("/console\.(log|info|warn|debug|group|groupEnd)\((.*)\);/", "", $minimized);
-      }
-      //$minimized = preg_replace("/\n+|\s+|\t+/", "", $minimized);
-
-      if ( $isCss ) {
-        $data = "@charset \"UTF-8\";\n{$header}{$minimized}";
-      } else {
-        $data = "{$header}{$minimized}";
-      }
-
-      if ( !$dryrun && file_put_contents($fname, $data) === false ) {
-        print "Failed to write minimized file '{$i}'";
-        continue;
-      }
-
-      $before = strlen($file);
-      $after  = strlen($data);
-      $diff   = -($before - $after);
-
-      print sprintf("  Minimized '%s' from %d to %d (%d)\n", $i, $before, $after, $diff);
-    }
-  }
+function yui($type, $path, $dest) {
+  global $yui_path;
+  $cmd = "java -jar $yui_path --type $type --charset=utf-8 $path -o $dest";
+  return shell_exec($cmd);
 }
 
+function minimize($data) {
+  $minimized = preg_replace('/(?:(?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:(?<!\:|\\\)\/\/.*))/', "", $data);
+  return $minimized;
+}
+
+function minimize_js($data) {
+  global $header;
+  $minimized = minimize($data);
+  //$minimized = preg_replace("/console\.(log|info|warn|debug|group|groupEnd)\((.*)\);?/", "", $minimized);
+  $minimized = preg_replace("/console\.(log|info|warn|debug|group|groupEnd)\(([^;]*)\);?/", "", $minimized);
+
+  return "{$header}{$minimized}";
+}
+
+function minimize_css($data) {
+  global $header;
+  $minimized = minimize($data);
+  $minimized = preg_replace("/^\@charset(.*)/", "", $minimized);
+
+  return "@charset \"UTF-8\";\n{$header}{$minimized}";
+}
+
+function concat_files(Array $files) {
+  $data = Array();
+  foreach ( $files as $f ) {
+    print "- Using '{$f}'\n";
+    if ( $src = file_get_contents($f) ) {
+      $data[] = $src;
+    }
+  }
+  return implode("\n", $data);
+}
+
+$css_tmp    = "frontend/_all.tmp.css";
+$css_output = "frontend/_all.css";
+$css_files  = Array(
+  "frontend/core.css",
+  "frontend/dialogs.css",
+  "frontend/gui.css",
+  "frontend/main.css"
+);
+
+$js_tmp    = "frontend/_all.tmp.js";
+$js_output = "frontend/_all.js";
+$js_files  = Array(
+  "frontend/core.js",
+  "frontend/dialogs.js",
+  "frontend/gui.js",
+  "frontend/handler.js",
+  "frontend/helpers.js",
+  "frontend/locales.js",
+  "frontend/main.js",
+  "frontend/utils.js"
+);
+
+$handler = 'demo';
+if ( defined("HANDLER") && HANDLER ) {
+  $handler = HANDLER;
+}
+if ( $handler ) {
+  $js_files[] = sprintf("frontend/handlers/%s.js", $handler);
+}
+
+if ( !$yui_path || !file_exists($yui_path) ) {
+  die("YUI was not found!\n");
+}
+
+// JS
+print sprintf("Minimizing %d JavaScript files...\n", count($js_files));
+$js_data = concat_files($js_files);
+if ( !($js = minimize_js($js_data)) ) {
+  $js = '';
+}
+file_put_contents($js_tmp, $js);
+yui('js', $js_tmp, $js_output);
+$js_new_size = filesize($js_output);
+$js_orig_size = strlen($js_data);
+$js_compression = ($js_new_size / $js_orig_size) * 100;
+print sprintf("Compressed size: %db, Original: %db (%d%%)\n", $js_new_size, $js_orig_size, $js_compression);
+
+print "\n";
+
+// CSS
+print sprintf("Minimizing %d CSS files...\n", count($css_files));
+$css_data = concat_files($css_files);
+if ( !($css = minimize_css($css_data)) ) {
+  $css = '';
+}
+file_put_contents($css_tmp, $css);
+yui('css', $css_tmp, $css_output);
+$css_new_size = filesize($css_output);
+$css_orig_size = strlen($css_data);
+$css_compression = ($css_new_size / $css_orig_size) * 100;
+print sprintf("Compressed size: %db, Original: %db (%d%%)\n", $css_new_size, $css_orig_size, $css_compression);
+
+// Cleanup
+@unlink($css_tmp);
+@unlink($js_tmp);
 ?>
