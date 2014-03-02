@@ -61,13 +61,71 @@ body.WallpaperStrech {
 
 #Loading {
   display : block;
-  width : 16px;
-  height : 16px;
   position : absolute;
-  top : 8px;
-  right : 8px;
+  top : 2px;
+  right : 10px;
+  width : 20px;
+  height : 20px;
   z-index : 999999999;
 }
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+@-ms-keyframes spin {
+  0% { -ms-transform: rotate(0deg); }
+  100% { -ms-transform: rotate(360deg); }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#Loading .loader {
+  position: relative;
+  display: inline-block;
+  margin: 0 12.5% 100px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #000;
+  border-radius: 50%;
+
+  -webkit-animation: spin 0.75s infinite linear;
+     -moz-animation: spin 0.75s infinite linear;
+      -ms-animation: spin 0.75s infinite linear;
+          animation: spin 0.75s infinite linear;
+}
+#Loading .loader::before,
+#Loading .loader::after {
+  left: -2px;
+  top: -2px;
+  display: none;
+  position: absolute;
+  content: '';
+  width: inherit;
+  height: inherit;
+  border: inherit;
+  border-radius: inherit;
+}
+
+#Loading .loader,
+#Loading .loader::before {
+  display: inline-block;
+  border-color: transparent;
+  border-top-color: #000;
+}
+#Loading .loader::before {
+  -webkit-animation: spin 1.5s infinite ease;
+     -moz-animation: spin 1.5s infinite ease;
+      -ms-animation: spin 1.5s infinite ease;
+          animation: spin 1.5s infinite ease;
+}
+
 
 /**
  * Window

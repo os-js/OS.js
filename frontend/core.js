@@ -2721,9 +2721,9 @@
       }
     }
 
-    _$LOADING     = document.createElement('img');
-    _$LOADING.id  = "Loading";
-    _$LOADING.src = OSjs.API.getThemeResource('loading_small.gif', 'base');
+    _$LOADING             = document.createElement('div');
+    _$LOADING.id          = "Loading";
+    _$LOADING.innerHTML   = '<div class="loader"></div>';
     document.body.appendChild(_$LOADING);
 
     _CORE = new Main();
