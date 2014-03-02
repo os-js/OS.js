@@ -205,6 +205,18 @@
       _change(cn, function(el) {
         el.getElementsByTagName('img')[0].src = win._icon;
       });
+    } else if ( ev == 'attention_on' ) {
+      _change(cn, function(el) {
+        if ( !el.className.match(/Attention/) ) {
+          el.className += ' Attention';
+        }
+      });
+    } else if ( ev == 'attention_off' ) {
+      _change(cn, function(el) {
+        if ( !el.className.match(/Attention/) ) {
+          el.className = el.className.replace(/\s?Attention/, '');
+        }
+      });
     }
   };
 

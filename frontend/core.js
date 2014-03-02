@@ -1425,6 +1425,7 @@
       this._disabled      = true;                 // If Window is currently disabled
       this._sound         = null;                 // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
+      this._blinkTimer    = null;
 
       this._properties    = {                     // Window Properties
         gravity           : null,
@@ -2301,6 +2302,7 @@
   Window.prototype._focus = function(force) {
     //if ( !force && this._state.focused ) { return false; }
     //console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
+    this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     if ( !this._$element.className.match(/WindowHintFocused/) ) {
@@ -2450,6 +2452,51 @@
     this._$loading.style.display = t ? 'block' : 'none';
   };
 
+  Window.prototype._toggleAttentionBlink = function(t) {
+    if ( this._state.focused ) { return false; }
+
+    var s      = false;
+    var el     = this._$element;
+    var self   = this;
+    var _blink = function(stat) {
+      if ( el ) {
+        if ( stat ) {
+          if ( !el.className.match(/WindowAttentionBlink/) ) {
+            el.className += ' WindowAttentionBlink';
+          }
+        } else {
+          el.className = el.className.replace(/\s?WindowAttentionBlink/, '');
+        }
+      }
+      self._onChange(stat ? 'attention_on' : 'attention_off');
+    };
+
+    /*
+    if ( t ) {
+      if ( !this._blinkTimer ) {
+        console.debug(this._name, '>' , "OSjs::Core::Window::_toggleAttentionBlink()", t);
+        this._blinkTimer = setInterval(function() {
+          s = !s;
+
+          _blink(s);
+        }, 1000);
+        _blink(true);
+      }
+    } else {
+      if ( this._blinkTimer ) {
+        console.debug(this._name, '>' , "OSjs::Core::Window::_toggleAttentionBlink()", t);
+        clearInterval(this._blinkTimer);
+        this._blinkTimer = null;
+      }
+      _blink(false);
+    }
+    */
+
+    _blink(t);
+
+    return true;
+  };
+
   //
   // Events
   //
@@ -2553,9 +2600,12 @@
   };
 
   Window.prototype._onChange = function(ev) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_onChange()", ev);
-    if ( _WM ) {
-      _WM.eventWindow(ev, this);
+    ev = ev || '';
+    if ( ev ) {
+      console.debug(this._name, '>' , "OSjs::Core::Window::_onChange()", ev);
+      if ( _WM ) {
+        _WM.eventWindow(ev, this);
+      }
     }
   };
 

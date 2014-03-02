@@ -5,8 +5,6 @@
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
 * Application compability check list (like in v1 -- metadata)
-* Trigger Window focus on GUIElement focus (when not focused)
-* Window alerts (blinking)
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.

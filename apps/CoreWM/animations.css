@@ -73,6 +73,47 @@
   50% { opacity: .35; }
 }
 
+@-webkit-keyframes attention {
+  0% { -webkit-transform: scale(1); }
+  30% { -webkit-transform: scale(1); }
+  40% { -webkit-transform: scale(1.02); }
+  50% { -webkit-transform: scale(1); }
+  60% { -webkit-transform: scale(1); }
+  70% { -webkit-transform: scale(1.005); }
+  80% { -webkit-transform: scale(1); }
+  100% { -webkit-transform: scale(1); }
+}
+@-moz-keyframes attention {
+  0% { -moz-transform: scale(1); }
+  30% { -moz-transform: scale(1); }
+  40% { -moz-transform: scale(1.02); }
+  50% { -moz-transform: scale(1); }
+  60% { -moz-transform: scale(1); }
+  70% { -moz-transform: scale(1.005); }
+  80% { -moz-transform: scale(1); }
+  100% { -moz-transform: scale(1); }
+}
+@-ms-keyframes attention {
+  0% { -ms-transform: scale(1); }
+  30% { -ms-transform: scale(1); }
+  40% { -ms-transform: scale(1.02); }
+  50% { -ms-transform: scale(1); }
+  60% { -ms-transform: scale(1); }
+  70% { -ms-transform: scale(1.005); }
+  80% { -ms-transform: scale(1); }
+  100% { -ms-transform: scale(1); }
+}
+@keyframes attention {
+  0% { transform: scale(1); }
+  30% { transform: scale(1); }
+  40% { transform: scale(1.02); }
+  50% { transform: scale(1); }
+  60% { transform: scale(1); }
+  70% { transform: scale(1.005); }
+  80% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
 /* Windows */
 .Window {
  -webkit-animation: show .3s;
@@ -112,6 +153,13 @@
   border-image: initial;
 }
 
+.WindowAttentionBlink {
+  -webkit-animation: attention 2s linear infinite;
+     -moz-animation: attention 2s linear infinite;
+      -ms-animation: attention 2s linear infinite;
+          animation: attention 2s linear infinite;
+}
+
 
 /* Desktop */
 #Background.Blinking {
@@ -131,4 +179,11 @@
       -ms-transition: all .3s ease-in-out;
        -o-transition: all .3s ease-in-out;
           transition: all .3s ease-in-out;
+}
+
+.WMPanel ul > li.Button.Attention {
+  -webkit-animation: attention 2s linear infinite;
+     -moz-animation: attention 2s linear infinite;
+      -ms-animation: attention 2s linear infinite;
+          animation: attention 2s linear infinite;
 }
