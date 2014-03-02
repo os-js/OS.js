@@ -802,7 +802,7 @@
               var conf = new ConfirmDialog(OSjs._("Are you sure you want to overwrite the file '{0}'?", check), function(btn) {
                 self._toggleDisabled(false);
                 if ( btn == 'ok' ) {
-                  _ok.call(self, item.getAttribute('data-path'), item.getAttribute('data-mime'));
+                  _ok.call(self, item.path, item.mime);
                 }
               });
               wm.addWindow(conf);
