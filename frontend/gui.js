@@ -206,6 +206,7 @@
       this.destroyed      = false;
       this.wid            = 0; // Set in Window::_addGUIElement()
       this.hasChanged     = false;
+      this.hasCustomKeys  = opts.hasCustomKeys === true;
       this.onItemDropped  = opts.onItemDropped  || function() {};
       this.onFilesDropped = opts.onFilesDropped || function() {};
       this.$element       = null;
@@ -326,6 +327,7 @@
   };
 
   GUIElement.prototype.onKeyPress = function(ev) {
+    if ( this.hasCustomKeys ) { return false; }
     if ( !this.focused ) { return false; }
     return true;
   };
@@ -363,6 +365,8 @@
    */
   var _Input = function(className, tagName, name, opts) {
     opts = opts || {};
+    opts.hasCustomKeys = true;
+
     this.$input       = null;
     this.type         = tagName === 'input' ? (opts.type || 'text') : null;
     this.disabled     = opts.disabled     || false;
@@ -1043,8 +1047,10 @@
     this.$scroll.scrollTop = 0;
 
     if ( reselect >= 0 ) {
-      this._onRowClick(null, this.rows[reselect]._element, this.rows[reselect]);
-      this._onSelect(null, this.rows[reselect]);
+      setTimeout(function() {
+        self._onRowClick(null, self.rows[reselect]._element, self.rows[reselect]);
+        self._onSelect(null, self.rows[reselect]);
+      }, 10);
     } else {
       this.selected = null;
     }
