@@ -2150,7 +2150,9 @@
     var self = this;
 
     var _render = function(list, root, level) {
-      level = level || 0;
+      if ( typeof level === 'undefined' ) {
+        level = false;
+      }
 
       var ul = document.createElement('ul');
 
@@ -2229,7 +2231,7 @@
 
         if ( exp ) {
           child = _render.call(self, iter.items, li, level + 1);
-          if ( this.expandLevel >= level ) {
+          if ( level !== false && this.expandLevel >= level ) {
             child.style.display = 'block';
           }
           exp.onclick = (function(c, el, it) {
