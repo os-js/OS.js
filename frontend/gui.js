@@ -1857,6 +1857,10 @@
    *
    * FIXME: Reselect last item on refresh with indexKey (see ListView)
    *
+   * reserved item (data) keys:
+   *  label = What to show as title
+   *  icon = Path to icon
+   *
    * options: (See GUIElement for more)
    *  onCreateItem      Function        Callback - When item is created
    *  onSelect          Function        Callback - When item is selected (clicked)
@@ -2071,7 +2075,12 @@
   /**
    * Tree View
    *
-   * FIXME: Remove individual events and do it like in ListView and IconView !?
+   * FIXME: TreeView - Remove individual events and do it like in ListView and IconView !?
+   * FIXME: TreeView - _onSelect() method 
+   *
+   * reserved item (data) keys:
+   *  title = What to show as title
+   *  icon = Path to icon
    *
    * options: (See GUIElement for more)
    *  onExpand          Function        Callback - When item has been expanded
@@ -2081,6 +2090,7 @@
    *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
    *  data              Array           Data (Items)
    *  render            bool            Render on create (default = true when data is supplied)
+   *  expanded          Mixed           What level to expand on render (Default = false (none), true = (1), int for level)
    *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
    */
   var TreeView = function(name, opts) {
@@ -2092,6 +2102,20 @@
     this.data       = [];
     this.total      = 0;
 
+    var keys = {
+      icon: 'icon',
+      title: 'title'
+    };
+
+    var expand = false;
+    if ( opts.expand === true ) {
+      expand = 0;
+    } else if ( opts.expand >= 0 ) {
+      expand = opts.expand;
+    }
+
+    this.keys           = opts.keys           || keys;
+    this.expandLevel    = expand;
     this.indexKey       = opts.indexKey       || null;
     this.onSelect       = opts.onSelect       || function() {};
     this.onExpand       = opts.onExpand       || function() {};
@@ -2125,7 +2149,9 @@
   TreeView.prototype._render = function(list, root) {
     var self = this;
 
-    var _render = function(list, root) {
+    var _render = function(list, root, level) {
+      level = level || 0;
+
       var ul = document.createElement('ul');
 
       var li, iter, exp, ico, title, child, inner, j;
@@ -2142,7 +2168,7 @@
 
         for ( j in iter ) {
           if ( iter.hasOwnProperty(j) ) {
-            if ( j != 'icon' ) {
+            if ( !OSjs.Utils.inArray(['items', 'title', 'icon'], j) ) {
               li.setAttribute('data-' + j, iter[j]);
             }
           }
@@ -2172,10 +2198,12 @@
 
         inner.oncontextmenu = (function(c, e) {
           return function(ev) {
+            ev.preventDefault();
             if ( e ) {
               ev.stopPropagation();
             }
             self._onContextMenu(ev, c);
+            return false;
           };
         })(iter, !exp);
 
@@ -2200,7 +2228,10 @@
         li.appendChild(inner);
 
         if ( exp ) {
-          child = _render.call(self, iter.items, li);
+          child = _render.call(self, iter.items, li, level + 1);
+          if ( this.expandLevel >= level ) {
+            child.style.display = 'block';
+          }
           exp.onclick = (function(c, el, it) {
             return function(ev) {
               var s = c.style.display;
@@ -2240,11 +2271,16 @@
   };
 
   TreeView.prototype.render = function(data) {
+    if ( !this.$view ) { return; }
+
     var self = this;
     var reselect = null;
+    var scrollTop = 0;
+
     if ( this.indexKey ) {
       if ( this.selected ) {
         reselect = this.selected[this.indexKey];
+        scrollTop = this.$view.scrollTop;
       }
     }
 
@@ -2257,10 +2293,14 @@
 
     this._render(this.data, this.$view);
 
-    if ( reselect !== null ) {
+    if ( reselect ) {
       setTimeout(function() {
         self.setSelected(reselect, self.indexKey);
+        if ( self.$view ) {
+          self.$view.scrollTop = scrollTop;
+        }
       }, 10);
+
     }
   };
 
@@ -2277,10 +2317,11 @@
         this.selected._element.className += ' Active';
       }
 
+      /* FIXME
       if ( scroll ) {
+        var pos = OSjs.Utils.$position(this.selected._element);
       }
-      var pos = OSjs.Utils.$position(this.selected._element);
-      console.warn("XXXX", pos);
+      */
     }
 
     if ( ev !== null && item !== null ) {
@@ -2326,14 +2367,28 @@
   };
 
   TreeView.prototype.getItemByKey = function(key, val) {
-    for ( var i in this.data ) {
-      if ( this.data.hasOwnProperty(i) ) {
-        if ( this.data[i][key] == val ) {
-          return this.data[i];
+    var _search = function(list) {
+      var ret = null;
+
+      for ( var i in list ) {
+        if ( list.hasOwnProperty(i) ) {
+          if ( list[i][key] == val ) {
+            return list[i];
+          }
+
+          if ( list[i].items ) {
+            ret = _search(list[i].items);
+            if ( ret ) {
+              return ret;
+            }
+          }
         }
       }
-    }
-    return null;
+
+      return null;
+    };
+
+    return _search.call(this, this.data);
   };
 
   TreeView.prototype.getItem = function(idx) {

@@ -485,13 +485,16 @@ body .GUIToolbar button {
 }
 .GUITreeView li img {
   vertical-align : middle;
-  margin-right : 5px;
   padding : 5px;
 }
 .GUITreeView li span {
   display : inline-block;
   vertical-align : middle;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  white-space : nowrap;
   padding : 5px;
+  max-width : 50%;
 }
 .GUITreeView .Expander {
   display : inline-block;
