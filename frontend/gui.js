@@ -2108,9 +2108,9 @@
     };
 
     var expand = false;
-    if ( opts.expand === true ) {
+    if ( opts.expanded === true ) {
       expand = 0;
-    } else if ( opts.expand >= 0 ) {
+    } else if ( opts.expanded >= 0 ) {
       expand = opts.expand;
     }
 
