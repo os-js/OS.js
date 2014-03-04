@@ -1855,6 +1855,8 @@
   /**
    * Icon View Element
    *
+   * FIXME: Reselect last item on refresh with indexKey (see ListView)
+   *
    * options: (See GUIElement for more)
    *  onCreateItem      Function        Callback - When item is created
    *  onSelect          Function        Callback - When item is selected (clicked)
@@ -2069,7 +2071,7 @@
   /**
    * Tree View
    *
-   * FIXME: Remove individual events and do it like in ListView and IconView
+   * FIXME: Remove individual events and do it like in ListView and IconView !?
    *
    * options: (See GUIElement for more)
    *  onExpand          Function        Callback - When item has been expanded
@@ -2079,6 +2081,7 @@
    *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
    *  data              Array           Data (Items)
    *  render            bool            Render on create (default = true when data is supplied)
+   *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
    */
   var TreeView = function(name, opts) {
     opts            = opts || {};
@@ -2087,7 +2090,9 @@
     this.$view      = null;
     this.selected   = null;
     this.data       = [];
+    this.total      = 0;
 
+    this.indexKey       = opts.indexKey       || null;
     this.onSelect       = opts.onSelect       || function() {};
     this.onExpand       = opts.onExpand       || function() {};
     this.onCollapse     = opts.onCollapse     || function() {};
@@ -2117,37 +2122,39 @@
     return el;
   };
 
-  TreeView.prototype.render = function(data) {
+  TreeView.prototype._render = function(list, root) {
     var self = this;
-    if ( data ) {
-      this.setData(data);
-    }
-    this._onSelect(null, null);
-
-    var total = 0;
 
     var _render = function(list, root) {
       var ul = document.createElement('ul');
 
-      var li, iter, exp, ico, title, child;
+      var li, iter, exp, ico, title, child, inner, j;
       for ( var i = 0; i < list.length; i++ ) {
         li = document.createElement('li');
+        inner = document.createElement('div');
 
         iter           = list[i]    || {};
-        iter.name      = iter.name  || 'treeviewitem_' + total;
+        iter.name      = iter.name  || 'treeviewitem_' + this.total;
         iter.title     = iter.title || iter.name;
-        iter._element  = li;
 
         li.className = 'Item';
         li.setAttribute('data-index', i);
-        li.setAttribute('data-name',  iter.name);
+
+        for ( j in iter ) {
+          if ( iter.hasOwnProperty(j) ) {
+            if ( j != 'icon' ) {
+              li.setAttribute('data-' + j, iter[j]);
+            }
+          }
+        }
+        iter._element  = li;
 
         if ( iter.items && iter.items.length ) {
           li.className += ' Expandable';
           exp = document.createElement('div');
           exp.className = 'Expander';
           exp.innerHTML = '';
-          li.appendChild(exp);
+          inner.appendChild(exp);
         } else {
           exp = null;
         }
@@ -2156,28 +2163,44 @@
           ico = document.createElement('img');
           ico.src = iter.icon;
           ico.alt = '';
-          li.appendChild(ico);
+          inner.appendChild(ico);
         }
 
         title = document.createElement('span');
         title.appendChild(document.createTextNode(iter.title));
-        li.appendChild(title);
+        inner.appendChild(title);
 
-        li.onclick = (function(c) {
+        inner.oncontextmenu = (function(c, e) {
           return function(ev) {
-            ev.stopPropagation();
+            if ( e ) {
+              ev.stopPropagation();
+            }
+            self._onContextMenu(ev, c);
+          };
+        })(iter, !exp);
+
+        inner.onclick = (function(c, e) {
+          return function(ev) {
+            if ( e ) {
+              ev.stopPropagation();
+            }
             self._onSelect(ev, c);
           };
-        })(iter);
+        })(iter, !exp);
 
-        li.ondblclick = (function(c) {
+        inner.ondblclick = (function(c, e) {
           return function(ev) {
+            if ( e ) {
+              ev.stopPropagation();
+            }
             self._onActivate(ev, c);
           };
-        })(iter);
+        })(iter, !exp);
+
+        li.appendChild(inner);
 
         if ( exp ) {
-          child = _render(iter.items, li);
+          child = _render.call(self, iter.items, li);
           exp.onclick = (function(c, el, it) {
             return function(ev) {
               var s = c.style.display;
@@ -2200,7 +2223,7 @@
           })(child, li, iter);
         }
 
-        total++;
+        this.total++;
         ul.appendChild(li);
       }
 
@@ -2209,11 +2232,39 @@
       return ul;
     };
 
-    OSjs.Utils.$empty(this.$view);
-    _render(this.data, this.$view);
+    return _render.apply(this, arguments);
   };
 
-  TreeView.prototype._onSelect = function(ev, item) {
+  TreeView.prototype.clear = function() {
+    this.render([]);
+  };
+
+  TreeView.prototype.render = function(data) {
+    var self = this;
+    var reselect = null;
+    if ( this.indexKey ) {
+      if ( this.selected ) {
+        reselect = this.selected[this.indexKey];
+      }
+    }
+
+    if ( typeof data !== 'undefined' ) {
+      this.setData(data);
+    }
+    this._onSelect(null, null);
+
+    OSjs.Utils.$empty(this.$view);
+
+    this._render(this.data, this.$view);
+
+    if ( reselect !== null ) {
+      setTimeout(function() {
+        self.setSelected(reselect, self.indexKey);
+      }, 10);
+    }
+  };
+
+  TreeView.prototype._onSelect = function(ev, item, scroll) {
     if ( this.selected &&  this.selected._element ) {
       this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
     }
@@ -2225,6 +2276,11 @@
       if ( !this.selected._element.className.match(/Active/) ) {
         this.selected._element.className += ' Active';
       }
+
+      if ( scroll ) {
+      }
+      var pos = OSjs.Utils.$position(this.selected._element);
+      console.warn("XXXX", pos);
     }
 
     if ( ev !== null && item !== null ) {
@@ -2249,6 +2305,7 @@
   };
 
   TreeView.prototype.setData = function(data, render) {
+    this.total = 0;
     this.data = data;
     if ( render ) {
       this.render();
@@ -2258,7 +2315,7 @@
   TreeView.prototype.setSelected = function(val, key) {
     var item = this.getItemByKey(key, val);
     if ( item ) {
-      this._onSelect(null, item);
+      this._onSelect(null, item, true);
       return true;
     }
     return false;

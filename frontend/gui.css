@@ -466,6 +466,7 @@ body .GUIToolbar button {
   margin : 0;
   padding : 0;
   list-style-type : none;
+  display : block;
 }
 .GUITreeView ul > li > ul {
   margin : 0;
@@ -490,7 +491,6 @@ body .GUIToolbar button {
 .GUITreeView li span {
   display : inline-block;
   vertical-align : middle;
-  cursor : default;
   padding : 5px;
 }
 .GUITreeView .Expander {
