@@ -2265,7 +2265,7 @@
       return ul;
     };
 
-    return _render.apply(this, arguments);
+    return _render.call(this, list, root, this.expandLevel);
   };
 
   TreeView.prototype.clear = function() {
