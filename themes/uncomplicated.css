@@ -327,6 +327,30 @@ body {
   cursor: ew-resize;
 }
 /**
+ * GUITreeView
+ */
+.GUITreeView {
+  background: #ffffff;
+  border: 1px solid #b2b2b2;
+  box-shadow: 0px 0px 1px rgba(255, 255, 255, 0.5);
+}
+.GUITreeView .Active {
+  color: #ffffff;
+  background: #2d73d2;
+}
+.GUITreeView .Expander:after {
+  border-left-color: #d4d4d4;
+}
+.GUITreeView .Expanded .Expander:after {
+  border-top-color: #d4d4d4;
+}
+.GUITreeView li.Active > ul {
+  background: #ffffff;
+}
+.GUITreeView li.Active > ul > li {
+  color: #242424;
+}
+/**
  * GUIColorSwatch
  */
 .GUIColorSwatch {

@@ -348,6 +348,31 @@ body {
 }
 
 /**
+ * GUITreeView
+ */
+.GUITreeView {
+  background : @theme_input_bg_color;
+  border : 1px solid @theme_secondary_border_color;
+  box-shadow: @theme_input_shadow;
+}
+.GUITreeView .Active {
+  color : @theme_selected_fg_color;
+  background : @theme_selected_bg_color;
+}
+.GUITreeView .Expander:after {
+  border-left-color: @theme_base_border_color;
+}
+.GUITreeView .Expanded .Expander:after {
+  border-top-color: @theme_base_border_color;
+}
+.GUITreeView li.Active > ul {
+  background : @theme_input_bg_color;
+}
+.GUITreeView li.Active > ul > li {
+  color: @theme_base_fg_color;
+}
+
+/**
  * GUIColorSwatch
  */
 .GUIColorSwatch {

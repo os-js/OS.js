@@ -20,10 +20,9 @@
 * Custom styling for GUISelectList
 * Custom styling for GUICheckbox
 * Custom styling for GUIRadio
-* Refactor GUIIconView
-* Abstraction for data list elements (IconView, ListView and TreeView)
-* GUITreeView
 * GUILabel
+* Abstraction for data list elements (IconView, ListView and TreeView)
+  Will involve some refactoring
 
 ### Not prioritized
 * Create bin/ scripts for nodejs (redo create-application for PHP)

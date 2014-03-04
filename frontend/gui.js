@@ -2067,6 +2067,228 @@
   };
 
   /**
+   * Tree View
+   *
+   * FIXME: Remove individual events and do it like in ListView and IconView
+   *
+   * options: (See GUIElement for more)
+   *  onExpand          Function        Callback - When item has been expanded
+   *  onCollapse        Function        Callback - When item has been collapsed
+   *  onSelect          Function        Callback - When item is selected (clicked)
+   *  onActivate        Function        Callback - When item is activated (dblclick)
+   *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
+   *  data              Array           Data (Items)
+   *  render            bool            Render on create (default = true when data is supplied)
+   */
+  var TreeView = function(name, opts) {
+    opts            = opts || {};
+    opts.focusable  = true;
+
+    this.$view      = null;
+    this.selected   = null;
+    this.data       = [];
+
+    this.onSelect       = opts.onSelect       || function() {};
+    this.onExpand       = opts.onExpand       || function() {};
+    this.onCollapse     = opts.onCollapse     || function() {};
+    this.onActivate     = opts.onActivate     || function() {};
+    this.onContextMenu  = opts.onContextMenu  || function() {};
+
+    GUIElement.apply(this, [name, opts]);
+  };
+
+  TreeView.prototype = Object.create(GUIElement.prototype);
+
+  TreeView.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+
+    // Automatic render when user supplies data
+    if ( this.opts.data ) {
+      if ( typeof this.opts.row === 'undefined' || this.opts.render === true ) {
+        this.render(this.opts.data);
+      }
+    }
+  };
+
+  TreeView.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUITreeView']);
+    this.$view = document.createElement('div');
+    el.appendChild(this.$view);
+    return el;
+  };
+
+  TreeView.prototype.render = function(data) {
+    var self = this;
+    if ( data ) {
+      this.setData(data);
+    }
+    this._onSelect(null, null);
+
+    var total = 0;
+
+    var _render = function(list, root) {
+      var ul = document.createElement('ul');
+
+      var li, iter, exp, ico, title, child;
+      for ( var i = 0; i < list.length; i++ ) {
+        li = document.createElement('li');
+
+        iter           = list[i]    || {};
+        iter.name      = iter.name  || 'treeviewitem_' + total;
+        iter.title     = iter.title || iter.name;
+        iter._element  = li;
+
+        li.className = 'Item';
+        li.setAttribute('data-index', i);
+        li.setAttribute('data-name',  iter.name);
+
+        if ( iter.items && iter.items.length ) {
+          li.className += ' Expandable';
+          exp = document.createElement('div');
+          exp.className = 'Expander';
+          exp.innerHTML = '';
+          li.appendChild(exp);
+        } else {
+          exp = null;
+        }
+
+        if ( iter.icon ) {
+          ico = document.createElement('img');
+          ico.src = iter.icon;
+          ico.alt = '';
+          li.appendChild(ico);
+        }
+
+        title = document.createElement('span');
+        title.appendChild(document.createTextNode(iter.title));
+        li.appendChild(title);
+
+        li.onclick = (function(c) {
+          return function(ev) {
+            ev.stopPropagation();
+            self._onSelect(ev, c);
+          };
+        })(iter);
+
+        li.ondblclick = (function(c) {
+          return function(ev) {
+            self._onActivate(ev, c);
+          };
+        })(iter);
+
+        if ( exp ) {
+          child = _render(iter.items, li);
+          exp.onclick = (function(c, el, it) {
+            return function(ev) {
+              var s = c.style.display;
+              if ( s === 'none' || s === '' ) {
+                c.style.display = 'block';
+                if ( !el.className.match(/Expanded/) ) {
+                  el.className += ' Expanded';
+                }
+
+                self._onExpand(ev, it);
+              } else {
+                c.style.display = 'none';
+                if ( el.className.match(/Expanded/) ) {
+                  el.className = el.className.replace(/\s?Expanded/, '');
+                }
+
+                self._onCollapse(ev, it);
+              }
+            };
+          })(child, li, iter);
+        }
+
+        total++;
+        ul.appendChild(li);
+      }
+
+      root.appendChild(ul);
+
+      return ul;
+    };
+
+    OSjs.Utils.$empty(this.$view);
+    _render(this.data, this.$view);
+  };
+
+  TreeView.prototype._onSelect = function(ev, item) {
+    if ( this.selected &&  this.selected._element ) {
+      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
+    }
+
+    this.selected = null;
+
+    if ( item && item._element ) {
+      this.selected  = item;
+      if ( !this.selected._element.className.match(/Active/) ) {
+        this.selected._element.className += ' Active';
+      }
+    }
+
+    if ( ev !== null && item !== null ) {
+      this.onSelect.apply(this, arguments);
+    }
+  };
+
+  TreeView.prototype._onExpand = function(ev, item) {
+    this.onExpand.apply(this, arguments);
+  };
+
+  TreeView.prototype._onCollapse = function(ev, item) {
+    this.onCollapse.apply(this, arguments);
+  };
+
+  TreeView.prototype._onActivate = function(ev, item) {
+    this.onActivate.apply(this, arguments);
+  };
+
+  TreeView.prototype._onContextMenu = function(ev, item) {
+    this.onContextMenu.apply(this, arguments);
+  };
+
+  TreeView.prototype.setData = function(data, render) {
+    this.data = data;
+    if ( render ) {
+      this.render();
+    }
+  };
+
+  TreeView.prototype.setSelected = function(val, key) {
+    var item = this.getItemByKey(key, val);
+    if ( item ) {
+      this._onSelect(null, item);
+      return true;
+    }
+    return false;
+  };
+
+  TreeView.prototype.setItems = function() {
+    this.setData.apply(this, arguments);
+  };
+
+  TreeView.prototype.getItemByKey = function(key, val) {
+    for ( var i in this.data ) {
+      if ( this.data.hasOwnProperty(i) ) {
+        if ( this.data[i][key] == val ) {
+          return this.data[i];
+        }
+      }
+    }
+    return null;
+  };
+
+  TreeView.prototype.getItem = function(idx) {
+    return this.data[idx];
+  };
+
+  TreeView.prototype.getSelected = function() {
+    return this.selected;
+  };
+
+
+  /**
    * Richt Text Element
    *
    * options: (See GUIElement for more)
@@ -3376,6 +3598,7 @@
   OSjs.GUI.Canvas       = Canvas;
   OSjs.GUI.ProgressBar  = ProgressBar;
   OSjs.GUI.IconView     = IconView;
+  OSjs.GUI.TreeView     = TreeView;
   OSjs.GUI.RichText     = RichText;
   OSjs.GUI.Tabs         = Tabs;
   OSjs.GUI.Select       = Select;
