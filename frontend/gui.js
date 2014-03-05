@@ -743,6 +743,8 @@
   /**
    * List View Class
    *
+   * TODO: Refactor
+   *
    * options: (See GUIElement for more)
    *  onCreateRow       Function        Callback - When row is created
    *  onSelect          Function        Callback - When row is selected (clicked)
@@ -934,9 +936,13 @@
     this.callback   = function() {};
   };
 
-  ListView.prototype.render = function() {
-    var selected = this.selected;
-    var reselect = -1;
+  ListView.prototype.render = function(reset) {
+    if ( reset ) {
+      this.selected = null;
+    }
+    var selected  = this.selected;
+    var reselect  = -1;
+    var scrollTop = reset ? 0 : this.$scroll.scrollTop;
 
     OSjs.Utils.$empty(this.$head);
     OSjs.Utils.$empty(this.$body);
@@ -1044,16 +1050,17 @@
       this.rows[i]._element = row;
     }
 
-    this.$scroll.scrollTop = 0;
-
     if ( reselect >= 0 ) {
+      this.$scroll.scrollTop = scrollTop;
       setTimeout(function() {
         self._onRowClick(null, self.rows[reselect]._element, self.rows[reselect]);
         self._onSelect(null, self.rows[reselect]);
       }, 10);
     } else {
       this.selected = null;
+      this.$scroll.scrollTop = 0;
     }
+
   };
 
   ListView.prototype.onKeyPress = function(ev) {
@@ -1116,6 +1123,7 @@
     el.className = 'active';
     this.lastSelectedDOM = el;
 
+    /*
     if ( !ev ) {
       var viewHeight = this.$scroll.offsetHeight - (this.$head.style.visible === 'none' ? 0 : this.$head.offsetHeight);
       var viewBottom = this.$scroll.scrollTop;
@@ -1125,6 +1133,7 @@
         this.$scroll.scrollTop = el.offsetTop;
       }
     }
+    */
   };
 
   ListView.prototype.addColumn = function(c) {
@@ -1855,7 +1864,8 @@
   /**
    * Icon View Element
    *
-   * FIXME: Reselect last item on refresh with indexKey (see ListView)
+   * TODO: Refactor
+   * FIXME: Reselect last item on refresh with indexKey (see TreeView, remember: scrollTop)
    *
    * reserved item (data) keys:
    *  label = What to show as title
@@ -2076,7 +2086,6 @@
    * Tree View
    *
    * FIXME: TreeView - Remove individual events and do it like in ListView and IconView !?
-   * FIXME: TreeView - _onSelect() method 
    *
    * reserved item (data) keys:
    *  title = What to show as title
@@ -2272,17 +2281,19 @@
     this.render([]);
   };
 
-  TreeView.prototype.render = function(data) {
+  TreeView.prototype.render = function(data, reset) {
     if ( !this.$view ) { return; }
 
     var self = this;
     var reselect = null;
     var scrollTop = 0;
 
-    if ( this.indexKey ) {
-      if ( this.selected ) {
-        reselect = this.selected[this.indexKey];
-        scrollTop = this.$view.scrollTop;
+    if ( !reset ) {
+      if ( this.indexKey ) {
+        if ( this.selected ) {
+          reselect = this.selected[this.indexKey];
+          scrollTop = this.$view.scrollTop;
+        }
       }
     }
 
@@ -2302,7 +2313,6 @@
           self.$view.scrollTop = scrollTop;
         }
       }, 10);
-
     }
   };
 
@@ -2319,11 +2329,12 @@
         this.selected._element.className += ' Active';
       }
 
-      /* FIXME
       if ( scroll ) {
-        var pos = OSjs.Utils.$position(this.selected._element);
+        var pos = OSjs.Utils.$position(this.selected._element, this.$view);
+        if ( pos !== null && this.$view.scrollTop < pos.top ) {
+          this.$view.scrollTop = pos.top;
+        }
       }
-      */
     }
 
     if ( ev !== null && item !== null ) {
@@ -2355,10 +2366,10 @@
     }
   };
 
-  TreeView.prototype.setSelected = function(val, key) {
+  TreeView.prototype.setSelected = function(val, key, scrollTo) {
     var item = this.getItemByKey(key, val);
     if ( item ) {
-      this._onSelect(null, item, true);
+      this._onSelect(null, item, scrollTo);
       return true;
     }
     return false;
