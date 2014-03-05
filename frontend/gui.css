@@ -438,7 +438,7 @@ body .GUIToolbar button {
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
 }
-.GUIIconView li.active span {
+.GUIIconView li.Active span {
   overflow: visible;
   white-space : pre-wrap;
   word-wrap : break-word;
