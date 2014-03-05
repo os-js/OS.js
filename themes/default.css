@@ -315,7 +315,7 @@ body {
 .GUIListView tbody tr:nth-child(2n+1) {
   background: #ffffff;
 }
-.GUIListView tr.active td {
+.GUIListView tr.Active td {
   color: #ffffff;
   background: #333333;
 }

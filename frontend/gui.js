@@ -469,6 +469,161 @@
     return this.$input.value;
   };
 
+  /**
+   * Data View Base Class
+   *
+   * This is for handling data lists in some sort of view
+   *
+   * options: (See GUIElement for more)
+   *  onSelect          Function        Callback - When item is selected (clicked)
+   *  onActivate        Function        Callback - When item is activated (dblclick)
+   *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
+   *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
+   *  render            bool            Render on create (default = true when data is supplied)
+   */
+  var _DataView = function(name, opts) {
+    opts            = opts || {};
+    opts.focusable  = true;
+
+    this.$view      = null;
+    this.selected   = null;
+    this.data       = [];
+
+    this.indexKey       = opts.indexKey       || null;
+    this.onSelect       = opts.onSelect       || function() {};
+    this.onActivate     = opts.onActivate     || function() {};
+    this.onContextMenu  = opts.onContextMenu  || function() {};
+
+    GUIElement.apply(this, [name, opts]);
+  };
+
+  _DataView.prototype = Object.create(GUIElement.prototype);
+
+  _DataView.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+
+    // Automatic render when user supplies data
+    if ( this.opts.data ) {
+      if ( typeof this.opts.render === 'undefined' || this.opts.render === true ) {
+      //if ( typeof this.opts.row === 'undefined' || this.opts.render === true ) {
+        this.render(this.opts.data);
+      }
+    }
+  };
+
+  _DataView.prototype.init = function(className, view) {
+    var el = GUIElement.prototype.init.apply(this, [className]);
+    this.$view = document.createElement('div');
+    if ( typeof view === 'undefined' || view === true ) {
+      el.appendChild(this.$view);
+    }
+    return el;
+  };
+
+  _DataView.prototype.clear = function() {
+    this.render([], true);
+  };
+
+  _DataView.prototype.render = function(data, reset) {
+    if ( !this.$view ) { return false; }
+
+    var self = this;
+    var reselect = null;
+    var scrollTop = 0;
+
+    if ( !reset ) {
+      if ( this.indexKey ) {
+        if ( this.selected ) {
+          reselect = this.selected[this.indexKey];
+          scrollTop = this.$view.scrollTop;
+        }
+      }
+    }
+
+    if ( typeof data !== 'undefined' ) {
+      this.setData(data);
+    }
+    this._onSelect(null, null);
+
+    this._onRender();
+
+    if ( reselect ) {
+      setTimeout(function() {
+        self.setSelected(reselect, self.indexKey);
+        if ( self.$view ) {
+          self.$view.scrollTop = scrollTop;
+        }
+      }, 10);
+    }
+
+    return true;
+  };
+
+  _DataView.prototype._onRender = function() {
+  };
+
+  _DataView.prototype._onSelect = function(ev, item, scroll) {
+    if ( ev !== null && item !== null ) {
+      this.onSelect.apply(this, arguments);
+    }
+    return this.selected;
+  };
+
+  _DataView.prototype._onActivate = function(ev, item) {
+    this.onActivate.apply(this, arguments);
+    return item;
+  };
+
+  _DataView.prototype._onContextMenu = function(ev, item) {
+    this._onSelect(ev, item);
+    this.onContextMenu.apply(this, arguments);
+    return item;
+  };
+
+  _DataView.prototype.setData = function(data, render) {
+    this.data = data;
+    if ( render ) {
+      this.render();
+    }
+  };
+
+  _DataView.prototype.setSelected = function(val, key, scrollTo) {
+    var item = this.getItemByKey(key, val);
+    if ( item ) {
+      this._onSelect(null, item, scrollTo);
+      return true;
+    }
+    return false;
+  };
+
+  _DataView.prototype.setSelectedIndex = function(idx, scrollTo) {
+    if ( this.data[idx] ) {
+      this._onSelect(null, this.data[idx], scrollTo);
+    }
+  };
+
+  _DataView.prototype.setItems = function() {
+    this.setData.apply(this, arguments);
+  };
+
+  _DataView.prototype.getItemByKey = function(key, val) {
+    var data = this.data;
+    for ( var i = 0, l = data.length; i < l; i++ ) {
+      if ( data[i][key] == val ) {
+        return data[i];
+      }
+    }
+    return null;
+  };
+
+  _DataView.prototype.getItem = function(idx) {
+    return this.data[idx];
+  };
+
+  _DataView.prototype.getSelected = function() {
+    return this.selected;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -743,114 +898,43 @@
   /**
    * List View Class
    *
-   * TODO: Refactor
-   *
-   * options: (See GUIElement for more)
+   * options: (See _DataView for more)
    *  onCreateRow       Function        Callback - When row is created
-   *  onSelect          Function        Callback - When row is selected (clicked)
-   *  onActivate        Function        Callback - When row is activated (dblclick)
-   *  onContextMenu     Function        Callback - When row menu is activated (rightclick)
    *  columns           Object          Columns
-   *  rows              Array           Rows
-   *  render            bool            Render on create (default = true when columns and rows are supplied)
-   *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
+   *  rows              Array           Rows (data)
+   *  singleClick       bool            Single click to Activate (dblclick)
    */
   var ListView = function(name, opts) {
-    opts            = opts || {};
-    opts.focusable  = true;
+    opts = opts || {};
+
+    if ( opts.rows ) {
+      opts.data = opts.rows;
+      delete opts.rows;
+    }
 
     this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
-    this.rows             = [];
-    this.columns          = [];
+    this.columns          = opts.columns || [];
     this.$head            = null;
     this.$headTop         = null;
     this.$body            = null;
     this.$table           = null;
     this.$tableTop        = null;
     this.$scroll          = null;
-    this.selected         = null;
     this.lastSelectedDOM  = null;
-    this.indexKey         = opts.indexKey || null;
+    this.onCreateRow      = opts.onCreateRow    || function() {};
 
-    this.onCreateRow    = opts.onCreateRow    || function() {};
-    this.onSelect       = opts.onSelect       || function() {};
-    this.onActivate     = opts.onActivate     || function() {};
-    this.onContextMenu  = opts.onContextMenu  || function() {};
-
-    GUIElement.apply(this, arguments);
-
-    if ( opts.columns ) {
-      this.setColumns(opts.columns);
-    }
-    if ( opts.rows ) {
-      this.setRows(opts.rows);
-    }
+    _DataView.apply(this, arguments);
   };
 
-  ListView.prototype = Object.create(GUIElement.prototype);
-
-  ListView.prototype.update = function() {
-    GUIElement.prototype.update.apply(this, arguments);
-
-    // Automatic render when user supplies rows and columns
-    if ( this.opts.columns &&  this.opts.rows ) {
-      if ( typeof this.opts.row === 'undefined' || this.opts.render === true ) {
-        this.render();
-      }
-    }
-  };
+  ListView.prototype = Object.create(_DataView.prototype);
 
   ListView.prototype.init = function() {
-    var el = GUIElement.prototype.init.apply(this, ['GUIListView']);
-
-    var self = this;
-    var activate = function(ev, type) {
-      var t = ev.target;
-      if ( t && t.tagName != 'TR' ) {
-        if ( t.parentNode.tagName == 'TR' ) {
-          t = t.parentNode;
-        } else if ( t.parentNode.parentNode.tagName == 'TR' ) {
-          t = t.parentNode.parentNode;
-        }
-      }
-
-      if ( t && t.tagName == 'TR' ) {
-        var idx = OSjs.Utils.$index(t, self.$body);
-        var item = self.rows[idx];
-        if ( item ) {
-          if ( type == 'activate' ) {
-            self._onActivate(ev, item);
-          } else if ( type == 'select' ) {
-            self._onSelect(ev, item);
-          }
-        }
-
-        return t;
-      }
-      return null;
-    };
-
-    var onDblClick = function(ev) {
-      activate(ev, 'activate');
-    };
-
-    var onClick = function(ev) {
-      activate(ev, 'select');
-    };
-
-    var onContextMenu = function(ev) {
-      ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-      ev.preventDefault();
-      var cel = activate(ev, 'select');
-      if ( cel ) {
-        cel.onclick(ev);
-        self.onContextMenu.call(self, ev, cel, self.selected);
-      }
-    };
+    var el = _DataView.prototype.init.apply(this, ['GUIListView', false]);
 
     var startW = 0;
     var startX = 0;
     var column = null;
+    var self = this;
 
     var onResizeMove = function(ev) {
       var newW = startW + (ev.clientX - startX);
@@ -903,15 +987,6 @@
     this.$scroll.className  = 'Scroll';
     this.$scroll.appendChild(table);
 
-    this._addEventListener(table, 'click', function(ev) {
-      return onClick(ev);
-    });
-    this._addEventListener(table, 'contextmenu', function(ev) {
-      return onContextMenu(ev);
-    });
-    this._addEventListener(table, (this.singleClick ? 'click' : 'dblclick'), function(ev) {
-      return onDblClick(ev);
-    });
     this._addEventListener(tableTop, 'mousedown', function(ev) {
       return onHeaderAction(ev, 'mousedown');
     });
@@ -933,27 +1008,16 @@
     this.$body      = body;
     this.$table     = table;
     this.$tableTop  = tableTop;
-    this.callback   = function() {};
   };
 
-  ListView.prototype.render = function(reset) {
-    if ( reset ) {
-      this.selected = null;
-    }
-    var selected  = this.selected;
-    var reselect  = -1;
-    var scrollTop = reset ? 0 : this.$scroll.scrollTop;
-
-    OSjs.Utils.$empty(this.$head);
-    OSjs.Utils.$empty(this.$body);
-    OSjs.Utils.$empty(this.$headTop);
-
+  ListView.prototype._render = function(list, columns) {
     var self = this;
     var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span, label, resizer;
 
+    // Columns (header)
     row = document.createElement('tr');
-    for ( i = 0, l = this.columns.length; i < l; i++ ) {
-      colref = this.columns[i];
+    for ( i = 0, l = columns.length; i < l; i++ ) {
+      colref = columns[i];
       if ( typeof colref.visible !== 'undefined' && colref.visible === false ) { continue; }
 
       col           = document.createElement('td');
@@ -985,14 +1049,15 @@
     this.$head.appendChild(row);
     this.$headTop.appendChild(row);
 
-    for ( i = 0, l = this.rows.length; i < l; i++ ) {
+    // Rows (data)
+    for ( i = 0, l = list.length; i < l; i++ ) {
       row = document.createElement('tr');
-      iter = this.rows[i];
+      iter = list[i];
 
-      for ( ii = 0, ll = this.columns.length; ii < ll; ii++ ) {
+      for ( ii = 0, ll = columns.length; ii < ll; ii++ ) {
         span = null;
 
-        colref = this.columns[ii];
+        colref = columns[ii];
         row.setAttribute('data-' + colref.key, iter[colref.key]);
 
         if ( (typeof colref.visible !== 'undefined' && colref.visible === false) ) { continue; }
@@ -1033,34 +1098,56 @@
           col.appendChild(span);
         }
 
-        row.onclick = function(ev) {
-          self._onRowClick(ev, this);
-        };
+        // FIXME: Use local event listener adding
+
+        row.oncontextmenu = (function(it) {
+          return function(ev) {
+            ev.stopPropagation(); // Or else eventual ContextMenu is blurred
+            ev.preventDefault();
+
+            self._onContextMenu(ev, it);
+          };
+        })(this.data[i]);
+
+        if ( this.singleClick ) {
+          row.onclick = (function(it) {
+            return function(ev) {
+              self._onSelect(ev, it);
+              self._onActivate(ev, it);
+            };
+          })(this.data[i]);
+        } else {
+          row.onclick = (function(it) {
+            return function(ev) {
+              self._onSelect(ev, it);
+            };
+          })(this.data[i]);
+
+          row.ondblclick = (function(it) {
+            return function(ev) {
+              self._onActivate(ev, it);
+            };
+          })(this.data[i]);
+        }
+
+
         row.appendChild(col);
       }
       this.$body.appendChild(row);
 
       this.onCreateRow(row, iter, colref);
 
-      if ( reselect < 0 && (selected && (iter[this.indexKey] == selected[this.indexKey])) ) {
-        reselect = i;
-      }
+      this.data[i]._index   = i;
+      this.data[i]._element = row;
+    }
+  };
 
-      this.rows[i]._index   = i;
-      this.rows[i]._element = row;
+  ListView.prototype.render = function(data, reset) {
+    if ( !_DataView.prototype.render.apply(this, arguments) ) {
+      return;
     }
 
-    if ( reselect >= 0 ) {
-      this.$scroll.scrollTop = scrollTop;
-      setTimeout(function() {
-        self._onRowClick(null, self.rows[reselect]._element, self.rows[reselect]);
-        self._onSelect(null, self.rows[reselect]);
-      }, 10);
-    } else {
-      this.selected = null;
-      this.$scroll.scrollTop = 0;
-    }
-
+    this._render(this.data, this.columns);
   };
 
   ListView.prototype.onKeyPress = function(ev) {
@@ -1072,7 +1159,7 @@
 
       var idx  = this.selected._index;
       var tidx = idx;
-      var len  = this.rows.length;
+      var len  = this.data.length;
 
       if ( idx >= 0 && idx < len  ) {
         if ( ev.keyCode === OSjs.Utils.Keys.UP ) {
@@ -1080,7 +1167,7 @@
         } else if ( ev.keyCode === OSjs.Utils.Keys.DOWN ) {
           idx++;
         } else if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
-          this._onActivate(ev, this.rows[idx]);
+          this._onActivate(ev, this.data[idx]);
           return true;
         }
 
@@ -1092,48 +1179,45 @@
     return true;
   };
 
+  ListView.prototype._onRender = function() {
+    OSjs.Utils.$empty(this.$head);
+    OSjs.Utils.$empty(this.$body);
+    OSjs.Utils.$empty(this.$headTop);
+  };
+
   ListView.prototype._onColumnClick = function(ev, col) {
   };
 
-  ListView.prototype._onSelect = function(ev, item) {
-    if ( item ) {
-      this.selected = item;
-      this.onSelect.call(this, ev, item._element, item);
-    }
+  _DataView.prototype._onActivate = function(ev, item) {
+    this.onActivate.apply(this, [ev, item._element, item]);
     return item;
   };
 
-  ListView.prototype._onActivate = function(ev, item) {
-    if ( item ) {
-      this.selected = item;
-      this.onActivate.call(this, ev, item._element, item);
-    }
-    return item;
-  };
-
-  ListView.prototype._onRowClick = function(ev, el, item) {
-    if ( !el ) {
-      console.warn("ListView::_onRowClick()", "did not get a element");
-      return;
+  // FIXME: Abstraction
+  ListView.prototype._onSelect = function(ev, item, scroll) {
+    if ( this.selected && this.selected._element ) {
+      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
     }
 
-    if ( this.lastSelectedDOM ) {
-      this.lastSelectedDOM.className = '';
-    }
-    el.className = 'active';
-    this.lastSelectedDOM = el;
+    this.selected = null;
 
-    /*
-    if ( !ev ) {
-      var viewHeight = this.$scroll.offsetHeight - (this.$head.style.visible === 'none' ? 0 : this.$head.offsetHeight);
-      var viewBottom = this.$scroll.scrollTop;
-      if ( el.offsetTop > (viewHeight + this.$scroll.scrollTop) ) {
-        this.$scroll.scrollTop = el.offsetTop;
-      } else if ( el.offsetTop < viewBottom ) {
-        this.$scroll.scrollTop = el.offsetTop;
+    if ( item && item._element ) {
+      this.selected  = item;
+      if ( !this.selected._element.className.match(/Active/) ) {
+        this.selected._element.className += ' Active';
+      }
+
+      if ( scroll ) {
+        var pos = OSjs.Utils.$position(this.selected._element, this.$scroll);
+        if ( pos !== null && this.$view.scrollTop < pos.top ) {
+          this.$scroll.scrollTop = pos.top;
+        }
       }
     }
-    */
+
+    _DataView.prototype._onSelect.apply(this, [ev, (item ? item._element : null), item]);
+
+    return this.selected;
   };
 
   ListView.prototype.addColumn = function(c) {
@@ -1149,42 +1233,7 @@
   };
 
   ListView.prototype.setRows = function(rows, render) {
-    this.rows = rows || [];
-
-    if ( render ) {
-      this.render();
-    }
-  };
-
-  ListView.prototype.getItemByKey = function(key, val) {
-    var rows = this.rows;
-    for ( var i = 0, l = rows.length; i < l; i++ ) {
-      if ( rows[i][key] == val ) {
-        return rows[i];
-      }
-    }
-    return null;
-  };
-
-  ListView.prototype.setSelectedIndex = function(idx) {
-    if ( this.destroyed ) { return; }
-    if ( this.rows[idx] ) {
-      this._onRowClick(null, this.rows[idx]._element, this.rows[idx]);
-      this._onSelect(null, this.rows[idx]);
-    }
-  };
-
-  ListView.prototype.setSelected = function(val, key) {
-    if ( this.destroyed ) { return; }
-    var row = this.getItemByKey(key, val);
-    if ( row ) {
-      this._onRowClick(null, row._element, row);
-      this._onSelect(null, row);
-    }
-  };
-
-  ListView.prototype.getSelected = function() {
-    return this.selected;
+    this.setData.apply(this, arguments);
   };
 
   /**
@@ -1864,8 +1913,7 @@
   /**
    * Icon View Element
    *
-   * TODO: Refactor
-   * FIXME: Reselect last item on refresh with indexKey (see TreeView, remember: scrollTop)
+   * TODO: Refactor to _DataView
    *
    * reserved item (data) keys:
    *  label = What to show as title
@@ -2085,31 +2133,18 @@
   /**
    * Tree View
    *
-   * FIXME: TreeView - Remove individual events and do it like in ListView and IconView !?
-   *
    * reserved item (data) keys:
    *  title = What to show as title
    *  icon = Path to icon
    *
-   * options: (See GUIElement for more)
+   * options: (See _DataView for more)
    *  onExpand          Function        Callback - When item has been expanded
    *  onCollapse        Function        Callback - When item has been collapsed
-   *  onSelect          Function        Callback - When item is selected (clicked)
-   *  onActivate        Function        Callback - When item is activated (dblclick)
-   *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
    *  data              Array           Data (Items)
-   *  render            bool            Render on create (default = true when data is supplied)
    *  expanded          Mixed           What level to expand on render (Default = false (none), true = (1), int for level)
-   *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
    */
   var TreeView = function(name, opts) {
-    opts            = opts || {};
-    opts.focusable  = true;
-
-    this.$view      = null;
-    this.selected   = null;
-    this.data       = [];
-    this.total      = 0;
+    opts = opts || {};
 
     var keys = {
       icon: 'icon',
@@ -2123,36 +2158,20 @@
       expand = opts.expand;
     }
 
+    this.total          = 0;
     this.keys           = opts.keys           || keys;
     this.expandLevel    = expand;
-    this.indexKey       = opts.indexKey       || null;
-    this.onSelect       = opts.onSelect       || function() {};
     this.onExpand       = opts.onExpand       || function() {};
     this.onCollapse     = opts.onCollapse     || function() {};
-    this.onActivate     = opts.onActivate     || function() {};
-    this.onContextMenu  = opts.onContextMenu  || function() {};
 
-    GUIElement.apply(this, [name, opts]);
+    _DataView.apply(this, [name, opts]);
   };
 
-  TreeView.prototype = Object.create(GUIElement.prototype);
-
-  TreeView.prototype.update = function() {
-    GUIElement.prototype.update.apply(this, arguments);
-
-    // Automatic render when user supplies data
-    if ( this.opts.data ) {
-      if ( typeof this.opts.row === 'undefined' || this.opts.render === true ) {
-        this.render(this.opts.data);
-      }
-    }
-  };
+  TreeView.prototype = Object.create(_DataView.prototype);
 
   TreeView.prototype.init = function() {
-    var el = GUIElement.prototype.init.apply(this, ['GUITreeView']);
-    this.$view = document.createElement('div');
-    el.appendChild(this.$view);
-    return el;
+    var root = _DataView.prototype.init.call(this, 'GUITreeView');
+    return root;
   };
 
   TreeView.prototype._render = function(list, root) {
@@ -2207,6 +2226,7 @@
         title.appendChild(document.createTextNode(iter.title));
         inner.appendChild(title);
 
+        // FIXME: Use local event listener adding
         inner.oncontextmenu = (function(c, e) {
           return function(ev) {
             ev.preventDefault();
@@ -2277,47 +2297,21 @@
     return _render.call(this, list, root, this.expandLevel);
   };
 
-  TreeView.prototype.clear = function() {
-    this.render([]);
+  TreeView.prototype.render = function(data, reset) {
+    if ( !_DataView.prototype.render.call(this, data, reset) ) {
+      return;
+    }
   };
 
-  TreeView.prototype.render = function(data, reset) {
-    if ( !this.$view ) { return; }
-
-    var self = this;
-    var reselect = null;
-    var scrollTop = 0;
-
-    if ( !reset ) {
-      if ( this.indexKey ) {
-        if ( this.selected ) {
-          reselect = this.selected[this.indexKey];
-          scrollTop = this.$view.scrollTop;
-        }
-      }
-    }
-
-    if ( typeof data !== 'undefined' ) {
-      this.setData(data);
-    }
-    this._onSelect(null, null);
-
+  TreeView.prototype._onRender = function() {
     OSjs.Utils.$empty(this.$view);
 
     this._render(this.data, this.$view);
-
-    if ( reselect ) {
-      setTimeout(function() {
-        self.setSelected(reselect, self.indexKey);
-        if ( self.$view ) {
-          self.$view.scrollTop = scrollTop;
-        }
-      }, 10);
-    }
   };
 
+  // FIXME: Abstraction
   TreeView.prototype._onSelect = function(ev, item, scroll) {
-    if ( this.selected &&  this.selected._element ) {
+    if ( this.selected && this.selected._element ) {
       this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
     }
 
@@ -2337,9 +2331,7 @@
       }
     }
 
-    if ( ev !== null && item !== null ) {
-      this.onSelect.apply(this, arguments);
-    }
+    _DataView.prototype._onSelect.apply(this, arguments);
   };
 
   TreeView.prototype._onExpand = function(ev, item) {
@@ -2350,33 +2342,9 @@
     this.onCollapse.apply(this, arguments);
   };
 
-  TreeView.prototype._onActivate = function(ev, item) {
-    this.onActivate.apply(this, arguments);
-  };
-
-  TreeView.prototype._onContextMenu = function(ev, item) {
-    this.onContextMenu.apply(this, arguments);
-  };
-
   TreeView.prototype.setData = function(data, render) {
     this.total = 0;
-    this.data = data;
-    if ( render ) {
-      this.render();
-    }
-  };
-
-  TreeView.prototype.setSelected = function(val, key, scrollTo) {
-    var item = this.getItemByKey(key, val);
-    if ( item ) {
-      this._onSelect(null, item, scrollTo);
-      return true;
-    }
-    return false;
-  };
-
-  TreeView.prototype.setItems = function() {
-    this.setData.apply(this, arguments);
+    _DataView.prototype.setData.apply(this, arguments);
   };
 
   TreeView.prototype.getItemByKey = function(key, val) {
@@ -2402,14 +2370,6 @@
     };
 
     return _search.call(this, this.data);
-  };
-
-  TreeView.prototype.getItem = function(idx) {
-    return this.data[idx];
-  };
-
-  TreeView.prototype.getSelected = function() {
-    return this.selected;
   };
 
 
