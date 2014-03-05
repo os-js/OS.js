@@ -21,7 +21,6 @@
 * Custom styling for GUICheckbox
 * Custom styling for GUIRadio
 * GUILabel
-* Refactor GUIIconView
 
 ### Not prioritized
 * Create bin/ scripts for nodejs (redo create-application for PHP)

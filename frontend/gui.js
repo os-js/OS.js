@@ -562,7 +562,7 @@
   _DataView.prototype._onRender = function() {
   };
 
-  _DataView.prototype._onSelect = function(ev, item, scroll) {
+  _DataView.prototype._onSelect = function(ev, item) {
     if ( ev !== null && item !== null ) {
       this.onSelect.apply(this, arguments);
     }
@@ -1188,13 +1188,15 @@
   ListView.prototype._onColumnClick = function(ev, col) {
   };
 
-  _DataView.prototype._onActivate = function(ev, item) {
-    this.onActivate.apply(this, [ev, item._element, item]);
+  ListView.prototype._onActivate = function(ev, item, callback) {
+    if ( typeof callback === 'undefined' || callback === true ) {
+      this.onActivate.apply(this, [ev, item._element, item]);
+    }
     return item;
   };
 
   // FIXME: Abstraction
-  ListView.prototype._onSelect = function(ev, item, scroll) {
+  ListView.prototype._onSelect = function(ev, item, scroll, callback) {
     if ( this.selected && this.selected._element ) {
       this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
     }
@@ -1215,8 +1217,11 @@
       }
     }
 
-    _DataView.prototype._onSelect.apply(this, [ev, (item ? item._element : null), item]);
-
+    if ( typeof callback === 'undefined' || callback === true ) {
+      if ( ev !== null ) {
+        this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
+      }
+    }
     return this.selected;
   };
 
@@ -1913,143 +1918,85 @@
   /**
    * Icon View Element
    *
-   * TODO: Refactor to _DataView
-   *
    * reserved item (data) keys:
    *  label = What to show as title
    *  icon = Path to icon
    *
-   * options: (See GUIElement for more)
+   * options: (See _DataView for more)
    *  onCreateItem      Function        Callback - When item is created
-   *  onSelect          Function        Callback - When item is selected (clicked)
-   *  onActivate        Function        Callback - When item is activated (dblclick)
-   *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
    *  data              Array           Data (Items)
-   *  render            bool            Render on create (default = true when data is supplied)
    */
   var IconView = function(name, opts) {
     opts            = opts || {};
-    opts.focusable  = true;
 
-    this.$view      = null;
     this.$ul        = null;
-    this.$selected  = null;
-    this.selected   = null;
     this.iconSize   = opts.size || '32x32';
-    this.data       = [];
 
-    this.onSelect       = opts.onSelect       || function() {};
-    this.onActivate     = opts.onActivate     || function() {};
     this.onCreateItem   = opts.onCreateItem   || function() {};
-    this.onContextMenu  = opts.onContextMenu  || function() {};
 
-    GUIElement.apply(this, [name, opts]);
+    _DataView.apply(this, [name, opts]);
   };
 
-  IconView.prototype = Object.create(GUIElement.prototype);
-
-  IconView.prototype.update = function() {
-    GUIElement.prototype.update.apply(this, arguments);
-
-    // Automatic render when user supplies data
-    if ( this.opts.data ) {
-      if ( typeof this.opts.row === 'undefined' || this.opts.render === true ) {
-        this.render(this.opts.data);
-      }
-    }
-  };
+  IconView.prototype = Object.create(_DataView.prototype);
 
   IconView.prototype.init = function() {
-    var el        = GUIElement.prototype.init.apply(this, ['GUIIconView']);
+    var el        = _DataView.prototype.init.apply(this, ['GUIIconView']);
     el.className += ' IconSize' + this.iconSize;
 
-    this.$view  = document.createElement('div');
     this.$ul    = document.createElement('ul');
 
     this.$view.appendChild(this.$ul);
 
     el.appendChild(this.$view);
 
-    var self = this;
-    var _onItem = function(ev, type) {
-      var t = ev.target;
-      if ( t && t.tagName != 'LI' ) {
-        if ( t.parentNode.tagName == 'LI' ) {
-          t = t.parentNode;
-        } else if ( t.parentNode.parentNode.tagName == 'LI' ) {
-          t = t.parentNode.parentNode;
-        }
-      }
-
-      if ( t.tagName === 'LI' ) {
-        var idx = t.getAttribute('data-index') << 0;
-        if ( idx >= 0 ) {
-          var item = self.data[idx];
-          if ( type === 'dblclick' ) {
-            self._onActivate(ev, item, t);
-          } else {
-            self._onSelect(ev, item, t);
-          }
-
-          if ( type === 'contextmenu' ) {
-            self._onContextMenu(ev, item, t);
-          }
-        }
-      }
-    };
-
-    this._addEventListener(this.$view, 'contextmenu', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-      _onItem(ev, 'contextmenu');
-      return false;
-    });
-    this._addEventListener(this.$view, 'click', function(ev) {
-      _onItem(ev, 'click');
-    });
-    this._addEventListener(this.$view, 'dblclick', function(ev) {
-      _onItem(ev, 'dblclick');
-    });
-
     return el;
   };
 
-  IconView.prototype._onContextMenu = function(ev, item, el) {
-    this.onContextMenu.apply(this, arguments);
+  // FIXME: Abstraction
+  IconView.prototype._onSelect = function(ev, item, scroll, callback) {
+    if ( this.selected && this.selected._element ) {
+      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
+    }
+
+    this.selected = null;
+
+    if ( item && item._element ) {
+      this.selected  = item;
+      if ( !this.selected._element.className.match(/Active/) ) {
+        this.selected._element.className += ' Active';
+      }
+
+      if ( scroll ) {
+        var pos = OSjs.Utils.$position(this.selected._element, this.$view);
+        if ( pos !== null && this.$view.scrollTop < pos.top ) {
+          this.$view.scrollTop = pos.top;
+        }
+      }
+    }
+
+    if ( typeof callback === 'undefined' || callback === true ) {
+      if ( ev !== null ) {
+        this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
+      }
+    }
+    return this.selected;
   };
 
-  IconView.prototype._onSelect = function(ev, item, el) {
-    if ( this.$selected ) {
-      this.$selected.className = this.$selected.className.replace(/\s?active/, '');
+  IconView.prototype._onActivate = function(ev, item, callback) {
+    if ( typeof callback === 'undefined' || callback === true ) {
+      this.onActivate.apply(this, [ev, item._element, item]);
     }
-    this.$selected = null;
-
-    if ( !el ) { return false; }
-
-    this.$selected = el;
-    this.$selected.className += ' active';
-    this.onSelect.apply(this, arguments);
-
     return item;
   };
 
-  IconView.prototype._onActivate = function(ev, item, el) {
-    this.onActivate.apply(this, arguments);
-    return item;
+  IconView.prototype._onRender = function() {
+    OSjs.Utils.$empty(this.$ul);
   };
 
-  IconView.prototype.render = function(data) {
-    if ( data ) {
-      this.setData(data);
-    }
-
+  IconView.prototype._render = function() {
     var _createImage = function(i) {
       return OSjs.API.getThemeResource(i, 'icon');
     };
-
-    this._onSelect(null, null, null);
-
-    OSjs.Utils.$empty(this.$ul);
 
     var i, l, iter, li, imgContainer, img, lblContainer, lbl;
     var k, j;
@@ -2083,51 +2030,44 @@
       lbl.appendChild(document.createTextNode(iter.label));
       lblContainer.appendChild(lbl);
 
+      // FIXME: Use local event listener adding
+      li.oncontextmenu = (function(it) {
+        return function(ev) {
+          ev.stopPropagation(); // Or else eventual ContextMenu is blurred
+          ev.preventDefault();
+
+          self._onContextMenu(ev, it);
+        };
+      })(iter);
+
+      li.onclick = (function(it) {
+        return function(ev) {
+          self._onSelect(ev, it);
+        };
+      })(iter);
+
+      li.ondblclick = (function(it) {
+        return function(ev) {
+          self._onActivate(ev, it);
+        };
+      })(iter);
+
       li.appendChild(imgContainer);
       li.appendChild(lblContainer);
 
       this.$ul.appendChild(li);
 
       this.onCreateItem(li, iter, iter.data);
+
+      this.data[i]._element = li;
     }
   };
 
-  IconView.prototype.setData = function(data) {
-    this.data = data;
-  };
-
-  IconView.prototype.getItemByKey = function(key, val) {
-    var items = this.$ul.childNodes;
-    var tmp, item;
-    for ( var i = 0, l = items.length; i < l; i++ ) {
-      item = items[i];
-      tmp = item.getAttribute('data-' + key);
-      if ( tmp == val ) {
-        return item;
-      }
+  IconView.prototype.render = function(data, reset) {
+    if ( !_DataView.prototype.render.call(this, data, reset) ) {
+      return;
     }
-    return null;
-  };
-
-  IconView.prototype.setSelected = function(val, key) {
-    if ( this.destroyed ) { return; }
-    var item = this.getItemByKey(key, val);
-    var data = {};
-    if ( item ) {
-      var attrs = item.attributes;
-      var tmp;
-      for ( var i = 0; i < attrs.length; i++ ) {
-        tmp = attrs.item(i);
-        if ( tmp && tmp.nodeName.match(/^data\-/) ) {
-          tmp[tmp.nodeName.replace(/^data\-/, '')] = tmp.nodeValue;
-        }
-      }
-      this._onSelect(null, data, item);
-
-      return true;
-    }
-
-    return false;
+    this._render();
   };
 
   /**
@@ -2229,7 +2169,9 @@
         // FIXME: Use local event listener adding
         inner.oncontextmenu = (function(c, e) {
           return function(ev) {
+            ev.stopPropagation(); // Or else eventual ContextMenu is blurred
             ev.preventDefault();
+
             if ( e ) {
               ev.stopPropagation();
             }
@@ -3228,24 +3170,17 @@
     IconView.prototype.render.apply(this, [fileList]);
   };
 
-  FileIconView.prototype._onContextMenu = function(ev, item, el) {
-    item = item.data || null;
-    this.onContextMenu.apply(this, [ev, item, el]);
-  };
-
-  FileIconView.prototype._onSelect = function(ev, item, el) {
-    item = IconView.prototype._onSelect.apply(this, arguments);
+  FileIconView.prototype._onSelect = function(ev, item) {
+    item = IconView.prototype._onSelect.apply(this, [ev, item, false]);
     item = item && item.data || null;
 
-    this.selected = null;
     if ( item && item.path ) {
-      this.selected = item;
       this.onSelected(item.path, item.type, item.mime);
     }
   };
 
-  FileIconView.prototype._onActivate = function(ev, item, el) {
-    item = IconView.prototype._onActivate.apply(this, arguments);
+  FileIconView.prototype._onActivate = function(ev, item) {
+    item = IconView.prototype._onActivate.apply(this, [ev, item, false]);
     item = item && item.data || null;
 
     if ( item && item.path ) {
@@ -3365,23 +3300,17 @@
   };
 
   FileListView.prototype._onActivate = function(ev, item) {
-    var item = ListView.prototype._onActivate.apply(this, arguments);
+    var item = ListView.prototype._onActivate.apply(this, [ev, item, false]);
     if ( item && item.path ) {
       this.onActivated(item.path, item.type, item.mime);
     }
   };
 
   FileListView.prototype._onSelect = function(ev, item) {
-    var item = ListView.prototype._onSelect.apply(this, arguments);
+    var item = ListView.prototype._onSelect.apply(this, [ev, item, false]);
     if ( item && item.path ) {
       this.onSelected(item, item._element);
     }
-  };
-
-  FileListView.prototype._onRowClick = function(ev, el, item) {
-    if ( this.destroyed ) { return; }
-    ListView.prototype._onRowClick.apply(this, arguments);
-    this._onSelect(ev, item);
   };
 
   /**

@@ -364,11 +364,11 @@ body {
   border: 1px solid #b1b1b1;
   box-shadow: 0px 0px 1px rgba(255, 255, 255, 0.5);
 }
-.GUIIconView .active {
+.GUIIconView .Active {
   background: #333333;
   color: #ffffff;
 }
-.GUIIconView li.active div span {
+.GUIIconView li.Active div span {
   background: #333333;
 }
 .GUIIconView li {
