@@ -578,7 +578,7 @@
       if ( scroll ) {
         var view = this.$view || this.$scroll;
         var pos = OSjs.Utils.$position(this.selected._element, view);
-        if ( pos !== null && this.$view.scrollTop < pos.top ) {
+        if ( pos !== null && view.scrollTop < pos.top ) {
           view.scrollTop = pos.top;
         }
       }
