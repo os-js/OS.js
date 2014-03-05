@@ -576,15 +576,16 @@
       }
 
       if ( scroll ) {
-        var pos = OSjs.Utils.$position(this.selected._element, this.$scroll);
+        var view = this.$view || this.$scroll;
+        var pos = OSjs.Utils.$position(this.selected._element, view);
         if ( pos !== null && this.$view.scrollTop < pos.top ) {
-          this.$scroll.scrollTop = pos.top;
+          view.scrollTop = pos.top;
         }
       }
     }
   };
 
-  _DataView.prototype._onSelect = function(ev, item) {
+  _DataView.prototype._onSelect = function(ev, item, scroll) {
     this.__onSelect(ev, item, scroll);
 
     if ( ev !== null && item !== null ) {
@@ -2101,6 +2102,7 @@
       }
 
       var ul = document.createElement('ul');
+      ul.className = 'Level_' + level;
 
       var li, iter, exp, ico, title, child, inner, j;
       for ( var i = 0; i < list.length; i++ ) {
@@ -2111,7 +2113,7 @@
         iter.name      = iter.name  || 'treeviewitem_' + this.total;
         iter.title     = iter.title || iter.name;
 
-        li.className = 'Item';
+        li.className = 'Item Level_' + level;
         li.setAttribute('data-index', i);
 
         for ( j in iter ) {
