@@ -576,11 +576,9 @@
       }
 
       if ( scroll ) {
-        // FIXME: Maybe we should do a property here
-        var view = this.$view || this.$scroll;
-        var pos = OSjs.Utils.$position(this.selected._element, view);
-        if ( pos !== null && view.scrollTop < pos.top ) {
-          view.scrollTop = pos.top;
+        var pos = OSjs.Utils.$position(this.selected._element, this.$view);
+        if ( pos !== null && this.$view.scrollTop < pos.top ) {
+          this.$view.scrollTop = pos.top;
         }
       }
     }
@@ -1050,6 +1048,7 @@
     this.$body      = body;
     this.$table     = table;
     this.$tableTop  = tableTop;
+    this.$view      = this.$scroll; // NOTE: Shorthand
   };
 
   ListView.prototype._render = function(list, columns) {

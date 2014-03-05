@@ -566,6 +566,9 @@
     window.addEventListener('resize', function(ev) {
       self._onResize.apply(self, arguments);
     }, false);
+    window.addEventListener('scroll', function(ev) {
+      self._onScroll.apply(self, arguments);
+    }, false);
 
     document.addEventListener('mouseout', function(ev) {
       self._onLeave(ev);
@@ -714,6 +717,9 @@
     window.removeEventListener('resize', function(ev) {
       self._onResize.apply(self, arguments);
     }, false);
+    window.removeEventListener('scroll', function(ev) {
+      self._onScroll.apply(self, arguments);
+    }, false);
 
     document.removeEventListener('mouseout', function(ev) {
       self._onLeave(ev);
@@ -816,6 +822,11 @@
     if ( _WM ) {
       _WM.onKeyDown(ev, _WIN);
     }
+  };
+
+  Main.prototype._onScroll = function(ev) {
+    document.body.scrollTop = 0;
+    document.body.scrollLeft = 0;
   };
 
   Main.prototype._onLeave = function(ev) {
