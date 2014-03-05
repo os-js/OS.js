@@ -925,6 +925,17 @@
   /**
    * List View Class
    *
+   * column data example:
+   * [
+   *   {key: 'mykey', title: 'Title'},
+   *   {key: 'id', visible: false}
+   * ]
+   * row data example:
+   * [
+   *  {mykey: 'Some title', id: 1},
+   *  {mykey: 'Some title', id: 2}
+   * ]
+   *
    * options: (See _DataView for more)
    *  onCreateRow       Function        Callback - When row is created
    *  columns           Object          Columns
@@ -948,7 +959,7 @@
     this.$tableTop        = null;
     this.$scroll          = null;
     this.lastSelectedDOM  = null;
-    this.onCreateRow      = opts.onCreateRow    || function() {};
+    this.onCreateRow      = opts.onCreateRow    || function(rowEl, iter, col) {};
 
     _DataView.apply(this, arguments);
   };
@@ -1934,12 +1945,11 @@
    *  data              Array           Data (Items)
    */
   var IconView = function(name, opts) {
-    opts            = opts || {};
+    opts = opts || {};
 
-    this.$ul        = null;
-    this.iconSize   = opts.size || '32x32';
-
-    this.onCreateItem   = opts.onCreateItem   || function() {};
+    this.$ul          = null;
+    this.iconSize     = opts.size || '32x32';
+    this.onCreateItem = opts.onCreateItem   || function(el, iter) {};
 
     _DataView.apply(this, [name, opts]);
   };
@@ -2081,8 +2091,8 @@
 
     this.total          = 0;
     this.expandLevel    = expand;
-    this.onExpand       = opts.onExpand       || function() {};
-    this.onCollapse     = opts.onCollapse     || function() {};
+    this.onExpand       = opts.onExpand       || function(ev, el, item) {};
+    this.onCollapse     = opts.onCollapse     || function(ev, el, item) {};
 
     _DataView.apply(this, [name, opts]);
   };
@@ -2233,11 +2243,11 @@
   };
 
   TreeView.prototype._onExpand = function(ev, item) {
-    this.onExpand.apply(this, arguments);
+    this.onExpand.apply(this, [ev, (item ? item._element : null), item]);
   };
 
   TreeView.prototype._onCollapse = function(ev, item) {
-    this.onCollapse.apply(this, arguments);
+    this.onCollapse.apply(this, [ev, (item ? item._element : null), item]);
   };
 
   TreeView.prototype.setData = function(data, render) {

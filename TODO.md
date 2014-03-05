@@ -20,6 +20,7 @@
 * Custom styling for GUISelectList
 * Custom styling for GUICheckbox
 * Custom styling for GUIRadio
+* FileTreeView implementation
 * GUILabel
 
 ### Not prioritized
