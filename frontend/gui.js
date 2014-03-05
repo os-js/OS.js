@@ -586,17 +586,21 @@
     }
   };
 
-  _DataView.prototype._onSelect = function(ev, item, scroll) {
+  _DataView.prototype._onSelect = function(ev, item, scroll, callback) {
     this.__onSelect(ev, item, scroll);
 
-    if ( ev !== null && item !== null ) {
-      this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
+    if ( typeof callback === 'undefined' || callback === true ) {
+      if ( ev !== null && item !== null ) {
+        this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
+      }
     }
     return this.selected;
   };
 
-  _DataView.prototype._onActivate = function(ev, item) {
-    this.onActivate.apply(this, [ev, (item ? item._element : null), item]);
+  _DataView.prototype._onActivate = function(ev, item, callback) {
+    if ( typeof callback === 'undefined' || callback === true ) {
+      this.onActivate.apply(this, [ev, (item ? item._element : null), item]);
+    }
     return item;
   };
 
@@ -1136,7 +1140,7 @@
           col.appendChild(span);
         }
 
-        // FIXME: Use local event listener adding
+        // FIXME: ListView - Use local event listener adding
 
         row.oncontextmenu = (function(it) {
           return function(ev) {
@@ -1224,23 +1228,6 @@
   };
 
   ListView.prototype._onColumnClick = function(ev, col) {
-  };
-
-  ListView.prototype._onActivate = function(ev, item, callback) {
-    if ( typeof callback === 'undefined' || callback === true ) {
-      this.onActivate.apply(this, [ev, item._element, item]);
-    }
-    return item;
-  };
-
-  ListView.prototype._onSelect = function(ev, item, scroll, callback) {
-    this.__onSelect(ev, item, scroll);
-    if ( typeof callback === 'undefined' || callback === true ) {
-      if ( ev !== null ) {
-        this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
-      }
-    }
-    return this.selected;
   };
 
   ListView.prototype.addColumn = function(c) {
@@ -1936,6 +1923,8 @@
   /**
    * Icon View Element
    *
+   * TODO: IconView - onKeyPress
+   *
    * reserved item (data) keys:
    *  label = What to show as title
    *  icon = Path to icon
@@ -1967,23 +1956,6 @@
     el.appendChild(this.$view);
 
     return el;
-  };
-
-  IconView.prototype._onSelect = function(ev, item, scroll, callback) {
-    this.__onSelect(ev, item, scroll);
-    if ( typeof callback === 'undefined' || callback === true ) {
-      if ( ev !== null ) {
-        this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
-      }
-    }
-    return this.selected;
-  };
-
-  IconView.prototype._onActivate = function(ev, item, callback) {
-    if ( typeof callback === 'undefined' || callback === true ) {
-      this.onActivate.apply(this, [ev, item._element, item]);
-    }
-    return item;
   };
 
   IconView.prototype._onRender = function() {
@@ -2026,7 +1998,7 @@
       lbl.appendChild(document.createTextNode(iter.label));
       lblContainer.appendChild(lbl);
 
-      // FIXME: Use local event listener adding
+      // FIXME: IconView - Use local event listener adding
       li.oncontextmenu = (function(it) {
         return function(ev) {
           ev.stopPropagation(); // Or else eventual ContextMenu is blurred
@@ -2068,6 +2040,8 @@
 
   /**
    * Tree View
+   *
+   * TODO: TreeView - onKeyPress
    *
    * reserved item (data) keys:
    *  title = What to show as title
@@ -2157,7 +2131,7 @@
         title.appendChild(document.createTextNode(iter.title));
         inner.appendChild(title);
 
-        // FIXME: Use local event listener adding
+        // FIXME: TreeView - Use local event listener adding
         inner.oncontextmenu = (function(c, e) {
           return function(ev) {
             ev.stopPropagation(); // Or else eventual ContextMenu is blurred
