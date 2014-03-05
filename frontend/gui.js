@@ -490,9 +490,9 @@
     this.data       = [];
 
     this.indexKey       = opts.indexKey       || null;
-    this.onSelect       = opts.onSelect       || function() {};
-    this.onActivate     = opts.onActivate     || function() {};
-    this.onContextMenu  = opts.onContextMenu  || function() {};
+    this.onSelect       = opts.onSelect       || function(ev, el, item) {};
+    this.onActivate     = opts.onActivate     || function(ev, el, item) {};
+    this.onContextMenu  = opts.onContextMenu  || function(ev, el, item) {};
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -576,6 +576,7 @@
       }
 
       if ( scroll ) {
+        // FIXME: Maybe we should do a property here
         var view = this.$view || this.$scroll;
         var pos = OSjs.Utils.$position(this.selected._element, view);
         if ( pos !== null && view.scrollTop < pos.top ) {
@@ -589,20 +590,20 @@
     this.__onSelect(ev, item, scroll);
 
     if ( ev !== null && item !== null ) {
-      this.onSelect.apply(this, arguments);
+      this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
     }
     return this.selected;
   };
 
   _DataView.prototype._onActivate = function(ev, item) {
-    this.onActivate.apply(this, arguments);
+    this.onActivate.apply(this, [ev, (item ? item._element : null), item]);
     return item;
   };
 
   _DataView.prototype._onContextMenu = function(ev, item) {
     this._onSelect(ev, item);
 
-    this.onContextMenu.apply(this, arguments);
+    this.onContextMenu.apply(this, [ev, item._element, item]);
     return item;
   };
 
@@ -3124,12 +3125,6 @@
     }
 
     IconView.prototype.render.apply(this, [fileList]);
-  };
-
-  FileIconView.prototype._onContextMenu = function(ev, item) {
-    this._onSelect(ev, item);
-    this.onContextMenu.apply(this, [ev, item._element, item]);
-    return item;
   };
 
   FileIconView.prototype._onSelect = function(ev, item) {
