@@ -562,7 +562,31 @@
   _DataView.prototype._onRender = function() {
   };
 
+  _DataView.prototype.__onSelect = function(ev, item, scroll) {
+    if ( this.selected && this.selected._element ) {
+      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
+    }
+
+    this.selected = null;
+
+    if ( item && item._element ) {
+      this.selected  = item;
+      if ( !this.selected._element.className.match(/Active/) ) {
+        this.selected._element.className += ' Active';
+      }
+
+      if ( scroll ) {
+        var pos = OSjs.Utils.$position(this.selected._element, this.$scroll);
+        if ( pos !== null && this.$view.scrollTop < pos.top ) {
+          this.$scroll.scrollTop = pos.top;
+        }
+      }
+    }
+  };
+
   _DataView.prototype._onSelect = function(ev, item) {
+    this.__onSelect(ev, item, scroll);
+
     if ( ev !== null && item !== null ) {
       this.onSelect.apply(this, arguments);
     }
@@ -576,6 +600,7 @@
 
   _DataView.prototype._onContextMenu = function(ev, item) {
     this._onSelect(ev, item);
+
     this.onContextMenu.apply(this, arguments);
     return item;
   };
@@ -1195,28 +1220,8 @@
     return item;
   };
 
-  // FIXME: Abstraction
   ListView.prototype._onSelect = function(ev, item, scroll, callback) {
-    if ( this.selected && this.selected._element ) {
-      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
-    }
-
-    this.selected = null;
-
-    if ( item && item._element ) {
-      this.selected  = item;
-      if ( !this.selected._element.className.match(/Active/) ) {
-        this.selected._element.className += ' Active';
-      }
-
-      if ( scroll ) {
-        var pos = OSjs.Utils.$position(this.selected._element, this.$scroll);
-        if ( pos !== null && this.$view.scrollTop < pos.top ) {
-          this.$scroll.scrollTop = pos.top;
-        }
-      }
-    }
-
+    this.__onSelect(ev, item, scroll);
     if ( typeof callback === 'undefined' || callback === true ) {
       if ( ev !== null ) {
         this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
@@ -1952,28 +1957,8 @@
     return el;
   };
 
-  // FIXME: Abstraction
   IconView.prototype._onSelect = function(ev, item, scroll, callback) {
-    if ( this.selected && this.selected._element ) {
-      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
-    }
-
-    this.selected = null;
-
-    if ( item && item._element ) {
-      this.selected  = item;
-      if ( !this.selected._element.className.match(/Active/) ) {
-        this.selected._element.className += ' Active';
-      }
-
-      if ( scroll ) {
-        var pos = OSjs.Utils.$position(this.selected._element, this.$view);
-        if ( pos !== null && this.$view.scrollTop < pos.top ) {
-          this.$view.scrollTop = pos.top;
-        }
-      }
-    }
-
+    this.__onSelect(ev, item, scroll);
     if ( typeof callback === 'undefined' || callback === true ) {
       if ( ev !== null ) {
         this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
@@ -2003,15 +1988,14 @@
     var self = this;
     for ( i = 0, l = this.data.length; i < l; i++ ) {
       iter = this.data[i];
-      iter.data = iter.data || {};
 
       li = document.createElement('li');
       li.setAttribute("data-index", i);
 
-      if ( iter.data ) {
-        for ( k in iter.data ) {
-          if ( iter.data.hasOwnProperty(k) ) {
-            li.setAttribute("data-" + k, iter.data[k]);
+      for ( var k in iter ) {
+        if ( iter.hasOwnProperty(k) ) {
+          if ( !OSjs.Utils.inArray(['title', 'icon'], k) ) {
+            li.setAttribute('data-' + k, iter[k]);
           }
         }
       }
@@ -2057,7 +2041,7 @@
 
       this.$ul.appendChild(li);
 
-      this.onCreateItem(li, iter, iter.data);
+      this.onCreateItem(li, iter);
 
       this.data[i]._element = li;
     }
@@ -2086,11 +2070,6 @@
   var TreeView = function(name, opts) {
     opts = opts || {};
 
-    var keys = {
-      icon: 'icon',
-      title: 'title'
-    };
-
     var expand = false;
     if ( opts.expanded === true ) {
       expand = 0;
@@ -2099,7 +2078,6 @@
     }
 
     this.total          = 0;
-    this.keys           = opts.keys           || keys;
     this.expandLevel    = expand;
     this.onExpand       = opts.onExpand       || function() {};
     this.onCollapse     = opts.onCollapse     || function() {};
@@ -2249,31 +2227,6 @@
     OSjs.Utils.$empty(this.$view);
 
     this._render(this.data, this.$view);
-  };
-
-  // FIXME: Abstraction
-  TreeView.prototype._onSelect = function(ev, item, scroll) {
-    if ( this.selected && this.selected._element ) {
-      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
-    }
-
-    this.selected = null;
-
-    if ( item && item._element ) {
-      this.selected  = item;
-      if ( !this.selected._element.className.match(/Active/) ) {
-        this.selected._element.className += ' Active';
-      }
-
-      if ( scroll ) {
-        var pos = OSjs.Utils.$position(this.selected._element, this.$view);
-        if ( pos !== null && this.$view.scrollTop < pos.top ) {
-          this.$view.scrollTop = pos.top;
-        }
-      }
-    }
-
-    _DataView.prototype._onSelect.apply(this, arguments);
   };
 
   TreeView.prototype._onExpand = function(ev, item) {
@@ -3100,8 +3053,6 @@
     }
     IconView.apply(this, [name, opts]);
 
-    this.selected     = null;
-
     this.onActivated  = function(path, type, mime) {};
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn("Not implemented yet!"); };
@@ -3114,7 +3065,7 @@
 
     var self = this;
     if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
-      this.onCreateItem = function(el, iter, item) {
+      this.onCreateItem = function(el, item) {
         var self = this;
         if ( item.filename == '..' ) { return; }
 
@@ -3129,7 +3080,12 @@
           createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
-            data   : item
+            data   : {
+              filename: item.filename,
+              path: item.path,
+              size : item.size,
+              mime: item.mime
+            }
           });
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
@@ -3160,20 +3116,22 @@
     var iter;
     for ( var i = 0; i < list.length; i++ ) {
       iter = list[i];
-      fileList.push({
-        label: iter.filename,
-        data:  iter,
-        icon:  _createIcon(iter)
-      });
+      iter.label = iter.filename;
+      iter.icon  = _createIcon(iter);
+      fileList.push(iter);
     }
 
     IconView.prototype.render.apply(this, [fileList]);
   };
 
+  FileIconView.prototype._onContextMenu = function(ev, item) {
+    this._onSelect(ev, item);
+    this.onContextMenu.apply(this, [ev, item._element, item]);
+    return item;
+  };
+
   FileIconView.prototype._onSelect = function(ev, item) {
     item = IconView.prototype._onSelect.apply(this, [ev, item, false]);
-    item = item && item.data || null;
-
     if ( item && item.path ) {
       this.onSelected(item.path, item.type, item.mime);
     }
@@ -3181,8 +3139,6 @@
 
   FileIconView.prototype._onActivate = function(ev, item) {
     item = IconView.prototype._onActivate.apply(this, [ev, item, false]);
-    item = item && item.data || null;
-
     if ( item && item.path ) {
       this.onActivated(item.path, item.type, item.mime);
     }
