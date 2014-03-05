@@ -273,8 +273,23 @@
     }
   };
 
-  OSjs.Utils.$position = function(el) {
-    return el ? el.getBoundingClientRect() : null;
+  OSjs.Utils.$position = function(el, parentEl) {
+    if ( el ) {
+      if ( parentEl ) {
+        var result = {left:0, top:0, width: el.offsetWidth, height: el.offsetHeight};
+        while ( true ) {
+          result.left += el.offsetLeft;
+          result.top  += el.offsetTop;
+          if ( el.offsetParent ==  parentEl || el.offsetParent === null ) {
+            break;
+          }
+          el = el.offsetParent;
+        }
+        return result;
+      }
+      return el.getBoundingClientRect();
+    }
+    return null;
   };
 
   OSjs.Utils.$index = function(el, parentEl) {
