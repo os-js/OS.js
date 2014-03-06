@@ -161,7 +161,7 @@
           app.mkdir((dir + '/' + value), function(result) {
             if ( result && fileView ) {
               fileView.refresh(function() {
-                fileView.setSelected('filename', value);
+                fileView.setSelected(value, 'filename');
               });
               OSjs.API.getCoreInstance().message('vfs', {type: 'mkdir', path: dir, filename: value, source: self._appRef.__pid});
             }
