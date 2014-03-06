@@ -554,6 +554,8 @@
           self.$view.scrollTop = scrollTop;
         }
       }, 10);
+    } else {
+      this.$view.scrollTop = 0;
     }
 
     return true;
@@ -3107,18 +3109,18 @@
       fileList.push(iter);
     }
 
-    IconView.prototype.render.apply(this, [fileList]);
+    IconView.prototype.render.apply(this, [fileList, true]);
   };
 
   FileIconView.prototype._onSelect = function(ev, item) {
-    item = IconView.prototype._onSelect.apply(this, [ev, item, false]);
+    item = IconView.prototype._onSelect.apply(this, arguments);
     if ( item && item.path ) {
       this.onSelected(item.path, item.type, item.mime);
     }
   };
 
   FileIconView.prototype._onActivate = function(ev, item) {
-    item = IconView.prototype._onActivate.apply(this, [ev, item, false]);
+    item = IconView.prototype._onActivate.apply(this, arguments);
     if ( item && item.path ) {
       this.onActivated(item.path, item.type, item.mime);
     }
@@ -3225,9 +3227,7 @@
       {key: 'type',     title: OSjs._('Type'), visible: false}
      ]);
 
-    this.setRows(list);
-
-    ListView.prototype.render.apply(this, []);
+    ListView.prototype.render.apply(this, [list, true]);
   };
 
   FileListView.prototype._onColumnClick = function(ev, col) {
@@ -3236,14 +3236,14 @@
   };
 
   FileListView.prototype._onActivate = function(ev, item) {
-    var item = ListView.prototype._onActivate.apply(this, [ev, item, false]);
+    var item = ListView.prototype._onActivate.apply(this, arguments);
     if ( item && item.path ) {
       this.onActivated(item.path, item.type, item.mime);
     }
   };
 
   FileListView.prototype._onSelect = function(ev, item) {
-    var item = ListView.prototype._onSelect.apply(this, [ev, item, false]);
+    var item = ListView.prototype._onSelect.apply(this, arguments);
     if ( item && item.path ) {
       this.onSelected(item, item._element);
     }
@@ -3513,9 +3513,9 @@
     }
   };
 
-  FileView.prototype.setSelected = function() {
+  FileView.prototype.setSelected = function(val, key) {
     if ( this.$view ) {
-      this.$view.setSelected.apply(this.$view, arguments);
+      this.$view.setSelected.apply(this.$view, [val, key, true]);
     }
   };
 
