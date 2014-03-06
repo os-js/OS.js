@@ -391,6 +391,11 @@
 
     if ( type === 'filesDrop' && item ) {
       return this.onDropUpload(ev, null, item);
+    } else if ( type === 'itemDrop' && item ) {
+      var gel = this._getGUIElement('FileManagerFileView');
+      if ( gel ) {
+        return gel.onItemDropped(ev, null, item);
+      }
     }
     return true;
   };

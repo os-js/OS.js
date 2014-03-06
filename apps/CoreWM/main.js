@@ -195,9 +195,9 @@
 
         onItemDropped: function(ev, el, item, args) {
           _remBlink();
-          if ( item ) {
+          if ( item && item.type === 'file' ) {
             var data = item.data;
-            if ( data && data.type === 'file' && data.mime && data.mime.match(/^image/) ) {
+            if ( data && data.mime && data.mime.match(/^image/) ) {
               self.applySettings({wallpaper: data.path}, false, true);
             }
           }

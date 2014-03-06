@@ -3184,6 +3184,7 @@
               mime: item.mime
             }
           });
+
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
 
