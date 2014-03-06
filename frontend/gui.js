@@ -478,6 +478,8 @@
    *  onSelect          Function        Callback - When item is selected (clicked)
    *  onActivate        Function        Callback - When item is activated (dblclick)
    *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
+   *  onCreateItem      Function        Callback - When item is created
+   *  data              Array           Data (Items)
    *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
    *  render            bool            Render on create (default = true when data is supplied)
    */
@@ -493,6 +495,7 @@
     this.onSelect       = opts.onSelect       || function(ev, el, item) {};
     this.onActivate     = opts.onActivate     || function(ev, el, item) {};
     this.onContextMenu  = opts.onContextMenu  || function(ev, el, item) {};
+    this.onCreateItem   = opts.onCreateItem   || function(el, iter) {};
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -941,9 +944,8 @@
    * ]
    *
    * options: (See _DataView for more)
-   *  onCreateRow       Function        Callback - When row is created
    *  columns           Object          Columns
-   *  rows              Array           Rows (data)
+   *  rows              Array           Rows (data alias)
    *  singleClick       bool            Single click to Activate (dblclick)
    */
   var ListView = function(name, opts) {
@@ -954,6 +956,7 @@
       delete opts.rows;
     }
 
+
     this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     this.columns          = opts.columns || [];
     this.$head            = null;
@@ -963,7 +966,7 @@
     this.$tableTop        = null;
     this.$scroll          = null;
     this.lastSelectedDOM  = null;
-    this.onCreateRow      = opts.onCreateRow    || function(rowEl, iter, col) {};
+    this.onCreateItem     = opts.onCreateItem   || function(el, iter, col) {};
 
     _DataView.apply(this, arguments);
   };
@@ -1178,7 +1181,7 @@
       }
       this.$body.appendChild(row);
 
-      this.onCreateRow(row, iter, colref);
+      this.onCreateItem(row, iter, colref);
 
       this.data[i]._index   = i;
       this.data[i]._element = row;
@@ -1931,15 +1934,12 @@
    *  icon = Path to icon
    *
    * options: (See _DataView for more)
-   *  onCreateItem      Function        Callback - When item is created
-   *  data              Array           Data (Items)
    */
   var IconView = function(name, opts) {
     opts = opts || {};
 
     this.$ul          = null;
     this.iconSize     = opts.size || '32x32';
-    this.onCreateItem = opts.onCreateItem   || function(el, iter) {};
 
     _DataView.apply(this, [name, opts]);
   };
@@ -3162,7 +3162,7 @@
 
     var self = this;
     if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
-      this.onCreateRow = function(el, item, column) {
+      this.onCreateItem = function(el, item, column) {
         var self = this;
         if ( item.filename == '..' ) { return; }
 

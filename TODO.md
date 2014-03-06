@@ -13,6 +13,7 @@
 * Refactor from currentX to currentFile.x for file stuff
 * CoreWM -- Finish panel item options
 * CoreWM -- Window Switcher is bugged
+* FileManager - Fix fileupload drop on list/window (dont remember which)
 
 ### GUI
 * More Themes
