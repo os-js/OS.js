@@ -341,7 +341,7 @@ body {
 .GUITreeView .Expander:after {
   border-left-color: #c2c2c2;
 }
-.GUITreeView .Expanded .Expander:after {
+.GUITreeView .Expanded > div > .Expander:after {
   border-top-color: #c2c2c2;
 }
 .GUITreeView li.Active > ul {

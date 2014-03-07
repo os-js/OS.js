@@ -516,7 +516,7 @@ body .GUIToolbar button {
   border-left: 5px solid black;
 }
 
-.GUITreeView .Expanded .Expander:after {
+.GUITreeView .Expanded > div > .Expander:after {
   width: 0;
   height: 0;
   border-left: 5px solid transparent;

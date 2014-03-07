@@ -2087,7 +2087,7 @@
       }
 
       var ul = document.createElement('ul');
-      ul.className = 'Level_' + level;
+      ul.className = 'Level_' + (level || 0);
 
       var li, iter, exp, ico, title, child, inner, j;
       for ( var i = 0; i < list.length; i++ ) {
