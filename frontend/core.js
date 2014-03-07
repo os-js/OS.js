@@ -1714,9 +1714,9 @@
 
     // Append stuff
     var classNames = ['Window'];
-    classNames.push('Window_' + this._name.replace(/[^a-zA-Z0-9]/g, '_'));
+    classNames.push('Window_' + OSjs.Utils.$safeName(this._name));
     if ( this._tag && (this._name != this._tag) ) {
-      classNames.push(this._tag.replace(/[^a-zA-Z0-9]/g, '_'));
+      classNames.push(OSjs.Utils.$safeName(this._tag));
     }
 
     main.className    = classNames.join(' ');

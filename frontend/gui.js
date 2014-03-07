@@ -241,9 +241,15 @@
   GUIElement.prototype.init = function(className) {
     var self = this;
 
+    var classNames = [
+      'GUIElement',
+      'GUIElement_' + this.id,
+      OSjs.Utils.$safeName(className),
+      OSjs.Utils.$safeName(this.name)
+    ];
+
     this.$element = document.createElement('div');
-    this.$element.className = 'GUIElement ' + this.name + ' GUIElement_' + this.id;
-    OSjs.Utils.$addClass(this.$element, className);
+    this.$element.className = classNames.join(' ');
 
     if ( this.opts.dnd && this.opts.dndDrop && OSjs.Compability.dnd ) {
       var opts = this.opts.dndOpts;
@@ -2534,7 +2540,8 @@
 
   Tabs.prototype.init = function() {
     var self = this;
-    var el = GUIElement.prototype.init.apply(this, ['GUITabs ' + this.orientation]);
+    var el = GUIElement.prototype.init.apply(this, ['GUITabs']);
+    OSjs.Utils.$addClass(el, OSjs.Utils.$safeName(this.orientation));
 
     this.$container = document.createElement('div');
     this.$container.className = 'TabContents';
@@ -2894,7 +2901,7 @@
   ScrollView.prototype = Object.create(GUIElement.prototype);
 
   ScrollView.prototype.init = function() {
-    var el = GUIElement.prototype.init.apply(this, ['GUIScrollView ' + this.name]);
+    var el = GUIElement.prototype.init.apply(this, ['GUIScrollView']);
     return el;
   };
 
@@ -2912,7 +2919,7 @@
   };
 
   ScrollView.prototype.setScroll = function(x, y) {
-    var classNames = ['GUIScrollView', this.name];
+    var classNames = ['GUIScrollView', OSjs.Utils.$safeName(this.name)];
     if ( x ) { classNames.push('ScrollX'); }
     if ( y ) { classNames.push('ScrollY'); }
 
@@ -2942,9 +2949,10 @@
   PanedView.prototype = Object.create(GUIElement.prototype);
 
   PanedView.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUIPanedView']);
     var type = this.opts.direction === 'horizontal' ? 'Horizontal' : 'Vertical';
-    var classNames = ['GUIPanedView', type, this.name];
-    var el = GUIElement.prototype.init.apply(this, [classNames.join(' ')]);
+    OSjs.Utils.$addClass(el, OSjs.Utils.$safeName(type));
+
     this.$container = document.createElement('ul');
     el.appendChild(this.$container);
     return el;

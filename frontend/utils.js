@@ -267,6 +267,10 @@
     return document.getElementById(id);
   };
 
+  OSjs.Utils.$safeName = function(str) {
+    return (str || '').replace(/[^a-zA-Z0-9]/g, '_');
+  };
+
   OSjs.Utils.$empty = function(myNode) {
     while (myNode.firstChild) {
       myNode.removeChild(myNode.firstChild);
