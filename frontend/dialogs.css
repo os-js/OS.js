@@ -207,21 +207,8 @@
 }
 
 /* FileInformationDialog */
-.FileInformationDialog textarea {
-  background : #fff;
-  border : 1px solid #555;
-  padding : 10px;
-  display : block;
-  width : 285px;
-  height : 330px;
-  resize : none;
-  outline : none;
-}
-
-.FileInformationDialog .OK {
-  right : auto !important;
-  left : 50% !important;
-  margin-left : -50px !important;
+.FileInformationDialog .GUITextarea {
+  height : 325px;
 }
 
 /* FontDialog */
