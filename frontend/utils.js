@@ -321,16 +321,20 @@
   };
 
   OSjs.Utils.$addClass = function(el, name) {
-    var re = new RegExp("\\s?" + name);
-    if ( re.test(el.className) === false ) {
-      el.className += (el.className ? ' ' : '') + name;
+    if ( el && name ) {
+      var re = new RegExp("\\s?" + name);
+      if ( re.test(el.className) === false ) {
+        el.className += (el.className ? ' ' : '') + name;
+      }
     }
   };
 
   OSjs.Utils.$removeClass = function(el, name) {
-    var re = new RegExp("\\s?" + name);
-    if ( re.test(el.className) !== false ) {
-      el.className = el.className.replace(re, '');
+    if ( el && name ) {
+      var re = new RegExp("\\s?" + name);
+      if ( re.test(el.className) !== false ) {
+        el.className = el.className.replace(re, '');
+      }
     }
   };
 

@@ -243,9 +243,7 @@
 
     this.$element = document.createElement('div');
     this.$element.className = 'GUIElement ' + this.name + ' GUIElement_' + this.id;
-    if ( className ) {
-      this.$element.className += ' ' + className;
-    }
+    OSjs.Utils.$addClass(this.$element, className);
 
     if ( this.opts.dnd && this.opts.dndDrop && OSjs.Compability.dnd ) {
       var opts = this.opts.dndOpts;
@@ -569,16 +567,14 @@
 
   _DataView.prototype.__onSelect = function(ev, item, scroll) {
     if ( this.selected && this.selected._element ) {
-      this.selected._element.className = this.selected._element.className.replace(/\s?Active/, '');
+      OSjs.Utils.$removeClass(this.selected._element, 'Active');
     }
 
     this.selected = null;
 
     if ( item && item._element ) {
       this.selected  = item;
-      if ( !this.selected._element.className.match(/Active/) ) {
-        this.selected._element.className += ' Active';
-      }
+      OSjs.Utils.$addClass(this.selected._element, 'Active');
 
       if ( scroll ) {
         var pos = OSjs.Utils.$position(this.selected._element, this.$view);
@@ -825,11 +821,9 @@
     el = (el && el.length) ? el[0] : null;
     if ( el ) {
       if ( d ) {
-        if ( !el.className.match(/Disabled/) ) {
-          el.className += ' Disabled';
-        }
+        OSjs.Utils.$addClass(el, 'Disabled');
       } else {
-        el.className = el.className.replace(/\s?Disabled/g, '');
+        OSjs.Utils.$removeClass(el, 'Disabled');
       }
       return true;
     }
@@ -1709,11 +1703,9 @@
         btn.onclick = (function(key, itm) {
           return function(ev) {
             if ( itm.grouped ) {
-              if ( self.$active ) {
-                self.$active.className = self.$active.className.replace(/\s?Active/, '');
-              }
+              OSjs.Utils.$removeClass(self.$active, 'Active');
               self.$active = this;
-              self.$active.className += ' Active';
+              OSjs.Utils.$addClass(self.$active, 'Active');
             }
 
             self._onItemSelect(ev, this, key, itm);
@@ -1934,6 +1926,7 @@
    *  icon = Path to icon
    *
    * options: (See _DataView for more)
+   *  iconSize      String        Icon Size (default = 32x32)
    */
   var IconView = function(name, opts) {
     opts = opts || {};
@@ -2176,16 +2169,12 @@
               var s = c.style.display;
               if ( s === 'none' || s === '' ) {
                 c.style.display = 'block';
-                if ( !el.className.match(/Expanded/) ) {
-                  el.className += ' Expanded';
-                }
+                OSjs.Utils.$addClass(el, 'Expanded');
 
                 self._onExpand(ev, it);
               } else {
                 c.style.display = 'none';
-                if ( el.className.match(/Expanded/) ) {
-                  el.className = el.className.replace(/\s?Expanded/, '');
-                }
+                OSjs.Utils.$removeClass(el, 'Expanded');
 
                 self._onCollapse(ev, it);
               }
@@ -2494,15 +2483,15 @@
   };
   Tab.prototype.select = function() {
     if ( this.selected || !this.$c || !this.$t ) { return; }
-    if ( !this.$c.className.match(/Active/) ) { this.$c.className += ' Active'}
-    if ( !this.$t.className.match(/Active/) ) { this.$t.className += ' Active'}
+    OSjs.Utils.$addClass(this.$c, 'Active');
+    OSjs.Utils.$addClass(this.$t, 'Active');
     this.selected = true;
     this.params.onSelect.call(this);
   };
   Tab.prototype.unselect = function() {
     if ( !this.selected || !this.$c || !this.$t ) { return; }
-    this.$c.className = this.$c.className.replace(/\s?Active/, '');
-    this.$t.className = this.$t.className.replace(/\s?Active/, '');
+    OSjs.Utils.$removeClass(this.$c, 'Active');
+    OSjs.Utils.$removeClass(this.$t, 'Active');
     this.selected = false;
     this.params.onUnselect.call(this);
   };
@@ -3069,6 +3058,7 @@
             type   : 'file',
             source : {wid: self.wid},
             data   : {
+              type   : 'file',
               filename: item.filename,
               path: item.path,
               size : item.size,
@@ -3178,6 +3168,7 @@
             type   : 'file',
             source : {wid: self.wid},
             data   : {
+              type: 'file',
               filename: item.filename,
               path: item.path,
               size : item.size,

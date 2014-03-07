@@ -1573,9 +1573,7 @@
           border.style.zIndex   = main.style.zIndex-1;
           border.style.display  = 'block';
 
-          if ( !main.className.match('WindowHintDnD') ) {
-            main.className += ' WindowHintDnD';
-          }
+          OSjs.Utils.$addClass(main, 'WindowHintDnD');
         };
         var _hideBorder = function() {
           border.style.top      = 0 + "px";
@@ -1585,9 +1583,7 @@
           border.style.display  = 'none';
 
           if ( border.parentNode ) { border.parentNode.removeChild(border); }
-          if ( main.className.match('WindowHintDnD') ) {
-            main.className = main.className.replace(' WindowHintDnD', '');
-          }
+          OSjs.Utils.$removeClass(main, 'WindowHintDnD');
         };
 
         OSjs.GUI.createDroppable(main, {
@@ -1766,16 +1762,12 @@
         px = self._position.x;
         py = self._position.y;
 
-        if ( !main.className.match(/WindowHintMoving/) ) {
-          main.className += ' WindowHintMoving';
-        }
+        OSjs.Utils.$addClass(main, 'WindowHintMoving');
       } else {
         px = self._dimension.w;
         py = self._dimension.h;
 
-        if ( !main.className.match(/WindowHintResizing/) ) {
-          main.className += ' WindowHintResizing';
-        }
+        OSjs.Utils.$addClass(main, 'WindowHintResizing');
       }
 
       sx = ev.clientX;
@@ -1800,8 +1792,8 @@
         }
       }
 
-      main.className = main.className.replace(/\s?WindowHintMoving/, '');
-      main.className = main.className.replace(/\s?WindowHintResizing/, '');
+      OSjs.Utils.$removeClass(main, 'WindowHintMoving');
+      OSjs.Utils.$removeClass(main, 'WindowHintResizing');
 
       document.removeEventListener('mousemove', onMouseMove, false);
       document.removeEventListener('mouseup', onMouseUp, false);
@@ -1938,9 +1930,7 @@
 
       var anim = _WM ? _WM.getSetting('animations') : false;
       if ( anim ) {
-        if ( !this._$element.className.match(/WindowHintClosing/) ) {
-          this._$element.className += ' WindowHintClosing';
-        }
+        OSjs.Utils.$addClass(this._$element, 'WindowHintClosing');
         setTimeout(function() {
           _removeDOM();
         }, ANIMDURATION);
@@ -2178,11 +2168,7 @@
     console.info("OSjs::Core::Window::_close()");
     if ( this._disabled ) { return; }
 
-    if ( this._$element ) {
-      if ( !this._$element.className.match(/WindowHintClosing/) ) {
-        this._$element.className += " WindowHintClosing";
-      }
-    }
+    OSjs.Utils.$addClass(this._$element, 'WindowHintClosing');
 
     this._blur();
     this.destroy();
@@ -2201,9 +2187,7 @@
     this._blur();
 
     this._state.minimized = true;
-    if ( !this._$element.className.match(/WindowHintMinimized/) ) {
-      this._$element.className += ' WindowHintMinimized';
-    }
+    OSjs.Utils.$addClass(this._$element, 'WindowHintMinimized');
 
     var _hideDOM = function() {
       self._$element.style.display = 'none';
@@ -2247,9 +2231,7 @@
     this._$element.style.left   = s.left + "px";
     this._$element.style.width  = s.width + "px";
     this._$element.style.height = s.height + "px";
-    if ( !this._$element.className.match(/WindowHintMaximized/) ) {
-      this._$element.className += ' WindowHintMaximized';
-    }
+    OSjs.Utils.$addClass(this._$element, 'WindowHintMaximized');
 
     //this._resize();
     this._dimension.w = s.width;
@@ -2286,13 +2268,13 @@
       this._move(this._lastPosition.x, this._lastPosition.y);
       this._resize(this._lastDimension.w, this._lastDimension.h);
       this._state.maximized = false;
-      this._$element.className = cn.replace(/\s?WindowHintMaximized/, '');
+      OSjs.Utils.$removeClass(this._$element, 'WindowHintMaximized');
     }
 
     if ( min && this._state.minimized ) {
       this._$element.style.display = 'block';
       this._state.minimized = false;
-      this._$element.className = cn.replace(/\s?WindowHintMinimized/, '');
+      OSjs.Utils.$removeClass(this._$element, 'WindowHintMinimized');
     }
 
     this._onChange('restore');
@@ -2316,9 +2298,7 @@
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    if ( !this._$element.className.match(/WindowHintFocused/) ) {
-      this._$element.className += ' WindowHintFocused';
-    }
+    OSjs.Utils.$addClass(this._$element, 'WindowHintFocused');
 
     if ( _WIN && _WIN._wid != this._wid ) {
       _WIN._blur();
@@ -2339,8 +2319,7 @@
   Window.prototype._blur = function(force) {
     if ( !force && !this._state.focused ) { return false; }
     //console.debug(this._name, '>' , "OSjs::Core::Window::_blur()");
-    var cn = this._$element.className;
-    this._$element.className = cn.replace(/\s?WindowHintFocused/, '');
+    OSjs.Utils.$removeClass(this._$element, 'WindowHintFocused');
     this._state.focused = false;
 
     this._onChange('blur');
@@ -2472,11 +2451,9 @@
     var _blink = function(stat) {
       if ( el ) {
         if ( stat ) {
-          if ( !el.className.match(/WindowAttentionBlink/) ) {
-            el.className += ' WindowAttentionBlink';
-          }
+          OSjs.Utils.$addClass(el, 'WindowAttentionBlink');
         } else {
-          el.className = el.className.replace(/\s?WindowAttentionBlink/, '');
+          OSjs.Utils.$removeClass(el, 'WindowAttentionBlink');
         }
       }
       self._onChange(stat ? 'attention_on' : 'attention_off');

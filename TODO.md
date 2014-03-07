@@ -17,6 +17,7 @@
 
 ### GUI
 * More Themes
+* Finish new Menu implementation
 * Custom styling for GUISelect
 * Custom styling for GUISelectList
 * Custom styling for GUICheckbox
