@@ -1138,6 +1138,7 @@
         var pos = {x: ev.clientX, y: ev.clientY};
         OSjs.GUI.createMenu([{
           title: _('Remove shortcut'), // FIXME: Translation
+          disabled: item.index === 0,
           onClick: function() {
             if ( item.launch ) { return; }
 
@@ -1233,7 +1234,7 @@
     this.data.push({
       icon: OSjs.GUI.getFileIcon(data.path, data.mime, null, null, '32x32'),
       label: data.filename,
-      index: this.data.length-1,
+      index: this.data.length,
       args: data
     });
   };
