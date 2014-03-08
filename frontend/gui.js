@@ -628,6 +628,11 @@
   };
 
   _DataView.prototype.setSelected = function(val, key, scrollTo) {
+    if ( !key && !val ) {
+      this._onSelect(null, null, false);
+      return true;
+    }
+
     var item = this.getItemByKey(key, val);
     if ( item ) {
       this._onSelect(null, item, scrollTo);
