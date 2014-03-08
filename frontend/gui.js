@@ -1956,14 +1956,22 @@
   IconView.prototype = Object.create(_DataView.prototype);
 
   IconView.prototype.init = function() {
+    var self      = this;
     var el        = _DataView.prototype.init.apply(this, ['GUIIconView']);
+    var view      = this.$view;
     el.className += ' IconSize' + this.iconSize;
 
     this.$ul    = document.createElement('ul');
+    this._addEvent(view, 'onclick', function(ev) {
+      var t = ev.target || ev.srcElement;
+      if ( t && t == view ) {
+        self.setSelected(null, null);
+      }
+    });
 
-    this.$view.appendChild(this.$ul);
+    view.appendChild(this.$ul);
 
-    el.appendChild(this.$view);
+    el.appendChild(view);
 
     return el;
   };
