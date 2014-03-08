@@ -531,6 +531,10 @@
     this.render([], true);
   };
 
+  _DataView.prototype.refresh = function() {
+    this.render(this.data, false);
+  };
+
   _DataView.prototype.render = function(data, reset) {
     if ( !this.$view ) { return false; }
 
@@ -1972,6 +1976,7 @@
     var self = this;
     for ( i = 0, l = this.data.length; i < l; i++ ) {
       iter = this.data[i];
+      imgContainer = null;
 
       li = document.createElement('li');
       li.setAttribute("data-index", i);
@@ -2020,7 +2025,9 @@
         };
       })(iter);
 
-      li.appendChild(imgContainer);
+      if ( imgContainer ) {
+        li.appendChild(imgContainer);
+      }
       li.appendChild(lblContainer);
 
       this.$ul.appendChild(li);
