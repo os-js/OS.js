@@ -409,7 +409,11 @@
       var data = item.data;
       if ( data && data.mime ) {
         if ( data.mime.match(/^image/) ) {
-          _openMenu.call(this, data, this);
+          if ( this.iconView ) {
+            _openMenu.call(this, data, this);
+          } else {
+            _applyWallpaper.call(this, data);
+          }
         } else {
           _createShortcut.call(this, data);
         }
