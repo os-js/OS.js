@@ -1101,6 +1101,105 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
+  // ICON VIEW
+  /////////////////////////////////////////////////////////////////////////////
+
+  var DesktopIconView = function() {
+    var self = this;
+    var opts = {
+      data : [{
+        icon: OSjs.API.getThemeResource('places/folder_home.png', 'icon', '32x32'),
+        label: 'Home',
+        launch: 'ApplicationFileManager',
+        args: {path: '/'}
+      }],
+      onActivate : function(ev, el, item) {
+        if ( typeof item.launch === 'undefined' ) {
+          OSjs.API.open(item.args.path, item.args.mime);
+        } else {
+          OSjs.API.launch(item.launch, item.args);
+        }
+      },
+      onContextMenu : function(ev, el, item) {
+        var pos = {x: ev.clientX, y: ev.clientY};
+        OSjs.GUI.createMenu([{
+          title: _('Remove shortcut'), // FIXME: Translation
+          onClick: function() {
+            if ( item.launch ) { return; }
+
+            self.removeShortcut(item);
+          }
+        }], pos)
+      }
+    };
+    GUI.IconView.apply(this, ['CoreWMDesktopIconView', opts]);
+  };
+
+  DesktopIconView.prototype = Object.create(GUI.IconView.prototype);
+
+  DesktopIconView.prototype.update = function(wm) {
+    GUI.IconView.prototype.update.apply(this, arguments);
+
+    var el = this.getRoot();
+    if ( el ) {
+      OSjs.GUI.createDroppable(el, {
+        onOver: function(ev, el, args) {
+          wm.onDropOver(ev, el, args);
+        },
+
+        onLeave : function() {
+          wm.onDropLeave();
+        },
+
+        onDrop : function() {
+          wm.onDrop();
+        },
+
+        onItemDropped: function(ev, el, item, args) {
+          wm.onDropItem(ev, el, item, args);
+        },
+
+        onFilesDropped: function(ev, el, files, args) {
+          wm.onDropFile(ev, el, files, args);
+        }
+      });
+    };
+  };
+
+  DesktopIconView.prototype.resize = function(wm) {
+    var el = this.getRoot();
+    var s  = wm.getWindowSpace();
+
+    if ( el ) {
+      el.style.top    = (s.top) + 'px';
+      el.style.left   = (s.left) + 'px';
+      el.style.width  = (s.width) + 'px';
+      el.style.height = (s.height) + 'px';
+    }
+  };
+
+  DesktopIconView.prototype.addShortcut = function(data) {
+    this.data.push({
+      icon: OSjs.GUI.getFileIcon(data.path, data.mime, null, null, '32x32'),
+      label: data.filename,
+      args: data
+    });
+
+    this.refresh();
+  };
+
+  DesktopIconView.prototype.removeShortcut = function(data) {
+    var iter;
+    for ( var i = 1; i < this.data.length; i++ ) {
+      iter = this.data[i].args;
+      if ( iter == data ) {
+        this.data.splice(i, 1);
+        break;
+      }
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -1113,5 +1212,6 @@
   OSjs.CoreWM.PanelItem         = PanelItem;
   OSjs.CoreWM.PanelItems        = {};
   OSjs.CoreWM.WindowSwitcher    = WindowSwitcher;
+  OSjs.CoreWM.DesktopIconView   = DesktopIconView;
 
 })(OSjs.Core.WindowManager, OSjs.Core.Window, OSjs.GUI);

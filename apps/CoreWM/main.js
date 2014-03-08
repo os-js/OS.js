@@ -39,6 +39,7 @@
       theme           : 'uncomplicated',
       background      : 'image-repeat',
       menuCategories  : true,
+      enableIconView  : false,
       enableSwitcher  : true,
       enableHotkeys   : true,
       enableSounds    : OSjs.Settings.DefaultConfig().Core.Sounds,
@@ -83,6 +84,7 @@
     this.panels         = [];
     this.switcher       = null;
     this.settingsWindow = null;
+    this.iconView       = null;
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
@@ -93,6 +95,7 @@
     this.initDesktop();
     this.initWM(function() {
       this.initPanels();
+      this.initIconView();
     });
 
     this.switcher = new OSjs.CoreWM.WindowSwitcher();
@@ -102,6 +105,11 @@
   CoreWM.prototype.destroy = function(kill) {
     if ( kill && !confirm(_("Killing this process will stop things from working!")) ) {
       return false;
+    }
+
+    if ( this.iconView ) {
+      this.iconView.destroy();
+      this.iconView = null;
     }
 
     if ( this.settingsWindow ) {
@@ -167,45 +175,34 @@
   CoreWM.prototype.initWM = function(callback) {
     callback = callback || function() {};
 
+    var self = this;
+
+    // Enable dropping of new wallpaper if no iconview is enabled
     var back = document.getElementById("Background");
     if ( back ) {
-      var _addBlink = function() {
-        if ( !back.className.match(/Blinking/) ) {
-          back.className += ' Blinking';
-        }
-      };
-      var _remBlink = function() {
-        if ( back.className.match(/Blinking/) ) {
-          back.className = back.className.replace(/\s?Blinking/, '');
-        }
-      };
-
       OSjs.GUI.createDroppable(back, {
         onOver: function(ev, el, args) {
-          _addBlink();
+          self.onDropOver(ev, el, args);
         },
 
         onLeave : function() {
-          _remBlink();
+          self.onDropLeave();
         },
 
         onDrop : function() {
-          _remBlink();
+          self.onDrop();
         },
 
         onItemDropped: function(ev, el, item, args) {
-          _remBlink();
-          if ( item && item.type === 'file' ) {
-            var data = item.data;
-            if ( data && data.mime && data.mime.match(/^image/) ) {
-              self.applySettings({wallpaper: data.path}, false, true);
-            }
-          }
+          self.onDropItem(ev, el, item, args);
+        },
+
+        onFilesDropped: function(ev, el, files, args) {
+          self.onDropFile(ev, el, files, args);
         }
       });
     }
 
-    var self = this;
     OSjs.API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
       if ( s ) {
         self.applySettings(s);
@@ -291,7 +288,26 @@
           }
         }
       }
+
+      if ( this.iconView ) {
+        this.iconView.resize(this);
+      }
     }
+  };
+
+  CoreWM.prototype.initIconView = function() {
+    if ( !this.getSetting('enableIconView') ) { return; }
+    if ( this.iconView ) { return; }
+
+    this.iconView = new OSjs.CoreWM.DesktopIconView();
+    this.iconView.init();
+    this.iconView.update(this);
+    document.body.appendChild(this.iconView.getRoot());
+
+    var self = this;
+    setTimeout(function() {
+      self.iconView.resize(self);
+    });
   };
 
   //
@@ -338,6 +354,71 @@
         iter._restore(true, false);
       }
     }
+
+    if ( this.iconView ) {
+      this.iconView.resize(this);
+    }
+  };
+
+  CoreWM.prototype.onDropLeave = function() {
+    var back = document.getElementById("Background");
+    OSjs.Utils.$removeClass(back, 'Blinking');
+  };
+
+  CoreWM.prototype.onDropOver = function() {
+    var back = document.getElementById("Background");
+    OSjs.Utils.$addClass(back, 'Blinking');
+  };
+
+  CoreWM.prototype.onDrop = function() {
+    var back = document.getElementById("Background");
+    OSjs.Utils.$removeClass(back, 'Blinking');
+  };
+
+  CoreWM.prototype.onDropItem = function(ev, el, item, args) {
+    var back = document.getElementById("Background");
+    OSjs.Utils.$removeClass(back, 'Blinking');
+
+
+    var _applyWallpaper = function(data) {
+      this.applySettings({wallpaper: data.path}, false, true);
+    };
+
+    var _createShortcut = function(data) {
+      if ( this.iconView ) {
+        this.iconView.addShortcut(data);
+      }
+    };
+
+    var _openMenu = function(data, self) {
+      var pos = {x: ev.clientX, y: ev.clientY};
+      OSjs.GUI.createMenu([{
+        title: _('Create shortcut'), // FIXME: Translation
+        onClick: function() {
+          _createShortcut.call(self, data);
+        }
+      }, {
+        title: _('Set as wallpaper'), // FIXME: Translation
+        onClick: function() {
+          _applyWallpaper.call(self, data);
+        }
+      }], pos)
+    };
+
+    if ( item && item.type === 'file' ) {
+      var data = item.data;
+      if ( data && data.mime ) {
+        if ( data.mime.match(/^image/) ) {
+          _openMenu.call(this, data, this);
+        } else {
+          _createShortcut.call(this, data);
+        }
+      }
+    }
+  };
+
+  CoreWM.prototype.onDropFile = function(ev, el, files, args) {
+    // TODO
   };
 
   CoreWM.prototype.onKeyUp = function(ev, win) {
@@ -558,6 +639,14 @@
       return settings[k];
     }
     return settings;
+  };
+
+  CoreWM.prototype.getPanels = function() {
+    return this.panels;
+  };
+
+  CoreWM.prototype.getPanel = function(idx) {
+    return this.panels[(idx || 0)];
   };
 
   /////////////////////////////////////////////////////////////////////////////

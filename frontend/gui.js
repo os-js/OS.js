@@ -1930,6 +1930,7 @@
    * Icon View Element
    *
    * TODO: IconView - onKeyPress
+   * FIXME: IconView - Unselect by click in background
    *
    * reserved item (data) keys:
    *  label = What to show as title
