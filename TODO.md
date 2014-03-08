@@ -5,7 +5,6 @@
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
 * Application compability check list (like in v1 -- metadata)
-* Upload on filedrop desktop
 
 ### Applications
 * New Draw codebase -- layer, effect support etc.

@@ -416,7 +416,34 @@
   };
 
   CoreWM.prototype.onDropFile = function(ev, el, files, args) {
-    // TODO
+    var dest = OSjs.API.getDefaultPath();
+    var self = this;
+
+    var dialog;
+    var callback = function(btn, filename, mime, size, iter) {
+      if ( btn != 'ok' && btn != 'complete' ) return;
+      OSjs.API.getCoreInstance().message('vfs', {type: 'upload', path: dest, filename: filename, source: self.__pid});
+
+      if ( self.iconView ) {
+        self.iconView.addShortcut({
+          path: OSjs.Utils.format('{0}/{1}', (dest == '/' ? '' : dest), filename),
+          mime: mime || 'text/plain', //iter.type, // FIXME: Some uploads does not have mime !?
+          size: size || 0, //iter.size,
+          type: 'file',
+          filename: filename
+        }, self);
+      }
+    };
+
+    for ( var i = 0; i < files.length; i++ ) {
+      dialog = new OSjs.Dialogs.FileUpload(dest, files[i], (function(iter) {
+        return function(btn, filename, mime, size) {
+          callback(btn, filename, mime, size, iter);
+        };
+      })(files[i]));
+
+      this.addWindow(dialog, false);
+    }
   };
 
   CoreWM.prototype.onKeyUp = function(ev, win) {
