@@ -39,7 +39,7 @@
       theme           : 'uncomplicated',
       background      : 'image-repeat',
       menuCategories  : true,
-      enableIconView  : true,
+      enableIconView  : false,
       enableSwitcher  : true,
       enableHotkeys   : true,
       enableSounds    : OSjs.Settings.DefaultConfig().Core.Sounds,
