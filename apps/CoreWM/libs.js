@@ -380,8 +380,6 @@
     });
     useIconView.setSelected(settings.enableIconView ? 'yes' : 'no');
     tabOther.appendChild(outer);
-    outer.style.display = 'none';
-
 
     //
     // Tab: Panels
@@ -1119,13 +1117,14 @@
   // ICON VIEW
   /////////////////////////////////////////////////////////////////////////////
 
-  var DesktopIconView = function() {
+  var DesktopIconView = function(wm) {
     var self = this;
     var opts = {
       data : [{
         icon: OSjs.API.getThemeResource('places/folder_home.png', 'icon', '32x32'),
         label: 'Home',
         launch: 'ApplicationFileManager',
+        index: 0,
         args: {path: '/'}
       }],
       onActivate : function(ev, el, item) {
@@ -1142,7 +1141,7 @@
           onClick: function() {
             if ( item.launch ) { return; }
 
-            self.removeShortcut(item);
+            self.removeShortcut(item, wm);
           }
         }], pos)
       }
@@ -1161,6 +1160,21 @@
 
     var el = this.getRoot();
     if ( el ) {
+      // Make sure we trigger the default events
+      this._addEvent(el, 'onmousedown', function(ev) {
+        ev.preventDefault();
+        OSjs.GUI.blurMenu();
+        return false;
+      });
+      this._addEvent(el, 'oncontextmenu', function(ev) {
+        ev.preventDefault();
+        if ( wm ) {
+          wm.openDesktopMenu(ev);
+        }
+        return false;
+      });
+
+      // Make DnD work just like a desktop without iconview
       OSjs.GUI.createDroppable(el, {
         onOver: function(ev, el, args) {
           wm.onDropOver(ev, el, args);
@@ -1182,6 +1196,15 @@
           wm.onDropFile(ev, el, files, args);
         }
       });
+
+      // Restore settings
+      var icons = wm.getSetting('desktopIcons') || [];
+      if ( icons.length ) {
+        for ( var i = 0; i < icons.length; i++ ) {
+          this._addShortcut(icons[i])
+        }
+        this.refresh();
+      }
     };
   };
 
@@ -1197,29 +1220,49 @@
     }
   };
 
-  DesktopIconView.prototype.addShortcut = function(data) {
+  DesktopIconView.prototype._save = function(wm) {
+    var icons = [];
+    for ( var i = 1; i < this.data.length; i++ ) {
+      icons.push(this.data[i].args);
+    }
+    wm.setSetting('desktopIcons', icons);
+    wm.saveSettings();
+  };
+
+  DesktopIconView.prototype._addShortcut = function(data) {
     this.data.push({
       icon: OSjs.GUI.getFileIcon(data.path, data.mime, null, null, '32x32'),
       label: data.filename,
+      index: this.data.length-1,
       args: data
     });
+  };
+
+  DesktopIconView.prototype.addShortcut = function(data, wm) {
+    this._addShortcut(data);
+
+    if ( wm ) {
+      this._save(wm);
+    }
 
     this.refresh();
   };
 
-  DesktopIconView.prototype.removeShortcut = function(data) {
+  DesktopIconView.prototype.removeShortcut = function(data, wm) {
     var iter;
     for ( var i = 1; i < this.data.length; i++ ) {
-      iter = this.data[i].args;
-      if ( iter == data ) {
+      iter = this.data[i];
+      if ( iter.index == data.index ) {
         this.data.splice(i, 1);
         break;
       }
     }
-  };
 
-  DesktopIconView.prototype.setForeground = function(color) {
-    var el = this.getRoot();
+    if ( wm ) {
+      this._save(wm);
+    }
+
+    this.refresh();
   };
 
   /////////////////////////////////////////////////////////////////////////////

@@ -39,7 +39,7 @@
       theme           : 'uncomplicated',
       background      : 'image-repeat',
       menuCategories  : true,
-      enableIconView  : false, // FIXME
+      enableIconView  : true,
       enableSwitcher  : true,
       enableHotkeys   : true,
       enableSounds    : OSjs.Settings.DefaultConfig().Core.Sounds,
@@ -58,11 +58,8 @@
           ]
         }
       ],
+      desktopIcons : [],
       style           : {
-        // Misc
-        iconviewColor    : '#242424',
-
-        // Body -- see CoreWM.prototype.applySettings()
         backgroundColor  : '#0B615E',
         fontFamily       : 'OSjsFont'
       }
@@ -219,20 +216,13 @@
   };
 
   CoreWM.prototype.initDesktop = function() {
-    var self = this;
-    var _openDesktopSettings = function() {
-      self.showSettings();
-    };
-
-    var _openDesktopMenu = function(ev) {
-      OSjs.GUI.createMenu([{title: _('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
-    };
 
     var background = document.getElementById('Background');
+    var self = this;
     if ( background ) {
       background.oncontextmenu = function(ev) {
         ev.preventDefault();
-        _openDesktopMenu(ev);
+        self.openDesktopMenu(ev);
         return false;
       };
     };
@@ -300,12 +290,10 @@
   };
 
   CoreWM.prototype.initIconView = function() {
-    return false; // FIXME
-
     if ( !this.getSetting('enableIconView') ) { return; }
     if ( this.iconView ) { return; }
 
-    this.iconView = new OSjs.CoreWM.DesktopIconView();
+    this.iconView = new OSjs.CoreWM.DesktopIconView(this);
     this.iconView.init();
     this.iconView.update(this);
     document.body.appendChild(this.iconView.getRoot());
@@ -392,7 +380,7 @@
 
     var _createShortcut = function(data) {
       if ( this.iconView ) {
-        this.iconView.addShortcut(data);
+        this.iconView.addShortcut(data, this);
       }
     };
 
@@ -474,6 +462,18 @@
     }
   };
 
+  CoreWM.prototype.saveSettings = function(settings) {
+    if ( settings ) {
+      var store = { WindowManager: this.getSettings() };
+      if ( settings.language ) {
+        store.Core = { Locale: settings.language };
+      }
+      OSjs.API.getHandlerInstance().setUserSettings(store);
+    } else {
+      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
+    }
+  };
+
   CoreWM.prototype.showSettings = function(tab) {
     var self = this;
     if ( this.settingsWindow ) {
@@ -503,6 +503,14 @@
         this.iconView._fireHook('blur');
       }
     }
+  };
+
+  CoreWM.prototype.openDesktopMenu = function(ev) {
+    var self = this;
+    var _openDesktopSettings = function() {
+      self.showSettings();
+    };
+    OSjs.GUI.createMenu([{title: _('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save) {
@@ -568,9 +576,6 @@
 
     if ( this.getSetting('enableIconView') ) {
       this.initIconView();
-      if ( this.iconView ) {
-        this.iconView.setForeground(opts.iconviewColor);
-      }
     } else {
       if ( this.iconView ) {
         this.iconView.destroy();
@@ -580,12 +585,7 @@
 
     if ( save ) {
       this.initPanels(true);
-
-      var store = { WindowManager: this.getSettings() };
-      if ( settings.language ) {
-        store.Core = { Locale: settings.language };
-      }
-      OSjs.API.getHandlerInstance().setUserSettings(store);
+      this.saveSettings(settings);
     }
 
     return true;
