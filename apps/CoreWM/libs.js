@@ -24,6 +24,7 @@
       'Enable sounds' : 'Skru på lyder',
       'Enable Window Switcher' : 'Skru på Vindu-bytter',
       'Enable Hotkeys' : 'Skru på Hurtigtaster',
+      'Enable iconview' : 'Skru på Ikonvisning',
 
       'Development' : 'Utvikling',
       'Education' : 'Utdanning',
@@ -56,6 +57,7 @@
       'Enable sounds': 'Töne aktivieren',
       'Enable Window Switcher': 'Fensterwechsel möglich?',
       'Enable Hotkeys': 'Hotkeys aktivieren',
+      'Enable iconview': 'Iconview aktivieren',
 
       'Development': 'Entwicklung',
       'Education': 'Bildung',
@@ -369,6 +371,16 @@
     useSounds.setSelected(settings.enableSounds ? 'yes' : 'no');
     tabOther.appendChild(outer);
 
+    // IconView
+    outer = _createContainer('IconView SettingsNoButton', _('Enable iconview'));
+    var useIconView = this._addGUIElement(new OSjs.GUI.Select('SettingsUseIconView'), outer);
+    useIconView.addItems({
+      'yes':  OSjs._('Yes'),
+      'no':   OSjs._('No')
+    });
+    useIconView.setSelected(settings.enableIconView ? 'yes' : 'no');
+    tabOther.appendChild(outer);
+
 
     //
     // Tab: Panels
@@ -505,6 +517,7 @@
         enableSwitcher:   useSwitcher.getValue() == 'yes',
         enableHotkeys:    useHotkeys.getValue() == 'yes',
         enableSounds:     useSounds.getValue() == 'yes',
+        enableIconView:   useIconView.getValue() == 'yes',
         desktopMargin:    desktopMargin,
         desktopFont:      fontName.getValue(),
         theme:            themeName.getValue(),
@@ -539,8 +552,9 @@
             backgroundColor  : settings.backgroundColor
           },
           enableSwitcher: settings.enableSwitcher,
-          enableHotkeys: settings.enableHotkeys,
-          enableSounds: settings.enableSounds
+          enableHotkeys:  settings.enableHotkeys,
+          enableSounds:   settings.enableSounds,
+          enableIconView: settings.enableIconView
         }, false, true);
       }
     }}), root);

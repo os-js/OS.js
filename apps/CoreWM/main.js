@@ -553,6 +553,15 @@
 
     console.groupEnd();
 
+    if ( this.getSetting('enableIconView') ) {
+      this.initIconView();
+    } else {
+      if ( this.iconView ) {
+        this.iconView.destroy();
+        this.iconView = null;
+      }
+    }
+
     if ( save ) {
       this.initPanels(true);
 
