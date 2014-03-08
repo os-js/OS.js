@@ -1109,7 +1109,7 @@
   WindowManager.prototype.setSetting = function(k, v) {
     if ( v !== null ) {
       if ( typeof this._settings[k] !== 'undefined' ) {
-        if ( typeof this._settings[k] === 'object' ) {
+        if ( (typeof this._settings[k] === 'object') && !(this._settings[k] instanceof Array) ) {
           if ( typeof v === 'object' ) {
             for ( var i in v ) {
               if ( this._settings[k].hasOwnProperty(i) ) {
