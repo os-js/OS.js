@@ -380,6 +380,7 @@
     });
     useIconView.setSelected(settings.enableIconView ? 'yes' : 'no');
     tabOther.appendChild(outer);
+    outer.style.display = 'none';
 
 
     //
@@ -1147,6 +1148,10 @@
       }
     };
     GUI.IconView.apply(this, ['CoreWMDesktopIconView', opts]);
+
+    this._addHook('blur', function() {
+      this.setSelected(null, null);
+    });
   };
 
   DesktopIconView.prototype = Object.create(GUI.IconView.prototype);
@@ -1211,6 +1216,10 @@
         break;
       }
     }
+  };
+
+  DesktopIconView.prototype.setForeground = function(color) {
+    var el = this.getRoot();
   };
 
   /////////////////////////////////////////////////////////////////////////////

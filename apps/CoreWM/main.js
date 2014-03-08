@@ -39,7 +39,7 @@
       theme           : 'uncomplicated',
       background      : 'image-repeat',
       menuCategories  : true,
-      enableIconView  : false,
+      enableIconView  : false, // FIXME
       enableSwitcher  : true,
       enableHotkeys   : true,
       enableSounds    : OSjs.Settings.DefaultConfig().Core.Sounds,
@@ -59,6 +59,10 @@
         }
       ],
       style           : {
+        // Misc
+        iconviewColor    : '#242424',
+
+        // Body -- see CoreWM.prototype.applySettings()
         backgroundColor  : '#0B615E',
         fontFamily       : 'OSjsFont'
       }
@@ -296,6 +300,8 @@
   };
 
   CoreWM.prototype.initIconView = function() {
+    return false; // FIXME
+
     if ( !this.getSetting('enableIconView') ) { return; }
     if ( this.iconView ) { return; }
 
@@ -491,6 +497,12 @@
     if ( panelItem ) {
       panelItem.update(ev, win);
     }
+
+    if ( ev === 'focus' ) {
+      if ( this.iconView ) {
+        this.iconView._fireHook('blur');
+      }
+    }
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save) {
@@ -501,9 +513,10 @@
 
     // Styles
     var opts = this.getSetting('style');
+    var valid = ['backgroundColor', 'fontFamily'];
     console.log("Styles", opts);
     for ( var i in opts ) {
-      if ( opts.hasOwnProperty(i) ) {
+      if ( opts.hasOwnProperty(i) && OSjs.Utils.inArray(valid, i) ) {
         document.body.style[i] = opts[i];
       }
     }
@@ -555,6 +568,9 @@
 
     if ( this.getSetting('enableIconView') ) {
       this.initIconView();
+      if ( this.iconView ) {
+        this.iconView.setForeground(opts.iconviewColor);
+      }
     } else {
       if ( this.iconView ) {
         this.iconView.destroy();
