@@ -684,6 +684,7 @@
     this.$switcher      = null;
     this.showing        = false;
     this.index          = -1;
+    this.winRef         = null;
   };
 
   WindowSwitcher.prototype.init = function() {
@@ -703,74 +704,66 @@
   WindowSwitcher.prototype.show = function(ev, win, wm) {
     ev.preventDefault();
 
-    var list  = [];
-    var index = 0;
-    var i = 0, l = wm._windows.length, iter;
-
-    for ( i; i < l; i++ ) {
-      iter = wm._windows[i];
-      if ( !iter ) { continue; }
-
-      list.push({
-        title:    iter._title,
-        icon:     iter._icon
-      });
-
-      if ( index === 0 ) {
-        if ( (win && win._wid === iter._wid) ) {
-           index = i;
-        }
-      }
-    }
-
-    if ( this.index === -1 ) {
-      this.index = index;
-    } else {
-      this.index++;
-      if ( this.index >= l ) {
-        this.index = 0;
-      }
-
-      index = this.index;
-    }
-
     var height = 0;
-    var root = this.$switcher;
-    OSjs.Utils.$empty(root);
+    var items  = [];
+    var index  = -1;
 
-    var container, image, label;
-    for ( i = 0; i < l; i++ ) {
-      iter = list[i];
-      if ( !iter ) { continue; }
+    // Render
+    OSjs.Utils.$empty(this.$switcher);
 
-      container       = document.createElement('div');
+    var container, image, label, iter;
+    for ( var i = 0; i < wm._windows.length; i++ ) {
+      iter = wm._windows[i];
+      if ( iter ) {
+        container       = document.createElement('div');
 
-      image           = document.createElement('img');
-      image.src       = iter.icon;
+        image           = document.createElement('img');
+        image.src       = iter._icon;
 
-      label           = document.createElement('span');
-      label.innerHTML = iter.title;
+        label           = document.createElement('span');
+        label.innerHTML = iter._title;
 
-      if ( i === index ) {
-        container.className = 'Active';
+        container.appendChild(image);
+        container.appendChild(label);
+        this.$switcher.appendChild(container);
+
+        height += 32;
+
+        if ( win && win._wid == iter._wid ) {
+          index = i;
+        }
+
+        items.push({
+          element: container,
+          win: iter
+        });
       }
-
-      container.appendChild(image);
-      container.appendChild(label);
-      root.appendChild(container);
-
-      height += 32;
     }
 
-    if ( !root.parentNode ) {
-      document.body.appendChild(root);
+    if ( !this.$switcher.parentNode ) {
+      document.body.appendChild(this.$switcher);
     }
 
-    root.style.height = height + 'px';
-    root.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
+    this.$switcher.style.height    = height + 'px';
+    this.$switcher.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
 
-    this.showing = true;
-    this.index = index;
+    // Select
+    if ( this.showing ) {
+      this.index++;
+      if ( this.index > (items.length-1) ) {
+        this.index = -1;
+      }
+    } else {
+      this.index = index;
+      this.showing = true;
+    }
+
+    if ( items[this.index] ) {
+      items[this.index].element.className = 'Active';
+      this.winRef = items[this.index].win;
+    } else {
+      this.winRef = null;
+    }
   };
 
   WindowSwitcher.prototype.hide = function(ev, win, wm) {
@@ -782,18 +775,12 @@
       this.$switcher.parentNode.removeChild(this.$switcher);
     }
 
-    if ( this.index >= 0 ) {
-      var found = false;
-      if ( wm._windows[this.index] ) {
-        wm._windows[this.index]._focus();
-        found = true;
-      }
-
-      if ( !found && win ) {
-        win._focus();
-      }
+    win = this.winRef || win;
+    if ( win ) {
+      win._focus();
     }
 
+    this.winRef  = null;
     this.index   = -1;
     this.showing = false;
   };
