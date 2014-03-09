@@ -28,6 +28,9 @@
  * @licence Simplified BSD License
  */
 (function(_http, _path, _url, _fs, _qs) {
+  //
+  // npm install node-fs-extra
+  //
 
   // You can create your own 'settings.json' in this directory
   // to override these vaules
@@ -151,6 +154,19 @@
     });
   };
 
+  var sortReaddir = function(list) {
+    var tree = {dirs: [], files: []};
+    for ( var i = 0; i < list.length; i++ ) {
+      if ( list[i].type == 'dir' ) {
+        tree.dirs.push(list[i]);
+      } else {
+        tree.files.push(list[i]);
+      }
+    }
+
+    return tree.dirs.concat(tree.files);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -228,8 +244,7 @@
         if ( !exists ) {
           respondJSON({result: null, error: 'Target does not exist!'}, response);
         } else {
-          // FIXME : Recursive + Directory
-          _fs.unlink(fullPath, function(error, data) {
+          _fs.remove(fullPath, function(error, data) {
             if ( error ) {
               respondJSON({result: false, error: 'Error deleting: ' + error}, response);
             } else {
@@ -241,8 +256,31 @@
     },
 
     copy : function(args, request, response) {
-      // TODO
-      respondJSON({result: null, error: 'Not implemented yet!'}, response);
+      var src  = args[0];
+      var dst  = args[1];
+      var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
+
+      var srcPath = _path.join(config.vfsdir, src);
+      var dstPath = _path.join(config.vfsdir, dst);
+      _fs.exists(srcPath, function(exists) {
+        if ( exists ) {
+          _fs.exists(dstPath, function(exists) {
+            if ( exists ) {
+              respondJSON({result: null, error: 'Target already exist!'}, response);
+            } else {
+              _fs.copy(srcPath, dstPath, function(error, data) {
+                if ( error ) {
+                  respondJSON({result: false, error: 'Error copying: ' + error}, response);
+                } else {
+                  respondJSON({result: true, error: null}, response);
+                }
+              });
+            }
+          });
+        } else {
+          respondJSON({result: null, error: 'Source does not exist!'}, response);
+        }
+      });
     },
 
     move : function(args, request, response) {
@@ -293,11 +331,35 @@
       });
     },
 
+    // TODO: Exif info
     fileinfo : function(args, request, response) {
-      // TODO
-      respondJSON({result: null, error: 'Not implemented yet!'}, response);
+      var path = args[0];
+      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
+      var fullPath = _path.join(config.vfsdir, path);
+      _fs.exists(fullPath, function(exists) {
+        if ( !exists ) {
+          respondJSON({result: null, error: 'No such file or directory!'}, response);
+        } else {
+          _fs.stat(fullPath, function(error, stat) {
+            if ( error ) {
+              respondJSON({result: false, error: 'Error getting file information: ' + error}, response);
+            } else {
+              var data = {
+                path:         _path.dirname(fullPath),
+                filename:     _path.basename(fullPath),
+                size:         stat.size,
+                mime:         getMime(fullPath),
+                permissions:  stat.mode // FIXME: String representation
+              };
+
+              respondJSON({result: data, error: null}, response);
+            }
+          });
+        }
+      });
     },
 
+    // TODO: Custom sorting
     scandir : function(args, request, response) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
@@ -309,12 +371,14 @@
           respondJSON({result: null, error: 'Error reading directory: ' + error}, response);
         } else {
           var result = [];
-          var ofpath, fpath, ftype, fsize;
+          var ofpath, fpath, ftype, fsize, fstat;
           for ( var i = 0; i < files.length; i++ ) {
             ofpath = _path.join(path, files[i]);
-            fpath = _path.join(fullPath, files[i]);
-            ftype = _fs.statSync(fpath).isFile() ? 'file' : 'dir'; // FIXME
-            fsize = 0; // FIXME
+            fpath  = _path.join(fullPath, files[i]);
+
+            fsstat = _fs.statSync(fpath);
+            ftype  = fsstat.isFile() ? 'file' : 'dir';
+            fsize  = fsstat.size;
 
             result.push({
               filename: files[i],
@@ -324,7 +388,9 @@
               type:     ftype
             });
           }
-          respondJSON({result: result, error: null}, response);
+
+          var tree = sortReaddir(result);
+          respondJSON({result: tree, error: null}, response);
         }
       });
     }
@@ -450,6 +516,6 @@
   require("http"),
   require("path"),
   require("url"),
-  require("fs"),
+  require("node-fs-extra"),
   require("querystring")
 );
