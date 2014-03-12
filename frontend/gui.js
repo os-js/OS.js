@@ -2099,16 +2099,18 @@
     return root;
   };
 
-  TreeView.prototype._render = function(list, root) {
+  TreeView.prototype._render = function(list, root, expandLevel, ul) {
     var self = this;
 
-    var _render = function(list, root, level) {
+    var _render = function(list, root, ul, level) {
       if ( typeof level === 'undefined' ) {
         level = false;
       }
 
-      var ul = document.createElement('ul');
-      ul.className = 'Level_' + (level || 0);
+      if ( !ul ) {
+        ul = document.createElement('ul');
+        ul.className = 'Level_' + (level || 0);
+      }
 
       var li, iter, exp, ico, title, child, inner, j;
       for ( var i = 0; i < list.length; i++ ) {
@@ -2119,7 +2121,7 @@
         iter.name      = iter.name  || 'treeviewitem_' + this.total;
         iter.title     = iter.title || iter.name;
 
-        li.className = 'Item Level_' + level;
+        li.className = 'Item Level_' + (level || 0);
         li.setAttribute('data-index', i);
 
         for ( j in iter ) {
@@ -2187,7 +2189,7 @@
         li.appendChild(inner);
 
         if ( exp ) {
-          child = _render.call(self, iter.items, li, level + 1);
+          child = _render.call(self, iter.items, li, null, level + 1);
           if ( level !== false && this.expandLevel >= level ) {
             child.style.display = 'block';
           }
@@ -2198,12 +2200,12 @@
                 c.style.display = 'block';
                 OSjs.Utils.$addClass(el, 'Expanded');
 
-                self._onExpand(ev, it);
+                self._onExpand.call(self, ev, it);
               } else {
                 c.style.display = 'none';
                 OSjs.Utils.$removeClass(el, 'Expanded');
 
-                self._onCollapse(ev, it);
+                self._onCollapse.call(self, ev, it);
               }
             };
           })(child, li, iter);
@@ -2211,6 +2213,10 @@
 
         this.total++;
         ul.appendChild(li);
+
+        if ( this.onCreateItem ) {
+          this.onCreateItem(li, iter);
+        }
       }
 
       root.appendChild(ul);
@@ -2218,7 +2224,7 @@
       return ul;
     };
 
-    return _render.call(this, list, root, this.expandLevel);
+    return _render.call(this, list, root, ul, expandLevel);
   };
 
   TreeView.prototype.render = function(data, reset) {
@@ -3045,6 +3051,149 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * FileView > TreeView
+   *
+   * options: (See GUIElement for more)
+   *  onSelected        Function        Callback - When item is selected (clicked)
+   *  onActivated       Function        Callback - When item is activated (dblclick)
+   *  onDropped         Function        Callback - When item has been dropped
+   */
+  var FileTreeView = function(fileView, name, opts) {
+    opts = opts || {};
+    if ( typeof opts.dnd === 'undefined' ) {
+      opts.dnd = true;
+    }
+    TreeView.apply(this, [name, opts]);
+
+    this.onActivated  = function(path, type, mime) {};
+    this.onSelected   = function(item, el) {};
+    this.onDropped    = function() { console.warn("Not implemented yet!"); };
+    this.fileView     = fileView;
+  };
+
+  FileTreeView.prototype = Object.create(TreeView.prototype);
+
+  FileTreeView.prototype.init = function() {
+    TreeView.prototype.init.apply(this, arguments);
+
+    var self = this;
+    if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
+      this.onCreateItem = function(el, item) {
+        var self = this;
+        if ( item.filename == '..' ) { return; }
+
+        if ( item.type === 'file' ) {
+          el.title = ([
+            OSjs._("Filename") + ": "  + item.filename,
+            OSjs._("Path")     + ": "  + item.path,
+            OSjs._("Size")     + ": "  + item.size || 0,
+            OSjs._("MIME")     + ": "  + item.mime || 'none'
+          ]).join("\n");
+
+          createDraggable(el, {
+            type   : 'file',
+            source : {wid: self.wid},
+            data   : {
+              type   : 'file',
+              filename: item.filename,
+              path: item.path,
+              size : item.size,
+              mime: item.mime
+            }
+          });
+        } else if ( item.type == 'dir' ) {
+          el.title = item.path;
+
+          createDroppable(el, {
+            onItemDropped: function(ev, el, item, args) {
+              return self.onItemDropped.call(self, ev, el, item, args);
+            },
+            onFilesDropped: function(ev, el, files, args) {
+              return self.onFilesDropped.call(self, ev, el, item, args);
+            }
+          });
+        }
+
+      };
+    }
+  };
+
+  FileTreeView.prototype._createList = function(list, skipDot) {
+    var fileList = [];
+    var _createIcon = function(iter) {
+      var defIcon = 'status/gtk-dialog-question.png';
+      return getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '16x16');
+    };
+
+    var iter;
+    for ( var i = 0; i < list.length; i++ ) {
+      iter = list[i];
+      if ( skipDot && iter.filename == '..' ) {
+        continue;
+      }
+
+      iter.title = iter.filename;
+      iter.icon  = _createIcon(iter);
+      iter._loaded = false;
+
+      if ( iter.type == 'dir' && iter.filename != '..' ) {
+        iter.items = [{
+          icon: iter.icon,
+          title: 'Loading...'
+        }];
+      }
+      fileList.push(iter);
+    }
+
+    return fileList;
+  };
+
+  FileTreeView.prototype.render = function(list, dir) {
+    if ( this.destroyed ) { return; }
+    var fileList = this._createList(list);
+    TreeView.prototype.render.apply(this, [fileList, true]);
+  };
+
+  FileTreeView.prototype._onSelect = function(ev, item) {
+    item = TreeView.prototype._onSelect.apply(this, arguments);
+    if ( item && item.path ) {
+      this.onSelected(item.path, item.type, item.mime);
+    }
+  };
+
+  FileTreeView.prototype._onActivate = function(ev, item) {
+    item = TreeView.prototype._onActivate.apply(this, arguments);
+    if ( item && item.path ) {
+      this.onActivated(item.path, item.type, item.mime);
+    }
+  };
+
+  FileTreeView.prototype._onExpand = function(ev, item) {
+    TreeView.prototype._onActivate.apply(this, arguments);
+    if ( item._loaded ) {
+      return;
+    }
+
+    if ( this.fileView && item && item.path && item._element ) {
+      var fv = this.fileView;
+      var self = this;
+      fv._getDir(item.path, function(list, dir, num, size) {
+        var ul = item._element.getElementsByTagName('UL')[0];
+        if ( ul ) {
+          OSjs.Utils.$empty(ul);
+        }
+
+        var level = item._element.className.replace('Level_', '') << 0;
+        var fileList = self._createList(list, true);
+        self._render(fileList, item._element, level+1, ul);
+        ul.style.display = 'block';
+      });
+
+      item._loaded = true;
+    }
+  };
+
+  /**
    * FileView > IconView
    *
    * options: (See GUIElement for more)
@@ -3052,7 +3201,7 @@
    *  onActivated       Function        Callback - When item is activated (dblclick)
    *  onDropped         Function        Callback - When item has been dropped
    */
-  var FileIconView = function(name, opts) {
+  var FileIconView = function(fileView, name, opts) {
     opts = opts || {};
     if ( typeof opts.dnd === 'undefined' ) {
       opts.dnd = true;
@@ -3062,6 +3211,7 @@
     this.onActivated  = function(path, type, mime) {};
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn("Not implemented yet!"); };
+    this.fileView     = fileView;
   };
 
   FileIconView.prototype = Object.create(IconView.prototype);
@@ -3145,10 +3295,6 @@
     }
   };
 
-  FileIconView.prototype.getSelected = function() {
-    return this.selected;
-  };
-
   /**
    * FileView > ListView
    *
@@ -3158,7 +3304,7 @@
    *  onDropped         Function        Callback - When item has been dropped
    *  humanSize         bool            Show human-readable sized (default = True)
    */
-  var FileListView = function(name, opts) {
+  var FileListView = function(fileView, name, opts) {
     opts = opts || {};
     if ( typeof opts.dnd === 'undefined' ) {
       opts.dnd = true;
@@ -3172,6 +3318,7 @@
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn("Not implemented yet!"); };
     this.onSort       = function() { console.warn("Not implemented yet!"); };
+    this.fileView     = fileView;
   };
 
   FileListView.prototype = Object.create(ListView.prototype);
@@ -3366,10 +3513,12 @@
         this.sortDir = true;
       }
 
-      if ( v === 'ListView' || v === 'listview' ) {
-        this.$view = new FileListView('FileListView', this.viewOpts);
-      } else if ( v === 'IconView' || v === 'iconview' ) {
-        this.$view = new FileIconView('FileIconView', this.viewOpts);
+      if ( v.toLowerCase() == 'listview' ) {
+        this.$view = new FileListView(this, 'FileListView', this.viewOpts);
+      } else if ( v.toLowerCase() == 'iconview' ) {
+        this.$view = new FileIconView(this, 'FileIconView', this.viewOpts);
+      } else if ( v.toLowerCase() == 'treeview' ) {
+        this.$view = new FileTreeView(this, 'FileTreeView', this.viewOpts);
       } else {
         throw "Invalid view type: " + v;
       }
@@ -3403,18 +3552,11 @@
     }
   };
 
-  FileView.prototype.chdir = function(dir, onRefreshed, onError) {
-    if ( this.destroyed ) { return; }
-
-    onRefreshed = onRefreshed || function() {};
-    onError     = onError     || function() {};
-
-    if ( !this.$view ) {
-      throw "FileView has no GUI element attached!";
-    }
-
+  FileView.prototype._getDir = function(dir, onSuccess, onError) {
     var self = this;
-    this.onRefresh.call(this);
+
+    onSuccess = onSuccess || function() {};
+    onError   = onError   || function() {};
 
     function sortList(list, key, asc) {
       if ( !key ) { return list; }
@@ -3444,6 +3586,88 @@
       return lst;
     }
 
+    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter}]}, function(res) {
+      if ( self.destroyed ) { return; }
+
+      var rendered  = false;
+      var num       = 0;
+      var size      = 0;
+      var list      = [];
+
+      if ( res ) {
+        if ( res.error ) {
+          onError.call(self, res.error, dir);
+          return;
+        } else {
+          if ( res.result /* && res.result.length*/ ) {
+            if ( self.locked ) {
+              if ( res.result.length > 0 ) {
+                if ( res.result[0].filename == '..' ) {
+                  res.result.shift();
+                }
+              }
+            }
+            if ( self.summary && res.result.length ) {
+              for ( var i = 0, l = res.result.length; i < l; i++ ) {
+                if ( res.result[i].filename !== ".." ) {
+                  if ( res.result[i].size ) {
+                    size += (res.result[i].size << 0);
+                  }
+                  num++;
+                }
+              }
+            }
+
+            list = self.sortKey ? sortList(res.result, self.sortKey, self.sortDir) : res.result;
+          }
+        }
+      }
+
+      onSuccess.call(self, list, dir, num, size);
+    }, function(error) {
+      onError.call(self, error, dir, true);
+    });
+  };
+
+  FileView.prototype.chdir = function(dir, onRefreshed, onError) {
+    if ( this.destroyed ) { return; }
+
+    onRefreshed = onRefreshed || function() {};
+    onError     = onError     || function() {};
+
+    if ( !this.$view ) {
+      throw "FileView has no GUI element attached!";
+    }
+
+    this.onRefresh.call(this);
+
+    this._getDir(dir, function(list, dir, num, size) {
+      if ( this.$view ) {
+        this.$view.render(list, dir);
+      }
+
+      this.onFinished(dir, num, size);
+
+      if ( this.$view && this.getViewType() === 'ListView' ) {
+        if ( this.sortKey ) {
+          var col = this.$view.$headTop.getElementsByClassName("Column_" + this.sortKey);
+          col = (col && col.length) ? col[0] : null;
+          if ( col ) {
+            //col.className += 'Sorted';
+            var arrow = document.createElement('div');
+            arrow.className = 'Arrow ' + (this.sortDir ? 'Ascending' : 'Descending');
+            col.firstChild.appendChild(arrow);
+          }
+        }
+      }
+
+      onRefreshed.call(this);
+    }, function(error, dir, arg) {
+      this.onError.call(this, error, dir, (arg || false));
+      onError.call(this, error, dir, (arg || false));
+    });
+
+    /*
     function _onRefreshed() {
       if ( self.$view && self.getViewType() === 'ListView' ) {
         if ( self.sortKey ) {
@@ -3472,7 +3696,7 @@
         if ( res.error ) {
           self.onError.call(self, res.error, dir);
         } else {
-          if ( res.result /* && res.result.length*/ ) {
+          if ( res.result / * && res.result.length * / ) {
             if ( self.locked ) {
               if ( res.result.length > 0 ) {
                 if ( res.result[0].filename == '..' ) {
@@ -3512,6 +3736,7 @@
       self.onError.call(self, error, dir, true);
       onError.call(self, error, dir, true);
     });
+    */
   };
 
   FileView.prototype.setViewType = function(v) {

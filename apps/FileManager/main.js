@@ -259,13 +259,16 @@
         fileView.setViewType('ListView');
         self._focus();
         app._setArgument('viewType', 'ListView');
-        //app._setSetting('viewType', 'ListView');
       }},
       {name: 'IconView', title: OSjs._('Icon View'), onClick: function() {
         fileView.setViewType('IconView');
         self._focus();
         app._setArgument('viewType', 'IconView');
-        //app._setSetting('viewType', 'IconView');
+      }},
+      {name: 'TreeView', title: OSjs._('Tree View'), onClick: function() {
+        fileView.setViewType('TreeView');
+        self._focus();
+        app._setArgument('viewType', 'TreeView');
       }}
     ];
 
@@ -326,12 +329,18 @@
         menu.setItemDisabled("OpenWith", true);
       }
 
-      if ( fileView.getViewType() === 'IconView' ) {
+      if ( fileView.getViewType().toLowerCase() == 'iconview' ) {
         menu.setItemDisabled("ListView", false);
         menu.setItemDisabled("IconView", true);
-      } else {
+        menu.setItemDisabled("TreeView", false);
+      } else if ( fileView.getViewType().toLowerCase() == 'listview' ) {
         menu.setItemDisabled("ListView", true);
         menu.setItemDisabled("IconView", false);
+        menu.setItemDisabled("TreeView", false);
+      } else {
+        menu.setItemDisabled("ListView", false);
+        menu.setItemDisabled("IconView", false);
+        menu.setItemDisabled("TreeView", true);
       }
     };
 

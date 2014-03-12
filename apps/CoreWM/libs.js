@@ -727,7 +727,7 @@
         container.appendChild(label);
         this.$switcher.appendChild(container);
 
-        height += 32;
+        height += 32; // FIXME: We can automatically calculate this
 
         if ( win && win._wid == iter._wid ) {
           index = i;
