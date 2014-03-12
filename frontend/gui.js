@@ -3643,6 +3643,7 @@
 
     this._getDir(dir, function(list, dir, num, size) {
       this.lastDir = dir;
+      this.wasUpdated = true;
 
       if ( this.$view ) {
         this.$view.render(list, dir);
