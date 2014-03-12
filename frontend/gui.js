@@ -3454,7 +3454,7 @@
     this.startViewType  = opts.viewType || 'ListView';
     this.viewType       = null;
     this.viewOpts       = viewOpts;
-    this.lastDir        = viewOpts.path;
+    this.lastDir        = viewOpts.path || '/';
     this.mimeFilter     = mimeFilter;
     this.typeFilter     = opts.typeFilter || null;
     this.wasUpdated     = false;
@@ -3642,6 +3642,8 @@
     this.onRefresh.call(this);
 
     this._getDir(dir, function(list, dir, num, size) {
+      this.lastDir = dir;
+
       if ( this.$view ) {
         this.$view.render(list, dir);
       }
@@ -3666,77 +3668,6 @@
       this.onError.call(this, error, dir, (arg || false));
       onError.call(this, error, dir, (arg || false));
     });
-
-    /*
-    function _onRefreshed() {
-      if ( self.$view && self.getViewType() === 'ListView' ) {
-        if ( self.sortKey ) {
-          var col = self.$view.$headTop.getElementsByClassName("Column_" + self.sortKey);
-          col = (col && col.length) ? col[0] : null;
-          if ( col ) {
-            //col.className += 'Sorted';
-            var arrow = document.createElement('div');
-            arrow.className = 'Arrow ' + (self.sortDir ? 'Ascending' : 'Descending');
-            col.firstChild.appendChild(arrow);
-          }
-        }
-      }
-      onRefreshed.call(self);
-    }
-
-    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter}]}, function(res) {
-      if ( self.destroyed ) { return; }
-
-      var error     = null;
-      var rendered  = false;
-      var num       = 0;
-      var size      = 0;
-
-      if ( res ) {
-        if ( res.error ) {
-          self.onError.call(self, res.error, dir);
-        } else {
-          if ( res.result / * && res.result.length * / ) {
-            if ( self.locked ) {
-              if ( res.result.length > 0 ) {
-                if ( res.result[0].filename == '..' ) {
-                  res.result.shift();
-                }
-              }
-            }
-            if ( self.summary && res.result.length ) {
-              for ( var i = 0, l = res.result.length; i < l; i++ ) {
-                if ( res.result[i].filename !== ".." ) {
-                  if ( res.result[i].size ) {
-                    size += (res.result[i].size << 0);
-                  }
-                  num++;
-                }
-              }
-            }
-
-            self.wasUpdated = true;
-            self.lastDir    = dir;
-            rendered = true;
-
-            var lst = self.sortKey ? sortList(res.result, self.sortKey, self.sortDir) : res.result;
-            self.$view.render(lst, dir);
-          }
-        }
-
-        if ( !rendered ) {
-          self.$view.render([], dir);
-        }
-
-        self.onFinished(dir, num, size);
-
-        _onRefreshed();
-      }
-    }, function(error) {
-      self.onError.call(self, error, dir, true);
-      onError.call(self, error, dir, true);
-    });
-    */
   };
 
   FileView.prototype.setViewType = function(v) {
