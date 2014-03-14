@@ -429,7 +429,7 @@
     var fileView = this._getGUIElement('FileManagerFileView');
     if ( fileView ) {
       if ( fileView.getPath() == path ) {
-        fileView.refresh();
+        fileView.refresh(null, null, true);
       }
     }
   };

@@ -3481,7 +3481,7 @@
     this.sortKey        = null;
     this.sortDir        = true; // true = asc, false = desc
     this.locked         = opts.locked || false;
-    this.$view          = null;
+    this.viewRef          = null;
 
     this.onActivated        = function(path, type, mime) {};
     this.onError            = function(error) {};
@@ -3505,9 +3505,9 @@
   FileView.prototype = Object.create(GUIElement.prototype);
 
   FileView.prototype.destroy = function() {
-    if ( this.$view ) {
-      this.$view.destroy();
-      this.$view = null;
+    if ( this.viewRef ) {
+      this.viewRef.destroy();
+      this.viewRef = null;
     }
 
     GUIElement.prototype.destroy.apply(this, arguments);
@@ -3526,25 +3526,25 @@
 
     if ( v != this.viewType ) {
 
-      if ( this.$view ) {
-        this.$view.destroy();
-        this.$view = null;
+      if ( this.viewRef ) {
+        this.viewRef.destroy();
+        this.viewRef = null;
 
         this.sortKey = null;
         this.sortDir = true;
       }
 
       if ( v.toLowerCase() == 'listview' ) {
-        this.$view = new FileListView(this, 'FileListView', this.viewOpts);
+        this.viewRef = new FileListView(this, 'FileListView', this.viewOpts);
       } else if ( v.toLowerCase() == 'iconview' ) {
-        this.$view = new FileIconView(this, 'FileIconView', this.viewOpts);
+        this.viewRef = new FileIconView(this, 'FileIconView', this.viewOpts);
       } else if ( v.toLowerCase() == 'treeview' ) {
-        this.$view = new FileTreeView(this, 'FileTreeView', this.viewOpts);
+        this.viewRef = new FileTreeView(this, 'FileTreeView', this.viewOpts);
       } else {
         throw "Invalid view type: " + v;
       }
 
-      this.$view.onActivated  = function(path, type, mime) {
+      this.viewRef.onActivated  = function(path, type, mime) {
         if ( type === 'dir' ) {
           self.chdir(path);
         } else {
@@ -3552,25 +3552,40 @@
         }
       };
 
-      this.$view.onSelected         = function() { return self.onSelected.apply(this, arguments); };
-      this.$view.onDropped          = function() { return self.onDropped.apply(this, arguments); };
-      this.$view.onContextMenu      = function() { return self.onContextMenu.apply(this, arguments); };
-      this.$view.onViewContextMenu  = function() { return self.onViewContextMenu.apply(this, arguments); };
-      this.$view.onItemDropped      = function() { return self.onItemDropped.apply(this, arguments); };
-      this.$view.onSort             = function() { return self.onColumnSort.apply(this, arguments); };
+      this.viewRef.onSelected         = function() { return self.onSelected.apply(this, arguments); };
+      this.viewRef.onDropped          = function() { return self.onDropped.apply(this, arguments); };
+      this.viewRef.onContextMenu      = function() { return self.onContextMenu.apply(this, arguments); };
+      this.viewRef.onViewContextMenu  = function() { return self.onViewContextMenu.apply(this, arguments); };
+      this.viewRef.onItemDropped      = function() { return self.onItemDropped.apply(this, arguments); };
+      this.viewRef.onSort             = function() { return self.onColumnSort.apply(this, arguments); };
 
-      (root || this.$element).appendChild(this.$view.getRoot());
+      (root || this.$element).appendChild(this.viewRef.getRoot());
       this.viewType = v;
 
       if ( !this.rendered ) {
-        this.$view.update();
+        this.viewRef.update();
       }
     }
   };
 
-  FileView.prototype.refresh = function(onRefreshed, onError) {
-    if ( this.$view ) {
-      this.chdir(this.getPath(), onRefreshed, onError);
+  FileView.prototype.refresh = function(onRefreshed, onError, restoreScroll) {
+    onRefreshed = onRefreshed || function() {};
+    onError = onError || function() {};
+    restoreScroll = (typeof restoreScroll !== 'undefined') && (restoreScroll === true);
+
+    if ( this.viewRef ) {
+      var v = this.viewRef.$view || {};
+      var scrollTop = v.scrollTop;
+
+      this.chdir(this.getPath(), function() {
+        onRefreshed.apply(this, arguments);
+
+        setTimeout(function() {
+          if ( v && restoreScroll ) {
+            v.scrollTop = scrollTop;
+          }
+        }, 10);
+      }, onError);
     }
   };
 
@@ -3657,7 +3672,7 @@
     onRefreshed = onRefreshed || function() {};
     onError     = onError     || function() {};
 
-    if ( !this.$view ) {
+    if ( !this.viewRef ) {
       throw "FileView has no GUI element attached!";
     }
 
@@ -3667,15 +3682,15 @@
       this.lastDir = dir;
       this.wasUpdated = true;
 
-      if ( this.$view ) {
-        this.$view.render(list, dir);
+      if ( this.viewRef ) {
+        this.viewRef.render(list, dir);
       }
 
       this.onFinished(dir, num, size);
 
-      if ( this.$view && this.getViewType() === 'ListView' ) {
+      if ( this.viewRef && this.getViewType() === 'ListView' ) {
         if ( this.sortKey ) {
-          var col = this.$view.$headTop.getElementsByClassName("Column_" + this.sortKey);
+          var col = this.viewRef.$headTop.getElementsByClassName("Column_" + this.sortKey);
           col = (col && col.length) ? col[0] : null;
           if ( col ) {
             //col.className += 'Sorted';
@@ -3714,8 +3729,8 @@
   };
 
   FileView.prototype.setSelected = function(val, key) {
-    if ( this.$view ) {
-      this.$view.setSelected.apply(this.$view, [val, key, true]);
+    if ( this.viewRef ) {
+      this.viewRef.setSelected.apply(this.viewRef, [val, key, true]);
     }
   };
 
@@ -3724,7 +3739,7 @@
   };
 
   FileView.prototype.getSelected = function() {
-    return this.$view ? this.$view.getSelected() : null;
+    return this.viewRef ? this.viewRef.getSelected() : null;
   };
 
   FileView.prototype.getViewType = function() {
