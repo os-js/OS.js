@@ -519,12 +519,20 @@
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {
-    // FIXME
-    var panelItem = this.panels[0] ? this.panels[0].getItem(OSjs.CoreWM.PanelItems.WindowList) : null;
-    if ( panelItem ) {
-      panelItem.update(ev, win);
+    // Make sure panel items are updated correctly
+    // FIXME: This is not compatible with other PanelItems
+    var panel, panelItem;
+    for ( var i = 0; i < this.panels.length; i++ ) {
+      panel = this.panels[i];
+      if ( panel ) {
+        panelItem = panel.getItem(OSjs.CoreWM.PanelItems.WindowList);
+        if ( panelItem ) {
+          panelItem.update(ev, win);
+        }
+      }
     }
 
+    // Unfocus IconView if we focus a window
     if ( ev === 'focus' ) {
       if ( this.iconView ) {
         this.iconView._fireHook('blur');
