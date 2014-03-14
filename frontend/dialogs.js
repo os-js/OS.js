@@ -635,9 +635,45 @@
 
     var typeFilter = this.select === 'path' ? 'dir' : null;
     var fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {mimeFilter: this.allowMimes, typeFilter: typeFilter}), this.$element);
+
+    var openMenu = function(ev) {
+      if ( !fileList ) { return; }
+      var curr = fileList.viewType;
+      var viewMenu = [
+        {name: 'ListView', title: OSjs._('List View'), disabled: (curr.toLowerCase() == 'listview'), onClick: function() {
+          if ( fileList ) {
+            fileList.setViewType('ListView');
+          }
+          self._focus();
+        }},
+        {name: 'IconView', title: OSjs._('Icon View'), disabled: (curr.toLowerCase() == 'iconview'), onClick: function() {
+          if ( fileList ) {
+            fileList.setViewType('IconView');
+          }
+          self._focus();
+        }},
+        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (curr.toLowerCase() == 'treeview'), onClick: function() {
+          if ( fileList ) {
+            fileList.setViewType('TreeView');
+          }
+          self._focus();
+        }}
+      ];
+
+      var menu = [
+        {name: 'ListView', title: OSjs._('View type'), menu: viewMenu},
+      ];
+
+      var pos = {x: ev.clientX, y: ev.clientY};
+      OSjs.GUI.createMenu(menu, pos);
+    };
+
     fileList.onError = function() {
       self._toggleLoading(false);
       self.onError.apply(this, arguments);
+    };
+    fileList.onContextMenu = function(ev) {
+      openMenu(ev);
     };
 
     var statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
