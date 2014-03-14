@@ -12,17 +12,22 @@ if ( $is_cli == "cli" ) {
 $combined = Array();
 $dirs = explode(":", APPDIR);
 foreach ( $dirs as $path ) {
+  if ( $path{0} == '.' ) continue;
   $basedir = basename($path);
 
+  print "In '{$path}':\n";
   foreach ( scandir($path) as $i ) {
-    if ( $i == "." || $i == ".." ) continue;
-    $file = "{$path}/{$i}/package.json";
+    $b = "{$path}/{$i}";
+    if ( $i{0} == '.' ) continue;
+    if ( !is_dir($b) ) continue;
+    $file = "{$b}/package.json";
     if ( file_exists($file) && ($c = file_get_contents($file)) ) {
       if ( $j = json_decode($c, true) ) {
         $k = key($j);
         $data = current($j);
 
         if ( isset($data['enabled']) && ($data['enabled'] === false || $data['enabled'] === 'false' ) ) {
+          print "- Skipping {$i} (disabled)\n";
           continue;
         }
 
@@ -32,10 +37,40 @@ foreach ( $dirs as $path ) {
           }
         }
 
+        print "- Added {$i}\n";
+
         $data['path']    = "{$basedir}/{$i}";
         $data['iter']    = $i;
         $combined[$k]    = $data;
+      } else {
+        print "- Skipped {$i} (parse error)\n";
+        switch (json_last_error()) {
+          case JSON_ERROR_NONE:
+            echo '  No errors';
+            break;
+          case JSON_ERROR_DEPTH:
+            echo '  Maximum stack depth exceeded';
+            break;
+          case JSON_ERROR_STATE_MISMATCH:
+            echo '  Underflow or the modes mismatch';
+            break;
+          case JSON_ERROR_CTRL_CHAR:
+            echo '  Unexpected control character found';
+            break;
+          case JSON_ERROR_SYNTAX:
+            echo '  Syntax error, malformed JSON';
+            break;
+          case JSON_ERROR_UTF8:
+            echo '  Malformed UTF-8 characters, possibly incorrectly encoded';
+            break;
+          default:
+            echo '  Unknown error';
+            break;
+        }
+        print "\n";
       }
+    } else {
+      print "- Skipped {$i} (no manifest)\n";
     }
   }
 }
