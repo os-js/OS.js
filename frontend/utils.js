@@ -113,7 +113,14 @@
       return feature;
     }
 
-    var nav = window.navigator || {};
+    var getMedia = false;
+    if ( window.navigator ) {
+      getMedia = ( navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+    }
+
     var compability = {
       upload         : false,
       fileSystem     : (('requestFileSystem' in window) || ('webkitRequestFileSystem' in window)),
@@ -121,7 +128,7 @@
       sessionStorage : (('sessionStorage'  in window) && window['sessionStorage'] !== null),
       globalStorage  : (('globalStorage'   in window) && window['globalStorage']  !== null),
       openDatabase   : (('openDatabase'    in window) && window['openDatabase']   !== null),
-      getUserMedia   : (('getUserMedia'    in nav)    && nav['getUserMedia']      !== null),
+      getUserMedia   : !!getMedia,
       socket         : (('WebSocket'       in window) && window['WebSocket']      !== null),
       worker         : (('Worker'          in window) && window['Worker']         !== null),
       dnd            : ('draggable' in document.createElement('span')),
