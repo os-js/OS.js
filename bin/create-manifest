@@ -3,6 +3,12 @@
 define('__CLI_SCRIPT', true);
 $is_cli = php_sapi_name();
 
+if ( !isset($argv) ) $argv = Array();
+$restrict = Array();
+for ( $i = 1; $i < sizeof($argv); $i++ ) {
+  $restrict[] = $argv[$i];
+}
+
 if ( $is_cli == "cli" ) {
   require 'backend/api.php';
 } else {
@@ -14,6 +20,10 @@ $dirs = explode(":", APPDIR);
 foreach ( $dirs as $path ) {
   if ( $path{0} == '.' ) continue;
   $basedir = basename($path);
+
+  if ( sizeof($restrict) && !in_array(basename($path), $restrict) ) {
+    continue;
+  }
 
   print "In '{$path}':\n";
   foreach ( scandir($path) as $i ) {
