@@ -41,7 +41,7 @@
   OSjs.Locale       = OSjs.Locale       || {};
   OSjs.Core         = {};
   OSjs.API          = {};
-  OSjs.Version      = '2.0-alpha1';
+  OSjs.Version      = '2.0-alpha2';
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
