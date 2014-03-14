@@ -412,12 +412,40 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // MISC FUNCTIONS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function UploadFiles(app, win, dest, files, onUploaded) {
+    files = files || [];
+    onUploaded = onUploaded || function(dest, filename, mime, size) {};
+
+    var _dialogClose  = function(btn, filename, mime, size) {
+      if ( btn != 'ok' && btn != 'complete' ) return;
+
+      OSjs.API.getCoreInstance().message('vfs', {type: 'upload', path: dest, filename: filename, source: app.__pid});
+
+      onUploaded(dest, filename, mime, size);
+    };
+
+    if ( files && files.length ) {
+      for ( var i = 0; i < files.length; i++ ) {
+        if ( win ) {
+          app._createDialog('FileUpload', [dest, files[i], _dialogClose], win);
+        } else {
+          app.addWindow(new OSjs.Dialogs.FileUpload(dest, files[i], _dialogClose), false);
+        }
+      }
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Helpers.DefaultApplication = DefaultApplication;
+  OSjs.Helpers.DefaultApplication       = DefaultApplication;
   OSjs.Helpers.DefaultApplicationWindow = DefaultApplicationWindow;
-  OSjs.Helpers.SettingsManager = SettingsManager;
+  OSjs.Helpers.SettingsManager          = SettingsManager;
+  OSjs.Helpers.UploadFiles              = UploadFiles;
 
 })();
 

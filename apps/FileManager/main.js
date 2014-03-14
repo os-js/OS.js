@@ -410,27 +410,18 @@
   };
 
   ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, el, files) {
-    var self = this;
-    if ( files && files.length ) {
-      var app = this._appRef;
-      var fileView = this._getGUIElement('FileManagerFileView');
-      var dest = fileView.getPath();
+    var self      = this;
+    var fileView  = this._getGUIElement('FileManagerFileView');
 
-      for ( var i = 0; i < files.length; i++ ) {
-        app._createDialog('FileUpload', [dest, files[i], function(btn, filename, mime, size) {
-          if ( btn != 'ok' && btn != 'complete' ) return;
-          var fileView = self._getGUIElement('FileManagerFileView');
-          if ( fileView ) {
-            fileView.refresh(function() {
-              fileView.setSelected(filename, 'filename');
-              self._focus();
-            });
-
-            OSjs.API.getCoreInstance().message('vfs', {type: 'upload', path: dest, filename: filename, source: self._appRef.__pid});
-          }
-        }], this);
+    OSjs.Helpers.UploadFiles(this._appRef, this, fileView.getPath(), files, function(dest, filename) {
+      if ( fileView ) {
+        fileView.refresh(function() {
+          fileView.setSelected(filename, 'filename');
+          self._focus();
+        });
       }
-    }
+    });
+
     return false;
   };
 

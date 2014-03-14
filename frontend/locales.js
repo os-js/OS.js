@@ -45,20 +45,12 @@
    * English
    */
   Locales.en_US = {
-
   };
 
   /**
    * Norwegian
    */
   Locales.no_NO = {
-
-    // core.js
-    'Minimize'          : 'Minimiser',
-    'Maximize'          : 'Maksimiser',
-    'Restore'           : 'Gjenopprett',
-    'On Top - Disable'  : 'På Topp - Skru av',
-    'On Top - Enable'   : 'På Topp - Skru på',
 
     "Error opening file" : "Feil ved åpning av fil",
     "No window manager is running" : "Ingen vinubehandler kjørende",
@@ -140,6 +132,11 @@
     'Discard current document ?' : 'Forkaste gjeldende dokument ?',
 
     // Common
+    'Minimize'          : 'Minimiser',
+    'Maximize'          : 'Maksimiser',
+    'Restore'           : 'Gjenopprett',
+    'On Top - Disable'  : 'På Topp - Skru av',
+    'On Top - Enable'   : 'På Topp - Skru på',
     'Application'       : 'Applikasjon',
     'Settings'          : 'Instillinger',
     'Log out (Exit)'    : 'Logg ut (Avslutt)',
@@ -222,11 +219,6 @@
   Locales.de_DE = {
 
     // core.js
-    'Minimize'        : 'Minimieren',
-    'Maximize'        : 'Maximieren',
-    'Restore'         : 'Wiederherstellen',
-    'On Top - Disable': 'Im Vordergrund - Deaktivieren',
-    'On Top - Enable' : 'Im Vordergrund - Aktivieren',
 
     "Error opening file": "Fehler beim Öffnen der Datei",
     "No window manager is running": "Es wird kein Fenster-Manager ausgeführt",
@@ -308,6 +300,11 @@
     'Discard current document ?': 'Aktuelles Dokument verwerfen?',
 
     // Common
+    'Minimize'          : 'Minimieren',
+    'Maximize'          : 'Maximieren',
+    'Restore'           : 'Wiederherstellen',
+    'On Top - Disable'  : 'Im Vordergrund - Deaktivieren',
+    'On Top - Enable'   : 'Im Vordergrund - Aktivieren',
     'Application'       : 'Anwendung',
     'Settings'          : 'Einstellungen',
     'Log out (Exit)'    : 'Abmelden',
