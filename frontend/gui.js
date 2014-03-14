@@ -2098,7 +2098,7 @@
 
     var expand = false;
     if ( opts.expanded === true ) {
-      expand = 0;
+      expand = true;
     } else if ( opts.expanded >= 0 ) {
       expand = opts.expand;
     }
@@ -2209,7 +2209,7 @@
 
         if ( exp ) {
           child = _render.call(self, iter.items, li, null, level + 1);
-          if ( level !== false && this.expandLevel >= level ) {
+          if ( this.expandLevel === true || (level !== false && this.expandLevel >= level) ) {
             child.style.display = 'block';
           }
           exp.onclick = (function(c, el, it) {
