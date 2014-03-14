@@ -479,9 +479,10 @@
    * This is for handling data lists in some sort of view
    *
    * options: (See GUIElement for more)
-   *  onSelect          Function        Callback - When item is selected (clicked)
-   *  onActivate        Function        Callback - When item is activated (dblclick)
-   *  onContextMenu     Function        Callback - When item menu is activated (rightclick)
+   *  onSelect          Function        Callback - When item is selected (clicked item)
+   *  onActivate        Function        Callback - When item is activated (double-click item)
+   *  onContextMenu     Function        Callback - When item menu is activated (right click on item)
+   *  onViewContextMenu Function        Callback - When view menu is activated (right click background)
    *  onCreateItem      Function        Callback - When item is created
    *  data              Array           Data (Items)
    *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
@@ -495,11 +496,12 @@
     this.selected   = null;
     this.data       = [];
 
-    this.indexKey       = opts.indexKey       || null;
-    this.onSelect       = opts.onSelect       || function(ev, el, item) {};
-    this.onActivate     = opts.onActivate     || function(ev, el, item) {};
-    this.onContextMenu  = opts.onContextMenu  || function(ev, el, item) {};
-    this.onCreateItem   = opts.onCreateItem   || function(el, iter) {};
+    this.indexKey           = opts.indexKey           || null;
+    this.onSelect           = opts.onSelect           || function(ev, el, item) {};
+    this.onActivate         = opts.onActivate         || function(ev, el, item) {};
+    this.onContextMenu      = opts.onContextMenu      || function(ev, el, item) {};
+    this.onViewContextMenu  = opts.onViewContextMenu  || function(ev) {};
+    this.onCreateItem       = opts.onCreateItem       || function(el, iter) {};
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -519,10 +521,19 @@
   };
 
   _DataView.prototype.init = function(className, view) {
+    var self = this;
     var el = GUIElement.prototype.init.apply(this, [className]);
     this.$view = document.createElement('div');
     if ( typeof view === 'undefined' || view === true ) {
       el.appendChild(this.$view);
+      this._addEvent(this.$view, 'oncontextmenu', function(ev) {
+        ev.stopPropagation(); // Or else eventual ContextMenu is blurred
+        ev.preventDefault();
+
+        self.onViewContextMenu.call(self, ev);
+
+        return false;
+      });
     }
     return el;
   };
@@ -1049,6 +1060,14 @@
     });
     this._addEventListener(this.$scroll, 'scroll', function(ev) {
       tableTop.style.left = -this.scrollLeft + 'px';
+    });
+    this._addEvent(this.$scroll, 'oncontextmenu', function(ev) {
+      ev.stopPropagation(); // Or else eventual ContextMenu is blurred
+      ev.preventDefault();
+
+      self.onViewContextMenu.call(self, ev);
+
+      return false;
     });
 
     table.appendChild(head);
@@ -3421,18 +3440,19 @@
    * FileView
    *
    * options: (See GUIElement for more)
-   *  startViewType     String          Default view type (Default = ListView)
-   *  locked            bool            Locked (Default = false)
-   *  humanSize         bool            Show human-readable sized (default = True)
-   *  summary           bool            Return statistics for onFinished() (Default = False)
-   *  onSelected        Function        Callback - When item is selected (clicked)
-   *  onActivated       Function        Callback - When item is activated (dblclick)
-   *  onItemDropped     Function        Callback - When item has been dropped
-   *  onDropped         Function        Callback - When item has been dropped (FIXME)
-   *  onError           Function        Callback - When error happened
-   *  onRefresh         Function        Callback - On refresh
-   *  onContextMenu     Function        Callback - On context menu
-   *  onColumnSort      Function        Callback - On sort
+   *  startViewType       String          Default view type (Default = ListView)
+   *  locked              bool            Locked (Default = false)
+   *  humanSize           bool            Show human-readable sized (default = True)
+   *  summary             bool            Return statistics for onFinished() (Default = False)
+   *  onSelected          Function        Callback - When item is selected (clicked)
+   *  onActivated         Function        Callback - When item is activated (dblclick)
+   *  onItemDropped       Function        Callback - When item has been dropped
+   *  onDropped           Function        Callback - When item has been dropped (FIXME)
+   *  onError             Function        Callback - When error happened
+   *  onRefresh           Function        Callback - On refresh
+   *  onContextMenu       Function        Callback - On context menu (item)
+   *  onViewContextMenu   Function        Callback - On view context menu (background / view)
+   *  onColumnSort        Function        Callback - On sort
    */
   var FileView = function(name, opts) {
     opts = opts || {};
@@ -3463,14 +3483,15 @@
     this.locked         = opts.locked || false;
     this.$view          = null;
 
-    this.onActivated    = function(path, type, mime) {};
-    this.onError        = function(error) {};
-    this.onFinished     = function() {};
-    this.onSelected     = function(item, el) {};
-    this.onRefresh      = function() {};
-    this.onDropped      = function() { console.warn("Not implemented yet!"); };
-    this.onContextMenu  = function(ev, el, item) {};
-    this.onItemDropped  = function(ev, el, item) {};
+    this.onActivated        = function(path, type, mime) {};
+    this.onError            = function(error) {};
+    this.onFinished         = function() {};
+    this.onSelected         = function(item, el) {};
+    this.onRefresh          = function() {};
+    this.onDropped          = function() { console.warn("Not implemented yet!"); };
+    this.onContextMenu      = function(ev, el, item) {};
+    this.onViewContextMenu  = function(ev) {};
+    this.onItemDropped      = function(ev, el, item) {};
 
     this.onColumnSort   = function(column) {
       if ( column === 'image' ) { column = null; }
@@ -3531,11 +3552,12 @@
         }
       };
 
-      this.$view.onSelected     = function() { return self.onSelected.apply(this, arguments); };
-      this.$view.onDropped      = function() { return self.onDropped.apply(this, arguments); };
-      this.$view.onContextMenu  = function() { return self.onContextMenu.apply(this, arguments); };
-      this.$view.onItemDropped  = function() { return self.onItemDropped.apply(this, arguments); };
-      this.$view.onSort         = function() { return self.onColumnSort.apply(this, arguments); };
+      this.$view.onSelected         = function() { return self.onSelected.apply(this, arguments); };
+      this.$view.onDropped          = function() { return self.onDropped.apply(this, arguments); };
+      this.$view.onContextMenu      = function() { return self.onContextMenu.apply(this, arguments); };
+      this.$view.onViewContextMenu  = function() { return self.onViewContextMenu.apply(this, arguments); };
+      this.$view.onItemDropped      = function() { return self.onItemDropped.apply(this, arguments); };
+      this.$view.onSort             = function() { return self.onColumnSort.apply(this, arguments); };
 
       (root || this.$element).appendChild(this.$view.getRoot());
       this.viewType = v;

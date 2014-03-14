@@ -675,6 +675,9 @@
     fileList.onContextMenu = function(ev) {
       openMenu(ev);
     };
+    fileList.onViewContextMenu = function(ev) {
+      openMenu(ev);
+    };
 
     var statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
     statusBar.setText("");
