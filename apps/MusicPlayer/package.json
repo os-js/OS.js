@@ -9,6 +9,7 @@
     "category":   "multimedia",
     "icon":       "status/audio-volume-high.png",
     "singular":   true,
+    "compability":["audio"],
     "preload":    [
       {"src": "main.js", "type": "javascript"},
       {"src": "main.css", "type": "stylesheet"}

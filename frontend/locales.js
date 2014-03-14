@@ -65,6 +65,7 @@
     "Application resources missing for '{0}' or it failed to load!" : "Applikasjon ressursjer mangler for '{0}' (eller en feil oppstod)",
     "Application '{0}' preloading failed: \n{1}" : "Applikasjonen '{0}' preloading feilet: \n{1}",
     "Failed to launch '{0}'. Application manifest data not found!" : "Klarte ikke starte '{0}'. Applikasjonsmanifest ikke funnet!",
+    "Failed to launch '{0}'. Your browser does not support: {1}" : "Klarte ikke starte '{0}'. Din nettleser støtter ikke: {1}",
 
     'JavaScript Error Report' : 'JavaScript Feil Oppstod',
     'An unexpected error occured, maybe a bug.' : 'An uventet feil oppstod, eller en kodefeil',
@@ -233,6 +234,7 @@
     "Application resources missing for '{0}' or it failed to load!": "Anwendungsressourcen fehlen oder wurden nicht geladen für: {0}",
     "Application '{0}' preloading failed: \n{1}": "Anwendung '{0}' preloading gescheitert: \n{1}",
     "Failed to launch '{0}'. Application manifest data not found!": "'{0}' konnte nicht gestartet werden. Anwendungsmanifest nicht gefunden!",
+    "Failed to launch '{0}'. Your browser does not support: {1}" : "Klarte ikke starte '{0}'. Uw browser ondersteunt geen: {1}",
 
     'JavaScript Error Report': 'JavaScript Fehlerbericht',
     'An unexpected error occured, maybe a bug.': 'Ein unerwarteter Fehler ist aufgetreten, möglicherweise ein Bug',

@@ -83,9 +83,9 @@
 
 .Window_ApplicationMusicPlayerWindow .WindowWrapper .MusicPlayerPlaylist {
   position : absolute;
-  left : 10px;
-  right : 10px;
-  bottom : 10px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
   top : 200px;
 }
 

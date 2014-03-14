@@ -402,6 +402,24 @@
       return;
     }
 
+    if ( typeof data.compability !== 'undefined' && (data.compability instanceof Array) ) {
+      var comp = OSjs.Utils.getCompability();
+      var c;
+      var nosupport = [];
+      for ( var i = 0; i < data.compability.length; i++ ) {
+        c = data.compability[i];
+        if ( typeof comp[c] !== 'undefiend' ) {
+          if ( !comp[c] ) {
+            nosupport.push(c);
+          }
+        }
+      }
+      if ( nosupport.length ) {
+        _error(OSjs._("Failed to launch '{0}'. Your browser does not support: {1}", n, nosupport.join(", ")));
+        return;
+      }
+    }
+
     _createSplash(data);
     _preload(data);
   }

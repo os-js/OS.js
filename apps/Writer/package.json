@@ -13,6 +13,7 @@
     "mime":       ["^text", "osjs\\/document"],
     "category":   "office",
     "icon":       "apps/libreoffice34-writer.png",
+    "compability":["richtext"],
     "preload":    [
       {"src": "main.js", "type": "javascript"},
       {"src": "main.css", "type": "stylesheet"}
