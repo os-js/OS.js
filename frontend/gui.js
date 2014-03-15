@@ -204,6 +204,7 @@
       this.opts           = opts || {};
       this.id             = _Count;
       this.destroyed      = false;
+      this.focused        = false;
       this.wid            = 0; // Set in Window::_addGUIElement()
       this.hasChanged     = false;
       this.hasCustomKeys  = opts.hasCustomKeys === true;
@@ -488,10 +489,11 @@
    *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
    *  render            bool            Render on create (default = true when data is supplied)
    */
-  var _DataView = function(name, opts) {
+  var _DataView = function(className, name, opts) {
     opts            = opts || {};
     opts.focusable  = true;
 
+    this.className  = className;
     this.$view      = null;
     this.selected   = null;
     this.data       = [];
@@ -599,7 +601,9 @@
 
       if ( scroll ) {
         var pos = OSjs.Utils.$position(this.selected._element, this.$view);
-        if ( pos !== null && this.$view.scrollTop < pos.top ) {
+        if ( pos !== null && 
+             (pos.top > (this.$view.scrollTop + this.$view.offsetHeight) || 
+             (pos.top < this.$view.scrollTop)) ) {
           this.$view.scrollTop = pos.top;
         }
       }
@@ -629,6 +633,68 @@
 
     this.onContextMenu.apply(this, [ev, item._element, item]);
     return item;
+  };
+
+  // TODO: _DataView -- TreeView onKeyPress
+  _DataView.prototype.onKeyPress = function(ev) {
+    if ( this.destroyed ) { return false; }
+    if ( !GUIElement.prototype.onKeyPress.apply(this, arguments) ) { return false; }
+
+    var valid = [OSjs.Utils.Keys.UP, OSjs.Utils.Keys.DOWN, OSjs.Utils.Keys.LEFT, OSjs.Utils.Keys.RIGHT, OSjs.Utils.Keys.ENTER];
+    if ( !OSjs.Utils.inArray(valid, ev.keyCode) ) {
+      return true;
+    }
+    if ( this.className == 'TreeView' ) {
+      return true;
+    }
+
+    ev.preventDefault();
+    if ( this.selected ) {
+
+      var idx  = this.selected._index;
+      var tidx = idx;
+      var len  = this.data.length;
+      var skip = 1;
+      var prev = idx;
+
+      if ( this.className == 'IconView' ) {
+        if ( this.$view ) {
+          var el = this.$view.getElementsByTagName('LI')[0];
+          if ( el ) {
+            var ow = el.offsetWidth;
+            try {
+              ow += OSjs.Utils.$getStyle(el, 'padding-left').replace('px', '') << 0;
+              ow += OSjs.Utils.$getStyle(el, 'padding-right').replace('px', '') << 0;
+              ow += OSjs.Utils.$getStyle(el, 'margin-left').replace('px', '') << 0;
+              ow += OSjs.Utils.$getStyle(el, 'margin-right').replace('px', '') << 0;
+            } catch ( e ) {}
+            skip = Math.floor(this.$view.offsetWidth / ow);
+          }
+        }
+      }
+
+      if ( idx >= 0 && idx < len  ) {
+        if ( ev.keyCode === OSjs.Utils.Keys.UP ) {
+          idx -= skip;
+          if ( idx < 0 ) { idx = prev; }
+        } else if ( ev.keyCode === OSjs.Utils.Keys.DOWN ) {
+          idx += skip;
+          if ( idx >= len ) { idx = prev; }
+        } else if ( ev.keyCode === OSjs.Utils.Keys.LEFT ) {
+          idx--;
+        } else if ( ev.keyCode === OSjs.Utils.Keys.RIGHT ) {
+          idx++;
+        } else if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
+          this._onActivate(ev, this.data[idx]);
+          return true;
+        }
+
+        if ( idx != tidx ) {
+          this.setSelectedIndex(idx, true);
+        }
+      }
+    }
+    return true;
   };
 
   _DataView.prototype.setData = function(data, render) {
@@ -988,7 +1054,7 @@
     this.lastSelectedDOM  = null;
     this.onCreateItem     = opts.onCreateItem   || function(el, iter, col) {};
 
-    _DataView.apply(this, arguments);
+    _DataView.apply(this, ['ListView', name, opts]);
   };
 
   ListView.prototype = Object.create(_DataView.prototype);
@@ -1222,35 +1288,6 @@
     }
 
     this._render(this.data, this.columns);
-  };
-
-  ListView.prototype.onKeyPress = function(ev) {
-    if ( this.destroyed ) { return false; }
-    if ( !GUIElement.prototype.onKeyPress.apply(this, arguments) ) { return false; }
-
-    ev.preventDefault();
-    if ( this.selected ) {
-
-      var idx  = this.selected._index;
-      var tidx = idx;
-      var len  = this.data.length;
-
-      if ( idx >= 0 && idx < len  ) {
-        if ( ev.keyCode === OSjs.Utils.Keys.UP ) {
-          idx--;
-        } else if ( ev.keyCode === OSjs.Utils.Keys.DOWN ) {
-          idx++;
-        } else if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
-          this._onActivate(ev, this.data[idx]);
-          return true;
-        }
-
-        if ( idx != tidx ) {
-          this.setSelectedIndex(idx);
-        }
-      }
-    }
-    return true;
   };
 
   ListView.prototype._onRender = function() {
@@ -1953,9 +1990,6 @@
   /**
    * Icon View Element
    *
-   * TODO: IconView - onKeyPress
-   * FIXME: IconView - Unselect by click in background
-   *
    * reserved item (data) keys:
    *  label = What to show as title
    *  icon = Path to icon
@@ -1969,7 +2003,7 @@
     this.$ul          = null;
     this.iconSize     = opts.size || '32x32';
 
-    _DataView.apply(this, [name, opts]);
+    _DataView.apply(this, ['IconView', name, opts]);
   };
 
   IconView.prototype = Object.create(_DataView.prototype);
@@ -2068,6 +2102,7 @@
       this.onCreateItem(li, iter);
 
       this.data[i]._element = li;
+      this.data[i]._index   = i;
     }
   };
 
@@ -2080,8 +2115,6 @@
 
   /**
    * Tree View
-   *
-   * TODO: TreeView - onKeyPress
    *
    * reserved item (data) keys:
    *  title = What to show as title
@@ -2108,7 +2141,7 @@
     this.onExpand       = opts.onExpand       || function(ev, el, item) {};
     this.onCollapse     = opts.onCollapse     || function(ev, el, item) {};
 
-    _DataView.apply(this, [name, opts]);
+    _DataView.apply(this, ['TreeView', name, opts]);
   };
 
   TreeView.prototype = Object.create(_DataView.prototype);
@@ -3456,6 +3489,7 @@
    */
   var FileView = function(name, opts) {
     opts = opts || {};
+    opts.focusable = true;
 
     var self = this;
     var mimeFilter = [];
@@ -3466,10 +3500,11 @@
       }
     }
 
-    var viewOpts        = {};
-    viewOpts.dnd        = (typeof opts.dnd === 'undefined' || opts.dnd === true);
-    viewOpts.summary    = opts.summary || false;
-    viewOpts.humanSize  = (typeof opts.humanSize === 'undefined' || opts.humanSize);
+    var viewOpts = {
+      dnd        : (typeof opts.dnd === 'undefined' || opts.dnd === true),
+      summary    : opts.summary || false,
+      humanSize  : (typeof opts.humanSize === 'undefined' || opts.humanSize)
+    };
 
     this.startViewType  = opts.viewType || 'ListView';
     this.viewType       = null;
@@ -3481,7 +3516,7 @@
     this.sortKey        = null;
     this.sortDir        = true; // true = asc, false = desc
     this.locked         = opts.locked || false;
-    this.viewRef          = null;
+    this.viewRef        = null;
 
     this.onActivated        = function(path, type, mime) {};
     this.onError            = function(error) {};
@@ -3499,7 +3534,7 @@
       self.setSort(column);
     };
 
-    GUIElement.apply(this, arguments);
+    GUIElement.apply(this, [name, opts]);
   };
 
   FileView.prototype = Object.create(GUIElement.prototype);
@@ -3706,6 +3741,38 @@
       this.onError.call(this, error, dir, (arg || false));
       onError.call(this, error, dir, (arg || false));
     });
+  };
+
+  FileView.prototype.onDndDrop = function(ev) {
+    if ( this.viewRef ) {
+      return this.viewRef.onDndDrop(ev);
+    }
+    return true;
+  };
+
+  FileView.prototype.onKeyPress = function(ev) {
+    if ( this.viewRef ) {
+      return this.viewRef.onKeyPress(ev);
+    }
+    return true;
+  };
+
+  FileView.prototype.focus = function(ev) {
+    if ( GUIElement.prototype.focus.apply(this, arguments) ) {
+      if ( this.viewRef ) {
+        return this.viewRef.focus(ev);
+      }
+    }
+    return false;
+  };
+
+  FileView.prototype.blur = function(ev) {
+    if ( GUIElement.prototype.blur.apply(this, arguments) ) {
+      if ( this.viewRef ) {
+        return this.viewRef.blur(ev);
+      }
+    }
+    return false;
   };
 
   FileView.prototype.setViewType = function(v) {

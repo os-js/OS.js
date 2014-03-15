@@ -2042,17 +2042,11 @@
     if ( gel instanceof OSjs.GUI.GUIElement ) {
       gel.wid = this._wid;
 
-      gel._addHook('focus', function() {
-        self._guiElement = this;
-      });
-      /*
-      gel._addHook('blur', function() {
-        self._guiElement = null;
-      });
-      */
-
       //console.log("OSjs::Core::Window::_addGUIElement()");
       if ( gel.opts && gel.opts.focusable ) {
+        gel._addHook('focus', function() {
+          self._guiElement = this;
+        });
         this._addHook('blur', function() {
           gel.blur();
         });

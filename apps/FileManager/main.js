@@ -387,14 +387,6 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev) {
-    Window.prototype._onKeyEvent.apply(this, arguments);
-    var fileView = this._getGUIElement('FileManagerFileView');
-    if ( fileView ) {
-      fileView.onKeyPress(ev);
-    }
-  };
-
   ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {
     if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
 
