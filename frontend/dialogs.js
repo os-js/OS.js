@@ -835,7 +835,7 @@
       if ( this.type == 'save' ) {
         var check = this.input ? check = OSjs.Utils.escapeFilename(this.input.getValue()) : '';
         if ( check ) {
-          item = fileList.$view.getItemByKey('filename', check);
+          item = fileList.viewRef.getItemByKey('filename', check);
           if ( item !== null ) {
             var wm = OSjs.API.getWMInstance();
             var self = this;
