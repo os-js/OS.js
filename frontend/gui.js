@@ -32,6 +32,8 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  var _PreviousGUIElement;
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -338,14 +340,20 @@
   };
 
   GUIElement.prototype.focus = function() {
+    if ( !this.opts.focusable ) { return false; }
     if ( this.focused ) { return false; }
+    if ( _PreviousGUIElement && _PreviousGUIElement.id != this.id ) {
+      _PreviousGUIElement.blur();
+    }
     console.debug("GUIElement::focus()", this.id, this.name);
     this.focused = true;
     this._fireHook('focus');
+    _PreviousGUIElement = this;
     return true;
   };
 
   GUIElement.prototype.blur = function() {
+    if ( !this.opts.focusable ) { return false; }
     if ( !this.focused ) { return false; }
     console.debug("GUIElement::blur()", this.id, this.name);
     this.focused = false;
@@ -2604,6 +2612,7 @@
    */
   var Tabs = function(name, opts) {
     opts = opts || {};
+    opts.focusable = false;
 
     this.$container   = null;
     this.$tabs        = null;
@@ -2612,7 +2621,7 @@
     this.tabCount     = 0;
     this.currentTab   = null;
 
-    GUIElement.apply(this, [name, {focusable: true}]);
+    GUIElement.apply(this, [name, opts]);
   };
 
   Tabs.prototype = Object.create(GUIElement.prototype);
