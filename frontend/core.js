@@ -2337,6 +2337,10 @@
     this._onChange('blur');
     this._fireHook('blur');
 
+    if ( _WIN && _WIN._wid == this._wid ) {
+      _WIN = null;
+    }
+
     return true;
   };
 
