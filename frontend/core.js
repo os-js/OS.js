@@ -2040,7 +2040,7 @@
       throw "Adding a GUI Element requires a parentNode";
     }
     if ( gel instanceof OSjs.GUI.GUIElement ) {
-      gel.wid = this._wid;
+      gel._setWindow(this);
 
       //console.log("OSjs::Core::Window::_addGUIElement()");
       if ( gel.opts && gel.opts.focusable ) {
@@ -2675,10 +2675,6 @@
   };
 
   DialogWindow.prototype = Object.create(Window.prototype);
-
-  DialogWindow.prototype.init = function() {
-    return Window.prototype.init.apply(this, arguments);
-  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

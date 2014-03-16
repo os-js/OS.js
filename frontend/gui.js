@@ -194,7 +194,7 @@
    *  dndDrop         bool          Enable DnD Droppable (Default = DnD)
    *  dndDrag         bool          Enable DnD Draggable (Default = DnD)
    *  dndOpts         Object        DnD Options
-   *  focusable       bool          If element is focusable (Default = false)
+   *  focusable       bool          If element is focusable (Default = true)
    */
   var GUIElement = (function() {
     var _Count = 0;
@@ -212,8 +212,10 @@
       this.hasCustomKeys  = opts.hasCustomKeys === true;
       this.onItemDropped  = opts.onItemDropped  || function() {};
       this.onFilesDropped = opts.onFilesDropped || function() {};
+      this._onFocusWindow = function() {};
       this.$element       = null;
       this.inited         = false;
+      this._window        = null;
       this._hooks         = {
         focus   : [],
         blur    : [],
@@ -233,7 +235,7 @@
         this.opts.dndOpts = {};
       }
       if ( typeof this.opts.focusable === 'undefined' ) {
-        this.opts.focusable = false;
+        this.opts.focusable = true;
       }
 
       this.init();
@@ -268,7 +270,7 @@
 
     if ( this.opts.focusable ) {
       this._addEventListener(this.$element, 'mousedown', function(ev) {
-        self.focus();
+        self._onFocus(ev);
       });
     }
 
@@ -339,6 +341,14 @@
     return true;
   };
 
+  GUIElement.prototype._onFocus = function(ev) {
+    ev.stopPropagation();
+    OSjs.GUI.blurMenu();
+
+    this.focus();
+    this._onFocusWindow.call(this, ev);
+  };
+
   GUIElement.prototype.focus = function() {
     if ( !this.opts.focusable ) { return false; }
     if ( this.focused ) { return false; }
@@ -359,6 +369,15 @@
     this.focused = false;
     this._fireHook('blur');
     return true;
+  };
+
+  GUIElement.prototype._setWindow = function(w) {
+    this.wid      = w._wid;
+    this._window  = w;
+
+    this._onFocusWindow = function() {
+      w._focus();
+    };
   };
 
   /**
@@ -498,8 +517,7 @@
    *  render            bool            Render on create (default = true when data is supplied)
    */
   var _DataView = function(className, name, opts) {
-    opts            = opts || {};
-    opts.focusable  = true;
+    opts = opts || {};
 
     this.className  = className;
     this.$view      = null;
@@ -1330,7 +1348,6 @@
    */
   var Textarea = function(name, opts) {
     opts = opts || {};
-    opts.focusable = true;
 
     this.$area = null;
     this.strLen = 0;
@@ -2346,6 +2363,7 @@
    *  onInited      Function      Callback - When initialized
    */
   var RichText = function(name, opts) {
+    opts = opts || {};
     if ( !OSjs.Compability.richtext ) { throw "Your platform does not support RichText editing"; }
 
     this.$view          = null;
@@ -2354,7 +2372,7 @@
     this.opts.onInited  = this.opts.onInited || function() {};
     this.loadContent    = null;
 
-    GUIElement.apply(this, [name, {focusable: true}]);
+    GUIElement.apply(this, [name, opts]);
   };
 
   RichText.prototype = Object.create(GUIElement.prototype);
@@ -2612,7 +2630,6 @@
    */
   var Tabs = function(name, opts) {
     opts = opts || {};
-    opts.focusable = false;
 
     this.$container   = null;
     this.$tabs        = null;
@@ -2731,7 +2748,6 @@
    */
   var Text = function(name, opts) {
     opts            = opts || {};
-    opts.focusable  = true;
     opts.type       = opts.type || 'text';
 
     _Input.apply(this, ['GUIText', 'input', name, opts]);
@@ -3498,7 +3514,6 @@
    */
   var FileView = function(name, opts) {
     opts = opts || {};
-    opts.focusable = true;
 
     var self = this;
     var mimeFilter = [];
@@ -3558,11 +3573,12 @@
   };
 
   FileView.prototype.init = function() {
-    var el = GUIElement.prototype.init.apply(this, ['GUIFileView']);
+    return GUIElement.prototype.init.apply(this, ['GUIFileView']);
+  };
 
-    this.createView(this.startViewType, el);
-
-    return el;
+  FileView.prototype.update = function() {
+    GUIElement.prototype.update.apply(this, arguments);
+    this.createView(this.startViewType, this.getRoot());
   };
 
   FileView.prototype.createView = function(v, root) {
@@ -3587,6 +3603,12 @@
       } else {
         throw "Invalid view type: " + v;
       }
+
+      // NOTE: Some quirks for having a child element
+      if ( this._window ) {
+        this.viewRef._setWindow(this._window);
+      }
+      this.viewRef._hooks = this._hooks;
 
       this.viewRef.onActivated  = function(path, type, mime) {
         if ( type === 'dir' ) {

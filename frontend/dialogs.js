@@ -146,7 +146,7 @@
   };
 
   StandardDialog.prototype._onKeyEvent = function(ev) {
-    DialogWindow.prototype._onKeyEvent(this, arguments);
+    DialogWindow.prototype._onKeyEvent.apply(this, arguments);
     if ( ev.keyCode === OSjs.Utils.Keys.ESC ) {
       if ( this.args.buttonClose ) {
         this.end('close');

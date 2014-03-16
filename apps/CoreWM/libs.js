@@ -1136,6 +1136,7 @@
     };
     GUI.IconView.apply(this, ['CoreWMDesktopIconView', opts]);
 
+    // IMPORTANT
     this._addHook('blur', function() {
       this.setSelected(null, null);
     });
@@ -1148,10 +1149,15 @@
 
     var el = this.getRoot();
     if ( el ) {
-      // Make sure we trigger the default events
+      // IMPORTANT Make sure we trigger the default events
       this._addEvent(el, 'onmousedown', function(ev) {
         ev.preventDefault();
         OSjs.GUI.blurMenu();
+
+        var c = OSjs.API.getCoreInstance();
+        if ( c ) {
+          c._onMouseDown(ev);
+        }
         return false;
       });
       this._addEvent(el, 'oncontextmenu', function(ev) {
