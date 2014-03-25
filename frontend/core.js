@@ -53,6 +53,8 @@
   var _CORE;              // Running Core process
   var _HANDLER;           // Running Handler process
   var _$LOADING;          // Loading DOM Element
+  var _$SPLASH_TXT;       //   It's description field
+  var _$SPLASH;           // Loading Screen DOM Element
   var _MOUSELOCK = true;  // Mouse inside view ?!
 
   var ANIMDURATION = 300; // Animation duration constant
@@ -657,7 +659,12 @@
             self._onResize();
           }, ANIMDURATION);
         });
+
         _HANDLER.onInitialized();
+
+        if ( _$SPLASH ) {
+          _$SPLASH.style.display = 'none';
+        }
       });
     };
 
@@ -2720,6 +2727,9 @@
         OSjs.Hooks.onInitialize();
       }
     }
+
+    _$SPLASH              = document.getElementById('LoadingScreen');
+    _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
 
     _$LOADING             = document.createElement('div');
     _$LOADING.id          = "Loading";

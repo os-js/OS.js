@@ -55,6 +55,26 @@ body {
 }
 
 /**
+ * Loading Screen
+ */
+#LoadingScreen {
+  width : 260px;
+  height : 70px;
+  padding : 20px;
+  position : absolute;
+  top : 50%;
+  left : 50%;
+  margin-top : -55px;
+  margin-left : -150px;
+  z-index : 9999999;
+  color : #fff;
+  border : 1px solid #fff;
+}
+#LoadingScreen h1 {
+  font-size : 140%;
+}
+
+/**
  * Debug Notification
  */
 #DebugNotice {
