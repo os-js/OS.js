@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for i in `find themes/*.less`; do
+  if [[ ! "$i" == themes/_* ]]; then
+    echo "Generating from '$i'"
+    lessc $i ${i%.*}.css
+  fi
+done
+
