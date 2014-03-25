@@ -243,7 +243,9 @@
     };
   })();
 
-  GUIElement.prototype.init = function(className) {
+  GUIElement.prototype.init = function(className, tagName) {
+    tagName = tagName || 'div';
+
     var self = this;
 
     var classNames = [
@@ -253,7 +255,7 @@
       OSjs.Utils.$safeName(this.name)
     ];
 
-    this.$element = document.createElement('div');
+    this.$element = document.createElement(tagName);
     this.$element.className = classNames.join(' ');
 
     if ( this.opts.dnd && this.opts.dndDrop && OSjs.Compability.dnd ) {
@@ -661,7 +663,6 @@
     return item;
   };
 
-  // TODO: _DataView -- TreeView onKeyPress
   _DataView.prototype.onKeyPress = function(ev) {
     if ( this.destroyed ) { return false; }
     if ( !GUIElement.prototype.onKeyPress.apply(this, arguments) ) { return false; }
@@ -671,6 +672,7 @@
       return true;
     }
     if ( this.className == 'TreeView' ) {
+      // TreeView has custom code
       return true;
     }
 
@@ -2324,6 +2326,9 @@
     this.onCollapse.apply(this, [ev, (item ? item._element : null), item]);
   };
 
+  TreeView.prototype.onKeyPress = function(ev) {
+  };
+
   TreeView.prototype.setData = function(data, render) {
     this.total = 0;
     _DataView.prototype.setData.apply(this, arguments);
@@ -2984,6 +2989,32 @@
     _Input.apply(this, ['GUIButton', 'button', name, opts]);
   };
   Button.prototype = Object.create(_Input.prototype);
+
+  /**
+   * Label
+   *
+   * options: (See _Input for more)
+   *  label     String      The label to display
+   *  forInput  String      ID/Name of input element (optional HTML feature)
+   */
+  var Label = function(name, opts) {
+    opts            = opts || {};
+    opts.focusable  = false;
+    opts.label      = opts.label || opts.value || 'GUILabel';
+
+    GUIElement.apply(this, [name, opts]);
+  };
+
+  Label.prototype = Object.create(GUIElement.prototype);
+
+  Label.prototype.init = function() {
+    var el = GUIElement.prototype.init.apply(this, ['GUILabel', 'label']);
+    el.appendChild(document.createTextNode(this.opts.label));
+    if ( this.opts.forInput ) {
+      el.setAttribute('for', this.opts.forInput);
+    }
+    return el;
+  };
 
   /**
    * ScrollView
@@ -3872,6 +3903,7 @@
   OSjs.GUI.Button       = Button;
   OSjs.GUI.ScrollView   = ScrollView;
   OSjs.GUI.PanedView    = PanedView;
+  OSjs.GUI.Label        = Label;
 
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;

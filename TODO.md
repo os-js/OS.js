@@ -20,7 +20,6 @@
 * Custom styling for GUISelectList
 * Custom styling for GUICheckbox
 * Custom styling for GUIRadio
-* GUILabel
 
 ### Not prioritized
 * Create bin/ scripts for nodejs (redo create-application for PHP)

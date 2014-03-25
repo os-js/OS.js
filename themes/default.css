@@ -619,3 +619,7 @@ body {
 .GUIMenuBar {
   background: #c2c2c2;
 }
+/* GUILabel */
+.GUILabel {
+  cursor: default;
+}

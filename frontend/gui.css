@@ -809,3 +809,10 @@ body .GUIToolbar button {
        -o-box-sizing: border-box;
           box-sizing: border-box;
 }
+
+/**
+ * GUILabel
+ */
+.GUILabel {
+  display : block;
+}
