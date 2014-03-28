@@ -171,6 +171,11 @@
       }
 
       compability.webgl = (compability.canvasContext.length > 1);
+      if ( !compability.webgl ) {
+        if ( 'WebGLRenderingContext' in window ) {
+          compability.webgl = true;
+        }
+      }
     }
 
     try {
