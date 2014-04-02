@@ -8,8 +8,7 @@ Make sure these directories exist and are readable+writable by the running web-s
 
 More information on configuring the backend and frontend on Wiki.
 
-You cannot run OS.js without some sort of web-server because of browser cross-origin restrictions (it is possible,
-but would require to modify browser settings, HTML file inclusions and (resource)handler)
+*Small Note: OS.js will not run without a web-server unless you modify browser cross-origin settings and update files to load from relative paths.*
 
 ### PHP5 With Apache
 * Clone OS.js-v2 (use `git --recursive` to pull dependency packages automatically)
