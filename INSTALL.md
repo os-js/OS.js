@@ -13,6 +13,7 @@ More information on configuring the backend and frontend on Wiki.
 ### PHP5 With Apache
 * Clone OS.js-v2 (use `git --recursive` to pull dependency packages automatically)
 * Set up an Apache vhost and point to cloned directory (If you have a "web hosting service", you can most likely skip this)
+  * Example in `doc/apache.conf`
   * Make sure .htaccess is allowed
   * Make sure mod_rewrite is enabled
 
