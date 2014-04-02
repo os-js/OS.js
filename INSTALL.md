@@ -27,6 +27,6 @@ More information on configuring the backend and frontend on Wiki.
 * Clone OS.js-v2 with (git --recursive)
 * Run `backend/server.js`
 
-## Lighttpd
+### Lighttpd
 
 See `doc/lighttpd.conf` for an example
