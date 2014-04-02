@@ -30,4 +30,8 @@ You should now be up and running :)
 * Clone OS.js-v2 with (git --recursive)
 * Run `backend/server.js`
 
+## Lighttpd
+
+See `doc/lighttpd.conf` for an example
+
 You should now be up and running :)
