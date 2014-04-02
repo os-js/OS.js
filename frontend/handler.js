@@ -53,6 +53,18 @@
     console.info("PackageManager::load()");
 
     OSjs.Utils.Ajax(this.uri, function(response, httpRequest, url) {
+
+
+      if ( typeof response === "string" ) {
+        if ( response.match(/^\{/) ) {
+          try {
+            response = JSON.parse(response);
+          } catch ( e  ){
+            console.warn("FAILED TO FORCE JSON MIME TYPE", e);
+          }
+        }
+      }
+
       if ( response ) {
         self._setPackages(response);
         callback(true);
