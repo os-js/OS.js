@@ -17,8 +17,6 @@ but would require to modify browser settings, HTML file inclusions and (resource
   * Make sure .htaccess is allowed
   * Make sure mod_rewrite is enabled
 
-You should now be up and running :)
-
 ### PHP5 Internal Web-server
 * This is mostly used for debugging and testing purposes (PHP 5.4+)
 * Clone OS.js-v2 (use `git --recursive` to pull dependency packages automatically)
@@ -33,5 +31,3 @@ You should now be up and running :)
 ## Lighttpd
 
 See `doc/lighttpd.conf` for an example
-
-You should now be up and running :)
