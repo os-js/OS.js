@@ -1796,8 +1796,8 @@
         OSjs.Utils.$addClass(main, 'WindowHintResizing');
       }
 
-      sx = ev.clientX;
-      sy = ev.clientY;
+      sx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
+      sy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
       action = a;
 
       document.addEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
@@ -1834,8 +1834,10 @@
     var onMouseMove = function(ev) {
       if ( !_MOUSELOCK ) { return; }
       if ( action === null ) { return; }
-      var dx = ev.clientX - sx;
-      var dy = ev.clientY - sy;
+      var cx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
+      var cy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
+      var dx = cx - sx;
+      var dy = cy - sy;
       var rx = px + dx;
       var ry = py + dy;
 
