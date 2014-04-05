@@ -169,7 +169,7 @@ body.WallpaperStrech {
   position : absolute;
   top : 0px;
   left : 26px;
-  right : 20px;
+  right : 0px; /* Calculated in script */
   height : 26px;
   z-index : 1;
   overflow : hidden;

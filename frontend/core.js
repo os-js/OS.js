@@ -1668,10 +1668,12 @@
     // Window -> Top -> Buttons
     var windowButtons       = document.createElement('div');
     windowButtons.className = 'WindowButtons';
-    this._addEvent(windowButtons, 'onmousedown', function(ev) {
-      ev.preventDefault();
-      return stopPropagation(ev);
-    });
+    if ( !isTouch ) {
+      this._addEvent(windowButtons, 'onmousedown', function(ev) {
+        ev.preventDefault();
+        return stopPropagation(ev);
+      });
+    }
 
     var buttonMinimize        = document.createElement('div');
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
@@ -1882,8 +1884,8 @@
     this._$disabled = windowDisabled;
 
     document.body.appendChild(this._$element);
+    /*
     var buttonsWidth = 0;
-
     if ( this._properties.allow_maximize ) {
       buttonsWidth += buttonMaximize.offsetWidth;
     }
@@ -1893,7 +1895,10 @@
     if ( this._properties.allow_close ) {
       buttonsWidth += buttonClose.offsetWidth;
     }
-    windowTitle.style.marginRight = buttonsWidth + 'px';
+
+    //windowTitle.style.marginRight = buttonsWidth + 'px';
+    */
+    windowTitle.style.right = windowButtons.offsetWidth + 'px';
 
     this._onChange('create');
     this._toggleLoading(false);
