@@ -1655,6 +1655,8 @@
       ev.preventDefault();
     });
     this._addEvent(windowIcon, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
       self._onWindowIconClick(ev, this);
     });
 
@@ -1675,6 +1677,7 @@
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
     buttonMinimize.innerHTML  = "&nbsp;";
     this._addEvent(buttonMinimize, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
+      ev.preventDefault();
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'minimize');
       return false;
@@ -1687,6 +1690,7 @@
     buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
     buttonMaximize.innerHTML  = "&nbsp;";
     this._addEvent(buttonMaximize, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
+      ev.preventDefault();
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'maximize');
       return false;
@@ -1699,6 +1703,7 @@
     buttonClose.className = 'WindowButton WindowButtonClose';
     buttonClose.innerHTML = "&nbsp;";
     this._addEvent(buttonClose, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
+      ev.preventDefault();
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'close');
       return false;
