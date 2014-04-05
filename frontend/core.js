@@ -1654,14 +1654,10 @@
     this._addEvent(windowIcon, 'ondblclick', function(ev) {
       ev.preventDefault();
     });
-    this._addEvent(windowIcon, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
+    this._addEvent(windowIcon, (isTouch ? 'touchend' : 'onclick'), function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       self._onWindowIconClick(ev, this);
-    });
-    this._addEvent(windowIcon, 'oncontextmenu', function(ev) {
-      ev.stopPropagation();
-      return false;
     });
 
     // Window -> Top -> Title
@@ -1682,40 +1678,42 @@
     var buttonMinimize        = document.createElement('div');
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
     buttonMinimize.innerHTML  = "&nbsp;";
-    this._addEvent(buttonMinimize, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      self._onWindowButtonClick(ev, this, 'minimize');
-      return false;
-    });
-    if ( !this._properties.allow_minimize ) {
+    if ( this._properties.allow_minimize ) {
+      this._addEvent(buttonMinimize, (isTouch ? 'touchend' : 'onclick'), function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'minimize');
+        return false;
+      });
+    } else {
       buttonMinimize.style.display = 'none';
     }
 
     var buttonMaximize        = document.createElement('div');
     buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
     buttonMaximize.innerHTML  = "&nbsp;";
-    this._addEvent(buttonMaximize, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      self._onWindowButtonClick(ev, this, 'maximize');
-      return false;
-    });
-    if ( !this._properties.allow_maximize ) {
+    if ( this._properties.allow_maximize ) {
+      this._addEvent(buttonMaximize, (isTouch ? 'touchend' : 'onclick'), function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'maximize');
+        return false;
+      });
+    } else {
       buttonMaximize.style.display = 'none';
     }
 
     var buttonClose       = document.createElement('div');
     buttonClose.className = 'WindowButton WindowButtonClose';
     buttonClose.innerHTML = "&nbsp;";
-    this._addEvent(buttonClose, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      self._onWindowButtonClick(ev, this, 'close');
-      return false;
-    });
-
-    if ( !this._properties.allow_close ) {
+    if ( this._properties.allow_close ) {
+      this._addEvent(buttonClose, (isTouch ? 'touchend' : 'onclick'), function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'close');
+        return false;
+      });
+    } else {
       buttonClose.style.display = 'none';
     }
 
@@ -1745,7 +1743,7 @@
     var windowDisabled            = document.createElement('div');
     windowDisabled.className      = 'WindowDisabledOverlay';
     //windowDisabled.style.display  = 'none';
-    this._addEvent(windowDisabled, 'onmousedown', function(ev) {
+    this._addEvent(windowDisabled, (isTouch ? 'touchstart' : 'onmousedown'), function(ev) {
       ev.preventDefault();
       return false;
     });
