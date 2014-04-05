@@ -1510,6 +1510,8 @@
 
   Window.prototype.init = function(_wm) {
     var self = this;
+    var isTouch = OSjs.Utils.getCompability().touch;
+
     console.group("OSjs::Core::Window::init()");
 
     this._state.focused = false;
@@ -1652,7 +1654,7 @@
     this._addEvent(windowIcon, 'ondblclick', function(ev) {
       ev.preventDefault();
     });
-    this._addEvent(windowIcon, 'onclick', function(ev) {
+    this._addEvent(windowIcon, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
       self._onWindowIconClick(ev, this);
     });
 
@@ -1672,7 +1674,7 @@
     var buttonMinimize        = document.createElement('div');
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
     buttonMinimize.innerHTML  = "&nbsp;";
-    this._addEvent(buttonMinimize, 'onclick', function(ev) {
+    this._addEvent(buttonMinimize, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'minimize');
       return false;
@@ -1684,7 +1686,7 @@
     var buttonMaximize        = document.createElement('div');
     buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
     buttonMaximize.innerHTML  = "&nbsp;";
-    this._addEvent(buttonMaximize, 'onclick', function(ev) {
+    this._addEvent(buttonMaximize, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'maximize');
       return false;
@@ -1696,7 +1698,7 @@
     var buttonClose       = document.createElement('div');
     buttonClose.className = 'WindowButton WindowButtonClose';
     buttonClose.innerHTML = "&nbsp;";
-    this._addEvent(buttonClose, 'onclick', function(ev) {
+    this._addEvent(buttonClose, (isTouch ? 'touchstart' : 'onclick'), function(ev) {
       ev.stopPropagation();
       self._onWindowButtonClick(ev, this, 'close');
       return false;
@@ -1776,7 +1778,6 @@
     var action = null;
     var moved = false;
     var startRect = null;
-    var isTouch = OSjs.Utils.getCompability().touch;
 
     var onMouseDown = function(ev, a) {
       ev.preventDefault();
