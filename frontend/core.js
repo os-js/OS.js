@@ -1659,6 +1659,10 @@
       ev.stopPropagation();
       self._onWindowIconClick(ev, this);
     });
+    this._addEvent(windowIcon, 'oncontextmenu', function(ev) {
+      ev.stopPropagation();
+      return false;
+    });
 
     // Window -> Top -> Title
     var windowTitle       = document.createElement('div');
