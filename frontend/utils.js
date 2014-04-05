@@ -132,7 +132,7 @@
       socket         : (('WebSocket'       in window) && window['WebSocket']      !== null),
       worker         : (('Worker'          in window) && window['Worker']         !== null),
       dnd            : ('draggable' in document.createElement('span')),
-      touch          : ('ontouchstart' in window),
+      touch          : ('ontouchstart' in window) || (window.DocumentTouch && document instanceof DocumentTouch),
       orientation    : ('onorientationchange' in window),
       css            : {
         transition : detectCSSFeature('transition'),

@@ -1060,7 +1060,7 @@
    * options: (See _DataView for more)
    *  columns           Object          Columns
    *  rows              Array           Rows (data alias)
-   *  singleClick       bool            Single click to Activate (dblclick)
+   *  singleClick       bool            Single click to Activate (dblclick) forced on touch devices
    */
   var ListView = function(name, opts) {
     opts = opts || {};
@@ -1071,7 +1071,6 @@
     }
 
 
-    this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     this.columns          = opts.columns || [];
     this.$head            = null;
     this.$headTop         = null;
@@ -1081,6 +1080,11 @@
     this.$scroll          = null;
     this.lastSelectedDOM  = null;
     this.onCreateItem     = opts.onCreateItem   || function(el, iter, col) {};
+
+    this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
+    if ( OSjs.Utils.getCompability().touch ) {
+      this.singleClick = true;
+    }
 
     _DataView.apply(this, ['ListView', name, opts]);
   };
@@ -2022,13 +2026,19 @@
    *  icon = Path to icon
    *
    * options: (See _DataView for more)
-   *  iconSize      String        Icon Size (default = 32x32)
+   *  iconSize          String          Icon Size (default = 32x32)
+   *  singleClick       bool            Single click to Activate (dblclick) forced on touch devices
    */
   var IconView = function(name, opts) {
     opts = opts || {};
 
     this.$ul          = null;
     this.iconSize     = opts.size || '32x32';
+    this.singleClick  = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
+
+    if ( OSjs.Utils.getCompability().touch ) {
+      this.singleClick = true;
+    }
 
     _DataView.apply(this, ['IconView', name, opts]);
   };
@@ -2107,17 +2117,27 @@
         };
       })(iter);
 
-      li.onclick = (function(it) {
-        return function(ev) {
-          self._onSelect(ev, it);
-        };
-      })(iter);
+      if ( this.singleClick ) {
+        li.onclick = (function(it) {
+          return function(ev) {
+            self._onSelect(ev, it);
 
-      li.ondblclick = (function(it) {
-        return function(ev) {
-          self._onActivate(ev, it);
-        };
-      })(iter);
+            self._onActivate(ev, it);
+          };
+        })(iter);
+      } else {
+        li.onclick = (function(it) {
+          return function(ev) {
+            self._onSelect(ev, it);
+          };
+        })(iter);
+
+        li.ondblclick = (function(it) {
+          return function(ev) {
+            self._onActivate(ev, it);
+          };
+        })(iter);
+      }
 
       if ( imgContainer ) {
         li.appendChild(imgContainer);
@@ -2152,6 +2172,7 @@
    *  onCollapse        Function        Callback - When item has been collapsed
    *  data              Array           Data (Items)
    *  expanded          Mixed           What level to expand on render (Default = false (none), true = (1), int for level)
+   *  singleClick       bool            Single click to Activate (dblclick) forced on touch devices
    */
   var TreeView = function(name, opts) {
     opts = opts || {};
@@ -2167,6 +2188,11 @@
     this.expandLevel    = expand;
     this.onExpand       = opts.onExpand       || function(ev, el, item) {};
     this.onCollapse     = opts.onCollapse     || function(ev, el, item) {};
+
+    this.singleClick    = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
+    if ( OSjs.Utils.getCompability().touch ) {
+      this.singleClick = true;
+    }
 
     _DataView.apply(this, ['TreeView', name, opts]);
   };
@@ -2247,23 +2273,36 @@
           };
         })(iter, !exp);
 
-        inner.onclick = (function(c, e) {
-          return function(ev) {
-            if ( e ) {
-              ev.stopPropagation();
-            }
-            self._onSelect(ev, c);
-          };
-        })(iter, !exp);
+        if ( this.singleClick ) {
+          inner.onclick = (function(c, e) {
+            return function(ev) {
+              if ( e ) {
+                ev.stopPropagation();
+              }
+              self._onSelect(ev, c);
 
-        inner.ondblclick = (function(c, e) {
-          return function(ev) {
-            if ( e ) {
-              ev.stopPropagation();
-            }
-            self._onActivate(ev, c);
-          };
-        })(iter, !exp);
+              self._onActivate(ev, c);
+            };
+          })(iter, !exp);
+        } else {
+          inner.onclick = (function(c, e) {
+            return function(ev) {
+              if ( e ) {
+                ev.stopPropagation();
+              }
+              self._onSelect(ev, c);
+            };
+          })(iter, !exp);
+
+          inner.ondblclick = (function(c, e) {
+            return function(ev) {
+              if ( e ) {
+                ev.stopPropagation();
+              }
+              self._onActivate(ev, c);
+            };
+          })(iter, !exp);
+        }
 
         li.appendChild(inner);
 

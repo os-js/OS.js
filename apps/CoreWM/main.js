@@ -97,6 +97,8 @@
     this.initWM(function() {
       this.initPanels();
       this.initIconView();
+
+      this.showSettings('Panels');
     });
 
     this.switcher = new OSjs.CoreWM.WindowSwitcher();
@@ -226,8 +228,6 @@
         return false;
       };
     };
-
-    //this.showSettings('Panels');
   };
 
   CoreWM.prototype.initPanels = function(applySettings) {

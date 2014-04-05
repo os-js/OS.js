@@ -1776,6 +1776,7 @@
     var action = null;
     var moved = false;
     var startRect = null;
+    var isTouch = OSjs.Utils.getCompability().touch;
 
     var onMouseDown = function(ev, a) {
       ev.preventDefault();
@@ -1799,8 +1800,8 @@
       sy = ev.clientY;
       action = a;
 
-      document.addEventListener('mousemove', onMouseMove, false);
-      document.addEventListener('mouseup', onMouseUp, false);
+      document.addEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
+      document.addEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
 
       return false;
     };
@@ -1820,8 +1821,8 @@
       OSjs.Utils.$removeClass(main, 'WindowHintMoving');
       OSjs.Utils.$removeClass(main, 'WindowHintResizing');
 
-      document.removeEventListener('mousemove', onMouseMove, false);
-      document.removeEventListener('mouseup', onMouseUp, false);
+      document.removeEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
+      document.removeEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
       action = null;
       sx = 0;
       sy = 0;
@@ -1851,17 +1852,17 @@
     };
 
     if ( this._properties.allow_move ) {
-      this._addEventListener(windowTop, 'mousedown', function(ev) {
+      this._addEventListener(windowTop, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
         onMouseDown(ev, 'move');
       });
     }
     if ( this._properties.allow_resize ) {
-      this._addEventListener(windowResize, 'mousedown', function(ev) {
+      this._addEventListener(windowResize, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
         onMouseDown(ev, 'resize');
       });
     }
 
-    this._addEventListener(main, 'mousedown', function(ev) {
+    this._addEventListener(main, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
       self._focus();
       return stopPropagation(ev);
     });
