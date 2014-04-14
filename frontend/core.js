@@ -1654,7 +1654,7 @@
     this._addEvent(windowIcon, 'ondblclick', function(ev) {
       ev.preventDefault();
     });
-    this._addEvent(windowIcon, (isTouch ? 'touchend' : 'onclick'), function(ev) {
+    this._addEventListener(windowIcon, (isTouch ? 'touchend' : 'click'), function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       self._onWindowIconClick(ev, this);
@@ -1679,7 +1679,7 @@
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
     buttonMinimize.innerHTML  = "&nbsp;";
     if ( this._properties.allow_minimize ) {
-      this._addEvent(buttonMinimize, (isTouch ? 'touchend' : 'onclick'), function(ev) {
+      this._addEventListener(buttonMinimize, (isTouch ? 'touchend' : 'click'), function(ev) {
         ev.preventDefault();
         ev.stopPropagation();
         self._onWindowButtonClick(ev, this, 'minimize');
@@ -1693,7 +1693,7 @@
     buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
     buttonMaximize.innerHTML  = "&nbsp;";
     if ( this._properties.allow_maximize ) {
-      this._addEvent(buttonMaximize, (isTouch ? 'touchend' : 'onclick'), function(ev) {
+      this._addEventListener(buttonMaximize, (isTouch ? 'touchend' : 'click'), function(ev) {
         ev.preventDefault();
         ev.stopPropagation();
         self._onWindowButtonClick(ev, this, 'maximize');
@@ -1707,7 +1707,7 @@
     buttonClose.className = 'WindowButton WindowButtonClose';
     buttonClose.innerHTML = "&nbsp;";
     if ( this._properties.allow_close ) {
-      this._addEvent(buttonClose, (isTouch ? 'touchend' : 'onclick'), function(ev) {
+      this._addEventListener(buttonClose, (isTouch ? 'touchend' : 'click'), function(ev) {
         ev.preventDefault();
         ev.stopPropagation();
         self._onWindowButtonClick(ev, this, 'close');
