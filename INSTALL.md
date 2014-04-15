@@ -3,7 +3,11 @@ Installation only requires a few small steps.
 
 **How to pull code:** `git pull --recursive https://github.com/andersevenrud/OS.js-v2.git`
 
-If you do not have Git, see the Wiki Installation article for more information
+Links:
+
+* [Installation overview](https://github.com/andersevenrud/OS.js-v2/wiki/Installation-overview)
+* [Installation and configuration help](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration)
+* [Installation without Git](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration#installation-without-git)
 
 ## Notes
 
