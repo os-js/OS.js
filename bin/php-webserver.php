@@ -6,7 +6,7 @@
 if ( preg_match('/^\/API/', $_SERVER["REQUEST_URI"]) ) {
   require '../backend/api.php';
   return true;
-if ( preg_match('/^\/FS\//', $_SERVER["REQUEST_URI"]) ) {
+} else if ( preg_match('/^\/FS\//', $_SERVER["REQUEST_URI"]) ) {
   $_GET['file'] = preg_replace('/^\/FS', '', $_SERVER["REQUEST_URI"]);
   require '../backend/api.php';
   return true;
