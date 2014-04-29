@@ -110,7 +110,7 @@ class FS
 
       if ( empty($opts['mime']) || $opts['mime'] === true ) {
         if ( $ftype == 'file' ) {
-          $mime = is_writable($fpath) ? fileMime($fpath) : null;
+          $mime = (is_writable($fpath) || is_readable($fpath)) ? fileMime($fpath) : null;
           if ( $mimeFilter ) {
             $skip = true;
             if ( $mime ) {
@@ -440,7 +440,7 @@ function truepath($path){
     }
     $path=implode(DIRECTORY_SEPARATOR, $absolutes);
     // resolve any symlinks
-    if(file_exists($path) && linkinfo($path)>0)$path=readlink($path);
+    if(file_exists($path) && is_link($path) && linkinfo($path)>0)$path=readlink($path);
     // put initial separator that could have been lost
     $path=!$unipath ? '/'.$path : $path;
     return $path;
