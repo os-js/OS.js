@@ -33,12 +33,14 @@ html, body {
   height : 100%;
 }
 body {
-  font-size : 12px;
-  font-family : Sans-serif, Arial;
   margin : 0;
   padding : 0;
   background-color : #000;
   overflow : hidden;
+}
+body, input, button, textarea, label {
+  font-size : 12px;
+  font-family : Sans-serif, Arial;
 }
 
 /**
