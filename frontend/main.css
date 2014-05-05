@@ -38,7 +38,7 @@ body {
   background-color : #000;
   overflow : hidden;
 }
-body, input, button, textarea, label {
+body, input, button, textarea, label, select {
   font-size : 12px;
   font-family : Sans-serif, Arial;
 }

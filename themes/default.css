@@ -97,7 +97,8 @@ body,
 input,
 button,
 textarea,
-label {
+label,
+select {
   font-family: OSjsFont, Sans-serif;
   color: #333333;
 }
