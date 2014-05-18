@@ -287,7 +287,7 @@
       titleText.appendChild(document.createTextNode(data.name));
 
       var title = document.createElement('span');
-      title.appendChild(document.createTextNode('Launching'));
+      title.appendChild(document.createTextNode('Launching '));
       title.appendChild(titleText);
       title.appendChild(document.createTextNode('...'));
 
