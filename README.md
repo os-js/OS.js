@@ -46,6 +46,8 @@ Comes bundeled with the default theme and some applications:
 
 *You can easily add more applications by using external repositories. More information on Wiki*
 
+An example repository: [OS.js-v2-extras](https://github.com/andersevenrud/OS.js-v2-extras)
+
 ## Demo
 
 You can have a look here: http://osjsv2.0o.no
