@@ -97,8 +97,6 @@
     this.initWM(function() {
       this.initPanels();
       this.initIconView();
-
-      this.showSettings('Panels');
     });
 
     this.switcher = new OSjs.CoreWM.WindowSwitcher();
