@@ -1,6 +1,6 @@
 YUI_EXEC="/opt/yuicompressor-2.4.8.jar"
-SRC_CORE_JS=$(shell find src/javascript/*.js src/javascript/handlers/demo.js)
-SRC_CORE_CSS=$(shell find src/stylesheets/*.css)
+SRC_CORE_JS=$(shell find src/javascript/* src/javascript/handlers/demo.js -type f -name "*.js")
+SRC_CORE_CSS=$(shell find src/stylesheets/ -type f -name "*.css")
 
 all:
 	echo ">>> Compiling JavaScript"
@@ -13,3 +13,9 @@ all:
 	
 	echo ">>> Compiling Applications"
 	cp -R src/packages/*/* dist/apps/
+
+php-webserver:
+	(cd src/web; php -S localhost:8000 ../server-php/webserver.php)
+
+node-webserver:
+	node src/server-node/server.js

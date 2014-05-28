@@ -32,12 +32,12 @@ See `doc/apache.conf` for an example
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
 
-* Run `php -S localhost:8000 ../server-php/webserver.php` from `src/web`
+* Run `make php-webserver`
 
 ### Node.js
 *Please note that the node server is not finished yet, but is working for development purposes*
 
-* Run `src/server-node/server.js`
+* Run `make node-webserver` or `node src/server-node/server.js`
 
 ### Lighttpd
 
