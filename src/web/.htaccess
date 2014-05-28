@@ -4,12 +4,9 @@ RewriteBase /
 RewriteCond %{REQUEST_URI} !^/index.html
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^API backend/api.php
-RewriteRule ^FS/(.*) backend/api.php?file=/$1
-RewriteRule ^FS backend/api.php?upload
-
-# Comment this line if you want to be able to run bin/ from web-server
-RewriteRule ^(bin|doc) - [F,NC]
+RewriteRule ^API ../server-php/api.php
+RewriteRule ^FS/(.*) ../server-php/api.php?file=/$1
+RewriteRule ^FS ../server-php/api.php?upload
 
 # For binding to other services
 <ifModule mod_proxy.c>

@@ -1,7 +1,9 @@
 # Installation
 Installation only requires a few small steps.
 
-**How to pull code:** `git pull --recursive https://github.com/andersevenrud/OS.js-v2.git`
+* **Pull code:** `git pull --recursive https://github.com/andersevenrud/OS.js-v2.git`
+* Run `make`
+* Set up a web-server (look below)
 
 Links:
 
@@ -18,6 +20,7 @@ More information on configuring the backend and frontend on Wiki.
 
 *Small Note: OS.js will not run without a web-server unless you modify browser cross-origin settings and update files to load from relative paths.*
 
+
 ### PHP5 With Apache
 
 See `doc/apache.conf` for an example
@@ -29,12 +32,12 @@ See `doc/apache.conf` for an example
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
 
-* Run `php -S localhost:8000 bin/php-webserver.php`
+* Run `php -S localhost:8000 ../server-php/webserver.php` from `src/web`
 
 ### Node.js
 *Please note that the node server is not finished yet, but is working for development purposes*
 
-* Run `backend/server.js`
+* Run `src/server-node/server.js`
 
 ### Lighttpd
 

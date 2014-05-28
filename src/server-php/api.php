@@ -29,7 +29,7 @@
  * @licence Simplified BSD License
  */
 
-$_dir = dirname(__FILE__);
+$_dir = __DIR__;
 if ( file_exists("{$_dir}/config.php") ) require "{$_dir}/config.php";
 require "vfs.php";
 
