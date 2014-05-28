@@ -3,6 +3,7 @@
 .DS_Store
 .git-old
 *-tmp.*
+src/server-node/node_modules/
 
 # External repositories
 apps-extras
@@ -14,4 +15,5 @@ backend/settings.json
 frontend/settings.js
 
 # Minimized files
-frontend/_all*
+dist/osjs.js
+dist/osjs.css
