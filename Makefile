@@ -1,6 +1,6 @@
 YUI_EXEC="/opt/yuicompressor-2.4.8.jar"
 SRC_CORE_JS=$(shell find src/javascript/*.js src/javascript/handlers/demo.js)
-SRC_CORE_CSS=$(shell find src/javascript/*.css)
+SRC_CORE_CSS=$(shell find src/stylesheets/*.css)
 
 all:
 	echo ">>> Compiling JavaScript"
