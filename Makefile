@@ -2,11 +2,9 @@
 # OS.js v2 Makefile
 #
 # Targets:
-# 	all              Build OS.js (default, same as 'uncompressed')
-# 	compressed       Build dist - compressed
-# 	uncompressed     Build dist - uncompressed
+# 	all              Build OS.js
+# 	compress         Compress dist 
 # 	clean            Clean dist
-#
 # 	core             Build only core files
 # 	packages         Build only package files
 # 	themes           Build only theme files
@@ -100,45 +98,43 @@ SRC_CORE_JS = src/javascript/utils.js \
 		src/javascript/handlers/demo.js \
 		src/javascript/main.js
 
-.PHONY: all clean core apps uncompressed compressed manifest
+.PHONY: all clean core apps compress manifest
 .DEFAULT: all
 
-all: uncompressed
-uncompressed: clean core themes packages normal manifest
-compressed: clean core themes packages minimize manifest
+#
+# BUILDING
+#
+
+all: clean core themes packages manifest
+
+compress:
+	@echo ">>> Making compressed distro"
+	java -jar ${YUI_EXEC} --type js --charset=utf-8 dist/osjs.js -o dist/osjs.js
+	java -jar ${YUI_EXEC} --type css --charset=utf-8 dist/osjs.css -o dist/osjs.css
 
 clean:
-	rm -f dist/.osjs.* ||:
 	rm -f dist/osjs.* ||:
 	rm -rf dist/packages/* ||:
 	rm -rf dist/themes/* ||:
 
 core:
 	@echo ">>> Compiling Core JavaScript"
-	cat ${SRC_CORE_JS} > dist/.osjs.js
-	
+	cat ${SRC_CORE_JS} > dist/osjs.js
 	@echo ">>> Compiling Core CSS"
-	cat ${SRC_CORE_CSS} > dist/.osjs.css
+	cat ${SRC_CORE_CSS} > dist/osjs.css
 
 packages:
 	@echo ">>> Compiling Packages"
 	cp -R src/packages/* dist/packages/
 
-minimize:
-	@echo ">>> Making compressed distro"
-	java -jar ${YUI_EXEC} --type js --charset=utf-8 dist/.osjs.js -o dist/osjs.js
-	java -jar ${YUI_EXEC} --type css --charset=utf-8 dist/.osjs.css -o dist/osjs.css
-	rm dist/.osjs.*
-
-normal:
-	@echo ">>> Compiling Theme CSS"
-	@echo ">>> Making uncompressed distro"
-	mv dist/.osjs.js dist/osjs.js
-	mv dist/.osjs.css dist/osjs.css
-
 themes:
+	@echo ">>> Compiling Theme CSS"
 	(bin/create-themes)
 	cp -R src/themes/wallpapers dist/themes/
+
+#
+# OTHER
+#
 
 manifest:
 	@echo ">>> Creating packge manifest"
