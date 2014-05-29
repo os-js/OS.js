@@ -108,27 +108,28 @@ SRC_CORE_JS = src/javascript/utils.js \
 all: clean core themes packages manifest
 
 compress:
-	@echo ">>> Making compressed distro"
+	@echo "\033[1;33mMaking compressed distro\033[0m"
 	java -jar ${YUI_EXEC} --type js --charset=utf-8 dist/osjs.js -o dist/osjs.js
 	java -jar ${YUI_EXEC} --type css --charset=utf-8 dist/osjs.css -o dist/osjs.css
 
 clean:
+	rm -f dist/packages.json ||:
 	rm -f dist/osjs.* ||:
 	rm -rf dist/packages/* ||:
 	rm -rf dist/themes/* ||:
 
 core:
-	@echo ">>> Compiling Core JavaScript"
+	@echo "\033[1;32mBuilding Core JavaScript\033[0m"
 	cat ${SRC_CORE_JS} > dist/osjs.js
-	@echo ">>> Compiling Core CSS"
+	@echo "\033[1;32mBuilding Core CSS\033[0m"
 	cat ${SRC_CORE_CSS} > dist/osjs.css
 
 packages:
-	@echo ">>> Compiling Packages"
+	@echo "\033[1;32mBuilding Packages\033[0m"
 	cp -R src/packages/* dist/packages/
 
 themes:
-	@echo ">>> Compiling Theme CSS"
+	@echo "\033[1;32mBuilding Themes\033[0m"
 	(bin/create-themes)
 	cp -R src/themes/wallpapers dist/themes/
 
@@ -137,7 +138,7 @@ themes:
 #
 
 manifest:
-	@echo ">>> Creating packge manifest"
+	@echo "\033[1;33mCreating package manifest\033[0m"
 	(bin/create-manifest)
 
 php-webserver:

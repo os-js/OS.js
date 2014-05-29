@@ -3,9 +3,8 @@
 for i in `find src/themes/*.less`; do
   if [[ ! "$i" == src/themes/_* ]]; then
     name=$(basename ${i%.*})
-    echo "--- Generating CSS for '${name}'"
+    echo -e "\033[1;34mBuilding theme '${name}'\033[0m"
     lessc $i dist/themes/${name}.css
-    echo "--- Copying resources in '${name}'..."
     cp -Rf src/themes/$name dist/themes/$name
   fi
 done
