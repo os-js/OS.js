@@ -31,6 +31,8 @@
   //
   // npm install node-fs-extra
   //
+  //
+  var rootDir = _path.join(_path.dirname(__filename), '/../../');
 
   // You can create your own 'settings.json' in this directory
   // to override these vaules
@@ -38,8 +40,8 @@
     port:       8000,
     directory:  null, // Automatic
     appdirs:    null, // Automatic, but overrideable
-    vfsdir:     '/opt/OSjs/home',
-    tmpdir:     '/opt/OSjs/tmp',
+    vfsdir:     _path.join(rootDir, 'vfs/home'),
+    tmpdir:     _path.join(rootDir, 'vfs/tmp'),
     mimes:      {
       '.bmp'    : 'image/bmp',
       '.css'    : 'text/css',
@@ -405,7 +407,7 @@
   console.log('***');
 
   var spath = _path.join(_path.dirname(__filename), 'settings.json');
-  var apath = _path.join(_path.dirname(__filename), 'apps');
+  var apath = _path.join(rootDir, 'src/packages/default');
   if ( (config.appdirs === null) || !(config.appdirs instanceof Array) ) {
     config.appdirs = [apath];
   }
@@ -507,7 +509,7 @@
         if ( path.match(/^\/FS/) ) {
           respondFile(path.replace(/^\/FS/, ''), request, response);
         } else {
-          respondFile(path, request, response, true);
+          respondFile(_path.join('/src/web/', path), request, response, true);
         }
       }
   }).listen(config.port);
