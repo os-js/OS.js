@@ -105,7 +105,7 @@
       var _onBugSuccess = function() {
         var wm = OSjs.API.getWMInstance();
         if ( wm ) {
-          wm.addWindow(new AlertDialog("The error was reported and will be looked into"));
+          wm.addWindow(new OSjs.Dialogs.Alert("The error was reported and will be looked into"));
         }
 
         ok.onClick();

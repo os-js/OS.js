@@ -56,7 +56,7 @@
     if ( !val ) {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
-        var d = new OSjs.Dialogs.AlertDialog(OSjs._("You need to select an application"));
+        var d = new OSjs.Dialogs.Alert(OSjs._("You need to select an application"));
         wm.addWindow(d);
         this._addChild(d);
       }

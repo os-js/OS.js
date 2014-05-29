@@ -10,7 +10,7 @@ if ( preg_match('/^\/API/', $_SERVER["REQUEST_URI"]) ) {
   require "{$root}/api.php";
   return true;
 } else if ( preg_match('/^\/FS\//', $_SERVER["REQUEST_URI"]) ) {
-  $_GET['file'] = preg_replace('/^\/FS', '', $_SERVER["REQUEST_URI"]);
+  $_GET['file'] = preg_replace('/^\/FS/', '', $_SERVER["REQUEST_URI"]);
   require "{$root}/api.php";
   return true;
 } else if ( preg_match('/^\/FS/', $_SERVER["REQUEST_URI"]) ) {

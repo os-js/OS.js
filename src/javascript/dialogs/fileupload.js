@@ -102,7 +102,7 @@
     this.$file.disabled = 'disabled';
     this.buttonCancel.setDisabled(true);
 
-    this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgressDialog(OSjs._("Uploading file...")));
+    this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs._("Uploading file...")));
     this.dialog.setDescription(OSjs._("Uploading '{0}' ({1} {2}) to {3}" + file.name, file.type, size, this.dest));
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
