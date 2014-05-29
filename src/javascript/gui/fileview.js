@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(GUIElement, ListView, TreeView, _DataView) {
 
   /////////////////////////////////////////////////////////////////////////////
   // FileView
@@ -76,7 +74,7 @@
             OSjs._("MIME")     + ": "  + item.mime || 'none'
           ]).join("\n");
 
-          createDraggable(el, {
+          OSjs.GUI.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
             data   : {
@@ -90,7 +88,7 @@
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
 
-          createDroppable(el, {
+          OSjs.GUI.createDroppable(el, {
             onItemDropped: function(ev, el, item, args) {
               return self.onItemDropped.call(self, ev, el, item, args);
             },
@@ -108,7 +106,7 @@
     var fileList = [];
     var _createIcon = function(iter) {
       var defIcon = 'status/gtk-dialog-question.png';
-      return getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '16x16');
+      return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '16x16');
     };
 
     var iter;
@@ -219,7 +217,7 @@
             OSjs._("MIME")     + ": "  + item.mime || 'none'
           ]).join("\n");
 
-          createDraggable(el, {
+          OSjs.GUI.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
             data   : {
@@ -233,7 +231,7 @@
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
 
-          createDroppable(el, {
+          OSjs.GUI.createDroppable(el, {
             onItemDropped: function(ev, el, item, args) {
               return self.onItemDropped.call(self, ev, el, item, args);
             },
@@ -253,7 +251,7 @@
     var fileList = [];
     var _createIcon = function(iter) {
       var defIcon = 'status/gtk-dialog-question.png';
-      return getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '32x32');
+      return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '32x32');
     };
 
     var iter;
@@ -326,7 +324,7 @@
             OSjs._("MIME")     + ": "  + item.mime || 'none'
           ]).join("\n");
 
-          createDraggable(el, {
+          OSjs.GUI.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
             data   : {
@@ -341,7 +339,7 @@
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
 
-          createDroppable(el, {
+          OSjs.GUI.createDroppable(el, {
             onItemDropped: function(ev, el, item, args) {
               return self.onItemDropped.call(self, ev, el, item, args);
             },
@@ -361,7 +359,7 @@
 
     var _callbackIcon = function(iter) {
       var icon = 'status/gtk-dialog-question.png';
-      return getFileIcon(iter.filename, iter.mime, iter.type, icon);
+      return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, icon);
     };
 
     var _callbackSize = function(iter) {
@@ -759,4 +757,4 @@
 
   OSjs.GUI.FileView     = FileView;
 
-})();
+})(OSjs.GUI.GUIElement, OSjs.GUI.ListView, OSjs.GUI.TreeView, OSjs.GUI._DataView);

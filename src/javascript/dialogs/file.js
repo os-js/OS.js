@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(StandardDialog) {
 
   /**
    * File Dialog Class
@@ -226,7 +224,7 @@
           var wm = OSjs.API.getWMInstance();
           if ( wm ) {
             self._toggleDisabled(true);
-            var conf = new ConfirmDialog(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path)), function(btn) {
+            var conf = new OSjs.Dialogs.ConfirmDialog(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path)), function(btn) {
               self._toggleDisabled(false);
               if ( btn == 'ok' ) {
                 self.dialogOK.call(self, path, mime);
@@ -271,9 +269,9 @@
         if ( wm ) {
           var dwin;
           if ( this.type === 'save' ) {
-            dwin = new AlertDialog(OSjs._('You need to select a file or enter new filename!'));
+            dwin = new OSjs.Dialogs.AlertDialog(OSjs._('You need to select a file or enter new filename!'));
           } else {
-            dwin = new AlertDialog(OSjs._('You need to select a file!'));
+            dwin = new OSjs.Dialogs.AlertDialog(OSjs._('You need to select a file!'));
           }
           wm.addWindow(dwin);
           this._addChild(dwin);
@@ -297,7 +295,7 @@
             var self = this;
             if ( wm ) {
               self._toggleDisabled(true);
-              var conf = new ConfirmDialog(OSjs._("Are you sure you want to overwrite the file '{0}'?", check), function(btn) {
+              var conf = new OSjs.Dialogs.ConfirmDialog(OSjs._("Are you sure you want to overwrite the file '{0}'?", check), function(btn) {
                 self._toggleDisabled(false);
                 if ( btn == 'ok' ) {
                   _ok.call(self, item.path, item.mime);
@@ -364,4 +362,4 @@
 
   OSjs.Dialogs.File               = FileDialog;
 
-})();
+})(OSjs.Dialogs.StandardDialog);

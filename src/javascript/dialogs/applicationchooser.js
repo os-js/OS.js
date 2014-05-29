@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(StandardDialog) {
 
   /**
    * Application Chooser Dialog
@@ -58,7 +56,7 @@
     if ( !val ) {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
-        var d = new AlertDialog(OSjs._("You need to select an application"));
+        var d = new OSjs.Dialogs.AlertDialog(OSjs._("You need to select an application"));
         wm.addWindow(d);
         this._addChild(d);
       }
@@ -135,4 +133,4 @@
 
   OSjs.Dialogs.ApplicationChooser = ApplicationChooserDialog;
 
-})();
+})(OSjs.Dialogs.StandardDialog);

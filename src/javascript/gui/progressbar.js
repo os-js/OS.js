@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(GUIElement) {
 
   /**
    * ProgressBar Element
@@ -85,4 +83,4 @@
 
   OSjs.GUI.ProgressBar  = ProgressBar;
 
-})();
+})(OSjs.GUI.GUIElement);

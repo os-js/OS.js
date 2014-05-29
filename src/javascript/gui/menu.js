@@ -29,8 +29,6 @@
  * @licence Simplified BSD License
  */
 (function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
 
   /**
    * Menu class

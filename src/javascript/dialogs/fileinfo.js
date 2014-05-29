@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(StandardDialog) {
 
   /**
    * File Information Dialog
@@ -92,4 +90,4 @@
 
   OSjs.Dialogs.FileInfo           = FileInformationDialog;
 
-})();
+})(OSjs.Dialogs.StandardDialog);

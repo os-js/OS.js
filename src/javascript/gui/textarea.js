@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(GUIElement, _Input) {
 
   /**
    * Textarea
@@ -100,4 +98,4 @@
 
   OSjs.GUI.Textarea     = Textarea;
 
-})();
+})(OSjs.GUI.GUIElement, OSjs.GUI._Input);

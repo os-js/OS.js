@@ -779,6 +779,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.GUI.GUIElement       = GUIElement;
+  OSjs.GUI._DataView        = _DataView;
+  OSjs.GUI._Input           = _Input;
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;
   OSjs.GUI.getFileIcon      = getFileIcon;

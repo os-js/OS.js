@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(GUIElement, _DataView) {
 
   /**
    * Icon View Element
@@ -180,4 +178,4 @@
 
   OSjs.GUI.IconView     = IconView;
 
-})();
+})(OSjs.GUI.GUIElement, OSjs.GUI._DataView);

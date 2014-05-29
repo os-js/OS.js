@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(StandardDialog) {
 
   /**
    * Font Dialog
@@ -164,4 +162,4 @@
 
   OSjs.Dialogs.Font               = FontDialog;
 
-})();
+})(OSjs.Dialogs.StandardDialog);

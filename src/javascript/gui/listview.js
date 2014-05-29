@@ -28,9 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
+(function(GUIElement, _DataView) {
 
   /**
    * List View Class
@@ -342,4 +340,4 @@
 
   OSjs.GUI.ListView     = ListView;
 
-})();
+})(OSjs.GUI.GUIElement, OSjs.GUI._DataView);

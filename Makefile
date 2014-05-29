@@ -1,5 +1,5 @@
 YUI_EXEC="/opt/yuicompressor-2.4.8.jar"
-SRC_CORE_JS=$(shell find src/javascript/* src/javascript/handlers/demo.js -type f -name "*.js")
+SRC_CORE_JS=$(shell find src/javascript/*.* src/javascript/gui/ src/javascript/dialogs/ src/javascript/handlers/demo.js -type f -name "*.js")
 SRC_CORE_CSS=$(shell find src/stylesheets/ -type f -name "*.css")
 
 
