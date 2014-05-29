@@ -1,19 +1,13 @@
-# Unwanted files
-*.sw*
+*.swp
+*.swo
 .DS_Store
 .git-old
 *-tmp.*
 src/server-node/node_modules/
-
-# External repositories
-apps-extras
-
-# Override files can be ignored
-backend/bugreport.php
-backend/config.php
-backend/settings.json
-frontend/settings.js
-
-# Minimized files
+src/server-php/bugreport.php
+src/server-php/config.php
+src/server-php/settings.json
+dist/settings.js
 dist/osjs.js
 dist/osjs.css
+dist/packages.json
