@@ -25,7 +25,7 @@ foreach ( $dirs as $path ) {
     continue;
   }
 
-  print "In '{$path}':\n";
+  print sprintf("\033[1;34mScanning repository '%s':\033[0m\n", basename($path));
   foreach ( scandir($path) as $i ) {
     $b = "{$path}/{$i}";
     if ( $i{0} == '.' ) continue;
@@ -47,13 +47,13 @@ foreach ( $dirs as $path ) {
           }
         }
 
-        print "- Added {$i}\n";
+        print "  \033[1;37mAdded package '$i'\033[0m\n";
 
         $data['path']    = "{$basedir}/{$i}";
         $data['iter']    = $i;
         $combined[$k]    = $data;
       } else {
-        print "- Skipped {$i} (parse error)\n";
+        print "  \033[1;31mSkipped {$i} (parse error):\033[0m\n";
         switch (json_last_error()) {
           case JSON_ERROR_NONE:
             echo '  No errors';
@@ -80,7 +80,7 @@ foreach ( $dirs as $path ) {
         print "\n";
       }
     } else {
-      print "- Skipped {$i} (no manifest)\n";
+      print "  \033[1;37mSkipped {$i} (no manifest)\033[0m\n";
     }
   }
 }
@@ -89,11 +89,11 @@ ksort($combined);
 
 if ( $size = file_put_contents(ROOTDIR . "/dist/packages.json", json_encode($combined)) ) {
   $count = sizeof($combined);
-  print "Wrote package manifest: {$size}b ($count apps)\n";
+  print "\033[0;36mWrote package manifest: {$size}b ($count apps)\033[0m\n";
   exit(0);
 }
 
-print "Failed creating manifest :/\n";
+print "\033[1;31mFAILED CREATING MANIFEST\033[0m\n";
 exit(1);
 
 ?>
