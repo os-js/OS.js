@@ -1,0 +1,17 @@
+
+/* FileProgress */
+.FileProgressDialog {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 5px;
+  padding-top : 10px;
+}
+.FileProgressDialog .Description {
+  margin-bottom : 10px;
+}
+.FileProgressDialog .Description span {
+  font-weight : bold;
+}
+

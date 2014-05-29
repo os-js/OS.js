@@ -1,0 +1,14 @@
+
+
+/*
+.AlertDialog {
+}
+*/
+.AlertDialog .Buttons .OK {
+  float : none;
+  position : absolute;
+
+  right : auto !important;
+  left : 50% !important;
+  margin-left : -40px !important;
+}

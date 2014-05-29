@@ -1,0 +1,37 @@
+
+/* FontDialog */
+/*.FontDialog {
+}*/
+.FontDialog .GUIRichText {
+  position : absolute;
+  left : 0px;
+  right : 0px;
+  top : 165px;
+  height : 40px;
+  min-height : 40px;
+}
+.FontDialog .SelectFont {
+  position : absolute;
+  left : 0px;
+  top : 0px;
+  height : 160px;
+  width : 300px;
+}
+.FontDialog .SelectSize {
+  position : absolute;
+  left : 305px;
+  top : 0px;
+  height : 160px;
+  width : 135px;
+}
+.FontDialog.NoFontSizes .SelectFont {
+  right : 0px;
+  width : 440px;
+}
+
+/* FileInformationDialog */
+.FileInformationDialog .GUITextarea {
+  height : 325px;
+}
+
+
