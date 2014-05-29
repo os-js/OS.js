@@ -7,8 +7,8 @@ Installation only requires a few small steps.
 
 ## Requirements
 * **lessc**
-* **YUI Compressor** if you want to build compressed dists
-
+* **java** if you want to build compressed dists
+* **npm install node-fs-extra** if you want filesystem support on Node server
 
 ## Setting up a web-server
 

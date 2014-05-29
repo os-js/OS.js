@@ -11,7 +11,7 @@
 # 	manifest         Create package manifest
 #
 
-YUI_EXEC = "/opt/yuicompressor-2.4.8.jar"
+YUI_EXEC = "vendor/yuicompressor-2.4.8.jar"
 
 SRC_CORE_CSS =  src/stylesheets/main.css \
 		src/stylesheets/core.css \
