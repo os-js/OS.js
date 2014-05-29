@@ -32,4 +32,52 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * Input Dialog
+   */
+  var InputDialog = function(msg, val, onClose) {
+    StandardDialog.apply(this, ['InputDialog', {title: OSjs._("Input Dialog"), message: msg}, {width:300, height:150}, onClose]);
+    this._icon = 'status/dialog-information.png';
+
+    this.value = val || '';
+    this.input = null;
+  };
+
+  InputDialog.prototype = Object.create(StandardDialog.prototype);
+
+  InputDialog.prototype.init = function() {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+
+    var inputd = document.createElement('div');
+
+    this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(ev) {
+      if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
+        self.buttonConfirm.onClick(ev);
+        return;
+      }
+    }}), inputd);
+    this.$element.appendChild(inputd);
+    return root;
+  };
+
+  InputDialog.prototype._focus = function() {
+    StandardDialog.prototype._focus.apply(this, arguments);
+    if ( this.input ) {
+      this.input.focus();
+      this.input.select();
+    }
+  };
+
+  InputDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.buttonConfirm ) { return; }
+    this.end('ok', this.input.getValue());
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Dialogs.Input              = InputDialog;
+
 })();

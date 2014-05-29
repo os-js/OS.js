@@ -32,4 +32,20 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * Alert/Message Dialog
+   */
+  var AlertDialog = function(msg, onClose, args) {
+    args = OSjs.Utils.mergeObject({title: OSjs._("Alert Dialog"), message: msg, buttonCancel: false, buttonOkLabel: OSjs._("Close")}, (args || {}));
+    StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
+    this._icon = 'status/dialog-warning.png';
+  };
+  AlertDialog.prototype = Object.create(StandardDialog.prototype);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Dialogs.Alert              = AlertDialog;
+
 })();

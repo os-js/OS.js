@@ -32,4 +32,107 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * Application Chooser Dialog
+   */
+  var ApplicationChooserDialog = function(filename, mime, list, onClose) {
+    this.filename     = OSjs.Utils.filename(filename);
+    this.mime         = mime;
+    this.list         = list;
+    this.selectedApp  = null;
+    this.useDefault   = false;
+
+    var msg = ([OSjs._("Choose an application to open"), "<br />" ,OSjs.Utils.format("<span>{0}</span>", this.filename), OSjs.Utils.format("({0})", this.mime)]).join(" ");
+    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: OSjs._("Choose Application"), message: msg}, {width:400, height:360}, onClose]);
+  };
+
+  ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
+
+  ApplicationChooserDialog.prototype.destroy = function(wm) {
+    StandardDialog.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationChooserDialog.prototype.onConfirmClick = function(ev, val) {
+    if ( !this.buttonConfirm ) { return; }
+    /*var*/ val  = this.selectedApp;
+    if ( !val ) {
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        var d = new AlertDialog(OSjs._("You need to select an application"));
+        wm.addWindow(d);
+        this._addChild(d);
+      }
+      return;
+    }
+    this.end('ok', val, this.useDefault);
+  };
+
+  ApplicationChooserDialog.prototype.init = function(wm) {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var container = this.$element;
+    var list = [];
+    var refs = OSjs.API.getHandlerInstance().getApplicationsMetadata();
+
+    var _createIcon = function(icon, appname) {
+      return OSjs.API.getIcon(icon, appname);
+    };
+
+    var image, icon, name, iter;
+    for ( var i = 0, l = this.list.length; i < l; i++ ) {
+      name = this.list[i];
+      icon = null;
+      if ( refs[this.list[i]] ) {
+        iter = refs[this.list[i]];
+        if ( iter ) {
+          name = OSjs.Utils.format("{0} - {1}", (iter.name || name), (iter.description || name));
+          icon = _createIcon(iter.icon, iter.path);
+        }
+      }
+
+      list.push({
+        key:   this.list[i],
+        image: icon,
+        name:  name
+      });
+    }
+
+    var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
+    listView.setColumns([
+      {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
+      {key: 'name',  title: OSjs._('Name')},
+      {key: 'key',   title: 'Key', visible: false}
+     ]);
+    listView.onActivate = function(ev, el, item) {
+      if ( item && item.key ) {
+        self.selectedApp = item.key;
+        self.buttonConfirm.setDisabled(false);
+        self.end('ok', item.key, self.useDefault);
+      }
+    };
+    listView.onSelect = function(ev, el, item) {
+      if ( item && item.key ) {
+        self.selectedApp = item.key;
+        self.buttonConfirm.setDisabled(false);
+      }
+    };
+
+    this.buttonConfirm.setDisabled(true);
+
+    listView.setRows(list);
+    listView.render();
+
+    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: OSjs._('Use as default application for {0}', this.mime), value: this.useDefault, onChange: function(el, ev, value) {
+      self.useDefault = value ? true : false;
+    }}), container);
+
+    return root;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Dialogs.ApplicationChooser = ApplicationChooserDialog;
+
 })();

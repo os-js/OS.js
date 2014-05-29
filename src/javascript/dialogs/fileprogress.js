@@ -32,4 +32,61 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * File Progress dialog
+   */
+  var FileProgressDialog = function(title) {
+    DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
+
+    this.$desc                    = null;
+    this._title                   = title || OSjs._("File Operation Progress");
+    this._properties.allow_close  = false;
+    this._icon                    = 'actions/document-send.png';
+  };
+
+  FileProgressDialog.prototype = Object.create(DialogWindow.prototype);
+
+  FileProgressDialog.prototype.destroy = function() {
+    DialogWindow.prototype.destroy.apply(this, arguments);
+  };
+
+  FileProgressDialog.prototype.init = function() {
+    DialogWindow.prototype.init.apply(this, arguments);
+
+    var self = this;
+    var root = this._$root;
+
+    var el          = document.createElement('div');
+    el.className    = 'FileProgressDialog';
+
+    var desc        = document.createElement('div');
+    desc.className  = 'Description';
+    desc.innerHTML  = OSjs._('Loading...');
+
+
+    el.appendChild(desc);
+    this._addGUIElement(new OSjs.GUI.ProgressBar('FileProgressBar', 0), el);
+    root.appendChild(el);
+
+    this.$desc = desc;
+  };
+
+  FileProgressDialog.prototype.setDescription = function(d) {
+    if ( !this.$desc ) { return; }
+    this.$desc.innerHTML = d;
+  };
+
+  FileProgressDialog.prototype.setProgress = function(p) {
+    var el = this._getGUIElement('FileProgressBar');
+    if ( el ) {
+      el.setPercentage(p);
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Dialogs.FileProgress       = FileProgressDialog;
+
 })();

@@ -32,4 +32,136 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * Font Dialog
+   */
+  var FontDialog = function(args, onClose) {
+    args = args || {};
+    this.fontName   = args.name       || OSjs.API.getHandlerInstance().getConfig('Fonts')['default'];
+    this.fontSize   = args.size       || 12;
+    this.background = args.background || '#ffffff';
+    this.color      = args.color      || '#000000';
+    this.fonts      = args.list       || OSjs.API.getHandlerInstance().getConfig('Fonts').list;
+    this.sizeType   = args.sizeType   || 'px';
+    this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
+
+    this.minSize    = typeof args.minSize === 'undefined' ? 6  : args.minSize;
+    this.maxSize    = typeof args.maxSize === 'undefined' ? 30 : args.maxSize;
+
+    this.$selectFonts = null;
+    this.$selectSize  = null;
+
+    StandardDialog.apply(this, ['FontDialog', {title: OSjs._("Font Dialog")}, {width:450, height:270}, onClose]);
+  };
+
+  FontDialog.prototype = Object.create(StandardDialog.prototype);
+
+  FontDialog.prototype.updateFont = function(name, size) {
+    var rt = this._getGUIElement('GUIRichText');
+
+    if ( name !== null && name ) {
+      this.fontName = name;
+    }
+    if ( size !== null && size ) {
+      this.fontSize = size << 0;
+    }
+
+    var styles = [];
+    if ( this.sizeType == 'internal' ) {
+      styles = [
+        'font-family: ' + this.fontName,
+        'background: '  + this.background,
+        'color: '       + this.color
+      ];
+      rt.setContent('<font size="' + this.fontSize + '" style="' + styles.join(";") + '">' + this.text + '</font>');
+    } else {
+      styles = [
+        'font-family: ' + this.fontName,
+        'font-size: '   + this.fontSize + 'px',
+        'background: '  + this.background,
+        'color: '       + this.color
+      ];
+      rt.setContent('<div style="' + styles.join(";") + '">' + this.text + '</div>');
+    }
+  };
+
+  FontDialog.prototype.init = function() {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var option;
+
+    var rt = this._addGUIElement(new OSjs.GUI.RichText('GUIRichText'), this.$element);
+
+    this.$selectFont = document.createElement('select');
+    this.$selectFont.className = 'SelectFont';
+    this.$selectFont.setAttribute("size", "7");
+
+    for ( var f = 0; f < this.fonts.length; f++ ) {
+      option            = document.createElement('option');
+      option.value      = f;
+      option.appendChild(document.createTextNode(this.fonts[f]));
+      this.$selectFont.appendChild(option);
+      if ( this.fontName.toLowerCase() == this.fonts[f].toLowerCase() ) {
+        this.$selectFont.selectedIndex = f;
+      }
+    }
+
+    this._addEvent(this.$selectFont, 'onchange', function(ev) {
+      var i = this.selectedIndex;
+      if ( self.fonts[i] ) {
+        self.updateFont(self.fonts[i], null);
+      }
+    });
+
+    this.$element.appendChild(this.$selectFont);
+
+    if ( this.maxSize > 0 ) {
+      this.$selectSize = document.createElement('select');
+      this.$selectSize.className = 'SelectSize';
+      this.$selectSize.setAttribute("size", "7");
+
+      var i = 0;
+      for ( var s = this.minSize; s <= this.maxSize; s++ ) {
+        option            = document.createElement('option');
+        option.value      = s;
+        option.innerHTML  = s;
+        this.$selectSize.appendChild(option);
+        if ( this.fontSize == s ) {
+          this.$selectSize.selectedIndex = i;
+        }
+        i++;
+      }
+
+      this._addEvent(this.$selectSize, 'onchange', function(ev) {
+        var i = this.selectedIndex;
+        var o = this.options[i];
+        if ( o ) {
+          self.updateFont(null, o.value);
+        }
+      });
+
+      this.$element.appendChild(this.$selectSize);
+    } else {
+      this.$element.className += ' NoFontSizes';
+    }
+
+    return root;
+  };
+
+  FontDialog.prototype._inited = function() {
+    StandardDialog.prototype._inited.apply(this, arguments);
+    this.updateFont();
+  };
+
+  FontDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.buttonConfirm ) { return; }
+    this.end('ok', this.fontName, this.fontSize);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Dialogs.Font               = FontDialog;
+
 })();

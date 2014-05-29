@@ -32,4 +32,158 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * File Upload Dialog
+   */
+  var FileUploadDialog = function(dest, file, onClose) {
+    this.dest     = dest;
+    this.file     = file || null;
+    this.$file    = null;
+    this.dialog   = null;
+    this._wmref   = null;
+
+    this.uploadName = null;
+    this.uploadSize = null;
+    this.uploadMime = null;
+
+    var maxSize = OSjs.API.getHandlerInstance().getConfig('Core').MaxUploadSize;
+    var msg = OSjs._('Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes', this.dest, maxSize);
+    StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs._("Upload Dialog"), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
+    this._icon = 'actions/filenew.png';
+  };
+
+  FileUploadDialog.prototype = Object.create(StandardDialog.prototype);
+
+  FileUploadDialog.prototype.init = function(wm) {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+    this._wmref = wm;
+
+    var file = document.createElement('input');
+    file.type = 'file';
+    file.name = 'upload';
+    file.onchange = function(ev) {
+      self.onFileSelected(ev, file.files[0]);
+    };
+
+    this.$file = file;
+    this.$element.appendChild(file);
+    if ( this.file ) {
+      this.onFileSelected(null, this.file);
+    }
+  };
+
+  FileUploadDialog.prototype.destroy = function() {
+    this._wmref = null;
+    if ( this.dialog ) {
+      this.dialog._close();
+      this.dialog = null;
+    }
+
+    StandardDialog.prototype.destroy.apply(this, arguments);
+  };
+
+  FileUploadDialog.prototype._close = function() {
+    if ( this.buttonCancel && (this.buttonCancel.isDisabled()) ) {
+      return;
+    }
+    StandardDialog.prototype._close.apply(this, arguments);
+  };
+
+  FileUploadDialog.prototype.end = function() {
+    if ( this.dialog ) {
+      this.dialog._close();
+      this.dialog = null;
+    }
+
+    this.onClose.apply(this, arguments);
+    this._close();
+  };
+
+  FileUploadDialog.prototype.upload = function(file, size) {
+    this.$file.disabled = 'disabled';
+    this.buttonCancel.setDisabled(true);
+
+    this.dialog = this._wmref.addWindow(new FileProgressDialog(OSjs._("Uploading file...")));
+    this.dialog.setDescription(OSjs._("Uploading '{0}' ({1} {2}) to {3}" + file.name, file.type, size, this.dest));
+    this.dialog.setProgress(0);
+    this._addChild(this.dialog); // Importante!
+
+    this.uploadName = file.name;
+    this.uploadSize = size;
+    this.uploadMime = file.type;
+
+    var self = this;
+    OSjs.Utils.AjaxUpload(file, size, this.dest, {
+      progress: function() { self.onUploadProgress.apply(self, arguments); },
+      complete: function() { self.onUploadComplete.apply(self, arguments); },
+      failed:   function() { self.onUploadFailed.apply(self, arguments); },
+      canceled: function() { self.onUploadCanceled.apply(self, arguments); }
+    });
+
+    setTimeout(function() {
+      if ( self.dialog ) {
+        self.dialog._focus();
+      }
+    }, 100);
+  };
+
+  FileUploadDialog.prototype.onFileSelected = function(evt, file) {
+    console.info("FileUploadDialog::onFileSelected()", evt, file);
+    if ( file ) {
+      var fileSize = 0;
+      if ( file.size > 1024 * 1024 ) {
+        fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+      } else {
+        fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+      }
+
+      this.upload(file, fileSize);
+    }
+  };
+
+  FileUploadDialog.prototype.onUploadProgress = function(evt) {
+    if ( evt.lengthComputable ) {
+      var p = Math.round(evt.loaded * 100 / evt.total);
+      if ( this.dialog ) {
+        this.dialog.setProgress(p);
+      }
+    }
+  };
+
+  FileUploadDialog.prototype.onUploadComplete = function(evt) {
+    console.info("FileUploadDialog::onUploadComplete()");
+
+    this.buttonCancel.setDisabled(false);
+    this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
+  };
+
+  FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
+    console.info("FileUploadDialog::onUploadFailed()");
+    if ( error ) {
+      this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), error);
+    } else {
+      this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), OSjs._("Reason unknown..."));
+    }
+    this.buttonCancel.setDisabled(false);
+    this.end('fail', error);
+  };
+
+  FileUploadDialog.prototype.onUploadCanceled = function(evt) {
+    console.info("FileUploadDialog::onUploadCanceled()");
+    this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), OSjs._("Cancelled by user..."));
+    this.buttonCancel.setDisabled(false);
+    this.end('cancelled', evt);
+  };
+
+  FileUploadDialog.prototype._error = function() {
+    OSjs.API.error.apply(this, arguments); // Because this window may close automatically, and that will remove errors
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Dialogs.FileUpload         = FileUploadDialog;
+
 })();

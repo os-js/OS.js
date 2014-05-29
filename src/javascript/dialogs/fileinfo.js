@@ -32,4 +32,64 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * File Information Dialog
+   */
+  var FileInformationDialog = function(path, onClose) {
+    this.path = path;
+    onClose = onClose || function() {};
+    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._("File Information"), buttonCancel: false, buttonOkLabel: OSjs._("Close")}, {width:300, height:400}, onClose]);
+  };
+  FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
+
+  FileInformationDialog.prototype.init = function() {
+    var self = this;
+    var root = StandardDialog.prototype.init.apply(this, arguments);
+
+    var desc = OSjs._("Loading file information for: {0}", this.path);
+    var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
+
+    var _onError = function(err) {
+      var fname = OSjs.Utils.filename(self.path);
+      self._error(OSjs._("FileInformationDialog Error"), OSjs._("Failed to get file information for <span>{0}</span>", fname), err);
+      txt.setValue(OSjs._("Failed to get file information for: {0}", self.path));
+    };
+
+    var _onSuccess = function(data) {
+      var info = [];
+      for ( var i in data ) {
+        if ( data.hasOwnProperty(i) ) {
+          if ( i === 'exif' ) {
+            info.push(i + ":\n\n" + data[i]);
+          } else {
+            info.push(i + ":\n\t" + data[i]);
+          }
+        }
+      }
+      txt.setValue(info.join("\n\n"));
+    };
+
+    OSjs.API.call('fs', {method: 'fileinfo', 'arguments' : [this.path]}, function(res) {
+      if ( res ) {
+        if ( res.error ) {
+          _onError(res.error);
+          return;
+        }
+        if ( res.result ) {
+          _onSuccess(res.result);
+        }
+      }
+    }, function(error) {
+      _onError(error);
+    });
+
+    return root;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Dialogs.FileInfo           = FileInformationDialog;
+
 })();
