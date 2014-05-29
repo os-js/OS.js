@@ -28,7 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement, _Input) {
+(function(GUIElement, _Input, Checkbox) {
 
   /**
    * Radio
@@ -63,4 +63,4 @@
 
   OSjs.GUI.Radio        = Radio;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._Input);
+})(OSjs.GUI.GUIElement, OSjs.GUI._Input, OSjs.GUI.Checkbox);

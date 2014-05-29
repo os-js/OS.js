@@ -165,6 +165,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs._StandardDialog    = StandardDialog;
+  OSjs.Dialogs.StandardDialog    = StandardDialog;
 
 })(OSjs.Core.DialogWindow, OSjs.GUI);

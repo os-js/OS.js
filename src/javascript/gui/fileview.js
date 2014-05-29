@@ -28,7 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement, ListView, TreeView, _DataView) {
+(function(GUIElement, ListView, TreeView, IconView, _DataView) {
 
   /////////////////////////////////////////////////////////////////////////////
   // FileView
@@ -757,4 +757,4 @@
 
   OSjs.GUI.FileView     = FileView;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI.ListView, OSjs.GUI.TreeView, OSjs.GUI._DataView);
+})(OSjs.GUI.GUIElement, OSjs.GUI.ListView, OSjs.GUI.TreeView, OSjs.GUI.IconView, OSjs.GUI._DataView);
