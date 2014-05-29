@@ -2,12 +2,14 @@
 # OS.js v2 Makefile
 #
 # Targets:
-# 	all              Normal uncompressed build (default, same as 'uncompressed')
-# 	compressed       Compressed dist (minimized)
-# 	uncompressed     Uncompressed dist
-# 	clean            Clean build files
-# 	dist             Only build files
-# 	packages         Only build packages
+# 	all              Build OS.js (default, same as 'uncompressed')
+# 	compressed       Build dist - compressed
+# 	uncompressed     Build dist - uncompressed
+# 	clean            Clean dist
+#
+# 	core             Build only core files
+# 	packages         Build only package files
+# 	themes           Build only theme files
 # 	manifest         Create package manifest
 #
 
@@ -98,27 +100,28 @@ SRC_CORE_JS = src/javascript/utils.js \
 		src/javascript/handlers/demo.js \
 		src/javascript/main.js
 
-.PHONY: all clean dist apps uncompressed compressed manifest
+.PHONY: all clean core apps uncompressed compressed manifest
 .DEFAULT: all
 
 all: uncompressed
-uncompressed: clean dist packages normal manifest
-compressed: clean dist packages minimize manifest
+uncompressed: clean core themes packages normal manifest
+compressed: clean core themes packages minimize manifest
 
 clean:
 	rm -f dist/.osjs.* ||:
 	rm -f dist/osjs.* ||:
 	rm -rf dist/packages/* ||:
+	rm -rf dist/themes/* ||:
 
-dist:
-	@echo ">>> Compiling JavaScript"
+core:
+	@echo ">>> Compiling Core JavaScript"
 	cat ${SRC_CORE_JS} > dist/.osjs.js
 	
-	@echo ">>> Compiling CSS"
+	@echo ">>> Compiling Core CSS"
 	cat ${SRC_CORE_CSS} > dist/.osjs.css
 
 packages:
-	@echo ">>> Compiling Applications"
+	@echo ">>> Compiling Packages"
 	cp -R src/packages/* dist/packages/
 
 minimize:
@@ -128,9 +131,14 @@ minimize:
 	rm dist/.osjs.*
 
 normal:
+	@echo ">>> Compiling Theme CSS"
 	@echo ">>> Making uncompressed distro"
 	mv dist/.osjs.js dist/osjs.js
 	mv dist/.osjs.css dist/osjs.css
+
+themes:
+	(bin/create-themes)
+	cp -R src/themes/wallpapers dist/themes/
 
 manifest:
 	@echo ">>> Creating packge manifest"

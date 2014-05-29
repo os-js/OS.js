@@ -5,6 +5,10 @@ Installation only requires a few small steps.
 * Run `make`
 * Set up a web-server
 
+## Requirements
+* **lessc**
+* **YUI Compressor** if you want to build compressed dists
+
 
 ## Setting up a web-server
 
