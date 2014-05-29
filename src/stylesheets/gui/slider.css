@@ -1,0 +1,39 @@
+
+/**
+ * Slider
+ */
+.GUISlider {
+  position : relative;
+}
+.GUISlider .Root {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : 1;
+}
+.GUISlider .Button {
+  position : absolute;
+  top : 0px;
+  left : 0%;
+  width : 20px;
+  height : 20px;
+  z-index : 2;
+
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.GUISlider.horizontal {
+  height : 20px;
+  min-width : 100px;
+}
+.GUISlider.vertical {
+  width : 20px;
+  min-height : 100px;
+}
+

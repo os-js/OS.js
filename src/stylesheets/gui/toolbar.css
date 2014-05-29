@@ -1,0 +1,55 @@
+
+/**
+ * ToolBar
+ */
+.GUIToolbar {
+  position : relative;
+}
+.GUIToolbar.vertical {
+  min-width : 36px;
+}
+.GUIToolbar.horizontal {
+  min-height : 36px;
+}
+.GUIToolbar > .Container {
+  margin : 0;
+  padding : 0;
+  list-style-type : none;
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+}
+.GUIToolbar li.Item {
+  margin : 0;
+  padding : 5px;
+  position : relative;
+  float : left;
+}
+.GUIToolbar.horizontal li.Separator {
+  float : left;
+  min-height : 26px;
+  margin : 5px;
+}
+body .GUIToolbar button {
+  display : inline;
+  position : relative;
+  margin : 0;
+  padding : 5px;
+  overflow : hidden;
+  text-align : center;
+  border-style : outset;
+  min-width : 26px;
+  min-height : 26px;
+}
+.GUIToolbar button.Active {
+  border-style : inset;
+}
+.GUIToolbar img {
+  vertical-align : middle;
+}
+.GUIToolbar.vertical li.Separator {
+  clear : both;
+}
+

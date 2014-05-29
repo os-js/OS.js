@@ -1,0 +1,18 @@
+
+/**
+ * GUIScrollView
+ */
+.GUIScrollView {
+  position : relative;
+  overflow : hidden;
+}
+.GUIScrollView.ScrollX {
+  overflow-x : auto;
+}
+.GUIScrollView.ScrollY {
+  overflow-y : auto;
+}
+.GUIScrollView.ScrollX.ScrollY {
+  overflow : auto;
+}
+

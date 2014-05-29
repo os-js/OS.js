@@ -1,0 +1,35 @@
+
+/**
+ * ProgressBar
+ */
+.GUIProgressBar {
+  position : relative;
+  min-width : 50px;
+  min-height : 20px;
+}
+.GUIProgressBar .Container {
+  height : 20px;
+  overflow : hidden;
+  position : relative;
+}
+.GUIProgressBar .Bar {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  height : 20px;
+  z-index : 1;
+  line-height : 20px;
+  width : 0%;
+}
+.GUIProgressBar .Label {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  text-align : center;
+  height : 20px;
+  z-index : 2;
+  line-height : 22px;
+}
+

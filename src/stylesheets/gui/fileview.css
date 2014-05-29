@@ -1,0 +1,22 @@
+
+/**
+ * GUIFileView
+ */
+.GUIFileView {
+  position : relative;
+}
+.GUIFileView > .GUIElement {
+  position : absolute;
+  top : 0px;
+  right : 0px;
+  bottom : 0px;
+  left : 0px;
+}
+
+.GUIFileView .GUIListView .Arrow {
+  position : absolute;
+  top : 9px;
+  right : 5px;
+  z-index : 999;
+}
+

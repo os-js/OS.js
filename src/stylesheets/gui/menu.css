@@ -1,0 +1,51 @@
+
+/**
+ * Menu
+ */
+.Menu {
+  z-index : 9999999;
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  min-width : 60px;
+  max-width : 500px;
+}
+.Menu ul {
+  list-style-type : none;
+  margin : 0;
+  padding : 0;
+}
+.Menu li {
+  margin : 0;
+  padding : 0;
+  padding-left : 5px;
+  padding-right : 5px;
+  height : 26px;
+  line-height : 26px;
+  white-space : nowrap;
+  position : relative;
+}
+.Menu li img {
+  vertical-align : middle;
+  margin-right : 5px;
+  pointer-events: none;
+}
+
+.Menu li > .Menu {
+  position : absolute;
+  display : none;
+  left : 100%;
+}
+.Menu li:hover > .Menu {
+  display : block;
+}
+
+.Menu .Arrow {
+  position : absolute;
+  right : 5px;
+  top : 9px;
+}
+.Menu li.HasSubMenu {
+  padding-right : 21px;
+}
+
