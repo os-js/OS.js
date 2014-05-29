@@ -3,23 +3,12 @@ Installation only requires a few small steps.
 
 * **Pull code:** `git pull --recursive https://github.com/andersevenrud/OS.js-v2.git`
 * Run `make`
-* Set up a web-server (look below)
+* Set up a web-server
 
-Links:
 
-* [Installation overview](https://github.com/andersevenrud/OS.js-v2/wiki/Installation-overview)
-* [Installation and configuration help](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration)
-* [Installation without Git](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration#installation-without-git)
+## Setting up a web-server
 
-## Notes
-
-By default OS.js filesystem is restricted to `/opt/OSjs/tmp` and `/opt/OSjs/home`.
-Make sure these directories exist and are readable+writable by the running web-server process.
-
-More information on configuring the backend and frontend on Wiki.
-
-*Small Note: OS.js will not run without a web-server unless you modify browser cross-origin settings and update files to load from relative paths.*
-
+Make sure the VFS directories (in `vfs/`) are given the correct web-server permissions to make filesystem work properly.
 
 ### PHP5 With Apache
 
@@ -42,3 +31,9 @@ See `doc/apache.conf` for an example
 ### Lighttpd
 
 See `doc/lighttpd.conf` for an example
+
+# Links
+
+* [Installation overview](https://github.com/andersevenrud/OS.js-v2/wiki/Installation-overview)
+* [Installation and configuration help](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration)
+* [Installation without Git](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration#installation-without-git)
