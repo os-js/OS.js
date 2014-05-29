@@ -167,10 +167,10 @@
     var cfg = OSjs.Settings.DefaultConfig();
 
     this.offline  = false;
-    this.settings = new OSjs.Helpers.SettingsManager();      // Settings cache
-    this.config   = cfg;                                     // Main configuration copy
-    this.packages = new PackageManager(cfg.Core.PACKAGEURI); // Package manager
-    this.userData = {                                        // User Session data
+    this.settings = new OSjs.Helpers.SettingsManager();       // Settings cache
+    this.config   = cfg;                                      // Main configuration copy
+    this.packages = new PackageManager(cfg.Core.MetadataURI); // Package manager
+    this.userData = {                                         // User Session data
       id      : 0,
       username: 'root',
       name    : 'root user',
@@ -541,7 +541,8 @@
    */
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
-    return '/packages/' + aname + '/' + name;
+    var root = OSjs.Settings.DefaultConfig().Core.PackageURI;
+    return root + '/' + aname + '/' + name;
   };
 
   /**
@@ -555,20 +556,21 @@
     if ( name ) {
       var wm = OSjs.API.getWMInstance();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
+      var root = OSjs.Settings.DefaultConfig().Core.ThemeURI;
       if ( !name.match(/^\//) ) {
         if ( type == 'icon' ) {
           var size = args || '16x16';
-          name = '/themes/' + theme + '/icons/' + size + '/' + name;
+          name = root + '/' + theme + '/icons/' + size + '/' + name;
         } else if ( type == 'sound' ) {
           var ext = 'oga';
           if ( !OSjs.Compability.audioTypes.ogg ) {
             ext = 'mp3';
           }
-          name = '/themes/' + theme + '/sounds/' + name + '.' + ext;
+          name = root + '/' + theme + '/sounds/' + name + '.' + ext;
         } else if ( type == 'wm' ) {
-          name = '/themes/' + theme + '/wm/' + name;
+          name = root + '/' + theme + '/wm/' + name;
         } else if ( type == 'base' ) {
-          name = '/themes/' + theme + '/' + name;
+          name = root + '/' + theme + '/' + name;
         }
       }
     }
@@ -599,7 +601,8 @@
     if ( name === null ) {
       return '/blank.css';
     }
-    return '/themes/' + name + '.css';
+    var root = OSjs.Settings.DefaultConfig().Core.ThemeURI;
+    return root + '/' + name + '.css';
   };
 
   /**

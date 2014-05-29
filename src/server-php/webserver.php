@@ -1,7 +1,8 @@
 <?php
 /**
- * To use with `php -S localhost:8000 bin/php-webserver.php'
- * in the directory src/web
+ * PHP Internal Webserver:
+ *  To use with `php -S localhost:8000 src/server-php/webserver-php.php'
+ *  in the directory src/web
  */
 
 $root = __DIR__;

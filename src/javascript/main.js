@@ -58,7 +58,9 @@
         Core : {
           APIURI:         '/API',
           FSURI:          '/FS',
-          PACKAGEURI:     '/packages.json',
+          MetadataURI:    '/packages.json',
+          ThemeURI:       '/themes',
+          PackageURI:     '/packages',
           Home:           '/',
           MaxUploadSize:  2097152,
           BugReporting:   true,

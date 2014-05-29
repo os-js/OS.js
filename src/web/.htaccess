@@ -4,9 +4,9 @@ RewriteBase /
 RewriteCond %{REQUEST_URI} !^/index.html
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^API ../server-php/api.php
-RewriteRule ^FS/(.*) ../server-php/api.php?file=/$1
-RewriteRule ^FS ../server-php/api.php?upload
+RewriteRule ^API api.php
+RewriteRule ^FS/(.*) api.php?file=/$1
+RewriteRule ^FS api.php?upload
 
 # For binding to other services
 <ifModule mod_proxy.c>
