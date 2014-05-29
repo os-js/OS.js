@@ -1,5 +1,56 @@
-YUI_EXEC="/opt/yuicompressor-2.4.8.jar"
-SRC_CORE_CSS=$(shell find src/stylesheets/ -type f -name "*.css")
+#
+# OS.js v2 Makefile
+#
+# Targets:
+# 	all              Normal uncompressed build (default, same as 'uncompressed')
+# 	compressed       Compressed dist (minimized)
+# 	uncompressed     Uncompressed dist
+# 	clean            Clean build files
+# 	dist             Only build files
+# 	apps             Only build applications
+#
+
+YUI_EXEC = "/opt/yuicompressor-2.4.8.jar"
+
+SRC_CORE_CSS =  src/stylesheets/main.css \
+								src/stylesheets/core.css \
+								src/stylesheets/dialogs.css \
+								src/stylesheets/dialogs/alert.css \
+								src/stylesheets/dialogs/applicationchooser.css \
+								src/stylesheets/dialogs/color.css \
+								src/stylesheets/dialogs/confirm.css \
+								src/stylesheets/dialogs/errormessage.css \
+								src/stylesheets/dialogs/file.css \
+								src/stylesheets/dialogs/fileinfo.css \
+								src/stylesheets/dialogs/fileprogress.css \
+								src/stylesheets/dialogs/fileupload.css \
+								src/stylesheets/dialogs/font.css \
+								src/stylesheets/dialogs/input.css \
+								src/stylesheets/gui.css \
+								src/stylesheets/gui/button.css \
+								src/stylesheets/gui/canvas.css \
+								src/stylesheets/gui/checkbox.css \
+								src/stylesheets/gui/colorswatch.css \
+								src/stylesheets/gui/fileview.css \
+								src/stylesheets/gui/iconview.css \
+								src/stylesheets/gui/label.css \
+								src/stylesheets/gui/listview.css \
+								src/stylesheets/gui/menu.css \
+								src/stylesheets/gui/menubar.css \
+								src/stylesheets/gui/panedview.css \
+								src/stylesheets/gui/progressbar.css \
+								src/stylesheets/gui/radio.css \
+								src/stylesheets/gui/richtext.css \
+								src/stylesheets/gui/scrollview.css \
+								src/stylesheets/gui/select.css \
+								src/stylesheets/gui/selectlist.css \
+								src/stylesheets/gui/slider.css \
+								src/stylesheets/gui/statusbar.css \
+								src/stylesheets/gui/tabs.css \
+								src/stylesheets/gui/text.css \
+								src/stylesheets/gui/textarea.css \
+								src/stylesheets/gui/toolbar.css \
+								src/stylesheets/gui/treeview.css \
 
 SRC_CORE_JS = src/javascript/utils.js \
 							src/javascript/locales.js \
@@ -46,40 +97,38 @@ SRC_CORE_JS = src/javascript/utils.js \
 							src/javascript/handlers/demo.js \
 							src/javascript/main.js
 
-all:
-	@rm -f dist/.osjs.* ||:
-	@rm -f dist/osjs.* ||:
-	
-	@echo ">>> Compiling JavaScript"
-	cat ${SRC_CORE_JS} > dist/.osjs.js
-	
-	@echo ">>> Compiling CSS"
-	cat ${SRC_CORE_CSS} > dist/.osjs.css
-	
-	@echo ">>> Compiling Applications"
-	cp -R src/packages/*/* dist/apps/
-	
-	@echo ">>> Making uncompress distro"
-	mv dist/.osjs.js dist/osjs.js
-	mv dist/.osjs.css dist/osjs.css
+.PHONY: all clean dist apps uncompressed compressed
+.DEFAULT: all
 
-compressed:
+all: uncompressed
+uncompressed: clean dist apps normal
+compressed: clean dist apps minimize
+
+clean:
 	@rm -f dist/.osjs.* ||:
 	@rm -f dist/osjs.* ||:
-	
+
+dist:
 	@echo ">>> Compiling JavaScript"
 	cat ${SRC_CORE_JS} > dist/.osjs.js
 	
 	@echo ">>> Compiling CSS"
 	cat ${SRC_CORE_CSS} > dist/.osjs.css
-	
+
+apps:
 	@echo ">>> Compiling Applications"
 	cp -R src/packages/*/* dist/apps/
-	
+
+minimize:
 	@echo ">>> Making compressed distro"
 	java -jar ${YUI_EXEC} --type js --charset=utf-8 dist/.osjs.js -o dist/osjs.js
 	java -jar ${YUI_EXEC} --type css --charset=utf-8 dist/.osjs.css -o dist/osjs.css
 	rm dist/.osjs.*
+
+normal:
+	@echo ">>> Making uncompressed distro"
+	mv dist/.osjs.js dist/osjs.js
+	mv dist/.osjs.css dist/osjs.css
 
 php-webserver:
 	(cd src/web; php -S localhost:8000 ../server-php/webserver.php)
