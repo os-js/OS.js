@@ -137,7 +137,7 @@ manifest:
 	(bin/create-manifest)
 
 php-webserver:
-	(cd src/web; php -S localhost:8000 ../server-php/webserver.php)
+	(cd dist; php -S localhost:8000 ../src/server-php/webserver.php)
 
 node-webserver:
 	node src/server-node/server.js

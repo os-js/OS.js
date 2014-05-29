@@ -2,7 +2,7 @@
 /**
  * PHP Internal Webserver:
  *  To use with `php -S localhost:8000 src/server-php/webserver-php.php'
- *  in the directory src/web
+ *  in the directory dist/
  */
 
 $root = __DIR__;

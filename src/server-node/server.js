@@ -32,7 +32,7 @@
   // npm install node-fs-extra
   //
   //
-  var rootDir = _path.join(_path.dirname(__filename), '/../../');
+  var rootDir = _path.join(_path.dirname(__filename), '/../');
 
   // You can create your own 'settings.json' in this directory
   // to override these vaules
@@ -509,7 +509,7 @@
         if ( path.match(/^\/FS/) ) {
           respondFile(path.replace(/^\/FS/, ''), request, response);
         } else {
-          respondFile(_path.join('/src/web/', path), request, response, true);
+          respondFile(_path.join('/dist/', path), request, response, true);
         }
       }
   }).listen(config.port);
