@@ -541,7 +541,7 @@
    */
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
-    return '/' + aname + '/' + name;
+    return '/packages/' + aname + '/' + name;
   };
 
   /**
@@ -597,7 +597,7 @@
    */
   DefaultHandler.prototype.getThemeCSS = function(name) {
     if ( name === null ) {
-      return '/frontend/blank.css';
+      return '/blank.css';
     }
     return '/themes/' + name + '.css';
   };

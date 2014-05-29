@@ -1,12 +1,13 @@
 #!/bin/bash
-if [[ -d "apps/$1" ]]; then
-  echo "Target directory already exist :("
-  exit
-fi
+DIR="src/packages/default"
 
-DIR="apps"
 if [ -n "$2" ]; then
   DIR="$2"
+fi
+
+if [[ -d "$DIR/$1" ]]; then
+  echo "Target directory already exist :("
+  exit
 fi
 
 mkdir $DIR/$1

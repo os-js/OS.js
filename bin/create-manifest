@@ -10,9 +10,9 @@ for ( $i = 1; $i < sizeof($argv); $i++ ) {
 }
 
 if ( $is_cli == "cli" ) {
-  require 'backend/api.php';
+  require 'src/server-php/api.php';
 } else {
-  require '../backend/api.php';
+  require '../src/server-php/api.php';
 }
 
 $combined = Array();
@@ -43,7 +43,7 @@ foreach ( $dirs as $path ) {
 
         foreach ( $data['preload'] as $pi => $pp ) {
           if ( !preg_match("/^(ftp|https?\:)?\/\//", $pp['src']) ) {
-            $data['preload'][$pi]['src'] = "/{$basedir}/{$i}/{$pp['src']}";
+            $data['preload'][$pi]['src'] = "/packages/{$basedir}/{$i}/{$pp['src']}";
           }
         }
 
@@ -87,7 +87,7 @@ foreach ( $dirs as $path ) {
 
 ksort($combined);
 
-if ( $size = file_put_contents(ROOTDIR . "/packages.json", json_encode($combined)) ) {
+if ( $size = file_put_contents(ROOTDIR . "/dist/packages.json", json_encode($combined)) ) {
   $count = sizeof($combined);
   print "Wrote package manifest: {$size}b ($count apps)\n";
   exit(0);
