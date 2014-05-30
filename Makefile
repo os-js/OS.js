@@ -10,6 +10,12 @@
 # 	themes           Build only theme files
 # 	manifest         Create package manifest
 #
+# Others:
+# 	php-webserver        Start PHP webserver
+# 	node-webserver       Start Node webserver
+# 	dev-php-webserver    Start PHP webserver for developers
+# 	dev-node-webserver   Start Node webserver for developers
+#
 
 SRC_CORE_CSS =  src/stylesheets/main.css \
 		src/stylesheets/core.css \
@@ -130,17 +136,23 @@ themes:
 	(bin/create-themes)
 	cp -R src/themes/wallpapers dist/themes/
 
-#
-# OTHER
-#
-
 manifest:
 	@echo "\033[1;33mCreating package manifest\033[0m"
 	(bin/create-manifest)
+
+#
+# OTHER
+#
 
 php-webserver:
 	(cd dist; php -S localhost:8000 ../src/server-php/webserver.php)
 
 node-webserver:
 	node src/server-node/server.js
+
+dev-php-webserver:
+	(cd dist-dev; php -S localhost:8000 ../src/server-php/webserver.php)
+
+dev-node-webserver:
+	node src/server-node/server.js dist-dev
 
