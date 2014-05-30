@@ -108,8 +108,6 @@ all: clean core themes packages manifest
 compress:
 	@echo "\033[1;33mMaking compressed distro\033[0m"
 	(bin/compress-dist)
-	java -jar ${YUI_EXEC} --type js --charset=utf-8 dist/osjs.js -o dist/osjs.js
-	java -jar ${YUI_EXEC} --type css --charset=utf-8 dist/osjs.css -o dist/osjs.css
 
 clean:
 	rm -f dist/packages.json ||:
