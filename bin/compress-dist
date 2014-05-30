@@ -1,0 +1,36 @@
+#!/bin/bash
+
+YUI_EXEC="vendor/yuicompressor-2.4.8.jar"
+
+for r in `find dist/packages -type d -maxdepth 1 -mindepth 1`; do
+
+  repo=$(basename $r)
+  echo -e "\033[1;34mScanning repository '$repo':\033[0m"
+  for a in `find $r -type d -maxdepth 1`; do
+    app=$(basename $a)
+    if [ "$app" == ".git" ]; then
+      continue
+    fi
+    if [ "$app" == "$repo" ]; then
+      continue
+    fi
+
+    echo -e "  \033[1;37mFound package '$app'\033[0m";
+
+    for js in `find $a -type f -name *.js -maxdepth 1`; do
+      file=$(basename $js)
+      before=$(du -h $js | awk '{print $1}')
+      java -jar ${YUI_EXEC} --type js --charset=utf-8 $js -o $js
+      after=$(du -h $js | awk '{print $1}')
+      echo "      $file $before > $after"
+    done
+    for css in `find $a -type f -name *.css -maxdepth 1`; do
+      file=$(basename $css)
+      before=$(du -h $css | awk '{print $1}')
+      java -jar ${YUI_EXEC} --type css --charset=utf-8 $css -o $css
+      after=$(du -h $css | awk '{print $1}')
+      echo "      $file $before > $after"
+    done
+  done
+
+done

@@ -11,8 +11,6 @@
 # 	manifest         Create package manifest
 #
 
-YUI_EXEC = "vendor/yuicompressor-2.4.8.jar"
-
 SRC_CORE_CSS =  src/stylesheets/main.css \
 		src/stylesheets/core.css \
 		src/stylesheets/dialogs.css \
@@ -109,6 +107,7 @@ all: clean core themes packages manifest
 
 compress:
 	@echo "\033[1;33mMaking compressed distro\033[0m"
+	(bin/compress-dist)
 	java -jar ${YUI_EXEC} --type js --charset=utf-8 dist/osjs.js -o dist/osjs.js
 	java -jar ${YUI_EXEC} --type css --charset=utf-8 dist/osjs.css -o dist/osjs.css
 
