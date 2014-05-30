@@ -2,7 +2,7 @@
 ## Roadmap
 
 ## TODOs
-* Makefile must support custom handlers without actually editing
+* Finish new bin/ tools (import configs etc, rewrite to make pretty)
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
 * Fix crazy IE bug where calling blur() actually minimizes the window *facepalm*

@@ -1,4 +1,5 @@
 # Requirements
+* **nodejs**
 * **lessc**
 * **GNU Make**
 * **java** if you want to build compressed dists
