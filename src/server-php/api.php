@@ -110,9 +110,10 @@ function error() {
 // Default settings
 //
 if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'));                   // The path to root dir
-if ( !defined("APPDIR") )     define("APPDIR",      ROOTDIR . '/src/packages/default');               // Default apps dir
 if ( !defined("HOMEDIR") )    define("HOMEDIR",     ROOTDIR . "/vfs/home");                           // Filesystem API default dir
 if ( !defined("TMPDIR") )     define("TMPDIR",      ROOTDIR . "/vfs/tmp");                            // Temporary files
+if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");                       // Packages
+if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.json");                  // Package repositories
 if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));    // Upload size limit
 if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
@@ -230,16 +231,10 @@ if ( empty($data) ) {
         $am   = empty($arguments['method'])      ? null     : $arguments['method'];
         $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
 
-        $aroot = sprintf("%s/%s", ROOTDIR, $path);
+        $aroot = sprintf("%s/%s", REPODIR, $path);
         $apath = sprintf("%s/%s", $aroot, "api.php");
-        $valid = false;
-        foreach ( explode(":", APPDIR) as $vd ) {
-          if ( strstr($aroot, $vd) !== false ) {
-            $valid = true;
-            break;
-          }
-        }
-        if ( !$valid || !file_exists($apath) ) {
+
+        if ( !file_exists($apath) ) {
           $error = "No such application or API file not available ({$an})!";
         } else {
           require $apath;

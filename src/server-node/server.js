@@ -32,7 +32,7 @@
   // npm install node-fs-extra
   //
   //
-  var rootDir = _path.join(_path.dirname(__filename), '/../');
+  var rootDir = _path.join(_path.dirname(__filename), '/../../');
   var distDir = 'dist';
   if ( process && process.argv.length > 2 ) {
     distDir = process.argv[2];
@@ -411,10 +411,8 @@
   console.log('***');
 
   var spath = _path.join(_path.dirname(__filename), 'settings.json');
-  var apath = _path.join(rootDir, 'src/packages/default');
-  if ( (config.appdirs === null) || !(config.appdirs instanceof Array) ) {
-    config.appdirs = [apath];
-  }
+  var rpath = _path.join(rootDir, 'src/packages/repositories.json');
+  var appdirs = [];
 
   if ( _fs.existsSync(spath) ) {
     try {
@@ -433,6 +431,18 @@
     }
   }
 
+  if ( _fs.existsSync(rpath) ) {
+    try {
+      var data = _fs.readFileSync(rpath);
+      if ( data ) {
+        console.log('!!!', 'Found repository file...');
+        appdirs = JSON.parse(data.toString());
+      }
+    } catch ( e ) {
+      console.warn('!!!', 'Failed to parse repository JSON file', e);
+    }
+  }
+
   if ( !config.directory ) {
     config.directory = _fs.realpathSync('.');
   }
@@ -442,7 +452,7 @@
   console.log('    Configured port', config.port);
   console.log('    Configured directory', config.directory);
   console.log('    VFS path', config.vfsdir);
-  console.log('    App dirs', config.appdirs);
+  console.log('    App dirs', appdirs);
 
   /**
    * Server instance

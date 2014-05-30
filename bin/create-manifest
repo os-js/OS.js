@@ -16,9 +16,9 @@ if ( $is_cli == "cli" ) {
 }
 
 $combined = Array();
-$dirs = explode(":", APPDIR);
+$dirs = (Array) json_decode(file_get_contents(REPOFILE));
 foreach ( $dirs as $path ) {
-  if ( $path{0} == '.' ) continue;
+  $path    = sprintf("%s/%s", REPODIR, $path);
   $basedir = basename($path);
 
   if ( sizeof($restrict) && !in_array(basename($path), $restrict) ) {
