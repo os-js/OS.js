@@ -1,7 +1,6 @@
 # Requirements
 * **lessc**
 * **java** if you want to build compressed dists
-* **npm install node-fs-extra** if you want filesystem support on Node server
 
 # Installation
 Installation only requires a few small steps.
@@ -18,7 +17,9 @@ Simply run `make`
 
 ## 3: Setting up a web-server
 
-Make sure the VFS directories (in `vfs/`) are given the correct web-server permissions to make filesystem work properly.
+Make sure the VFS directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.
+
+Example for Apache: `sudo chown -R www-data:www-data vfs/*`
 
 ### PHP5 With Apache
 
@@ -31,11 +32,14 @@ See `doc/apache.conf` for an example
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
 
 * Run `make php-webserver`
+  * Or `(cd dist; php -S localhost:8000 ../src/server-php/webserver.php)`
 
 ### Node.js
 *Please note that the node server is not finished yet, but is working for development purposes*
 
-* Run `make node-webserver` or `node src/server-node/server.js`
+* Install dependencies: `npm install node-fs-extra` (only required for filesystem API support)
+* Run `make node-webserver`
+  * Or `node src/server-node/server.js`
 
 ### Lighttpd
 
