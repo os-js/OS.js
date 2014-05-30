@@ -49,7 +49,7 @@ SRC_CORE_CSS =  src/stylesheets/main.css \
 		src/stylesheets/gui/text.css \
 		src/stylesheets/gui/textarea.css \
 		src/stylesheets/gui/toolbar.css \
-		src/stylesheets/gui/treeview.css \
+		src/stylesheets/gui/treeview.css
 
 SRC_CORE_JS = src/javascript/utils.js \
 		src/javascript/locales.js \
