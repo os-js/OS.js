@@ -18,9 +18,8 @@ Make sure the VFS directories (in `vfs/`) are given the correct web-server permi
 
 See `doc/apache.conf` for an example
 
-* Set up an Apache vhost and point to cloned directory (If you have a "web hosting service", you can most likely skip this)
-  * Make sure .htaccess is allowed
-  * Make sure mod_rewrite is enabled
+* Make sure .htaccess is allowed
+* Make sure mod_rewrite is enabled
 
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*

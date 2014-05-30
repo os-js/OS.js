@@ -2,7 +2,7 @@
 ## Roadmap
 
 ## TODOs
-* YAML ? for settings shared in all server types ?!
+* JSON for settings shared in all server types ?!
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)
 * Fix crazy IE bug where calling blur() actually minimizes the window *facepalm*
