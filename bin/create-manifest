@@ -62,6 +62,9 @@ for ( var i = 0; i < repos.length; i++ ) {
             }
           }
 
+          pmanifest.path = repo + "/" + pname;
+          pmanifest.iter = pname;
+
           console.log("  \033[1;37mAdded package '%s'\033[0m", file);
           combined[pname] = pmanifest;
         }

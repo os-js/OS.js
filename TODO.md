@@ -4,6 +4,7 @@
 ## TODOs
 * Finish new bin/ tools (import configs etc, rewrite to make pretty)
 * Finish Node.js backend
+* Split up locales
 * Create reserved strings for locales in `locales.js` (for core messages etc)
 * Fix crazy IE bug where calling blur() actually minimizes the window *facepalm*
 
