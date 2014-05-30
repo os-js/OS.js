@@ -33,6 +33,10 @@
   //
   //
   var rootDir = _path.join(_path.dirname(__filename), '/../');
+  var distDir = 'dist';
+  if ( process && process.argv.length > 2 ) {
+    distDir = process.argv[2];
+  }
 
   // You can create your own 'settings.json' in this directory
   // to override these vaules
@@ -434,6 +438,7 @@
   }
 
   console.log('---', 'Configuration:');
+  console.log('    Configured dist', distDir);
   console.log('    Configured port', config.port);
   console.log('    Configured directory', config.directory);
   console.log('    VFS path', config.vfsdir);
@@ -509,7 +514,7 @@
         if ( path.match(/^\/FS/) ) {
           respondFile(path.replace(/^\/FS/, ''), request, response);
         } else {
-          respondFile(_path.join('/dist/', path), request, response, true);
+          respondFile(_path.join(distDir, path), request, response, true);
         }
       }
   }).listen(config.port);

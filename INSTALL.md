@@ -39,7 +39,8 @@ See `doc/apache.conf` for an example
 
 * Install dependencies: `npm install node-fs-extra` (only required for filesystem API support)
 * Run `make node-webserver`
-  * Or `node src/server-node/server.js`
+  * Or `node src/server-node/server.js` for build dist
+  * Or `node src/server-node/server.js dist-dev` for developers
 
 ### Lighttpd
 
