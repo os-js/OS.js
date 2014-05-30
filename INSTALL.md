@@ -1,16 +1,22 @@
-# Installation
-Installation only requires a few small steps.
-
-* **Pull code:** `git pull --recursive https://github.com/andersevenrud/OS.js-v2.git`
-* Run `make`
-* Set up a web-server
-
-## Requirements
+# Requirements
 * **lessc**
 * **java** if you want to build compressed dists
 * **npm install node-fs-extra** if you want filesystem support on Node server
 
-## Setting up a web-server
+# Installation
+Installation only requires a few small steps.
+
+## 1: Pull code
+
+Run `git pull --recursive https://github.com/andersevenrud/OS.js-v2.git`
+
+Or if you do not have Git see this wiki article: [Installation without Git](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration#installation-without-git)
+
+## 2: Build OS.js
+
+Simply run `make`
+
+## 3: Setting up a web-server
 
 Make sure the VFS directories (in `vfs/`) are given the correct web-server permissions to make filesystem work properly.
 
@@ -37,6 +43,4 @@ See `doc/lighttpd.conf` for an example
 
 # Links
 
-* [Installation overview](https://github.com/andersevenrud/OS.js-v2/wiki/Installation-overview)
 * [Installation and configuration help](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration)
-* [Installation without Git](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration#installation-without-git)
