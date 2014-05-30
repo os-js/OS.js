@@ -1,4 +1,9 @@
 
+# 2.0.0-alpha3
+
+A bit more modular design for the filetree. Created a Makefile for doing all build stuff.
+Some cleanups and documentation updates
+
 # 2.0.0-alpha1
 
 See full list here: https://github.com/andersevenrud/OS.js-v2/wiki/Info:-Version-History-(ChangeLog)
