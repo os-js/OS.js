@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+var _fs = require('fs'),
+    _path = require('path');
+
+var ROOT = _path.dirname(__filename);
+var OUT_PHP = "src/server-php/settings.php";
+var OUT_NODE = "src/server-node/settings.json";
+var OUT_JS = "dist/settings.js";
+var IN_JSON = "src/build.json";
+
+function file_get_contents(path) {
+  if ( _fs.existsSync(path) ) {
+    return _fs.readFileSync(path);
+  }
+  return null;
+}
+
+function file_put_contents(path, data) {
+  return _fs.writeFileSync(path, data);
+}
+
+var buildData = JSON.parse(file_get_contents(IN_JSON));
+if ( buildData !== null ) {
+  var settings = buildData.settings.backend;
+  for ( var i in settings ) {
+    if ( settings.hasOwnProperty(i) ) {
+      if ( typeof settings[i] === "string" ) {
+        settings[i] = settings[i].replace("%ROOT%", ROOT);
+      }
+    }
+  }
+
+  var cfg_node = settings;
+  var cfg_php  = [];
+  var cfg_js   = "(function() {\n  window.OSjs = window.OSjs   || {};\n  OSjs.Settings = OSjs.Settings || {};\n  OSjs.Settings.DefaultConfig = function() {\n    return %CONFIG%;\n  };\n})();\n";
+
+  for ( var i in settings ) {
+    if ( settings.hasOwnProperty(i) ) {
+      cfg_php.push("define('" + i.toUpperCase() + "', '" + settings[i] + "');");
+    }
+  }
+
+  cfg_php = "<?php\n" + cfg_php.join("\n") + "\n?>";
+  file_put_contents(OUT_NODE, JSON.stringify(cfg_node));
+  file_put_contents(OUT_PHP, cfg_php);
+
+  settings = buildData.settings.frontend;
+  file_put_contents(OUT_JS, cfg_js.replace("%CONFIG%", JSON.stringify(settings)));
+}

@@ -30,7 +30,7 @@
  */
 
 $_dir = __DIR__;
-if ( file_exists("{$_dir}/config.php") ) require "{$_dir}/config.php";
+if ( file_exists("{$_dir}/settings.php") ) require "{$_dir}/settings.php";
 require "vfs.php";
 
 function out($json) {

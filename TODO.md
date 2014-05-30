@@ -2,7 +2,7 @@
 ## Roadmap
 
 ## TODOs
-* Finish new bin/ tools (import configs etc, rewrite to make pretty)
+* Finish new bin/ tools
 * Finish Node.js backend
 * Split up locales
 * Create reserved strings for locales in `locales.js` (for core messages etc)

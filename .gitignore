@@ -5,8 +5,8 @@
 *-tmp.*
 src/server-node/node_modules/
 src/server-php/bugreport.php
-src/server-php/config.php
-src/server-php/settings.json
+src/server-php/settings.php
+src/server-node/settings.json
 dist/settings.js
 dist/osjs.js
 dist/osjs.css

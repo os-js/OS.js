@@ -4,6 +4,9 @@
     "frontend" : {
     },
     "backend" : {
+      "vfsdir" : "%ROOT%/vfs/home",
+      "tmpdir" : "%ROOT%/vfs/tmp",
+      "port" : 8000
     }
   },
 

@@ -5,6 +5,7 @@
 # 	all              Build OS.js
 # 	compress         Compress dist 
 # 	clean            Clean dist
+# 	config           Build only configuration files
 # 	core             Build only core files
 # 	packages         Build only package files
 # 	themes           Build only theme files
@@ -17,14 +18,14 @@
 # 	dev-node-webserver   Start Node webserver for developers
 #
 
-.PHONY: all clean core themes packages compress manifest
+.PHONY: all clean config core themes packages compress manifest
 .DEFAULT: all
 
 #
 # BUILDING
 #
 
-all: clean core themes packages manifest
+all: clean config core themes packages manifest
 
 clean:
 	rm -f dist/packages.json ||:
@@ -35,6 +36,10 @@ clean:
 core:
 	@echo "\033[1;32mBuilding OS.js Core\033[0m"
 	(bin/build-dist)
+
+config:
+	@echo "\033[1;32mBuilding OS.js Configurations\033[0m"
+	(bin/build-config)
 
 packages:
 	@echo "\033[1;32mBuilding Packages\033[0m"
