@@ -2,6 +2,7 @@
 ## Roadmap
 
 ## TODOs
+* Finish bew build system
 * Finish new bin/ tools
 * Finish Node.js backend
 * Split up locales
