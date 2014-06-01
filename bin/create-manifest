@@ -1,79 +1,84 @@
 #!/usr/bin/env node
 
-var PACKAGES_DIR = "src/packages";
-var REPO_FILE = "src/packages/repositories.json";
-var OUT_MANIFEST = "dist/packages.json";
+var PACKAGES_DIR  = "src/packages";
+var REPO_FILE     = "src/packages/repositories.json";
+var OUT_MANIFEST  = "dist/packages.json";
 
-var _fs = require('fs'),
+var _fs   = require('fs'),
     _path = require('path');
 
-function file_get_contents(path) {
-  if ( _fs.existsSync(path) ) {
-    return _fs.readFileSync(path);
+function get_metadata(path, file, repo) {
+  var json_path = _path.join(path, "package.json");
+  try {
+    var json_data = JSON.parse(_fs.readFileSync(json_path));
+    var manifest = null;
+    var package_name;
+    for ( var name in json_data ) {
+      if ( json_data.hasOwnProperty(name) ) {
+        package_name = name;
+        manifest     = json_data[name];
+        break;
+      }
+    }
+
+    if ( manifest !== null ) {
+      if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
+        console.log("  \033[1;31mSkipped '%s' (disabled)\033[0m", package_name);
+        return null;
+      }
+    }
+
+    if ( typeof manifest.preload !== 'undefined' ) {
+      var piter;
+      for ( var p = 0; p < manifest.preload.legth; p++ ) {
+        piter = manifest.preload[i];
+        if ( !piter.src.match(/^(ftp|https?\:)?\/\//) ) {
+          manifest.preload[p].src = (["/packages", repo, file, piter.src]).join("/");
+        }
+      }
+    }
+
+    manifest.path = repo + "/" + file;
+    manifest.iter = file;
+
+
+    console.log("  \033[1;37mAdded package '%s'\033[0m", package_name);
+
+    return manifest;
+  } catch ( e ) {
+    console.log("  \033[1;31mSkipped '%s' (parse error)\033[0m", file);
+    console.error(e);
   }
   return null;
 }
 
-function file_put_contents(path, data) {
-  return _fs.writeFileSync(path, data);
-}
-
-var repos = JSON.parse(file_get_contents(REPO_FILE));
-var combined = {};
-for ( var i = 0; i < repos.length; i++ ) {
-  var repo = repos[i];
-  console.log("\033[1;34mScanning repository '%s':\033[0m", repo);
-
+function scan_packages(repo, packages) {
   var files = _fs.readdirSync(_path.join(PACKAGES_DIR, repo));
+  var packages = [];
+
+  var file, path, metadata;
   for ( var f = 0; f < files.length; f++ ) {
-    var file = files[f];
+    file = files[f];
     if ( !file.length || file.match(/^\./) ) continue;
 
-    var path = _path.join(PACKAGES_DIR, repo, file);
+    path = _path.join(PACKAGES_DIR, repo, file);
     if ( _fs.statSync(path).isDirectory() ) {
-      try {
-        var ppath = _path.join(path, "package.json");
-        var pdata = file_get_contents(ppath);
-        if ( pdata !== null ) {
-          var ptmp = JSON.parse(pdata);
-          var pmanifest = null;
-          var pname = file;
-
-          for ( var a in ptmp ) {
-            if ( ptmp.hasOwnProperty(a) ) {
-              pname     = a;
-              pmanifest = ptmp[a];
-              break;
-            }
-          }
-          if ( pmanifest === null ) continue;
-          if ( pmanifest['enabled'] === false || pmanifest['enabled'] === "false" ) {
-            console.log("  \033[1;31mSkipped '%s' (disabled)\033[0m", file);
-            continue;
-          }
-
-          if ( typeof pmanifest['preload'] !== 'undefined' ) {
-            var piter;
-            for ( var p = 0; p < pmanifest['preload'].length; p++ ) {
-              piter = pmanifest.preload[p];
-              if ( !piter.src.match(/^(ftp|https?\:)?\/\//) ) {
-                pmanifest.preload[p].src = (["/packages", repo, file, piter.src]).join("/");
-              }
-            }
-          }
-
-          pmanifest.path = repo + "/" + file;
-          pmanifest.iter = file;
-
-          console.log("  \033[1;37mAdded package '%s'\033[0m", file);
-          combined[pname] = pmanifest;
-        }
-      } catch ( e ) {
-        console.log("  \033[1;31mSkipped '%s' (parse error)\033[0m", file);
-        console.error(e);
+      metadata = get_metadata(path, file, repo);
+      if ( metadata !== null ) {
+        packages[metadata.iter] = metadata;
       }
     }
   }
 }
 
-file_put_contents(OUT_MANIFEST, JSON.stringify(combined));
+var combined = {};
+var repos = JSON.parse(_fs.readFileSync(REPO_FILE));
+var repo;
+
+for ( var i = 0; i < repos.length; i++ ) {
+  repo = repos[i];
+  console.log("\033[1;34mScanning repository '%s':\033[0m", repo);
+  scan_packages(repo, combined);
+}
+
+_fs.writeFileSync(OUT_MANIFEST, JSON.stringify(combined));
