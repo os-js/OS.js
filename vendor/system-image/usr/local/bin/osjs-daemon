@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# OS.js Daemon
+#
+# Copyright (c) 2013 Anders Evenrud <andersevenrud@gmail.com>
+# Released under the 2-clause BSD license.
+#
+
+nohup node /opt/OS.js/server-web.js x11 >/dev/null 2>&1 &
+sleep 3
+exec /usr/local/bin/osjs-x11
+
