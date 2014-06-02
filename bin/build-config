@@ -7,9 +7,8 @@ var ROOT      = _path.dirname(__filename);
 var OUT_PHP   = "src/server-php/settings.php";
 var OUT_NODE  = "src/server-node/settings.json";
 var OUT_JS    = "dist/settings.js";
-var IN_JSON   = "src/build.json";
 
-var buildData = JSON.parse(_fs.readFileSync(IN_JSON));
+var buildData = JSON.parse(_fs.readFileSync("src/build.json"));
 if ( buildData !== null ) {
   var settings = buildData.settings.backend;
   for ( var i in settings ) {

@@ -1,29 +1,14 @@
 #!/usr/bin/env node
 
-var OUT_JS = "dist/osjs.js";
-var OUT_CSS = "dist/osjs.css";
-var IN_JSON = "src/build.json";
-
 var _fs = require('fs'),
     _path = require('path');
-
-function file_get_contents(path) {
-  if ( _fs.existsSync(path) ) {
-    return _fs.readFileSync(path);
-  }
-  return null;
-}
-
-function file_put_contents(path, data) {
-  return _fs.writeFileSync(path, data);
-}
 
 function get_list_contents(list, handler) {
   var data = [];
   var iter;
   for ( var i = 0; i < list.length; i++ ) {
     iter = list[i].replace("%HANDLER%", handler);
-    var src = file_get_contents(iter);
+    var src = _fs.readFileSync(iter);
     console.log(iter);
     if ( src !== null ) {
       data.push(src);
@@ -32,9 +17,9 @@ function get_list_contents(list, handler) {
   return data.join("\n");
 }
 
-var buildData = JSON.parse(file_get_contents(IN_JSON));
+var buildData = JSON.parse(_fs.readFileSync("src/build.json"));
 if ( buildData !== null ) {
   var handler = buildData.handler || "demo";
-  file_put_contents(OUT_JS, get_list_contents(buildData.javascript, handler));
-  file_put_contents(OUT_CSS, get_list_contents(buildData.stylesheets, handler));
+  _fs.writeFileSync(buildData.javascript.output, get_list_contents(buildData.javascript.files, handler));
+  _fs.writeFileSync(buildData.stylesheets.output, get_list_contents(buildData.stylesheets.files, handler));
 }
