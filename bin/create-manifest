@@ -28,19 +28,16 @@ function get_metadata(path, file, repo) {
       }
     }
 
-    if ( typeof manifest.preload !== 'undefined' ) {
-      var piter;
-      for ( var p = 0; p < manifest.preload.legth; p++ ) {
-        piter = manifest.preload[i];
-        if ( !piter.src.match(/^(ftp|https?\:)?\/\//) ) {
-          manifest.preload[p].src = (["/packages", repo, file, piter.src]).join("/");
+    if ( typeof manifest.preload !== 'undefined' && (manifest.preload instanceof Array)) {
+      for ( var p = 0; p < manifest.preload.length; p++ ) {
+        if ( !manifest.preload[p].src.match(/^(ftp|https?\:)?\/\//) ) {
+          manifest.preload[p].src = (["/packages", repo, file, manifest.preload[p].src]).join("/");
         }
       }
     }
 
     manifest.path = repo + "/" + file;
     manifest.iter = file;
-
 
     console.log("  \033[1;37mAdded package '%s'\033[0m", package_name);
 
@@ -52,9 +49,8 @@ function get_metadata(path, file, repo) {
   return null;
 }
 
-function scan_packages(repo, packages) {
+function scan_packages(repo, /* byref */packages) {
   var files = _fs.readdirSync(_path.join(PACKAGES_DIR, repo));
-  var packages = [];
 
   var file, path, metadata;
   for ( var f = 0; f < files.length; f++ ) {
