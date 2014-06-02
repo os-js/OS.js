@@ -51,11 +51,11 @@ themes:
 	cp -R src/themes/wallpapers dist/themes/
 
 compress:
-	@echo "\033[1;33mMaking compressed distro\033[0m"
+	@echo "\033[1;32mMaking compressed distro\033[0m"
 	(bin/compress-dist)
 
 manifest:
-	@echo "\033[1;33mCreating package manifest\033[0m"
+	@echo "\033[1;32mCreating package manifest\033[0m"
 	(bin/create-manifest)
 
 #

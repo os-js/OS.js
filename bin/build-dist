@@ -14,12 +14,19 @@ function get_list_contents(list, handler) {
       data.push(src);
     }
   }
-  return data.join("\n");
+
+  var out = data.join("\n");
+  console.log("\033[1;37m... %d files / %d bytes\033[0m", data.length, out.length);
+  return out;
 }
 
 var buildData = JSON.parse(_fs.readFileSync("src/build.json"));
 if ( buildData !== null ) {
   var handler = buildData.handler || "demo";
-  _fs.writeFileSync(buildData.javascript.output, get_list_contents(buildData.javascript.files, handler));
+  console.log("\033[1;34mCompiling JavaScript\033[0m");
+  var js = get_list_contents(buildData.javascript.files, handler);
+  _fs.writeFileSync(buildData.javascript.output, js);
+
+  console.log("\033[1;34mCompiling CSS\033[0m");
   _fs.writeFileSync(buildData.stylesheets.output, get_list_contents(buildData.stylesheets.files, handler));
 }

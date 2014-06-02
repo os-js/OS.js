@@ -1,7 +1,8 @@
 # Requirements
 * **nodejs**
 * **lessc**
-* **GNU Make**
+* **bash**
+* **GNU Make** makes building easier, but not a dependency
 * **java** if you want to build compressed dists
 
 # Installation
