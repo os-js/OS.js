@@ -37,7 +37,7 @@ function get_metadata(path, file, repo) {
     }
 
     manifest.path = repo + "/" + file;
-    manifest.iter = file;
+    manifest.iter = package_name;
 
     //console.log("\033[1;37mAdded package '%s'\033[0m", package_name);
     console.log("Added package '%s'", package_name);
