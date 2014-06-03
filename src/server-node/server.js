@@ -46,6 +46,7 @@
     appdirs:    null, // Automatic, but overrideable
     vfsdir:     _path.join(rootDir, 'vfs/home'),
     tmpdir:     _path.join(rootDir, 'vfs/tmp'),
+    repodir:    _path.join(rootDir, 'src/packages'),
     mimes:      {
       '.bmp'    : 'image/bmp',
       '.css'    : 'text/css',
@@ -182,8 +183,22 @@
    */
   var api = {
     application : function(path, name, method, args, request, response) {
-      // TODO
-      respondJSON({result: null, error: 'Not implemented yet!'}, response);
+      var aroot = _path.join(config.repodir, path);
+      var apath = _path.join(aroot, "api.js");
+
+      try {
+        var api = require(apath);
+        api[name].call(method, args, function(result, error) {
+          error = error || null;
+          if ( error !== null ) {
+            result = null;
+          }
+          respondJSON({result: result, error: error}, response);
+        });
+      } catch ( e ) {
+        respondJSON({result: null, error: "Application API error or missing: " + e.toString()}, response);
+        return;
+      }
     },
 
     bugreport : function() {

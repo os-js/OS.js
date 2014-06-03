@@ -21,11 +21,14 @@ function get_metadata(path, file, repo) {
       }
     }
 
-    if ( manifest !== null ) {
-      if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
-        console.log("\033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
-        return null;
-      }
+    if ( !manifest ) {
+      console.log("\033[0;31mSkipped '%s' (no manifest)\033[0m", file);
+      return null;
+    }
+
+    if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
+      console.log("\033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
+      return null;
     }
 
     if ( typeof manifest.preload !== 'undefined' && (manifest.preload instanceof Array)) {
