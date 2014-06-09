@@ -40,7 +40,7 @@
     opts      = opts || {};
     opts.type = 'checkbox';
 
-    this.label  = opts.label || 'GUICheckbox Label';
+    this.label  = opts.label || null;
     this.$label = null;
 
     _Input.apply(this, ['GUICheckbox', 'input', name, opts]);
@@ -57,11 +57,15 @@
       self.onChange.apply(self, [this, ev, self.getValue()]);
     });
 
-    this.$label = document.createElement('label');
-    this.$label.appendChild(this.$input);
-    this.$label.appendChild(document.createTextNode(this.label));
+    if ( this.label ) {
+      this.$label = document.createElement('label');
+      this.$label.appendChild(this.$input);
+      this.$label.appendChild(document.createTextNode(this.label));
 
-    el.appendChild(this.$label);
+      el.appendChild(this.$label);
+    } else {
+      el.appendChild(this.$input);
+    }
 
     this.setDisabled(this.disabled);
     this.setValue(this.value);

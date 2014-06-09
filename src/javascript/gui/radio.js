@@ -45,7 +45,7 @@
     this.label  = opts.label || 'GUIRadio Label';
     this.$label = null;
 
-    _Input.apply(this, ['GUICheckbox', 'input', name, opts]);
+    _Input.apply(this, ['GUIRadio', 'input', name, opts]);
   };
   Radio.prototype = Object.create(Checkbox.prototype);
 
