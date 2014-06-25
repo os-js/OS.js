@@ -7,7 +7,7 @@ In this example "Ubuntu Server" was used with the user "osjs"
 # Install dependencies
 
 ```
-sudo apt-get install nodejs 
+sudo apt-get install nodejs virtualbox-x11 npm libwebkit-dev ligbwebkitgtk-dev build-essential
 ```
 
 # Copy system image
