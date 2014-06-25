@@ -1,3 +1,4 @@
+node_modules
 *.swp
 *.swo
 .DS_Store
@@ -8,6 +9,7 @@ src/server-php/bugreport.php
 src/server-php/settings.php
 src/server-node/settings.json
 dist/settings.js
+dist/config.js
 dist/osjs.js
 dist/osjs.css
 dist/packages.json
