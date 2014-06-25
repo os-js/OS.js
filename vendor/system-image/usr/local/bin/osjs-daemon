@@ -6,7 +6,7 @@
 # Released under the 2-clause BSD license.
 #
 
-nohup node /opt/OS.js/server-web.js x11 >/dev/null 2>&1 &
+nohup node /home/osjs/OS.js-v2/src/server-node/server.js >/dev/null 2>&1 &
 sleep 3
 exec /usr/local/bin/osjs-x11
 

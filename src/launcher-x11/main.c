@@ -45,7 +45,7 @@ static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window)
 // MAIN
 ///////////////////////////////////////////////////////////////////////////////
 
-char *uri = "http://localhost:3000";
+char *uri = "http://localhost:8000";
 GtkWidget *window;
 
 /**
