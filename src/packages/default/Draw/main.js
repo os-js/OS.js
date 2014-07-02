@@ -29,203 +29,17 @@
  */
 (function(Application, Window, GUI, Dialogs) {
 
+  // TODO: Locales (Translations)
+  // TODO: Add/Remove/Position layers from GUI
+
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
   /////////////////////////////////////////////////////////////////////////////
-
-  var _Locales = {
-    no_NO : {
-      'Pointer'     : 'Peker',
-      'Picker'      : 'Velger',
-      'Bucket'      : 'Bøtte',
-      'Eraser'      : 'Hvisker',
-      'Pencil'      : 'Blyant',
-      'Path'        : 'Sti',
-      'Rectangle'   : 'Rektangel',
-      'Square'      : 'Firkant',
-      'Ellipse'     : 'Oval',
-      'Circle'      : 'Sirkel',
-      'Text'        : 'Tekst',
-      'Background'  : 'Bakgrunn',
-      'Foreground'  : 'Fremgrunn',
-      'Stroke Width': 'Strøk-bredde',
-      'Stroke'      : 'Strøk',
-      'Line Join'   : 'Linje-stil',
-      'Bevel'       : 'Kant',
-      'Round'       : 'Rund',
-      'Miter'       : 'Miter'
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  var Tools = {
-    picker : {
-      click : function(ev, clickX, clickY, canvas, canvasImage) {
-        var leftClick = ev.which <= 1;
-        var color = canvasImage.getColorAt(clickX, clickY);
-        this.setColor(leftClick ? 'foreground' : 'background', color.hex);
-      }
-    },
-
-    bucket : {
-      click : function(ev, clickX, clickY, canvas) {
-        var leftClick = ev.which <= 1;
-        var color = leftClick ? this.currentForegroundColor : this.currentBackgroundColor;
-        canvas.fillColor(color);
-      }
-    },
-
-    pencil : {
-      down : function(ev, pos, canvas) {
-        canvas.$context.beginPath();
-        canvas.$context.moveTo(pos.x, pos.y);
-        canvas.$context.fillStyle = this.currentForegroundColor;
-        canvas.$context.strokeStyle = this.currentBackgroundColor;
-        canvas.$context.lineWidth = this.strokeWidth;
-        canvas.$context.lineJoin = this.strokeStyle;
-      },
-      up : function(ev, startPos, endPos, canvas) {
-      },
-      move : function(ev, startPos, currentPos, canvas) {
-        canvas.$context.lineTo(currentPos.x, currentPos.y);
-        canvas.$context.stroke();
-      }
-    },
-
-    path : {
-      down : function(ev, pos, canvas) {
-        canvas.$context.fillStyle = this.currentForegroundColor;
-        canvas.$context.strokeStyle = this.currentBackgroundColor;
-        canvas.$context.lineWidth = this.strokeWidth;
-        canvas.$context.lineJoin = this.strokeStyle;
-      },
-
-      move : function(ev, startPos, currentPos, canvas) {
-        canvas.$context.beginPath();
-        canvas.$context.moveTo(startPos.x, startPos.y);
-        canvas.$context.lineTo(currentPos.x, currentPos.y);
-        if ( this.strokeWidth ) {
-          canvas.$context.stroke();
-        }
-        canvas.$context.closePath();
-      },
-
-      up : function(ev, startPos, endPos, canvas) {
-      }
-    },
-
-    rectangle : {
-      down : function(ev, pos, canvas) {
-        canvas.$context.fillStyle = this.currentForegroundColor;
-        canvas.$context.strokeStyle = this.currentBackgroundColor;
-        canvas.$context.lineWidth = this.strokeWidth;
-        canvas.$context.lineJoin = this.strokeStyle;
-      },
-
-      move : function(ev, startPos, currentPos, canvas) {
-        var x = Math.min(currentPos.x, startPos.x);
-        var y = Math.min(currentPos.y, startPos.y);
-        var w = Math.abs(currentPos.x - startPos.x);
-        var h = Math.abs(currentPos.y - startPos.y);
-
-        if ( w && h ) {
-          if ( this.strokeWidth ) {
-            canvas.$context.strokeRect(x, y, w, h);
-          }
-          canvas.$context.fillRect(x, y, w, h);
-        }
-      }
-    },
-
-    square : {
-      down : function(ev, pos, canvas) {
-        canvas.$context.fillStyle = this.currentForegroundColor;
-        canvas.$context.strokeStyle = this.currentBackgroundColor;
-        canvas.$context.lineWidth = this.strokeWidth;
-        canvas.$context.lineJoin = this.strokeStyle;
-      },
-
-      move : function(ev, startPos, currentPos, canvas) {
-        var x = startPos.x; //Math.min(currentPos.x, startPos.x);
-        var y = startPos.y; //Math.min(currentPos.y, startPos.y);
-        var w = Math.abs(currentPos.x - startPos.x) * (currentPos.x < startPos.x ? -1 : 1);
-        var h = Math.abs(w) * (currentPos.y < startPos.y ? -1 : 1);
-
-        if ( w && h ) {
-          if ( this.strokeWidth ) {
-            canvas.$context.strokeRect(x, y, w, h);
-          }
-          canvas.$context.fillRect(x, y, w, h);
-        }
-      }
-    },
-
-    circle : {
-      down : function(ev, pos, canvas) {
-        canvas.$context.fillStyle = this.currentForegroundColor;
-        canvas.$context.strokeStyle = this.currentBackgroundColor;
-        canvas.$context.lineWidth = this.strokeWidth;
-        canvas.$context.lineJoin = this.strokeStyle;
-      },
-
-      move : function(ev, startPos, currentPos, canvas) {
-        var x = Math.abs(startPos.x - currentPos.x);
-        var y = Math.abs(startPos.y - currentPos.y);
-        var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        if ( r > 0 ) {
-          canvas.$context.beginPath();
-          canvas.$context.arc(startPos.x, startPos.y, r, 0, Math.PI*2, true);
-          canvas.$context.closePath();
-          if ( this.strokeWidth ) {
-            canvas.$context.stroke();
-          }
-          canvas.$context.fill();
-        }
-      }
-    },
-
-    ellipse : {
-      down : function(ev, pos, canvas) {
-        canvas.$context.fillStyle = this.currentForegroundColor;
-        canvas.$context.strokeStyle = this.currentBackgroundColor;
-        canvas.$context.lineWidth = this.strokeWidth;
-        canvas.$context.lineJoin = this.strokeStyle;
-      },
-
-      move : function(ev, startPos, currentPos, canvas) {
-        var width = Math.abs(startPos.x - currentPos.x);
-        var height = Math.abs(startPos.y - currentPos.y);
-
-        if ( width > 0 && height > 0 ) {
-          canvas.$context.beginPath();
-          canvas.$context.moveTo(startPos.x, startPos.y - height*2); // A1
-          canvas.$context.bezierCurveTo(
-            startPos.x + width*2, startPos.y - height*2, // C1
-            startPos.x + width*2, startPos.y + height*2, // C2
-            startPos.x, startPos.y + height*2); // A2
-          canvas.$context.bezierCurveTo(
-            startPos.x - width*2, startPos.y + height*2, // C3
-            startPos.x - width*2, startPos.y - height*2, // C4
-            startPos.x, startPos.y - height*2); // A1
-
-          canvas.$context.closePath();
-          if ( this.strokeWidth ) {
-            canvas.$context.stroke();
-          }
-          canvas.$context.fill();
-        }
-      }
-    }
-  };
 
   /**
    * Main Window
@@ -233,15 +47,25 @@
   var ApplicationDrawWindow = function(app, metadata) {
     Window.apply(this, ['ApplicationDrawWindow', {width: 800, height: 450}, app]);
 
-    this.title                  = metadata.name;
-    this.$canvasContainer       = null;
-    this.currentTool            = 'pointer';
-    this.currentForegroundColor = '#000000';
-    this.currentBackgroundColor = '#ffffff';
-    this.strokeWidth            = 1;
-    this.strokeStyle            = 'round';
+    this.title            = metadata.name;
+    this.image            = null;
+    this.currentTool      = null;
+    this.currentStyle     = {
+      stroke    : false,
+      bg        : "#000000",
+      fg        : "#ffffff",
+      lineJoin  : "round",
+      lineWidth : 3
+    };
+    this.mouseStartX      = 0;
+    this.mouseStartY      = 0;
+    this.offsetX          = 0;
+    this.offsetY          = 0;
+    this.isPainting       = false;
+    this.$imageContainer  = null;
 
     // Set window properties here
+    this._title = this.title;
     this._icon = metadata.icon;
     this._properties.allow_drop = true;
   };
@@ -249,120 +73,11 @@
   ApplicationDrawWindow.prototype = Object.create(Window.prototype);
 
   ApplicationDrawWindow.prototype.init = function(wmRef, app) {
-    var root = Window.prototype.init.apply(this, arguments);
     var self = this;
+
+    var root = Window.prototype.init.apply(this, arguments);
+
     // Create window contents here
-
-    // FIXME: Use API
-    var _createIcon = function(i) {
-      return OSjs.API.getApplicationResource(app, 'icons/' + i + '-16.png');
-    };
-
-    var _onClick = function(ev, el, name, item) {
-      if ( name ) {
-        if ( name === 'foregroundColor' ) {
-          self.setColor('foreground');
-        } else if ( name === 'backgroundColor' ) {
-          self.setColor('background');
-        } else {
-          self.setTool(name);
-        }
-      }
-    };
-
-    var _createColorButton = function(name, item, container, button) {
-      var color = document.createElement('div');
-      color.className = 'Color';
-      color.style.backgroundColor = '#ffffff';
-      button.title = name === 'foregroundColor' ? 'Foreground (Fill) Color' : 'Background (Stroke) Color';
-      button.appendChild(color);
-    };
-
-    var toolBar = this._addGUIElement(new GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
-
-    toolBar.addItem('pointer',    {grouped: true, title: _('Pointer'),   icon: _createIcon('stock-cursor'),                  onClick: _onClick});
-    toolBar.addItem('picker',     {grouped: true, title: _('Picker'),    icon: _createIcon('stock-color-pick-from-screen'),  onClick: _onClick});
-    toolBar.addItem('bucket',     {grouped: true, title: _('Bucket'),    icon: _createIcon('stock-tool-bucket-fill'),        onClick: _onClick});
-    //toolBar.addItem('eraser',     {grouped: true, title: _('Eraser'),    icon: _createIcon('stock-tool-eraser'),             onClick: _onClick});
-
-    toolBar.addItem('pencil',     {grouped: true, title: _('Pencil'),    icon: _createIcon('stock-tool-pencil'),             onClick: _onClick});
-    toolBar.addItem('path',       {grouped: true, title: _('Path'),      icon: _createIcon('stock-tool-path'),               onClick: _onClick});
-    toolBar.addItem('rectangle',  {grouped: true, title: _('Rectangle'), icon: _createIcon('stock-shape-rectangle'),         onClick: _onClick});
-    toolBar.addItem('square',     {grouped: true, title: _('Square'),    icon: _createIcon('stock-shape-square'),            onClick: _onClick});
-    toolBar.addItem('ellipse',    {grouped: true, title: _('Ellipse'),   icon: _createIcon('stock-shape-ellipse'),           onClick: _onClick});
-    toolBar.addItem('circle',     {grouped: true, title: _('Circle'),    icon: _createIcon('stock-shape-circle'),            onClick: _onClick});
-    //toolBar.addItem('text',       {grouped: true, title: _('Text'),      icon: _createIcon('stock-tool-text'),               onClick: _onClick});
-
-    toolBar.addSeparator();
-
-    toolBar.addItem('foregroundColor',       {title: _('Foreground'), onClick: _onClick, onCreate: _createColorButton});
-    toolBar.addItem('backgroundColor',       {title: _('Background'), onClick: _onClick, onCreate: _createColorButton});
-
-    toolBar.addItem('strokeWidth',          {title: _('Stroke Width'), type: 'custom', onClick: function(ev, el, name, item) {
-    }, onCreate: function(name, item, container, button) {
-      container.className += ' Long';
-
-      var select = document.createElement('select');
-      select.onchange = function() {
-        var el = this.options[this.selectedIndex];
-        if ( el ) {
-          self.strokeWidth = el.value << 0;
-        }
-      };
-      var option;
-      var label = document.createElement('label');
-      label.innerHTML = _('Stroke');
-
-      for ( var i = 0, l = 15; i < l; i++ ) {
-        option = document.createElement('option');
-        option.value = i;
-        option.innerHTML = i;
-        if ( self.strokeWidth == i ) {
-          option.selected = "selected";
-          select.selectedIndex = i;
-        }
-        select.appendChild(option);
-      }
-      button.appendChild(label);
-      button.appendChild(select);
-    }});
-
-    toolBar.addItem('lineJoin',          {title: _('Line Join'), type: 'custom', onClick: function(ev, el, name, item) {
-    }, onCreate: function(name, item, container, button) {
-      container.className += ' Long';
-
-      var select = document.createElement('select');
-      select.onchange = function() {
-        var el = this.options[this.selectedIndex];
-        if ( el ) {
-          self.strokeStyle = el.value;
-        }
-      };
-      var option;
-      var label = document.createElement('label');
-      label.innerHTML = _('Line Join');
-
-      option = document.createElement('option');
-      option.value = 'bevel';
-      option.innerHTML = _('Bevel');
-      select.appendChild(option);
-
-      option = document.createElement('option');
-      option.value = 'round';
-      option.innerHTML = _('Round');
-      option.selected = "selected";
-      select.appendChild(option);
-
-      option = document.createElement('option');
-      option.value = 'miter';
-      option.innerHTML = _('Miter');
-      select.appendChild(option);
-
-      button.appendChild(label);
-      button.appendChild(select);
-      option.selectedIndex = 1;
-    }});
-
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationDrawMenuBar'), root);
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('New'), name: 'New', onClick: function() {
@@ -386,86 +101,215 @@
       menu.setItemDisabled("Save", app.currentFilename ? false : true);
     };
 
-    this.$canvasContainer = document.createElement('div');
-    this.$canvasContainer.className = 'CanvasContainer';
+    var toolBar = this._addGUIElement(new GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
 
-    var canvasImage = this._addGUIElement(new GUI.Canvas('ApplicationDrawCanvas', {width: 640, height:480}), this.$canvasContainer);
-    var canvas = this._addGUIElement(new GUI.Canvas('ApplicationDrawCanvasOverlay', {width: 640, height:480}), this.$canvasContainer);
-
-    //this.$canvasContainer.style.width = '640px';
-    //this.$canvasContainer.style.height = '480px';
-
-    var mouseDown = false;
-    var startX, startY;
-    var start, end;
-
-    var _getPosition = function(ev) {
-      var cpos = OSjs.Utils.$position(self.$canvasContainer);
-      return {x: (ev.clientX-cpos.left) + self.$canvasContainer.scrollLeft, y: (ev.clientY-cpos.top) + self.$canvasContainer.scrollTop};
+    var _createColorButton = function(name, item, container, button) {
+      var color = document.createElement('div');
+      color.className = 'Color';
+      color.style.backgroundColor = name === 'foregroundColor' ? self.currentStyle.fg : self.currentStyle.bg;
+      button.title = name === 'foregroundColor' ? 'Foreground (Fill) Color' : 'Background (Stroke) Color';
+      button.appendChild(color);
     };
 
-    var _onMouseMove = function(ev) {
-      if ( !mouseDown ) return;
-      var diffX = ev.clientX - startX;
-      var diffY = ev.clientY - startY;
-      var cur = {
-        x: start.x + diffX,
-        y: start.y + diffY
-      };
-      self.onMouseMove(ev, diffX, diffY, start, cur, canvas, canvasImage);
+    var _createLineJoin = function(name, item, container, button) {
+      var join = document.createElement('div');
+      join.className = 'LineJoin';
+
+      button.title = "Line Join";
+      button.appendChild(join);
     };
 
-    var _onMouseUp = function(ev) {
-      end = _getPosition(ev);
+    var _createLineWidth = function(name, item, container, button) {
+      var width = document.createElement('div');
+      width.className = 'LineWidth';
 
-      document.removeEventListener('mouseup', _onMouseUp, false);
-      document.removeEventListener('mousemove', _onMouseMove, false);
-      self.onMouseUp(ev, start, end, canvas, canvasImage);
-      mouseDown = false;
+      button.title = "Line Width";
+      button.appendChild(width);
     };
 
-    var _onMouseDown = function(ev) {
-      ev.preventDefault();
-      start = _getPosition(ev);
-      startX = ev.clientX;
-      startY = ev.clientY;
+    var _createEnableStroke = function(name, item, container, button) {
+      var en = document.createElement('div');
+      en.className = 'EnableStroke';
 
-      document.addEventListener('mouseup', _onMouseUp, false);
-      document.addEventListener('mousemove', _onMouseMove, false);
-      self.onMouseDown(ev, start, canvas, canvasImage);
-      mouseDown = true;
+      button.title = "Toggle Stroke";
+      button.appendChild(en);
     };
 
-    var _onMouseClick = function(ev) {
-      var pos = _getPosition(ev);
-      self.onMouseClick(ev, pos.x, pos.y, canvas, canvasImage);
+    var _selectColor = function(type, hex) {
+      self.currentStyle[type] = hex;
+      if ( toolBar ) {
+        var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
+        toolBar.getItem(className).getElementsByClassName('Color')[0].style.backgroundColor = hex;
+      }
     };
 
-    self.$canvasContainer.addEventListener('mousedown', _onMouseDown, false);
-    self.$canvasContainer.addEventListener('click', _onMouseClick, false);
-    this._addHook('destroy', function() {
-      self.$canvasContainer.removeEventListener('mousedown', _onMouseDown, false);
-      self.$canvasContainer.removeEventListener('click', _onMouseClick, false);
-    });
+    var _selectLineJoin = function(type) {
+      var txt = {round: "R", miter: "M", bevel: "B"};
+      self.currentStyle.lineJoin = type;
+      if ( toolBar ) {
+        toolBar.getItem('lineJoin').getElementsByClassName('LineJoin')[0].innerHTML = txt[type];
+      }
+    };
 
+    var _selectLineWidth = function(width) {
+      self.currentStyle.lineWidth = width;
+      if ( toolBar ) {
+        toolBar.getItem('lineWidth').getElementsByClassName('LineWidth')[0].innerHTML = width;
+      }
+    };
 
-    root.appendChild(this.$canvasContainer);
+    var _toggleStroke = function(t) {
+      if ( typeof t !== "undefined" && t !== null ) {
+        self.currentStyle.stroke = t ? true : false;
+      } else {
+        self.currentStyle.stroke = !self.currentStyle.stroke;
+      }
+      if ( toolBar ) {
+        toolBar.getItem('enableStroke').getElementsByClassName('EnableStroke')[0].innerHTML = self.currentStyle.stroke ? "S" : "NS";
+      }
+    };
 
-    this.setTitle('');
+    toolBar.addItem('foregroundColor', {title: ('Foreground'), onClick: function() {
+      app._createDialog('Color', [{color: self.currentStyle.fg}, function(btn, rgb, hex) {
+        self._focus();
+        if ( btn !== 'ok' ) return;
+        _selectColor("fg", hex);
+      }], self);
+    }, onCreate: _createColorButton});
+
+    toolBar.addItem('backgroundColor', {title: ('Background'), onClick: function() {
+      app._createDialog('Color', [{color: self.currentStyle.bg}, function(btn, rgb, hex) {
+        self._focus();
+        if ( btn !== 'ok' ) return;
+        _selectColor("bg", hex);
+      }], self);
+    }, onCreate: _createColorButton});
+
+    toolBar.addItem('lineJoin', {title: ('Line Join'), onClick: function(ev) {
+      GUI.createMenu([
+        {
+          title: "Round",
+          onClick: function(ev) {
+            _selectLineJoin("round");
+          }
+        },
+        {
+          title: "Miter",
+          onClick: function(ev) {
+            _selectLineJoin("miter");
+          }
+        },
+        {
+          title: "Bevel",
+          onClick: function(ev) {
+            _selectLineJoin("bevel");
+          }
+        }
+      ], {x: ev.clientX, y: ev.clientY});
+
+    }, onCreate: _createLineJoin});
+
+    toolBar.addItem('lineWidth', {title: ('Line Width'), onClick: function(ev) {
+      var items = [];
+      for ( var i = 1; i < 20; i++ ) {
+        items.push({
+          title: i,
+          onClick: (function(idx) {
+            return function() {
+              _selectLineWidth(idx);
+            };
+          })(i)
+        });
+      }
+
+      GUI.createMenu(items, {x: ev.clientX, y: ev.clientY});
+    }, onCreate: _createLineWidth});
+
+    toolBar.addItem('enableStroke', {title: ('Enable stroke'), onClick: function(ev) {
+      _toggleStroke();
+    }, onCreate: _createEnableStroke});
+
+    toolBar.addSeparator();
+
+    var tools = OSjs.Applications.ApplicationDrawLibs.Tools;
+    var t;
+    for ( var i = 0; i < tools.length; i++ ) {
+      t = tools[i];
+      if ( t ) {
+        toolBar.addItem(t.name, {
+          grouped: true,
+          title: t.title,
+
+          icon:(function(tool) {
+            return OSjs.API.getApplicationResource(app, 'icons/' + tool.icon + '-16.png');
+          })(t),
+
+          onClick : (function(tool) {
+            return function() {
+              self.setTool(tool);
+            };
+          })(t)
+        });
+      }
+    }
 
     toolBar.render();
 
-    this.setColor('foreground', this.currentForegroundColor);
-    this.setColor('background', this.currentBackgroundColor);
-    this.setTool(this.currentTool);
+    this.$imageContainer = document.createElement("div");
+    this.$imageContainer.className = "ImageContainer";
 
-    return root;
+    this._addEventListener(this.$imageContainer, "mousedown", function(ev) {
+      ev.preventDefault();
+
+      self.onMouseDown(ev);
+      document.addEventListener("mousemove", function(ev) {
+        self.onMouseMove(ev);
+      });
+    });
+
+    this._addEventListener(this.$imageContainer, "mouseup", function(ev) {
+      ev.preventDefault();
+
+      self.onMouseUp(ev);
+      document.removeEventListener("mousemove", function(ev) {
+        self.onMouseMove(ev);
+      });
+    }, false);
+
+    this._addEventListener(this.$imageContainer, "click", function(ev) {
+      ev.preventDefault();
+
+      self.onMouseClick(ev);
+    }, false);
+
+    root.appendChild(this.$imageContainer);
+
+    _selectLineJoin(this.currentStyle.lineJoin);
+    _selectLineWidth(this.currentStyle.lineWidth);
+    _selectColor("fg", this.currentStyle.fg);
+    _selectColor("bg", this.currentStyle.bg);
+    _toggleStroke(this.currentStyle.stroke);
+
+    this.setImage(null, null);
   };
 
   ApplicationDrawWindow.prototype.destroy = function() {
+    var self = this;
+
     // Destroy custom objects etc. here
+    if ( this.image ) {
+      this.image.destroy();
+    }
+    this.image = null;
 
     Window.prototype.destroy.apply(this, arguments);
+
+    if ( this.$imageContainer ) {
+      if ( this.$imageContainer.parentNode ) {
+        this.$imageContainer.parentNode.removeChild(this.$imageContainer);
+      }
+      this.$imageContainer = null;
+    }
   };
 
   ApplicationDrawWindow.prototype._onDndEvent = function(ev, type, item, args) {
@@ -478,41 +322,124 @@
     }
   };
 
-  ApplicationDrawWindow.prototype.onMouseClick = function(ev, clickX, clickY, canvas, canvasImage) {
-    if ( canvas && this.currentTool && Tools[this.currentTool] ) {
-      if ( Tools[this.currentTool].click ) {
-        Tools[this.currentTool].click.call(this, ev, clickX, clickY, canvas, canvasImage);
-      }
-      canvasImage.$context.drawImage(canvas.$canvas, 0, 0);
-      canvas.clear();
+  ApplicationDrawWindow.prototype.applyStyle = function(ev, context) {
+    var style   = {
+      enableStroke:  this.currentStyle.stroke,
+      strokeStyle:   this.currentStyle.bg,
+      fillStyle:     this.currentStyle.fg,
+      lineJoin:      this.currentStyle.lineJoin,
+      lineWidth:     this.currentStyle.lineWidth
+    };
+
+    if ( OSjs.Utils.mouseButton(ev) != "left" ) {
+      style.strokeStyle = this.currentStyle.fg;
+      style.fillStyle   = this.currentStyle.bg;
     }
+
+    this.currentTool.applyStyle(style, context);
   };
 
-  ApplicationDrawWindow.prototype.onMouseDown = function(ev, pos, canvas, canvasImage) {
-    if ( canvas && this.currentTool && Tools[this.currentTool] ) {
-      if ( Tools[this.currentTool].down ) {
-        Tools[this.currentTool].down.call(this, ev, pos, canvas);
-      }
-    }
+  ApplicationDrawWindow.prototype.onMouseDown = function(ev) {
+    if ( !this.image || !this.currentTool ) { return false; }
+    var layer   = this.image.getActiveLayer();
+    var context = layer.context;
+
+    if ( !context ) { return false; }
+
+    var pos = OSjs.Utils.$position(this.$imageContainer);
+
+    this.offsetX     = pos.left - this.$imageContainer.scrollLeft;
+    this.offsetY     = pos.top - this.$imageContainer.scrollTop;
+    this.mouseStartX = ev.pageX - this.offsetX;
+    this.mouseStartY = ev.pageY - this.offsetY;
+
+    this.applyStyle(ev, context);
+    this.currentTool.onmousedown(ev, this, this.image, layer, [this.mouseStartX, this.mouseStartY], [this.mouseStartX, this.mouseStartY]);
+
+    this.isPainting = true;
+
+    return true;
   };
 
-  ApplicationDrawWindow.prototype.onMouseUp = function(ev, startPos, endPos, canvas, canvasImage) {
-    if ( canvas && this.currentTool && Tools[this.currentTool] ) {
-      if ( Tools[this.currentTool].up ) {
-        Tools[this.currentTool].up.call(this, ev, startPos, endPos, canvas);
-      }
-      canvasImage.$context.drawImage(canvas.$canvas, 0, 0);
-      canvas.clear();
-    }
+  ApplicationDrawWindow.prototype.onMouseUp = function(ev) {
+    if ( !this.image || !this.currentTool ) { return false; }
+
+    var curX        = ev.pageX - this.offsetX;
+    var curY        = ev.pageY - this.offsetY;
+
+    this.currentTool.onmouseup(ev, this, this.image, this.image.getActiveLayer(), [curX, curY], [this.mouseStartX, this.mouseStartY]);
+
+    this.isPainting = false;
+
+    return true;
   };
 
-  ApplicationDrawWindow.prototype.onMouseMove = function(ev, dx, dy, startPos, currentPos, canvas, canvasImage) {
-    if ( canvas && this.currentTool && Tools[this.currentTool] ) {
-      canvas.clear();
-      if ( Tools[this.currentTool].move ) {
-        Tools[this.currentTool].move.call(this, ev, startPos, currentPos, canvas);
-      }
+  ApplicationDrawWindow.prototype.onMouseMove = function(ev) {
+    if ( !this.image || !this.currentTool ) { return false; }
+    if ( !this.isPainting ) { return false; }
+
+    var curX = ev.pageX - this.offsetX;
+    var curY = ev.pageY - this.offsetY;
+
+    this.isPainting  = true;
+
+    this.currentTool.ondraw(ev, this, this.image, this.image.getActiveLayer(), [curX, curY], [this.mouseStartX, this.mouseStartY]);
+
+    return true;
+  };
+
+  ApplicationDrawWindow.prototype.onMouseClick = function(ev) {
+    if ( !this.image || !this.currentTool ) { return false; }
+    var pos = OSjs.Utils.$position(this.$imageContainer);
+    var layer   = this.image.getActiveLayer();
+    var context = layer.context;
+
+    if ( !context ) { return false; }
+
+    this.mouseStartX = ev.pageX - (pos.left - this.$imageContainer.scrollLeft);
+    this.mouseStartY = ev.pageY - (pos.top - this.$imageContainer.scrollTop);
+    this.isPainting  = false;
+
+    this.applyStyle(ev, context);
+
+    this.currentTool.onclick(ev, this, this.image, this.image.getActiveLayer(), [this.mouseStartX, this.mouseStartY], [this.mouseStartX, this.mouseStartY]);
+
+    return true;
+  };
+
+  ApplicationDrawWindow.prototype.setImage = function(name, data) {
+    if ( this.image ) {
+      this.image.destroy();
+      this.image = null;
     }
+
+    name = name ? OSjs.Utils.filename(name) : "New Image";
+    data = data || null;
+
+    var sx = data ? data.width : 640;
+    var sy = data ? data.height : 480;
+
+    this.image = new OSjs.Applications.ApplicationDrawLibs.Image(name, sx, sy);
+    if ( data ) {
+      this.image.setData(data);
+    }
+    this.$imageContainer.appendChild(this.image.getContainer());
+
+    this.setImageName(name);
+  };
+
+  ApplicationDrawWindow.prototype.setImageName = function(name) {
+    if ( this.image ) {
+      this.image.setName(name);
+    }
+
+    this.setTitle(name);
+    this._toggleLoading(false);
+    this._focus();
+  };
+
+  ApplicationDrawWindow.prototype.setTool = function(tool) {
+    this.currentTool = tool;
   };
 
   ApplicationDrawWindow.prototype.setTitle = function(t) {
@@ -520,83 +447,18 @@
     return this._setTitle(title);
   };
 
-  ApplicationDrawWindow.prototype.setTool = function(tool) {
-    console.log("ApplicationDrawWindow::setTool()", tool);
-    this.currentTool = tool;
-  };
+  ApplicationDrawWindow.prototype.setColor = function(type, val) {
+    this.currentStyle[type] = val;
 
-  ApplicationDrawWindow.prototype.setColor = function(what, color) {
-    var self = this;
-
-    var _onSelected = function() {
-      var toolBar = self._getGUIElement('ApplicationDrawToolBar');
-      if ( toolBar ) {
-        toolBar.getItem('foregroundColor').getElementsByClassName('Color')[0].style.backgroundColor = self.currentForegroundColor;
-        toolBar.getItem('backgroundColor').getElementsByClassName('Color')[0].style.backgroundColor = self.currentBackgroundColor;
-      }
-    };
-
-    var _select = function(hex) {
-      console.log("ApplicationDrawWindow::setColor()", what, hex);
-      if ( what === 'foreground' ) {
-        self.currentForegroundColor = hex;
-      } else {
-        self.currentBackgroundColor = hex;
-      }
-      _onSelected();
-    };
-
-    if ( color ) {
-      _select(color);
-    } else {
-      var current = what === 'foreground' ? this.currentForegroundColor : this.currentBackgroundColor;
-      this._appRef._createDialog('Color', [{color: current}, function(btn, rgb, hex) {
-        self._focus();
-        if ( btn !== 'ok' ) return;
-
-        _select(hex);
-      }], this);
+    var toolBar = this._getGUIElement('ApplicationDrawToolBar');
+    if ( toolBar ) {
+      var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
+      toolBar.getItem(className).getElementsByClassName('Color')[0].style.backgroundColor = val;
     }
   };
 
-  ApplicationDrawWindow.prototype.setData = function(data, filename) {
-    var self = this;
-    var canvas = this._getGUIElement('ApplicationDrawCanvas');
-    if ( canvas ) {
-      this.createNew();
-      console.log("ApplicationDrawWindow::setData()");
-
-      setTimeout(function() { // To make loading show correctly
-        canvas.clear();
-        canvas.setImageData(data, function() {
-          //self.$canvasContainer.style.width = canvas.width + 'px';
-          //self.$canvasContainer.style.height = canvas.height + 'px';
-
-          self._getGUIElement('ApplicationDrawCanvasOverlay').resize(canvas.width, canvas.height);
-          self._getGUIElement('ApplicationDrawCanvasOverlay').clear();
-
-          self._toggleLoading(false);
-        }, function() {
-          self._toggleLoading(false);
-        });
-      }, 10);
-    }
-
-    this.setTitle(filename);
-  };
-
-  ApplicationDrawWindow.prototype.createNew = function(w, h) {
-    w = w || 640;
-    h = h || 480;
-
-    //this.$canvasContainer.style.width = w + 'px';
-    //this.$canvasContainer.style.height = h + 'px';
-
-    this._getGUIElement('ApplicationDrawCanvasOverlay').resize(w, h);
-    this._getGUIElement('ApplicationDrawCanvasOverlay').clear();
-
-    this._getGUIElement('ApplicationDrawCanvas').resize(w, h);
-    this._getGUIElement('ApplicationDrawCanvas').clear();
+  ApplicationDrawWindow.prototype.getImage = function() {
+    return this.image;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -638,39 +500,39 @@
     }
   };
 
+  // TODO: Refactor
   ApplicationDraw.prototype.action = function(action, filename, mime) {
     var self = this;
     var win = this._getWindow('ApplicationDrawWindow');
 
+    var _setCurrentFile = function(name, mime) {
+      self.currentFilename = name;
+      self._setArgument('file', name);
+      self._setArgument('mime', mime || null);
+    };
+
     var _onError = function(error) {
-      self._setArgument('file', null);
-      self._setArgument('mime', null);
+      _setCurrentFile(null, null);
       if ( win ) {
-        win.setTitle('');
-        win._toggleLoading(false);
+        win.setImageName("");
+
         win._error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
       } else {
         OSjs.API.error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
       }
     };
 
-    // Save
     var _saveFile = function(fname) {
       var _onSaveFinished = function(name) {
-        self.currentFilename = name;
-        self._setArgument('file', name);
-        self._setArgument('mime', mime || null);
+        _setCurrentFile(name, mime);
         if ( win ) {
-          win._toggleLoading(false);
-
-          win.setTitle(name);
-          win._focus();
+          win.setImageName(name);
         }
       };
 
-      var canvas = win._getGUIElement('ApplicationDrawCanvas');
-      if ( !canvas ) return;
-      var data = canvas.getImageData();
+      var image = win.getImage();
+      if ( !image ) { return; }
+      var data = image.getData();
 
       win._toggleLoading(true);
       OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, data, {dataSource: true}]}, function(res) {
@@ -688,28 +550,34 @@
       });
     };
 
-    // Open
+    var _readFile = function(fname, fmime, data) {
+      var img = new Image();
+      img.onerror = function() {
+        _onError("Failed to load image data");
+      };
+      img.onload = function() {
+        _setCurrentFile(fname, fmime);
+
+        if ( win ) {
+          win.setImage(fname, this);
+        }
+      };
+      img.src = data;
+    };
+
     var _openFile = function(fname, fmime) {
       if ( fmime && !fmime.match(/^image/) ) {
         OSjs.API.error(self.__label, OSjs._("Cannot open file"), OSjs._("Not supported!"));
         return;
       }
 
-      var _openFileFinished = function(name, data) {
-        self.currentFilename = name;
-        self._setArgument('file', name);
-        self._setArgument('mime', (mime || fmime || null));
-        if ( win ) {
-          win.setData(data, name);
-          win._focus();
-        }
-      };
-
       win.setTitle('Loading...');
       win._toggleLoading(true);
       OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: true}]}, function(res) {
         if ( res && res.result ) {
-          _openFileFinished(fname, res.result);
+          if ( win ) {
+            _readFile(fname, fmime, res.result);
+          }
         } else {
           if ( res && res.error ) {
             _onError(OSjs._("Failed to open file: {0}", fname), res.error);
@@ -722,12 +590,11 @@
       });
     };
 
-    // New
     var _newFile = function() {
-      self.currentFilename = null;
+      _setCurrentFile(null, null);
+
       if ( win ) {
-        win.setTitle('');
-        win.createNew();
+        win.setImage(null, null);
       }
     };
 

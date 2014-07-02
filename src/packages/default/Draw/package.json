@@ -15,6 +15,7 @@
     "icon":       "categories/gnome-graphics.png",
     "compability":["canvas"],
     "preload":    [
+      {"src": "libs.js", "type": "javascript"},
       {"src": "main.js", "type": "javascript"},
       {"src": "main.css", "type": "stylesheet"}
     ]

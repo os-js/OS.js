@@ -31,6 +31,29 @@
 .Window_ApplicationDrawWindow .WindowWrapper {
 }
 
+.Window_ApplicationDrawWindow .WindowWrapper .ImageContainer {
+  position : absolute;
+  left : 85px;
+  top : 32px;
+  right : 1px;
+  bottom : 1px;
+  overflow : auto;
+}
+
+.Window_ApplicationDrawWindow .WindowWrapper .VBox {
+  position : relative;
+}
+
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawCanvas {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : 1;
+  background : #000 url('checkerboard.png');
+}
+
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar {
   position : absolute;
   left : 0px;
@@ -51,12 +74,16 @@
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.Long {
   width : 74px;
 }
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.Separator {
+  height : 8px;
+  position : relative;
+}
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.Separator:after {
+  height : 8px;
+}
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar button .Color {
-  position : absolute;
-  top : 4px;
-  left : 4px;
-  width : 22px;
-  height : 22px;
+  width : 21px;
+  height : 21px;
 }
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.Long label {
   display : block;
@@ -68,29 +95,4 @@
 }
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar .HasIcon span {
   display : none;
-}
-.Window_ApplicationDrawWindow .WindowWrapper .CanvasContainer {
-  position : absolute;
-  bottom : 5px;
-  right : 5px;
-  top : 34px;
-  left : 90px;
-  overflow : auto;
-}
-.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawCanvas {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 1;
-  background : #000 url('/apps/Draw/checkerboard.png');
-}
-.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawCanvasOverlay {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 2;
 }
