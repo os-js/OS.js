@@ -93,6 +93,9 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     // Create window contents here
+    var layerBar = document.createElement("div");
+    layerBar.className = "GUIToolbar ApplicationDrawLayersBar";
+
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationDrawMenuBar'), root);
 
     var _toggleToolsToolbar = function(t) {
@@ -358,9 +361,59 @@
       self.onMouseClick(ev);
     }, false);
 
+
     root.appendChild(this.$imageContainer);
+    root.appendChild(layerBar);
 
     var statusBar  = this._addGUIElement(new GUI.StatusBar('ApplicationDrawStatusBar'), root);
+
+    var layerList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationDrawLayerListView'), layerBar);
+
+    layerList.setColumns([
+      {key: 'name',  title: OSjs._('Name')}
+     ]);
+    layerList.onActivate = function(ev, el, item) {
+      if ( item && item.key ) {
+      }
+    };
+    layerList.onSelect = function(ev, el, item) {
+      if ( item && item.key ) {
+      }
+    };
+
+    layerList.setRows([
+      {
+        name: "Default"
+      }
+    ]);
+
+    layerList.onSelect = function(ev, el, item) {
+      if ( item ) {
+      } else {
+      }
+    };
+
+    layerList.render();
+
+    var layerButtons = document.createElement("div");
+    layerButtons.className = "Buttons";
+
+    var layerButtonAdd = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonAdd', {disabled: true, icon: OSjs.API.getIcon('actions/add.png'), onClick: function(el, ev) {
+      layerButtonRemove.setDisabled(true);
+      layerButtonUp.setDisabled(true);
+      layerButtonDown.setDisabled(true);
+    }}), layerButtons);
+
+    var layerButtonRemove = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonRemove', {disabled: true, icon: OSjs.API.getIcon('actions/remove.png'), onClick: function(el, ev) {
+    }}), layerButtons);
+
+    var layerButtonUp = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonUp', {disabled: true, icon: OSjs.API.getIcon('actions/up.png'), onClick: function(el, ev) {
+    }}), layerButtons);
+
+    var layerButtonDown = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonDown', {disabled: true, icon: OSjs.API.getIcon('actions/down.png'), onClick: function(el, ev) {
+    }}), layerButtons);
+
+    layerBar.appendChild(layerButtons);
 
     _selectLineJoin(this.currentStyle.lineJoin);
     _selectLineWidth(this.currentStyle.lineWidth);

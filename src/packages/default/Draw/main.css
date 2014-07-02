@@ -43,6 +43,27 @@
 .Window_ApplicationDrawWindow .WindowWrapper .VBox {
   position : relative;
 }
+.Window_ApplicationDrawWindow .WindowWrapper .Buttons {
+  text-align : center;
+}
+.Window_ApplicationDrawWindow .WindowWrapper .Buttons > .GUIButton {
+  display : inline-block;
+  width : 32px;
+  margin : 5px;
+}
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawLayersBar {
+  position : absolute;
+  right : 0px;
+  top : 32px;
+  bottom : 27px;
+  width : 200px;
+  display : none;
+}
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawLayerListView {
+  height : 300px;
+  margin : 5px;
+}
+
 
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawCanvas {
   position : absolute;
@@ -68,6 +89,12 @@
 }
 .Window_ApplicationDrawWindow .WindowWrapper.ShowToolToolbar .ApplicationDrawToolBar {
   display : block;
+}
+.Window_ApplicationDrawWindow .WindowWrapper.ShowLayerToolbar .ApplicationDrawLayersBar {
+  display : block;
+}
+.Window_ApplicationDrawWindow .WindowWrapper.ShowLayerToolbar .ImageContainer {
+  right : 200px;
 }
 
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li {
