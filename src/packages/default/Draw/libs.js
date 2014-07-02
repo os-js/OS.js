@@ -33,11 +33,12 @@
   // TOOLS
   /////////////////////////////////////////////////////////////////////////////
 
-  var Tool = function(name, title, icon, tmp) {
+  var Tool = function(name, title, icon, txt, tmp) {
     this.name = name;
     this.title = title;
     this.icon = icon;
     this.style = null;
+    this.statusText = txt;
     this.tmpEnable = tmp ? true : false;
     this.tmpCanvas = null;
     this.tmpContext = null;
@@ -108,7 +109,7 @@
    * Tool: Pointer
    */
   var ToolPointer = function() {
-    Tool.call(this, "pointer", "Pointer", "stock-cursor");
+    Tool.call(this, "pointer", "Pointer", "stock-cursor", "");
   };
   ToolPointer.prototype = Object.create(Tool.prototype);
 
@@ -116,7 +117,7 @@
    * Tool: Picker
    */
   var ToolPicker = function() {
-    Tool.call(this, "picker", "Picker", "stock-color-pick-from-screen");
+    Tool.call(this, "picker", "Picker", "stock-color-pick-from-screen", "LMB: set fg color, RMB: set gb color");
   };
   ToolPicker.prototype = Object.create(Tool.prototype);
 
@@ -147,7 +148,7 @@
    * Tool: Bucket
    */
   var ToolBucket = function() {
-    Tool.call(this, "bucket", "Bucket", "stock-tool-bucket-fill");
+    Tool.call(this, "bucket", "Bucket", "stock-tool-bucket-fill", "LMB: fill with fg color, RMB: fill with bg color");
   };
   ToolBucket.prototype = Object.create(Tool.prototype);
 
@@ -163,7 +164,7 @@
    * Tool: Pencil
    */
   var ToolPencil = function() {
-    Tool.call(this, "pencil", "Pencil", "stock-tool-pencil");
+    Tool.call(this, "pencil", "Pencil", "stock-tool-pencil", "LMB: draw with fg color, RMB: draw with bg color");
   };
   ToolPencil.prototype = Object.create(Tool.prototype);
 
@@ -192,7 +193,7 @@
    * Tool: Path
    */
   var ToolPath = function() {
-    Tool.call(this, "path", "Path", "stock-tool-path", true);
+    Tool.call(this, "path", "Path", "stock-tool-path", "LMB: draw with fg color, RMB: draw with bg color", true);
   };
   ToolPath.prototype = Object.create(Tool.prototype);
 
@@ -226,7 +227,7 @@
    * Tool: Rectangle
    */
   var ToolRectangle = function() {
-    Tool.call(this, "rectangle", "Rectangle", "stock-shape-rectangle", true);
+    Tool.call(this, "rectangle", "Rectangle", "stock-shape-rectangle", "LMB: draw with fg color, RMB: draw with bg color", true);
   };
   ToolRectangle.prototype = Object.create(Tool.prototype);
 
@@ -252,7 +253,7 @@
    * Tool: Square
    */
   var ToolSquare = function() {
-    Tool.call(this, "square", "Square", "stock-shape-square", true);
+    Tool.call(this, "square", "Square", "stock-shape-square", "LMB: draw with fg color, RMB: draw with bg color", true);
   };
   ToolSquare.prototype = Object.create(Tool.prototype);
 
@@ -278,7 +279,7 @@
    * Tool: Ellipse
    */
   var ToolEllipse = function() {
-    Tool.call(this, "ellipse", "Ellipse", "stock-shape-ellipse", true);
+    Tool.call(this, "ellipse", "Ellipse", "stock-shape-ellipse", "LMB: draw with fg color, RMB: draw with bg color", true);
   };
   ToolEllipse.prototype = Object.create(Tool.prototype);
 
@@ -306,7 +307,7 @@
    * Tool: Circle
    */
   var ToolCircle = function() {
-    Tool.call(this, "circle", "Circle", "stock-shape-circle", true);
+    Tool.call(this, "circle", "Circle", "stock-shape-circle", "LMB: draw with fg color, RMB: draw with bg color", true);
   };
   ToolCircle.prototype = Object.create(Tool.prototype);
 

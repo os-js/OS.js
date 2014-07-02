@@ -36,6 +36,17 @@
   // LOCALES
   /////////////////////////////////////////////////////////////////////////////
 
+  var _Locales = {
+    no_NO : {
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return OSjs.__.apply(this, args);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -284,6 +295,8 @@
 
     root.appendChild(this.$imageContainer);
 
+    var statusBar  = this._addGUIElement(new GUI.StatusBar('ApplicationDrawStatusBar'), root);
+
     _selectLineJoin(this.currentStyle.lineJoin);
     _selectLineWidth(this.currentStyle.lineWidth);
     _selectColor("fg", this.currentStyle.fg);
@@ -440,6 +453,11 @@
 
   ApplicationDrawWindow.prototype.setTool = function(tool) {
     this.currentTool = tool;
+
+    var statusBar = this._getGUIElement('ApplicationDrawStatusBar');
+    if ( statusBar ) {
+      statusBar.setText(tool.statusText);
+    }
   };
 
   ApplicationDrawWindow.prototype.setTitle = function(t) {

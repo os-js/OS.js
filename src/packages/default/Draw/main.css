@@ -35,8 +35,8 @@
   position : absolute;
   left : 85px;
   top : 32px;
-  right : 1px;
-  bottom : 1px;
+  right : 0px;
+  bottom : 27px;
   overflow : auto;
 }
 
