@@ -545,6 +545,14 @@
       new ToolEllipse(),
       new ToolCircle()
     ],
+    Effects: {
+      blur: {
+        name: "Blur",
+        func: function(canvas, context) {
+          OSjs.Applications.ApplicationDrawEffects.Blur(canvas, context);
+        }
+      }
+    },
     Image: Image,
     Layer: Layer
   };

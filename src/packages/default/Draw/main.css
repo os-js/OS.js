@@ -33,7 +33,7 @@
 
 .Window_ApplicationDrawWindow .WindowWrapper .ImageContainer {
   position : absolute;
-  left : 85px;
+  left : 0;
   top : 32px;
   right : 0px;
   bottom : 27px;
@@ -60,6 +60,14 @@
   bottom : 0px;
   top : 30px;
   width : 84px;
+  display : none;
+}
+
+.Window_ApplicationDrawWindow .WindowWrapper.ShowToolToolbar .ImageContainer {
+  left : 85px;
+}
+.Window_ApplicationDrawWindow .WindowWrapper.ShowToolToolbar .ApplicationDrawToolBar {
+  display : block;
 }
 
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li {

@@ -31,6 +31,8 @@
 
   // TODO: Locales (Translations)
   // TODO: Add/Remove/Position layers from GUI
+  // TODO: Copy/Cut/Paste
+  // TODO: Resize
 
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
@@ -60,6 +62,8 @@
 
     this.title            = metadata.name;
     this.image            = null;
+    this.toggleTools      = true;
+    this.toggleLayers     = false;
     this.currentTool      = null;
     this.currentStyle     = {
       stroke    : false,
@@ -90,6 +94,33 @@
 
     // Create window contents here
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationDrawMenuBar'), root);
+
+    var _toggleToolsToolbar = function(t) {
+      if ( typeof t !== "undefined" && t !== null ) {
+        self.toggleTools = t ? true : false;
+      } else {
+        self.toggleTools = !self.toggleTools;
+      }
+
+      OSjs.Utils.$removeClass(root, "ShowToolToolbar");
+      if ( self.toggleTools ) {
+        OSjs.Utils.$addClass(root, "ShowToolToolbar");
+      }
+    };
+
+    var _toggleLayersToolbar = function(t) {
+      if ( typeof t !== "undefined" && t !== null ) {
+        self.toggleLayers = t ? true : false;
+      } else {
+        self.toggleLayers = !self.toggleLayers;
+      }
+
+      OSjs.Utils.$removeClass(root, "ShowLayerToolbar");
+      if ( self.toggleLayers ) {
+        OSjs.Utils.$addClass(root, "ShowLayerToolbar");
+      }
+    };
+
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('New'), name: 'New', onClick: function() {
         app.action('new');
@@ -106,6 +137,40 @@
       {title: OSjs._('Close'), name: 'Close', onClick: function() {
         app.action('close');
       }}
+    ]);
+    menuBar.addItem(OSjs._("View"), [
+      {title: OSjs._('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
+        _toggleToolsToolbar();
+      }},
+      {title: OSjs._('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
+        _toggleLayersToolbar();
+      }}
+    ]);
+    /*
+    menuBar.addItem(OSjs._("Image"), [
+      {title: OSjs._('Resize'), name: 'Resize', onClick: function() {
+      }}
+    ]);
+    */
+
+    var effects = OSjs.Applications.ApplicationDrawLibs.Effects;
+    var items = [];
+    for ( var f in effects ) {
+      if ( effects.hasOwnProperty(f) ) {
+        items.push({
+          title: effects[f].name,
+          name: f,
+          onClick: (function(fn, fi) {
+            return function() {
+              self.applyEffect(fn, fi);
+            };
+          })(f, effects[f].func)
+        });
+      }
+    }
+
+    menuBar.addItem(OSjs._("Layer"), [
+      {title: OSjs._('Effect'), name: 'Effect', menu: items}
     ]);
 
     menuBar.onMenuOpen = function(menu) {
@@ -302,6 +367,8 @@
     _selectColor("fg", this.currentStyle.fg);
     _selectColor("bg", this.currentStyle.bg);
     _toggleStroke(this.currentStyle.stroke);
+    _toggleToolsToolbar(this.toggleTools);
+    _toggleLayersToolbar(this.toggleLayers);
 
     this.setImage(null, null);
   };
@@ -350,6 +417,14 @@
     }
 
     this.currentTool.applyStyle(style, context);
+  };
+
+  ApplicationDrawWindow.prototype.applyEffect = function(name, func) {
+    if ( !this.image ) { return false; }
+    var layer   = this.image.getActiveLayer();
+    var context = layer.context;
+
+    func(context.canvas, context);
   };
 
   ApplicationDrawWindow.prototype.onMouseDown = function(ev) {
