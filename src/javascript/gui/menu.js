@@ -63,7 +63,7 @@
           m.className = '';
 
           if ( !list[i].name ) {
-            list[i].name = (list[i].title || '').replace(/\s/, '_');
+            list[i].name = ((''+list[i].title) || '').replace(/\s/, '_');
           }
 
           if ( list[i].name ) {
