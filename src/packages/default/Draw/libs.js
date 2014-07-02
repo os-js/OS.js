@@ -143,6 +143,10 @@
   ToolPicker.prototype.ondraw = function(ev, win, image, layer, currentPos, startPos) {
     this.onclick.apply(this, arguments);
   };
+  ToolPicker.prototype.onmousedown = function(ev, win, image, layer, currentPos, startPos) {
+    Tool.prototype.onmousedown.apply(this, arguments);
+    this.onclick.apply(this, arguments);
+  };
 
   /**
    * Tool: Bucket
