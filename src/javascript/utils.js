@@ -52,6 +52,15 @@
     DOWN:       40
   };
 
+  OSjs.Utils.mouseButton = function(ev) {
+    // TODO: Middle button
+    if ( typeof ev.button !== "undefined" ) {
+      return ev.button <= 0 ? "left" : "right";
+    }
+
+    return ev.which <= 1 ? "left" : "right";
+  };
+
   // Kudos: http://stackoverflow.com/a/4673436
   OSjs.Utils.format = function(format) {
     var args = Array.prototype.slice.call(arguments, 1);
