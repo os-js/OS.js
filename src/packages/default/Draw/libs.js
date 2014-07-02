@@ -196,6 +196,8 @@
     var fg = this.style.fillStyle;
     context.strokeStyle = fg;
     context.fillStyle   = bg;
+
+    this.ondraw.apply(this, arguments);
   };
 
   ToolPencil.prototype.ondraw = function(ev, win, image, layer, currentPos, startPos) {
