@@ -121,25 +121,40 @@
   };
   ToolPicker.prototype = Object.create(Tool.prototype);
 
-  ToolPicker.prototype.onclick = function(ev, win, image, layer, currentPos, startPos) {
-    var context = layer.context;
-    var imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data;
-    var index = ((currentPos[0] + currentPos[1] * context.canvas.width) * 4);
-    var rgb = {r:imageData[index + 0], g:imageData[index + 1], b:imageData[index + 2], a:imageData[index + 3]};
-    var hex = "#000000";
+  ToolPicker.prototype.onclick = (function() {
+    var imageData;
+    var timeout;
 
-    try {
-      hex = OSjs.Utils.RGBtoHEX(rgb);
-    } catch ( e ) {
-      console.warn("Failed to convert to hex", rgb, e);
-    }
+    return function(ev, win, image, layer, currentPos, startPos) {
+      var context = layer.context;
+      if ( !imageData ) {
+        imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data;
+        if ( timeout ) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        timeout = setTimeout(function() {
+          imageData = null;
+        }, 150);
+      }
 
-    if ( OSjs.Utils.mouseButton(ev) == "left" ) {
-      win.setColor("fg", hex);
-    } else {
-      win.setColor("bg", hex);
-    }
-  };
+      var index = ((currentPos[0] + currentPos[1] * context.canvas.width) * 4);
+      var rgb = {r:imageData[index + 0], g:imageData[index + 1], b:imageData[index + 2], a:imageData[index + 3]};
+      var hex = "#000000";
+
+      try {
+        hex = OSjs.Utils.RGBtoHEX(rgb);
+      } catch ( e ) {
+        console.warn("Failed to convert to hex", rgb, e);
+      }
+
+      if ( OSjs.Utils.mouseButton(ev) == "left" ) {
+        win.setColor("fg", hex);
+      } else {
+        win.setColor("bg", hex);
+      }
+    };
+  })();
   ToolPicker.prototype.ondraw = function(ev, win, image, layer, currentPos, startPos) {
     this.onclick.apply(this, arguments);
   };
