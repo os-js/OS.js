@@ -287,14 +287,22 @@
     var context = layer.context;
     if ( !this.tmpContext ) { return; }
 
-    var x = Math.abs(startPos[0] - currentPos[0]);
-    var y = Math.abs(startPos[1] - currentPos[1]);
-    var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    var width = Math.abs(startPos[0] - currentPos[0]);
+    var height = Math.abs(startPos[1] - currentPos[1]);
 
     this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
-    if ( r > 0 ) {
+    if ( width > 0 && height > 0 ) {
       this.tmpContext.beginPath();
-      this.tmpContext.arc(startPos[0], startPos[1], r, 0, Math.PI*2, true);
+      this.tmpContext.moveTo(startPos[0], startPos[1] - height*2); // A1
+      this.tmpContext.bezierCurveTo(
+        startPos[0] + width*2, startPos[1] - height*2, // C1
+        startPos[0] + width*2, startPos[1] + height*2, // C2
+        startPos[0], startPos[1] + height*2); // A2
+      this.tmpContext.bezierCurveTo(
+        startPos[0] - width*2, startPos[1] + height*2, // C3
+        startPos[0] - width*2, startPos[1] - height*2, // C4
+        startPos[0], startPos[1] - height*2); // A1
+
       this.tmpContext.closePath();
       if ( this.style.enableStroke ) {
         this.tmpContext.stroke();
@@ -315,22 +323,14 @@
     var context = layer.context;
     if ( !this.tmpContext ) { return; }
 
-    var width = Math.abs(startPos[0] - currentPos[0]);
-    var height = Math.abs(startPos[1] - currentPos[1]);
+    var x = Math.abs(startPos[0] - currentPos[0]);
+    var y = Math.abs(startPos[1] - currentPos[1]);
+    var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
     this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
-    if ( width > 0 && height > 0 ) {
+    if ( r > 0 ) {
       this.tmpContext.beginPath();
-      this.tmpContext.moveTo(startPos[0], startPos[1] - height*2); // A1
-      this.tmpContext.bezierCurveTo(
-        startPos[0] + width*2, startPos[1] - height*2, // C1
-        startPos[0] + width*2, startPos[1] + height*2, // C2
-        startPos[0], startPos[1] + height*2); // A2
-      this.tmpContext.bezierCurveTo(
-        startPos[0] - width*2, startPos[1] + height*2, // C3
-        startPos[0] - width*2, startPos[1] - height*2, // C4
-        startPos[0], startPos[1] - height*2); // A1
-
+      this.tmpContext.arc(startPos[0], startPos[1], r, 0, Math.PI*2, true);
       this.tmpContext.closePath();
       if ( this.style.enableStroke ) {
         this.tmpContext.stroke();
