@@ -27,12 +27,13 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs) {
+(function(Application, Window, GUI, Dialogs, Utils) {
 
   // TODO: Locales (Translations)
   // TODO: Movment of layers
   // TODO: Copy/Cut/Paste
   // TODO: Resize
+  // TODO: Clean up ApplicationDraw.prototype.action
 
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
@@ -88,15 +89,18 @@
 
   ApplicationDrawWindow.prototype = Object.create(Window.prototype);
 
+  /**
+   * Create window contents
+   */
   ApplicationDrawWindow.prototype.init = function(wmRef, app) {
     var self = this;
-
     var root = Window.prototype.init.apply(this, arguments);
 
-    // Create window contents here
+    // Layer bar container
     var layerBar = document.createElement("div");
     layerBar.className = "GUIToolbar ApplicationDrawLayersBar";
 
+    // Menubar
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationDrawMenuBar'), root);
 
     var _toggleToolsToolbar = function(t) {
@@ -106,9 +110,9 @@
         self.toggleTools = !self.toggleTools;
       }
 
-      OSjs.Utils.$removeClass(root, "ShowToolToolbar");
+      Utils.$removeClass(root, "ShowToolToolbar");
       if ( self.toggleTools ) {
-        OSjs.Utils.$addClass(root, "ShowToolToolbar");
+        Utils.$addClass(root, "ShowToolToolbar");
       }
     };
 
@@ -119,9 +123,9 @@
         self.toggleLayers = !self.toggleLayers;
       }
 
-      OSjs.Utils.$removeClass(root, "ShowLayerToolbar");
+      Utils.$removeClass(root, "ShowLayerToolbar");
       if ( self.toggleLayers ) {
-        OSjs.Utils.$addClass(root, "ShowLayerToolbar");
+        Utils.$addClass(root, "ShowLayerToolbar");
       }
     };
 
@@ -179,6 +183,7 @@
       menu.setItemDisabled("Save", app.currentFilename ? false : true);
     };
 
+    // Tools Toolbar
     var toolBar = this._addGUIElement(new GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
 
     var _createColorButton = function(name, item, container, button) {
@@ -333,6 +338,7 @@
 
     toolBar.render();
 
+    // Image/Canvas container
     this.$imageContainer = document.createElement("div");
     this.$imageContainer.className = "ImageContainer";
 
@@ -364,8 +370,10 @@
     root.appendChild(this.$imageContainer);
     root.appendChild(layerBar);
 
+    // Statusbar
     var statusBar  = this._addGUIElement(new GUI.StatusBar('ApplicationDrawStatusBar'), root);
 
+    // Layer listview
     var layerList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationDrawLayerListView'), layerBar);
 
     layerList.setColumns([
@@ -384,6 +392,7 @@
       }
     };
 
+    // Layer buttons
     var layerButtons = document.createElement("div");
     layerButtons.className = "Buttons";
 
@@ -411,6 +420,7 @@
 
     layerBar.appendChild(layerButtons);
 
+    // Reset/Initialize tools etc.
     _selectLineJoin(this.currentStyle.lineJoin);
     _selectLineWidth(this.currentStyle.lineWidth);
     _selectColor("fg", this.currentStyle.fg);
@@ -422,6 +432,9 @@
     this.setImage(null, null);
   };
 
+  /**
+   * Destroy window
+   */
   ApplicationDrawWindow.prototype.destroy = function() {
     var self = this;
 
@@ -441,6 +454,9 @@
     }
   };
 
+  /**
+   * Drag'n'Drop event
+   */
   ApplicationDrawWindow.prototype._onDndEvent = function(ev, type, item, args) {
     Window.prototype._onDndEvent.apply(this, arguments);
     if ( type === 'itemDrop' && item ) {
@@ -451,6 +467,9 @@
     }
   };
 
+  /**
+   * Update Layer Listview
+   */
   ApplicationDrawWindow.prototype.updateLayers = function() {
     if ( !this.image ) { return; }
 
@@ -472,12 +491,15 @@
       if ( tbody.length ) {
         var rows = tbody[0].getElementsByTagName("tr");
         if ( rows[this.activeLayer] ) {
-          OSjs.Utils.$addClass(rows[this.activeLayer], "ActiveLayer");
+          Utils.$addClass(rows[this.activeLayer], "ActiveLayer");
         }
       }
     }
   };
 
+  /**
+   * Remove a layer by index
+   */
   ApplicationDrawWindow.prototype.removeLayer = function(l) {
     if ( !this.image ) { return; }
     if ( this.image.layers.length <= 1 ) { return; }
@@ -494,6 +516,9 @@
     this.updateLayers();
   };
 
+  /**
+   * Move a layer by index and direction
+   */
   ApplicationDrawWindow.prototype.moveLayer = function(l, dir) {
     if ( !this.image ) { return; }
     if ( this.image.layers.length <= 1 ) { return; }
@@ -501,6 +526,9 @@
     this.updateLayers();
   };
 
+  /**
+   * Create a new layer
+   */
   ApplicationDrawWindow.prototype.createLayer = function() {
     if ( !this.image ) { return; }
 
@@ -510,6 +538,9 @@
     this.updateLayers();
   };
 
+  /**
+   * Apply user-defined styles for tool
+   */
   ApplicationDrawWindow.prototype.applyStyle = function(ev, context) {
     var style   = {
       enableStroke:  this.currentStyle.stroke,
@@ -519,7 +550,7 @@
       lineWidth:     this.currentStyle.lineWidth
     };
 
-    if ( OSjs.Utils.mouseButton(ev) != "left" ) {
+    if ( Utils.mouseButton(ev) != "left" ) {
       style.strokeStyle = this.currentStyle.fg;
       style.fillStyle   = this.currentStyle.bg;
     }
@@ -527,6 +558,9 @@
     this.currentTool.applyStyle(style, context);
   };
 
+  /**
+   * Apply given Effect to active layer in Image
+   */
   ApplicationDrawWindow.prototype.applyEffect = function(effect) {
     if ( !this.image ) { return false; }
     var layer   = this.image.getActiveLayer();
@@ -535,6 +569,9 @@
     effect.run(this, context, context.canvas);
   };
 
+  /**
+   * Image mousedown event
+   */
   ApplicationDrawWindow.prototype.onMouseDown = function(ev) {
     if ( !this.image || !this.currentTool ) { return false; }
     var layer   = this.image.getActiveLayer();
@@ -542,7 +579,7 @@
 
     if ( !context ) { return false; }
 
-    var pos = OSjs.Utils.$position(this.$imageContainer);
+    var pos = Utils.$position(this.$imageContainer);
 
     this.offsetX     = pos.left - this.$imageContainer.scrollLeft;
     this.offsetY     = pos.top - this.$imageContainer.scrollTop;
@@ -557,6 +594,9 @@
     return true;
   };
 
+  /**
+   * Image mouseup event
+   */
   ApplicationDrawWindow.prototype.onMouseUp = function(ev) {
     if ( !this.image || !this.currentTool ) { return false; }
 
@@ -570,6 +610,9 @@
     return true;
   };
 
+  /**
+   * Image mousemove event
+   */
   ApplicationDrawWindow.prototype.onMouseMove = function(ev) {
     if ( !this.image || !this.currentTool ) { return false; }
     if ( !this.isPainting ) { return false; }
@@ -584,9 +627,12 @@
     return true;
   };
 
+  /**
+   * Image mouseclick event
+   */
   ApplicationDrawWindow.prototype.onMouseClick = function(ev) {
     if ( !this.image || !this.currentTool ) { return false; }
-    var pos = OSjs.Utils.$position(this.$imageContainer);
+    var pos = Utils.$position(this.$imageContainer);
     var layer   = this.image.getActiveLayer();
     var context = layer.context;
 
@@ -603,13 +649,16 @@
     return true;
   };
 
+  /**
+   * Set the current image
+   */
   ApplicationDrawWindow.prototype.setImage = function(name, data) {
     if ( this.image ) {
       this.image.destroy();
       this.image = null;
     }
 
-    name = name ? OSjs.Utils.filename(name) : "New Image";
+    name = name ? Utils.filename(name) : "New Image";
     data = data || null;
 
     var sx = data ? data.width : 640;
@@ -628,6 +677,9 @@
     this.updateLayers();
   };
 
+  /**
+   * Set current image (file)name
+   */
   ApplicationDrawWindow.prototype.setImageName = function(name) {
     if ( this.image ) {
       this.image.setName(name);
@@ -638,6 +690,9 @@
     this._focus();
   };
 
+  /**
+   * Set current tool (Internal function)
+   */
   ApplicationDrawWindow.prototype.setTool = function(tool) {
     this.currentTool = tool;
 
@@ -647,11 +702,17 @@
     }
   };
 
+  /**
+   * Set the window title (helper)
+   */
   ApplicationDrawWindow.prototype.setTitle = function(t) {
-    var title = this.title + (t ? (' - ' + OSjs.Utils.filename(t)) : ' - New File');
+    var title = this.title + (t ? (' - ' + Utils.filename(t)) : ' - New File');
     return this._setTitle(title);
   };
 
+  /**
+   * Set current color (Internal function)
+   */
   ApplicationDrawWindow.prototype.setColor = function(type, val) {
     this.currentStyle[type] = val;
 
@@ -662,12 +723,18 @@
     }
   };
 
+  /**
+   * Set the currently active Image Layer by index
+   */
   ApplicationDrawWindow.prototype.setActiveLayer = function(l) {
     if ( !this.image ) return;
     this.image.setActiveLayer(l);
     this.updateLayers();
   };
 
+  /**
+   * Gets the current Image
+   */
   ApplicationDrawWindow.prototype.getImage = function() {
     return this.image;
   };
@@ -711,7 +778,6 @@
     }
   };
 
-  // TODO: Refactor
   ApplicationDraw.prototype.action = function(action, filename, mime) {
     var self = this;
     var win = this._getWindow('ApplicationDrawWindow');
@@ -819,7 +885,7 @@
         if ( filename ) {
           _openFile(filename, mime);
         } else {
-          var path = (this.currentFilename) ? OSjs.Utils.dirname(this.currentFilename) : null;
+          var path = (this.currentFilename) ? Utils.dirname(this.currentFilename) : null;
 
           this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image'], path: path}, function(btn, fname, fmime) {
             if ( btn !== 'ok' ) return;
@@ -835,8 +901,8 @@
       break;
 
       case 'saveas' :
-        var dir = this.currentFilename ? OSjs.Utils.dirname(this.currentFilename) : null;
-        var fnm = this.currentFilename ? OSjs.Utils.filename(this.currentFilename) : null;
+        var dir = this.currentFilename ? Utils.dirname(this.currentFilename) : null;
+        var fnm = this.currentFilename ? Utils.filename(this.currentFilename) : null;
         this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png'}, function(btn, fname) {
             if ( btn !== 'ok' ) return;
           _saveFile(fname);
@@ -856,4 +922,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationDraw = ApplicationDraw;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils);
