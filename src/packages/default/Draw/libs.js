@@ -550,6 +550,94 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // EFFECTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  var Effect = function(name, title) {
+    this.name = name;
+    this.title = title;
+  };
+  Effect.prototype.run = function(context, canvas) {
+    return false;
+  };
+  Effect.prototype.showDialog = function(win, context, canvas) {
+    this.run.call(this, context, canvas);
+  };
+
+  /**
+   * Effect: Blur
+   */
+  var EffectBlurWindow = function(win, callback) {
+    var app = win._appRef;
+
+    Window.apply(this, ['ApplicationDrawEffectBlurWindow', {width: 400, height: 150}, app]);
+
+    this._title = "Effect: Blur";
+    this._properties.allow_resize = false,
+    this._properties.allow_minimize = false,
+    this._properties.allow_maximize = false,
+    this._properties.allow_close = false,
+    this.radius = 4;
+    this.iterations = 1;
+    this.callback = callback;
+  };
+
+  EffectBlurWindow.prototype = Object.create(Window.prototype);
+
+  EffectBlurWindow.prototype.init = function(wmRef, app) {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+
+    var buttonContainer = document.createElement("div");
+    buttonContainer.className = "ButtonContainer";
+
+    var labelRadius = this._addGUIElement(new GUI.Label("EffectBlurWindowLabel1", {label: "Radius: " + this.radius}), root);
+    var sliderRadius = this._addGUIElement(new GUI.Slider("EffectBlurWindowSlider1", {min:1, max:20, val: this.radius, onUpdate: function(val) {
+      labelRadius.setLabel("Radius: " + val);
+      self.radius = val;
+    }}), root);
+
+    var labelIterations = this._addGUIElement(new GUI.Label("EffectBlurWindowLabel1", {label: "Iterations: " + this.iterations}), root);
+    var sliderIterations = this._addGUIElement(new GUI.Slider("EffectBlurWindowSlider1", {min:1, max:4, val: this.iterations, onUpdate: function(val) {
+      labelIterations.setLabel("Iterations: " + val);
+      self.iterations = val;
+    }}), root);
+
+    this._addGUIElement(new GUI.Button("EffectBlurButtonOK", {label: "Apply", onClick: function() {
+      self.callback.call(self, "apply", self.radius, self.iterations);
+    }}), buttonContainer);
+    this._addGUIElement(new GUI.Button("EffectBlurButtonCancel", {label: "Cancel", onClick: function() {
+      self.callback.call(self, "cancel");
+    }}), buttonContainer);
+
+    root.appendChild(buttonContainer);
+
+    return root;
+  };
+
+  var EffectBlur = function() {
+    Effect.call(this, "blur", "Blur");
+  };
+
+  EffectBlur.prototype = Object.create(Effect.prototype);
+
+  EffectBlur.prototype.run = function(win, context, canvas) {
+    var self = this;
+    var dialog = new EffectBlurWindow(win, function(response, radius, iterations) {
+      if ( response == "apply" ) {
+        self._run(context, canvas, radius, iterations);
+      }
+      this._close();
+    });
+    win._addChild(dialog, true);
+    dialog._focus();
+  };
+
+  EffectBlur.prototype._run = function(context, canvas, radius, iterations) {
+    return OSjs.Applications.ApplicationDrawEffects.Blur(canvas, context);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -566,14 +654,9 @@
       new ToolEllipse(),
       new ToolCircle()
     ],
-    Effects: {
-      blur: {
-        name: "Blur",
-        func: function(canvas, context) {
-          OSjs.Applications.ApplicationDrawEffects.Blur(canvas, context);
-        }
-      }
-    },
+    Effects: [
+      new EffectBlur()
+    ],
     Image: Image,
     Layer: Layer
   };

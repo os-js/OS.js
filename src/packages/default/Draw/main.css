@@ -131,3 +131,18 @@
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar .HasIcon span {
   display : none;
 }
+
+.Window_ApplicationDrawEffectBlurWindow .ButtonContainer {
+  text-align : right;
+  margin : -5px;
+  position  : absolute;
+  bottom : 0px;
+  right : 0px;
+  left : 0px;
+}
+
+.Window_ApplicationDrawEffectBlurWindow .GUIButton {
+  display : inline-block;
+  margin : 5px;
+  text-align : center;
+}

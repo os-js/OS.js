@@ -144,10 +144,10 @@
     menuBar.addItem(OSjs._("View"), [
       {title: OSjs._('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
         _toggleToolsToolbar();
-      }},
+      }}/*,
       {title: OSjs._('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
         _toggleLayersToolbar();
-      }}
+      }}*/
     ]);
     /*
     menuBar.addItem(OSjs._("Image"), [
@@ -158,18 +158,16 @@
 
     var effects = OSjs.Applications.ApplicationDrawLibs.Effects;
     var items = [];
-    for ( var f in effects ) {
-      if ( effects.hasOwnProperty(f) ) {
-        items.push({
-          title: effects[f].name,
-          name: f,
-          onClick: (function(fn, fi) {
-            return function() {
-              self.applyEffect(fn, fi);
-            };
-          })(f, effects[f].func)
-        });
-      }
+    for ( var f = 0; f < effects.length; f++ ) {
+      items.push({
+        title: effects[f].title,
+        name: effects[f].name,
+        onClick: (function(instance) {
+          return function() {
+            self.applyEffect(instance);
+          };
+        })(effects[f])
+      });
     }
 
     menuBar.addItem(OSjs._("Layer"), [
@@ -472,12 +470,12 @@
     this.currentTool.applyStyle(style, context);
   };
 
-  ApplicationDrawWindow.prototype.applyEffect = function(name, func) {
+  ApplicationDrawWindow.prototype.applyEffect = function(effect) {
     if ( !this.image ) { return false; }
     var layer   = this.image.getActiveLayer();
     var context = layer.context;
 
-    func(context.canvas, context);
+    effect.run(this, context, context.canvas);
   };
 
   ApplicationDrawWindow.prototype.onMouseDown = function(ev) {
