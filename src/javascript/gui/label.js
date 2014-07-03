@@ -56,6 +56,12 @@
     return el;
   };
 
+  Label.prototype.setLabel = function(l) {
+    this.opts.label = l;
+    this.$element.innerHTML = "";
+    this.$element.appendChild(document.createTextNode(this.opts.label));
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
