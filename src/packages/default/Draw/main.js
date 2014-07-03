@@ -30,7 +30,7 @@
 (function(Application, Window, GUI, Dialogs) {
 
   // TODO: Locales (Translations)
-  // TODO: Add/Remove/Position layers from GUI
+  // TODO: Movment of layers
   // TODO: Copy/Cut/Paste
   // TODO: Resize
 
@@ -72,6 +72,7 @@
       lineJoin  : "round",
       lineWidth : 3
     };
+    this.activeLayer      = 0;
     this.mouseStartX      = 0;
     this.mouseStartY      = 0;
     this.offsetX          = 0;
@@ -144,10 +145,10 @@
     menuBar.addItem(OSjs._("View"), [
       {title: OSjs._('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
         _toggleToolsToolbar();
-      }}/*,
+      }},
       {title: OSjs._('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
         _toggleLayersToolbar();
-      }}*/
+      }}
     ]);
     /*
     menuBar.addItem(OSjs._("Image"), [
@@ -371,44 +372,41 @@
       {key: 'name',  title: OSjs._('Name')}
      ]);
     layerList.onActivate = function(ev, el, item) {
-      if ( item && item.key ) {
+      if ( item ) {
+        self.activeLayer = item._index;
+        self.setActiveLayer(item._index);
       }
     };
-    layerList.onSelect = function(ev, el, item) {
-      if ( item && item.key ) {
-      }
-    };
-
-    layerList.setRows([
-      {
-        name: "Default"
-      }
-    ]);
-
     layerList.onSelect = function(ev, el, item) {
       if ( item ) {
-      } else {
+        self.activeLayer = item._index;
+        self.setActiveLayer(item._index);
       }
     };
-
-    layerList.render();
 
     var layerButtons = document.createElement("div");
     layerButtons.className = "Buttons";
 
-    var layerButtonAdd = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonAdd', {disabled: true, icon: OSjs.API.getIcon('actions/add.png'), onClick: function(el, ev) {
-      layerButtonRemove.setDisabled(true);
-      layerButtonUp.setDisabled(true);
-      layerButtonDown.setDisabled(true);
+    var layerButtonAdd = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonAdd', {disabled: false, icon: OSjs.API.getIcon('actions/add.png'), onClick: function(el, ev) {
+      self.createLayer();
     }}), layerButtons);
 
-    var layerButtonRemove = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonRemove', {disabled: true, icon: OSjs.API.getIcon('actions/remove.png'), onClick: function(el, ev) {
+    var layerButtonRemove = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonRemove', {disabled: false, icon: OSjs.API.getIcon('actions/remove.png'), onClick: function(el, ev) {
+      if ( layerList ) {
+        self.removeLayer(self.activeLayer);
+      }
     }}), layerButtons);
 
     var layerButtonUp = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonUp', {disabled: true, icon: OSjs.API.getIcon('actions/up.png'), onClick: function(el, ev) {
+      if ( layerList ) {
+        self.moveLayer(self.activeLayer, "up");
+      }
     }}), layerButtons);
 
     var layerButtonDown = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonDown', {disabled: true, icon: OSjs.API.getIcon('actions/down.png'), onClick: function(el, ev) {
+      if ( layerList ) {
+        self.moveLayer(self.activeLayer, "down");
+      }
     }}), layerButtons);
 
     layerBar.appendChild(layerButtons);
@@ -451,6 +449,65 @@
         this._appRef.action('open', data.path, data.mime);
       }
     }
+  };
+
+  ApplicationDrawWindow.prototype.updateLayers = function() {
+    if ( !this.image ) { return; }
+
+    var layerList = this._getGUIElement('ApplicationDrawLayerListView');
+    if ( layerList ) {
+      var layers = [];
+      var ilayers = this.image.layers;
+
+      for ( var i = 0; i < ilayers.length; i++ ) {
+        layers.push({
+          name: ilayers[i].name
+        });
+      }
+
+      layerList.setRows(layers);
+      layerList.render();
+
+      var tbody = layerList.$element.getElementsByTagName("tbody");
+      if ( tbody.length ) {
+        var rows = tbody[0].getElementsByTagName("tr");
+        if ( rows[this.activeLayer] ) {
+          OSjs.Utils.$addClass(rows[this.activeLayer], "ActiveLayer");
+        }
+      }
+    }
+  };
+
+  ApplicationDrawWindow.prototype.removeLayer = function(l) {
+    if ( !this.image ) { return; }
+    if ( this.image.layers.length <= 1 ) { return; }
+
+    this.image.removeLayer(l);
+
+    if ( this.activeLayer > 0 ) {
+      this.activeLayer = l - 1;
+      if ( this.activeLayer < 0 ) {
+        this.activeLayer = 0;
+      }
+    }
+
+    this.updateLayers();
+  };
+
+  ApplicationDrawWindow.prototype.moveLayer = function(l, dir) {
+    if ( !this.image ) { return; }
+    if ( this.image.layers.length <= 1 ) { return; }
+
+    this.updateLayers();
+  };
+
+  ApplicationDrawWindow.prototype.createLayer = function() {
+    if ( !this.image ) { return; }
+
+    this.image.createLayer("Layer " + this.image.layers.length, 0, 0, true);
+    this.activeLayer = this.image.layers.length - 1;
+
+    this.updateLayers();
   };
 
   ApplicationDrawWindow.prototype.applyStyle = function(ev, context) {
@@ -564,7 +621,11 @@
     }
     this.$imageContainer.appendChild(this.image.getContainer());
 
+    this.activeLayer = 0;
+
     this.setImageName(name);
+
+    this.updateLayers();
   };
 
   ApplicationDrawWindow.prototype.setImageName = function(name) {
@@ -599,6 +660,12 @@
       var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
       toolBar.getItem(className).getElementsByClassName('Color')[0].style.backgroundColor = val;
     }
+  };
+
+  ApplicationDrawWindow.prototype.setActiveLayer = function(l) {
+    if ( !this.image ) return;
+    this.image.setActiveLayer(l);
+    this.updateLayers();
   };
 
   ApplicationDrawWindow.prototype.getImage = function() {

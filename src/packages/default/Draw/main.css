@@ -39,6 +39,14 @@
   bottom : 27px;
   overflow : auto;
 }
+.Window_ApplicationDrawWindow .WindowWrapper .ImageContainer canvas {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+}
+.Window_ApplicationDrawWindow .WindowWrapper tr.ActiveLayer td span {
+  font-weight : bold;
+}
 
 .Window_ApplicationDrawWindow .WindowWrapper .VBox {
   position : relative;

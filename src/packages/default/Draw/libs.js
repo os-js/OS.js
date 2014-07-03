@@ -403,7 +403,7 @@
     sx = sx || this.size[0];
     sy = sy || this.size[1];
 
-    var layer = new Layer(name, sx, sy);
+    var layer = new Layer(name, sx, sy, this.layers.length + 1);
     this.addLayer(layer, setActive);
     return layer;
   };
@@ -454,7 +454,17 @@
   };
 
   Image.prototype.setActiveLayer = function(layer) {
-    this.activeLayer = layer;
+    this.activeLayer = null;
+
+    if ( typeof layer === "number" ) {
+      if ( this.layers[layer] ) {
+        this.activeLayer = this.layers[layer];
+      }
+    } else {
+      if ( layer instanceof Layer ) {
+        this.activeLayer = layer;
+      }
+    }
   };
 
   Image.prototype.getActiveLayer = function() {
@@ -477,14 +487,18 @@
   };
 
   Image.prototype.getData = function() {
-    var data;
-    // FIXME: Merge layers
+    var canvas = document.createElement("canvas");
+    canvas.width = this.size[0];
+    canvas.height = this.size[1];
+    var context = canvas.getContext("2d");
+
     for ( var i = 0; i < this.layers.length; i++ ) {
       if ( this.layers[i] ) {
-        data = this.layers[i].getData(this.filetype);
+        context.drawImage(this.layers[i].canvas, 0, 0);
       }
     }
-    return data;
+
+    return canvas.toDataURL(this.filetype);
   };
 
   Image.prototype.getContainer = function() {
@@ -495,13 +509,14 @@
   // LAYER
   /////////////////////////////////////////////////////////////////////////////
 
-  var Layer = function(name, w, h) {
+  var Layer = function(name, w, h, z) {
     this.name = name;
     this.width = w || 0;
     this.height = h || 0;
     this.canvas = document.createElement("canvas");
     this.canvas.width = w;
     this.canvas.height = h;
+    this.canvas.style.zIndex = z || 1;
     this.context = this.canvas.getContext("2d");
   };
 
