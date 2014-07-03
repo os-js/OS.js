@@ -381,13 +381,11 @@
      ]);
     layerList.onActivate = function(ev, el, item) {
       if ( item ) {
-        self.activeLayer = item._index;
         self.setActiveLayer(item._index);
       }
     };
     layerList.onSelect = function(ev, el, item) {
       if ( item ) {
-        self.activeLayer = item._index;
         self.setActiveLayer(item._index);
       }
     };
@@ -728,6 +726,7 @@
    */
   ApplicationDrawWindow.prototype.setActiveLayer = function(l) {
     if ( !this.image ) return;
+    this.activeLayer = l;
     this.image.setActiveLayer(l);
     this.updateLayers();
   };
