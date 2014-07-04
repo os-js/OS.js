@@ -563,8 +563,15 @@
     if ( !this.image ) { return false; }
     var layer   = this.image.getActiveLayer();
     var context = layer.context;
+    var win     = this;
 
-    effect.run(this, context, context.canvas);
+    this._toggleDisabled(true);
+    setTimeout(function() {
+      effect.run(win, context, context.canvas, function() {
+        win._toggleLoading(false);
+        win._toggleDisabled(false);
+      });
+    }, 10);
   };
 
   /**

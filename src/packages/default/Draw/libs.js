@@ -513,6 +513,9 @@
     this.name = name;
     this.width = w || 0;
     this.height = h || 0;
+    this.left = 0;
+    this.top = 0;
+
     this.canvas = document.createElement("canvas");
     this.canvas.width = w;
     this.canvas.height = h;
@@ -539,12 +542,10 @@
     // TODO
   };
 
-  Layer.prototype.effect = function() {
-    // TODO
-  };
-
-  Layer.prototype.clear = function(color) {
-    // TODO
+  Layer.prototype.clear = function() {
+    if ( this.context && (this.width + this.height) ) {
+      this.context.clearRect(0, 0, this.width, this.height);
+    }
   };
 
   Layer.prototype.getData = function(type) {
@@ -636,20 +637,57 @@
 
   EffectBlur.prototype = Object.create(Effect.prototype);
 
-  EffectBlur.prototype.run = function(win, context, canvas) {
+  EffectBlur.prototype.run = function(win, context, canvas, callback) {
+    callback = callback || function() {};
+
     var self = this;
     var dialog = new EffectBlurWindow(win, function(response, radius, iterations) {
+      win._toggleLoading(true);
+
       if ( response == "apply" ) {
-        self._run(context, canvas, radius, iterations);
+        self._run(win, context, canvas, radius, iterations);
       }
       this._close();
+
+      callback();
     });
     win._addChild(dialog, true);
     dialog._focus();
   };
 
-  EffectBlur.prototype._run = function(context, canvas, radius, iterations) {
-    return OSjs.Applications.ApplicationDrawEffects.Blur(canvas, context);
+  EffectBlur.prototype._run = function(win, context, canvas, radius, iterations) {
+    OSjs.Applications.ApplicationDrawEffects.Blur(canvas, context);
+  };
+
+  /**
+   * Effect: Noise
+   */
+  var EffectNoise = function() {
+    Effect.call(this, "noise", "Noise");
+  };
+
+  EffectNoise.prototype = Object.create(Effect.prototype);
+
+  EffectNoise.prototype.run = function(win, context, canvas, callback) {
+    callback = callback || function() {};
+
+    win._toggleLoading(true);
+
+    setTimeout(function() {
+      var x, y, n;
+      var opacity = 1;
+      var width =  canvas.width;
+      var height = canvas.height;
+      for ( x = 0; x < width; x++ ) {
+        for ( y = 0; y < height; y++ ) {
+          n = Math.floor( Math.random() * 60 );
+          context.fillStyle = "rgba(" + n + "," + n + "," + n + "," + opacity + ")";
+          context.fillRect(x, y, 1, 1);
+        }
+      }
+
+      callback();
+    }, 10);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -670,7 +708,8 @@
       new ToolCircle()
     ],
     Effects: [
-      new EffectBlur()
+      new EffectBlur(),
+      new EffectNoise()
     ],
     Image: Image,
     Layer: Layer
