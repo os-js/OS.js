@@ -10,7 +10,7 @@
       "no_NO":      "Simpelt tegne-program",
       "de_DE":      "Einfaches Zeichen-Programm"
     },
-    "mime":       ["^image"],
+    "mime":       ["^image", "osjs\/odraw"],
     "category":   "graphics",
     "icon":       "categories/gnome-graphics.png",
     "compability":["canvas"],

@@ -51,6 +51,10 @@
       this.defaultExtension = OSjs.Utils.filext(this.defaultFilename);
     }
 
+    if ( this.defaultExtension && ! this.defaultExtension.match(/^\./) ) {
+      this.defaultExtension = "." + this.defaultExtension;
+    }
+
     var self = this;
 
     var errors = 0;
@@ -371,8 +375,10 @@
     }
   };
 
+  // FIXME: This is not safe -- can replace unexpected stuff in filename
   FileDialog.prototype.changeFileType = function(t) {
     if ( !this.input ) { return; }
+    t = t || this.defaultExtension;
 
     var old = this.input.getValue();
     var oext = OSjs.Utils.filext(old);
