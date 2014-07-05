@@ -50,6 +50,7 @@
   };
 
   Select.prototype.addItem = function(value, label) {
+    var self      = this;
     var el        = document.createElement('option');
     el.value      = value;
     el.appendChild(document.createTextNode(label));

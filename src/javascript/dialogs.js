@@ -77,7 +77,8 @@
     buttonContainer.className = 'Buttons';
 
     this.$element = document.createElement('div');
-    this.$element.className = 'StandardDialog ' + this.className;
+    OSjs.Utils.$addClass(this.$element, "StandardDialog");
+    OSjs.Utils.$addClass(this.$element, this.className);
 
     if ( this.message ) {
       this.$message           = document.createElement('div');

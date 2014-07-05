@@ -20,7 +20,19 @@
   left : 0px;
   right : 0px;
   bottom : 30px;
-  width : 590px;
+  width : 100%;
+}
+.FileSaveDialog .GUISelect {
+  display : block;
+  position : absolute;
+  right : 0px;
+  bottom : 30px;
+  width : 200px;
+  z-index : 10;
+}
+.FileSaveDialog.HasFileTypes .GUIText {
+  right : 210px;
+  width : auto;
 }
 
 .FileSaveDialog .GUIStatusBar,

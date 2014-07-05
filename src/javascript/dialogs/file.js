@@ -39,11 +39,17 @@
     this.currentPath      = args.path             || OSjs.API.getDefaultPath('/');
     this.currentFilename  = args.filename         || '';
     this.defaultFilename  = args.defaultFilename  || '';
+    this.defaultExtension = args.defaultExtension || '';
+    this.extensions       = args.extensions       || null;
     this.type             = args.type             || 'open';
     this.mime             = args.mime             || null;
     this.allowMimes       = args.mimes            || null;
     this.select           = args.select           || 'file';
     this.input            = null;
+
+    if ( !this.defaultExtension && this.defaultFilename ) {
+      this.defaultExtension = OSjs.Utils.filext(this.defaultFilename);
+    }
 
     var self = this;
 
@@ -132,6 +138,15 @@
     fileList.onViewContextMenu = function(ev) {
       openMenu(ev);
     };
+
+
+    if ( this.extensions ) {
+      var typeSelect = this._addGUIElement(new OSjs.GUI.Select('FileDialogFiletypeSelect', {onChange: function(sobj, sdom, val) {
+        self.changeFileType(val);
+      }}), this.$element);
+      typeSelect.addItems(this.extensions);
+      OSjs.Utils.$addClass(root.firstChild, "HasFileTypes");
+    }
 
     var statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
     statusBar.setText("");
@@ -354,6 +369,15 @@
 
       this.input.select(range);
     }
+  };
+
+  FileDialog.prototype.changeFileType = function(t) {
+    if ( !this.input ) { return; }
+
+    var old = this.input.getValue();
+    var oext = OSjs.Utils.filext(old);
+
+    this.input.setValue(old.replace(("." + oext), t));
   };
 
   /////////////////////////////////////////////////////////////////////////////
