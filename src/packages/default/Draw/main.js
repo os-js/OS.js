@@ -29,6 +29,7 @@
  */
 (function(Application, Window, GUI, Dialogs, Utils) {
 
+  // TODO: Raw image loading/saving
   // TODO: Locales (Translations)
   // TODO: Movment of layers
   // TODO: Copy/Cut/Paste
@@ -227,7 +228,7 @@
     };
 
     var _selectLineJoin = function(type) {
-      var txt = {round: "R", miter: "M", bevel: "B"};
+      var txt = {round: "Round", miter: "Miter", bevel: "Beveled"};
       self.currentStyle.lineJoin = type;
       if ( toolBar ) {
         toolBar.getItem('lineJoin').getElementsByClassName('LineJoin')[0].innerHTML = txt[type];
@@ -248,7 +249,7 @@
         self.currentStyle.stroke = !self.currentStyle.stroke;
       }
       if ( toolBar ) {
-        toolBar.getItem('enableStroke').getElementsByClassName('EnableStroke')[0].innerHTML = self.currentStyle.stroke ? "S" : "NS";
+        toolBar.getItem('enableStroke').getElementsByClassName('EnableStroke')[0].innerHTML = self.currentStyle.stroke ? "Stroked" : "No stroke";
       }
     };
 
@@ -909,7 +910,7 @@
       case 'saveas' :
         var dir = this.currentFilename ? Utils.dirname(this.currentFilename) : null;
         var fnm = this.currentFilename ? Utils.filename(this.currentFilename) : null;
-        this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png'}, function(btn, fname) {
+        this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', extensions: {".png": "PNG Image", ".jpg": "JPEG Image", ".odraw": "OS.js Draw Document"}}, function(btn, fname) {
             if ( btn !== 'ok' ) return;
           _saveFile(fname);
         }], win);

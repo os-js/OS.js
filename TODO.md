@@ -9,7 +9,6 @@
 * Fix crazy IE bug where calling blur() actually minimizes the window *facepalm*
 
 ### Applications
-* Draw -- Finish
 * Writer -- Check for changes before opening/new file
 * Finish Music Player
 * Refactor from currentX to currentFile.x for file stuff

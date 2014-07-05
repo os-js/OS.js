@@ -38,6 +38,7 @@
     this.title = title;
     this.icon = icon;
     this.style = null;
+    this.drawAlt = false;
     this.statusText = txt;
     this.tmpEnable = tmp ? true : false;
     this.tmpCanvas = null;
@@ -69,6 +70,8 @@
 
   Tool.prototype.onmousedown = function(ev, win, image, layer, currentPos, startPos) {
     var context = layer.context;
+
+    this.drawAlt = ev.shiftKey ? true : false;
 
     if ( this.tmpEnable ) {
       var canvas = document.createElement("canvas");
@@ -183,7 +186,7 @@
    * Tool: Pencil
    */
   var ToolPencil = function() {
-    Tool.call(this, "pencil", "Pencil", "stock-tool-pencil", "LMB: draw with fg color, RMB: draw with bg color");
+    Tool.call(this, "pencil", "Pencil", "stock-tool-pencil", "LMB/RMB: Draw with fg/bg color");
   };
   ToolPencil.prototype = Object.create(Tool.prototype);
 
@@ -214,7 +217,7 @@
    * Tool: Path
    */
   var ToolPath = function() {
-    Tool.call(this, "path", "Path", "stock-tool-path", "LMB: draw with fg color, RMB: draw with bg color", true);
+    Tool.call(this, "path", "Path", "stock-tool-path", "LMB/RMB: Draw with fg/bg color", true);
   };
   ToolPath.prototype = Object.create(Tool.prototype);
 
@@ -245,36 +248,10 @@
   };
 
   /**
-   * Tool: Rectangle
-   */
-  var ToolRectangle = function() {
-    Tool.call(this, "rectangle", "Rectangle", "stock-shape-rectangle", "LMB: draw with fg color, RMB: draw with bg color", true);
-  };
-  ToolRectangle.prototype = Object.create(Tool.prototype);
-
-  ToolRectangle.prototype.ondraw = function(ev, win, image, layer, currentPos, startPos) {
-    var context = layer.context;
-    if ( !this.tmpContext ) { return; }
-
-    var x = Math.min(currentPos[0], startPos[0]);
-    var y = Math.min(currentPos[1], startPos[1]);
-    var w = Math.abs(currentPos[0] - startPos[0]);
-    var h = Math.abs(currentPos[1] - startPos[1]);
-
-    this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
-    if ( w && h ) {
-      if ( this.style.enableStroke ) {
-        this.tmpContext.strokeRect(x, y, w, h);
-      }
-      this.tmpContext.fillRect(x, y, w, h);
-    }
-  };
-
-  /**
    * Tool: Square
    */
   var ToolSquare = function() {
-    Tool.call(this, "square", "Square", "stock-shape-square", "LMB: draw with fg color, RMB: draw with bg color", true);
+    Tool.call(this, "square", "Square/Rectangle", "stock-shape-square", "LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle", true);
   };
   ToolSquare.prototype = Object.create(Tool.prototype);
 
@@ -282,10 +259,18 @@
     var context = layer.context;
     if ( !this.tmpContext ) { return; }
 
-    var x = startPos[0]; //Math.min(currentPos[0], startPos[0]);
-    var y = startPos[1]; //Math.min(currentPos[1], startPos[1]);
-    var w = Math.abs(currentPos[0] - startPos[0]) * (currentPos[0] < startPos[0] ? -1 : 1);
-    var h = Math.abs(w) * (currentPos[1] < startPos[1] ? -1 : 1);
+    var x, y, w, h;
+    if ( this.drawAlt ) {
+      x = Math.min(currentPos[0], startPos[0]);
+      y = Math.min(currentPos[1], startPos[1]);
+      w = Math.abs(currentPos[0] - startPos[0]);
+      h = Math.abs(currentPos[1] - startPos[1]);
+    } else {
+      x = startPos[0]; //Math.min(currentPos[0], startPos[0]);
+      y = startPos[1]; //Math.min(currentPos[1], startPos[1]);
+      w = Math.abs(currentPos[0] - startPos[0]) * (currentPos[0] < startPos[0] ? -1 : 1);
+      h = Math.abs(w) * (currentPos[1] < startPos[1] ? -1 : 1);
+    }
 
     this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
     if ( w && h ) {
@@ -297,46 +282,10 @@
   };
 
   /**
-   * Tool: Ellipse
-   */
-  var ToolEllipse = function() {
-    Tool.call(this, "ellipse", "Ellipse", "stock-shape-ellipse", "LMB: draw with fg color, RMB: draw with bg color", true);
-  };
-  ToolEllipse.prototype = Object.create(Tool.prototype);
-
-  ToolEllipse.prototype.ondraw = function(ev, win, image, layer, currentPos, startPos) {
-    var context = layer.context;
-    if ( !this.tmpContext ) { return; }
-
-    var width = Math.abs(startPos[0] - currentPos[0]);
-    var height = Math.abs(startPos[1] - currentPos[1]);
-
-    this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
-    if ( width > 0 && height > 0 ) {
-      this.tmpContext.beginPath();
-      this.tmpContext.moveTo(startPos[0], startPos[1] - height*2); // A1
-      this.tmpContext.bezierCurveTo(
-        startPos[0] + width*2, startPos[1] - height*2, // C1
-        startPos[0] + width*2, startPos[1] + height*2, // C2
-        startPos[0], startPos[1] + height*2); // A2
-      this.tmpContext.bezierCurveTo(
-        startPos[0] - width*2, startPos[1] + height*2, // C3
-        startPos[0] - width*2, startPos[1] - height*2, // C4
-        startPos[0], startPos[1] - height*2); // A1
-
-      this.tmpContext.closePath();
-      if ( this.style.enableStroke ) {
-        this.tmpContext.stroke();
-      }
-      this.tmpContext.fill();
-    }
-  };
-
-  /**
    * Tool: Circle
    */
   var ToolCircle = function() {
-    Tool.call(this, "circle", "Circle", "stock-shape-circle", "LMB: draw with fg color, RMB: draw with bg color", true);
+    Tool.call(this, "circle", "Circle/Ellipse", "stock-shape-circle", "LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse", true);
   };
   ToolCircle.prototype = Object.create(Tool.prototype);
 
@@ -344,19 +293,44 @@
     var context = layer.context;
     if ( !this.tmpContext ) { return; }
 
-    var x = Math.abs(startPos[0] - currentPos[0]);
-    var y = Math.abs(startPos[1] - currentPos[1]);
-    var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    if ( this.drawAlt ) {
+      var width = Math.abs(startPos[0] - currentPos[0]);
+      var height = Math.abs(startPos[1] - currentPos[1]);
 
-    this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
-    if ( r > 0 ) {
-      this.tmpContext.beginPath();
-      this.tmpContext.arc(startPos[0], startPos[1], r, 0, Math.PI*2, true);
-      this.tmpContext.closePath();
-      if ( this.style.enableStroke ) {
-        this.tmpContext.stroke();
+      this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
+      if ( width > 0 && height > 0 ) {
+        this.tmpContext.beginPath();
+        this.tmpContext.moveTo(startPos[0], startPos[1] - height*2); // A1
+        this.tmpContext.bezierCurveTo(
+          startPos[0] + width*2, startPos[1] - height*2, // C1
+          startPos[0] + width*2, startPos[1] + height*2, // C2
+          startPos[0], startPos[1] + height*2); // A2
+        this.tmpContext.bezierCurveTo(
+          startPos[0] - width*2, startPos[1] + height*2, // C3
+          startPos[0] - width*2, startPos[1] - height*2, // C4
+          startPos[0], startPos[1] - height*2); // A1
+
+        this.tmpContext.closePath();
+        if ( this.style.enableStroke ) {
+          this.tmpContext.stroke();
+        }
+        this.tmpContext.fill();
       }
-      this.tmpContext.fill();
+    } else {
+      var x = Math.abs(startPos[0] - currentPos[0]);
+      var y = Math.abs(startPos[1] - currentPos[1]);
+      var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+      this.tmpContext.clearRect(0, 0, this.tmpCanvas.width, this.tmpCanvas.height);
+      if ( r > 0 ) {
+        this.tmpContext.beginPath();
+        this.tmpContext.arc(startPos[0], startPos[1], r, 0, Math.PI*2, true);
+        this.tmpContext.closePath();
+        if ( this.style.enableStroke ) {
+          this.tmpContext.stroke();
+        }
+        this.tmpContext.fill();
+      }
     }
   };
 
@@ -505,6 +479,29 @@
     return this.$container;
   };
 
+  Image.prototype.getSaveData = function() {
+    var layers = [];
+    for ( var i = 0; i < this.layers.length; i++ ) {
+      layers.push({
+        name: this.layers[i].name,
+        width: this.layers[i].width,
+        height: this.layers[i].height,
+        left: this.layers[i].left,
+        top: this.layers[i].top,
+        data: this.layers[i].getRawData()
+      });
+    }
+
+    var data = {
+      filename: this.name,
+      filetype: this.filetype,
+      size: this.size,
+      layers: layers
+    };
+
+    return data;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // LAYER
   /////////////////////////////////////////////////////////////////////////////
@@ -553,6 +550,24 @@
       return this.canvas.toDataURL(type);
     }
     return null;
+  };
+
+  Layer.prototype.getRawData = function() {
+    var data = [];
+    if ( this.context ) {
+      var imd = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      var j, i, tmp;
+
+      for ( j = 0; j < imd.length; i++ ) {
+        tmp = [];
+        for ( i = 0; i < imd[j].data.length; i++ ) {
+          tmp.push(String.fromCharCode(imd[j][i]));
+        }
+        data.push(tmp);
+      }
+    }
+
+    return data;
   };
 
   Layer.prototype.setData = function(img, x, y) {
@@ -702,9 +717,7 @@
       new ToolBucket(),
       new ToolPencil(),
       new ToolPath(),
-      new ToolRectangle(),
       new ToolSquare(),
-      new ToolEllipse(),
       new ToolCircle()
     ],
     Effects: [

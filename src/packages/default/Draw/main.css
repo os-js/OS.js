@@ -109,6 +109,20 @@
   width : 32px;
   height : 32px;
 }
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.enableStroke,
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.enableStroke button,
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.lineWidth,
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.lineWidth button,
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.lineJoin,
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar li.lineJoin button {
+  width : 100%;
+
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
+}
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawToolBar button {
   width : 32px;
   height : 32px;
