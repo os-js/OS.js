@@ -101,6 +101,9 @@
     var layerBar = document.createElement("div");
     layerBar.className = "GUIToolbar ApplicationDrawLayersBar";
 
+    var layerBarContainer = document.createElement("div");
+    layerBarContainer.className = "Container";
+
     // Menubar
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationDrawMenuBar'), root);
 
@@ -369,13 +372,14 @@
 
 
     root.appendChild(this.$imageContainer);
+    layerBar.appendChild(layerBarContainer);
     root.appendChild(layerBar);
 
     // Statusbar
     var statusBar  = this._addGUIElement(new GUI.StatusBar('ApplicationDrawStatusBar'), root);
 
     // Layer listview
-    var layerList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationDrawLayerListView'), layerBar);
+    var layerList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationDrawLayerListView'), layerBarContainer);
 
     layerList.setColumns([
       {key: 'name',  title: OSjs._('Name')}

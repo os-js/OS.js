@@ -52,6 +52,10 @@
   position : relative;
 }
 .Window_ApplicationDrawWindow .WindowWrapper .Buttons {
+  position : absolute;
+  bottom : 0px;
+  right : 5px;
+  left : 5px;
   text-align : center;
 }
 .Window_ApplicationDrawWindow .WindowWrapper .Buttons > .GUIButton {
@@ -67,9 +71,15 @@
   width : 200px;
   display : none;
 }
+.Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawLayersBar .Container {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 40px;
+}
 .Window_ApplicationDrawWindow .WindowWrapper .ApplicationDrawLayerListView {
-  height : 300px;
-  margin : 5px;
+  height : 100%;
 }
 
 
