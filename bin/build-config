@@ -3,7 +3,7 @@
 var _fs   = require('fs'),
     _path = require('path');
 
-var ROOT      = _path.dirname(__filename);
+var ROOT      = _path.dirname(_path.dirname(__filename) + "../");
 var OUT_PHP   = "src/server-php/settings.php";
 var OUT_NODE  = "src/server-node/settings.json";
 var OUT_JS    = "dist/settings.js";
