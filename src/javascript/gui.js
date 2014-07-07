@@ -340,6 +340,10 @@
   GUIElement.prototype.onKeyPress = function(ev) {
     if ( this.hasCustomKeys ) { return false; }
     if ( !this.focused ) { return false; }
+    if ( !this.opts.onKeyPress ) { return false; }
+
+    this.opts.onKeyPress.call(this, ev);
+
     return true;
   };
 

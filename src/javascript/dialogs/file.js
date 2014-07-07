@@ -166,9 +166,6 @@
           return;
         }
       }}), this.$element);
-      this.input.onKeyPress = function() {
-        self.buttonConfirm.setDisabled(this.getValue().length <= 0);
-      };
 
       fileList.onFinished = function() {
         statusBar.setText(fileList.getPath());

@@ -3,7 +3,6 @@
 
 ## TODOs
 * ListView header bugs out when content has scrollbar (the width is offset)
-* Enter key in file dialog
 * Refactor some of the dialogs
 * Finish bew build system
 * Finish Node.js backend
