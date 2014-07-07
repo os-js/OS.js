@@ -3,6 +3,7 @@
 
 ## TODOs
 * Refactor some of the dialogs
+* Rename fs api function (`file_get_contents` => `fswrite` etc.)
 * Finish bew build system
 * Finish Node.js backend
 * Create reserved strings for locales in `locales.js` (for core messages etc)

@@ -1,7 +1,9 @@
 # OS.js Version 2.0
 OS.js is a light-weight JavaScript based web/cloud desktop solution.
 
-Current version: **Alpha - API and project file-tree subject to change**
+Current version: **Alpha**
+
+**See TODO.md for roadmap and planned changes**
 
 **If you find any bugs report them back to me and I'll have them squashed**
 
