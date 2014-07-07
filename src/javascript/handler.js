@@ -240,7 +240,7 @@
 
     var wm = OSjs.API.getWMInstance();
     if ( wm ) {
-      wm.notification({title: "Warning!", message: "You are Offline!"});
+      wm.notification({title: "Warning!", message: "You are On-line!"});
     }
   };
 
@@ -253,7 +253,7 @@
 
     var wm = OSjs.API.getWMInstance();
     if ( wm ) {
-      wm.notification({title: "Warning!", message: "You are On-line!"});
+      wm.notification({title: "Warning!", message: "You are Off-line!"});
     }
   };
 
