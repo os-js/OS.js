@@ -67,6 +67,7 @@
     this.$scroll          = null;
     this.lastSelectedDOM  = null;
     this.onCreateItem     = opts.onCreateItem   || function(el, iter, col) {};
+    this.fixInterval      = null;
 
     this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     if ( OSjs.Utils.getCompability().touch ) {
@@ -77,6 +78,14 @@
   };
 
   ListView.prototype = Object.create(_DataView.prototype);
+
+  ListView.prototype.destroy = function() {
+    if ( this.fixInterval ) {
+      clearInterval(this.fixInterval);
+      this.fixInterval = null;
+    }
+    _DataView.prototype.destroy.apply(this, arguments);
+  };
 
   ListView.prototype.init = function() {
     var el = _DataView.prototype.init.apply(this, ['GUIListView', false]);
@@ -167,6 +176,10 @@
     this.$table     = table;
     this.$tableTop  = tableTop;
     this.$view      = this.$scroll; // NOTE: Shorthand
+
+    this.fixInterval = setInterval(function() {
+      self._scrollbarFix();
+    }, 200);
   };
 
   ListView.prototype._render = function(list, columns) {
@@ -299,6 +312,8 @@
       this.data[i]._index   = i;
       this.data[i]._element = row;
     }
+
+    this._scrollbarFix();
   };
 
   ListView.prototype.render = function(data, reset) {
@@ -307,6 +322,14 @@
     }
 
     this._render(this.data, this.columns);
+  };
+
+  ListView.prototype._scrollbarFix = function() {
+    var padding = 0;
+    if ( this.$scroll.scrollHeight > this.$scroll.offsetHeight ) {
+      padding = this.$scroll.offsetWidth - this.$scroll.clientWidth;
+    }
+    this.$element.style.paddingRight = padding + "px";
   };
 
   ListView.prototype._onRender = function() {

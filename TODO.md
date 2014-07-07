@@ -2,7 +2,6 @@
 ## Roadmap
 
 ## TODOs
-* ListView header bugs out when content has scrollbar (the width is offset)
 * Refactor some of the dialogs
 * Finish bew build system
 * Finish Node.js backend
