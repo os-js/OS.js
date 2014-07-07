@@ -5,7 +5,6 @@
 * Refactor some of the dialogs
 * Finish bew build system
 * Finish Node.js backend
-* Split up locales
 * Create reserved strings for locales in `locales.js` (for core messages etc)
 * Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
 
