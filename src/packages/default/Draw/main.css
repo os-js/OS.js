@@ -44,6 +44,16 @@
   top : 0px;
   left : 0px;
 }
+.Window_ApplicationDrawWindow .WindowWrapper .ImageContainer .ApplicationDrawCanvas {
+  overflow : hidden;
+}
+.Window_ApplicationDrawWindow .WindowWrapper .ImageContainer .ApplicationDrawCanvas.moving > canvas {
+  border : 1px dashed #ff0000;
+  margin : -1px;
+}
+.Window_ApplicationDrawWindow .WindowWrapper .ImageContainer .ApplicationDrawCanvas.moving {
+  cursor : move;
+}
 .Window_ApplicationDrawWindow .WindowWrapper tr.ActiveLayer td span {
   font-weight : bold;
 }

@@ -31,10 +31,9 @@
 
   // TODO: Raw image loading/saving
   // TODO: Locales (Translations)
-  // TODO: Movment of layers
+  // TODO: Shift layer positions
   // TODO: Copy/Cut/Paste
   // TODO: Resize
-  // TODO: Clean up ApplicationDraw.prototype.action
 
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
@@ -662,7 +661,7 @@
   /**
    * Set the current image
    */
-  ApplicationDrawWindow.prototype.setImage = function(name, data) {
+  ApplicationDrawWindow.prototype.setImage = function(name, data, width, height) {
     if ( this.image ) {
       this.image.destroy();
       this.image = null;
@@ -671,8 +670,8 @@
     name = name ? Utils.filename(name) : "New Image";
     data = data || null;
 
-    var sx = data ? data.width : 640;
-    var sy = data ? data.height : 480;
+    var sx = data ? data.width  : (width  || 640);
+    var sy = data ? data.height : (height || 480);
 
     this.image = new OSjs.Applications.ApplicationDrawLibs.Image(name, sx, sy);
     if ( data ) {
@@ -765,10 +764,16 @@
 
   ApplicationDraw.prototype = Object.create(Application.prototype);
 
+  /**
+   * Destroy Application
+   */
   ApplicationDraw.prototype.destroy = function() {
     return Application.prototype.destroy.apply(this, []);
   };
 
+  /**
+   * Initialize Application
+   */
   ApplicationDraw.prototype.init = function(core, settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
@@ -781,6 +786,9 @@
     }
   };
 
+  /**
+   * Drag And Drop Helper
+   */
   ApplicationDraw.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
 
@@ -789,62 +797,130 @@
     }
   };
 
+  /**
+   * Perform an external action
+   */
   ApplicationDraw.prototype.action = function(action, filename, mime) {
+    switch ( action ) {
+      case 'new' :
+        this.onNew();
+      break;
+
+      case 'open' :
+        this.onOpen(filename, mime);
+      break;
+
+      case 'save' :
+        this.onSave(filename, mime);
+      break;
+
+      case 'saveas' :
+        this.onSaveAs(filename, mime);
+      break;
+
+      case 'close' :
+        this.destroy();
+      break;
+    }
+  };
+
+  /**
+   * Save to given file
+   */
+  ApplicationDraw.prototype.doSave = function(filename, mime) {
     var self = this;
     var win = this._getWindow('ApplicationDrawWindow');
 
-    var _setCurrentFile = function(name, mime) {
-      self.currentFilename = name;
-      self._setArgument('file', name);
-      self._setArgument('mime', mime || null);
-    };
 
-    var _onError = function(error) {
-      _setCurrentFile(null, null);
+    var _onSaveFinished = function(name) {
+      self.setCurrentFile(name, mime);
       if ( win ) {
-        win.setImageName("");
-
-        win._error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
-      } else {
-        OSjs.API.error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
+        win.setImageName(name);
       }
     };
 
-    var _saveFile = function(fname) {
-      var _onSaveFinished = function(name) {
-        _setCurrentFile(name, mime);
+    var image = win.getImage();
+    if ( !image ) { return; }
+    var data = image.getData();
+
+    win._toggleLoading(true);
+    OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [filename, data, {dataSource: true}]}, function(res) {
+      if ( res && res.result ) {
+        _onSaveFinished(filename);
+      } else {
+        if ( res && res.error ) {
+          self.onError(OSjs._("Failed to save file: {0}", filename), res.error);
+          return;
+        }
+        self.onError(OSjs._("Failed to save file: {0}", filename), OSjs._("Unknown error"));
+      }
+    }, function(error) {
+      self.onError(OSjs._("Failed to save file (call): {0}", filename), error);
+    });
+  };
+
+  /**
+   * File operation error
+   */
+  ApplicationDraw.prototype.onError = function(error) {
+    this.setCurrentFile(null, null);
+
+    var win = this._getWindow('ApplicationDrawWindow');
+    if ( win ) {
+      win.setImageName("");
+
+      win._error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
+
+      win._toggleDisabled(false);
+    } else {
+      OSjs.API.error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
+    }
+  };
+
+  /**
+   * Wrapper for save action
+   */
+  ApplicationDraw.prototype.onSave = function(filename, mime) {
+    if ( this.currentFilename ) {
+      this.doSave(this.currentFilename, mime);
+    }
+  };
+
+  /**
+   * Wrapper for save as action
+   */
+  ApplicationDraw.prototype.onSaveAs = function(filename, mime) {
+    var self = this;
+    var win = this._getWindow('ApplicationDrawWindow');
+    var dir = this.currentFilename ? Utils.dirname(this.currentFilename) : null;
+    var fnm = this.currentFilename ? Utils.filename(this.currentFilename) : null;
+
+    if ( win ) {
+      win._toggleDisabled(true);
+      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', extensions: {".png": "PNG Image", ".jpg": "JPEG Image", ".odraw": "OS.js Draw Document"}}, function(btn, fname) {
         if ( win ) {
-          win.setImageName(name);
+          win._toggleDisabled(false);
         }
-      };
+        if ( btn !== 'ok' ) return;
+        self.doSave(fname, mime);
+      }], win);
+    }
+  };
 
-      var image = win.getImage();
-      if ( !image ) { return; }
-      var data = image.getData();
-
-      win._toggleLoading(true);
-      OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, data, {dataSource: true}]}, function(res) {
-        if ( res && res.result ) {
-          _onSaveFinished(fname);
-        } else {
-          if ( res && res.error ) {
-            _onError(OSjs._("Failed to save file: {0}", fname), res.error);
-            return;
-          }
-          _onError(OSjs._("Failed to save file: {0}", fname), OSjs._("Unknown error"));
-        }
-      }, function(error) {
-        _onError(OSjs._("Failed to save file (call): {0}", fname), error);
-      });
-    };
+  /**
+   * Wrapper for open action
+   */
+  ApplicationDraw.prototype.onOpen = function(filename, mime) {
+    var self = this;
+    var win = this._getWindow('ApplicationDrawWindow');
 
     var _readFile = function(fname, fmime, data) {
       var img = new Image();
       img.onerror = function() {
-        _onError("Failed to load image data");
+        self.onError("Failed to load image data");
       };
       img.onload = function() {
-        _setCurrentFile(fname, fmime);
+        self.setCurrentFile(fname, fmime);
 
         if ( win ) {
           win.setImage(fname, this);
@@ -868,62 +944,69 @@
           }
         } else {
           if ( res && res.error ) {
-            _onError(OSjs._("Failed to open file: {0}", fname), res.error);
+            self.onError(OSjs._("Failed to open file: {0}", fname), res.error);
             return;
           }
-          _onError(OSjs._("Failed to open file: {0}", fname), OSjs._("Unknown error"));
+          self.onError(OSjs._("Failed to open file: {0}", fname), OSjs._("Unknown error"));
         }
       }, function(error) {
-        _onError(OSjs._("Failed to open file (call): {0}", fname), error);
+        self.onError(OSjs._("Failed to open file (call): {0}", fname), error);
       });
     };
 
-    var _newFile = function() {
-      _setCurrentFile(null, null);
+    if ( filename ) {
+      _openFile(filename, mime);
+    } else {
+      var path = (this.currentFilename) ? Utils.dirname(this.currentFilename) : null;
 
-      if ( win ) {
-        win.setImage(null, null);
-      }
-    };
+      win._toggleDisabled(true);
 
-    // Check action
-    switch ( action ) {
-      case 'new' :
-        _newFile();
-      break;
-
-      case 'open' :
-        if ( filename ) {
-          _openFile(filename, mime);
-        } else {
-          var path = (this.currentFilename) ? Utils.dirname(this.currentFilename) : null;
-
-          this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image'], path: path}, function(btn, fname, fmime) {
-            if ( btn !== 'ok' ) return;
-            _openFile(fname, fmime);
-          }], win);
+      this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image'], path: path}, function(btn, fname, fmime) {
+        if ( win ) {
+          win._toggleDisabled(false);
         }
-      break;
 
-      case 'save' :
-        if ( this.currentFilename ) {
-          _saveFile(this.currentFilename);
-        }
-      break;
-
-      case 'saveas' :
-        var dir = this.currentFilename ? Utils.dirname(this.currentFilename) : null;
-        var fnm = this.currentFilename ? Utils.filename(this.currentFilename) : null;
-        this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', extensions: {".png": "PNG Image", ".jpg": "JPEG Image", ".odraw": "OS.js Draw Document"}}, function(btn, fname) {
-            if ( btn !== 'ok' ) return;
-          _saveFile(fname);
-        }], win);
-      break;
-
-      case 'close' :
-        this.destroy();
-      break;
+        if ( btn !== 'ok' ) return;
+        _openFile(fname, fmime);
+      }], win);
     }
+  };
+
+  /**
+   * Wrapper for new action
+   */
+  ApplicationDraw.prototype.onNew = function() {
+    var win = this._getWindow('ApplicationDrawWindow');
+
+    this.setCurrentFile(null, null);
+
+    if ( win ) {
+      win._toggleDisabled(true);
+
+      this._createDialog("Input", ["New image dimension", "640x480", function(btn, val) {
+        if ( win ) {
+          win._toggleDisabled(false);
+        }
+        if ( btn !== "ok" ) { return; }
+
+        var split  = val.toLowerCase().split("x");
+        var width  = split.shift() || 0;
+        var height = split.shift() || 0;
+
+        if ( win ) {
+          win.setImage(null, null, width, height);
+        }
+      }], win);
+    }
+  };
+
+  /**
+   * Sets current active file
+   */
+  ApplicationDraw.prototype.setCurrentFile = function(name, mime) {
+    this.currentFilename = name;
+    this._setArgument('file', name);
+    this._setArgument('mime', mime || null);
   };
 
   /////////////////////////////////////////////////////////////////////////////

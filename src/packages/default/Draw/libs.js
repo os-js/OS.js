@@ -112,9 +112,42 @@
    * Tool: Pointer
    */
   var ToolPointer = function() {
-    Tool.call(this, "pointer", "Pointer", "stock-cursor", "");
+    Tool.call(this, "pointer", "Pointer", "stock-cursor", "Move active layer");
+
+    this.layerStartLeft   = 0;
+    this.layerStartTop    = 0;
+    this.layerCurrentLeft = 0;
+    this.layerCurrentTop  = 0;
   };
   ToolPointer.prototype = Object.create(Tool.prototype);
+
+  ToolPointer.prototype.onmousedown = function(ev, win, image, layer, currentPos, startPos) {
+    Tool.prototype.onmousedown.apply(this, arguments);
+
+    this.layerStartLeft = layer.left;
+    this.layerStartTop  = layer.top;
+
+    OSjs.Utils.$addClass(image.$container, "moving");
+  };
+
+  ToolPointer.prototype.onmouseup = function(ev, win, image, layer, currentPos, startPos) {
+    Tool.prototype.onmouseup.apply(this, arguments);
+
+    layer.left = this.layerCurrentLeft;
+    layer.top  = this.layerCurrentTop;
+
+    OSjs.Utils.$removeClass(image.$container, "moving");
+  };
+
+  ToolPointer.prototype.ondraw = function(ev, win, image, layer, currentPos, startPos) {
+    Tool.prototype.ondraw.apply(this, arguments);
+
+    this.layerCurrentLeft = layer.left + (currentPos[0] - startPos[0]);
+    this.layerCurrentTop  = layer.top  + (currentPos[1] - startPos[1]);
+
+    layer.canvas.style.left = (this.layerCurrentLeft) + "px";
+    layer.canvas.style.top  = (this.layerCurrentTop)  + "px";
+  };
 
   /**
    * Tool: Picker
@@ -466,9 +499,11 @@
     canvas.height = this.size[1];
     var context = canvas.getContext("2d");
 
+    var layer;
     for ( var i = 0; i < this.layers.length; i++ ) {
-      if ( this.layers[i] ) {
-        context.drawImage(this.layers[i].canvas, 0, 0);
+      layer = this.layers[i];
+      if ( layer ) {
+        context.drawImage(layer.canvas, layer.left, layer.top);
       }
     }
 
@@ -507,16 +542,17 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var Layer = function(name, w, h, z) {
-    this.name = name;
-    this.width = w || 0;
+    this.name   = name;
+    this.width  = w || 0;
     this.height = h || 0;
-    this.left = 0;
-    this.top = 0;
+    this.left   = 0;
+    this.top    = 0;
 
-    this.canvas = document.createElement("canvas");
-    this.canvas.width = w;
-    this.canvas.height = h;
-    this.canvas.style.zIndex = z || 1;
+    this.canvas               = document.createElement("canvas");
+    this.canvas.width         = w;
+    this.canvas.height        = h;
+    this.canvas.style.zIndex  = z || 1;
+
     this.context = this.canvas.getContext("2d");
   };
 
