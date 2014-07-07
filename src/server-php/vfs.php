@@ -62,9 +62,9 @@ class FS
   }
 
   public static function scandir($orgdir, Array $opts = Array()) {
-    $dirname = HOMEDIR . $orgdir;
+    $dirname = VFSDIR . $orgdir;
 
-    if ( strstr($dirname, HOMEDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
+    if ( strstr($dirname, VFSDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
     if ( !is_dir($dirname) ) {
       throw new Exception("Invalid directory '{$orgdir}'");
     }
@@ -136,9 +136,9 @@ class FS
 
   public static function file_put_contents($fname, $content, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
-    $fname = unrealpath(HOMEDIR . $fname);
+    $fname = unrealpath(VFSDIR . $fname);
 
-    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( is_file($fname) ) {
       if ( !is_file($fname) ) throw new Exception("You are writing to a invalid resource");
       if ( !is_writable($fname) ) throw new Exception("Write permission denied");
@@ -173,9 +173,9 @@ class FS
 
   public static function file_get_contents($fname, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
-    $fname = unrealpath(HOMEDIR . $fname);
+    $fname = unrealpath(VFSDIR . $fname);
 
-    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 
@@ -193,9 +193,9 @@ class FS
   }
 
   public static function delete($fname) {
-    $fname = unrealpath(HOMEDIR . $fname);
+    $fname = unrealpath(VFSDIR . $fname);
 
-    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
 
     if ( is_file($fname) ) {
       if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
@@ -210,11 +210,11 @@ class FS
   }
 
   public static function copy($src, $dest) {
-    $src = unrealpath(HOMEDIR . $src);
-    $dest = unrealpath(HOMEDIR . $dest);
+    $src = unrealpath(VFSDIR . $src);
+    $dest = unrealpath(VFSDIR . $dest);
 
-    if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
-    if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
+    if ( strstr($src, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
+    if ( strstr($dest, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
@@ -224,11 +224,11 @@ class FS
   }
 
   public static function move($src, $dest) {
-    $src = unrealpath(HOMEDIR . $src);
-    $dest = unrealpath(HOMEDIR . $dest);
+    $src = unrealpath(VFSDIR . $src);
+    $dest = unrealpath(VFSDIR . $dest);
 
-    if ( strstr($src, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
-    if ( strstr($dest, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
+    if ( strstr($src, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
+    if ( strstr($dest, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
@@ -238,18 +238,18 @@ class FS
   }
 
   public static function mkdir($dname) {
-    $dname = unrealpath(HOMEDIR . $dname);
+    $dname = unrealpath(VFSDIR . $dname);
 
-    if ( strstr($dname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($dname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( file_exists($dname) ) throw new Exception("Destination already exists");
 
     return mkdir($dname);
   }
 
   public static function fileinfo($fname) {
-    $fname = unrealpath(HOMEDIR . $fname);
+    $fname = unrealpath(VFSDIR . $fname);
 
-    if ( strstr($fname, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 

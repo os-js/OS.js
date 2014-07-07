@@ -110,7 +110,7 @@ function error() {
 // Default settings
 //
 if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'));                   // The path to root dir
-if ( !defined("HOMEDIR") )    define("HOMEDIR",     ROOTDIR . "/vfs/home");                           // Filesystem API default dir
+if ( !defined("VFSDIR") )    define("VFSDIR",     ROOTDIR . "/vfs/home");                           // Filesystem API default dir
 if ( !defined("TMPDIR") )     define("TMPDIR",      ROOTDIR . "/vfs/tmp");                            // Temporary files
 if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");                       // Packages
 if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.json");                  // Package repositories
@@ -143,9 +143,9 @@ $data   = $method === 'POST' ? file_get_contents("php://input") : (empty($_SERVE
 // GET file request wrapper
 //
 if ( $method === 'GET' ) {
-  if ( isset($_GET['file']) && ($file = (HOMEDIR . unrealpath($_GET['file']))) ) {
+  if ( isset($_GET['file']) && ($file = (VFSDIR . unrealpath($_GET['file']))) ) {
     try {
-      if ( strstr($file, HOMEDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+      if ( strstr($file, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
       if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
       if ( !is_readable($file) ) throw new Exception("Read permission denied");
     } catch ( Exception $e ) {
@@ -184,9 +184,9 @@ if ( $method === 'GET' ) {
 //
 if ( isset($_GET['upload']) ) {
   if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
-    $dest = unrealpath(HOMEDIR . $_POST['path'] . '/' . $_FILES['upload']['name']);
+    $dest = unrealpath(VFSDIR . $_POST['path'] . '/' . $_FILES['upload']['name']);
 
-    if ( strstr($dest, HOMEDIR) === false ) {
+    if ( strstr($dest, VFSDIR) === false ) {
       header("HTTP/1.0 500 Internal Server Error");
       print "Invalid destination!";
       exit;
