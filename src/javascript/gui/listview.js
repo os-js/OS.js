@@ -177,6 +177,7 @@
     this.$tableTop  = tableTop;
     this.$view      = this.$scroll; // NOTE: Shorthand
 
+    // FIXME: This should be bound to the resize event on a window ?!
     this.fixInterval = setInterval(function() {
       self._scrollbarFix();
     }, 200);

@@ -2,7 +2,7 @@
 
 if ( !defined("MusicPlayerCommand") ) define("MusicPlayerCommand", "/usr/bin/mediainfo");
 
-class MusicPlayer
+class ApplicationMusicPlayer
 {
 
   public static function call($method, $args) {
