@@ -586,45 +586,17 @@
     this.context = null;
   };
 
-  Layer.prototype.resize = function() {
-    // TODO
-  };
-
-  Layer.prototype.move = function() {
-    // TODO
-  };
-
   Layer.prototype.clear = function() {
     if ( this.context && (this.width + this.height) ) {
       this.context.clearRect(0, 0, this.width, this.height);
     }
   };
 
-  Layer.prototype.getData = function(type) {
-    if ( this.canvas ) {
-      return this.canvas.toDataURL(type);
-    }
-    return null;
-  };
-
   Layer.prototype.getRawData = function() {
     var data = [];
     if ( this.context ) {
-      /*
-      var imd = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
-      var j, i, tmp;
-
-      for ( j = 0; j < imd.length; j++ ) {
-        tmp = [];
-        for ( i = 0; i < imd[j].data.length; i++ ) {
-          tmp.push(String.fromCharCode(imd[j][i]));
-        }
-        data.push(tmp);
-      }
-      */
       data = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
-
     return data;
   };
 

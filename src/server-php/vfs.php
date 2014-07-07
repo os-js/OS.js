@@ -147,13 +147,25 @@ class FS
     }
 
     if ( !empty($opts['dataSource']) && $opts['dataSource'] ) {
-      $dcontent = preg_replace("/^data\:(.*);base64\,/", "", $content);
-      if ( $dcontent === false ) {
-        $dcontent = '';
-      } else {
-        $dcontent = base64_decode($dcontent);
+      $tmp = explode(",", $content, 2);
+      if ( sizeof($tmp) > 1 ) {
+        //$dcontent = preg_replace("/^data\:(.*);base64\,/", "", $content);
+
+        $dcontent = array_pop($tmp);
+        $dtype    = array_pop($tmp);
+
+        if ( preg_match("/^data\:image/", $dtype) ) {
+          $dcontent =  str_replace(' ', '+', $dcontent);
+        }
+
+        if ( $dcontent === false ) {
+          $dcontent = '';
+        } else {
+          $dcontent = base64_decode($dcontent);
+        }
+
+        $content = $dcontent;
       }
-      return file_put_contents($fname, $dcontent) !== false;
     }
 
     return file_put_contents($fname, $content) !== false;
