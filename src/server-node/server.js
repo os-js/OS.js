@@ -92,6 +92,7 @@
       '.doc'    : 'text/plain',
 
       '.odoc'   : 'osjs/document',
+      '.odraw'  : 'osjs/draw',
 
       'default' : 'application/octet-stream'
     }

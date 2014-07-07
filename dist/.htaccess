@@ -69,5 +69,7 @@ RewriteRule ^FS api.php?upload
 
   AddType text/plain .txt
   AddType text/plain .doc
+
   AddType osjs/document .odoc
+  AddType osjs/draw .odraw
 </ifModule>

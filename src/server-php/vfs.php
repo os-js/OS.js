@@ -312,6 +312,7 @@ function fileMime($fname) {
 
     'txt'      => 'text/plain',
     'doc'      => 'text/plain',
+    'odraw'    => 'osjs/draw',
     'odoc'     => 'osjs/document'
   );
 
