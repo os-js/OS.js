@@ -406,11 +406,13 @@
     }
   };
 
-  Image.prototype.createLayer = function(name, sx, sy, setActive) {
+  Image.prototype.createLayer = function(name, sx, sy, setActive, x, y) {
     sx = sx || this.size[0];
     sy = sy || this.size[1];
+    x  = x  || 0;
+    y  = y  || 0;
 
-    var layer = new Layer(name, sx, sy, this.layers.length + 1);
+    var layer = new Layer(name, sx, sy, this.layers.length + 1, x, y);
     this.addLayer(layer, setActive);
     return layer;
   };
@@ -483,17 +485,32 @@
   };
 
   Image.prototype.setData = function(img) {
+    var layer;
     if ( (img instanceof Image) || (img instanceof HTMLImageElement) ) {
       this.clear();
 
-      var layer = this.createLayer("Default", 0, 0, true);
+      layer = this.createLayer("Default", 0, 0, true);
       layer.setData(img);
       return true;
+    } else if ( (img instanceof Array) ) {
+      this.clear();
+
+      for ( var i = 0; i < img.length; i++ ) {
+        layer = this.createLayer(img[i].name,
+                                 img[i].width,
+                                 img[i].height,
+                                 true,
+                                 img[i].left,
+                                 img[i].top);
+
+        layer.setData(img[i].data);
+      }
     }
+
     return false;
   };
 
-  Image.prototype.getData = function() {
+  Image.prototype.getData = function(filetype) {
     var canvas = document.createElement("canvas");
     canvas.width = this.size[0];
     canvas.height = this.size[1];
@@ -507,7 +524,7 @@
       }
     }
 
-    return canvas.toDataURL(this.filetype);
+    return canvas.toDataURL(filetype || this.filetype);
   };
 
   Image.prototype.getContainer = function() {
@@ -534,19 +551,19 @@
       layers: layers
     };
 
-    return data;
+    return JSON.stringify(data);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // LAYER
   /////////////////////////////////////////////////////////////////////////////
 
-  var Layer = function(name, w, h, z) {
+  var Layer = function(name, w, h, z, x, y) {
     this.name   = name;
     this.width  = w || 0;
     this.height = h || 0;
-    this.left   = 0;
-    this.top    = 0;
+    this.left   = x || 0;
+    this.top    = y || 0;
 
     this.canvas               = document.createElement("canvas");
     this.canvas.width         = w;
@@ -591,16 +608,19 @@
   Layer.prototype.getRawData = function() {
     var data = [];
     if ( this.context ) {
+      /*
       var imd = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
       var j, i, tmp;
 
-      for ( j = 0; j < imd.length; i++ ) {
+      for ( j = 0; j < imd.length; j++ ) {
         tmp = [];
         for ( i = 0; i < imd[j].data.length; i++ ) {
           tmp.push(String.fromCharCode(imd[j][i]));
         }
         data.push(tmp);
       }
+      */
+      data = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     return data;
@@ -610,7 +630,11 @@
     if ( this.context ) {
       this.clear();
 
-      this.context.drawImage(img, x||0, y||0);
+      if ( (img instanceof Image) || (img instanceof HTMLImageElement) ) {
+        this.context.drawImage(img, x||0, y||0);
+      } else if ( (img instanceof Array) ) {
+        this.context.putImageData(img, 0, 0);
+      }
       return true;
     }
     return false;

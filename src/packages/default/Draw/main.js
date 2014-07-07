@@ -35,6 +35,13 @@
   // TODO: Copy/Cut/Paste
   // TODO: Resize
 
+  var FileTypes = {
+    "png": "image/png",
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpg",
+    "odraw": "osjs/draw"
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
   /////////////////////////////////////////////////////////////////////////////
@@ -825,12 +832,65 @@
   };
 
   /**
+   * Open given file
+   */
+  ApplicationDraw.prototype.doOpen = function(filename, mime, data) {
+    var self = this;
+    var win = this._getWindow('ApplicationDrawWindow');
+    var ext = OSjs.Utils.filext(filename).toLowerCase();
+
+    var _openRaw = function() {
+      var imageData = JSON.parse(data);
+      var width  = imageData.size[0];
+      var height = imageData.size[1];
+      var layers = imageData.layers;
+
+      self.setCurrentFile(filename, mime);
+      if ( win ) {
+        win.setImage(filename, layers, width, height);
+      }
+    };
+
+    var _openConverted = function() {
+      var img = new Image();
+      img.onerror = function() {
+        self.onError("Failed to load image data", "doOpen");
+      };
+      img.onload = function() {
+        self.setCurrentFile(filename, mime);
+
+        if ( win ) {
+          win.setImage(filename, this);
+        }
+      };
+      img.src = data;
+    };
+
+    if ( ext === "odraw" ) {
+      try {
+        _openRaw();
+      } catch ( e ) {
+        this.onError("Failed to load raw image", e, "doOpen");
+        console.warn(e.stack);
+      }
+    } else {
+      _openConverted();
+    }
+  };
+
+  /**
    * Save to given file
    */
   ApplicationDraw.prototype.doSave = function(filename, mime) {
     var self = this;
     var win = this._getWindow('ApplicationDrawWindow');
 
+    var ext = OSjs.Utils.filext(filename).toLowerCase();
+    if ( FileTypes[ext] ) {
+      mime = FileTypes[ext];
+    } else {
+      return;
+    }
 
     var _onSaveFinished = function(name) {
       self.setCurrentFile(name, mime);
@@ -841,28 +901,31 @@
 
     var image = win.getImage();
     if ( !image ) { return; }
-    var data = image.getData();
+    var data = ext === "odraw" ? image.getSaveData() : image.getData(mime);
+    var dataSource = ext !== "odraw";
 
     win._toggleLoading(true);
-    OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [filename, data, {dataSource: true}]}, function(res) {
+    OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [filename, data, {dataSource: dataSource}]}, function(res) {
       if ( res && res.result ) {
         _onSaveFinished(filename);
       } else {
         if ( res && res.error ) {
-          self.onError(OSjs._("Failed to save file: {0}", filename), res.error);
+          self.onError(OSjs._("Failed to save file: {0}", filename), res.error, "doSave");
           return;
         }
-        self.onError(OSjs._("Failed to save file: {0}", filename), OSjs._("Unknown error"));
+        self.onError(OSjs._("Failed to save file: {0}", filename), OSjs._("Unknown error"), "doSave");
       }
     }, function(error) {
-      self.onError(OSjs._("Failed to save file (call): {0}", filename), error);
+      self.onError(OSjs._("Failed to save file (call): {0}", filename), error, "doSave");
     });
   };
 
   /**
    * File operation error
    */
-  ApplicationDraw.prototype.onError = function(error) {
+  ApplicationDraw.prototype.onError = function(error, action) {
+    action || "unknown";
+
     this.setCurrentFile(null, null);
 
     var win = this._getWindow('ApplicationDrawWindow');
@@ -897,7 +960,8 @@
 
     if ( win ) {
       win._toggleDisabled(true);
-      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', extensions: {".png": "PNG Image", ".jpg": "JPEG Image", ".odraw": "OS.js Draw Document"}}, function(btn, fname) {
+      //this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', extensions: {".png": "PNG Image", ".jpg": "JPEG Image", ".odraw": "OS.js Draw Document"}}, function(btn, fname) {
+      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png'}, function(btn, fname) {
         if ( win ) {
           win._toggleDisabled(false);
         }
@@ -914,43 +978,29 @@
     var self = this;
     var win = this._getWindow('ApplicationDrawWindow');
 
-    var _readFile = function(fname, fmime, data) {
-      var img = new Image();
-      img.onerror = function() {
-        self.onError("Failed to load image data");
-      };
-      img.onload = function() {
-        self.setCurrentFile(fname, fmime);
-
-        if ( win ) {
-          win.setImage(fname, this);
-        }
-      };
-      img.src = data;
-    };
-
     var _openFile = function(fname, fmime) {
-      if ( fmime && !fmime.match(/^image/) ) {
+      if ( !fmime || (fmime != "osjs/draw" && !fmime.match(/^image/)) ) {
         OSjs.API.error(self.__label, OSjs._("Cannot open file"), OSjs._("Not supported!"));
         return;
       }
 
+      var ext = OSjs.Utils.filext(fname).toLowerCase();
+      var dataSource = ext !== "odraw";
+
       win.setTitle('Loading...');
       win._toggleLoading(true);
-      OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: true}]}, function(res) {
+      OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: dataSource}]}, function(res) {
         if ( res && res.result ) {
-          if ( win ) {
-            _readFile(fname, fmime, res.result);
-          }
+          self.doOpen(fname, fmime, res.result);
         } else {
           if ( res && res.error ) {
-            self.onError(OSjs._("Failed to open file: {0}", fname), res.error);
+            self.onError(OSjs._("Failed to open file: {0}", fname), res.error, "onOpen");
             return;
           }
-          self.onError(OSjs._("Failed to open file: {0}", fname), OSjs._("Unknown error"));
+          self.onError(OSjs._("Failed to open file: {0}", fname), OSjs._("Unknown error"), "onOpen");
         }
       }, function(error) {
-        self.onError(OSjs._("Failed to open file (call): {0}", fname), error);
+        self.onError(OSjs._("Failed to open file (call): {0}", fname), error, "onOpen");
       });
     };
 
@@ -961,7 +1011,7 @@
 
       win._toggleDisabled(true);
 
-      this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image'], path: path}, function(btn, fname, fmime) {
+      this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image', 'osjs\/draw'], path: path}, function(btn, fname, fmime) {
         if ( win ) {
           win._toggleDisabled(false);
         }
