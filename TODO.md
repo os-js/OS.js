@@ -10,12 +10,14 @@
 * Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
 
 ### Applications
+* Refactor DefaultApplication helper
 * Writer -- Check for changes before opening/new file
 * Finish Music Player
 * Refactor from currentX to currentFile.x for file stuff
 * CoreWM -- Finish panel item options
 
 ### GUI
+* GUIScrollbar
 * More Themes
 * Finish new Menu implementation
 * Custom styling for GUISelect

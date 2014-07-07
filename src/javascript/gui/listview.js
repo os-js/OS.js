@@ -65,6 +65,8 @@
     this.$table           = null;
     this.$tableTop        = null;
     this.$scroll          = null;
+    this.$tmpScroll       = null;
+    this.$tmpContent      = null;
     this.lastSelectedDOM  = null;
     this.onCreateItem     = opts.onCreateItem   || function(el, iter, col) {};
     this.fixInterval      = null;
@@ -164,11 +166,35 @@
       return false;
     });
 
+    /*
+    var tmpScroll = document.createElement("div");
+    tmpScroll.className = "TmpScroll";
+
+    var scrollLock;
+    var clearTmpScroll = function() {
+      if ( scrollLock ) {
+        clearTimeout(scrollLock);
+        scrollLock = null;
+      }
+    };
+    this._addEventListener(tmpScroll, "scroll", function() {
+    });
+
+    this._addEventListener(this.$scroll, "scroll", function() {
+      if ( scrollLock ) { return; }
+      tmpScroll.scrollTop = this.scrollTop;
+    });
+
+    var tmpContent = document.createElement("div");
+    */
+
+    //tmpScroll.appendChild(tmpContent);
     table.appendChild(head);
     table.appendChild(body);
     tableTop.appendChild(headTop);
     el.appendChild(tableTop);
     el.appendChild(this.$scroll);
+    //el.appendChild(tmpScroll);
 
     this.$head      = head;
     this.$headTop   = headTop;
@@ -176,6 +202,8 @@
     this.$table     = table;
     this.$tableTop  = tableTop;
     this.$view      = this.$scroll; // NOTE: Shorthand
+    //this.$tmpScroll = tmpScroll;
+    //this.$tmpContent= tmpContent;
 
     // FIXME: This should be bound to the resize event on a window ?!
     this.fixInterval = setInterval(function() {
@@ -328,9 +356,21 @@
   ListView.prototype._scrollbarFix = function() {
     var padding = 0;
     if ( this.$scroll.scrollHeight > this.$scroll.offsetHeight ) {
-      padding = this.$scroll.offsetWidth - this.$scroll.clientWidth;
+      padding = (this.$scroll.offsetWidth - this.$scroll.clientWidth);
     }
-    this.$element.style.paddingRight = padding + "px";
+    this.$scroll.style.right = -padding + "px";
+
+    /*
+    if ( padding ) {
+      if ( this.$tmpContent.offsetHeight != this.$scroll.scrollHeight ) {
+        this.$tmpContent.style.height = this.$scroll.scrollHeight + "px";
+      }
+      this.$tmpScroll.style.width   = padding + "px";
+      this.$tmpScroll.style.display = "block";
+    } else {
+      this.$tmpScroll.style.display = "none";
+    }
+    */
   };
 
   ListView.prototype._onRender = function() {
