@@ -902,10 +902,10 @@
     var image = win.getImage();
     if ( !image ) { return; }
     var data = ext === "odraw" ? image.getSaveData() : image.getData(mime);
-    var dataSource = ext !== "odraw";
+    var datas = ext !== "odraw";
 
     win._toggleLoading(true);
-    OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [filename, data, {dataSource: dataSource}]}, function(res) {
+    OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [filename, data, {dataSource: datas}]}, function(res) {
       if ( res && res.result ) {
         _onSaveFinished(filename);
       } else {
@@ -985,11 +985,11 @@
       }
 
       var ext = OSjs.Utils.filext(fname).toLowerCase();
-      var dataSource = ext !== "odraw";
+      var datas = ext !== "odraw";
 
       win.setTitle('Loading...');
       win._toggleLoading(true);
-      OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: dataSource}]}, function(res) {
+      OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: datas}]}, function(res) {
         if ( res && res.result ) {
           self.doOpen(fname, fmime, res.result);
         } else {

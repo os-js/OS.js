@@ -511,6 +511,8 @@
   };
 
   Image.prototype.getData = function(filetype) {
+    filetype = filetype || this.filetype;
+
     var canvas = document.createElement("canvas");
     canvas.width = this.size[0];
     canvas.height = this.size[1];
@@ -524,7 +526,7 @@
       }
     }
 
-    return canvas.toDataURL(filetype || this.filetype);
+    return canvas.toDataURL(filetype);
   };
 
   Image.prototype.getContainer = function() {
