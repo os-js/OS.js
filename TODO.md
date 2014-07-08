@@ -8,12 +8,15 @@
 * [GUI] GUIScrollbar
 * [GUI] GUIListView -- Add a GUIScrollbar
 * [GUI] Refactor GUIMenu
+* [GUI] FileView->ListView sort column does not work like expected
+* [GUI] FileView->ListView needs to disable sorting when click on column three times
 * [Application] Draw -- Finish
 * [Application] Writer -- Check for changes before opening/new file
 * [Application] MusicPlayer -- Finish
 * [Application] CoreWM -- Finish panel item options
 * [Application] Go over applications and clean up code (including DefaultApplication class)
 * [Compability] Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
+* [Misc] There are TODO and FIXME markings in source code files
 
 # Low-priority TODOs
 * [Dialogs] Go over dialog code and look for possible refactors

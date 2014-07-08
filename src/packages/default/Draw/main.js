@@ -351,7 +351,9 @@
     this.$imageContainer = document.createElement("div");
     this.$imageContainer.className = "ImageContainer";
 
-    this._addEventListener(this.$imageContainer, "mousedown", function(ev) {
+    var isTouch = OSjs.Utils.getCompability().touch;
+
+    this._addEventListener(this.$imageContainer, (isTouch ? "touchstart" : "mousedown"), function(ev) {
       ev.preventDefault();
 
       self.onMouseDown(ev);
@@ -360,7 +362,7 @@
       });
     });
 
-    this._addEventListener(this.$imageContainer, "mouseup", function(ev) {
+    this._addEventListener(this.$imageContainer, (isTouch ? "tocuhend" : "mouseup"), function(ev) {
       ev.preventDefault();
 
       self.onMouseUp(ev);
