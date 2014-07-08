@@ -287,18 +287,20 @@
    * Create Context Menu
    */
   FileDialog.prototype.createContextMenu = function(ev) {
+    var self = this;
     var fileList = this.$fileView;
     if ( !fileList ) { return; }
+    var viewType = fileList.viewType || "";
 
     OSjs.GUI.createMenu([
       {name: 'ListView', title: OSjs._('View type'), menu: [
-        {name: 'ListView', title: OSjs._('List View'), disabled: (fileList.viewType.toLowerCase() == 'listview'), onClick: function() {
+        {name: 'ListView', title: OSjs._('List View'), disabled: (viewType.toLowerCase() == 'listview'), onClick: function() {
           self.onMenuSelect("ListView");
         }},
-        {name: 'IconView', title: OSjs._('Icon View'), disabled: (fileList.viewType.toLowerCase() == 'iconview'), onClick: function() {
+        {name: 'IconView', title: OSjs._('Icon View'), disabled: (viewType.toLowerCase() == 'iconview'), onClick: function() {
           self.onMenuSelect("IconView");
         }},
-        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (fileList.viewType.toLowerCase() == 'treeview'), onClick: function() {
+        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (viewType.toLowerCase() == 'treeview'), onClick: function() {
           self.onMenuSelect("TreeView");
         }}
       ]}
