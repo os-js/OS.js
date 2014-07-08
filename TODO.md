@@ -17,6 +17,7 @@
 * [Application] Go over applications and clean up code (including DefaultApplication class)
 * [Compability] Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
 * [Misc] There are TODO and FIXME markings in source code files
+* [Backend] Provide a websocket version like in v1
 
 # Low-priority TODOs
 * [Dialogs] Go over dialog code and look for possible refactors
