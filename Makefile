@@ -47,6 +47,7 @@ packages:
 
 themes:
 	@echo "\033[1;32mBuilding Themes\033[0m"
+	rm -rf dist/themes/* ||:
 	(bin/create-themes)
 	cp -R src/themes/wallpapers dist/themes/
 
