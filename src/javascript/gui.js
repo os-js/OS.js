@@ -479,6 +479,10 @@
     return false;
   };
 
+  _Input.prototype.getDisabled = function() {
+    return this.disabled;
+  };
+
   _Input.prototype.setDisabled = function(d) {
     this.disabled = d;
     if ( d ) {

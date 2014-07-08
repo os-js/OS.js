@@ -429,6 +429,10 @@
    * Input: enter pressed
    */
   FileDialog.prototype.onInputEnter = function(ev) {
+    if ( this.buttonConfirm && this.buttonConfirm.getDisabled() ) {
+      return;
+    }
+
     this.onConfirmClick(ev);
   };
 
@@ -437,6 +441,23 @@
    */
   FileDialog.prototype.onConfirmClick = function(ev) {
     if ( !this.buttonConfirm ) { return; }
+
+    var sel = this.$input ? this.$input.getValue() : this.selectedFile;
+    if ( !sel ) {
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        var dwin;
+        if ( this.type === 'save' ) {
+          dwin = new OSjs.Dialogs.Alert(OSjs._('You need to select a file or enter new filename!'));
+        } else {
+          dwin = new OSjs.Dialogs.Alert(OSjs._('You need to select a file!'));
+        }
+        wm.addWindow(dwin);
+        this._addChild(dwin);
+      }
+      return;
+    }
+
     this.finishDialog();
   };
 
