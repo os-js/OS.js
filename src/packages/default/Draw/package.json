@@ -13,6 +13,7 @@
     "mime":       ["^image", "osjs/draw"],
     "category":   "graphics",
     "icon":       "categories/gnome-graphics.png",
+    "splash":     true,
     "compability":["canvas"],
     "preload":    [
       {"src": "effect-blur.js", "type": "javascript"},
