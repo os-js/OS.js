@@ -8,8 +8,10 @@ src/server-node/node_modules/
 src/server-php/bugreport.php
 src/server-php/settings.php
 src/server-node/settings.json
+src/packages/*
 dist/settings.js
 dist/config.js
 dist/osjs.js
 dist/osjs.css
 dist/packages.json
+dist-dev/test.*
