@@ -37,39 +37,6 @@
     return spl.join(".");
   }
 
-  var MIMEDescriptions = {
-    'image/bmp'               : "Bitmap Image",
-    'image/gif'               : "GIF Image",
-    'image/jpeg'              : "JPEG Image",
-    'image/jpg'               : "JPEG Image",
-    'image/png'               : "PNG Image",
-
-    'text/plain'              : "Text Document",
-    'text/css'                : "Cascade Stylesheet",
-    'text/html'               : "HTML Document",
-    'text/xml'                : "XML Document",
-    'application/javascript'  : "JavaScript Document",
-    'application/json'        : "JSON Document",
-    'application/x-python'    : "Python Document",
-
-    'audio/aac'               : "AAC Audio",
-    'audio/mp4'               : "MP4 Audio",
-    'audio/mpeg'              : "MPEG Audio",
-    'audio/ogg'               : "OGG Audio",
-    'audio/wav'               : "WAV Audio",
-    'audio/webm'              : "WEBM Audio",
-
-    'video/mp4'               : "MP4 Video",
-    'video/ogg'               : "OGG Video",
-    'video/webm'              : "WEBM Video",
-    'video/x-ms-video'        : "AVI Video",
-    'video/x-flv'             : "FLV Video",
-    'video/x-matroska'        : "MKV Video",
-
-    'osjs/document'           : "OS.js Document",
-    'osjs/draw'               : "OS.js Image"
-  };
-
   /**
    * Init
    *
@@ -181,6 +148,7 @@
       if ( this.filetypes ) {
         var types = {};
         var val;
+        var MIMEDescriptions = OSjs.Settings.DefaultConfig().MIME || {};
         for ( var i in this.filetypes ) {
           if ( this.filetypes.hasOwnProperty(i) ) {
             val = this.filetypes[i];
