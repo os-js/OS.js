@@ -1,6 +1,8 @@
 # Requirements
+Make sure you have these dependencies installed.
+
 * **nodejs**
-* **lessc**
+* **lessc** (`sudo npm -g less`)
 * **bash**
 * **GNU Make** makes building easier, but not a dependency
 * **java** if you want to build compressed dists
