@@ -352,9 +352,11 @@
     this.$imageContainer.className = "ImageContainer";
 
     var isTouch = OSjs.Utils.getCompability().touch;
+    var hasMoved = false;
 
     this._addEventListener(this.$imageContainer, (isTouch ? "touchstart" : "mousedown"), function(ev) {
       ev.preventDefault();
+      hasMoved = false;
 
       self.onMouseDown(ev);
       document.addEventListener("mousemove", function(ev) {
@@ -366,15 +368,19 @@
       ev.preventDefault();
 
       self.onMouseUp(ev);
-      document.removeEventListener("mousemove", function(ev) {
+      document.removeEventListener((isTouch ? "touchmove" : "mousemove"), function(ev) {
+        hasMoved = true;
         self.onMouseMove(ev);
       });
     }, false);
 
-    this._addEventListener(this.$imageContainer, "click", function(ev) {
+    this._addEventListener(this.$imageContainer, (isTouch ? "touchend" : "click"), function(ev) {
       ev.preventDefault();
+      if ( isTouch && hasMoved ) { return; }
 
       self.onMouseClick(ev);
+
+      hasMoved = false;
     }, false);
 
 
