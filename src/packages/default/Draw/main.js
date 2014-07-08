@@ -354,13 +354,20 @@
     var isTouch = OSjs.Utils.getCompability().touch;
     var hasMoved = false;
 
+    var _onMove = function(ev) {
+      ev.preventDefault();
+
+      hasMoved = true;
+      self.onMouseMove(ev);
+    };
+
     this._addEventListener(this.$imageContainer, (isTouch ? "touchstart" : "mousedown"), function(ev) {
       ev.preventDefault();
       hasMoved = false;
 
       self.onMouseDown(ev);
-      document.addEventListener("mousemove", function(ev) {
-        self.onMouseMove(ev);
+      document.addEventListener((isTouch ? "touchmove" : "mousemove"), function(ev) {
+        _onMove(ev);
       });
     });
 
@@ -369,8 +376,7 @@
 
       self.onMouseUp(ev);
       document.removeEventListener((isTouch ? "touchmove" : "mousemove"), function(ev) {
-        hasMoved = true;
-        self.onMouseMove(ev);
+        _onMove(ev);
       });
     }, false);
 
