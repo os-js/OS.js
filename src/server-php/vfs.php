@@ -30,6 +30,33 @@
  */
 
 /**
+ * MIME Helpers
+ */
+class MIME
+{
+  protected $data;
+  protected static $instance;
+
+  protected function __construct() {
+    $file = sprintf("%s/%s", ROOTDIR, "mime.json");
+    if ( file_exists($file) ) {
+      $this->data = json_decode(file_get_contents($file));
+    }
+  }
+
+  public static function get() {
+    if ( !self::$instance ) {
+      self::$instance = new self();
+    }
+    return self::$instance;
+  }
+
+  public function getData() {
+    return $this->data;
+  }
+}
+
+/**
  * Filesystem Helpers
  */
 class FS
@@ -300,43 +327,10 @@ class FS
 
 
 function fileMime($fname) {
-  $force = Array(
-    'aac'      => 'audio/aac',
-    'mp4'      => 'audio/mp4',
-    'm4a'      => 'audio/mp4',
-    'mp1'      => 'audio/mpeg',
-    'mp2'      => 'audio/mpeg',
-    'mp3'      => 'audio/mpeg',
-    'mpg'      => 'audio/mpeg',
-    'mpeg'     => 'audio/mpeg',
-    'oga'      => 'audio/ogg',
-    'ogg'      => 'audio/ogg',
-    'wav'      => 'audio/wav',
-    'webm'     => 'audio/webm',
-
-    'mp4'      => 'video/mp4',
-    'm4v'      => 'video/mp4',
-    'ogv'      => 'video/ogg',
-    'webm'     => 'video/webm',
-    'avi'      => 'video/x-ms-video',
-    'flv'      => 'video/x-flv',
-    'mkv'      => 'video/x-matroska',
-
-    'py'       => 'application/x-python',
-    'html'     => 'text/html',
-    'xml'      => 'text/xml',
-    'js'       => 'application/javascript',
-    'css'      => 'text/css',
-
-    'txt'      => 'text/plain',
-    'doc'      => 'text/plain',
-    'odraw'    => 'osjs/draw',
-    'odoc'     => 'osjs/document'
-  );
-
   if ( function_exists('pathinfo') ) {
     if ( $ext = pathinfo($fname, PATHINFO_EXTENSION) ) {
       $ext = strtolower($ext);
+      $force = MIME::get()->getData();
       if ( isset($force[$ext]) ) {
         return $force[$ext];
       }

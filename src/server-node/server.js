@@ -47,55 +47,7 @@
     vfsdir:     _path.join(rootDir, 'vfs/home'),
     tmpdir:     _path.join(rootDir, 'vfs/tmp'),
     repodir:    _path.join(rootDir, 'src/packages'),
-    mimes:      {
-      '.bmp'    : 'image/bmp',
-      '.css'    : 'text/css',
-      '.gif'    : 'image/gif',
-      '.htm'    : 'text/html',
-      '.html'   : 'text/html',
-      '.jpg'    : 'image/jpeg',
-      '.jpeg'   : 'image/jpeg',
-      '.js'     : 'application/javascript',
-      '.json'   : 'application/json',
-      '.otf'    : 'font/opentype',
-      '.ttf'    : 'font/opentype',
-      '.png'    : 'image/png',
-
-      '.aac'    : 'audio/aac',
-      '.mp4'    : 'audio/mp4',
-      '.m4a'    : 'audio/mp4',
-      '.mp1'    : 'audio/mpeg',
-      '.mp2'    : 'audio/mpeg',
-      '.mp3'    : 'audio/mpeg',
-      '.mpg'    : 'audio/mpeg',
-      '.mpeg'   : 'audio/mpeg',
-      '.oga'    : 'audio/ogg',
-      '.ogg'    : 'audio/ogg',
-      '.wav'    : 'audio/wav',
-      '.webm'   : 'audio/webm',
-
-      '.mp4'    : 'video/mp4',
-      '.m4v'    : 'video/mp4',
-      '.ogv'    : 'video/ogg',
-      '.webm'   : 'video/webm',
-      '.avi'    : 'video/x-ms-video',
-      '.flv'    : 'video/x-flv',
-      '.mkv'    : 'video/x-matroska',
-
-      '.py'     : 'application/x-python',
-      '.html'   : 'text/html',
-      '.xml'    : 'text/xml',
-      '.js'     : 'application/javascript',
-      '.css'    : 'text/css',
-
-      '.txt'    : 'text/plain',
-      '.doc'    : 'text/plain',
-
-      '.odoc'   : 'osjs/document',
-      '.odraw'  : 'osjs/draw',
-
-      'default' : 'application/octet-stream'
-    }
+    mimes:      {}
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -437,7 +389,23 @@
 
   var spath = _path.join(_path.dirname(__filename), 'settings.json');
   var rpath = _path.join(rootDir, 'src/packages/repositories.json');
+  var mpath = _path.join(rootDir, 'src/mime.json');
   var appdirs = [];
+
+  // FIXME: Refactor
+  if ( _fs.existsSync(mpath) ) {
+    try {
+      var data = _fs.readFileSync(mpath);
+      if ( data ) {
+        console.log('!!!', 'Found MIME file...');
+        data = JSON.parse(data.toString());
+        config.mimes = data;
+      }
+    } catch ( e ) {
+      console.warn('!!!', 'Failed to parse settings JSON file', e);
+    }
+  }
+
 
   if ( _fs.existsSync(spath) ) {
     try {

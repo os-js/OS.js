@@ -37,6 +37,7 @@ RewriteRule ^FS api.php?upload
   </FilesMatch>
 </ifModule>
 
+# You can update this file manually by looking at src/mime.json
 <ifModule mod_mime.c>
   AddType application/json .json
 
