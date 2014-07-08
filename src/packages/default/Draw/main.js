@@ -783,7 +783,7 @@
   ApplicationDraw.prototype.init = function(core, settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
-    this._addWindow(new ApplicationDrawWindow(this, metadata));
+    var win = this._addWindow(new ApplicationDrawWindow(this, metadata));
 
     var open = this._getArgument('file');
     var mime = this._getArgument('mime');

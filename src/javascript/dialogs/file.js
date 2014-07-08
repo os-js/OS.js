@@ -260,12 +260,16 @@
     var _getSelected = function() {
       var result = "";
 
-      if ( this.$fileView ) {
-        var root = this.$fileView.getPath();
-        if ( this.$input ) {
-          result = root + "/" + this.$input.getValue();
-        } else {
-          result = root + "/" + this.selectedFile;
+      if ( this.select == "path" ) {
+        result = this.selectedFile;
+      } else {
+        if ( this.$fileView ) {
+          var root = this.$fileView.getPath();
+          if ( this.$input ) {
+            result = root + "/" + this.$input.getValue();
+          } else {
+            result = this.selectedFile;
+          }
         }
       }
 
@@ -322,13 +326,13 @@
       var val = this.$input.getValue();
       var range = {
         min: 0,
-        max: val.length - 1
+        max: val.length
       };
 
       if ( val.match(/\.(\w+)$/) ) {
         var m = val.split(/\.(\w+)$/);
         if ( m ) {
-          range.max -= (m.length);
+          range.max -= (m.length + 1);
         }
       }
 
@@ -400,11 +404,11 @@
 
     if ( this.select === "path" ) {
       if ( item && item.type == "dir" ) {
-        selected = item.filename;
+        selected = item.path;
       }
     } else {
       if ( item && item.type == "file" ) {
-        selected = item.filename;
+        selected = item.path;
       }
     }
 
@@ -413,7 +417,8 @@
     }
 
     if ( this.$input ) {
-      this.$input.setValue(Utils.escapeFilename(selected ? selected : this.defaultFilename));
+      var fname = Utils.filename(selected ? selected : this.defaultFilename);
+      this.$input.setValue(Utils.escapeFilename(fname));
     }
 
     this.selectedFile = selected;
@@ -428,6 +433,11 @@
       this.$statusBar.setText(this.path);
     }
     this._toggleLoading(false);
+
+    if ( this.select == "path" ) {
+      this.selectedFile = this.path; // Dir selection dialog needs to start on default
+      this.buttonConfirm.setDisabled(false);
+    }
   };
 
   /**
