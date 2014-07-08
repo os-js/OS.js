@@ -28,7 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog) {
+(function(StandardDialog, Utils, API) {
 
   function ReplaceExtension(orig, rep) {
     var spl = orig.split(".");
@@ -46,6 +46,7 @@
    *  path                  Current path
    *  filename              Current filename
    *  mime                  Current file MIME
+   *  mimes                 Browse filetype filter (defaults to [none] all files)
    *  filetypes             Save filetypes dict (ext => mime)
    *  defaultFilename       Default filename
    *  defaultFilemime       Default filemime (defaults to given MIME)
@@ -55,7 +56,7 @@
 
     // Arguments
     this.type             = args.type             || "open";
-    this.path             = args.path             || "/";
+    this.path             = args.path;
     this.select           = args.select           || "file";
     this.filename         = args.filename         || "";
     this.filemime         = args.mime             || "";
@@ -63,6 +64,17 @@
     this.filetypes        = args.filetypes        || null;
     this.defaultFilename  = args.defaultFilename  || "New File";
     this.defaultFilemime  = args.defaultFilemime  || this.filemime || "";
+
+    if ( !this.path && this.filename ) {
+      if ( this.filename.match(/\//) ) {
+        this.path     = Utils.dirname(this.filename);
+        this.filename = Utils.filename(this.filename);
+      }
+    }
+
+    if ( !this.path ) {
+      this.path = API.getDefaultPath('/');
+    }
 
     // Stored elements etc.
     this.errors       = 0;
@@ -106,7 +118,7 @@
       typeFilter: (this.select === 'path' ? 'dir' : null)
     }), this.$element);
     this.$fileView.onError = function() {
-      self.onError.apply(this, arguments);
+      self.onError.apply(self, arguments);
     };
     this.$fileView.onContextMenu = function(ev) {
       self.createContextMenu(ev);
@@ -131,7 +143,7 @@
     this.$statusBar.setText("");
 
     if ( this.type === 'save' ) {
-      var curval = OSjs.Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
+      var curval = Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
 
       if ( this.filetypes ) {
         var types = {};
@@ -145,11 +157,11 @@
           self.onSelectChange(val);
         }}), this.$element);
         this.$select.addItems(types);
-        OSjs.Utils.$addClass(root.firstChild, "HasFileTypes");
+        Utils.$addClass(root.firstChild, "HasFileTypes");
       }
 
       this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(ev) {
-        if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
+        if ( ev.keyCode === Utils.Keys.ENTER ) {
           self.onInputEnter(ev);
           return;
         }
@@ -223,10 +235,10 @@
     path = path || _getSelected.call(this);
 
     var _confirm = function() {
-      var wm = OSjs.API.getWMInstance();
+      var wm = API.getWMInstance();
       if ( wm ) {
         this._toggleDisabled(true);
-        var conf = new OSjs.Dialogs.Confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path)), function(btn) {
+        var conf = new OSjs.Dialogs.Confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", Utils.filename(path)), function(btn) {
           self._toggleDisabled(false);
           if ( btn == 'ok' ) {
             self.end('ok', path, mime);
@@ -240,7 +252,7 @@
     if ( this.type == "open" ) {
       this.end('ok', path, mime);
     } else {
-      OSjs.API.call('fs', {method: 'fileexists', 'arguments' : [path]}, function(res) {
+      API.call('fs', {method: 'fileexists', 'arguments' : [path]}, function(res) {
         res = res || {};
 
         if ( res.error ) {
@@ -317,7 +329,7 @@
       if ( !fatal ) {
         if ( this.errors < 2 ) {
           if ( this.$fileView ) {
-            this.$fileView.chdir(OSjs.API.getDefaultPath('/'));
+            this.$fileView.chdir(API.getDefaultPath('/'));
           }
         } else {
           this.errors = 0;
@@ -360,7 +372,7 @@
     }
 
     if ( this.$input ) {
-      this.$input.setValue(OSjs.Utils.escapeFilename(selected ? selected : this.defaultFilename));
+      this.$input.setValue(Utils.escapeFilename(selected ? selected : this.defaultFilename));
     }
 
     this.selectedFile = selected;
@@ -406,7 +418,7 @@
 
     if ( this.select === 'file' && type === 'file' ) {
       _activated.call(this);
-    } else if ( this.select === 'path' && type === 'dir' && OSjs.Utils.filename(path) != '..' ) {
+    } else if ( this.select === 'path' && type === 'dir' && Utils.filename(path) != '..' ) {
       _activated.call(this);
     }
   };
@@ -444,7 +456,7 @@
 
     var sel = this.$input ? this.$input.getValue() : this.selectedFile;
     if ( !sel ) {
-      var wm = OSjs.API.getWMInstance();
+      var wm = API.getWMInstance();
       if ( wm ) {
         var dwin;
         if ( this.type === 'save' ) {
@@ -467,4 +479,4 @@
 
   OSjs.Dialogs.File               = FileDialog;
 
-})(OSjs.Dialogs.StandardDialog);
+})(OSjs.Dialogs.StandardDialog, OSjs.Utils, OSjs.API);
