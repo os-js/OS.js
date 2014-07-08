@@ -331,8 +331,8 @@ function fileMime($fname) {
     if ( $ext = pathinfo($fname, PATHINFO_EXTENSION) ) {
       $ext = strtolower($ext);
       $force = MIME::get()->getData();
-      if ( isset($force[$ext]) ) {
-        return $force[$ext];
+      if ( isset($force[".{$ext}"]) ) {
+        return $force[".{$ext}"];
       }
     }
   }
