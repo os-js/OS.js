@@ -30,6 +30,20 @@
  */
 (function() {
 
+  window.console    = window.console    || {};
+  console.log       = console.log       || function() {};
+  console.debug     = console.debug     || console.log;
+  console.error     = console.error     || console.log;
+  console.warn      = console.warn      || console.log;
+  console.group     = console.group     || console.log;
+  console.groupEnd  = console.groupEnd  || console.log;
+
+  /*
+  window.indexedDB      = window.indexedDB      || window.mozIndexedDB          || window.webkitIndexedDB   || window.msIndexedDB;
+  window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;
+  window.IDBKeyRange    = window.IDBKeyRange    || window.webkitIDBKeyRange     || window.msIDBKeyRange;
+  */
+
   window.OSjs       = window.OSjs       || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
@@ -41,7 +55,7 @@
   OSjs.Locale       = OSjs.Locale       || {};
   OSjs.Core         = {};
   OSjs.API          = {};
-  OSjs.Version      = '2.0-alpha4';
+  OSjs.Version      = '2.0-alpha5';
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
@@ -2758,7 +2772,7 @@
     }
   };
 
-  OSjs._initialize = function() {
+  var Initialize = function() {
     if ( __initialized ) { return; }
     __initialized = true;
 
@@ -2784,7 +2798,7 @@
     });
   };
 
-  OSjs._shutdown = function(save, onunload) {
+  OSjs.Shutdown = function(save, onunload) {
     if ( !__initialized ) { return; }
     __initialized = false;
     window.onunload = null;
@@ -2813,5 +2827,27 @@
       _CORE.shutdown(save, _shutdown);
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Main initialization code
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _onLoad = function() {
+    Initialize();
+  };
+
+  var _onUnload = function() {
+    OSjs.Shutdown(false, true);
+  };
+
+  var jQuery = window.$ || window.jQuery;
+  if ( typeof jQuery !== 'undefined' ) {
+    console.warn("Using jQuery initialization");
+    jQuery(window).on('load', _onLoad);
+    jQuery(window).on('unload', _onUnload);
+  } else {
+    window.onload   = _onLoad;
+    window.onunload = _onUnload;
+  }
 
 })();

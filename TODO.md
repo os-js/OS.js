@@ -4,6 +4,7 @@
 * [Backend] Finish bew build system
 * [Backend] Finish Node.js backend
 * [Locales] Create reserved strings for locales in `locales.js` (for core messages etc)
+* [Core] Keypress not registered on FileView in a window (and possibly others)
 * [GUI] GUIScrollbar
 * [GUI] GUIListView -- Add a GUIScrollbar
 * [GUI] Refactor GUIMenu

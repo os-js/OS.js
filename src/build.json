@@ -3,7 +3,56 @@
 
   "settings" : {
     "frontend" : {
+      "Core" : {
+        "APIURI":         "/API",
+        "FSURI":          "/FS",
+        "MetadataURI":    "/packages.json",
+        "ThemeURI":       "/themes",
+        "PackageURI":     "/packages",
+        "Home":           "/",
+        "MaxUploadSize":  2097152,
+        "BugReporting":   true,
+        "Preloads":       [],
+        "Sounds":         true,
+        "Languages":      {
+          "en_US": "English",
+          "no_NO": "Norsk (Norwegian)",
+          "de_DE": "Deutsch (German)"
+        },
+        "Locale":         "en_US"
+      },
+
+      "Fonts" : {
+        "default" : "OSjsFont",
+        "list"    : [
+          "OSjsFont",
+          "Arial",
+          "Arial Black",
+          "Sans-serif",
+          "Serif",
+          "Trebuchet MS",
+          "Impact",
+          "Georgia",
+          "Courier New",
+          "Comic Sans MS",
+          "Monospace",
+          "Symbol",
+          "Webdings"
+        ]
+      },
+
+      "WM" : {
+        "exec": "CoreWM",
+        "args": {
+          "themes": [
+            {"name": "default", "title": "Basic OS.js Theme"},
+            {"name": "uncomplicated", "title": "Uncomplicated (Gnome Theme)"}
+          ],
+          "defaults": null
+        }
+      }
     },
+
     "backend" : {
       "vfsdir" : "%ROOT%/vfs/home",
       "tmpdir" : "%ROOT%/vfs/tmp",
@@ -59,8 +108,7 @@
       "src/javascript/dialogs/font.js",
       "src/javascript/dialogs/input.js",
       "src/javascript/handler.js",
-      "src/javascript/handlers/%HANDLER%.js",
-      "src/javascript/main.js"
+      "src/javascript/handlers/%HANDLER%.js"
     ]
   },
 
