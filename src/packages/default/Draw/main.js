@@ -37,9 +37,8 @@
 
   var FileTypes = {
     "png": "image/png",
-    "jpg": "image/jpeg",
-    "jpeg": "image/jpg",
-    "odraw": "osjs/draw"
+    "jpg": "image/jpeg"/*,
+    "odraw": "osjs/draw"*/
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -960,8 +959,7 @@
 
     if ( win ) {
       win._toggleDisabled(true);
-      //this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', extensions: {".png": "PNG Image", ".jpg": "JPEG Image", ".odraw": "OS.js Draw Document"}}, function(btn, fname) {
-      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png'}, function(btn, fname) {
+      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', filetypes: FileTypes}, function(btn, fname) {
         if ( win ) {
           win._toggleDisabled(false);
         }
