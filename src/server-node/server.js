@@ -353,6 +353,15 @@
       });
     },
 
+    fileexists : function(args, request, response) {
+      var path = args[0];
+      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
+      var fullPath = _path.join(config.vfsdir, path);
+      _fs.exists(fullPath, function(exists) {
+        respondJSON({result: exists, error: null}, response);
+      });
+    },
+
     // TODO: Exif info
     fileinfo : function(args, request, response) {
       var path = args[0];

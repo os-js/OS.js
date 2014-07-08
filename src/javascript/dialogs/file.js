@@ -30,51 +30,49 @@
  */
 (function(StandardDialog) {
 
+  function ReplaceExtension(orig, rep) {
+    var spl = orig.split(".");
+    spl.pop();
+    spl.push(rep);
+    return spl.join(".");
+  }
+
   /**
-   * File Dialog Class
+   * Init
+   *
+   * Arguments:
+   *  type                  Dialog type: "open" or "save"
+   *  select                Selection type: "file" or "dir"
+   *  path                  Current path
+   *  filename              Current filename
+   *  mime                  Current file MIME
+   *  filetypes             Save filetypes dict (ext => mime)
+   *  defaultFilename       Default filename
+   *  defaultFilemime       Default filemime (defaults to given MIME)
    */
   var FileDialog = function(args, onClose) {
     args = args || {};
 
-    this.currentPath      = args.path             || OSjs.API.getDefaultPath('/');
-    this.currentFilename  = args.filename         || '';
-    this.defaultFilename  = args.defaultFilename  || '';
-    this.defaultExtension = args.defaultExtension || '';
-    this.extensions       = args.extensions       || null;
-    this.type             = args.type             || 'open';
-    this.mime             = args.mime             || null;
-    this.allowMimes       = args.mimes            || null;
-    this.select           = args.select           || 'file';
-    this.input            = null;
+    // Arguments
+    this.type             = args.type             || "open";
+    this.path             = args.path             || "/";
+    this.select           = args.select           || "file";
+    this.filename         = args.filename         || "";
+    this.filemime         = args.mime             || "";
+    this.filter           = args.mimes            || [];
+    this.filetypes        = args.filetypes        || null;
+    this.defaultFilename  = args.defaultFilename  || "New File";
+    this.defaultFilemime  = args.defaultFilemime  || this.filemime || "";
 
-    if ( !this.defaultExtension && this.defaultFilename ) {
-      this.defaultExtension = OSjs.Utils.filext(this.defaultFilename);
-    }
+    // Stored elements etc.
+    this.errors       = 0;
+    this.selectedFile = null;
+    this.$input       = null;
+    this.$fileView    = null;
+    this.$statusBar   = null;
+    this.$select      = null;
 
-    if ( this.defaultExtension && ! this.defaultExtension.match(/^\./) ) {
-      this.defaultExtension = "." + this.defaultExtension;
-    }
-
-    var self = this;
-
-    var errors = 0;
-    this.onError          = function(err, dirname, fatal) {
-      if ( err ) {
-        if ( !fatal ) {
-          if ( errors < 2 ) {
-            var fileList = self._getGUIElement('FileDialogFileView');
-            if ( fileList ) {
-              fileList.chdir(OSjs.API.getDefaultPath('/'));
-            }
-          } else {
-            errors = 0;
-          }
-          errors++;
-        }
-        self._error(OSjs._("FileDialog Error"), OSjs._("Failed listing directory '{0}' because an error occured", dirname), err);
-      }
-    };
-
+    // Window
     var title     = OSjs._(this.type == "save" ? "Save" : "Open");
     var className = this.type == "save" ? 'FileSaveDialog' : 'FileOpenDialog';
 
@@ -89,273 +87,186 @@
 
   FileDialog.prototype = Object.create(StandardDialog.prototype);
 
+  /**
+   * Destroy
+   */
   FileDialog.prototype.destroy = function() {
     StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
+  /**
+   * Create
+   */
   FileDialog.prototype.init = function() {
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var typeFilter = this.select === 'path' ? 'dir' : null;
-    var fileList = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {mimeFilter: this.allowMimes, typeFilter: typeFilter}), this.$element);
-
-    var openMenu = function(ev) {
-      if ( !fileList ) { return; }
-      var curr = fileList.viewType;
-      var viewMenu = [
-        {name: 'ListView', title: OSjs._('List View'), disabled: (curr.toLowerCase() == 'listview'), onClick: function() {
-          if ( fileList ) {
-            fileList.setViewType('ListView');
-          }
-          self._focus();
-        }},
-        {name: 'IconView', title: OSjs._('Icon View'), disabled: (curr.toLowerCase() == 'iconview'), onClick: function() {
-          if ( fileList ) {
-            fileList.setViewType('IconView');
-          }
-          self._focus();
-        }},
-        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (curr.toLowerCase() == 'treeview'), onClick: function() {
-          if ( fileList ) {
-            fileList.setViewType('TreeView');
-          }
-          self._focus();
-        }}
-      ];
-
-      var menu = [
-        {name: 'ListView', title: OSjs._('View type'), menu: viewMenu},
-      ];
-
-      var pos = {x: ev.clientX, y: ev.clientY};
-      OSjs.GUI.createMenu(menu, pos);
-    };
-
-    fileList.onError = function() {
-      self._toggleLoading(false);
+    this.$fileView = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {
+      mimeFilter: this.filter,
+      typeFilter: (this.select === 'path' ? 'dir' : null)
+    }), this.$element);
+    this.$fileView.onError = function() {
       self.onError.apply(this, arguments);
     };
-    fileList.onContextMenu = function(ev) {
-      openMenu(ev);
+    this.$fileView.onContextMenu = function(ev) {
+      self.createContextMenu(ev);
     };
-    fileList.onViewContextMenu = function(ev) {
-      openMenu(ev);
+    this.$fileView.onViewContextMenu = function(ev) {
+      self.createContextMenu(ev);
+    };
+    this.$fileView.onSelected = function(item) {
+      self.onFileSelected(item);
+    };
+    this.$fileView.onFinished = function() {
+      self.onFileFinished();
+    };
+    this.$fileView.onRefresh = function() {
+      self.onFileRefresh();
+    };
+    this.$fileView.onActivated = function(path, type, mime) {
+      self.onFileActivated(path, type, mime);
     };
 
-
-    if ( this.extensions ) {
-      var typeSelect = this._addGUIElement(new OSjs.GUI.Select('FileDialogFiletypeSelect', {onChange: function(sobj, sdom, val) {
-        self.changeFileType(val);
-      }}), this.$element);
-      typeSelect.addItems(this.extensions);
-      OSjs.Utils.$addClass(root.firstChild, "HasFileTypes");
-    }
-
-    var statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
-    statusBar.setText("");
+    this.$statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
+    this.$statusBar.setText("");
 
     if ( this.type === 'save' ) {
-      var start = true;
-      var curval = OSjs.Utils.escapeFilename(this.currentFilename ? this.currentFilename : this.defaultFilename);
+      var curval = OSjs.Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
 
-      this.input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(ev) {
-        self.buttonConfirm.setDisabled(this.value.length <= 0);
+      if ( this.filetypes ) {
+        var types = {};
+        for ( var i in this.filetypes ) {
+          if ( this.filetypes.hasOwnProperty(i) ) {
+            types[i] = this.filetypes[i] + " (." + i + ")";
+          }
+        }
+
+        this.$select = this._addGUIElement(new OSjs.GUI.Select('FileDialogFiletypeSelect', {onChange: function(sobj, sdom, val) {
+          self.onSelectChange(val);
+        }}), this.$element);
+        this.$select.addItems(types);
+        OSjs.Utils.$addClass(root.firstChild, "HasFileTypes");
+      }
+
+      this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(ev) {
         if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
-          self.buttonConfirm.onClick(ev);
+          self.onInputEnter(ev);
           return;
         }
       }}), this.$element);
-
-      fileList.onFinished = function() {
-        statusBar.setText(fileList.getPath());
-        self._toggleLoading(false);
-        if ( start ) {
-          if ( self.currentFilename ) {
-            fileList.setSelected(self.currentFilename, 'filename');
-          }
-        }
-        start = false;
-      };
-
-      fileList.onRefresh = function() {
-        //self.buttonConfirm.setDisabled(true);
-
-        statusBar.setText(fileList.getPath());
-        self._toggleLoading(true);
-        if ( start ) {
-          self.input.setValue(curval);
-        } else {
-          self.input.setValue('');
-        }
-      };
-
-      fileList.onSelected = function(item) {
-        if ( !item || item.type == 'dir' ) {
-          self.input.setValue('');
-        } else {
-          self.input.setValue(item.filename);
-        }
-      };
-
-    } else {
-      if ( this.select === 'file' ) {
-        this.buttonConfirm.setDisabled(true);
-      }
-
-      fileList.onSelected = function(item) {
-        if ( item ) {
-          if ( this.select === 'path' ) {
-            if ( item.type == 'dir' || (this.select === 'file' && item.type != 'dir' && item.filename !== '..') ) {
-              self.buttonConfirm.setDisabled(false);
-            }
-          } else {
-            if ( item.type === 'file' ) {
-              self.buttonConfirm.setDisabled(false);
-            }
-          }
-        }
-      };
-
-      fileList.onFinished = function() {
-        statusBar.setText(fileList.getPath());
-        self._toggleLoading(false);
-      };
-      fileList.onRefresh = function() {
-        statusBar.setText(fileList.getPath());
-        self._toggleLoading(true);
-
-        if ( self.select === 'file' ) {
-          self.buttonConfirm.setDisabled(true);
-        }
-      };
     }
-
-    fileList.onActivated = function(path, type, mime) {
-      if ( self.select === 'file' && type === 'file' ) {
-        self.buttonConfirm.setDisabled(false);
-
-        if ( self.type === 'save' ) {
-
-          var wm = OSjs.API.getWMInstance();
-          if ( wm ) {
-            self._toggleDisabled(true);
-            var conf = new OSjs.Dialogs.Confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path)), function(btn) {
-              self._toggleDisabled(false);
-              if ( btn == 'ok' ) {
-                self.dialogOK.call(self, path, mime);
-              }
-            });
-            wm.addWindow(conf);
-            self._addChild(conf);
-          }
-
-        } else {
-          self.dialogOK.call(self, path, mime);
-        }
-      } else if ( self.select === 'path' && type === 'dir' && OSjs.Utils.filename(path) != '..' ) {
-        self.buttonConfirm.setDisabled(false);
-      }
-    };
 
     return root;
   };
 
+  /**
+   * Window has been displayed
+   */
   FileDialog.prototype._inited = function() {
     StandardDialog.prototype._inited.apply(this, arguments);
 
-    var fileList = this._getGUIElement('FileDialogFileView');
-    if ( fileList ) {
-      fileList.chdir(this.currentPath);
-    }
-  };
-
-  FileDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) { return; }
-    this.dialogOK();
-  };
-
-  FileDialog.prototype.dialogOK = function(forcepath, forcemime) {
-
-    var _ok = function(curr, mime) {
-      if ( curr ) {
-        this.end('ok', curr, mime);
-      } else {
-        var wm = OSjs.API.getWMInstance();
-        if ( wm ) {
-          var dwin;
-          if ( this.type === 'save' ) {
-            dwin = new OSjs.Dialogs.Alert(OSjs._('You need to select a file or enter new filename!'));
-          } else {
-            dwin = new OSjs.Dialogs.Alert(OSjs._('You need to select a file!'));
-          }
-          wm.addWindow(dwin);
-          this._addChild(dwin);
+    // Force override of default MIME if we have a selector
+    if ( this.filetypes && this.$select ) {
+      for ( var i in this.filetypes ) {
+        if ( this.filetypes.hasOwnProperty(i) ) {
+          this.filemime = i;
+          this.defaultFilemime = i;
+          break;
         }
+      }
+    }
+
+    if ( this.$fileView ) {
+      this.$fileView.chdir(this.path);
+    }
+
+    if ( this.buttonConfirm ) {
+      if ( this.type == "save" && this.$input && this.$input.getValue() ) {
+        this.buttonConfirm.setDisabled(false);
+      }
+    }
+
+    this.highlightFilename();
+  };
+
+  /**
+   * Window has been focused
+   */
+  FileDialog.prototype._focus = function() {
+    StandardDialog.prototype._focus.apply(this, arguments);
+
+    this.highlightFilename();
+  };
+
+  /**
+   * File has been chosen
+   */
+  FileDialog.prototype.finishDialog = function(path, mime) {
+    var self = this;
+
+    var _getSelected = function() {
+      var result = "";
+
+      if ( this.$fileView ) {
+        var root = this.$fileView.getPath();
+        if ( this.$input ) {
+          result = root + "/" + this.$input.getValue();
+        } else {
+          result = root + "/" + this.selectedFile;
+        }
+      }
+
+      return result;
+    };
+
+    mime = mime || this.defaultFilemime;
+    path = path || _getSelected.call(this);
+
+    var _confirm = function() {
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        this._toggleDisabled(true);
+        var conf = new OSjs.Dialogs.Confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", OSjs.Utils.filename(path)), function(btn) {
+          self._toggleDisabled(false);
+          if ( btn == 'ok' ) {
+            self.end('ok', path, mime);
+          }
+        });
+        wm.addWindow(conf);
+        this._addChild(conf);
       }
     };
 
-
-    var curr, item, mime = null;
-    if ( forcepath ) {
-      curr = forcepath;
-      mime = forcemime;
+    if ( this.type == "open" ) {
+      this.end('ok', path, mime);
     } else {
-      var fileList = this._getGUIElement('FileDialogFileView');
-      if ( this.type == 'save' ) {
-        var check = this.input ? check = OSjs.Utils.escapeFilename(this.input.getValue()) : '';
-        if ( check ) {
-          item = fileList.viewRef.getItemByKey('filename', check);
-          if ( item !== null ) {
-            var wm = OSjs.API.getWMInstance();
-            var self = this;
-            if ( wm ) {
-              self._toggleDisabled(true);
-              var conf = new OSjs.Dialogs.Confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", check), function(btn) {
-                self._toggleDisabled(false);
-                if ( btn == 'ok' ) {
-                  _ok.call(self, item.path, item.mime);
-                }
-              });
-              wm.addWindow(conf);
-              this._addChild(conf);
-            }
+      OSjs.API.call('fs', {method: 'fileexists', 'arguments' : [path]}, function(res) {
+        res = res || {};
 
-            return;
-          }
+        if ( res.error ) {
+          self.onError((res.error || "Failed to stat file"), path);
+          return;
         }
 
-        if ( !mime && check ) { mime = this.mime; }
-        if ( !curr && check ) { curr = fileList.getPath() + '/' + check; }
-      } else {
-        if ( this.select === 'path' ) {
-          item =  fileList.getSelected();
-          if ( item !== null ) {
-            mime = item.mime;
-            curr = item.path;
-          } else {
-            curr = fileList.getPath();
-            mime = null;
-          }
+        if ( res.result ) {
+          _confirm.call(self);
         } else {
-          item =  fileList.getSelected();
-          if ( item !== null ) {
-            mime = item.mime;
-            curr = item.path;
-          }
+          self.end('ok', path, mime);
         }
-      }
+      }, function(error) {
+        self.onError(error, path);
+      });
     }
-
-    _ok.call(this, curr, mime);
   };
 
-  FileDialog.prototype._focus = function() {
-    StandardDialog.prototype._focus.apply(this, arguments);
-    if ( this.input ) {
-      this.input.focus();
+  /**
+   * Highlights the filename in input
+   */
+  FileDialog.prototype.highlightFilename = function() {
+    if ( this.$input ) {
+      this.$input.focus();
 
-      var val = this.input.getValue();
+      var val = this.$input.getValue();
       var range = {
         min: 0,
         max: val.length - 1
@@ -368,19 +279,163 @@
         }
       }
 
-      this.input.select(range);
+      this.$input.select(range);
     }
   };
 
-  // FIXME: This is not safe -- can replace unexpected stuff in filename
-  FileDialog.prototype.changeFileType = function(t) {
-    if ( !this.input ) { return; }
-    t = t || this.defaultExtension;
+  /**
+   * Create Context Menu
+   */
+  FileDialog.prototype.createContextMenu = function(ev) {
+    var fileList = this.$fileView;
+    if ( !fileList ) { return; }
 
-    var old = this.input.getValue();
-    var oext = OSjs.Utils.filext(old);
+    OSjs.GUI.createMenu([
+      {name: 'ListView', title: OSjs._('View type'), menu: [
+        {name: 'ListView', title: OSjs._('List View'), disabled: (fileList.viewType.toLowerCase() == 'listview'), onClick: function() {
+          self.onMenuSelect("ListView");
+        }},
+        {name: 'IconView', title: OSjs._('Icon View'), disabled: (fileList.viewType.toLowerCase() == 'iconview'), onClick: function() {
+          self.onMenuSelect("IconView");
+        }},
+        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (fileList.viewType.toLowerCase() == 'treeview'), onClick: function() {
+          self.onMenuSelect("TreeView");
+        }}
+      ]}
+    ], {x: ev.clientX, y: ev.clientY});
+  };
 
-    this.input.setValue(old.replace(("." + oext), t));
+  /**
+   * Error wrapper
+   */
+  FileDialog.prototype.onError = function(err, dirname, fatal) {
+    this._toggleLoading(false);
+
+    if ( err ) {
+      if ( !fatal ) {
+        if ( this.errors < 2 ) {
+          if ( this.$fileView ) {
+            this.$fileView.chdir(OSjs.API.getDefaultPath('/'));
+          }
+        } else {
+          this.errors = 0;
+        }
+        this.errors++;
+      }
+
+      this._error(OSjs._("FileDialog Error"), OSjs._("Failed listing directory '{0}' because an error occured", dirname), err);
+    }
+  };
+
+  /**
+   * Menu: Item selected
+   */
+  FileDialog.prototype.onMenuSelect = function(type) {
+    if ( this.$fileView ) {
+      this.$fileView.setViewType(type);
+    }
+    this._focus();
+  };
+
+  /**
+   * FileView: Selection
+   */
+  FileDialog.prototype.onFileSelected = function(item) {
+    var selected = null;
+
+    if ( this.select === "path" ) {
+      if ( item && item.type == "dir" ) {
+        selected = item.filename;
+      }
+    } else {
+      if ( item && item.type == "file" ) {
+        selected = item.filename;
+      }
+    }
+
+    if ( this.buttonConfirm ) {
+      this.buttonConfirm.setDisabled(selected === null);
+    }
+
+    if ( this.$input ) {
+      this.$input.setValue(OSjs.Utils.escapeFilename(selected ? selected : this.defaultFilename));
+    }
+
+    this.selectedFile = selected;
+  };
+
+  /**
+   * FileView: Refresh Finished
+   */
+  FileDialog.prototype.onFileFinished = function() {
+    if ( this.$statusBar && this.$fileView ) {
+      this.path = this.$fileView.getPath();
+      this.$statusBar.setText(this.path);
+    }
+    this._toggleLoading(false);
+  };
+
+  /**
+   * FileView: Refresh
+   */
+  FileDialog.prototype.onFileRefresh = function() {
+    this.selectedFile = null;
+
+    if ( this.$statusBar && this.$fileView ) {
+      this.$statusBar.setText(this.$fileView.getPath());
+    }
+    this._toggleLoading(true);
+
+    if ( this.buttonConfirm ) {
+      this.buttonConfirm.setDisabled(true);
+    }
+  };
+
+  /**
+   * FileView: Activated
+   */
+  FileDialog.prototype.onFileActivated = function(path, type, mime) {
+    this.selectedFile = null;
+
+    var _activated = function() {
+      this.buttonConfirm.setDisabled(false);
+      this.finishDialog.call(this, path, mime);
+    };
+
+    if ( this.select === 'file' && type === 'file' ) {
+      _activated.call(this);
+    } else if ( this.select === 'path' && type === 'dir' && OSjs.Utils.filename(path) != '..' ) {
+      _activated.call(this);
+    }
+  };
+
+  /**
+   * Select: Item changed
+   */
+  FileDialog.prototype.onSelectChange = function(type) {
+    this.filemime = this.filetypes[type];
+
+    if ( this.$input ) {
+      var newval = ReplaceExtension(this.$input.getValue(), type);
+      this.$input.setValue(newval);
+    }
+
+    this.highlightFilename();
+  };
+
+  /**
+   * Input: enter pressed
+   */
+  FileDialog.prototype.onInputEnter = function(ev) {
+    this.onConfirmClick(ev);
+  };
+
+  /**
+   * Button: pressed
+   */
+  FileDialog.prototype.onConfirmClick = function(ev) {
+    if ( !this.buttonConfirm ) { return; }
+    this.finishDialog();
   };
 
   /////////////////////////////////////////////////////////////////////////////
