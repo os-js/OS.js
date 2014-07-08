@@ -14,7 +14,6 @@
 * [Application] CoreWM -- Finish panel item options
 * [Application] Go over applications and clean up code (including DefaultApplication class)
 * [Compability] Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
-* [Compability] New font CSS and convert fonts to other formats for all browsers
 
 # Low-priority TODOs
 * [Dialogs] Go over dialog code and look for possible refactors
