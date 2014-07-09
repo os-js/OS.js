@@ -38,9 +38,9 @@ class MIME
   protected static $instance;
 
   protected function __construct() {
-    $file = sprintf("%s/%s", ROOTDIR, "mime.json");
+    $file = sprintf("%s/src/%s", ROOTDIR, "mime.json");
     if ( file_exists($file) ) {
-      $this->data = json_decode(file_get_contents($file));
+      $this->data = (array)json_decode(file_get_contents($file));
     }
   }
 
