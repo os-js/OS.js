@@ -33,7 +33,7 @@
  */
 
 /*
-See example.README
+See doc/example-handler.txt
 */
 
 define("APIHANDLER_DSN", "mysql:host=localhost;dbname=osjs");

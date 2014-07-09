@@ -32,6 +32,10 @@
  * @licence Simplified BSD License
  */
 
+/*
+See doc/example-handler.txt
+*/
+
 (function() {
 
   window.OSjs   = window.OSjs   || {};
