@@ -1,6 +1,0 @@
-[submodule "src/themes/default/icons"]
-	path = src/themes/default/icons
-	url = https://github.com/andersevenrud/osjs-icon-theme.git
-[submodule "src/themes/default/sounds"]
-	path = src/themes/default/sounds
-	url = https://github.com/andersevenrud/osjs-sound-theme.git
