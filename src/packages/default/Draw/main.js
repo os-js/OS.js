@@ -59,6 +59,8 @@
       'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',
       'Layer' : 'Lag',
       'Effect' : 'Effekt',
+      'Foreground' : 'Forgrunn',
+      'Bakgrunn' : 'Bakgrunn',
       'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
       'Background (Stroke) Color' : 'Bakgrunn (Strøk) Farge',
       'Line Join' : 'Linje Knytting',
@@ -68,8 +70,8 @@
       'Round' : 'Rund',
       'Miter' : 'Skjev',
       'Beveled' : 'Kantet',
-      'Stroked' : 'Strøket',
-      'No stroke' : 'Ikke strøket',
+      'Stroked' : 'Strøk På',
+      'No stroke' : 'Strøk Av',
 
       'Pointer' : 'Peker',
       'Move active layer' : 'Flytt aktivt lag',
@@ -304,7 +306,7 @@
       }
     };
 
-    toolBar.addItem('foregroundColor', {title: ('Foreground'), onClick: function() {
+    toolBar.addItem('foregroundColor', {title: _('Foreground'), onClick: function() {
       app._createDialog('Color', [{color: self.currentStyle.fg}, function(btn, rgb, hex) {
         self._focus();
         if ( btn !== 'ok' ) return;
@@ -312,7 +314,7 @@
       }], self);
     }, onCreate: _createColorButton});
 
-    toolBar.addItem('backgroundColor', {title: ('Background'), onClick: function() {
+    toolBar.addItem('backgroundColor', {title: _('Background'), onClick: function() {
       app._createDialog('Color', [{color: self.currentStyle.bg}, function(btn, rgb, hex) {
         self._focus();
         if ( btn !== 'ok' ) return;
@@ -320,7 +322,7 @@
       }], self);
     }, onCreate: _createColorButton});
 
-    toolBar.addItem('lineJoin', {title: ('Line Join'), onClick: function(ev) {
+    toolBar.addItem('lineJoin', {title: _('Line Join'), onClick: function(ev) {
       GUI.createMenu([
         {
           title: _("Round"),
