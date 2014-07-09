@@ -164,7 +164,7 @@
    * OS.js VFS
    */
   var vfs = {
-    file_get_contents : function(args, request, response) {
+    read : function(args, request, response) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
@@ -188,7 +188,7 @@
       });
     },
 
-    file_put_contents : function(args, request, response) {
+    write : function(args, request, response) {
       var path = args[0];
       var data = args[1] || '';
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});

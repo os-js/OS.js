@@ -985,7 +985,7 @@
     var datas = ext !== "odraw";
 
     win._toggleLoading(true);
-    OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [filename, data, {dataSource: datas}]}, function(res) {
+    OSjs.API.call('fs', {'method': 'write', 'arguments': [filename, data, {dataSource: datas}]}, function(res) {
       if ( res && res.result ) {
         _onSaveFinished(filename);
       } else {
@@ -1068,7 +1068,7 @@
 
       win.setTitle('Loading...');
       win._toggleLoading(true);
-      OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname, {dataSource: datas}]}, function(res) {
+      OSjs.API.call('fs', {'method': 'read', 'arguments': [fname, {dataSource: datas}]}, function(res) {
         if ( res && res.result ) {
           self.doOpen(fname, fmime, res.result);
         } else {

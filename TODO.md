@@ -1,6 +1,5 @@
 
 # High-priority TODOs
-* [Backend] Rename fs api function (`file_get_contents` => `fswrite` etc.)
 * [Backend] Finish bew build system
 * [Backend] Finish Node.js backend
 * [GUI] Refactor GUIMenu

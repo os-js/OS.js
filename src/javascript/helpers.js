@@ -232,7 +232,7 @@
       }
 
       // Read file from server
-      OSjs.API.call('fs', {'method': 'file_get_contents', 'arguments': [fname]}, function(res) {
+      OSjs.API.call('fs', {'method': 'read', 'arguments': [fname]}, function(res) {
         if ( res && (res.result !== false) ) {
           self.setCurrentFile(fname, fmime);
           self.defaultActionSuccess('open', res.result, self.currentFile);
@@ -250,7 +250,7 @@
       var fdata = self.getSaveData();
 
       // Write file to server
-      OSjs.API.call('fs', {'method': 'file_put_contents', 'arguments': [fname, fdata]}, function(res) {
+      OSjs.API.call('fs', {'method': 'write', 'arguments': [fname, fdata]}, function(res) {
         if ( res && res.result !== false ) {
           self.setCurrentFile(fname, fmime);
           self.defaultActionSuccess('save', self.currentFile);

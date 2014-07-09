@@ -3,7 +3,6 @@
  * ListView
  */
 .GUIListView {
-  border : 1px solid rgba(34, 34, 34, .5);
   position : relative;
   overflow : auto;
   min-height : 50px;

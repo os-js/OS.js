@@ -161,7 +161,7 @@ class FS
     return self::sortdir($list);
   }
 
-  public static function file_put_contents($fname, $content, $opts = null) {
+  public static function write($fname, $content, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
     $fname = unrealpath(VFSDIR . $fname);
 
@@ -198,7 +198,7 @@ class FS
     return file_put_contents($fname, $content) !== false;
   }
 
-  public static function file_get_contents($fname, $opts = null) {
+  public static function read($fname, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
     $fname = unrealpath(VFSDIR . $fname);
 
