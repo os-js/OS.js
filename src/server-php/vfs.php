@@ -318,7 +318,7 @@ class FS
     return $data;
   }
 
-  public static function fileexists($fname) {
+  public static function exists($fname) {
     $fname = unrealpath(VFSDIR . $fname);
     if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     return file_exists($fname);

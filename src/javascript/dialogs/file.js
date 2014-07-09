@@ -265,7 +265,7 @@
     if ( this.type == "open" ) {
       this.end('ok', path, mime);
     } else {
-      API.call('fs', {method: 'fileexists', 'arguments' : [path]}, function(res) {
+      API.call('fs', {method: 'exists', 'arguments' : [path]}, function(res) {
         res = res || {};
 
         if ( res.error ) {

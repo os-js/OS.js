@@ -1,6 +1,5 @@
 
 # High-priority TODOs
-* [Backend] Finish bew build system
 * [Backend] Finish Node.js backend
 * [Backend] Provide a websocket version like in v1
 * [GUI] FileView->ListView sort column does not work like expected
@@ -14,17 +13,18 @@
 * [Misc] There are TODO and FIXME markings in source code files
 
 # Low-priority TODOs
+* [Application] CoreWM: Custom keyboard binding shortcuts
 * [Locales] Create reserved strings for locales in `locales.js` (for core messages etc)
 * [Dialogs] Go over dialog code and look for possible refactors
+* [Themes] More Themes
 * [GUI] Custom styling for GUISelect
 * [GUI] Custom styling for GUISelectList
 * [GUI] Custom styling for GUICheckbox
 * [GUI] Custom styling for GUIRadio
 * [GUI] GUIScrollbar
-* [Themes] More Themes
 * [Misc] Offline resource pre-loading
 * [Misc] Offline VFS
-* [Application] CoreWM: Custom keyboard binding shortcuts
+* [Misc] Look more into build system
 
 ## Ideas for solving misc problems
 * Unfocused windows should have a transparent overlay to prevent clicks+iframe probles

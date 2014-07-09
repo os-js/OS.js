@@ -305,7 +305,7 @@
       });
     },
 
-    fileexists : function(args, request, response) {
+    exists : function(args, request, response) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
       var fullPath = _path.join(config.vfsdir, path);
