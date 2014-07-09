@@ -721,12 +721,17 @@
 
   FileView.prototype.setSort = function(col) {
     if ( this.wasUpdated ) {
-      if ( col === this.sortKey ) {
-        this.sortDir = !this.sortDir;
-      } else {
+      if ( this.sortDir === false ) {
+        this.sortKey = null;
         this.sortDir = true;
+      } else {
+        if ( col === this.sortKey ) {
+          this.sortDir = !this.sortDir;
+        } else {
+          this.sortDir = true;
+        }
+        this.sortKey = col;
       }
-      this.sortKey = col;
       this.refresh();
     }
   };
