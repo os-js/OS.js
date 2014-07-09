@@ -205,8 +205,8 @@
     this.$table     = table;
     this.$tableTop  = tableTop;
     this.$view      = this.$scroll; // NOTE: Shorthand
-    this.$tmpScroll = tmpScroll;
-    this.$tmpContent= tmpContent;
+    //this.$tmpScroll = tmpScroll;
+    //this.$tmpContent= tmpContent;
 
     // FIXME: This should be bound to the resize event on a window ?!
     this.fixInterval = setInterval(function() {
