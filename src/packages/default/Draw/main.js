@@ -979,6 +979,7 @@
       if ( win ) {
         win.setImageName(name);
       }
+      OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
     };
 
     var image = win.getImage();
