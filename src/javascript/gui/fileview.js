@@ -721,7 +721,7 @@
 
   FileView.prototype.setSort = function(col) {
     if ( this.wasUpdated ) {
-      if ( this.sortDir === false ) {
+      if ( this.sortKey == col && this.sortDir === false ) {
         this.sortKey = null;
         this.sortDir = true;
       } else {
