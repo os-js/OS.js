@@ -166,6 +166,7 @@
       return false;
     });
 
+    /*
     var tmpScroll = document.createElement("div");
     tmpScroll.className = "TmpScroll";
 
@@ -190,12 +191,13 @@
     tmpContent.innerHTML = "&nbsp;";
 
     tmpScroll.appendChild(tmpContent);
+    */
     table.appendChild(head);
     table.appendChild(body);
     tableTop.appendChild(headTop);
     el.appendChild(tableTop);
     el.appendChild(this.$scroll);
-    el.appendChild(tmpScroll);
+    //el.appendChild(tmpScroll);
 
     this.$head      = head;
     this.$headTop   = headTop;
@@ -360,10 +362,10 @@
       padding = (this.$scroll.offsetWidth - this.$scroll.clientWidth);
     }
     this.$scroll.style.right = -padding + "px";
+    /*
     if ( padding ) {
       if ( this.$tmpContent.offsetHeight != this.$scroll.scrollHeight ) {
         this.$tmpContent.style.height = this.$scroll.scrollHeight + "px";
-        console.warn("XXX", this.$tmpContent.offsetHeight);
       }
       this.$tmpScroll.style.width   = padding + "px";
       this.$tmpScroll.style.display = "block";
@@ -371,6 +373,7 @@
     } else {
       this.$tmpScroll.style.display = "none";
     }
+    */
   };
 
   ListView.prototype._onRender = function() {
