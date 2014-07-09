@@ -30,7 +30,6 @@
 (function(Application, Window, GUI, Dialogs, Utils) {
 
   // TODO: Raw image loading/saving
-  // TODO: Shift layer positions
   // TODO: Copy/Cut/Paste
   // TODO: Resize
 
@@ -39,6 +38,16 @@
     "jpg": "image/jpeg"/*,
     "odraw": "osjs/draw"*/
   };
+
+  function MoveLayer(arr, old_index, new_index) {
+    if (new_index >= arr.length) {
+      var k = new_index - arr.length;
+      while ((k--) + 1) {
+        arr.push(undefined);
+      }
+    }
+    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
@@ -462,13 +471,13 @@
       }
     }}), layerButtons);
 
-    var layerButtonUp = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonUp', {disabled: true, icon: OSjs.API.getIcon('actions/up.png'), onClick: function(el, ev) {
+    var layerButtonUp = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonUp', {disabled: false, icon: OSjs.API.getIcon('actions/up.png'), onClick: function(el, ev) {
       if ( layerList ) {
         self.moveLayer(self.activeLayer, "up");
       }
     }}), layerButtons);
 
-    var layerButtonDown = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonDown', {disabled: true, icon: OSjs.API.getIcon('actions/down.png'), onClick: function(el, ev) {
+    var layerButtonDown = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonDown', {disabled: false, icon: OSjs.API.getIcon('actions/down.png'), onClick: function(el, ev) {
       if ( layerList ) {
         self.moveLayer(self.activeLayer, "down");
       }
@@ -579,7 +588,31 @@
     if ( !this.image ) { return; }
     if ( this.image.layers.length <= 1 ) { return; }
 
-    this.updateLayers();
+    var updated = false;
+    var nindex = l;
+    if ( dir == "up" ) {
+      nindex--;
+    } else {
+      nindex++;
+    }
+
+    if ( nindex >= 0 && nindex <= (this.image.layers.length-1) ) {
+      MoveLayer(this.image.layers, l, nindex);
+      updated = true;
+    }
+
+    if ( updated ) {
+      this.image.refreshZindex();
+
+      var layerList = this._getGUIElement('ApplicationDrawLayerListView');
+      if ( layerList ) {
+        layerList.setSelectedIndex(nindex, true);
+      }
+
+      this.activeLayer = nindex;
+
+      this.updateLayers();
+    }
   };
 
   /**

@@ -452,6 +452,15 @@
     }
   };
 
+  Image.prototype.refreshZindex = function() {
+    for ( var i = 0; i < this.layers.length; i++ ) {
+      if ( this.layers[i].canvas ) {
+        this.layers[i].zindex = (i+1);
+        this.layers[i].canvas.style.zIndex = (i+1);
+      }
+    }
+  };
+
   Image.prototype.clear = function() {
     for ( var i = 0; i < this.layers.length; i++ ) {
       if ( this.layers[i] ) {
@@ -566,11 +575,12 @@
     this.height = h || 0;
     this.left   = x || 0;
     this.top    = y || 0;
+    this.zindex = z || 1;
 
     this.canvas               = document.createElement("canvas");
-    this.canvas.width         = w;
-    this.canvas.height        = h;
-    this.canvas.style.zIndex  = z || 1;
+    this.canvas.width         = this.width;
+    this.canvas.height        = this.height;
+    this.canvas.style.zIndex  = this.zindex;
 
     this.context = this.canvas.getContext("2d");
   };
