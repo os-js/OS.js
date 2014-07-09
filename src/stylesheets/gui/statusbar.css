@@ -12,5 +12,6 @@
   line-height : 15px;
   overflow : hidden;
   white-space : nowrap;
+  z-index : 99999;
 }
 
