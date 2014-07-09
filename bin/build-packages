@@ -1,0 +1,30 @@
+#!/bin/bash
+
+YUI_EXEC="vendor/yuicompressor-2.4.8.jar"
+
+js="dist/osjs.js"
+css="dist/osjs.css"
+
+java -jar ${YUI_EXEC} --type js --charset=utf-8 $js -o $js
+java -jar ${YUI_EXEC} --type css --charset=utf-8 $css -o $css
+
+mkdir dist/packages
+for r in `find src/packages -type d -maxdepth 1 -mindepth 1`; do
+
+  repo=$(basename $r)
+  echo -e "\033[1;34mFound repository '$repo':\033[0m"
+  mkdir dist/packages/${repo} 2>/dev/null
+  for a in `find $r -type d -maxdepth 1`; do
+    app=$(basename $a)
+    if [ "$app" == ".git" ]; then
+      continue
+    fi
+    if [ "$app" == "$repo" ]; then
+      continue
+    fi
+
+    echo -e "Copying package '$app'";
+    cp -rf ${a} dist/packages/${repo}/${app}
+  done
+
+done

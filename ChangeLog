@@ -1,3 +1,8 @@
+# 2.0.0-alpha4 to 2.0.0-alpha6
+
+Build system improvments, cleanups, bugfixes and documentation updates.
+
+Also removed the default submodules and added them to the master filetree.
 
 # 2.0.0-alpha3
 

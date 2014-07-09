@@ -43,7 +43,7 @@ config:
 
 packages:
 	@echo "\033[1;32mBuilding Packages\033[0m"
-	cp -R src/packages/* dist/packages/
+	(bin/build-packages)
 
 themes:
 	@echo "\033[1;32mBuilding Themes\033[0m"
