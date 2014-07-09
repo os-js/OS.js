@@ -1,14 +1,6 @@
 #!/bin/bash
 
-YUI_EXEC="vendor/yuicompressor-2.4.8.jar"
-
-js="dist/osjs.js"
-css="dist/osjs.css"
-
-java -jar ${YUI_EXEC} --type js --charset=utf-8 $js -o $js
-java -jar ${YUI_EXEC} --type css --charset=utf-8 $css -o $css
-
-mkdir dist/packages
+mkdir dist/packages 2>/dev/null
 for r in `find src/packages -type d -maxdepth 1 -mindepth 1`; do
 
   repo=$(basename $r)
