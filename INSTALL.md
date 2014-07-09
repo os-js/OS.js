@@ -12,7 +12,7 @@ Installation only requires a few small steps.
 
 ## 1: Pull code
 
-Run `git pull --recursive https://github.com/andersevenrud/OS.js-v2.git`
+Run `git pull https://github.com/andersevenrud/OS.js-v2.git`
 
 Or if you do not have Git see this wiki article: [Installation without Git](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration#installation-without-git)
 
