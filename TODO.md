@@ -3,7 +3,6 @@
 * [Backend] Rename fs api function (`file_get_contents` => `fswrite` etc.)
 * [Backend] Finish bew build system
 * [Backend] Finish Node.js backend
-* [Locales] Create reserved strings for locales in `locales.js` (for core messages etc)
 * [GUI] GUIScrollbar
 * [GUI] GUIListView -- Add a GUIScrollbar
 * [GUI] Refactor GUIMenu
@@ -19,6 +18,7 @@
 * [Backend] Provide a websocket version like in v1
 
 # Low-priority TODOs
+* [Locales] Create reserved strings for locales in `locales.js` (for core messages etc)
 * [Dialogs] Go over dialog code and look for possible refactors
 * [GUI] Custom styling for GUISelect
 * [GUI] Custom styling for GUISelectList

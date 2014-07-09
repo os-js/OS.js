@@ -30,7 +30,6 @@
 (function(Application, Window, GUI, Dialogs, Utils) {
 
   // TODO: Raw image loading/saving
-  // TODO: Locales (Translations)
   // TODO: Shift layer positions
   // TODO: Copy/Cut/Paste
   // TODO: Resize
@@ -47,6 +46,41 @@
 
   var _Locales = {
     no_NO : {
+      'Toggle tools toolbar' : 'Svitsj verktøylinje',
+      'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',
+      'Layer' : 'Lag',
+      'Effect' : 'Effekt',
+      'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
+      'Background (Stroke) Color' : 'Bakgrunn (Strøk) Farge',
+      'Line Join' : 'Linje Knytting',
+      'Line Width' : 'Linje Bredde',
+      'Toggle Stroke' : 'Svitsj strøk',
+      'Enable stroke' : 'Skru på strøk',
+      'Round' : 'Rund',
+      'Miter' : 'Skjev',
+      'Beveled' : 'Kantet',
+      'Stroked' : 'Strøket',
+      'No stroke' : 'Ikke strøket',
+
+      'Pointer' : 'Peker',
+      'Move active layer' : 'Flytt aktivt lag',
+
+      'Picker' : 'Plukker',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: sett bg farge, RMB: sett fg farge',
+
+      'Pencil' : 'Penn',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Tegn med fg/bg farge',
+      'Path' : 'Sti',
+
+      'Square/Rectangle' : 'Firkant/Rektangel',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
+
+      'Circle/Ellipse' : 'Sirkel/Ellipse',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn ellipse',
+
+      'Blur' : 'Klatte (Blur)',
+      'Noise' : 'Støy'
+
     }
   };
 
@@ -156,10 +190,10 @@
       }}
     ]);
     menuBar.addItem(OSjs._("View"), [
-      {title: OSjs._('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
+      {title: _('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
         _toggleToolsToolbar();
       }},
-      {title: OSjs._('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
+      {title: _('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
         _toggleLayersToolbar();
       }}
     ]);
@@ -174,7 +208,7 @@
     var items = [];
     for ( var f = 0; f < effects.length; f++ ) {
       items.push({
-        title: effects[f].title,
+        title: _(effects[f].title),
         name: effects[f].name,
         onClick: (function(instance) {
           return function() {
@@ -184,8 +218,8 @@
       });
     }
 
-    menuBar.addItem(OSjs._("Layer"), [
-      {title: OSjs._('Effect'), name: 'Effect', menu: items}
+    menuBar.addItem(_("Layer"), [
+      {title: _('Effect'), name: 'Effect', menu: items}
     ]);
 
     menuBar.onMenuOpen = function(menu) {
@@ -199,7 +233,7 @@
       var color = document.createElement('div');
       color.className = 'Color';
       color.style.backgroundColor = name === 'foregroundColor' ? self.currentStyle.fg : self.currentStyle.bg;
-      button.title = name === 'foregroundColor' ? 'Foreground (Fill) Color' : 'Background (Stroke) Color';
+      button.title = _(name === 'foregroundColor' ? 'Foreground (Fill) Color' : 'Background (Stroke) Color');
       button.appendChild(color);
     };
 
@@ -207,7 +241,7 @@
       var join = document.createElement('div');
       join.className = 'LineJoin';
 
-      button.title = "Line Join";
+      button.title = _("Line Join");
       button.appendChild(join);
     };
 
@@ -215,7 +249,7 @@
       var width = document.createElement('div');
       width.className = 'LineWidth';
 
-      button.title = "Line Width";
+      button.title = _("Line Width");
       button.appendChild(width);
     };
 
@@ -223,7 +257,7 @@
       var en = document.createElement('div');
       en.className = 'EnableStroke';
 
-      button.title = "Toggle Stroke";
+      button.title = _("Toggle Stroke");
       button.appendChild(en);
     };
 
@@ -239,7 +273,7 @@
       var txt = {round: "Round", miter: "Miter", bevel: "Beveled"};
       self.currentStyle.lineJoin = type;
       if ( toolBar ) {
-        toolBar.getItem('lineJoin').getElementsByClassName('LineJoin')[0].innerHTML = txt[type];
+        toolBar.getItem('lineJoin').getElementsByClassName('LineJoin')[0].innerHTML = _(txt[type]);
       }
     };
 
@@ -257,7 +291,7 @@
         self.currentStyle.stroke = !self.currentStyle.stroke;
       }
       if ( toolBar ) {
-        toolBar.getItem('enableStroke').getElementsByClassName('EnableStroke')[0].innerHTML = self.currentStyle.stroke ? "Stroked" : "No stroke";
+        toolBar.getItem('enableStroke').getElementsByClassName('EnableStroke')[0].innerHTML = _(self.currentStyle.stroke ? "Stroked" : "No stroke");
       }
     };
 
@@ -280,19 +314,19 @@
     toolBar.addItem('lineJoin', {title: ('Line Join'), onClick: function(ev) {
       GUI.createMenu([
         {
-          title: "Round",
+          title: _("Round"),
           onClick: function(ev) {
             _selectLineJoin("round");
           }
         },
         {
-          title: "Miter",
+          title: _("Miter"),
           onClick: function(ev) {
             _selectLineJoin("miter");
           }
         },
         {
-          title: "Bevel",
+          title: _("Bevel"),
           onClick: function(ev) {
             _selectLineJoin("bevel");
           }
@@ -301,7 +335,7 @@
 
     }, onCreate: _createLineJoin});
 
-    toolBar.addItem('lineWidth', {title: ('Line Width'), onClick: function(ev) {
+    toolBar.addItem('lineWidth', {title: _('Line Width'), onClick: function(ev) {
       var items = [];
       for ( var i = 1; i < 20; i++ ) {
         items.push({
@@ -317,7 +351,7 @@
       GUI.createMenu(items, {x: ev.clientX, y: ev.clientY});
     }, onCreate: _createLineWidth});
 
-    toolBar.addItem('enableStroke', {title: ('Enable stroke'), onClick: function(ev) {
+    toolBar.addItem('enableStroke', {title: _('Enable stroke'), onClick: function(ev) {
       _toggleStroke();
     }, onCreate: _createEnableStroke});
 
@@ -727,7 +761,7 @@
 
     var statusBar = this._getGUIElement('ApplicationDrawStatusBar');
     if ( statusBar ) {
-      statusBar.setText(tool.statusText);
+      statusBar.setText(_(tool.statusText));
     }
   };
 
