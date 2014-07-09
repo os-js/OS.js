@@ -1,0 +1,16 @@
+To set this up just update the handler ot "example" in "src/build.json" and run "make"
+and copy "example.html" to dist
+
+If you're using dist-dev you'll need to update index.html manually
+
+Then set up your database with this table and configure definitions below all this text:
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `groups` text,
+  `settings` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;

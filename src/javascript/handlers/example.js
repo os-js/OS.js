@@ -105,7 +105,7 @@
       container.style.display = 'block';
     };
 
-    var uri = '/frontend/handlers/example.html';
+    var uri = '/example.html';
     OSjs.Utils.Ajax(uri, function(response, httpRequest, url) {
       if ( !response ) {
         alert("No content was found for example handler login HTML");

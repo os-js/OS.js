@@ -33,26 +33,7 @@
  */
 
 /*
-To set this up, first create 'backend/config.php' (see wiki)
-and do:
-
-define('HANDLER', 'example');
-
-Then in index.html:
-    <script type="text/javascript" charset="utf-8" src="/frontend/handlers/example.js"></script> <!-- You can replace me -->
-
-Then set up your database with this table and configure definitions below all this text:
-
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `groups` text,
-  `settings` text,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
+See example.README
 */
 
 define("APIHANDLER_DSN", "mysql:host=localhost;dbname=osjs");

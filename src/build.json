@@ -89,6 +89,7 @@
     "backend" : {
       "vfsdir" : "%ROOT%/vfs/home",
       "tmpdir" : "%ROOT%/vfs/tmp",
+      "handler" : "%HANDLER%",
       "port" : 8000
     }
   },

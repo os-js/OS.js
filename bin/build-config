@@ -11,10 +11,12 @@ var OUT_JS    = "dist/settings.js";
 var buildData = JSON.parse(_fs.readFileSync("src/build.json"));
 if ( buildData !== null ) {
   var settings = buildData.settings.backend;
+  var handler  = buildData.handler || "demo";
   for ( var i in settings ) {
     if ( settings.hasOwnProperty(i) ) {
       if ( typeof settings[i] === "string" ) {
         settings[i] = settings[i].replace("%ROOT%", ROOT);
+        settings[i] = settings[i].replace("%HANDLER%", handler);
       }
     }
   }

@@ -290,7 +290,7 @@ if ( empty($data) ) {
       default :
         $found = false;
         if ( HANDLER ) {
-          $hdir = sprintf("%s/backend/handlers/%s.php", ROOTDIR, HANDLER);
+          $hdir = sprintf("%s/src/server-php/handlers/%s.php", ROOTDIR, HANDLER);
           if ( file_exists($hdir) ) {
             require $hdir;
             if ( class_exists('APIHandler') && method_exists('APIHandler', 'call') ) {
