@@ -3,8 +3,6 @@
 * [Backend] Rename fs api function (`file_get_contents` => `fswrite` etc.)
 * [Backend] Finish bew build system
 * [Backend] Finish Node.js backend
-* [GUI] GUIScrollbar
-* [GUI] GUIListView -- Add a GUIScrollbar
 * [GUI] Refactor GUIMenu
 * [GUI] FileView->ListView sort column does not work like expected
 * [GUI] FileView->ListView needs to disable sorting when click on column three times
@@ -24,6 +22,7 @@
 * [GUI] Custom styling for GUISelectList
 * [GUI] Custom styling for GUICheckbox
 * [GUI] Custom styling for GUIRadio
+* [GUI] GUIScrollbar
 * [Themes] More Themes
 * [Misc] Offline resource pre-loading
 * [Misc] Offline VFS

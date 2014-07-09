@@ -5,7 +5,7 @@
 .GUIListView {
   border : 1px solid rgba(34, 34, 34, .5);
   position : relative;
-  overflow : hidden;
+  overflow : auto;
   min-height : 50px;
 }
 
@@ -15,7 +15,7 @@
   left : 0px;
   right : 0px;
   bottom : 0px;
-  overflow : auto;
+  overflow : none;
 }
 
 .GUIListView table {
@@ -31,6 +31,7 @@
   top : 0px;
   left : 0px;
   right : 0px;
+  z-index : 999;
 }
 
 .GUIListView tr {
@@ -80,12 +81,3 @@
   border-right : 1px solid transparent;
 }
 
-.GUIListView .TmpScroll {
-  position : absolute;
-  top : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 999;
-  width : 10px;
-  overflow : scroll;
-}
