@@ -2,7 +2,7 @@
 # High-priority TODOs
 * [Backend] Finish bew build system
 * [Backend] Finish Node.js backend
-* [GUI] Refactor GUIMenu
+* [Backend] Provide a websocket version like in v1
 * [GUI] FileView->ListView sort column does not work like expected
 * [GUI] FileView->ListView needs to disable sorting when click on column three times
 * [Application] Draw -- Finish
@@ -12,7 +12,6 @@
 * [Application] Go over applications and clean up code (including DefaultApplication class)
 * [Compability] Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
 * [Misc] There are TODO and FIXME markings in source code files
-* [Backend] Provide a websocket version like in v1
 
 # Low-priority TODOs
 * [Locales] Create reserved strings for locales in `locales.js` (for core messages etc)

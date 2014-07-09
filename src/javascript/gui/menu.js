@@ -32,6 +32,19 @@
 
   /**
    * Menu class
+   *
+   * Usage:
+   *  OSjs.GUI.createMenu(items, pos);
+   *    items = Array
+   *    pos   = Object(x:0, y:0)
+   *
+   * Just provide an array with a collection of tuples containing these parameters:
+   *  title       Item title
+   *  icon        Item icon
+   *  tooltip     Item tooltip
+   *  disabled    Initialize as disabled
+   *  menu        An array of submenu items
+   *  onCreate    Callback when item has been created (usefull for creating custom elements)
    */
   var Menu = function(menuList) {
     var self = this;
