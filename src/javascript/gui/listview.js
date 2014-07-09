@@ -339,7 +339,7 @@
     }
 
     this.$tableTop.style.top = top + "px";
-    this.$view.style.paddingTop = padding + "px";
+    //this.$view.style.paddingTop = padding + "px";
   };
 
   ListView.prototype.addColumn = function(c) {
