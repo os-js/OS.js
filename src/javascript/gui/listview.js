@@ -166,7 +166,6 @@
       return false;
     });
 
-    /*
     var tmpScroll = document.createElement("div");
     tmpScroll.className = "TmpScroll";
 
@@ -178,6 +177,8 @@
       }
     };
     this._addEventListener(tmpScroll, "scroll", function() {
+      clearTmpScroll();
+      self.$scroll.scrollTop = this.scrollTop;
     });
 
     this._addEventListener(this.$scroll, "scroll", function() {
@@ -186,15 +187,15 @@
     });
 
     var tmpContent = document.createElement("div");
-    */
+    tmpContent.innerHTML = "&nbsp;";
 
-    //tmpScroll.appendChild(tmpContent);
+    tmpScroll.appendChild(tmpContent);
     table.appendChild(head);
     table.appendChild(body);
     tableTop.appendChild(headTop);
     el.appendChild(tableTop);
     el.appendChild(this.$scroll);
-    //el.appendChild(tmpScroll);
+    el.appendChild(tmpScroll);
 
     this.$head      = head;
     this.$headTop   = headTop;
@@ -202,8 +203,8 @@
     this.$table     = table;
     this.$tableTop  = tableTop;
     this.$view      = this.$scroll; // NOTE: Shorthand
-    //this.$tmpScroll = tmpScroll;
-    //this.$tmpContent= tmpContent;
+    this.$tmpScroll = tmpScroll;
+    this.$tmpContent= tmpContent;
 
     // FIXME: This should be bound to the resize event on a window ?!
     this.fixInterval = setInterval(function() {
@@ -359,18 +360,17 @@
       padding = (this.$scroll.offsetWidth - this.$scroll.clientWidth);
     }
     this.$scroll.style.right = -padding + "px";
-
-    /*
     if ( padding ) {
       if ( this.$tmpContent.offsetHeight != this.$scroll.scrollHeight ) {
         this.$tmpContent.style.height = this.$scroll.scrollHeight + "px";
+        console.warn("XXX", this.$tmpContent.offsetHeight);
       }
       this.$tmpScroll.style.width   = padding + "px";
       this.$tmpScroll.style.display = "block";
+     // this.$tmpScroll.style.bottom  = -padding + "px";
     } else {
       this.$tmpScroll.style.display = "none";
     }
-    */
   };
 
   ListView.prototype._onRender = function() {

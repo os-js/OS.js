@@ -673,7 +673,7 @@
 
   _DataView.prototype.onKeyPress = function(ev) {
     if ( this.destroyed ) { return false; }
-    if ( !GUIElement.prototype.onKeyPress.apply(this, arguments) ) { return false; }
+    if ( GUIElement.prototype.onKeyPress.apply(this, arguments) ) { return false; }
 
     var valid = [OSjs.Utils.Keys.UP, OSjs.Utils.Keys.DOWN, OSjs.Utils.Keys.LEFT, OSjs.Utils.Keys.RIGHT, OSjs.Utils.Keys.ENTER];
     if ( !OSjs.Utils.inArray(valid, ev.keyCode) ) {
