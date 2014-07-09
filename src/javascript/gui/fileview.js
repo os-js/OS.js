@@ -577,12 +577,10 @@
       }
 
       var lst = list.sort(function(a, b) {
-        var keyA = new Date(a[key]),
-            keyB = new Date(b[key]);
+        var x = (a[key] === null) ? "" : "" + a[key],
+            y = (b[key] === null) ? "" : "" + b[key];
 
-        if(keyA < keyB) { return -1; }
-        if(keyA > keyB) { return 1; }
-        return 0;
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
       });
 
       if ( !asc ) {

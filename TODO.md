@@ -2,7 +2,6 @@
 # High-priority TODOs
 * [Backend] Finish Node.js backend
 * [Backend] Provide a websocket version like in v1
-* [GUI] FileView->ListView sort column does not work like expected
 * [GUI] FileView->ListView needs to disable sorting when click on column three times
 * [Application] Draw -- Finish
 * [Application] Writer -- Check for changes before opening/new file
