@@ -29,14 +29,13 @@
  */
 (function(Application, Window, GUI, Dialogs, Utils) {
 
-  // TODO: Raw image loading/saving
   // TODO: Copy/Cut/Paste
   // TODO: Resize
 
   var FileTypes = {
     "png": "image/png",
-    "jpg": "image/jpeg"/*,
-    "odraw": "osjs/draw"*/
+    "jpg": "image/jpeg",
+    "odraw": "osjs/draw"
   };
 
   function MoveLayer(arr, old_index, new_index) {
@@ -766,6 +765,8 @@
     if ( data ) {
       this.image.setData(data);
     }
+    this.$imageContainer.style.width = sx + "px";
+    this.$imageContainer.style.height = sy + "px";
     this.$imageContainer.appendChild(this.image.getContainer());
 
     this.activeLayer = 0;
@@ -923,8 +924,8 @@
 
     var _openRaw = function() {
       var imageData = JSON.parse(data);
-      var width  = imageData.size[0];
-      var height = imageData.size[1];
+      var width  = imageData.size[0] << 0;
+      var height = imageData.size[1] << 0;
       var layers = imageData.layers;
 
       self.setCurrentFile(filename, mime);
@@ -1043,7 +1044,7 @@
 
     if ( win ) {
       win._toggleDisabled(true);
-      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image'], defaultFilename: 'New Image.png', filetypes: FileTypes}, function(btn, fname) {
+      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image', 'osjs\\/draw'], defaultFilename: 'New Image.png', filetypes: FileTypes}, function(btn, fname) {
         if ( win ) {
           win._toggleDisabled(false);
         }
@@ -1093,7 +1094,7 @@
 
       win._toggleDisabled(true);
 
-      this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image', 'osjs\/draw'], path: path}, function(btn, fname, fmime) {
+      this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image', 'osjs\\/draw'], path: path}, function(btn, fname, fmime) {
         if ( win ) {
           win._toggleDisabled(false);
         }

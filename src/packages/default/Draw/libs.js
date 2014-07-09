@@ -512,7 +512,7 @@
                                  img[i].left,
                                  img[i].top);
 
-        layer.setData(img[i].data);
+        layer.load(img[i].data);
       }
     }
 
@@ -551,7 +551,7 @@
         height: this.layers[i].height,
         left: this.layers[i].left,
         top: this.layers[i].top,
-        data: this.layers[i].getRawData()
+        data: this.layers[i].canvas.toDataURL("image/png")
       });
     }
 
@@ -602,12 +602,17 @@
     }
   };
 
-  Layer.prototype.getRawData = function() {
-    var data = [];
-    if ( this.context ) {
-      data = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    }
-    return data;
+  Layer.prototype.load = function(dataurl) {
+    var self = this;
+
+    var im = document.createElement("img");
+    im.onerror = function() {
+      console.warn("FAILED TO LOAD LAYER DATA");
+    };
+    im.onload = function() {
+      self.setData(this);
+    };
+    im.src = dataurl;
   };
 
   Layer.prototype.setData = function(img, x, y) {
@@ -616,10 +621,8 @@
 
       if ( (img instanceof Image) || (img instanceof HTMLImageElement) ) {
         this.context.drawImage(img, x||0, y||0);
-      } else if ( (img instanceof Array) ) {
-        this.context.putImageData(img, 0, 0);
+        return true;
       }
-      return true;
     }
     return false;
   };
