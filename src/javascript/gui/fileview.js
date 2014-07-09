@@ -617,7 +617,7 @@
                 }
               }
             }
-            if ( self.summary && res.result.length ) {
+            if ( self.viewOpts.summary && res.result.length ) {
               for ( var i = 0, l = res.result.length; i < l; i++ ) {
                 if ( res.result[i].filename !== ".." ) {
                   if ( res.result[i].size ) {
