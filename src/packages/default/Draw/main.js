@@ -803,9 +803,10 @@
     if ( data ) {
       this.image.setData(data);
     }
-    this.$imageContainer.style.width = sx + "px";
-    this.$imageContainer.style.height = sy + "px";
-    this.$imageContainer.appendChild(this.image.getContainer());
+    var container = this.image.getContainer();
+    container.style.width = sx + "px";
+    container.style.height = sy + "px";
+    this.$imageContainer.appendChild(container);
 
     this.activeLayer = 0;
 
