@@ -673,6 +673,57 @@
   Effect.prototype.showDialog = function(win, context, canvas) {
     this.run.call(this, context, canvas);
   };
+  Effect.prototype.convolute = function(context, weights, opaque) {
+    context = context || this.context;
+
+    var pixels = context.getImageData(0, 0, context.canvas.width, context.canvas.height);
+    var tmpCanvas = document.createElement("canvas");
+    var tmpCtx = tmpCanvas.getContext("2d");
+
+    var side = Math.round(Math.sqrt(weights.length));
+    var halfSide = Math.floor(side/2);
+    var src = pixels.data;
+    var sw = pixels.width;
+    var sh = pixels.height;
+    // pad output by the convolution matrix
+    var w = sw;
+    var h = sh;
+
+    var output = tmpCtx.createImageData(w, h);
+    var dst = output.data;
+    // go through the destination image pixels
+    var alphaFac = opaque ? 1 : 0;
+    for (var y=0; y<h; y++) {
+      for (var x=0; x<w; x++) {
+        var sy = y;
+        var sx = x;
+        var dstOff = (y*w+x)*4;
+        // calculate the weighed sum of the source image pixels that
+        // fall under the convolution matrix
+        var r=0, g=0, b=0, a=0;
+        for (var cy=0; cy<side; cy++) {
+          for (var cx=0; cx<side; cx++) {
+            var scy = sy + cy - halfSide;
+            var scx = sx + cx - halfSide;
+            if (scy >= 0 && scy < sh && scx >= 0 && scx < sw) {
+              var srcOff = (scy*sw+scx)*4;
+              var wt = weights[cy*side+cx];
+              r += src[srcOff] * wt;
+              g += src[srcOff+1] * wt;
+              b += src[srcOff+2] * wt;
+              a += src[srcOff+3] * wt;
+            }
+          }
+        }
+        dst[dstOff] = r;
+        dst[dstOff+1] = g;
+        dst[dstOff+2] = b;
+        dst[dstOff+3] = a + alphaFac*(255-a);
+      }
+    }
+
+    context.putImageData(output, 0, 0);
+  };
 
   /**
    * Effect: Blur
@@ -843,6 +894,54 @@
     }, 10);
   };
 
+  /**
+   * Effect: Sharpen
+   */
+  var EffectSharpen = function() {
+    Effect.call(this, "sharpen", "Sharpen");
+  };
+
+  EffectSharpen.prototype = Object.create(Effect.prototype);
+
+  EffectSharpen.prototype.run = function(win, context, canvas, callback) {
+    callback = callback || function() {};
+
+    win._toggleLoading(true);
+
+    var self = this;
+    setTimeout(function() {
+      self.convolute(context, [  0, -1,  0,
+                                -1,  5, -1,
+                                 0, -1,  0 ]);
+
+      callback();
+    }, 10);
+  };
+
+  /**
+   * Effect: SimpleBlur
+   */
+  var EffectSimpleBlur = function() {
+    Effect.call(this, "simpleblur", "Simple Blur");
+  };
+
+  EffectSimpleBlur.prototype = Object.create(Effect.prototype);
+
+  EffectSimpleBlur.prototype.run = function(win, context, canvas, callback) {
+    callback = callback || function() {};
+
+    win._toggleLoading(true);
+
+    var self = this;
+    setTimeout(function() {
+      self.convolute(context, [ 1/9, 1/9, 1/9,
+                                1/9, 1/9, 1/9,
+                                1/9, 1/9, 1/9 ]);
+
+      callback();
+    }, 10);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -862,7 +961,9 @@
       new EffectBlur(),
       new EffectNoise(),
       new EffectInvert(),
-      new EffectGrayscale()
+      new EffectGrayscale(),
+      new EffectSharpen(),
+      new EffectSimpleBlur()
     ],
     Image: Image,
     Layer: Layer

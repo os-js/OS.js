@@ -91,7 +91,9 @@
       'Blur' : 'Klatte (Blur)',
       'Noise' : 'Støy',
       'Invert colors' : 'Inverter farger',
-      'Grayscale' : 'Gråskala'
+      'Grayscale' : 'Gråskala',
+      'Sharpen' : 'Skarpgjør',
+      'Simple Blur' : 'Simpel Klatte (Blur)'
 
     }
   };

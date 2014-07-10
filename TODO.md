@@ -15,6 +15,7 @@
 * _[Application]_ CoreWM -- Custom keyboard binding shortcuts
 * _[Application]_ CoreWM -- Finish panel item options
 * _[Application]_ Draw -- Finish features (marked in source)
+* _[Application]_ Draw -- Add more effects with the convolute method
 * _[Dialogs]_ Go over dialog code and look for possible refactors
 * _[Themes]_ More Themes
 * _[GUI]_ Custom styling for GUISelect
