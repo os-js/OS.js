@@ -784,6 +784,34 @@
     }, 10);
   };
 
+  /**
+   * Effect: Invert
+   */
+  var EffectInvert = function() {
+    Effect.call(this, "invert", "Invert colors");
+  };
+
+  EffectInvert.prototype = Object.create(Effect.prototype);
+
+  EffectInvert.prototype.run = function(win, context, canvas, callback) {
+    callback = callback || function() {};
+
+    win._toggleLoading(true);
+
+    setTimeout(function() {
+      var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      var data = imageData.data;
+      for (var i = 0; i < data.length; i += 4) {
+        data[i] = 255 - data[i];
+        data[i + 1] = 255 - data[i + 1];
+        data[i + 2] = 255 - data[i + 2];
+      }
+      context.putImageData(imageData, 0, 0);
+
+      callback();
+    }, 10);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -801,7 +829,8 @@
     ],
     Effects: [
       new EffectBlur(),
-      new EffectNoise()
+      new EffectNoise(),
+      new EffectInvert()
     ],
     Image: Image,
     Layer: Layer

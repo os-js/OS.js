@@ -89,7 +89,8 @@
       'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn ellipse',
 
       'Blur' : 'Klatte (Blur)',
-      'Noise' : 'Støy'
+      'Noise' : 'Støy',
+      'Invert colors' : 'Inverter farger'
 
     }
   };
