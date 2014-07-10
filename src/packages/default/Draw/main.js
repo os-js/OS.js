@@ -243,7 +243,13 @@
     }
 
     menuBar.addItem(_("Layer"), [
-      {title: _('Effect'), name: 'Effect', menu: items}
+      {title: _('Effect'), name: 'Effect', menu: items},
+      {title: _('Flip X'), name: 'FlipX', onClick : function() {
+        self.applyModifier("flip", "x");
+      }},
+      {title: _('Flip Y'), name: 'FlipY', onClick : function() {
+        self.applyModifier("flip", "y");
+      }}
     ]);
 
     menuBar.onMenuOpen = function(menu) {
@@ -660,6 +666,23 @@
     }
 
     this.currentTool.applyStyle(style, context);
+  };
+
+  /**
+   * Apply given Modifier or Transformation
+   */
+  ApplicationDrawWindow.prototype.applyModifier = function(mod, arg) {
+    if ( !this.image ) { return; }
+    var layer = this.image.getActiveLayer();
+    if ( !layer ) { return; }
+
+    if ( mod == "flip" ) {
+      if ( arg == "x" ) {
+        layer.flipX();
+      } else {
+        layer.flipY();
+      }
+    }
   };
 
   /**

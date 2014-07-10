@@ -627,6 +627,38 @@
     return false;
   };
 
+  Layer.prototype.flipX = function() {
+    if ( !this.context ) { return; }
+    var copy = document.createElement("canvas");
+    copy.width = this.canvas.width;
+    copy.height = this.canvas.height;
+    copy.getContext("2d").drawImage(this.canvas, 0, 0);
+
+    this.clear();
+    this.context.save();
+    this.context.scale(1, -1);
+    this.context.drawImage(copy, 0, (copy.height * -1), copy.width, copy.height);
+    this.context.restore();
+
+    copy = null;
+  };
+
+  Layer.prototype.flipY = function() {
+    if ( !this.context ) { return; }
+    var copy = document.createElement("canvas");
+    copy.width = this.canvas.width;
+    copy.height = this.canvas.height;
+    copy.getContext("2d").drawImage(this.canvas, 0, 0);
+
+    this.clear();
+    this.context.save();
+    this.context.scale(-1, 1);
+    this.context.drawImage(copy, (copy.width * -1), 0, copy.width, copy.height);
+    this.context.restore();
+
+    copy = null;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EFFECTS
   /////////////////////////////////////////////////////////////////////////////
