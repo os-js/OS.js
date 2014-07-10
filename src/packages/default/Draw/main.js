@@ -758,8 +758,8 @@
     name = name ? Utils.filename(name) : "New Image";
     data = data || null;
 
-    var sx = data ? data.width  : (width  || 640);
-    var sy = data ? data.height : (height || 480);
+    var sx = data ? (typeof data.width  == "undefined" ? width : data.width)  : (width  || 640);
+    var sy = data ? (typeof data.height == "undefined" ? height : data.height) : (height || 480);
 
     this.image = new OSjs.Applications.ApplicationDrawLibs.Image(name, sx, sy);
     if ( data ) {

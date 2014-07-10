@@ -506,8 +506,8 @@
 
       for ( var i = 0; i < img.length; i++ ) {
         layer = this.createLayer(img[i].name,
-                                 img[i].width,
-                                 img[i].height,
+                                 img[i].width << 0,
+                                 img[i].height << 0,
                                  true,
                                  img[i].left,
                                  img[i].top);
