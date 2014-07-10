@@ -6,7 +6,6 @@
 * _[Application]_ Go over applications and clean up code (including DefaultApplication class)
 
 # Meduim-priority
-* _[Application]_ Draw -- Finish
 * _[Backend]_ Provide a websocket version like in v1
 * _[GUI]_ GUIScrollbar
 * _[Locales]_ Create reserved strings for locales in `locales.js` (for core messages etc)
@@ -15,6 +14,7 @@
 # Low-priority
 * _[Application]_ CoreWM -- Custom keyboard binding shortcuts
 * _[Application]_ CoreWM -- Finish panel item options
+* _[Application]_ Draw -- Finish features (marked in source)
 * _[Dialogs]_ Go over dialog code and look for possible refactors
 * _[Themes]_ More Themes
 * _[GUI]_ Custom styling for GUISelect

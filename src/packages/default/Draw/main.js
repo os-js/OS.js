@@ -68,7 +68,7 @@
       'Enable stroke' : 'Skru på strøk',
       'Round' : 'Rund',
       'Miter' : 'Skjev',
-      'Beveled' : 'Kantet',
+      'Bevel' : 'Kantet',
       'Stroked' : 'Strøk På',
       'No stroke' : 'Strøk Av',
 
@@ -146,6 +146,16 @@
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
 
+    var toggleTools = app._getArgument("ShowTools");
+    if ( typeof toggleTools !== "undefined" && toggleTools !== null ) {
+      this.toggleTools = toggleTools;
+    }
+
+    var toggleLayers = app._getArgument("ShowLayers");
+    if ( typeof toggleLayers !== "undefined" && toggleLayers !== null ) {
+      this.toggleLayers = toggleLayers;
+    }
+
     // Layer bar container
     var layerBar = document.createElement("div");
     layerBar.className = "GUIToolbar ApplicationDrawLayersBar";
@@ -167,6 +177,8 @@
       if ( self.toggleTools ) {
         Utils.$addClass(root, "ShowToolToolbar");
       }
+
+      app._setArgument("ShowTools", self.toggleTools);
     };
 
     var _toggleLayersToolbar = function(t) {
@@ -180,6 +192,8 @@
       if ( self.toggleLayers ) {
         Utils.$addClass(root, "ShowLayerToolbar");
       }
+
+      app._setArgument("ShowLayers", self.toggleLayers);
     };
 
     menuBar.addItem(OSjs._("File"), [
@@ -280,7 +294,7 @@
     };
 
     var _selectLineJoin = function(type) {
-      var txt = {round: "Round", miter: "Miter", bevel: "Beveled"};
+      var txt = {round: "Round", miter: "Miter", bevel: "Bevel"};
       self.currentStyle.lineJoin = type;
       if ( toolBar ) {
         toolBar.getItem('lineJoin').getElementsByClassName('LineJoin')[0].innerHTML = _(txt[type]);

@@ -407,6 +407,7 @@
    *  onChange        Function      Callback - When value changed
    *  onClick         Function      Callback - When clicked
    *  onKeyPress      Function      Callback - When key pressed
+   *  onKeyUp         Fybctuib      Callback - When key released
    *
    *  Please not that not all of these options applies to all
    *  implemented input elements!
