@@ -90,7 +90,8 @@
 
       'Blur' : 'Klatte (Blur)',
       'Noise' : 'Støy',
-      'Invert colors' : 'Inverter farger'
+      'Invert colors' : 'Inverter farger',
+      'Grayscale' : 'Gråskala'
 
     }
   };

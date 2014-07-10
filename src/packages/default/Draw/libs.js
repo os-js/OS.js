@@ -812,6 +812,37 @@
     }, 10);
   };
 
+  /**
+   * Effect: Grayscale
+   */
+  var EffectGrayscale = function() {
+    Effect.call(this, "grayscale", "Grayscale");
+  };
+
+  EffectGrayscale.prototype = Object.create(Effect.prototype);
+
+  EffectGrayscale.prototype.run = function(win, context, canvas, callback) {
+    callback = callback || function() {};
+
+    win._toggleLoading(true);
+
+    setTimeout(function() {
+      var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      var data = imageData.data;
+      var r, g, b, v;
+      for (var i = 0; i < data.length; i += 4) {
+        r = data[i];
+        g = data[i+1];
+        b = data[i+2];
+        v = 0.2126*r + 0.7152*g + 0.0722*b;
+        data[i] = data[i+1] = data[i+2] = v
+      }
+      context.putImageData(imageData, 0, 0);
+
+      callback();
+    }, 10);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -830,7 +861,8 @@
     Effects: [
       new EffectBlur(),
       new EffectNoise(),
-      new EffectInvert()
+      new EffectInvert(),
+      new EffectGrayscale()
     ],
     Image: Image,
     Layer: Layer
