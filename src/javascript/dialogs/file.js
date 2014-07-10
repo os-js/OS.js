@@ -170,10 +170,15 @@
       }
 
       this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(ev) {
+        self.onInputKey(ev);
         if ( ev.keyCode === Utils.Keys.ENTER ) {
           self.onInputEnter(ev);
           return;
         }
+      }, onChange: function(ev) {
+        self.onInputKey(ev);
+      }, onKeyUp: function(ev) {
+        self.onInputKey(ev);
       }}), this.$element);
     }
 
@@ -308,6 +313,17 @@
     }
   };
 
+  FileDialog.prototype.checkInput = function() {
+    if ( this.type != "save" ) { return; }
+    if ( !this.buttonConfirm ) { return; }
+
+    if ( this.$input.getValue().length ) {
+      this.buttonConfirm.setDisabled(false);
+    } else {
+      this.buttonConfirm.setDisabled(true);
+    }
+  };
+
   /**
    * Create Context Menu
    */
@@ -406,6 +422,8 @@
       this.selectedFile = this.path; // Dir selection dialog needs to start on default
       this.buttonConfirm.setDisabled(false);
     }
+
+    this.checkInput();
   };
 
   /**
@@ -454,6 +472,13 @@
     }
 
     this.highlightFilename();
+  };
+
+  /**
+   * Input: key pressed
+   */
+  FileDialog.prototype.onInputKey = function() {
+    this.checkInput();
   };
 
   /**

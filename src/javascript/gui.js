@@ -171,11 +171,11 @@
           icon = 'mimetypes/sound.png';
         } else if ( mime.match(/^video\//) ) {
           icon = 'mimetypes/video.png';
-        } else if ( mime.match(/^image\//) ) {
+        } else if ( mime.match(/^image\//) || mime == "osjs/draw" ) {
           icon = 'mimetypes/image.png';
         } else if ( mime.match(/^application\//) ) {
           icon = 'mimetypes/binary.png';
-        } else if ( mime.match(/^osjs\/document/) ) {
+        } else if ( mime == "osjs/document" ) {
           icon = 'mimetypes/gnome-mime-application-msword.png';
         }
       }
@@ -347,6 +347,16 @@
     return true;
   };
 
+  GUIElement.prototype.onKeyUp = function(ev) {
+    if ( this.hasCustomKeys ) { return false; }
+    if ( !this.focused ) { return false; }
+    if ( !this.opts.onKeyUp ) { return false; }
+
+    this.opts.onKeyUp.call(this, ev);
+
+    return true;
+  };
+
   GUIElement.prototype._onFocus = function(ev) {
     ev.stopPropagation();
     OSjs.GUI.blurMenu();
@@ -416,6 +426,7 @@
     this.onChange     = opts.onChange     || function() {};
     this.onClick      = opts.onClick      || function() {};
     this.onKeyPress   = opts.onKeyPress   || function() {};
+    this.onKeyUp      = opts.onKeyUp      || function() {};
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -436,6 +447,9 @@
 
         this._addEventListener(this.$input, 'keypress', function(ev) {
           self.onKeyPress.apply(self, [ev]);
+        });
+        this._addEventListener(this.$input, 'keyup', function(ev) {
+          self.onKeyUp.apply(self, [ev]);
         });
       }
     }
