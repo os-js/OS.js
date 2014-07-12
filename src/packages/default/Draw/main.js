@@ -183,6 +183,8 @@
       }
 
       app._setArgument("ShowTools", self.toggleTools);
+
+      self._focus();
     };
 
     var _toggleLayersToolbar = function(t) {
@@ -198,6 +200,8 @@
       }
 
       app._setArgument("ShowLayers", self.toggleLayers);
+
+      self._focus();
     };
 
     menuBar.addItem(OSjs._("File"), [
@@ -703,8 +707,11 @@
       effect.run(win, context, context.canvas, function() {
         win._toggleLoading(false);
         win._toggleDisabled(false);
+        win._focus();
       });
     }, 10);
+
+    win._focus();
   };
 
   /**
@@ -816,6 +823,8 @@
     this.setImageName(name);
 
     this.updateLayers();
+
+    this._focus();
   };
 
   /**
@@ -862,6 +871,8 @@
       var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
       toolBar.getItem(className).getElementsByClassName('Color')[0].style.backgroundColor = val;
     }
+
+    this._focus();
   };
 
   /**
