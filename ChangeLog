@@ -1,3 +1,14 @@
+# 2.0.0-alpha7 to 2.0.0-alpha8
+
+* Cleaned up some old code
+* Updated translations
+* GUIFileView bugfixes
+* GUIStatusbar bugfixes
+* Updated the includer login handler
+* Updated custom handler support
+* Application - Draw: Many updates
+* Updated documentation
+
 # 2.0.0-alpha4 to 2.0.0-alpha6
 
 Build system improvments, cleanups, bugfixes and documentation updates.
