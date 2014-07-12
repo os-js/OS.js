@@ -2751,26 +2751,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var __initialized = false;
-  var __initialize  = function() {
-    if ( typeof OSjs.Hooks !== 'undefined' ) {
-      if ( typeof OSjs.Hooks.onInitialize === 'function' ) {
-        OSjs.Hooks.onInitialize();
-      }
-    }
-
-    _$SPLASH              = document.getElementById('LoadingScreen');
-    _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
-
-    _$LOADING             = document.createElement('div');
-    _$LOADING.id          = "Loading";
-    _$LOADING.innerHTML   = '<div class="loader"></div>';
-    document.body.appendChild(_$LOADING);
-
-    _CORE = new Main();
-    if ( _CORE ) {
-      _CORE.init();
-    }
-  };
 
   var Initialize = function() {
     if ( __initialized ) { return; }
@@ -2786,7 +2766,6 @@
     console.log("             `._.'                      ");
     console.log("");
 
-
     window.onload = null;
 
     OSjs.Compability = OSjs.Utils.getCompability();
@@ -2794,7 +2773,24 @@
     // Launch handler
     _HANDLER = new OSjs.Handlers.Current();
     _HANDLER.init(function() {
-      __initialize();
+      if ( typeof OSjs.Hooks !== 'undefined' ) {
+        if ( typeof OSjs.Hooks.onInitialize === 'function' ) {
+          OSjs.Hooks.onInitialize();
+        }
+      }
+
+      _$SPLASH              = document.getElementById('LoadingScreen');
+      _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
+
+      _$LOADING             = document.createElement('div');
+      _$LOADING.id          = "Loading";
+      _$LOADING.innerHTML   = '<div class="loader"></div>';
+      document.body.appendChild(_$LOADING);
+
+      _CORE = new Main();
+      if ( _CORE ) {
+        _CORE.init();
+      }
     });
   };
 

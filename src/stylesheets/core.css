@@ -29,6 +29,30 @@
  * @licence Simplified BSD License
  */
 
+html, body {
+  height : 100%;
+}
+body {
+  margin : 0;
+  padding : 0;
+  background-color : #000;
+  overflow : hidden;
+}
+body, input, button, textarea, label, select {
+  font-size : 12px;
+  font-family : Sans-serif, Arial;
+}
+
+[draggable] {
+  -webkit-user-select: none;
+   -khtml-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+
+  -webkit-user-drag: element;
+   -khtml-user-drag: element;
+}
+
 /**
  * Default Wallpaper stuff
  */
