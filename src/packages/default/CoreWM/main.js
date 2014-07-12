@@ -86,11 +86,28 @@
     this.switcher       = null;
     this.settingsWindow = null;
     this.iconView       = null;
+    this.$themeLink     = null;
+    this.$animationLink = null;
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.init = function() {
+
+    var themeLink = document.createElement("link");
+    themeLink.type = "text/css";
+    themeLink.rel = "stylesheet"
+    themeLink.href = "/blank.css";
+    this.$themeLink = themeLink;
+    document.getElementsByTagName("head")[0].appendChild(this.$themeLink);
+
+    var animationLink = document.createElement("link");
+    animationLink.type = "text/css";
+    animationLink.rel = "stylesheet";
+    animationLink.href = "/blank.css";
+    this.$animationLink = animationLink;
+    document.getElementsByTagName("head")[0].appendChild(this.$animationLink);
+
     WindowManager.prototype.init.apply(this, arguments);
 
     this.initDesktop();
@@ -127,6 +144,15 @@
 
     // Reset styles
     this.applySettings(DefaultSettings(), true);
+
+    if ( this.$themeLink ) {
+      this.$themeLink.parentNode.removeChild(this.$themeLink);
+      this.$themeLink = null;
+    }
+    if ( this.$animationLink ) {
+      this.$animationLink.parentNode.removeChild(this.$animationLink);
+      this.$animationLink = null;
+    }
 
     return WindowManager.prototype.destroy.apply(this, []);
   };
@@ -577,18 +603,20 @@
 
     // Theme
     var theme = this.getSetting('theme');
-    var tlink = document.getElementById("_OSjsTheme");
     console.log("theme", theme);
-    tlink.setAttribute('href', OSjs.API.getThemeCSS(theme));
+    if ( this.$themeLink ) {
+      this.$themeLink.setAttribute('href', OSjs.API.getThemeCSS(theme));
+    }
 
     // Animations
     var anim  = this.getSetting('animations');
-    var alink = document.getElementById("_OSjsAnimations");
     console.log("animations", anim);
-    if ( anim ) {
-      alink.setAttribute('href', OSjs.API.getApplicationResource(this, 'animations.css'));
-    } else {
-      alink.setAttribute('href', OSjs.API.getThemeCSS(null));
+    if ( this.$animationLink ) {
+      if ( anim ) {
+        this.$animationLink.setAttribute('href', OSjs.API.getApplicationResource(this, 'animations.css'));
+      } else {
+        this.$animationLink.setAttribute('href', OSjs.API.getThemeCSS(null));
+      }
     }
 
     console.groupEnd();
