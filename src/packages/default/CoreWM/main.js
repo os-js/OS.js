@@ -54,7 +54,7 @@
           items:    [
             {name: 'Buttons'},
             {name: 'WindowList'},
-            {name: 'StartupNotification'},
+            {name: 'NotificationArea'},
             {name: 'Clock'}
           ]
         }
@@ -292,17 +292,18 @@
         p = new OSjs.CoreWM.Panel('Default', ps[i].options);
         p.init(document.body);
 
-        try {
-          if ( ps[i].items ) {
-            for ( j = 0; j < ps[i].items.length; j++ ) {
+        if ( ps[i].items && ps[i].items.length ) {
+          for ( j = 0; j < ps[i].items.length; j++ ) {
+            try {
               n = ps[i].items[j];
               p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
               added = true;
+            } catch ( e ) {
+              // FIXME: Should we notify the user with a error dialog ?!
+              console.warn("An error occured while creating PanelItem", e);
+              console.warn('stack', e.stack);
             }
           }
-        } catch ( e ) {
-          console.warn("An error occured while creating PanelItem", e);
-          console.warn('stack', e.stack);
         }
 
         this.panels.push(p);
@@ -577,20 +578,21 @@
     }
   };
 
-  CoreWM.prototype.createStartupNotification = function(name) {
+  CoreWM.prototype.createNotificationIcon = function(name, opts) {
+    opts = opts || {};
     if ( !name ) { return false; }
 
-    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.StartupNotification);
+    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.NotificationArea);
     for ( var i = 0; i < pitems.length; i++ ) {
-      pitems[i].createNotification(name);
+      pitems[i].createNotification(name, opts);
     }
     return pitems.length > 0;
   };
 
-  CoreWM.prototype.removeStartupNotification = function(name) {
+  CoreWM.prototype.removeNotificationIcon = function(name) {
     if ( !name ) { return false; }
 
-    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.StartupNotification);
+    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.NotificationArea);
     for ( var i = 0; i < pitems.length; i++ ) {
       pitems[i].removeNotification(name);
     }

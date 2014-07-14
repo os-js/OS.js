@@ -272,50 +272,96 @@
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * PanelItem: StartupNotification
-   */
-  var PanelItemStartupNotification = function() {
-    PanelItem.apply(this, ['PanelItemStartupNotification PanelItemFill PanelItemRight']);
-    this.clockInterval  = null;
+  var NotificationAreaItem = function(name, opts) {
+    opts = opts || {};
+
+    this.name       = name;
+    this.opts       = opts;
+    this.$container = document.createElement("div");
+    this.$inner     = document.createElement("div");
+
+    var classNames = ["NotificationArea", "NotificationArea_" + name];
+    if ( opts.className ) {
+      classNames.push(opts.className);
+    }
+
+    this.$container.className = classNames.join(" ");
+    if ( this.opts.tooltip ) {
+      this.$container.title = this.opts.tooltip;
+    }
+
+    this.$container.appendChild(this.$inner);
   };
 
-  PanelItemStartupNotification.prototype = Object.create(PanelItem.prototype);
-  PanelItemStartupNotification.Name = 'StartupNotification'; // Static name
-  PanelItemStartupNotification.Description = 'View the time'; // Static description
-  PanelItemStartupNotification.Icon = 'status/appointment-soon.png'; // Static icon
+  NotificationAreaItem.prototype.init = function(root) {
+    root.appendChild(this.$container);
+  };
 
-  PanelItemStartupNotification.prototype.init = function() {
+  NotificationAreaItem.prototype.destroy = function() {
+    if ( this.$container ) {
+      if ( this.$container.parentNode ) {
+        this.$container.parentNode.removeChild(this.$container);
+      }
+      this.$container = null;
+    }
+    this.$inner = null;
+  };
+
+  /**
+   * PanelItem: NotificationArea
+   */
+  var PanelItemNotificationArea = function() {
+    PanelItem.apply(this, ['PanelItemNotificationArea PanelItemFill PanelItemRight']);
+    this.notifications = {};
+  };
+
+  PanelItemNotificationArea.prototype = Object.create(PanelItem.prototype);
+  PanelItemNotificationArea.Name = 'NotificationArea'; // Static name
+  PanelItemNotificationArea.Description = 'View notifications'; // Static description
+  PanelItemNotificationArea.Icon = 'status/important.png'; // Static icon
+
+  PanelItemNotificationArea.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     return root;
   };
 
 
-  PanelItemStartupNotification.prototype.createNotification = function(name) {
+  PanelItemNotificationArea.prototype.createNotification = function(name, opts) {
     if ( this._$root ) {
-      var desc = "Starting: " + name; // FIXME
+      if ( !this.notifications[name] ) {
+        var item = new NotificationAreaItem(name, opts);
+        item.init(this._$root);
+        this.notifications[name] = item;
 
-      var n = document.createElement("div");
-      var i = document.createElement("div");
-      n.className = "StartupNotification StartupNotification_" + name;
-      n.title = desc || name;
-      n.appendChild(i);
-      this._$root.appendChild(n);
-    }
-  };
-
-  PanelItemStartupNotification.prototype.removeNotification = function(name) {
-    if ( this._$root ) {
-      var items = this._$root.getElementsByClassName("StartupNotification_" + name);
-      for ( var i = 0; i < items.length; i++ ) {
-        items[i].parentNode.removeChild(items[i]);
+        return item;
       }
     }
+    return null;
+  };
+
+  PanelItemNotificationArea.prototype.removeNotification = function(name) {
+    if ( this._$root ) {
+      if ( this.notifications[name] ) {
+        this.notifications[name].destroy();
+        delete this.notifications[name];
+        return true;
+      }
+    }
+
+    return false;
   };
 
 
-  PanelItemStartupNotification.prototype.destroy = function() {
+  PanelItemNotificationArea.prototype.destroy = function() {
+    for ( var i in this.notifications ) {
+      if ( this.notifications.hasOwnProperty(i) ) {
+        if ( this.notifications[i] ) {
+          this.notifications[i].destroy();
+        }
+        delete this.notifications[i];
+      }
+    }
 
     PanelItem.prototype.destroy.apply(this, arguments);
   };
@@ -324,10 +370,10 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.CoreWM.PanelItems.Buttons              = PanelItemButtons;
-  OSjs.CoreWM.PanelItems.WindowList           = PanelItemWindowList;
-  OSjs.CoreWM.PanelItems.Clock                = PanelItemClock;
-  OSjs.CoreWM.PanelItems.StartupNotification  = PanelItemStartupNotification;
+  OSjs.CoreWM.PanelItems.Buttons           = PanelItemButtons;
+  OSjs.CoreWM.PanelItems.WindowList        = PanelItemWindowList;
+  OSjs.CoreWM.PanelItems.Clock             = PanelItemClock;
+  OSjs.CoreWM.PanelItems.NotificationArea  = PanelItemNotificationArea;
 
 })(OSjs.CoreWM, OSjs.CoreWM.Panel, OSjs.CoreWM.PanelItem);
 

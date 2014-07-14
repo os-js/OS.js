@@ -129,11 +129,11 @@
 .WMPanel .PanelItemWindowList {
   overflow : hidden;
 }
-.WMPanel .PanelItemStartupNotification {
+.WMPanel .PanelItemNotificationArea {
   overflow : hidden;
   position : relative;
 }
-.WMPanel .PanelItemStartupNotification > div {
+.WMPanel .PanelItemNotificationArea > div.StartupNotification {
   display : inline-block;
   width : 16px;
   height : 16px;
@@ -142,14 +142,14 @@
   cursor : help;
 }
 
-.WMPanel .PanelItemStartupNotification > div > div {
+.WMPanel .PanelItemNotificationArea > div.StartupNotification > div {
   position: relative;
   width: 16px;
   height: 16px;
   border: 2px solid #000;
   border-radius: 100%;
 }
-.WMPanel .PanelItemStartupNotification > div > div:before {
+.WMPanel .PanelItemNotificationArea > div.StartupNotification > div:before {
   display: block;
   position: absolute;
   left: 7px; /*( 16px / 2 ) - 1px;*/
@@ -169,7 +169,7 @@
       -ms-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
           transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
 }
-.WMPanel .PanelItemStartupNotification > div > div:after {
+.WMPanel .PanelItemNotificationArea > div.StartupNotification > div:after {
     display: block;
     position: absolute;
     left: 7px; /*( 16px / 2 ) - 1px;*/

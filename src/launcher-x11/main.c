@@ -80,6 +80,7 @@ int main (int argc, gchar *argv[])
   g_object_set (G_OBJECT(settings), "enable-webgl", TRUE, NULL);
   g_object_set (G_OBJECT(settings), "enable-fullscreen", TRUE, NULL);
   g_object_set (G_OBJECT(settings), "enable-webaudio", TRUE, NULL);
+  g_object_set (G_OBJECT(settings), "enable-html5-local-storage", TRUE, NULL);
   g_object_set (G_OBJECT(settings), "enable-html5-database", TRUE, NULL);
 
   WebKitWebView *web_view;

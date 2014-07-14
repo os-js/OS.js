@@ -277,13 +277,13 @@
     var splashBar = null;
     var snotified = false;
 
-    var _createStartupNotification = function(data) {
-      return _WM ? _WM.createStartupNotification((data.name || n)) : false;
+    var _createStartupNotification = function() {
+      return _WM ? _WM.createNotificationIcon(n, {className: "StartupNotification", tooltip: "Starting " + n}) : false;
     };
     var _removeStartupNotification = function() {
       if ( snotified ) {
         if ( _WM ) {
-          _WM.removeStartupNotification(snotified);
+          _WM.removeNotificationIcon(snotified);
         }
         return true;
       }
@@ -300,8 +300,8 @@
     };
 
     var _createSplash = function(data) {
-      if ( _createStartupNotification(data) ) {
-        snotified = (data.name || n);
+      if ( _createStartupNotification() ) {
+        snotified = n;
       }
 
       if ( !snotified ) {
