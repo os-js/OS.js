@@ -644,6 +644,12 @@
       self._onScroll.apply(self, arguments);
     }, false);
 
+    if ( OSjs.Utils.getCompability().touch ) {
+      document.addEventListener('touchmove', function(ev) {
+        ev.preventDefault();
+      });
+    }
+
     document.addEventListener('mouseout', function(ev) {
       self._onLeave(ev);
     }, false);
@@ -799,6 +805,12 @@
     window.removeEventListener('scroll', function(ev) {
       self._onScroll.apply(self, arguments);
     }, false);
+
+    if ( OSjs.Utils.getCompability().touch ) {
+      document.removeEventListener('touchmove', function(ev) {
+        ev.preventDefault();
+      });
+    }
 
     document.removeEventListener('mouseout', function(ev) {
       self._onLeave(ev);
