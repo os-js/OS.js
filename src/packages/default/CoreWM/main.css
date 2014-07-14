@@ -129,6 +129,88 @@
 .WMPanel .PanelItemWindowList {
   overflow : hidden;
 }
+.WMPanel .PanelItemStartupNotification {
+  overflow : hidden;
+  position : relative;
+}
+.WMPanel .PanelItemStartupNotification > div {
+  display : inline-block;
+  width : 16px;
+  height : 16px;
+  position : relative;
+  margin : 4px;
+  cursor : help;
+}
+
+.WMPanel .PanelItemStartupNotification > div > div {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #000;
+  border-radius: 100%;
+}
+.WMPanel .PanelItemStartupNotification > div > div:before {
+  display: block;
+  position: absolute;
+  left: 7px; /*( 16px / 2 ) - 1px;*/
+  top: 2px;
+  width: 2px;
+  height: 6px; /*( 16px / 2 ) - 2px;*/
+  background-color: #000;
+  content: "";
+
+  -webkit-animation: spin 3s linear infinite;
+     -moz-animation: spin 3s linear infinite;
+      -ms-animation: spin 3s linear infinite;
+          animation: spin 3s linear infinite;
+
+  -webkit-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+     -moz-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+      -ms-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+          transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+}
+.WMPanel .PanelItemStartupNotification > div > div:after {
+    display: block;
+    position: absolute;
+    left: 7px; /*( 16px / 2 ) - 1px;*/
+    top: 3px;
+    width: 2px;
+    height: 5px; /*( 16px / 2 ) - 3px;*/
+    background-color: #000;
+    content: "";
+
+    -webkit-animation: spin 18s linear infinite; /* spin 6 * 3s linear infinite; */
+       -moz-animation: spin 18s linear infinite; /* spin 6 * 3s linear infinite; */
+        -ms-animation: spin 18s linear infinite; /* spin 6 * 3s linear infinite; */
+            animation: spin 18s linear infinite; /* spin 6 * 3s linear infinite; */
+
+    -webkit-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+       -moz-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+        -ms-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+            transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+}
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate( 360deg );
+  }
+}
+@-moz-keyframes spin {
+  to {
+    -moz-transform: rotate( 360deg );
+  }
+}
+@-ms-keyframes spin {
+  to {
+    -ms-transform: rotate( 360deg );
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate( 360deg );
+  }
+}
+
 
 /**
  * Window Switcher

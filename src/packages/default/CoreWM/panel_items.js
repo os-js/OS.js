@@ -269,12 +269,65 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // ITEM
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * PanelItem: StartupNotification
+   */
+  var PanelItemStartupNotification = function() {
+    PanelItem.apply(this, ['PanelItemStartupNotification PanelItemFill PanelItemRight']);
+    this.clockInterval  = null;
+  };
+
+  PanelItemStartupNotification.prototype = Object.create(PanelItem.prototype);
+  PanelItemStartupNotification.Name = 'StartupNotification'; // Static name
+  PanelItemStartupNotification.Description = 'View the time'; // Static description
+  PanelItemStartupNotification.Icon = 'status/appointment-soon.png'; // Static icon
+
+  PanelItemStartupNotification.prototype.init = function() {
+    var root = PanelItem.prototype.init.apply(this, arguments);
+
+    return root;
+  };
+
+
+  PanelItemStartupNotification.prototype.createNotification = function(name) {
+    if ( this._$root ) {
+      var desc = "Starting: " + name; // FIXME
+
+      var n = document.createElement("div");
+      var i = document.createElement("div");
+      n.className = "StartupNotification StartupNotification_" + name;
+      n.title = desc || name;
+      n.appendChild(i);
+      this._$root.appendChild(n);
+    }
+  };
+
+  PanelItemStartupNotification.prototype.removeNotification = function(name) {
+    if ( this._$root ) {
+      var items = this._$root.getElementsByClassName("StartupNotification_" + name);
+      for ( var i = 0; i < items.length; i++ ) {
+        items[i].parentNode.removeChild(items[i]);
+      }
+    }
+  };
+
+
+  PanelItemStartupNotification.prototype.destroy = function() {
+
+    PanelItem.prototype.destroy.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.CoreWM.PanelItems.Buttons    = PanelItemButtons;
-  OSjs.CoreWM.PanelItems.WindowList = PanelItemWindowList;
-  OSjs.CoreWM.PanelItems.Clock      = PanelItemClock;
+  OSjs.CoreWM.PanelItems.Buttons              = PanelItemButtons;
+  OSjs.CoreWM.PanelItems.WindowList           = PanelItemWindowList;
+  OSjs.CoreWM.PanelItems.Clock                = PanelItemClock;
+  OSjs.CoreWM.PanelItems.StartupNotification  = PanelItemStartupNotification;
 
 })(OSjs.CoreWM, OSjs.CoreWM.Panel, OSjs.CoreWM.PanelItem);
 

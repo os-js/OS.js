@@ -54,6 +54,7 @@
           items:    [
             {name: 'Buttons'},
             {name: 'WindowList'},
+            {name: 'StartupNotification'},
             {name: 'Clock'}
           ]
         }
@@ -69,6 +70,32 @@
       return OSjs.Utils.mergeObject(cfg, defaults);
     }
     return cfg;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MISC
+  /////////////////////////////////////////////////////////////////////////////
+
+  function GetPanelItems(panels, type) {
+    var items = [];
+    var panel, pitem;
+    var p, i;
+
+    for ( p = 0; p < panels.length; p++ ) {
+      panel = panels[p];
+      if ( panel ) {
+        pitem = panel.getItemsByType(type);
+        if ( pitem && pitem.length ) {
+          for ( i = 0; i < pitem.length; i++ ) {
+            if ( pitem[i] ) {
+              items.push(pitem[i]);
+            }
+          }
+        }
+      }
+    }
+
+    return items;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -548,6 +575,26 @@
         this.iconView._fireHook('blur');
       }
     }
+  };
+
+  CoreWM.prototype.createStartupNotification = function(name) {
+    if ( !name ) { return false; }
+
+    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.StartupNotification);
+    for ( var i = 0; i < pitems.length; i++ ) {
+      pitems[i].createNotification(name);
+    }
+    return pitems.length > 0;
+  };
+
+  CoreWM.prototype.removeStartupNotification = function(name) {
+    if ( !name ) { return false; }
+
+    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.StartupNotification);
+    for ( var i = 0; i < pitems.length; i++ ) {
+      pitems[i].removeNotification(name);
+    }
+    return pitems.length > 0;
   };
 
   CoreWM.prototype.openDesktopMenu = function(ev) {

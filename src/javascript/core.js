@@ -275,6 +275,20 @@
     var self = this;
     var splash = null;
     var splashBar = null;
+    var snotified = false;
+
+    var _createStartupNotification = function(data) {
+      return _WM ? _WM.createStartupNotification((data.name || n)) : false;
+    };
+    var _removeStartupNotification = function() {
+      if ( snotified ) {
+        if ( _WM ) {
+          _WM.removeStartupNotification(snotified);
+        }
+        return true;
+      }
+      return false;
+    };
 
     var _updateSplash = function(p, c) {
       if ( !splash || !splashBar ) { return; }
@@ -286,7 +300,13 @@
     };
 
     var _createSplash = function(data) {
-      _$LOADING.style.display = 'block';
+      if ( _createStartupNotification(data) ) {
+        snotified = (data.name || n);
+      }
+
+      if ( !snotified ) {
+        _$LOADING.style.display = 'block';
+      }
 
       if ( !data.splash ) { return; }
 
@@ -397,7 +417,11 @@
 
     var _preload = function(result) {
       OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
-        _$LOADING.style.display = 'none';
+        if ( snotified ) {
+          _removeStartupNotification(snotified);
+        } else {
+          _$LOADING.style.display = 'none';
+        }
 
         if ( errors ) {
           _error(OSjs._("Application '{0}' preloading failed: \n{1}", n, failed.join(",")));

@@ -951,13 +951,27 @@
     this._$container.appendChild(item.init());
   };
 
-  Panel.prototype.getItem = function(type) {
+  Panel.prototype.getItemByType = function(type) {
+    return this.getItem(type);
+  };
+
+  Panel.prototype.getItemsByType = function(type) {
+    return this.getItem(type, true);
+  };
+
+  Panel.prototype.getItem = function(type, multiple) {
+    var result = multiple ? [] : null;
     for ( var i = 0; i < this._items.length; i++ ) {
       if ( this._items[i] instanceof type ) {
-        return this._items[i];
+        if ( multiple ) {
+          result.push(this._items[i]);
+        } else {
+          result = this._items[i];
+          break;
+        }
       }
     }
-    return null;
+    return result;
   };
 
   Panel.prototype.getOntop = function() {
