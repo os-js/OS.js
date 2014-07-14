@@ -1,0 +1,147 @@
+
+/**
+ * PanelItemClock
+ */
+.WMPanel .PanelItemClock {
+  width : 70px;
+  cursor : default;
+}
+.WMPanel .PanelItemClock > div {
+  display : inline-block;
+  vertical-align : middle;
+}
+
+/**
+ * PanelItemWindowList
+ */
+.WMPanel .PanelItemWindowList {
+  overflow : hidden;
+}
+
+/**
+ * PanelItemNotificationArea
+ */
+.WMPanel .PanelItemNotificationArea {
+  overflow : hidden;
+  position : relative;
+}
+.WMPanel .PanelItemNotificationArea > div.StartupNotification {
+  display : inline-block;
+  width : 16px;
+  height : 16px;
+  position : relative;
+  margin : 4px;
+  cursor : help;
+}
+
+.WMPanel .PanelItemNotificationArea > div.StartupNotification > div {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #000;
+  border-radius: 100%;
+}
+.WMPanel .PanelItemNotificationArea > div.StartupNotification > div:before {
+  display: block;
+  position: absolute;
+  left: 7px; /*( 16px / 2 ) - 1px;*/
+  top: 2px;
+  width: 2px;
+  height: 6px; /*( 16px / 2 ) - 2px;*/
+  background-color: #000;
+  content: "";
+
+  -webkit-animation: NotificationSpinAnim 3s linear infinite;
+     -moz-animation: NotificationSpinAnim 3s linear infinite;
+      -ms-animation: NotificationSpinAnim 3s linear infinite;
+          animation: NotificationSpinAnim 3s linear infinite;
+
+  -webkit-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+     -moz-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+      -ms-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+          transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+}
+.WMPanel .PanelItemNotificationArea > div.StartupNotification > div:after {
+    display: block;
+    position: absolute;
+    left: 7px; /*( 16px / 2 ) - 1px;*/
+    top: 3px;
+    width: 2px;
+    height: 5px; /*( 16px / 2 ) - 3px;*/
+    background-color: #000;
+    content: "";
+
+    -webkit-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
+       -moz-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
+        -ms-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
+            animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
+
+    -webkit-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+       -moz-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+        -ms-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+            transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+}
+
+.WMPanel .PanelItemNotificationArea > div.BusyNotification {
+  display : inline-block;
+  width : 16px;
+  height : 16px;
+  position : relative;
+  margin : 4px;
+  cursor : help;
+}
+.WMPanel .PanelItemNotificationArea > div.BusyNotification > div {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #000;
+  border-radius: 100%;
+}
+.WMPanel .PanelItemNotificationArea > div.BusyNotification > div:after,
+.WMPanel .PanelItemNotificationArea > div.BusyNotification > div:before {
+  display: block;
+  position: absolute;
+  left: 7px;
+  top: 2px;
+  width: 2px;
+  height: 12px;
+  background-color: #000;
+  content: "";
+
+  -webkit-transform-origin: 1px 6px; /* 1px ( 24px / 2 ) - 2px;*/
+     -moz-transform-origin: 1px 6px; /* 1px ( 24px / 2 ) - 2px;*/
+      -ms-transform-origin: 1px 6px; /* 1px ( 24px / 2 ) - 2px;*/
+          transform-origin: 1px 6px; /* 1px ( 24px / 2 ) - 2px;*/
+
+  -webkit-animation: NotificationSpinAnim 3s linear infinite;
+     -moz-animation: NotificationSpinAnim 3s linear infinite;
+      -ms-animation: NotificationSpinAnim 3s linear infinite;
+          animation: NotificationSpinAnim 3s linear infinite;
+}
+.WMPanel .PanelItemNotificationArea > div.BusyNotification > div:after {
+  -webkit-animation: NotificationSpinAnim 3s linear -0.75s infinite;
+     -moz-animation: NotificationSpinAnim 3s linear -0.75s infinite;
+      -ms-animation: NotificationSpinAnim 3s linear -0.75s infinite;
+          animation: NotificationSpinAnim 3s linear -0.75s infinite;
+}
+
+@-webkit-keyframes NotificationSpinAnim {
+  to {
+    -webkit-transform: rotate( 360deg );
+  }
+}
+@-moz-keyframes NotificationSpinAnim {
+  to {
+    -moz-transform: rotate( 360deg );
+  }
+}
+@-ms-keyframes NotificationSpinAnim {
+  to {
+    -ms-transform: rotate( 360deg );
+  }
+}
+@keyframes NotificationSpinAnim {
+  to {
+    transform: rotate( 360deg );
+  }
+}

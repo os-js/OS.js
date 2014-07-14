@@ -127,6 +127,38 @@
     return _getWindowSpace();
   }
 
+  /**
+   * Create (or show) loading indicator
+   */
+  function createLoading(name, opts) {
+    if ( _WM ) {
+      if ( _WM.createNotificationIcon(name, opts) ) {
+        return name;
+      }
+    }
+
+    _$LOADING.style.display = 'block';
+
+    return false;
+  }
+
+  /**
+   * Destroy (or hide) loading indicator
+   */
+  function destroyLoading(name) {
+    if ( name ) {
+      if ( _WM ) {
+        if ( _WM.removeNotificationIcon(name) ) {
+          return true;
+        }
+      }
+    }
+
+    _$LOADING.style.display = 'none';
+
+    return false;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -140,16 +172,24 @@
    * @param   Function  cerror  Callback on error
    * @return  void
    */
-  function APICall(m, a, cok, cerror) {
-    _$LOADING.style.display = 'block';
-    return _HANDLER.callAPI(m, a, function() {
-      _$LOADING.style.display = 'none';
-      cok.apply(this, arguments);
-    }, function() {
-      _$LOADING.style.display = 'none';
-      cerror.apply(this, arguments);
-    });
-  }
+  var APICall = (function() {
+    var _cidx = 1;
+
+    return function(m, a, cok, cerror) {
+      var lname = "APICall_" + _cidx;
+      createLoading(lname, {className: "BusyNotification", tooltip: "API Call"});
+
+      _cidx++;
+
+      return _HANDLER.callAPI(m, a, function() {
+        destroyLoading(lname);
+        cok.apply(this, arguments);
+      }, function() {
+        destroyLoading(lname);
+        cerror.apply(this, arguments);
+      });
+    };
+  })();
 
   /**
    * Global function for showing an error dialog
@@ -275,20 +315,6 @@
     var self = this;
     var splash = null;
     var splashBar = null;
-    var snotified = false;
-
-    var _createStartupNotification = function() {
-      return _WM ? _WM.createNotificationIcon(n, {className: "StartupNotification", tooltip: "Starting " + n}) : false;
-    };
-    var _removeStartupNotification = function() {
-      if ( snotified ) {
-        if ( _WM ) {
-          _WM.removeNotificationIcon(snotified);
-        }
-        return true;
-      }
-      return false;
-    };
 
     var _updateSplash = function(p, c) {
       if ( !splash || !splashBar ) { return; }
@@ -300,13 +326,7 @@
     };
 
     var _createSplash = function(data) {
-      if ( _createStartupNotification() ) {
-        snotified = n;
-      }
-
-      if ( !snotified ) {
-        _$LOADING.style.display = 'block';
-      }
+      createLoading(n, {className: "StartupNotification", tooltip: "Starting " + n});
 
       if ( !data.splash ) { return; }
 
@@ -417,11 +437,7 @@
 
     var _preload = function(result) {
       OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
-        if ( snotified ) {
-          _removeStartupNotification(snotified);
-        } else {
-          _$LOADING.style.display = 'none';
-        }
+        destroyLoading(n);
 
         if ( errors ) {
           _error(OSjs._("Application '{0}' preloading failed: \n{1}", n, failed.join(",")));
