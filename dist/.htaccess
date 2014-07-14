@@ -16,7 +16,7 @@ RewriteRule ^FS api.php?upload
 </ifModule>
 
 <ifModule mod_headers.c>
-  <FilesMatch "\.(html|htm|js|css|json)$">
+  <FilesMatch "\.json$">
     FileETag None
     Header unset ETag
     Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
@@ -24,7 +24,7 @@ RewriteRule ^FS api.php?upload
     Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
   </FilesMatch>
 
-  <FilesMatch "\.(mp3|ogg|oga|mpe?g|avi|wav|webm|aac|mp4)$">
+  <FilesMatch "^FS">
     FileETag None
     Header unset ETag
     Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"

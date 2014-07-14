@@ -4,6 +4,7 @@
 * _[Application]_ Writer -- Finish (note: Check for changes before opening/new file)
 * _[Application]_ MusicPlayer -- Finish
 * _[Application]_ Go over applications and clean up code (including DefaultApplication class)
+* _[CoreWM]_ Convert StartupNotification to NotificationArea
 
 # Meduim-priority
 * _[Backend]_ Provide a websocket version like in v1
