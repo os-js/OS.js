@@ -163,15 +163,6 @@
       self.fixScrollbar();
     });
 
-    if ( OSjs.Utils.getCompability().touch ) {
-      this._addEventListener(el, 'touchmove', function(ev) {
-        ev.preventDefault();
-      });
-      this._addEventListener(this.$scroll, 'touchmove', function(ev) {
-        ev.preventDefault();
-      });
-    }
-
     table.appendChild(head);
     table.appendChild(body);
     tableTop.appendChild(headTop);
@@ -339,16 +330,7 @@
 
   ListView.prototype.fixScrollbar = function() {
     if ( !this.$element ) { return; }
-
-    var top = 0;
-    var padding = 0;
-    if ( this.$element.scrollTop ) {
-      top = this.$element.scrollTop;
-      padding = this.$tableTop.offsetHeight;
-    }
-
-    this.$tableTop.style.top = top + "px";
-    //this.$view.style.paddingTop = padding + "px";
+    this.$tableTop.style.top = this.$element.scrollTop + "px";
   };
 
   ListView.prototype.addColumn = function(c) {
