@@ -163,6 +163,15 @@
       self.fixScrollbar();
     });
 
+    if ( OSjs.Utils.getCompability().touch ) {
+      this._addEventListener(el, 'touchmove', function(ev) {
+        ev.preventDefault();
+      });
+      this._addEventListener(this.$scroll, 'touchmove', function(ev) {
+        ev.preventDefault();
+      });
+    }
+
     table.appendChild(head);
     table.appendChild(body);
     tableTop.appendChild(headTop);
