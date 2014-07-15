@@ -6,13 +6,14 @@
 * _[Application]_ Go over applications and clean up code (including DefaultApplication class)
 * _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
 
-# Meduim-priority
+# Medium-priority
 * _[Backend]_ Provide a websocket version like in v1
 * _[Backend]_ Rewrite the PHP backend
 * _[Backend]_ Rewrite the Node backend
 * _[GUI]_ GUIScrollbar
 * _[Locales]_ Create reserved strings for locales in `locales.js` (for core messages etc)
 * _[Misc]_ There are TODO and FIXME markings in source code files
+* _[Themes]_ CSS Style scrollbars on webkit
 
 # Low-priority
 * _[Application]_ CoreWM -- Custom keyboard binding shortcuts
