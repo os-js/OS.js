@@ -30,6 +30,19 @@
  */
 (function(GUIElement, ListView, TreeView, IconView, _DataView) {
 
+  function createDragImage(ev, dragRoot) {
+    return null;
+    var el = document.createElement("div");
+    el.style.position = "absolute";
+    el.style.left = "0px";
+    el.style.top = "0px";
+    el.style.width = "40px";
+    el.style.height = "40px";
+    el.style.zIndex = -2;
+    el.style.background = "red";
+    return {element: el, offset: {x: 20, y: 20}};
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // FileView
   /////////////////////////////////////////////////////////////////////////////
@@ -83,7 +96,8 @@
               path: item.path,
               size : item.size,
               mime: item.mime
-            }
+            },
+            dragImage : createDragImage
           });
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
@@ -226,7 +240,8 @@
               path: item.path,
               size : item.size,
               mime: item.mime
-            }
+            },
+            dragImage: createDragImage
           });
         } else if ( item.type == 'dir' ) {
           el.title = item.path;
@@ -333,7 +348,8 @@
               path: item.path,
               size : item.size,
               mime: item.mime
-            }
+            },
+            dragImage : createDragImage
           });
 
         } else if ( item.type == 'dir' ) {

@@ -9,7 +9,7 @@
 # 	core             Build only core files
 # 	packages         Build only package files
 # 	themes           Build only theme files
-# 	manifest         Create package manifest
+# 	manifest         Create package manifest (you need to run 'make packages' first)
 #
 # Others:
 # 	php-webserver        Start PHP webserver
@@ -29,12 +29,14 @@ all: clean config core themes packages manifest
 
 clean:
 	rm -f dist/packages.json ||:
+	rm -f dist-dev/packages.json ||:
 	rm -f dist/osjs.* ||:
 	rm -rf dist/packages/* ||:
 	rm -rf dist/themes/* ||:
 
 core:
 	@echo "\033[1;32mBuilding OS.js Core\033[0m"
+	rm -f dist/osjs.* ||:
 	(bin/build-dist)
 
 config:
@@ -43,6 +45,7 @@ config:
 
 packages:
 	@echo "\033[1;32mBuilding Packages\033[0m"
+	rm -rf dist/packages/* ||:
 	(bin/build-packages)
 
 themes:
@@ -57,6 +60,8 @@ compress:
 
 manifest:
 	@echo "\033[1;32mCreating package manifest\033[0m"
+	rm -f dist/packages.json ||:
+	rm -f dist-dev/packages.json ||:
 	(bin/create-manifest)
 
 #

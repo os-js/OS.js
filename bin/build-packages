@@ -15,8 +15,9 @@ for r in `find src/packages -type d -maxdepth 1 -mindepth 1`; do
       continue
     fi
 
-    echo -e "Copying package '$app'";
+    echo -e "Copying and combining package '$app'";
     cp -rf ${a} dist/packages/${repo}/${app}
+    ./bin/build-package ${repo} ${app}
   done
 
 done

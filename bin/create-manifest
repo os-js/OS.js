@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
-var PACKAGES_DIR  = "src/packages";
+/**
+ * Creates package manifest files for 'dist' and 'dist-dev'
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ */
+
 var REPO_FILE     = "src/packages/repositories.json";
-var OUT_MANIFEST  = "dist/packages.json";
 
 var _fs   = require('fs'),
     _path = require('path');
@@ -22,12 +26,12 @@ function get_metadata(path, file, repo) {
     }
 
     if ( !manifest ) {
-      console.log("\033[0;31mSkipped '%s' (no manifest)\033[0m", file);
+      console.log("  - \033[0;31mSkipped '%s' (no manifest)\033[0m", file);
       return null;
     }
 
     if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
-      console.log("\033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
+      console.log("  - \033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
       return null;
     }
 
@@ -43,25 +47,25 @@ function get_metadata(path, file, repo) {
     manifest.iter = package_name;
 
     //console.log("\033[1;37mAdded package '%s'\033[0m", package_name);
-    console.log("Added package '%s'", package_name);
+    console.log("  - Added package '%s'", package_name);
 
     return manifest;
   } catch ( e ) {
-    console.log("  \033[0;31mSkipped '%s' (parse error)\033[0m", file);
+    console.log("  - \033[0;31mSkipped '%s' (parse error)\033[0m", file);
     console.error(e);
   }
   return null;
 }
 
-function scan_packages(repo, /* byref */packages) {
-  var files = _fs.readdirSync(_path.join(PACKAGES_DIR, repo));
+function scan_packages(pkgdir, repo, /* byref */packages) {
+  var files = _fs.readdirSync(_path.join(pkgdir, repo));
 
   var file, path, metadata;
   for ( var f = 0; f < files.length; f++ ) {
     file = files[f];
     if ( !file.length || file.match(/^\./) ) continue;
 
-    path = _path.join(PACKAGES_DIR, repo, file);
+    path = _path.join(pkgdir, repo, file);
     if ( _fs.statSync(path).isDirectory() ) {
       metadata = get_metadata(path, file, repo);
       if ( metadata !== null ) {
@@ -71,14 +75,21 @@ function scan_packages(repo, /* byref */packages) {
   }
 }
 
-var combined = {};
-var repos = JSON.parse(_fs.readFileSync(REPO_FILE));
-var repo;
+function create_dist_manifest(dist) {
+  var combined = {};
+  var repos = JSON.parse(_fs.readFileSync(REPO_FILE));
+  var repo;
 
-for ( var i = 0; i < repos.length; i++ ) {
-  repo = repos[i];
-  console.log("\033[1;34mScanning repository '%s':\033[0m", repo);
-  scan_packages(repo, combined);
+  console.log("\033[1;32mCreating manifest for '%s'\033[0m", dist);
+
+  for ( var i = 0; i < repos.length; i++ ) {
+    repo = repos[i];
+    console.log("+ \033[1;34mScanning repository '%s':\033[0m", repo);
+    scan_packages(dist + "/packages", repo, combined);
+  }
+
+  _fs.writeFileSync(dist + "/packages.json", JSON.stringify(combined, null, 2));
 }
 
-_fs.writeFileSync(OUT_MANIFEST, JSON.stringify(combined));
+create_dist_manifest("dist");
+create_dist_manifest("dist-dev");

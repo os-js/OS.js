@@ -93,6 +93,7 @@
     }, false);
 
     el.addEventListener('dragenter', function(ev) {
+      OSjs.Utils.$addClass(el, "onDragEnter");
       return args.onEnter.call(this, ev, this, args);
     }, false);
 
@@ -104,6 +105,7 @@
     }, false);
 
     el.addEventListener('dragleave', function(ev) {
+      OSjs.Utils.$removeClass(el, "onDragEnter");
       return args.onLeave.call(this, ev, this, args);
     }, false);
   }
@@ -115,6 +117,7 @@
     args.data   = args.data   || null;
     args.mime   = args.mime   || 'application/json';
 
+    args.dragImage  = args.dragImage  || null;
     args.onStart    = args.onStart    || function() { return true; };
     args.onEnd      = args.onEnd      || function() { return true; };
 
@@ -137,6 +140,18 @@
       if ( ev.dataTransfer ) {
         try {
           ev.dataTransfer.effectAllowed = args.effect;
+          if ( args.dragImage && (typeof args.dragImage === "function") ) {
+            if ( ev.dataTransfer.setDragImage ) {
+              var dragImage = args.dragImage(ev, el);
+              if ( dragImage ) {
+                var dragEl    = dragImage.element;
+                var dragPos   = dragImage.offset;
+
+                document.body.appendChild(dragEl);
+                ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
+              }
+            }
+          }
           ev.dataTransfer.setData(args.mime, _toString(args.mime));
         } catch ( e ) {
           console.warn("Failed to dragstart: " + e);

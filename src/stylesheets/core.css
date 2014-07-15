@@ -43,16 +43,6 @@ body, input, button, textarea, label, select {
   font-family : Sans-serif, Arial;
 }
 
-[draggable] {
-  -webkit-user-select: none;
-   -khtml-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
-
-  -webkit-user-drag: element;
-   -khtml-user-drag: element;
-}
-
 /**
  * Default Wallpaper stuff
  */

@@ -16,3 +16,4 @@ dist/osjs.js
 dist/osjs.css
 dist/packages.json
 dist-dev/test.*
+dist-dev/packages.json

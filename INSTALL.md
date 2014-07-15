@@ -20,8 +20,6 @@ Or if you do not have Git see this wiki article: [Installation without Git](http
 
 Simply run `make`
 
-Optionally run `make compress` if you want a minimized build
-
 ## 3: Setting up a web-server
 
 Make sure the VFS directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.

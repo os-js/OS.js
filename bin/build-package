@@ -1,0 +1,76 @@
+#!/usr/bin/env node
+
+/**
+ * Combines all resources for dist packages
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ */
+
+var _fs   = require('fs'),
+    _path = require('path');
+
+var ROOT = _path.dirname(_path.dirname(__filename) + "../");
+
+var repo    = process.argv[2];
+var app     = process.argv[3];
+var dir     = _path.join(ROOT, "dist", "packages", repo, app);
+var manpath = _path.join(dir, "package.json");
+var man     = JSON.parse(_fs.readFileSync(manpath));
+var mkey    = null;
+
+for ( var x in man ) {
+  if ( man.hasOwnProperty(x) ) {
+    mkey = x;
+    break;
+  }
+}
+
+if ( !mkey || !man[mkey] ) {
+  return;
+}
+
+if ( man[mkey].preload && man[mkey].preload.length ) {
+  var combined_js = [];
+  var combined_css = [];
+  var remove = [];
+  var p, r, s;
+  var n = [];
+
+  for ( var i = 0; i < man[mkey].preload.length; i++ ) {
+    s = man[mkey].preload[i];
+    p = _path.join(dir, s.src);
+
+    if ( s.src.match(/^combined\.(css|js)$/) ) {
+      n.push(s);
+      continue;
+    }
+
+    if ( s.type == "javascript" ) {
+      combined_js.push(_fs.readFileSync(p));
+      remove.push(p);
+    } else if ( s.type == "stylesheet" ) {
+      combined_css.push(_fs.readFileSync(p));
+      remove.push(p);
+    } else {
+      n.push(s);
+    }
+  }
+
+  for ( var r = 0; r < remove.length; r++ ) {
+    _fs.unlinkSync(remove[r]);
+  }
+
+  if ( combined_css.length ) {
+    n.push({type: "stylesheet", src: "combined.css"});
+  }
+  if ( combined_js.length ) {
+    n.push({type: "javascript", src: "combined.js"});
+  }
+
+  man[mkey].preload = n;
+
+  _fs.writeFileSync(_path.join(dir, "combined.js"), combined_js.join("\n"));
+  _fs.writeFileSync(_path.join(dir, "combined.css"), combined_css.join("\n"));
+  _fs.writeFileSync(manpath, JSON.stringify(man, null, 2));
+}
+
