@@ -40,7 +40,7 @@ if ( man[mkey].preload && man[mkey].preload.length ) {
     s = man[mkey].preload[i];
     p = _path.join(dir, s.src);
 
-    if ( s.src.match(/^combined\.(css|js)$/) ) {
+    if ( ((typeof s.combine !== "undefined" && (s.combine === false || s.combine === "false"))) || s.src.match(/^combined\.(css|js)$/) ) {
       n.push(s);
       continue;
     }
