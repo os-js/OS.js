@@ -89,4 +89,6 @@ See the `LICENSE` file.
 * [Demo Page](http://osjsv2.0o.no/)
 * [Author Homepage](http://andersevenrud.github.io/)
 * [Author Blog](http://anderse.wordpress.com)
+* [Google+ Page](https://plus.google.com/b/113399210633478618934/113399210633478618934)
+* [Facebook Page](https://www.facebook.com/pages/OSjs/226644300734574)
 * [OS.js v1](http://andersevenrud.github.com/OS.js)
