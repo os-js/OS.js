@@ -1,3 +1,16 @@
+# 2.0.0-alpha9
+
+* Application - Draw: Small updates
+* Build-system: Update compression script
+* Build-system: Combine sources for 'dist' build
+* Build-system: Cleanups and small fixes
+* CoreWM: Added NotificationArea panel item
+* CoreWM: Added busy/startup notifications
+* CoreWM: Split CSS files
+* CoreWM: Resume loading panel-items if queue fails (bufix)
+* CGI: Update .htaccess rules for builds
+
+
 # 2.0.0-alpha7 to 2.0.0-alpha8
 
 * Cleaned up some old code
