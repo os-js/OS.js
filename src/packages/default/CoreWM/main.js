@@ -73,32 +73,6 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // MISC
-  /////////////////////////////////////////////////////////////////////////////
-
-  function GetPanelItems(panels, type) {
-    var items = [];
-    var panel, pitem;
-    var p, i;
-
-    for ( p = 0; p < panels.length; p++ ) {
-      panel = panels[p];
-      if ( panel ) {
-        pitem = panel.getItemsByType(type);
-        if ( pitem && pitem.length ) {
-          for ( i = 0; i < pitem.length; i++ ) {
-            if ( pitem[i] ) {
-              items.push(pitem[i]);
-            }
-          }
-        }
-      }
-    }
-
-    return items;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
@@ -578,25 +552,38 @@
     }
   };
 
-  CoreWM.prototype.createNotificationIcon = function(name, opts) {
+  CoreWM.prototype.createNotificationIcon = function(name, opts, panelId) {
     opts = opts || {};
+    panelId = panelId || 0;
     if ( !name ) { return false; }
 
-    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.NotificationArea);
-    for ( var i = 0; i < pitems.length; i++ ) {
-      pitems[i].createNotification(name, opts);
+    var panel  = this.panels[panelId];
+    var result = null;
+    if ( panel ) {
+      var pitem = panel.getItem(OSjs.CoreWM.PanelItems.NotificationArea, false);
+      if ( pitem ) {
+        result = pitem.createNotification(name, opts);
+      }
+
     }
-    return pitems.length > 0;
+    return result;
   };
 
-  CoreWM.prototype.removeNotificationIcon = function(name) {
+  CoreWM.prototype.removeNotificationIcon = function(name, panelId) {
+    panelId = panelId || 0;
     if ( !name ) { return false; }
 
-    var pitems = GetPanelItems(this.panels, OSjs.CoreWM.PanelItems.NotificationArea);
-    for ( var i = 0; i < pitems.length; i++ ) {
-      pitems[i].removeNotification(name);
+    var panel  = this.panels[panelId];
+    var result = null;
+    if ( panel ) {
+      var pitem = panel.getItem(OSjs.CoreWM.PanelItems.NotificationArea, false);
+      if ( pitem ) {
+        pitem.removeNotification(name);
+        return true;
+      }
+
     }
-    return pitems.length > 0;
+    return false;
   };
 
   CoreWM.prototype.openDesktopMenu = function(ev) {

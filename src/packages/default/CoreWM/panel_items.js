@@ -275,10 +275,15 @@
   var NotificationAreaItem = function(name, opts) {
     opts = opts || {};
 
-    this.name       = name;
-    this.opts       = opts;
-    this.$container = document.createElement("div");
-    this.$inner     = document.createElement("div");
+    this.name           = name;
+    this.opts           = opts;
+    this.$container     = document.createElement("div");
+    this.$inner         = document.createElement("div");
+    this.onCreated      = opts.onCreated     || function() {};
+    this.onInited       = opts.onInited      || function() {};
+    this.onDestroy      = opts.onDestroy     || function() {};
+    this.onClick        = opts.onClick       || function() {};
+    this.onContextMenu  = opts.onContextMenu || function() {};
 
     var classNames = ["NotificationArea", "NotificationArea_" + name];
     if ( opts.className ) {
@@ -290,14 +295,29 @@
       this.$container.title = this.opts.tooltip;
     }
 
+    var self = this;
+    this.$inner.addEventListener("click", function(ev) {
+      self.onClick.apply(self, arguments);
+    });
+    this.$inner.addEventListener("contextmenu", function(ev) {
+      ev.preventDefault();
+      self.onContextMenu.apply(self, arguments);
+    });
+
     this.$container.appendChild(this.$inner);
+
+    this.onCreated.call(this);
   };
 
   NotificationAreaItem.prototype.init = function(root) {
     root.appendChild(this.$container);
+
+    this.onInited.call(this, this.$container);
   };
 
   NotificationAreaItem.prototype.destroy = function() {
+    this.onDestroy.call(this);
+
     if ( this.$container ) {
       if ( this.$container.parentNode ) {
         this.$container.parentNode.removeChild(this.$container);

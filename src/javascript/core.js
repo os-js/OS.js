@@ -130,9 +130,9 @@
   /**
    * Create (or show) loading indicator
    */
-  function createLoading(name, opts) {
+  function createLoading(name, opts, panelId) {
     if ( _WM ) {
-      if ( _WM.createNotificationIcon(name, opts) ) {
+      if ( _WM.createNotificationIcon(name, opts, panelId) ) {
         return name;
       }
     }
@@ -145,10 +145,10 @@
   /**
    * Destroy (or hide) loading indicator
    */
-  function destroyLoading(name) {
+  function destroyLoading(name, panelId) {
     if ( name ) {
       if ( _WM ) {
-        if ( _WM.removeNotificationIcon(name) ) {
+        if ( _WM.removeNotificationIcon(name, panelId) ) {
           return true;
         }
       }
