@@ -248,6 +248,12 @@
     };
     var _updateClock = function() {
       var d = new Date();
+      var t = ([
+        (d.getHours() < 10 ? ("0" + d.getHours()) : d.getHours()),
+        (d.getMinutes() < 10 ? ("0" + d.getMinutes()) : d.getMinutes()),
+        (d.getSeconds() < 10 ? ("0" + d.getSeconds()) : d.getSeconds())
+      ]).join(":");
+
       clock.innerHTML = d.toLocaleTimeString();
       clock.title     = d.toLocaleDateString();
     };

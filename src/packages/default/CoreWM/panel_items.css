@@ -5,6 +5,9 @@
 .WMPanel .PanelItemClock {
   width : 70px;
   cursor : default;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
 .WMPanel .PanelItemClock > div {
   display : inline-block;
@@ -16,6 +19,7 @@
  */
 .WMPanel .PanelItemWindowList {
   overflow : hidden;
+  min-width : 100px;
 }
 
 /**
