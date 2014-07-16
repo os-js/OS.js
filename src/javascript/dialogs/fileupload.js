@@ -30,15 +30,18 @@
  */
 (function(StandardDialog) {
 
+  var _ID = 0;
+
   /**
    * File Upload Dialog
    */
   var FileUploadDialog = function(dest, file, onClose) {
-    this.dest     = dest;
-    this.file     = file || null;
-    this.$file    = null;
-    this.dialog   = null;
-    this._wmref   = null;
+    this.dest             = dest;
+    this.file             = file || null;
+    this.$file            = null;
+    this.dialog           = null;
+    this._wmref           = null;
+    this.notificationId   = "FileUploadDialog_" + _ID;
 
     this.uploadName = null;
     this.uploadSize = null;
@@ -48,6 +51,8 @@
     var msg = OSjs._('Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes', this.dest, maxSize);
     StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs._("Upload Dialog"), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
     this._icon = 'actions/filenew.png';
+
+    _ID++;
   };
 
   FileUploadDialog.prototype = Object.create(StandardDialog.prototype);
@@ -89,6 +94,10 @@
   };
 
   FileUploadDialog.prototype.end = function() {
+    if ( this._wmref ) {
+      this._wmref.removeNotificationIcon(this.notificationId);
+    }
+
     if ( this.dialog ) {
       this.dialog._close();
       this.dialog = null;
@@ -102,14 +111,19 @@
     this.$file.disabled = 'disabled';
     this.buttonCancel.setDisabled(true);
 
+    var desc = OSjs._("Uploading '{0}' ({1} {2}) to {3}", file.name, file.type, size, this.dest);
     this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs._("Uploading file...")));
-    this.dialog.setDescription(OSjs._("Uploading '{0}' ({1} {2}) to {3}" + file.name, file.type, size, this.dest));
+    this.dialog.setDescription(desc);
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
 
     this.uploadName = file.name;
     this.uploadSize = size;
     this.uploadMime = file.type;
+
+    if ( this._wmref ) {
+      this._wmref.createNotificationIcon(this.notificationId, {className: "BusyNotification", tooltip: desc});
+    }
 
     var self = this;
     OSjs.Utils.AjaxUpload(file, size, this.dest, {
