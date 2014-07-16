@@ -89,6 +89,7 @@
     };
 
     el.addEventListener('drop', function(ev) {
+      OSjs.Utils.$removeClass(el, "onDragEnter");
       return _onDrop(ev, this);
     }, false);
 
