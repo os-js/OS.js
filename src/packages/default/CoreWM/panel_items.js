@@ -254,8 +254,8 @@
         (d.getSeconds() < 10 ? ("0" + d.getSeconds()) : d.getSeconds())
       ]).join(":");
 
-      clock.innerHTML = d.toLocaleTimeString();
-      clock.title     = d.toLocaleDateString();
+      clock.innerHTML = t;
+      clock.title     = t;
     };
     this.clockInterval = setInterval(_updateClock, 1000);
     _updateClock();
