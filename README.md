@@ -7,35 +7,26 @@ Current version: **Alpha**
 
 **If you find any bugs report them back to me and I'll have them squashed**
 
+## Demo
 
-## Changes
+I have a demo running on my server: http://osjsv2.0o.no
 
-* Completely rewritten (API breakage)
-* Easier to extend core and deploy custom builds
-* Easier to create custom applications
-* Smaller and faster
-* Tons of improvements
-* Dropped support for legacy browsers
-* Runs standalone on any web-server (Filesystem APIs requires using the PHP or Node backend)
-* Very simple setup
-* No 3rd party libraries (runs on native browser libs)
+Please note that it may be unavailable at times and slightly out-of-date.
+
+![ScreenShot](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/screenshot.png)
 
 ## Features
 
-* Window Manager
-* Desktop Environment
-* Session Handling (Support for resuming previous workspaces)
-* Package Management (User-installable applications)
-* User Management (Custom login and settings storage)
-* GUI Library (With Drag-and-drop support)
-* Dialog Library
-* Supports both Applications and Background-services
-* File System functions
-* A basic Theme implementation (icons, sounds and CSS styles)
-* Multi-user environment support
-* Localization and translations
+* Window Manager and Desktop Environment with Theme support
+* Support for saving and restoring sessions
+* File-system API to handle file manipulations etc.
+* Localization and Translation support
+* Easy-to-use GUI, Application and Core API for creating custom Applications
+* Runs on all web-servers and node.js
+* Uses no third-party libraries
+* Light-weight and super fast
 
-Comes bundeled with the default theme and some applications:
+### Default application bundle
 * **Draw** - A simple drawing application
 * **File Manager** - File Management
 * **Preview** - For viewing images and videos
@@ -48,23 +39,9 @@ Comes bundeled with the default theme and some applications:
 
 An example repository: [OS.js-v2-extras](https://github.com/andersevenrud/OS.js-v2-extras)
 
-## Demo
+## Installation
 
-You can have a look here: http://osjsv2.0o.no
-
-This site may not always be up to date, and can be unavailable at times.
-
-## Documentation
-
-### Installation
-
-See the `INSTALL.md` file
-
-### General
-
-Source documentation and examples are located in the `doc/` folder.
-
-Everything else is in the GitHub Project Wiki pages (linked below).
+See the `INSTALL.md` file for instructions
 
 ## Compability
 
@@ -80,7 +57,34 @@ Runs in any modern browser. Tested:
 * Android and iOS is working, but no mobile version is implemented yet
 
 # License
-See the `LICENSE` file.
+
+```
+
+OS.js -- Copyright (c) 2011-2013, Anders Evenrud <andersevenrud@gmail.com>
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met: 
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer. 
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution. 
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+```
 
 # Links
 * [Homepage](http://andersevenrud.github.io/OS.js-v2/)
