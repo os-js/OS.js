@@ -241,7 +241,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     var clock = document.createElement('div');
-    clock.innerHTML = '00:00';
+    clock.innerHTML = '00:00:00';
     clock.oncontextmenu = function(ev) {
       ev.stopPropagation();
       return false;
