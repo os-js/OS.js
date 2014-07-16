@@ -25,6 +25,16 @@
   overflow : hidden;
   position : relative;
 }
+.WMPanel .PanelItemNotificationArea > div {
+  width : 20px;
+  height : 20px;
+  display : inline-block;
+  vertical-align : middle;
+  position : relative;
+}
+
+
+
 .WMPanel .PanelItemNotificationArea > div.StartupNotification {
   display : inline-block;
   width : 16px;
