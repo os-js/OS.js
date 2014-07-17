@@ -1,3 +1,17 @@
+# 2.0.0-alpha10
+
+* Updated some documentation
+* New README file for repo
+* Updated INSTALL instructions
+* CoreWM: Notification Area updates
+* CoreWM: Clock Panel Item has been fixed for all platforms
+* Dialog: FileUpload bugfixes
+* Core: Fixed bug where no errors were reported on fail starting WM
+* X11: Small fixes in CSS for compability in libwekbit3
+* Themes: Now supported in build system
+* Themes: Now uses manifest file like packages
+* Makefile: Updated colors
+
 # 2.0.0-alpha9
 
 * Application - Draw: Small updates
