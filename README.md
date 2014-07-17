@@ -22,7 +22,7 @@ Please note that it may be unavailable at times and slightly out-of-date.
 * File-system API to handle file manipulations etc.
 * Localization and Translation support
 * Easy-to-use GUI, Application and Core API for creating custom Applications
-* Runs on all web-servers and node.js
+* Runs on all web-servers using PHP5 or node.js
 * Uses no third-party libraries
 * Light-weight and super fast
 

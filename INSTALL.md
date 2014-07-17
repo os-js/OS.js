@@ -27,12 +27,16 @@ Make sure the VFS directories in `vfs/` are given the correct web-server permiss
 
 Example for Apache: `sudo chown -R www-data:www-data vfs/*`
 
-### PHP5 With Apache
+### PHP5 on Apache
 
 See `doc/apache.conf` for an example
 
 * Make sure .htaccess is allowed
 * Make sure mod_rewrite is enabled
+
+### PHP5 on Lighttpd
+
+See `doc/lighttpd.conf` for an example
 
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
@@ -46,10 +50,6 @@ See `doc/apache.conf` for an example
 * Install dependencies: `npm install node-fs-extra` (only required for filesystem API support)
 * Production dist: `node src/server-node/server.js`
 * Developer dist: `node src/server-node/server.js dist-dev`
-
-### Lighttpd
-
-See `doc/lighttpd.conf` for an example
 
 # Links
 
