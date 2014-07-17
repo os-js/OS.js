@@ -349,6 +349,8 @@
   PanelItemNotificationArea.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
 
+    this.createNotification("FOOBAR", {className: "BusyNotification"})
+
     return root;
   };
 

@@ -3,11 +3,12 @@
  * PanelItemClock
  */
 .WMPanel .PanelItemClock {
-  width : 70px;
+  width : 55px;
   cursor : default;
   overflow : hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
+  text-align : center;
 }
 .WMPanel .PanelItemClock > div {
   display : inline-block;
@@ -30,30 +31,40 @@
   position : relative;
 }
 .WMPanel .PanelItemNotificationArea > div {
-  width : 20px;
-  height : 20px;
+  min-width : 26px;
+  min-height : 26px;
   display : inline-block;
   vertical-align : middle;
+  text-align : center;
   position : relative;
+  cursor : pointer;
+}
+.WMPanel .PanelItemNotificationArea > div > div {
+  position : absolute;
+  top : 50%;
+  left : 50%;
+  width : 16px;
+  height : 16px;
+  margin-left : -8px;
+  margin-top : -8px;
+}
+.WMPanel .PanelItemNotificationArea > div img {
+  vertical-align : middle;
 }
 
 
 
+.WMPanel .PanelItemNotificationArea > div.BusyNotification,
 .WMPanel .PanelItemNotificationArea > div.StartupNotification {
-  display : inline-block;
-  width : 16px;
-  height : 16px;
-  position : relative;
-  margin : 4px;
   cursor : help;
 }
 
+.WMPanel .PanelItemNotificationArea > div.BusyNotification > div,
 .WMPanel .PanelItemNotificationArea > div.StartupNotification > div {
-  position: relative;
-  width: 16px;
-  height: 16px;
   border: 2px solid #000;
   border-radius: 100%;
+  margin-left : -10px;
+  margin-top : -10px;
 }
 .WMPanel .PanelItemNotificationArea > div.StartupNotification > div:before {
   display: block;
@@ -96,21 +107,6 @@
             transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
 }
 
-.WMPanel .PanelItemNotificationArea > div.BusyNotification {
-  display : inline-block;
-  width : 16px;
-  height : 16px;
-  position : relative;
-  margin : 4px;
-  cursor : help;
-}
-.WMPanel .PanelItemNotificationArea > div.BusyNotification > div {
-  position: relative;
-  width: 16px;
-  height: 16px;
-  border: 2px solid #000;
-  border-radius: 100%;
-}
 .WMPanel .PanelItemNotificationArea > div.BusyNotification > div:after,
 .WMPanel .PanelItemNotificationArea > div.BusyNotification > div:before {
   display: block;
