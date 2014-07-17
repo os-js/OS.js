@@ -11,12 +11,6 @@
 # 	themes           Build only theme files
 # 	manifest         Create package manifest (you need to run 'make packages' first)
 #
-# Others:
-# 	php-webserver        Start PHP webserver
-# 	node-webserver       Start Node webserver
-# 	dev-php-webserver    Start PHP webserver for developers
-# 	dev-node-webserver   Start Node webserver for developers
-#
 
 .PHONY: all clean config core themes packages compress manifest
 .DEFAULT: all
@@ -68,20 +62,4 @@ manifest:
 	rm -f dist/themes.json ||:
 	rm -f dist-dev/themes.json ||:
 	(bin/create-theme-manifest)
-
-#
-# OTHER
-#
-
-php-webserver:
-	(cd dist; php -S localhost:8000 ../src/server-php/webserver.php)
-
-node-webserver:
-	node src/server-node/server.js
-
-dev-php-webserver:
-	(cd dist-dev; php -S localhost:8000 ../src/server-php/webserver.php)
-
-dev-node-webserver:
-	node src/server-node/server.js dist-dev
 

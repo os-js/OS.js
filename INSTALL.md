@@ -37,17 +37,15 @@ See `doc/apache.conf` for an example
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
 
-* Run `make php-webserver`
-  * Same as: `(cd dist; php -S localhost:8000 ../src/server-php/webserver.php)`
-  * Or `(cd dist-dev; php -S localhost:8000 ../src/server-php/webserver.php)` for developers
+* Production dist: `(cd dist; php -S localhost:8000 ../src/server-php/webserver.php)`
+* Developer dist: `(cd dist-dev; php -S localhost:8000 ../src/server-php/webserver.php)`
 
 ### Node.js
 *Please note that the node server is not finished yet, but is working for development purposes*
 
 * Install dependencies: `npm install node-fs-extra` (only required for filesystem API support)
-* Run `make node-webserver`
-  * Same as: `node src/server-node/server.js`
-  * Or `node src/server-node/server.js dist-dev` for developers
+* Production dist: `node src/server-node/server.js`
+* Developer dist: `node src/server-node/server.js dist-dev`
 
 ### Lighttpd
 
