@@ -4,17 +4,18 @@ Make sure you have these dependencies installed.
 * **nodejs**
 * **lessc** (`sudo npm -g less`)
 * **bash**
-* **GNU Make** makes building easier, but not a dependency
-* **java** if you want to build compressed dists
+* **GNU Make**
+
+To build compressed/minimized versions java is required because of YUI tools used.
 
 # Installation
 Installation only requires a few small steps.
 
 ## 1: Pull code
 
-Run `git pull https://github.com/andersevenrud/OS.js-v2.git`
+Download the latest source from github or clone with git using:
 
-Or if you do not have Git see this wiki article: [Installation without Git](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration#installation-without-git)
+`git pull https://github.com/andersevenrud/OS.js-v2.git`
 
 ## 2: Build OS.js
 
