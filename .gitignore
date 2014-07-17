@@ -15,5 +15,7 @@ dist/config.js
 dist/osjs.js
 dist/osjs.css
 dist/packages.json
+dist/themes.json
 dist-dev/test.*
 dist-dev/packages.json
+dist-dev/themes.json

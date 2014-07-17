@@ -686,7 +686,12 @@
         return;
       }
 
-      LaunchProcess(wm.exec, wm.args || {}, function() {
+      var cfg = OSjs.Settings.DefaultConfig();
+      var uri = cfg.Core.ThemeMetadataURI;
+
+      var wargs = wm.args || {};
+      wargs.themes = _HANDLER.getThemes();
+      LaunchProcess(wm.exec, wargs, function() {
         callback();
       }, function(error) {
         _error(OSjs._("Cannot launch OS.js: Failed to launch Window Manager: {0}", error));

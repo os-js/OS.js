@@ -5,7 +5,6 @@
 * _[Application]_ MusicPlayer -- Finish
 * _[Application]_ Go over applications and clean up code (including DefaultApplication class)
 * _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
-* _[Themes]_ Needs themes.json file instead of loading from build.json
 
 # Medium-priority
 * _[Backend]_ Provide a websocket version like in v1

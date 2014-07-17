@@ -34,6 +34,55 @@
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
 
+  function FixJSON(response) {
+    if ( typeof response === "string" ) {
+      if ( response.match(/^\{/) ) {
+        try {
+          response = JSON.parse(response);
+        } catch ( e  ){
+          console.warn("FAILED TO FORCE JSON MIME TYPE", e);
+        }
+      }
+    }
+    return response;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // DEFAULT THEME MANAGER
+  /////////////////////////////////////////////////////////////////////////////
+
+  var ThemeManager = function(uri) {
+    this.themes = [];
+    this.uri = uri;
+  };
+
+  ThemeManager.prototype.load = function(callback) {
+    var self = this;
+    callback = callback || {};
+
+    console.info("ThemeManager::load()");
+
+    OSjs.Utils.Ajax(this.uri, function(response, httpRequest, url) {
+      response = FixJSON(response);
+
+      if ( response ) {
+        self.themes = response;
+        callback(true);
+      } else {
+        callback(false, "No themes found!")
+      }
+    }, function(error, response, httpRequest) {
+      if ( httpRequest && httpRequest.status != 200 ) {
+        error = 'Failed to theme manifest from ' + self.uri + ' - HTTP Error: ' + httpRequest.status;
+      }
+      callback(false, error);
+    }, {method: 'GET', parse: true});
+  };
+
+  ThemeManager.prototype.getThemes = function() {
+    return this.themes;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT PACKAGE MANAGER
   /////////////////////////////////////////////////////////////////////////////
@@ -53,17 +102,7 @@
     console.info("PackageManager::load()");
 
     OSjs.Utils.Ajax(this.uri, function(response, httpRequest, url) {
-
-
-      if ( typeof response === "string" ) {
-        if ( response.match(/^\{/) ) {
-          try {
-            response = JSON.parse(response);
-          } catch ( e  ){
-            console.warn("FAILED TO FORCE JSON MIME TYPE", e);
-          }
-        }
-      }
+      response = FixJSON(response);
 
       if ( response ) {
         self._setPackages(response);
@@ -73,7 +112,7 @@
       }
     }, function(error, response, httpRequest) {
       if ( httpRequest && httpRequest.status != 200 ) {
-        error = 'Failed to load package manifest from ' + uri + ' - HTTP Error: ' + httpRequest.status;
+        error = 'Failed to load package manifest from ' + self.uri + ' - HTTP Error: ' + httpRequest.status;
       }
       callback(false, error);
     }, {method: 'GET', parse: true});
@@ -167,10 +206,11 @@
     var cfg = OSjs.Settings.DefaultConfig();
 
     this.offline  = false;
-    this.settings = new OSjs.Helpers.SettingsManager();       // Settings cache
-    this.config   = cfg;                                      // Main configuration copy
-    this.packages = new PackageManager(cfg.Core.MetadataURI); // Package manager
-    this.userData = {                                         // User Session data
+    this.settings = new OSjs.Helpers.SettingsManager();           // Settings cache
+    this.config   = cfg;                                          // Main configuration copy
+    this.packages = new PackageManager(cfg.Core.MetadataURI);     // Package manager
+    this.themes   = new ThemeManager(cfg.Core.ThemeMetadataURI);  // Theme Manager
+    this.userData = {                                             // User Session data
       id      : 0,
       username: 'root',
       name    : 'root user',
@@ -302,8 +342,17 @@
    */
   DefaultHandler.prototype.boot = function(callback) {
     console.info("OSjs::DefaultHandler::boot()");
-    this.packages.load(function() {
-      callback(true);
+
+    var self = this;
+    this.themes.load(function(tresult, terror) {
+      if ( !tresult ) {
+        callback(tresult, terror);
+        return;
+      }
+
+      self.packages.load(function(presult, perror) {
+        callback(presult, perror);
+      });
     });
   };
 
@@ -400,6 +449,16 @@
       }
       callback(pacman.getPackagesByMime(mime));
     });
+  };
+
+  //
+  // Themes
+  //
+  DefaultHandler.prototype.getThemes = function() {
+    if ( this.themes ) {
+      return this.themes.getThemes();
+    }
+    return [];
   };
 
   //

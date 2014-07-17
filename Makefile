@@ -28,6 +28,8 @@
 all: clean config core themes packages manifest
 
 clean:
+	rm -f dist/themes.json ||:
+	rm -f dist-dev/themes.json ||:
 	rm -f dist/packages.json ||:
 	rm -f dist-dev/packages.json ||:
 	rm -f dist/osjs.* ||:
@@ -59,10 +61,13 @@ compress:
 	(bin/compress-dist)
 
 manifest:
-	@echo "\033[1;32mCreating package manifest\033[0m"
+	@echo "\033[1;32mCreating manifest files\033[0m"
 	rm -f dist/packages.json ||:
 	rm -f dist-dev/packages.json ||:
 	(bin/create-manifest)
+	rm -f dist/themes.json ||:
+	rm -f dist-dev/themes.json ||:
+	(bin/create-theme-manifest)
 
 #
 # OTHER

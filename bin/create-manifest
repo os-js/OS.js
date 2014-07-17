@@ -80,7 +80,7 @@ function create_dist_manifest(dist) {
   var repos = JSON.parse(_fs.readFileSync(REPO_FILE));
   var repo;
 
-  console.log("\033[1;32mCreating manifest for '%s'\033[0m", dist);
+  console.log("\033[1;32mCreating package manifest for '%s'\033[0m", dist);
 
   for ( var i = 0; i < repos.length; i++ ) {
     repo = repos[i];
