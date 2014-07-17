@@ -37,31 +37,31 @@ clean:
 	rm -rf dist/themes/* ||:
 
 core:
-	@echo "\033[1;32mBuilding OS.js Core\033[0m"
+	@echo "\033[1;35mBuilding OS.js Core\033[0m"
 	rm -f dist/osjs.* ||:
 	(bin/build-dist)
 
 config:
-	@echo "\033[1;32mBuilding OS.js Configurations\033[0m"
+	@echo "\033[1;35mBuilding OS.js Configurations\033[0m"
 	(bin/build-config)
 
 packages:
-	@echo "\033[1;32mBuilding Packages\033[0m"
+	@echo "\033[1;35mBuilding Packages\033[0m"
 	rm -rf dist/packages/* ||:
 	(bin/build-packages)
 
 themes:
-	@echo "\033[1;32mBuilding Themes\033[0m"
+	@echo "\033[1;35mBuilding Themes\033[0m"
 	rm -rf dist/themes/* ||:
 	(bin/create-themes)
 	cp -R src/themes/wallpapers dist/themes/
 
 compress:
-	@echo "\033[1;32mMaking compressed distro\033[0m"
+	@echo "\033[1;35mMaking compressed distro\033[0m"
 	(bin/compress-dist)
 
 manifest:
-	@echo "\033[1;32mCreating manifest files\033[0m"
+	@echo "\033[1;35mCreating manifest files\033[0m"
 	rm -f dist/packages.json ||:
 	rm -f dist-dev/packages.json ||:
 	(bin/create-manifest)
