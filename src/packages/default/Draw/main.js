@@ -122,8 +122,8 @@
     this.currentTool      = null;
     this.currentStyle     = {
       stroke    : false,
-      bg        : "#000000",
-      fg        : "#ffffff",
+      bg        : "#ffffff",
+      fg        : "#000000",
       lineJoin  : "round",
       lineWidth : 3
     };
