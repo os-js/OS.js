@@ -1390,9 +1390,11 @@
       if ( _WM ) {
         _WM.addWindow(w);
       }
-      setTimeout(function() {
-        w._focus();
-      }, 5);
+      if ( w._properties.start_focused ) {
+        setTimeout(function() {
+          w._focus();
+        }, 5);
+      }
     }
 
     return w;
@@ -1536,6 +1538,7 @@
         allow_ontop       : true,
         allow_hotkeys     : true,
         allow_session     : true,
+        start_focused     : true,
         min_width         : opts.min_height || _DEFAULT_MIN_HEIGHT,
         min_height        : opts.min_width  || _DEFAULT_MIN_WIDTH,
         max_width         : opts.max_width  || null,
