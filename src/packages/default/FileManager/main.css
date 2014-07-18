@@ -12,6 +12,9 @@
 .Window_ApplicationFileManagerWindow .FileManagerPanedView .View.Side {
   width : 140px;
 }
+.Window_ApplicationFileManagerWindow .FileManagerPanedView .View.File {
+  min-width : 50%;
+}
 .Window_ApplicationFileManagerWindow .FileManagerSideView {
   position : absolute;
   top : 0px;
