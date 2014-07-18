@@ -3,137 +3,95 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="google-site-verification" content="bmgeaar1iUG3PtnMnBkPO4rbeJ84oOOQEP2kr71ZOh8" />
     <title>Os.js-v2 by andersevenrud</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-    <script type="text/javascript">var switchTo5x=true;</script>
-    <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
-    <script type="text/javascript" src="http://s.sharethis.com/loader.js"></script>
   </head>
   <body>
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
     <div class="wrapper">
       <header>
-        <h1>Os.js-v2</h1>
-        <p>OS.js version 2.x</p>
-
-        <p class="view"><a href="https://github.com/andersevenrud/OS.js-v2">View the Project on GitHub <small>andersevenrud/OS.js-v2</small></a></p>
-        <p class="view"><a href="https://github.com/andersevenrud/OS.js-v2/wiki">Wiki<small>github.com</small></a></p>
-        <p class="view"><a href="https://github.com/andersevenrud/OS.js-v2/issues">Bug-Tracker<small>github.com</small></a></p>
-
+        <h1 class="header">Os.js-v2</h1>
+        <p class="header">OS.js version 2.x</p>
 
         <ul>
-          <li><a href="https://github.com/andersevenrud/OS.js-v2/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/andersevenrud/OS.js-v2/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/andersevenrud/OS.js-v2">View On <strong>GitHub</strong></a></li>
+          <li class="download"><a class="buttons" href="https://github.com/andersevenrud/OS.js-v2/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/andersevenrud/OS.js-v2/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/andersevenrud/OS.js-v2">View On GitHub</a></li>
         </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/andersevenrud">andersevenrud</a></p>
+
 
       </header>
       <section>
-        <h1>
-<a name="osjs-version-20" class="anchor" href="#osjs-version-20"><span class="octicon octicon-link"></span></a>OS.js Version 2.0</h1>
+        <p><img src="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/osjs-logo.png" alt="Logo"></p>
 
 <p>OS.js is a light-weight JavaScript based web/cloud desktop solution.</p>
 
-<p>
-Current version: <b>Alpha</b>
-</p>
-<p>
-  <i>Application API is stable. FS and Handler API is subject to change.</i>
-</p>
-<p>
-  <b>If you find any bugs report them back to me and I'll have them squashed</b>
-</p>
+<p>Current version: <strong>Alpha</strong></p>
 
-<h2>
-<a name="changes" class="anchor" href="#changes"><span class="octicon octicon-link"></span></a>Changes</h2>
+<p><strong>See TODO.md for roadmap and planned changes</strong></p>
 
-<ul>
-<li>Completely rewritten (API breakage)</li>
-<li>Easier to extend core and deploy custom builds</li>
-<li>Easier to create custom applications</li>
-<li>Smaller and faster</li>
-<li>Tons of improvements</li>
-<li>Dropped support for legacy browsers</li>
-<li>Runs standalone on any web-server (Filesystem APIs requires using the PHP or Node backend)</li>
-<li>Very simple setup</li>
-<li>No 3rd party libraries (runs on native browser libs)</li>
-</ul><h2>
-<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
-
-<ul>
-<li>Window Manager</li>
-<li>Desktop Environment</li>
-<li>Session Handling (Support for resuming previous workspaces)</li>
-<li>Package Management (User-installable applications)</li>
-<li>User Management (Custom login and settings storage)</li>
-<li>GUI Library (With Drag-and-drop support)</li>
-<li>Dialog Library</li>
-<li>Supports both Applications and Background-services</li>
-<li>File System functions</li>
-<li>A basic Theme implementation (icons, sounds and CSS styles)</li>
-<li>Multi-user environment support</li>
-<li>Localization and translations</li>
-</ul>
-
-<p>Comes bundeled with the default theme and some applications:</p>
-<ul>
-  <li><b>Draw</b> - A simple drawing application</li>
-  <li><b>File Manager</b> - File Management</li>
-  <li><b>Preview</b> - For viewing images and videos</li>
-  <li><b>Music Player</b> - For listening to audio files</li>
-  <li><b>Process Viewer</b> - View running processes</li>
-  <li><b>Textpad</b> - A notepad-type application</li>
-  <li><b>Writer</b> - Richtext editor</li>
-</ul>
-
-<p>
-  <i>You can easily add more applications by using external repositories. More information on Wiki</i>
-</p>
-
+<p><strong>If you find any bugs report them back to me and I'll have them squashed</strong></p>
 
 <h2>
 <a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo</h2>
 
-<p>You can have a look here: <a href="http://osjsv2.0o.no">http://osjsv2.0o.no</a></p>
+<p>I have a demo running on my server: <a href="http://osjsv2.0o.no">http://osjsv2.0o.no</a></p>
 
-<p>This site may not always be up to date, and can be unavailable at times.</p>
+<p>Please note that it may be unavailable at times and slightly out-of-date.</p>
+
+<p><img src="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/screenshot.png" alt="ScreenShot"></p>
 
 <h2>
-<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
 
-<h3>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
+<ul>
+<li>Window Manager and Desktop Environment with Theme support</li>
+<li>Support for saving and restoring sessions</li>
+<li>File-system API to handle file manipulations etc.</li>
+<li>Localization and Translation support</li>
+<li>Easy-to-use GUI, Application and Core API for creating custom Applications</li>
+<li>Runs on all web-servers using PHP5 or node.js</li>
+<li>Uses no third-party libraries</li>
+<li>Light-weight and super fast</li>
+</ul><h3>
+<a name="default-application-bundle" class="anchor" href="#default-application-bundle"><span class="octicon octicon-link"></span></a>Default application bundle</h3>
 
-<p>See the <code>INSTALL.md</code> file</p>
+<ul>
+<li>
+<strong>Draw</strong> - A simple drawing application</li>
+<li>
+<strong>File Manager</strong> - File Management</li>
+<li>
+<strong>Preview</strong> - For viewing images and videos</li>
+<li>
+<strong>Music Player</strong> - For listening to audio files</li>
+<li>
+<strong>Process Viewer</strong> - View running processes</li>
+<li>
+<strong>Textpad</strong> - A notepad-type application</li>
+<li>
+<strong>Writer</strong> - Richtext editor</li>
+</ul><p><em>You can easily add more applications by using external repositories. More information on Wiki</em></p>
 
-<h3>
-<a name="general" class="anchor" href="#general"><span class="octicon octicon-link"></span></a>General</h3>
+<p>An example repository: <a href="https://github.com/andersevenrud/OS.js-v2-extras">OS.js-v2-extras</a></p>
 
-<p>Source documentation and examples are located in the <code>doc/</code> folder.</p>
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>Everything else is in the GitHub Project Wiki pages (linked below).</p>
+<p>See the <code>INSTALL.md</code> file for instructions</p>
 
 <h2>
 <a name="compability" class="anchor" href="#compability"><span class="octicon octicon-link"></span></a>Compability</h2>
 
-<p>Can run on anything that can host web-pages. Currently only Apache has been tested on Mac and Linux.</p>
+<p>The backend runs on Mac, BSD and Linux. Frontend only requires a modern browser with HTML5 support.</p>
 
 <h3>
 <a name="browser-support" class="anchor" href="#browser-support"><span class="octicon octicon-link"></span></a>Browser support</h3>
@@ -147,28 +105,10 @@ Current version: <b>Alpha</b>
 <strong>WebKit</strong> Google Chrome, Opera, Safari</li>
 <li>Internet Explorer 10+</li>
 <li>Android and iOS is working, but no mobile version is implemented yet</li>
-</ul>
+</ul><h1>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
 
-<h1>
-<a name="videos" class="anchor" href="#videos"><span class="octicon octicon-link"></span></a>Videos</h1>
-
-<iframe width="560" height="315" src="//www.youtube.com/embed/7nB48BJKYCI" frameborder="0" allowfullscreen></iframe>
-
-<h1>
-<a name="screenshots" class="anchor" href="#screenshots"><span class="octicon octicon-link"></span></a>Screenshots</h1>
-<div style="margin-bottom:10px">
-  <a target="_blank" href="screenshot-01.png"><img alt="" src="screenshot-01-thumb.png" /></a>
-</div>
-<div style="margin-bottom:10px">
-  <a target="_blank" href="screenshot-02.png"><img alt="" src="screenshot-02-thumb.png" /></a>
-</div>
-<div style="margin-bottom:10px">
-  <a target="_blank" href="screenshot-03.png"><img alt="" src="screenshot-03-thumb.png" /></a>
-</div>
-
-<h1>
-<a name="license" class="anchor" href="#links"><span class="octicon octicon-link"></span></a>License</h1>
-<p style="background:#e6e6e6;margin:0px;padding:10px;white-space:pre;font-family:Monospace;font-size:10px;overflow:auto">
+<pre><code>
 OS.js -- Copyright (c) 2011-2013, Anders Evenrud &lt;andersevenrud@gmail.com&gt;
 All rights reserved.
 
@@ -192,76 +132,39 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-</p>
+
+</code></pre>
 
 <h1>
 <a name="links" class="anchor" href="#links"><span class="octicon octicon-link"></span></a>Links</h1>
 
 <ul>
-  <li><a href="https://github.com/andersevenrud/OS.js-v2/wiki">Github Wiki Pages</a></li>
-  <li><a href="https://github.com/andersevenrud/OS.js-v2">Github Project Page</a></li>
-  <li><a href="http://osjsv2.0o.no/">Demo Page</a></li>
-  <li><a href="http://andersevenrud.github.io/">Author Homepage</a></li>
-  <li><a href="http://anderse.wordpress.com">Author Blog</a></li>
-  <li><a href="https://plus.google.com/101576798387217383063?rel=author">Author on Google+</a>
-  <li><a href="http://andersevenrud.github.com/OS.js">OS.js v1</a></li>
+<li><a href="http://andersevenrud.github.io/OS.js-v2/">Homepage</a></li>
+<li><a href="https://github.com/andersevenrud/OS.js-v2/wiki">Github Wiki Pages</a></li>
+<li><a href="https://github.com/andersevenrud/OS.js-v2">Github Project Page</a></li>
+<li><a href="http://osjsv2.0o.no/">Demo Page</a></li>
+<li><a href="http://andersevenrud.github.io/">Author Homepage</a></li>
+<li><a href="http://anderse.wordpress.com">Author Blog</a></li>
+<li><a href="https://plus.google.com/b/113399210633478618934/113399210633478618934">Google+ Page</a></li>
+<li><a href="https://www.facebook.com/pages/OSjs/226644300734574">Facebook Page</a></li>
+<li><a href="http://andersevenrud.github.com/OS.js">OS.js v1</a></li>
 </ul>
-
-
       </section>
       <footer>
-
-<div>
-  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <!-- andersevenrud.github.io/OS.js-v2 -->
-  <ins class="adsbygoogle"
-    style="display:inline-block;width:336px;height:280px"
-    data-ad-client="ca-pub-6145716264521226"
-    data-ad-slot="2600151192"></ins>
-  <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</div>
-        <p>This project is maintained by Anders Evenrud on <a href="https://github.com/andersevenrud">GitHub</a>, <a href="https://plus.google.com/101576798387217383063?rel=author">Google+</a></p>
-
-        <!-- Place this tag where you want the +1 button to render. -->
-        <div style="margin:10px;">
-          <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="250"></div>
-        </div>
-        <div style="margin:10px;">
-          <div class="fb-like" data-href="http://andersevenrud.github.com/OS.js/" data-send="true" data-layout="button_count" data-width="250" data-show-faces="false"></div>
-        </div>
-
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
           <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-46087265-1']);
-            _gaq.push(['_trackPageview']);
-            (function() {
-              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
-
-              ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
-
-              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
+            try {
+              var pageTracker = _gat._getTracker("UA-46087265-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
           </script>
 
-
-          <script type="text/javascript">stLight.options({publisher: "a51d3e3b-d804-4abe-9952-113e8cb776a1", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
-<script>
-var options={ "publisher": "a51d3e3b-d804-4abe-9952-113e8cb776a1", "position": "right", "ad": { "visible": false, "openDelay": 5, "closeDelay": 0}, "chicklets": { "items": ["facebook", "googleplus", "twitter", "linkedin", "pinterest", "wordpress", "reddit", "email", "sharethis"]}};
-var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
-</script>
-
-<script type="text/javascript">
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/plusone.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
-</script>
   </body>
 </html>
