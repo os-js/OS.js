@@ -33,25 +33,22 @@
  * Loading Screen
  */
 #LoadingScreen {
-  width : 280px;
-  height : 50px;
-  line-height : 50px;
-  padding : 20px;
   position : absolute;
+  width : 264px;
+  height : 114px;
   top : 50%;
   left : 50%;
-  margin-top : -25px;
-  margin-left : -140px;
+  margin-top : -57px;
+  margin-left : -132px;
   z-index : 9999999;
-  color : #fff;
-  background : #000;
-  border : 1px solid #fff;
 }
-#LoadingScreen h1 {
-  font-size : 40px;
-  text-align : center;
+#LoadingScreen span {
+  font-size : 12px;
   padding : 0;
   margin : 0;
+  display : block;
+  color : #000;
+  text-align : center;
 }
 
 /**

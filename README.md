@@ -1,4 +1,6 @@
-# OS.js Version 2.0
+![Logo](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/osjs-logo.png)
+
+
 OS.js is a light-weight JavaScript based web/cloud desktop solution.
 
 Current version: **Alpha**
