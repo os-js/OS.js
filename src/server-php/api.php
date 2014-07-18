@@ -274,9 +274,10 @@ if ( empty($data) ) {
       case 'bugreport' :
         if ( isset($arguments['data']) && ($data = $arguments['data']) ) {
           if ( $data = json_encode($data) ) {
-            if ( file_exists("bugreport.php") ) {
+            $bfname = __DIR__ . "/bugreport.php");
+            if ( file_exists($bfname) ) {
               try {
-                require "bugreport.php";
+                require $bfname;
                 $result = BugReport::send($data);
               } catch ( Exception $e ) {
                 $error = $e->getMessage();
