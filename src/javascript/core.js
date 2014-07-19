@@ -277,15 +277,15 @@
               _HANDLER.setDefaultApplication(mime, setDefault ? appname : null);
             }));
           } else {
-            OSjs.API.error(OSjs._("Error opening file"),
-                           OSjs._("The file '<span>{0}</span>' could not be opened", fname),
+            OSjs.API.error(OSjs._("ERR_FILE_OPEN"),
+                           OSjs._("ERR_FILE_OPEN_FMT", fname),
                            OSjs._("No window manager is running") );
           }
         }
       } else {
-        OSjs.API.error(OSjs._("Error opening file"),
-                       OSjs._("The file '<span>{0}</span>' could not be opened", fname),
-                       OSjs._("Could not find any Applications with support for '{0}' files", mime) );
+        OSjs.API.error(OSjs._("ERR_FILE_OPEN"),
+                       OSjs._("ERR_FILE_OPEN_FMT", fname),
+                       OSjs._("ERR_APP_MIME_NOT_FOUND_FMT", mime) );
       }
     };
 
@@ -371,8 +371,8 @@
     var _error = function(msg, exception) {
       _removeSplash();
       console.groupEnd(); // !!!
-      ErrorDialog(OSjs._('Failed to launch Application'),
-                  OSjs._('An error occured while trying to launch: {0}', n),
+      ErrorDialog(OSjs._('ERR_APP_LAUNCH_FAILED'),
+                  OSjs._('ERR_APP_LAUNCH_FAILED_FMT', n),
                   msg, exception, true);
 
       onError(msg, n, arg);
@@ -390,7 +390,7 @@
             if ( sproc instanceof Application ) {
               sproc._onMessage(null, 'attention', arg);
             } else {
-              _error(OSjs._("The application '{0}' is already launched and allows only one instance!", n));
+              _error(OSjs._("ERR_APP_LAUNCH_ALREADY_RUNNING_FMT", n));
             }
             return;
           }
@@ -404,7 +404,7 @@
           onConstructed(a, result);
         } catch ( e ) {
           console.warn("Error on constructing application", e, e.stack);
-          _error(OSjs._("Application '{0}' construct failed: {1}", n, e), e);
+          _error(OSjs._("ERR_APP_CONSTRUCT_FAILED_FMT", n, e), e);
           err = true;
         }
 
@@ -426,11 +426,11 @@
             });
           } catch ( e ) {
             console.warn("Error on init() application", e, e.stack);
-            _error(OSjs._("Application '{0}' init() failed: {1}", n, e), e);
+            _error(OSjs._("ERR_APP_INIT_FAILED_FMT", n, e), e);
           }
         }
       } else {
-        _error(OSjs._("Application resources missing for '{0}' or it failed to load!", n));
+        _error(OSjs._("ERR_APP_RESOURCES_MISSING_FMT", n));
       }
     };
 
@@ -440,7 +440,7 @@
         destroyLoading(n);
 
         if ( errors ) {
-          _error(OSjs._("Application '{0}' preloading failed: \n{1}", n, failed.join(",")));
+          _error(OSjs._("ERR_APP_PRELOAD_FAILED_FMT", n, failed.join(",")));
           return;
         }
 
@@ -454,7 +454,7 @@
 
     var data = _HANDLER.getApplicationMetadata(n);
     if ( !data ) {
-      _error(OSjs._("Failed to launch '{0}'. Application manifest data not found!", n));
+      _error(OSjs._("ERR_APP_LAUNCH_MANIFEST_FAILED_FMT", n));
       return;
     }
 
@@ -471,7 +471,7 @@
         }
       }
       if ( nosupport.length ) {
-        _error(OSjs._("Failed to launch '{0}'. Your browser does not support: {1}", n, nosupport.join(", ")));
+        _error(OSjs._("ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT", n, nosupport.join(", ")));
         return;
       }
     }
@@ -622,7 +622,7 @@
     // Override error handling
     window.onerror = function(message, url, linenumber, column, exception) {
       var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-      ErrorDialog(OSjs._('JavaScript Error Report'), OSjs._('An unexpected error occured, maybe a bug.'), msg, exception, true);
+      ErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'), OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'), msg, exception, true);
       return false;
     };
 
@@ -676,13 +676,14 @@
     var self = this;
 
     var _error = function(msg) {
-      ErrorDialog(OSjs._('Failed to initialize OS.js'), OSjs._('An error occured while initializing OS.js'), msg, null, true);
+      ErrorDialog(OSjs._('ERR_CORE_INIT_FAILED'), OSjs._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
     };
 
     var _launchWM = function(callback) {
       var wm = _HANDLER.getConfig('WM');
+      wm = null;
       if ( !wm || !wm.exec ) {
-        _error(OSjs._("Cannot launch OS.js: No window manager defined!"));
+        _error(OSjs._("ERR_CORE_INIT_NO_WM"));
         return;
       }
 
@@ -694,14 +695,14 @@
       LaunchProcess(wm.exec, wargs, function() {
         callback();
       }, function(error) {
-        _error(OSjs._("Cannot launch OS.js: Failed to launch Window Manager: {0}", error));
+        _error(OSjs._("ERR_CORE_INIT_WM_FAILED_FMT", error));
       });
     };
 
     var _preload = function(list, callback) {
       OSjs.Utils.Preload(list, function(total, errors) {
         if ( errors ) {
-          _error(OSjs._("Cannot launch OS.js: Failed to preload resources..."));
+          _error(OSjs._("ERR_CORE_INIT_PRELOAD_FAILED"));
           return;
         }
 
@@ -1358,8 +1359,8 @@
     onSuccess = onSuccess || function() {};
     onError = onError || function(err) {
       err = err || "Unknown error";
-      OSjs.API.error(OSjs._("Application API error"),
-                     OSjs._("Application {0} failed to perform operation '{1}'", self.__name, method),
+      OSjs.API.error(OSjs._("ERR_APP_API_ERROR"),
+                     OSjs._("ERR_APP_API_ERROR_DESC_FMT", self.__name, method),
                      err);
     };
     return APICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);

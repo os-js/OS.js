@@ -11,7 +11,6 @@
 * _[Backend]_ Rewrite the PHP backend
 * _[Backend]_ Rewrite the Node backend
 * _[GUI]_ GUIScrollbar
-* _[Locales]_ Create reserved strings for locales in `locales.js` (for core messages etc)
 * _[Misc]_ There are TODO and FIXME markings in source code files
 * _[Themes]_ CSS Style scrollbars on webkit
 
@@ -22,6 +21,7 @@
 * _[Application]_ Draw -- Add more effects with the convolute method
 * _[Dialogs]_ Go over dialog code and look for possible refactors
 * _[Themes]_ More Themes
+* _[Locales]_ Add more of the ERR_ strings etc.
 * _[GUI]_ Custom styling for GUISelect
 * _[GUI]_ Custom styling for GUISelectList
 * _[GUI]_ Custom styling for GUICheckbox

@@ -39,9 +39,8 @@
 
   OSjs.Locales = OSjs.Locales || {};
 
-  var DefaultLocale = 'en_US';
-  var CurrentLocale = 'en_US';
-  var Locales       = {};
+  var DefaultLocale = 'en_EN';
+  var CurrentLocale = 'en_EN';
 
 
   /////////////////////////////////////////////////////////////////////////////
