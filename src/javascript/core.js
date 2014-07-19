@@ -681,7 +681,6 @@
 
     var _launchWM = function(callback) {
       var wm = _HANDLER.getConfig('WM');
-      wm = null;
       if ( !wm || !wm.exec ) {
         _error(OSjs._("ERR_CORE_INIT_NO_WM"));
         return;
