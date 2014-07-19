@@ -36,7 +36,7 @@
       fullscreen      : false,
       desktop         : {margin: 5},
       wallpaper       : 'osjs:///themes/wallpapers/diamond_upholstery.png',
-      theme           : 'uncomplicated',
+      theme           : 'default',
       background      : 'image-repeat',
       menuCategories  : true,
       enableIconView  : false,
@@ -67,7 +67,7 @@
     };
 
     if ( defaults ) {
-      return OSjs.Utils.mergeObject(cfg, defaults);
+      cfg = OSjs.Utils.mergeObject(cfg, defaults);
     }
     return cfg;
   }
@@ -82,7 +82,8 @@
   var CoreWM = function(args, metadata) {
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
 
-    this._settings      = DefaultSettings(args.defaults || {});
+    this._defaults      = (args.defaults || {});
+    this._settings      = DefaultSettings(this._defaults);
     this.panels         = [];
     this.switcher       = null;
     this.settingsWindow = null;
@@ -144,7 +145,7 @@
     this.destroyPanels();
 
     // Reset styles
-    this.applySettings(DefaultSettings(), true);
+    this.applySettings(DefaultSettings(this._defaults), true);
 
     if ( this.$themeLink ) {
       this.$themeLink.parentNode.removeChild(this.$themeLink);
@@ -235,7 +236,7 @@
       if ( s ) {
         self.applySettings(s);
       } else {
-        self.applySettings(DefaultSettings(), true);
+        self.applySettings(DefaultSettings(self._defaults), true);
       }
 
       callback.call(self);
@@ -740,13 +741,13 @@
   CoreWM.prototype.getSetting = function(k) {
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
     if ( typeof val === 'undefined' || val === null ) {
-      return DefaultSettings()[k];
+      return DefaultSettings(this._defaults)[k];
     }
     return val;
   };
 
   CoreWM.prototype.getDefaultSetting = function(k) {
-    var settings = DefaultSettings();
+    var settings = DefaultSettings(this._defaults);
     if ( typeof k !== 'undefined' ) {
       return settings[k];
     }

@@ -15,9 +15,9 @@
         "BugReporting":     true,
         "Preloads":         [],
         "Sounds":           true,
-        "Locale":           "en_US",
+        "Locale":           "en_EN",
         "Languages":        {
-          "en_US": "English",
+          "en_EN": "English",
           "no_NO": "Norsk (Norwegian)",
           "de_DE": "Deutsch (German)"
         }
@@ -78,7 +78,9 @@
       "WM" : {
         "exec": "CoreWM",
         "args": {
-          "defaults": null
+          "defaults": {
+            "theme": "uncomplicated"
+          }
         }
       }
     },
