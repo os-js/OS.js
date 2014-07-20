@@ -333,6 +333,19 @@ footer {
 	padding-left: 50px;
 }
 
+#SupportColumn {
+  position : fixed;
+  top : 10px;
+  right : 10px;
+  display : none;
+}
+
+@media screen and (min-width : 1024px) {
+  #SupportColumn {
+    display : block;
+  }
+}
+
 @media print, screen and (max-width: 960px) {
 
   div.wrapper {
