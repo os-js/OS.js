@@ -36,7 +36,7 @@
 
   function FixJSON(response) {
     if ( typeof response === "string" ) {
-      if ( response.match(/^\{/) ) {
+      if ( response.match(/^\{|\[/) ) {
         try {
           response = JSON.parse(response);
         } catch ( e  ){
