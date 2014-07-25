@@ -41,8 +41,8 @@ See `doc/lighttpd.conf` for an example
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
 
-* Production dist: `(cd dist; php -S localhost:8000 ../src/server-php/webserver.php)`
-* Developer dist: `(cd dist-dev; php -S localhost:8000 ../src/server-php/webserver.php)`
+* Production dist: `(cd dist; php -S localhost:8000 ../src/server-php/server.php)`
+* Developer dist: `(cd dist-dev; php -S localhost:8000 ../src/server-php/server.php)`
 
 ### Node.js
 *Please note that the node server is not finished yet, but is working for development purposes*

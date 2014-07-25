@@ -29,296 +29,349 @@
  * @licence Simplified BSD License
  */
 
-$_dir = __DIR__;
-if ( file_exists("{$_dir}/settings.php") ) require "{$_dir}/settings.php";
-require "vfs.php";
+/**
+ * HTTP Request Class
+ */
+class APIRequest
+{
+  public $method = "GET";
+  public $data   = null;
+  public $uri    = "";
 
-function out($json) {
-  header("Content-type: application/json");
-  print json_encode($json);
-}
-
-function error() {
-  if ( !is_null($e = error_get_last()) ) {
-
-    $type = 'UNKNOWN';
-    switch ((int)$e['type']) {
-      case E_ERROR: // 1
-        $type = 'E_ERROR';
-      break;
-      case E_WARNING: // 2
-        $type = 'E_WARNING';
-      break;
-      case E_PARSE: // 4
-        $type = 'E_PARSE';
-      break;
-      case E_NOTICE: // 8
-        $type = 'E_NOTICE';
-      break;
-      case E_CORE_ERROR: // 16
-        $type = 'E_CORE_ERROR';
-      break;
-      case E_CORE_WARNING: // 32
-        $type = 'E_CORE_WARNING';
-      break;
-      case E_CORE_ERROR: // 64
-        $type = 'E_COMPILE_ERROR';
-      break;
-      case E_CORE_WARNING: // 128
-        $type = 'E_COMPILE_WARNING';
-      break;
-      case E_USER_ERROR: // 256
-        $type = 'E_USER_ERROR';
-      break;
-      case E_USER_WARNING: // 512
-        $type = 'E_USER_WARNING';
-      break;
-      case E_USER_NOTICE: // 1024
-        $type = 'E_USER_NOTICE';
-      break;
-      case E_STRICT: // 2048
-        $type = 'E_STRICT';
-      break;
-      case E_RECOVERABLE_ERROR: // 4096
-        $type = 'E_RECOVERABLE_ERROR';
-      break;
-      case E_DEPRECATED: // 8192
-        $type = 'E_DEPRECATED';
-      break;
-      case E_USER_DEPRECATED: // 16384
-        $type = 'E_USER_DEPRECATED';
-      break;
-    }
-
-    if ( !ERRHANDLER && !in_array($type, Array('E_ERROR', 'E_PARSE', 'E_CORE_ERROR', 'E_RECOVERABLE_ERROR')) ) {
-      return;
-    }
-
-    if ( ob_get_level() ) ob_end_clean();
-    header("HTTP/1.0 500 Internal Server Error");
-    if ( SHOWERRORS ) {
-      print implode("\n", Array($e['message'], "Type: {$type}", "Line: {$e['line']}", "File: {$e['file']}"));
-    } else {
-      print $e['message'];
-    }
-    exit;
+  public function __construct($uri) {
+    $this->method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
+    $this->data   = $this->method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $uri);
+    $this->uri    = $uri;
   }
 }
 
+/**
+ * HTTP Response Class
+ */
+class APIResponse
+{
+  public $data      = null;
+  public $code      = 200;
+  public $error     = null;
+  public $headers   = Array();
+  public $isJSON    = false;
 
-//
-// Default settings
-//
-if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'));                   // The path to root dir
-if ( !defined("VFSDIR") )    define("VFSDIR",     ROOTDIR . "/vfs/home");                           // Filesystem API default dir
-if ( !defined("TMPDIR") )     define("TMPDIR",      ROOTDIR . "/vfs/tmp");                            // Temporary files
-if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");                       // Packages
-if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.json");                  // Package repositories
-if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));    // Upload size limit
-if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
-if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
-if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
-if ( !defined("HANDLER") )    define("HANDLER",     null);
+  public function __construct($json, $data, $error, $code = 0, Array $headers = null) {
+    $this->isJSON = (bool) $json;
+    $this->data = $data;
 
-date_default_timezone_set(TIMEZONE);
+    if ( $error ) {
+      $this->error = $error;
+      $this->code  = 500;
+    }
 
-if ( php_sapi_name() == "cli" || defined('__CLI_SCRIPT') ) {
-  return;
+    if ( $code > 0 ) {
+      $this->code = $code;
+    }
+
+    if ( $headers ) {
+      $this->headers = $headers;
+    }
+  }
+
+  public static function ErrorHandler() {
+    $response = null;
+
+    if ( !is_null($e = error_get_last()) ) {
+      $type = 'UNKNOWN';
+      switch ((int)$e['type']) {
+        case E_ERROR: // 1
+          $type = 'E_ERROR';
+        break;
+        case E_WARNING: // 2
+          $type = 'E_WARNING';
+        break;
+        case E_PARSE: // 4
+          $type = 'E_PARSE';
+        break;
+        case E_NOTICE: // 8
+          $type = 'E_NOTICE';
+        break;
+        case E_CORE_ERROR: // 16
+          $type = 'E_CORE_ERROR';
+        break;
+        case E_CORE_WARNING: // 32
+          $type = 'E_CORE_WARNING';
+        break;
+        case E_CORE_ERROR: // 64
+          $type = 'E_COMPILE_ERROR';
+        break;
+        case E_CORE_WARNING: // 128
+          $type = 'E_COMPILE_WARNING';
+        break;
+        case E_USER_ERROR: // 256
+          $type = 'E_USER_ERROR';
+        break;
+        case E_USER_WARNING: // 512
+          $type = 'E_USER_WARNING';
+        break;
+        case E_USER_NOTICE: // 1024
+          $type = 'E_USER_NOTICE';
+        break;
+        case E_STRICT: // 2048
+          $type = 'E_STRICT';
+        break;
+        case E_RECOVERABLE_ERROR: // 4096
+          $type = 'E_RECOVERABLE_ERROR';
+        break;
+        case E_DEPRECATED: // 8192
+          $type = 'E_DEPRECATED';
+        break;
+        case E_USER_DEPRECATED: // 16384
+          $type = 'E_USER_DEPRECATED';
+        break;
+      }
+
+      if ( !ERRHANDLER && !in_array($type, Array('E_ERROR', 'E_PARSE', 'E_CORE_ERROR', 'E_RECOVERABLE_ERROR')) ) {
+        return;
+      }
+
+      if ( ob_get_level() ) ob_end_clean();
+
+      $error = $e["message"];
+      if ( SHOWERRORS ) {
+        $error = implode("\n", Array($e['message'], "Type: {$type}", "Line: {$e['line']}", "File: {$e['file']}"));
+      }
+      $response = new APIResponse(false, false, $error, 500);
+    }
+
+    if ( $response ) {
+      $response->output();
+    }
+  }
+
+  public function output() {
+    $headers = $this->headers;
+    if ( $this->code == 500 ) {
+      $headers[] = "HTTP/1.0 500 Internal Server Error";
+    } else if ( $this->code == 404 ) {
+      $headers[] = "HTTP/1.0 404 Not Found";
+    }
+
+    if ( $this->isJSON ) {
+      $headers[] = "Content-type: application/json";
+    }
+
+    foreach ( $headers as $h ) {
+      header($h);
+    }
+
+    if ( $this->isJSON ) {
+      $result = Array("result" => false, "error" => null);
+      if ( $this->error ) {
+        $result["error"] = $this->error;
+      } else {
+        $result["result"] = $this->data;
+      }
+      $result = json_encode($result);
+    } else {
+      if ( $this->error ) {
+        $result = $this->error;
+      } else {
+        $result = $this->data;
+      }
+    }
+
+    print $result;
+  }
 }
 
-register_shutdown_function('error');
+/**
+ * OS.js API Call Wrapper Class
+ */
+class API
+{
 
-session_start();
+  /**
+   * File Download Request
+   */
+  public static function FileGET(APIRequest $req) {
+    $result   = false;
+    $error    = false;
+    $headers  = Array();
+    $code     = 0;
 
-//
-// Collect request data
-//
-$method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
-$json   = Array("result" => false, "error" => null);
-$error  = null;
-$result = null;
-$data   = $method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $_SERVER['REQUEST_URI']);;
-
-//
-// GET file request wrapper
-//
-if ( $method === 'GET' ) {
-  if ( isset($_GET['file']) && ($file = (VFSDIR . unrealpath($_GET['file']))) ) {
     try {
-      if ( strstr($file, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
-      if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
-      if ( !is_readable($file) ) throw new Exception("Read permission denied");
+      if ( isset($_GET['file']) && ($file = (VFSDIR . unrealpath($_GET['file']))) ) {
+        if ( strstr($file, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+        if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
+        if ( !is_readable($file) ) throw new Exception("Read permission denied");
+
+        if ( file_exists($file) ) {
+            session_write_close();
+            if ( ($mime = fileMime($file)) ) {
+              $length = filesize($file);
+              $fp = fopen($file, "r");
+              $etag = md5(serialize(fstat($fp)));
+              fclose($fp);
+
+              $headers[] = "Etag: {$etag}";
+              $headers[] = "Content-type: {$mime}";
+              $headers[] = "Content-length: {$length}";
+
+              $result = file_get_contents($file);
+            } else {
+              $error = "No valid MIME";
+            }
+        } else {
+          $code = 404;
+          $error = "File not found";
+        }
+      }
     } catch ( Exception $e ) {
-      header("HTTP/1.0 500 Internal Server Error");
-      print $e->getMessage();
-      exit;
+      $error = $e->getMessage();
     }
 
-    if ( file_exists($file) ) {
-        session_write_close();
-        if ( ($mime = fileMime($file)) ) {
-          $length = filesize($file);
-          $fp = fopen($file, "r");
-          $etag = md5(serialize(fstat($fp)));
-          fclose($fp);
+    return new APIResponse(false, $result, $error, $code, $headers);
+  }
 
-          header("Etag: {$etag}");
-          header("Content-type: {$mime}");
-          header("Content-length: {$length}");
+  /**
+   * File Upload Requests
+   */
+  public static function FilePOST(APIRequest $req) {
+    $result = false;
+    $error  = false;
 
-          print file_get_contents($file);
+    if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
+      $dest = unrealpath(VFSDIR . $_POST['path'] . '/' . $_FILES['upload']['name']);
+
+      if ( strstr($dest, VFSDIR) === false ) {
+        $error = "Invalid destination!";
+      } else if ( file_exists($dest) ) {
+        $error = "Destination already exist!";
+      } else {
+        if ( $_FILES['upload']['size'] <= 0 || $_FILES['upload']['size'] > MAXUPLOAD ) {
+          $error = "The upload request is either empty or too large!";
         } else {
-          header("HTTP/1.0 500 Internal Server Error");
-          print "No valid MIME";
+          session_write_close();
+          if ( move_uploaded_file($_FILES['upload']['tmp_name'], $dest) === true ) {
+            chmod($dest, 0600);
+
+            $result = true;
+          } else {
+            $error = "File was not uploaded";
+          }
         }
+      }
+    }
+
+    return new APIResponse(false, $result, $error);
+  }
+
+  /**
+   * Core API Requests
+   */
+  public static function CoreAPI(APIRequest $req) {
+    $data = json_decode($req->data, true);
+    $error = false;
+    $result = false;
+
+    if ( empty($data) ) {
+      $error = "No call given";
     } else {
-      header("HTTP/1.0 404 Not Found");
-      print "File not found";
-    }
-  }
-  exit;
-}
+      if ( empty($data['method']) ) {
+        $error = "No call data given";
+      } else {
+        $method = $data['method'];
+        $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
+        switch ( $method ) {
 
-//
-// Upload file
-//
-if ( isset($_GET['upload']) ) {
-  if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
-    $dest = unrealpath(VFSDIR . $_POST['path'] . '/' . $_FILES['upload']['name']);
+          // API call via application
+          case 'application' :
+            $path = empty($arguments['path'])        ? null     : $arguments['path'];
+            $an   = empty($arguments['application']) ? null     : $arguments['application'];
+            $am   = empty($arguments['method'])      ? null     : $arguments['method'];
+            $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
 
-    if ( strstr($dest, VFSDIR) === false ) {
-      header("HTTP/1.0 500 Internal Server Error");
-      print "Invalid destination!";
-      exit;
-    }
-    if ( file_exists($dest) ) {
-      header("HTTP/1.0 500 Internal Server Error");
-      print "Destination already exist!";
-      exit;
-    }
-    if ( $_FILES['upload']['size'] <= 0 || $_FILES['upload']['size'] > MAXUPLOAD ) {
-      header("HTTP/1.0 500 Internal Server Error");
-      print "The upload request is either empty or too large!";
-      exit;
-    }
+            $aroot = sprintf("%s/%s", REPODIR, $path);
+            $apath = sprintf("%s/%s", $aroot, "api.php");
 
-    session_write_close();
-    if ( move_uploaded_file($_FILES['upload']['tmp_name'], $dest) ) {
-      chmod($dest, 0600);
-    }
-  }
-  exit;
-}
-
-//
-// Normal API call
-//
-if ( empty($data) ) {
-  $error = "No call given";
-} else {
-  $data = json_decode($data, true);
-  if ( empty($data['method']) ) {
-    $error = "No call data given";
-  } else {
-    $method = $data['method'];
-    $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
-    switch ( $method ) {
-
-      // API call via application
-      case 'application' :
-        $path = empty($arguments['path'])        ? null     : $arguments['path'];
-        $an   = empty($arguments['application']) ? null     : $arguments['application'];
-        $am   = empty($arguments['method'])      ? null     : $arguments['method'];
-        $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
-
-        $aroot = sprintf("%s/%s", REPODIR, $path);
-        $apath = sprintf("%s/%s", $aroot, "api.php");
-
-        if ( !file_exists($apath) ) {
-          $error = "No such application or API file not available ({$an})!";
-        } else {
-          require $apath;
-          if ( !class_exists($an) || !method_exists($an, 'call') ) {
-            $error = "Application API missing!";
-          } else {
-            try {
-              $result = $an::call($am, $aa);//call_user_func_array(Array($an, 'call'), $aa);
-            } catch ( Exception $e ) {
-              $error = "Application API exception: {$e->getMessage()}";
-            }
-          }
-        }
-      break;
-
-      // Filesystem operations
-      case 'fs' :
-        $m = $arguments['method'];
-        $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
-
-        if ( !method_exists('FS', $m) ) {
-          $error = "Invalid FS operation: {$m}";
-        } else {
-          if ( !$a ) {
-            $error = "Supply argument for FS operaion: {$m}";
-          } else {
-            try {
-              $result = call_user_func_array(Array("FS", $m), $a);
-            } catch ( Exception $e ) {
-              $error = "FS operaion error: {$e->getMessage()}";
-            }
-          }
-        }
-      break;
-
-      // Bugreporting
-      case 'bugreport' :
-        if ( isset($arguments['data']) && ($data = $arguments['data']) ) {
-          if ( $data = json_encode($data) ) {
-            $bfname = __DIR__ . "/bugreport.php";
-            if ( file_exists($bfname) ) {
-              try {
-                require $bfname;
-                $result = BugReport::send($data);
-              } catch ( Exception $e ) {
-                $error = $e->getMessage();
+            if ( !file_exists($apath) ) {
+              $error = "No such application or API file not available ({$an})!";
+            } else {
+              require $apath;
+              if ( !class_exists($an) || !method_exists($an, 'call') ) {
+                $error = "Application API missing!";
+              } else {
+                try {
+                  $result = $an::call($am, $aa);//call_user_func_array(Array($an, 'call'), $aa);
+                } catch ( Exception $e ) {
+                  $error = "Application API exception: {$e->getMessage()}";
+                }
               }
             }
-          }
-        }
-      break;
+          break;
 
-      // Default
-      default :
-        $found = false;
-        if ( HANDLER ) {
-          $hdir = sprintf("%s/src/server-php/handlers/%s.php", ROOTDIR, HANDLER);
-          if ( file_exists($hdir) ) {
-            require $hdir;
-            if ( class_exists('APIHandler') && method_exists('APIHandler', 'call') ) {
-              $found = true;
-              try {
-                $result = APIHandler::call($method, $arguments);
-              } catch ( Exception $e ) {
-                $error = "API Handler call error: {$e->getMessage()}";
+          // Filesystem operations
+          case 'fs' :
+            $m = $arguments['method'];
+            $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
+
+            if ( !method_exists('FS', $m) ) {
+              $error = "Invalid FS operation: {$m}";
+            } else {
+              if ( !$a ) {
+                $error = "Supply argument for FS operaion: {$m}";
+              } else {
+                try {
+                  $result = call_user_func_array(Array("FS", $m), $a);
+                } catch ( Exception $e ) {
+                  $error = "FS operaion error: {$e->getMessage()}";
+                }
               }
             }
-          }
-        }
+          break;
 
-        if ( !$found ) {
-          $error = "No such API method: {$method}";
+          // Bugreporting
+          case 'bugreport' :
+            if ( isset($arguments['data']) && ($data = $arguments['data']) ) {
+              if ( $data = json_encode($data) ) {
+                $bfname = __DIR__ . "/bugreport.php";
+                if ( file_exists($bfname) ) {
+                  try {
+                    require $bfname;
+                    $result = BugReport::send($data);
+                  } catch ( Exception $e ) {
+                    $error = $e->getMessage();
+                  }
+                }
+              }
+            }
+          break;
+
+          // Default
+          default :
+            $found = false;
+            if ( HANDLER ) {
+              $hdir = sprintf("%s/src/server-php/handlers/%s.php", ROOTDIR, HANDLER);
+              if ( file_exists($hdir) ) {
+                require $hdir;
+                if ( class_exists('APIHandler') && method_exists('APIHandler', 'call') ) {
+                  $found = true;
+                  try {
+                    $result = APIHandler::call($method, $arguments);
+                  } catch ( Exception $e ) {
+                    $error = "API Handler call error: {$e->getMessage()}";
+                  }
+                }
+              }
+            }
+
+            if ( !$found ) {
+              $error = "No such API method: {$method}";
+            }
+          break;
         }
-      break;
+      }
     }
+    return new APIResponse(true, $result, $error);
   }
+
 }
 
-if ( $error ) {
-  $json["error"] = $error;
-} else {
-  $json["result"] = $result;
-}
-
-print out($json);
-exit;
 ?>
