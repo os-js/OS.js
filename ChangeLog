@@ -1,3 +1,17 @@
+# 2.0.0-alpha11
+
+* Added window property "start_focused"
+* Updated .gitignore
+* Application - Draw: Switched default colors
+* Application - FileManager: Added min-size to file view
+* GUI - ListView: Added width in CSS for header table
+* Dialogs - Font: Fixed height of window
+* Backend: Bugfix for bugreport function
+* Updated locales
+* Rewrote the PHP backend - unified and OO for requests etc!
+* OS.js now has a logo (temporary)!
+* New loading screen!
+
 # 2.0.0-alpha10
 
 * Updated some documentation
