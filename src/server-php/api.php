@@ -38,10 +38,29 @@ class APIRequest
   public $data   = null;
   public $uri    = "";
 
-  public function __construct($uri) {
+  protected function __construct() {
     $this->method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
     $this->data   = $this->method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $uri);
-    $this->uri    = $uri;
+    $this->uri    = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "/";
+  }
+
+  /**
+   * Public method for calling the API
+   */
+  public static function call() {
+    $request = new APIRequest();
+
+    if ( preg_match('/^\/API/', $request->uri) ) {
+      $response = API::CoreAPI($request);
+    } else if ( preg_match('/^\/FS\//', $request->uri) ) {
+      $response = API::FileGET($request);
+    } else if ( preg_match('/^\/FS/', $request->uri) ) {
+      $response = API::FilePOST($request);
+    } else {
+      $response = null;
+    }
+
+    return $response;
   }
 }
 

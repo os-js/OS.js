@@ -39,8 +39,6 @@ error_reporting(E_ALL);
 
 // Bootstrapping
 $root = __DIR__;
-$cgi  = (php_sapi_name() == "cgi");
-$uri  = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "/";
 
 require "{$root}/vfs.php";
 require "{$root}/api.php";
@@ -62,24 +60,11 @@ date_default_timezone_set(TIMEZONE);
 register_shutdown_function(Array('APIResponse', 'ErrorHandler'));
 session_start();
 
-$request = new APIRequest($uri);
-$response = null;
-
-// Routing
-if ( preg_match('/^\/API/', $uri) ) {
-  $response = API::CoreAPI($request);
-} else if ( preg_match('/^\/FS\//', $uri) ) {
-  $response = API::FileGET($request);
-} else if ( preg_match('/^\/FS/', $uri) ) {
-  $response = API::FilePOST($request);
-}
-
-// Response
-if ( $response ) {
+if ( $response = APIRequest::call() ) {
   $response->output();
-  if ( !$cgi ) return true;
+  return true;
 }
 
-if ( !$cgi ) return false;
+return false;
 
 ?>
