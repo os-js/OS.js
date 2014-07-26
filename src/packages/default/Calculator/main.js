@@ -80,7 +80,7 @@
    * Main Window Constructor
    */
   var ApplicationCalculatorWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationCalculatorWindow', {width: 220, height: 380}, app]);
+    Window.apply(this, ['ApplicationCalculatorWindow', {width: 220, height: 350}, app]);
 
     // Set window properties and other stuff here
     this._title = metadata.name;
@@ -166,13 +166,14 @@
   };
 
   ApplicationCalculatorWindow.prototype.key = function(ev) {
-    if ( (ev.keyCode>95) && (ev.keyCode<106) ) {
-      this.operation(ev.keyCode-96);
-    } else if ( (ev.keyCode>47) && (ev.keyCode<58) ) {
-      this.operation(ev.keyCode-48);
+    var keyCode = ev.which || ev.keyCode;
+    if ( (keyCode>95) && (keyCode<106) ) {
+      this.operation(keyCode-96);
+    } else if ( (keyCode>47) && (keyCode<58) ) {
+      this.operation(keyCode-48);
     } else {
-      if ( typeof keys[ev.keyCode] !== "undefined" ) {
-        this.operation(keys[ev.keyCode]);
+      if ( typeof keys[keyCode] !== "undefined" ) {
+        this.operation(keys[keyCode]);
       }
     }
   };

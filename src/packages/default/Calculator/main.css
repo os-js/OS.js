@@ -38,6 +38,9 @@
 }
 .Window_ApplicationCalculatorWindow .WindowWrapper .Buttons {
   text-align : center;
+}
+.Window_ApplicationCalculatorWindow .WindowWrapper .Output:first-child,
+.Window_ApplicationCalculatorWindow .WindowWrapper .Buttons:first-child {
   margin-top : 10px;
 }
 
