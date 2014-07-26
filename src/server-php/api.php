@@ -40,8 +40,8 @@ class APIRequest
 
   protected function __construct() {
     $this->method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
-    $this->data   = $this->method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $uri);
     $this->uri    = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "/";
+    $this->data   = $this->method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $this->uri);
   }
 
   /**
@@ -216,7 +216,8 @@ class API
     $code     = 0;
 
     try {
-      if ( isset($_GET['file']) && ($file = (VFSDIR . unrealpath($_GET['file']))) ) {
+      $arg = preg_replace("/^\/FS/", "", $req->data);
+      if ( isset($arg) && ($file = (VFSDIR . unrealpath($arg))) ) {
         if ( strstr($file, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
         if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
         if ( !is_readable($file) ) throw new Exception("Read permission denied");
