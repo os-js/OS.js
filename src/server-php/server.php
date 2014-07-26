@@ -42,8 +42,7 @@ $root = __DIR__;
 
 require "{$root}/vfs.php";
 require "{$root}/api.php";
-
-if ( file_exists("{$root}/settings.php") ) require "{$root}/settings.php";
+require "{$root}/settings.php";
 
 if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'));                   // The path to root dir
 if ( !defined("VFSDIR") )     define("VFSDIR",      ROOTDIR . "/vfs/home");                           // Filesystem API default dir
