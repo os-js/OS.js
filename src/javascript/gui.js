@@ -423,7 +423,9 @@
    *  onChange        Function      Callback - When value changed
    *  onClick         Function      Callback - When clicked
    *  onKeyPress      Function      Callback - When key pressed
-   *  onKeyUp         Fybctuib      Callback - When key released
+   *  onKeyUp         Function      Callback - When key released
+   *  onMouseDown     Function      Callabck - When mouse is pressed
+   *  onMouseUp       Function      Callback - When mouse is released
    *
    *  Please not that not all of these options applies to all
    *  implemented input elements!
@@ -444,6 +446,8 @@
     this.onClick      = opts.onClick      || function() {};
     this.onKeyPress   = opts.onKeyPress   || function() {};
     this.onKeyUp      = opts.onKeyUp      || function() {};
+    this.onMouseUp    = opts.onMouseUp    || function() {};
+    this.onMouseDown  = opts.onMouseDown  || function() {};
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -470,6 +474,13 @@
         });
       }
     }
+
+    this._addEventListener(this.$input, 'mousedown', function(ev) {
+      self.onMouseDown.apply(self, [ev]);
+    });
+    this._addEventListener(this.$input, 'mouseup', function(ev) {
+      self.onMouseUp.apply(self, [ev]);
+    });
 
     if ( this.tagName == 'button' ) {
       if ( this.opts.icon ) {
