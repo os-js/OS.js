@@ -30,6 +30,7 @@ Please note that it may be unavailable at times and slightly out-of-date.
 
 ### Default application bundle
 * **Draw** - A simple drawing application
+* **Calculator** - Simple calculator
 * **File Manager** - File Management
 * **Preview** - For viewing images and videos
 * **Music Player** - For listening to audio files
