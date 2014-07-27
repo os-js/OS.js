@@ -92,7 +92,7 @@
           if ( error ) {
             console.log(">>>", '500', fullPath);
             console.warn(error);
-            respond("500 Internal Server Error", null, response);
+            respond("500 Internal Server Error", null, response, null, 500);
           } else {
             var mime = _vfs.getMime(fullPath, CONFIG);
             console.log(">>>", '200', mime, fullPath, data.length);
@@ -101,7 +101,7 @@
         });
       } else {
         console.log('!!!', '404', fullPath);
-        respond("404 Not Found", null, response, [[404, {}]]);
+        respond("404 Not Found", null, response, null, 404);
       }
     });
   };
