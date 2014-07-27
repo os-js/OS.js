@@ -1,12 +1,12 @@
 # Requirements
 Make sure you have these dependencies installed.
 
-* **nodejs**
+* **nodejs** and **npm**
 * **lessc** (`sudo npm -g less`)
 * **bash**
 * **GNU Make**
 
-To build compressed/minimized versions java is required because of YUI tools used.
+_To build compressed/minimized versions java is required because of YUI tools used. (YUI is included)_
 
 # Installation
 Installation only requires a few small steps.
@@ -45,7 +45,6 @@ See `doc/lighttpd.conf` for an example
 * Developer dist: `(cd dist-dev; php -S localhost:8000 ../src/server-php/server.php)`
 
 ### Node.js
-*Please note that the node server is not finished yet, but is working for development purposes*
 
 * Install dependencies: `npm install node-fs-extra formidable`
 * Production dist: `node src/server-node/server.js`

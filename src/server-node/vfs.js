@@ -29,6 +29,14 @@
  */
 (function(_path, _fs) {
 
+  var readExif = function(data, cb) {
+    cb(data); // TODO
+  };
+
+  var readPermission = function(mode) {
+    return mode; // TODO
+  };
+
   var sortReaddir = function(list) {
     var tree = {dirs: [], files: []};
     for ( var i = 0; i < list.length; i++ ) {
@@ -201,7 +209,6 @@
       });
     },
 
-    // TODO: Exif info
     fileinfo : function(args, request, respond, config) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
@@ -219,17 +226,19 @@
                 filename:     _path.basename(fullPath),
                 size:         stat.size,
                 mime:         vfs.getMime(fullPath, config),
-                permissions:  stat.mode // FIXME: String representation
+                permissions:  readPermission(stat.mode)
               };
 
-              respond({result: data, error: null});
+              readExif(data, function(data) {
+                respond({result: data, error: null});
+              });
+
             }
           });
         }
       });
     },
 
-    // TODO: Custom sorting
     scandir : function(args, request, respond, config) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
