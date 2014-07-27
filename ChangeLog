@@ -1,3 +1,14 @@
+# 2.0.0-alpha12
+
+* Node.js backend refactor and cleanup
+* Node.js file upload support
+* Updated documentation
+* Cleaned up new PHP backend code
+* settings.php now required without checking for existence
+* GetFile bugfix in PHP backend
+* Applications: Added Calculator
+* GUI: Added more input events to the GUIInput type
+
 # 2.0.0-alpha11
 
 * Added window property "start_focused"
