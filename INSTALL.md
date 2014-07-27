@@ -47,7 +47,7 @@ See `doc/lighttpd.conf` for an example
 ### Node.js
 *Please note that the node server is not finished yet, but is working for development purposes*
 
-* Install dependencies: `npm install node-fs-extra` (only required for filesystem API support)
+* Install dependencies: `npm install node-fs-extra formidable`
 * Production dist: `node src/server-node/server.js`
 * Developer dist: `node src/server-node/server.js dist-dev`
 

@@ -8,7 +8,6 @@
 
 # Medium-priority
 * _[Backend]_ Provide a websocket version like in v1
-* _[Backend]_ Rewrite the Node backend
 * _[GUI]_ GUIScrollbar
 * _[Misc]_ There are TODO and FIXME markings in source code files
 * _[Themes]_ CSS Style scrollbars on webkit

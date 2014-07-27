@@ -27,26 +27,27 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_http, _path, _url, _fs, _qs) {
-  //
-  // npm install node-fs-extra
-  //
-  //
-  var rootDir = _path.join(_path.dirname(__filename), '/../../');
-  var distDir = 'dist';
-  if ( process && process.argv.length > 2 ) {
-    distDir = process.argv[2];
-  }
 
-  // You can create your own 'settings.json' in this directory
-  // to override these vaules
-  var config = {
+/**
+ * Depends on:
+ *  `npm install node-fs-extra`
+ *  `npm install formidable`
+ */
+
+(function(_http, _path, _url, _fs, _qs, _multipart, _vfs)
+{
+  /**
+   * Globals and default settings etc.
+   */
+  var ROOTDIR = _path.join(_path.dirname(__filename), '/../../');
+  var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
+  var CONFIG  = {
     port:       8000,
     directory:  null, // Automatic
     appdirs:    null, // Automatic, but overrideable
-    vfsdir:     _path.join(rootDir, 'vfs/home'),
-    tmpdir:     _path.join(rootDir, 'vfs/tmp'),
-    repodir:    _path.join(rootDir, 'src/packages'),
+    vfsdir:     _path.join(ROOTDIR, 'vfs/home'),
+    tmpdir:     _path.join(ROOTDIR, 'vfs/tmp'),
+    repodir:    _path.join(ROOTDIR, 'src/packages'),
     mimes:      {}
   };
 
@@ -55,22 +56,13 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Get MIME
-   */
-  var getMime = function(file) {
-    var i = file.lastIndexOf("."),
-        ext = (i === -1) ? "default" : file.substr(i),
-        mimeTypes = config.mimes;
-    return mimeTypes[ext.toLowerCase()] || mimeTypes.default;
-  };
-
-  /**
    * HTTP Output
    */
-  var respond = function(data, mime, response, headers) {
+  var respond = function(data, mime, response, headers, code) {
     data    = data    || '';
     headers = headers || [];
     mime    = mime    || "text/html";
+    code    = code    || 200;
 
     //console.log(">>>", 'respond()', mime, data.length);
 
@@ -78,7 +70,7 @@
       response.writeHead.apply(response, headers[i]);
     }
 
-    response.writeHead(200, {"Content-Type": mime});
+    response.writeHead(code, {"Content-Type": mime});
     response.write(data);
     response.end();
   };
@@ -93,7 +85,7 @@
    * File Output
    */
   var respondFile = function(path, request, response, jpath) {
-    var fullPath = jpath ? _path.join(config.directory, path) : path;
+    var fullPath = jpath ? _path.join(CONFIG.directory, path) : _path.join(CONFIG.vfsdir, path);
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
         _fs.readFile(fullPath, function(error, data) {
@@ -102,7 +94,7 @@
             console.warn(error);
             respond("500 Internal Server Error", null, response);
           } else {
-            var mime = getMime(fullPath);
+            var mime = _vfs.getMime(fullPath, CONFIG);
             console.log(">>>", '200', mime, fullPath, data.length);
             respond(data, mime, response);
           }
@@ -114,17 +106,19 @@
     });
   };
 
-  var sortReaddir = function(list) {
-    var tree = {dirs: [], files: []};
-    for ( var i = 0; i < list.length; i++ ) {
-      if ( list[i].type == 'dir' ) {
-        tree.dirs.push(list[i]);
-      } else {
-        tree.files.push(list[i]);
+  var readConfig = function(filename) {
+    var path = _path.join(ROOTDIR, filename);
+    if ( _fs.existsSync(path) ) {
+      try {
+        console.info('-->', 'Found configuration', filename);
+        return JSON.parse(_fs.readFileSync(path).toString());
+      } catch ( e ) {
+        console.warn('!!!', 'Failed to parse configuration', filename, e);
       }
+    } else {
+      console.warn('!!!', 'Did not find configuration', path);
     }
-
-    return tree.dirs.concat(tree.files);
+    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -135,247 +129,101 @@
    * OS.js API
    */
   var api = {
-    application : function(path, name, method, args, request, response) {
-      var aroot = _path.join(config.repodir, path);
-      var apath = _path.join(aroot, "api.js");
-
-      try {
-        var api = require(apath);
-        api[name].call(method, args, function(result, error) {
-          error = error || null;
-          if ( error !== null ) {
-            result = null;
-          }
-          respondJSON({result: result, error: error}, response);
-        });
-      } catch ( e ) {
-        respondJSON({result: null, error: "Application API error or missing: " + e.toString()}, response);
-        return;
+    FileGET : function(path, request, response, arg) {
+      if ( !arg ) {
+        console.log('---', 'FileGET', path);
       }
+      respondFile(path, request, response, arg);
     },
 
-    bugreport : function() {
-      // TODO
-      respondJSON({result: null, error: 'Not implemented!'}, response);
-    }
-  };
+    FilePOST : function(fields, files, request, response) {
+      var srcPath = files.upload.path;
+      var dstPath = _path.join(CONFIG.vfsdir, fields.path, files.upload.name);
 
-  /**
-   * OS.js VFS
-   */
-  var vfs = {
-    read : function(args, request, response) {
-      var path = args[0];
-      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
-        if ( exists ) {
-          _fs.readFile(fullPath, function(error, data) {
-            if ( error ) {
-              respondJSON({result: null, error: 'Error reading file: ' + error}, response);
-            } else {
-              if ( opts.dataSource ) {
-                data = "data:" + getMime(fullPath) + ";base64," + (new Buffer(data).toString('base64'));
-              }
-
-              respondJSON({result: data.toString(), error: null}, response);
-            }
-          });
-        } else {
-          respondJSON({result: null, error: 'File not found!'}, response);
-        }
-      });
-    },
-
-    write : function(args, request, response) {
-      var path = args[0];
-      var data = args[1] || '';
-      var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
-
-      var fullPath = _path.join(config.vfsdir, path);
-
-      if ( opts.dataSource ) {
-        data = data.replace(/^data\:(.*);base64\,/, "") || '';
-        data = new Buffer(data, 'base64').toString('ascii')
-      }
-
-      _fs.writeFile(fullPath, data, function(error, data) {
-        if ( error ) {
-          respondJSON({result: null, error: 'Error writing file: ' + error}, response);
-        } else {
-          respondJSON({result: true, error: null}, response);
-        }
-      });
-    },
-
-    'delete' : function(args, request, response) {
-      var path = args[0];
-      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
-        if ( !exists ) {
-          respondJSON({result: null, error: 'Target does not exist!'}, response);
-        } else {
-          _fs.remove(fullPath, function(error, data) {
-            if ( error ) {
-              respondJSON({result: false, error: 'Error deleting: ' + error}, response);
-            } else {
-              respondJSON({result: true, error: null}, response);
-            }
-          });
-        }
-      });
-    },
-
-    copy : function(args, request, response) {
-      var src  = args[0];
-      var dst  = args[1];
-      var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
-
-      var srcPath = _path.join(config.vfsdir, src);
-      var dstPath = _path.join(config.vfsdir, dst);
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {
           _fs.exists(dstPath, function(exists) {
             if ( exists ) {
-              respondJSON({result: null, error: 'Target already exist!'}, response);
-            } else {
-              _fs.copy(srcPath, dstPath, function(error, data) {
-                if ( error ) {
-                  respondJSON({result: false, error: 'Error copying: ' + error}, response);
-                } else {
-                  respondJSON({result: true, error: null}, response);
-                }
-              });
-            }
-          });
-        } else {
-          respondJSON({result: null, error: 'Source does not exist!'}, response);
-        }
-      });
-    },
-
-    move : function(args, request, response) {
-      var src  = args[0];
-      var dst  = args[1];
-      var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
-
-      var srcPath = _path.join(config.vfsdir, src);
-      var dstPath = _path.join(config.vfsdir, dst);
-      _fs.exists(srcPath, function(exists) {
-        if ( exists ) {
-          _fs.exists(dstPath, function(exists) {
-            if ( exists ) {
-              respondJSON({result: null, error: 'Target already exist!'}, response);
+              respond('Target already exist!', "text/plain", response, null, 500);
             } else {
               _fs.rename(srcPath, dstPath, function(error, data) {
                 if ( error ) {
-                  respondJSON({result: false, error: 'Error renaming/moving: ' + error}, response);
+                  respond('Error renaming/moving: ' + error, "text/plain", response, null, 500);
                 } else {
-                  respondJSON({result: true, error: null}, response);
+                  respond("", "text/plain", response);
                 }
               });
             }
           });
         } else {
-          respondJSON({result: null, error: 'Source does not exist!'}, response);
+          respond('Source does not exist!', "text/plain", response, null, 500);
         }
       });
     },
 
-    mkdir : function(args, request, response) {
-      var path = args[0];
-      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
+    CoreAPI : function(url, path, POST, request, response) {
+      if ( path.match(/^\/API/) ) {
+        try {
+          var data   = JSON.parse(POST);
+          var method = data.method;
+          var args   = data['arguments'] || {}
 
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
-        if ( exists ) {
-          respondJSON({result: null, error: 'Target already exist!'}, response);
-        } else {
-          _fs.mkdir(fullPath, function(error, data) {
-            if ( error ) {
-              respondJSON({result: false, error: 'Error creating directory: ' + error}, response);
-            } else {
-              respondJSON({result: true, error: null}, response);
-            }
-          });
-        }
-      });
-    },
+          console.log('---', 'CoreAPI', method, args);
 
-    exists : function(args, request, response) {
-      var path = args[0];
-      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
-        respondJSON({result: exists, error: null}, response);
-      });
-    },
+          switch ( method ) {
+            case 'application' :
+              var apath = args.path || null;
+              var aname = args.application || null;
+              var ameth = args.method || null;
+              var aargs = args['arguments'] || [];
 
-    // TODO: Exif info
-    fileinfo : function(args, request, response) {
-      var path = args[0];
-      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
-        if ( !exists ) {
-          respondJSON({result: null, error: 'No such file or directory!'}, response);
-        } else {
-          _fs.stat(fullPath, function(error, stat) {
-            if ( error ) {
-              respondJSON({result: false, error: 'Error getting file information: ' + error}, response);
-            } else {
-              var data = {
-                path:         _path.dirname(fullPath),
-                filename:     _path.basename(fullPath),
-                size:         stat.size,
-                mime:         getMime(fullPath),
-                permissions:  stat.mode // FIXME: String representation
-              };
+              var aroot = _path.join(CONFIG.repodir, apath);
+              var fpath = _path.join(aroot, "api.js");
 
-              respondJSON({result: data, error: null}, response);
-            }
-          });
-        }
-      });
-    },
+              try {
+                var api = require(fpath);
+                api[aname].call(ameth, aargs, function(result, error) {
+                  error = error || null;
+                  if ( error !== null ) {
+                    result = null;
+                  }
+                  respondJSON({result: result, error: error}, response);
+                });
+              } catch ( e ) {
+                respondJSON({result: null, error: "Application API error or missing: " + e.toString()}, response);
+              }
+            break;
 
-    // TODO: Custom sorting
-    scandir : function(args, request, response) {
-      var path = args[0];
-      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
+            case 'bugreport' :
+              respondJSON({result: null, error: 'Not implemented!'}, response);
+            break;
 
-      var fullPath = _path.join(config.vfsdir, path);
+            case 'fs' :
+              var m = args.method;
+              var a = args['arguments'] || [];
 
-      _fs.readdir(fullPath, function(error, files) {
-        if ( error ) {
-          respondJSON({result: null, error: 'Error reading directory: ' + error}, response);
-        } else {
-          var result = [];
-          var ofpath, fpath, ftype, fsize, fstat;
-          for ( var i = 0; i < files.length; i++ ) {
-            ofpath = _path.join(path, files[i]);
-            fpath  = _path.join(fullPath, files[i]);
+              if ( _vfs[m] ) {
+                _vfs[m](a, request, function(json) {
+                  respondJSON(json, response);
+                }, CONFIG);
+              } else {
+                throw "Invalid VFS method: " + m;
+              }
+            break;
 
-            fsstat = _fs.statSync(fpath);
-            ftype  = fsstat.isFile() ? 'file' : 'dir';
-            fsize  = fsstat.size;
-
-            result.push({
-              filename: files[i],
-              path:     ofpath,
-              size:     fsize,
-              mime:     ftype === 'file' ? getMime(files[i]) : '',
-              type:     ftype
-            });
+            default :
+              throw "Invalid method: " + method;
+            break;
           }
+        } catch ( e ) {
+          console.error("!!! Caught exception", e);
+          console.warn(e.stack);
 
-          var tree = sortReaddir(result);
-          respondJSON({result: tree, error: null}, response);
+          respondJSON({result: null, error: "500 Internal Server Error: " + e}, response);
         }
-      });
+        return true;
+      }
+      return false;
     }
   };
 
@@ -387,65 +235,37 @@
   console.log('***', 'THIS IS A WORK IN PROGRESS!!!');
   console.log('***');
 
-  var spath = _path.join(_path.dirname(__filename), 'settings.json');
-  var rpath = _path.join(rootDir, 'src/packages/repositories.json');
-  var mpath = _path.join(rootDir, 'src/mime.json');
-  var appdirs = [];
+  /**
+   * Initialize config
+   */
+  (function() {
 
-  // FIXME: Refactor
-  if ( _fs.existsSync(mpath) ) {
-    try {
-      var data = _fs.readFileSync(mpath);
-      if ( data ) {
-        console.log('!!!', 'Found MIME file...');
-        data = JSON.parse(data.toString());
-        config.mimes = data;
-      }
-    } catch ( e ) {
-      console.warn('!!!', 'Failed to parse settings JSON file', e);
-    }
-  }
-
-
-  if ( _fs.existsSync(spath) ) {
-    try {
-      var data = _fs.readFileSync(spath);
-      if ( data ) {
-        console.log('!!!', 'Found configuration file...');
-        data = JSON.parse(data.toString());
-        for ( var i in data ) {
-          if ( data.hasOwnProperty(i) && config.hasOwnProperty(i) ) {
-            config[i] = data[i];
-          }
+    var settConfig = readConfig("src/server-node/settings.json");
+    if ( settConfig !== false ) {
+      for ( var i in settConfig ) {
+        if ( settConfig.hasOwnProperty(i) && CONFIG.hasOwnProperty(i) ) {
+          CONFIG[i] = settConfig[i];
         }
       }
-    } catch ( e ) {
-      console.warn('!!!', 'Failed to parse settings JSON file', e);
     }
-  }
 
-  if ( _fs.existsSync(rpath) ) {
-    try {
-      var data = _fs.readFileSync(rpath);
-      if ( data ) {
-        console.log('!!!', 'Found repository file...');
-        appdirs = JSON.parse(data.toString());
-      }
-    } catch ( e ) {
-      console.warn('!!!', 'Failed to parse repository JSON file', e);
+    var mimeConfig = readConfig("src/mime.json");
+    if ( mimeConfig !== false ) {
+      CONFIG.mimes = mimeConfig;
     }
-  }
 
-  if ( !config.directory ) {
-    config.directory = _fs.realpathSync('.');
-  }
+    var repoConfig = readConfig("src/packages/repositories.json");
+    if ( repoConfig !== false ) {
+      CONFIG.appdirs = repoConfig;
+    }
 
-  console.log('---', 'Configuration:');
-  console.log('    Configured dist', distDir);
-  console.log('    Configured port', config.port);
-  console.log('    Configured directory', config.directory);
-  console.log('    VFS path', config.vfsdir);
-  console.log('    App dirs', appdirs);
+    if ( !CONFIG.directory ) {
+      CONFIG.directory = _fs.realpathSync('.');
+    }
+
+  })();
+
+  console.log(JSON.stringify(CONFIG, null, 2));
 
   /**
    * Server instance
@@ -458,74 +278,48 @@
       if ( path === "/" ) path += "index.html";
       console.log('<<<', path);
 
-      if ( request.method == 'POST' ) {
-        var body = '';
-        request.on('data', function (data) {
-          body += data;
-        });
+      if ( request.method == 'POST' ) 
+      {
+        // File Uploads
+        if ( path.match(/^\/FS$/) ) {
+          var form = new _multipart.IncomingForm();
+          form.parse(request, function(err, fields, files) {
+            api.FilePOST(fields, files, request, response);
+          });
+        }
 
-        request.on('end', function () {
-          var POST = body;//_qs.parse(body);
+        // API Calls
+        else {
+          var body = '';
+          request.on('data', function (data) {
+            body += data;
+          });
 
-          if ( path.match(/^\/API/) ) {
-            var data = {};
-            try {
-              data = JSON.parse(POST);
-
-              var method = data.method;
-              var args   = data['arguments'] || {}
-
-              console.log('---', 'API', method, args);
-
-              switch ( method ) {
-                case 'application' :
-                  var apath = args.path || null;
-                  var aname = args.application || null;
-                  var ameth = args.method || null;
-                  var aargs = args['arguments'] || [];
-
-                  api.application(apath, aname, ameth, aargs, request, response);
-                break;
-
-                case 'fs' :
-                  var m = args.method;
-                  var a = args['arguments'] || [];
-
-                  if ( vfs[m] ) {
-                    vfs[m](a, request, response);
-                  } else {
-                    throw "Invalid VFS method: " + m;
-                  }
-                break;
-
-                default :
-                  throw "Invalid method: " + method;
-                break;
-              }
-            } catch ( e ) {
-              console.error("!!! Caught exception", e);
-              console.warn(e.stack);
-
-              respondJSON({result: null, error: "500 Internal Server Error: " + e}, response);
+          request.on('end', function () {
+            if ( !api.CoreAPI(url, path, body, request, response) ) {
+              console.log(">>>", '404', path);
+              respond("404 Not Found", null, response, [[404, {}]]);
             }
-          } else {
-            console.log(">>>", '404', path);
-            respond("404 Not Found", null, response, [[404, {}]]);
-          }
-        });
-      } else {
-        if ( path.match(/^\/FS/) ) {
-          respondFile(path.replace(/^\/FS/, ''), request, response);
-        } else {
-          respondFile(_path.join(distDir, path), request, response, true);
+          });
         }
       }
-  }).listen(config.port);
+
+      // File Gets
+      else {
+        if ( path.match(/^\/FS/) ) {
+          api.FileGET(path.replace(/^\/FS/, ''), request, response, false);
+        } else {
+          api.FileGET(_path.join(DISTDIR, path), request, response, true);
+        }
+      }
+  }).listen(CONFIG.port);
 
 })(
   require("http"),
   require("path"),
   require("url"),
   require("node-fs-extra"),
-  require("querystring")
+  require("querystring"),
+  require("formidable"),
+  require("./vfs.js")
 );
