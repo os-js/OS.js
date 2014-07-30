@@ -215,13 +215,17 @@ body, input, button, textarea, label, select {
  * Window
  */
 .Window {
-  box-shadow : @theme_base_shadow_unfocused;
-  background : @theme_base_bg_color;
   opacity : 0.8;
 }
+.Window:before {
+  box-shadow : @theme_base_shadow_unfocused;
+  background : @theme_base_bg_color;
+}
 .Window.WindowHintFocused {
-  box-shadow : @theme_base_shadow_focused;
   opacity : 1.0;
+}
+.Window.WindowHintFocused:before {
+  box-shadow : @theme_base_shadow_focused;
 }
 .Window > .WindowWrapper {
   overflow : hidden;
@@ -256,7 +260,7 @@ body, input, button, textarea, label, select {
 .WindowLoadingIndicator {
   background : url('default/loading.gif');
 }
-.WindowDropRect {
+.Window.WindowHintDnD:after {
   border : 2px solid #000;
   margin : -2px;
 }

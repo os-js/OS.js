@@ -1499,6 +1499,7 @@
 
       this._$element      = null;                 // DOMElement: Window Outer container
       this._$root         = null;                 // DOMElement: Window Inner container (for content)
+      this._$top          = null;                 // DOMElement: Window Top
       this._$winicon      = null;                 // DOMElement: Window Icon
       this._$loading      = null;                 // DOMElement: Window Loading overlay
       this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
@@ -1655,24 +1656,9 @@
         border.className = 'WindowDropRect';
 
         var _showBorder = function() {
-          if ( !border.parentNode ) { document.body.appendChild(border); }
-          border.style.top      = (main.offsetTop+2) + "px";
-          border.style.left     = (main.offsetLeft+2) + "px";
-          border.style.width    = (main.offsetWidth-4) + "px";
-          border.style.height   = (main.offsetHeight-4) + "px";
-          border.style.zIndex   = main.style.zIndex-1;
-          border.style.display  = 'block';
-
           OSjs.Utils.$addClass(main, 'WindowHintDnD');
         };
         var _hideBorder = function() {
-          border.style.top      = 0 + "px";
-          border.style.left     = 0 + "px";
-          border.style.width    = 0 + "px";
-          border.style.height   = 0 + "px";
-          border.style.display  = 'none';
-
-          if ( border.parentNode ) { border.parentNode.removeChild(border); }
           OSjs.Utils.$removeClass(main, 'WindowHintDnD');
         };
 
@@ -1944,6 +1930,7 @@
 
     this._$element  = main;
     this._$root     = windowWrapper;
+    this._$top      = windowTop;
     this._$loading  = windowLoading;
     this._$winicon  = windowIconImage;
     this._$disabled = windowDisabled;
@@ -2328,7 +2315,7 @@
     this._$element.style.top    = s.top + "px";
     this._$element.style.left   = s.left + "px";
     this._$element.style.width  = s.width + "px";
-    this._$element.style.height = s.height + "px";
+    this._$element.style.height = (s.height-this._$top.offsetHeight) + "px";
     OSjs.Utils.$addClass(this._$element, 'WindowHintMaximized');
 
     //this._resize();
@@ -2430,7 +2417,7 @@
     return true;
   };
 
-  Window.prototype._resizeTo = function(dw, dh, container, limit) {
+  Window.prototype._resizeTo = function(dw, dh, limit) {
     if ( dw <= 0 || dh <= 0 ) { return; }
 
     limit = (typeof limit === 'undefined' || limit === true);
@@ -2441,32 +2428,8 @@
       throw "Window resize failed, missing measure of element.";
     }
 
-    var rx   = posi.left - poso.left;
-    var ry   = posi.top - poso.top;
-    var ex   = poso.right - posi.right;
-    var ey   = poso.bottom - posi.bottom;
-    var ow   = this._$element.offsetWidth;
-    var oh   = this._$element.offsetHeight;
-    var dx   = (ow - this._$root.offsetWidth);
-    var dy   = (oh - this._$root.offsetHeight);
-
-    var newW = dw + dx + rx + ex;
-    var newH = dh + dy + ry + ey;
-
-    if ( limit ) {
-      var rect = _getWindowSpace();
-      var x    = this._position.x;
-      var y    = this._position.y;
-
-      if ( (newW + x) > rect.width ) {
-        newW = (rect.width - x - 10);
-      }
-      if ( (newH + y) > rect.height ) {
-        newH = (rect.height - y - 10);
-      }
-    }
-
-    this._resize(newW, newH);
+    // FIXME
+    // TODO
   };
 
   Window.prototype._resize = function(w, h, force) {

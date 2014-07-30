@@ -36,7 +36,7 @@
   var FileInformationDialog = function(path, onClose) {
     this.path = path;
     onClose = onClose || function() {};
-    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._("File Information"), buttonCancel: false, buttonOkLabel: OSjs._("Close")}, {width:300, height:400}, onClose]);
+    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._("File Information"), buttonCancel: false, buttonOkLabel: OSjs._("Close")}, {width:300, height:370}, onClose]);
   };
   FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
 

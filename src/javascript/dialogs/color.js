@@ -39,7 +39,7 @@
       opts.alpha = 1.0;
     }
 
-    StandardDialog.apply(this, ['ColorDialog', {title: OSjs._("Color Dialog")}, {width:450, height:275}, onClose]);
+    StandardDialog.apply(this, ['ColorDialog', {title: OSjs._("Color Dialog")}, {width:450, height:250}, onClose]);
     this._icon = 'apps/gnome-settings-theme.png';
 
     if ( typeof opts.color === 'object' ) {

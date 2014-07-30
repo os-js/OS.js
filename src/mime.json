@@ -42,6 +42,7 @@
   ".txt"    : "text/plain",
   ".doc"    : "text/plain",
 
+  ".oplist" : "osjs/playlist",
   ".odoc"   : "osjs/document",
   ".odraw"  : "osjs/draw",
 

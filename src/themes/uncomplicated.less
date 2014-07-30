@@ -89,24 +89,28 @@ body .WMPanel.Bottom.Autohide {
 /**
  * Window
  */
-.Window {
+.Window:before {
   .theme_border_top(3px);
-}
-.Window > .WindowWrapper {
-  margin : 3px;
-  top : 29px;
+  left : -3px;
+  top : -29px;
+  right : -3px;
+  bottom : -3px;
 }
 .Window > .WindowTop {
-  margin : 3px;
+  top : -27px;
 }
 .Window > .WindowTop > .WindowTitle {
   text-align : center;
 }
-.WindowDropRect {
+.Window > .WindowResize {
+  bottom : -3px;
+  right : -3px;
+}
+.Window.WindowHintDnD:after {
   border : 4px solid rgba(0, 0, 0, .7);
-  margin : -4px;
   border-radius : 1px;
   .theme_border_top(3px);
+  margin : -4px;
 }
 
 /* Max */

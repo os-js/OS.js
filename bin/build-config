@@ -7,6 +7,7 @@ var ROOT      = _path.dirname(_path.dirname(__filename) + "../");
 var OUT_PHP   = "src/server-php/settings.php";
 var OUT_NODE  = "src/server-node/settings.json";
 var OUT_JS    = "dist/settings.js";
+var REPO_FILE = "src/packages/repositories.json";
 
 var buildData = JSON.parse(_fs.readFileSync("src/build.json"));
 if ( buildData !== null ) {
@@ -36,5 +37,6 @@ if ( buildData !== null ) {
   _fs.writeFileSync(OUT_PHP, cfg_php);
 
   settings = buildData.settings.frontend;
-  _fs.writeFileSync(OUT_JS, cfg_js.replace("%CONFIG%", JSON.stringify(settings)));
+  settings.Core.Repositories = JSON.parse(_fs.readFileSync(REPO_FILE));
+  _fs.writeFileSync(OUT_JS, cfg_js.replace("%CONFIG%", JSON.stringify(settings, null, 2)));
 }

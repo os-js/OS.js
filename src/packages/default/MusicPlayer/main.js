@@ -370,7 +370,7 @@
    * Main Window
    */
   var ApplicationMusicPlayerWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationMusicPlayerWindow', {width: 322, height: 230}, app]);
+    Window.apply(this, ['ApplicationMusicPlayerWindow', {width: 322, height: 200}, app]);
 
     this.title            = metadata.name;
     this.$buttons         = {};

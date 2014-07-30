@@ -72,6 +72,7 @@
    * Demo handler - Uses localStorage for sessions, for testing purposes
    */
   var DemoHandler = function() {
+
     OSjs.Handlers.Default.apply(this, arguments);
 
     this.storage = new DefaultStorage();

@@ -148,12 +148,21 @@ body.WallpaperStrech {
   position : absolute;
   top : 0px;
   left : 0px;
-  overflow : hidden;
+  overflow : visible;
+  margin-top : 26px;
+}
+.Window:before {
+  content : '';
+  position : absolute;
+  top : -26px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
 }
 
 .Window > .WindowTop {
   position : absolute;
-  top : 0px;
+  top : -26px;
   left : 0px;
   right : 0px;
   height : 26px;
@@ -215,7 +224,7 @@ body.WallpaperStrech {
 
 .Window > .WindowWrapper {
   position : absolute;
-  top : 26px;
+  top : 0px;
   left : 0px;
   right : 0px;
   bottom : 0px;
@@ -259,16 +268,16 @@ body.WallpaperStrech {
   bottom : 0px;
   z-index : 999998;
 }
-
-.WindowDropRect {
+.Window.WindowHintDnD:after {
+  content : '';
   position : absolute;
-  top : 0px;
+  top : -26px;
   left : 0px;
-  width : 0px;
-  height : 0px;
-  display : none;
+  bottom : 0px;
+  right : 0px;
   /*z-index : 10;*/
 }
+
 
 /**
  * WM

@@ -79,7 +79,7 @@
           el.alt = t;
           el.onload = function() {
             if ( self.frame ) {
-              self._resizeTo(this.width, this.height, self.frame.getRoot());
+              self._resizeTo(this.width, this.height);
             }
           };
           el.src = src;
@@ -99,7 +99,7 @@
 
           el.addEventListener("loadedmetadata", function(ev) {
             if ( self.frame ) {
-              self._resizeTo(this.offsetWidth, this.offsetHeight, self.frame.getRoot());
+              self._resizeTo(this.offsetWidth, this.offsetHeight);
             }
             self.loaded = true;
           });

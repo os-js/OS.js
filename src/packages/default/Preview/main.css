@@ -4,9 +4,9 @@
 .Window_ApplicationPreviewWindow .WindowWrapper .Frame {
   position : absolute;
   top : 35px;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
 }
 
 .Window_ApplicationPreviewWindow .WindowWrapper audio,

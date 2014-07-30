@@ -80,7 +80,7 @@
    * Main Window Constructor
    */
   var ApplicationCalculatorWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationCalculatorWindow', {width: 220, height: 350}, app]);
+    Window.apply(this, ['ApplicationCalculatorWindow', {width: 220, height: 310}, app]);
 
     // Set window properties and other stuff here
     this._title = metadata.name;
