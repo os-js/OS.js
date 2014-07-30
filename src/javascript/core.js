@@ -2421,15 +2421,25 @@
     if ( dw <= 0 || dh <= 0 ) { return; }
 
     limit = (typeof limit === 'undefined' || limit === true);
-    var posi  = OSjs.Utils.$position(container);
     var poso  = OSjs.Utils.$position(this._$root);
+    var space = getWindowSpace();
 
-    if ( posi === null || poso === null ) {
+    if ( poso === null ) {
       throw "Window resize failed, missing measure of element.";
     }
 
-    // FIXME
-    // TODO
+    var newW = dw;
+    var newH = dh;
+    if ( limit ) {
+      if ( (poso.left + newW) > space.width ) {
+        newW = (space.width - poso.left);
+      }
+      if ( (poso.top + newH) > space.height ) {
+        newH = (space.height - poso.top);
+      }
+    }
+
+    this._resize(newW, newH);
   };
 
   Window.prototype._resize = function(w, h, force) {
