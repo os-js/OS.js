@@ -8,7 +8,7 @@ class ApplicationMusicPlayer
   public static function call($method, $args) {
     if ( $method === 'info' ) {
       $fname = $args['filename'];
-      if ( !$fname || strstr($fname, HOMEDIR) === false ) throw new Exception("Invalid file!");
+      if ( !$fname || strstr($fname, VFSDIR) === false ) throw new Exception("Invalid file!");
 
       if ( !class_exists('SimpleXMLElement') ) {
         throw new Exception("Cannot get media information -- No XML parser found");
