@@ -262,7 +262,7 @@ body.WallpaperStrech {
 
 .Window > .WindowDisabledOverlay {
   position : absolute;
-  top : 27px;
+  top : 0px;
   left : 0px;
   right : 0px;
   bottom : 0px;
