@@ -81,7 +81,6 @@ class APIResponse
 
     if ( $error ) {
       $this->error = $error;
-      $this->code  = 500;
     }
 
     if ( $code > 0 ) {
