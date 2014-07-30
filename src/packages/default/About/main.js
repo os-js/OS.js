@@ -37,7 +37,7 @@
    * Main Window
    */
   var ApplicationAboutWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 280, min_height: 250}, app]);
+    Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 250, min_height: 250}, app]);
 
     // Set window properties here
     this._icon    = metadata.icon;
