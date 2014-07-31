@@ -1794,6 +1794,7 @@
     //windowDisabled.style.display  = 'none';
     this._addEvent(windowDisabled, (isTouch ? 'touchstart' : 'onmousedown'), function(ev) {
       ev.preventDefault();
+      ev.stopPropagation();
       return false;
     });
 
@@ -1936,20 +1937,7 @@
     this._$disabled = windowDisabled;
 
     document.body.appendChild(this._$element);
-    /*
-    var buttonsWidth = 0;
-    if ( this._properties.allow_maximize ) {
-      buttonsWidth += buttonMaximize.offsetWidth;
-    }
-    if ( this._properties.allow_minimize ) {
-      buttonsWidth += buttonMinimize.offsetWidth;
-    }
-    if ( this._properties.allow_close ) {
-      buttonsWidth += buttonClose.offsetWidth;
-    }
 
-    //windowTitle.style.marginRight = buttonsWidth + 'px';
-    */
     windowTitle.style.right = windowButtons.offsetWidth + 'px';
 
     this._onChange('create');
@@ -2310,12 +2298,20 @@
     this._state.maximized = true;
 
     var s = getWindowSpace();
+    var margin = {left: 0, top: 0, right: 0, bottom: 0};
+    try {
+      margin.left = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("left"), 10);
+      margin.top = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("top"), 10);
+      margin.right = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("right"), 10);
+      margin.bottom = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("bottom"), 10);
+    } catch ( e ) {}
+    margin.top -= this._$top.offsetHeight;
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    this._$element.style.top    = s.top + "px";
-    this._$element.style.left   = s.left + "px";
-    this._$element.style.width  = s.width + "px";
-    this._$element.style.height = (s.height-this._$top.offsetHeight) + "px";
+    this._$element.style.top    = (s.top+margin.top) + "px";
+    this._$element.style.left   = (s.left+margin.left) + "px";
+    this._$element.style.width  = (s.width-margin.right) + "px";
+    this._$element.style.height = (s.height-margin.top) + "px";
     OSjs.Utils.$addClass(this._$element, 'WindowHintMaximized');
 
     //this._resize();
