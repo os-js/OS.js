@@ -1,3 +1,14 @@
+# 2.0.0-alpha13
+
+* Themes: Refactored theming
+* Windows: The given dimensions will now work correctly
+* Backend: Bugfixes for PHP
+* Applications: Small fixes for dimensions
+* dist: Fixed xmpp stuff
+* Helpers: Moved UploadFiles and SettingsManager to OSjs.API
+* Helpers: New DefaultApplication
+* Helpers: New DefaultApplicationWindow
+
 # 2.0.0-alpha12
 
 * Node.js backend refactor and cleanup
