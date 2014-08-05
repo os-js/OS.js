@@ -113,8 +113,9 @@
   ApplicationTextpad.prototype = Object.create(Application.prototype);
 
   ApplicationTextpad.prototype.init = function(core, settings, metadata) {
-    Application.prototype.init.apply(this, arguments);
     this.mainWindow = this._addWindow(new ApplicationTextpadWindow(this, {width: 450, height: 300}, metadata));
+
+    Application.prototype.init.apply(this, arguments);
   };
 
   ApplicationTextpad.prototype.onNew = function() {

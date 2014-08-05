@@ -150,9 +150,9 @@
   ApplicationPreview.prototype = Object.create(Application.prototype);
 
   ApplicationPreview.prototype.init = function(core, settings, metadata) {
-    Application.prototype.init.apply(this, arguments);
-
     this.mainWindow = this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}, metadata));
+
+    Application.prototype.init.apply(this, arguments);
   };
 
   ApplicationPreview.prototype.onOpen = function(filename, mime, data) {

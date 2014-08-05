@@ -141,11 +141,9 @@
     Application.prototype.init.apply(this, arguments);
 
     // Get launch/restore argument(s)
-    var filename = this._getArgument('file');
-    var mime     = this._getArgument('mime');
-
-    if ( filename ) {
-      this.action('open', filename, mime);
+    this.currentFilename = this._getArgument('file');
+    if ( this.currentFilename ) {
+      this.action('open', this.currentFilename, this._getArgument('mime'));
     }
   };
 
@@ -404,5 +402,6 @@
   //
   OSjs.Helpers.DefaultApplication       = DefaultApplication;
   OSjs.Helpers.DefaultApplicationWindow = DefaultApplicationWindow;
+
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils)
 
