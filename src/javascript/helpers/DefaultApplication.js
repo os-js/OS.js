@@ -292,9 +292,10 @@
 
     var _onSaveFinished = function(name) {
       self._setCurrentFile(name, mime);
-      OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
-      self.onSave(filename, mime);
+      self.onSave(name, mime);
       self.mainWindow._toggleLoading(false);
+
+      OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
     };
 
 
@@ -365,12 +366,12 @@
       opt.path = dir;
       opt.filename = fnm;
 
-      this._createDialog('File', [opt, function(btn, fname) {
+      this._createDialog('File', [opt, function(btn, fname, fmime) {
         if ( self.mainWindow ) {
           self.mainWindow._toggleDisabled(false);
         }
         if ( btn !== 'ok' ) return;
-        self._doSave(fname, mime);
+        self._doSave(fname, fmime);
       }], this.mainWindow);
     }
   };
