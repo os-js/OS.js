@@ -115,28 +115,43 @@
 
   /**
    * Application constructor
+   *
+   * Usage: (Look at Textpad as an example)
+   *
+   * Implement this as your base-class and set `dialogOptions` on construct.
+   * Then add these methods to your Application class: onNew, onOpen, onSave, onGetSaveData
+   * In init() assign your main window to `this.mainWindow`
    */
   var DefaultApplication = function() {
     Application.apply(this, arguments);
 
-    // You can set application variables here
+    // These are reserved
     this.currentFilename = null;
     this.mainWindow      = null;
+
     this.dialogOptions   = {
+      read: true,           // Read file data
+
+      // These are passed on to Dialog
       mime: null,
       mimes: [],
       select: "file",
-      read: true,
       defaultFilename: ''
     };
   };
 
   DefaultApplication.prototype = Object.create(Application.prototype);
 
+  /**
+   * Default Destruction code
+   */
   DefaultApplication.prototype.destroy = function() {
     return Application.prototype.destroy.apply(this, arguments);
   };
 
+  /**
+   * Default init() code (run this last in your Application init() method)
+   */
   DefaultApplication.prototype.init = function(core, settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
@@ -147,6 +162,9 @@
     }
   };
 
+  /**
+   * Default Messaging handler
+   */
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
 
@@ -159,24 +177,32 @@
   };
 
   DefaultApplication.prototype.onNew = function() {
+    // IMPLEMENT THIS IN YOUR CLASS
   };
 
   DefaultApplication.prototype.onOpen = function(filename, mime, data) {
+    // IMPLEMENT THIS IN YOUR CLASS
   };
 
   DefaultApplication.prototype.onSave = function(filename, mime, data) {
+    // IMPLEMENT THIS IN YOUR CLASS
   };
 
   DefaultApplication.prototype.onGetSaveData = function(callback) {
+    // IMPLEMENT THIS IN YOUR CLASS
     callback(null);
   };
 
   DefaultApplication.prototype.onCheckChanged = function(callback) {
+    // IMPLEMENT THIS IN YOUR CLASS
     callback(true); // discard true/false
   };
 
+  /**
+   * Confirmation dialog creator
+   */
   DefaultApplication.prototype.onConfirmDialog = function(win, msg, callback) {
-    msg = msg || 'Quit without saving?';
+    msg = msg || 'Discard changes?';
     win._toggleDisabled(true);
     this._createDialog('Confirm', [msg, function(btn) {
       win._toggleDisabled(false);
@@ -185,6 +211,9 @@
     return true;
   };
 
+  /**
+   * Default Error Handler
+   */
   DefaultApplication.prototype.onError = function(error, action) {
     return false; // Use internal error handler
   };
@@ -282,6 +311,7 @@
       if ( this.mainWindow ) {
         this.mainWindow._error(OSjs._("{0} Application Error", this.__label), OSjs._("Failed to perform action '{0}'", action), error);
         this.mainWindow._toggleDisabled(false);
+        this.mainWindow._toggleLoading(false);
       } else {
         OSjs.API.error(OSjs._("{0} Application Error", this.__label), OSjs._("Failed to perform action '{0}'", action), error);
       }
