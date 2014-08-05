@@ -433,5 +433,5 @@
   OSjs.Helpers.DefaultApplication       = DefaultApplication;
   OSjs.Helpers.DefaultApplicationWindow = DefaultApplicationWindow;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils)
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils);
 
