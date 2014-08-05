@@ -265,6 +265,8 @@
    * Open given file
    */
   DefaultApplication.prototype._doOpen = function(filename, mime, data) {
+    this._setCurrentFile(filename, mime);
+
     this.onOpen(filename, mime, data);
 
     if ( this.mainWindow ) {
@@ -291,9 +293,9 @@
     }
 
     var _onSaveFinished = function(name) {
-      self._setCurrentFile(name, mime);
       self.onSave(name, mime);
       self.mainWindow._toggleLoading(false);
+      self._setCurrentFile(name, mime);
 
       OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
     };
