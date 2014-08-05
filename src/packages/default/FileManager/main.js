@@ -405,7 +405,7 @@
     var self      = this;
     var fileView  = this._getGUIElement('FileManagerFileView');
 
-    OSjs.Helpers.UploadFiles(this._appRef, this, fileView.getPath(), files, function(dest, filename) {
+    OSjs.API.UploadFiles(this._appRef, this, fileView.getPath(), files, function(dest, filename) {
       if ( fileView ) {
         fileView.refresh(function() {
           fileView.setSelected(filename, 'filename');

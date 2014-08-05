@@ -206,7 +206,7 @@
     var cfg = OSjs.Settings.DefaultConfig();
 
     this.offline  = false;
-    this.settings = new OSjs.Helpers.SettingsManager();           // Settings cache
+    this.settings = new OSjs.Core.SettingsManager();           // Settings cache
     this.config   = cfg;                                          // Main configuration copy
     this.packages = new PackageManager(cfg.Core.MetadataURI);     // Package manager
     this.themes   = new ThemeManager(cfg.Core.ThemeMetadataURI);  // Theme Manager
@@ -486,7 +486,7 @@
 
   /**
    * Sets a setting
-   * @see OSjs.Helpers.SettingsManager
+   * @see OSjs.Core.SettingsManager
    */
   DefaultHandler.prototype.setSetting = function(category, name, value, callback, save, merge) {
     save = (typeof save === 'undefined' || save === true);
@@ -503,7 +503,7 @@
 
   /**
    * Gets a setting
-   * @see OSjs.Helpers.SettingsManager
+   * @see OSjs.Core.SettingsManager
    */
   DefaultHandler.prototype.getSetting = function(category, name, callback, defaultValue) {
     callback = callback || function() {};

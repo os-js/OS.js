@@ -567,6 +567,32 @@
     return a;
   }
 
+  /**
+   * Global function for uploading a file
+   */
+  function UploadFiles(app, win, dest, files, onUploaded) {
+    files = files || [];
+    onUploaded = onUploaded || function(dest, filename, mime, size) {};
+
+    var _dialogClose  = function(btn, filename, mime, size) {
+      if ( btn != 'ok' && btn != 'complete' ) return;
+
+      OSjs.API.getCoreInstance().message('vfs', {type: 'upload', path: dest, filename: filename, source: app.__pid});
+
+      onUploaded(dest, filename, mime, size);
+    };
+
+    if ( files && files.length ) {
+      for ( var i = 0; i < files.length; i++ ) {
+        if ( win ) {
+          app._createDialog('FileUpload', [dest, files[i], _dialogClose], win);
+        } else {
+          app.addWindow(new OSjs.Dialogs.FileUpload(dest, files[i], _dialogClose), false);
+        }
+      }
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -2732,6 +2758,104 @@
   DialogWindow.prototype = Object.create(Window.prototype);
 
   /////////////////////////////////////////////////////////////////////////////
+  // SETTINGS MANAGER
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Settings Manager
+   */
+  function SettingsManager(defaults, defaultMerge) {
+    this.defaults = {};
+    this.settings = {};
+    this.defaultMerge = (typeof defaultMerge === 'undefined' || defaultMerge === true);
+
+    this.load(defaults);
+  }
+
+  SettingsManager.prototype.load = function(obj) {
+    this.defaults = {};
+    this.settings = {};
+
+    if ( obj ) {
+      this.defaults = JSON.parse(JSON.stringify(obj));
+      this.reset();
+    }
+  };
+
+  SettingsManager.prototype.reset = function() {
+    this.settings = JSON.parse(JSON.stringify(this.defaults));
+  };
+
+  SettingsManager.prototype.set = function(category, name, value, merge) {
+    if ( !name ) {
+      return this.setCategory(category, value, merge);
+    }
+    return this.setCategoryItem(category, name, value, merge);
+  };
+
+  SettingsManager.prototype.get = function(category, name, defaultValue) {
+    if ( !category ) {
+      return this.settings;
+    }
+    if ( !name ) {
+      return this.getCategory(category, defaultValue);
+    }
+    return this.getCategoryItem(category, name, defaultValue);
+  };
+
+  SettingsManager.prototype._mergeSettings = function(obj1, obj2) {
+    if ( ((typeof obj2) !== (typeof obj1)) && (!obj2 && obj1) ) {
+      return obj1;
+    }
+    if ( (typeof obj2) !== (typeof obj1) ) {
+      return obj2;
+    }
+    return OSjs.Utils.mergeObject(obj1, obj2);
+  };
+
+  SettingsManager.prototype.setCategory = function(category, value, merge) {
+    console.debug("SettingsManager::setCategory()", category, value);
+    if ( typeof merge === 'undefined' ) { merge = this.defaultMerge; }
+
+    if ( merge ) {
+      this.settings[category] = this._mergeSettings(this.settings[category], value);
+    } else {
+      this.settings[category] = value;
+    }
+  };
+
+  SettingsManager.prototype.setCategoryItem = function(category, name, value, merge) {
+    console.debug("SettingsManager::setCategoryItem()", category, name, value);
+    if ( typeof merge === 'undefined' ) { merge = this.defaultMerge; }
+
+    if ( !this.settings[category] ) {
+      this.settings[category] = {};
+    }
+
+    if ( merge ) {
+      this.settings[category][name] = this._mergeSettings(this.settings[category][name], value);
+    } else {
+      this.settings[category][name] = value;
+    }
+  };
+
+  SettingsManager.prototype.getCategory = function(category, defaultValue) {
+    if ( typeof this.settings[category] !== 'undefined' ) {
+      return this.settings[category];
+    }
+    return defaultValue;
+  };
+
+  SettingsManager.prototype.getCategoryItem = function(category, name, defaultValue) {
+    if ( typeof this.settings[category] !== 'undefined' ) {
+      if ( typeof this.settings[category][name] !== 'undefined' ) {
+        return this.settings[category][name];
+      }
+    }
+    return defaultValue;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -2742,6 +2866,7 @@
   OSjs.Core.Window            = Window;
   OSjs.Core.DialogWindow      = DialogWindow;
   OSjs.Core.WindowManager     = WindowManager;
+  OSjs.Core.SettingsManager   = SettingsManager;
 
   // Running instances
   OSjs.API.getHandlerInstance     = function() { return _HANDLER; };
@@ -2763,6 +2888,7 @@
   OSjs.API.launchList         = LaunchProcessList;
   OSjs.API.open               = LaunchFile;
   OSjs.API.playSound          = PlaySound;
+  OSjs.API.UploadFiles        = UploadFiles;
 
   /////////////////////////////////////////////////////////////////////////////
   // STARTUP / SHUTDOWN FUNCTIONS

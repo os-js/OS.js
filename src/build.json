@@ -99,7 +99,6 @@
       "src/javascript/utils.js",
       "src/javascript/locales.js",
       "src/javascript/core.js",
-      "src/javascript/helpers.js",
       "src/javascript/helpers/DefaultApplication.js",
       "src/javascript/locales/en_EN.js",
       "src/javascript/locales/no_NO.js",
