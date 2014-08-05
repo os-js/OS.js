@@ -3,10 +3,10 @@
 * _[Backend]_ Finish Node.js backend
 * _[Application]_ Writer -- Finish (note: Check for changes before opening/new file)
 * _[Application]_ MusicPlayer -- Finish
-* _[Application]_ Go over applications and clean up code (including DefaultApplication class)
 * _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
 
 # Medium-priority
+* _[Compability]_ IE Fails to load themes on first try
 * _[Backend]_ Provide a websocket version like in v1
 * _[GUI]_ GUIScrollbar
 * _[Misc]_ There are TODO and FIXME markings in source code files
