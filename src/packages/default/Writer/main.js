@@ -169,16 +169,16 @@
 
     mb.addItem(OSjs._("File"), [
       {title: OSjs._('New'), name: 'New', onClick: function() {
-        app.defaultAction('new');
+        app.action('new');
       }},
       {title: OSjs._('Open'), name: 'Open', onClick: function() {
-        app.defaultAction('open');
+        app.action('open');
       }},
       {title: OSjs._('Save'), name: 'Save', onClick: function() {
-        app.defaultAction('save');
+        app.action('save');
       }},
       {title: OSjs._('Save As...'), name: 'SaveAs', onClick: function() {
-        app.defaultAction('saveas');
+        app.action('saveas');
       }},
       {title: OSjs._('Close'), name: 'Close', onClick: function() {
         self._close();
@@ -232,7 +232,7 @@
     ]);
 
     mb.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFile.path ? false : true);
+      menu.setItemDisabled("Save", app.currentFilename ? false : true);
     };
 
     _setFont(self.font, self.fontSize);
@@ -290,32 +290,9 @@
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
-        this._appRef.defaultAction('open', data.path, data.mime);
+        this._appRef.action('open', data.path, data.mime);
       }
     }
-  };
-
-  ApplicationWriterWindow.prototype._close = function() {
-    var self = this;
-    var callback = function() {
-      self._close();
-    };
-
-    if ( this.checkChanged(callback) !== false ) {
-      return false;
-    }
-    return Window.prototype._close.apply(this, arguments);
-  };
-
-  ApplicationWriterWindow.prototype.checkChanged = function(callback, msg) {
-    var gel  = this._getGUIElement('WriterRichText');
-    if ( gel && gel.hasChanged ) {
-      return this._appRef.defaultConfirmClose(this, msg, function() {
-        gel.hasChanged = false;
-        callback();
-      });
-    }
-    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -330,53 +307,49 @@
 
     Application.apply(this, ['ApplicationWriter', args, metadata]);
 
-    var self = this;
-
-    this.defaultActionWindow  = 'ApplicationWriterWindow';
-    this.defaultFilename      = "New text document.odoc";
-    this.defaultMime          = 'osjs/document';
-    this.acceptMime           = metadata.mime || null;
-    this.getSaveData          = function() {
-      var w = self._getWindow('ApplicationWriterWindow');
-      return w ? w.getRichTextData() : '';
-    };
-
-    this.defaultActionError = function(action, error) {
-      var w = self._getWindow('ApplicationWriterWindow');
-      var msg = OSjs._("An error occured in action: {0}", action);
-      if ( w ) {
-        w._error(OSjs._("{0} Application Error", self.__label), msg, error);
-      } else {
-        OSjs.API.error(OSjs._("{0} Application Error", self.__label), msg, error);
-      }
-    };
-
-    this.defaultActionSuccess = function(action, arg1, arg2) {
-      var w = self._getWindow('ApplicationWriterWindow');
-      if ( w ) {
-        if ( action === 'open' ) {
-          w.update(arg2, arg1);
-        } else if ( action === 'new' ) {
-          var _new = function() {
-            w.update(null, '');
-          };
-          var msg = OSjs._("Discard current document ?");
-          if ( w.checkChanged(function() { _new(); }, msg) === false ) {
-            _new();
-          }
-        } else {
-          w.update(arg1);
-        }
-        w._focus();
-      }
-    };
+    this.dialogOptions.mimes = metadata.mime;
+    this.dialogOptions.defaultFilename = "New text document.odoc";
+    this.dialogOptions.defaultMime = "osjs/document";
   };
 
   ApplicationWriter.prototype = Object.create(Application.prototype);
 
   ApplicationWriter.prototype.init = function(core, settings, metadata) {
-    this._addWindow(new ApplicationWriterWindow(this, metadata));
     Application.prototype.init.apply(this, arguments);
+    this.mainWindow = this._addWindow(new ApplicationWriterWindow(this, metadata));
+  };
+
+  ApplicationWriter.prototype.onNew = function() {
+    if ( this.mainWindow ) {
+      this.mainWindow.update(null, "");
+      this.mainWindow._focus();
+    }
+  };
+
+  ApplicationWriter.prototype.onOpen = function(filename, mime, data) {
+    if ( this.mainWindow ) {
+      this.mainWindow.update(filename, data);
+      this.mainWindow._focus();
+    }
+  };
+
+  ApplicationWriter.prototype.onSave = function(filename, mime, data) {
+    if ( this.mainWindow ) {
+      this.mainWindow.update(filename);
+      this.mainWindow._focus();
+    }
+  };
+
+  ApplicationWriter.prototype.onCheckChanged = function(callback) {
+    callback(true); // discard true/false
+  };
+
+  ApplicationWriter.prototype.onGetSaveData = function(callback) {
+    var data = null;
+    if ( this.mainWindow ) {
+      data = this.mainWindow.getRichTextData();
+    }
+    callback(data);
   };
 
   /////////////////////////////////////////////////////////////////////////////

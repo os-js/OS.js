@@ -29,7 +29,7 @@
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationPreviewMenuBar'), root);
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('Open'), onClick: function() {
-        app.defaultAction('open');
+        app.action('open');
       }},
       {title: OSjs._('Close'), onClick: function() {
         self._close();
@@ -141,40 +141,25 @@
    * Application
    */
   var ApplicationPreview = function(args, metadata) {
-    var self = this;
     Application.apply(this, ['ApplicationPreview', args, metadata]);
 
-    this.defaultActionWindow  = 'ApplicationPreviewWindow';
-    this.acceptMime           = metadata.mime || null;
-    this.allowedActions       = ['open'];
-    this.openAction           = 'filename';
-
-    this.defaultActionError = function(action, error) {
-      var w = self._getWindow('ApplicationPreviewWindow');
-      var msg = OSjs._("An error occured in action: {0}", action);
-      if ( w ) {
-        w._error(OSjs._("{0} Application Error", self.__label), msg, error);
-      } else {
-        OSjs.API.error(OSjs._("{0} Application Error", self.__label), msg, error);
-      }
-    };
-
-    this.defaultActionSuccess = function(action, arg1, arg2) {
-      var w = self._getWindow('ApplicationPreviewWindow');
-      if ( w ) {
-        if ( action === 'open' ) {
-          w.setPreview(arg1.path, arg1.mime);
-        }
-        w._focus();
-      }
-    };
+    this.dialogOptions.read  = false;
+    this.dialogOptions.mimes = metadata.mime;
   };
 
   ApplicationPreview.prototype = Object.create(Application.prototype);
 
   ApplicationPreview.prototype.init = function(core, settings, metadata) {
-    this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}, metadata));
     Application.prototype.init.apply(this, arguments);
+
+    this.mainWindow = this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}, metadata));
+  };
+
+  ApplicationPreview.prototype.onOpen = function(filename, mime, data) {
+    if ( this.mainWindow ) {
+      this.mainWindow.setPreview(filename, mime);
+      this.mainWindow._focus();
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////

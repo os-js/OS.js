@@ -321,7 +321,6 @@
     var mainWindow = this._addWindow(new ApplicationCalculatorWindow(this, metadata));
 
     // Do other stuff here
-    // See 'DefaultApplication' sample in 'helpers.js' for more code
   };
 
   ApplicationCalculator.prototype._onMessage = function(obj, msg, args) {

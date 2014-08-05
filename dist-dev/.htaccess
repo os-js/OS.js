@@ -56,6 +56,7 @@ RewriteRule ^ api.php [QSA,L]
   AddType text/plain .txt
   AddType text/plain .doc
 
+  AddType osjs/dbeat .dbeat
   AddType osjs/playlist .oplist
   AddType osjs/document .odoc
   AddType osjs/draw .odraw

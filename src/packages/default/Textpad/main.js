@@ -24,16 +24,16 @@
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationTextpadMenuBar'), root);
     menuBar.addItem(OSjs._("File"), [
       {title: OSjs._('New'), name: 'New', onClick: function() {
-        app.defaultAction('new');
+        app.action('new');
       }},
       {title: OSjs._('Open'), name: 'Open', onClick: function() {
-        app.defaultAction('open');
+        app.action('open');
       }},
       {title: OSjs._('Save'), name: 'Save', onClick: function() {
-        app.defaultAction('save');
+        app.action('save');
       }},
       {title: OSjs._('Save As...'), name: 'SaveAs', onClick: function() {
-        app.defaultAction('saveas');
+        app.action('saveas');
       }},
       {title: OSjs._('Close'), name: 'Close', onClick: function() {
         self._close();
@@ -41,7 +41,7 @@
     ]);
 
     menuBar.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFile.path ? false : true);
+      menu.setItemDisabled("Save", app.currentFilename ? false : true);
     };
 
     this._addGUIElement(new GUI.Textarea('TextpadTextarea'), root);
@@ -76,11 +76,13 @@
   };
 
   ApplicationTextpadWindow.prototype.checkChanged = function(callback, msg) {
-    var gel  = this._getGUIElement('TextpadTextarea');
+    var gel = this._getGUIElement('TextpadTextarea');
     if ( gel && gel.hasChanged ) {
-      return this._appRef.defaultConfirmClose(this, msg, function() {
-        gel.hasChanged = false;
-        callback();
+      return this._appRef.onConfirmDialog(this, msg, function(discard) {
+        if ( discard ) {
+          gel.hasChanged = false;
+        }
+        callback(discard);
       });
     }
     return false;
@@ -101,63 +103,67 @@
    * Application
    */
   var ApplicationTextpad = function(args, metadata) {
-    var self = this;
     Application.apply(this, ['ApplicationTextpad', args, metadata]);
 
-    this.defaultActionWindow  = 'ApplicationTextpadWindow';
-    this.defaultFilename      = "New text file.txt";
-    this.defaultMime          = 'text/plain';
-    this.acceptMime           = metadata.mime || null;
-    this.getSaveData          = function() {
-      var w = self._getWindow('ApplicationTextpadWindow');
-      return w ? w.getText() : null;
-    };
-
-    this.defaultActionError = function(action, error) {
-      var w = self._getWindow('ApplicationTextpadWindow');
-      var msg = OSjs._("An error occured in action: {0}", action);
-      if ( w ) {
-        w._error(OSjs._("{0} Application Error", self.__label), msg, error);
-      } else {
-        OSjs.API.error(OSjs._("{0} Application Error", self.__label), msg, error);
-      }
-    };
-
-    this.defaultActionSuccess = function(action, arg1, arg2) {
-      var w = self._getWindow('ApplicationTextpadWindow');
-      if ( w ) {
-        var msg = OSjs._("Discard current document ?");
-        var _new = function() {
-          w.setText('', null);
-        };
-        var _open = function() {
-          w.setText(arg1, arg2.path);
-        };
-        if ( action === 'open' ) {
-          if ( w.checkChanged(function() { _open(); }, msg) === false ) {
-            _open();
-          }
-        } else {
-          if ( action === 'new' ) {
-            if ( w.checkChanged(function() { _new(); }, msg) === false ) {
-              _new();
-            }
-          } else {
-            w.setTitle(arg1 ? arg1.path : null);
-          }
-
-          w.setChanged(false);
-        }
-        w._focus();
-      }
-    };
+    this.dialogOptions.mimes = metadata.mime;
+    this.dialogOptions.defaultFilename = "New text file.txt";
+    this.dialogOptions.defaultMime = "text/plain";
   };
 
   ApplicationTextpad.prototype = Object.create(Application.prototype);
 
   ApplicationTextpad.prototype.init = function(core, settings, metadata) {
-    this._addWindow(new ApplicationTextpadWindow(this, {width: 450, height: 300}, metadata));
     Application.prototype.init.apply(this, arguments);
+    this.mainWindow = this._addWindow(new ApplicationTextpadWindow(this, {width: 450, height: 300}, metadata));
+  };
+
+  ApplicationTextpad.prototype.onNew = function() {
+    if ( this.mainWindow ) {
+      this.mainWindow.setChanged(false);
+      this.mainWindow.setText('', null);
+      this.mainWindow._focus();
+    }
+  };
+
+  ApplicationTextpad.prototype.onOpen = function(filename, mime, data) {
+    if ( this.mainWindow ) {
+      this.mainWindow.setChanged(false);
+      this.mainWindow.setText(data, filename);
+      this.mainWindow._focus();
+    }
+  };
+
+  ApplicationTextpad.prototype.onSave = function(filename, mime, data) {
+    if ( this.mainWindow ) {
+      this.mainWindow.setChanged(false);
+      this.mainWindow.setTitle(filename);
+      this.mainWindow._focus();
+    }
+  };
+
+  ApplicationTextpad.prototype.onCheckChanged = function(callback) {
+    var msg = OSjs._("Discard current document ?");
+
+    var self = this;
+    var _cb = function(discard) {
+      self.mainWindow._focus();
+
+      callback(discard);
+    };
+
+    if ( this.mainWindow ) {
+      if ( this.mainWindow.checkChanged(function(discard) { _cb(discard); }, msg) === false ) {
+        _cb(true);
+      }
+    }
+  };
+
+  ApplicationTextpad.prototype.onGetSaveData = function(callback) {
+    var data = null;
+    if ( this.mainWindow ) {
+      data = this.mainWindow.getText();
+    }
+    callback(data);
   };
 
   /////////////////////////////////////////////////////////////////////////////

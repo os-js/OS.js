@@ -99,7 +99,6 @@
     var mainWindow = this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
 
     // Do other stuff here
-    // See 'DefaultApplication' sample in 'helpers.js' for more code
   };
 
   ApplicationEXAMPLE.prototype._onMessage = function(obj, msg, args) {
