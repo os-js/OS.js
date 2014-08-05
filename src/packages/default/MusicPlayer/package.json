@@ -5,7 +5,7 @@
       "no_NO":      "Musikkspiller",
       "de_DE":      "Musikspieler"
     },
-    "mime":       ["^audio", "osjs/playlist"],
+    "mime":       ["^audio", "osjs\\/playlist"],
     "category":   "multimedia",
     "icon":       "status/audio-volume-high.png",
     "singular":   true,

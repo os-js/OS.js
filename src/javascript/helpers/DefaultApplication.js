@@ -133,6 +133,7 @@
       read: true,           // Read file data
 
       // These are passed on to Dialog
+      filetypes: null,
       mime: null,
       mimes: [],
       select: "file",
@@ -188,7 +189,7 @@
     // IMPLEMENT THIS IN YOUR CLASS
   };
 
-  DefaultApplication.prototype.onGetSaveData = function(callback) {
+  DefaultApplication.prototype.onGetSaveData = function(callback, filename, mime) {
     // IMPLEMENT THIS IN YOUR CLASS
     callback(null);
   };
@@ -196,6 +197,10 @@
   DefaultApplication.prototype.onCheckChanged = function(callback) {
     // IMPLEMENT THIS IN YOUR CLASS
     callback(true); // discard true/false
+  };
+
+  DefaultApplication.prototype.onCheckDataSource = function(filename, mime) {
+    return false;
   };
 
   /**
@@ -273,6 +278,16 @@
   DefaultApplication.prototype._doSave = function(filename, mime) {
     var self = this;
 
+    if ( this.dialogOptions.filetypes !== null ) {
+      var filetypes = this.dialogOptions.filetypes;
+      var ext = OSjs.Utils.filext(filename).toLowerCase();
+      if ( filetypes[ext] ) {
+        mime = filetypes[ext];
+      } else {
+        return;
+      }
+    }
+
     var _onSaveFinished = function(name) {
       self._setCurrentFile(name, mime);
       OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
@@ -283,7 +298,13 @@
 
     this.onGetSaveData(function(data) {
       self.mainWindow._toggleLoading(true);
-      OSjs.API.call('fs', {'method': 'write', 'arguments': [filename, data]}, function(res) {
+      var wopts = [filename, data];
+      var dataSource = self.onCheckDataSource(filename, mime);
+      if ( dataSource !== false ) {
+        wopts.push({dataSource: dataSource});
+      }
+
+      OSjs.API.call('fs', {'method': 'write', 'arguments': wopts}, function(res) {
         if ( res && res.result ) {
           _onSaveFinished(filename);
         } else {
@@ -296,7 +317,7 @@
       }, function(error) {
         self._onError(OSjs._("Failed to save file (call): {0}", filename), error, "doSave");
       });
-    });
+    }, filename, mime);
   };
 
   /**
@@ -377,7 +398,13 @@
         return;
       }
 
-      OSjs.API.call('fs', {'method': 'read', 'arguments': [fname]}, function(res) {
+      var ropts = [fname];
+      var dataSource = self.onCheckDataSource(fname, fmime);
+      if ( dataSource !== false ) {
+        ropts.push({dataSource: dataSource});
+      }
+
+      OSjs.API.call('fs', {'method': 'read', 'arguments': ropts}, function(res) {
         if ( res && res.result ) {
           self._doOpen(fname, fmime, res.result);
         } else {

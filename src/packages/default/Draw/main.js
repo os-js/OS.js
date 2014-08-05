@@ -31,12 +31,8 @@
 
   // TODO: Copy/Cut/Paste
   // TODO: Resize
-
-  var FileTypes = {
-    "png": "image/png",
-    "jpg": "image/jpeg",
-    "odraw": "osjs/draw"
-  };
+  // TODO: DefaultApplicationWindow
+  // TODO: Check for changes
 
   function MoveLayer(arr, old_index, new_index) {
     if (new_index >= arr.length) {
@@ -900,272 +896,32 @@
    * Application
    */
   var ApplicationDraw = function(args, metadata) {
-    this.currentFilename = null;
-
     Application.apply(this, ['ApplicationDraw', args, metadata]);
+
+    this.dialogOptions.mimes = metadata.mime;
+    this.dialogOptions.defaultFilename = "New image.odraw";
+    this.dialogOptions.defaultMime = "osjs/draw";
+    this.dialogOptions.filetypes = {
+      "png": "image/png",
+      "jpg": "image/jpeg",
+      "odraw": "osjs/draw"
+    };
   };
 
   ApplicationDraw.prototype = Object.create(Application.prototype);
 
-  /**
-   * Destroy Application
-   */
-  ApplicationDraw.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, []);
-  };
 
   /**
    * Initialize Application
    */
   ApplicationDraw.prototype.init = function(core, settings, metadata) {
+    this.mainWindow = this._addWindow(new ApplicationDrawWindow(this, metadata));
+
     Application.prototype.init.apply(this, arguments);
-
-    var win = this._addWindow(new ApplicationDrawWindow(this, metadata));
-
-    var open = this._getArgument('file');
-    var mime = this._getArgument('mime');
-    if ( open ) {
-      this.action('open', open, mime);
-    }
   };
 
-  /**
-   * Drag And Drop Helper
-   */
-  ApplicationDraw.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationDrawWindow' ) {
-      this.destroy();
-    }
-  };
-
-  /**
-   * Perform an external action
-   */
-  ApplicationDraw.prototype.action = function(action, filename, mime) {
-    switch ( action ) {
-      case 'new' :
-        this.onNew();
-      break;
-
-      case 'open' :
-        this.onOpen(filename, mime);
-      break;
-
-      case 'save' :
-        this.onSave(filename, mime);
-      break;
-
-      case 'saveas' :
-        this.onSaveAs(filename, mime);
-      break;
-
-      case 'close' :
-        this.destroy();
-      break;
-    }
-  };
-
-  /**
-   * Open given file
-   */
-  ApplicationDraw.prototype.doOpen = function(filename, mime, data) {
-    var self = this;
-    var win = this._getWindow('ApplicationDrawWindow');
-    var ext = OSjs.Utils.filext(filename).toLowerCase();
-
-    var _openRaw = function() {
-      var imageData = JSON.parse(data);
-      var width  = imageData.size[0] << 0;
-      var height = imageData.size[1] << 0;
-      var layers = imageData.layers;
-
-      self.setCurrentFile(filename, mime);
-      if ( win ) {
-        win.setImage(filename, layers, width, height);
-      }
-    };
-
-    var _openConverted = function() {
-      var img = new Image();
-      img.onerror = function() {
-        self.onError("Failed to load image data", "doOpen");
-      };
-      img.onload = function() {
-        self.setCurrentFile(filename, mime);
-
-        if ( win ) {
-          win.setImage(filename, this);
-        }
-      };
-      img.src = data;
-    };
-
-    if ( ext === "odraw" ) {
-      try {
-        _openRaw();
-      } catch ( e ) {
-        this.onError("Failed to load raw image", e, "doOpen");
-        console.warn(e.stack);
-      }
-    } else {
-      _openConverted();
-    }
-  };
-
-  /**
-   * Save to given file
-   */
-  ApplicationDraw.prototype.doSave = function(filename, mime) {
-    var self = this;
-    var win = this._getWindow('ApplicationDrawWindow');
-
-    var ext = OSjs.Utils.filext(filename).toLowerCase();
-    if ( FileTypes[ext] ) {
-      mime = FileTypes[ext];
-    } else {
-      return;
-    }
-
-    var _onSaveFinished = function(name) {
-      self.setCurrentFile(name, mime);
-      if ( win ) {
-        win.setImageName(name);
-      }
-      OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
-    };
-
-    var image = win.getImage();
-    if ( !image ) { return; }
-    var data = ext === "odraw" ? image.getSaveData() : image.getData(mime);
-    var datas = ext !== "odraw";
-
-    win._toggleLoading(true);
-    OSjs.API.call('fs', {'method': 'write', 'arguments': [filename, data, {dataSource: datas}]}, function(res) {
-      if ( res && res.result ) {
-        _onSaveFinished(filename);
-      } else {
-        if ( res && res.error ) {
-          self.onError(OSjs._("Failed to save file: {0}", filename), res.error, "doSave");
-          return;
-        }
-        self.onError(OSjs._("Failed to save file: {0}", filename), OSjs._("Unknown error"), "doSave");
-      }
-    }, function(error) {
-      self.onError(OSjs._("Failed to save file (call): {0}", filename), error, "doSave");
-    });
-  };
-
-  /**
-   * File operation error
-   */
-  ApplicationDraw.prototype.onError = function(error, action) {
-    action || "unknown";
-
-    this.setCurrentFile(null, null);
-
-    var win = this._getWindow('ApplicationDrawWindow');
-    if ( win ) {
-      win.setImageName("");
-
-      win._error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
-
-      win._toggleDisabled(false);
-    } else {
-      OSjs.API.error(OSjs._("{0} Application Error", self.__label), OSjs._("Failed to perform action '{0}'", action), error);
-    }
-  };
-
-  /**
-   * Wrapper for save action
-   */
-  ApplicationDraw.prototype.onSave = function(filename, mime) {
-    if ( this.currentFilename ) {
-      this.doSave(this.currentFilename, mime);
-    }
-  };
-
-  /**
-   * Wrapper for save as action
-   */
-  ApplicationDraw.prototype.onSaveAs = function(filename, mime) {
-    var self = this;
-    var win = this._getWindow('ApplicationDrawWindow');
-    var dir = this.currentFilename ? Utils.dirname(this.currentFilename) : null;
-    var fnm = this.currentFilename ? Utils.filename(this.currentFilename) : null;
-
-    if ( win ) {
-      win._toggleDisabled(true);
-      this._createDialog('File', [{type: 'save', path: dir, filename: fnm, mime: 'image/png', mimes: ['^image', 'osjs\\/draw'], defaultFilename: 'New Image.png', filetypes: FileTypes}, function(btn, fname) {
-        if ( win ) {
-          win._toggleDisabled(false);
-        }
-        if ( btn !== 'ok' ) return;
-        self.doSave(fname, mime);
-      }], win);
-    }
-  };
-
-  /**
-   * Wrapper for open action
-   */
-  ApplicationDraw.prototype.onOpen = function(filename, mime) {
-    var self = this;
-    var win = this._getWindow('ApplicationDrawWindow');
-
-    var _openFile = function(fname, fmime) {
-      if ( !fmime || (fmime != "osjs/draw" && !fmime.match(/^image/)) ) {
-        OSjs.API.error(self.__label, OSjs._("Cannot open file"), OSjs._("Not supported!"));
-        return;
-      }
-
-      var ext = OSjs.Utils.filext(fname).toLowerCase();
-      var datas = ext !== "odraw";
-
-      win.setTitle('Loading...');
-      win._toggleLoading(true);
-      OSjs.API.call('fs', {'method': 'read', 'arguments': [fname, {dataSource: datas}]}, function(res) {
-        if ( res && res.result ) {
-          self.doOpen(fname, fmime, res.result);
-        } else {
-          if ( res && res.error ) {
-            self.onError(OSjs._("Failed to open file: {0}", fname), res.error, "onOpen");
-            return;
-          }
-          self.onError(OSjs._("Failed to open file: {0}", fname), OSjs._("Unknown error"), "onOpen");
-        }
-      }, function(error) {
-        self.onError(OSjs._("Failed to open file (call): {0}", fname), error, "onOpen");
-      });
-    };
-
-    if ( filename ) {
-      _openFile(filename, mime);
-    } else {
-      var path = (this.currentFilename) ? Utils.dirname(this.currentFilename) : null;
-
-      win._toggleDisabled(true);
-
-      this._createDialog('File', [{type: 'open', mime: 'image/png', mimes: ['^image', 'osjs\\/draw'], path: path}, function(btn, fname, fmime) {
-        if ( win ) {
-          win._toggleDisabled(false);
-        }
-
-        if ( btn !== 'ok' ) return;
-        _openFile(fname, fmime);
-      }], win);
-    }
-  };
-
-  /**
-   * Wrapper for new action
-   */
   ApplicationDraw.prototype.onNew = function() {
-    var win = this._getWindow('ApplicationDrawWindow');
-
-    this.setCurrentFile(null, null);
-
+    var win = this.mainWindow;
     if ( win ) {
       win._toggleDisabled(true);
 
@@ -1186,13 +942,85 @@
     }
   };
 
-  /**
-   * Sets current active file
-   */
-  ApplicationDraw.prototype.setCurrentFile = function(name, mime) {
-    this.currentFilename = name;
-    this._setArgument('file', name);
-    this._setArgument('mime', mime || null);
+  ApplicationDraw.prototype.onOpen = function(filename, mime, data) {
+    var self = this;
+    var win = this.mainWindow;
+    var ext = OSjs.Utils.filext(filename).toLowerCase();
+
+    var _openRaw = function() {
+      var imageData = JSON.parse(data);
+      var width  = imageData.size[0] << 0;
+      var height = imageData.size[1] << 0;
+      var layers = imageData.layers;
+
+      self._setCurrentFile(filename, mime);
+      if ( win ) {
+        win.setImage(filename, layers, width, height);
+      }
+    };
+
+    var _openConverted = function() {
+      var img = new Image();
+      img.onerror = function() {
+        self.onError("Failed to load image data", "doOpen");
+      };
+      img.onload = function() {
+        self._setCurrentFile(filename, mime);
+
+        if ( win ) {
+          win.setImage(filename, this);
+        }
+      };
+      img.src = data;
+    };
+
+    if ( ext === "odraw" ) {
+      try {
+        _openRaw();
+      } catch ( e ) {
+        this.onError("Failed to load raw image", e, "doOpen");
+        console.warn(e.stack);
+      }
+    } else {
+      _openConverted();
+    }
+  };
+
+  ApplicationDraw.prototype.onSave = function(filename, mime, data) {
+    if ( this.mainWindow ) {
+      this.mainWindow.setImageName(filename);
+      this.mainWindow._focus();
+    }
+  };
+
+  ApplicationDraw.prototype.onError = function() {
+    if ( this.mainWindow ) {
+      this.mainWindow.setImageName("");
+    }
+    return Application.prototype.onError.apply(this, arguments);
+  };
+
+  ApplicationDraw.prototype.onCheckDataSource = function(filename, mime) {
+    var ext = OSjs.Utils.filext(filename).toLowerCase();
+    return ext !== "odraw";
+  };
+
+  ApplicationDraw.prototype.onGetSaveData = function(callback, filename, mime) {
+    if ( !this.mainWindow ) {
+      callback(null);
+      return;
+    }
+
+    var image = this.mainWindow.getImage();
+    if ( !image ) {
+      callback(null);
+      return;
+    }
+
+    var ext = OSjs.Utils.filext(filename).toLowerCase();
+    var data = ext === "odraw" ? image.getSaveData() : image.getData(mime);
+
+    callback(data);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1202,4 +1030,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationDraw = ApplicationDraw;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils);
