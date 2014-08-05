@@ -36,7 +36,7 @@
   var ErrorDialog = function() {
     this.data = {title: 'No title', message: 'No message', error: ''};
 
-    DialogWindow.apply(this, ['ErrorDialog', {width:400, height:250}]);
+    DialogWindow.apply(this, ['ErrorDialog', {width:400, height:280}]);
     this._icon = 'status/dialog-error.png';
     this._sound = 'dialog-warning';
     this._soundVolume = 1.0;
