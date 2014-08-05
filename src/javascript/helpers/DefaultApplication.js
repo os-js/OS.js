@@ -277,14 +277,16 @@
    */
   DefaultApplication.prototype._doSave = function(filename, mime) {
     var self = this;
+    var ext = OSjs.Utils.filext(filename).toLowerCase();
 
     if ( this.dialogOptions.filetypes !== null ) {
       var filetypes = this.dialogOptions.filetypes;
-      var ext = OSjs.Utils.filext(filename).toLowerCase();
-      if ( filetypes[ext] ) {
-        mime = filetypes[ext];
-      } else {
-        return;
+      if ( filetypes ) {
+        if ( filetypes[ext] ) {
+          mime = filetypes[ext];
+        } else {
+          return;
+        }
       }
     }
 
