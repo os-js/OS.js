@@ -318,7 +318,7 @@
               break;
           }
         } catch ( e ) {
-          msg = OSjs._('Fatal error: {0}', e);
+          msg = OSjs._('ERR_GENERIC_APP_FATAL_FMT', e);
         }
 
         this.onError(ev, this, msg);
@@ -540,7 +540,7 @@
     };
     this.player.onError = function(ev, player, msg) {
       self.updateInfo(ev, null, slider);
-      self._error(OSjs._('{0} Application Error', self.title), _('Failed to play file'), msg);
+      self._error(OSjs._('ERR_GENERIC_APP_FMT', self.title), _('Failed to play file'), msg);
     };
     this.player.onTrackEnded = function(ev, player) {
       if ( self.playlist.isLast() ) return;
@@ -792,7 +792,7 @@
     if ( !mime.match(/^audio/) ) {
       var msg = _('The audio type is not supported: {0}', mime);
       var win = this._getWindow('ApplicationMusicPlayerWindow');
-      win._error(OSjs._("{0} Application Error", win.title), _("Failed to play file"), msg);
+      win._error(OSjs._("ERR_GENERIC_APP_FMT", win.title), _("Failed to play file"), msg);
       return;
     }
 

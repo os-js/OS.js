@@ -207,7 +207,7 @@
    * Confirmation dialog creator
    */
   DefaultApplication.prototype.onConfirmDialog = function(win, msg, callback) {
-    msg = msg || 'Discard changes?';
+    msg = msg || OSjs._('Discard changes?');
     win._toggleDisabled(true);
     this._createDialog('Confirm', [msg, function(btn) {
       win._toggleDisabled(false);
@@ -314,13 +314,13 @@
           _onSaveFinished(filename);
         } else {
           if ( res && res.error ) {
-            self._onError(OSjs._("Failed to save file: {0}", filename), res.error, "doSave");
+            self._onError(OSjs._("ERR_FILE_APP_SAVE_ALT_FMT", filename), res.error, "doSave");
             return;
           }
-          self._onError(OSjs._("Failed to save file: {0}", filename), OSjs._("Unknown error"), "doSave");
+          self._onError(OSjs._("ERR_FILE_APP_SAVE_ALT_FMT", filename), OSjs._("Unknown error"), "doSave");
         }
       }, function(error) {
-        self._onError(OSjs._("Failed to save file (call): {0}", filename), error, "doSave");
+        self._onError(OSjs._("ERR_FILE_APP_SAVE_ALT_FMT", filename), error, "doSave");
       });
     }, filename, mime);
   };
@@ -335,11 +335,11 @@
 
     if ( !this.onError(error, action) ) {
       if ( this.mainWindow ) {
-        this.mainWindow._error(OSjs._("{0} Application Error", this.__label), OSjs._("Failed to perform action '{0}'", action), error);
+        this.mainWindow._error(OSjs._("ERR_GENERIC_APP_FMT", this.__label), OSjs._("ERR_GENERIC_APP_ACTION_FMT", action), error);
         this.mainWindow._toggleDisabled(false);
         this.mainWindow._toggleLoading(false);
       } else {
-        OSjs.API.error(OSjs._("{0} Application Error", this.__label), OSjs._("Failed to perform action '{0}'", action), error);
+        OSjs.API.error(OSjs._("ERR_GENERIC_APP_FMT", this.__label), OSjs._("ERR_GENERIC_APP_ACTION_FMT", action), error);
       }
     }
   };
@@ -389,7 +389,7 @@
 
     var _openFile = function(fname, fmime) {
       if ( !checkAcceptMime(fmime, opt.mimes) ) {
-        OSjs.API.error(self.__label, OSjs._("Cannot open file"), OSjs._("Not supported!"));
+        OSjs.API.error(self.__label, OSjs._("ERR_FILE_APP_OPEN"), OSjs._("ERR_FILE_APP_OPEN_FMT", filename, mime));
         return;
       }
 
@@ -414,13 +414,13 @@
           self._doOpen(fname, fmime, res.result);
         } else {
           if ( res && res.error ) {
-            self._onError(OSjs._("Failed to open file: {0}", fname), res.error, "onOpen");
+            self._onError(OSjs._("ERR_FILE_APP_OPEN_ALT_FMT", fname), res.error, "onOpen");
             return;
           }
-          self._onError(OSjs._("Failed to open file: {0}", fname), OSjs._("Unknown error"), "onOpen");
+          self._onError(OSjs._("ERR_FILE_APP_OPEN_ALT_FMT", fname), OSjs._("Unknown error"), "onOpen");
         }
       }, function(error) {
-        self._onError(OSjs._("Failed to open file (call): {0}", fname), error, "onOpen");
+        self._onError(OSjs._("ERR_FILE_APP_OPEN_ALT_FMT", fname), error, "onOpen");
       });
     };
 

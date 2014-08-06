@@ -63,9 +63,7 @@
     // helpers.js
     "The requested file MIME '{0}' is not accepted by this application." : "Denne applikasjonen støtter ikke filer med denne MIME-typen '{0}'",
     'Fatal error on open file!' : 'Fatal feil under åpning av fil!',
-    "Failed to open file: {0}" : 'Klarte ikke åpne filen: {0}',
     'Fatal error on save file!' : 'Fatal feil under lagring av fil!',
-    "Failed to save file: {0}" : 'Klarte ikke lagre filen: {1}',
 
     // dialogs.js
     "Choose Application" : 'Velg Applikasjon',
@@ -101,18 +99,13 @@
     'Alpha: {0}' : 'Alpha: {0}',
     "Font Dialog" : 'Skriftype-dialog',
 
-    // Application-specific
-    '{0} Application Error' : '{0} Applikasjon Feil',
-    "Failed to perform action '{0}'" : "Klarte ikke utføre '{0}'",
-    'Failed to save file (call): {0}' : 'Klarte ikke lagre filen (call): {0}',
-    'Cannot open file' : 'Kan ikke åpne filen',
-    'Not supported!' : 'Ikke støttet!',
-    'Unknown Error' : 'Unkjent Feil',
-    'Failed to open file (call): {0}' : 'Klarte ikke åpne filen (call): {0}',
-    'An error occured while handling your request' : 'En feil oppstod under handling av din forespursel',
-    'Fatal error: {0}' : 'Fatal feil: {0}',
-    'An error occured in action: {0}' : 'En feil oppstod under forespursel: {0}',
-    'Discard current document ?' : 'Forkaste gjeldende dokument ?',
+    // DefaultApplication
+    "ERR_GENERIC_APP_FMT" : "{0} Applikasjon Feil",
+    "ERR_GENERIC_APP_ACTION_FMT" : "Klarte ikke utføre '{0}'",
+    "ERR_GENERIC_APP_UNKNOWN" : "Unkjent Feil",
+    "ERR_GENERIC_APP_REQUEST" : "En feil oppstod under handling av din forespursel",
+    "ERR_GENERIC_APP_FATAL_FMT" : "Fatal Feil: {0}",
+    "MSG_GENERIC_APP_DISCARD" : "Forkaste gjeldende dokument ?",
 
     // Common
     'Minimize'          : 'Minimiser',

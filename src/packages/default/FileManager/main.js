@@ -140,7 +140,7 @@
 
     fileView.onError = function(error) {
       self._toggleLoading(false);
-      self._error(OSjs._("{0} Application Error", self.title), OSjs._("An error occured while handling your request"), error);
+      self._error(OSjs._("ERR_GENERIC_APP_FMT", self.title), OSjs._("ERR_GENERIC_APP_REQUEST"), error);
     };
 
     var menuAction = function(action, check) {
@@ -485,9 +485,9 @@
     var _onError = function(error) {
       var win = self._getWindow('ApplicationFileManagerWindow');
       if ( win ) {
-        win._error(OSjs._("{0} Application Error", self.__label), OSjs._("An error occured while handling your request"), error);
+        win._error(OSjs._("ERR_GENERIC_APP_FMT", self.__label), OSjs._("ERR_GENERIC_APP_REQUEST"), error);
       } else {
-        OSjs.API.error(OSjs._("{0} Application Error", self.__label), OSjs._("An error occured while handling your request"), error);
+        OSjs.API.error(OSjs._("ERR_GENERIC_APP_FMT", self.__label), OSjs._("ERR_GENERIC_APP_REQUEST"), error);
       }
 
       callback(false);

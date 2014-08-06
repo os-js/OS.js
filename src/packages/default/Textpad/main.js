@@ -143,9 +143,9 @@
   };
 
   ApplicationTextpad.prototype.onCheckChanged = function(callback) {
-    var msg = OSjs._("Discard current document ?");
-
     var self = this;
+
+    var msg = OSjs._("MSG_GENERIC_APP_DISCARD");
     var _cb = function(discard) {
       self.mainWindow._focus();
 

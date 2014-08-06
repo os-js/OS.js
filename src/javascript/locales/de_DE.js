@@ -65,9 +65,7 @@
     // helpers.js
     "The requested file MIME '{0}' is not accepted by this application.": "Die Anwendung unterstützt den folgenden Dateityp '{0}' nicht",
     'Fatal error on open file!': 'Schwerwigender Fehler während des Öffnen der Datei!',
-    "Failed to open file: {0}": 'Datei konnte nicht geöffnet werden: {0}',
     'Fatal error on save file!': 'Schwerwigender Fehler während des Speichern der Datei!',
-    "Failed to save file: {0}": 'Datei konnte nicht gespeichert werden: {1}',
 
     // dialogs.js
     "Choose Application": 'Wählen Sie eine Anwendung',
@@ -103,18 +101,13 @@
     'Alpha: {0}': 'Alpha: {0}',
     "Font Dialog": 'Schriftarten-Dialog',
 
-    // Application-specific
-    '{0} Application Error': '{0} Anwendungsfehler',
-    "Failed to perform action '{0}'": "Konnte Aktion nicht durchführen: '{0}'",
-    'Failed to save file (call): {0}': 'Fehler beim Speichern der Datei (call): {0}',
-    'Cannot open file': 'Datei kann nicht geöffnte werden',
-    'Not supported!': 'Nicht unterstützt!',
-    'Unknown Error': 'Unbekannter Fehler',
-    'Failed to open file (call): {0}': 'Datei kann nicht geöffnte werden (call): {0}',
-    'An error occured while handling your request': 'Während Ihres Requests ist ein Fehler aufgetreten',
-    'Fatal error: {0}': 'Schwerwiegender Fehler: {0}',
-    'An error occured in action: {0}': 'Fehler während Aktion: {0}',
-    'Discard current document ?': 'Aktuelles Dokument verwerfen?',
+    // DefaultApplication
+    "ERR_GENERIC_APP_FMT" : "{0} Anwendungsfehler",
+    "ERR_GENERIC_APP_ACTION_FMT" : "Konnte Aktion nicht durchführen: '{0}'",
+    "ERR_GENERIC_APP_UNKNOWN" : "Unbekannter Fehler",
+    "ERR_GENERIC_APP_REQUEST" : "Während Ihres Requests ist ein Fehler aufgetreten",
+    "ERR_GENERIC_APP_FATAL_FMT" : "Schwerwiegender Fehler: {0}",
+    "MSG_GENERIC_APP_DISCARD" : "Aktuelles Dokument verwerfen?",
 
     // Common
     'Minimize'          : 'Minimieren',

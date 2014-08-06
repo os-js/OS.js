@@ -56,7 +56,19 @@
     "ERR_CORE_INIT_PRELOAD_FAILED" : "Cannot launch OS.js: Failed to preload resources...",
 
     "ERR_APP_API_ERROR" : "Application API error",
-    "ERR_APP_API_ERROR_DESC_FMT" : "Application {0} failed to perform operation '{1}'"
+    "ERR_APP_API_ERROR_DESC_FMT" : "Application {0} failed to perform operation '{1}'",
+
+    // DefaultApplication
+    "ERR_FILE_APP_OPEN" : "Cannot open file",
+    "ERR_FILE_APP_OPEN_FMT" : "The file {0} could not be opened because the mime {1} is not supported",
+    "ERR_FILE_APP_OPEN_ALT_FMT" : "The file {0} could not be opened",
+    "ERR_FILE_APP_SAVE_ALT_FMT" : "The file {0} could not be saved",
+    "ERR_GENERIC_APP_FMT" : "{0} Application Error",
+    "ERR_GENERIC_APP_ACTION_FMT" : "Failed to perform action '{0}'",
+    "ERR_GENERIC_APP_UNKNOWN" : "Unknown Error",
+    "ERR_GENERIC_APP_REQUEST" : "An error occured while handling your request",
+    "ERR_GENERIC_APP_FATAL_FMT" : "Fatal Error: {0}",
+    "MSG_GENERIC_APP_DISCARD" : "Discard changes?"
   };
 
 })();
