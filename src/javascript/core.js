@@ -2331,13 +2331,18 @@
       margin.right = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("right"), 10);
       margin.bottom = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("bottom"), 10);
     } catch ( e ) {}
-    margin.top -= this._$top.offsetHeight;
+
+    s.left += margin.left;
+    s.width -= (margin.left + margin.right);
+    //s.top -= margin.top;
+    s.top += margin.bottom;
+    s.height -= (margin.bottom + margin.top);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    this._$element.style.top    = (s.top+margin.top) + "px";
-    this._$element.style.left   = (s.left+margin.left) + "px";
-    this._$element.style.width  = (s.width-margin.right) + "px";
-    this._$element.style.height = (s.height-margin.top) + "px";
+    this._$element.style.top    = (s.top) + "px";
+    this._$element.style.left   = (s.left) + "px";
+    this._$element.style.width  = (s.width) + "px";
+    this._$element.style.height = (s.height) + "px";
     OSjs.Utils.$addClass(this._$element, 'WindowHintMaximized');
 
     //this._resize();
