@@ -6,7 +6,6 @@
 * _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
 
 # Medium-priority
-* _[Compability]_ IE Fails to load themes on first try
 * _[Backend]_ Provide a websocket version like in v1
 * _[GUI]_ GUIScrollbar
 * _[Misc]_ There are TODO and FIXME markings in source code files

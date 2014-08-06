@@ -95,20 +95,8 @@
   CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.init = function() {
-
-    var themeLink = document.createElement("link");
-    themeLink.type = "text/css";
-    themeLink.rel = "stylesheet"
-    themeLink.href = "/blank.css";
-    this.$themeLink = themeLink;
-    document.getElementsByTagName("head")[0].appendChild(this.$themeLink);
-
-    var animationLink = document.createElement("link");
-    animationLink.type = "text/css";
-    animationLink.rel = "stylesheet";
-    animationLink.href = "/blank.css";
-    this.$animationLink = animationLink;
-    document.getElementsByTagName("head")[0].appendChild(this.$animationLink);
+    this.setThemeLink("/blank.css");
+    this.setAnimationLink("/blank.css");
 
     WindowManager.prototype.init.apply(this, arguments);
 
@@ -642,7 +630,7 @@
     var theme = this.getSetting('theme');
     console.log("theme", theme);
     if ( this.$themeLink ) {
-      this.$themeLink.setAttribute('href', OSjs.API.getThemeCSS(theme));
+      this.setThemeLink(OSjs.API.getThemeCSS(theme));
     }
 
     // Animations
@@ -650,9 +638,9 @@
     console.log("animations", anim);
     if ( this.$animationLink ) {
       if ( anim ) {
-        this.$animationLink.setAttribute('href', OSjs.API.getApplicationResource(this, 'animations.css'));
+        this.setAnimationLink(OSjs.API.getApplicationResource(this, 'animations.css'));
       } else {
-        this.$animationLink.setAttribute('href', OSjs.API.getThemeCSS(null));
+        this.setAnimationLink(OSjs.API.getThemeCSS(null));
       }
     }
 
@@ -673,6 +661,38 @@
     }
 
     return true;
+  };
+
+  CoreWM.prototype.setAnimationLink = function(src) {
+    if ( this.$animationLink ) {
+      if ( this.$animationLink.parentNode ) {
+        this.$animationLink.parentNode.removeChild(this.$animationLink);
+      }
+      this.$animationLink = null;
+    }
+
+    var animationLink = document.createElement("link");
+    document.getElementsByTagName("head")[0].appendChild(animationLink);
+    animationLink.type = "text/css";
+    animationLink.rel = "stylesheet"
+    animationLink.href = src;
+    this.$animationLink = animationLink;
+  };
+
+  CoreWM.prototype.setThemeLink = function(src) {
+    if ( this.$themeLink ) {
+      if ( this.$themeLink.parentNode ) {
+        this.$themeLink.parentNode.removeChild(this.$themeLink);
+      }
+      this.$themeLink = null;
+    }
+
+    var themeLink = document.createElement("link");
+    document.getElementsByTagName("head")[0].appendChild(themeLink);
+    themeLink.type = "text/css";
+    themeLink.rel = "stylesheet"
+    themeLink.href = src;
+    this.$themeLink = themeLink;
   };
 
 
