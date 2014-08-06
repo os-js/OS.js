@@ -34,23 +34,6 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
 
-  function checkAcceptMime(mime, list) {
-    if ( mime && list.length ) {
-      var re;
-      for ( var i = 0; i < list.length; i++ ) {
-        re = new RegExp(list[i]);
-        if ( re.test(mime) ) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  function cloneObject(o) {
-    return JSON.parse(JSON.stringify(o));
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // Default Application Window Helper
   /////////////////////////////////////////////////////////////////////////////
@@ -329,7 +312,7 @@
    * File operation error
    */
   DefaultApplication.prototype._onError = function(error, action) {
-    action || "unknown";
+    action = action || "unknown";
 
     this._setCurrentFile(null, null);
 
@@ -363,7 +346,7 @@
 
     if ( this.mainWindow ) {
       this.mainWindow._toggleDisabled(true);
-      var opt = cloneObject(this.dialogOptions);
+      var opt = Utils.cloneObject(this.dialogOptions);
       opt.type =  "save";
       opt.path = dir;
       opt.filename = fnm;
@@ -384,11 +367,11 @@
   DefaultApplication.prototype._onOpen = function(filename, mime) {
     var self = this;
 
-    var opt = cloneObject(this.dialogOptions);
+    var opt = Utils.cloneObject(this.dialogOptions);
     opt.type =  "open";
 
     var _openFile = function(fname, fmime) {
-      if ( !checkAcceptMime(fmime, opt.mimes) ) {
+      if ( !Utils.checkAcceptMime(fmime, opt.mimes) ) {
         OSjs.API.error(self.__label, OSjs._("ERR_FILE_APP_OPEN"), OSjs._("ERR_FILE_APP_OPEN_FMT", filename, mime));
         return;
       }

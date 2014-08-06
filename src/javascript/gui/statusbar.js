@@ -50,7 +50,7 @@
     el.appendChild(this.$contents);
 
     if ( this.opts.value ) {
-      this.setText(value);
+      this.setText(this.opts.value);
     }
 
     return el;

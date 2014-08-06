@@ -75,22 +75,41 @@
 
   OSjs.Utils.mergeObject = function(obj1, obj2) {
     for ( var p in obj2 ) {
-      try {
-        if ( obj2[p].constructor == Object ) {
-          obj1[p] = OSjs.Utils.mergeObject(obj1[p], obj2[p]);
-        } else {
+      if ( obj2.hasOwnProperty(p) ) {
+        try {
+          if ( obj2[p].constructor == Object ) {
+            obj1[p] = OSjs.Utils.mergeObject(obj1[p], obj2[p]);
+          } else {
+            obj1[p] = obj2[p];
+          }
+        } catch(e) {
           obj1[p] = obj2[p];
         }
-      } catch(e) {
-        obj1[p] = obj2[p];
       }
     }
     return obj1;
   };
 
+  OSjs.Utils.cloneObject = function(o) {
+    return JSON.parse(JSON.stringify(o));
+  };
+
   OSjs.Utils.inArray = function(arr, val) {
     for ( var i = 0, l = arr.length; i < l; i++ ) {
       if ( arr[i] === val ) { return true; }
+    }
+    return false;
+  };
+
+  OSjs.Utils.checkAcceptMime = function(mime, list) {
+    if ( mime && list.length ) {
+      var re;
+      for ( var i = 0; i < list.length; i++ ) {
+        re = new RegExp(list[i]);
+        if ( re.test(mime) === true ) {
+          return true;
+        }
+      }
     }
     return false;
   };
@@ -132,12 +151,12 @@
 
     var compability = {
       upload         : false,
+      getUserMedia   : !!getMedia,
       fileSystem     : (('requestFileSystem' in window) || ('webkitRequestFileSystem' in window)),
       localStorage   : (('localStorage'    in window) && window['localStorage']   !== null),
       sessionStorage : (('sessionStorage'  in window) && window['sessionStorage'] !== null),
       globalStorage  : (('globalStorage'   in window) && window['globalStorage']  !== null),
       openDatabase   : (('openDatabase'    in window) && window['openDatabase']   !== null),
-      getUserMedia   : !!getMedia,
       socket         : (('WebSocket'       in window) && window['WebSocket']      !== null),
       worker         : (('Worker'          in window) && window['Worker']         !== null),
       dnd            : ('draggable' in document.createElement('span')),
@@ -451,7 +470,7 @@
         try {
           httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
         }
-        catch (e) {}
+        catch (ex) {}
       }
     }
 
@@ -494,7 +513,7 @@
       httpRequest.send();
     } else {
       var args = opts.post;
-      if ( !(typeof opts.post === 'String') ) {
+      if ( typeof opts.post !== 'string' ) {
         args = (JSON.stringify(opts.post));
         //args = encodeURIComponent(JSON.stringify(opts.post));
       }

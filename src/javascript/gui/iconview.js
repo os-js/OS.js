@@ -97,7 +97,7 @@
       li = document.createElement('li');
       li.setAttribute("data-index", i);
 
-      for ( var k in iter ) {
+      for ( k in iter ) {
         if ( iter.hasOwnProperty(k) ) {
           if ( !OSjs.Utils.inArray(['title', 'icon'], k) ) {
             li.setAttribute('data-' + k, iter[k]);

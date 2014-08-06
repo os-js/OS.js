@@ -464,7 +464,7 @@
       var nosupport = [];
       for ( var i = 0; i < data.compability.length; i++ ) {
         c = data.compability[i];
-        if ( typeof comp[c] !== 'undefiend' ) {
+        if ( typeof comp[c] !== 'undefined' ) {
           if ( !comp[c] ) {
             nosupport.push(c);
           }

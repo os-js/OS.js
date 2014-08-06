@@ -86,10 +86,10 @@
       } catch(e) {
         try {
           this.$view.execCommand('useCSS', false, null);
-        } catch(e) {
+        } catch(ex) {
           try {
             this.$view.execCommand('styleWithCSS', false, false);
-          } catch(e) {
+          } catch(exx) {
           }
         }
       }

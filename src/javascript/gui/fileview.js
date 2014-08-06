@@ -32,6 +32,7 @@
 
   function createDragImage(ev, dragRoot) {
     return null;
+    /*
     var el = document.createElement("div");
     el.style.position = "absolute";
     el.style.left = "0px";
@@ -41,6 +42,7 @@
     el.style.zIndex = -2;
     el.style.background = "red";
     return {element: el, offset: {x: 20, y: 20}};
+    */
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -404,14 +406,14 @@
   };
 
   FileListView.prototype._onActivate = function(ev, item) {
-    var item = ListView.prototype._onActivate.apply(this, arguments);
+    item = ListView.prototype._onActivate.apply(this, arguments);
     if ( item && item.path ) {
       this.onActivated(item.path, item.type, item.mime);
     }
   };
 
   FileListView.prototype._onSelect = function(ev, item) {
-    var item = ListView.prototype._onSelect.apply(this, arguments);
+    item = ListView.prototype._onSelect.apply(this, arguments);
     if ( item && item.path ) {
       this.onSelected(item, item._element);
     }

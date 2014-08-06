@@ -229,7 +229,7 @@
     for ( var i in this.tabs ) {
       if ( this.tabs.hasOwnProperty(i) && this.tabs[i] !== null ) {
         found = i;
-        break
+        break;
       }
     }
 

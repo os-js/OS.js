@@ -29,12 +29,12 @@
  * @licence Simplified BSD License
  */
 
-(function() {
+(function(Utils) {
 
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
 
-  function FixJSON(response) {
+  function fixJSON(response) {
     if ( typeof response === "string" ) {
       if ( response.match(/^\{|\[/) ) {
         try {
@@ -62,14 +62,14 @@
 
     console.info("ThemeManager::load()");
 
-    OSjs.Utils.Ajax(this.uri, function(response, httpRequest, url) {
-      response = FixJSON(response);
+    Utils.Ajax(this.uri, function(response, httpRequest, url) {
+      response = fixJSON(response);
 
       if ( response ) {
         self.themes = response;
         callback(true);
       } else {
-        callback(false, "No themes found!")
+        callback(false, "No themes found!");
       }
     }, function(error, response, httpRequest) {
       if ( httpRequest && httpRequest.status != 200 ) {
@@ -101,8 +101,8 @@
 
     console.info("PackageManager::load()");
 
-    OSjs.Utils.Ajax(this.uri, function(response, httpRequest, url) {
-      response = FixJSON(response);
+    Utils.Ajax(this.uri, function(response, httpRequest, url) {
+      response = fixJSON(response);
 
       if ( response ) {
         self._setPackages(response);
@@ -178,10 +178,8 @@
       if ( this.packages.hasOwnProperty(i) ) {
         a = this.packages[i];
         if ( a && a.mime ) {
-          for ( j = 0; j < a.mime.length; j++ ) {
-            if ( (new RegExp(a.mime[j])).test(mime) === true ) {
-              list.push(i);
-            }
+          if ( Utils.checkAcceptMime(mime, a.mime) ) {
+            list.push(i);
           }
         }
       }
@@ -236,7 +234,7 @@
       return false;
     }
 
-    return OSjs.Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
+    return Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
       response = response || {};
       cok.apply(this, arguments);
     }, function(error, response, httpRequest, url) {
@@ -678,5 +676,5 @@
 
   OSjs.Handlers.Default = DefaultHandler;
 
-})();
+})(OSjs.Utils);
 
