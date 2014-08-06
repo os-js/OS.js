@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * OS.js - JavaScript Operating System
  *
@@ -37,6 +36,7 @@ See doc/example-handler.txt
 */
 
 (function() {
+  "use strict";
 
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};

@@ -4,7 +4,7 @@ var _fs = require('fs'),
     _path = require('path');
 
 var header_js = ([
-'"use strict";',
+//'"use strict";',
 '/*!',
 ' * OS.js - JavaScript Operating System',
 ' *',
@@ -79,7 +79,7 @@ function get_list_contents(list, handler, type) {
     src = _fs.readFileSync(iter);
     if ( src !== null ) {
       src = src.toString().replace(/\/\*\![\s\S]*?\*\//, "");
-      src = src.toString().replace('"use strict";', "");
+//      src = src.toString().replace('"use strict";', "");
       src = src.toString().replace('@charset "UTF-8";', "");
 
       data.push(src);

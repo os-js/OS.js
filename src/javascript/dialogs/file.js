@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * OS.js - JavaScript Operating System
  *
@@ -29,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog, Utils, API) {
+  "use strict";
 
   function ReplaceExtension(orig, rep) {
     var spl = orig.split(".");

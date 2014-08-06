@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * OS.js - JavaScript Operating System
  *
@@ -30,6 +29,7 @@
  */
 
 (function(Application, Window, Utils) {
+  "use strict";
 
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};

@@ -1,4 +1,3 @@
-"use strict";
 /*!
  * OS.js - JavaScript Operating System
  *
@@ -29,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _Input) {
+  "use strict";
 
   /**
    * Textarea
