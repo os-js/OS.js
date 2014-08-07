@@ -37,6 +37,18 @@
     ]);
 
     this.frame = this._addGUIElement(new GUI.ScrollView('Frame'), root);
+
+    this._addHook("resized", function() {
+      if ( self.frame.$element ) {
+        if ( self.previewElement ) {
+          if ( (self.previewElement.offsetHeight <= self.frame.$element.offsetHeight) && (self.previewElement.offsetWidth <= self.frame.$element.offsetWidth) ) {
+            self.frame.$element.style.overflow = "hidden";
+          } else {
+            self.frame.$element.style.overflow = "auto";
+          }
+        }
+      }
+    });
   };
 
   ApplicationPreviewWindow.prototype.destroy = function() {
@@ -79,7 +91,7 @@
           el.alt = t;
           el.onload = function() {
             if ( self.frame ) {
-              self._resizeTo(this.width, this.height);
+              self._resizeTo(this.width, this.height, true, false, self.previewElement);
             }
           };
           el.src = src;
@@ -99,7 +111,7 @@
 
           el.addEventListener("loadedmetadata", function(ev) {
             if ( self.frame ) {
-              self._resizeTo(this.offsetWidth, this.offsetHeight);
+              self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, self.previewElement);
             }
             self.loaded = true;
           });

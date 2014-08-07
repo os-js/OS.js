@@ -1899,7 +1899,6 @@
           } else if ( action === 'resize' ) {
             self._onChange('resize');
             self._fireHook('resized');
-
           }
         }
       }
@@ -2088,6 +2087,7 @@
           this._hooks[k][i].apply(this, args);
         } catch ( e ) {
           console.warn("Window::_fireHook() failed to run hook", k, i, e);
+          console.warn(e.stack);
           //console.log(e, e.prototype);
           //throw e;
         }
@@ -2430,33 +2430,50 @@
     return true;
   };
 
-  Window.prototype._resizeTo = function(dw, dh, limit, move) {
+  Window.prototype._resizeTo = function(dw, dh, limit, move, container) {
+    var self = this;
     if ( dw <= 0 || dh <= 0 ) { return; }
 
     limit = (typeof limit === 'undefined' || limit === true);
 
+    var dx = 0;
+    var dy = 0;
+
+    if ( container ) {
+      var cpos  = OSjs.Utils.$position(container, this._$root);
+      dx = parseInt(cpos.left, 10);
+      dy = parseInt(cpos.top, 10);
+    }
+
     var space = this._getMaximizedSize();
+    var cx    = this._position.x + dx;
+    var cy    = this._position.y + dy;
     var newW  = dw;
     var newH  = dh;
     var newX  = null;
     var newY  = null;
 
     if ( limit ) {
-      if ( (this._position.x + newW) > space.width ) {
+      if ( (cx + newW) > space.width ) {
         if ( move ) {
           newW = space.width;
           newX = space.left;
         } else {
-          newW = space.width - this._position.x;
+          newW = (space.width - cx) + dx;
         }
+      } else {
+        newW += dx;
       }
-      if ( (this._position.y + newH) > space.height ) {
+
+      if ( (cy + newH) > space.height ) {
         if ( move ) {
           newH = space.height;
           newY = space.top;
         } else {
-          newH = space.height - this._position.y + this._$top.offsetHeight;
+          newH = (space.height - cy + this._$top.offsetHeight) + dy;
         }
+      } else {
+        newH += dy;
       }
     }
 
@@ -2467,6 +2484,15 @@
     }
     if ( newY !== null ) {
       this._move(this._position.x, newY);
+    }
+
+    var anim = _WM ? _WM.getSetting('animations') : false;
+    if ( anim ) {
+      setTimeout(function() {
+        self._fireHook('resized');
+      }, ANIMDURATION);
+    } else {
+      this._fireHook('resized');
     }
   };
 
