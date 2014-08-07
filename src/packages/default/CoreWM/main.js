@@ -670,13 +670,7 @@
       }
       this.$animationLink = null;
     }
-
-    var animationLink = document.createElement("link");
-    document.getElementsByTagName("head")[0].appendChild(animationLink);
-    animationLink.type = "text/css";
-    animationLink.rel = "stylesheet"
-    animationLink.href = src;
-    this.$animationLink = animationLink;
+    this.$animationLink = OSjs.Utils.$createCSS(src);
   };
 
   CoreWM.prototype.setThemeLink = function(src) {
@@ -686,13 +680,7 @@
       }
       this.$themeLink = null;
     }
-
-    var themeLink = document.createElement("link");
-    document.getElementsByTagName("head")[0].appendChild(themeLink);
-    themeLink.type = "text/css";
-    themeLink.rel = "stylesheet"
-    themeLink.href = src;
-    this.$themeLink = themeLink;
+    this.$themeLink = OSjs.Utils.$createCSS(src);
   };
 
 

@@ -396,6 +396,31 @@
     }
   };
 
+  OSjs.Utils.$createCSS = function(src) {
+    var res    = document.createElement("link");
+    document.getElementsByTagName("head")[0].appendChild(res);
+
+    res.rel    = "stylesheet";
+    res.type   = "text/css";
+    res.href   = src;
+
+    return res;
+  };
+
+  OSjs.Utils.$createJS = function(src, onreadystatechange, onload, onerror) {
+    var res                = document.createElement("script");
+    res.type               = "text/javascript";
+    res.charset            = "utf-8";
+    res.onreadystatechange = onreadystatechange || function() {};
+    res.onload             = onload             || function() {};
+    res.onerror            = onerror            || function() {};
+    res.src                = src;
+
+    document.getElementsByTagName("head")[0].appendChild(res);
+
+    return res;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // XHR
   /////////////////////////////////////////////////////////////////////////////
@@ -563,11 +588,7 @@
       document.createStyleSheet(src);
       _finished(true);
     } else {
-      var res    = document.createElement("link");
-      res.rel    = "stylesheet";
-      res.type   = "text/css";
-      res.href   = src;
-      document.getElementsByTagName("head")[0].appendChild(res);
+      var res = OSjs.Utils.$createCSS(src);
 
       if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
         _finished(true);
@@ -605,29 +626,20 @@
     };
 
     var loaded  = false;
-    var res     = document.createElement("script");
-    res.type    = "text/javascript";
-    res.charset = "utf-8";
-    res.onreadystatechange = function() {
+    OSjs.Utils.$createJS(src, function() {
       if ( (this.readyState == 'complete' || this.readyState == 'loaded') && !loaded) {
         loaded = true;
         _finished(true);
       }
-    };
-    res.onload = function() {
+    }, function() {
       if ( loaded ) { return; }
       loaded = true;
       _finished(true);
-    };
-    res.onerror = function() {
+    }, function() {
       if ( loaded ) { return; }
       loaded = true;
-
       _finished(false);
-    };
-    res.src = src;
-
-    document.getElementsByTagName("head")[0].appendChild(res);
+    });
   };
 
   OSjs.Utils.Preload = function(list, callback, callbackProgress) {
