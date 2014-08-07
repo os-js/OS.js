@@ -2323,21 +2323,7 @@
     this._lastDimension   = {w: this._dimension.w, h: this._dimension.h};
     this._state.maximized = true;
 
-    var s = getWindowSpace();
-    var margin = {left: 0, top: 0, right: 0, bottom: 0};
-    try {
-      margin.left = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("left"), 10);
-      margin.top = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("top"), 10);
-      margin.right = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("right"), 10);
-      margin.bottom = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("bottom"), 10);
-    } catch ( e ) {}
-
-    s.left += margin.left;
-    s.width -= (margin.left + margin.right);
-    //s.top -= margin.top;
-    s.top += margin.bottom;
-    s.height -= (margin.bottom + margin.top);
-
+    var s = this._getMaximizedSize();
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     this._$element.style.top    = (s.top) + "px";
     this._$element.style.left   = (s.left) + "px";
@@ -2444,29 +2430,44 @@
     return true;
   };
 
-  Window.prototype._resizeTo = function(dw, dh, limit) {
+  Window.prototype._resizeTo = function(dw, dh, limit, move) {
     if ( dw <= 0 || dh <= 0 ) { return; }
 
     limit = (typeof limit === 'undefined' || limit === true);
-    var poso  = OSjs.Utils.$position(this._$root);
-    var space = getWindowSpace();
 
-    if ( poso === null ) {
-      throw "Window resize failed, missing measure of element.";
-    }
+    var space = this._getMaximizedSize();
+    var newW  = dw;
+    var newH  = dh;
+    var newX  = null;
+    var newY  = null;
 
-    var newW = dw;
-    var newH = dh;
     if ( limit ) {
-      if ( (poso.left + newW) > space.width ) {
-        newW = (space.width - poso.left);
+      if ( (this._position.x + newW) > space.width ) {
+        if ( move ) {
+          newW = space.width;
+          newX = space.left;
+        } else {
+          newW = space.width - this._position.x;
+        }
       }
-      if ( (poso.top + newH) > space.height ) {
-        newH = (space.height - poso.top);
+      if ( (this._position.y + newH) > space.height ) {
+        if ( move ) {
+          newH = space.height;
+          newY = space.top;
+        } else {
+          newH = space.height - this._position.y + this._$top.offsetHeight;
+        }
       }
     }
 
     this._resize(newW, newH);
+
+    if ( newX !== null ) {
+      this._move(newX, this._position.y);
+    }
+    if ( newY !== null ) {
+      this._move(this._position.x, newY);
+    }
   };
 
   Window.prototype._resize = function(w, h, force) {
@@ -2702,6 +2703,24 @@
   //
   // Getters
   //
+
+  Window.prototype._getMaximizedSize = function() {
+    var s = getWindowSpace();
+    var margin = {left: 0, top: 0, right: 0, bottom: 0};
+    try {
+      margin.left = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("left"), 10);
+      margin.top = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("top"), 10);
+      margin.right = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("right"), 10);
+      margin.bottom = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("bottom"), 10);
+    } catch ( e ) {}
+
+    s.left += margin.left;
+    s.width -= (margin.left + margin.right);
+    //s.top -= margin.top;
+    s.top += margin.bottom;
+    s.height -= (margin.bottom + margin.top);
+    return s;
+  };
 
   Window.prototype._getViewRect = function() {
     return this._$element ? OSjs.Utils.$position(this._$element) : null;
