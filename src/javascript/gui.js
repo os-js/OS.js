@@ -90,12 +90,12 @@
     };
 
     el.addEventListener('drop', function(ev) {
-      OSjs.Utils.$removeClass(el, "onDragEnter");
+      //OSjs.Utils.$removeClass(el, "onDragEnter");
       return _onDrop(ev, this);
     }, false);
 
     el.addEventListener('dragenter', function(ev) {
-      OSjs.Utils.$addClass(el, "onDragEnter");
+      //OSjs.Utils.$addClass(el, "onDragEnter");
       return args.onEnter.call(this, ev, this, args);
     }, false);
 
@@ -107,7 +107,7 @@
     }, false);
 
     el.addEventListener('dragleave', function(ev) {
-      OSjs.Utils.$removeClass(el, "onDragEnter");
+      //OSjs.Utils.$removeClass(el, "onDragEnter");
       return args.onLeave.call(this, ev, this, args);
     }, false);
   }
