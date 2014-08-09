@@ -210,7 +210,7 @@
         if ( getval()<10 && getval()>-10 ) {
           gel.setValue(0);
         } else {
-          gel.setValue(getval().slice(0, getval().length-1));
+          gel.setValue(getval().toString().slice(0, getval().toString().length-1));
         }
         if ( this.calc_array[0] == '=' ) {
           this.calc_array[2] = getval();
