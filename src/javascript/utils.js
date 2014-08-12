@@ -170,6 +170,7 @@
       canvas         : (!!canvas_supported),
       canvasContext  : [],
       webgl          : false,
+      audioContext   : false,
       svg            : (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect),
       video          : (!!video_supported),
       videoTypes     : {
@@ -210,6 +211,10 @@
       var xhr = new XMLHttpRequest();
       compability.upload = (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
     } catch ( e ) {}
+
+    if ( window.hasOwnProperty('AudioContext') || window.hasOwnProperty('webkitAudioContext') ) {
+      compability.audioContext = true;
+    }
 
     return function() {
       return compability;
