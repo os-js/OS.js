@@ -46,6 +46,7 @@
     this.opts.fontName  = this.opts.fontName || 'Arial';
     this.opts.onInited  = this.opts.onInited || function() {};
     this.loadContent    = null;
+    this.strlen         = 0;
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -54,6 +55,7 @@
 
   RichText.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
+    var self = this;
 
     this.$view = document.createElement('iframe');
     this.$view.setAttribute("border", "0");
@@ -101,6 +103,20 @@
         this.$view.contentWindow.onblur = function() {
           self.blur();
         };
+        var _timeout;
+        this._addEvent(this.$view.contentWindow, 'onkeypress', function(ev) {
+          if ( _timeout ) {
+            clearTimeout(_timeout);
+            _timeout = null;
+          }
+          _timeout = setTimeout(function() {
+            var strlen = self.getContent().length;
+            if ( self.strlen != strlen ) {
+              self.hasChanged = true;
+            }
+            self.strlen = strlen;
+          }, 100);
+        });
       } catch ( e ) {
         console.warn("Failed to bind focus/blur on richtext", e);
       }
@@ -125,7 +141,9 @@
       if ( typeof args        !== 'undefined' ) { argss.push(args); }
 
       try {
-        return d.execCommand.apply(d, argss);
+        var result = d.execCommand.apply(d, argss);
+        this.hasChanged = true;
+        return result;
       } catch ( e ) {
         console.warn("OSjs.GUI.RichText::command() failed", cmd, defaultUI, args, e);
       }
@@ -135,6 +153,7 @@
 
   RichText.prototype.setContent = function(c) {
     this.hasChanged = false;
+    this.strlen = c.length;
 
     var d = this.getDocument();
     if ( d && d.body ) {

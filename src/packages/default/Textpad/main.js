@@ -91,7 +91,7 @@
   ApplicationTextpadWindow.prototype.setChanged = function(c) {
     var gel  = this._getGUIElement('TextpadTextarea');
     if ( gel ) {
-      gel.hasChanged = false;
+      gel.hasChanged = c;
     }
   };
 
@@ -105,6 +105,7 @@
   var ApplicationTextpad = function(args, metadata) {
     Application.apply(this, ['ApplicationTextpad', args, metadata]);
 
+    this.defaultCheckChange  = true;
     this.dialogOptions.mimes = metadata.mime;
     this.dialogOptions.defaultFilename = "New text file.txt";
     this.dialogOptions.defaultMime = "text/plain";
@@ -139,23 +140,6 @@
       this.mainWindow.setChanged(false);
       this.mainWindow.setTitle(filename);
       this.mainWindow._focus();
-    }
-  };
-
-  ApplicationTextpad.prototype.onCheckChanged = function(callback) {
-    var self = this;
-
-    var msg = OSjs._("MSG_GENERIC_APP_DISCARD");
-    var _cb = function(discard) {
-      self.mainWindow._focus();
-
-      callback(discard);
-    };
-
-    if ( this.mainWindow ) {
-      if ( this.mainWindow.checkChanged(function(discard) { _cb(discard); }, msg) === false ) {
-        _cb(true);
-      }
     }
   };
 

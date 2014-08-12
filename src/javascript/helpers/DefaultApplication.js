@@ -109,10 +109,10 @@
     Application.apply(this, arguments);
 
     // These are reserved
-    this.currentFilename = null;
-    this.mainWindow      = null;
-
-    this.dialogOptions   = {
+    this.currentFilename     = null;
+    this.mainWindow          = null;
+    this.defaultCheckChange  = false;
+    this.dialogOptions       = {
       read: true,           // Read file data
 
       // These are passed on to Dialog
@@ -178,8 +178,24 @@
   };
 
   DefaultApplication.prototype.onCheckChanged = function(callback) {
-    // IMPLEMENT THIS IN YOUR CLASS
-    callback(true); // discard true/false
+    if ( this.defaultCheckChange ) {
+      var self = this;
+
+      var msg = OSjs._("MSG_GENERIC_APP_DISCARD");
+      var _cb = function(discard) {
+        self.mainWindow._focus();
+
+        callback(discard);
+      };
+
+      if ( this.mainWindow ) {
+        if ( this.mainWindow.checkChanged(function(discard) { _cb(discard); }, msg) === false ) {
+          _cb(true);
+        }
+      }
+    } else {
+      callback(true); // discard true/false
+    }
   };
 
   DefaultApplication.prototype.onCheckDataSource = function(filename, mime) {

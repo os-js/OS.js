@@ -33,6 +33,8 @@
   // LOCALES
   /////////////////////////////////////////////////////////////////////////////
 
+  var DEFAULT_FILENAME = "New text document.odoc";
+
   var _Locales = {
     no_NO : {
       'Insert URL' : 'Sett inn URL'
@@ -59,7 +61,7 @@
     this.fontSize   = 3;
     this.textColor  = '#000000';
     this.backColor  = '#ffffff';
-    this.title      = metadata.name + ' (WIP)';
+    this.title      = metadata.name;
 
     // Set window properties here
     this._icon = metadata.icon;
@@ -239,27 +241,22 @@
     _setTextColor(self.textColor);
     _setBackColor(self.backColor);
 
+    rt.hasChanged = false;
+
     return root;
-  };
-
-  ApplicationWriterWindow.prototype.destroy = function() {
-    // Destroy custom objects etc. here
-
-    Window.prototype.destroy.apply(this, arguments);
   };
 
   ApplicationWriterWindow.prototype.update = function(file, contents) {
     if ( typeof contents !== 'undefined' ) {
       var rt = this._getGUIElement('WriterRichText');
       if ( rt ) {
-        rt.hasChanged = false;
         rt.setContent(contents || '');
       }
     }
 
-    var t = "New file";
-    if ( file && file.path ) {
-      t = OSjs.Utils.filename(file.path);
+    var t = DEFAULT_FILENAME;
+    if ( file ) {
+      t = OSjs.Utils.filename(file);
     }
 
     this._setTitle(this.title + " - " + t);
@@ -284,14 +281,23 @@
     return rt ? rt.getContent() : '';
   };
 
-  ApplicationWriterWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+  ApplicationWriterWindow.prototype.checkChanged = function(callback, msg) {
+    var gel = this._getGUIElement('WriterRichText');
+    if ( gel && gel.hasChanged ) {
+      return this._appRef.onConfirmDialog(this, msg, function(discard) {
+        if ( discard ) {
+          gel.hasChanged = false;
+        }
+        callback(discard);
+      });
+    }
+    return false;
+  };
 
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        this._appRef.action('open', data.path, data.mime);
-      }
+  ApplicationWriterWindow.prototype.setChanged = function(c) {
+    var gel  = this._getGUIElement('WriterRichText');
+    if ( gel ) {
+      gel.hasChanged = c;
     }
   };
 
@@ -307,8 +313,9 @@
 
     Application.apply(this, ['ApplicationWriter', args, metadata]);
 
+    this.defaultCheckChange  = true;
     this.dialogOptions.mimes = metadata.mime;
-    this.dialogOptions.defaultFilename = "New text document.odoc";
+    this.dialogOptions.defaultFilename = DEFAULT_FILENAME;
     this.dialogOptions.defaultMime = "osjs/document";
   };
 
@@ -322,6 +329,7 @@
   ApplicationWriter.prototype.onNew = function() {
     if ( this.mainWindow ) {
       this.mainWindow.update(null, "");
+      this.mainWindow.setChanged(false);
       this.mainWindow._focus();
     }
   };
@@ -329,6 +337,7 @@
   ApplicationWriter.prototype.onOpen = function(filename, mime, data) {
     if ( this.mainWindow ) {
       this.mainWindow.update(filename, data);
+      this.mainWindow.setChanged(false);
       this.mainWindow._focus();
     }
   };
@@ -336,12 +345,9 @@
   ApplicationWriter.prototype.onSave = function(filename, mime, data) {
     if ( this.mainWindow ) {
       this.mainWindow.update(filename);
+      this.mainWindow.setChanged(false);
       this.mainWindow._focus();
     }
-  };
-
-  ApplicationWriter.prototype.onCheckChanged = function(callback) {
-    callback(true); // discard true/false
   };
 
   ApplicationWriter.prototype.onGetSaveData = function(callback) {
@@ -359,4 +365,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationWriter = ApplicationWriter;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs);

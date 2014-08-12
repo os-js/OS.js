@@ -1,7 +1,6 @@
 
 # High-priority
 * _[Backend]_ Finish Node.js backend
-* _[Application]_ Writer -- Finish (note: Check for changes before opening/new file)
 * _[Application]_ MusicPlayer -- Finish
 * _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
 
@@ -10,6 +9,7 @@
 * _[GUI]_ GUIScrollbar
 * _[Misc]_ There are TODO and FIXME markings in source code files
 * _[Themes]_ CSS Style scrollbars on webkit
+* _[Application]_ Finish Writer
 
 # Low-priority
 * _[Application]_ CoreWM -- Custom keyboard binding shortcuts
