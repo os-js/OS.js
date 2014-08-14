@@ -55,22 +55,7 @@
  */
 body > .WMPanel {
   height : 32px;
-  left : 5px;
-  right : 5px;
-  background : transparent;
-  .theme_border_bottom(3px);
-}
-body > .WMPanel:before {
-  content : '';
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 1;
-  background : @theme_base_bg_color;
-  .theme_border_bottom(3px);
-  opacity : .9;
+  border : 0 none;
 }
 body > .WMPanel > ul {
   margin : 3px;
@@ -81,6 +66,7 @@ body .WMPanel.Top.Autohide {
 body .WMPanel.Bottom.Autohide {
   bottom : -33px;
 }
+
 #Background.Blinking {
   background : #242424;
 }
