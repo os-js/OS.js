@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Label
@@ -58,7 +58,7 @@
 
   Label.prototype.setLabel = function(l) {
     this.opts.label = l;
-    this.$element.innerHTML = "";
+    this.$element.innerHTML = '';
     this.$element.appendChild(document.createTextNode(this.opts.label));
   };
 

@@ -29,7 +29,7 @@
  */
 
 (function(Application, Window, Utils) {
-  "use strict";
+  'use strict';
 
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
@@ -64,7 +64,7 @@
    * Default DnD event
    */
   DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
 
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
@@ -119,7 +119,7 @@
       filetypes: null,
       mime: null,
       mimes: [],
-      select: "file",
+      select: 'file',
       defaultFilename: ''
     };
   };
@@ -154,7 +154,7 @@
 
     // Make sure we kill our application if main window was closed
     if ( this.mainWindow ) {
-      if ( msg == 'destroyWindow' && obj._name === this.mainWindow._name ) {
+      if ( msg === 'destroyWindow' && obj._name === this.mainWindow._name ) {
         this.destroy();
       }
     }
@@ -187,7 +187,7 @@
     if ( this.defaultCheckChange ) {
       var self = this;
 
-      var msg = OSjs._("MSG_GENERIC_APP_DISCARD");
+      var msg = OSjs._('MSG_GENERIC_APP_DISCARD');
       if ( this.mainWindow ) {
         if ( this.mainWindow.checkChanged(function(discard) { _cb(discard); }, msg) === false ) {
           _cb(true);
@@ -210,7 +210,7 @@
     win._toggleDisabled(true);
     this._createDialog('Confirm', [msg, function(btn) {
       win._toggleDisabled(false);
-      callback(btn == "ok");
+      callback(btn === 'ok');
     }]);
     return true;
   };
@@ -313,13 +313,13 @@
           _onSaveFinished(filename);
         } else {
           if ( res && res.error ) {
-            self._onError(OSjs._("ERR_FILE_APP_SAVE_ALT_FMT", filename), res.error, "doSave");
+            self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), res.error, 'doSave');
             return;
           }
-          self._onError(OSjs._("ERR_FILE_APP_SAVE_ALT_FMT", filename), OSjs._("Unknown error"), "doSave");
+          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), OSjs._('Unknown error'), 'doSave');
         }
       }, function(error) {
-        self._onError(OSjs._("ERR_FILE_APP_SAVE_ALT_FMT", filename), error, "doSave");
+        self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), error, 'doSave');
       });
     }, filename, mime);
   };
@@ -328,17 +328,17 @@
    * File operation error
    */
   DefaultApplication.prototype._onError = function(error, action) {
-    action = action || "unknown";
+    action = action || 'unknown';
 
     this._setCurrentFile(null, null);
 
     if ( !this.onError(error, action) ) {
       if ( this.mainWindow ) {
-        this.mainWindow._error(OSjs._("ERR_GENERIC_APP_FMT", this.__label), OSjs._("ERR_GENERIC_APP_ACTION_FMT", action), error);
+        this.mainWindow._error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
         this.mainWindow._toggleDisabled(false);
         this.mainWindow._toggleLoading(false);
       } else {
-        OSjs.API.error(OSjs._("ERR_GENERIC_APP_FMT", this.__label), OSjs._("ERR_GENERIC_APP_ACTION_FMT", action), error);
+        OSjs.API.error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
       }
     }
   };
@@ -363,7 +363,7 @@
     if ( this.mainWindow ) {
       this.mainWindow._toggleDisabled(true);
       var opt = Utils.cloneObject(this.dialogOptions);
-      opt.type =  "save";
+      opt.type =  'save';
       opt.path = dir;
       opt.filename = fnm;
 
@@ -371,7 +371,7 @@
         if ( self.mainWindow ) {
           self.mainWindow._toggleDisabled(false);
         }
-        if ( btn !== 'ok' ) return;
+        if ( btn !== 'ok' ) { return; }
         self._doSave(fname, fmime);
       }], this.mainWindow);
     }
@@ -384,11 +384,11 @@
     var self = this;
 
     var opt = Utils.cloneObject(this.dialogOptions);
-    opt.type =  "open";
+    opt.type =  'open';
 
     function _openFile(fname, fmime) {
       if ( !Utils.checkAcceptMime(fmime, opt.mimes) ) {
-        OSjs.API.error(self.__label, OSjs._("ERR_FILE_APP_OPEN"), OSjs._("ERR_FILE_APP_OPEN_FMT", filename, mime));
+        OSjs.API.error(self.__label, OSjs._('ERR_FILE_APP_OPEN'), OSjs._('ERR_FILE_APP_OPEN_FMT', filename, mime));
         return;
       }
 
@@ -413,13 +413,13 @@
           self._doOpen(fname, fmime, res.result);
         } else {
           if ( res && res.error ) {
-            self._onError(OSjs._("ERR_FILE_APP_OPEN_ALT_FMT", fname), res.error, "onOpen");
+            self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), res.error, 'onOpen');
             return;
           }
-          self._onError(OSjs._("ERR_FILE_APP_OPEN_ALT_FMT", fname), OSjs._("Unknown error"), "onOpen");
+          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), OSjs._('Unknown error'), 'onOpen');
         }
       }, function(error) {
-        self._onError(OSjs._("ERR_FILE_APP_OPEN_ALT_FMT", fname), error, "onOpen");
+        self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), error, 'onOpen');
       });
     }
 
@@ -435,7 +435,7 @@
           self.mainWindow._toggleDisabled(false);
         }
 
-        if ( btn !== 'ok' ) return;
+        if ( btn !== 'ok' ) { return; }
         _openFile(fname, fmime);
       }], this.mainWindow);
     }

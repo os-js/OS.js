@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
-  "use strict";
+  'use strict';
 
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
@@ -42,13 +42,13 @@
    */
   var DefaultStorage = function() {
     if ( !OSjs.Compability.localStorage ) {
-      throw "Your browser does not support localStorage :(";
+      throw 'Your browser does not support localStorage :(';
     }
     this.prefix = 'OS.js-v2/DemoHandler/';
   };
 
   DefaultStorage.prototype.set = function(o) {
-    console.debug("DefaultStorage::set()", o);
+    console.debug('DefaultStorage::set()', o);
     for ( var i in o ) {
       if ( o.hasOwnProperty(i) ) {
         localStorage.setItem(this.prefix + i, JSON.stringify(o[i]));
@@ -83,7 +83,7 @@
    * Demo initialization
    */
   DemoHandler.prototype.init = function(callback) {
-    console.info("OSjs::DemoHandler::init()");
+    console.info('OSjs::DemoHandler::init()');
 
     var self = this;
     function _finished(locale) {
@@ -116,7 +116,7 @@
    * Demo login. Just an example
    */
   DemoHandler.prototype.login = function(username, password, callback) {
-    console.info("OSjs::DemoHandler::login()", username);
+    console.info('OSjs::DemoHandler::login()', username);
     if ( username === 'demo' && password === 'demo' ) {
       var userData = {
         id:         1,
@@ -128,7 +128,7 @@
       callback.call(this, userData);
       return;
     }
-    callback.call(this, false, "Invalid login");
+    callback.call(this, false, 'Invalid login');
   };
 
   DemoHandler.prototype.saveSettings = function(callback) {

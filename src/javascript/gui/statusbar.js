@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Status Bar Element
@@ -46,7 +46,7 @@
   StatusBar.prototype.init = function() {
     var el = GUIElement.prototype.init.apply(this, ['GUIStatusBar']);
     this.$contents = document.createElement('div');
-    this.$contents.className = "Contents";
+    this.$contents.className = 'Contents';
     el.appendChild(this.$contents);
 
     if ( this.opts.value ) {

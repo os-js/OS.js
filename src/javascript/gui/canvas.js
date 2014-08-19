@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Canvas Element
@@ -41,7 +41,7 @@
   var Canvas = function(name, opts) {
     opts = opts || {};
     if ( !OSjs.Compability.canvas ) {
-      throw "Your platform does not support canvas :/";
+      throw 'Your platform does not support canvas :/';
     }
 
     this.$canvas    = null;
@@ -99,7 +99,7 @@
 
   Canvas.prototype.func = function(f, args) {
     if ( !f || !args ) {
-      throw "Canvas::func() expects a function name and arguments";
+      throw 'Canvas::func() expects a function name and arguments';
     }
     if ( this.$canvas && this.$context ) {
       return this.$context[f].apply(this.$context, args);
@@ -121,7 +121,7 @@
     try {
       mime = src.split(/;/)[0].replace(/^data\:/, '');
     } catch ( e ) {
-      throw "Cannot setImageData() invalid or no mime";
+      throw 'Cannot setImageData() invalid or no mime';
       //return;
     }
 

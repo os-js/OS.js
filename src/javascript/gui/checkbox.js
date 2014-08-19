@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(_Input, GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Checkbox
@@ -80,9 +80,9 @@
   Checkbox.prototype.setValue = function(val) {
     this.value = val ? true : false;
     if ( this.value ) {
-      this.$input.setAttribute("checked", "checked");
+      this.$input.setAttribute('checked', 'checked');
     } else {
-      this.$input.removeAttribute("checked");
+      this.$input.removeAttribute('checked');
     }
   };
 

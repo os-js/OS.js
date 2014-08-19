@@ -28,13 +28,13 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog) {
-  "use strict";
+  'use strict';
 
   /**
    * Input Dialog
    */
   var InputDialog = function(msg, val, onClose) {
-    StandardDialog.apply(this, ['InputDialog', {title: OSjs._("Input Dialog"), message: msg}, {width:300, height:150}, onClose]);
+    StandardDialog.apply(this, ['InputDialog', {title: OSjs._('Input Dialog'), message: msg}, {width:300, height:150}, onClose]);
     this._icon = 'status/dialog-information.png';
 
     this.value = val || '';

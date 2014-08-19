@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Slider Element
@@ -55,7 +55,7 @@
     var self = this;
     this.onUpdate = function(val, perc) {
       (opts.onUpdate || function(val, perc) {
-        console.warn("GUIScroll onUpdate() missing...", val, '('+perc+'%)');
+        console.warn('GUIScroll onUpdate() missing...', val, '('+perc+'%)');
       }).apply(self, arguments);
       self.onChange.apply(this, arguments);
     };
@@ -89,7 +89,7 @@
       if ( !scrolling ) { return; }
 
       var newX, newY;
-      if ( self.type == 'horizontal' ) {
+      if ( self.type === 'horizontal' ) {
         var diffX = (ev.clientX - startX);
         newX = elX + diffX;
         newX = snapping * Math.round(newX / snapping);
@@ -123,7 +123,7 @@
       ev.preventDefault();
 
       scrolling = true;
-      if ( self.type == 'horizontal' ) {
+      if ( self.type === 'horizontal' ) {
         startX    = ev.clientX;
         elX       = self.$button.offsetLeft;
         maxX      = self.$element.offsetWidth - self.$button.offsetWidth;
@@ -177,7 +177,7 @@
     var cd = (this.max - this.min);
     var tmp;
 
-    if ( this.type == 'horizontal' ) {
+    if ( this.type === 'horizontal' ) {
       tmp = (cx/tw)*100;
     } else {
       tmp = (cy/th)*100;
@@ -209,7 +209,7 @@
     var cd = (this.max - this.min);
     var cp = this.val / (cd/100);
 
-    if ( this.type == 'horizontal' ) {
+    if ( this.type === 'horizontal' ) {
       var rw    = this.$element.offsetWidth;
       var bw    = this.$button.offsetWidth;
       var dw    = (rw - bw);

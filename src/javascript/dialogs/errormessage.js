@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(DialogWindow) {
-  "use strict";
+  'use strict';
 
   /**
    * ErrorDialog implementation
@@ -52,13 +52,13 @@
     var label;
 
     function _onBugError(error) {
-      self._error(self._title, "Bugreport error", error, null, false);
+      self._error(self._title, 'Bugreport error', error, null, false);
     }
 
     function _onBugSuccess() {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
-        wm.addWindow(new OSjs.Dialogs.Alert("The error was reported and will be looked into"));
+        wm.addWindow(new OSjs.Dialogs.Alert('The error was reported and will be looked into'));
       }
 
       ok.onClick();
@@ -88,11 +88,11 @@
         error = exception.stack;
       } else {
         error = exception.name;
-        error += "\nFilename: " + exception.fileName || '<unknown>';
-        error += "\nLine: " + exception.lineNumber;
-        error += "\nMessage: " + exception.message;
+        error += '\nFilename: ' + exception.fileName || '<unknown>';
+        error += '\nLine: ' + exception.lineNumber;
+        error += '\nMessage: ' + exception.message;
         if ( exception.extMessage ) {
-          error += "\n" + exception.extMessage;
+          error += '\n' + exception.extMessage;
         }
       }
 
@@ -123,7 +123,7 @@
               return;
             }
           }
-          _onBugError("Something went wrong during reporting. You can mail it to andersevenrud@gmail.com");
+          _onBugError('Something went wrong during reporting. You can mail it to andersevenrud@gmail.com');
         }, function(error) {
           _onBugError(error);
         });

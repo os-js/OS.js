@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(DialogWindow) {
-  "use strict";
+  'use strict';
 
   /**
    * File Progress dialog
@@ -37,7 +37,7 @@
     DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
 
     this.$desc                    = null;
-    this._title                   = title || OSjs._("File Operation Progress");
+    this._title                   = title || OSjs._('File Operation Progress');
     this._properties.allow_close  = false;
     this._icon                    = 'actions/document-send.png';
   };

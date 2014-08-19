@@ -28,13 +28,13 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog) {
-  "use strict";
+  'use strict';
 
   /**
    * Alert/Message Dialog
    */
   var AlertDialog = function(msg, onClose, args) {
-    args = OSjs.Utils.mergeObject({title: OSjs._("Alert Dialog"), message: msg, buttonCancel: false, buttonOkLabel: OSjs._("Close")}, (args || {}));
+    args = OSjs.Utils.mergeObject({title: OSjs._('Alert Dialog'), message: msg, buttonCancel: false, buttonOkLabel: OSjs._('Close')}, (args || {}));
     StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
     this._icon = 'status/dialog-warning.png';
   };

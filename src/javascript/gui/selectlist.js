@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _Input) {
-  "use strict";
+  'use strict';
 
   /**
    * SelectList
@@ -81,9 +81,9 @@
     var i = 0;
     var l = this.$input.childNodes.length;
     for ( i; i < l; i++ ) {
-      this.$input.childNodes[i].removeAttribute("selected");
+      this.$input.childNodes[i].removeAttribute('selected');
       if ( OSjs.Utils.inArray(sel, this.$input.childNodes[i].value) ) {
-        this.$input.childNodes[i].setAttribute("selected", "selected");
+        this.$input.childNodes[i].setAttribute('selected', 'selected');
       }
     }
   };

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * MenuBar Class
@@ -116,7 +116,7 @@
 
   MenuBar.prototype.getItem = function(name) {
     for ( var i = 0; i < this.items.length; i++ ) {
-      if ( this.items[i].name == name ) {
+      if ( this.items[i].name === name ) {
         return this.items[i];
       }
     }

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog) {
-  "use strict";
+  'use strict';
 
   var _ID = 0;
 
@@ -41,7 +41,7 @@
     this.$file            = null;
     this.dialog           = null;
     this._wmref           = null;
-    this.notificationId   = "FileUploadDialog_" + _ID;
+    this.notificationId   = 'FileUploadDialog_' + _ID;
 
     this.uploadName = null;
     this.uploadSize = null;
@@ -49,7 +49,7 @@
 
     var maxSize = OSjs.API.getHandlerInstance().getConfig('Core').MaxUploadSize;
     var msg = OSjs._('Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes', this.dest, maxSize);
-    StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs._("Upload Dialog"), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
+    StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs._('Upload Dialog'), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
     this._icon = 'actions/filenew.png';
 
     _ID++;
@@ -111,8 +111,8 @@
     this.$file.disabled = 'disabled';
     this.buttonCancel.setDisabled(true);
 
-    var desc = OSjs._("Uploading '{0}' ({1} {2}) to {3}", file.name, file.type, size, this.dest);
-    this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs._("Uploading file...")));
+    var desc = OSjs._('Uploading \'{0}\' ({1} {2}) to {3}', file.name, file.type, size, this.dest);
+    this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs._('Uploading file...')));
     this.dialog.setDescription(desc);
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
@@ -122,7 +122,7 @@
     this.uploadMime = file.type;
 
     if ( this._wmref ) {
-      this._wmref.createNotificationIcon(this.notificationId, {className: "BusyNotification", tooltip: desc});
+      this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc});
     }
 
     var self = this;
@@ -141,7 +141,7 @@
   };
 
   FileUploadDialog.prototype.onFileSelected = function(evt, file) {
-    console.info("FileUploadDialog::onFileSelected()", evt, file);
+    console.info('FileUploadDialog::onFileSelected()', evt, file);
     if ( file ) {
       var fileSize = 0;
       if ( file.size > 1024 * 1024 ) {
@@ -164,26 +164,26 @@
   };
 
   FileUploadDialog.prototype.onUploadComplete = function(evt) {
-    console.info("FileUploadDialog::onUploadComplete()");
+    console.info('FileUploadDialog::onUploadComplete()');
 
     this.buttonCancel.setDisabled(false);
     this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
   };
 
   FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
-    console.info("FileUploadDialog::onUploadFailed()");
+    console.info('FileUploadDialog::onUploadFailed()');
     if ( error ) {
-      this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), error);
+      this._error(OSjs._('Upload failed'), OSjs._('The upload has failed'), error);
     } else {
-      this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), OSjs._("Reason unknown..."));
+      this._error(OSjs._('Upload failed'), OSjs._('The upload has failed'), OSjs._('Reason unknown...'));
     }
     this.buttonCancel.setDisabled(false);
     this.end('fail', error);
   };
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
-    console.info("FileUploadDialog::onUploadCanceled()");
-    this._error(OSjs._("Upload failed"), OSjs._("The upload has failed"), OSjs._("Cancelled by user..."));
+    console.info('FileUploadDialog::onUploadCanceled()');
+    this._error(OSjs._('Upload failed'), OSjs._('The upload has failed'), OSjs._('Cancelled by user...'));
     this.buttonCancel.setDisabled(false);
     this.end('cancelled', evt);
   };

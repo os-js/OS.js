@@ -28,13 +28,13 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog) {
-  "use strict";
+  'use strict';
 
   /**
    * Confirmation Dialog
    */
   var ConfirmDialog = function(msg, onClose, args) {
-    args = OSjs.Utils.mergeObject({title: OSjs._("Confirm Dialog"), message: msg}, (args || {}));
+    args = OSjs.Utils.mergeObject({title: OSjs._('Confirm Dialog'), message: msg}, (args || {}));
     StandardDialog.apply(this, ['ConfirmDialog', args, {width:350, height:120}, onClose]);
     this._icon = 'status/dialog-question.png';
   };

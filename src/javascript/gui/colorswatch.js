@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Color Swatch
@@ -41,7 +41,7 @@
     this.onSelect = onSelect || function(r, g, b) {};
 
     if ( !OSjs.Compability.canvas ) {
-      throw "Canvas is not supported on your platform!";
+      throw 'Canvas is not supported on your platform!';
     }
 
     GUIElement.apply(this, [name, {}]);
@@ -60,13 +60,13 @@
     var gradient  = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
 
     // Create color gradient
-    gradient.addColorStop(0,    "rgb(255,   0,   0)");
-    gradient.addColorStop(0.15, "rgb(255,   0, 255)");
-    gradient.addColorStop(0.33, "rgb(0,     0, 255)");
-    gradient.addColorStop(0.49, "rgb(0,   255, 255)");
-    gradient.addColorStop(0.67, "rgb(0,   255,   0)");
-    gradient.addColorStop(0.84, "rgb(255, 255,   0)");
-    gradient.addColorStop(1,    "rgb(255,   0,   0)");
+    gradient.addColorStop(0,    'rgb(255,   0,   0)');
+    gradient.addColorStop(0.15, 'rgb(255,   0, 255)');
+    gradient.addColorStop(0.33, 'rgb(0,     0, 255)');
+    gradient.addColorStop(0.49, 'rgb(0,   255, 255)');
+    gradient.addColorStop(0.67, 'rgb(0,   255,   0)');
+    gradient.addColorStop(0.84, 'rgb(255, 255,   0)');
+    gradient.addColorStop(1,    'rgb(255,   0,   0)');
 
     // Apply gradient to canvas
     ctx.fillStyle = gradient;
@@ -74,10 +74,10 @@
 
     // Create semi transparent gradient (white -> trans. -> black)
     gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-    gradient.addColorStop(0,   "rgba(255, 255, 255, 1)");
-    gradient.addColorStop(0.5, "rgba(255, 255, 255, 0)");
-    gradient.addColorStop(0.5, "rgba(0,     0,   0, 0)");
-    gradient.addColorStop(1,   "rgba(0,     0,   0, 1)");
+    gradient.addColorStop(0,   'rgba(255, 255, 255, 1)');
+    gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+    gradient.addColorStop(0.5, 'rgba(0,     0,   0, 0)');
+    gradient.addColorStop(1,   'rgba(0,     0,   0, 1)');
 
     // Apply gradient to canvas
     ctx.fillStyle = gradient;

@@ -28,13 +28,13 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog, Utils, API) {
-  "use strict";
+  'use strict';
 
   function ReplaceExtension(orig, rep) {
-    var spl = orig.split(".");
+    var spl = orig.split('.');
     spl.pop();
     spl.push(rep);
-    return spl.join(".");
+    return spl.join('.');
   }
 
   /**
@@ -55,15 +55,15 @@
     args = args || {};
 
     // Arguments
-    this.type             = args.type             || "open";
+    this.type             = args.type             || 'open';
     this.path             = args.path;
-    this.select           = args.select           || "file";
-    this.filename         = args.filename         || "";
-    this.filemime         = args.mime             || "";
+    this.select           = args.select           || 'file';
+    this.filename         = args.filename         || '';
+    this.filemime         = args.mime             || '';
     this.filter           = args.mimes            || [];
     this.filetypes        = args.filetypes        || null;
-    this.defaultFilename  = args.defaultFilename  || "New File";
-    this.defaultFilemime  = args.defaultFilemime  || this.filemime || "";
+    this.defaultFilename  = args.defaultFilename  || 'New File';
+    this.defaultFilemime  = args.defaultFilemime  || this.filemime || '';
 
     if ( !this.path && this.filename ) {
       if ( this.filename.match(/\//) ) {
@@ -85,8 +85,8 @@
     this.$select      = null;
 
     // Window
-    var title     = OSjs._(this.type == "save" ? "Save" : "Open");
-    var className = this.type == "save" ? 'FileSaveDialog' : 'FileOpenDialog';
+    var title     = OSjs._(this.type === 'save' ? 'Save' : 'Open');
+    var className = this.type === 'save' ? 'FileSaveDialog' : 'FileOpenDialog';
 
     StandardDialog.apply(this, [className, {title: title}, {width:600, height:380}, onClose]);
 
@@ -140,7 +140,7 @@
     };
 
     this.$statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
-    this.$statusBar.setText("");
+    this.$statusBar.setText('');
 
     if ( this.type === 'save' ) {
       var curval = Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
@@ -152,13 +152,13 @@
         for ( var i in this.filetypes ) {
           if ( this.filetypes.hasOwnProperty(i) ) {
             val = this.filetypes[i];
-            types[i] = "";
+            types[i] = '';
 
             if ( MIMEDescriptions[val] ) {
-              types[i] += MIMEDescriptions[val] + " ";
+              types[i] += MIMEDescriptions[val] + ' ';
             }
 
-            types[i] += val + " (." + i + ")";
+            types[i] += val + ' (.' + i + ')';
           }
         }
 
@@ -166,7 +166,7 @@
           self.onSelectChange(val);
         }}), this.$element);
         this.$select.addItems(types);
-        Utils.$addClass(root.firstChild, "HasFileTypes");
+        Utils.$addClass(root.firstChild, 'HasFileTypes');
       }
 
       this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(ev) {
@@ -207,7 +207,7 @@
     }
 
     if ( this.buttonConfirm ) {
-      if ( this.type == "save" && this.$input && this.$input.getValue() ) {
+      if ( this.type === 'save' && this.$input && this.$input.getValue() ) {
         this.buttonConfirm.setDisabled(false);
       }
     }
@@ -231,15 +231,15 @@
     var self = this;
 
     function _getSelected() {
-      var result = "";
+      var result = '';
 
-      if ( this.select == "path" ) {
+      if ( this.select === 'path' ) {
         result = this.selectedFile;
       } else {
         if ( this.$fileView ) {
           var root = this.$fileView.getPath();
           if ( this.$input ) {
-            result = root + "/" + this.$input.getValue();
+            result = root + '/' + this.$input.getValue();
           } else {
             result = this.selectedFile;
           }
@@ -256,9 +256,9 @@
       var wm = API.getWMInstance();
       if ( wm ) {
         this._toggleDisabled(true);
-        var conf = new OSjs.Dialogs.Confirm(OSjs._("Are you sure you want to overwrite the file '{0}'?", Utils.filename(path)), function(btn) {
+        var conf = new OSjs.Dialogs.Confirm(OSjs._('Are you sure you want to overwrite the file \'{0}\'?', Utils.filename(path)), function(btn) {
           self._toggleDisabled(false);
-          if ( btn == 'ok' ) {
+          if ( btn === 'ok' ) {
             self.end('ok', path, mime);
           }
         });
@@ -267,14 +267,14 @@
       }
     }
 
-    if ( this.type == "open" ) {
+    if ( this.type === 'open' ) {
       this.end('ok', path, mime);
     } else {
       API.call('fs', {method: 'exists', 'arguments' : [path]}, function(res) {
         res = res || {};
 
         if ( res.error ) {
-          self.onError((res.error || "Failed to stat file"), path);
+          self.onError((res.error || 'Failed to stat file'), path);
           return;
         }
 
@@ -314,7 +314,7 @@
   };
 
   FileDialog.prototype.checkInput = function() {
-    if ( this.type != "save" ) { return; }
+    if ( this.type !== 'save' ) { return; }
     if ( !this.buttonConfirm ) { return; }
 
     if ( this.$input.getValue().length ) {
@@ -331,18 +331,18 @@
     var self = this;
     var fileList = this.$fileView;
     if ( !fileList ) { return; }
-    var viewType = fileList.viewType || "";
+    var viewType = fileList.viewType || '';
 
     OSjs.GUI.createMenu([
       {name: 'ListView', title: OSjs._('View type'), menu: [
-        {name: 'ListView', title: OSjs._('List View'), disabled: (viewType.toLowerCase() == 'listview'), onClick: function() {
-          self.onMenuSelect("ListView");
+        {name: 'ListView', title: OSjs._('List View'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
+          self.onMenuSelect('ListView');
         }},
-        {name: 'IconView', title: OSjs._('Icon View'), disabled: (viewType.toLowerCase() == 'iconview'), onClick: function() {
-          self.onMenuSelect("IconView");
+        {name: 'IconView', title: OSjs._('Icon View'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
+          self.onMenuSelect('IconView');
         }},
-        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (viewType.toLowerCase() == 'treeview'), onClick: function() {
-          self.onMenuSelect("TreeView");
+        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
+          self.onMenuSelect('TreeView');
         }}
       ]}
     ], {x: ev.clientX, y: ev.clientY});
@@ -366,7 +366,7 @@
         this.errors++;
       }
 
-      this._error(OSjs._("FileDialog Error"), OSjs._("Failed listing directory '{0}' because an error occured", dirname), err);
+      this._error(OSjs._('FileDialog Error'), OSjs._('Failed listing directory \'{0}\' because an error occured', dirname), err);
     }
   };
 
@@ -386,12 +386,12 @@
   FileDialog.prototype.onFileSelected = function(item) {
     var selected = null;
 
-    if ( this.select === "path" ) {
-      if ( item && item.type == "dir" ) {
+    if ( this.select === 'path' ) {
+      if ( item && item.type === 'dir' ) {
         selected = item.path;
       }
     } else {
-      if ( item && item.type == "file" ) {
+      if ( item && item.type === 'file' ) {
         selected = item.path;
       }
     }
@@ -418,7 +418,7 @@
     }
     this._toggleLoading(false);
 
-    if ( this.select == "path" ) {
+    if ( this.select === 'path' ) {
       this.selectedFile = this.path; // Dir selection dialog needs to start on default
       this.buttonConfirm.setDisabled(false);
     }
@@ -455,7 +455,7 @@
 
     if ( this.select === 'file' && type === 'file' ) {
       _activated.call(this);
-    } else if ( this.select === 'path' && type === 'dir' && Utils.filename(path) != '..' ) {
+    } else if ( this.select === 'path' && type === 'dir' && Utils.filename(path) !== '..' ) {
       _activated.call(this);
     }
   };

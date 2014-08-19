@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog) {
-  "use strict";
+  'use strict';
 
   /**
    * File Information Dialog
@@ -36,7 +36,7 @@
   var FileInformationDialog = function(path, onClose) {
     this.path = path;
     onClose = onClose || function() {};
-    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._("File Information"), buttonCancel: false, buttonOkLabel: OSjs._("Close")}, {width:300, height:370}, onClose]);
+    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._('File Information'), buttonCancel: false, buttonOkLabel: OSjs._('Close')}, {width:300, height:370}, onClose]);
   };
   FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
 
@@ -44,13 +44,13 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var desc = OSjs._("Loading file information for: {0}", this.path);
+    var desc = OSjs._('Loading file information for: {0}', this.path);
     var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
 
     function _onError(err) {
       var fname = OSjs.Utils.filename(self.path);
-      self._error(OSjs._("FileInformationDialog Error"), OSjs._("Failed to get file information for <span>{0}</span>", fname), err);
-      txt.setValue(OSjs._("Failed to get file information for: {0}", self.path));
+      self._error(OSjs._('FileInformationDialog Error'), OSjs._('Failed to get file information for <span>{0}</span>', fname), err);
+      txt.setValue(OSjs._('Failed to get file information for: {0}', self.path));
     }
 
     function _onSuccess(data) {
@@ -58,13 +58,13 @@
       for ( var i in data ) {
         if ( data.hasOwnProperty(i) ) {
           if ( i === 'exif' ) {
-            info.push(i + ":\n\n" + data[i]);
+            info.push(i + ':\n\n' + data[i]);
           } else {
-            info.push(i + ":\n\t" + data[i]);
+            info.push(i + ':\n\t' + data[i]);
           }
         }
       }
-      txt.setValue(info.join("\n\n"));
+      txt.setValue(info.join('\n\n'));
     }
 
     OSjs.API.call('fs', {method: 'fileinfo', 'arguments' : [this.path]}, function(res) {

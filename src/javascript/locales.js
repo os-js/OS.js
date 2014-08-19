@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
-  "use strict";
+  'use strict';
 
   window.OSjs       = window.OSjs       || {};
   OSjs.Locale       = OSjs.Locale       || {};
@@ -90,11 +90,11 @@
     if ( OSjs.Locales[l] ) {
       CurrentLocale = l;
     } else {
-      console.warn("OSjs::Locale::setLocale()", "Invalid locale", l, "(Using default)");
+      console.warn('OSjs::Locale::setLocale()', 'Invalid locale', l, '(Using default)');
       CurrentLocale = DefaultLocale;
     }
 
-    console.log("OSjs::Locale::setLocale()", CurrentLocale);
+    console.log('OSjs::Locale::setLocale()', CurrentLocale);
   };
 
 })();

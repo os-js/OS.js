@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Richt Text Element
@@ -39,7 +39,7 @@
    */
   var RichText = function(name, opts) {
     opts = opts || {};
-    if ( !OSjs.Compability.richtext ) { throw "Your platform does not support RichText editing"; }
+    if ( !OSjs.Compability.richtext ) { throw 'Your platform does not support RichText editing'; }
 
     this.$view          = null;
     this.opts           = opts || {};
@@ -58,7 +58,7 @@
     var self = this;
 
     this.$view = document.createElement('iframe');
-    this.$view.setAttribute("border", "0");
+    this.$view.setAttribute('border', '0');
 
     el.appendChild(this.$view);
 
@@ -77,7 +77,7 @@
       doc.write(template);
       doc.close();
     } catch (error) {
-      console.error("Failed to write RichText template", error);
+      console.error('Failed to write RichText template', error);
     }
 
     if ( doc ) {
@@ -111,14 +111,14 @@
           }
           _timeout = setTimeout(function() {
             var strlen = self.getContent().length;
-            if ( self.strlen != strlen ) {
+            if ( self.strlen !== strlen ) {
               self.hasChanged = true;
             }
             self.strlen = strlen;
           }, 100);
         });
       } catch ( e ) {
-        console.warn("Failed to bind focus/blur on richtext", e);
+        console.warn('Failed to bind focus/blur on richtext', e);
       }
 
       if ( this.opts.onInited ) {
@@ -145,7 +145,7 @@
         this.hasChanged = true;
         return result;
       } catch ( e ) {
-        console.warn("OSjs.GUI.RichText::command() failed", cmd, defaultUI, args, e);
+        console.warn('OSjs.GUI.RichText::command() failed', cmd, defaultUI, args, e);
       }
     }
     return false;

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _Input) {
-  "use strict";
+  'use strict';
 
   /**
    * Text
@@ -53,7 +53,7 @@
           if ( typeof range.max === 'undefined' || !range.max || range.max < range.min ) { range.max = this.getValue().length - 1; }
           OSjs.Utils.$selectRange(this.$input, range.min, range.max);
         } catch ( e ) {
-          console.warn("OSjs::GUI::Text::select()", "exception", e);
+          console.warn('OSjs::GUI::Text::select()', 'exception', e);
           this.$input.select();
         }
       } else {

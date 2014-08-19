@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _Input) {
-  "use strict";
+  'use strict';
 
   /**
    * Select
@@ -67,7 +67,7 @@
     var found = false;
 
     for ( i; i < l; i++ ) {
-      if ( i === val || this.$input.childNodes[i].value == val ) {
+      if ( i === val || this.$input.childNodes[i].value === val ) {
         found = i;
         break;
       }

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement) {
-  "use strict";
+  'use strict';
 
   /**
    * Tabs > Tab Container
@@ -193,7 +193,7 @@
   };
 
   Tabs.prototype.setTab = function(idx) {
-    console.debug("OSjs::GUI::Tabs::setTab()", idx);
+    console.debug('OSjs::GUI::Tabs::setTab()', idx);
 
     if ( this.tabs[idx] ) {
       if ( this.currentTab ) {
@@ -207,7 +207,7 @@
   };
 
   Tabs.prototype.removeTab = function(idx) {
-    console.debug("OSjs::GUI::Tabs::removeTab()", idx);
+    console.debug('OSjs::GUI::Tabs::removeTab()', idx);
 
     if ( idx instanceof Tab ) {
       idx = idx.name;
@@ -241,7 +241,7 @@
   Tabs.prototype.addTab = function(name, opts) {
     var self  = this;
 
-    console.debug("OSjs::GUI::Tabs::addTab()", name, opts);
+    console.debug('OSjs::GUI::Tabs::addTab()', name, opts);
 
     var tab = new Tab(name, opts, this.tabCount, this.$tabs, this.$container, this);
     this.tabs[name] = tab;

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
-  "use strict";
+  'use strict';
 
   /**
    * Menu class
@@ -50,7 +50,7 @@
     var self = this;
 
     function _onclick(ev, func) {
-      func = func || function() { console.warn("Warning -- you forgot to implement a handler"); };
+      func = func || function() { console.warn('Warning -- you forgot to implement a handler'); };
       if ( !func(ev) ) {
         OSjs.GUI.blurMenu();
       }
@@ -127,7 +127,7 @@
             m.onclick = (function(ref) {
               return function(ev) {
                 if ( this.className.match(/Disabled/) ) { return; }
-                if ( this.getAttribute("disabled") == "disabled" ) { return; }
+                if ( this.getAttribute('disabled') === 'disabled' ) { return; }
 
                 _onclick(ev, ref.onClick);
               };
@@ -202,7 +202,7 @@
 
   Menu.prototype.setItemDisabled = function(name, d) {
     var root = this.getRoot();
-    var el = root.getElementsByClassName("MenuItem_" + name);
+    var el = root.getElementsByClassName('MenuItem_' + name);
     el = (el && el.length) ? el[0] : null;
     if ( el ) {
       if ( d ) {

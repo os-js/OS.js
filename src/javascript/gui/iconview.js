@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _DataView) {
-  "use strict";
+  'use strict';
 
   /**
    * Icon View Element
@@ -66,7 +66,7 @@
     this.$ul    = document.createElement('ul');
     this._addEvent(view, 'onclick', function(ev) {
       var t = ev.target || ev.srcElement;
-      if ( t && t == view ) {
+      if ( t && t === view ) {
         self.setSelected(null, null);
       }
     });
@@ -95,7 +95,7 @@
       imgContainer = null;
 
       li = document.createElement('li');
-      li.setAttribute("data-index", i);
+      li.setAttribute('data-index', i);
 
       for ( k in iter ) {
         if ( iter.hasOwnProperty(k) ) {

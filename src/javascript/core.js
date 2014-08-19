@@ -223,7 +223,7 @@
       }
     }
 
-    alert(title + "\n\n" + message + "\n\n" + error);
+    alert(title + '\n\n' + message + '\n\n' + error);
     return null;
   }
 

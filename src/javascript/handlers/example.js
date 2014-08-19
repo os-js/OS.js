@@ -36,7 +36,7 @@ See doc/example-handler.txt
 */
 
 (function() {
-  "use strict";
+  'use strict';
 
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
@@ -62,19 +62,19 @@ See doc/example-handler.txt
       var s         = document.getElementById('LoginSubmit');
 
       if ( !container ) {
-        throw "Could not find Login Form Container";
+        throw 'Could not find Login Form Container';
       }
 
       function _restore() {
-        s.removeAttribute("disabled");
-        u.removeAttribute("disabled");
-        p.removeAttribute("disabled");
+        s.removeAttribute('disabled');
+        u.removeAttribute('disabled');
+        p.removeAttribute('disabled');
       }
 
       function _lock() {
-        s.setAttribute("disabled", "disabled");
-        u.setAttribute("disabled", "disabled");
-        p.setAttribute("disabled", "disabled");
+        s.setAttribute('disabled', 'disabled');
+        u.setAttribute('disabled', 'disabled');
+        p.setAttribute('disabled', 'disabled');
       }
 
       function _login(username, password) {
@@ -112,7 +112,7 @@ See doc/example-handler.txt
     var uri = '/example.html';
     OSjs.Utils.Ajax(uri, function(response, httpRequest, url) {
       if ( !response ) {
-        alert("No content was found for example handler login HTML");
+        alert('No content was found for example handler login HTML');
         return;
       }
 
@@ -122,7 +122,7 @@ See doc/example-handler.txt
         _onLoaded();
       }, 0);
     }, function(error, response, httpRequest) {
-      alert("Failed to fetch example handler login HTML");
+      alert('Failed to fetch example handler login HTML');
     }, {method: 'GET', parse: true});
   };
 
@@ -133,11 +133,11 @@ See doc/example-handler.txt
       if ( response.result ) { // This contains an object with user data
         callback(response.result);
       } else {
-        callback(false, response.error ? ("Error while logging in: " + response.error) : "Invalid login");
+        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
       }
 
     }, function(error) {
-      callback(false, "Login error: " + error);
+      callback(false, 'Login error: ' + error);
     });
   };
 
@@ -151,10 +151,10 @@ See doc/example-handler.txt
         if ( response.result ) {
           callback(true);
         } else {
-          callback(false, "An error occured: " + (response.error || 'Unknown error'));
+          callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
         }
       }, function(error) {
-        callback(false, "Logout error: " + error);
+        callback(false, 'Logout error: ' + error);
       });
     }
 
@@ -175,14 +175,14 @@ See doc/example-handler.txt
     var settings = this.settings.get();
     var opts = {settings: settings};
     this.callAPI('settings', opts, function(response) {
-      console.debug("ExampleHandler::syncSettings()", response);
+      console.debug('ExampleHandler::syncSettings()', response);
       if ( response.result ) {
         callback.call(self, true);
       } else {
         callback.call(self, false);
       }
     }, function(error) {
-      console.warn("ExampleHandler::syncSettings()", "Call error", error);
+      console.warn('ExampleHandler::syncSettings()', 'Call error', error);
       callback.call(self, false);
     });
   };

@@ -28,19 +28,19 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, ListView, TreeView, IconView, _DataView) {
-  "use strict";
+  'use strict';
 
   function createDragImage(ev, dragRoot) {
     return null;
     /*
-    var el = document.createElement("div");
-    el.style.position = "absolute";
-    el.style.left = "0px";
-    el.style.top = "0px";
-    el.style.width = "40px";
-    el.style.height = "40px";
+    var el = document.createElement('div');
+    el.style.position = 'absolute';
+    el.style.left = '0px';
+    el.style.top = '0px';
+    el.style.width = '40px';
+    el.style.height = '40px';
     el.style.zIndex = -2;
-    el.style.background = "red";
+    el.style.background = 'red';
     return {element: el, offset: {x: 20, y: 20}};
     */
   }
@@ -66,7 +66,7 @@
 
     this.onActivated  = function(path, type, mime) {};
     this.onSelected   = function(item, el) {};
-    this.onDropped    = function() { console.warn("Not implemented yet!"); };
+    this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
   };
 
@@ -79,15 +79,15 @@
     if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
       this.onCreateItem = function(el, item) {
         var self = this;
-        if ( item.filename == '..' ) { return; }
+        if ( item.filename === '..' ) { return; }
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs._("Filename") + ": "  + item.filename,
-            OSjs._("Path")     + ": "  + item.path,
-            OSjs._("Size")     + ": "  + item.size || 0,
-            OSjs._("MIME")     + ": "  + item.mime || 'none'
-          ]).join("\n");
+            OSjs._('Filename') + ': '  + item.filename,
+            OSjs._('Path')     + ': '  + item.path,
+            OSjs._('Size')     + ': '  + item.size || 0,
+            OSjs._('MIME')     + ': '  + item.mime || 'none'
+          ]).join('\n');
 
           OSjs.GUI.createDraggable(el, {
             type   : 'file',
@@ -101,7 +101,7 @@
             },
             dragImage : createDragImage
           });
-        } else if ( item.type == 'dir' ) {
+        } else if ( item.type === 'dir' ) {
           el.title = item.path;
 
           OSjs.GUI.createDroppable(el, {
@@ -128,7 +128,7 @@
     var iter;
     for ( var i = 0; i < list.length; i++ ) {
       iter = list[i];
-      if ( skipDot && iter.filename == '..' ) {
+      if ( skipDot && iter.filename === '..' ) {
         continue;
       }
 
@@ -136,7 +136,7 @@
       iter.icon  = _createIcon(iter);
       iter._loaded = false;
 
-      if ( iter.type == 'dir' && iter.filename != '..' ) {
+      if ( iter.type === 'dir' && iter.filename !== '..' ) {
         iter.items = [{
           icon: iter.icon,
           title: 'Loading...'
@@ -210,7 +210,7 @@
 
     this.onActivated  = function(path, type, mime) {};
     this.onSelected   = function(item, el) {};
-    this.onDropped    = function() { console.warn("Not implemented yet!"); };
+    this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
   };
 
@@ -223,15 +223,15 @@
     if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
       this.onCreateItem = function(el, item) {
         var self = this;
-        if ( item.filename == '..' ) { return; }
+        if ( item.filename === '..' ) { return; }
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs._("Filename") + ": "  + item.filename,
-            OSjs._("Path")     + ": "  + item.path,
-            OSjs._("Size")     + ": "  + item.size || 0,
-            OSjs._("MIME")     + ": "  + item.mime || 'none'
-          ]).join("\n");
+            OSjs._('Filename') + ': '  + item.filename,
+            OSjs._('Path')     + ': '  + item.path,
+            OSjs._('Size')     + ': '  + item.size || 0,
+            OSjs._('MIME')     + ': '  + item.mime || 'none'
+          ]).join('\n');
 
           OSjs.GUI.createDraggable(el, {
             type   : 'file',
@@ -245,7 +245,7 @@
             },
             dragImage: createDragImage
           });
-        } else if ( item.type == 'dir' ) {
+        } else if ( item.type === 'dir' ) {
           el.title = item.path;
 
           OSjs.GUI.createDroppable(el, {
@@ -317,8 +317,8 @@
 
     this.onActivated  = function(path, type, mime) {};
     this.onSelected   = function(item, el) {};
-    this.onDropped    = function() { console.warn("Not implemented yet!"); };
-    this.onSort       = function() { console.warn("Not implemented yet!"); };
+    this.onDropped    = function() { console.warn('Not implemented yet!'); };
+    this.onSort       = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
   };
 
@@ -331,15 +331,15 @@
     if ( this.opts.dnd && this.opts.dndDrag && OSjs.Compability.dnd ) {
       this.onCreateItem = function(el, item, column) {
         var self = this;
-        if ( item.filename == '..' ) { return; }
+        if ( item.filename === '..' ) { return; }
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs._("Filename") + ": "  + item.filename,
-            OSjs._("Path")     + ": "  + item.path,
-            OSjs._("Size")     + ": "  + item.size || 0,
-            OSjs._("MIME")     + ": "  + item.mime || 'none'
-          ]).join("\n");
+            OSjs._('Filename') + ': '  + item.filename,
+            OSjs._('Path')     + ': '  + item.path,
+            OSjs._('Size')     + ': '  + item.size || 0,
+            OSjs._('MIME')     + ': '  + item.mime || 'none'
+          ]).join('\n');
 
           OSjs.GUI.createDraggable(el, {
             type   : 'file',
@@ -354,7 +354,7 @@
             dragImage : createDragImage
           });
 
-        } else if ( item.type == 'dir' ) {
+        } else if ( item.type === 'dir' ) {
           el.title = item.path;
 
           OSjs.GUI.createDroppable(el, {
@@ -389,10 +389,10 @@
     }
 
     this.setColumns([
-      {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: "16"}, resizable: false},
+      {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: '16'}, resizable: false},
       {key: 'filename', title: OSjs._('Filename')},
-      {key: 'mime',     title: OSjs._('MIME'), domProperties: {width: "150"}},
-      {key: 'size',     title: OSjs._('Size'), callback: _callbackSize, domProperties: {width: "80"}},
+      {key: 'mime',     title: OSjs._('MIME'), domProperties: {width: '150'}},
+      {key: 'size',     title: OSjs._('Size'), callback: _callbackSize, domProperties: {width: '80'}},
       {key: 'path',     title: OSjs._('Path'), visible: false},
       {key: 'type',     title: OSjs._('Type'), visible: false}
      ]);
@@ -472,7 +472,7 @@
     this.onFinished         = function() {};
     this.onSelected         = function(item, el) {};
     this.onRefresh          = function() {};
-    this.onDropped          = function() { console.warn("Not implemented yet!"); };
+    this.onDropped          = function() { console.warn('Not implemented yet!'); };
     this.onContextMenu      = function(ev, el, item) {};
     this.onViewContextMenu  = function(ev) {};
     this.onItemDropped      = function(ev, el, item) {};
@@ -509,7 +509,7 @@
   FileView.prototype.createView = function(v, root) {
     var self = this;
 
-    if ( v != this.viewType ) {
+    if ( v !== this.viewType ) {
 
       if ( this.viewRef ) {
         this.viewRef.destroy();
@@ -519,14 +519,14 @@
         this.sortDir = true;
       }
 
-      if ( v.toLowerCase() == 'listview' ) {
+      if ( v.toLowerCase() === 'listview' ) {
         this.viewRef = new FileListView(this, 'FileListView', this.viewOpts);
-      } else if ( v.toLowerCase() == 'iconview' ) {
+      } else if ( v.toLowerCase() === 'iconview' ) {
         this.viewRef = new FileIconView(this, 'FileIconView', this.viewOpts);
-      } else if ( v.toLowerCase() == 'treeview' ) {
+      } else if ( v.toLowerCase() === 'treeview' ) {
         this.viewRef = new FileTreeView(this, 'FileTreeView', this.viewOpts);
       } else {
-        throw "Invalid view type: " + v;
+        throw 'Invalid view type: ' + v;
       }
 
       // NOTE: Some quirks for having a child element
@@ -595,8 +595,8 @@
       }
 
       var lst = list.sort(function(a, b) {
-        var x = (a[key] === null) ? "" : "" + a[key],
-            y = (b[key] === null) ? "" : "" + b[key];
+        var x = (a[key] === null) ? '' : '' + a[key],
+            y = (b[key] === null) ? '' : '' + b[key];
 
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
       });
@@ -628,14 +628,14 @@
           if ( res.result /* && res.result.length*/ ) {
             if ( self.locked ) {
               if ( res.result.length > 0 ) {
-                if ( res.result[0].filename == '..' ) {
+                if ( res.result[0].filename === '..' ) {
                   res.result.shift();
                 }
               }
             }
             if ( self.viewOpts.summary && res.result.length ) {
               for ( var i = 0, l = res.result.length; i < l; i++ ) {
-                if ( res.result[i].filename !== ".." ) {
+                if ( res.result[i].filename !== '..' ) {
                   if ( res.result[i].size ) {
                     size += (res.result[i].size << 0);
                   }
@@ -662,7 +662,7 @@
     onError     = onError     || function() {};
 
     if ( !this.viewRef ) {
-      throw "FileView has no GUI element attached!";
+      throw 'FileView has no GUI element attached!';
     }
 
     this.onRefresh.call(this);
@@ -679,7 +679,7 @@
 
       if ( this.viewRef && this.getViewType() === 'ListView' ) {
         if ( this.sortKey ) {
-          var col = this.viewRef.$headTop.getElementsByClassName("Column_" + this.sortKey);
+          var col = this.viewRef.$headTop.getElementsByClassName('Column_' + this.sortKey);
           col = (col && col.length) ? col[0] : null;
           if ( col ) {
             //col.className += 'Sorted';
@@ -739,7 +739,7 @@
 
   FileView.prototype.setSort = function(col) {
     if ( this.wasUpdated ) {
-      if ( this.sortKey == col && this.sortDir === false ) {
+      if ( this.sortKey === col && this.sortDir === false ) {
         this.sortKey = null;
         this.sortDir = true;
       } else {

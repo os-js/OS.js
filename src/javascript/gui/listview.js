@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _DataView) {
-  "use strict";
+  'use strict';
 
   /**
    * List View Class
@@ -106,7 +106,7 @@
     function onResizeStart(ev, col) {
       startX = ev.clientX;
       startW = col.offsetWidth;
-      column = col.parentNode.getAttribute("data-index");
+      column = col.parentNode.getAttribute('data-index');
 
       document.addEventListener('mouseup',    onResizeEnd,  false);
       document.addEventListener('mousemove',  onResizeMove, false);
@@ -159,7 +159,7 @@
       return false;
     });
 
-    this._addEventListener(el, "scroll", function(ev) {
+    this._addEventListener(el, 'scroll', function(ev) {
       self.fixScrollbar();
     });
 
@@ -189,7 +189,7 @@
 
       col           = document.createElement('td');
       col.className = 'Column_' + colref.key;
-      col.setAttribute("data-index", i);
+      col.setAttribute('data-index', i);
 
       label           = document.createElement('div');
       label.className = 'Label';
@@ -330,7 +330,7 @@
 
   ListView.prototype.fixScrollbar = function() {
     if ( !this.$element ) { return; }
-    this.$tableTop.style.top = this.$element.scrollTop + "px";
+    this.$tableTop.style.top = this.$element.scrollTop + 'px';
   };
 
   ListView.prototype.addColumn = function(c) {

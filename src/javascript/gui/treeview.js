@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _DataView) {
-  "use strict";
+  'use strict';
 
   /**
    * Tree View
@@ -249,7 +249,7 @@
 
       for ( var i in list ) {
         if ( list.hasOwnProperty(i) ) {
-          if ( list[i][key] == val ) {
+          if ( list[i][key] === val ) {
             return list[i];
           }
 

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _Input, Checkbox) {
-  "use strict";
+  'use strict';
 
   /**
    * Radio

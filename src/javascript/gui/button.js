@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(_Input) {
-  "use strict";
+  'use strict';
 
   /**
    * Button

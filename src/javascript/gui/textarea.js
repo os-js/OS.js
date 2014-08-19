@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(GUIElement, _Input) {
-  "use strict";
+  'use strict';
 
   /**
    * Textarea
@@ -52,7 +52,7 @@
 
     this._addEvent(this.$input, 'onkeypress', function(ev) {
       var cur = this.value.length;
-      self.hasChanged = (cur != self.strLen);
+      self.hasChanged = (cur !== self.strLen);
     });
 
     return el;

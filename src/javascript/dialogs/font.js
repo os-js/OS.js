@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(StandardDialog) {
-  "use strict";
+  'use strict';
 
   /**
    * Font Dialog
@@ -49,7 +49,7 @@
     this.$selectFonts = null;
     this.$selectSize  = null;
 
-    StandardDialog.apply(this, ['FontDialog', {title: OSjs._("Font Dialog")}, {width:450, height:250}, onClose]);
+    StandardDialog.apply(this, ['FontDialog', {title: OSjs._('Font Dialog')}, {width:450, height:250}, onClose]);
   };
 
   FontDialog.prototype = Object.create(StandardDialog.prototype);
@@ -65,13 +65,13 @@
     }
 
     var styles = [];
-    if ( this.sizeType == 'internal' ) {
+    if ( this.sizeType === 'internal' ) {
       styles = [
         'font-family: ' + this.fontName,
         'background: '  + this.background,
         'color: '       + this.color
       ];
-      rt.setContent('<font size="' + this.fontSize + '" style="' + styles.join(";") + '">' + this.text + '</font>');
+      rt.setContent('<font size="' + this.fontSize + '" style="' + styles.join(';') + '">' + this.text + '</font>');
     } else {
       styles = [
         'font-family: ' + this.fontName,
@@ -79,7 +79,7 @@
         'background: '  + this.background,
         'color: '       + this.color
       ];
-      rt.setContent('<div style="' + styles.join(";") + '">' + this.text + '</div>');
+      rt.setContent('<div style="' + styles.join(';') + '">' + this.text + '</div>');
     }
   };
 
@@ -92,14 +92,14 @@
 
     this.$selectFont = document.createElement('select');
     this.$selectFont.className = 'SelectFont';
-    this.$selectFont.setAttribute("size", "7");
+    this.$selectFont.setAttribute('size', '7');
 
     for ( var f = 0; f < this.fonts.length; f++ ) {
       option            = document.createElement('option');
       option.value      = f;
       option.appendChild(document.createTextNode(this.fonts[f]));
       this.$selectFont.appendChild(option);
-      if ( this.fontName.toLowerCase() == this.fonts[f].toLowerCase() ) {
+      if ( this.fontName.toLowerCase() === this.fonts[f].toLowerCase() ) {
         this.$selectFont.selectedIndex = f;
       }
     }
@@ -116,7 +116,7 @@
     if ( this.maxSize > 0 ) {
       this.$selectSize = document.createElement('select');
       this.$selectSize.className = 'SelectSize';
-      this.$selectSize.setAttribute("size", "7");
+      this.$selectSize.setAttribute('size', '7');
 
       var i = 0;
       for ( var s = this.minSize; s <= this.maxSize; s++ ) {
@@ -124,7 +124,7 @@
         option.value      = s;
         option.innerHTML  = s;
         this.$selectSize.appendChild(option);
-        if ( this.fontSize == s ) {
+        if ( this.fontSize === s ) {
           this.$selectSize.selectedIndex = i;
         }
         i++;
