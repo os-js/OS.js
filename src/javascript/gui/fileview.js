@@ -120,10 +120,10 @@
 
   FileTreeView.prototype._createList = function(list, skipDot) {
     var fileList = [];
-    var _createIcon = function(iter) {
+    function _createIcon(iter) {
       var defIcon = 'status/gtk-dialog-question.png';
       return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '16x16');
-    };
+    }
 
     var iter;
     for ( var i = 0; i < list.length; i++ ) {
@@ -266,10 +266,10 @@
     if ( this.destroyed ) { return; }
 
     var fileList = [];
-    var _createIcon = function(iter) {
+    function _createIcon(iter) {
       var defIcon = 'status/gtk-dialog-question.png';
       return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '32x32');
-    };
+    }
 
     var iter;
     for ( var i = 0; i < list.length; i++ ) {
@@ -375,18 +375,18 @@
     if ( this.destroyed ) { return; }
     var self = this;
 
-    var _callbackIcon = function(iter) {
+    function _callbackIcon(iter) {
       var icon = 'status/gtk-dialog-question.png';
       return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, icon);
-    };
+    }
 
-    var _callbackSize = function(iter) {
+    function _callbackSize(iter) {
       if ( iter.size === '' ) { return ''; }
       if ( self.humanSize ) {
         return OSjs.Utils.humanFileSize(iter.size);
       }
       return iter.size;
-    };
+    }
 
     this.setColumns([
       {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: "16"}, resizable: false},

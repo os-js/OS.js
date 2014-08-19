@@ -54,7 +54,7 @@ See doc/example-handler.txt
 
     var self      = this;
 
-    var _onLoaded = function() {
+    function _onLoaded() {
       var container = document.getElementById('Login');
       var login     = document.getElementById('LoginForm');
       var u         = document.getElementById('LoginUsername');
@@ -65,19 +65,19 @@ See doc/example-handler.txt
         throw "Could not find Login Form Container";
       }
 
-      var _restore = function() {
+      function _restore() {
         s.removeAttribute("disabled");
         u.removeAttribute("disabled");
         p.removeAttribute("disabled");
-      };
+      }
 
-      var _lock = function() {
+      function _lock() {
         s.setAttribute("disabled", "disabled");
         u.setAttribute("disabled", "disabled");
         p.setAttribute("disabled", "disabled");
-      };
+      }
 
-      var _login = function(username, password) {
+      function _login(username, password) {
         self.login(username, password, function(result, error) {
           if ( error ) {
             alert(error);
@@ -98,7 +98,7 @@ See doc/example-handler.txt
           container.parentNode.removeChild(container);
           callback();
         });
-      };
+      }
 
       login.onsubmit = function(ev) {
         _lock();
@@ -107,7 +107,7 @@ See doc/example-handler.txt
       };
 
       container.style.display = 'block';
-    };
+    }
 
     var uri = '/example.html';
     OSjs.Utils.Ajax(uri, function(response, httpRequest, url) {
@@ -145,7 +145,7 @@ See doc/example-handler.txt
     console.debug('OSjs::Handlers::ExampleHandler::logout()', session);
     var self = this;
 
-    var _finished = function() {
+    function _finished() {
       var opts = {};
       self.callAPI('logout', opts, function(response) {
         if ( response.result ) {
@@ -156,7 +156,7 @@ See doc/example-handler.txt
       }, function(error) {
         callback(false, "Logout error: " + error);
       });
-    };
+    }
 
     if ( session !== null ) {
       self.setUserSession(session, function() {

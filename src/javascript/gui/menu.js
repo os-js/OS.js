@@ -49,14 +49,14 @@
   var Menu = function(menuList) {
     var self = this;
 
-    var _onclick = function(ev, func) {
+    function _onclick(ev, func) {
       func = func || function() { console.warn("Warning -- you forgot to implement a handler"); };
       if ( !func(ev) ) {
         OSjs.GUI.blurMenu();
       }
-    };
+    }
 
-    var _createMenu = function(list) {
+    function _createMenu(list) {
       var el          = document.createElement('div');
       el.className    = 'Menu';
       el.oncontextmenu= function(ev) {
@@ -141,7 +141,7 @@
       }
 
       return el;
-    };
+    }
 
     this.$element = _createMenu(menuList);
   };

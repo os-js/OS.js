@@ -29,18 +29,18 @@
  */
 
 (function(Utils) {
-  "use strict";
+  'use strict';
 
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
 
   function fixJSON(response) {
-    if ( typeof response === "string" ) {
+    if ( typeof response === 'string' ) {
       if ( response.match(/^\{|\[/) ) {
         try {
           response = JSON.parse(response);
         } catch ( e  ){
-          console.warn("FAILED TO FORCE JSON MIME TYPE", e);
+          console.warn('FAILED TO FORCE JSON MIME TYPE', e);
         }
       }
     }
@@ -60,7 +60,7 @@
     var self = this;
     callback = callback || {};
 
-    console.info("ThemeManager::load()");
+    console.info('ThemeManager::load()');
 
     Utils.Ajax(this.uri, function(response, httpRequest, url) {
       response = fixJSON(response);
@@ -69,10 +69,10 @@
         self.themes = response;
         callback(true);
       } else {
-        callback(false, "No themes found!");
+        callback(false, 'No themes found!');
       }
     }, function(error, response, httpRequest) {
-      if ( httpRequest && httpRequest.status != 200 ) {
+      if ( httpRequest && httpRequest.status !== 200 ) {
         error = 'Failed to theme manifest from ' + self.uri + ' - HTTP Error: ' + httpRequest.status;
       }
       callback(false, error);
@@ -99,7 +99,7 @@
     var self = this;
     callback = callback || {};
 
-    console.info("PackageManager::load()");
+    console.info('PackageManager::load()');
 
     Utils.Ajax(this.uri, function(response, httpRequest, url) {
       response = fixJSON(response);
@@ -108,10 +108,10 @@
         self._setPackages(response);
         callback(true);
       } else {
-        callback(false, "No packages found!");
+        callback(false, 'No packages found!');
       }
     }, function(error, response, httpRequest) {
-      if ( httpRequest && httpRequest.status != 200 ) {
+      if ( httpRequest && httpRequest.status !== 200 ) {
         error = 'Failed to load package manifest from ' + self.uri + ' - HTTP Error: ' + httpRequest.status;
       }
       callback(false, error);
@@ -122,7 +122,7 @@
    * Set package list (does some corrections for locale)
    */
   PackageManager.prototype._setPackages = function(result) {
-    console.debug("PackageManager::_setPackages()", result);
+    console.debug('PackageManager::_setPackages()', result);
     var currLocale = OSjs.Locale.getLocale();
     var resulted = {};
     var newIter;
@@ -172,7 +172,7 @@
    * Get packages by Mime support type
    */
   PackageManager.prototype.getPackagesByMime = function(mime) {
-    var j, i, a;
+    var i, a;
     var list = [];
     for ( i in this.packages ) {
       if ( this.packages.hasOwnProperty(i) ) {
@@ -216,10 +216,10 @@
     };
 
     if ( typeof navigator.onLine !== 'undefined' ) {
-      window.addEventListener("offline", function(ev) {
+      window.addEventListener('offline', function(ev) {
         self.onOffline();
       });
-      window.addEventListener("online", function(ev) {
+      window.addEventListener('online', function(ev) {
         self.onOnline();
       });
     }
@@ -230,7 +230,7 @@
    */
   DefaultHandler.prototype._call = function(opts, cok, cerror) {
     if ( this.offline ) {
-      cerror("You are currently off-line and cannot perform this operation!");
+      cerror('You are currently off-line and cannot perform this operation!');
       return false;
     }
 
@@ -249,9 +249,9 @@
   DefaultHandler.prototype.callAPI = function(method, args, cok, cerror) {
     args = args || {};
 
-    console.group("DefaultHandler::callAPI()");
-    console.log("Method", method);
-    console.log("Arguments", args);
+    console.group('DefaultHandler::callAPI()');
+    console.log('Method', method);
+    console.log('Arguments', args);
     console.groupEnd();
 
     var opts = {
@@ -273,12 +273,12 @@
    * Event when browser goes on-line (again)
    */
   DefaultHandler.prototype.onOnline = function() {
-    console.warn("DefaultHandler::onOnline()", "Going online...");
+    console.warn('DefaultHandler::onOnline()', 'Going online...');
     this.offline = false;
 
     var wm = OSjs.API.getWMInstance();
     if ( wm ) {
-      wm.notification({title: "Warning!", message: "You are On-line!"});
+      wm.notification({title: 'Warning!', message: 'You are On-line!'});
     }
   };
 
@@ -286,12 +286,12 @@
    * Event when browser gies off-line
    */
   DefaultHandler.prototype.onOffline = function() {
-    console.warn("DefaultHandler::onOffline()", "Going offline...");
+    console.warn('DefaultHandler::onOffline()', 'Going offline...');
     this.offline = true;
 
     var wm = OSjs.API.getWMInstance();
     if ( wm ) {
-      wm.notification({title: "Warning!", message: "You are Off-line!"});
+      wm.notification({title: 'Warning!', message: 'You are Off-line!'});
     }
   };
 
@@ -299,7 +299,7 @@
    * Event when OS.js has successfully initialized
    */
   DefaultHandler.prototype.onInitialized = function() {
-    console.debug("OSjs::DefaultHandler::onInitialized()");
+    console.debug('OSjs::DefaultHandler::onInitialized()');
   };
 
   //
@@ -312,7 +312,7 @@
    * @see OSjs._initialize
    */
   DefaultHandler.prototype.init = function(callback) {
-    console.info("OSjs::DefaultHandler::init()");
+    console.info('OSjs::DefaultHandler::init()');
 
     OSjs.Locale.setLocale(this.config.Core.Locale);
 
@@ -325,10 +325,10 @@
   DefaultHandler.prototype.destroy = function() {
     var self = this;
     if ( typeof navigator.onLine !== 'undefined' ) {
-      window.removeEventListener("offline", function(ev) {
+      window.removeEventListener('offline', function(ev) {
         self.onOffline();
       });
-      window.removeEventListener("online", function(ev) {
+      window.removeEventListener('online', function(ev) {
         self.onOnline();
       });
     }
@@ -339,7 +339,7 @@
    * @see Core::Main::init()
    */
   DefaultHandler.prototype.boot = function(callback) {
-    console.info("OSjs::DefaultHandler::boot()");
+    console.info('OSjs::DefaultHandler::boot()');
 
     var self = this;
     this.themes.load(function(tresult, terror) {
@@ -360,7 +360,7 @@
    *       To implement your own login handler, see the Wiki :)
    */
   DefaultHandler.prototype.login = function(username, password, callback) {
-    console.info("OSjs::DefaultHandler::login()", username);
+    console.info('OSjs::DefaultHandler::login()', username);
     callback(true);
   };
 
@@ -370,7 +370,7 @@
    *       To implement your own login handler, see the Wiki :)
    */
   DefaultHandler.prototype.logout = function(session, callback) {
-    console.info("OSjs::DefaultHandler::logout()");
+    console.info('OSjs::DefaultHandler::logout()');
 
     if ( session !== null ) {
       this.setUserSession(session, function() {
@@ -385,7 +385,7 @@
    * Default method to restore last running session
    */
   DefaultHandler.prototype.loadSession = function(callback) {
-    console.info("OSjs::DefaultHandler::loadSession()");
+    console.info('OSjs::DefaultHandler::loadSession()');
 
     callback = callback || function() {};
 
@@ -406,7 +406,7 @@
               w._move(r.position.x, r.position.y, true);
               w._resize(r.dimension.w, r.dimension.h, true);
 
-              console.info('DefaultHandler::loadSession()->onSuccess()', 'Restored window "' + r.name + '" from session');
+              console.info('DefaultHandler::loadSession()->onSuccess()', 'Restored window \'' + r.name + '\' from session');
             }
           }
         }, null, callback);
@@ -438,7 +438,7 @@
   DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
     var pacman = this.packages;
     this.getSetting('defaultApplication', mime, function(val) {
-      console.debug("OSjs::DefaultHandler::getApplicationNameByMime()", "default application", val);
+      console.debug('OSjs::DefaultHandler::getApplicationNameByMime()', 'default application', val);
       if ( !forceList && val ) {
         if ( pacman.getPackage(val) ) {
           callback([val]);
@@ -468,7 +468,7 @@
    */
   DefaultHandler.prototype.setDefaultApplication = function(mime, app, callback) {
     callback = callback || function() {};
-    console.debug("OSjs::DefaultHandler::setDefaultApplication()", mime, app);
+    console.debug('OSjs::DefaultHandler::setDefaultApplication()', mime, app);
     this.setSetting('defaultApplication', mime, app, callback);
   };
 
@@ -615,18 +615,18 @@
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
       var root = OSjs.Settings.DefaultConfig().Core.ThemeURI;
       if ( !name.match(/^\//) ) {
-        if ( type == 'icon' ) {
+        if ( type === 'icon' ) {
           var size = args || '16x16';
           name = root + '/' + theme + '/icons/' + size + '/' + name;
-        } else if ( type == 'sound' ) {
+        } else if ( type === 'sound' ) {
           var ext = 'oga';
           if ( !OSjs.Compability.audioTypes.ogg ) {
             ext = 'mp3';
           }
           name = root + '/' + theme + '/sounds/' + name + '.' + ext;
-        } else if ( type == 'wm' ) {
+        } else if ( type === 'wm' ) {
           name = root + '/' + theme + '/wm/' + name;
-        } else if ( type == 'base' ) {
+        } else if ( type === 'base' ) {
           name = root + '/' + theme + '/' + name;
         }
       }

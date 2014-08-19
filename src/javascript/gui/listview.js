@@ -90,29 +90,29 @@
     var column = null;
     var self = this;
 
-    var onResizeMove = function(ev) {
+    function onResizeMove(ev) {
       var newW = startW + (ev.clientX - startX);
       if ( column >= 0 && newW >= 16 ) {
         self.$headTop.rows[0].childNodes[column].width = newW;
         self.$body.rows[0].childNodes[column].width = newW;
       }
-    };
+    }
 
-    var onResizeEnd = function(ev) {
+    function onResizeEnd(ev) {
       document.removeEventListener('mouseup',   onResizeEnd,  false);
       document.removeEventListener('mousemove', onResizeMove, false);
-    };
+    }
 
-    var onResizeStart = function(ev, col) {
+    function onResizeStart(ev, col) {
       startX = ev.clientX;
       startW = col.offsetWidth;
       column = col.parentNode.getAttribute("data-index");
 
       document.addEventListener('mouseup',    onResizeEnd,  false);
       document.addEventListener('mousemove',  onResizeMove, false);
-    };
+    }
 
-    var onHeaderAction = function(ev, type) {
+    function onHeaderAction(ev, type) {
       ev.preventDefault();
       var t = ev.target;
       if ( t.tagName === 'DIV' ) {
@@ -125,7 +125,7 @@
         return false;
       }
       return true;
-    };
+    }
 
     var table = document.createElement('table');
     table.className = 'Body';

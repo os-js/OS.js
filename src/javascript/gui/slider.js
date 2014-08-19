@@ -85,7 +85,7 @@
     var snapping  = 0;
     var self      = this;
 
-    var _onMouseMove = function(ev) {
+    function _onMouseMove(ev) {
       if ( !scrolling ) { return; }
 
       var newX, newY;
@@ -108,18 +108,18 @@
       }
 
       self.onSliderUpdate(newX, newY, maxX, maxY, 'mousemove');
-    };
+    }
 
-    var _onMouseUp = function(ev) {
+    function _onMouseUp(ev) {
       scrolling = false;
       document.removeEventListener('mousemove', _onMouseMove, false);
       document.removeEventListener('mouseup', _onMouseUp, false);
 
       var p = (self.max / 100) * self.val; //self.val) * 100;
       self.onChange.call(self, self.val, p, 'mouseup');
-    };
+    }
 
-    var _onMouseDown = function(ev) {
+    function _onMouseDown(ev) {
       ev.preventDefault();
 
       scrolling = true;
@@ -137,7 +137,7 @@
 
       document.addEventListener('mousemove', _onMouseMove, false);
       document.addEventListener('mouseup', _onMouseUp, false);
-    };
+    }
 
     this._addEventListener(this.$button, 'mousedown', function(ev) {
       return _onMouseDown(ev);

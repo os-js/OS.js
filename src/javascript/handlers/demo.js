@@ -86,12 +86,12 @@
     console.info("OSjs::DemoHandler::init()");
 
     var self = this;
-    var _finished = function(locale) {
+    function _finished(locale) {
       OSjs.Locale.setLocale(locale || self.config.Core.Locale);
       if ( callback ) {
         callback();
       }
-    };
+    }
 
     // Use the 'demo' user
     this.login('demo', 'demo', function(userData) {

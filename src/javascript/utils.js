@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
-  "use strict";
+  'use strict';
 
   window.OSjs = window.OSjs || {};
   OSjs.Utils  = OSjs.Utils  || {};
@@ -54,11 +54,11 @@
 
   OSjs.Utils.mouseButton = function(ev) {
     // TODO: Middle button
-    if ( typeof ev.button !== "undefined" ) {
-      return ev.button <= 0 ? "left" : "right";
+    if ( typeof ev.button !== 'undefined' ) {
+      return ev.button <= 0 ? 'left' : 'right';
     }
 
-    return ev.which <= 1 ? "left" : "right";
+    return ev.which <= 1 ? 'left' : 'right';
   };
 
   // Kudos: http://stackoverflow.com/a/4673436
@@ -66,9 +66,9 @@
     var args = Array.prototype.slice.call(arguments, 1);
     var sprintfRegex = /\{(\d+)\}/g;
 
-    var sprintf = function (match, number) {
+    function sprintf(match, number) {
       return number in args ? args[number] : match;
-    };
+    }
 
     return format.replace(sprintfRegex, sprintf);
   };
@@ -77,7 +77,7 @@
     for ( var p in obj2 ) {
       if ( obj2.hasOwnProperty(p) ) {
         try {
-          if ( obj2[p].constructor == Object ) {
+          if ( obj2[p].constructor === Object ) {
             obj1[p] = OSjs.Utils.mergeObject(obj1[p], obj2[p]);
           } else {
             obj1[p] = obj2[p];
@@ -190,7 +190,7 @@
     };
 
     if ( canvas_supported ) {
-      var test = ["2d", "webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];
+      var test = ['2d', 'webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
       for ( var i = 0; i < test.length; i++ ) {
         try {
           if ( !!canvas_supported.getContext(test[i]) ) {
@@ -224,7 +224,7 @@
 
   OSjs.Utils.isIE = function() {
     var myNav = navigator.userAgent.toLowerCase();
-    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1], 10) : false;
+    return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1], 10) : false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -232,18 +232,18 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Utils.filext = function(d) {
-    var ext = OSjs.Utils.filename(d).split(".").pop();
+    var ext = OSjs.Utils.filename(d).split('.').pop();
     return ext ? ext.toLowerCase() : null;
   };
 
   OSjs.Utils.dirname = function(f) {
-    var tmp = f.split("/");
+    var tmp = f.split('/');
     tmp.pop();
-    return tmp.join("/");
+    return tmp.join('/');
   };
 
   OSjs.Utils.filename = function(p) {
-    return (p||'').split("/").pop();
+    return (p||'').split('/').pop();
   };
 
   // Kudos: http://stackoverflow.com/users/65387/mark
@@ -268,7 +268,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Utils.HEXtoRGB = function(hex) {
-    var rgb = parseInt(hex.replace("#", ""), 16);
+    var rgb = parseInt(hex.replace('#', ''), 16);
     return {
       r : (rgb & (255 << 16)) >> 16,
       g : (rgb & (255 << 8)) >> 8,
@@ -285,7 +285,7 @@
     }
 
     if ( typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined' ) {
-      throw "Invalid RGB supplied to RGBtoHEX()";
+      throw 'Invalid RGB supplied to RGBtoHEX()';
     }
 
     var hex = [
@@ -297,12 +297,12 @@
     for ( var i in hex ) {
       if ( hex.hasOwnProperty(i) ) {
         if ( hex[i].length === 1 ) {
-          hex[i] = "0" + hex[i];
+          hex[i] = '0' + hex[i];
         }
       }
     }
 
-    return '#' + hex.join("").toUpperCase();
+    return '#' + hex.join('').toUpperCase();
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -324,9 +324,9 @@
   };
 
   OSjs.Utils.$getStyle = function(oElm, strCssRule) {
-    var strValue = "";
+    var strValue = '';
     if ( document.defaultView && document.defaultView.getComputedStyle ) {
-      strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+      strValue = document.defaultView.getComputedStyle(oElm, '').getPropertyValue(strCssRule);
     } else if ( oElm.currentStyle ) {
       strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1) {
         return p1.toUpperCase();
@@ -343,7 +343,7 @@
         while ( true ) {
           result.left += el.offsetLeft;
           result.top  += el.offsetTop;
-          if ( el.offsetParent ==  parentEl || el.offsetParent === null ) {
+          if ( el.offsetParent ===  parentEl || el.offsetParent === null ) {
             break;
           }
           el = el.offsetParent;
@@ -363,8 +363,8 @@
   };
 
   OSjs.Utils.$selectRange = function(field, start, end) {
-    if ( !field ) { throw "Cannot select range: missing element"; }
-    if ( typeof start === 'undefined' || typeof end === 'undefined' ) { throw "Cannot select range: mising start/end"; }
+    if ( !field ) { throw 'Cannot select range: missing element'; }
+    if ( typeof start === 'undefined' || typeof end === 'undefined' ) { throw 'Cannot select range: mising start/end'; }
 
     if ( field.createTextRange ) {
       var selRange = field.createTextRange();
@@ -376,7 +376,7 @@
     } else if ( field.setSelectionRange ) {
       field.focus();
       field.setSelectionRange(start, end);
-    } else if ( typeof field.selectionStart != 'undefined' ) {
+    } else if ( typeof field.selectionStart !== 'undefined' ) {
       field.selectionStart = start;
       field.selectionEnd = end;
       field.focus();
@@ -385,7 +385,7 @@
 
   OSjs.Utils.$addClass = function(el, name) {
     if ( el && name ) {
-      var re = new RegExp("\\s?" + name);
+      var re = new RegExp('\\s?' + name);
       if ( re.test(el.className) === false ) {
         el.className += (el.className ? ' ' : '') + name;
       }
@@ -394,7 +394,7 @@
 
   OSjs.Utils.$removeClass = function(el, name) {
     if ( el && name ) {
-      var re = new RegExp("\\s?" + name);
+      var re = new RegExp('\\s?' + name);
       if ( re.test(el.className) !== false ) {
         el.className = el.className.replace(re, '');
       }
@@ -402,26 +402,26 @@
   };
 
   OSjs.Utils.$createCSS = function(src) {
-    var res    = document.createElement("link");
-    document.getElementsByTagName("head")[0].appendChild(res);
+    var res    = document.createElement('link');
+    document.getElementsByTagName('head')[0].appendChild(res);
 
-    res.rel    = "stylesheet";
-    res.type   = "text/css";
+    res.rel    = 'stylesheet';
+    res.type   = 'text/css';
     res.href   = src;
 
     return res;
   };
 
   OSjs.Utils.$createJS = function(src, onreadystatechange, onload, onerror) {
-    var res                = document.createElement("script");
-    res.type               = "text/javascript";
-    res.charset            = "utf-8";
+    var res                = document.createElement('script');
+    res.type               = 'text/javascript';
+    res.charset            = 'utf-8';
     res.onreadystatechange = onreadystatechange || function() {};
     res.onload             = onload             || function() {};
     res.onerror            = onerror            || function() {};
     res.src                = src;
 
-    document.getElementsByTagName("head")[0].appendChild(res);
+    document.getElementsByTagName('head')[0].appendChild(res);
 
     return res;
   };
@@ -432,7 +432,7 @@
 
   OSjs.Utils.AjaxUpload = function(file, size, dest, callbacks) {
     if ( !OSjs.Utils.getCompability().upload ) {
-      throw "File upload is not supported on your platform";
+      throw 'File upload is not supported on your platform';
     }
 
     callbacks           = callbacks           || {};
@@ -443,18 +443,18 @@
 
     var xhr = new XMLHttpRequest();
     var fd  = new FormData();
-    fd.append("upload", 1);
-    fd.append("path",   dest);
-    fd.append("upload", file);
+    fd.append('upload', 1);
+    fd.append('path',   dest);
+    fd.append('upload', file);
 
-    xhr.upload.addEventListener("progress", function(evt) { callbacks.progress(evt); }, false);
-    xhr.addEventListener("load", function(evt) { callbacks.complete(evt); }, false);
-    xhr.addEventListener("error", function(evt) { callbacks.failed(evt); }, false);
-    xhr.addEventListener("abort", function(evt) { callbacks.canceled(evt); }, false);
+    xhr.upload.addEventListener('progress', function(evt) { callbacks.progress(evt); }, false);
+    xhr.addEventListener('load', function(evt) { callbacks.complete(evt); }, false);
+    xhr.addEventListener('error', function(evt) { callbacks.failed(evt); }, false);
+    xhr.addEventListener('abort', function(evt) { callbacks.canceled(evt); }, false);
     xhr.onreadystatechange = function(evt) {
       if ( xhr.readyState === 4 ) {
         if ( xhr.status !== 200 ) {
-          var err = "Unknown error";
+          var err = 'Unknown error';
           try {
             var tmp = JSON.parse(xhr.responseText);
             if ( tmp.error ) {
@@ -472,14 +472,14 @@
       }
     };
 
-    xhr.open("POST", OSjs.API.getResourceURL());
+    xhr.open('POST', OSjs.API.getResourceURL());
     xhr.send(fd);
 
     return xhr;
   };
 
   OSjs.Utils.Ajax = function(url, onSuccess, onError, opts) {
-    if ( !url ) { throw "No URL given"; }
+    if ( !url ) { throw 'No URL given'; }
 
     onSuccess = onSuccess || function() {};
     onError = onError || function() {};
@@ -494,11 +494,11 @@
       httpRequest = new XMLHttpRequest();
     } else if (window.ActiveXObject) { // IE
       try {
-        httpRequest = new ActiveXObject("Msxml2.XMLHTTP");
+        httpRequest = new ActiveXObject('Msxml2.XMLHTTP');
       }
       catch (e) {
         try {
-          httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+          httpRequest = new ActiveXObject('Microsoft.XMLHTTP');
         }
         catch (ex) {}
       }
@@ -512,7 +512,7 @@
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
         var response = httpRequest.responseText;
-        var error = "";
+        var error = '';
         var ctype = this.getResponseHeader('content-type');
 
         if ( ctype === 'application/json' ) {
@@ -521,7 +521,7 @@
               response = JSON.parse(httpRequest.responseText);
             } catch ( e ) {
               response = null;
-              error = "An error occured while parsing: " + e;
+              error = 'An error occured while parsing: ' + e;
             }
           }
         }
@@ -530,7 +530,7 @@
           onSuccess(response, httpRequest, url);
         } else {
           if ( !error && (ctype !== 'application/json') ) {
-            error = "Backend error: " + (httpRequest.responseText || "Fatal Error");
+            error = 'Backend error: ' + (httpRequest.responseText || 'Fatal Error');
           }
           onError(error, response, httpRequest, url);
         }
@@ -585,7 +585,7 @@
 
     var _finished = function(result) {
       _LOADED[src] = result;
-      console.info("Preloader->createStyle()", result ? 'success' : 'error', src);
+      console.info('Preloader->createStyle()', result ? 'success' : 'error', src);
       callback(result, src);
     };
 
@@ -593,8 +593,7 @@
       document.createStyleSheet(src);
       _finished(true);
     } else {
-      var res = OSjs.Utils.$createCSS(src);
-
+      OSjs.Utils.$createCSS(src);
       if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
         _finished(true);
       } else if ( !checkLoadedStyle(src) ) {
@@ -609,7 +608,7 @@
         };
 
         ival = setInterval(function() {
-          console.debug("Preloader->createStyle()", 'check', src);
+          console.debug('Preloader->createStyle()', 'check', src);
           if ( checkLoadedStyle(src) ) {
             _clear(true);
             return;
@@ -626,13 +625,13 @@
   var createScript = function(src, callback) {
     var _finished = function(result) {
       _LOADED[src] = result;
-      console.info("Preloader->createScript()", result ? 'success' : 'error', src);
+      console.info('Preloader->createScript()', result ? 'success' : 'error', src);
       callback(result, src);
     };
 
     var loaded  = false;
     OSjs.Utils.$createJS(src, function() {
-      if ( (this.readyState == 'complete' || this.readyState == 'loaded') && !loaded) {
+      if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
         loaded = true;
         _finished(true);
       }
@@ -663,11 +662,11 @@
     var progress    = 0;
     var failed      = [];
 
-    var _finished = function() {
+    function _finished() {
       callback(count, failed.length, failed);
-    };
+    }
 
-    var _loaded = function(success, src) {
+    function _loaded(success, src) {
       progress++;
 
       callbackProgress(progress, count);
@@ -684,9 +683,9 @@
       } else {
         _finished();
       }
-    };
+    }
 
-    var _next = function() {
+    function _next() {
       if ( newList.length ) {
         //var item = newList.pop();
         var item = newList.shift();
@@ -701,10 +700,10 @@
           createScript(item.src, _loaded);
         }
       }
-    };
+    }
 
     if ( newList.length ) {
-      console.log("Preloader", count, "file(s)", newList);
+      console.log('Preloader', count, 'file(s)', newList);
       _next();
     } else {
       _finished();

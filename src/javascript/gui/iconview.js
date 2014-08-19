@@ -83,9 +83,9 @@
   };
 
   IconView.prototype._render = function() {
-    var _createImage = function(i) {
+    function _createImage(i) {
       return OSjs.API.getThemeResource(i, 'icon');
-    };
+    }
 
     var i, l, iter, li, imgContainer, img, lblContainer, lbl;
     var k, j;

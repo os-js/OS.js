@@ -47,9 +47,22 @@
   ErrorDialog.prototype.init = function(wmRef) {
     var bugData = this.data;
     var self = this;
-    this._title = this.data.title;
 
+    var ok;
     var label;
+
+    function _onBugError(error) {
+      self._error(self._title, "Bugreport error", error, null, false);
+    }
+
+    function _onBugSuccess() {
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        wm.addWindow(new OSjs.Dialogs.Alert("The error was reported and will be looked into"));
+      }
+
+      ok.onClick();
+    }
 
     var root        = DialogWindow.prototype.init.apply(this, arguments);
     root.className += ' ErrorDialog';
@@ -94,23 +107,11 @@
       traced.setValue(error);
     }
 
-    var ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs._('Close'), onClick: function() {
+    ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs._('Close'), onClick: function() {
       self._close();
     }}), root);
 
     if ( this.data.bugreport ) {
-      var _onBugError = function(error) {
-        self._error(self._title, "Bugreport error", error, null, false);
-      };
-      var _onBugSuccess = function() {
-        var wm = OSjs.API.getWMInstance();
-        if ( wm ) {
-          wm.addWindow(new OSjs.Dialogs.Alert("The error was reported and will be looked into"));
-        }
-
-        ok.onClick();
-      };
-
       var sendBug = this._addGUIElement(new OSjs.GUI.Button('Bug', {label: OSjs._('Bugreport'), onClick: function() {
         OSjs.API.call('bugreport', {data: bugData}, function(res) {
           if ( res ) {
@@ -128,6 +129,8 @@
         });
       }}), root);
     }
+
+    this._title = this.data.title;
   };
 
   ErrorDialog.prototype.setError = function(title, message, error, exception, bugreport) {

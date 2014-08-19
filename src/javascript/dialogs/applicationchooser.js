@@ -72,9 +72,9 @@
     var list = [];
     var refs = OSjs.API.getHandlerInstance().getApplicationsMetadata();
 
-    var _createIcon = function(icon, appname) {
+    function _createIcon(icon, appname) {
       return OSjs.API.getIcon(icon, appname);
-    };
+    }
 
     var image, icon, name, iter;
     for ( var i = 0, l = this.list.length; i < l; i++ ) {

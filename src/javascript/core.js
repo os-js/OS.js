@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
-  "use strict";
+  'use strict';
 
   window.console    = window.console    || {};
   console.log       = console.log       || function() {};
@@ -176,8 +176,8 @@
     var _cidx = 1;
 
     return function(m, a, cok, cerror) {
-      var lname = "APICall_" + _cidx;
-      createLoading(lname, {className: "BusyNotification", tooltip: "API Call"});
+      var lname = 'APICall_' + _cidx;
+      createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
 
       _cidx++;
 
@@ -203,7 +203,7 @@
    */
   function ErrorDialog(title, message, error, exception, bugreport) {
     if ( _HANDLER.getConfig('Core').BugReporting ) {
-      bugreport = typeof bugreport == 'undefined' ? false : (bugreport ? true : false);
+      bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {
       bugreport = false;
     }
@@ -218,7 +218,7 @@
 
         return w;
       } catch ( e ) {
-        console.warn("An error occured while creating Dialogs.ErrorMessage", e);
+        console.warn('An error occured while creating Dialogs.ErrorMessage', e);
         console.warn('stack', e.stack);
       }
     }
@@ -238,9 +238,8 @@
    */
   function LaunchFile(fname, mime, launchArgs) {
     launchArgs = launchArgs || {};
-    if ( !fname ) { throw "Cannot LaunchFile() without a filename"; }
-    if ( !mime )  { throw "Cannot LaunchFile() without a mime type"; }
-
+    if ( !fname ) { throw 'Cannot LaunchFile() without a filename'; }
+    if ( !mime )  { throw 'Cannot LaunchFile() without a mime type'; }
 
     var args = {file: fname, mime: mime};
 
@@ -252,42 +251,43 @@
       }
     }
 
-    console.group("LaunchFile()");
-    console.log("Filename", fname);
-    console.log("MIME", mime);
+    console.group('LaunchFile()');
+    console.log('Filename', fname);
+    console.log('MIME', mime);
 
-    var _onDone = function(app) {
-      console.info("Found", app.length, "applications supporting this mime");
+    function _launch(name) {
+      if ( name ) {
+        LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
+      }
+    }
+
+    function _onDone(app) {
+      console.info('Found', app.length, 'applications supporting this mime');
       console.groupEnd();
       if ( app.length ) {
-        var _launch = function(name) {
-          if ( name ) {
-            LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
-          }
-        };
 
         if ( app.length === 1 ) {
           _launch(app[0]);
         } else {
           if ( _WM ) {
             _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname, setDefault) {
-              if ( btn != 'ok' ) { return; }
+              if ( btn !== 'ok' ) { return; }
               _launch(appname);
 
               _HANDLER.setDefaultApplication(mime, setDefault ? appname : null);
             }));
           } else {
-            OSjs.API.error(OSjs._("ERR_FILE_OPEN"),
-                           OSjs._("ERR_FILE_OPEN_FMT", fname),
-                           OSjs._("No window manager is running") );
+            OSjs.API.error(OSjs._('ERR_FILE_OPEN'),
+                           OSjs._('ERR_FILE_OPEN_FMT', fname),
+                           OSjs._('No window manager is running') );
           }
         }
       } else {
-        OSjs.API.error(OSjs._("ERR_FILE_OPEN"),
-                       OSjs._("ERR_FILE_OPEN_FMT", fname),
-                       OSjs._("ERR_APP_MIME_NOT_FOUND_FMT", mime) );
+        OSjs.API.error(OSjs._('ERR_FILE_OPEN'),
+                       OSjs._('ERR_FILE_OPEN_FMT', fname),
+                       OSjs._('ERR_APP_MIME_NOT_FOUND_FMT', mime) );
       }
-    };
+    }
 
     _HANDLER.getApplicationNameByMime(mime, fname, launchArgs.forceList, _onDone);
   }
@@ -308,25 +308,24 @@
     onError       = onError       || function() {};
     onConstructed = onConstructed || function() {};
 
-    if ( !n ) { throw "Cannot LaunchProcess() witout a application name"; }
+    if ( !n ) { throw 'Cannot LaunchProcess() witout a application name'; }
 
-    console.group("LaunchProcess()", n, arg);
+    console.group('LaunchProcess()', n, arg);
 
-    var self = this;
     var splash = null;
     var splashBar = null;
 
-    var _updateSplash = function(p, c) {
+    function _updateSplash(p, c) {
       if ( !splash || !splashBar ) { return; }
       var per = c ? 0 : 100;
       if ( c ) {
         per = (p / c) * 100;
       }
       splashBar.setProgress(per);
-    };
+    }
 
-    var _createSplash = function(data) {
-      createLoading(n, {className: "StartupNotification", tooltip: "Starting " + n});
+    function _createSplash(data) {
+      createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
       if ( !data.splash ) { return; }
 
@@ -352,9 +351,9 @@
       splash.appendChild(splashBar.getRoot());
 
       document.body.appendChild(splash);
-    };
+    }
 
-    var _removeSplash = function() {
+    function _removeSplash() {
       if ( splashBar ) {
         splashBar.destroy();
         splashBar = null;
@@ -366,9 +365,9 @@
         }
         splash = null;
       }
-    };
+    }
 
-    var _error = function(msg, exception) {
+    function _error(msg, exception) {
       _removeSplash();
       console.groupEnd(); // !!!
       ErrorDialog(OSjs._('ERR_APP_LAUNCH_FAILED'),
@@ -376,21 +375,21 @@
                   msg, exception, true);
 
       onError(msg, n, arg);
-    };
+    }
 
-    var _callback = function(result) {
+    function _callback(result) {
       _removeSplash();
 
-      if ( typeof OSjs.Applications[n] != 'undefined' ) {
+      if ( typeof OSjs.Applications[n] !== 'undefined' ) {
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
           var sproc = _CORE.getProcess(n, true);
           if ( sproc ) {
-            console.debug("LaunchProcess()", "detected that this application is a singular and already running...");
+            console.debug('LaunchProcess()', 'detected that this application is a singular and already running...');
             if ( sproc instanceof Application ) {
               sproc._onMessage(null, 'attention', arg);
             } else {
-              _error(OSjs._("ERR_APP_LAUNCH_ALREADY_RUNNING_FMT", n));
+              _error(OSjs._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
             }
             return;
           }
@@ -403,8 +402,8 @@
 
           onConstructed(a, result);
         } catch ( e ) {
-          console.warn("Error on constructing application", e, e.stack);
-          _error(OSjs._("ERR_APP_CONSTRUCT_FAILED_FMT", n, e), e);
+          console.warn('Error on constructing application', e, e.stack);
+          _error(OSjs._('ERR_APP_CONSTRUCT_FAILED_FMT', n, e), e);
           err = true;
         }
 
@@ -414,7 +413,7 @@
               a.destroy();
               a = null;
             } catch ( e ) {
-              console.warn("Something awful happened when trying to clean up failed launch Oo", e);
+              console.warn('Something awful happened when trying to clean up failed launch Oo', e);
             }
           }
         } else {
@@ -425,22 +424,21 @@
               console.groupEnd();
             });
           } catch ( e ) {
-            console.warn("Error on init() application", e, e.stack);
-            _error(OSjs._("ERR_APP_INIT_FAILED_FMT", n, e), e);
+            console.warn('Error on init() application', e, e.stack);
+            _error(OSjs._('ERR_APP_INIT_FAILED_FMT', n, e), e);
           }
         }
       } else {
-        _error(OSjs._("ERR_APP_RESOURCES_MISSING_FMT", n));
+        _error(OSjs._('ERR_APP_RESOURCES_MISSING_FMT', n));
       }
-    };
+    }
 
-
-    var _preload = function(result) {
+    function _preload(result) {
       OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
         destroyLoading(n);
 
         if ( errors ) {
-          _error(OSjs._("ERR_APP_PRELOAD_FAILED_FMT", n, failed.join(",")));
+          _error(OSjs._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
           return;
         }
 
@@ -450,11 +448,11 @@
       }, function(progress, count) {
         _updateSplash(progress, count);
       });
-    };
+    }
 
     var data = _HANDLER.getApplicationMetadata(n);
     if ( !data ) {
-      _error(OSjs._("ERR_APP_LAUNCH_MANIFEST_FAILED_FMT", n));
+      _error(OSjs._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
       return;
     }
 
@@ -471,7 +469,7 @@
         }
       }
       if ( nosupport.length ) {
-        _error(OSjs._("ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT", n, nosupport.join(", ")));
+        _error(OSjs._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
         return;
       }
     }
@@ -496,18 +494,18 @@
     onError     = onError     || function() {};
     onFinished  = onFinished  || function() {};
 
-    var _onSuccess = function(app, metadata, appName, appArgs, queueData) {
+    function _onSuccess(app, metadata, appName, appArgs, queueData) {
       onSuccess(app, metadata, appName, appArgs, queueData);
       _onNext();
-    };
+    }
 
-    var _onError = function(err, appName, appArgs) {
-      console.warn("LaunchProcessList() _onError()", err);
+    function _onError(err, appName, appArgs) {
+      console.warn('LaunchProcessList() _onError()', err);
       onError(err, appName, appArgs);
       _onNext();
-    };
+    }
 
-    var _onNext = function() {
+    function _onNext() {
       if ( list.length ) {
         var s = list.pop();
         if ( typeof s !== 'object' ) { return; }
@@ -517,7 +515,7 @@
         var adata = s.data || {};
 
         if ( !aname ) {
-          console.warn("LaunchProcessList() _onNext()", "No application name defined");
+          console.warn('LaunchProcessList() _onNext()', 'No application name defined');
           return;
         }
 
@@ -529,7 +527,7 @@
       } else {
         onFinished();
       }
-    };
+    }
 
     _onNext();
   }
@@ -543,15 +541,15 @@
    */
   function PlaySound(name, volume) {
     if ( !OSjs.Compability.audio ) {
-      console.debug("PlaySound()", "Browser has no support for sounds!");
+      console.debug('PlaySound()', 'Browser has no support for sounds!');
       return false;
     }
     if ( _HANDLER && !_HANDLER.getConfig('Core').Sounds ) {
-      console.debug("PlaySound()", "Core Config has disabled sounds!");
+      console.debug('PlaySound()', 'Core Config has disabled sounds!');
       return false;
     }
     if ( _WM && !_WM.getSetting('enableSounds') ) {
-      console.debug("PlaySound()", "Window Manager has disabled sounds!");
+      console.debug('PlaySound()', 'Window Manager has disabled sounds!');
       return false;
     }
 
@@ -560,7 +558,7 @@
     }
 
     var f = OSjs.API.getThemeResource(name, 'sound');
-    console.info("PlaySound()", name, f);
+    console.info('PlaySound()', name, f);
     var a = new Audio(f);
     a.volume = volume;
     a.play();
@@ -572,10 +570,10 @@
    */
   function UploadFiles(app, win, dest, files, onUploaded) {
     files = files || [];
-    onUploaded = onUploaded || function(dest, filename, mime, size) {};
+    onUploaded = onUploaded || function(/*dest, filename, mime, size*/) {};
 
     var _dialogClose  = function(btn, filename, mime, size) {
-      if ( btn != 'ok' && btn != 'complete' ) return;
+      if ( btn !== 'ok' && btn !== 'complete' ) { return; }
 
       OSjs.API.getCoreInstance().message('vfs', {type: 'upload', path: dest, filename: filename, source: app.__pid});
 
@@ -611,10 +609,10 @@
       this.__started  = new Date();
       this.__index    = -1;
 
-      console.group("OSjs::Core::Process::__construct()");
-      console.log("pid",    this.__pid);
-      console.log("pname",  this.__pname);
-      console.log("started",this.__started);
+      console.group('OSjs::Core::Process::__construct()');
+      console.log('pid',    this.__pid);
+      console.log('pname',  this.__pname);
+      console.log('started',this.__started);
       console.groupEnd();
 
       if ( _PID > 0 ) {
@@ -628,7 +626,7 @@
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
     this.__state = -1;
-    console.log("OSjs::Core::Process::destroy()", this.__pid, this.__pname);
+    console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
     if ( kill ) {
       if ( this.__index >= 0 ) {
         _PROCS[this.__index] = null;
@@ -641,7 +639,7 @@
    * Root Process Class
    */
   var Main = function() {
-    console.group("OSjs::Core::Main::__construct()");
+    console.group('OSjs::Core::Main::__construct()');
 
     Process.apply(this, ['Main']);
 
@@ -654,19 +652,19 @@
 
     // Events
     var self = this;
-    document.addEventListener('keydown', function(ev) {
+    document.addEventListener('keydown', function(/*ev*/) {
       self._onKeyDown.apply(self, arguments);
     }, false);
-    document.addEventListener('keyup', function(ev) {
+    document.addEventListener('keyup', function(/*ev*/) {
       self._onKeyUp.apply(self, arguments);
     }, false);
-    document.addEventListener('mousedown', function(ev) {
+    document.addEventListener('mousedown', function(/*ev*/) {
       self._onMouseDown.apply(self, arguments);
     }, false);
-    window.addEventListener('resize', function(ev) {
+    window.addEventListener('resize', function(/*ev*/) {
       self._onResize.apply(self, arguments);
     }, false);
-    window.addEventListener('scroll', function(ev) {
+    window.addEventListener('scroll', function(/*ev*/) {
       self._onScroll.apply(self, arguments);
     }, false);
 
@@ -680,7 +678,7 @@
 
     // Background element
     this._$root = document.createElement('div');
-    this._$root.id = "Background";
+    this._$root.id = 'Background';
     this._$root.addEventListener('contextmenu', function(ev) {
       ev.preventDefault();
       return false;
@@ -697,46 +695,43 @@
   Main.prototype = Object.create(Process.prototype);
 
   Main.prototype.init = function() {
-    console.log("OSjs::Core::Main::init()");
+    console.log('OSjs::Core::Main::init()');
 
     var self = this;
 
-    var _error = function(msg) {
+    function _error(msg) {
       ErrorDialog(OSjs._('ERR_CORE_INIT_FAILED'), OSjs._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
-    };
+    }
 
-    var _launchWM = function(callback) {
+    function _launchWM(callback) {
       var wm = _HANDLER.getConfig('WM');
       if ( !wm || !wm.exec ) {
-        _error(OSjs._("ERR_CORE_INIT_NO_WM"));
+        _error(OSjs._('ERR_CORE_INIT_NO_WM'));
         return;
       }
-
-      var cfg = OSjs.Settings.DefaultConfig();
-      var uri = cfg.Core.ThemeMetadataURI;
 
       var wargs = wm.args || {};
       wargs.themes = _HANDLER.getThemes();
       LaunchProcess(wm.exec, wargs, function() {
         callback();
       }, function(error) {
-        _error(OSjs._("ERR_CORE_INIT_WM_FAILED_FMT", error));
+        _error(OSjs._('ERR_CORE_INIT_WM_FAILED_FMT', error));
       });
-    };
+    }
 
-    var _preload = function(list, callback) {
+    function _preload(list, callback) {
       OSjs.Utils.Preload(list, function(total, errors) {
         if ( errors ) {
-          _error(OSjs._("ERR_CORE_INIT_PRELOAD_FAILED"));
+          _error(OSjs._('ERR_CORE_INIT_PRELOAD_FAILED'));
           return;
         }
 
         callback();
       });
-    };
+    }
 
-    var _loaded = function() {
-      _launchWM(function(app) {
+    function _loaded() {
+      _launchWM(function(/*app*/) {
         _$LOADING.style.display = 'none';
         PlaySound('service-login');
 
@@ -752,7 +747,7 @@
           _$SPLASH.style.display = 'none';
         }
       });
-    };
+    }
 
     _HANDLER.boot(function(result, error) {
       if ( error ) {
@@ -772,28 +767,29 @@
   Main.prototype.shutdown = function(save, onFinished) {
     var self = this;
     var session = null;
+
+    function getSessionSaveData(app) {
+      var args = app.__args;
+      var wins = app.__windows;
+      var data = {name: app.__name, args: args, windows: []};
+      var win;
+
+      for ( var i = 0, l = wins.length; i < l; i++ ) {
+        win = wins[i];
+        if ( !win || !win._properties.allow_session ) { continue; }
+
+        data.windows.push({
+          name      : win._name,
+          dimension : win._dimension,
+          position  : win._position,
+          state     : win._state
+        });
+      }
+
+      return data;
+    }
+
     if ( save ) {
-      var getSessionSaveData = function(app) {
-        var args = app.__args;
-        var wins = app.__windows;
-        var data = {name: app.__name, args: args, windows: []};
-        var win;
-
-        for ( var i = 0, l = wins.length; i < l; i++ ) {
-          win = wins[i];
-          if ( !win || !win._properties.allow_session ) continue;
-
-          data.windows.push({
-            name      : win._name,
-            dimension : win._dimension,
-            position  : win._position,
-            state     : win._state
-          });
-        }
-
-        return data;
-      };
-
       var data = [];
       for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
         if ( _PROCS[i] && (_PROCS[i] instanceof OSjs.Core.Application) ) {
@@ -810,25 +806,25 @@
   };
 
   Main.prototype.destroy = function() {
-    console.log("OSjs::Core::Main::destroy()");
+    console.log('OSjs::Core::Main::destroy()');
     Process.prototype.destroy.apply(this, []);
 
     OSjs.GUI.blurMenu();
 
     var self = this;
-    document.removeEventListener('keydown', function(ev) {
+    document.removeEventListener('keydown', function(/*ev*/) {
       self._onKeyDown.apply(self, arguments);
     }, false);
-    document.removeEventListener('keyup', function(ev) {
+    document.removeEventListener('keyup', function(/*ev*/) {
       self._onKeyUp.apply(self, arguments);
     }, false);
-    document.removeEventListener('mousedown', function(ev) {
+    document.removeEventListener('mousedown', function(/*ev*/) {
       self._onMouseDown.apply(self, arguments);
     }, false);
-    window.removeEventListener('resize', function(ev) {
+    window.removeEventListener('resize', function(/*ev*/) {
       self._onResize.apply(self, arguments);
     }, false);
-    window.removeEventListener('scroll', function(ev) {
+    window.removeEventListener('scroll', function(/*ev*/) {
       self._onScroll.apply(self, arguments);
     }, false);
 
@@ -840,10 +836,10 @@
     }, false);
 
     if ( this._$root ) {
-      this._$root.removeEventListener('contextmenu', function(ev) {
+      this._$root.removeEventListener('contextmenu', function(/*ev*/) {
         return false;
       }, false);
-      this._$root.removeEventListener('mousedown', function(ev) {
+      this._$root.removeEventListener('mousedown', function(/*ev*/) {
         OSjs.GUI.blurMenu();
       }, false);
     }
@@ -878,7 +874,7 @@
     if ( pid > 0 ) {
       pid--;
       if ( _PROCS[pid] ) {
-        console.warn("Killing application", pid);
+        console.warn('Killing application', pid);
         if ( _PROCS[pid].destroy(true) === false ) {
           return;
         }
@@ -942,7 +938,7 @@
 
   Main.prototype._onLeave = function(ev) {
     var from = ev.relatedTarget || ev.toElement;
-    if ( !from || from.nodeName == "HTML" ) {
+    if ( !from || from.nodeName === 'HTML' ) {
       _MOUSELOCK = false;
     } else {
       _MOUSELOCK = true;
@@ -962,10 +958,10 @@
   Main.prototype._onResize = (function() {
     var _timeout;
 
-    var _resize = function(ev) {
+    function _resize(ev) {
       if ( !_WM ) { return; }
       _WM.resize(ev, _getWindowSpace());
-    };
+    }
 
     return function(ev) {
       if ( _timeout ) {
@@ -1011,9 +1007,9 @@
    * The default implementation of this is in apps/CoreWM/main.js
    */
   var WindowManager = function(name, ref, args, metadata) {
-    console.group("OSjs::Core::WindowManager::__construct()");
-    console.log("Name", name);
-    console.log("Arguments", args);
+    console.group('OSjs::Core::WindowManager::__construct()');
+    console.log('Name', name);
+    console.log('Arguments', args);
 
     this._windows  = [];
     this._settings = {};
@@ -1038,12 +1034,11 @@
   WindowManager.prototype = Object.create(Process.prototype);
 
   WindowManager.prototype.destroy = function() {
-    console.log("OSjs::Core::WindowManager::destroy()");
+    console.log('OSjs::Core::WindowManager::destroy()');
 
     // Destroy all windows
     var i = 0;
     var l = this._windows.length;
-    var w;
     for ( i; i < l; i++ ) {
       if ( this._windows[i] !== null ) {
         this._windows[i].destroy();
@@ -1058,7 +1053,7 @@
   };
 
   WindowManager.prototype.init = function() {
-    console.log("OSjs::Core::WindowManager::init()");
+    console.log('OSjs::Core::WindowManager::init()');
   };
 
   WindowManager.prototype.onKeyDown = function(ev, win) {
@@ -1074,21 +1069,21 @@
       opts          = opts          || {};
       opts.icon     = opts.icon     || null;
       opts.title    = opts.title    || null;
-      opts.message  = opts.message  || "";
+      opts.message  = opts.message  || '';
       opts.onClick  = opts.onClick  || function() {};
 
       if ( typeof opts.timeout === 'undefined' ) {
         opts.timeout  = 5000;
       }
 
-      console.log("OSjs::Core::WindowManager::notification()", opts);
+      console.log('OSjs::Core::WindowManager::notification()', opts);
 
       var container  = document.createElement('div');
       var classNames = ['Notification'];
       var self       = this;
       var timeout    = null;
 
-      var _remove = function() {
+      function _remove() {
         if ( timeout ) {
           clearTimeout(timeout);
           timeout = null;
@@ -1102,7 +1097,7 @@
         if ( _visible <= 0 ) {
           self._$notifications.style.display = 'none';
         }
-      };
+      }
 
       if ( opts.icon ) {
         var icon = document.createElement('img');
@@ -1152,10 +1147,10 @@
 
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
-      console.warn("OSjs::Core::WindowManager::addWindow()", "Got", w);
-      throw ("addWindow() expects a 'Window' class");
+      console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
+      throw ('addWindow() expects a "Window" class');
     }
-    console.log("OSjs::Core::WindowManager::addWindow()");
+    console.log('OSjs::Core::WindowManager::addWindow()');
 
     w.init(this, w._appRef);
     this._windows.push(w);
@@ -1170,17 +1165,17 @@
 
   WindowManager.prototype.removeWindow = function(w) {
     if ( !(w instanceof Window) ) {
-      console.warn("OSjs::Core::WindowManager::removeWindow()", "Got", w);
-      throw ("removeWindow() expects a 'Window' class");
+      console.warn('OSjs::Core::WindowManager::removeWindow()', 'Got', w);
+      throw ('removeWindow() expects a "Window" class');
     }
-    console.log("OSjs::Core::WindowManager::removeWindow()");
+    console.log('OSjs::Core::WindowManager::removeWindow()');
 
     var i = 0;
     var l = this._windows.length;
     for ( i; i < l; i++ ) {
       if ( !this._windows[i] ) { continue; }
 
-      if ( this._windows[i]._wid == w._wid ) {
+      if ( this._windows[i]._wid === w._wid ) {
         if ( !this._windows[i] ) { break; }
         this._windows[i] = null;
         //this._windows.splice(i, 1);
@@ -1193,7 +1188,7 @@
   };
 
   WindowManager.prototype.eventWindow = function(ev, win) {
-    //console.debug("OSjs::Core::WindowManager::eventWindow", ev, win._name);
+    //console.debug('OSjs::Core::WindowManager::eventWindow', ev, win._name);
   };
 
   WindowManager.prototype.showSettings = function() {
@@ -1202,7 +1197,7 @@
 
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
-    console.log("OSjs::Core::WindowManager::applySettings", "forced?", force);
+    console.log('OSjs::Core::WindowManager::applySettings', 'forced?', force);
 
     if ( force ) {
       this._settings = settings;
@@ -1303,7 +1298,7 @@
    * Application Class
    */
   var Application = function(name, args, metadata, settings) {
-    console.group("OSjs::Core::Application::__construct()");
+    console.group('OSjs::Core::Application::__construct()');
     this.__name       = name;
     this.__label      = metadata.name;
     this.__path       = metadata.path;
@@ -1318,15 +1313,15 @@
 
     Process.apply(this, [name]);
 
-    console.log("Name", this.__name);
-    console.log("Args", this.__args);
+    console.log('Name', this.__name);
+    console.log('Args', this.__args);
     console.groupEnd();
   };
 
   Application.prototype = Object.create(Process.prototype);
 
   Application.prototype.init = function(core, settings) {
-    console.log("OSjs::Core::Application::init()", this.__name);
+    console.log('OSjs::Core::Application::init()', this.__name);
 
     if ( settings ) {
       this.__settings = OSjs.Utils.mergeObject(this.__settings, settings);
@@ -1352,7 +1347,7 @@
   Application.prototype.destroy = function(kill) {
     if ( this.__destroyed ) { return true; }
     this.__destroyed = true;
-    console.log("OSjs::Core::Application::destroy()", this.__name);
+    console.log('OSjs::Core::Application::destroy()', this.__name);
 
     var i;
     while ( this.__windows.length ) {
@@ -1383,9 +1378,9 @@
     var self = this;
     onSuccess = onSuccess || function() {};
     onError = onError || function(err) {
-      err = err || "Unknown error";
-      OSjs.API.error(OSjs._("ERR_APP_API_ERROR"),
-                     OSjs._("ERR_APP_API_ERROR_DESC_FMT", self.__name, method),
+      err = err || 'Unknown error';
+      OSjs.API.error(OSjs._('ERR_APP_API_ERROR'),
+                     OSjs._('ERR_APP_API_ERROR_DESC_FMT', self.__name, method),
                      err);
     };
     return APICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
@@ -1408,8 +1403,8 @@
   };
 
   Application.prototype._addWindow = function(w) {
-    if ( !(w instanceof Window) ) { throw "Application::_addWindow() expects Window"; }
-    console.info("OSjs::Core::Application::_addWindow()");
+    if ( !(w instanceof Window) ) { throw 'Application::_addWindow() expects Window'; }
+    console.info('OSjs::Core::Application::_addWindow()');
     this.__windows.push(w);
 
     if ( this.__inited ) {
@@ -1427,13 +1422,13 @@
   };
 
   Application.prototype._removeWindow = function(w) {
-    if ( !(w instanceof Window) ) { throw "Application::_removeWindow() expects Window"; }
+    if ( !(w instanceof Window) ) { throw 'Application::_removeWindow() expects Window'; }
     var i = 0;
     var l = this.__windows.length;
     for ( i; i < l; i++ ) {
       if ( this.__windows[i] ) {
         if ( this.__windows[i]._wid === w._wid ) {
-          console.info("OSjs::Core::Application::_removeWindow()", w._wid);
+          console.info('OSjs::Core::Application::_removeWindow()', w._wid);
           this.__windows[i].destroy();
           //this.__windows[i] = null;
           this.__windows.splice(i, 1);
@@ -1516,7 +1511,7 @@
 
     return function(name, opts, appRef) {
       if ( OSjs.Utils.inArray(_NAMES, name) ) {
-        throw OSjs.Utils.format("You already have a Window named '{0}'", name);
+        throw OSjs.Utils.format('You already have a Window named \'{0}\'', name);
       }
 
       var icon      = OSjs.API.getThemeResource('wm.png', 'wm');
@@ -1592,7 +1587,7 @@
         resized   : []  // Called inside the mouseup event
       };
 
-      console.info("OSjs::Core::Window::__construct()", this._wid, this._name);
+      console.info('OSjs::Core::Window::__construct()', this._wid, this._name);
 
       _WID++;
     };
@@ -1602,7 +1597,14 @@
     var self = this;
     var isTouch = OSjs.Utils.getCompability().touch;
 
-    console.group("OSjs::Core::Window::init()");
+    function _showBorder() {
+      OSjs.Utils.$addClass(main, 'WindowHintDnD');
+    }
+    function _hideBorder() {
+      OSjs.Utils.$removeClass(main, 'WindowHintDnD');
+    }
+
+    console.group('OSjs::Core::Window::init()');
 
     this._state.focused = false;
 
@@ -1681,13 +1683,6 @@
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
-        var _showBorder = function() {
-          OSjs.Utils.$addClass(main, 'WindowHintDnD');
-        };
-        var _hideBorder = function() {
-          OSjs.Utils.$removeClass(main, 'WindowHintDnD');
-        };
-
         OSjs.GUI.createDroppable(main, {
           onOver: function(ev, el, args) {
             _showBorder();
@@ -1752,7 +1747,7 @@
 
     var buttonMinimize        = document.createElement('div');
     buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
-    buttonMinimize.innerHTML  = "&nbsp;";
+    buttonMinimize.innerHTML  = '&nbsp;';
     if ( this._properties.allow_minimize ) {
       this._addEventListener(buttonMinimize, (isTouch ? 'touchend' : 'click'), function(ev) {
         ev.preventDefault();
@@ -1766,7 +1761,7 @@
 
     var buttonMaximize        = document.createElement('div');
     buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
-    buttonMaximize.innerHTML  = "&nbsp;";
+    buttonMaximize.innerHTML  = '&nbsp;';
     if ( this._properties.allow_maximize ) {
       this._addEventListener(buttonMaximize, (isTouch ? 'touchend' : 'click'), function(ev) {
         ev.preventDefault();
@@ -1780,7 +1775,7 @@
 
     var buttonClose       = document.createElement('div');
     buttonClose.className = 'WindowButton WindowButtonClose';
-    buttonClose.innerHTML = "&nbsp;";
+    buttonClose.innerHTML = '&nbsp;';
     if ( this._properties.allow_close ) {
       this._addEventListener(buttonClose, (isTouch ? 'touchend' : 'click'), function(ev) {
         ev.preventDefault();
@@ -1827,15 +1822,15 @@
     // Append stuff
     var classNames = ['Window'];
     classNames.push('Window_' + OSjs.Utils.$safeName(this._name));
-    if ( this._tag && (this._name != this._tag) ) {
+    if ( this._tag && (this._name !== this._tag) ) {
       classNames.push(OSjs.Utils.$safeName(this._tag));
     }
 
     main.className    = classNames.join(' ');
-    main.style.width  = this._dimension.w + "px";
-    main.style.height = this._dimension.h + "px";
-    main.style.top    = this._position.y + "px";
-    main.style.left   = this._position.x + "px";
+    main.style.width  = this._dimension.w + 'px';
+    main.style.height = this._dimension.h + 'px';
+    main.style.top    = this._position.y + 'px';
+    main.style.left   = this._position.x + 'px';
     main.style.zIndex = getNextZindex(this._state.ontop);
 
     windowIcon.appendChild(windowIconImage);
@@ -1864,7 +1859,7 @@
     var moved = false;
     var startRect = null;
 
-    var onMouseDown = function(ev, a) {
+    function onMouseDown(ev, a) {
       ev.preventDefault();
 
       if ( self._state.maximized ) { return false; }
@@ -1890,8 +1885,9 @@
       document.addEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
 
       return false;
-    };
-    var onMouseUp = function(ev) {
+    }
+
+    function onMouseUp(ev) {
       if ( moved ) {
         if ( _WM ) {
           if ( action === 'move' ) {
@@ -1913,10 +1909,10 @@
       sy = 0;
       moved = false;
       startRect = null;
-    };
+    }
 
     // FIXME: Do a timeout here to spare CPU
-    var onMouseMove = function(ev) {
+    function onMouseMove(ev) {
       if ( !_MOUSELOCK ) { return; }
       if ( action === null ) { return; }
       var cx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
@@ -1936,7 +1932,7 @@
       }
 
       moved = true;
-    };
+    }
 
     if ( this._properties.allow_move ) {
       this._addEventListener(windowTop, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
@@ -1991,9 +1987,16 @@
 
   Window.prototype.destroy = function() {
     var self = this;
+
+    function _removeDOM() {
+      if ( self._$element.parentNode ) {
+        self._$element.parentNode.removeChild(self._$element);
+      }
+    }
+
     if ( this._destroyed ) { return; }
     this._destroyed = true;
-    console.log("OSjs::Core::Window::destroy()");
+    console.log('OSjs::Core::Window::destroy()');
 
     this._onChange('close');
 
@@ -2021,17 +2024,11 @@
     if ( _WM ) {
       _WM.removeWindow(this);
     }
-    if ( _WIN && _WIN._wid == this._wid ) {
+    if ( _WIN && _WIN._wid === this._wid ) {
       _WIN = null;
     }
 
     if ( this._$element ) {
-      var _removeDOM = function() {
-        if ( self._$element.parentNode ) {
-          self._$element.parentNode.removeChild(self._$element);
-        }
-      };
-
       var anim = _WM ? _WM.getSetting('animations') : false;
       if ( anim ) {
         OSjs.Utils.$addClass(this._$element, 'WindowHintClosing');
@@ -2039,7 +2036,7 @@
           _removeDOM();
         }, ANIMDURATION);
       } else {
-        this._$element.style.display = "none";
+        this._$element.style.display = 'none';
         _removeDOM();
       }
     }
@@ -2086,7 +2083,7 @@
         try {
           this._hooks[k][i].apply(this, args);
         } catch ( e ) {
-          console.warn("Window::_fireHook() failed to run hook", k, i, e);
+          console.warn('Window::_fireHook() failed to run hook', k, i, e);
           console.warn(e.stack);
           //console.log(e, e.prototype);
           //throw e;
@@ -2124,12 +2121,12 @@
   Window.prototype._addGUIElement = function(gel, parentNode) {
     var self = this;
     if ( !parentNode ) {
-      throw "Adding a GUI Element requires a parentNode";
+      throw 'Adding a GUI Element requires a parentNode';
     }
     if ( gel instanceof OSjs.GUI.GUIElement ) {
       gel._setWindow(this);
 
-      //console.log("OSjs::Core::Window::_addGUIElement()");
+      //console.log('OSjs::Core::Window::_addGUIElement()');
       if ( gel.opts && gel.opts.focusable ) {
         gel._addHook('focus', function() {
           self._guiElement = this;
@@ -2190,7 +2187,7 @@
   //
 
   Window.prototype._addChild = function(w, wmAdd) {
-    console.info("OSjs::Core::Window::_addChild()");
+    console.info('OSjs::Core::Window::_addChild()');
     w._parent = this;
     if ( wmAdd && _WM ) {
       _WM.addWindow(w);
@@ -2202,7 +2199,7 @@
     var i = 0, l = this._children.length;
     for ( i; i < l; i++ ) {
       if ( this._children[i] && this._children[i]._wid === w._wid ) {
-        console.info("OSjs::Core::Window::_removeChild()");
+        console.info('OSjs::Core::Window::_removeChild()');
 
         this._children[i].destroy();
         this._children[i] = null;
@@ -2264,7 +2261,7 @@
   //
 
   Window.prototype._close = function() {
-    console.info("OSjs::Core::Window::_close()");
+    console.info('OSjs::Core::Window::_close()');
     if ( this._disabled ) { return; }
 
     OSjs.Utils.$addClass(this._$element, 'WindowHintClosing');
@@ -2275,7 +2272,7 @@
 
   Window.prototype._minimize = function() {
     var self = this;
-    console.debug(this._name, '>' , "OSjs::Core::Window::_minimize()");
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_minimize()');
     if ( !this._properties.allow_minimize ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.minimized ) {
@@ -2288,9 +2285,9 @@
     this._state.minimized = true;
     OSjs.Utils.$addClass(this._$element, 'WindowHintMinimized');
 
-    var _hideDOM = function() {
+    function _hideDOM() {
       self._$element.style.display = 'none';
-    };
+    }
 
     var anim = _WM ? _WM.getSetting('animations') : false;
     if ( anim ) {
@@ -2304,7 +2301,7 @@
     this._onChange('minimize');
     this._fireHook('minimize');
 
-    if ( _WIN && _WIN._wid == this._wid ) {
+    if ( _WIN && _WIN._wid === this._wid ) {
       _WIN = null;
     }
 
@@ -2312,7 +2309,7 @@
   };
 
   Window.prototype._maximize = function() {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_maximize()");
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_maximize()');
     if ( !this._properties.allow_maximize ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.maximized ) {
@@ -2325,10 +2322,10 @@
 
     var s = this._getMaximizedSize();
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    this._$element.style.top    = (s.top) + "px";
-    this._$element.style.left   = (s.left) + "px";
-    this._$element.style.width  = (s.width) + "px";
-    this._$element.style.height = (s.height) + "px";
+    this._$element.style.top    = (s.top) + 'px';
+    this._$element.style.left   = (s.left) + 'px';
+    this._$element.style.width  = (s.width) + 'px';
+    this._$element.style.height = (s.height) + 'px';
     OSjs.Utils.$addClass(this._$element, 'WindowHintMaximized');
 
     //this._resize();
@@ -2356,12 +2353,11 @@
   Window.prototype._restore = function(max, min) {
     if ( !this._$element ) { return; }
 
-    console.debug(this._name, '>' , "OSjs::Core::Window::_restore()");
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_restore()');
     //if ( this._disabled ) return ;
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
 
-    var cn = this._$element.className;
     if ( max && this._state.maximized ) {
       this._move(this._lastPosition.x, this._lastPosition.y);
       this._resize(this._lastDimension.w, this._lastDimension.h);
@@ -2392,13 +2388,13 @@
 
   Window.prototype._focus = function(force) {
     //if ( !force && this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , "OSjs::Core::Window::_focus()");
+    //console.debug(this._name, '>' , 'OSjs::Core::Window::_focus()');
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     OSjs.Utils.$addClass(this._$element, 'WindowHintFocused');
 
-    if ( _WIN && _WIN._wid != this._wid ) {
+    if ( _WIN && _WIN._wid !== this._wid ) {
       _WIN._blur();
     }
 
@@ -2416,14 +2412,14 @@
 
   Window.prototype._blur = function(force) {
     if ( !force && !this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , "OSjs::Core::Window::_blur()");
+    //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
     OSjs.Utils.$removeClass(this._$element, 'WindowHintFocused');
     this._state.focused = false;
 
     this._onChange('blur');
     this._fireHook('blur');
 
-    if ( _WIN && _WIN._wid == this._wid ) {
+    if ( _WIN && _WIN._wid === this._wid ) {
       _WIN = null;
     }
 
@@ -2513,12 +2509,12 @@
     //if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
 
     if ( w ) {
-      this._$element.style.width = w + "px";
+      this._$element.style.width = w + 'px';
       this._dimension.w = w;
     }
 
     if ( h ) {
-      this._$element.style.height = h + "px";
+      this._$element.style.height = h + 'px';
       this._dimension.h = h;
     }
 
@@ -2532,13 +2528,13 @@
     var cx = this._position.x;
     var cy = this._position.y;
 
-    if ( pos == 'left' ) {
+    if ( pos === 'left' ) {
       this._move(s.left, cy);
-    } else if ( pos == 'right' ) {
+    } else if ( pos === 'right' ) {
       this._move((s.width - this._dimension.w), cy);
-    } else if ( pos == 'top' ) {
+    } else if ( pos === 'top' ) {
       this._move(cx, s.top);
-    } else if ( pos == 'bottom' ) {
+    } else if ( pos === 'bottom' ) {
       this._move(cx, (s.height - this._dimension.h));
     }
   };
@@ -2547,37 +2543,37 @@
     if ( !this._properties.allow_move ) { return false; }
     if ( typeof x === 'undefined' || typeof y === 'undefined') { return; }
 
-    this._$element.style.top  = y + "px";
-    this._$element.style.left = x + "px";
+    this._$element.style.top  = y + 'px';
+    this._$element.style.left = x + 'px';
     this._position.x          = x;
     this._position.y          = y;
     return true;
   };
 
   Window.prototype._error = function(title, description, message, exception, bugreport) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_error()");
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_error()');
     var w = ErrorDialog(title, description, message, exception, bugreport);
     this._addChild(w);
   };
 
   Window.prototype._toggleDisabled = function(t) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleDisabled()", t);
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleDisabled()', t);
     this._$disabled.style.display = t ? 'block' : 'none';
     this._disabled = t ? true : false;
   };
 
   Window.prototype._toggleLoading = function(t) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_toggleLoading()", t);
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleLoading()', t);
     this._$loading.style.display = t ? 'block' : 'none';
   };
 
   Window.prototype._toggleAttentionBlink = function(t) {
     if ( this._state.focused ) { return false; }
 
-    var s      = false;
     var el     = this._$element;
     var self   = this;
-    var _blink = function(stat) {
+
+    function _blink(stat) {
       if ( el ) {
         if ( stat ) {
           OSjs.Utils.$addClass(el, 'WindowAttentionBlink');
@@ -2586,12 +2582,12 @@
         }
       }
       self._onChange(stat ? 'attention_on' : 'attention_off');
-    };
+    }
 
     /*
     if ( t ) {
       if ( !this._blinkTimer ) {
-        console.debug(this._name, '>' , "OSjs::Core::Window::_toggleAttentionBlink()", t);
+        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         this._blinkTimer = setInterval(function() {
           s = !s;
 
@@ -2601,7 +2597,7 @@
       }
     } else {
       if ( this._blinkTimer ) {
-        console.debug(this._name, '>' , "OSjs::Core::Window::_toggleAttentionBlink()", t);
+        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         clearInterval(this._blinkTimer);
         this._blinkTimer = null;
       }
@@ -2619,21 +2615,21 @@
   //
 
   Window.prototype._onDndEvent = function(ev, type) {
-    console.info("OSjs::Core::Window::_onDndEvent()", type);
+    console.info('OSjs::Core::Window::_onDndEvent()', type);
     if ( this._disabled ) { return false; }
     return true;
   };
 
   Window.prototype._onKeyEvent = function(ev) {
     if ( this._guiElement ) {
-      if ( ev.type == "keydown" && !this._guiElement.hasCustomKeys ) {
+      if ( ev.type === 'keydown' && !this._guiElement.hasCustomKeys ) {
         this._guiElement.onKeyPress(ev);
       }
     }
   };
 
   Window.prototype._onWindowIconClick = function(ev, el) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_onWindowIconClick()");
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowIconClick()');
     if ( !this._properties.allow_iconmenu ) { return; }
 
     var self = this;
@@ -2705,7 +2701,7 @@
   };
 
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
-    console.debug(this._name, '>' , "OSjs::Core::Window::_onWindowButtonClick()", btn);
+    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowButtonClick()', btn);
 
     if ( btn === 'close' ) {
       this._close();
@@ -2719,7 +2715,7 @@
   Window.prototype._onChange = function(ev) {
     ev = ev || '';
     if ( ev ) {
-      console.debug(this._name, '>' , "OSjs::Core::Window::_onChange()", ev);
+      console.debug(this._name, '>' , 'OSjs::Core::Window::_onChange()', ev);
       if ( _WM ) {
         _WM.eventWindow(ev, this);
       }
@@ -2734,10 +2730,10 @@
     var s = getWindowSpace();
     var margin = {left: 0, top: 0, right: 0, bottom: 0};
     try {
-      margin.left = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("left"), 10);
-      margin.top = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("top"), 10);
-      margin.right = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("right"), 10);
-      margin.bottom = -parseInt(window.getComputedStyle(this._$element, ":before").getPropertyValue("bottom"), 10);
+      margin.left = -parseInt(window.getComputedStyle(this._$element, ':before').getPropertyValue('left'), 10);
+      margin.top = -parseInt(window.getComputedStyle(this._$element, ':before').getPropertyValue('top'), 10);
+      margin.right = -parseInt(window.getComputedStyle(this._$element, ':before').getPropertyValue('right'), 10);
+      margin.bottom = -parseInt(window.getComputedStyle(this._$element, ':before').getPropertyValue('bottom'), 10);
     } catch ( e ) {}
 
     s.left += margin.left;
@@ -2864,7 +2860,7 @@
   };
 
   SettingsManager.prototype.setCategory = function(category, value, merge) {
-    console.debug("SettingsManager::setCategory()", category, value);
+    console.debug('SettingsManager::setCategory()', category, value);
     if ( typeof merge === 'undefined' ) { merge = this.defaultMerge; }
 
     if ( merge ) {
@@ -2875,7 +2871,7 @@
   };
 
   SettingsManager.prototype.setCategoryItem = function(category, name, value, merge) {
-    console.debug("SettingsManager::setCategoryItem()", category, name, value);
+    console.debug('SettingsManager::setCategoryItem()', category, name, value);
     if ( typeof merge === 'undefined' ) { merge = this.defaultMerge; }
 
     if ( !this.settings[category] ) {
@@ -2946,19 +2942,9 @@
 
   var __initialized = false;
 
-  var Initialize = function() {
+  function Initialize() {
     if ( __initialized ) { return; }
     __initialized = true;
-
-    console.log("");
-    console.log(" .--.  .--.     _               .---.   ");
-    console.log(": ,. :: .--'   :_;              `--. :  ");
-    console.log(": :: :`. `.    .-. .--.   .-..-.  ,','  ");
-    console.log(": :; : _`, : _ : :`._-.'  : `; :.'.'_   ");
-    console.log("`.__.'`.__.':_;: :`.__.'  `.__.':____;  ");
-    console.log("             .-. :                      ");
-    console.log("             `._.'                      ");
-    console.log("");
 
     window.onload = null;
 
@@ -2977,7 +2963,7 @@
       _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
 
       _$LOADING             = document.createElement('div');
-      _$LOADING.id          = "Loading";
+      _$LOADING.id          = 'Loading';
       _$LOADING.innerHTML   = '<div class="loader"></div>';
       document.body.appendChild(_$LOADING);
 
@@ -2986,14 +2972,14 @@
         _CORE.init();
       }
     });
-  };
+  }
 
   OSjs.Shutdown = function(save, onunload) {
     if ( !__initialized ) { return; }
     __initialized = false;
     window.onunload = null;
 
-    var _shutdown = function() {
+    function _shutdown() {
       if ( _CORE ) {
         _CORE.destroy();
         _CORE = null;
@@ -3009,7 +2995,7 @@
         _$LOADING.parentNode.removeChild(_$LOADING);
       }
       _$LOADING = null;
-    };
+    }
 
     if ( onunload ) {
       _shutdown();
@@ -3022,17 +3008,17 @@
   // Main initialization code
   /////////////////////////////////////////////////////////////////////////////
 
-  var _onLoad = function() {
+  function _onLoad() {
     Initialize();
-  };
+  }
 
-  var _onUnload = function() {
+  function _onUnload() {
     OSjs.Shutdown(false, true);
-  };
+  }
 
   var jQuery = window.$ || window.jQuery;
   if ( typeof jQuery !== 'undefined' ) {
-    console.warn("Using jQuery initialization");
+    console.warn('Using jQuery initialization');
     jQuery(window).on('load', _onLoad);
     jQuery(window).on('unload', _onUnload);
   } else {

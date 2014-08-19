@@ -80,11 +80,11 @@
    */
   DefaultApplicationWindow.prototype._close = function() {
     var self = this;
-    var callback = function(discard) {
+    function callback(discard) {
       if ( discard ) {
         self._close();
       }
-    };
+    }
 
     if ( this.checkChanged(callback) !== false ) {
       return false;
@@ -178,16 +178,16 @@
   };
 
   DefaultApplication.prototype.onCheckChanged = function(callback) {
+    function _cb(discard) {
+      self.mainWindow._focus();
+
+      callback(discard);
+    }
+
     if ( this.defaultCheckChange ) {
       var self = this;
 
       var msg = OSjs._("MSG_GENERIC_APP_DISCARD");
-      var _cb = function(discard) {
-        self.mainWindow._focus();
-
-        callback(discard);
-      };
-
       if ( this.mainWindow ) {
         if ( this.mainWindow.checkChanged(function(discard) { _cb(discard); }, msg) === false ) {
           _cb(true);
@@ -291,13 +291,13 @@
       }
     }
 
-    var _onSaveFinished = function(name) {
+    function _onSaveFinished(name) {
       self.onSave(name, mime);
       self.mainWindow._toggleLoading(false);
       self._setCurrentFile(name, mime);
 
       OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
-    };
+    }
 
 
     this.onGetSaveData(function(data) {
@@ -386,7 +386,7 @@
     var opt = Utils.cloneObject(this.dialogOptions);
     opt.type =  "open";
 
-    var _openFile = function(fname, fmime) {
+    function _openFile(fname, fmime) {
       if ( !Utils.checkAcceptMime(fmime, opt.mimes) ) {
         OSjs.API.error(self.__label, OSjs._("ERR_FILE_APP_OPEN"), OSjs._("ERR_FILE_APP_OPEN_FMT", filename, mime));
         return;
@@ -421,7 +421,7 @@
       }, function(error) {
         self._onError(OSjs._("ERR_FILE_APP_OPEN_ALT_FMT", fname), error, "onOpen");
       });
-    };
+    }
 
     if ( filename ) {
       _openFile(filename, mime);

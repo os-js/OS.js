@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(DialogWindow, GUI) {
-  "use strict";
+  'use strict';
 
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
@@ -78,7 +78,7 @@
     buttonContainer.className = 'Buttons';
 
     this.$element = document.createElement('div');
-    OSjs.Utils.$addClass(this.$element, "StandardDialog");
+    OSjs.Utils.$addClass(this.$element, 'StandardDialog');
     OSjs.Utils.$addClass(this.$element, this.className);
 
     if ( this.message ) {

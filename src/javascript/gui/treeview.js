@@ -77,7 +77,7 @@
   TreeView.prototype._render = function(list, root, expandLevel, ul) {
     var self = this;
 
-    var _render = function(list, root, ul, level) {
+    function _render(list, root, ul, level) {
       if ( typeof level === 'undefined' ) {
         level = false;
       }
@@ -210,7 +210,7 @@
       root.appendChild(ul);
 
       return ul;
-    };
+    }
 
     return _render.call(this, list, root, ul, expandLevel);
   };
@@ -244,7 +244,7 @@
   };
 
   TreeView.prototype.getItemByKey = function(key, val) {
-    var _search = function(list) {
+    function _search(list) {
       var ret = null;
 
       for ( var i in list ) {
@@ -263,7 +263,7 @@
       }
 
       return null;
-    };
+    }
 
     return _search.call(this, this.data);
   };

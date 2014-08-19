@@ -65,33 +65,35 @@
   };
 
   PanedView.prototype.createView = function(name) {
+    var startW = 0;
+    var startX = 0;
+    var idx;
+    var column;
+
+    function onResizeMove(ev) {
+      var newW = startW + (ev.clientX - startX);
+      column.style.width = newW + 'px';
+    }
+
+    function onResizeEnd(ev) {
+      document.removeEventListener('mouseup',   onResizeEnd,  false);
+      document.removeEventListener('mousemove', onResizeMove, false);
+    }
+
+    function onResizeStart(ev, col) {
+      startX = ev.clientX;
+      startW = column.offsetWidth;
+
+      document.addEventListener('mouseup',    onResizeEnd,  false);
+      document.addEventListener('mousemove',  onResizeMove, false);
+    }
+
     if ( this.$container.childNodes.length % 2 ) {
       var separator = document.createElement('li');
       separator.className = 'Separator';
 
-
-      var startW = 0;
-      var startX = 0;
-      var idx    = this.$container.childNodes.length - 1;
-      var column = this.$container.childNodes[idx];
-
-      var onResizeMove = function(ev) {
-        var newW = startW + (ev.clientX - startX);
-        column.style.width = newW + 'px';
-      };
-
-      var onResizeEnd = function(ev) {
-        document.removeEventListener('mouseup',   onResizeEnd,  false);
-        document.removeEventListener('mousemove', onResizeMove, false);
-      };
-
-      var onResizeStart = function(ev, col) {
-        startX = ev.clientX;
-        startW = column.offsetWidth;
-
-        document.addEventListener('mouseup',    onResizeEnd,  false);
-        document.addEventListener('mousemove',  onResizeMove, false);
-      };
+      idx    = this.$container.childNodes.length - 1;
+      column = this.$container.childNodes[idx];
 
       this._addEventListener(separator, 'mousedown', function(ev) {
         ev.preventDefault();

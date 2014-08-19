@@ -47,13 +47,13 @@
     var desc = OSjs._("Loading file information for: {0}", this.path);
     var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
 
-    var _onError = function(err) {
+    function _onError(err) {
       var fname = OSjs.Utils.filename(self.path);
       self._error(OSjs._("FileInformationDialog Error"), OSjs._("Failed to get file information for <span>{0}</span>", fname), err);
       txt.setValue(OSjs._("Failed to get file information for: {0}", self.path));
-    };
+    }
 
-    var _onSuccess = function(data) {
+    function _onSuccess(data) {
       var info = [];
       for ( var i in data ) {
         if ( data.hasOwnProperty(i) ) {
@@ -65,7 +65,7 @@
         }
       }
       txt.setValue(info.join("\n\n"));
-    };
+    }
 
     OSjs.API.call('fs', {method: 'fileinfo', 'arguments' : [this.path]}, function(res) {
       if ( res ) {

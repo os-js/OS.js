@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
-  "use strict";
+  'use strict';
 
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
@@ -48,7 +48,7 @@
     args.files  = args.files  || true;
 
     if ( OSjs.Utils.isIE() ) {
-      args.mime = "text";
+      args.mime = 'text';
     }
 
     args.onFilesDropped = args.onFilesDropped || function() { return true; };
@@ -81,7 +81,7 @@
       }
       if ( data ) {
         var item = JSON.parse(data);
-        if ( args.accept === null || args.accept == item.type ) {
+        if ( args.accept === null || args.accept === item.type ) {
           return args.onItemDropped.call(self, ev, el, item, args);
         }
       }
@@ -90,12 +90,12 @@
     };
 
     el.addEventListener('drop', function(ev) {
-      //OSjs.Utils.$removeClass(el, "onDragEnter");
+      //OSjs.Utils.$removeClass(el, 'onDragEnter');
       return _onDrop(ev, this);
     }, false);
 
     el.addEventListener('dragenter', function(ev) {
-      //OSjs.Utils.$addClass(el, "onDragEnter");
+      //OSjs.Utils.$addClass(el, 'onDragEnter');
       return args.onEnter.call(this, ev, this, args);
     }, false);
 
@@ -107,7 +107,7 @@
     }, false);
 
     el.addEventListener('dragleave', function(ev) {
-      //OSjs.Utils.$removeClass(el, "onDragEnter");
+      //OSjs.Utils.$removeClass(el, 'onDragEnter');
       return args.onLeave.call(this, ev, this, args);
     }, false);
   }
@@ -124,7 +124,7 @@
     args.onEnd      = args.onEnd      || function() { return true; };
 
     if ( OSjs.Utils.isIE() ) {
-      args.mime = "text";
+      args.mime = 'text';
     }
 
     var _toString = function(mime) {
@@ -136,13 +136,13 @@
       });
     };
 
-    el.setAttribute("draggable", "true");
+    el.setAttribute('draggable', 'true');
     el.addEventListener('dragstart', function(ev) {
       this.style.opacity = '0.4';
       if ( ev.dataTransfer ) {
         try {
           ev.dataTransfer.effectAllowed = args.effect;
-          if ( args.dragImage && (typeof args.dragImage === "function") ) {
+          if ( args.dragImage && (typeof args.dragImage === 'function') ) {
             if ( ev.dataTransfer.setDragImage ) {
               var dragImage = args.dragImage(ev, el);
               if ( dragImage ) {
@@ -156,7 +156,7 @@
           }
           ev.dataTransfer.setData(args.mime, _toString(args.mime));
         } catch ( e ) {
-          console.warn("Failed to dragstart: " + e);
+          console.warn('Failed to dragstart: ' + e);
         }
       }
 
@@ -171,14 +171,14 @@
   }
 
   function getFileIcon(filename, mime, type, icon, size) {
-    if ( !filename ) { throw "Filename is required for getFileIcon()"; }
+    if ( !filename ) { throw 'Filename is required for getFileIcon()'; }
     type = type || 'file';
     icon = icon || 'mimetypes/gnome-fs-regular.png';
     size = size || '16x16';
 
-    if ( type == 'dir' ) {
+    if ( type === 'dir' ) {
       icon = 'places/folder.png';
-    } else if ( type == 'file' ) {
+    } else if ( type === 'file' ) {
       if ( mime ) {
         if ( mime.match(/^application\/(x\-python|javascript)/) || mime.match(/^text\/(html|xml|css)/) ) {
           icon = 'mimetypes/stock_script.png';
@@ -188,11 +188,11 @@
           icon = 'mimetypes/sound.png';
         } else if ( mime.match(/^video\//) ) {
           icon = 'mimetypes/video.png';
-        } else if ( mime.match(/^image\//) || mime == "osjs/draw" ) {
+        } else if ( mime.match(/^image\//) || mime === 'osjs/draw' ) {
           icon = 'mimetypes/image.png';
         } else if ( mime.match(/^application\//) ) {
           icon = 'mimetypes/binary.png';
-        } else if ( mime == "osjs/document" ) {
+        } else if ( mime === 'osjs/document' ) {
           icon = 'mimetypes/gnome-mime-application-msword.png';
         }
       }
@@ -340,7 +340,7 @@
         try {
           this._hooks[k][i].apply(this, args);
         } catch ( e ) {
-          console.warn("GUIElement::_fireHook() failed to run hook", k, i, e);
+          console.warn('GUIElement::_fireHook() failed to run hook', k, i, e);
         }
       }
     }
@@ -385,10 +385,10 @@
   GUIElement.prototype.focus = function() {
     if ( !this.opts.focusable ) { return false; }
     if ( this.focused ) { return false; }
-    if ( _PreviousGUIElement && _PreviousGUIElement.id != this.id ) {
+    if ( _PreviousGUIElement && _PreviousGUIElement.id !== this.id ) {
       _PreviousGUIElement.blur();
     }
-    console.debug("GUIElement::focus()", this.id, this.name);
+    console.debug('GUIElement::focus()', this.id, this.name);
     this.focused = true;
     this._fireHook('focus');
     _PreviousGUIElement = this;
@@ -398,7 +398,7 @@
   GUIElement.prototype.blur = function() {
     if ( !this.opts.focusable ) { return false; }
     if ( !this.focused ) { return false; }
-    console.debug("GUIElement::blur()", this.id, this.name);
+    console.debug('GUIElement::blur()', this.id, this.name);
     this.focused = false;
     this._fireHook('blur');
     return true;
@@ -460,7 +460,7 @@
     var el = GUIElement.prototype.init.apply(this, [this.className]);
     this.$input = document.createElement(this.tagName);
 
-    if ( this.tagName == 'input' ) {
+    if ( this.tagName === 'input' ) {
       this.$input.type = this.type;
       if ( this.type === 'text' || this.type === 'password' ) {
         if ( this.placeholder ) {
@@ -483,7 +483,7 @@
       self.onMouseUp.apply(self, [ev]);
     });
 
-    if ( this.tagName == 'button' ) {
+    if ( this.tagName === 'button' ) {
       if ( this.opts.icon ) {
         var img = document.createElement('img');
         img.alt = '';
@@ -529,9 +529,9 @@
   _Input.prototype.setDisabled = function(d) {
     this.disabled = d;
     if ( d ) {
-      this.$input.setAttribute("disabled", "disabled");
+      this.$input.setAttribute('disabled', 'disabled');
     } else {
-      this.$input.removeAttribute("disabled");
+      this.$input.removeAttribute('disabled');
     }
   };
 
@@ -722,7 +722,7 @@
     if ( !OSjs.Utils.inArray(valid, ev.keyCode) ) {
       return true;
     }
-    if ( this.className == 'TreeView' ) {
+    if ( this.className === 'TreeView' ) {
       // TreeView has custom code
       return true;
     }
@@ -736,7 +736,7 @@
       var skip = 1;
       var prev = idx;
 
-      if ( this.className == 'IconView' ) {
+      if ( this.className === 'IconView' ) {
         if ( this.$view ) {
           var el = this.$view.getElementsByTagName('LI')[0];
           if ( el ) {
@@ -768,7 +768,7 @@
           return true;
         }
 
-        if ( idx != tidx ) {
+        if ( idx !== tidx ) {
           this.setSelectedIndex(idx, true);
         }
       }
@@ -810,7 +810,7 @@
   _DataView.prototype.getItemByKey = function(key, val) {
     var data = this.data;
     for ( var i = 0, l = data.length; i < l; i++ ) {
-      if ( data[i][key] == val ) {
+      if ( data[i][key] === val ) {
         return data[i];
       }
     }

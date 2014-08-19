@@ -230,7 +230,7 @@
   FileDialog.prototype.finishDialog = function(path, mime) {
     var self = this;
 
-    var _getSelected = function() {
+    function _getSelected() {
       var result = "";
 
       if ( this.select == "path" ) {
@@ -247,12 +247,12 @@
       }
 
       return result;
-    };
+    }
 
     mime = mime || this.defaultFilemime;
     path = path || _getSelected.call(this);
 
-    var _confirm = function() {
+    function _confirm() {
       var wm = API.getWMInstance();
       if ( wm ) {
         this._toggleDisabled(true);
@@ -265,7 +265,7 @@
         wm.addWindow(conf);
         this._addChild(conf);
       }
-    };
+    }
 
     if ( this.type == "open" ) {
       this.end('ok', path, mime);
@@ -448,10 +448,10 @@
   FileDialog.prototype.onFileActivated = function(path, type, mime) {
     this.selectedFile = null;
 
-    var _activated = function() {
+    function _activated() {
       this.buttonConfirm.setDisabled(false);
       this.finishDialog.call(this, path, mime);
-    };
+    }
 
     if ( this.select === 'file' && type === 'file' ) {
       _activated.call(this);
