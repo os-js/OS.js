@@ -1,3 +1,15 @@
+# 2.0.0-alpha15
+
+* Utils: Added $createCSS
+* Utils: Added $createJS
+* Utils: Added AudioContext to getCompability()
+* Window::_resizeTo() has been recoded
+* Bugfix for DnD hanging windows on some browsers
+* Application - Calculator: Bugfixes from reports
+* Application - Writer: Small updates
+* Themes: New panel style (default)
+* Tonnes of jslint updates
+
 # 2.0.0-alpha14
 
 * Code syntax fix for compressed/combined dist
