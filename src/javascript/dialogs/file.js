@@ -30,7 +30,7 @@
 (function(StandardDialog, Utils, API) {
   'use strict';
 
-  function ReplaceExtension(orig, rep) {
+  function replaceExtension(orig, rep) {
     var spl = orig.split('.');
     spl.pop();
     spl.push(rep);
@@ -467,7 +467,7 @@
     this.filemime = this.filetypes[type];
 
     if ( this.$input ) {
-      var newval = ReplaceExtension(this.$input.getValue(), type);
+      var newval = replaceExtension(this.$input.getValue(), type);
       this.$input.setValue(newval);
     }
 

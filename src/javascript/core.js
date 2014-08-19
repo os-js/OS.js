@@ -172,7 +172,7 @@
    * @param   Function  cerror  Callback on error
    * @return  void
    */
-  var APICall = (function() {
+  var doAPICall = (function() {
     var _cidx = 1;
 
     return function(m, a, cok, cerror) {
@@ -201,7 +201,7 @@
    * @param   boolean   bugreport   Enable bugreporting for this error (default=fale)
    * @return  null
    */
-  function ErrorDialog(title, message, error, exception, bugreport) {
+  function doErrorDialog(title, message, error, exception, bugreport) {
     if ( _HANDLER.getConfig('Core').BugReporting ) {
       bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {
@@ -233,13 +233,13 @@
    * @param   String          fname         Full path to file
    * @param   String          mime          File MIME type
    * @param   Object          launchArgs    Arguments to send to process launch function
-   * @see     LaunchProcess
+   * @see     doLaunchProcess
    * @return  void
    */
-  function LaunchFile(fname, mime, launchArgs) {
+  function doLaunchFile(fname, mime, launchArgs) {
     launchArgs = launchArgs || {};
-    if ( !fname ) { throw 'Cannot LaunchFile() without a filename'; }
-    if ( !mime )  { throw 'Cannot LaunchFile() without a mime type'; }
+    if ( !fname ) { throw 'Cannot doLaunchFile() without a filename'; }
+    if ( !mime )  { throw 'Cannot doLaunchFile() without a mime type'; }
 
     var args = {file: fname, mime: mime};
 
@@ -251,13 +251,13 @@
       }
     }
 
-    console.group('LaunchFile()');
+    console.group('doLaunchFile()');
     console.log('Filename', fname);
     console.log('MIME', mime);
 
     function _launch(name) {
       if ( name ) {
-        LaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
+        doLaunchProcess(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
       }
     }
 
@@ -302,15 +302,15 @@
    * @param   Function    onConstructed   Callback on application init
    * @return  void
    */
-  function LaunchProcess(n, arg, onFinished, onError, onConstructed) {
+  function doLaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
     onFinished    = onFinished    || function() {};
     onError       = onError       || function() {};
     onConstructed = onConstructed || function() {};
 
-    if ( !n ) { throw 'Cannot LaunchProcess() witout a application name'; }
+    if ( !n ) { throw 'Cannot doLaunchProcess() witout a application name'; }
 
-    console.group('LaunchProcess()', n, arg);
+    console.group('doLaunchProcess()', n, arg);
 
     var splash = null;
     var splashBar = null;
@@ -370,7 +370,7 @@
     function _error(msg, exception) {
       _removeSplash();
       console.groupEnd(); // !!!
-      ErrorDialog(OSjs._('ERR_APP_LAUNCH_FAILED'),
+      doErrorDialog(OSjs._('ERR_APP_LAUNCH_FAILED'),
                   OSjs._('ERR_APP_LAUNCH_FAILED_FMT', n),
                   msg, exception, true);
 
@@ -385,7 +385,7 @@
         if ( singular ) {
           var sproc = _CORE.getProcess(n, true);
           if ( sproc ) {
-            console.debug('LaunchProcess()', 'detected that this application is a singular and already running...');
+            console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
             if ( sproc instanceof Application ) {
               sproc._onMessage(null, 'attention', arg);
             } else {
@@ -485,10 +485,10 @@
    * @param   Function      onSuccess   Callback on success
    * @param   Function      onError     Callback on error
    * @param   Function      onFinished  Callback on finished running
-   * @see     LaunchProcess
+   * @see     doLaunchProcess
    * @return  void
    */
-  function LaunchProcessList(list, onSuccess, onError, onFinished) {
+  function doLaunchProcessList(list, onSuccess, onError, onFinished) {
     list        = list        || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
     onSuccess   = onSuccess   || function() {};
     onError     = onError     || function() {};
@@ -500,7 +500,7 @@
     }
 
     function _onError(err, appName, appArgs) {
-      console.warn('LaunchProcessList() _onError()', err);
+      console.warn('doLaunchProcessList() _onError()', err);
       onError(err, appName, appArgs);
       _onNext();
     }
@@ -515,7 +515,7 @@
         var adata = s.data || {};
 
         if ( !aname ) {
-          console.warn('LaunchProcessList() _onNext()', 'No application name defined');
+          console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
           return;
         }
 
@@ -539,17 +539,17 @@
    * @param   float       volume    Sound volume (0.0 - 1.0)
    * @return  DOMAudio
    */
-  function PlaySound(name, volume) {
+  function doPlaySound(name, volume) {
     if ( !OSjs.Compability.audio ) {
-      console.debug('PlaySound()', 'Browser has no support for sounds!');
+      console.debug('doPlaySound()', 'Browser has no support for sounds!');
       return false;
     }
     if ( _HANDLER && !_HANDLER.getConfig('Core').Sounds ) {
-      console.debug('PlaySound()', 'Core Config has disabled sounds!');
+      console.debug('doPlaySound()', 'Core Config has disabled sounds!');
       return false;
     }
     if ( _WM && !_WM.getSetting('enableSounds') ) {
-      console.debug('PlaySound()', 'Window Manager has disabled sounds!');
+      console.debug('doPlaySound()', 'Window Manager has disabled sounds!');
       return false;
     }
 
@@ -558,7 +558,7 @@
     }
 
     var f = OSjs.API.getThemeResource(name, 'sound');
-    console.info('PlaySound()', name, f);
+    console.info('doPlaySound()', name, f);
     var a = new Audio(f);
     a.volume = volume;
     a.play();
@@ -568,7 +568,7 @@
   /**
    * Global function for uploading a file
    */
-  function UploadFiles(app, win, dest, files, onUploaded) {
+  function doUploadFiles(app, win, dest, files, onUploaded) {
     files = files || [];
     onUploaded = onUploaded || function(/*dest, filename, mime, size*/) {};
 
@@ -646,7 +646,7 @@
     // Override error handling
     window.onerror = function(message, url, linenumber, column, exception) {
       var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-      ErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'), OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'), msg, exception, true);
+      doErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'), OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'), msg, exception, true);
       return false;
     };
 
@@ -700,7 +700,7 @@
     var self = this;
 
     function _error(msg) {
-      ErrorDialog(OSjs._('ERR_CORE_INIT_FAILED'), OSjs._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
+      doErrorDialog(OSjs._('ERR_CORE_INIT_FAILED'), OSjs._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
     }
 
     function _launchWM(callback) {
@@ -712,7 +712,7 @@
 
       var wargs = wm.args || {};
       wargs.themes = _HANDLER.getThemes();
-      LaunchProcess(wm.exec, wargs, function() {
+      doLaunchProcess(wm.exec, wargs, function() {
         callback();
       }, function(error) {
         _error(OSjs._('ERR_CORE_INIT_WM_FAILED_FMT', error));
@@ -733,7 +733,7 @@
     function _loaded() {
       _launchWM(function(/*app*/) {
         _$LOADING.style.display = 'none';
-        PlaySound('service-login');
+        doPlaySound('service-login');
 
         _HANDLER.loadSession(function() {
           setTimeout(function() {
@@ -800,7 +800,7 @@
     }
 
     _HANDLER.logout(session, function() {
-      PlaySound('service-logout');
+      doPlaySound('service-logout');
       onFinished(self);
     });
   };
@@ -1291,7 +1291,7 @@
   Service.prototype._call = function(method, args, onSuccess, onError) {
     onSuccess = onSuccess || function() {};
     onError = onError || function() {};
-    return APICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
+    return doAPICall('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
   /**
@@ -1383,7 +1383,7 @@
                      OSjs._('ERR_APP_API_ERROR_DESC_FMT', self.__name, method),
                      err);
     };
-    return APICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
+    return doAPICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
   Application.prototype._createDialog = function(className, args, parentClass) {
@@ -1966,7 +1966,7 @@
     this._toggleDisabled(false);
 
     if ( this._sound ) {
-      PlaySound(this._sound, this._soundVolume);
+      doPlaySound(this._sound, this._soundVolume);
     }
 
     console.groupEnd();
@@ -2552,7 +2552,7 @@
 
   Window.prototype._error = function(title, description, message, exception, bugreport) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_error()');
-    var w = ErrorDialog(title, description, message, exception, bugreport);
+    var w = doErrorDialog(title, description, message, exception, bugreport);
     this._addChild(w);
   };
 
@@ -2928,13 +2928,13 @@
   OSjs.API.getIcon                = function(name, app)        { return _HANDLER.getIcon(name, app); };
 
   // Common API functions
-  OSjs.API.call               = APICall;
-  OSjs.API.error              = ErrorDialog;
-  OSjs.API.launch             = LaunchProcess;
-  OSjs.API.launchList         = LaunchProcessList;
-  OSjs.API.open               = LaunchFile;
-  OSjs.API.playSound          = PlaySound;
-  OSjs.API.UploadFiles        = UploadFiles;
+  OSjs.API.call               = doAPICall;
+  OSjs.API.error              = doErrorDialog;
+  OSjs.API.launch             = doLaunchProcess;
+  OSjs.API.launchList         = doLaunchProcessList;
+  OSjs.API.open               = doLaunchFile;
+  OSjs.API.playSound          = doPlaySound;
+  OSjs.API.UploadFiles        = doUploadFiles;
 
   /////////////////////////////////////////////////////////////////////////////
   // STARTUP / SHUTDOWN FUNCTIONS
@@ -2942,7 +2942,7 @@
 
   var __initialized = false;
 
-  function Initialize() {
+  function doInitialize() {
     if ( __initialized ) { return; }
     __initialized = true;
 
@@ -3009,7 +3009,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function _onLoad() {
-    Initialize();
+    doInitialize();
   }
 
   function _onUnload() {

@@ -2,7 +2,6 @@
 # High-priority
 * _[jslint]_ Investegate | "Possible strict violation"
 * _[jslint]_ Refactor | "Don't make functions within a loop."
-* _[jslint]_ Rename functions | "Missing 'new' prefix when invoking a constructor."
 * _[Backend]_ Finish Node.js backend
 * _[Application]_ MusicPlayer -- Finish
 * _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
