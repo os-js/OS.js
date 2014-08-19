@@ -183,7 +183,7 @@
           OSjs.Utils.$empty(ul);
         }
 
-        var level = item._element.className.replace('Level_', '') << 0;
+        var level = parseInt(item._element.className.replace('Level_', ''), 0);
         var fileList = self._createList(list, true);
         self._render(fileList, item._element, level+1, ul);
         ul.style.display = 'block';
@@ -637,7 +637,7 @@
               for ( var i = 0, l = res.result.length; i < l; i++ ) {
                 if ( res.result[i].filename !== '..' ) {
                   if ( res.result[i].size ) {
-                    size += (res.result[i].size << 0);
+                    size += parseInt(res.result[i].size, 10);
                   }
                   num++;
                 }

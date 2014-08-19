@@ -742,10 +742,10 @@
           if ( el ) {
             var ow = el.offsetWidth;
             try {
-              ow += OSjs.Utils.$getStyle(el, 'padding-left').replace('px', '') << 0;
-              ow += OSjs.Utils.$getStyle(el, 'padding-right').replace('px', '') << 0;
-              ow += OSjs.Utils.$getStyle(el, 'margin-left').replace('px', '') << 0;
-              ow += OSjs.Utils.$getStyle(el, 'margin-right').replace('px', '') << 0;
+              ow += parseInt(OSjs.Utils.$getStyle(el, 'padding-left').replace('px', ''), 10);
+              ow += parseInt(OSjs.Utils.$getStyle(el, 'padding-right').replace('px', ''), 10);
+              ow += parseInt(OSjs.Utils.$getStyle(el, 'margin-left').replace('px', ''), 10);
+              ow += parseInt(OSjs.Utils.$getStyle(el, 'margin-right').replace('px', ''), 10);
             } catch ( e ) {}
             skip = Math.floor(this.$view.offsetWidth / ow);
           }

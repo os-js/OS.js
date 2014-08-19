@@ -269,11 +269,11 @@
 
   OSjs.Utils.HEXtoRGB = function(hex) {
     var rgb = parseInt(hex.replace('#', ''), 16);
-    return {
-      r : (rgb & (255 << 16)) >> 16,
-      g : (rgb & (255 << 8)) >> 8,
-      b : (rgb & 255)
-    };
+    var val = {};
+    val.r = (rgb & (255 << 16)) >> 16;
+    val.g = (rgb & (255 << 8)) >> 8;
+    val.b = (rgb & 255);
+    return val;
   };
 
 

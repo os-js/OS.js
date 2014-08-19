@@ -68,7 +68,7 @@
 
   ProgressBar.prototype.setPercentage = function(p) {
     if ( p < 0 || p > 100 ) { return; }
-    this.percentage       = (p << 0);
+    this.percentage       = parseInt(p, 10);
     this.$bar.style.width = this.percentage + '%';
     this.$label.innerHTML = this.percentage + '%';
   };

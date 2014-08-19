@@ -61,7 +61,7 @@
       this.fontName = name;
     }
     if ( size !== null && size ) {
-      this.fontSize = size << 0;
+      this.fontSize = parseInt(size, 10);
     }
 
     var styles = [];

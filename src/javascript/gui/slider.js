@@ -165,10 +165,10 @@
   };
 
   Slider.prototype.setPercentage = function(p, evt) {
-    p = p << 0;
+    p = parseInt(p, 10);
 
     var cd  = (this.max - this.min);
-    var val = (cd*(p/100)) << 0;
+    var val = parseInt(cd*(p/100), 10);
     this.val = val;
     this.onUpdate.call(this, val, p, evt);
   };
@@ -183,7 +183,7 @@
       tmp = (cy/th)*100;
     }
 
-    var val = (cd*(tmp/100)) << 0;
+    var val = parseInt(cd*(tmp/100), 10);
     this.setValue(val);
     this.setPercentage(tmp, 'click');
   };

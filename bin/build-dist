@@ -5,6 +5,9 @@ var _fs = require('fs'),
 
 var header_js = ([
 //'"use strict";',
+'/*jshint maxerr: 10000 */',
+'var OSjs;',
+'',
 '/*!',
 ' * OS.js - JavaScript Operating System',
 ' *',
