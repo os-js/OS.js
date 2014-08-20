@@ -73,9 +73,21 @@
 
   ToolBar.prototype.render = function() {
     if ( !this.$container ) { return; }
+    var self = this;
+
+    function _bindMouseClick(btn, key, itm) {
+      btn.onclick = function(ev) {
+        if ( itm.grouped ) {
+          OSjs.Utils.$removeClass(self.$active, 'Active');
+          self.$active = this;
+          OSjs.Utils.$addClass(self.$active, 'Active');
+        }
+
+        self._onItemSelect(ev, this, key, itm);
+      };
+    }
 
     var el, btn, img, span, item;
-    var self = this;
     for ( var i in this.items ) {
       if ( this.items.hasOwnProperty(i) ) {
         item = this.items[i] || null;
@@ -120,17 +132,7 @@
           btn.title = item.tooltip;
         }
 
-        btn.onclick = (function(key, itm) {
-          return function(ev) {
-            if ( itm.grouped ) {
-              OSjs.Utils.$removeClass(self.$active, 'Active');
-              self.$active = this;
-              OSjs.Utils.$addClass(self.$active, 'Active');
-            }
-
-            self._onItemSelect(ev, this, key, itm);
-          };
-        })(i, item);
+        _bindMouseClick(btn, i, item);
 
         el.appendChild(btn);
         this.$container.appendChild(el);

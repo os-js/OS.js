@@ -1,7 +1,6 @@
 
 # High-priority
 * _[jslint]_ Investegate | "Possible strict violation"
-* _[jslint]_ Refactor | "Don't make functions within a loop."
 * _[Backend]_ Finish Node.js backend
 * _[Application]_ MusicPlayer -- Finish
 * _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
@@ -18,6 +17,7 @@
 * _[Application]_ CoreWM -- Finish panel item options
 * _[Application]_ Draw -- Finish features (marked in source)
 * _[Application]_ Draw -- Add more effects with the convolute method
+* _[Application]_ CodeMirror -- SaveAs does not change filename in tab
 * _[Dialogs]_ Go over dialog code and look for possible refactors
 * _[Themes]_ More Themes
 * _[Locales]_ Add more of the ERR_ strings etc.

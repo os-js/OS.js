@@ -1597,13 +1597,6 @@
     var self = this;
     var isTouch = OSjs.Utils.getCompability().touch;
 
-    function _showBorder() {
-      OSjs.Utils.$addClass(main, 'WindowHintDnD');
-    }
-    function _hideBorder() {
-      OSjs.Utils.$removeClass(main, 'WindowHintDnD');
-    }
-
     console.group('OSjs::Core::Window::init()');
 
     this._state.focused = false;
@@ -1677,6 +1670,13 @@
       return false;
     });
 
+    function _showBorder() {
+      OSjs.Utils.$addClass(main, 'WindowHintDnD');
+    }
+
+    function _hideBorder() {
+      OSjs.Utils.$removeClass(main, 'WindowHintDnD');
+    }
 
     if ( this._properties.allow_drop ) {
       if ( OSjs.Compability.dnd ) {

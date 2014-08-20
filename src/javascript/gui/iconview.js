@@ -83,13 +83,38 @@
   };
 
   IconView.prototype._render = function() {
+    var self = this;
+
     function _createImage(i) {
       return OSjs.API.getThemeResource(i, 'icon');
     }
 
+    function _bindEvents(li, iter, singleClick) {
+      // FIXME: IconView - Use local event listener adding
+      li.oncontextmenu = function(ev) {
+        ev.stopPropagation(); // Or else eventual ContextMenu is blurred
+        ev.preventDefault();
+
+        self._onContextMenu(ev, iter);
+      };
+
+      if ( singleClick ) {
+        li.onclick = function(ev) {
+          self._onSelect(ev, iter);
+          self._onActivate(ev, iter);
+        };
+      } else {
+        li.onclick = function(ev) {
+          self._onSelect(ev, iter);
+        };
+        li.dblonclick = function(ev) {
+          self._onActivate(ev, iter);
+        };
+      }
+    }
+
     var i, l, iter, li, imgContainer, img, lblContainer, lbl;
     var k, j;
-    var self = this;
     for ( i = 0, l = this.data.length; i < l; i++ ) {
       iter = this.data[i];
       imgContainer = null;
@@ -119,37 +144,7 @@
       lbl.appendChild(document.createTextNode(iter.label));
       lblContainer.appendChild(lbl);
 
-      // FIXME: IconView - Use local event listener adding
-      li.oncontextmenu = (function(it) {
-        return function(ev) {
-          ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-          ev.preventDefault();
-
-          self._onContextMenu(ev, it);
-        };
-      })(iter);
-
-      if ( this.singleClick ) {
-        li.onclick = (function(it) {
-          return function(ev) {
-            self._onSelect(ev, it);
-
-            self._onActivate(ev, it);
-          };
-        })(iter);
-      } else {
-        li.onclick = (function(it) {
-          return function(ev) {
-            self._onSelect(ev, it);
-          };
-        })(iter);
-
-        li.ondblclick = (function(it) {
-          return function(ev) {
-            self._onActivate(ev, it);
-          };
-        })(iter);
-      }
+      _bindEvents(li, iter, this.singleClick);
 
       if ( imgContainer ) {
         li.appendChild(imgContainer);

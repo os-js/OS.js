@@ -181,6 +181,30 @@
     var self = this;
     var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span, label, resizer;
 
+    function _bindEvents(row, iter, singleClick) {
+      // FIXME: IconView - Use local event listener adding
+      row.oncontextmenu = function(ev) {
+        ev.stopPropagation(); // Or else eventual ContextMenu is blurred
+        ev.preventDefault();
+
+        self._onContextMenu(ev, iter);
+      };
+
+      if ( singleClick ) {
+        row.onclick = function(ev) {
+          self._onSelect(ev, iter);
+          self._onActivate(ev, iter);
+        };
+      } else {
+        row.onclick = function(ev) {
+          self._onSelect(ev, iter);
+        };
+        row.dblonclick = function(ev) {
+          self._onActivate(ev, iter);
+        };
+      }
+    }
+
     // Columns (header)
     row = document.createElement('tr');
     for ( i = 0, l = columns.length; i < l; i++ ) {
@@ -265,38 +289,7 @@
           col.appendChild(span);
         }
 
-        // FIXME: ListView - Use local event listener adding
-
-        row.oncontextmenu = (function(it) {
-          return function(ev) {
-            ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-            ev.preventDefault();
-
-            self._onContextMenu(ev, it);
-          };
-        })(this.data[i]);
-
-        if ( this.singleClick ) {
-          row.onclick = (function(it) {
-            return function(ev) {
-              self._onSelect(ev, it);
-              self._onActivate(ev, it);
-            };
-          })(this.data[i]);
-        } else {
-          row.onclick = (function(it) {
-            return function(ev) {
-              self._onSelect(ev, it);
-            };
-          })(this.data[i]);
-
-          row.ondblclick = (function(it) {
-            return function(ev) {
-              self._onActivate(ev, it);
-            };
-          })(this.data[i]);
-        }
-
+        _bindEvents(row, this.data[i], this.singleClick);
 
         row.appendChild(col);
       }

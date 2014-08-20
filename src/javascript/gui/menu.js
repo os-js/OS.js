@@ -56,7 +56,26 @@
       }
     }
 
+    function _bindMouseOver(m, s) {
+      m.onmouseover = function(ev) {
+        var elem = this;
+        setTimeout(function() {
+          self.show(elem, s);
+        }, 0);
+      };
+    }
+
+    function _bindMouseClick(m, ref) {
+      m.onclick = function(ev) {
+        if ( this.className.match(/Disabled/) ) { return; }
+        if ( this.getAttribute('disabled') === 'disabled' ) { return; }
+
+        _onclick(ev, ref.onClick);
+      };
+    }
+
     function _createMenu(list) {
+
       var el          = document.createElement('div');
       el.className    = 'Menu';
       el.oncontextmenu= function(ev) {
@@ -115,23 +134,9 @@
             m.appendChild(sub);
             m.appendChild(arrow);
 
-            m.onmouseover = (function(s) {
-              return function(ev) {
-                var elem = this;
-                setTimeout(function() {
-                  self.show(elem, s);
-                }, 0);
-              };
-            })(sub);
+            _bindMouseOver(m, sub);
           } else {
-            m.onclick = (function(ref) {
-              return function(ev) {
-                if ( this.className.match(/Disabled/) ) { return; }
-                if ( this.getAttribute('disabled') === 'disabled' ) { return; }
-
-                _onclick(ev, ref.onClick);
-              };
-            })(list[i]);
+            _bindMouseClick(m, list[i]);
           }
 
           ul.appendChild(m);

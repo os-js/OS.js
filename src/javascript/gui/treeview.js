@@ -77,6 +77,63 @@
   TreeView.prototype._render = function(list, root, expandLevel, ul) {
     var self = this;
 
+    function _bindEvents(inner, c, e, singleClick) {
+      // FIXME: TreeView - Use local event listener adding
+
+      inner.oncontextmenu =  function(ev) {
+        ev.stopPropagation(); // Or else eventual ContextMenu is blurred
+        ev.preventDefault();
+
+        if ( e ) {
+          ev.stopPropagation();
+        }
+        self._onContextMenu(ev, c);
+        return false;
+      };
+
+      if ( singleClick ) {
+        inner.onclick = function(ev) {
+          if ( e ) {
+            ev.stopPropagation();
+          }
+          self._onSelect(ev, c);
+
+          self._onActivate(ev, c);
+        };
+      } else {
+        inner.onclick = function(ev) {
+          if ( e ) {
+            ev.stopPropagation();
+          }
+          self._onSelect(ev, c);
+        };
+
+        inner.ondblclick = function(ev) {
+          if ( e ) {
+            ev.stopPropagation();
+          }
+          self._onActivate(ev, c);
+        };
+      }
+    }
+
+    function _bindSubEvents(exp, c, el, it) {
+      exp.onclick = function(ev) {
+        var s = c.style.display;
+        if ( s === 'none' || s === '' ) {
+          c.style.display = 'block';
+          OSjs.Utils.$addClass(el, 'Expanded');
+
+          self._onExpand.call(self, ev, it);
+        } else {
+          c.style.display = 'none';
+          OSjs.Utils.$removeClass(el, 'Expanded');
+
+          self._onCollapse.call(self, ev, it);
+        }
+      };
+    }
+
     function _render(list, root, ul, level) {
       if ( typeof level === 'undefined' ) {
         level = false;
@@ -129,50 +186,7 @@
         title.appendChild(document.createTextNode(iter.title));
         inner.appendChild(title);
 
-        // FIXME: TreeView - Use local event listener adding
-        inner.oncontextmenu = (function(c, e) {
-          return function(ev) {
-            ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-            ev.preventDefault();
-
-            if ( e ) {
-              ev.stopPropagation();
-            }
-            self._onContextMenu(ev, c);
-            return false;
-          };
-        })(iter, !exp);
-
-        if ( this.singleClick ) {
-          inner.onclick = (function(c, e) {
-            return function(ev) {
-              if ( e ) {
-                ev.stopPropagation();
-              }
-              self._onSelect(ev, c);
-
-              self._onActivate(ev, c);
-            };
-          })(iter, !exp);
-        } else {
-          inner.onclick = (function(c, e) {
-            return function(ev) {
-              if ( e ) {
-                ev.stopPropagation();
-              }
-              self._onSelect(ev, c);
-            };
-          })(iter, !exp);
-
-          inner.ondblclick = (function(c, e) {
-            return function(ev) {
-              if ( e ) {
-                ev.stopPropagation();
-              }
-              self._onActivate(ev, c);
-            };
-          })(iter, !exp);
-        }
+        _bindEvents(inner, iter, !exp, this.singleClick);
 
         li.appendChild(inner);
 
@@ -181,22 +195,7 @@
           if ( this.expandLevel === true || (level !== false && this.expandLevel >= level) ) {
             child.style.display = 'block';
           }
-          exp.onclick = (function(c, el, it) {
-            return function(ev) {
-              var s = c.style.display;
-              if ( s === 'none' || s === '' ) {
-                c.style.display = 'block';
-                OSjs.Utils.$addClass(el, 'Expanded');
-
-                self._onExpand.call(self, ev, it);
-              } else {
-                c.style.display = 'none';
-                OSjs.Utils.$removeClass(el, 'Expanded');
-
-                self._onCollapse.call(self, ev, it);
-              }
-            };
-          })(child, li, iter);
+          _bindSubEvents(exp, child, li, iter);
         }
 
         this.total++;
