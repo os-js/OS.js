@@ -8,7 +8,7 @@
   "noempty": true,
   "nonew": true,
   "sub": true,
-  "undef": false,
+  "undef": true,
   "unused": false,
   "nonbsp": true,
   "trailing": true,
