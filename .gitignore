@@ -4,6 +4,7 @@ node_modules
 .DS_Store
 .git-old
 *-tmp.*
+twistd.*
 src/server-node/node_modules/
 src/server-php/bugreport.php
 src/server-php/settings.php
