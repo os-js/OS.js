@@ -63,6 +63,11 @@ if ( $response = APIRequest::call() ) {
   $response->output();
   return true;
 } else {
+
+
+  if ( php_sapi_name() === "cli-server" ) {
+    return false;
+  }
   header("HTTP/1.0 404 Not Found");
   print "404 Not Found";
   if ( !empty($_SERVER["REQUEST_URI"]) ) {

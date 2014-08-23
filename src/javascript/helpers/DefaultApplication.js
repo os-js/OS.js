@@ -218,7 +218,7 @@
   /**
    * Default Error Handler
    */
-  DefaultApplication.prototype.onError = function(error, action) {
+  DefaultApplication.prototype.onError = function(title, message, action) {
     return false; // Use internal error handler
   };
 
@@ -327,18 +327,20 @@
   /**
    * File operation error
    */
-  DefaultApplication.prototype._onError = function(error, action) {
+  DefaultApplication.prototype._onError = function(title, message, action) {
     action = action || 'unknown';
 
     this._setCurrentFile(null, null);
 
-    if ( !this.onError(error, action) ) {
+    if ( !this.onError(title, message, action) ) {
       if ( this.mainWindow ) {
-        this.mainWindow._error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
+        //this.mainWindow._error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
+        this.mainWindow._error(title, message);
         this.mainWindow._toggleDisabled(false);
         this.mainWindow._toggleLoading(false);
       } else {
-        OSjs.API.error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
+        //OSjs.API.error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
+        OSjs.API.error(title, message);
       }
     }
   };
