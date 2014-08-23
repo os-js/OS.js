@@ -332,15 +332,18 @@
 
     this._setCurrentFile(null, null);
 
+    console.warn([title, message,  action]);
+
     if ( !this.onError(title, message, action) ) {
+      var t = OSjs._('ERR_GENERIC_APP_FMT', this.__label);
       if ( this.mainWindow ) {
         //this.mainWindow._error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
-        this.mainWindow._error(title, message);
+        this.mainWindow._error(t, title, message);
         this.mainWindow._toggleDisabled(false);
         this.mainWindow._toggleLoading(false);
       } else {
         //OSjs.API.error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
-        OSjs.API.error(title, message);
+        OSjs.API.error(t, title, message);
       }
     }
   };

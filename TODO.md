@@ -1,10 +1,5 @@
 
 # High-priority
-* _[Core]_ Open file error message fires twice
-  - Create file
-  - Save session
-  - Remove from fs
-  - Resume session = error message
 * _[jslint]_ Investegate | "Possible strict violation"
 * _[Backend]_ Finish Node.js backend
 * _[Application]_ MusicPlayer -- Finish
