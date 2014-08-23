@@ -182,7 +182,6 @@
     var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span, label, resizer;
 
     function _bindEvents(row, iter, singleClick) {
-      console.warn("XXX", row, iter, singleClick);
       // FIXME: IconView - Use local event listener adding
       row.oncontextmenu = function(ev) {
         ev.stopPropagation(); // Or else eventual ContextMenu is blurred
