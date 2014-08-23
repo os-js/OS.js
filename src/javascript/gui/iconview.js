@@ -107,7 +107,7 @@
         li.onclick = function(ev) {
           self._onSelect(ev, iter);
         };
-        li.dblonclick = function(ev) {
+        li.ondblclick = function(ev) {
           self._onActivate(ev, iter);
         };
       }
