@@ -332,8 +332,6 @@
 
     this._setCurrentFile(null, null);
 
-    console.warn([title, message,  action]);
-
     if ( !this.onError(title, message, action) ) {
       var t = OSjs._('ERR_GENERIC_APP_FMT', this.__label);
       if ( this.mainWindow ) {
