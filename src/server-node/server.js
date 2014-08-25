@@ -194,10 +194,6 @@
               }
             break;
 
-            case 'bugreport' :
-              respondJSON({result: null, error: 'Not implemented!'}, response);
-            break;
-
             case 'fs' :
               var m = args.method;
               var a = args['arguments'] || [];
