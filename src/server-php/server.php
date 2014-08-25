@@ -40,6 +40,8 @@ error_reporting(E_ALL);
 // Bootstrapping
 $root = __DIR__;
 
+define("ROOT", $root);
+
 require "{$root}/vfs.php";
 require "{$root}/api.php";
 require "{$root}/settings.php";

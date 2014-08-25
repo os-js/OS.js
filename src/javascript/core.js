@@ -300,7 +300,7 @@
    * @param   Function    onFinished      Callback on success
    * @param   Function    onError         Callback on error
    * @param   Function    onConstructed   Callback on application init
-   * @return  void
+   * @return  bool
    */
   function doLaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
@@ -453,7 +453,7 @@
     var data = _HANDLER.getApplicationMetadata(n);
     if ( !data ) {
       _error(OSjs._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
-      return;
+      return false;
     }
 
     if ( typeof data.compability !== 'undefined' && (data.compability instanceof Array) ) {
@@ -470,12 +470,14 @@
       }
       if ( nosupport.length ) {
         _error(OSjs._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
-        return;
+        return false;
       }
     }
 
     _createSplash(data);
     _preload(data);
+
+    return true;
   }
 
   /**
