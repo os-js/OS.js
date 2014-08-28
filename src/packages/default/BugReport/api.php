@@ -44,7 +44,6 @@ EOHTML;
     $mail->Body       = $html;
 
     // GMail config
-    $mail->SMTPDebug  = 1;
     $mail->SMTPAuth   = true;
     $mail->SMTPSecure = 'ssl';
     $mail->Host       = "smtp.gmail.com";
