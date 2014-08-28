@@ -61,7 +61,7 @@
 
 .WMPanel .PanelItemNotificationArea > div.BusyNotification > div,
 .WMPanel .PanelItemNotificationArea > div.StartupNotification > div {
-  border: 2px solid #000;
+  border: 2px solid #fff;
   border-radius: 100%;
   margin-left : -10px;
   margin-top : -10px;
@@ -73,7 +73,7 @@
   top: 2px;
   width: 2px;
   height: 6px; /*( 16px / 2 ) - 2px;*/
-  background-color: #000;
+  background-color: #fff;
   content: "";
 
   -webkit-animation: NotificationSpinAnim 3s linear infinite;
@@ -93,7 +93,7 @@
     top: 3px;
     width: 2px;
     height: 5px; /*( 16px / 2 ) - 3px;*/
-    background-color: #000;
+    background-color: #fff;
     content: "";
 
     -webkit-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
@@ -115,7 +115,7 @@
   top: 2px;
   width: 2px;
   height: 12px;
-  background-color: #000;
+  background-color: #fff;
   content: "";
 
   -webkit-transform-origin: 1px 6px; /* 1px ( 24px / 2 ) - 2px;*/
