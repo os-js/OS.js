@@ -74,10 +74,10 @@
     var s = arguments[1];
     var a = Array.prototype.slice.call(arguments, 1);
 
-    if ( l[CurrentLocale][s] ) {
+    if ( l[CurrentLocale] && l[CurrentLocale][s] ) {
       a[0] = l[CurrentLocale][s];
     } else {
-      a[0] = l[DefaultLocale][s] || s;
+      a[0] = l[DefaultLocale] ? (l[DefaultLocale][s] || s) : s;
     }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
