@@ -1,5 +1,8 @@
 To use BugReporter
-1: Clone into vendor/
+1: Enable application and in package.json
+2: Update manifest
+   `make manifest`
+3: Clone into vendor/
    https://github.com/PHPMailer/PHPMailer.git
-2: Change username and password in
+4: Change username and password in
    src/packages/default/BugReport/api.php
