@@ -61,9 +61,13 @@
     var misc = this._addGUIElement(new OSjs.GUI.Textarea('ReportData'), root);
     misc.setValue(JSON.stringify(app.reportData, null, 2));
 
-    this._addGUIElement(new OSjs.GUI.Button('Send', {label: OSjs._('Send and Close'), onClick: function() {
+    var btn = this._addGUIElement(new OSjs.GUI.Button('Send', {label: OSjs._('Send and Close'), onClick: function() {
       if ( app ) {
-        app.report(description.getValue(), misc.getValue());
+        btn.setDisabled(true);
+
+        app.report(description.getValue(), misc.getValue(), function() {
+          btn.setDisabled(false);
+        });
       } else {
         self._close();
       }
@@ -109,11 +113,16 @@
     }
   };
 
-  ApplicationBugReport.prototype.report  = function(message, misc) {
+  ApplicationBugReport.prototype.report  = function(message, misc, cb) {
+    cb = cb || function() {};
+
     var self = this;
 
     this._call('Report', {message:message, misc:misc}, function(response) {
       var error = 'Unknown error';
+
+      cb(response);
+
       if ( response ) {
         if ( response.result === true ) {
           alert('The error was reported and will be looked into');
