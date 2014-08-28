@@ -1,6 +1,6 @@
 <?php
 
-@include ROOT . "/vendor/PHPMailer/PHPMailerAutoload.php";
+require ROOTDIR . "/vendor/PHPMailer/PHPMailerAutoload.php";
 
 class ApplicationBugReport
 {
