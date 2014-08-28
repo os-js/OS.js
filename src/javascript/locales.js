@@ -56,7 +56,12 @@
   OSjs._ = function() {
     var s = arguments[0];
     var a = arguments;
-    a[0] = OSjs.Locales[CurrentLocale][s] || s;
+
+    if ( OSjs.Locales[CurrentLocale][s] ) {
+      a[0] = OSjs.Locales[CurrentLocale][s];
+    } else {
+      a[0] = OSjs.Locales[DefaultLocale][s] || s;
+    }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
   };
@@ -68,7 +73,12 @@
     var l = arguments[0];
     var s = arguments[1];
     var a = Array.prototype.slice.call(arguments, 1);
-    a[0] = l[CurrentLocale] ? (l[CurrentLocale][s] || s) : s;
+
+    if ( l[CurrentLocale][s] ) {
+      a[0] = l[CurrentLocale][s];
+    } else {
+      a[0] = l[DefaultLocale][s] || s;
+    }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
   };

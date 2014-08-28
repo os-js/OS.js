@@ -62,11 +62,6 @@
     'ERR_APP_API_ERROR': 'Anwendungs API Fehler',
     'ERR_APP_API_ERROR_DESC_FMT': 'Anwendung {0} konnte Aktion nicht ausführen \'{1}\'',
 
-    // helpers.js
-    'The requested file MIME \'{0}\' is not accepted by this application.': 'Die Anwendung unterstützt den folgenden Dateityp \'{0}\' nicht',
-    'Fatal error on open file!': 'Schwerwigender Fehler während des Öffnen der Datei!',
-    'Fatal error on save file!': 'Schwerwigender Fehler während des Speichern der Datei!',
-
     // dialogs.js
     'Choose Application': 'Wählen Sie eine Anwendung',
     'Choose an application to open': 'Wählen Sie eine Anwendung zum Öffnen',
