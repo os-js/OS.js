@@ -100,10 +100,6 @@
     'Font Dialog' : 'Skriftype-dialog',
 
     // DefaultApplication
-    'ERR_FILE_APP_OPEN' : 'Cannot open file',
-    'ERR_FILE_APP_OPEN_FMT' : 'The file {0} could not be opened because the mime {1} is not supported',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : 'The file {0} could not be opened',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : 'The file {0} could not be saved',
     'ERR_GENERIC_APP_FMT' : '{0} Applikasjon Feil',
     'ERR_GENERIC_APP_ACTION_FMT' : 'Klarte ikke utføre \'{0}\'',
     'ERR_GENERIC_APP_UNKNOWN' : 'Unkjent Feil',
