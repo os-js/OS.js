@@ -1,3 +1,14 @@
+# 2.0.0-alpha16
+
+* jslint: Core code is now acceptable
+* php-webserver: Fixed for internal server bugs remaining from refactors
+* GUI: Bugfix for ListView dblclick (typo in refactor :()
+* GUI: Bugfix for IconView dblclick (typo in refactor :()
+* Updated licences and headers
+* Applications: Bugreporting is now a standalone application
+* DefaultApplication: Small fixes for error handling
+* CoreWM: Updated status notification colors
+
 # 2.0.0-alpha15
 
 * Utils: Added $createCSS
