@@ -1,12 +1,16 @@
 #!/bin/bash
 
 YUI_EXEC="vendor/yuicompressor-2.4.8.jar"
+CC_EXEC="vendor/closurecompiler.jar"
 
 js="dist/osjs.js"
 css="dist/osjs.css"
 
-java -jar ${YUI_EXEC} --type js --charset=utf-8 $js -o $js
+#java -jar ${YUI_EXEC} --type js --charset=utf-8 $js -o $js
+java -jar ${CC_EXEC} --charset=utf-8 --js $js --js_output_file /tmp/osjs.js
+mv /tmp/osjs.js $js
 java -jar ${YUI_EXEC} --type css --charset=utf-8 $css -o $css
+exit
 
 for r in `find dist/packages -type d -maxdepth 1 -mindepth 1`; do
 
