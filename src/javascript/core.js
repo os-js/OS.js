@@ -38,12 +38,6 @@
   console.group     = console.group     || console.log;
   console.groupEnd  = console.groupEnd  || console.log;
 
-  /*
-  window.indexedDB      = window.indexedDB      || window.mozIndexedDB          || window.webkitIndexedDB   || window.msIndexedDB;
-  window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;
-  window.IDBKeyRange    = window.IDBKeyRange    || window.webkitIDBKeyRange     || window.msIDBKeyRange;
-  */
-
   window.OSjs       = window.OSjs       || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
@@ -53,9 +47,41 @@
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
   OSjs.Locale       = OSjs.Locale       || {};
+  OSjs.Hooks        = {};
   OSjs.Core         = {};
   OSjs.API          = {};
   OSjs.Version      = '2.0-alpha16';
+
+  /////////////////////////////////////////////////////////////////////////////
+  // DEFAULT HOOKS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Hooks.onInitialize          = function() {}; // 1: When OS.js is starting
+  OSjs.Hooks.onInited              = function() {}; // 2: When all resources has been loaded
+  OSjs.Hooks.onWMInited            = function() {}; // 3: When Window Manager has started
+  OSjs.Hooks.onSessionLoaded       = function() {}; // 4: After session has been loaded or restored
+  OSjs.Hooks.onLogout              = function() {}; // When logout is requested
+  OSjs.Hooks.onShutdown            = function() {}; // When shutting down after successfull logout
+  OSjs.Hooks.onApplicationLaunch   = function() {}; // On application launch request
+  OSjs.Hooks.onApplicationLaunched = function() {}; // When application has been launched
+
+  /**
+   * Method for triggering a hook
+   */
+  OSjs.Hooks._trigger = function(name, args, thisarg) {
+    thisarg = thisarg || OSjs;
+    args = args || [];
+
+    if ( typeof OSjs.Hooks[name] === 'function' ) {
+      try {
+        OSjs.Hooks[name].apply(thisarg, args);
+      } catch ( e ) {
+        console.warn('Error on Hook', e, e.stack);
+      }
+    } else {
+      console.warn('No such Hook', name);
+    }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
@@ -312,6 +338,8 @@
 
     console.group('doLaunchProcess()', n, arg);
 
+    OSjs.Hooks._trigger('onApplicationLaunch', [n, arg]);
+
     var splash = null;
     var splashBar = null;
 
@@ -421,6 +449,9 @@
             _HANDLER.getApplicationSettings(a.__name, function(settings) {
               a.init(_CORE, settings, result);
               onFinished(a, result);
+
+              OSjs.Hooks._trigger('onApplicationLaunched', [n, arg]);
+
               console.groupEnd();
             });
           } catch ( e ) {
@@ -733,7 +764,11 @@
     }
 
     function _loaded() {
+      OSjs.Hooks._trigger('onInited');
+
       _launchWM(function(/*app*/) {
+        OSjs.Hooks._trigger('onWMInited');
+
         _$LOADING.style.display = 'none';
         doPlaySound('service-login');
 
@@ -741,6 +776,8 @@
           setTimeout(function() {
             self._onResize();
           }, ANIMDURATION);
+
+          OSjs.Hooks._trigger('onSessionLoaded');
         });
 
         _HANDLER.onInitialized();
@@ -752,6 +789,7 @@
     }
 
     _HANDLER.boot(function(result, error) {
+
       if ( error ) {
         _error(error);
         return;
@@ -801,7 +839,11 @@
       session = data;
     }
 
+    OSjs.Hooks._trigger('onLogout');
+
     _HANDLER.logout(session, function() {
+      OSjs.Hooks._trigger('onShutdown');
+
       doPlaySound('service-logout');
       onFinished(self);
     });
@@ -1147,6 +1189,14 @@
     };
   })();
 
+  WindowManager.prototype.createNotificationIcon = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.destroyNotificationIcon = function() {
+    // Implement in your WM
+  };
+
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
       console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
@@ -1194,7 +1244,7 @@
   };
 
   WindowManager.prototype.showSettings = function() {
-    // Placeholder
+    // Implement in your WM
   };
 
   WindowManager.prototype.applySettings = function(settings, force) {
@@ -1235,6 +1285,18 @@
       }
     }
     return false;
+  };
+
+  WindowManager.prototype.getDefaultSetting = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.getPanel = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.getPanels = function() {
+    // Implement in your WM
   };
 
   WindowManager.prototype.getWindowSpace = function() {
@@ -2955,11 +3017,7 @@
     // Launch handler
     _HANDLER = new OSjs.Handlers.Current();
     _HANDLER.init(function() {
-      if ( typeof OSjs.Hooks !== 'undefined' ) {
-        if ( typeof OSjs.Hooks.onInitialize === 'function' ) {
-          OSjs.Hooks.onInitialize();
-        }
-      }
+      OSjs.Hooks._trigger('onInitialize');
 
       _$SPLASH              = document.getElementById('LoadingScreen');
       _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
