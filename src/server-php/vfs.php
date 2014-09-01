@@ -40,7 +40,8 @@ class MIME
   protected function __construct() {
     $file = sprintf("%s/src/%s", ROOTDIR, "mime.json");
     if ( file_exists($file) ) {
-      $this->data = (array)json_decode(file_get_contents($file));
+      $arr = (array)json_decode(file_get_contents($file));
+      $this->data = $arr["mappings"];
     }
   }
 

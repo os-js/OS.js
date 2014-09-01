@@ -247,7 +247,7 @@
 
     var mimeConfig = readConfig("src/mime.json");
     if ( mimeConfig !== false ) {
-      CONFIG.mimes = mimeConfig;
+      CONFIG.mimes = mimeConfig.mapping;
     }
 
     var repoConfig = readConfig("src/packages/repositories.json");

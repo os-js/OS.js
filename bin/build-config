@@ -8,8 +8,11 @@ var OUT_PHP   = "src/server-php/settings.php";
 var OUT_NODE  = "src/server-node/settings.json";
 var OUT_JS    = "dist/settings.js";
 var REPO_FILE = "src/packages/repositories.json";
+var MIME_FILE = "src/mime.json";
 
 var buildData = JSON.parse(_fs.readFileSync("src/build.json"));
+var mimeData = JSON.parse(_fs.readFileSync(MIME_FILE)).descriptions;
+
 if ( buildData !== null ) {
   var settings = buildData.settings.backend;
   var handler  = buildData.handler || "demo";
@@ -37,6 +40,7 @@ if ( buildData !== null ) {
   _fs.writeFileSync(OUT_PHP, cfg_php);
 
   settings = buildData.settings.frontend;
+  settings.MIME = mimeData;
   settings.Core.Repositories = JSON.parse(_fs.readFileSync(REPO_FILE));
   _fs.writeFileSync(OUT_JS, cfg_js.replace("%CONFIG%", JSON.stringify(settings, null, 2)));
 }
