@@ -1055,9 +1055,10 @@
     console.log('Name', name);
     console.log('Arguments', args);
 
-    this._windows  = [];
-    this._settings = {};
-    this._themes   = args.themes || [{'default': {title: 'Default'}}];
+    this._$notifications = null;
+    this._windows        = [];
+    this._settings       = {};
+    this._themes         = args.themes || [{'default': {title: 'Default'}}];
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');
@@ -1069,10 +1070,6 @@
     _WM = (ref || this);
 
     console.groupEnd();
-
-    this._$notifications  = document.createElement('div');
-    this._$notifications.id = 'Notifications';
-    document.body.appendChild(this._$notifications);
   };
 
   WindowManager.prototype = Object.create(Process.prototype);
@@ -1098,103 +1095,6 @@
 
   WindowManager.prototype.init = function() {
     console.log('OSjs::Core::WindowManager::init()');
-  };
-
-  WindowManager.prototype.onKeyDown = function(ev, win) {
-  };
-
-  WindowManager.prototype.resize = function(ev, rect) {
-  };
-
-  WindowManager.prototype.notification = (function() {
-    var _visible = 0;
-
-    return function(opts) {
-      opts          = opts          || {};
-      opts.icon     = opts.icon     || null;
-      opts.title    = opts.title    || null;
-      opts.message  = opts.message  || '';
-      opts.onClick  = opts.onClick  || function() {};
-
-      if ( typeof opts.timeout === 'undefined' ) {
-        opts.timeout  = 5000;
-      }
-
-      console.log('OSjs::Core::WindowManager::notification()', opts);
-
-      var container  = document.createElement('div');
-      var classNames = ['Notification'];
-      var self       = this;
-      var timeout    = null;
-
-      function _remove() {
-        if ( timeout ) {
-          clearTimeout(timeout);
-          timeout = null;
-        }
-
-        container.onclick = null;
-        if ( container.parentNode ) {
-          container.parentNode.removeChild(container);
-        }
-        _visible--;
-        if ( _visible <= 0 ) {
-          self._$notifications.style.display = 'none';
-        }
-      }
-
-      if ( opts.icon ) {
-        var icon = document.createElement('img');
-        icon.alt = '';
-        icon.src = OSjs.API.getThemeResource(opts.icon, 'icon', '32x32');
-        classNames.push('HasIcon');
-        container.appendChild(icon);
-      }
-
-      if ( opts.title ) {
-        var title = document.createElement('div');
-        title.className = 'Title';
-        title.appendChild(document.createTextNode(opts.title));
-        classNames.push('HasTitle');
-        container.appendChild(title);
-      }
-
-      if ( opts.message ) {
-        var message = document.createElement('div');
-        message.className = 'Message';
-        message.appendChild(document.createTextNode(opts.message));
-        classNames.push('HasMessage');
-        container.appendChild(message);
-      }
-
-      _visible++;
-      if ( _visible > 0 ) {
-        this._$notifications.style.display = 'block';
-      }
-
-      container.className = classNames.join(' ');
-      container.onclick = function(ev) {
-        _remove();
-
-        opts.onClick(ev);
-      };
-
-      this._$notifications.appendChild(container);
-
-      if ( opts.timeout ) {
-        timeout = setTimeout(function() {
-          _remove();
-        }, opts.timeout);
-      }
-    };
-  })();
-
-  WindowManager.prototype.createNotificationIcon = function() {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.destroyNotificationIcon = function() {
-    // Implement in your WM
   };
 
   WindowManager.prototype.addWindow = function(w, focus) {
@@ -1239,14 +1139,6 @@
     return false;
   };
 
-  WindowManager.prototype.eventWindow = function(ev, win) {
-    //console.debug('OSjs::Core::WindowManager::eventWindow', ev, win._name);
-  };
-
-  WindowManager.prototype.showSettings = function() {
-    // Implement in your WM
-  };
-
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
     console.log('OSjs::Core::WindowManager::applySettings', 'forced?', force);
@@ -1262,6 +1154,47 @@
     }
 
     return true;
+  };
+
+
+  WindowManager.prototype.onKeyDown = function(ev, win) {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.resize = function(ev, rect) {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.notification = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.createNotificationIcon = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.destroyNotificationIcon = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.eventWindow = function(ev, win) {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.showSettings = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.getDefaultSetting = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.getPanel = function() {
+    // Implement in your WM
+  };
+
+  WindowManager.prototype.getPanels = function() {
+    // Implement in your WM
   };
 
   WindowManager.prototype.setSetting = function(k, v) {
@@ -1285,18 +1218,6 @@
       }
     }
     return false;
-  };
-
-  WindowManager.prototype.getDefaultSetting = function() {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.getPanel = function() {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.getPanels = function() {
-    // Implement in your WM
   };
 
   WindowManager.prototype.getWindowSpace = function() {

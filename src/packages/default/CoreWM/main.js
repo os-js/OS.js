@@ -90,6 +90,10 @@
     this.iconView       = null;
     this.$themeLink     = null;
     this.$animationLink = null;
+
+    this._$notifications    = document.createElement('div');
+    this._$notifications.id = 'Notifications';
+    document.body.appendChild(this._$notifications);
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
@@ -540,6 +544,89 @@
       }
     }
   };
+
+  CoreWM.prototype.notification = (function() {
+    var _visible = 0;
+
+    return function(opts) {
+      opts          = opts          || {};
+      opts.icon     = opts.icon     || null;
+      opts.title    = opts.title    || null;
+      opts.message  = opts.message  || '';
+      opts.onClick  = opts.onClick  || function() {};
+
+      if ( typeof opts.timeout === 'undefined' ) {
+        opts.timeout  = 5000;
+      }
+
+      console.log('OSjs::Core::WindowManager::notification()', opts);
+
+      var container  = document.createElement('div');
+      var classNames = ['Notification'];
+      var self       = this;
+      var timeout    = null;
+
+      function _remove() {
+        if ( timeout ) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+
+        container.onclick = null;
+        if ( container.parentNode ) {
+          container.parentNode.removeChild(container);
+        }
+        _visible--;
+        if ( _visible <= 0 ) {
+          self._$notifications.style.display = 'none';
+        }
+      }
+
+      if ( opts.icon ) {
+        var icon = document.createElement('img');
+        icon.alt = '';
+        icon.src = OSjs.API.getThemeResource(opts.icon, 'icon', '32x32');
+        classNames.push('HasIcon');
+        container.appendChild(icon);
+      }
+
+      if ( opts.title ) {
+        var title = document.createElement('div');
+        title.className = 'Title';
+        title.appendChild(document.createTextNode(opts.title));
+        classNames.push('HasTitle');
+        container.appendChild(title);
+      }
+
+      if ( opts.message ) {
+        var message = document.createElement('div');
+        message.className = 'Message';
+        message.appendChild(document.createTextNode(opts.message));
+        classNames.push('HasMessage');
+        container.appendChild(message);
+      }
+
+      _visible++;
+      if ( _visible > 0 ) {
+        this._$notifications.style.display = 'block';
+      }
+
+      container.className = classNames.join(' ');
+      container.onclick = function(ev) {
+        _remove();
+
+        opts.onClick(ev);
+      };
+
+      this._$notifications.appendChild(container);
+
+      if ( opts.timeout ) {
+        timeout = setTimeout(function() {
+          _remove();
+        }, opts.timeout);
+      }
+    };
+  })();
 
   CoreWM.prototype.createNotificationIcon = function(name, opts, panelId) {
     opts = opts || {};
