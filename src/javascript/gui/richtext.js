@@ -104,7 +104,7 @@
           self.blur();
         };
         var _timeout;
-        this._addEvent(this.$view.contentWindow, 'onkeypress', function(ev) {
+        this._addEventListener(this.$view.contentWindow, 'keypress', function(ev) {
           if ( _timeout ) {
             clearTimeout(_timeout);
             _timeout = null;

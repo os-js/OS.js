@@ -311,13 +311,6 @@
     this._hooks = {};
   };
 
-  GUIElement.prototype._addEvent = function(el, ev, callback) {
-    el[ev] = callback;
-    this._addHook('destroy', function() {
-      el[ev] = null;
-    });
-  };
-
   GUIElement.prototype._addEventListener = function(el, ev, callback) {
     el.addEventListener(ev, callback, false);
 
@@ -491,12 +484,12 @@
         this.$input.appendChild(img);
       }
       this.$input.appendChild(document.createTextNode(this.value || this.label));
-      this._addEvent(this.$input, 'onclick', function(ev) {
+      this._addEventListener(this.$input, 'click', function(ev) {
         if ( self.isDisabled() ) { return; }
         self.onClick.apply(self, [this, ev]);
       });
     } else {
-      this._addEvent(this.$input, 'onchange', function(ev) {
+      this._addEventListener(this.$input, 'change', function(ev) {
         self.onChange.apply(self, [this, ev, self.getValue()]);
       });
     }
@@ -607,7 +600,7 @@
     this.$view = document.createElement('div');
     if ( typeof view === 'undefined' || view === true ) {
       el.appendChild(this.$view);
-      this._addEvent(this.$view, 'oncontextmenu', function(ev) {
+      this._addEventListener(this.$view, 'contextmenu', function(ev) {
         ev.stopPropagation(); // Or else eventual ContextMenu is blurred
         ev.preventDefault();
 

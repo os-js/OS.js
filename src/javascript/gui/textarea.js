@@ -50,7 +50,7 @@
     var self = this;
     var el = _Input.prototype.init.apply(this, ['GUITextarea']);
 
-    this._addEvent(this.$input, 'onkeypress', function(ev) {
+    this._addEventListener(this.$input, 'keypress', function(ev) {
       var cur = this.value.length;
       self.hasChanged = (cur !== self.strLen);
     });

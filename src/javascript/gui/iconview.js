@@ -64,7 +64,7 @@
     el.className += ' IconSize' + this.iconSize;
 
     this.$ul    = document.createElement('ul');
-    this._addEvent(view, 'onclick', function(ev) {
+    this._addEventListener(view, 'click', function(ev) {
       var t = ev.target || ev.srcElement;
       if ( t && t === view ) {
         self.setSelected(null, null);
@@ -90,26 +90,25 @@
     }
 
     function _bindEvents(li, iter, singleClick) {
-      // FIXME: IconView - Use local event listener adding
-      li.oncontextmenu = function(ev) {
+      self._addEventListener(li, 'contextmenu', function(ev) {
         ev.stopPropagation(); // Or else eventual ContextMenu is blurred
         ev.preventDefault();
 
         self._onContextMenu(ev, iter);
-      };
+      });
 
       if ( singleClick ) {
-        li.onclick = function(ev) {
+        self._addEventListener(li, 'click', function(ev) {
           self._onSelect(ev, iter);
           self._onActivate(ev, iter);
-        };
+        });
       } else {
-        li.onclick = function(ev) {
+        self._addEventListener(li, 'click', function(ev) {
           self._onSelect(ev, iter);
-        };
-        li.ondblclick = function(ev) {
+        });
+        self._addEventListener(li, 'dblclick', function(ev) {
           self._onActivate(ev, iter);
-        };
+        });
       }
     }
 

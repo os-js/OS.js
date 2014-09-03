@@ -53,7 +53,7 @@
 
     this.$input       = document.createElement(this.tagName);
     this.$input.type  = this.type;
-    this._addEvent(this.$input, 'onchange', function(ev) {
+    this._addEventListener(this.$input, 'change', function(ev) {
       self.onChange.apply(self, [this, ev, self.getValue()]);
     });
 

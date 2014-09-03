@@ -8,7 +8,7 @@
 # Medium-priority
 * _[Backend]_ Provide a websocket version like in v1
 * _[GUI]_ GUIScrollbar
-* _[Misc]_ There are TODO and FIXME markings in source code files
+* _[GUI]_ GUIPanedView needs to be finished
 * _[Themes]_ CSS Style scrollbars on webkit
 * _[Application]_ Finish Writer
 

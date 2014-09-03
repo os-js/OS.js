@@ -1646,7 +1646,7 @@
     // Main outer container
     var main = document.createElement('div');
 
-    this._addEvent(main, 'oncontextmenu', function(ev) {
+    this._addEventListener(main, 'contextmenu', function(ev) {
       OSjs.GUI.blurMenu();
       if ( ev.target && (ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'INPUT') ) {
         return true;
@@ -1705,7 +1705,7 @@
     windowIconImage.src         = this._icon;
     windowIconImage.width       = 16;
     windowIconImage.height      = 16;
-    this._addEvent(windowIcon, 'ondblclick', function(ev) {
+    this._addEventListener(windowIcon, 'dblclick', function(ev) {
       ev.preventDefault();
     });
     this._addEventListener(windowIcon, (isTouch ? 'touchend' : 'click'), function(ev) {
@@ -1723,7 +1723,7 @@
     var windowButtons       = document.createElement('div');
     windowButtons.className = 'WindowButtons';
     if ( !isTouch ) {
-      this._addEvent(windowButtons, 'onmousedown', function(ev) {
+      this._addEventListener(windowButtons, 'mousedown', function(ev) {
         ev.preventDefault();
         return stopPropagation(ev);
       });
@@ -1785,7 +1785,7 @@
     // Window -> Loading Indication
     var windowLoading       = document.createElement('div');
     windowLoading.className = 'WindowLoading';
-    this._addEvent(windowLoading, 'onclick', function(ev) {
+    this._addEventListener(windowLoading, 'click', function(ev) {
       ev.preventDefault();
       return false;
     });
@@ -1797,7 +1797,7 @@
     var windowDisabled            = document.createElement('div');
     windowDisabled.className      = 'WindowDisabledOverlay';
     //windowDisabled.style.display  = 'none';
-    this._addEvent(windowDisabled, (isTouch ? 'touchstart' : 'onmousedown'), function(ev) {
+    this._addEventListener(windowDisabled, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       return false;
@@ -2036,13 +2036,6 @@
   //
   // GUI And Event Hooks
   //
-
-  Window.prototype._addEvent = function(el, ev, callback) {
-    el[ev] = callback;
-    this._addHook('destroy', function() {
-      el[ev] = null;
-    });
-  };
 
   Window.prototype._addEventListener = function(el, ev, callback) {
     el.addEventListener(ev, callback, false);

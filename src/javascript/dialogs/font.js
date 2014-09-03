@@ -104,7 +104,7 @@
       }
     }
 
-    this._addEvent(this.$selectFont, 'onchange', function(ev) {
+    this._addEventListener(this.$selectFont, 'change', function(ev) {
       var i = this.selectedIndex;
       if ( self.fonts[i] ) {
         self.updateFont(self.fonts[i], null);
@@ -130,7 +130,7 @@
         i++;
       }
 
-      this._addEvent(this.$selectSize, 'onchange', function(ev) {
+      this._addEventListener(this.$selectSize, 'change', function(ev) {
         var i = this.selectedIndex;
         var o = this.options[i];
         if ( o ) {

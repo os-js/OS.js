@@ -78,9 +78,7 @@
     var self = this;
 
     function _bindEvents(inner, c, e, singleClick) {
-      // FIXME: TreeView - Use local event listener adding
-
-      inner.oncontextmenu =  function(ev) {
+      self._addEventListener(inner, 'contextmenu', function(ev) {
         ev.stopPropagation(); // Or else eventual ContextMenu is blurred
         ev.preventDefault();
 
@@ -88,32 +86,32 @@
           ev.stopPropagation();
         }
         self._onContextMenu(ev, c);
+
         return false;
-      };
+      });
 
       if ( singleClick ) {
-        inner.onclick = function(ev) {
+        self._addEventListener(inner, 'click', function(ev) {
           if ( e ) {
             ev.stopPropagation();
           }
           self._onSelect(ev, c);
 
           self._onActivate(ev, c);
-        };
+        });
       } else {
-        inner.onclick = function(ev) {
+        self._addEventListener(inner, 'click', function(ev) {
           if ( e ) {
             ev.stopPropagation();
           }
           self._onSelect(ev, c);
-        };
-
-        inner.ondblclick = function(ev) {
+        });
+        self._addEventListener(inner, 'dblclick', function(ev) {
           if ( e ) {
             ev.stopPropagation();
           }
           self._onActivate(ev, c);
-        };
+        });
       }
     }
 

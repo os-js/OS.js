@@ -1164,7 +1164,7 @@
     var el = this.getRoot();
     if ( el ) {
       // IMPORTANT Make sure we trigger the default events
-      this._addEvent(el, 'onmousedown', function(ev) {
+      this._addEventListener(el, 'mousedown', function(ev) {
         ev.preventDefault();
         OSjs.GUI.blurMenu();
 
@@ -1174,7 +1174,7 @@
         }
         return false;
       });
-      this._addEvent(el, 'oncontextmenu', function(ev) {
+      this._addEventListener(el, 'contextmenu', function(ev) {
         ev.preventDefault();
         if ( wm ) {
           wm.openDesktopMenu(ev);

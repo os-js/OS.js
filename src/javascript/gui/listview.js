@@ -150,7 +150,7 @@
     this._addEventListener(this.$scroll, 'scroll', function(ev) {
       tableTop.style.left = -this.scrollLeft + 'px';
     });
-    this._addEvent(this.$scroll, 'oncontextmenu', function(ev) {
+    this._addEventListener(this.$scroll, 'contextmenu', function(ev) {
       ev.stopPropagation(); // Or else eventual ContextMenu is blurred
       ev.preventDefault();
 
@@ -182,26 +182,25 @@
     var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span, label, resizer;
 
     function _bindEvents(row, iter, singleClick) {
-      // FIXME: IconView - Use local event listener adding
-      row.oncontextmenu = function(ev) {
+      self._addEventListener(row, 'contextmenu', function(ev) {
         ev.stopPropagation(); // Or else eventual ContextMenu is blurred
         ev.preventDefault();
 
         self._onContextMenu(ev, iter);
-      };
+      });
 
       if ( singleClick ) {
-        row.onclick = function(ev) {
+        self._addEventListener(row, 'click', function(ev) {
           self._onSelect(ev, iter);
           self._onActivate(ev, iter);
-        };
+        });
       } else {
-        row.onclick = function(ev) {
+        self._addEventListener(row, 'click', function(ev) {
           self._onSelect(ev, iter);
-        };
-        row.ondblclick = function(ev) {
+        });
+        self._addEventListener(row, 'dblclick', function(ev) {
           self._onActivate(ev, iter);
-        };
+        });
       }
     }
 
