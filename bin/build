@@ -492,7 +492,7 @@
         scan_packages(src, repo);
       }
 
-      var dest = _path.join(root, dist, 'packages.json');
+      var dest = _path.join(ROOT, dist, 'packages.json');
       _fs.writeFileSync(dest, JSON.stringify(packages, null, 2));
     }
 
