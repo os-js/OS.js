@@ -1,3 +1,14 @@
+# 2.0.0-alpha17
+
+* Locales: Now falls back to system default language when not found in dict
+* Core: Added lots of hooks for custom custom integration stuff
+* Core: Removed _addEvent() and migrated code
+* CoreWM: Moved some code from Core, some abstraction updates
+* Utils: Added middle button detection to mouseButton()
+* Misc: Moved some MIME stuff around
+* Misc: Console messages now removed from dist builds
+* Misc: Google Closure Compiler now default for Core
+
 # 2.0.0-alpha16
 
 * jslint: Core code is now acceptable
