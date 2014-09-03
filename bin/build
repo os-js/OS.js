@@ -1,0 +1,620 @@
+#!/usr/bin/env node
+
+(function(argv, _fs, _path, _exec) {
+
+  var ROOT    = _path.join(__dirname, '../');
+  var BUILD   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "build.json")));
+  var REPOS   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "packages", "repositories.json")));
+  var MIMES   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "mime.json")));
+  var HANDLER = BUILD.handler || 'demo';
+  var YUI     = _path.join(ROOT, 'vendor', 'yuicompressor-2.4.8.jar');
+  var CC      = _path.join(ROOT, 'vendor', 'closurecompiler.jar');
+
+  function AQ() {
+    this.q  = [];
+    this.f  = false;
+    this.cb = function() {};
+  }
+
+  AQ.prototype._next = function() {
+    var self = this;
+    if ( this.f ) { return; }
+    if ( this.q.length ) {
+      var i = this.q.shift();
+      i(function() {
+        self._next();
+      });
+    } else {
+      this.f = true;
+    }
+
+    if ( this.f ) {
+      this.cb();
+    }
+  };
+
+  AQ.prototype.add = function(cb) {
+    this.q.push(cb);
+  };
+
+  AQ.prototype.run = function(cb) {
+    if ( typeof cb === 'function' ) {
+      this.cb = cb;
+    }
+    this._next();
+  };
+
+  function printHelp() {
+    console.log('Available actions:');
+    for ( var i in actions ) {
+      if ( actions.hasOwnProperty(i) ) {
+        console.log(i, '-', actions[i].description);
+      }
+    }
+  }
+
+  function exec(cmd, cb) {
+    cb = cb || function() {};
+
+    console.info(cmd);
+
+    _exec(cmd, function (error, stdout, stderr) {
+      cb(error, stdout, stderr);
+    });
+  }
+
+  function getExtension(filename) {
+    var ext = _path.extname(filename||'').split('.');
+    return ext[ext.length - 1];
+  }
+
+  function getFilesByExtension(dir, type) {
+    var list  = [];
+    var files = _fs.readdirSync(dir);
+    for ( var i = 0; i < files.length; i++ ) {
+      if ( getExtension(files[i]) == type ) {
+        list.push(files[i]);
+      }
+    }
+    return list;
+  }
+
+  function getDirs(dir) {
+    var list = [];
+
+    var files = _fs.readdirSync(dir);
+    for ( var i = 0; i < files.length; i++ ) {
+      if ( files[i].match(/^\./) ) {
+        continue;
+      }
+
+      if ( _fs.lstatSync(_path.join(dir, files[i])).isDirectory() ) {
+        list.push(files[i]);
+      }
+    }
+
+    return list;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // ACTIONS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Action: Build Core
+   */
+  function buildCore() {
+    function _concat(list, type) {
+      var data = [];
+      var iter, src;
+      for ( var i = 0; i < list.length; i++ ) {
+        iter = list[i].replace("%HANDLER%", HANDLER);
+        console.log(iter);
+
+        src = _fs.readFileSync(iter);
+        if ( src !== null ) {
+          src = src.toString().replace(/\/\*\![\s\S]*?\*\//, "");
+          if ( type === 'css' ) {
+            src = src.toString().replace('@charset "UTF-8";', "");
+          } else {
+            src = src.toString().replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, "");
+          }
+
+          data.push(src);
+        }
+      }
+
+      return data.join("\n");
+    }
+
+    console.log("\033[1;34mCompiling JavaScript\033[0m");
+    var js = _concat(BUILD.javascript.files, 'js');
+    _fs.writeFileSync(_path.join(ROOT, BUILD.javascript.output), js);
+
+    console.log("\033[1;34mCompiling CSS\033[0m");
+    var css = _concat(BUILD.stylesheets.files, 'css');
+    _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), css);
+  }
+
+  /**
+   * Action: Build Themes
+   */
+  function buildThemes() {
+    var dir   = _path.join(ROOT, 'src', 'themes');
+    var files = getFilesByExtension(dir, 'less');
+
+    var q = new AQ();
+
+    function aq(iter, name) {
+      q.add(function(cb) {
+        console.log("\033[1;34mBuilding theme '" + name + "'\033[0m");
+        cb();
+      });
+
+      q.add(function(cb) {
+        var src = _path.join(dir, iter);
+        var dest = _path.join(ROOT, 'dist', 'themes', name + '.css');
+
+        exec((['lessc', src, dest]).join(' '), function() {
+          cb();
+        });
+      });
+
+      q.add(function(cb) {
+        var src = _path.join(dir, name);
+        var dest = _path.join(ROOT, 'dist', 'themes', name);
+        exec((['cp', '-Rf', src, dest]).join(' '), function() {
+          cb();
+        });
+      });
+    }
+
+    var name;
+    for ( var i = 0; i < files.length; i++ ) {
+      name = _path.basename(files[i]).replace(/\.[A-z]+$/, '');
+      if ( !name.match(/^\.|\_/) ) {
+        aq(files[i], name);
+      }
+    }
+
+    q.run(function() {
+    });
+  }
+
+  /**
+   * Action: Build Packages
+   */
+  function buildPackages() {
+
+    var q = new AQ();
+
+    function build_package(repo, app) {
+
+      var src = _path.join(ROOT, 'src', 'packages', repo, app);
+      var dst = _path.join(ROOT, 'dist', 'packages', repo);
+      var dir = _path.join(ROOT, 'dist', 'packages', repo, app);
+
+      q.add(function(cb) {
+        console.log("\033[1;34mBuilding Package", "'"+app+"'", "in", "'"+repo+"'", "\033[0m");
+        cb();
+      });
+      q.add(function(cb) {
+        exec((['mkdir', '-p', dir]).join(' '), cb);
+      });
+      q.add(function(cb) {
+        exec((['cp', '-rf', src, dst]).join(' '), cb);
+      });
+      q.add(function(cb) {
+        var manpath = _path.join(dir, "package.json");
+        var man     = JSON.parse(_fs.readFileSync(manpath));
+        var mkey    = null;
+
+        for ( var x in man ) {
+          if ( man.hasOwnProperty(x) ) {
+            mkey = x;
+            break;
+          }
+        }
+
+        if ( !mkey || !man[mkey] ) {
+          return;
+        }
+
+        if ( man[mkey].preload && man[mkey].preload.length ) {
+          var combined_js = [];
+          var combined_css = [];
+          var remove = [];
+          var p, r, s;
+          var n = [];
+
+          for ( var i = 0; i < man[mkey].preload.length; i++ ) {
+            s = man[mkey].preload[i];
+            p = _path.join(dir, s.src);
+
+            if ( ((typeof s.combine !== "undefined" && (s.combine === false || s.combine === "false"))) || s.src.match(/^combined\.(css|js)$/) ) {
+              n.push(s);
+              continue;
+            }
+
+            if ( s.type == "javascript" ) {
+              combined_js.push(_fs.readFileSync(p));
+              remove.push(p);
+            } else if ( s.type == "stylesheet" ) {
+              combined_css.push(_fs.readFileSync(p));
+              remove.push(p);
+            } else {
+              n.push(s);
+            }
+          }
+
+          for ( var r = 0; r < remove.length; r++ ) {
+            _fs.unlinkSync(remove[r]);
+          }
+
+          if ( combined_css.length ) {
+            n.push({type: "stylesheet", src: "combined.css"});
+          }
+          if ( combined_js.length ) {
+            n.push({type: "javascript", src: "combined.js"});
+          }
+
+          man[mkey].preload = n;
+
+          _fs.writeFileSync(_path.join(dir, "combined.js"), combined_js.join("\n"));
+          _fs.writeFileSync(_path.join(dir, "combined.css"), combined_css.join("\n"));
+          _fs.writeFileSync(manpath, JSON.stringify(man, null, 2));
+        }
+
+        cb();
+      });
+    }
+
+    q.add(function(cb) {
+      exec((['mkdir', _path.join(ROOT, 'dist', 'packages')]).join(' '), cb);
+    });
+
+    var dirs;
+    for ( var i = 0; i < REPOS.length; i++ ) {
+      dirs = getDirs(_path.join(ROOT, 'src', 'packages', REPOS[i]));
+      for ( var d = 0; d < dirs.length; d++ ) {
+        build_package(REPOS[i], dirs[d]);
+      }
+    }
+
+    q.run(function() {
+    });
+  }
+
+  /**
+   * Action: Build Config
+   */
+  function buildConfig() {
+    var out_php   = _path.join(ROOT, 'src', 'server-php', 'settings.php');
+    var out_node  = _path.join(ROOT, 'src', 'server-node', 'settings.json');
+    var out_js    = _path.join(ROOT, 'dist', 'settings.js');
+
+    var settings = BUILD.settings.backend;
+    var handler  = BUILD.handler || "demo";
+    for ( var i in settings ) {
+      if ( settings.hasOwnProperty(i) ) {
+        if ( typeof settings[i] === "string" ) {
+          settings[i] = settings[i].replace("%ROOT%", ROOT);
+          settings[i] = settings[i].replace("%HANDLER%", handler);
+        }
+      }
+    }
+
+    var cfg_node = settings;
+    var cfg_php  = [];
+    var cfg_js   = "(function() {\n  window.OSjs = window.OSjs   || {};\n  OSjs.Settings = OSjs.Settings || {};\n  OSjs.Settings.DefaultConfig = function() {\n    return %CONFIG%;\n  };\n})();\n";
+
+    for ( var i in settings ) {
+      if ( settings.hasOwnProperty(i) ) {
+        cfg_php.push("define('" + i.toUpperCase() + "', '" + settings[i] + "');");
+      }
+    }
+
+    cfg_php = "<?php\n" + cfg_php.join("\n") + "\n?>";
+    _fs.writeFileSync(out_node, JSON.stringify(cfg_node));
+    _fs.writeFileSync(out_php, cfg_php);
+
+    settings = BUILD.settings.frontend;
+    settings.MIME = MIMES.descriptions;
+    settings.Core.Repositories = REPOS;
+    _fs.writeFileSync(out_js, cfg_js.replace("%CONFIG%", JSON.stringify(settings, null, 2)));
+  }
+
+  /**
+   * Action: Compress
+   */
+  function doCompress() {
+    var out_js = _path.join(ROOT, BUILD.javascript.output);
+    var out_css = _path.join(ROOT, BUILD.stylesheets.output);
+    var q = new AQ();
+
+    function compress_css(src, dest, cb) {
+      dest = dest || src;
+      exec((['java', '-jar', YUI, '--type css', '--charset utf-8', src, '-o', dest]).join(' '), cb);
+    }
+
+    function compress_js(src, dest, cb) {
+      dest = dest || src;
+      exec((['java', '-jar', CC, '--charset utf-8', '--js', src, '--js_output_file', dest]).join(' '), cb);
+    }
+
+    function compress_package(repo, app) {
+      q.add(function(cb) {
+        console.log("\033[1;34mCompressing Package", "'"+app+"'", "in", "'"+repo+"'", "\033[0m");
+        cb();
+      });
+
+      q.add(function(cb) {
+        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.js');
+        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.js');
+        compress_js(src, dst, cb);
+      });
+      q.add(function(cb) {
+        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.js');
+        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.js');
+        exec((['mv', src, dst]).join(' '), cb);
+      });
+
+      q.add(function(cb) {
+        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.css');
+        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.css');
+        compress_css(src, dst, cb);
+      });
+      q.add(function(cb) {
+        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.css');
+        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.css');
+        exec((['mv', src, dst]).join(' '), cb);
+      });
+    }
+
+    q.add(function(cb) {
+      console.log("\033[1;34mCompressing Core:\033[0m");
+      cb();
+    });
+
+    q.add(function(cb) {
+      var src = _path.join(ROOT, 'dist', 'osjs.css');
+      var dst = _path.join(ROOT, 'dist', 'osjs.tmp.css');
+      compress_css(src, dst, cb);
+    });
+    q.add(function(cb) {
+      var src = _path.join(ROOT, 'dist', 'osjs.tmp.css');
+      var dst = _path.join(ROOT, 'dist', 'osjs.css');
+      exec((['mv', src, dst]).join(' '), cb);
+    });
+
+    q.add(function(cb) {
+      var src = _path.join(ROOT, 'dist', 'osjs.js');
+      var dst = _path.join(ROOT, 'dist', 'osjs.tmp.js');
+      compress_js(src, dst, cb);
+    });
+    q.add(function(cb) {
+      var src = _path.join(ROOT, 'dist', 'osjs.tmp.js');
+      var dst = _path.join(ROOT, 'dist', 'osjs.js');
+      exec((['mv', src, dst]).join(' '), cb);
+    });
+
+    var dirs;
+    for ( var i = 0; i < REPOS.length; i++ ) {
+      dirs = getDirs(_path.join(ROOT, 'src', 'packages', REPOS[i]));
+      for ( var d = 0; d < dirs.length; d++ ) {
+        compress_package(REPOS[i], dirs[d]);
+      }
+    }
+
+    q.run(function() {
+    });
+  }
+
+  /**
+   * Action: Create Package Manifest
+   */
+  function createPackageManifest() {
+    var packages = {};
+
+    function get_metadata(path, file, repo) {
+      var json_path = _path.join(path, "package.json");
+      try {
+        var json_data = JSON.parse(_fs.readFileSync(json_path));
+        var manifest = null;
+        var package_name;
+        for ( var name in json_data ) {
+          if ( json_data.hasOwnProperty(name) ) {
+            package_name = name;
+            manifest     = json_data[name];
+            break;
+          }
+        }
+
+        if ( !manifest ) {
+          console.log("- \033[0;31mSkipped '%s' (no manifest)\033[0m", file);
+          return null;
+        }
+
+        if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
+          console.log("- \033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
+          return null;
+        }
+
+        if ( typeof manifest.preload !== 'undefined' && (manifest.preload instanceof Array)) {
+          for ( var p = 0; p < manifest.preload.length; p++ ) {
+            if ( !manifest.preload[p].src.match(/^(ftp|https?\:)?\/\//) ) {
+              manifest.preload[p].src = (["/packages", repo, file, manifest.preload[p].src]).join("/");
+            }
+          }
+        }
+
+        manifest.path = repo + "/" + file;
+        manifest.iter = package_name;
+
+        //console.log("\033[1;37mAdded package '%s'\033[0m", package_name);
+        console.log("- Added package '%s'", package_name);
+
+        return manifest;
+      } catch ( e ) {
+        console.log("- \033[0;31mSkipped '%s' (parse error)\033[0m", file);
+        console.error(e);
+      }
+      return null;
+    }
+
+    function scan_packages(pkgdir, repo) {
+      var files = _fs.readdirSync(_path.join(pkgdir, repo));
+
+      var file, path, metadata;
+      for ( var f = 0; f < files.length; f++ ) {
+        file = files[f];
+        if ( !file.length || file.match(/^\./) ) continue;
+
+        path = _path.join(pkgdir, repo, file);
+        if ( _fs.statSync(path).isDirectory() ) {
+          metadata = get_metadata(path, file, repo);
+          if ( metadata !== null ) {
+            packages[metadata.iter] = metadata;
+          }
+        }
+      }
+    }
+
+    function create_dist_manifest(dist) {
+
+      console.log("\033[1;32mCreating package manifest for '%s'\033[0m", dist);
+
+      var src;
+      for ( var i = 0; i < REPOS.length; i++ ) {
+        repo = REPOS[i];
+        console.log("\033[1;34mScanning repository '%s':\033[0m", repo);
+        src = _path.join(ROOT, dist, 'packages');
+        scan_packages(src, repo);
+      }
+
+      var dest = _path.join(root, dist, 'packages.json');
+      _fs.writeFileSync(dest, JSON.stringify(packages, null, 2));
+    }
+
+    create_dist_manifest("dist");
+    create_dist_manifest("dist-dev");
+  }
+
+  /**
+   * Action: Create Theme Manifest
+   */
+  function createThemeManifest() {
+
+    function get_metadata(path, file) {
+      var json_path = _path.join(path, "metadata.json");
+      if ( _fs.existsSync(json_path) ) {
+        try {
+          var manifest = JSON.parse(_fs.readFileSync(json_path));
+
+          console.log("- Added theme '%s'", file);
+
+          return manifest;
+        } catch ( e ) {
+          console.log("- \033[0;31mSkipped '%s' (parse error)\033[0m", file);
+          console.error(e);
+        }
+      }
+      return null;
+    }
+
+    function scan_themes(pkgdir) {
+      var files = _fs.readdirSync(pkgdir);
+      var file, path, metadata;
+      var result = [];
+      for ( var f = 0; f < files.length; f++ ) {
+        file = files[f];
+        if ( !file.length || file.match(/^\./) ) continue;
+
+        path = _path.join(pkgdir, file);
+        if ( _fs.statSync(path).isDirectory() ) {
+          metadata = get_metadata(path, file);
+          if ( metadata !== null ) {
+            result.push(metadata);
+          }
+        }
+      }
+      return result;
+    }
+
+    function create_dist_manifest(dist) {
+      console.log("\033[1;32mCreating theme manifest for '%s'\033[0m", dist);
+
+      var src = _path.join(ROOT, dist, 'themes');
+      var packages = scan_themes(src);
+      var dest = _path.join(ROOT, dist, 'themes.json');
+      _fs.writeFileSync(dest, JSON.stringify(packages, null, 2));
+    }
+
+    create_dist_manifest("dist");
+    create_dist_manifest("dist-dev");
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // ACTION LIST
+  /////////////////////////////////////////////////////////////////////////////
+
+  var actions = {
+    'core': {
+      description: 'Builds core files',
+      cb: buildCore
+    },
+
+    'themes': {
+      description: 'Builds theme files',
+      cb: buildThemes
+    },
+
+    'packages': {
+      description: 'Builds package files',
+      cb: buildPackages
+    },
+
+    'config': {
+      description: 'Builds config files',
+      cb: buildConfig
+    },
+
+    'compress': {
+      description: 'Compresses dist',
+      cb: doCompress
+    },
+
+    'package-manifest' : {
+      description: 'Creates package manifest',
+      cb: createPackageManifest
+    },
+
+    'theme-manifest' : {
+      description: 'Creates theme manifest',
+      cb: createThemeManifest
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MAIN
+  /////////////////////////////////////////////////////////////////////////////
+
+  if ( argv.length < 2 ) {
+    return;
+  }
+
+  var a = argv[2];
+  var args = [];
+
+  if ( a === "help" ) {
+    printHelp();
+    return;
+  }
+
+  if ( !actions[a] ) {
+    throw 'Invalid action: ' + a;
+  }
+
+  actions[a].cb.apply(actions, args);
+
+})(process.argv, require('fs'), require('path'), require('child_process').exec);

@@ -3,7 +3,6 @@
 * _[jslint]_ Investegate | "Possible strict violation"
 * _[Backend]_ Finish Node.js backend
 * _[Application]_ MusicPlayer -- Finish
-* _[Tools]_ Create a standard library for managing packages and manifest files etc. (bin/ tools)
 
 # Medium-priority
 * _[Backend]_ Provide a websocket version like in v1
