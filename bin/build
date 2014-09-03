@@ -398,8 +398,6 @@ var header_css = ([
    * Action: Compress
    */
   function doCompress() {
-    var out_js = _path.join(ROOT, BUILD.javascript.output);
-    var out_css = _path.join(ROOT, BUILD.stylesheets.output);
     var q = new AQ();
 
     function compress_css(src, dest, cb) {
@@ -441,30 +439,33 @@ var header_css = ([
       });
     }
 
+
     q.add(function(cb) {
       console.log("\033[1;34mCompressing Core:\033[0m");
       cb();
     });
 
+    var out_css = _path.join(ROOT, BUILD.stylesheets.output);
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', 'osjs.css');
-      var dst = _path.join(ROOT, 'dist', 'osjs.tmp.css');
+      var src = _path.join(ROOT, 'dist', out_css);
+      var dst = _path.join(ROOT, 'dist', out_css.replace(/\.css$/, '.tmp.css'));
       compress_css(src, dst, cb);
     });
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', 'osjs.tmp.css');
-      var dst = _path.join(ROOT, 'dist', 'osjs.css');
+      var src = _path.join(ROOT, 'dist', out_css.replace(/\.css$/, '.tmp.css'));
+      var dst = _path.join(ROOT, 'dist', out_css);
       exec((['mv', src, dst]).join(' '), cb);
     });
 
+    var out_js = _path.join(ROOT, BUILD.javascript.output);
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', 'osjs.js');
-      var dst = _path.join(ROOT, 'dist', 'osjs.tmp.js');
+      var src = _path.join(ROOT, 'dist', out_js);
+      var dst = _path.join(ROOT, 'dist', out_js.replace(/\.js$/, '.tmp.js'));
       compress_js(src, dst, cb);
     });
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', 'osjs.tmp.js');
-      var dst = _path.join(ROOT, 'dist', 'osjs.js');
+      var src = _path.join(ROOT, 'dist', out_js.replace(/\.js$/, '.tmp.js'));
+      var dst = _path.join(ROOT, 'dist', out_js);
       exec((['mv', src, dst]).join(' '), cb);
     });
 
