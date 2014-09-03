@@ -288,10 +288,11 @@
           col.appendChild(span);
         }
 
-        _bindEvents(row, this.data[i], this.singleClick);
-
         row.appendChild(col);
       }
+
+      _bindEvents(row, this.data[i], this.singleClick);
+
       this.$body.appendChild(row);
 
       this.onCreateItem(row, iter, colref);
