@@ -81,44 +81,40 @@ var header_css = ([
   var CC      = _path.join(ROOT, 'vendor', 'closurecompiler.jar');
 
   function AQ() {
-    this.q  = [];
-    this.f  = false;
-    this.cb = function() {};
+    this.q = [];
   }
-
-  AQ.prototype._next = function() {
-    var self = this;
-    if ( this.f ) { return; }
-    if ( this.q.length ) {
-      var i = this.q.shift();
-      i(function() {
-        self._next();
-      });
-    } else {
-      this.f = true;
-    }
-
-    if ( this.f ) {
-      this.cb();
-    }
-  };
-
   AQ.prototype.add = function(cb) {
     this.q.push(cb);
   };
-
   AQ.prototype.run = function(cb) {
-    if ( typeof cb === 'function' ) {
-      this.cb = cb;
+    var self = this;
+    var f = false;
+    cb = cb || function() {};
+
+    function _next() {
+      if ( f ) { return; }
+      if ( self.q.length ) {
+        var i = self.q.shift();
+        i(function() {
+          _next();
+        });
+      } else {
+        f = true;
+      }
+
+      if ( f ) {
+        cb();
+      }
     }
-    this._next();
+
+    _next();
   };
 
   function printHelp() {
     console.log('Available actions:');
     for ( var i in actions ) {
       if ( actions.hasOwnProperty(i) ) {
-        console.log(i, '-', actions[i].description);
+        console.log(' ', i, '-', actions[i].description);
       }
     }
   }
@@ -674,7 +670,7 @@ var header_css = ([
     return;
   }
 
-  var a = argv[2];
+  var a = argv[2] || "help";
   var args = [];
 
   if ( a === "help" ) {
@@ -683,7 +679,8 @@ var header_css = ([
   }
 
   if ( !actions[a] ) {
-    throw 'Invalid action: ' + a;
+    console.error("Invalid action", a);
+    return;
   }
 
   actions[a].cb.apply(actions, args);
