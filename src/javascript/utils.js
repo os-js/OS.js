@@ -53,12 +53,21 @@
   };
 
   OSjs.Utils.mouseButton = function(ev) {
-    // TODO: Middle button
     if ( typeof ev.button !== 'undefined' ) {
-      return ev.button <= 0 ? 'left' : 'right';
+      if ( ev.button === 0 ) {
+        return 'left';
+      } else if ( ev.button === 1 ) {
+        return 'middle';
+      }
+      return 'right';
     }
 
-    return ev.which <= 1 ? 'left' : 'right';
+    if ( ev.which === 2 || ev.which === 4 ) {
+      return 'middle';
+    } else if ( ev.which === 1 ) {
+      return 'left';
+    }
+    return 'right';
   };
 
   // Kudos: http://stackoverflow.com/a/4673436

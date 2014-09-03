@@ -1597,7 +1597,6 @@
       }
     }
 
-    // Clamp (FIXME: Create a clamp function)
     if ( this._properties.min_height ) {
       if ( this._dimension.h < this._properties.min_height ) {
         this._dimension.h = this._properties.min_height;
@@ -1896,7 +1895,6 @@
       startRect = null;
     }
 
-    // FIXME: Do a timeout here to spare CPU
     function onMouseMove(ev) {
       if ( !_MOUSELOCK ) { return; }
       if ( action === null ) { return; }
