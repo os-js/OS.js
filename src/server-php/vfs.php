@@ -41,7 +41,7 @@ class MIME
     $file = sprintf("%s/src/%s", ROOTDIR, "mime.json");
     if ( file_exists($file) ) {
       $arr = (array)json_decode(file_get_contents($file));
-      $this->data = $arr["mapping"];
+      $this->data = (array)$arr["mapping"];
     }
   }
 
