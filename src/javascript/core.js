@@ -185,6 +185,22 @@
     return false;
   }
 
+  /**
+   * Checks if event is on a input type element
+   */
+  function isInputElement(ev) {
+    var d = ev.srcElement || ev.target;
+    if ( d ) {
+      var t = d.tagName.toUpperCase();
+      if ( t === 'TEXTAREA' || t === 'INPUT' ) {
+        if ( !(d.readOnly || d.disabled) ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -713,8 +729,11 @@
     this._$root = document.createElement('div');
     this._$root.id = 'Background';
     this._$root.addEventListener('contextmenu', function(ev) {
-      ev.preventDefault();
-      return false;
+      if ( !isInputElement(ev) ) {
+        ev.preventDefault();
+        return false;
+      }
+      return true;
     }, false);
     this._$root.addEventListener('mousedown', function(ev) {
       ev.preventDefault();
@@ -880,10 +899,15 @@
     }, false);
 
     if ( this._$root ) {
-      this._$root.removeEventListener('contextmenu', function(/*ev*/) {
-        return false;
+      this._$root.removeEventListener('contextmenu', function(ev) {
+        if ( !isInputElement(ev) ) {
+          ev.preventDefault();
+          return false;
+        }
+        return true;
       }, false);
-      this._$root.removeEventListener('mousedown', function(/*ev*/) {
+      this._$root.removeEventListener('mousedown', function(ev) {
+        ev.preventDefault();
         OSjs.GUI.blurMenu();
       }, false);
     }
@@ -952,10 +976,7 @@
   Main.prototype._onKeyDown = function(ev) {
     var d = ev.srcElement || ev.target;
     var doPrevent = d.tagName === 'BODY' ? true : false;
-    var isHTMLInput = false;
-    if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE')) || d.tagName.toUpperCase() === 'TEXTAREA') {
-          isHTMLInput = d.readOnly || d.disabled;
-    }
+    var isHTMLInput = isInputElement(ev);
 
     if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
       if ( isHTMLInput ) {
@@ -1647,11 +1668,15 @@
     var main = document.createElement('div');
 
     this._addEventListener(main, 'contextmenu', function(ev) {
-      OSjs.GUI.blurMenu();
-      if ( ev.target && (ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'INPUT') ) {
-        return true;
+      var r = isInputElement(ev);
+
+      if ( !r ) {
+        ev.preventDefault();
       }
-      return false;
+
+      OSjs.GUI.blurMenu();
+
+      return r;
     });
 
     function _showBorder() {
