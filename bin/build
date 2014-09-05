@@ -708,7 +708,7 @@
     },
 
     'apache-htaccess' : {
-      description: 'Generates apache htaccess files. Optional argument is <dist-name> (default is both \'all')',
+      description: 'Generates apache htaccess files. Optional argument is <dist-name> (default is both \'all\')',
       cb: generateApacheHtaccess
     },
 
