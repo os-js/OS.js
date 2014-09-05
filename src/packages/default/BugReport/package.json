@@ -2,7 +2,6 @@
   "ApplicationBugReport":  {
     "name":       "Bug Report",
     "description":"Report a bug",
-    "enabled":    false,
     "mime":       null,
     "icon":       "status/software-update-urgent.png",
     "preload":    [
