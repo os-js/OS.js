@@ -462,13 +462,15 @@
     var el = GUIElement.prototype.init.apply(this, [this.className]);
     this.$input = document.createElement(this.tagName);
 
+    if ( this.tagName === 'textarea' || this.type === 'text' || this.type === 'password' ) {
+      if ( this.placeholder ) {
+        this.$input.setAttribute('placeholder', this.placeholder);
+      }
+    }
+
     if ( this.tagName === 'input' ) {
       this.$input.type = this.type;
       if ( this.type === 'text' || this.type === 'password' ) {
-        if ( this.placeholder ) {
-          this.$input.setAttribute('placeholder', this.placeholder);
-        }
-
         this._addEventListener(this.$input, 'keypress', function(ev) {
           self.onKeyPress.apply(self, [ev]);
         });
