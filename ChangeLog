@@ -1,3 +1,14 @@
+# 2.0.0-alpha18
+
+* New build tools (replaces all bin/ scripts)
+* GUI: Bugfix for multiple events firing in IconView and ListView
+* GUI: Textarea etc. now supports placeholder
+* GUI: Bugfix for Input blur/focus after destruct
+* Misc: Fixed a couple of detached DOM objects
+* Misc: Fixed some memory leaks
+* Application - Bugreport: Increased sizes of fields
+* Updated docs
+
 # 2.0.0-alpha17
 
 * Locales: Now falls back to system default language when not found in dict
