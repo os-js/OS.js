@@ -37,7 +37,7 @@
   font-weight : bold;
 }
 .Window_ApplicationBugReportWindow .WindowWrapper .GUITextarea {
-  height : 80px;
+  height : 140px;
   margin : 10px;
   display : block;
 }

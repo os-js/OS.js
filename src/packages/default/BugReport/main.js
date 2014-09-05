@@ -37,7 +37,7 @@
    * Main Window Constructor
    */
   var ApplicationBugReportWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationBugReportWindow', {width: 400, height: 300}, app]);
+    Window.apply(this, ['ApplicationBugReportWindow', {width: 500, height: 400}, app]);
 
     // Set window properties and other stuff here
     this._title = metadata.name;
