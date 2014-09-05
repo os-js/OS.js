@@ -1,5 +1,9 @@
 # Requirements
-Make sure you have these dependencies installed.
+Server runs on OSX, BSD and Linux (also Windows if you have Cygwin)
+
+## System dependencies
+
+Make sure you have these dependencies installed
 
 * **nodejs** and **npm**
 * **lessc** (`sudo npm -g less`)

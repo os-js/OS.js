@@ -624,13 +624,11 @@
       _fs.writeFileSync(dst, tpl);
     }
 
-    if ( a === 'dist' ) {
+    if ( a === 'all' ) {
       generate_htaccess('apache-prod-htaccess.conf', 'dist');
-    } else if ( a === 'dist-dev' ) {
       generate_htaccess('apache-dev-htaccess.conf', 'dist-dev');
     } else {
-      generate_htaccess('apache-prod-htaccess.conf', 'dist');
-      generate_htaccess('apache-dev-htaccess.conf', 'dist-dev');
+      generate_htaccess('apache-dev-htaccess.conf', a);
     }
   }
 
@@ -695,7 +693,7 @@
     },
 
     'compress': {
-      description: 'Compresses dist',
+      description: 'Compresses dist (overwrites \'dist\' files)',
       cb: doCompress
     },
 
@@ -710,7 +708,7 @@
     },
 
     'apache-htaccess' : {
-      description: 'Generates apache htaccess files. Optional argument is <dist-name> (default is both \'dist\' and \'dist-dev\')',
+      description: 'Generates apache htaccess files. Optional argument is <dist-name> (default is both \'all')',
       cb: generateApacheHtaccess
     },
 

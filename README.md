@@ -29,7 +29,7 @@ Please note that it may be unavailable at times and slightly out-of-date.
 * Light-weight and super fast
 
 ### Default application bundle
-* **Draw** - A simple drawing application
+* **Draw** - A simple drawing application with layer and effect support
 * **Calculator** - Simple calculator
 * **File Manager** - File Management
 * **Preview** - For viewing images and videos
@@ -37,6 +37,7 @@ Please note that it may be unavailable at times and slightly out-of-date.
 * **Process Viewer** - View running processes
 * **Textpad** - A notepad-type application
 * **Writer** - Richtext editor
+* **Bugreport** - Bug-reporting utility
 
 *You can easily add more applications by using external repositories. More information on Wiki*
 
@@ -58,6 +59,14 @@ Runs in any modern browser. Tested:
 * **WebKit** Google Chrome, Opera, Safari
 * Internet Explorer 10+
 * Android and iOS is working, but no mobile version is implemented yet
+
+## How to contribute
+
+Just send me a [pull-request](https://github.com/andersevenrud/OS.js-v2/pulls) on Github if you have any changes you would like to see integrated.
+
+You can also use the Github [bug-tracker](https://github.com/andersevenrud/OS.js-v2/issues) to report bugs or add feature requests.
+
+My contact information is located on my [Github profile](https://github.com/andersevenrud)
 
 # License
 
