@@ -409,22 +409,22 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.js');
         compress_js(src, dst, cb);
       });
-      q.add(function(cb) {
-        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.js');
-        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.js');
-        exec((['mv', src, dst]).join(' '), cb);
-      });
+        q.add(function(cb) {
+          var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.js');
+          var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.js');
+          exec((['mv', src, dst]).join(' '), cb);
+        });
 
       q.add(function(cb) {
-        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.css');
-        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.css');
+        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.css');
+        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.css');
         compress_css(src, dst, cb);
       });
-      q.add(function(cb) {
-        var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.css');
-        var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.css');
-        exec((['mv', src, dst]).join(' '), cb);
-      });
+        q.add(function(cb) {
+          var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.css');
+          var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.css');
+          exec((['mv', src, dst]).join(' '), cb);
+        });
     }
 
 
@@ -439,11 +439,11 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       var dst = out_css.replace(/\.css$/, '.tmp.css');
       compress_css(src, dst, cb);
     });
-    q.add(function(cb) {
-      var src = out_css.replace(/\.css$/, '.tmp.css');
-      var dst = out_css;
-      exec((['mv', src, dst]).join(' '), cb);
-    });
+      q.add(function(cb) {
+        var src = out_css.replace(/\.css$/, '.tmp.css');
+        var dst = out_css;
+        exec((['mv', src, dst]).join(' '), cb);
+      });
 
     var out_js = _path.join(ROOT, BUILD.javascript.output);
     q.add(function(cb) {
@@ -451,11 +451,11 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       var dst = out_js.replace(/\.js$/, '.tmp.js');
       compress_js(src, dst, cb);
     });
-    q.add(function(cb) {
-      var src = out_js.replace(/\.js$/, '.tmp.js');
-      var dst = out_js;
-      exec((['mv', src, dst]).join(' '), cb);
-    });
+      q.add(function(cb) {
+        var src = out_js.replace(/\.js$/, '.tmp.js');
+        var dst = out_js;
+        exec((['mv', src, dst]).join(' '), cb);
+      });
 
     var dirs;
     for ( var i = 0; i < REPOS.length; i++ ) {
