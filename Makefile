@@ -10,6 +10,9 @@
 # 	packages         Build only package files
 # 	themes           Build only theme files
 # 	manifest         Create package manifest (you need to run 'make packages' first)
+# 	apache-htaccess  Generate new .htaccess files
+# 	apache-vhost     Generate new apache vhost config file
+# 	lighttpd-config  Generate new lighttpd config files
 #
 
 .PHONY: all clean config core themes packages compress manifest
@@ -62,4 +65,13 @@ manifest:
 	rm -f dist/themes.json ||:
 	rm -f dist-dev/themes.json ||:
 	(bin/build theme-manifest)
+
+apache-htaccess:
+	(bin/build apache-htaccess)
+
+apache-vhost:
+	(bin/build apache-vhost)
+
+lighttpd-config:
+	(bin/build lighttpd-config)
 

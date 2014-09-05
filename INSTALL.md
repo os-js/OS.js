@@ -31,9 +31,13 @@ Example for Apache: `sudo chown -R www-data:www-data vfs/`
 
 See `doc/apache.conf` for an example
 
+Or run `make apache-vhost` to generate one
+
 ### PHP5 on Lighttpd
 
 See `doc/lighttpd.conf` for an example
+
+Or run `make lighttpd-config` to generate one
 
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*

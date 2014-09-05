@@ -1,5 +1,33 @@
 #!/usr/bin/env node
-
+/**
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
 
 (function(argv, _fs, _path, _exec) {
 
@@ -11,6 +39,9 @@
   var YUI     = _path.join(ROOT, 'vendor', 'yuicompressor-2.4.8.jar');
   var CC      = _path.join(ROOT, 'vendor', 'closurecompiler.jar');
 
+  /**
+   * Simple Async Queue
+   */
   function AQ() {
     this.q = [];
   }
@@ -41,6 +72,9 @@
     _next();
   };
 
+  /**
+   * Prints help screen
+   */
   function printHelp() {
     console.log('Available actions:');
     for ( var i in actions ) {
@@ -50,6 +84,9 @@
     }
   }
 
+  /**
+   * Executes a command
+   */
   function exec(cmd, cb) {
     cb = cb || function() {};
 
@@ -60,11 +97,17 @@
     });
   }
 
+  /**
+   * Gets file extension
+   */
   function getExtension(filename) {
     var ext = _path.extname(filename||'').split('.');
     return ext[ext.length - 1];
   }
 
+  /**
+   * Returns a list of files matching extension
+   */
   function getFilesByExtension(dir, type) {
     var list  = [];
     var files = _fs.readdirSync(dir);
@@ -76,6 +119,9 @@
     return list;
   }
 
+  /**
+   * Returns a list of directories in given path
+   */
   function getDirs(dir) {
     var list = [];
 
@@ -554,6 +600,75 @@
     create_dist_manifest("dist-dev");
   }
 
+  /**
+   * Generate new Apache Htaccess files
+   */
+  function generateApacheHtaccess(a) {
+    var mimes = [];
+    var maps = MIMES.mapping;
+    for ( var i in maps ) {
+      if ( maps.hasOwnProperty(i) ) {
+        if ( !i.match(/^\./) ) { continue; }
+        mimes.push('  AddType ' + maps[i] + ' ' + i);
+      }
+    }
+    mimes = mimes.join('\n');
+
+    function generate_htaccess(t, d) {
+      console.log("\033[1;32mCreating apache htaccess for '%s'\033[0m", d);
+
+      var src = _path.join(ROOT, 'src', 'tools', 'templates', t);
+      var dst = _path.join(ROOT, d, '.htaccess');
+      var tpl = _fs.readFileSync(src).toString();
+      tpl = tpl.replace(/%MIMES%/, mimes);
+      _fs.writeFileSync(dst, tpl);
+    }
+
+    if ( a === 'dist' ) {
+      generate_htaccess('apache-prod-htaccess.conf', 'dist');
+    } else if ( a === 'dist-dev' ) {
+      generate_htaccess('apache-dev-htaccess.conf', 'dist-dev');
+    } else {
+      generate_htaccess('apache-prod-htaccess.conf', 'dist');
+      generate_htaccess('apache-dev-htaccess.conf', 'dist-dev');
+    }
+  }
+
+  /**
+   * Generate new Lighttpd config
+   */
+  function generateLighttpdConfig(a) {
+    var dist = a || 'dist';
+    var mimes = [];
+    var maps = MIMES.mapping;
+    for ( var i in maps ) {
+      if ( maps.hasOwnProperty(i) ) {
+        if ( !i.match(/^\./) ) { continue; }
+        mimes.push('  ' + i + ' => ' + maps[i]);
+      }
+    }
+    mimes = mimes.join(',\n');
+
+    var src = _path.join(ROOT, 'src', 'tools', 'templates', 'lighttpd.conf');
+    var tpl = _fs.readFileSync(src).toString();
+    tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, dist));
+    tpl = tpl.replace(/%MIMES%/, mimes);
+
+    console.log('\n' + tpl + '\n');
+  }
+
+  /**
+   * Generate new Apache vhost
+   */
+  function generateApacheVhost(a) {
+    var dist = a || 'dist';
+    var src = _path.join(ROOT, 'src', 'tools', 'templates', 'apache-vhost.conf');
+    var tpl = _fs.readFileSync(src).toString();
+    tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, dist));
+
+    console.log('\n' + tpl + '\n');
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // ACTION LIST
   /////////////////////////////////////////////////////////////////////////////
@@ -592,6 +707,21 @@
     'theme-manifest' : {
       description: 'Creates theme manifest',
       cb: createThemeManifest
+    },
+
+    'apache-htaccess' : {
+      description: 'Generates apache htaccess files. Optional argument is <dist-name> (default is both \'dist\' and \'dist-dev\')',
+      cb: generateApacheHtaccess
+    },
+
+    'apache-vhost' : {
+      description: 'Generates a apache vhost config. Optional argument is <dist-name> (defaults to \'dist\')',
+      cb: generateApacheVhost
+    },
+
+    'lighttpd-config' : {
+      description: 'Generates a lighttpd config. Optional argument is <dist-name> (defaults to \'dist\')',
+      cb: generateLighttpdConfig
     }
   };
 
@@ -605,6 +735,9 @@
 
   var a = argv[2] || "help";
   var args = [];
+  for ( var i = 3; i < argv.length; i++ ) {
+    args.push(argv[i]);
+  }
 
   if ( a === "help" ) {
     printHelp();

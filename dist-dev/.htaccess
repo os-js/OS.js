@@ -22,12 +22,21 @@ RewriteRule ^ api.php [QSA,L]
   Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
 </ifModule>
 
-# You can update this file manually by looking at src/mime.json
 <ifModule mod_mime.c>
+  AddType image/bmp .bmp
+  AddType text/css .css
+  AddType image/gif .gif
+  AddType text/html .htm
+  AddType text/html .html
+  AddType image/jpeg .jpg
+  AddType image/jpeg .jpeg
+  AddType application/javascript .js
   AddType application/json .json
-
+  AddType font/opentype .otf
+  AddType font/opentype .ttf
+  AddType image/png .png
   AddType audio/aac .aac
-  AddType audio/mp4 .mp4
+  AddType video/mp4 .mp4
   AddType audio/mp4 .m4a
   AddType audio/mpeg .mp1
   AddType audio/mpeg .mp2
@@ -37,26 +46,17 @@ RewriteRule ^ api.php [QSA,L]
   AddType audio/ogg .oga
   AddType audio/ogg .ogg
   AddType audio/wav .wav
-  AddType audio/webm .webm
-
-  AddType video/mp4 .mp4
+  AddType video/webm .webm
   AddType video/mp4 .m4v
   AddType video/ogg .ogv
-  AddType video/webm .webm
-  AddType video/x-msvideo .avi
+  AddType video/x-ms-video .avi
   AddType video/x-flv .flv
   AddType video/x-matroska .mkv
-
-  AddType text/html .html
-  AddType text/xml .xml
-  AddType text/css .css
-  AddType application/javascript .js
   AddType application/x-python .py
-
+  AddType text/xml .xml
   AddType text/plain .txt
   AddType text/plain .doc
-
-  AddType osjs/dbeat .dbeat
+  AddType osjs/dbeat .odbeat
   AddType osjs/playlist .oplist
   AddType osjs/document .odoc
   AddType osjs/draw .odraw
