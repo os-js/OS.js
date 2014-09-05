@@ -1,3 +1,5 @@
+# Generated with `make apache-htaccess`
+
 Options +FollowSymlinks
 RewriteEngine on
 RewriteBase /

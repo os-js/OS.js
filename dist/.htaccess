@@ -1,4 +1,4 @@
-# Generated with `make apache-vhost`
+# Generated with `make apache-htaccess`
 
 Options +FollowSymlinks
 RewriteEngine on
