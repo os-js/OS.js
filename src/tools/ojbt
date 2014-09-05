@@ -435,25 +435,25 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
     var out_css = _path.join(ROOT, BUILD.stylesheets.output);
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', out_css);
-      var dst = _path.join(ROOT, 'dist', out_css.replace(/\.css$/, '.tmp.css'));
+      var src = out_css;
+      var dst = out_css.replace(/\.css$/, '.tmp.css');
       compress_css(src, dst, cb);
     });
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', out_css.replace(/\.css$/, '.tmp.css'));
-      var dst = _path.join(ROOT, 'dist', out_css);
+      var src = out_css.replace(/\.css$/, '.tmp.css');
+      var dst = out_css;
       exec((['mv', src, dst]).join(' '), cb);
     });
 
     var out_js = _path.join(ROOT, BUILD.javascript.output);
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', out_js);
-      var dst = _path.join(ROOT, 'dist', out_js.replace(/\.js$/, '.tmp.js'));
+      var src = out_js;
+      var dst = out_js.replace(/\.js$/, '.tmp.js');
       compress_js(src, dst, cb);
     });
     q.add(function(cb) {
-      var src = _path.join(ROOT, 'dist', out_js.replace(/\.js$/, '.tmp.js'));
-      var dst = _path.join(ROOT, 'dist', out_js);
+      var src = out_js.replace(/\.js$/, '.tmp.js');
+      var dst = out_js;
       exec((['mv', src, dst]).join(' '), cb);
     });
 
