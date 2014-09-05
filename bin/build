@@ -29,6 +29,16 @@
  * @licence Simplified BSD License
  */
 
+String.prototype.replaceAll = function(stringToFind,stringToReplace){
+  var temp = this;
+  var index = temp.indexOf(stringToFind);
+  while(index != -1){
+    temp = temp.replace(stringToFind,stringToReplace);
+    index = temp.indexOf(stringToFind);
+  }
+  return temp;
+};
+
 (function(argv, _fs, _path, _exec) {
 
   var ROOT    = _path.join(__dirname, '../');
@@ -90,7 +100,7 @@
   function exec(cmd, cb) {
     cb = cb || function() {};
 
-    console.info(cmd);
+    console.info(cmd.toString().replaceAll(ROOT, ''));
 
     _exec(cmd, function (error, stdout, stderr) {
       cb(error, stdout, stderr);
@@ -192,7 +202,7 @@
 
     function aq(iter, name) {
       q.add(function(cb) {
-        console.log("\033[1;34mBuilding theme '" + name + "'\033[0m");
+        console.log("\033[1;32mBuilding theme \033[0;33m%s\033[0m", name);
         cb();
       });
 
@@ -240,7 +250,7 @@
       var dir = _path.join(ROOT, 'dist', 'packages', repo, app);
 
       q.add(function(cb) {
-        console.log("\033[1;34mBuilding Package", "'"+app+"'", "in", "'"+repo+"'", "\033[0m");
+        console.log("\033[1;32mBuilding Package \033[0;33m%s/\033[1;33m%s\033[0m", repo, app);
         cb();
       });
       q.add(function(cb) {
@@ -497,8 +507,7 @@
         manifest.path = repo + "/" + file;
         manifest.iter = package_name;
 
-        //console.log("\033[1;37mAdded package '%s'\033[0m", package_name);
-        console.log("- Added package '%s'", package_name);
+        console.log("- Added package \033[1;37m%s\033[0m", package_name);
 
         return manifest;
       } catch ( e ) {
@@ -557,7 +566,7 @@
         try {
           var manifest = JSON.parse(_fs.readFileSync(json_path));
 
-          console.log("- Added theme '%s'", file);
+          console.log("- Added theme \033[1;37m%s\033[0m", file);
 
           return manifest;
         } catch ( e ) {
