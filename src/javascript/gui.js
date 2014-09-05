@@ -307,6 +307,7 @@
     this._fireHook('destroy');
     if ( this.$element && this.$element.parentNode ) {
       this.$element.parentNode.removeChild(this.$element);
+      this.$element = null;
     }
     this._hooks = {};
   };
@@ -447,6 +448,14 @@
   };
 
   _Input.prototype = Object.create(GUIElement.prototype);
+
+  _Input.prototype.destroy = function() {
+    GUIElement.prototype.destroy.apply(this, arguments);
+    if ( this.$input && this.$input.parentNode ) {
+      this.$input.parentNode.removeChild(this.$input);
+      this.$input = null;
+    }
+  }
 
   _Input.prototype.init = function() {
     var self = this;

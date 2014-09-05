@@ -111,7 +111,6 @@
     });
 
     this.switcher = new OSjs.CoreWM.WindowSwitcher();
-    this.switcher.init();
   };
 
   CoreWM.prototype.destroy = function(kill) {

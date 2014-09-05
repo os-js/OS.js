@@ -687,19 +687,18 @@
     this.winRef         = null;
   };
 
-  WindowSwitcher.prototype.init = function() {
-    this.$switcher = document.createElement('div');
-    this.$switcher.id = 'WindowSwitcher';
+  WindowSwitcher.prototype.destroy = function() {
+    this._remove();
   };
 
-  WindowSwitcher.prototype.destroy = function() {
+  WindowSwitcher.prototype._remove = function() {
     if ( this.$switcher ) {
       if ( this.$switcher.parentNode ) {
         this.$switcher.parentNode.removeChild(this.$switcher);
       }
       this.$switcher = null;
     }
-  };
+  }
 
   WindowSwitcher.prototype.show = function(ev, win, wm) {
     ev.preventDefault();
@@ -709,7 +708,8 @@
     var index  = -1;
 
     // Render
-    OSjs.Utils.$empty(this.$switcher);
+    this.$switcher = document.createElement('div');
+    this.$switcher.id = 'WindowSwitcher';
 
     var container, image, label, iter;
     for ( var i = 0; i < wm._windows.length; i++ ) {
@@ -740,9 +740,7 @@
       }
     }
 
-    if ( !this.$switcher.parentNode ) {
-      document.body.appendChild(this.$switcher);
-    }
+    document.body.appendChild(this.$switcher);
 
     this.$switcher.style.height    = height + 'px';
     this.$switcher.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
@@ -771,9 +769,7 @@
 
     ev.preventDefault();
 
-    if ( this.$switcher && this.$switcher.parentNode ) {
-      this.$switcher.parentNode.removeChild(this.$switcher);
-    }
+    this._remove();
 
     win = this.winRef || win;
     if ( win ) {

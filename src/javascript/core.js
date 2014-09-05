@@ -2000,6 +2000,12 @@
       if ( self._$element.parentNode ) {
         self._$element.parentNode.removeChild(self._$element);
       }
+      self._$element  = null;
+      self._$root     = null;
+      self._$top      = null;
+      self._$winicon  = null;
+      self._$loading  = null;
+      self._$disabled = null;
     }
 
     if ( this._destroyed ) { return; }
