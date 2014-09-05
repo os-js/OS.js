@@ -514,14 +514,18 @@
 
   _Input.prototype.blur = function() {
     if ( GUIElement.prototype.blur.apply(this, arguments) ) {
-      this.$input.blur();
+      if ( this.$input ) {
+        this.$input.blur();
+      }
     }
     return false;
   };
 
   _Input.prototype.focus = function() {
     if ( GUIElement.prototype.focus.apply(this, arguments) ) {
-      this.$input.focus();
+      if ( this.$input ) {
+        this.$input.focus();
+      }
     }
     return false;
   };
