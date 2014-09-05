@@ -36,42 +36,42 @@ clean:
 core:
 	@echo "\033[1;35mBuilding OS.js Core\033[0m"
 	rm -f dist/osjs.* ||:
-	(src/tools/build core)
+	(src/tools/ojbt core)
 
 config:
 	@echo "\033[1;35mBuilding OS.js Configurations\033[0m"
-	(src/tools/build config)
+	(src/tools/ojbt config)
 
 packages:
 	@echo "\033[1;35mBuilding Packages\033[0m"
 	rm -rf dist/packages/* ||:
-	(src/tools/build packages)
+	(src/tools/ojbt packages)
 
 themes:
 	@echo "\033[1;35mBuilding Themes\033[0m"
 	rm -rf dist/themes/* ||:
-	(src/tools/build themes)
+	(src/tools/ojbt themes)
 	cp -R src/themes/wallpapers dist/themes/
 
 compress:
 	@echo "\033[1;35mMaking compressed distro\033[0m"
-	(src/tools/build compress)
+	(src/tools/ojbt compress)
 
 manifest:
 	@echo "\033[1;35mCreating manifest files\033[0m"
 	rm -f dist/packages.json ||:
 	rm -f dist-dev/packages.json ||:
-	(src/tools/build package-manifest)
+	(src/tools/ojbt package-manifest)
 	rm -f dist/themes.json ||:
 	rm -f dist-dev/themes.json ||:
-	(src/tools/build theme-manifest)
+	(src/tools/ojbt theme-manifest)
 
 apache-htaccess:
-	(src/tools/build apache-htaccess)
+	(src/tools/ojbt apache-htaccess)
 
 apache-vhost:
-	(src/tools/build apache-vhost)
+	(src/tools/ojbt apache-vhost)
 
 lighttpd-config:
-	(src/tools/build lighttpd-config)
+	(src/tools/ojbt lighttpd-config)
 

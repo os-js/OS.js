@@ -1,5 +1,8 @@
 #!/usr/bin/env node
+
 /**
+ * OS.js Build Tool
+ *
  * OS.js - JavaScript Operating System
  *
  * Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
