@@ -102,6 +102,9 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    */
   function exec(cmd, cb) {
     cb = cb || function() {};
+    if ( typeof cmd === 'array' || (cmd instanceof Array) ) {
+      cmd = cmd.join(' ');
+    }
 
     console.info(cmd.toString().replaceAll(ROOT, ''));
 
@@ -213,7 +216,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var src = _path.join(dir, iter);
         var dest = _path.join(ROOT, 'dist', 'themes', name + '.css');
 
-        exec((['lessc', src, dest]).join(' '), function() {
+        exec(['lessc', src, dest], function() {
           cb();
         });
       });
@@ -221,7 +224,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       q.add(function(cb) {
         var src = _path.join(dir, name);
         var dest = _path.join(ROOT, 'dist', 'themes', name);
-        exec((['cp', '-Rf', src, dest]).join(' '), function() {
+        exec(['cp', '-Rf', src, dest], function() {
           cb();
         });
       });
@@ -257,10 +260,10 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         cb();
       });
       q.add(function(cb) {
-        exec((['mkdir', '-p', dir]).join(' '), cb);
+        exec(['mkdir', '-p', dir], cb);
       });
       q.add(function(cb) {
-        exec((['cp', '-rf', src, dst]).join(' '), cb);
+        exec(['cp', '-rf', src, dst], cb);
       });
       q.add(function(cb) {
         var manpath = _path.join(dir, "package.json");
@@ -328,7 +331,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     }
 
     q.add(function(cb) {
-      exec((['mkdir', _path.join(ROOT, 'dist', 'packages')]).join(' '), cb);
+      exec(['mkdir', _path.join(ROOT, 'dist', 'packages')], cb);
     });
 
     var dirs;
@@ -390,12 +393,12 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
     function compress_css(src, dest, cb) {
       dest = dest || src;
-      exec((['java', '-jar', YUI, '--type css', '--charset utf-8', src, '-o', dest]).join(' '), cb);
+      exec(['java', '-jar', YUI, '--type css', '--charset utf-8', src, '-o', dest], cb);
     }
 
     function compress_js(src, dest, cb) {
       dest = dest || src;
-      exec((['java', '-jar', CC, '--charset utf-8', '--js', src, '--js_output_file', dest]).join(' '), cb);
+      exec(['java', '-jar', CC, '--charset utf-8', '--js', src, '--js_output_file', dest], cb);
     }
 
     function compress_package(repo, app) {
@@ -412,7 +415,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         q.add(function(cb) {
           var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.js');
           var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.js');
-          exec((['mv', src, dst]).join(' '), cb);
+          exec(['mv', src, dst], cb);
         });
 
       q.add(function(cb) {
@@ -423,7 +426,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         q.add(function(cb) {
           var src = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.tmp.css');
           var dst = _path.join(ROOT, 'dist', 'packages', repo, app, 'combined.css');
-          exec((['mv', src, dst]).join(' '), cb);
+          exec(['mv', src, dst], cb);
         });
     }
 
@@ -442,7 +445,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       q.add(function(cb) {
         var src = out_css.replace(/\.css$/, '.tmp.css');
         var dst = out_css;
-        exec((['mv', src, dst]).join(' '), cb);
+        exec(['mv', src, dst], cb);
       });
 
     var out_js = _path.join(ROOT, BUILD.javascript.output);
@@ -454,7 +457,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       q.add(function(cb) {
         var src = out_js.replace(/\.js$/, '.tmp.js');
         var dst = out_js;
-        exec((['mv', src, dst]).join(' '), cb);
+        exec(['mv', src, dst], cb);
       });
 
     var dirs;
@@ -683,6 +686,9 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    * Create new package
    */
   function createPackage(name, repo) {
+    if ( !name ) {
+      throw "Expects 'name'";
+    }
     repo = repo || 'default';
     var q = new AQ();
 
@@ -704,7 +710,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     }
 
     q.add(function(cb) {
-      exec((['cp', '-r', src, dst]).join(' '), function() {
+      exec(['cp', '-r', src, dst], function() {
         cb();
       });
     });
@@ -720,6 +726,108 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     q.add(function(cb) {
       console.log("\033[1;32mCreated Package \033[0;33m%s/\033[1;33m%s\033[0m", repo, name);
       console.log(dst);
+      cb();
+    });
+
+    q.run();
+  }
+
+  /**
+   * Manage repository
+   */
+  function manageRepository(action, repo, arg) {
+    if ( !action ) {
+      throw 'Expects action';
+    }
+    var q = new AQ();
+
+    function find(name) {
+      for ( var i = 0; i < REPOS.length; i++ ) {
+        if ( REPOS[i] === name ) {
+          return i;
+        }
+      }
+      return false;
+    }
+
+    var found = find(repo);
+
+    switch ( action ) {
+      case 'add' :
+        if ( !repo ) {
+          throw 'Expects \'repository name\'';
+        }
+        if ( found !== false ) {
+          throw 'Repository already added';
+        }
+
+        q.add(function(cb) {
+          REPOS.push(repo);
+
+          cb();
+        });
+      break;
+
+      case 'remove' :
+        if ( !repo ) {
+          throw 'Expects \'repository name\'';
+        }
+        if ( found === false ) {
+          throw 'Repository not found';
+        }
+
+        q.add(function(cb) {
+          REPOS.splice(found, 1);
+          cb();
+        });
+      break;
+
+      case 'clone' :
+        if ( !repo || !arg ) {
+          throw 'Expects \'repository name\' and \'repository url\'';
+        }
+        if ( found !== false ) {
+          throw 'Repository already cloned';
+        }
+
+        q.add(function(cb) {
+          var src = arg;
+          var dst = _path.join(ROOT, 'src', 'packages', repo);
+          exec(['git', 'clone', src, dst], cb);
+        });
+
+        q.add(function(cb) {
+          REPOS.push(repo);
+          cb();
+        });
+      break;
+
+      case 'delete' :
+        if ( !repo ) {
+          throw 'Expects \'repository name\'';
+        }
+
+        var target = _path.join(ROOT, 'src', 'packages', repo);
+        q.add(function(cb) {
+          exec(['rm', '-rf', target], cb);
+        });
+
+        q.add(function(cb) {
+          if ( found !== false ) {
+            REPOS.splice(found, 1);
+          }
+
+          cb();
+        });
+      break;
+
+      default :
+        throw 'Invalid action: ' + action;
+      break;
+    }
+
+    q.add(function(cb) {
+      _fs.writeFileSync(_path.join(ROOT, "src", "packages", "repositories.json"), JSON.stringify(REPOS));
       cb();
     });
 
@@ -783,8 +891,13 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
     'create-package' : {
       description: 'Generate a new package template (new application). Arguments: <name>[, <repository>]',
-      args: 1,
       cb: createPackage
+    },
+
+    'repository' : {
+      description: 'Manage repositories: Arguments: <action> <repo-name>[, <argument>, ...]',
+      help: 'Actions: add <name>, remove <name>, clone <name> <url>, delete <name>',
+      cb: manageRepository
     }
   };
 
@@ -809,11 +922,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
   if ( !actions[a] ) {
     console.error("Invalid action", a);
-    return;
-  }
-
-  if ( actions[a].args && (args.length < actions[a].args) ) {
-    console.error("Not enough arguments for action", a);
     return;
   }
 
