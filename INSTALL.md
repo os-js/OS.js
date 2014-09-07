@@ -5,10 +5,11 @@ Server runs on OSX, BSD and Linux (also Windows if you have Cygwin)
 
 Make sure you have these dependencies installed
 
-* **nodejs** and **npm**
-* **lessc** (`sudo npm -g less`)
-* **bash**
-* **GNU Make**
+* GNU Make
+* **Nodejs** and **npm**
+* Node module **lessc** (`sudo npm install -g less`)
+* Node module **node-fs-extra** (`npm install -g node-fs-extra`)
+* Node module **formidable** (`npm install -g formidable`) _if you are planning on using Node as server_
 
 _To build compressed/minimized versions java is required because of vendor libraries_
 
@@ -23,7 +24,7 @@ Download the latest source from github or clone with git using:
 
 ## 2: Build OS.js
 
-Simply run `make`
+Simply run `./obt make`
 
 ## 3: Setting up a web-server
 
@@ -35,13 +36,13 @@ Example for Apache: `sudo chown -R www-data:www-data vfs/`
 
 See `doc/apache.conf` for an example
 
-Or run `make apache-vhost` to generate one
+Or run `./obt apache-vhost` to generate one
 
 ### PHP5 on Lighttpd
 
 See `doc/lighttpd.conf` for an example
 
-Or run `make lighttpd-config` to generate one
+Or run `./obt lighttpd-config` to generate one
 
 ### PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
@@ -51,7 +52,6 @@ Or run `make lighttpd-config` to generate one
 
 ### Node.js
 
-* Install dependencies: `npm install node-fs-extra formidable`
 * Production dist: `node src/server-node/server.js`
 * Developer dist: `node src/server-node/server.js dist-dev`
 
