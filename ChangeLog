@@ -1,3 +1,13 @@
+# 2.0.0-alpha19
+
+* Completely new build tools: 'obt' aka 'OS.js Build Tools'
+* New build tool replaces all bin/ scripts
+* obt can now handle package repositories
+* Better abstraction for Handlers
+* Simplified and Cleaned up Handlers
+* Prepared for WebSockets
+* New INSTALL instructions
+
 # 2.0.0-alpha18
 
 * New build tools (replaces all bin/ scripts)
@@ -141,4 +151,5 @@ Some cleanups and documentation updates
 
 # 2.0.0-alpha1
 
-See full list here: https://github.com/andersevenrud/OS.js-v2/wiki/Info:-Version-History-(ChangeLog)
+Rewritten from scratch!
+
