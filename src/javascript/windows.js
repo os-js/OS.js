@@ -1372,7 +1372,7 @@
 
   Window.prototype._error = function(title, description, message, exception, bugreport) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_error()');
-    var w = doErrorDialog(title, description, message, exception, bugreport);
+    var w = API.error(title, description, message, exception, bugreport);
     this._addChild(w);
   };
 
