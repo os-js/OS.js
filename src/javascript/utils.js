@@ -435,6 +435,19 @@
     return res;
   };
 
+  OSjs.Utils.isInputElement = function(ev) {
+    var d = ev.srcElement || ev.target;
+    if ( d ) {
+      var t = d.tagName.toUpperCase();
+      if ( t === 'TEXTAREA' || t === 'INPUT' ) {
+        if ( !(d.readOnly || d.disabled) ) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // XHR
   /////////////////////////////////////////////////////////////////////////////

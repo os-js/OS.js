@@ -128,22 +128,6 @@
     return false;
   }
 
-  /**
-   * Checks if event is on a input type element
-   */
-  function isInputElement(ev) {
-    var d = ev.srcElement || ev.target;
-    if ( d ) {
-      var t = d.tagName.toUpperCase();
-      if ( t === 'TEXTAREA' || t === 'INPUT' ) {
-        if ( !(d.readOnly || d.disabled) ) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // SYSTEM HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -739,7 +723,7 @@
     this._$root = document.createElement('div');
     this._$root.id = 'Background';
     this._$root.addEventListener('contextmenu', function(ev) {
-      if ( !isInputElement(ev) ) {
+      if ( !OSjs.Utils.isInputElement(ev) ) {
         ev.preventDefault();
         return false;
       }
@@ -910,7 +894,7 @@
 
     if ( this._$root ) {
       this._$root.removeEventListener('contextmenu', function(ev) {
-        if ( !isInputElement(ev) ) {
+        if ( !OSjs.Utils.isInputElement(ev) ) {
           ev.preventDefault();
           return false;
         }
@@ -986,7 +970,7 @@
   Main.prototype._onKeyDown = function(ev) {
     var d = ev.srcElement || ev.target;
     var doPrevent = d.tagName === 'BODY' ? true : false;
-    var isHTMLInput = isInputElement(ev);
+    var isHTMLInput = OSjs.Utils.isInputElement(ev);
 
     if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
       if ( isHTMLInput ) {

@@ -481,7 +481,7 @@
     var main = document.createElement('div');
 
     this._addEventListener(main, 'contextmenu', function(ev) {
-      var r = isInputElement(ev);
+      var r = OSjs.Utils.isInputElement(ev);
 
       if ( !r ) {
         ev.preventDefault();
