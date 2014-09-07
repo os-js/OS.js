@@ -85,18 +85,12 @@ See doc/example-handler.txt
             return;
           }
           console.debug('OSjs::Handlers::ExampleHandler::init()', 'login response', result);
-          self.user.setUserData(result.userData);
-          var locale = null;
-          if ( result.userSettings ) {
-            self.settings.load(result.userSettings);
-            if ( result.userSettings.Core ) {
-              locale = result.userSettings.Core.Locale || null;
-            }
-          }
-          OSjs.Locale.setLocale(locale || self.config.Core.Locale);
-
           container.parentNode.removeChild(container);
-          callback();
+
+          self.settings.load(result.userSettings); // IMPORTANT
+          self.onLogin(result.userData, function() {
+            callback();
+          });
         });
       }
 
@@ -187,5 +181,8 @@ See doc/example-handler.txt
     });
   };
 
-  OSjs.Handlers.Current  = ExampleHandler; // Set this as the default handler
+  //
+  // EXPORTS
+  //
+  OSjs.Handlers.example  = ExampleHandler;
 })();

@@ -2956,7 +2956,13 @@
     OSjs.Compability = OSjs.Utils.getCompability();
 
     // Launch handler
-    _HANDLER = new OSjs.Handlers.Current();
+    var cfg = OSjs.Settings.DefaultConfig();
+    var hname = cfg.Core.Handler;
+    if ( !OSjs.Handlers[hname] ) {
+      throw "Handler not found";
+    }
+
+    _HANDLER = new OSjs.Handlers[hname]();
     _HANDLER.init(function() {
       OSjs.Hooks._trigger('onInitialize');
 

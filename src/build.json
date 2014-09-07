@@ -12,6 +12,7 @@
         "ThemeURI":         "/themes",
         "PackageURI":       "/packages",
         "Home":             "/",
+        "Handler":          "%HANDLER%",
         "MaxUploadSize":    2097152,
         "BugReporting":     true,
         "Preloads":         [],

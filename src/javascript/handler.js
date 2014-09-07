@@ -79,18 +79,32 @@
     }
   };
 
-  ConnectionManager.prototype.send = function(opts, cok, cerror) {
+  ConnectionManager.prototype.callAPI = function(method, args, cbSuccess, cbError) {
     if ( this.offline ) {
       cerror('You are currently off-line and cannot perform this operation!');
       return false;
     }
 
+    args      = args      || {};
+    cbSuccess = cbSuccess || function() {};
+    cbError   = cbError   || function() {};
+
+    console.group('ConnectionManager::callAPI()');
+    console.log('Method', method);
+    console.log('Arguments', args);
+    console.groupEnd();
+
     return Utils.Ajax(this.url, function(response, httpRequest, url) {
-      response = response || {};
-      cok.apply(this, arguments);
+      cbSuccess.apply(this, arguments);
     }, function(error, response, httpRequest, url) {
-      cerror.apply(this, arguments);
-    }, opts);
+      cbError.apply(this, arguments);
+    }, {
+      method : 'POST',
+      post   : {
+        'method'    : method,
+        'arguments' : args
+      }
+    });
   };
 
   ConnectionManager.prototype.onOnline = function() {
@@ -319,33 +333,6 @@
   };
 
   /**
-   * Default method to perform a call to the backend (API)
-   * Use this shorthand method: OSjs.API.call() instead :)
-   */
-  DefaultHandler.prototype.callAPI = function(method, args, cok, cerror) {
-    args = args || {};
-
-    console.group('DefaultHandler::callAPI()');
-    console.log('Method', method);
-    console.log('Arguments', args);
-    console.groupEnd();
-
-    var opts = {
-      method : 'POST',
-      post   : {
-        'method'    : method,
-        'arguments' : args
-      }
-    };
-
-    return this.connection.send(opts, cok, cerror);
-  };
-
-  //
-  // Main
-  //
-
-  /**
    * Called upon window loaded from 'main.js'
    * @see main.js
    * @see OSjs._initialize
@@ -366,6 +353,12 @@
       this.connection.destroy();
       this.connection = null;
     }
+
+    this.user     = null;
+    this.themes   = null;
+    this.packages = null;
+    this.settings = null;
+    this.config   = {};
   };
 
   /**
@@ -395,7 +388,9 @@
    */
   DefaultHandler.prototype.login = function(username, password, callback) {
     console.info('OSjs::DefaultHandler::login()', username);
-    callback(true);
+    this.onLogin({}, function() {
+      callback(true);
+    });
   };
 
   /**
@@ -419,15 +414,56 @@
    * Default method to restore last running session
    */
   DefaultHandler.prototype.loadSession = function(callback) {
-    console.info('OSjs::DefaultHandler::loadSession()');
-
     callback = callback || function() {};
+
+    console.info('OSjs::DefaultHandler::loadSession()');
 
     var self = this;
     this.getUserSession(function(res) {
       if ( res ) {
         self.user.loadSession(res, callback);
       }
+    });
+  };
+
+  /**
+   * Default method to perform a call to the backend (API)
+   * Use this shorthand method: OSjs.API.call() instead :)
+   */
+  DefaultHandler.prototype.callAPI = function(method, args, cbSuccess, cbError) {
+    return this.connection.callAPI(method, args, cbSuccess, cbError);
+  };
+
+  //
+  // Events
+  //
+
+  /**
+   * Called when login() is finished
+   */
+  DefaultHandler.prototype.onLogin = function(userData, callback) {
+    callback = callback || function() {};
+
+    var curLocale = this.config.Core.Locale;
+
+    function _finished(locale) {
+      OSjs.Locale.setLocale(locale || curLocale);
+      if ( callback ) {
+        callback();
+      }
+    }
+
+    this.user.setUserData(userData);
+
+    // Ensure we get the user-selected locale configured from WM
+    this.getUserSettings('Core', function(result) {
+      var locale = null;
+      if ( result ) {
+        if ( (typeof result.Locale !== 'undefined') && result.Locale ) {
+          locale = result.Locale;
+        }
+      }
+      _finished(locale);
     });
   };
 
@@ -694,13 +730,11 @@
   //
   // EXPORTS
   //
-  OSjs.Handlers.Default = DefaultHandler;
-  OSjs.Handlers.DefaultLibs = {
-    ConnectionManager: ConnectionManager,
-    UserSession: UserSession,
-    ThemeManager: ThemeManager,
-    PackageManager: PackageManager
-  };
+  OSjs.Handlers.Default           = DefaultHandler;
+  OSjs.Handlers.ConnectionManager = ConnectionManager;
+  OSjs.Handlers.UserSession       = UserSession;
+  OSjs.Handlers.ThemeManager      = ThemeManager;
+  OSjs.Handlers.PackageManager    = PackageManager;
 
 })(OSjs.Utils);
 

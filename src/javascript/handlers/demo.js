@@ -33,8 +33,15 @@
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
 
+  var DEMO_USER = {
+    id:         1,
+    username:   'demo',
+    name:       'Demo User',
+    groups:     ['demo']
+  };
+
   /////////////////////////////////////////////////////////////////////////////
-  // DEFAULT HANDLING CODE
+  // DEMO STORAGE
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -68,6 +75,10 @@
     return ret;
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // DEMO HANDLER
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
    * Demo handler - Uses localStorage for sessions, for testing purposes
    */
@@ -84,28 +95,13 @@
   DemoHandler.prototype.init = function(callback) {
     console.info('OSjs::DemoHandler::init()');
 
-    var self = this;
-    function _finished(locale) {
-      OSjs.Locale.setLocale(locale || self.config.Core.Locale);
-      if ( callback ) {
-        callback();
-      }
-    }
-
     // Use the 'demo' user
+    var self = this;
     this.login('demo', 'demo', function(userData) {
-      self.user.setUserData(userData);
-      self.settings.load(self.storage.get());   // Load previously used settings
+      self.settings.load(self.storage.get()); // IMPORTANT
 
-      // Ensure we get the user-selected locale configured from WM
-      self.getUserSettings('Core', function(result) {
-        var locale = null;
-        if ( result ) {
-          if ( (typeof result.Locale !== 'undefined') && result.Locale ) {
-            locale = result.Locale;
-          }
-        }
-        _finished(locale);
+      self.onLogin(userData, function() {
+        callback();
       });
     });
   };
@@ -116,14 +112,7 @@
   DemoHandler.prototype.login = function(username, password, callback) {
     console.info('OSjs::DemoHandler::login()', username);
     if ( username === 'demo' && password === 'demo' ) {
-      var userData = {
-        id:         1,
-        username:   'demo',
-        name:       'Demo User',
-        groups:     ['demo']
-      };
-
-      callback.call(this, userData);
+      callback.call(this, DEMO_USER);
       return;
     }
     callback.call(this, false, 'Invalid login');
@@ -137,5 +126,8 @@
   };
 
 
-  OSjs.Handlers.Current  = DemoHandler; // Set this as the default handler
+  //
+  // Exports
+  //
+  OSjs.Handlers.demo  = DemoHandler;
 })();
