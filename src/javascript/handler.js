@@ -691,7 +691,16 @@
     return path ? (fsuri + path) : fsuri;
   };
 
+  //
+  // EXPORTS
+  //
   OSjs.Handlers.Default = DefaultHandler;
+  OSjs.Handlers.DefaultLibs = {
+    ConnectionManager: ConnectionManager,
+    UserSession: UserSession,
+    ThemeManager: ThemeManager,
+    PackageManager: PackageManager
+  };
 
 })(OSjs.Utils);
 
