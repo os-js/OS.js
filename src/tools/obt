@@ -350,36 +350,36 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    * Action: Build Config
    */
   function buildConfig() {
-    var out_php   = _path.join(ROOT, 'src', 'server-php', 'settings.php');
-    var out_node  = _path.join(ROOT, 'src', 'server-node', 'settings.json');
-    var out_js    = _path.join(ROOT, 'dist', 'settings.js');
+    var build      = JSON.stringify(BUILD);
+    var handler    = BUILD.handler    || "demo";
+    var connection = BUILD.connection || "http";
 
-    var settings = BUILD.settings.backend;
-    var handler  = BUILD.handler || "demo";
-    for ( var i in settings ) {
-      if ( settings.hasOwnProperty(i) ) {
-        if ( typeof settings[i] === "string" ) {
-          settings[i] = settings[i].replace("%ROOT%", ROOT);
-          settings[i] = settings[i].replace("%HANDLER%", handler);
-        }
-      }
-    }
+    build = build.replaceAll("%ROOT%",       ROOT);
+    build = build.replaceAll("%HANDLER%",    handler);
+    build = build.replaceAll("%CONNECTION%", connection);
+    build = JSON.parse(build);
 
-    var cfg_node = settings;
+    // PHP
+    var settings = build.settings.backend;
+    var out_php  = _path.join(ROOT, 'src', 'server-php', 'settings.php');
     var cfg_php  = [];
-    var cfg_js   = "(function() {\n  window.OSjs = window.OSjs   || {};\n  OSjs.Settings = OSjs.Settings || {};\n  OSjs.Settings.DefaultConfig = function() {\n    return %CONFIG%;\n  };\n})();\n";
-
     for ( var i in settings ) {
       if ( settings.hasOwnProperty(i) ) {
         cfg_php.push("define('" + i.toUpperCase() + "', '" + settings[i] + "');");
       }
     }
-
     cfg_php = "<?php\n" + cfg_php.join("\n") + "\n?>";
-    _fs.writeFileSync(out_node, JSON.stringify(cfg_node));
     _fs.writeFileSync(out_php, cfg_php);
 
-    settings = BUILD.settings.frontend;
+    // Node
+    var out_node = _path.join(ROOT, 'src', 'server-node', 'settings.json');
+    var cfg_node = settings;
+    _fs.writeFileSync(out_node, JSON.stringify(cfg_node));
+
+    // JS
+    var cfg_js = "(function() {\n  window.OSjs = window.OSjs   || {};\n  OSjs.Settings = OSjs.Settings || {};\n  OSjs.Settings.DefaultConfig = function() {\n    return %CONFIG%;\n  };\n})();\n";
+    var out_js = _path.join(ROOT, 'dist', 'settings.js');
+    settings = build.settings.frontend;
     settings.MIME = MIMES.descriptions;
     settings.Core.Repositories = REPOS;
     _fs.writeFileSync(out_js, cfg_js.replace("%CONFIG%", JSON.stringify(settings, null, 2)));

@@ -85,7 +85,7 @@ See doc/example-handler.txt
             return;
           }
           console.debug('OSjs::Handlers::ExampleHandler::init()', 'login response', result);
-          self.userData = result.userData;
+          self.user.setUserData(result.userData);
           var locale = null;
           if ( result.userSettings ) {
             self.settings.load(result.userSettings);

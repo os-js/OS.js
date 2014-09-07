@@ -72,7 +72,6 @@
    * Demo handler - Uses localStorage for sessions, for testing purposes
    */
   var DemoHandler = function() {
-
     OSjs.Handlers.Default.apply(this, arguments);
 
     this.storage = new DefaultStorage();
@@ -95,8 +94,7 @@
 
     // Use the 'demo' user
     this.login('demo', 'demo', function(userData) {
-      userData = userData || {};
-      self.userData = userData;                 // Set our user session info
+      self.user.setUserData(userData);
       self.settings.load(self.storage.get());   // Load previously used settings
 
       // Ensure we get the user-selected locale configured from WM

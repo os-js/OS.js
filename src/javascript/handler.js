@@ -48,6 +48,92 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
+  // DEFAULT CONNECTION MANAGER
+  /////////////////////////////////////////////////////////////////////////////
+
+  var ConnectionManager = function(cfg) {
+    var self = this;
+    this.offline  = false;
+
+    if ( typeof navigator.onLine !== 'undefined' ) {
+      window.addEventListener('offline', function(ev) {
+        self.onOffline();
+      });
+      window.addEventListener('online', function(ev) {
+        self.onOnline();
+      });
+    }
+  };
+
+  ConnectionManager.prototype.destroy = function() {
+    var self = this;
+    if ( typeof navigator.onLine !== 'undefined' ) {
+      window.removeEventListener('offline', function(ev) {
+        self.onOffline();
+      });
+      window.removeEventListener('online', function(ev) {
+        self.onOnline();
+      });
+    }
+  };
+
+  ConnectionManager.prototype.send = function(opts, cok, cerror) {
+    if ( this.offline ) {
+      cerror('You are currently off-line and cannot perform this operation!');
+      return false;
+    }
+
+    return Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
+      response = response || {};
+      cok.apply(this, arguments);
+    }, function(error, response, httpRequest, url) {
+      cerror.apply(this, arguments);
+    }, opts);
+  };
+
+  ConnectionManager.prototype.onOnline = function() {
+    console.warn('DefaultHandler::onOnline()', 'Going online...');
+    this.offline = false;
+
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      wm.notification({title: 'Warning!', message: 'You are On-line!'});
+    }
+  };
+
+  ConnectionManager.prototype.onOffline = function() {
+    console.warn('DefaultHandler::onOffline()', 'Going offline...');
+    this.offline = true;
+
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      wm.notification({title: 'Warning!', message: 'You are Off-line!'});
+    }
+  };
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  // DEFAULT USER MANAGER
+  /////////////////////////////////////////////////////////////////////////////
+
+  var UserSession = function(cfg) {
+    this.userData = {
+      id      : 0,
+      username: 'root',
+      name    : 'root user',
+      groups  : ['root']
+    };
+  };
+
+  UserSession.prototype.setUserData = function(d) {
+    this.userData = d || {};
+  };
+
+  UserSession.prototype.getUserData = function() {
+    return this.userData;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // DEFAULT THEME MANAGER
   /////////////////////////////////////////////////////////////////////////////
 
@@ -200,46 +286,19 @@
    * You can implement your own, see documentation on Wiki.
    */
   var DefaultHandler = function() {
-    var self = this;
-    var cfg = OSjs.Settings.DefaultConfig();
-
-    this.offline  = false;
-    this.settings = new OSjs.Core.SettingsManager();           // Settings cache
-    this.config   = cfg;                                          // Main configuration copy
-    this.packages = new PackageManager(cfg.Core.MetadataURI);     // Package manager
-    this.themes   = new ThemeManager(cfg.Core.ThemeMetadataURI);  // Theme Manager
-    this.userData = {                                             // User Session data
-      id      : 0,
-      username: 'root',
-      name    : 'root user',
-      groups  : ['root']
-    };
-
-    if ( typeof navigator.onLine !== 'undefined' ) {
-      window.addEventListener('offline', function(ev) {
-        self.onOffline();
-      });
-      window.addEventListener('online', function(ev) {
-        self.onOnline();
-      });
-    }
+    this.config     = OSjs.Settings.DefaultConfig();
+    this.settings   = new OSjs.Core.SettingsManager();
+    this.connection = new ConnectionManager(this.config.Connection);
+    this.packages   = new PackageManager(this.config.Core.MetadataURI);
+    this.themes     = new ThemeManager(this.config.Core.ThemeMetadataURI);
+    this.user       = new UserSession(this.config.Core.DefaultUser);
   };
 
   /**
    * Default method to perform a call to the backend (Wrapper)
    */
   DefaultHandler.prototype._call = function(opts, cok, cerror) {
-    if ( this.offline ) {
-      cerror('You are currently off-line and cannot perform this operation!');
-      return false;
-    }
-
-    return Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
-      response = response || {};
-      cok.apply(this, arguments);
-    }, function(error, response, httpRequest, url) {
-      cerror.apply(this, arguments);
-    }, opts);
+    return this.connection.send(opts, cok, error);
   };
 
   /**
@@ -266,43 +325,6 @@
   };
 
   //
-  // Events
-  //
-
-  /**
-   * Event when browser goes on-line (again)
-   */
-  DefaultHandler.prototype.onOnline = function() {
-    console.warn('DefaultHandler::onOnline()', 'Going online...');
-    this.offline = false;
-
-    var wm = OSjs.API.getWMInstance();
-    if ( wm ) {
-      wm.notification({title: 'Warning!', message: 'You are On-line!'});
-    }
-  };
-
-  /**
-   * Event when browser gies off-line
-   */
-  DefaultHandler.prototype.onOffline = function() {
-    console.warn('DefaultHandler::onOffline()', 'Going offline...');
-    this.offline = true;
-
-    var wm = OSjs.API.getWMInstance();
-    if ( wm ) {
-      wm.notification({title: 'Warning!', message: 'You are Off-line!'});
-    }
-  };
-
-  /**
-   * Event when OS.js has successfully initialized
-   */
-  DefaultHandler.prototype.onInitialized = function() {
-    console.debug('OSjs::DefaultHandler::onInitialized()');
-  };
-
-  //
   // Main
   //
 
@@ -323,14 +345,9 @@
    * Called upon unload
    */
   DefaultHandler.prototype.destroy = function() {
-    var self = this;
-    if ( typeof navigator.onLine !== 'undefined' ) {
-      window.removeEventListener('offline', function(ev) {
-        self.onOffline();
-      });
-      window.removeEventListener('online', function(ev) {
-        self.onOnline();
-      });
+    if ( this.connection ) {
+      this.connection.destroy();
+      this.connection = null;
     }
   };
 
@@ -579,7 +596,7 @@
    * Get data for logged in user
    */
   DefaultHandler.prototype.getUserData = function() {
-    return this.userData;
+    return this.user.getUserData();
   };
 
   /**

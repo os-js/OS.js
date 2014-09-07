@@ -799,8 +799,6 @@
           OSjs.Hooks._trigger('onSessionLoaded');
         });
 
-        _HANDLER.onInitialized();
-
         if ( _$SPLASH ) {
           _$SPLASH.style.display = 'none';
         }

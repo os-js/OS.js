@@ -1,5 +1,6 @@
 {
   "handler": "demo",
+  "connection": "http",
 
   "settings" : {
     "frontend" : {
@@ -21,6 +22,11 @@
           "no_NO": "Norsk (Norwegian)",
           "de_DE": "Deutsch (German)"
         }
+      },
+
+      "Connection": {
+        "type": "%CONNECTION%",
+        "ws": "ws://localhost:8888"
       },
 
       "Fonts" : {
