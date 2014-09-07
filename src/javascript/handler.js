@@ -92,7 +92,7 @@
   };
 
   ConnectionManager.prototype.onOnline = function() {
-    console.warn('DefaultHandler::onOnline()', 'Going online...');
+    console.warn('ConnectionManager::onOnline()', 'Going online...');
     this.offline = false;
 
     var wm = OSjs.API.getWMInstance();
@@ -102,7 +102,7 @@
   };
 
   ConnectionManager.prototype.onOffline = function() {
-    console.warn('DefaultHandler::onOffline()', 'Going offline...');
+    console.warn('ConnectionManager::onOffline()', 'Going offline...');
     this.offline = true;
 
     var wm = OSjs.API.getWMInstance();
