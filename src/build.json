@@ -116,7 +116,8 @@
       "src/javascript/dialogs/font.js",
       "src/javascript/dialogs/input.js",
       "src/javascript/handler.js",
-      "src/javascript/handlers/%HANDLER%.js"
+      "src/javascript/handlers/%HANDLER%.js",
+      "src/javascript/main.js"
     ]
   },
 

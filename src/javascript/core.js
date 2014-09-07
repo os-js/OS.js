@@ -30,14 +30,6 @@
 (function() {
   'use strict';
 
-  window.console    = window.console    || {};
-  console.log       = console.log       || function() {};
-  console.debug     = console.debug     || console.log;
-  console.error     = console.error     || console.log;
-  console.warn      = console.warn      || console.log;
-  console.group     = console.group     || console.log;
-  console.groupEnd  = console.groupEnd  || console.log;
-
   window.OSjs       = window.OSjs       || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
@@ -96,6 +88,7 @@
   var _$SPLASH_TXT;       //   It's description field
   var _$SPLASH;           // Loading Screen DOM Element
   var _MOUSELOCK = true;  // Mouse inside view ?!
+  var _INITED = false;
 
   var ANIMDURATION = 300; // Animation duration constant (FIXME)
 
@@ -149,6 +142,73 @@
       }
     }
     return false;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // SYSTEM HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function doInitialize() {
+    if ( _INITED ) { return; }
+    _INITED = true;
+
+    window.onload = null;
+
+    OSjs.Compability = OSjs.Utils.getCompability();
+
+    // Launch handler
+    var cfg = OSjs.Settings.DefaultConfig();
+    var hname = cfg.Core.Handler;
+    if ( !OSjs.Handlers[hname] ) {
+      throw "Handler not found";
+    }
+
+    _HANDLER = new OSjs.Handlers[hname]();
+    _HANDLER.init(function() {
+      OSjs.Hooks._trigger('onInitialize');
+
+      _$SPLASH              = document.getElementById('LoadingScreen');
+      _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
+
+      _$LOADING             = document.createElement('div');
+      _$LOADING.id          = 'Loading';
+      _$LOADING.innerHTML   = '<div class="loader"></div>';
+      document.body.appendChild(_$LOADING);
+
+      _CORE = new Main();
+      if ( _CORE ) {
+        _CORE.init();
+      }
+    });
+  }
+
+  function doShutdown(save, onunload) {
+    if ( !_INITED ) { return; }
+    _INITED = false;
+    window.onunload = null;
+
+    function _shutdown() {
+      if ( _CORE ) {
+        _CORE.destroy();
+        _CORE = null;
+      }
+      if ( _HANDLER ) {
+        _HANDLER.destroy();
+        _HANDLER = null;
+      }
+      _WM = null;
+
+      if ( _$LOADING && _$LOADING.parentNode ) {
+        _$LOADING.parentNode.removeChild(_$LOADING);
+      }
+      _$LOADING = null;
+    }
+
+    if ( onunload ) {
+      _shutdown();
+    } else {
+      _CORE.shutdown(save, _shutdown);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1341,6 +1401,9 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  OSjs.Initialize = doInitialize;
+  OSjs.Shutdown   = doShutdown;
+
   // Classes
   OSjs.Core.Process           = Process;
   OSjs.Core.Application       = Application;
@@ -1367,97 +1430,7 @@
   OSjs.API.launchList         = doLaunchProcessList;
   OSjs.API.open               = doLaunchFile;
   OSjs.API.playSound          = doPlaySound;
-  OSjs.API.UploadFiles        = doUploadFiles;
-
-  /////////////////////////////////////////////////////////////////////////////
-  // STARTUP / SHUTDOWN FUNCTIONS
-  /////////////////////////////////////////////////////////////////////////////
-
-  var __initialized = false;
-
-  function doInitialize() {
-    if ( __initialized ) { return; }
-    __initialized = true;
-
-    window.onload = null;
-
-    OSjs.Compability = OSjs.Utils.getCompability();
-
-    // Launch handler
-    var cfg = OSjs.Settings.DefaultConfig();
-    var hname = cfg.Core.Handler;
-    if ( !OSjs.Handlers[hname] ) {
-      throw "Handler not found";
-    }
-
-    _HANDLER = new OSjs.Handlers[hname]();
-    _HANDLER.init(function() {
-      OSjs.Hooks._trigger('onInitialize');
-
-      _$SPLASH              = document.getElementById('LoadingScreen');
-      _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
-
-      _$LOADING             = document.createElement('div');
-      _$LOADING.id          = 'Loading';
-      _$LOADING.innerHTML   = '<div class="loader"></div>';
-      document.body.appendChild(_$LOADING);
-
-      _CORE = new Main();
-      if ( _CORE ) {
-        _CORE.init();
-      }
-    });
-  }
-
-  OSjs.Shutdown = function(save, onunload) {
-    if ( !__initialized ) { return; }
-    __initialized = false;
-    window.onunload = null;
-
-    function _shutdown() {
-      if ( _CORE ) {
-        _CORE.destroy();
-        _CORE = null;
-      }
-      if ( _HANDLER ) {
-        _HANDLER.destroy();
-        _HANDLER = null;
-      }
-      _WM = null;
-
-      if ( _$LOADING && _$LOADING.parentNode ) {
-        _$LOADING.parentNode.removeChild(_$LOADING);
-      }
-      _$LOADING = null;
-    }
-
-    if ( onunload ) {
-      _shutdown();
-    } else {
-      _CORE.shutdown(save, _shutdown);
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Main initialization code
-  /////////////////////////////////////////////////////////////////////////////
-
-  function _onLoad() {
-    doInitialize();
-  }
-
-  function _onUnload() {
-    OSjs.Shutdown(false, true);
-  }
-
-  var jQuery = window.$ || window.jQuery;
-  if ( typeof jQuery !== 'undefined' ) {
-    console.warn('Using jQuery initialization');
-    jQuery(window).on('load', _onLoad);
-    jQuery(window).on('unload', _onUnload);
-  } else {
-    window.onload   = _onLoad;
-    window.onunload = _onUnload;
-  }
+  OSjs.API.uploadFiles        = doUploadFiles;
+  OSjs.API.isMouseLock        = function() { return _MOUSELOCK; };
 
 })();

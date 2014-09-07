@@ -437,7 +437,7 @@
     var dest = OSjs.API.getDefaultPath();
     var self = this;
 
-    OSjs.API.UploadFiles(this, null, dest, files, function(dest, filename, mime, size) {
+    OSjs.API.uploadFiles(this, null, dest, files, function(dest, filename, mime, size) {
       if ( self.iconView ) {
         self.iconView.addShortcut({
           path:     OSjs.Utils.format('{0}/{1}', (dest == '/' ? '' : dest), filename),
