@@ -295,13 +295,6 @@
   };
 
   /**
-   * Default method to perform a call to the backend (Wrapper)
-   */
-  DefaultHandler.prototype._call = function(opts, cok, cerror) {
-    return this.connection.send(opts, cok, error);
-  };
-
-  /**
    * Default method to perform a call to the backend (API)
    * Use this shorthand method: OSjs.API.call() instead :)
    */
@@ -321,7 +314,7 @@
       }
     };
 
-    return this._call(opts, cok, cerror);
+    return this.connection.send(opts, cok, error);
   };
 
   //
