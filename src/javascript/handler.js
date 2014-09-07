@@ -226,7 +226,7 @@
 
   ConnectionManager.prototype.callAPI = function(method, args, cbSuccess, cbError) {
     if ( this.offline ) {
-      cerror('You are currently off-line and cannot perform this operation!');
+      cbError('You are currently off-line and cannot perform this operation!');
       return false;
     }
 

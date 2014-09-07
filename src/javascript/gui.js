@@ -455,7 +455,7 @@
       this.$input.parentNode.removeChild(this.$input);
       this.$input = null;
     }
-  }
+  };
 
   _Input.prototype.init = function() {
     var self = this;
