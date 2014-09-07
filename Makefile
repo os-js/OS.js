@@ -13,6 +13,7 @@
 # 	apache-htaccess  Generate new .htaccess files
 # 	apache-vhost     Generate new apache vhost config file
 # 	lighttpd-config  Generate new lighttpd config files
+# 	dist-dev-index   Generate new index.html for dist-dev
 #
 
 .PHONY: all clean config core themes packages compress manifest
@@ -75,3 +76,5 @@ apache-vhost:
 lighttpd-config:
 	(src/tools/obt lighttpd-config)
 
+dist-dev-index:
+	(src/tools/obt dist-dev-index)

@@ -48,9 +48,22 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
   var BUILD   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "build.json")));
   var REPOS   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "packages", "repositories.json")));
   var MIMES   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "mime.json")));
-  var HANDLER = BUILD.handler || 'demo';
+  var HANDLER = '';
   var YUI     = _path.join(ROOT, 'vendor', 'yuicompressor-2.4.8.jar');
   var CC      = _path.join(ROOT, 'vendor', 'closurecompiler.jar');
+
+  (function() {
+    var build      = JSON.stringify(BUILD);
+    var handler    = BUILD.handler    || "demo";
+    var connection = BUILD.connection || "http";
+
+    build = build.replaceAll("%ROOT%",       ROOT);
+    build = build.replaceAll("%HANDLER%",    handler);
+    build = build.replaceAll("%CONNECTION%", connection);
+
+    BUILD   = JSON.parse(build);
+    HANDLER = BUILD.handler || 'demo';
+  })();
 
   /**
    * Simple Async Queue
@@ -167,7 +180,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       var data = [];
       var iter, src;
       for ( var i = 0; i < list.length; i++ ) {
-        iter = list[i].replace("%HANDLER%", HANDLER);
+        iter = list[i];
         console.log(iter);
 
         src = _fs.readFileSync(iter);
@@ -350,17 +363,8 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    * Action: Build Config
    */
   function buildConfig() {
-    var build      = JSON.stringify(BUILD);
-    var handler    = BUILD.handler    || "demo";
-    var connection = BUILD.connection || "http";
-
-    build = build.replaceAll("%ROOT%",       ROOT);
-    build = build.replaceAll("%HANDLER%",    handler);
-    build = build.replaceAll("%CONNECTION%", connection);
-    build = JSON.parse(build);
-
     // PHP
-    var settings = build.settings.backend;
+    var settings = BUILD.settings.backend;
     var out_php  = _path.join(ROOT, 'src', 'server-php', 'settings.php');
     var cfg_php  = [];
     for ( var i in settings ) {
@@ -379,7 +383,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     // JS
     var cfg_js = "(function() {\n  window.OSjs = window.OSjs   || {};\n  OSjs.Settings = OSjs.Settings || {};\n  OSjs.Settings.DefaultConfig = function() {\n    return %CONFIG%;\n  };\n})();\n";
     var out_js = _path.join(ROOT, 'dist', 'settings.js');
-    settings = build.settings.frontend;
+    settings = BUILD.settings.frontend;
     settings.MIME = MIMES.descriptions;
     settings.Core.Repositories = REPOS;
     _fs.writeFileSync(out_js, cfg_js.replace("%CONFIG%", JSON.stringify(settings, null, 2)));
@@ -834,6 +838,32 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     q.run();
   }
 
+  /**
+   * Generate index.html
+   */
+  function generateIndex() {
+    var i;
+
+    var scripts = [];
+    for ( var j = 0; j < BUILD.javascript.files.length; j++ ) {
+      i = BUILD.javascript.files[j].replace('src/javascript', 'js');
+      scripts.push('    <script type="text/javascript" charset="utf-8" src="/' + i + '"></script>');
+    }
+    scripts = scripts.join('\n');
+
+    var styles = [];
+    for ( var s = 0; s < BUILD.stylesheets.files.length; s++ ) {
+      i = BUILD.stylesheets.files[s].replace('src/stylesheets', 'css');
+      styles.push('    <link type="text/css" rel="stylesheet" href="/' + i + '" />');
+    }
+    styles = styles.join('\n');
+
+    var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'index.html')).toString();
+    tpl = tpl.replaceAll("%SCRIPTS%", scripts);
+    tpl = tpl.replaceAll("%STYLES%", styles);
+    _fs.writeFileSync(_path.join(ROOT, 'dist-dev', 'index.html'), tpl);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // ACTION LIST
   /////////////////////////////////////////////////////////////////////////////
@@ -887,6 +917,11 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     'lighttpd-config' : {
       description: 'Generates a lighttpd config. Optional argument is <dist-name> (defaults to \'dist\')',
       cb: generateLighttpdConfig
+    },
+
+    'dist-dev-index' : {
+      description: 'Generates a index.html file for dist-dev',
+      cb: generateIndex
     },
 
     'create-package' : {
