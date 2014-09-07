@@ -24,7 +24,7 @@ Download the latest source from github or clone with git using:
 
 ## 2: Build OS.js
 
-Simply run `./obt make`
+Simply run `make`
 
 ## 3: Setting up a web-server
 
