@@ -5,7 +5,7 @@
 * _[Application]_ Draw -- Finish features (marked in source)
 * _[Locales]_ Finish the format strings
 * _[Themes]_ More Themes
-* _[Backend]_ Provide a websocket version like in v1
+* _[Backend]_ Finish WebSocket hander implementation
 
 # Low-priority
 * _[Application]_ CoreWM -- Custom keyboard binding shortcuts

@@ -13,6 +13,7 @@
         "PackageURI":       "/packages",
         "Home":             "/",
         "Handler":          "%HANDLER%",
+        "Connection":       "%CONNECTION%",
         "MaxUploadSize":    2097152,
         "BugReporting":     true,
         "Preloads":         [],
@@ -23,11 +24,6 @@
           "no_NO": "Norsk (Norwegian)",
           "de_DE": "Deutsch (German)"
         }
-      },
-
-      "Connection": {
-        "type": "%CONNECTION%",
-        "ws": "ws://localhost:8888"
       },
 
       "Fonts" : {

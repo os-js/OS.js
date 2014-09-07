@@ -51,11 +51,19 @@
   // DEFAULT CONNECTION MANAGER
   /////////////////////////////////////////////////////////////////////////////
 
-  var ConnectionManager = function(cfg, url) {
+  var ConnectionManager = function(type, url, cb) {
+    cb = cb || function() {};
+
+    this.type       = type;
+    this.url        = url;
+    this.offline    = false;
+    this.connection = null;
+    /*
+    this._wsmid     = 0;
+    this._wscb      = {};
+    */
+
     var self = this;
-    this.config   = cfg;
-    this.url      = url;
-    this.offline  = false;
 
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.addEventListener('offline', function(ev) {
@@ -65,10 +73,49 @@
         self.onOnline();
       });
     }
+
+    /*
+    if ( this.type === 'websocket' ) {
+      this.offline = true;
+
+      //this.connection = new WebSocket(this.url);
+      this.connection = new WebSocket('ws://10.0.0.52:8889');
+      this.connection.onopen = function() {
+        self.offline = false;
+      };
+      this.connection.onclose = function() {
+        self.offline = true;
+      };
+      this.connection.onerror = function(ev) {
+        console.error('Connection error', ev);
+      };
+      this.connection.onmessage = function(ev) {
+        var data = JSON.parse(ev.data);
+        var id = data.id;
+
+        if ( self._wscb[id] ) {
+          if ( data.error ) {
+            self._wscb[id].cbError(data.error, data);
+          } else {
+            self._wscb[id].cbSuccess(data);
+          }
+          delete self._wscb[id];
+        }
+      };
+    }
+    */
   };
 
   ConnectionManager.prototype.destroy = function() {
     var self = this;
+    /*
+    if ( this.connection ) {
+      this.connection.close();
+      this.connection = null;
+      this._wscb = {};
+    }
+    */
+
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.removeEventListener('offline', function(ev) {
         self.onOffline();
@@ -93,6 +140,27 @@
     console.log('Method', method);
     console.log('Arguments', args);
     console.groupEnd();
+
+    /*
+    if ( this.connection ) {
+      var id = 'msg_' + this._wsmid;
+      this._wscb[id] = {
+        args: args,
+        cbSuccess: cbSuccess,
+        cbError: cbError
+      };
+
+      this.connection.send(JSON.stringify({
+        id: id,
+        method: method,
+        args: args
+      }));
+
+      this._wsmid++;
+
+      return true;
+    }
+    */
 
     return Utils.Ajax(this.url, function(response, httpRequest, url) {
       cbSuccess.apply(this, arguments);
@@ -326,7 +394,7 @@
   var DefaultHandler = function() {
     this.config     = OSjs.Settings.DefaultConfig();
     this.settings   = new OSjs.Core.SettingsManager();
-    this.connection = new ConnectionManager(this.config.Connection, this.config.Core.APIURI);
+    this.connection = new ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
     this.packages   = new PackageManager(this.config.Core.MetadataURI);
     this.themes     = new ThemeManager(this.config.Core.ThemeMetadataURI);
     this.user       = new UserSession(this.config.Core.DefaultUser);
