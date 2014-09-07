@@ -51,8 +51,10 @@
   // DEFAULT CONNECTION MANAGER
   /////////////////////////////////////////////////////////////////////////////
 
-  var ConnectionManager = function(cfg) {
+  var ConnectionManager = function(cfg, url) {
     var self = this;
+    this.config   = cfg;
+    this.url      = url;
     this.offline  = false;
 
     if ( typeof navigator.onLine !== 'undefined' ) {
@@ -83,7 +85,7 @@
       return false;
     }
 
-    return Utils.Ajax(this.config.Core.APIURI, function(response, httpRequest, url) {
+    return Utils.Ajax(this.url, function(response, httpRequest, url) {
       response = response || {};
       cok.apply(this, arguments);
     }, function(error, response, httpRequest, url) {
@@ -123,6 +125,28 @@
       name    : 'root user',
       groups  : ['root']
     };
+  };
+
+  UserSession.prototype.loadSession = function(res, callback) {
+    var list = [];
+    for ( var i = 0; i < res.length; i++ ) {
+      list.push({name: res[i].name, args: res[i].args, data: {windows: res[i].windows || []}});
+    }
+
+    OSjs.API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
+      var data = ((queueData || {}).windows) || [];
+      var w, r;
+      for ( var i = 0, l = data.length; i < l; i++ ) {
+        r = data[i];
+        w = app._getWindow(r.name);
+        if ( w ) {
+          w._move(r.position.x, r.position.y, true);
+          w._resize(r.dimension.w, r.dimension.h, true);
+
+          console.info('UserSession::loadSession()->onSuccess()', 'Restored window \'' + r.name + '\' from session');
+        }
+      }
+    }, null, callback);
   };
 
   UserSession.prototype.setUserData = function(d) {
@@ -288,7 +312,7 @@
   var DefaultHandler = function() {
     this.config     = OSjs.Settings.DefaultConfig();
     this.settings   = new OSjs.Core.SettingsManager();
-    this.connection = new ConnectionManager(this.config.Connection);
+    this.connection = new ConnectionManager(this.config.Connection, this.config.Core.APIURI);
     this.packages   = new PackageManager(this.config.Core.MetadataURI);
     this.themes     = new ThemeManager(this.config.Core.ThemeMetadataURI);
     this.user       = new UserSession(this.config.Core.DefaultUser);
@@ -314,7 +338,7 @@
       }
     };
 
-    return this.connection.send(opts, cok, error);
+    return this.connection.send(opts, cok, cerror);
   };
 
   //
@@ -399,27 +423,10 @@
 
     callback = callback || function() {};
 
+    var self = this;
     this.getUserSession(function(res) {
       if ( res ) {
-        var list = [];
-        for ( var i = 0; i < res.length; i++ ) {
-          list.push({name: res[i].name, args: res[i].args, data: {windows: res[i].windows || []}});
-        }
-
-        OSjs.API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
-          var data = ((queueData || {}).windows) || [];
-          var w, r;
-          for ( var i = 0, l = data.length; i < l; i++ ) {
-            r = data[i];
-            w = app._getWindow(r.name);
-            if ( w ) {
-              w._move(r.position.x, r.position.y, true);
-              w._resize(r.dimension.w, r.dimension.h, true);
-
-              console.info('DefaultHandler::loadSession()->onSuccess()', 'Restored window \'' + r.name + '\' from session');
-            }
-          }
-        }, null, callback);
+        self.user.loadSession(res, callback);
       }
     });
   };
