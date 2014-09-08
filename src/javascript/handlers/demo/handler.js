@@ -129,5 +129,5 @@
   //
   // Exports
   //
-  OSjs.Handlers.demo  = DemoHandler;
+  OSjs.Handlers.Current  = DemoHandler;
 })();

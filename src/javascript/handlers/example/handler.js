@@ -184,5 +184,5 @@ See doc/example-handler.txt
   //
   // EXPORTS
   //
-  OSjs.Handlers.example  = ExampleHandler;
+  OSjs.Handlers.Current  = ExampleHandler;
 })();

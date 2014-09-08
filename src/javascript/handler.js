@@ -896,6 +896,7 @@
   //
   // EXPORTS
   //
+  OSjs.Handlers.Current           = null;
   OSjs.Handlers.Default           = DefaultHandler;
   OSjs.Handlers.ConnectionManager = ConnectionManager;
   OSjs.Handlers.UserSession       = UserSession;

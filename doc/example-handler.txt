@@ -1,5 +1,5 @@
 To set this up just update the handler ot "example" in "src/build.json" and run "make"
-and copy "example.html" to dist
+and copy "index.html" to dist
 
 If you're using dist-dev you'll need to update index.html manually
 
