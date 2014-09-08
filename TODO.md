@@ -13,7 +13,7 @@
 * _[Application]_ CoreWM -- Finish panel item options
 * _[Application]_ Draw -- Finish features (marked in source)
 * _[Application]_ Draw -- Add more effects with the convolute method
-* _[Application]_ CodeMirror -- SaveAs does not change filename in tab
+* _[Application]_ CodeMirror -- Probably needs a refactor
 * _[Application]_ Writer -- Finish
 * _[GUI]_ Custom styling for GUISelect
 * _[GUI]_ Custom styling for GUISelectList
