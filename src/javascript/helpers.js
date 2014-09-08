@@ -110,6 +110,7 @@
 
     // These are reserved
     this.currentFilename     = null;
+    this.currentMime         = null;
     this.mainWindow          = null;
     this.defaultCheckChange  = false;
     this.dialogOptions       = {
@@ -141,8 +142,9 @@
 
     // Get launch/restore argument(s)
     this.currentFilename = this._getArgument('file');
+    this.currentMime     = this._getArgument('mime');
     if ( this.currentFilename ) {
-      this.action('open', this.currentFilename, this._getArgument('mime'));
+      this.action('open', this.currentFilename, this.currentMime);
     }
   };
 
@@ -280,6 +282,10 @@
     var self = this;
     var ext = OSjs.Utils.filext(filename).toLowerCase();
 
+    if ( !mime && this.currentMime ) {
+      mime = this.currentMime;
+    }
+
     if ( this.dialogOptions.filetypes !== null ) {
       var filetypes = this.dialogOptions.filetypes;
       if ( filetypes ) {
@@ -350,8 +356,11 @@
    * Wrapper for save action
    */
   DefaultApplication.prototype._onSave = function(filename, mime) {
-    if ( this.currentFilename ) {
-      this._doSave(this.currentFilename, mime);
+    filename = filename || this.currentFilename;
+    mime = mime || this.currentMime;
+
+    if ( filename ) {
+      this._doSave(filename, mime);
     }
   };
 
@@ -360,8 +369,12 @@
    */
   DefaultApplication.prototype._onSaveAs = function(filename, mime) {
     var self = this;
-    var dir = this.currentFilename ? Utils.dirname(this.currentFilename) : null;
-    var fnm = this.currentFilename ? Utils.filename(this.currentFilename) : null;
+    filename = filename || this.currentFilename;
+    mime = mime || this.currentMime;
+
+    var dir = filename ? Utils.dirname(filename) : null;
+    var fnm = filename ? Utils.filename(filename) : null;
+
 
     if ( this.mainWindow ) {
       this.mainWindow._toggleDisabled(true);
@@ -457,6 +470,7 @@
    */
   DefaultApplication.prototype._setCurrentFile = function(name, mime) {
     this.currentFilename = name;
+    this.currentMime = mime || null;
     this._setArgument('file', name);
     this._setArgument('mime', mime || null);
   };
