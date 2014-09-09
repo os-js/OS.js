@@ -1131,6 +1131,7 @@
   Window.prototype._maximize = function() {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_maximize()');
     if ( !this._properties.allow_maximize ) { return false; }
+    if ( !this._$element ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.maximized ) {
       this._restore(true, false);
@@ -1207,6 +1208,8 @@
   };
 
   Window.prototype._focus = function(force) {
+    if ( !this._$element ) { return false; }
+
     //if ( !force && this._state.focused ) { return false; }
     //console.debug(this._name, '>' , 'OSjs::Core::Window::_focus()');
     this._toggleAttentionBlink(false);
@@ -1231,6 +1234,7 @@
   };
 
   Window.prototype._blur = function(force) {
+    if ( !this._$element ) { return false; }
     if ( !force && !this._state.focused ) { return false; }
     //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
     OSjs.Utils.$removeClass(this._$element, 'WindowHintFocused');
@@ -1247,6 +1251,8 @@
   };
 
   Window.prototype._resizeTo = function(dw, dh, limit, move, container) {
+    if ( !this._$element ) { return; }
+
     var self = this;
     if ( dw <= 0 || dh <= 0 ) { return; }
 
@@ -1313,6 +1319,8 @@
   };
 
   Window.prototype._resize = function(w, h, force) {
+    if ( !this._$element ) { return false; }
+
     if ( !force ) {
       if ( !this._properties.allow_resize ) { return false; }
 
@@ -1360,8 +1368,9 @@
   };
 
   Window.prototype._move = function(x, y) {
+    if ( !this._$element ) { return false; }
     if ( !this._properties.allow_move ) { return false; }
-    if ( typeof x === 'undefined' || typeof y === 'undefined') { return; }
+    if ( typeof x === 'undefined' || typeof y === 'undefined') { return false; }
 
     this._$element.style.top  = y + 'px';
     this._$element.style.left = x + 'px';
@@ -1388,6 +1397,7 @@
   };
 
   Window.prototype._toggleAttentionBlink = function(t) {
+    if ( !this._$element ) { return false; }
     if ( this._state.focused ) { return false; }
 
     var el     = this._$element;
@@ -1491,7 +1501,9 @@
           icon:     'actions/window-new.png',
           onClick:  function(name, iter) {
             self._state.ontop = false;
-            self._$element.style.zIndex = getNextZindex(false);
+            if ( self._$element ) {
+              self._$element.style.zIndex = getNextZindex(false);
+            }
             self._focus();
           }
         });
@@ -1501,7 +1513,9 @@
           icon:     'actions/window-new.png',
           onClick:  function(name, iter) {
             self._state.ontop = true;
-            self._$element.style.zIndex = getNextZindex(true);
+            if ( self._$element ) {
+              self._$element.style.zIndex = getNextZindex(true);
+            }
             self._focus();
           }
         });
@@ -1548,6 +1562,8 @@
 
   Window.prototype._getMaximizedSize = function() {
     var s = getWindowSpace();
+    if ( !this._$element ) { return s; }
+
     var margin = {left: 0, top: 0, right: 0, bottom: 0};
     try {
       margin.left = -parseInt(window.getComputedStyle(this._$element, ':before').getPropertyValue('left'), 10);
