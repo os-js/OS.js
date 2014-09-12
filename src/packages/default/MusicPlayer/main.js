@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs) {
+  'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES

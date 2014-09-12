@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, Utils) {
+  'use strict';
 
   // TODO: Copy/Cut/Paste
   // TODO: Resize
