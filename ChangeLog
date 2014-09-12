@@ -1,3 +1,14 @@
+# 2.0.0-alpha20
+
+* Core: Split Widow and WindowManager etc. into src/javascript/windows.js
+* Core: Split init code into src/javascript/main.js
+* Core: Moved some code from core.js into handler.js
+* Windows: Possible fix for some errors on touch devices when closing window while moving
+* Applications: Added strict
+* DefaultApplication: Some improvments
+* obt: Can now generate dist-dev/index.html
+* Updated lint and some docs
+
 # 2.0.0-alpha19
 
 * Completely new build tools: 'obt' aka 'OS.js Build Tools'
