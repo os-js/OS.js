@@ -99,7 +99,7 @@
 
   ApplicationBugReport.prototype = Object.create(Application.prototype);
 
-  ApplicationBugReport.prototype.init = function(core, settings, metadata) {
+  ApplicationBugReport.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     this._addWindow(new ApplicationBugReportWindow(this, metadata));

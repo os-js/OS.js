@@ -100,10 +100,8 @@
     return Application.prototype.destroy.apply(this, []);
   };
 
-  ApplicationAbout.prototype.init = function(core, settings, metadata) {
+  ApplicationAbout.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
-    var self = this;
-
     this._addWindow(new ApplicationAboutWindow(this, metadata));
   };
 

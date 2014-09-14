@@ -915,7 +915,7 @@
   /**
    * Initialize Application
    */
-  ApplicationDraw.prototype.init = function(core, settings, metadata) {
+  ApplicationDraw.prototype.init = function(settings, metadata) {
     this.mainWindow = this._addWindow(new ApplicationDrawWindow(this, metadata));
 
     Application.prototype.init.apply(this, arguments);

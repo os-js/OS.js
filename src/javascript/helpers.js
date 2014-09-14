@@ -137,7 +137,7 @@
   /**
    * Default init() code (run this last in your Application init() method)
    */
-  DefaultApplication.prototype.init = function(core, settings, metadata) {
+  DefaultApplication.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     // Get launch/restore argument(s)

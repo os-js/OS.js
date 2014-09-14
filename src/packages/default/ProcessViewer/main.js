@@ -94,7 +94,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationProcessViewer.prototype.init = function(core, settings, metadata) {
+  ApplicationProcessViewer.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     this._addWindow(new ApplicationProcessViewerWindow(this, metadata));

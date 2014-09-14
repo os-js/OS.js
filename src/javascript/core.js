@@ -727,10 +727,16 @@
         } else {
           try {
             _HANDLER.getApplicationSettings(a.__name, function(settings) {
-              a.init(null, settings, result);
+              a.init(settings, result);
               onFinished(a, result);
 
-              OSjs.Hooks._trigger('onApplicationLaunched', [n, arg]);
+              OSjs.Hooks._trigger('onApplicationLaunched', [{
+                application: a,
+                name: n,
+                args: arg,
+                settings: settings,
+                metadata: result
+              }]);
 
               console.groupEnd();
             });
@@ -1043,7 +1049,7 @@
 
   Application.prototype = Object.create(Process.prototype);
 
-  Application.prototype.init = function(core, settings) {
+  Application.prototype.init = function(settings, metadata) {
     console.log('OSjs::Core::Application::init()', this.__name);
 
     if ( settings ) {

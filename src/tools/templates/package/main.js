@@ -90,7 +90,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationEXAMPLE.prototype.init = function(core, settings, metadata) {
+  ApplicationEXAMPLE.prototype.init = function(settings, metadata) {
     var self = this;
 
     Application.prototype.init.apply(this, arguments);
