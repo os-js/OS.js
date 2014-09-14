@@ -774,13 +774,12 @@
     }
 
     if ( typeof data.compability !== 'undefined' && (data.compability instanceof Array) ) {
-      var comp = OSjs.Utils.getCompability();
       var c;
       var nosupport = [];
       for ( var i = 0; i < data.compability.length; i++ ) {
         c = data.compability[i];
-        if ( typeof comp[c] !== 'undefined' ) {
-          if ( !comp[c] ) {
+        if ( typeof OSjs.Compability[c] !== 'undefined' ) {
+          if ( !OSjs.Compability[c] ) {
             nosupport.push(c);
           }
         }

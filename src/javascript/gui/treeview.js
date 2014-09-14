@@ -60,7 +60,7 @@
     this.onCollapse     = opts.onCollapse     || function(ev, el, item) {};
 
     this.singleClick    = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
-    if ( OSjs.Utils.getCompability().touch ) {
+    if ( OSjs.Compability.touch ) {
       this.singleClick = true;
     }
 

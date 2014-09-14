@@ -420,7 +420,7 @@
     this.$imageContainer = document.createElement("div");
     this.$imageContainer.className = "ImageContainer";
 
-    var isTouch = OSjs.Utils.getCompability().touch;
+    var isTouch = OSjs.Compability.touch;
     var hasMoved = false;
 
     var _onMove = function(ev) {

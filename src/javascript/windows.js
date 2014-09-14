@@ -414,7 +414,7 @@
 
   Window.prototype.init = function(_wm) {
     var self = this;
-    var isTouch = OSjs.Utils.getCompability().touch;
+    var isTouch = OSjs.Compability.touch;
 
     console.group('OSjs::Core::Window::init()');
 
