@@ -135,8 +135,8 @@ See doc/example-handler.txt
     });
   };
 
-  ExampleHandler.prototype.logout = function(session, callback) {
-    console.debug('OSjs::Handlers::ExampleHandler::logout()', session);
+  ExampleHandler.prototype.logout = function(save, callback) {
+    console.debug('OSjs::Handlers::ExampleHandler::logout()', save);
     var self = this;
 
     function _finished() {
@@ -152,13 +152,8 @@ See doc/example-handler.txt
       });
     }
 
-    if ( session !== null ) {
-      self.setUserSession(session, function() {
-        _finished();
-      });
-    } else {
-      _finished();
-    }
+
+    OSjs.Handlers.Default.prototype.logout.call(this, save, _finished);
   };
 
   ExampleHandler.prototype.saveSettings = function(callback) {

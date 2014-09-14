@@ -1193,11 +1193,7 @@
       this._addEventListener(el, 'mousedown', function(ev) {
         ev.preventDefault();
         OSjs.GUI.blurMenu();
-
-        var c = OSjs.API.getCoreInstance();
-        if ( c ) {
-          c._onMouseDown(ev);
-        }
+        OSjs.API._onMouseDown(ev);
         return false;
       });
       this._addEventListener(el, 'contextmenu', function(ev) {

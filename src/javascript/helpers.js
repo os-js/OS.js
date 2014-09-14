@@ -302,7 +302,7 @@
       self.mainWindow._toggleLoading(false);
       self._setCurrentFile(name, mime);
 
-      OSjs.API.getCoreInstance().message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
+      OSjs.API.message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
     }
 
 

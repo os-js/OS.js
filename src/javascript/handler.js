@@ -307,6 +307,40 @@
     };
   };
 
+  UserSession.prototype.getSession = function() {
+    var procs = OSjs.API.getProcesses();
+
+    function getSessionSaveData(app) {
+      var args = app.__args;
+      var wins = app.__windows;
+      var data = {name: app.__name, args: args, windows: []};
+      var win;
+
+      for ( var i = 0, l = wins.length; i < l; i++ ) {
+        win = wins[i];
+        if ( !win || !win._properties.allow_session ) { continue; }
+
+        data.windows.push({
+          name      : win._name,
+          dimension : win._dimension,
+          position  : win._position,
+          state     : win._state
+        });
+      }
+
+      return data;
+    }
+
+    var data = [];
+    for ( var i = 0, l = procs.length; i < l; i++ ) {
+      if ( procs[i] && (procs[i] instanceof OSjs.Core.Application) ) {
+        data.push(getSessionSaveData(procs[i]));
+      }
+    }
+
+    return data;
+  };
+
   UserSession.prototype.loadSession = function(res, callback) {
     var list = [];
     for ( var i = 0; i < res.length; i++ ) {
@@ -561,13 +595,15 @@
 
   /**
    * Default logout method
-   * NOTE: This is just a placeholder.
-   *       To implement your own login handler, see the Wiki :)
+   *
+   * NOTE: You should call this in your implemented handler
+   *       or else your data will not be stored
    */
-  DefaultHandler.prototype.logout = function(session, callback) {
+  DefaultHandler.prototype.logout = function(save, callback) {
     console.info('OSjs::DefaultHandler::logout()');
 
-    if ( session !== null ) {
+    if ( save ) {
+      var session = this.user ? this.user.getSession() : [];
       this.setUserSession(session, function() {
         callback(true);
       });

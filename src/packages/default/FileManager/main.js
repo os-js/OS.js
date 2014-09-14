@@ -193,7 +193,7 @@
               fileView.refresh(function() {
                 fileView.setSelected(value, 'filename');
               });
-              OSjs.API.getCoreInstance().message('vfs', {type: 'mkdir', path: dir, filename: value, source: self._appRef.__pid});
+              OSjs.API.message('vfs', {type: 'mkdir', path: dir, filename: value, source: self._appRef.__pid});
             }
           });
         }], self);
@@ -207,7 +207,7 @@
               fileView.refresh(function() {
                 fileView.setSelected(filename, 'filename');
               });
-              OSjs.API.getCoreInstance().message('vfs', {type: 'upload', path: dir, filename: filename, source: self._appRef.__pid});
+              OSjs.API.message('vfs', {type: 'upload', path: dir, filename: filename, source: self._appRef.__pid});
             }
           }
         }], self);
@@ -225,7 +225,7 @@
                 if ( fileView ) fileView.setSelected(value, 'filename');
               });
               self._focus();
-              OSjs.API.getCoreInstance().message('vfs', {type: 'rename', path: dir, filename: value, source: self._appRef.__pid});
+              OSjs.API.message('vfs', {type: 'rename', path: dir, filename: value, source: self._appRef.__pid});
             }
           });
         }], self);
@@ -238,7 +238,7 @@
           app.unlink(cur.path, function(result) {
             if ( result && fileView ) {
               fileView.refresh();
-              OSjs.API.getCoreInstance().message('vfs', {type: 'delete', path: OSjs.Utils.dirname(cur.path), filename: OSjs.Utils.filename(cur.path), source: self._appRef.__pid});
+              OSjs.API.message('vfs', {type: 'delete', path: OSjs.Utils.dirname(cur.path), filename: OSjs.Utils.filename(cur.path), source: self._appRef.__pid});
             }
           });
         }]);

@@ -80,13 +80,13 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _PROCS = [];        // Running processes
-  var _CORE;              // Running Core process
   var _HANDLER;           // Running Handler process
   var _WM;                // Running WindowManager process
 
   var _$LOADING;          // Loading DOM Element
   var _$SPLASH_TXT;       //   It's description field
   var _$SPLASH;           // Loading Screen DOM Element
+  var _$ROOT;             // Root element
   var _MOUSELOCK = true;  // Mouse inside view ?!
   var _INITED = false;
 
@@ -129,12 +129,230 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // SYSTEM HELPERS
+  // SYSTEM FUNCTIONS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Global onResize Event
+   */
+  var globalOnResize = (function() {
+    var _timeout;
+
+    function _resize(ev) {
+      if ( !_WM ) { return; }
+      _WM.resize(ev, OSjs.API.getWindowSpace());
+    }
+
+    return function(ev) {
+      if ( _timeout ) {
+        clearTimeout(_timeout);
+        _timeout = null;
+      }
+
+
+      var self = this;
+      _timeout = setTimeout(function() {
+        _resize.call(self, ev);
+      }, 100);
+    };
+  })();
+
+  /**
+   * Global onMouseDown Event
+   */
+  function globalOnMouseDown(ev) {
+    var win = _WM ? _WM.getCurrentWindow() : null;
+    if ( win ) {
+      win._blur();
+    }
+  }
+
+  /**
+   * Global onEnter Event
+   */
+  function globalOnEnter(ev) {
+    _MOUSELOCK = true;
+  }
+
+  /**
+   * Global onLeave Event
+   */
+  function globalOnLeave(ev) {
+    var from = ev.relatedTarget || ev.toElement;
+    if ( !from || from.nodeName === 'HTML' ) {
+      _MOUSELOCK = false;
+    } else {
+      _MOUSELOCK = true;
+    }
+  }
+
+  /**
+   * Global onScroll Event
+   */
+  function globalOnScroll(ev) {
+    document.body.scrollTop = 0;
+    document.body.scrollLeft = 0;
+  }
+
+  /**
+   * Global onKeyUp Event
+   */
+  function globalOnKeyUp(ev) {
+    if ( _WM ) {
+      _WM.onKeyUp(ev, _WM.getCurrentWindow());
+    }
+  }
+
+  /**
+   * Global onKeyDown Event
+   */
+  function globalOnKeyDown(ev) {
+    var d = ev.srcElement || ev.target;
+    var doPrevent = d.tagName === 'BODY' ? true : false;
+    var isHTMLInput = OSjs.Utils.isInputElement(ev);
+
+    if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
+      if ( isHTMLInput ) {
+        doPrevent = true;
+      }
+    }
+
+    if ( doPrevent ) {
+      ev.preventDefault();
+    }
+
+    var win = _WM ? _WM.getCurrentWindow() : null;
+    if ( win ) {
+      win._onKeyEvent(ev);
+    }
+    if ( _WM ) {
+      _WM.onKeyDown(ev, win);
+    }
+  }
+
+  /**
+   * Initialize OS.js
+   */
   function doInitialize() {
     if ( _INITED ) { return; }
     _INITED = true;
+
+    function _error(msg) {
+      doErrorDialog(OSjs._('ERR_CORE_INIT_FAILED'), OSjs._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
+    }
+
+    function _LaunchWM(callback) {
+      var wm = _HANDLER.getConfig('WM');
+      if ( !wm || !wm.exec ) {
+        _error(OSjs._('ERR_CORE_INIT_NO_WM'));
+        return;
+      }
+
+      var wargs = wm.args || {};
+      wargs.themes = _HANDLER.getThemes();
+      doLaunchProcess(wm.exec, wargs, function(app) {
+        _WM = app;
+
+        callback();
+      }, function(error) {
+        _error(OSjs._('ERR_CORE_INIT_WM_FAILED_FMT', error));
+      });
+    }
+
+    function _Loaded() {
+      OSjs.Hooks._trigger('onInited');
+
+      _LaunchWM(function(/*app*/) {
+        OSjs.Hooks._trigger('onWMInited');
+
+        _$LOADING.style.display = 'none';
+        doPlaySound('service-login');
+
+        _HANDLER.loadSession(function() {
+          setTimeout(function() {
+            globalOnResize();
+          }, ANIMDURATION);
+
+          OSjs.Hooks._trigger('onSessionLoaded');
+        });
+
+        if ( _$SPLASH ) {
+          _$SPLASH.style.display = 'none';
+        }
+      });
+    }
+
+    function _Preload(list, callback) {
+      OSjs.Utils.Preload(list, function(total, errors) {
+        if ( errors ) {
+          _error(OSjs._('ERR_CORE_INIT_PRELOAD_FAILED'));
+          return;
+        }
+
+        callback();
+      });
+    }
+
+    function _Boot() {
+      window.onerror = function(message, url, linenumber, column, exception) {
+        var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
+        doErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'), OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'), msg, exception, true);
+        return false;
+      };
+
+      _$ROOT = document.createElement('div');
+      _$ROOT.id = 'Background';
+      _$ROOT.addEventListener('contextmenu', function(ev) {
+        if ( !OSjs.Utils.isInputElement(ev) ) {
+          ev.preventDefault();
+          return false;
+        }
+        return true;
+      }, false);
+      _$ROOT.addEventListener('mousedown', function(ev) {
+        ev.preventDefault();
+        OSjs.GUI.blurMenu();
+      }, false);
+
+      document.body.appendChild(_$ROOT);
+
+      document.addEventListener('keydown', function(ev) {
+        globalOnKeyDown(ev);
+      }, false);
+      document.addEventListener('keyup', function(ev) {
+        globalOnKeyUp(ev);
+      }, false);
+      document.addEventListener('mousedown', function(ev) {
+        globalOnMouseDown(ev);
+      }, false);
+      window.addEventListener('resize', function(ev) {
+        globalOnResize(ev);
+      }, false);
+      window.addEventListener('scroll', function(ev) {
+        globalOnScroll(ev);
+      }, false);
+      document.addEventListener('mouseout', function(ev) {
+        globalOnLeave(ev);
+      }, false);
+      document.addEventListener('mouseenter', function(ev) {
+        globalOnEnter(ev);
+      }, false);
+
+      _HANDLER.boot(function(result, error) {
+
+        if ( error ) {
+          _error(error);
+          return;
+        }
+
+        var preloads = _HANDLER.getConfig('Core').Preloads;
+        _Preload(preloads, function() {
+          setTimeout(function() {
+            _Loaded();
+          }, 0);
+        });
+      });
+    }
 
     window.onload = null;
 
@@ -153,23 +371,78 @@
       _$LOADING.innerHTML   = '<div class="loader"></div>';
       document.body.appendChild(_$LOADING);
 
-      _CORE = new Main();
-      if ( _CORE ) {
-        _CORE.init();
-      }
+      _Boot();
     });
   }
 
-  function doShutdown(save, onunload) {
+  /**
+   * Shut down OS.js
+   */
+  function doShutdown(save) {
     if ( !_INITED ) { return; }
     _INITED = false;
-    window.onunload = null;
+
+    function _Destroy() {
+      OSjs.GUI.blurMenu();
+
+      document.removeEventListener('keydown', function(ev) {
+        globalOnKeyDown(ev);
+      }, false);
+      document.removeEventListener('keyup', function(ev) {
+        globalOnKeyUp(ev);
+      }, false);
+      document.removeEventListener('mousedown', function(ev) {
+        globalOnMouseDown(ev);
+      }, false);
+      window.removeEventListener('resize', function(ev) {
+        globalOnResize(ev);
+      }, false);
+      window.removeEventListener('scroll', function(ev) {
+        globalOnScroll(ev);
+      }, false);
+
+      document.removeEventListener('mouseout', function(ev) {
+        globalOnLeave(ev);
+      }, false);
+      document.removeEventListener('mouseenter', function(ev) {
+        globalOnEnter(ev);
+      }, false);
+
+      if ( _$ROOT ) {
+        _$ROOT.removeEventListener('contextmenu', function(ev) {
+          if ( !OSjs.Utils.isInputElement(ev) ) {
+            ev.preventDefault();
+            return false;
+          }
+          return true;
+        }, false);
+        _$ROOT.removeEventListener('mousedown', function(ev) {
+          ev.preventDefault();
+          OSjs.GUI.blurMenu();
+        }, false);
+      }
+
+      var i = 0;
+      var l = _PROCS.length;
+      for ( i; i < l; i++ ) {
+        if ( !_PROCS[i] ) { continue; }
+        _PROCS[i].destroy(false);
+        _PROCS[i] = null;
+      }
+
+      if ( _$ROOT && _$ROOT.parentNode ) {
+        _$ROOT.parentNode.removeChild(_$ROOT);
+        _$ROOT = null;
+      }
+
+      _PROCS = [];
+
+      window.onerror = function() {};
+    }
 
     function _shutdown() {
-      if ( _CORE ) {
-        _CORE.destroy();
-        _CORE = null;
-      }
+      _Destroy();
+
       if ( _HANDLER ) {
         _HANDLER.destroy();
         _HANDLER = null;
@@ -182,11 +455,14 @@
       _$LOADING = null;
     }
 
-    if ( onunload ) {
+    OSjs.Hooks._trigger('onLogout');
+
+    _HANDLER.logout(save, function() {
+      OSjs.Hooks._trigger('onShutdown');
+
+      doPlaySound('service-logout');
       _shutdown();
-    } else {
-      _CORE.shutdown(save, _shutdown);
-    }
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -415,7 +691,7 @@
       if ( typeof OSjs.Applications[n] !== 'undefined' ) {
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
-          var sproc = _CORE.getProcess(n, true);
+          var sproc = doGetProcess(n, true);
           if ( sproc ) {
             console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
             if ( sproc instanceof Application ) {
@@ -451,7 +727,7 @@
         } else {
           try {
             _HANDLER.getApplicationSettings(a.__name, function(settings) {
-              a.init(_CORE, settings, result);
+              a.init(null, settings, result);
               onFinished(a, result);
 
               OSjs.Hooks._trigger('onApplicationLaunched', [n, arg]);
@@ -612,7 +888,7 @@
     var _dialogClose  = function(btn, filename, mime, size) {
       if ( btn !== 'ok' && btn !== 'complete' ) { return; }
 
-      OSjs.API.getCoreInstance().message('vfs', {type: 'upload', path: dest, filename: filename, source: app.__pid});
+      OSjs.API.message('vfs', {type: 'upload', path: dest, filename: filename, source: app.__pid});
 
       onUploaded(dest, filename, mime, size);
     };
@@ -626,6 +902,53 @@
         }
       }
     }
+  }
+
+  /**
+   * Kills a process
+   */
+  function doKillProcess(pid) {
+    if ( pid > 0 ) {
+      pid--;
+      if ( _PROCS[pid] ) {
+        console.warn('Killing application', pid);
+        if ( _PROCS[pid].destroy(true) === false ) {
+          return;
+        }
+        _PROCS[pid] = null;
+      }
+    }
+  }
+
+  /**
+   * Sends a message to all processes
+   */
+  function doProcessMessage(msg, opts) {
+    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
+      if ( _PROCS[i] && _PROCS[i] instanceof Application ) {
+        _PROCS[i]._onMessage(null, msg, opts);
+      }
+    }
+  }
+
+  /**
+   * Get a process by name
+   */
+  function doGetProcess(name, first) {
+    var p;
+    var result = first ? null : [];
+    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
+      p = _PROCS[i];
+      if ( !p ) { continue; }
+      if ( p.__pname === name ) {
+        if ( first ) {
+          result = p;
+          break;
+        }
+        result.push(p);
+      }
+    }
+    return result;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -644,7 +967,7 @@
       this.__sname    = name; // Used internall only
       this.__state    = 0;
       this.__started  = new Date();
-      this.__index    = -1;
+      this.__index    = _PROCS.push(this) - 1;
 
       console.group('OSjs::Core::Process::__construct()');
       console.log('pid',    this.__pid);
@@ -652,9 +975,6 @@
       console.log('started',this.__started);
       console.groupEnd();
 
-      if ( _PID > 0 ) {
-        this.__index = _PROCS.push(this) - 1;
-      }
 
       _PID++;
     };
@@ -670,387 +990,6 @@
       }
     }
     return true;
-  };
-
-  /**
-   * Root Process Class
-   */
-  var Main = function() {
-    console.group('OSjs::Core::Main::__construct()');
-
-    Process.apply(this, ['Main']);
-
-    // Override error handling
-    window.onerror = function(message, url, linenumber, column, exception) {
-      var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-      doErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'), OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'), msg, exception, true);
-      return false;
-    };
-
-    // Events
-    var self = this;
-    document.addEventListener('keydown', function(/*ev*/) {
-      self._onKeyDown.apply(self, arguments);
-    }, false);
-    document.addEventListener('keyup', function(/*ev*/) {
-      self._onKeyUp.apply(self, arguments);
-    }, false);
-    document.addEventListener('mousedown', function(/*ev*/) {
-      self._onMouseDown.apply(self, arguments);
-    }, false);
-    window.addEventListener('resize', function(/*ev*/) {
-      self._onResize.apply(self, arguments);
-    }, false);
-    window.addEventListener('scroll', function(/*ev*/) {
-      self._onScroll.apply(self, arguments);
-    }, false);
-
-
-    document.addEventListener('mouseout', function(ev) {
-      self._onLeave(ev);
-    }, false);
-    document.addEventListener('mouseenter', function(ev) {
-      self._onEnter(ev);
-    }, false);
-
-    // Background element
-    this._$root = document.createElement('div');
-    this._$root.id = 'Background';
-    this._$root.addEventListener('contextmenu', function(ev) {
-      if ( !OSjs.Utils.isInputElement(ev) ) {
-        ev.preventDefault();
-        return false;
-      }
-      return true;
-    }, false);
-    this._$root.addEventListener('mousedown', function(ev) {
-      ev.preventDefault();
-      OSjs.GUI.blurMenu();
-    }, false);
-
-    document.body.appendChild(this._$root);
-
-    console.groupEnd();
-  };
-  Main.prototype = Object.create(Process.prototype);
-
-  Main.prototype.init = function() {
-    console.log('OSjs::Core::Main::init()');
-
-    var self = this;
-
-    function _error(msg) {
-      doErrorDialog(OSjs._('ERR_CORE_INIT_FAILED'), OSjs._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
-    }
-
-    function _launchWM(callback) {
-      var wm = _HANDLER.getConfig('WM');
-      if ( !wm || !wm.exec ) {
-        _error(OSjs._('ERR_CORE_INIT_NO_WM'));
-        return;
-      }
-
-      var wargs = wm.args || {};
-      wargs.themes = _HANDLER.getThemes();
-      doLaunchProcess(wm.exec, wargs, function(app) {
-        _WM = app;
-
-        callback();
-      }, function(error) {
-        _error(OSjs._('ERR_CORE_INIT_WM_FAILED_FMT', error));
-      });
-    }
-
-    function _preload(list, callback) {
-      OSjs.Utils.Preload(list, function(total, errors) {
-        if ( errors ) {
-          _error(OSjs._('ERR_CORE_INIT_PRELOAD_FAILED'));
-          return;
-        }
-
-        callback();
-      });
-    }
-
-    function _loaded() {
-      OSjs.Hooks._trigger('onInited');
-
-      _launchWM(function(/*app*/) {
-        OSjs.Hooks._trigger('onWMInited');
-
-        _$LOADING.style.display = 'none';
-        doPlaySound('service-login');
-
-        _HANDLER.loadSession(function() {
-          setTimeout(function() {
-            self._onResize();
-          }, ANIMDURATION);
-
-          OSjs.Hooks._trigger('onSessionLoaded');
-        });
-
-        if ( _$SPLASH ) {
-          _$SPLASH.style.display = 'none';
-        }
-      });
-    }
-
-    _HANDLER.boot(function(result, error) {
-
-      if ( error ) {
-        _error(error);
-        return;
-      }
-
-      var preloads = _HANDLER.getConfig('Core').Preloads;
-      _preload(preloads, function() {
-        setTimeout(function() {
-          _loaded();
-        }, 0);
-      });
-    });
-  };
-
-  Main.prototype.shutdown = function(save, onFinished) {
-    var self = this;
-    var session = null;
-
-    function getSessionSaveData(app) {
-      var args = app.__args;
-      var wins = app.__windows;
-      var data = {name: app.__name, args: args, windows: []};
-      var win;
-
-      for ( var i = 0, l = wins.length; i < l; i++ ) {
-        win = wins[i];
-        if ( !win || !win._properties.allow_session ) { continue; }
-
-        data.windows.push({
-          name      : win._name,
-          dimension : win._dimension,
-          position  : win._position,
-          state     : win._state
-        });
-      }
-
-      return data;
-    }
-
-    if ( save ) {
-      var data = [];
-      for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
-        if ( _PROCS[i] && (_PROCS[i] instanceof OSjs.Core.Application) ) {
-          data.push(getSessionSaveData(_PROCS[i]));
-        }
-      }
-      session = data;
-    }
-
-    OSjs.Hooks._trigger('onLogout');
-
-    _HANDLER.logout(session, function() {
-      OSjs.Hooks._trigger('onShutdown');
-
-      doPlaySound('service-logout');
-      onFinished(self);
-    });
-  };
-
-  Main.prototype.destroy = function() {
-    console.log('OSjs::Core::Main::destroy()');
-    Process.prototype.destroy.apply(this, []);
-
-    OSjs.GUI.blurMenu();
-
-    var self = this;
-    document.removeEventListener('keydown', function(/*ev*/) {
-      self._onKeyDown.apply(self, arguments);
-    }, false);
-    document.removeEventListener('keyup', function(/*ev*/) {
-      self._onKeyUp.apply(self, arguments);
-    }, false);
-    document.removeEventListener('mousedown', function(/*ev*/) {
-      self._onMouseDown.apply(self, arguments);
-    }, false);
-    window.removeEventListener('resize', function(/*ev*/) {
-      self._onResize.apply(self, arguments);
-    }, false);
-    window.removeEventListener('scroll', function(/*ev*/) {
-      self._onScroll.apply(self, arguments);
-    }, false);
-
-    document.removeEventListener('mouseout', function(ev) {
-      self._onLeave(ev);
-    }, false);
-    document.removeEventListener('mouseenter', function(ev) {
-      self._onEnter(ev);
-    }, false);
-
-    if ( this._$root ) {
-      this._$root.removeEventListener('contextmenu', function(ev) {
-        if ( !OSjs.Utils.isInputElement(ev) ) {
-          ev.preventDefault();
-          return false;
-        }
-        return true;
-      }, false);
-      this._$root.removeEventListener('mousedown', function(ev) {
-        ev.preventDefault();
-        OSjs.GUI.blurMenu();
-      }, false);
-    }
-
-    var i = 0;
-    var l = _PROCS.length;
-    for ( i; i < l; i++ ) {
-      if ( !_PROCS[i] ) { continue; }
-      _PROCS[i].destroy(false);
-      _PROCS[i] = null;
-    }
-
-    if ( this._$root && this._$root.parentNode ) {
-      this._$root.parentNode.removeChild(this._$root);
-      this._$root = null;
-    }
-
-    _PROCS = [];
-
-    window.onerror = function() {};
-  };
-
-  Main.prototype.message = function(msg, opts) {
-    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
-      if ( _PROCS[i] && _PROCS[i] instanceof Application ) {
-        _PROCS[i]._onMessage(null, msg, opts);
-      }
-    }
-  };
-
-  Main.prototype.kill = function(pid) {
-    if ( pid > 0 ) {
-      pid--;
-      if ( _PROCS[pid] ) {
-        console.warn('Killing application', pid);
-        if ( _PROCS[pid].destroy(true) === false ) {
-          return;
-        }
-        _PROCS[pid] = null;
-      }
-    }
-  };
-
-  Main.prototype.ps = function() {
-    var lst = [];
-    var p;
-    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
-      p = _PROCS[i];
-      if ( !p ) { continue; }
-
-      lst.push({
-        pid     : p.__pid,
-        name    : p.__pname,
-        started : p.__started
-      });
-    }
-    return lst;
-  };
-
-  Main.prototype._onKeyUp = function(ev) {
-    if ( _WM ) {
-      _WM.onKeyUp(ev, _WM.getCurrentWindow());
-    }
-  };
-
-  Main.prototype._onKeyDown = function(ev) {
-    var d = ev.srcElement || ev.target;
-    var doPrevent = d.tagName === 'BODY' ? true : false;
-    var isHTMLInput = OSjs.Utils.isInputElement(ev);
-
-    if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
-      if ( isHTMLInput ) {
-        doPrevent = true;
-      }
-    }
-
-    if ( doPrevent ) {
-      ev.preventDefault();
-    }
-
-    var win = _WM ? _WM.getCurrentWindow() : null;
-    if ( win ) {
-      win._onKeyEvent(ev);
-    }
-    if ( _WM ) {
-      _WM.onKeyDown(ev, win);
-    }
-  };
-
-  Main.prototype._onScroll = function(ev) {
-    document.body.scrollTop = 0;
-    document.body.scrollLeft = 0;
-  };
-
-  Main.prototype._onLeave = function(ev) {
-    var from = ev.relatedTarget || ev.toElement;
-    if ( !from || from.nodeName === 'HTML' ) {
-      _MOUSELOCK = false;
-    } else {
-      _MOUSELOCK = true;
-    }
-  };
-
-  Main.prototype._onEnter = function(ev) {
-    _MOUSELOCK = true;
-  };
-
-  Main.prototype._onMouseDown = function(ev) {
-    var win = _WM ? _WM.getCurrentWindow() : null;
-    if ( win ) {
-      win._blur();
-    }
-  };
-
-  Main.prototype._onResize = (function() {
-    var _timeout;
-
-    function _resize(ev) {
-      if ( !_WM ) { return; }
-      _WM.resize(ev, OSjs.API.getWindowSpace());
-    }
-
-    return function(ev) {
-      if ( _timeout ) {
-        clearTimeout(_timeout);
-        _timeout = null;
-      }
-
-
-      var self = this;
-      _timeout = setTimeout(function() {
-        _resize.call(self, ev);
-      }, 100);
-    };
-  })();
-
-  Main.prototype.getProcesses = function() {
-    return _PROCS;
-  };
-
-  Main.prototype.getProcess = function(name, first) {
-    var p;
-    var result = first ? null : [];
-    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
-      p = _PROCS[i];
-      if ( !p ) { continue; }
-      if ( p.__pname === name ) {
-        if ( first ) {
-          result = p;
-          break;
-        }
-        result.push(p);
-      }
-    }
-    return result;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1281,18 +1220,10 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Initialize = doInitialize;
-  OSjs.Shutdown   = doShutdown;
-
   // Classes
   OSjs.Core.Process           = Process;
   OSjs.Core.Application       = Application;
   OSjs.Core.Service           = Service;
-
-  // Running instances
-  OSjs.API.getHandlerInstance     = function() { return _HANDLER; };
-  OSjs.API.getWMInstance          = function() { return _WM; };
-  OSjs.API.getCoreInstance        = function() { return _CORE; };
 
   // Handler shortcuts
   OSjs.API.getDefaultPath         = function(def)              { return (_HANDLER.getConfig('Core').Home || (def || '/')); };
@@ -1303,13 +1234,23 @@
   OSjs.API.getIcon                = function(name, app)        { return _HANDLER.getIcon(name, app); };
 
   // Common API functions
+  OSjs.Initialize             = doInitialize;
+  OSjs.Shutdown               = doShutdown;
+
   OSjs.API.call               = doAPICall;
   OSjs.API.error              = doErrorDialog;
+  OSjs.API.open               = doLaunchFile;
   OSjs.API.launch             = doLaunchProcess;
   OSjs.API.launchList         = doLaunchProcessList;
-  OSjs.API.open               = doLaunchFile;
+  OSjs.API.kill               = doKillProcess;
   OSjs.API.playSound          = doPlaySound;
   OSjs.API.uploadFiles        = doUploadFiles;
+  OSjs.API.message            = doProcessMessage;
+  OSjs.API.getProcess         = doGetProcess;
+  OSjs.API.getProcesses       = function() { return _PROCS; };
+  OSjs.API.getHandlerInstance = function() { return _HANDLER; };
+  OSjs.API.getWMInstance      = function() { return _WM; };
   OSjs.API.isMouseLock        = function() { return _MOUSELOCK; };
+  OSjs.API._onMouseDown       = globalOnMouseDown;
 
 })();

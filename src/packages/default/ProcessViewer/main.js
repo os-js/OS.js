@@ -118,11 +118,10 @@
   ApplicationProcessViewer.prototype.refreshList = function() {
     var w = this._getWindow('ApplicationProcessViewerWindow');
     var r = w ? w._getRoot() : null;
-    var core = OSjs.API.getCoreInstance();
 
     if ( r ) {
       var rows = [];
-      var procs = core.ps();
+      var procs = OSjs.API.getProcesses();
       var now = new Date();
 
       var i = 0, l = procs.length;
@@ -132,15 +131,15 @@
           return function(ev) {
             ev.preventDefault();
             ev.stopPropagation();
-            core.kill(pid);
+            OSjs.API.kill(pid);
             return false;
           };
-        })(procs[i].pid);
+        })(procs[i].__pid);
 
         rows.push({
-          pid: procs[i].pid,
-          name: procs[i].name,
-          alive: now-procs[i].started,
+          pid: procs[i].__pid,
+          name: procs[i].__pname,
+          alive: now-procs[i].__started,
           kill: 'Kill',
           customEvent: cev
         });

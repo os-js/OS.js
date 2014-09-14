@@ -1,5 +1,7 @@
 
 # High-priority
+* _[Applications]_ Refactor after latest changes
+                    Application::init(core, settings) => Application::init(settings)
 * _[Backend]_ Finish Node.js backend
 * _[Locales]_ Finish the format strings
 * _[Themes]_ Finish theme manifest stuff with settings
