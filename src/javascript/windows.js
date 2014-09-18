@@ -34,13 +34,15 @@
   window.OSjs = window.OSjs || {};
   OSjs.Core   = OSjs.Core   || {};
 
-  var _WM;                // Running Window Manager process
-  var _WIN;               // Currently selected Window
+  /////////////////////////////////////////////////////////////////////////////
+  // GLOBALS
+  /////////////////////////////////////////////////////////////////////////////
 
-  var ANIMDURATION = 300; // Animation duration constant (FIXME)
+  var _WM;   // Running Window Manager process
+  var _WIN;  // Currently selected Window
 
   /////////////////////////////////////////////////////////////////////////////
-  // DOM HELPERS
+  // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -93,6 +95,21 @@
     return _getWindowSpace();
   }
 
+  /**
+   * Get animation duration
+   * @return int
+   */
+  function getAnimDuration() {
+    if ( _WM ) {
+      var name  = _WM.getSetting('theme');
+      var theme = _WM.getTheme(name);
+      if ( theme && (typeof theme.animduration !== 'undefined') ) {
+        return parseInt(theme.animduration, 10);
+      }
+    }
+    return 300;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -109,7 +126,6 @@
     this._$notifications = null;
     this._windows        = [];
     this._settings       = {};
-    this._themes         = args.themes || [{'default': {title: 'Default'}}];
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');
@@ -240,14 +256,27 @@
 
   WindowManager.prototype.getDefaultSetting = function() {
     // Implement in your WM
+    return null;
   };
 
   WindowManager.prototype.getPanel = function() {
     // Implement in your WM
+    return null;
   };
 
   WindowManager.prototype.getPanels = function() {
     // Implement in your WM
+    return [];
+  };
+
+  WindowManager.prototype.getTheme = function() {
+    // Implement in your WM
+    return null;
+  };
+
+  WindowManager.prototype.getThemes = function() {
+    // Implement in your WM
+    return [];
   };
 
   WindowManager.prototype.setSetting = function(k, v) {
@@ -297,10 +326,6 @@
 
   WindowManager.prototype.getSettings = function() {
     return this._settings;
-  };
-
-  WindowManager.prototype.getThemes = function() {
-    return this._themes;
   };
 
   WindowManager.prototype.getWindows = function() {
@@ -861,7 +886,7 @@
         OSjs.Utils.$addClass(this._$element, 'WindowHintClosing');
         setTimeout(function() {
           _removeDOM();
-        }, ANIMDURATION);
+        }, getAnimDuration());
       } else {
         this._$element.style.display = 'none';
         _removeDOM();
@@ -1113,7 +1138,7 @@
     if ( anim ) {
       setTimeout(function() {
         _hideDOM();
-      }, ANIMDURATION);
+      }, getAnimDuration());
     } else {
       _hideDOM();
     }
@@ -1163,7 +1188,7 @@
       var self = this;
       setTimeout(function() {
         self._fireHook('maximize');
-      }, ANIMDURATION);
+      }, getAnimDuration());
     } else {
       this._fireHook('maximize');
     }
@@ -1199,7 +1224,7 @@
       var self = this;
       setTimeout(function() {
         self._fireHook('restore');
-      }, ANIMDURATION);
+      }, getAnimDuration());
     } else {
       this._fireHook('restore');
     }
@@ -1312,7 +1337,7 @@
     if ( anim ) {
       setTimeout(function() {
         self._fireHook('resized');
-      }, ANIMDURATION);
+      }, getAnimDuration());
     } else {
       this._fireHook('resized');
     }

@@ -403,6 +403,15 @@
     }, {method: 'GET', parse: true});
   };
 
+  ThemeManager.prototype.getTheme = function(name) {
+    for ( var i = 0; i < this.themes.length; i++ ) {
+      if ( this.themes[i].name === name ) {
+        return this.themes[i];
+      }
+    }
+    return null;
+  };
+
   ThemeManager.prototype.getThemes = function() {
     return this.themes;
   };
@@ -707,11 +716,19 @@
   //
   // Themes
   //
+
   DefaultHandler.prototype.getThemes = function() {
     if ( this.themes ) {
       return this.themes.getThemes();
     }
     return [];
+  };
+
+  DefaultHandler.prototype.getTheme = function(name) {
+    if ( this.themes ) {
+      return this.themes.getTheme(name);
+    }
+    return null;
   };
 
   //

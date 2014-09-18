@@ -90,8 +90,6 @@
   var _MOUSELOCK = true;  // Mouse inside view ?!
   var _INITED = false;
 
-  var ANIMDURATION = 300; // Animation duration constant (FIXME)
-
   /////////////////////////////////////////////////////////////////////////////
   // DOM HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -271,7 +269,7 @@
         _HANDLER.loadSession(function() {
           setTimeout(function() {
             globalOnResize();
-          }, ANIMDURATION);
+          }, 500);
 
           OSjs.Hooks._trigger('onSessionLoaded');
         });

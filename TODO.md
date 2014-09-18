@@ -2,7 +2,6 @@
 # High-priority
 * _[Backend]_ Finish Node.js backend
 * _[Locales]_ Finish the format strings
-* _[Themes]_ Finish theme manifest stuff with settings
 * _[Themes]_ More Themes
 * _[Backend]_ Finish WebSocket hander implementation
 
