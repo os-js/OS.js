@@ -127,22 +127,28 @@
       var i = 0, l = procs.length;
       var cev;
       for ( i; i < l; i++ ) {
-        cev = (function(pid) {
-          return function(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            OSjs.API.kill(pid);
-            return false;
-          };
-        })(procs[i].__pid);
+        if ( !procs[i] ) { continue; }
 
-        rows.push({
-          pid: procs[i].__pid,
-          name: procs[i].__pname,
-          alive: now-procs[i].__started,
-          kill: 'Kill',
-          customEvent: cev
-        });
+        try {
+          cev = (function(pid) {
+            return function(ev) {
+              ev.preventDefault();
+              ev.stopPropagation();
+              OSjs.API.kill(pid);
+              return false;
+            };
+          })(procs[i].__pid);
+
+          rows.push({
+            pid: procs[i].__pid,
+            name: procs[i].__pname,
+            alive: now-procs[i].__started,
+            kill: 'Kill',
+            customEvent: cev
+          });
+        } catch ( e ) {
+          console.warn('err', e, e.stack);
+        }
       }
 
       w.refresh(rows);
