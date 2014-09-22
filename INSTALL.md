@@ -29,15 +29,15 @@ Simply run `make`
 
 ## 3: Setting up a web-server
 
-Make sure the _VFS_ directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.
-
-Example for Apache: `sudo chown -R www-data:www-data vfs/`
-
 ### PHP5 on Apache
 
 See `doc/apache.conf` for an example
 
 Or run `./obt apache-vhost` to generate one
+
+Make sure the _VFS_ directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.
+
+Example for Apache: `sudo chown -R www-data:www-data vfs/`
 
 ### PHP5 on Lighttpd
 
