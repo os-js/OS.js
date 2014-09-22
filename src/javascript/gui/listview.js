@@ -91,10 +91,16 @@
     var self = this;
 
     function onResizeMove(ev) {
+      if ( !self.$headTop || !self.$body ) { return; }
+
       var newW = startW + (ev.clientX - startX);
       if ( column >= 0 && newW >= 16 ) {
-        self.$headTop.rows[0].childNodes[column].width = newW;
-        self.$body.rows[0].childNodes[column].width = newW;
+        if ( self.$headTop.rows[0] ) {
+          self.$headTop.rows[0].childNodes[column].width = newW;
+        }
+        if ( self.$body.rows[0] ) {
+          self.$body.rows[0].childNodes[column].width = newW;
+        }
       }
     }
 

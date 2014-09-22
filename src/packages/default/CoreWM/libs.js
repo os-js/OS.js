@@ -912,7 +912,9 @@
     if ( options.autohide ) {
       this.onMouseOut();
     }
-    this._$element.className = cn.join(' ');
+    if ( this._$element ) {
+      this._$element.className = cn.join(' ');
+    }
     this._options = options;
   };
 
