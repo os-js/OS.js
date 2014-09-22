@@ -647,7 +647,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       generate_htaccess('apache-prod-htaccess.conf', 'dist');
       generate_htaccess('apache-dev-htaccess.conf', 'dist-dev');
     } else {
-      generate_htaccess('apache-dev-htaccess.conf', (a || 'dist'));
+      generate_htaccess('apache-prod-htaccess.conf', (a || 'dist'));
     }
   }
 
