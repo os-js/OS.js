@@ -28,12 +28,6 @@
  * @licence Simplified BSD License
  */
 
-/**
- * Depends on:
- *  `npm install node-fs-extra`
- *  `npm install formidable`
- */
-
 (function(_http, _path, _url, _fs, _qs, _multipart, _vfs)
 {
   /**

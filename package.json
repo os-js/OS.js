@@ -1,0 +1,27 @@
+{
+  "name": "OS.js",
+  "description": "JavaScript Cloud/Web Desktop Platform",
+  "url": "http://andersevenrud.github.io/OS.js-v2/",
+  "email": "andersevenrud@gmail.com",
+  "license": "BSD-2-Clause",
+  "contributors": [
+    {
+      "name": "Anders Evenrud",
+      "email": "andersevenrud@gmail.com"
+    }
+  ],
+  "keywords": ["os.js"],
+  "bugs": {
+    "url": "https://github.com/andersevenrud/OS.js-v2/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andersevenrud/OS.js-v2.git"
+  },
+  "dependencies": {
+    "less": "latest",
+    "node-fs-extra": "latest",
+    "formidable": "latest"
+  }
+
+}

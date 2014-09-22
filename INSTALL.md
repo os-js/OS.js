@@ -7,20 +7,21 @@ Make sure you have these dependencies installed
 
 * GNU Make
 * **Nodejs** and **npm**
-* Node module **lessc** (`sudo npm install -g less`)
-* Node module **node-fs-extra** (`npm install -g node-fs-extra`)
-* Node module **formidable** (`npm install -g formidable`) _if you are planning on using Node as server_
 
 _To build compressed/minimized versions java is required because of vendor libraries_
 
 # Installation
 Installation only requires a few small steps.
 
-## 1: Download
+## 1: Download and install OS.js
 
 Download the latest source from github or clone with git using:
 
 `git pull https://github.com/andersevenrud/OS.js-v2.git`
+
+### Automatically install dependencies
+
+Enter installation directory and run `npm install`
 
 ## 2: Build OS.js
 
