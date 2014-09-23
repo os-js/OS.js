@@ -291,8 +291,6 @@
       if ( filetypes ) {
         if ( filetypes[ext] ) {
           mime = filetypes[ext];
-        } else {
-          return;
         }
       }
     }
