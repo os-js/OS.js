@@ -210,7 +210,7 @@
     var isHTMLInput = OSjs.Utils.isInputElement(ev);
 
     if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
-      if ( isHTMLInput ) {
+      if ( !isHTMLInput ) {
         doPrevent = true;
       }
     }
