@@ -193,7 +193,7 @@
     if ( typeof x !== 'undefined' ) {
       p = (x/maxX) * 100;
     } else if ( typeof y !== 'undefined' ) {
-      p = (y/maxY) * 100;
+      p = 100 - ((y/maxY) * 100);
     }
     if ( p !== null ) {
       this.setPercentage(p, evt);
@@ -221,6 +221,8 @@
       var bh    = this.$button.offsetHeight;
       var dh    = (rh - bh);
       var top   = (dh/100)*cp;
+
+      top = (rh-bh) - top;
 
       this.$button.style.top = top + 'px';
     }
