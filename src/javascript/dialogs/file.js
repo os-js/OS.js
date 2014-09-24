@@ -304,8 +304,11 @@
 
       if ( val.match(/\.(\w+)$/) ) {
         var m = val.split(/\.(\w+)$/);
-        if ( m ) {
-          range.max -= (m.length + 1);
+        for ( var i = m.length - 1; i >= 0; i-- ) {
+          if ( m[i].length ) {
+            range.max = val.length - m[i].length - 1;
+            break;
+          }
         }
       }
 
