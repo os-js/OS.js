@@ -500,6 +500,25 @@
     return xhr;
   };
 
+  OSjs.Utils.AjaxDownload = function(url, onSuccess, onError) {
+    onSuccess = onSuccess || function() {};
+    onError   = onError   || function() {};
+
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'arraybuffer';
+
+    request.onerror = function(err) {
+      onError(err);
+    };
+
+    request.onload = function() {
+      onSuccess(request.response);
+    };
+
+    request.send();
+  };
+
   OSjs.Utils.Ajax = function(url, onSuccess, onError, opts) {
     if ( !url ) { throw 'No URL given'; }
 
