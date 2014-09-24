@@ -355,7 +355,10 @@
         w = app._getWindow(r.name);
         if ( w ) {
           w._move(r.position.x, r.position.y, true);
-          w._resize(r.dimension.w, r.dimension.h, true);
+
+          if ( w._properties.allow_resize ) {
+            w._resize(r.dimension.w, r.dimension.h, true);
+          }
 
           console.info('UserSession::loadSession()->onSuccess()', 'Restored window \'' + r.name + '\' from session');
         }
