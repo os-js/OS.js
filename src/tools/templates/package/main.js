@@ -114,6 +114,7 @@
   // EXPORTS
   //
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationEXAMPLE = ApplicationEXAMPLE;
+  OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
+  OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
