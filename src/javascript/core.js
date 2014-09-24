@@ -703,7 +703,11 @@
 
         var a = null, err = false;
         try {
-          a = new OSjs.Applications[n](arg, result);
+          if ( typeof OSjs.Applications[n].Class !== 'undefined' ) {
+            a = new OSjs.Applications[n].Class(arg, result);
+          } else {
+            a = new OSjs.Applications[n](arg, result);
+          }
           a.__sname = n;
 
           onConstructed(a, result);
