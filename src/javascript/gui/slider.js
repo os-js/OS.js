@@ -150,7 +150,7 @@
       var cx = ev.clientX - p.left;
       var cy = ev.clientY - p.top;
 
-      self.onSliderClick(ev, cx, cy, (self.$element.offsetWidth - (self.$button.offsetWidth/2)), (self.$element.offsetHeight - (self.$button.offsetHeight/2)));
+      self.onSliderClick(ev, cx, cy, (self.$element.offsetWidth - (self.$button.offsetWidth/2)), (self.$element.offsetHeight - (self.$button.offsetHeight/2)), self.$element.offsetHeight, self.$button.offsetHeight);
     });
 
     el.appendChild(this.$root);
@@ -173,14 +173,14 @@
     this.onUpdate.call(this, val, p, evt);
   };
 
-  Slider.prototype.onSliderClick = function(ev, cx, cy, tw, th) {
+  Slider.prototype.onSliderClick = function(ev, cx, cy, tw, th, rh, bh) {
     var cd = (this.max - this.min);
     var tmp;
 
     if ( this.type === 'horizontal' ) {
       tmp = (cx/tw)*100;
     } else {
-      tmp = (cy/th)*100;
+      tmp = (rh + (bh/2)) - ((cy/th)*100);
     }
 
     var val = parseInt(cd*(tmp/100), 10);
