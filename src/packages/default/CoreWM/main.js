@@ -886,6 +886,14 @@
     return this.panels[(idx || 0)];
   };
 
+  CoreWM.prototype.getThemes = function() {
+    var handler = OSjs.API.getHandlerInstance();
+    if ( handler ) {
+      return handler.getThemes();
+    }
+    return [];
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
