@@ -45,6 +45,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 (function(argv, _fs, _path, _exec) {
 
   var ROOT    = _path.join(__dirname, '../../');
+  var LESSC   = _path.join(ROOT, 'node_modules/less/bin/lessc');
   var BUILD   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "build.json")));
   var REPOS   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "packages", "repositories.json")));
   var MIMES   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "mime.json")));
@@ -229,7 +230,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var src = _path.join(dir, iter);
         var dest = _path.join(ROOT, 'dist', 'themes', name + '.css');
 
-        exec(['lessc', src, dest], function() {
+        exec([LESSC, src, dest], function() {
           cb();
         });
       });
