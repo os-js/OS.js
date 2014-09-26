@@ -48,14 +48,20 @@
   // DEFAULT HOOKS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Hooks.onInitialize          = function() {}; // 1: When OS.js is starting
-  OSjs.Hooks.onInited              = function() {}; // 2: When all resources has been loaded
-  OSjs.Hooks.onWMInited            = function() {}; // 3: When Window Manager has started
-  OSjs.Hooks.onSessionLoaded       = function() {}; // 4: After session has been loaded or restored
-  OSjs.Hooks.onLogout              = function() {}; // When logout is requested
-  OSjs.Hooks.onShutdown            = function() {}; // When shutting down after successfull logout
-  OSjs.Hooks.onApplicationLaunch   = function() {}; // On application launch request
-  OSjs.Hooks.onApplicationLaunched = function() {}; // When application has been launched
+  var _hooks = [
+    'onInitialize',          // 1: When OS.js is starting
+    'onInited',              // 2: When all resources has been loaded
+    'onWMInited',            // 3: When Window Manager has started
+    'onSessionLoaded',       // 4: After session has been loaded or restored
+    'onLogout',              // When logout is requested
+    'onShutdown',            // When shutting down after successfull logout
+    'onApplicationLaunch',   // On application launch request
+    'onApplicationLaunched'  // When application has been launched
+  ];
+
+  for ( var h = 0; h < _hooks.length; h++ ) {
+    OSjs.Hooks[_hooks[h]] = OSjs.Hooks[_hooks[h]] || function __hookPlaceHolder() {};
+  }
 
   /**
    * Method for triggering a hook
