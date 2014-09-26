@@ -129,8 +129,8 @@
   CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.init = function() {
-    this.setThemeLink("/blank.css");
-    this.setAnimationLink("/blank.css");
+    this.setThemeLink('/blank.css');
+    this.setAnimationLink('/blank.css');
 
     WindowManager.prototype.init.apply(this, arguments);
 
@@ -144,7 +144,7 @@
   };
 
   CoreWM.prototype.destroy = function(kill) {
-    if ( kill && !confirm(_("Killing this process will stop things from working!")) ) {
+    if ( kill && !confirm(_('Killing this process will stop things from working!')) ) {
       return false;
     }
 
@@ -228,7 +228,7 @@
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
-    var back = document.getElementById("Background");
+    var back = document.getElementById('Background');
     if ( back ) {
       OSjs.GUI.createDroppable(back, {
         onOver: function(ev, el, args) {
@@ -296,7 +296,7 @@
               added = true;
             } catch ( e ) {
               // FIXME: Should we notify the user with a error dialog ?!
-              console.warn("An error occured while creating PanelItem", e);
+              console.warn('An error occured while creating PanelItem', e);
               console.warn('stack', e.stack);
             }
           }
@@ -310,8 +310,8 @@
       this.notification({
         timeout : 0,
         icon: 'status/important.png',
-        title: "CoreWM",
-        message: _("Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)")
+        title: 'CoreWM',
+        message: _('Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)')
       });
     }
 
@@ -325,7 +325,7 @@
           iter = this._windows[i];
           if ( !iter ) { continue; }
           if ( iter._position.y < space.top ) {
-            console.warn("CoreWM::initPanels()", "I moved this window because it overlapped with a panel!", iter);
+            console.warn('CoreWM::initPanels()', 'I moved this window because it overlapped with a panel!', iter);
             iter._move(iter._position.x, space.top);
           }
         }
@@ -403,22 +403,22 @@
   };
 
   CoreWM.prototype.onDropLeave = function() {
-    var back = document.getElementById("Background");
+    var back = document.getElementById('Background');
     OSjs.Utils.$removeClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDropOver = function() {
-    var back = document.getElementById("Background");
+    var back = document.getElementById('Background');
     OSjs.Utils.$addClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDrop = function() {
-    var back = document.getElementById("Background");
+    var back = document.getElementById('Background');
     OSjs.Utils.$removeClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDropItem = function(ev, el, item, args) {
-    var back = document.getElementById("Background");
+    var back = document.getElementById('Background');
     OSjs.Utils.$removeClass(back, 'Blinking');
 
 
@@ -703,12 +703,12 @@
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
       return false;
     }
-    console.group("OSjs::Applications::CoreWM::applySettings");
+    console.group('OSjs::Applications::CoreWM::applySettings');
 
     // Styles
     var opts = this.getSetting('style');
     var valid = ['backgroundColor', 'fontFamily'];
-    console.log("Styles", opts);
+    console.log('Styles', opts);
     for ( var i in opts ) {
       if ( opts.hasOwnProperty(i) && OSjs.Utils.inArray(valid, i) ) {
         document.body.style[i] = opts[i];
@@ -723,7 +723,7 @@
     var back      = 'none';
 
     if ( name && type.match(/^image/) ) {
-      back = "url('" + OSjs.API.getResourceURL(name) + "')";
+      back = 'url(\'' + OSjs.API.getResourceURL(name) + '\')';
       switch ( type ) {
         case     'image' :        className = 'Normal';   break;
         case     'image-center':  className = 'Center';   break;
@@ -733,9 +733,9 @@
       }
     }
 
-    console.log("Wallpaper name", name);
-    console.log("Wallpaper type", type);
-    console.log("Wallpaper className", className);
+    console.log('Wallpaper name', name);
+    console.log('Wallpaper type', type);
+    console.log('Wallpaper className', className);
 
     var cn = document.body.className;
     var nc = 'Wallpaper' + className + ' ';
@@ -744,14 +744,18 @@
 
     // Theme
     var theme = this.getSetting('theme');
-    console.log("theme", theme);
+    console.log('theme', theme);
     if ( this.$themeLink ) {
-      this.setThemeLink(OSjs.API.getThemeCSS(theme));
+      if ( theme ) {
+        this.setThemeLink(OSjs.API.getThemeCSS(theme));
+      } else {
+        console.warn('NO THEME WAS SELECTED!');
+      }
     }
 
     // Animations
     var anim  = this.getSetting('animations');
-    console.log("animations", anim);
+    console.log('animations', anim);
     if ( this.$animationLink ) {
       if ( anim ) {
         this.setAnimationLink(OSjs.API.getApplicationResource(this, 'animations.css'));

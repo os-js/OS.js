@@ -140,7 +140,7 @@
           })(procs[i].__pid);
 
           rows.push({
-            pid: procs[i].__pid,
+            pid: procs[i].__pid.toString(),
             name: procs[i].__pname,
             alive: now-procs[i].__started,
             kill: 'Kill',
