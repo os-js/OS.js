@@ -915,15 +915,12 @@
    * Kills a process
    */
   function doKillProcess(pid) {
-    if ( pid > 0 ) {
-      pid--;
-      if ( _PROCS[pid] ) {
-        console.warn('Killing application', pid);
-        if ( _PROCS[pid].destroy(true) === false ) {
-          return;
-        }
-        _PROCS[pid] = null;
+    if ( _PROCS[pid] ) {
+      console.warn('Killing application', pid);
+      if ( _PROCS[pid].destroy(true) === false ) {
+        return;
       }
+      _PROCS[pid] = null;
     }
   }
 
