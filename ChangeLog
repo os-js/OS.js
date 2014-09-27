@@ -1,3 +1,25 @@
+# 2.0.0-alpha21
+
+Version bump - WARNING: API Change
+
+* Core: Removed 'Main' Class
+* Core: Refactored Application::init(core, settings, metadata) => Application(settings, metadata)
+* Core: Slimmed down and cleaned up
+* Core: Fixed some bugs coming from reports where some vars was undefined
+* Core: Hooks are now checked before assigning noop
+* GUI: Vertical slider is now inverted
+* Sessions: Windows with resize disabled will not be restored to previous size on load
+* Dialogs - File: Fixed the filename highlighting in save dialog
+* API: You can now have a namespace in OSjs.Applications and set the main class to OSjs.Applications.MyApp.Class
+* CoreWM: Fixed getThemes()
+* CoreWM: Do not apply theme if name is empty
+* Utils: Added AjaxDownload() and global API shortcut downloadFile()
+* Application - ProcessViewer: Fixes for the listview
+* obt: Fix for htaccess generation
+* obt: Now uses local npm packages instead of global
+* Added package.json for npm
+* Updated install instructions -- simplified
+
 # 2.0.0-alpha20
 
 * Core: Split Widow and WindowManager etc. into src/javascript/windows.js
