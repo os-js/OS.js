@@ -98,9 +98,9 @@
       var option        = document.createElement('option');
       option.value      = f;
       option.appendChild(document.createTextNode(font));
-      this.$selectFont.appendChild(option);
-      if ( this.fontName.toLowerCase() === font.toLowerCase() ) {
-        this.$selectFont.selectedIndex = f;
+      self.$selectFont.appendChild(option);
+      if ( self.fontName.toLowerCase() === font.toLowerCase() ) {
+        self.$selectFont.selectedIndex = f;
       }
     });
 
