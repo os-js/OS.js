@@ -30,9 +30,6 @@
 (function(WindowManager, GUI) {
   'use strict';
 
-  OSjs.CoreWM       = OSjs.CoreWM       || {};
-  OSjs.Applications = OSjs.Applications || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
   /////////////////////////////////////////////////////////////////////////////
@@ -140,7 +137,7 @@
       this.initIconView();
     });
 
-    this.switcher = new OSjs.CoreWM.WindowSwitcher();
+    this.switcher = new OSjs.Applications.CoreWM.WindowSwitcher();
   };
 
   CoreWM.prototype.destroy = function(kill) {
@@ -285,14 +282,14 @@
     if ( ps && ps.length ) {
       var p, j, n;
       for ( var i = 0; i < ps.length; i++ ) {
-        p = new OSjs.CoreWM.Panel('Default', ps[i].options);
+        p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options);
         p.init(document.body);
 
         if ( ps[i].items && ps[i].items.length ) {
           for ( j = 0; j < ps[i].items.length; j++ ) {
             try {
               n = ps[i].items[j];
-              p.addItem(new OSjs.CoreWM.PanelItems[n.name]());
+              p.addItem(new OSjs.Applications.CoreWM.PanelItems[n.name]());
               added = true;
             } catch ( e ) {
               // FIXME: Should we notify the user with a error dialog ?!
@@ -341,7 +338,7 @@
     if ( !this.getSetting('enableIconView') ) { return; }
     if ( this.iconView ) { return; }
 
-    this.iconView = new OSjs.CoreWM.DesktopIconView(this);
+    this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
     this.iconView.init();
     this.iconView.update(this);
     document.body.appendChild(this.iconView.getRoot());
@@ -545,7 +542,7 @@
       return;
     }
 
-    this.settingsWindow = this.addWindow(new OSjs.CoreWM.SettingsWindow(this));
+    this.settingsWindow = this.addWindow(new OSjs.Applications.CoreWM.SettingsWindow(this));
     this.settingsWindow._focus();
     setTimeout(function() {
       self.settingsWindow.setTab(tab);
@@ -559,7 +556,7 @@
     for ( var i = 0; i < this.panels.length; i++ ) {
       panel = this.panels[i];
       if ( panel ) {
-        panelItem = panel.getItem(OSjs.CoreWM.PanelItems.WindowList);
+        panelItem = panel.getItem(OSjs.Applications.CoreWM.PanelItems.WindowList);
         if ( panelItem ) {
           panelItem.update(ev, win);
         }
@@ -665,7 +662,7 @@
     var panel  = this.panels[panelId];
     var result = null;
     if ( panel ) {
-      var pitem = panel.getItem(OSjs.CoreWM.PanelItems.NotificationArea, false);
+      var pitem = panel.getItem(OSjs.Applications.CoreWM.PanelItems.NotificationArea, false);
       if ( pitem ) {
         result = pitem.createNotification(name, opts);
       }
@@ -681,7 +678,7 @@
     var panel  = this.panels[panelId];
     var result = null;
     if ( panel ) {
-      var pitem = panel.getItem(OSjs.CoreWM.PanelItems.NotificationArea, false);
+      var pitem = panel.getItem(OSjs.Applications.CoreWM.PanelItems.NotificationArea, false);
       if ( pitem ) {
         pitem.removeNotification(name);
         return true;
@@ -902,6 +899,8 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications.CoreWM = CoreWM;
+  OSjs.Applications              = OSjs.Applications || {};
+  OSjs.Applications.CoreWM       = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.Class = CoreWM;
 
 })(OSjs.Core.WindowManager, OSjs.GUI);

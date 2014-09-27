@@ -802,7 +802,7 @@
   };
 
   EffectBlur.prototype._run = function(win, context, canvas, radius, iterations) {
-    OSjs.Applications.ApplicationDrawEffects.Blur(canvas, context);
+    OSjs.Applications.ApplicationDraw.Effects.Blur(canvas, context);
   };
 
   /**
@@ -948,26 +948,25 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationDrawLibs = {
-    Tools: [
-      new ToolPointer(),
-      new ToolPicker(),
-      new ToolBucket(),
-      new ToolPencil(),
-      new ToolPath(),
-      new ToolSquare(),
-      new ToolCircle()
-    ],
-    Effects: [
-      new EffectBlur(),
-      new EffectNoise(),
-      new EffectInvert(),
-      new EffectGrayscale(),
-      new EffectSharpen(),
-      new EffectSimpleBlur()
-    ],
-    Image: Image,
-    Layer: Layer
-  };
+  OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
+  OSjs.Applications.ApplicationDraw.Image = Image;
+  OSjs.Applications.ApplicationDraw.Layer = Layer;
+  OSjs.Applications.ApplicationDraw.ToolList = [
+    new ToolPointer(),
+    new ToolPicker(),
+    new ToolBucket(),
+    new ToolPencil(),
+    new ToolPath(),
+    new ToolSquare(),
+    new ToolCircle()
+  ];
+  OSjs.Applications.ApplicationDraw.EffectList = [
+    new EffectBlur(),
+    new EffectNoise(),
+    new EffectInvert(),
+    new EffectGrayscale(),
+    new EffectSharpen(),
+    new EffectSimpleBlur()
+  ];
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);

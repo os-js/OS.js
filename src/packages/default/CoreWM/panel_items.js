@@ -30,9 +30,6 @@
 (function(CoreWM, Panel, PanelItem) {
   'use strict';
 
-  OSjs.CoreWM                   = OSjs.CoreWM             || {};
-  OSjs.CoreWM.PanelItems        = OSjs.CoreWM.PanelItems  || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
   /////////////////////////////////////////////////////////////////////////////
@@ -80,9 +77,9 @@
       ev.stopPropagation();
       var wm = OSjs.API.getWMInstance();
       if ( wm && wm.getSetting('menuCategories') ) {
-        OSjs.CoreWM.BuildCategoryMenu(ev);
+        OSjs.Applications.CoreWM.BuildCategoryMenu(ev);
       } else {
-        OSjs.CoreWM.BuildMenu(ev);
+        OSjs.Applications.CoreWM.BuildMenu(ev);
       }
       return false;
     });
@@ -426,10 +423,13 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.CoreWM.PanelItems.Buttons           = PanelItemButtons;
-  OSjs.CoreWM.PanelItems.WindowList        = PanelItemWindowList;
-  OSjs.CoreWM.PanelItems.Clock             = PanelItemClock;
-  OSjs.CoreWM.PanelItems.NotificationArea  = PanelItemNotificationArea;
+  OSjs.Applications                                    = OSjs.Applications || {};
+  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.PanelItems.Buttons          = PanelItemButtons;
+  OSjs.Applications.CoreWM.PanelItems.WindowList       = PanelItemWindowList;
+  OSjs.Applications.CoreWM.PanelItems.Clock            = PanelItemClock;
+  OSjs.Applications.CoreWM.PanelItems.NotificationArea = PanelItemNotificationArea;
 
-})(OSjs.CoreWM, OSjs.CoreWM.Panel, OSjs.CoreWM.PanelItem);
+})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem);
 

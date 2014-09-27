@@ -233,7 +233,7 @@
     ]);
     */
 
-    var effects = OSjs.Applications.ApplicationDrawLibs.Effects;
+    var effects = OSjs.Applications.ApplicationDraw.EffectList;
     var items = [];
     for ( var f = 0; f < effects.length; f++ ) {
       items.push({
@@ -392,7 +392,7 @@
 
     toolBar.addSeparator();
 
-    var tools = OSjs.Applications.ApplicationDrawLibs.Tools;
+    var tools = OSjs.Applications.ApplicationDraw.ToolList;
     var t;
     for ( var i = 0; i < tools.length; i++ ) {
       t = tools[i];
@@ -806,7 +806,7 @@
     var sx = data ? (typeof data.width  == "undefined" ? width : data.width)  : (width  || 640);
     var sy = data ? (typeof data.height == "undefined" ? height : data.height) : (height || 480);
 
-    this.image = new OSjs.Applications.ApplicationDrawLibs.Image(name, sx, sy);
+    this.image = new OSjs.Applications.ApplicationDraw.Image(name, sx, sy);
     if ( data ) {
       this.image.setData(data);
     }
@@ -1029,6 +1029,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationDraw = ApplicationDraw;
+  OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
+  OSjs.Applications.ApplicationDraw.Class = ApplicationDraw;
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils);

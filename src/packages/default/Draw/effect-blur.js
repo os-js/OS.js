@@ -314,8 +314,9 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationDrawEffects = OSjs.Applications.ApplicationDrawEffects || {};
-  OSjs.Applications.ApplicationDrawEffects.Blur = function(canvas, context, alpha, radius, iterations) {
+  OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
+  OSjs.Applications.ApplicationDraw.Effects = OSjs.Applications.ApplicationDraw.Effects || {};
+  OSjs.Applications.ApplicationDraw.Effects.Blur = function(canvas, context, alpha, radius, iterations) {
     var top_x = 0;
     var top_y = 0;
     var width = canvas.width;

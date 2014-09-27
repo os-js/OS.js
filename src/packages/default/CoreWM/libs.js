@@ -151,7 +151,7 @@
     var self = this;
 
     var list = [];
-    var items = OSjs.CoreWM.PanelItems;
+    var items = OSjs.Applications.CoreWM.PanelItems;
     for ( var i in items ) {
       if ( items.hasOwnProperty(i) ) {
         list.push({
@@ -971,7 +971,7 @@
   };
 
   Panel.prototype.addItem = function(item) {
-    if ( !(item instanceof OSjs.CoreWM.PanelItem) ) {
+    if ( !(item instanceof OSjs.Applications.CoreWM.PanelItem) ) {
       throw "Expected a PanelItem in Panel::addItem()";
     }
 
@@ -1301,15 +1301,16 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.CoreWM                   = OSjs.CoreWM       || {};
-  OSjs.CoreWM.SettingsWindow    = SettingsWindow;
-  OSjs.CoreWM.PanleItemWindow   = PanelItemWindow;
-  OSjs.CoreWM.BuildMenu         = BuildMenu;
-  OSjs.CoreWM.BuildCategoryMenu = BuildCategoryMenu;
-  OSjs.CoreWM.Panel             = Panel;
-  OSjs.CoreWM.PanelItem         = PanelItem;
-  OSjs.CoreWM.PanelItems        = {};
-  OSjs.CoreWM.WindowSwitcher    = WindowSwitcher;
-  OSjs.CoreWM.DesktopIconView   = DesktopIconView;
+  OSjs.Applications                          = OSjs.Applications || {};
+  OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.SettingsWindow    = SettingsWindow;
+  OSjs.Applications.CoreWM.PanleItemWindow   = PanelItemWindow;
+  OSjs.Applications.CoreWM.BuildMenu         = BuildMenu;
+  OSjs.Applications.CoreWM.BuildCategoryMenu = BuildCategoryMenu;
+  OSjs.Applications.CoreWM.Panel             = Panel;
+  OSjs.Applications.CoreWM.PanelItem         = PanelItem;
+  OSjs.Applications.CoreWM.WindowSwitcher    = WindowSwitcher;
+  OSjs.Applications.CoreWM.DesktopIconView   = DesktopIconView;
 
 })(OSjs.Core.WindowManager, OSjs.Core.Window, OSjs.GUI);
