@@ -918,6 +918,27 @@
   }
 
   /**
+   * Gloal function for downloading a file
+   */
+  var doDownloadFile = (function() {
+    var _didx = 1;
+
+    return function(url, callback) {
+      var lname = 'DownloadFile_' + _didx;
+      _didx++;
+      createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
+
+      OSjs.Utils.AjaxDownload(url, function(data) {
+        destroyLoading(lname);
+        callback(false, data);
+      }, function(err) {
+        destroyLoading(lname);
+        callback(err);
+      });
+    }
+  })();
+
+  /**
    * Kills a process
    */
   function doKillProcess(pid) {
@@ -1255,6 +1276,7 @@
   OSjs.API.kill               = doKillProcess;
   OSjs.API.playSound          = doPlaySound;
   OSjs.API.uploadFiles        = doUploadFiles;
+  OSjs.API.downloadFile       = doDownloadFile;
   OSjs.API.message            = doProcessMessage;
   OSjs.API.getProcess         = doGetProcess;
   OSjs.API.getProcesses       = function() { return _PROCS; };
