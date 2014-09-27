@@ -906,6 +906,7 @@
    * Default method for getting a icon (wrapper for above methods)
    */
   DefaultHandler.prototype.getIcon = function(name, app, args) {
+    name = name || '';
     if ( name.match(/\.\//) ) {
       if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
           return OSjs.API.getApplicationResource(app, name);
