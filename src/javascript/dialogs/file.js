@@ -135,8 +135,8 @@
     this.$fileView.onRefresh = function() {
       self.onFileRefresh();
     };
-    this.$fileView.onActivated = function(path, type, mime) {
-      self.onFileActivated(path, type, mime);
+    this.$fileView.onActivated = function(item) {
+      self.onFileActivated(item);
     };
 
     this.$statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
@@ -444,17 +444,17 @@
   /**
    * FileView: Activated
    */
-  FileDialog.prototype.onFileActivated = function(path, type, mime) {
+  FileDialog.prototype.onFileActivated = function(item) {
     this.selectedFile = null;
 
     function _activated() {
       this.buttonConfirm.setDisabled(false);
-      this.finishDialog.call(this, path, mime);
+      this.finishDialog.call(this, item.path, item.mime);
     }
 
-    if ( this.select === 'file' && type === 'file' ) {
+    if ( this.select === 'file' && item.type === 'file' ) {
       _activated.call(this);
-    } else if ( this.select === 'path' && type === 'dir' && Utils.filename(path) !== '..' ) {
+    } else if ( this.select === 'path' && item.type === 'dir' && Utils.filename(item.path) !== '..' ) {
       _activated.call(this);
     }
   };

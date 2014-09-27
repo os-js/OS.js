@@ -64,7 +64,7 @@
     }
     TreeView.apply(this, [name, opts]);
 
-    this.onActivated  = function(path, type, mime) {};
+    this.onActivated  = function(item, el) {};
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
@@ -157,14 +157,14 @@
   FileTreeView.prototype._onSelect = function(ev, item) {
     item = TreeView.prototype._onSelect.apply(this, arguments);
     if ( item && item.path ) {
-      this.onSelected(item.path, item.type, item.mime);
+      this.onSelected(item, item._element);
     }
   };
 
   FileTreeView.prototype._onActivate = function(ev, item) {
     item = TreeView.prototype._onActivate.apply(this, arguments);
     if ( item && item.path ) {
-      this.onActivated(item.path, item.type, item.mime);
+      this.onActivated(item, item._element);
     }
   };
 
@@ -208,7 +208,7 @@
     }
     IconView.apply(this, [name, opts]);
 
-    this.onActivated  = function(path, type, mime) {};
+    this.onActivated  = function(item, el) {};
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
@@ -283,14 +283,14 @@
   FileIconView.prototype._onSelect = function(ev, item) {
     item = IconView.prototype._onSelect.apply(this, arguments);
     if ( item && item.path ) {
-      this.onSelected(item.path, item.type, item.mime);
+      this.onSelected(item, item._element);
     }
   };
 
   FileIconView.prototype._onActivate = function(ev, item) {
     item = IconView.prototype._onActivate.apply(this, arguments);
     if ( item && item.path ) {
-      this.onActivated(item.path, item.type, item.mime);
+      this.onActivated(item, item._element);
     }
   };
 
@@ -313,7 +313,7 @@
 
     this.humanSize  = (typeof opts.humanSize === 'undefined' || opts.humanSize);
 
-    this.onActivated  = function(path, type, mime) {};
+    this.onActivated  = function(item, el) {};
     this.onSelected   = function(item, el) {};
     this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.onSort       = function() { console.warn('Not implemented yet!'); };
@@ -406,7 +406,7 @@
   FileListView.prototype._onActivate = function(ev, item) {
     item = ListView.prototype._onActivate.apply(this, arguments);
     if ( item && item.path ) {
-      this.onActivated(item.path, item.type, item.mime);
+      this.onActivated(item, item._element);
     }
   };
 
@@ -465,7 +465,7 @@
     this.locked         = opts.locked || false;
     this.viewRef        = null;
 
-    this.onActivated        = function(path, type, mime) {};
+    this.onActivated        = function(item, el) {};
     this.onError            = function(error) {};
     this.onFinished         = function() {};
     this.onSelected         = function(item, el) {};
