@@ -505,8 +505,9 @@
    */
   PackageManager.prototype.getPackagesByMime = function(mime) {
     var list = [];
+    var self = this;
     Object.keys(this.packages).forEach(function(i) {
-      var a = this.packages[i];
+      var a = self.packages[i];
       if ( a && a.mime ) {
         if ( Utils.checkAcceptMime(mime, a.mime) ) {
           list.push(i);
