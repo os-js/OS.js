@@ -30,6 +30,7 @@
 (function() {
   'use strict';
 
+  // Compability
   window.OSjs       = window.OSjs       || {};
   window.console    = window.console    || {};
   console.log       = console.log       || function() {};
@@ -38,6 +39,8 @@
   console.warn      = console.warn      || console.log;
   console.group     = console.group     || console.log;
   console.groupEnd  = console.groupEnd  || console.log;
+
+  NodeList.prototype.forEach = Array.prototype.forEach;
 
   /////////////////////////////////////////////////////////////////////////////
   // Main initialization code

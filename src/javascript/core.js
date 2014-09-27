@@ -30,8 +30,6 @@
 (function() {
   'use strict';
 
-  NodeList.prototype.forEach = Array.prototype.forEach
-
   window.OSjs       = window.OSjs       || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
@@ -936,7 +934,7 @@
         destroyLoading(lname);
         callback(err);
       });
-    }
+    };
   })();
 
   /**
