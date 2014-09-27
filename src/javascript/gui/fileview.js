@@ -588,6 +588,7 @@
 
     function sortList(list, key, asc) {
       if ( !key ) { return list; }
+      console.warn(list.length, key, asc);
 
       var first = null;
       if ( list.length && list[0].filename === '..' ) {
@@ -598,6 +599,12 @@
         var x = (a[key] === null) ? '' : '' + a[key],
             y = (b[key] === null) ? '' : '' + b[key];
 
+        if ( key === 'size' ) {
+          x = parseInt(x, 10);
+          y = parseInt(y, 10);
+          if ( isNaN(x) ) { x = asc ? -1 : Number.MAX_VALUE; }
+          if ( isNaN(y) ) { y = asc ? -1 : Number.MAX_VALUE; }
+        }
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
       });
 
