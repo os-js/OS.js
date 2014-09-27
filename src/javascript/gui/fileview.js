@@ -533,11 +533,13 @@
       }
       this.viewRef._hooks = this._hooks;
 
-      this.viewRef.onActivated  = function(path, type, mime) {
-        if ( type === 'dir' ) {
-          self.chdir(path);
-        } else {
-          self.onActivated.apply(this, arguments);
+      this.viewRef.onActivated  = function(item) {
+        if ( item ) {
+          if ( item.type === 'dir' ) {
+            self.chdir(item.path);
+          } else {
+            self.onActivated.apply(this, arguments);
+          }
         }
       };
 

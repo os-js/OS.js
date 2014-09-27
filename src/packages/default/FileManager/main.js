@@ -147,10 +147,10 @@
       statusBar.setText(_("Refreshing..."));
       self._toggleLoading(true);
     };
-    fileView.onActivated = function(name, type, mime) {
-      if ( name ) {
-        if ( type === 'file' ) {
-          app.open(name, mime);
+    fileView.onActivated = function(item) {
+      if ( item && item.path ) {
+        if ( item.type === 'file' ) {
+          app.open(item.path, item.mime);
         } else {
           statusBar.setText(_("Loading..."));
         }
@@ -393,7 +393,7 @@
       {image: _getFileIcon('places/folder.png'), filename: 'Temp', mime: null, size: 0, type: 'link', path: '/tmp'},
       {image: _getFileIcon('devices/drive-harddisk.png'), filename: 'Filesystem', mime: null, size: 0, type: 'link', path: '/'}*/
     ]);
-    sideView.onActivate = function(ev, el, item) {
+    sideView.onActivate = function(ev, item) {
       if ( el && item && item.path ) {
         if ( item.type === 'file' ) {
           app.open(item.path, item.mime);
