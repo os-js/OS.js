@@ -150,7 +150,7 @@
         var MIMEDescriptions = OSjs.Settings.DefaultConfig().MIME || {};
 
         Object.keys(this.filetypes).forEach(function(i) {
-          var val = this.filetypes[i];
+          var val = self.filetypes[i];
 
           types[i] = '';
           if ( MIMEDescriptions[val] ) {
