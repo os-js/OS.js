@@ -19,6 +19,7 @@
         "Preloads":         [],
         "Sounds":           true,
         "Locale":           "en_EN",
+        "VersionAppend":    "",
         "Languages":        {
           "en_EN": "English",
           "no_NO": "Norsk (Norwegian)",

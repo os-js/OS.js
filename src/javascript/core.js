@@ -132,6 +132,32 @@
     return false;
   }
 
+  /**
+   * Creates the version stamp
+   */
+  function createVersionStamp() {
+    var append = _HANDLER.getConfig('Core').VersionAppend;
+
+    var ver = OSjs.Version;
+    var cop = 'Copyright © 2011-2014 ';
+    var lnk = document.createElement('a');
+    lnk.href = 'mailto:andersevenrud@gmail.com';
+    lnk.appendChild(document.createTextNode('Anders Evenrud'));
+
+    var el = document.createElement('div');
+    el.id = 'DebugNotice';
+    el.appendChild(document.createTextNode(OSjs.Utils.format('OS.js {0}', ver)));
+    el.appendChild(document.createElement('br'));
+    el.appendChild(document.createTextNode(cop));
+    el.appendChild(lnk);
+    if ( append ) {
+      el.appendChild(document.createElement('br'));
+      el.innerHTML += append;
+    }
+
+    document.body.appendChild(el);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // SYSTEM FUNCTIONS
   /////////////////////////////////////////////////////////////////////////////
@@ -365,6 +391,9 @@
     // Launch handler
     _HANDLER = new OSjs.Handlers.Current();
     _HANDLER.init(function() {
+
+      createVersionStamp();
+
       OSjs.Hooks._trigger('onInitialize');
 
       _$SPLASH              = document.getElementById('LoadingScreen');
