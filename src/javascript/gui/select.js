@@ -42,11 +42,10 @@
   Select.prototype = Object.create(_Input.prototype);
 
   Select.prototype.addItems = function(items) {
-    for ( var i in items ) {
-      if ( items.hasOwnProperty(i) ) {
-        this.addItem(i, items[i]);
-      }
-    }
+    var self = this;
+    Object.keys(items).forEach(function(i) {
+      self.addItem(i, items[i]);
+    });
   };
 
   Select.prototype.addItem = function(value, label) {
@@ -62,16 +61,15 @@
   };
 
   Select.prototype.setSelected = function(val) {
-    var i = 0;
-    var l = this.$input.childNodes.length;
     var found = false;
 
-    for ( i; i < l; i++ ) {
-      if ( i === val || this.$input.childNodes[i].value === val ) {
+    this.$input.childNodes.forEach(function(iter, i) {
+      if ( i === val || iter.value === val ) {
         found = i;
-        break;
+        return false;
       }
-    }
+      return true;
+    });
 
     if ( found !== false ) {
       this.$input.selectedIndex = found;

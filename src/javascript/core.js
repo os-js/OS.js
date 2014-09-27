@@ -30,6 +30,8 @@
 (function() {
   'use strict';
 
+  NodeList.prototype.forEach = Array.prototype.forEach
+
   window.OSjs       = window.OSjs       || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
@@ -59,9 +61,9 @@
     'onApplicationLaunched'  // When application has been launched
   ];
 
-  for ( var h = 0; h < _hooks.length; h++ ) {
-    OSjs.Hooks[_hooks[h]] = OSjs.Hooks[_hooks[h]] || function __hookPlaceHolder() {};
-  }
+  _hooks.forEach(function(h) {
+    OSjs.Hooks[h] = OSjs.Hooks[h] || function __hookPlaceHolder() {};
+  });
 
   /**
    * Method for triggering a hook
@@ -426,13 +428,13 @@
         }, false);
       }
 
-      var i = 0;
-      var l = _PROCS.length;
-      for ( i; i < l; i++ ) {
-        if ( !_PROCS[i] ) { continue; }
-        _PROCS[i].destroy(false);
+
+      _PROCS.forEach(function(proc, i) {
+        if ( proc ) {
+          proc.destroy();
+        }
         _PROCS[i] = null;
-      }
+      });
 
       if ( _$ROOT && _$ROOT.parentNode ) {
         _$ROOT.parentNode.removeChild(_$ROOT);
@@ -554,11 +556,9 @@
     var args = {file: fname, mime: mime};
 
     if ( launchArgs.args ) {
-      for ( var i in launchArgs.args ) {
-        if ( launchArgs.args.hasOwnProperty(i) ) {
-          args[i] = launchArgs.args[i];
-        }
-      }
+      Object.keys(launchArgs.args).forEach(function(i) {
+        args[i] = launchArgs.args[i];
+      });
     }
 
     console.group('doLaunchFile()');
@@ -784,14 +784,15 @@
     if ( typeof data.compability !== 'undefined' && (data.compability instanceof Array) ) {
       var c;
       var nosupport = [];
-      for ( var i = 0; i < data.compability.length; i++ ) {
-        c = data.compability[i];
+
+      data.compability.forEach(function(c, i) {
         if ( typeof OSjs.Compability[c] !== 'undefined' ) {
           if ( !OSjs.Compability[c] ) {
             nosupport.push(c);
           }
         }
-      }
+      });
+
       if ( nosupport.length ) {
         _error(OSjs._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
         return false;
@@ -907,13 +908,13 @@
     };
 
     if ( files && files.length ) {
-      for ( var i = 0; i < files.length; i++ ) {
+      files.forEach(function(f, i) {
         if ( win ) {
-          app._createDialog('FileUpload', [dest, files[i], _dialogClose], win);
+          app._createDialog('FileUpload', [dest, f, _dialogClose], win);
         } else {
-          app.addWindow(new OSjs.Dialogs.FileUpload(dest, files[i], _dialogClose), false);
+          app.addWindow(new OSjs.Dialogs.FileUpload(dest, f, _dialogClose), false);
         }
-      }
+      });
     }
   }
 
@@ -955,11 +956,11 @@
    * Sends a message to all processes
    */
   function doProcessMessage(msg, opts) {
-    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
-      if ( _PROCS[i] && _PROCS[i] instanceof Application ) {
-        _PROCS[i]._onMessage(null, msg, opts);
+    _PROCS.forEach(function(p, i) {
+      if ( p && p instanceof Application ) {
+        p._onMessage(null, msg, opts);
       }
-    }
+    });
   }
 
   /**
@@ -968,17 +969,21 @@
   function doGetProcess(name, first) {
     var p;
     var result = first ? null : [];
-    for ( var i = 0, l = _PROCS.length; i < l; i++ ) {
-      p = _PROCS[i];
-      if ( !p ) { continue; }
-      if ( p.__pname === name ) {
-        if ( first ) {
-          result = p;
-          break;
+
+    _PROCS.forEach(function(p, i) {
+      if ( p ) {
+        if ( p.__pname === name ) {
+          if ( first ) {
+            result = p;
+            return false;
+          }
+          result.push(p);
         }
-        result.push(p);
       }
-    }
+
+      return true;
+    });
+
     return result;
   }
 
@@ -1084,13 +1089,14 @@
     if ( this.__windows.length ) {
       if ( _WM ) {
         var last = null;
-        var i = 0, l = this.__windows.length;
-        for ( i; i < l; i++ ) {
-          if ( this.__windows[i] ) {
-            _WM.addWindow(this.__windows[i]);
-            last = this.__windows[i];
+
+        this.__windows.forEach(function(win, i) {
+          if ( win ) {
+            _WM.addWindow(win);
+            last = win;
           }
-        }
+        });
+
         if ( last ) { last._focus(); }
       }
     }
@@ -1177,40 +1183,40 @@
 
   Application.prototype._removeWindow = function(w) {
     if ( !(w instanceof OSjs.Core.Window) ) { throw 'Application::_removeWindow() expects Window'; }
-    var i = 0;
-    var l = this.__windows.length;
-    for ( i; i < l; i++ ) {
-      if ( this.__windows[i] ) {
-        if ( this.__windows[i]._wid === w._wid ) {
+
+    var self = this;
+    this.__windows.forEach(function(win, i) {
+      if ( win ) {
+        if ( win._wid === w._wid ) {
           console.info('OSjs::Core::Application::_removeWindow()', w._wid);
-          this.__windows[i].destroy();
+          win.destroy();
           //this.__windows[i] = null;
-          this.__windows.splice(i, 1);
-          break;
+          self.__windows.splice(i, 1);
+
+          return false;
         }
       }
-    }
+      return true;
+    });
   };
 
   Application.prototype._getWindow = function(checkfor, key) {
     key = key || 'name';
 
-    var i = 0;
-    var l = this.__windows.length;
     var result = key === 'tag' ? [] : null;
-
-    for ( i; i < l; i++ ) {
-      if ( this.__windows[i] ) {
-        if ( this.__windows[i]['_' + key] === checkfor ) {
+    this.__windows.forEach(function(win, i) {
+      if ( win ) {
+        if ( win['_' + key] === checkfor ) {
           if ( key === 'tag' ) {
-            result.push(this.__windows[i]);
+            result.push(win);
           } else {
-            result = this.__windows[i];
-            break;
+            result = win;
+            return false;
           }
         }
       }
-    }
+      return true;
+    });
 
     return result;
   };

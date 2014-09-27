@@ -55,15 +55,13 @@
 
     function _onSuccess(data) {
       var info = [];
-      for ( var i in data ) {
-        if ( data.hasOwnProperty(i) ) {
-          if ( i === 'exif' ) {
-            info.push(i + ':\n\n' + data[i]);
-          } else {
-            info.push(i + ':\n\t' + data[i]);
-          }
+      Object.keys(data).forEach(function(i) {
+        if ( i === 'exif' ) {
+          info.push(i + ':\n\n' + data[i]);
+        } else {
+          info.push(i + ':\n\t' + data[i]);
         }
-      }
+      });
       txt.setValue(info.join('\n\n'));
     }
 

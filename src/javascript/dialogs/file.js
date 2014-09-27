@@ -147,20 +147,17 @@
 
       if ( this.filetypes ) {
         var types = {};
-        var val;
         var MIMEDescriptions = OSjs.Settings.DefaultConfig().MIME || {};
-        for ( var i in this.filetypes ) {
-          if ( this.filetypes.hasOwnProperty(i) ) {
-            val = this.filetypes[i];
-            types[i] = '';
 
-            if ( MIMEDescriptions[val] ) {
-              types[i] += MIMEDescriptions[val] + ' ';
-            }
+        Object.keys(this.filetypes).forEach(function(i) {
+          var val = this.filetypes[i];
 
-            types[i] += val + ' (.' + i + ')';
+          types[i] = '';
+          if ( MIMEDescriptions[val] ) {
+            types[i] += MIMEDescriptions[val] + ' ';
           }
-        }
+          types[i] += val + ' (.' + i + ')';
+        });
 
         this.$select = this._addGUIElement(new OSjs.GUI.Select('FileDialogFiletypeSelect', {onChange: function(sobj, sdom, val) {
           self.onSelectChange(val);
@@ -193,13 +190,12 @@
 
     // Force override of default MIME if we have a selector
     if ( this.filetypes && this.$select ) {
-      for ( var i in this.filetypes ) {
-        if ( this.filetypes.hasOwnProperty(i) ) {
-          this.filemime = i;
-          this.defaultFilemime = i;
-          break;
-        }
-      }
+      var self = this;
+      Object.keys(this.filetypes).forEach(function(i) {
+        self.filemime = i;
+        self.defaultFilemime = i;
+        return false;
+      });
     }
 
     if ( this.$fileView ) {

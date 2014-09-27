@@ -76,12 +76,11 @@
       return OSjs.API.getIcon(icon, appname);
     }
 
-    var image, icon, name, iter;
-    for ( var i = 0, l = this.list.length; i < l; i++ ) {
-      name = this.list[i];
-      icon = null;
-      if ( refs[this.list[i]] ) {
-        iter = refs[this.list[i]];
+    this.list.forEach(function(key, i) {
+      var icon = null;
+      var name = key;
+      if ( refs[key] ) {
+        var iter = refs[key];
         if ( iter ) {
           name = OSjs.Utils.format('{0} - {1}', (iter.name || name), (iter.description || name));
           icon = _createIcon(iter.icon, iter.path);
@@ -89,11 +88,11 @@
       }
 
       list.push({
-        key:   this.list[i],
+        key:   key,
         image: icon,
         name:  name
       });
-    }
+    });
 
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
     listView.setColumns([

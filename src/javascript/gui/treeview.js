@@ -142,25 +142,23 @@
         ul.className = 'Level_' + (level || 0);
       }
 
-      var li, iter, exp, ico, title, child, inner, j;
-      for ( var i = 0; i < list.length; i++ ) {
-        li = document.createElement('li');
-        inner = document.createElement('div');
+      list.forEach(function(iter, i) {
+        var exp, ico, title, child;
 
-        iter           = list[i]    || {};
-        iter.name      = iter.name  || 'treeviewitem_' + this.total;
+        var li = document.createElement('li');
+        var inner = document.createElement('div');
+
+        iter.name      = iter.name  || 'treeviewitem_' + self.total;
         iter.title     = iter.title || iter.name;
 
         li.className = 'Item Level_' + (level || 0);
         li.setAttribute('data-index', i);
 
-        for ( j in iter ) {
-          if ( iter.hasOwnProperty(j) ) {
-            if ( !OSjs.Utils.inArray(['items', 'title', 'icon'], j) ) {
-              li.setAttribute('data-' + j, iter[j]);
-            }
+        Object.keys(iter).forEach(function(j) {
+          if ( !OSjs.Utils.inArray(['items', 'title', 'icon'], j) ) {
+            li.setAttribute('data-' + j, iter[j]);
           }
-        }
+        });
         iter._element  = li;
 
         if ( iter.items && iter.items.length ) {
@@ -184,25 +182,25 @@
         title.appendChild(document.createTextNode(iter.title));
         inner.appendChild(title);
 
-        _bindEvents(inner, iter, !exp, this.singleClick);
+        _bindEvents(inner, iter, !exp, self.singleClick);
 
         li.appendChild(inner);
 
         if ( exp ) {
           child = _render.call(self, iter.items, li, null, level + 1);
-          if ( this.expandLevel === true || (level !== false && this.expandLevel >= level) ) {
+          if ( self.expandLevel === true || (level !== false && self.expandLevel >= level) ) {
             child.style.display = 'block';
           }
           _bindSubEvents(exp, child, li, iter);
         }
 
-        this.total++;
+        self.total++;
         ul.appendChild(li);
 
-        if ( this.onCreateItem ) {
-          this.onCreateItem(li, iter);
+        if ( self.onCreateItem ) {
+          self.onCreateItem(li, iter);
         }
-      }
+      });
 
       root.appendChild(ul);
 
@@ -244,22 +242,22 @@
     function _search(list) {
       var ret = null;
 
-      for ( var i in list ) {
-        if ( list.hasOwnProperty(i) ) {
-          if ( list[i][key] === val ) {
-            return list[i];
-          }
+      Object.keys(list).forEach(function(i) {
+        if ( list[i][key] === val ) {
+          ret = list[i];
+        }
 
-          if ( list[i].items ) {
-            ret = _search(list[i].items);
-            if ( ret ) {
-              return ret;
-            }
+        if ( !ret && list[i].items ) {
+          var tst = _search(list[i].items);
+          if ( tst ) {
+            ret = tst;
           }
         }
-      }
 
-      return null;
+        return ret ? false : true;
+      });
+
+      return ret;
     }
 
     return _search.call(this, this.data);

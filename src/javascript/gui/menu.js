@@ -89,58 +89,58 @@
 
       if ( list ) {
         var ul = document.createElement('ul');
-        var m, img, span, arrow, sub;
-        for ( var i = 0, l = list.length; i < l; i++ ) {
-          m           = document.createElement('li');
+
+        list.forEach(function(iter, i) {
+          var m       = document.createElement('li');
           m.className = '';
 
-          if ( !list[i].name ) {
-            list[i].name = ((''+list[i].title) || '').replace(/\s/, '_');
+          if ( !iter.name ) {
+            iter.name = ((''+iter.title) || '').replace(/\s/, '_');
           }
 
-          if ( list[i].name ) {
-            m.className = 'MenuItem_' + list[i].name;
+          if ( iter.name ) {
+            m.className = 'MenuItem_' + iter.name;
           }
 
-          if ( typeof list[i].onCreate === 'function' ) {
-            list[i].onCreate(m, list[i]);
+          if ( typeof iter.onCreate === 'function' ) {
+            iter.onCreate(m, iter);
           } else {
-            if ( list[i].tooltip ) {
-              m.title = list[i].tooltip;
+            if ( iter.tooltip ) {
+              m.title = iter.tooltip;
             }
-            if ( list[i].icon ) {
-              img     = document.createElement('img');
+            if ( iter.icon ) {
+              var img = document.createElement('img');
               img.alt = '';
-              img.src = OSjs.API.getThemeResource(list[i].icon, 'icon');
+              img.src = OSjs.API.getThemeResource(iter.icon, 'icon');
               m.appendChild(img);
             }
 
-            span            = document.createElement('span');
-            span.appendChild(document.createTextNode(list[i].title));
+            var span = document.createElement('span');
+            span.appendChild(document.createTextNode(iter.title));
             m.appendChild(span);
 
-            if ( list[i].disabled ) {
+            if ( iter.disabled ) {
               m.className += ' Disabled';
             }
           }
 
-          if ( list[i].menu ) {
+          if ( iter.menu ) {
             m.className += ' HasSubMenu';
 
-            arrow           = document.createElement('div');
+            var arrow       = document.createElement('div');
             arrow.className = 'Arrow';
 
-            sub = _createMenu(list[i].menu);
+            var sub = _createMenu(iter.menu);
             m.appendChild(sub);
             m.appendChild(arrow);
 
             _bindMouseOver(m, sub);
           } else {
-            _bindMouseClick(m, list[i]);
+            _bindMouseClick(m, iter);
           }
 
           ul.appendChild(m);
-        }
+        });
 
         el.appendChild(ul);
       }
@@ -155,11 +155,10 @@
     if ( this.$element ) {
       var ul = this.$element.getElementsByTagName('UL')[0];
       if ( ul ) {
-        var i = 0, l = ul.childNodes.length;
-        for ( i; i < l; i++ ) {
-          ul.childNodes[i].onclick = null;
-          ul.childNodes[i].onmousedown = null;
-        }
+        ul.childNodes.forEach(function(li, i) {
+          li.onclick = null;
+          li.onmousedown = null;
+        });
       }
       if ( this.$element.parentNode ) {
         this.$element.parentNode.removeChild(this.$element);

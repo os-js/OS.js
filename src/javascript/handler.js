@@ -314,45 +314,40 @@
       var args = app.__args;
       var wins = app.__windows;
       var data = {name: app.__name, args: args, windows: []};
-      var win;
 
-      for ( var i = 0, l = wins.length; i < l; i++ ) {
-        win = wins[i];
-        if ( !win || !win._properties.allow_session ) { continue; }
-
-        data.windows.push({
-          name      : win._name,
-          dimension : win._dimension,
-          position  : win._position,
-          state     : win._state
-        });
-      }
+      wins.forEach(function(win, i) {
+        if ( win && win._properties.allow_session ) {
+          data.windows.push({
+            name      : win._name,
+            dimension : win._dimension,
+            position  : win._position,
+            state     : win._state
+          });
+        }
+      });
 
       return data;
     }
 
     var data = [];
-    for ( var i = 0, l = procs.length; i < l; i++ ) {
-      if ( procs[i] && (procs[i] instanceof OSjs.Core.Application) ) {
-        data.push(getSessionSaveData(procs[i]));
+    procs.forEach(function(proc, i) {
+      if ( proc && (proc instanceof OSjs.Core.Application) ) {
+        data.push(getSessionSaveData(proc));
       }
-    }
-
+    });
     return data;
   };
 
   UserSession.prototype.loadSession = function(res, callback) {
     var list = [];
-    for ( var i = 0; i < res.length; i++ ) {
-      list.push({name: res[i].name, args: res[i].args, data: {windows: res[i].windows || []}});
-    }
+    res.forEach(function(iter, i) {
+      list.push({name: iter.name, args: iter.args, data: {windows: iter.windows || []}});
+    });
 
     OSjs.API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
       var data = ((queueData || {}).windows) || [];
-      var w, r;
-      for ( var i = 0, l = data.length; i < l; i++ ) {
-        r = data[i];
-        w = app._getWindow(r.name);
+      data.forEach(function(r, i) {
+        var w = app._getWindow(r.name);
         if ( w ) {
           w._move(r.position.x, r.position.y, true);
 
@@ -362,7 +357,7 @@
 
           console.info('UserSession::loadSession()->onSuccess()', 'Restored window \'' + r.name + '\' from session');
         }
-      }
+      });
     }, null, callback);
   };
 
@@ -407,12 +402,15 @@
   };
 
   ThemeManager.prototype.getTheme = function(name) {
-    for ( var i = 0; i < this.themes.length; i++ ) {
-      if ( this.themes[i].name === name ) {
-        return this.themes[i];
+    var result = null;
+    this.themes.forEach(function(theme, i) {
+      if ( theme.name === name ) {
+        result = theme;
+        return false;
       }
-    }
-    return null;
+      return true;
+    });
+    return result;
   };
 
   ThemeManager.prototype.getThemes = function() {
@@ -461,28 +459,26 @@
     console.debug('PackageManager::_setPackages()', result);
     var currLocale = OSjs.Locale.getLocale();
     var resulted = {};
-    var newIter;
-    for ( var i in result ) {
-      if ( result.hasOwnProperty(i) ) {
-        newIter = result[i];
-        if ( typeof newIter.names !== 'undefined' ) {
-          if ( newIter.names[currLocale] ) {
-            newIter.name = newIter.names[currLocale];
-          }
-        }
-        if ( typeof newIter.descriptions !== 'undefined' ) {
-          if ( newIter.descriptions[currLocale] ) {
-            newIter.description = newIter.descriptions[currLocale];
-          }
-        }
 
-        if ( !newIter.description ) {
-          newIter.description = newIter.name;
+    Object.keys(result).forEach(function(i) {
+      var newIter = result[i];
+      if ( typeof newIter.names !== 'undefined' ) {
+        if ( newIter.names[currLocale] ) {
+          newIter.name = newIter.names[currLocale];
         }
-
-        resulted[i] = newIter;
       }
-    }
+      if ( typeof newIter.descriptions !== 'undefined' ) {
+        if ( newIter.descriptions[currLocale] ) {
+          newIter.description = newIter.descriptions[currLocale];
+        }
+      }
+
+      if ( !newIter.description ) {
+        newIter.description = newIter.name;
+      }
+
+      resulted[i] = newIter;
+    });
 
     this.packages = resulted;
   };
@@ -508,19 +504,15 @@
    * Get packages by Mime support type
    */
   PackageManager.prototype.getPackagesByMime = function(mime) {
-    var i, a;
     var list = [];
-    for ( i in this.packages ) {
-      if ( this.packages.hasOwnProperty(i) ) {
-        a = this.packages[i];
-        if ( a && a.mime ) {
-          if ( Utils.checkAcceptMime(mime, a.mime) ) {
-            list.push(i);
-          }
+    Object.keys(this.packages).forEach(function(i) {
+      var a = this.packages[i];
+      if ( a && a.mime ) {
+        if ( Utils.checkAcceptMime(mime, a.mime) ) {
+          list.push(i);
         }
       }
-    }
-
+    });
     return list;
   };
 
@@ -789,11 +781,10 @@
   DefaultHandler.prototype.setUserSettings = function(name, values, callback) {
     callback = callback || function() {};
     if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        if ( name.hasOwnProperty(i) ) {
-          this.setSetting('userSettings', i, name[i], null, false);
-        }
-      }
+      var self = this;
+      Object.keys(name).forEach(function(i) {
+        self.setSetting('userSettings', i, name[i], null, false);
+      });
 
       this.saveSettings(function() {
         callback.call(this, true);

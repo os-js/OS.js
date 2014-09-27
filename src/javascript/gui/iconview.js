@@ -112,22 +112,18 @@
       }
     }
 
-    var i, l, iter, li, imgContainer, img, lblContainer, lbl;
-    var k, j;
-    for ( i = 0, l = this.data.length; i < l; i++ ) {
-      iter = this.data[i];
-      imgContainer = null;
+    this.data.forEach(function(iter, i) {
+      var imgContainer = null;
+      var img;
 
-      li = document.createElement('li');
+      var li = document.createElement('li');
       li.setAttribute('data-index', i);
 
-      for ( k in iter ) {
-        if ( iter.hasOwnProperty(k) ) {
-          if ( !OSjs.Utils.inArray(['title', 'icon'], k) ) {
-            li.setAttribute('data-' + k, iter[k]);
-          }
+      Object.keys(iter).forEach(function(k) {
+        if ( !OSjs.Utils.inArray(['title', 'icon'], k) ) {
+          li.setAttribute('data-' + k, iter[k]);
         }
-      }
+      });
 
       if ( iter.icon ) {
         imgContainer = document.createElement('div');
@@ -138,25 +134,26 @@
         imgContainer.appendChild(img);
       }
 
-      lblContainer = document.createElement('div');
-      lbl = document.createElement('span');
+      var lblContainer = document.createElement('div');
+      var lbl = document.createElement('span');
       lbl.appendChild(document.createTextNode(iter.label));
       lblContainer.appendChild(lbl);
 
-      _bindEvents(li, iter, this.singleClick);
+      _bindEvents(li, iter, self.singleClick);
 
       if ( imgContainer ) {
         li.appendChild(imgContainer);
       }
       li.appendChild(lblContainer);
 
-      this.$ul.appendChild(li);
+      self.$ul.appendChild(li);
 
-      this.onCreateItem(li, iter);
+      self.onCreateItem(li, iter);
 
-      this.data[i]._element = li;
-      this.data[i]._index   = i;
-    }
+      self.data[i]._element = li;
+      self.data[i]._index   = i;
+    });
+
   };
 
   IconView.prototype.render = function(data, reset) {

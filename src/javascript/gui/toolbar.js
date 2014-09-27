@@ -87,57 +87,59 @@
       };
     }
 
-    var el, btn, img, span, item;
-    for ( var i in this.items ) {
-      if ( this.items.hasOwnProperty(i) ) {
-        item = this.items[i] || null;
-        el = document.createElement('li');
+    Object.keys(this.items).forEach(function(i) {
+      var btn, img, span;
 
-        if ( !item ) {
-          el.className = 'Separator ' + i;
-          this.$container.appendChild(el);
-          continue;
-        }
+      var item = self.items[i] || null;
+      var el = document.createElement('li');
 
-        el.className = 'Item ' + i;
-        switch ( item.type ) {
-          case 'custom' :
-            btn = document.createElement('div');
-          break;
-
-          default :
-            btn = document.createElement('button');
-          break;
-        }
-
-        if ( typeof item.onCreate === 'function' ) {
-          item.onCreate.call(this, i, item, el, btn);
-        } else {
-          if ( item.icon ) {
-            img = document.createElement('img');
-            img.alt = ''; //item.icon;
-            img.src = item.icon;
-            btn.appendChild(img);
-            el.className += ' HasIcon';
-          }
-          if ( item.title ) {
-            span = document.createElement('span');
-            span.appendChild(document.createTextNode(item.title));
-            btn.appendChild(span);
-            el.className += ' HasTitle';
-          }
-        }
-
-        if ( item.tooltip && !btn.title ) {
-          btn.title = item.tooltip;
-        }
-
-        _bindMouseClick(btn, i, item);
-
-        el.appendChild(btn);
-        this.$container.appendChild(el);
+      if ( !item ) {
+        el.className = 'Separator ' + i;
+        self.$container.appendChild(el);
+        return true;
       }
-    }
+
+      el.className = 'Item ' + i;
+      switch ( item.type ) {
+        case 'custom' :
+          btn = document.createElement('div');
+        break;
+
+        default :
+          btn = document.createElement('button');
+        break;
+      }
+
+      if ( typeof item.onCreate === 'function' ) {
+        item.onCreate.call(self, i, item, el, btn);
+      } else {
+        if ( item.icon ) {
+          img = document.createElement('img');
+          img.alt = ''; //item.icon;
+          img.src = item.icon;
+          btn.appendChild(img);
+          el.className += ' HasIcon';
+        }
+        if ( item.title ) {
+          span = document.createElement('span');
+          span.appendChild(document.createTextNode(item.title));
+          btn.appendChild(span);
+          el.className += ' HasTitle';
+        }
+      }
+
+      if ( item.tooltip && !btn.title ) {
+        btn.title = item.tooltip;
+      }
+
+      _bindMouseClick(btn, i, item);
+
+      el.appendChild(btn);
+      self.$container.appendChild(el);
+
+      return true;
+    });
+
   };
 
   ToolBar.prototype._onItemSelect = function(ev, el, name, item) {
@@ -147,15 +149,17 @@
   };
 
   ToolBar.prototype.getItem = function(name) {
+    var result = null;
     if ( this.$container ) {
-      var children = this.$container.childNodes;
-      for ( var i = 0, l = children.length; i < l; i++ ) {
-        if ( (new RegExp(name)).test(children[i].className) ) {
-          return children[i];
+      this.$container.childNodes.forEach(function(child, i) {
+        if ( (new RegExp(name)).test(child.className) ) {
+          result = child;
+          return false;
         }
-      }
+        return true;
+      });
     }
-    return null;
+    return result;
   };
 
   /////////////////////////////////////////////////////////////////////////////

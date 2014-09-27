@@ -94,15 +94,15 @@
     this.$selectFont.className = 'SelectFont';
     this.$selectFont.setAttribute('size', '7');
 
-    for ( var f = 0; f < this.fonts.length; f++ ) {
-      option            = document.createElement('option');
+    this.fonts.forEach(function(font, f) {
+      var option        = document.createElement('option');
       option.value      = f;
-      option.appendChild(document.createTextNode(this.fonts[f]));
+      option.appendChild(document.createTextNode(font));
       this.$selectFont.appendChild(option);
-      if ( this.fontName.toLowerCase() === this.fonts[f].toLowerCase() ) {
+      if ( this.fontName.toLowerCase() === font.toLowerCase() ) {
         this.$selectFont.selectedIndex = f;
       }
-    }
+    });
 
     this._addEventListener(this.$selectFont, 'change', function(ev) {
       var i = this.selectedIndex;

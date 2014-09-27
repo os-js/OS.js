@@ -145,14 +145,13 @@
     console.log('OSjs::Core::WindowManager::destroy()');
 
     // Destroy all windows
-    var i = 0;
-    var l = this._windows.length;
-    for ( i; i < l; i++ ) {
-      if ( this._windows[i] !== null ) {
-        this._windows[i].destroy();
-        this._windows[i] = null;
+    var self = this;
+    this._windows.forEach(function(win, i) {
+      if ( win ) {
+        win.destroy();
+        self._windows[i] = null;
       }
-    }
+    });
     this._windows = [];
 
     _WM = null;
@@ -190,21 +189,17 @@
     }
     console.log('OSjs::Core::WindowManager::removeWindow()');
 
-    var i = 0;
-    var l = this._windows.length;
-    for ( i; i < l; i++ ) {
-      if ( !this._windows[i] ) { continue; }
-
-      if ( this._windows[i]._wid === w._wid ) {
-        if ( !this._windows[i] ) { break; }
-        this._windows[i] = null;
-        //this._windows.splice(i, 1);
-        return true;
-        //break;
+    var result = false;
+    var self = this;
+    this._windows.forEach(function(win, i) {
+      if ( win && win._wid === w._wid ) {
+        self._windows[i] = null;
+        result = true;
+        return false;
       }
-    }
-
-    return false;
+      return true;
+    });
+    return result;
   };
 
   WindowManager.prototype.applySettings = function(settings, force) {
@@ -284,13 +279,13 @@
       if ( typeof this._settings[k] !== 'undefined' ) {
         if ( (typeof this._settings[k] === 'object') && !(this._settings[k] instanceof Array) ) {
           if ( typeof v === 'object' ) {
-            for ( var i in v ) {
+            Object.keys(v).forEach(function(i) {
               if ( this._settings[k].hasOwnProperty(i) ) {
                 if ( v[i] !== null ) {
                   this._settings[k][i] = v[i];
                 }
               }
-            }
+            });
             return true;
           }
         } else {
@@ -822,11 +817,11 @@
 
   Window.prototype._inited = function() {
     if ( !this._rendered ) {
-      for ( var i = 0; i < this._guiElements.length; i++ ) {
-        if ( this._guiElements[i] ) {
-          this._guiElements[i].update();
+      this._guiElements.forEach(function(el, i) {
+        if ( el ) {
+          el.update();
         }
-      }
+      });
     }
     this._rendered = true;
   };
@@ -861,12 +856,12 @@
     this._parent = null;
 
     if ( this._guiElements && this._guiElements.length ) {
-      for ( var e = 0, s = this._guiElements.length; e < s; e++ ) {
-        if ( this._guiElements[e] ) {
-          this._guiElements[e].destroy();
-          this._guiElements[e] = null;
+      this._guiElements.forEach(function(el, i) {
+        if ( el ) {
+          el.destroy();
         }
-      }
+        self._guiElements[i] = null;
+      });
     }
     this._guiElements = [];
 
@@ -923,25 +918,25 @@
   Window.prototype._fireHook = function(k, args) {
     args = args || {};
     if ( this._hooks[k] ) {
-      for ( var i = 0, l = this._hooks[k].length; i < l; i++ ) {
-        if ( !this._hooks[k][i] ) { continue; }
-        try {
-          this._hooks[k][i].apply(this, args);
-        } catch ( e ) {
-          console.warn('Window::_fireHook() failed to run hook', k, i, e);
-          console.warn(e.stack);
-          //console.log(e, e.prototype);
-          //throw e;
+      this._hooks[k].forEach(function(hook, i) {
+        if ( hook ) {
+          try {
+            hook.apply(this, args);
+          } catch ( e ) {
+            console.warn('Window::_fireHook() failed to run hook', k, i, e);
+            console.warn(e.stack);
+            //console.log(e, e.prototype);
+            //throw e;
+          }
         }
-      }
+      });
     }
   };
 
   Window.prototype._removeGUIElement = function(gel) {
-    var iter, destroy;
-    for ( var i = 0; i < this._guiElements.length; i++ ) {
-      iter = this._guiElements[i];
-      destroy = false;
+    var self = this;
+    this._guiElements.forEach(function(iter, i) {
+      var destroy = false;
 
       if ( iter ) {
         if ( gel instanceof OSjs.GUI.GUIElement ) {
@@ -956,11 +951,13 @@
       }
 
       if ( destroy !== false ) {
-        this._guiElements[destroy].destroy();
-        this._guiElements[destroy] = null;
-        break;
+        self._guiElements[destroy].destroy();
+        self._guiElements[destroy] = null;
+        return false;
       }
-    }
+
+      return true;
+    });
   };
 
   Window.prototype._addGUIElement = function(gel, parentNode) {
@@ -1041,35 +1038,36 @@
   };
 
   Window.prototype._removeChild = function(w) {
-    var i = 0, l = this._children.length;
-    for ( i; i < l; i++ ) {
-      if ( this._children[i] && this._children[i]._wid === w._wid ) {
+    var self = this;
+    this._children.forEach(function(child, i) {
+      if ( child && child._wid === w._wid ) {
         console.info('OSjs::Core::Window::_removeChild()');
 
-        this._children[i].destroy();
-        this._children[i] = null;
-        break;
+        child.destroy();
+        self._children[i] = null;
+        return false;
       }
-    }
+      return true;
+    });
   };
 
   Window.prototype._getChild = function(id, key) {
     key = key || 'wid';
 
     var result = key === 'tag' ? [] : null;
-    var i = 0, l = this._children.length;
-    for ( i; i < l; i++ ) {
-      if ( this._children[i] ) {
+    this._children.forEach(function(child, i) {
+      if ( child ) {
         if ( key === 'tag' ) {
-          result.push(this._children[i]);
+          result.push(child);
         } else {
-          if ( this._children[i]['_' + key] === id ) {
-            result = this._children[i];
-            break;
+          if ( child['_' + key] === id ) {
+            result = child;
+            return false;
           }
         }
       }
-    }
+      return true;
+    });
     return result;
   };
 
@@ -1091,12 +1089,11 @@
 
   Window.prototype._removeChildren = function() {
     if ( this._children && this._children.length ) {
-      var i = 0, l = this._children.length;
-      for ( i; i < l; i++ ) {
-        if ( this._children[i] ) {
-          this._children[i].destroy();
+      this._children.forEach(function(child, i) {
+        if ( child ) {
+          child.destroy();
         }
-      }
+      });
     }
     this._children = [];
   };
@@ -1614,14 +1611,15 @@
   };
 
   Window.prototype._getGUIElement = function(n) {
-    var iter;
-    for ( var i = 0, l = this._guiElements.length; i < l; i++ ) {
-      iter = this._guiElements[i];
+    var result = null;
+    this._guiElements.forEach(function(iter, i) {
       if (iter && (iter.id === n || iter.name === n) ) {
-        return iter;
+        result = iter;
+        return false;
       }
-    }
-    return null;
+      return true;
+    });
+    return result;
   };
 
   Window.prototype._setTitle = function(t) {

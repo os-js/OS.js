@@ -200,13 +200,13 @@
 
     if ( canvas_supported ) {
       var test = ['2d', 'webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
-      for ( var i = 0; i < test.length; i++ ) {
+      test.forEach(function(tst, i) {
         try {
-          if ( !!canvas_supported.getContext(test[i]) ) {
-            compability.canvasContext.push(test[i]);
+          if ( !!canvas_supported.getContext(tst) ) {
+            compability.canvasContext.push(tst);
           }
         } catch ( eee ) {}
-      }
+      });
 
       compability.webgl = (compability.canvasContext.length > 1);
       if ( !compability.webgl ) {
@@ -303,13 +303,11 @@
       (b).toString( 16 )
     ];
 
-    for ( var i in hex ) {
-      if ( hex.hasOwnProperty(i) ) {
-        if ( hex[i].length === 1 ) {
-          hex[i] = '0' + hex[i];
-        }
+    Object.keys(hex).forEach(function(i) {
+      if ( hex[i].length === 1 ) {
+        hex[i] = '0' + hex[i];
       }
-    }
+    });
 
     return '#' + hex.join('').toUpperCase();
   };
@@ -603,15 +601,15 @@
   var _LOADED = {};
 
   var checkLoadedStyle = function(path) {
-    var lst = document.styleSheet || [];
-    if ( lst.length ) {
-      for ( var i = 0; i < lst.length; i++ ) {
-        if ( lst[i].href.indexOf(path) !== -1 ) {
-          return true;
-        }
+    var result = false;
+    (document.styleSheet || []).forEach(function(iter, i) {
+      if ( iter.href.indexOf(path) !== -1 ) {
+        result = true;
+        return false;
       }
-    }
-    return false;
+      return true;
+    });
+    return result;
   };
 
   var createStyle = function(src, callback, opts) {
@@ -694,9 +692,9 @@
 
     // Make a copy!
     var newList = [];
-    for ( var i = 0; i < list.length; i++ ) {
-      newList.push(list[i]);
-    }
+    list.forEach(function(iter, i) {
+      newList.push(iter);
+    });
 
     var count       = newList.length;
     var successes   = 0;

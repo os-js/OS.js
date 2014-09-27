@@ -125,11 +125,9 @@
       return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '16x16');
     }
 
-    var iter;
-    for ( var i = 0; i < list.length; i++ ) {
-      iter = list[i];
+    list.forEach(function(iter, i) {
       if ( skipDot && iter.filename === '..' ) {
-        continue;
+        return true;
       }
 
       iter.title = iter.filename;
@@ -143,7 +141,9 @@
         }];
       }
       fileList.push(iter);
-    }
+
+      return true;
+    });
 
     return fileList;
   };
@@ -271,13 +271,11 @@
       return OSjs.GUI.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '32x32');
     }
 
-    var iter;
-    for ( var i = 0; i < list.length; i++ ) {
-      iter = list[i];
+    list.forEach(function(iter, i) {
       iter.label = iter.filename;
       iter.icon  = _createIcon(iter);
       fileList.push(iter);
-    }
+    });
 
     IconView.prototype.render.apply(this, [fileList, true]);
   };
@@ -634,14 +632,14 @@
               }
             }
             if ( self.viewOpts.summary && res.result.length ) {
-              for ( var i = 0, l = res.result.length; i < l; i++ ) {
-                if ( res.result[i].filename !== '..' ) {
-                  if ( res.result[i].size ) {
-                    size += parseInt(res.result[i].size, 10);
+              res.result.forEach(function(s, i) {
+                if ( s.filename !== '..' ) {
+                  if ( s.size ) {
+                    size += parseInt(s.size, 10);
                   }
                   num++;
                 }
-              }
+              });
             }
 
             list = self.sortKey ? sortList(res.result, self.sortKey, self.sortDir) : res.result;

@@ -329,14 +329,15 @@
   GUIElement.prototype._fireHook = function(k, args) {
     args = args || {};
     if ( this._hooks[k] ) {
-      for ( var i = 0, l = this._hooks[k].length; i < l; i++ ) {
-        if ( !this._hooks[k][i] ) { continue; }
-        try {
-          this._hooks[k][i].apply(this, args);
-        } catch ( e ) {
-          console.warn('GUIElement::_fireHook() failed to run hook', k, i, e);
+      this._hooks[k].forEach(function(hook, i) {
+        if ( hook ) {
+          try {
+            hook.apply(this, args);
+          } catch ( e ) {
+            console.warn('GUIElement::_fireHook() failed to run hook', k, i, e);
+          }
         }
-      }
+      });
     }
   };
 
@@ -816,13 +817,15 @@
   };
 
   _DataView.prototype.getItemByKey = function(key, val) {
-    var data = this.data;
-    for ( var i = 0, l = data.length; i < l; i++ ) {
-      if ( data[i][key] === val ) {
-        return data[i];
+    var result = null;
+    this.data.forEach(function(iter, i) {
+      if ( iter[key] === val ) {
+        result = iter;
+        return false;
       }
-    }
-    return null;
+      return true;
+    });
+    return result;
   };
 
   _DataView.prototype.getItem = function(idx) {

@@ -182,11 +182,12 @@
   };
 
   Tabs.prototype.destroy = function() {
-    for ( var i in this.tabs ) {
-      if ( this.tabs.hasOwnProperty(i) && this.tabs[i] ) {
-        this.tabs[i].destroy();
+    var self = this;
+    Object.keys(this.tabs).forEach(function(i) {
+      if ( self.tabs[i] ) {
+        self.tabs[i].destroy();
       }
-    }
+    });
     this.tabs = {};
     GUIElement.prototype.destroy.apply(this, arguments);
 
@@ -226,12 +227,14 @@
     if ( !this.$tabs || !this.$container ) { return; }
 
     var found = false;
-    for ( var i in this.tabs ) {
-      if ( this.tabs.hasOwnProperty(i) && this.tabs[i] !== null ) {
+    var self = this;
+    Object.keys(this.tabs).forEach(function(i) {
+      if ( self.tabs[i] !== null ) {
         found = i;
-        break;
+        return false;
       }
-    }
+      return true;
+    });
 
     if ( found !== false ) {
       this.setTab(found);
