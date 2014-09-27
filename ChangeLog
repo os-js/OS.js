@@ -1,3 +1,11 @@
+# 2.0.0-alpha22
+
+* Added automated installer
+* Updated INSTALL instructions entirely
+* Core: Refactored to use forEach() loops instead of the traditional way
+* GUI: FileView bugfixes for iconview and treeview
+* Dialogs: File dialog bugfixes relating to GUIFileView
+
 # 2.0.0-alpha21
 
 Version bump - WARNING: API Change
