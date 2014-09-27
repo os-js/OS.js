@@ -20,45 +20,45 @@ Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
 
 This only requires a few simple steps
 
-### 1: Download and install OS.js
+```
+# Clone repository
+git pull https://github.com/andersevenrud/OS.js-v2.git
 
-Download the latest source from github or clone with git using:
+# Enter directory
+cd OS.js-v2
 
-`git pull https://github.com/andersevenrud/OS.js-v2.git`
+# Install node.js packages
+npm install
 
-#### Automatically install dependencies
+# Build OS.js
+make
+```
 
-Enter installation directory and run `npm install`
+# Setting up a server
 
-### 2: Build OS.js
+Make sure the _VFS_ directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.
 
-Simply run `make`
+Example for Apache on Ubuntu: `sudo chown -R www-data:www-data vfs/`
 
-### 3: Setting up a web-server
-
-#### PHP5 on Apache
+## PHP5 on Apache
 
 See `doc/apache.conf` for an example
 
 Or run `./obt apache-vhost` to generate one
 
-Make sure the _VFS_ directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.
-
-Example for Apache: `sudo chown -R www-data:www-data vfs/`
-
-#### PHP5 on Lighttpd
+## PHP5 on Lighttpd
 
 See `doc/lighttpd.conf` for an example
 
 Or run `./obt lighttpd-config` to generate one
 
-#### PHP5 Internal Web-server
+## PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
 
 * Production dist: `(cd dist; php -S localhost:8000 ../src/server-php/server.php)`
 * Developer dist: `(cd dist-dev; php -S localhost:8000 ../src/server-php/server.php)`
 
-#### Node.js
+## Node.js
 
 * Production dist: `node src/server-node/server.js`
 * Developer dist: `node src/server-node/server.js dist-dev`
