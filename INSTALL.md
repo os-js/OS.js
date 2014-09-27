@@ -5,10 +5,10 @@ Server runs on OSX, BSD and Linux (also Windows if you have Cygwin)
 
 Make sure you have these dependencies installed
 
-* *GNU Make*
-* *nodejs* and *npm*
-* *Git* _for the automated installer_
-* Optional: *java* to compress/minimize sources
+* **GNU Make**
+* **nodejs** and **npm**
+* **Git** _for the automated installer_
+* Optional: **java** to compress/minimize sources
 
 # Installation
 
