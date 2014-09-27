@@ -7,7 +7,7 @@ Make sure you have these dependencies installed
 
 * **GNU Make**
 * **nodejs** and **npm**
-* **Git** _for the automated installer_
+* Optional: **Git** for the automated installer
 * Optional: **java** to compress/minimize sources
 
 # Installation
