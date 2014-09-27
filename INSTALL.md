@@ -5,10 +5,10 @@ Server runs on OSX, BSD and Linux (also Windows if you have Cygwin)
 
 Make sure you have these dependencies installed
 
-* GNU Make
-* **Nodejs** and **npm**
-
-_To build compressed/minimized versions java is required because of vendor libraries_
+* *GNU Make*
+* *nodejs* and *npm*
+* *Git* _for the automated installer_
+* Optional: *java* to compress/minimize sources
 
 # Installation
 
@@ -20,12 +20,15 @@ Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
 
 This only requires a few simple steps
 
-```
+```shell
 # Clone repository
 git pull https://github.com/andersevenrud/OS.js-v2.git
-
-# Enter directory
 cd OS.js-v2
+
+# Or alternatively download the latest zip
+#wget https://github.com/andersevenrud/OS.js-v2/archive/master.zip
+#unzip master.zip
+#cd OS.js-v2-master
 
 # Install node.js packages
 npm install
