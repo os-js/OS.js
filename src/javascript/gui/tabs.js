@@ -52,6 +52,8 @@
     opts.onDestroy  = opts.onDestroy  || function() {};
     opts.onClose    = opts.onClose    || function() { return true; };
 
+    this.firstTab     = null;
+
     this.$c           = document.createElement('div');
     this.$c.className = 'TabContent';
 
@@ -226,23 +228,17 @@
   Tabs.prototype.selectFirstTab = function() {
     if ( !this.$tabs || !this.$container ) { return; }
 
-    var found = false;
-    var self = this;
-    Object.keys(this.tabs).forEach(function(i) {
-      if ( self.tabs[i] !== null ) {
-        found = i;
-        return false;
-      }
-      return true;
-    });
-
-    if ( found !== false ) {
-      this.setTab(found);
+    if ( this.firstTab ) {
+      this.setTab(this.firstTab);
     }
   };
 
   Tabs.prototype.addTab = function(name, opts) {
     var self  = this;
+
+    if ( !this.firstTab ) {
+      this.firstTab = name;
+    }
 
     console.debug('OSjs::GUI::Tabs::addTab()', name, opts);
 
