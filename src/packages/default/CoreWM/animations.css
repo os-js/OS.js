@@ -1,6 +1,32 @@
 
 /* Animations */
 
+@-webkit-keyframes windowloadinganim {
+  to {
+    -webkit-transform: rotate( 180deg );
+  }
+}
+@-moz-keyframes windowloadinganim {
+  to {
+    -moz-transform: rotate( 180deg );
+  }
+}
+@-ms-keyframes windowloadinganim {
+  to {
+    -ms-transform: rotate( 180deg );
+  }
+}
+@-o-keyframes windowloadinganim {
+  to {
+    -o-transform: rotate( 180deg );
+  }
+}
+@keyframes windowloadinganim {
+  to {
+    transform: rotate( 180deg );
+  }
+}
+
 @-webkit-keyframes show {
   50% { -webkit-transform: scale(1.03); }
 }

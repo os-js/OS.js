@@ -148,10 +148,6 @@
   position : absolute;
   left : 50%;
   top : 50%;
-  margin-left : -32px;
-  margin-top : -32px;
-  width : 64px;
-  height : 64px;
 }
 
 .Window > .WindowDisabledOverlay {
