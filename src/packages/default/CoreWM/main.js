@@ -344,9 +344,10 @@
     document.body.appendChild(this.iconView.getRoot());
 
     var self = this;
+    this.iconView.resize(this);
     setTimeout(function() {
       self.iconView.resize(self);
-    });
+    }, OSjs.API.getAnimDuration());
   };
 
   //

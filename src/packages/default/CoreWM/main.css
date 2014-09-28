@@ -301,15 +301,15 @@ body.WallpaperStrech {
 }
 
 .CoreWMDesktopIconView {
-  background : transparent;
+  background : transparent !important;
   position : absolute;
   top : 10px;
   left : 10px;
   right : 10px;
   bottom : 10px;
   z-index : 1;
-  border : 0 none;
-  box-shadow : none;
+  border : 0 none !important;
+  box-shadow : none !important;
 }
 /*
 .CoreWMDesktopIconView span {

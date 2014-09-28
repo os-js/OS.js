@@ -1673,5 +1673,6 @@
 
   // Common API functions
   OSjs.API.getWindowSpace     = getWindowSpace;
+  OSjs.API.getAnimDuration    = getAnimDuration;
 
 })(OSjs.API, OSjs.Core.Process);
