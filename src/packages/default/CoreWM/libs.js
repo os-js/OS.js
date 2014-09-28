@@ -1163,6 +1163,11 @@
           OSjs.API.launch(item.launch, item.args);
         }
       },
+      onViewContextMenu : function(ev) {
+        if ( wm ) {
+          wm.openDesktopMenu(ev);
+        }
+      },
       onContextMenu : function(ev, el, item) {
         var pos = {x: ev.clientX, y: ev.clientY};
         OSjs.GUI.createMenu([{
