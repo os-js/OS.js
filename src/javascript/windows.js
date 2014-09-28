@@ -212,11 +212,6 @@
       this._settings = OSjs.Utils.mergeObject(this._settings, settings);
     }
 
-    var loading = document.getElementById('Loading');
-    if ( loading ) {
-      loading.src = OSjs.API.getThemeResource('loading_small.gif', 'base');
-    }
-
     return true;
   };
 
