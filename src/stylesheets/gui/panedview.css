@@ -6,6 +6,14 @@
   position : relative;
   overflow : hidden;
 }
+.GUIPanedView.Horizontal {
+  min-height : 50px;
+  min-width : 200px;
+}
+.GUIPanedView.Vertical {
+  min-height : 200px;
+  min-width : 50px;
+}
 .GUIPanedView > ul {
   margin : 0;
   padding : 0;
@@ -42,22 +50,24 @@
        -o-flex-direction: column;
           flex-direction: column;
 }
-.GUIPanedView > ul > .View {
+.GUIPanedView > ul > li {
   overflow : hidden;
   position : relative;
 }
-.GUIPanedView > ul > .View:nth-child(3) {
+/*
+.GUIPanedView > ul > li:nth-child(3) {
   -webkit-flex: 1 0 auto;
      -moz-flex: 1 0 auto;
       -ms-flex: 1 0 auto;
        -o-flex: 1 0 auto;
           flex: 1 0 auto;
 }
-.GUIPanedView.Horizontal > ul > .View {
+  */
+.GUIPanedView.Horizontal > ul > li {
   height : 100%;
   min-width : 10px;
 }
-.GUIPanedView.Vertical > ul > .View {
+.GUIPanedView.Vertical > ul > li {
   width : 100%;
   min-height : 10px;
 }
@@ -72,4 +82,3 @@
 .GUIPanedView.Vertical > ul > .Separator {
   cursor : ns-resize;
 }
-

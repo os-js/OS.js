@@ -9,9 +9,6 @@
   bottom : 32px;
   right : 5px;
 }
-.Window_ApplicationFileManagerWindow .FileManagerPanedView .View.Side {
-  width : 140px;
-}
 .Window_ApplicationFileManagerWindow .FileManagerPanedView .View.File {
   min-width : 50%;
 }

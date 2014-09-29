@@ -27,13 +27,11 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement) {
+(function(GUIElement, Utils) {
   'use strict';
 
   /**
    * PanedView
-   * FIXME: PanedView - When more than two Views manual CSS is required
-   * FIXME: PanedView - Vertical orientation (direction)
    *
    * options: (See GUIElement for more)
    *  orientation     String        Orientation (Default = horizontal)
@@ -42,8 +40,9 @@
     opts            = opts            || {};
     opts.direction  = (opts.direction || opts.orientation)  || 'horizontal';
 
-    this.$container = null;
-    this.$separator = null;
+    this.viewcount   = 0;
+    this.views       = {};
+    this.$container  = null;
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -62,51 +61,105 @@
   PanedView.prototype.update = function() {
     GUIElement.prototype.update.apply(this, arguments);
 
+    var self  = this;
+    var views = this.views;
+    var count = this.viewcount;
+    var dir   = this.opts.direction;
+
+    function setCSS(el, flex, width, height) {
+      var css = Utils.format('{0} {1} {2}', flex, flex, 'auto');
+      el.style['webkitFlex'] = css;
+      el.style['mozFlex'] = css;
+      el.style['msFlex'] = css;
+      el.style['oFlex'] = css;
+      el.style['flex'] = css;
+      if ( width !== null ) {
+        el.style.width = width;
+      }
+      if ( height !== null ) {
+        el.style.height = height;
+      }
+    }
+
+    function createResizer(v, idx, sep) {
+      var startSize = 0;
+      var startMPos = 0;
+      var el        = self.$container.childNodes[idx-2];
+
+      function onResizeMove(ev) {
+        if ( dir === 'horizontal' ) {
+          var newW = startSize + (ev.clientX - startMPos);
+          setCSS(el, 0, newW + 'px', null);
+        } else {
+          var newH = startSize + (ev.clientY - startMPos);
+          setCSS(el, 0, null, newH + 'px');
+        }
+      }
+
+      function onResizeEnd(ev) {
+        document.removeEventListener('mouseup',   onResizeEnd,  false);
+        document.removeEventListener('mousemove', onResizeMove, false);
+      }
+
+      function onResizeStart(ev) {
+        startMPos = dir === 'horizontal' ? ev.clientX : ev.clientY;
+        startSize = dir === 'horizontal' ? el.offsetWidth : el.offsetHeight;
+
+        document.addEventListener('mouseup',    onResizeEnd,  false);
+        document.addEventListener('mousemove',  onResizeMove, false);
+      }
+
+      if ( el && sep ) {
+        self._addEventListener(sep, 'mousedown', function(ev) {
+          ev.preventDefault();
+          return onResizeStart(ev);
+        });
+      }
+    }
+
+    Object.keys(views).forEach(function(name) {
+      var v = views[name];
+      var el = v._element;
+      var sep = v._separator;
+      var idx = Utils.$index(el);
+
+      var initialWidth = typeof v.width === 'undefined' ? 'auto' : (v.width.toString() + 'px')
+      var flex = idx === 0 ? 0 : 1;
+      if ( count > 2 ) {
+        flex = 1;
+      }
+
+      setCSS(el, flex, initialWidth);
+
+      createResizer(v, idx, sep);
+    });
+
   };
 
-  PanedView.prototype.createView = function(name) {
-    var startW = 0;
-    var startX = 0;
-    var idx;
-    var column;
+  PanedView.prototype.Destroy = function() {
+    this.$container = null;
+    this.views      = {};
+    GUIElement.prototype.Destroy.apply(this, arguments);
+  };
 
-    function onResizeMove(ev) {
-      var newW = startW + (ev.clientX - startX);
-      column.style.width = newW + 'px';
-    }
+  PanedView.prototype.createView = function(name, opts) {
+    opts = opts || {};
 
-    function onResizeEnd(ev) {
-      document.removeEventListener('mouseup',   onResizeEnd,  false);
-      document.removeEventListener('mousemove', onResizeMove, false);
-    }
-
-    function onResizeStart(ev, col) {
-      startX = ev.clientX;
-      startW = column.offsetWidth;
-
-      document.addEventListener('mouseup',    onResizeEnd,  false);
-      document.addEventListener('mousemove',  onResizeMove, false);
-    }
-
-    if ( this.$container.childNodes.length % 2 ) {
-      var separator = document.createElement('li');
-      separator.className = 'Separator';
-
-      idx    = this.$container.childNodes.length - 1;
-      column = this.$container.childNodes[idx];
-
-      this._addEventListener(separator, 'mousedown', function(ev) {
-        ev.preventDefault();
-        return onResizeStart(ev);
-      });
-
-      this.$container.appendChild(separator);
-      this.$separator = separator;
-    }
-
+    var separator = null;
     var container = document.createElement('li');
     container.className = 'View ' + name;
+
+    if ( this.$container.childNodes.length % 2 ) {
+      separator = document.createElement('li');
+      separator.className = 'Separator';
+      this.$container.appendChild(separator);
+    }
+
     this.$container.appendChild(container);
+    this.views[name] = opts;
+    this.views[name]._element = container;
+    this.views[name]._separator = separator;
+    this.viewcount++;
     return container;
   };
 
@@ -128,4 +181,4 @@
 
   OSjs.GUI.PanedView    = PanedView;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.GUI.GUIElement, OSjs.Utils);

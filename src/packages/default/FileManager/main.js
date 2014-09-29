@@ -80,7 +80,7 @@
     var vs    = true;
 
     var panedView  = this._addGUIElement(new GUI.PanedView('FileManagerPanedView'), root);
-    var viewSide   = panedView.createView('Side');
+    var viewSide   = panedView.createView('Side', {width: 140});
     var viewFile   = panedView.createView('File');
     var sideView   = this._addGUIElement(new GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), viewSide);
     var fileView   = this._addGUIElement(new GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), viewFile);

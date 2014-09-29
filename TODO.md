@@ -19,7 +19,6 @@
 * _[GUI]_ Custom styling for GUICheckbox
 * _[GUI]_ Custom styling for GUIRadio
 * _[GUI]_ GUIScrollbar
-* _[GUI]_ GUIPanedView needs to be finished
 
 # Other
 * _[Misc]_ Offline resource pre-loading
