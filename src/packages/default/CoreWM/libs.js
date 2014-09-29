@@ -1185,7 +1185,7 @@
 
     // IMPORTANT
     this._addHook('blur', function() {
-      this.setSelected(null, null);
+      self.setSelected(null, null);
     });
   };
 

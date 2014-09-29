@@ -335,6 +335,7 @@
             hook.apply(this, args);
           } catch ( e ) {
             console.warn('GUIElement::_fireHook() failed to run hook', k, i, e);
+            console.warn(e.stack);
           }
         }
       });
