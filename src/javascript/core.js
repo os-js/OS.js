@@ -39,6 +39,7 @@
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
   OSjs.Locale       = OSjs.Locale       || {};
+  OSjs.VFS          = OSjs.VFS          || {};
   OSjs.Hooks        = {};
   OSjs.Core         = {};
   OSjs.API          = {};

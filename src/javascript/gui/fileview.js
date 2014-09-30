@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement, ListView, TreeView, IconView, _DataView) {
+(function(GUIElement, ListView, TreeView, IconView, _DataView, VFS) {
   'use strict';
 
   function createDragImage(ev, dragRoot) {
@@ -619,46 +619,41 @@
       return lst;
     }
 
-    OSjs.API.call('fs', {method: 'scandir', 'arguments' : [dir, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter}]}, function(res) {
-      if ( self.destroyed ) { return; }
-
-      var rendered  = false;
-      var num       = 0;
-      var size      = 0;
-      var list      = [];
-
-      if ( res ) {
-        if ( res.error ) {
-          onError.call(self, res.error, dir);
-          return;
-        } else {
-          if ( res.result /* && res.result.length*/ ) {
-            if ( self.locked ) {
-              if ( res.result.length > 0 ) {
-                if ( res.result[0].filename === '..' ) {
-                  res.result.shift();
-                }
-              }
-            }
-            if ( self.viewOpts.summary && res.result.length ) {
-              res.result.forEach(function(s, i) {
-                if ( s.filename !== '..' ) {
-                  if ( s.size ) {
-                    size += parseInt(s.size, 10);
-                  }
-                  num++;
-                }
-              });
-            }
-
-            list = self.sortKey ? sortList(res.result, self.sortKey, self.sortDir) : res.result;
-          }
-        }
+    var opts = {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter};
+    VFS.scandir(dir, opts, function(error, result) {
+      if ( error ) {
+        onError.call(self, error, dir);
+        return;
       }
 
-      onSuccess.call(self, list, dir, num, size);
-    }, function(error) {
-      onError.call(self, error, dir, true);
+      if ( result ) {
+        if ( self.destroyed ) { return; }
+
+        var rendered  = false;
+        var num       = 0;
+        var size      = 0;
+
+        if ( self.locked ) {
+          if ( result.length > 0 ) {
+            if ( result[0].filename === '..' ) {
+              result.shift();
+            }
+          }
+        }
+        if ( self.viewOpts.summary && result.length ) {
+          result.forEach(function(s, i) {
+            if ( s.filename !== '..' ) {
+              if ( s.size ) {
+                size += parseInt(s.size, 10);
+              }
+              num++;
+            }
+          });
+        }
+
+        var list = self.sortKey ? sortList(result, self.sortKey, self.sortDir) : result;
+        onSuccess.call(self, list, dir, num, size);
+      }
     });
   };
 
@@ -785,4 +780,4 @@
 
   OSjs.GUI.FileView     = FileView;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI.ListView, OSjs.GUI.TreeView, OSjs.GUI.IconView, OSjs.GUI._DataView);
+})(OSjs.GUI.GUIElement, OSjs.GUI.ListView, OSjs.GUI.TreeView, OSjs.GUI.IconView, OSjs.GUI._DataView, OSjs.VFS);

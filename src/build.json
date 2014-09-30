@@ -74,6 +74,7 @@
       "src/javascript/utils.js",
       "src/javascript/locales.js",
       "src/javascript/core.js",
+      "src/javascript/vfs.js",
       "src/javascript/windows.js",
       "src/javascript/helpers.js",
       "src/javascript/locales/en_EN.js",

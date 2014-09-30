@@ -388,7 +388,8 @@
      ]);
     sideView.setRows([
       {image: _getFileIcon('places/folder_home.png'), filename: 'Home', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
-      {image: _getFileIcon('places/folder-documents.png'), filename: 'Documents', mime: null, size: 0, type: 'link', path: '/Documents'}
+      {image: _getFileIcon('places/folder-documents.png'), filename: 'Documents', mime: null, size: 0, type: 'link', path: '/Documents'},
+      {image: _getFileIcon('places/folder-documents.png'), filename: 'Google Drive', mime: null, size: 0, type: 'link', path: 'google-drive:///'}
       /*,
       {image: _getFileIcon('places/folder.png'), filename: 'Temp', mime: null, size: 0, type: 'link', path: '/tmp'},
       {image: _getFileIcon('devices/drive-harddisk.png'), filename: 'Filesystem', mime: null, size: 0, type: 'link', path: '/'}*/
@@ -523,15 +524,14 @@
       callback(false);
     };
 
-    OSjs.API.call('fs', {'method': name, 'arguments': args}, function(res) {
-      if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        _onError(res.error || OSjs._('Fatal error'));
-      } else {
-        callback(res.result);
+    args.push(function(error, result) {
+      if ( error ) {
+        _onError(error);
+        return;
       }
-    }, function(error) {
-      _onError(error);
+      callback(result);
     });
+    OSjs.VFS[name].apply(OSjs.VFS, args);
   };
 
   ApplicationFileManager.prototype.move = function(src, dest, callback) {
@@ -555,6 +555,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationFileManager = ApplicationFileManager;
+  OSjs.Applications.ApplicationFileManager = OSjs.Applications.ApplicationFileManager || {};
+  OSjs.Applications.ApplicationFileManager.Plugins = OSjs.Applications.ApplicationFileManager.Plugins || {};
+  OSjs.Applications.ApplicationFileManager.Class = ApplicationFileManager;
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI);

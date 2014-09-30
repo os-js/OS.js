@@ -306,24 +306,17 @@
 
     this.onGetSaveData(function(data) {
       self.mainWindow._toggleLoading(true);
-      var wopts = [filename, data];
       var dataSource = self.onCheckDataSource(filename, mime);
-      if ( dataSource !== false ) {
-        wopts.push({dataSource: dataSource});
-      }
-
-      OSjs.API.call('fs', {'method': 'write', 'arguments': wopts}, function(res) {
-        if ( res && res.result ) {
-          _onSaveFinished(filename);
-        } else {
-          if ( res && res.error ) {
-            self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), res.error, 'doSave');
-            return;
-          }
-          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), OSjs._('Unknown error'), 'doSave');
+      OSjs.VFS.write(filename, data, dataSource, function(error, result) {
+        if ( error ) {
+          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), res.error, 'doSave');
+          return;
         }
-      }, function(error) {
-        self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), error, 'doSave');
+        if ( result === false ) {
+          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), OSjs._('Unknown error'), 'doSave');
+          return;
+        }
+        _onSaveFinished(filename);
       });
     }, filename, mime);
   };
@@ -416,24 +409,17 @@
         return;
       }
 
-      var ropts = [fname];
       var dataSource = self.onCheckDataSource(fname, fmime);
-      if ( dataSource !== false ) {
-        ropts.push({dataSource: dataSource});
-      }
-
-      OSjs.API.call('fs', {'method': 'read', 'arguments': ropts}, function(res) {
-        if ( res && res.result ) {
-          self._doOpen(fname, fmime, res.result);
-        } else {
-          if ( res && res.error ) {
-            self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), res.error, 'onOpen');
-            return;
-          }
-          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), OSjs._('Unknown error'), 'onOpen');
+      OSjs.VFS.read(fname, dataSource, function(error, result) {
+        if ( error ) {
+          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), error, 'onOpen');
+          return;
         }
-      }, function(error) {
-        self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), error, 'onOpen');
+        if ( result === false ) {
+          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), OSjs._('Unknown error'), 'onOpen');
+          return;
+        }
+        self._doOpen(fname, fmime, result);
       });
     }
 
@@ -472,6 +458,7 @@
     this._setArgument('file', name);
     this._setArgument('mime', mime || null);
   };
+
 
   //
   // EXPORTS

@@ -65,18 +65,12 @@
       txt.setValue(info.join('\n\n'));
     }
 
-    OSjs.API.call('fs', {method: 'fileinfo', 'arguments' : [this.path]}, function(res) {
-      if ( res ) {
-        if ( res.error ) {
-          _onError(res.error);
-          return;
-        }
-        if ( res.result ) {
-          _onSuccess(res.result);
-        }
+    OSjs.VFS.fileinfo(this.path, function(error, result) {
+      if ( error ) {
+        _onError(error);
+        return;
       }
-    }, function(error) {
-      _onError(error);
+      _onSuccess(result || {});
     });
 
     return root;

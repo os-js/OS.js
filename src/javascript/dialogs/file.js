@@ -266,21 +266,17 @@
     if ( this.type === 'open' ) {
       this.end('ok', path, mime);
     } else {
-      API.call('fs', {method: 'exists', 'arguments' : [path]}, function(res) {
-        res = res || {};
-
-        if ( res.error ) {
-          self.onError((res.error || 'Failed to stat file'), path);
+      OSjs.VFS.exists(path, function(error, result) {
+        if ( error ) {
+          self.onError((error || 'Failed to stat file'), path);
+          return;
+        }
+        if ( result ) {
+          _confirm.call(self);
           return;
         }
 
-        if ( res.result ) {
-          _confirm.call(self);
-        } else {
-          self.end('ok', path, mime);
-        }
-      }, function(error) {
-        self.onError(error, path);
+        self.end('ok', path, mime);
       });
     }
   };
