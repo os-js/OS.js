@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs) {
+(function(Application, Window, GUI, Dialogs, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -261,11 +261,16 @@
 
   AudioPlayer.prototype.open = function(filename) {
     if ( !this.$audio ) return false;
+    var self = this;
 
     this.currentFilename = filename;
-    this.$audio.src      = OSjs.API.getResourceURL(filename);
-    //this.$audio.volume   = .0;
-    this.$audio.play();
+    VFS.url(filename, function(error, result) {
+      if ( !error && self.$audio ) {
+        self.$audio.src      = result;
+        //self.$audio.volume   = .0;
+        self.$audio.play();
+      }
+    });
 
 
     return true;
@@ -824,4 +829,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationMusicPlayer = ApplicationMusicPlayer;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.VFS);

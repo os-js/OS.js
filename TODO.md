@@ -21,8 +21,7 @@
 * _[GUI]_ GUIScrollbar
 
 # Other
-* _[Misc]_ Offline resource pre-loading
-* _[Misc]_ Offline VFS
+* _[Misc]_ Offline VFS ?!
 * _[Themes]_ CSS Style scrollbars on webkit
 * _[Compability]_ Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
 

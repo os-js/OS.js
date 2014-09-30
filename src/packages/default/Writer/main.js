@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs) {
+(function(Application, Window, GUI, Dialogs, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -222,8 +222,11 @@
       {title: OSjs._('Image'), name: 'IMG', onClick: function() {
         self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, fname, fmime) {
           if ( btn !== 'ok' || !fmime.match(/^image/) ) return;
-          var src = OSjs.API.getResourceURL(fname);
-          self.command('insertImage', src);
+          VFS.url(fname, function(error, result) {
+            if ( !error ) {
+              self.command('insertImage', result);
+            }
+          });
         }]);
       }},
       {title: OSjs._('Link'), name: 'A', onClick: function() {
@@ -366,4 +369,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationWriter = ApplicationWriter;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs, OSjs.VFS);

@@ -930,18 +930,6 @@
     return root + '/' + name + '.css';
   };
 
-  /**
-   * Default method for getting path to a resource
-   */
-  DefaultHandler.prototype.getResourceURL = function(path) {
-    path = path || '';
-    if ( path.match(/^osjs\:\/\//) ) {
-      return path.replace(/^osjs\:\/\//, '');
-    }
-    var fsuri = this.getConfig('Core').FSURI;
-    return path ? (fsuri + path) : fsuri;
-  };
-
   //
   // EXPORTS
   //

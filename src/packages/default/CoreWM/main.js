@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(WindowManager, GUI) {
+(function(WindowManager, GUI, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -721,7 +721,7 @@
     var back      = 'none';
 
     if ( name && type.match(/^image/) ) {
-      back = 'url(\'' + OSjs.API.getResourceURL(name) + '\')';
+      back = name;
       switch ( type ) {
         case     'image' :        className = 'Normal';   break;
         case     'image-center':  className = 'Center';   break;
@@ -738,7 +738,17 @@
     var cn = document.body.className;
     var nc = 'Wallpaper' + className + ' ';
     document.body.className             = cn.replace(/(Wallpaper(.*)\s?)?/, nc);
-    document.body.style.backgroundImage = back;
+
+    if ( back !== 'none' ) {
+      VFS.url(back, function(error, result) {
+        if ( !error ) {
+          back = 'url(\'' + result + '\')';
+          document.body.style.backgroundImage = back;
+        }
+      });
+    } else {
+      document.body.style.backgroundImage = back;
+    }
 
     // Theme
     var theme = this.getSetting('theme');
@@ -904,4 +914,4 @@
   OSjs.Applications.CoreWM       = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Class = CoreWM;
 
-})(OSjs.Core.WindowManager, OSjs.GUI);
+})(OSjs.Core.WindowManager, OSjs.GUI, OSjs.VFS);

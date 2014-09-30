@@ -187,7 +187,7 @@
     });
   };
 
-  GoogleDrive.prototype.scandir = function(dir, callback) {
+  GoogleDrive.prototype.scandir = function(dir, opts, callback) {
     console.warn('GoogleDrive::scandir()', dir);
 
     function retrieveAllFiles(cb) {
@@ -222,66 +222,110 @@
           });
         });
       }
-      callback(result, list);
+      callback(false, result, list);
     });
   };
 
+  GoogleDrive.prototype.read = function(filename, callback) {
+    callback('Not implemented');
+  };
+
+  GoogleDrive.prototype.write = function(filename, data, callback) {
+    callback('Not implemented');
+  };
+
+  GoogleDrive.prototype.copy = function(src, dest, callback) {
+    callback('Not implemented');
+  };
+
+  GoogleDrive.prototype.move = function(src, dest, callback) {
+    callback('Not implemented');
+  };
+
+  GoogleDrive.prototype.unlink = function(src, callback) {
+    callback('Not implemented');
+  };
+
+  GoogleDrive.prototype.exists = function(src, callback) {
+    callback('Not implemented');
+  };
+
+  GoogleDrive.prototype.fileinfo = function(filename, callback) {
+    callback('Not implemented');
+  };
+
+  GoogleDrive.prototype.url = function(filename, callback) {
+    callback('Not implemented');
+  };
+
   /////////////////////////////////////////////////////////////////////////////
-  // VFS WRAPPERS
+  // VFS METHODS
   /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Scandir
    */
   OSjs.VFS.scandir = function(dir, opts, callback) {
-    opts = opts || {};
-
     if ( dir.match(/google-drive\:\/\//) ) {
-      getGoogleDrive(function(instance) {
-        instance.scandir(dir, function(result, raw) {
-          callback(false, result);
-        });
-      });
+      this._googledrive('scandir', [dir, opts], callback);
       return;
     }
-
-    this._raw('scandir', [dir, opts], callback);
+    opts = opts || {};
+    this._internal('scandir', [dir, opts], callback);
   };
 
   /**
    * Write File
    */
   OSjs.VFS.write = function(filename, data, dataSource, callback) {
+    if ( filename.match(/google-drive\:\/\//) ) {
+      this._googledrive('write', [filename, data], callback);
+      return;
+    }
+
     var wopts = [filename, data];
     if ( (dataSource !== null) && dataSource !== false ) {
       wopts.push({dataSource: dataSource});
     }
-    this._raw('write', wopts, callback);
+    this._internal('write', wopts, callback);
   };
 
   /**
    * Read File
    */
   OSjs.VFS.read = function(filename, dataSource, callback) {
+    if ( filename.match(/google-drive\:\/\//) ) {
+      this._googledrive('read', [filename], callback);
+      return;
+    }
+
     var ropts = [filename];
     if ( (dataSource !== null) && dataSource !== false ) {
       ropts.push({dataSource: dataSource});
     }
-    this._raw('read', ropts, callback);
+    this._internal('read', ropts, callback);
   };
 
   /**
    * Copy File
    */
   OSjs.VFS.copy = function(src, dest, callback) {
-    this._raw('copy', [src, dest], callback);
+    if ( src.match(/google-drive\:\/\//) || dst.match(/google-drive\:\/\//) ) {
+      callback('Not implemented');
+      return;
+    }
+    this._internal('copy', [src, dest], callback);
   };
 
   /**
    * Move File
    */
   OSjs.VFS.move = function(src, dest, callback) {
-    this._raw('move', [src, dest], callback);
+    if ( src.match(/google-drive\:\/\//) || dst.match(/google-drive\:\/\//) ) {
+      callback('Not implemented');
+      return;
+    }
+    this._internal('move', [src, dest], callback);
   };
   OSjs.VFS.rename = function(src, dest, callback) {
     OSjs.VFS.move.apply(this, arguments);
@@ -291,7 +335,11 @@
    * Delete File
    */
   OSjs.VFS.unlink = function(src, callback) {
-    this._raw('delete', [src], callback);
+    if ( src.match(/google-drive\:\/\//) ) {
+      this._googledrive('delete', [src], callback);
+      return;
+    }
+    this._internal('delete', [src], callback);
   };
   OSjs.VFS['delete'] = function(src, callback) {
     OSjs.VFS.unlink.apply(this, arguments);
@@ -301,27 +349,78 @@
    * Create Directory
    */
   OSjs.VFS.mkdir = function(dirname, callback) {
-    this._raw('mkdir', [dirname], callback);
+    if ( dirname.match(/google-drive\:\/\//) ) {
+      this._googledrive('mkdir', [dirname], callback);
+      return;
+    }
+    this._internal('mkdir', [dirname], callback);
   };
 
   /**
    * Check if file exists
    */
   OSjs.VFS.exists = function(filename, callback) {
-    this._raw('exists', [filename], callback);
+    if ( filename.match(/google-drive\:\/\//) ) {
+      this._googledrive('exists', [filename], callback);
+      return;
+    }
+    this._internal('exists', [filename], callback);
   };
 
   /**
    * Get file info
    */
   OSjs.VFS.fileinfo = function(filename, callback) {
-    this._raw('fileinfo', [filename], callback);
+    if ( filename.match(/google-drive\:\/\//) ) {
+      this._googledrive('fileinfo', [filename], callback);
+      return;
+    }
+    this._internal('fileinfo', [filename], callback);
   };
 
   /**
-   * Raw call
+   * Get file URL
    */
-  OSjs.VFS._raw = function(name, args, callback) {
+  OSjs.VFS.url = function(path, callback) {
+    path = path || '';
+    if ( path.match(/^osjs\:\/\//) ) {
+      callback(false, path.replace(/^osjs\:\/\//, ''));
+      return;
+    }
+    if ( path.match(/google-drive\:\/\//) ) {
+      this._googledrive('url', [path], callback);
+      return;
+    }
+
+    var handler = OSjs.API.getHandlerInstance();
+    var fsuri   = handler.getConfig('Core').FSURI;
+    callback(false, path ? (fsuri + path) : fsuri);
+  };
+
+  /**
+   * Google Drive call
+   */
+  OSjs.VFS._googledrive = function(name, args, callback) {
+    args = args || [];
+    callback = callback || {};
+
+    getGoogleDrive(function(instance) {
+      var fargs = args;
+      fargs.push(callback);
+
+      instance[name].apply(instance, fargs);
+
+      instance.scandir(dir, function(error, result, raw) {
+        callback(error, result);
+      });
+    });
+  };
+
+  /**
+   * Internal call
+   */
+  OSjs.VFS._internal = function(name, args, callback) {
+    args = args || [];
     callback = callback || {};
 
     OSjs.API.call('fs', {'method': name, 'arguments': args}, function(res) {

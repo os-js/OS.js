@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI) {
+(function(Application, Window, GUI, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,6 @@
     if ( t ) {
       this.frame.setScroll(false, false);
       try {
-        var src = OSjs.API.getResourceURL(t);
         if ( mime.match(/^image/) ) {
           el = document.createElement('img');
           el.alt = t;
@@ -124,14 +123,12 @@
               self._resizeTo(this.width, this.height, true, false, self.previewElement);
             }
           };
-          el.src = src;
 
           this.frame.setScroll(true, true);
         } else if ( mime.match(/^audio/) ) {
           el = document.createElement('audio');
           el.controls = "controls";
           el.autoplay = "autoplay";
-          el.src = src;
           this._resize(640, 480);
           this.loaded = true;
         } else if ( mime.match(/^video/) ) {
@@ -145,7 +142,14 @@
             }
             self.loaded = true;
           });
-          el.src = src;
+        }
+
+        if ( el ) {
+          VFS.url(t, function(error, result) {
+            if ( !error && el ) {
+              el.src = result;
+            }
+          });
         }
       } catch ( e ) {
         console.warn("Preview error: " + e);
@@ -211,4 +215,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationPreview = ApplicationPreview;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.VFS);
