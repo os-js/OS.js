@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog, Utils, API) {
+(function(StandardDialog, Utils, API, VFS) {
   'use strict';
 
   function replaceExtension(orig, rep) {
@@ -238,8 +238,11 @@
   /**
    * File has been chosen
    */
-  FileDialog.prototype.finishDialog = function(path, mime) {
+  FileDialog.prototype.finishDialog = function(file) {
     var self = this;
+
+    file = file || new VFS.File(_getSelected.call(this));
+    file.mime = file.mime || this.defaultMime;
 
     function _getSelected() {
       var result = '';
@@ -260,17 +263,14 @@
       return result;
     }
 
-    mime = mime || this.defaultFilemime;
-    path = path || _getSelected.call(this);
-
     function _confirm() {
       var wm = API.getWMInstance();
       if ( wm ) {
         this._toggleDisabled(true);
-        var conf = new OSjs.Dialogs.Confirm(OSjs._('Are you sure you want to overwrite the file \'{0}\'?', Utils.filename(path)), function(btn) {
+        var conf = new OSjs.Dialogs.Confirm(OSjs._('Are you sure you want to overwrite the file \'{0}\'?', Utils.filename(file.path)), function(btn) {
           self._toggleDisabled(false);
           if ( btn === 'ok' ) {
-            self.end('ok', path, mime);
+            self.end('ok', file);
           }
         });
         wm.addWindow(conf);
@@ -279,11 +279,11 @@
     }
 
     if ( this.type === 'open' ) {
-      this.end('ok', path, mime);
+      this.end('ok', file);
     } else {
-      OSjs.VFS.exists(path, function(error, result) {
+      OSjs.VFS.exists(file, function(error, result) {
         if ( error ) {
-          self.onError((error || 'Failed to stat file'), path);
+          self.onError((error || 'Failed to stat file'), file.path);
           return;
         }
         if ( result ) {
@@ -291,7 +291,7 @@
           return;
         }
 
-        self.end('ok', path, mime);
+        self.end('ok', file);
       });
     }
   };
@@ -460,7 +460,7 @@
 
     function _activated() {
       this.buttonConfirm.setDisabled(false);
-      this.finishDialog.call(this, item.path, item.mime);
+      this.finishDialog.call(this, item);
     }
 
     if ( this.select === 'file' && item.type === 'file' ) {
@@ -533,4 +533,4 @@
 
   OSjs.Dialogs.File               = FileDialog;
 
-})(OSjs.Dialogs.StandardDialog, OSjs.Utils, OSjs.API);
+})(OSjs.Dialogs.StandardDialog, OSjs.Utils, OSjs.API, OSjs.VFS);

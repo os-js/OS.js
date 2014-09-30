@@ -633,10 +633,10 @@
     var curn = input.value ? OSjs.Utils.filename(input.value) : '';
 
     var self = this;
-    this._appRef._createDialog('File', [{type: 'open', path: curf, filename: curn, mimes: ['^image']}, function(btn, fname, rmime) {
+    this._appRef._createDialog('File', [{type: 'open', path: curf, filename: curn, mimes: ['^image']}, function(btn, file) {
       self._focus();
       if ( btn !== 'ok' ) return;
-      input.setValue(fname);
+      input.setValue(file.path);
     }], this);
   };
 
@@ -1158,7 +1158,7 @@
       }],
       onActivate : function(ev, el, item) {
         if ( typeof item.launch === 'undefined' ) {
-          OSjs.API.open(item.args.path, item.args.mime);
+          OSjs.API.open(item.args);
         } else {
           OSjs.API.launch(item.launch, item.args);
         }

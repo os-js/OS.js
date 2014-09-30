@@ -943,10 +943,10 @@
     }
   };
 
-  ApplicationDraw.prototype.onOpen = function(filename, mime, data) {
+  ApplicationDraw.prototype.onOpen = function(file, data) {
     var self = this;
     var win = this.mainWindow;
-    var ext = OSjs.Utils.filext(filename).toLowerCase();
+    var ext = OSjs.Utils.filext(file.path).toLowerCase();
 
     var _openRaw = function() {
       var imageData = JSON.parse(data);
@@ -954,9 +954,9 @@
       var height = imageData.size[1] << 0;
       var layers = imageData.layers;
 
-      self._setCurrentFile(filename, mime);
+      self._setCurrentFile(file);
       if ( win ) {
-        win.setImage(filename, layers, width, height);
+        win.setImage(file.path, layers, width, height); // FIXME
       }
     };
 
@@ -966,10 +966,10 @@
         self.onError("Failed to load image data", "doOpen");
       };
       img.onload = function() {
-        self._setCurrentFile(filename, mime);
+        self._setCurrentFile(file);
 
         if ( win ) {
-          win.setImage(filename, this);
+          win.setImage(file.path, this);
         }
       };
       img.src = data;
@@ -987,9 +987,9 @@
     }
   };
 
-  ApplicationDraw.prototype.onSave = function(filename, mime, data) {
+  ApplicationDraw.prototype.onSave = function(file, data) {
     if ( this.mainWindow ) {
-      this.mainWindow.setImageName(filename);
+      this.mainWindow.setImageName(file.path);
       this.mainWindow._focus();
     }
   };
@@ -1001,12 +1001,12 @@
     return Application.prototype.onError.apply(this, arguments);
   };
 
-  ApplicationDraw.prototype.onCheckDataSource = function(filename, mime) {
-    var ext = OSjs.Utils.filext(filename).toLowerCase();
+  ApplicationDraw.prototype.onCheckDataSource = function(file) {
+    var ext = OSjs.Utils.filext(file.path).toLowerCase();
     return ext !== "odraw";
   };
 
-  ApplicationDraw.prototype.onGetSaveData = function(callback, filename, mime) {
+  ApplicationDraw.prototype.onGetSaveData = function(callback, file) {
     if ( !this.mainWindow ) {
       callback(null);
       return;
@@ -1018,8 +1018,8 @@
       return;
     }
 
-    var ext = OSjs.Utils.filext(filename).toLowerCase();
-    var data = ext === "odraw" ? image.getSaveData() : image.getData(mime);
+    var ext = OSjs.Utils.filext(file.path).toLowerCase();
+    var data = ext === "odraw" ? image.getSaveData() : image.getData(file.mime);
 
     callback(data);
   };

@@ -33,9 +33,9 @@
   /**
    * Application Chooser Dialog
    */
-  var ApplicationChooserDialog = function(filename, mime, list, onClose) {
-    this.filename     = OSjs.Utils.filename(filename);
-    this.mime         = mime;
+  var ApplicationChooserDialog = function(file, list, onClose) {
+    this.filename     = OSjs.Utils.filename(file.path);
+    this.mime         = file.mime;
     this.list         = list || [];
     this.selectedApp  = null;
     this.useDefault   = false;

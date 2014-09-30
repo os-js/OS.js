@@ -71,7 +71,7 @@
     ]);
 
     menuBar.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFilename ? false : true);
+      menu.setItemDisabled("Save", app.currentFile ? false : true);
     };
 
     this._addGUIElement(new GUI.Textarea('TextpadTextarea'), root);
@@ -157,18 +157,18 @@
     }
   };
 
-  ApplicationTextpad.prototype.onOpen = function(filename, mime, data) {
+  ApplicationTextpad.prototype.onOpen = function(file, data) {
     if ( this.mainWindow ) {
       this.mainWindow.setChanged(false);
-      this.mainWindow.setText(data, filename);
+      this.mainWindow.setText(data, file.path);
       this.mainWindow._focus();
     }
   };
 
-  ApplicationTextpad.prototype.onSave = function(filename, mime, data) {
+  ApplicationTextpad.prototype.onSave = function(file, data) {
     if ( this.mainWindow ) {
       this.mainWindow.setChanged(false);
-      this.mainWindow.setTitle(filename);
+      this.mainWindow.setTitle(file.path);
       this.mainWindow._focus();
     }
   };

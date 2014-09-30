@@ -220,9 +220,9 @@
         self.command('insertUnorderedList');
       }},
       {title: OSjs._('Image'), name: 'IMG', onClick: function() {
-        self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, fname, fmime) {
+        self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, file) {
           if ( btn !== 'ok' || !fmime.match(/^image/) ) return;
-          VFS.url(fname, function(error, result) {
+          VFS.url(file, function(error, result) {
             if ( !error ) {
               self.command('insertImage', result);
             }
@@ -238,7 +238,7 @@
     ]);
 
     mb.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFilename ? false : true);
+      menu.setItemDisabled("Save", app.currentFile ? false : true);
     };
 
     _setFont(self.font, self.fontSize);
@@ -338,17 +338,17 @@
     }
   };
 
-  ApplicationWriter.prototype.onOpen = function(filename, mime, data) {
+  ApplicationWriter.prototype.onOpen = function(file, data) {
     if ( this.mainWindow ) {
-      this.mainWindow.update(filename, data);
+      this.mainWindow.update(file.path, data);
       this.mainWindow.setChanged(false);
       this.mainWindow._focus();
     }
   };
 
-  ApplicationWriter.prototype.onSave = function(filename, mime, data) {
+  ApplicationWriter.prototype.onSave = function(file, data) {
     if ( this.mainWindow ) {
-      this.mainWindow.update(filename);
+      this.mainWindow.update(file.path);
       this.mainWindow.setChanged(false);
       this.mainWindow._focus();
     }

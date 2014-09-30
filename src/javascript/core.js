@@ -570,18 +570,17 @@
   /**
    * Open a file
    *
-   * @param   String          fname         Full path to file
-   * @param   String          mime          File MIME type
+   * @param   Object          file          File
    * @param   Object          launchArgs    Arguments to send to process launch function
    * @see     doLaunchProcess
    * @return  void
    */
-  function doLaunchFile(fname, mime, launchArgs) {
+  function doLaunchFile(file, launchArgs) {
     launchArgs = launchArgs || {};
-    if ( !fname ) { throw 'Cannot doLaunchFile() without a filename'; }
-    if ( !mime )  { throw 'Cannot doLaunchFile() without a mime type'; }
+    if ( !file.path ) { throw 'Cannot doLaunchFile() without a path'; }
+    if ( !file.mime )  { throw 'Cannot doLaunchFile() without a mime type'; }
 
-    var args = {file: fname, mime: mime};
+    var args = {file: file};
 
     if ( launchArgs.args ) {
       Object.keys(launchArgs.args).forEach(function(i) {
@@ -589,9 +588,7 @@
       });
     }
 
-    console.group('doLaunchFile()');
-    console.log('Filename', fname);
-    console.log('MIME', mime);
+    console.group('doLaunchFile()', file);
 
     function _launch(name) {
       if ( name ) {
@@ -608,26 +605,26 @@
           _launch(app[0]);
         } else {
           if ( _WM ) {
-            _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(fname, mime, app, function(btn, appname, setDefault) {
+            _WM.addWindow(new OSjs.Dialogs.ApplicationChooser(file, app, function(btn, appname, setDefault) {
               if ( btn !== 'ok' ) { return; }
               _launch(appname);
 
-              _HANDLER.setDefaultApplication(mime, setDefault ? appname : null);
+              _HANDLER.setDefaultApplication(file.mime, setDefault ? appname : null);
             }));
           } else {
             OSjs.API.error(OSjs._('ERR_FILE_OPEN'),
-                           OSjs._('ERR_FILE_OPEN_FMT', fname),
+                           OSjs._('ERR_FILE_OPEN_FMT', file.path),
                            OSjs._('No window manager is running') );
           }
         }
       } else {
         OSjs.API.error(OSjs._('ERR_FILE_OPEN'),
-                       OSjs._('ERR_FILE_OPEN_FMT', fname),
-                       OSjs._('ERR_APP_MIME_NOT_FOUND_FMT', mime) );
+                       OSjs._('ERR_FILE_OPEN_FMT', file.path),
+                       OSjs._('ERR_APP_MIME_NOT_FOUND_FMT', file.mime) );
       }
     }
 
-    _HANDLER.getApplicationNameByMime(mime, fname, launchArgs.forceList, _onDone);
+    _HANDLER.getApplicationNameByMime(file.mime, file.path, launchArgs.forceList, _onDone); // FIXME - Refactor
   }
 
   /**
@@ -714,7 +711,7 @@
                   OSjs._('ERR_APP_LAUNCH_FAILED_FMT', n),
                   msg, exception, true);
 
-      onError(msg, n, arg);
+      onError(msg, n, arg, exception);
     }
 
     function _callback(result) {
@@ -758,6 +755,7 @@
               a = null;
             } catch ( e ) {
               console.warn('Something awful happened when trying to clean up failed launch Oo', e);
+              console.warn(e.stack);
             }
           }
         } else {
@@ -778,7 +776,7 @@
             });
           } catch ( e ) {
             console.warn('Error on init() application', e, e.stack);
-            _error(OSjs._('ERR_APP_INIT_FAILED_FMT', n, e), e);
+            _error(OSjs._('ERR_APP_INIT_FAILED_FMT', n, e.toString()), e);
           }
         }
       } else {
@@ -854,8 +852,11 @@
       _onNext();
     }
 
-    function _onError(err, appName, appArgs) {
+    function _onError(err, appName, appArgs, exc) {
       console.warn('doLaunchProcessList() _onError()', err);
+      if ( exc ) {
+        console.warn(exc, exc.stack);
+      }
       onError(err, appName, appArgs);
       _onNext();
     }

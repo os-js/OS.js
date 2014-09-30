@@ -423,9 +423,9 @@
     };
 
     var _openFile = function(append) {
-      app._createDialog('File', [{type: 'open', mimes: ['^audio']}, function(btn, fname, fmime) {
+      app._createDialog('File', [{type: 'open', mimes: ['^audio']}, function(btn, file) {
         if ( btn !== 'ok' ) return;
-        app.play(fname, fmime, append);
+        app.play(file.path, file.mime, append);
       }], self);
     };
 
@@ -773,10 +773,9 @@
 
     this._addWindow(new ApplicationMusicPlayerWindow(this, metadata));
 
-    var path = this._getArgument('file');
-    var mime = this._getArgument('mime');
-    if ( path ) {
-      this.play(path, mime, false);
+    var file = this._getArgument('file');
+    if ( file && (typeof file === 'object') ) {
+      this.play(file.path, file.mime, false);
     }
   };
 

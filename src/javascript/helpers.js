@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-(function(Application, Window, Utils) {
+(function(Application, Window, Utils, VFS) {
   'use strict';
 
   window.OSjs       = window.OSjs       || {};
@@ -109,8 +109,7 @@
     Application.apply(this, arguments);
 
     // These are reserved
-    this.currentFilename     = null;
-    this.currentMime         = null;
+    this.currentFile         = null;
     this.mainWindow          = null;
     this.defaultCheckChange  = false;
     this.dialogOptions       = {
@@ -141,10 +140,11 @@
     Application.prototype.init.apply(this, arguments);
 
     // Get launch/restore argument(s)
-    this.currentFilename = this._getArgument('file');
-    this.currentMime     = this._getArgument('mime');
-    if ( this.currentFilename ) {
-      this.action('open', this.currentFilename, this.currentMime);
+
+    var file = this._getArgument('file');
+    if ( file && (typeof file === 'object') ) {
+      this.currentFile = new VFS.File(file);
+      this.action('open', this.currentFile);
     }
   };
 
@@ -166,15 +166,15 @@
     // IMPLEMENT THIS IN YOUR CLASS
   };
 
-  DefaultApplication.prototype.onOpen = function(filename, mime, data) {
+  DefaultApplication.prototype.onOpen = function(file, data) {
     // IMPLEMENT THIS IN YOUR CLASS
   };
 
-  DefaultApplication.prototype.onSave = function(filename, mime, data) {
+  DefaultApplication.prototype.onSave = function(file, data) {
     // IMPLEMENT THIS IN YOUR CLASS
   };
 
-  DefaultApplication.prototype.onGetSaveData = function(callback, filename, mime) {
+  DefaultApplication.prototype.onGetSaveData = function(callback, item) {
     // IMPLEMENT THIS IN YOUR CLASS
     callback(null);
   };
@@ -200,7 +200,7 @@
     }
   };
 
-  DefaultApplication.prototype.onCheckDataSource = function(filename, mime) {
+  DefaultApplication.prototype.onCheckDataSource = function(file) {
     return false;
   };
 
@@ -227,7 +227,7 @@
   /**
    * Perform an external action
    */
-  DefaultApplication.prototype.action = function(action, filename, mime) {
+  DefaultApplication.prototype.action = function(action, file) {
     var self = this;
 
     switch ( action ) {
@@ -242,17 +242,17 @@
       case 'open' :
         this.onCheckChanged(function(discard) {
           if ( discard ) {
-            self._onOpen(filename, mime);
+            self._onOpen(file);
           }
         });
       break;
 
       case 'save' :
-        self._onSave(filename, mime);
+        self._onSave(file);
       break;
 
       case 'saveas' :
-        self._onSaveAs(filename, mime);
+        self._onSaveAs(file);
       break;
 
       case 'close' :
@@ -265,11 +265,9 @@
   /**
    * Open given file
    */
-  DefaultApplication.prototype._doOpen = function(filename, mime, data) {
-    this._setCurrentFile(filename, mime);
-
-    this.onOpen(filename, mime, data);
-
+  DefaultApplication.prototype._doOpen = function(file, data) {
+    this._setCurrentFile(file);
+    this.onOpen(file, data);
     if ( this.mainWindow ) {
       this.mainWindow._toggleLoading(false);
     }
@@ -278,47 +276,49 @@
   /**
    * Save to given file
    */
-  DefaultApplication.prototype._doSave = function(filename, mime) {
+  DefaultApplication.prototype._doSave = function(file) {
     var self = this;
-    var ext = OSjs.Utils.filext(filename).toLowerCase();
+    var ext = Utils.filext(file.path).toLowerCase();
 
-    if ( !mime && this.currentMime ) {
-      mime = this.currentMime;
+    if ( !file.mime && this.currentFile ) {
+      file.mime = this.currentFile.mime;
     }
 
     if ( this.dialogOptions.filetypes !== null ) {
       var filetypes = this.dialogOptions.filetypes;
       if ( filetypes ) {
         if ( filetypes[ext] ) {
-          mime = filetypes[ext];
+          file.mime = filetypes[ext];
         }
       }
     }
 
-    function _onSaveFinished(name) {
-      self.onSave(name, mime);
+    function _onSaveFinished(item) {
+      self.onSave(item);
       self.mainWindow._toggleLoading(false);
-      self._setCurrentFile(name, mime);
+      self._setCurrentFile(item);
 
-      OSjs.API.message('vfs', {type: 'write', path: OSjs.Utils.dirname(name), filename: OSjs.Utils.filename(name), source: self.__pid});
+      OSjs.API.message('vfs', {type: 'write', path: Utils.dirname(item.path), filename: item.filename, source: self.__pid});
     }
 
 
     this.onGetSaveData(function(data) {
       self.mainWindow._toggleLoading(true);
-      var dataSource = self.onCheckDataSource(filename, mime);
-      OSjs.VFS.write(filename, data, dataSource, function(error, result) {
+      var item = new VFS.File(file);
+      item._opts = {dataSource: self.onCheckDataSource(file)};
+
+      VFS.write(item, data, function(error, result) {
         if ( error ) {
-          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), res.error, 'doSave');
+          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), res.error, 'doSave');
           return;
         }
         if ( result === false ) {
-          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', filename), OSjs._('Unknown error'), 'doSave');
+          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), OSjs._('Unknown error'), 'doSave');
           return;
         }
-        _onSaveFinished(filename);
+        _onSaveFinished(item);
       });
-    }, filename, mime);
+    }, file);
   };
 
   /**
@@ -327,7 +327,7 @@
   DefaultApplication.prototype._onError = function(title, message, action) {
     action = action || 'unknown';
 
-    this._setCurrentFile(null, null);
+    this._setCurrentFile(null);
 
     if ( !this.onError(title, message, action) ) {
       var t = OSjs._('ERR_GENERIC_APP_FMT', this.__label);
@@ -346,97 +346,106 @@
   /**
    * Wrapper for save action
    */
-  DefaultApplication.prototype._onSave = function(filename, mime) {
-    filename = filename || this.currentFilename;
-    mime = mime || this.currentMime;
+  DefaultApplication.prototype._onSave = function(file) {
+    file = file || this.currentFile;
 
-    if ( filename ) {
-      this._doSave(filename, mime);
+    if ( file ) {
+      if ( !file.path && this.currentFile ) {
+        file.path = this.currentFile.path;
+      }
+      if ( !file.mime && this.currentFile ) {
+        file.mime = this.currentFile.mime;
+      }
+      this._doSave(file);
     }
   };
 
   /**
    * Wrapper for save as action
    */
-  DefaultApplication.prototype._onSaveAs = function(filename, mime) {
+  DefaultApplication.prototype._onSaveAs = function(file) {
+    file = file || this.currentFile;
+
     var self = this;
-    filename = filename || this.currentFilename;
-    mime = mime || this.currentMime;
+    if ( file ) {
+      if ( !file.path && this.currentFile ) {
+        file.path = this.currentFile.path;
+      }
+      if ( !file.mime && this.currentFile ) {
+        file.mime = this.currentFile.mime;
+      }
 
-    var dir = filename ? Utils.dirname(filename) : null;
-    var fnm = filename ? Utils.filename(filename) : null;
+      if ( this.mainWindow ) {
+        this.mainWindow._toggleDisabled(true);
+        var opt = Utils.cloneObject(this.dialogOptions);
+        opt.type =  'save';
+        opt.path = Utils.dirname(file.path);
+        opt.filename = file.filename;
 
-
-    if ( this.mainWindow ) {
-      this.mainWindow._toggleDisabled(true);
-      var opt = Utils.cloneObject(this.dialogOptions);
-      opt.type =  'save';
-      opt.path = dir;
-      opt.filename = fnm;
-
-      this._createDialog('File', [opt, function(btn, fname, fmime) {
-        if ( self.mainWindow ) {
-          self.mainWindow._toggleDisabled(false);
-        }
-        if ( btn !== 'ok' ) { return; }
-        self._doSave(fname, fmime);
-      }], this.mainWindow);
+        this._createDialog('File', [opt, function(btn, item) { // FIXME
+          if ( self.mainWindow ) {
+            self.mainWindow._toggleDisabled(false);
+          }
+          if ( btn !== 'ok' ) { return; }
+          self._doSave(item);
+        }], this.mainWindow);
+      }
     }
   };
 
   /**
    * Wrapper for open action
    */
-  DefaultApplication.prototype._onOpen = function(filename, mime) {
+  DefaultApplication.prototype._onOpen = function(file) {
     var self = this;
 
     var opt = Utils.cloneObject(this.dialogOptions);
     opt.type =  'open';
 
-    function _openFile(fname, fmime) {
-      if ( !Utils.checkAcceptMime(fmime, opt.mimes) ) {
-        OSjs.API.error(self.__label, OSjs._('ERR_FILE_APP_OPEN'), OSjs._('ERR_FILE_APP_OPEN_FMT', filename, mime));
+    function _openFile(item) {
+      if ( !Utils.checkAcceptMime(item.mime, opt.mimes) ) {
+        OSjs.API.error(self.__label, OSjs._('ERR_FILE_APP_OPEN'), OSjs._('ERR_FILE_APP_OPEN_FMT', item.path, item.mime));
         return;
       }
 
-      var ext = OSjs.Utils.filext(fname).toLowerCase();
+      var ext = Utils.filext(item.path).toLowerCase();
 
       if ( self.mainWindow ) {
         self.mainWindow._toggleLoading(true);
       }
       if ( !opt.read ) {
-        self._doOpen(fname, fmime, null);
+        self._doOpen(item, null);
         return;
       }
 
-      var dataSource = self.onCheckDataSource(fname, fmime);
-      OSjs.VFS.read(fname, dataSource, function(error, result) {
+      item._opts = {dataSource: self.onCheckDataSource(item)};
+      VFS.read(item, function(error, result) {
         if ( error ) {
-          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), error, 'onOpen');
+          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), error, 'onOpen');
           return;
         }
         if ( result === false ) {
-          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', fname), OSjs._('Unknown error'), 'onOpen');
+          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), OSjs._('Unknown error'), 'onOpen');
           return;
         }
-        self._doOpen(fname, fmime, result);
+        self._doOpen(item, result);
       });
     }
 
-    if ( filename ) {
-      _openFile(filename, mime);
+    if ( file ) {
+      _openFile(file);
     } else {
-      opt.path = (this.currentFilename) ? Utils.dirname(this.currentFilename) : null;
+      opt.path = (this.currentFile) ? Utils.dirname(this.currentFile.path) : null; // FIXME
 
       this.mainWindow._toggleDisabled(true);
 
-      this._createDialog('File', [opt, function(btn, fname, fmime) {
+      this._createDialog('File', [opt, function(btn, item) {
         if ( self.mainWindow ) {
           self.mainWindow._toggleDisabled(false);
         }
 
         if ( btn !== 'ok' ) { return; }
-        _openFile(fname, fmime);
+        _openFile(item);
       }], this.mainWindow);
     }
   };
@@ -445,18 +454,16 @@
    * Wrapper for new action
    */
   DefaultApplication.prototype._onNew = function() {
-    this._setCurrentFile(null, null);
+    this._setCurrentFile(null);
     this.onNew();
   };
 
   /**
    * Sets current active file
    */
-  DefaultApplication.prototype._setCurrentFile = function(name, mime) {
-    this.currentFilename = name;
-    this.currentMime = mime || null;
-    this._setArgument('file', name);
-    this._setArgument('mime', mime || null);
+  DefaultApplication.prototype._setCurrentFile = function(file) {
+    this.currentFile = file || null;
+    this._setArgument('file', this.currentFile);
   };
 
 
@@ -466,5 +473,5 @@
   OSjs.Helpers.DefaultApplication       = DefaultApplication;
   OSjs.Helpers.DefaultApplicationWindow = DefaultApplicationWindow;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.VFS);
 

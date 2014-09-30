@@ -100,7 +100,12 @@
   };
 
   OSjs.Utils.cloneObject = function(o) {
-    return JSON.parse(JSON.stringify(o));
+    return JSON.parse(JSON.stringify(o, function(key, value) {
+      if ( value && typeof value == 'object' && value.tagName ) {
+        return undefined;
+      }
+      return value;
+    }));
   };
 
   OSjs.Utils.inArray = function(arr, val) {

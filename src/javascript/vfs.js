@@ -99,6 +99,44 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
+  // File abstraction
+  /////////////////////////////////////////////////////////////////////////////
+
+  function OFile(arg) {
+    if ( typeof arg === 'object' ) {
+      this.setData(arg);
+    } else if ( typeof arg === 'string' ) {
+      this.path = arg;
+      this.filename = Utils.filename(arg);
+    }
+  }
+
+  OFile.prototype.path = null;
+  OFile.prototype.filename = null;
+  OFile.prototype.type = null;
+  OFile.prototype.size = null;
+  OFile.prototype.mime = null;
+
+  OFile.prototype.setData = function(o) {
+    var self = this;
+    Object.keys(o).forEach(function(k) {
+      self[k] = o[k];
+    });
+  };
+
+  OFile.prototype.getData = function() {
+    return {
+      path: this.path,
+      filename: this.filename,
+      type: this.type,
+      size: this.size,
+      mime: this.mime
+    };
+  };
+
+  OSjs.VFS.File = OFile;
+
+  /////////////////////////////////////////////////////////////////////////////
   // Google Drive
   /////////////////////////////////////////////////////////////////////////////
 
@@ -237,7 +275,9 @@
     });
   };
 
-  GoogleDrive.prototype.scandir = function(dir, opts, callback) {
+  GoogleDrive.prototype.scandir = function(item, callback) {
+    var dir = item.path;
+    // TODO: _opts
     console.warn('GoogleDrive::scandir()', dir);
 
     function retrieveAllFiles(cb) {
@@ -265,26 +305,25 @@
       var result = [];
       if ( list ) {
         list.forEach(function(iter, i) {
-          result.push({
+          result.push(new OFile({
             filename: iter.title,
             path: dir + '/' + iter.title,
             id:   iter.id,
             size: iter.quotaBytesUsed,
             mime: iter.mimeType,
             type: iter.kind === 'drive#file' ? 'file' : 'dir'
-          });
+          }));
         });
       }
       callback(false, result, list);
     });
   };
 
-  GoogleDrive.prototype.read = function(filename, callback) {
-    console.warn('GoogleDrive::read()', filename);
-    var fid = Utils.filename(filename);
+  GoogleDrive.prototype.read = function(item, callback) {
+    console.warn('GoogleDrive::read()', item);
 
     var request = gapi.client.drive.files.get({
-      fileId: fid
+      fileId: item.id
     });
 
     request.execute(function(file) {
@@ -403,166 +442,10 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // VFS METHODS
+  // Internal Storage
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Scandir
-   */
-  OSjs.VFS.scandir = function(dir, opts, callback) {
-    if ( dir.match(/google-drive\:\/\//) ) {
-      this._googledrive('scandir', [dir, opts], callback);
-      return;
-    }
-    opts = opts || {};
-    this._internal('scandir', [dir, opts], callback);
-  };
-
-  /**
-   * Write File
-   */
-  OSjs.VFS.write = function(filename, data, dataSource, callback) {
-    if ( filename.match(/google-drive\:\/\//) ) {
-      this._googledrive('write', [filename, data], callback);
-      return;
-    }
-
-    var wopts = [filename, data];
-    if ( (dataSource !== null) && dataSource !== false ) {
-      wopts.push({dataSource: dataSource});
-    }
-    this._internal('write', wopts, callback);
-  };
-
-  /**
-   * Read File
-   */
-  OSjs.VFS.read = function(filename, dataSource, callback) {
-    if ( filename.match(/google-drive\:\/\//) ) {
-      this._googledrive('read', [filename], callback);
-      return;
-    }
-
-    var ropts = [filename];
-    if ( (dataSource !== null) && dataSource !== false ) {
-      ropts.push({dataSource: dataSource});
-    }
-    this._internal('read', ropts, callback);
-  };
-
-  /**
-   * Copy File
-   */
-  OSjs.VFS.copy = function(src, dest, callback) {
-    if ( src.match(/google-drive\:\/\//) || dst.match(/google-drive\:\/\//) ) {
-      callback('Not implemented');
-      return;
-    }
-    this._internal('copy', [src, dest], callback);
-  };
-
-  /**
-   * Move File
-   */
-  OSjs.VFS.move = function(src, dest, callback) {
-    if ( src.match(/google-drive\:\/\//) || dst.match(/google-drive\:\/\//) ) {
-      callback('Not implemented');
-      return;
-    }
-    this._internal('move', [src, dest], callback);
-  };
-  OSjs.VFS.rename = function(src, dest, callback) {
-    OSjs.VFS.move.apply(this, arguments);
-  };
-
-  /**
-   * Delete File
-   */
-  OSjs.VFS.unlink = function(src, callback) {
-    if ( src.match(/google-drive\:\/\//) ) {
-      this._googledrive('delete', [src], callback);
-      return;
-    }
-    this._internal('delete', [src], callback);
-  };
-  OSjs.VFS['delete'] = function(src, callback) {
-    OSjs.VFS.unlink.apply(this, arguments);
-  };
-
-  /**
-   * Create Directory
-   */
-  OSjs.VFS.mkdir = function(dirname, callback) {
-    if ( dirname.match(/google-drive\:\/\//) ) {
-      this._googledrive('mkdir', [dirname], callback);
-      return;
-    }
-    this._internal('mkdir', [dirname], callback);
-  };
-
-  /**
-   * Check if file exists
-   */
-  OSjs.VFS.exists = function(filename, callback) {
-    if ( filename.match(/google-drive\:\/\//) ) {
-      this._googledrive('exists', [filename], callback);
-      return;
-    }
-    this._internal('exists', [filename], callback);
-  };
-
-  /**
-   * Get file info
-   */
-  OSjs.VFS.fileinfo = function(filename, callback) {
-    if ( filename.match(/google-drive\:\/\//) ) {
-      this._googledrive('fileinfo', [filename], callback);
-      return;
-    }
-    this._internal('fileinfo', [filename], callback);
-  };
-
-  /**
-   * Get file URL
-   */
-  OSjs.VFS.url = function(path, callback) {
-    path = path || '';
-    if ( path.match(/^osjs\:\/\//) ) {
-      callback(false, path.replace(/^osjs\:\/\//, ''));
-      return;
-    }
-    if ( path.match(/google-drive\:\/\//) ) {
-      this._googledrive('url', [path], callback);
-      return;
-    }
-
-    var handler = OSjs.API.getHandlerInstance();
-    var fsuri   = handler.getConfig('Core').FSURI;
-    callback(false, path ? (fsuri + path) : fsuri);
-  };
-
-  /**
-   * Google Drive call
-   */
-  OSjs.VFS._googledrive = function(name, args, callback) {
-    args = args || [];
-    callback = callback || {};
-
-    getGoogleDrive(function(instance) {
-      var fargs = args;
-      fargs.push(callback);
-
-      instance[name].apply(instance, fargs);
-    });
-  };
-
-  /**
-   * Internal call
-   */
-  OSjs.VFS._internal = function(name, args, callback) {
-    args = args || [];
-    callback = callback || {};
-
+  function internalCall(name, args, callback) {
     OSjs.API.call('fs', {'method': name, 'arguments': args}, function(res) {
       if ( !res || (typeof res.result === 'undefined') || res.error ) {
         callback(res.error || OSjs._('Fatal error'));
@@ -572,6 +455,235 @@
     }, function(error) {
       callback(error);
     });
+  }
+
+  var InternalStorage = {};
+  InternalStorage.scandir = function(item, callback) {
+    internalCall('scandir', [item.path, item._opts], function(error, result) {
+      if ( result ) {
+        var tmp = [];
+        result.forEach(function(iter) {
+          tmp.push(new OFile(iter));
+        });
+        result = tmp;
+      }
+
+      callback(error, result);
+    });
+  };
+  InternalStorage.write = function(item, data, callback) {
+    var wopts = [item.path, data];
+    if ( item._opts ) {
+      wopts.push(item._opts);
+    }
+    internalCall('write', wopts, callback);
+  };
+  InternalStorage.read = function(item, callback) {
+    var ropts = [item.path];
+    if ( item._opts ) {
+      ropts.push(item._opts);
+    }
+    internalCall('read', ropts, callback);
+  };
+  InternalStorage.copy = function(src, dest, callback) {
+    internalCall('copy', [src.path, dest.path], callback);
+  };
+  InternalStorage.move = function(src, dest, callback) {
+    internalCall('move', [src.path, dest.path], callback);
+  };
+  InternalStorage.unlink = function(item, callback) {
+    internalCall('delete', [item.path], callback);
+  };
+  InternalStorage.mkdir = function(item, callback) {
+    internalCall('mkdir', [item.path], callback);
+  };
+  InternalStorage.exists = function(item, callback) {
+    internalCall('exists', [item.path], callback);
+  };
+  InternalStorage.fileinfo = function(item, callback) {
+    internalCall('fileinfo', [item.path], callback);
+  };
+  InternalStorage.url = function(item, callback) {
+    var path    = typeof item === 'string' ? item : item.path;
+    var handler = OSjs.API.getHandlerInstance();
+    var fsuri   = handler.getConfig('Core').FSURI;
+    callback(false, path ? (fsuri + path) : fsuri);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // GOOGLE STORAGE
+  /////////////////////////////////////////////////////////////////////////////
+
+  function googleDriveStorage(name, args, callback) {
+    args = args || [];
+    callback = callback || {};
+
+    getGoogleDrive(function(instance) {
+      var fargs = args;
+      fargs.push(callback);
+
+      instance[name].apply(instance, fargs);
+    });
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // VFS METHODS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Scandir
+   */
+  OSjs.VFS.scandir = function(item, callback) {
+    console.info('VFS::read()', item);
+    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( item.path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('scandir', [item], callback);
+      return;
+    }
+    InternalStorage.scandir(item, callback);
+  };
+
+  /**
+   * Write File
+   */
+  OSjs.VFS.write = function(item, data, callback) {
+    console.info('VFS::write()', item);
+    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( item.path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('write', [item, data], callback);
+      return;
+    }
+    InternalStorage.write(item, data, callback);
+  };
+
+  /**
+   * Read File
+   */
+  OSjs.VFS.read = function(item, callback) {
+    console.info('VFS::read()', item);
+    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( item.path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('read', [item], callback);
+      return;
+    }
+    InternalStorage.read(item, callback);
+  };
+
+  /**
+   * Copy File
+   */
+  OSjs.VFS.copy = function(src, dest, callback) {
+    console.info('VFS::copy()', src, dest);
+    if ( !(src instanceof OFile) ) { throw 'Expects a src file-object'; }
+    if ( !(dest instanceof OFile) ) { throw 'Expects a dest file-object'; }
+
+    if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
+      callback('Not implemented');
+      return;
+    }
+    InternalStorage.copy(src, dest, callback);
+  };
+
+  /**
+   * Move File
+   */
+  OSjs.VFS.move = function(src, dest, callback) {
+    console.info('VFS::move()', src, dest);
+    if ( !(src instanceof OFile) ) { throw 'Expects a src file-object'; }
+    if ( !(dest instanceof OFile) ) { throw 'Expects a dest file-object'; }
+
+    if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
+      callback('Not implemented');
+      return;
+    }
+
+    InternalStorage.move(src, dest, callback);
+  };
+  OSjs.VFS.rename = function(src, dest, callback) {
+    OSjs.VFS.move.apply(this, arguments);
+  };
+
+  /**
+   * Delete File
+   */
+  OSjs.VFS.unlink = function(item, callback) {
+    console.info('VFS::unlink()', item);
+    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( item.path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('delete', [item], callback);
+      return;
+    }
+    InternalStorage.unlink(item, callback);
+  };
+  OSjs.VFS['delete'] = function(item, callback) {
+    OSjs.VFS.unlink.apply(this, arguments);
+  };
+
+  /**
+   * Create Directory
+   */
+  OSjs.VFS.mkdir = function(item, callback) {
+    console.info('VFS::mkdir()', item);
+    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( item.path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('mkdir', [item], callback);
+      return;
+    }
+    InternalStorage.mkdir(item, callback);
+  };
+
+  /**
+   * Check if file exists
+   */
+  OSjs.VFS.exists = function(item, callback) {
+    console.info('VFS::exists()', item);
+    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( item.path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('exists', [item], callback);
+      return;
+    }
+    InternalStorage.exists(item, callback);
+  };
+
+  /**
+   * Get file info
+   */
+  OSjs.VFS.fileinfo = function(item, callback) {
+    console.info('VFS::fileinfo()', item);
+    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( item.path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('fileinfo', [item], callback);
+      return;
+    }
+    InternalStorage.fileinfo(item, callback);
+  };
+
+  /**
+   * Get file URL
+   */
+  OSjs.VFS.url = function(item, callback) {
+    console.info('VFS::url()', item);
+    var path = (typeof item === 'string') ? item : item.path;
+    if ( path.match(/^osjs\:\/\//) ) {
+      callback(false, path.replace(/^osjs\:\/\//, ''));
+      return;
+    }
+    if ( path.match(/google-drive\:\/\//) ) {
+      googleDriveStorage('url', [item], callback);
+      return;
+    }
+
+    InternalStorage.url(item, callback);
+  };
+
+  /**
+   * Internal call
+   */
+  OSjs.VFS._internal = function(name, args, callback) {
+    callback = callback || {};
+    args = args || [];
+    args.push(callback);
+    InternalStorage[name].apply(InternalStorage, args);
   };
 
 })(OSjs.Utils);

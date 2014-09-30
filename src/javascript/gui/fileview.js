@@ -534,11 +534,12 @@
       this.viewRef._hooks = this._hooks;
 
       this.viewRef.onActivated  = function(item) {
+        item = new VFS.File(item);
         if ( item ) {
           if ( item.type === 'dir' ) {
             self.chdir(item.path);
           } else {
-            self.onActivated.apply(this, arguments);
+            self.onActivated.call(this, item);
           }
         }
       };
@@ -619,8 +620,9 @@
       return lst;
     }
 
-    var opts = {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter};
-    VFS.scandir(dir, opts, function(error, result) {
+    var file = new VFS.File(dir);
+    file._opts = {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter};
+    VFS.scandir(file, function(error, result) {
       if ( error ) {
         onError.call(self, error, dir);
         return;

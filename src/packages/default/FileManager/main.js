@@ -106,13 +106,12 @@
       if ( item && item.type === "file" && item.data ) {
         var dir = fileView.getPath();
         var fnm = item.data.filename;
-        var src = item.data.path;
-        var dst = dir + '/' + fnm;
+        var dst = {filename: fnm, path: (dir + '/' + fnm)};
 
         var d = app._createDialog('FileProgress', [_('Copying file...')], self);
         d.setDescription(_("Copying <span>{0}</span> to <span>{1}</span>", fnm, dir));
 
-        app.copy(src, dst, function(result) {
+        app.copy(item, dst, function(result) {
           d.setProgress(100);
           if ( result ) {
             fileView.refresh(function() {
@@ -150,7 +149,7 @@
     fileView.onActivated = function(item) {
       if ( item && item.path ) {
         if ( item.type === 'file' ) {
-          app.open(item.path, item.mime);
+          app.open(item);
         } else {
           statusBar.setText(_("Loading..."));
         }
@@ -188,7 +187,7 @@
           self._focus();
           if ( btn !== 'ok' || !value ) return;
 
-          app.mkdir((dir + '/' + value), function(result) {
+          app.mkdir({filename: value, path: (dir + '/' + value)}, function(result) {
             if ( result && fileView ) {
               fileView.refresh(function() {
                 fileView.setSelected(value, 'filename');
@@ -217,9 +216,9 @@
         app._createDialog('Input', [_("Rename <span>{0}</span>", fname), fname, function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
-          var newpath = OSjs.Utils.dirname(cur.path) + '/' + value;
+          var newitem = {filename: value, path: OSjs.Utils.dirname(cur.path) + '/' + value};
 
-          app.move(cur.path, newpath, function(result) {
+          app.move(cur, newitem, function(result) {
             if ( result && fileView ) {
               fileView.refresh(function() {
                 if ( fileView ) fileView.setSelected(value, 'filename');
@@ -235,7 +234,7 @@
         app._createDialog('Confirm', [_("Delete <span>{0}</span> ?", fname), function(btn) {
           self._focus();
           if ( btn !== 'ok' ) return;
-          app.unlink(cur.path, function(result) {
+          app.unlink(cur, function(result) {
             if ( result && fileView ) {
               fileView.refresh();
               OSjs.API.message('vfs', {type: 'delete', path: OSjs.Utils.dirname(cur.path), filename: OSjs.Utils.filename(cur.path), source: self._appRef.__pid});
@@ -246,14 +245,14 @@
 
       else if ( action == 'info' ) {
         if ( cur.type === 'dir' ) return;
-        app._createDialog('FileInfo', [cur.path, function(btn) {
+        app._createDialog('FileInfo', [cur, function(btn) {
           self._focus();
         }]);
       }
 
       else if ( action == 'openWith' ) {
         if ( cur.type === 'dir' ) return;
-        app.open(cur.path, cur.mime, true);
+        app.open(cur, true);
       }
     };
 
@@ -397,7 +396,7 @@
     sideView.onActivate = function(el, ev, item) {
       if ( item && item.path ) {
         if ( item.type === 'file' ) {
-          app.open(item.path, item.mime);
+          app.open(item);
         } else {
           var fileView = self._getGUIElement('FileManagerFileView');
           if ( fileView ) {
@@ -500,8 +499,8 @@
     }
   };
 
-  ApplicationFileManager.prototype.open = function(filename, mime, forceList) {
-    OSjs.API.open(filename, mime, {forceList: (forceList?true:false)});
+  ApplicationFileManager.prototype.open = function(file, forceList) {
+    OSjs.API.open(file, {forceList: (forceList?true:false)});
   };
 
   ApplicationFileManager.prototype.go = function(dir, w) {
@@ -538,12 +537,12 @@
     return this._action('move', [src, dest], callback);
   };
 
-  ApplicationFileManager.prototype.unlink = function(name, callback) {
-    return this._action('delete', [name], callback);
+  ApplicationFileManager.prototype.unlink = function(item, callback) {
+    return this._action('delete', [item], callback);
   };
 
-  ApplicationFileManager.prototype.mkdir = function(name, callback) {
-    return this._action('mkdir', [name], callback);
+  ApplicationFileManager.prototype.mkdir = function(item, callback) {
+    return this._action('mkdir', [item], callback);
   };
 
   ApplicationFileManager.prototype.copy = function(src, dest, callback) {

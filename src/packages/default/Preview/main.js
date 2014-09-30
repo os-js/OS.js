@@ -201,9 +201,9 @@
     Application.prototype.init.apply(this, arguments);
   };
 
-  ApplicationPreview.prototype.onOpen = function(filename, mime, data) {
+  ApplicationPreview.prototype.onOpen = function(file, data) {
     if ( this.mainWindow ) {
-      this.mainWindow.setPreview(filename, mime);
+      this.mainWindow.setPreview(file.path, file.mime);
       this.mainWindow._focus();
     }
   };
