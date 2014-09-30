@@ -83,6 +83,7 @@
     this.$fileView    = null;
     this.$statusBar   = null;
     this.$select      = null;
+    this.$selectRoot  = null;
 
     // Window
     var title     = OSjs._(this.type === 'save' ? 'Save' : 'Open');
@@ -103,6 +104,12 @@
    * Destroy
    */
   FileDialog.prototype.destroy = function() {
+    this.$input       = null;
+    this.$fileView    = null;
+    this.$statusBar   = null;
+    this.$select      = null;
+    this.$selectRoot  = null;
+
     StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
@@ -178,6 +185,14 @@
         self.onInputKey(ev);
       }}), this.$element);
     }
+
+    this.$selectRoot = this._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
+      if ( self.$fileView ) {
+        self.$fileView.chdir(value);
+      }
+    }}), this.$element);
+    this.$selectRoot.addItem('/', 'OS.js Storage');
+    this.$selectRoot.addItem('google-drive:///', 'Google Drive Storage');
 
     return root;
   };

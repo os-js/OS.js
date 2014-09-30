@@ -3,10 +3,19 @@
 .FileOpenDialog {
 }*/
 
+.FileSaveDialog .SelectRoot,
+.FileOpenDialog .SelectRoot {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  width : 100%;
+}
+
 .FileOpenDialog .FileDialogFileView,
 .FileSaveDialog .FileDialogFileView {
   position : absolute;
-  top : 0px;
+  top : 28px;
   left : 0px;
   right : 0px;
   bottom : 30px;
@@ -22,7 +31,7 @@
   bottom : 30px;
   width : 100%;
 }
-.FileSaveDialog .GUISelect {
+.FileSaveDialog .FileDialogFiletypeSelect {
   display : block;
   position : absolute;
   right : 0px;

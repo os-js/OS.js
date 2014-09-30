@@ -1,5 +1,6 @@
 
 # High-priority
+* _[VFS]_ Create a File() object to pass around instead of strings
 * _[Backend]_ Finish Node.js backend
 * _[Locales]_ Finish the format strings
 * _[Themes]_ More Themes
