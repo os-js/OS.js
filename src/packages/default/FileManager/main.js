@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI) {
+(function(Application, Window, GUI, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -216,8 +216,10 @@
         app._createDialog('Input', [_("Rename <span>{0}</span>", fname), fname, function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
-          var newitem = {filename: value, path: OSjs.Utils.dirname(cur.path) + '/' + value};
 
+          var newitem = new VFS.File(cur);
+          newitem.filename = value;
+          newitem.path = OSjs.Utils.dirname(cur.path) + '/' + value;
           app.move(cur, newitem, function(result) {
             if ( result && fileView ) {
               fileView.refresh(function() {
@@ -386,12 +388,8 @@
       {key: 'type', title: OSjs._('Type'), visible: false, domProperties: {width: "50"}}
      ]);
     sideView.setRows([
-      {image: _getFileIcon('places/folder_home.png'), filename: 'Home', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
-      {image: _getFileIcon('places/folder-documents.png'), filename: 'Documents', mime: null, size: 0, type: 'link', path: '/Documents'},
+      {image: _getFileIcon('places/folder_home.png'), filename: 'OS.js', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
       {image: _getFileIcon('places/folder-documents.png'), filename: 'Google Drive', mime: null, size: 0, type: 'link', path: 'google-drive:///'}
-      /*,
-      {image: _getFileIcon('places/folder.png'), filename: 'Temp', mime: null, size: 0, type: 'link', path: '/tmp'},
-      {image: _getFileIcon('devices/drive-harddisk.png'), filename: 'Filesystem', mime: null, size: 0, type: 'link', path: '/'}*/
     ]);
     sideView.onActivate = function(el, ev, item) {
       if ( item && item.path ) {
@@ -530,7 +528,7 @@
       }
       callback(result);
     });
-    OSjs.VFS[name].apply(OSjs.VFS, args);
+    VFS[name].apply(VFS, args);
   };
 
   ApplicationFileManager.prototype.move = function(src, dest, callback) {
@@ -558,4 +556,4 @@
   OSjs.Applications.ApplicationFileManager.Plugins = OSjs.Applications.ApplicationFileManager.Plugins || {};
   OSjs.Applications.ApplicationFileManager.Class = ApplicationFileManager;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.VFS);

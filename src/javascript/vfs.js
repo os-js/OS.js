@@ -49,15 +49,15 @@
     };
   })();
 
-  function createBoundary(filename, data, callback) {
+  function createBoundary(file, data, callback) {
     var boundary = '-------314159265358979323846';
     var delimiter = "\r\n--" + boundary + "\r\n";
     var close_delim = "\r\n--" + boundary + "--";
-    var contentType = 'text/plain'; //fileData.type || 'application/octet-stream';
+    var contentType = file.mime || 'text/plain'; //fileData.type || 'application/octet-stream';
 
     function createBody(result) {
       var metadata = {
-        title: Utils.filename(filename),
+        title: file.filename,
         mimeType: contentType
       };
       var base64Data = btoa(result);
@@ -116,6 +116,7 @@
   OFile.prototype.type = null;
   OFile.prototype.size = null;
   OFile.prototype.mime = null;
+  OFile.prototype.id = null;
 
   OFile.prototype.setData = function(o) {
     var self = this;
@@ -130,7 +131,8 @@
       filename: this.filename,
       type: this.type,
       size: this.size,
-      mime: this.mime
+      mime: this.mime,
+      id: this.id
     };
   };
 
@@ -343,10 +345,10 @@
     });
   };
 
-  GoogleDrive.prototype.write = function(filename, data, callback) {
-    console.warn('GoogleDrive::write()', filename);
+  GoogleDrive.prototype.write = function(file, data, callback) {
+    console.warn('GoogleDrive::write()', file);
 
-    var fileData = createBoundary(filename, data, function(error, fileData) {
+    var fileData = createBoundary(file, data, function(error, fileData) {
       var request = gapi.client.request({
         path: '/upload/drive/v2/files',
         method: 'POST',
@@ -381,7 +383,7 @@
   GoogleDrive.prototype.unlink = function(src, callback) {
     console.warn('GoogleDrive::unlink()', src);
     var request = gapi.client.drive.files.delete({
-      fileId: Utils.filename(src)
+      fileId: src.id
     });
     request.execute(function(resp) {
       console.warn('GoogleDrive::unlink()', '=>', resp);
@@ -394,12 +396,32 @@
     callback('Not implemented');
   };
 
-  GoogleDrive.prototype.exists = function(src, callback) {
-    console.warn('GoogleDrive::exists()', src);
-    var fid = Utils.filename(src);
+  GoogleDrive.prototype.exists = function(item, callback) {
+    console.warn('GoogleDrive::exists()', item);
 
+    this.scandir(Utils.dirname(item.path), function(error, result) {
+      if ( error ) {
+        callback('Failed to check existence: ' + error);
+        return;
+      }
+      var found = false;
+
+      if ( result ) {
+        result.forEach(function(iter) {
+          if ( iter.path === item.path ) {
+            found = true;
+            return false;
+          }
+          return true;
+        });
+      }
+
+      callback(false, !found);
+    });
+
+    /*
     var request = gapi.client.drive.files.get({
-      fileId: fid
+      fileId: iitem.filename //tem.id
     });
 
     request.execute(function(resp) {
@@ -411,6 +433,7 @@
       }
       // FIXME
     });
+    */
   };
 
   GoogleDrive.prototype.fileinfo = function(filename, callback) {
@@ -610,7 +633,7 @@
     console.info('VFS::unlink()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
     if ( item.path.match(/google-drive\:\/\//) ) {
-      googleDriveStorage('delete', [item], callback);
+      googleDriveStorage('unlink', [item], callback);
       return;
     }
     InternalStorage.unlink(item, callback);
