@@ -433,15 +433,19 @@
     var self      = this;
     var fileView  = this._getGUIElement('FileManagerFileView');
 
-    OSjs.API.uploadFiles(this._appRef, this, fileView.getPath(), files, function(dest, filename) {
-      if ( fileView ) {
+    VFS.upload({
+      files: files,
+      destination: fileView.getPath(),
+      win: this,
+      app: this._appRef,
+    }, function(error, file) {
+      if ( !error && file && fileView ) {
         fileView.refresh(function() {
-          fileView.setSelected(filename, 'filename');
+          fileView.setSelected(file.filename, 'filename');
           self._focus();
         });
       }
     });
-
     return false;
   };
 

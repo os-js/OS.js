@@ -40,7 +40,12 @@
   console.group     = console.group     || console.log;
   console.groupEnd  = console.groupEnd  || console.log;
 
-  NodeList.prototype.forEach = Array.prototype.forEach;
+  if ( window.NodeList ) {
+    NodeList.prototype.forEach = Array.prototype.forEach;
+  }
+  if ( window.FileList ) {
+    FileList.prototype.forEach = Array.prototype.forEach;
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // Main initialization code

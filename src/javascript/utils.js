@@ -497,7 +497,12 @@
       }
     };
 
-    xhr.open('POST', OSjs.API.getResourceURL());
+    var handler = OSjs.API.getHandlerInstance();
+    var fsuri   = '/';
+    if ( handler ) {
+      fsuri = handler.getConfig('Core').FSURI;
+    }
+    xhr.open('POST', fsuri);
     xhr.send(fd);
 
     return xhr;

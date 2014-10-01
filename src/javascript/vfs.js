@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils) {
+(function(Utils, API) {
   'use strict';
 
   window.OSjs       = window.OSjs       || {};
@@ -702,13 +702,71 @@
   };
 
   /**
-   * Internal call
+   * Upload file(s)
    */
-  OSjs.VFS._internal = function(name, args, callback) {
-    callback = callback || {};
-    args = args || [];
-    args.push(callback);
-    InternalStorage[name].apply(InternalStorage, args);
+  OSjs.VFS.upload = function(args, callback) {
+    args = args || {};
+    if ( !(args.app instanceof OSjs.Core.Application) ) {
+      throw 'upload() expects an Application reference';
+    }
+    if ( !args.files ) {
+      throw 'upload() expects a file array';
+    }
+    if ( !args.destination ) {
+      throw 'upload() expects a destination';
+    }
+    if ( args.destination.match(/google-drive\:\/\//) ) {
+      callback('upload() does not support google-drive yet');
+    }
+
+    var _dialogClose  = function(btn, filename, mime, size) {
+      if ( btn !== 'ok' && btn !== 'complete' ) { return; }
+
+      OSjs.API.message('vfs', {type: 'upload', path: args.destination, filename: filename, source: args.app.__pid});
+
+      var file = new OSjs.VFS.File({
+        filename: filename,
+        path: args.destination + '/' + filename,
+        mime: mime,
+        size: size
+      });
+
+      callback(false, file);
+    };
+
+    args.files.forEach(function(f, i) {
+      if ( args.win ) {
+        args.app._createDialog('FileUpload', [args.destination, f, _dialogClose], args.win);
+      } else {
+        args.app.addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
+      }
+    });
   };
 
-})(OSjs.Utils);
+  /**
+   * Download a file
+   */
+  OSjs.VFS.download = (function() {
+    var _didx = 1;
+
+    return function(args, callback) {
+      args = args || {};
+      if ( !args.path ) {
+        throw 'download() expects a path';
+      }
+
+      var lname = 'DownloadFile_' + _didx;
+      _didx++;
+      API.createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
+
+      Utils.AjaxDownload(args.path, function(data) {
+        API.destroyLoading(lname);
+        callback(false, data);
+      }, function(err) {
+        destroyLoading(lname);
+        callback(err);
+      });
+    };
+  })();
+
+})(OSjs.Utils, OSjs.API);

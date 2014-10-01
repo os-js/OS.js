@@ -462,18 +462,15 @@
   };
 
   CoreWM.prototype.onDropFile = function(ev, el, files, args) {
-    var dest = OSjs.API.getDefaultPath();
     var self = this;
 
-    OSjs.API.uploadFiles(this, null, dest, files, function(dest, filename, mime, size) {
-      if ( self.iconView ) {
-        self.iconView.addShortcut({
-          path:     OSjs.Utils.format('{0}/{1}', (dest == '/' ? '' : dest), filename),
-          mime:     mime || 'text/plain', // FIXME: Some uploads does not have mime !?
-          size:     size || 0,
-          type:     'file',
-          filename: filename
-        }, self);
+    VFS.upload({
+      app: this,
+      destination: OSjs.API.getDefaultPath(),
+      files: files
+    }, function(error, file) {
+      if ( !error && file && self.iconView ) {
+        self.iconView.addShortcut(file, self);
       }
     });
   };

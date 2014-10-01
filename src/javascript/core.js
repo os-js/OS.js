@@ -922,53 +922,6 @@
   }
 
   /**
-   * Global function for uploading a file
-   */
-  function doUploadFiles(app, win, dest, files, onUploaded) {
-    files = files || [];
-    onUploaded = onUploaded || function(/*dest, filename, mime, size*/) {};
-
-    var _dialogClose  = function(btn, filename, mime, size) {
-      if ( btn !== 'ok' && btn !== 'complete' ) { return; }
-
-      OSjs.API.message('vfs', {type: 'upload', path: dest, filename: filename, source: app.__pid});
-
-      onUploaded(dest, filename, mime, size);
-    };
-
-    if ( files && files.length ) {
-      files.forEach(function(f, i) {
-        if ( win ) {
-          app._createDialog('FileUpload', [dest, f, _dialogClose], win);
-        } else {
-          app.addWindow(new OSjs.Dialogs.FileUpload(dest, f, _dialogClose), false);
-        }
-      });
-    }
-  }
-
-  /**
-   * Gloal function for downloading a file
-   */
-  var doDownloadFile = (function() {
-    var _didx = 1;
-
-    return function(url, callback) {
-      var lname = 'DownloadFile_' + _didx;
-      _didx++;
-      createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
-
-      OSjs.Utils.AjaxDownload(url, function(data) {
-        destroyLoading(lname);
-        callback(false, data);
-      }, function(err) {
-        destroyLoading(lname);
-        callback(err);
-      });
-    };
-  })();
-
-  /**
    * Kills a process
    */
   function doKillProcess(pid) {
@@ -1309,10 +1262,10 @@
   OSjs.API.launchList         = doLaunchProcessList;
   OSjs.API.kill               = doKillProcess;
   OSjs.API.playSound          = doPlaySound;
-  OSjs.API.uploadFiles        = doUploadFiles;
-  OSjs.API.downloadFile       = doDownloadFile;
   OSjs.API.message            = doProcessMessage;
   OSjs.API.getProcess         = doGetProcess;
+  OSjs.API.createLoading      = createLoading;
+  OSjs.API.destroyLoading     = destroyLoading;
   OSjs.API.getProcesses       = function() { return _PROCS; };
   OSjs.API.getHandlerInstance = function() { return _HANDLER; };
   OSjs.API.getWMInstance      = function() { return _WM; };
