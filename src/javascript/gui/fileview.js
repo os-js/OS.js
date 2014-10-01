@@ -89,16 +89,11 @@
             OSjs._('MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
+          var file = new VFS.File(item);
           OSjs.GUI.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
-            data   : {
-              type   : 'file',
-              filename: item.filename,
-              path: item.path,
-              size : item.size,
-              mime: item.mime
-            },
+            data   : file.getData(),
             dragImage : createDragImage
           });
         } else if ( item.type === 'dir' ) {
@@ -233,16 +228,11 @@
             OSjs._('MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
+          var file = new VFS.File(item);
           OSjs.GUI.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
-            data   : {
-              type   : 'file',
-              filename: item.filename,
-              path: item.path,
-              size : item.size,
-              mime: item.mime
-            },
+            data   : file.getData(),
             dragImage: createDragImage
           });
         } else if ( item.type === 'dir' ) {
@@ -339,16 +329,11 @@
             OSjs._('MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
+          var file = new VFS.File(item);
           OSjs.GUI.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
-            data   : {
-              type: 'file',
-              filename: item.filename,
-              path: item.path,
-              size : item.size,
-              mime: item.mime
-            },
+            data   : file.getData(),
             dragImage : createDragImage
           });
 

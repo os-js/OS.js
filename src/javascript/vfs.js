@@ -121,7 +121,9 @@
   OFile.prototype.setData = function(o) {
     var self = this;
     Object.keys(o).forEach(function(k) {
-      self[k] = o[k];
+      if ( k !== '_element' ) {
+        self[k] = o[k];
+      }
     });
   };
 

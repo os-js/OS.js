@@ -105,17 +105,17 @@
     fileView.onItemDropped = function(ev, el, item) {
       if ( item && item.type === "file" && item.data ) {
         var dir = fileView.getPath();
-        var fnm = item.data.filename;
-        var dst = {filename: fnm, path: (dir + '/' + fnm)};
+        var src = new VFS.File(item.data);
+        var dst = new VFS.File((dir + '/' + src.filename));
 
         var d = app._createDialog('FileProgress', [_('Copying file...')], self);
-        d.setDescription(_("Copying <span>{0}</span> to <span>{1}</span>", fnm, dir));
+        d.setDescription(_("Copying <span>{0}</span> to <span>{1}</span>", src.filename, dir));
 
-        app.copy(item, dst, function(result) {
+        app.copy(src, dst, function(result) {
           d.setProgress(100);
           if ( result ) {
             fileView.refresh(function() {
-              fileView.setSelected(fnm, 'filename');
+              fileView.setSelected(src.filename, 'filename');
             });
             self._focus();
           }

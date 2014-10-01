@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils) {
+(function(Application, Window, GUI, Dialogs, Utils, VFS) {
   'use strict';
 
   // TODO: Copy/Cut/Paste
@@ -553,7 +553,8 @@
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
-        this._appRef.action('open', data.path, data.mime);
+        var file = new VFS.File(data);
+        this._appRef.action('open', file);
       }
     }
   };
@@ -1032,4 +1033,4 @@
   OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
   OSjs.Applications.ApplicationDraw.Class = ApplicationDraw;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.VFS);

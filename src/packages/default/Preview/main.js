@@ -95,7 +95,8 @@
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
-        this._appRef.defaultAction('open', data.path, data.mime);
+        var file = new VFS.File(data);
+        this._appRef.action('open', file);
       }
     }
   };
