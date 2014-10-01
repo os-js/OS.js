@@ -103,6 +103,23 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Returns a list of all enabled VFS modules
+   */
+  OSjs.VFS.getModules = function() {
+    var m = OSjs.VFS.Modules;
+    var a = [];
+    Object.keys(m).forEach(function(name) {
+      if ( m[name].enabled ) {
+        a.push({
+          name: name,
+          module: m[name]
+        });
+      }
+    });
+    return a;
+  };
+
+  /**
    * Scandir
    */
   OSjs.VFS.scandir = function(item, callback) {

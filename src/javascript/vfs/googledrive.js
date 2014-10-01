@@ -450,7 +450,10 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
+    description: 'Google Drive Storage',
     enabled: false,
+    root: 'google-drive:///',
+    icon: 'places/folder-documents.png',
     match: /google-drive\:\/\//,
     request: makeRequest
   };

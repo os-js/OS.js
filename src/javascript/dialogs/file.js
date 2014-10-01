@@ -186,13 +186,19 @@
       }}), this.$element);
     }
 
-    this.$selectRoot = this._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
-      if ( self.$fileView ) {
-        self.$fileView.chdir(value);
-      }
-    }}), this.$element);
-    this.$selectRoot.addItem('/', 'OS.js Storage');
-    this.$selectRoot.addItem('google-drive:///', 'Google Drive Storage');
+    var roots = VFS.getModules(); // FIXME Does not work if Internal is disabled for some reason
+    if ( roots.length > 1 ) {
+      Utils.$addClass(this.$element, 'HasRootSelection');
+      this.$selectRoot = this._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
+        if ( self.$fileView ) {
+          self.$fileView.chdir(value);
+        }
+      }}), this.$element);
+
+      roots.forEach(function(m, i) {
+        self.$selectRoot.addItem(m.module.root, m.module.description);
+      });
+    }
 
     return root;
   };

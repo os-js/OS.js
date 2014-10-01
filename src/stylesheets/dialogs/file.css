@@ -15,10 +15,14 @@
 .FileOpenDialog .FileDialogFileView,
 .FileSaveDialog .FileDialogFileView {
   position : absolute;
-  top : 28px;
+  top : 0px;
   left : 0px;
   right : 0px;
   bottom : 30px;
+}
+.FileOpenDialog.HasRootSelection .FileDialogFileView,
+.FileSaveDialog.HasRootSelection .FileDialogFileView {
+  top : 28px;
 }
 .FileSaveDialog .FileDialogFileView {
   bottom : 60px !important;

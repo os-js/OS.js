@@ -1,5 +1,6 @@
 
 # High-priority
+* _[Documentation]_ Complete documentation for JavaScript
 * _[Backend]_ Finish Node.js backend
 * _[Locales]_ Finish the format strings
 * _[Themes]_ More Themes

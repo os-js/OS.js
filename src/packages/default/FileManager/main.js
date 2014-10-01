@@ -379,6 +379,18 @@
       return OSjs.API.getThemeResource(r, 'icon');
     };
 
+    var sideViewItems = [];
+    VFS.getModules().forEach(function(m, i) {
+      sideViewItems.push({
+        image: _getFileIcon(m.module.icon),
+        filename: m.module.description,
+        mime: null,
+        size: 0,
+        type: 'link',
+        path: m.module.root
+      });
+    });
+
     sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
       {key: 'filename', title: OSjs._('Filename')},
@@ -387,10 +399,7 @@
       {key: 'path', title: OSjs._('Path'), visible: false, domProperties: {width: "70"}},
       {key: 'type', title: OSjs._('Type'), visible: false, domProperties: {width: "50"}}
      ]);
-    sideView.setRows([
-      {image: _getFileIcon('places/folder_home.png'), filename: 'OS.js', mime: null, size: 0, type: 'link', path: OSjs.API.getDefaultPath('/')},
-      {image: _getFileIcon('places/folder-documents.png'), filename: 'Google Drive', mime: null, size: 0, type: 'link', path: 'google-drive:///'}
-    ]);
+    sideView.setRows(sideViewItems);
     sideView.onActivate = function(el, ev, item) {
       if ( item && item.path ) {
         if ( item.type === 'file' ) {
