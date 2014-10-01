@@ -242,7 +242,7 @@
    */
   OSjs.VFS.upload = function(args, callback) {
     args = args || {};
-    if ( !(args.app instanceof OSjs.Core.Application) ) {
+    if ( !(args.app instanceof OSjs.Core.Process) ) {
       throw 'upload() expects an Application reference';
     }
     if ( !args.files ) {

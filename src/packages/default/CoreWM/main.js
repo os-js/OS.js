@@ -465,7 +465,7 @@
     var self = this;
 
     VFS.upload({
-      app: this,
+      app: self,
       destination: OSjs.API.getDefaultPath(),
       files: files
     }, function(error, file) {
