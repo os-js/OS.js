@@ -401,6 +401,7 @@
    */
   FileDialog.prototype.onFileSelected = function(item) {
     var selected = null;
+    var seltype  = item ? item.type : null;
 
     if ( this.select === 'path' ) {
       if ( item && item.type === 'dir' ) {
@@ -417,8 +418,20 @@
     }
 
     if ( this.$input ) {
-      var fname = Utils.filename(selected ? selected : this.defaultFilename);
-      this.$input.setValue(Utils.escapeFilename(fname));
+      var fname;
+      if ( this.select === 'dir' ) {
+        if ( selected ) {
+          fname = selected;
+        }
+      } else {
+        if ( seltype === 'file' ) {
+          fname = selected;
+        }
+      }
+
+      if ( fname ) {
+        this.$input.setValue(Utils.escapeFilename(fname));
+      }
     }
 
     this.selectedFile = selected;
