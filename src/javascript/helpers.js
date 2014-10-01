@@ -383,7 +383,7 @@
         opt.path = Utils.dirname(file.path);
         opt.filename = file.filename;
 
-        this._createDialog('File', [opt, function(btn, item) { // FIXME
+        this._createDialog('File', [opt, function(btn, item) {
           if ( self.mainWindow ) {
             self.mainWindow._toggleDisabled(false);
           }
@@ -436,7 +436,7 @@
     if ( file ) {
       _openFile(file);
     } else {
-      opt.path = (this.currentFile) ? Utils.dirname(this.currentFile.path) : null; // FIXME
+      opt.path = (this.currentFile) ? Utils.dirname(this.currentFile.path) : null;
 
       this.mainWindow._toggleDisabled(true);
 
