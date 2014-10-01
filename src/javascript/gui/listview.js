@@ -89,6 +89,7 @@
     var startX = 0;
     var column = null;
     var self = this;
+    var resized = false;
 
     function onResizeMove(ev) {
       if ( !self.$headTop || !self.$body ) { return; }
@@ -101,6 +102,7 @@
         if ( self.$body.rows[0] ) {
           self.$body.rows[0].childNodes[column].width = newW;
         }
+        resized = true;
       }
     }
 
@@ -113,6 +115,7 @@
       startX = ev.clientX;
       startW = col.offsetWidth;
       column = col.parentNode.getAttribute('data-index');
+      resized = false;
 
       document.addEventListener('mouseup',    onResizeEnd,  false);
       document.addEventListener('mousemove',  onResizeMove, false);
@@ -123,10 +126,13 @@
       var t = ev.target;
       if ( t.tagName === 'DIV' ) {
         if ( type === 'mousedown' && t.className === 'Resizer' ) {
+          console.error(1);
           onResizeStart(ev, t.parentNode);
         } else if ( type === 'click' && t.className === 'Label' ) {
-          var col = t.parentNode.className.replace('Column_', '');
-          self._onColumnClick(ev, col);
+          if ( !resized ) {
+            var col = t.parentNode.className.replace('Column_', '');
+            self._onColumnClick(ev, col);
+          }
         }
         return false;
       }
