@@ -187,7 +187,8 @@
           self._focus();
           if ( btn !== 'ok' || !value ) return;
 
-          app.mkdir({filename: value, path: (dir + '/' + value)}, function(result) {
+          var item = new VFS.File(dir + '/' + value);
+          app.mkdir(item, function(result) {
             if ( result && fileView ) {
               fileView.refresh(function() {
                 fileView.setSelected(value, 'filename');
