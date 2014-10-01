@@ -258,7 +258,7 @@
     ]);
 
     menuBar.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFilename ? false : true);
+      menu.setItemDisabled("Save", app.currentFile ? false : true);
     };
 
     // Tools Toolbar

@@ -221,7 +221,7 @@
       }},
       {title: OSjs._('Image'), name: 'IMG', onClick: function() {
         self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, file) {
-          if ( btn !== 'ok' || !fmime.match(/^image/) ) return;
+          if ( btn !== 'ok' || !file || !file.mime.match(/^image/) ) return;
           VFS.url(file, function(error, result) {
             if ( !error ) {
               self.command('insertImage', result);
