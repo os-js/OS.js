@@ -253,7 +253,7 @@
       break;
 
       case 'saveas' :
-        self._onSaveAs(file);
+        self._onSaveAs();
       break;
 
       case 'close' :
@@ -279,15 +279,18 @@
    */
   DefaultApplication.prototype._doSave = function(file) {
     var self = this;
-    var ext = Utils.filext(file.path).toLowerCase();
 
-    if ( !file.mime && this.currentFile ) {
-      file.mime = this.currentFile.mime;
+    if ( !file ) {
+      throw 'cannot save without File ref';
+    }
+    if ( !file.path ) {
+      throw 'cannot save without a path';
     }
 
     if ( this.dialogOptions.filetypes !== null ) {
       var filetypes = this.dialogOptions.filetypes;
       if ( filetypes ) {
+        var ext = Utils.filext(file.path).toLowerCase();
         if ( filetypes[ext] ) {
           file.mime = filetypes[ext];
         }
@@ -310,7 +313,7 @@
 
       VFS.write(item, data, function(error, result) {
         if ( error ) {
-          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), res.error, 'doSave');
+          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), error, 'doSave');
           return;
         }
         if ( result === false ) {
@@ -348,49 +351,55 @@
    * Wrapper for save action
    */
   DefaultApplication.prototype._onSave = function(file) {
-    file = file || this.currentFile;
-
-    if ( file ) {
-      if ( !file.path && this.currentFile ) {
-        file.path = this.currentFile.path;
-      }
-      if ( !file.mime && this.currentFile ) {
-        file.mime = this.currentFile.mime;
-      }
-      this._doSave(file);
+    if ( !file && this.currentFile && this.currentFile.path) {
+      file = new VFS.File(this.currentFile);
     }
+    if ( !file ) {
+      file = new VFS.File(
+        '/' + this.dialogOptions.defaultFilename, // FIXME
+        this.dialogOptions.defaultMime
+      );
+    }
+    if ( !file.path && this.currentFile && this.currentFile.path ) {
+      file.path = this.currentFile.path;
+    }
+    if ( !file.mime && this.currentFile && this.currentFile.mime ) {
+      file.mime = this.currentFile.mime;
+    }
+
+    this._doSave(file);
   };
 
   /**
    * Wrapper for save as action
    */
-  DefaultApplication.prototype._onSaveAs = function(file) {
-    file = file || this.currentFile;
-
+  DefaultApplication.prototype._onSaveAs = function() {
     var self = this;
-    if ( file ) {
-      if ( !file.path && this.currentFile ) {
-        file.path = this.currentFile.path;
+    if ( this.mainWindow ) {
+      var fn       = '/' + this.dialogOptions.defaultFilename; // FIXME
+      var mime     = this.dialogOptions.defaumtMime;
+      var opt      = Utils.cloneObject(this.dialogOptions);
+      opt.type     =  'save';
+      opt.path     = Utils.dirname(fn);
+      opt.filename = Utils.filename(fn);
+
+      if ( this.currentFile && this.currentFile.mime ) {
+        mime = this.currentFile.mime;
       }
-      if ( !file.mime && this.currentFile ) {
-        file.mime = this.currentFile.mime;
+      if ( this.currentFile && this.currentFile.path ) {
+        opt.path = Utils.dirname(this.currentFile.path);
+        opt.filename = Utils.filename(this.currentFile.filename);
       }
 
-      if ( this.mainWindow ) {
-        this.mainWindow._toggleDisabled(true);
-        var opt = Utils.cloneObject(this.dialogOptions);
-        opt.type =  'save';
-        opt.path = Utils.dirname(file.path);
-        opt.filename = file.filename;
-
-        this._createDialog('File', [opt, function(btn, item) {
-          if ( self.mainWindow ) {
-            self.mainWindow._toggleDisabled(false);
-          }
-          if ( btn !== 'ok' ) { return; }
-          self._doSave(item);
-        }], this.mainWindow);
-      }
+      this.mainWindow._toggleDisabled(true);
+      this._createDialog('File', [opt, function(btn, item) {
+        if ( self.mainWindow ) {
+          self.mainWindow._toggleDisabled(false);
+        }
+        if ( btn !== 'ok' ) { return; }
+        if ( !item.mime ) { item.mime = mime; }
+        self._doSave(item);
+      }], this.mainWindow);
     }
   };
 
@@ -433,10 +442,10 @@
       });
     }
 
-    if ( file ) {
+    if ( file && file.path ) {
       _openFile(file);
     } else {
-      opt.path = (this.currentFile) ? Utils.dirname(this.currentFile.path) : null;
+      opt.path = (this.currentFile && this.currentFile.path) ? Utils.dirname(this.currentFile.path) : null;
 
       this.mainWindow._toggleDisabled(true);
 
@@ -464,7 +473,11 @@
    */
   DefaultApplication.prototype._setCurrentFile = function(file) {
     this.currentFile = file || null;
-    this._setArgument('file', this.currentFile);
+    var data = file;
+    if ( data instanceof VFS.File ) {
+      data = this.currentFile.getData();
+    }
+    this._setArgument('file', data);
   };
 
 

@@ -259,7 +259,7 @@
         if ( this.$fileView ) {
           var root = this.$fileView.getPath();
           if ( this.$input ) {
-            result = root + '/' + this.$input.getValue();
+            result = root + (root.match(/\/$/) ? '' : '/') + this.$input.getValue();
           } else {
             result = this.selectedFile;
           }

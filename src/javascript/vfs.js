@@ -60,12 +60,18 @@
   // FILE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
 
-  function OFile(arg) {
+  function OFile(arg, mime) {
+    if ( !arg ) {
+      throw 'File expects at least one argument';
+    }
     if ( typeof arg === 'object' ) {
       this.setData(arg);
     } else if ( typeof arg === 'string' ) {
       this.path = arg;
       this.filename = Utils.filename(arg);
+    }
+    if ( mime ) {
+      this.mime = mime;
     }
   }
 
