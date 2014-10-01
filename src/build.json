@@ -20,6 +20,11 @@
         "Sounds":           true,
         "Locale":           "en_EN",
         "VersionAppend":    "",
+        "VFS": {
+          "GoogleDrive": {
+            "ClientId": "102829789507-17p4beok9ecfsen8n5kvi6h0mckdh9an.apps.googleusercontent.com"
+          }
+        },
         "Languages":        {
           "en_EN": "English",
           "no_NO": "Norsk (Norwegian)",
@@ -75,6 +80,8 @@
       "src/javascript/locales.js",
       "src/javascript/core.js",
       "src/javascript/vfs.js",
+      "src/javascript/vfs/internal.js",
+      "src/javascript/vfs/googledrive.js",
       "src/javascript/windows.js",
       "src/javascript/helpers.js",
       "src/javascript/locales/en_EN.js",
