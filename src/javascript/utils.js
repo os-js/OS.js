@@ -253,7 +253,8 @@
   OSjs.Utils.dirname = function(f) {
     var tmp = f.split('/');
     tmp.pop();
-    return tmp.join('/');
+    var result = tmp.join('/');
+    return f.match(/^\//) && !result ? '/' : result;
   };
 
   OSjs.Utils.filename = function(p) {
