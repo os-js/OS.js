@@ -356,9 +356,13 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
     var dirs;
     for ( var i = 0; i < REPOS.length; i++ ) {
-      dirs = getDirs(_path.join(ROOT, 'src', 'packages', REPOS[i]));
-      for ( var d = 0; d < dirs.length; d++ ) {
-        build_package(REPOS[i], dirs[d]);
+      try {
+        dirs = getDirs(_path.join(ROOT, 'src', 'packages', REPOS[i]));
+        for ( var d = 0; d < dirs.length; d++ ) {
+          build_package(REPOS[i], dirs[d]);
+        }
+      } catch ( e ) {
+        console.warn('\033[1;33mWARNING:\033[0m Failed to list directory', REPOS[i], e);
       }
     }
 
@@ -561,7 +565,11 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         repo = REPOS[i];
         console.log("\033[1;34mScanning repository '%s':\033[0m", repo);
         src = _path.join(ROOT, dist, 'packages');
-        scan_packages(src, repo);
+        try {
+          scan_packages(src, repo);
+        } catch ( e ) {
+          console.warn('\033[1;33mWARNING:\033[0m Failed to list directory', repo, e);
+        }
       }
 
       var dest = _path.join(ROOT, dist, 'packages.json');
