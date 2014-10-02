@@ -527,7 +527,7 @@
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
     description: 'Google Drive',
-    enabled: true,
+    enabled: false,
     root: 'google-drive:///',
     icon: 'places/google-drive.png',
     match: /^google-drive\:\/\//,
