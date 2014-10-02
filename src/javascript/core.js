@@ -43,7 +43,7 @@
   OSjs.Hooks        = {};
   OSjs.Core         = {};
   OSjs.API          = {};
-  OSjs.Version      = '2.0-alpha23';
+  OSjs.Version      = '2.0-alpha24';
 
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HOOKS

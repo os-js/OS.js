@@ -1,3 +1,18 @@
+# 2.0.0-alpha24
+
+WARNING: API Change
+
+* VFS: New VFS wrapping
+* VFS: Google Drive integration
+* API: You must now pass an object around for files
+* API: Moved ALL file functions to VFS namespace
+* Dialogs: ApplicationChooser crash prevension on arguments
+* CoreWM: Fixed IconView style
+* CoreWM: Added Desktop context menu to IconView
+* CoreWM: Fixed a hook in IconView
+* Themes: Removed deprecated loading GIFs
+* GUI: Finished PanedView
+
 # 2.0.0-alpha23
 
 * Version stamp now created on startup
@@ -16,7 +31,7 @@
 
 # 2.0.0-alpha21
 
-Version bump - WARNING: API Change
+WARNING: API Change
 
 * Core: Removed 'Main' Class
 * Core: Refactored Application::init(core, settings, metadata) => Application(settings, metadata)
