@@ -41,7 +41,7 @@
   /**
    * Perform VFS request
    */
-  function request(test, method, args) {
+  function request(test, method, args, callback) {
     var m = OSjs.VFS.Modules;
     var d = 'Internal';
 
@@ -56,7 +56,7 @@
       });
     }
 
-    m[d].request(method, args);
+    m[d].request(method, args, callback);
   }
 
   /**
@@ -184,8 +184,7 @@
   OSjs.VFS.scandir = function(item, callback) {
     console.info('VFS::read()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
-
-    request(item.path, 'scandir', [item, callback]);
+    request(item.path, 'scandir', [item], callback);
   };
 
   /**
@@ -194,7 +193,7 @@
   OSjs.VFS.write = function(item, data, callback) {
     console.info('VFS::write()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
-    request(item.path, 'write', [item, data, callback]);
+    request(item.path, 'write', [item, data], callback);
   };
 
   /**
@@ -203,7 +202,7 @@
   OSjs.VFS.read = function(item, callback) {
     console.info('VFS::read()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
-    request(item.path, 'read', [item, callback]);
+    request(item.path, 'read', [item], callback);
   };
 
   /**
@@ -220,7 +219,7 @@
       return;
     }
 
-    request(null, 'copy', [src, dest, callback]);
+    request(null, 'copy', [src, dest], callback);
   };
 
   /**
@@ -237,7 +236,7 @@
       return;
     }
 
-    request(null, 'move', [src, dest, callback]);
+    request(null, 'move', [src, dest], callback);
   };
   OSjs.VFS.rename = function(src, dest, callback) {
     OSjs.VFS.move.apply(this, arguments);
@@ -249,7 +248,7 @@
   OSjs.VFS.unlink = function(item, callback) {
     console.info('VFS::unlink()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
-    request(item.path, 'unlink', [item, callback]);
+    request(item.path, 'unlink', [item], callback);
   };
   OSjs.VFS['delete'] = function(item, callback) {
     OSjs.VFS.unlink.apply(this, arguments);
@@ -261,7 +260,7 @@
   OSjs.VFS.mkdir = function(item, callback) {
     console.info('VFS::mkdir()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
-    request(item.path, 'mkdir', [item, callback]);
+    request(item.path, 'mkdir', [item], callback);
   };
 
   /**
@@ -270,7 +269,7 @@
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
-    request(item.path, 'exists', [item, callback]);
+    request(item.path, 'exists', [item], callback);
   };
 
   /**
@@ -279,7 +278,7 @@
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
     if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
-    request(item.path, 'fileinfo', [item, callback]);
+    request(item.path, 'fileinfo', [item], callback);
   };
 
   /**
@@ -293,7 +292,7 @@
       return;
     }
 
-    request(path, 'url', [item, callback]);
+    request(path, 'url', [item], callback);
   };
 
   /**
@@ -313,7 +312,7 @@
     }
     if ( args.destination.match(/^google-drive\:\/\//) ) {
       args.files.forEach(function(f, i) {
-        request(args.destination, 'upload', [f, args.destination, callback]);
+        request(args.destination, 'upload', [f, args.destination], callback);
       });
       return;
     }

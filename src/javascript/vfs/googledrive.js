@@ -93,30 +93,6 @@
     }
   }
 
-  var getGoogleDrive = (function() {
-    var _gd;
-    return function(callback) {
-      callback = callback || function() {};
-      var clientId = null;
-      var handler = API.getHandlerInstance();
-      if ( handler ) {
-        try {
-          clientId = handler.getConfig('Core').VFS.GoogleDrive.ClientId;
-        } catch ( e ) {
-          console.warn("getGoogleDrive()", e, e.stack);
-        }
-      }
-      if ( !_gd ) {
-        _gd = new GoogleDrive(clientId);
-        _gd.init(function() {
-          callback(_gd);
-        });
-      } else {
-        callback(_gd);
-      }
-    };
-  })();
-
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -146,16 +122,21 @@
     function preloaded(error) {
       if ( !error ) {
         self.doInit(function(success) {
+          console.debug('GoogleDrive::init() => doInit()', success);
           if ( success ) {
             self.doAuthentication(function(success) {
+              console.debug('GoogleDrive::init() => doAuthentication()', success);
               if ( success ) {
                 self.doDriveLoad(function(success) {
+                  console.debug('GoogleDrive::init() => doDriveLoad()', success);
                   if ( success ) {
-                    callback(false);
+                    callback(false, true);
                   }
                 });
               }
             });
+          } else {
+            callback('Google Drive API failed to load');
           }
         });
         return;
@@ -178,6 +159,11 @@
     console.info('GoogleDrive::doInit()');
 
     callback = callback || function() {};
+
+    if ( !window.gapi || !gapi.load ) {
+      callback(false);
+      return;
+    }
 
     gapi.load('auth:client,drive-realtime,drive-share', function() {
       callback(true);
@@ -475,21 +461,63 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  var getGoogleDrive = (function() {
+    var _gd;
+    return function(callback, onerror) {
+      callback = callback || function() {};
+      onerror  = onerror  || function() {};
+
+      var clientId = null;
+      var handler = API.getHandlerInstance();
+      if ( handler ) {
+        try {
+          clientId = handler.getConfig('Core').VFS.GoogleDrive.ClientId;
+        } catch ( e ) {
+          console.warn("getGoogleDrive()", e, e.stack);
+        }
+      }
+
+      function done() {
+        try {
+          callback(_gd);
+        } catch ( e ) {
+          console.error(e);
+          console.warn('Stack trace', e.stack);
+          onerror(e.toString());
+        }
+      }
+
+      if ( !_gd ) {
+        _gd = new GoogleDrive(clientId);
+        _gd.init(function(error) {
+          if ( error ) {
+            onerror(error);
+          } else {
+            done();
+          }
+        });
+      } else {
+        done();
+      }
+    };
+  })();
+
   function makeRequest(name, args, callback) {
     args = args || [];
-    callback = callback || {};
+    callback = callback || function() {};
 
     getGoogleDrive(function(instance) {
       if ( !instance ) {
         throw 'No GoogleDrive instance was created. Load error ?';
-      }
-      if ( !instance[name] ) {
+      } else if ( !instance[name] ) {
         throw 'Invalid GoogleDrive API call name';
       }
+
       var fargs = args;
       fargs.push(callback);
-
       instance[name].apply(instance, fargs);
+    }, function(error) {
+      callback(error);
     });
   }
 
@@ -499,7 +527,7 @@
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
     description: 'Google Drive',
-    enabled: false,
+    enabled: true,
     root: 'google-drive:///',
     icon: 'places/google-drive.png',
     match: /^google-drive\:\/\//,
