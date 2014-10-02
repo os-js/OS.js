@@ -44,9 +44,15 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
 (function(argv, _fs, _path, _exec) {
 
+  var buildFile = _path.join(ROOT, "src", "build.json");
+  if ( _fs.existsSync(_path.join(ROOT, "src", "build.custom.json")) ) {
+    buildFile = _path.join(ROOT, "src", "build.custom.json");
+    console.log('Using', buildFile);
+  }
+
   var ROOT    = _path.join(__dirname, '../../');
   var LESSC   = _path.join(ROOT, 'node_modules/less/bin/lessc');
-  var BUILD   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "build.json")));
+  var BUILD   = JSON.parse(_fs.readFileSync(buildFile));
   var REPOS   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "packages", "repositories.json")));
   var MIMES   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "mime.json")));
   var HANDLER = '';

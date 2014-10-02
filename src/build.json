@@ -23,7 +23,7 @@
         "VFS": {
           "GoogleDrive": {
             "Enabled": false,
-            "ClientId": "102829789507-17p4beok9ecfsen8n5kvi6h0mckdh9an.apps.googleusercontent.com"
+            "ClientId": ""
           }
         },
         "Languages":        {
