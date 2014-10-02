@@ -496,7 +496,13 @@
 
   Image.prototype.setData = function(img) {
     var layer;
-    if ( (img instanceof Image) || (img instanceof HTMLImageElement) ) {
+    if ( (window.Uint8Array && (img instanceof Uint8Array)) ) {
+      this.clear();
+
+      layer = this.createLayer("Default", 0, 0, true);
+      layer.setRawData(img);
+      return true;
+    } else if ( (img instanceof Image) || (img instanceof HTMLImageElement) ) {
       this.clear();
 
       layer = this.createLayer("Default", 0, 0, true);
@@ -614,6 +620,18 @@
       self.setData(this);
     };
     im.src = dataurl;
+  };
+
+  Layer.prototype.setRawData = function(bytes) {
+    if ( this.context ) {
+      var ctx   = this.context.canvas;
+      console.warn(ctx.width, ctx.height);
+      var image = this.context.createImageData(ctx.width, ctx.height);
+      for (var i=0; i<bytes.length; i++) {
+        image.data[i] = bytes[i];
+      }
+      this.context.drawImage(image, 0, 0);
+    }
   };
 
   Layer.prototype.setData = function(img, x, y) {

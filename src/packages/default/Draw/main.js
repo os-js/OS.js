@@ -961,19 +961,54 @@
       }
     };
 
-    var _openConverted = function() {
-      var img = new Image();
-      img.onerror = function() {
-        self.onError("Failed to load image data", "doOpen");
-      };
-      img.onload = function() {
-        self._setCurrentFile(file);
+    var _openConvertedCb = function(result, width, height) {
+      self._setCurrentFile(file);
 
-        if ( win ) {
-          win.setImage(file.path, this);
-        }
-      };
-      img.src = data;
+      if ( win ) {
+        win.setImage(file.path, result, width, height);
+      }
+    };
+
+    /*
+    var _openConvertedNew = function(url, img) {
+      var bytes = new Uint8Array(data.length);
+      for (var i=0; i<data.length; i++) {
+        bytes[i] = data.charCodeAt(i);
+      }
+
+      _openConvertedCb(data, img.width, img.height);
+    };
+    */
+
+    var _openConverted = function() {
+      if ( !data.match(/^data\:/) ) {
+        OSjs.VFS.url(file, function(error, url) {
+          if ( error ) {
+            self.onError("Failed to load image", error, "doOpen");
+            return;
+          }
+
+          var tmp = new Image();
+          tmp.onerror = function() {
+            self.onError("Failed to load image data (raw)", "doOpen");
+          };
+          tmp.onload = function() {
+            //_openConvertedNew(url, this);
+            _openConvertedCb(this);
+          };
+          tmp.src = url;
+        });
+
+      } else {
+        var img = new Image();
+        img.onerror = function() {
+          self.onError("Failed to load image data", "doOpen");
+        };
+        img.onload = function() {
+          _openConvertedCb(this);
+        };
+        img.src = data;
+      }
     };
 
     if ( ext === "odraw" ) {
