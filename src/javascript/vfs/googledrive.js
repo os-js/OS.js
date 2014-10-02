@@ -245,7 +245,6 @@
     });
   };
 
-  // TODO: _opts
   GoogleDrive.prototype.scandir = function(item, callback) {
     var dir = item.path;
     console.info('GoogleDrive::scandir()', dir);
@@ -284,6 +283,7 @@
             type: iter.kind === 'drive#file' ? 'file' : 'dir'
           }));
         });
+        result = OSjs.VFS.filterScandir(result, item._opts);
       }
       callback(false, result, list);
     });

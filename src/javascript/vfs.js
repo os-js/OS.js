@@ -38,6 +38,9 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Perform VFS request
+   */
   function request(test, method, args) {
     var m = OSjs.VFS.Modules;
     var d = 'Internal';
@@ -55,6 +58,52 @@
 
     m[d].request(method, args);
   }
+
+  /**
+   * Filters a scandir() request
+   */
+  function filterScandir(list, options) {
+    options = options || {};
+    var result = [];
+
+    var typeFilter = options.typeFilter || null;
+    var mimeFilter = options.mimeFilter || [];
+    list.forEach(function(iter) {
+      if ( typeFilter && iter.type !== typeFilter ) {
+        return;
+      }
+
+      if ( mimeFilter && mimeFilter.length && iter.mime ) {
+        var valid = false;
+        mimeFilter.forEach(function(miter) {
+          if ( iter.mime.match(miter) ) {
+            valid = true;
+            return false;
+          }
+          return true;
+        });
+
+        if ( !valid ) {
+          return;
+        }
+      }
+
+      result.push(iter);
+    });
+
+    var tree = {dirs: [], files: []};
+    for ( var i = 0; i < result.length; i++ ) {
+      if ( result[i].type == 'dir' ) {
+        tree.dirs.push(result[i]);
+      } else {
+        tree.files.push(result[i]);
+      }
+    }
+
+    return tree.dirs.concat(tree.files);
+  }
+
+  OSjs.VFS.filterScandir = filterScandir;
 
   /////////////////////////////////////////////////////////////////////////////
   // FILE ABSTRACTION

@@ -37,20 +37,6 @@
     return mode; // TODO
   };
 
-  var sortReaddir = function(list) {
-    var tree = {dirs: [], files: []};
-    for ( var i = 0; i < list.length; i++ ) {
-      if ( list[i].type == 'dir' ) {
-        tree.dirs.push(list[i]);
-      } else {
-        tree.files.push(list[i]);
-      }
-    }
-
-    return tree.dirs.concat(tree.files);
-  };
-
-
   var vfs = {
     getMime : function(file, config) {
       var i = file.lastIndexOf("."),
@@ -241,8 +227,6 @@
 
     scandir : function(args, request, respond, config) {
       var path = args[0];
-      var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-
       var fullPath = _path.join(config.vfsdir, path);
 
       _fs.readdir(fullPath, function(error, files) {
@@ -268,8 +252,7 @@
             });
           }
 
-          var tree = sortReaddir(result);
-          respond({result: tree, error: null});
+          respond({result: result, error: null});
         }
       });
     }

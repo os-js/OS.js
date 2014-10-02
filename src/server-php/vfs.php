@@ -62,32 +62,6 @@ class MIME
  */
 class FS
 {
-  protected static function sortdir($list) {
-    $result = Array();
-    $order = Array('dir', 'application', 'file');
-
-    $tmp = Array();
-    foreach ( $list as $i ) {
-      if ( !isset($tmp[$i['type']]) ) {
-        $tmp[$i['type']] = Array();
-      }
-      $tmp[$i['type']][$i['filename']] = $i;
-    }
-
-    foreach ( array_keys($tmp) as $k ) {
-      ksort($tmp[$k]);
-    }
-
-    foreach ( $order as $o ) {
-      if ( isset($tmp[$o]) ) {
-        foreach ( $tmp[$o] as $f ) {
-          $result[] = $f;
-        }
-      }
-    }
-
-    return $result;
-  }
 
   public static function scandir($orgdir, Array $opts = Array()) {
     $dirname = VFSDIR . $orgdir;
@@ -100,6 +74,37 @@ class FS
       throw new Exception("Permission denied in '{$orgdir}'");
     }
 
+    $files = scandir($dirname);
+    foreach ( $files as $fname ) {
+      if ( $fname == "." || ($orgdir == "/" && $fname == "..") ) continue;
+
+      $ofpath = truepath(str_replace("//", "/", sprintf("%s/%s", $orgdir, $fname)));
+      $fpath  = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
+      $ftype  = is_dir($fpath) ? 'dir' : 'file';
+      $fsize  = 0;
+      $fmime  = null;
+
+      if ( is_writable($fpath) || is_readable($fpath) ) {
+        $fmime = fileMime($fpath);
+        if ( $ftype !== 'dir' ) {
+          if ( ($s = filesize($fpath)) !== false ) {
+            $fsize = $s;
+          }
+        }
+      }
+
+      $list[] = Array(
+        'filename' => htmlspecialchars($fname),
+        'path'     => htmlspecialchars($ofpath),
+        'size'     => $fsize,
+        'mime'     => $fmime,
+        'type'     => $ftype
+      );
+    }
+
+    return $list;
+
+    /*
     $list = Array();
     $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
     $typeFilter = empty($opts['typeFilter']) ? null    : $opts['typeFilter'];
@@ -160,6 +165,7 @@ class FS
     }
 
     return self::sortdir($list);
+     */
   }
 
   public static function write($fname, $content, $opts = null) {

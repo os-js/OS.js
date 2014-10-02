@@ -52,16 +52,15 @@
 
   var InternalStorage = {};
   InternalStorage.scandir = function(item, callback) {
-    internalCall('scandir', [item.path, item._opts], function(error, result) {
+    internalCall('scandir', [item.path], function(error, result) {
+      var list = [];
       if ( result ) {
-        var tmp = [];
+        result = OSjs.VFS.filterScandir(result, item._opts);
         result.forEach(function(iter) {
-          tmp.push(new OSjs.VFS.File(iter));
+          list.push(new OSjs.VFS.File(iter));
         });
-        result = tmp;
       }
-
-      callback(error, result);
+      callback(error, list);
     });
   };
   InternalStorage.write = function(item, data, callback) {
