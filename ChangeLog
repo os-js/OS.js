@@ -1,3 +1,15 @@
+# 2.0.0-alpha25
+
+* VFS: Moved server-side code into client
+* VFS: GoogleDrive improvments
+* VFS: Better error handling
+* VFS: Moved all configuration to build.json
+* Themes: Added Google Drive icons
+* Application - Draw: Updated VFS support
+* Dialogs - File: Now selects appropriate VFS module in selection box
+* obt: Added support for custom build.json files
+* obt: Prevent crash on repo dir non existent
+
 # 2.0.0-alpha24
 
 WARNING: API Change
