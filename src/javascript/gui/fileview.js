@@ -606,6 +606,7 @@
     }
 
     var file = new VFS.File(dir);
+    file.type  = 'dir';
     file._opts = {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter};
     VFS.scandir(file, function(error, result) {
       if ( error ) {

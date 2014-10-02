@@ -232,7 +232,7 @@
   };
 
   GoogleDrive.prototype.scandir = function(item, callback) {
-    var dir = item.path;
+    var dir = item.type === 'dir' ? item.path : (Utils.dirname(item.path) + '/'); // FIXME
     console.info('GoogleDrive::scandir()', dir);
 
     function retrieveAllFiles(cb) {
@@ -317,24 +317,34 @@
   GoogleDrive.prototype.write = function(file, data, callback) {
     console.info('GoogleDrive::write()', file);
 
-    var fileData = createBoundary(file, data, function(error, fileData) {
-      var request = gapi.client.request({
-        path: '/upload/drive/v2/files',
-        method: 'POST',
-        params: {uploadType: 'multipart'},
-        headers: {'Content-Type': fileData.contentType},
-        body: fileData.body
-      });
+    this.exists(file, function(error, exists) {
+      var uri = '/upload/drive/v2/files';
+      var method = 'POST';
+      if ( !error && exists ) {
+        uri = '/upload/drive/v2/files/' + exists.id;
+        method = 'PUT';
+      }
+      var fileData = createBoundary(file, data, function(error, fileData) {
+        var request = gapi.client.request({
+          path: uri,
+          method: method,
+          params: {uploadType: 'multipart'},
+          headers: {'Content-Type': fileData.contentType},
+          body: fileData.body
+        });
 
-      request.execute(function(resp) {
-        console.info('GoogleDrive::write()', '=>', resp);
-        if ( resp && resp.id ) {
-          callback(false, true);
-        } else {
-          callback('Failed to write file');
-        }
+        request.execute(function(resp) {
+          console.info('GoogleDrive::write()', '=>', resp);
+          if ( resp && resp.id ) {
+            callback(false, true);
+          } else {
+            callback('Failed to write file');
+          }
+        });
       });
     });
+
+
   };
 
   GoogleDrive.prototype.copy = function(src, dest, callback) {
@@ -378,7 +388,7 @@
     console.info('GoogleDrive::exists()', item);
 
     // FIXME Is there a better way to do this ?
-    this.scandir(Utils.dirname(item.path), function(error, result) {
+    this.scandir(item, function(error, result) {
       if ( error ) {
         callback('Failed to check existence: ' + error);
         return;
@@ -388,14 +398,15 @@
       if ( result ) {
         result.forEach(function(iter) {
           if ( iter.path === item.path ) {
-            found = true;
+            found = new OSjs.VFS.File(item.path, iter.mimeType);
+            found.id = iter.id;
             return false;
           }
           return true;
         });
       }
 
-      callback(false, !found);
+      callback(false, found);
     });
   };
 
