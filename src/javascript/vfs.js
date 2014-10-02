@@ -69,6 +69,10 @@
     var typeFilter = options.typeFilter || null;
     var mimeFilter = options.mimeFilter || [];
     list.forEach(function(iter) {
+      if ( iter.mime === 'application/vnd.google-apps.folder' ) {
+        iter.type = 'dir';
+      }
+
       if ( typeFilter && iter.type !== typeFilter ) {
         return;
       }
@@ -296,6 +300,7 @@
    * Upload file(s)
    */
   OSjs.VFS.upload = function(args, callback) {
+    console.info('VFS::upload()', args);
     args = args || {};
     if ( !(args.app instanceof OSjs.Core.Process) ) {
       throw 'upload() expects an Application reference';
@@ -306,9 +311,10 @@
     if ( !args.destination ) {
       throw 'upload() expects a destination';
     }
-    // TODO
-    if ( args.destination.match(/google-drive\:\/\//) ) {
-      callback('upload() does not support google-drive yet');
+    if ( args.destination.match(/^google-drive\:\/\//) ) {
+      args.files.forEach(function(f, i) {
+        request(args.destination, 'upload', [f, args.destination, callback]);
+      });
       return;
     }
 
@@ -343,6 +349,7 @@
     var _didx = 1;
 
     return function(args, callback) {
+      console.info('VFS::download()', args);
       args = args || {};
       if ( !args.path ) {
         throw 'download() expects a path';

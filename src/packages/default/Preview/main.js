@@ -101,24 +101,25 @@
     }
   };
 
-  ApplicationPreviewWindow.prototype.setPreview = function(t, mime) {
-    console.log("ApplicationPreviewWindow::setPreview()", t, mime);
+  ApplicationPreviewWindow.prototype.setPreview = function(file) {
+    console.log("ApplicationPreviewWindow::setPreview()", file);
 
     this.loaded = false;
 
     var self = this;
+    var el;
+
     if ( this.previewElement && this.previewElement.parentNode ) {
       this.previewElement.parentNode.removeChild(this.previewElement);
       this.previewElement = null;
     }
 
-    var el;
-    if ( t ) {
+    if ( file.path ) {
       this.frame.setScroll(false, false);
       try {
-        if ( mime.match(/^image/) ) {
+        if ( file.mime.match(/^image/) ) {
           el = document.createElement('img');
-          el.alt = t;
+          el.alt = file.filename;
           el.onload = function() {
             if ( self.frame ) {
               self._resizeTo(this.width, this.height, true, false, self.previewElement);
@@ -126,13 +127,13 @@
           };
 
           this.frame.setScroll(true, true);
-        } else if ( mime.match(/^audio/) ) {
+        } else if ( file.mime.match(/^audio/) ) {
           el = document.createElement('audio');
           el.controls = "controls";
           el.autoplay = "autoplay";
           this._resize(640, 480);
           this.loaded = true;
-        } else if ( mime.match(/^video/) ) {
+        } else if ( file.mime.match(/^video/) ) {
           el = document.createElement('video');
           el.controls = "controls";
           el.autoplay = "autoplay";
@@ -146,7 +147,7 @@
         }
 
         if ( el ) {
-          VFS.url(t, function(error, result) {
+          VFS.url(file, function(error, result) {
             if ( !error && el ) {
               el.src = result;
             }
@@ -162,7 +163,7 @@
       this.frame.addElement(this.previewElement, true);
     }
 
-    this._setTitle(t ? (this.title + " - " + OSjs.Utils.filename(t)) : this.title);
+    this._setTitle(file && file.path ? (this.title + " - " + OSjs.Utils.filename(file.path)) : this.title);
   };
 
   ApplicationPreviewWindow.prototype._resize = function(w, h) {
@@ -204,7 +205,7 @@
 
   ApplicationPreview.prototype.onOpen = function(file, data) {
     if ( this.mainWindow ) {
-      this.mainWindow.setPreview(file.path, file.mime);
+      this.mainWindow.setPreview(file);
       this.mainWindow._focus();
     }
   };

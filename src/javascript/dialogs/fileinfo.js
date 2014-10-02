@@ -33,8 +33,9 @@
   /**
    * File Information Dialog
    */
-  var FileInformationDialog = function(path, onClose) {
-    this.path = path;
+  var FileInformationDialog = function(file, onClose) {
+    this.path = file ? file.path : null;
+    this.file = file;
     onClose = onClose || function() {};
     StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._('File Information'), buttonCancel: false, buttonOkLabel: OSjs._('Close')}, {width:300, height:370}, onClose]);
   };
@@ -65,7 +66,7 @@
       txt.setValue(info.join('\n\n'));
     }
 
-    OSjs.VFS.fileinfo(this.path, function(error, result) {
+    OSjs.VFS.fileinfo(this.file, function(error, result) {
       if ( error ) {
         _onError(error);
         return;

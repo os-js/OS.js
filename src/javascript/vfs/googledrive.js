@@ -180,7 +180,7 @@
     callback = callback || function() {};
 
     gapi.load('auth:client,drive-realtime,drive-share', function() {
-      callback(true); // FIXME
+      callback(true);
     });
   };
 
@@ -240,8 +240,8 @@
 
   GoogleDrive.prototype.doDriveLoad = function(callback) {
     callback = callback || function() {};
-    gapi.client.load('drive', 'v2', function(resp) {
-      callback(true); // FIXME
+    gapi.client.load('drive', 'v2', function() {
+      callback(true);
     });
   };
 
@@ -274,9 +274,14 @@
       var result = [];
       if ( list ) {
         list.forEach(function(iter, i) {
+          var path = dir;
+          if ( !path.match(/\/$/) ) {
+            path += '/';
+          }
+          path += iter.title;
           result.push(new OSjs.VFS.File({
             filename: iter.title,
-            path: dir + '/' + iter.title,
+            path: path,
             id:   iter.id,
             size: iter.quotaBytesUsed,
             mime: iter.mimeType,
@@ -297,21 +302,23 @@
     });
 
     request.execute(function(file) {
-      console.info('GoogleDrive::read()', file);
+      console.info('GoogleDrive::read()', '=>', file);
 
-      // FIXME: Check for error
-
-      var accessToken = gapi.auth.getToken().access_token;
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', file.downloadUrl);
-      xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-      xhr.onload = function() {
-        callback(false, xhr.responseText);
-      };
-      xhr.onerror = function() {
-        callback('XHR Error');
-      };
-      xhr.send();
+      if ( file && file.id ) {
+        var accessToken = gapi.auth.getToken().access_token;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', file.downloadUrl);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.onload = function() {
+          callback(false, xhr.responseText);
+        };
+        xhr.onerror = function() {
+          callback('XHR Error');
+        };
+        xhr.send();
+      } else {
+        callback('Failed to fetch file');
+      }
     });
   };
 
@@ -329,7 +336,11 @@
 
       request.execute(function(resp) {
         console.info('GoogleDrive::write()', '=>', resp);
-        callback(false, true); // FIXME
+        if ( resp && resp.id ) {
+          callback(false, true);
+        } else {
+          callback('Failed to write file');
+        }
       });
     });
   };
@@ -357,7 +368,11 @@
     });
     request.execute(function(resp) {
       console.info('GoogleDrive::unlink()', '=>', resp);
-      callback(false, true); // FIXME
+      if ( resp && (typeof resp.result === 'object') ) {
+        callback(false, true);
+      } else {
+        callback('Failed to unlink file');
+      }
     });
   };
 
@@ -398,10 +413,24 @@
     callback('GoogleDrive::fileinfo() not implemented yet');
   };
 
-  // TODO
   GoogleDrive.prototype.url = function(item, callback) {
     console.info('GoogleDrive::url()', item);
-    callback('GoogleDrive::url() not implemented yet');
+    if ( !item || !item.id ) {
+      throw 'url() expects a File ref with Id';
+    }
+
+    var request = gapi.client.drive.files.get({
+      fileId: item.id
+    });
+
+    request.execute(function(file) {
+      console.info('GoogleDrive::url()', file);
+      if ( file && file.webContentLink ) {
+        callback(false, file.webContentLink);
+      } else {
+        callback('Failed to get URL or file not found!');
+      }
+    });
   };
 
   GoogleDrive.prototype.mkdir = function(dir, callback) {
@@ -410,16 +439,36 @@
       'path': '/drive/v2/files',
       'method': 'POST',
       'body': JSON.stringify({
-        title: Utils.filename(dir),
-        parents: null,
+        title: dir.filename,
+        parents: null, // TODO
         mimeType: 'application/vnd.google-apps.folder'
       })
     });
 
     request.execute(function(resp) {
       console.info('GoogleDrive::mkdir()', '=>', resp);
-      callback(false, true); // FIXME
+      if ( resp && resp.id ) {
+        callback(false, true);
+      } else {
+        callback('Failed to create directory');
+      }
     });
+  };
+
+  GoogleDrive.prototype.upload = function(file, dest, callback) {
+    dest = dest.replace(OSjs.VFS.Modules.GoogleDrive.match, '');
+    if ( !dest.match(/\/$/) ) {
+      dest += '/';
+    }
+
+    var item = new OSjs.VFS.File({
+      filename: file.name,
+      path: dest + file.name,
+      mime: file.type,
+      size: file.size
+    });
+
+    this.write(item, file, callback);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -427,7 +476,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function makeRequest(name, args, callback) {
-    console.error("XXX", name, args);
     args = args || [];
     callback = callback || {};
 
@@ -450,11 +498,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
-    description: 'Google Drive Storage',
+    description: 'Google Drive',
     enabled: false,
     root: 'google-drive:///',
-    icon: 'places/folder-documents.png',
-    match: /google-drive\:\/\//,
+    icon: 'places/google-drive.png',
+    match: /^google-drive\:\/\//,
     request: makeRequest
   };
 
