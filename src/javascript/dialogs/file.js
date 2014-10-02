@@ -191,13 +191,17 @@
       Utils.$addClass(this.$element, 'HasRootSelection');
       this.$selectRoot = this._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
         if ( self.$fileView ) {
-          self.$fileView.chdir(value);
+          var root = VFS.Modules[value].root;
+          self.$fileView.chdir(root);
         }
       }}), this.$element);
 
       roots.forEach(function(m, i) {
-        self.$selectRoot.addItem(m.module.root, m.module.description);
+        self.$selectRoot.addItem(m.name, m.module.description);
       });
+
+      var cur = OSjs.VFS.getModuleFromPath(this.path);
+      this.$selectRoot.setSelected(cur);
     }
 
     return root;
