@@ -400,6 +400,7 @@
           if ( iter.path === item.path ) {
             found = new OSjs.VFS.File(item.path, iter.mimeType);
             found.id = iter.id;
+            fount.title = iter.title;
             return false;
           }
           return true;
