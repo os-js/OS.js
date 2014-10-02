@@ -38,10 +38,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Perform VFS request
-   */
-  function request(test, method, args, callback) {
+  function getModuleFromPath(test) {
     var m = OSjs.VFS.Modules;
     var d = 'Internal';
 
@@ -56,6 +53,15 @@
       });
     }
 
+    return d;
+  }
+
+  /**
+   * Perform VFS request
+   */
+  function request(test, method, args, callback) {
+    var m = OSjs.VFS.Modules;
+    var d = getModuleFromPath(test);
     m[d].request(method, args, callback);
   }
 
@@ -107,8 +113,6 @@
     return tree.dirs.concat(tree.files);
   }
 
-  OSjs.VFS.filterScandir = filterScandir;
-
   /////////////////////////////////////////////////////////////////////////////
   // FILE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
@@ -154,8 +158,6 @@
       id: this.id
     };
   };
-
-  OSjs.VFS.File = OFile;
 
   /////////////////////////////////////////////////////////////////////////////
   // VFS METHODS
@@ -372,5 +374,12 @@
       });
     };
   })();
+
+  //
+  // Misc exports
+  //
+  OSjs.VFS.filterScandir = filterScandir;
+  OSjs.VFS.getModuleFromPath = getModuleFromPath;
+  OSjs.VFS.File = OFile;
 
 })(OSjs.Utils, OSjs.API);

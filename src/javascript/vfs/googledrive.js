@@ -252,8 +252,14 @@
           }
         });
       }
-      var initialRequest = gapi.client.drive.files.list();
-      retrievePageOfFiles(initialRequest, []);
+      try {
+        var initialRequest = gapi.client.drive.files.list();
+        retrievePageOfFiles(initialRequest, []);
+      } catch ( e ) {
+        console.warn('GoogleDrive::scandir() exception', e, e.stack);
+        console.warn('THIS ERROR OCCURS WHEN MULTIPLE REQUESTS FIRE AT ONCE ?!'); // FIXME
+        cb([]);
+      }
     }
 
     retrieveAllFiles(function(list) {
@@ -477,6 +483,11 @@
         }
       }
 
+      if ( !clientId ) {
+        onerror('GoogleDrive Module not configured or disabled');
+        return;
+      }
+
       function done() {
         try {
           callback(_gd);
@@ -527,7 +538,7 @@
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
     description: 'Google Drive',
-    enabled: false,
+    enabled: true,
     root: 'google-drive:///',
     icon: 'places/google-drive.png',
     match: /^google-drive\:\/\//,
