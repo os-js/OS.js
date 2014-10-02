@@ -127,7 +127,9 @@
     description: 'OS.js Storage',
     root: '/',
     icon: 'places/folder_home.png',
-    enabled: true,
+    enabled: function() {
+      return true;
+    },
     match: null,
     request: makeRequest
   };

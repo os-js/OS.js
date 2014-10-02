@@ -45,7 +45,7 @@
     if ( test !== null ) {
       Object.keys(m).forEach(function(name) {
         var i = m[name];
-        if ( i.enabled === true && i.match && test.match(i.match) ) {
+        if ( i.enabled() === true && i.match && test.match(i.match) ) {
           d = name;
           return false;
         }
@@ -170,7 +170,7 @@
     var m = OSjs.VFS.Modules;
     var a = [];
     Object.keys(m).forEach(function(name) {
-      if ( m[name].enabled ) {
+      if ( m[name].enabled() ) {
         a.push({
           name: name,
           module: m[name]

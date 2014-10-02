@@ -538,7 +538,19 @@
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
     description: 'Google Drive',
-    enabled: true,
+    enabled: function() {
+      var handler = API.getHandlerInstance();
+      if ( handler ) {
+        try {
+          if ( handler.getConfig('Core').VFS.GoogleDrive.Enabled ) {
+            return true;
+          }
+        } catch ( e ) {
+          console.warn("OSjs.VFS.Modules.GoogleDrive::enabled()", e, e.stack);
+        }
+      }
+      return false;
+    },
     root: 'google-drive:///',
     icon: 'places/google-drive.png',
     match: /^google-drive\:\/\//,
