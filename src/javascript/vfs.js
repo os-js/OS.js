@@ -215,7 +215,7 @@
 
     // TODO
     if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
-      callback('Not implemented');
+      callback('You cannot copy from OSjs to Google Drive yet :(');
       return;
     }
 
@@ -232,7 +232,7 @@
 
     // TODO
     if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
-      callback('Not implemented');
+      callback('You cannot move between OSjs and Google Drive yet :(');
       return;
     }
 
