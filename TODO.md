@@ -1,5 +1,8 @@
 
 # High-priority
+* _[VFS]_ Finish Google Drive implementation
+* _[VFS]_ Figure out copy between OSjs and Google Drive
+* _[VFS]_ Fix paths for File() object -- currently a bit messy
 * _[Documentation]_ Complete documentation for JavaScript
 * _[Backend]_ Finish Node.js backend
 * _[Locales]_ Finish the format strings
