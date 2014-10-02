@@ -103,69 +103,6 @@ class FS
     }
 
     return $list;
-
-    /*
-    $list = Array();
-    $mimeFilter = empty($opts['mimeFilter']) ? Array() : $opts['mimeFilter'];
-    $typeFilter = empty($opts['typeFilter']) ? null    : $opts['typeFilter'];
-
-    // We need to test for errors here!
-    $tmp = Array();
-    foreach ( $mimeFilter as $m ) {
-      if ( preg_match("/{$m}/", null) !== false ) {
-        $tmp[] = $m;
-      }
-    }
-    $mimeFilter = $tmp;
-
-    $files = scandir($dirname);
-    foreach ( $files as $fname ) {
-      if ( $orgdir == "/" && $fname == ".." ) continue;
-      if ( $fname == "." ) continue;
-
-      $ofpath = truepath(str_replace("//", "/", sprintf("%s/%s", $orgdir, $fname)));
-      $fpath  = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
-      $ftype  = is_dir($fpath) ? 'dir' : 'file';
-
-      if ( $typeFilter && $ftype !== $typeFilter ) continue;
-
-      $fsize = @(($ftype == 'dir' ? '' : filesize($fpath)));
-
-      if ( $fsize === false ) $fsize = '';
-
-      $iter = Array(
-        'filename' => htmlspecialchars($fname),
-        'path'     => htmlspecialchars($ofpath),
-        'size'     => $fsize,
-        'mime'     => null,
-        'type'     => $ftype
-      );
-
-      if ( empty($opts['mime']) || $opts['mime'] === true ) {
-        if ( $ftype == 'file' ) {
-          $mime = (is_writable($fpath) || is_readable($fpath)) ? fileMime($fpath) : null;
-          if ( $mimeFilter ) {
-            $skip = true;
-            if ( $mime ) {
-              foreach ( $mimeFilter as $mf ) {
-                if ( preg_match("/{$mf}/", $mime) === 1 ) {
-                  $skip = false;
-                  break;
-                }
-              }
-            }
-            if ( $skip ) continue;
-          }
-
-          $iter['mime'] = $mime;
-        }
-      }
-
-      $list[] = $iter;
-    }
-
-    return self::sortdir($list);
-     */
   }
 
   public static function write($fname, $content, $opts = null) {
