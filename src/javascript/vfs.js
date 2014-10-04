@@ -83,18 +83,20 @@
         return;
       }
 
-      if ( mimeFilter && mimeFilter.length && iter.mime ) {
-        var valid = false;
-        mimeFilter.forEach(function(miter) {
-          if ( iter.mime.match(miter) ) {
-            valid = true;
-            return false;
-          }
-          return true;
-        });
+      if ( iter.type === 'file' ) {
+        if ( mimeFilter && mimeFilter.length && iter.mime ) {
+          var valid = false;
+          mimeFilter.forEach(function(miter) {
+            if ( iter.mime.match(miter) ) {
+              valid = true;
+              return false;
+            }
+            return true;
+          });
 
-        if ( !valid ) {
-          return;
+          if ( !valid ) {
+            return;
+          }
         }
       }
 
