@@ -2,6 +2,9 @@ body {
   font-family: sans-serif;
   font-size : 110%;
   color : #222;
+  background : #fff url('back.png');
+  background-repeat : no-repeat;
+  background-size : 100% auto;
 }
 a {
   text-decoration : none;
