@@ -1,0 +1,108 @@
+body {
+  font-family: sans-serif;
+  font-size : 110%;
+  color : #222;
+}
+a {
+  text-decoration : none;
+}
+a.super {
+  vertical-align : super;
+  font-size : 50%;
+}
+
+main, nav, section, footer {
+  display : block;
+}
+
+main {
+  width : 850px;
+  margin : 0 auto;
+}
+
+section {
+}
+
+section.Rakklam {
+  text-align : center;
+  margin-bottom : 80px;
+  margin-top : 80px;
+}
+
+section#Main {
+  color : #000;
+}
+  section#Main h1 {
+    font-size : 400%;
+    margin-bottom : 0;
+    padding-bottom : 0;
+    color : #000;
+  }
+  section#Main h2 {
+    margin-top : 20px;
+    padding-top : 0;
+    font-size : 120%;
+    color : #666;
+  }
+
+section.Point {
+  line-height : 200%;
+  margin-bottom : 40px;
+  color : #444;
+}
+  section.Point h1 {
+    padding-top : 0;
+    margin-top : 0;
+    color : #222;
+  }
+  section.Point a {
+    color : #DD7940;
+  }
+
+section.Notice {
+  margin-bottom : 40px;
+}
+  section.Notice p {
+    vertical-align : super;
+    font-size : 50%;
+    text-align : center;
+    color : #999;
+  }
+
+footer {
+  margin-top : 120px;
+  padding : 40px;
+  font-size : 80%;
+  line-height : 200%;
+  text-align : center;
+}
+
+a.Button {
+  display : inline-block;
+  text-align : center;
+  min-width : 290px;
+  padding : 40px;
+  background : #e6e6e6;
+  color : #000;
+  margin : 20px;
+  border : 5px solid #fff;
+
+  -webkit-border-radius : 10px;
+  -moz-border-radius : 10px;
+  -ms-border-radius : 10px;
+  -o-border-radius : 10px;
+  border-radius : 10px;
+}
+a.Button:hover {
+  border : 5px solid rgba(0, 0, 0, .5);
+}
+a.Button.Download {
+  background : #A7F1B0;
+  color : #000;
+}
+
+div#Buttons {
+  text-align : center;
+  margin-top : 40px;
+  margin-bottom : 40px;
+}

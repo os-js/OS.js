@@ -1,226 +1,155 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Os.js-v2 by andersevenrud</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <title>OS.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">Os.js-v2</h1>
-        <p class="header">OS.js version 2.x</p>
+    <nav>
+    </nav>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/andersevenrud/OS.js-v2/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/andersevenrud/OS.js-v2/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/andersevenrud/OS.js-v2">View On GitHub</a></li>
-        </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/andersevenrud">andersevenrud</a></p>
-
-      </header>
-      <section>
-        <p><img style="margin-left:-10px;" src="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/osjs-logo.png" alt="Logo"></p>
-
-<p>OS.js is a light-weight JavaScript based web/cloud desktop solution.</p>
-
-<p>Current version: <strong>Alpha</strong></p>
-
-<p><strong>See TODO.md for roadmap and planned changes</strong></p>
-
-<p><strong>If you find any bugs report them back to me and I'll have them squashed</strong></p>
-
-<div style="margin-bottom:10px">
-  <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="250"></div>
-</div>
-
-<div style="margin-bottom:10px">
-  <div class="fb-like" data-href="http://andersevenrud.github.com/OS.js-v2/" data-send="true" data-layout="button_count" data-width="250" data-show-faces="false"></div>
-</div>
-
-<div style="margin-bottom:10px">
-  <i>Buy me a beer or help out covering demo-server costs by donating :)</i>
-  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-    <input type="hidden" name="cmd" value="_s-xclick" />
-    <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----" />
-    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
-  </form>
-
-</div>
-
-<h2>
-<a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo</h2>
-
-<p>I have a demo running on my server: <a href="http://osjsv2.0o.no">http://osjsv2.0o.no</a></p>
-
-<p>Please note that it may be unavailable at times and slightly out-of-date.</p>
-
-<p><img src="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/screenshot.png" alt="ScreenShot"></p>
-
-<p>
-<iframe width="650" height="365" src="//www.youtube.com/embed/7nB48BJKYCI" frameborder="0" allowfullscreen></iframe>
-</p>
-
-<h2>
-<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
-
-<ul>
-<li>Window Manager and Desktop Environment with Theme support</li>
-<li>Support for saving and restoring sessions</li>
-<li>File-system API to handle file manipulations etc.</li>
-<li>Localization and Translation support</li>
-<li>Easy-to-use GUI, Application and Core API for creating custom Applications</li>
-<li>Runs on all web-servers using PHP5 or node.js</li>
-<li>Uses no third-party libraries</li>
-<li>Light-weight and super fast</li>
-</ul><h3>
-<a name="default-application-bundle" class="anchor" href="#default-application-bundle"><span class="octicon octicon-link"></span></a>Default application bundle</h3>
-
-<ul>
-<li>
-<strong>Draw</strong> - A simple drawing application</li>
-<li>
-<strong>Calculator</strong> - A simple calculator</li>
-<li>
-<strong>File Manager</strong> - File Management</li>
-<li>
-<strong>Preview</strong> - For viewing images and videos</li>
-<li>
-<strong>Music Player</strong> - For listening to audio files</li>
-<li>
-<strong>Process Viewer</strong> - View running processes</li>
-<li>
-<strong>Textpad</strong> - A notepad-type application</li>
-<li>
-<strong>Writer</strong> - Richtext editor</li>
-</ul><p><em>You can easily add more applications by using external repositories. More information on Wiki</em></p>
-
-<p>An example repository: <a href="https://github.com/andersevenrud/OS.js-v2-extras">OS.js-v2-extras</a></p>
-
-<h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<p>See the <code>INSTALL.md</code> file for instructions</p>
-
-
-<div style="margin-bottom:10px">
-  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <!-- andersevenrud.github.io/OS.js-v2 -->
-  <ins class="adsbygoogle"
-    style="display:inline-block;width:336px;height:280px"
-    data-ad-client="ca-pub-6145716264521226"
-    data-ad-slot="2600151192"></ins>
-  <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</div>
-
-<h2>
-<a name="compability" class="anchor" href="#compability"><span class="octicon octicon-link"></span></a>Compability</h2>
-
-<p>The backend runs on Mac, BSD and Linux. Frontend only requires a modern browser with HTML5 support.</p>
-
-<h3>
-<a name="browser-support" class="anchor" href="#browser-support"><span class="octicon octicon-link"></span></a>Browser support</h3>
-
-<p>Runs in any modern browser. Tested:</p>
-
-<ul>
-<li>
-<strong>Gecko</strong> Mozilla Firefox</li>
-<li>
-<strong>WebKit</strong> Google Chrome, Opera, Safari</li>
-<li>Internet Explorer 10+</li>
-<li>Android and iOS is working, but no mobile version is implemented yet</li>
-</ul><h1>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h1>
-
-<pre><code>
-OS.js -- Copyright (c) 2011-2013, Anders Evenrud &lt;andersevenrud@gmail.com&gt;
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-</code></pre>
-
-<h1>
-<a name="links" class="anchor" href="#links"><span class="octicon octicon-link"></span></a>Links</h1>
-
-<ul>
-<li><a href="http://andersevenrud.github.io/OS.js-v2/">Homepage</a></li>
-<li><a href="https://github.com/andersevenrud/OS.js-v2/wiki">Github Wiki Pages</a></li>
-<li><a href="https://github.com/andersevenrud/OS.js-v2">Github Project Page</a></li>
-<li><a href="http://osjsv2.0o.no/">Demo Page</a></li>
-<li><a href="http://andersevenrud.github.io/">Author Homepage</a></li>
-<li><a href="http://anderse.wordpress.com">Author Blog</a></li>
-<li><a href="https://plus.google.com/b/113399210633478618934/113399210633478618934">Google+ Page</a></li>
-<li><a href="https://www.facebook.com/pages/OSjs/226644300734574">Facebook Page</a></li>
-<li><a href="http://andersevenrud.github.com/OS.js">OS.js v1</a></li>
-<li><a href="https://plus.google.com/101576798387217383063?rel=author">Author on Google+</a>
-</ul>
+    <main>
+      <section id="Main">
+        <h1>OS.js</h1>
+        <h2>
+          JavaScript Web/Cloud Desktop Platform
+        </h2>
       </section>
-      <div id="SupportColumn">
+      </section>
+        <div id="Buttons">
+          <a class="Button" href="https://github.com/andersevenrud/OS.js-v2">Fork on Github</a>
+          <a class="Button Download" href="https://github.com/andersevenrud/OS.js-v2/archive/master.zip">Download latest source</a>
+        </div>
+      </section>
+
+      <section class="Notice">
+        <p>
+          Please note that <b>OS.js</b> is under development and features are not complete
+        </p>
+      </section>
+
+      <section class="Point">
+        <h1>Open-source</h1>
+        <p>
+          <b>OS.js</b> is completely free and open-source which means you can contribute to the development or use the code as you like. <a href="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE" class="super" target="_blank">View License</a>
+        </p>
+      </section>
+
+      <section class="Point">
+        <h1>Fast, flexible and customizable</h1>
+        <p>
+          Features a simple and very flexible API so you can customize and add features easiliy.
+        </p>
+        <p>
+          Comes with a Virtual Filesystem to easily create/modify files across different storage services and providers. Includes support for storage on <b>OS.js</b> deployed servers and Google Drive.
+        </p>
+        <p>
+          <b>OS.js</b> is also <i>very small</i> and <i>lightning fast</i>.
+        </p>
+      </section>
+
+      <section class="Point">
+        <h1>Desktop</h1>
+        <p>
+          The Desktop and Window Manager is easy to use and fully customizable. You can change themes, wallpapers and modify panels.
+        </p>
+      </section>
+
+      <section class="Rakklam">
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- andersevenrud.github.io/OS.js-v2 (NEW) -->
+        <!-- https://github.com/andersevenrud/OS.js-v2 (NEW2) -->
         <ins class="adsbygoogle"
-          style="display:inline-block;width:160px;height:600px"
-          data-ad-client="ca-pub-6145716264521226"
-          data-ad-slot="9018538390"></ins>
+             style="display:inline-block;width:728px;height:90px"
+             data-ad-client="ca-pub-6145716264521226"
+             data-ad-slot="4498242791"></ins>
         <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-      </div>
+      </section>
+
+      <section class="Point">
+        <h1>Applications and packages</h1>
+        <p>
+          Comes complete with a basic productivity suite: <i>File Manager, Drawing Application, Music/Video Player, Calculator, Text-editor and a Richtext-editor.</i>
+        </p>
+        <p>
+          You can easily add more packages using <a href="https://github.com/andersevenrud/OS.js-v2/wiki/Package-Repositories">external repositories</a> (to which you can contribute).
+        </p>
+      </section>
+
+      <section class="Point">
+        <h1>Compability</h1>
+        <p>
+          Works in any modern browser that supports HTML5 and ES5.1: <i>Chrome, Firefox, Opera, Safari, Internet Explorer 10+</i>
+        </p>
+        <p>
+          Compatible with Mobile devices using Android or iOS (But has currently no custom UI).
+        </p>
+        <p>
+          You can deploy a server on <i>Linux, BSD, OSX and Windows/Cygwin using Nodejs or PHP (Apache and Lighttpd)</i>
+        </p>
+      </section>
+
+      <section class="Point">
+        <h1>Check it out yourself</h1>
+        <p>
+          <a href="http://osjsv2.0o.no">Visit the demo site for a preview</a>
+        </p>
+        <div>
+          <iframe width="850" height="477" src="//www.youtube.com/embed/7nB48BJKYCI" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div id="Gallery" style="display:none">
+          <ul>
+          </ul>
+        </div>
+      </section>
+
+      <section class="Point">
+        <h1>Documentation</h1>
+        <p>
+          You can find the documentation in the <a href="https://github.com/andersevenrud/OS.js-v2">source-code</a>. Examples and tutorials is located on the <a href="https://github.com/andersevenrud/OS.js-v2/wiki">Github project page wiki</a>
+        </p>
+        <p>
+          Want to check out <b>OS.js</b> for yourself ? No problem! Take a look at the <a href="https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md">installation documentation</a> on how to get started.
+        </p>
+      </section>
+
       <footer>
-        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <div style="margin-bottom:10px">
+          <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="250"></div>
+          <br />
+          <div class="fb-like" data-href="http://andersevenrud.github.com/OS.js-v2/" data-send="true" data-layout="button_count" data-width="250" data-show-faces="false"></div>
+        </div>
+
+        <i>Buy me a beer or help out covering demo-server costs by donating :)</i>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+          <input type="hidden" name="cmd" value="_s-xclick" />
+          <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----" />
+          <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" />
+        </form>
+        <br />
+        Social media links:
+        <a href="https://plus.google.com/b/113399210633478618934/113399210633478618934">Google+ Page</a>, <a href="https://www.facebook.com/pages/OSjs/226644300734574">Facebook Page</a>, <a href="http://twitter.com/andersevenrud">@andersevenrud</a>
+        <br />
+        &copy; Anders Evenrud <a href="http://andersevenrud.github.io/">Homepage</a> <a href="https://plus.google.com/101576798387217383063?rel=author">Google+</a>, <a href="mailto:andersevenrud@gmail.com">Email</a>
       </footer>
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-          <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-46087265-1']);
-            _gaq.push(['_trackPageview']);
-            (function() {
-              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+    </main>
 
-              ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
 
-              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-          </script>
-          <script type="text/javascript">stLight.options({publisher: "a51d3e3b-d804-4abe-9952-113e8cb776a1", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
-<script>
-var options={ "publisher": "a51d3e3b-d804-4abe-9952-113e8cb776a1", "position": "right", "ad": { "visible": false, "openDelay": 5, "closeDelay": 0}, "chicklets": { "items": ["facebook", "googleplus", "twitter", "linkedin", "pinterest", "wordpress", "reddit", "email", "sharethis"]}};
-var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
+<div id="fb-root"></div>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-46087265-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
 </script>
-
 <script type="text/javascript">
   (function() {
     var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
@@ -228,15 +157,19 @@ var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
   })();
 </script>
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+<script>
+  var options={ "publisher": "a51d3e3b-d804-4abe-9952-113e8cb776a1", "position": "right", "ad": { "visible": false, "openDelay": 5, "closeDelay": 0}, "chicklets": { "items": ["facebook", "googleplus", "twitter", "linkedin", "pinterest", "wordpress", "reddit", "email", "sharethis"]}};
+  var st_hover_widget = new sharethis.widgets.hoverbuttons(options);
+</script>
 
   </body>
 </html>
