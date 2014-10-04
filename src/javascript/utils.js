@@ -241,6 +241,20 @@
     return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1], 10) : false;
   };
 
+  OSjs.Utils.urlsafe_b64encode = function(str) {
+    return (!str || !str.length) ? '' : btoa(str)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  };
+  OSjs.Utils.urlsafe_b64decode = function(str) {
+    if ( str && str.length ) {
+      str = (str + '===').slice(0, str.length + (str.length % 4));
+      return atob(str.replace(/-/g, '+').replace(/_/g, '/'));
+    }
+    return '';
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
