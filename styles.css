@@ -11,6 +11,13 @@ a.super {
   font-size : 50%;
 }
 
+iframe {
+  margin : 0;
+  padding : 0;
+  border : 0 none;
+  outline : none;
+}
+
 main, nav, section, footer {
   display : block;
 }
