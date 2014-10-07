@@ -126,7 +126,6 @@
       var t = ev.target;
       if ( t.tagName === 'DIV' ) {
         if ( type === 'mousedown' && t.className === 'Resizer' ) {
-          console.error(1);
           onResizeStart(ev, t.parentNode);
         } else if ( type === 'click' && t.className === 'Label' ) {
           if ( !resized ) {

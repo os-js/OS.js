@@ -326,8 +326,14 @@
 
     function _Boot() {
       window.onerror = function(message, url, linenumber, column, exception) {
-        var msg = JSON.stringify({message: message, url: url, linenumber: linenumber, column: column}, null, '\t');
-        doErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'), OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'), msg, exception, true);
+        console.warn('window::onerror()', arguments);
+        var msg = 'Please report this if you think this is a bug.\nInclude a brief description on how the error occured, and if you can; how to replicate it';
+        doErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'),
+                      OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
+                      msg,
+                      exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber, message: message},
+                      true );
+
         return false;
       };
 
