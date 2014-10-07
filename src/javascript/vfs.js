@@ -121,7 +121,7 @@
 
   function OFile(arg, mime) {
     if ( !arg ) {
-      throw 'File expects at least one argument';
+      throw new Error('File expects at least one argument');
     }
     if ( typeof arg === 'object' ) {
       this.setData(arg);
@@ -187,7 +187,7 @@
    */
   OSjs.VFS.scandir = function(item, callback) {
     console.info('VFS::read()', item);
-    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'scandir', [item], callback);
   };
 
@@ -196,7 +196,7 @@
    */
   OSjs.VFS.write = function(item, data, callback) {
     console.info('VFS::write()', item);
-    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'write', [item, data], callback);
   };
 
@@ -205,7 +205,7 @@
    */
   OSjs.VFS.read = function(item, callback) {
     console.info('VFS::read()', item);
-    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'read', [item], callback);
   };
 
@@ -214,8 +214,8 @@
    */
   OSjs.VFS.copy = function(src, dest, callback) {
     console.info('VFS::copy()', src, dest);
-    if ( !(src instanceof OFile) ) { throw 'Expects a src file-object'; }
-    if ( !(dest instanceof OFile) ) { throw 'Expects a dest file-object'; }
+    if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
+    if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
     // TODO
     if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
@@ -231,8 +231,8 @@
    */
   OSjs.VFS.move = function(src, dest, callback) {
     console.info('VFS::move()', src, dest);
-    if ( !(src instanceof OFile) ) { throw 'Expects a src file-object'; }
-    if ( !(dest instanceof OFile) ) { throw 'Expects a dest file-object'; }
+    if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
+    if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
     // TODO
     if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
@@ -251,7 +251,7 @@
    */
   OSjs.VFS.unlink = function(item, callback) {
     console.info('VFS::unlink()', item);
-    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'unlink', [item], callback);
   };
   OSjs.VFS['delete'] = function(item, callback) {
@@ -263,7 +263,7 @@
    */
   OSjs.VFS.mkdir = function(item, callback) {
     console.info('VFS::mkdir()', item);
-    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'mkdir', [item], callback);
   };
 
@@ -272,7 +272,7 @@
    */
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
-    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'exists', [item], callback);
   };
 
@@ -281,7 +281,7 @@
    */
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
-    if ( !(item instanceof OFile) ) { throw 'Expects a file-object'; }
+    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'fileinfo', [item], callback);
   };
 
@@ -306,13 +306,13 @@
     console.info('VFS::upload()', args);
     args = args || {};
     if ( !(args.app instanceof OSjs.Core.Process) ) {
-      throw 'upload() expects an Application reference';
+      throw new Error('upload() expects an Application reference');
     }
     if ( !args.files ) {
-      throw 'upload() expects a file array';
+      throw new Error('upload() expects a file array');
     }
     if ( !args.destination ) {
-      throw 'upload() expects a destination';
+      throw new Error('upload() expects a destination');
     }
     if ( args.destination.match(/^google-drive\:\/\//) ) {
       args.files.forEach(function(f, i) {
@@ -355,7 +355,7 @@
       console.info('VFS::download()', args);
       args = args || {};
       if ( !args.path ) {
-        throw 'download() expects a path';
+        throw new Error('download() expects a path');
       }
       // TODO
       if ( args.path.match(/google-drive\:\/\//) ) {

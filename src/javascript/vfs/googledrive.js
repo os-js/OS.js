@@ -420,7 +420,7 @@
   GoogleDrive.prototype.url = function(item, callback) {
     console.info('GoogleDrive::url()', item);
     if ( !item || !item.id ) {
-      throw 'url() expects a File ref with Id';
+      throw new Error('url() expects a File ref with Id');
     }
 
     var request = gapi.client.drive.files.get({
@@ -531,9 +531,9 @@
 
     getGoogleDrive(function(instance) {
       if ( !instance ) {
-        throw 'No GoogleDrive instance was created. Load error ?';
+        throw new Error('No GoogleDrive instance was created. Load error ?');
       } else if ( !instance[name] ) {
-        throw 'Invalid GoogleDrive API call name';
+        throw new Error('Invalid GoogleDrive API call name');
       }
 
       var fargs = args;

@@ -49,7 +49,7 @@
    */
   var DefaultStorage = function() {
     if ( !OSjs.Compability.localStorage ) {
-      throw 'Your browser does not support localStorage :(';
+      throw new Error('Your browser does not support localStorage :(');
     }
     this.prefix = 'OS.js-v2/DemoHandler/';
   };

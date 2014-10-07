@@ -39,7 +39,7 @@
    */
   var RichText = function(name, opts) {
     opts = opts || {};
-    if ( !OSjs.Compability.richtext ) { throw 'Your platform does not support RichText editing'; }
+    if ( !OSjs.Compability.richtext ) { throw new Error('Your platform does not support RichText editing'); }
 
     this.$view          = null;
     this.opts           = opts || {};

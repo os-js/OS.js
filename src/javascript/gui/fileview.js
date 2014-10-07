@@ -509,7 +509,7 @@
       } else if ( v.toLowerCase() === 'treeview' ) {
         this.viewRef = new FileTreeView(this, 'FileTreeView', this.viewOpts);
       } else {
-        throw 'Invalid view type: ' + v;
+        throw new Error('Invalid view type: ' + v);
       }
 
       // NOTE: Some quirks for having a child element
@@ -652,7 +652,7 @@
     onError     = onError     || function() {};
 
     if ( !this.viewRef ) {
-      throw 'FileView has no GUI element attached!';
+      throw new Error('FileView has no GUI element attached!');
     }
 
     this.onRefresh.call(this);

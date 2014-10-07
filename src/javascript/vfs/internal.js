@@ -111,7 +111,7 @@
     callback = callback || {};
 
     if ( !InternalStorage[name] ) {
-      throw 'Invalid InternalStorage API call name';
+      throw new Error('Invalid InternalStorage API call name');
     }
 
     var fargs = args;

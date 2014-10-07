@@ -314,7 +314,7 @@
     }
 
     if ( typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined' ) {
-      throw 'Invalid RGB supplied to RGBtoHEX()';
+      throw new Error('Invalid RGB supplied to RGBtoHEX()');
     }
 
     var hex = [
@@ -390,8 +390,8 @@
   };
 
   OSjs.Utils.$selectRange = function(field, start, end) {
-    if ( !field ) { throw 'Cannot select range: missing element'; }
-    if ( typeof start === 'undefined' || typeof end === 'undefined' ) { throw 'Cannot select range: mising start/end'; }
+    if ( !field ) { throw new Error('Cannot select range: missing element'); }
+    if ( typeof start === 'undefined' || typeof end === 'undefined' ) { throw new Error('Cannot select range: mising start/end'); }
 
     if ( field.createTextRange ) {
       var selRange = field.createTextRange();
@@ -472,7 +472,7 @@
 
   OSjs.Utils.AjaxUpload = function(file, size, dest, callbacks) {
     if ( !OSjs.Utils.getCompability().upload ) {
-      throw 'File upload is not supported on your platform';
+      throw new Error('File upload is not supported on your platform');
     }
 
     callbacks           = callbacks           || {};
@@ -543,7 +543,7 @@
   };
 
   OSjs.Utils.Ajax = function(url, onSuccess, onError, opts) {
-    if ( !url ) { throw 'No URL given'; }
+    if ( !url ) { throw new Error('No URL given'); }
 
     onSuccess = onSuccess || function() {};
     onError = onError || function() {};

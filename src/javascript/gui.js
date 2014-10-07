@@ -171,7 +171,7 @@
   }
 
   function getFileIcon(filename, mime, type, icon, size) {
-    if ( !filename ) { throw 'Filename is required for getFileIcon()'; }
+    if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
     type = type || 'file';
     icon = icon || 'mimetypes/gnome-fs-regular.png';
     size = size || '16x16';

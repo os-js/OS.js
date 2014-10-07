@@ -281,10 +281,10 @@
     var self = this;
 
     if ( !file ) {
-      throw 'cannot save without File ref';
+      throw new Error('cannot save without File ref');
     }
     if ( !file.path ) {
-      throw 'cannot save without a path';
+      throw new Error('cannot save without a path');
     }
 
     if ( this.dialogOptions.filetypes !== null ) {

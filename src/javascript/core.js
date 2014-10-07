@@ -285,8 +285,8 @@
         _WM = app;
 
         callback();
-      }, function(error) {
-        _error(OSjs._('ERR_CORE_INIT_WM_FAILED_FMT', error));
+      }, function(error, name, args, exception) {
+        _error(OSjs._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
       });
     }
 
@@ -326,12 +326,15 @@
 
     function _Boot() {
       window.onerror = function(message, url, linenumber, column, exception) {
+        if ( typeof exception === 'string' ) {
+          exception = null;
+        }
         console.warn('window::onerror()', arguments);
         var msg = 'Please report this if you think this is a bug.\nInclude a brief description on how the error occured, and if you can; how to replicate it';
         doErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'),
                       OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
                       msg,
-                      exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber, message: message},
+                      exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber+':'+column, message: message},
                       true );
 
         return false;
@@ -583,8 +586,8 @@
    */
   function doLaunchFile(file, launchArgs) {
     launchArgs = launchArgs || {};
-    if ( !file.path ) { throw 'Cannot doLaunchFile() without a path'; }
-    if ( !file.mime )  { throw 'Cannot doLaunchFile() without a mime type'; }
+    if ( !file.path ) { throw new Error('Cannot doLaunchFile() without a path'); }
+    if ( !file.mime )  { throw new Error('Cannot doLaunchFile() without a mime type'); }
 
     var args = {file: file};
 
@@ -649,7 +652,7 @@
     onError       = onError       || function() {};
     onConstructed = onConstructed || function() {};
 
-    if ( !n ) { throw 'Cannot doLaunchProcess() witout a application name'; }
+    if ( !n ) { throw new Error('Cannot doLaunchProcess() witout a application name'); }
 
     console.group('doLaunchProcess()', n, arg);
 
@@ -780,9 +783,9 @@
 
               console.groupEnd();
             });
-          } catch ( e ) {
-            console.warn('Error on init() application', e, e.stack);
-            _error(OSjs._('ERR_APP_INIT_FAILED_FMT', n, e.toString()), e);
+          } catch ( ex ) {
+            console.warn('Error on init() application', ex, ex.stack);
+            _error(OSjs._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
           }
         }
       } else {
@@ -1151,7 +1154,7 @@
   };
 
   Application.prototype._addWindow = function(w) {
-    if ( !(w instanceof OSjs.Core.Window) ) { throw 'Application::_addWindow() expects Window'; }
+    if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
     console.info('OSjs::Core::Application::_addWindow()');
     this.__windows.push(w);
 
@@ -1170,7 +1173,7 @@
   };
 
   Application.prototype._removeWindow = function(w) {
-    if ( !(w instanceof OSjs.Core.Window) ) { throw 'Application::_removeWindow() expects Window'; }
+    if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_removeWindow() expects Window'); }
 
     var self = this;
     this.__windows.forEach(function(win, i) {

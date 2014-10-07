@@ -62,7 +62,7 @@ See doc/example-handler.txt
       var s         = document.getElementById('LoginSubmit');
 
       if ( !container ) {
-        throw 'Could not find Login Form Container';
+        throw new Error('Could not find Login Form Container');
       }
 
       function _restore() {

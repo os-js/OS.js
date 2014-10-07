@@ -41,7 +41,7 @@
     this.onSelect = onSelect || function(r, g, b) {};
 
     if ( !OSjs.Compability.canvas ) {
-      throw 'Canvas is not supported on your platform!';
+      throw new Error('Canvas is not supported on your platform!');
     }
 
     GUIElement.apply(this, [name, {}]);

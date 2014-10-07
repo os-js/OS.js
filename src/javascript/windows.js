@@ -167,7 +167,7 @@
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
       console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
-      throw ('addWindow() expects a "Window" class');
+      throw new Error('addWindow() expects a "Window" class');
     }
     console.log('OSjs::Core::WindowManager::addWindow()');
 
@@ -185,7 +185,7 @@
   WindowManager.prototype.removeWindow = function(w) {
     if ( !(w instanceof Window) ) {
       console.warn('OSjs::Core::WindowManager::removeWindow()', 'Got', w);
-      throw ('removeWindow() expects a "Window" class');
+      throw new Error('removeWindow() expects a "Window" class');
     }
     console.log('OSjs::Core::WindowManager::removeWindow()');
 
@@ -345,7 +345,7 @@
 
     return function(name, opts, appRef) {
       if ( OSjs.Utils.inArray(_NAMES, name) ) {
-        throw OSjs.Utils.format('You already have a Window named \'{0}\'', name);
+        throw new Error(OSjs.Utils.format('You already have a Window named \'{0}\'', name));
       }
 
       var icon      = OSjs.API.getThemeResource('wm.png', 'wm');
@@ -958,7 +958,7 @@
   Window.prototype._addGUIElement = function(gel, parentNode) {
     var self = this;
     if ( !parentNode ) {
-      throw 'Adding a GUI Element requires a parentNode';
+      throw new Error('Adding a GUI Element requires a parentNode');
     }
     if ( gel instanceof OSjs.GUI.GUIElement ) {
       gel._setWindow(this);
