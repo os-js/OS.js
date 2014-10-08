@@ -187,6 +187,7 @@
    */
   OSjs.VFS.scandir = function(item, callback) {
     console.info('VFS::read()', item);
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'scandir', [item], callback);
   };
@@ -196,6 +197,7 @@
    */
   OSjs.VFS.write = function(item, data, callback) {
     console.info('VFS::write()', item);
+    if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'write', [item, data], callback);
   };
@@ -205,6 +207,7 @@
    */
   OSjs.VFS.read = function(item, callback) {
     console.info('VFS::read()', item);
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'read', [item], callback);
   };
@@ -214,12 +217,22 @@
    */
   OSjs.VFS.copy = function(src, dest, callback) {
     console.info('VFS::copy()', src, dest);
+    if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    // TODO
-    if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
-      callback('You cannot copy from OSjs to Google Drive yet :(');
+    var msrc = getModuleFromPath(src.path);
+    var mdst = getModuleFromPath(dest.path);
+    if ( msrc != mdst ) {
+      OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+        OSjs.VFS.Modules[mdst].request('write', [dest, result], function(error, result) {
+          callback(error, result);
+        });
+      });
       return;
     }
 
@@ -231,6 +244,7 @@
    */
   OSjs.VFS.move = function(src, dest, callback) {
     console.info('VFS::move()', src, dest);
+    if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
@@ -251,6 +265,7 @@
    */
   OSjs.VFS.unlink = function(item, callback) {
     console.info('VFS::unlink()', item);
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'unlink', [item], callback);
   };
@@ -263,6 +278,7 @@
    */
   OSjs.VFS.mkdir = function(item, callback) {
     console.info('VFS::mkdir()', item);
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'mkdir', [item], callback);
   };
@@ -272,6 +288,7 @@
    */
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'exists', [item], callback);
   };
@@ -281,6 +298,7 @@
    */
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     request(item.path, 'fileinfo', [item], callback);
   };
@@ -290,6 +308,8 @@
    */
   OSjs.VFS.url = function(item, callback) {
     console.info('VFS::url()', item);
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
+
     var path = (typeof item === 'string') ? item : item.path;
     if ( path.match(/^osjs\:\/\//) ) {
       callback(false, path.replace(/^osjs\:\/\//, ''));
@@ -305,6 +325,8 @@
   OSjs.VFS.upload = function(args, callback) {
     console.info('VFS::upload()', args);
     args = args || {};
+    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
+
     if ( !(args.app instanceof OSjs.Core.Process) ) {
       throw new Error('upload() expects an Application reference');
     }
@@ -354,6 +376,9 @@
     return function(args, callback) {
       console.info('VFS::download()', args);
       args = args || {};
+
+      if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
+
       if ( !args.path ) {
         throw new Error('download() expects a path');
       }
