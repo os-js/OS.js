@@ -1,3 +1,15 @@
+# 2.0.0-alpha26
+
+* Templates: Removed some deprecated stuff
+* VFS: Fix for empty File construct
+* VFS: GoogleDrive fixes
+* VFS: Copy/Move between different sources
+* VFS: Download method for all sources
+* Utils: Fixed dirname() for uri with protocol
+* Utils: Added urlsafe base64 encode/decode
+* Dialogs: Fixed directory listing bug in File dialog
+* Core: Better error/exception handling
+
 # 2.0.0-alpha25
 
 * VFS: Moved server-side code into client
