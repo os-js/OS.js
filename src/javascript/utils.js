@@ -265,10 +265,24 @@
   };
 
   OSjs.Utils.dirname = function(f) {
-    var tmp = f.split('/');
-    tmp.pop();
-    var result = tmp.join('/');
-    return f.match(/^\//) && !result ? '/' : result;
+    var pstr   = f.split(/^(.*)\:\/\/(.*)/).filter(function(n){ return n !== '' });
+    var args   = pstr.pop();
+    var prot   = pstr.pop();
+    var result = '';
+
+    var tmp = args.split('/').filter(function(n){ return n !== '' });
+    if ( tmp.length ) {
+      tmp.pop();
+    }
+    result = tmp.join('/');
+
+    if ( !result.match(/^\//) ) {
+      result = '/' + result;
+    }
+    if ( prot ) {
+      result = prot + '://' + result;
+    }
+    return result;
   };
 
   OSjs.Utils.filename = function(p) {
