@@ -226,10 +226,13 @@
     if ( msrc != mdst ) {
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
-          callback(error);
+          callback('An error occured while copying between storage: ' + error);
           return;
         }
         OSjs.VFS.Modules[mdst].request('write', [dest, result], function(error, result) {
+          if ( error ) {
+            error = 'An error occured while copying between storage: ' + error;
+          }
           callback(error, result);
         });
       });
@@ -248,9 +251,29 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    // TODO
-    if ( src.path.match(/google-drive\:\/\//) || dest.path.match(/google-drive\:\/\//) ) {
-      callback('You cannot move between OSjs and Google Drive yet :(');
+    var msrc = getModuleFromPath(src.path);
+    var mdst = getModuleFromPath(dest.path);
+    if ( msrc != mdst ) {
+      OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
+        if ( error ) {
+          callback('An error occured while moving between storage: ' + error);
+          return;
+        }
+        OSjs.VFS.Modules[mdst].request('write', [dest, result], function(error, result) {
+
+          if ( error ) {
+            callback('An error occured while moving between storage: ' + error);
+            return;
+          }
+
+          OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
+            if ( error ) {
+              error = 'An error occured while movin between storage: ' + error;
+            }
+            callback(error, result);
+          });
+        });
+      });
       return;
     }
 
@@ -382,16 +405,36 @@
       if ( !args.path ) {
         throw new Error('download() expects a path');
       }
-      // TODO
-      if ( args.path.match(/google-drive\:\/\//) ) {
-        callback('download() does not support google-drive yet');
-        return;
-      }
 
       var lname = 'DownloadFile_' + _didx;
       _didx++;
 
       API.createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
+
+      var dmodule = getModuleFromPath(args.path);
+      if ( dmodule !== 'Internal' ) {
+        var file = args;
+        if ( !(file instanceof OSjs.VFS.File) ) {
+          file = new OSjs.VFS.File(args.path);
+          if ( args.id ) {
+            file.id = args.id;
+          }
+        }
+
+
+        OSjs.VFS.Modules[dmodule].request('read', [file], function(error, result) {
+          API.destroyLoading(lname);
+
+          if ( error ) {
+            callback('An error occured while downloading: ' + error);
+            return;
+          }
+
+          callback(false, result);
+        });
+        return;
+      }
+
       Utils.AjaxDownload(args.path, function(data) {
         API.destroyLoading(lname);
         callback(false, data);
