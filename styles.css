@@ -53,6 +53,9 @@ a.super {
   vertical-align : super;
   font-size : 50%;
 }
+.indented {
+  padding-left : 20px;
+}
 
 iframe {
   margin : 0;
@@ -95,8 +98,8 @@ section#Main {
   }
 
 section.Point {
-  line-height : 180%;
-  margin-bottom : 40px;
+  line-height : 160%;
+  margin-bottom : 100px;
   color : #444;
 }
   section.Point h1 {
@@ -114,7 +117,7 @@ section.Notice {
 }
   section.Notice p {
     vertical-align : super;
-    font-size : 50%;
+    font-size : 80%;
     text-align : center;
     color : #999;
   }
@@ -130,8 +133,8 @@ footer {
 a.Button {
   display : inline-block;
   text-align : center;
-  min-width : 290px;
-  padding : 40px;
+  min-width : 310px;
+  padding : 60px;
   background : #e6e6e6;
   color : #000;
   margin : 20px;
