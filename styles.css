@@ -1,6 +1,46 @@
+@font-face {
+  font-family: OSjsFont;
+  src: url('fonts/Karla-Regular.eot');
+  src: url('fonts/Karla-Regular.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Regular.svg#karla') format('svg'), url('fonts/Karla-Regular.woff') format('woff'), url('fonts/Karla-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: OSjsFont;
+  src: url('fonts/Karla-Bold.eot');
+  src: url('fonts/Karla-Bold.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Bold.svg#karla_bold') format('svg'), url('fonts/Karla-Bold.woff') format('woff'), url('fonts/Karla-Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+@font-face {
+  font-family: OSjsFont;
+  src: url('fonts/Karla-Italic.eot');
+  src: url('fonts/Karla-Italic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Italic.svg#karla_italic') format('svg'), url('fonts/Karla-Italic.woff') format('woff'), url('fonts/Karla-Italic.ttf') format('truetype');
+  font-style: italic;
+}
+@font-face {
+  font-family: OSjsFont;
+  src: url('fonts/Karla-Italic.eot');
+  src: url('fonts/Karla-Italic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Italic.svg#karla_italic') format('svg'), url('fonts/Karla-Italic.woff') format('woff'), url('fonts/Karla-Italic.ttf') format('truetype');
+  font-style: oblique;
+}
+@font-face {
+  font-family: OSjsFont;
+  src: url('fonts/Karla-BoldItalic.eot');
+  src: url('fonts/Karla-BoldItalic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-BoldItalic.svg#karla_bolditalic') format('svg'), url('fonts/Karla-BoldItalic.woff') format('woff'), url('fonts/Karla-BoldItalic.ttf') format('truetype');
+  font-style: italic;
+  font-style: italic;
+}
+@font-face {
+  font-family: OSjsFont;
+  src: url('fonts/Karla-BoldItalic.eot');
+  src: url('fonts/Karla-BoldItalic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-BoldItalic.svg#karla_bolditalic') format('svg'), url('fonts/Karla-BoldItalic.woff') format('woff'), url('fonts/Karla-BoldItalic.ttf') format('truetype');
+  font-style: italic;
+  font-style: oblique;
+}
+
 body {
-  font-family: sans-serif;
-  font-size : 110%;
+  font-family: OSjsFont, sans-serif;
+  font-size : 120%;
   color : #222;
   background : #fff url('back.png');
   background-repeat : no-repeat;
@@ -26,7 +66,7 @@ main, nav, section, footer {
 }
 
 main {
-  width : 850px;
+  width : 970px;
   margin : 0 auto;
 }
 
@@ -52,15 +92,15 @@ section#Main {
     margin-top : 20px;
     padding-top : 0;
     font-size : 120%;
-    color : #666;
   }
 
 section.Point {
-  line-height : 200%;
+  line-height : 180%;
   margin-bottom : 40px;
   color : #444;
 }
   section.Point h1 {
+    font-size : 220%;
     padding-top : 0;
     margin-top : 0;
     color : #222;
@@ -96,6 +136,7 @@ a.Button {
   color : #000;
   margin : 20px;
   border : 5px solid #fff;
+  font-size : 140%;
 
   -webkit-border-radius : 10px;
   -moz-border-radius : 10px;
