@@ -62,7 +62,11 @@
   function request(test, method, args, callback) {
     var m = OSjs.VFS.Modules;
     var d = getModuleFromPath(test);
-    m[d].request(method, args, callback);
+    var h = OSjs.API.getHandlerInstance();
+
+    h.onVFSRequest(d, method, args, function() {
+      m[d].request(method, args, callback);
+    });
   }
 
   /**

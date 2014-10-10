@@ -674,6 +674,14 @@
     });
   };
 
+  /**
+   * Called upon a VFS request
+   */
+  DefaultHandler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
+    // If you want to interrupt or modify somehow
+    callback();
+  };
+
   //
   // Packages
   //
