@@ -1,5 +1,6 @@
 
 # High-priority
+* _[VFS]_ OSjs Module for Nodejs
 * _[VFS]_ Copy/Move between sources is not working correctly
 * _[VFS]_ Finish Google Drive implementation
 * _[Documentation]_ Complete documentation for JavaScript

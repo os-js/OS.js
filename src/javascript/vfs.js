@@ -119,6 +119,10 @@
     return tree.dirs.concat(tree.files);
   }
 
+  function getRealtiveURL(orig) {
+    return orig.replace(/^([A-z0-9\-_]+)\:\/\//, '');
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // FILE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
@@ -336,14 +340,10 @@
   OSjs.VFS.url = function(item, callback) {
     console.info('VFS::url()', item);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
-
-    var path = (typeof item === 'string') ? item : item.path;
-    if ( path.match(/^osjs\:\/\//) ) {
-      callback(false, path.replace(/^osjs\:\/\//, ''));
-      return;
+    if ( typeof item === 'string' ) {
+      item = new OFile(item);
     }
-
-    request(path, 'url', [item], callback);
+    request(item.path, 'url', [item], callback);
   };
 
   /**
@@ -439,7 +439,8 @@
         return;
       }
 
-      Utils.AjaxDownload(args.path, function(data) {
+      var path = getRelativeURL(args.path);
+      Utils.AjaxDownload(path, function(data) {
         API.destroyLoading(lname);
         callback(false, data);
       }, function(err) {

@@ -64,9 +64,17 @@ class FS
 {
 
   public static function scandir($orgdir, Array $opts = Array()) {
-    $dirname = VFSDIR . $orgdir;
+    $protocol = "";
+    if ( preg_match("/^osjs\:\/\//", $orgdir) ) {
+      $dirname = DISTDIR . preg_replace("/^osjs\:\/\//", "", $orgdir);
+      $orgdir  = preg_replace("/^osjs\:\/\//", "", $orgdir);
+      $protocol= "osjs://";
+      if ( strstr($dirname, DISTDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
+    } else {
+      $dirname = VFSDIR . $orgdir;
+      if ( strstr($dirname, VFSDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
+    }
 
-    if ( strstr($dirname, VFSDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
     if ( !is_dir($dirname) ) {
       throw new Exception("Invalid directory '{$orgdir}'");
     }
@@ -78,7 +86,7 @@ class FS
     foreach ( $files as $fname ) {
       if ( $fname == "." || ($orgdir == "/" && $fname == "..") ) continue;
 
-      $ofpath = truepath(str_replace("//", "/", sprintf("%s/%s", $orgdir, $fname)));
+      $ofpath = $protocol . truepath(str_replace("//", "/", sprintf("%s/%s", $orgdir, $fname)));
       $fpath  = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
       $ftype  = is_dir($fpath) ? 'dir' : 'file';
       $fsize  = 0;

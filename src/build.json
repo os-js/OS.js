@@ -81,6 +81,7 @@
       "src/javascript/locales.js",
       "src/javascript/core.js",
       "src/javascript/vfs.js",
+      "src/javascript/vfs/osjs.js",
       "src/javascript/vfs/internal.js",
       "src/javascript/vfs/googledrive.js",
       "src/javascript/windows.js",
