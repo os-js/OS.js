@@ -550,6 +550,7 @@
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
     description: 'Google Drive',
+    visible: true,
     enabled: function() {
       var handler = API.getHandlerInstance();
       if ( handler ) {

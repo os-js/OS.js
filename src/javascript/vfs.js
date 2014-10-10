@@ -176,15 +176,18 @@
   /**
    * Returns a list of all enabled VFS modules
    */
-  OSjs.VFS.getModules = function() {
+  OSjs.VFS.getModules = function(visible) {
+    visible = (typeof visible === 'undefined') ? true : visible === true;
     var m = OSjs.VFS.Modules;
     var a = [];
     Object.keys(m).forEach(function(name) {
       if ( m[name].enabled() ) {
-        a.push({
-          name: name,
-          module: m[name]
-        });
+        if ( visible && m[name].visible === visible ) {
+          a.push({
+            name: name,
+            module: m[name]
+          });
+        }
       }
     });
     return a;

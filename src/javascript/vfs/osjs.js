@@ -118,6 +118,7 @@
     root: 'osjs:///',
     match: /^osjs\:\/\//,
     icon: 'devices/harddrive.png',
+    visible: false,
     enabled: function() {
       return true;
     },
