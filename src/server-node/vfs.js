@@ -48,8 +48,13 @@
     read : function(args, request, respond, config) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-
       var fullPath = _path.join(config.vfsdir, path);
+
+      if ( path.match(/^osjs\:\/\//) ) {
+        path = path.replace(/^osjs\:\/\//, '');
+        fullPath = _path.join(config.distdir, path);
+      }
+
       _fs.exists(fullPath, function(exists) {
         if ( exists ) {
           _fs.readFile(fullPath, function(error, data) {
@@ -227,7 +232,14 @@
 
     scandir : function(args, request, respond, config) {
       var path = args[0];
+      var protocol = '';
       var fullPath = _path.join(config.vfsdir, path);
+
+      if ( path.match(/^osjs\:\/\//) ) {
+        path = path.replace(/^osjs\:\/\//, '');
+        protocol = 'osjs://';
+        fullPath = _path.join(config.distdir, path);
+      }
 
       _fs.readdir(fullPath, function(error, files) {
         if ( error ) {
@@ -239,13 +251,18 @@
             ofpath = _path.join(path, files[i]);
             fpath  = _path.join(fullPath, files[i]);
 
-            fsstat = _fs.statSync(fpath);
-            ftype  = fsstat.isFile() ? 'file' : 'dir';
-            fsize  = fsstat.size;
+            try {
+              fsstat = _fs.statSync(fpath);
+              ftype  = fsstat.isFile() ? 'file' : 'dir';
+              fsize  = fsstat.size;
+            } catch ( e ) {
+              ftype = 'file';
+              fsize = 0;
+            }
 
             result.push({
               filename: files[i],
-              path:     ofpath,
+              path:     protocol + ofpath,
               size:     fsize,
               mime:     ftype === 'file' ? vfs.getMime(files[i], config) : '',
               type:     ftype

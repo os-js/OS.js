@@ -42,6 +42,7 @@
     vfsdir:     _path.join(ROOTDIR, 'vfs/home'),
     tmpdir:     _path.join(ROOTDIR, 'vfs/tmp'),
     repodir:    _path.join(ROOTDIR, 'src/packages'),
+    distdir:    _path.join(ROOTDIR, DISTDIR),
     mimes:      {}
   };
 
