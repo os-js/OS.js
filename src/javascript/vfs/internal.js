@@ -124,7 +124,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.Internal = OSjs.VFS.Modules.Internal || {
-    description: 'OS.js Storage',
+    description: 'Public Storage',
     root: '/',
     icon: 'places/folder_home.png',
     visible: true,

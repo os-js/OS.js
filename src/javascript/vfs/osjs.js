@@ -114,11 +114,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
-    description: 'OS.js',
+    description: 'OS.js (Read-Only)',
     root: 'osjs:///',
     match: /^osjs\:\/\//,
     icon: 'devices/harddrive.png',
-    visible: false,
+    visible: true,
     enabled: function() {
       return true;
     },

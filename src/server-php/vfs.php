@@ -63,54 +63,65 @@ class MIME
 class FS
 {
 
-  public static function scandir($orgdir, Array $opts = Array()) {
+  public static function scandir($scandir, Array $opts = Array()) {
+    $scandir  = preg_replace("/\/$/", "", $scandir);
+    $scandir  = preg_replace("/\/\.\.?/", "/", $scandir);
+    $result   = Array();
+    $dirname  = $scandir;
     $protocol = "";
-    if ( preg_match("/^osjs\:\/\//", $orgdir) ) {
-      $dirname = DISTDIR . preg_replace("/^osjs\:\/\//", "", $orgdir);
-      $orgdir  = preg_replace("/^osjs\:\/\//", "", $orgdir);
-      $protocol= "osjs://";
-      if ( strstr($dirname, DISTDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
+
+    if ( (preg_match("/^([A-z0-9\-_]+)?\:\/\/?(.*)/", $scandir, $matches)) !== false ) {
+      if ( sizeof($matches) === 3 ) {
+        $protocol = "{$matches[1]}://";
+        $dirname  = $matches[2];
+      }
+    }
+
+    if ( $protocol ) {
+      $root = sprintf("%s/%s", DISTDIR, preg_replace("/^\//", "", $dirname));
+      if ( strstr($root, DISTDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
     } else {
-      $dirname = VFSDIR . $orgdir;
-      if ( strstr($dirname, VFSDIR) === false ) throw new Exception("Access denied in directory '{$dirname}'");
+      $root = sprintf("%s/%s", VFSDIR, preg_replace("/^\//", "", $dirname));
+      if ( strstr($root, VFSDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
     }
 
-    if ( !is_dir($dirname) ) {
-      throw new Exception("Invalid directory '{$orgdir}'");
-    }
-    if ( !is_readable($dirname) ) {
-      throw new Exception("Permission denied in '{$orgdir}'");
-    }
+    $on_root = !$dirname || $dirname == "/";
+    if ( ($files = scandir($root)) !== false ) {
+      foreach ( $files as $f ) {
+        if ( $f == "." || ($f == ".." && $on_root) ) continue;
 
-    $files = scandir($dirname);
-    foreach ( $files as $fname ) {
-      if ( $fname == "." || ($orgdir == "/" && $fname == "..") ) continue;
+        $opath = implode("/", Array($root, $f));
+        if ( $f == ".." ) {
+          $tpath = truepath(implode("/", Array($dirname, $f)), false);
+        } else {
+          $tpath = implode("/", Array($dirname, $f));
+        }
+        $vpath = sprintf("%s%s", $protocol, $on_root ? preg_replace("/^\//", "", $tpath) : $tpath);
 
-      $ofpath = $protocol . truepath(str_replace("//", "/", sprintf("%s/%s", $orgdir, $fname)));
-      $fpath  = realpath(str_replace("//", "/", sprintf("%s/%s", $dirname, $fname)));
-      $ftype  = is_dir($fpath) ? 'dir' : 'file';
-      $fsize  = 0;
-      $fmime  = null;
+        $iter = Array(
+          "filename" => htmlspecialchars($f),
+          "path"     => $vpath,
+          "size"     => 0,
+          "mime"     => null,
+          "type"     => is_dir($opath) ? "dir" : "file"
+        );
 
-      if ( is_writable($fpath) || is_readable($fpath) ) {
-        $fmime = fileMime($fpath);
-        if ( $ftype !== 'dir' ) {
-          if ( ($s = filesize($fpath)) !== false ) {
-            $fsize = $s;
+        if ( $iter["type"] == "file" ) {
+          if ( is_writable($opath) || is_readable($opath) ) {
+            if ( $mime = fileMime($opath) ) {
+              $iter["mime"] = $mime;
+            }
+            if ( ($size = filesize($opath)) !== false ) {
+              $iter["size"] = $size;
+            }
           }
         }
-      }
 
-      $list[] = Array(
-        'filename' => htmlspecialchars($fname),
-        'path'     => htmlspecialchars($ofpath),
-        'size'     => $fsize,
-        'mime'     => $fmime,
-        'type'     => $ftype
-      );
+        $result[] = $iter;
+      }
     }
 
-    return $list;
+    return $result;
   }
 
   public static function write($fname, $content, $opts = null) {
@@ -385,7 +396,7 @@ function unrealpath($p) {
   return str_replace(Array("../", "./"), "", $p);
 }
 
-function truepath($path){
+function truepath($path, $chk = true){
     // whether $path is unix or not
     $unipath=strlen($path)==0 || $path{0}!='/';
     // attempts to detect if path is relative in which case, add cwd
@@ -405,7 +416,9 @@ function truepath($path){
     }
     $path=implode(DIRECTORY_SEPARATOR, $absolutes);
     // resolve any symlinks
-    if(file_exists($path) && is_link($path) && linkinfo($path)>0)$path=readlink($path);
+    if ( $chk ) {
+      if(file_exists($path) && is_link($path) && linkinfo($path)>0)$path=readlink($path);
+    }
     // put initial separator that could have been lost
     $path=!$unipath ? '/'.$path : $path;
     return $path;

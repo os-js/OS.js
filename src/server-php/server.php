@@ -62,6 +62,10 @@ date_default_timezone_set(TIMEZONE);
 register_shutdown_function(Array('APIResponse', 'ErrorHandler'));
 session_start();
 
+if ( defined("NOSERVER") && (NOSERVER === true) ) {
+  return;
+}
+
 if ( $response = APIRequest::call() ) {
   $response->output();
   return true;
