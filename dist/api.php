@@ -1,7 +1,6 @@
 <?php
 
-$root = realpath(__DIR__ . '/../');
-define("DISTDIR", "{$root}/dist-dev");
+define("DISTDIR", __DIR__);
 require '../src/server-php/server.php';
 
 ?>
