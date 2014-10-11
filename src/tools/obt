@@ -175,6 +175,31 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     return list;
   }
 
+  /**
+   * Returns a list of packages of type extension
+   */
+  function getCoreExtensions() {
+    var list = [];
+    REPOS.forEach(function(r) {
+      var dir = _path.join(ROOT, 'src', 'packages', r);
+      getDirs(dir).forEach(function(d) {
+        var path = _path.join(dir, d);
+        var meta = _path.join(path, 'package.json');
+        try {
+          var data = JSON.parse(_fs.readFileSync(meta));
+          if ( data && data.type === 'extension' ) {
+            data._root = path;
+            data._dist = _path.join('packages', r, d);
+            list.push(data);
+          }
+        } catch ( e ) {
+          console.warn('\033[1;33mWARNING:\033[0m Failed to read metadata of %s:%s: %s', r, d, e);
+        }
+      });
+    });
+    return list;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // ACTIONS
   /////////////////////////////////////////////////////////////////////////////
@@ -190,7 +215,13 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         iter = list[i];
         console.log(iter);
 
-        src = _fs.readFileSync(iter);
+        try {
+          src = _fs.readFileSync(iter);
+        } catch ( e ) {
+          console.warn('\033[1;33mWARNING:\033[0m Failed to read', iter, e);
+          continue;
+        }
+
         if ( src !== null ) {
           src = src.toString().replace(/\/\*\![\s\S]*?\*\//, "");
           if ( type === 'css' ) {
@@ -206,14 +237,38 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       return data.join("\n");
     }
 
+    var extensions = getCoreExtensions();
+
     console.log("\033[1;34mCompiling JavaScript\033[0m");
     var header_js = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js'));
-    var js = header_js + _concat(BUILD.javascript.files, 'js');
+    var list_js = BUILD.javascript.files;
+    extensions.forEach(function(iter) {
+      if ( iter && iter.sources ) {
+        iter.sources.forEach(function(iiter) {
+          if ( iiter.type === 'javascript' ) {
+            list_js.push(_path.join(iiter._root, iiter.src));
+          }
+        });
+      }
+    });
+
+    var js = header_js + _concat(list_js, 'js');
     _fs.writeFileSync(_path.join(ROOT, BUILD.javascript.output), js);
 
     console.log("\033[1;34mCompiling CSS\033[0m");
     var header_css = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css'));
-    var css = header_css + _concat(BUILD.stylesheets.files, 'css');
+    var list_css = BUILD.stylesheets.files;
+    extensions.forEach(function(iter) {
+      if ( iter && iter.sources ) {
+        iter.sources.forEach(function(iiter) {
+          if ( iiter.type === 'stylesheet' ) {
+            list_css.push(_path.join(iiter._root, iiter.src));
+          }
+        });
+      }
+    });
+
+    var css = header_css + _concat(list_css, 'css');
     _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), css);
   }
 
@@ -289,6 +344,11 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var manpath = _path.join(dir, "package.json");
         var man     = JSON.parse(_fs.readFileSync(manpath));
         var mkey    = null;
+
+        if ( man.type === 'extension' ) {
+          cb();
+          return;
+        }
 
         for ( var x in man ) {
           if ( man.hasOwnProperty(x) ) {
@@ -514,6 +574,10 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
         if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
           console.log("- \033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
+          return null;
+        }
+
+        if ( manifest['type'] === 'extension' ) {
           return null;
         }
 
@@ -857,25 +921,40 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    * Generate index.html
    */
   function generateIndex() {
-    var i;
+    var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'index.html')).toString();
+    var extensions = getCoreExtensions();
 
-    var scripts = [];
-    for ( var j = 0; j < BUILD.javascript.files.length; j++ ) {
-      i = BUILD.javascript.files[j].replace('src/javascript', 'js');
-      scripts.push('    <script type="text/javascript" charset="utf-8" src="/' + i + '"></script>');
-    }
-    scripts = scripts.join('\n');
+    var script_list = [];
+    var style_list = [];
+    BUILD.javascript.files.forEach(function(i) {
+      script_list.push(i.replace('src/javascript', 'js'));
+    });
+    BUILD.stylesheets.files.forEach(function(i) {
+      style_list.push(i.replace('src/stylesheets', 'css'));
+    });
+    extensions.forEach(function(i) {
+      if ( i.sources ) {
+        i.sources.forEach(function(iter) {
+          if ( iter.type === 'stylesheet' ) {
+            style_list.push(_path.join(i._dist, iter.src));
+          } else {
+            script_list.push(_path.join(i._dist, iter.src));
+          }
+        });
+      }
+    });
 
     var styles = [];
-    for ( var s = 0; s < BUILD.stylesheets.files.length; s++ ) {
-      i = BUILD.stylesheets.files[s].replace('src/stylesheets', 'css');
+    var scripts = [];
+    script_list.forEach(function(i) {
+      scripts.push('    <script type="text/javascript" charset="utf-8" src="/' + i + '"></script>');
+    });
+    style_list.forEach(function(i) {
       styles.push('    <link type="text/css" rel="stylesheet" href="/' + i + '" />');
-    }
-    styles = styles.join('\n');
+    });
 
-    var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'index.html')).toString();
-    tpl = tpl.replaceAll("%SCRIPTS%", scripts);
-    tpl = tpl.replaceAll("%STYLES%", styles);
+    tpl = tpl.replaceAll("%STYLES%", styles.join('\n'));
+    tpl = tpl.replaceAll("%SCRIPTS%", scripts.join('\n'));
     _fs.writeFileSync(_path.join(ROOT, 'dist-dev', 'index.html'), tpl);
   }
 
