@@ -187,6 +187,9 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var meta = _path.join(path, 'package.json');
         try {
           var data = JSON.parse(_fs.readFileSync(meta));
+          if ( !data || data.enabled === false ) {
+            return;
+          }
           if ( data && data.type === 'extension' ) {
             data._root = path;
             data._dist = _path.join('packages', r, d);
