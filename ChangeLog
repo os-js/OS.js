@@ -1,3 +1,10 @@
+# 2.0.0-alpha27
+
+* VFS: Added support for osjs://
+* VFS: Rewrote scandir()
+* obt: Added support for extending core via packages of type "extension"
+* Application - Textpad: Added more mime types
+
 # 2.0.0-alpha26
 
 * Templates: Removed some deprecated stuff
