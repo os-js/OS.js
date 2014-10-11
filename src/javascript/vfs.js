@@ -119,7 +119,7 @@
     return tree.dirs.concat(tree.files);
   }
 
-  function getRealtiveURL(orig) {
+  function getRelativeURL(orig) {
     return orig.replace(/^([A-z0-9\-_]+)\:\/\//, '');
   }
 
@@ -458,6 +458,7 @@
   //
   OSjs.VFS.filterScandir = filterScandir;
   OSjs.VFS.getModuleFromPath = getModuleFromPath;
+  OSjs.VFS.getRelativeURL = getRelativeURL;
   OSjs.VFS.File = OFile;
 
 })(OSjs.Utils, OSjs.API);
