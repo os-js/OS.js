@@ -96,7 +96,7 @@ class FS
         } else {
           $tpath = implode("/", Array($dirname, $f));
         }
-        $vpath = sprintf("%s%s", $protocol, $on_root ? preg_replace("/^\//", "", $tpath) : $tpath);
+        $vpath = sprintf("%s%s", $protocol, $tpath); //$on_root ? preg_replace("/^\//", "", $tpath) : $tpath);
 
         $iter = Array(
           "filename" => htmlspecialchars($f),
