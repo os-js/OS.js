@@ -163,9 +163,16 @@ class FS
 
   public static function read($fname, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
-    $fname = unrealpath(VFSDIR . $fname);
 
-    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    if ( preg_match("/^osjs\:\/\//", $fname) ) {
+      $fname = preg_replace("/^osjs\:\/\//", "", $fname);
+      $fname = unrealpath(DISTDIR . $fname);
+      if ( strstr($fname, DISTDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    } else {
+      $fname = unrealpath(VFSDIR . $fname);
+      if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    }
+
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 

@@ -67,7 +67,11 @@
     callback('Unavailable');
   };
   OSjsStorage.read = function(item, callback) {
-    callback('Unavailable. Use download()');
+    var ropts = [item.path];
+    if ( item._opts ) {
+      ropts.push(item._opts);
+    }
+    internalCall('read', ropts, callback);
   };
   OSjsStorage.copy = function(src, dest, callback) {
     callback('Unavailable');
