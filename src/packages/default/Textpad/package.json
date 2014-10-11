@@ -10,7 +10,7 @@
       "no_NO":      "Simpel tekst redigering",
       "de_DE":      "Einfacher Texteditor"
     },
-    "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript"],
+    "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
     "category":   "utilities",
     "icon":       "apps/accessories-text-editor.png",
     "preload":    [
