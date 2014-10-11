@@ -580,8 +580,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
           return null;
         }
 
-        if ( manifest['type'] === 'extension' ) {
-          cb();
+        if ( manifest['type'] === 'extension' || typeof manifest === 'string' ) {
           return null;
         }
 
