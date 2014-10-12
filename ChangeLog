@@ -1,3 +1,10 @@
+# 2.0.0-alpha28
+
+* VFS: Now fully supports home directories pr user
+* VFS: Now has a "public" directory for general file sharing
+* VFS: Changed default path to home://
+* API: Moved Google API to handlers/
+
 # 2.0.0-alpha27
 
 * VFS: Added support for osjs://
