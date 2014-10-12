@@ -22,8 +22,7 @@
         "VersionAppend":    "",
         "VFS": {
           "GoogleDrive": {
-            "Enabled": false,
-            "ClientId": ""
+            "Enabled": false
           }
         },
         "Languages":        {
@@ -31,6 +30,10 @@
           "no_NO": "Norsk (Norwegian)",
           "de_DE": "Deutsch (German)"
         }
+      },
+
+      "GoogleAPI": {
+        "ClientId": ""
       },
 
       "Fonts" : {
@@ -127,6 +130,7 @@
       "src/javascript/dialogs/font.js",
       "src/javascript/dialogs/input.js",
       "src/javascript/handler.js",
+      "src/javascript/handlers/google.js",
       "src/javascript/handlers/%HANDLER%/handler.js",
       "src/javascript/main.js"
     ]

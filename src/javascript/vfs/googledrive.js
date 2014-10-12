@@ -97,139 +97,8 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  function GoogleDrive(clientId) {
-    this.clientId = clientId;
-    this.userId   = null;
-    this.preloads = [
-      {
-        type: 'javascript',
-        src: 'https://apis.google.com/js/api.js'
-      }
-    ];
+  function GoogleDrive() {
   }
-
-  GoogleDrive.prototype.destroy = function() {
-    try {
-      gapi.auth.signOut();
-    } catch ( e ) {
-    }
-  };
-
-  GoogleDrive.prototype.init = function(callback) {
-    callback = callback || function() {};
-    var self = this;
-
-    function preloaded(error) {
-      if ( !error ) {
-        self.doInit(function(success) {
-          console.debug('GoogleDrive::init() => doInit()', success);
-          if ( success ) {
-            self.doAuthentication(function(success) {
-              console.debug('GoogleDrive::init() => doAuthentication()', success);
-              if ( success ) {
-                self.doDriveLoad(function(success) {
-                  console.debug('GoogleDrive::init() => doDriveLoad()', success);
-                  if ( success ) {
-                    callback(false, true);
-                  }
-                });
-              }
-            });
-          } else {
-            callback('Google Drive API failed to load');
-          }
-        });
-        return;
-      }
-
-      callback(error);
-    }
-
-    Utils.Preload(this.preloads, function(total, errors) {
-      if ( errors ) {
-        preloaded(error);
-        return;
-      }
-
-      preloaded(false);
-    });
-  };
-
-  GoogleDrive.prototype.doInit = function(callback) {
-    console.info('GoogleDrive::doInit()');
-
-    callback = callback || function() {};
-
-    if ( !window.gapi || !gapi.load ) {
-      callback(false);
-      return;
-    }
-
-    gapi.load('auth:client,drive-realtime,drive-share', function() {
-      callback(true);
-    });
-  };
-
-  GoogleDrive.prototype.doAuthentication = function(callback) {
-    console.info('GoogleDrive::doAuthentication()');
-
-    callback = callback || function() {};
-
-    var self = this;
-
-    function getUserId(cb) {
-      cb = cb || function() {};
-      gapi.client.load('oauth2', 'v2', function() {
-        gapi.client.oauth2.userinfo.get().execute(function(resp) {
-          console.info('GoogleDrive::doAuthentication() => getUserId()', resp);
-          cb(resp.id);
-        });
-      });
-    }
-
-    function login(immediate, cb) {
-      console.info('GoogleDrive::doAuthentication() => login()', immediate);
-
-      cb = cb || function() {};
-      gapi.auth.authorize({
-        client_id: self.clientId,
-        scope: [
-          'https://www.googleapis.com/auth/drive.install',
-          'https://www.googleapis.com/auth/drive.file',
-          'openid'
-        ],
-        user_id: self.userId,
-        immediate: immediate
-      }, cb);
-    }
-
-    var handleAuthResult = function(authResult) {
-      console.info('GoogleDrive::doAuthentication() => handleAuthResult()', authResult);
-
-      if ( authResult && !authResult.error ) {
-        getUserId(function(id) {
-          self.userId = id;
-
-          if ( id ) {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        });
-      } else {
-        login(false, handleAuthResult);
-      }
-    };
-
-    login(true, handleAuthResult);
-  };
-
-  GoogleDrive.prototype.doDriveLoad = function(callback) {
-    callback = callback || function() {};
-    gapi.client.load('drive', 'v2', function() {
-      callback(true);
-    });
-  };
 
   GoogleDrive.prototype.scandir = function(item, callback) {
     var dir = item.type === 'dir' ? item.path : (Utils.dirname(item.path) + '/'); // FIXME
@@ -485,43 +354,20 @@
       callback = callback || function() {};
       onerror  = onerror  || function() {};
 
-      var clientId = null;
-      var handler = API.getHandlerInstance();
-      if ( handler ) {
-        try {
-          clientId = handler.getConfig('Core').VFS.GoogleDrive.ClientId;
-        } catch ( e ) {
-          console.warn("getGoogleDrive()", e, e.stack);
-        }
-      }
-
-      if ( !clientId ) {
-        onerror('GoogleDrive Module not configured or disabled');
+      if ( !_gd ) {
+        _gd = new GoogleDrive();
+        OSjs.Handlers.getGoogleAPI(['drive-realtime', 'drive-share'],
+                                   ['https://www.googleapis.com/auth/drive.install', 'https://www.googleapis.com/auth/drive.file', 'openid'],
+                                    'drive', 'v2', function(error, result) {
+                                      if ( error ) {
+                                        return onerror(error);
+                                      }
+                                      callback(_gd);
+                                    });
         return;
       }
 
-      function done() {
-        try {
-          callback(_gd);
-        } catch ( e ) {
-          console.error(e);
-          console.warn('Stack trace', e.stack);
-          onerror(e.toString());
-        }
-      }
-
-      if ( !_gd ) {
-        _gd = new GoogleDrive(clientId);
-        _gd.init(function(error) {
-          if ( error ) {
-            onerror(error);
-          } else {
-            done();
-          }
-        });
-      } else {
-        done();
-      }
+      callback(_gd);
     };
   })();
 
