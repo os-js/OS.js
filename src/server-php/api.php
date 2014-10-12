@@ -30,6 +30,73 @@
  */
 
 /**
+ * OS.js API User
+ */
+class APIUser
+{
+  protected static $_instance;
+
+  protected $id       = -1;
+  protected $username = "";
+  protected $name     = "";
+  protected $groups   = Array();
+
+  protected function __construct(Array $args) {
+    $this->id = $args["id"];
+    $this->username = $args["username"];
+    $this->name = $args["name"];
+    $this->groups = $args["groups"];
+
+    $_SESSION["user"] = $this->getData();
+  }
+
+  public static function restore() {
+    if ( $data = $_SESSION["user"] ) {
+      self::login($data);
+    }
+  }
+
+  public static function login(Array $args) {
+    self::logout();
+    return (self::$_instance = new self($args));
+  }
+
+  public static function logout() {
+    self::$_instance = null;
+    unset($_SESSION['user']);
+  }
+
+  public static function get() {
+    return self::$_instance;
+  }
+
+  public function getId() {
+    return $this->id;
+  }
+
+  public function getUsername() {
+    return $this->username;
+  }
+
+  public function getName() {
+    return $this->name;
+  }
+
+  public function getGroups() {
+    return $this->groups;
+  }
+
+  public function getData() {
+    return Array(
+      "id" => $this->id,
+      "username" => $this->username,
+      "name" => $this->name,
+      "groups" => $this->groups
+    );
+  }
+}
+
+/**
  * HTTP Request Class
  */
 class APIRequest
@@ -209,6 +276,10 @@ class API
    * File Download Request
    */
   public static function FileGET(APIRequest $req) {
+    if ( !APIUser::get() ) {
+      throw new Exception("You have no OS.js Session, please log in!");
+    }
+
     $result   = false;
     $error    = false;
     $headers  = Array();
@@ -253,6 +324,10 @@ class API
    * File Upload Requests
    */
   public static function FilePOST(APIRequest $req) {
+    if ( !APIUser::get() ) {
+      throw new Exception("You have no OS.js Session, please log in!");
+    }
+
     $result = false;
     $error  = false;
 
@@ -302,25 +377,29 @@ class API
 
           // API call via application
           case 'application' :
-            $path = empty($arguments['path'])        ? null     : $arguments['path'];
-            $an   = empty($arguments['application']) ? null     : $arguments['application'];
-            $am   = empty($arguments['method'])      ? null     : $arguments['method'];
-            $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
-
-            $aroot = sprintf("%s/%s", REPODIR, $path);
-            $apath = sprintf("%s/%s", $aroot, "api.php");
-
-            if ( !file_exists($apath) ) {
-              $error = "No such application or API file not available ({$an})!";
+            if ( !APIUser::get() ) {
+              $error = "You have no OS.js Session, please log in!";
             } else {
-              require $apath;
-              if ( !class_exists($an) || !method_exists($an, 'call') ) {
-                $error = "Application API missing!";
+              $path = empty($arguments['path'])        ? null     : $arguments['path'];
+              $an   = empty($arguments['application']) ? null     : $arguments['application'];
+              $am   = empty($arguments['method'])      ? null     : $arguments['method'];
+              $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
+
+              $aroot = sprintf("%s/%s", REPODIR, $path);
+              $apath = sprintf("%s/%s", $aroot, "api.php");
+
+              if ( !file_exists($apath) ) {
+                $error = "No such application or API file not available ({$an})!";
               } else {
-                try {
-                  $result = $an::call($am, $aa);//call_user_func_array(Array($an, 'call'), $aa);
-                } catch ( Exception $e ) {
-                  $error = "Application API exception: {$e->getMessage()}";
+                require $apath;
+                if ( !class_exists($an) || !method_exists($an, 'call') ) {
+                  $error = "Application API missing!";
+                } else {
+                  try {
+                    $result = $an::call($am, $aa);//call_user_func_array(Array($an, 'call'), $aa);
+                  } catch ( Exception $e ) {
+                    $error = "Application API exception: {$e->getMessage()}";
+                  }
                 }
               }
             }
@@ -328,19 +407,23 @@ class API
 
           // Filesystem operations
           case 'fs' :
-            $m = $arguments['method'];
-            $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
-
-            if ( !method_exists('FS', $m) ) {
-              $error = "Invalid FS operation: {$m}";
+            if ( !APIUser::get() ) {
+              $error = "You have no OS.js Session, please log in!";
             } else {
-              if ( !$a ) {
-                $error = "Supply argument for FS operaion: {$m}";
+              $m = $arguments['method'];
+              $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
+
+              if ( !method_exists('FS', $m) ) {
+                $error = "Invalid FS operation: {$m}";
               } else {
-                try {
-                  $result = call_user_func_array(Array("FS", $m), $a);
-                } catch ( Exception $e ) {
-                  $error = "FS operaion error: {$e->getMessage()}";
+                if ( !$a ) {
+                  $error = "Supply argument for FS operaion: {$m}";
+                } else {
+                  try {
+                    $result = call_user_func_array(Array("FS", $m), $a);
+                  } catch ( Exception $e ) {
+                    $error = "FS operaion error: {$e->getMessage()}";
+                  }
                 }
               }
             }

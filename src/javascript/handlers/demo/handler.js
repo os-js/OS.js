@@ -33,13 +33,6 @@
   window.OSjs   = window.OSjs   || {};
   OSjs.Handlers = OSjs.Handlers || {};
 
-  var DEMO_USER = {
-    id:         1,
-    username:   'demo',
-    name:       'Demo User',
-    groups:     ['demo']
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // DEMO STORAGE
   /////////////////////////////////////////////////////////////////////////////
@@ -99,7 +92,6 @@
     var self = this;
     this.login('demo', 'demo', function(userData) {
       self.settings.load(self.storage.get()); // IMPORTANT
-
       self.onLogin(userData, function() {
         callback();
       });
@@ -111,11 +103,17 @@
    */
   DemoHandler.prototype.login = function(username, password, callback) {
     console.info('OSjs::DemoHandler::login()', username);
-    if ( username === 'demo' && password === 'demo' ) {
-      callback.call(this, DEMO_USER);
-      return;
-    }
-    callback.call(this, false, 'Invalid login');
+    var opts = {username: username, password: password};
+    this.callAPI('login', opts, function(response) {
+      if ( response.result ) { // This contains an object with user data
+        callback(response.result);
+      } else {
+        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
+      }
+
+    }, function(error) {
+      callback(false, 'Login error: ' + error);
+    });
   };
 
   DemoHandler.prototype.saveSettings = function(callback) {

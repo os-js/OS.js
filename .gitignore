@@ -16,3 +16,4 @@ dist/themes.json
 dist-dev/test.*
 dist-dev/packages.json
 dist-dev/themes.json
+vfs/*/*

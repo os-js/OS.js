@@ -63,6 +63,8 @@ date_default_timezone_set(TIMEZONE);
 register_shutdown_function(Array('APIResponse', 'ErrorHandler'));
 session_start();
 
+APIUser::restore();
+
 if ( defined("NOSERVER") && (NOSERVER === true) ) {
   return;
 }
@@ -71,8 +73,6 @@ if ( $response = APIRequest::call() ) {
   $response->output();
   return true;
 } else {
-
-
   if ( php_sapi_name() === "cli-server" ) {
     return false;
   }

@@ -39,7 +39,7 @@
     port:       8000,
     directory:  null, // Automatic
     appdirs:    null, // Automatic, but overrideable
-    vfsdir:     _path.join(ROOTDIR, 'vfs/home'),
+    vfsdir:     _path.join(ROOTDIR, 'vfs/home/demo'), // FIXME
     tmpdir:     _path.join(ROOTDIR, 'vfs/tmp'),
     publicdir:  _path.join(ROOTDIR, 'vfs/public'),
     repodir:    _path.join(ROOTDIR, 'src/packages'),

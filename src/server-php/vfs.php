@@ -281,8 +281,18 @@ function getRealPath(&$scandir) {
     $root = sprintf("%s/%s", DISTDIR, preg_replace("/^\//", "", $dirname));
     if ( strstr($root, DISTDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
   } else if ( $protocol === "home://" ) {
-    $root = sprintf("%s/%s", VFSDIR, preg_replace("/^\//", "", $dirname));
-    if ( strstr($root, VFSDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
+    $username = null;
+    if ( $user = APIUser::get() ) {
+      $username = $user->getUsername();
+    }
+
+    if ( !$username ) {
+      throw new Exception("No username was found, cannot access home directory");
+    }
+
+    $vfsdir = sprintf("%s/%s", VFSDIR, $username);
+    $root = sprintf("%s/%s", $vfsdir, preg_replace("/^\//", "", $dirname));
+    if ( strstr($root, $vfsdir) === false ) throw new Exception("Access denied in directory '{$root}'");
   } else {
     $root = sprintf("%s/%s", PUBLICDIR, preg_replace("/^\//", "", $dirname));
     if ( strstr($root, PUBLICDIR) === false ) throw new Exception("Access denied in directory '{$root}'");

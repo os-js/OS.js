@@ -1,10 +1,9 @@
 
 # High-priority
-* _[VFS]_ Include a handler that supports separate home dirs for users
 * _[VFS]_ Copy/Move between sources is not working correctly
 * _[VFS]_ Finish Google Drive implementation
 * _[Documentation]_ Complete documentation for JavaScript
-* _[Backend]_ Finish Node.js backend
+* _[Backend]_ Finish Node.js backend: Handlers, Session and ApplicationAPI
 * _[Locales]_ Finish the format strings
 * _[Themes]_ More Themes
 * _[Backend]_ Finish WebSocket hander implementation

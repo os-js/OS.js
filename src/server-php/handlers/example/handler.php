@@ -88,7 +88,11 @@ class APIHandler
         }
 
         if ( $result = $response ) {
-          $_SESSION['user'] = $response['userData'];
+          $user = APIUser::login($response["userData"]);
+          $homedir = sprintf("%s/%s", VFSDIR, $user->getUsername());
+          if ( !file_exists($homedir) ) {
+            @mkdir($homedir);
+          }
         }
       break;
 
@@ -104,7 +108,7 @@ class APIHandler
       break;
 
       case 'logout' :
-        unset($_SESSION['user']);
+        APIUser::logout();
         $result = true;
       break;
     }
