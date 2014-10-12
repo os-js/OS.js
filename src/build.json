@@ -11,7 +11,7 @@
         "ThemeMetadataURI": "/themes.json",
         "ThemeURI":         "/themes",
         "PackageURI":       "/packages",
-        "Home":             "/",
+        "Home":             "home:///",
         "Handler":          "%HANDLER%",
         "Connection":       "%CONNECTION%",
         "MaxUploadSize":    2097152,
