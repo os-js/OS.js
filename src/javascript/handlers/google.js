@@ -65,7 +65,7 @@
     }
   };
 
-  GoogleAPI.prototype.load = function(load, scope, api, version, callback) {
+  GoogleAPI.prototype.load = function(load, scope, callback) {
     load = (['auth:client']).concat(load);
 
     var self = this;
@@ -82,9 +82,7 @@
 
       gapi.load(load.join(','), function() {
         self.authenticate(scope, function() {
-          gapi.client.load(api, version, function() {
-            callback(false, true);
-          });
+          callback(false, true);
         });
       });
 
@@ -149,9 +147,9 @@
   OSjs.Handlers              = OSjs.Handlers || {};
   OSjs.Handlers.getGoogleAPI = (function() {
     var _c;
-    return function(load, scope, api, version, callback) {
+    return function(load, scope, callback) {
       function _run() {
-        _c.load(load, scope, api, version, callback);
+        _c.load(load, scope, callback);
       }
 
       if ( _c ) {

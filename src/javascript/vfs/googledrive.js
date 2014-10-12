@@ -356,14 +356,19 @@
 
       if ( !_gd ) {
         _gd = new GoogleDrive();
-        OSjs.Handlers.getGoogleAPI(['drive-realtime', 'drive-share'],
-                                   ['https://www.googleapis.com/auth/drive.install', 'https://www.googleapis.com/auth/drive.file', 'openid'],
-                                    'drive', 'v2', function(error, result) {
-                                      if ( error ) {
-                                        return onerror(error);
-                                      }
-                                      callback(_gd);
-                                    });
+        var scopes = [
+          'https://www.googleapis.com/auth/drive.install',
+          'https://www.googleapis.com/auth/drive.file',
+          'openid'
+        ];
+        OSjs.Handlers.getGoogleAPI(['drive-realtime', 'drive-share'], scopes, function(error, result) {
+          if ( error ) {
+            return onerror(error);
+          }
+          gapi.client.load('drive', 'v2', function() {
+            callback(_gd);
+          });
+        });
         return;
       }
 
