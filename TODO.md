@@ -1,5 +1,6 @@
 
 # High-priority
+* _[VFS]_ Include a handler that supports separate home dirs for users
 * _[VFS]_ Copy/Move between sources is not working correctly
 * _[VFS]_ Finish Google Drive implementation
 * _[Documentation]_ Complete documentation for JavaScript

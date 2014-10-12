@@ -119,8 +119,26 @@
     return tree.dirs.concat(tree.files);
   }
 
+  /**
+   * Returns the URL without protocol
+   */
   function getRelativeURL(orig) {
     return orig.replace(/^([A-z0-9\-_]+)\:\/\//, '');
+  }
+
+  /**
+   * Perform default VFS call via backend
+   */
+  function internalCall(name, args, callback) {
+    API.call('fs', {'method': name, 'arguments': args}, function(res) {
+      if ( !res || (typeof res.result === 'undefined') || res.error ) {
+        callback(res.error || OSjs._('Fatal error'));
+      } else {
+        callback(false, res.result);
+      }
+    }, function(error) {
+      callback(error);
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -234,7 +252,7 @@
 
     var msrc = getModuleFromPath(src.path);
     var mdst = getModuleFromPath(dest.path);
-    if ( msrc != mdst ) {
+    if ( (msrc !== mdst) && (msrc === 'Internal' && mdst === 'User') && (msrc === 'User' && mdst === 'Internal') ) {
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
           callback('An error occured while copying between storage: ' + error);
@@ -264,7 +282,7 @@
 
     var msrc = getModuleFromPath(src.path);
     var mdst = getModuleFromPath(dest.path);
-    if ( msrc != mdst ) {
+    if ( (msrc !== mdst) && (msrc === 'Internal' && mdst === 'User') && (msrc === 'User' && mdst === 'Internal') ) {
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
           callback('An error occured while moving between storage: ' + error);
@@ -419,7 +437,7 @@
       API.createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
 
       var dmodule = getModuleFromPath(args.path);
-      if ( dmodule !== 'Internal' ) {
+      if ( dmodule !== 'Internal' && dmodule != 'User' ) {
         var file = args;
         if ( !(file instanceof OSjs.VFS.File) ) {
           file = new OSjs.VFS.File(args.path);
@@ -456,9 +474,10 @@
   //
   // Misc exports
   //
-  OSjs.VFS.filterScandir = filterScandir;
+  OSjs.VFS.internalCall      = internalCall;
+  OSjs.VFS.filterScandir     = filterScandir;
   OSjs.VFS.getModuleFromPath = getModuleFromPath;
-  OSjs.VFS.getRelativeURL = getRelativeURL;
-  OSjs.VFS.File = OFile;
+  OSjs.VFS.getRelativeURL    = getRelativeURL;
+  OSjs.VFS.File              = OFile;
 
 })(OSjs.Utils, OSjs.API);

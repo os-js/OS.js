@@ -64,27 +64,9 @@ class FS
 {
 
   public static function scandir($scandir, Array $opts = Array()) {
-    $scandir  = preg_replace("/\/$/", "", $scandir);
-    $scandir  = preg_replace("/\/\.\.?/", "/", $scandir);
-    $result   = Array();
-    $dirname  = $scandir;
-    $protocol = "";
+    list($dirname, $root, $protocol) = getRealPath($scandir);
 
-    if ( (preg_match("/^([A-z0-9\-_]+)?\:\/\/?(.*)/", $scandir, $matches)) !== false ) {
-      if ( sizeof($matches) === 3 ) {
-        $protocol = "{$matches[1]}://";
-        $dirname  = $matches[2];
-      }
-    }
-
-    if ( $protocol ) {
-      $root = sprintf("%s/%s", DISTDIR, preg_replace("/^\//", "", $dirname));
-      if ( strstr($root, DISTDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
-    } else {
-      $root = sprintf("%s/%s", VFSDIR, preg_replace("/^\//", "", $dirname));
-      if ( strstr($root, VFSDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
-    }
-
+    $result = Array();
     $on_root = !$dirname || $dirname == "/";
     if ( ($files = scandir($root)) !== false ) {
       foreach ( $files as $f ) {
@@ -126,9 +108,8 @@ class FS
 
   public static function write($fname, $content, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
-    $fname = unrealpath(VFSDIR . $fname);
+    list($dirname, $root, $protocol, $fname) = getRealPath($fname);
 
-    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( is_file($fname) ) {
       if ( !is_file($fname) ) throw new Exception("You are writing to a invalid resource");
       if ( !is_writable($fname) ) throw new Exception("Write permission denied");
@@ -164,14 +145,7 @@ class FS
   public static function read($fname, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
 
-    if ( preg_match("/^osjs\:\/\//", $fname) ) {
-      $fname = preg_replace("/^osjs\:\/\//", "", $fname);
-      $fname = unrealpath(DISTDIR . $fname);
-      if ( strstr($fname, DISTDIR) === false ) throw new Exception("You do not have enough privileges to do this");
-    } else {
-      $fname = unrealpath(VFSDIR . $fname);
-      if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
-    }
+    list($dirname, $root, $protocol, $fname) = getRealPath($fname);
 
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
@@ -190,9 +164,7 @@ class FS
   }
 
   public static function delete($fname) {
-    $fname = unrealpath(VFSDIR . $fname);
-
-    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    list($dirname, $root, $protocol, $fname) = getRealPath($fname);
 
     if ( is_file($fname) ) {
       if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
@@ -207,11 +179,9 @@ class FS
   }
 
   public static function copy($src, $dest) {
-    $src = unrealpath(VFSDIR . $src);
-    $dest = unrealpath(VFSDIR . $dest);
+    list($dirname, $root, $protocol, $src) = getRealPath($src);
+    list($dirname, $root, $protocol, $dest) = getRealPath($dest);
 
-    if ( strstr($src, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
-    if ( strstr($dest, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
@@ -221,11 +191,9 @@ class FS
   }
 
   public static function move($src, $dest) {
-    $src = unrealpath(VFSDIR . $src);
-    $dest = unrealpath(VFSDIR . $dest);
+    list($dirname, $root, $protocol, $src) = getRealPath($src);
+    list($dirname, $root, $protocol, $dest) = getRealPath($dest);
 
-    if ( strstr($src, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (1)");
-    if ( strstr($dest, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this (2)");
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
     if ( !is_writeable(dirname($dest)) ) throw new Exception("Permission denied");
@@ -235,18 +203,19 @@ class FS
   }
 
   public static function mkdir($dname) {
-    $dname = unrealpath(VFSDIR . $dname);
+    list($dirname, $root, $protocol, $dname) = getRealPath($dname);
 
-    if ( strstr($dname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( file_exists($dname) ) throw new Exception("Destination already exists");
 
-    return mkdir($dname);
+    if ( !mkdir($dname) ) {
+      throw new Exception("Failed to create directory");
+    }
+    return true;
   }
 
   public static function fileinfo($fname) {
-    $fname = unrealpath(VFSDIR . $fname);
+    list($dirname, $root, $protocol, $fname) = getRealPath($fname);
 
-    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 
@@ -289,12 +258,40 @@ class FS
   }
 
   public static function exists($fname) {
-    $fname = unrealpath(VFSDIR . $fname);
-    if ( strstr($fname, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
+    list($dirname, $root, $protocol, $fname) = getRealPath($fname);
     return file_exists($fname);
   }
 }
 
+function getRealPath(&$scandir) {
+  $scandir  = preg_replace("/\/$/", "", $scandir);
+  $scandir  = preg_replace("/\/\.\.?/", "/", $scandir);
+  $protocol = "";
+  $dirname  = $scandir;
+  $realpath = "";
+
+  if ( (preg_match("/^([A-z0-9\-_]+)?\:\/\/?(.*)/", $scandir, $matches)) !== false ) {
+    if ( sizeof($matches) === 3 ) {
+      $protocol = "{$matches[1]}://";
+      $dirname  = $matches[2];
+    }
+  }
+
+  if ( $protocol === "osjs://" ) {
+    $root = sprintf("%s/%s", DISTDIR, preg_replace("/^\//", "", $dirname));
+    if ( strstr($root, DISTDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
+  } else if ( $protocol === "home://" ) {
+    $root = sprintf("%s/%s", VFSDIR, preg_replace("/^\//", "", $dirname));
+    if ( strstr($root, VFSDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
+  } else {
+    $root = sprintf("%s/%s", PUBLICDIR, preg_replace("/^\//", "", $dirname));
+    if ( strstr($root, PUBLICDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
+  }
+
+  $realpath = str_replace(Array("../", "./"), "", $root);
+
+  return Array($dirname, $root, $protocol, $realpath);
+}
 
 function fileMime($fname) {
   if ( function_exists('pathinfo') ) {
@@ -397,10 +394,6 @@ function destroy_dir($dir) {
     }
   }
   return rmdir($dir);
-}
-
-function unrealpath($p) {
-  return str_replace(Array("../", "./"), "", $p);
 }
 
 function truepath($path, $chk = true){

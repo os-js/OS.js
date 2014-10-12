@@ -50,6 +50,7 @@ if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'
 if ( !defined("DISTDIR") )    define("DISTDIR",     ROOTDIR . "/dist");                               // Dist dir
 if ( !defined("VFSDIR") )     define("VFSDIR",      ROOTDIR . "/vfs/home");                           // Filesystem API default dir
 if ( !defined("TMPDIR") )     define("TMPDIR",      ROOTDIR . "/vfs/tmp");                            // Temporary files
+if ( !defined("PUBLICDIR") )  define("PUBLICDIR",   ROOTDIR . "/vfs/public");                         // Public (shared) files
 if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");                       // Packages
 if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.json");                  // Package repositories
 if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));    // Upload size limit

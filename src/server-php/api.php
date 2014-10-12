@@ -52,7 +52,7 @@ class APIRequest
 
     if ( preg_match('/^\/API/', $request->uri) ) {
       $response = API::CoreAPI($request);
-    } else if ( preg_match('/^\/FS\//', $request->uri) ) {
+    } else if ( preg_match('/^\/FS(.*)/', $request->uri) ) {
       $response = API::FileGET($request);
     } else if ( preg_match('/^\/FS/', $request->uri) ) {
       $response = API::FilePOST($request);
@@ -215,28 +215,28 @@ class API
     $code     = 0;
 
     try {
-      $arg = preg_replace("/^\/FS/", "", $req->data);
-      if ( isset($arg) && ($file = (VFSDIR . unrealpath($arg))) ) {
-        if ( strstr($file, VFSDIR) === false ) throw new Exception("You do not have enough privileges to do this");
-        if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
-        if ( !is_readable($file) ) throw new Exception("Read permission denied");
+      if ( $arg = preg_replace("/^\/FS/", "", $req->data) ) {
+        list($dirname, $root, $protocol, $file) = getRealPath($arg);
 
         if ( file_exists($file) ) {
-            session_write_close();
-            if ( ($mime = fileMime($file)) ) {
-              $length = filesize($file);
-              $fp = fopen($file, "r");
-              $etag = md5(serialize(fstat($fp)));
-              fclose($fp);
+          if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
+          if ( !is_readable($file) ) throw new Exception("Read permission denied");
 
-              $headers[] = "Etag: {$etag}";
-              $headers[] = "Content-type: {$mime}";
-              $headers[] = "Content-length: {$length}";
+          session_write_close();
+          if ( ($mime = fileMime($file)) ) {
+            $length = filesize($file);
+            $fp = fopen($file, "r");
+            $etag = md5(serialize(fstat($fp)));
+            fclose($fp);
 
-              $result = file_get_contents($file);
-            } else {
-              $error = "No valid MIME";
-            }
+            $headers[] = "Etag: {$etag}";
+            $headers[] = "Content-type: {$mime}";
+            $headers[] = "Content-length: {$length}";
+
+            $result = file_get_contents($file);
+          } else {
+            $error = "No valid MIME";
+          }
         } else {
           $code = 404;
           $error = "File not found";

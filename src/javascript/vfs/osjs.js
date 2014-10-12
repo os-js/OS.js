@@ -34,25 +34,13 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
-  function internalCall(name, args, callback) {
-    API.call('fs', {'method': name, 'arguments': args}, function(res) {
-      if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        callback(res.error || OSjs._('Fatal error'));
-      } else {
-        callback(false, res.result);
-      }
-    }, function(error) {
-      callback(error);
-    });
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
   var OSjsStorage = {};
   OSjsStorage.scandir = function(item, callback) {
-    internalCall('scandir', [item.path], function(error, result) {
+    OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
       var list = [];
       if ( result ) {
         result = OSjs.VFS.filterScandir(result, item._opts);
@@ -71,7 +59,7 @@
     if ( item._opts ) {
       ropts.push(item._opts);
     }
-    internalCall('read', ropts, callback);
+    OSjs.VFS.internalCall('read', ropts, callback);
   };
   OSjsStorage.copy = function(src, dest, callback) {
     callback('Unavailable');

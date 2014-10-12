@@ -34,25 +34,13 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
-  function internalCall(name, args, callback) {
-    API.call('fs', {'method': name, 'arguments': args}, function(res) {
-      if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        callback(res.error || OSjs._('Fatal error'));
-      } else {
-        callback(false, res.result);
-      }
-    }, function(error) {
-      callback(error);
-    });
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
   var InternalStorage = {};
   InternalStorage.scandir = function(item, callback) {
-    internalCall('scandir', [item.path], function(error, result) {
+    OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
       var list = [];
       if ( result ) {
         result = OSjs.VFS.filterScandir(result, item._opts);
@@ -68,32 +56,32 @@
     if ( item._opts ) {
       wopts.push(item._opts);
     }
-    internalCall('write', wopts, callback);
+    OSjs.VFS.internalCall('write', wopts, callback);
   };
   InternalStorage.read = function(item, callback) {
     var ropts = [item.path];
     if ( item._opts ) {
       ropts.push(item._opts);
     }
-    internalCall('read', ropts, callback);
+    OSjs.VFS.internalCall('read', ropts, callback);
   };
   InternalStorage.copy = function(src, dest, callback) {
-    internalCall('copy', [src.path, dest.path], callback);
+    OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
   };
   InternalStorage.move = function(src, dest, callback) {
-    internalCall('move', [src.path, dest.path], callback);
+    OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
   };
   InternalStorage.unlink = function(item, callback) {
-    internalCall('delete', [item.path], callback);
+    OSjs.VFS.internalCall('delete', [item.path], callback);
   };
   InternalStorage.mkdir = function(item, callback) {
-    internalCall('mkdir', [item.path], callback);
+    OSjs.VFS.internalCall('mkdir', [item.path], callback);
   };
   InternalStorage.exists = function(item, callback) {
-    internalCall('exists', [item.path], callback);
+    OSjs.VFS.internalCall('exists', [item.path], callback);
   };
   InternalStorage.fileinfo = function(item, callback) {
-    internalCall('fileinfo', [item.path], callback);
+    OSjs.VFS.internalCall('fileinfo', [item.path], callback);
   };
   InternalStorage.url = function(item, callback) {
     var path    = typeof item === 'string' ? item : item.path;
@@ -123,15 +111,27 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Modules.Internal = OSjs.VFS.Modules.Internal || {
-    description: 'Public Storage',
-    root: '/',
+  OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
+    description: 'Home',
+    root: 'home:///',
     icon: 'places/folder_home.png',
+    match: /^home\:\/\//,
     visible: true,
     enabled: function() {
       return true;
     },
+    request: makeRequest
+  };
+
+  OSjs.VFS.Modules.Internal = OSjs.VFS.Modules.Internal || {
+    description: 'Shared',
+    root: '/',
+    icon: 'places/folder-publicshare.png',
+    visible: true,
     match: null,
+    enabled: function() {
+      return true;
+    },
     request: makeRequest
   };
 

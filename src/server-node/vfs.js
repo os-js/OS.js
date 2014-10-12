@@ -37,6 +37,21 @@
     return mode; // TODO
   };
 
+  function getRealPath(path, config) {
+    var fullPath = _path.join(config.publicdir, path);
+    var protocol = '';
+    if ( path.match(/^osjs\:\/\//) ) {
+      path = path.replace(/^osjs\:\/\//, '');
+      fullPath = _path.join(config.distdir, path);
+      protocol = 'osjs://';
+    } else if ( path.match(/^home\:\/\//) ) {
+      path = path.replace(/^home\:\/\//, '');
+      fullPath = _path.join(config.vfsdir, path);
+      protocol = 'home://';
+    }
+    return {root: fullPath, path: path, protocol: protocol};
+  }
+
   var vfs = {
     getMime : function(file, config) {
       var i = file.lastIndexOf("."),
@@ -48,21 +63,18 @@
     read : function(args, request, respond, config) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-      var fullPath = _path.join(config.vfsdir, path);
 
-      if ( path.match(/^osjs\:\/\//) ) {
-        path = path.replace(/^osjs\:\/\//, '');
-        fullPath = _path.join(config.distdir, path);
-      }
+      var realPath = getRealPath(path, config);
+      path = realPath.path;
 
-      _fs.exists(fullPath, function(exists) {
+      _fs.exists(realPath.root, function(exists) {
         if ( exists ) {
-          _fs.readFile(fullPath, function(error, data) {
+          _fs.readFile(realPath.root, function(error, data) {
             if ( error ) {
               respond({result: null, error: 'Error reading file: ' + error});
             } else {
               if ( opts.dataSource ) {
-                data = "data:" + vfs.getMime(fullPath, config) + ";base64," + (new Buffer(data).toString('base64'));
+                data = "data:" + vfs.getMime(realPath.root, config) + ";base64," + (new Buffer(data).toString('base64'));
               }
 
               respond({result: data.toString(), error: null});
@@ -79,14 +91,15 @@
       var data = args[1] || '';
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var fullPath = _path.join(config.vfsdir, path);
+      var realPath = getRealPath(path, config);
+      path = realPath.path;
 
       if ( opts.dataSource ) {
         data = data.replace(/^data\:(.*);base64\,/, "") || '';
         data = new Buffer(data, 'base64').toString('ascii')
       }
 
-      _fs.writeFile(fullPath, data, function(error, data) {
+      _fs.writeFile(realPath.root, data, function(error, data) {
         if ( error ) {
           respond({result: null, error: 'Error writing file: ' + error});
         } else {
@@ -99,12 +112,14 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
+      var realPath = getRealPath(path, config);
+      path = realPath.path;
+
+      _fs.exists(realPath.root, function(exists) {
         if ( !exists ) {
           respond({result: null, error: 'Target does not exist!'});
         } else {
-          _fs.remove(fullPath, function(error, data) {
+          _fs.remove(realPath.root, function(error, data) {
             if ( error ) {
               respond({result: false, error: 'Error deleting: ' + error});
             } else {
@@ -120,8 +135,10 @@
       var dst  = args[1];
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var srcPath = _path.join(config.vfsdir, src);
-      var dstPath = _path.join(config.vfsdir, dst);
+      var realSrc = getRealPath(src, config);
+      var realDst = getRealPath(dst, config);
+      var srcPath = _path.join(realSrc.root, src);
+      var dstPath = _path.join(realDst.root, dst);
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {
           _fs.exists(dstPath, function(exists) {
@@ -148,8 +165,10 @@
       var dst  = args[1];
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var srcPath = _path.join(config.vfsdir, src);
-      var dstPath = _path.join(config.vfsdir, dst);
+      var realSrc = getRealPath(src, config);
+      var realDst = getRealPath(dst, config);
+      var srcPath = _path.join(realSrc.root, src);
+      var dstPath = _path.join(realDst.root, dst);
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {
           _fs.exists(dstPath, function(exists) {
@@ -175,12 +194,14 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
+      var realPath = getRealPath(path, config);
+      path = realPath.path;
+
+      _fs.exists(realPath.root, function(exists) {
         if ( exists ) {
           respond({result: null, error: 'Target already exist!'});
         } else {
-          _fs.mkdir(fullPath, function(error, data) {
+          _fs.mkdir(realPath.root, function(error, data) {
             if ( error ) {
               respond({result: false, error: 'Error creating directory: ' + error});
             } else {
@@ -194,8 +215,10 @@
     exists : function(args, request, respond, config) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
+
+      var realPath = getRealPath(path, config);
+      path = realPath.path;
+      _fs.exists(realPath.root, function(exists) {
         respond({result: exists, error: null});
       });
     },
@@ -203,20 +226,22 @@
     fileinfo : function(args, request, respond, config) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
-      var fullPath = _path.join(config.vfsdir, path);
-      _fs.exists(fullPath, function(exists) {
+
+      var realPath = getRealPath(path, config);
+      path = realPath.path;
+      _fs.exists(realPath.root, function(exists) {
         if ( !exists ) {
           respond({result: null, error: 'No such file or directory!'});
         } else {
-          _fs.stat(fullPath, function(error, stat) {
+          _fs.stat(realPath.root, function(error, stat) {
             if ( error ) {
               respond({result: false, error: 'Error getting file information: ' + error});
             } else {
               var data = {
-                path:         _path.dirname(fullPath),
-                filename:     _path.basename(fullPath),
+                path:         _path.dirname(realPath.root),
+                filename:     _path.basename(realPath.root),
                 size:         stat.size,
-                mime:         vfs.getMime(fullPath, config),
+                mime:         vfs.getMime(realPath.root, config),
                 permissions:  readPermission(stat.mode)
               };
 
@@ -232,16 +257,11 @@
 
     scandir : function(args, request, respond, config) {
       var path = args[0];
-      var protocol = '';
-      var fullPath = _path.join(config.vfsdir, path);
 
-      if ( path.match(/^osjs\:\/\//) ) {
-        path = path.replace(/^osjs\:\/\//, '');
-        protocol = 'osjs://';
-        fullPath = _path.join(config.distdir, path);
-      }
+      var realPath = getRealPath(path, config);
+      path = realPath.path;
 
-      _fs.readdir(fullPath, function(error, files) {
+      _fs.readdir(realPath.root, function(error, files) {
         if ( error ) {
           respond({result: null, error: 'Error reading directory: ' + error});
         } else {
@@ -249,7 +269,7 @@
           var ofpath, fpath, ftype, fsize, fstat;
           for ( var i = 0; i < files.length; i++ ) {
             ofpath = _path.join(path, files[i]);
-            fpath  = _path.join(fullPath, files[i]);
+            fpath  = _path.join(realPath.root, files[i]);
 
             try {
               fsstat = _fs.statSync(fpath);
@@ -262,7 +282,7 @@
 
             result.push({
               filename: files[i],
-              path:     protocol + ofpath,
+              path:     realPath.protocol + ofpath,
               size:     fsize,
               mime:     ftype === 'file' ? vfs.getMime(files[i], config) : '',
               type:     ftype

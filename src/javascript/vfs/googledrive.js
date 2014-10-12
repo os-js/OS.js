@@ -97,10 +97,9 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  function GoogleDrive() {
-  }
+  var GoogleDriveStorage = {};
 
-  GoogleDrive.prototype.scandir = function(item, callback) {
+  GoogleDriveStorage.scandir = function(item, callback) {
     var dir = item.type === 'dir' ? item.path : (Utils.dirname(item.path) + '/'); // FIXME
     console.info('GoogleDrive::scandir()', dir);
 
@@ -155,7 +154,7 @@
     });
   };
 
-  GoogleDrive.prototype.read = function(item, callback) {
+  GoogleDriveStorage.read = function(item, callback) {
     console.info('GoogleDrive::read()', item);
 
     var request = gapi.client.drive.files.get({
@@ -183,7 +182,7 @@
     });
   };
 
-  GoogleDrive.prototype.write = function(file, data, callback) {
+  GoogleDriveStorage.write = function(file, data, callback) {
     console.info('GoogleDrive::write()', file);
 
     this.exists(file, function(error, exists) {
@@ -216,7 +215,7 @@
 
   };
 
-  GoogleDrive.prototype.copy = function(src, dest, callback) {
+  GoogleDriveStorage.copy = function(src, dest, callback) {
     console.info('GoogleDrive::copy()', src, dest);
     var request = gapi.client.drive.files.copy({
       fileId: Utils.filename(src),
@@ -232,7 +231,7 @@
     });
   };
 
-  GoogleDrive.prototype.unlink = function(src, callback) {
+  GoogleDriveStorage.unlink = function(src, callback) {
     console.info('GoogleDrive::unlink()', src);
     var request = gapi.client.drive.files.delete({
       fileId: src.id
@@ -248,12 +247,12 @@
   };
 
   // TODO
-  GoogleDrive.prototype.move = function(src, dest, callback) {
+  GoogleDriveStorage.move = function(src, dest, callback) {
     console.info('GoogleDrive::move()', src, dest);
     callback('GoogleDrive::move() not implemented yet');
   };
 
-  GoogleDrive.prototype.exists = function(item, callback) {
+  GoogleDriveStorage.exists = function(item, callback) {
     console.info('GoogleDrive::exists()', item);
 
     // FIXME Is there a better way to do this ?
@@ -281,12 +280,12 @@
   };
 
   // TODO
-  GoogleDrive.prototype.fileinfo = function(item, callback) {
+  GoogleDriveStorage.fileinfo = function(item, callback) {
     console.info('GoogleDrive::fileinfo()', item);
     callback('GoogleDrive::fileinfo() not implemented yet');
   };
 
-  GoogleDrive.prototype.url = function(item, callback) {
+  GoogleDriveStorage.url = function(item, callback) {
     console.info('GoogleDrive::url()', item);
     if ( !item || !item.id ) {
       throw new Error('url() expects a File ref with Id');
@@ -306,7 +305,7 @@
     });
   };
 
-  GoogleDrive.prototype.mkdir = function(dir, callback) {
+  GoogleDriveStorage.mkdir = function(dir, callback) {
     console.info('GoogleDrive::mkdir()', dir);
     var request = gapi.client.request({
       'path': '/drive/v2/files',
@@ -328,7 +327,7 @@
     });
   };
 
-  GoogleDrive.prototype.upload = function(file, dest, callback) {
+  GoogleDriveStorage.upload = function(file, dest, callback) {
     dest = dest.replace(OSjs.VFS.Modules.GoogleDrive.match, '');
     if ( !dest.match(/\/$/) ) {
       dest += '/';
@@ -349,13 +348,12 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var getGoogleDrive = (function() {
-    var _gd;
+    var inited = false;
     return function(callback, onerror) {
       callback = callback || function() {};
       onerror  = onerror  || function() {};
 
-      if ( !_gd ) {
-        _gd = new GoogleDrive();
+      if ( !inited ) {
         var scopes = [
           'https://www.googleapis.com/auth/drive.install',
           'https://www.googleapis.com/auth/drive.file',
@@ -366,13 +364,15 @@
             return onerror(error);
           }
           gapi.client.load('drive', 'v2', function() {
-            callback(_gd);
+            inited = true;
+
+            callback(GoogleDriveStorage);
           });
         });
         return;
       }
 
-      callback(_gd);
+      callback(GoogleDriveStorage);
     };
   })();
 
