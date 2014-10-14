@@ -141,19 +141,13 @@
     });
   }
 
-  /**
-   * Creates a new File object
-   */
-  function createBlobFromString(str, mime, callback) {
-    mime = mime || 'application/octet-binary';
-
-    var bytes = new Uint8Array(str.length);
-    for ( var i = 0; i < str.length; i++ ) {
-      bytes[i] = str.charCodeAt(i);
-    }
-
-    var blob = new Blob([bytes], {type: mime});
-    callback(false, blob);
+  function createDataURL(str, mime, callback) {
+    var blob = new Blob([str], {type: mime});
+    var r = new FileReader();
+    r.onloadend = function() {
+      callback(false, r.result);
+    };
+    r.readAsDataURL(blob);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -270,35 +264,24 @@
     var msrc = getModuleFromPath(src.path);
     var mdst = getModuleFromPath(dest.path);
     if ( (msrc !== mdst) && !((msrc === 'Internal' && mdst === 'User') || (msrc === 'User' && mdst === 'Internal')) ) {
+      src._opts = {arraybuffer: true};
+
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
           callback('An error occured while copying between storage: ' + error);
           return;
         }
 
-        createBlobFromString(result, dest.mime, function(error, blob) {
-          if ( error ) {
-            callback(error);
-            return;
-          }
-
-          var file = {data: blob, filename: Utils.filename(dest.path)};
-          var args = {destination: Utils.dirname(dest.path), filename: Utils.filename(dest.path), files: [file]};
-          OSjs.VFS.upload(args, function(error, result) {
+        createDataURL(result, src.mime, function(error, data) {
+          console.log(data.length, data);
+          dest._opts = {dataSource: true};
+          OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
             if ( error ) {
               error = 'An error occured while copying between storage: ' + error;
             }
             callback(error, result);
           });
         });
-/*
-        OSjs.VFS.Modules[mdst].request('write', [dest, result], function(error, result) {
-          if ( error ) {
-            error = 'An error occured while copying between storage: ' + error;
-          }
-          callback(error, result);
-        });
-*/
 
       });
       return;
@@ -527,7 +510,6 @@
   //
   OSjs.VFS.internalCall          = internalCall;
   OSjs.VFS.filterScandir         = filterScandir;
-  OSjs.VFS.createBlobFromString  = createBlobFromString;
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
   OSjs.VFS.File                  = OFile;

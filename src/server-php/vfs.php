@@ -120,7 +120,7 @@ class FS
 
     session_write_close();
     if ( move_uploaded_file($file['tmp_name'], $root) === true ) {
-      chmod("{$root}/{$file['name']}", 0600);
+      //chmod("{$root}/{$file['name']}", 0600);
       return true;
     }
 
@@ -147,7 +147,7 @@ class FS
         $dtype    = array_pop($tmp);
 
         if ( preg_match("/^data\:image/", $dtype) ) {
-          $dcontent =  str_replace(' ', '+', $dcontent);
+          $dcontent = str_replace(' ', '+', $dcontent);
         }
 
         if ( $dcontent === false ) {

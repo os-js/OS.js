@@ -161,6 +161,7 @@
       fileId: item.id
     });
 
+    var arraybuffer = item._opts ? item._opts.arraybuffer === true : false;
     request.execute(function(file) {
       console.info('GoogleDrive::read()', '=>', file);
 
@@ -169,8 +170,11 @@
         var xhr = new XMLHttpRequest();
         xhr.open('GET', file.downloadUrl);
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        if ( arraybuffer ) {
+          xhr.responseType = 'arraybuffer';
+        }
         xhr.onload = function() {
-          callback(false, xhr.responseText);
+          callback(false, arraybuffer ? xhr.response : xhr.responseText);
         };
         xhr.onerror = function() {
           callback('XHR Error');
