@@ -293,6 +293,21 @@
         var ext = Utils.filext(file.path).toLowerCase();
         if ( filetypes[ext] ) {
           file.mime = filetypes[ext];
+        } else {
+          var first = null;
+          Object.keys(filetypes).forEach(function(t) {
+            first = t;
+            return false;
+          });
+
+          if ( first ) {
+            var newname = Utils.replaceFileExtension(file.path, first);
+            file.path = newname;
+            file.filename = Utils.filename(newname);
+
+            var msg = Utils.format('The filetype "{0}" is not supported, using "{1}" instead.', ext, first);
+            this._createDialog('Alert', [msg, null, {title: 'Draw - Warning'}]); // FIXME: Translation
+          }
         }
       }
     }

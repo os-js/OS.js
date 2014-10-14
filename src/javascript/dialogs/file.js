@@ -30,13 +30,6 @@
 (function(StandardDialog, Utils, API, VFS) {
   'use strict';
 
-  function replaceExtension(orig, rep) {
-    var spl = orig.split('.');
-    spl.pop();
-    spl.push(rep);
-    return spl.join('.');
-  }
-
   /**
    * Init
    *
@@ -185,7 +178,7 @@
 
         var ext = (curval.split('.')).pop();
         if ( ext && !ktypes[ext] && firstExt ) {
-          curval = replaceExtension(curval, firstExt);
+          curval = Utils.replaceFileExtension(curval, firstExt);
         }
 
         this.$select = this._addGUIElement(new OSjs.GUI.Select('FileDialogFiletypeSelect', {onChange: function(sobj, sdom, val) {
@@ -530,7 +523,7 @@
     this.filemime = this.filetypes[type];
 
     if ( this.$input ) {
-      var newval = replaceExtension(this.$input.getValue(), type);
+      var newval = Utils.replaceFileExtension(this.$input.getValue(), type);
       this.$input.setValue(newval);
     }
 

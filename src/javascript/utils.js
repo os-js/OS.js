@@ -255,6 +255,13 @@
     return '';
   };
 
+  OSjs.Utils.replaceFileExtension = function(filename, rep) {
+    var spl = filename.split('.');
+    spl.pop();
+    spl.push(rep);
+    return spl.join('.');
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
