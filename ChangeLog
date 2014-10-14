@@ -1,3 +1,11 @@
+# 2.0.0-alpha29
+
+* VFS: Bugfixes for upload
+* VFS: Bugfixes for copying between sources
+* VFS: Code cleanup
+* VFS: Better upload handling
+* server-node: Added a temporary fix for default home path
+
 # 2.0.0-alpha28
 
 * VFS: Now fully supports home directories pr user
