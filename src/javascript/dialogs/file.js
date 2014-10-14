@@ -149,6 +149,15 @@
     this.$statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
     this.$statusBar.setText('');
 
+    function setSelectedType(val) {
+      if ( val && self.$select ) {
+        var spl = val.split('.');
+        if ( spl.length ) {
+          self.$select.setValue(spl.pop());
+        }
+      }
+    }
+
     if ( this.type === 'save' ) {
       var curval = Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
 
@@ -170,6 +179,8 @@
           self.onSelectChange(val);
         }}), this.$element);
         this.$select.addItems(types);
+
+        setSelectedType(curval);
         Utils.$addClass(root.firstChild, 'HasFileTypes');
       }
 
@@ -180,8 +191,14 @@
           return;
         }
       }, onChange: function(ev) {
+        if ( self.$input ) {
+          setSelectedType(self.$input.getValue());
+        }
         self.onInputKey(ev);
       }, onKeyUp: function(ev) {
+        if ( self.$input ) {
+          setSelectedType(self.$input.getValue());
+        }
         self.onInputKey(ev);
       }}), this.$element);
     }
