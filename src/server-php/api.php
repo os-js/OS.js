@@ -286,7 +286,7 @@ class API
     $code     = 0;
 
     try {
-      if ( $arg = preg_replace("/^\/FS/", "", $req->data) ) {
+      if ( $arg = preg_replace("/^\/FS/", "", urldecode($req->data)) ) {
         list($dirname, $root, $protocol, $file) = getRealPath($arg);
 
         if ( file_exists($file) ) {
