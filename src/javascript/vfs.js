@@ -449,7 +449,7 @@
       callback(false, file);
     }
 
-    if ( !isInternalModule(destination) ) {
+    if ( !isInternalModule(args.destination) ) {
       args.files.forEach(function(f, i) {
         request(args.destination, 'upload', [f, args.destination], callback);
       });
