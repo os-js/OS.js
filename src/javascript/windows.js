@@ -104,10 +104,10 @@
       var name  = _WM.getSetting('theme');
       var theme = _WM.getTheme(name);
       if ( theme && (typeof theme.animduration !== 'undefined') ) {
-        return parseInt(theme.animduration, 10);
+        return parseInt(theme.animduration, 10) + 1;
       }
     }
-    return 300;
+    return 301;
   }
 
   /////////////////////////////////////////////////////////////////////////////
