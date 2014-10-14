@@ -252,12 +252,20 @@
 
     var msrc = getModuleFromPath(src.path);
     var mdst = getModuleFromPath(dest.path);
-    if ( (msrc !== mdst) && (msrc === 'Internal' && mdst === 'User') && (msrc === 'User' && mdst === 'Internal') ) {
+    if ( (msrc !== mdst) && !((msrc === 'Internal' && mdst === 'User') || (msrc === 'User' && mdst === 'Internal')) ) {
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
           callback('An error occured while copying between storage: ' + error);
           return;
         }
+
+/*
+        if ( mdst === 'Internal' || mdst === 'User' ) {
+          result = 'data:' + src.mime + ';base64,' + Base64.encode(result);
+          dest._opts = {dataSource: true};
+        }
+*/
+
         OSjs.VFS.Modules[mdst].request('write', [dest, result], function(error, result) {
           if ( error ) {
             error = 'An error occured while copying between storage: ' + error;
@@ -282,7 +290,7 @@
 
     var msrc = getModuleFromPath(src.path);
     var mdst = getModuleFromPath(dest.path);
-    if ( (msrc !== mdst) && (msrc === 'Internal' && mdst === 'User') && (msrc === 'User' && mdst === 'Internal') ) {
+    if ( (msrc !== mdst) && !((msrc === 'Internal' && mdst === 'User') || (msrc === 'User' && mdst === 'Internal')) ) {
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
           callback('An error occured while moving between storage: ' + error);
