@@ -154,16 +154,12 @@
     if ( this.type === 'save' ) {
       var curval = Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
 
-
-
-
       if ( this.filetypes ) {
         var firstExt = '';
         var types = {};
-        var ktypes = Object.keys(this.filetypes);
         var MIMEDescriptions = OSjs.Settings.DefaultConfig().MIME || {};
 
-        ktypes.forEach(function(i) {
+        Object.keys(this.filetypes).forEach(function(i) {
           var val = self.filetypes[i];
           if ( !firstExt ) {
             firstExt = i;
@@ -177,7 +173,7 @@
         });
 
         var ext = (curval.split('.')).pop();
-        if ( ext && !ktypes[ext] && firstExt ) {
+        if ( ext && !this.filetypes[ext] && firstExt ) {
           curval = Utils.replaceFileExtension(curval, firstExt);
         }
 
