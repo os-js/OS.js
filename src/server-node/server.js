@@ -237,6 +237,9 @@
     if ( settConfig !== false ) {
       for ( var i in settConfig ) {
         if ( settConfig.hasOwnProperty(i) && CONFIG.hasOwnProperty(i) ) {
+          if ( i === 'vfsdir' ) {
+            settConfig[i] += '/demo'; // FIXME
+          }
           CONFIG[i] = settConfig[i];
         }
       }
@@ -255,6 +258,7 @@
     if ( !CONFIG.directory ) {
       CONFIG.directory = _fs.realpathSync('.');
     }
+
 
   })();
 
