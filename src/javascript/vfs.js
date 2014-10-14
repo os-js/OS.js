@@ -38,9 +38,27 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function isInternalModule(test) {
+    var m = OSjs.VFS.Modules;
+    var d = null;
+
+    if ( test !== null ) {
+      Object.keys(m).forEach(function(name) {
+        var i = m[name];
+        if ( i.internal === true && i.match && test.match(i.match) ) {
+          d = true;
+          return false;
+        }
+        return true;
+      });
+    }
+
+    return d;
+  }
+
   function getModuleFromPath(test) {
     var m = OSjs.VFS.Modules;
-    var d = 'Internal';
+    var d = null;
 
     if ( test !== null ) {
       Object.keys(m).forEach(function(name) {
@@ -51,6 +69,10 @@
         }
         return true;
       });
+    }
+
+    if ( !d ) {
+      return 'Internal';
     }
 
     return d;
@@ -261,9 +283,10 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    var msrc = getModuleFromPath(src.path);
-    var mdst = getModuleFromPath(dest.path);
-    if ( (msrc !== mdst) && !((msrc === 'Internal' && mdst === 'User') || (msrc === 'User' && mdst === 'Internal')) ) {
+    if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
+      var msrc = getModuleFromPath(src.path);
+      var mdst = getModuleFromPath(dest.path);
+
       src._opts = {arraybuffer: true};
 
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
@@ -300,9 +323,10 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    var msrc = getModuleFromPath(src.path);
-    var mdst = getModuleFromPath(dest.path);
-    if ( (msrc !== mdst) && !((msrc === 'Internal' && mdst === 'User') || (msrc === 'User' && mdst === 'Internal')) ) {
+    if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
+      var msrc = getModuleFromPath(src.path);
+      var mdst = getModuleFromPath(dest.path);
+
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
           callback('An error occured while moving between storage: ' + error);
@@ -408,14 +432,6 @@
       throw new Error('upload() expects a destination');
     }
 
-    // FIXME -- This should be detected!
-    if ( args.destination.match(/^google-drive\:\/\//) ) {
-      args.files.forEach(function(f, i) {
-        request(args.destination, 'upload', [f, args.destination], callback);
-      });
-      return;
-    }
-
     function _dialogClose(btn, filename, mime, size) {
       if ( btn !== 'ok' && btn !== 'complete' ) { return; }
 
@@ -429,6 +445,13 @@
       });
 
       callback(false, file);
+    }
+
+    if ( !isInternalModule(destination) ) {
+      args.files.forEach(function(f, i) {
+        request(args.destination, 'upload', [f, args.destination], callback);
+      });
+      return;
     }
 
     args.files.forEach(function(f, i) {
@@ -470,8 +493,8 @@
 
       API.createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
 
-      var dmodule = getModuleFromPath(args.path);
-      if ( dmodule !== 'Internal' && dmodule != 'User' ) {
+      if ( !isInternalModule(args.path) ) {
+        var dmodule = getModuleFromPath(args.path);
         var file = args;
         if ( !(file instanceof OSjs.VFS.File) ) {
           file = new OSjs.VFS.File(args.path);
@@ -511,6 +534,7 @@
   OSjs.VFS.internalCall          = internalCall;
   OSjs.VFS.filterScandir         = filterScandir;
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
+  OSjs.VFS.isInternalModule      = isInternalModule;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
   OSjs.VFS.File                  = OFile;
 

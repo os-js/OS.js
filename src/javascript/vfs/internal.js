@@ -117,6 +117,7 @@
     icon: 'places/folder_home.png',
     match: /^home\:\/\//,
     visible: true,
+    internal: true,
     enabled: function() {
       return true;
     },
@@ -128,7 +129,8 @@
     root: '/',
     icon: 'places/folder-publicshare.png',
     visible: true,
-    match: null,
+    internal: true,
+    match: /^\//,
     enabled: function() {
       return true;
     },
