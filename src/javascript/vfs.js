@@ -141,6 +141,21 @@
     });
   }
 
+  /**
+   * Creates a new File object
+   */
+  function createBlobFromString(str, mime, callback) {
+    mime = mime || 'application/octet-binary';
+
+    var bytes = new Uint8Array(str.length);
+    for ( var i = 0; i < str.length; i++ ) {
+      bytes[i] = str.charCodeAt(i);
+    }
+
+    var blob = new Blob([bytes], {type: mime});
+    callback(false, blob);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // FILE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
@@ -223,6 +238,7 @@
 
   /**
    * Write File
+   * TODO: Check for existence before
    */
   OSjs.VFS.write = function(item, data, callback) {
     console.info('VFS::write()', item);
@@ -243,6 +259,7 @@
 
   /**
    * Copy File
+   * TODO: Check for existence before
    */
   OSjs.VFS.copy = function(src, dest, callback) {
     console.info('VFS::copy()', src, dest);
@@ -259,19 +276,30 @@
           return;
         }
 
-/*
-        if ( mdst === 'Internal' || mdst === 'User' ) {
-          result = 'data:' + src.mime + ';base64,' + Base64.encode(result);
-          dest._opts = {dataSource: true};
-        }
-*/
+        createBlobFromString(result, dest.mime, function(error, blob) {
+          if ( error ) {
+            callback(error);
+            return;
+          }
 
+          var file = {data: blob, filename: Utils.filename(dest.path)};
+          var args = {destination: Utils.dirname(dest.path), filename: Utils.filename(dest.path), files: [file]};
+          OSjs.VFS.upload(args, function(error, result) {
+            if ( error ) {
+              error = 'An error occured while copying between storage: ' + error;
+            }
+            callback(error, result);
+          });
+        });
+/*
         OSjs.VFS.Modules[mdst].request('write', [dest, result], function(error, result) {
           if ( error ) {
             error = 'An error occured while copying between storage: ' + error;
           }
           callback(error, result);
         });
+*/
+
       });
       return;
     }
@@ -281,6 +309,7 @@
 
   /**
    * Move File
+   * TODO: Check for existence before
    */
   OSjs.VFS.move = function(src, dest, callback) {
     console.info('VFS::move()', src, dest);
@@ -335,6 +364,7 @@
 
   /**
    * Create Directory
+   * TODO: Check for existence before
    */
   OSjs.VFS.mkdir = function(item, callback) {
     console.info('VFS::mkdir()', item);
@@ -383,15 +413,19 @@
     args = args || {};
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
 
+    /*
     if ( !(args.app instanceof OSjs.Core.Process) ) {
       throw new Error('upload() expects an Application reference');
     }
+    */
     if ( !args.files ) {
       throw new Error('upload() expects a file array');
     }
     if ( !args.destination ) {
       throw new Error('upload() expects a destination');
     }
+
+    // FIXME -- This should be detected!
     if ( args.destination.match(/^google-drive\:\/\//) ) {
       args.files.forEach(function(f, i) {
         request(args.destination, 'upload', [f, args.destination], callback);
@@ -399,7 +433,7 @@
       return;
     }
 
-    var _dialogClose  = function(btn, filename, mime, size) {
+    function _dialogClose(btn, filename, mime, size) {
       if ( btn !== 'ok' && btn !== 'complete' ) { return; }
 
       OSjs.API.message('vfs', {type: 'upload', path: args.destination, filename: filename, source: args.app.__pid});
@@ -412,13 +446,22 @@
       });
 
       callback(false, file);
-    };
+    }
 
     args.files.forEach(function(f, i) {
-      if ( args.win ) {
-        args.app._createDialog('FileUpload', [args.destination, f, _dialogClose], args.win);
+      if ( args.app ) {
+        if ( args.win ) {
+          args.app._createDialog('FileUpload', [args.destination, f, _dialogClose], args.win);
+        } else {
+          args.app.addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
+        }
       } else {
-        args.app.addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
+        Utils.AjaxUpload(f, 0, args.destination, {
+          progress: function() { },
+          complete: function() { callback(false, true) },
+          failed:   function() { callback('File upload failed'); },
+          canceled: function() { callback('File upload was cancelled'); }
+        });
       }
     });
   };
@@ -482,10 +525,11 @@
   //
   // Misc exports
   //
-  OSjs.VFS.internalCall      = internalCall;
-  OSjs.VFS.filterScandir     = filterScandir;
-  OSjs.VFS.getModuleFromPath = getModuleFromPath;
-  OSjs.VFS.getRelativeURL    = getRelativeURL;
-  OSjs.VFS.File              = OFile;
+  OSjs.VFS.internalCall          = internalCall;
+  OSjs.VFS.filterScandir         = filterScandir;
+  OSjs.VFS.createBlobFromString  = createBlobFromString;
+  OSjs.VFS.getModuleFromPath     = getModuleFromPath;
+  OSjs.VFS.getRelativeURL        = getRelativeURL;
+  OSjs.VFS.File                  = OFile;
 
 })(OSjs.Utils, OSjs.API);

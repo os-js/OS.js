@@ -53,6 +53,8 @@
   }
 
   var vfs = {
+    getRealPath: getRealPath,
+
     getMime : function(file, config) {
       var i = file.lastIndexOf("."),
           ext = (i === -1) ? "default" : file.substr(i),

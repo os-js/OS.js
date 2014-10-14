@@ -499,7 +499,11 @@
     var fd  = new FormData();
     fd.append('upload', 1);
     fd.append('path',   dest);
-    fd.append('upload', file);
+    if ( file instanceof File ) {
+      fd.append('upload', file);
+    } else {
+      fd.append('upload', file.data, file.filename);
+    }
 
     xhr.upload.addEventListener('progress', function(evt) { callbacks.progress(evt); }, false);
     xhr.addEventListener('load', function(evt) { callbacks.complete(evt); }, false);

@@ -538,7 +538,7 @@
 
   _Input.prototype.setDisabled = function(d) {
     this.disabled = d;
-    if ( d ) {
+    if ( this.$input && d ) {
       this.$input.setAttribute('disabled', 'disabled');
     } else {
       this.$input.removeAttribute('disabled');

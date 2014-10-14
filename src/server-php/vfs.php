@@ -106,6 +106,27 @@ class FS
     return $result;
   }
 
+  public static function upload($path, $file) {
+    $dest = "{$path}/{$file['name']}";
+
+    list($dirname, $root, $protocol, $fname) = getRealPath($dest);
+
+    if ( file_exists($dest) ) {
+      throw new Exception("Destination already exist!");
+    }
+    if ( $file['size'] <= 0 || $file['size'] > MAXUPLOAD ) {
+      throw new Exception("The upload request is either empty or too large!");
+    }
+
+    session_write_close();
+    if ( move_uploaded_file($file['tmp_name'], $root) === true ) {
+      chmod("{$root}/{$file['name']}", 0600);
+      return true;
+    }
+
+    return false;
+  }
+
   public static function write($fname, $content, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
     list($dirname, $root, $protocol, $fname) = getRealPath($fname);

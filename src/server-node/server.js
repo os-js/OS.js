@@ -134,7 +134,8 @@
 
     FilePOST : function(fields, files, request, response) {
       var srcPath = files.upload.path;
-      var dstPath = _path.join(CONFIG.vfsdir, fields.path, files.upload.name);
+      var tmpPath = _path.join(fields.path, files.upload.name);
+      var dstPath = _vfs.getRealPath(tmpPath, CONFIG).root;
 
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {

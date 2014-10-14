@@ -119,10 +119,10 @@ class APIRequest
 
     if ( preg_match('/^\/API/', $request->uri) ) {
       $response = API::CoreAPI($request);
+    } else if ( preg_match('/^\/FS$/', $request->uri) ) {
+      $response = API::FilePOST($request);
     } else if ( preg_match('/^\/FS(.*)/', $request->uri) ) {
       $response = API::FileGET($request);
-    } else if ( preg_match('/^\/FS/', $request->uri) ) {
-      $response = API::FilePOST($request);
     } else {
       $response = null;
     }
@@ -331,27 +331,16 @@ class API
     $result = false;
     $error  = false;
 
-    if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
-      $dest = unrealpath(VFSDIR . $_POST['path'] . '/' . $_FILES['upload']['name']);
-
-      if ( strstr($dest, VFSDIR) === false ) {
-        $error = "Invalid destination!";
-      } else if ( file_exists($dest) ) {
-        $error = "Destination already exist!";
-      } else {
-        if ( $_FILES['upload']['size'] <= 0 || $_FILES['upload']['size'] > MAXUPLOAD ) {
-          $error = "The upload request is either empty or too large!";
+    try {
+      if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
+        if ( FS::upload($_POST['path'], $_FILES['upload']) ) {
+          $result = true;
         } else {
-          session_write_close();
-          if ( move_uploaded_file($_FILES['upload']['tmp_name'], $dest) === true ) {
-            chmod($dest, 0600);
-
-            $result = true;
-          } else {
-            $error = "File was not uploaded";
-          }
+          $error = "File was not uploaded";
         }
       }
+    } catch ( Exception $e ) {
+      $error = "File upload failed: {$e->getMessage()}";
     }
 
     return new APIResponse(false, $result, $error);

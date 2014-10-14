@@ -166,7 +166,9 @@
   FileUploadDialog.prototype.onUploadComplete = function(evt) {
     console.info('FileUploadDialog::onUploadComplete()');
 
-    this.buttonCancel.setDisabled(false);
+    if ( this.buttonCancel ) {
+      this.buttonCancel.setDisabled(false);
+    }
     this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
   };
 
@@ -177,14 +179,18 @@
     } else {
       this._error(OSjs._('Upload failed'), OSjs._('The upload has failed'), OSjs._('Reason unknown...'));
     }
-    this.buttonCancel.setDisabled(false);
+    if ( this.buttonCancel ) {
+      this.buttonCancel.setDisabled(false);
+    }
     this.end('fail', error);
   };
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
     console.info('FileUploadDialog::onUploadCanceled()');
     this._error(OSjs._('Upload failed'), OSjs._('The upload has failed'), OSjs._('Cancelled by user...'));
-    this.buttonCancel.setDisabled(false);
+    if ( this.buttonCancel ) {
+      this.buttonCancel.setDisabled(false);
+    }
     this.end('cancelled', evt);
   };
 
