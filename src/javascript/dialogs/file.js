@@ -161,12 +161,20 @@
     if ( this.type === 'save' ) {
       var curval = Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
 
+
+
+
       if ( this.filetypes ) {
+        var firstExt = '';
         var types = {};
+        var ktypes = Object.keys(this.filetypes);
         var MIMEDescriptions = OSjs.Settings.DefaultConfig().MIME || {};
 
-        Object.keys(this.filetypes).forEach(function(i) {
+        ktypes.forEach(function(i) {
           var val = self.filetypes[i];
+          if ( !firstExt ) {
+            firstExt = i;
+          }
 
           types[i] = '';
           if ( MIMEDescriptions[val] ) {
@@ -174,6 +182,11 @@
           }
           types[i] += val + ' (.' + i + ')';
         });
+
+        var ext = (curval.split('.')).pop();
+        if ( ext && !ktypes[ext] && firstExt ) {
+          curval = replaceExtension(curval, firstExt);
+        }
 
         this.$select = this._addGUIElement(new OSjs.GUI.Select('FileDialogFiletypeSelect', {onChange: function(sobj, sdom, val) {
           self.onSelectChange(val);

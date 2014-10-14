@@ -905,7 +905,7 @@
     this.dialogOptions.defaultMime = "osjs/draw";
     this.dialogOptions.filetypes = {
       "png": "image/png",
-      "jpg": "image/jpeg",
+      //"jpg": "image/jpeg",
       "odraw": "osjs/draw"
     };
   };
