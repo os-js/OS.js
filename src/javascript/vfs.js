@@ -34,6 +34,8 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
+  var DefaultModule = 'Public';
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -72,7 +74,7 @@
     }
 
     if ( !d ) {
-      return 'Internal';
+      return DefaultModule;
     }
 
     return d;

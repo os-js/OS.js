@@ -38,8 +38,8 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var InternalStorage = {};
-  InternalStorage.scandir = function(item, callback) {
+  var PublicStorage = {};
+  PublicStorage.scandir = function(item, callback) {
     OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
       var list = [];
       if ( result ) {
@@ -51,39 +51,39 @@
       callback(error, list);
     });
   };
-  InternalStorage.write = function(item, data, callback) {
+  PublicStorage.write = function(item, data, callback) {
     var wopts = [item.path, data];
     if ( item._opts ) {
       wopts.push(item._opts);
     }
     OSjs.VFS.internalCall('write', wopts, callback);
   };
-  InternalStorage.read = function(item, callback) {
+  PublicStorage.read = function(item, callback) {
     var ropts = [item.path];
     if ( item._opts ) {
       ropts.push(item._opts);
     }
     OSjs.VFS.internalCall('read', ropts, callback);
   };
-  InternalStorage.copy = function(src, dest, callback) {
+  PublicStorage.copy = function(src, dest, callback) {
     OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
   };
-  InternalStorage.move = function(src, dest, callback) {
+  PublicStorage.move = function(src, dest, callback) {
     OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
   };
-  InternalStorage.unlink = function(item, callback) {
+  PublicStorage.unlink = function(item, callback) {
     OSjs.VFS.internalCall('delete', [item.path], callback);
   };
-  InternalStorage.mkdir = function(item, callback) {
+  PublicStorage.mkdir = function(item, callback) {
     OSjs.VFS.internalCall('mkdir', [item.path], callback);
   };
-  InternalStorage.exists = function(item, callback) {
+  PublicStorage.exists = function(item, callback) {
     OSjs.VFS.internalCall('exists', [item.path], callback);
   };
-  InternalStorage.fileinfo = function(item, callback) {
+  PublicStorage.fileinfo = function(item, callback) {
     OSjs.VFS.internalCall('fileinfo', [item.path], callback);
   };
-  InternalStorage.url = function(item, callback) {
+  PublicStorage.url = function(item, callback) {
     var path    = typeof item === 'string' ? item : item.path;
     var handler = OSjs.API.getHandlerInstance();
     var fsuri   = handler.getConfig('Core').FSURI;
@@ -98,13 +98,13 @@
     args = args || [];
     callback = callback || {};
 
-    if ( !InternalStorage[name] ) {
-      throw new Error('Invalid InternalStorage API call name');
+    if ( !PublicStorage[name] ) {
+      throw new Error('Invalid PublicStorage API call name');
     }
 
     var fargs = args;
     fargs.push(callback);
-    InternalStorage[name].apply(InternalStorage, fargs);
+    PublicStorage[name].apply(PublicStorage, fargs);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@
     request: makeRequest
   };
 
-  OSjs.VFS.Modules.Internal = OSjs.VFS.Modules.Internal || {
+  OSjs.VFS.Modules.Public = OSjs.VFS.Modules.Public || {
     description: 'Shared',
     root: '/',
     icon: 'places/folder-publicshare.png',
