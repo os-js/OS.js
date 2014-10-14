@@ -111,19 +111,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
-    description: 'Home',
-    root: 'home:///',
-    icon: 'places/folder_home.png',
-    match: /^home\:\/\//,
-    visible: true,
-    internal: true,
-    enabled: function() {
-      return true;
-    },
-    request: makeRequest
-  };
-
   OSjs.VFS.Modules.Public = OSjs.VFS.Modules.Public || {
     description: 'Shared',
     root: '/',

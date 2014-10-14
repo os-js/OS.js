@@ -17,3 +17,4 @@ dist-dev/test.*
 dist-dev/packages.json
 dist-dev/themes.json
 vfs/*/*
+src/build.custom.json
