@@ -231,6 +231,11 @@
               OSjs.API.message('vfs', {type: 'rename', path: dir, filename: value, source: self._appRef.__pid});
             }
           });
+        }, function(input) {
+          if ( input ) {
+            var range = OSjs.Utils.getFilenameRange(input.getValue());
+            input.select(range);
+          }
         }], self);
       }
 
