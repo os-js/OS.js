@@ -331,23 +331,7 @@
   FileDialog.prototype.highlightFilename = function() {
     if ( this.$input ) {
       this.$input.focus();
-
-      var val = this.$input.getValue();
-      var range = {
-        min: 0,
-        max: val.length
-      };
-
-      if ( val.match(/\.(\w+)$/) ) {
-        var m = val.split(/\.(\w+)$/);
-        for ( var i = m.length - 1; i >= 0; i-- ) {
-          if ( m[i].length ) {
-            range.max = val.length - m[i].length - 1;
-            break;
-          }
-        }
-      }
-
+      var range = Utils.getFilenameRange(this.$input.getValue());
       this.$input.select(range);
     }
   };
