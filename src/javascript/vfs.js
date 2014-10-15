@@ -342,10 +342,14 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
-      var msrc = getModuleFromPath(src.path);
-      var mdst = getModuleFromPath(dest.path);
+    var isInternal = (isInternalModule(src.path) && isInternalModule(dest.path));
+    var isOther    = (isInternalModule(src.path) !== isInternalModule(dest.path));
+    var msrc = getModuleFromPath(src.path);
+    var mdst = getModuleFromPath(dest.path);
 
+    if ( !isInternal && (msrc === mdst) ) {
+      request(src.path, 'move', [src, dest], callback);
+    } else if ( isOther ) {
       this.copy(src, dest, function(error, result) {
         if ( error ) {
           return callback(error);
@@ -358,10 +362,9 @@
           callback(error, result);
         });
       });
-      return;
+    } else {
+      request(null, 'move', [src, dest], callback);
     }
-
-    request(null, 'move', [src, dest], callback);
   };
   OSjs.VFS.rename = function(src, dest, callback) {
     OSjs.VFS.move.apply(this, arguments);
