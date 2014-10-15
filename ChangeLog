@@ -1,3 +1,16 @@
+# 2.0.0-alpha30
+
+* VFS: Split User/Public modules into separate files
+* VFS: Added 'internal' property to modules
+* VFS: Added Folder support to Google Drive
+* VFS: Now always sends base64 encoded data on transfer with read()
+* VFS: Fixes for transfer between sources
+* server-node: Fixed a bug where index.html was not loaded
+* Dialogs - File: Autoselect filetype in dropdown correctly
+* Dialogs - File: Fixed selection of filetype on input
+* DefaultApplication: Now checks if filetype is valid on save() and replaces extension if nesecary
+* Windows: Added 1ms to getAnimDuration(). Fixes Chrome bug where resized hook triggers too soon
+
 # 2.0.0-alpha29
 
 * VFS: Bugfixes for upload
