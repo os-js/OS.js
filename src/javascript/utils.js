@@ -255,13 +255,6 @@
     return '';
   };
 
-  OSjs.Utils.replaceFileExtension = function(filename, rep) {
-    var spl = filename.split('.');
-    spl.pop();
-    spl.push(rep);
-    return spl.join('.');
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
@@ -311,6 +304,20 @@
 
   OSjs.Utils.escapeFilename = function(n) {
     return (n || '').replace(/[\|&;\$%@"<>\(\)\+,\*\/]/g, '').trim();
+  };
+
+  OSjs.Utils.replaceFileExtension = function(filename, rep) {
+    var spl = filename.split('.');
+    spl.pop();
+    spl.push(rep);
+    return spl.join('.');
+  };
+
+  OSjs.Utils.replaceFilename = function(orig, newname) {
+    var spl = orig.split('/');
+    spl.pop();
+    spl.push(newname);
+    return spl.join('/');
   };
 
   /////////////////////////////////////////////////////////////////////////////

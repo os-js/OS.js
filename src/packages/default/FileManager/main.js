@@ -220,7 +220,8 @@
 
           var newitem = new VFS.File(cur);
           newitem.filename = value;
-          newitem.path = OSjs.Utils.dirname(cur.path) + '/' + value;
+          newitem.path = OSjs.Utils.replaceFilename(cur.path, value);
+
           app.move(cur, newitem, function(result) {
             if ( result && fileView ) {
               fileView.refresh(function() {
