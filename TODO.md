@@ -1,6 +1,9 @@
 
 # High-priority
 * _[VFS]_ Finish Google Drive implementation
+   - Copy file that already has this name fails (including upload)
+   - Add fileinfo()
+   - Create dirs in subdirectories
 * _[Documentation]_ Complete documentation for JavaScript
 * _[Backend]_ Finish Node.js backend: Handlers, Session and ApplicationAPI
 * _[Locales]_ Finish the format strings

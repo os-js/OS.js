@@ -77,6 +77,8 @@
             } else {
               if ( opts.dataSource ) {
                 data = "data:" + vfs.getMime(realPath.root, config) + ";base64," + (new Buffer(data).toString('base64'));
+              } else {
+                data = (new Buffer(data).toString('base64'));
               }
 
               respond({result: data.toString(), error: null});

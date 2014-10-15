@@ -51,7 +51,7 @@ class APIUser
   }
 
   public static function restore() {
-    if ( $data = $_SESSION["user"] ) {
+    if ( isset($_SESSION["user"]) && ($data = $_SESSION["user"]) ) {
       self::login($data);
     }
   }

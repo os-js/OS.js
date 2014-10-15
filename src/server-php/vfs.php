@@ -181,7 +181,7 @@ class FS
       throw new Exception("Failed to read file");
     }
 
-    return file_get_contents($fname);
+    return base64_encode(file_get_contents($fname));
   }
 
   public static function delete($fname) {

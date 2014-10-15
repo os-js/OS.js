@@ -289,11 +289,24 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
-      var msrc = getModuleFromPath(src.path);
-      var mdst = getModuleFromPath(dest.path);
+    var msrc, mdst;
 
-      src._opts = {arraybuffer: true};
+    function _write(data) {
+      OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
+        if ( error ) {
+          error = 'An error occured while copying between storage: ' + error;
+        }
+        callback(error, result);
+      });
+    }
+
+    if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
+      msrc = getModuleFromPath(src.path);
+      mdst = getModuleFromPath(dest.path);
+
+      if ( msrc === 'GoogleDrive'  ) {
+        src._opts = {arraybuffer: true};
+      }
 
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
@@ -301,16 +314,16 @@
           return;
         }
 
-        createDataURL(result, src.mime, function(error, data) {
-          console.log(data.length, data);
-          dest._opts = {dataSource: true};
-          OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
-            if ( error ) {
-              error = 'An error occured while copying between storage: ' + error;
-            }
-            callback(error, result);
+        dest.mime = src.mime;
+        if ( msrc === 'GoogleDrive' ) {
+          createDataURL(result, src.mime, function(error, data) {
+            dest._opts = {dataSource: true};
+
+            _write(data);
           });
-        });
+        } else {
+          _write(result);
+        }
 
       });
       return;
@@ -333,24 +346,16 @@
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
 
-      OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
+      this.copy(src, dest, function(error, result) {
         if ( error ) {
-          callback('An error occured while moving between storage: ' + error);
-          return;
+          return callback(error);
         }
-        OSjs.VFS.Modules[mdst].request('write', [dest, result], function(error, result) {
 
+        OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
           if ( error ) {
-            callback('An error occured while moving between storage: ' + error);
-            return;
+            error = 'An error occured while movin between storage: ' + error;
           }
-
-          OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
-            if ( error ) {
-              error = 'An error occured while movin between storage: ' + error;
-            }
-            callback(error, result);
-          });
+          callback(error, result);
         });
       });
       return;
