@@ -33,12 +33,13 @@
   /**
    * Input Dialog
    */
-  var InputDialog = function(msg, val, onClose) {
+  var InputDialog = function(msg, val, onClose, onCreated) {
     StandardDialog.apply(this, ['InputDialog', {title: OSjs._('Input Dialog'), message: msg}, {width:300, height:150}, onClose]);
     this._icon = 'status/dialog-information.png';
 
     this.value = val || '';
     this.input = null;
+    this.onInputCreated = onCreated || function _noop() {};
   };
 
   InputDialog.prototype = Object.create(StandardDialog.prototype);
@@ -56,7 +57,17 @@
       }
     }}), inputd);
     this.$element.appendChild(inputd);
+
     return root;
+  };
+
+  InputDialog.prototype._inited = function() {
+    StandardDialog.prototype._inited.apply(this, arguments);
+
+    var self = this;
+    setTimeout(function() {
+      self.onInputCreated(self.input);
+    }, 10);
   };
 
   InputDialog.prototype._focus = function() {
