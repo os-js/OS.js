@@ -509,10 +509,23 @@
     });
   };
 
-  // TODO
   GoogleDriveStorage.move = function(src, dest, callback) {
     console.info('GoogleDrive::move()', src, dest);
-    callback('GoogleDrive::move() not implemented yet');
+
+    var request = gapi.client.drive.files.patch({
+      fileId: src.id,
+      resource: {
+        title: Utils.filename(dest.path)
+      }
+    });
+
+    request.execute(function(resp) {
+      if ( resp && resp.id ) {
+        callback(false, true);
+      } else {
+        callback('Failed to move file');
+      }
+    });
   };
 
   GoogleDriveStorage.exists = function(item, callback) {
