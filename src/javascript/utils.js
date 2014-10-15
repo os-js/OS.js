@@ -321,13 +321,21 @@
   };
 
   OSjs.Utils.getFilenameRange = function(val) {
+    val = val || '';
+
     var range = {min: 0, max: val.length};
-    if ( val.match(/\.(\w+)$/) ) {
-      var m = val.split(/\.(\w+)$/);
-      for ( var i = m.length - 1; i >= 0; i-- ) {
-        if ( m[i].length ) {
-          range.max = val.length - m[i].length - 1;
-          break;
+    if ( val.match(/^\./) ) {
+      if ( val.length >= 2 ) {
+        range.min = 1;
+      }
+    } else {
+      if ( val.match(/\.(\w+)$/) ) {
+        var m = val.split(/\.(\w+)$/);
+        for ( var i = m.length - 1; i >= 0; i-- ) {
+          if ( m[i].length ) {
+            range.max = val.length - m[i].length - 1;
+            break;
+          }
         }
       }
     }

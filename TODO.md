@@ -2,7 +2,6 @@
 # High-priority
 * _[VFS]_ Finish Google Drive implementation
    - Copy file that already has this name fails (including upload)
-   - Add fileinfo()
    - Create dirs in subdirectories
    - Deleting a folder does not restore the root parent of items
 * _[Documentation]_ Complete documentation for JavaScript
