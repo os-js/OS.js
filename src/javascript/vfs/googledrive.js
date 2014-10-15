@@ -555,10 +555,23 @@
     });
   };
 
-  // TODO
   GoogleDriveStorage.fileinfo = function(item, callback) {
     console.info('GoogleDrive::fileinfo()', item);
-    callback('GoogleDrive::fileinfo() not implemented yet');
+
+    var request = gapi.client.drive.files.get({
+      fileId: item.id
+    });
+    request.execute(function(resp) {
+      if ( resp && resp.id ) {
+        var useKeys = ['createdDate', 'id', 'lastModifyingUser', 'lastViewedByMeDate', 'markedViewedByMeDate', 'mimeType', 'modifiedByMeDate', 'modifiedDate', 'title', 'alternateLink'];
+        var info = {};
+        useKeys.forEach(function(k) {
+          info[k] = resp[k];
+        });
+        return callback(false, info);
+      }
+      callback('Failed to get file information');
+    });
   };
 
   GoogleDriveStorage.url = function(item, callback) {
