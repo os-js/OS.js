@@ -41,6 +41,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function isInternalModule(test) {
+    test = test || '';
+
     var m = OSjs.VFS.Modules;
     var d = null;
 
@@ -59,6 +61,8 @@
   }
 
   function getModuleFromPath(test) {
+    test = test || '';
+
     var m = OSjs.VFS.Modules;
     var d = null;
 
