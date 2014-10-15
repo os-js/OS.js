@@ -81,8 +81,7 @@
    * File Output
    */
   var respondFile = function(path, request, response, jpath) {
-    var fullPath = _vfs.getRealPath(path, CONFIG).root;
-    //var fullPath = jpath ? _path.join(CONFIG.directory, path) : _path.join(CONFIG.vfsdir, path);
+    var fullPath = jpath ? _path.join(CONFIG.directory, path) : _vfs.getRealPath(path, CONFIG).root;
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
         _fs.readFile(fullPath, function(error, data) {
