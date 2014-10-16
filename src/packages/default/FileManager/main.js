@@ -54,7 +54,7 @@
     return OSjs.__.apply(this, args);
   }
 
-  var notificationWasDisplayed = false;
+  var notificationWasDisplayed = {};
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -421,7 +421,7 @@
             fileView.chdir(item.path);
 
             if ( !item.internal ) {
-              self.showStorageNotification();
+              self.showStorageNotification(item.path);
             }
           }
         }
@@ -482,11 +482,11 @@
     }
   };
 
-  ApplicationFileManagerWindow.prototype.showStorageNotification = function() {
-    if ( notificationWasDisplayed ) {
+  ApplicationFileManagerWindow.prototype.showStorageNotification = function(type) {
+    if ( notificationWasDisplayed[type] ) {
       return;
     }
-    notificationWasDisplayed = true;
+    notificationWasDisplayed[type] = true;
 
     var wm = OSjs.API.getWMInstance();
     var ha = OSjs.API.getHandlerInstance();
