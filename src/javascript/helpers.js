@@ -159,6 +159,14 @@
     if ( this.mainWindow ) {
       if ( msg === 'destroyWindow' && obj._name === this.mainWindow._name ) {
         this.destroy();
+      } else if ( msg == 'vfs' ) {
+        if ( args.source !== this.__pid && args.file ) {
+          if ( this.currentFile && this.currentFile.path ) {
+            if ( args.file.path === this.currentFile.path ) {
+              this.onFileHasChanged(args.file);
+            }
+          }
+        }
       }
     }
   };
@@ -178,6 +186,26 @@
   DefaultApplication.prototype.onGetSaveData = function(callback, item) {
     // IMPLEMENT THIS IN YOUR CLASS
     callback(null);
+  };
+
+  DefaultApplication.prototype.onFileHasChanged = function(file) {
+    if ( !file ) { return; }
+
+    var self = this;
+    var win = this.mainWindow;
+
+    if ( win ) {
+      win._toggleDisabled(true);
+    }
+    var msg = 'The file has changed. Reload?'; // TODO: Translation
+    this._createDialog('Confirm', [msg, function(btn) {
+      if ( win ) {
+        win._toggleDisabled(false);
+      }
+      if ( btn === 'ok' ) {
+        self.action('open', file);
+      }
+    }, win]);
   };
 
   DefaultApplication.prototype.onCheckChanged = function(callback) {
