@@ -178,7 +178,7 @@
         try {
           clientId = handler.getConfig('GoogleAPI').ClientId;
         } catch ( e ) {
-          console.warn("getGoogleAPI()", e, e.stack);
+          console.warn('getGoogleAPI()', e, e.stack);
         }
       }
 

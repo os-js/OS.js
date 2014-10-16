@@ -123,7 +123,7 @@
       var sep = v._separator;
       var idx = Utils.$index(el);
 
-      var initialWidth = typeof v.width === 'undefined' ? 'auto' : (v.width.toString() + 'px')
+      var initialWidth = typeof v.width === 'undefined' ? 'auto' : (v.width.toString() + 'px');
       var flex = idx === 0 ? 0 : 1;
       if ( count > 2 ) {
         flex = 1;

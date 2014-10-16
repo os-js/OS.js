@@ -137,7 +137,7 @@
 
     var tree = {dirs: [], files: []};
     for ( var i = 0; i < result.length; i++ ) {
-      if ( result[i].type == 'dir' ) {
+      if ( result[i].type === 'dir' ) {
         tree.dirs.push(result[i]);
       } else {
         tree.files.push(result[i]);
@@ -478,7 +478,7 @@
       } else {
         Utils.AjaxUpload(f, 0, args.destination, {
           progress: function() { },
-          complete: function() { callback(false, true) },
+          complete: function() { callback(false, true); },
           failed:   function() { callback('File upload failed'); },
           canceled: function() { callback('File upload was cancelled'); }
         });

@@ -45,8 +45,8 @@
 
   function createBoundary(file, data, callback) {
     var boundary = '-------314159265358979323846';
-    var delimiter = "\r\n--" + boundary + "\r\n";
-    var close_delim = "\r\n--" + boundary + "--";
+    var delimiter = '\r\n--' + boundary + '\r\n';
+    var close_delim = '\r\n--' + boundary + '--';
     var contentType = file.mime || 'text/plain'; //fileData.type || 'application/octet-stream';
 
     function createBody(result) {
@@ -69,7 +69,7 @@
       return multipartRequestBody;
     }
 
-    var reqContentType = 'multipart/mixed; boundary="' + boundary + '"';
+    var reqContentType = 'multipart/mixed; boundary=\'' + boundary + '\'';
     if ( typeof data === 'string' ) {
       var body = createBody(data);
       callback(false, {
@@ -271,7 +271,7 @@
             cb(result);
           }
         });
-      }
+      };
 
       try {
         var initialRequest = method(args);
@@ -709,7 +709,7 @@
             return true;
           }
         } catch ( e ) {
-          console.warn("OSjs.VFS.Modules.GoogleDrive::enabled()", e, e.stack);
+          console.warn('OSjs.VFS.Modules.GoogleDrive::enabled()', e, e.stack);
         }
       }
       return false;

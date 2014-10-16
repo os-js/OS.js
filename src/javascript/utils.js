@@ -101,7 +101,7 @@
 
   OSjs.Utils.cloneObject = function(o) {
     return JSON.parse(JSON.stringify(o, function(key, value) {
-      if ( value && typeof value == 'object' && value.tagName ) {
+      if ( value && typeof value === 'object' && value.tagName ) {
         return undefined;
       }
       return value;
@@ -265,12 +265,12 @@
   };
 
   OSjs.Utils.dirname = function(f) {
-    var pstr   = f.split(/^(.*)\:\/\/(.*)/).filter(function(n){ return n !== '' });
+    var pstr   = f.split(/^(.*)\:\/\/(.*)/).filter(function(n){ return n !== ''; });
     var args   = pstr.pop();
     var prot   = pstr.pop();
     var result = '';
 
-    var tmp = args.split('/').filter(function(n){ return n !== '' });
+    var tmp = args.split('/').filter(function(n){ return n !== ''; });
     if ( tmp.length ) {
       tmp.pop();
     }
