@@ -32,10 +32,11 @@
   'use strict';
 
   function GoogleAPI(clientId) {
-    this.clientId = clientId;
-    this.userId   = null;
-    this.loaded   = false;
-    this.preloads = [
+    this.clientId       = clientId;
+    this.userId         = null;
+    this.loaded         = false;
+    this.authenticated  = false;
+    this.preloads       = [
       {
         type: 'javascript',
         src: 'https://apis.google.com/js/api.js'
@@ -81,8 +82,15 @@
       }
 
       gapi.load(load.join(','), function() {
-        self.authenticate(scope, function() {
-          callback(false, true);
+        self.authenticate(scope, function(error, result) {
+          if ( error ) {
+            return callback(error);
+          }
+          if ( !self.authenticated ) {
+            return callback('Google API Authentication failed or did not take place');
+          }
+
+          callback(false, result);
         });
       });
 
@@ -121,14 +129,22 @@
     var handleAuthResult = function(authResult) {
       console.info('GoogleAPI::authenticate() => handleAuthResult()', authResult);
 
+      if ( authResult.error ) {
+        if ( authResult.error_subtype === 'origin_mismatch' || authResult.error_subtype === 'access_denied' ) {
+          callback('Failed to authenticate: ' + authResult.error + ':' + authResult.error_subtype);
+          return;
+        }
+      }
+
       if ( authResult && !authResult.error ) {
         getUserId(function(id) {
           self.userId = id;
 
           if ( id ) {
-            callback(true);
+            self.authenticated = true;
+            callback(false, true);
           } else {
-            callback(false);
+            callback(false, false);
           }
         });
       } else {
