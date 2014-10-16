@@ -1,3 +1,19 @@
+# 2.0.0-alpha31
+
+* Application - FileManager: Now displays notification about login to external services
+* Application - FileManager: Rename dialog now automatically highlight filename-ext
+* Dialogs - File: Moved to new Utils::getFilenameRange()
+* Utils: Added getFilenameRange()
+* Dialogs - Input: Added callback for _inited()
+* google-drive: Added support for fileinfo()
+* google-drive: Added support for move()
+* google-drive: Some error prevension
+* google handler: Updated error handling
+* VFS: Added support for move() on all modules -- i forgot
+* Core: Added Utils::replaceFilename()
+* obt: Bugfix for 'make core' with extension
+* General: Linting after all changes
+
 # 2.0.0-alpha30
 
 * VFS: Split User/Public modules into separate files
