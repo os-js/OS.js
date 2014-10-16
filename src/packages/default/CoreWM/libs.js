@@ -1071,7 +1071,7 @@
     var list = [];
     for ( var a in apps ) {
       if ( apps.hasOwnProperty(a) ) {
-        if ( apps[a].type === "service" || apps[a].type === "special" ) { continue; }
+        if ( apps[a].type !== "application" ) { continue; }
         list.push({
           title: apps[a].name,
           icon: _createIcon(apps[a], a),
@@ -1106,7 +1106,7 @@
     for ( a in apps ) {
       if ( apps.hasOwnProperty(a) ) {
         iter = apps[a];
-        if ( iter.type === "service" || iter.type === "special" ) { continue; }
+        if ( iter.type !== "application" ) { continue; }
         cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
         cats[cat].push({name: a, data: iter})
       }

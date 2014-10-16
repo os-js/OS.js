@@ -87,6 +87,10 @@
         }
       }
 
+      if ( iter.type !== 'application' ) {
+        return;
+      }
+
       list.push({
         key:   key,
         image: icon,

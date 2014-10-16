@@ -6,7 +6,7 @@
       "de_DE":      "OS.js Fenster-Manager"
     },
     "singular":   true,
-    "type":       "special",
+    "type":       "windowmanager",
     "mime":       null,
     "icon":       null,
     "preload":    [

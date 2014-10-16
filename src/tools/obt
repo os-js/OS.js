@@ -248,7 +248,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     extensions.forEach(function(iter) {
       if ( iter && iter.sources ) {
         iter.sources.forEach(function(iiter) {
-          if ( iiter.type === 'javascript' ) {
+          if ( iiter.type === 'javascript' && !iter.preload ) {
             list_js.push(_path.join(iter._root, iiter.src));
           }
         });
@@ -264,7 +264,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     extensions.forEach(function(iter) {
       if ( iter && iter.sources ) {
         iter.sources.forEach(function(iiter) {
-          if ( iiter.type === 'stylesheet' ) {
+          if ( iiter.type === 'stylesheet' && !iter.preload ) {
             list_css.push(_path.join(iter._root, iiter.src));
           }
         });
@@ -562,6 +562,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var json_data = JSON.parse(_fs.readFileSync(json_path));
         var manifest = null;
         var package_name;
+
         for ( var name in json_data ) {
           if ( json_data.hasOwnProperty(name) ) {
             package_name = name;
@@ -575,27 +576,37 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
           return null;
         }
 
+        if ( typeof manifest === 'string' ) {
+          console.log("- \033[0;31mSkipped '%s' (invalid manifest)\033[0m", package_name);
+          return null;
+        }
+
         if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
           console.log("- \033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
           return null;
         }
 
-        if ( manifest['type'] === 'extension' || typeof manifest === 'string' ) {
-          return null;
-        }
-
         if ( typeof manifest.preload !== 'undefined' && (manifest.preload instanceof Array)) {
-          for ( var p = 0; p < manifest.preload.length; p++ ) {
-            if ( !manifest.preload[p].src.match(/^(ftp|https?\:)?\/\//) ) {
-              manifest.preload[p].src = (["/packages", repo, file, manifest.preload[p].src]).join("/");
+          manifest.preload.forEach(function(p, i) {
+            if ( !p.src.match(/^(ftp|https?\:)?\/\//) ) {
+              manifest.preload[i].src = (["/packages", repo, file, p.src]).join("/");
             }
-          }
+          });
         }
 
+        if ( typeof manifest.sources !== 'undefined' && (manifest.sources instanceof Array)) {
+          manifest.sources.forEach(function(p, i) {
+            if ( !p.src.match(/^(ftp|https?\:)?\/\//) ) {
+              manifest.sources[i].src = (["/packages", repo, file, p.src]).join("/");
+            }
+          });
+        }
+
+        manifest.type = manifest.type || 'application';
         manifest.path = repo + "/" + file;
         manifest.iter = package_name;
 
-        console.log("- Added package \033[1;37m%s\033[0m", package_name);
+        console.log("- Added %s \033[1;37m%s\033[0m", manifest.type, package_name);
 
         return manifest;
       } catch ( e ) {
