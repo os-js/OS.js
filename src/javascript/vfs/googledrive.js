@@ -30,13 +30,10 @@
 (function(Utils, API) {
   'use strict';
 
-  // http://stackoverflow.com/questions/10330992/authorization-of-google-drive-using-javascript/10331393#10331393
   // https://developers.google.com/drive/web/quickstart/quickstart-js
   // https://developers.google.com/+/web/signin/javascript-flow
   // https://developers.google.com/drive/realtime/realtime-quickstart
-  // https://developers.google.com/drive/v2/reference/files/list
-
-  // http://stackoverflow.com/questions/17266168/whats-the-right-way-to-find-files-by-full-path-in-google-drive-api-v2
+  // https://developers.google.com/drive/v2/reference/
 
   window.OSjs       = window.OSjs       || {};
   OSjs.VFS          = OSjs.VFS          || {};
@@ -235,23 +232,28 @@
     function retrieveAllFiles(cb) {
       var retrievePageOfFiles = function(request, result) {
         request.execute(function(resp) {
+          if ( resp.error ) {
+            console.warn('GoogleDrive::getAllDirectoryFiles()', 'error', resp);
+          }
           if ( root === '/' ) {
             var files = [];
-            resp.items.forEach(function(fiter) {
-              var isRooted = false;
-              fiter.parents.forEach(function(par, idx) {
-                if ( par.isRoot ) {
-                  isRooted = true;
-                }
-                if ( idx > 0 && par.isRoot ) {
-                  isRooted = false;
+            if ( resp.items ) {
+              resp.items.forEach(function(fiter) {
+                var isRooted = false;
+                fiter.parents.forEach(function(par, idx) {
+                  if ( par.isRoot ) {
+                    isRooted = true;
+                  }
+                  if ( idx > 0 && par.isRoot ) {
+                    isRooted = false;
+                  }
+                });
+
+                if ( isRooted ) {
+                  files.push(fiter);
                 }
               });
-
-              if ( isRooted ) {
-                files.push(fiter);
-              }
-            });
+            }
 
             result = result.concat(files);
           } else {
