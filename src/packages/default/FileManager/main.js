@@ -195,7 +195,6 @@
               fileView.refresh(function() {
                 fileView.setSelected(value, 'filename');
               });
-              OSjs.API.message('vfs', {type: 'mkdir', path: dir, filename: value, source: self._appRef.__pid});
             }
           });
         }], self);
@@ -209,7 +208,6 @@
               fileView.refresh(function() {
                 fileView.setSelected(filename, 'filename');
               });
-              OSjs.API.message('vfs', {type: 'upload', path: dir, filename: filename, source: self._appRef.__pid});
             }
           }
         }], self);
@@ -230,7 +228,6 @@
                 if ( fileView ) fileView.setSelected(value, 'filename');
               });
               self._focus();
-              OSjs.API.message('vfs', {type: 'rename', path: dir, filename: value, source: self._appRef.__pid});
             }
           });
         }, function(input) {
@@ -248,7 +245,6 @@
           app.unlink(cur, function(result) {
             if ( result && fileView ) {
               fileView.refresh();
-              OSjs.API.message('vfs', {type: 'delete', path: OSjs.Utils.dirname(cur.path), filename: OSjs.Utils.filename(cur.path), source: self._appRef.__pid});
             }
           });
         }]);
@@ -473,10 +469,10 @@
     return false;
   };
 
-  ApplicationFileManagerWindow.prototype.vfsEvent = function(path, filename) {
+  ApplicationFileManagerWindow.prototype.vfsEvent = function(file) {
     var fileView = this._getGUIElement('FileManagerFileView');
     if ( fileView ) {
-      if ( fileView.getPath() == path ) {
+      if ( fileView.getPath() == OSjs.Utils.dirname(file.path) ) {
         fileView.refresh(null, null, true);
       }
     }
@@ -533,10 +529,10 @@
     if ( msg == 'destroyWindow' && obj._name === 'ApplicationFileManagerWindow' ) {
       this.destroy();
     } else if ( msg == 'vfs' ) {
-      if ( args.source !== this.__pid ) {
+      if ( args.source !== this.__pid && args.file ) {
         var win = this._getWindow('ApplicationFileManagerWindow');
         if ( win ) {
-          win.vfsEvent(args.path, args.filename);
+          win.vfsEvent(args.file);
         }
       }
     }
@@ -573,6 +569,7 @@
       }
       callback(result);
     });
+    args.push(this._appRef);
     VFS[name].apply(VFS, args);
   };
 

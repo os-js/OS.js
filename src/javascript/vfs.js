@@ -262,11 +262,17 @@
    * Write File
    * TODO: Check for existence before
    */
-  OSjs.VFS.write = function(item, data, callback) {
+  OSjs.VFS.write = function(item, data, callback, appRef) {
     console.info('VFS::write()', item);
     if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
-    request(item.path, 'write', [item, data], callback);
+    function _finished(error, result) {
+      if ( !error ) {
+        OSjs.API.message('vfs', {type: 'write', file: item, source: appRef ? appRef.__pid : null});
+      }
+      callback(error, result);
+    }
+    request(item.path, 'write', [item, data], _finished);
   };
 
   /**
@@ -283,7 +289,7 @@
    * Copy File
    * TODO: Check for existence before
    */
-  OSjs.VFS.copy = function(src, dest, callback) {
+  OSjs.VFS.copy = function(src, dest, callback, appRef) {
     console.info('VFS::copy()', src, dest);
     if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
@@ -291,12 +297,19 @@
 
     var msrc, mdst;
 
+    function _finished(error, result) {
+      if ( !error ) {
+        OSjs.API.message('vfs', {type: 'mkdir', file: dest, source: appRef ? appRef.__pid : null});
+      }
+      callback(error, result);
+    }
+
     function _write(data) {
       OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
         if ( error ) {
           error = 'An error occured while copying between storage: ' + error;
         }
-        callback(error, result);
+        _finished(error, result);
       });
     }
 
@@ -310,7 +323,7 @@
 
       OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
         if ( error ) {
-          callback('An error occured while copying between storage: ' + error);
+          _finished('An error occured while copying between storage: ' + error);
           return;
         }
 
@@ -329,18 +342,25 @@
       return;
     }
 
-    request(null, 'copy', [src, dest], callback);
+    request(null, 'copy', [src, dest], _finished);
   };
 
   /**
    * Move File
    * TODO: Check for existence before
    */
-  OSjs.VFS.move = function(src, dest, callback) {
+  OSjs.VFS.move = function(src, dest, callback, appRef) {
     console.info('VFS::move()', src, dest);
     if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
+
+    function _finished(error, result) {
+      if ( !error ) {
+        OSjs.API.message('vfs', {type: 'move', file: dest, source: appRef ? appRef.__pid : null});
+      }
+      callback(error, result);
+    }
 
     var isInternal = (isInternalModule(src.path) && isInternalModule(dest.path));
     var isOther    = (isInternalModule(src.path) !== isInternalModule(dest.path));
@@ -348,22 +368,22 @@
     var mdst = getModuleFromPath(dest.path);
 
     if ( !isInternal && (msrc === mdst) ) {
-      request(src.path, 'move', [src, dest], callback);
+      request(src.path, 'move', [src, dest], _finished);
     } else if ( isOther ) {
       this.copy(src, dest, function(error, result) {
         if ( error ) {
-          return callback(error);
+          return _finished(error);
         }
 
         OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
           if ( error ) {
             error = 'An error occured while movin between storage: ' + error;
           }
-          callback(error, result);
+          _finished(error, result);
         });
       });
     } else {
-      request(null, 'move', [src, dest], callback);
+      request(null, 'move', [src, dest], _finished);
     }
   };
   OSjs.VFS.rename = function(src, dest, callback) {
@@ -373,11 +393,17 @@
   /**
    * Delete File
    */
-  OSjs.VFS.unlink = function(item, callback) {
+  OSjs.VFS.unlink = function(item, callback, appRef) {
     console.info('VFS::unlink()', item);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
-    request(item.path, 'unlink', [item], callback);
+    function _finished(error, result) {
+      if ( !error ) {
+        OSjs.API.message('vfs', {type: 'delete', file: item, source: appRef ? appRef.__pid : null});
+      }
+      callback(error, result);
+    }
+    request(item.path, 'unlink', [item], _finished);
   };
   OSjs.VFS['delete'] = function(item, callback) {
     OSjs.VFS.unlink.apply(this, arguments);
@@ -387,11 +413,17 @@
    * Create Directory
    * TODO: Check for existence before
    */
-  OSjs.VFS.mkdir = function(item, callback) {
+  OSjs.VFS.mkdir = function(item, callback, appRef) {
     console.info('VFS::mkdir()', item);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
-    request(item.path, 'mkdir', [item], callback);
+    function _finished(error, result) {
+      if ( !error ) {
+        OSjs.API.message('vfs', {type: 'mkdir', file: item, source: appRef ? appRef.__pid : null});
+      }
+      callback(error, result);
+    }
+    request(item.path, 'mkdir', [item], _finished);
   };
 
   /**
@@ -429,7 +461,7 @@
   /**
    * Upload file(s)
    */
-  OSjs.VFS.upload = function(args, callback) {
+  OSjs.VFS.upload = function(args, callback, appRef) {
     console.info('VFS::upload()', args);
     args = args || {};
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
@@ -449,7 +481,6 @@
     function _dialogClose(btn, filename, mime, size) {
       if ( btn !== 'ok' && btn !== 'complete' ) { return; }
 
-      OSjs.API.message('vfs', {type: 'upload', path: args.destination, filename: filename, source: args.app.__pid});
 
       var file = new OSjs.VFS.File({
         filename: filename,
@@ -457,6 +488,8 @@
         mime: mime,
         size: size
       });
+
+      OSjs.API.message('vfs', {type: 'upload', file: file, source: args.app.__pid});
 
       callback(false, file);
     }

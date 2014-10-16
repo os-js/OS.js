@@ -316,8 +316,6 @@
       self.onSave(item);
       self.mainWindow._toggleLoading(false);
       self._setCurrentFile(item);
-
-      OSjs.API.message('vfs', {type: 'write', path: Utils.dirname(item.path), filename: item.filename, source: self.__pid});
     }
 
 
@@ -336,7 +334,7 @@
           return;
         }
         _onSaveFinished(item);
-      });
+      }, self);
     }, file);
   };
 
