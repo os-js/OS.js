@@ -187,6 +187,13 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var meta = _path.join(path, 'package.json');
         try {
           var data = JSON.parse(_fs.readFileSync(meta));
+          var key  = Object.keys(data).shift();
+
+          if ( !key ) {
+            return;
+          }
+
+          data = data[key];
           if ( !data || data.enabled === false ) {
             return;
           }
@@ -248,7 +255,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     extensions.forEach(function(iter) {
       if ( iter && iter.sources ) {
         iter.sources.forEach(function(iiter) {
-          if ( iiter.type === 'javascript' && !iter.preload ) {
+          if ( iiter.type === 'javascript' && !iiter.preload ) {
             list_js.push(_path.join(iter._root, iiter.src));
           }
         });
@@ -264,7 +271,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     extensions.forEach(function(iter) {
       if ( iter && iter.sources ) {
         iter.sources.forEach(function(iiter) {
-          if ( iiter.type === 'stylesheet' && !iter.preload ) {
+          if ( iiter.type === 'stylesheet' && !iiter.preload ) {
             list_css.push(_path.join(iter._root, iiter.src));
           }
         });
