@@ -249,7 +249,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       if ( iter && iter.sources ) {
         iter.sources.forEach(function(iiter) {
           if ( iiter.type === 'javascript' ) {
-            list_js.push(_path.join(iiter._root, iiter.src));
+            list_js.push(_path.join(iter._root, iiter.src));
           }
         });
       }
@@ -265,7 +265,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       if ( iter && iter.sources ) {
         iter.sources.forEach(function(iiter) {
           if ( iiter.type === 'stylesheet' ) {
-            list_css.push(_path.join(iiter._root, iiter.src));
+            list_css.push(_path.join(iter._root, iiter.src));
           }
         });
       }
