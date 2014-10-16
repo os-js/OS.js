@@ -54,6 +54,8 @@
     return OSjs.__.apply(this, args);
   }
 
+  var notificationWasDisplayed = false;
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -394,6 +396,7 @@
         mime: null,
         size: 0,
         type: 'link',
+        internal: m.module.internal,
         path: m.module.root
       });
     });
@@ -403,6 +406,7 @@
       {key: 'filename', title: OSjs._('Filename')},
       {key: 'mime', title: OSjs._('Mime'), visible: false},
       {key: 'size', title: OSjs._('Size'), visible: false},
+      {key: 'internal', title: 'Internal', visible: false},
       {key: 'path', title: OSjs._('Path'), visible: false, domProperties: {width: "70"}},
       {key: 'type', title: OSjs._('Type'), visible: false, domProperties: {width: "50"}}
      ]);
@@ -415,6 +419,10 @@
           var fileView = self._getGUIElement('FileManagerFileView');
           if ( fileView ) {
             fileView.chdir(item.path);
+
+            if ( !item.internal ) {
+              self.showStorageNotification();
+            }
           }
         }
       }
@@ -471,6 +479,23 @@
       if ( fileView.getPath() == path ) {
         fileView.refresh(null, null, true);
       }
+    }
+  };
+
+  ApplicationFileManagerWindow.prototype.showStorageNotification = function() {
+    if ( notificationWasDisplayed ) {
+      return;
+    }
+    notificationWasDisplayed = true;
+
+    var wm = OSjs.API.getWMInstance();
+    var ha = OSjs.API.getHandlerInstance();
+    if ( wm ) {
+      wm.notification({
+        title: 'External Storage',
+        message: 'Authentication may require you to sign in. A popup window may appear',
+        icon: 'status/dialog-information.png'
+      });
     }
   };
 
