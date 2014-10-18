@@ -642,6 +642,9 @@
         opts.onClick(ev);
       };
 
+      var space = this.getWindowSpace();
+      this._$notifications.style.top = space.top + 'px';
+
       this._$notifications.appendChild(container);
 
       if ( opts.timeout ) {
