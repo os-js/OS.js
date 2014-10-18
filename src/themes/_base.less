@@ -202,8 +202,14 @@ body, input, button, textarea, label, select {
 }
 
 /* Notifications */
-.Notification,
 .ProcessSplash {
+  box-shadow : @theme_base_shadow_unfocused;
+  background : @theme_base_bg_color;
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+  opacity : .85;
+  cursor : pointer;
+}
+.Notification {
   color : @theme_panel_fg_color;
   background : @theme_panel_bg_color;
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
