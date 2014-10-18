@@ -62,6 +62,8 @@
     'ERR_APP_API_ERROR': 'Anwendungs API Fehler',
     'ERR_APP_API_ERROR_DESC_FMT': 'Anwendung {0} konnte Aktion nicht ausführen \'{1}\'',
 
+    'Logging out user \'{0}\'.\nDo you want to save current session?' : 'Benutzer wird abgemeldet \'{0}\'.\nWollen Sie die aktuelle Sitzung speichern?',
+
     // dialogs.js
     'Choose Application': 'Wählen Sie eine Anwendung',
     'Choose an application to open': 'Wählen Sie eine Anwendung zum Öffnen',

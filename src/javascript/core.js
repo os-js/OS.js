@@ -299,12 +299,15 @@
         _$LOADING.style.display = 'none';
         doPlaySound('service-login');
 
-        _HANDLER.loadSession(function() {
-          setTimeout(function() {
-            globalOnResize();
-          }, 500);
+        _HANDLER.onWMLaunched(_WM, function() {
 
-          OSjs.Hooks._trigger('onSessionLoaded');
+          _HANDLER.loadSession(function() {
+            setTimeout(function() {
+              globalOnResize();
+            }, 500);
+
+            OSjs.Hooks._trigger('onSessionLoaded');
+          });
         });
 
         if ( _$SPLASH ) {
@@ -506,6 +509,25 @@
       doPlaySound('service-logout');
       _shutdown();
     });
+  }
+
+  /**
+   * Sign Out
+   */
+  function doSignOut() {
+    if ( _WM ) {
+      var user = _HANDLER.getUserData() || {name: 'Unknown'};
+      var conf = new OSjs.Dialogs.Confirm(OSjs._('Logging out user \'{0}\'.\nDo you want to save current session?', user.name), function(btn) {
+        if ( btn == 'ok' ) {
+          OSjs.Shutdown(true, false);
+        } else if ( btn == 'cancel' ) {
+          OSjs.Shutdown(false, false);
+        }
+      }, {title: OSjs._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs._('Cancel'), buttonOkLabel: OSjs._('Yes'), buttonCancelLabel: OSjs._('No')});
+      _WM.addWindow(conf);
+    } else {
+      OSjs.Shutdown(true, false);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1263,6 +1285,7 @@
   // Common API functions
   OSjs.Initialize             = doInitialize;
   OSjs.Shutdown               = doShutdown;
+  OSjs.SignOut                = doSignOut;
 
   OSjs.API.call               = doAPICall;
   OSjs.API.error              = doErrorDialog;

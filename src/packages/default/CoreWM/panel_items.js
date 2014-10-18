@@ -31,25 +31,6 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _Locales = {
-    no_NO : {
-      "Logging out user '{0}'.\nDo you want to save current session?" : "Logger ut bruker '{0}'.\nVil du lagre gjeldende sessjon?"
-    },
-    de_DE : {
-      "Logging out user '{0}'.\nDo you want to save current session?" : "Benutzer wird abgemeldet '{0}'.\nWollen Sie die aktuelle Sitzung speichern?"
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
 
@@ -93,18 +74,7 @@
     });
 
     this.addButton(OSjs._('Log out (Exit)'), 'actions/exit.png', function(ev) {
-      var user = OSjs.API.getHandlerInstance().getUserData() || {name: 'Unknown'};
-      var wm = OSjs.API.getWMInstance();
-      if ( wm ) {
-        var conf = new OSjs.Dialogs.Confirm(_("Logging out user '{0}'.\nDo you want to save current session?", user.name), function(btn) {
-          if ( btn == 'ok' ) {
-            OSjs.Shutdown(true, false);
-          } else if ( btn == 'cancel' ) {
-            OSjs.Shutdown(false, false);
-          }
-        }, {title: OSjs._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs._('Cancel'), buttonOkLabel: OSjs._('Yes'), buttonCancelLabel: OSjs._('No')});
-        wm.addWindow(conf);
-      }
+      OSjs.SignOut();
     });
 
     return root;

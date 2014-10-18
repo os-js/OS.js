@@ -614,6 +614,11 @@
   DefaultHandler.prototype.logout = function(save, callback) {
     console.info('OSjs::DefaultHandler::logout()');
 
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      wm.destroyNotificationIcon('DefaultHandlerUserNotification');
+    }
+
     if ( save ) {
       var session = this.user ? this.user.getSession() : [];
       this.setUserSession(session, function() {
@@ -686,6 +691,36 @@
    */
   DefaultHandler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
     // If you want to interrupt or modify somehow
+    callback();
+  };
+
+  DefaultHandler.prototype.onWMLaunched = function(wm, callback) {
+    var user = this.user.getUserData();
+
+    if ( wm ) {
+      wm.createNotificationIcon('DefaultHandlerUserNotification', {
+        onContextMenu: function(ev) {
+          var pos = {x: ev.clientX, y: ev.clientY};
+          OSjs.GUI.createMenu([{
+            title: 'Sign out', // FIXME: Translation
+            onClick: function() {
+              OSjs.SignOut();
+            }
+          }], pos);
+          return false;
+        },
+        onInited: function(el) {
+          if ( el.firstChild ) {
+            var img = document.createElement('img');
+            img.title = 'You are signed in as: ' + user.username; // FIXME: Translation;
+            img.alt = img.title;
+            img.src = OSjs.API.getThemeResource('status/avatar-default.png', 'icon', '16x16');
+            el.firstChild.appendChild(img);
+          }
+        }
+      });
+    }
+
     callback();
   };
 

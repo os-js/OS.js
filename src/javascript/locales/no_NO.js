@@ -60,6 +60,8 @@
     'ERR_APP_API_ERROR' : 'Applikasjon API Feil',
     'ERR_APP_API_ERROR_DESC_FMT' : 'Applikasjonen {0} klarte ikke utføre operasjon \'{1}\'',
 
+    'Logging out user \'{0}o\'.\nDo you want to save current session?' : 'Logger ut bruker \'{0}\'.\nVil du lagre gjeldende sessjon?',
+
     // helpers.js
     'The requested file MIME \'{0}\' is not accepted by this application.' : 'Denne applikasjonen støtter ikke filer med denne MIME-typen \'{0}\'',
     'Fatal error on open file!' : 'Fatal feil under åpning av fil!',
