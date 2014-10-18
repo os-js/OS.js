@@ -602,7 +602,7 @@
     console.info('GoogleDrive::mkdir()', dir);
     var parents = null; // TODO
 
-    if ( dir.path !== OSjs.VFS.Modules.GoogleDrive.root ) {
+    if ( Utils.dirname(dir.path) !== OSjs.VFS.Modules.GoogleDrive.root ) {
       return callback('You must create folders on the root'); // TODO
     }
 
