@@ -32,15 +32,14 @@ body.WallpaperStrech {
   top : 0px;
   right : 0px;
   z-index : 10000000;
-  min-width : 200px;
-  max-width : 600px;
+  width : 20%;
 }
 
 #Notifications .Notification {
   position : relative;
   min-height : 10px;
-  padding : 5px;
-  margin : 5px;
+  padding : 10px;
+  margin : 10px;
   overflow : hidden;
   white-space : nowrap;
 }
