@@ -184,7 +184,7 @@
                   self.signOut();
                 });
               }
-            }], pos)
+            }], pos);
             return false;
           },
           onInited: function(el) {
