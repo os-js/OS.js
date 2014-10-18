@@ -607,6 +607,25 @@
     if ( !opts.post )   { opts.post = {}; }
     if ( !opts.parse )  { opts.parse = true; }
 
+    if ( opts.jsonp ) {
+      var loaded  = false;
+      OSjs.Utils.$createJS(url, function() {
+        if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
+          loaded = true;
+          onSuccess();
+        }
+      }, function() {
+        if ( loaded ) { return; }
+        loaded = true;
+        onSuccess();
+      }, function() {
+        if ( loaded ) { return; }
+        loaded = true;
+        onError();
+      });
+      return;
+    }
+
     var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
