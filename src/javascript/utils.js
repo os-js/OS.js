@@ -174,7 +174,7 @@
       socket         : (('WebSocket'       in window) && window['WebSocket']      !== null),
       worker         : (('Worker'          in window) && window['Worker']         !== null),
       dnd            : ('draggable' in document.createElement('span')),
-      touch          : ('ontouchstart' in window) || (window.DocumentTouch && document instanceof DocumentTouch),
+      touch          : ('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch)),
       orientation    : ('onorientationchange' in window),
       css            : {
         transition : detectCSSFeature('transition'),
@@ -535,7 +535,7 @@
     var fd  = new FormData();
     fd.append('upload', 1);
     fd.append('path',   dest);
-    if ( file instanceof File ) {
+    if ( file instanceof window.File ) {
       fd.append('upload', file);
     } else {
       fd.append('upload', file.data, file.filename);

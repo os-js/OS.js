@@ -31,6 +31,11 @@
 (function(Utils, API) {
   'use strict';
 
+  var OSjs = window.OSjs = window.OSjs || {};
+  var gapi = window.gapi = window.gapi || {};
+
+  OSjs.Handlers = OSjs.Handlers || {};
+
   function GoogleAPI(clientId) {
     this.clientId       = clientId;
     this.userId         = null;
@@ -159,8 +164,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  window.OSjs                = window.OSjs   || {};
-  OSjs.Handlers              = OSjs.Handlers || {};
   OSjs.Handlers.getGoogleAPI = (function() {
     var _c;
     return function(load, scope, callback) {

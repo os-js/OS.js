@@ -270,21 +270,21 @@
   FileDialog.prototype.finishDialog = function(file) {
     var self = this;
 
-    file = file || new VFS.File(_getSelected.call(this));
+    file = file || new VFS.File(_getSelected());
     file.mime = file.mime || this.defaultMime;
 
     function _getSelected() {
       var result = '';
 
-      if ( this.select === 'path' ) {
-        result = this.selectedFile;
+      if ( self.select === 'path' ) {
+        result = self.selectedFile;
       } else {
-        if ( this.$fileView ) {
-          var root = this.$fileView.getPath();
-          if ( this.$input ) {
-            result = root + (root.match(/\/$/) ? '' : '/') + this.$input.getValue();
+        if ( self.$fileView ) {
+          var root = self.$fileView.getPath();
+          if ( self.$input ) {
+            result = root + (root.match(/\/$/) ? '' : '/') + self.$input.getValue();
           } else {
-            result = this.selectedFile;
+            result = self.selectedFile;
           }
         }
       }
@@ -295,7 +295,7 @@
     function _confirm() {
       var wm = API.getWMInstance();
       if ( wm ) {
-        this._toggleDisabled(true);
+        self._toggleDisabled(true);
         var conf = new OSjs.Dialogs.Confirm(OSjs._('Are you sure you want to overwrite the file \'{0}\'?', Utils.filename(file.path)), function(btn) {
           self._toggleDisabled(false);
           if ( btn === 'ok' ) {
@@ -303,7 +303,7 @@
           }
         });
         wm.addWindow(conf);
-        this._addChild(conf);
+        self._addChild(conf);
       }
     }
 
@@ -316,7 +316,7 @@
           return;
         }
         if ( result ) {
-          _confirm.call(self);
+          _confirm();
           return;
         }
 
@@ -482,17 +482,18 @@
    * FileView: Activated
    */
   FileDialog.prototype.onFileActivated = function(item) {
+    var self = this;
     this.selectedFile = null;
 
     function _activated() {
-      this.buttonConfirm.setDisabled(false);
-      this.finishDialog.call(this, item);
+      self.buttonConfirm.setDisabled(false);
+      self.finishDialog.call(self, item);
     }
 
     if ( this.select === 'file' && item.type === 'file' ) {
-      _activated.call(this);
+      _activated();
     } else if ( this.select === 'path' && item.type === 'dir' && Utils.filename(item.path) !== '..' ) {
-      _activated.call(this);
+      _activated();
     }
   };
 

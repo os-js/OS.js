@@ -41,10 +41,10 @@
   console.groupEnd  = console.groupEnd  || console.log;
 
   if ( window.NodeList ) {
-    NodeList.prototype.forEach = Array.prototype.forEach;
+    window.NodeList.prototype.forEach = Array.prototype.forEach;
   }
   if ( window.FileList ) {
-    FileList.prototype.forEach = Array.prototype.forEach;
+    window.FileList.prototype.forEach = Array.prototype.forEach;
   }
 
   /////////////////////////////////////////////////////////////////////////////

@@ -35,7 +35,9 @@
   // https://developers.google.com/drive/realtime/realtime-quickstart
   // https://developers.google.com/drive/v2/reference/
 
-  window.OSjs       = window.OSjs       || {};
+  var gapi = window.gapi = window.gapi  || {};
+  var OSjs = window.OSjs = window.OSjs  || {};
+
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
