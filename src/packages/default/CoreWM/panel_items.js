@@ -333,8 +333,10 @@
       self.onClick.apply(self, arguments);
     });
     this.$inner.addEventListener("contextmenu", function(ev) {
+      ev.stopPropagation();
       ev.preventDefault();
       self.onContextMenu.apply(self, arguments);
+      return false;
     });
 
     this.$container.appendChild(this.$inner);
