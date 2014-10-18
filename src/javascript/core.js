@@ -1276,7 +1276,7 @@
   OSjs.API.createLoading      = createLoading;
   OSjs.API.destroyLoading     = destroyLoading;
   OSjs.API.getProcesses       = function() { return _PROCS; };
-  OSjs.API.getHandlerInstance = function() { return _HANDLER; };
+  OSjs.API.getHandlerInstance = function() { return OSjs.Handlers.getInstance(); };
   OSjs.API.getWMInstance      = function() { return _WM; };
   OSjs.API.isMouseLock        = function() { return _MOUSELOCK; };
   OSjs.API._onMouseDown       = globalOnMouseDown;

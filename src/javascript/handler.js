@@ -47,6 +47,8 @@
     return response;
   }
 
+  var _handlerInstance;
+
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT SETTINGS MANAGER
   /////////////////////////////////////////////////////////////////////////////
@@ -529,12 +531,17 @@
    * You can implement your own, see documentation on Wiki.
    */
   var DefaultHandler = function() {
+    if ( _handlerInstance ) {
+      throw Error('Cannot create another Handler Instance');
+    }
     this.config     = OSjs.Settings.DefaultConfig();
     this.settings   = new SettingsManager();
     this.connection = new ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
     this.packages   = new PackageManager(this.config.Core.MetadataURI);
     this.themes     = new ThemeManager(this.config.Core.ThemeMetadataURI);
     this.user       = new UserSession(this.config.Core.DefaultUser);
+
+    _handlerInstance = this;
   };
 
   /**
@@ -948,6 +955,10 @@
   OSjs.Handlers.ThemeManager      = ThemeManager;
   OSjs.Handlers.PackageManager    = PackageManager;
   OSjs.Handlers.SettingsManager   = SettingsManager;
+
+  OSjs.Handlers.getInstance = function() {
+    return _handlerInstance;
+  };
 
 })(OSjs.Utils);
 
