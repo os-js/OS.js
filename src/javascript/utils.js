@@ -607,26 +607,7 @@
     if ( !opts.post )   { opts.post = {}; }
     if ( !opts.parse )  { opts.parse = true; }
 
-    var httpRequest;
-    if (window.XMLHttpRequest) {
-      httpRequest = new XMLHttpRequest();
-    } else if (window.ActiveXObject) { // IE
-      try {
-        httpRequest = new ActiveXObject('Msxml2.XMLHTTP');
-      }
-      catch (e) {
-        try {
-          httpRequest = new ActiveXObject('Microsoft.XMLHTTP');
-        }
-        catch (ex) {}
-      }
-    }
-
-    if ( !httpRequest ) {
-      alert('Giving up :( Cannot create an XMLHTTP instance');
-      return false;
-    }
-
+    var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
         var response = httpRequest.responseText;
