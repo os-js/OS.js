@@ -79,17 +79,20 @@
     this.list.forEach(function(key, i) {
       var icon = null;
       var name = key;
+      var iter;
+
       if ( refs[key] ) {
-        var iter = refs[key];
+        iter = refs[key];
         if ( iter ) {
           name = OSjs.Utils.format('{0} - {1}', (iter.name || name), (iter.description || name));
           icon = _createIcon(iter.icon, iter.path);
+
+          if ( iter.type !== 'application' ) {
+            return;
+          }
         }
       }
 
-      if ( iter.type !== 'application' ) {
-        return;
-      }
 
       list.push({
         key:   key,

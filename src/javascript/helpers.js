@@ -159,7 +159,7 @@
     if ( this.mainWindow ) {
       if ( msg === 'destroyWindow' && obj._name === this.mainWindow._name ) {
         this.destroy();
-      } else if ( msg == 'vfs' ) {
+      } else if ( msg === 'vfs' ) {
         if ( args.source !== this.__pid && args.file ) {
           if ( this.currentFile && this.currentFile.path ) {
             if ( args.file.path === this.currentFile.path ) {

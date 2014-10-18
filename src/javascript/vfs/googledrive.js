@@ -86,7 +86,7 @@
           body: body
         });
       };
-      reader.onerror = function() {
+      reader.onerror = function(e) {
         callback(e);
       };
     }
