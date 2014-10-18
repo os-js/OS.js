@@ -36,8 +36,11 @@
 
   OSjs.Handlers = OSjs.Handlers || {};
 
+  var SingletonInstance = null;
+
   function GoogleAPI(clientId) {
     this.clientId       = clientId;
+    this.accessToken    = null;
     this.userId         = null;
     this.loaded         = false;
     this.authenticated  = false;
@@ -50,10 +53,6 @@
   }
 
   GoogleAPI.prototype.destroy = function() {
-    try {
-      gapi.auth.signOut();
-    } catch ( e ) {
-    }
   };
 
   GoogleAPI.prototype.init = function(callback) {
@@ -102,6 +101,42 @@
     });
   };
 
+  GoogleAPI.prototype.signOut = function() {
+    console.info('GoogleAPI::signOut()');
+    if ( this.authenticated ) {
+      try {
+        gapi.auth.signOut();
+      } catch ( e ) {
+        console.warn('GoogleAPI::signOut()', 'failed', e);
+        console.warn(e.stack);
+      }
+
+      this.authenticated = false;
+
+      var wm = API.getWMInstance();
+      if ( wm ) {
+        wm.removeNotificationIcon('GoogleAPIService');
+      }
+    }
+  };
+
+  GoogleAPI.prototype.revoke = function(callback) {
+    console.info('GoogleAPI::revoke()');
+
+    if ( !this.accessToken ) {
+      return callback(false);
+    }
+
+    var url = 'https://accounts.google.com/o/oauth2/revoke?token=' + this.accessToken;
+    Utils.Ajax(url, function() {
+      callback(true);
+    }, function() {
+      callback(false);
+    }, {
+      jsonp: true
+    });
+  };
+
   GoogleAPI.prototype.authenticate = function(scope, callback) {
     console.info('GoogleAPI::authenticate()');
 
@@ -131,6 +166,40 @@
       }, cb);
     }
 
+    function createNotificationIcon() {
+      var wm = API.getWMInstance();
+      if ( wm ) {
+        wm.createNotificationIcon('GoogleAPIService', {
+          onContextMenu: function(ev) {
+            var pos = {x: ev.clientX, y: ev.clientY};
+            OSjs.GUI.createMenu([{
+              title: 'Sign out from Google API Services', // FIXME: Translation
+              onClick: function() {
+                self.signOut();
+              }
+            }, {
+              title: 'Revoke permissions and Sign Out', // FIXME: Translation
+              onClick: function() {
+                self.revoke(function() {
+                  self.signOut();
+                });
+              }
+            }], pos)
+            return false;
+          },
+          onInited: function(el) {
+            if ( el.firstChild ) {
+              var img = document.createElement('img');
+              img.title = 'You are signed in to Google API';
+              img.alt = img.title;
+              img.src = API.getThemeResource('status/gtk-dialog-authentication.png', 'icon', '16x16');
+              el.firstChild.appendChild(img);
+            }
+          }
+        });
+      }
+    }
+
     var handleAuthResult = function(authResult) {
       console.info('GoogleAPI::authenticate() => handleAuthResult()', authResult);
 
@@ -146,7 +215,9 @@
           self.userId = id;
 
           if ( id ) {
+            createNotificationIcon();
             self.authenticated = true;
+            self.accessToken = authResult.access_token || null;
             callback(false, true);
           } else {
             callback(false, false);
@@ -164,35 +235,36 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Handlers.getGoogleAPI = (function() {
-    var _c;
-    return function(load, scope, callback) {
-      function _run() {
-        _c.load(load, scope, callback);
-      }
+  OSjs.Handlers.getGoogleAPIInstance = function() {
+    return SingletonInstance;
+  };
 
-      if ( _c ) {
-        return _run();
-      }
+  OSjs.Handlers.getGoogleAPI = function(load, scope, callback) {
+    function _run() {
+      SingletonInstance.load(load, scope, callback);
+    }
 
-      var clientId = null;
-      var handler = API.getHandlerInstance();
-      if ( handler ) {
-        try {
-          clientId = handler.getConfig('GoogleAPI').ClientId;
-        } catch ( e ) {
-          console.warn('getGoogleAPI()', e, e.stack);
-        }
-      }
+    if ( SingletonInstance ) {
+      return _run();
+    }
 
-      if ( !clientId ) {
-        onerror('GoogleAPI Module not configured or disabled');
-        return;
+    var clientId = null;
+    var handler = API.getHandlerInstance();
+    if ( handler ) {
+      try {
+        clientId = handler.getConfig('GoogleAPI').ClientId;
+      } catch ( e ) {
+        console.warn('getGoogleAPI()', e, e.stack);
       }
+    }
 
-      _c = new GoogleAPI(clientId);
-      _run();
-    };
-  })();
+    if ( !clientId ) {
+      onerror('GoogleAPI Module not configured or disabled');
+      return;
+    }
+
+    SingletonInstance = new GoogleAPI(clientId);
+    _run();
+  };
 
 })(OSjs.Utils, OSjs.API);

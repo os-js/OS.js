@@ -654,6 +654,14 @@
       callback = callback || function() {};
       onerror  = onerror  || function() {};
 
+      // Check if user has signed out or revoked permissions
+      if ( inited ) {
+        var inst = OSjs.Handlers.getGoogleAPIInstance();
+        if ( inst && !inst.authenticated ) {
+          inited = false;
+        }
+      }
+
       if ( !inited ) {
         var scopes = [
           'https://www.googleapis.com/auth/drive.install',
