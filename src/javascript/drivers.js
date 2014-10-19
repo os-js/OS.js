@@ -43,7 +43,9 @@
 
   OSjs.Drivers.getInstance = function(name) {
     if ( OSjs.Drivers[name] ) {
-      return OSjs.Drivers[name].getInstance();
+      if ( typeof OSjs.Drivers[name].getInstance === 'function' ) {
+        return OSjs.Drivers[name].getInstance();
+      }
     }
     return null;
   };

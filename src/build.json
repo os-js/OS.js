@@ -85,6 +85,7 @@
       "src/javascript/locales.js",
       "src/javascript/core.js",
       "src/javascript/drivers.js",
+      "src/javascript/drivers/indexed-db.js",
       "src/javascript/drivers/google-api.js",
       "src/javascript/vfs.js",
       "src/javascript/vfs/osjs.js",
