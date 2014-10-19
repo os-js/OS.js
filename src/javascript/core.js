@@ -32,6 +32,7 @@
 
   window.OSjs       = window.OSjs       || {};
   OSjs.Compability  = OSjs.Compability  || {};
+  OSjs.Drivers      = OSjs.Drivers      || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Settings     = OSjs.Settings     || {};

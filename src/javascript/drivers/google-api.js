@@ -34,7 +34,11 @@
   var OSjs = window.OSjs = window.OSjs || {};
   var gapi = window.gapi = window.gapi || {};
 
-  OSjs.Handlers = OSjs.Handlers || {};
+  OSjs.Drivers = OSjs.Drivers || {};
+
+  /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
 
   var SingletonInstance = null;
 
@@ -235,11 +239,15 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Handlers.getGoogleAPIInstance = function() {
+  OSjs.Drivers.GoogleAPI = OSjs.Drivers.GoogleAPI || {};
+
+  OSjs.Drivers.GoogleAPI.getInstance = function() {
     return SingletonInstance;
   };
 
-  OSjs.Handlers.getGoogleAPI = function(load, scope, callback) {
+  OSjs.Drivers.GoogleAPI.createInstance = function(args, callback) {
+    var load = args.load || [];
+    var scope = args.scope || [];
     function _run() {
       SingletonInstance.load(load, scope, callback);
     }

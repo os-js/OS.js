@@ -84,6 +84,8 @@
       "src/javascript/utils.js",
       "src/javascript/locales.js",
       "src/javascript/core.js",
+      "src/javascript/drivers.js",
+      "src/javascript/drivers/google-api.js",
       "src/javascript/vfs.js",
       "src/javascript/vfs/osjs.js",
       "src/javascript/vfs/public.js",
@@ -132,7 +134,6 @@
       "src/javascript/dialogs/font.js",
       "src/javascript/dialogs/input.js",
       "src/javascript/handler.js",
-      "src/javascript/handlers/google.js",
       "src/javascript/handlers/%HANDLER%/handler.js",
       "src/javascript/main.js"
     ]
