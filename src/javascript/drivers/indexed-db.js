@@ -44,15 +44,11 @@
 
     this.version = (args.version || 1).toString();
     this.dbName = args.dbName;
-    this.storeName = args.storeName;
-    this.primaryKey = args.primaryKey || null;
+    this.onupgrade = args.onupgrade || function __noop__() {};
     this.db = null;
 
     if ( !this.dbName ) {
       throw new Error('Cannot create IndexedDB without Database Name');
-    }
-    if ( !this.storeName ) {
-      throw new Error('Cannot create IndexedDB without Store Name');
     }
 
     console.info('OIndexedDB::construct()', this);
@@ -70,13 +66,9 @@
       console.info('OIndexedDB::init()','=>','onupgradeneeded()', e);
 
       var db = e.target.result;
-      if ( db.objectStoreNames.contains(self.storeName) ) {
-        db.deleteObjectStore(self.storeName);
-      }
-      var sargs = self.primaryKey ? {keyPath: self.primaryKey} : {autoIncrement: true}
-      var store = db.createObjectStore(self.storeName, sargs);
-
-      callback(false, true);
+      self.onupgrade(db, function() {
+        callback(false, true);
+      });
     };
 
     request.onsuccess = function(e) {
@@ -97,15 +89,13 @@
     console.info('OIndexedDB::_queue()', queue);
 
     var index = 0;
-    var trans = this.db.transaction([this.storeName], "readwrite");
-    var store = trans.objectStore(this.storeName);
 
     function _process(item, cb) {
       console.info('OIndexedDB::_queue()','=>','_process()', index, item);
       if ( typeof item === 'undefined' ) {
         return cb('No such item');
       }
-      onItem(item, trans, store, cb);
+      onItem(item, cb);
     }
 
     function _next() {
@@ -124,25 +114,33 @@
     _next();
   };
 
-  OIndexedDB.prototype.update = function(items, callback) {
-    console.info('OIndexedDB::update()', items);
+  OIndexedDB.prototype.update = function(args, items, callback) {
+    args = args || {};
+
+    console.info('OIndexedDB::update()', args, items);
 
     var self = this;
     var nitems = [];
     Object.keys(items).forEach(function(k) {
       var rel = OSjs.Utils.cloneObject(items[k]);
-      if ( self.primaryKey ) {
-        rel[self.primaryKey] = k;
+      if ( args.key ) {
+        rel[args.key] = k;
       }
       nitems.push(rel);
     });
-    this.insert(nitems, callback);
+    this.insert(args, nitems, callback);
   };
 
-  OIndexedDB.prototype.insert = function(items, callback) {
-    console.info('OIndexedDB::insert()', items);
+  OIndexedDB.prototype.insert = function(args, items, callback) {
+    args = args || {};
+
+    console.info('OIndexedDB::insert()', args, items);
+
     var queue = items instanceof Array ? items : [items];
-    this._queue(queue, function(item, trans, store, cb) {
+    var trans = this.db.transaction([args.store], "readwrite");
+    var store = trans.objectStore(args.store);
+
+    this._queue(queue, function(item, cb) {
       var request = store.put(item);
       request.onsuccess = function(e) {
         console.info('OIndexedDB::insert()', '=>', 'onsuccess()', e);
@@ -155,10 +153,14 @@
     }, callback);
   };
 
-  OIndexedDB.prototype.remove = function(items, callback) {
-    console.info('OIndexedDB::remove()', items);
+  OIndexedDB.prototype.remove = function(args, items, callback) {
+    console.info('OIndexedDB::remove()', args, items);
+
     var queue = items instanceof Array ? items : [items];
-    this._queue(queue, function(item, trans, store, cb) {
+    var trans = this.db.transaction([args.store], "readwrite");
+    var store = trans.objectStore(args.store);
+
+    this._queue(queue, function(item, cb) {
       var request = store.delete(item);
       trans.oncomplete = function(e) {
         console.info('OIndexedDB::remove()', '=>', 'oncomplete()', e);
@@ -176,8 +178,8 @@
     console.info('OIndexedDB::list()', args);
 
     var list = [];
-    var trans = this.db.transaction([this.storeName], "readwrite");
-    var store = trans.objectStore(this.storeName);
+    var trans = this.db.transaction([args.store], "readwrite");
+    var store = trans.objectStore(args.store);
     var keyRange = IDBKeyRange.lowerBound(0);
     var cursorRequest = store.openCursor(keyRange);
 
@@ -203,11 +205,13 @@
     };
   };
 
-  OIndexedDB.prototype.get = function(item, callback) {
-    console.info('OIndexedDB::get()', item);
+  OIndexedDB.prototype.get = function(args, item, callback) {
+    args = args || {};
 
-    var trans = this.db.transaction([this.storeName], "readonly");
-    var store = trans.objectStore(this.storeName);
+    console.info('OIndexedDB::get()', args, item);
+
+    var trans = this.db.transaction([args.store], "readonly");
+    var store = trans.objectStore(args.store);
     var req = store.get(item);
     req.onsuccess = function(e) {
       console.info('OIndexedDB::get()', '=>', 'onsuccess()', e);
