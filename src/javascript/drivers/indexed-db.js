@@ -102,14 +102,14 @@
 
     function _process(item, cb) {
       console.info('OIndexedDB::_queue()','=>','_process()', index, item);
-      if ( !item ) {
+      if ( typeof item === 'undefined' ) {
         return cb('No such item');
       }
       onItem(item, trans, store, cb);
     }
 
     function _next() {
-      if ( !queue.length || index >= queue.length ) {
+      if ( index >= queue.length ) {
         return onFinished(false, true);
       }
 
@@ -144,8 +144,8 @@
     var queue = items instanceof Array ? items : [items];
     this._queue(queue, function(item, trans, store, cb) {
       var request = store.put(item);
-      trans.oncomplete = function(e) {
-        console.info('OIndexedDB::insert()', '=>', 'oncomplete()', e);
+      request.onsuccess = function(e) {
+        console.info('OIndexedDB::insert()', '=>', 'onsuccess()', e);
         cb(false, e);
       };
       request.onerror = function(e) {
@@ -186,6 +186,7 @@
 
       var result = e.target.result;
       if ( !!result == false ) {
+        console.info('OIndexedDB::list()', '=>', 'onsuccess()', 'FINISHED', list);
         callback(false, list);
         return;
       }
