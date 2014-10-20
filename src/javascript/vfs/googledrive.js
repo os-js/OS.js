@@ -656,7 +656,7 @@
 
       // Check if user has signed out or revoked permissions
       if ( inited ) {
-        var inst = OSjs.Drivers.getInstance('GoogleAPI');
+        var inst = OSjs.Helpers.GoogleDrive.getInstance();
         if ( inst && !inst.authenticated ) {
           inited = false;
         }
@@ -669,7 +669,7 @@
           'openid'
         ];
         var iargs = {load: ['drive-realtime', 'drive-share'], scope: scopes};
-        OSjs.Drivers.createInstance('GoogleAPI', iargs, function(error, result) {
+        OSjs.Helpers.GoogleAPI.createInstance(iargs, function(error, result) {
           if ( error ) {
             return onerror(error);
           }

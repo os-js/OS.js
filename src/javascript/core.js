@@ -34,7 +34,6 @@
   OSjs.API          = OSjs.API          || {};
   OSjs.Core         = OSjs.Core         || {};
   OSjs.Compability  = OSjs.Compability  || {};
-  OSjs.Drivers      = OSjs.Drivers      || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Applications = OSjs.Applications || {};

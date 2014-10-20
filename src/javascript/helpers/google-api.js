@@ -34,7 +34,7 @@
   var OSjs = window.OSjs = window.OSjs || {};
   var gapi = window.gapi = window.gapi || {};
 
-  OSjs.Drivers = OSjs.Drivers || {};
+  OSjs.Helpers.Helpers = OSjs.Helpers || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // API
@@ -239,13 +239,13 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Drivers.GoogleAPI = OSjs.Drivers.GoogleAPI || {};
+  OSjs.Helpers.GoogleAPI = OSjs.Helpers.GoogleAPI || {};
 
-  OSjs.Drivers.GoogleAPI.getInstance = function() {
+  OSjs.Helpers.GoogleAPI.getInstance = function() {
     return SingletonInstance;
   };
 
-  OSjs.Drivers.GoogleAPI.createInstance = function(args, callback) {
+  OSjs.Helpers.GoogleAPI.createInstance = function(args, callback) {
     var load = args.load || [];
     var scope = args.scope || [];
     function _run() {

@@ -35,6 +35,8 @@
   var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
   var IDBKeyRange    = window.IDBKeyRange    || window.webkitIDBKeyRange    || window.msIDBKeyRange;
 
+  OSjs.Helpers.Helpers = OSjs.Helpers || {};
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -227,9 +229,9 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Drivers.IndexedDB = OSjs.Drivers.IndexedDB || {};
+  OSjs.Helpers.IndexedDB = OSjs.Helpers.IndexedDB || {};
 
-  OSjs.Drivers.IndexedDB.createInstance = function(args, callback) {
+  OSjs.Helpers.IndexedDB.createInstance = function(args, callback) {
     return new OIndexedDB(args, callback);
   };
 
