@@ -579,8 +579,8 @@ body, input, button, textarea, label, select {
   border-bottom: 8px solid @theme_base_fg_color;
 }
 
-/*
- * GUIText & GUITextarea & GUISelect
+/**
+ * GUIText GUITextArea
  */
 .GUITextarea textarea,
 .GUIText input,
@@ -609,15 +609,64 @@ body, input, button, textarea, label, select {
   color : @theme_secondary_fg_color;
 }
 
-/**
+/*
  * GUISelect
  */
 .GUISelect select {
-  -webkit-appearance: button;
+  margin : 0;
+  padding : 2px;
+  padding : 2px 0 2px 2px;
+  min-height : 24px;
+
+  background : @theme_input_bg_color;
+  border : 1px solid @theme_secondary_border_color;
+  box-shadow: @theme_input_shadow;
+
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+       -o-box-sizing: border-box;
+          box-sizing: border-box;
+
+  outline:none;
+  resize : none;
+  display: inline-block;
+
   -webkit-border-radius: 0px;
-  -moz-appearance: button;
-  -moz-border-radius: 0px;
-  padding : 3px 0 2px 2px;
+     -moz-border-radius: 0px;
+      -ms-border-radius: 0px;
+          border-radius: 0px;
+
+  -webkit-appearance:none;
+     -moz-appearance:none;
+      -ms-appearance:none;
+          appearance:none;
+}
+.GUISelect:before {
+  content : '';
+  right : 1px;
+  top : 1px;
+  width : 22px;
+  height : 22px;
+  background : @theme_input_bg_color;
+  position : absolute;
+  pointer-events : none;
+  display : block;
+}
+.GUISelect:after {
+  content : '<>';
+  font : 11px "Consolas", monospace;
+  color : @theme_secondary_border_color;
+  -webkit-transform : rotate(90deg);
+  -moz-transform : rotate(90deg);
+  -ms-transform : rotate(90deg);
+  transform : rotate(90deg);
+  right : 2px;
+  top : 4px;
+  padding : 0 0 2px;
+  border-bottom : 1px solid @theme_secondary_border_color;
+  position : absolute;
+  pointer-events : none;
 }
 
 /**

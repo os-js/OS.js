@@ -15,6 +15,7 @@
 
 # Low-priority
 * _[Themes]_ More Themes
+* _[Themes]_ Customize scrollbar
 * _[VFS]_ Finish Google Drive implementation
    - Add support for trash
    - Add support to recover from trash
@@ -31,8 +32,6 @@
 * _[Application]_ Draw -- Add more effects with the convolute method
 * _[Application]_ CodeMirror -- Probably needs a refactor
 * _[Application]_ Writer -- Finish
-* _[GUI]_ Custom styling for GUISelect
-* _[GUI]_ Custom styling for GUISelectList
 * _[GUI]_ Custom styling for GUICheckbox
 * _[GUI]_ Custom styling for GUIRadio
 * _[GUI]_ Menu -- Bind keyboard buttons to menu items
