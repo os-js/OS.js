@@ -656,7 +656,7 @@
 
       // Check if user has signed out or revoked permissions
       if ( inited ) {
-        var inst = OSjs.Helpers.GoogleDrive.getInstance();
+        var inst = OSjs.Helpers.GoogleAPI.getInstance();
         if ( inst && !inst.authenticated ) {
           inited = false;
         }
