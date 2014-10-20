@@ -752,6 +752,8 @@ body, input, button, textarea, label, select {
   position : absolute;
   top : 3px;
   left : 2px;
+  z-index : 100;
+  visibility : hidden;
 
   background : transparent;
   border : 0 none;
@@ -773,8 +775,8 @@ body, input, button, textarea, label, select {
           appearance:none;
 }
 
-.GUICheckbox:before,
-.GUIRadio:before {
+.GUICheckbox label:before,
+.GUIRadio label:before {
   content : '';
   position : absolute;
   left : 0px;
@@ -784,7 +786,8 @@ body, input, button, textarea, label, select {
   line-height : 16px;
   text-align : center;
   cursor : pointer;
-  z-index : -1;
+  z-index : 1;
+  pointer-events : none;
 
   background : @theme_input_bg_color;
   border : 1px solid @theme_secondary_border_color;
@@ -793,16 +796,16 @@ body, input, button, textarea, label, select {
   color : @theme_gui_button_fg_color;
 }
 
-.GUIRadio:before {
+.GUIRadio label:before {
   border-radius : 16px;
 }
 
-.GUICheckbox.Checked:before {
+.GUICheckbox input:checked + label:before {
   content: "\2713";
   font-size : 16px;
 }
 
-.GUIRadio.Checked:before {
+.GUIRadio input:checked + label:before {
   content: "\2022";
   font-size : 32px;
 }

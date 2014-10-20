@@ -30,6 +30,8 @@
 (function(_Input, GUIElement) {
   'use strict';
 
+  var _idx = 0;
+
   /**
    * Checkbox
    *
@@ -50,26 +52,29 @@
   Checkbox.prototype.init = function() {
     var self = this;
     var el = GUIElement.prototype.init.apply(this, [this.className]);
+    var ref = this.opts.group || 'GUICheckbox_' + _idx.toString();
 
     this.$input       = document.createElement(this.tagName);
     this.$input.type  = this.type;
     this._addEventListener(this.$input, 'change', function(ev) {
       self.onChange.apply(self, [this, ev, self.getValue()]);
-      self._onChange();
     });
 
-    if ( this.label ) {
-      this.$label = document.createElement('label');
-      this.$label.appendChild(document.createTextNode(this.label));
+    this.$label = document.createElement('label');
+    this.$label.appendChild(document.createTextNode(this.label || ''));
+    this._addEventListener(this.$label, 'click', function(ev) {
+      var e = document.createEvent("MouseEvents");
+      e.initEvent("click", true, true);
+      self.$input.dispatchEvent(e);
+    });
 
-      el.appendChild(this.$input);
-      el.appendChild(this.$label);
-    } else {
-      el.appendChild(this.$input);
-    }
+    el.appendChild(this.$input);
+    el.appendChild(this.$label);
 
     this.setDisabled(this.disabled);
     this.setValue(this.value);
+
+    _idx++;
 
     return el;
   };
@@ -84,16 +89,6 @@
       this.$input.setAttribute('checked', 'checked');
     } else {
       this.$input.removeAttribute('checked');
-    }
-
-    this._onChange();
-  };
-
-  Checkbox.prototype._onChange = function() {
-    if ( this.getValue() ) {
-      OSjs.Utils.$addClass(this.$element, 'Checked');
-    } else {
-      OSjs.Utils.$removeClass(this.$element, 'Checked');
     }
   };
 
