@@ -38,7 +38,7 @@
     if ( OSjs.Drivers[name] ) {
       return OSjs.Drivers[name].createInstance(args, callback);
     }
-    callback('No such driver')
+    callback('No such driver');
   };
 
   OSjs.Drivers.getInstance = function(name) {

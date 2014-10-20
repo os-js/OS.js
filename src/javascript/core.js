@@ -578,9 +578,9 @@
     if ( _WM ) {
       var user = _HANDLER.getUserData() || {name: 'Unknown'};
       var conf = new OSjs.Dialogs.Confirm(OSjs._('Logging out user \'{0}\'.\nDo you want to save current session?', user.name), function(btn) {
-        if ( btn == 'ok' ) {
+        if ( btn === 'ok' ) {
           OSjs.Core.shutdown(true, false);
-        } else if ( btn == 'cancel' ) {
+        } else if ( btn === 'cancel' ) {
           OSjs.Core.shutdown(false, false);
         }
       }, {title: OSjs._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs._('Cancel'), buttonOkLabel: OSjs._('Yes'), buttonCancelLabel: OSjs._('No')});

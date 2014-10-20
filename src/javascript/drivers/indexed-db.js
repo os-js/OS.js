@@ -137,7 +137,7 @@
     console.info('OIndexedDB::insert()', args, items);
 
     var queue = items instanceof Array ? items : [items];
-    var trans = this.db.transaction([args.store], "readwrite");
+    var trans = this.db.transaction([args.store], 'readwrite');
     var store = trans.objectStore(args.store);
 
     this._queue(queue, function(item, cb) {
@@ -157,7 +157,7 @@
     console.info('OIndexedDB::remove()', args, items);
 
     var queue = items instanceof Array ? items : [items];
-    var trans = this.db.transaction([args.store], "readwrite");
+    var trans = this.db.transaction([args.store], 'readwrite');
     var store = trans.objectStore(args.store);
 
     this._queue(queue, function(item, cb) {
@@ -178,14 +178,14 @@
     console.info('OIndexedDB::list()', args);
 
     var list = [];
-    var trans = this.db.transaction([args.store], "readwrite");
+    var trans = this.db.transaction([args.store], 'readwrite');
     var store = trans.objectStore(args.store);
     var keyRange = IDBKeyRange.lowerBound(0);
     var cursorRequest = store.openCursor(keyRange);
 
     cursorRequest.onsuccess = function(e) {
       var result = e.target.result;
-      if ( !!result == false ) {
+      if ( (!!result) === false ) {
         console.info('OIndexedDB::list()', '=>', 'onsuccess()', 'FINISHED', list);
         callback(false, list);
         return;
@@ -208,7 +208,7 @@
 
     console.info('OIndexedDB::get()', args, item);
 
-    var trans = this.db.transaction([args.store], "readonly");
+    var trans = this.db.transaction([args.store], 'readonly');
     var store = trans.objectStore(args.store);
     var req = store.get(item);
     req.onsuccess = function(e) {
