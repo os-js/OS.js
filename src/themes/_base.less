@@ -152,6 +152,34 @@ body, input, button, textarea, label, select {
   color: @theme_base_fg_color;
 }
 
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-button {
+  background : @theme_secondary_border_color;
+  color : @theme_gui_button_fg_color;
+  width : 12px;
+  height : 12px;
+  display : none;
+}
+::-webkit-scrollbar-track {
+  background : @theme_base_bg_color;
+}
+::-webkit-scrollbar-track-piece {
+  background : @theme_base_bg_color;
+}
+::-webkit-scrollbar-thumb {
+  background : @theme_secondary_border_color;
+}
+::-webkit-scrollbar-corner {
+  background : @theme_base_bg_color;
+}
+::-webkit-resizer {
+  background : @theme_base_bg_color;
+}
+
+
 /**
  * WM
  */

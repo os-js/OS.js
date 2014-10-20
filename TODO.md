@@ -15,7 +15,6 @@
 
 # Low-priority
 * _[Themes]_ More Themes
-* _[Themes]_ Customize scrollbar
 * _[VFS]_ Finish Google Drive implementation
    - Add support for trash
    - Add support to recover from trash
@@ -38,7 +37,6 @@
 
 # Other
 * _[Misc]_ Offline VFS ?!
-* _[Themes]_ CSS Style scrollbars on webkit
 * _[Compability]_ Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
 
 # Ideas for solving misc problems
