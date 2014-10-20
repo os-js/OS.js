@@ -184,8 +184,6 @@
     var cursorRequest = store.openCursor(keyRange);
 
     cursorRequest.onsuccess = function(e) {
-      console.info('OIndexedDB::list()', '=>', 'onsuccess()', e);
-
       var result = e.target.result;
       if ( !!result == false ) {
         console.info('OIndexedDB::list()', '=>', 'onsuccess()', 'FINISHED', list);
