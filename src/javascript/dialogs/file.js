@@ -157,7 +157,7 @@
       if ( this.filetypes ) {
         var firstExt = '';
         var types = {};
-        var MIMEDescriptions = OSjs.Settings.DefaultConfig().MIME || {};
+        var MIMEDescriptions = OSjs.API.getDefaultSettings().MIME || {};
 
         Object.keys(this.filetypes).forEach(function(i) {
           var val = self.filetypes[i];

@@ -69,7 +69,7 @@
       enableIconView  : false,
       enableSwitcher  : true,
       enableHotkeys   : true,
-      enableSounds    : OSjs.Settings.DefaultConfig().Core.Sounds,
+      enableSounds    : OSjs.API.getDefaultSettings().Core.Sounds,
       moveOnResize    : true,       // Move windows into viewport on resize
       panels          : [
         {

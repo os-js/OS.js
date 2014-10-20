@@ -534,7 +534,7 @@
     if ( _handlerInstance ) {
       throw Error('Cannot create another Handler Instance');
     }
-    this.config     = OSjs.Settings.DefaultConfig();
+    this.config     = OSjs.API.getDefaultSettings();
     this.settings   = new SettingsManager();
     this.connection = new ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
     this.packages   = new PackageManager(this.config.Core.MetadataURI);
@@ -915,7 +915,7 @@
    */
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
-    var root = OSjs.Settings.DefaultConfig().Core.PackageURI;
+    var root = OSjs.API.getDefaultSettings().Core.PackageURI;
     return root + '/' + aname + '/' + name;
   };
 
@@ -930,7 +930,7 @@
     if ( name ) {
       var wm = OSjs.API.getWMInstance();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.Settings.DefaultConfig().Core.ThemeURI;
+      var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
       if ( !name.match(/^\//) ) {
         if ( type === 'icon' ) {
           var size = args || '16x16';
@@ -976,7 +976,7 @@
     if ( name === null ) {
       return '/blank.css';
     }
-    var root = OSjs.Settings.DefaultConfig().Core.ThemeURI;
+    var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
     return root + '/' + name + '.css';
   };
 

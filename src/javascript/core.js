@@ -31,19 +31,18 @@
   'use strict';
 
   window.OSjs       = window.OSjs       || {};
+  OSjs.API          = OSjs.API          || {};
+  OSjs.Core         = OSjs.Core         || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Drivers      = OSjs.Drivers      || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
-  OSjs.Settings     = OSjs.Settings     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
   OSjs.Locale       = OSjs.Locale       || {};
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.Hooks        = {};
-  OSjs.Core         = {};
-  OSjs.API          = {};
   OSjs.Version      = '2.0-alpha32';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1293,9 +1292,9 @@
   OSjs.Core.Process           = Process;
   OSjs.Core.Application       = Application;
   OSjs.Core.Service           = Service;
-  OSjs.Core.initialize             = doInitialize;
-  OSjs.Core.shutdown               = doShutdown;
-  OSjs.Core.signOut                = doSignOut;
+  OSjs.Core.initialize        = doInitialize;
+  OSjs.Core.shutdown          = doShutdown;
+  OSjs.Core.signOut           = doSignOut;
 
   // Handler shortcuts
   OSjs.API.getDefaultPath         = function(fallback)         { return _HANDLER.getConfig('Core').Home || fallback || '/'; };
@@ -1316,6 +1315,7 @@
   OSjs.API.getProcess         = doGetProcess;
   OSjs.API.createLoading      = createLoading;
   OSjs.API.destroyLoading     = destroyLoading;
+  OSjs.API.getDefaultSettings = OSjs.API.getDefaultSettings || function __noop__() { return {}; };
   OSjs.API.getProcesses       = function() { return _PROCS; };
   OSjs.API.getHandlerInstance = function() { return OSjs.Handlers.getInstance(); };
   OSjs.API.getWMInstance      = function() { return _WM; };

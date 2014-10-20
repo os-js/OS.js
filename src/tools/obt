@@ -462,7 +462,17 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     _fs.writeFileSync(out_node, JSON.stringify(cfg_node));
 
     // JS
-    var cfg_js = "(function() {\n  window.OSjs = window.OSjs   || {};\n  OSjs.Settings = OSjs.Settings || {};\n  OSjs.Settings.DefaultConfig = function() {\n    return %CONFIG%;\n  };\n})();\n";
+    var tmp = [];
+    tmp.push('(function() {');
+    tmp.push('  window.OSjs = window.OSjs || {}');
+    tmp.push('  OSjs.API = OSjs.API || {}');
+    tmp.push('  OSjs.API.getDefaultSettings = function() {');
+    tmp.push('    return %CONFIG%;');
+    tmp.push('  };');
+    tmp.push('})();');
+
+
+    var cfg_js = tmp.join('\n');
     var out_js = _path.join(ROOT, 'dist', 'settings.js');
     settings = BUILD.settings.frontend;
     settings.MIME = MIMES.descriptions;
