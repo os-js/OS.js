@@ -55,13 +55,14 @@
     this.$input.type  = this.type;
     this._addEventListener(this.$input, 'change', function(ev) {
       self.onChange.apply(self, [this, ev, self.getValue()]);
+      self._onChange();
     });
 
     if ( this.label ) {
       this.$label = document.createElement('label');
-      this.$label.appendChild(this.$input);
       this.$label.appendChild(document.createTextNode(this.label));
 
+      el.appendChild(this.$input);
       el.appendChild(this.$label);
     } else {
       el.appendChild(this.$input);
@@ -83,6 +84,16 @@
       this.$input.setAttribute('checked', 'checked');
     } else {
       this.$input.removeAttribute('checked');
+    }
+
+    this._onChange();
+  };
+
+  Checkbox.prototype._onChange = function() {
+    if ( this.getValue() ) {
+      OSjs.Utils.$addClass(this.$element, 'Checked');
+    } else {
+      OSjs.Utils.$removeClass(this.$element, 'Checked');
     }
   };
 

@@ -540,8 +540,10 @@
     this.disabled = d;
     if ( this.$input && d ) {
       this.$input.setAttribute('disabled', 'disabled');
+      OSjs.Utils.$addClass(this.$element, 'Disabled');
     } else {
       this.$input.removeAttribute('disabled');
+      OSjs.Utils.$removeClass(this.$element, 'Disabled');
     }
   };
 
