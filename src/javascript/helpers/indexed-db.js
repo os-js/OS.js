@@ -35,7 +35,7 @@
   var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
   var IDBKeyRange    = window.IDBKeyRange    || window.webkitIDBKeyRange    || window.msIDBKeyRange;
 
-  OSjs.Helpers.Helpers = OSjs.Helpers || {};
+  OSjs.Helpers = OSjs.Helpers || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // API

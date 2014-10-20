@@ -34,7 +34,7 @@
   var OSjs = window.OSjs = window.OSjs || {};
   var gapi = window.gapi = window.gapi || {};
 
-  OSjs.Helpers.Helpers = OSjs.Helpers || {};
+  OSjs.Helpers = OSjs.Helpers || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // API
