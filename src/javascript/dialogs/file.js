@@ -216,7 +216,8 @@
       }}), this.$element);
 
       roots.forEach(function(m, i) {
-        self.$selectRoot.addItem(m.name, m.module.description);
+        var icon = API.getIcon(m.module.icon, null, '16x16');
+        self.$selectRoot.addItem(m.name, m.module.description, icon);
       });
 
       var cur = OSjs.VFS.getModuleFromPath(this.path);

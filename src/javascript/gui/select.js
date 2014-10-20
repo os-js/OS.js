@@ -48,11 +48,18 @@
     });
   };
 
-  Select.prototype.addItem = function(value, label) {
+  Select.prototype.addItem = function(value, label, icon) {
     var self      = this;
     var el        = document.createElement('option');
     el.value      = value;
     el.appendChild(document.createTextNode(label));
+
+    /*
+    if ( icon ) {
+      el.style.background = OSjs.Utils.format('transparent url({0}) 0px 0px', icon);
+    }
+    */
+
     this.$input.appendChild(el);
   };
 
