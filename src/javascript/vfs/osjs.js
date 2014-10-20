@@ -56,10 +56,20 @@
   };
   OSjsStorage.read = function(item, callback) {
     var ropts = [item.path];
+    var dataSource = false;
     if ( item._opts ) {
       ropts.push(item._opts);
+      if ( item._opts.dataSource ) {
+        dataSource = true;
+      }
     }
-    OSjs.VFS.internalCall('read', ropts, callback);
+    //OSjs.VFS.internalCall('read', ropts, callback);
+    OSjs.VFS.internalCall('read', ropts, function(error, result) {
+      if ( error ) {
+        return callback(error);
+      }
+      callback(false, dataSource ? result : atob(result));
+    });
   };
   OSjsStorage.copy = function(src, dest, callback) {
     callback('Unavailable');
