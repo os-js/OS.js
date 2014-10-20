@@ -1,3 +1,26 @@
+# 2.0.0-alpha32
+
+* Added reverted version of repositories.json file
+* Core: Updated manifest support for Extension type packages
+* Core: Removed old compability code
+* Core: Jslint
+* Core: Fixed a crazy ass bug where _HANDLER was lost on boot (undefined)
+* Core: Added signout()
+* Core: Added IndexedDB driver
+* VFS: Now emitts application messages globally on all vfs functions
+* DefaultApplication: Now shows a dialog if file has changed on vfs emitt trigger
+* Utils added JSONP support
+* CoreWM: Small fix for bubbling of events in panel items
+* CoreWM: Now displays notifications so it does not block panels
+* google-api: Added support for revoking permissions
+* google-api: Added notification icon
+* google-api: Moved to namespace Drivers
+* google-drive: Bugfix for mkdir()
+* Themes: Updated desktop notification styles
+* GUI: Custom styling for SELECT
+* GUI: Custom styling for CHECKBOX
+* GUI: Custom styling for RADIO
+
 # 2.0.0-alpha31
 
 * Application - FileManager: Now displays notification about login to external services
