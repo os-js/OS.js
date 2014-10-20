@@ -30,9 +30,10 @@
 (function() {
   'use strict';
 
-  OSjs.Locales = OSjs.Locales || {};
+  OSjs.Locale = OSjs.Locale || {};
+  OSjs.Locale.Lang = OSjs.Locale.Lang || {};
 
-  OSjs.Locales.no_NO = {
+  OSjs.Locale.Lang.no_NO = {
 
     'ERR_FILE_OPEN' : 'Feil ved åpning av fil',
     'ERR_WM_NOT_RUNNING' : 'Ingen vinubehandler kjørende',

@@ -30,9 +30,10 @@
 (function() {
   'use strict';
 
-  OSjs.Locales = OSjs.Locales || {};
+  OSjs.Locale = OSjs.Locale || {};
+  OSjs.Locale.Lang = OSjs.Locale.Lang || {};
 
-  OSjs.Locales.en_EN = {
+  OSjs.Locale.Lang.en_EN = {
     'ERR_FILE_OPEN' : 'Error opening file',
     'ERR_WM_NOT_RUNNING' : 'ERR_WM_NOT_RUNNING',
     'ERR_FILE_OPEN_FMT' : 'The file \'<span>{0}</span>\' could not be opened',

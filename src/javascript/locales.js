@@ -32,12 +32,12 @@
 
   window.OSjs       = window.OSjs       || {};
   OSjs.Locale       = OSjs.Locale       || {};
+  OSjs.Locale.Lang  = OSjs.Locale.Lang  || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // TRANSLATIONS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Locales = OSjs.Locales || {};
 
   var DefaultLocale = 'en_EN';
   var CurrentLocale = 'en_EN';
@@ -57,10 +57,10 @@
     var s = arguments[0];
     var a = arguments;
 
-    if ( OSjs.Locales[CurrentLocale][s] ) {
-      a[0] = OSjs.Locales[CurrentLocale][s];
+    if ( OSjs.Locale.Lang[CurrentLocale][s] ) {
+      a[0] = OSjs.Locale.Lang[CurrentLocale][s];
     } else {
-      a[0] = OSjs.Locales[DefaultLocale][s] || s;
+      a[0] = OSjs.Locale.Lang[DefaultLocale][s] || s;
     }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
@@ -97,7 +97,7 @@
    * @return void
    */
   OSjs.Locale.setLocale = function(l) {
-    if ( OSjs.Locales[l] ) {
+    if ( OSjs.Locale.Lang[l] ) {
       CurrentLocale = l;
     } else {
       console.warn('OSjs::Locale::setLocale()', 'Invalid locale', l, '(Using default)');

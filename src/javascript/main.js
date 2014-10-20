@@ -52,11 +52,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function _onLoad() {
-    OSjs.Initialize();
+    OSjs.Core.initialize();
   }
 
   function _onUnload() {
-    OSjs.Shutdown(false, true);
+    OSjs.Core.shutdown(false, true);
   }
 
   var jQuery = window.$ || window.jQuery;

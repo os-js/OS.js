@@ -74,7 +74,7 @@
     });
 
     this.addButton(OSjs._('Log out (Exit)'), 'actions/exit.png', function(ev) {
-      OSjs.SignOut();
+      OSjs.Core.signOut();
     });
 
     return root;

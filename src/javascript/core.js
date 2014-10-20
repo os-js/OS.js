@@ -160,6 +160,65 @@
     document.body.appendChild(el);
   }
 
+  /**
+   * Creates application launch splash
+   */
+  function createLaunchSplash(data, n) {
+    var splash = null;
+    var splashBar = null;
+
+    createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
+
+    if ( !data.splash ) { return; }
+
+    splash = document.createElement('div');
+    splash.className = 'ProcessSplash';
+
+    var icon = document.createElement('img');
+    icon.alt = n;
+    icon.src = OSjs.API.getIcon(data.icon, data);
+
+    var titleText = document.createElement('b');
+    titleText.appendChild(document.createTextNode(data.name));
+
+    var title = document.createElement('span');
+    title.appendChild(document.createTextNode('Launching '));
+    title.appendChild(titleText);
+    title.appendChild(document.createTextNode('...'));
+
+    splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
+
+    splash.appendChild(icon);
+    splash.appendChild(title);
+    splash.appendChild(splashBar.getRoot());
+
+    document.body.appendChild(splash);
+
+    return {
+      destroy: function() {
+        if ( splashBar ) {
+          splashBar.destroy();
+          splashBar = null;
+        }
+
+        if ( splash ) {
+          if ( splash.parentNode ) {
+            splash.parentNode.removeChild(splash);
+          }
+          splash = null;
+        }
+      },
+      update: function(p, c) {
+        if ( !splash || !splashBar ) { return; }
+        var per = c ? 0 : 100;
+        if ( c ) {
+          per = (p / c) * 100;
+        }
+        splashBar.setProgress(per);
+      }
+    };
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // SYSTEM FUNCTIONS
   /////////////////////////////////////////////////////////////////////////////
@@ -520,15 +579,32 @@
       var user = _HANDLER.getUserData() || {name: 'Unknown'};
       var conf = new OSjs.Dialogs.Confirm(OSjs._('Logging out user \'{0}\'.\nDo you want to save current session?', user.name), function(btn) {
         if ( btn == 'ok' ) {
-          OSjs.Shutdown(true, false);
+          OSjs.Core.shutdown(true, false);
         } else if ( btn == 'cancel' ) {
-          OSjs.Shutdown(false, false);
+          OSjs.Core.shutdown(false, false);
         }
       }, {title: OSjs._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs._('Cancel'), buttonOkLabel: OSjs._('Yes'), buttonCancelLabel: OSjs._('No')});
       _WM.addWindow(conf);
     } else {
-      OSjs.Shutdown(true, false);
+      OSjs.Core.shutdown(true, false);
     }
+  }
+
+  /**
+   * Checks a list of compability for application
+   */
+  function checkApplicationCompability(comp) {
+    var result = [];
+    if ( typeof comp !== 'undefined' && (comp instanceof Array) ) {
+      comp.forEach(function(c, i) {
+        if ( typeof OSjs.Compability[c] !== 'undefined' ) {
+          if ( !OSjs.Compability[c] ) {
+            result.push(c);
+          }
+        }
+      });
+    }
+    return result;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -679,65 +755,17 @@
 
     console.group('doLaunchProcess()', n, arg);
 
-    OSjs.Hooks._trigger('onApplicationLaunch', [n, arg]);
-
     var splash = null;
-    var splashBar = null;
 
-    function _updateSplash(p, c) {
-      if ( !splash || !splashBar ) { return; }
-      var per = c ? 0 : 100;
-      if ( c ) {
-        per = (p / c) * 100;
-      }
-      splashBar.setProgress(per);
-    }
-
-    function _createSplash(data) {
-      createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
-
-      if ( !data.splash ) { return; }
-
-      splash = document.createElement('div');
-      splash.className = 'ProcessSplash';
-
-      var icon = document.createElement('img');
-      icon.alt = n;
-      icon.src = OSjs.API.getIcon(data.icon, data);
-
-      var titleText = document.createElement('b');
-      titleText.appendChild(document.createTextNode(data.name));
-
-      var title = document.createElement('span');
-      title.appendChild(document.createTextNode('Launching '));
-      title.appendChild(titleText);
-      title.appendChild(document.createTextNode('...'));
-
-      splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
-
-      splash.appendChild(icon);
-      splash.appendChild(title);
-      splash.appendChild(splashBar.getRoot());
-
-      document.body.appendChild(splash);
-    }
-
-    function _removeSplash() {
-      if ( splashBar ) {
-        splashBar.destroy();
-        splashBar = null;
-      }
-
+    function _done() {
       if ( splash ) {
-        if ( splash.parentNode ) {
-          splash.parentNode.removeChild(splash);
-        }
+        splash.destroy();
         splash = null;
       }
     }
 
     function _error(msg, exception) {
-      _removeSplash();
+      _done();
       console.groupEnd(); // !!!
       doErrorDialog(OSjs._('ERR_APP_LAUNCH_FAILED'),
                   OSjs._('ERR_APP_LAUNCH_FAILED_FMT', n),
@@ -747,9 +775,10 @@
     }
 
     function _callback(result) {
-      _removeSplash();
+      _done();
 
       if ( typeof OSjs.Applications[n] !== 'undefined' ) {
+        // Only allow one instance if specified
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
           var sproc = doGetProcess(n, true);
@@ -816,49 +845,38 @@
       }
     }
 
-    function _preload(result) {
-      OSjs.Utils.Preload(result.preload, function(total, errors, failed) {
-        destroyLoading(n);
+    OSjs.Hooks._trigger('onApplicationLaunch', [n, arg]);
 
-        if ( errors ) {
-          _error(OSjs._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
-          return;
-        }
-
-        setTimeout(function() {
-          _callback(result);
-        }, 0);
-      }, function(progress, count) {
-        _updateSplash(progress, count);
-      });
-    }
-
+    // Get metadata and check compability
     var data = _HANDLER.getApplicationMetadata(n);
     if ( !data ) {
       _error(OSjs._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
       return false;
     }
-
-    if ( typeof data.compability !== 'undefined' && (data.compability instanceof Array) ) {
-      var c;
-      var nosupport = [];
-
-      data.compability.forEach(function(c, i) {
-        if ( typeof OSjs.Compability[c] !== 'undefined' ) {
-          if ( !OSjs.Compability[c] ) {
-            nosupport.push(c);
-          }
-        }
-      });
-
-      if ( nosupport.length ) {
-        _error(OSjs._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
-        return false;
-      }
+    var nosupport = checkApplicationCompability(data.compability);
+    if ( nosupport.length ) {
+      _error(OSjs._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
+      return false;
     }
 
-    _createSplash(data);
-    _preload(data);
+    // Preload
+    splash = createLaunchSplash(data, n);
+    OSjs.Utils.Preload(data.preload, function(total, errors, failed) {
+      destroyLoading(n);
+
+      if ( errors ) {
+        _error(OSjs._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
+        return;
+      }
+
+      setTimeout(function() {
+        _callback(data);
+      }, 0);
+    }, function(progress, count) {
+      if ( splash ) {
+        splash.update(progress, count);
+      }
+    });
 
     return true;
   }
@@ -1271,10 +1289,13 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  // Classes
+  // Classes and Core functions
   OSjs.Core.Process           = Process;
   OSjs.Core.Application       = Application;
   OSjs.Core.Service           = Service;
+  OSjs.Core.initialize             = doInitialize;
+  OSjs.Core.shutdown               = doShutdown;
+  OSjs.Core.signOut                = doSignOut;
 
   // Handler shortcuts
   OSjs.API.getDefaultPath         = function(fallback)         { return _HANDLER.getConfig('Core').Home || fallback || '/'; };
@@ -1284,10 +1305,6 @@
   OSjs.API.getIcon                = function(name, app)        { return _HANDLER.getIcon(name, app); };
 
   // Common API functions
-  OSjs.Initialize             = doInitialize;
-  OSjs.Shutdown               = doShutdown;
-  OSjs.SignOut                = doSignOut;
-
   OSjs.API.call               = doAPICall;
   OSjs.API.error              = doErrorDialog;
   OSjs.API.open               = doLaunchFile;
@@ -1302,7 +1319,7 @@
   OSjs.API.getProcesses       = function() { return _PROCS; };
   OSjs.API.getHandlerInstance = function() { return OSjs.Handlers.getInstance(); };
   OSjs.API.getWMInstance      = function() { return _WM; };
-  OSjs.API.isMouseLock        = function() { return _MOUSELOCK; };
+  OSjs.API._isMouseLock       = function() { return _MOUSELOCK; };
   OSjs.API._onMouseDown       = globalOnMouseDown;
 
 })();

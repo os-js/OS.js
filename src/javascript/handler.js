@@ -704,7 +704,7 @@
           OSjs.GUI.createMenu([{
             title: 'Sign out', // FIXME: Translation
             onClick: function() {
-              OSjs.SignOut();
+              OSjs.Core.signOut();
             }
           }], pos);
           return false;
