@@ -15,7 +15,6 @@
 * _[Documentation]_ Complete documentation for JavaScript
 
 # Low-priority
-* _[CoreWM]_ When DnD-ing items over windowlist panelitem, peek windows :)
 * _[Themes]_ More Themes
 * _[VFS]_ Finish Google Drive implementation
    - Add support for trash

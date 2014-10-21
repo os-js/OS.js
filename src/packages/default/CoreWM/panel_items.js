@@ -175,6 +175,40 @@
         return false;
       };
 
+      var peeking = false;
+      OSjs.GUI.createDroppable(el, {
+        onDrop: function(ev, el) {
+          if ( win ) {
+            win._focus();
+          }
+        },
+        onLeave: function() {
+          if ( peeking ) {
+            peeking = false;
+          }
+        },
+        onEnter: function(ev, inst, args) {
+          if ( !peeking ) {
+            if ( win ) {
+              win._focus();
+            }
+            peeking = true;
+          }
+        },
+        onItemDropped: function(ev, el, item, args) {
+          if ( win ) {
+            return win._onDndEvent(ev, 'itemDrop', item, args);
+          }
+          return false;
+        },
+        onFilesDropped: function(ev, el, files, args) {
+          if ( win ) {
+            return win._onDndEvent(ev, 'filesDrop', files, args);
+          }
+          return false;
+        }
+      });
+
       if ( win._state.focused ) {
         el.className += ' Focused';
       }
