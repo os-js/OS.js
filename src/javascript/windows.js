@@ -1459,7 +1459,12 @@
   };
 
   Window.prototype._nextTabIndex = function() {
-    return;
+    if ( this._guiElement ) {
+      if ( this._guiElement.tagName === 'textarea' ) {
+        return;
+      }
+    }
+
     var found = null;
     var next  = (this._guiElement ? (this._guiElement.tabIndex || -1) : -1) + 1;
 

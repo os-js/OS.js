@@ -55,6 +55,22 @@
       self.hasChanged = (cur !== self.strLen);
     });
 
+    this._addEventListener(this.$input, 'keydown', function(e) {
+      if ( e.keyCode === OSjs.Utils.Keys.TAB ) {
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+        var target = e.target;
+        var value = target.value;
+
+        target.value = value.substring(0, start)
+                        + "\t"
+                        + value.substring(end);
+
+        this.selectionStart = this.selectionEnd = start + 1;
+        e.preventDefault();
+      }
+    });
+
     return el;
   };
 

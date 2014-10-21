@@ -43,6 +43,7 @@
     R: 82,
 
     BACKSPACE:  8,
+    SPACE:      32,
     TAB:        9,
     ENTER:      13,
     ESC:        27,
