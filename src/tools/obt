@@ -635,6 +635,10 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         manifest.type = manifest.type || 'application';
         manifest.path = repo + "/" + file;
 
+        if ( manifest.build ) {
+          delete manifest.build;
+        }
+
         console.log("- Added %s \033[1;37m%s\033[0m", manifest.type, relpath);
 
         return manifest;
