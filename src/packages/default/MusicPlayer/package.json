@@ -1,20 +1,19 @@
 {
-  "ApplicationMusicPlayer":  {
-    "name":       "Music Player",
-    "names":      {
-      "no_NO":      "Musikkspiller",
-      "de_DE":      "Musikspieler"
-    },
-    "mime":       ["^audio", "osjs\\/playlist"],
-    "category":   "multimedia",
-    "icon":       "status/audio-volume-high.png",
-    "singular":   true,
-    "compability":["audio"],
-    "preload":    [
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationMusicPlayer",
+  "name":       "Music Player",
+  "names":      {
+    "no_NO":      "Musikkspiller",
+    "de_DE":      "Musikspieler"
+  },
+  "mime":       ["^audio", "osjs\\/playlist"],
+  "category":   "multimedia",
+  "icon":       "status/audio-volume-high.png",
+  "singular":   true,
+  "compability":["audio"],
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }
 
 

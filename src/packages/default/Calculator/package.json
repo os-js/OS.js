@@ -1,14 +1,13 @@
 {
-  "ApplicationCalculator":  {
-    "name":       "Calculator",
-    "mime":       null,
-    "icon":       "apps/calc.png",
-    "category":   "office",
-    "preload":    [
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationCalculator",
+  "name":       "Calculator",
+  "mime":       null,
+  "icon":       "apps/calc.png",
+  "category":   "office",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }
 
 

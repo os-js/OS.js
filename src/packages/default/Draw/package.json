@@ -1,27 +1,26 @@
 {
-  "ApplicationDraw":  {
-    "name":       "Draw",
-    "description":"Simple drawing application",
-    "names":      {
-      "no_NO":      "Tegne",
-      "de_DE":      "Zeichnen"
-    },
-    "descriptions":      {
-      "no_NO":      "Simpelt tegne-program",
-      "de_DE":      "Einfaches Zeichen-Programm"
-    },
-    "mime":       ["^image", "osjs\\/draw"],
-    "category":   "graphics",
-    "icon":       "categories/gnome-graphics.png",
-    "splash":     true,
-    "compability":["canvas"],
-    "preload":    [
-      {"src": "effect-blur.js", "type": "javascript"},
-      {"src": "libs.js", "type": "javascript"},
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationDraw",
+  "name":       "Draw",
+  "description":"Simple drawing application",
+  "names":      {
+    "no_NO":      "Tegne",
+    "de_DE":      "Zeichnen"
+  },
+  "descriptions":      {
+    "no_NO":      "Simpelt tegne-program",
+    "de_DE":      "Einfaches Zeichen-Programm"
+  },
+  "mime":       ["^image", "osjs\\/draw"],
+  "category":   "graphics",
+  "icon":       "categories/gnome-graphics.png",
+  "splash":     true,
+  "compability":["canvas"],
+  "preload":    [
+    {"src": "effect-blur.js", "type": "javascript"},
+    {"src": "libs.js", "type": "javascript"},
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }
 
 

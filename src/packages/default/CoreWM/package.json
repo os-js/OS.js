@@ -1,21 +1,20 @@
 {
-  "CoreWM":  {
-    "name":       "OS.js Window Manager",
-    "names":      {
-      "no_NO":      "OS.js Vinduhåndterer",
-      "de_DE":      "OS.js Fenster-Manager"
-    },
-    "singular":   true,
-    "type":       "windowmanager",
-    "mime":       null,
-    "icon":       null,
-    "preload":    [
-      {"src": "libs.js", "type": "javascript"},
-      {"src": "panel_items.js", "type": "javascript"},
-      {"src": "main.js", "type": "javascript"},
-      {"src": "panel_items.css", "type": "stylesheet"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "CoreWM",
+  "name":       "OS.js Window Manager",
+  "names":      {
+    "no_NO":      "OS.js Vinduhåndterer",
+    "de_DE":      "OS.js Fenster-Manager"
+  },
+  "singular":   true,
+  "type":       "windowmanager",
+  "mime":       null,
+  "icon":       null,
+  "preload":    [
+    {"src": "libs.js", "type": "javascript"},
+    {"src": "panel_items.js", "type": "javascript"},
+    {"src": "main.js", "type": "javascript"},
+    {"src": "panel_items.css", "type": "stylesheet"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }
 

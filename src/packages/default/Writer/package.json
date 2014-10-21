@@ -1,24 +1,23 @@
 {
-  "ApplicationWriter":  {
-    "name":       "Writer",
-    "description":"Write rich text documents",
-    "names":      {
-      "no_NO":      "Writer",
-      "de_DE":      "Writer"
-    },
-    "descriptions":      {
-      "no_NO":      "Skriv riktekst dokumenter",
-      "de_DE":      "Verfassen Sie Rich-Text-Dokumente"
-    },
-    "mime":       ["^text", "osjs\\/document"],
-    "category":   "office",
-    "icon":       "apps/libreoffice34-writer.png",
-    "compability":["richtext"],
-    "preload":    [
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationWriter",
+  "name":       "Writer",
+  "description":"Write rich text documents",
+  "names":      {
+    "no_NO":      "Writer",
+    "de_DE":      "Writer"
+  },
+  "descriptions":      {
+    "no_NO":      "Skriv riktekst dokumenter",
+    "de_DE":      "Verfassen Sie Rich-Text-Dokumente"
+  },
+  "mime":       ["^text", "osjs\\/document"],
+  "category":   "office",
+  "icon":       "apps/libreoffice34-writer.png",
+  "compability":["richtext"],
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }
 
 

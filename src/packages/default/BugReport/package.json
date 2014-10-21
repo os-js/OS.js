@@ -1,15 +1,14 @@
 {
-  "ApplicationBugReport":  {
-    "name":       "Bug Report",
-    "description":"Report a bug",
-    "mime":       null,
-    "enabled":    false,
-    "icon":       "status/software-update-urgent.png",
-    "preload":    [
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationBugReport",
+  "name":       "Bug Report",
+  "description":"Report a bug",
+  "mime":       null,
+  "enabled":    false,
+  "icon":       "status/software-update-urgent.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }
 
 

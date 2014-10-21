@@ -1,21 +1,20 @@
 {
-  "ApplicationTextpad":  {
-    "name":       "Textpad",
-    "description":"Simple text editor",
-    "names":      {
-      "no_NO":      "Tekstblokk",
-      "de_DE":      "Texteditor"
-    },
-    "descriptions":      {
-      "no_NO":      "Simpel tekst redigering",
-      "de_DE":      "Einfacher Texteditor"
-    },
-    "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
-    "category":   "utilities",
-    "icon":       "apps/accessories-text-editor.png",
-    "preload":    [
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationTextpad",
+  "name":       "Textpad",
+  "description":"Simple text editor",
+  "names":      {
+    "no_NO":      "Tekstblokk",
+    "de_DE":      "Texteditor"
+  },
+  "descriptions":      {
+    "no_NO":      "Simpel tekst redigering",
+    "de_DE":      "Einfacher Texteditor"
+  },
+  "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
+  "category":   "utilities",
+  "icon":       "apps/accessories-text-editor.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }

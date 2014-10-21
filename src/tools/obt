@@ -187,13 +187,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var meta = _path.join(path, 'package.json');
         try {
           var data = JSON.parse(_fs.readFileSync(meta));
-          var key  = Object.keys(data).shift();
-
-          if ( !key ) {
-            return;
-          }
-
-          data = data[key];
           if ( !data || data.enabled === false ) {
             return;
           }
@@ -353,33 +346,21 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       q.add(function(cb) {
         var manpath = _path.join(dir, "package.json");
         var man     = JSON.parse(_fs.readFileSync(manpath));
-        var mkey    = null;
 
         if ( man.type === 'extension' ) {
           cb();
           return;
         }
 
-        for ( var x in man ) {
-          if ( man.hasOwnProperty(x) ) {
-            mkey = x;
-            break;
-          }
-        }
-
-        if ( !mkey || !man[mkey] ) {
-          return;
-        }
-
-        if ( man[mkey].preload && man[mkey].preload.length ) {
+        if ( man.preload && man.preload.length ) {
           var combined_js = [];
           var combined_css = [];
           var remove = [];
           var p, r, s;
           var n = [];
 
-          for ( var i = 0; i < man[mkey].preload.length; i++ ) {
-            s = man[mkey].preload[i];
+          for ( var i = 0; i < man.preload.length; i++ ) {
+            s = man.preload[i];
             p = _path.join(dir, s.src);
 
             if ( ((typeof s.combine !== "undefined" && (s.combine === false || s.combine === "false"))) || s.src.match(/^combined\.(css|js)$/) ) {
@@ -409,7 +390,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
             n.push({type: "javascript", src: "combined.js"});
           }
 
-          man[mkey].preload = n;
+          man.preload = n;
 
           _fs.writeFileSync(_path.join(dir, "combined.js"), combined_js.join("\n"));
           _fs.writeFileSync(_path.join(dir, "combined.css"), combined_css.join("\n"));
@@ -576,30 +557,25 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     function get_metadata(path, file, repo) {
       var json_path = _path.join(path, "package.json");
       try {
-        var json_data = JSON.parse(_fs.readFileSync(json_path));
-        var manifest = null;
-        var package_name;
-
-        for ( var name in json_data ) {
-          if ( json_data.hasOwnProperty(name) ) {
-            package_name = name;
-            manifest     = json_data[name];
-            break;
-          }
-        }
+        var relpath = _path.basename(path);
+        var manifest = JSON.parse(_fs.readFileSync(json_path));
 
         if ( !manifest ) {
           console.log("- \033[0;31mSkipped '%s' (no manifest)\033[0m", file);
           return null;
         }
+        if ( !manifest.className ) {
+          console.log("- \033[0;31mSkipped '%s' (missing className)\033[0m", file);
+          return null;
+        }
 
         if ( typeof manifest === 'string' ) {
-          console.log("- \033[0;31mSkipped '%s' (invalid manifest)\033[0m", package_name);
+          console.log("- \033[0;31mSkipped '%s' (invalid manifest)\033[0m", relpath);
           return null;
         }
 
         if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
-          console.log("- \033[0;31mSkipped '%s' (disabled)\033[0m", package_name);
+          console.log("- \033[0;31mSkipped '%s' (disabled)\033[0m", relpath);
           return null;
         }
 
@@ -621,9 +597,8 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
         manifest.type = manifest.type || 'application';
         manifest.path = repo + "/" + file;
-        manifest.iter = package_name;
 
-        console.log("- Added %s \033[1;37m%s\033[0m", manifest.type, package_name);
+        console.log("- Added %s \033[1;37m%s\033[0m", manifest.type, relpath);
 
         return manifest;
       } catch ( e ) {
@@ -645,7 +620,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         if ( _fs.statSync(path).isDirectory() ) {
           metadata = get_metadata(path, file, repo);
           if ( metadata !== null ) {
-            packages[metadata.iter] = metadata;
+            packages[metadata.className] = metadata;
           }
         }
       }

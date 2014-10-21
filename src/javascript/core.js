@@ -1096,7 +1096,7 @@
     this.__name       = name;
     this.__label      = metadata.name;
     this.__path       = metadata.path;
-    this.__iter       = metadata.iter;
+    this.__iter       = metadata.className;
     this.__destroyed  = false;
     this.__running    = true;
     this.__inited     = false;

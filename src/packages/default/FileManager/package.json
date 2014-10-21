@@ -1,21 +1,20 @@
 {
-  "ApplicationFileManager":  {
-    "name":       "File Manager",
-    "description":"The default file manager",
-    "names":      {
-      "no_NO":      "Fil-håndtering",
-      "de_DE":      "Dateimanager"
-    },
-    "descriptions":      {
-      "no_NO":      "Standard Fil-håndtering program",
-      "de_DE":      "Standardmäßiger Dateimanager"
-    },
-    "mime":       null,
-    "category":   "utilities",
-    "icon":       "apps/file-manager.png",
-    "preload":    [
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationFileManager",
+  "name":       "File Manager",
+  "description":"The default file manager",
+  "names":      {
+    "no_NO":      "Fil-håndtering",
+    "de_DE":      "Dateimanager"
+  },
+  "descriptions":      {
+    "no_NO":      "Standard Fil-håndtering program",
+    "de_DE":      "Standardmäßiger Dateimanager"
+  },
+  "mime":       null,
+  "category":   "utilities",
+  "icon":       "apps/file-manager.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }

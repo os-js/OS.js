@@ -1,24 +1,23 @@
 {
-  "ApplicationProcessViewer":  {
-    "name":       "Process Viewer",
-    "description":"View running processes",
-    "names":      {
-      "no_NO":      "Prosess oversikt",
-      "de_DE":      "Prozess-Manager"
-    },
-    "descriptions":      {
-      "no_NO":      "Se oversikt over kjørende prosesser",
-      "de_DE":      "Laufende Prozesse verwalten"
-    },
-    "singular":   true,
-    "mime":       null,
-    "category":   "system",
-    "icon":       "apps/gnome-monitor.png",
-    "preload":    [
-      {"src": "main.js", "type": "javascript"},
-      {"src": "main.css", "type": "stylesheet"}
-    ]
-  }
+  "className":  "ApplicationProcessViewer",
+  "name":       "Process Viewer",
+  "description":"View running processes",
+  "names":      {
+    "no_NO":      "Prosess oversikt",
+    "de_DE":      "Prozess-Manager"
+  },
+  "descriptions":      {
+    "no_NO":      "Se oversikt over kjørende prosesser",
+    "de_DE":      "Laufende Prozesse verwalten"
+  },
+  "singular":   true,
+  "mime":       null,
+  "category":   "system",
+  "icon":       "apps/gnome-monitor.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
 }
 
 
