@@ -735,11 +735,16 @@
 
     var height = 0;
     var items  = [];
+    var total  = 0;
     var index  = -1;
 
     // Render
-    this.$switcher = document.createElement('div');
-    this.$switcher.id = 'WindowSwitcher';
+    if ( !this.$switcher ) {
+      this.$switcher = document.createElement('div');
+      this.$switcher.id = 'WindowSwitcher';
+    } else {
+      OSjs.Utils.$empty(this.$switcher);
+    }
 
     var container, image, label, iter;
     for ( var i = 0; i < wm._windows.length; i++ ) {
@@ -770,7 +775,9 @@
       }
     }
 
-    document.body.appendChild(this.$switcher);
+    if ( !this.$switcher.parentNode ) {
+      document.body.appendChild(this.$switcher);
+    }
 
     this.$switcher.style.height    = height + 'px';
     this.$switcher.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
@@ -785,6 +792,8 @@
       this.index = index;
       this.showing = true;
     }
+
+    console.debug('WindowSwitcher::show()', this.index);
 
     if ( items[this.index] ) {
       items[this.index].element.className = 'Active';
