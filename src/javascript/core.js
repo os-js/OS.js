@@ -42,7 +42,6 @@
   OSjs.GUI          = OSjs.GUI          || {};
   OSjs.Locales      = OSjs.Locales      || {};
   OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.Version      = '2.0-alpha33';
 
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HOOKS
@@ -141,7 +140,7 @@
   function createVersionStamp() {
     var append = _HANDLER.getConfig('Core').VersionAppend;
 
-    var ver = OSjs.Version;
+    var ver = OSjs.API.getDefaultSettings().Version || 'unknown verion';
     var cop = 'Copyright © 2011-2014 ';
     var lnk = document.createElement('a');
     lnk.href = 'mailto:andersevenrud@gmail.com';
