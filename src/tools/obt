@@ -356,7 +356,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       var dst = _path.join(ROOT, 'dist', 'packages', repo);
       var dir = _path.join(ROOT, 'dist', 'packages', repo, app);
 
-      var newmanpath  = _path.join(dst, "package.json");
+      var newmanpath  = _path.join(dir, "package.json");
       var manpath     = _path.join(src, "package.json");
       var man         = JSON.parse(_fs.readFileSync(manpath));
 
