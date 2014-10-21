@@ -697,16 +697,24 @@
   DefaultHandler.prototype.onWMLaunched = function(wm, callback) {
     var user = this.user.getUserData();
 
+    function displayMenu(ev) {
+      var pos = {x: ev.clientX, y: ev.clientY};
+      OSjs.GUI.createMenu([{
+        title: 'Sign out', // FIXME: Translation
+        onClick: function() {
+          OSjs.Core.signOut();
+        }
+      }], pos);
+    }
+
     if ( wm ) {
       wm.createNotificationIcon('DefaultHandlerUserNotification', {
         onContextMenu: function(ev) {
-          var pos = {x: ev.clientX, y: ev.clientY};
-          OSjs.GUI.createMenu([{
-            title: 'Sign out', // FIXME: Translation
-            onClick: function() {
-              OSjs.Core.signOut();
-            }
-          }], pos);
+          displayMenu(ev);
+          return false;
+        },
+        onClick: function(ev) {
+          displayMenu(ev);
           return false;
         },
         onInited: function(el) {

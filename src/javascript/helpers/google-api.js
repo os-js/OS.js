@@ -172,23 +172,32 @@
 
     function createNotificationIcon() {
       var wm = API.getWMInstance();
+
+      function displayMenu(ev) {
+        var pos = {x: ev.clientX, y: ev.clientY};
+        OSjs.GUI.createMenu([{
+          title: 'Sign out from Google API Services', // FIXME: Translation
+          onClick: function() {
+            self.signOut();
+          }
+        }, {
+          title: 'Revoke permissions and Sign Out', // FIXME: Translation
+          onClick: function() {
+            self.revoke(function() {
+              self.signOut();
+            });
+          }
+        }], pos);
+      }
+
       if ( wm ) {
         wm.createNotificationIcon('GoogleAPIService', {
           onContextMenu: function(ev) {
-            var pos = {x: ev.clientX, y: ev.clientY};
-            OSjs.GUI.createMenu([{
-              title: 'Sign out from Google API Services', // FIXME: Translation
-              onClick: function() {
-                self.signOut();
-              }
-            }, {
-              title: 'Revoke permissions and Sign Out', // FIXME: Translation
-              onClick: function() {
-                self.revoke(function() {
-                  self.signOut();
-                });
-              }
-            }], pos);
+            displayMenu(ev);
+            return false;
+          },
+          onClick: function(ev) {
+            displayMenu(ev);
             return false;
           },
           onInited: function(el) {

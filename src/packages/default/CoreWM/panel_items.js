@@ -334,11 +334,16 @@
 
     var self = this;
     this.$inner.addEventListener("click", function(ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+      OSjs.GUI.blurMenu();
       self.onClick.apply(self, arguments);
+      return false;
     });
     this.$inner.addEventListener("contextmenu", function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
+      OSjs.GUI.blurMenu();
       self.onContextMenu.apply(self, arguments);
       return false;
     });
