@@ -459,7 +459,7 @@
    */
   PackageManager.prototype._setPackages = function(result) {
     console.debug('PackageManager::_setPackages()', result);
-    var currLocale = OSjs.Locale.getLocale();
+    var currLocale = OSjs.API.getLocale();
     var resulted = {};
 
     Object.keys(result).forEach(function(i) {
@@ -547,12 +547,12 @@
   /**
    * Called upon window loaded from 'main.js'
    * @see main.js
-   * @see OSjs._initialize
+   * @see OSjs.API._initialize
    */
   DefaultHandler.prototype.init = function(callback) {
     console.info('OSjs::DefaultHandler::init()');
 
-    OSjs.Locale.setLocale(this.config.Core.Locale);
+    OSjs.API.setLocale(this.config.Core.Locale);
 
     callback();
   };
@@ -666,7 +666,7 @@
     var curLocale = this.config.Core.Locale;
 
     function _finished(locale) {
-      OSjs.Locale.setLocale(locale || curLocale);
+      OSjs.API.setLocale(locale || curLocale);
       if ( callback ) {
         callback();
       }

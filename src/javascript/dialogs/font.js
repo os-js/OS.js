@@ -49,7 +49,7 @@
     this.$selectFonts = null;
     this.$selectSize  = null;
 
-    StandardDialog.apply(this, ['FontDialog', {title: OSjs._('Font Dialog')}, {width:450, height:250}, onClose]);
+    StandardDialog.apply(this, ['FontDialog', {title: OSjs.API._('Font Dialog')}, {width:450, height:250}, onClose]);
   };
 
   FontDialog.prototype = Object.create(StandardDialog.prototype);

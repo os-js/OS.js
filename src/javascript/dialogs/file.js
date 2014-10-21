@@ -79,7 +79,7 @@
     this.$selectRoot  = null;
 
     // Window
-    var title     = OSjs._(this.type === 'save' ? 'Save' : 'Open');
+    var title     = OSjs.API._(this.type === 'save' ? 'Save' : 'Open');
     var className = this.type === 'save' ? 'FileSaveDialog' : 'FileOpenDialog';
 
     StandardDialog.apply(this, [className, {title: title}, {width:600, height:380}, onClose]);
@@ -297,7 +297,7 @@
       var wm = API.getWMInstance();
       if ( wm ) {
         self._toggleDisabled(true);
-        var conf = new OSjs.Dialogs.Confirm(OSjs._('Are you sure you want to overwrite the file \'{0}\'?', Utils.filename(file.path)), function(btn) {
+        var conf = new OSjs.Dialogs.Confirm(OSjs.API._('Are you sure you want to overwrite the file \'{0}\'?', Utils.filename(file.path)), function(btn) {
           self._toggleDisabled(false);
           if ( btn === 'ok' ) {
             self.end('ok', file);
@@ -358,14 +358,14 @@
     var viewType = fileList.viewType || '';
 
     OSjs.GUI.createMenu([
-      {name: 'ListView', title: OSjs._('View type'), menu: [
-        {name: 'ListView', title: OSjs._('List View'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
+      {name: 'ListView', title: OSjs.API._('View type'), menu: [
+        {name: 'ListView', title: OSjs.API._('List View'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
           self.onMenuSelect('ListView');
         }},
-        {name: 'IconView', title: OSjs._('Icon View'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
+        {name: 'IconView', title: OSjs.API._('Icon View'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
           self.onMenuSelect('IconView');
         }},
-        {name: 'TreeView', title: OSjs._('Tree View'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
+        {name: 'TreeView', title: OSjs.API._('Tree View'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
           self.onMenuSelect('TreeView');
         }}
       ]}
@@ -390,7 +390,7 @@
         this.errors++;
       }
 
-      this._error(OSjs._('FileDialog Error'), OSjs._('Failed listing directory \'{0}\' because an error occured', dirname), err);
+      this._error(OSjs.API._('FileDialog Error'), OSjs.API._('Failed listing directory \'{0}\' because an error occured', dirname), err);
     }
   };
 
@@ -542,9 +542,9 @@
       if ( wm ) {
         var dwin;
         if ( this.type === 'save' ) {
-          dwin = new OSjs.Dialogs.Alert(OSjs._('You need to select a file or enter new filename!'));
+          dwin = new OSjs.Dialogs.Alert(OSjs.API._('You need to select a file or enter new filename!'));
         } else {
-          dwin = new OSjs.Dialogs.Alert(OSjs._('You need to select a file!'));
+          dwin = new OSjs.Dialogs.Alert(OSjs.API._('You need to select a file!'));
         }
         wm.addWindow(dwin);
         this._addChild(dwin);

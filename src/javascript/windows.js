@@ -1515,7 +1515,7 @@
 
     if ( this._properties.allow_minimize ) {
       list.push({
-        title:    OSjs._('Minimize'),
+        title:    OSjs.API._('Minimize'),
         icon:     'actions/stock_up.png',
         onClick:  function(name, iter) {
           self._minimize();
@@ -1524,7 +1524,7 @@
     }
     if ( this._properties.allow_maximize ) {
       list.push({
-        title:    OSjs._('Maximize'),
+        title:    OSjs.API._('Maximize'),
         icon:     'actions/window_fullscreen.png',
         onClick:  function(name, iter) {
           self._maximize();
@@ -1534,7 +1534,7 @@
     }
     if ( this._state.maximized ) {
       list.push({
-        title:    OSjs._('Restore'),
+        title:    OSjs.API._('Restore'),
         icon:     'actions/view-restore.png',
         onClick:  function(name, iter) {
           self._restore();
@@ -1545,7 +1545,7 @@
     if ( this._properties.allow_ontop ) {
       if ( this._state.ontop ) {
         list.push({
-          title:    OSjs._('On Top - Disable'),
+          title:    OSjs.API._('On Top - Disable'),
           icon:     'actions/window-new.png',
           onClick:  function(name, iter) {
             self._state.ontop = false;
@@ -1557,7 +1557,7 @@
         });
       } else {
         list.push({
-          title:    OSjs._('On Top - Enable'),
+          title:    OSjs.API._('On Top - Enable'),
           icon:     'actions/window-new.png',
           onClick:  function(name, iter) {
             self._state.ontop = true;
@@ -1571,7 +1571,7 @@
     }
     if ( this._properties.allow_close ) {
       list.push({
-        title:    OSjs._('Close'),
+        title:    OSjs.API._('Close'),
         icon:     'actions/window-close.png',
         onClick:  function(name, iter) {
           self._close();

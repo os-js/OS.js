@@ -98,7 +98,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
+    return OSjs.API.__.apply(this, args);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -201,24 +201,24 @@
       self._focus();
     };
 
-    menuBar.addItem(OSjs._("File"), [
-      {title: OSjs._('New'), name: 'New', onClick: function() {
+    menuBar.addItem(OSjs.API._("File"), [
+      {title: OSjs.API._('New'), name: 'New', onClick: function() {
         app.action('new');
       }},
-      {title: OSjs._('Open'), name: 'Open', onClick: function() {
+      {title: OSjs.API._('Open'), name: 'Open', onClick: function() {
         app.action('open');
       }},
-      {title: OSjs._('Save'), name: 'Save', onClick: function() {
+      {title: OSjs.API._('Save'), name: 'Save', onClick: function() {
         app.action('save');
       }},
-      {title: OSjs._('Save As...'), name: 'SaveAs', onClick: function() {
+      {title: OSjs.API._('Save As...'), name: 'SaveAs', onClick: function() {
         app.action('saveas');
       }},
-      {title: OSjs._('Close'), name: 'Close', onClick: function() {
+      {title: OSjs.API._('Close'), name: 'Close', onClick: function() {
         app.action('close');
       }}
     ]);
-    menuBar.addItem(OSjs._("View"), [
+    menuBar.addItem(OSjs.API._("View"), [
       {title: _('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
         _toggleToolsToolbar();
       }},
@@ -227,8 +227,8 @@
       }}
     ]);
     /*
-    menuBar.addItem(OSjs._("Image"), [
-      {title: OSjs._('Resize'), name: 'Resize', onClick: function() {
+    menuBar.addItem(OSjs.API._("Image"), [
+      {title: OSjs.API._('Resize'), name: 'Resize', onClick: function() {
       }}
     ]);
     */
@@ -470,7 +470,7 @@
     var layerList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationDrawLayerListView'), layerBarContainer);
 
     layerList.setColumns([
-      {key: 'name',  title: OSjs._('Name')}
+      {key: 'name',  title: OSjs.API._('Name')}
      ]);
     layerList.onActivate = function(ev, el, item) {
       if ( item ) {

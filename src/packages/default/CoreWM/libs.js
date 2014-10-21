@@ -105,7 +105,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
+    return OSjs.API.__.apply(this, args);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -172,7 +172,7 @@
     var listView = this._addGUIElement(new OSjs.GUI.ListView('PanelItemChooserDialogListView'), root);
     listView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'name',  title: OSjs._('Name')},
+      {key: 'name',  title: OSjs.API._('Name')},
       {key: 'key',   title: 'Key', visible: false}
      ]);
     listView.onActivate = function(ev, el, item) {
@@ -189,7 +189,7 @@
       }
     };
 
-    this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs._('Add'), onClick: function(el, ev) {
+    this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs.API._('Add'), onClick: function(el, ev) {
       if ( !this.isDisabled() ) {
         _onActivate();
       }
@@ -280,7 +280,7 @@
       slider.setValue(desktopMargin);
     }});
 
-    var tabPanels = tabs.addTab('Panels', {title: OSjs._('Panels')});
+    var tabPanels = tabs.addTab('Panels', {title: OSjs.API._('Panels')});
     var tabLocale = tabs.addTab('Locales', {title: _('Locales')});
 
     //
@@ -288,7 +288,7 @@
     //
 
     // Theme
-    outer = _createContainer('Theme SettingsNoButton', OSjs._('Theme'));
+    outer = _createContainer('Theme SettingsNoButton', OSjs.API._('Theme'));
     var themeName = this._addGUIElement(new OSjs.GUI.Select('SettingsThemeName'), outer);
     themeName.addItems(themelist);
     themeName.setSelected(theme);
@@ -298,18 +298,18 @@
     outer = _createContainer('BackgroundType SettingsNoButton', _('Background Type'));
     var backgroundType = this._addGUIElement(new OSjs.GUI.Select('SettingsBackgroundType'), outer);
     backgroundType.addItems({
-      'image':        OSjs._('Image'),
+      'image':        OSjs.API._('Image'),
       'image-repeat': _('Image (Repeat)'),
       'image-center': _('Image (Centered)'),
       'image-fill':   _('Image (Fill)'),
       'image-strech': _('Image (Streched)'),
-      'color':        OSjs._('Color')
+      'color':        OSjs.API._('Color')
     });
     backgroundType.setSelected(settings.background);
     tabStyles.appendChild(outer);
 
     // Background Image
-    outer = _createContainer('BackgroundImage', OSjs._('Background Image'));
+    outer = _createContainer('BackgroundImage', OSjs.API._('Background Image'));
     var backgroundImage = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundImage', {disabled: true, value: settings.wallpaper}), outer);
 
     this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
@@ -319,7 +319,7 @@
     tabStyles.appendChild(outer);
 
     // Background Color
-    outer = _createContainer('BackgroundColor', OSjs._('Background Color'));
+    outer = _createContainer('BackgroundColor', OSjs.API._('Background Color'));
 
     var backgroundColor = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundColor', {disabled: true, value: settings.style.backgroundColor}), outer);
     backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
@@ -332,7 +332,7 @@
     tabStyles.appendChild(outer);
 
     // Font
-    outer = _createContainer('Font', OSjs._('Font'));
+    outer = _createContainer('Font', OSjs.API._('Font'));
 
     var fontName = this._addGUIElement(new OSjs.GUI.Text('SettingsFont', {disabled: true, value: settings.style.fontFamily}), outer);
     fontName.$input.style.fontFamily = settings.style.fontFamily;
@@ -347,8 +347,8 @@
     outer = _createContainer('Animations SettingsNoButton', _('Use animations ?'));
     var useAnimations = this._addGUIElement(new OSjs.GUI.Select('SettingsUseAnimations'), outer);
     useAnimations.addItems({
-      'yes':  OSjs._('Yes'),
-      'no':   OSjs._('No')
+      'yes':  OSjs.API._('Yes'),
+      'no':   OSjs.API._('No')
     });
     useAnimations.setSelected(settings.animations ? 'yes' : 'no');
     tabStyles.appendChild(outer);
@@ -375,8 +375,8 @@
     outer = _createContainer('Switcher SettingsNoButton', _('Enable Window Switcher'));
     var useSwitcher = this._addGUIElement(new OSjs.GUI.Select('SettingsUseSwitcher'), outer);
     useSwitcher.addItems({
-      'yes':  OSjs._('Yes'),
-      'no':   OSjs._('No')
+      'yes':  OSjs.API._('Yes'),
+      'no':   OSjs.API._('No')
     });
     useSwitcher.setSelected(settings.enableSwitcher ? 'yes' : 'no');
     tabOther.appendChild(outer);
@@ -385,8 +385,8 @@
     outer = _createContainer('Hotkeys SettingsNoButton', _('Enable Hotkeys'));
     var useHotkeys = this._addGUIElement(new OSjs.GUI.Select('SettingsUseHotkeys'), outer);
     useHotkeys.addItems({
-      'yes':  OSjs._('Yes'),
-      'no':   OSjs._('No')
+      'yes':  OSjs.API._('Yes'),
+      'no':   OSjs.API._('No')
     });
     useHotkeys.setSelected(settings.enableHotkeys ? 'yes' : 'no');
     tabOther.appendChild(outer);
@@ -395,8 +395,8 @@
     outer = _createContainer('Sounds SettingsNoButton', _('Enable sounds'));
     var useSounds = this._addGUIElement(new OSjs.GUI.Select('SettingsUseSounds'), outer);
     useSounds.addItems({
-      'yes':  OSjs._('Yes'),
-      'no':   OSjs._('No')
+      'yes':  OSjs.API._('Yes'),
+      'no':   OSjs.API._('No')
     });
     useSounds.setSelected(settings.enableSounds ? 'yes' : 'no');
     tabOther.appendChild(outer);
@@ -405,8 +405,8 @@
     outer = _createContainer('IconView SettingsNoButton', _('Enable iconview'));
     var useIconView = this._addGUIElement(new OSjs.GUI.Select('SettingsUseIconView'), outer);
     useIconView.addItems({
-      'yes':  OSjs._('Yes'),
-      'no':   OSjs._('No')
+      'yes':  OSjs.API._('Yes'),
+      'no':   OSjs.API._('No')
     });
     useIconView.setSelected(settings.enableIconView ? 'yes' : 'no');
     tabOther.appendChild(outer);
@@ -419,8 +419,8 @@
     outer = _createContainer('PanelPosition SettingsNoButton', _('Panel Position'));
     var panelPosition = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelPosition'), outer);
     panelPosition.addItems({
-      'top':      OSjs._('Top'),
-      'bottom':   OSjs._('Bottom')
+      'top':      OSjs.API._('Top'),
+      'bottom':   OSjs.API._('Bottom')
     });
     panelPosition.setSelected(settings.panels[0].options.position);
     tabPanels.appendChild(outer);
@@ -429,8 +429,8 @@
     outer = _createContainer('PanelAutohide SettingsNoButton', _('Panel Autohide ?'));
     var panelAutohide = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelAutohide'), outer);
     panelAutohide.addItems({
-      'yes':  OSjs._('Yes'),
-      'no':   OSjs._('No')
+      'yes':  OSjs.API._('Yes'),
+      'no':   OSjs.API._('No')
     });
     panelAutohide.setSelected(settings.panels[0].options.autohide ? 'yes' : 'no');
     tabPanels.appendChild(outer);
@@ -439,8 +439,8 @@
     outer = _createContainer('PanelOntop SettingsNoButton', _('Panel Ontop ?'));
     var panelOntop = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelOntop'), outer);
     panelOntop.addItems({
-      'yes':  OSjs._('Yes'),
-      'no':   OSjs._('No')
+      'yes':  OSjs.API._('Yes'),
+      'no':   OSjs.API._('No')
     });
     panelOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
     tabPanels.appendChild(outer);
@@ -479,7 +479,7 @@
       }
     }}), panelItemButtons);
 
-    var panelItemButtonReset = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonReset', {tooltop: OSjs._('Reset to defaults'), icon: OSjs.API.getIcon('actions/revert.png'), onClick: function(el, ev) {
+    var panelItemButtonReset = this._addGUIElement(new OSjs.GUI.Button('PanelItemButtonReset', {tooltop: OSjs.API._('Reset to defaults'), icon: OSjs.API.getIcon('actions/revert.png'), onClick: function(el, ev) {
       self.resetPanelItems();
     }}), panelItemButtons);
 
@@ -528,13 +528,13 @@
     var useLanguage = this._addGUIElement(new OSjs.GUI.Select('SettingsUseLanguage'), outer);
     var languages = OSjs.API.getHandlerInstance().getConfig('Core').Languages;
     useLanguage.addItems(languages);
-    useLanguage.setSelected(OSjs.Locale.getLocale());
+    useLanguage.setSelected(OSjs.API.getLocale());
     tabLocale.appendChild(outer);
 
     //
     // Buttons
     //
-    this._addGUIElement(new OSjs.GUI.Button('Save', {label: OSjs._('Apply'), onClick: function(el, ev) {
+    this._addGUIElement(new OSjs.GUI.Button('Save', {label: OSjs.API._('Apply'), onClick: function(el, ev) {
       // First validate
       var settings = {
         language:         useLanguage.getValue(),

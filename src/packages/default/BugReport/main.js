@@ -62,7 +62,7 @@
     var misc = this._addGUIElement(new OSjs.GUI.Textarea('ReportData'), root);
     misc.setValue(JSON.stringify(app.reportData, null, 2));
 
-    var btn = this._addGUIElement(new OSjs.GUI.Button('Send', {label: OSjs._('Send and Close'), onClick: function() {
+    var btn = this._addGUIElement(new OSjs.GUI.Button('Send', {label: OSjs.API._('Send and Close'), onClick: function() {
       if ( app ) {
         btn.setDisabled(true);
 

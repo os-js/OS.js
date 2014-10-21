@@ -30,10 +30,9 @@
 (function() {
   'use strict';
 
-  OSjs.Locale = OSjs.Locale || {};
-  OSjs.Locale.Lang = OSjs.Locale.Lang || {};
+  OSjs.Locales = OSjs.Locales || {};
 
-  OSjs.Locale.Lang.de_DE = {
+  OSjs.Locales.de_DE = {
 
     // core.js
 

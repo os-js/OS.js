@@ -39,7 +39,7 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
-  OSjs.Locale       = OSjs.Locale       || {};
+  OSjs.Locales      = OSjs.Locales       || {};
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.Hooks        = {};
   OSjs.Version      = '2.0-alpha33';
@@ -84,6 +84,9 @@
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
   /////////////////////////////////////////////////////////////////////////////
+
+  var DefaultLocale = 'en_EN';
+  var CurrentLocale = 'en_EN';
 
   var _PROCS = [];        // Running processes
   var _HANDLER;           // Running Handler process
@@ -332,13 +335,13 @@
     _INITED = true;
 
     function _error(msg) {
-      doErrorDialog(OSjs._('ERR_CORE_INIT_FAILED'), OSjs._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
+      doErrorDialog(OSjs.API._('ERR_CORE_INIT_FAILED'), OSjs.API._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
     }
 
     function _LaunchWM(callback) {
       var wm = _HANDLER.getConfig('WM');
       if ( !wm || !wm.exec ) {
-        _error(OSjs._('ERR_CORE_INIT_NO_WM'));
+        _error(OSjs.API._('ERR_CORE_INIT_NO_WM'));
         return;
       }
 
@@ -349,7 +352,7 @@
 
         callback();
       }, function(error, name, args, exception) {
-        _error(OSjs._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
+        _error(OSjs.API._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
       });
     }
 
@@ -382,7 +385,7 @@
     function _Preload(list, callback) {
       OSjs.Utils.Preload(list, function(total, errors) {
         if ( errors ) {
-          _error(OSjs._('ERR_CORE_INIT_PRELOAD_FAILED'));
+          _error(OSjs.API._('ERR_CORE_INIT_PRELOAD_FAILED'));
           return;
         }
 
@@ -397,8 +400,8 @@
         }
         console.warn('window::onerror()', arguments);
         var msg = 'Please report this if you think this is a bug.\nInclude a brief description on how the error occured, and if you can; how to replicate it';
-        doErrorDialog(OSjs._('ERR_JAVASCRIPT_EXCEPTION'),
-                      OSjs._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
+        doErrorDialog(OSjs.API._('ERR_JAVASCRIPT_EXCEPTION'),
+                      OSjs.API._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
                       msg,
                       exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber+':'+column, message: message},
                       true );
@@ -580,13 +583,13 @@
   function doSignOut() {
     if ( _WM ) {
       var user = _HANDLER.getUserData() || {name: 'Unknown'};
-      var conf = new OSjs.Dialogs.Confirm(OSjs._('Logging out user \'{0}\'.\nDo you want to save current session?', user.name), function(btn) {
+      var conf = new OSjs.Dialogs.Confirm(OSjs.API._('Logging out user \'{0}\'.\nDo you want to save current session?', user.name), function(btn) {
         if ( btn === 'ok' ) {
           OSjs.Core.shutdown(true, false);
         } else if ( btn === 'cancel' ) {
           OSjs.Core.shutdown(false, false);
         }
-      }, {title: OSjs._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs._('Cancel'), buttonOkLabel: OSjs._('Yes'), buttonCancelLabel: OSjs._('No')});
+      }, {title: OSjs.API._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs.API._('Cancel'), buttonOkLabel: OSjs.API._('Yes'), buttonCancelLabel: OSjs.API._('No')});
       _WM.addWindow(conf);
     } else {
       OSjs.Core.shutdown(true, false);
@@ -723,15 +726,15 @@
               _HANDLER.setDefaultApplication(file.mime, setDefault ? appname : null);
             }));
           } else {
-            OSjs.API.error(OSjs._('ERR_FILE_OPEN'),
-                           OSjs._('ERR_FILE_OPEN_FMT', file.path),
-                           OSjs._('No window manager is running') );
+            OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
+                           OSjs.API._('ERR_FILE_OPEN_FMT', file.path),
+                           OSjs.API._('No window manager is running') );
           }
         }
       } else {
-        OSjs.API.error(OSjs._('ERR_FILE_OPEN'),
-                       OSjs._('ERR_FILE_OPEN_FMT', file.path),
-                       OSjs._('ERR_APP_MIME_NOT_FOUND_FMT', file.mime) );
+        OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
+                       OSjs.API._('ERR_FILE_OPEN_FMT', file.path),
+                       OSjs.API._('ERR_APP_MIME_NOT_FOUND_FMT', file.mime) );
       }
     }
 
@@ -770,8 +773,8 @@
     function _error(msg, exception) {
       _done();
       console.groupEnd(); // !!!
-      doErrorDialog(OSjs._('ERR_APP_LAUNCH_FAILED'),
-                  OSjs._('ERR_APP_LAUNCH_FAILED_FMT', n),
+      doErrorDialog(OSjs.API._('ERR_APP_LAUNCH_FAILED'),
+                  OSjs.API._('ERR_APP_LAUNCH_FAILED_FMT', n),
                   msg, exception, true);
 
       onError(msg, n, arg, exception);
@@ -790,7 +793,7 @@
             if ( sproc instanceof Application ) {
               sproc._onMessage(null, 'attention', arg);
             } else {
-              _error(OSjs._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
+              _error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
             }
             return;
           }
@@ -808,7 +811,7 @@
           onConstructed(a, result);
         } catch ( e ) {
           console.warn('Error on constructing application', e, e.stack);
-          _error(OSjs._('ERR_APP_CONSTRUCT_FAILED_FMT', n, e), e);
+          _error(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', n, e), e);
           err = true;
         }
 
@@ -840,11 +843,11 @@
             });
           } catch ( ex ) {
             console.warn('Error on init() application', ex, ex.stack);
-            _error(OSjs._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
+            _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
           }
         }
       } else {
-        _error(OSjs._('ERR_APP_RESOURCES_MISSING_FMT', n));
+        _error(OSjs.API._('ERR_APP_RESOURCES_MISSING_FMT', n));
       }
     }
 
@@ -853,12 +856,12 @@
     // Get metadata and check compability
     var data = _HANDLER.getApplicationMetadata(n);
     if ( !data ) {
-      _error(OSjs._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
+      _error(OSjs.API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
       return false;
     }
     var nosupport = checkApplicationCompability(data.compability);
     if ( nosupport.length ) {
-      _error(OSjs._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
+      _error(OSjs.API._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
       return false;
     }
 
@@ -868,7 +871,7 @@
       destroyLoading(n);
 
       if ( errors ) {
-        _error(OSjs._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
+        _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
         return;
       }
 
@@ -1022,6 +1025,67 @@
     return result;
   }
 
+  /**
+   * Translate given string
+   * @param  String   s     Translation key/string
+   * @param  Mixed    ...   Format values
+   * @return String
+   */
+  function doTranslate() {
+    var s = arguments[0];
+    var a = arguments;
+
+    if ( OSjs.Locales[CurrentLocale][s] ) {
+      a[0] = OSjs.Locales[CurrentLocale][s];
+    } else {
+      a[0] = OSjs.Locales[DefaultLocale][s] || s;
+    }
+
+    return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
+  };
+
+  /**
+   * Same as _ only you can supply the list as first argument
+   */
+  function doTranslateList() {
+    var l = arguments[0];
+    var s = arguments[1];
+    var a = Array.prototype.slice.call(arguments, 1);
+
+    if ( l[CurrentLocale] && l[CurrentLocale][s] ) {
+      a[0] = l[CurrentLocale][s];
+    } else {
+      a[0] = l[DefaultLocale] ? (l[DefaultLocale][s] || s) : s;
+    }
+
+    return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
+  };
+
+  /**
+   * Get current locale
+   * @return String
+   */
+  function doGetLocale() {
+    return CurrentLocale;
+  };
+
+  /**
+   * Set locale
+   * @param  String   s     Locale name
+   * @return void
+   */
+  function doSetLocale(l) {
+    if ( OSjs.Locales[l] ) {
+      CurrentLocale = l;
+    } else {
+      console.warn('doSetLocale()', 'Invalid locale', l, '(Using default)');
+      CurrentLocale = DefaultLocale;
+    }
+
+    console.log('doSetLocale()', CurrentLocale);
+  };
+
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -1174,8 +1238,8 @@
     onSuccess = onSuccess || function() {};
     onError = onError || function(err) {
       err = err || 'Unknown error';
-      OSjs.API.error(OSjs._('ERR_APP_API_ERROR'),
-                     OSjs._('ERR_APP_API_ERROR_DESC_FMT', self.__name, method),
+      OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
+                     OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__name, method),
                      err);
     };
     return doAPICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
@@ -1308,6 +1372,10 @@
   OSjs.API.getIcon                = function(name, app)        { return _HANDLER.getIcon(name, app); };
 
   // Common API functions
+  OSjs.API._                  = doTranslate;
+  OSjs.API.__                 = doTranslateList;
+  OSjs.API.getLocale          = doGetLocale;
+  OSjs.API.setLocale          = doSetLocale;
   OSjs.API.call               = doAPICall;
   OSjs.API.error              = doErrorDialog;
   OSjs.API.open               = doLaunchFile;

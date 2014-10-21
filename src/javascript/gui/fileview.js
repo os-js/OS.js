@@ -83,10 +83,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs._('Filename') + ': '  + item.filename,
-            OSjs._('Path')     + ': '  + item.path,
-            OSjs._('Size')     + ': '  + item.size || 0,
-            OSjs._('MIME')     + ': '  + item.mime || 'none'
+            OSjs.API._('Filename') + ': '  + item.filename,
+            OSjs.API._('Path')     + ': '  + item.path,
+            OSjs.API._('Size')     + ': '  + item.size || 0,
+            OSjs.API._('MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
           var file = new VFS.File(item);
@@ -222,10 +222,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs._('Filename') + ': '  + item.filename,
-            OSjs._('Path')     + ': '  + item.path,
-            OSjs._('Size')     + ': '  + item.size || 0,
-            OSjs._('MIME')     + ': '  + item.mime || 'none'
+            OSjs.API._('Filename') + ': '  + item.filename,
+            OSjs.API._('Path')     + ': '  + item.path,
+            OSjs.API._('Size')     + ': '  + item.size || 0,
+            OSjs.API._('MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
           var file = new VFS.File(item);
@@ -323,10 +323,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs._('Filename') + ': '  + item.filename,
-            OSjs._('Path')     + ': '  + item.path,
-            OSjs._('Size')     + ': '  + item.size || 0,
-            OSjs._('MIME')     + ': '  + item.mime || 'none'
+            OSjs.API._('Filename') + ': '  + item.filename,
+            OSjs.API._('Path')     + ': '  + item.path,
+            OSjs.API._('Size')     + ': '  + item.size || 0,
+            OSjs.API._('MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
           var file = new VFS.File(item);
@@ -373,11 +373,11 @@
 
     this.setColumns([
       {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: '16'}, resizable: false},
-      {key: 'filename', title: OSjs._('Filename')},
-      {key: 'mime',     title: OSjs._('MIME'), domProperties: {width: '150'}},
-      {key: 'size',     title: OSjs._('Size'), callback: _callbackSize, domProperties: {width: '80'}},
-      {key: 'path',     title: OSjs._('Path'), visible: false},
-      {key: 'type',     title: OSjs._('Type'), visible: false}
+      {key: 'filename', title: OSjs.API._('Filename')},
+      {key: 'mime',     title: OSjs.API._('MIME'), domProperties: {width: '150'}},
+      {key: 'size',     title: OSjs.API._('Size'), callback: _callbackSize, domProperties: {width: '80'}},
+      {key: 'path',     title: OSjs.API._('Path'), visible: false},
+      {key: 'type',     title: OSjs.API._('Type'), visible: false}
      ]);
 
     ListView.prototype.render.apply(this, [list, true]);

@@ -34,7 +34,7 @@
    * Input Dialog
    */
   var InputDialog = function(msg, val, onClose, onCreated) {
-    StandardDialog.apply(this, ['InputDialog', {title: OSjs._('Input Dialog'), message: msg}, {width:300, height:150}, onClose]);
+    StandardDialog.apply(this, ['InputDialog', {title: OSjs.API._('Input Dialog'), message: msg}, {width:300, height:150}, onClose]);
     this._icon = 'status/dialog-information.png';
 
     this.value = val || '';

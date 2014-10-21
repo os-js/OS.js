@@ -31,80 +31,16 @@
   'use strict';
 
   window.OSjs       = window.OSjs       || {};
-  OSjs.Locale       = OSjs.Locale       || {};
-  OSjs.Locale.Lang  = OSjs.Locale.Lang  || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // TRANSLATIONS
   /////////////////////////////////////////////////////////////////////////////
 
 
-  var DefaultLocale = 'en_EN';
-  var CurrentLocale = 'en_EN';
 
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Translate given string
-   * @param  String   s     Translation key/string
-   * @param  Mixed    ...   Format values
-   * @return String
-   */
-  OSjs._ = function() {
-    var s = arguments[0];
-    var a = arguments;
-
-    if ( OSjs.Locale.Lang[CurrentLocale][s] ) {
-      a[0] = OSjs.Locale.Lang[CurrentLocale][s];
-    } else {
-      a[0] = OSjs.Locale.Lang[DefaultLocale][s] || s;
-    }
-
-    return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
-  };
-
-  /**
-   * Same as _ only you can supply the list as first argument
-   */
-  OSjs.__ = function() {
-    var l = arguments[0];
-    var s = arguments[1];
-    var a = Array.prototype.slice.call(arguments, 1);
-
-    if ( l[CurrentLocale] && l[CurrentLocale][s] ) {
-      a[0] = l[CurrentLocale][s];
-    } else {
-      a[0] = l[DefaultLocale] ? (l[DefaultLocale][s] || s) : s;
-    }
-
-    return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
-  };
-
-  /**
-   * Get current locale
-   * @return String
-   */
-  OSjs.Locale.getLocale = function() {
-    return CurrentLocale;
-  };
-
-  /**
-   * Set locale
-   * @param  String   s     Locale name
-   * @return void
-   */
-  OSjs.Locale.setLocale = function(l) {
-    if ( OSjs.Locale.Lang[l] ) {
-      CurrentLocale = l;
-    } else {
-      console.warn('OSjs::Locale::setLocale()', 'Invalid locale', l, '(Using default)');
-      CurrentLocale = DefaultLocale;
-    }
-
-    console.log('OSjs::Locale::setLocale()', CurrentLocale);
-  };
 
 })();

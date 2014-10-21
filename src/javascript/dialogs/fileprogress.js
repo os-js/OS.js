@@ -37,7 +37,7 @@
     DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
 
     this.$desc                    = null;
-    this._title                   = title || OSjs._('File Operation Progress');
+    this._title                   = title || OSjs.API._('File Operation Progress');
     this._properties.allow_close  = false;
     this._icon                    = 'actions/document-send.png';
   };
@@ -59,7 +59,7 @@
 
     var desc        = document.createElement('div');
     desc.className  = 'Description';
-    desc.innerHTML  = OSjs._('Loading...');
+    desc.innerHTML  = OSjs.API._('Loading...');
 
 
     el.appendChild(desc);

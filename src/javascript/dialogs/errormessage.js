@@ -55,13 +55,13 @@
     root.className += ' ErrorDialog';
 
     var messagel        = document.createElement('div');
-    messagel.className  = OSjs._('Message');
+    messagel.className  = OSjs.API._('Message');
     messagel.innerHTML  = this.data.message;
     root.appendChild(messagel);
 
     label           = document.createElement('div');
     label.className = 'Label';
-    label.innerHTML = OSjs._('Summary');
+    label.innerHTML = OSjs.API._('Summary');
     root.appendChild(label);
 
     var messaged = this._addGUIElement(new OSjs.GUI.Textarea('Summary'), root);
@@ -87,19 +87,19 @@
 
       label           = document.createElement('div');
       label.className = 'Label';
-      label.innerHTML = OSjs._('Trace');
+      label.innerHTML = OSjs.API._('Trace');
       root.appendChild(label);
 
       var traced = this._addGUIElement(new OSjs.GUI.Textarea('Trace'), root);
       traced.setValue(error);
     }
 
-    ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs._('Close'), onClick: function() {
+    ok = this._addGUIElement(new OSjs.GUI.Button('OK', {label: OSjs.API._('Close'), onClick: function() {
       self._close();
     }}), root);
 
     if ( this.data.bugreport ) {
-      this._addGUIElement(new OSjs.GUI.Button('Bug', {label: OSjs._('Bugreport'), onClick: function() {
+      this._addGUIElement(new OSjs.GUI.Button('Bug', {label: OSjs.API._('Bugreport'), onClick: function() {
         if ( !OSjs.API.launch('ApplicationBugReport', {data: bugData}) ) {
           alert('Something went wrong during reporting. You can mail it to andersevenrud@gmail.com');
         }

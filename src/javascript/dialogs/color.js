@@ -39,7 +39,7 @@
       opts.alpha = 1.0;
     }
 
-    StandardDialog.apply(this, ['ColorDialog', {title: OSjs._('Color Dialog')}, {width:450, height:250}, onClose]);
+    StandardDialog.apply(this, ['ColorDialog', {title: OSjs.API._('Color Dialog')}, {width:450, height:250}, onClose]);
     this._icon = 'apps/gnome-settings-theme.png';
 
     if ( typeof opts.color === 'object' ) {
@@ -67,7 +67,7 @@
 
     var label       = document.createElement('div');
     label.className = 'Label LabelR';
-    label.innerHTML = OSjs._('Red: {0}', 0);
+    label.innerHTML = OSjs.API._('Red: {0}', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, val: color.r, onUpdate: function(value, percentage) {
       self.setColor(value, self.currentRGB.g, self.currentRGB.b);
@@ -75,7 +75,7 @@
 
     label           = document.createElement('div');
     label.className = 'Label LabelG';
-    label.innerHTML = OSjs._('Green: {0}', 0);
+    label.innerHTML = OSjs.API._('Green: {0}', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, val: color.g, onUpdate: function(value, percentage) {
       self.setColor(self.currentRGB.r, value, self.currentRGB.b);
@@ -83,7 +83,7 @@
 
     label           = document.createElement('div');
     label.className = 'Label LabelB';
-    label.innerHTML = OSjs._('Blue: {0}', 0);
+    label.innerHTML = OSjs.API._('Blue: {0}', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, val: color.b, onUpdate: function(value, percentage) {
       self.setColor(self.currentRGB.r, self.currentRGB.g, value);
@@ -92,7 +92,7 @@
     if ( this.showAlpha ) {
       label           = document.createElement('div');
       label.className = 'Label LabelA';
-      label.innerHTML = OSjs._('Alpha: {0}', 0);
+      label.innerHTML = OSjs.API._('Alpha: {0}', 0);
       sliders.appendChild(label);
       this._addGUIElement(new OSjs.GUI.Slider('SliderA', {min: 0, max: 100, val: this.currentAlpha, onUpdate: function(value, percentage) {
         self.setColor(self.currentRGB.r, self.currentRGB.g, self.currentRGB.b, value);
@@ -120,18 +120,18 @@
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
 
     this._getGUIElement('SliderR').setValue(r);
-    this.$element.getElementsByClassName('LabelR')[0].innerHTML = OSjs._('Red: {0}', r);
+    this.$element.getElementsByClassName('LabelR')[0].innerHTML = OSjs.API._('Red: {0}', r);
 
     this._getGUIElement('SliderG').setValue(g);
-    this.$element.getElementsByClassName('LabelG')[0].innerHTML = OSjs._('Green: {0}', g);
+    this.$element.getElementsByClassName('LabelG')[0].innerHTML = OSjs.API._('Green: {0}', g);
 
     this._getGUIElement('SliderB').setValue(b);
-    this.$element.getElementsByClassName('LabelB')[0].innerHTML = OSjs._('Blue: {0}', b);
+    this.$element.getElementsByClassName('LabelB')[0].innerHTML = OSjs.API._('Blue: {0}', b);
 
     if ( this.showAlpha ) {
       var ca = (this.currentAlpha/100);
       this._getGUIElement('SliderA').setValue(this.currentAlpha);
-      this.$element.getElementsByClassName('LabelA')[0].innerHTML = OSjs._('Alpha: {0}', ca);
+      this.$element.getElementsByClassName('LabelA')[0].innerHTML = OSjs.API._('Alpha: {0}', ca);
     }
 
   };

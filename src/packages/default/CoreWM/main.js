@@ -50,7 +50,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
+    return OSjs.API.__.apply(this, args);
   }
 
   /////////////////////////////////////////////////////////////////////////////

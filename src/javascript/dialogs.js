@@ -90,7 +90,7 @@
 
     var lbl;
     if ( (typeof this.args.buttonClose !== 'undefined') && (this.args.buttonClose === true) ) {
-      lbl = (this.args.buttonCloseLabel || OSjs._('Close'));
+      lbl = (this.args.buttonCloseLabel || OSjs.API._('Close'));
       this.buttonClose = this._addGUIElement(new OSjs.GUI.Button('Close', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onCloseClick(ev);
@@ -99,7 +99,7 @@
     }
 
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
-      lbl = (this.args.buttonCancelLabel || OSjs._('Cancel'));
+      lbl = (this.args.buttonCancelLabel || OSjs.API._('Cancel'));
       this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onCancelClick(ev);
@@ -108,7 +108,7 @@
     }
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
-      lbl = (this.args.buttonOkLabel || OSjs._('OK'));
+      lbl = (this.args.buttonOkLabel || OSjs.API._('OK'));
       this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onConfirmClick.call(self, ev);

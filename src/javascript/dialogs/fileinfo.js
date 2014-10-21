@@ -37,7 +37,7 @@
     this.path = file ? file.path : null;
     this.file = file;
     onClose = onClose || function() {};
-    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs._('File Information'), buttonCancel: false, buttonOkLabel: OSjs._('Close')}, {width:300, height:370}, onClose]);
+    StandardDialog.apply(this, ['FileInformationDialog', {title: OSjs.API._('File Information'), buttonCancel: false, buttonOkLabel: OSjs.API._('Close')}, {width:300, height:370}, onClose]);
   };
   FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
 
@@ -45,13 +45,13 @@
     var self = this;
     var root = StandardDialog.prototype.init.apply(this, arguments);
 
-    var desc = OSjs._('Loading file information for: {0}', this.path);
+    var desc = OSjs.API._('Loading file information for: {0}', this.path);
     var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
 
     function _onError(err) {
       var fname = OSjs.Utils.filename(self.path);
-      self._error(OSjs._('FileInformationDialog Error'), OSjs._('Failed to get file information for <span>{0}</span>', fname), err);
-      txt.setValue(OSjs._('Failed to get file information for: {0}', self.path));
+      self._error(OSjs.API._('FileInformationDialog Error'), OSjs.API._('Failed to get file information for <span>{0}</span>', fname), err);
+      txt.setValue(OSjs.API._('Failed to get file information for: {0}', self.path));
     }
 
     function _onSuccess(data) {

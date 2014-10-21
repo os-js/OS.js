@@ -218,7 +218,7 @@
     if ( this.defaultCheckChange ) {
       var self = this;
 
-      var msg = OSjs._('MSG_GENERIC_APP_DISCARD');
+      var msg = OSjs.API._('MSG_GENERIC_APP_DISCARD');
       if ( this.mainWindow ) {
         if ( this.mainWindow.checkChanged(function(discard) { _cb(discard); }, msg) === false ) {
           _cb(true);
@@ -237,7 +237,7 @@
    * Confirmation dialog creator
    */
   DefaultApplication.prototype.onConfirmDialog = function(win, msg, callback) {
-    msg = msg || OSjs._('Discard changes?');
+    msg = msg || OSjs.API._('Discard changes?');
     win._toggleDisabled(true);
     this._createDialog('Confirm', [msg, function(btn) {
       win._toggleDisabled(false);
@@ -354,11 +354,11 @@
 
       VFS.write(item, data, function(error, result) {
         if ( error ) {
-          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), error, 'doSave');
+          self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), error, 'doSave');
           return;
         }
         if ( result === false ) {
-          self._onError(OSjs._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), OSjs._('Unknown error'), 'doSave');
+          self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), OSjs.API._('Unknown error'), 'doSave');
           return;
         }
         _onSaveFinished(item);
@@ -375,14 +375,14 @@
     this._setCurrentFile(null);
 
     if ( !this.onError(title, message, action) ) {
-      var t = OSjs._('ERR_GENERIC_APP_FMT', this.__label);
+      var t = OSjs.API._('ERR_GENERIC_APP_FMT', this.__label);
       if ( this.mainWindow ) {
-        //this.mainWindow._error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
+        //this.mainWindow._error(OSjs.API._('ERR_GENERIC_APP_FMT', this.__label), OSjs.API._('ERR_GENERIC_APP_ACTION_FMT', action), error);
         this.mainWindow._error(t, title, message);
         this.mainWindow._toggleDisabled(false);
         this.mainWindow._toggleLoading(false);
       } else {
-        //OSjs.API.error(OSjs._('ERR_GENERIC_APP_FMT', this.__label), OSjs._('ERR_GENERIC_APP_ACTION_FMT', action), error);
+        //OSjs.API.error(OSjs.API._('ERR_GENERIC_APP_FMT', this.__label), OSjs.API._('ERR_GENERIC_APP_ACTION_FMT', action), error);
         OSjs.API.error(t, title, message);
       }
     }
@@ -460,7 +460,7 @@
 
     function _openFile(item) {
       if ( !Utils.checkAcceptMime(item.mime, opt.mimes) ) {
-        OSjs.API.error(self.__label, OSjs._('ERR_FILE_APP_OPEN'), OSjs._('ERR_FILE_APP_OPEN_FMT', item.path, item.mime));
+        OSjs.API.error(self.__label, OSjs.API._('ERR_FILE_APP_OPEN'), OSjs.API._('ERR_FILE_APP_OPEN_FMT', item.path, item.mime));
         return;
       }
 
@@ -477,11 +477,11 @@
       item._opts = {dataSource: self.onCheckDataSource(item)};
       VFS.read(item, function(error, result) {
         if ( error ) {
-          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), error, 'onOpen');
+          self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), error, 'onOpen');
           return;
         }
         if ( result === false ) {
-          self._onError(OSjs._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), OSjs._('Unknown error'), 'onOpen');
+          self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), OSjs.API._('Unknown error'), 'onOpen');
           return;
         }
         self._doOpen(item, result);

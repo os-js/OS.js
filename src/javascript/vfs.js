@@ -160,7 +160,7 @@
   function internalCall(name, args, callback) {
     API.call('fs', {'method': name, 'arguments': args}, function(res) {
       if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        callback(res.error || OSjs._('Fatal error'));
+        callback(res.error || OSjs.API._('Fatal error'));
       } else {
         callback(false, res.result);
       }

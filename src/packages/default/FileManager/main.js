@@ -51,7 +51,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
+    return OSjs.API.__.apply(this, args);
   }
 
   var notificationWasDisplayed = {};
@@ -171,7 +171,7 @@
 
     fileView.onError = function(error) {
       self._toggleLoading(false);
-      self._error(OSjs._("ERR_GENERIC_APP_FMT", self.title), OSjs._("ERR_GENERIC_APP_REQUEST"), error);
+      self._error(OSjs.API._("ERR_GENERIC_APP_FMT", self.title), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
     };
 
     var menuAction = function(action, check) {
@@ -263,45 +263,45 @@
       }
     };
 
-    menuBar.addItem(OSjs._("File"), [
-      {title: OSjs._('Create directory'), onClick: function() {
+    menuBar.addItem(OSjs.API._("File"), [
+      {title: OSjs.API._('Create directory'), onClick: function() {
         menuAction('mkdir');
       }},
-      {title: OSjs._('Upload'), onClick: function() {
+      {title: OSjs.API._('Upload'), onClick: function() {
         menuAction('upload');
       }},
-      {title: OSjs._('Close'), onClick: function() {
+      {title: OSjs.API._('Close'), onClick: function() {
         self._close();
       }}
     ]);
 
-    menuBar.addItem(OSjs._("Edit"), [
-      {name: 'Rename', title: OSjs._('Rename'), onClick: function() {
+    menuBar.addItem(OSjs.API._("Edit"), [
+      {name: 'Rename', title: OSjs.API._('Rename'), onClick: function() {
         menuAction('rename', true);
       }},
-      {name: 'Delete', title: OSjs._('Delete'), onClick: function() {
+      {name: 'Delete', title: OSjs.API._('Delete'), onClick: function() {
         menuAction('delete', true);
       }},
-      {name: 'Information', title: OSjs._('Information'), onClick: function() {
+      {name: 'Information', title: OSjs.API._('Information'), onClick: function() {
         menuAction('info', true);
       }},
-      {name: 'OpenWith', title: OSjs._('Open With ...'), onClick: function() {
+      {name: 'OpenWith', title: OSjs.API._('Open With ...'), onClick: function() {
         menuAction('openWith', true);
       }}
     ]);
 
     var viewTypeMenu = [
-      {name: 'ListView', title: OSjs._('List View'), onClick: function() {
+      {name: 'ListView', title: OSjs.API._('List View'), onClick: function() {
         fileView.setViewType('ListView');
         self._focus();
         app._setArgument('viewType', 'ListView');
       }},
-      {name: 'IconView', title: OSjs._('Icon View'), onClick: function() {
+      {name: 'IconView', title: OSjs.API._('Icon View'), onClick: function() {
         fileView.setViewType('IconView');
         self._focus();
         app._setArgument('viewType', 'IconView');
       }},
-      {name: 'TreeView', title: OSjs._('Tree View'), onClick: function() {
+      {name: 'TreeView', title: OSjs.API._('Tree View'), onClick: function() {
         fileView.setViewType('TreeView');
         self._focus();
         app._setArgument('viewType', 'TreeView');
@@ -309,8 +309,8 @@
     ];
 
     var chk;
-    menuBar.addItem(OSjs._("View"), [
-      {title: OSjs._('Refresh'), onClick: function() {
+    menuBar.addItem(OSjs.API._("View"), [
+      {title: OSjs.API._('Refresh'), onClick: function() {
         fileView.refresh();
         self._focus();
       }},
@@ -339,11 +339,11 @@
           self._focus();
         }
       },
-      {title: OSjs._('View type'), menu: viewTypeMenu}
+      {title: OSjs.API._('View type'), menu: viewTypeMenu}
     ]);
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {
-      if ( mtitle === OSjs._('File') ) return;
+      if ( mtitle === OSjs.API._('File') ) return;
 
       var fileView = self._getGUIElement('FileManagerFileView');
       var sel = fileView.getSelected();
@@ -399,12 +399,12 @@
 
     sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'filename', title: OSjs._('Filename')},
-      {key: 'mime', title: OSjs._('Mime'), visible: false},
-      {key: 'size', title: OSjs._('Size'), visible: false},
+      {key: 'filename', title: OSjs.API._('Filename')},
+      {key: 'mime', title: OSjs.API._('Mime'), visible: false},
+      {key: 'size', title: OSjs.API._('Size'), visible: false},
       {key: 'internal', title: 'Internal', visible: false},
-      {key: 'path', title: OSjs._('Path'), visible: false, domProperties: {width: "70"}},
-      {key: 'type', title: OSjs._('Type'), visible: false, domProperties: {width: "50"}}
+      {key: 'path', title: OSjs.API._('Path'), visible: false, domProperties: {width: "70"}},
+      {key: 'type', title: OSjs.API._('Type'), visible: false, domProperties: {width: "50"}}
      ]);
     sideView.setRows(sideViewItems);
     sideView.onActivate = function(el, ev, item) {
@@ -554,9 +554,9 @@
     var _onError = function(error) {
       var win = self._getWindow('ApplicationFileManagerWindow');
       if ( win ) {
-        win._error(OSjs._("ERR_GENERIC_APP_FMT", self.__label), OSjs._("ERR_GENERIC_APP_REQUEST"), error);
+        win._error(OSjs.API._("ERR_GENERIC_APP_FMT", self.__label), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
       } else {
-        OSjs.API.error(OSjs._("ERR_GENERIC_APP_FMT", self.__label), OSjs._("ERR_GENERIC_APP_REQUEST"), error);
+        OSjs.API.error(OSjs.API._("ERR_GENERIC_APP_FMT", self.__label), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
       }
 
       callback(false);

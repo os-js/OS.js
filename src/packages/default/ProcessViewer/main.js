@@ -51,9 +51,9 @@
 
     var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView', {indexKey: 'pid'}), root);
     listView.setColumns([
-      {key: 'pid',    title: OSjs._('PID'), domProperties: {width: "50"}},
-      {key: 'name',   title: OSjs._('Name')},
-      {key: 'alive',  title: OSjs._('Alive'), domProperties: {width: "100"}},
+      {key: 'pid',    title: OSjs.API._('PID'), domProperties: {width: "50"}},
+      {key: 'name',   title: OSjs.API._('Name')},
+      {key: 'alive',  title: OSjs.API._('Alive'), domProperties: {width: "100"}},
       {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
     ]);
 

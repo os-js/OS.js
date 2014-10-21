@@ -55,7 +55,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.__.apply(this, args);
+    return OSjs.API.__.apply(this, args);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -320,11 +320,11 @@
               msg = _('Media source not supported');
               break;
             default:
-              msg = OSjs._('Unknown error');
+              msg = OSjs.API._('Unknown error');
               break;
           }
         } catch ( e ) {
-          msg = OSjs._('ERR_GENERIC_APP_FATAL_FMT', e);
+          msg = OSjs.API._('ERR_GENERIC_APP_FATAL_FMT', e);
         }
 
         this.onError(ev, this, msg);
@@ -430,14 +430,14 @@
     };
 
     var menuBar = this._addGUIElement(new GUI.MenuBar('MusicPlayerMenuBar'), root);
-    menuBar.addItem(OSjs._("File"), [
-      {title: OSjs._('Open'), name: 'Open', onClick: function() {
+    menuBar.addItem(OSjs.API._("File"), [
+      {title: OSjs.API._('Open'), name: 'Open', onClick: function() {
         _openFile(false);
       }},
-      {title: OSjs._('Add'), name: 'Add', onClick: function() {
+      {title: OSjs.API._('Add'), name: 'Add', onClick: function() {
         _openFile(true);
       }},
-      {title: OSjs._('Close'), name: 'Close', onClick: function() {
+      {title: OSjs.API._('Close'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
@@ -546,7 +546,7 @@
     };
     this.player.onError = function(ev, player, msg) {
       self.updateInfo(ev, null, slider);
-      self._error(OSjs._('ERR_GENERIC_APP_FMT', self.title), _('Failed to play file'), msg);
+      self._error(OSjs.API._('ERR_GENERIC_APP_FMT', self.title), _('Failed to play file'), msg);
     };
     this.player.onTrackEnded = function(ev, player) {
       if ( self.playlist.isLast() ) return;
@@ -567,10 +567,10 @@
 
     var pl = this._addGUIElement(new GUI.ListView('MusicPlayerPlaylist'), root);
     pl.setColumns([
-      {key: 'name',     title: OSjs._('Name')},
-      {key: 'filename', title: OSjs._('Filename'),  visible: false},
-      {key: 'mime',     title: OSjs._('MIME'),      visible: false},
-      {key: 'index',    title: OSjs._('Index'),     visible: false}
+      {key: 'name',     title: OSjs.API._('Name')},
+      {key: 'filename', title: OSjs.API._('Filename'),  visible: false},
+      {key: 'mime',     title: OSjs.API._('MIME'),      visible: false},
+      {key: 'index',    title: OSjs.API._('Index'),     visible: false}
      ]);
 
     pl.onActivate = function(ev, el, item) {
@@ -794,7 +794,7 @@
     if ( !mime.match(/^audio/) ) {
       var msg = _('The audio type is not supported: {0}', mime);
       var win = this._getWindow('ApplicationMusicPlayerWindow');
-      win._error(OSjs._("ERR_GENERIC_APP_FMT", win.title), _("Failed to play file"), msg);
+      win._error(OSjs.API._("ERR_GENERIC_APP_FMT", win.title), _("Failed to play file"), msg);
       return;
     }
 

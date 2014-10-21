@@ -40,8 +40,8 @@
     this.selectedApp  = null;
     this.useDefault   = false;
 
-    var msg = ([OSjs._('Choose an application to open'), '<br />' ,OSjs.Utils.format('<span>{0}</span>', this.filename), OSjs.Utils.format('({0})', this.mime)]).join(' ');
-    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: OSjs._('Choose Application'), message: msg}, {width:400, height:360}, onClose]);
+    var msg = ([OSjs.API._('Choose an application to open'), '<br />' ,OSjs.Utils.format('<span>{0}</span>', this.filename), OSjs.Utils.format('({0})', this.mime)]).join(' ');
+    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: OSjs.API._('Choose Application'), message: msg}, {width:400, height:360}, onClose]);
   };
 
   ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
@@ -56,7 +56,7 @@
     if ( !val ) {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
-        var d = new OSjs.Dialogs.Alert(OSjs._('You need to select an application'));
+        var d = new OSjs.Dialogs.Alert(OSjs.API._('You need to select an application'));
         wm.addWindow(d);
         this._addChild(d);
       }
@@ -104,7 +104,7 @@
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
     listView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: '16'}},
-      {key: 'name',  title: OSjs._('Name')},
+      {key: 'name',  title: OSjs.API._('Name')},
       {key: 'key',   title: 'Key', visible: false}
      ]);
     listView.onActivate = function(ev, el, item) {
@@ -126,7 +126,7 @@
     listView.setRows(list);
     listView.render();
 
-    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: OSjs._('Use as default application for {0}', this.mime), value: this.useDefault, onChange: function(el, ev, value) {
+    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: OSjs.API._('Use as default application for {0}', this.mime), value: this.useDefault, onChange: function(el, ev, value) {
       self.useDefault = value ? true : false;
     }}), container);
 
