@@ -489,7 +489,7 @@
     if ( wm ) {
       wm.notification({
         title: 'External Storage',
-        message: 'Authentication may require you to sign in. A popup window may appear',
+        message: 'Using external services requires authorization. A popup-window may appear.',
         icon: 'status/dialog-information.png'
       });
     }

@@ -121,6 +121,7 @@
     match: /^osjs\:\/\//,
     icon: 'devices/harddrive.png',
     visible: true,
+    internal: true,
     enabled: function() {
       return true;
     },
