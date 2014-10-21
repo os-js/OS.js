@@ -84,7 +84,6 @@
     "output": "dist/osjs.js",
     "files": [
       "src/javascript/utils.js",
-      "src/javascript/locales.js",
       "src/javascript/core.js",
       "src/javascript/vfs.js",
       "src/javascript/vfs/osjs.js",
