@@ -7,6 +7,8 @@ WARNING: API Change
 * obt: You can now specify which files to copy into dist in metadata (whitelist) Makes building much faster
 * VFS: Changed desktop notification message
 * Core: Collapsed OSjs.Hooks into OSjs.Core.hooks
+* Core: Moved tranlation functions to OSjs.API._()
+* Core: Moved locale functions to OSjs.API.*
 * Misc: Moved version stamp into build.json
 
 # 2.0.0-alpha33
