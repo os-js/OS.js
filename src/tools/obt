@@ -203,6 +203,29 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     return list;
   }
 
+  function checkManifest(manifest, relpath) {
+    if ( !manifest ) {
+      console.log("- \033[0;31mSkipped '%s' (no manifest)\033[0m", relpath);
+      return null;
+    }
+    if ( !manifest.className ) {
+      console.log("- \033[0;31mSkipped '%s' (missing className)\033[0m", relpath);
+      return null;
+    }
+
+    if ( typeof manifest === 'string' ) {
+      console.log("- \033[0;31mSkipped '%s' (invalid manifest)\033[0m", relpath);
+      return null;
+    }
+
+    if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
+      console.log("- \033[0;31mSkipped '%s' (disabled)\033[0m", relpath);
+      return null;
+    }
+
+    return true;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // ACTIONS
   /////////////////////////////////////////////////////////////////////////////
@@ -333,6 +356,15 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       var dst = _path.join(ROOT, 'dist', 'packages', repo);
       var dir = _path.join(ROOT, 'dist', 'packages', repo, app);
 
+      var newmanpath  = _path.join(dst, "package.json");
+      var manpath     = _path.join(src, "package.json");
+      var man         = JSON.parse(_fs.readFileSync(manpath));
+
+      if ( checkManifest(man, app) === null ) {
+        return;
+      }
+
+      var copy_files = [];
       q.add(function(cb) {
         console.log("\033[1;32mBuilding Package \033[0;33m%s/\033[1;33m%s\033[0m", repo, app);
         cb();
@@ -341,11 +373,27 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         exec(['mkdir', '-p', dir], cb);
       });
       q.add(function(cb) {
-        exec(['cp', '-rf', src, dst], cb);
+        if ( copy_files.length ) {
+          var nq = new AQ();
+
+          copy_files.forEach(function(f) {
+            nq.add(function(ncb) {
+              exec(['cp', '-f', f, dst], ncb);
+            });
+          });
+
+          nq.run();
+        } else {
+          exec(['cp', '-rf', src, dst], cb);
+        }
       });
       q.add(function(cb) {
-        var manpath = _path.join(dir, "package.json");
-        var man     = JSON.parse(_fs.readFileSync(manpath));
+
+        if ( man.build && man.build.copy ) {
+          man.build.copy.forEach(function(iter) {
+            copy_files.push(_path.join(dir, iter));
+          });
+        }
 
         if ( man.type === 'extension' ) {
           cb();
@@ -394,7 +442,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
           _fs.writeFileSync(_path.join(dir, "combined.js"), combined_js.join("\n"));
           _fs.writeFileSync(_path.join(dir, "combined.css"), combined_css.join("\n"));
-          _fs.writeFileSync(manpath, JSON.stringify(man, null, 2));
+          _fs.writeFileSync(newmanpath, JSON.stringify(man, null, 2));
         }
 
         cb();
@@ -560,22 +608,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         var relpath = _path.basename(path);
         var manifest = JSON.parse(_fs.readFileSync(json_path));
 
-        if ( !manifest ) {
-          console.log("- \033[0;31mSkipped '%s' (no manifest)\033[0m", file);
-          return null;
-        }
-        if ( !manifest.className ) {
-          console.log("- \033[0;31mSkipped '%s' (missing className)\033[0m", file);
-          return null;
-        }
-
-        if ( typeof manifest === 'string' ) {
-          console.log("- \033[0;31mSkipped '%s' (invalid manifest)\033[0m", relpath);
-          return null;
-        }
-
-        if ( manifest['enabled'] === false || manifest['enabled'] === 'false' ) {
-          console.log("- \033[0;31mSkipped '%s' (disabled)\033[0m", relpath);
+        if ( checkManifest(manifest, relpath) === null ) {
           return null;
         }
 
