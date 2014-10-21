@@ -42,7 +42,7 @@
   OSjs.Locale       = OSjs.Locale       || {};
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.Hooks        = {};
-  OSjs.Version      = '2.0-alpha32';
+  OSjs.Version      = '2.0-alpha33';
 
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HOOKS

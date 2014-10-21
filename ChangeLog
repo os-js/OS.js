@@ -1,3 +1,20 @@
+# 2.0.0-alpha33
+
+* Themes: Custom WebKit scrollbar styles
+* Themes: Small fixes for custom input element styles
+* Core: Remove Settings namespace
+* Core: Moved default settings method to API.getDefaultSettings()
+* Core: Removed Drivers namespace
+* Core: Moved 'indexed-db' to Helpers
+* Core: Moved 'google'api' to Helpers
+* server-php: Bugfix for osjs:/// file reading (i forgot decoder)
+* CoreWM: Fixed WindowSwitcher
+* CoreWM: You can now DnD on to Windows in PanelItemWindowList, including peeking
+* GUI: Removed input tabindex (set to -1 for disable)
+* Windows: Added real tabindex (custom code)
+* jslint and small cleanups
+* DefaultApplication: Fixed save dialog default path
+
 # 2.0.0-alpha32
 
 * Added reverted version of repositories.json file
