@@ -33,12 +33,13 @@
   /**
    * Color Swatch
    */
-  var ColorSwatch = function(name, w, h, onSelect) {
+  var ColorSwatch = function(name, opts) {
+    opts = opts || {};
     this.$element = null;
     this.$canvas  = null;
-    this.width    = w || 100;
-    this.height   = h || 100;
-    this.onSelect = onSelect || function(r, g, b) {};
+    this.width    = opts.width || 100;
+    this.height   = opts.height || 100;
+    this.onSelect = opts.onSelect || function(r, g, b) {};
 
     if ( !OSjs.Compability.canvas ) {
       throw new Error('Canvas is not supported on your platform!');

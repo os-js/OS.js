@@ -102,9 +102,9 @@
     this.$color           = document.createElement('div');
     this.$color.className = 'ColorSelected';
 
-    this._addGUIElement(new OSjs.GUI.ColorSwatch('ColorDialogColorSwatch', 200, 200, function(r, g, b) {
+    this._addGUIElement(new OSjs.GUI.ColorSwatch('ColorDialogColorSwatch', {width: 200, height: 200, onSelect: function(r, g, b) {
       self.setColor(r, g, b);
-    }), this.$element);
+    }}), this.$element);
 
     this.$element.appendChild(sliders);
     this.$element.appendChild(this.$color);
