@@ -364,7 +364,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         return;
       }
 
-      var copy_files = [];
       q.add(function(cb) {
         console.log("\033[1;32mBuilding Package \033[0;33m%s/\033[1;33m%s\033[0m", repo, app);
         cb();
@@ -373,12 +372,23 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         exec(['mkdir', '-p', dir], cb);
       });
       q.add(function(cb) {
+
+        var copy_files = [];
+        if ( man.build && man.build.copy ) {
+          copy_files = man.build.copy;
+        }
         if ( copy_files.length ) {
           var nq = new AQ();
 
           copy_files.forEach(function(f) {
             nq.add(function(ncb) {
-              exec(['cp', '-f', f, dst], ncb);
+              var ndir = _path.join(dir, _path.dirname(f));
+              exec(['mkdir', '-p', ndir], ncb);
+            });
+            nq.add(function(ncb) {
+              var nsrc = _path.join(src, f);
+              var ndst = _path.join(dir, f);
+              exec(['cp', '-f', nsrc, ndst], ncb);
             });
           });
 
@@ -388,12 +398,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
         }
       });
       q.add(function(cb) {
-
-        if ( man.build && man.build.copy ) {
-          man.build.copy.forEach(function(iter) {
-            copy_files.push(_path.join(dir, iter));
-          });
-        }
 
         if ( man.type === 'extension' ) {
           cb();
