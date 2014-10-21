@@ -14,6 +14,7 @@
 * _[Documentation]_ Complete documentation for JavaScript
 
 # Low-priority
+* _[CoreWM]_ When DnD-ing items over windowlist panelitem, peek windows :)
 * _[Themes]_ More Themes
 * _[VFS]_ Finish Google Drive implementation
    - Add support for trash
@@ -23,17 +24,18 @@
    - Add support for comments
    - Add support for revisioning
 * _[Dialogs]_ Rewrite for better button handling
-* _[Application]_ MusicPlayer -- Finish
-* _[Application]_ MusicPlayer -- Node ApplicationAPI
-* _[Application]_ CoreWM -- Custom keyboard binding shortcuts
-* _[Application]_ CoreWM -- Finish panel item options
-* _[Application]_ Draw -- Finish features (marked in source)
-* _[Application]_ Draw -- Add more effects with the convolute method
-* _[Application]_ CodeMirror -- Probably needs a refactor
-* _[Application]_ Writer -- Finish
+* _[Application]_
+  - MusicPlayer -- Finish
+  - MusicPlayer -- Node ApplicationAPI
+  - CoreWM -- Custom keyboard binding shortcuts
+  - CoreWM -- Finish panel item options
+  - Draw -- Finish features (marked in source)
+  - Draw -- Add more effects with the convolute method
+  - CodeMirror -- Probably needs a refactor
+  - Writer -- Finish
 * _[GUI]_ Menu -- Bind keyboard buttons to menu items
 * _[GUI]_ GUIScrollbar
-* _[GUI]_ GUISelect -- Add support for icons
+* _[GUI]_ Write an alternative and fully custom GUISelect/GUISelectList
 
 # Other
 * _[Misc]_ Offline VFS ?!
