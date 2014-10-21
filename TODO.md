@@ -1,5 +1,6 @@
 
 # High-priority
+* _[Misc]_ There are some FIXME and TODO markers in the code
 * _[VFS]_ Finish Google Drive implementation
    - Copy file that already has this name fails (including upload)
    - Create dirs in subdirectories

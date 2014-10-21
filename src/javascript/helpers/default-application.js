@@ -427,9 +427,14 @@
       if ( this.currentFile && this.currentFile.mime ) {
         mime = this.currentFile.mime;
       }
-      if ( this.currentFile && this.currentFile.path ) {
-        opt.path = Utils.dirname(this.currentFile.path);
-        opt.filename = Utils.filename(this.currentFile.filename);
+      var currentPath = this.currentFile ? this.currentFile.path : '';
+      if ( !currentPath.match(/^\//) ) {
+        currentPath = OSjs.API.getDefaultPath('/') + currentPath;
+      }
+
+      if ( currentPath ) {
+        opt.path = Utils.dirname(currentPath);
+        opt.filename = Utils.filename(currentPath);
       }
 
       this.mainWindow._toggleDisabled(true);
