@@ -33,15 +33,15 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.API          = OSjs.API          || {};
   OSjs.Core         = OSjs.Core         || {};
+  OSjs.Core.hooks   = OSjs.Core.hooks   || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
-  OSjs.Locales      = OSjs.Locales       || {};
+  OSjs.Locales      = OSjs.Locales      || {};
   OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.Hooks        = {};
   OSjs.Version      = '2.0-alpha33';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -60,19 +60,19 @@
   ];
 
   _hooks.forEach(function(h) {
-    OSjs.Hooks[h] = OSjs.Hooks[h] || function __hookPlaceHolder() {};
+    OSjs.Core.hooks[h] = OSjs.Core.hooks[h] || function __hookPlaceHolder() {};
   });
 
   /**
    * Method for triggering a hook
    */
-  OSjs.Hooks._trigger = function(name, args, thisarg) {
+  function _triggerHook(name, args, thisarg) {
     thisarg = thisarg || OSjs;
     args = args || [];
 
-    if ( typeof OSjs.Hooks[name] === 'function' ) {
+    if ( typeof OSjs.Core.hooks[name] === 'function' ) {
       try {
-        OSjs.Hooks[name].apply(thisarg, args);
+        OSjs.Core.hooks[name].apply(thisarg, args);
       } catch ( e ) {
         console.warn('Error on Hook', e, e.stack);
       }
@@ -357,10 +357,10 @@
     }
 
     function _Loaded() {
-      OSjs.Hooks._trigger('onInited');
+      _triggerHook('onInited');
 
       _LaunchWM(function(/*app*/) {
-        OSjs.Hooks._trigger('onWMInited');
+        _triggerHook('onWMInited');
 
         _$LOADING.style.display = 'none';
         doPlaySound('service-login');
@@ -372,7 +372,7 @@
               globalOnResize();
             }, 500);
 
-            OSjs.Hooks._trigger('onSessionLoaded');
+            _triggerHook('onSessionLoaded');
           });
         });
 
@@ -473,7 +473,7 @@
 
       createVersionStamp();
 
-      OSjs.Hooks._trigger('onInitialize');
+      _triggerHook('onInitialize');
 
       _$SPLASH              = document.getElementById('LoadingScreen');
       _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
@@ -567,10 +567,10 @@
       _$LOADING = null;
     }
 
-    OSjs.Hooks._trigger('onLogout');
+    _triggerHook('onLogout');
 
     _HANDLER.logout(save, function() {
-      OSjs.Hooks._trigger('onShutdown');
+      _triggerHook('onShutdown');
 
       doPlaySound('service-logout');
       _shutdown();
@@ -831,7 +831,7 @@
               a.init(settings, result);
               onFinished(a, result);
 
-              OSjs.Hooks._trigger('onApplicationLaunched', [{
+              _triggerHook('onApplicationLaunched', [{
                 application: a,
                 name: n,
                 args: arg,
@@ -851,7 +851,7 @@
       }
     }
 
-    OSjs.Hooks._trigger('onApplicationLaunch', [n, arg]);
+    _triggerHook('onApplicationLaunch', [n, arg]);
 
     // Get metadata and check compability
     var data = _HANDLER.getApplicationMetadata(n);
