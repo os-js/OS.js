@@ -187,13 +187,12 @@
 
     cursorRequest.onsuccess = function(e) {
       var result = e.target.result;
-      if ( (!!result) === false ) {
+      if ( result ) {
+        list.push(result.value);
+      } else {
         console.info('OIndexedDB::list()', '=>', 'onsuccess()', 'FINISHED', list);
         callback(false, list);
         return;
-      }
-      if ( result ) {
-        list.push(result.value);
       }
       result.continue();
     };

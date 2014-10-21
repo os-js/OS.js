@@ -78,7 +78,7 @@
     } else {
       console.warn('No such Hook', name);
     }
-  };
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL VARIABLES
@@ -1041,7 +1041,7 @@
     }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
-  };
+  }
 
   /**
    * Same as _ only you can supply the list as first argument
@@ -1058,7 +1058,7 @@
     }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
-  };
+  }
 
   /**
    * Get current locale
@@ -1066,7 +1066,7 @@
    */
   function doGetLocale() {
     return CurrentLocale;
-  };
+  }
 
   /**
    * Set locale
@@ -1082,8 +1082,7 @@
     }
 
     console.log('doSetLocale()', CurrentLocale);
-  };
-
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
