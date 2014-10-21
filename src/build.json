@@ -4,7 +4,7 @@
 
   "settings" : {
     "frontend" : {
-      "Version" : "2.0-alpha33",
+      "Version" : "2.0-alpha34",
 
       "Core" : {
         "APIURI":           "/API",

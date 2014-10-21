@@ -1,3 +1,14 @@
+# 2.0.0-alpha34
+
+WARNING: API Change
+
+* New Application Manifest layout (collapsed, finally)
+* obt: buildPackages() now only does the ones that are actually enabled
+* obt: You can now specify which files to copy into dist in metadata (whitelist) Makes building much faster
+* VFS: Changed desktop notification message
+* Core: Collapsed OSjs.Hooks into OSjs.Core.hooks
+* Misc: Moved version stamp into build.json
+
 # 2.0.0-alpha33
 
 * Themes: Custom WebKit scrollbar styles
