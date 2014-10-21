@@ -388,11 +388,11 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
             nq.add(function(ncb) {
               var nsrc = _path.join(src, f);
               var ndst = _path.join(dir, f);
-              exec(['cp', '-f', nsrc, ndst], ncb);
+              exec(['cp', '-rf', nsrc, ndst], ncb);
             });
           });
 
-          nq.run();
+          nq.run(cb);
         } else {
           exec(['cp', '-rf', src, dst], cb);
         }
