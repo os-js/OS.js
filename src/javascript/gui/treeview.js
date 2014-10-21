@@ -230,7 +230,7 @@
     this.onCollapse.apply(this, [ev, (item ? item._element : null), item]);
   };
 
-  TreeView.prototype.onKeyPress = function(ev) {
+  TreeView.prototype.onGlobalKeyPress = function(ev) {
   };
 
   TreeView.prototype.setData = function(data, render) {

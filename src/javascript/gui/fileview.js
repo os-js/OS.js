@@ -694,9 +694,9 @@
     return true;
   };
 
-  FileView.prototype.onKeyPress = function(ev) {
+  FileView.prototype.onGlobalKeyPress = function(ev) {
     if ( this.viewRef ) {
-      return this.viewRef.onKeyPress(ev);
+      return this.viewRef.onGlobalKeyPress(ev);
     }
     return true;
   };

@@ -1495,16 +1495,13 @@
   };
 
   Window.prototype._onKeyEvent = function(ev) {
-
     if ( ev.keyCode === OSjs.Utils.Keys.TAB ) {
       this._nextTabIndex();
     }
 
     if ( this._guiElement ) {
       if ( ev.type === 'keydown' ) {
-        if ( !this._guiElement.hasCustomKeys ) {
-          this._guiElement.onKeyPress(ev);
-        }
+        this._guiElement.onGlobalKeyPress(ev);
       }
     }
   };

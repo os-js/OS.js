@@ -226,6 +226,7 @@
       this.focused        = false;
       this.tabIndex       = -1; // Set in Window::_addGUIElement()
       this.wid            = 0; // Set in Window::_addGUIElement()
+      this.hasTabIndex    = opts.hasTabIndex === true;
       this.hasChanged     = false;
       this.hasCustomKeys  = opts.hasCustomKeys === true;
       this.onItemDropped  = opts.onItemDropped  || function() {};
@@ -352,7 +353,7 @@
     return true;
   };
 
-  GUIElement.prototype.onKeyPress = function(ev) {
+  GUIElement.prototype.onGlobalKeyPress = function(ev) {
     if ( this.hasCustomKeys ) { return false; }
     if ( !this.focused ) { return false; }
     if ( !this.opts.onKeyPress ) { return false; }
@@ -412,6 +413,8 @@
   };
 
   GUIElement.prototype._setTabIndex = function(i) {
+    if ( !this.hasTabIndex ) { return; }
+
     this.tabIndex = parseInt(i, 10) || -1;
     if ( this.$element ) {
       this.$element.setAttribute('data-tabindex', this.tabIndex.toString());
@@ -540,6 +543,22 @@
       }
     }
     return false;
+  };
+
+  _Input.prototype.onGlobalKeyPress = function(ev) {
+    if ( this.destroyed ) { return false; }
+    if ( !this.focused ) { return false; }
+
+    // Simulate click
+    if ( this.$input && ev.keyCode === OSjs.Utils.Keys.SPACE ) {
+      if ( this.tagName === 'input' && (this.type === 'checkbox' || this.type === 'radio') ) {
+        var e = document.createEvent("MouseEvents");
+        e.initEvent("click", true, true);
+        this.$input.dispatchEvent(e);
+      }
+    }
+
+    return GUIElement.prototype.onGlobalKeyPress.apply(this, arguments);
   };
 
   _Input.prototype.getDisabled = function() {
@@ -736,9 +755,9 @@
     return item;
   };
 
-  _DataView.prototype.onKeyPress = function(ev) {
+  _DataView.prototype.onGlobalKeyPress = function(ev) {
     if ( this.destroyed ) { return false; }
-    if ( GUIElement.prototype.onKeyPress.apply(this, arguments) ) { return false; }
+    if ( GUIElement.prototype.onGlobalKeyPress.apply(this, arguments) ) { return false; }
 
     var valid = [OSjs.Utils.Keys.UP, OSjs.Utils.Keys.DOWN, OSjs.Utils.Keys.LEFT, OSjs.Utils.Keys.RIGHT, OSjs.Utils.Keys.ENTER];
     if ( !OSjs.Utils.inArray(valid, ev.keyCode) ) {
