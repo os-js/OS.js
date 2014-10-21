@@ -224,6 +224,7 @@
       this.id             = _Count;
       this.destroyed      = false;
       this.focused        = false;
+      this.tabIndex       = -1; // Set in Window::_addGUIElement()
       this.wid            = 0; // Set in Window::_addGUIElement()
       this.hasChanged     = false;
       this.hasCustomKeys  = opts.hasCustomKeys === true;
@@ -327,12 +328,13 @@
   };
 
   GUIElement.prototype._fireHook = function(k, args) {
+    var self = this;
     args = args || {};
     if ( this._hooks[k] ) {
       this._hooks[k].forEach(function(hook, i) {
         if ( hook ) {
           try {
-            hook.apply(this, args);
+            hook.apply(self, args);
           } catch ( e ) {
             console.warn('GUIElement::_fireHook() failed to run hook', k, i, e);
             console.warn(e.stack);
@@ -409,6 +411,13 @@
     };
   };
 
+  GUIElement.prototype._setTabIndex = function(i) {
+    this.tabIndex = parseInt(i, 10) || -1;
+    if ( this.$element ) {
+      this.$element.setAttribute('data-tabindex', this.tabIndex.toString());
+    }
+  };
+
   /**
    * _Input
    *
@@ -463,6 +472,7 @@
     var self = this;
     var el = GUIElement.prototype.init.apply(this, [this.className]);
     this.$input = document.createElement(this.tagName);
+    this.$input.setAttribute('tabindex', '-1');
 
     if ( this.tagName === 'textarea' || this.type === 'text' || this.type === 'password' ) {
       if ( this.placeholder ) {

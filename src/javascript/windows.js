@@ -962,6 +962,7 @@
     }
     if ( gel instanceof OSjs.GUI.GUIElement ) {
       gel._setWindow(this);
+      gel._setTabIndex(this._guiElements.length + 1);
 
       //console.log('OSjs::Core::Window::_addGUIElement()');
       if ( gel.opts && gel.opts.focusable ) {
@@ -1457,6 +1458,27 @@
     return true;
   };
 
+  Window.prototype._nextTabIndex = function() {
+    return;
+    var found = null;
+    var next  = (this._guiElement ? (this._guiElement.tabIndex || -1) : -1) + 1;
+
+    console.debug('Window::_nextTabIndex()', next);
+    if ( next <= 0 ) { return; }
+    if ( next > this._guiElements.length ) { next = 1; }
+
+    this._guiElements.forEach(function(iter) {
+      if ( iter && iter.opts.focusable && iter.tabIndex === next ) {
+        found = iter;
+        return false;
+      }
+    });
+    console.debug('Window::_nextTabIndex()', found);
+    if ( found ) {
+      found.focus();
+    }
+  };
+
   //
   // Events
   //
@@ -1468,9 +1490,16 @@
   };
 
   Window.prototype._onKeyEvent = function(ev) {
+
+    if ( ev.keyCode === OSjs.Utils.Keys.TAB ) {
+      this._nextTabIndex();
+    }
+
     if ( this._guiElement ) {
-      if ( ev.type === 'keydown' && !this._guiElement.hasCustomKeys ) {
-        this._guiElement.onKeyPress(ev);
+      if ( ev.type === 'keydown' ) {
+        if ( !this._guiElement.hasCustomKeys ) {
+          this._guiElement.onKeyPress(ev);
+        }
       }
     }
   };

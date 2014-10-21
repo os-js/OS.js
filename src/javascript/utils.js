@@ -503,17 +503,22 @@
     return res;
   };
 
-  OSjs.Utils.isInputElement = function(ev) {
+  OSjs.Utils.isFormElement = function(ev, types) {
+    types = types || ['TEXTAREA', 'INPUT', 'SELECT'];
+
     var d = ev.srcElement || ev.target;
     if ( d ) {
-      var t = d.tagName.toUpperCase();
-      if ( t === 'TEXTAREA' || t === 'INPUT' ) {
+      if ( types.indexOf(d.tagName.toUpperCase()) >= 0 ) {
         if ( !(d.readOnly || d.disabled) ) {
           return true;
         }
       }
     }
     return false;
+  };
+
+  OSjs.Utils.isInputElement = function(ev) {
+    return this.isFormElement(ev); //, ['TEXTAREA', 'INPUT']);
   };
 
   /////////////////////////////////////////////////////////////////////////////

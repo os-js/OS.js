@@ -297,11 +297,15 @@
    */
   function globalOnKeyDown(ev) {
     var d = ev.srcElement || ev.target;
-    var doPrevent = d.tagName === 'BODY' ? true : false;
-    var isHTMLInput = OSjs.Utils.isInputElement(ev);
 
+    // Some keys must be cancelled
+    var doPrevent = d.tagName === 'BODY' ? true : false;
     if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
-      if ( !isHTMLInput ) {
+      if ( !OSjs.Utils.isInputElement(ev) ) {
+        doPrevent = true;
+      }
+    } else if ( ev.keyCode === OSjs.Utils.Keys.TAB ) {
+      if ( OSjs.Utils.isFormElement(ev) ) {
         doPrevent = true;
       }
     }
@@ -310,11 +314,12 @@
       ev.preventDefault();
     }
 
-    var win = _WM ? _WM.getCurrentWindow() : null;
-    if ( win ) {
-      win._onKeyEvent(ev);
-    }
+    // WindowManager and Window must always recieve events
     if ( _WM ) {
+      var win = _WM.getCurrentWindow();
+      if ( win ) {
+        win._onKeyEvent(ev);
+      }
       _WM.onKeyDown(ev, win);
     }
   }
