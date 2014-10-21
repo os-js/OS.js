@@ -63,8 +63,8 @@
     this.$label = document.createElement('label');
     this.$label.appendChild(document.createTextNode(this.label || ''));
     this._addEventListener(this.$label, 'click', function(ev) {
-      var e = document.createEvent("MouseEvents");
-      e.initEvent("click", true, true);
+      var e = document.createEvent('MouseEvents');
+      e.initEvent('click', true, true);
       self.$input.dispatchEvent(e);
     });
 

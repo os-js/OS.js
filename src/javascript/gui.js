@@ -552,8 +552,8 @@
     // Simulate click
     if ( this.$input && ev.keyCode === OSjs.Utils.Keys.SPACE ) {
       if ( this.tagName === 'input' && (this.type === 'checkbox' || this.type === 'radio') ) {
-        var e = document.createEvent("MouseEvents");
-        e.initEvent("click", true, true);
+        var e = document.createEvent('MouseEvents');
+        e.initEvent('click', true, true);
         this.$input.dispatchEvent(e);
       }
     }

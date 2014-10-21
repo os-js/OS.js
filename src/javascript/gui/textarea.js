@@ -62,9 +62,7 @@
         var target = e.target;
         var value = target.value;
 
-        target.value = value.substring(0, start)
-                        + "\t"
-                        + value.substring(end);
+        target.value = value.substring(0, start) + '\t' + value.substring(end);
 
         this.selectionStart = this.selectionEnd = start + 1;
         e.preventDefault();
