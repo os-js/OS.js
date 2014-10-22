@@ -540,8 +540,8 @@
 
       API.createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
 
+      var dmodule = getModuleFromPath(args.path);
       if ( !isInternalModule(args.path) ) {
-        var dmodule = getModuleFromPath(args.path);
         var file = args;
         if ( !(file instanceof OSjs.VFS.File) ) {
           file = new OSjs.VFS.File(args.path);
@@ -564,6 +564,21 @@
         return;
       }
 
+      OSjs.VFS.url(args, function(error, result) {
+        if ( error ) {
+          return callback(error);
+        }
+        Utils.AjaxDownload(result, function(data) {
+          API.destroyLoading(lname);
+          callback(false, data);
+        }, function(err) {
+          API.destroyLoading(lname);
+          callback(err);
+        });
+      });
+
+
+      /*
       var path = getRelativeURL(args.path);
       Utils.AjaxDownload(path, function(data) {
         API.destroyLoading(lname);
@@ -572,6 +587,7 @@
         API.destroyLoading(lname);
         callback(err);
       });
+      */
     };
   })();
 
