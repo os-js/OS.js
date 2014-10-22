@@ -292,6 +292,7 @@ body, input, button, textarea, label, select {
 }
 .Window > .WindowTop:active {
   cursor : move;
+  cursor : pointer;
 }
 .Window > .WindowTop > .WindowTitle {
   text-shadow: @theme_text_shadow;
@@ -300,6 +301,7 @@ body, input, button, textarea, label, select {
 }
 .Window > .WindowTop > .WindowTitle:active {
   cursor : move;
+  cursor : pointer;
 }
 .Window.WindowHintFocused .WindowTitle {
   color : @theme_base_fg_color;
@@ -308,8 +310,7 @@ body, input, button, textarea, label, select {
   cursor : pointer;
 }
 .WindowResize {
-  cursor : se-resize;
-  background : rgba(34, 34, 34, .1);
+  cursor : move;
 }
 .WindowTop, .WindowTop > * {
   cursor : default;

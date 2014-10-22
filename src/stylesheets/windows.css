@@ -128,11 +128,16 @@
 
 .Window > .WindowResize {
   position : absolute;
-  bottom : 0px;
-  right : 0px;
-  width : 10px;
-  height : 10px;
-  z-index : 10;
+  top : -34px;
+  left : -8px;
+  right : -8px;
+  bottom : -8px;
+  z-index : -1;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .Window > .WindowLoading {
