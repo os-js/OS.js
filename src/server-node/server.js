@@ -33,6 +33,7 @@
   /**
    * Globals and default settings etc.
    */
+  var HANDLER = null;
   var ROOTDIR = _path.join(_path.dirname(__filename), '/../../');
   var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
   var CONFIG  = {
@@ -205,7 +206,16 @@
             break;
 
             default :
-              throw "Invalid method: " + method;
+              var found = false;
+              if ( HANDLER ) {
+                found = HANDLER.request(method, args, function(error, result) {
+                  respondJSON({result: result, error: error}, response);
+                }, request, response);
+              }
+
+              if ( !found ) {
+                throw "Invalid method: " + method;
+              }
             break;
           }
         } catch ( e ) {
@@ -259,10 +269,14 @@
       CONFIG.directory = _fs.realpathSync('.');
     }
 
-
+    HANDLER = require(_path.join(ROOTDIR, 'src', 'server-node', 'handlers', settConfig.handler , 'handler.js'));
   })();
 
   console.log(JSON.stringify(CONFIG, null, 2));
+  if ( !HANDLER ) {
+    console.log("Invalid handler %s defined", CONFIG.handler);
+    return;
+  }
 
   /**
    * Server instance

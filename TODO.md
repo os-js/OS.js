@@ -6,10 +6,7 @@
    - Create dirs in subdirectories
    - Deleting a folder does not restore the root parent of items
 * _[Backend]_ Finish Node.js backend
-  - Custom handler support
-  - Add User/Sessions in Core API (take from PHP)
-  - Add 'demo' handler (take from PHP)
-  - Add 'example' handler (take from PHP)
+  - Add User/Sessions in Core API
 * _[Locales]_ Finish the format strings
 * _[Backend]_ Finish WebSocket hander implementation
 * _[Documentation]_ Complete documentation for JavaScript
