@@ -384,6 +384,8 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
+    var self = this;
+
     function doRequest() {
       function _finished(error, result) {
         if ( !error ) {
