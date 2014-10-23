@@ -261,6 +261,11 @@
         if ( cur.type === 'dir' ) return;
         app.open(cur, true);
       }
+
+      else if ( action == 'download' ) {
+        if ( cur.type === 'dir' ) return;
+        app.download(cur);
+      }
     };
 
     menuBar.addItem(OSjs.API._("File"), [
@@ -287,6 +292,9 @@
       }},
       {name: 'OpenWith', title: OSjs.API._('Open With ...'), onClick: function() {
         menuAction('openWith', true);
+      }},
+      {name: 'Download', title: OSjs.API._('Download to computer'), onClick: function() {
+        menuAction('download', true);
       }}
     ]);
 
@@ -587,6 +595,14 @@
 
   ApplicationFileManager.prototype.copy = function(src, dest, callback) {
     return this._action('copy', [src, dest], callback);
+  };
+
+  ApplicationFileManager.prototype.download = function(item) {
+    VFS.url(item, function(error, result) {
+      if ( result ) {
+        window.open(result);
+      }
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
