@@ -141,8 +141,8 @@
 
       var realSrc = getRealPath(src, config);
       var realDst = getRealPath(dst, config);
-      var srcPath = _path.join(realSrc.root, src);
-      var dstPath = _path.join(realDst.root, dst);
+      var srcPath = realSrc.root; //_path.join(realSrc.root, src);
+      var dstPath = realDst.root; //_path.join(realDst.root, dst);
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {
           _fs.exists(dstPath, function(exists) {
@@ -171,8 +171,8 @@
 
       var realSrc = getRealPath(src, config);
       var realDst = getRealPath(dst, config);
-      var srcPath = _path.join(realSrc.root, src);
-      var dstPath = _path.join(realDst.root, dst);
+      var srcPath = realSrc.root; //_path.join(realSrc.root, src);
+      var dstPath = realDst.root; //_path.join(realDst.root, dst);
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {
           _fs.exists(dstPath, function(exists) {
