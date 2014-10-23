@@ -174,6 +174,8 @@
       openDatabase   : (('openDatabase'    in window) && window['openDatabase']   !== null),
       socket         : (('WebSocket'       in window) && window['WebSocket']      !== null),
       worker         : (('Worker'          in window) && window['Worker']         !== null),
+      file           : (('File'            in window) && window['File']           !== null),
+      blob           : (('Blob'            in window) && window['Blob']           !== null),
       dnd            : ('draggable' in document.createElement('span')),
       touch          : ('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch)),
       orientation    : ('onorientationchange' in window),
