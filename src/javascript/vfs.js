@@ -479,7 +479,10 @@
     }
 
     function _dialogClose(btn, filename, mime, size) {
-      if ( btn !== 'ok' && btn !== 'complete' ) { return; }
+      if ( btn !== 'ok' && btn !== 'complete' ) {
+        callback(false, false);
+        return;
+      }
 
 
       var file = new OSjs.VFS.File({
@@ -506,7 +509,7 @@
         if ( args.win ) {
           args.app._createDialog('FileUpload', [args.destination, f, _dialogClose], args.win);
         } else {
-          args.app.addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
+          args.app._addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
         }
       } else {
         Utils.AjaxUpload(f, 0, args.destination, {
