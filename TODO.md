@@ -21,6 +21,7 @@
    - Add support for comments
    - Add support for revisioning
 * _[Dialogs]_ Rewrite for better button handling
+* _[Application]_ Go over all applications and collapse namespace calls (OSjs.API.* => API.*)
 * _[Application]_
   - MusicPlayer -- Finish
   - MusicPlayer -- Node ApplicationAPI
@@ -30,6 +31,7 @@
   - Draw -- Add more effects with the convolute method
   - CodeMirror -- Probably needs a refactor
   - Writer -- Finish
+  - FileManager -- Rewrite. Has become very messy over time and can be significantly simplified
 * _[GUI]_ Menu -- Bind keyboard buttons to menu items
 * _[GUI]_ GUIScrollbar
 * _[GUI]_ Write an alternative and fully custom GUISelect/GUISelectList
