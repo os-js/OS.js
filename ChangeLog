@@ -1,3 +1,20 @@
+# 2.0.0-alpha35
+
+* VFS: Fixed download() across all modules
+* VFS: Better error handling for file uploads
+* VFS: Added existence checks on common methods
+* CoreWM: Added click() to panel item notification icons, same as contextmenu()
+* WindowManager: You can now resize a window in all directions
+* Dialogs: File dialog can now have button to create new dir
+* GUI: Added zip file icon to mime
+* default-application: Added support for upload on save
+* default-application: Fixed setting mime on save
+* server-php: Bugfix for upload in home
+* server-php: Removed a exists() check
+* server-node: Added support for custom handlers
+* locales: Moved some more strings
+* locales: Updated locales
+
 # 2.0.0-alpha34
 
 WARNING: API Change
