@@ -295,9 +295,9 @@
   /**
    * Open given file
    */
-  DefaultApplication.prototype._doOpen = function(file, data) {
+  DefaultApplication.prototype._doOpen = function(file, data, sendArgs) {
     this._setCurrentFile(file);
-    this.onOpen(file, data);
+    this.onOpen(file, data, sendArgs);
     if ( this.mainWindow ) {
       this.mainWindow._toggleLoading(false);
     }
@@ -475,7 +475,7 @@
   /**
    * Wrapper for open action
    */
-  DefaultApplication.prototype._onOpen = function(file) {
+  DefaultApplication.prototype._onOpen = function(file, sendArgs) {
     var self = this;
 
     var opt = Utils.cloneObject(this.dialogOptions);
@@ -493,7 +493,7 @@
         self.mainWindow._toggleLoading(true);
       }
       if ( !opt.read ) {
-        self._doOpen(item, null);
+        self._doOpen(item, null, sendArgs);
         return;
       }
 
@@ -507,7 +507,7 @@
           self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), OSjs.API._('Unknown error'), 'onOpen');
           return;
         }
-        self._doOpen(item, result);
+        self._doOpen(item, result, sendArgs);
       });
     }
 

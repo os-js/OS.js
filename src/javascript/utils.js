@@ -287,7 +287,7 @@
   };
 
   OSjs.Utils.filename = function(p) {
-    return (p||'').split('/').pop();
+    return (p||'').replace(/\/$/, '').split('/').pop();
   };
 
   // Kudos: http://stackoverflow.com/users/65387/mark
