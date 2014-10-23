@@ -268,6 +268,8 @@
       }
     };
 
+    this.menuAction = menuAction;
+
     menuBar.addItem(OSjs.API._("File"), [
       {title: OSjs.API._('Create directory'), onClick: function() {
         menuAction('mkdir');
@@ -441,6 +443,16 @@
 
   ApplicationFileManagerWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev) {
+    Window.prototype._onKeyEvent.apply(this, arguments);
+
+    if ( ev.keyCode === OSjs.Utils.Keys.F2 ) {
+      this.menuAction('rename');
+    } else if ( ev.keyCode === OSjs.Utils.Keys.DELETE ) {
+      this.menuAction('delete');
+    }
   };
 
   ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {
