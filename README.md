@@ -4,11 +4,7 @@ OS.js is a desktop implementation for your browser with a fully-fletched window 
 
 You can read more on [the official homepage](http://andersevenrud.github.io/OS.js-v2/)
 
-Current version: **Alpha**
-
-**See TODO.md for roadmap and planned changes**
-
-**If you find any bugs report them back to me and I'll have them squashed**
+Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
 
 ## Demo
 
@@ -18,7 +14,11 @@ Please note that it may be unavailable at times and slightly out-of-date.
 
 ![ScreenShot](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/screenshot.png)
 
-## Features
+## Information
+
+Works on any modern browser (Chrome, Firefox, IE10+) and on mobile devices.
+
+You can deploy OS.js on any platform (Windows requires cygwin) using Node or PHP.
 
 * Free and Open-source
 * Very simple installation
@@ -51,14 +51,6 @@ curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh
 ```
 
 Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
-
-## Compability
-
-Works in any modern browser that supports HTML5 and ES5.1: **Chrome, Firefox, Opera, Safari, Internet Explorer 10+**
-
-Compatible with Mobile devices using Android or iOS (But has currently no custom UI).
-
-You can deploy a server on **Linux, BSD, OSX and Windows/Cygwin using Nodejs or PHP (Apache and Lighttpd)**
 
 ## How to contribute
 
