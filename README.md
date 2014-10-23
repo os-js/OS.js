@@ -1,7 +1,8 @@
 ![Logo](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo-normal.png)
 
+OS.js is a desktop implementation for your browser with a fully-fletched window manager, Application APIs, GUI toolkits and filesystem abstraction.
 
-OS.js is a light-weight JavaScript based web/cloud desktop solution.
+You can read more on [the official homepage](http://andersevenrud.github.io/OS.js-v2/)
 
 Current version: **Alpha**
 
@@ -19,46 +20,45 @@ Please note that it may be unavailable at times and slightly out-of-date.
 
 ## Features
 
-* Window Manager and Desktop Environment with Theme support
-* Support for saving and restoring sessions
-* File-system API to handle file manipulations etc.
-* Localization and Translation support
-* Easy-to-use GUI, Application and Core API for creating custom Applications
-* Runs on all web-servers using PHP5 or node.js
-* Uses no third-party libraries
-* Light-weight and super fast
+* Free and Open-source
+* Very simple installation
+* Works in any modern browser
+* Deployable on any platform using either PHP or Node
+* Dependency-free frontend
+* Easy to use API
+* Customizable and easy to extend with custom code and modules etc.
+* Virtual File System - Store your files across many different locations
+* Desktop and Window Manager built to feel familiar to most users
+* Drag-and-drop between applications
+* Supports sessions so you can reload workspaces on any computer
+* Localization and translations
+* Comes with a small application suite
+* Supports adding of packages via external repositories
+* Can be deployed using X11 to work as a full-fletched desktop solution
+* Comes with all the tools nesessry to build your own applications
+* Source-code up to strict standards and fully linted
 
-### Default application bundle
-* **Draw** - A simple drawing application with layer and effect support
-* **Calculator** - Simple calculator
-* **File Manager** - File Management
-* **Preview** - For viewing images and videos
-* **Music Player** - For listening to audio files
-* **Process Viewer** - View running processes
-* **Textpad** - A notepad-type application
-* **Writer** - Richtext editor
-* **Bugreport** - Bug-reporting utility
+Comes complete with a basic productivity suite: **File Manager, Drawing Application, Music/Video Player, Calculator, Text-editor and a Richtext-editor.**
 
-*You can easily add more applications by using external repositories. More information on Wiki*
-
-An example repository: [OS.js-v2-extras](https://github.com/andersevenrud/OS.js-v2-extras)
+You can easily add more packages using [external repositories](https://github.com/andersevenrud/OS.js-v2/wiki/Package-Repositories) (to which you can contribute). Some examples: Chat, Archiver, WebRTC, Drum Sampler
 
 ## Installation
 
-See the `INSTALL.md` file for instructions
+Just run the automated installer and you will be ready to go:
+
+```
+curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh
+```
+
+Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
 
 ## Compability
 
-The backend runs on Mac, BSD and Linux. Frontend only requires a modern browser with HTML5 support.
+Works in any modern browser that supports HTML5 and ES5.1: **Chrome, Firefox, Opera, Safari, Internet Explorer 10+**
 
-### Browser support
+Compatible with Mobile devices using Android or iOS (But has currently no custom UI).
 
-Runs in any modern browser. Tested:
-
-* **Gecko** Mozilla Firefox
-* **WebKit** Google Chrome, Opera, Safari
-* Internet Explorer 10+
-* Android and iOS is working, but no mobile version is implemented yet
+You can deploy a server on **Linux, BSD, OSX and Windows/Cygwin using Nodejs or PHP (Apache and Lighttpd)**
 
 ## How to contribute
 

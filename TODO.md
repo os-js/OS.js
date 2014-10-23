@@ -1,6 +1,10 @@
 
 # High-priority
 * _[Misc]_ There are some FIXME and TODO markers in the code
+* _[DefaultApplication]_ Saving on osjs:// makes currentFile go wacky (because of error message)
+* _[VFS]_ Move misc File params to the actual function (as last param).
+   - `._overwrite`
+   - `._opts` => mimeFilter, typeFilter etc.
 * _[VFS]_ Finish Google Drive implementation
    - Copy file that already has this name fails (including upload)
    - Create dirs in subdirectories
