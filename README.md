@@ -1,4 +1,4 @@
-![Logo](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/osjs-logo.png)
+![Logo](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo-normal.png)
 
 
 OS.js is a light-weight JavaScript based web/cloud desktop solution.
