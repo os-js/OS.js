@@ -194,6 +194,8 @@
           icon = 'mimetypes/binary.png';
         } else if ( mime === 'osjs/document' ) {
           icon = 'mimetypes/gnome-mime-application-msword.png';
+        } else if ( mime === 'application/zip' ) {
+          icon = 'mimetypes/folder_tar.png';
         }
       }
     }

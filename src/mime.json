@@ -14,6 +14,8 @@
     "application/json"        : "JSON Document",
     "application/x-python"    : "Python Document",
 
+    "application/zip"         : "ZIP Archive",
+
     "audio/aac"               : "AAC Audio",
     "audio/mp4"               : "MP4 Audio",
     "audio/mpeg"              : "MPEG Audio",
@@ -44,6 +46,8 @@
     ".otf"    : "font/opentype",
     ".ttf"    : "font/opentype",
     ".png"    : "image/png",
+
+    ".zip"    : "application/zip",
 
     ".aac"    : "audio/aac",
     ".mp4"    : "audio/mp4",
