@@ -148,7 +148,7 @@
                 if ( error ) {
                   respond('Error renaming/moving: ' + error, "text/plain", response, null, 500);
                 } else {
-                  respond("", "text/plain", response);
+                  respond("1", "text/plain", response);
                 }
               });
             }
