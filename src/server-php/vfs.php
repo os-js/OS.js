@@ -110,6 +110,7 @@ class FS
     $dest = "{$path}/{$file['name']}";
 
     list($dirname, $root, $protocol, $fname) = getRealPath($dest);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
 
     /*
     if ( file_exists($root) ) {
@@ -132,6 +133,7 @@ class FS
   public static function write($fname, $content, $opts = null) {
     if ( !$opts || !is_array($opts) ) $opts = Array();
     list($dirname, $root, $protocol, $fname) = getRealPath($fname);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
 
     if ( is_file($fname) ) {
       if ( !is_file($fname) ) throw new Exception("You are writing to a invalid resource");
@@ -188,6 +190,7 @@ class FS
 
   public static function delete($fname) {
     list($dirname, $root, $protocol, $fname) = getRealPath($fname);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
 
     if ( is_file($fname) ) {
       if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
@@ -203,7 +206,9 @@ class FS
 
   public static function copy($src, $dest) {
     list($dirname, $root, $protocol, $src) = getRealPath($src);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
     list($dirname, $root, $protocol, $dest) = getRealPath($dest);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
 
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
@@ -215,7 +220,9 @@ class FS
 
   public static function move($src, $dest) {
     list($dirname, $root, $protocol, $src) = getRealPath($src);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
     list($dirname, $root, $protocol, $dest) = getRealPath($dest);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
 
     if ( $src === $dest ) throw new Exception("Source and destination cannot be the same");
     if ( !file_exists($src) ) throw new Exception("File does not exist");
@@ -227,6 +234,7 @@ class FS
 
   public static function mkdir($dname) {
     list($dirname, $root, $protocol, $dname) = getRealPath($dname);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
 
     if ( file_exists($dname) ) throw new Exception("Destination already exists");
 
