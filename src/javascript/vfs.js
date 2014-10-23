@@ -178,6 +178,20 @@
     r.readAsDataURL(blob);
   }
 
+  function existsWrapper(item, callback) {
+    if ( typeof item._overwrite !== 'undefined' && item._overwrite === true ) {
+      callback();
+    } else {
+      OSjs.VFS.exists(item, function(error, result) {
+        if ( result ) {
+          callback('Destination already exists');
+        } else {
+          callback();
+        }
+      });
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // FILE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
@@ -260,7 +274,6 @@
 
   /**
    * Write File
-   * TODO: Check for existence before
    */
   OSjs.VFS.write = function(item, data, callback, appRef) {
     console.info('VFS::write()', item);
@@ -272,7 +285,16 @@
       }
       callback(error, result);
     }
+
+    /*
+    existsWrapper(item, function(error) {
+      if ( error ) {
+        return callback(error);
+      }
+    });
+    */
     request(item.path, 'write', [item, data], _finished);
+
   };
 
   /**
@@ -287,7 +309,6 @@
 
   /**
    * Copy File
-   * TODO: Check for existence before
    */
   OSjs.VFS.copy = function(src, dest, callback, appRef) {
     console.info('VFS::copy()', src, dest);
@@ -295,59 +316,67 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    var msrc, mdst;
+    function doRequest() {
+      var msrc, mdst;
 
-    function _finished(error, result) {
-      if ( !error ) {
-        OSjs.API.message('vfs', {type: 'mkdir', file: dest, source: appRef ? appRef.__pid : null});
-      }
-      callback(error, result);
-    }
-
-    function _write(data) {
-      OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
-        if ( error ) {
-          error = 'An error occured while copying between storage: ' + error;
+      function _finished(error, result) {
+        if ( !error ) {
+          OSjs.API.message('vfs', {type: 'mkdir', file: dest, source: appRef ? appRef.__pid : null});
         }
-        _finished(error, result);
-      });
-    }
-
-    if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
-      msrc = getModuleFromPath(src.path);
-      mdst = getModuleFromPath(dest.path);
-
-      if ( msrc === 'GoogleDrive'  ) {
-        src._opts = {arraybuffer: true};
+        callback(error, result);
       }
 
-      OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
-        if ( error ) {
-          _finished('An error occured while copying between storage: ' + error);
-          return;
+      function _write(data) {
+        OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
+          if ( error ) {
+            error = 'An error occured while copying between storage: ' + error;
+          }
+          _finished(error, result);
+        });
+      }
+
+      if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
+        msrc = getModuleFromPath(src.path);
+        mdst = getModuleFromPath(dest.path);
+
+        if ( msrc === 'GoogleDrive'  ) {
+          src._opts = {arraybuffer: true};
         }
 
-        dest.mime = src.mime;
-        if ( msrc === 'GoogleDrive' ) {
-          createDataURL(result, src.mime, function(error, data) {
-            dest._opts = {dataSource: true};
+        OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
+          if ( error ) {
+            _finished('An error occured while copying between storage: ' + error);
+            return;
+          }
 
-            _write(data);
-          });
-        } else {
-          _write(result);
-        }
+          dest.mime = src.mime;
+          if ( msrc === 'GoogleDrive' ) {
+            createDataURL(result, src.mime, function(error, data) {
+              dest._opts = {dataSource: true};
 
-      });
-      return;
+              _write(data);
+            });
+          } else {
+            _write(result);
+          }
+
+        });
+        return;
+      }
+
+      request(null, 'copy', [src, dest], _finished);
     }
 
-    request(null, 'copy', [src, dest], _finished);
+    existsWrapper(dest, function(error) {
+      if ( error ) {
+        return callback(error);
+      }
+      doRequest();
+    });
   };
 
   /**
    * Move File
-   * TODO: Check for existence before
    */
   OSjs.VFS.move = function(src, dest, callback, appRef) {
     console.info('VFS::move()', src, dest);
@@ -355,36 +384,45 @@
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
 
-    function _finished(error, result) {
-      if ( !error ) {
-        OSjs.API.message('vfs', {type: 'move', file: dest, source: appRef ? appRef.__pid : null});
-      }
-      callback(error, result);
-    }
-
-    var isInternal = (isInternalModule(src.path) && isInternalModule(dest.path));
-    var isOther    = (isInternalModule(src.path) !== isInternalModule(dest.path));
-    var msrc = getModuleFromPath(src.path);
-    var mdst = getModuleFromPath(dest.path);
-
-    if ( !isInternal && (msrc === mdst) ) {
-      request(src.path, 'move', [src, dest], _finished);
-    } else if ( isOther ) {
-      this.copy(src, dest, function(error, result) {
-        if ( error ) {
-          return _finished(error);
+    function doRequest() {
+      function _finished(error, result) {
+        if ( !error ) {
+          OSjs.API.message('vfs', {type: 'move', file: dest, source: appRef ? appRef.__pid : null});
         }
+        callback(error, result);
+      }
 
-        OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
+      var isInternal = (isInternalModule(src.path) && isInternalModule(dest.path));
+      var isOther    = (isInternalModule(src.path) !== isInternalModule(dest.path));
+      var msrc = getModuleFromPath(src.path);
+      var mdst = getModuleFromPath(dest.path);
+
+      if ( !isInternal && (msrc === mdst) ) {
+        request(src.path, 'move', [src, dest], _finished);
+      } else if ( isOther ) {
+        this.copy(src, dest, function(error, result) {
           if ( error ) {
-            error = 'An error occured while movin between storage: ' + error;
+            return _finished(error);
           }
-          _finished(error, result);
+
+          OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
+            if ( error ) {
+              error = 'An error occured while movin between storage: ' + error;
+            }
+            _finished(error, result);
+          });
         });
-      });
-    } else {
-      request(null, 'move', [src, dest], _finished);
+      } else {
+        request(null, 'move', [src, dest], _finished);
+      }
     }
+
+    existsWrapper(dest, function(error) {
+      if ( error ) {
+        return callback(error);
+      }
+      doRequest();
+    });
   };
   OSjs.VFS.rename = function(src, dest, callback) {
     OSjs.VFS.move.apply(this, arguments);
@@ -411,19 +449,28 @@
 
   /**
    * Create Directory
-   * TODO: Check for existence before
    */
   OSjs.VFS.mkdir = function(item, callback, appRef) {
     console.info('VFS::mkdir()', item);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
-    function _finished(error, result) {
-      if ( !error ) {
-        OSjs.API.message('vfs', {type: 'mkdir', file: item, source: appRef ? appRef.__pid : null});
+
+    function doRequest() {
+      function _finished(error, result) {
+        if ( !error ) {
+          OSjs.API.message('vfs', {type: 'mkdir', file: item, source: appRef ? appRef.__pid : null});
+        }
+        callback(error, result);
       }
-      callback(error, result);
+      request(item.path, 'mkdir', [item], _finished);
     }
-    request(item.path, 'mkdir', [item], _finished);
+
+    existsWrapper(item, function(error) {
+      if ( error ) {
+        return callback(error);
+      }
+      doRequest();
+    });
   };
 
   /**
@@ -460,7 +507,6 @@
 
   /**
    * Upload file(s)
-   * TODO: Check for existence before
    */
   OSjs.VFS.upload = function(args, callback, appRef) {
     console.info('VFS::upload()', args);
@@ -505,7 +551,7 @@
       return;
     }
 
-    args.files.forEach(function(f, i) {
+    function doRequest(f, i) {
       if ( args.app ) {
         if ( args.win ) {
           args.app._createDialog('FileUpload', [args.destination, f, _dialogClose], args.win);
@@ -520,7 +566,21 @@
           canceled: function(evt) { callback('File upload was cancelled', null, evt); }
         });
       }
+    }
+
+    args.files.forEach(function(f, i) {
+      var filename = (f instanceof window.File) ? f.name : f.filename;
+      var dest = new OFile(args.destination + '/' + filename);
+      dest._overwrite = f._overwrite === true;
+
+      existsWrapper(dest, function(error) {
+        if ( error ) {
+          return callback(error);
+        }
+        doRequest(f, i);
+      });
     });
+
   };
 
   /**
