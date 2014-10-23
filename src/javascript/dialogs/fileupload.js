@@ -169,6 +169,7 @@
     if ( this.buttonCancel ) {
       this.buttonCancel.setDisabled(false);
     }
+
     this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
   };
 

@@ -548,7 +548,12 @@
     }
 
     xhr.upload.addEventListener('progress', function(evt) { callbacks.progress(evt); }, false);
-    xhr.addEventListener('load', function(evt) { callbacks.complete(evt); }, false);
+    xhr.addEventListener('load', function(evt) {
+      if ( evt.target && evt.target.responseText !== '1' ) {
+        return callbacks.failed(evt, evt.target.responseText);
+      }
+      return callbacks.complete(evt);
+    }, false);
     xhr.addEventListener('error', function(evt) { callbacks.failed(evt); }, false);
     xhr.addEventListener('abort', function(evt) { callbacks.canceled(evt); }, false);
     xhr.onreadystatechange = function(evt) {

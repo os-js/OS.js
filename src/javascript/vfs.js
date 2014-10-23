@@ -511,9 +511,9 @@
       } else {
         Utils.AjaxUpload(f, 0, args.destination, {
           progress: function() { },
-          complete: function() { callback(false, true); },
-          failed:   function() { callback('File upload failed'); },
-          canceled: function() { callback('File upload was cancelled'); }
+          complete: function(evt) { callback(false, true, evt); },
+          failed:   function(evt, message) { callback('File upload failed: ' + (message || 'Unknown reason'), null, evt); },
+          canceled: function(evt) { callback('File upload was cancelled', null, evt); }
         });
       }
     });
