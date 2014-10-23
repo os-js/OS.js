@@ -479,11 +479,15 @@
       win: this,
       app: this._appRef,
     }, function(error, file) {
-      if ( !error && file && fileView ) {
-        fileView.refresh(function() {
-          fileView.setSelected(file.filename, 'filename');
-          self._focus();
-        });
+      if ( error ) {
+        self._error(OSjs.API._("ERR_GENERIC_APP_FMT", self.__label), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
+      } else {
+        if (file && fileView ) {
+          fileView.refresh(function() {
+            fileView.setSelected(file.filename, 'filename');
+            self._focus();
+          });
+        }
       }
     });
     return false;
