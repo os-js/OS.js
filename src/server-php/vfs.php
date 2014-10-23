@@ -111,9 +111,11 @@ class FS
 
     list($dirname, $root, $protocol, $fname) = getRealPath($dest);
 
+    /*
     if ( file_exists($root) ) {
       throw new Exception("Destination already exist!");
     }
+     */
     if ( $file['size'] <= 0 || $file['size'] > MAXUPLOAD ) {
       throw new Exception("The upload request is either empty or too large!");
     }

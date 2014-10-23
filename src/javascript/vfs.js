@@ -460,6 +460,7 @@
 
   /**
    * Upload file(s)
+   * TODO: Check for existence before
    */
   OSjs.VFS.upload = function(args, callback, appRef) {
     console.info('VFS::upload()', args);
