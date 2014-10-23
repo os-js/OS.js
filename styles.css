@@ -64,6 +64,13 @@ iframe {
   outline : none;
 }
 
+p.code {
+  background : #e6e6e6;
+  color : #000;
+  padding : 20px;
+  display : inline-block;
+}
+
 main, nav, section, footer {
   display : block;
 }
