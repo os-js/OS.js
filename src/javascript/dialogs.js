@@ -46,6 +46,7 @@
     this.buttonConfirm  = null;
     this.buttonCancel   = null;
     this.buttonClose    = null;
+    this.buttonContainer= null;
 
     this.className      = className;
     this.args           = args          || {};
@@ -68,14 +69,15 @@
 
     this.onClose.apply(this, ['destroy']);
     DialogWindow.prototype.destroy.apply(this, arguments);
+    this.buttonContainer = null;
   };
 
   StandardDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
     var self = this;
 
-    var buttonContainer = document.createElement('div');
-    buttonContainer.className = 'Buttons';
+    this.buttonContainer = document.createElement('div');
+    this.buttonContainer.className = 'Buttons';
 
     this.$element = document.createElement('div');
     OSjs.Utils.$addClass(this.$element, 'StandardDialog');
@@ -95,7 +97,7 @@
         if ( !this.isDisabled() ) {
           self.onCloseClick(ev);
         }
-      }}), buttonContainer);
+      }}), this.buttonContainer);
     }
 
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
@@ -104,7 +106,7 @@
         if ( !this.isDisabled() ) {
           self.onCancelClick(ev);
         }
-      }}), buttonContainer);
+      }}), this.buttonContainer);
     }
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
@@ -113,10 +115,10 @@
         if ( !this.isDisabled() ) {
           self.onConfirmClick.call(self, ev);
         }
-      }}), buttonContainer);
+      }}), this.buttonContainer);
     }
 
-    this.$element.appendChild(buttonContainer);
+    this.$element.appendChild(this.buttonContainer);
     root.appendChild(this.$element);
     return root;
   };

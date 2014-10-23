@@ -55,6 +55,7 @@
     this.filemime         = args.mime             || '';
     this.filter           = args.mimes            || [];
     this.filetypes        = args.filetypes        || null;
+    this.showMkdir        = args.mkdir            || false;
     this.defaultFilename  = args.defaultFilename  || 'New File';
     this.defaultFilemime  = args.defaultFilemime  || this.filemime || '';
 
@@ -222,6 +223,26 @@
 
       var cur = OSjs.VFS.getModuleFromPath(this.path);
       this.$selectRoot.setSelected(cur);
+    }
+
+    if ( this.showMkdir && this.buttonContainer ) {
+      this._addGUIElement(new OSjs.GUI.Button('ButtonMkdir', {label: 'New Folder', onClick: function() {
+
+        var dir = self.$fileView.getPath();
+        var msg = OSjs.API._('Create a new directory in <span>{0}</span>', dir);
+        var diag = new OSjs.Dialogs.Input(msg, 'New Folder', function(btn, val) {
+          if ( btn === 'ok' && val ) {
+            var newdir = new VFS.File(dir + '/' + val);
+            VFS.mkdir(newdir, function(error) {
+              if ( !error && self.$fileView ) {
+                self.$fileView.refresh();
+              }
+            });
+          }
+        });
+
+        self._addChild(diag, true);
+      }}), this.buttonContainer);
     }
 
     return root;

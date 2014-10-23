@@ -51,7 +51,7 @@
 .FileSaveDialog .GUIStatusBar,
 .FileOpenDialog .GUIStatusBar {
   border : 0 none !important;
-  right : 230px;
+  right : 270px;
   bottom : -2px !important;
 }
 
