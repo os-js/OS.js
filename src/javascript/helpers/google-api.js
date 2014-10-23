@@ -176,12 +176,12 @@
       function displayMenu(ev) {
         var pos = {x: ev.clientX, y: ev.clientY};
         OSjs.GUI.createMenu([{
-          title: 'Sign out from Google API Services', // FIXME: Translation
+          title: API._('GAPI_SIGN_OUT'),
           onClick: function() {
             self.signOut();
           }
         }, {
-          title: 'Revoke permissions and Sign Out', // FIXME: Translation
+          title: API._('GAPI_REVOKE'),
           onClick: function() {
             self.revoke(function() {
               self.signOut();

@@ -198,7 +198,7 @@
     if ( win ) {
       win._toggleDisabled(true);
     }
-    var msg = 'The file has changed. Reload?'; // TODO: Translation
+    var msg = OSjs.API._('MSG_FILE_CHANGED');
     this._createDialog('Confirm', [msg, function(btn) {
       if ( win ) {
         win._toggleDisabled(false);
@@ -335,7 +335,7 @@
             file.filename = Utils.filename(newname);
 
             var msg = Utils.format('The filetype "{0}" is not supported, using "{1}" instead.', ext, first);
-            this._createDialog('Alert', [msg, null, {title: 'Draw - Warning'}]); // FIXME: Translation
+            this._createDialog('Alert', [msg, null, {title: OSjs.API._('MSG_APPLICATION_WARNING')}]);
           }
         }
       }

@@ -58,6 +58,13 @@
     'ERR_APP_API_ERROR' : 'Application API error',
     'ERR_APP_API_ERROR_DESC_FMT' : 'Application {0} failed to perform operation \'{1}\'',
 
+
+    'TITLE_SIGN_OUT' : 'Sign out',
+    'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
+
+    'GAPI_SIGN_OUT' : 'Sign out from Google API Services',
+    'GAPI_REVOKE' : 'Revoke permissions and Sign Out',
+
     // DefaultApplication
     'ERR_FILE_APP_OPEN' : 'Cannot open file',
     'ERR_FILE_APP_OPEN_FMT' : 'The file {0} could not be opened because the mime {1} is not supported',
@@ -68,7 +75,9 @@
     'ERR_GENERIC_APP_UNKNOWN' : 'Unknown Error',
     'ERR_GENERIC_APP_REQUEST' : 'An error occured while handling your request',
     'ERR_GENERIC_APP_FATAL_FMT' : 'Fatal Error: {0}',
-    'MSG_GENERIC_APP_DISCARD' : 'Discard changes?'
+    'MSG_GENERIC_APP_DISCARD' : 'Discard changes?',
+    'MSG_FILE_CHANGED' : 'The file has changed. Reload?',
+    'MSG_APPLICATION_WARNING' : 'Application Warning'
   };
 
 })();

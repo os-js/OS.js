@@ -55,6 +55,7 @@
       'Enable Window Switcher' : 'Skru på Vindu-bytter',
       'Enable Hotkeys' : 'Skru på Hurtigtaster',
       'Enable iconview' : 'Skru på Ikonvisning',
+      'Remove shortcut' : 'Fjern snarvei',
 
       'Development' : 'Utvikling',
       'Education' : 'Utdanning',
@@ -1180,7 +1181,7 @@
       onContextMenu : function(ev, el, item) {
         var pos = {x: ev.clientX, y: ev.clientY};
         OSjs.GUI.createMenu([{
-          title: _('Remove shortcut'), // FIXME: Translation
+          title: _('Remove shortcut'),
           disabled: item.index === 0,
           onClick: function() {
             if ( item.launch ) { return; }

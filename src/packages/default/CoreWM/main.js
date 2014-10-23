@@ -38,7 +38,9 @@
     no_NO : {
       'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
       'Open settings' : 'Åpne instillinger',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)'
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
+      'Create shortcut' : 'Lag snarvei',
+      'Set as wallpaper' : 'Sett som bakgrunn'
     },
     de_DE : {
       'Killing this process will stop things from working!' : 'Durch das Beenden dieses Prozesses werden andere Programme aufhören zu arbeiten!',
@@ -433,12 +435,12 @@
     var _openMenu = function(data, self) {
       var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.GUI.createMenu([{
-        title: _('Create shortcut'), // FIXME: Translation
+        title: _('Create shortcut'),
         onClick: function() {
           _createShortcut.call(self, data);
         }
       }, {
-        title: _('Set as wallpaper'), // FIXME: Translation
+        title: _('Set as wallpaper'),
         onClick: function() {
           _applyWallpaper.call(self, data);
         }

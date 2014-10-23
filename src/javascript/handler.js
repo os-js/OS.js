@@ -700,7 +700,7 @@
     function displayMenu(ev) {
       var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.GUI.createMenu([{
-        title: 'Sign out', // FIXME: Translation
+        title: OSjs.API._(TITLE_SIGN_OUT),
         onClick: function() {
           OSjs.Core.signOut();
         }
@@ -720,7 +720,7 @@
         onInited: function(el) {
           if ( el.firstChild ) {
             var img = document.createElement('img');
-            img.title = 'You are signed in as: ' + user.username; // FIXME: Translation;
+            img.title = OSjs.API._('TITLE_SIGNED_IN_AS_FMT', user.username);
             img.alt = img.title;
             img.src = OSjs.API.getThemeResource('status/avatar-default.png', 'icon', '16x16');
             el.firstChild.appendChild(img);
