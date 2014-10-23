@@ -91,6 +91,7 @@ section.Rakklam {
 
 section#Main {
   color : #000;
+  margin-top : 100px;
 }
   section#Main h1 {
     font-size : 400%;
