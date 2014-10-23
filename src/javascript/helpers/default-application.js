@@ -115,6 +115,7 @@
     this.defaultCheckChange  = false;
     this.dialogOptions       = {
       read: true,           // Read file data
+      upload: false,        // Upload instead of writing
 
       // These are passed on to Dialog
       filetypes: null,
@@ -346,23 +347,35 @@
       self._setCurrentFile(item);
     }
 
+    function _onSaveRequest(error, result, item) {
+      if ( error ) {
+        self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), error, 'doSave');
+        return;
+      }
+      if ( result === false ) {
+        self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), OSjs.API._('Unknown error'), 'doSave');
+        return;
+      }
+      _onSaveFinished(item);
+    }
 
     this.onGetSaveData(function(data) {
       self.mainWindow._toggleLoading(true);
       var item = new VFS.File(file);
       item._opts = {dataSource: self.onCheckDataSource(file)};
 
-      VFS.write(item, data, function(error, result) {
-        if ( error ) {
-          self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), error, 'doSave');
-          return;
-        }
-        if ( result === false ) {
-          self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), OSjs.API._('Unknown error'), 'doSave');
-          return;
-        }
-        _onSaveFinished(item);
-      }, self);
+      if ( self.dialogOptions.upload ) {
+        VFS.upload({
+          destination: OSjs.Utils.dirname(item.path),
+          files: [data]
+        }, function(error, result) {
+          _onSaveRequest(error, result, item);
+        });
+      } else {
+        VFS.write(item, data, function(error, result) {
+          _onSaveRequest(error, result, item);
+        }, self);
+      }
     }, file);
   };
 
@@ -414,7 +427,7 @@
   /**
    * Wrapper for save as action
    */
-  DefaultApplication.prototype._onSaveAs = function() {
+  DefaultApplication.prototype._onSaveAs = function(callback) {
     var self = this;
     if ( this.mainWindow ) {
       var fn       = '/' + this.dialogOptions.defaultFilename; // FIXME
@@ -444,7 +457,12 @@
         }
         if ( btn !== 'ok' ) { return; }
         if ( !item.mime ) { item.mime = mime; }
-        self._doSave(item);
+
+        if ( callback ) {
+          callback(item);
+        } else {
+          self._doSave(item);
+        }
       }], this.mainWindow);
     }
   };
