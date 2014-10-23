@@ -400,7 +400,7 @@
       if ( !isInternal && (msrc === mdst) ) {
         request(src.path, 'move', [src, dest], _finished);
       } else if ( isOther ) {
-        this.copy(src, dest, function(error, result) {
+        self.copy(src, dest, function(error, result) {
           if ( error ) {
             return _finished(error);
           }
