@@ -359,6 +359,11 @@
       _onSaveFinished(item);
     }
 
+
+    if ( !file.mime && this.dialogOptions.defaultMime ) {
+      file.mime = this.dialogOptions.defaultMime;
+    }
+
     this.onGetSaveData(function(data) {
       self.mainWindow._toggleLoading(true);
       var item = new VFS.File(file);
@@ -441,7 +446,7 @@
         mime = this.currentFile.mime;
       }
       var currentPath = this.currentFile ? this.currentFile.path : '';
-      if ( !currentPath.match(/^\//) ) {
+      if ( !currentPath.match(/^\//) && !currentPath.match(/^([A-z0-9\-_]+)\:\/\//) ) {
         currentPath = OSjs.API.getDefaultPath('/') + currentPath;
       }
 
