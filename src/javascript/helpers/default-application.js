@@ -359,7 +359,6 @@
       _onSaveFinished(item);
     }
 
-
     if ( !file.mime && this.dialogOptions.defaultMime ) {
       file.mime = this.dialogOptions.defaultMime;
     }
@@ -390,7 +389,9 @@
   DefaultApplication.prototype._onError = function(title, message, action) {
     action = action || 'unknown';
 
-    this._setCurrentFile(null);
+    if ( action !== 'doSave' ) {
+      this._setCurrentFile(null);
+    }
 
     if ( !this.onError(title, message, action) ) {
       var t = OSjs.API._('ERR_GENERIC_APP_FMT', this.__label);
