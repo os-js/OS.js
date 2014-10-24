@@ -1,3 +1,18 @@
+# 2.0.0-alpha36
+
+* server-php: Now blocks all VFS write request on osjs://
+* server-node: Fix for upload
+* DefaultApplication: Added argument passing to save functions
+* DefaultApplication: Fixed bug on save where currentFile is reset
+* Utils: Added 'file' and 'blob' to compability list
+* Utils: Added more keycodes
+* FileManager: F2 to rename
+* FileManager: DELETE to delete
+* FileManager: Added error dialog on upload error
+* FileManager: Added Download to context menu
+* New README
+* New Logo!
+
 # 2.0.0-alpha35
 
 * VFS: Fixed download() across all modules
