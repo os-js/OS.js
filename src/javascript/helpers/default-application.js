@@ -416,7 +416,7 @@
     }
     if ( !file ) {
       file = new VFS.File(
-        '/' + this.dialogOptions.defaultFilename, // FIXME
+        OSjs.API.getDefaultPath('/') + this.dialogOptions.defaultFilename,
         this.dialogOptions.defaultMime
       );
     }
@@ -436,7 +436,7 @@
   DefaultApplication.prototype._onSaveAs = function(callback) {
     var self = this;
     if ( this.mainWindow ) {
-      var fn       = '/' + this.dialogOptions.defaultFilename; // FIXME
+      var fn       = OSjs.API.getDefaultPath('/') + this.dialogOptions.defaultFilename;
       var mime     = this.dialogOptions.defaumtMime;
       var opt      = Utils.cloneObject(this.dialogOptions);
       opt.type     =  'save';
