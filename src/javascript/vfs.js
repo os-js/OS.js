@@ -87,13 +87,13 @@
   /**
    * Perform VFS request
    */
-  function request(test, method, args, callback) {
+  function request(test, method, args, callback, options) {
     var m = OSjs.VFS.Modules;
     var d = getModuleFromPath(test);
     var h = OSjs.API.getHandlerInstance();
 
     h.onVFSRequest(d, method, args, function() {
-      m[d].request(method, args, callback);
+      m[d].request(method, args, callback, options);
     });
   }
 
@@ -265,11 +265,11 @@
   /**
    * Scandir
    */
-  OSjs.VFS.scandir = function(item, callback) {
-    console.info('VFS::read()', item);
+  OSjs.VFS.scandir = function(item, callback, options) {
+    console.info('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
-    request(item.path, 'scandir', [item], callback);
+    request(item.path, 'scandir', [item], callback, options);
   };
 
   /**

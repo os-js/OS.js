@@ -607,7 +607,6 @@
 
     var file = new VFS.File(dir);
     file.type  = 'dir';
-    file._opts = {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter};
     VFS.scandir(file, function(error, result) {
       if ( error ) {
         onError.call(self, error, dir);
@@ -642,7 +641,7 @@
         var list = self.sortKey ? sortList(result, self.sortKey, self.sortDir) : result;
         onSuccess.call(self, list, dir, num, size);
       }
-    });
+    }, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter});
   };
 
   FileView.prototype.chdir = function(dir, onRefreshed, onError) {

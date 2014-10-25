@@ -39,11 +39,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var OSjsStorage = {};
-  OSjsStorage.scandir = function(item, callback) {
+  OSjsStorage.scandir = function(item, callback, options) {
     OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
       var list = [];
       if ( result ) {
-        result = OSjs.VFS.filterScandir(result, item._opts);
+        result = OSjs.VFS.filterScandir(result, options);
         result.forEach(function(iter) {
           list.push(new OSjs.VFS.File(iter));
         });
@@ -98,7 +98,7 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function makeRequest(name, args, callback) {
+  function makeRequest(name, args, callback, options) {
     args = args || [];
     callback = callback || {};
 
@@ -108,6 +108,7 @@
 
     var fargs = args;
     fargs.push(callback);
+    fargs.push(options);
     OSjsStorage[name].apply(OSjsStorage, fargs);
   }
 

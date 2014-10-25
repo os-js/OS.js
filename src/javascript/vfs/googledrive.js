@@ -174,7 +174,7 @@
   /**
    * Generate FileView compatible array of scandir()
    */
-  function createDirectoryList(dir, list, item) {
+  function createDirectoryList(dir, list, item, options) {
     var result = [];
     if ( list ) {
       list.forEach(function(iter, i) {
@@ -204,7 +204,7 @@
         }));
       });
     }
-    return result ? OSjs.VFS.filterScandir(result, item._opts) : [];
+    return result ? OSjs.VFS.filterScandir(result, options) : [];
   }
 
   /**
@@ -370,7 +370,7 @@
 
   var GoogleDriveStorage = {};
 
-  GoogleDriveStorage.scandir = function(item, callback) {
+  GoogleDriveStorage.scandir = function(item, callback, options) {
     console.info('GoogleDrive::scandir()', item);
 
     function doScandir() {
@@ -378,7 +378,7 @@
         if ( error ) {
           return callback(error);
         }
-        var result = createDirectoryList(dir, list, item);
+        var result = createDirectoryList(dir, list, item, options);
         callback(false, result, list);
       });
     }
@@ -686,7 +686,7 @@
     };
   })();
 
-  function makeRequest(name, args, callback) {
+  function makeRequest(name, args, callback, options) {
     args = args || [];
     callback = callback || function() {};
 
@@ -699,6 +699,7 @@
 
       var fargs = args;
       fargs.push(callback);
+      fargs.push(options);
       instance[name].apply(instance, fargs);
     }, function(error) {
       callback(error);
