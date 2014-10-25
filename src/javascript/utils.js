@@ -260,6 +260,10 @@
       compability.audioContext = true;
     }
 
+    canvas_supported = null;
+    video_supported = null;
+    audio_supported = null;
+
     return function() {
       return compability;
     };
