@@ -178,8 +178,10 @@
     r.readAsDataURL(blob);
   }
 
-  function existsWrapper(item, callback) {
-    if ( typeof item._overwrite !== 'undefined' && item._overwrite === true ) {
+  function existsWrapper(item, callback, options) {
+    options = options || {};
+
+    if ( typeof options.overwrite !== 'undefined' && options.overwrite === true ) {
       callback();
     } else {
       OSjs.VFS.exists(item, function(error, result) {
@@ -576,14 +578,13 @@
     args.files.forEach(function(f, i) {
       var filename = (f instanceof window.File) ? f.name : f.filename;
       var dest = new OFile(args.destination + '/' + filename);
-      dest._overwrite = f._overwrite === true;
 
       existsWrapper(dest, function(error) {
         if ( error ) {
           return callback(error);
         }
         doRequest(f, i);
-      });
+      }, options);
     });
 
   };
