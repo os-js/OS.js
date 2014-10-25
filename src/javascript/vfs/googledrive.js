@@ -403,14 +403,14 @@
     doScandir();
   };
 
-  GoogleDriveStorage.read = function(item, callback) {
+  GoogleDriveStorage.read = function(item, callback, options) {
     console.info('GoogleDrive::read()', item);
 
     var request = gapi.client.drive.files.get({
       fileId: item.id
     });
 
-    var arraybuffer = item._opts ? item._opts.arraybuffer === true : false;
+    var arraybuffer = options ? options.arraybuffer === true : false;
     request.execute(function(file) {
       console.info('GoogleDrive::read()', '=>', file);
 

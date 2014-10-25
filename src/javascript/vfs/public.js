@@ -51,22 +51,20 @@
       callback(error, list);
     });
   };
-  PublicStorage.write = function(item, data, callback) {
+  PublicStorage.write = function(item, data, callback, options) {
     var wopts = [item.path, data];
-    if ( item._opts ) {
-      wopts.push(item._opts);
+    if ( options ) {
+      wopts.push(options);
     }
     OSjs.VFS.internalCall('write', wopts, callback);
   };
-  PublicStorage.read = function(item, callback) {
+  PublicStorage.read = function(item, callback, options) {
     var ropts = [item.path];
-    var dataSource = false;
-    if ( item._opts ) {
-      ropts.push(item._opts);
-      if ( item._opts.dataSource ) {
-        dataSource = true;
-      }
+    var dataSource = options ? (options.dataSource ? true : false) : false;
+    if ( options ) {
+      ropts.push(options);
     }
+
     //OSjs.VFS.internalCall('read', ropts, callback);
     OSjs.VFS.internalCall('read', ropts, function(error, result) {
       if ( error ) {

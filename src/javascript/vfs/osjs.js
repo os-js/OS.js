@@ -54,15 +54,13 @@
   OSjsStorage.write = function(item, data, callback) {
     callback('Unavailable');
   };
-  OSjsStorage.read = function(item, callback) {
+  OSjsStorage.read = function(item, callback, options) {
     var ropts = [item.path];
-    var dataSource = false;
-    if ( item._opts ) {
-      ropts.push(item._opts);
-      if ( item._opts.dataSource ) {
-        dataSource = true;
-      }
+    var dataSource = options ? (options.dataSource ? true : false) : false;
+    if ( options ) {
+      ropts.push(options);
     }
+
     //OSjs.VFS.internalCall('read', ropts, callback);
     OSjs.VFS.internalCall('read', ropts, function(error, result) {
       if ( error ) {

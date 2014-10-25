@@ -366,7 +366,7 @@
     this.onGetSaveData(function(data) {
       self.mainWindow._toggleLoading(true);
       var item = new VFS.File(file);
-      item._opts = {dataSource: self.onCheckDataSource(file)};
+      var options = {dataSource: self.onCheckDataSource(file)};
 
       if ( self.dialogOptions.upload ) {
         VFS.upload({
@@ -378,7 +378,7 @@
       } else {
         VFS.write(item, data, function(error, result) {
           _onSaveRequest(error, result, item);
-        }, self);
+        }, options, self);
       }
     }, file);
   };
@@ -498,7 +498,6 @@
         return;
       }
 
-      item._opts = {dataSource: self.onCheckDataSource(item)};
       VFS.read(item, function(error, result) {
         if ( error ) {
           self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), error, 'onOpen');
@@ -509,7 +508,7 @@
           return;
         }
         self._doOpen(item, result, sendArgs);
-      });
+      }, {dataSource: self.onCheckDataSource(item)});
     }
 
     if ( file && file.path ) {

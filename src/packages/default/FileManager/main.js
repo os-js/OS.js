@@ -593,6 +593,7 @@
       }
       callback(result);
     });
+    args.push(null);
     args.push(this._appRef);
     VFS[name].apply(VFS, args);
   };

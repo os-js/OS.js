@@ -275,8 +275,8 @@
   /**
    * Write File
    */
-  OSjs.VFS.write = function(item, data, callback, appRef) {
-    console.info('VFS::write()', item);
+  OSjs.VFS.write = function(item, data, callback, options, appRef) {
+    console.info('VFS::write()', item, options);
     if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     function _finished(error, result) {
@@ -293,25 +293,25 @@
       }
     });
     */
-    request(item.path, 'write', [item, data], _finished);
+    request(item.path, 'write', [item, data], _finished, options);
 
   };
 
   /**
    * Read File
    */
-  OSjs.VFS.read = function(item, callback) {
-    console.info('VFS::read()', item);
+  OSjs.VFS.read = function(item, callback, options) {
+    console.info('VFS::read()', item, options);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
-    request(item.path, 'read', [item], callback);
+    request(item.path, 'read', [item], callback, options);
   };
 
   /**
    * Copy File
    */
-  OSjs.VFS.copy = function(src, dest, callback, appRef) {
-    console.info('VFS::copy()', src, dest);
+  OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
+    console.info('VFS::copy()', src, dest, options);
     if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
@@ -332,7 +332,7 @@
             error = 'An error occured while copying between storage: ' + error;
           }
           _finished(error, result);
-        });
+        }, options);
       }
 
       if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
@@ -340,7 +340,10 @@
         mdst = getModuleFromPath(dest.path);
 
         if ( msrc === 'GoogleDrive'  ) {
-          src._opts = {arraybuffer: true};
+          if ( !options ) {
+            options = {};
+          }
+          options.arraybuffer = true;
         }
 
         OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
@@ -352,7 +355,7 @@
           dest.mime = src.mime;
           if ( msrc === 'GoogleDrive' ) {
             createDataURL(result, src.mime, function(error, data) {
-              dest._opts = {dataSource: true};
+              options.dataSource = true;
 
               _write(data);
             });
@@ -360,7 +363,7 @@
             _write(result);
           }
 
-        });
+        }, options);
         return;
       }
 
@@ -378,8 +381,8 @@
   /**
    * Move File
    */
-  OSjs.VFS.move = function(src, dest, callback, appRef) {
-    console.info('VFS::move()', src, dest);
+  OSjs.VFS.move = function(src, dest, callback, options, appRef) {
+    console.info('VFS::move()', src, dest, options);
     if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
     if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
     if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
@@ -412,10 +415,10 @@
               error = 'An error occured while movin between storage: ' + error;
             }
             _finished(error, result);
-          });
+          }, options);
         });
       } else {
-        request(null, 'move', [src, dest], _finished);
+        request(null, 'move', [src, dest], _finished, options);
       }
     }
 
@@ -433,8 +436,8 @@
   /**
    * Delete File
    */
-  OSjs.VFS.unlink = function(item, callback, appRef) {
-    console.info('VFS::unlink()', item);
+  OSjs.VFS.unlink = function(item, callback, options, appRef) {
+    console.info('VFS::unlink()', item, options);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
     function _finished(error, result) {
@@ -443,7 +446,7 @@
       }
       callback(error, result);
     }
-    request(item.path, 'unlink', [item], _finished);
+    request(item.path, 'unlink', [item], _finished, options);
   };
   OSjs.VFS['delete'] = function(item, callback) {
     OSjs.VFS.unlink.apply(this, arguments);
@@ -452,8 +455,8 @@
   /**
    * Create Directory
    */
-  OSjs.VFS.mkdir = function(item, callback, appRef) {
-    console.info('VFS::mkdir()', item);
+  OSjs.VFS.mkdir = function(item, callback, options, appRef) {
+    console.info('VFS::mkdir()', item, options);
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
     if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
 
@@ -464,7 +467,7 @@
         }
         callback(error, result);
       }
-      request(item.path, 'mkdir', [item], _finished);
+      request(item.path, 'mkdir', [item], _finished, options);
     }
 
     existsWrapper(item, function(error) {
@@ -510,7 +513,7 @@
   /**
    * Upload file(s)
    */
-  OSjs.VFS.upload = function(args, callback, appRef) {
+  OSjs.VFS.upload = function(args, callback, options, appRef) {
     console.info('VFS::upload()', args);
     args = args || {};
     if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
@@ -548,7 +551,7 @@
 
     if ( !isInternalModule(args.destination) ) {
       args.files.forEach(function(f, i) {
-        request(args.destination, 'upload', [f, args.destination], callback);
+        request(args.destination, 'upload', [f, args.destination], callback, options);
       });
       return;
     }
