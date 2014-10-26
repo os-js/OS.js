@@ -58,14 +58,28 @@
 
     'ERR_APP_API_ERROR' : 'Application API error',
     'ERR_APP_API_ERROR_DESC_FMT' : 'Application {0} failed to perform operation \'{1}\'',
+    'ERR_APP_MISSING_ARGUMENT_FMT': 'Missing argument: {0}',
+    'ERR_APP_UNKNOWN_ERROR': 'Unknown error',
+
+    // Window
+    'ERR_WIN_DUPLICATE_FMT' : 'You already have a Window named \'{0}\'',
 
     // CoreWM
     'TITLE_SIGN_OUT' : 'Sign out',
     'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
 
     // GoogleAPI
+    'GAPI_DISABLED' : 'GoogleAPI Module not configured or disabled',
+    'GAPI_NOTIFICATION_TITLE' : 'You are signed in to Google API',
     'GAPI_SIGN_OUT' : 'Sign out from Google API Services',
     'GAPI_REVOKE' : 'Revoke permissions and Sign Out',
+    'GAPI_AUTH_FAILURE' : 'Google API Authentication failed or did not take place',
+    'GAPI_AUTH_FAILURE_FMT' : 'Failed to authenticate: {0}:{1}',
+    'GAPI_LOAD_FAILURE' : 'Failed to load Google API',
+
+    // IndexedDB
+    'IDB_MISSING_DBNAME' : 'Cannot create IndexedDB without Database Name',
+    'IDB_NO_SUCH_ITEM' : 'No such item',
 
     // VFS
     'ERR_VFS_FATAL': 'Fatal Error',
@@ -97,7 +111,9 @@
     'ERR_GENERIC_APP_FATAL_FMT' : 'Fatal Error: {0}',
     'MSG_GENERIC_APP_DISCARD' : 'Discard changes?',
     'MSG_FILE_CHANGED' : 'The file has changed. Reload?',
-    'MSG_APPLICATION_WARNING' : 'Application Warning'
+    'MSG_APPLICATION_WARNING' : 'Application Warning',
+    'MSG_MIME_OVERRIDE': 'The filetype "{0}" is not supported, using "{1}" instead.'
+
   };
 
 })();

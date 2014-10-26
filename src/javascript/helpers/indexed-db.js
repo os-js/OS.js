@@ -50,7 +50,7 @@
     this.db = null;
 
     if ( !this.dbName ) {
-      throw new Error('Cannot create IndexedDB without Database Name');
+      throw new Error(API._('IDB_MISSING_DBNAME'));
     }
 
     console.info('OIndexedDB::construct()', this);
@@ -95,7 +95,7 @@
     function _process(item, cb) {
       console.info('OIndexedDB::_queue()','=>','_process()', index, item);
       if ( typeof item === 'undefined' ) {
-        return cb('No such item');
+        return cb(API._('IDB_NO_SUCH_ITEM'));
       }
       onItem(item, cb);
     }
@@ -124,7 +124,7 @@
     var self = this;
     var nitems = [];
     Object.keys(items).forEach(function(k) {
-      var rel = OSjs.Utils.cloneObject(items[k]);
+      var rel = Utils.cloneObject(items[k]);
       if ( args.key ) {
         rel[args.key] = k;
       }

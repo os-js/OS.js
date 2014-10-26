@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
+(function(API, Utils, VFS) {
   'use strict';
 
   window.OSjs   = window.OSjs   || {};
@@ -128,4 +128,4 @@
   // Exports
   //
   OSjs.Handlers.Current  = DemoHandler;
-})();
+})(OSjs.API, OSjs.Utils, OSjs.VFS);

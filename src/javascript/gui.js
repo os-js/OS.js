@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
+(function(API, Utils) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -47,7 +47,7 @@
     args.mime   = args.mime   || 'application/json';
     args.files  = args.files  || true;
 
-    if ( OSjs.Utils.isIE() ) {
+    if ( Utils.isIE() ) {
       args.mime = 'text';
     }
 
@@ -90,12 +90,12 @@
     };
 
     el.addEventListener('drop', function(ev) {
-      //OSjs.Utils.$removeClass(el, 'onDragEnter');
+      //Utils.$removeClass(el, 'onDragEnter');
       return _onDrop(ev, this);
     }, false);
 
     el.addEventListener('dragenter', function(ev) {
-      //OSjs.Utils.$addClass(el, 'onDragEnter');
+      //Utils.$addClass(el, 'onDragEnter');
       return args.onEnter.call(this, ev, this, args);
     }, false);
 
@@ -107,7 +107,7 @@
     }, false);
 
     el.addEventListener('dragleave', function(ev) {
-      //OSjs.Utils.$removeClass(el, 'onDragEnter');
+      //Utils.$removeClass(el, 'onDragEnter');
       return args.onLeave.call(this, ev, this, args);
     }, false);
   }
@@ -123,7 +123,7 @@
     args.onStart    = args.onStart    || function() { return true; };
     args.onEnd      = args.onEnd      || function() { return true; };
 
-    if ( OSjs.Utils.isIE() ) {
+    if ( Utils.isIE() ) {
       args.mime = 'text';
     }
 
@@ -200,7 +200,7 @@
       }
     }
 
-    return OSjs.API.getThemeResource(icon, 'icon', size);
+    return API.getThemeResource(icon, 'icon', size);
   }
 
   /**
@@ -272,8 +272,8 @@
     var classNames = [
       'GUIElement',
       'GUIElement_' + this.id,
-      OSjs.Utils.$safeName(className),
-      OSjs.Utils.$safeName(this.name)
+      Utils.$safeName(className),
+      Utils.$safeName(this.name)
     ];
 
     this.$element = document.createElement(tagName);
@@ -552,7 +552,7 @@
     if ( !this.focused ) { return false; }
 
     // Simulate click
-    if ( this.$input && ev.keyCode === OSjs.Utils.Keys.SPACE ) {
+    if ( this.$input && ev.keyCode === Utils.Keys.SPACE ) {
       if ( this.tagName === 'input' && (this.type === 'checkbox' || this.type === 'radio') ) {
         var e = document.createEvent('MouseEvents');
         e.initEvent('click', true, true);
@@ -571,10 +571,10 @@
     this.disabled = d;
     if ( this.$input && d ) {
       this.$input.setAttribute('disabled', 'disabled');
-      OSjs.Utils.$addClass(this.$element, 'Disabled');
+      Utils.$addClass(this.$element, 'Disabled');
     } else {
       this.$input.removeAttribute('disabled');
-      OSjs.Utils.$removeClass(this.$element, 'Disabled');
+      Utils.$removeClass(this.$element, 'Disabled');
     }
   };
 
@@ -712,17 +712,17 @@
 
   _DataView.prototype.__onSelect = function(ev, item, scroll) {
     if ( this.selected && this.selected._element ) {
-      OSjs.Utils.$removeClass(this.selected._element, 'Active');
+      Utils.$removeClass(this.selected._element, 'Active');
     }
 
     this.selected = null;
 
     if ( item && item._element ) {
       this.selected  = item;
-      OSjs.Utils.$addClass(this.selected._element, 'Active');
+      Utils.$addClass(this.selected._element, 'Active');
 
       if ( scroll ) {
-        var pos = OSjs.Utils.$position(this.selected._element, this.$view);
+        var pos = Utils.$position(this.selected._element, this.$view);
         if ( pos !== null && 
              (pos.top > (this.$view.scrollTop + this.$view.offsetHeight) || 
              (pos.top < this.$view.scrollTop)) ) {
@@ -761,8 +761,8 @@
     if ( this.destroyed ) { return false; }
     if ( GUIElement.prototype.onGlobalKeyPress.apply(this, arguments) ) { return false; }
 
-    var valid = [OSjs.Utils.Keys.UP, OSjs.Utils.Keys.DOWN, OSjs.Utils.Keys.LEFT, OSjs.Utils.Keys.RIGHT, OSjs.Utils.Keys.ENTER];
-    if ( !OSjs.Utils.inArray(valid, ev.keyCode) ) {
+    var valid = [Utils.Keys.UP, Utils.Keys.DOWN, Utils.Keys.LEFT, Utils.Keys.RIGHT, Utils.Keys.ENTER];
+    if ( !Utils.inArray(valid, ev.keyCode) ) {
       return true;
     }
     if ( this.className === 'TreeView' ) {
@@ -785,10 +785,10 @@
           if ( el ) {
             var ow = el.offsetWidth;
             try {
-              ow += parseInt(OSjs.Utils.$getStyle(el, 'padding-left').replace('px', ''), 10);
-              ow += parseInt(OSjs.Utils.$getStyle(el, 'padding-right').replace('px', ''), 10);
-              ow += parseInt(OSjs.Utils.$getStyle(el, 'margin-left').replace('px', ''), 10);
-              ow += parseInt(OSjs.Utils.$getStyle(el, 'margin-right').replace('px', ''), 10);
+              ow += parseInt(Utils.$getStyle(el, 'padding-left').replace('px', ''), 10);
+              ow += parseInt(Utils.$getStyle(el, 'padding-right').replace('px', ''), 10);
+              ow += parseInt(Utils.$getStyle(el, 'margin-left').replace('px', ''), 10);
+              ow += parseInt(Utils.$getStyle(el, 'margin-right').replace('px', ''), 10);
             } catch ( e ) {}
             skip = Math.floor(this.$view.offsetWidth / ow);
           }
@@ -796,17 +796,17 @@
       }
 
       if ( idx >= 0 && idx < len  ) {
-        if ( ev.keyCode === OSjs.Utils.Keys.UP ) {
+        if ( ev.keyCode === Utils.Keys.UP ) {
           idx -= skip;
           if ( idx < 0 ) { idx = prev; }
-        } else if ( ev.keyCode === OSjs.Utils.Keys.DOWN ) {
+        } else if ( ev.keyCode === Utils.Keys.DOWN ) {
           idx += skip;
           if ( idx >= len ) { idx = prev; }
-        } else if ( ev.keyCode === OSjs.Utils.Keys.LEFT ) {
+        } else if ( ev.keyCode === Utils.Keys.LEFT ) {
           idx--;
-        } else if ( ev.keyCode === OSjs.Utils.Keys.RIGHT ) {
+        } else if ( ev.keyCode === Utils.Keys.RIGHT ) {
           idx++;
-        } else if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
+        } else if ( ev.keyCode === Utils.Keys.ENTER ) {
           this._onActivate(ev, this.data[idx]);
           return true;
         }
@@ -881,4 +881,4 @@
   OSjs.GUI.createDroppable  = createDroppable;
   OSjs.GUI.getFileIcon      = getFileIcon;
 
-})();
+})(OSjs.API, OSjs.Utils);

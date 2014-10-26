@@ -238,7 +238,7 @@
    * Confirmation dialog creator
    */
   DefaultApplication.prototype.onConfirmDialog = function(win, msg, callback) {
-    msg = msg || OSjs.API._('Discard changes?');
+    msg = msg || OSjs.API._('MSG_GENERIC_APP_DISCARD');
     win._toggleDisabled(true);
     this._createDialog('Confirm', [msg, function(btn) {
       win._toggleDisabled(false);
@@ -310,10 +310,10 @@
     var self = this;
 
     if ( !file ) {
-      throw new Error('cannot save without File ref');
+      throw new Error(OSjs.API._('ERR_APP_MISSING_ARGUMENT_FMT', 'File'));
     }
     if ( !file.path ) {
-      throw new Error('cannot save without a path');
+      throw new Error(OSjs.API._('ERR_APP_MISSING_ARGUMENT_FMT', 'path'));
     }
 
     if ( this.dialogOptions.filetypes !== null ) {
@@ -334,7 +334,7 @@
             file.path = newname;
             file.filename = Utils.filename(newname);
 
-            var msg = Utils.format('The filetype "{0}" is not supported, using "{1}" instead.', ext, first);
+            var msg = OSjs.API._('MSG_MIME_OVERRIDE', ext, first);
             this._createDialog('Alert', [msg, null, {title: OSjs.API._('MSG_APPLICATION_WARNING')}]);
           }
         }
@@ -353,7 +353,7 @@
         return;
       }
       if ( result === false ) {
-        self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), OSjs.API._('Unknown error'), 'doSave');
+        self._onError(OSjs.API._('ERR_FILE_APP_SAVE_ALT_FMT', item.path), OSjs.API._('ERR_APP_UNKNOWN_ERROR'), 'doSave');
         return;
       }
       _onSaveFinished(item);
@@ -504,7 +504,7 @@
           return;
         }
         if ( result === false ) {
-          self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), OSjs.API._('Unknown error'), 'onOpen');
+          self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), OSjs.API._('ERR_APP_UNKNOWN_ERROR'), 'onOpen');
           return;
         }
         self._doOpen(item, result, sendArgs);

@@ -85,7 +85,7 @@
       }
 
       if ( !window.gapi || !gapi.load ) {
-        callback('Failed to load Google API');
+        callback(API._('GAPI_LOAD_FAILURE'));
         return;
       }
 
@@ -95,7 +95,7 @@
             return callback(error);
           }
           if ( !self.authenticated ) {
-            return callback('Google API Authentication failed or did not take place');
+            return callback(API._('GAPI_AUTH_FAILURE'));
           }
 
           callback(false, result);
@@ -203,7 +203,7 @@
           onInited: function(el) {
             if ( el.firstChild ) {
               var img = document.createElement('img');
-              img.title = 'You are signed in to Google API';
+              img.title = API._('GAPI_NOTIFICATION_TITLE');
               img.alt = img.title;
               img.src = API.getThemeResource('status/gtk-dialog-authentication.png', 'icon', '16x16');
               el.firstChild.appendChild(img);
@@ -218,7 +218,8 @@
 
       if ( authResult.error ) {
         if ( authResult.error_subtype === 'origin_mismatch' || authResult.error_subtype === 'access_denied' ) {
-          callback('Failed to authenticate: ' + authResult.error + ':' + authResult.error_subtype);
+          var msg = API._('GAPI_AUTH_FAILURE_FMT', authResult.error, authResult.error_subtype);
+          callback(msg);
           return;
         }
       }
@@ -276,7 +277,7 @@
     }
 
     if ( !clientId ) {
-      onerror('GoogleAPI Module not configured or disabled');
+      onerror(API._('GAPI_DISABLED'));
       return;
     }
 

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(DialogWindow, GUI) {
+(function(Utils, API, DialogWindow, GUI) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -80,8 +80,8 @@
     this.buttonContainer.className = 'Buttons';
 
     this.$element = document.createElement('div');
-    OSjs.Utils.$addClass(this.$element, 'StandardDialog');
-    OSjs.Utils.$addClass(this.$element, this.className);
+    Utils.$addClass(this.$element, 'StandardDialog');
+    Utils.$addClass(this.$element, this.className);
 
     if ( this.message ) {
       this.$message           = document.createElement('div');
@@ -92,7 +92,7 @@
 
     var lbl;
     if ( (typeof this.args.buttonClose !== 'undefined') && (this.args.buttonClose === true) ) {
-      lbl = (this.args.buttonCloseLabel || OSjs.API._('Close'));
+      lbl = (this.args.buttonCloseLabel || API._('Close'));
       this.buttonClose = this._addGUIElement(new OSjs.GUI.Button('Close', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onCloseClick(ev);
@@ -101,7 +101,7 @@
     }
 
     if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
-      lbl = (this.args.buttonCancelLabel || OSjs.API._('Cancel'));
+      lbl = (this.args.buttonCancelLabel || API._('Cancel'));
       this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onCancelClick(ev);
@@ -110,7 +110,7 @@
     }
 
     if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
-      lbl = (this.args.buttonOkLabel || OSjs.API._('OK'));
+      lbl = (this.args.buttonOkLabel || API._('OK'));
       this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: lbl, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
           self.onConfirmClick.call(self, ev);
@@ -151,7 +151,7 @@
 
   StandardDialog.prototype._onKeyEvent = function(ev) {
     DialogWindow.prototype._onKeyEvent.apply(this, arguments);
-    if ( ev.keyCode === OSjs.Utils.Keys.ESC ) {
+    if ( ev.keyCode === Utils.Keys.ESC ) {
       if ( this.args.buttonClose ) {
         this.end('close');
       } else {
@@ -171,4 +171,4 @@
 
   OSjs.Dialogs.StandardDialog    = StandardDialog;
 
-})(OSjs.Core.DialogWindow, OSjs.GUI);
+})(OSjs.Utils, OSjs.API, OSjs.Core.DialogWindow, OSjs.GUI);

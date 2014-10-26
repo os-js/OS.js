@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog) {
+(function(API, Utils, StandardDialog) {
   'use strict';
 
   /**
@@ -35,11 +35,11 @@
    */
   var FontDialog = function(args, onClose) {
     args = args || {};
-    this.fontName   = args.name       || OSjs.API.getHandlerInstance().getConfig('Fonts')['default'];
+    this.fontName   = args.name       || API.getHandlerInstance().getConfig('Fonts')['default'];
     this.fontSize   = args.size       || 12;
     this.background = args.background || '#ffffff';
     this.color      = args.color      || '#000000';
-    this.fonts      = args.list       || OSjs.API.getHandlerInstance().getConfig('Fonts').list;
+    this.fonts      = args.list       || API.getHandlerInstance().getConfig('Fonts').list;
     this.sizeType   = args.sizeType   || 'px';
     this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
 
@@ -49,7 +49,7 @@
     this.$selectFonts = null;
     this.$selectSize  = null;
 
-    StandardDialog.apply(this, ['FontDialog', {title: OSjs.API._('Font Dialog')}, {width:450, height:250}, onClose]);
+    StandardDialog.apply(this, ['FontDialog', {title: API._('Font Dialog')}, {width:450, height:250}, onClose]);
   };
 
   FontDialog.prototype = Object.create(StandardDialog.prototype);
@@ -162,4 +162,4 @@
 
   OSjs.Dialogs.Font               = FontDialog;
 
-})(OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);

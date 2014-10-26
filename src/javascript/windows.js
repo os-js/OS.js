@@ -28,7 +28,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Process) {
+(function(Utils, API, Process) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -209,7 +209,7 @@
     if ( force ) {
       this._settings = settings;
     } else {
-      this._settings = OSjs.Utils.mergeObject(this._settings, settings);
+      this._settings = Utils.mergeObject(this._settings, settings);
     }
 
     return true;
@@ -344,11 +344,11 @@
     var _NAMES              = [];
 
     return function(name, opts, appRef) {
-      if ( OSjs.Utils.inArray(_NAMES, name) ) {
-        throw new Error(OSjs.Utils.format('You already have a Window named \'{0}\'', name));
+      if ( Utils.inArray(_NAMES, name) ) {
+        throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
       }
 
-      var icon      = OSjs.API.getThemeResource('wm.png', 'wm');
+      var icon      = API.getThemeResource('wm.png', 'wm');
       var position  = {x:(opts.x), y:(opts.y)};
       var dimension = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
 
@@ -435,7 +435,7 @@
 
     this._state.focused = false;
 
-    this._icon = OSjs.API.getIcon(this._icon, this._appRef);
+    this._icon = API.getIcon(this._icon, this._appRef);
 
     // Initial position
     if ( !this._properties.gravity ) {
@@ -496,7 +496,7 @@
     var main = document.createElement('div');
 
     this._addEventListener(main, 'contextmenu', function(ev) {
-      var r = OSjs.Utils.isInputElement(ev);
+      var r = Utils.isInputElement(ev);
 
       if ( !r ) {
         ev.preventDefault();
@@ -508,11 +508,11 @@
     });
 
     function _showBorder() {
-      OSjs.Utils.$addClass(main, 'WindowHintDnD');
+      Utils.$addClass(main, 'WindowHintDnD');
     }
 
     function _hideBorder() {
-      OSjs.Utils.$removeClass(main, 'WindowHintDnD');
+      Utils.$removeClass(main, 'WindowHintDnD');
     }
 
     if ( this._properties.allow_drop ) {
@@ -658,9 +658,9 @@
 
     // Append stuff
     var classNames = ['Window'];
-    classNames.push('Window_' + OSjs.Utils.$safeName(this._name));
+    classNames.push('Window_' + Utils.$safeName(this._name));
     if ( this._tag && (this._name !== this._tag) ) {
-      classNames.push(OSjs.Utils.$safeName(this._tag));
+      classNames.push(Utils.$safeName(this._tag));
     }
 
     main.className    = classNames.join(' ');
@@ -709,10 +709,10 @@
       startDimension.h = self._dimension.h;
 
       if ( a === 'move' ) {
-        OSjs.Utils.$addClass(main, 'WindowHintMoving');
+        Utils.$addClass(main, 'WindowHintMoving');
       } else {
         if ( windowResize ) {
-          var dir = OSjs.Utils.$position(windowResize);
+          var dir = Utils.$position(windowResize);
           var dirX = ev.clientX - dir.left;
           var dirY = ev.clientY - dir.top;
           var dirD = 20;
@@ -740,7 +740,7 @@
             direction = 'sw';
           }
 
-          OSjs.Utils.$addClass(main, 'WindowHintResizing');
+          Utils.$addClass(main, 'WindowHintResizing');
         }
       }
 
@@ -766,8 +766,8 @@
         }
       }
 
-      OSjs.Utils.$removeClass(main, 'WindowHintMoving');
-      OSjs.Utils.$removeClass(main, 'WindowHintResizing');
+      Utils.$removeClass(main, 'WindowHintMoving');
+      Utils.$removeClass(main, 'WindowHintResizing');
 
       document.removeEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
       document.removeEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
@@ -779,7 +779,7 @@
     }
 
     function onMouseMove(ev) {
-      if ( !OSjs.API._isMouseLock() ) { return; }
+      if ( !API._isMouseLock() ) { return; }
       if ( action === null ) { return; }
       var cx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
       var cy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
@@ -946,7 +946,7 @@
     if ( this._$element ) {
       var anim = _WM ? _WM.getSetting('animations') : false;
       if ( anim ) {
-        OSjs.Utils.$addClass(this._$element, 'WindowHintClosing');
+        Utils.$addClass(this._$element, 'WindowHintClosing');
         setTimeout(function() {
           _removeDOM();
         }, getAnimDuration());
@@ -1057,7 +1057,7 @@
         var overlay = null, elpos;
         this._addHook('resize', function() {
           if ( !overlay ) {
-            elpos = OSjs.Utils.$position(gel.$element);
+            elpos = Utils.$position(gel.$element);
 
             overlay                   = document.createElement('div');
             overlay.className         = 'IFrameResizeFixer';
@@ -1175,7 +1175,7 @@
     console.info('OSjs::Core::Window::_close()');
     if ( this._disabled ) { return; }
 
-    OSjs.Utils.$addClass(this._$element, 'WindowHintClosing');
+    Utils.$addClass(this._$element, 'WindowHintClosing');
 
     this._blur();
     this.destroy();
@@ -1194,7 +1194,7 @@
     this._blur();
 
     this._state.minimized = true;
-    OSjs.Utils.$addClass(this._$element, 'WindowHintMinimized');
+    Utils.$addClass(this._$element, 'WindowHintMinimized');
 
     function _hideDOM() {
       self._$element.style.display = 'none';
@@ -1238,7 +1238,7 @@
     this._$element.style.left   = (s.left) + 'px';
     this._$element.style.width  = (s.width) + 'px';
     this._$element.style.height = (s.height) + 'px';
-    OSjs.Utils.$addClass(this._$element, 'WindowHintMaximized');
+    Utils.$addClass(this._$element, 'WindowHintMaximized');
 
     //this._resize();
     this._dimension.w = s.width;
@@ -1274,13 +1274,13 @@
       this._move(this._lastPosition.x, this._lastPosition.y);
       this._resize(this._lastDimension.w, this._lastDimension.h);
       this._state.maximized = false;
-      OSjs.Utils.$removeClass(this._$element, 'WindowHintMaximized');
+      Utils.$removeClass(this._$element, 'WindowHintMaximized');
     }
 
     if ( min && this._state.minimized ) {
       this._$element.style.display = 'block';
       this._state.minimized = false;
-      OSjs.Utils.$removeClass(this._$element, 'WindowHintMinimized');
+      Utils.$removeClass(this._$element, 'WindowHintMinimized');
     }
 
     this._onChange('restore');
@@ -1306,7 +1306,7 @@
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    OSjs.Utils.$addClass(this._$element, 'WindowHintFocused');
+    Utils.$addClass(this._$element, 'WindowHintFocused');
 
     if ( _WIN && _WIN._wid !== this._wid ) {
       _WIN._blur();
@@ -1328,7 +1328,7 @@
     if ( !this._$element ) { return false; }
     if ( !force && !this._state.focused ) { return false; }
     //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
-    OSjs.Utils.$removeClass(this._$element, 'WindowHintFocused');
+    Utils.$removeClass(this._$element, 'WindowHintFocused');
     this._state.focused = false;
 
     this._onChange('blur');
@@ -1353,7 +1353,7 @@
     var dy = 0;
 
     if ( container ) {
-      var cpos  = OSjs.Utils.$position(container, this._$root);
+      var cpos  = Utils.$position(container, this._$root);
       dx = parseInt(cpos.left, 10);
       dy = parseInt(cpos.top, 10);
     }
@@ -1497,9 +1497,9 @@
     function _blink(stat) {
       if ( el ) {
         if ( stat ) {
-          OSjs.Utils.$addClass(el, 'WindowAttentionBlink');
+          Utils.$addClass(el, 'WindowAttentionBlink');
         } else {
-          OSjs.Utils.$removeClass(el, 'WindowAttentionBlink');
+          Utils.$removeClass(el, 'WindowAttentionBlink');
         }
       }
       self._onChange(stat ? 'attention_on' : 'attention_off');
@@ -1568,7 +1568,7 @@
   };
 
   Window.prototype._onKeyEvent = function(ev) {
-    if ( ev.keyCode === OSjs.Utils.Keys.TAB ) {
+    if ( ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex();
     }
 
@@ -1588,7 +1588,7 @@
 
     if ( this._properties.allow_minimize ) {
       list.push({
-        title:    OSjs.API._('Minimize'),
+        title:    API._('Minimize'),
         icon:     'actions/stock_up.png',
         onClick:  function(name, iter) {
           self._minimize();
@@ -1597,7 +1597,7 @@
     }
     if ( this._properties.allow_maximize ) {
       list.push({
-        title:    OSjs.API._('Maximize'),
+        title:    API._('Maximize'),
         icon:     'actions/window_fullscreen.png',
         onClick:  function(name, iter) {
           self._maximize();
@@ -1607,7 +1607,7 @@
     }
     if ( this._state.maximized ) {
       list.push({
-        title:    OSjs.API._('Restore'),
+        title:    API._('Restore'),
         icon:     'actions/view-restore.png',
         onClick:  function(name, iter) {
           self._restore();
@@ -1618,7 +1618,7 @@
     if ( this._properties.allow_ontop ) {
       if ( this._state.ontop ) {
         list.push({
-          title:    OSjs.API._('On Top - Disable'),
+          title:    API._('On Top - Disable'),
           icon:     'actions/window-new.png',
           onClick:  function(name, iter) {
             self._state.ontop = false;
@@ -1630,7 +1630,7 @@
         });
       } else {
         list.push({
-          title:    OSjs.API._('On Top - Enable'),
+          title:    API._('On Top - Enable'),
           icon:     'actions/window-new.png',
           onClick:  function(name, iter) {
             self._state.ontop = true;
@@ -1644,7 +1644,7 @@
     }
     if ( this._properties.allow_close ) {
       list.push({
-        title:    OSjs.API._('Close'),
+        title:    API._('Close'),
         icon:     'actions/window-close.png',
         onClick:  function(name, iter) {
           self._close();
@@ -1702,7 +1702,7 @@
   };
 
   Window.prototype._getViewRect = function() {
-    return this._$element ? OSjs.Utils.$position(this._$element) : null;
+    return this._$element ? Utils.$position(this._$element) : null;
   };
 
   Window.prototype._getRoot = function() {
@@ -1774,4 +1774,4 @@
   OSjs.API.getWindowSpace     = getWindowSpace;
   OSjs.API.getAnimDuration    = getAnimDuration;
 
-})(OSjs.API, OSjs.Core.Process);
+})(OSjs.Utils, OSjs.API, OSjs.Core.Process);

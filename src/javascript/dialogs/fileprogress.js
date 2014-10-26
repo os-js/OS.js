@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(DialogWindow) {
+(function(API, Utils, DialogWindow) {
   'use strict';
 
   /**
@@ -37,7 +37,7 @@
     DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
 
     this.$desc                    = null;
-    this._title                   = title || OSjs.API._('File Operation Progress');
+    this._title                   = title || API._('File Operation Progress');
     this._properties.allow_close  = false;
     this._icon                    = 'actions/document-send.png';
   };
@@ -59,7 +59,7 @@
 
     var desc        = document.createElement('div');
     desc.className  = 'Description';
-    desc.innerHTML  = OSjs.API._('Loading...');
+    desc.innerHTML  = API._('Loading...');
 
 
     el.appendChild(desc);
@@ -87,4 +87,4 @@
 
   OSjs.Dialogs.FileProgress       = FileProgressDialog;
 
-})(OSjs.Core.DialogWindow);
+})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

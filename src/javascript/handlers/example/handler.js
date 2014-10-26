@@ -35,7 +35,7 @@
 See doc/example-handler.txt
 */
 
-(function() {
+(function(API, Utils, VFS) {
   'use strict';
 
   window.OSjs   = window.OSjs   || {};
@@ -180,4 +180,4 @@ See doc/example-handler.txt
   // EXPORTS
   //
   OSjs.Handlers.Current  = ExampleHandler;
-})();
+})(OSjs.API, OSjs.Utils, OSjs.VFS);

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-(function(Utils) {
+(function(API, Utils) {
   'use strict';
 
   window.OSjs   = window.OSjs   || {};
@@ -102,7 +102,7 @@
     if ( (typeof obj2) !== (typeof obj1) ) {
       return obj2;
     }
-    return OSjs.Utils.mergeObject(obj1, obj2);
+    return Utils.mergeObject(obj1, obj2);
   };
 
   SettingsManager.prototype.setCategory = function(category, value, merge) {
@@ -279,7 +279,7 @@
     console.warn('ConnectionManager::onOnline()', 'Going online...');
     this.offline = false;
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = API.getWMInstance();
     if ( wm ) {
       wm.notification({title: 'Warning!', message: 'You are On-line!'});
     }
@@ -289,7 +289,7 @@
     console.warn('ConnectionManager::onOffline()', 'Going offline...');
     this.offline = true;
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = API.getWMInstance();
     if ( wm ) {
       wm.notification({title: 'Warning!', message: 'You are Off-line!'});
     }
@@ -310,7 +310,7 @@
   };
 
   UserSession.prototype.getSession = function() {
-    var procs = OSjs.API.getProcesses();
+    var procs = API.getProcesses();
 
     function getSessionSaveData(app) {
       var args = app.__args;
@@ -346,7 +346,7 @@
       list.push({name: iter.name, args: iter.args, data: {windows: iter.windows || []}});
     });
 
-    OSjs.API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
+    API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
       var data = ((queueData || {}).windows) || [];
       data.forEach(function(r, i) {
         var w = app._getWindow(r.name);
@@ -459,7 +459,7 @@
    */
   PackageManager.prototype._setPackages = function(result) {
     console.debug('PackageManager::_setPackages()', result);
-    var currLocale = OSjs.API.getLocale();
+    var currLocale = API.getLocale();
     var resulted = {};
 
     Object.keys(result).forEach(function(i) {
@@ -534,7 +534,7 @@
     if ( _handlerInstance ) {
       throw Error('Cannot create another Handler Instance');
     }
-    this.config     = OSjs.API.getDefaultSettings();
+    this.config     = API.getDefaultSettings();
     this.settings   = new SettingsManager();
     this.connection = new ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
     this.packages   = new PackageManager(this.config.Core.MetadataURI);
@@ -547,12 +547,12 @@
   /**
    * Called upon window loaded from 'main.js'
    * @see main.js
-   * @see OSjs.API._initialize
+   * @see API._initialize
    */
   DefaultHandler.prototype.init = function(callback) {
     console.info('OSjs::DefaultHandler::init()');
 
-    OSjs.API.setLocale(this.config.Core.Locale);
+    API.setLocale(this.config.Core.Locale);
 
     callback();
   };
@@ -614,7 +614,7 @@
   DefaultHandler.prototype.logout = function(save, callback) {
     console.info('OSjs::DefaultHandler::logout()');
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = API.getWMInstance();
     if ( wm ) {
       wm.destroyNotificationIcon('DefaultHandlerUserNotification');
     }
@@ -647,7 +647,7 @@
 
   /**
    * Default method to perform a call to the backend (API)
-   * Use this shorthand method: OSjs.API.call() instead :)
+   * Use this shorthand method: API.call() instead :)
    */
   DefaultHandler.prototype.callAPI = function(method, args, cbSuccess, cbError) {
     return this.connection.callAPI(method, args, cbSuccess, cbError);
@@ -666,7 +666,7 @@
     var curLocale = this.config.Core.Locale;
 
     function _finished(locale) {
-      OSjs.API.setLocale(locale || curLocale);
+      API.setLocale(locale || curLocale);
       if ( callback ) {
         callback();
       }
@@ -700,7 +700,7 @@
     function displayMenu(ev) {
       var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.GUI.createMenu([{
-        title: OSjs.API._('TITLE_SIGN_OUT'),
+        title: API._('TITLE_SIGN_OUT'),
         onClick: function() {
           OSjs.Core.signOut();
         }
@@ -720,9 +720,9 @@
         onInited: function(el) {
           if ( el.firstChild ) {
             var img = document.createElement('img');
-            img.title = OSjs.API._('TITLE_SIGNED_IN_AS_FMT', user.username);
+            img.title = API._('TITLE_SIGNED_IN_AS_FMT', user.username);
             img.alt = img.title;
-            img.src = OSjs.API.getThemeResource('status/avatar-default.png', 'icon', '16x16');
+            img.src = API.getThemeResource('status/avatar-default.png', 'icon', '16x16');
             el.firstChild.appendChild(img);
           }
         }
@@ -923,7 +923,7 @@
    */
   DefaultHandler.prototype.getApplicationResource = function(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
-    var root = OSjs.API.getDefaultSettings().Core.PackageURI;
+    var root = API.getDefaultSettings().Core.PackageURI;
     return root + '/' + aname + '/' + name;
   };
 
@@ -936,9 +936,9 @@
     args = args || null;
 
     if ( name ) {
-      var wm = OSjs.API.getWMInstance();
+      var wm = API.getWMInstance();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
+      var root = API.getDefaultSettings().Core.ThemeURI;
       if ( !name.match(/^\//) ) {
         if ( type === 'icon' ) {
           var size = args || '16x16';
@@ -967,14 +967,14 @@
     name = name || '';
     if ( name.match(/\.\//) ) {
       if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
-          return OSjs.API.getApplicationResource(app, name);
+          return API.getApplicationResource(app, name);
       } else {
         if ( typeof app === 'object' ) {
-          return OSjs.API.getApplicationResource(app.path, name);
+          return API.getApplicationResource(app.path, name);
         }
       }
     }
-    return OSjs.API.getThemeResource(name, 'icon', args);
+    return API.getThemeResource(name, 'icon', args);
   };
 
   /**
@@ -984,7 +984,7 @@
     if ( name === null ) {
       return '/blank.css';
     }
-    var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
+    var root = API.getDefaultSettings().Core.ThemeURI;
     return root + '/' + name + '.css';
   };
 
@@ -1003,5 +1003,5 @@
     return _handlerInstance;
   };
 
-})(OSjs.Utils);
+})(OSjs.API, OSjs.Utils);
 

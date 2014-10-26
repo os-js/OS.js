@@ -27,14 +27,14 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog) {
+(function(API, Utils, StandardDialog) {
   'use strict';
 
   /**
    * Input Dialog
    */
   var InputDialog = function(msg, val, onClose, onCreated) {
-    StandardDialog.apply(this, ['InputDialog', {title: OSjs.API._('Input Dialog'), message: msg}, {width:300, height:150}, onClose]);
+    StandardDialog.apply(this, ['InputDialog', {title: API._('Input Dialog'), message: msg}, {width:300, height:150}, onClose]);
     this._icon = 'status/dialog-information.png';
 
     this.value = val || '';
@@ -51,7 +51,7 @@
     var inputd = document.createElement('div');
 
     this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(ev) {
-      if ( ev.keyCode === OSjs.Utils.Keys.ENTER ) {
+      if ( ev.keyCode === Utils.Keys.ENTER ) {
         self.buttonConfirm.onClick(ev);
         return;
       }
@@ -89,4 +89,4 @@
 
   OSjs.Dialogs.Input              = InputDialog;
 
-})(OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);

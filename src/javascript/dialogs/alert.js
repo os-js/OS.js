@@ -27,14 +27,14 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog) {
+(function(API, Utils, StandardDialog) {
   'use strict';
 
   /**
    * Alert/Message Dialog
    */
   var AlertDialog = function(msg, onClose, args) {
-    args = OSjs.Utils.mergeObject({title: OSjs.API._('Alert Dialog'), message: msg, buttonCancel: false, buttonOkLabel: OSjs.API._('Close')}, (args || {}));
+    args = Utils.mergeObject({title: API._('Alert Dialog'), message: msg, buttonCancel: false, buttonOkLabel: API._('Close')}, (args || {}));
     StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
     this._icon = 'status/dialog-warning.png';
   };
@@ -46,4 +46,4 @@
 
   OSjs.Dialogs.Alert              = AlertDialog;
 
-})(OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);

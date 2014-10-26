@@ -27,14 +27,14 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog) {
+(function(API, Utils, StandardDialog) {
   'use strict';
 
   /**
    * Confirmation Dialog
    */
   var ConfirmDialog = function(msg, onClose, args) {
-    args = OSjs.Utils.mergeObject({title: OSjs.API._('Confirm Dialog'), message: msg}, (args || {}));
+    args = Utils.mergeObject({title: API._('Confirm Dialog'), message: msg}, (args || {}));
     StandardDialog.apply(this, ['ConfirmDialog', args, {width:350, height:120}, onClose]);
     this._icon = 'status/dialog-question.png';
   };
@@ -46,4 +46,4 @@
 
   OSjs.Dialogs.Confirm            = ConfirmDialog;
 
-})(OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);
