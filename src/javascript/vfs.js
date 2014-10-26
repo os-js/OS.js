@@ -623,7 +623,7 @@
       var lname = 'DownloadFile_' + _didx;
       _didx++;
 
-      API.createLoading(lname, {className: 'BusyNotification', tooltip: OSjs.API._('TOOLTIP_VFS_DOWNLOAD_NOTIFICATION'}));
+      API.createLoading(lname, {className: 'BusyNotification', tooltip: OSjs.API._('TOOLTIP_VFS_DOWNLOAD_NOTIFICATION')});
 
       var dmodule = getModuleFromPath(args.path);
       if ( !isInternalModule(args.path) ) {
