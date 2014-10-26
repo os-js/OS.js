@@ -160,7 +160,7 @@
   function internalCall(name, args, callback) {
     API.call('fs', {'method': name, 'arguments': args}, function(res) {
       if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        callback(res.error || OSjs.API._('Fatal error'));
+        callback(res.error || OSjs.API._('ERR_VFS_FATAL'));
       } else {
         callback(false, res.result);
       }
@@ -169,6 +169,9 @@
     });
   }
 
+  /**
+   * Creates a blob URL
+   */
   function createDataURL(str, mime, callback) {
     var blob = new Blob([str], {type: mime});
     var r = new FileReader();
@@ -178,6 +181,9 @@
     r.readAsDataURL(blob);
   }
 
+  /**
+   * A wrapper for checking if a file exists
+   */
   function existsWrapper(item, callback, options) {
     options = options || {};
 
@@ -186,7 +192,7 @@
     } else {
       OSjs.VFS.exists(item, function(error, result) {
         if ( result ) {
-          callback('Destination already exists');
+          callback(OSjs.API._('ERR_VFS_FILE_EXISTS'));
         } else {
           callback();
         }
@@ -198,9 +204,12 @@
   // FILE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is the file object that is passed around in VFS
+   */
   function OFile(arg, mime) {
     if ( !arg ) {
-      throw new Error('File expects at least one argument');
+      throw new Error(OSjs.API._('ERR_VFS_FILE_ARGS'));
     }
     if ( typeof arg === 'object' ) {
       this.setData(arg);
@@ -269,8 +278,8 @@
    */
   OSjs.VFS.scandir = function(item, callback, options) {
     console.info('VFS::scandir()', item, options);
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
-    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_FILE')); }
     request(item.path, 'scandir', [item], callback, options);
   };
 
@@ -279,8 +288,8 @@
    */
   OSjs.VFS.write = function(item, data, callback, options, appRef) {
     console.info('VFS::write()', item, options);
-    if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
-    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
+    if ( arguments.length < 3 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_FILE')); }
     function _finished(error, result) {
       if ( !error ) {
         OSjs.API.message('vfs', {type: 'write', file: item, source: appRef ? appRef.__pid : null});
@@ -304,8 +313,8 @@
    */
   OSjs.VFS.read = function(item, callback, options) {
     console.info('VFS::read()', item, options);
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
-    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_FILE')); }
     request(item.path, 'read', [item], callback, options);
   };
 
@@ -314,9 +323,9 @@
    */
   OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
     console.info('VFS::copy()', src, dest, options);
-    if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
-    if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
-    if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
+    if ( arguments.length < 3 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(src instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_SRC_FILE')); }
+    if ( !(dest instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_DST_FILE')); }
 
     function doRequest() {
       var msrc, mdst;
@@ -331,7 +340,7 @@
       function _write(data) {
         OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
           if ( error ) {
-            error = 'An error occured while copying between storage: ' + error;
+            error = OSjs.API._('ERR_VFS_TRANSFER_FMT', error);
           }
           _finished(error, result);
         }, options);
@@ -350,7 +359,7 @@
 
         OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
           if ( error ) {
-            _finished('An error occured while copying between storage: ' + error);
+            _finished(OSjs.API._('ERR_VFS_TRANSFER_FMT', error));
             return;
           }
 
@@ -385,9 +394,9 @@
    */
   OSjs.VFS.move = function(src, dest, callback, options, appRef) {
     console.info('VFS::move()', src, dest, options);
-    if ( arguments.length < 3 ) { throw new Error('Not enough aruments'); }
-    if ( !(src instanceof OFile) ) { throw new Error('Expects a src file-object'); }
-    if ( !(dest instanceof OFile) ) { throw new Error('Expects a dest file-object'); }
+    if ( arguments.length < 3 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(src instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_SRC_FILE')); }
+    if ( !(dest instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_DST_FILE')); }
 
     var self = this;
 
@@ -409,12 +418,13 @@
       } else if ( isOther ) {
         self.copy(src, dest, function(error, result) {
           if ( error ) {
+            error = OSjs.API._('ERR_VFS_TRANSFER_FMT', error);
             return _finished(error);
           }
 
           OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
             if ( error ) {
-              error = 'An error occured while movin between storage: ' + error;
+              error = OSjs.API._('ERR_VFS_TRANSFER_FMT', error);
             }
             _finished(error, result);
           }, options);
@@ -440,8 +450,8 @@
    */
   OSjs.VFS.unlink = function(item, callback, options, appRef) {
     console.info('VFS::unlink()', item, options);
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
-    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_FILE')); }
     function _finished(error, result) {
       if ( !error ) {
         OSjs.API.message('vfs', {type: 'delete', file: item, source: appRef ? appRef.__pid : null});
@@ -459,8 +469,8 @@
    */
   OSjs.VFS.mkdir = function(item, callback, options, appRef) {
     console.info('VFS::mkdir()', item, options);
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
-    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_FILE')); }
 
     function doRequest() {
       function _finished(error, result) {
@@ -485,8 +495,8 @@
    */
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
-    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_FILE')); }
     request(item.path, 'exists', [item], callback);
   };
 
@@ -495,8 +505,8 @@
    */
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
-    if ( !(item instanceof OFile) ) { throw new Error('Expects a file-object'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof OFile) ) { throw new Error(OSjs.API._('ERR_VFS_EXPECT_FILE')); }
     request(item.path, 'fileinfo', [item], callback);
   };
 
@@ -505,7 +515,7 @@
    */
   OSjs.VFS.url = function(item, callback) {
     console.info('VFS::url()', item);
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
     if ( typeof item === 'string' ) {
       item = new OFile(item);
     }
@@ -518,7 +528,7 @@
   OSjs.VFS.upload = function(args, callback, options, appRef) {
     console.info('VFS::upload()', args);
     args = args || {};
-    if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
+    if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
 
     /*
     if ( !(args.app instanceof OSjs.Core.Process) ) {
@@ -526,10 +536,10 @@
     }
     */
     if ( !args.files ) {
-      throw new Error('upload() expects a file array');
+      throw new Error(OSjs.API._('ERR_VFS_UPLOAD_NO_FILES'));
     }
     if ( !args.destination ) {
-      throw new Error('upload() expects a destination');
+      throw new Error(OSjs.API._('ERR_VFS_UPLOAD_NO_DEST'));
     }
 
     function _dialogClose(btn, filename, mime, size) {
@@ -569,8 +579,13 @@
         Utils.AjaxUpload(f, 0, args.destination, {
           progress: function() { },
           complete: function(evt) { callback(false, true, evt); },
-          failed:   function(evt, message) { callback('File upload failed: ' + (message || 'Unknown reason'), null, evt); },
-          canceled: function(evt) { callback('File upload was cancelled', null, evt); }
+          failed:   function(evt, message) {
+            var msg = OSjs.API._('ERR_VFS_UPLOAD_FAIL_FMT', (message || 'Unknown reason'));
+            callback(msg, null, evt);
+          },
+          canceled: function(evt) {
+            callback(OSjs.API._('ERR_VFS_UPLOAD_CANCELLED'), null, evt);
+          }
         });
       }
     }
@@ -599,16 +614,16 @@
       console.info('VFS::download()', args);
       args = args || {};
 
-      if ( arguments.length < 2 ) { throw new Error('Not enough aruments'); }
+      if ( arguments.length < 2 ) { throw new Error(OSjs.API._('ERR_VFS_NUM_ARGS')); }
 
       if ( !args.path ) {
-        throw new Error('download() expects a path');
+        throw new Error(OSjs.API._('ERR_VFS_DOWNLOAD_NO_FILE'));
       }
 
       var lname = 'DownloadFile_' + _didx;
       _didx++;
 
-      API.createLoading(lname, {className: 'BusyNotification', tooltip: 'Downloading file'});
+      API.createLoading(lname, {className: 'BusyNotification', tooltip: OSjs.API._('TOOLTIP_VFS_DOWNLOAD_NOTIFICATION'}));
 
       var dmodule = getModuleFromPath(args.path);
       if ( !isInternalModule(args.path) ) {
@@ -625,7 +640,7 @@
           API.destroyLoading(lname);
 
           if ( error ) {
-            callback('An error occured while downloading: ' + error);
+            callback(OSjs.API._('ERR_VFS_DOWNLOAD_FAILED', error));
             return;
           }
 

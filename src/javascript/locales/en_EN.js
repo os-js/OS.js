@@ -54,16 +54,36 @@
     'ERR_CORE_INIT_NO_WM' : 'Cannot launch OS.js: No window manager defined!',
     'ERR_CORE_INIT_WM_FAILED_FMT' : 'Cannot launch OS.js: Failed to launch Window Manager: {0}',
     'ERR_CORE_INIT_PRELOAD_FAILED' : 'Cannot launch OS.js: Failed to preload resources...',
+    'ERR_NO_WM_RUNNING' : 'No window manager is running',
 
     'ERR_APP_API_ERROR' : 'Application API error',
     'ERR_APP_API_ERROR_DESC_FMT' : 'Application {0} failed to perform operation \'{1}\'',
 
-
+    // CoreWM
     'TITLE_SIGN_OUT' : 'Sign out',
     'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
 
+    // GoogleAPI
     'GAPI_SIGN_OUT' : 'Sign out from Google API Services',
     'GAPI_REVOKE' : 'Revoke permissions and Sign Out',
+
+    // VFS
+    'ERR_VFS_FATAL': 'Fatal Error',
+    'ERR_VFS_FILE_ARGS' : 'File expects at least one argument',
+    'ERR_VFS_NUM_ARGS': 'Not enugh arguments',
+    'ERR_VFS_EXPECT_FILE': 'Expects a file-object',
+    'ERR_VFS_EXPECT_SRC_FILE': 'Expects a source file-object',
+    'ERR_VFS_EXPECT_DST_FILE': 'Expects a destination file-object',
+    'ERR_VFS_FILE_EXISTS': 'Destination already exists',
+    'ERR_VFS_TRANSFER_FMT': 'An error occured while transfering between storage: {0}',
+    'ERR_VFS_UPLOAD_NO_DEST': 'Cannot upload a file without a destination',
+    'ERR_VFS_UPLOAD_NO_FILES': 'Cannot upload without any files defined',
+    'ERR_VFS_UPLOAD_FAIL_FMT': 'File upload failed: {0}',
+    'ERR_VFS_UPLOAD_CANCELLED': 'File upload was cancelled',
+    'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
+    'ERR_VFS_DOWNLOAD_FAILED': 'An error occured while downloading: {0}',
+    'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
+
 
     // DefaultApplication
     'ERR_FILE_APP_OPEN' : 'Cannot open file',

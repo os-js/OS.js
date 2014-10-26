@@ -727,7 +727,7 @@
           } else {
             OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
                            OSjs.API._('ERR_FILE_OPEN_FMT', file.path),
-                           OSjs.API._('No window manager is running') );
+                           OSjs.API._('ERR_NO_WM_RUNNING') );
           }
         }
       } else {
@@ -737,7 +737,7 @@
       }
     }
 
-    _HANDLER.getApplicationNameByMime(file.mime, file.path, launchArgs.forceList, _onDone); // FIXME - Refactor
+    _HANDLER.getApplicationNameByMime(file.mime, file.path, launchArgs.forceList, _onDone);
   }
 
   /**
