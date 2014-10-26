@@ -380,13 +380,13 @@
 
     OSjs.GUI.createMenu([
       {name: 'ListView', title: API._('DIALOG_FILE_MNU_VIEWTYPE'), menu: [
-        {name: 'ListView', title: API._('DIALOG_FULE_MNU_LISTVIEW'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
+        {name: 'ListView', title: API._('DIALOG_FILE_MNU_LISTVIEW'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
           self.onMenuSelect('ListView');
         }},
-        {name: 'IconView', title: API._('DIALOG_FULE_MNU_ICONVIEW'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
+        {name: 'IconView', title: API._('DIALOG_FILE_MNU_ICONVIEW'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
           self.onMenuSelect('IconView');
         }},
-        {name: 'TreeView', title: API._('DIALOG_FULE_MNU_TREEVIEW'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
+        {name: 'TreeView', title: API._('DIALOG_FILE_MNU_TREEVIEW'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
           self.onMenuSelect('TreeView');
         }}
       ]}
