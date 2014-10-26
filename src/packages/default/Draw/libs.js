@@ -180,7 +180,7 @@
       var hex = "#000000";
 
       try {
-        hex = OSjs.Utils.RGBtoHEX(rgb);
+        hex = OSjs.Utils.convertToHEX(rgb);
       } catch ( e ) {
         console.warn("Failed to convert to hex", rgb, e);
       }

@@ -45,7 +45,7 @@
     if ( typeof opts.color === 'object' ) {
       this.currentRGB = opts.color;
     } else {
-      this.currentRGB = Utils.HEXtoRGB(opts.color || '#ffffff');
+      this.currentRGB = Utils.convertToRGB(opts.color || '#ffffff');
     }
     this.showAlpha    = opts.showAlpha ? true : false;
     this.currentAlpha = opts.alpha * 100;
@@ -143,7 +143,7 @@
 
   ColorDialog.prototype.onConfirmClick = function(ev) {
     if ( !this.buttonConfirm ) { return; }
-    this.end('ok', this.currentRGB, Utils.RGBtoHEX(this.currentRGB), (this.currentAlpha/100));
+    this.end('ok', this.currentRGB, Utils.convertToHEX(this.currentRGB), (this.currentAlpha/100));
   };
 
   /////////////////////////////////////////////////////////////////////////////

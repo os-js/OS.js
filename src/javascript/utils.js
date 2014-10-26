@@ -380,7 +380,7 @@
   // COLORS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Utils.HEXtoRGB = function(hex) {
+  OSjs.Utils.convertToRGB = function(hex) {
     var rgb = parseInt(hex.replace('#', ''), 16);
     var val = {};
     val.r = (rgb & (255 << 16)) >> 16;
@@ -390,7 +390,7 @@
   };
 
 
-  OSjs.Utils.RGBtoHEX = function(r, g, b) {
+  OSjs.Utils.convertToHEX = function(r, g, b) {
     if ( typeof r === 'object' ) {
       g = r.g;
       b = r.b;
@@ -398,7 +398,7 @@
     }
 
     if ( typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined' ) {
-      throw new Error('Invalid RGB supplied to RGBtoHEX()');
+      throw new Error('Invalid RGB supplied to convertToHEX()');
     }
 
     var hex = [
