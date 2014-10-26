@@ -49,7 +49,7 @@
 
     var maxSize = OSjs.API.getHandlerInstance().getConfig('Core').MaxUploadSize;
     var msg = OSjs.API._('Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes', this.dest, maxSize);
-    StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs.API._('Upload Dialog'), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
+    StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs.API._('DIALOG_UPLOAD_TITLE'), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
     this._icon = 'actions/filenew.png';
 
     _ID++;
@@ -111,8 +111,8 @@
     this.$file.disabled = 'disabled';
     this.buttonCancel.setDisabled(true);
 
-    var desc = OSjs.API._('Uploading \'{0}\' ({1} {2}) to {3}', file.name, file.type, size, this.dest);
-    this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs.API._('Uploading file...')));
+    var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, size, this.dest);
+    this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs.API._('DIALOG_UPLOAD_MSG')));
     this.dialog.setDescription(desc);
     this.dialog.setProgress(0);
     this._addChild(this.dialog); // Importante!
@@ -176,9 +176,9 @@
   FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
     console.info('FileUploadDialog::onUploadFailed()');
     if ( error ) {
-      this._error(OSjs.API._('Upload failed'), OSjs.API._('The upload has failed'), error);
+      this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), error);
     } else {
-      this._error(OSjs.API._('Upload failed'), OSjs.API._('The upload has failed'), OSjs.API._('Reason unknown...'));
+      this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), OSjs.API._('DIALOG_UPLOAD_FAILED_UNKNOWN'));
     }
     if ( this.buttonCancel ) {
       this.buttonCancel.setDisabled(false);
@@ -188,7 +188,7 @@
 
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
     console.info('FileUploadDialog::onUploadCanceled()');
-    this._error(OSjs.API._('Upload failed'), OSjs.API._('The upload has failed'), OSjs.API._('Cancelled by user...'));
+    this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'));
     if ( this.buttonCancel ) {
       this.buttonCancel.setDisabled(false);
     }

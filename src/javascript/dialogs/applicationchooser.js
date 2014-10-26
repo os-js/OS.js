@@ -40,8 +40,8 @@
     this.selectedApp  = null;
     this.useDefault   = false;
 
-    var msg = ([API._('Choose an application to open'), '<br />' ,Utils.format('<span>{0}</span>', this.filename), Utils.format('({0})', this.mime)]).join(' ');
-    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: API._('Choose Application'), message: msg}, {width:400, height:360}, onClose]);
+    var msg = ([API._('DIALOG_APPCHOOSER_MSG'), '<br />' ,Utils.format('<span>{0}</span>', this.filename), Utils.format('({0})', this.mime)]).join(' ');
+    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: API._('DIALOG_APPCHOOSER_TITLE'), message: msg}, {width:400, height:360}, onClose]);
   };
 
   ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
@@ -56,7 +56,7 @@
     if ( !val ) {
       var wm = API.getWMInstance();
       if ( wm ) {
-        var d = new OSjs.Dialogs.Alert(API._('You need to select an application'));
+        var d = new OSjs.Dialogs.Alert(API._('DIALOG_APPCHOOSER_NO_SELECTION'));
         wm.addWindow(d);
         this._addChild(d);
       }
@@ -126,7 +126,7 @@
     listView.setRows(list);
     listView.render();
 
-    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: API._('Use as default application for {0}', this.mime), value: this.useDefault, onChange: function(el, ev, value) {
+    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: API._('DIALOG_APPCHOOSER_SET_DEFAULT', this.mime), value: this.useDefault, onChange: function(el, ev, value) {
       self.useDefault = value ? true : false;
     }}), container);
 

@@ -1,5 +1,7 @@
 
 # High-priority
+* _[Locales]_ Finish the format strings
+* _[Locales]_ Redo nb_NO and de_DE locales after changes
 * _[Misc]_ There are some FIXME and TODO markers in the code
 * _[VFS]_ Finish Google Drive implementation
    - Copy file that already has this name fails (including upload)
@@ -7,7 +9,6 @@
    - Deleting a folder does not restore the root parent of items
 * _[Backend]_ Finish Node.js backend
   - Add User/Sessions in Core API
-* _[Locales]_ Finish the format strings
 * _[Backend]_ Finish WebSocket hander implementation
 * _[Documentation]_ Complete documentation for JavaScript
 

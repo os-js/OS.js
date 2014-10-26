@@ -34,7 +34,7 @@
    * Alert/Message Dialog
    */
   var AlertDialog = function(msg, onClose, args) {
-    args = Utils.mergeObject({title: API._('Alert Dialog'), message: msg, buttonCancel: false, buttonOkLabel: API._('Close')}, (args || {}));
+    args = Utils.mergeObject({title: API._('DIALOG_ALERT_TITLE'), message: msg, buttonCancel: false, buttonOkLabel: API._('DIALOG_CLOSE')}, (args || {}));
     StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
     this._icon = 'status/dialog-warning.png';
   };

@@ -80,7 +80,7 @@
     this.$selectRoot  = null;
 
     // Window
-    var title     = API._(this.type === 'save' ? 'Save' : 'Open');
+    var title     = API._(this.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
     var className = this.type === 'save' ? 'FileSaveDialog' : 'FileOpenDialog';
 
     StandardDialog.apply(this, [className, {title: title}, {width:600, height:380}, onClose]);
@@ -229,8 +229,8 @@
       this._addGUIElement(new OSjs.GUI.Button('ButtonMkdir', {label: 'New Folder', onClick: function() {
 
         var dir = self.$fileView.getPath();
-        var msg = API._('Create a new directory in <span>{0}</span>', dir);
-        var diag = new OSjs.Dialogs.Input(msg, 'New Folder', function(btn, val) {
+        var msg = API._('DIALOG_FILE_MKDIR_MSG', dir);
+        var diag = new OSjs.Dialogs.Input(msg, API._('DIALOG_FILE_MKDIR'), function(btn, val) {
           if ( btn === 'ok' && val ) {
             var newdir = new VFS.File(dir + '/' + val);
             VFS.mkdir(newdir, function(error) {
@@ -318,7 +318,7 @@
       var wm = API.getWMInstance();
       if ( wm ) {
         self._toggleDisabled(true);
-        var conf = new OSjs.Dialogs.Confirm(API._('Are you sure you want to overwrite the file \'{0}\'?', Utils.filename(file.path)), function(btn) {
+        var conf = new OSjs.Dialogs.Confirm(API._('DIALOG_FILE_OVERWRITE', Utils.filename(file.path)), function(btn) {
           self._toggleDisabled(false);
           if ( btn === 'ok' ) {
             self.end('ok', file);
@@ -379,14 +379,14 @@
     var viewType = fileList.viewType || '';
 
     OSjs.GUI.createMenu([
-      {name: 'ListView', title: API._('View type'), menu: [
-        {name: 'ListView', title: API._('List View'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
+      {name: 'ListView', title: API._('DIALOG_FILE_MNU_VIEWTYPE'), menu: [
+        {name: 'ListView', title: API._('DIALOG_FULE_MNU_LISTVIEW'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
           self.onMenuSelect('ListView');
         }},
-        {name: 'IconView', title: API._('Icon View'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
+        {name: 'IconView', title: API._('DIALOG_FULE_MNU_ICONVIEW'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
           self.onMenuSelect('IconView');
         }},
-        {name: 'TreeView', title: API._('Tree View'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
+        {name: 'TreeView', title: API._('DIALOG_FULE_MNU_TREEVIEW'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
           self.onMenuSelect('TreeView');
         }}
       ]}
@@ -411,7 +411,7 @@
         this.errors++;
       }
 
-      this._error(API._('FileDialog Error'), API._('Failed listing directory \'{0}\' because an error occured', dirname), err);
+      this._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', dirname), err);
     }
   };
 
@@ -563,9 +563,9 @@
       if ( wm ) {
         var dwin;
         if ( this.type === 'save' ) {
-          dwin = new OSjs.Dialogs.Alert(API._('You need to select a file or enter new filename!'));
+          dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_FILENAME'));
         } else {
-          dwin = new OSjs.Dialogs.Alert(API._('You need to select a file!'));
+          dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_SELECTION'));
         }
         wm.addWindow(dwin);
         this._addChild(dwin);

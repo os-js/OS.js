@@ -63,10 +63,77 @@
 
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'You already have a Window named \'{0}\'',
+    'WINDOW_MINIMIZE' : 'Minimize',
+    'WINDOW_MAXIMIZE' : 'Maximize',
+    'WINDOW_RESTORE'  : 'Restore',
+    'WINDOW_CLOSE'    : 'Close',
+    'WINDOW_ONTOP_ON' : 'Ontop (Enable)',
+    'WINDOW_ONTOP_OFF': 'Ontop (Disable)',
 
-    // CoreWM
+    // Handler
     'TITLE_SIGN_OUT' : 'Sign out',
     'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
+
+    // Dialogs
+    'DIALOG_CLOSE' : 'Close',
+    'DIALOG_CANCEL': 'Cancel',
+    'DIALOG_APPLY' : 'Apply',
+    'DIALOG_OK'    : 'OK',
+
+    'DIALOG_ALERT_TITLE' : 'Alert Dialog',
+
+    'DIALOG_COLOR_TITLE' : 'Color Dialog',
+    'DIALOG_COLOR_R' : 'Red: {0}',
+    'DIALOG_COLOR_G' : 'Green: {0}',
+    'DIALOG_COLOR_B' : 'Blue: {0}',
+    'DIALOG_COLOR_A' : 'Alpha: {0}',
+
+    'DIALOG_CONFIRM_TITLE' : 'Confirm Dialog',
+
+    'DIALOG_ERROR_MESSAGE'   : 'Message',
+    'DIALOG_ERROR_SUMMARY'   : 'Summary',
+    'DIALOG_ERROR_TRACE'     : 'Trace',
+    'DIALOG_ERROR_BUGREPORT' : 'Bugreport',
+
+    'DIALOG_FILE_SAVE'      : 'Save',
+    'DIALOG_FILE_OPEN'      : 'Open',
+    'DIALOG_FILE_MKDIR'     : 'New Folder',
+    'DIALOG_FILE_MKDIR_MSG' : 'Create a new directory in <span>{0}</span>',
+    'DIALOG_FILE_OVERWRITE' : 'Are you sure you want to overwrite the file \'{0}\'?',
+    'DIALOG_FILE_MNU_VIEWTYPE' : 'View type',
+    'DIALOG_FILE_MNU_LISTVIEW' : 'List View',
+    'DIALOG_FILE_MNU_TREEVIEW' : 'Tree View',
+    'DIALOG_FILE_MNU_ICONVIEW' : 'Icon View',
+    'DIALOG_FILE_ERROR'        : 'FileDialog Error',
+    'DIALOG_FILE_ERROR_SCANDIR': 'Failed listing directory \'{0}\' because an error occured',
+    'DIALOG_FILE_MISSING_FILENAME' : 'You need to select a file or enter new filename!',
+    'DIALOG_FILE_MISSING_SELECTION': 'You need to select a file!',
+
+    'DIALOG_FILEINFO_TITLE' : 'File Information',
+    'DIALOG_FILEINFO_LOADING' : 'Loading file information for: {0}',
+    'DIALOG_FILEINFO_ERROR' : 'FileInformationDialog Error',
+    'DIALOG_FILEINFO_ERROR_LOOKUP' : 'Failed to get file information for <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Failed to get file information for: {0}',
+
+
+    'DIALOG_FILEPROGRESS_TITLE' : 'File Operation Progress',
+    'DIALOG_FILEPROGRESS_LOADING' : 'Loading...',
+
+    'DIALOG_UPLOAD_TITLE' : 'Upload Dialog',
+    'DIALOG_UPLOAD_MSG_FMT' : 'Uploading \'{0}\' ({1} {2}) to {3}',
+    'DIALOG_UPLOAD_MSG' : 'Uploading file...',
+    'DIALOG_UPLOAD_FAILED' : 'Upload failed',
+    'DIALOG_UPLOAD_FAILED_MSG' : 'The upload has failed',
+    'DIALOG_UPLOAD_FAILED_UNKNOWN' : 'Reason unknown...',
+    'DIALOG_UPLOAD_FAILED_CANCELLED' : 'Cancelled by user...',
+
+    'DIALOG_FONT_TITLE' : 'Font Dialog',
+
+
+    'DIALOG_APPCHOOSER_TITLE' : 'Choose Application',
+    'DIALOG_APPCHOOSER_MSG' : 'Choose an application to open',
+    'DIALOG_APPCHOOSER_NO_SELECTION' : 'You need to select an application',
+    'DIALOG_APPCHOOSER_SET_DEFAULT' : 'Use as default application for {0}',
 
     // GoogleAPI
     'GAPI_DISABLED' : 'GoogleAPI Module not configured or disabled',
@@ -97,7 +164,6 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
     'ERR_VFS_DOWNLOAD_FAILED': 'An error occured while downloading: {0}',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
-
 
     // DefaultApplication
     'ERR_FILE_APP_OPEN' : 'Cannot open file',
