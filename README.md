@@ -34,6 +34,10 @@ You can also use the Github [bug-tracker](https://github.com/andersevenrud/OS.js
 
 My contact information is located on my [Github profile](https://github.com/andersevenrud)
 
+[Want to join the testing team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-testing-team)
+
+[Want to join the translation team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-translation-team)
+
 # License
 
 ```
