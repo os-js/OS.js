@@ -52,4 +52,4 @@ My contact information is located on my [Github profile](https://github.com/ande
 * [Author Homepage](http://andersevenrud.github.io/)
 * [Author Blog](http://anderse.wordpress.com)
 * [Author Twitter](https://twitter.com/andersevenrud)
-* [Author Mail](andersevenrud@gmail.com)
+* Author Mail: <andersevenrud@gmail.com>
