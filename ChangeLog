@@ -1,3 +1,16 @@
+# 2.0.0-alpha37
+
+* Locales: Added formatting string for entire OS.js, so now translations should be a breeze :)
+* Locales: Entirely new en_EN
+* Locales: Entirely new no_NO
+* Locales: Disabled de_DE for now (waiting for new translations)
+* Utils: Fixed a tiny memory leak in getCompability()
+* Utils: Renamed HEXtoRGB => convertToRGB
+* Utils: Renamed RGBtoHEX => convertToHEX
+* VFS: Added options parameter to write/scandir/upload
+* VFS: Removed _opts entirely from API (finally)
+* DefaultApplication: Removed static paths
+
 # 2.0.0-alpha36
 
 * server-php: Now blocks all VFS write request on osjs://
