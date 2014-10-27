@@ -255,6 +255,7 @@
     'LBL_REDO'     : 'Redo',
     'LBL_CUT'      : 'Cut',
     'LBL_UNLINK'   : 'Unlink',
+    'LBL_COPY'     : 'Copy',
     'LBL_PASTE'    : 'Paste',
     'LBL_INSERT'   : 'Insert',
     'LBL_IMAGE'    : 'Image',
