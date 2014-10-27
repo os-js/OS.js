@@ -270,48 +270,48 @@
 
     this.menuAction = menuAction;
 
-    menuBar.addItem(OSjs.API._("File"), [
-      {title: OSjs.API._('Create directory'), onClick: function() {
+    menuBar.addItem(OSjs.API._("LBL_FILE"), [
+      {title: OSjs.API._('LBL_MKDIR'), onClick: function() {
         menuAction('mkdir');
       }},
-      {title: OSjs.API._('Upload'), onClick: function() {
+      {title: OSjs.API._('LBL_UPLOAD'), onClick: function() {
         menuAction('upload');
       }},
-      {title: OSjs.API._('Close'), onClick: function() {
+      {title: OSjs.API._('LBL_CLOSE'), onClick: function() {
         self._close();
       }}
     ]);
 
-    menuBar.addItem(OSjs.API._("Edit"), [
-      {name: 'Rename', title: OSjs.API._('Rename'), onClick: function() {
+    menuBar.addItem(OSjs.API._("LBL_EDIT"), [
+      {name: 'Rename', title: OSjs.API._('LBL_RENAME'), onClick: function() {
         menuAction('rename', true);
       }},
-      {name: 'Delete', title: OSjs.API._('Delete'), onClick: function() {
+      {name: 'Delete', title: OSjs.API._('LBL_RENAME'), onClick: function() {
         menuAction('delete', true);
       }},
-      {name: 'Information', title: OSjs.API._('Information'), onClick: function() {
+      {name: 'Information', title: OSjs.API._('LBL_INFORMATION'), onClick: function() {
         menuAction('info', true);
       }},
-      {name: 'OpenWith', title: OSjs.API._('Open With ...'), onClick: function() {
+      {name: 'OpenWith', title: OSjs.API._('LBL_OPENWITH'), onClick: function() {
         menuAction('openWith', true);
       }},
-      {name: 'Download', title: OSjs.API._('Download to computer'), onClick: function() {
+      {name: 'Download', title: OSjs.API._('LBL_DOWNLOAD_COMP'), onClick: function() {
         menuAction('download', true);
       }}
     ]);
 
     var viewTypeMenu = [
-      {name: 'ListView', title: OSjs.API._('List View'), onClick: function() {
+      {name: 'ListView', title: OSjs.API._('LBL_LISTVIEW'), onClick: function() {
         fileView.setViewType('ListView');
         self._focus();
         app._setArgument('viewType', 'ListView');
       }},
-      {name: 'IconView', title: OSjs.API._('Icon View'), onClick: function() {
+      {name: 'IconView', title: OSjs.API._('LBL_ICONVIEW'), onClick: function() {
         fileView.setViewType('IconView');
         self._focus();
         app._setArgument('viewType', 'IconView');
       }},
-      {name: 'TreeView', title: OSjs.API._('Tree View'), onClick: function() {
+      {name: 'TreeView', title: OSjs.API._('LBL_TREEVIEW'), onClick: function() {
         fileView.setViewType('TreeView');
         self._focus();
         app._setArgument('viewType', 'TreeView');
@@ -319,8 +319,8 @@
     ];
 
     var chk;
-    menuBar.addItem(OSjs.API._("View"), [
-      {title: OSjs.API._('Refresh'), onClick: function() {
+    menuBar.addItem(OSjs.API._("LBL_VIEW"), [
+      {title: OSjs.API._('LBL_REFRESH'), onClick: function() {
         fileView.refresh();
         self._focus();
       }},
@@ -349,11 +349,11 @@
           self._focus();
         }
       },
-      {title: OSjs.API._('View type'), menu: viewTypeMenu}
+      {title: OSjs.API._('LBL_VIEWTYPE'), menu: viewTypeMenu}
     ]);
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {
-      if ( mtitle === OSjs.API._('File') ) return;
+      if ( mtitle === OSjs.API._('LBL_FILE') ) return;
 
       var fileView = self._getGUIElement('FileManagerFileView');
       var sel = fileView.getSelected();
@@ -409,12 +409,12 @@
 
     sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'filename', title: OSjs.API._('Filename')},
-      {key: 'mime', title: OSjs.API._('Mime'), visible: false},
-      {key: 'size', title: OSjs.API._('Size'), visible: false},
+      {key: 'filename', title: OSjs.API._('LBL_FILENAME')},
+      {key: 'mime', title: OSjs.API._('LBL_MIME'), visible: false},
+      {key: 'size', title: OSjs.API._('LBL_SIZE'), visible: false},
       {key: 'internal', title: 'Internal', visible: false},
-      {key: 'path', title: OSjs.API._('Path'), visible: false, domProperties: {width: "70"}},
-      {key: 'type', title: OSjs.API._('Type'), visible: false, domProperties: {width: "50"}}
+      {key: 'path', title: OSjs.API._('LBL_PATH'), visible: false, domProperties: {width: "70"}},
+      {key: 'type', title: OSjs.API._('LBL_TYPE'), visible: false, domProperties: {width: "50"}}
      ]);
     sideView.setRows(sideViewItems);
     sideView.onActivate = function(el, ev, item) {

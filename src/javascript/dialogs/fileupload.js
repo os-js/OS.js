@@ -48,7 +48,7 @@
     this.uploadMime = null;
 
     var maxSize = OSjs.API.getHandlerInstance().getConfig('Core').MaxUploadSize;
-    var msg = OSjs.API._('Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes', this.dest, maxSize);
+    var msg = OSjs.API._('DIALOG_UPLOAD_DESC', this.dest, maxSize);
     StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs.API._('DIALOG_UPLOAD_TITLE'), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
     this._icon = 'actions/filenew.png';
 

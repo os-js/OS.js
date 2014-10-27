@@ -83,10 +83,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs.API._('Filename') + ': '  + item.filename,
-            OSjs.API._('Path')     + ': '  + item.path,
-            OSjs.API._('Size')     + ': '  + item.size || 0,
-            OSjs.API._('MIME')     + ': '  + item.mime || 'none'
+            OSjs.API._('LBL_FILENAME') + ': '  + item.filename,
+            OSjs.API._('LBL_PATH')     + ': '  + item.path,
+            OSjs.API._('LBL_SIZE')     + ': '  + item.size || 0,
+            OSjs.API._('LBL_MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
           var file = new VFS.File(item);
@@ -132,7 +132,7 @@
       if ( iter.type === 'dir' && iter.filename !== '..' ) {
         iter.items = [{
           icon: iter.icon,
-          title: 'Loading...'
+          title: OSjs.API._('LBL_LOADING')
         }];
       }
       fileList.push(iter);
@@ -222,10 +222,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs.API._('Filename') + ': '  + item.filename,
-            OSjs.API._('Path')     + ': '  + item.path,
-            OSjs.API._('Size')     + ': '  + item.size || 0,
-            OSjs.API._('MIME')     + ': '  + item.mime || 'none'
+            OSjs.API._('LBL_FILENAME') + ': '  + item.filename,
+            OSjs.API._('LBL_PATH')     + ': '  + item.path,
+            OSjs.API._('LBL_SIZE')     + ': '  + item.size || 0,
+            OSjs.API._('LBL_MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
           var file = new VFS.File(item);
@@ -323,10 +323,10 @@
 
         if ( item.type === 'file' ) {
           el.title = ([
-            OSjs.API._('Filename') + ': '  + item.filename,
-            OSjs.API._('Path')     + ': '  + item.path,
-            OSjs.API._('Size')     + ': '  + item.size || 0,
-            OSjs.API._('MIME')     + ': '  + item.mime || 'none'
+            OSjs.API._('LBL_FILENAME') + ': '  + item.filename,
+            OSjs.API._('LBL_PATH')     + ': '  + item.path,
+            OSjs.API._('LBL_SIZE')     + ': '  + item.size || 0,
+            OSjs.API._('LBL_MIME')     + ': '  + item.mime || 'none'
           ]).join('\n');
 
           var file = new VFS.File(item);
@@ -373,11 +373,11 @@
 
     this.setColumns([
       {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: '16'}, resizable: false},
-      {key: 'filename', title: OSjs.API._('Filename')},
-      {key: 'mime',     title: OSjs.API._('MIME'), domProperties: {width: '150'}},
-      {key: 'size',     title: OSjs.API._('Size'), callback: _callbackSize, domProperties: {width: '80'}},
-      {key: 'path',     title: OSjs.API._('Path'), visible: false},
-      {key: 'type',     title: OSjs.API._('Type'), visible: false}
+      {key: 'filename', title: OSjs.API._('LBL_FILENAME')},
+      {key: 'mime',     title: OSjs.API._('LBL_MIME'), domProperties: {width: '150'}},
+      {key: 'size',     title: OSjs.API._('LBL_SIZE'), callback: _callbackSize, domProperties: {width: '80'}},
+      {key: 'path',     title: OSjs.API._('LBL_PATH'), visible: false},
+      {key: 'type',     title: OSjs.API._('LBL_TYPE'), visible: false}
      ]);
 
     ListView.prototype.render.apply(this, [list, true]);

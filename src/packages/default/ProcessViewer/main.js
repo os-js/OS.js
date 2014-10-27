@@ -51,9 +51,9 @@
 
     var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView', {indexKey: 'pid'}), root);
     listView.setColumns([
-      {key: 'pid',    title: OSjs.API._('PID'), domProperties: {width: "50"}},
-      {key: 'name',   title: OSjs.API._('Name')},
-      {key: 'alive',  title: OSjs.API._('Alive'), domProperties: {width: "100"}},
+      {key: 'pid',    title: OSjs.API._('LBL_PID'), domProperties: {width: "50"}},
+      {key: 'name',   title: OSjs.API._('LBL_NAME')},
+      {key: 'alive',  title: OSjs.API._('LBL_ALIVE'), domProperties: {width: "100"}},
       {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
     ]);
 
@@ -143,7 +143,7 @@
             pid: procs[i].__pid.toString(),
             name: procs[i].__pname,
             alive: now-procs[i].__started,
-            kill: 'Kill',
+            kill: OSjs.API._('Kill'),
             customEvent: cev
           });
         } catch ( e ) {

@@ -143,25 +143,25 @@
       }
     };
 
-    tb.addItem('bold',          {toggleable: true, title: OSjs.API._('Bold'),       onClick: _action, icon: _createIcon('actions/format-text-bold.png')});
-    tb.addItem('italic',        {toggleable: true, title: OSjs.API._('Italic'),     onClick: _action, icon: _createIcon('actions/format-text-italic.png')});
-    tb.addItem('underline',     {toggleable: true, title: OSjs.API._('Underline'),  onClick: _action, icon: _createIcon('actions/format-text-underline.png')});
-    tb.addItem('strikeThrough', {toggleable: true, title: OSjs.API._('Strike'),     onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
+    tb.addItem('bold',          {toggleable: true, title: OSjs.API._('LBL_BOLD'),       onClick: _action, icon: _createIcon('actions/format-text-bold.png')});
+    tb.addItem('italic',        {toggleable: true, title: OSjs.API._('LBL_ITALIC'),     onClick: _action, icon: _createIcon('actions/format-text-italic.png')});
+    tb.addItem('underline',     {toggleable: true, title: OSjs.API._('LBL_UNDERLINE'),  onClick: _action, icon: _createIcon('actions/format-text-underline.png')});
+    tb.addItem('strikeThrough', {toggleable: true, title: OSjs.API._('LBL_STRIKE'),     onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
     //tb.addItem('subscript',     {toggleable: true, title: 'Sub',        onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
     //tb.addItem('superscript',   {toggleable: true, title: 'Super',      onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
     tb.addSeparator();
-    tb.addItem('justifyLeft',   {toggleable: true, title: OSjs.API._('Left'),       onClick: _action, icon: _createIcon('actions/format-justify-left.png')});
-    tb.addItem('justifyCenter', {toggleable: true, title: OSjs.API._('Center'),     onClick: _action, icon: _createIcon('actions/format-justify-center.png')});
-    tb.addItem('justifyRight',  {toggleable: true, title: OSjs.API._('Right'),      onClick: _action, icon: _createIcon('actions/format-justify-right.png')});
+    tb.addItem('justifyLeft',   {toggleable: true, title: OSjs.API._('LBL_LEFT'),       onClick: _action, icon: _createIcon('actions/format-justify-left.png')});
+    tb.addItem('justifyCenter', {toggleable: true, title: OSjs.API._('LBL_CENTER'),     onClick: _action, icon: _createIcon('actions/format-justify-center.png')});
+    tb.addItem('justifyRight',  {toggleable: true, title: OSjs.API._('LBL_RIGHT'),      onClick: _action, icon: _createIcon('actions/format-justify-right.png')});
     tb.addSeparator();
-    tb.addItem('indent',        {title: OSjs.API._('Indent'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
-    tb.addItem('outdent',       {title: OSjs.API._('Outdent'),                      onClick: _action, icon: _createIcon('actions/gtk-unindent-ltr.png')});
+    tb.addItem('indent',        {title: OSjs.API._('LBL_INDENT'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
+    tb.addItem('outdent',       {title: OSjs.API._('LBL_OUTDENT'),                      onClick: _action, icon: _createIcon('actions/gtk-unindent-ltr.png')});
     tb.addSeparator();
-    tb.addItem('textColor',     {title: OSjs.API._('Text Color'),                   onClick: _action});
-    tb.addItem('backColor',     {title: OSjs.API._('Back Color'),                   onClick: _action});
-    tb.addItem('font',          {title: OSjs.API._('Font'),                         onClick: _action});
+    tb.addItem('textColor',     {title: OSjs.API._('LBL_TEXT_COLOR'),                   onClick: _action});
+    tb.addItem('backColor',     {title: OSjs.API._('LBL_BACK_COLOR'),                   onClick: _action});
+    tb.addItem('font',          {title: OSjs.API._('LBL_FONT'),                         onClick: _action});
     tb.render();
-    tb.addItem('indent',        {title: OSjs.API._('Indent'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
+    tb.addItem('indent',        {title: OSjs.API._('LBL_INDENT'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
 
     var rt = this._addGUIElement(new GUI.RichText('WriterRichText'), root);
 
@@ -170,56 +170,56 @@
     sb.setText("THIS IS A WORK IN PROGRESS");
     */
 
-    mb.addItem(OSjs.API._("File"), [
-      {title: OSjs.API._('New'), name: 'New', onClick: function() {
+    mb.addItem(OSjs.API._("LBL_FILE"), [
+      {title: OSjs.API._('LBL_NEW'), name: 'New', onClick: function() {
         app.action('new');
       }},
-      {title: OSjs.API._('Open'), name: 'Open', onClick: function() {
+      {title: OSjs.API._('LBL_OPEN'), name: 'Open', onClick: function() {
         app.action('open');
       }},
-      {title: OSjs.API._('Save'), name: 'Save', onClick: function() {
+      {title: OSjs.API._('LBL_SAVE'), name: 'Save', onClick: function() {
         app.action('save');
       }},
-      {title: OSjs.API._('Save As...'), name: 'SaveAs', onClick: function() {
+      {title: OSjs.API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
         app.action('saveas');
       }},
-      {title: OSjs.API._('Close'), name: 'Close', onClick: function() {
+      {title: OSjs.API._('LBL_CLOSE'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
 
-    mb.addItem(OSjs.API._("Edit"), [
-      {title: OSjs.API._('Undo'), name: 'undo', onClick: function() {
+    mb.addItem(OSjs.API._("LBL_EDIT"), [
+      {title: OSjs.API._('LBL_UNDO'), name: 'undo', onClick: function() {
         self.command('undo');
       }},
-      {title: OSjs.API._('Redo'), name: 'redo', onClick: function() {
+      {title: OSjs.API._('LBL_REDO'), name: 'redo', onClick: function() {
         self.command('redo');
       }},
-      {title: OSjs.API._('Copy'), name: 'copy', onClick: function() {
+      {title: OSjs.API._('LBL_COPY'), name: 'copy', onClick: function() {
         self.command('copy');
       }},
-      {title: OSjs.API._('Cut'), name: 'cut', onClick: function() {
+      {title: OSjs.API._('LBL_CUT'), name: 'cut', onClick: function() {
         self.command('cut');
       }},
-      {title: OSjs.API._('Delete'), name: 'delete', onClick: function() {
+      {title: OSjs.API._('LBL_DELETE'), name: 'delete', onClick: function() {
         self.command('delete');
       }},
-      {title: OSjs.API._('Paste'), name: 'paste', onClick: function() {
+      {title: OSjs.API._('LBL_PASTE'), name: 'paste', onClick: function() {
         self.command('paste');
       }},
-      {title: OSjs.API._('Unlink'), name: 'unlink', onClick: function() {
+      {title: OSjs.API._('LBL_UNLINK'), name: 'unlink', onClick: function() {
         self.command('unlink');
       }}
     ]);
 
-    mb.addItem(OSjs.API._("Insert"), [
-      {title: OSjs.API._('Ordered List'), name: 'OL', onClick: function() {
+    mb.addItem(OSjs.API._("LBL_INSERT"), [
+      {title: OSjs.API._('LBL_ORDERED_LIST'), name: 'OL', onClick: function() {
         self.command('insertOrderedList');
       }},
-      {title: OSjs.API._('Unordered List'), name: 'UL', onClick: function() {
+      {title: OSjs.API._('LBL_UNORDERED_LIST'), name: 'UL', onClick: function() {
         self.command('insertUnorderedList');
       }},
-      {title: OSjs.API._('Image'), name: 'IMG', onClick: function() {
+      {title: OSjs.API._('LBL_IMAGE'), name: 'IMG', onClick: function() {
         self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, file) {
           if ( btn !== 'ok' || !file || !file.mime.match(/^image/) ) return;
           VFS.url(file, function(error, result) {
@@ -229,7 +229,7 @@
           });
         }]);
       }},
-      {title: OSjs.API._('Link'), name: 'A', onClick: function() {
+      {title: OSjs.API._('LBL_LINK'), name: 'A', onClick: function() {
         self._appRef._createDialog('Input', [_('Insert URL'), 'http://', function(btn, val) {
           if ( btn !== 'ok' || ! val ) return;
           self.command('createLink', val);

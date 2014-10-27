@@ -57,11 +57,11 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationPreviewMenuBar'), root);
-    menuBar.addItem(OSjs.API._("File"), [
-      {title: OSjs.API._('Open'), onClick: function() {
+    menuBar.addItem(OSjs.API._("LBL_FILE"), [
+      {title: OSjs.API._('LBL_OPEN'), onClick: function() {
         app.action('open');
       }},
-      {title: OSjs.API._('Close'), onClick: function() {
+      {title: OSjs.API._('LBL_CLOSE'), onClick: function() {
         self._close();
       }}
     ]);

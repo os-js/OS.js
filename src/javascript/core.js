@@ -581,14 +581,14 @@
    */
   function doSignOut() {
     if ( _WM ) {
-      var user = _HANDLER.getUserData() || {name: 'Unknown'};
-      var conf = new OSjs.Dialogs.Confirm(OSjs.API._('Logging out user \'{0}\'.\nDo you want to save current session?', user.name), function(btn) {
+      var user = _HANDLER.getUserData() || {name: OSjs.API._('LBL_UNKNOWN')};
+      var conf = new OSjs.Dialogs.Confirm(OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name), function(btn) {
         if ( btn === 'ok' ) {
           OSjs.Core.shutdown(true, false);
         } else if ( btn === 'cancel' ) {
           OSjs.Core.shutdown(false, false);
         }
-      }, {title: OSjs.API._('Log out (Exit)'), buttonClose: true, buttonCloseLabel: OSjs.API._('Cancel'), buttonOkLabel: OSjs.API._('Yes'), buttonCancelLabel: OSjs.API._('No')});
+      }, {title: OSjs.API._('DIALOG_LOGOUT_TITLE'), buttonClose: true, buttonCloseLabel: OSjs.API._('LBL_CANCEL'), buttonOkLabel: OSjs.API._('LBL_YES'), buttonCancelLabel: OSjs.API._('LBL_NO')});
       _WM.addWindow(conf);
     } else {
       OSjs.Core.shutdown(true, false);

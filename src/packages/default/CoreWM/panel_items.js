@@ -54,7 +54,7 @@
     this.$container = document.createElement('ul');
     root.appendChild(this.$container);
 
-    this.addButton(OSjs.API._('Applications'), 'categories/applications-other.png', function(ev) {
+    this.addButton(OSjs.API._('LBL_APPLICATIONS'), 'categories/applications-other.png', function(ev) {
       ev.stopPropagation();
       var wm = OSjs.API.getWMInstance();
       if ( wm && wm.getSetting('menuCategories') ) {
@@ -65,7 +65,7 @@
       return false;
     });
 
-    this.addButton(OSjs.API._('Settings'), 'categories/applications-system.png', function(ev) {
+    this.addButton(OSjs.API._('LBL_SETTINGS'), 'categories/applications-system.png', function(ev) {
       var wm = OSjs.API.getWMInstance();
       if ( wm ) {
         wm.showSettings();
@@ -73,7 +73,7 @@
       return false;
     });
 
-    this.addButton(OSjs.API._('Log out (Exit)'), 'actions/exit.png', function(ev) {
+    this.addButton(OSjs.API._('DIALOG_LOGOUT_TITLE'), 'actions/exit.png', function(ev) {
       OSjs.Core.signOut();
     });
 

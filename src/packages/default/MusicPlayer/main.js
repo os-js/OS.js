@@ -320,7 +320,7 @@
               msg = _('Media source not supported');
               break;
             default:
-              msg = OSjs.API._('Unknown error');
+              msg = OSjs.API._('ERR_APP_UNKNOWN_ERROR');
               break;
           }
         } catch ( e ) {
@@ -430,14 +430,14 @@
     };
 
     var menuBar = this._addGUIElement(new GUI.MenuBar('MusicPlayerMenuBar'), root);
-    menuBar.addItem(OSjs.API._("File"), [
-      {title: OSjs.API._('Open'), name: 'Open', onClick: function() {
+    menuBar.addItem(OSjs.API._("LBL_FILE"), [
+      {title: OSjs.API._('LBL_OPEN'), name: 'Open', onClick: function() {
         _openFile(false);
       }},
-      {title: OSjs.API._('Add'), name: 'Add', onClick: function() {
+      {title: OSjs.API._('LBL_ADD'), name: 'Add', onClick: function() {
         _openFile(true);
       }},
-      {title: OSjs.API._('Close'), name: 'Close', onClick: function() {
+      {title: OSjs.API._('LBL_CLOSE'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
@@ -567,10 +567,10 @@
 
     var pl = this._addGUIElement(new GUI.ListView('MusicPlayerPlaylist'), root);
     pl.setColumns([
-      {key: 'name',     title: OSjs.API._('Name')},
-      {key: 'filename', title: OSjs.API._('Filename'),  visible: false},
-      {key: 'mime',     title: OSjs.API._('MIME'),      visible: false},
-      {key: 'index',    title: OSjs.API._('Index'),     visible: false}
+      {key: 'name',     title: OSjs.API._('LBL_NAME')},
+      {key: 'filename', title: OSjs.API._('LBL_FILENAME'),  visible: false},
+      {key: 'mime',     title: OSjs.API._('LBL_MIME'),      visible: false},
+      {key: 'index',    title: OSjs.API._('LBL_INDEX'),     visible: false}
      ]);
 
     pl.onActivate = function(ev, el, item) {

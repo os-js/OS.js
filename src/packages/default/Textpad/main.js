@@ -52,20 +52,20 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationTextpadMenuBar'), root);
-    menuBar.addItem(OSjs.API._("File"), [
-      {title: OSjs.API._('New'), name: 'New', onClick: function() {
+    menuBar.addItem(OSjs.API._("LBL_FILE"), [
+      {title: OSjs.API._('LBL_NEW'), name: 'New', onClick: function() {
         app.action('new');
       }},
-      {title: OSjs.API._('Open'), name: 'Open', onClick: function() {
+      {title: OSjs.API._('LBL_OPEN'), name: 'Open', onClick: function() {
         app.action('open');
       }},
-      {title: OSjs.API._('Save'), name: 'Save', onClick: function() {
+      {title: OSjs.API._('LBL_SAVE'), name: 'Save', onClick: function() {
         app.action('save');
       }},
-      {title: OSjs.API._('Save As...'), name: 'SaveAs', onClick: function() {
+      {title: OSjs.API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
         app.action('saveas');
       }},
-      {title: OSjs.API._('Close'), name: 'Close', onClick: function() {
+      {title: OSjs.API._('LBL_CLOSE'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
