@@ -70,11 +70,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Links
 * [Homepage](http://andersevenrud.github.io/OS.js-v2/)
-* [Github Wiki Pages](https://github.com/andersevenrud/OS.js-v2/wiki)
-* [Github Project Page](https://github.com/andersevenrud/OS.js-v2)
-* [Demo Page](http://osjsv2.0o.no/)
-* [Author Homepage](http://andersevenrud.github.io/)
-* [Author Blog](http://anderse.wordpress.com)
+* [Wiki](https://github.com/andersevenrud/OS.js-v2/wiki)
+* [Sources](https://github.com/andersevenrud/OS.js-v2)
+* [Demo](http://osjsv2.0o.no/)
 * [Google+ Page](https://plus.google.com/b/113399210633478618934/113399210633478618934)
 * [Facebook Page](https://www.facebook.com/pages/OSjs/226644300734574)
-* [OS.js v1](http://andersevenrud.github.com/OS.js)
+
+# Contact
+* [Author Homepage](http://andersevenrud.github.io/)
+* [Author Blog](http://anderse.wordpress.com)
+* [Author Twitter](https://twitter.com/andersevenrud)
+* [Author Mail](andersevenrud@gmail.com)
