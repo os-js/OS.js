@@ -4,6 +4,8 @@ OS.js is a desktop implementation for your browser with a fully-fletched window 
 
 Works in any modern browser and can be deployed on any server using Node or PHP (Windows requries cygwin).
 
+Is available under the [BSD Clause 2 License](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
+
 You can read more on [the official homepage](http://andersevenrud.github.io/OS.js-v2/)
 
 Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
@@ -37,36 +39,6 @@ My contact information is located on my [Github profile](https://github.com/ande
 [Want to join the testing team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-testing-team)
 
 [Want to join the translation team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-translation-team)
-
-# License
-
-```
-
-OS.js -- Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met: 
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer. 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution. 
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-```
 
 # Links
 * [Homepage](http://andersevenrud.github.io/OS.js-v2/)
