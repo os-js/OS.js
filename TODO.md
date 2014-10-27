@@ -1,7 +1,6 @@
 
 # High-priority
-* _[Locales]_ Redo nb_NO and de_DE locales after changes
-* _[Locales]_ Add new translation strings to extras / experimental apps
+* _[Locales]_ New de_DE Translations
 * _[Misc]_ There are some FIXME and TODO markers in the code
 * _[VFS]_ Finish Google Drive implementation
    - Copy file that already has this name fails (including upload)

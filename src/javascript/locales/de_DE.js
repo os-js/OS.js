@@ -32,6 +32,9 @@
 
   OSjs.Locales = OSjs.Locales || {};
 
+  // TODO: Waiting for new translations
+
+  /*
   OSjs.Locales.de_DE = {
 
     // core.js
@@ -188,5 +191,6 @@
     'Locales'           : 'Lokalisierung'
 
   };
+*/
 
 })();
