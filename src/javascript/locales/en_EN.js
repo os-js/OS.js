@@ -250,7 +250,7 @@
     'LBL_REGULAR'  : 'Regular',
     'LBL_STRIKE'   : 'Strike',
     'LBL_INDENT'   : 'Indent',
-    'LBL_OUTDATA'  : 'Outdate',
+    'LBL_OUTDENT'  : 'Outdate',
     'LBL_UNDO'     : 'Undo',
     'LBL_REDO'     : 'Redo',
     'LBL_CUT'      : 'Cut',

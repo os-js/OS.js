@@ -250,7 +250,7 @@
     'LBL_REGULAR'  : 'Normal',
     'LBL_STRIKE'   : 'Gjennomstrøk',
     'LBL_INDENT'   : 'Innrykk',
-    'LBL_OUTDATA'  : 'Utrykk',
+    'LBL_OUTDENT'  : 'Utrykk',
     'LBL_UNDO'     : 'Angre',
     'LBL_REDO'     : 'Gjør om igjen',
     'LBL_CUT'      : 'Kutt',

@@ -1,6 +1,6 @@
 
 # High-priority
-* _[Locales]_ New de_DE Translations
+* _[Locales]_ Get someone to update de_DE translations
 * _[Misc]_ There are some FIXME and TODO markers in the code
 * _[VFS]_ Finish Google Drive implementation
    - Copy file that already has this name fails (including upload)
