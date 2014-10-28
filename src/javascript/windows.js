@@ -110,6 +110,176 @@
     return 301;
   }
 
+  /**
+   * Create Window move/resize events (FIXME: Optimize)
+   */
+  function attachWindowEvents(self, main, windowTop, windowResize, isTouch) {
+    var sx = 0;
+    var sy = 0;
+    var action = null;
+    var moved = false;
+    var startRect = null;
+    var direction = null;
+    var startDimension = {x: 0, y: 0, w: 0, h: 0};
+
+    function onMouseDown(ev, a) {
+      ev.preventDefault();
+
+      if ( self._state.maximized ) { return false; }
+      startRect = _WM.getWindowSpace();
+
+      startDimension.x = self._position.x;
+      startDimension.y = self._position.y;
+      startDimension.w = self._dimension.w;
+      startDimension.h = self._dimension.h;
+
+      if ( a === 'move' ) {
+        Utils.$addClass(main, 'WindowHintMoving');
+      } else {
+        if ( windowResize ) {
+          var dir = Utils.$position(windowResize);
+          var dirX = ev.clientX - dir.left;
+          var dirY = ev.clientY - dir.top;
+          var dirD = 20;
+
+          direction = 's';
+          if ( (dirX <= dirD) && (dirY <= dirD) ) {
+            direction = 'nw';
+          }
+          if ( (dirX > dirD) && (dirY <= dirD) ) {
+            direction = 'n';
+          }
+          if ( (dirX <= dirD) && (dirY >= dirD) ) {
+            direction = 'w';
+          }
+          if ( (dirX >= (dir.width-dirD)) && (dirY <= dirD) ) {
+            direction = 'ne';
+          }
+          if ( (dirX >= (dir.width-dirD)) && (dirY > dirD) ) {
+            direction = 'e';
+          }
+          if ( (dirX >= (dir.width-dirD)) && (dirY >= (dir.height-dirD)) ) {
+            direction = 'se';
+          }
+          if ( (dirX <= dirD) && (dirY >= (dir.height-dirD)) ) {
+            direction = 'sw';
+          }
+
+          Utils.$addClass(main, 'WindowHintResizing');
+        }
+      }
+
+      sx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
+      sy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
+      action = a;
+
+      document.addEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
+      document.addEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
+
+      return false;
+    }
+
+    function onMouseUp(ev) {
+      if ( moved ) {
+        if ( _WM ) {
+          if ( action === 'move' ) {
+            self._onChange('move');
+          } else if ( action === 'resize' ) {
+            self._onChange('resize');
+            self._fireHook('resized');
+          }
+        }
+      }
+
+      Utils.$removeClass(main, 'WindowHintMoving');
+      Utils.$removeClass(main, 'WindowHintResizing');
+
+      document.removeEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
+      document.removeEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
+      action = null;
+      sx = 0;
+      sy = 0;
+      moved = false;
+      startRect = null;
+    }
+
+    function onMouseMove(ev) {
+      if ( !API._isMouseLock() ) { return; }
+      if ( action === null ) { return; }
+      var cx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
+      var cy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
+      var dx = cx - sx;
+      var dy = cy - sy;
+      var newLeft = null;
+      var newTop = null;
+      var newWidth = null;
+      var newHeight = null;
+
+      if ( action === 'move' ) {
+        newLeft = startDimension.x + dx;
+        newTop = startDimension.y + dy;
+        if ( newTop < startRect.top ) { newTop = startRect.top; }
+      } else {
+        if ( direction === 's' ) {
+          newWidth = startDimension.w;
+          newHeight = startDimension.h + dy;
+        } else if ( direction === 'se' ) {
+          newWidth = startDimension.w + dx;
+          newHeight = startDimension.h + dy;
+        } else if ( direction === 'e' ) {
+          newWidth = startDimension.w + dx;
+          newHeight = startDimension.h;
+        } else if ( direction === 'sw' ) {
+          newWidth = startDimension.w - dx;
+          newHeight = startDimension.h + dy;
+          newLeft = startDimension.x + dx;
+          newTop = startDimension.y;
+        } else if ( direction === 'w' ) {
+          newWidth = startDimension.w - dx;
+          newHeight = startDimension.h;
+          newLeft = startDimension.x + dx;
+          newTop = startDimension.y;
+        } else if ( direction === 'n' ) {
+          newTop = startDimension.y + dy;
+          newLeft = startDimension.x;
+          newHeight = startDimension.h - dy;
+          newWidth = startDimension.w;
+        } else if ( direction === 'nw' ) {
+          newTop = startDimension.y + dy;
+          newLeft = startDimension.x + dx;
+          newHeight = startDimension.h - dy;
+          newWidth = startDimension.w - dx;
+        } else if ( direction === 'ne' ) {
+          newTop = startDimension.y + dy;
+          newLeft = startDimension.x;
+          newHeight = startDimension.h - dy;
+          newWidth = startDimension.w + dx;
+        }
+      }
+
+      if ( newLeft !== null && newTop !== null ) {
+        self._move(newLeft, newTop);
+      }
+      if ( newWidth !== null && newHeight !== null ) {
+        self._resize(newWidth, newHeight);
+        self._fireHook('resize');
+      }
+
+      moved = true;
+    }
+
+    if ( self._properties.allow_move ) {
+      self._addEventListener(windowTop, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
+        onMouseDown(ev, 'move');
+      });
+    }
+    if ( self._properties.allow_resize ) {
+      self._addEventListener(windowResize, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
+        onMouseDown(ev, 'resize');
+      });
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -688,171 +858,7 @@
     main.appendChild(windowLoading);
     main.appendChild(windowDisabled);
 
-    // TODO: Move to a separate function and optimize!
-    var sx = 0;
-    var sy = 0;
-    var action = null;
-    var moved = false;
-    var startRect = null;
-    var direction = null;
-    var startDimension = {x: 0, y: 0, w: 0, h: 0};
-
-    function onMouseDown(ev, a) {
-      ev.preventDefault();
-
-      if ( self._state.maximized ) { return false; }
-      startRect = _WM.getWindowSpace();
-
-      startDimension.x = self._position.x;
-      startDimension.y = self._position.y;
-      startDimension.w = self._dimension.w;
-      startDimension.h = self._dimension.h;
-
-      if ( a === 'move' ) {
-        Utils.$addClass(main, 'WindowHintMoving');
-      } else {
-        if ( windowResize ) {
-          var dir = Utils.$position(windowResize);
-          var dirX = ev.clientX - dir.left;
-          var dirY = ev.clientY - dir.top;
-          var dirD = 20;
-
-          direction = 's';
-          if ( (dirX <= dirD) && (dirY <= dirD) ) {
-            direction = 'nw';
-          }
-          if ( (dirX > dirD) && (dirY <= dirD) ) {
-            direction = 'n';
-          }
-          if ( (dirX <= dirD) && (dirY >= dirD) ) {
-            direction = 'w';
-          }
-          if ( (dirX >= (dir.width-dirD)) && (dirY <= dirD) ) {
-            direction = 'ne';
-          }
-          if ( (dirX >= (dir.width-dirD)) && (dirY > dirD) ) {
-            direction = 'e';
-          }
-          if ( (dirX >= (dir.width-dirD)) && (dirY >= (dir.height-dirD)) ) {
-            direction = 'se';
-          }
-          if ( (dirX <= dirD) && (dirY >= (dir.height-dirD)) ) {
-            direction = 'sw';
-          }
-
-          Utils.$addClass(main, 'WindowHintResizing');
-        }
-      }
-
-      sx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
-      sy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
-      action = a;
-
-      document.addEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
-      document.addEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
-
-      return false;
-    }
-
-    function onMouseUp(ev) {
-      if ( moved ) {
-        if ( _WM ) {
-          if ( action === 'move' ) {
-            self._onChange('move');
-          } else if ( action === 'resize' ) {
-            self._onChange('resize');
-            self._fireHook('resized');
-          }
-        }
-      }
-
-      Utils.$removeClass(main, 'WindowHintMoving');
-      Utils.$removeClass(main, 'WindowHintResizing');
-
-      document.removeEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
-      document.removeEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
-      action = null;
-      sx = 0;
-      sy = 0;
-      moved = false;
-      startRect = null;
-    }
-
-    function onMouseMove(ev) {
-      if ( !API._isMouseLock() ) { return; }
-      if ( action === null ) { return; }
-      var cx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
-      var cy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
-      var dx = cx - sx;
-      var dy = cy - sy;
-      var newLeft = null;
-      var newTop = null;
-      var newWidth = null;
-      var newHeight = null;
-
-      if ( action === 'move' ) {
-        newLeft = startDimension.x + dx;
-        newTop = startDimension.y + dy;
-        if ( newTop < startRect.top ) { newTop = startRect.top; }
-      } else {
-        if ( direction === 's' ) {
-          newWidth = startDimension.w;
-          newHeight = startDimension.h + dy;
-        } else if ( direction === 'se' ) {
-          newWidth = startDimension.w + dx;
-          newHeight = startDimension.h + dy;
-        } else if ( direction === 'e' ) {
-          newWidth = startDimension.w + dx;
-          newHeight = startDimension.h;
-        } else if ( direction === 'sw' ) {
-          newWidth = startDimension.w - dx;
-          newHeight = startDimension.h + dy;
-          newLeft = startDimension.x + dx;
-          newTop = startDimension.y;
-        } else if ( direction === 'w' ) {
-          newWidth = startDimension.w - dx;
-          newHeight = startDimension.h;
-          newLeft = startDimension.x + dx;
-          newTop = startDimension.y;
-        } else if ( direction === 'n' ) {
-          newTop = startDimension.y + dy;
-          newLeft = startDimension.x;
-          newHeight = startDimension.h - dy;
-          newWidth = startDimension.w;
-        } else if ( direction === 'nw' ) {
-          newTop = startDimension.y + dy;
-          newLeft = startDimension.x + dx;
-          newHeight = startDimension.h - dy;
-          newWidth = startDimension.w - dx;
-        } else if ( direction === 'ne' ) {
-          newTop = startDimension.y + dy;
-          newLeft = startDimension.x;
-          newHeight = startDimension.h - dy;
-          newWidth = startDimension.w + dx;
-        }
-      }
-
-      if ( newLeft !== null && newTop !== null ) {
-        self._move(newLeft, newTop);
-      }
-      if ( newWidth !== null && newHeight !== null ) {
-        self._resize(newWidth, newHeight);
-        self._fireHook('resize');
-      }
-
-      moved = true;
-    }
-
-    if ( this._properties.allow_move ) {
-      this._addEventListener(windowTop, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
-        onMouseDown(ev, 'move');
-      });
-    }
-    if ( this._properties.allow_resize ) {
-      this._addEventListener(windowResize, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
-        onMouseDown(ev, 'resize');
-      });
-    }
+    attachWindowEvents(this, main, windowTop, windowResize, isTouch);
 
     this._addEventListener(main, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
       self._focus();
