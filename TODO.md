@@ -21,7 +21,7 @@
    - Add support for comments
    - Add support for revisioning
 * _[Dialogs]_ Rewrite for better button handling
-* _[Application]_ Go over all applications and collapse namespace calls (OSjs.API.* => API.*)
+* _[Application]_ Go over extra/experimental apps and collapse namespace calls (OSjs.API.* => API.*)
 * _[Application]_
   - MusicPlayer -- Finish
   - MusicPlayer -- Node ApplicationAPI

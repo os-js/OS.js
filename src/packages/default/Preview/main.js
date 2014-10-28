@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, VFS) {
+(function(Application, Window, GUI, Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -57,11 +57,11 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationPreviewMenuBar'), root);
-    menuBar.addItem(OSjs.API._("LBL_FILE"), [
-      {title: OSjs.API._('LBL_OPEN'), onClick: function() {
+    menuBar.addItem(API._("LBL_FILE"), [
+      {title: API._('LBL_OPEN'), onClick: function() {
         app.action('open');
       }},
-      {title: OSjs.API._('LBL_CLOSE'), onClick: function() {
+      {title: API._('LBL_CLOSE'), onClick: function() {
         self._close();
       }}
     ]);
@@ -163,7 +163,7 @@
       this.frame.addElement(this.previewElement, true);
     }
 
-    this._setTitle(file && file.path ? (this.title + " - " + OSjs.Utils.filename(file.path)) : this.title);
+    this._setTitle(file && file.path ? (this.title + " - " + Utils.filename(file.path)) : this.title);
   };
 
   ApplicationPreviewWindow.prototype._resize = function(w, h) {
@@ -217,4 +217,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationPreview = ApplicationPreview;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.VFS);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

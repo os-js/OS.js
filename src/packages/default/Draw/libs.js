@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs) {
+(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@
     this.layerStartLeft = layer.left;
     this.layerStartTop  = layer.top;
 
-    OSjs.Utils.$addClass(image.$container, "moving");
+    Utils.$addClass(image.$container, "moving");
   };
 
   ToolPointer.prototype.onmouseup = function(ev, win, image, layer, currentPos, startPos) {
@@ -137,7 +137,7 @@
     layer.left = this.layerCurrentLeft;
     layer.top  = this.layerCurrentTop;
 
-    OSjs.Utils.$removeClass(image.$container, "moving");
+    Utils.$removeClass(image.$container, "moving");
   };
 
   ToolPointer.prototype.ondraw = function(ev, win, image, layer, currentPos, startPos) {
@@ -180,12 +180,12 @@
       var hex = "#000000";
 
       try {
-        hex = OSjs.Utils.convertToHEX(rgb);
+        hex = Utils.convertToHEX(rgb);
       } catch ( e ) {
         console.warn("Failed to convert to hex", rgb, e);
       }
 
-      if ( OSjs.Utils.mouseButton(ev) == "left" ) {
+      if ( Utils.mouseButton(ev) == "left" ) {
         win.setColor("fg", hex);
       } else {
         win.setColor("bg", hex);
@@ -987,4 +987,4 @@
     new EffectSimpleBlur()
   ];
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);

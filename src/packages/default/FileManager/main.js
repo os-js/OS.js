@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, VFS) {
+(function(Application, Window, GUI, Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.API.__.apply(this, args);
+    return API.__.apply(this, args);
   }
 
   var notificationWasDisplayed = {};
@@ -133,7 +133,7 @@
     };
 
     fileView.onFinished = function(dir, numItems, totalBytes) {
-      var hifs = OSjs.Utils.humanFileSize(totalBytes);
+      var hifs = Utils.humanFileSize(totalBytes);
       defaultStatusText = _("Showing {0} item(s), {1}", numItems, hifs);
       statusBar.setText(defaultStatusText);
 
@@ -164,14 +164,14 @@
         statusBar.setText(defaultStatusText);
         return;
       }
-      var hifs = OSjs.Utils.humanFileSize(item.size);
+      var hifs = Utils.humanFileSize(item.size);
       statusBar.setText('1 item: ' + item.filename + ' (' + hifs + ')');
     };
     */
 
     fileView.onError = function(error) {
       self._toggleLoading(false);
-      self._error(OSjs.API._("ERR_GENERIC_APP_FMT", self.title), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
+      self._error(API._("ERR_GENERIC_APP_FMT", self.title), API._("ERR_GENERIC_APP_REQUEST"), error);
     };
 
     var menuAction = function(action, check) {
@@ -182,7 +182,7 @@
       if ( check ) {
         if ( !cur || !cur.path ) return;
       }
-      var fname = cur ? OSjs.Utils.filename(cur.path) : null;
+      var fname = cur ? Utils.filename(cur.path) : null;
 
       if ( action == 'mkdir' ) {
         app._createDialog('Input', [_("Create a new directory in <span>{0}</span>", dir), '', function(btn, value) {
@@ -220,7 +220,7 @@
 
           var newitem = new VFS.File(cur);
           newitem.filename = value;
-          newitem.path = OSjs.Utils.replaceFilename(cur.path, value);
+          newitem.path = Utils.replaceFilename(cur.path, value);
 
           app.move(cur, newitem, function(result) {
             if ( result && fileView ) {
@@ -232,7 +232,7 @@
           });
         }, function(input) {
           if ( input ) {
-            var range = OSjs.Utils.getFilenameRange(input.getValue());
+            var range = Utils.getFilenameRange(input.getValue());
             input.select(range);
           }
         }], self);
@@ -270,48 +270,48 @@
 
     this.menuAction = menuAction;
 
-    menuBar.addItem(OSjs.API._("LBL_FILE"), [
-      {title: OSjs.API._('LBL_MKDIR'), onClick: function() {
+    menuBar.addItem(API._("LBL_FILE"), [
+      {title: API._('LBL_MKDIR'), onClick: function() {
         menuAction('mkdir');
       }},
-      {title: OSjs.API._('LBL_UPLOAD'), onClick: function() {
+      {title: API._('LBL_UPLOAD'), onClick: function() {
         menuAction('upload');
       }},
-      {title: OSjs.API._('LBL_CLOSE'), onClick: function() {
+      {title: API._('LBL_CLOSE'), onClick: function() {
         self._close();
       }}
     ]);
 
-    menuBar.addItem(OSjs.API._("LBL_EDIT"), [
-      {name: 'Rename', title: OSjs.API._('LBL_RENAME'), onClick: function() {
+    menuBar.addItem(API._("LBL_EDIT"), [
+      {name: 'Rename', title: API._('LBL_RENAME'), onClick: function() {
         menuAction('rename', true);
       }},
-      {name: 'Delete', title: OSjs.API._('LBL_RENAME'), onClick: function() {
+      {name: 'Delete', title: API._('LBL_RENAME'), onClick: function() {
         menuAction('delete', true);
       }},
-      {name: 'Information', title: OSjs.API._('LBL_INFORMATION'), onClick: function() {
+      {name: 'Information', title: API._('LBL_INFORMATION'), onClick: function() {
         menuAction('info', true);
       }},
-      {name: 'OpenWith', title: OSjs.API._('LBL_OPENWITH'), onClick: function() {
+      {name: 'OpenWith', title: API._('LBL_OPENWITH'), onClick: function() {
         menuAction('openWith', true);
       }},
-      {name: 'Download', title: OSjs.API._('LBL_DOWNLOAD_COMP'), onClick: function() {
+      {name: 'Download', title: API._('LBL_DOWNLOAD_COMP'), onClick: function() {
         menuAction('download', true);
       }}
     ]);
 
     var viewTypeMenu = [
-      {name: 'ListView', title: OSjs.API._('LBL_LISTVIEW'), onClick: function() {
+      {name: 'ListView', title: API._('LBL_LISTVIEW'), onClick: function() {
         fileView.setViewType('ListView');
         self._focus();
         app._setArgument('viewType', 'ListView');
       }},
-      {name: 'IconView', title: OSjs.API._('LBL_ICONVIEW'), onClick: function() {
+      {name: 'IconView', title: API._('LBL_ICONVIEW'), onClick: function() {
         fileView.setViewType('IconView');
         self._focus();
         app._setArgument('viewType', 'IconView');
       }},
-      {name: 'TreeView', title: OSjs.API._('LBL_TREEVIEW'), onClick: function() {
+      {name: 'TreeView', title: API._('LBL_TREEVIEW'), onClick: function() {
         fileView.setViewType('TreeView');
         self._focus();
         app._setArgument('viewType', 'TreeView');
@@ -319,8 +319,8 @@
     ];
 
     var chk;
-    menuBar.addItem(OSjs.API._("LBL_VIEW"), [
-      {title: OSjs.API._('LBL_REFRESH'), onClick: function() {
+    menuBar.addItem(API._("LBL_VIEW"), [
+      {title: API._('LBL_REFRESH'), onClick: function() {
         fileView.refresh();
         self._focus();
       }},
@@ -349,11 +349,11 @@
           self._focus();
         }
       },
-      {title: OSjs.API._('LBL_VIEWTYPE'), menu: viewTypeMenu}
+      {title: API._('LBL_VIEWTYPE'), menu: viewTypeMenu}
     ]);
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {
-      if ( mtitle === OSjs.API._('LBL_FILE') ) return;
+      if ( mtitle === API._('LBL_FILE') ) return;
 
       var fileView = self._getGUIElement('FileManagerFileView');
       var sel = fileView.getSelected();
@@ -391,7 +391,7 @@
     };
 
     var _getFileIcon = function(r) {
-      return OSjs.API.getThemeResource(r, 'icon');
+      return API.getThemeResource(r, 'icon');
     };
 
     var sideViewItems = [];
@@ -409,12 +409,12 @@
 
     sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
-      {key: 'filename', title: OSjs.API._('LBL_FILENAME')},
-      {key: 'mime', title: OSjs.API._('LBL_MIME'), visible: false},
-      {key: 'size', title: OSjs.API._('LBL_SIZE'), visible: false},
+      {key: 'filename', title: API._('LBL_FILENAME')},
+      {key: 'mime', title: API._('LBL_MIME'), visible: false},
+      {key: 'size', title: API._('LBL_SIZE'), visible: false},
       {key: 'internal', title: 'Internal', visible: false},
-      {key: 'path', title: OSjs.API._('LBL_PATH'), visible: false, domProperties: {width: "70"}},
-      {key: 'type', title: OSjs.API._('LBL_TYPE'), visible: false, domProperties: {width: "50"}}
+      {key: 'path', title: API._('LBL_PATH'), visible: false, domProperties: {width: "70"}},
+      {key: 'type', title: API._('LBL_TYPE'), visible: false, domProperties: {width: "50"}}
      ]);
     sideView.setRows(sideViewItems);
     sideView.onActivate = function(el, ev, item) {
@@ -448,9 +448,9 @@
   ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev) {
     Window.prototype._onKeyEvent.apply(this, arguments);
 
-    if ( ev.keyCode === OSjs.Utils.Keys.F2 ) {
+    if ( ev.keyCode === Utils.Keys.F2 ) {
       this.menuAction('rename');
-    } else if ( ev.keyCode === OSjs.Utils.Keys.DELETE ) {
+    } else if ( ev.keyCode === Utils.Keys.DELETE ) {
       this.menuAction('delete');
     }
   };
@@ -480,7 +480,7 @@
       app: this._appRef,
     }, function(error, file) {
       if ( error ) {
-        self._error(OSjs.API._("ERR_GENERIC_APP_FMT", self.__label), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
+        self._error(API._("ERR_GENERIC_APP_FMT", self.__label), API._("ERR_GENERIC_APP_REQUEST"), error);
       } else {
         if (file && fileView ) {
           fileView.refresh(function() {
@@ -496,7 +496,7 @@
   ApplicationFileManagerWindow.prototype.vfsEvent = function(file) {
     var fileView = this._getGUIElement('FileManagerFileView');
     if ( fileView ) {
-      if ( fileView.getPath() == OSjs.Utils.dirname(file.path) ) {
+      if ( fileView.getPath() == Utils.dirname(file.path) ) {
         fileView.refresh(null, null, true);
       }
     }
@@ -508,8 +508,8 @@
     }
     notificationWasDisplayed[type] = true;
 
-    var wm = OSjs.API.getWMInstance();
-    var ha = OSjs.API.getHandlerInstance();
+    var wm = API.getWMInstance();
+    var ha = API.getHandlerInstance();
     if ( wm ) {
       wm.notification({
         title: 'External Storage',
@@ -541,7 +541,7 @@
 
     this._addWindow(new ApplicationFileManagerWindow(this, metadata));
 
-    var path = this._getArgument('path') || OSjs.API.getDefaultPath('/');
+    var path = this._getArgument('path') || API.getDefaultPath('/');
     var w = this._getWindow('ApplicationFileManagerWindow');
     w._getGUIElement('FileManagerFileView').chdir(path);
     this.go(path, w);
@@ -563,7 +563,7 @@
   };
 
   ApplicationFileManager.prototype.open = function(file, forceList) {
-    OSjs.API.open(file, {forceList: (forceList?true:false)});
+    API.open(file, {forceList: (forceList?true:false)});
   };
 
   ApplicationFileManager.prototype.go = function(dir, w) {
@@ -578,9 +578,9 @@
     var _onError = function(error) {
       var win = self._getWindow('ApplicationFileManagerWindow');
       if ( win ) {
-        win._error(OSjs.API._("ERR_GENERIC_APP_FMT", self.__label), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
+        win._error(API._("ERR_GENERIC_APP_FMT", self.__label), API._("ERR_GENERIC_APP_REQUEST"), error);
       } else {
-        OSjs.API.error(OSjs.API._("ERR_GENERIC_APP_FMT", self.__label), OSjs.API._("ERR_GENERIC_APP_REQUEST"), error);
+        API.error(API._("ERR_GENERIC_APP_FMT", self.__label), API._("ERR_GENERIC_APP_REQUEST"), error);
       }
 
       callback(false);
@@ -631,4 +631,4 @@
   OSjs.Applications.ApplicationFileManager.Plugins = OSjs.Applications.ApplicationFileManager.Plugins || {};
   OSjs.Applications.ApplicationFileManager.Class = ApplicationFileManager;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

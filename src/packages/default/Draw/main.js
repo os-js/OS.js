@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils, VFS) {
+(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
   'use strict';
 
   // TODO: Copy/Cut/Paste
@@ -98,7 +98,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.API.__.apply(this, args);
+    return API.__.apply(this, args);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -201,24 +201,24 @@
       self._focus();
     };
 
-    menuBar.addItem(OSjs.API._("LBL_FILE"), [
-      {title: OSjs.API._('LBL_NEW'), name: 'New', onClick: function() {
+    menuBar.addItem(API._("LBL_FILE"), [
+      {title: API._('LBL_NEW'), name: 'New', onClick: function() {
         app.action('new');
       }},
-      {title: OSjs.API._('LBL_OPEN'), name: 'Open', onClick: function() {
+      {title: API._('LBL_OPEN'), name: 'Open', onClick: function() {
         app.action('open');
       }},
-      {title: OSjs.API._('LBL_SAVE'), name: 'Save', onClick: function() {
+      {title: API._('LBL_SAVE'), name: 'Save', onClick: function() {
         app.action('save');
       }},
-      {title: OSjs.API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
+      {title: API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
         app.action('saveas');
       }},
-      {title: OSjs.API._('LBL_CLOSE'), name: 'Close', onClick: function() {
+      {title: API._('LBL_CLOSE'), name: 'Close', onClick: function() {
         app.action('close');
       }}
     ]);
-    menuBar.addItem(OSjs.API._("LBL_VIEW"), [
+    menuBar.addItem(API._("LBL_VIEW"), [
       {title: _('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
         _toggleToolsToolbar();
       }},
@@ -227,8 +227,8 @@
       }}
     ]);
     /*
-    menuBar.addItem(OSjs.API._("Image"), [
-      {title: OSjs.API._('Resize'), name: 'Resize', onClick: function() {
+    menuBar.addItem(API._("Image"), [
+      {title: API._('Resize'), name: 'Resize', onClick: function() {
       }}
     ]);
     */
@@ -402,7 +402,7 @@
           title: t.title,
 
           icon:(function(tool) {
-            return OSjs.API.getApplicationResource(app, 'icons/' + tool.icon + '-16.png');
+            return API.getApplicationResource(app, 'icons/' + tool.icon + '-16.png');
           })(t),
 
           onClick : (function(tool) {
@@ -470,7 +470,7 @@
     var layerList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationDrawLayerListView'), layerBarContainer);
 
     layerList.setColumns([
-      {key: 'name',  title: OSjs.API._('LBL_NAME')}
+      {key: 'name',  title: API._('LBL_NAME')}
      ]);
     layerList.onActivate = function(ev, el, item) {
       if ( item ) {
@@ -487,23 +487,23 @@
     var layerButtons = document.createElement("div");
     layerButtons.className = "Buttons";
 
-    var layerButtonAdd = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonAdd', {disabled: false, icon: OSjs.API.getIcon('actions/add.png'), onClick: function(el, ev) {
+    var layerButtonAdd = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonAdd', {disabled: false, icon: API.getIcon('actions/add.png'), onClick: function(el, ev) {
       self.createLayer();
     }}), layerButtons);
 
-    var layerButtonRemove = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonRemove', {disabled: false, icon: OSjs.API.getIcon('actions/remove.png'), onClick: function(el, ev) {
+    var layerButtonRemove = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonRemove', {disabled: false, icon: API.getIcon('actions/remove.png'), onClick: function(el, ev) {
       if ( layerList ) {
         self.removeLayer(self.activeLayer);
       }
     }}), layerButtons);
 
-    var layerButtonUp = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonUp', {disabled: false, icon: OSjs.API.getIcon('actions/up.png'), onClick: function(el, ev) {
+    var layerButtonUp = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonUp', {disabled: false, icon: API.getIcon('actions/up.png'), onClick: function(el, ev) {
       if ( layerList ) {
         self.moveLayer(self.activeLayer, "up");
       }
     }}), layerButtons);
 
-    var layerButtonDown = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonDown', {disabled: false, icon: OSjs.API.getIcon('actions/down.png'), onClick: function(el, ev) {
+    var layerButtonDown = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonDown', {disabled: false, icon: API.getIcon('actions/down.png'), onClick: function(el, ev) {
       if ( layerList ) {
         self.moveLayer(self.activeLayer, "down");
       }
@@ -947,7 +947,7 @@
   ApplicationDraw.prototype.onOpen = function(file, data) {
     var self = this;
     var win = this.mainWindow;
-    var ext = OSjs.Utils.filext(file.path).toLowerCase();
+    var ext = Utils.filext(file.path).toLowerCase();
 
     var _openRaw = function() {
       var imageData = JSON.parse(data);
@@ -982,7 +982,7 @@
 
     var _openConverted = function() {
       if ( !data.match(/^data\:/) ) {
-        OSjs.VFS.url(file, function(error, url) {
+        VFS.url(file, function(error, url) {
           if ( error ) {
             self.onError("Failed to load image", error, "doOpen");
             return;
@@ -1038,7 +1038,7 @@
   };
 
   ApplicationDraw.prototype.onCheckDataSource = function(file) {
-    var ext = OSjs.Utils.filext(file.path).toLowerCase();
+    var ext = Utils.filext(file.path).toLowerCase();
     return ext !== "odraw";
   };
 
@@ -1054,7 +1054,7 @@
       return;
     }
 
-    var ext = OSjs.Utils.filext(file.path).toLowerCase();
+    var ext = Utils.filext(file.path).toLowerCase();
     var data = ext === "odraw" ? image.getSaveData() : image.getData(file.mime);
 
     callback(data);
@@ -1068,4 +1068,4 @@
   OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
   OSjs.Applications.ApplicationDraw.Class = ApplicationDraw;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.VFS);
+})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);

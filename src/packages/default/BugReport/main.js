@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs) {
+(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@
     var misc = this._addGUIElement(new OSjs.GUI.Textarea('ReportData'), root);
     misc.setValue(JSON.stringify(app.reportData, null, 2));
 
-    var btn = this._addGUIElement(new OSjs.GUI.Button('Send', {label: OSjs.API._('Send and Close'), onClick: function() {
+    var btn = this._addGUIElement(new OSjs.GUI.Button('Send', {label: API._('Send and Close'), onClick: function() {
       if ( app ) {
         btn.setDisabled(true);
 
@@ -89,7 +89,7 @@
 
     var nav = navigator || {};
     this.reportData = args.data || {};
-    this.reportData.compability = OSjs.Utils.getCompability();
+    this.reportData.compability = Utils.getCompability();
     this.reportData.client = {
       name: nav.appName,
       agent: nav.userAgent,
@@ -144,4 +144,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationBugReport = ApplicationBugReport;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);

@@ -27,8 +27,10 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(WindowManager, GUI, VFS) {
+(function(WindowManager, GUI, Utils, API, VFS) {
   'use strict';
+
+  var PADDING_PANEL_AUTOHIDE = 10; // FIXME: Replace with a constant ?!
 
   /////////////////////////////////////////////////////////////////////////////
   // LOCALES
@@ -40,7 +42,8 @@
       'Open settings' : 'Åpne instillinger',
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
       'Create shortcut' : 'Lag snarvei',
-      'Set as wallpaper' : 'Sett som bakgrunn'
+      'Set as wallpaper' : 'Sett som bakgrunn',
+      'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}'
     },
     de_DE : {
       'Killing this process will stop things from working!' : 'Durch das Beenden dieses Prozesses werden andere Programme aufhören zu arbeiten!',
@@ -52,7 +55,7 @@
   function _() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.unshift(_Locales);
-    return OSjs.API.__.apply(this, args);
+    return API.__.apply(this, args);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -71,7 +74,7 @@
       enableIconView  : false,
       enableSwitcher  : true,
       enableHotkeys   : true,
-      enableSounds    : OSjs.API.getDefaultSettings().Core.Sounds,
+      enableSounds    : API.getDefaultSettings().Core.Sounds,
       moveOnResize    : true,       // Move windows into viewport on resize
       panels          : [
         {
@@ -96,7 +99,7 @@
     };
 
     if ( defaults ) {
-      cfg = OSjs.Utils.mergeObject(cfg, defaults);
+      cfg = Utils.mergeObject(cfg, defaults);
     }
     return cfg;
   }
@@ -252,7 +255,7 @@
       });
     }
 
-    OSjs.API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
+    API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
       if ( s ) {
         self.applySettings(s);
       } else {
@@ -294,9 +297,14 @@
               p.addItem(new OSjs.Applications.CoreWM.PanelItems[n.name]());
               added = true;
             } catch ( e ) {
-              // FIXME: Should we notify the user with a error dialog ?!
               console.warn('An error occured while creating PanelItem', e);
               console.warn('stack', e.stack);
+
+              this.notification({
+                icon: 'status/important.png',
+                title: 'CoreWM',
+                message: _('An error occured while creating PanelItem: {0}', e)
+              });
             }
           }
         }
@@ -349,7 +357,7 @@
     this.iconView.resize(this);
     setTimeout(function() {
       self.iconView.resize(self);
-    }, OSjs.API.getAnimDuration());
+    }, API.getAnimDuration());
   };
 
   //
@@ -404,22 +412,22 @@
 
   CoreWM.prototype.onDropLeave = function() {
     var back = document.getElementById('Background');
-    OSjs.Utils.$removeClass(back, 'Blinking');
+    Utils.$removeClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDropOver = function() {
     var back = document.getElementById('Background');
-    OSjs.Utils.$addClass(back, 'Blinking');
+    Utils.$addClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDrop = function() {
     var back = document.getElementById('Background');
-    OSjs.Utils.$removeClass(back, 'Blinking');
+    Utils.$removeClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDropItem = function(ev, el, item, args) {
     var back = document.getElementById('Background');
-    OSjs.Utils.$removeClass(back, 'Blinking');
+    Utils.$removeClass(back, 'Blinking');
 
 
     var _applyWallpaper = function(data) {
@@ -468,7 +476,7 @@
 
     VFS.upload({
       app: self,
-      destination: OSjs.API.getDefaultPath(),
+      destination: API.getDefaultPath(),
       files: files
     }, function(error, file) {
       if ( !error && file && self.iconView ) {
@@ -490,7 +498,7 @@
   CoreWM.prototype.onKeyDown = function(ev, win) {
     if ( !ev ) { return; }
 
-    var keys = OSjs.Utils.Keys;
+    var keys = Utils.Keys;
     if ( ev.shiftKey && ev.keyCode === keys.TAB ) { // Toggle Window switcher
       if ( !this.getSetting('enableSwitcher') ) { return; }
 
@@ -526,9 +534,9 @@
       if ( settings.language ) {
         store.Core = { Locale: settings.language };
       }
-      OSjs.API.getHandlerInstance().setUserSettings(store);
+      API.getHandlerInstance().setUserSettings(store);
     } else {
-      OSjs.API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
+      API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
     }
   };
 
@@ -611,7 +619,7 @@
       if ( opts.icon ) {
         var icon = document.createElement('img');
         icon.alt = '';
-        icon.src = OSjs.API.getThemeResource(opts.icon, 'icon', '32x32');
+        icon.src = API.getThemeResource(opts.icon, 'icon', '32x32');
         classNames.push('HasIcon');
         container.appendChild(icon);
       }
@@ -710,7 +718,7 @@
     var valid = ['backgroundColor', 'fontFamily'];
     console.log('Styles', opts);
     for ( var i in opts ) {
-      if ( opts.hasOwnProperty(i) && OSjs.Utils.inArray(valid, i) ) {
+      if ( opts.hasOwnProperty(i) && Utils.inArray(valid, i) ) {
         document.body.style[i] = opts[i];
       }
     }
@@ -757,7 +765,7 @@
     console.log('theme', theme);
     if ( this.$themeLink ) {
       if ( theme ) {
-        this.setThemeLink(OSjs.API.getThemeCSS(theme));
+        this.setThemeLink(API.getThemeCSS(theme));
       } else {
         console.warn('NO THEME WAS SELECTED!');
       }
@@ -768,9 +776,9 @@
     console.log('animations', anim);
     if ( this.$animationLink ) {
       if ( anim ) {
-        this.setAnimationLink(OSjs.API.getApplicationResource(this, 'animations.css'));
+        this.setAnimationLink(API.getApplicationResource(this, 'animations.css'));
       } else {
-        this.setAnimationLink(OSjs.API.getThemeCSS(null));
+        this.setAnimationLink(API.getThemeCSS(null));
       }
     }
 
@@ -800,7 +808,7 @@
       }
       this.$animationLink = null;
     }
-    this.$animationLink = OSjs.Utils.$createCSS(src);
+    this.$animationLink = Utils.$createCSS(src);
   };
 
   CoreWM.prototype.setThemeLink = function(src) {
@@ -810,7 +818,7 @@
       }
       this.$themeLink = null;
     }
-    this.$themeLink = OSjs.Utils.$createCSS(src);
+    this.$themeLink = Utils.$createCSS(src);
   };
 
 
@@ -828,9 +836,8 @@
       if ( p && p.getOntop() ) {
         ph = p.getHeight();
         if ( p.getAutohide() ) {
-          // FIXME: Replace with a constant ?!
-          s.top    += 10;
-          s.height -= 10;
+          s.top    += PADDING_PANEL_AUTOHIDE;
+          s.height -= PADDING_PANEL_AUTOHIDE;
         } else if ( p.getPosition('top') ) {
           s.top    += ph;
           s.height -= ph;
@@ -864,7 +871,7 @@
       if ( p && p.getOntop() ) {
         if ( p.getPosition('top') ) {
           if ( p.getAutohide() ) {
-            pos.y += 10; // FIXME: Replace with a constant ?!
+            pos.y += PADDING_PANEL_AUTOHIDE;
           } else {
             pos.y += p.getHeight();
           }
@@ -901,7 +908,7 @@
   };
 
   CoreWM.prototype.getThemes = function() {
-    var handler = OSjs.API.getHandlerInstance();
+    var handler = API.getHandlerInstance();
     if ( handler ) {
       return handler.getThemes();
     }
@@ -916,4 +923,4 @@
   OSjs.Applications.CoreWM       = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Class = CoreWM;
 
-})(OSjs.Core.WindowManager, OSjs.GUI, OSjs.VFS);
+})(OSjs.Core.WindowManager, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

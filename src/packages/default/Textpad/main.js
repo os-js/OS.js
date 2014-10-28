@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI) {
+(function(Application, Window, GUI, Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -52,20 +52,20 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationTextpadMenuBar'), root);
-    menuBar.addItem(OSjs.API._("LBL_FILE"), [
-      {title: OSjs.API._('LBL_NEW'), name: 'New', onClick: function() {
+    menuBar.addItem(API._("LBL_FILE"), [
+      {title: API._('LBL_NEW'), name: 'New', onClick: function() {
         app.action('new');
       }},
-      {title: OSjs.API._('LBL_OPEN'), name: 'Open', onClick: function() {
+      {title: API._('LBL_OPEN'), name: 'Open', onClick: function() {
         app.action('open');
       }},
-      {title: OSjs.API._('LBL_SAVE'), name: 'Save', onClick: function() {
+      {title: API._('LBL_SAVE'), name: 'Save', onClick: function() {
         app.action('save');
       }},
-      {title: OSjs.API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
+      {title: API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
         app.action('saveas');
       }},
-      {title: OSjs.API._('LBL_CLOSE'), name: 'Close', onClick: function() {
+      {title: API._('LBL_CLOSE'), name: 'Close', onClick: function() {
         self._close();
       }}
     ]);
@@ -94,7 +94,7 @@
 
   ApplicationTextpadWindow.prototype.setTitle = function(name) {
     name = name || "New file";
-    this._setTitle(this.title + " - " + OSjs.Utils.filename(name));
+    this._setTitle(this.title + " - " + Utils.filename(name));
   };
 
   ApplicationTextpadWindow.prototype._focus = function() {
@@ -188,4 +188,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationTextpad = ApplicationTextpad;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

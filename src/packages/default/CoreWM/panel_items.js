@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(CoreWM, Panel, PanelItem) {
+(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -54,9 +54,9 @@
     this.$container = document.createElement('ul');
     root.appendChild(this.$container);
 
-    this.addButton(OSjs.API._('LBL_APPLICATIONS'), 'categories/applications-other.png', function(ev) {
+    this.addButton(API._('LBL_APPLICATIONS'), 'categories/applications-other.png', function(ev) {
       ev.stopPropagation();
-      var wm = OSjs.API.getWMInstance();
+      var wm = API.getWMInstance();
       if ( wm && wm.getSetting('menuCategories') ) {
         OSjs.Applications.CoreWM.BuildCategoryMenu(ev);
       } else {
@@ -65,15 +65,15 @@
       return false;
     });
 
-    this.addButton(OSjs.API._('LBL_SETTINGS'), 'categories/applications-system.png', function(ev) {
-      var wm = OSjs.API.getWMInstance();
+    this.addButton(API._('LBL_SETTINGS'), 'categories/applications-system.png', function(ev) {
+      var wm = API.getWMInstance();
       if ( wm ) {
         wm.showSettings();
       }
       return false;
     });
 
-    this.addButton(OSjs.API._('DIALOG_LOGOUT_TITLE'), 'actions/exit.png', function(ev) {
+    this.addButton(API._('DIALOG_LOGOUT_TITLE'), 'actions/exit.png', function(ev) {
       OSjs.Core.signOut();
     });
 
@@ -85,7 +85,7 @@
   };
 
   PanelItemButtons.prototype.addButton = function(title, icon, callback) {
-    icon = OSjs.API.getThemeResource(icon, 'icon');
+    icon = API.getThemeResource(icon, 'icon');
 
     var sel = document.createElement('li');
     sel.className = 'Button';
@@ -124,7 +124,7 @@
     this.$element = document.createElement('ul');
     root.appendChild(this.$element);
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = API.getWMInstance();
     if ( wm ) {
       var wins = wm.getWindows();
       for ( var i = 0; i < wins.length; i++ ) {
@@ -442,5 +442,5 @@
   OSjs.Applications.CoreWM.PanelItems.Clock            = PanelItemClock;
   OSjs.Applications.CoreWM.PanelItems.NotificationArea = PanelItemNotificationArea;
 
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem);
+})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);
 

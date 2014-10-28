@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI) {
+(function(Application, Window, GUI, Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -51,9 +51,9 @@
 
     var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView', {indexKey: 'pid'}), root);
     listView.setColumns([
-      {key: 'pid',    title: OSjs.API._('LBL_PID'), domProperties: {width: "50"}},
-      {key: 'name',   title: OSjs.API._('LBL_NAME')},
-      {key: 'alive',  title: OSjs.API._('LBL_ALIVE'), domProperties: {width: "100"}},
+      {key: 'pid',    title: API._('LBL_PID'), domProperties: {width: "50"}},
+      {key: 'name',   title: API._('LBL_NAME')},
+      {key: 'alive',  title: API._('LBL_ALIVE'), domProperties: {width: "100"}},
       {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
     ]);
 
@@ -121,7 +121,7 @@
 
     if ( r ) {
       var rows = [];
-      var procs = OSjs.API.getProcesses();
+      var procs = API.getProcesses();
       var now = new Date();
 
       var i = 0, l = procs.length;
@@ -134,7 +134,7 @@
             return function(ev) {
               ev.preventDefault();
               ev.stopPropagation();
-              OSjs.API.kill(pid);
+              API.kill(pid);
               return false;
             };
           })(procs[i].__pid);
@@ -143,7 +143,7 @@
             pid: procs[i].__pid.toString(),
             name: procs[i].__pname,
             alive: now-procs[i].__started,
-            kill: OSjs.API._('Kill'),
+            kill: API._('Kill'),
             customEvent: cev
           });
         } catch ( e ) {
@@ -162,4 +162,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationProcessViewer = ApplicationProcessViewer;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
