@@ -56,6 +56,9 @@ a.super {
 .indented {
   padding-left : 20px;
 }
+.indented.spaced {
+  margin-bottom : 20px;
+}
 
 iframe {
   margin : 0;
@@ -168,3 +171,4 @@ div#Buttons {
   margin-top : 40px;
   margin-bottom : 40px;
 }
+
