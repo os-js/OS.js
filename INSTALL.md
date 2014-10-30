@@ -10,6 +10,8 @@ Make sure you have these dependencies installed
 * Optional: **Git** for the automated installer
 * Optional: **java** to compress/minimize sources
 
+You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttpd)
+
 # Installation
 
 ## Automated
