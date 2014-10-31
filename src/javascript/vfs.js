@@ -350,7 +350,7 @@
         msrc = getModuleFromPath(src.path);
         mdst = getModuleFromPath(dest.path);
 
-        if ( msrc === 'GoogleDrive'  ) {
+        if ( msrc === 'GoogleDrive'  ) { // FIXME: Create a VFS module parameter
           if ( !options ) {
             options = {};
           }
@@ -364,7 +364,7 @@
           }
 
           dest.mime = src.mime;
-          if ( msrc === 'GoogleDrive' ) {
+          if ( msrc === 'GoogleDrive' ) { // FIXME: Create a VFS module parameter
             createDataURL(result, src.mime, function(error, data) {
               options.dataSource = true;
 
@@ -676,9 +676,10 @@
     };
   })();
 
-  //
-  // Misc exports
-  //
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.VFS.internalCall          = internalCall;
   OSjs.VFS.filterScandir         = filterScandir;
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
