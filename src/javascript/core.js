@@ -372,6 +372,8 @@
             }, 500);
 
             _triggerHook('onSessionLoaded');
+
+            doAutostart();
           });
         });
 
@@ -1082,6 +1084,26 @@
     }
 
     console.log('doSetLocale()', CurrentLocale);
+  }
+
+  /**
+   * Autostart applications from config
+   */
+  function doAutostart() {
+    if ( _HANDLER ) {
+      var autostart;
+
+      try {
+        autostart = _HANDLER.getConfig('System').AutoStart;
+      } catch ( e ) {
+        console.warn('doAutostart() exception', e, e.stack);
+      }
+
+      console.info('doAutostart()', autostart);
+      if ( autostart ) {
+        doLaunchProcessList(autostart);
+      }
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
