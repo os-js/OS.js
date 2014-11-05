@@ -38,7 +38,3 @@
 # Other
 * _[Misc]_ Offline VFS ?!
 * _[Compability]_ Fix crazy IE bug where calling blur() actually minimizes the browser window *facepalm*
-
-# Ideas for solving misc problems
-* Unfocused windows should have a transparent overlay to prevent clicks+iframe probles
-  * When DnD hide

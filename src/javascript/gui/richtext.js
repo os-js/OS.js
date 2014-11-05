@@ -45,6 +45,7 @@
     this.opts           = opts || {};
     this.opts.fontName  = this.opts.fontName || 'Arial';
     this.opts.onInited  = this.opts.onInited || function() {};
+    this.opts.isIframe  = true;
     this.loadContent    = null;
     this.strlen         = 0;
 

@@ -38,8 +38,8 @@
   // GLOBALS
   /////////////////////////////////////////////////////////////////////////////
 
-  var _WM;   // Running Window Manager process
-  var _WIN;  // Currently selected Window
+  var _WM;             // Running Window Manager process
+  var _WIN;            // Currently selected Window
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -528,6 +528,7 @@
       this._$winicon      = null;                 // DOMElement: Window Icon
       this._$loading      = null;                 // DOMElement: Window Loading overlay
       this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
+      this._$iframefix    = null;                 // DOMElement: Window IFrame Fix Overlay
 
       this._rendered      = false;                // If Window has been initially rendered
       this._appRef        = appRef || null;       // Reference to Application Window was created from
@@ -550,6 +551,7 @@
       this._sound         = null;                 // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
       this._blinkTimer    = null;
+      this._iframeFixEl   = null;
 
       this._properties    = {                     // Window Properties
         gravity           : null,
@@ -693,10 +695,24 @@
         OSjs.GUI.createDroppable(main, {
           onOver: function(ev, el, args) {
             _showBorder();
+
+            /*
+            if ( self._$iframefix ) {
+              self._$iframefix.style.display = 'none';
+            }
+            */
           },
 
           onLeave : function() {
             _hideBorder();
+
+            /*
+            if ( !self._state.focused ) {
+              if ( self._$iframefix ) {
+                self._$iframefix.style.display = 'block';
+              }
+            }
+            */
           },
 
           onDrop : function() {
@@ -898,6 +914,11 @@
       });
     }
     this._rendered = true;
+
+    if ( this._$iframefix && this._iframeFixEl ) {
+      this._$iframefix.style.left = this._iframeFixEl.$element.style.offsetLeft + 'px';
+      this._$iframefix.style.top = this._iframeFixEl.$element.offsetTop + 'px';
+    }
   };
 
   Window.prototype.destroy = function() {
@@ -907,12 +928,14 @@
       if ( self._$element.parentNode ) {
         self._$element.parentNode.removeChild(self._$element);
       }
-      self._$element  = null;
-      self._$root     = null;
-      self._$top      = null;
-      self._$winicon  = null;
-      self._$loading  = null;
-      self._$disabled = null;
+      self._$element    = null;
+      self._$root       = null;
+      self._$top        = null;
+      self._$winicon    = null;
+      self._$loading    = null;
+      self._$disabled   = null;
+      self._$iframefix  = null;
+      self._iframeFixEl = null;
     }
 
     if ( this._destroyed ) { return; }
@@ -1044,13 +1067,27 @@
       gel._setTabIndex(this._guiElements.length + 1);
 
       //console.log('OSjs::Core::Window::_addGUIElement()');
-      if ( gel.opts && gel.opts.focusable ) {
-        gel._addHook('focus', function() {
-          self._guiElement = this;
-        });
-        this._addHook('blur', function() {
-          gel.blur();
-        });
+      if ( gel.opts ) {
+        if ( gel.opts.focusable ) {
+          gel._addHook('focus', function() {
+            self._guiElement = this;
+          });
+          this._addHook('blur', function() {
+            gel.blur();
+          });
+        }
+
+        // NOTE: This is a fix for iframes blocking mousemove events (ex. moving windows)
+        if ( gel.opts.isIframe ) {
+          this._$iframefix = document.createElement('div');
+          this._$iframefix.className = 'WindowIframeFix';
+          this._$iframefix.onmousemove = function(ev) {
+            ev.preventDefault();
+            return false;
+          };
+          this._$element.appendChild(this._$iframefix);
+          this._iframeFixEl = gel;
+        }
       }
 
       // NOTE: Fixes for Iframe "bugs"
@@ -1327,6 +1364,10 @@
 
     this._state.focused = true;
 
+    if ( this._$iframefix ) {
+      this._$iframefix.style.display = 'none';
+    }
+
     return true;
   };
 
@@ -1342,6 +1383,10 @@
 
     if ( _WIN && _WIN._wid === this._wid ) {
       _WIN = null;
+    }
+
+    if ( this._$iframefix ) {
+      this._$iframefix.style.display = 'block';
     }
 
     return true;
