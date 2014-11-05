@@ -1,3 +1,4 @@
+More detailed information and participation here: https://github.com/andersevenrud/OS.js-v2/issues
 
 # High-priority
 * _[Misc]_ There are some FIXME and TODO markers in the code
