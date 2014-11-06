@@ -33,7 +33,7 @@
 
   OSjs.Locales = OSjs.Locales || {};
 
-  OSjs.Locales.en_EN = {
+  OSjs.Locales.fr_FR = {
     'ERR_FILE_OPEN'             : 'Erreur lors de l\'ouverture du fichier',
     'ERR_FILE_OPEN_FMT'         : 'Le fichier \'<span>{0}</span>\' n\'a pas pu être ouvert',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Impossible de trouver une application supportant les fichiers \'{0}\'',
