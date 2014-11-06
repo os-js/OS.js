@@ -1,3 +1,16 @@
+# 2.0.0-alpha38
+
+* Updated README
+* Updated AUTHORS
+* Windows: Minor cleanups
+* Windows: Fixed (somewhat) iframes in windows blocking certain events
+* Misc: Collapsed some namespace calls
+* Locales: Added new de_DE translations
+* Locales: Added French fr_FR Core translations
+* Locales: Added Russian ru_RU Core translations
+* FileManager: Label bugfix
+* Core: Added AutoStart config support
+
 # 2.0.0-alpha37
 
 * Locales: Added formatting string for entire OS.js, so now translations should be a breeze :)
