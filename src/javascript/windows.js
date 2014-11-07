@@ -577,6 +577,7 @@
         allow_ontop       : true,
         allow_hotkeys     : true,
         allow_session     : true,
+        key_capture       : false,
         start_focused     : true,
         min_width         : opts.min_height || _DEFAULT_MIN_HEIGHT,
         min_height        : opts.min_width  || _DEFAULT_MIN_WIDTH,
@@ -1629,13 +1630,13 @@
     return true;
   };
 
-  Window.prototype._onKeyEvent = function(ev) {
+  Window.prototype._onKeyEvent = function(ev, type) {
     if ( ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex();
     }
 
-    if ( this._guiElement ) {
-      if ( ev.type === 'keydown' ) {
+    if ( type === 'keydown' ) {
+      if ( this._guiElement ) {
         this._guiElement.onGlobalKeyPress(ev);
       }
     }

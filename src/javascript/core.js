@@ -291,7 +291,26 @@
   function globalOnKeyUp(ev) {
     if ( _WM ) {
       _WM.onKeyUp(ev, _WM.getCurrentWindow());
+
+      var win = _WM.getCurrentWindow();
+      if ( win ) {
+        return win._onKeyEvent(ev, 'keyup');
+      }
     }
+    return true;
+  }
+
+  /**
+   * Global onKeyPress Event
+   */
+  function globalOnKeyPress(ev) {
+    if ( _WM ) {
+      var win = _WM.getCurrentWindow();
+      if ( win ) {
+        return win._onKeyEvent(ev, 'keypress');
+      }
+    }
+    return true;
   }
 
   /**
@@ -299,6 +318,7 @@
    */
   function globalOnKeyDown(ev) {
     var d = ev.srcElement || ev.target;
+    var win = _WM ? _WM.getCurrentWindow() : null;
 
     // Some keys must be cancelled
     var doPrevent = d.tagName === 'BODY' ? true : false;
@@ -313,17 +333,20 @@
     }
 
     if ( doPrevent ) {
-      ev.preventDefault();
+      if ( !win || !win._properties.key_capture ) {
+        ev.preventDefault();
+      }
     }
 
     // WindowManager and Window must always recieve events
     if ( _WM ) {
-      var win = _WM.getCurrentWindow();
       if ( win ) {
-        win._onKeyEvent(ev);
+        win._onKeyEvent(ev, 'keydown');
       }
       _WM.onKeyDown(ev, win);
     }
+
+    return true;
   }
 
   /**
@@ -427,10 +450,13 @@
       document.body.appendChild(_$ROOT);
 
       document.addEventListener('keydown', function(ev) {
-        globalOnKeyDown(ev);
+        return globalOnKeyDown(ev);
+      }, false);
+      document.addEventListener('keypress', function(ev) {
+        return globalOnKeyPress(ev);
       }, false);
       document.addEventListener('keyup', function(ev) {
-        globalOnKeyUp(ev);
+        return globalOnKeyUp(ev);
       }, false);
       document.addEventListener('mousedown', function(ev) {
         globalOnMouseDown(ev);
@@ -499,10 +525,13 @@
       OSjs.GUI.blurMenu();
 
       document.removeEventListener('keydown', function(ev) {
-        globalOnKeyDown(ev);
+        return globalOnKeyDown(ev);
       }, false);
       document.removeEventListener('keyup', function(ev) {
-        globalOnKeyUp(ev);
+        return globalOnKeyUp(ev);
+      }, false);
+      document.removeEventListener('keypress', function(ev) {
+        return globalOnKeyPress(ev);
       }, false);
       document.removeEventListener('mousedown', function(ev) {
         globalOnMouseDown(ev);
