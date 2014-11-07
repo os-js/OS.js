@@ -1228,12 +1228,14 @@
 
   Window.prototype._close = function() {
     console.info('OSjs::Core::Window::_close()');
-    if ( this._disabled ) { return; }
+    if ( this._disabled ) { return false; }
 
     Utils.$addClass(this._$element, 'WindowHintClosing');
 
     this._blur();
     this.destroy();
+
+    return true;
   };
 
   Window.prototype._minimize = function() {
