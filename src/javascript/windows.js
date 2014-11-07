@@ -334,6 +334,17 @@
     console.log('OSjs::Core::WindowManager::init()');
   };
 
+  WindowManager.prototype.getWindow = function(name) {
+    var result = null;
+    this._windows.forEach(function(w) {
+      if ( w && w._name === name ) {
+        result = w;
+      }
+      return w ? false : true;
+    });
+    return result;
+  };
+
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
       console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
@@ -1392,7 +1403,7 @@
     return true;
   };
 
-  Window.prototype._resizeTo = function(dw, dh, limit, move, container) {
+  Window.prototype._resizeTo = function(dw, dh, limit, move, container, force) {
     if ( !this._$element ) { return; }
 
     var self = this;
@@ -1441,7 +1452,7 @@
       }
     }
 
-    this._resize(newW, newH);
+    this._resize(newW, newH, force);
 
     if ( newX !== null ) {
       this._move(newX, this._position.y);
