@@ -982,10 +982,12 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     extensions.forEach(function(i) {
       if ( i.sources ) {
         i.sources.forEach(function(iter) {
-          if ( iter.type === 'stylesheet' ) {
-            style_list.push(_path.join(i._dist, iter.src));
-          } else {
-            script_list.push(_path.join(i._dist, iter.src));
+          if ( !iter.preload ) {
+            if ( iter.type === 'stylesheet' ) {
+              style_list.push(_path.join(i._dist, iter.src));
+            } else {
+              script_list.push(_path.join(i._dist, iter.src));
+            }
           }
         });
       }
