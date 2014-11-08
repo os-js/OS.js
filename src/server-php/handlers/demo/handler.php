@@ -33,31 +33,27 @@
  */
 
 /**
- * APIHandler for demoing
+ * DemoAPIHandler for demoing
  */
-class APIHandler
+class DemoAPIHandler
 {
-  public static function call($method, Array $arguments) {
-    $result = null;
-    switch ( $method ) {
-      case 'login' :
-        $user = APIUser::login(Array(
-          "id" => 0,
-          "username" => "demo",
-          "name" => "Demo User",
-          "groups" => Array("demo")
-        ));
-        $result = $user->getData();
-      break;
+  public static function login(Array $arguments) {
+    $user = APIUser::login(Array(
+      "id" => 0,
+      "username" => "demo",
+      "name" => "Demo User",
+      "groups" => Array("demo")
+    ));
+    return Array(false, $user->getData());
+  }
 
-      case 'logout' :
-        APIUser::logout();
-        $result = true;
-      break;
-    }
-
-    return $result;
+  public static function logout(Array $arguments) {
+    APIUser::logout();
+    return Array(false, true);
   }
 }
+
+API::AddHandler('login', Array('DemoAPIHandler', 'login'));
+API::AddHandler('logout', Array('DemoAPIHandler', 'logout'));
 
 ?>

@@ -58,6 +58,18 @@ if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                     
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
 if ( !defined("HANDLER") )    define("HANDLER",     null);
+if ( !defined("EXTENSIONS") ) define("EXTENSIONS",  null);
+
+if ( HANDLER ) {
+  require sprintf("%s/src/server-php/handlers/%s/handler.php", ROOTDIR, HANDLER);
+}
+if ( EXTENSIONS ) {
+  if ( $load = (array)json_decode(EXTENSIONS) ) {
+    foreach ( $load as $l ) {
+      require $l;
+    }
+  }
+}
 
 date_default_timezone_set(TIMEZONE);
 register_shutdown_function(Array('APIResponse', 'ErrorHandler'));

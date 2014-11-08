@@ -41,80 +41,94 @@ define("APIHANDLER_USER", "osjs");
 define("APIHANDLER_PASS", "osjs");
 
 /**
- * APIHandler for sessions via database
+ * ExampleAPIHandler for sessions via database
  */
-class APIHandler
+class ExampleAPIHandler
 {
-  public static function call($method, Array $arguments) {
+  protected static function _initDB() {
     $args = Array(1002 => "SET NAMES 'utf8'");
     if ( !($db = new PDO(APIHANDLER_DSN, APIHANDLER_USER, APIHANDLER_PASS, $args)) ) {
       throw "Could not set up database connection";
     }
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $db;
+  }
 
-    $result = null;
-    switch ( $method ) {
-      case 'login' :
-        unset($_SESSION['user']);
+  public static function login(Array $arguments) {
+    $db = self::_initDB();
+    $result = false;
 
-        $q = "SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? AND `password` = ? LIMIT 1;";
-        $a = Array($arguments['username'], $arguments['password']);
+    unset($_SESSION['user']);
 
-        $response = false;
-        if ( $stmt = $db->prepare($q) ) {
-          $stmt->setFetchMode(PDO::FETCH_ASSOC);
-          if ( $stmt->execute($a) ) {
-            if ( $row = $stmt->fetch() ) {
-              $response = Array(
-                "userData" => Array(
-                  "id"        => (int) $row['id'],
-                  "username"  => $row['username'],
-                  "name"      => $row['name'],
-                  "groups"    => (Array)json_decode($row['groups'])
-                ),
-                "userSettings"  => (Array)json_decode($row['settings'])
-              );
+    $q = "SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? AND `password` = ? LIMIT 1;";
+    $a = Array($arguments['username'], $arguments['password']);
 
-              if ( !$response['userData']['groups'] ) {
-                $response['userData']['groups'] = Array();
-              }
-              if ( !$response['userSettings'] ) {
-                $response['userSettings'] = null;
-              }
-            } else {
-              throw new Exception("Invalid login credentials");
-            }
+    $response = false;
+    if ( $stmt = $db->prepare($q) ) {
+      $stmt->setFetchMode(PDO::FETCH_ASSOC);
+      if ( $stmt->execute($a) ) {
+        if ( $row = $stmt->fetch() ) {
+          $response = Array(
+            "userData" => Array(
+              "id"        => (int) $row['id'],
+              "username"  => $row['username'],
+              "name"      => $row['name'],
+              "groups"    => (Array)json_decode($row['groups'])
+            ),
+            "userSettings"  => (Array)json_decode($row['settings'])
+          );
+
+          if ( !$response['userData']['groups'] ) {
+            $response['userData']['groups'] = Array();
           }
-        }
-
-        if ( $result = $response ) {
-          $user = APIUser::login($response["userData"]);
-          $homedir = sprintf("%s/%s", VFSDIR, $user->getUsername());
-          if ( !file_exists($homedir) ) {
-            @mkdir($homedir);
+          if ( !$response['userSettings'] ) {
+            $response['userSettings'] = null;
           }
+        } else {
+          throw new Exception("Invalid login credentials");
         }
-      break;
-
-      case 'settings' :
-        if ( !isset($_SESSION['user']) ) {
-          throw new Exception("Cannot set settings without user session");
-        }
-        $q = "UPDATE `users` SET `settings` = ? WHERE `id` = ?;";
-        $a = Array(json_encode($arguments['settings']), $_SESSION['user']['id']);
-        if ( $stmt = $db->prepare($q) ) {
-          $result = $stmt->execute($a);
-        }
-      break;
-
-      case 'logout' :
-        APIUser::logout();
-        $result = true;
-      break;
+      }
     }
 
-    return $result;
+    if ( $result = $response ) {
+      $user = APIUser::login($response["userData"]);
+      $homedir = sprintf("%s/%s", VFSDIR, $user->getUsername());
+      if ( !file_exists($homedir) ) {
+        @mkdir($homedir);
+      }
+    }
+
+    return Array(false, $result);
+  }
+
+  public static function logout(Array $arguments) {
+    $db = self::_initDB();
+
+    APIUser::logout();
+    return Array(false, true);
+  }
+
+  public static function settings(Array $arguments) {
+    $db = self::_initDB();
+
+    $result = false;
+
+    if ( !isset($_SESSION['user']) ) {
+      throw new Exception("Cannot set settings without user session");
+    }
+    $q = "UPDATE `users` SET `settings` = ? WHERE `id` = ?;";
+    $a = Array(json_encode($arguments['settings']), $_SESSION['user']['id']);
+    if ( $stmt = $db->prepare($q) ) {
+      $result = $stmt->execute($a);
+    }
+
+    return Array(false, $result);
   }
 }
+
+
+API::AddHandler('login', Array('ExampleAPIHandler', 'login'));
+API::AddHandler('logout', Array('ExampleAPIHandler', 'logout'));
+API::AddHandler('logout', Array('ExampleAPIHandler', 'logout'));
 
 ?>

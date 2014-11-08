@@ -272,6 +272,8 @@ class APIResponse
 class API
 {
 
+  protected static $Methods = Array();
+
   /**
    * File Download Request
    */
@@ -362,90 +364,92 @@ class API
       } else {
         $method = $data['method'];
         $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
-        switch ( $method ) {
 
-          // API call via application
-          case 'application' :
-            if ( !APIUser::get() ) {
-              $error = "You have no OS.js Session, please log in!";
-            } else {
-              $path = empty($arguments['path'])        ? null     : $arguments['path'];
-              $an   = empty($arguments['application']) ? null     : $arguments['application'];
-              $am   = empty($arguments['method'])      ? null     : $arguments['method'];
-              $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
-
-              $aroot = sprintf("%s/%s", REPODIR, $path);
-              $apath = sprintf("%s/%s", $aroot, "api.php");
-
-              if ( !file_exists($apath) ) {
-                $error = "No such application or API file not available ({$an})!";
-              } else {
-                require $apath;
-                if ( !class_exists($an) || !method_exists($an, 'call') ) {
-                  $error = "Application API missing!";
-                } else {
-                  try {
-                    $result = $an::call($am, $aa);//call_user_func_array(Array($an, 'call'), $aa);
-                  } catch ( Exception $e ) {
-                    $error = "Application API exception: {$e->getMessage()}";
-                  }
-                }
-              }
-            }
-          break;
-
-          // Filesystem operations
-          case 'fs' :
-            if ( !APIUser::get() ) {
-              $error = "You have no OS.js Session, please log in!";
-            } else {
-              $m = $arguments['method'];
-              $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
-
-              if ( !method_exists('FS', $m) ) {
-                $error = "Invalid FS operation: {$m}";
-              } else {
-                if ( !$a ) {
-                  $error = "Supply argument for FS operaion: {$m}";
-                } else {
-                  try {
-                    $result = call_user_func_array(Array("FS", $m), $a);
-                  } catch ( Exception $e ) {
-                    $error = "FS operaion error: {$e->getMessage()}";
-                  }
-                }
-              }
-            }
-          break;
-
-          // Default
-          default :
-            $found = false;
-            if ( HANDLER ) {
-              $hdir = sprintf("%s/src/server-php/handlers/%s/handler.php", ROOTDIR, HANDLER);
-              if ( file_exists($hdir) ) {
-                require $hdir;
-                if ( class_exists('APIHandler') && method_exists('APIHandler', 'call') ) {
-                  $found = true;
-                  try {
-                    $result = APIHandler::call($method, $arguments);
-                  } catch ( Exception $e ) {
-                    $error = "API Handler call error: {$e->getMessage()}";
-                  }
-                }
-              }
-            }
-
-            if ( !$found ) {
-              $error = "No such API method: {$method}";
-            }
-          break;
+        try {
+          if ( isset(self::$Methods[$method]) ) {
+            list($error, $result) = call_user_func_array(self::$Methods[$method], Array($arguments));
+          } else {
+            $error = "No such API method: {$method}";
+          }
+        } catch ( Exception $e ) {
+          $error = "API Error: {$e->getMessage()}";
         }
       }
     }
     return new APIResponse(true, $result, $error);
   }
 
+  public static function AddHandler($name, $cb) {
+    self::$Methods[$name] = $cb;
+  }
+
 }
+
+class CoreAPIHandler
+{
+  public static function application(Array $arguments) {
+    $error = null;
+    $result = null;
+
+    if ( !APIUser::get() ) {
+      $error = "You have no OS.js Session, please log in!";
+    } else {
+      $path = empty($arguments['path'])        ? null     : $arguments['path'];
+      $an   = empty($arguments['application']) ? null     : $arguments['application'];
+      $am   = empty($arguments['method'])      ? null     : $arguments['method'];
+      $aa   = empty($arguments['arguments'])   ? Array()  : $arguments['arguments'];
+
+      $aroot = sprintf("%s/%s", REPODIR, $path);
+      $apath = sprintf("%s/%s", $aroot, "api.php");
+
+      if ( !file_exists($apath) ) {
+        $error = "No such application or API file not available ({$an})!";
+      } else {
+        require $apath;
+        if ( !class_exists($an) || !method_exists($an, 'call') ) {
+          $error = "Application API missing!";
+        } else {
+          try {
+            $result = $an::call($am, $aa);//call_user_func_array(Array($an, 'call'), $aa);
+          } catch ( Exception $e ) {
+            $error = "Application API exception: {$e->getMessage()}";
+          }
+        }
+      }
+    }
+
+    return Array($error, $result);
+  }
+
+  public static function fs(Array $arguments) {
+    $error = null;
+    $result = null;
+
+    if ( !APIUser::get() ) {
+      $error = "You have no OS.js Session, please log in!";
+    } else {
+      $m = $arguments['method'];
+      $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
+
+      if ( !method_exists('FS', $m) ) {
+        $error = "Invalid FS operation: {$m}";
+      } else {
+        if ( !$a ) {
+          $error = "Supply argument for FS operaion: {$m}";
+        } else {
+          try {
+            $result = call_user_func_array(Array("FS", $m), $a);
+          } catch ( Exception $e ) {
+            $error = "FS operaion error: {$e->getMessage()}";
+          }
+        }
+      }
+    }
+    return Array($error, $result);
+  }
+}
+
+API::AddHandler('application', Array('CoreAPIHandler', 'application'));
+API::AddHandler('application', Array('CoreAPIHandler', 'fs'));
 
 ?>
