@@ -263,37 +263,15 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       return data.join("\n");
     }
 
-    var extensions = getCoreExtensions();
-
     console.log("\033[1;34mCompiling JavaScript\033[0m");
     var header_js = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js'));
     var list_js = BUILD.javascript.files;
-    extensions.forEach(function(iter) {
-      if ( iter && iter.sources ) {
-        iter.sources.forEach(function(iiter) {
-          if ( iiter.type === 'javascript' && !iiter.preload ) {
-            list_js.push(_path.join(iter._root, iiter.src));
-          }
-        });
-      }
-    });
-
     var js = header_js + _concat(list_js, 'js');
     _fs.writeFileSync(_path.join(ROOT, BUILD.javascript.output), js);
 
     console.log("\033[1;34mCompiling CSS\033[0m");
     var header_css = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css'));
     var list_css = BUILD.stylesheets.files;
-    extensions.forEach(function(iter) {
-      if ( iter && iter.sources ) {
-        iter.sources.forEach(function(iiter) {
-          if ( iiter.type === 'stylesheet' && !iiter.preload ) {
-            list_css.push(_path.join(iter._root, iiter.src));
-          }
-        });
-      }
-    });
-
     var css = header_css + _concat(list_css, 'css');
     _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), css);
   }
@@ -482,6 +460,8 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     var extensions = getCoreExtensions();
 
     var loadExtensions = [];
+    var preloads = [];
+
     extensions.forEach(function(e) {
       var p = _path.join(e._root, 'api.php');
       if ( _fs.existsSync(p) ) {
@@ -523,6 +503,17 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     settings = BUILD.settings.frontend;
     settings.MIME = MIMES.descriptions;
     settings.Core.Repositories = REPOS;
+    settings.Core.Preloads = settings.Core.Prelads || [];
+    extensions.forEach(function(e) {
+    console.warn(e);
+      if ( e.sources ) {
+        e.sources.forEach(function(ee) {
+          ee.src = _path.join('/', e._dist, ee.src);
+          settings.Core.Preloads.push(ee);
+        });
+      }
+    });
+
     _fs.writeFileSync(out_js, cfg_js.replace("%CONFIG%", JSON.stringify(settings, null, 2)));
   }
 
@@ -982,7 +973,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    */
   function generateIndex() {
     var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'index.html')).toString();
-    var extensions = getCoreExtensions();
 
     var script_list = [];
     var style_list = [];
@@ -991,19 +981,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     });
     BUILD.stylesheets.files.forEach(function(i) {
       style_list.push(i.replace('src/stylesheets', 'css'));
-    });
-    extensions.forEach(function(i) {
-      if ( i.sources ) {
-        i.sources.forEach(function(iter) {
-          if ( !iter.preload ) {
-            if ( iter.type === 'stylesheet' ) {
-              style_list.push(_path.join(i._dist, iter.src));
-            } else {
-              script_list.push(_path.join(i._dist, iter.src));
-            }
-          }
-        });
-      }
     });
 
     var styles = [];
