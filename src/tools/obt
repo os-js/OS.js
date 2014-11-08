@@ -479,6 +479,19 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
   function buildConfig() {
     // PHP
     var settings = BUILD.settings.backend;
+    var extensions = getCoreExtensions();
+
+    var loadExtensions = [];
+    extensions.forEach(function(e) {
+      var p = _path.join(e._root, 'api.php');
+      if ( _fs.existsSync(p) ) {
+        loadExtensions.push(p);
+      }
+    });
+    if ( loadExtensions ) {
+      settings.extensions = JSON.stringify(loadExtensions);
+    }
+
     var out_php  = _path.join(ROOT, 'src', 'server-php', 'settings.php');
     var cfg_php  = [];
     for ( var i in settings ) {
