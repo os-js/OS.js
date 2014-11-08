@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs) {
+(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -117,4 +117,4 @@
   OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
   OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
