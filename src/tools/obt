@@ -505,7 +505,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     settings.Core.Repositories = REPOS;
     settings.Core.Preloads = settings.Core.Prelads || [];
     extensions.forEach(function(e) {
-    console.warn(e);
       if ( e.sources ) {
         e.sources.forEach(function(ee) {
           ee.src = _path.join('/', e._dist, ee.src);
