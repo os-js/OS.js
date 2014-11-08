@@ -40,7 +40,7 @@
   var Label = function(name, opts) {
     opts            = opts || {};
     opts.focusable  = false;
-    opts.label      = opts.label || opts.value || 'GUILabel';
+    opts.label      = opts.label || opts.value || '';
 
     GUIElement.apply(this, [name, opts]);
   };
