@@ -450,6 +450,6 @@ class CoreAPIHandler
 }
 
 API::AddHandler('application', Array('CoreAPIHandler', 'application'));
-API::AddHandler('application', Array('CoreAPIHandler', 'fs'));
+API::AddHandler('fs', Array('CoreAPIHandler', 'fs'));
 
 ?>
