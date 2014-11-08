@@ -183,9 +183,9 @@
       if ( moved ) {
         if ( _WM ) {
           if ( action === 'move' ) {
-            self._onChange('move');
+            self._onChange('move', true);
           } else if ( action === 'resize' ) {
-            self._onChange('resize');
+            self._onChange('resize', true);
             self._fireHook('resized');
           }
         }
@@ -1732,7 +1732,7 @@
     }
   };
 
-  Window.prototype._onChange = function(ev) {
+  Window.prototype._onChange = function(ev, byUser) {
     ev = ev || '';
     if ( ev ) {
       console.debug(this._name, '>' , 'OSjs::Core::Window::_onChange()', ev);
