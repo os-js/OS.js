@@ -59,7 +59,7 @@
   ];
 
   _hooks.forEach(function(h) {
-    OSjs.Core.hooks[h] = OSjs.Core.hooks[h] || function __hookPlaceHolder() {};
+    OSjs.Core.hooks[h] = [];
   });
 
   /**
@@ -69,14 +69,27 @@
     thisarg = thisarg || OSjs;
     args = args || [];
 
-    if ( typeof OSjs.Core.hooks[name] === 'function' ) {
-      try {
-        OSjs.Core.hooks[name].apply(thisarg, args);
-      } catch ( e ) {
-        console.warn('Error on Hook', e, e.stack);
-      }
-    } else {
-      console.warn('No such Hook', name);
+    if ( OSjs.Core.hooks[name] ) {
+      OSjs.Core.hooks[name].forEach(function(hook) {
+        if ( typeof hook === 'function' ) {
+          try {
+            hook.apply(thisarg, args);
+          } catch ( e ) {
+            console.warn('Error on Hook', e, e.stack);
+          }
+        } else {
+          console.warn('No such Hook', name);
+        }
+      });
+    }
+  }
+
+  /**
+   * Method for adding a hook
+   */
+  function doAddHook(name, fn) {
+    if ( typeof OSjs.Core.hooks[name] !== 'undefined' ) {
+      OSjs.Core.hooks[name].push(fn);
     }
   }
 
@@ -1410,6 +1423,7 @@
   OSjs.Core.Application       = Application;
   OSjs.Core.Service           = Service;
   OSjs.Core.initialize        = doInitialize;
+  OSjs.Core.addHook           = doAddHook;
   OSjs.Core.shutdown          = doShutdown;
   OSjs.Core.signOut           = doSignOut;
 
