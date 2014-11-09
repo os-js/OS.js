@@ -61,7 +61,7 @@
   }
   DropboxVFS.prototype.init = function(callback) {
     this.client.authenticate(function(error, client) {
-      console.warn("DropboxVFS::construct()", error, client);
+      console.warn('DropboxVFS::construct()', error, client);
       callback(error);
     });
   };
@@ -186,10 +186,10 @@
     var client;
     return function(callback) {
       if ( !client ) {
-        client = new DropboxVFS();
+        client = new window.DropboxVFS();
         client.init(function(error) {
           if ( error ) {
-            console.error("Failed to initialize dropbox VFS", error);
+            console.error('Failed to initialize dropbox VFS', error);
             callback(null);
             return;
           }
