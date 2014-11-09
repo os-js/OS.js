@@ -219,6 +219,8 @@
     var args = {};
     var initialList = [];
 
+    root = root.replace(/\/+/, '/');
+
     if ( item.type === 'dir' && root !== '/' ) {
       method = gapi.client.drive.children.list;
       args = {folderId: item.id};
@@ -538,7 +540,9 @@
     console.info('GoogleDrive::exists()', item);
 
     // FIXME Is there a better way to do this ?
-    this.scandir(item, function(error, result) {
+    var req = new OSjs.VFS.File(OSjs.Utils.dirname(item.path));
+
+    this.scandir(req, function(error, result) {
       if ( error ) {
         callback('Failed to check existence: ' + error);
         return;
