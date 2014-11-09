@@ -289,6 +289,27 @@
     return '';
   };
 
+  OSjs.Utils.getUserLocale = function() {
+    var loc = (window.navigator.userLanguage || window.navigator.language) || 'en-EN';
+    var map = {
+      'nb'    : 'no_NO',
+      'no'    : 'no_NO',
+      'en'    : 'en_EN',
+      'es'    : 'es_ES',
+      'ru'    : 'ru_RU',
+      'fr'    : 'fr_FR'
+    };
+
+    if ( loc.match(/\-/) ) {
+      var tmp = loc.split('-')[0];
+      if ( map[tmp] ) {
+        return map[tmp];
+      }
+      return loc.replace('-', '_');
+    }
+    return map[loc] || loc;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////

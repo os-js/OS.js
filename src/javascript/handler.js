@@ -663,7 +663,8 @@
   DefaultHandler.prototype.onLogin = function(userData, callback) {
     callback = callback || function() {};
 
-    var curLocale = this.config.Core.Locale;
+    var found = Utils.getUserLocale();
+    var curLocale = found || this.config.Core.Locale;
 
     function _finished(locale) {
       API.setLocale(locale || curLocale);

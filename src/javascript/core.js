@@ -423,7 +423,7 @@
           exception = null;
         }
         console.warn('window::onerror()', arguments);
-        var msg = 'Please report this if you think this is a bug.\nInclude a brief description on how the error occured, and if you can; how to replicate it';
+        var msg = 'Please report this if you think this is a bug.\nInclude a brief description on how the error occured, and if you can; how to replicate it'; // FIXME: Translation
         doErrorDialog(OSjs.API._('ERR_JAVASCRIPT_EXCEPTION'),
                       OSjs.API._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
                       msg,
