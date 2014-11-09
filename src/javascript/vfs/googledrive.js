@@ -410,7 +410,7 @@
       fileId: item.id
     });
 
-    var arraybuffer = options ? options.arraybuffer === true : false;
+    var arraybuffer = options ? options.arrayBuffer === true : false;
     request.execute(function(file) {
       console.info('GoogleDrive::read()', '=>', file);
 

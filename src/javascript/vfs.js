@@ -350,11 +350,12 @@
         msrc = getModuleFromPath(src.path);
         mdst = getModuleFromPath(dest.path);
 
-        if ( msrc === 'GoogleDrive' || msrc === 'Dropbox'  ) { // FIXME: Create a VFS module parameter
+        var isArrayBuffer = OSjs.VFS.Modules[msrc].arrayBuffer;
+        if ( isArrayBuffer ) {
           if ( !options ) {
             options = {};
           }
-          options.arraybuffer = true;
+          options.arrayBuffer = true;
         }
 
         OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
@@ -364,7 +365,7 @@
           }
 
           dest.mime = src.mime;
-          if ( msrc === 'GoogleDrive' || msrc === 'Dropbox' ) { // FIXME: Create a VFS module parameter
+          if ( isArrayBuffer ) {
             createDataURL(result, src.mime, function(error, data) {
               options.dataSource = true;
 
