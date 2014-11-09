@@ -66,7 +66,7 @@
       if ( error ) {
         return callback(error);
       }
-      callback(false, dataSource ? result : atob(result));
+      callback(false, dataSource ? result : decodeURIComponent(escape(atob(result))));
     });
   };
   OSjsStorage.copy = function(src, dest, callback) {
