@@ -122,12 +122,16 @@
 
   OSjs.VFS.Modules.Public = OSjs.VFS.Modules.Public || {
     arrayBuffer: false,
+    readOnly: false,
     description: 'Shared',
     root: '/',
     icon: 'places/folder-publicshare.png',
     visible: true,
     internal: true,
     match: /^\//,
+    mounted: function() {
+      return true;
+    },
     enabled: function() {
       return true;
     },

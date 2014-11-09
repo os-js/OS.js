@@ -39,6 +39,8 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
+  var _isMounted = false;
+
   function _getConfig(cfg) {
     try {
       var handler = API.getHandlerInstance();
@@ -193,6 +195,10 @@
             callback(null);
             return;
           }
+
+          _isMounted = true;
+          API.message('vfs', {type: 'mount', module: 'Dropbox', source: null});
+
           callback(client);
         });
         return;
@@ -223,8 +229,15 @@
 
   OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || {
     arrayBuffer: true,
+    readOnly: false,
     description: 'Dropbox',
     visible: true,
+    unmount: function() {
+      return false; // TODO
+    },
+    mounted: function() {
+      return _isMounted;
+    },
     enabled: function() {
       if ( !window.Dropbox ) {
         return false;

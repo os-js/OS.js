@@ -67,6 +67,7 @@
     this.$scroll          = null;
     this.lastSelectedDOM  = null;
     this.onCreateItem     = opts.onCreateItem   || function(el, iter, col) {};
+    this.onRenderItem     = opts.onRenderItem   || function(el, iter) {};
 
     this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     if ( OSjs.Compability.touch ) {
@@ -307,6 +308,7 @@
       this.$body.appendChild(row);
 
       this.onCreateItem(row, iter, colref);
+      this.onRenderItem(row, iter, colref);
 
       this.data[i]._index   = i;
       this.data[i]._element = row;

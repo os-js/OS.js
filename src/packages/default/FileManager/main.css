@@ -41,3 +41,6 @@
   margin : 0;
   padding : 0;
 }
+.Window_ApplicationFileManagerWindow .FileManagerSideView .NotMounted {
+  opacity : .6;
+}

@@ -276,7 +276,8 @@
     //
     // NEW
     //
-    'LBL_STATUS' : 'Status'
+    'LBL_STATUS' : 'Status',
+    'LBL_READONLY' : 'Read-Only'
   };
 
 })();

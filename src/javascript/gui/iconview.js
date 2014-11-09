@@ -47,6 +47,7 @@
     this.$ul          = null;
     this.iconSize     = opts.size || '32x32';
     this.singleClick  = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
+    this.onRenderItem = opts.onRenderItem   || function(el, iter) {};
 
     if ( OSjs.Compability.touch ) {
       this.singleClick = true;
@@ -149,6 +150,7 @@
       self.$ul.appendChild(li);
 
       self.onCreateItem(li, iter);
+      self.onRenderItem(li, iter);
 
       self.data[i]._element = li;
       self.data[i]._index   = i;

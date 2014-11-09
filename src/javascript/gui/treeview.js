@@ -58,6 +58,7 @@
     this.expandLevel    = expand;
     this.onExpand       = opts.onExpand       || function(ev, el, item) {};
     this.onCollapse     = opts.onCollapse     || function(ev, el, item) {};
+    this.onRenderItem   = opts.onRenderItem   || function(el, iter) {};
 
     this.singleClick    = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
     if ( OSjs.Compability.touch ) {
@@ -199,6 +200,9 @@
 
         if ( self.onCreateItem ) {
           self.onCreateItem(li, iter);
+        }
+        if ( self.onRenderItem ) {
+          self.onRenderItem(li, iter);
         }
       });
 

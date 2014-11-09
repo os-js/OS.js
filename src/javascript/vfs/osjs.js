@@ -116,12 +116,16 @@
 
   OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
     arrayBuffer: false,
-    description: 'OS.js (Read-Only)',
+    readOnly: true,
+    description: 'OS.js',
     root: 'osjs:///',
     match: /^osjs\:\/\//,
     icon: 'devices/harddrive.png',
     visible: true,
     internal: true,
+    mounted: function() {
+      return true;
+    },
     enabled: function() {
       return true;
     },

@@ -85,6 +85,8 @@
     this._title                 = this.title;
     this._properties.allow_drop = true;
     this._icon                  = metadata.icon;
+
+    this.sideView = null;
   };
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -99,7 +101,7 @@
     var panedView  = this._addGUIElement(new GUI.PanedView('FileManagerPanedView'), root);
     var viewSide   = panedView.createView('Side', {width: 140});
     var viewFile   = panedView.createView('File');
-    var sideView   = this._addGUIElement(new GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), viewSide);
+    this.sideView  = this._addGUIElement(new GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), viewSide);
     var fileView   = this._addGUIElement(new GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), viewFile);
     var statusBar  = this._addGUIElement(new GUI.StatusBar('FileManagerStatusBar'), root);
     var menuBar    = this._addGUIElement(new GUI.MenuBar('FileManagerMenuBar'), root);
@@ -385,9 +387,11 @@
       if ( cur && sel.type === 'file' ) {
         menu.setItemDisabled("Information", false);
         menu.setItemDisabled("OpenWith", false);
+        menu.setItemDisabled("Download", false);
       } else {
         menu.setItemDisabled("Information", true);
         menu.setItemDisabled("OpenWith", true);
+        menu.setItemDisabled("Download", true);
       }
 
       if ( fileView.getViewType().toLowerCase() == 'iconview' ) {
@@ -405,24 +409,7 @@
       }
     };
 
-    var _getFileIcon = function(r) {
-      return API.getThemeResource(r, 'icon');
-    };
-
-    var sideViewItems = [];
-    VFS.getModules().forEach(function(m, i) {
-      sideViewItems.push({
-        image: _getFileIcon(m.module.icon),
-        filename: m.module.description,
-        mime: null,
-        size: 0,
-        type: 'link',
-        internal: m.module.internal,
-        path: m.module.root
-      });
-    });
-
-    sideView.setColumns([
+    this.sideView.setColumns([
       {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
       {key: 'filename', title: API._('LBL_FILENAME')},
       {key: 'mime', title: API._('LBL_MIME'), visible: false},
@@ -431,25 +418,8 @@
       {key: 'path', title: API._('LBL_PATH'), visible: false, domProperties: {width: "70"}},
       {key: 'type', title: API._('LBL_TYPE'), visible: false, domProperties: {width: "50"}}
      ]);
-    sideView.setRows(sideViewItems);
-    sideView.onActivate = function(el, ev, item) {
-      if ( item && item.path ) {
-        if ( item.type === 'file' ) {
-          app.open(item);
-        } else {
-          var fileView = self._getGUIElement('FileManagerFileView');
-          if ( fileView ) {
-            fileView.chdir(item.path);
 
-            if ( !item.internal ) {
-              self.showStorageNotification(item.path);
-            }
-          }
-        }
-      }
-    };
-
-    sideView.render();
+    this.renderRootList();
 
     if ( app._getArgument('viewSidebar') === false ) {
       _toggleSidebar(false);
@@ -508,11 +478,16 @@
     return false;
   };
 
-  ApplicationFileManagerWindow.prototype.vfsEvent = function(file) {
-    var fileView = this._getGUIElement('FileManagerFileView');
-    if ( fileView ) {
-      if ( fileView.getPath() == Utils.dirname(file.path) ) {
-        fileView.refresh(null, null, true);
+  ApplicationFileManagerWindow.prototype.vfsEvent = function(args) {
+    if ( args.type === 'mount' || args.type === 'unmount' ) {
+      this.renderRootList();
+    } else {
+      var file = args.file;
+      var fileView = this._getGUIElement('FileManagerFileView');
+      if ( fileView ) {
+        if ( fileView.getPath() == Utils.dirname(file.path) ) {
+          fileView.refresh(null, null, true);
+        }
       }
     }
   };
@@ -532,6 +507,53 @@
         icon: 'status/dialog-information.png'
       });
     }
+  };
+
+  ApplicationFileManagerWindow.prototype.renderRootList = function() {
+    if ( !this.sideView ) { return; }
+    var self = this;
+
+    var _getFileIcon = function(r) {
+      return API.getThemeResource(r, 'icon');
+    };
+
+    var sideViewItems = [];
+    VFS.getModules().forEach(function(m, i) {
+      sideViewItems.push({
+        image: _getFileIcon(m.module.icon),
+        filename: m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
+        mime: null,
+        size: 0,
+        type: 'link',
+        internal: m.module.internal,
+        path: m.module.root,
+        mounted: m.module.mounted()
+      });
+    });
+
+    this.sideView.onRenderItem = function(el, item) {
+      Utils.$addClass(el, item.mounted ? 'IsMounted' : 'NotMounted');
+    };
+
+    this.sideView.setRows(sideViewItems);
+    this.sideView.onActivate = function(el, ev, item) {
+      if ( item && item.path ) {
+        if ( item.type === 'file' ) {
+          app.open(item);
+        } else {
+          var fileView = self._getGUIElement('FileManagerFileView');
+          if ( fileView ) {
+            fileView.chdir(item.path);
+
+            if ( !item.internal ) {
+              self.showStorageNotification(item.path);
+            }
+          }
+        }
+      }
+    };
+
+    this.sideView.render();
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -568,10 +590,10 @@
     if ( msg == 'destroyWindow' && obj._name === 'ApplicationFileManagerWindow' ) {
       this.destroy();
     } else if ( msg == 'vfs' ) {
-      if ( args.source !== this.__pid && args.file ) {
+      if ( args.source !== this.__pid ) {
         var win = this._getWindow('ApplicationFileManagerWindow');
         if ( win ) {
-          win.vfsEvent(args.file);
+          win.vfsEvent(args);
         }
       }
     }

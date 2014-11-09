@@ -37,12 +37,16 @@
   OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
   OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
     arrayBuffer: false,
+    readOnly: false,
     description: 'Home',
     root: 'home:///',
     icon: 'places/folder_home.png',
     match: /^home\:\/\//,
     visible: true,
     internal: true,
+    mounted: function() {
+      return true;
+    },
     enabled: function() {
       return true;
     },

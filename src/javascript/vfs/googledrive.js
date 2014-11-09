@@ -41,6 +41,8 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
+  var _isMounted = false;
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -648,43 +650,42 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  var getGoogleDrive = (function() {
-    var inited = false;
-    return function(callback, onerror) {
-      callback = callback || function() {};
-      onerror  = onerror  || function() {};
+  function getGoogleDrive(callback, onerror) {
+    callback = callback || function() {};
+    onerror  = onerror  || function() {};
 
-      // Check if user has signed out or revoked permissions
-      if ( inited ) {
-        var inst = OSjs.Helpers.GoogleAPI.getInstance();
-        if ( inst && !inst.authenticated ) {
-          inited = false;
+    // Check if user has signed out or revoked permissions
+    if ( _isMounted ) {
+      var inst = OSjs.Helpers.GoogleAPI.getInstance();
+      if ( inst && !inst.authenticated ) {
+        _isMounted = false;
+      }
+    }
+
+    if ( !_isMounted ) {
+      var scopes = [
+        'https://www.googleapis.com/auth/drive.install',
+        'https://www.googleapis.com/auth/drive.file',
+        'openid'
+      ];
+      var iargs = {load: ['drive-realtime', 'drive-share'], scope: scopes};
+      OSjs.Helpers.GoogleAPI.createInstance(iargs, function(error, result) {
+        if ( error ) {
+          return onerror(error);
         }
-      }
+        gapi.client.load('drive', 'v2', function() {
+          _isMounted = true;
 
-      if ( !inited ) {
-        var scopes = [
-          'https://www.googleapis.com/auth/drive.install',
-          'https://www.googleapis.com/auth/drive.file',
-          'openid'
-        ];
-        var iargs = {load: ['drive-realtime', 'drive-share'], scope: scopes};
-        OSjs.Helpers.GoogleAPI.createInstance(iargs, function(error, result) {
-          if ( error ) {
-            return onerror(error);
-          }
-          gapi.client.load('drive', 'v2', function() {
-            inited = true;
+          API.message('vfs', {type: 'mount', module: 'GoogleDrive', source: null});
 
-            callback(GoogleDriveStorage);
-          });
+          callback(GoogleDriveStorage);
         });
-        return;
-      }
+      });
+      return;
+    }
 
-      callback(GoogleDriveStorage);
-    };
-  })();
+    callback(GoogleDriveStorage);
+  }
 
   function makeRequest(name, args, callback, options) {
     args = args || [];
@@ -712,8 +713,15 @@
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
     arrayBuffer: true,
+    readOnly: false,
     description: 'Google Drive',
     visible: true,
+    unmount: function() {
+      return false; // TODO
+    },
+    mounted: function() {
+      return _isMounted;
+    },
     enabled: function() {
       var handler = API.getHandlerInstance();
       if ( handler ) {
