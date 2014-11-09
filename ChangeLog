@@ -1,3 +1,24 @@
+# 2.0.0-alpha39
+
+* WM: Added getWindow(name)
+* Core: Extended keyboard handling support in windows etc.
+* Windows: Added return on _close()
+* Windows: _onChange() now has byUser parameter
+* obt: Added some more namespaces to templates
+* obt: Fixed including preload items in extensions
+* obt: Config file now includes API extension modules
+* obt: Now preloading extensions instead of updating template (less overhead)
+* server-php: Much better extendability
+* GUI - Label: Removed default label
+* VFS: Updated compability
+* VFS: Added new parameters
+* VFS: Added detection of arrayBuffer usage
+* VFS: Added Dropbox module from Experimental repo
+* VFS: Fixed UTF encoding problems (#30)
+* Misc: added vendor/ to dist
+* Misc: added utf-8 to apache configs when serving JS
+* Misc: jslint
+
 # 2.0.0-alpha38
 
 * Updated README
