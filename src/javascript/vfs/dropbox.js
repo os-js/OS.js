@@ -57,7 +57,7 @@
 
   function DropboxVFS() {
     var clientKey = _getConfig('ClientKey');
-    this.client = new Dropbox.Client({ key: clientKey });
+    this.client = new window.Dropbox.Client({ key: clientKey });
   }
   DropboxVFS.prototype.init = function(callback) {
     this.client.authenticate(function(error, client) {
@@ -186,7 +186,7 @@
     var client;
     return function(callback) {
       if ( !client ) {
-        client = new window.DropboxVFS();
+        client = new DropboxVFS();
         client.init(function(error) {
           if ( error ) {
             console.error('Failed to initialize dropbox VFS', error);
