@@ -4,11 +4,13 @@
   "description":"The default file manager",
   "names":      {
     "no_NO":      "Fil-håndtering",
-    "de_DE":      "Dateimanager"
+    "de_DE":      "Dateimanager",
+    "ru_RU":      "Файловый менеджер",
   },
   "descriptions":      {
     "no_NO":      "Standard Fil-håndtering program",
-    "de_DE":      "Standardmäßiger Dateimanager"
+    "de_DE":      "Standardmäßiger Dateimanager",
+    "ru_RU":      "Стандартный файловый менеджер",
   },
   "mime":       null,
   "category":   "utilities",
