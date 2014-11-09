@@ -503,7 +503,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     settings = BUILD.settings.frontend;
     settings.MIME = MIMES.descriptions;
     settings.Core.Repositories = REPOS;
-    settings.Core.Preloads = settings.Core.Prelads || [];
+    settings.Core.Preloads = settings.Core.Preloads || [];
     extensions.forEach(function(e) {
       if ( e.sources ) {
         e.sources.forEach(function(ee) {
