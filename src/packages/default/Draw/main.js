@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -99,6 +99,48 @@
     fr_FR : {
     },
     ru_RU : {
+      'Toggle tools toolbar' : 'Панель инструментов',
+      'Toggle layers toolbar' : 'Панель слоев',
+      'Layer' : 'Слой',
+      'Effect' : 'Эффекты',
+      'Flip Horizontally' : 'Отразить горизонтально',
+      'Flip Vertically' : 'Отразить вертикально',
+      'Foreground' : 'Передний план',
+      'Bakgrunn' : 'Фон',
+      'Foreground (Fill) Color' : 'Передний план (Заливка) цвет',
+      'Background (Stroke) Color' : 'Фоновый (Обводка) цвет',
+      'Line Join' : 'Замкнутая линия',
+      'Line Width' : 'Ширина линии',
+      'Toggle Stroke' : 'Вкл/выкл обводку',
+      'Enable stroke' : 'Включить обводку',
+      'Round' : 'Закругленный',
+      'Miter' : 'Прямой',
+      'Bevel' : 'Скошенный',
+      'Stroked' : 'С обводкой',
+      'No stroke' : 'Без обводки',
+
+      'Pointer' : 'Указатель',
+      'Move active layer' : 'Перемещает активный слой',
+
+      'Picker' : 'Пипетка',
+      'LMB: set fg color, RMB: set gb color' : 'ЛКМ: устананавливает первичный цвет, ПКМ: устанавливает вторичный(фоновый) цвет',
+
+      'Pencil' : 'Карандаш',
+      'LMB/RMB: Draw with fg/bg color' : 'ЛКМ/ПКМ: Рисует первичным/вторичным цветом',
+      'Path' : 'Прямая',
+
+      'Square/Rectangle' : 'Квадрат/Прямоугольник',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
+
+      'Circle/Ellipse' : 'Круг/Эллипс',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
+
+      'Blur' : 'Размытие (Blur)',
+      'Noise' : 'Шум',
+      'Invert colors' : 'Инвертировать цвета',
+      'Grayscale' : 'Обесцветить',
+      'Sharpen' : 'Сточить',
+      'Simple Blur' : 'Простое размытие (Blur)'
     }
   };
 
