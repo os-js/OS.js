@@ -25,6 +25,10 @@
         "VFS": {
           "GoogleDrive": {
             "Enabled": false
+          },
+          "Dropbox": {
+            "Enabled": false,
+            "ClientKey": ""
           }
         },
         "Languages":        {
@@ -96,6 +100,7 @@
       "src/javascript/vfs/public.js",
       "src/javascript/vfs/user.js",
       "src/javascript/vfs/googledrive.js",
+      "src/javascript/vfs/dropbox.js",
       "src/javascript/windows.js",
       "src/javascript/helpers/default-application.js",
       "src/javascript/helpers/indexed-db.js",
