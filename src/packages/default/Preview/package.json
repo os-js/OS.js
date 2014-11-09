@@ -4,11 +4,13 @@
   "description":"Preview image files",
   "names":      {
     "no_NO":      "Forhåndsviser",
-    "de_DE":      "Vorschau"
+    "de_DE":      "Vorschau",
+    "ru_RU":      "Просмотрщик"
   },
   "descriptions":      {
     "no_NO":      "Forhåndsvisning av bilde-filer",
-    "de_DE":      "Bildervorschau"
+    "de_DE":      "Bildervorschau",
+    "ru_RU":      "Просмотрщик изображений"
   },
   "mime":       ["^image", "^video"],
   "category":   "multimedia",

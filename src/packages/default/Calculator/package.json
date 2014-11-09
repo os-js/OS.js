@@ -1,6 +1,9 @@
 {
   "className":  "ApplicationCalculator",
   "name":       "Calculator",
+  "names":      {
+    "ru_RU":      "Калькулятор"
+  },
   "mime":       null,
   "icon":       "apps/calc.png",
   "category":   "office",
