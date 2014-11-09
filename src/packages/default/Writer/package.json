@@ -4,11 +4,13 @@
   "description":"Write rich text documents",
   "names":      {
     "no_NO":      "Writer",
-    "de_DE":      "Writer"
+    "de_DE":      "Writer",
+    "ru_RU":      "Текстовый процессор"
   },
   "descriptions":      {
     "no_NO":      "Skriv riktekst dokumenter",
-    "de_DE":      "Verfassen Sie Rich-Text-Dokumente"
+    "de_DE":      "Verfassen Sie Rich-Text-Dokumente",
+    "ru_RU":      "Текстовый процессор"
   },
   "mime":       ["^text", "osjs\\/document"],
   "category":   "office",

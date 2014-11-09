@@ -3,7 +3,8 @@
   "name":       "Music Player",
   "names":      {
     "no_NO":      "Musikkspiller",
-    "de_DE":      "Musikspieler"
+    "de_DE":      "Musikspieler",
+    "ru_RU":      "Аудиоплеер"
   },
   "mime":       ["^audio", "osjs\\/playlist"],
   "category":   "multimedia",

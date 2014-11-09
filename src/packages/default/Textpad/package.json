@@ -4,11 +4,13 @@
   "description":"Simple text editor",
   "names":      {
     "no_NO":      "Tekstblokk",
-    "de_DE":      "Texteditor"
+    "de_DE":      "Texteditor",
+    "ru_RU":      "Редактор текста"
   },
   "descriptions":      {
     "no_NO":      "Simpel tekst redigering",
-    "de_DE":      "Einfacher Texteditor"
+    "de_DE":      "Einfacher Texteditor",
+    "ru_RU":      "Простой текстовый редактор"
   },
   "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
   "category":   "utilities",

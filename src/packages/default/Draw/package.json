@@ -4,11 +4,13 @@
   "description":"Simple drawing application",
   "names":      {
     "no_NO":      "Tegne",
-    "de_DE":      "Zeichnen"
+    "de_DE":      "Zeichnen",
+    "ru_RU":      "Графический редактор"
   },
   "descriptions":      {
     "no_NO":      "Simpelt tegne-program",
-    "de_DE":      "Einfaches Zeichen-Programm"
+    "de_DE":      "Einfaches Zeichen-Programm",
+    "ru_RU":      "Простой графический редактор"
   },
   "mime":       ["^image", "osjs\\/draw"],
   "category":   "graphics",

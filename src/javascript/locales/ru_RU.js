@@ -151,7 +151,7 @@
 
     // IndexedDB
     'IDB_MISSING_DBNAME' : 'Не удается создать IndexedDB без названия',
-    'IDB_NO_SUCH_ITEM'   : 'Не найдено найти',
+    'IDB_NO_SUCH_ITEM'   : 'Ничего не удалось найти',
 
     // VFS
     'ERR_VFS_FATAL'           : 'Критическая ошибка',
@@ -159,14 +159,14 @@
     'ERR_VFS_NUM_ARGS'        : 'Не достаточно аргументов',
     'ERR_VFS_EXPECT_FILE'     : 'Ожидается file-object',
     'ERR_VFS_EXPECT_SRC_FILE' : 'Ожидается источник file-object',
-    'ERR_VFS_EXPECT_DST_FILE' : 'Ожидается пукт назнечение file-object',
-    'ERR_VFS_FILE_EXISTS'     : 'Пукт назначения уже существует',
+    'ERR_VFS_EXPECT_DST_FILE' : 'Ожидается имя файла file-object',
+    'ERR_VFS_FILE_EXISTS'     : 'Файл с таким именем уже существует',
     'ERR_VFS_TRANSFER_FMT'    : 'Произошла ошибка во время переноса между хранилищами: {0}',
-    'ERR_VFS_UPLOAD_NO_DEST'  : 'Невозможно загрузить файл, без указания пункта назначения',
+    'ERR_VFS_UPLOAD_NO_DEST'  : 'Невозможно загрузить файл, без указания имени',
     'ERR_VFS_UPLOAD_NO_FILES' : 'Невозможно загрузить файлы, без указания опредленных файлов',
     'ERR_VFS_UPLOAD_FAIL_FMT' : 'Загрузка файла не удалась: {0}',
     'ERR_VFS_UPLOAD_CANCELLED': 'Загрузка файла была отменена',
-    'ERR_VFS_DOWNLOAD_NO_FILE': 'Невозможно скачать путь без пути',
+    'ERR_VFS_DOWNLOAD_NO_FILE': 'Невозможно скачать каталог без пути',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Произошла ошибка при загрузке: {0}',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Скачивание файла',
 

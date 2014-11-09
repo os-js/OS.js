@@ -51,6 +51,15 @@
     fr_FR : {
     },
     ru_RU : {
+      'Show Sidebar' : 'Отобразить боковую панель',
+      'Copying file...' : 'Копирование файла...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Копирование <span>{0}</span> в <span>{1}</span>",
+      "Showing {0} item(s), {1}" : "Показан(ы) {0} объект(ы), {1}",
+      "Refreshing..." : "Обновление...",
+      "Loading..." : "Загрузка...",
+      "Create a new directory in <span>{0}</span>" : "Создать новый каталог в <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Переименовать <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Удалить <span>{0}</span> ?"
     }
   };
 
