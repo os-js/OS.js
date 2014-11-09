@@ -49,6 +49,12 @@
       'Media information query failed' : 'Media-informasjon forespursel feil',
       'seek unavailable in format' : 'spoling utilgjenglig i format',
       'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}',
+    },
+    de_DE : {
+    },
+    fr_FR : {
+    },
+    ru_RU : {
     }
   };
 

@@ -39,6 +39,12 @@
   var _Locales = {
     no_NO : {
       'Insert URL' : 'Sett inn URL'
+    },
+    de_DE : {
+    },
+    fr_FR : {
+    },
+    ru_RU : {
     }
   };
 

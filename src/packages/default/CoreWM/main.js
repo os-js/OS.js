@@ -46,9 +46,10 @@
       'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}'
     },
     de_DE : {
-      'Killing this process will stop things from working!' : 'Durch das Beenden dieses Prozesses werden andere Programme aufhören zu arbeiten!',
-      'Open settings' : 'Öffne Einstellungen',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ihr Panel enthält keine Elemente. Gehen Sie in die Einstellungen und setzen Sie OS.js auf Werkseinstellungen zurück oder bearbeiten Sie das Panel manuell.\n(Dies kann nach einem Update von OS.js passieren.)'
+    },
+    fr_FR : {
+    },
+    ru_RU : {
     }
   };
 

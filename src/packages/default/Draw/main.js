@@ -55,6 +55,8 @@
       'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',
       'Layer' : 'Lag',
       'Effect' : 'Effekt',
+      'Flip Horizontally' : 'Flipp Horisontalt',
+      'Flip Vertically' : 'Flipp Vertikalt',
       'Foreground' : 'Forgrunn',
       'Bakgrunn' : 'Bakgrunn',
       'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
@@ -91,7 +93,12 @@
       'Grayscale' : 'Gråskala',
       'Sharpen' : 'Skarpgjør',
       'Simple Blur' : 'Simpel Klatte (Blur)'
-
+    },
+    de_DE : {
+    },
+    fr_FR : {
+    },
+    ru_RU : {
     }
   };
 
@@ -249,10 +256,10 @@
 
     menuBar.addItem(_("Layer"), [
       {title: _('Effect'), name: 'Effect', menu: items},
-      {title: _('Flip X'), name: 'FlipX', onClick : function() {
+      {title: _('Flip Horizontally'), name: 'FlipX', onClick : function() {
         self.applyModifier("flip", "x");
       }},
-      {title: _('Flip Y'), name: 'FlipY', onClick : function() {
+      {title: _('Flip Vertically'), name: 'FlipY', onClick : function() {
         self.applyModifier("flip", "y");
       }}
     ]);

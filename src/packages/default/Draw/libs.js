@@ -31,6 +31,49 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
+  // LOCALES
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _Locales = {
+    no_NO : {
+      'Pointer' : 'Peker',
+      'Move active layer' : 'Flytt aktivt lag',
+      'Picket' : 'Fargevelger',
+      'LMB: set fg color, RMB: set bg color' : 'LMB: sett fg farge, RMB: sett bg farge',
+      'Bucket' : 'Bøtte',
+      'LMB: fill with fg color, RMB: fill with bg color' : 'LMB: fyll med fg farge, RMB: fyll med bg farge',
+      'Pencil' : 'Penn',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Tegn med fg/bg farge',
+      'Path' : 'Sti',
+      'Square/Rectangle' : 'Firkant/Rektangel',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fb/bg farge, SHIFT: Tegn rektangel',
+      'Circle/Ellipse' : 'Sirkel/Oval',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Tegn med fb/bg farge, SHIFT: Tegn oval',
+      'Radius' : 'Radius',
+      'Iterations' : 'Itereringer',
+
+      'Blur' : 'Klatte (Blur)',
+      'Noise' : 'Støy',
+      'Invert colors' : 'Inverter farger',
+      'Grayscale' : 'Gråskala',
+      'Sharpen' : 'Skarpgjør',
+      'Simple Blur' : 'Simpel Klatte (Blur)'
+    },
+    de_DE : {
+    },
+    fr_FR : {
+    },
+    ru_RU : {
+    }
+  };
+
+  function _() {
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(_Locales);
+    return API.__.apply(this, args);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // TOOLS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -113,7 +156,7 @@
    * Tool: Pointer
    */
   var ToolPointer = function() {
-    Tool.call(this, "pointer", "Pointer", "stock-cursor", "Move active layer");
+    Tool.call(this, "pointer", _("Pointer"), "stock-cursor", _("Move active layer"));
 
     this.layerStartLeft   = 0;
     this.layerStartTop    = 0;
@@ -154,7 +197,7 @@
    * Tool: Picker
    */
   var ToolPicker = function() {
-    Tool.call(this, "picker", "Picker", "stock-color-pick-from-screen", "LMB: set fg color, RMB: set gb color");
+    Tool.call(this, "picker", _("Picker"), "stock-color-pick-from-screen", "LMB: set fg color, RMB: set bg color");
   };
   ToolPicker.prototype = Object.create(Tool.prototype);
 
@@ -204,7 +247,7 @@
    * Tool: Bucket
    */
   var ToolBucket = function() {
-    Tool.call(this, "bucket", "Bucket", "stock-tool-bucket-fill", "LMB: fill with fg color, RMB: fill with bg color");
+    Tool.call(this, "bucket", _("Bucket"), "stock-tool-bucket-fill", "LMB: fill with fg color, RMB: fill with bg color");
   };
   ToolBucket.prototype = Object.create(Tool.prototype);
 
@@ -220,7 +263,7 @@
    * Tool: Pencil
    */
   var ToolPencil = function() {
-    Tool.call(this, "pencil", "Pencil", "stock-tool-pencil", "LMB/RMB: Draw with fg/bg color");
+    Tool.call(this, "pencil", _("Pencil"), "stock-tool-pencil", _("LMB/RMB: Draw with fg/bg color"));
   };
   ToolPencil.prototype = Object.create(Tool.prototype);
 
@@ -251,7 +294,7 @@
    * Tool: Path
    */
   var ToolPath = function() {
-    Tool.call(this, "path", "Path", "stock-tool-path", "LMB/RMB: Draw with fg/bg color", true);
+    Tool.call(this, "path", _("Path"), "stock-tool-path", _("LMB/RMB: Draw with fg/bg color"), true);
   };
   ToolPath.prototype = Object.create(Tool.prototype);
 
@@ -285,7 +328,7 @@
    * Tool: Square
    */
   var ToolSquare = function() {
-    Tool.call(this, "square", "Square/Rectangle", "stock-shape-square", "LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle", true);
+    Tool.call(this, "square", _("Square/Rectangle"), "stock-shape-square", _("LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle"), true);
   };
   ToolSquare.prototype = Object.create(Tool.prototype);
 
@@ -319,7 +362,7 @@
    * Tool: Circle
    */
   var ToolCircle = function() {
-    Tool.call(this, "circle", "Circle/Ellipse", "stock-shape-circle", "LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse", true);
+    Tool.call(this, "circle", _("Circle/Ellipse"), "stock-shape-circle", _("LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse"), true);
   };
   ToolCircle.prototype = Object.create(Tool.prototype);
 
@@ -773,13 +816,13 @@
 
     var labelRadius = this._addGUIElement(new GUI.Label("EffectBlurWindowLabel1", {label: "Radius: " + this.radius}), root);
     var sliderRadius = this._addGUIElement(new GUI.Slider("EffectBlurWindowSlider1", {min:1, max:20, val: this.radius, onUpdate: function(val) {
-      labelRadius.setLabel("Radius: " + val);
+      labelRadius.setLabel(_("Radius") + ": " + val);
       self.radius = val;
     }}), root);
 
     var labelIterations = this._addGUIElement(new GUI.Label("EffectBlurWindowLabel1", {label: "Iterations: " + this.iterations}), root);
     var sliderIterations = this._addGUIElement(new GUI.Slider("EffectBlurWindowSlider1", {min:1, max:4, val: this.iterations, onUpdate: function(val) {
-      labelIterations.setLabel("Iterations: " + val);
+      labelIterations.setLabel(_("Iterations") + ": " + val);
       self.iterations = val;
     }}), root);
 
@@ -796,7 +839,7 @@
   };
 
   var EffectBlur = function() {
-    Effect.call(this, "blur", "Blur");
+    Effect.call(this, "blur", _("Blur"));
   };
 
   EffectBlur.prototype = Object.create(Effect.prototype);
@@ -827,7 +870,7 @@
    * Effect: Noise
    */
   var EffectNoise = function() {
-    Effect.call(this, "noise", "Noise");
+    Effect.call(this, "noise", _("Noise"));
   };
 
   EffectNoise.prototype = Object.create(Effect.prototype);
@@ -858,7 +901,7 @@
    * Effect: Invert
    */
   var EffectInvert = function() {
-    Effect.call(this, "invert", "Invert colors");
+    Effect.call(this, "invert", _("Invert colors"));
   };
 
   EffectInvert.prototype = Object.create(Effect.prototype);
@@ -886,7 +929,7 @@
    * Effect: Grayscale
    */
   var EffectGrayscale = function() {
-    Effect.call(this, "grayscale", "Grayscale");
+    Effect.call(this, "grayscale", _("Grayscale"));
   };
 
   EffectGrayscale.prototype = Object.create(Effect.prototype);
@@ -917,7 +960,7 @@
    * Effect: Sharpen
    */
   var EffectSharpen = function() {
-    Effect.call(this, "sharpen", "Sharpen");
+    Effect.call(this, "sharpen", _("Sharpen"));
   };
 
   EffectSharpen.prototype = Object.create(Effect.prototype);
@@ -941,7 +984,7 @@
    * Effect: SimpleBlur
    */
   var EffectSimpleBlur = function() {
-    Effect.call(this, "simpleblur", "Simple Blur");
+    Effect.call(this, "simpleblur", _("Simple Blur"));
   };
 
   EffectSimpleBlur.prototype = Object.create(Effect.prototype);

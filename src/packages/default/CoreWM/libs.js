@@ -68,38 +68,11 @@
       'Utilities' : 'Verktøy',
       'Other' : 'Andre'
     },
-
     de_DE : {
-      'CoreWM Settings': 'CoreWM Einstellungen',
-      'Theme and Background': 'Design und Hintergrund',
-      'Desktop Settings': 'Desktop Einstellungen',
-      'Background Type': 'Hintergrundtyp',
-      'Image (Repeat)': 'Bild (wiederholend)',
-      'Image (Centered)': 'Bild (zentriert)',
-      'Image (Fill)': 'Bild (füllend)',
-      'Image (Streched)': 'Bilde (ausgedehnt)',
-      'Desktop Margin ({0}px)': 'Desktop-Rand ({0}px)',
-      'Panel Position': 'Panel Position',
-      'Panel Ontop ?': 'Panel im Vordergrund?',
-      'Panel Items': 'Panel-Elemente',
-      'Use animations ?': 'Animationen nutzen?',
-      'Language (requires restart)': 'Sprache (benötigt Neustart)',
-      'Open Panel Settings': 'Åpne panel-instillinger',
-      'Enable sounds': 'Töne aktivieren',
-      'Enable Window Switcher': 'Fensterwechsel möglich?',
-      'Enable Hotkeys': 'Hotkeys aktivieren',
-      'Enable iconview': 'Iconview aktivieren',
-
-      'Development': 'Entwicklung',
-      'Education': 'Bildung',
-      'Games': 'Spiele',
-      'Graphics': 'Grafik',
-      'Network': 'Netzwerk',
-      'Multimedia': 'Multimedia',
-      'Office': 'Office',
-      'System': 'System',
-      'Utilities': 'Zubehör',
-      'Other': 'Andere'
+    },
+    fr_FR : {
+    },
+    ru_RU : {
     }
   };
 

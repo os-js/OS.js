@@ -271,6 +271,6 @@
     'LBL_ORDERED_LIST'  : 'Ordnet liste',
     'LBL_BACKGROUND_IMAGE' : 'Bakgrunnsbilde',
     'LBL_BACKGROUND_COLOR' : 'Bakgrunnsfarge',
-    'LBL_UNORDERED_LIST'   : 'Unordnet Liste'
+    'LBL_UNORDERED_LIST'   : 'Uordnet Liste'
   };
 })();

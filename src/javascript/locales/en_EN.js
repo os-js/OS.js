@@ -271,7 +271,12 @@
     'LBL_ORDERED_LIST'  : 'Ordered List',
     'LBL_BACKGROUND_IMAGE' : 'Background Image',
     'LBL_BACKGROUND_COLOR' : 'Background Color',
-    'LBL_UNORDERED_LIST'   : 'Unordered List'
+    'LBL_UNORDERED_LIST'   : 'Unordered List',
+
+    //
+    // NEW
+    //
+    'LBL_STATUS' : 'Status'
   };
 
 })();

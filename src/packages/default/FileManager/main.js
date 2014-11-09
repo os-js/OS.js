@@ -45,6 +45,12 @@
       "Create a new directory in <span>{0}</span>" : "Opprett ny mappe i <span>{0}</span>",
       "Rename <span>{0}</span>" : "Navngi <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"
+    },
+    de_DE : {
+    },
+    fr_FR : {
+    },
+    ru_RU : {
     }
   };
 
