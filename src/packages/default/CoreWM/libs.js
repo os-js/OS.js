@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -73,6 +73,37 @@
     fr_FR : {
     },
     ru_RU : {
+      'CoreWM Settings' : 'CoreWM Настройки',
+      'Theme and Background' : 'Тема и фон',
+      'Desktop Settings' : 'Настройки рабочего стола',
+      'Background Type' : 'Тип фона',
+      'Image (Repeat)' : 'Изображение(повторяющееся)',
+      'Image (Centered)' : 'Изображение(по центру)',
+      'Image (Fill)' : 'Изображение(заполнить)',
+      'Image (Streched)' : 'Изображение(растянуть)',
+      'Desktop Margin ({0}px)' : 'Отсутуп рабочего стола ({0}px)',
+      'Panel Position' : 'Позиция панели',
+      'Panel Ontop ?' : 'Панель вверху?',
+      'Panel Items' : 'Элементы панели',
+      'Use animations ?' : 'Исплользовать анимации?',
+      'Language (requires restart)' : 'Язык (необходим перезапуск)',
+      'Open Panel Settings' : 'Открыть настройки панели',
+      'Enable sounds' : 'Включить звук',
+      'Enable Window Switcher' : 'Включить растягивание окон',
+      'Enable Hotkeys' : 'Включить горячии клавиши',
+      'Enable iconview' : 'Включить иконки',
+      'Remove shortcut' : 'Удалить ярлык',
+
+      'Development' : 'Разработка',
+      'Education' : 'Образование',
+      'Games' : 'Игры',
+      'Graphics' : 'Графика',
+      'Network' : 'Интернет',
+      'Multimedia' : 'Мультимедиа',
+      'Office' : 'Офис',
+      'System' : 'Система',
+      'Utilities' : 'Утилиты',
+      'Other' : 'Другое'
     }
   };
 
