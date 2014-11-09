@@ -721,7 +721,7 @@
     this.clear();
     this.context.save();
     this.context.scale(1, -1);
-    this.context.drawImage(copy, 0, (copy.height * -1), copy.width, copy.height);
+    this.context.drawImage(copy, (copy.width * -1), 0, copy.width, copy.height);
     this.context.restore();
 
     copy = null;
@@ -737,7 +737,7 @@
     this.clear();
     this.context.save();
     this.context.scale(-1, 1);
-    this.context.drawImage(copy, (copy.width * -1), 0, copy.width, copy.height);
+    this.context.drawImage(copy, 0, (copy.height * -1), copy.width, copy.height);
     this.context.restore();
 
     copy = null;
