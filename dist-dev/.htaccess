@@ -8,6 +8,9 @@ RewriteCond %{REQUEST_URI} !^/http-bind-jabber
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ api.php [QSA,L]
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .js
+
 
 # For binding to other services
 <ifModule mod_proxy.c>
