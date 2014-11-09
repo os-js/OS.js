@@ -711,6 +711,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
+    arrayBuffer: true,
     description: 'Google Drive',
     visible: true,
     enabled: function() {

@@ -121,6 +121,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.Public = OSjs.VFS.Modules.Public || {
+    arrayBuffer: false,
     description: 'Shared',
     root: '/',
     icon: 'places/folder-publicshare.png',

@@ -115,6 +115,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
+    arrayBuffer: false,
     description: 'OS.js (Read-Only)',
     root: 'osjs:///',
     match: /^osjs\:\/\//,
