@@ -1,3 +1,18 @@
+# 2.0.0-alpha40
+
+* Misc: Fixed loading problems in Firefox - #32
+* Core: Autodetection of language - #23
+* Core: Hooks now arrays, adding support for multiple handlers
+* Utils: Added getUserLocale()
+* Draw: Fix for flip effect
+* Locales: Added ru_RU Application translations (Thanks @Fabel) - #18
+* VFS: Added mounted() property
+* VFS: Added readOnly propert
+* VFS: Fixed exists() in GoogleDrive
+* VFS: Now sends mounted/unmounted message to procs
+* FileManager: Added opacity for unmounted volumes
+* server-node: Removed old error message
+
 # 2.0.0-alpha39
 
 * WM: Added getWindow(name)
