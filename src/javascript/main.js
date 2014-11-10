@@ -51,22 +51,19 @@
   // Main initialization code
   /////////////////////////////////////////////////////////////////////////////
 
-  function _onLoad() {
+  var loaded = false;
+  document.addEventListener('DOMContentLoaded', function() {
+    if ( loaded ) { return; }
+    loaded = true;
     OSjs.Core.initialize();
-  }
-
-  function _onUnload() {
+  });
+  document.addEventListener('load', function() {
+    if ( loaded ) { return; }
+    loaded = true;
+    OSjs.Core.initialize();
+  });
+  document.addEventListener('unload', function() {
     OSjs.Core.shutdown(false, true);
-  }
-
-  var jQuery = window.$ || window.jQuery;
-  if ( typeof jQuery !== 'undefined' ) {
-    console.warn('Using jQuery initialization');
-    jQuery(window).on('load', _onLoad);
-    jQuery(window).on('unload', _onUnload);
-  } else {
-    window.onload   = _onLoad;
-    window.onunload = _onUnload;
-  }
+  });
 
 })();
