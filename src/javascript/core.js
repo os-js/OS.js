@@ -33,7 +33,6 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.API          = OSjs.API          || {};
   OSjs.Core         = OSjs.Core         || {};
-  OSjs.Core.hooks   = OSjs.Core.hooks   || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
   OSjs.Handlers     = OSjs.Handlers     || {};
@@ -47,20 +46,16 @@
   // DEFAULT HOOKS
   /////////////////////////////////////////////////////////////////////////////
 
-  var _hooks = [
-    'onInitialize',          // 1: When OS.js is starting
-    'onInited',              // 2: When all resources has been loaded
-    'onWMInited',            // 3: When Window Manager has started
-    'onSessionLoaded',       // 4: After session has been loaded or restored
-    'onLogout',              // When logout is requested
-    'onShutdown',            // When shutting down after successfull logout
-    'onApplicationLaunch',   // On application launch request
-    'onApplicationLaunched'  // When application has been launched
-  ];
-
-  _hooks.forEach(function(h) {
-    OSjs.Core.hooks[h] = [];
-  });
+  var _hooks = {
+    'onInitialize':          [], // 1: When OS.js is starting
+    'onInited':              [], // 2: When all resources has been loaded
+    'onWMInited':            [], // 3: When Window Manager has started
+    'onSessionLoaded':       [], // 4: After session has been loaded or restored
+    'onLogout':              [], // When logout is requested
+    'onShutdown':            [], // When shutting down after successfull logout
+    'onApplicationLaunch':   [], // On application launch request
+    'onApplicationLaunched': []  // When application has been launched
+  };
 
   /**
    * Method for triggering a hook
@@ -69,8 +64,8 @@
     thisarg = thisarg || OSjs;
     args = args || [];
 
-    if ( OSjs.Core.hooks[name] ) {
-      OSjs.Core.hooks[name].forEach(function(hook) {
+    if ( _hooks[name] ) {
+      _hooks[name].forEach(function(hook) {
         if ( typeof hook === 'function' ) {
           try {
             hook.apply(thisarg, args);
@@ -88,8 +83,8 @@
    * Method for adding a hook
    */
   function doAddHook(name, fn) {
-    if ( typeof OSjs.Core.hooks[name] !== 'undefined' ) {
-      OSjs.Core.hooks[name].push(fn);
+    if ( typeof _hooks[name] !== 'undefined' ) {
+      _hooks[name].push(fn);
     }
   }
 
