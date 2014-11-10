@@ -838,6 +838,7 @@
             } else {
               _error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
             }
+            console.groupEnd();
             return;
           }
         }

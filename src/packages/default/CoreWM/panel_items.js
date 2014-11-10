@@ -374,6 +374,8 @@
   /**
    * PanelItem: NotificationArea
    */
+  var _restartFix = {}; // FIXME: This is a workaround for resetting items on panel change
+
   var PanelItemNotificationArea = function() {
     PanelItem.apply(this, ['PanelItemNotificationArea PanelItemFill PanelItemRight']);
     this.notifications = {};
@@ -387,6 +389,14 @@
   PanelItemNotificationArea.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
 
+    var fix = Object.keys(_restartFix);
+    var self = this;
+    if ( fix.length ) {
+      fix.forEach(function(k) {
+        self.createNotification(k, _restartFix[k]);
+      });
+    }
+
     return root;
   };
 
@@ -397,6 +407,7 @@
         var item = new NotificationAreaItem(name, opts);
         item.init(this._$root);
         this.notifications[name] = item;
+        _restartFix[name] = opts;
 
         return item;
       }
@@ -409,6 +420,9 @@
       if ( this.notifications[name] ) {
         this.notifications[name].destroy();
         delete this.notifications[name];
+        if ( _restartFix[name] ) {
+          delete _restartFix[name];
+        }
         return true;
       }
     }

@@ -38,8 +38,6 @@
 
   var _Locales = {
     no_NO : {
-      '' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
-
       'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
       'Open settings' : 'Åpne instillinger',
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
@@ -127,7 +125,6 @@
     this._settings      = DefaultSettings(this._defaults);
     this.panels         = [];
     this.switcher       = null;
-    this.settingsWindow = null;
     this.iconView       = null;
     this.$themeLink     = null;
     this.$animationLink = null;
@@ -164,11 +161,6 @@
       this.iconView = null;
     }
 
-    if ( this.settingsWindow ) {
-      this.settingsWindow.destroy();
-      this.settingsWindow = null;
-    }
-
     if ( this.switcher ) {
       this.switcher.destroy();
       this.switcher = null;
@@ -202,14 +194,6 @@
 
   // Copy from Application
   CoreWM.prototype._onMessage = function(obj, msg, args) {
-    if ( msg == 'destroyWindow' && obj._name === 'CoreWMSettingsWindow' ) {
-      this.settingsWindow = null;
-    }
-    if ( msg == 'destroyWindow' && obj._name === 'CoreWMPanelItemWindow' ) {
-      if ( this.settingsWindow ) {
-        this.settingsWindow.panelItemWindow = null;
-      }
-    }
   };
 
   // Copy from Application
@@ -289,36 +273,39 @@
   };
 
   CoreWM.prototype.initPanels = function(applySettings) {
-    this.destroyPanels();
-
     var ps = this.getSetting('panels');
     var added = false;
-    if ( ps && ps.length ) {
-      var p, j, n;
-      for ( var i = 0; i < ps.length; i++ ) {
-        p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options);
-        p.init(document.body);
+    if ( ps === false ) {
+      added = true;
+    } else {
+      this.destroyPanels();
+      if ( ps && ps.length ) {
+        var p, j, n;
+        for ( var i = 0; i < ps.length; i++ ) {
+          p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options);
+          p.init(document.body);
 
-        if ( ps[i].items && ps[i].items.length ) {
-          for ( j = 0; j < ps[i].items.length; j++ ) {
-            try {
-              n = ps[i].items[j];
-              p.addItem(new OSjs.Applications.CoreWM.PanelItems[n.name]());
-              added = true;
-            } catch ( e ) {
-              console.warn('An error occured while creating PanelItem', e);
-              console.warn('stack', e.stack);
+          if ( ps[i].items && ps[i].items.length ) {
+            for ( j = 0; j < ps[i].items.length; j++ ) {
+              try {
+                n = ps[i].items[j];
+                p.addItem(new OSjs.Applications.CoreWM.PanelItems[n.name]());
+                added = true;
+              } catch ( e ) {
+                console.warn('An error occured while creating PanelItem', e);
+                console.warn('stack', e.stack);
 
-              this.notification({
-                icon: 'status/important.png',
-                title: 'CoreWM',
-                message: _('An error occured while creating PanelItem: {0}', e)
-              });
+                this.notification({
+                  icon: 'status/important.png',
+                  title: 'CoreWM',
+                  message: _('An error occured while creating PanelItem: {0}', e)
+                });
+              }
             }
           }
-        }
 
-        this.panels.push(p);
+          this.panels.push(p);
+        }
       }
     }
 
@@ -551,19 +538,8 @@
 
   CoreWM.prototype.showSettings = function(tab) {
     var self = this;
-    if ( this.settingsWindow ) {
-      this.settingsWindow._restore();
-      setTimeout(function() {
-        self.settingsWindow.setTab(tab);
-      }, 10);
-      return;
-    }
 
-    this.settingsWindow = this.addWindow(new OSjs.Applications.CoreWM.SettingsWindow(this));
-    this.settingsWindow._focus();
-    setTimeout(function() {
-      self.settingsWindow.setTab(tab);
-    }, 10);
+    OSjs.API.launch('ApplicationSettings', {tab: tab});
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {

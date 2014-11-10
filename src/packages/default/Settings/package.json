@@ -1,0 +1,23 @@
+{
+  "className":  "ApplicationSettings",
+  "name":       "OS.js Settings",
+  "names":      {
+    "no_NO":      "OS.js Instillinger",
+    "ru_RU":      "OS.js Настройки"
+  },
+  "descriptions":      {
+    "no_NO":      "OS.js Instillinger",
+    "ru_RU":      "OS.js Настройки"
+  },
+  "mime":       null,
+  "icon":       "categories/applications-system.png",
+  "category":   "system",
+  "singular":   true,
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+

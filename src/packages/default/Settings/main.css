@@ -1,0 +1,122 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+.Window_ApplicationSettingsWindow .WindowWrapper {
+}
+
+.Window_ApplicationSettingsWindow .WindowWrapper {
+  overflow : auto;
+  padding : 5px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting {
+  position : relative;
+  height : 42px;
+  margin : 5px;
+}
+
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting label {
+  display : block;
+  height : 16px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting input[type=text],
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting select {
+  position : absolute;
+  left : 0px;
+  width : 100%;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
+  right : 0px;
+  width : 100%;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Setting .GUIButton {
+  position : absolute;
+  right : 0px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .GUIButton.Save {
+  position : absolute;
+  right : 5px;
+  bottom : 5px;
+}
+
+.Window_ApplicationSettingsWindow .WindowWrapper .SettingTabs {
+  position : absolute;
+  top : 5px;
+  left : 5px;
+  right : 5px;
+  bottom : 34px;
+  z-index : 9999;
+}
+
+
+.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemsContainer {
+  height : 200px;
+  position : relative;
+}
+
+.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemListView {
+  height : 168px;
+  width : 435px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemListView .Header {
+  display : none;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemListView .Scroll {
+  top : 0;
+  margin-top : 0;
+}
+
+.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemButtons {
+  position : absolute;
+  right : 0px;
+  top : 0px;
+  bottom : 0px;
+  width : 30px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemButtons > .GUIButton {
+  display : block;
+  position : relative;
+  margin-bottom : 5px;
+  height : 30px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemButtons > .GUIButton button {
+  height : 30px;
+  text-align : center;
+}
+
+.Window_CoreWMPanelItemWindow .WindowWrapper {
+  padding : 5px;
+}
+.Window_CoreWMPanelItemWindow .GUIListView {
+  height : 293px;
+}
+.Window_CoreWMPanelItemWindow .GUIButton {
+  margin-top : 5px;
+}
