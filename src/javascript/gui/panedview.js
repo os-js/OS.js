@@ -67,24 +67,13 @@
     var dir   = this.opts.direction;
 
     function setCSS(el, flex, width, height) {
-      var par = 'auto';
-      if ( width !== null ) {
-        par = width + 'px';
-      } else if ( height !== null ) {
-        par = height + 'px';
-      }
+      var par = width || height || 'auto';
       var css = Utils.format('{0} {1} {2}', flex, flex, par);
       el.style['webkitFlex'] = css;
       el.style['mozFlex'] = css;
       el.style['msFlex'] = css;
       el.style['oFlex'] = css;
       el.style['flex'] = css;
-      if ( width !== null ) {
-        el.style.width = width;
-      }
-      if ( height !== null ) {
-        el.style.height = height;
-      }
     }
 
     function createResizer(v, idx, sep) {
