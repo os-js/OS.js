@@ -208,7 +208,9 @@
             default :
               var found = false;
               if ( HANDLER ) {
-                found = HANDLER.request(method, args, function(error, result) {
+                HANDLER.request(method, args, function(error, result) {
+                  found = true;
+
                   respondJSON({result: result, error: error}, response);
                 }, request, response);
               }
