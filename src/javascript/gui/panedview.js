@@ -112,13 +112,14 @@
       }
     }
 
-    Object.keys(views).forEach(function(name) {
+    var viewk = Object.keys(views);
+    viewk.forEach(function(name) {
       var v = views[name];
       var el = v._element;
       var sep = v._separator;
       var idx = Utils.$index(el);
 
-      var initialWidth = typeof v.width === 'undefined' ? '100%' : (v.width.toString() + 'px');
+      var initialWidth = typeof v.width === 'undefined' ? ((100 / viewk.length).toString() + '%') : (v.width.toString() + 'px');
       var flex = idx === 0 ? 0 : 1;
       if ( count > 2 ) {
         flex = 1;
