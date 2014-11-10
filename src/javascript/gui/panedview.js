@@ -67,7 +67,13 @@
     var dir   = this.opts.direction;
 
     function setCSS(el, flex, width, height) {
-      var css = Utils.format('{0} {1} {2}', flex, flex, 'auto');
+      var par = 'auto';
+      if ( width !== null ) {
+        par = width + 'px';
+      } else if ( height !== null ) {
+        par = height + 'px';
+      }
+      var css = Utils.format('{0} {1} {2}', flex, flex, par);
       el.style['webkitFlex'] = css;
       el.style['mozFlex'] = css;
       el.style['msFlex'] = css;
@@ -123,7 +129,7 @@
       var sep = v._separator;
       var idx = Utils.$index(el);
 
-      var initialWidth = typeof v.width === 'undefined' ? 'auto' : (v.width.toString() + 'px');
+      var initialWidth = typeof v.width === 'undefined' ? '100%' : (v.width.toString() + 'px');
       var flex = idx === 0 ? 0 : 1;
       if ( count > 2 ) {
         flex = 1;

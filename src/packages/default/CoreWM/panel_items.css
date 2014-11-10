@@ -3,7 +3,7 @@
  * PanelItemClock
  */
 .WMPanel .PanelItemClock {
-  width : 55px;
+  flex : 0 0 55px;
   cursor : default;
   overflow : hidden;
   text-overflow: ellipsis;
