@@ -37,7 +37,7 @@
     return mode; // TODO
   };
 
-  function getRealPath(path, config) {
+  function getRealPath(path, config, request) {
     var fullPath = _path.join(config.publicdir, path);
     var protocol = '';
     if ( path.match(/^osjs\:\/\//) ) {
@@ -46,7 +46,11 @@
       protocol = 'osjs://';
     } else if ( path.match(/^home\:\/\//) ) {
       path = path.replace(/^home\:\/\//, '');
-      fullPath = _path.join(config.vfsdir, path);
+      var userdir = request.cookies.get('username');
+      if ( !userdir ) {
+        throw "No user session was found";
+      }
+      fullPath = _path.join(config.vfsdir, userdir, path);
       protocol = 'home://';
     }
     return {root: fullPath, path: path, protocol: protocol};
@@ -66,7 +70,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var realPath = getRealPath(path, config);
+      var realPath = getRealPath(path, config, request);
       path = realPath.path;
 
       _fs.exists(realPath.root, function(exists) {
@@ -95,7 +99,7 @@
       var data = args[1] || '';
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var realPath = getRealPath(path, config);
+      var realPath = getRealPath(path, config, request);
       path = realPath.path;
 
       if ( opts.dataSource ) {
@@ -116,7 +120,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var realPath = getRealPath(path, config);
+      var realPath = getRealPath(path, config, request);
       path = realPath.path;
 
       _fs.exists(realPath.root, function(exists) {
@@ -139,8 +143,8 @@
       var dst  = args[1];
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var realSrc = getRealPath(src, config);
-      var realDst = getRealPath(dst, config);
+      var realSrc = getRealPath(src, config, request);
+      var realDst = getRealPath(dst, config, request);
       var srcPath = realSrc.root; //_path.join(realSrc.root, src);
       var dstPath = realDst.root; //_path.join(realDst.root, dst);
       _fs.exists(srcPath, function(exists) {
@@ -169,8 +173,8 @@
       var dst  = args[1];
       var opts = typeof args[2] === 'undefined' ? {} : (args[2] || {});
 
-      var realSrc = getRealPath(src, config);
-      var realDst = getRealPath(dst, config);
+      var realSrc = getRealPath(src, config, request);
+      var realDst = getRealPath(dst, config, request);
       var srcPath = realSrc.root; //_path.join(realSrc.root, src);
       var dstPath = realDst.root; //_path.join(realDst.root, dst);
       _fs.exists(srcPath, function(exists) {
@@ -198,7 +202,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var realPath = getRealPath(path, config);
+      var realPath = getRealPath(path, config, request);
       path = realPath.path;
 
       _fs.exists(realPath.root, function(exists) {
@@ -220,7 +224,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var realPath = getRealPath(path, config);
+      var realPath = getRealPath(path, config, request);
       path = realPath.path;
       _fs.exists(realPath.root, function(exists) {
         respond({result: exists, error: null});
@@ -231,7 +235,7 @@
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
-      var realPath = getRealPath(path, config);
+      var realPath = getRealPath(path, config, request);
       path = realPath.path;
       _fs.exists(realPath.root, function(exists) {
         if ( !exists ) {
@@ -262,7 +266,7 @@
     scandir : function(args, request, respond, config) {
       var path = args[0];
 
-      var realPath = getRealPath(path, config);
+      var realPath = getRealPath(path, config, request);
       path = realPath.path;
 
       _fs.readdir(realPath.root, function(error, files) {

@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-(function(_http, _path, _url, _fs, _qs, _multipart, _vfs)
+(function(_http, _path, _url, _fs, _qs, _multipart, _cookies, _vfs)
 {
   /**
    * Globals and default settings etc.
@@ -40,7 +40,7 @@
     port:       8000,
     directory:  null, // Automatic
     appdirs:    null, // Automatic, but overrideable
-    vfsdir:     _path.join(ROOTDIR, 'vfs/home/demo'), // FIXME
+    vfsdir:     _path.join(ROOTDIR, 'vfs/home'),
     tmpdir:     _path.join(ROOTDIR, 'vfs/tmp'),
     publicdir:  _path.join(ROOTDIR, 'vfs/public'),
     repodir:    _path.join(ROOTDIR, 'src/packages'),
@@ -82,7 +82,7 @@
    * File Output
    */
   var respondFile = function(path, request, response, jpath) {
-    var fullPath = jpath ? _path.join(CONFIG.directory, path) : _vfs.getRealPath(path, CONFIG).root;
+    var fullPath = jpath ? _path.join(CONFIG.directory, path) : _vfs.getRealPath(path, CONFIG, request).root;
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
         _fs.readFile(fullPath, function(error, data) {
@@ -136,7 +136,7 @@
     FilePOST : function(fields, files, request, response) {
       var srcPath = files.upload.path;
       var tmpPath = (fields.path + '/' + files.upload.name).replace('////', '///'); // FIXME
-      var dstPath = _vfs.getRealPath(tmpPath, CONFIG).root;
+      var dstPath = _vfs.getRealPath(tmpPath, CONFIG, request).root;
 
       _fs.exists(srcPath, function(exists) {
         if ( exists ) {
@@ -285,8 +285,11 @@
    */
   _http.createServer(function(request, response) {
 
-    var url     = _url.parse(request.url, true),
-        path    = decodeURIComponent(url.pathname);
+      var url     = _url.parse(request.url, true),
+          path    = decodeURIComponent(url.pathname),
+          cookies = new _cookies(request, response);
+
+      request.cookies = cookies;
 
       if ( path === "/" ) path += "index.html";
       console.log('<<<', path);
@@ -334,5 +337,6 @@
   require("node-fs-extra"),
   require("querystring"),
   require("formidable"),
+  require("cookies"),
   require("./vfs.js")
 );

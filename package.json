@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "less": "latest",
+    "cookies": "latest",
     "node-fs-extra": "latest",
     "formidable": "latest"
   }

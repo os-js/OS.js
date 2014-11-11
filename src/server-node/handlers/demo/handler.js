@@ -34,10 +34,14 @@
 
   var APIUser = function() {};
   APIUser.login = function(data, request, response) {
+    console.log('APIUser::login()');
+    request.cookies.set('username', data.username, {httpOnly:true});
     return data;
   };
 
   APIUser.logout = function(request, response) {
+    console.log('APIUser::logout()');
+    request.cookies.set('username', null, {httpOnly:true});
     return true;
   };
 
