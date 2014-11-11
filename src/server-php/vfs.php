@@ -68,39 +68,43 @@ class FS
 
     $result = Array();
     $on_root = !$dirname || $dirname == "/";
-    if ( ($files = scandir($root)) !== false ) {
-      foreach ( $files as $f ) {
-        if ( $f == "." || ($f == ".." && $on_root) ) continue;
+    if ( file_exists($root) && is_dir($root) ) {
+      if ( ($files = scandir($root)) !== false ) {
+        foreach ( $files as $f ) {
+          if ( $f == "." || ($f == ".." && $on_root) ) continue;
 
-        $opath = implode("/", Array($root, $f));
-        if ( $f == ".." ) {
-          $tpath = truepath(implode("/", Array($dirname, $f)), false);
-        } else {
-          $tpath = implode("/", Array($dirname, $f));
-        }
-        $vpath = sprintf("%s%s", $protocol, $tpath); //$on_root ? preg_replace("/^\//", "", $tpath) : $tpath);
+          $opath = implode("/", Array($root, $f));
+          if ( $f == ".." ) {
+            $tpath = truepath(implode("/", Array($dirname, $f)), false);
+          } else {
+            $tpath = implode("/", Array($dirname, $f));
+          }
+          $vpath = sprintf("%s%s", $protocol, $tpath); //$on_root ? preg_replace("/^\//", "", $tpath) : $tpath);
 
-        $iter = Array(
-          "filename" => htmlspecialchars($f),
-          "path"     => $vpath,
-          "size"     => 0,
-          "mime"     => null,
-          "type"     => is_dir($opath) ? "dir" : "file"
-        );
+          $iter = Array(
+            "filename" => htmlspecialchars($f),
+            "path"     => $vpath,
+            "size"     => 0,
+            "mime"     => null,
+            "type"     => is_dir($opath) ? "dir" : "file"
+          );
 
-        if ( $iter["type"] == "file" ) {
-          if ( is_writable($opath) || is_readable($opath) ) {
-            if ( $mime = fileMime($opath) ) {
-              $iter["mime"] = $mime;
-            }
-            if ( ($size = filesize($opath)) !== false ) {
-              $iter["size"] = $size;
+          if ( $iter["type"] == "file" ) {
+            if ( is_writable($opath) || is_readable($opath) ) {
+              if ( $mime = fileMime($opath) ) {
+                $iter["mime"] = $mime;
+              }
+              if ( ($size = filesize($opath)) !== false ) {
+                $iter["size"] = $size;
+              }
             }
           }
-        }
 
-        $result[] = $iter;
+          $result[] = $iter;
+        }
       }
+    } else {
+      throw new Exception("Directory does not exist");
     }
 
     return $result;
