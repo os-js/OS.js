@@ -209,7 +209,7 @@
     'LBL_HELP'     : 'Hjelp',
     'LBL_ABOUT'    : 'Om',
     'LBL_PANELS'   : 'Paneler',
-    'LBL_LOCALES'  : 'Locales',
+    'LBL_LOCALES'  : 'Lokalisering',
     'LBL_THEME'    : 'Temaer',
     'LBL_COLOR'    : 'Farge',
     'LBL_PID'      : 'PID',

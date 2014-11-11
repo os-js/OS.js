@@ -732,7 +732,7 @@
 
     var cn = document.body.className;
     var nc = 'Wallpaper' + className + ' ';
-    document.body.className             = cn.replace(/(Wallpaper(.*)\s?)?/, nc);
+    document.body.className = cn.replace(/(Wallpaper(.*)\s?)?/, nc);
 
     if ( back !== 'none' ) {
       VFS.url(back, function(error, result) {
