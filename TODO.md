@@ -2,8 +2,6 @@ Look here for the latest listings
 https://github.com/andersevenrud/OS.js-v2/issues
 
 * _[Misc]_ There are some FIXME and TODO markers in the code
-* _[Backend]_ Finish Node.js backend
-* _[Backend]_ Finish WebSocket hander implementation
 * _[Documentation]_ Complete documentation for JavaScript
 * _[Themes]_ More Themes
 * _[Application]_ Go over extra/experimental apps and collapse namespace calls (OSjs.API.* => API.*)
