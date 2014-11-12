@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-(function(_http, _path, _url, _fs, _qs, _multipart, _cookies, _vfs)
+(function(_http, _path, _url, _fs, _qs, _multipart, _cookies, _api, _vfs)
 {
   /**
    * Globals and default settings etc.
@@ -36,6 +36,7 @@
   var HANDLER = null;
   var ROOTDIR = _path.join(_path.dirname(__filename), '/../../');
   var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
+  var API     = {};
   var CONFIG  = {
     port:       8000,
     directory:  null, // Automatic
@@ -167,58 +168,12 @@
           var args   = data['arguments'] || {}
 
           console.log('---', 'CoreAPI', method, args);
-
-          switch ( method ) {
-            case 'application' :
-              var apath = args.path || null;
-              var aname = args.application || null;
-              var ameth = args.method || null;
-              var aargs = args['arguments'] || [];
-
-              var aroot = _path.join(CONFIG.repodir, apath);
-              var fpath = _path.join(aroot, "api.js");
-
-              try {
-                var api = require(fpath);
-                api[aname].call(ameth, aargs, function(result, error) {
-                  error = error || null;
-                  if ( error !== null ) {
-                    result = null;
-                  }
-                  respondJSON({result: result, error: error}, response);
-                });
-              } catch ( e ) {
-                respondJSON({result: null, error: "Application API error or missing: " + e.toString()}, response);
-              }
-            break;
-
-            case 'fs' :
-              var m = args.method;
-              var a = args['arguments'] || [];
-
-              if ( _vfs[m] ) {
-                _vfs[m](a, request, function(json) {
-                  respondJSON(json, response);
-                }, CONFIG);
-              } else {
-                throw "Invalid VFS method: " + m;
-              }
-            break;
-
-            default :
-              var found = false;
-              if ( HANDLER ) {
-                HANDLER.request(method, args, function(error, result) {
-                  found = true;
-
-                  respondJSON({result: result, error: error}, response);
-                }, request, response);
-              }
-
-              if ( !found ) {
-                throw "Invalid method: " + method;
-              }
-            break;
+          if ( API[method] ) {
+            API[method](args, function(error, result) {
+              respondJSON({result: result, error: error}, response);
+            }, request, response);
+          } else {
+            throw "Invalid method: " + method;
           }
         } catch ( e ) {
           console.error("!!! Caught exception", e);
@@ -269,6 +224,16 @@
     }
 
     HANDLER = require(_path.join(ROOTDIR, 'src', 'server-node', 'handlers', settConfig.handler , 'handler.js'));
+
+    _api.register(CONFIG, API);
+    if ( settConfig.extensions ) {
+      var exts = JSON.parse(settConfig.extensions);
+      exts.forEach(function(f) {
+        console.info('-->', 'Registering external API methods', f);
+        require(f).register(settConfig, API);
+      });
+    }
+
   })();
 
   console.log(JSON.stringify(CONFIG, null, 2));
@@ -276,6 +241,7 @@
     console.log("Invalid handler %s defined", CONFIG.handler);
     return;
   }
+  HANDLER.register(CONFIG, API);
 
   /**
    * Server instance
@@ -335,5 +301,6 @@
   require("querystring"),
   require("formidable"),
   require("cookies"),
+  require("./api.js"),
   require("./vfs.js")
 );

@@ -456,12 +456,10 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    */
   function buildConfig() {
     // PHP
-    var settings = BUILD.settings.backend;
+    var settings = JSON.parse(JSON.stringify(BUILD.settings.backend));
     var extensions = getCoreExtensions();
 
     var loadExtensions = [];
-    var preloads = [];
-
     extensions.forEach(function(e) {
       var p = _path.join(e._root, 'api.php');
       if ( _fs.existsSync(p) ) {
@@ -483,8 +481,22 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     _fs.writeFileSync(out_php, cfg_php);
 
     // Node
+    settings = JSON.parse(JSON.stringify(BUILD.settings.backend));
+
+    loadExtensions = [];
+    extensions.forEach(function(e) {
+      var p = _path.join(e._root, 'api.js');
+      if ( _fs.existsSync(p) ) {
+        loadExtensions.push(p);
+      }
+    });
+    if ( loadExtensions ) {
+      settings.extensions = JSON.stringify(loadExtensions);
+    }
+
     var out_node = _path.join(ROOT, 'src', 'server-node', 'settings.json');
     var cfg_node = settings;
+
     _fs.writeFileSync(out_node, JSON.stringify(cfg_node));
 
     // JS

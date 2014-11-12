@@ -1,9 +1,6 @@
 /*!
  * OS.js - JavaScript Operating System
  *
- * Example Handler: Login screen and session/settings handling via database
- * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
- *
  * Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  * 
@@ -30,38 +27,51 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-
-  var APIUser = function() {};
-  APIUser.login = function(data, request, response) {
-    console.log('APIUser::login()');
-    request.cookies.set('username', data.username, {httpOnly:true});
-    return data;
-  };
-
-  APIUser.logout = function(request, response) {
-    console.log('APIUser::logout()');
-    request.cookies.set('username', null, {httpOnly:true});
-    return true;
-  };
+(function(_path, _url, _vfs) {
 
   exports.register = function(CONFIG, API) {
-    console.info('-->', 'Registering handler API methods');
-    API.login = function(args, callback, request, response) {
-      var result = APIUser.login({
-        id: 0,
-        username: 'demo',
-        name: 'Demo User',
-        groups: ['demo']
-      }, request, response);
+    console.info('-->', 'Registering default API methods');
 
-      callback(false, result);
+    API.application = function(args, callback, request, response) {
+      var apath = args.path || null;
+      var aname = args.application || null;
+      var ameth = args.method || null;
+      var aargs = args['arguments'] || [];
+
+      var aroot = _path.join(CONFIG.repodir, apath);
+      var fpath = _path.join(aroot, "api.js");
+
+      try {
+        var api = require(fpath);
+        api[aname].call(ameth, aargs, function(result, error) {
+          error = error || null;
+          if ( error !== null ) {
+            result = null;
+          }
+          callback(error, result);
+        });
+      } catch ( e ) {
+        callback("Application API error or missing: " + e.toString(), null);
+      }
     };
 
-    API.logout = function(args, callback, request, response) {
-      var result = APIUser.logout(request, response);
-      callback(false, result);
+    API.fs = function(args, callback, request, response) {
+      var m = args.method;
+      var a = args['arguments'] || [];
+
+      if ( _vfs[m] ) {
+        _vfs[m](a, request, function(json) {
+          if ( !json ) json = { error: 'No data from response' };
+          callback(json.error, json.result);
+        }, CONFIG);
+      } else {
+        throw "Invalid VFS method: " + m;
+      }
     };
   };
 
-})();
+})(
+  require("path"),
+  require("url"),
+  require("./vfs.js")
+);
