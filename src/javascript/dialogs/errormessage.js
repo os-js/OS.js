@@ -100,9 +100,7 @@
 
     if ( this.data.bugreport ) {
       this._addGUIElement(new OSjs.GUI.Button('Bug', {label: API._('DIALOG_ERROR_BUGREPORT'), onClick: function() {
-        if ( !API.launch('ApplicationBugReport', {data: bugData}) ) {
-          alert('Something went wrong during reporting. You can mail it to andersevenrud@gmail.com');
-        }
+        window.open('//github.com/andersevenrud/OS.js-v2/issues/new');
 
         if ( ok ) {
           ok.onClick();
