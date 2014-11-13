@@ -152,6 +152,15 @@
     return false;
   };
 
+  RichText.prototype.commandValue = function(q) {
+    try {
+      return this.getDocument().queryCommandValue(q);
+    } catch ( e ) {
+      console.warn('RichText::commandValue()', q, 'error', e, e.stack);
+    }
+    return null;
+  };
+
   RichText.prototype.setContent = function(c) {
     this.hasChanged = false;
     this.strlen = c.length;
@@ -184,6 +193,13 @@
   RichText.prototype.getDocument = function() {
     if ( this.$view ) {
       return this.$view.contentDocument || this.$view.contentWindow.document;
+    }
+    return null;
+  };
+
+  RichText.prototype.getWindow = function() {
+    if ( this.$view ) {
+      return this.$view.contentWindow;
     }
     return null;
   };

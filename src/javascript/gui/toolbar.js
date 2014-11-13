@@ -93,6 +93,10 @@
       var item = self.items[i] || null;
       var el = document.createElement('li');
 
+      if ( item ) {
+        self.items[i]._element = el;
+      }
+
       if ( !item ) {
         el.className = 'Separator ' + i;
         self.$container.appendChild(el);
@@ -149,17 +153,7 @@
   };
 
   ToolBar.prototype.getItem = function(name) {
-    var result = null;
-    if ( this.$container ) {
-      this.$container.childNodes.forEach(function(child, i) {
-        if ( (new RegExp(name)).test(child.className) ) {
-          result = child;
-          return false;
-        }
-        return true;
-      });
-    }
-    return result;
+    return this.items[name];
   };
 
   /////////////////////////////////////////////////////////////////////////////

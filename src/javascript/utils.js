@@ -423,9 +423,9 @@
     }
 
     var hex = [
-      (r).toString( 16 ),
-      (g).toString( 16 ),
-      (b).toString( 16 )
+      parseInt(r, 10).toString( 16 ),
+      parseInt(g, 10).toString( 16 ),
+      parseInt(b, 10).toString( 16 )
     ];
 
     Object.keys(hex).forEach(function(i) {

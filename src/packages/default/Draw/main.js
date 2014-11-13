@@ -349,7 +349,7 @@
       self.currentStyle[type] = hex;
       if ( toolBar ) {
         var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
-        toolBar.getItem(className).getElementsByClassName('Color')[0].style.backgroundColor = hex;
+        toolBar.getItem(className)._element.getElementsByClassName('Color')[0].style.backgroundColor = hex;
       }
     };
 
@@ -357,14 +357,14 @@
       var txt = {round: "Round", miter: "Miter", bevel: "Bevel"};
       self.currentStyle.lineJoin = type;
       if ( toolBar ) {
-        toolBar.getItem('lineJoin').getElementsByClassName('LineJoin')[0].innerHTML = _(txt[type]);
+        toolBar.getItem('lineJoin')._element.getElementsByClassName('LineJoin')[0].innerHTML = _(txt[type]);
       }
     };
 
     var _selectLineWidth = function(width) {
       self.currentStyle.lineWidth = width;
       if ( toolBar ) {
-        toolBar.getItem('lineWidth').getElementsByClassName('LineWidth')[0].innerHTML = width;
+        toolBar.getItem('lineWidth')._element.getElementsByClassName('LineWidth')[0].innerHTML = width;
       }
     };
 
@@ -375,7 +375,7 @@
         self.currentStyle.stroke = !self.currentStyle.stroke;
       }
       if ( toolBar ) {
-        toolBar.getItem('enableStroke').getElementsByClassName('EnableStroke')[0].innerHTML = _(self.currentStyle.stroke ? "Stroked" : "No stroke");
+        toolBar.getItem('enableStroke')._element.getElementsByClassName('EnableStroke')[0].innerHTML = _(self.currentStyle.stroke ? "Stroked" : "No stroke");
       }
     };
 
@@ -916,7 +916,7 @@
     var toolBar = this._getGUIElement('ApplicationDrawToolBar');
     if ( toolBar ) {
       var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
-      toolBar.getItem(className).getElementsByClassName('Color')[0].style.backgroundColor = val;
+      toolBar.getItem(className)._element.getElementsByClassName('Color')[0].style.backgroundColor = val;
     }
 
     this._focus();
