@@ -144,8 +144,8 @@ footer {
 a.Button {
   display : inline-block;
   text-align : center;
-  min-width : 310px;
-  padding : 60px;
+  min-width : 160px;
+  padding : 52px;
   background : #e6e6e6;
   color : #000;
   margin : 20px;
@@ -163,7 +163,11 @@ a.Button:hover {
 }
 a.Button.Download {
   background : #A7F1B0;
-  color : #000;
+  color : #252525;
+}
+a.Button.Try {
+  background : #d7d7ff;
+  color : #3E3E4D;
 }
 
 div#Buttons {
