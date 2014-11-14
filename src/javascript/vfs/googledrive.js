@@ -58,7 +58,7 @@
         title: file.filename,
         mimeType: contentType
       };
-      var base64Data = btoa(unescape(encodeURIComponent(result)));
+      var base64Data = Utils.btoaUtf(result);
       var multipartRequestBody =
           delimiter +
           'Content-Type: application/json\r\n\r\n' +

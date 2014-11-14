@@ -70,7 +70,7 @@
       if ( error ) {
         return callback(error);
       }
-      callback(false, dataSource ? result : decodeURIComponent(escape(atob(result))));
+      callback(false, dataSource ? result : Utils.atobUtf(result));
     });
   };
   PublicStorage.copy = function(src, dest, callback) {

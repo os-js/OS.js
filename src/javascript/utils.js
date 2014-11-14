@@ -275,18 +275,40 @@
     return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1], 10) : false;
   };
 
-  OSjs.Utils.urlsafe_b64encode = function(str) {
+  OSjs.Utils.btoaUrlsafe = function(str) { // Encode
     return (!str || !str.length) ? '' : btoa(str)
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=+$/, '');
   };
-  OSjs.Utils.urlsafe_b64decode = function(str) {
+  OSjs.Utils.atobUrlsafe = function(str) { // Decode
     if ( str && str.length ) {
       str = (str + '===').slice(0, str.length + (str.length % 4));
       return atob(str.replace(/-/g, '+').replace(/_/g, '/'));
     }
     return '';
+  };
+
+  OSjs.Utils.btoaUtf = function(str) { // Encode
+    var _unescape = window.unescape || function(s) {
+      function d(x, n) {
+        return String.fromCharCode(parseInt(n, 16));
+      }
+      return s.replace(/%([0-9A-F]{2})/i, d);
+    };
+    return btoa(_unescape(encodeURIComponent(str)));
+  };
+
+  OSjs.Utils.atobUtf = function(str) { // Decode
+    var _escape = window.escape || function(s) {
+      function q(c) {
+        c = c.charCodeAt();
+        return '%' + (c<16 ? '0' : '') + c.toString(16).toUpperCase();
+      }
+      return s.replace(/[\x00-),:-?[-^`{-\xFF]/g, q);
+    };
+
+    return decodeURIComponent(_escape(atob(str)));
   };
 
   OSjs.Utils.getUserLocale = function() {
