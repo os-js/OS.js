@@ -12,7 +12,7 @@
     "de_DE":      "Einfacher Texteditor",
     "ru_RU":      "Простой текстовый редактор"
   },
-  "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
+  "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
   "category":   "utilities",
   "icon":       "apps/accessories-text-editor.png",
   "preload":    [
