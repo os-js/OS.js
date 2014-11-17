@@ -53,6 +53,9 @@ a.super {
   vertical-align : super;
   font-size : 50%;
 }
+span.small {
+  font-size : 60%;
+}
 .indented {
   padding-left : 20px;
 }
