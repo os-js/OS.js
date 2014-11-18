@@ -37,12 +37,14 @@
   /**
    * Main Window
    */
-  var ApplicationTextpadWindow = function(app, opts, metadata) {
-    Window.apply(this, ['ApplicationTextpadWindow', opts, app]);
-
-    this.title  = metadata.name;
-    this._icon  = metadata.icon;
-    this._title = this.title;
+  var ApplicationTextpadWindow = function(app, metadata) {
+    Window.apply(this, ['ApplicationTextpadWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      width: 450,
+      height: 300
+    }, app]);
+    this.title = metadata.name;
   };
 
   ApplicationTextpadWindow.prototype = Object.create(Window.prototype);
@@ -144,7 +146,7 @@
   ApplicationTextpad.prototype = Object.create(Application.prototype);
 
   ApplicationTextpad.prototype.init = function(settings, metadata) {
-    this.mainWindow = this._addWindow(new ApplicationTextpadWindow(this, {width: 450, height: 300}, metadata));
+    this.mainWindow = this._addWindow(new ApplicationTextpadWindow(this, metadata));
 
     Application.prototype.init.apply(this, arguments);
   };

@@ -79,13 +79,15 @@
    * Main Window
    */
   var ApplicationFileManagerWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationFileManagerWindow', {width: 650, height: 420}, app]);
+    Window.apply(this, ['ApplicationFileManagerWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      allow_drop: true,
+      width: 650,
+      height: 420
+    }, app]);
 
-    this.title                  = metadata.name;
-    this._title                 = this.title;
-    this._properties.allow_drop = true;
-    this._icon                  = metadata.icon;
-
+    this.title = metadata.name;
     this.sideView = null;
   };
 

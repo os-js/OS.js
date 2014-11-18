@@ -38,10 +38,12 @@
    * Main Window
    */
   var ApplicationProcessViewerWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationProcessViewerWindow', {width: 400, height: 400}, app]);
-
-    this._title = metadata.name;
-    this._icon = metadata.icon;
+    Window.apply(this, ['ApplicationProcessViewerWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      width: 400,
+      height: 400
+    }, app]);
   };
 
   ApplicationProcessViewerWindow.prototype = Object.create(Window.prototype);

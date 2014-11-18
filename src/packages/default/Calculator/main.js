@@ -81,13 +81,14 @@
    * Main Window Constructor
    */
   var ApplicationCalculatorWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationCalculatorWindow', {width: 220, height: 310}, app]);
-
-    // Set window properties and other stuff here
-    this._title = metadata.name;
-    this._icon  = metadata.icon;
-    this._properties.allow_resize = false;
-    this._properties.allow_maximize = false;
+    Window.apply(this, ['ApplicationCalculatorWindow', {
+      title: metadata.name,
+      icon: metadata.icon,
+      allow_resize: false,
+      allow_maximize: false,
+      width: 220,
+      height: 310
+    }, app]);
 
     this.calc_array = ['=', 1, '0', '0', 0];
     this.pas_ch = 0;

@@ -395,7 +395,15 @@
    * Main Window
    */
   var ApplicationMusicPlayerWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationMusicPlayerWindow', {width: 322, height: 200}, app]);
+    Window.apply(this, ['ApplicationMusicPlayerWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      allow_drop: true,
+      allow_resize: false,
+      allow_maximize: false,
+      width: 322,
+      height: 200
+    }, app]);
 
     this.title            = metadata.name;
     this.$buttons         = {};
@@ -405,14 +413,6 @@
 
     this.playlist         = new Playlist();
     this.player           = new AudioPlayer();
-
-    // Set window properties here
-    this._title = this.title;
-    this._icon  = metadata.icon;
-
-    this._properties.allow_drop     = true;
-    this._properties.allow_resize   = false;
-    this._properties.allow_maximize = false;
   };
 
   ApplicationMusicPlayerWindow.prototype = Object.create(Window.prototype);

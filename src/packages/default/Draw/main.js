@@ -159,7 +159,13 @@
    * Main Window
    */
   var ApplicationDrawWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationDrawWindow', {width: 800, height: 450}, app]);
+    Window.apply(this, ['ApplicationDrawWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      allow_drop: true,
+      width: 800,
+      height: 450
+    }, app]);
 
     this.title            = metadata.name;
     this.image            = null;
@@ -180,11 +186,6 @@
     this.offsetY          = 0;
     this.isPainting       = false;
     this.$imageContainer  = null;
-
-    // Set window properties here
-    this._title = this.title;
-    this._icon = metadata.icon;
-    this._properties.allow_drop = true;
   };
 
   ApplicationDrawWindow.prototype = Object.create(Window.prototype);

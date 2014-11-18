@@ -63,18 +63,19 @@
    * Main Window
    */
   var ApplicationWriterWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationWriterWindow', {width: 800, height: 450}, app]);
+    Window.apply(this, ['ApplicationWriterWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      allow_drop: true,
+      width: 800,
+      height: 450
+    }, app]);
 
     this.font       = 'Arial';
     this.fontSize   = 3;
     this.textColor  = '#000000';
     this.backColor  = '#ffffff';
     this.title      = metadata.name;
-
-    // Set window properties here
-    this._icon = metadata.icon;
-    this._title = this.title;
-    this._properties.allow_drop = true;
   };
 
   ApplicationWriterWindow.prototype = Object.create(Window.prototype);

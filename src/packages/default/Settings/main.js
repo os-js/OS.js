@@ -115,14 +115,16 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var PanelItemWindow = function(app, parentWindow) {
-    Window.apply(this, ['CoreWMPanelItemWindow', {width:400, height:390}, app]);
-
-    this._title                     = _("CoreWM Panel Item Chooser");
-    this._icon                      = "categories/applications-system.png";
-    this._properties.allow_resize   = false;
-    this._properties.allow_maximize = false;
-    this._properties.allow_minimize = false;
-    this._properties.gravity        = 'center';
+    Window.apply(this, ['CoreWMPanelItemWindow', {
+      icon: "categories/applications-system.png",
+      title: _("CoreWM Panel Item Chooser"),
+      allow_resize: false,
+      allow_maximize: false,
+      allow_minimize: false,
+      gravity: 'center',
+      width:400,
+      height:390
+    }, app]);
 
     this.parentWindow = parentWindow;
     this.buttonConfirm = null;
@@ -201,13 +203,15 @@
   };
 
   var ApplicationSettingsWindow = function(app, metadata, tab) {
-    Window.apply(this, ['ApplicationSettingsWindow', {width: 500, height: 450}, app]);
-
-    this._title                     = metadata.name;
-    this._icon                      = "categories/applications-system.png";
-    this._properties.allow_resize   = false;
-    this._properties.allow_maximize = false;
-    this._properties.gravity        = 'center';
+    Window.apply(this, ['ApplicationSettingsWindow', {
+      icon: "categories/applications-system.png",
+      title: metadata.name,
+      allow_resize: false,
+      allow_maximize: false,
+      gravity: 'center',
+      width: 500,
+      height: 450
+    }, app]);
 
     this.currentPanelItem = null;
     this.panelItems       = [];

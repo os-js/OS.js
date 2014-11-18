@@ -133,6 +133,8 @@
       startDimension.w = self._dimension.w;
       startDimension.h = self._dimension.h;
 
+      self._focus();
+
       if ( a === 'move' ) {
         Utils.$addClass(main, 'WindowHintMoving');
       } else {
@@ -525,11 +527,13 @@
     var _NAMES              = [];
 
     return function(name, opts, appRef) {
+      var self = this;
+
       if ( Utils.inArray(_NAMES, name) ) {
         throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
       }
 
-      var icon      = API.getThemeResource('wm.png', 'wm');
+      var icon      = opts.icon || API.getThemeResource('wm.png', 'wm');
       var position  = {x:(opts.x), y:(opts.y)};
       var dimension = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
 
@@ -547,7 +551,7 @@
       this._wid           = _WID;                 // Window ID (Internal)
       this._icon          = icon;                 // Window Icon
       this._name          = name;                 // Window Name (Unique identifier)
-      this._title         = name;                 // Window Title
+      this._title         = opts.title || name;   // Window Title
       this._tag           = opts.tag || name;     // Window Tag (ex. Use this when you have a group of windows)
       this._position      = position;             // Window Position
       this._dimension     = dimension;            // Window Dimension
@@ -579,10 +583,10 @@
         allow_session     : true,
         key_capture       : false,
         start_focused     : true,
-        min_width         : opts.min_height || _DEFAULT_MIN_HEIGHT,
-        min_height        : opts.min_width  || _DEFAULT_MIN_WIDTH,
-        max_width         : opts.max_width  || null,
-        max_height        : opts.max_height || null
+        min_width         : _DEFAULT_MIN_HEIGHT,
+        min_height        : _DEFAULT_MIN_WIDTH,
+        max_width         : null,
+        max_height        : null
       };
 
       this._state     = {                         // Window State
@@ -604,6 +608,12 @@
         resize    : [], // Called inside the mousemove event
         resized   : []  // Called inside the mouseup event
       };
+
+      Object.keys(opts).forEach(function(k) {
+        if ( typeof self._properties[k] !== 'undefined' ) {
+          self._properties[k] = opts[k];
+        }
+      });
 
       console.info('OSjs::Core::Window::__construct()', this._wid, this._name);
 

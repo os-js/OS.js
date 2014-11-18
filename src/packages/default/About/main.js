@@ -38,15 +38,16 @@
    * Main Window
    */
   var ApplicationAboutWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationAboutWindow', {width: 350, height: 250, min_height: 250}, app]);
-
-    // Set window properties here
-    this._icon    = metadata.icon;
-    this._title   = metadata.name;
-
-    this._properties.gravity = 'center';
-    this._properties.allow_resize = false;
-    this._properties.allow_maximize = false;
+    Window.apply(this, ['ApplicationAboutWindow', {
+      title: metadata.name,
+      icon: metadata.icon,
+      gravity: 'center',
+      allow_resize: false,
+      allow_maximize: false,
+      width: 350,
+      height: 250,
+      min_height: 250
+    }, app]);
   };
 
   ApplicationAboutWindow.prototype = Object.create(Window.prototype);

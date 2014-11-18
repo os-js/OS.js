@@ -37,11 +37,12 @@
    * Main Window Constructor
    */
   var ApplicationEXAMPLEWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationEXAMPLEWindow', {width: 400, height: 200}, app]);
-
-    // Set window properties and other stuff here
-    this._title = metadata.name;
-    this._icon  = metadata.icon;
+    Window.apply(this, ['ApplicationEXAMPLEWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      width: 400,
+      height: 200
+    }, app]);
   };
 
   ApplicationEXAMPLEWindow.prototype = Object.create(Window.prototype);

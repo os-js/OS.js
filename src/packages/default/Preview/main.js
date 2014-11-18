@@ -37,17 +37,19 @@
   /**
    * Main Window
    */
-  var ApplicationPreviewWindow = function(app, opts, metadata) {
-    Window.apply(this, ['ApplicationPreviewWindow', opts, app]);
+  var ApplicationPreviewWindow = function(app, metadata) {
+    Window.apply(this, ['ApplicationPreviewWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      allow_drop: true,
+      width: 400,
+      height: 200
+    }, app]);
 
     this.previewElement = null;
     this.title          = metadata.name;
     this.frame          = null;
     this.loaded         = false;
-
-    this._title = this.title;
-    this._icon  = metadata.icon;
-    this._properties.allow_drop = true;
   };
 
   ApplicationPreviewWindow.prototype = Object.create(Window.prototype);
@@ -198,7 +200,7 @@
   ApplicationPreview.prototype = Object.create(Application.prototype);
 
   ApplicationPreview.prototype.init = function(settings, metadata) {
-    this.mainWindow = this._addWindow(new ApplicationPreviewWindow(this, {width: 400, height: 200}, metadata));
+    this.mainWindow = this._addWindow(new ApplicationPreviewWindow(this, metadata));
 
     Application.prototype.init.apply(this, arguments);
   };
