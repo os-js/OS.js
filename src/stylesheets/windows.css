@@ -119,6 +119,7 @@
   line-height : 18px;
   text-align : center;
   display : inline-block;
+  position : relative;
 }
 
 .Window > .WindowWrapper {
