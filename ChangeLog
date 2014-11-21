@@ -1,3 +1,21 @@
+# 2.0.0-alpha41
+
+* Themes: Added 'Dark' Theme
+* CSS: Added GPU rendering to windows
+* CSS: Fixed flex boxes in some cases - Fixes #33
+* GUI: Fix for panedview flexing and resizing
+* GUI: Toolbar updates
+* Windows: You can now apply window properties in constructor
+* Applications: Moved 'Settings' to its own Application
+* Applications: Removed BugReport application
+* Applications: Added more MIMEs to some packges
+* Utils: Added atobUtf() btoaUtf() atobUrlsafe() btoaUrlsafe()
+* Core: hook cleanup
+* server-node: Added session support (finally). Requres npm update
+* server-php: Added scandir() check
+* server-node: Better extendability
+* locales: Updated nb_NO
+
 # 2.0.0-alpha40
 
 * Misc: Fixed loading problems in Firefox - #32
