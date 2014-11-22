@@ -47,6 +47,15 @@
       "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"
     },
     de_DE : {
+      'Show Sidebar' : 'Seitenleiste anzeigen',
+      'Copying file...' : 'Kopiere Datei...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiere <span>{0}</span> nach <span>{1}</span>",
+      "Showing {0} item(s), {1}" : "Viser {0} objekt(er), {1}",
+      "Refreshing..." : "Aktualisiere...",
+      "Loading..." : "Lade...",
+      "Create a new directory in <span>{0}</span>" : "Erstelle ein neues Verzeichnis in <span>{0}</span>",
+      "Rename <span>{0}</span>" : "<span>{0}</span> umbenennen",
+      "Delete <span>{0}</span> ?" : "<span>{0}</span> löschen?"
     },
     fr_FR : {
     },

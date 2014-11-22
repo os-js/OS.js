@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, VFS, Utils) {
+(function(Application, Window, GUI, Dialogs, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -41,6 +41,7 @@
       'Insert URL' : 'Sett inn URL'
     },
     de_DE : {
+      'Insert URL' : 'URL einfügen'
     },
     fr_FR : {
     },
@@ -87,7 +88,6 @@
     // Create window contents here
     var mb = this._addGUIElement(new GUI.MenuBar('WriterMenuBar'), root);
     var tb = this._addGUIElement(new GUI.ToolBar('WriterToolBar'), root);
-    var rt;
 
     var _createIcon = function(i) {
       return OSjs.API.getThemeResource(i, 'icon');
@@ -107,29 +107,23 @@
       }], self);
     };
 
-    var _setFont = function(name, size, nocommand) {
-      if ( !nocommand ) {
-        self.command('fontName', name);
-        self.command('fontSize', size);
-      }
-      self.font = name || self.font;
-      self.fontSize = size || self.fontSize;
-      tb.getItem('font')._element.getElementsByTagName('span')[0].style.fontFamily = self.font;
-      tb.getItem('font')._element.getElementsByTagName('span')[0].innerHTML = self.font + ' (' + self.fontSize.toString() + ')';
+    var _setFont = function(name, size) {
+      self.command('fontName', name);
+      self.command('fontSize', size);
+      self.font = name;
+      self.fontSize = size;
+      tb.getItem('font').getElementsByTagName('span')[0].style.fontFamily = name;
+      tb.getItem('font').getElementsByTagName('span')[0].innerHTML = name + ' (' + size + ')';
     };
-    var _setTextColor = function(hex, nocommand) {
-      if ( !nocommand ) {
-        self.command('foreColor', hex);
-      }
+    var _setTextColor = function(hex) {
+      self.command('foreColor', hex);
       self.textColor = hex;
-      tb.getItem('textColor')._element.getElementsByTagName('span')[0].style.color = hex;
+      tb.getItem('textColor').getElementsByTagName('span')[0].style.color = hex;
     };
-    var _setBackColor = function(hex, nocommand) {
-      if ( !nocommand ) {
-        self.command('hiliteColor', hex);
-      }
+    var _setBackColor = function(hex) {
+      self.command('hiliteColor', hex);
       self.backColor = hex;
-      tb.getItem('backColor')._element.getElementsByTagName('span')[0].style.backgroundColor = hex;
+      tb.getItem('backColor').getElementsByTagName('span')[0].style.backgroundColor = hex;
     };
 
     var _action = function(ev, el, name, item) {
@@ -158,64 +152,6 @@
       }
     };
 
-    function _updateToolbar() {
-      if ( rt ) {
-        var styles = {
-          fontName: rt.commandValue('fontName').replace(/^\'/, '').replace(/\'$/, ''),
-          fontSize: rt.commandValue('fontSize'),
-          foreColor: rt.commandValue('foreColor'),
-          hiliteColor: rt.commandValue('hiliteColor'),
-          justifyLeft: rt.commandValue('justifyLeft'),
-          justifyCenter: rt.commandValue('justifyCenter'),
-          justifyRight: rt.commandValue('justifyRight'),
-          bold: rt.commandValue('bold'),
-          italic: rt.commandValue('italic'),
-          underline: rt.commandValue('underline'),
-          strikeThrough: rt.commandValue('strikeThrough')
-        };
-
-        if ( !styles.foreColor.match(/^\#/) ) {
-          var tmp = styles.foreColor.replace(/\s/g, '').replace(/^rgb\(/, '').replace(/\)$/, '').split(',');
-          if ( tmp.length > 2 ) {
-            styles.foreColor = Utils.convertToHEX.apply(Utils, tmp);
-          } else {
-            styles.foreColor = self.textColor;
-          }
-        }
-
-        if ( !styles.hiliteColor.match(/^\#/) ) {
-          var tmp = styles.hiliteColor.replace(/\s/g, '').replace(/^rgb\(/, '').replace(/\)$/, '').split(',');
-          if ( tmp.length > 2 ) {
-            styles.hiliteColor = Utils.convertToHEX.apply(Utils, tmp);
-          } else {
-            styles.hiliteColor = self.backColor;
-          }
-        }
-
-        _setBackColor(styles.hiliteColor, true);
-        _setTextColor(styles.foreColor, true);
-        _setFont(styles.fontName, styles.fontSize, true);
-
-        /*
-        if ( tb ) {
-          Utils.$removeClass(tb.getItem('justifyLeft')._element, 'Active');
-          Utils.$removeClass(tb.getItem('justifyCenter')._element, 'Active');
-          Utils.$removeClass(tb.getItem('justifyRight')._element, 'Active');
-
-          if ( styles.justifyLeft ) {
-            Utils.$addClass(tb.getItem('justifyLeft')._element, 'Active');
-          }
-          if ( styles.justifyCenter ) {
-            Utils.$addClass(tb.getItem('justifyCenter')._element, 'Active');
-          }
-          if ( styles.justifyRight ) {
-            Utils.$addClass(tb.getItem('justifyRight')._element, 'Active');
-          }
-        }
-        */
-      }
-    }
-
     tb.addItem('bold',          {toggleable: true, title: OSjs.API._('LBL_BOLD'),       onClick: _action, icon: _createIcon('actions/format-text-bold.png')});
     tb.addItem('italic',        {toggleable: true, title: OSjs.API._('LBL_ITALIC'),     onClick: _action, icon: _createIcon('actions/format-text-italic.png')});
     tb.addItem('underline',     {toggleable: true, title: OSjs.API._('LBL_UNDERLINE'),  onClick: _action, icon: _createIcon('actions/format-text-underline.png')});
@@ -236,14 +172,7 @@
     tb.render();
     tb.addItem('indent',        {title: OSjs.API._('LBL_INDENT'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
 
-    rt = this._addGUIElement(new GUI.RichText('WriterRichText', {onInited: function() {
-      rt.getWindow().addEventListener('selectstart', function() {
-        _updateToolbar();
-      });
-      rt.getWindow().addEventListener('mouseup', function() {
-        _updateToolbar();
-      });
-    }}), root);
+    var rt = this._addGUIElement(new GUI.RichText('WriterRichText'), root);
 
     /*
     var sb = this._addGUIElement(new GUI.StatusBar('WriterStatusBar'), root);
@@ -340,7 +269,7 @@
 
     var t = DEFAULT_FILENAME;
     if ( file ) {
-      t = Utils.filename(file);
+      t = OSjs.Utils.filename(file);
     }
 
     this._setTitle(this.title + " - " + t);
@@ -449,4 +378,4 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationWriter = ApplicationWriter;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs, OSjs.VFS, OSjs.Utils);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs, OSjs.VFS);

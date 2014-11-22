@@ -48,6 +48,16 @@
       'Other' : 'Andre'
     },
     de_DE : {
+      'Development' : 'Entwicklung',
+      'Education' : 'Bildung',
+      'Games' : 'Spiele',
+      'Graphics' : 'Grafik',
+      'Network' : 'Netzwerk',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Büro',
+      'System' : 'System',
+      'Utilities' : 'Zubehör',
+      'Other' : 'Andere'
     },
     fr_FR : {
     },

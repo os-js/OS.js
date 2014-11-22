@@ -60,6 +60,28 @@
       'Simple Blur' : 'Simpel Klatte (Blur)'
     },
     de_DE : {
+      'Pointer' : 'Zeiger',
+      'Move active layer' : 'Bewege aktive Ebene',
+      'Picket' : 'Farbauswahl',
+      'LMB: set fg color, RMB: set bg color' : 'LMB: setze Vordergrundfarbe, RMB: setze Hintergrundfarbe',
+      'Bucket' : 'Farbfüller',
+      'LMB: fill with fg color, RMB: fill with bg color' : 'LMB: mit Vordergrundfarbe füllen, RMB: mit Hintergrundfarbe füllen',
+      'Pencil' : 'Stift',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Zeichnen mit Vorder-/Hintergrundfarbe',
+      'Path' : 'Pfad',
+      'Square/Rectangle' : 'Quadrat/Rechteck',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Zeichnen mit Vorder-/Hintergrundfarbe, SHIFT: Rechteck zeichnen',
+      'Circle/Ellipse' : 'Kreis/Ellipse',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Zeichnen mit Vorder-/Hintergrundfarbe, SHIFT: Ellipse zeichnen',
+      'Radius' : 'Radius',
+      'Iterations' : 'Iterationen',
+
+      'Blur' : 'Weichzeichner (Blur)',
+      'Noise' : 'Rauschen',
+      'Invert colors' : 'Farben invertieren',
+      'Grayscale' : 'Graustufen',
+      'Sharpen' : 'Schärfen',
+      'Simple Blur' : 'Einfacher Weichzeichner (Blur)'
     },
     fr_FR : {
     },

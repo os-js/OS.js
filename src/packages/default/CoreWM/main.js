@@ -46,6 +46,12 @@
       'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}'
     },
     de_DE : {
+      'Killing this process will stop things from working!' : 'Das Beenden dieses Prozesses wird Konsequenzen haben!',
+      'Open settings' : 'Einstellungen öffnen',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ihr Panel enthält keine Items. Öffnen Sie die Einstellungen um die Panel-Einstellungen zurückzusetzen oder manuell zu ändern (Dieser Fehler kann nach einem Upgrade von OS.js entstehen)',
+      'Create shortcut' : 'Verknüpfung erstellen',
+      'Set as wallpaper' : 'Als Hintergrund verwenden',
+      'An error occured while creating PanelItem: {0}' : 'Während des Erstellens eines Panel-Items ist folgender Fehler aufgetreten: {0}'
     },
     fr_FR : {
     },
