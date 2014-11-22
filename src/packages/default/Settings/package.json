@@ -3,10 +3,12 @@
   "name":       "OS.js Settings",
   "names":      {
     "no_NO":      "OS.js Instillinger",
+    "de_DE":      "OS.js Einstellungen",
     "ru_RU":      "OS.js Настройки"
   },
   "descriptions":      {
     "no_NO":      "OS.js Instillinger",
+    "de_DE":      "OS.js Einstellungen",
     "ru_RU":      "OS.js Настройки"
   },
   "mime":       null,
