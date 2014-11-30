@@ -129,6 +129,6 @@ class ExampleAPIHandler
 
 API::AddHandler('login', Array('ExampleAPIHandler', 'login'));
 API::AddHandler('logout', Array('ExampleAPIHandler', 'logout'));
-API::AddHandler('logout', Array('ExampleAPIHandler', 'logout'));
+API::AddHandler('settings', Array('ExampleAPIHandler', 'settings'));
 
 ?>
