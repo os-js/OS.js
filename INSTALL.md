@@ -51,6 +51,8 @@ See `doc/apache.conf` for an example
 
 Or run `./obt apache-vhost` to generate one
 
+*Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
+
 ## PHP5 on Lighttpd
 
 See `doc/lighttpd.conf` for an example
