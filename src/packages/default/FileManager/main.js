@@ -136,6 +136,12 @@
       }
     };
 
+    fileView.onViewContextMenu = function(ev, el, item) {
+      if ( menuBar ) {
+        menuBar.createContextMenu(ev, 0);
+      }
+    };
+
     fileView.onItemDropped = function(ev, el, item) {
       if ( item && item.type === "file" && item.data ) {
         var dir = fileView.getPath();
