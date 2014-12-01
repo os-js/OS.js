@@ -574,7 +574,11 @@
         if ( args.win ) {
           args.app._createDialog('FileUpload', [args.destination, f, _dialogClose], args.win);
         } else {
-          args.app._addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
+          if ( args.app._addWindow ) {
+            args.app._addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
+          } else {
+            args.app._createDialog('FileUpload', [args.destination, f, _dialogClose]);
+          }
         }
       } else {
         Utils.AjaxUpload(f, 0, args.destination, {
