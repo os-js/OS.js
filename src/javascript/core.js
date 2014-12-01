@@ -289,8 +289,15 @@
    * Global onScroll Event
    */
   function globalOnScroll(ev) {
+    if ( ev.target === document || ev.target === document.body || ev.target.id === 'Background' ) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      return false;
+    }
+
     document.body.scrollTop = 0;
     document.body.scrollLeft = 0;
+    return true;
   }
 
   /**
@@ -473,7 +480,7 @@
         globalOnResize(ev);
       }, false);
       window.addEventListener('scroll', function(ev) {
-        globalOnScroll(ev);
+        return globalOnScroll(ev);
       }, false);
       document.addEventListener('mouseout', function(ev) {
         globalOnLeave(ev);
@@ -548,7 +555,7 @@
         globalOnResize(ev);
       }, false);
       window.removeEventListener('scroll', function(ev) {
-        globalOnScroll(ev);
+        return globalOnScroll(ev);
       }, false);
 
       document.removeEventListener('mouseout', function(ev) {

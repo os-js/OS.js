@@ -87,11 +87,11 @@ body.WallpaperStrech {
   top : auto;
   bottom : 0px;
 }
-.WMPanel.Top.Autohide {
-  top : -30px;
+.WMPanel.Autohide {
+  height : 0px;
 }
-.WMPanel.Bottom.Autohide {
-  bottom : -30px;
+.WMPanel.Autohide > * {
+  visibility : hidden;
 }
 .WMPanel ul {
   margin : 0;
