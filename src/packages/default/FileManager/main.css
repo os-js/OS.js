@@ -9,6 +9,9 @@
   bottom : 32px;
   right : 5px;
 }
+.Window_ApplicationFileManagerWindow .FileManagerPanedView .Sidebar .Separator {
+  display : none;
+}
 .Window_ApplicationFileManagerWindow .FileManagerPanedView .View.File {
   min-width : 50%;
 }

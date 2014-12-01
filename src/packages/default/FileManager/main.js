@@ -123,7 +123,11 @@
       vs = val;
       app._setArgument('viewSidebar', vs);
       viewSide.style.display = vs ? 'block' : 'none';
-      panedView.$separator.style.display = vs ? 'block' : 'none';
+      if ( vs ) {
+        Utils.$removeClass(panedView.$container, 'Sidebar');
+      } else {
+        Utils.$addClass(panedView.$container, 'Sidebar');
+      }
     };
 
     fileView.onContextMenu = function(ev, el, item) {
