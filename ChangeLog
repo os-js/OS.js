@@ -1,3 +1,21 @@
+# 2.0.0-alpha42
+
+* Added Core de_DE translations (Thanks @danielang)
+* Added Application de_DE translations (Thanks @danielang)
+* Themes: Added missing icon
+* Handlers: Fixed a typo after refactor (settings saving in Example handler)
+* Misc: Fixed desktop scrolling causing flickering
+* Application - FileManager: Fixed side view toggle
+* Application - FileManager: Added 'Edit' menu to default right-click menu context
+* CoreWM: Fixed upload on desktop via DnD
+* CoreWM: Now removes shortcut if file is removed in IconView
+* GUI: Fixed DnD to child containers inside Windows
+* GUI: Cleaned up DnD of _DataView classes (finally)
+* VFS: Now removing extra slashes on upload() (derp)
+* Updated Apache Vhost Configurations
+* Updated AUTHORS
+* Updated INSTALL
+
 # 2.0.0-alpha41
 
 * Themes: Added 'Dark' Theme
