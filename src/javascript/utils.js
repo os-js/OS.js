@@ -538,21 +538,26 @@
   };
 
   OSjs.Utils.$addClass = function(el, name) {
-    if ( el && name ) {
-      var re = new RegExp('\\s?' + name);
-      if ( re.test(el.className) === false ) {
-        el.className += (el.className ? ' ' : '') + name;
-      }
+    if ( el && name && !this.$hasClass(el, name) ) {
+      el.className += (el.className ? ' ' : '') + name;
     }
   };
 
   OSjs.Utils.$removeClass = function(el, name) {
+    if ( el && name && this.$hasClass(el, name) ) {
+      var re = new RegExp('\\s?' + name);
+      el.className = el.className.replace(re, '');
+    }
+  };
+
+  OSjs.Utils.$hasClass = function(el, name) {
     if ( el && name ) {
       var re = new RegExp('\\s?' + name);
       if ( re.test(el.className) !== false ) {
-        el.className = el.className.replace(re, '');
+        return true;
       }
     }
+    return false;
   };
 
   OSjs.Utils.$createCSS = function(src) {

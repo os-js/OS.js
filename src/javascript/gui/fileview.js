@@ -55,7 +55,6 @@
    * options: (See GUIElement for more)
    *  onSelected        Function        Callback - When item is selected (clicked)
    *  onActivated       Function        Callback - When item is activated (dblclick)
-   *  onDropped         Function        Callback - When item has been dropped
    */
   var FileTreeView = function(fileView, name, opts) {
     opts = opts || {};
@@ -66,7 +65,6 @@
 
     this.onActivated  = function(item, el) {};
     this.onSelected   = function(item, el) {};
-    this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
   };
 
@@ -194,7 +192,6 @@
    * options: (See GUIElement for more)
    *  onSelected        Function        Callback - When item is selected (clicked)
    *  onActivated       Function        Callback - When item is activated (dblclick)
-   *  onDropped         Function        Callback - When item has been dropped
    */
   var FileIconView = function(fileView, name, opts) {
     opts = opts || {};
@@ -205,7 +202,6 @@
 
     this.onActivated  = function(item, el) {};
     this.onSelected   = function(item, el) {};
-    this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
   };
 
@@ -290,7 +286,6 @@
    * options: (See GUIElement for more)
    *  onSelected        Function        Callback - When item is selected (clicked)
    *  onActivated       Function        Callback - When item is activated (dblclick)
-   *  onDropped         Function        Callback - When item has been dropped
    *  humanSize         bool            Show human-readable sized (default = True)
    */
   var FileListView = function(fileView, name, opts) {
@@ -305,7 +300,6 @@
 
     this.onActivated  = function(item, el) {};
     this.onSelected   = function(item, el) {};
-    this.onDropped    = function() { console.warn('Not implemented yet!'); };
     this.onSort       = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
   };
@@ -413,7 +407,6 @@
    *  onSelected          Function        Callback - When item is selected (clicked)
    *  onActivated         Function        Callback - When item is activated (dblclick)
    *  onItemDropped       Function        Callback - When item has been dropped
-   *  onDropped           Function        Callback - When item has been dropped (FIXME)
    *  onError             Function        Callback - When error happened
    *  onRefresh           Function        Callback - On refresh
    *  onContextMenu       Function        Callback - On context menu (item)
@@ -455,10 +448,10 @@
     this.onFinished         = function() {};
     this.onSelected         = function(item, el) {};
     this.onRefresh          = function() {};
-    this.onDropped          = function() { console.warn('Not implemented yet!'); };
     this.onContextMenu      = function(ev, el, item) {};
     this.onViewContextMenu  = function(ev) {};
     this.onItemDropped      = function(ev, el, item) {};
+    this.onFilesDropped     = function(ev, el, files) {};
 
     this.onColumnSort   = function(column) {
       if ( column === 'image' ) { column = null; }
@@ -530,10 +523,10 @@
       };
 
       this.viewRef.onSelected         = function() { return self.onSelected.apply(this, arguments); };
-      this.viewRef.onDropped          = function() { return self.onDropped.apply(this, arguments); };
       this.viewRef.onContextMenu      = function() { return self.onContextMenu.apply(this, arguments); };
       this.viewRef.onViewContextMenu  = function() { return self.onViewContextMenu.apply(this, arguments); };
       this.viewRef.onItemDropped      = function() { return self.onItemDropped.apply(this, arguments); };
+      this.viewRef.onFilesDropped     = function() { return self.onFilesDropped.apply(this, arguments); };
       this.viewRef.onSort             = function() { return self.onColumnSort.apply(this, arguments); };
 
       (root || this.$element).appendChild(this.viewRef.getRoot());

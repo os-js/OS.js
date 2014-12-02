@@ -42,6 +42,21 @@
   function createDroppable(el, args) {
     args = args || {};
 
+    function getParent(start, matcher) {
+      if ( start === matcher ) { return true; }
+      var i = 10;
+
+      while ( start && i > 0 ) {
+        if ( start === matcher ) {
+          return true;
+        }
+        start = start.parentNode;
+        i--;
+      }
+      return false;
+    }
+
+
     args.accept = args.accept || null;
     args.effect = args.effect || 'move';
     args.mime   = args.mime   || 'application/json';
@@ -101,6 +116,10 @@
 
     el.addEventListener('dragover', function(ev) {
       ev.preventDefault();
+      if ( !getParent(ev.target, el) ) {
+        return false;
+      }
+
       ev.stopPropagation();
       ev.dataTransfer.dropEffect = args.effect;
       return args.onOver.call(this, ev, this, args);
