@@ -55,6 +55,8 @@
   }
 
   WindowSwitcher.prototype.show = function(ev, win, wm) {
+    win = win || wm.getLastWindow();
+
     ev.preventDefault();
 
     var height = 0;

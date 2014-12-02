@@ -40,6 +40,7 @@
 
   var _WM;             // Running Window Manager process
   var _WIN;            // Currently selected Window
+  var _LASTWIN;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -507,6 +508,10 @@
 
   WindowManager.prototype.getCurrentWindow = function() {
     return _WIN;
+  };
+
+  WindowManager.prototype.getLastWindow = function() {
+    return _LASTWIN;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -993,6 +998,9 @@
     if ( _WIN && _WIN._wid === this._wid ) {
       _WIN = null;
     }
+    if ( _LASTWIN && _LASTWIN._wid === this._wid ) {
+      _LASTWIN = null;
+    }
 
     if ( this._$element ) {
       var anim = _WM ? _WM.getSetting('animations') : false;
@@ -1380,6 +1388,7 @@
     }
 
     _WIN = this;
+    _LASTWIN = this;
 
     if ( !this._state.focused || force) {
       this._onChange('focus');
