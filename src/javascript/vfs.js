@@ -549,10 +549,10 @@
         return;
       }
 
-
+      var npath = (args.destination + '/' + filename).replace(/\/\/\/\/+/, '///');
       var file = new OSjs.VFS.File({
         filename: filename,
-        path: args.destination + '/' + filename,
+        path: npath,
         mime: mime,
         size: size
       });
