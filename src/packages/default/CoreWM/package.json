@@ -11,7 +11,9 @@
   "mime":       null,
   "icon":       null,
   "preload":    [
-    {"src": "libs.js", "type": "javascript"},
+    {"src": "iconview.js", "type": "javascript"},
+    {"src": "windowswitcher.js", "type": "javascript"},
+    {"src": "panel.js", "type": "javascript"},
     {"src": "panel_items.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
     {"src": "panel_items.css", "type": "stylesheet"},

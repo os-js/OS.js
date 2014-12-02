@@ -43,7 +43,18 @@
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
       'Create shortcut' : 'Lag snarvei',
       'Set as wallpaper' : 'Sett som bakgrunn',
-      'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}'
+      'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}',
+
+      'Development' : 'Utvikling',
+      'Education' : 'Utdanning',
+      'Games' : 'Spill',
+      'Graphics' : 'Grafikk',
+      'Network' : 'Nettverk',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Kontor',
+      'System' : 'System',
+      'Utilities' : 'Verktøy',
+      'Other' : 'Andre'
     },
     de_DE : {
       'Killing this process will stop things from working!' : 'Das Beenden dieses Prozesses wird Konsequenzen haben!',
@@ -51,9 +62,30 @@
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ihr Panel enthält keine Items. Öffnen Sie die Einstellungen um die Panel-Einstellungen zurückzusetzen oder manuell zu ändern (Dieser Fehler kann nach einem Upgrade von OS.js entstehen)',
       'Create shortcut' : 'Verknüpfung erstellen',
       'Set as wallpaper' : 'Als Hintergrund verwenden',
-      'An error occured while creating PanelItem: {0}' : 'Während des Erstellens eines Panel-Items ist folgender Fehler aufgetreten: {0}'
+      'An error occured while creating PanelItem: {0}' : 'Während des Erstellens eines Panel-Items ist folgender Fehler aufgetreten: {0}',
+
+      'Development' : 'Entwicklung',
+      'Education' : 'Bildung',
+      'Games' : 'Spiele',
+      'Graphics' : 'Grafik',
+      'Network' : 'Netzwerk',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Büro',
+      'System' : 'System',
+      'Utilities' : 'Zubehör',
+      'Other' : 'Andere'
     },
     fr_FR : {
+      'Development' : 'Разработка',
+      'Education' : 'Образование',
+      'Games' : 'Игры',
+      'Graphics' : 'Графика',
+      'Network' : 'Интернет',
+      'Multimedia' : 'Мультимедиа',
+      'Office' : 'Офис',
+      'System' : 'Система',
+      'Utilities' : 'Утилиты',
+      'Other' : 'Другое'
     },
     ru_RU : {
       'Killing this process will stop things from working!' : 'Завершение этого процесса остановит работу системы!',
@@ -115,6 +147,110 @@
       cfg = Utils.mergeObject(cfg, defaults);
     }
     return cfg;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // SETTINGS
+  /////////////////////////////////////////////////////////////////////////////
+
+  var DefaultCategories = {
+    development : {icon: 'categories/package_development.png', title: 'Development'},
+    education   : {icon: 'categories/applications-sience.png', title: 'Education'},
+    games       : {icon: 'categories/package_games.png',       title: 'Games'},
+    graphics    : {icon: 'categories/package_graphics.png',    title: 'Graphics'},
+    network     : {icon: 'categories/package_network.png',     title: 'Network'},
+    multimedia  : {icon: 'categories/package_multimedia.png',  title: 'Multimedia'},
+    office      : {icon: 'categories/package_office.png',      title: 'Office'},
+    system      : {icon: 'categories/package_system.png',      title: 'System'},
+    utilities   : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
+    unknown     : {icon: 'categories/applications-other.png',  title: 'Other'}
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function _createIcon(aiter, aname) {
+    return API.getIcon(aiter.icon, aiter);
+  }
+
+  /**
+   * Create default application menu
+   */
+  function BuildMenu(ev) {
+    var apps = API.getHandlerInstance().getApplicationsMetadata();
+    var list = [];
+    for ( var a in apps ) {
+      if ( apps.hasOwnProperty(a) ) {
+        if ( apps[a].type !== "application" ) { continue; }
+        list.push({
+          title: apps[a].name,
+          icon: _createIcon(apps[a], a),
+          tooltip : iter.description,
+          onClick: (function(name, iter) {
+            return function() {
+              API.launch(name);
+            };
+          })(a, apps[a])
+        });
+      }
+    }
+    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
+  }
+
+  /**
+   * Create default application menu with categories (sub-menus)
+   */
+  function BuildCategoryMenu(ev) {
+    var apps = API.getHandlerInstance().getApplicationsMetadata();
+    var list = [];
+    var cats = {};
+
+    var c, a, iter, cat, submenu;
+
+    for ( c in DefaultCategories ) {
+      if ( DefaultCategories.hasOwnProperty(c) ) {
+        cats[c] = [];
+      }
+    }
+
+    for ( a in apps ) {
+      if ( apps.hasOwnProperty(a) ) {
+        iter = apps[a];
+        if ( iter.type !== "application" ) { continue; }
+        cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
+        cats[cat].push({name: a, data: iter})
+      }
+    }
+
+    for ( c in cats ) {
+      if ( cats.hasOwnProperty(c) ) {
+        submenu = [];
+        for ( a = 0; a < cats[c].length; a++ ) {
+          iter = cats[c][a];
+          submenu.push({
+            title: iter.data.name,
+            icon: _createIcon(iter.data, iter.name),
+            tooltip : iter.data.description,
+            onClick: (function(name, iter) {
+              return function() {
+                API.launch(name);
+              };
+            })(iter.name, iter.data)
+          });
+        }
+
+        if ( submenu.length ) {
+          list.push({
+            title: _(DefaultCategories[c].title),
+            icon:  API.getThemeResource(DefaultCategories[c].icon, 'icon', '16x16'),
+            menu:  submenu
+          });
+        }
+      }
+    }
+
+    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -917,8 +1053,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications              = OSjs.Applications || {};
-  OSjs.Applications.CoreWM       = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.Class = CoreWM;
+  OSjs.Applications                          = OSjs.Applications || {};
+  OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.Class             = CoreWM;
+  OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.BuildMenu         = BuildMenu;
+  OSjs.Applications.CoreWM.BuildCategoryMenu = BuildCategoryMenu;
 
 })(OSjs.Core.WindowManager, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
