@@ -200,6 +200,13 @@
 
   // Copy from Application
   CoreWM.prototype._onMessage = function(obj, msg, args) {
+    if ( this.iconView ) {
+      if ( msg === 'vfs' ) {
+        if ( args && args.type === 'delete' && args.file ) {
+          this.iconView.removeShortcutByPath(args.file.path);
+        }
+      }
+    }
   };
 
   // Copy from Application

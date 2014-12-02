@@ -1041,7 +1041,7 @@
    */
   function doProcessMessage(msg, opts) {
     _PROCS.forEach(function(p, i) {
-      if ( p && p instanceof Application ) {
+      if ( p && (p instanceof Application || p instanceof Process) ) {
         p._onMessage(null, msg, opts);
       }
     });
@@ -1190,6 +1190,9 @@
       }
     }
     return true;
+  };
+
+  Process.prototype._onMessage = function(obj, msg, args) {
   };
 
   /////////////////////////////////////////////////////////////////////////////

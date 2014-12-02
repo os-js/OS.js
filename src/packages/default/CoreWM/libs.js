@@ -703,6 +703,17 @@
     this.refresh();
   };
 
+  DesktopIconView.prototype.removeShortcutByPath = function(path) {
+    var self = this;
+    this.data.forEach(function(iter) {
+      if ( iter.args.path === path ) {
+        self.removeShortcut(iter);
+        return false;
+      }
+      return true;
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
