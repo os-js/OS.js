@@ -59,7 +59,7 @@
       onContextMenu : function(ev, el, item) {
         var pos = {x: ev.clientX, y: ev.clientY};
         OSjs.GUI.createMenu([{
-          title: _('Remove shortcut'),
+          title: OSjs.Applications.CoreWM._('Remove shortcut'),
           disabled: item.index === 0,
           onClick: function() {
             if ( item.launch ) { return; }

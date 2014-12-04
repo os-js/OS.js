@@ -1059,5 +1059,6 @@
   OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.BuildMenu         = BuildMenu;
   OSjs.Applications.CoreWM.BuildCategoryMenu = BuildCategoryMenu;
+  OSjs.Applications.CoreWM._                 = _;
 
 })(OSjs.Core.WindowManager, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
