@@ -36,7 +36,7 @@
     'minus'    : '-',
     'plus'     : '+',
     'multiply' : '*',
-    'divide'   : ''
+    'divide'   : '/'
   };
 
   var keys = {
@@ -199,7 +199,7 @@
 
     var addition = false;
     var getval = function() {
-      return gel.getValue() << 0;
+      return gel.getValue().toString();
     };
 
     switch ( o ) {
@@ -212,7 +212,9 @@
         if ( getval()<10 && getval()>-10 ) {
           gel.setValue(0);
         } else {
-          gel.setValue(getval().toString().slice(0, getval().toString().length-1));
+          gel.setValue(getval().slice(0, getval().length-1));
+          
+          this.pas_ch = 1;
         }
         if ( this.calc_array[0] == '=' ) {
           this.calc_array[2] = getval();
@@ -221,11 +223,9 @@
           this.calc_array[3] = getval();
         }
       break;
-
-      case 'dec' :
-      case 'minus' :
+      
       case 'plus' :
-      case 'perc' :
+      case 'minus' :
       case 'multiply' :
       case 'divide' :
         if ( this.calc_array[0] != '=' && this.calc_array[1] != 1 ) {
@@ -236,10 +236,39 @@
           this.calc_array[3]=0;
         }
         this.calc_array[0] = ops[o];
-
-        addition = (o === "dec");
       break;
+        
+      case 'dec' :
+        if ( getval().indexOf(ops.dec) === -1 ) {
+          if ( this.calc_array[1] == 1 && getval().indexOf(ops.dec) === -1 ) {
+            gel.setValue('0.');
 
+            this.calc_array[1] = 0;
+          } else {
+            gel.setValue(getval() + '.');
+          }
+
+          if ( this.calc_array[0] == '=' ) {
+            this.calc_array[2] = getval();
+            this.calc_array[3] = 0;
+          } else {
+            this.calc_array[3] = getval();
+          }
+        }
+        
+        addition = true;
+      break;
+        
+      case 'perc' :
+        gel.setValue(getval()/100);
+        if ( this.calc_array[0] == '=' ) {
+          this.calc_array[2] = getval();
+          this.calc_array[3] = 0;
+        } else {
+          this.calc_array[3] = getval();
+        }
+        this.pas_ch = 1;
+      break;
 
       case 'swap' :
         gel.setValue(getval()*-1);
