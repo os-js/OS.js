@@ -942,10 +942,7 @@
     }
     this._rendered = true;
 
-    if ( this._$iframefix && this._iframeFixEl ) {
-      this._$iframefix.style.left = this._iframeFixEl.$element.style.offsetLeft + 'px';
-      this._$iframefix.style.top = this._iframeFixEl.$element.offsetTop + 'px';
-    }
+    this._updateIframeFix();
   };
 
   Window.prototype.destroy = function() {
@@ -1087,11 +1084,24 @@
     });
   };
 
+  Window.prototype._updateIframeFix = function() {
+    if ( this._$iframefix && this._iframeFixEl ) {
+      var fel = this._iframeFixEl.$element;
+      if ( fel ) {
+        this._$iframefix.style.left   = fel.offsetLeft.toString()   + 'px';
+        this._$iframefix.style.top    = fel.offsetTop.toString()    + 'px';
+        this._$iframefix.style.width  = fel.offsetWidth.toString()  + 'px';
+        this._$iframefix.style.height = fel.offsetHeight.toString() + 'px';
+      }
+    }
+  };
+
   Window.prototype._addGUIElement = function(gel, parentNode) {
     var self = this;
     if ( !parentNode ) {
       throw new Error('Adding a GUI Element requires a parentNode');
     }
+
     if ( gel instanceof OSjs.GUI.GUIElement ) {
       gel._setWindow(this);
       gel._setTabIndex(this._guiElements.length + 1);
@@ -1117,6 +1127,14 @@
           };
           this._$element.appendChild(this._$iframefix);
           this._iframeFixEl = gel;
+
+          this._addHook('resized', function() {
+            self._updateIframeFix();
+          });
+          this._addHook('blur', function() {
+            self._updateIframeFix();
+          });
+          this._updateIframeFix();
         }
       }
 
