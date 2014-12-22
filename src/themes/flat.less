@@ -1,0 +1,218 @@
+@import "_base.less";
+
+@theme_base_bg_color          : #eeeeee;
+@theme_base_fg_color          : #676664;
+@theme_base_border_color      : transparent;
+
+@theme_secondary_bg_color     : #eeeeee;
+@theme_secondary_fg_color     : #878882;
+@theme_secondary_border_color : #eeeeee;
+
+@theme_selected_bg_color      : #33cbbf;
+@theme_selected_fg_color      : #ffffff;
+@theme_even_row               : #eeeeee;
+@theme_odd_row                : #ffffff;
+
+@theme_input_bg_color         : #f8f8f8;
+@theme_input_fg_color         : #222222;
+
+@theme_gui_button_bg_color    : #f8f8f8;
+@theme_gui_button_fg_color    : #222222;
+@theme_gui_button_bg_from     : #f8f8f8;
+@theme_gui_button_gb_to       : #f8f8f8;
+@theme_gui_button_border_color: #f8f8f8;
+
+@theme_gui_hbutton_bg_color    : #33cbbf;
+@theme_gui_hbutton_fg_color    : #ffffff;
+@theme_gui_hbutton_bg_from     : @theme_gui_hbutton_bg_color;
+@theme_gui_hbutton_gb_to       : @theme_gui_hbutton_bg_color;
+@theme_gui_hbutton_border_color: @theme_gui_button_border_color;
+
+@theme_gui_abutton_bg_color    : #33cbbf;
+@theme_gui_abutton_fg_color    : #ffffff;
+@theme_gui_abutton_bg_from     : @theme_gui_abutton_bg_color;
+@theme_gui_abutton_gb_to       : @theme_gui_abutton_bg_color;
+@theme_gui_abutton_border_color: @theme_gui_button_border_color;
+
+@theme_gui_dbutton_bg_color    : #e6e6e6;
+@theme_gui_dbutton_fg_color    : #ffffff;
+@theme_gui_dbutton_bg_from     : @theme_gui_dbutton_bg_color;
+@theme_gui_dbutton_gb_to       : @theme_gui_dbutton_bg_color;
+@theme_gui_dbutton_border_color: @theme_gui_hbutton_border_color;
+
+@theme_base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+@theme_base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+@theme_input_shadow           : none;
+@theme_text_shadow            : 0px 0px 1px rgba(255, 255, 255, .5);
+
+.theme_gui_button {
+  cursor : pointer;
+  background : @theme_gui_button_bg_color;
+  color : @theme_gui_button_fg_color;
+}
+.theme_gui_button_hover {
+  background : @theme_gui_hbutton_bg_color;
+  color : @theme_gui_hbutton_fg_color;
+}
+.theme_gui_button_active {
+  background : @theme_gui_abutton_bg_color;
+  color : @theme_gui_abutton_fg_color;
+}
+.theme_gui_button_disabled {
+  background : @theme_gui_dbutton_bg_color;
+  color : @theme_gui_dbutton_fg_color;
+}
+
+/**
+ * WM
+ */
+body > .WMPanel {
+  height : 32px;
+  border : 0 none;
+}
+body > .WMPanel > ul {
+  margin : 3px;
+}
+
+#Background.Blinking {
+  background : #242424;
+}
+
+
+/**
+ * Window
+ */
+.Window:before {
+  .theme_border(4px);
+  left : -3px;
+  top : -29px;
+  right : -3px;
+  bottom : -3px;
+}
+.Window:after {
+  content : '';
+  position : absolute;
+  left : -3px;
+  top : -29px;
+  right : -3px;
+  bottom : -3px;
+}
+.Window > .WindowTop {
+  top : -27px;
+}
+.Window > .WindowTop > .WindowTitle {
+  text-align : center;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButton {
+  width : 16px;
+  height : 16px;
+  border : 0 none !important;
+  background : transparent !important;
+  background-image : none !important;
+  padding : 2px;
+  margin : 2px;
+}
+
+.Window > .WindowTop > .WindowButtons > .WindowButton:after {
+  content : '';
+  position : absolute;
+  top : 8px;
+  left : 8px;
+  width : 8px;
+  height : 8px;
+  border-radius : 8px;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButtonClose:after {
+  background-color : #ea4438;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButtonMinimize:after {
+  background-color : #f8d271;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButtonMaximize:after {
+  background-color : #8ecf29;
+}
+
+/*
+.Window > .WindowTop > .WindowButtons > .WindowButton:hover {
+  background : #404040;
+  background-image : none !important;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButton:hover:after {
+  color : #fff;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButton:after {
+  content : '';
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  line-height : 14px;
+  text-align : center;
+  font-family : Monospace;
+  font-size : 16px;
+  color : #ddd;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButton:before {
+  content : '';
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  border : 1px solid #4b4b4b;
+}
+.Window > .WindowTop > .WindowButtons > .WindowButtonClose:after {
+  content : 'x';
+}
+.Window > .WindowTop > .WindowButtons > .WindowButtonMinimize:after {
+  content : '\25BD';
+}
+.Window > .WindowTop > .WindowButtons > .WindowButtonMaximize:after {
+  content : '\25A1';
+}
+*/
+
+.Window.WindowHintDnD:after {
+  border : 4px solid rgba(0, 0, 0, .7);
+  .theme_border(4px);
+  margin : -4px;
+}
+
+.GUIToolbar .Container {
+  background : transparent;
+}
+.GUIListView thead td {
+  font-weight : bold;
+  color : #000;
+  background : @theme_gui_button_bg_color;
+}
+.GUIListView tbody tr:nth-child(2n+2) {
+  background : @theme_odd_row;
+}
+.GUIListView tbody tr:nth-child(2n+1) {
+  background : @theme_even_row;
+}
+.GUIRichText {
+  background : #fff;
+}
+.GUIMenuBar {
+  border-color : transparent;
+}
+.GUIStatusBar {
+  border-color : transparent;
+}
+
+.GUIButton button,
+.GUIToolbar button {
+  border : 0 none !important;
+}
+
+.GUISlider .Root {
+  background : @theme_gui_button_bg_color;
+}
+
+.GUITabs .Tabs .Tab.Active {
+  background : @theme_selected_bg_color;
+  color : @theme_selected_fg_color;
+}
