@@ -18,3 +18,4 @@ dist-dev/packages.json
 dist-dev/themes.json
 vfs/*/*
 src/build.custom.json
+.vagrant/*
