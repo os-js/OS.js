@@ -30,6 +30,7 @@
 (function(WindowManager, GUI, Utils, API, VFS) {
   'use strict';
 
+  var SETTING_STORAGE_NAME = 'CoreWM';
   var PADDING_PANEL_AUTOHIDE = 10; // FIXME: Replace with a constant ?!
 
   /////////////////////////////////////////////////////////////////////////////
@@ -76,6 +77,16 @@
       'Other' : 'Andere'
     },
     fr_FR : {
+      // TODO
+    },
+    ru_RU : {
+      'Killing this process will stop things from working!' : 'Завершение этого процесса остановит работу системы!',
+      'Open settings': 'Открыть настройки',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'На вашей панели отсутствуют элементы. Откройте настройки для сброса панели к начальному состоянию или ручной настройки\n(Эта ошибка может произойти после обновления OS.js)',
+      'Create shortcut': 'Создать ярлык',
+      'Set as wallpaper' : 'Установить как обои',
+      'An error occured while creating PanelItem: {0}' : 'Произошла обшибка при создании PanelItem: {0}',
+
       'Development' : 'Разработка',
       'Education' : 'Образование',
       'Games' : 'Игры',
@@ -86,14 +97,6 @@
       'System' : 'Система',
       'Utilities' : 'Утилиты',
       'Other' : 'Другое'
-    },
-    ru_RU : {
-      'Killing this process will stop things from working!' : 'Завершение этого процесса остановит работу системы!',
-      'Open settings': 'Открыть настройки',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'На вашей панели отсутствуют элементы. Откройте настройки для сброса панели к начальному состоянию или ручной настройки\n(Эта ошибка может произойти после обновления OS.js)',
-      'Create shortcut': 'Создать ярлык',
-      'Set as wallpaper' : 'Установить как обои',
-      'An error occured while creating PanelItem: {0}' : 'Произошла обшибка при создании PanelItem: {0}'
     }
   };
 
@@ -397,7 +400,7 @@
       });
     }
 
-    API.getHandlerInstance().getUserSettings('WindowManager', function(s) {
+    API.getHandlerInstance().getUserSettings(SETTING_STORAGE_NAME, function(s) {
       if ( s ) {
         self.applySettings(s);
       } else {
@@ -675,13 +678,14 @@
 
   CoreWM.prototype.saveSettings = function(settings) {
     if ( settings ) {
-      var store = { WindowManager: this.getSettings() };
+      var store = { };
+      store[SETTING_STORAGE_NAME] = this.getSettings();
       if ( settings.language ) {
         store.Core = { Locale: settings.language };
       }
       API.getHandlerInstance().setUserSettings(store);
     } else {
-      API.getHandlerInstance().setUserSettings('WindowManager', this.getSettings());
+      API.getHandlerInstance().setUserSettings(SETTING_STORAGE_NAME, this.getSettings());
     }
   };
 
