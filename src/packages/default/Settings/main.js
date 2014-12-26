@@ -435,6 +435,16 @@
     useIconView.setSelected(settings.enableIconView ? 'yes' : 'no');
     tabOther.appendChild(outer);
 
+    // TODO: Translations!!!
+    outer = _createContainer('IconView SettingsNoButton', _('Invert iconview colors (uses background color)'));
+    var useInvertedColor = this._addGUIElement(new OSjs.GUI.Select('SettingsInvertIconView'), outer);
+    useInvertedColor.addItems({
+      'yes':  API._('LBL_YES'),
+      'no':   API._('LBL_NO')
+    });
+    useInvertedColor.setSelected(settings.invertIconViewColor ? 'yes' : 'no');
+    tabOther.appendChild(outer);
+
     //
     // Tab: Panels
     //
@@ -561,22 +571,23 @@
     this._addGUIElement(new OSjs.GUI.Button('Save', {label: API._('LBL_APPLY'), onClick: function(el, ev) {
       // First validate
       var settings = {
-        language:         useLanguage.getValue(),
-        panelItems:       self.panelItems,
-        animations:       useAnimations.getValue() == 'yes',
-        panelOntop:       panelOntop.getValue() == 'yes',
-        panelAutohide:    panelAutohide.getValue() == 'yes',
-        panelPosition:    panelPosition.getValue(),
-        enableSwitcher:   useSwitcher.getValue() == 'yes',
-        enableHotkeys:    useHotkeys.getValue() == 'yes',
-        enableSounds:     useSounds.getValue() == 'yes',
-        enableIconView:   useIconView.getValue() == 'yes',
-        desktopMargin:    desktopMargin,
-        desktopFont:      fontName.getValue(),
-        theme:            themeName.getValue(),
-        backgroundType:   backgroundType.getValue(),
-        backgroundImage:  backgroundImage.getValue(),
-        backgroundColor:  backgroundColor.getValue()
+        language:             useLanguage.getValue(),
+        panelItems:           self.panelItems,
+        animations:           useAnimations.getValue() == 'yes',
+        panelOntop:           panelOntop.getValue() == 'yes',
+        panelAutohide:        panelAutohide.getValue() == 'yes',
+        panelPosition:        panelPosition.getValue(),
+        enableSwitcher:       useSwitcher.getValue() == 'yes',
+        enableHotkeys:        useHotkeys.getValue() == 'yes',
+        enableSounds:         useSounds.getValue() == 'yes',
+        enableIconView:       useIconView.getValue() == 'yes',
+        invertIconViewColor:  useInvertedColor.getValue() == 'yes',
+        desktopMargin:        desktopMargin,
+        desktopFont:          fontName.getValue(),
+        theme:                themeName.getValue(),
+        backgroundType:       backgroundType.getValue(),
+        backgroundImage:      backgroundImage.getValue(),
+        backgroundColor:      backgroundColor.getValue()
       };
 
       // Then apply
@@ -607,7 +618,8 @@
           enableSwitcher: settings.enableSwitcher,
           enableHotkeys:  settings.enableHotkeys,
           enableSounds:   settings.enableSounds,
-          enableIconView: settings.enableIconView
+          enableIconView: settings.enableIconView,
+          invertIconViewColor: settings.invertIconViewColor
         }, false, true);
       }
     }}), root);

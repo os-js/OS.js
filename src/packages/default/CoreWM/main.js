@@ -112,19 +112,20 @@
 
   function DefaultSettings(defaults) {
     var cfg = {
-      animations      : OSjs.Compability.css.animation,
-      fullscreen      : false,
-      desktop         : {margin: 5},
-      wallpaper       : 'osjs:///themes/wallpapers/diamond_upholstery.png',
-      theme           : 'default',
-      background      : 'image-repeat',
-      menuCategories  : true,
-      enableIconView  : false,
-      enableSwitcher  : true,
-      enableHotkeys   : true,
-      enableSounds    : API.getDefaultSettings().Core.Sounds,
-      moveOnResize    : true,       // Move windows into viewport on resize
-      panels          : [
+      animations          : OSjs.Compability.css.animation,
+      fullscreen          : false,
+      desktop             : {margin: 5},
+      wallpaper           : 'osjs:///themes/wallpapers/diamond_upholstery.png',
+      theme               : 'default',
+      background          : 'image-repeat',
+      menuCategories      : true,
+      enableIconView      : false,
+      enableSwitcher      : true,
+      enableHotkeys       : true,
+      enableSounds        : API.getDefaultSettings().Core.Sounds,
+      invertIconViewColor : false,
+      moveOnResize        : true,       // Move windows into viewport on resize
+      panels              : [
         {
           options: {
             position: 'top',
@@ -139,8 +140,8 @@
           ]
         }
       ],
-      desktopIcons : [],
-      style           : {
+      desktopIcons      : [],
+      style             : {
         backgroundColor  : '#0B615E',
         fontFamily       : 'OSjsFont'
       }
@@ -493,18 +494,39 @@
   };
 
   CoreWM.prototype.initIconView = function() {
+    var self = this;
+
+    function _setForegroundColor() {
+      if ( !self.iconView ) { return; }
+      if ( !self.getSetting('invertIconViewColor') ) {
+        self.iconView.setForegroundColor(null);
+        return;
+      }
+
+      var style = self.getSetting('style');
+      var backColor = style ? style.backgroundColor : null;
+      if ( backColor ) {
+        var invertedColor = Utils.invertHEX(backColor);
+        self.iconView.setForegroundColor(invertedColor || null);
+      }
+    }
+
     if ( !this.getSetting('enableIconView') ) { return; }
-    if ( this.iconView ) { return; }
+    if ( this.iconView ) {
+      _setForegroundColor();
+      return;
+    }
 
     this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
     this.iconView.init();
     this.iconView.update(this);
     document.body.appendChild(this.iconView.getRoot());
 
-    var self = this;
     this.iconView.resize(this);
     setTimeout(function() {
       self.iconView.resize(self);
+
+      _setForegroundColor();
     }, API.getAnimDuration());
   };
 

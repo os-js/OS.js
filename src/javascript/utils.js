@@ -459,6 +459,15 @@
     return '#' + hex.join('').toUpperCase();
   };
 
+  // Kudos: http://stackoverflow.com/a/9601429/1236086
+  OSjs.Utils.invertHEX = function(hex) {
+    var color = parseInt(hex.replace('#', ''), 16);
+    color = 0xFFFFFF ^ color;
+    color = color.toString(16);
+    color = ('000000' + color).slice(-6);
+    return '#' + color;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // DOM
   /////////////////////////////////////////////////////////////////////////////

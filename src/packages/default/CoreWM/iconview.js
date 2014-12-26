@@ -201,6 +201,12 @@
     });
   };
 
+  DesktopIconView.prototype.setForegroundColor = function(hex) {
+    hex = hex || 'inherit';
+    if ( this.$element ) {
+      this.$element.style.color = hex;
+    }
+  };
 
 
   /////////////////////////////////////////////////////////////////////////////
