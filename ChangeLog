@@ -1,3 +1,16 @@
+# 2.0.0-alpha43
+
+* CoreWM: Split lib.js into separate files (finally)
+* CoreWM: Better WindowSwitcher behavior
+* CoreWM: Some abstraction fixes
+* CoreWM: Fixed ru locale
+* CoreWM: Renamed setting storage name (NOTE: This resets your dekstop)
+* Windows: Updated IFrame event blocking fixer
+* Themes: Added 'flat'
+* Application - Calculator: Fixed (Thanks, @danielang)
+* Misc: Added Vargantfile and docs (Thanks, @CtrlC-Root)
+* Misc: Updated INSTALL.md
+
 # 2.0.0-alpha42
 
 * Added Core de_DE translations (Thanks @danielang)
