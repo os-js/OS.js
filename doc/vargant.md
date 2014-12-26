@@ -17,6 +17,12 @@ $ git clone https://github.com/andersevenrud/OS.js-v2.git
 $ cd OS.js-v2
 ```
 
+Or alternatively just download the Vargant file.
+
+```
+$ wget https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile
+```
+
 Provision the vagrant VM.
 
 ```
