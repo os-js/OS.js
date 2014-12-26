@@ -16,7 +16,9 @@ You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttp
 
 ## Automated
 
-Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
+Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`.
+
+A [Vargant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment.
 
 ## Manual
 
