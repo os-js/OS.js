@@ -16,9 +16,7 @@ You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttp
 
 ## Automated
 
-Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh` to install OS.js.
-
-A [Vargant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine. [More information here](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/vargant.md)
+Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`.
 
 ## Manual
 
@@ -71,6 +69,12 @@ Or run `./obt lighttpd-config` to generate one
 
 * Production dist: `node src/server-node/server.js`
 * Developer dist: `node src/server-node/server.js dist-dev`
+
+## Vargant
+
+A [Vargant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
+
+[More information here](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/vargant.md)
 
 # Links
 
