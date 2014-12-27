@@ -342,6 +342,8 @@
   };
 
   OSjs.Utils.dirname = function(f) {
+    f = f.replace(/\/$/, '');
+
     var pstr   = f.split(/^(.*)\:\/\/(.*)/).filter(function(n){ return n !== ''; });
     var args   = pstr.pop();
     var prot   = pstr.pop();

@@ -35,6 +35,11 @@
   // https://developers.google.com/drive/realtime/realtime-quickstart
   // https://developers.google.com/drive/v2/reference/
 
+  // https://developers.google.com/drive/web/search-parameters
+  // https://developers.google.com/drive/v2/reference/files/list
+  // http://stackoverflow.com/questions/22092402/python-google-drive-api-list-the-entire-drive-file-tree
+  // https://developers.google.com/drive/web/folder
+
   var gapi = window.gapi = window.gapi  || {};
   var OSjs = window.OSjs = window.OSjs  || {};
 
@@ -101,7 +106,7 @@
    */
   function getFileIdFromPath(dir, type, callback) {
     var tmp = dir.replace(OSjs.VFS.Modules.GoogleDrive.match, '');
-    tmp = tmp.replace(/^\//, '').replace(/\/$/).split('/');
+    tmp = tmp.replace(/^\//, '').replace(/\/$/, '').split('/');
 
     var currentItem, currentIter;
     var atoms = [''];
@@ -165,6 +170,8 @@
     var dir = Utils.dirname(item.path);
     var type = 'application/vnd.google-apps.folder';
 
+    console.debug('GoogleDrive::*getParentPathId()', item);
+
     getFileIdFromPath(dir, type, function(error, item) {
       if ( error ) {
         return callback(error);
@@ -189,9 +196,7 @@
         }
 
         if ( iter.title === '..' ) {
-          var tmp = dir.split('/');
-          tmp.pop();
-          path = tmp.join('/').replace(/\.\.$/);
+          path = Utils.dirname(dir);
         }
 
         path += iter.title === '..' ? '/' : iter.title;
@@ -213,6 +218,8 @@
    * Get all files in a directory
    */
   function getAllDirectoryFiles(item, callback) {
+    console.debug('GoogleDrive::*getAllDirectoryFiles()', item);
+
     var dir = item.type === 'dir' ? item.path : (Utils.dirname(item.path) + '/'); // FIXME
     var root = dir.replace(OSjs.VFS.Modules.GoogleDrive.match, '') || '/';
     var method = gapi.client.drive.files.list;
@@ -445,6 +452,8 @@
     var self = this;
 
     function _write(parentId) {
+      console.debug('GoogleDrive::write()->_write()', 'parent', parentId);
+
       self.exists(file, function(error, exists) {
         var uri = '/upload/drive/v2/files';
         var method = 'POST';
@@ -606,30 +615,43 @@
 
   GoogleDriveStorage.mkdir = function(dir, callback) {
     console.info('GoogleDrive::mkdir()', dir);
-    var parents = null; // TODO
 
-    if ( Utils.dirname(dir.path) !== OSjs.VFS.Modules.GoogleDrive.root ) {
-      return callback('You must create folders on the root'); // TODO
+    function doMkdir(parents) {
+
+      var request = gapi.client.request({
+        'path': '/drive/v2/files',
+        'method': 'POST',
+        'body': JSON.stringify({
+          title: dir.filename,
+          parents: parents,
+          mimeType: 'application/vnd.google-apps.folder'
+        })
+      });
+
+      request.execute(function(resp) {
+        console.info('GoogleDrive::mkdir()', '=>', resp);
+        if ( resp && resp.id ) {
+          callback(false, true);
+        } else {
+          callback('Failed to create directory'); // TODO: Translation
+        }
+      });
     }
 
-    var request = gapi.client.request({
-      'path': '/drive/v2/files',
-      'method': 'POST',
-      'body': JSON.stringify({
-        title: dir.filename,
-        parents: parents,
-        mimeType: 'application/vnd.google-apps.folder'
-      })
-    });
+    if ( Utils.dirname(dir.path) !== OSjs.VFS.Modules.GoogleDrive.root ) {
+      getParentPathId(dir, function(error, id) {
+        console.debug('GoogleDrive::mkdir()->getParentPathId()', id, 'of', dir);
+        if ( error || !id ) {
+          callback('Failed to look up parent directory: ' + (error || 'No such parent')); // TODO: Translation
+          return;
+        }
+        doMkdir([{id: id}]);
+      });
 
-    request.execute(function(resp) {
-      console.info('GoogleDrive::mkdir()', '=>', resp);
-      if ( resp && resp.id ) {
-        callback(false, true);
-      } else {
-        callback('Failed to create directory');
-      }
-    });
+      return;
+    }
+
+    doMkdir(null);
   };
 
   GoogleDriveStorage.upload = function(file, dest, callback) {
