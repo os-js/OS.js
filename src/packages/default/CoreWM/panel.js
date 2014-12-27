@@ -75,7 +75,7 @@
       OSjs.GUI.blurMenu();
     };
     this._$element.oncontextmenu = function(ev) {
-      OSjs.GUI.createMenu([{title: _('Open Panel Settings'), onClick: function(ev) {
+      OSjs.GUI.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
         var wm = API.getWMInstance();
         if ( wm ) {
           wm.showSettings('Panels');
