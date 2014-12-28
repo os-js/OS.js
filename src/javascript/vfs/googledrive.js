@@ -48,7 +48,7 @@
 
   // If the user idles the connection for this amount of time, the cache will automatically clean
   // forcing an update. If user uploads from another place etc. OS.js will make sure to fetch these
-  var CACHE_CLEAR_TIMEOUT = 5000;
+  var CACHE_CLEAR_TIMEOUT = 7000;
 
   var _isMounted    = false;
   var _rootFolderId = null;
@@ -239,9 +239,6 @@
               retrievePageOfFiles(request, result);
             } else {
               _treeCache = result;
-              clearCacheTimeout = setTimeout(function() {
-                _treeCache = null;
-              }, CACHE_CLEAR_TIMEOUT);
 
               cb(false, result);
             }
@@ -345,11 +342,16 @@
       }
 
       function doRetrieve() {
-
         retrieveAllFiles(function(error, list) {
           var root = item.path;
           getFilesBelongingTo(list, root, function(error, response) {
             console.groupEnd();
+
+            clearCacheTimeout = setTimeout(function() {
+              console.info('Clearing GoogleDrive filetree cache!');
+              _treeCache = null;
+            }, CACHE_CLEAR_TIMEOUT);
+
             console.log('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
             callback(error, response, root);
           });
