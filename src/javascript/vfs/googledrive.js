@@ -365,7 +365,7 @@
         var request = gapi.client.drive.about.get();
         request.execute(function(resp) {
           if ( !resp || !resp.rootFolderId ) {
-            callback('Failed to find root folder id');
+            callback(API._('ERR_GDRIVE_ROOT_ID'));
             return;
           }
           _rootFolderId = resp.rootFolderId;
@@ -461,11 +461,11 @@
             callback(false, arraybuffer ? xhr.response : xhr.responseText);
           };
           xhr.onerror = function() {
-            callback('XHR Error');
+            callback(API._('ERR_GDRIVE_XHR_ERROR'));
           };
           xhr.send();
         } else {
-          callback('Failed to fetch file'); // FIXME: Translation
+          callback(API._('ERR_GDRIVE_READ'));
         }
       });
     }
@@ -475,11 +475,11 @@
     } else {
       getFileFromPath(item.path, item.mime, function(error, response) {
         if ( error ) {
-          callback('Failed to fetch file: ' + error); // FIXME: Translation
+          callback(API._('ERR_GDRIVE_READ_FMT', error));
           return;
         }
         if ( !response ) {
-          callback('Failed to fetch file: ' + 'No such file'); // FIXME: Translation
+          callback(API._('ERR_GDRIVE_READ_FMT', API._('ERR_GDRIVE_NOSUCH')));
           return;
         }
 
@@ -524,7 +524,7 @@
               callback(false, true);
             }
           } else {
-            callback('Failed to write file'); // FIXME: Translation
+            callback(API._('ERR_GDRIVE_WRITE'));
           }
         });
       });
@@ -556,11 +556,14 @@
     });
     request.execute(function(resp) {
       console.info('GoogleDrive::copy()', '=>', resp);
+
       if ( resp.id ) {
         callback(false, true);
         return;
       }
-      callback('Failed to copy');
+
+      var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+      callback(API._('ERR_GDRIVE_COPY_FMT', error));
     });
   };
 
@@ -576,8 +579,8 @@
         if ( resp && (typeof resp.result === 'object') ) {
           callback(false, true);
         } else {
-          var msg = resp && resp.message ? resp.message : 'Unknown error'; // FIXME: Translate
-          callback('Failed to unlink file: ' + msg); // FIXME: Translate
+          var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+          callback(API._('ERR_GDRIVE_UNLINK_FMT', msg));
         }
       });
     }
@@ -585,11 +588,11 @@
     if ( !src.id ) {
       getFileFromPath(src.path, src.mime, function(error, response) {
         if ( error ) {
-          callback('Failed to fetch file: ' + error); // FIXME: Translation
+          callback(API._('ERR_GDRIVE_READ_FMT', error));
           return;
         }
         if ( !response ) {
-          callback('Failed to fetch file: ' + 'No such file'); // FIXME: Translation
+          callback(API._('ERR_GDRIVE_READ_FMT', API._('ERR_GDRIVE_NOSUCH')));
           return;
         }
 
@@ -616,20 +619,21 @@
         _treeCache = null; // Make sure we refetch any cached stuff
         callback(false, true);
       } else {
-        callback('Failed to move file'); // FIXME: Translation
+        var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+        callback(API._('ERR_GDRIVE_MOVE_FMT', msg));
       }
     });
   };
 
+  // FIXME Is there a better way to do this ?
   GoogleDriveStorage.exists = function(item, callback) {
     console.info('GoogleDrive::exists()', item);
 
-    // FIXME Is there a better way to do this ?
     var req = new OSjs.VFS.File(OSjs.Utils.dirname(item.path));
 
     this.scandir(req, function(error, result) {
       if ( error ) {
-        callback('Failed to check existence: ' + error);
+        callback(API._('ERR_GDRIVE_EXIST_FMT', error));
         return;
       }
       var found = false;
@@ -665,7 +669,7 @@
         });
         return callback(false, info);
       }
-      callback('Failed to get file information');
+      callback(API._('ERR_GDRIVE_FILEINFO'));
     });
   };
 
@@ -679,12 +683,13 @@
       fileId: item.id
     });
 
-    request.execute(function(file) {
-      console.info('GoogleDrive::url()', file);
-      if ( file && file.webContentLink ) {
-        callback(false, file.webContentLink);
+    request.execute(function(resp) {
+      console.info('GoogleDrive::url()', resp);
+      if ( resp && resp.webContentLink ) {
+        callback(false, resp.webContentLink);
       } else {
-        callback('Failed to get URL or file not found!');
+        var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+        callback(API._('ERR_GDRIVE_URL_FMT', msg));
       }
     });
   };
@@ -709,7 +714,8 @@
         if ( resp && resp.id ) {
           callback(false, true);
         } else {
-          callback('Failed to create directory'); // TODO: Translation
+          var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+          callback(API._('ERR_GDRIVE_MKDIR_FMT', msg));
         }
       });
     }
@@ -718,7 +724,8 @@
       getParentPathId(dir, function(error, id) {
         console.debug('GoogleDrive::mkdir()->getParentPathId()', id, 'of', dir);
         if ( error || !id ) {
-          callback('Failed to look up parent directory: ' + (error || 'No such parent')); // TODO: Translation
+          error = error || API._('ERR_GDRIVE_PARENT');
+          callback(API._('ERR_GDRIVE_PARENT_FMT', error));
           return;
         }
         doMkdir([{id: id}]);
