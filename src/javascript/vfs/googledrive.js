@@ -463,52 +463,56 @@
 
     var self = this;
 
-    function _write(parentId) {
-      console.debug('GoogleDrive::write()->_write()', 'parent', parentId);
+    function doWrite(parentId, fileId) {
+      console.debug('GoogleDrive::write()->doWrite()', parentId, fileId);
+      var uri = '/upload/drive/v2/files';
+      var method = 'POST';
+      if ( fileId ) {
+        uri = '/upload/drive/v2/files/' + fileId;
+        method = 'PUT';
+      }
 
-      self.exists(file, function(error, exists) {
-        var uri = '/upload/drive/v2/files';
-        var method = 'POST';
-        if ( !error && exists ) {
-          uri = '/upload/drive/v2/files/' + exists.id;
-          method = 'PUT';
-        }
-        console.debug('GoogleDrive::write()->_write()', 'exists', exists);
+      var fileData = createBoundary(file, data, function(error, fileData) {
+        var request = gapi.client.request({
+          path: uri,
+          method: method,
+          params: {uploadType: 'multipart'},
+          headers: {'Content-Type': fileData.contentType},
+          body: fileData.body
+        });
 
-        var fileData = createBoundary(file, data, function(error, fileData) {
-          var request = gapi.client.request({
-            path: uri,
-            method: method,
-            params: {uploadType: 'multipart'},
-            headers: {'Content-Type': fileData.contentType},
-            body: fileData.body
-          });
+        request.execute(function(resp) {
+          console.info('GoogleDrive::write()', '=>', resp);
+          console.groupEnd();
 
-          request.execute(function(resp) {
-            console.info('GoogleDrive::write()', '=>', resp);
-            console.groupEnd();
-
-            if ( resp && resp.id ) {
-              if ( parentId ) {
-                setFolder(resp, parentId, callback);
-              } else {
-                callback(false, true);
-              }
+          if ( resp && resp.id ) {
+            if ( parentId ) {
+              setFolder(resp, parentId, callback);
             } else {
-              callback('Failed to write file'); // FIXME: Translation
+              callback(false, true);
             }
-          });
+          } else {
+            callback('Failed to write file'); // FIXME: Translation
+          }
         });
       });
     }
 
     console.group('GoogleDrive::write()');
     getParentPathId(file, function(error, id) {
+      console.debug('GoogleDrive::write()->getParentPathId', id);
       if ( error ) {
         console.groupEnd();
         return callback(error);
       }
-      _write(id);
+      if ( file.id ) {
+        doWrite(id, file.id);
+      } else {
+        self.exists(file, function(error, exists) {
+          var fileid = error ? null : (exists ? exists.id : null);
+          doWrite(id, fileid);
+        });
+      }
     });
   };
 
