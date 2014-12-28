@@ -46,8 +46,13 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
-  var _isMounted = false;
+  // If the user idles the connection for this amount of time, the cache will automatically clean
+  // forcing an update. If user uploads from another place etc. OS.js will make sure to fetch these
+  var CACHE_CLEAR_TIMEOUT = 5000;
+
+  var _isMounted    = false;
   var _rootFolderId = null;
+  var _treeCache    = null;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -198,155 +203,179 @@
   /**
    * Get all files in a directory
    */
-  function getAllDirectoryFiles(item, callback) {
-    console.log('GoogleDrive::*getAllDirectoryFiles()', item);
+  var getAllDirectoryFiles = (function() {
+    var clearCacheTimeout;
 
-    function retrieveAllFiles(cb) {
-      var list = [];
+    return function (item, callback) {
+      console.log('GoogleDrive::*getAllDirectoryFiles()', item);
 
-      function retrievePageOfFiles(request, result) {
-        request.execute(function(resp) {
-          if ( resp.error ) {
-            console.warn('GoogleDrive::getAllDirectoryFiles()', 'error', resp);
-          }
+      function retrieveAllFiles(cb) {
+        if ( clearCacheTimeout ) {
+          clearTimeout(clearCacheTimeout);
+          clearCacheTimeout = null;
+        }
+        if ( _treeCache ) {
+          console.info('USING CACHE FROM PREVIOUS FETCH!');
+          cb(false, _treeCache);
+          return;
+        }
+        console.info('UPDATING CACHE');
 
-          result = result.concat(resp.items);
+        var list = [];
 
-          var nextPageToken = resp.nextPageToken;
-          if (nextPageToken) {
-            request = gapi.client.drive.files.list({
-              pageToken: nextPageToken
-            });
-            retrievePageOfFiles(request, result);
-          } else {
-            cb(false, result);
-          }
-        });
-      }
+        function retrievePageOfFiles(request, result) {
+          request.execute(function(resp) {
+            if ( resp.error ) {
+              console.warn('GoogleDrive::getAllDirectoryFiles()', 'error', resp);
+            }
 
-      try {
-        var initialRequest = gapi.client.drive.files.list({});
-        retrievePageOfFiles(initialRequest, list);
-      } catch ( e ) {
-        console.warn('GoogleDrive::getAllDirectoryFiles() exception', e, e.stack);
-        console.warn('THIS ERROR OCCURS WHEN MULTIPLE REQUESTS FIRE AT ONCE ?!'); // FIXME
-        cb(false, list);
-      }
-    }
+            result = result.concat(resp.items);
 
-    function getFilesBelongingTo(list, root, cb) {
-      var idList = {};
-      var parentList = {};
-      list.forEach(function(iter) {
-        idList[iter.id] = iter;
-        var parents = [];
-        if ( iter.parents ) {
-          iter.parents.forEach(function(piter) {
-            if ( piter ) {
-              parents.push(piter.id);
+            var nextPageToken = resp.nextPageToken;
+            if (nextPageToken) {
+              request = gapi.client.drive.files.list({
+                pageToken: nextPageToken
+              });
+              retrievePageOfFiles(request, result);
+            } else {
+              _treeCache = result;
+              clearCacheTimeout = setTimeout(function() {
+                _treeCache = null;
+              }, CACHE_CLEAR_TIMEOUT);
+
+              cb(false, result);
             }
           });
         }
-        parentList[iter.id] = parents;
-      });
 
-      var resolves = root.replace(OSjs.VFS.Modules.GoogleDrive.match, '').replace(/^\/+/, '').split('/');
-      resolves = resolves.filter(function(el) {
-        return el !== '';
-      });
-
-      var currentParentId = _rootFolderId;
-      var isOnRoot = !resolves.length;
-
-      function _getFileList(foundId) {
-        var result = [];
-
-        if ( !isOnRoot ) {
-          result.push({
-            title: '..',
-            path: Utils.dirname(root),
-            id: item.id,
-            quotaBytesUsed: 0,
-            mimeType: 'application/vnd.google-apps.folder'
-          });
+        try {
+          var initialRequest = gapi.client.drive.files.list({});
+          retrievePageOfFiles(initialRequest, list);
+        } catch ( e ) {
+          console.warn('GoogleDrive::getAllDirectoryFiles() exception', e, e.stack);
+          console.warn('THIS ERROR OCCURS WHEN MULTIPLE REQUESTS FIRE AT ONCE ?!'); // FIXME
+          cb(false, list);
         }
-        list.forEach(function(iter) {
-          if ( iter && parentList[iter.id] && parentList[iter.id].indexOf(foundId) !== -1 ) {
-            result.push(iter);
-          }
-        });
-        return result;
       }
 
-      function _nextDir(completed) {
-        var current = resolves.shift();
-        var done = resolves.length <= 0;
-        var found;
-
-        if ( isOnRoot ) {
-          found = currentParentId;
-        } else {
-          if ( current ) {
-            list.forEach(function(iter) {
-              if ( iter ) {
-                if ( iter.title === current && parentList[iter.id] && parentList[iter.id].indexOf(currentParentId) !== -1 ) {
-                  currentParentId = iter.id;
-                  found  = iter.id;
-                }
+      function getFilesBelongingTo(list, root, cb) {
+        var idList = {};
+        var parentList = {};
+        list.forEach(function(iter) {
+          idList[iter.id] = iter;
+          var parents = [];
+          if ( iter.parents ) {
+            iter.parents.forEach(function(piter) {
+              if ( piter ) {
+                parents.push(piter.id);
               }
             });
           }
+          parentList[iter.id] = parents;
+        });
+
+        var resolves = root.replace(OSjs.VFS.Modules.GoogleDrive.match, '').replace(/^\/+/, '').split('/');
+        resolves = resolves.filter(function(el) {
+          return el !== '';
+        });
+
+        var currentParentId = _rootFolderId;
+        var isOnRoot = !resolves.length;
+
+        function _getFileList(foundId) {
+          var result = [];
+
+          if ( !isOnRoot ) {
+            result.push({
+              title: '..',
+              path: Utils.dirname(root),
+              id: item.id,
+              quotaBytesUsed: 0,
+              mimeType: 'application/vnd.google-apps.folder'
+            });
+          }
+          list.forEach(function(iter) {
+            if ( iter && parentList[iter.id] && parentList[iter.id].indexOf(foundId) !== -1 ) {
+              result.push(iter);
+            }
+          });
+          return result;
         }
 
-        if ( done ) {
-          completed(found);
-        } else {
-          _nextDir(completed);
-        }
-      }
+        function _nextDir(completed) {
+          var current = resolves.shift();
+          var done = resolves.length <= 0;
+          var found;
 
-      _nextDir(function(foundId) {
-        if ( foundId && idList[foundId] ) {
-          cb(false, _getFileList(foundId));
-          return;
-        } else {
           if ( isOnRoot ) {
-            cb(false, _getFileList(currentParentId));
-            return;
+            found = currentParentId;
+          } else {
+            if ( current ) {
+              list.forEach(function(iter) {
+                if ( iter ) {
+                  if ( iter.title === current && parentList[iter.id] && parentList[iter.id].indexOf(currentParentId) !== -1 ) {
+                    currentParentId = iter.id;
+                    found  = iter.id;
+                  }
+                }
+              });
+            }
+          }
+
+          if ( done ) {
+            completed(found);
+          } else {
+            _nextDir(completed);
           }
         }
 
-        cb('Could not list directory');
-      });
-    }
+        _nextDir(function(foundId) {
+          if ( foundId && idList[foundId] ) {
+            cb(false, _getFileList(foundId));
+            return;
+          } else {
+            if ( isOnRoot ) {
+              cb(false, _getFileList(currentParentId));
+              return;
+            }
+          }
 
-    function doRetrieve() {
-
-      retrieveAllFiles(function(error, list) {
-        var root = item.path;
-        getFilesBelongingTo(list, root, function(error, response) {
-          console.log('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
-          callback(error, response, root);
+          cb('Could not list directory');
         });
-      });
+      }
 
-    }
+      function doRetrieve() {
 
-    if ( !_rootFolderId ) {
-      var request = gapi.client.drive.about.get();
-      request.execute(function(resp) {
-        if ( !resp || !resp.rootFolderId ) {
-          callback('Failed to find root folder id');
-          return;
-        }
-        _rootFolderId = resp.rootFolderId;
+        retrieveAllFiles(function(error, list) {
+          var root = item.path;
+          getFilesBelongingTo(list, root, function(error, response) {
+            console.groupEnd();
+            console.log('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
+            callback(error, response, root);
+          });
+        });
 
+      }
+
+      console.group('GoogleDrive::*getAllDirectoryFiles()');
+
+      if ( !_rootFolderId ) {
+        var request = gapi.client.drive.about.get();
+        request.execute(function(resp) {
+          if ( !resp || !resp.rootFolderId ) {
+            callback('Failed to find root folder id');
+            return;
+          }
+          _rootFolderId = resp.rootFolderId;
+
+          doRetrieve();
+        });
+      } else {
         doRetrieve();
-      });
-    } else {
-      doRetrieve();
-    }
-  }
+      }
+    };
+
+  })();
 
   /**
    * Sets the folder for a file
@@ -485,6 +514,7 @@
           console.info('GoogleDrive::write()', '=>', resp);
           console.groupEnd();
 
+          _treeCache = null; // Make sure we refetch any cached stuff
           if ( resp && resp.id ) {
             if ( parentId ) {
               setFolder(resp, parentId, callback);
@@ -581,9 +611,10 @@
 
     request.execute(function(resp) {
       if ( resp && resp.id ) {
+        _treeCache = null; // Make sure we refetch any cached stuff
         callback(false, true);
       } else {
-        callback('Failed to move file');
+        callback('Failed to move file'); // FIXME: Translation
       }
     });
   };
