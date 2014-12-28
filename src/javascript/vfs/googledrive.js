@@ -530,17 +530,39 @@
 
   GoogleDriveStorage.unlink = function(src, callback) {
     console.info('GoogleDrive::unlink()', src);
-    var request = gapi.client.drive.files.delete({
-      fileId: src.id
-    });
-    request.execute(function(resp) {
-      console.info('GoogleDrive::unlink()', '=>', resp);
-      if ( resp && (typeof resp.result === 'object') ) {
-        callback(false, true);
-      } else {
-        callback('Failed to unlink file');
-      }
-    });
+
+    function doDelete() {
+      var request = gapi.client.drive.files.delete({
+        fileId: src.id
+      });
+      request.execute(function(resp) {
+        console.info('GoogleDrive::unlink()', '=>', resp);
+        if ( resp && (typeof resp.result === 'object') ) {
+          callback(false, true);
+        } else {
+          var msg = resp && resp.message ? resp.message : 'Unknown error'; // FIXME: Translate
+          callback('Failed to unlink file: ' + msg); // FIXME: Translate
+        }
+      });
+    }
+
+    if ( !src.id ) {
+      getFileFromPath(src.path, src.mime, function(error, response) {
+        if ( error ) {
+          callback('Failed to fetch file: ' + error); // FIXME: Translation
+          return;
+        }
+        if ( !response ) {
+          callback('Failed to fetch file: ' + 'No such file'); // FIXME: Translation
+          return;
+        }
+
+        src = response;
+        doDelete();
+      });
+    } else {
+      doDelete();
+    }
   };
 
   GoogleDriveStorage.move = function(src, dest, callback) {
