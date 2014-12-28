@@ -47,6 +47,7 @@
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
   var _isMounted = false;
+  var _rootFolderId = null;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -104,63 +105,41 @@
   /**
    * Scans entire file tree for given path
    */
-  function getFileIdFromPath(dir, type, callback) {
-    var tmp = dir.replace(OSjs.VFS.Modules.GoogleDrive.match, '');
-    tmp = tmp.replace(/^\//, '').replace(/\/$/, '').split('/');
-
-    var currentItem, currentIter;
-    var atoms = [''];
-
-    if ( !tmp.length ) {
-      return callback(false, false);
+  function getFileFromPath(dir, type, callback) {
+    if ( dir instanceof OSjs.VFS.File ) {
+      dir = dir.path;
     }
 
-    function _findMatching(m, list) {
-      var result = null;
+    var tmpItem = new OSjs.VFS.File({
+      filename: Utils.filename(dir),
+      type: 'dir',
+      path: Utils.dirname(dir)
+    });
+
+    console.debug('GoogleDrive::*getFileIdFromPath()', dir, type, tmpItem);
+
+    getAllDirectoryFiles(tmpItem, function(error, list, ldir) {
+      if ( error ) {
+        return callback(error);
+      }
+
+      var found = null;
       list.forEach(function(iter) {
-        if ( iter && iter.title === m ) {
+        if ( iter.title === Utils.filename(dir) ) {
           if ( type ) {
             if ( iter.mimeType === type ) {
-              result = iter;
+              found = iter;
               return false;
             }
           } else {
-            result = iter;
-            return false;
+            found = iter;
           }
         }
-      });
-      return result;
-    }
-
-    function _nextDirectory() {
-      if ( currentItem ) {
-        atoms.push(currentIter);
-      }
-      currentIter = tmp.shift();
-
-      var tmpItem = new OSjs.VFS.File({
-        filename: currentIter,
-        type: 'dir',
-        path: 'google-drive://' + atoms.join('/')
+        return true;
       });
 
-      getAllDirectoryFiles(tmpItem, function(error, list, ldir) {
-        if ( error ) {
-          return callback(error);
-        }
-
-        currentItem = _findMatching(currentIter, list);
-        if ( tmp.length ) {
-          _nextDirectory();
-        } else {
-          callback(false, currentItem);
-        }
-      });
-
-    }
-
-    _nextDirectory();
+      callback(false, found);
+    });
   }
 
   /**
@@ -172,7 +151,7 @@
 
     console.debug('GoogleDrive::*getParentPathId()', item);
 
-    getFileIdFromPath(dir, type, function(error, item) {
+    getFileFromPath(dir, type, function(error, item) {
       if ( error ) {
         return callback(error);
       }
@@ -185,21 +164,23 @@
    */
   function createDirectoryList(dir, list, item, options) {
     var result = [];
+    var rdir = dir.replace(/^google-drive\:\/+/, '/'); // FIXME
+    var isOnRoot = rdir === '/';
+
     if ( list ) {
       list.forEach(function(iter, i) {
         if ( !iter ) { return; }
 
         var path = dir;
 
-        if ( !path.match(/\/$/) ) {
-          path += '/';
-        }
-
         if ( iter.title === '..' ) {
           path = Utils.dirname(dir);
+        } else {
+          if ( !isOnRoot ) {
+            path += '/';
+          }
+          path += iter.title;
         }
-
-        path += iter.title === '..' ? '/' : iter.title;
 
         result.push(new OSjs.VFS.File({
           filename: iter.title,
@@ -218,121 +199,153 @@
    * Get all files in a directory
    */
   function getAllDirectoryFiles(item, callback) {
-    console.debug('GoogleDrive::*getAllDirectoryFiles()', item);
-
-    var dir = item.type === 'dir' ? item.path : (Utils.dirname(item.path) + '/'); // FIXME
-    var root = dir.replace(OSjs.VFS.Modules.GoogleDrive.match, '') || '/';
-    var method = gapi.client.drive.files.list;
-    var args = {};
-    var initialList = [];
-
-    root = root.replace(/\/+/, '/');
-
-    if ( item.type === 'dir' && root !== '/' ) {
-      method = gapi.client.drive.children.list;
-      args = {folderId: item.id};
-      initialList = [
-        {
-          title: '..',
-          path: Utils.dirname(item.path),
-          id: item.id,
-          quotaBytesUsed: 0,
-          mimeType: 'application/vnd.google-apps.folder'
-        }
-      ];
-    }
+    console.log('GoogleDrive::*getAllDirectoryFiles()', item);
 
     function retrieveAllFiles(cb) {
-      var retrievePageOfFiles = function(request, result) {
+      var list = [];
+
+      function retrievePageOfFiles(request, result) {
         request.execute(function(resp) {
           if ( resp.error ) {
             console.warn('GoogleDrive::getAllDirectoryFiles()', 'error', resp);
           }
-          if ( root === '/' ) {
-            var files = [];
-            if ( resp.items ) {
-              resp.items.forEach(function(fiter) {
-                var isRooted = false;
-                fiter.parents.forEach(function(par, idx) {
-                  if ( par.isRoot ) {
-                    isRooted = true;
-                  }
-                  if ( idx > 0 && par.isRoot ) {
-                    isRooted = false;
-                  }
-                });
 
-                if ( isRooted ) {
-                  files.push(fiter);
-                }
-              });
-            }
-
-            result = result.concat(files);
-          } else {
-            result = result.concat(resp.items);
-          }
-
+          result = result.concat(resp.items);
 
           var nextPageToken = resp.nextPageToken;
           if (nextPageToken) {
-            var targs = Utils.cloneObject(args);
-            args.pageToken = nextPageToken;
-            request = method(targs);
+            request = gapi.client.drive.files.list({
+              pageToken: nextPageToken
+            });
             retrievePageOfFiles(request, result);
           } else {
-            cb(result);
+            cb(false, result);
           }
         });
-      };
+      }
 
       try {
-        var initialRequest = method(args);
-        retrievePageOfFiles(initialRequest, initialList);
+        var initialRequest = gapi.client.drive.files.list({});
+        retrievePageOfFiles(initialRequest, list);
       } catch ( e ) {
         console.warn('GoogleDrive::getAllDirectoryFiles() exception', e, e.stack);
         console.warn('THIS ERROR OCCURS WHEN MULTIPLE REQUESTS FIRE AT ONCE ?!'); // FIXME
-        cb(initialList);
+        cb(false, list);
       }
     }
 
-    function resolveChildLinks(list, cb) {
-      var filelist = list.slice(0);
-      var result = [];
-
-      function _next() {
-        if ( !filelist.length ) {
-          return cb(false, result, dir);
-        }
-
-        var cur = filelist.shift();
-        if ( !cur ) {
-          return _next();
-        }
-
-        if ( cur.childLink ) {
-          var request = gapi.client.drive.files.get({
-            fileId: cur.id
-          });
-          request.execute(function(resp) {
-            if ( resp && resp.id ) {
-              result.push(resp);
+    function getFilesBelongingTo(list, root, cb) {
+      var idList = {};
+      var parentList = {};
+      list.forEach(function(iter) {
+        idList[iter.id] = iter;
+        var parents = [];
+        if ( iter.parents ) {
+          iter.parents.forEach(function(piter) {
+            if ( piter ) {
+              parents.push(piter.id);
             }
-            _next();
           });
+        }
+        parentList[iter.id] = parents;
+      });
+
+      var resolves = root.replace(OSjs.VFS.Modules.GoogleDrive.match, '').replace(/^\/+/, '').split('/');
+      resolves = resolves.filter(function(el) {
+        return el !== '';
+      });
+
+      var currentParentId = _rootFolderId;
+      var isOnRoot = !resolves.length;
+
+      function _getFileList(foundId) {
+        var result = [];
+
+        if ( !isOnRoot ) {
+          result.push({
+            title: '..',
+            path: Utils.dirname(root),
+            id: item.id,
+            quotaBytesUsed: 0,
+            mimeType: 'application/vnd.google-apps.folder'
+          });
+        }
+        list.forEach(function(iter) {
+          if ( iter && parentList[iter.id] && parentList[iter.id].indexOf(foundId) !== -1 ) {
+            result.push(iter);
+          }
+        });
+        return result;
+      }
+
+      function _nextDir(completed) {
+        var current = resolves.shift();
+        var done = resolves.length <= 0;
+        var found;
+
+        if ( isOnRoot ) {
+          found = currentParentId;
         } else {
-          result.push(cur);
-          _next();
+          if ( current ) {
+            list.forEach(function(iter) {
+              if ( iter ) {
+                if ( iter.title === current && parentList[iter.id] && parentList[iter.id].indexOf(currentParentId) !== -1 ) {
+                  currentParentId = iter.id;
+                  found  = iter.id;
+                }
+              }
+            });
+          }
+        }
+
+        if ( done ) {
+          completed(found);
+        } else {
+          _nextDir(completed);
         }
       }
 
-      _next();
+      _nextDir(function(foundId) {
+        if ( foundId && idList[foundId] ) {
+          cb(false, _getFileList(foundId));
+          return;
+        } else {
+          if ( isOnRoot ) {
+            cb(false, _getFileList(currentParentId));
+            return;
+          }
+        }
+
+        cb('Could not list directory');
+      });
     }
 
-    retrieveAllFiles(function(list) {
-      console.info('GoogleDrive::getAllDirectoryFiles()', '=>', list);
-      resolveChildLinks(list, callback);
-    });
+    function doRetrieve() {
+
+      retrieveAllFiles(function(error, list) {
+        var root = item.path;
+        getFilesBelongingTo(list, root, function(error, response) {
+          console.log('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
+          callback(error, response, root);
+        });
+      });
+
+    }
+
+    if ( !_rootFolderId ) {
+      var request = gapi.client.drive.about.get();
+      request.execute(function(resp) {
+        if ( !resp || !resp.rootFolderId ) {
+          callback('Failed to find root folder id');
+          return;
+        }
+        _rootFolderId = resp.rootFolderId;
+
+        doRetrieve();
+      });
+    } else {
+      doRetrieve();
+    }
   }
 
   /**
@@ -384,66 +397,65 @@
   GoogleDriveStorage.scandir = function(item, callback, options) {
     console.info('GoogleDrive::scandir()', item);
 
-    function doScandir() {
-      getAllDirectoryFiles(item, function(error, list, dir) {
-        if ( error ) {
-          return callback(error);
-        }
-        var result = createDirectoryList(dir, list, item, options);
-        callback(false, result, list);
-      });
-    }
-
-    var root = item.path.replace(OSjs.VFS.Modules.GoogleDrive.match, '') || '/';
-    if ( root !== '/' && !item.id ) {
-      var type = 'application/vnd.google-apps.folder';
-
-      getFileIdFromPath(item.path, type, function(error, found) {
-        if ( error ) {
-          return callback(error);
-        }
-
-        if ( found ) {
-          item.id = found.id;
-        }
-        doScandir();
-      });
-      return;
-    }
-
-    doScandir();
+    getAllDirectoryFiles(item, function(error, list, dir) {
+      if ( error ) {
+        return callback(error);
+      }
+      var result = createDirectoryList(dir, list, item, options);
+      callback(false, result, list);
+    });
   };
 
   GoogleDriveStorage.read = function(item, callback, options) {
     console.info('GoogleDrive::read()', item);
 
-    var request = gapi.client.drive.files.get({
-      fileId: item.id
-    });
+    function doRead() {
+      var request = gapi.client.drive.files.get({
+        fileId: item.id
+      });
 
-    var arraybuffer = options ? options.arrayBuffer === true : false;
-    request.execute(function(file) {
-      console.info('GoogleDrive::read()', '=>', file);
+      var arraybuffer = options ? options.arrayBuffer === true : false;
+      request.execute(function(file) {
+        console.info('GoogleDrive::read()', '=>', file);
 
-      if ( file && file.id ) {
-        var accessToken = gapi.auth.getToken().access_token;
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', file.downloadUrl);
-        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-        if ( arraybuffer ) {
-          xhr.responseType = 'arraybuffer';
+        if ( file && file.id ) {
+          var accessToken = gapi.auth.getToken().access_token;
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', file.downloadUrl);
+          xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+          if ( arraybuffer ) {
+            xhr.responseType = 'arraybuffer';
+          }
+          xhr.onload = function() {
+            callback(false, arraybuffer ? xhr.response : xhr.responseText);
+          };
+          xhr.onerror = function() {
+            callback('XHR Error');
+          };
+          xhr.send();
+        } else {
+          callback('Failed to fetch file'); // FIXME: Translation
         }
-        xhr.onload = function() {
-          callback(false, arraybuffer ? xhr.response : xhr.responseText);
-        };
-        xhr.onerror = function() {
-          callback('XHR Error');
-        };
-        xhr.send();
-      } else {
-        callback('Failed to fetch file');
-      }
-    });
+      });
+    }
+
+    if ( item.downloadUrl ) {
+      doRead();
+    } else {
+      getFileFromPath(item.path, item.mime, function(error, response) {
+        if ( error ) {
+          callback('Failed to fetch file: ' + error); // FIXME: Translation
+          return;
+        }
+        if ( !response ) {
+          callback('Failed to fetch file: ' + 'No such file'); // FIXME: Translation
+          return;
+        }
+
+        item = response;
+        doRead();
+      });
+    }
   };
 
   GoogleDriveStorage.write = function(file, data, callback) {
@@ -461,6 +473,7 @@
           uri = '/upload/drive/v2/files/' + exists.id;
           method = 'PUT';
         }
+        console.debug('GoogleDrive::write()->_write()', 'exists', exists);
 
         var fileData = createBoundary(file, data, function(error, fileData) {
           var request = gapi.client.request({
@@ -473,6 +486,8 @@
 
           request.execute(function(resp) {
             console.info('GoogleDrive::write()', '=>', resp);
+            console.groupEnd();
+
             if ( resp && resp.id ) {
               if ( parentId ) {
                 setFolder(resp, parentId, callback);
@@ -480,15 +495,17 @@
                 callback(false, true);
               }
             } else {
-              callback('Failed to write file');
+              callback('Failed to write file'); // FIXME: Translation
             }
           });
         });
       });
     }
 
+    console.group('GoogleDrive::write()');
     getParentPathId(file, function(error, id) {
       if ( error ) {
+        console.groupEnd();
         return callback(error);
       }
       _write(id);

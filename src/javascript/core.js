@@ -1040,6 +1040,7 @@
    * Sends a message to all processes
    */
   function doProcessMessage(msg, opts) {
+    console.info('doProcessMessage', msg, opts);
     _PROCS.forEach(function(p, i) {
       if ( p && (p instanceof Application || p instanceof Process) ) {
         p._onMessage(null, msg, opts);
