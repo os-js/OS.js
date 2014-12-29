@@ -338,21 +338,18 @@
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
 
+      if ( !options ) {
+        options = {};
+      }
+      options.arrayBuffer = true;
+
       if ( (srcInternal && dstInternal) ) {
         if ( msrc === mdst ) {
-          request(src.path, 'copy', [src, dest], _finished);
+          request(src.path, 'copy', [src, dest], _finished, options);
         } else {
-          request(null, 'copy', [src, dest], _finished);
+          request(null, 'copy', [src, dest], _finished, options);
         }
       } else {
-        var isArrayBuffer = OSjs.VFS.Modules[msrc].arrayBuffer;
-        if ( isArrayBuffer ) {
-          if ( !options ) {
-            options = {};
-          }
-          options.arrayBuffer = true;
-        }
-
         OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
           if ( error ) {
             _finished(API._('ERR_VFS_TRANSFER_FMT', error));

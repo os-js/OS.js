@@ -36,7 +36,6 @@
   OSjs.VFS              = OSjs.VFS          || {};
   OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
   OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
-    arrayBuffer: false,
     readOnly: false,
     description: 'Home',
     root: 'home:///',

@@ -69,7 +69,8 @@
         title: file.filename,
         mimeType: contentType
       };
-      var base64Data = btoa(result); //Utils.btoaUtf(result);
+      //var base64Data = btoa(result); //Utils.btoaUtf(result);
+      var base64Data = result;
       var multipartRequestBody =
           delimiter +
           'Content-Type: application/json\r\n\r\n' +
@@ -86,7 +87,7 @@
 
     var reqContentType = 'multipart/mixed; boundary=\'' + boundary + '\'';
     if ( typeof data === 'string' ) {
-      var body = createBody(data);
+      var body = createBody(Utils.btoaUtf(data));
       callback(false, {
         contentType: reqContentType,
         body: body
@@ -94,7 +95,7 @@
     } else {
       var reader = new FileReader();
       reader.onload = function(e) {
-        var body = createBody(reader.result);
+        var body = createBody(btoa(reader.result));
         callback(false, {
           contentType: reqContentType,
           body: body
@@ -829,7 +830,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
-    arrayBuffer: true,
     readOnly: false,
     description: 'Google Drive',
     visible: true,

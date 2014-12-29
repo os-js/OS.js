@@ -88,16 +88,30 @@
       ropts.push(options);
     }
 
-    OSjs.VFS.internalCall('read', ropts, function(error, result) {
-      if ( error ) {
-        return callback(error);
-      }
-      if ( dataSource ) {
-        return callback(false, result);
-      }
+    if ( options && options.arrayBuffer ) {
+      this.url(item, function(error, url) {
+        if ( error ) {
+          return callback(error);
+        }
 
-      return callback(false, atob(result));
-    });
+        Utils.AjaxDownload(url, function(response) {
+          callback(false, response);
+        }, function(error) {
+          callback(error);
+        });
+      });
+    } else {
+      OSjs.VFS.internalCall('read', ropts, function(error, result) {
+        if ( error ) {
+          return callback(error);
+        }
+        if ( dataSource ) {
+          return callback(false, result);
+        }
+
+        return callback(false, atob(result));
+      });
+    }
   };
   PublicStorage.copy = function(src, dest, callback) {
     OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
@@ -147,7 +161,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.Public = OSjs.VFS.Modules.Public || {
-    arrayBuffer: false,
     readOnly: false,
     description: 'Shared',
     root: '/',

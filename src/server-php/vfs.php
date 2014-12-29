@@ -169,6 +169,8 @@ class FS
     } else {
       $content = base64_decode($content);
     }
+    //$content = iconv("ISO-8859-1","UTF-8", $content);
+
 
     return file_put_contents($fname, $content) !== false;
   }

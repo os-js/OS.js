@@ -102,14 +102,15 @@
     console.info('DropboxVFS::write()', item);
 
     var path = OSjs.VFS.getRelativeURL(item.path);
-
     var bytes = data;
+    /*
     if ( typeof data === 'string' ) {
       bytes = new Uint8Array(data.length);
       for (var i=0; i<data.length; i++) {
         bytes[i] = data.charCodeAt(i);
       }
     }
+    */
 
     this.client.writeFile(path, bytes, function(error, stat) {
       callback(error, true);
@@ -238,7 +239,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || {
-    arrayBuffer: true,
     readOnly: false,
     description: 'Dropbox',
     visible: true,

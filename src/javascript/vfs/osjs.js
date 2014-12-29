@@ -61,16 +61,30 @@
       ropts.push(options);
     }
 
-    OSjs.VFS.internalCall('read', ropts, function(error, result) {
-      if ( error ) {
-        return callback(error);
-      }
-      if ( dataSource ) {
-        return callback(false, result);
-      }
+    if ( options && options.arrayBuffer ) {
+      this.url(item, function(error, url) {
+        if ( error ) {
+          return callback(error);
+        }
 
-      return callback(false, atob(result));
-    });
+        Utils.AjaxDownload(url, function(response) {
+          callback(false, response);
+        }, function(error) {
+          callback(error);
+        });
+      });
+    } else {
+      OSjs.VFS.internalCall('read', ropts, function(error, result) {
+        if ( error ) {
+          return callback(error);
+        }
+        if ( dataSource ) {
+          return callback(false, result);
+        }
+
+        return callback(false, atob(result));
+      });
+    }
   };
   OSjsStorage.copy = function(src, dest, callback) {
     callback('Unavailable');
@@ -118,7 +132,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
-    arrayBuffer: false,
     readOnly: true,
     description: 'OS.js',
     root: 'osjs:///',
