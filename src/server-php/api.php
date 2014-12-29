@@ -298,15 +298,14 @@ class API
           session_write_close();
           if ( ($mime = fileMime($file)) ) {
             $length = filesize($file);
-            $fp = fopen($file, "r");
+            $fp = fopen($file, "rb");
             $etag = md5(serialize(fstat($fp)));
+            $result = fread($fp, $length);
             fclose($fp);
 
             $headers[] = "Etag: {$etag}";
-            $headers[] = "Content-type: {$mime}";
+            $headers[] = "Content-type: {$mime}; charset=utf-8";
             $headers[] = "Content-length: {$length}";
-
-            $result = file_get_contents($file);
           } else {
             $error = "No valid MIME";
           }

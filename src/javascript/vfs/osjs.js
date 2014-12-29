@@ -61,7 +61,6 @@
       ropts.push(options);
     }
 
-    //OSjs.VFS.internalCall('read', ropts, callback);
     OSjs.VFS.internalCall('read', ropts, function(error, result) {
       if ( error ) {
         return callback(error);
