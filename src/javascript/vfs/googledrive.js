@@ -747,7 +747,8 @@
   };
 
   GoogleDriveStorage.upload = function(file, dest, callback) {
-    var ndest = dest.replace(OSjs.VFS.Modules.GoogleDrive.match, '');
+    //var ndest = dest.replace(OSjs.VFS.Modules.GoogleDrive.match, '');
+    var ndest = dest;
     if ( !ndest.match(/\/$/) ) {
       ndest += '/';
     }
