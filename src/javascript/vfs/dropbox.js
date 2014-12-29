@@ -57,7 +57,7 @@
   function destroyNotificationIcon() {
     var wm = API.getWMInstance();
     if ( wm ) {
-      wm.removeNotificationIcon('GoogleAPIService');
+      wm.removeNotificationIcon('DropboxVFSService');
     }
   }
 
@@ -104,6 +104,14 @@
   function DropboxVFS() {
     var clientKey = _getConfig('ClientKey');
     this.client = new window.Dropbox.Client({ key: clientKey });
+
+    /*
+    if ( this.client ) {
+      var authDriver = new window.Dropbox.AuthDriver.Popup({
+      });
+      this.client.authDriver(authDriver);
+    }
+    */
   }
 
   DropboxVFS.prototype.init = function(callback) {
@@ -322,19 +330,31 @@
     cb = cb || function() {};
     options = options || null;
 
+    function finished(client) {
+      if ( client ) {
+        client.reset();
+      }
+      _isMounted = false;
+      _cachedClient = null;
+
+      API.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
+
+      destroyNotificationIcon();
+
+      cb();
+    }
+
     getDropbox(function(client) {
       client = client ? client.client : null;
       if ( client ) {
-        client.signOut(options, function() {
-          _isMounted = false;
-          _cachedClient = null;
-
-          API.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
-
-          destroyNotificationIcon();
-
-          cb();
-        });
+        try {
+          client.signOut(options, function() {
+            finished(client);
+          });
+        } catch ( ex ) {
+          console.warn('DROPBOX SIGNOUT EXCEPTION', ex);
+          finished(client);
+        }
       }
     });
   }
