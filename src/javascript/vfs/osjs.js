@@ -39,71 +39,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var OSjsStorage = {};
-  OSjsStorage.scandir = function(item, callback, options) {
-    OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
-      var list = [];
-      if ( result ) {
-        result = OSjs.VFS.filterScandir(result, options);
-        result.forEach(function(iter) {
-          list.push(new OSjs.VFS.File(iter));
-        });
-      }
-      callback(error, list);
-    });
-  };
-  OSjsStorage.write = function(item, data, callback) {
-    callback('Unavailable');
-  };
-  OSjsStorage.read = function(item, callback, options) {
-    var ropts = [item.path];
-    var dataSource = options ? (options.dataSource ? true : false) : false;
-    if ( options ) {
-      ropts.push(options);
-    }
-
-    if ( options && options.arrayBuffer ) {
-      this.url(item, function(error, url) {
-        if ( error ) {
-          return callback(error);
-        }
-
-        Utils.AjaxDownload(url, function(response) {
-          callback(false, response);
-        }, function(error) {
-          callback(error);
-        });
-      });
-    } else {
-      OSjs.VFS.internalCall('read', ropts, function(error, result) {
-        if ( error ) {
-          return callback(error);
-        }
-        if ( dataSource ) {
-          return callback(false, result);
-        }
-
-        return callback(false, atob(result));
-      });
-    }
-  };
-  OSjsStorage.copy = function(src, dest, callback) {
-    callback('Unavailable');
-  };
-  OSjsStorage.move = function(src, dest, callback) {
-    callback('Unavailable');
-  };
-  OSjsStorage.unlink = function(item, callback) {
-    callback('Unavailable');
-  };
-  OSjsStorage.mkdir = function(item, callback) {
-    callback('Unavailable');
-  };
-  OSjsStorage.exists = function(item, callback) {
-    callback(false, true);
-  };
-  OSjsStorage.fileinfo = function(item, callback) {
-    callback('Unavailable');
-  };
   OSjsStorage.url = function(item, callback) {
     var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, '');
     callback(false, url);
@@ -117,14 +52,16 @@
     args = args || [];
     callback = callback || {};
 
-    if ( !OSjsStorage[name] ) {
-      throw new Error('Invalid OSjsStorage API call name');
+    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo'];
+    if ( OSjsStorage[name] ) {
+      var fargs = args;
+      fargs.push(callback);
+      fargs.push(options);
+      return OSjsStorage[name].apply(OSjsStorage, fargs);
+    } else if ( restricted.indexOf(name) !== -1 ) {
+      return callback('Unavailable');
     }
-
-    var fargs = args;
-    fargs.push(callback);
-    fargs.push(options);
-    OSjsStorage[name].apply(OSjsStorage, fargs);
+    OSjs.VFS.Modules.Public.request.apply(null, arguments);
   }
 
   /////////////////////////////////////////////////////////////////////////////
