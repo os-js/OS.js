@@ -117,9 +117,18 @@
     console.info('DropboxVFS::scandir()', item);
 
     var path = OSjs.VFS.getRelativeURL(item.path);
+    var isOnRoot = path === '/';
 
     function _finish(entries) {
       var result = [];
+      if ( !isOnRoot ) {
+        result.push(new OSjs.VFS.File({
+          filename: '..',
+          path: Utils.dirname(item.path),
+          mime: null,
+          type: 'dir'
+        }));
+      }
       entries.forEach(function(iter) {
         console.info(iter);
         result.push(new OSjs.VFS.File({
