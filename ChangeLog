@@ -1,3 +1,17 @@
+# 2.0.0-alpha44
+
+NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working properly
+
+* VFS: Now always transfers files using ArrayBuffer if possible
+* VFS: google-drive - Now caches filetree for a certain amount of time
+* VFS: google-drive - Rewrote filetree handling. Solved all bugs
+* VFS: google-drive - Updated locales
+* VFS: dropbox - Minor improvments
+* VFS: Improved copy between sources
+* VFS: Cleanups
+* CoreWM: Fixed contextmenu on panel
+* CoreWM: Added option to invert IconView colors (uses background color)
+
 # 2.0.0-alpha43
 
 * CoreWM: Split lib.js into separate files (finally)

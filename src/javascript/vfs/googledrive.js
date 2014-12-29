@@ -570,7 +570,7 @@
       }
 
       var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-      callback(API._('ERR_GDRIVE_COPY_FMT', error));
+      callback(API._('ERR_GDRIVE_COPY_FMT', msg));
     });
   };
 
