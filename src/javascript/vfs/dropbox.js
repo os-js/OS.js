@@ -61,12 +61,14 @@
     var clientKey = _getConfig('ClientKey');
     this.client = new window.Dropbox.Client({ key: clientKey });
   }
+
   DropboxVFS.prototype.init = function(callback) {
     this.client.authenticate(function(error, client) {
       console.warn('DropboxVFS::construct()', error, client);
       callback(error);
     });
   };
+
   DropboxVFS.prototype.scandir = function(item, callback) {
     console.info('DropboxVFS::scandir()', item);
 
@@ -92,12 +94,14 @@
 
     this.client.readdir(path, {}, function(error, entries, stat, entry_stats) {
       if ( error ) {
+        error = API._('ERR_VFSMODULE_SCANDIR_FMT', error);
         callback(error);
         return;
       }
       _finish(entry_stats);
     });
   };
+
   DropboxVFS.prototype.write = function(item, data, callback) {
     console.info('DropboxVFS::write()', item);
 
@@ -113,59 +117,103 @@
     */
 
     this.client.writeFile(path, bytes, function(error, stat) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_WRITE_FMT', error);
+      }
       callback(error, true);
     });
   };
+
   DropboxVFS.prototype.read = function(item, callback, options) {
     options = options || {};
 
     console.info('DropboxVFS::read()', item, options);
     var path = OSjs.VFS.getRelativeURL(item.path);
     this.client.readFile(path, options, function(error, entries) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_READ_FMT', error);
+      }
       callback(error, (error ? false : (entries instanceof Array ? entries.join('\n') : entries)));
     });
   };
+
   DropboxVFS.prototype.copy = function(src, dest, callback) {
     console.info('DropboxVFS::copy()', src, dest);
     var spath = OSjs.VFS.getRelativeURL(src.path);
     var dpath = OSjs.VFS.getRelativeURL(dest.path);
     this.client.copy(spath, dpath, function(error) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_COPY_FMT', error);
+      }
       callback(error, !error);
     });
   };
+
   DropboxVFS.prototype.move = function(src, dest, callback) {
     console.info('DropboxVFS::move()', src, dest);
     var spath = OSjs.VFS.getRelativeURL(src.path);
     var dpath = OSjs.VFS.getRelativeURL(dest.path);
     this.client.move(spath, dpath, function(error) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_MOVE_FMT', error);
+      }
       callback(error, !error);
     });
   };
+
   DropboxVFS.prototype.unlink = function(item, callback) {
     console.info('DropboxVFS::unlink()', item);
     var path = OSjs.VFS.getRelativeURL(item.path);
     this.client.unlink(path, function(error, stat) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
+      }
       callback(error, !error);
     });
   };
+
   DropboxVFS.prototype.mkdir = function(item, callback) {
     console.info('DropboxVFS::mkdir()', item);
     var path = OSjs.VFS.getRelativeURL(item.path);
     this.client.mkdir(path, function(error, stat) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_MKDIR_FMT', error);
+      }
       callback(error, !error);
     });
   };
+
+  // FIXME: Is there a better way to do this ?!
   DropboxVFS.prototype.exists = function(item, callback) {
     console.info('DropboxVFS::exists()', item);
-    // FIXME: Is there a better way to do this ?!
     this.read(item, function(error, data) {
       callback(error, !error);
     });
   };
+
   DropboxVFS.prototype.fileinfo = function(item, callback) {
     console.info('DropboxVFS::fileinfo()', item);
-    callback('Not implemented');
+
+    var path = OSjs.VFS.getRelativeURL(item.path);
+    this.client.stat(path, path, function(error, response) {
+      var fileinfo = null;
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_FILEINFO_FMT', error);
+      } else {
+        if ( response ) {
+          fileinfo = {};
+
+          var useKeys = ['clientModifiedAt', 'humanSize', 'mimeType', 'modifiedAt', 'name', 'path', 'size', 'versionTag'];
+          useKeys.forEach(function(k) {
+            fileinfo[k] = response[k];
+          });
+        }
+      }
+
+      callback(error, fileinfo);
+    });
   };
+
   DropboxVFS.prototype.url = function(item, callback) {
     console.info('DropboxVFS::url()', item);
     var path = (typeof item === 'string') ? OSjs.VFS.getRelativeURL(item) : OSjs.VFS.getRelativeURL(item.path);
@@ -173,6 +221,7 @@
       callback(error, url ? url.url : false);
     });
   };
+
   DropboxVFS.prototype.upload = function(file, dest, callback) {
     var ndest = dest.replace(OSjs.VFS.Modules.Dropbox.match, '');
     if ( !ndest.match(/\/$/) ) {

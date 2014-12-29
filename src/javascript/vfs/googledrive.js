@@ -372,7 +372,7 @@
         var request = gapi.client.drive.about.get();
         request.execute(function(resp) {
           if ( !resp || !resp.rootFolderId ) {
-            callback(API._('ERR_GDRIVE_ROOT_ID'));
+            callback(API._('ERR_VFSMODULE_ROOT_ID'));
             return;
           }
           _rootFolderId = resp.rootFolderId;
@@ -468,11 +468,11 @@
             callback(false, arraybuffer ? xhr.response : xhr.responseText);
           };
           xhr.onerror = function() {
-            callback(API._('ERR_GDRIVE_XHR_ERROR'));
+            callback(API._('ERR_VFSMODULE_XHR_ERROR'));
           };
           xhr.send();
         } else {
-          callback(API._('ERR_GDRIVE_READ'));
+          callback(API._('ERR_VFSMODULE_READ'));
         }
       });
     }
@@ -482,11 +482,11 @@
     } else {
       getFileFromPath(item.path, item.mime, function(error, response) {
         if ( error ) {
-          callback(API._('ERR_GDRIVE_READ_FMT', error));
+          callback(API._('ERR_VFSMODULE_READ_FMT', error));
           return;
         }
         if ( !response ) {
-          callback(API._('ERR_GDRIVE_READ_FMT', API._('ERR_GDRIVE_NOSUCH')));
+          callback(API._('ERR_VFSMODULE_READ_FMT', API._('ERR_VFSMODULE_NOSUCH')));
           return;
         }
 
@@ -531,7 +531,7 @@
               callback(false, true);
             }
           } else {
-            callback(API._('ERR_GDRIVE_WRITE'));
+            callback(API._('ERR_VFSMODULE_WRITE'));
           }
         });
       });
@@ -570,7 +570,7 @@
       }
 
       var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-      callback(API._('ERR_GDRIVE_COPY_FMT', msg));
+      callback(API._('ERR_VFSMODULE_COPY_FMT', msg));
     });
   };
 
@@ -589,7 +589,7 @@
           callback(false, true);
         } else {
           var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-          callback(API._('ERR_GDRIVE_UNLINK_FMT', msg));
+          callback(API._('ERR_VFSMODULE_UNLINK_FMT', msg));
         }
       });
     }
@@ -597,11 +597,11 @@
     if ( !src.id ) {
       getFileFromPath(src.path, src.mime, function(error, response) {
         if ( error ) {
-          callback(API._('ERR_GDRIVE_READ_FMT', error));
+          callback(API._('ERR_VFSMODULE_READ_FMT', error));
           return;
         }
         if ( !response ) {
-          callback(API._('ERR_GDRIVE_READ_FMT', API._('ERR_GDRIVE_NOSUCH')));
+          callback(API._('ERR_VFSMODULE_READ_FMT', API._('ERR_VFSMODULE_NOSUCH')));
           return;
         }
 
@@ -629,7 +629,7 @@
         callback(false, true);
       } else {
         var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-        callback(API._('ERR_GDRIVE_MOVE_FMT', msg));
+        callback(API._('ERR_VFSMODULE_MOVE_FMT', msg));
       }
     });
   };
@@ -642,7 +642,7 @@
 
     this.scandir(req, function(error, result) {
       if ( error ) {
-        callback(API._('ERR_GDRIVE_EXIST_FMT', error));
+        callback(API._('ERR_VFSMODULE_EXIST_FMT', error));
         return;
       }
       var found = false;
@@ -678,7 +678,7 @@
         });
         return callback(false, info);
       }
-      callback(API._('ERR_GDRIVE_FILEINFO'));
+      callback(API._('ERR_VFSMODULE_FILEINFO'));
     });
   };
 
@@ -698,7 +698,7 @@
         callback(false, resp.webContentLink);
       } else {
         var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-        callback(API._('ERR_GDRIVE_URL_FMT', msg));
+        callback(API._('ERR_VFSMODULE_URL_FMT', msg));
       }
     });
   };
@@ -724,7 +724,7 @@
           callback(false, true);
         } else {
           var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-          callback(API._('ERR_GDRIVE_MKDIR_FMT', msg));
+          callback(API._('ERR_VFSMODULE_MKDIR_FMT', msg));
         }
       });
     }
@@ -733,8 +733,8 @@
       getParentPathId(dir, function(error, id) {
         console.debug('GoogleDrive::mkdir()->getParentPathId()', id, 'of', dir);
         if ( error || !id ) {
-          error = error || API._('ERR_GDRIVE_PARENT');
-          callback(API._('ERR_GDRIVE_PARENT_FMT', error));
+          error = error || API._('ERR_VFSMODULE_PARENT');
+          callback(API._('ERR_VFSMODULE_PARENT_FMT', error));
           return;
         }
         doMkdir([{id: id}]);
