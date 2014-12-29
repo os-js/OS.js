@@ -65,12 +65,15 @@
       ropts.push(options);
     }
 
-    //OSjs.VFS.internalCall('read', ropts, callback);
     OSjs.VFS.internalCall('read', ropts, function(error, result) {
       if ( error ) {
         return callback(error);
       }
-      callback(false, dataSource ? result : Utils.atobUtf(result));
+      if ( dataSource ) {
+        return callback(false, result);
+      }
+
+      return callback(false, atob(result));
     });
   };
   PublicStorage.copy = function(src, dest, callback) {

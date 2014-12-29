@@ -100,8 +100,9 @@
   };
   DropboxVFS.prototype.write = function(item, data, callback) {
     console.info('DropboxVFS::write()', item);
+
     var path = OSjs.VFS.getRelativeURL(item.path);
-    this.client.writeFile(path, data, function(error, stat) {
+    this.client.writeFile(path, str2ab(data), function(error, stat) {
       callback(error, true);
     });
   };

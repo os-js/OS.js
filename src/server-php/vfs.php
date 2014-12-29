@@ -188,8 +188,12 @@ class FS
 
       throw new Exception("Failed to read file");
     }
+    $handle = fopen($fname, "rb");
+    $contents = fread($handle, filesize($fname));
+    fclose($handle);
 
-    return base64_encode(file_get_contents($fname));
+    $encoded = base64_encode($contents);
+    return $encoded;
   }
 
   public static function delete($fname) {

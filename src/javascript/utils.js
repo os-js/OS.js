@@ -289,6 +289,7 @@
     return '';
   };
 
+  // Encode
   OSjs.Utils.btoaUtf = function(str) { // Encode
     var _unescape = window.unescape || function(s) {
       function d(x, n) {
@@ -296,9 +297,11 @@
       }
       return s.replace(/%([0-9A-F]{2})/i, d);
     };
-    return btoa(_unescape(encodeURIComponent(str)));
+    str = _unescape(encodeURIComponent(str));
+    return btoa(str);
   };
 
+  // Decode
   OSjs.Utils.atobUtf = function(str) { // Decode
     var _escape = window.escape || function(s) {
       function q(c) {
@@ -308,7 +311,8 @@
       return s.replace(/[\x00-),:-?[-^`{-\xFF]/g, q);
     };
 
-    return decodeURIComponent(_escape(atob(str)));
+    var trans = _escape(atob(str));
+    return decodeURIComponent(trans);
   };
 
   OSjs.Utils.getUserLocale = function() {
