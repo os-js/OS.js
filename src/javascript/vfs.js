@@ -328,8 +328,6 @@
     if ( !(dest instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_DST_FILE')); }
 
     function doRequest() {
-      var msrc, mdst;
-
       function _finished(error, result) {
         if ( !error ) {
           API.message('vfs', {type: 'mkdir', file: dest, source: appRef ? appRef.__pid : null});
@@ -346,10 +344,19 @@
         }, options);
       }
 
-      if ( isInternalModule(src.path) !== isInternalModule(dest.path) ) {
-        msrc = getModuleFromPath(src.path);
-        mdst = getModuleFromPath(dest.path);
 
+      var srcInternal = isInternalModule(src.path);
+      var dstInternal = isInternalModule(dest.path);
+      var msrc = getModuleFromPath(src.path);
+      var mdst = getModuleFromPath(dest.path);
+
+      if ( (srcInternal && dstInternal) ) {
+        if ( msrc === mdst ) {
+          request(src.path, 'copy', [src, dest], _finished);
+        } else {
+          request(null, 'copy', [src, dest], _finished);
+        }
+      } else {
         var isArrayBuffer = OSjs.VFS.Modules[msrc].arrayBuffer;
         if ( isArrayBuffer ) {
           if ( !options ) {
@@ -376,10 +383,7 @@
           }
 
         }, options);
-        return;
       }
-
-      request(null, 'copy', [src, dest], _finished);
     }
 
     existsWrapper(dest, function(error) {
@@ -409,14 +413,18 @@
         callback(error, result);
       }
 
-      var isInternal = (isInternalModule(src.path) && isInternalModule(dest.path));
-      var isOther    = (isInternalModule(src.path) !== isInternalModule(dest.path));
+      var srcInternal = isInternalModule(src.path);
+      var dstInternal = isInternalModule(dest.path);
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
 
-      if ( !isInternal && (msrc === mdst) ) {
-        request(src.path, 'move', [src, dest], _finished);
-      } else if ( isOther ) {
+      if ( (srcInternal && dstInternal) ) {
+        if ( msrc === mdst ) {
+          request(src.path, 'move', [src, dest], _finished);
+        } else {
+          request(null, 'move', [src, dest], _finished, options);
+        }
+      } else {
         self.copy(src, dest, function(error, result) {
           if ( error ) {
             error = API._('ERR_VFS_TRANSFER_FMT', error);
@@ -430,8 +438,6 @@
             _finished(error, result);
           }, options);
         });
-      } else {
-        request(null, 'move', [src, dest], _finished, options);
       }
     }
 
