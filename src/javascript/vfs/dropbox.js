@@ -105,13 +105,18 @@
     var clientKey = _getConfig('ClientKey');
     this.client = new window.Dropbox.Client({ key: clientKey });
 
-    /*
     if ( this.client ) {
+      var href = window.location.href;
+      if ( !href.match(/\/$/) ) {
+        href += '/';
+      }
+      href += 'vendor/dropboxOauthReceiver.html';
+
       var authDriver = new window.Dropbox.AuthDriver.Popup({
+        receiverUrl: href
       });
       this.client.authDriver(authDriver);
     }
-    */
   }
 
   DropboxVFS.prototype.init = function(callback) {
