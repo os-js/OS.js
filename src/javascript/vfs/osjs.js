@@ -66,7 +66,11 @@
       if ( error ) {
         return callback(error);
       }
-      callback(false, dataSource ? result : Utils.atobUtf(result));
+      if ( dataSource ) {
+        return callback(false, result);
+      }
+
+      return callback(false, atob(result));
     });
   };
   OSjsStorage.copy = function(src, dest, callback) {
