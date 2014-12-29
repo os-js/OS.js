@@ -104,8 +104,8 @@
 
       if ( opts.dataSource ) {
         data = data.replace(/^data\:(.*);base64\,/, "") || '';
-        data = new Buffer(data, 'base64').toString('ascii')
       }
+      data = new Buffer(data, 'base64').toString('utf-8');
 
       _fs.writeFile(realPath.root, data, function(error, data) {
         if ( error ) {
