@@ -166,6 +166,8 @@ class FS
 
         $content = $dcontent;
       }
+    } else {
+      $content = base64_decode($content);
     }
 
     return file_put_contents($fname, $content) !== false;

@@ -79,7 +79,7 @@
       });
       return;
     }
-    doWrite(data);
+    doWrite(btoa(data));
   };
   PublicStorage.read = function(item, callback, options) {
     var ropts = [item.path];
