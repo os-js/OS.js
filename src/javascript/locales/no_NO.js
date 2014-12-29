@@ -142,7 +142,7 @@
 
     // GoogleAPI
     'GAPI_DISABLED'           : 'GoogleAPI Modul dekativert eller ikke konfigurert',
-    'GAPI_NOTIFICATION_TITLE' : 'Du må logge inn på Google API',
+    'GAPI_NOTIFICATION_TITLE' : 'Du er logget inn i Google API',
     'GAPI_SIGN_OUT'           : 'Logg ut av Google API Services',
     'GAPI_REVOKE'             : 'Tilbakekall tillatelse og Logg ut',
     'GAPI_AUTH_FAILURE'       : 'Google API autentisering feilet eller tok ikke sted',
@@ -170,7 +170,6 @@
     'ERR_VFS_DOWNLOAD_FAILED' : 'En feil oppstod under nedlasting: {0}',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Last ned fil',
 
-    // VFS -> GoogleDrive
     'ERR_VFSMODULE_XHR_ERROR'    : 'XHR Feil',
     'ERR_VFSMODULE_ROOT_ID'      : 'Klarte ikke hente id for rotmappe',
     'ERR_VFSMODULE_NOSUCH'       : 'Filen eksister ikke',
@@ -196,6 +195,10 @@
     'ERR_VFSMODULE_MKDIR_FMT'    : 'Klarte ikke lage mapp: {0}',
     'ERR_VFSMODULE_URL'          : 'Klarte ikke hente URL for fil',
     'ERR_VFSMODULE_URL_FMT'      : 'Klarte ikke hente URL for fil: {0}',
+
+    // VFS -> Dropbox
+    'DROPBOX_NOTIFICATION_TITLE' : 'Du er logget inn i Dropbox API',
+    'DROPBOX_SIGN_OUT'           : 'Logg ut fra Dropbox API',
 
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : 'Kan ikke åpne filen',

@@ -134,7 +134,6 @@
 
     'DIALOG_FONT_TITLE' : 'Font Dialog',
 
-
     'DIALOG_APPCHOOSER_TITLE' : 'Choose Application',
     'DIALOG_APPCHOOSER_MSG'   : 'Choose an application to open',
     'DIALOG_APPCHOOSER_NO_SELECTION' : 'You need to select an application',
@@ -170,7 +169,6 @@
     'ERR_VFS_DOWNLOAD_FAILED' : 'An error occured while downloading: {0}',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
-    // VFS -> GoogleDrive
     'ERR_VFSMODULE_XHR_ERROR'    : 'XHR Error',
     'ERR_VFSMODULE_ROOT_ID'      : 'Failed to find root folder id',
     'ERR_VFSMODULE_NOSUCH'       : 'File does not exist',
@@ -196,6 +194,10 @@
     'ERR_VFSMODULE_MKDIR_FMT'    : 'Failed to create directory: {0}',
     'ERR_VFSMODULE_URL'          : 'Failed to get URL for file',
     'ERR_VFSMODULE_URL_FMT'      : 'Failed to get URL for file: {0}',
+
+    // VFS -> Dropbox
+    'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',
+    'DROPBOX_SIGN_OUT'           : 'Sign out from Google API Services',
 
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : 'Cannot open file',
