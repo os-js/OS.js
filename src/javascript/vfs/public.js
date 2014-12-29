@@ -52,11 +52,34 @@
     });
   };
   PublicStorage.write = function(item, data, callback, options) {
-    var wopts = [item.path, data];
-    if ( options ) {
-      wopts.push(options);
+    function createDataURL(str, mime, callback) {
+      var blob = new Blob([str], {type: mime});
+      var r = new FileReader();
+      r.onloadend = function() {
+        callback(false, r.result);
+      };
+      r.readAsDataURL(blob);
     }
-    OSjs.VFS.internalCall('write', wopts, callback);
+
+    function doWrite(data) {
+      var wopts = [item.path, data];
+      if ( options ) {
+        wopts.push(options);
+      }
+      OSjs.VFS.internalCall('write', wopts, callback);
+    }
+
+    if ( data instanceof ArrayBuffer ) {
+      createDataURL(data, item.mime || 'application/octet-stream', function(error, result) {
+        if ( !options ) {
+          options = {};
+        }
+        options.dataSource = true;
+        doWrite(result);
+      });
+      return;
+    }
+    doWrite(data);
   };
   PublicStorage.read = function(item, callback, options) {
     var ropts = [item.path];

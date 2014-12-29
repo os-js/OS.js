@@ -102,9 +102,13 @@
     console.info('DropboxVFS::write()', item);
 
     var path = OSjs.VFS.getRelativeURL(item.path);
-    var bytes = new Uint8Array(data.length);
-    for (var i=0; i<data.length; i++) {
-      bytes[i] = data.charCodeAt(i);
+
+    var bytes = data;
+    if ( typeof data === 'string' ) {
+      bytes = new Uint8Array(data.length);
+      for (var i=0; i<data.length; i++) {
+        bytes[i] = data.charCodeAt(i);
+      }
     }
 
     this.client.writeFile(path, bytes, function(error, stat) {

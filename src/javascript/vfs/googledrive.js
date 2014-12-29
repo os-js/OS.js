@@ -93,7 +93,6 @@
       });
     } else {
       var reader = new FileReader();
-      reader.readAsBinaryString(data);
       reader.onload = function(e) {
         var body = createBody(reader.result);
         callback(false, {
@@ -104,6 +103,13 @@
       reader.onerror = function(e) {
         callback(e);
       };
+
+      if ( data instanceof ArrayBuffer ) {
+        var blob = new Blob([data], {type: reqContentType});
+        reader.readAsBinaryString(blob);
+      } else {
+        reader.readAsBinaryString(data);
+      }
     }
   }
 

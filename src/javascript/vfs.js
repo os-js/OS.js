@@ -170,18 +170,6 @@
   }
 
   /**
-   * Creates a blob URL
-   */
-  function createDataURL(str, mime, callback) {
-    var blob = new Blob([str], {type: mime});
-    var r = new FileReader();
-    r.onloadend = function() {
-      callback(false, r.result);
-    };
-    r.readAsDataURL(blob);
-  }
-
-  /**
    * A wrapper for checking if a file exists
    */
   function existsWrapper(item, callback, options) {
@@ -372,16 +360,7 @@
           }
 
           dest.mime = src.mime;
-          if ( isArrayBuffer ) {
-            createDataURL(result, src.mime, function(error, data) {
-              options.dataSource = true;
-
-              _write(data);
-            });
-          } else {
-            _write(result);
-          }
-
+          _write(result);
         }, options);
       }
     }
