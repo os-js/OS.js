@@ -30,8 +30,6 @@
 (function(Utils, API) {
   'use strict';
 
-  // This module uses the same API as public
-
   window.OSjs           = window.OSjs       || {};
   OSjs.VFS              = OSjs.VFS          || {};
   OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
@@ -50,6 +48,7 @@
       return true;
     },
     request: function() {
+      // This module uses the same API as public
       OSjs.VFS.Modules.Public.request.apply(null, arguments);
     }
   };

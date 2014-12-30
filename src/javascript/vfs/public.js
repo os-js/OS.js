@@ -94,24 +94,31 @@
       });
     });
   };
+
   PublicStorage.copy = function(src, dest, callback) {
     OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
   };
+
   PublicStorage.move = function(src, dest, callback) {
     OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
   };
+
   PublicStorage.unlink = function(item, callback) {
     OSjs.VFS.internalCall('delete', [item.path], callback);
   };
+
   PublicStorage.mkdir = function(item, callback) {
     OSjs.VFS.internalCall('mkdir', [item.path], callback);
   };
+
   PublicStorage.exists = function(item, callback) {
     OSjs.VFS.internalCall('exists', [item.path], callback);
   };
+
   PublicStorage.fileinfo = function(item, callback) {
     OSjs.VFS.internalCall('fileinfo', [item.path], callback);
   };
+
   PublicStorage.url = function(item, callback) {
     var path    = typeof item === 'string' ? item : item.path;
     var handler = OSjs.API.getHandlerInstance();
