@@ -85,30 +85,19 @@
     }
 
     var reqContentType = 'multipart/mixed; boundary=\'' + boundary + '\'';
-    if ( typeof data === 'string' ) {
+
+    if ( data instanceof OSjs.VFS.FileDataURL ) {
       callback(false, {
         contentType: reqContentType,
-        body: createBody(Utils.btoaUtf(data))
+        body: createBody(data.toBase64())
       });
     } else {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var encoded = btoa(reader.result);
+      OSjs.VFS.abToBinaryString(data, contentType, function(error, response) {
         callback(false, {
           contentType: reqContentType,
-          body: createBody(encoded)
+          body: createBody(btoa(response))
         });
-      };
-      reader.onerror = function(e) {
-        callback(e);
-      };
-
-      if ( data instanceof ArrayBuffer ) {
-        var blob = new Blob([data], {type: contentType});
-        reader.readAsBinaryString(blob);
-      } else {
-        reader.readAsBinaryString(data);
-      }
+      });
     }
   }
 
@@ -450,7 +439,6 @@
         fileId: item.id
       });
 
-      var arraybuffer = options ? options.arrayBuffer === true : false;
       request.execute(function(file) {
         console.info('GoogleDrive::read()', '=>', file);
 
@@ -459,11 +447,9 @@
           var xhr = new XMLHttpRequest();
           xhr.open('GET', file.downloadUrl);
           xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-          if ( arraybuffer ) {
-            xhr.responseType = 'arraybuffer';
-          }
+          xhr.responseType = 'arraybuffer';
           xhr.onload = function() {
-            callback(false, arraybuffer ? xhr.response : xhr.responseText);
+            callback(false, xhr.response);
           };
           xhr.onerror = function() {
             callback(API._('ERR_VFSMODULE_XHR_ERROR'));

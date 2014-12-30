@@ -79,12 +79,7 @@
             if ( error ) {
               respond({result: null, error: 'Error reading file: ' + error});
             } else {
-              if ( opts.dataSource ) {
-                data = "data:" + vfs.getMime(realPath.root, config) + ";base64," + (new Buffer(data).toString('base64'));
-              } else {
-                data = (new Buffer(data).toString('base64'));
-              }
-
+              data = "data:" + vfs.getMime(realPath.root, config) + ";base64," + (new Buffer(data).toString('base64'));
               respond({result: data.toString(), error: null});
             }
           });
@@ -101,11 +96,8 @@
 
       var realPath = getRealPath(path, config, request);
       path = realPath.path;
-
-      if ( opts.dataSource ) {
-        data = data.replace(/^data\:(.*);base64\,/, "") || '';
-      }
-      data = new Buffer(data, 'base64').toString('utf-8');
+      data = data.replace(/^data\:(.*);base64\,/, "") || '';
+      data = new Buffer(data, 'base64').toString('utf8');
 
       _fs.writeFile(realPath.root, data, function(error, data) {
         if ( error ) {

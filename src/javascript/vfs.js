@@ -188,6 +188,87 @@
     }
   }
 
+  /**
+   * Just a simple wrapper
+   */
+  function FileDataURL(dataURL) {
+    this.dataURL = dataURL;
+  }
+  FileDataURL.prototype.toBase64 = function() {
+    return this.data.split(',')[1];
+  };
+  FileDataURL.prototype.toString = function() {
+    return this.dataURL;
+  };
+
+  /**
+   * Convert DataSourceURL to ArrayBuffer
+   */
+  function dataSourceToAb(data, mime, callback) {
+    var byteString = atob(data.split(',')[1]);
+    var mimeString = data.split(',')[0].split(':')[1].split(';')[0]
+
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    callback(false, ab);
+  }
+
+  /**
+   * Convert PlainText to ArrayBuffer
+   */
+  function textToAb(data, mime, callback) {
+    mime = mime || 'application/octet-stream';
+
+    var blob    = new Blob([data], {type: mime});
+    var r       = new FileReader();
+    r.onerror   = function(e) { callback(e);               };
+    r.onloadend = function()  { callback(false, r.result); };
+    r.readAsArrayBuffer(blob);
+  }
+
+  /**
+   * Convert ArrayBuffer to DataSourceURL
+   */
+  function abToDataSource(arrayBuffer, mime, callback) {
+    mime = mime || 'application/octet-stream';
+
+    var blob    = new Blob([arrayBuffer], {type: mime});
+    var r       = new FileReader();
+    r.onerror   = function(e) { callback(e);               };
+    r.onloadend = function()  { callback(false, r.result); };
+    r.readAsDataURL(blob);
+  }
+
+  /**
+   * Convert ArrayBuffer to PlainText
+   */
+  function abToText(arrayBuffer, mime, callback) {
+    mime = mime || 'application/octet-stream';
+
+    var blob    = new Blob([arrayBuffer], {type: mime});
+    var r       = new FileReader();
+    r.onerror   = function(e) { callback(e);               };
+    r.onloadend = function()  { callback(false, r.result); };
+    r.readAsText(blob);
+  }
+
+  /**
+   * Convert ArrayBuffer to BinaryString
+   */
+  function abToBinaryString(arrayBuffer, mime, callback) {
+    mime = mime || 'application/octet-stream';
+
+    var blob    = new Blob([arrayBuffer], {type: mime});
+    var r       = new FileReader();
+    r.onerror   = function(e) { callback(e);               };
+    r.onloadend = function()  { callback(false, r.result); };
+    r.readAsBinaryString(blob);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // FILE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
@@ -285,14 +366,21 @@
       callback(error, result);
     }
 
-    /*
-    existsWrapper(item, function(error) {
-      if ( error ) {
-        return callback(error);
-      }
-    });
-    */
-    request(item.path, 'write', [item, data], _finished, options);
+    function _write(data) {
+      request(item.path, 'write', [item, data], _finished, options);
+    }
+
+    if ( typeof data === 'string' ) {
+      textToAb(data, item.mime, function(error, response) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+        _write(response);
+      });
+    } else {
+      _write(data);
+    }
 
   };
 
@@ -303,7 +391,20 @@
     console.info('VFS::read()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
-    request(item.path, 'read', [item], callback, options);
+    request(item.path, 'read', [item], function(error, response) {
+      if ( error ) {
+        callback(error);
+      }
+
+      if ( options.type === 'text' ) {
+        OSjs.VFS.abToText(response, item.mime, function(error, text) {
+          callback(error, error ? null : text);
+        });
+        return;
+      }
+
+      callback(false, response);
+    }, options);
   };
 
   /**
@@ -314,6 +415,10 @@
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(src instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_SRC_FILE')); }
     if ( !(dest instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_DST_FILE')); }
+
+    options = options || {};
+    options.type = options.type || 'binary';
+    options.arrayBuffer = true;
 
     function doRequest() {
       function _finished(error, result) {
@@ -337,11 +442,6 @@
       var dstInternal = isInternalModule(dest.path);
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
-
-      if ( !options ) {
-        options = {};
-      }
-      options.arrayBuffer = true;
 
       if ( (srcInternal && dstInternal) ) {
         if ( msrc === mdst ) {
@@ -672,6 +772,12 @@
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.isInternalModule      = isInternalModule;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
+  OSjs.VFS.abToBinaryString      = abToBinaryString;
+  OSjs.VFS.abToDataSource        = abToDataSource;
+  OSjs.VFS.abToText              = abToText;
+  OSjs.VFS.textToAb              = textToAb;
+  OSjs.VFS.dataSourceToAb        = dataSourceToAb;
+  OSjs.VFS.FileDataURL           = FileDataURL;
   OSjs.VFS.File                  = OFile;
 
 })(OSjs.Utils, OSjs.API);

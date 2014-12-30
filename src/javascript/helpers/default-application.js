@@ -114,6 +114,7 @@
     this.mainWindow          = null;
     this.defaultCheckChange  = false;
     this.dialogOptions       = {
+      binary: false,        // Do we read binary data ?
       read: true,           // Read file data
       upload: false,        // Upload instead of writing
 
@@ -508,7 +509,7 @@
           return;
         }
         self._doOpen(item, result, sendArgs);
-      }, {dataSource: self.onCheckDataSource(item)});
+      }, {dataSource: self.onCheckDataSource(item), type: self.dialogOptions.binary ? 'binary' : 'text'});
     }
 
     if ( file && file.path ) {

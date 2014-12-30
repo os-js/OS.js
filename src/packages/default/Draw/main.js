@@ -1147,7 +1147,12 @@
     }
 
     var ext = Utils.filext(file.path).toLowerCase();
-    var data = ext === "odraw" ? image.getSaveData() : image.getData(file.mime);
+    var data;
+    if ( ext === 'odraw' ) {
+      data = image.getSaveData();
+    } else {
+      data = new VFS.FileDataURL(image.getData(file.mime));
+    }
 
     callback(data);
   };

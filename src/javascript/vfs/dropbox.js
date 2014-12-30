@@ -171,30 +171,41 @@
   DropboxVFS.prototype.write = function(item, data, callback) {
     console.info('DropboxVFS::write()', item);
 
+    var self = this;
     var path = OSjs.VFS.getRelativeURL(item.path);
     var bytes = data;
-    /*
-    if ( typeof data === 'string' ) {
-      bytes = new Uint8Array(data.length);
-      for (var i=0; i<data.length; i++) {
-        bytes[i] = data.charCodeAt(i);
-      }
-    }
-    */
 
-    this.client.writeFile(path, bytes, function(error, stat) {
-      if ( error ) {
-        error = API._('ERR_VFSMODULE_WRITE_FMT', error);
-      }
-      callback(error, true);
-    });
+    function _write(bytes) {
+      self.client.writeFile(path, bytes, function(error, stat) {
+        if ( error ) {
+          error = API._('ERR_VFSMODULE_WRITE_FMT', error);
+        }
+        callback(error, true);
+      });
+    }
+
+    if ( data instanceof OSjs.VFS.FileDataURL ) {
+      VFS.dataSourceToAb(data, item.mime, function(error, response) {
+        if ( error ) {
+          error = API._('ERR_VFSMODULE_WRITE_FMT', error);
+          callback(error);
+          return;
+        }
+        _write(response);
+      });
+    } else {
+      _write(data);
+    }
+
   };
 
   DropboxVFS.prototype.read = function(item, callback, options) {
     options = options || {};
+    options.arrayBuffer = true;
 
     console.info('DropboxVFS::read()', item, options);
     var path = OSjs.VFS.getRelativeURL(item.path);
+
     this.client.readFile(path, options, function(error, entries) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_READ_FMT', error);

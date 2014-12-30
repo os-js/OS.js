@@ -59,7 +59,7 @@
   var respond = function(data, mime, response, headers, code) {
     data    = data    || '';
     headers = headers || [];
-    mime    = mime    || "text/html";
+    mime    = mime    || "text/html; charset=utf-8";
     code    = code    || 200;
 
     //console.log(">>>", 'respond()', mime, data.length);

@@ -146,28 +146,22 @@ class FS
       if ( !is_writable(dirname($fname)) ) throw new Exception("Write permission denied in folder");
     }
 
-    if ( !empty($opts['dataSource']) && $opts['dataSource'] ) {
-      $tmp = explode(",", $content, 2);
-      if ( sizeof($tmp) > 1 ) {
-        //$dcontent = preg_replace("/^data\:(.*);base64\,/", "", $content);
+    $tmp = explode(",", $content, 2);
+    if ( sizeof($tmp) > 1 ) {
+      $dcontent = array_pop($tmp);
+      $dtype    = array_pop($tmp);
 
-        $dcontent = array_pop($tmp);
-        $dtype    = array_pop($tmp);
-
-        if ( preg_match("/^data\:image/", $dtype) ) {
-          $dcontent = str_replace(' ', '+', $dcontent);
-        }
-
-        if ( $dcontent === false ) {
-          $dcontent = '';
-        } else {
-          $dcontent = base64_decode($dcontent);
-        }
-
-        $content = $dcontent;
+      if ( preg_match("/^data\:image/", $dtype) ) {
+        $dcontent = str_replace(' ', '+', $dcontent);
       }
-    } else {
-      $content = base64_decode($content);
+
+      if ( $dcontent === false ) {
+        $dcontent = '';
+      } else {
+        $dcontent = base64_decode($dcontent);
+      }
+
+      $content = $dcontent;
     }
 
     return file_put_contents($fname, $content) !== false;
@@ -181,21 +175,26 @@ class FS
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 
-    if ( !empty($opts['dataSource']) && $opts['dataSource'] ) {
-      if ( ($mime = fileMime($fname)) ) {
-        $data = file_get_contents($fname);
-        $out  = null;
-        return sprintf("data:%s;base64,%s", $mime, base64_encode($data));
-      }
-
-      throw new Exception("Failed to read file");
+    $etag = null;
+    if ( !($mime = fileMime($fname)) ) {
+      $mime = "application/octet-stream";
     }
+
     $handle = fopen($fname, "rb");
-    $contents = fread($handle, filesize($fname));
+    $length = filesize($fname);
+    $contents = fread($handle, $length);
+    if ( isset($opts["raw"]) ) {
+      $etag = md5(serialize(fstat($handle)));
+    }
     fclose($handle);
 
+    if ( isset($opts["raw"]) ) {
+      return Array($mime, $etag, $length, $contents);
+    }
+
     $encoded = base64_encode($contents);
-    return $encoded;
+    $dataURL = sprintf("data:%s;base64,%s", $mime, $encoded);
+    return $dataURL;
   }
 
   public static function delete($fname) {

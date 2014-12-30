@@ -290,24 +290,17 @@ class API
     try {
       if ( $arg = preg_replace("/^\/FS/", "", urldecode($req->data)) ) {
         list($dirname, $root, $protocol, $file) = getRealPath($arg);
-
         if ( file_exists($file) ) {
-          if ( !is_file($file) ) throw new Exception("You are reading an invalid resource");
-          if ( !is_readable($file) ) throw new Exception("Read permission denied");
-
           session_write_close();
-          if ( ($mime = fileMime($file)) ) {
-            $length = filesize($file);
-            $fp = fopen($file, "rb");
-            $etag = md5(serialize(fstat($fp)));
-            $result = fread($fp, $length);
-            fclose($fp);
+          if ( $data = FS::read($arg, Array("raw" => true)) ) {
+            list($mime, $etag, $length, $result) = $data;
 
             $headers[] = "Etag: {$etag}";
             $headers[] = "Content-type: {$mime}; charset=utf-8";
             $headers[] = "Content-length: {$length}";
           } else {
-            $error = "No valid MIME";
+            $code = 500;
+            $error = "File read error";
           }
         } else {
           $code = 404;

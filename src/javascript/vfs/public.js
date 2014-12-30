@@ -34,6 +34,34 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
+  /*
+  function convertDataSource(dataURI, returnBlob, callback) {
+    // convert base64/URLEncoded data component to raw binary data held in a string
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+
+
+    if ( returnBlob ) {
+      // separate out the mime component
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+      // write the bytes of the string to a typed array
+      var ia = new Uint8Array(byteString.length);
+      for (var i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+      }
+
+      var blob = new Blob([ia], {type:mimeString});
+      callback(false, blob);
+    }
+
+    return callback(false, byteString);
+  }
+  */
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -51,67 +79,59 @@
       callback(error, list);
     });
   };
-  PublicStorage.write = function(item, data, callback, options) {
-    function createDataURL(str, mime, callback) {
-      var blob = new Blob([str], {type: mime});
-      var r = new FileReader();
-      r.onloadend = function() {
-        callback(false, r.result);
-      };
-      r.readAsDataURL(blob);
-    }
 
-    function doWrite(data) {
-      var wopts = [item.path, data];
-      if ( options ) {
-        wopts.push(options);
-      }
+  PublicStorage.write = function(item, data, callback, options) {
+    options = options || {};
+
+    function _write(dataSource) {
+      var wopts = [item.path, dataSource, options];
       OSjs.VFS.internalCall('write', wopts, callback);
     }
 
-    if ( data instanceof ArrayBuffer ) {
-      createDataURL(data, item.mime || 'application/octet-stream', function(error, result) {
-        if ( !options ) {
-          options = {};
-        }
-        options.dataSource = true;
-        doWrite(result);
-      });
-      return;
-    }
-    doWrite(btoa(data));
-  };
-  PublicStorage.read = function(item, callback, options) {
-    var ropts = [item.path];
-    var dataSource = options ? (options.dataSource ? true : false) : false;
-    if ( options ) {
-      ropts.push(options);
-    }
-
-    if ( options && options.arrayBuffer ) {
-      this.url(item, function(error, url) {
-        if ( error ) {
-          return callback(error);
-        }
-
-        Utils.AjaxDownload(url, function(response) {
-          callback(false, response);
-        }, function(error) {
-          callback(error);
-        });
-      });
+    if ( data instanceof OSjs.VFS.FileDataURL ) {
+      _write(data.toString());
     } else {
+      OSjs.VFS.abToDataSource(data, item.mime, function(error, dataSource) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+        _write(dataSource);
+      });
+    }
+  };
+
+  PublicStorage.read = function(item, callback, options) {
+    options = options || {};
+
+    /*
+      var ropts = [item.path];
       OSjs.VFS.internalCall('read', ropts, function(error, result) {
         if ( error ) {
           return callback(error);
         }
-        if ( dataSource ) {
-          return callback(false, result);
-        }
-
-        return callback(false, atob(result));
+        return callback(false, result);
+        });
       });
-    }
+    */
+
+    this.url(item, function(error, url) {
+      if ( error ) {
+        return callback(error);
+      }
+
+      Utils.AjaxDownload(url, function(response) {
+        if ( options.dataSource ) {
+          OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
+            callback(error, error ? null : dataSource);
+          });
+          return;
+        }
+        callback(false, response);
+      }, function(error) {
+        callback(error);
+      });
+    });
   };
   PublicStorage.copy = function(src, dest, callback) {
     OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
