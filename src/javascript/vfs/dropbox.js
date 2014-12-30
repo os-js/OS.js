@@ -160,7 +160,6 @@
 
     this.client.readdir(path, {}, function(error, entries, stat, entry_stats) {
       if ( error ) {
-        error = API._('ERR_VFSMODULE_SCANDIR_FMT', error);
         callback(error);
         return;
       }
@@ -177,9 +176,6 @@
 
     function _write(bytes) {
       self.client.writeFile(path, bytes, function(error, stat) {
-        if ( error ) {
-          error = API._('ERR_VFSMODULE_WRITE_FMT', error);
-        }
         callback(error, true);
       });
     }
@@ -187,7 +183,6 @@
     if ( data instanceof OSjs.VFS.FileDataURL ) {
       VFS.dataSourceToAb(data, item.mime, function(error, response) {
         if ( error ) {
-          error = API._('ERR_VFSMODULE_WRITE_FMT', error);
           callback(error);
           return;
         }
@@ -207,9 +202,6 @@
     var path = OSjs.VFS.getRelativeURL(item.path);
 
     this.client.readFile(path, options, function(error, entries) {
-      if ( error ) {
-        error = API._('ERR_VFSMODULE_READ_FMT', error);
-      }
       callback(error, (error ? false : (entries instanceof Array ? entries.join('\n') : entries)));
     });
   };
@@ -219,9 +211,6 @@
     var spath = OSjs.VFS.getRelativeURL(src.path);
     var dpath = OSjs.VFS.getRelativeURL(dest.path);
     this.client.copy(spath, dpath, function(error) {
-      if ( error ) {
-        error = API._('ERR_VFSMODULE_COPY_FMT', error);
-      }
       callback(error, !error);
     });
   };
@@ -231,9 +220,6 @@
     var spath = OSjs.VFS.getRelativeURL(src.path);
     var dpath = OSjs.VFS.getRelativeURL(dest.path);
     this.client.move(spath, dpath, function(error) {
-      if ( error ) {
-        error = API._('ERR_VFSMODULE_MOVE_FMT', error);
-      }
       callback(error, !error);
     });
   };
@@ -242,9 +228,6 @@
     console.info('DropboxVFS::unlink()', item);
     var path = OSjs.VFS.getRelativeURL(item.path);
     this.client.unlink(path, function(error, stat) {
-      if ( error ) {
-        error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
-      }
       callback(error, !error);
     });
   };
@@ -253,9 +236,6 @@
     console.info('DropboxVFS::mkdir()', item);
     var path = OSjs.VFS.getRelativeURL(item.path);
     this.client.mkdir(path, function(error, stat) {
-      if ( error ) {
-        error = API._('ERR_VFSMODULE_MKDIR_FMT', error);
-      }
       callback(error, !error);
     });
   };
@@ -274,17 +254,13 @@
     var path = OSjs.VFS.getRelativeURL(item.path);
     this.client.stat(path, path, function(error, response) {
       var fileinfo = null;
-      if ( error ) {
-        error = API._('ERR_VFSMODULE_FILEINFO_FMT', error);
-      } else {
-        if ( response ) {
-          fileinfo = {};
+      if ( !error && response ) {
+        fileinfo = {};
 
-          var useKeys = ['clientModifiedAt', 'humanSize', 'mimeType', 'modifiedAt', 'name', 'path', 'size', 'versionTag'];
-          useKeys.forEach(function(k) {
-            fileinfo[k] = response[k];
-          });
-        }
+        var useKeys = ['clientModifiedAt', 'humanSize', 'mimeType', 'modifiedAt', 'name', 'path', 'size', 'versionTag'];
+        useKeys.forEach(function(k) {
+          fileinfo[k] = response[k];
+        });
       }
 
       callback(error, fileinfo);

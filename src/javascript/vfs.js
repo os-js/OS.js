@@ -349,7 +349,12 @@
     console.info('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
-    request(item.path, 'scandir', [item], callback, options);
+    request(item.path, 'scandir', [item], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_SCANDIR_FMT', error);
+      }
+      callback(error, response);
+    }, options);
   };
 
   /**
@@ -359,10 +364,14 @@
     console.info('VFS::write()', item, options);
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
     function _finished(error, result) {
-      if ( !error ) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_WRITE_FMT', error);
+      } else {
         API.message('vfs', {type: 'write', file: item, source: appRef ? appRef.__pid : null});
       }
+
       callback(error, result);
     }
 
@@ -373,7 +382,7 @@
     if ( typeof data === 'string' ) {
       textToAb(data, item.mime, function(error, response) {
         if ( error ) {
-          callback(error);
+          _finished(error, null);
           return;
         }
         _write(response);
@@ -391,19 +400,28 @@
     console.info('VFS::read()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    function _finished(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_READ_FMT', error);
+      }
+      callback(error, error ? null : response);
+    }
+
     request(item.path, 'read', [item], function(error, response) {
       if ( error ) {
-        callback(error);
+        _finished(error);
+        return;
       }
 
       if ( options.type === 'text' ) {
         OSjs.VFS.abToText(response, item.mime, function(error, text) {
-          callback(error, error ? null : text);
+          _finished(error, text);
         });
         return;
       }
 
-      callback(false, response);
+      _finished(false, response);
     }, options);
   };
 
@@ -428,16 +446,6 @@
         callback(error, result);
       }
 
-      function _write(data) {
-        OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
-          if ( error ) {
-            error = API._('ERR_VFS_TRANSFER_FMT', error);
-          }
-          _finished(error, result);
-        }, options);
-      }
-
-
       var srcInternal = isInternalModule(src.path);
       var dstInternal = isInternalModule(dest.path);
       var msrc = getModuleFromPath(src.path);
@@ -445,25 +453,41 @@
 
       if ( (srcInternal && dstInternal) ) {
         if ( msrc === mdst ) {
-          request(src.path, 'copy', [src, dest], _finished, options);
+          request(src.path, 'copy', [src, dest], function(error, response) {
+            if ( error ) {
+              error = API._('ERR_VFSMODULE_COPY_FMT', error);
+            }
+            _finished(error, response);
+          }, options);
         } else {
-          request(null, 'copy', [src, dest], _finished, options);
+          request(null, 'copy', [src, dest], function(error, response) {
+            if ( error ) {
+              error = API._('ERR_VFSMODULE_COPY_FMT', error);
+            }
+            _finished(error, response);
+          }, options);
         }
       } else {
-        OSjs.VFS.Modules[msrc].request('read', [src], function(error, result) {
+        OSjs.VFS.Modules[msrc].request('read', [src], function(error, data) {
           if ( error ) {
             _finished(API._('ERR_VFS_TRANSFER_FMT', error));
             return;
           }
 
           dest.mime = src.mime;
-          _write(result);
+          OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
+            if ( error ) {
+              error = API._('ERR_VFSMODULE_COPY_FMT', error);
+            }
+            _finished(error, result);
+          }, options);
         }, options);
       }
     }
 
     existsWrapper(dest, function(error) {
       if ( error ) {
+        error = API._('ERR_VFSMODULE_COPY_FMT', error);
         return callback(error);
       }
       doRequest();
@@ -496,9 +520,19 @@
 
       if ( (srcInternal && dstInternal) ) {
         if ( msrc === mdst ) {
-          request(src.path, 'move', [src, dest], _finished);
+          request(src.path, 'move', [src, dest], function(error, response) {
+            if ( error ) {
+              error = API._('ERR_VFSMODULE_MOVE_FMT', error);
+            }
+            _finished(error, error ? null : response);
+          }, options);
         } else {
-          request(null, 'move', [src, dest], _finished, options);
+          request(null, 'move', [src, dest], function(error, response) {
+            if ( error ) {
+              error = API._('ERR_VFSMODULE_MOVE_FMT', error);
+            }
+            _finished(error, error ? null : response);
+          }, options);
         }
       } else {
         self.copy(src, dest, function(error, result) {
@@ -519,6 +553,7 @@
 
     existsWrapper(dest, function(error) {
       if ( error ) {
+        error = API._('ERR_VFSMODULE_MOVE_FMT', error);
         return callback(error);
       }
       doRequest();
@@ -536,7 +571,9 @@
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
     function _finished(error, result) {
-      if ( !error ) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
+      } else {
         API.message('vfs', {type: 'delete', file: item, source: appRef ? appRef.__pid : null});
       }
       callback(error, result);
@@ -557,7 +594,9 @@
 
     function doRequest() {
       function _finished(error, result) {
-        if ( !error ) {
+        if ( error ) {
+          error = API._('ERR_VFSMODULE_MKDIR_FMT', error);
+        } else {
           API.message('vfs', {type: 'mkdir', file: item, source: appRef ? appRef.__pid : null});
         }
         callback(error, result);
@@ -567,6 +606,7 @@
 
     existsWrapper(item, function(error) {
       if ( error ) {
+        error = API._('ERR_VFSMODULE_MKDIR_FMT', error);
         return callback(error);
       }
       doRequest();
@@ -590,7 +630,12 @@
     console.info('VFS::fileinfo()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof OFile) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
-    request(item.path, 'fileinfo', [item], callback);
+    request(item.path, 'fileinfo', [item], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_FILEINFO_FMT', error);
+      }
+      callback(error, response);
+    });
   };
 
   /**
@@ -602,7 +647,12 @@
     if ( typeof item === 'string' ) {
       item = new OFile(item);
     }
-    request(item.path, 'url', [item], callback);
+    request(item.path, 'url', [item], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_URL_FMT', error);
+      }
+      callback(error, response);
+    });
   };
 
   /**

@@ -456,7 +456,7 @@
           };
           xhr.send();
         } else {
-          callback(API._('ERR_VFSMODULE_READ'));
+          callback(API._('ERR_VFSMODULE_NOSUCH'));
         }
       });
     }
@@ -466,11 +466,11 @@
     } else {
       getFileFromPath(item.path, item.mime, function(error, response) {
         if ( error ) {
-          callback(API._('ERR_VFSMODULE_READ_FMT', error));
+          callback(error);
           return;
         }
         if ( !response ) {
-          callback(API._('ERR_VFSMODULE_READ_FMT', API._('ERR_VFSMODULE_NOSUCH')));
+          callback(API._('ERR_VFSMODULE_NOSUCH'));
           return;
         }
 
@@ -515,7 +515,7 @@
               callback(false, true);
             }
           } else {
-            callback(API._('ERR_VFSMODULE_WRITE'));
+            callback(API._('ERR_VFSMODULE_NOSUCH'));
           }
         });
       });
@@ -554,7 +554,7 @@
       }
 
       var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-      callback(API._('ERR_VFSMODULE_COPY_FMT', msg));
+      callback(msg);
     });
   };
 
@@ -573,7 +573,7 @@
           callback(false, true);
         } else {
           var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-          callback(API._('ERR_VFSMODULE_UNLINK_FMT', msg));
+          callback(msg);
         }
       });
     }
@@ -581,11 +581,11 @@
     if ( !src.id ) {
       getFileFromPath(src.path, src.mime, function(error, response) {
         if ( error ) {
-          callback(API._('ERR_VFSMODULE_READ_FMT', error));
+          callback(error);
           return;
         }
         if ( !response ) {
-          callback(API._('ERR_VFSMODULE_READ_FMT', API._('ERR_VFSMODULE_NOSUCH')));
+          callback(API._('ERR_VFSMODULE_NOSUCH'));
           return;
         }
 
@@ -613,7 +613,7 @@
         callback(false, true);
       } else {
         var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-        callback(API._('ERR_VFSMODULE_MOVE_FMT', msg));
+        callback(msg);
       }
     });
   };
@@ -626,7 +626,7 @@
 
     this.scandir(req, function(error, result) {
       if ( error ) {
-        callback(API._('ERR_VFSMODULE_EXIST_FMT', error));
+        callback(error);
         return;
       }
       var found = false;
@@ -662,7 +662,7 @@
         });
         return callback(false, info);
       }
-      callback(API._('ERR_VFSMODULE_FILEINFO'));
+      callback(API._('ERR_VFSMODULE_NOSUCH'));
     });
   };
 
@@ -682,7 +682,7 @@
         callback(false, resp.webContentLink);
       } else {
         var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-        callback(API._('ERR_VFSMODULE_URL_FMT', msg));
+        callback(msg);
       }
     });
   };
@@ -708,7 +708,7 @@
           callback(false, true);
         } else {
           var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
-          callback(API._('ERR_VFSMODULE_MKDIR_FMT', msg));
+          callback(msg);
         }
       });
     }
