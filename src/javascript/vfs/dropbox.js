@@ -157,7 +157,7 @@
     }
 
     if ( data instanceof OSjs.VFS.FileDataURL ) {
-      VFS.dataSourceToAb(data, item.mime, function(error, response) {
+      OSjs.VFS.dataSourceToAb(data, item.mime, function(error, response) {
         if ( error ) {
           callback(error);
           return;
