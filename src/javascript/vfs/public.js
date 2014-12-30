@@ -34,34 +34,6 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
-  /*
-  function convertDataSource(dataURI, returnBlob, callback) {
-    // convert base64/URLEncoded data component to raw binary data held in a string
-    var byteString;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
-    else
-        byteString = unescape(dataURI.split(',')[1]);
-
-
-    if ( returnBlob ) {
-      // separate out the mime component
-      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-      // write the bytes of the string to a typed array
-      var ia = new Uint8Array(byteString.length);
-      for (var i = 0; i < byteString.length; i++) {
-          ia[i] = byteString.charCodeAt(i);
-      }
-
-      var blob = new Blob([ia], {type:mimeString});
-      callback(false, blob);
-    }
-
-    return callback(false, byteString);
-  }
-  */
-
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -103,17 +75,6 @@
 
   PublicStorage.read = function(item, callback, options) {
     options = options || {};
-
-    /*
-      var ropts = [item.path];
-      OSjs.VFS.internalCall('read', ropts, function(error, result) {
-        if ( error ) {
-          return callback(error);
-        }
-        return callback(false, result);
-        });
-      });
-    */
 
     this.url(item, function(error, url) {
       if ( error ) {
