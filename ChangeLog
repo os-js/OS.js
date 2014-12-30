@@ -1,3 +1,18 @@
+# 2.0.0-alpha45
+
+* VFS: Cleanups
+* VFS: Removed some redundant code
+* VFS: Rewrote osjs module
+* VFS: Generalized translation strings
+* VFS: google-drive - Bugfix in upload
+* VFS: google-drive - Charset fixes
+* VFS: dropbox - Added fileinfo()
+* VFS: dropbox - Added locales
+* VFS: dropbox - Added notification icon
+* VFS: dropbox - Added sign out option
+* VFS: dropbox - Added parent directory in scandir() (I forgot this somehow)
+* VFS: dropbox - Now uses popup auth driver
+
 # 2.0.0-alpha44
 
 NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working properly
