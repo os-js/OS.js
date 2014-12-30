@@ -1,3 +1,20 @@
+# 2.0.0-alpha46
+
+This release fixes all the encoding problems in VFS.I should have thought of
+this sooner, but using ArrayBuffer to pass around is pretty much fool-proof.
+
+* DefaultApplication: You can now specify binary/text file handling type
+* VFS: dropbox - fixed 'null' size of parent in directory list
+* VFS: You can now use FileDataURL() pass as an alternative to ArrayBuffer
+* VFS: Added API methods for ArrayBuffer conversions and vice-versa
+* VFS: Now always passing ArrayBuffers inside js
+* VFS: Now always reads files as ArrayBuffers
+* VFS: Moved all locales down to vfs.js
+* VFS: Cleanups
+* VFS: Added some missing javascript documentation
+* Core: Added 'ServiceRing'. NotificationIcon for managing API services
+* Misc: jslinted
+
 # 2.0.0-alpha45
 
 * VFS: Cleanups
