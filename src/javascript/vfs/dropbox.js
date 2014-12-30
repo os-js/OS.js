@@ -115,6 +115,7 @@
           filename: '..',
           path: Utils.dirname(item.path),
           mime: null,
+          size: 0,
           type: 'dir'
         }));
       }
