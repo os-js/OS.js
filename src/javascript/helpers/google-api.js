@@ -117,9 +117,9 @@
 
       this.authenticated = false;
 
-      var wm = API.getWMInstance();
-      if ( wm ) {
-        wm.removeNotificationIcon('GoogleAPIService');
+      var ring = OSjs.Helpers.getServiceRing();
+      if ( ring ) {
+        ring.remove('Google API');
       }
     }
   };
@@ -170,12 +170,10 @@
       }, cb);
     }
 
-    function createNotificationIcon() {
-      var wm = API.getWMInstance();
-
-      function displayMenu(ev) {
-        var pos = {x: ev.clientX, y: ev.clientY};
-        OSjs.GUI.createMenu([{
+    function createRingNotification() {
+      var ring = OSjs.Helpers.getServiceRing();
+      if ( ring ) {
+        ring.add('Google API', [{
           title: API._('GAPI_SIGN_OUT'),
           onClick: function() {
             self.signOut();
@@ -187,29 +185,7 @@
               self.signOut();
             });
           }
-        }], pos);
-      }
-
-      if ( wm ) {
-        wm.createNotificationIcon('GoogleAPIService', {
-          onContextMenu: function(ev) {
-            displayMenu(ev);
-            return false;
-          },
-          onClick: function(ev) {
-            displayMenu(ev);
-            return false;
-          },
-          onInited: function(el) {
-            if ( el.firstChild ) {
-              var img = document.createElement('img');
-              img.title = API._('GAPI_NOTIFICATION_TITLE');
-              img.alt = img.title;
-              img.src = API.getThemeResource('status/gtk-dialog-authentication.png', 'icon', '16x16');
-              el.firstChild.appendChild(img);
-            }
-          }
-        });
+        }]);
       }
     }
 
@@ -229,7 +205,7 @@
           self.userId = id;
 
           if ( id ) {
-            createNotificationIcon();
+            createRingNotification();
             self.authenticated = true;
             self.accessToken = authResult.access_token || null;
             callback(false, true);

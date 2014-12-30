@@ -54,46 +54,22 @@
     return null;
   }
 
-  function destroyNotificationIcon() {
-    var wm = API.getWMInstance();
-    if ( wm ) {
-      wm.removeNotificationIcon('DropboxVFSService');
+  function destroyRingNotification() {
+    var ring = OSjs.Helpers.getServiceRing();
+    if ( ring ) {
+      ring.remove('Dropbox.js');
     }
   }
 
-  function createNotificationIcon() {
-    var wm = API.getWMInstance();
-
-    function displayMenu(ev) {
-      var pos = {x: ev.clientX, y: ev.clientY};
-      OSjs.GUI.createMenu([{
+  function createRingNotification() {
+    var ring = OSjs.Helpers.getServiceRing();
+    if ( ring ) {
+      ring.add('Dropbox.js', [{
         title: API._('DROPBOX_SIGN_OUT'),
         onClick: function() {
           signoutDropbox();
         }
-      }], pos);
-    }
-
-    if ( wm ) {
-      wm.createNotificationIcon('DropboxVFSService', {
-        onContextMenu: function(ev) {
-          displayMenu(ev);
-          return false;
-        },
-        onClick: function(ev) {
-          displayMenu(ev);
-          return false;
-        },
-        onInited: function(el) {
-          if ( el.firstChild ) {
-            var img = document.createElement('img');
-            img.title = API._('DROPBOX_NOTIFICATION_TITLE');
-            img.alt = img.title;
-            img.src = API.getThemeResource('status/gtk-dialog-authentication.png', 'icon', '16x16');
-            el.firstChild.appendChild(img);
-          }
-        }
-      });
+      }]);
     }
   }
 
@@ -308,7 +284,9 @@
         }
 
         _isMounted = true;
-        createNotificationIcon();
+
+        createRingNotification();
+
         API.message('vfs', {type: 'mount', module: 'Dropbox', source: null});
 
         callback(_cachedClient);
@@ -331,7 +309,7 @@
 
       API.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
 
-      destroyNotificationIcon();
+      destroyRingNotification();
 
       cb();
     }

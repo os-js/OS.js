@@ -102,6 +102,7 @@
       "src/javascript/vfs/googledrive.js",
       "src/javascript/vfs/dropbox.js",
       "src/javascript/windows.js",
+      "src/javascript/helpers/service-ring.js",
       "src/javascript/helpers/default-application.js",
       "src/javascript/helpers/indexed-db.js",
       "src/javascript/helpers/google-api.js",

@@ -142,7 +142,6 @@
 
     // GoogleAPI
     'GAPI_DISABLED'           : 'GoogleAPI Modul dekativert eller ikke konfigurert',
-    'GAPI_NOTIFICATION_TITLE' : 'Du er logget inn i Google API',
     'GAPI_SIGN_OUT'           : 'Logg ut av Google API Services',
     'GAPI_REVOKE'             : 'Tilbakekall tillatelse og Logg ut',
     'GAPI_AUTH_FAILURE'       : 'Google API autentisering feilet eller tok ikke sted',

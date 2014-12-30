@@ -141,7 +141,6 @@
 
     // GoogleAPI
     'GAPI_DISABLED'           : 'GoogleAPI Module not configured or disabled',
-    'GAPI_NOTIFICATION_TITLE' : 'You are signed in to Google API',
     'GAPI_SIGN_OUT'           : 'Sign out from Google API Services',
     'GAPI_REVOKE'             : 'Revoke permissions and Sign Out',
     'GAPI_AUTH_FAILURE'       : 'Google API Authentication failed or did not take place',

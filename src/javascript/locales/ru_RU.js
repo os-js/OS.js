@@ -142,7 +142,6 @@
 
     // GoogleAPI
     'GAPI_DISABLED'           : 'GoogleAPI модуль не настроен или отключен',
-    'GAPI_NOTIFICATION_TITLE' : 'Вам необходимо войти в Google API',
     'GAPI_SIGN_OUT'           : 'Выйти из API служб Google',
     'GAPI_REVOKE'             : 'Отозвать права доступа и выйти',
     'GAPI_AUTH_FAILURE'       : 'Не удалось аутентифицировать Google API',

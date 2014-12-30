@@ -142,7 +142,6 @@
 
     // GoogleAPI
     'GAPI_DISABLED'           : 'Module GoogleAPI non configuré ou désactivé',
-    'GAPI_NOTIFICATION_TITLE' : 'Vous êtes connecté à l\'API de Google',
     'GAPI_SIGN_OUT'           : 'Déconnexion de l\'API Google',
     'GAPI_REVOKE'             : 'Révoquer les permissions et déconnecter',
     'GAPI_AUTH_FAILURE'       : 'L\'authentification Google API a échoué ou ne s\'est pas déroulée',
