@@ -69,7 +69,6 @@
         title: file.filename,
         mimeType: contentType
       };
-      //var base64Data = btoa(result); //Utils.btoaUtf(result);
       var base64Data = result;
       var multipartRequestBody =
           delimiter +
@@ -87,18 +86,17 @@
 
     var reqContentType = 'multipart/mixed; boundary=\'' + boundary + '\'';
     if ( typeof data === 'string' ) {
-      var body = createBody(Utils.btoaUtf(data));
       callback(false, {
         contentType: reqContentType,
-        body: body
+        body: createBody(Utils.btoaUtf(data))
       });
     } else {
       var reader = new FileReader();
       reader.onload = function(e) {
-        var body = createBody(btoa(reader.result));
+        var encoded = btoa(reader.result);
         callback(false, {
           contentType: reqContentType,
-          body: body
+          body: createBody(encoded)
         });
       };
       reader.onerror = function(e) {
@@ -106,7 +104,7 @@
       };
 
       if ( data instanceof ArrayBuffer ) {
-        var blob = new Blob([data], {type: reqContentType});
+        var blob = new Blob([data], {type: contentType});
         reader.readAsBinaryString(blob);
       } else {
         reader.readAsBinaryString(data);
