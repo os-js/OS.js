@@ -850,6 +850,20 @@
     });
   };
 
+  /**
+   * Permanently empty trash (Not used in internal storage)
+   */
+  OSjs.VFS.emptyTrash = function(callback) {
+    console.info('VFS::emptyTrash()', item, options);
+    if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    request(item.path, 'emptyTrash', [], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_EMPTYTRASH_FMT', error);
+      }
+      callback(error, response);
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

@@ -797,6 +797,19 @@
     });
   };
 
+  GoogleDriveStorage.emptyTrash = function(callback) {
+    var request = gapi.client.drive.files.emptyTrash({});
+    request.execute(function(resp) {
+      console.info('GoogleDrive::emptyTrash()', '=>', resp);
+      if ( resp && resp.message ) {
+        var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+        callback(msg);
+        return;
+      }
+      callback(false, true);
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
