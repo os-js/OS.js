@@ -253,16 +253,18 @@
         var idList = {};
         var parentList = {};
         list.forEach(function(iter) {
-          idList[iter.id] = iter;
-          var parents = [];
-          if ( iter.parents ) {
-            iter.parents.forEach(function(piter) {
-              if ( piter ) {
-                parents.push(piter.id);
-              }
-            });
+          if ( iter ) {
+            idList[iter.id] = iter;
+            var parents = [];
+            if ( iter.parents ) {
+              iter.parents.forEach(function(piter) {
+                if ( piter ) {
+                  parents.push(piter.id);
+                }
+              });
+            }
+            parentList[iter.id] = parents;
           }
-          parentList[iter.id] = parents;
         });
 
         var resolves = root.replace(OSjs.VFS.Modules.GoogleDrive.match, '').replace(/^\/+/, '').split('/');
