@@ -818,6 +818,38 @@
     };
   })();
 
+  /**
+   * Move file to trash (Not used in internal storage)
+   */
+  OSjs.VFS.trash = function(item, callback) {
+    console.info('VFS::trash()', item, options);
+    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    request(item.path, 'trash', [item], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_TRASH_FMT', error);
+      }
+      callback(error, response);
+    });
+  };
+
+  /**
+   * Restore file from trash (Not used in internal storage)
+   */
+  OSjs.VFS.untrash = function(item, callback) {
+    console.info('VFS::untrash()', item, options);
+    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    request(item.path, 'untrash', [item], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_UNTRASH_FMT', error);
+      }
+      callback(error, response);
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

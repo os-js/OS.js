@@ -94,7 +94,7 @@
             data   : file.getData(),
             dragImage : createDragImage
           });
-        } else if ( item.type === 'dir' ) {
+        } else {
           el.title = item.path;
 
           OSjs.GUI.createDroppable(el, {
@@ -127,7 +127,7 @@
       iter.icon  = _createIcon(iter);
       iter._loaded = false;
 
-      if ( iter.type === 'dir' && iter.filename !== '..' ) {
+      if ( iter.type !== 'file' && iter.filename !== '..' ) {
         iter.items = [{
           icon: iter.icon,
           title: OSjs.API._('LBL_LOADING')
@@ -231,7 +231,7 @@
             data   : file.getData(),
             dragImage: createDragImage
           });
-        } else if ( item.type === 'dir' ) {
+        } else {
           el.title = item.path;
 
           OSjs.GUI.createDroppable(el, {
@@ -331,7 +331,7 @@
             dragImage : createDragImage
           });
 
-        } else if ( item.type === 'dir' ) {
+        } else {
           el.title = item.path;
 
           OSjs.GUI.createDroppable(el, {
@@ -514,10 +514,10 @@
       this.viewRef.onActivated  = function(item) {
         item = new VFS.File(item);
         if ( item ) {
-          if ( item.type === 'dir' ) {
-            self.chdir(item.path);
-          } else {
+          if ( item.type === 'file' ) {
             self.onActivated.call(this, item);
+          } else {
+            self.chdir(item.path);
           }
         }
       };

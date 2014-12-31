@@ -154,6 +154,7 @@
 
     // VFS
     'ERR_VFS_FATAL'           : 'Fatal Feil',
+    'ERR_VFS_UNAVAILABLE'     : 'Ikke tilgjenglig',
     'ERR_VFS_FILE_ARGS'       : 'File forventer minst èt argument',
     'ERR_VFS_NUM_ARGS'        : 'Ikke not argumenter',
     'ERR_VFS_EXPECT_FILE'     : 'Forventer èt Fil-objekt',
@@ -194,6 +195,10 @@
     'ERR_VFSMODULE_MKDIR_FMT'    : 'Klarte ikke lage mapp: {0}',
     'ERR_VFSMODULE_URL'          : 'Klarte ikke hente URL for fil',
     'ERR_VFSMODULE_URL_FMT'      : 'Klarte ikke hente URL for fil: {0}',
+    'ERR_VFSMODULE_TRASH'        : 'Klarte ikke flytte fil til søppelkassen',
+    'ERR_VFSMODULE_TRASH_FMT'    : 'Klarte ikke flytte fil til søppelkassen: {0}',
+    'ERR_VFSMODULE_UNTRASH'      : 'Klarte ikke flytte fil ut av søppelkassen',
+    'ERR_VFSMODULE_UNTRASH_FMT'  : 'Klarte ikke flytte fil ut av søppelkassen: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Du er logget inn i Dropbox API',

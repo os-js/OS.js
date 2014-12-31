@@ -180,14 +180,18 @@
           }
           path += iter.title;
         }
+        var fileType = iter.mimeType === 'application/vnd.google-apps.folder' ? 'dir' : (iter.kind === 'drive#file' ? 'file' : 'dir')
+        if ( iter.mimeType === 'application/vnd.google-apps.trash' ) {
+          fileType = 'trash';
+        }
 
         result.push(new OSjs.VFS.File({
           filename: iter.title,
           path:     path,
           id:       iter.id,
-          size:     iter.quotaBytesUsed,
+          size:     iter.quotaBytesUsed || 0,
           mime:     iter.mimeType === 'application/vnd.google-apps.folder' ? null : iter.mimeType,
-          type:     iter.mimeType === 'application/vnd.google-apps.folder' ? 'dir' : (iter.kind === 'drive#file' ? 'file' : 'dir')
+          type:     fileType
         }));
       });
     }
@@ -286,7 +290,15 @@
               quotaBytesUsed: 0,
               mimeType: 'application/vnd.google-apps.folder'
             });
-          }
+          }/* else {
+            result.push({
+              title: 'Trash',
+              path: OSjs.VFS.Modules.GoogleDrive.root + '.trash',
+              id: null,
+              mimeType: 'application/vnd.google-apps.trash'
+            });
+          }*/
+
           list.forEach(function(iter) {
             if ( iter && parentList[iter.id] && parentList[iter.id].indexOf(foundId) !== -1 ) {
               result.push(iter);
@@ -749,6 +761,40 @@
     });
 
     this.write(item, file, callback);
+  };
+
+  GoogleDriveStorage.trash = function(file, callback) {
+    var request = gapi.client.drive.files.trash({
+      fileId: file.id
+    });
+    request.execute(function(resp) {
+      console.info('GoogleDrive::trash()', '=>', resp);
+
+      if ( resp.id ) {
+        callback(false, true);
+        return;
+      }
+
+      var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+      callback(msg);
+    });
+  };
+
+  GoogleDriveStorage.untrash = function(file, callback) {
+    var request = gapi.client.drive.files.untrash({
+      fileId: file.id
+    });
+    request.execute(function(resp) {
+      console.info('GoogleDrive::untrash()', '=>', resp);
+
+      if ( resp.id ) {
+        callback(false, true);
+        return;
+      }
+
+      var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
+      callback(msg);
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////

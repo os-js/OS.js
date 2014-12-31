@@ -52,14 +52,14 @@
     args = args || [];
     callback = callback || {};
 
-    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo'];
+    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash'];
     if ( OSjsStorage[name] ) {
       var fargs = args;
       fargs.push(callback);
       fargs.push(options);
       return OSjsStorage[name].apply(OSjsStorage, fargs);
     } else if ( restricted.indexOf(name) !== -1 ) {
-      return callback('Unavailable');
+      return callback(API._('ERR_VFS_UNAVAILABLE'));
     }
     OSjs.VFS.Modules.Public.request.apply(null, arguments);
   }

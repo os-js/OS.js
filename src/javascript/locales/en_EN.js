@@ -153,6 +153,7 @@
 
     // VFS
     'ERR_VFS_FATAL'           : 'Fatal Error',
+    'ERR_VFS_UNAVAILABLE'     : 'Not available',
     'ERR_VFS_FILE_ARGS'       : 'File expects at least one argument',
     'ERR_VFS_NUM_ARGS'        : 'Not enugh arguments',
     'ERR_VFS_EXPECT_FILE'     : 'Expects a file-object',
@@ -193,6 +194,10 @@
     'ERR_VFSMODULE_MKDIR_FMT'    : 'Failed to create directory: {0}',
     'ERR_VFSMODULE_URL'          : 'Failed to get URL for file',
     'ERR_VFSMODULE_URL_FMT'      : 'Failed to get URL for file: {0}',
+    'ERR_VFSMODULE_TRASH'        : 'Failed to move file to trash',
+    'ERR_VFSMODULE_TRASH_FMT'    : 'Failed to move file to trash: {0}',
+    'ERR_VFSMODULE_UNTRASH'      : 'Failed to move file out of trash',
+    'ERR_VFSMODULE_UNTRASH_FMT'  : 'Failed to move file out of trash: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',

@@ -126,6 +126,14 @@
     callback(false, path ? (fsuri + path) : fsuri);
   };
 
+  PublicStorage.trash = function(item, callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
+  PublicStorage.untrash = function(item, callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////

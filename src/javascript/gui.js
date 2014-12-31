@@ -197,6 +197,8 @@
 
     if ( type === 'dir' ) {
       icon = 'places/folder.png';
+    } else if  ( type === 'trash' ) {
+      icon = 'places/user-trash.png';
     } else if ( type === 'file' ) {
       if ( mime ) {
         if ( mime.match(/^application\/(x\-python|javascript)/) || mime.match(/^text\/(html|xml|css)/) ) {

@@ -270,6 +270,14 @@
     this.write(item, file, callback);
   };
 
+  DropboxVFS.prototype.trash = function(item, callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
+  DropboxVFS.prototype.untrash = function(item, callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
