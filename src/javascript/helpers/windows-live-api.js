@@ -52,6 +52,8 @@
 
   OSjs.Helpers = OSjs.Helpers || {};
 
+  var redirectURI = window.location.href.replace(/\/$/, '') + '/vendor/wlOauthReceiver.html';
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -96,18 +98,29 @@
         return;
       }
 
-      WL.Event.subscribe("auth.login", function() {
-        console.warn("XXXXXXX");
+      if ( !window.WL ) {
+        callback('Windows Live API Was not loaded'); // FIXME: Translation
+        return;
+      }
+
+      WL.Event.subscribe('auth.login', function() {
+        self.onLogin.apply(self, arguments);
+      });
+      WL.Event.subscribe('auth.logout', function() {
+        self.onLogout.apply(self, arguments);
+      });
+      WL.Event.subscribe('wl.log', function() {
+        self.onLog.apply(self, arguments);
       });
       WL.Event.subscribe('auth.sessionChange', function() {
-        self.onSessionChange();
+        self.onSessionChange.apply(self, arguments);
       });
 
       WL.init({
         scope: scope,
         client_id: self.clientId,
         display: 'popup',
-        redirect_uri: window.location.href
+        redirect_uri: redirectURI
       }).then(function(result) {
         console.debug('WindowsLiveAPI::load()', '=>', result);
 
@@ -123,6 +136,9 @@
             callback(false, true);
           });
         }
+      }, function(result) {
+        console.error('WindowsLiveAPI::load()', 'init() error', result);
+        callback(result.error_description);
       });
     });
   };
@@ -134,23 +150,41 @@
     }
 
     WL.login({
-      scope: scope
+      scope: scope,
+      redirect_uri: redirectURI
     }).then(function(result) {
       if ( result.status == 'connected' ) {
         callback(false, true);
       } else {
-        callback('Login failed');
+        callback('Login failed'); // FIXME: Translation
       }
+    }, function(result) {
+      callback('An error occured while logging in to Windows Live API: ' + result.error_description); // FIXME: Translation
     });
   };
 
   WindowsLiveAPI.prototype.onSessionChange = function() {
+    console.warn('WindowsLiveAPI::onSessionChange()', arguments);
     var session = WL.getSession();
     if ( session ) {
-      self.hasSession = true;
+      this.hasSession = true;
     } else {
-      self.hasSession = false;
+      this.hasSession = false;
     }
+  };
+
+  WindowsLiveAPI.prototype.onLogin = function() {
+    console.warn('WindowsLiveAPI::onLogin()', arguments);
+    this.hasSession = true;
+  };
+
+  WindowsLiveAPI.prototype.onLogout = function() {
+    console.warn('WindowsLiveAPI::onLogout()', arguments);
+    this.hasSession = false;
+  };
+
+  WindowsLiveAPI.prototype.onLog = function() {
+    console.debug('WindowsLiveAPI::onLog()', arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
