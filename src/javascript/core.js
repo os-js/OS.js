@@ -612,6 +612,11 @@
       _$LOADING = null;
     }
 
+    var ring = OSjs.Helpers.getServiceRing();
+    if ( ring ) {
+      ring.destroy();
+    }
+
     _triggerHook('onLogout');
 
     _HANDLER.logout(save, function() {
