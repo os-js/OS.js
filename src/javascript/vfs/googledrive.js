@@ -180,7 +180,7 @@
           }
           path += iter.title;
         }
-        var fileType = iter.mimeType === 'application/vnd.google-apps.folder' ? 'dir' : (iter.kind === 'drive#file' ? 'file' : 'dir')
+        var fileType = iter.mimeType === 'application/vnd.google-apps.folder' ? 'dir' : (iter.kind === 'drive#file' ? 'file' : 'dir');
         if ( iter.mimeType === 'application/vnd.google-apps.trash' ) {
           fileType = 'trash';
         }
