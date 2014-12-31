@@ -1,0 +1,200 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2014, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+
+//
+// NOTE NOTE NOTE NOTE NOTE NOTE
+//
+// THIS IS HIGHLY EXPERIMENTAL!!!!
+//
+// NOTE NOTE NOTE NOTE NOTE NOTE
+//
+
+// http://msdn.microsoft.com/en-us/library/hh826538.aspx
+// http://msdn.microsoft.com/en-us/library/hh550837.aspx
+// http://msdn.microsoft.com/en-us/library/dn631844.aspx
+//
+// http://msdn.microsoft.com/en-us/library/dn631839.aspx
+// http://msdn.microsoft.com/en-us/library/hh243643.aspx
+
+(function(Utils, API) {
+  'use strict';
+
+  var OSjs = window.OSjs = window.OSjs || {};
+  //var WL   = window.WL   = window.WL || {};
+
+  OSjs.Helpers = OSjs.Helpers || {};
+
+  /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  var SingletonInstance = null;
+
+  function WindowsLiveAPI(clientId) {
+    this.hasSession = false;
+    this.clientId = clientId;
+    this.loaded = false;
+    this.preloads = [{
+      type: 'javascript',
+      src: '//js.live.net/v5.0/wl.js'
+    }];
+  }
+
+  WindowsLiveAPI.prototype.destroy = function() {
+  };
+
+  WindowsLiveAPI.prototype.init = function(callback) {
+    callback = callback || function() {};
+    var self = this;
+    if ( this.loaded ) {
+      callback(false, true);
+    } else {
+      Utils.Preload(this.preloads, function(total, errors) {
+        if ( !errors ) {
+          self.loaded = true;
+        }
+        callback(errors);
+      });
+    }
+  };
+
+  WindowsLiveAPI.prototype.load = function(scope, callback) {
+    console.debug('WindowsLiveAPI::load()', scope);
+
+    var self = this;
+    this.init(function(error) {
+      if ( error ) {
+        callback(error.join('\n'));
+        return;
+      }
+
+      WL.Event.subscribe("auth.login", function() {
+        console.warn("XXXXXXX");
+      });
+      WL.Event.subscribe('auth.sessionChange', function() {
+        self.onSessionChange();
+      });
+
+      WL.init({
+        scope: scope,
+        client_id: self.clientId,
+        display: 'popup',
+        redirect_uri: window.location.href
+      }).then(function(result) {
+        console.debug('WindowsLiveAPI::load()', '=>', result);
+
+        if ( result.status == 'connected' ) {
+          callback(false, true);
+        } else {
+          self.login(scope, function(error, response) {
+            if ( error ) {
+              callback(error);
+              return;
+            }
+
+            callback(false, true);
+          });
+        }
+      });
+    });
+  };
+
+  WindowsLiveAPI.prototype.login = function(scope, callback) {
+    if ( this.hasSession ) {
+      callback(false, true);
+      return;
+    }
+
+    WL.login({
+      scope: scope
+    }).then(function(result) {
+      if ( result.status == 'connected' ) {
+        callback(false, true);
+      } else {
+        callback('Login failed');
+      }
+    });
+  };
+
+  WindowsLiveAPI.prototype.onSessionChange = function() {
+    var session = WL.getSession();
+    if ( session ) {
+      self.hasSession = true;
+    } else {
+      self.hasSession = false;
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Helpers.WindowsLiveAPI = OSjs.Helpers.WindowsLiveAPI || {};
+
+  OSjs.Helpers.WindowsLiveAPI.getInstance = function() {
+    return SingletonInstance;
+  };
+
+  OSjs.Helpers.WindowsLiveAPI.createInstance = function(args, callback) {
+    args = args || {};
+
+    function _run() {
+      var scope = args.scope;
+      SingletonInstance.load(scope, function() {
+        callback(SingletonInstance);
+      });
+    }
+
+    if ( SingletonInstance ) {
+      _run();
+      return;
+    }
+
+    var clientId = null;
+    var handler = API.getHandlerInstance();
+    if ( handler ) {
+      try {
+        clientId = handler.getConfig('WindowsLiveAPI').ClientId;
+      } catch ( e ) {
+        console.warn('getGoogleAPI()', e, e.stack);
+      }
+    }
+
+    if ( !clientId ) {
+      onerror('Windows Live API disabled or not configured'); // FIXME: Translation
+      return;
+    }
+
+    SingletonInstance = new WindowsLiveAPI(clientId);
+    _run();
+  };
+
+})(OSjs.Utils, OSjs.API);
