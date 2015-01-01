@@ -37,6 +37,7 @@
 // NOTE NOTE NOTE NOTE NOTE NOTE
 //
 
+// http://msdn.microsoft.com/en-us/library/hh826547.aspx
 // http://msdn.microsoft.com/en-us/library/hh826538.aspx
 // http://msdn.microsoft.com/en-us/library/hh550837.aspx
 // http://msdn.microsoft.com/en-us/library/dn631844.aspx
@@ -143,7 +144,34 @@
     });
   };
 
+  WindowsLiveAPI.prototype._removeRing = function() {
+    var ring = OSjs.Helpers.getServiceRing();
+    if ( ring ) {
+      ring.remove('Windows Live API');
+    }
+  };
+
+  WindowsLiveAPI.prototype.logout = function(callback) {
+    callback = callback || function() {};
+
+    var self = this;
+    if ( this.hasSession ) {
+      callback(false, false);
+    }
+
+    WL.Event.unsubscribe('auth.logout');
+    WL.Event.subscribe('auth.logout', function() {
+      self._removeRing();
+
+      WL.Event.unsubscribe('auth.logout');
+      callback(false, true);
+    });
+
+    WL.logout();
+  };
+
   WindowsLiveAPI.prototype.login = function(scope, callback) {
+    var self = this;
     if ( this.hasSession ) {
       callback(false, true);
       return;
@@ -176,11 +204,23 @@
   WindowsLiveAPI.prototype.onLogin = function() {
     console.warn('WindowsLiveAPI::onLogin()', arguments);
     this.hasSession = true;
+
+    var self = this;
+    var ring = OSjs.Helpers.getServiceRing();
+    if ( ring ) {
+      ring.add('Windows Live API', [{
+        title: API._('Sign Out'),
+        onClick: function() {
+          self.logout();
+        }
+      }]);
+    }
   };
 
   WindowsLiveAPI.prototype.onLogout = function() {
     console.warn('WindowsLiveAPI::onLogout()', arguments);
     this.hasSession = false;
+    this._removeRing();
   };
 
   WindowsLiveAPI.prototype.onLog = function() {
@@ -203,7 +243,7 @@
     function _run() {
       var scope = args.scope;
       SingletonInstance.load(scope, function() {
-        callback(SingletonInstance);
+        callback(false, SingletonInstance);
       });
     }
 
@@ -223,7 +263,7 @@
     }
 
     if ( !clientId ) {
-      onerror('Windows Live API disabled or not configured'); // FIXME: Translation
+      callback('Windows Live API disabled or not configured'); // FIXME: Translation
       return;
     }
 
