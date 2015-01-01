@@ -31,6 +31,8 @@
   'use strict';
 
   // https://social.msdn.microsoft.com/forums/onedrive/en-US/5e259b9c-8e9e-40d7-95c7-722ef5bb6d38/upload-file-to-skydrive-using-javascript
+  // http://msdn.microsoft.com/en-us/library/hh826531.aspx
+  // http://msdn.microsoft.com/en-us/library/dn659726.aspx
 
   //var WL   = window.WL   = window.WL    || {};
   var OSjs = window.OSjs = window.OSjs  || {};
@@ -61,31 +63,6 @@
   // TODO
   function createDirectoryList(dir, list, item, options) {
     return [];
-  }
-
-  function createFilePOST(filename, data, contentType, callback) {
-    contentType = contentType || 'application/octet-stream';
-
-    function createBody(base64Data) {
-      var str = [];
-      str.push('--AaB03x');
-      str.push('Content-Disposition: form-data; name="file"; filename="' + filename + '"');
-      str.push('Content-Type: ' + contentType);
-      //str.push('Content-Transfer-Encoding: base64');
-      str.push('');
-      str.push(base64Data);
-      str.push('');
-      str.push('--AaB03x--');
-      return str.join('\r\n');
-    }
-
-    if ( data instanceof OSjs.VFS.FileDataURL ) {
-      callback(createBody(data.toBase64()));
-    } else {
-      OSjs.VFS.abToBinaryString(data, contentType, function(error, response) {
-        callback(createBody(btoa(response)));
-      });
-    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -307,6 +284,7 @@
           return onerror(error);
         }
 
+        _isMounted = true;
         API.message('vfs', {type: 'mount', module: 'OneDrive', source: null});
         callback(OneDriveStorage);
       });
