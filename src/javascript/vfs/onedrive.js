@@ -106,13 +106,13 @@
     );
   };
 
+  // TODO: DataURL support
   OneDriveStorage.write = function(file, data, callback) {
     console.info('OneDrive::write()', file);
 
     var inst = OSjs.Helpers.WindowsLiveAPI.getInstance();
     var url = '//apis.live.net/v5.0/me/skydrive/files?access_token=' + inst.accessToken;
 
-    var xhr = new XMLHttpRequest();
     var fd  = new FormData();
     if ( data instanceof window.File ) {
       fd.append('file', data);
@@ -120,27 +120,23 @@
       fd.append('file', data, file.filename);
     }
 
-    xhr.onreadystatechange = function(evt) {
-      if ( xhr.readyState === 4 ) {
-        var responseJSON = null;
-        try {
-          responseJSON = JSON.parse(xhr.responseText);
-        } catch ( ex )  {}
-
-        if ( xhr.status === 200 || xhr.status === 201 ) {
-          if ( responseJSON ) {
-            callback(false, responseJSON.id);
-            return;
-          }
-          callback('Unknown Error'); // FIXME: Translation
-        } else {
-          callback(responseJSON ? responseJSON.message : 'Unknown Error'); // FIXME: Translation
+    OSjs.Utils.ajax({
+      url: url,
+      method: 'POST',
+      json: true,
+      body: fd,
+      onsuccess: function(result) {
+        if ( result && result.id ) {
+          callback(false, result.id);
+          return;
         }
+        callback('Unknown Error'); // FIXME: Translation
+      },
+      onerror: function(result) {
+        callback(result);
+        //callback('XHR Error'); // FIXME: Translation
       }
-    };
-
-    xhr.open('POST', url);
-    xhr.send(fd);
+    });
   };
 
   OneDriveStorage.copy = function(src, dest, callback) {

@@ -194,6 +194,44 @@
     }
   }
 
+  /**
+   * Wrapper for internal file uploads
+   */
+  function internalUpload(file, dest, callback) {
+    var handler = OSjs.API.getHandlerInstance();
+    var fsuri   = '/';
+    if ( handler ) {
+      fsuri = handler.getConfig('Core').FSURI;
+    }
+
+    var fd  = new FormData();
+    fd.append('upload', 1);
+    fd.append('path',   dest);
+    if ( file instanceof window.File ) {
+      fd.append('upload', file);
+    } else {
+      fd.append('upload', file.data, file.filename);
+    }
+
+    OSjs.Utils.ajax({
+      url: fsuri,
+      method: 'POST',
+      body: fd,
+      onsuccess: function(result) {
+        callback('success', result);
+      },
+      onerror: function(result) {
+        callback('error', result);
+      },
+      onprogress: function(evt) {
+        callback('progress', evt);
+      },
+      oncanceled: function(evt) {
+        callback('canceled', evt);
+      }
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // CONVERSION HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -730,15 +768,14 @@
           }
         }
       } else {
-        Utils.AjaxUpload(f, 0, args.destination, {
-          progress: function() { },
-          complete: function(evt) { callback(false, true, evt); },
-          failed:   function(evt, message) {
-            var msg = API._('ERR_VFS_UPLOAD_FAIL_FMT', (message || 'Unknown reason'));
-            callback(msg, null, evt);
-          },
-          canceled: function(evt) {
-            callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, evt);
+        OSjs.VFS.internalUpload(f, args.destination, function(type, arg) {
+          if ( type === 'complete' ) {
+            callback(false, true, arg);
+          } else if ( type === 'failed' ) {
+            var msg = API._('ERR_VFS_UPLOAD_FAIL_FMT', 'Unknown reason');
+            callback(msg, null, arg);
+          } else if ( type === 'canceled' ) {
+            callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, arg);
           }
         });
       }
@@ -807,13 +844,21 @@
         if ( error ) {
           return callback(error);
         }
-        Utils.AjaxDownload(result, function(data) {
-          API.destroyLoading(lname);
-          callback(false, data);
-        }, function(err) {
-          API.destroyLoading(lname);
-          callback(err);
+
+        Utils.ajax({
+          url: url,
+          method: 'POST',
+          responseType: 'arraybuffer',
+          onsuccess: function(result) {
+            API.destroyLoading(lname);
+            callback(false, response);
+          },
+          onerror: function(result) {
+            API.destroyLoading(lname);
+            callback(error);
+          }
         });
+
       });
     };
   })();
@@ -869,6 +914,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.internalCall          = internalCall;
+  OSjs.VFS.internalUpload        = internalUpload;
   OSjs.VFS.filterScandir         = filterScandir;
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.isInternalModule      = isInternalModule;

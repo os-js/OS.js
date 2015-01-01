@@ -126,11 +126,16 @@
     }
 
     var self = this;
-    OSjs.Utils.AjaxUpload(file, size, this.dest, {
-      progress: function() { self.onUploadProgress.apply(self, arguments); },
-      complete: function() { self.onUploadComplete.apply(self, arguments); },
-      failed:   function() { self.onUploadFailed.apply(self, arguments); },
-      canceled: function() { self.onUploadCanceled.apply(self, arguments); }
+    OSjs.VFS.internalUpload(file, this.dest, function(type, arg) {
+      if ( type === 'success' ) {
+        self.onUploadComplete(self, arg);
+      } else if ( type === 'failed' ) {
+        self.onUploadFailed.call(self, arg);
+      } else if ( type === 'canceled' ) {
+        self.onUploadCanceled.call(self, arg);
+      } else if ( type === 'progress' ) {
+        self.onUploadProgress.call(self, arg);
+      }
     });
 
     setTimeout(function() {

@@ -132,12 +132,15 @@
     }
 
     var url = 'https://accounts.google.com/o/oauth2/revoke?token=' + this.accessToken;
-    Utils.Ajax(url, function() {
-      callback(true);
-    }, function() {
-      callback(false);
-    }, {
-      jsonp: true
+    Utils.ajax({
+      url: url,
+      jsonp: true,
+      onsuccess: function() {
+        callback(true);
+      },
+      onerror: function() {
+        callback(false);
+      }
     });
   };
 

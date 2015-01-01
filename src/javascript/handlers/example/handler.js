@@ -104,20 +104,24 @@ See doc/example-handler.txt
     }
 
     var uri = '/example.html';
-    OSjs.Utils.Ajax(uri, function(response, httpRequest, url) {
-      if ( !response ) {
-        alert('No content was found for example handler login HTML');
-        return;
+    OSjs.Utils.ajax({
+      url: uri,
+      onsuccess: function(response) {
+        if ( !response ) {
+          alert('No content was found for example handler login HTML');
+          return;
+        }
+
+        document.body.innerHTML += response;
+
+        setTimeout(function() {
+          _onLoaded();
+        }, 0);
+      },
+      onerror: function(error) {
+        alert('Failed to fetch example handler login HTML');
       }
-
-      document.body.innerHTML += response;
-
-      setTimeout(function() {
-        _onLoaded();
-      }, 0);
-    }, function(error, response, httpRequest) {
-      alert('Failed to fetch example handler login HTML');
-    }, {method: 'GET', parse: true});
+    });
   };
 
   ExampleHandler.prototype.login = function(username, password, callback) {

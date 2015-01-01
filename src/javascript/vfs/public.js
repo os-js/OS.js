@@ -81,16 +81,22 @@
         return callback(error);
       }
 
-      Utils.AjaxDownload(url, function(response) {
-        if ( options.dataSource ) {
-          OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
-            callback(error, error ? null : dataSource);
-          });
-          return;
+      Utils.ajax({
+        url: url,
+        method: 'GET',
+        responseType: 'arraybuffer',
+        onsuccess: function(response) {
+          if ( options.dataSource ) {
+            OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
+              callback(error, error ? null : dataSource);
+            });
+            return;
+          }
+          callback(false, response);
+        },
+        onerror: function(result) {
+          callback(error);
         }
-        callback(false, response);
-      }, function(error) {
-        callback(error);
       });
     });
   };

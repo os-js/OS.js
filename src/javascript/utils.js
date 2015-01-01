@@ -622,167 +622,111 @@
   // XHR
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Utils.AjaxUpload = function(file, size, dest, callbacks) {
-    if ( !OSjs.Utils.getCompability().upload ) {
-      throw new Error('File upload is not supported on your platform');
-    }
+  /**
+   * Common function for handling all types of XHR calls
+   * including download/upload and JSONP
+   */
+  OSjs.Utils.ajax = function(args) {
+    args                = args                  || {};
+    args.onerror        = args.onerror          || function() {};
+    args.onsuccess      = args.onsuccess        || function() {};
+    args.onprogress     = args.onprogress       || function() {};
+    args.oncreated      = args.oncreated        || function() {};
+    args.onfailed       = args.onfailed         || function() {};
+    args.oncanceled     = args.oncanceled       || function() {};
+    args.method         = args.method           || 'GET';
+    args.responseType   = args.responseType     || null;
+    args.requestHeaders = args.requestHeaders   || {};
+    args.body           = args.body             || '';
+    args.json           = args.json             || false;
+    args.url            = args.url              || '';
+    args.jsonp          = args.jsonp            || false;
 
-    callbacks           = callbacks           || {};
-    callbacks.progress  = callbacks.progress  || function() {};
-    callbacks.complete  = callbacks.complete  || function() {};
-    callbacks.failed    = callbacks.failed    || function() {};
-    callbacks.canceled  = callbacks.canceled  || function() {};
+    console.debug('Utils::ajax()', args);
 
-    var xhr = new XMLHttpRequest();
-    var fd  = new FormData();
-    fd.append('upload', 1);
-    fd.append('path',   dest);
-    if ( file instanceof window.File ) {
-      fd.append('upload', file);
-    } else {
-      fd.append('upload', file.data, file.filename);
-    }
-
-    xhr.upload.addEventListener('progress', function(evt) { callbacks.progress(evt); }, false);
-    xhr.addEventListener('load', function(evt) {
-      if ( evt.target && evt.target.responseText !== '1' ) {
-        return callbacks.failed(evt, evt.target.responseText);
-      }
-      return callbacks.complete(evt);
-    }, false);
-    xhr.addEventListener('error', function(evt) { callbacks.failed(evt); }, false);
-    xhr.addEventListener('abort', function(evt) { callbacks.canceled(evt); }, false);
-    xhr.onreadystatechange = function(evt) {
-      if ( xhr.readyState === 4 ) {
-        if ( xhr.status !== 200 ) {
-          var err = 'Unknown error';
-          try {
-            var tmp = JSON.parse(xhr.responseText);
-            if ( tmp.error ) {
-              err = tmp.error;
-            }
-          } catch ( e ) {
-            if ( xhr.responseText ) {
-              err = xhr.responseText;
-            } else {
-              err = e;
-            }
-          }
-          callbacks.failed(evt, err);
-        }
-      }
-    };
-
-    var handler = OSjs.API.getHandlerInstance();
-    var fsuri   = '/';
-    if ( handler ) {
-      fsuri = handler.getConfig('Core').FSURI;
-    }
-    xhr.open('POST', fsuri);
-    xhr.send(fd);
-
-    return xhr;
-  };
-
-  OSjs.Utils.AjaxDownload = function(url, onSuccess, onError) {
-    onSuccess = onSuccess || function() {};
-    onError   = onError   || function() {};
-
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.responseType = 'arraybuffer';
-
-    request.onerror = function(err) {
-      onError(err);
-    };
-
-    request.onload = function() {
-      onSuccess(request.response);
-    };
-
-    request.send();
-  };
-
-  OSjs.Utils.Ajax = function(url, onSuccess, onError, opts) {
-    if ( !url ) { throw new Error('No URL given'); }
-
-    onSuccess = onSuccess || function() {};
-    onError = onError || function() {};
-
-    if ( !opts )        { opts = {}; }
-    if ( !opts.method ) { opts.method = 'GET'; }
-    if ( !opts.post )   { opts.post = {}; }
-    if ( !opts.parse )  { opts.parse = true; }
-
-    if ( opts.jsonp ) {
+    if ( args.jsonp ) {
       var loaded  = false;
-      OSjs.Utils.$createJS(url, function() {
+      OSjs.Utils.$createJS(args.url, function() {
         if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
           loaded = true;
-          onSuccess();
+          args.onsuccess();
         }
       }, function() {
         if ( loaded ) { return; }
         loaded = true;
-        onSuccess();
+        args.onsuccess();
       }, function() {
         if ( loaded ) { return; }
         loaded = true;
-        onError();
+        args.onerror();
       });
       return;
     }
 
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = function() {
-      if (httpRequest.readyState === 4) {
-        var response = httpRequest.responseText;
-        var error = '';
-        var ctype = this.getResponseHeader('content-type');
 
-        if ( ctype === 'application/json' ) {
-          if ( opts.parse ) {
-            try {
-              response = JSON.parse(httpRequest.responseText);
-            } catch ( e ) {
-              response = null;
-              error = 'An error occured while parsing: ' + e;
-            }
-          }
-        }
+    var request = new XMLHttpRequest();
 
-        if ( httpRequest.status === 200 || httpRequest.status === 201 ) {
-          onSuccess(response, httpRequest, url);
-        } else {
-          if ( !error && (ctype !== 'application/json') ) {
-            error = 'Backend error: ' + (httpRequest.responseText || 'Fatal Error');
-          }
-          onError(error, response, httpRequest, url);
+    if ( args.json ) {
+      if ( typeof args.body !== 'string' ) {
+        if ( !(args.body instanceof FormData) ) {
+          args.body = JSON.stringify(args.body);
         }
       }
-    };
-
-    httpRequest.open(opts.method, url);
-    if ( opts.contentType ) {
-      httpRequest.setRequestHeader('Content-Type', opts.contentType);
     }
 
-    if ( opts.method === 'GET' ) {
-      httpRequest.send();
+    function getResponse(ctype) {
+      var response = request.responseText;
+      if ( args.json && ctype.match(/^application\/json/) ) {
+        try {
+          response = JSON.parse(response);
+        } catch(ex) {
+          console.warn('Utils::ajax()', 'handleResponse()', ex);
+        }
+      }
+
+      return response;
+    }
+
+    if ( args.responseType ) {
+      request.responseType = args.responseType;
+    }
+
+    if ( args.responseType === 'arraybuffer' ) {
+      request.onerror = function(err) {
+        args.onerror(err, request.response, request, args.url);
+      };
+      request.onload = function() {
+        args.onsuccess(request.response, request);
+      };
     } else {
-      var args = opts.post;
-      if ( typeof opts.post !== 'string' ) {
-        args = (JSON.stringify(opts.post));
-        //args = encodeURIComponent(JSON.stringify(opts.post));
+      if ( request.upload ) {
+        request.upload.addEventListener('progress', function(evt) { args.onprogress(evt); }, false);
       }
+      request.addEventListener('error', function(evt) { args.onfailed(evt); }, false);
+      request.addEventListener('abort', function(evt) { args.oncanceled(evt); }, false);
 
-      if ( !opts.contentType ) {
-        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      }
-      httpRequest.send(args);
+      request.onreadystatechange = function() {
+        if ( request.readyState === 4 ) {
+          var ctype = request.getResponseHeader('content-type');
+          if ( request.status === 200 || request.status === 201 ) {
+            args.onsuccess(getResponse(ctype), request, args.url);
+          } else {
+            var error = 'AJAX Error: ' + (request.responseText || 'Fatal Error') + ' - ' + request.status;
+            args.onerror(error, request.response, request, args.url);
+          }
+        }
+      };
     }
 
-    return true;
+    request.open(args.method, args.url, true);
+
+    Object.keys(args.requestHeaders).forEach(function(h) {
+      request.setRequestHeader(h, args.requestHeaders[h]);
+    });
+
+    args.oncreated(request);
+
+    request.send(args.body);
   };
 
   /////////////////////////////////////////////////////////////////////////////

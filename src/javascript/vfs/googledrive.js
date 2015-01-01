@@ -458,17 +458,18 @@
 
         if ( file && file.id ) {
           var accessToken = gapi.auth.getToken().access_token;
-          var xhr = new XMLHttpRequest();
-          xhr.open('GET', file.downloadUrl);
-          xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-          xhr.responseType = 'arraybuffer';
-          xhr.onload = function() {
-            callback(false, xhr.response);
-          };
-          xhr.onerror = function() {
-            callback(API._('ERR_VFSMODULE_XHR_ERROR'));
-          };
-          xhr.send();
+          Utils.ajax({
+            url: file.downloadUrl,
+            method: 'GET',
+            responseType: 'arraybuffer',
+            requestHeaders: {'Authorization': 'Bearer ' + accessToken},
+            onsuccess: function(response) {
+              callback(false, response);
+            },
+            onerror: function(error) {
+              callback(API._('ERR_VFSMODULE_XHR_ERROR') + ' - ' + error);
+            }
+          });
         } else {
           callback(API._('ERR_VFSMODULE_NOSUCH'));
         }

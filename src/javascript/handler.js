@@ -262,15 +262,19 @@
     }
     */
 
-    return Utils.Ajax(this.url, function(response, httpRequest, url) {
-      cbSuccess.apply(this, arguments);
-    }, function(error, response, httpRequest, url) {
-      cbError.apply(this, arguments);
-    }, {
-      method : 'POST',
-      post   : {
+    return Utils.ajax({
+      url: this.url,
+      method: 'POST',
+      json: true,
+      body: {
         'method'    : method,
         'arguments' : args
+      },
+      onsuccess: function(response, request, url) {
+        cbSuccess.apply(this, arguments);
+      },
+      onerror: function(error, response, request, url) {
+        cbError.apply(this, arguments);
       }
     });
   };
@@ -386,21 +390,27 @@
 
     console.info('ThemeManager::load()');
 
-    Utils.Ajax(this.uri, function(response, httpRequest, url) {
-      response = fixJSON(response);
+    return Utils.ajax({
+      url: this.uri,
+      json: true,
+      parse: true,
+      onsuccess: function(response, request, url) {
+        response = fixJSON(response);
 
-      if ( response ) {
-        self.themes = response;
-        callback(true);
-      } else {
-        callback(false, 'No themes found!');
+        if ( response ) {
+          self.themes = response;
+          callback(true);
+        } else {
+          callback(false, 'No themes found!');
+        }
+      },
+      onerror: function(error, response, request, url) {
+        if ( request && request.status !== 200 ) {
+          error = 'Failed to theme manifest from ' + url + ' - HTTP Error: ' + request.status;
+        }
+        callback(false, error);
       }
-    }, function(error, response, httpRequest) {
-      if ( httpRequest && httpRequest.status !== 200 ) {
-        error = 'Failed to theme manifest from ' + self.uri + ' - HTTP Error: ' + httpRequest.status;
-      }
-      callback(false, error);
-    }, {method: 'GET', parse: true});
+    });
   };
 
   ThemeManager.prototype.getTheme = function(name) {
@@ -437,21 +447,26 @@
 
     console.info('PackageManager::load()');
 
-    Utils.Ajax(this.uri, function(response, httpRequest, url) {
-      response = fixJSON(response);
+    return Utils.ajax({
+      url: this.uri,
+      json: true,
+      onsuccess: function(response, request, url) {
+        response = fixJSON(response);
 
-      if ( response ) {
-        self._setPackages(response);
-        callback(true);
-      } else {
-        callback(false, 'No packages found!');
+        if ( response ) {
+          self._setPackages(response);
+          callback(true);
+        } else {
+          callback(false, 'No packages found!');
+        }
+      },
+      onerror: function(error, response, request, url) {
+        if ( request && request.status !== 200 ) {
+          error = 'Failed to load package manifest from ' + self.uri + ' - HTTP Error: ' + request.status;
+        }
+        callback(false, error);
       }
-    }, function(error, response, httpRequest) {
-      if ( httpRequest && httpRequest.status !== 200 ) {
-        error = 'Failed to load package manifest from ' + self.uri + ' - HTTP Error: ' + httpRequest.status;
-      }
-      callback(false, error);
-    }, {method: 'GET', parse: true});
+    });
   };
 
   /**
