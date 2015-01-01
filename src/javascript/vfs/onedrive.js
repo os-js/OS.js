@@ -30,6 +30,8 @@
 (function(Utils, API) {
   'use strict';
 
+  // https://social.msdn.microsoft.com/forums/onedrive/en-US/5e259b9c-8e9e-40d7-95c7-722ef5bb6d38/upload-file-to-skydrive-using-javascript
+
   //var WL   = window.WL   = window.WL    || {};
   var OSjs = window.OSjs = window.OSjs  || {};
 
@@ -50,7 +52,7 @@
         callback(false, response);
       },
       function(responseFailed) {
-        console.debug('OneDrive::*onedriveCall()', 'error', responseFailed);
+        console.error('OneDrive::*onedriveCall()', 'error', responseFailed, args);
         callback(responseFailed.error.message);
       }
     );
@@ -59,6 +61,31 @@
   // TODO
   function createDirectoryList(dir, list, item, options) {
     return [];
+  }
+
+  function createFilePOST(filename, data, contentType, callback) {
+    contentType = contentType || 'application/octet-stream';
+
+    function createBody(base64Data) {
+      var str = [];
+      str.push('--AaB03x');
+      str.push('Content-Disposition: form-data; name="file"; filename="' + filename + '"');
+      str.push('Content-Type: ' + contentType);
+      //str.push('Content-Transfer-Encoding: base64');
+      str.push('');
+      str.push(base64Data);
+      str.push('');
+      str.push('--AaB03x--');
+      return str.join('\r\n');
+    }
+
+    if ( data instanceof OSjs.VFS.FileDataURL ) {
+      callback(createBody(data.toBase64()));
+    } else {
+      OSjs.VFS.abToBinaryString(data, contentType, function(error, response) {
+        callback(createBody(btoa(response)));
+      });
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -103,21 +130,40 @@
   };
 
   OneDriveStorage.write = function(file, data, callback) {
-    var drivePath = item.path; // TODO
+    console.info('OneDrive::write()', file);
 
-    WL.createBackgroundUpload({
-      path: drivePath,
-      file_name: file.filename,
-      file_input: data,
-      overwrite: 'rename'
-    }).then(
-      function (response) {
-        callback(false, true);
-      },
-      function (responseFailed) {
-        callback(responseFailed.error.message);
+    var inst = OSjs.Helpers.WindowsLiveAPI.getInstance();
+    var url = '//apis.live.net/v5.0/me/skydrive/files?access_token=' + inst.accessToken;
+
+    var xhr = new XMLHttpRequest();
+    var fd  = new FormData();
+    if ( data instanceof window.File ) {
+      fd.append('file', data);
+    } else {
+      fd.append('file', data, file.filename);
+    }
+
+    xhr.onreadystatechange = function(evt) {
+      if ( xhr.readyState === 4 ) {
+        var responseJSON = null;
+        try {
+          responseJSON = JSON.parse(xhr.responseText);
+        } catch ( ex )  {}
+
+        if ( xhr.status === 200 || xhr.status === 201 ) {
+          if ( responseJSON ) {
+            callback(false, responseJSON.id);
+            return;
+          }
+          callback('Unknown Error'); // FIXME: Translation
+        } else {
+          callback(responseJSON ? responseJSON.message : 'Unknown Error'); // FIXME: Translation
+        }
       }
-    );
+    };
+
+    xhr.open('POST', url);
+    xhr.send(fd);
   };
 
   OneDriveStorage.copy = function(src, dest, callback) {
@@ -208,6 +254,8 @@
   };
 
   OneDriveStorage.upload = function(file, dest, callback) {
+    console.info('OneDrive::upload()', file, dest);
+
     var ndest = dest;
     if ( !ndest.match(/\/$/) ) {
       ndest += '/';
