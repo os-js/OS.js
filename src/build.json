@@ -106,6 +106,7 @@
       "src/javascript/helpers/default-application.js",
       "src/javascript/helpers/indexed-db.js",
       "src/javascript/helpers/google-api.js",
+      "src/javascript/helpers/windows-live-api.js",
       "src/javascript/locales/en_EN.js",
       "src/javascript/locales/no_NO.js",
       "src/javascript/locales/de_DE.js",

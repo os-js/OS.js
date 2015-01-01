@@ -148,6 +148,13 @@
     'GAPI_AUTH_FAILURE_FMT'   : 'Klarte ikke autentisere: {0}:{1}',
     'GAPI_LOAD_FAILURE'       : 'Klarte ikke laste Google API',
 
+    // Windows Live API
+    'WLAPI_DISABLED'          : 'Windows Live API Modul deaktivert eller ikke konfigurert',
+    'WLAPI_SIGN_OUT'          : 'Logg ut av Window Live API',
+    'WLAPI_LOAD_FAILURE'      : 'Klarte ikke laste Windows Live API',
+    'WLAPI_LOGIN_FAILED'      : 'Klarte ikke logge inn Windows Live API',
+    'WLAPI_LOGIN_FAILED_FMT'  : 'Klarte ikke logge inn Windows Live API: {0}',
+
     // IndexedDB
     'IDB_MISSING_DBNAME' : 'Kan ikke opprette IndexedDB uten databasenavn',
     'IDB_NO_SUCH_ITEM'   : 'Item ble ikke funnet',

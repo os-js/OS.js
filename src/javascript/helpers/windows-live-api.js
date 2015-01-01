@@ -28,15 +28,6 @@
  * @licence Simplified BSD License
  */
 
-
-//
-// NOTE NOTE NOTE NOTE NOTE NOTE
-//
-// THIS IS HIGHLY EXPERIMENTAL!!!!
-//
-// NOTE NOTE NOTE NOTE NOTE NOTE
-//
-
 // http://msdn.microsoft.com/en-us/library/hh826547.aspx
 // http://msdn.microsoft.com/en-us/library/hh826538.aspx
 // http://msdn.microsoft.com/en-us/library/hh550837.aspx
@@ -101,7 +92,7 @@
       }
 
       if ( !window.WL ) {
-        callback('Windows Live API Was not loaded'); // FIXME: Translation
+        callback(API._('WLAPI_LOAD_FAILURE'));
         return;
       }
 
@@ -189,10 +180,10 @@
       if ( result.status == 'connected' ) {
         callback(false, true);
       } else {
-        callback('Login failed'); // FIXME: Translation
+        callback(API._('WLAPI_LOGIN_FAILED'));
       }
     }, function(result) {
-      callback('An error occured while logging in to Windows Live API: ' + result.error_description); // FIXME: Translation
+        callback(API._('WLAPI_LOGIN_FAILED_FMT', result.error_description));
     });
   };
 
@@ -214,7 +205,7 @@
     var ring = OSjs.Helpers.getServiceRing();
     if ( ring ) {
       ring.add('Windows Live API', [{
-        title: API._('Sign Out'),
+        title: API._('WLAPI_SIGN_OUT'),
         onClick: function() {
           self.logout();
         }
@@ -263,12 +254,12 @@
       try {
         clientId = handler.getConfig('WindowsLiveAPI').ClientId;
       } catch ( e ) {
-        console.warn('getGoogleAPI()', e, e.stack);
+        console.warn('getWindowsLiveAPI()', e, e.stack);
       }
     }
 
     if ( !clientId ) {
-      callback('Windows Live API disabled or not configured'); // FIXME: Translation
+      callback(API._('WLAPI_DISABLED'));
       return;
     }
 

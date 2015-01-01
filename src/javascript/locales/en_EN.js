@@ -147,6 +147,13 @@
     'GAPI_AUTH_FAILURE_FMT'   : 'Failed to authenticate: {0}:{1}',
     'GAPI_LOAD_FAILURE'       : 'Failed to load Google API',
 
+    // Windows Live API
+    'WLAPI_DISABLED'          : 'Windows Live API module not configured or disabled',
+    'WLAPI_SIGN_OUT'          : 'Sign out from Window Live API',
+    'WLAPI_LOAD_FAILURE'      : 'Failed to load Windows Live API',
+    'WLAPI_LOGIN_FAILED'      : 'Failed to log into Windows Live API',
+    'WLAPI_LOGIN_FAILED_FMT'  : 'Failed to log into Windows Live API: {0}',
+
     // IndexedDB
     'IDB_MISSING_DBNAME' : 'Cannot create IndexedDB without Database Name',
     'IDB_NO_SUCH_ITEM'   : 'No such item',
