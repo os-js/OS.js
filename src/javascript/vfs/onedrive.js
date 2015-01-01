@@ -114,11 +114,7 @@
     var url = '//apis.live.net/v5.0/me/skydrive/files?access_token=' + inst.accessToken;
 
     var fd  = new FormData();
-    if ( data instanceof window.File ) {
-      fd.append('file', data);
-    } else {
-      fd.append('file', data, file.filename);
-    }
+    OSjs.VFS.addFormFile(fd, 'file', data, file);
 
     OSjs.Utils.ajax({
       url: url,
@@ -132,8 +128,11 @@
         }
         callback('Unknown Error'); // FIXME: Translation
       },
-      onerror: function(result) {
-        callback(result);
+      onerror: function(error, result) {
+        if ( result && result.error ) {
+          error += ' - ' + result.error.message;
+        }
+        callback(error);
         //callback('XHR Error'); // FIXME: Translation
       }
     });

@@ -206,12 +206,8 @@
 
     var fd  = new FormData();
     fd.append('upload', 1);
-    fd.append('path',   dest);
-    if ( file instanceof window.File ) {
-      fd.append('upload', file);
-    } else {
-      fd.append('upload', file.data, file.filename);
-    }
+    fd.append('path', dest);
+    addFormFile(fd, 'upload', file);
 
     OSjs.Utils.ajax({
       url: fsuri,
@@ -235,6 +231,22 @@
   /////////////////////////////////////////////////////////////////////////////
   // CONVERSION HELPERS
   /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * This is a helper to add a File to FormData
+   */
+  function addFormFile(fd, key, data, file) {
+    if ( data instanceof window.File ) {
+      fd.append(key, data);
+    } else {
+      if ( file ) {
+        if ( data instanceof window.ArrayBuffer ) {
+          data = new Blob([data], {type: file.mime});
+        }
+        fd.append(key, data, file.filename);
+      }
+    }
+  }
 
   /**
    * Convert DataSourceURL to ArrayBuffer
@@ -919,6 +931,7 @@
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.isInternalModule      = isInternalModule;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
+  OSjs.VFS.addFormFile           = addFormFile;
   OSjs.VFS.abToBinaryString      = abToBinaryString;
   OSjs.VFS.abToDataSource        = abToDataSource;
   OSjs.VFS.abToText              = abToText;

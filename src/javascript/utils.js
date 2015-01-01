@@ -708,11 +708,13 @@
       request.onreadystatechange = function() {
         if ( request.readyState === 4 ) {
           var ctype = request.getResponseHeader('content-type');
+          var result = getResponse(ctype);
+
           if ( request.status === 200 || request.status === 201 ) {
-            args.onsuccess(getResponse(ctype), request, args.url);
+            args.onsuccess(result, request, args.url);
           } else {
-            var error = 'AJAX Error: ' + (request.responseText || 'Fatal Error') + ' - ' + request.status;
-            args.onerror(error, request.response, request, args.url);
+            var error = 'AJAX Error: ' + request.status.toString(); // FIXME: Translation
+            args.onerror(error, result, request, args.url);
           }
         }
       };
