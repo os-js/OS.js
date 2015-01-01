@@ -751,7 +751,7 @@
           }
         }
 
-        if ( httpRequest.status === 200 ) {
+        if ( httpRequest.status === 200 || httpRequest.status === 201 ) {
           onSuccess(response, httpRequest, url);
         } else {
           if ( !error && (ctype !== 'application/json') ) {
@@ -763,6 +763,9 @@
     };
 
     httpRequest.open(opts.method, url);
+    if ( opts.contentType ) {
+      httpRequest.setRequestHeader('Content-Type', opts.contentType);
+    }
 
     if ( opts.method === 'GET' ) {
       httpRequest.send();
@@ -773,7 +776,9 @@
         //args = encodeURIComponent(JSON.stringify(opts.post));
       }
 
-      httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      if ( !opts.contentType ) {
+        httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      }
       httpRequest.send(args);
     }
 
