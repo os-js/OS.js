@@ -627,7 +627,7 @@
    * including download/upload and JSONP
    */
   OSjs.Utils.ajax = function(args) {
-    args                = args                  || {};
+
     args.onerror        = args.onerror          || function() {};
     args.onsuccess      = args.onsuccess        || function() {};
     args.onprogress     = args.onprogress       || function() {};
@@ -664,8 +664,6 @@
     }
 
 
-    var request = new XMLHttpRequest();
-
     if ( args.json ) {
       if ( typeof args.body !== 'string' ) {
         if ( !(args.body instanceof FormData) ) {
@@ -686,6 +684,10 @@
 
       return response;
     }
+
+
+    var request = new XMLHttpRequest();
+    request.open(args.method, args.url, true);
 
     if ( args.responseType ) {
       request.responseType = args.responseType;
@@ -720,8 +722,6 @@
         }
       };
     }
-
-    request.open(args.method, args.url, true);
 
     Object.keys(args.requestHeaders).forEach(function(h) {
       request.setRequestHeader(h, args.requestHeaders[h]);
