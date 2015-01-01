@@ -637,7 +637,7 @@
     args.method         = args.method           || 'GET';
     args.responseType   = args.responseType     || null;
     args.requestHeaders = args.requestHeaders   || {};
-    args.body           = args.body             || '';
+    args.body           = args.body             || null;
     args.json           = args.json             || false;
     args.url            = args.url              || '';
     args.jsonp          = args.jsonp            || false;
@@ -692,8 +692,9 @@
     }
 
     if ( args.responseType === 'arraybuffer' ) {
-      request.onerror = function(err) {
-        args.onerror(err, request.response, request, args.url);
+      request.onerror = function(evt) {
+        var error = request.response || 'Fatal Error'; // FIXME: Translation
+        args.onerror(error, evt, request, args.url);
       };
       request.onload = function() {
         args.onsuccess(request.response, request);
