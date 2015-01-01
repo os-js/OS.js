@@ -94,7 +94,7 @@
           }
           callback(false, response);
         },
-        onerror: function(result) {
+        onerror: function(error) {
           callback(error);
         }
       });
