@@ -43,11 +43,14 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function onedriveCall(args, callback) {
+    console.debug('OneDrive::*onedriveCall()', args);
+
     WL.api(args).then(
       function(response) {
         callback(false, response);
       },
-      function (responseFailed) {
+      function(responseFailed) {
+        console.debug('OneDrive::*onedriveCall()', 'error', responseFailed);
         callback(responseFailed.error.message);
       }
     );
@@ -65,16 +68,19 @@
   var OneDriveStorage = {};
 
   OneDriveStorage.scandir = function(item, callback, options) {
+    console.info('OneDrive::scandir()', item);
+
     var drivePath = 'me/skydrive'; // TODO
 
     onedriveCall({
-      path: srcDrivePath,
+      path: drivePath,
       method: 'GET'
     }, function(error, response) {
       if ( error ) {
         callback(error);
         return;
       }
+      console.debug('OneDrive::scandir()', '=>', response);
 
       var result = createDirectoryList(drivePath, response, item, options);
       callback(false, result);
@@ -252,7 +258,6 @@
         if ( error ) {
           return onerror(error);
         }
-
 
         API.message('vfs', {type: 'mount', module: 'OneDrive', source: null});
         callback(OneDriveStorage);
