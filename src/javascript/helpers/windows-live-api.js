@@ -65,6 +65,7 @@
     this.hasSession = false;
     this.clientId = clientId;
     this.loaded = false;
+    this.accessToken = null;
     this.preloads = [{
       type: 'javascript',
       src: '//js.live.net/v5.0/wl.js'
@@ -125,6 +126,8 @@
       }).then(function(result) {
         console.debug('WindowsLiveAPI::load()', '=>', result);
 
+        self.accessToken = result.session.access_token;
+
         if ( result.status == 'connected' ) {
           callback(false, true);
         } else {
@@ -134,7 +137,9 @@
               return;
             }
 
-            callback(false, true);
+            setTimeout(function() {
+              callback(false, true);
+            }, 10);
           });
         }
       }, function(result) {
