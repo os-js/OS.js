@@ -61,8 +61,36 @@
   }
 
   // TODO
+  // NOTE SEEMS LIKE ONEDRIVE DOES NOT SUPPORT MIME :(
   function createDirectoryList(dir, list, item, options) {
-    return [];
+    var result = [];
+
+    list.forEach(function(iter) {
+      result.push(new OSjs.VFS.File({
+        id: iter.id,
+        filename: iter.name,
+        path: 'onedrive:///' + dir + '/' + iter.name,
+        size: iter.size || 0,
+        mime: (iter.type === 'file' ? 'application/octet-stream' : null), // FIXME
+        type: (iter.type === 'folder' ? 'dir' : 'file')
+      }));
+    });
+
+    return result;
+  }
+
+  function getFilesInFolder(folderId, callback) {
+    onedriveCall({
+      path: folderId + '/files',
+      method: 'GET'
+    }, function(error, response) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+      console.debug('OneDrive::*getFilesInFolder()', '=>', response);
+      callback(false, response.data || []);
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -86,24 +114,48 @@
       }
       console.debug('OneDrive::scandir()', '=>', response);
 
-      var result = createDirectoryList(drivePath, response, item, options);
-      callback(false, result);
+      getFilesInFolder(response.id, function(error, list) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        var result = createDirectoryList(drivePath, list, item, options);
+        callback(false, result);
+      });
+
     });
   };
 
   OneDriveStorage.read = function(item, callback, options) {
-    var drivePath = item.path; // TODO
 
-    WL.createBackgroundDownload({
-      path: drivePath
-    }).then(
-      function (response) {
-        callback(false, response);
-      },
-      function (responseFailed) {
-        callback(responseFailed.error.message);
+    this.url(item, function(error, url) {
+      if ( error ) {
+        callback(error);
+        return;
       }
-    );
+
+      Utils.ajax({
+        url: url + '&download=true',
+        method: 'GET',
+        responseType: 'arraybuffer',
+        requestHeaders: {
+          'Access-Control-Allow-Origin': window.location.href
+        },
+        onsuccess: function(response) {
+          if ( options.dataSource ) {
+            OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
+              callback(error, error ? null : dataSource);
+            });
+            return;
+          }
+          callback(false, response);
+        },
+        onerror: function(error) {
+          callback(error);
+        }
+      });
+    });
   };
 
   // TODO: DataURL support
@@ -154,8 +206,7 @@
   };
 
   OneDriveStorage.unlink = function(src, callback) {
-    var drivePath = item.path; // TODO
-
+    var drivePath = src.id;
     onedriveCall({
       path: drivePath,
       method: 'DELETE'
@@ -179,10 +230,13 @@
     });
   };
 
+  // TODO
   // FIXME Is there a better way to do this ?
   OneDriveStorage.exists = function(item, callback) {
     console.info('GoogleDrive::exists()', item); // TODO
 
+    callback(false, item);
+    /*
     var req = new OSjs.VFS.File(OSjs.Utils.dirname(item.path));
 
     this.scandir(req, function(error, result) {
@@ -204,6 +258,7 @@
 
       callback(false, found);
     });
+    */
   };
 
   // TODO
@@ -253,6 +308,34 @@
 
   OneDriveStorage.emptyTrash = function(callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
+  OneDriveStorage.url = function(item, callback) {
+    console.info('GoogleDrive::url()', item);
+    if ( !item || !item.id ) {
+      throw new Error('url() expects a File ref with Id');
+    }
+
+    /*
+    var drivePath = item.id; // TODO
+    var inst = OSjs.Helpers.WindowsLiveAPI.getInstance();
+    var url = '//apis.live.net/v5.0/' + drivePath + '/content?access_token=' + inst.accessToken;
+
+    callback(false, url);
+    */
+
+    onedriveCall({
+      path: item.id + '/content',
+      method: 'GET'
+    }, function(error, response) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+      callback(false, response.location);
+    });
+
+
   };
 
   /////////////////////////////////////////////////////////////////////////////
