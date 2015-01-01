@@ -1,3 +1,20 @@
+# 2.0.0-alpha47
+
+WARNING: This release will require you to refactor applications to use Utils.ajax()
+instead of old Utils.Ajax*() methods
+
+* Core: Destroy 'service-ring' on shutdown
+* VFS: google-drive - Fixed a intermittent bug in createDirectoryList
+* VFS: google-drive - Typo in configuration check caused error
+* VFS: Microsoft OneDrive module included (but not enabled. HIGHLY EXPERIMENTAL #43)
+* VFS: Added support for methods: trash, untrash, emptyTrash
+* VFS: Added helper function to easily attach files to uploads
+* Helpers: Added Windows Live API support (#42)
+* Utils: Removed old Ajax() AjaxDownload() and AjaxUpload()
+* Utils: One ajax() function to rule them all!
+* Misc: jslint update
+* Misc: cleanups
+
 # 2.0.0-alpha46
 
 This release fixes all the encoding problems in VFS.I should have thought of
