@@ -253,7 +253,7 @@
     }
 
     if ( !clientId ) {
-      onerror(API._('GAPI_DISABLED'));
+      callback(API._('GAPI_DISABLED'));
       return;
     }
 
