@@ -60,6 +60,28 @@
     );
   }
 
+  var getItemMime = (function() {
+    var EXTs;
+
+    return function(iter) {
+      if ( !EXTs ) {
+        EXTs = API.getDefaultSettings().EXTMIME || {};
+      }
+      var mime = null;
+      if ( iter.type === 'file' ) {
+        mime = 'application/octet-stream';
+        var ext = Utils.filext(iter.name);
+        if ( ext.length ) {
+          ext = '.' + ext;
+          if ( EXTs[ext] ) {
+            mime = EXTs[ext];
+          }
+        }
+      }
+      return mime;
+    };
+  })();
+
   // TODO
   // NOTE SEEMS LIKE ONEDRIVE DOES NOT SUPPORT MIME :(
   function createDirectoryList(dir, list, item, options) {
@@ -71,7 +93,7 @@
         filename: iter.name,
         path: 'onedrive:///' + dir + '/' + iter.name,
         size: iter.size || 0,
-        mime: (iter.type === 'file' ? 'application/octet-stream' : null), // FIXME
+        mime: getItemMime(iter),
         type: (iter.type === 'folder' ? 'dir' : 'file')
       }));
     });

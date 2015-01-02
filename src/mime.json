@@ -77,6 +77,7 @@
     ".css"    : "text/css",
 
     ".txt"    : "text/plain",
+    ".log"    : "text/plain",
     ".doc"    : "text/plain",
 
     ".odbeat" : "osjs/dbeat",

@@ -514,6 +514,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     var out_js = _path.join(ROOT, 'dist', 'settings.js');
     settings = BUILD.settings.frontend;
     settings.MIME = MIMES.descriptions;
+    settings.EXTMIME = MIMES.mapping;
     settings.Core.Repositories = REPOS;
     settings.Core.Preloads = settings.Core.Preloads || [];
     extensions.forEach(function(e) {
