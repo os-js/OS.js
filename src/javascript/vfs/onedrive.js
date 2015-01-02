@@ -115,6 +115,42 @@
     });
   }
 
+  function isFileInFolder(folderId, filename, callback, returnIter) {
+    getFilesInFolder(folderId, function(error, list) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+
+      var found;
+      list.forEach(function(iter) {
+        if ( iter.name === filename ) {
+          found = iter;
+          return false;
+        }
+        return true;
+      });
+
+      if ( found ) {
+        if ( returnIter ) {
+          callback(false, found);
+          return;
+        }
+        var foundFile = new OSjs.VFS.File({
+          id: found.id,
+          filename: found.name,
+          path: 'onedrive:///' + dir + '/' + found.name,
+          size: found.size || 0,
+          mime: getItemMime(found),
+          type: (found.type === 'folder' ? 'dir' : 'file')
+        });
+        callback(false, foundFile);
+      } else {
+        callback('Could not find requested file'); // FIXME: Translation
+      }
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -257,35 +293,27 @@
   OneDriveStorage.exists = function(item, callback) {
     console.info('GoogleDrive::exists()', item); // TODO
 
-    callback(false, item);
-    /*
-    var req = new OSjs.VFS.File(OSjs.Utils.dirname(item.path));
+    var drivePath = 'me/skydrive'; // TODO
+    isFileInFolder(drivePath, item.filename, callback);
+  };
 
-    this.scandir(req, function(error, result) {
+  OneDriveStorage.fileinfo = function(item, callback) {
+    console.info('OneDrive::fileinfo()', item);
+
+    var drivePath = 'me/skydrive'; // TODO
+    isFileInFolder(drivePath, item.filename, function(error, response) {
       if ( error ) {
         callback(error);
         return;
       }
-      var found = false;
 
-      if ( result ) {
-        result.forEach(function(iter) {
-          if ( iter.path === item.path ) {
-            found = new OSjs.VFS.File(iter);
-            return false;
-          }
-          return true;
-        });
-      }
-
-      callback(false, found);
-    });
-    */
-  };
-
-  // TODO
-  OneDriveStorage.fileinfo = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
+      var useKeys = ['created_time', 'id', 'link', 'name', 'type', 'updated_time', 'upload_location', 'description', 'client_updated_time'];
+      var info = {};
+      useKeys.forEach(function(k) {
+        info[k] = response[k];
+      });
+      return callback(false, info);
+    }, true);
   };
 
   OneDriveStorage.mkdir = function(dir, callback) {
