@@ -26,6 +26,9 @@
           "GoogleDrive": {
             "Enabled": false
           },
+          "OneDrive": {
+            "Enabled": false
+          },
           "Dropbox": {
             "Enabled": false,
             "ClientKey": ""
@@ -45,6 +48,10 @@
       },
 
       "GoogleAPI": {
+        "ClientId": ""
+      },
+
+      "WindowsLiveAPI": {
         "ClientId": ""
       },
 
