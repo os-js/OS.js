@@ -56,7 +56,9 @@
     this.hasSession = false;
     this.clientId = clientId;
     this.loaded = false;
+    this.inited = false;
     this.accessToken = null;
+    this.lastScope = null;
     this.preloads = [{
       type: 'javascript',
       src: '//js.live.net/v5.0/wl.js'
@@ -85,6 +87,28 @@
     console.debug('WindowsLiveAPI::load()', scope);
 
     var self = this;
+
+    function _login() {
+      var lastScope = (self.lastScope || []).sort();
+      var currScope = (scope || []).sort();
+
+      if ( self.hasSession && (lastScope.toString() === currScope.toString()) ) {
+        callback(false, true);
+        return;
+      }
+
+      self.login(scope, function(error, response) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        setTimeout(function() {
+          callback(false, true);
+        }, 10);
+      });
+    }
+
     this.init(function(error) {
       if ( error ) {
         callback(error.join('\n'));
@@ -96,49 +120,43 @@
         return;
       }
 
-      WL.Event.subscribe('auth.login', function() {
-        self.onLogin.apply(self, arguments);
-      });
-      WL.Event.subscribe('auth.logout', function() {
-        self.onLogout.apply(self, arguments);
-      });
-      WL.Event.subscribe('wl.log', function() {
-        self.onLog.apply(self, arguments);
-      });
-      WL.Event.subscribe('auth.sessionChange', function() {
-        self.onSessionChange.apply(self, arguments);
-      });
+      if ( self.inited ) {
+        _login();
+      } else {
+        self.inited = true;
+        WL.Event.subscribe('auth.login', function() {
+          self.onLogin.apply(self, arguments);
+        });
+        WL.Event.subscribe('auth.logout', function() {
+          self.onLogout.apply(self, arguments);
+        });
+        WL.Event.subscribe('wl.log', function() {
+          self.onLog.apply(self, arguments);
+        });
+        WL.Event.subscribe('auth.sessionChange', function() {
+          self.onSessionChange.apply(self, arguments);
+        });
 
-      WL.init({
-        scope: scope,
-        client_id: self.clientId,
-        display: 'popup',
-        redirect_uri: redirectURI
-      }).then(function(result) {
-        console.debug('WindowsLiveAPI::load()', '=>', result);
+        WL.init({
+          client_id: self.clientId,
+          display: 'popup',
+          redirect_uri: redirectURI
+        }).then(function(result) {
+          console.debug('WindowsLiveAPI::load()', '=>', result);
 
-        self.accessToken = result.session.access_token;
-
-        if ( result.status === 'connected' ) {
-          callback(false, true);
-        } else if ( result.status === 'unknown' ) {
-          callback('Windows Live API returned unknown status'); // FIXME: Translation
-        } else {
-          self.login(scope, function(error, response) {
-            if ( error ) {
-              callback(error);
-              return;
-            }
-
-            setTimeout(function() {
-              callback(false, true);
-            }, 10);
-          });
-        }
-      }, function(result) {
-        console.error('WindowsLiveAPI::load()', 'init() error', result);
-        callback(result.error_description);
-      });
+          self.accessToken = result.session.access_token || null;
+          if ( result.status === 'connected' ) {
+            callback(false, true);
+          } else if ( result.status === 'unknown' ) {
+            callback('Windows Live API returned unknown status'); // FIXME: Translation
+          } else {
+            _login();
+          }
+        }, function(result) {
+          console.error('WindowsLiveAPI::load()', 'init() error', result);
+          callback(result.error_description);
+        });
+      }
     });
   };
 
