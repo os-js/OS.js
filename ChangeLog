@@ -1,3 +1,22 @@
+# 2.0.0-alpha48
+
+NOTE: Run 'npm update' for node server :)
+
+* Utils::ajax() fix for cross-browser after last release
+* Misc: Updated copyright headers on all files
+* onedrive: Added Path resolving (#43)
+* onedrive: Added MIME emulation (#43)
+* onedrive: Added fileinfo() (#43)
+* onedrive: Added read() (#43)
+* onedrive: Added write() (#43)
+* onedrive: Added exists() (#43)
+* onedrive: Added to build.json and dist-dev-index (#43)
+* onedrive: Added localization (#43)
+* windows-live-api: Improved session/auth handling and bugfixes (#42)
+* API: Added curl() to server-node and server-php (#11)
+* VFS: Added remoteRead()
+* GUI - FileView: Improved error handling
+
 # 2.0.0-alpha47
 
 WARNING: This release will require you to refactor applications to use Utils.ajax()
