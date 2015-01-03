@@ -98,7 +98,7 @@
     }
 
     list.forEach(function(iter) {
-      var path = 'onedrive:///' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + iter.name; // FIXME
+      var path = 'onedrive://' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + iter.name; // FIXME
 
       result.push(new OSjs.VFS.File({
         id: iter.id,
@@ -440,7 +440,10 @@
         return;
       }
 
-      isFileInFolder(drivePath, item.filename, function(error, response) {
+      onedriveCall({
+        path: drivePath,
+        method: 'GET'
+      }, function(error, response) {
         if ( error ) {
           callback(error);
           return;
@@ -451,8 +454,8 @@
         useKeys.forEach(function(k) {
           info[k] = response[k];
         });
-        return callback(false, info);
-      }, true);
+        callback(false, info);
+      });
 
     });
   };
