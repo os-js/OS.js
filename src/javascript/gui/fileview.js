@@ -654,7 +654,11 @@
       this.wasUpdated = true;
 
       if ( this.viewRef ) {
-        this.viewRef.render(list, dir);
+        try {
+          this.viewRef.render(list, dir);
+        } catch ( ex ) {
+          console.warn('FileView::chdir()', 'exception', ex);
+        }
       }
 
       this.onFinished(dir, num, size);
