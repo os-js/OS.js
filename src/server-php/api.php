@@ -439,9 +439,78 @@ class CoreAPIHandler
     }
     return Array($error, $result);
   }
+
+  public static function curl(Array $arguments) {
+    $error = null;
+    $result = null;
+
+    if ( !function_exists("curl_init") ) {
+      throw new Exception("cURL is not supported on this platform");
+    }
+
+    if ( !APIUser::get() ) {
+      $error = "You have no OS.js Session, please log in!";
+    } else {
+      $url      = empty($arguments['url'])     ? null    : $arguments['url'];
+      $method   = empty($arguments['method'])  ? "GET"   : strtoupper($arguments['method']);
+      $query    = empty($arguments['query'])   ? Array() : $arguments['query'];
+      $timeout  = empty($arguments['timeout']) ? 0       : (int) $arguments['timeout'];
+      $binary   = empty($arguments['binary'])  ? false   : $arguments['binary'] === true;
+      $mime     = empty($arguments['mime'])    ? null    : $arguments['mime'];
+
+      if ( !$mime && $binary ) {
+        $mime = "application/octet-stream";
+      }
+
+      if ( !$url ) throw new Exception("cURL expects an 'url'");
+      if ( !$method ) throw new Exception("cURL expects a 'method'");
+
+      $data = "";
+      if ( $method === "POST" ) {
+        if ( $query ) {
+          if ( is_array($query) ) {
+            $data = http_build_query($query);
+          } else if ( is_string($query) ) {
+            $data = $query;
+          }
+        }
+      }
+
+      if ( $ch = curl_init() ) {
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if ( $timeout ) {
+          curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        }
+        if ( $data ) {
+          curl_setopt($ch, CURLOPT_POST, true);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        }
+
+        $response = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ( $binary && $response ) {
+          $response = "data:{$mime};base64," . base64_encode($response);
+        }
+
+        $result = Array(
+          "httpCode" => $httpcode,
+          "body"     => $response
+        );
+
+        curl_close($ch);
+      } else {
+        $error = "Failed to initialize cURL";
+      }
+
+    }
+    return Array($error, $result);
+  }
 }
 
 API::AddHandler('application', Array('CoreAPIHandler', 'application'));
 API::AddHandler('fs', Array('CoreAPIHandler', 'fs'));
+API::AddHandler('curl', Array('CoreAPIHandler', 'curl'));
 
 ?>

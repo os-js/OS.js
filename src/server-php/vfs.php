@@ -193,7 +193,7 @@ class FS
     }
 
     $encoded = base64_encode($contents);
-    $dataURL = sprintf("data:%s;base64,%s", $mime, $encoded);
+    $dataURL = printf("data:%s;base64,%s", $mime, $encoded);
     return $dataURL;
   }
 
@@ -301,6 +301,7 @@ class FS
     list($dirname, $root, $protocol, $fname) = getRealPath($fname);
     return file_exists($fname);
   }
+
 }
 
 function getRealPath(&$scandir) {

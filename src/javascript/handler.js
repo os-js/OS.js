@@ -226,7 +226,7 @@
     }
   };
 
-  ConnectionManager.prototype.callAPI = function(method, args, cbSuccess, cbError) {
+  ConnectionManager.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
     if ( this.offline ) {
       cbError('You are currently off-line and cannot perform this operation!');
       return false;
@@ -262,7 +262,7 @@
     }
     */
 
-    return Utils.ajax({
+    var data = {
       url: this.url,
       method: 'POST',
       json: true,
@@ -276,7 +276,15 @@
       onerror: function(error, response, request, url) {
         cbError.apply(this, arguments);
       }
-    });
+    };
+
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        data[key] = options[key];
+      });
+    }
+
+    return Utils.ajax(data);
   };
 
   ConnectionManager.prototype.onOnline = function() {
@@ -933,6 +941,24 @@
   //
   // Resources
   //
+
+  /**
+   * Perform a cURL call
+   */
+  DefaultHandler.prototype.curl = function(args, callback) {
+    args = args || {};
+    callback = callback || {};
+
+    this.callAPI('curl', args.body, function(response) {
+      if ( response && response.error ) {
+        callback(response.error);
+        return;
+      }
+      callback(false, response ? (response.result || null) : null);
+    }, function(error) {
+      callback(error);
+    }, args.options);
+  };
 
   /**
    * Default method for getting a resource from application
