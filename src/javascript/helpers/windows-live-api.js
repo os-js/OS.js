@@ -119,8 +119,10 @@
 
         self.accessToken = result.session.access_token;
 
-        if ( result.status == 'connected' ) {
+        if ( result.status === 'connected' ) {
           callback(false, true);
+        } else if ( result.status === 'unknown' ) {
+          callback('Windows Live API returned unknown status'); // FIXME: Translation
         } else {
           self.login(scope, function(error, response) {
             if ( error ) {
