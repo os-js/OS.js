@@ -468,6 +468,8 @@
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
 
+    options = options || {};
+
     function _finished(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_READ_FMT', error);
@@ -895,7 +897,7 @@
    * Restore file from trash (Not used in internal storage)
    */
   OSjs.VFS.untrash = function(item, callback) {
-    console.info('VFS::untrash()', item, options);
+    console.info('VFS::untrash()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
 
@@ -911,13 +913,60 @@
    * Permanently empty trash (Not used in internal storage)
    */
   OSjs.VFS.emptyTrash = function(callback) {
-    console.info('VFS::emptyTrash()', item, options);
+    console.info('VFS::emptyTrash()');
     if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
     request(item.path, 'emptyTrash', [], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_EMPTYTRASH_FMT', error);
       }
       callback(error, response);
+    });
+  };
+
+  /**
+   * Read a remote file with URL (CORS)
+   */
+  OSjs.VFS.remoteRead = function(url, mime, callback, options) {
+    options = options || {};
+    mime = options.mime || 'application/octet-stream';
+
+    console.info('VFS::remoteRead()', url, mime);
+
+    if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+
+    var h = API.getHandlerInstance();
+    h.curl({
+      body: {
+        url: url,
+        binary: true,
+        mime: mime,
+        method: 'POST'
+      }
+    }, function(error, response) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+
+      if ( !response.body ) {
+        callback('Response was empty'); // FIXME: Translation
+        return;
+      }
+
+      if ( options.dataSource ) {
+        callback(false, response.body);
+        return;
+      }
+
+      dataSourceToAb(response.body, mime, function(error, response) {
+        if ( options.type === 'text' ) {
+          OSjs.VFS.abToText(response, mime, function(error, text) {
+            callback(error, text);
+          });
+          return;
+        }
+        callback(error, response);
+      });
     });
   };
 
