@@ -212,6 +212,9 @@
     'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',
     'DROPBOX_SIGN_OUT'           : 'Sign out from Google API Services',
 
+    // VFS -> OneDrive
+    'ONEDRIVE_ERR_RESOLVE'      : 'Failed to resolve path: item not found',
+
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : 'Cannot open file',
     'ERR_FILE_APP_OPEN_FMT'     : 'The file {0} could not be opened because the mime {1} is not supported',

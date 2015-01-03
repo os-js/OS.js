@@ -211,6 +211,9 @@
     'DROPBOX_NOTIFICATION_TITLE' : 'Du er logget inn i Dropbox API',
     'DROPBOX_SIGN_OUT'           : 'Logg ut fra Dropbox API',
 
+    // VFS -> OneDrive
+    'ONEDRIVE_ERR_RESOLVE'      : 'Klarte ikke løse sti: fant ikke filen',
+
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : 'Kan ikke åpne filen',
     'ERR_FILE_APP_OPEN_FMT'     : 'Filen {0} ble ikke åpnet fordi MIME {1} ikke er støttet',

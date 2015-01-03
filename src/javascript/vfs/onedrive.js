@@ -265,7 +265,7 @@
       if ( foundId ) {
         callback(false, foundId);
       } else {
-        callback('Failed to resolve path: item not found'); // FIXME: Translation
+        callback(API._('ONEDRIVE_ERR_RESOLVE'));
       }
     });
   }
@@ -358,14 +358,13 @@
             callback(false, result.id);
             return;
           }
-          callback('Unknown Error'); // FIXME: Translation
+          callback(API._('ERR_APP_UNKNOWN_ERROR'));
         },
         onerror: function(error, result) {
           if ( result && result.error ) {
             error += ' - ' + result.error.message;
           }
           callback(error);
-          //callback('XHR Error'); // FIXME: Translation
         }
       });
     }
