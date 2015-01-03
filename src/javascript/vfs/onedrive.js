@@ -288,6 +288,7 @@
   };
 
   OneDriveStorage.read = function(item, callback, options) {
+    options = options || {};
 
     this.url(item, function(error, url) {
       if ( error ) {
@@ -295,59 +296,59 @@
         return;
       }
 
-      Utils.ajax({
-        url: url + '&download=true',
-        method: 'GET',
-        responseType: 'arraybuffer',
-        requestHeaders: {
-          'Access-Control-Allow-Origin': window.location.href
-        },
-        onsuccess: function(response) {
-          if ( options.dataSource ) {
-            OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
-              callback(error, error ? null : dataSource);
-            });
-            return;
-          }
-          callback(false, response);
-        },
-        onerror: function(error) {
+      OSjs.VFS.remoteRead(url, item.mime, function(error, response) {
+        if ( error ) {
           callback(error);
+          return;
         }
-      });
+        callback(false, response);
+      }, options);
     });
   };
 
-  // TODO: DataURL support
   OneDriveStorage.write = function(file, data, callback) {
     console.info('OneDrive::write()', file);
 
     var inst = OSjs.Helpers.WindowsLiveAPI.getInstance();
     var url = '//apis.live.net/v5.0/me/skydrive/files?access_token=' + inst.accessToken;
 
-    var fd  = new FormData();
-    OSjs.VFS.addFormFile(fd, 'file', data, file);
+    function _write(filedata) {
+      var fd  = new FormData();
+      OSjs.VFS.addFormFile(fd, 'file', filedata, file);
 
-    OSjs.Utils.ajax({
-      url: url,
-      method: 'POST',
-      json: true,
-      body: fd,
-      onsuccess: function(result) {
-        if ( result && result.id ) {
-          callback(false, result.id);
+      OSjs.Utils.ajax({
+        url: url,
+        method: 'POST',
+        json: true,
+        body: fd,
+        onsuccess: function(result) {
+          if ( result && result.id ) {
+            callback(false, result.id);
+            return;
+          }
+          callback('Unknown Error'); // FIXME: Translation
+        },
+        onerror: function(error, result) {
+          if ( result && result.error ) {
+            error += ' - ' + result.error.message;
+          }
+          callback(error);
+          //callback('XHR Error'); // FIXME: Translation
+        }
+      });
+    }
+
+    if ( data instanceof OSjs.VFS.FileDataURL ) {
+      OSjs.VFS.dataSourceToAb(data.toString(), file.mime, function(error, response) {
+        if ( error ) {
+          callback(error);
           return;
         }
-        callback('Unknown Error'); // FIXME: Translation
-      },
-      onerror: function(error, result) {
-        if ( result && result.error ) {
-          error += ' - ' + result.error.message;
-        }
-        callback(error);
-        //callback('XHR Error'); // FIXME: Translation
-      }
-    });
+        _write(response);
+      });
+    } else {
+      _write(data);
+    }
   };
 
   OneDriveStorage.copy = function(src, dest, callback) {
@@ -421,11 +422,12 @@
 
   // FIXME Is there a better way to do this ?
   OneDriveStorage.exists = function(item, callback) {
-    console.info('GoogleDrive::exists()', item); // TODO
+    console.info('OneDrive::exists()', item); // TODO
 
     resolvePath(item, function(error, drivePath) {
       if ( error ) {
-        callback(error);
+        callback(false, false);
+        //callback(error);
         return;
       }
       isFileInFolder(drivePath, item.filename, callback);
@@ -498,10 +500,7 @@
   };
 
   OneDriveStorage.url = function(item, callback) {
-    console.info('GoogleDrive::url()', item);
-    if ( !item || !item.id ) {
-      throw new Error('url() expects a File ref with Id');
-    }
+    console.info('OneDrive::url()', item);
 
     /*
     var drivePath = item.id; // TODO
@@ -515,18 +514,18 @@
       if ( error ) {
         callback(error);
         return;
-
-        onedriveCall({
-          path: drivePath + '/content',
-          method: 'GET'
-        }, function(error, response) {
-          if ( error ) {
-            callback(error);
-            return;
-          }
-          callback(false, response.location);
-        });
       }
+
+      onedriveCall({
+        path: drivePath + '/content',
+        method: 'GET'
+      }, function(error, response) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+        callback(false, response.location);
+      });
     });
 
   };
