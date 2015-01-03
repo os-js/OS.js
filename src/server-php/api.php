@@ -463,7 +463,6 @@ class CoreAPIHandler
       }
 
       if ( !$url ) throw new Exception("cURL expects an 'url'");
-      if ( !$method ) throw new Exception("cURL expects a 'method'");
 
       $data = "";
       if ( $method === "POST" ) {
