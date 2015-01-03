@@ -22,7 +22,8 @@
     "less": "latest",
     "cookies": "latest",
     "node-fs-extra": "latest",
-    "formidable": "latest"
+    "formidable": "latest",
+    "request": "latest"
   }
 
 }
