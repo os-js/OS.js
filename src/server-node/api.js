@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _url, _vfs) {
+(function(_path, _url, _request, _vfs) {
 
   exports.register = function(CONFIG, API) {
     console.info('-->', 'Registering default API methods');
@@ -68,10 +68,59 @@
         throw "Invalid VFS method: " + m;
       }
     };
+
+    API.curl = function(args, callback, request, response) {
+      var url = args.url;
+      var method = args.method || 'GET';
+      var query = args.query || {};
+      var timeout = args.timeout || 0;
+      var binary = args.binary === true;
+      var mime = args.mime || null;
+
+      if ( !mime && binary ) {
+        mime = 'application/octet-stream';
+      }
+
+      if ( !url ) {
+        callback('cURL expects an "url"');
+        return;
+      }
+
+      var opts = {
+        url: url,
+        method: method,
+        timeout: timeout * 1000
+      };
+
+      if ( method === 'POST' ) {
+        opts.json = true;
+        opts.body = query;
+      }
+
+      _request(opts, function(error, response, body) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        if ( binary && body ) {
+          body = "data:" + mime + ";base64," + (new Buffer(body).toString('base64'));
+        }
+
+        var data = {
+          httpCode: response.statusCode,
+          body: body
+        };
+
+        callback(false, data);
+      });
+    };
+
   };
 
 })(
   require("path"),
   require("url"),
+  require("request"),
   require("./vfs.js")
 );
