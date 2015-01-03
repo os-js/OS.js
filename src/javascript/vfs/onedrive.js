@@ -68,7 +68,7 @@
         EXTs = API.getDefaultSettings().EXTMIME || {};
       }
       var mime = null;
-      if ( iter.type === 'file' ) {
+      if ( iter.type !== 'folder' ) {
         mime = 'application/octet-stream';
         var ext = Utils.filext(iter.name);
         if ( ext.length ) {
@@ -87,11 +87,23 @@
   function createDirectoryList(dir, list, item, options) {
     var result = [];
 
+    if ( dir !== '/' ) {
+      result.push(new OSjs.VFS.File({
+        id: item.id,
+        filename: '..',
+        path: Utils.dirname(item.path),
+        size: 0,
+        type: 'dir'
+      }));
+    }
+
     list.forEach(function(iter) {
+      var path = 'onedrive:///' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + iter.name; // FIXME
+
       result.push(new OSjs.VFS.File({
         id: iter.id,
         filename: iter.name,
-        path: 'onedrive:///' + dir + '/' + iter.name,
+        path: path,
         size: iter.size || 0,
         mime: getItemMime(iter),
         type: (iter.type === 'folder' ? 'dir' : 'file')
@@ -110,6 +122,7 @@
         callback(error);
         return;
       }
+
       console.debug('OneDrive::*getFilesInFolder()', '=>', response);
       callback(false, response.data || []);
     });
@@ -139,7 +152,7 @@
         var foundFile = new OSjs.VFS.File({
           id: found.id,
           filename: found.name,
-          path: 'onedrive:///' + dir + '/' + found.name,
+          path: 'onedrive:///' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + found.name,
           size: found.size || 0,
           mime: getItemMime(found),
           type: (found.type === 'folder' ? 'dir' : 'file')
@@ -151,6 +164,80 @@
     });
   }
 
+  function resolvePath(item, callback, useParent) {
+    if ( !useParent ) {
+      if ( item.id ) {
+        callback(false, item.id);
+        return;
+      }
+    }
+
+    var path = OSjs.VFS.getRelativeURL(item.path).replace(/\/+/, '/');
+    if ( useParent ) {
+      path = Utils.dirname(path);
+    }
+    if ( path === '/' ) {
+      callback(false, 'me/skydrive');
+      return;
+    }
+
+    var resolves = path.replace(/^\/+/, '').split('/');
+    var isOnRoot = !resolves.length;
+    var currentParentId = 'me/skydrive';
+
+    function _nextDir(completed) {
+      var current = resolves.shift();
+      var done = resolves.length <= 0;
+      var found;
+
+      if ( isOnRoot ) {
+        found = currentParentId;
+      } else {
+
+        if ( current ) {
+          getFilesInFolder(currentParentId, function(error, list) {
+            list = list || [];
+            var lfound;
+            list.forEach(function(iter) { // FIXME: Not very precise
+              if ( iter ) {
+                if ( iter.name === current ) {
+                  lfound = iter.id;
+                }
+              }
+            });
+
+            if ( lfound ) {
+              currentParentId = lfound;
+            }
+
+            if ( done ) {
+              completed(lfound);
+            } else {
+              _nextDir(completed);
+            }
+
+          });
+
+          return;
+        }
+      }
+
+      if ( done ) {
+        completed(found);
+      } else {
+        _nextDir(completed);
+      }
+    }
+
+    _nextDir(function(foundId) {
+      if ( foundId ) {
+        callback(false, foundId);
+      } else {
+        callback('Failed to resolve path: item not found'); // FIXME: Translation
+      }
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -158,30 +245,45 @@
   var OneDriveStorage = {};
 
   OneDriveStorage.scandir = function(item, callback, options) {
+    console.group('OneDrive::scandir()');
+
     console.info('OneDrive::scandir()', item);
 
-    var drivePath = 'me/skydrive'; // TODO
+    var relativePath = OSjs.VFS.getRelativeURL(item.path);
 
-    onedriveCall({
-      path: drivePath,
-      method: 'GET'
-    }, function(error, response) {
-      if ( error ) {
-        callback(error);
-        return;
-      }
-      console.debug('OneDrive::scandir()', '=>', response);
+    function _finished(error, result) {
+      console.groupEnd();
+      callback(error, result);
+    }
 
-      getFilesInFolder(response.id, function(error, list) {
+    function _scandir(drivePath) {
+      onedriveCall({
+        path: drivePath,
+        method: 'GET'
+      }, function(error, response) {
         if ( error ) {
-          callback(error);
+          _finished(error);
           return;
         }
+        console.debug('OneDrive::scandir()', '=>', response);
 
-        var result = createDirectoryList(drivePath, list, item, options);
-        callback(false, result);
+        getFilesInFolder(response.id, function(error, list) {
+          if ( error ) {
+            _finished(error);
+            return;
+          }
+          var fileList = createDirectoryList(relativePath, list, item, options);
+          _finished(false, fileList);
+        });
       });
+    }
 
+    resolvePath(item, function(error, drivePath) {
+      if ( error ) {
+        _finished(error);
+        return;
+      }
+      _scandir(drivePath);
     });
   };
 
@@ -249,85 +351,129 @@
   };
 
   OneDriveStorage.copy = function(src, dest, callback) {
-    var srcDrivePath = src.path; // TODO
-    var dstDrivePath = dest.path; // TODO
-
-    onedriveCall({
-      path: srcDrivePath,
-      method: 'COPY',
-      body: {
-        destination: dstDrivePath
-      }
-    }, function(error, response) {
-      callback(error, error ? null : true);
-    });
-  };
-
-  OneDriveStorage.unlink = function(src, callback) {
-    var drivePath = src.id;
-    onedriveCall({
-      path: drivePath,
-      method: 'DELETE'
-    }, function(error, response) {
-      callback(error, error ? null : true);
-    });
-  };
-
-  OneDriveStorage.move = function(src, dest, callback) {
-    var srcDrivePath = src.path; // TODO
-    var dstDrivePath = dest.path; // TODO
-
-    onedriveCall({
-      path: srcDrivePath,
-      method: 'MOVE',
-      body: {
-        destination: dstDrivePath
-      }
-    }, function(error, response) {
-      callback(error, error ? null : true);
-    });
-  };
-
-  // TODO
-  // FIXME Is there a better way to do this ?
-  OneDriveStorage.exists = function(item, callback) {
-    console.info('GoogleDrive::exists()', item); // TODO
-
-    var drivePath = 'me/skydrive'; // TODO
-    isFileInFolder(drivePath, item.filename, callback);
-  };
-
-  OneDriveStorage.fileinfo = function(item, callback) {
-    console.info('OneDrive::fileinfo()', item);
-
-    var drivePath = 'me/skydrive'; // TODO
-    isFileInFolder(drivePath, item.filename, function(error, response) {
+    resolvePath(src, function(error, srcDrivePath) {
       if ( error ) {
         callback(error);
         return;
       }
 
-      var useKeys = ['created_time', 'id', 'link', 'name', 'type', 'updated_time', 'upload_location', 'description', 'client_updated_time'];
-      var info = {};
-      useKeys.forEach(function(k) {
-        info[k] = response[k];
+      resolvePath(dest, function(error, dstDrivePath) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        onedriveCall({
+          path: srcDrivePath,
+          method: 'COPY',
+          body: {
+            destination: dstDrivePath
+          }
+        }, function(error, response) {
+          callback(error, error ? null : true);
+        });
       });
-      return callback(false, info);
-    }, true);
+    });
+  };
+
+  OneDriveStorage.unlink = function(src, callback) {
+    resolvePath(src, function(error, drivePath) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+
+      onedriveCall({
+        path: drivePath,
+        method: 'DELETE'
+      }, function(error, response) {
+        callback(error, error ? null : true);
+      });
+    });
+  };
+
+  OneDriveStorage.move = function(src, dest, callback) {
+    resolvePath(src, function(error, srcDrivePath) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+
+      resolvePath(dest, function(error, dstDrivePath) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        onedriveCall({
+          path: srcDrivePath,
+          method: 'MOVE',
+          body: {
+            destination: dstDrivePath
+          }
+        }, function(error, response) {
+          callback(error, error ? null : true);
+        });
+      });
+    });
+
+  };
+
+  // FIXME Is there a better way to do this ?
+  OneDriveStorage.exists = function(item, callback) {
+    console.info('GoogleDrive::exists()', item); // TODO
+
+    resolvePath(item, function(error, drivePath) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+      isFileInFolder(drivePath, item.filename, callback);
+    });
+  };
+
+  OneDriveStorage.fileinfo = function(item, callback) {
+    console.info('OneDrive::fileinfo()', item);
+    resolvePath(item, function(error, drivePath) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+
+      isFileInFolder(drivePath, item.filename, function(error, response) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        var useKeys = ['created_time', 'id', 'link', 'name', 'type', 'updated_time', 'upload_location', 'description', 'client_updated_time'];
+        var info = {};
+        useKeys.forEach(function(k) {
+          info[k] = response[k];
+        });
+        return callback(false, info);
+      }, true);
+
+    });
   };
 
   OneDriveStorage.mkdir = function(dir, callback) {
-    var drivePath = 'me/skydrive'; // TODO
-
-    onedriveCall({
-      path: drivePath,
-      method: 'POST',
-      body: {
-        name: dir.filename
+    resolvePath(dir, function(error, drivePath) {
+      if ( error ) {
+        callback(error);
+        return;
       }
-    }, function(error, response) {
-      callback(error, error ? null : true);
-    });
+
+      onedriveCall({
+        path: drivePath,
+        method: 'POST',
+        body: {
+          name: dir.filename
+        }
+      }, function(error, response) {
+        callback(error, error ? null : true);
+      });
+    }, true);
   };
 
   OneDriveStorage.upload = function(file, dest, callback) {
@@ -348,18 +494,6 @@
     this.write(item, file, callback);
   };
 
-  OneDriveStorage.trash = function(file, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  OneDriveStorage.untrash = function(file, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  OneDriveStorage.emptyTrash = function(callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
   OneDriveStorage.url = function(item, callback) {
     console.info('GoogleDrive::url()', item);
     if ( !item || !item.id ) {
@@ -374,18 +508,36 @@
     callback(false, url);
     */
 
-    onedriveCall({
-      path: item.id + '/content',
-      method: 'GET'
-    }, function(error, response) {
+    resolvePath(item, function(error, drivePath) {
       if ( error ) {
         callback(error);
         return;
+
+        onedriveCall({
+          path: drivePath + '/content',
+          method: 'GET'
+        }, function(error, response) {
+          if ( error ) {
+            callback(error);
+            return;
+          }
+          callback(false, response.location);
+        });
       }
-      callback(false, response.location);
     });
 
+  };
 
+  OneDriveStorage.trash = function(file, callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
+  OneDriveStorage.untrash = function(file, callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
+  OneDriveStorage.emptyTrash = function(callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
   /////////////////////////////////////////////////////////////////////////////
