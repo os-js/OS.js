@@ -108,6 +108,7 @@
       "src/javascript/vfs/user.js",
       "src/javascript/vfs/googledrive.js",
       "src/javascript/vfs/dropbox.js",
+      "src/javascript/vfs/onedrive.js",
       "src/javascript/windows.js",
       "src/javascript/helpers/service-ring.js",
       "src/javascript/helpers/default-application.js",
