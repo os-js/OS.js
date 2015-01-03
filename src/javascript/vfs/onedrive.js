@@ -46,6 +46,9 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Perform a REST call to WL API
+   */
   function onedriveCall(args, callback) {
     console.debug('OneDrive::*onedriveCall()', args);
 
@@ -60,6 +63,39 @@
     );
   }
 
+  /**
+   * Gets OS.js VFS File Metadata type from OneDrive item
+   */
+  function getItemType(iter) {
+    var type = 'file';
+    if ( iter.type === 'folder' || iter.type === 'album' ) {
+      type = 'dir';
+    }
+    return type;
+  }
+
+  /**
+   * Get OS.js VFS File Metadata from OneDrive item
+   */
+  function getMetadataFromItem(dir, item) {
+    var path = 'onedrive://' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + item.name; // FIXME
+
+    var itemFile = new OSjs.VFS.File({
+      id: item.id,
+      filename: item.name,
+      size: item.size || 0,
+      path: path,
+      mime: getItemMime(item),
+      type: getItemType(item)
+    });
+    return itemFile;
+  }
+
+  /**
+   * Get MIME type from file extension of a file
+   * Yeah... it's pretty rough, but OneDrive does
+   * not support mimes yet
+   */
   var getItemMime = (function() {
     var EXTs;
 
@@ -68,7 +104,7 @@
         EXTs = API.getDefaultSettings().EXTMIME || {};
       }
       var mime = null;
-      if ( iter.type !== 'folder' ) {
+      if ( getItemType(iter) !== 'dir' ) {
         mime = 'application/octet-stream';
         var ext = Utils.filext(iter.name);
         if ( ext.length ) {
@@ -82,8 +118,9 @@
     };
   })();
 
-  // TODO
-  // NOTE SEEMS LIKE ONEDRIVE DOES NOT SUPPORT MIME :(
+  /**
+   * Create an Array filled with OS.js VFS file metadata
+   */
   function createDirectoryList(dir, list, item, options) {
     var result = [];
 
@@ -98,21 +135,15 @@
     }
 
     list.forEach(function(iter) {
-      var path = 'onedrive://' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + iter.name; // FIXME
-
-      result.push(new OSjs.VFS.File({
-        id: iter.id,
-        filename: iter.name,
-        path: path,
-        size: iter.size || 0,
-        mime: getItemMime(iter),
-        type: (iter.type === 'folder' ? 'dir' : 'file')
-      }));
+      result.push(getMetadataFromItem(dir, iter));
     });
 
     return result;
   }
 
+  /**
+   * Get files inside given folder
+   */
   function getFilesInFolder(folderId, callback) {
     onedriveCall({
       path: folderId + '/files',
@@ -128,7 +159,9 @@
     });
   }
 
-  function isFileInFolder(folderId, filename, callback, returnIter) {
+  /**
+   * Check if file is existent inside given folder
+  function isFileInFolder(folderId, file, callback, returnIter) {
     getFilesInFolder(folderId, function(error, list) {
       if ( error ) {
         callback(error);
@@ -137,7 +170,7 @@
 
       var found;
       list.forEach(function(iter) {
-        if ( iter.name === filename ) {
+        if ( iter.name === file.filename ) {
           found = iter;
           return false;
         }
@@ -149,21 +182,20 @@
           callback(false, found);
           return;
         }
-        var foundFile = new OSjs.VFS.File({
-          id: found.id,
-          filename: found.name,
-          path: 'onedrive:///' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + found.name,
-          size: found.size || 0,
-          mime: getItemMime(found),
-          type: (found.type === 'folder' ? 'dir' : 'file')
-        });
+
+        var dir = OSjs.VFS.getRelativeURL(Utils.dirname(found.path));
+        var foundFile = getMetadataFromItem(dir, found);
         callback(false, foundFile);
       } else {
         callback('Could not find requested file'); // FIXME: Translation
       }
     });
   }
+  */
 
+  /**
+   * Resolve normal /path/to/file to OneDrive ID
+   */
   function resolvePath(item, callback, useParent) {
     if ( !useParent ) {
       if ( item.id ) {
@@ -424,13 +456,22 @@
   OneDriveStorage.exists = function(item, callback) {
     console.info('OneDrive::exists()', item); // TODO
 
+    /*
     resolvePath(item, function(error, drivePath) {
       if ( error ) {
         callback(false, false);
         //callback(error);
         return;
       }
-      isFileInFolder(drivePath, item.filename, callback);
+      isFileInFolder(drivePath, item, callback);
+    });
+    */
+    this.fileinfo(item, function(error, response) {
+      if ( error ) {
+        callback(false, false);
+        return;
+      }
+      callback(false, response ? true : false);
     });
   };
 
