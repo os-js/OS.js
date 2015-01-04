@@ -939,43 +939,6 @@
   };
 
   //
-  // Resources
-  //
-
-  /**
-   * Default method for getting a resource from theme
-   */
-  DefaultHandler.prototype.getThemeResource = function(name, type, args) {
-    name = name || null;
-    type = type || null;
-    args = args || null;
-
-    if ( name ) {
-      var wm = API.getWMInstance();
-      var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = API.getDefaultSettings().Core.ThemeURI;
-      if ( !name.match(/^\//) ) {
-        if ( type === 'icon' ) {
-          var size = args || '16x16';
-          name = root + '/' + theme + '/icons/' + size + '/' + name;
-        } else if ( type === 'sound' ) {
-          var ext = 'oga';
-          if ( !OSjs.Compability.audioTypes.ogg ) {
-            ext = 'mp3';
-          }
-          name = root + '/' + theme + '/sounds/' + name + '.' + ext;
-        } else if ( type === 'wm' ) {
-          name = root + '/' + theme + '/wm/' + name;
-        } else if ( type === 'base' ) {
-          name = root + '/' + theme + '/' + name;
-        }
-      }
-    }
-
-    return name;
-  };
-
-  //
   // EXPORTS
   //
   OSjs.Handlers.Current           = null;

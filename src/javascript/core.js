@@ -1212,6 +1212,39 @@
     return API.getThemeResource(name, 'icon', args);
   }
 
+  /**
+   * Default method for getting a resource from theme
+   */
+  function doGetThemeResource(name, type, args) {
+    name = name || null;
+    type = type || null;
+    args = args || null;
+
+    if ( name ) {
+      var wm = API.getWMInstance();
+      var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
+      var root = API.getDefaultSettings().Core.ThemeURI;
+      if ( !name.match(/^\//) ) {
+        if ( type === 'icon' ) {
+          var size = args || '16x16';
+          name = root + '/' + theme + '/icons/' + size + '/' + name;
+        } else if ( type === 'sound' ) {
+          var ext = 'oga';
+          if ( !OSjs.Compability.audioTypes.ogg ) {
+            ext = 'mp3';
+          }
+          name = root + '/' + theme + '/sounds/' + name + '.' + ext;
+        } else if ( type === 'wm' ) {
+          name = root + '/' + theme + '/wm/' + name;
+        } else if ( type === 'base' ) {
+          name = root + '/' + theme + '/' + name;
+        }
+      }
+    }
+
+    return name;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -1494,10 +1527,6 @@
   OSjs.Core.shutdown          = doShutdown;
   OSjs.Core.signOut           = doSignOut;
 
-  // Handler shortcuts
-  OSjs.API.getDefaultPath         = function(fallback)         { return _HANDLER.getConfig('Core').Home || fallback || '/'; };
-  OSjs.API.getThemeResource       = function(name, type, args) { return _HANDLER.getThemeResource(name, type, args); };
-
   // Common API functions
   OSjs.API._                      = doTranslate;
   OSjs.API.__                     = doTranslateList;
@@ -1518,7 +1547,9 @@
   OSjs.API.getApplicationResource = doGetApplicationResource;
   OSjs.API.getThemeCSS            = doGetThemeCSS;
   OSjs.API.getIcon                = doGetIcon;
+  OSjs.API.getThemeResource       = doGetThemeResource;
   OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || function __noop__() { return {}; };
+  OSjs.API.getDefaultPath         = function(fallback) { return _HANDLER.getConfig('Core').Home || fallback || '/'; };
   OSjs.API.getProcesses           = function() { return _PROCS; };
   OSjs.API.getHandlerInstance     = function() { return OSjs.Handlers.getInstance(); };
   OSjs.API.getWMInstance          = function() { return _WM; };
