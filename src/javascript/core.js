@@ -1180,18 +1180,18 @@
    */
   function doGetApplicationResource(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
-    var root = API.getDefaultSettings().Core.PackageURI;
+    var root = OSjs.API.getDefaultSettings().Core.PackageURI;
     return root + '/' + aname + '/' + name;
   }
 
   /**
    * Get path to css theme
    */
-  function doGetThemeCSS = function(name) {
+  function doGetThemeCSS(name) {
     if ( name === null ) {
       return '/blank.css';
     }
-    var root = API.getDefaultSettings().Core.ThemeURI;
+    var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
     return root + '/' + name + '.css';
   }
 
@@ -1202,14 +1202,14 @@
     name = name || '';
     if ( name.match(/\.\//) ) {
       if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
-          return API.getApplicationResource(app, name);
+          return OSjs.API.getApplicationResource(app, name);
       } else {
         if ( typeof app === 'object' ) {
-          return API.getApplicationResource(app.path, name);
+          return OSjs.API.getApplicationResource(app.path, name);
         }
       }
     }
-    return API.getThemeResource(name, 'icon', args);
+    return OSjs.API.getThemeResource(name, 'icon', args);
   }
 
   /**
@@ -1221,9 +1221,9 @@
     args = args || null;
 
     if ( name ) {
-      var wm = API.getWMInstance();
+      var wm = OSjs.API.getWMInstance();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = API.getDefaultSettings().Core.ThemeURI;
+      var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
       if ( !name.match(/^\//) ) {
         if ( type === 'icon' ) {
           var size = args || '16x16';
