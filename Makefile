@@ -16,7 +16,7 @@
 # 	dist-dev-index   Generate new index.html for dist-dev
 #
 
-.PHONY: all clean config core themes packages compress manifest
+.PHONY: all clean config core themes packages compress manifest test
 .DEFAULT: all
 
 #
@@ -78,3 +78,14 @@ lighttpd-config:
 
 dist-dev-index:
 	(src/tools/obt dist-dev-index)
+
+test:
+	@echo "\033[1;35mRunning unit tests on PHP backend\033[0m"
+	@echo "\033[0;31mNot implemented yet\033[0m"
+	@echo "\033[1;35mRunning unit tests on Node backend\033[0m"
+	@echo "\033[0;31mNot implemented yet\033[0m"
+	@echo "\033[1;35mRunning unit tests on frontend\033[0m"
+	@echo "\033[0;31mNot implemented yet\033[0m"
+	@echo "\033[1;35mLinting OS.js Core\033[0m"
+	@echo "You should run 'make core' before doing this"
+	(jshint dist/osjs.js)
