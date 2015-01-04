@@ -1182,7 +1182,18 @@
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
     var root = API.getDefaultSettings().Core.PackageURI;
     return root + '/' + aname + '/' + name;
-  };
+  }
+
+  /**
+   * Get path to css theme
+   */
+  function doGetThemeCSS = function(name) {
+    if ( name === null ) {
+      return '/blank.css';
+    }
+    var root = API.getDefaultSettings().Core.ThemeURI;
+    return root + '/' + name + '.css';
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
@@ -1468,7 +1479,6 @@
 
   // Handler shortcuts
   OSjs.API.getDefaultPath         = function(fallback)         { return _HANDLER.getConfig('Core').Home || fallback || '/'; };
-  OSjs.API.getThemeCSS            = function(name)             { return _HANDLER.getThemeCSS(name); };
   OSjs.API.getThemeResource       = function(name, type, args) { return _HANDLER.getThemeResource(name, type, args); };
   OSjs.API.getIcon                = function(name, app)        { return _HANDLER.getIcon(name, app); };
 
@@ -1490,6 +1500,7 @@
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
   OSjs.API.getApplicationResource = doGetApplicationResource;
+  OSjs.API.getThemeCSS            = doGetThemeCSS;
   OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || function __noop__() { return {}; };
   OSjs.API.getProcesses           = function() { return _PROCS; };
   OSjs.API.getHandlerInstance     = function() { return OSjs.Handlers.getInstance(); };

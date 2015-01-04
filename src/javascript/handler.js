@@ -992,17 +992,6 @@
     return API.getThemeResource(name, 'icon', args);
   };
 
-  /**
-   * Default method for getting path to css theme
-   */
-  DefaultHandler.prototype.getThemeCSS = function(name) {
-    if ( name === null ) {
-      return '/blank.css';
-    }
-    var root = API.getDefaultSettings().Core.ThemeURI;
-    return root + '/' + name + '.css';
-  };
-
   //
   // EXPORTS
   //
