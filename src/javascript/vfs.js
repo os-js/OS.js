@@ -854,7 +854,7 @@
         return;
       }
 
-      OSjs.VFS.url(args, function(error, result) {
+      OSjs.VFS.url(args, function(error, url) {
         if ( error ) {
           return callback(error);
         }
@@ -865,7 +865,7 @@
           responseType: 'arraybuffer',
           onsuccess: function(result) {
             API.destroyLoading(lname);
-            callback(false, response);
+            callback(false, result);
           },
           onerror: function(result) {
             API.destroyLoading(lname);
@@ -915,7 +915,7 @@
   OSjs.VFS.emptyTrash = function(callback) {
     console.info('VFS::emptyTrash()');
     if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    request(item.path, 'emptyTrash', [], function(error, response) {
+    request(null, 'emptyTrash', [], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_EMPTYTRASH_FMT', error);
       }

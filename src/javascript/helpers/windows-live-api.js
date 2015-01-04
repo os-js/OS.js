@@ -197,7 +197,7 @@
       scope: scope,
       redirect_uri: redirectURI
     }).then(function(result) {
-      if ( result.status == 'connected' ) {
+      if ( result.status === 'connected' ) {
         callback(false, true);
       } else {
         callback(API._('WLAPI_LOGIN_FAILED'));
