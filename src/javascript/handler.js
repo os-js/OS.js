@@ -943,24 +943,6 @@
   //
 
   /**
-   * Perform a cURL call
-   */
-  DefaultHandler.prototype.curl = function(args, callback) {
-    args = args || {};
-    callback = callback || {};
-
-    this.callAPI('curl', args.body, function(response) {
-      if ( response && response.error ) {
-        callback(response.error);
-        return;
-      }
-      callback(false, response ? (response.result || null) : null);
-    }, function(error) {
-      callback(error);
-    }, args.options);
-  };
-
-  /**
    * Default method for getting a resource from application
    */
   DefaultHandler.prototype.getApplicationResource = function(app, name) {

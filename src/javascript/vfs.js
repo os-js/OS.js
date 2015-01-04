@@ -934,8 +934,7 @@
 
     if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
 
-    var h = API.getHandlerInstance();
-    h.curl({
+    API.curl({
       body: {
         url: url,
         binary: true,

@@ -1157,6 +1157,24 @@
     }
   }
 
+  /**
+   * Perform cURL call
+   */
+  function doCurl(args, callback) {
+    args = args || {};
+    callback = callback || {};
+
+    doAPICall('curl', args.body, function(response) {
+      if ( response && response.error ) {
+        callback(response.error);
+        return;
+      }
+      callback(false, response ? (response.result || null) : null);
+    }, function(error) {
+      callback(error);
+    }, args.options);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -1451,6 +1469,7 @@
   OSjs.API.__                 = doTranslateList;
   OSjs.API.getLocale          = doGetLocale;
   OSjs.API.setLocale          = doSetLocale;
+  OSjs.API.curl               = doCurl;
   OSjs.API.call               = doAPICall;
   OSjs.API.error              = doErrorDialog;
   OSjs.API.open               = doLaunchFile;
