@@ -1175,6 +1175,15 @@
     }, args.options);
   }
 
+  /**
+   * Get a resource from application
+   */
+  function doGetApplicationResource(app, name) {
+    var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
+    var root = API.getDefaultSettings().Core.PackageURI;
+    return root + '/' + aname + '/' + name;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -1461,31 +1470,31 @@
   OSjs.API.getDefaultPath         = function(fallback)         { return _HANDLER.getConfig('Core').Home || fallback || '/'; };
   OSjs.API.getThemeCSS            = function(name)             { return _HANDLER.getThemeCSS(name); };
   OSjs.API.getThemeResource       = function(name, type, args) { return _HANDLER.getThemeResource(name, type, args); };
-  OSjs.API.getApplicationResource = function(app, name)        { return _HANDLER.getApplicationResource(app, name); };
   OSjs.API.getIcon                = function(name, app)        { return _HANDLER.getIcon(name, app); };
 
   // Common API functions
-  OSjs.API._                  = doTranslate;
-  OSjs.API.__                 = doTranslateList;
-  OSjs.API.getLocale          = doGetLocale;
-  OSjs.API.setLocale          = doSetLocale;
-  OSjs.API.curl               = doCurl;
-  OSjs.API.call               = doAPICall;
-  OSjs.API.error              = doErrorDialog;
-  OSjs.API.open               = doLaunchFile;
-  OSjs.API.launch             = doLaunchProcess;
-  OSjs.API.launchList         = doLaunchProcessList;
-  OSjs.API.kill               = doKillProcess;
-  OSjs.API.playSound          = doPlaySound;
-  OSjs.API.message            = doProcessMessage;
-  OSjs.API.getProcess         = doGetProcess;
-  OSjs.API.createLoading      = createLoading;
-  OSjs.API.destroyLoading     = destroyLoading;
-  OSjs.API.getDefaultSettings = OSjs.API.getDefaultSettings || function __noop__() { return {}; };
-  OSjs.API.getProcesses       = function() { return _PROCS; };
-  OSjs.API.getHandlerInstance = function() { return OSjs.Handlers.getInstance(); };
-  OSjs.API.getWMInstance      = function() { return _WM; };
-  OSjs.API._isMouseLock       = function() { return _MOUSELOCK; };
-  OSjs.API._onMouseDown       = globalOnMouseDown;
+  OSjs.API._                      = doTranslate;
+  OSjs.API.__                     = doTranslateList;
+  OSjs.API.getLocale              = doGetLocale;
+  OSjs.API.setLocale              = doSetLocale;
+  OSjs.API.curl                   = doCurl;
+  OSjs.API.call                   = doAPICall;
+  OSjs.API.error                  = doErrorDialog;
+  OSjs.API.open                   = doLaunchFile;
+  OSjs.API.launch                 = doLaunchProcess;
+  OSjs.API.launchList             = doLaunchProcessList;
+  OSjs.API.kill                   = doKillProcess;
+  OSjs.API.playSound              = doPlaySound;
+  OSjs.API.message                = doProcessMessage;
+  OSjs.API.getProcess             = doGetProcess;
+  OSjs.API.createLoading          = createLoading;
+  OSjs.API.destroyLoading         = destroyLoading;
+  OSjs.API.getApplicationResource = doGetApplicationResource;
+  OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || function __noop__() { return {}; };
+  OSjs.API.getProcesses           = function() { return _PROCS; };
+  OSjs.API.getHandlerInstance     = function() { return OSjs.Handlers.getInstance(); };
+  OSjs.API.getWMInstance          = function() { return _WM; };
+  OSjs.API._isMouseLock           = function() { return _MOUSELOCK; };
+  OSjs.API._onMouseDown           = globalOnMouseDown;
 
 })();

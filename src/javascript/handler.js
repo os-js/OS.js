@@ -943,15 +943,6 @@
   //
 
   /**
-   * Default method for getting a resource from application
-   */
-  DefaultHandler.prototype.getApplicationResource = function(app, name) {
-    var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
-    var root = API.getDefaultSettings().Core.PackageURI;
-    return root + '/' + aname + '/' + name;
-  };
-
-  /**
    * Default method for getting a resource from theme
    */
   DefaultHandler.prototype.getThemeResource = function(name, type, args) {
