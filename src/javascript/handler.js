@@ -975,23 +975,6 @@
     return name;
   };
 
-  /**
-   * Default method for getting a icon (wrapper for above methods)
-   */
-  DefaultHandler.prototype.getIcon = function(name, app, args) {
-    name = name || '';
-    if ( name.match(/\.\//) ) {
-      if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
-          return API.getApplicationResource(app, name);
-      } else {
-        if ( typeof app === 'object' ) {
-          return API.getApplicationResource(app.path, name);
-        }
-      }
-    }
-    return API.getThemeResource(name, 'icon', args);
-  };
-
   //
   // EXPORTS
   //
