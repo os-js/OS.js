@@ -335,7 +335,7 @@
     } else {
       VFS.exists(file, function(error, result) {
         if ( error ) {
-          self.onError((error || 'Failed to stat file'), file.path);
+          self.onError((error || 'Failed to stat file'), file.path, false, true);
           return;
         }
         if ( result ) {
@@ -397,14 +397,16 @@
   /**
    * Error wrapper
    */
-  FileDialog.prototype.onError = function(err, dirname, fatal) {
+  FileDialog.prototype.onError = function(err, dirname, fatal, nochdir) {
     this._toggleLoading(false);
 
     if ( err ) {
       if ( !fatal ) {
         if ( this.errors < 2 ) {
           if ( this.$fileView ) {
-            this.$fileView.chdir(API.getDefaultPath('/'));
+            if ( !nochdir ) { // NOTE ISSUE #44
+              this.$fileView.chdir(API.getDefaultPath('/'));
+            }
           }
         } else {
           this.errors = 0;
