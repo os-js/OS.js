@@ -144,13 +144,16 @@
         }).then(function(result) {
           console.debug('WindowsLiveAPI::load()', '=>', result);
 
-          self.accessToken = result.session.access_token || null;
+          if ( result.session ) {
+            self.accessToken = result.session.access_token || null;
+          }
+
           if ( result.status === 'connected' ) {
             callback(false, true);
-          } else if ( result.status === 'unknown' ) {
-            callback('Windows Live API returned unknown status'); // FIXME: Translation
-          } else {
+          } else if ( result.status === 'success' ) {
             _login();
+          } else {
+            callback('Windows Live API returned ' + result.status + ' status'); // FIXME: Translation
           }
         }, function(result) {
           console.error('WindowsLiveAPI::load()', 'init() error', result);
@@ -184,6 +187,10 @@
     });
 
     WL.logout();
+
+    if ( OSjs.VFS.Modules.OneDrive ) {
+      OSjs.VFS.Modules.OneDrive.unmount();
+    }
   };
 
   WindowsLiveAPI.prototype.login = function(scope, callback) {

@@ -41,6 +41,10 @@
     match: /^home\:\/\//,
     visible: true,
     internal: true,
+    unmount: function(cb) {
+      cb = cb || function() {};
+      cb(API._('ERR_VFS_UNAVAILABLE'), false);
+    },
     mounted: function() {
       return true;
     },

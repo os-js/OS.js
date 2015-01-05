@@ -501,6 +501,22 @@
 
   ApplicationFileManagerWindow.prototype.vfsEvent = function(args) {
     if ( args.type === 'mount' || args.type === 'unmount' ) {
+      if ( args.type === 'unmount' ) {
+        if ( args.module ) {
+          var fileView = this._getGUIElement('FileManagerFileView');
+          if ( fileView ) {
+            var m = OSjs.VFS.Modules[args.module];
+            var c = fileView.getPath();
+            if ( m && c ) {
+              if ( c.match(m.match) ) {
+                var path = API.getDefaultPath('/');
+                fileView.chdir(path);
+              }
+            }
+          }
+        }
+      }
+
       this.renderRootList();
     } else {
       var file = args.file;

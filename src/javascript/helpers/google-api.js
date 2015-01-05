@@ -105,7 +105,9 @@
     });
   };
 
-  GoogleAPI.prototype.signOut = function() {
+  GoogleAPI.prototype.signOut = function(cb) {
+    cb = cb || function() {};
+
     console.info('GoogleAPI::signOut()');
     if ( this.authenticated ) {
       try {
@@ -122,6 +124,12 @@
         ring.remove('Google API');
       }
     }
+
+    if ( OSjs.VFS.Modules.GoogleDrive ) {
+      OSjs.VFS.Modules.GoogleDrive.unmount();
+    }
+
+    cb(false, true);
   };
 
   GoogleAPI.prototype.revoke = function(callback) {

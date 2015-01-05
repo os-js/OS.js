@@ -644,8 +644,12 @@
     readOnly: false,
     description: 'OneDrive',
     visible: true,
-    unmount: function() {
-      return false; // TODO
+    unmount: function(cb) {
+      // FIXME: Should we sign out here too ?
+      cb = cb || function() {};
+      _isMounted = false;
+      API.message('vfs', {type: 'unmount', module: 'OneDrive', source: null});
+      cb(false, true);
     },
     mounted: function() {
       return _isMounted;
