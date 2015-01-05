@@ -244,6 +244,10 @@
           data = new Blob([data], {type: file.mime});
         }
         fd.append(key, data, file.filename);
+      } else {
+        if ( data.data && data.filename ) { // In case user defines custom
+          fd.append(key, data.data, data.filename);
+        }
       }
     }
   }
@@ -783,7 +787,7 @@
         }
       } else {
         OSjs.VFS.internalUpload(f, args.destination, function(type, arg) {
-          if ( type === 'complete' ) {
+          if ( type === 'complete' || type === 'success' ) {
             callback(false, true, arg);
           } else if ( type === 'failed' ) {
             var msg = API._('ERR_VFS_UPLOAD_FAIL_FMT', 'Unknown reason');
