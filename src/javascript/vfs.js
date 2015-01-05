@@ -865,7 +865,7 @@
 
         Utils.ajax({
           url: url,
-          method: 'POST',
+          method: 'GET',
           responseType: 'arraybuffer',
           onsuccess: function(result) {
             API.destroyLoading(lname);
