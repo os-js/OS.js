@@ -189,41 +189,6 @@
     }, false);
   }
 
-  function getFileIcon(filename, mime, type, icon, size) {
-    if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
-    type = type || 'file';
-    icon = icon || 'mimetypes/gnome-fs-regular.png';
-    size = size || '16x16';
-
-    if ( type === 'dir' ) {
-      icon = 'places/folder.png';
-    } else if  ( type === 'trash' ) {
-      icon = 'places/user-trash.png';
-    } else if ( type === 'file' ) {
-      if ( mime ) {
-        if ( mime.match(/^application\/(x\-python|javascript)/) || mime.match(/^text\/(html|xml|css)/) ) {
-          icon = 'mimetypes/stock_script.png';
-        } else if ( mime.match(/^text\//) ) {
-          icon = 'mimetypes/txt.png';
-        } else if ( mime.match(/^audio\//) ) {
-          icon = 'mimetypes/sound.png';
-        } else if ( mime.match(/^video\//) ) {
-          icon = 'mimetypes/video.png';
-        } else if ( mime.match(/^image\//) || mime === 'osjs/draw' ) {
-          icon = 'mimetypes/image.png';
-        } else if ( mime.match(/^application\//) ) {
-          icon = 'mimetypes/binary.png';
-        } else if ( mime === 'osjs/document' ) {
-          icon = 'mimetypes/gnome-mime-application-msword.png';
-        } else if ( mime === 'application/zip' ) {
-          icon = 'mimetypes/folder_tar.png';
-        }
-      }
-    }
-
-    return API.getThemeResource(icon, 'icon', size);
-  }
-
   /**
    * GUI Element
    *
@@ -900,6 +865,5 @@
   OSjs.GUI._Input           = _Input;
   OSjs.GUI.createDraggable  = createDraggable;
   OSjs.GUI.createDroppable  = createDroppable;
-  OSjs.GUI.getFileIcon      = getFileIcon;
 
 })(OSjs.API, OSjs.Utils);
