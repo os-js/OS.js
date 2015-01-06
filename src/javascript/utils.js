@@ -336,6 +336,19 @@
     return map[loc] || loc;
   };
 
+  OSjs.Utils.fixJSON = function(response) {
+    if ( typeof response === 'string' ) {
+      if ( response.match(/^\{|\[/) ) {
+        try {
+          response = JSON.parse(response);
+        } catch ( e  ){
+          console.warn('FAILED TO FORCE JSON MIME TYPE', e);
+        }
+      }
+    }
+    return response;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
