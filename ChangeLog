@@ -1,3 +1,35 @@
+# 2.0.0-alpha49
+
+WARNING: API CHANGES. All helper functions have been moved into `OSjs.API`
+
+References: #45, #44, #50, #51, #53
+
+* Makefile: Added 'test' (no unit testing yet)
+* Core: Moved Handler::curl() to API::
+* Core: Moved Handler::getApplicationResource() to API::
+* Core: Moved Handler::getThemeCSS() to API::
+* Core: Moved Handler::getIcon() to API::
+* Core: Moved Handler::getThemeResource() to API::
+* Core: Moved Handler::getFileIcon() to API::
+* Core: Moved all classes used by Handler into Helpers::
+* Core: Moved GUI::createMenu into API::
+* Core: Moved GUI::blurMenu into API::
+* Core: Moved GUI::createDroppable into API::
+* Core: Moved GUI::createDraggable into API::
+* Core: Moved gui.js to guielement.js
+* Core: Moved gui.css to guielement.css
+* GUI: Moved _DataView into separate file
+* GUI: Moved _Input into separate file
+* VFS: Added unmount() with signaling
+* VFS: Bugfix for uploding custom files
+* VFS: Bugfix for internal download
+* Window: Added _getZindex()
+* Window: Added 'moved' hook
+* FileManager: Now recieves unmount() signals correctly
+* FileDialog: Fix resetting of path on VFS::exists() error
+* Docs: Full documentation of 'core.js'
+* Misc: Cleanups
+
 # 2.0.0-alpha48
 
 NOTE: Run 'npm update' for node server :)
