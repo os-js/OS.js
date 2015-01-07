@@ -890,7 +890,7 @@
    * @param   Function    onConstructed   Callback on application init
    *
    * @return  bool
-   * @api     OSjs.API.launchList
+   * @api     OSjs.API.launch
    */
   function doLaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
@@ -1038,6 +1038,7 @@
    * @param   Function      onFinished  Callback on finished running
    * @see     doLaunchProcess
    * @return  void
+   * @api     OSjs.API.launchList
    */
   function doLaunchProcessList(list, onSuccess, onError, onFinished) {
     list        = list        || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
