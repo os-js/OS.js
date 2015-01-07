@@ -1824,6 +1824,13 @@
     return result;
   };
 
+  Window.prototype._getZindex = function() {
+    if ( this._$element ) {
+      return parseInt(this._$element.style.zIndex, 10);
+    }
+    return -1;
+  };
+
   Window.prototype._setTitle = function(t) {
     if ( !this._$element ) { return; }
     var tel = this._$element.getElementsByClassName('WindowTitle')[0];
