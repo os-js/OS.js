@@ -187,6 +187,7 @@
         if ( _WM ) {
           if ( action === 'move' ) {
             self._onChange('move', true);
+            self._fireHook('moved');
           } else if ( action === 'resize' ) {
             self._onChange('resize', true);
             self._fireHook('resized');
