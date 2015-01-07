@@ -30,7 +30,7 @@
 (function() {
   'use strict';
 
-  // Compability
+  // Make sure namespaces exist
   window.OSjs       = window.OSjs       || {};
   window.console    = window.console    || {};
   console.log       = console.log       || function() {};
@@ -40,6 +40,7 @@
   console.group     = console.group     || console.log;
   console.groupEnd  = console.groupEnd  || console.log;
 
+  // Make forEach on all DOM Elements etc
   if ( window.NodeList ) {
     window.NodeList.prototype.forEach = Array.prototype.forEach;
   }

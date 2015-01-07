@@ -46,6 +46,10 @@
   // DEFAULT HOOKS
   /////////////////////////////////////////////////////////////////////////////
 
+  //
+  // You can add hooks to your custom scripts to catch any of these events
+  //
+
   var _hooks = {
     'onInitialize':          [], // 1: When OS.js is starting
     'onInited':              [], // 2: When all resources has been loaded
@@ -112,6 +116,12 @@
 
   /**
    * Create (or show) loading indicator
+   *
+   * @param   String    name        Name of dialog (unique)
+   * @param   Object    opts        Options
+   * @param   int       panelId     Panel ID (optional)
+   *
+   * @return  String                Or false on error
    */
   function createLoading(name, opts, panelId) {
     if ( _WM ) {
@@ -127,6 +137,11 @@
 
   /**
    * Destroy (or hide) loading indicator
+   *
+   * @param   String    name        Name of dialog (unique)
+   * @param   int       panelId     Panel ID (optional)
+   *
+   * @return  boolean
    */
   function destroyLoading(name, panelId) {
     if ( name ) {
@@ -144,6 +159,8 @@
 
   /**
    * Creates the version stamp
+   *
+   * @return  void
    */
   function createVersionStamp() {
     var append = _HANDLER.getConfig('Core').VersionAppend;
@@ -170,6 +187,8 @@
 
   /**
    * Creates application launch splash
+   *
+   * @return  void
    */
   function createLaunchSplash(data, n) {
     var splash = null;
@@ -228,11 +247,15 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // SYSTEM FUNCTIONS
+  // EVENTS
   /////////////////////////////////////////////////////////////////////////////
 
   /**
    * Global onResize Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   var globalOnResize = (function() {
     var _timeout;
@@ -258,6 +281,10 @@
 
   /**
    * Global onMouseDown Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   function globalOnMouseDown(ev) {
     var win = _WM ? _WM.getCurrentWindow() : null;
@@ -268,6 +295,10 @@
 
   /**
    * Global onEnter Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   function globalOnEnter(ev) {
     _MOUSELOCK = true;
@@ -275,6 +306,10 @@
 
   /**
    * Global onLeave Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   function globalOnLeave(ev) {
     var from = ev.relatedTarget || ev.toElement;
@@ -287,6 +322,10 @@
 
   /**
    * Global onScroll Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   function globalOnScroll(ev) {
     if ( ev.target === document || ev.target === document.body || ev.target.id === 'Background' ) {
@@ -302,6 +341,10 @@
 
   /**
    * Global onKeyUp Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   function globalOnKeyUp(ev) {
     if ( _WM ) {
@@ -317,6 +360,10 @@
 
   /**
    * Global onKeyPress Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   function globalOnKeyPress(ev) {
     if ( _WM ) {
@@ -330,6 +377,10 @@
 
   /**
    * Global onKeyDown Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
    */
   function globalOnKeyDown(ev) {
     var d = ev.srcElement || ev.target;
@@ -364,8 +415,15 @@
     return true;
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // CORE FUNCTIONS
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
-   * Initialize OS.js
+   * This is the main initialization function
+   * the first thing that is called after page has loaded
+   *
+   * @return  void
    */
   function doInitialize() {
     if ( _INITED ) { return; }
@@ -531,6 +589,10 @@
 
   /**
    * Shut down OS.js
+   *
+   * @param   boolean     save      Save the current session ?
+   *
+   * @return  void
    */
   function doShutdown(save) {
     if ( !_INITED ) { return; }
@@ -628,7 +690,9 @@
   }
 
   /**
-   * Sign Out
+   * Sign Out of OS.js
+   *
+   * @return  void
    */
   function doSignOut() {
     if ( _WM ) {
@@ -648,6 +712,8 @@
 
   /**
    * Checks a list of compability for application
+   *
+   * @return  Array     Of unsupported features
    */
   function checkApplicationCompability(comp) {
     var result = [];
@@ -1030,6 +1096,10 @@
 
   /**
    * Kills a process
+   *
+   * @param   int     pid       Process ID
+   *
+   * @return  void
    */
   function doKillProcess(pid) {
     if ( _PROCS[pid] ) {
@@ -1043,6 +1113,13 @@
 
   /**
    * Sends a message to all processes
+   *
+   * Example: VFS uses this to signal file changes etc.
+   *
+   * @param   String    msg     Message name
+   * @param   Object    opts    Options
+   *
+   * @return  void
    */
   function doProcessMessage(msg, opts) {
     console.info('doProcessMessage', msg, opts);
@@ -1055,6 +1132,11 @@
 
   /**
    * Get a process by name
+   *
+   * @param   String    name    Process Name
+   * @param   boolean   first   Return the first found
+   *
+   * @return  Process           Or an Array of Processes
    */
   function doGetProcess(name, first) {
     var p;
@@ -1081,6 +1163,7 @@
    * Translate given string
    * @param  String   s     Translation key/string
    * @param  Mixed    ...   Format values
+   *
    * @return String
    */
   function doTranslate() {
@@ -1115,6 +1198,7 @@
 
   /**
    * Get current locale
+   *
    * @return String
    */
   function doGetLocale() {
@@ -1123,7 +1207,9 @@
 
   /**
    * Set locale
+   *
    * @param  String   s     Locale name
+   *
    * @return void
    */
   function doSetLocale(l) {
@@ -1159,6 +1245,12 @@
 
   /**
    * Perform cURL call
+   *
+   * @param   Object    args      cURL Arguments (see backend)
+   * @param   Function  callback  Callback function
+   *                              fn(error, result)
+   *
+   * @return  void
    */
   function doCurl(args, callback) {
     args = args || {};
@@ -1177,6 +1269,12 @@
 
   /**
    * Get a resource from application
+   *
+   * @param   Process   app     Application instance reference
+   *                            You can also specify a name by String
+   * @param   String    name    Resource Name
+   *
+   * @return  String            The absolute URL of resource
    */
   function doGetApplicationResource(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
@@ -1186,6 +1284,10 @@
 
   /**
    * Get path to css theme
+   *
+   * @param   String    name    CSS Stylesheet name (without extension)
+   *
+   * @return  String            The absolute URL of css file
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
@@ -1197,6 +1299,17 @@
 
   /**
    * Get a icon (wrapper for above methods)
+   *
+   * If the given name is specified with "./something.png" it will use the
+   * 'app' parameter.
+   *
+   * @param   String    name    Icon Name
+   * @param   Process   app     Application instance reference (Optional)
+   *                            You can also specify a name by String
+   * @param   String    args    Optional argument to getThemeResource
+   *                            (default="16x16")
+   *
+   * @retrurn String            The absolute URL of the icon
    */
   function doGetIcon(name, app, args) {
     name = name || '';
@@ -1214,6 +1327,14 @@
 
   /**
    * Get a icon based in file and mime
+   *
+   * @param   String    filename    Filename
+   * @param   String    mime        MIME type
+   * @param   String    type        Filetype (dir or file, default="file")
+   * @param   String    icon        Default icon (optional)
+   * @param   String    size        Icon size (default="16x16")
+   *
+   * @return  String                The absolute URL to the icon
    */
   function doGetFileIcon(filename, mime, type, icon, size) {
     if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
@@ -1252,7 +1373,13 @@
 
 
   /**
-   * Default method for getting a resource from theme
+   * Default method for getting a resource from current theme
+   *
+   * @param   String    name    Resource filename
+   * @param   String    type    Type (icon, sound, wm, base)
+   * @param   String    args    Used for 'icon', defines the size (optional)
+   *
+   * @return  String            The absolute URL to the resource
    */
   function doGetThemeResource(name, type, args) {
     name = name || null;
@@ -1290,6 +1417,9 @@
 
   /**
    * Process Template Class
+   *
+   * @param   String    name    Process Name
+   * @class
    */
   var Process = (function() {
     var _PID = 0;
@@ -1313,6 +1443,13 @@
     };
   })();
 
+  /**
+   * Process::destroy() -- Destroys the process
+   *
+   * @param   boolean   kill    Force kill ?
+   *
+   * @return  boolean
+   */
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
     this.__state = -1;
@@ -1325,6 +1462,11 @@
     return true;
   };
 
+  /**
+   * Process::_onMessage() -- Placeholder for messages sendt via API
+   *
+   * @return  void
+   */
   Process.prototype._onMessage = function(obj, msg, args) {
   };
 
@@ -1334,6 +1476,12 @@
 
   /**
    * Service Class
+   *
+   * @param   String    name    Process name
+   * @param   Object    args    Process arguments
+   *
+   * @extends Process
+   * @class
    */
   var Service = function(name, args) {
     this.__name = name;
@@ -1344,9 +1492,18 @@
 
   Service.prototype = Object.create(Process.prototype);
 
+  /**
+   * Service::init() -- Intiaialize the Service
+   *
+   * @return  void
+   */
   Service.prototype.init = function() {
   };
 
+  /**
+   * Service::_call() -- Call the ApplicationAPI
+   * @return  boolean
+   */
   Service.prototype._call = function(method, args, onSuccess, onError) {
     onSuccess = onSuccess || function() {};
     onError = onError || function() {};
@@ -1355,6 +1512,17 @@
 
   /**
    * Application Class
+   *
+   * The 'Process arguments' is a JSON object with the arguments the
+   * Applications was launched with. Just like 'argv'
+   *
+   * @param   String    name      Process name
+   * @param   Object    args      Process arguments
+   * @param   Object    metadata  Application metadata
+   * @param   Object    settings  Application settings
+   *
+   * @extends Process
+   * @class
    */
   var Application = function(name, args, metadata, settings) {
     console.group('OSjs::Core::Application::__construct()');
@@ -1379,6 +1547,13 @@
 
   Application.prototype = Object.create(Process.prototype);
 
+  /**
+   * Application::init() -- Initialize the Application
+   *
+   * @param   Object    settings      Settings JSON
+   * @param   Object    metadata      Metadata JSON
+   * @return  void
+   */
   Application.prototype.init = function(settings, metadata) {
     console.log('OSjs::Core::Application::init()', this.__name);
 
@@ -1404,6 +1579,11 @@
     this.__inited = true;
   };
 
+  /**
+   * Application::destroy() -- Destroy the application
+   *
+   * @see Process::destroy()
+   */
   Application.prototype.destroy = function(kill) {
     if ( this.__destroyed ) { return true; }
     this.__destroyed = true;
@@ -1420,6 +1600,15 @@
     return Process.prototype.destroy.apply(this, arguments);
   };
 
+  /**
+   * Application::_onMessage() -- Application has received a message
+   *
+   * @param   Object    obj       Where it came from
+   * @param   String    msg       Name of message
+   * @param   Object    args      Message arguments
+   *
+   * @return  void
+   */
   Application.prototype._onMessage = function(obj, msg, args) {
     if ( !msg ) { return; }
 
@@ -1434,6 +1623,18 @@
     }
   };
 
+  /**
+   * Application::_call() -- Call the ApplicationAPI
+   *
+   * This is used for calling 'api.php' or 'api.js' in your Application.
+   *
+   * @param   String      method      Name of method
+   * @param   Object      args        Arguments in JSON
+   * @param   Function    onSuccess   When request is done callback fn(result)
+   * @param   Function    onError     When an error occured fn(error)
+   *
+   * @return  boolean
+   */
   Application.prototype._call = function(method, args, onSuccess, onError) {
     var self = this;
     onSuccess = onSuccess || function() {};
@@ -1446,6 +1647,18 @@
     return doAPICall('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
+  /**
+   * Application::_createDialog() -- Wrapper for creating dialogs
+   *
+   * Using this function will add them as children, making sure they will
+   * be destroyed on close.
+   *
+   * @param   String    className     ClassName in OSjs.Dialogs namespace
+   * @param   Array     args          Array of arguments for constructor
+   * @param   Window    parentClass   The parent window
+   *
+   * @return  Window                  Or false on error
+   */
   Application.prototype._createDialog = function(className, args, parentClass) {
     if ( OSjs.Dialogs[className] ) {
 
@@ -1462,6 +1675,15 @@
     return false;
   };
 
+  /**
+   * Application::_addWindow() -- Add a window to the application
+   *
+   * This will automatically add it to the WindowManager and show it to you
+   *
+   * @param   Window    w     The Window
+   *
+   * @return  Window
+   */
   Application.prototype._addWindow = function(w) {
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
     console.info('OSjs::Core::Application::_addWindow()');
@@ -1481,6 +1703,13 @@
     return w;
   };
 
+  /**
+   * Application::_removeWindow() -- Removes given Window
+   *
+   * @param   Window      w     The Windo
+   *
+   * @return  boolean
+   */
   Application.prototype._removeWindow = function(w) {
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_removeWindow() expects Window'); }
 
@@ -1500,6 +1729,17 @@
     });
   };
 
+  /**
+   * Application::_getWindow() -- Gets a Window by X
+   *
+   * If you specify 'tag' the result will end with an Array because
+   * these are not unique.
+   *
+   * @param   String    checkfor      The argument to check for
+   * @param   Mixed     key           What to match against
+   *
+   * @return  Window                  Or null on error or nothing
+   */
   Application.prototype._getWindow = function(checkfor, key) {
     key = key || 'name';
 
@@ -1521,22 +1761,53 @@
     return result;
   };
 
+  /**
+   * Application::_getWindowsByName() -- Get a Window by Name
+   *
+   * @see Application::_getWindow()
+   */
   Application.prototype._getWindowByName = function(name) {
     return this._getWindow(name);
   };
 
+  /**
+   * Application::_getWindowsByTag() -- Get Windows(!) by Tag
+   *
+   * @see Application::_getWindow()
+   * @return Array
+   */
   Application.prototype._getWindowsByTag = function(tag) {
     return this._getWindow(tag, 'tag');
   };
 
+  /**
+   * Application::_getWindows() -- Get a list of all windows
+   *
+   * @retrun Array
+   */
   Application.prototype._getWindows = function() {
     return this.__windows;
   };
 
+  /**
+   * Application::_getSettings() -- Get the sessions JSON
+   *
+   * @return  Object    the current settings
+   */
   Application.prototype._getSetting = function(k) {
     return this.__settings[k];
   };
 
+  /**
+   * Application::_setSetting() -- Set a setting
+   *
+   * @param   String    k             Key
+   * @param   String    v             Value
+   * @param   boolean   save          Immediately save settings ?
+   * @param   Function  saveCallback  If you save, this will be called when done
+   *
+   * @return  void
+   */
   Application.prototype._setSetting = function(k, v, save, saveCallback) {
     save = (typeof save === 'undefined' || save === true);
     this.__settings[k] = v;
@@ -1545,10 +1816,24 @@
     }
   };
 
+  /**
+   * Application::_getArgument() -- Get a launch/session argument
+   *
+   * @return  Mixed     Argument value or null
+   */
   Application.prototype._getArgument = function(k) {
     return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
   };
 
+
+  /**
+   * Application::_setArgument() -- Set a launch/session argument
+   *
+   * @param   String    k             Key
+   * @param   String    v             Value
+   *
+   * @return  void
+   */
   Application.prototype._setArgument = function(k, v) {
     this.__args[k] = v;
   };
