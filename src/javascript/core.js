@@ -63,6 +63,12 @@
 
   /**
    * Method for triggering a hook
+   *
+   * @param   String    name      Hook name
+   * @param   Array     args      List of arguments
+   * @param   Object    thisarg   'this' ref
+   *
+   * @return  void
    */
   function _triggerHook(name, args, thisarg) {
     thisarg = thisarg || OSjs;
@@ -85,6 +91,12 @@
 
   /**
    * Method for adding a hook
+   *
+   * @param   String    name    Hook name
+   * @param   Function  fn      Callback
+   *
+   * @return  void
+   * @api     OSjs.Core.addHook
    */
   function doAddHook(name, fn) {
     if ( typeof _hooks[name] !== 'undefined' ) {
@@ -122,6 +134,7 @@
    * @param   int       panelId     Panel ID (optional)
    *
    * @return  String                Or false on error
+   * @api     OSjs.API.createLoading
    */
   function createLoading(name, opts, panelId) {
     if ( _WM ) {
@@ -142,6 +155,7 @@
    * @param   int       panelId     Panel ID (optional)
    *
    * @return  boolean
+   * @api     OSjs.API.destroyLoading
    */
   function destroyLoading(name, panelId) {
     if ( name ) {
@@ -424,6 +438,7 @@
    * the first thing that is called after page has loaded
    *
    * @return  void
+   * @api     OSjs.Core.initialize
    */
   function doInitialize() {
     if ( _INITED ) { return; }
@@ -593,6 +608,7 @@
    * @param   boolean     save      Save the current session ?
    *
    * @return  void
+   * @api     OSjs.Core.shutdown
    */
   function doShutdown(save) {
     if ( !_INITED ) { return; }
@@ -693,6 +709,7 @@
    * Sign Out of OS.js
    *
    * @return  void
+   * @api     OSjs.Core.signOut
    */
   function doSignOut() {
     if ( _WM ) {
@@ -740,7 +757,9 @@
    * @param   Object    a       Method arguments
    * @param   Function  cok     Callback on success
    * @param   Function  cerror  Callback on error
+   *
    * @return  void
+   * @api     OSjs.API.call
    */
   var doAPICall = (function() {
     var _cidx = 1;
@@ -769,7 +788,9 @@
    * @param   String    error       Error message
    * @param   Object    exception   Exception reference (optional)
    * @param   boolean   bugreport   Enable bugreporting for this error (default=fale)
+   *
    * @return  null
+   * @api     OSjs.API.error
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
     if ( _HANDLER.getConfig('Core').BugReporting ) {
@@ -803,7 +824,9 @@
    * @param   Object          file          File
    * @param   Object          launchArgs    Arguments to send to process launch function
    * @see     doLaunchProcess
+   *
    * @return  void
+   * @api     OSjs.API.launch
    */
   function doLaunchFile(file, launchArgs) {
     launchArgs = launchArgs || {};
@@ -865,7 +888,9 @@
    * @param   Function    onFinished      Callback on success
    * @param   Function    onError         Callback on error
    * @param   Function    onConstructed   Callback on application init
+   *
    * @return  bool
+   * @api     OSjs.API.launchList
    */
   function doLaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
@@ -1066,7 +1091,9 @@
    *
    * @param   String      name      Sound name
    * @param   float       volume    Sound volume (0.0 - 1.0)
+   *
    * @return  DOMAudio
+   * @api     OSjs.API.playSound
    */
   function doPlaySound(name, volume) {
     if ( !OSjs.Compability.audio ) {
@@ -1100,6 +1127,7 @@
    * @param   int     pid       Process ID
    *
    * @return  void
+   * @api     OSjs.API.kill
    */
   function doKillProcess(pid) {
     if ( _PROCS[pid] ) {
@@ -1120,6 +1148,8 @@
    * @param   Object    opts    Options
    *
    * @return  void
+   * @see     Process::_onMessage()
+   * @api     OSjs.API.message
    */
   function doProcessMessage(msg, opts) {
     console.info('doProcessMessage', msg, opts);
@@ -1137,6 +1167,7 @@
    * @param   boolean   first   Return the first found
    *
    * @return  Process           Or an Array of Processes
+   * @api     OSjs.API.getProcess
    */
   function doGetProcess(name, first) {
     var p;
@@ -1165,6 +1196,7 @@
    * @param  Mixed    ...   Format values
    *
    * @return String
+   * @api    OSjs.API._
    */
   function doTranslate() {
     var s = arguments[0];
@@ -1181,6 +1213,8 @@
 
   /**
    * Same as _ only you can supply the list as first argument
+   * @see    doTranslate()
+   * @api    OSjs.API.__
    */
   function doTranslateList() {
     var l = arguments[0];
@@ -1200,6 +1234,7 @@
    * Get current locale
    *
    * @return String
+   * @api    OSjs.API.getLocale
    */
   function doGetLocale() {
     return CurrentLocale;
@@ -1211,6 +1246,7 @@
    * @param  String   s     Locale name
    *
    * @return void
+   * @api    OSjs.API.setLocale
    */
   function doSetLocale(l) {
     if ( OSjs.Locales[l] ) {
@@ -1251,6 +1287,7 @@
    *                              fn(error, result)
    *
    * @return  void
+   * @api     OSjs.API.curl
    */
   function doCurl(args, callback) {
     args = args || {};
@@ -1275,6 +1312,8 @@
    * @param   String    name    Resource Name
    *
    * @return  String            The absolute URL of resource
+   *
+   * @api     OSjs.API.getApplicationResource
    */
   function doGetApplicationResource(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
@@ -1288,6 +1327,8 @@
    * @param   String    name    CSS Stylesheet name (without extension)
    *
    * @return  String            The absolute URL of css file
+   *
+   * @api     OSjs.API.getThemeCSS
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
@@ -1310,6 +1351,8 @@
    *                            (default="16x16")
    *
    * @retrurn String            The absolute URL of the icon
+   *
+   * @api     OSjs.API.getIcon
    */
   function doGetIcon(name, app, args) {
     name = name || '';
@@ -1335,6 +1378,8 @@
    * @param   String    size        Icon size (default="16x16")
    *
    * @return  String                The absolute URL to the icon
+   *
+   * @api     OSjs.API.getFileIcon
    */
   function doGetFileIcon(filename, mime, type, icon, size) {
     if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
@@ -1380,6 +1425,8 @@
    * @param   String    args    Used for 'icon', defines the size (optional)
    *
    * @return  String            The absolute URL to the resource
+   *
+   * @api     OSjs.API.getThemeResource
    */
   function doGetThemeResource(name, type, args) {
     name = name || null;
@@ -1411,6 +1458,64 @@
     return name;
   }
 
+  /**
+   * Get default configured settings
+   *
+   * THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
+   *
+   * @return  Object
+   *
+   * @api     OSjs.API.getDefaultSettings
+   */
+  function doGetDefaultSettings() {
+    return {};
+  }
+
+  /**
+   * Get default configured path
+   *
+   * @param   String    fallback      Fallback path on error (default= "/")
+   * @return  String
+   *
+   * @api     OSjs.API.getDefaultPath
+   */
+  function doGetDefaultPath(fallback) {
+    return _HANDLER.getConfig('Core').Home || fallback || '/';
+  }
+
+  /**
+   * Get all processes
+   *
+   * @return  Array
+   *
+   * @api     OSjs.API.getProcesses
+   */
+  function doGetProcesses() {
+    return _PROCS;
+  }
+
+  /**
+   * Get running 'Handler' instance
+   *
+   * @return  Handler
+   *
+   * @api     OSjs.API.getHandlerInstance
+   */
+  function doGetHandlerInstance() {
+    return OSjs.Handlers.getInstance();
+  }
+
+  /**
+   * Get running 'WindowManager' instance
+   *
+   * @return  WindowManager
+   *
+   * @api     OSjs.API.getWMInstance
+   */
+  function doGetWMInstance() {
+    return _WM;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -1419,6 +1524,8 @@
    * Process Template Class
    *
    * @param   String    name    Process Name
+   *
+   * @api     OSjs.Core.Process
    * @class
    */
   var Process = (function() {
@@ -1480,6 +1587,7 @@
    * @param   String    name    Process name
    * @param   Object    args    Process arguments
    *
+   * @api     OSjs.Core.Service
    * @extends Process
    * @class
    */
@@ -1521,6 +1629,7 @@
    * @param   Object    metadata  Application metadata
    * @param   Object    settings  Application settings
    *
+   * @api     OSjs.Core.Application
    * @extends Process
    * @class
    */
@@ -1873,11 +1982,12 @@
   OSjs.API.getIcon                = doGetIcon;
   OSjs.API.getFileIcon            = doGetFileIcon;
   OSjs.API.getThemeResource       = doGetThemeResource;
-  OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || function __noop__() { return {}; };
-  OSjs.API.getDefaultPath         = function(fallback) { return _HANDLER.getConfig('Core').Home || fallback || '/'; };
-  OSjs.API.getProcesses           = function() { return _PROCS; };
-  OSjs.API.getHandlerInstance     = function() { return OSjs.Handlers.getInstance(); };
-  OSjs.API.getWMInstance          = function() { return _WM; };
+  OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || doGetDefaultSettings;
+  OSjs.API.getDefaultPath         = doGetDefaultPath;
+  OSjs.API.getProcesses           = doGetProcesses;
+  OSjs.API.getHandlerInstance     = doGetHandlerInstance;
+  OSjs.API.getWMInstance          = doGetWMInstance;
+
   OSjs.API._isMouseLock           = function() { return _MOUSELOCK; };
   OSjs.API._onMouseDown           = globalOnMouseDown;
 
