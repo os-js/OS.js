@@ -439,7 +439,7 @@
     }, onCreate: _createColorButton});
 
     toolBar.addItem('lineJoin', {title: _('Line Join'), onClick: function(ev) {
-      GUI.createMenu([
+      API.createMenu([
         {
           title: _("Round"),
           onClick: function(ev) {
@@ -475,7 +475,7 @@
         });
       }
 
-      GUI.createMenu(items, {x: ev.clientX, y: ev.clientY});
+      API.createMenu(items, {x: ev.clientX, y: ev.clientY});
     }, onCreate: _createLineWidth});
 
     toolBar.addItem('enableStroke', {title: _('Enable stroke'), onClick: function(ev) {

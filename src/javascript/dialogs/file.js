@@ -379,7 +379,7 @@
     if ( !fileList ) { return; }
     var viewType = fileList.viewType || '';
 
-    OSjs.GUI.createMenu([
+    OSjs.API.createMenu([
       {name: 'ListView', title: API._('DIALOG_FILE_MNU_VIEWTYPE'), menu: [
         {name: 'ListView', title: API._('DIALOG_FILE_MNU_LISTVIEW'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
           self.onMenuSelect('ListView');

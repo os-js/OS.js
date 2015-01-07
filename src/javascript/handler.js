@@ -217,7 +217,7 @@
 
     function displayMenu(ev) {
       var pos = {x: ev.clientX, y: ev.clientY};
-      OSjs.GUI.createMenu([{
+      OSjs.API.createMenu([{
         title: API._('TITLE_SIGN_OUT'),
         onClick: function() {
           OSjs.Core.signOut();

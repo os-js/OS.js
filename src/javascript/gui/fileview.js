@@ -88,7 +88,7 @@
           ]).join('\n');
 
           var file = new VFS.File(item);
-          OSjs.GUI.createDraggable(el, {
+          OSjs.API.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
             data   : file.getData(),
@@ -97,7 +97,7 @@
         } else {
           el.title = item.path;
 
-          OSjs.GUI.createDroppable(el, {
+          OSjs.API.createDroppable(el, {
             onItemDropped: function(ev, el, item, args) {
               return self.onItemDropped.call(self, ev, el, item, args);
             },
@@ -225,7 +225,7 @@
           ]).join('\n');
 
           var file = new VFS.File(item);
-          OSjs.GUI.createDraggable(el, {
+          OSjs.API.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
             data   : file.getData(),
@@ -234,7 +234,7 @@
         } else {
           el.title = item.path;
 
-          OSjs.GUI.createDroppable(el, {
+          OSjs.API.createDroppable(el, {
             onItemDropped: function(ev, el, item, args) {
               return self.onItemDropped.call(self, ev, el, item, args);
             },
@@ -324,7 +324,7 @@
           ]).join('\n');
 
           var file = new VFS.File(item);
-          OSjs.GUI.createDraggable(el, {
+          OSjs.API.createDraggable(el, {
             type   : 'file',
             source : {wid: self.wid},
             data   : file.getData(),
@@ -334,7 +334,7 @@
         } else {
           el.title = item.path;
 
-          OSjs.GUI.createDroppable(el, {
+          OSjs.API.createDroppable(el, {
             onItemDropped: function(ev, el, item, args) {
               return self.onItemDropped.call(self, ev, el, item, args);
             },

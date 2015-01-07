@@ -199,7 +199,7 @@
         });
       }
     }
-    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
+    API.createMenu(list, {x: ev.clientX, y: ev.clientY});
   }
 
   /**
@@ -254,7 +254,7 @@
       }
     }
 
-    GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
+    API.createMenu(list, {x: ev.clientX, y: ev.clientY});
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -378,7 +378,7 @@
     // Enable dropping of new wallpaper if no iconview is enabled
     var back = document.getElementById('Background');
     if ( back ) {
-      OSjs.GUI.createDroppable(back, {
+      OSjs.API.createDroppable(back, {
         onOver: function(ev, el, args) {
           self.onDropOver(ev, el, args);
         },
@@ -612,7 +612,7 @@
 
     var _openMenu = function(data, self) {
       var pos = {x: ev.clientX, y: ev.clientY};
-      OSjs.GUI.createMenu([{
+      OSjs.API.createMenu([{
         title: _('Create shortcut'),
         onClick: function() {
           _createShortcut.call(self, data);
@@ -864,7 +864,7 @@
     var _openDesktopSettings = function() {
       self.showSettings();
     };
-    OSjs.GUI.createMenu([{title: _('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu([{title: _('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save) {

@@ -112,6 +112,7 @@
   var CurrentLocale = 'en_EN';
 
   var _PROCS = [];        // Running processes
+  var _MENU;              // Current open 'OSjs.GUI.Menu'
   var _HANDLER;           // Running Handler process
   var _WM;                // Running WindowManager process
 
@@ -532,7 +533,7 @@
       }, false);
       _$ROOT.addEventListener('mousedown', function(ev) {
         ev.preventDefault();
-        OSjs.GUI.blurMenu();
+        OSjs.API.blurMenu();
       }, false);
 
       document.body.appendChild(_$ROOT);
@@ -615,7 +616,7 @@
     _INITED = false;
 
     function _Destroy() {
-      OSjs.GUI.blurMenu();
+      OSjs.API.blurMenu();
 
       document.removeEventListener('keydown', function(ev) {
         return globalOnKeyDown(ev);
@@ -653,7 +654,7 @@
         }, false);
         _$ROOT.removeEventListener('mousedown', function(ev) {
           ev.preventDefault();
-          OSjs.GUI.blurMenu();
+          OSjs.API.blurMenu();
         }, false);
       }
 
@@ -799,7 +800,7 @@
       bugreport = false;
     }
 
-    OSjs.GUI.blurMenu();
+    OSjs.API.blurMenu();
 
     if ( _WM ) {
       try {
@@ -1517,6 +1518,209 @@
     return _WM;
   }
 
+  /**
+   * Create a droppable DOM element
+   *
+   * @param   DOMElement    el      DOMElement
+   * @param   Object        args    JSON of droppable params
+   *
+   * @return  void
+   *
+   * @api     OSjs.API.createDroppable
+   */
+  function doCreateDroppable(el, args) {
+    args = args || {};
+
+    function getParent(start, matcher) {
+      if ( start === matcher ) { return true; }
+      var i = 10;
+
+      while ( start && i > 0 ) {
+        if ( start === matcher ) {
+          return true;
+        }
+        start = start.parentNode;
+        i--;
+      }
+      return false;
+    }
+
+
+    args.accept = args.accept || null;
+    args.effect = args.effect || 'move';
+    args.mime   = args.mime   || 'application/json';
+    args.files  = args.files  || true;
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = 'text';
+    }
+
+    args.onFilesDropped = args.onFilesDropped || function() { return true; };
+    args.onItemDropped  = args.onItemDropped  || function() { return true; };
+    args.onEnter        = args.onEnter        || function() { return true; };
+    args.onOver         = args.onOver         || function() { return true; };
+    args.onLeave        = args.onLeave        || function() { return true; };
+    args.onDrop         = args.onDrop         || function() { return true; };
+
+    var _onDrop = function(ev, el) {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      args.onDrop.call(this, ev, el);
+      if ( !ev.dataTransfer ) { return true; }
+
+      if ( args.files ) {
+        var files = ev.dataTransfer.files;
+        if ( files && files.length ) {
+          return args.onFilesDropped.call(this, ev, el, files, args);
+        }
+      }
+
+      var data;
+      var self = this;
+      try {
+        data = ev.dataTransfer.getData(args.mime);
+      } catch ( e ) {
+        console.warn('Failed to drop: ' + e);
+      }
+      if ( data ) {
+        var item = JSON.parse(data);
+        if ( args.accept === null || args.accept === item.type ) {
+          return args.onItemDropped.call(self, ev, el, item, args);
+        }
+      }
+
+      return false;
+    };
+
+    el.addEventListener('drop', function(ev) {
+      //Utils.$removeClass(el, 'onDragEnter');
+      return _onDrop(ev, this);
+    }, false);
+
+    el.addEventListener('dragenter', function(ev) {
+      //Utils.$addClass(el, 'onDragEnter');
+      return args.onEnter.call(this, ev, this, args);
+    }, false);
+
+    el.addEventListener('dragover', function(ev) {
+      ev.preventDefault();
+      if ( !getParent(ev.target, el) ) {
+        return false;
+      }
+
+      ev.stopPropagation();
+      ev.dataTransfer.dropEffect = args.effect;
+      return args.onOver.call(this, ev, this, args);
+    }, false);
+
+    el.addEventListener('dragleave', function(ev) {
+      //Utils.$removeClass(el, 'onDragEnter');
+      return args.onLeave.call(this, ev, this, args);
+    }, false);
+  }
+
+  /**
+   * Create a draggable DOM element
+   *
+   * @param   DOMElement    el      DOMElement
+   * @param   Object        args    JSON of draggable params
+   *
+   * @return  void
+   *
+   * @api     OSjs.API.createDraggable
+   */
+  function doCreateDraggable(el, args) {
+    args        = args        || {};
+    args.type   = args.type   || null;
+    args.effect = args.effect || 'move';
+    args.data   = args.data   || null;
+    args.mime   = args.mime   || 'application/json';
+
+    args.dragImage  = args.dragImage  || null;
+    args.onStart    = args.onStart    || function() { return true; };
+    args.onEnd      = args.onEnd      || function() { return true; };
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = 'text';
+    }
+
+    var _toString = function(mime) {
+      return JSON.stringify({
+        type:   args.type,
+        effect: args.effect,
+        data:   args.data,
+        mime:   args.mime
+      });
+    };
+
+    el.setAttribute('draggable', 'true');
+    el.addEventListener('dragstart', function(ev) {
+      this.style.opacity = '0.4';
+      if ( ev.dataTransfer ) {
+        try {
+          ev.dataTransfer.effectAllowed = args.effect;
+          if ( args.dragImage && (typeof args.dragImage === 'function') ) {
+            if ( ev.dataTransfer.setDragImage ) {
+              var dragImage = args.dragImage(ev, el);
+              if ( dragImage ) {
+                var dragEl    = dragImage.element;
+                var dragPos   = dragImage.offset;
+
+                document.body.appendChild(dragEl);
+                ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
+              }
+            }
+          }
+          ev.dataTransfer.setData(args.mime, _toString(args.mime));
+        } catch ( e ) {
+          console.warn('Failed to dragstart: ' + e);
+        }
+      }
+
+      return args.onStart(ev, this, args);
+    }, false);
+
+    el.addEventListener('dragend', function(ev) {
+      this.style.opacity = '1.0';
+
+      return args.onEnd(ev, this, args);
+    }, false);
+  }
+
+  /**
+   * Create and show a GUI Menu
+   *
+   * @param   Array     items   Array of items
+   * @param   Object    pos     Object with x and y
+   *
+   * @return  OSjs.GUI.Menu
+   * @api     OSjs.API.createMenu
+   */
+  function doCreateMenu(items, pos) {
+    items = items || [];
+    pos = pos || {x: 0, y: 0};
+
+    OSjs.API.blurMenu();
+
+    _MENU = new OSjs.GUI.Menu(items);
+    _MENU.show(pos);
+    return _MENU;
+  }
+
+  /**
+   * Blur (Hide) current Menu
+   *
+   * @return  void
+   * @api     OSjs.API.blurMenu
+   */
+  function doBlurMenu() {
+    if ( _MENU ) {
+      _MENU.destroy();
+      _MENU = null;
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BASE CLASSES
   /////////////////////////////////////////////////////////////////////////////
@@ -1975,6 +2179,10 @@
   OSjs.API.kill                   = doKillProcess;
   OSjs.API.playSound              = doPlaySound;
   OSjs.API.message                = doProcessMessage;
+  OSjs.API.createDraggable        = doCreateDraggable;
+  OSjs.API.createDroppable        = doCreateDroppable;
+  OSjs.API.createMenu             = doCreateMenu;
+  OSjs.API.blurMenu               = doBlurMenu;
   OSjs.API.getProcess             = doGetProcess;
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;

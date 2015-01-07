@@ -58,7 +58,7 @@
       },
       onContextMenu : function(ev, el, item) {
         var pos = {x: ev.clientX, y: ev.clientY};
-        OSjs.GUI.createMenu([{
+        OSjs.API.createMenu([{
           title: OSjs.Applications.CoreWM._('Remove shortcut'),
           disabled: item.index === 0,
           onClick: function() {
@@ -87,7 +87,7 @@
       // IMPORTANT Make sure we trigger the default events
       this._addEventListener(el, 'mousedown', function(ev) {
         ev.preventDefault();
-        OSjs.GUI.blurMenu();
+        OSjs.API.blurMenu();
         API._onMouseDown(ev);
         return false;
       });
@@ -100,7 +100,7 @@
       });
 
       // Make DnD work just like a desktop without iconview
-      OSjs.GUI.createDroppable(el, {
+      OSjs.API.createDroppable(el, {
         onOver: function(ev, el, args) {
           wm.onDropOver(ev, el, args);
         },

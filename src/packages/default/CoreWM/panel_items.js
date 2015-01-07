@@ -176,7 +176,7 @@
       };
 
       var peeking = false;
-      OSjs.GUI.createDroppable(el, {
+      OSjs.API.createDroppable(el, {
         onDrop: function(ev, el) {
           if ( win ) {
             win._focus();
@@ -336,14 +336,14 @@
     this.$inner.addEventListener("click", function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
-      OSjs.GUI.blurMenu();
+      OSjs.API.blurMenu();
       self.onClick.apply(self, arguments);
       return false;
     });
     this.$inner.addEventListener("contextmenu", function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
-      OSjs.GUI.blurMenu();
+      OSjs.API.blurMenu();
       self.onContextMenu.apply(self, arguments);
       return false;
     });

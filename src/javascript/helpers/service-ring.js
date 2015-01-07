@@ -110,7 +110,7 @@
       });
     });
 
-    OSjs.GUI.createMenu(menu, {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu(menu, {x: ev.clientX, y: ev.clientY});
   };
 
   ServiceRing.prototype.add = function(name, menu) {

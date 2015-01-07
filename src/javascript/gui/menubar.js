@@ -98,7 +98,7 @@
       }
       var elm = null;
       if ( menu && menu.length ) {
-        elm = OSjs.GUI.createMenu(menu, pos);
+        elm = OSjs.API.createMenu(menu, pos);
       }
       self.onMenuOpen.call(self, elm, pos, (typeof item === 'string' ? item : nitem), self);
     };

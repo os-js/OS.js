@@ -67,7 +67,7 @@
    * @return boolean
    */
   function stopPropagation(ev) {
-    OSjs.GUI.blurMenu();
+    OSjs.API.blurMenu();
     ev.stopPropagation();
     return false;
   }
@@ -702,7 +702,7 @@
         ev.preventDefault();
       }
 
-      OSjs.GUI.blurMenu();
+      OSjs.API.blurMenu();
 
       return r;
     });
@@ -720,7 +720,7 @@
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
-        OSjs.GUI.createDroppable(main, {
+        OSjs.API.createDroppable(main, {
           onOver: function(ev, el, args) {
             _showBorder();
 
@@ -1142,7 +1142,7 @@
       // NOTE: Fixes for Iframe "bugs"
       if ( (gel instanceof OSjs.GUI.RichText) ) {
         gel._addHook('focus', function() {
-          OSjs.GUI.blurMenu();
+          OSjs.API.blurMenu();
           self._focus();
         });
 
@@ -1755,7 +1755,7 @@
       });
     }
 
-    OSjs.GUI.createMenu(list, {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu(list, {x: ev.clientX, y: ev.clientY});
   };
 
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {

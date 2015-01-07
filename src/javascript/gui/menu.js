@@ -34,7 +34,7 @@
    * Menu class
    *
    * Usage:
-   *  OSjs.GUI.createMenu(items, pos);
+   *  OSjs.API.createMenu(items, pos);
    *    items = Array
    *    pos   = Object(x:0, y:0)
    *
@@ -52,7 +52,7 @@
     function _onclick(ev, func) {
       func = func || function() { console.warn('Warning -- you forgot to implement a handler'); };
       if ( !func(ev) ) {
-        OSjs.GUI.blurMenu();
+        OSjs.API.blurMenu();
       }
     }
 
@@ -223,22 +223,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  var _MENU;
-  OSjs.GUI.createMenu = function(items, pos) {
-    items = items || [];
-    pos = pos || {x: 0, y: 0};
-
-    OSjs.GUI.blurMenu();
-
-    _MENU = new Menu(items);
-    _MENU.show(pos);
-    return _MENU;
-  };
-  OSjs.GUI.blurMenu   = function() {
-    if ( _MENU ) {
-      _MENU.destroy();
-      _MENU = null;
-    }
-  };
+  OSjs.GUI.Menu = Menu;
 
 })();

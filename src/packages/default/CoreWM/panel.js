@@ -72,10 +72,10 @@
       self.onMouseOut(ev);
     };
     this._$element.onclick = function(ev) {
-      OSjs.GUI.blurMenu();
+      OSjs.API.blurMenu();
     };
     this._$element.oncontextmenu = function(ev) {
-      OSjs.GUI.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
+      OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
         var wm = API.getWMInstance();
         if ( wm ) {
           wm.showSettings('Panels');
