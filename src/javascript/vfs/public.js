@@ -55,22 +55,15 @@
   PublicStorage.write = function(item, data, callback, options) {
     options = options || {};
 
-    function _write(dataSource) {
-      var wopts = [item.path, dataSource, options];
-      OSjs.VFS.internalCall('write', wopts, callback);
-    }
+    OSjs.VFS.abToDataSource(data, item.mime, function(error, dataSource) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
 
-    if ( data instanceof OSjs.VFS.FileDataURL ) {
-      _write(data.toString());
-    } else {
-      OSjs.VFS.abToDataSource(data, item.mime, function(error, dataSource) {
-        if ( error ) {
-          callback(error);
-          return;
-        }
-        _write(dataSource);
-      });
-    }
+      var wopts = [item.path, dataSource, options]
+      OSjs.VFS.internalCall('write', wopts, callback);
+    });
   };
 
   PublicStorage.read = function(item, callback, options) {
@@ -86,12 +79,6 @@
         method: 'GET',
         responseType: 'arraybuffer',
         onsuccess: function(response) {
-          if ( options.dataSource ) {
-            OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
-              callback(error, error ? null : dataSource);
-            });
-            return;
-          }
           callback(false, response);
         },
         onerror: function(error) {

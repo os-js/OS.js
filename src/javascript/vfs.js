@@ -41,6 +41,11 @@
   //
   //    VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
   //
+  // By default all functions that read data will return ArrayBuffer, but you can also return:
+  //    String
+  //    dataSource
+  //    TODO: Blob ?
+  //
   // Functions that take 'data' (File Data) as an argument supports these types:
   //
   //    File                      Browser internal
@@ -497,8 +502,8 @@
       callback(error, result);
     }
 
-    function _write(data) {
-      request(item.path, 'write', [item, data], _finished, options);
+    function _write(filedata) {
+      request(item.path, 'write', [item, filedata], _finished, options);
     }
 
     if ( typeof data === 'string' ) {
@@ -510,6 +515,17 @@
         _write(response);
       });
     } else {
+      if ( data instanceof OSjs.VFS.FileDataURL ) {
+        OSjs.VFS.dataSourceToAb(data.toString(), item.mime, function(error, response) {
+          if ( error ) {
+            _finished(error, null);
+            return;
+          }
+          _write(response);
+        });
+        return;
+      }
+
       _write(data);
     }
 
@@ -523,7 +539,7 @@
    * @param   Object          options   Optional set of options
    *
    * options:
-   *  dataSource  - Return as datasource string
+   *  type        - What to return, default: binary. Can also be: text, datasource
    *
    * @return  void
    * @api     OSjs.VFS.read
@@ -539,6 +555,21 @@
       if ( error ) {
         error = API._('ERR_VFSMODULE_READ_FMT', error);
       }
+
+      if ( options.type ) {
+        if ( options.type.toLowerCase() === 'datasource' ) {
+          OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
+            callback(error, error ? null : dataSource);
+          });
+          return;
+        } else if ( options.type.toLowerCase() === 'text' ) {
+          OSjs.VFS.abToText(response, item.mime, function(error, text) {
+            callback(error, error ? null : text);
+          });
+          return;
+        }
+      }
+
       callback(error, error ? null : response);
     }
 
@@ -547,14 +578,6 @@
         _finished(error);
         return;
       }
-
-      if ( options.type === 'text' ) {
-        OSjs.VFS.abToText(response, item.mime, function(error, text) {
-          _finished(error, text);
-        });
-        return;
-      }
-
       _finished(false, response);
     }, options);
   };

@@ -343,43 +343,28 @@
 
     var inst = OSjs.Helpers.WindowsLiveAPI.getInstance();
     var url = '//apis.live.net/v5.0/me/skydrive/files?access_token=' + inst.accessToken;
+    var fd  = new FormData();
+    OSjs.VFS.addFormFile(fd, 'file', data, file);
 
-    function _write(filedata) {
-      var fd  = new FormData();
-      OSjs.VFS.addFormFile(fd, 'file', filedata, file);
-
-      OSjs.Utils.ajax({
-        url: url,
-        method: 'POST',
-        json: true,
-        body: fd,
-        onsuccess: function(result) {
-          if ( result && result.id ) {
-            callback(false, result.id);
-            return;
-          }
-          callback(API._('ERR_APP_UNKNOWN_ERROR'));
-        },
-        onerror: function(error, result) {
-          if ( result && result.error ) {
-            error += ' - ' + result.error.message;
-          }
-          callback(error);
-        }
-      });
-    }
-
-    if ( data instanceof OSjs.VFS.FileDataURL ) {
-      OSjs.VFS.dataSourceToAb(data.toString(), file.mime, function(error, response) {
-        if ( error ) {
-          callback(error);
+    OSjs.Utils.ajax({
+      url: url,
+      method: 'POST',
+      json: true,
+      body: fd,
+      onsuccess: function(result) {
+        if ( result && result.id ) {
+          callback(false, result.id);
           return;
         }
-        _write(response);
-      });
-    } else {
-      _write(data);
-    }
+        callback(API._('ERR_APP_UNKNOWN_ERROR'));
+      },
+      onerror: function(error, result) {
+        if ( result && result.error ) {
+          error += ' - ' + result.error.message;
+        }
+        callback(error);
+      }
+    });
   };
 
   OneDriveStorage.copy = function(src, dest, callback) {

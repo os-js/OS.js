@@ -367,7 +367,7 @@
     this.onGetSaveData(function(data) {
       self.mainWindow._toggleLoading(true);
       var item = new VFS.File(file);
-      var options = {dataSource: self.onCheckDataSource(file)};
+      var options = {};
 
       if ( self.dialogOptions.upload ) {
         VFS.upload({
@@ -499,6 +499,15 @@
         return;
       }
 
+      var type = 'binary';
+      if ( self.onCheckDataSource(item) ) {
+        type = 'dataSource';
+      } else {
+        if ( !self.dialogOptions.binary ) {
+          type = 'text';
+        }
+      }
+
       VFS.read(item, function(error, result) {
         if ( error ) {
           self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), error, 'onOpen');
@@ -509,7 +518,7 @@
           return;
         }
         self._doOpen(item, result, sendArgs);
-      }, {dataSource: self.onCheckDataSource(item), type: self.dialogOptions.binary ? 'binary' : 'text'});
+      }, {type: type});
     }
 
     if ( file && file.path ) {

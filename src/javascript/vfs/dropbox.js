@@ -147,28 +147,10 @@
   DropboxVFS.prototype.write = function(item, data, callback) {
     console.info('DropboxVFS::write()', item);
 
-    var self = this;
     var path = OSjs.VFS.getRelativeURL(item.path);
-    var bytes = data;
-
-    function _write(bytes) {
-      self.client.writeFile(path, bytes, function(error, stat) {
-        callback(error, true);
-      });
-    }
-
-    if ( data instanceof OSjs.VFS.FileDataURL ) {
-      OSjs.VFS.dataSourceToAb(data, item.mime, function(error, response) {
-        if ( error ) {
-          callback(error);
-          return;
-        }
-        _write(response);
-      });
-    } else {
-      _write(data);
-    }
-
+    this.client.writeFile(path, data, function(error, stat) {
+      callback(error, true);
+    });
   };
 
   DropboxVFS.prototype.read = function(item, callback, options) {
