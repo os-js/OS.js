@@ -30,10 +30,16 @@
 (function(Utils, API) {
   'use strict';
 
+  //
   // This is a wrapper for handling all VFS functions
   // read() write() scandir() and so on.
   //
   // See 'src/javascript/vfs/' for the specific modules.
+  //
+  // Functions that take 'metadata' (File Metadata) as an argument (like all of them)
+  // it expects you to use an instance of OSjs.VFS.File()
+  //
+  //    VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
   //
   // Functions that take 'data' (File Data) as an argument supports these types:
   //
