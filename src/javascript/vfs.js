@@ -1131,7 +1131,7 @@
    * @param   Object          options   Options
    *
    * options:
-   *  dataSource  - Return as datasource string
+   *  type        - What to return, default: binary. Can also be: text, datasource
    *
    * @return  void
    * @api     OSjs.VFS.remoteRead()
@@ -1143,6 +1143,8 @@
     console.info('VFS::remoteRead()', url, mime);
 
     if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+
+    options = options || {};
 
     API.curl({
       body: {
@@ -1162,7 +1164,7 @@
         return;
       }
 
-      if ( options.dataSource ) {
+      if ( options.type.toLowerCase() === 'datasource' ) {
         callback(false, response.body);
         return;
       }
