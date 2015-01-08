@@ -42,6 +42,9 @@
   /**
    * GUI Element
    *
+   * @param   String    name      Name of GUI Element (unique)
+   * @param   Object    opts      A dict of options (see below)
+   *
    * options:
    *  onItemDropped   Function      Callback - When internal object dropped (requires dnd enabled)
    *  onFilesDropped  Function      Callback - When external file object dropped (requires dnd enabled)
@@ -50,6 +53,9 @@
    *  dndDrag         bool          Enable DnD Draggable (Default = DnD)
    *  dndOpts         Object        DnD Options
    *  focusable       bool          If element is focusable (Default = true)
+   *
+   * @api     OSjs.GUI.GUIElement
+   * @class
    */
   var GUIElement = (function() {
     var _Count = 0;
@@ -100,6 +106,11 @@
     };
   })();
 
+  /**
+   * GUIElement::init() -- Initializes the GUI Element
+   *
+   * @return  DOMElement    The outer container of created element
+   */
   GUIElement.prototype.init = function(className, tagName) {
     tagName = tagName || 'div';
 
@@ -136,10 +147,20 @@
     return this.$element;
   };
 
+  /**
+   * GUIElement::update() -- When element receives update event
+   *
+   * @return  void
+   */
   GUIElement.prototype.update = function() {
     this.inited = true;
   };
 
+  /**
+   * GUIElement::destroy() -- Destroys the GUI Element
+   *
+   * @return  void
+   */
   GUIElement.prototype.destroy = function() {
     if ( this.destroyed ) { return; }
 
@@ -152,6 +173,15 @@
     this._hooks = {};
   };
 
+  /**
+   * GUIElement::_addEventListener() -- Adds a listener for an event
+   *
+   * @param   DOMElement    el          DOM Element to attach event to
+   * @param   String        ev          DOM Event Name
+   * @param   Function      callback    Callback on event
+   *
+   * @return  void
+   */
   GUIElement.prototype._addEventListener = function(el, ev, callback) {
     el.addEventListener(ev, callback, false);
 
@@ -160,12 +190,27 @@
     });
   };
 
+  /**
+   * GUIElement::_addHook() -- Adds a hook (internal events)
+   *
+   * @param   String    k       Hook name: focus, blur, destroy
+   * @param   Function  func    Callback function
+   *
+   * @return  void
+   */
   GUIElement.prototype._addHook = function(k, func) {
     if ( typeof func === 'function' && this._hooks[k] ) {
       this._hooks[k].push(func);
     }
   };
 
+  /**
+   * GUIElement::_fireHook() -- Fire a hook (internal event)
+   *
+   * @param   String    k       Hook name: focus, blur, destroy
+   *
+   * @return  void
+   */
   GUIElement.prototype._fireHook = function(k, args) {
     var self = this;
     args = args || {};
@@ -183,14 +228,34 @@
     }
   };
 
+  /**
+   * GUIElement::getRoot() -- Get root DOM Element
+   *
+   * @return  DOMElement    The outer container
+   */
   GUIElement.prototype.getRoot = function() {
     return this.$element;
   };
 
+  /**
+   * GUIElement::onDndDrop() -- Event for DnD
+   *
+   * @param   DOMEvent      ev      DOM Event
+   *
+   * @return  boolean
+   */
   GUIElement.prototype.onDndDrop = function(ev) {
     return true;
   };
 
+  /**
+   * GUIElement::onGlobalKeyPress() -- Event for Key Press
+   *
+   * @param   DOMEvent      ev      DOM Event
+   *
+   * @see     OSjs.Core.Window::_onKeyEvent
+   * @return  boolean
+   */
   GUIElement.prototype.onGlobalKeyPress = function(ev) {
     if ( this.hasCustomKeys ) { return false; }
     if ( !this.focused ) { return false; }
@@ -201,6 +266,14 @@
     return true;
   };
 
+  /**
+   * GUIElement::onKeyUp() -- Event for Key Release
+   *
+   * @param   DOMEvent      ev      DOM Event
+   *
+   * @see     OSjs.Core.Window::_onKeyEvent
+   * @return  boolean
+   */
   GUIElement.prototype.onKeyUp = function(ev) {
     if ( this.hasCustomKeys ) { return false; }
     if ( !this.focused ) { return false; }
@@ -211,6 +284,13 @@
     return true;
   };
 
+  /**
+   * GUIElement::_onFocus() -- Event for focus
+   *
+   * @param   DOMEvent      ev      DOM Event
+   *
+   * @return  boolean
+   */
   GUIElement.prototype._onFocus = function(ev) {
     ev.stopPropagation();
     OSjs.API.blurMenu();
@@ -219,6 +299,11 @@
     this._onFocusWindow.call(this, ev);
   };
 
+  /**
+   * GUIElement::focus() -- Set focus to the GUI Element
+   *
+   * @return  boolean
+   */
   GUIElement.prototype.focus = function() {
     if ( !this.opts.focusable ) { return false; }
     if ( this.focused ) { return false; }
@@ -232,6 +317,11 @@
     return true;
   };
 
+  /**
+   * GUIElement::blur() -- Unset focus for the GUI Element
+   *
+   * @return  boolean
+   */
   GUIElement.prototype.blur = function() {
     if ( !this.opts.focusable ) { return false; }
     if ( !this.focused ) { return false; }
@@ -241,6 +331,13 @@
     return true;
   };
 
+  /**
+   * GUIElement::_setWindow() -- Set what Window we belong to
+   *
+   * @param   Window    w       The Window
+   *
+   * @return  void
+   */
   GUIElement.prototype._setWindow = function(w) {
     this.wid      = w._wid;
     this._window  = w;
@@ -250,6 +347,13 @@
     };
   };
 
+  /**
+   * GUIElement::_setTabIndex() -- Sets the tabindex
+   *
+   * @param   int     i       Tab index (0+)
+   *
+   * @return  void
+   */
   GUIElement.prototype._setTabIndex = function(i) {
     if ( !this.hasTabIndex ) { return; }
 
