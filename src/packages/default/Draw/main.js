@@ -1129,9 +1129,12 @@
     return Application.prototype.onError.apply(this, arguments);
   };
 
-  ApplicationDraw.prototype.onCheckDataSource = function(file) {
+  ApplicationDraw.prototype.onCheckDataType = function(file) {
     var ext = Utils.filext(file.path).toLowerCase();
-    return ext !== "odraw";
+    if ( ext === 'odraw' ) {
+      return 'datasource';
+    }
+    return Application.prototype.onCheckDataType.apply(this, arguments);
   };
 
   ApplicationDraw.prototype.onGetSaveData = function(callback, file) {

@@ -190,6 +190,14 @@
     callback(null);
   };
 
+  /**
+   * Returns the appropriate datatype for loading file
+   */
+  DefaultApplication.prototype.onCheckDataType = function(file) {
+    // IMPLEMENT THIS IN YOUR CLASS TO OVERRIDE PR FILETYPE
+    return this.dialogOptions.binary ? 'binary' : 'text';
+  };
+
   DefaultApplication.prototype.onFileHasChanged = function(file) {
     if ( !file ) { return; }
 
@@ -229,10 +237,6 @@
     } else {
       callback(true); // discard true/false
     }
-  };
-
-  DefaultApplication.prototype.onCheckDataSource = function(file) {
-    return false;
   };
 
   /**
@@ -499,15 +503,7 @@
         return;
       }
 
-      var type = 'binary';
-      if ( self.onCheckDataSource(item) ) {
-        type = 'dataSource';
-      } else {
-        if ( !self.dialogOptions.binary ) {
-          type = 'text';
-        }
-      }
-
+      var type = self.onCheckDataType(item);
       VFS.read(item, function(error, result) {
         if ( error ) {
           self._onError(OSjs.API._('ERR_FILE_APP_OPEN_ALT_FMT', item.path), error, 'onOpen');
