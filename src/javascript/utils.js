@@ -37,6 +37,12 @@
   // MISC
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * A collection of keycode mappings
+   *
+   * @api OSjs.Utils.Keys
+   * @var
+   */
   OSjs.Utils.Keys = {
     F1: 112,
     F2: 113,
@@ -80,6 +86,15 @@
     DOWN:       40
   };
 
+  /**
+   * Get the mouse button pressed
+   *
+   * @param   DOMEvent  ev    The DOM Event
+   *
+   * @return  String          The mouse button (left/middle/right)
+   *
+   * @api     OSjs.Utils.mouseButton()
+   */
   OSjs.Utils.mouseButton = function(ev) {
     if ( typeof ev.button !== 'undefined' ) {
       if ( ev.button === 0 ) {
@@ -98,7 +113,17 @@
     return 'right';
   };
 
-  // Kudos: http://stackoverflow.com/a/4673436
+  /**
+   * Format a string (almost like sprintf)
+   *
+   * @param   String      format        String format
+   * @param   String      ...           Insert into format
+   *
+   * @return  String                    The formatted string
+   *
+   * @link    http://stackoverflow.com/a/4673436
+   * @api     OSjs.Utils.format()
+   */
   OSjs.Utils.format = function(format) {
     var args = Array.prototype.slice.call(arguments, 1);
     var sprintfRegex = /\{(\d+)\}/g;
@@ -110,6 +135,16 @@
     return format.replace(sprintfRegex, sprintf);
   };
 
+  /**
+   * Deep-merge to objects
+   *
+   * @param   Object      obj1      Object to merge to
+   * @param   Object      obj2      Object to merge with
+   *
+   * @return  Object                The merged object
+   *
+   * @api     OSjs.Utils.mergeObject()
+   */
   OSjs.Utils.mergeObject = function(obj1, obj2) {
     for ( var p in obj2 ) {
       if ( obj2.hasOwnProperty(p) ) {
@@ -127,6 +162,15 @@
     return obj1;
   };
 
+  /**
+   * Clone a object
+   *
+   * @param   Object      o     The object to clone
+   *
+   * @return  Object            An identical object
+   *
+   * @api     OSjs.Utils.cloneObject()
+   */
   OSjs.Utils.cloneObject = function(o) {
     return JSON.parse(JSON.stringify(o, function(key, value) {
       if ( value && typeof value === 'object' && value.tagName ) {
@@ -136,6 +180,17 @@
     }));
   };
 
+  /**
+   * Check if item is in array
+   * TODO: This is deprecated, remove
+   *
+   * @param   Array     arr       The array
+   * @param   Mixed     val       The value to check for
+   *
+   * @return  int                 The index where found or false
+   *
+   * @api     OSjs.Utils.inArray()
+   */
   OSjs.Utils.inArray = function(arr, val) {
     for ( var i = 0, l = arr.length; i < l; i++ ) {
       if ( arr[i] === val ) { return true; }
@@ -143,6 +198,17 @@
     return false;
   };
 
+  /**
+   * Check if this MIME type is inside list
+   * This matches by regex
+   *
+   * @param   String      mime      The mime string
+   * @param   Array       list      Array of regex matches
+   *
+   * @return  boolean               If found
+   *
+   * @api     OSjs.Utils.checkAcceptMime()
+   */
   OSjs.Utils.checkAcceptMime = function(mime, list) {
     if ( mime && list.length ) {
       var re;
@@ -156,6 +222,13 @@
     return false;
   };
 
+  /**
+   * Gets browser compability flags
+   *
+   * @return    Object      List of compability
+   *
+   * @api       OSjs.Utils.getCompability()
+   */
   OSjs.Utils.getCompability = (function() {
     var canvas_supported  = !!document.createElement('canvas').getContext   ? document.createElement('canvas')  : null;
     var video_supported   = !!document.createElement('video').canPlayType   ? document.createElement('video')   : null;
@@ -270,18 +343,44 @@
 
   })();
 
+  /**
+   * Check if browser is IE
+   *
+   * @return    boolean       If IE
+   *
+   * @api       OSjs.Utils.isIE()
+   */
   OSjs.Utils.isIE = function() {
     var myNav = navigator.userAgent.toLowerCase();
     return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1], 10) : false;
   };
 
-  OSjs.Utils.btoaUrlsafe = function(str) { // Encode
+  /**
+   * (Encode) Convert URL-safe String to Base64
+   *
+   * @param   String      str     String
+   *
+   * @return  String              Base64 String
+   *
+   * @api     OSjs.Utils.btoaUrlsafe()
+   */
+  OSjs.Utils.btoaUrlsafe = function(str) {
     return (!str || !str.length) ? '' : btoa(str)
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=+$/, '');
   };
-  OSjs.Utils.atobUrlsafe = function(str) { // Decode
+
+  /**
+   * (Decode) Convert Base64 to URL-safe String
+   *
+   * @param   String      str     Base64 String
+   *
+   * @return  String              String
+   *
+   * @api     OSjs.Utils.atobUrlsafe()
+   */
+  OSjs.Utils.atobUrlsafe = function(str) {
     if ( str && str.length ) {
       str = (str + '===').slice(0, str.length + (str.length % 4));
       return atob(str.replace(/-/g, '+').replace(/_/g, '/'));
@@ -289,7 +388,15 @@
     return '';
   };
 
-  // Encode
+  /**
+   * (Encode) Convert String to Base64 with UTF-8
+   *
+   * @param   String      str     String
+   *
+   * @return  String              Base64 String
+   *
+   * @api     OSjs.Utils.btoaUtf()
+   */
   OSjs.Utils.btoaUtf = function(str) { // Encode
     var _unescape = window.unescape || function(s) {
       function d(x, n) {
@@ -301,7 +408,15 @@
     return btoa(str);
   };
 
-  // Decode
+  /**
+   * (Decode) Convert Base64 with UTF-8 to String
+   *
+   * @param   String      str     Base64 String
+   *
+   * @return  String              String
+   *
+   * @api     OSjs.Utils.atobUtf()
+   */
   OSjs.Utils.atobUtf = function(str) { // Decode
     var _escape = window.escape || function(s) {
       function q(c) {
@@ -315,6 +430,15 @@
     return decodeURIComponent(trans);
   };
 
+  /**
+   * Gets the browser Locale
+   *
+   * For example 'en'
+   *
+   * @return  String          Locale string
+   *
+   * @api     OSjs.Utils.getUserLocale()
+   */
   OSjs.Utils.getUserLocale = function() {
     var loc = (window.navigator.userLanguage || window.navigator.language) || 'en-EN';
     var map = {
@@ -336,6 +460,15 @@
     return map[loc] || loc;
   };
 
+  /**
+   * Fixes JSON for HTTP requests (in case they were returned as string)
+   *
+   * @param   Mixed     response      The data
+   *
+   * @return  Object                  JSON
+   *
+   * @api     OSjs.Utils.fixJSON()
+   */
   OSjs.Utils.fixJSON = function(response) {
     if ( typeof response === 'string' ) {
       if ( response.match(/^\{|\[/) ) {
@@ -353,11 +486,32 @@
   // FS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Get file extension of filename/path
+   *
+   * @param   String    d       filename/path
+   *
+   * @return  String            The file extension
+   *
+   * @api     OSjs.Utils.filext()
+   */
   OSjs.Utils.filext = function(d) {
     var ext = OSjs.Utils.filename(d).split('.').pop();
     return ext ? ext.toLowerCase() : null;
   };
 
+  /**
+   * Get directory from path
+   *
+   * If you use this on a directory path, you will
+   * get the parent
+   *
+   * @param   String    f       filename/path
+   *
+   * @return  String            The resulted path
+   *
+   * @api     OSjs.Utils.dirname()
+   */
   OSjs.Utils.dirname = function(f) {
     f = f.replace(/\/$/, '');
 
@@ -381,11 +535,32 @@
     return result;
   };
 
+  /**
+   * Get filename from path
+   *
+   * @param   String    p     Path
+   *
+   * @return  String          The filename
+   *
+   * @api     OSjs.Utils.filename()
+   */
   OSjs.Utils.filename = function(p) {
     return (p||'').replace(/\/$/, '').split('/').pop();
   };
 
-  // Kudos: http://stackoverflow.com/users/65387/mark
+  /**
+   * Get human-readable size from integer
+   *
+   * Example return: '128 MB'
+   *
+   * @param   int     bytes     Size in bytes
+   * @param   String  si        Use SI units ?
+   *
+   * @return  String            Size
+   *
+   * @link    http://stackoverflow.com/users/65387/mark
+   * @api     OSjs.Utils.humanFileSize()
+   */
   OSjs.Utils.humanFileSize = function(bytes, si) {
     var thresh = si ? 1000 : 1024;
     if(bytes < thresh) { return bytes + ' B'; }
@@ -398,10 +573,29 @@
     return bytes.toFixed(1)+' '+units[u];
   };
 
+  /**
+   * Escape filename (removes invalid characters)
+   *
+   * @param   String    n     Filename
+   *
+   * @return  String          Escaped filename
+   *
+   * @api     OSjs.Utils.escapeFilename()
+   */
   OSjs.Utils.escapeFilename = function(n) {
     return (n || '').replace(/[\|&;\$%@"<>\(\)\+,\*\/]/g, '').trim();
   };
 
+  /**
+   * Replace file extension of filename
+   *
+   * @param   String    filename      The filename
+   * @param   String    rep           New file extension (without dot)
+   *
+   * @return  String                  New filename
+   *
+   * @api     OSjs.Utils.replaceFileExtension()
+   */
   OSjs.Utils.replaceFileExtension = function(filename, rep) {
     var spl = filename.split('.');
     spl.pop();
@@ -409,6 +603,16 @@
     return spl.join('.');
   };
 
+  /**
+   * Replace the filename of a path
+   *
+   * @param   String    orig      The full path to file
+   * @param   String    newname   Replace with this filename
+   *
+   * @return  String              The new path
+   *
+   * @api     OSjs.Utils.replaceFilename()
+   */
   OSjs.Utils.replaceFilename = function(orig, newname) {
     var spl = orig.split('/');
     spl.pop();
@@ -416,6 +620,17 @@
     return spl.join('/');
   };
 
+  /**
+   * Gets the range of filename in a path (without extension)
+   *
+   * This is used for example in text boxes to highlight the filename
+   *
+   * @param   String    val     The path
+   *
+   * @return  Object            Range in form of {min: 0, max: 1}
+   *
+   * @api     OSjs.Utils.getFilenameRange()
+   */
   OSjs.Utils.getFilenameRange = function(val) {
     val = val || '';
 
@@ -442,6 +657,15 @@
   // COLORS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Convert HEX to RGB
+   *
+   * @param   String      hex     The hex string (with #)
+   *
+   * @return  Object              RGB in form of {r:0, g:0, b:0}
+   *
+   * @api     OSjs.Utils.convertToRGB()
+   */
   OSjs.Utils.convertToRGB = function(hex) {
     var rgb = parseInt(hex.replace('#', ''), 16);
     var val = {};
@@ -451,7 +675,21 @@
     return val;
   };
 
-
+  /**
+   * Convert RGB to HEX
+   *
+   * @param   Object      rgb       The RGB object in form of {r:0, g:0, b:0}
+   *
+   * OR
+   *
+   * @param   int         r         Red value
+   * @param   int         g         Green value
+   * @param   int         b         Blue value
+   *
+   * @return  String                Hex string (with #)
+   *
+   * @api     OSjs.Utils.convertToHEX()
+   */
   OSjs.Utils.convertToHEX = function(r, g, b) {
     if ( typeof r === 'object' ) {
       g = r.g;
@@ -478,7 +716,16 @@
     return '#' + hex.join('').toUpperCase();
   };
 
-  // Kudos: http://stackoverflow.com/a/9601429/1236086
+  /**
+   * Ivert HEX color
+   *
+   * @param   String      hex     Hex string (With #)
+   *
+   * @return  String              Inverted hex (With #)
+   *
+   * @link    http://stackoverflow.com/a/9601429/1236086
+   * @api     OSjs.Utils.invertHEX()
+   */
   OSjs.Utils.invertHEX = function(hex) {
     var color = parseInt(hex.replace('#', ''), 16);
     color = 0xFFFFFF ^ color;
@@ -491,20 +738,57 @@
   // DOM
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Get element by ID
+   *
+   * @param   String    id      DOM Element ID
+   *
+   * @return  DOMElement        Found element or null
+   *
+   * @api     OSjs.Utils.$()
+   */
   OSjs.Utils.$ = function(id) {
     return document.getElementById(id);
   };
 
+  /**
+   * Remove unwanted characters from ID or className
+   *
+   * @param   String    str     The name
+   *
+   * @return  String            The new name
+   *
+   * @api     OSjs.Utils.$safeName()
+   */
   OSjs.Utils.$safeName = function(str) {
     return (str || '').replace(/[^a-zA-Z0-9]/g, '_');
   };
 
+  /**
+   * Empty this element (remove children)
+   *
+   * @param   DOMElement    myNode      The DOM Element
+   *
+   * @return  void
+   *
+   * @api     OSjs.Utils.$empty()
+   */
   OSjs.Utils.$empty = function(myNode) {
     while (myNode.firstChild) {
       myNode.removeChild(myNode.firstChild);
     }
   };
 
+  /**
+   * Get CSS style attribute
+   *
+   * @param   DOMElement    oElm          The DOM Element
+   * @param   String        strCssRule    The CSS rule to get
+   *
+   * @return  String                      Style attribute
+   *
+   * @api     OSjs.Utils.$getStyle()
+   */
   OSjs.Utils.$getStyle = function(oElm, strCssRule) {
     var strValue = '';
     if ( document.defaultView && document.defaultView.getComputedStyle ) {
@@ -518,6 +802,19 @@
     return strValue;
   };
 
+  /**
+   * Get element absolute position
+   *
+   * Modern browsers will return getBoundingClientRect()
+   * See DOM documentation
+   *
+   * @param   DOMElement      el        The Element to find position of
+   * @param   DOMElement      parentEl  Optional parent to end loop in
+   *
+   * @return  Object                    The bounding box
+   *
+   * @api     OSjs.Utils.$position()
+   */
   OSjs.Utils.$position = function(el, parentEl) {
     if ( el ) {
       if ( parentEl ) {
@@ -537,6 +834,16 @@
     return null;
   };
 
+  /**
+   * Get the index of an element within a node
+   *
+   * @param   DOMElement    el          Element to check
+   * @param   DOMElement    parentEl    Optional parent (automatically checked)
+   *
+   * @return  int                       The index
+   *
+   * @api     OSjs.Utils.$index()
+   */
   OSjs.Utils.$index = function(el, parentEl) {
     parentEl = parentEl || el.parentNode;
     var nodeList = Array.prototype.slice.call(parentEl.children);
@@ -544,6 +851,17 @@
     return nodeIndex;
   };
 
+  /**
+   * Selects range in a text field
+   *
+   * @param     DOMElement      field     The DOM Element
+   * @param     int             start     Start position
+   * @param     int             end       End position
+   *
+   * @return    void
+   *
+   * @api       OSjs.Utils.$selectRange()
+   */
   OSjs.Utils.$selectRange = function(field, start, end) {
     if ( !field ) { throw new Error('Cannot select range: missing element'); }
     if ( typeof start === 'undefined' || typeof end === 'undefined' ) { throw new Error('Cannot select range: mising start/end'); }
@@ -565,12 +883,32 @@
     }
   };
 
+  /**
+   * Add a className to a DOM Element
+   *
+   * @param   DOMElement      el      The dom Element
+   * @param   String          name    The class name
+   *
+   * @return  void
+   *
+   * @api     OSjs.Utils.$addClass()
+   */
   OSjs.Utils.$addClass = function(el, name) {
     if ( el && name && !this.$hasClass(el, name) ) {
       el.className += (el.className ? ' ' : '') + name;
     }
   };
 
+  /**
+   * Remove a className from a DOM Element
+   *
+   * @param   DOMElement      el      The dom Element
+   * @param   String          name    The class name
+   *
+   * @return  void
+   *
+   * @api     OSjs.Utils.$removeClass()
+   */
   OSjs.Utils.$removeClass = function(el, name) {
     if ( el && name && this.$hasClass(el, name) ) {
       var re = new RegExp('\\s?' + name);
@@ -578,6 +916,16 @@
     }
   };
 
+  /**
+   * Check if a DOM Element has given className
+   *
+   * @param   DOMElement      el      The dom Element
+   * @param   String          name    The class name
+   *
+   * @return  boolean
+   *
+   * @api     OSjs.Utils.$hasClass()
+   */
   OSjs.Utils.$hasClass = function(el, name) {
     if ( el && name ) {
       var re = new RegExp('\\s?' + name);
@@ -588,6 +936,15 @@
     return false;
   };
 
+  /**
+   * Create a <link> stylesheet tag
+   *
+   * @param   String      src     The URL of resource
+   *
+   * @return  DOMElement          The tag
+   *
+   * @api     OSjs.Utils.$createCSS()
+   */
   OSjs.Utils.$createCSS = function(src) {
     var res    = document.createElement('link');
     document.getElementsByTagName('head')[0].appendChild(res);
@@ -599,6 +956,18 @@
     return res;
   };
 
+  /**
+   * Create a <script> tag
+   *
+   * @param   String      src                   The URL of resource
+   * @param   Function    onreadystatechange    readystatechange callback
+   * @param   Function    onload                onload callback
+   * @param   Function    onerror               onerror callback
+   *
+   * @return  DOMElement                        The tag
+   *
+   * @api     OSjs.Utils.$createJS()
+   */
   OSjs.Utils.$createJS = function(src, onreadystatechange, onload, onerror) {
     var res                = document.createElement('script');
     res.type               = 'text/javascript';
@@ -613,6 +982,16 @@
     return res;
   };
 
+  /**
+   * Check if event happened on a form element
+   *
+   * @param   DOMEvent    ev      DOM Event
+   * @param   Array       types   Array of types
+   *
+   * @return  boolean             If is a form element
+   *
+   * @api     OSjs.Utils.isFormElement()
+   */
   OSjs.Utils.isFormElement = function(ev, types) {
     types = types || ['TEXTAREA', 'INPUT', 'SELECT'];
 
@@ -627,6 +1006,12 @@
     return false;
   };
 
+  /**
+   * Alias
+   *
+   * @see OSjs.Utils.isFormElement()
+   * @api OSjs.Utils.isInputElement()
+   */
   OSjs.Utils.isInputElement = function(ev) {
     return this.isFormElement(ev); //, ['TEXTAREA', 'INPUT']);
   };
@@ -638,6 +1023,26 @@
   /**
    * Common function for handling all types of XHR calls
    * including download/upload and JSONP
+   *
+   * @param   Object      args      Aguments (see below)
+   *
+   * arguments:
+   *  url             String          The URL
+   *  method          String          HTTP Call method: (POST/GET, default = GET)
+   *  body            Mixed           Optional body to send (for POST)
+   *  responseType    String          HTTP Response type (default = null)
+   *  requestHeaders  Object          Tuple with headers (default = null)
+   *  json            boolean         Handle as a JSON request/response (default = false)
+   *  jsonp           boolean         Handle as a JSONP request (default = false)
+   *  onerror         Function        onerror callback
+   *  onsuccess       Function        onsuccess callback
+   *  oncreated       Function        oncreated callback
+   *  onfailed        Function        onfailed callback
+   *  oncanceled      Function        oncanceled callback
+   *
+   * @return  void
+   *
+   * @api     OSjs.Utils.ajax()
    */
   OSjs.Utils.ajax = function(args) {
 
@@ -745,159 +1150,177 @@
     request.send(args.body);
   };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MISC
-  /////////////////////////////////////////////////////////////////////////////
+  /**
+   * Preload a list of resources
+   *
+   * Format of list is:
+   * [
+   *  {
+   *
+   *    "type": "javascript" // or "stylesheet",
+   *    "src": "url/uri"
+   *  }
+   * ]
+   *
+   * @param   Array     list              The list of resources
+   * @param   Function  callback          Callback when done
+   * @param   Function  callbackProgress  Callback on progress
+   *
+   * @return  void
+   *
+   * @api     OSjs.Utils.Preload()
+   */
+  OSjs.Utils.Preload = (function() {
+    var _LOADED = {};
 
-  var _LOADED = {};
-
-  var checkLoadedStyle = function(path) {
-    var result = false;
-    (document.styleSheet || []).forEach(function(iter, i) {
-      if ( iter.href.indexOf(path) !== -1 ) {
-        result = true;
-        return false;
-      }
-      return true;
-    });
-    return result;
-  };
-
-  var createStyle = function(src, callback, opts) {
-    opts = opts || {};
-
-    if ( typeof opts.check === 'undefined' ) {
-      opts.check = true;
-    }
-
-    var interval  = opts.interval || 50;
-    var maxTries  = opts.maxTries || 10;
-
-    var _finished = function(result) {
-      _LOADED[src] = result;
-      console.info('Preloader->createStyle()', result ? 'success' : 'error', src);
-      callback(result, src);
+    var checkLoadedStyle = function(path) {
+      var result = false;
+      (document.styleSheet || []).forEach(function(iter, i) {
+        if ( iter.href.indexOf(path) !== -1 ) {
+          result = true;
+          return false;
+        }
+        return true;
+      });
+      return result;
     };
 
-    if ( document.createStyleSheet ) {
-      document.createStyleSheet(src);
-      _finished(true);
-    } else {
-      OSjs.Utils.$createCSS(src);
-      if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
+    var createStyle = function(src, callback, opts) {
+      opts = opts || {};
+
+      if ( typeof opts.check === 'undefined' ) {
+        opts.check = true;
+      }
+
+      var interval  = opts.interval || 50;
+      var maxTries  = opts.maxTries || 10;
+
+      var _finished = function(result) {
+        _LOADED[src] = result;
+        console.info('Preloader->createStyle()', result ? 'success' : 'error', src);
+        callback(result, src);
+      };
+
+      if ( document.createStyleSheet ) {
+        document.createStyleSheet(src);
         _finished(true);
-      } else if ( !checkLoadedStyle(src) ) {
-        var ival;
+      } else {
+        OSjs.Utils.$createCSS(src);
+        if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
+          _finished(true);
+        } else if ( !checkLoadedStyle(src) ) {
+          var ival;
 
-        var _clear = function(result) {
-          if ( ival ) {
-            clearInterval(ival);
-            ival = null;
-          }
-          _finished(result);
-        };
+          var _clear = function(result) {
+            if ( ival ) {
+              clearInterval(ival);
+              ival = null;
+            }
+            _finished(result);
+          };
 
-        ival = setInterval(function() {
-          console.debug('Preloader->createStyle()', 'check', src);
-          if ( checkLoadedStyle(src) ) {
-            _clear(true);
-            return;
-          } else if ( maxTries <= 0 ) {
-            _clear(false);
-            return;
-          }
-          maxTries--;
-        }, interval);
+          ival = setInterval(function() {
+            console.debug('Preloader->createStyle()', 'check', src);
+            if ( checkLoadedStyle(src) ) {
+              _clear(true);
+              return;
+            } else if ( maxTries <= 0 ) {
+              _clear(false);
+              return;
+            }
+            maxTries--;
+          }, interval);
+        }
       }
-    }
-  };
-
-  var createScript = function(src, callback) {
-    var _finished = function(result) {
-      _LOADED[src] = result;
-      console.info('Preloader->createScript()', result ? 'success' : 'error', src);
-      callback(result, src);
     };
 
-    var loaded  = false;
-    OSjs.Utils.$createJS(src, function() {
-      if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
+    var createScript = function(src, callback) {
+      var _finished = function(result) {
+        _LOADED[src] = result;
+        console.info('Preloader->createScript()', result ? 'success' : 'error', src);
+        callback(result, src);
+      };
+
+      var loaded  = false;
+      OSjs.Utils.$createJS(src, function() {
+        if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
+          loaded = true;
+          _finished(true);
+        }
+      }, function() {
+        if ( loaded ) { return; }
         loaded = true;
         _finished(true);
-      }
-    }, function() {
-      if ( loaded ) { return; }
-      loaded = true;
-      _finished(true);
-    }, function() {
-      if ( loaded ) { return; }
-      loaded = true;
-      _finished(false);
-    });
-  };
+      }, function() {
+        if ( loaded ) { return; }
+        loaded = true;
+        _finished(false);
+      });
+    };
 
-  OSjs.Utils.Preload = function(list, callback, callbackProgress) {
-    list              = list              || [];
-    callback          = callback          || function() {};
-    callbackProgress  = callbackProgress  || function() {};
+    return function(list, callback, callbackProgress) {
+      list              = list              || [];
+      callback          = callback          || function() {};
+      callbackProgress  = callbackProgress  || function() {};
 
-    // Make a copy!
-    var newList = [];
-    list.forEach(function(iter, i) {
-      newList.push(iter);
-    });
+      // Make a copy!
+      var newList = [];
+      list.forEach(function(iter, i) {
+        newList.push(iter);
+      });
 
-    var count       = newList.length;
-    var successes   = 0;
-    var progress    = 0;
-    var failed      = [];
+      var count       = newList.length;
+      var successes   = 0;
+      var progress    = 0;
+      var failed      = [];
 
-    function _finished() {
-      callback(count, failed.length, failed);
-    }
-
-    function _loaded(success, src) {
-      progress++;
-
-      callbackProgress(progress, count);
-
-      if ( success ) {
-        successes++;
-      } else {
-        failed.push(src);
+      function _finished() {
+        callback(count, failed.length, failed);
       }
 
+      function _loaded(success, src) {
+        progress++;
+
+        callbackProgress(progress, count);
+
+        if ( success ) {
+          successes++;
+        } else {
+          failed.push(src);
+        }
+
+
+        if ( newList.length ) {
+          _next();
+        } else {
+          _finished();
+        }
+      }
+
+      function _next() {
+        if ( newList.length ) {
+          //var item = newList.pop();
+          var item = newList.shift();
+          if ( _LOADED[item.src] === true ) {
+            _loaded(true);
+            return;
+          }
+
+          if ( item.type.match(/^style/) ) {
+            createStyle(item.src, _loaded);
+          } else if ( item.type.match(/script$/) ) {
+            createScript(item.src, _loaded);
+          }
+        }
+      }
 
       if ( newList.length ) {
+        console.log('Preloader', count, 'file(s)', newList);
         _next();
       } else {
         _finished();
       }
-    }
-
-    function _next() {
-      if ( newList.length ) {
-        //var item = newList.pop();
-        var item = newList.shift();
-        if ( _LOADED[item.src] === true ) {
-          _loaded(true);
-          return;
-        }
-
-        if ( item.type.match(/^style/) ) {
-          createStyle(item.src, _loaded);
-        } else if ( item.type.match(/script$/) ) {
-          createScript(item.src, _loaded);
-        }
-      }
-    }
-
-    if ( newList.length ) {
-      console.log('Preloader', count, 'file(s)', newList);
-      _next();
-    } else {
-      _finished();
-    }
-  };
+    };
+  })();
 
 })();
