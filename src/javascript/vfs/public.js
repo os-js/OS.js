@@ -61,7 +61,7 @@
         return;
       }
 
-      var wopts = [item.path, dataSource, options]
+      var wopts = [item.path, dataSource, options];
       OSjs.VFS.internalCall('write', wopts, callback);
     });
   };
