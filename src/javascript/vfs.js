@@ -72,6 +72,7 @@
   //    OS.js        osjs:///            OS.js Dist (Read-only)
   //    GoogleDrive  google-drive:///    Google Drive Storage
   //    OneDrive     onedrive:///        Microsoft OneDrive (SkyDrive)
+  //    Dropbox      dropbox:///         Dropbox Storage
   //
 
   window.OSjs       = window.OSjs       || {};
@@ -278,6 +279,15 @@
 
   /**
    * This is a helper to add a File to FormData
+   *
+   * @param   FormData          fd      FormData instance
+   * @param   String            key     FormData entry name
+   * @param   [File]            data    File Data (see supported types)
+   * @param   OSjs.VFS.File     file    File Metadata
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.addFormFile()
    */
   function addFormFile(fd, key, data, file) {
     if ( data instanceof window.File ) {
@@ -298,6 +308,14 @@
 
   /**
    * Convert DataSourceURL to ArrayBuffer
+   *
+   * @param   String        data        The datasource string
+   * @param   String        mime        The mime type
+   * @param   Function      callback    Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.dataSourceToAb()
    */
   function dataSourceToAb(data, mime, callback) {
     var byteString = atob(data.split(',')[1]);
@@ -314,6 +332,14 @@
 
   /**
    * Convert PlainText to ArrayBuffer
+   *
+   * @param   String        data        The plaintext string
+   * @param   String        mime        The mime type
+   * @param   Function      callback    Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.textToAb()
    */
   function textToAb(data, mime, callback) {
     mime = mime || 'application/octet-stream';
@@ -327,6 +353,14 @@
 
   /**
    * Convert ArrayBuffer to DataSourceURL
+   *
+   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
+   * @param   String        mime        The mime type
+   * @param   Function      callback    Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.abToDataSource()
    */
   function abToDataSource(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
@@ -340,6 +374,14 @@
 
   /**
    * Convert ArrayBuffer to PlainText
+   *
+   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
+   * @param   String        mime        The mime type
+   * @param   Function      callback    Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.abToText()
    */
   function abToText(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
@@ -353,6 +395,14 @@
 
   /**
    * Convert ArrayBuffer to BinaryString
+   *
+   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
+   * @param   String        mime        The mime type
+   * @param   Function      callback    Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.abToBinaryString()
    */
   function abToBinaryString(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
