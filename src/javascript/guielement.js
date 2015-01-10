@@ -107,9 +107,11 @@
   })();
 
   /**
-   * GUIElement::init() -- Initializes the GUI Element
+   * Initializes the GUI Element
    *
    * @return  DOMElement    The outer container of created element
+   *
+   * @method  GUIElement::init()
    */
   GUIElement.prototype.init = function(className, tagName) {
     tagName = tagName || 'div';
@@ -148,18 +150,22 @@
   };
 
   /**
-   * GUIElement::update() -- When element receives update event
+   * When element receives update event
    *
    * @return  void
+   *
+   * @method  GUIElement::update()
    */
   GUIElement.prototype.update = function() {
     this.inited = true;
   };
 
   /**
-   * GUIElement::destroy() -- Destroys the GUI Element
+   * Destroys the GUI Element
    *
    * @return  void
+   *
+   * @method  GUIElement::destroy()
    */
   GUIElement.prototype.destroy = function() {
     if ( this.destroyed ) { return; }
@@ -174,13 +180,15 @@
   };
 
   /**
-   * GUIElement::_addEventListener() -- Adds a listener for an event
+   * Adds a listener for an event
    *
    * @param   DOMElement    el          DOM Element to attach event to
    * @param   String        ev          DOM Event Name
    * @param   Function      callback    Callback on event
    *
    * @return  void
+   *
+   * @method  GUIElement::_addEventListener()
    */
   GUIElement.prototype._addEventListener = function(el, ev, callback) {
     el.addEventListener(ev, callback, false);
@@ -191,12 +199,14 @@
   };
 
   /**
-   * GUIElement::_addHook() -- Adds a hook (internal events)
+   * Adds a hook (internal events)
    *
    * @param   String    k       Hook name: focus, blur, destroy
    * @param   Function  func    Callback function
    *
    * @return  void
+   *
+   * @method  GUIElement::_addHook()
    */
   GUIElement.prototype._addHook = function(k, func) {
     if ( typeof func === 'function' && this._hooks[k] ) {
@@ -205,11 +215,13 @@
   };
 
   /**
-   * GUIElement::_fireHook() -- Fire a hook (internal event)
+   * Fire a hook (internal event)
    *
    * @param   String    k       Hook name: focus, blur, destroy
    *
    * @return  void
+   *
+   * @method  GUIElement::_fireHook()
    */
   GUIElement.prototype._fireHook = function(k, args) {
     var self = this;
@@ -229,32 +241,38 @@
   };
 
   /**
-   * GUIElement::getRoot() -- Get root DOM Element
+   * Get root DOM Element
    *
    * @return  DOMElement    The outer container
+   *
+   * @method  GUIElement::getRoot()
    */
   GUIElement.prototype.getRoot = function() {
     return this.$element;
   };
 
   /**
-   * GUIElement::onDndDrop() -- Event for DnD
+   * Event for DnD
    *
    * @param   DOMEvent      ev      DOM Event
    *
    * @return  boolean
+   *
+   * @method  GUIElement::onDndDrop()
    */
   GUIElement.prototype.onDndDrop = function(ev) {
     return true;
   };
 
   /**
-   * GUIElement::onGlobalKeyPress() -- Event for Key Press
+   * Event for Key Press
    *
    * @param   DOMEvent      ev      DOM Event
    *
    * @see     OSjs.Core.Window::_onKeyEvent
    * @return  boolean
+   *
+   * @method  GUIElement::onGlobalKeyPress()
    */
   GUIElement.prototype.onGlobalKeyPress = function(ev) {
     if ( this.hasCustomKeys ) { return false; }
@@ -267,12 +285,14 @@
   };
 
   /**
-   * GUIElement::onKeyUp() -- Event for Key Release
+   * Event for Key Release
    *
    * @param   DOMEvent      ev      DOM Event
    *
    * @see     OSjs.Core.Window::_onKeyEvent
    * @return  boolean
+   *
+   * @method  GUIElement::onKeyUp()
    */
   GUIElement.prototype.onKeyUp = function(ev) {
     if ( this.hasCustomKeys ) { return false; }
@@ -285,11 +305,13 @@
   };
 
   /**
-   * GUIElement::_onFocus() -- Event for focus
+   * Event for focus
    *
    * @param   DOMEvent      ev      DOM Event
    *
    * @return  boolean
+   *
+   * @method  GUIElement::_onFocus()
    */
   GUIElement.prototype._onFocus = function(ev) {
     ev.stopPropagation();
@@ -300,9 +322,11 @@
   };
 
   /**
-   * GUIElement::focus() -- Set focus to the GUI Element
+   * Set focus to the GUI Element
    *
    * @return  boolean
+   *
+   * @method  GUIElement::focus()
    */
   GUIElement.prototype.focus = function() {
     if ( !this.opts.focusable ) { return false; }
@@ -318,9 +342,11 @@
   };
 
   /**
-   * GUIElement::blur() -- Unset focus for the GUI Element
+   * Unset focus for the GUI Element
    *
    * @return  boolean
+   *
+   * @method  GUIElement::blur()
    */
   GUIElement.prototype.blur = function() {
     if ( !this.opts.focusable ) { return false; }
@@ -332,11 +358,13 @@
   };
 
   /**
-   * GUIElement::_setWindow() -- Set what Window we belong to
+   * Set what Window we belong to
    *
    * @param   Window    w       The Window
    *
    * @return  void
+   *
+   * @method  GUIElement::_setWindow()
    */
   GUIElement.prototype._setWindow = function(w) {
     this.wid      = w._wid;
@@ -348,11 +376,13 @@
   };
 
   /**
-   * GUIElement::_setTabIndex() -- Sets the tabindex
+   * Sets the tabindex
    *
    * @param   int     i       Tab index (0+)
    *
    * @return  void
+   *
+   * @method  GUIElement::_setTabIndex()
    */
   GUIElement.prototype._setTabIndex = function(i) {
     if ( !this.hasTabIndex ) { return; }

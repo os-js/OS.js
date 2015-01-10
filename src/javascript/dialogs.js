@@ -47,7 +47,7 @@
    *
    * @see     OSjs.Core.DialogWindow
    * @api     OSjs.Core.StandardDialog
-   * @extends Process
+   * @extends DialogWindow
    * @class
    */
   var StandardDialog = function(className, args, opts, onClose) {
@@ -75,10 +75,12 @@
   StandardDialog.prototype = Object.create(DialogWindow.prototype);
 
   /**
-   * StandardDialog::destroy() -- Destroy the Dialog Window
+   * Destroy the Dialog Window
    *
    * @see     OSjs.Core.DialogWindow::destroy()
    * @return  void
+   *
+   * @method  StandardDialog::destroy()
    */
   StandardDialog.prototype.destroy = function() {
     if ( this._destroyed ) { return; }
@@ -89,10 +91,12 @@
   };
 
   /**
-   * StandardDialog::init() -- Initialize Dialog Window
+   * Initialize Dialog Window
    *
    * @see     OSjs.Core.DialogWindow::init()
    * @return  DOMElement
+   *
+   * @method  StandardDialog::init()
    */
   StandardDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
@@ -146,10 +150,12 @@
   };
 
   /**
-   * StandardDialog::_inited() -- When Dialog Windows has been inited
+   * When Dialog Windows has been inited
    *
    * @see     OSjs.Core.DialogWindow::_inited()
    * @return  void
+   *
+   * @method  StandardDialog::_inited()
    */
   StandardDialog.prototype._inited = function() {
     DialogWindow.prototype._inited.apply(this, arguments);
@@ -163,9 +169,11 @@
   };
 
   /**
-   * StandardDialog::onCloseClick() -- When Close has been clicked
+   * When Close has been clicked
    *
    * @return  void
+   *
+   * @method  StandardDialog::onCloseClick()
    */
   StandardDialog.prototype.onCloseClick = function(ev) {
     if ( !this.buttonClose ) { return; }
@@ -173,9 +181,11 @@
   };
 
   /**
-   * StandardDialog::onCancelClick() -- When Cancel has been clicked
+   * When Cancel has been clicked
    *
    * @return  void
+   *
+   * @method  StandardDialog::onCancelClick()
    */
   StandardDialog.prototype.onCancelClick = function(ev) {
     if ( !this.buttonCancel ) { return; }
@@ -183,9 +193,11 @@
   };
 
   /**
-   * StandardDialog::onConfirmClick() -- When Confirm has been clicked
+   * When Confirm has been clicked
    *
    * @return  void
+   *
+   * @method  StandardDialog::onConfirmClick()
    */
   StandardDialog.prototype.onConfirmClick = function(ev) {
     if ( !this.buttonConfirm ) { return; }
@@ -194,10 +206,12 @@
 
 
   /**
-   * StandardDialog::_onKeyEvent() -- On Key event
+   * On Key event
    *
    * @see     OSjs.Core.DialogWindow::_onKeyEvent()
    * @return  void
+   *
+   * @method  StandardDialog::_onKeyEvent()
    */
   StandardDialog.prototype._onKeyEvent = function(ev) {
     DialogWindow.prototype._onKeyEvent.apply(this, arguments);
@@ -211,9 +225,11 @@
   };
 
   /**
-   * StandardDialog::end() -- End/Close Dialog Window
+   * End/Close Dialog Window
    *
    * @return  void
+   *
+   * @method  StandardDialog::end()
    */
   StandardDialog.prototype.end = function() {
     this.onClose.apply(this, arguments);

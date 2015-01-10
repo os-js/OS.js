@@ -135,7 +135,7 @@
    * @param   int       panelId     Panel ID (optional)
    *
    * @return  String                Or false on error
-   * @api     OSjs.API.createLoading
+   * @api     OSjs.API.createLoading()
    */
   function createLoading(name, opts, panelId) {
     if ( _WM ) {
@@ -156,7 +156,7 @@
    * @param   int       panelId     Panel ID (optional)
    *
    * @return  boolean
-   * @api     OSjs.API.destroyLoading
+   * @api     OSjs.API.destroyLoading()
    */
   function destroyLoading(name, panelId) {
     if ( name ) {
@@ -439,7 +439,7 @@
    * the first thing that is called after page has loaded
    *
    * @return  void
-   * @api     OSjs.Core.initialize
+   * @api     OSjs.Core.initialize()
    */
   function doInitialize() {
     if ( _INITED ) { return; }
@@ -609,7 +609,7 @@
    * @param   boolean     save      Save the current session ?
    *
    * @return  void
-   * @api     OSjs.Core.shutdown
+   * @api     OSjs.Core.shutdown()
    */
   function doShutdown(save) {
     if ( !_INITED ) { return; }
@@ -747,6 +747,26 @@
     return result;
   }
 
+  /**
+   * Autostart applications from config
+   */
+  function doAutostart() {
+    if ( _HANDLER ) {
+      var autostart;
+
+      try {
+        autostart = _HANDLER.getConfig('System').AutoStart;
+      } catch ( e ) {
+        console.warn('doAutostart() exception', e, e.stack);
+      }
+
+      console.info('doAutostart()', autostart);
+      if ( autostart ) {
+        doLaunchProcessList(autostart);
+      }
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -760,7 +780,7 @@
    * @param   Function  cerror  Callback on error
    *
    * @return  void
-   * @api     OSjs.API.call
+   * @api     OSjs.API.call()
    */
   var doAPICall = (function() {
     var _cidx = 1;
@@ -791,7 +811,7 @@
    * @param   boolean   bugreport   Enable bugreporting for this error (default=fale)
    *
    * @return  null
-   * @api     OSjs.API.error
+   * @api     OSjs.API.error()
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
     if ( _HANDLER.getConfig('Core').BugReporting ) {
@@ -827,7 +847,7 @@
    * @see     doLaunchProcess
    *
    * @return  void
-   * @api     OSjs.API.launch
+   * @api     OSjs.API.launch()
    */
   function doLaunchFile(file, launchArgs) {
     launchArgs = launchArgs || {};
@@ -891,7 +911,7 @@
    * @param   Function    onConstructed   Callback on application init
    *
    * @return  bool
-   * @api     OSjs.API.launch
+   * @api     OSjs.API.launch()
    */
   function doLaunchProcess(n, arg, onFinished, onError, onConstructed) {
     arg           = arg           || {};
@@ -1039,7 +1059,7 @@
    * @param   Function      onFinished  Callback on finished running
    * @see     doLaunchProcess
    * @return  void
-   * @api     OSjs.API.launchList
+   * @api     OSjs.API.launchList()
    */
   function doLaunchProcessList(list, onSuccess, onError, onFinished) {
     list        = list        || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
@@ -1095,7 +1115,7 @@
    * @param   float       volume    Sound volume (0.0 - 1.0)
    *
    * @return  DOMAudio
-   * @api     OSjs.API.playSound
+   * @api     OSjs.API.playSound()
    */
   function doPlaySound(name, volume) {
     if ( !OSjs.Compability.audio ) {
@@ -1129,7 +1149,7 @@
    * @param   int     pid       Process ID
    *
    * @return  void
-   * @api     OSjs.API.kill
+   * @api     OSjs.API.kill()
    */
   function doKillProcess(pid) {
     if ( _PROCS[pid] ) {
@@ -1151,7 +1171,7 @@
    *
    * @return  void
    * @see     Process::_onMessage()
-   * @api     OSjs.API.message
+   * @api     OSjs.API.message()
    */
   function doProcessMessage(msg, opts) {
     console.info('doProcessMessage', msg, opts);
@@ -1169,7 +1189,7 @@
    * @param   boolean   first   Return the first found
    *
    * @return  Process           Or an Array of Processes
-   * @api     OSjs.API.getProcess
+   * @api     OSjs.API.getProcess()
    */
   function doGetProcess(name, first) {
     var p;
@@ -1198,7 +1218,7 @@
    * @param  Mixed    ...   Format values
    *
    * @return String
-   * @api    OSjs.API._
+   * @api    OSjs.API._()
    */
   function doTranslate() {
     var s = arguments[0];
@@ -1216,7 +1236,7 @@
   /**
    * Same as _ only you can supply the list as first argument
    * @see    doTranslate()
-   * @api    OSjs.API.__
+   * @api    OSjs.API.__()
    */
   function doTranslateList() {
     var l = arguments[0];
@@ -1236,7 +1256,7 @@
    * Get current locale
    *
    * @return String
-   * @api    OSjs.API.getLocale
+   * @api    OSjs.API.getLocale()
    */
   function doGetLocale() {
     return CurrentLocale;
@@ -1248,7 +1268,7 @@
    * @param  String   s     Locale name
    *
    * @return void
-   * @api    OSjs.API.setLocale
+   * @api    OSjs.API.setLocale()
    */
   function doSetLocale(l) {
     if ( OSjs.Locales[l] ) {
@@ -1262,26 +1282,6 @@
   }
 
   /**
-   * Autostart applications from config
-   */
-  function doAutostart() {
-    if ( _HANDLER ) {
-      var autostart;
-
-      try {
-        autostart = _HANDLER.getConfig('System').AutoStart;
-      } catch ( e ) {
-        console.warn('doAutostart() exception', e, e.stack);
-      }
-
-      console.info('doAutostart()', autostart);
-      if ( autostart ) {
-        doLaunchProcessList(autostart);
-      }
-    }
-  }
-
-  /**
    * Perform cURL call
    *
    * @param   Object    args      cURL Arguments (see backend)
@@ -1289,7 +1289,7 @@
    *                              fn(error, result)
    *
    * @return  void
-   * @api     OSjs.API.curl
+   * @api     OSjs.API.curl()
    */
   function doCurl(args, callback) {
     args = args || {};
@@ -1315,7 +1315,7 @@
    *
    * @return  String            The absolute URL of resource
    *
-   * @api     OSjs.API.getApplicationResource
+   * @api     OSjs.API.getApplicationResource()
    */
   function doGetApplicationResource(app, name) {
     var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
@@ -1330,7 +1330,7 @@
    *
    * @return  String            The absolute URL of css file
    *
-   * @api     OSjs.API.getThemeCSS
+   * @api     OSjs.API.getThemeCSS()
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
@@ -1354,7 +1354,7 @@
    *
    * @retrurn String            The absolute URL of the icon
    *
-   * @api     OSjs.API.getIcon
+   * @api     OSjs.API.getIcon()
    */
   function doGetIcon(name, app, args) {
     name = name || '';
@@ -1381,7 +1381,7 @@
    *
    * @return  String                The absolute URL to the icon
    *
-   * @api     OSjs.API.getFileIcon
+   * @api     OSjs.API.getFileIcon()
    */
   function doGetFileIcon(filename, mime, type, icon, size) {
     if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
@@ -1428,7 +1428,7 @@
    *
    * @return  String            The absolute URL to the resource
    *
-   * @api     OSjs.API.getThemeResource
+   * @api     OSjs.API.getThemeResource()
    */
   function doGetThemeResource(name, type, args) {
     name = name || null;
@@ -1467,7 +1467,7 @@
    *
    * @return  Object
    *
-   * @api     OSjs.API.getDefaultSettings
+   * @api     OSjs.API.getDefaultSettings()
    */
   function doGetDefaultSettings() {
     return {};
@@ -1479,7 +1479,7 @@
    * @param   String    fallback      Fallback path on error (default= "/")
    * @return  String
    *
-   * @api     OSjs.API.getDefaultPath
+   * @api     OSjs.API.getDefaultPath()
    */
   function doGetDefaultPath(fallback) {
     return _HANDLER.getConfig('Core').Home || fallback || '/';
@@ -1490,7 +1490,7 @@
    *
    * @return  Array
    *
-   * @api     OSjs.API.getProcesses
+   * @api     OSjs.API.getProcesses()
    */
   function doGetProcesses() {
     return _PROCS;
@@ -1501,7 +1501,7 @@
    *
    * @return  Handler
    *
-   * @api     OSjs.API.getHandlerInstance
+   * @api     OSjs.API.getHandlerInstance()
    */
   function doGetHandlerInstance() {
     return OSjs.Handlers.getInstance();
@@ -1512,7 +1512,7 @@
    *
    * @return  WindowManager
    *
-   * @api     OSjs.API.getWMInstance
+   * @api     OSjs.API.getWMInstance()
    */
   function doGetWMInstance() {
     return _WM;
@@ -1526,7 +1526,7 @@
    *
    * @return  void
    *
-   * @api     OSjs.API.createDroppable
+   * @api     OSjs.API.createDroppable()
    */
   function doCreateDroppable(el, args) {
     args = args || {};
@@ -1628,7 +1628,7 @@
    *
    * @return  void
    *
-   * @api     OSjs.API.createDraggable
+   * @api     OSjs.API.createDraggable()
    */
   function doCreateDraggable(el, args) {
     args        = args        || {};
@@ -1695,7 +1695,7 @@
    * @param   Object    pos     Object with x and y
    *
    * @return  OSjs.GUI.Menu
-   * @api     OSjs.API.createMenu
+   * @api     OSjs.API.createMenu()
    */
   function doCreateMenu(items, pos) {
     items = items || [];
@@ -1712,7 +1712,7 @@
    * Blur (Hide) current Menu
    *
    * @return  void
-   * @api     OSjs.API.blurMenu
+   * @api     OSjs.API.blurMenu()
    */
   function doBlurMenu() {
     if ( _MENU ) {
@@ -1756,11 +1756,13 @@
   })();
 
   /**
-   * Process::destroy() -- Destroys the process
+   * Destroys the process
    *
    * @param   boolean   kill    Force kill ?
    *
    * @return  boolean
+   *
+   * @method  Process::destroy()
    */
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
@@ -1775,9 +1777,11 @@
   };
 
   /**
-   * Process::_onMessage() -- Placeholder for messages sendt via API
+   * Placeholder for messages sendt via API
    *
    * @return  void
+   *
+   * @method  Process::_onMessage()
    */
   Process.prototype._onMessage = function(obj, msg, args) {
   };
@@ -1806,16 +1810,21 @@
   Service.prototype = Object.create(Process.prototype);
 
   /**
-   * Service::init() -- Intiaialize the Service
+   * Intiaialize the Service
    *
    * @return  void
+   *
+   * @method Service::init()
    */
   Service.prototype.init = function() {
   };
 
   /**
-   * Service::_call() -- Call the ApplicationAPI
+   * Call the ApplicationAPI
+   *
    * @return  boolean
+   *
+   * @method  Service::_call()
    */
   Service.prototype._call = function(method, args, onSuccess, onError) {
     onSuccess = onSuccess || function() {};
@@ -1862,11 +1871,14 @@
   Application.prototype = Object.create(Process.prototype);
 
   /**
-   * Application::init() -- Initialize the Application
+   * Initialize the Application
    *
    * @param   Object    settings      Settings JSON
    * @param   Object    metadata      Metadata JSON
+   *
    * @return  void
+   *
+   * @method  Application::init()
    */
   Application.prototype.init = function(settings, metadata) {
     console.log('OSjs::Core::Application::init()', this.__name);
@@ -1894,9 +1906,11 @@
   };
 
   /**
-   * Application::destroy() -- Destroy the application
+   * Destroy the application
    *
    * @see Process::destroy()
+   *
+   * @method    Application::destroy()
    */
   Application.prototype.destroy = function(kill) {
     if ( this.__destroyed ) { return true; }
@@ -1915,13 +1929,15 @@
   };
 
   /**
-   * Application::_onMessage() -- Application has received a message
+   * Application has received a message
    *
    * @param   Object    obj       Where it came from
    * @param   String    msg       Name of message
    * @param   Object    args      Message arguments
    *
    * @return  void
+   *
+   * @method  Application::_onMessage()
    */
   Application.prototype._onMessage = function(obj, msg, args) {
     if ( !msg ) { return; }
@@ -1938,7 +1954,7 @@
   };
 
   /**
-   * Application::_call() -- Call the ApplicationAPI
+   * Call the ApplicationAPI
    *
    * This is used for calling 'api.php' or 'api.js' in your Application.
    *
@@ -1948,6 +1964,8 @@
    * @param   Function    onError     When an error occured fn(error)
    *
    * @return  boolean
+   *
+   * @method  Application::_call()
    */
   Application.prototype._call = function(method, args, onSuccess, onError) {
     var self = this;
@@ -1962,7 +1980,7 @@
   };
 
   /**
-   * Application::_createDialog() -- Wrapper for creating dialogs
+   * Wrapper for creating dialogs
    *
    * Using this function will add them as children, making sure they will
    * be destroyed on close.
@@ -1972,6 +1990,8 @@
    * @param   Window    parentClass   The parent window
    *
    * @return  Window                  Or false on error
+   *
+   * @method  Application::_createDialog()
    */
   Application.prototype._createDialog = function(className, args, parentClass) {
     if ( OSjs.Dialogs[className] ) {
@@ -1990,13 +2010,15 @@
   };
 
   /**
-   * Application::_addWindow() -- Add a window to the application
+   * Add a window to the application
    *
    * This will automatically add it to the WindowManager and show it to you
    *
    * @param   Window    w     The Window
    *
    * @return  Window
+   *
+   * @method  Application::_addWindow()
    */
   Application.prototype._addWindow = function(w) {
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
@@ -2018,11 +2040,13 @@
   };
 
   /**
-   * Application::_removeWindow() -- Removes given Window
+   * Removes given Window
    *
    * @param   Window      w     The Windo
    *
    * @return  boolean
+   *
+   * @method  Application::_removeWindow()
    */
   Application.prototype._removeWindow = function(w) {
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_removeWindow() expects Window'); }
@@ -2044,7 +2068,7 @@
   };
 
   /**
-   * Application::_getWindow() -- Gets a Window by X
+   * Gets a Window by X
    *
    * If you specify 'tag' the result will end with an Array because
    * these are not unique.
@@ -2053,6 +2077,8 @@
    * @param   Mixed     key           What to match against
    *
    * @return  Window                  Or null on error or nothing
+   *
+   * @method  Application::_getWindow()
    */
   Application.prototype._getWindow = function(checkfor, key) {
     key = key || 'name';
@@ -2076,44 +2102,52 @@
   };
 
   /**
-   * Application::_getWindowsByName() -- Get a Window by Name
+   * Get a Window by Name
    *
    * @see Application::_getWindow()
+   *
+   * @method Application::_getWindowsByName()
    */
   Application.prototype._getWindowByName = function(name) {
     return this._getWindow(name);
   };
 
   /**
-   * Application::_getWindowsByTag() -- Get Windows(!) by Tag
+   * Get Windows(!) by Tag
    *
    * @see Application::_getWindow()
    * @return Array
+   *
+   * @method Application::_getWindowsByTag()
    */
   Application.prototype._getWindowsByTag = function(tag) {
     return this._getWindow(tag, 'tag');
   };
 
   /**
-   * Application::_getWindows() -- Get a list of all windows
+   * Get a list of all windows
    *
    * @retrun Array
+   *
+   * @method Application::_getWindows()
    */
   Application.prototype._getWindows = function() {
     return this.__windows;
   };
 
   /**
-   * Application::_getSettings() -- Get the sessions JSON
+   * Get the sessions JSON
    *
    * @return  Object    the current settings
+   *
+   * @method  Application::_getSettings()
    */
   Application.prototype._getSetting = function(k) {
     return this.__settings[k];
   };
 
   /**
-   * Application::_setSetting() -- Set a setting
+   * Set a setting
    *
    * @param   String    k             Key
    * @param   String    v             Value
@@ -2121,6 +2155,8 @@
    * @param   Function  saveCallback  If you save, this will be called when done
    *
    * @return  void
+   *
+   * @method  Application::_setSetting()
    */
   Application.prototype._setSetting = function(k, v, save, saveCallback) {
     save = (typeof save === 'undefined' || save === true);
@@ -2131,9 +2167,11 @@
   };
 
   /**
-   * Application::_getArgument() -- Get a launch/session argument
+   * Get a launch/session argument
    *
    * @return  Mixed     Argument value or null
+   *
+   * @method  Application::_getArgument()
    */
   Application.prototype._getArgument = function(k) {
     return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
@@ -2141,12 +2179,14 @@
 
 
   /**
-   * Application::_setArgument() -- Set a launch/session argument
+   * Set a launch/session argument
    *
    * @param   String    k             Key
    * @param   String    v             Value
    *
    * @return  void
+   *
+   * @method  Application::_setArgument()
    */
   Application.prototype._setArgument = function(k, v) {
     this.__args[k] = v;

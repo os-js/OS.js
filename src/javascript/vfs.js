@@ -498,8 +498,8 @@
    *
    * @param   boolean   visible       All visible modules only (default=true)
    *
-   * @return  Array     List of all Modules found
-   * @api     OSjs.VFS.getModules
+   * @return  Array                   List of all Modules found
+   * @api     OSjs.VFS.getModules()
    */
   OSjs.VFS.getModules = function(visible) {
     visible = (typeof visible === 'undefined') ? true : visible === true;
@@ -526,7 +526,7 @@
    * @param   Object          options   Optional set of options
    *
    * @return  void
-   * @api     OSjs.VFS.scandir
+   * @api     OSjs.VFS.scandir()
    */
   OSjs.VFS.scandir = function(item, callback, options) {
     console.info('VFS::scandir()', item, options);
@@ -553,7 +553,7 @@
    *  NONE
    *
    * @return  void
-   * @api     OSjs.VFS.write
+   * @api     OSjs.VFS.write()
    */
   OSjs.VFS.write = function(item, data, callback, options, appRef) {
     console.info('VFS::write()', item, options);
@@ -610,7 +610,7 @@
    *  type        - What to return, default: binary. Can also be: text, datasource
    *
    * @return  void
-   * @api     OSjs.VFS.read
+   * @api     OSjs.VFS.read()
    */
   OSjs.VFS.read = function(item, callback, options) {
     console.info('VFS::read()', item, options);
@@ -660,10 +660,11 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  NONE
+   *  overwrite   boolean     If set to true it will not check if the destination
+   *                          exists
    *
    * @return  void
-   * @api     OSjs.VFS.copy
+   * @api     OSjs.VFS.copy()
    */
   OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
     console.info('VFS::copy()', src, dest, options);
@@ -741,10 +742,11 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  NONE
+   *  overwrite   boolean     If set to true it will not check if the destination
+   *                          exists
    *
    * @return  void
-   * @api     OSjs.VFS.move
+   * @api     OSjs.VFS.move()
    */
   OSjs.VFS.move = function(src, dest, callback, options, appRef) {
     console.info('VFS::move()', src, dest, options);
@@ -824,7 +826,7 @@
    *  NONE
    *
    * @return  void
-   * @api     OSjs.VFS.unlink
+   * @api     OSjs.VFS.unlink()
    */
   OSjs.VFS.unlink = function(item, callback, options, appRef) {
     console.info('VFS::unlink()', item, options);
@@ -853,10 +855,11 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  NONE
+   *  overwrite   boolean     If set to true it will not check if the destination
+   *                          exists
    *
    * @return  void
-   * @api     OSjs.VFS.mkdir
+   * @api     OSjs.VFS.mkdir()
    */
   OSjs.VFS.mkdir = function(item, callback, options, appRef) {
     console.info('VFS::mkdir()', item, options);
@@ -891,7 +894,7 @@
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
-   * @api     OSjs.VFS.exists
+   * @api     OSjs.VFS.exists()
    */
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
@@ -907,7 +910,7 @@
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
-   * @api     OSjs.VFS.fileinfo
+   * @api     OSjs.VFS.fileinfo()
    */
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
@@ -959,10 +962,11 @@
    *  files       - Array of 'File'
    *
    * options:
-   *  NONE
+   *  overwrite   boolean     If set to true it will not check if the destination
+   *                          exists
    *
    * @return  void
-   * @api     OSjs.VFS.upload
+   * @api     OSjs.VFS.upload()
    */
   OSjs.VFS.upload = function(args, callback, options, appRef) {
     console.info('VFS::upload()', args);
@@ -1053,7 +1057,7 @@
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
-   * @api     OSjs.VFS.download
+   * @api     OSjs.VFS.download()
    */
   OSjs.VFS.download = (function() {
     var _didx = 1;
@@ -1122,6 +1126,8 @@
 
   /**
    * Move file to trash (Not used in internal storage)
+   *
+   * THIS IS NOT USED FOR INTERNAL MODULES
    *
    * @param   OSjs.VFS.File   item      File Metadata
    * @param   Function        callback  Callback function => fn(error, result)
