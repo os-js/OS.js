@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OS.js Client Documentation</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+  </head>
+  <body>
+    <nav>
+      <h1>Files</h1>
+      <ul>
+
+<li><a href="_srcjavascriptutilsjs.html">src/javascript/utils.js</a></li>
+<li><a href="_srcjavascriptguielementjs.html">src/javascript/guielement.js</a></li>
+<li><a href="_srcjavascriptdialogsjs.html">src/javascript/dialogs.js</a></li>
+<li><a href="_srcjavascriptcorejs.html">src/javascript/core.js</a></li>
+<li><a href="_srcjavascriptvfsjs.html">src/javascript/vfs.js</a></li>
+
+      </ul>
+
+      <h1>Namespace</h1>
+      <ul>
+
+%NAMESPACE%
+
+      </ul>
+    </nav>
+
+    <content>
+
+<div><i>src/javascript/guielement.js, Generated: </i>Sun Jan 11 2015 00:42:19 GMT+0100 (CET)</div>
+<h1>Overview</h1>
+<h2>Functions</h2>
+<ul>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
+<ul>
+<li><a href="#guielement-init">init()</a></li>
+<li><a href="#guielement-update">update()</a></li>
+<li><a href="#guielement-destroy">destroy()</a></li>
+<li><a href="#guielement-_addeventlistener">_addEventListener()</a></li>
+<li><a href="#guielement-_addhook">_addHook()</a></li>
+<li><a href="#guielement-_firehook">_fireHook()</a></li>
+<li><a href="#guielement-getroot">getRoot()</a></li>
+<li><a href="#guielement-ondnddrop">onDndDrop()</a></li>
+<li><a href="#guielement-onglobalkeypress">onGlobalKeyPress()</a></li>
+<li><a href="#guielement-onkeyup">onKeyUp()</a></li>
+<li><a href="#guielement-_onfocus">_onFocus()</a></li>
+<li><a href="#guielement-focus">focus()</a></li>
+<li><a href="#guielement-blur">blur()</a></li>
+<li><a href="#guielement-_setwindow">_setWindow()</a></li>
+<li><a href="#guielement-_settabindex">_setTabIndex()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-gui-guielement">
+<h2>GUIElement</h2>
+<p>GUI Element
+
+options:
+
+ onItemDropped Function Callback - When internal object dropped (requires dnd enabled)
+
+ onFilesDropped Function Callback - When external file object dropped (requires dnd enabled)
+
+ dnd bool Enable DnD (Default = false)
+
+ dndDrop bool Enable DnD Droppable (Default = DnD)
+
+ dndDrag bool Enable DnD Draggable (Default = DnD)
+
+ dndOpts Object DnD Options
+
+ focusable bool If element is focusable (Default = true)</p>
+<div class="section-method" id="guielement-init">
+<h3 id="guielement-init-">GUIElement::init()</h3>
+<p>Initializes the GUI Element</p>
+<p><strong>Returns:</strong> DOMElement <em>The outer container of created element</em></p>
+
+</div>
+<div class="section-method" id="guielement-update">
+<h3 id="guielement-update-">GUIElement::update()</h3>
+<p>When element receives update event</p>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="guielement-destroy">
+<h3 id="guielement-destroy-">GUIElement::destroy()</h3>
+<p>Destroys the GUI Element</p>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="guielement-_addeventlistener">
+<h3 id="guielement-_addeventlistener-">GUIElement::_addEventListener()</h3>
+<p>Adds a listener for an event</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>DOM Element to attach event to</td>
+</tr>
+<tr>
+<td>String</td>
+<td>ev</td>
+<td>DOM Event Name</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>callback</td>
+<td>Callback on event</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="guielement-_addhook">
+<h3 id="guielement-_addhook-">GUIElement::_addHook()</h3>
+<p>Adds a hook (internal events)</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>k</td>
+<td>Hook name: focus, blur, destroy</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>func</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="guielement-_firehook">
+<h3 id="guielement-_firehook-">GUIElement::_fireHook()</h3>
+<p>Fire a hook (internal event)</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>k</td>
+<td>Hook name: focus, blur, destroy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="guielement-getroot">
+<h3 id="guielement-getroot-">GUIElement::getRoot()</h3>
+<p>Get root DOM Element</p>
+<p><strong>Returns:</strong> DOMElement <em>The outer container</em></p>
+
+</div>
+<div class="section-method" id="guielement-ondnddrop">
+<h3 id="guielement-ondnddrop-">GUIElement::onDndDrop()</h3>
+<p>Event for DnD</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMEvent</td>
+<td>ev</td>
+<td>DOM Event</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="guielement-onglobalkeypress">
+<h3 id="guielement-onglobalkeypress-">GUIElement::onGlobalKeyPress()</h3>
+<p>Event for Key Press</p>
+<p><strong>See:</strong> OSjs.Core.Window::_onKeyEvent</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMEvent</td>
+<td>ev</td>
+<td>DOM Event</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="guielement-onkeyup">
+<h3 id="guielement-onkeyup-">GUIElement::onKeyUp()</h3>
+<p>Event for Key Release</p>
+<p><strong>See:</strong> OSjs.Core.Window::_onKeyEvent</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMEvent</td>
+<td>ev</td>
+<td>DOM Event</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="guielement-_onfocus">
+<h3 id="guielement-_onfocus-">GUIElement::_onFocus()</h3>
+<p>Event for focus</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMEvent</td>
+<td>ev</td>
+<td>DOM Event</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="guielement-focus">
+<h3 id="guielement-focus-">GUIElement::focus()</h3>
+<p>Set focus to the GUI Element</p>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="guielement-blur">
+<h3 id="guielement-blur-">GUIElement::blur()</h3>
+<p>Unset focus for the GUI Element</p>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="guielement-_setwindow">
+<h3 id="guielement-_setwindow-">GUIElement::_setWindow()</h3>
+<p>Set what Window we belong to</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Window</td>
+<td>w</td>
+<td>The Window</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="guielement-_settabindex">
+<h3 id="guielement-_settabindex-">GUIElement::_setTabIndex()</h3>
+<p>Sets the tabindex</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int</td>
+<td>i</td>
+<td>Tab index (0+)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+</div>
+
+    </content>
+  </body>
+</body>

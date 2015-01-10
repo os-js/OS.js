@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OS.js Client Documentation</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+  </head>
+  <body>
+    <nav>
+      <h1>Files</h1>
+      <ul>
+
+<li><a href="_srcjavascriptutilsjs.html">src/javascript/utils.js</a></li>
+<li><a href="_srcjavascriptguielementjs.html">src/javascript/guielement.js</a></li>
+<li><a href="_srcjavascriptdialogsjs.html">src/javascript/dialogs.js</a></li>
+<li><a href="_srcjavascriptcorejs.html">src/javascript/core.js</a></li>
+<li><a href="_srcjavascriptvfsjs.html">src/javascript/vfs.js</a></li>
+
+      </ul>
+
+      <h1>Namespace</h1>
+      <ul>
+
+%NAMESPACE%
+
+      </ul>
+    </nav>
+
+    <content>
+
+<div><i>src/javascript/utils.js, Generated: </i>Sun Jan 11 2015 00:42:19 GMT+0100 (CET)</div>
+<h1>Overview</h1>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Utils.<a href="#osjs-utils-keys">Keys</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-mousebutton">mouseButton()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-format">format()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-mergeobject">mergeObject()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-cloneobject">cloneObject()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-inarray">inArray()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-checkacceptmime">checkAcceptMime()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getcompability">getCompability()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isie">isIE()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-btoaurlsafe">btoaUrlsafe()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-atoburlsafe">atobUrlsafe()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-btoautf">btoaUtf()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-atobutf">atobUtf()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getuserlocale">getUserLocale()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-fixjson">fixJSON()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-filext">filext()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-dirname">dirname()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-filename">filename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-humanfilesize">humanFileSize()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-escapefilename">escapeFilename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-replacefileextension">replaceFileExtension()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-replacefilename">replaceFilename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getfilenamerange">getFilenameRange()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-converttorgb">convertToRGB()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-converttohex">convertToHEX()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-inverthex">invertHEX()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-">$()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-safename">$safeName()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-empty">$empty()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getstyle">$getStyle()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-position">$position()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-index">$index()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-selectrange">$selectRange()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-addclass">$addClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-removeclass">$removeClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-hasclass">$hasClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-createcss">$createCSS()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-createjs">$createJS()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isformelement">isFormElement()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isinputelement">isInputElement()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-ajax">ajax()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-preload">Preload()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-utils-keys">
+<h2 id="osjs-utils-keys">OSjs.Utils.Keys</h2>
+<p>A collection of keycode mappings</p>
+<p>@var</p>
+
+</div>
+<div class="section-function" id="osjs-utils-mousebutton">
+<h2 id="osjs-utils-mousebutton-">OSjs.Utils.mouseButton()</h2>
+<p>Get the mouse button pressed</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMEvent</td>
+<td>ev</td>
+<td>The DOM Event</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The mouse button (left/middle/right)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-format">
+<h2 id="osjs-utils-format-">OSjs.Utils.format()</h2>
+<p>Format a string (almost like sprintf)</p>
+<p><strong>Link:</strong> <a href="http://stackoverflow.com/a/4673436">http://stackoverflow.com/a/4673436</a></p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>format</td>
+<td>String format</td>
+</tr>
+<tr>
+<td>String</td>
+<td>...</td>
+<td>Insert into format</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The formatted string</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-mergeobject">
+<h2 id="osjs-utils-mergeobject-">OSjs.Utils.mergeObject()</h2>
+<p>Deep-merge to objects</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>obj1</td>
+<td>Object to merge to</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>obj2</td>
+<td>Object to merge with</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Object <em>The merged object</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-cloneobject">
+<h2 id="osjs-utils-cloneobject-">OSjs.Utils.cloneObject()</h2>
+<p>Clone a object</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>o</td>
+<td>The object to clone</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Object <em>An identical object</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-inarray">
+<h2 id="osjs-utils-inarray-">OSjs.Utils.inArray()</h2>
+<p>Check if item is in array</p>
+<p>TODO: This is deprecated, remove</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Array</td>
+<td>arr</td>
+<td>The array</td>
+</tr>
+<tr>
+<td>Mixed</td>
+<td>val</td>
+<td>The value to check for</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> int <em>The index where found or false</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-checkacceptmime">
+<h2 id="osjs-utils-checkacceptmime-">OSjs.Utils.checkAcceptMime()</h2>
+<p>Check if this MIME type is inside list</p>
+<p>This matches by regex</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>mime</td>
+<td>The mime string</td>
+</tr>
+<tr>
+<td>Array</td>
+<td>list</td>
+<td>Array of regex matches</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean <em>If found</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getcompability">
+<h2 id="osjs-utils-getcompability-">OSjs.Utils.getCompability()</h2>
+<p>Gets browser compability flags</p>
+<p><strong>Returns:</strong> Object <em>List of compability</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isie">
+<h2 id="osjs-utils-isie-">OSjs.Utils.isIE()</h2>
+<p>Check if browser is IE</p>
+<p><strong>Returns:</strong> boolean <em>If IE</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-btoaurlsafe">
+<h2 id="osjs-utils-btoaurlsafe-">OSjs.Utils.btoaUrlsafe()</h2>
+<p>(Encode) Convert URL-safe String to Base64</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>str</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Base64 String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-atoburlsafe">
+<h2 id="osjs-utils-atoburlsafe-">OSjs.Utils.atobUrlsafe()</h2>
+<p>(Decode) Convert Base64 to URL-safe String</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>str</td>
+<td>Base64 String</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-btoautf">
+<h2 id="osjs-utils-btoautf-">OSjs.Utils.btoaUtf()</h2>
+<p>(Encode) Convert String to Base64 with UTF-8</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>str</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Base64 String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-atobutf">
+<h2 id="osjs-utils-atobutf-">OSjs.Utils.atobUtf()</h2>
+<p>(Decode) Convert Base64 with UTF-8 to String</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>str</td>
+<td>Base64 String</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getuserlocale">
+<h2 id="osjs-utils-getuserlocale-">OSjs.Utils.getUserLocale()</h2>
+<p>Gets the browser Locale</p>
+<p>For example &#39;en&#39;</p>
+<p><strong>Returns:</strong> String <em>Locale string</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-fixjson">
+<h2 id="osjs-utils-fixjson-">OSjs.Utils.fixJSON()</h2>
+<p>Fixes JSON for HTTP requests (in case they were returned as string)</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mixed</td>
+<td>response</td>
+<td>The data</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Object <em>JSON</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-filext">
+<h2 id="osjs-utils-filext-">OSjs.Utils.filext()</h2>
+<p>Get file extension of filename/path</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>d</td>
+<td>filename/path</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The file extension</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-dirname">
+<h2 id="osjs-utils-dirname-">OSjs.Utils.dirname()</h2>
+<p>Get directory from path</p>
+<p>If you use this on a directory path, you will</p>
+<p>get the parent</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>f</td>
+<td>filename/path</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The resulted path</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-filename">
+<h2 id="osjs-utils-filename-">OSjs.Utils.filename()</h2>
+<p>Get filename from path</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>p</td>
+<td>Path</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-humanfilesize">
+<h2 id="osjs-utils-humanfilesize-">OSjs.Utils.humanFileSize()</h2>
+<p>Get human-readable size from integer</p>
+<p>Example return: &#39;128 MB&#39;</p>
+<p><strong>Link:</strong> <a href="http://stackoverflow.com/users/65387/mark">http://stackoverflow.com/users/65387/mark</a></p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int</td>
+<td>bytes</td>
+<td>Size in bytes</td>
+</tr>
+<tr>
+<td>String</td>
+<td>si</td>
+<td>Use SI units ?</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Size</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-escapefilename">
+<h2 id="osjs-utils-escapefilename-">OSjs.Utils.escapeFilename()</h2>
+<p>Escape filename (removes invalid characters)</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>n</td>
+<td>Filename</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Escaped filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-replacefileextension">
+<h2 id="osjs-utils-replacefileextension-">OSjs.Utils.replaceFileExtension()</h2>
+<p>Replace file extension of filename</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>filename</td>
+<td>The filename</td>
+</tr>
+<tr>
+<td>String</td>
+<td>rep</td>
+<td>New file extension (without dot)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>New filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-replacefilename">
+<h2 id="osjs-utils-replacefilename-">OSjs.Utils.replaceFilename()</h2>
+<p>Replace the filename of a path</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>orig</td>
+<td>The full path to file</td>
+</tr>
+<tr>
+<td>String</td>
+<td>newname</td>
+<td>Replace with this filename</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The new path</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getfilenamerange">
+<h2 id="osjs-utils-getfilenamerange-">OSjs.Utils.getFilenameRange()</h2>
+<p>Gets the range of filename in a path (without extension)</p>
+<p>This is used for example in text boxes to highlight the filename</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>val</td>
+<td>The path</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Object <em>Range in form of {min: 0, max: 1}</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-converttorgb">
+<h2 id="osjs-utils-converttorgb-">OSjs.Utils.convertToRGB()</h2>
+<p>Convert HEX to RGB</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>hex</td>
+<td>The hex string (with #)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Object <em>RGB in form of {r:0, g:0, b:0}</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-converttohex">
+<h2 id="osjs-utils-converttohex-">OSjs.Utils.convertToHEX()</h2>
+<p>Convert RGB to HEX</p>
+<p>OR</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>rgb</td>
+<td>The RGB object in form of {r:0, g:0, b:0}</td>
+</tr>
+<tr>
+<td>int</td>
+<td>r</td>
+<td>Red value</td>
+</tr>
+<tr>
+<td>int</td>
+<td>g</td>
+<td>Green value</td>
+</tr>
+<tr>
+<td>int</td>
+<td>b</td>
+<td>Blue value</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Hex string (with #)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-inverthex">
+<h2 id="osjs-utils-inverthex-">OSjs.Utils.invertHEX()</h2>
+<p>Ivert HEX color</p>
+<p><strong>Link:</strong> <a href="http://stackoverflow.com/a/9601429/1236086">http://stackoverflow.com/a/9601429/1236086</a></p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>hex</td>
+<td>Hex string (With #)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Inverted hex (With #)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-">
+<h2 id="osjs-utils-">OSjs.Utils.$()</h2>
+<p>Get element by ID</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>id</td>
+<td>DOM Element ID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> DOMElement <em>Found element or null</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-safename">
+<h2 id="osjs-utils-safename-">OSjs.Utils.$safeName()</h2>
+<p>Remove unwanted characters from ID or className</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>str</td>
+<td>The name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The new name</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-empty">
+<h2 id="osjs-utils-empty-">OSjs.Utils.$empty()</h2>
+<p>Empty this element (remove children)</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>myNode</td>
+<td>The DOM Element</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-utils-getstyle">
+<h2 id="osjs-utils-getstyle-">OSjs.Utils.$getStyle()</h2>
+<p>Get CSS style attribute</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>oElm</td>
+<td>The DOM Element</td>
+</tr>
+<tr>
+<td>String</td>
+<td>strCssRule</td>
+<td>The CSS rule to get</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Style attribute</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-position">
+<h2 id="osjs-utils-position-">OSjs.Utils.$position()</h2>
+<p>Get element absolute position</p>
+<p>Modern browsers will return getBoundingClientRect()</p>
+<p>See DOM documentation</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>The Element to find position of</td>
+</tr>
+<tr>
+<td>DOMElement</td>
+<td>parentEl</td>
+<td>Optional parent to end loop in</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Object <em>The bounding box</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-index">
+<h2 id="osjs-utils-index-">OSjs.Utils.$index()</h2>
+<p>Get the index of an element within a node</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>Element to check</td>
+</tr>
+<tr>
+<td>DOMElement</td>
+<td>parentEl</td>
+<td>Optional parent (automatically checked)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> int <em>The index</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-selectrange">
+<h2 id="osjs-utils-selectrange-">OSjs.Utils.$selectRange()</h2>
+<p>Selects range in a text field</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>field</td>
+<td>The DOM Element</td>
+</tr>
+<tr>
+<td>int</td>
+<td>start</td>
+<td>Start position</td>
+</tr>
+<tr>
+<td>int</td>
+<td>end</td>
+<td>End position</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-utils-addclass">
+<h2 id="osjs-utils-addclass-">OSjs.Utils.$addClass()</h2>
+<p>Add a className to a DOM Element</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-utils-removeclass">
+<h2 id="osjs-utils-removeclass-">OSjs.Utils.$removeClass()</h2>
+<p>Remove a className from a DOM Element</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-utils-hasclass">
+<h2 id="osjs-utils-hasclass-">OSjs.Utils.$hasClass()</h2>
+<p>Check if a DOM Element has given className</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-function" id="osjs-utils-createcss">
+<h2 id="osjs-utils-createcss-">OSjs.Utils.$createCSS()</h2>
+<p>Create a <link> stylesheet tag</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>src</td>
+<td>The URL of resource</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> DOMElement <em>The tag</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-createjs">
+<h2 id="osjs-utils-createjs-">OSjs.Utils.$createJS()</h2>
+<p>Create a <script> tag</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>src</td>
+<td>The URL of resource</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onreadystatechange</td>
+<td>readystatechange callback</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onload</td>
+<td>onload callback</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onerror</td>
+<td>onerror callback</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> DOMElement <em>The tag</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isformelement">
+<h2 id="osjs-utils-isformelement-">OSjs.Utils.isFormElement()</h2>
+<p>Check if event happened on a form element</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMEvent</td>
+<td>ev</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>Array</td>
+<td>types</td>
+<td>Array of types</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean <em>If is a form element</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isinputelement">
+<h2 id="osjs-utils-isinputelement-">OSjs.Utils.isInputElement()</h2>
+<p>Alias</p>
+<p><strong>See:</strong> OSjs.Utils.isFormElement()</p>
+
+</div>
+<div class="section-function" id="osjs-utils-ajax">
+<h2 id="osjs-utils-ajax-">OSjs.Utils.ajax()</h2>
+<p>Common function for handling all types of XHR calls</p>
+<p>including download/upload and JSONP</p>
+<p>arguments:</p>
+<p> url String The URL</p>
+<p> method String HTTP Call method: (POST/GET, default = GET)</p>
+<p> body Mixed Optional body to send (for POST)</p>
+<p> responseType String HTTP Response type (default = null)</p>
+<p> requestHeaders Object Tuple with headers (default = null)</p>
+<p> json boolean Handle as a JSON request/response (default = false)</p>
+<p> jsonp boolean Handle as a JSONP request (default = false)</p>
+<p> onerror Function onerror callback</p>
+<p> onsuccess Function onsuccess callback</p>
+<p> oncreated Function oncreated callback</p>
+<p> onfailed Function onfailed callback</p>
+<p> oncanceled Function oncanceled callback</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>args</td>
+<td>Aguments (see below)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-utils-preload">
+<h2 id="osjs-utils-preload-">OSjs.Utils.Preload()</h2>
+<p>Preload a list of resources</p>
+<p>Format of list is:</p>
+<p>[</p>
+<p> {</p>
+<p> &quot;type&quot;: &quot;javascript&quot; // or &quot;stylesheet&quot;,</p>
+<p> &quot;src&quot;: &quot;url/uri&quot;</p>
+<p> }</p>
+<p>]</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Array</td>
+<td>list</td>
+<td>The list of resources</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>callback</td>
+<td>Callback when done</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>callbackProgress</td>
+<td>Callback on progress</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<h1>Classes</h1>
+
+    </content>
+  </body>
+</body>

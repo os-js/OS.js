@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OS.js Client Documentation</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+  </head>
+  <body>
+    <nav>
+      <h1>Files</h1>
+      <ul>
+
+<li><a href="_srcjavascriptutilsjs.html">src/javascript/utils.js</a></li>
+<li><a href="_srcjavascriptguielementjs.html">src/javascript/guielement.js</a></li>
+<li><a href="_srcjavascriptdialogsjs.html">src/javascript/dialogs.js</a></li>
+<li><a href="_srcjavascriptcorejs.html">src/javascript/core.js</a></li>
+<li><a href="_srcjavascriptvfsjs.html">src/javascript/vfs.js</a></li>
+
+      </ul>
+
+      <h1>Namespace</h1>
+      <ul>
+
+%NAMESPACE%
+
+      </ul>
+    </nav>
+
+    <content>
+
+<div><i>src/javascript/core.js, Generated: </i>Sun Jan 11 2015 00:42:19 GMT+0100 (CET)</div>
+<h1>Overview</h1>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Core.<a href="#osjs-core-addhook">addHook()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createloading">createLoading()</a></li>
+<li>OSjs.API.<a href="#osjs-api-destroyloading">destroyLoading()</a></li>
+<li>OSjs.Core.<a href="#osjs-core-initialize">initialize()</a></li>
+<li>OSjs.Core.<a href="#osjs-core-shutdown">shutdown()</a></li>
+<li>OSjs.Core.<a href="#osjs-core-signout">signOut()</a></li>
+<li>OSjs.API.<a href="#osjs-api-call">call()</a></li>
+<li>OSjs.API.<a href="#osjs-api-error">error()</a></li>
+<li>OSjs.API.<a href="#osjs-api-launch">launch()</a></li>
+<li>OSjs.API.<a href="#osjs-api-launch">launch()</a></li>
+<li>OSjs.API.<a href="#osjs-api-launchlist">launchList()</a></li>
+<li>OSjs.API.<a href="#osjs-api-playsound">playSound()</a></li>
+<li>OSjs.API.<a href="#osjs-api-kill">kill()</a></li>
+<li>OSjs.API.<a href="#osjs-api-message">message()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getprocess">getProcess()</a></li>
+<li>OSjs.API.<a href="#osjs-api-_">_()</a></li>
+<li>OSjs.API.<a href="#osjs-api-__">__()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getlocale">getLocale()</a></li>
+<li>OSjs.API.<a href="#osjs-api-setlocale">setLocale()</a></li>
+<li>OSjs.API.<a href="#osjs-api-curl">curl()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getapplicationresource">getApplicationResource()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getthemecss">getThemeCSS()</a></li>
+<li>OSjs.API.<a href="#osjs-api-geticon">getIcon()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getfileicon">getFileIcon()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getthemeresource">getThemeResource()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getdefaultsettings">getDefaultSettings()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getdefaultpath">getDefaultPath()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getprocesses">getProcesses()</a></li>
+<li>OSjs.API.<a href="#osjs-api-gethandlerinstance">getHandlerInstance()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getwminstance">getWMInstance()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createdroppable">createDroppable()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createdraggable">createDraggable()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createmenu">createMenu()</a></li>
+<li>OSjs.API.<a href="#osjs-api-blurmenu">blurMenu()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+OSjs.Core.<a href="#osjs-core-process">Process</a>
+<ul>
+<li><a href="#process-destroy">destroy()</a></li>
+<li><a href="#process-_onmessage">_onMessage()</a></li>
+</ul>
+</li>
+<li>
+OSjs.Core.<a href="#osjs-core-service">Service</a>
+<ul>
+<li><a href="#service-init">init()</a></li>
+<li><a href="#service-_call">_call()</a></li>
+</ul>
+</li>
+<li>
+OSjs.Core.<a href="#osjs-core-application">Application</a>
+<ul>
+<li><a href="#application-init">init()</a></li>
+<li><a href="#application-destroy">destroy()</a></li>
+<li><a href="#application-_onmessage">_onMessage()</a></li>
+<li><a href="#application-_call">_call()</a></li>
+<li><a href="#application-_createdialog">_createDialog()</a></li>
+<li><a href="#application-_addwindow">_addWindow()</a></li>
+<li><a href="#application-_removewindow">_removeWindow()</a></li>
+<li><a href="#application-_getwindow">_getWindow()</a></li>
+<li><a href="#application-_getwindowsbyname">_getWindowsByName()</a></li>
+<li><a href="#application-_getwindowsbytag">_getWindowsByTag()</a></li>
+<li><a href="#application-_getwindows">_getWindows()</a></li>
+<li><a href="#application-_getsettings">_getSettings()</a></li>
+<li><a href="#application-_setsetting">_setSetting()</a></li>
+<li><a href="#application-_getargument">_getArgument()</a></li>
+<li><a href="#application-_setargument">_setArgument()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-core-addhook">
+<h2 id="osjs-core-addhook-">OSjs.Core.addHook()</h2>
+<p>Method for adding a hook</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Hook name</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>fn</td>
+<td>Callback</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-createloading">
+<h2 id="osjs-api-createloading-">OSjs.API.createLoading()</h2>
+<p>Create (or show) loading indicator</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Name of dialog (unique)</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>opts</td>
+<td>Options</td>
+</tr>
+<tr>
+<td>int</td>
+<td>panelId</td>
+<td>Panel ID (optional)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>Or false on error</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-destroyloading">
+<h2 id="osjs-api-destroyloading-">OSjs.API.destroyLoading()</h2>
+<p>Destroy (or hide) loading indicator</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Name of dialog (unique)</td>
+</tr>
+<tr>
+<td>int</td>
+<td>panelId</td>
+<td>Panel ID (optional)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-function" id="osjs-core-initialize">
+<h2 id="osjs-core-initialize-">OSjs.Core.initialize()</h2>
+<p>This is the main initialization function</p>
+<p>the first thing that is called after page has loaded</p>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-core-shutdown">
+<h2 id="osjs-core-shutdown-">OSjs.Core.shutdown()</h2>
+<p>Shut down OS.js</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>save</td>
+<td>Save the current session ?</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-core-signout">
+<h2 id="osjs-core-signout-">OSjs.Core.signOut()</h2>
+<p>Sign Out of OS.js</p>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-call">
+<h2 id="osjs-api-call-">OSjs.API.call()</h2>
+<p>Global function for calling API (backend)</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>m</td>
+<td>Method name</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>a</td>
+<td>Method arguments</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>cok</td>
+<td>Callback on success</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>cerror</td>
+<td>Callback on error</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-error">
+<h2 id="osjs-api-error-">OSjs.API.error()</h2>
+<p>Global function for showing an error dialog</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>title</td>
+<td>Dialog title</td>
+</tr>
+<tr>
+<td>String</td>
+<td>message</td>
+<td>Dialog message</td>
+</tr>
+<tr>
+<td>String</td>
+<td>error</td>
+<td>Error message</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>exception</td>
+<td>Exception reference (optional)</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>bugreport</td>
+<td>Enable bugreporting for this error (default=fale)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> null</p>
+
+</div>
+<div class="section-function" id="osjs-api-launch">
+<h2 id="osjs-api-launch-">OSjs.API.launch()</h2>
+<p>Open a file</p>
+<p><strong>See:</strong> doLaunchProcess</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>file</td>
+<td>File</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>launchArgs</td>
+<td>Arguments to send to process launch function</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-launch">
+<h2 id="osjs-api-launch-">OSjs.API.launch()</h2>
+<p>Launch a Process</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>n</td>
+<td>Application Name</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>arg</td>
+<td>Launch arguments</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onFinished</td>
+<td>Callback on success</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onError</td>
+<td>Callback on error</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onConstructed</td>
+<td>Callback on application init</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> bool</p>
+
+</div>
+<div class="section-function" id="osjs-api-launchlist">
+<h2 id="osjs-api-launchlist-">OSjs.API.launchList()</h2>
+<p>Launch Processes from a List</p>
+<p><strong>See:</strong> doLaunchProcess</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Array</td>
+<td>list</td>
+<td>List of launch application arguments</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onSuccess</td>
+<td>Callback on success</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onError</td>
+<td>Callback on error</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onFinished</td>
+<td>Callback on finished running</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-playsound">
+<h2 id="osjs-api-playsound-">OSjs.API.playSound()</h2>
+<p>Global function for playing a sound</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Sound name</td>
+</tr>
+<tr>
+<td>float</td>
+<td>volume</td>
+<td>Sound volume (0.0 - 1.0)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> DOMAudio</p>
+
+</div>
+<div class="section-function" id="osjs-api-kill">
+<h2 id="osjs-api-kill-">OSjs.API.kill()</h2>
+<p>Kills a process</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>int</td>
+<td>pid</td>
+<td>Process ID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-message">
+<h2 id="osjs-api-message-">OSjs.API.message()</h2>
+<p>Sends a message to all processes</p>
+<p>Example: VFS uses this to signal file changes etc.</p>
+<p><strong>See:</strong> Process::_onMessage()</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>msg</td>
+<td>Message name</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>opts</td>
+<td>Options</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-getprocess">
+<h2 id="osjs-api-getprocess-">OSjs.API.getProcess()</h2>
+<p>Get a process by name</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Process Name</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>first</td>
+<td>Return the first found</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Process <em>Or an Array of Processes</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-_">
+<h2 id="osjs-api-_-">OSjs.API._()</h2>
+<p>Translate given string</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>s</td>
+<td>Translation key/string</td>
+</tr>
+<tr>
+<td>Mixed</td>
+<td>...</td>
+<td>Format values</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String</p>
+
+</div>
+<div class="section-function" id="osjs-api-__">
+<h2 id="osjs-api-__-">OSjs.API.__()</h2>
+<p>Same as _ only you can supply the list as first argument</p>
+<p><strong>See:</strong> doTranslate()</p>
+
+</div>
+<div class="section-function" id="osjs-api-getlocale">
+<h2 id="osjs-api-getlocale-">OSjs.API.getLocale()</h2>
+<p>Get current locale</p>
+<p><strong>Returns:</strong> String</p>
+
+</div>
+<div class="section-function" id="osjs-api-setlocale">
+<h2 id="osjs-api-setlocale-">OSjs.API.setLocale()</h2>
+<p>Set locale</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>s</td>
+<td>Locale name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-curl">
+<h2 id="osjs-api-curl-">OSjs.API.curl()</h2>
+<p>Perform cURL call</p>
+<p> fn(error, result)</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>args</td>
+<td>cURL Arguments (see backend)</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>callback</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-getapplicationresource">
+<h2 id="osjs-api-getapplicationresource-">OSjs.API.getApplicationResource()</h2>
+<p>Get a resource from application</p>
+<p> You can also specify a name by String</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Process</td>
+<td>app</td>
+<td>Application instance reference</td>
+</tr>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Resource Name</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The absolute URL of resource</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getthemecss">
+<h2 id="osjs-api-getthemecss-">OSjs.API.getThemeCSS()</h2>
+<p>Get path to css theme</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>CSS Stylesheet name (without extension)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The absolute URL of css file</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-geticon">
+<h2 id="osjs-api-geticon-">OSjs.API.getIcon()</h2>
+<p>Get a icon (wrapper for above methods)</p>
+<p>If the given name is specified with &quot;./something.png&quot; it will use the</p>
+<p>&#39;app&#39; parameter.</p>
+<p> You can also specify a name by String</p>
+<p> (default=&quot;16x16&quot;)</p>
+<p>@retrurn String The absolute URL of the icon</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Icon Name</td>
+</tr>
+<tr>
+<td>Process</td>
+<td>app</td>
+<td>Application instance reference (Optional)</td>
+</tr>
+<tr>
+<td>String</td>
+<td>args</td>
+<td>Optional argument to getThemeResource</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<div class="section-function" id="osjs-api-getfileicon">
+<h2 id="osjs-api-getfileicon-">OSjs.API.getFileIcon()</h2>
+<p>Get a icon based in file and mime</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>filename</td>
+<td>Filename</td>
+</tr>
+<tr>
+<td>String</td>
+<td>mime</td>
+<td>MIME type</td>
+</tr>
+<tr>
+<td>String</td>
+<td>type</td>
+<td>Filetype (dir or file, default=&quot;file&quot;)</td>
+</tr>
+<tr>
+<td>String</td>
+<td>icon</td>
+<td>Default icon (optional)</td>
+</tr>
+<tr>
+<td>String</td>
+<td>size</td>
+<td>Icon size (default=&quot;16x16&quot;)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The absolute URL to the icon</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getthemeresource">
+<h2 id="osjs-api-getthemeresource-">OSjs.API.getThemeResource()</h2>
+<p>Default method for getting a resource from current theme</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Resource filename</td>
+</tr>
+<tr>
+<td>String</td>
+<td>type</td>
+<td>Type (icon, sound, wm, base)</td>
+</tr>
+<tr>
+<td>String</td>
+<td>args</td>
+<td>Used for &#39;icon&#39;, defines the size (optional)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String <em>The absolute URL to the resource</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getdefaultsettings">
+<h2 id="osjs-api-getdefaultsettings-">OSjs.API.getDefaultSettings()</h2>
+<p>Get default configured settings</p>
+<p>THIS IS JUST A PLACEHOLDER. &#39;settings.js&#39; SHOULD HAVE THIS!</p>
+<p><strong>Returns:</strong> Object</p>
+
+</div>
+<div class="section-function" id="osjs-api-getdefaultpath">
+<h2 id="osjs-api-getdefaultpath-">OSjs.API.getDefaultPath()</h2>
+<p>Get default configured path</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>fallback</td>
+<td>Fallback path on error (default= &quot;/&quot;)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> String</p>
+
+</div>
+<div class="section-function" id="osjs-api-getprocesses">
+<h2 id="osjs-api-getprocesses-">OSjs.API.getProcesses()</h2>
+<p>Get all processes</p>
+<p><strong>Returns:</strong> Array</p>
+
+</div>
+<div class="section-function" id="osjs-api-gethandlerinstance">
+<h2 id="osjs-api-gethandlerinstance-">OSjs.API.getHandlerInstance()</h2>
+<p>Get running &#39;Handler&#39; instance</p>
+<p><strong>Returns:</strong> Handler</p>
+
+</div>
+<div class="section-function" id="osjs-api-getwminstance">
+<h2 id="osjs-api-getwminstance-">OSjs.API.getWMInstance()</h2>
+<p>Get running &#39;WindowManager&#39; instance</p>
+<p><strong>Returns:</strong> WindowManager</p>
+
+</div>
+<div class="section-function" id="osjs-api-createdroppable">
+<h2 id="osjs-api-createdroppable-">OSjs.API.createDroppable()</h2>
+<p>Create a droppable DOM element</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>DOMElement</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>args</td>
+<td>JSON of droppable params</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-createdraggable">
+<h2 id="osjs-api-createdraggable-">OSjs.API.createDraggable()</h2>
+<p>Create a draggable DOM element</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DOMElement</td>
+<td>el</td>
+<td>DOMElement</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>args</td>
+<td>JSON of draggable params</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-function" id="osjs-api-createmenu">
+<h2 id="osjs-api-createmenu-">OSjs.API.createMenu()</h2>
+<p>Create and show a GUI Menu</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Array</td>
+<td>items</td>
+<td>Array of items</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>pos</td>
+<td>Object with x and y</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> OSjs.GUI.Menu</p>
+
+</div>
+<div class="section-function" id="osjs-api-blurmenu">
+<h2 id="osjs-api-blurmenu-">OSjs.API.blurMenu()</h2>
+<p>Blur (Hide) current Menu</p>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-process">
+<h2>Process</h2>
+<p>Process Template Class</p>
+<div class="section-method" id="process-destroy">
+<h3 id="process-destroy-">Process::destroy()</h3>
+<p>Destroys the process</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>kill</td>
+<td>Force kill ?</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="process-_onmessage">
+<h3 id="process-_onmessage-">Process::_onMessage()</h3>
+<p>Placeholder for messages sendt via API</p>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+</div>
+<div class="section-class" id="osjs-core-service">
+<h2>Service</h2>
+<p>Service Class</p>
+<p><b>Extends:</b>Process</p>
+<div class="section-method" id="service-init">
+<h3 id="service-init-">Service::init()</h3>
+<p>Intiaialize the Service</p>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="service-_call">
+<h3 id="service-_call-">Service::_call()</h3>
+<p>Call the ApplicationAPI</p>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+</div>
+<div class="section-class" id="osjs-core-application">
+<h2>Application</h2>
+<p>Application Class
+
+The 'Process arguments' is a JSON object with the arguments the
+
+Applications was launched with. Just like 'argv'</p>
+<p><b>Extends:</b>Process</p>
+<div class="section-method" id="application-init">
+<h3 id="application-init-">Application::init()</h3>
+<p>Initialize the Application</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>settings</td>
+<td>Settings JSON</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>metadata</td>
+<td>Metadata JSON</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="application-destroy">
+<h3 id="application-destroy-">Application::destroy()</h3>
+<p>Destroy the application</p>
+<p><strong>See:</strong> Process::destroy()</p>
+
+</div>
+<div class="section-method" id="application-_onmessage">
+<h3 id="application-_onmessage-">Application::_onMessage()</h3>
+<p>Application has received a message</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>obj</td>
+<td>Where it came from</td>
+</tr>
+<tr>
+<td>String</td>
+<td>msg</td>
+<td>Name of message</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>args</td>
+<td>Message arguments</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="application-_call">
+<h3 id="application-_call-">Application::_call()</h3>
+<p>Call the ApplicationAPI</p>
+<p>This is used for calling &#39;api.php&#39; or &#39;api.js&#39; in your Application.</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>method</td>
+<td>Name of method</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>args</td>
+<td>Arguments in JSON</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onSuccess</td>
+<td>When request is done callback fn(result)</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>onError</td>
+<td>When an error occured fn(error)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="application-_createdialog">
+<h3 id="application-_createdialog-">Application::_createDialog()</h3>
+<p>Wrapper for creating dialogs</p>
+<p>Using this function will add them as children, making sure they will</p>
+<p>be destroyed on close.</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>className</td>
+<td>ClassName in OSjs.Dialogs namespace</td>
+</tr>
+<tr>
+<td>Array</td>
+<td>args</td>
+<td>Array of arguments for constructor</td>
+</tr>
+<tr>
+<td>Window</td>
+<td>parentClass</td>
+<td>The parent window</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Window <em>Or false on error</em></p>
+
+</div>
+<div class="section-method" id="application-_addwindow">
+<h3 id="application-_addwindow-">Application::_addWindow()</h3>
+<p>Add a window to the application</p>
+<p>This will automatically add it to the WindowManager and show it to you</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Window</td>
+<td>w</td>
+<td>The Window</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Window</p>
+
+</div>
+<div class="section-method" id="application-_removewindow">
+<h3 id="application-_removewindow-">Application::_removeWindow()</h3>
+<p>Removes given Window</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Window</td>
+<td>w</td>
+<td>The Windo</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> boolean</p>
+
+</div>
+<div class="section-method" id="application-_getwindow">
+<h3 id="application-_getwindow-">Application::_getWindow()</h3>
+<p>Gets a Window by X</p>
+<p>If you specify &#39;tag&#39; the result will end with an Array because</p>
+<p>these are not unique.</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>checkfor</td>
+<td>The argument to check for</td>
+</tr>
+<tr>
+<td>Mixed</td>
+<td>key</td>
+<td>What to match against</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> Window <em>Or null on error or nothing</em></p>
+
+</div>
+<div class="section-method" id="application-_getwindowsbyname">
+<h3 id="application-_getwindowsbyname-">Application::_getWindowsByName()</h3>
+<p>Get a Window by Name</p>
+<p><strong>See:</strong> Application::_getWindow()</p>
+
+</div>
+<div class="section-method" id="application-_getwindowsbytag">
+<h3 id="application-_getwindowsbytag-">Application::_getWindowsByTag()</h3>
+<p>Get Windows(!) by Tag</p>
+<p><strong>See:</strong> Application::_getWindow()
+<strong>Returns:</strong> Array</p>
+
+</div>
+<div class="section-method" id="application-_getwindows">
+<h3 id="application-_getwindows-">Application::_getWindows()</h3>
+<p>Get a list of all windows</p>
+<p>@retrun Array</p>
+
+</div>
+<div class="section-method" id="application-_getsettings">
+<h3 id="application-_getsettings-">Application::_getSettings()</h3>
+<p>Get the sessions JSON</p>
+<p><strong>Returns:</strong> Object <em>the current settings</em></p>
+
+</div>
+<div class="section-method" id="application-_setsetting">
+<h3 id="application-_setsetting-">Application::_setSetting()</h3>
+<p>Set a setting</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>k</td>
+<td>Key</td>
+</tr>
+<tr>
+<td>String</td>
+<td>v</td>
+<td>Value</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>save</td>
+<td>Immediately save settings ?</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>saveCallback</td>
+<td>If you save, this will be called when done</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+<div class="section-method" id="application-_getargument">
+<h3 id="application-_getargument-">Application::_getArgument()</h3>
+<p>Get a launch/session argument</p>
+<p><strong>Returns:</strong> Mixed <em>Argument value or null</em></p>
+
+</div>
+<div class="section-method" id="application-_setargument">
+<h3 id="application-_setargument-">Application::_setArgument()</h3>
+<p>Set a launch/session argument</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>k</td>
+<td>Key</td>
+</tr>
+<tr>
+<td>String</td>
+<td>v</td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong> void</p>
+
+</div>
+</div>
+
+    </content>
+  </body>
+</body>

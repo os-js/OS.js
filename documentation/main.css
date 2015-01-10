@@ -1,0 +1,70 @@
+body {
+  font-family : sans-serif;
+  margin : 0;
+  padding : 0;
+  overflow : hidden;
+}
+
+li {
+  padding : 5px;
+}
+
+li a {
+  text-decoration : none;
+  color : blue;
+}
+
+nav {
+  position : absolute;
+  left : 0px;
+  top : 0px;
+  bottom : 0px;
+  width : 300px;
+  background : #eee;
+  box-sizing : border-box;
+  padding : 20px;
+}
+
+content {
+  position : absolute;
+  left : 300px;
+  top : 0px;
+  right : 0px;
+  bottom : 0px;
+  overflow : auto;
+  box-sizing : border-box;
+  padding : 20px;
+}
+
+content div.section-function {
+  background : #eee;
+  padding : 20px;
+  margin-bottom : 20px;
+}
+
+content div.section-class {
+  background : #eee;
+  padding : 20px;
+  margin-bottom : 20px;
+}
+content div.section-class > div {
+  background : #fff;
+  padding : 20px;
+  margin-bottom : 20px;
+}
+
+content table {
+  border : 1px solid #666;
+  border-collapse : collapse;
+  min-width : 400px;
+}
+content thead * {
+  text-align : left;
+  font-weight : bold;
+  padding : 10px;
+  background : #fff;
+}
+content tbody * {
+  padding : 10px;
+  background : #ccc;
+}
