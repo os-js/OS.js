@@ -46,6 +46,12 @@
    * Used for communication, resources, settings and session handling
    *
    * You can implement your own, see documentation on Wiki.
+   *
+   * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
+   * OSjs.API.getHandlerInstance();
+   *
+   * @api   OSjs.Handlers.Default
+   * @class
    */
   var DefaultHandler = function() {
     if ( _handlerInstance ) {
@@ -63,8 +69,14 @@
 
   /**
    * Called upon window loaded from 'main.js'
-   * @see main.js
-   * @see API._initialize
+   *
+   * @param   Function      callback        Callback function
+   *
+   * @see OSjs.API.initialize()
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::init()
    */
   DefaultHandler.prototype.init = function(callback) {
     console.info('OSjs::DefaultHandler::init()');
@@ -75,7 +87,11 @@
   };
 
   /**
-   * Called upon unload
+   * Destroy the handler
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::destroy()
    */
   DefaultHandler.prototype.destroy = function() {
     if ( this.connection ) {
@@ -92,7 +108,12 @@
 
   /**
    * Called after successfull login in 'core.js'
-   * @see Core::Main::init()
+   *
+   * @param   Function      callback        Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::boot()
    */
   DefaultHandler.prototype.boot = function(callback) {
     console.info('OSjs::DefaultHandler::boot()');
@@ -114,6 +135,14 @@
    * Default login method
    * NOTE: This is just a placeholder.
    *       To implement your own login handler, see the Wiki :)
+   *
+   * @param   String    username      Login username
+   * @param   String    password      Login password
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::login()
    */
   DefaultHandler.prototype.login = function(username, password, callback) {
     console.info('OSjs::DefaultHandler::login()', username);
@@ -127,6 +156,13 @@
    *
    * NOTE: You should call this in your implemented handler
    *       or else your data will not be stored
+   *
+   * @parm    boolean   save          Save session?
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::logout()
    */
   DefaultHandler.prototype.logout = function(save, callback) {
     console.info('OSjs::DefaultHandler::logout()');
@@ -148,6 +184,12 @@
 
   /**
    * Default method to restore last running session
+   *
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::loadSession()
    */
   DefaultHandler.prototype.loadSession = function(callback) {
     callback = callback || function() {};
@@ -165,6 +207,10 @@
   /**
    * Default method to perform a call to the backend (API)
    * Use this shorthand method: API.call() instead :)
+   *
+   * @see OSjs.API.call()
+   *
+   * @method  DefaultHandler::callAPI()
    */
   DefaultHandler.prototype.callAPI = function(method, args, cbSuccess, cbError) {
     return this.connection.callAPI(method, args, cbSuccess, cbError);
@@ -176,6 +222,13 @@
 
   /**
    * Called when login() is finished
+   *
+   * @param   Object    userData      JSON User Data
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::onLogin()
    */
   DefaultHandler.prototype.onLogin = function(userData, callback) {
     callback = callback || function() {};
@@ -206,6 +259,17 @@
 
   /**
    * Called upon a VFS request
+   *
+   * You can use this to interrupt operations
+   *
+   * @param   String    vfsModule     VFS Module Name
+   * @param   String    vfsMethod     VFS Method Name
+   * @param   Object    vfsArguments  VFS Method Arguments
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::onVFSRequest()
    */
   DefaultHandler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
     // If you want to interrupt or modify somehow
@@ -256,6 +320,10 @@
 
   /**
    * Get metadata for application by class-name
+   *
+   * @return  Object        JSON data
+   *
+   * @method  DefaultHandler::getApplicationMetadata()
    */
   DefaultHandler.prototype.getApplicationMetadata = function(name) {
     return this.packages.getPackage(name);
@@ -263,6 +331,10 @@
 
   /**
    * Get all package metadata
+   *
+   * @return  Array       Array of JSON data
+   *
+   * @method  DefaultHandler::getApplicationsMetadata()
    */
   DefaultHandler.prototype.getApplicationsMetadata = function() {
     return this.packages.getPackages();
@@ -270,6 +342,17 @@
 
   /**
    * Get a list of application supporting mime type
+   *
+   * FIXME: There is a unused parameter here!
+   *
+   * @param   String    mime      The MIME type
+   * @param   String    fname     Filename (unused)
+   * @param   boolean   forceList Force entry to show up
+   * @param   Function  callback  Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::getApplicationNameByMime()
    */
   DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
     var pacman = this.packages;
@@ -289,6 +372,13 @@
   // Themes
   //
 
+  /**
+   * Gets a list of all themes metadata
+   *
+   * @return  Array       Array of JSON
+   *
+   * @method  DefaultHandler::getThemes()
+   */
   DefaultHandler.prototype.getThemes = function() {
     if ( this.themes ) {
       return this.themes.getThemes();
@@ -296,6 +386,13 @@
     return [];
   };
 
+  /**
+   * Gets a theme by name
+   *
+   * @return  Object        JSON Data
+   *
+   * @method  DefaultHandler::getTheme()
+   */
   DefaultHandler.prototype.getTheme = function(name) {
     if ( this.themes ) {
       return this.themes.getTheme(name);
@@ -309,6 +406,14 @@
 
   /**
    * Set the default application for given mime type
+   *
+   * @param   String    mime      MIME Type
+   * @param   String    app       Application name
+   * @param   Function  callback  Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::setDefaultApplication()
    */
   DefaultHandler.prototype.setDefaultApplication = function(mime, app, callback) {
     callback = callback || function() {};
@@ -320,6 +425,12 @@
    * Internal method for saving settings (wrapper)
    * NOTE: This is should be called from the implemented handler
    *       See 'demo' handler for example
+   *
+   * @param   Function  callback  Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::saveSettings()
    */
   DefaultHandler.prototype.saveSettings = function(callback) {
     console.debug('OSjs::DefaultHandler::saveSettings()');
@@ -328,7 +439,17 @@
 
   /**
    * Sets a setting
-   * @see SettingsManager
+   *
+   * @param   String    category      The group/category of setting
+   * @param   String    name          The setting key
+   * @param   Mixed     value         The setting value
+   * @param   Function  callback      Callback function
+   * @param   boolean   save          Also save settings? (default=true)
+   * @param   boolean   merge         Merge instead of set?
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::setSetting()
    */
   DefaultHandler.prototype.setSetting = function(category, name, value, callback, save, merge) {
     save = (typeof save === 'undefined' || save === true);
@@ -345,7 +466,15 @@
 
   /**
    * Gets a setting
-   * @see SettingsManager
+   *
+   * @param   String    category      The group/category of setting
+   * @param   String    name          The setting key
+   * @param   Function  callback      Callback function
+   * @param   Mixed     defaultValue  Use as default if none found
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::getSetting()
    */
   DefaultHandler.prototype.getSetting = function(category, name, callback, defaultValue) {
     callback = callback || function() {};
@@ -354,6 +483,14 @@
 
   /**
    * Wrapper for setting user settings
+   *
+   * @param   String    name          The setting key
+   * @param   Object    values        JSON of settings
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::setUserSettings()
    */
   DefaultHandler.prototype.setUserSettings = function(name, values, callback) {
     callback = callback || function() {};
@@ -373,6 +510,13 @@
 
   /**
    * Wrapper for getting user settings
+   *
+   * @param   String    name          The setting key
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::getUserSettings()
    */
   DefaultHandler.prototype.getUserSettings = function(name, callback) {
     callback = callback || function() {};
@@ -381,6 +525,13 @@
 
   /**
    * Wrapper for setting user session
+   *
+   * @param   Array     session       Array of session JSON data
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::setUserSession()
    */
   DefaultHandler.prototype.setUserSession = function(session, callback) {
     callback = callback || function() {};
@@ -389,6 +540,12 @@
 
   /**
    * Wrapper for getting user session
+   *
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::getUserSession()
    */
   DefaultHandler.prototype.getUserSession = function(callback) {
     callback = callback || function() {};
@@ -397,6 +554,14 @@
 
   /**
    * Wrapper for setting application settings
+   *
+   * @param   String    app           Application name
+   * @param   Array     settings      Array of setting JSON data
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::setApplicationSettings()
    */
   DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
     callback = callback || function() {};
@@ -405,6 +570,13 @@
 
   /**
    * Wrapper for getting application settings
+   *
+   * @param   String    app           Application name
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  DefaultHandler::getApplicationSettings()
    */
   DefaultHandler.prototype.getApplicationSettings = function(app, callback) {
     callback = callback || function() {};
@@ -413,6 +585,12 @@
 
   /**
    * Get entire configuration
+   *
+   * @param   String    key     Optionally get just this value
+   *
+   * @return  Object    All settings or just value by key
+   *
+   * @method  DefaultHandler::getConfig()
    */
   DefaultHandler.prototype.getConfig = function(key) {
     return key ? this.config[key] : this.config;
@@ -420,6 +598,10 @@
 
   /**
    * Get data for logged in user
+   *
+   * @return  Object      JSON With user data
+   *
+   * @method  DefaultHandler::getUserData()
    */
   DefaultHandler.prototype.getUserData = function() {
     return this.user.getUserData();
@@ -427,6 +609,10 @@
 
   /**
    * Get the settings manager
+   *
+   * @return  Object    All settings in JSON
+   *
+   * @method  DefaultHandler::getSettings()
    */
   DefaultHandler.prototype.getSettings = function() {
     return this.settings;

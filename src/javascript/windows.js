@@ -292,6 +292,9 @@
    * WindowManager Process Class
    * The default implementation of this is in apps/CoreWM/main.js
    *
+   * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
+   * OSjs.API.getWMInstance();
+   *
    * @see     OSjs.Core.Process
    * @api     OSjs.Core.WindowManager
    * @extends Process
