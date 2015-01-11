@@ -19,6 +19,7 @@
     "url": "https://github.com/andersevenrud/OS.js-v2.git"
   },
   "dependencies": {
+    "marked": "latest",
     "less": "latest",
     "cookies": "latest",
     "node-fs-extra": "latest",

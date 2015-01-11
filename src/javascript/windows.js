@@ -291,6 +291,11 @@
   /**
    * WindowManager Process Class
    * The default implementation of this is in apps/CoreWM/main.js
+   *
+   * @see     OSjs.Core.Process
+   * @api     OSjs.Core.WindowManager
+   * @extends Process
+   * @class
    */
   var WindowManager = function(name, ref, args, metadata) {
     console.group('OSjs::Core::WindowManager::__construct()');
@@ -315,6 +320,13 @@
 
   WindowManager.prototype = Object.create(Process.prototype);
 
+  /**
+   * Destroy the WindowManager
+   *
+   * @see Process::destroy()
+   *
+   * @method    WindowManager::destroy()
+   */
   WindowManager.prototype.destroy = function() {
     console.log('OSjs::Core::WindowManager::destroy()');
 
@@ -334,10 +346,27 @@
     return Process.prototype.destroy.apply(this, []);
   };
 
+
+  /**
+   * Initialize the WindowManager
+   *
+   * @return  void
+   *
+   * @method  WindowManager::init()
+   */
   WindowManager.prototype.init = function() {
     console.log('OSjs::Core::WindowManager::init()');
   };
 
+  /**
+   * Get a Window by name
+   *
+   * @param   String      name        Window name
+   *
+   * @return  Window
+   *
+   * @method  WindowManager::getWindow()
+   */
   WindowManager.prototype.getWindow = function(name) {
     var result = null;
     this._windows.forEach(function(w) {
@@ -349,6 +378,16 @@
     return result;
   };
 
+  /**
+   * Add a Window
+   *
+   * @param   Window      w         Window reference
+   * @param   boolean     focus     Focus the window
+   *
+   * @return  Window                The added window
+   *
+   * @method  WindowManager::addWindow()
+   */
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
       console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
@@ -367,6 +406,15 @@
     return w;
   };
 
+  /**
+   * Remove a Window
+   *
+   * @param   Window      w         Window reference
+   *
+   * @return  boolean               On success
+   *
+   * @method  WindowManager::removeWindow()
+   */
   WindowManager.prototype.removeWindow = function(w) {
     if ( !(w instanceof Window) ) {
       console.warn('OSjs::Core::WindowManager::removeWindow()', 'Got', w);
@@ -387,6 +435,16 @@
     return result;
   };
 
+  /**
+   * Set WindowManager settings
+   *
+   * @param   Object      settings        JSON Settings
+   * @param   boolean     force           If forced, no merging will take place
+   *
+   * @return  boolean                     On success
+   *
+   * @method  WindowManager::applySettings()
+   */
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
     console.log('OSjs::Core::WindowManager::applySettings', 'forced?', force);
@@ -401,6 +459,16 @@
   };
 
 
+  /**
+   * When Key Down Event received
+   *
+   * @param   DOMEvent      ev      DOM Event
+   * @param   Window        win     Active window
+   *
+   * @return  void
+   *
+   * @method  WindowManager::onKeyDown()
+   */
   WindowManager.prototype.onKeyDown = function(ev, win) {
     // Implement in your WM
   };
@@ -429,31 +497,74 @@
     // Implement in your WM
   };
 
+  /**
+   * Get default Settings
+   *
+   * @return  Object      JSON Data
+   *
+   * @method  WindowManager::getDefaultSettings()
+   */
   WindowManager.prototype.getDefaultSetting = function() {
     // Implement in your WM
     return null;
   };
 
+  /**
+   * Get panel
+   *
+   * @method  WindowManager::getPanel()
+   */
   WindowManager.prototype.getPanel = function() {
     // Implement in your WM
     return null;
   };
 
+  /**
+   * Gets all panels
+   *
+   * @return  Array       Panel List
+   *
+   * @method  WindowManager::getPanels()
+   */
   WindowManager.prototype.getPanels = function() {
     // Implement in your WM
     return [];
   };
 
+  /**
+   * Gets current theme
+   *
+   * @return  String      Theme name or 'null'
+   *
+   * @method  WindowManager::getTheme()
+   */
   WindowManager.prototype.getTheme = function() {
     // Implement in your WM
     return null;
   };
 
+  /**
+   * Gets a list of themes
+   *
+   * @return  Array   The list of themes
+   *
+   * @method  WindowManager::getThemes()
+   */
   WindowManager.prototype.getThemes = function() {
     // Implement in your WM
     return [];
   };
 
+  /**
+   * Sets a setting
+   *
+   * @param   String      k       Key
+   * @param   Mixed       v       Value
+   *
+   * @return  boolean             On success
+   *
+   * @method  WindowManager::setSetting()
+   */
   WindowManager.prototype.setSetting = function(k, v) {
     if ( v !== null ) {
       if ( typeof this._settings[k] !== 'undefined' ) {
@@ -477,10 +588,24 @@
     return false;
   };
 
+  /**
+   * Gets the rectangle for window space
+   *
+   * @return    Object {top:, left:, width:, height:}
+   *
+   * @method    WindowManager::getWindowSpace()
+   */
   WindowManager.prototype.getWindowSpace = function() {
     return _getWindowSpace();
   };
 
+  /**
+   * Get next window position
+   *
+   * @return    Object    {x:, y:}
+   *
+   * @method    WindowManager::getWindowPosition()
+   */
   WindowManager.prototype.getWindowPosition = (function() {
     var _LNEWX = 0;
     var _LNEWY = 0;
@@ -492,6 +617,15 @@
     };
   })();
 
+  /**
+   * Gets a setting
+   *
+   * @param   String    k     Key
+   *
+   * @return  Mixed           Setting value or 'null'
+   *
+   * @method  WindowManager::getSetting()
+   */
   WindowManager.prototype.getSetting = function(k) {
     if ( typeof this._settings[k] !== 'undefined' ) {
       return this._settings[k];
@@ -499,18 +633,46 @@
     return null;
   };
 
+  /**
+   * Gets all settings
+   *
+   * @return    Object        JSON With all settings
+   *
+   * @method    WindowManager::getSettings()
+   */
   WindowManager.prototype.getSettings = function() {
     return this._settings;
   };
 
+  /**
+   * Gets all Windows
+   *
+   * @return    Array           List of all Windows
+   *
+   * @method    WindowManager::getWindows()
+   */
   WindowManager.prototype.getWindows = function() {
     return this._windows;
   };
 
+  /**
+   * Gets current Window
+   *
+   * @return      Window        Current Window or 'null'
+   *
+   * @method      WindowManager::getCurrentWindow()
+   */
   WindowManager.prototype.getCurrentWindow = function() {
     return _WIN;
   };
 
+  /**
+   * Gets previous Window
+   *
+   * @return      Window        Current Window or 'null'
+   *
+   * @method      WindowManager::getLastWindow()
+   */
   WindowManager.prototype.getLastWindow = function() {
     return _LASTWIN;
   };
@@ -522,6 +684,13 @@
 
   /**
    * Window Class
+   *
+   * @param   String                    name      Window name (unique)
+   * @param   Object                    opts      List of options
+   * @param   OSjs.Core.Application     appRef    Application Reference
+   *
+   * @api     OSjs.Core.Window
+   * @class
    */
   var Window = (function() {
     var _WID                = 0;
@@ -627,6 +796,15 @@
     };
   })();
 
+  /**
+   * Initialize the Window
+   *
+   * @param   WindowManager   _wm     Window Manager reference
+   *
+   * @return  DOMElement              The Window DOM element
+   *
+   * @method  Window::init()
+   */
   Window.prototype.init = function(_wm) {
     var self = this;
     var isTouch = OSjs.Compability.touch;
@@ -946,6 +1124,13 @@
     this._updateIframeFix();
   };
 
+  /**
+   * Destroy the Window
+   *
+   * @return  void
+   *
+   * @method  Window::destroy()
+   */
   Window.prototype.destroy = function() {
     var self = this;
 
@@ -1026,6 +1211,18 @@
   // GUI And Event Hooks
   //
 
+
+  /**
+   * Adds a listener for an event
+   *
+   * @param   DOMElement    el          DOM Element to attach event to
+   * @param   String        ev          DOM Event Name
+   * @param   Function      callback    Callback on event
+   *
+   * @return  void
+   *
+   * @method  Window::_addEventListener()
+   */
   Window.prototype._addEventListener = function(el, ev, callback) {
     el.addEventListener(ev, callback, false);
 
@@ -1034,12 +1231,32 @@
     });
   };
 
+
+  /**
+   * Adds a hook (internal events)
+   *
+   * @param   String    k       Hook name: focus, blur, destroy
+   * @param   Function  func    Callback function
+   *
+   * @return  void
+   *
+   * @method  Window::_addHook()
+   */
   Window.prototype._addHook = function(k, func) {
     if ( typeof func === 'function' && this._hooks[k] ) {
       this._hooks[k].push(func);
     }
   };
 
+  /**
+   * Fire a hook (internal event)
+   *
+   * @param   String    k       Hook name: focus, blur, destroy, maximize, minimize, restore, resize, resized
+   *
+   * @return  void
+   *
+   * @method  Window::_fireHook()
+   */
   Window.prototype._fireHook = function(k, args) {
     args = args || {};
     if ( this._hooks[k] ) {
@@ -1058,6 +1275,15 @@
     }
   };
 
+  /**
+   * Remove a GUIElement
+   *
+   * @param   OSjs.GUI.GUIElement     gel       GUI Element reference
+   *
+   * @return  boolean                           On success
+   *
+   * @method  Window::_removeGUIElement()
+   */
   Window.prototype._removeGUIElement = function(gel) {
     var self = this;
     this._guiElements.forEach(function(iter, i) {
@@ -1085,6 +1311,13 @@
     });
   };
 
+  /**
+   * Update IFrame GUIElement "fix"
+   *
+   * @return  void
+   *
+   * @method  Window::_updateIframeFix()
+   */
   Window.prototype._updateIframeFix = function() {
     if ( this._$iframefix && this._iframeFixEl ) {
       var fel = this._iframeFixEl.$element;
@@ -1097,6 +1330,16 @@
     }
   };
 
+  /**
+   * Adds a GUIElement
+   *
+   * @param   GUIElement      gel           GUIElement reference
+   * @param   DOMElement      parentNode    DOM Node to add to
+   *
+   * @return  GUIElement                    On success or 'false'
+   *
+   * @method  Window::_addGUIElement()
+   */
   Window.prototype._addGUIElement = function(gel, parentNode) {
     var self = this;
     if ( !parentNode ) {
@@ -1198,6 +1441,15 @@
     this._children.push(w);
   };
 
+  /**
+   * Removes a child Window
+   *
+   * @param   Window    w     Widow reference
+   *
+   * @return  boolean         On success
+   *
+   * @method  Window::_removeChild()
+   */
   Window.prototype._removeChild = function(w) {
     var self = this;
     this._children.forEach(function(child, i) {
@@ -1212,6 +1464,16 @@
     });
   };
 
+  /**
+   * Get a Window child by X
+   *
+   * @param   String      id      Value to look for
+   * @param   String      key     Key to look for
+   *
+   * @return  Window              Resulted Window or 'null'
+   *
+   * @method  Window::_getChild()
+   */
   Window.prototype._getChild = function(id, key) {
     key = key || 'wid';
 
@@ -1232,22 +1494,56 @@
     return result;
   };
 
+  /**
+   * Get a Window child by ID
+   *
+   * @see Window::_getChild()
+   * @method Window::_getChildById()
+   */
   Window.prototype._getChildById = function(id) {
     return this._getChild(id, 'wid');
   };
 
+  /**
+   * Get a Window child by Name
+   *
+   * @see Window::_getChild()
+   * @method Window::_getChildByName()
+   */
   Window.prototype._getChildByName = function(name) {
     return this._getChild(name, 'name');
   };
 
+  /**
+   * Get Window(s) child by Tag
+   *
+   * @return  Array
+   *
+   * @see Window::_getChild()
+   * @method Window::_getChildrenByTag()
+   */
   Window.prototype._getChildrenByTag = function(tag) {
     return this._getChild(tag, 'tag');
   };
 
+  /**
+   * Gets all children Windows
+   *
+   * @return  Array
+   *
+   * @method  Window::_getChildren()
+   */
   Window.prototype._getChildren = function() {
     return this._children;
   };
 
+  /**
+   * Removes all children Windows
+   *
+   * @return  void
+   *
+   * @method  Window::_removeChildren()
+   */
   Window.prototype._removeChildren = function() {
     if ( this._children && this._children.length ) {
       this._children.forEach(function(child, i) {
@@ -1263,6 +1559,13 @@
   // Actions
   //
 
+  /**
+   * Close the Window
+   *
+   * @return  boolean     On succes
+   *
+   * @method  Window::_close()
+   */
   Window.prototype._close = function() {
     console.info('OSjs::Core::Window::_close()');
     if ( this._disabled ) { return false; }
@@ -1275,6 +1578,13 @@
     return true;
   };
 
+  /**
+   * Minimize the Window
+   *
+   * @return    boolean     On success
+   *
+   * @method    Window::_minimize()
+   */
   Window.prototype._minimize = function() {
     var self = this;
     console.debug(this._name, '>' , 'OSjs::Core::Window::_minimize()');
@@ -1313,6 +1623,13 @@
     return true;
   };
 
+  /**
+   * Maximize the Window
+   *
+   * @return    boolean     On success
+   *
+   * @method    Window::_maximize()
+   */
   Window.prototype._maximize = function() {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_maximize()');
     if ( !this._properties.allow_maximize ) { return false; }
@@ -1356,6 +1673,16 @@
     return true;
   };
 
+  /**
+   * Restore the Window
+   *
+   * @param     boolean     max     Revert maximize state
+   * @param     boolean     min     Revert minimize state
+   *
+   * @return    void
+   *
+   * @method    Window::_restore()
+   */
   Window.prototype._restore = function(max, min) {
     if ( !this._$element ) { return; }
 
@@ -1392,6 +1719,15 @@
     this._focus();
   };
 
+  /**
+   * Focus the window
+   *
+   * @param   boolean     force     Forces focus
+   *
+   * @return  boolean               On success
+   *
+   * @method  Window::_focus()
+   */
   Window.prototype._focus = function(force) {
     if ( !this._$element ) { return false; }
 
@@ -1423,6 +1759,15 @@
     return true;
   };
 
+  /**
+   * Blur the window
+   *
+   * @param   boolean     force     Forces blur
+   *
+   * @return  boolean               On success
+   *
+   * @method  Window::_blur()
+   */
   Window.prototype._blur = function(force) {
     if ( !this._$element ) { return false; }
     if ( !force && !this._state.focused ) { return false; }
@@ -1444,6 +1789,20 @@
     return true;
   };
 
+  /**
+   * Resize Window to given size
+   *
+   * @param   int           dw            Width
+   * @param   int           dh            Height
+   * @param   boolean       limit         Limit to this size (default=true)
+   * @param   boolean       move          Move window if too big (default=false)
+   * @param   DOMElement    container     Relative to this container (default=null)
+   * @param   boolean       force         Force movment (default=false)
+   *
+   * @return  void
+   *
+   * @method  Window::_resizeTo()
+   */
   Window.prototype._resizeTo = function(dw, dh, limit, move, container, force) {
     if ( !this._$element ) { return; }
 
@@ -1543,6 +1902,15 @@
     return true;
   };
 
+  /**
+   * Move window to position
+   *
+   * @param   Object      pos       Object with {x:, y:}
+   *
+   * @return  void
+   *
+   * @method  Window::_moveTo()
+   */
   Window.prototype._moveTo = function(pos) {
     if ( !_WM ) { return; }
 
@@ -1561,6 +1929,16 @@
     }
   };
 
+  /**
+   * Move window to position
+   *
+   * @param   int       x     X Position
+   * @param   int       y     Y Position
+   *
+   * @return  boolean         On success
+   *
+   * @method  Window::_move()
+   */
   Window.prototype._move = function(x, y) {
     if ( !this._$element ) { return false; }
     if ( !this._properties.allow_move ) { return false; }
@@ -1573,23 +1951,63 @@
     return true;
   };
 
+  /**
+   * Creates an error dialog
+   *
+   * @param   String      title             Dialog title
+   * @param   String      description       Error description
+   * @param   String      message           Error message
+   * @param   Error       exception         (Optional) Exception
+   * @param   boolean     bugreport         Set if this bug can be reported
+   *
+   * @return  void
+   *
+   * @method  Window::_error()
+   */
   Window.prototype._error = function(title, description, message, exception, bugreport) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_error()');
     var w = API.error(title, description, message, exception, bugreport);
     this._addChild(w);
   };
 
+  /**
+   * Toggle disabled overlay
+   *
+   * @param     boolean     t       Toggle
+   *
+   * @return    void
+   *
+   * @method    Window::_toggleDisabled()
+   */
   Window.prototype._toggleDisabled = function(t) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleDisabled()', t);
     this._$disabled.style.display = t ? 'block' : 'none';
     this._disabled = t ? true : false;
   };
 
+  /**
+   * Toggle loading overlay
+   *
+   * @param     boolean     t       Toggle
+   *
+   * @return    void
+   *
+   * @method    Window::_toggleLoading()
+   */
   Window.prototype._toggleLoading = function(t) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleLoading()', t);
     this._$loading.style.display = t ? 'block' : 'none';
   };
 
+  /**
+   * Toggle attention
+   *
+   * @param     boolean     t       Toggle
+   *
+   * @return    void
+   *
+   * @method    Window::_toggleAttentionBlink()
+   */
   Window.prototype._toggleAttentionBlink = function(t) {
     if ( !this._$element ) { return false; }
     if ( this._state.focused ) { return false; }
@@ -1634,6 +2052,13 @@
     return true;
   };
 
+  /**
+   * Check next Tab (cycle GUIElement)
+   *
+   * @return  void
+   *
+   * @method  Window::_nextTabIndex()
+   */
   Window.prototype._nextTabIndex = function() {
     if ( this._guiElement ) {
       if ( this._guiElement.tagName === 'textarea' ) {
@@ -1664,12 +2089,32 @@
   // Events
   //
 
+  /**
+   * On Drag-and-drop event
+   *
+   * @param   DOMEevent     ev        DOM Event
+   * @param   String        type      DnD type
+   *
+   * @return  boolean                 On success
+   *
+   * @method  Window::_onDndEvent()
+   */
   Window.prototype._onDndEvent = function(ev, type) {
     console.info('OSjs::Core::Window::_onDndEvent()', type);
     if ( this._disabled ) { return false; }
     return true;
   };
 
+  /**
+   * On Key event
+   *
+   * @param   DOMEvent      ev        DOM Event
+   * @param   String        type      Key type
+   *
+   * @return  void
+   *
+   * @method  Window::_onKeyEvent()
+   */
   Window.prototype._onKeyEvent = function(ev, type) {
     if ( ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex();
@@ -1682,6 +2127,16 @@
     }
   };
 
+  /**
+   * On Window Icon Click
+   *
+   * @param   DOMEvent      ev        DOM Event
+   * @param   DOMElement    el        DOM Element
+   *
+   * @return  void
+   *
+   * @method  Window::_onWindowIconClick()
+   */
   Window.prototype._onWindowIconClick = function(ev, el) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowIconClick()');
     if ( !this._properties.allow_iconmenu ) { return; }
@@ -1758,6 +2213,17 @@
     OSjs.API.createMenu(list, {x: ev.clientX, y: ev.clientY});
   };
 
+  /**
+   * On Window Button Click
+   *
+   * @param   DOMEvent      ev        DOM Event
+   * @param   DOMElement    el        DOM Element
+   * @param   String        btn       Button name
+   *
+   * @return  void
+   *
+   * @method  Window::_onWindowButtonClick()
+   */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowButtonClick()', btn);
 
@@ -1770,6 +2236,16 @@
     }
   };
 
+  /**
+   * On Window has changed
+   *
+   * @param   DOMEvent      ev        DOM Event
+   * @param   boolean       byUser    Performed by user?
+   *
+   * @return  void
+   *
+   * @method  Window::_onChange()
+   */
   Window.prototype._onChange = function(ev, byUser) {
     ev = ev || '';
     if ( ev ) {
@@ -1784,6 +2260,13 @@
   // Getters
   //
 
+  /**
+   * Get Window maximized size
+   *
+   * @return    Object      Size of {left:, top:, right:, bottom: }
+   *
+   * @method    Window::_getMaximizedSize()
+   */
   Window.prototype._getMaximizedSize = function() {
     var s = getWindowSpace();
     if ( !this._$element ) { return s; }
@@ -1804,14 +2287,35 @@
     return s;
   };
 
+  /**
+   * Get Window position in DOM
+   *
+   * @see OSjs.Utils.$position()
+   *
+   * @method  Window::_getViewRect()
+   */
   Window.prototype._getViewRect = function() {
     return this._$element ? Utils.$position(this._$element) : null;
   };
 
+  /**
+   * Get Window main DOM element
+   *
+   * @return  DOMElement
+   *
+   * @method  Window::_getRoot()
+   */
   Window.prototype._getRoot = function() {
     return this._$root;
   };
 
+  /**
+   * Get a GUIElement by name
+   *
+   * @param   String      n     GUIElement name
+   *
+   * @return  GUIElement        Element if found or 'null'
+   */
   Window.prototype._getGUIElement = function(n) {
     var result = null;
     this._guiElements.forEach(function(iter, i) {
@@ -1824,6 +2328,13 @@
     return result;
   };
 
+  /**
+   * Get Window z-index
+   *
+   * @return    int
+   *
+   * @method    Window::_getZindex()
+   */
   Window.prototype._getZindex = function() {
     if ( this._$element ) {
       return parseInt(this._$element.style.zIndex, 10);
@@ -1831,6 +2342,15 @@
     return -1;
   };
 
+  /**
+   * Set Window title
+   *
+   * @param   String      t     Title
+   *
+   * @return  void
+   *
+   * @method  Window::_setTitle()
+   */
   Window.prototype._setTitle = function(t) {
     if ( !this._$element ) { return; }
     var tel = this._$element.getElementsByClassName('WindowTitle')[0];
@@ -1842,6 +2362,15 @@
     this._onChange('title');
   };
 
+  /**
+   * Set Windoc icon
+   *
+   * @param   String      i     Icon path
+   *
+   * @return  void
+   *
+   * @method  Window::_setIcon()
+   */
   Window.prototype._setIcon = function(i) {
     if ( this._$winicon ) {
       this._$winicon.src = i;

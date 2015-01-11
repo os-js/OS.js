@@ -1,0 +1,98 @@
+body {
+  font-family : sans-serif;
+  font-size : 14px;
+  margin : 0;
+  padding : 0;
+  overflow : hidden;
+  color : #111;
+}
+
+li {
+  padding : 5px;
+}
+
+li a {
+  text-decoration : none;
+  color : blue;
+}
+
+nav {
+  position : absolute;
+  left : 0px;
+  top : 0px;
+  bottom : 0px;
+  width : 300px;
+  background : #eee;
+  box-sizing : border-box;
+  padding : 20px;
+  overflow : auto;
+}
+
+nav ul {
+  padding-left : 20px;
+}
+
+nav li a.Class {
+  font-weight : bold;
+}
+
+content {
+  position : absolute;
+  left : 300px;
+  top : 0px;
+  right : 0px;
+  bottom : 0px;
+  overflow : auto;
+  box-sizing : border-box;
+  padding : 20px;
+  overflow : auto;
+}
+
+content div.section-function {
+  background : #eee;
+  padding : 20px;
+  margin-bottom : 20px;
+}
+
+content div.section-class {
+  background : #eee;
+  padding : 20px;
+  margin-bottom : 20px;
+}
+content div.section-class > div {
+  background : #fff;
+  padding : 20px;
+  margin-bottom : 20px;
+}
+
+content table {
+  border : 0 none;
+  border-collapse : collapse;
+  margin-left : 20px;
+}
+content thead * {
+  text-align : left;
+  font-weight : bold;
+  padding : 10px;
+  background : #aaa;
+}
+content tbody * {
+  padding : 10px;
+  background : #ccc;
+}
+content tbody td:nth-child(1) {
+  width : 100px;
+}
+content tbody td:nth-child(2) {
+  width : 100px;
+  text-decoration : underline;
+}
+content tbody td:nth-child(3) {
+  min-width : 400px;
+  font-style : italic;
+}
+
+content div pre {
+  padding : 20px;
+  color : #333;
+}
