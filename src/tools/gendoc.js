@@ -40,6 +40,7 @@ Array.prototype.unique = function(){
     this.functionName = null;
     this.comment = comment;
     this.methods = [];
+    this.options = {};
 
     this.parse(comment);
   }
@@ -60,6 +61,19 @@ Array.prototype.unique = function(){
       if ( line.match(/^@param/) ) {
         tmp = line.replace(/^@param\s/, '').split(' ');
         self.parameters.push({
+          type: tmp.shift(),
+          key: tmp.shift(),
+          description: tmp.join(' ')
+        });
+      } else if ( line.match(/^@option/) ) {
+        tmp = line.replace(/^@option\s/, '').split(' ');
+        var tmp2 = tmp.shift();
+
+        if ( typeof self.options[tmp2] === 'undefined' ) {
+          self.options[tmp2] = [];
+        }
+
+        self.options[tmp2].push({
           type: tmp.shift(),
           key: tmp.shift(),
           description: tmp.join(' ')
@@ -199,6 +213,24 @@ Array.prototype.unique = function(){
       if ( this.isClass ) {
         addToBuffer('\n&nbsp;\n');
       }
+    }
+
+    var self = this;
+    if ( Object.keys(this.options).length ) {
+      Object.keys(this.options).forEach(function(o) {
+        addToBuffer('####', 'Options for', '*' + o + '*');
+
+        addToBuffer('| Name | Type | Description |');
+        addToBuffer('| ---  | ---  | --- |');
+
+        self.options[o].forEach(function(p) {
+          addToBuffer('|', p.key, '|', p.type, '|', p.description || '', '|');
+        });
+
+        if ( self.isClass ) {
+          addToBuffer('\n&nbsp;\n');
+        }
+      });
     }
 
     addToBuffer('');

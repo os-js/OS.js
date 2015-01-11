@@ -543,14 +543,13 @@
   /**
    * Write File
    *
+   * This function currently have no options.
+   *
    * @param   OSjs.VFS.File   item      File Metadata
    * @param   [File]          data      File Data (see supported types)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
-   *
-   * options:
-   *    NONE
    *
    * @return  void
    * @api     OSjs.VFS.write()
@@ -606,8 +605,7 @@
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    *
-   * options:
-   *    String    type        What to return, default: binary. Can also be: text, datasource
+   * @option  options     String      type    What to return, default: binary. Can also be: text, datasource
    *
    * @return  void
    * @api     OSjs.VFS.read()
@@ -659,8 +657,7 @@
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
    *
-   * options:
-   *    boolean     overwrite   If set to true it will not check if the destination exists
+   * @option  options boolean overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.copy()
@@ -740,8 +737,7 @@
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
    *
-   * options:
-   *    boolean     overwrite   If set to true it will not check if the destination exists
+   * @option  options boolean overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.move()
@@ -815,13 +811,12 @@
   /**
    * Delete File
    *
+   * This function currently have no options.
+   *
    * @param   OSjs.VFS.File   item      File Metadata
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
-   *
-   * options:
-   *    NONE
    *
    * @return  void
    * @api     OSjs.VFS.unlink()
@@ -852,8 +847,7 @@
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
    *
-   * options:
-   *    boolean     overwrite   If set to true it will not check if the destination exists
+   * @option  options boolean overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.mkdir()
@@ -958,8 +952,7 @@
    *  destination - Full path to destination
    *  files       - Array of 'File'
    *
-   * options:
-   *    boolean     overwrite   If set to true it will not check if the destination exists
+   * @option  options boolean overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.upload()
@@ -1200,8 +1193,7 @@
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Options
    *
-   * options:
-   *    String    type        What to return, default: binary. Can also be: text, datasource
+   * @option  options     String      type    What to return, default: binary. Can also be: text, datasource
    *
    * @return  void
    * @api     OSjs.VFS.remoteRead()

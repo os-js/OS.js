@@ -689,31 +689,30 @@
    * @param   Object                    opts      List of options
    * @param   OSjs.Core.Application     appRef    Application Reference
    *
-   * opts:
-   *      String          title             Window Title
-   *      String          icon              Window Icon
-   *      int             x                 (Optional) X Position
-   *      int             y                 (Optional) Y Position
-   *      int             w                 (Optional) Width
-   *      int             h                 (Optional) Height
-   *      String          tag               (Optional) Window Tag
-   *      String          gravity           (Optional) Window Gravity
-   *      boolean         allow_move        (Optional) Allow movment
-   *      boolean         allow_resize      (Optional) Allow resize
-   *      boolean         allow_minimize    (Optional) Allow minimize
-   *      boolean         allow_maximize    (Optional) Allow maximize
-   *      boolean         allow_close       (Optional) Allow closing
-   *      boolean         allow_windowlist  (Optional) Allow appear in WindowList (Panel)
-   *      boolean         allow_drop        (Optional) Allow DnD
-   *      boolean         allow_iconmenu    (Optional) Allow Menu when click on Window Icon
-   *      boolean         allow_ontop       (Optional) Allow ontop
-   *      boolean         allow_hotkeys     (Optional) Allow usage of hotkeys
-   *      boolean         allow_session     (Optional) Allow to store for session
-   *      boolean         key_capture       (Optional) Allow key capture (UNSUSED ?!)
-   *      boolean         min_width         (Optional) Minimum allowed width
-   *      boolean         min_height        (Optional) Minimum allowed height
-   *      boolean         max_width         (Optional) Maximum allowed width
-   *      boolean         max_height        (Optional) Maximum allowed height
+   * @option  opts     String          title             Window Title
+   * @option  opts     String          icon              Window Icon
+   * @option  opts     int             x                 (Optional) X Position
+   * @option  opts     int             y                 (Optional) Y Position
+   * @option  opts     int             w                 (Optional) Width
+   * @option  opts     int             h                 (Optional) Height
+   * @option  opts     String          tag               (Optional) Window Tag
+   * @option  opts     String          gravity           (Optional) Window Gravity
+   * @option  opts     boolean         allow_move        (Optional) Allow movment
+   * @option  opts     boolean         allow_resize      (Optional) Allow resize
+   * @option  opts     boolean         allow_minimize    (Optional) Allow minimize
+   * @option  opts     boolean         allow_maximize    (Optional) Allow maximize
+   * @option  opts     boolean         allow_close       (Optional) Allow closing
+   * @option  opts     boolean         allow_windowlist  (Optional) Allow appear in WindowList (Panel)
+   * @option  opts     boolean         allow_drop        (Optional) Allow DnD
+   * @option  opts     boolean         allow_iconmenu    (Optional) Allow Menu when click on Window Icon
+   * @option  opts     boolean         allow_ontop       (Optional) Allow ontop
+   * @option  opts     boolean         allow_hotkeys     (Optional) Allow usage of hotkeys
+   * @option  opts     boolean         allow_session     (Optional) Allow to store for session
+   * @option  opts     boolean         key_capture       (Optional) Allow key capture (UNSUSED ?!)
+   * @option  opts     boolean         min_width         (Optional) Minimum allowed width
+   * @option  opts     boolean         min_height        (Optional) Minimum allowed height
+   * @option  opts     boolean         max_width         (Optional) Maximum allowed width
+   * @option  opts     boolean         max_height        (Optional) Maximum allowed height
    *
    * @api     OSjs.Core.Window
    * @class
