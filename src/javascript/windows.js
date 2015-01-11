@@ -689,6 +689,32 @@
    * @param   Object                    opts      List of options
    * @param   OSjs.Core.Application     appRef    Application Reference
    *
+   * opts:
+   *      String          title             Window Title
+   *      String          icon              Window Icon
+   *      int             x                 (Optional) X Position
+   *      int             y                 (Optional) Y Position
+   *      int             w                 (Optional) Width
+   *      int             h                 (Optional) Height
+   *      String          tag               (Optional) Window Tag
+   *      String          gravity           (Optional) Window Gravity
+   *      boolean         allow_move        (Optional) Allow movment
+   *      boolean         allow_resize      (Optional) Allow resize
+   *      boolean         allow_minimize    (Optional) Allow minimize
+   *      boolean         allow_maximize    (Optional) Allow maximize
+   *      boolean         allow_close       (Optional) Allow closing
+   *      boolean         allow_windowlist  (Optional) Allow appear in WindowList (Panel)
+   *      boolean         allow_drop        (Optional) Allow DnD
+   *      boolean         allow_iconmenu    (Optional) Allow Menu when click on Window Icon
+   *      boolean         allow_ontop       (Optional) Allow ontop
+   *      boolean         allow_hotkeys     (Optional) Allow usage of hotkeys
+   *      boolean         allow_session     (Optional) Allow to store for session
+   *      boolean         key_capture       (Optional) Allow key capture (UNSUSED ?!)
+   *      boolean         min_width         (Optional) Minimum allowed width
+   *      boolean         min_height        (Optional) Minimum allowed height
+   *      boolean         max_width         (Optional) Maximum allowed width
+   *      boolean         max_height        (Optional) Maximum allowed height
+   *
    * @api     OSjs.Core.Window
    * @class
    */
@@ -1791,6 +1817,9 @@
 
   /**
    * Resize Window to given size
+   *
+   * Use this method if you want the window to fit into the viewport and not
+   * just set a specific size
    *
    * @param   int           dw            Width
    * @param   int           dh            Height

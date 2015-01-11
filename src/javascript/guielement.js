@@ -46,13 +46,13 @@
    * @param   Object    opts      A dict of options (see below)
    *
    * options:
-   *  onItemDropped   Function      Callback - When internal object dropped (requires dnd enabled)
-   *  onFilesDropped  Function      Callback - When external file object dropped (requires dnd enabled)
-   *  dnd             bool          Enable DnD (Default = false)
-   *  dndDrop         bool          Enable DnD Droppable (Default = DnD)
-   *  dndDrag         bool          Enable DnD Draggable (Default = DnD)
-   *  dndOpts         Object        DnD Options
-   *  focusable       bool          If element is focusable (Default = true)
+   *    Function     onItemDropped      Callback - When internal object dropped (requires dnd enabled)
+   *    Function     onFilesDropped     Callback - When external file object dropped (requires dnd enabled)
+   *    bool         dnd                Enable DnD (Default = false)
+   *    bool         dndDrop            Enable DnD Droppable (Default = DnD)
+   *    bool         dndDrag            Enable DnD Draggable (Default = DnD)
+   *    Object       dndOpts            DnD Options
+   *    bool         focusable          If element is focusable (Default = true)
    *
    * @api     OSjs.GUI.GUIElement
    * @class

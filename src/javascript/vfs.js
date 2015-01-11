@@ -550,7 +550,7 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  NONE
+   *    NONE
    *
    * @return  void
    * @api     OSjs.VFS.write()
@@ -607,7 +607,7 @@
    * @param   Object          options   Optional set of options
    *
    * options:
-   *  type        - What to return, default: binary. Can also be: text, datasource
+   *    String    type        What to return, default: binary. Can also be: text, datasource
    *
    * @return  void
    * @api     OSjs.VFS.read()
@@ -660,8 +660,7 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  overwrite   boolean     If set to true it will not check if the destination
-   *                          exists
+   *    boolean     overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.copy()
@@ -742,8 +741,7 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  overwrite   boolean     If set to true it will not check if the destination
-   *                          exists
+   *    boolean     overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.move()
@@ -823,7 +821,7 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  NONE
+   *    NONE
    *
    * @return  void
    * @api     OSjs.VFS.unlink()
@@ -855,8 +853,7 @@
    * @param   Application     appRef    Optional reference to an Application
    *
    * options:
-   *  overwrite   boolean     If set to true it will not check if the destination
-   *                          exists
+   *    boolean     overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.mkdir()
@@ -962,8 +959,7 @@
    *  files       - Array of 'File'
    *
    * options:
-   *  overwrite   boolean     If set to true it will not check if the destination
-   *                          exists
+   *    boolean     overwrite   If set to true it will not check if the destination exists
    *
    * @return  void
    * @api     OSjs.VFS.upload()
@@ -1205,7 +1201,7 @@
    * @param   Object          options   Options
    *
    * options:
-   *  type        - What to return, default: binary. Can also be: text, datasource
+   *    String    type        What to return, default: binary. Can also be: text, datasource
    *
    * @return  void
    * @api     OSjs.VFS.remoteRead()
