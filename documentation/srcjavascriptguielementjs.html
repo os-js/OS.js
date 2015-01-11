@@ -27,7 +27,7 @@
 
     <content>
 
-<div><i>src/javascript/guielement.js, Generated: </i>Sun Jan 11 2015 01:55:18 GMT+0100 (CET)</div>
+<div><i>src/javascript/guielement.js, Generated: </i>Sun Jan 11 2015 02:11:37 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -58,24 +58,41 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 <h1>Functions</h1>
 <h1>Classes</h1>
 <div class="section-class" id="osjs-gui-guielement">
-<h2>GUIElement</h2>
-<p>GUI Element
+<h2 id="guielement">GUIElement</h2>
+<p>GUI Element</p>
+<p>options:</p>
+<p> onItemDropped Function Callback - When internal object dropped (requires dnd enabled)</p>
+<p> onFilesDropped Function Callback - When external file object dropped (requires dnd enabled)</p>
+<p> dnd bool Enable DnD (Default = false)</p>
+<p> dndDrop bool Enable DnD Droppable (Default = DnD)</p>
+<p> dndDrag bool Enable DnD Draggable (Default = DnD)</p>
+<p> dndOpts Object DnD Options</p>
+<p> focusable bool If element is focusable (Default = true)</p>
+<p><strong>Namespace: </strong> OSjs.GUI.GUIElement</p>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td>name</td>
+<td>Name of GUI Element (unique)</td>
+</tr>
+<tr>
+<td>Object</td>
+<td>opts</td>
+<td>A dict of options (see below)</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
 
-options:
-
- onItemDropped Function Callback - When internal object dropped (requires dnd enabled)
-
- onFilesDropped Function Callback - When external file object dropped (requires dnd enabled)
-
- dnd bool Enable DnD (Default = false)
-
- dndDrop bool Enable DnD Droppable (Default = DnD)
-
- dndDrag bool Enable DnD Draggable (Default = DnD)
-
- dndOpts Object DnD Options
-
- focusable bool If element is focusable (Default = true)</p>
 <div class="section-method" id="guielement-init">
 <h3 id="guielement-init-">GUIElement::init()</h3>
 <p>Initializes the GUI Element</p>
