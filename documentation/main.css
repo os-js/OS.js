@@ -62,7 +62,7 @@ content div.section-class > div {
 }
 
 content table {
-  border : 1px solid #666;
+  border : 0 none;
   border-collapse : collapse;
   min-width : 400px;
 }
