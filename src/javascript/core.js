@@ -96,7 +96,7 @@
    * @param   Function  fn      Callback
    *
    * @return  void
-   * @api     OSjs.Core.addHook
+   * @api     OSjs.Core.addHook()
    */
   function doAddHook(name, fn) {
     if ( typeof _hooks[name] !== 'undefined' ) {
@@ -710,7 +710,7 @@
    * Sign Out of OS.js
    *
    * @return  void
-   * @api     OSjs.Core.signOut
+   * @api     OSjs.Core.signOut()
    */
   function doSignOut() {
     if ( _WM ) {
