@@ -51,7 +51,7 @@
    * OSjs.API.getHandlerInstance();
    *
    * @api   OSjs.Handlers.Default
-   * @class
+   * @class DefaultHandler
    */
   var DefaultHandler = function() {
     if ( _handlerInstance ) {

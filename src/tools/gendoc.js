@@ -93,7 +93,11 @@ Array.prototype.unique = function(){
         tmp = line.split(' ', 2);
         self.extendsFrom.push(tmp[1]);
       } else if ( line.match(/^@class/) ) {
+        tmp = line.split(' ', 2);
         self.isClass = true;
+        if ( tmp[1] ) {
+          self.className = tmp[1];
+        }
       } else if ( line.match(/^@method/) ) {
         tmp = line.split(' ', 2);
         self.methodName = tmp[1];
@@ -118,7 +122,9 @@ Array.prototype.unique = function(){
 
     if ( this.api ) {
       if ( this.isClass ) {
-        this.className = this.api.split('.').pop();
+        if ( !this.className ) {
+          this.className = this.api.split('.').pop();
+        }
       } else {
         if ( !this.isMethod ) {
           this.functionName = this.api.split('.').pop();
@@ -462,7 +468,7 @@ Array.prototype.unique = function(){
       var title = cn;
 
       output.push('<li>');
-      output.push(pre + '<a href="#' + href + '">' + title + '</a>');
+      output.push('<a href="#' + href + '">' + title + '</a>' + ' (' + pre + ')');
       output.push('<ul>');
       classes[cn].methods.forEach(function(m) {
         title = m.methodName.split('::').pop();
