@@ -32,6 +32,10 @@ nav ul {
   padding-left : 20px;
 }
 
+nav li a.Class {
+  font-weight : bold;
+}
+
 content {
   position : absolute;
   left : 300px;
