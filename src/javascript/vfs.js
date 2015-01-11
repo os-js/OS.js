@@ -948,13 +948,12 @@
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
    *
-   * args:
-   *  app         - (optional) If specified (Application ref) it will create a Dialog window
-   *  win         - (optional) Save as above only will add as child to this window
-   *  destination - Full path to destination
-   *  files       - Array of 'File'
+   * @option  options boolean     overwrite     If set to true it will not check if the destination exists
    *
-   * @option  options boolean overwrite   If set to true it will not check if the destination exists
+   * @option  args    Application app           (optional) If specified (Application ref) it will create a Dialog window
+   * @option  args    Window      win           (optional) Save as above only will add as child to this window
+   * @option  args    String      destination   Full path to destination
+   * @option  args    Array       files         Array of 'File'
    *
    * @return  void
    * @api     OSjs.VFS.upload()
