@@ -45,6 +45,10 @@
    *  disabled    Initialize as disabled
    *  menu        An array of submenu items
    *  onCreate    Callback when item has been created (usefull for creating custom elements)
+   *
+   * @api OSjs.GUI.Menu
+   *
+   * @class
    */
   var Menu = function(menuList) {
     var self = this;

@@ -33,8 +33,15 @@
   /**
    * Text
    *
-   * options: (See _Input for more)
-   *  type      String        Input text type (Default = text)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @param opts  String    type  The input text type (Default=text)
+   *
+   * @see OSjs.GUI._Input
+   * @api OSjs.GUI.Text
+   *
+   * @class
    */
   var Text = function(name, opts) {
     opts            = opts || {};

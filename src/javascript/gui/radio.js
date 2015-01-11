@@ -33,9 +33,16 @@
   /**
    * Radio
    *
-   * options: (See GUIElement for more)
-   *  group           String        Group name
-   *  label           String        Label value
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts  String    label       The Label of Element
+   * @option  opts  String    group       The Group of Radio
+   *
+   * @see OSjs.GUI._Input
+   * @api OSjs.GUI.Radio
+   *
+   * @class
    */
   var Radio = function(name, opts) {
     opts        = opts || {};

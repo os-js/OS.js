@@ -399,19 +399,26 @@
   /**
    * FileView
    *
-   * options: (See GUIElement for more)
-   *  startViewType       String          Default view type (Default = ListView)
-   *  locked              bool            Locked (Default = false)
-   *  humanSize           bool            Show human-readable sized (default = True)
-   *  summary             bool            Return statistics for onFinished() (Default = False)
-   *  onSelected          Function        Callback - When item is selected (clicked)
-   *  onActivated         Function        Callback - When item is activated (dblclick)
-   *  onItemDropped       Function        Callback - When item has been dropped
-   *  onError             Function        Callback - When error happened
-   *  onRefresh           Function        Callback - On refresh
-   *  onContextMenu       Function        Callback - On context menu (item)
-   *  onViewContextMenu   Function        Callback - On view context menu (background / view)
-   *  onColumnSort        Function        Callback - On sort
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts String      startViewType           Default view type (Default = ListView)
+   * @option  opts bool        locked                  Locked (Default = false)
+   * @option  opts bool        humanSize               Show human-readable sized (default = True)
+   * @option  opts bool        summary                 Return statistics for onFinished() (Default = False)
+   * @option  opts Function    onSelected              Callback - When item is selected (clicked)
+   * @option  opts Function    onActivated             Callback - When item is activated (dblclick)
+   * @option  opts Function    onItemDropped           Callback - When item has been dropped
+   * @option  opts Function    onError                 Callback - When error happened
+   * @option  opts Function    onRefresh               Callback - On refresh
+   * @option  opts Function    onContextMenu           Callback - On context menu (item)
+   * @option  opts Function    onViewContextMenu       Callback - On view context menu (background / view)
+   * @option  opts Function    onColumnSort            Callback - On sort
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.FileView
+   *
+   * @class
    */
   var FileView = function(name, opts) {
     opts = opts || {};

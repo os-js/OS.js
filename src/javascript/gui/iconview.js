@@ -37,9 +37,17 @@
    *  label = What to show as title
    *  icon = Path to icon
    *
-   * options: (See _DataView for more)
-   *  iconSize          String          Icon Size (default = 32x32)
-   *  singleClick       bool            Single click to Activate (dblclick) forced on touch devices
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option opts String    iconSize      Icon Size (default=32x32)
+   * @option opts boolean   singleClick   Single click to Activate (dblclick) forced on touch devices
+   * @option opts Function  onRenderItem  Callback on item rendered
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.IconView
+   *
+   * @class
    */
   var IconView = function(name, opts) {
     opts = opts || {};

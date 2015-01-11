@@ -33,7 +33,16 @@
   /**
    * ScrollView
    *
-   * options: (See GUIElement for more)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts  int   scrollX   Scroll X ? (default=true)
+   * @option  opts  int   scrollY   Scroll Y ? (default=true)
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.ScrollView
+   *
+   * @class
    */
   var ScrollView = function(name, opts) {
     opts      = opts || {};

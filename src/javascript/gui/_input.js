@@ -38,22 +38,27 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * _Input
+   * HTML Input Element Wrapper
    *
-   * options: (See GUIElement for more)
-   *  disabled        bool          HTML Input disabled ?
-   *  value           String        HTML Input value
-   *  label           String        Label value
-   *  placeholder     String        Placeholder value (HTML5)
-   *  onChange        Function      Callback - When value changed
-   *  onClick         Function      Callback - When clicked
-   *  onKeyPress      Function      Callback - When key pressed
-   *  onKeyUp         Function      Callback - When key released
-   *  onMouseDown     Function      Callabck - When mouse is pressed
-   *  onMouseUp       Function      Callback - When mouse is released
+   * @param   String      className     The element className
+   * @param   String      tagName       The element tagName
+   * @param   String      name          The element name
+   * @param   Object      opts          A list of options
    *
-   *  Please not that not all of these options applies to all
-   *  implemented input elements!
+   * @option  opts  disabled        bool          HTML Input disabled ?
+   * @option  opts  value           String        HTML Input value
+   * @option  opts  label           String        Label value
+   * @option  opts  placeholder     String        Placeholder value (HTML5)
+   * @option  opts  onChange        Function      Callback - When value changed
+   * @option  opts  onClick         Function      Callback - When clicked
+   * @option  opts  onKeyPress      Function      Callback - When key pressed
+   * @option  opts  onKeyUp         Function      Callback - When key released
+   * @option  opts  onMouseDown     Function      Callabck - When mouse is pressed
+   * @option  opts  onMouseUp       Function      Callback - When mouse is released
+   *
+   * @api OSjs.GUI._Input
+   *
+   * @class
    */
   var _Input = function(className, tagName, name, opts) {
     opts = opts || {};

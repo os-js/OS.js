@@ -37,12 +37,19 @@
    *  title = What to show as title
    *  icon = Path to icon
    *
-   * options: (See _DataView for more)
-   *  onExpand          Function        Callback - When item has been expanded
-   *  onCollapse        Function        Callback - When item has been collapsed
-   *  data              Array           Data (Items)
-   *  expanded          Mixed           What level to expand on render (Default = false (none), true = (1), int for level)
-   *  singleClick       bool            Single click to Activate (dblclick) forced on touch devices
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option opts Array     data          Data (Items)
+   * @option opts boolean   singleClick   Single click to Activate (dblclick) forced on touch devices
+   * @option opts Function  onExpand      Callback when item is expended
+   * @option opts Function  onCollapse    Callback when item is collapsed
+   * @option opts Mixed     expanded      What level to expand on render (Default = false (none), true = (1), int for level)
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.TreeView
+   *
+   * @class
    */
   var TreeView = function(name, opts) {
     opts = opts || {};

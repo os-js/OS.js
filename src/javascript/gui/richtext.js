@@ -33,9 +33,16 @@
   /**
    * Richt Text Element
    *
-   * options: (See GUIElement for more)
-   *  fontName      String        Font name (default)
-   *  onInited      Function      Callback - When initialized
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option opts String    fontName      Name of the font used
+   * @option opts Function  onInited      Callback when inited
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.RichText
+   *
+   * @class
    */
   var RichText = function(name, opts) {
     opts = opts || {};

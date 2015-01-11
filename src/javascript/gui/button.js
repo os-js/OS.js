@@ -33,7 +33,13 @@
   /**
    * Button
    *
-   * options: (See _Input for more)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @see OSjs.GUI._Input
+   * @api OSjs.GUI.Button
+   *
+   * @class
    */
   var Button = function(name, opts) {
     _Input.apply(this, ['GUIButton', 'button', name, opts]);

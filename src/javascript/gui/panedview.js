@@ -33,8 +33,15 @@
   /**
    * PanedView
    *
-   * options: (See GUIElement for more)
-   *  orientation     String        Orientation (Default = horizontal)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts    String  orientation     The Orientation (Default=horizontal)
+   *
+   * @api OSjs.GUI.PanedView
+   * @see OSjs.GUI.GUIElement
+   *
+   * @class
    */
   var PanedView = function(name, opts) {
     opts            = opts            || {};

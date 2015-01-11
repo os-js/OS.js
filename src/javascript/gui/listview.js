@@ -44,10 +44,17 @@
    *  {mykey: 'Some title', id: 2}
    * ]
    *
-   * options: (See _DataView for more)
-   *  columns           Object          Columns
-   *  rows              Array           Rows (data alias)
-   *  singleClick       bool            Single click to Activate (dblclick) forced on touch devices
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option opts boolean   singleClick   Single click to Activate (dblclick) forced on touch devices
+   * @option opts Object    columns       Column data
+   * @option opts Array     rows          Rows of data
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.ListView
+   *
+   * @class
    */
   var ListView = function(name, opts) {
     opts = opts || {};

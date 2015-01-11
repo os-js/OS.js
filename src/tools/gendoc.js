@@ -464,7 +464,7 @@ Array.prototype.unique = function(){
     output.push('<ul>');
     Object.keys(classes).forEach(function(cn) {
       var href = createHref(classes[cn].api);
-      var pre = classes[cn].api.replace(cn, '');
+      var pre = classes[cn].api;//.replace(cn, '');
       var title = cn;
 
       output.push('<li>');
@@ -533,7 +533,34 @@ Array.prototype.unique = function(){
     'src/javascript/core.js',
     'src/javascript/windows.js',
     'src/javascript/handler.js',
-    'src/javascript/vfs.js'
+    'src/javascript/vfs.js',
+
+    'src/javascript/gui/_dataview.js',
+    'src/javascript/gui/_input.js',
+    'src/javascript/gui/button.js',
+    'src/javascript/gui/canvas.js',
+    'src/javascript/gui/checkbox.js',
+    'src/javascript/gui/colorswatch.js',
+    'src/javascript/gui/fileview.js',
+    'src/javascript/gui/iconview.js',
+    'src/javascript/gui/label.js',
+    'src/javascript/gui/listview.js',
+    'src/javascript/gui/menu.js',
+    'src/javascript/gui/menubar.js',
+    'src/javascript/gui/panedview.js',
+    'src/javascript/gui/progressbar.js',
+    'src/javascript/gui/radio.js',
+    'src/javascript/gui/richtext.js',
+    'src/javascript/gui/scrollview.js',
+    'src/javascript/gui/select.js',
+    'src/javascript/gui/selectlist.js',
+    'src/javascript/gui/slider.js',
+    'src/javascript/gui/statusbar.js',
+    'src/javascript/gui/tabs.js',
+    'src/javascript/gui/text.js',
+    'src/javascript/gui/textarea.js',
+    'src/javascript/gui/toolbar.js',
+    'src/javascript/gui/treeview.js'
   ];
 
   var menu = generateMenu(files);

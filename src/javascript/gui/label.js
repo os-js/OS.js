@@ -33,9 +33,16 @@
   /**
    * Label
    *
-   * options: (See _Input for more)
-   *  label     String      The label to display
-   *  forInput  String      ID/Name of input element (optional HTML feature)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts  String    label       The Label of Element
+   * @option  opts  String    forInput    ID/Name of input element (optional HTML feature)
+   *
+   * @see OSjs.GUI._Input
+   * @api OSjs.GUI.Label
+   *
+   * @class
    */
   var Label = function(name, opts) {
     opts            = opts || {};

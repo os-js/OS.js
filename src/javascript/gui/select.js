@@ -33,7 +33,13 @@
   /**
    * Select
    *
-   * options: (See _Input for more)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @see OSjs.GUI._Input
+   * @api OSjs.GUI.Select
+   *
+   * @class
    */
   var Select = function(name, opts) {
     _Input.apply(this, ['GUISelect', 'select', name, opts]);

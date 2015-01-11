@@ -33,10 +33,17 @@
   /**
    * Canvas Element
    *
-   * options: (See GUIElement for more)
-   *  width   int       Canvas width
-   *  height  int       Canvas height
-   *  type    String    Image type (Default = image/png)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option opts int   width     The width
+   * @option opts int   height    The height
+   * @option opts type  String    Image type (default=image/png)
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.Canvas
+   *
+   * @class
    */
   var Canvas = function(name, opts) {
     opts = opts || {};

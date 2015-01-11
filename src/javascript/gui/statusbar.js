@@ -33,8 +33,15 @@
   /**
    * Status Bar Element
    *
-   * options: (See GUIElement for more)
-   *  value   String      Initial value
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts  String    value         The value in text
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.StatusBar
+   *
+   * @class
    */
   var StatusBar = function(name) {
     this.$contents = null;

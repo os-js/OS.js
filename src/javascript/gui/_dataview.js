@@ -42,15 +42,22 @@
    *
    * This is for handling data lists in some sort of view
    *
-   * options: (See GUIElement for more)
-   *  onSelect          Function        Callback - When item is selected (clicked item)
-   *  onActivate        Function        Callback - When item is activated (double-click item)
-   *  onContextMenu     Function        Callback - When item menu is activated (right click on item)
-   *  onViewContextMenu Function        Callback - When view menu is activated (right click background)
-   *  onCreateItem      Function        Callback - When item is created
-   *  data              Array           Data (Items)
-   *  indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
-   *  render            bool            Render on create (default = true when data is supplied)
+   * @param   String      className     The element className
+   * @param   String      name          The element name
+   * @param   Object      opts          A list of options
+   *
+   * @option  opts onSelect          Function        Callback - When item is selected (clicked item)
+   * @option  opts onActivate        Function        Callback - When item is activated (double-click item)
+   * @option  opts onContextMenu     Function        Callback - When item menu is activated (right click on item)
+   * @option  opts onViewContextMenu Function        Callback - When view menu is activated (right click background)
+   * @option  opts onCreateItem      Function        Callback - When item is created
+   * @option  opts data              Array           Data (Items)
+   * @option  opts indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
+   * @option  opts render            bool            Render on create (default = true when data is supplied)
+   *
+   * @api OSjs.GUI._DataView
+   *
+   * @class
    */
   var _DataView = function(className, name, opts) {
     opts = opts || {};

@@ -32,6 +32,18 @@
 
   /**
    * Color Swatch
+   *
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option opts int       width     The width
+   * @option opts int       height    The height
+   * @option opts Function  onSelect  Callback for when color is selected
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.ColorSwatch
+   *
+   * @class
    */
   var ColorSwatch = function(name, opts) {
     opts = opts || {};

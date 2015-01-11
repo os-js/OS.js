@@ -148,8 +148,15 @@
   /**
    * Tabs Container
    *
-   * options: (See GUIElement for more)
-   *  orientation     String        Orientation (Default = horizontal)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts  String    orientation     Orientation (default=horizontal)
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.Tabs
+   *
+   * @class
    */
   var Tabs = function(name, opts) {
     opts = opts || {};

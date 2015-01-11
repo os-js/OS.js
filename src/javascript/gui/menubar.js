@@ -33,8 +33,15 @@
   /**
    * MenuBar Class
    *
-   * options: (See GUIElement for more)
-   *  onMenuOpen    Function      Callback - When menu is opened
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts    Function    onMenuOpen      Callback when menu is opened
+   *
+   * @api OSjs.GUI.MenuBar
+   * @see OSjs.GUI.GUIElement
+   *
+   * @class
    */
   var MenuBar = function(name, opts) {
     opts = opts || {};

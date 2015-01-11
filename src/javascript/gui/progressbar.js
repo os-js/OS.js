@@ -33,7 +33,13 @@
   /**
    * ProgressBar Element
    *
-   * options: (See GUIElement for more)
+   * @param String    name        Name of GUIElement (unique)
+   * @param int       percentage  Start at this value
+   *
+   * @api OSjs.GUI.ProgressBar
+   * @see OSjs.GUI.GUIElement
+   *
+   * @class
    */
   var ProgressBar = function(name, percentage) {
     this.$container = null;

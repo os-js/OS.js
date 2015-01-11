@@ -33,14 +33,21 @@
   /**
    * Slider Element
    *
-   * options: (See GUIElement for more)
-   *  min             int           Minimum value
-   *  max             int           Maximim value
-   *  val             int           Current value
-   *  orientation     String        Orientation (Default = horizontal)
-   *  steps           int           Stepping value (Default = 1)
-   *  onChange        Function      Callback - When value has changed (on drag)
-   *  onUpdate        Function      Callback - When value is updated (finished)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @option  opts  int       min           Minimum value
+   * @option  opts  int       max           Maximum value
+   * @option  opts  int       val           Current value
+   * @option  opts  String    orientation   Orientation (default=horizontal)
+   * @option  opts  int       steps         Stepping value (default=1)
+   * @option  opts  Function  onChange      On Change callback
+   * @option  opts  Function  onUpdate      On Update callback
+   *
+   * @see OSjs.GUI.GUIElement
+   * @api OSjs.GUI.Slider
+   *
+   * @class
    */
   var Slider = function(name, opts) {
     this.min      = opts.min          || 0;

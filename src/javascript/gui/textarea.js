@@ -33,7 +33,13 @@
   /**
    * Textarea
    *
-   * options: (See _Input for more)
+   * @param String    name    Name of GUIElement (unique)
+   * @param Object    opts    A list of options
+   *
+   * @see OSjs.GUI._Input
+   * @api OSjs.GUI.Textarea
+   *
+   * @class
    */
   var Textarea = function(name, opts) {
     opts = opts || {};
