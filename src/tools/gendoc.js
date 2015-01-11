@@ -526,6 +526,7 @@ Array.prototype.unique = function(){
     'src/javascript/dialogs.js',
     'src/javascript/core.js',
     'src/javascript/windows.js',
+    'src/javascript/handler.js',
     'src/javascript/vfs.js'
   ];
 
