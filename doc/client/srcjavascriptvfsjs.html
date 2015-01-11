@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/vfs.js, Generated: </i>Sun Jan 11 2015 22:03:22 GMT+0100 (CET)</div>
+<div><i>src/javascript/vfs.js, Generated: </i>Sun Jan 11 2015 23:34:23 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <pre>
   This is a wrapper for handling all VFS functions
@@ -896,16 +896,6 @@ Get file URL
 <h2 id="osjs-vfs-upload-args-callback-options-appref-">OSjs.VFS.upload(args, callback, options, appRef)</h2>
 <pre>
 Upload file(s)
-
-args:
-
- app - (optional) If specified (Application ref) it will create a Dialog window
-
- win - (optional) Save as above only will add as child to this window
-
- destination - Full path to destination
-
- files - Array of 'File'
 </pre>
 
 
@@ -955,6 +945,38 @@ args:
 <td>overwrite</td>
 <td>boolean</td>
 <td>If set to true it will not check if the destination exists</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>Application</td>
+<td>(optional) If specified (Application ref) it will create a Dialog window</td>
+</tr>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>(optional) Save as above only will add as child to this window</td>
+</tr>
+<tr>
+<td>destination</td>
+<td>String</td>
+<td>Full path to destination</td>
+</tr>
+<tr>
+<td>files</td>
+<td>Array</td>
+<td>Array of &#39;File&#39;</td>
 </tr>
 </tbody>
 </table>
