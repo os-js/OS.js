@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/core.js, Generated: </i>Sun Jan 11 2015 21:58:14 GMT+0100 (CET)</div>
+<div><i>src/javascript/core.js, Generated: </i>Sun Jan 11 2015 22:03:22 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -133,7 +133,7 @@
 </ul>
 <h1>Functions</h1>
 <div class="section-function" id="osjs-core-addhook">
-<h2 id="osjs-core-addhook-">OSjs.Core.addHook()</h2>
+<h2 id="osjs-core-addhook-name-fn-">OSjs.Core.addHook(name, fn)</h2>
 <pre>
 Method for adding a hook
 </pre>
@@ -166,7 +166,7 @@ Method for adding a hook
 
 </div>
 <div class="section-function" id="osjs-api-createloading">
-<h2 id="osjs-api-createloading-">OSjs.API.createLoading()</h2>
+<h2 id="osjs-api-createloading-name-opts-panelid-">OSjs.API.createLoading(name, opts, panelId)</h2>
 <pre>
 Create (or show) loading indicator
 </pre>
@@ -204,7 +204,7 @@ Create (or show) loading indicator
 
 </div>
 <div class="section-function" id="osjs-api-destroyloading">
-<h2 id="osjs-api-destroyloading-">OSjs.API.destroyLoading()</h2>
+<h2 id="osjs-api-destroyloading-name-panelid-">OSjs.API.destroyLoading(name, panelId)</h2>
 <pre>
 Destroy (or hide) loading indicator
 </pre>
@@ -251,7 +251,7 @@ the first thing that is called after page has loaded
 
 </div>
 <div class="section-function" id="osjs-core-shutdown">
-<h2 id="osjs-core-shutdown-">OSjs.Core.shutdown()</h2>
+<h2 id="osjs-core-shutdown-save-">OSjs.Core.shutdown(save)</h2>
 <pre>
 Shut down OS.js
 </pre>
@@ -291,7 +291,7 @@ Sign Out of OS.js
 
 </div>
 <div class="section-function" id="osjs-api-call">
-<h2 id="osjs-api-call-">OSjs.API.call()</h2>
+<h2 id="osjs-api-call-m-a-cok-cerror-">OSjs.API.call(m, a, cok, cerror)</h2>
 <pre>
 Global function for calling API (backend)
 </pre>
@@ -334,7 +334,7 @@ Global function for calling API (backend)
 
 </div>
 <div class="section-function" id="osjs-api-error">
-<h2 id="osjs-api-error-">OSjs.API.error()</h2>
+<h2 id="osjs-api-error-title-message-error-exception-bugreport-">OSjs.API.error(title, message, error, exception, bugreport)</h2>
 <pre>
 Global function for showing an error dialog
 </pre>
@@ -382,7 +382,7 @@ Global function for showing an error dialog
 
 </div>
 <div class="section-function" id="osjs-api-launch">
-<h2 id="osjs-api-launch-">OSjs.API.launch()</h2>
+<h2 id="osjs-api-launch-file-launchargs-">OSjs.API.launch(file, launchArgs)</h2>
 <pre>
 Open a file
 </pre>
@@ -419,7 +419,7 @@ Open a file
 
 </div>
 <div class="section-function" id="osjs-api-launch">
-<h2 id="osjs-api-launch-">OSjs.API.launch()</h2>
+<h2 id="osjs-api-launch-n-arg-onfinished-onerror-onconstructed-">OSjs.API.launch(n, arg, onFinished, onError, onConstructed)</h2>
 <pre>
 Launch a Process
 </pre>
@@ -467,7 +467,7 @@ Launch a Process
 
 </div>
 <div class="section-function" id="osjs-api-launchlist">
-<h2 id="osjs-api-launchlist-">OSjs.API.launchList()</h2>
+<h2 id="osjs-api-launchlist-list-onsuccess-onerror-onfinished-">OSjs.API.launchList(list, onSuccess, onError, onFinished)</h2>
 <pre>
 Launch Processes from a List
 </pre>
@@ -514,7 +514,7 @@ Launch Processes from a List
 
 </div>
 <div class="section-function" id="osjs-api-playsound">
-<h2 id="osjs-api-playsound-">OSjs.API.playSound()</h2>
+<h2 id="osjs-api-playsound-name-volume-">OSjs.API.playSound(name, volume)</h2>
 <pre>
 Global function for playing a sound
 </pre>
@@ -547,7 +547,7 @@ Global function for playing a sound
 
 </div>
 <div class="section-function" id="osjs-api-kill">
-<h2 id="osjs-api-kill-">OSjs.API.kill()</h2>
+<h2 id="osjs-api-kill-pid-">OSjs.API.kill(pid)</h2>
 <pre>
 Kills a process
 </pre>
@@ -575,7 +575,7 @@ Kills a process
 
 </div>
 <div class="section-function" id="osjs-api-message">
-<h2 id="osjs-api-message-">OSjs.API.message()</h2>
+<h2 id="osjs-api-message-msg-opts-">OSjs.API.message(msg, opts)</h2>
 <pre>
 Sends a message to all processes
 
@@ -614,7 +614,7 @@ Example: VFS uses this to signal file changes etc.
 
 </div>
 <div class="section-function" id="osjs-api-getprocess">
-<h2 id="osjs-api-getprocess-">OSjs.API.getProcess()</h2>
+<h2 id="osjs-api-getprocess-name-first-">OSjs.API.getProcess(name, first)</h2>
 <pre>
 Get a process by name
 </pre>
@@ -647,7 +647,7 @@ Get a process by name
 
 </div>
 <div class="section-function" id="osjs-api-_">
-<h2 id="osjs-api-_-">OSjs.API._()</h2>
+<h2 id="osjs-api-_-s-">OSjs.API._(s, ...)</h2>
 <pre>
 Translate given string
 </pre>
@@ -705,7 +705,7 @@ Get current locale
 
 </div>
 <div class="section-function" id="osjs-api-setlocale">
-<h2 id="osjs-api-setlocale-">OSjs.API.setLocale()</h2>
+<h2 id="osjs-api-setlocale-s-">OSjs.API.setLocale(s)</h2>
 <pre>
 Set locale
 </pre>
@@ -733,7 +733,7 @@ Set locale
 
 </div>
 <div class="section-function" id="osjs-api-curl">
-<h2 id="osjs-api-curl-">OSjs.API.curl()</h2>
+<h2 id="osjs-api-curl-args-callback-">OSjs.API.curl(args, callback)</h2>
 <pre>
 Perform cURL call
 
@@ -768,7 +768,7 @@ Perform cURL call
 
 </div>
 <div class="section-function" id="osjs-api-getapplicationresource">
-<h2 id="osjs-api-getapplicationresource-">OSjs.API.getApplicationResource()</h2>
+<h2 id="osjs-api-getapplicationresource-app-name-">OSjs.API.getApplicationResource(app, name)</h2>
 <pre>
 Get a resource from application
 
@@ -803,7 +803,7 @@ Get a resource from application
 
 </div>
 <div class="section-function" id="osjs-api-getthemecss">
-<h2 id="osjs-api-getthemecss-">OSjs.API.getThemeCSS()</h2>
+<h2 id="osjs-api-getthemecss-name-">OSjs.API.getThemeCSS(name)</h2>
 <pre>
 Get path to css theme
 </pre>
@@ -831,7 +831,7 @@ Get path to css theme
 
 </div>
 <div class="section-function" id="osjs-api-geticon">
-<h2 id="osjs-api-geticon-">OSjs.API.getIcon()</h2>
+<h2 id="osjs-api-geticon-name-app-args-">OSjs.API.getIcon(name, app, args)</h2>
 <pre>
 Get a icon (wrapper for above methods)
 
@@ -877,7 +877,7 @@ If the given name is specified with "./something.png" it will use the
 
 </div>
 <div class="section-function" id="osjs-api-getfileicon">
-<h2 id="osjs-api-getfileicon-">OSjs.API.getFileIcon()</h2>
+<h2 id="osjs-api-getfileicon-filename-mime-type-icon-size-">OSjs.API.getFileIcon(filename, mime, type, icon, size)</h2>
 <pre>
 Get a icon based in file and mime
 </pre>
@@ -925,7 +925,7 @@ Get a icon based in file and mime
 
 </div>
 <div class="section-function" id="osjs-api-getthemeresource">
-<h2 id="osjs-api-getthemeresource-">OSjs.API.getThemeResource()</h2>
+<h2 id="osjs-api-getthemeresource-name-type-args-">OSjs.API.getThemeResource(name, type, args)</h2>
 <pre>
 Default method for getting a resource from current theme
 </pre>
@@ -977,7 +977,7 @@ THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
 
 </div>
 <div class="section-function" id="osjs-api-getdefaultpath">
-<h2 id="osjs-api-getdefaultpath-">OSjs.API.getDefaultPath()</h2>
+<h2 id="osjs-api-getdefaultpath-fallback-">OSjs.API.getDefaultPath(fallback)</h2>
 <pre>
 Get default configured path
 </pre>
@@ -1041,7 +1041,7 @@ Get running 'WindowManager' instance
 
 </div>
 <div class="section-function" id="osjs-api-createdroppable">
-<h2 id="osjs-api-createdroppable-">OSjs.API.createDroppable()</h2>
+<h2 id="osjs-api-createdroppable-el-args-">OSjs.API.createDroppable(el, args)</h2>
 <pre>
 Create a droppable DOM element
 </pre>
@@ -1074,7 +1074,7 @@ Create a droppable DOM element
 
 </div>
 <div class="section-function" id="osjs-api-createdraggable">
-<h2 id="osjs-api-createdraggable-">OSjs.API.createDraggable()</h2>
+<h2 id="osjs-api-createdraggable-el-args-">OSjs.API.createDraggable(el, args)</h2>
 <pre>
 Create a draggable DOM element
 </pre>
@@ -1107,7 +1107,7 @@ Create a draggable DOM element
 
 </div>
 <div class="section-function" id="osjs-api-createmenu">
-<h2 id="osjs-api-createmenu-">OSjs.API.createMenu()</h2>
+<h2 id="osjs-api-createmenu-items-pos-">OSjs.API.createMenu(items, pos)</h2>
 <pre>
 Create and show a GUI Menu
 </pre>
@@ -1182,7 +1182,7 @@ Process Template Class
 <p>&nbsp;</p>
 
 <div class="section-method" id="process-destroy">
-<h3 id="process-destroy-">Process::destroy()</h3>
+<h3 id="process-destroy-kill-">Process::destroy(kill)</h3>
 <pre>
 Destroys the process
 </pre>
@@ -1338,7 +1338,7 @@ Applications was launched with. Just like 'argv'
 <p>&nbsp;</p>
 
 <div class="section-method" id="application-init">
-<h3 id="application-init-">Application::init()</h3>
+<h3 id="application-init-settings-metadata-">Application::init(settings, metadata)</h3>
 <pre>
 Initialize the Application
 </pre>
@@ -1384,7 +1384,7 @@ Destroy the application
 
 </div>
 <div class="section-method" id="application-_onmessage">
-<h3 id="application-_onmessage-">Application::_onMessage()</h3>
+<h3 id="application-_onmessage-obj-msg-args-">Application::_onMessage(obj, msg, args)</h3>
 <pre>
 Application has received a message
 </pre>
@@ -1422,7 +1422,7 @@ Application has received a message
 
 </div>
 <div class="section-method" id="application-_call">
-<h3 id="application-_call-">Application::_call()</h3>
+<h3 id="application-_call-method-args-onsuccess-onerror-">Application::_call(method, args, onSuccess, onError)</h3>
 <pre>
 Call the ApplicationAPI
 
@@ -1467,7 +1467,7 @@ This is used for calling 'api.php' or 'api.js' in your Application.
 
 </div>
 <div class="section-method" id="application-_createdialog">
-<h3 id="application-_createdialog-">Application::_createDialog()</h3>
+<h3 id="application-_createdialog-classname-args-parentclass-">Application::_createDialog(className, args, parentClass)</h3>
 <pre>
 Wrapper for creating dialogs
 
@@ -1509,7 +1509,7 @@ be destroyed on close.
 
 </div>
 <div class="section-method" id="application-_addwindow">
-<h3 id="application-_addwindow-">Application::_addWindow()</h3>
+<h3 id="application-_addwindow-w-">Application::_addWindow(w)</h3>
 <pre>
 Add a window to the application
 
@@ -1539,7 +1539,7 @@ This will automatically add it to the WindowManager and show it to you
 
 </div>
 <div class="section-method" id="application-_removewindow">
-<h3 id="application-_removewindow-">Application::_removeWindow()</h3>
+<h3 id="application-_removewindow-w-">Application::_removeWindow(w)</h3>
 <pre>
 Removes given Window
 </pre>
@@ -1567,7 +1567,7 @@ Removes given Window
 
 </div>
 <div class="section-method" id="application-_getwindow">
-<h3 id="application-_getwindow-">Application::_getWindow()</h3>
+<h3 id="application-_getwindow-checkfor-key-">Application::_getWindow(checkfor, key)</h3>
 <pre>
 Gets a Window by X
 
@@ -1655,7 +1655,7 @@ Get the sessions JSON
 
 </div>
 <div class="section-method" id="application-_setsetting">
-<h3 id="application-_setsetting-">Application::_setSetting()</h3>
+<h3 id="application-_setsetting-k-v-save-savecallback-">Application::_setSetting(k, v, save, saveCallback)</h3>
 <pre>
 Set a setting
 </pre>
@@ -1710,7 +1710,7 @@ Get a launch/session argument
 
 </div>
 <div class="section-method" id="application-_setargument">
-<h3 id="application-_setargument-">Application::_setArgument()</h3>
+<h3 id="application-_setargument-k-v-">Application::_setArgument(k, v)</h3>
 <pre>
 Set a launch/session argument
 </pre>

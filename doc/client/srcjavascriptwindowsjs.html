@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/windows.js, Generated: </i>Sun Jan 11 2015 21:58:14 GMT+0100 (CET)</div>
+<div><i>src/javascript/windows.js, Generated: </i>Sun Jan 11 2015 22:03:22 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -186,7 +186,7 @@ Initialize the WindowManager
 
 </div>
 <div class="section-method" id="windowmanager-getwindow">
-<h3 id="windowmanager-getwindow-">WindowManager::getWindow()</h3>
+<h3 id="windowmanager-getwindow-name-">WindowManager::getWindow(name)</h3>
 <pre>
 Get a Window by name
 </pre>
@@ -214,7 +214,7 @@ Get a Window by name
 
 </div>
 <div class="section-method" id="windowmanager-addwindow">
-<h3 id="windowmanager-addwindow-">WindowManager::addWindow()</h3>
+<h3 id="windowmanager-addwindow-w-focus-">WindowManager::addWindow(w, focus)</h3>
 <pre>
 Add a Window
 </pre>
@@ -247,7 +247,7 @@ Add a Window
 
 </div>
 <div class="section-method" id="windowmanager-removewindow">
-<h3 id="windowmanager-removewindow-">WindowManager::removeWindow()</h3>
+<h3 id="windowmanager-removewindow-w-">WindowManager::removeWindow(w)</h3>
 <pre>
 Remove a Window
 </pre>
@@ -275,7 +275,7 @@ Remove a Window
 
 </div>
 <div class="section-method" id="windowmanager-applysettings">
-<h3 id="windowmanager-applysettings-">WindowManager::applySettings()</h3>
+<h3 id="windowmanager-applysettings-settings-force-">WindowManager::applySettings(settings, force)</h3>
 <pre>
 Set WindowManager settings
 </pre>
@@ -308,7 +308,7 @@ Set WindowManager settings
 
 </div>
 <div class="section-method" id="windowmanager-onkeydown">
-<h3 id="windowmanager-onkeydown-">WindowManager::onKeyDown()</h3>
+<h3 id="windowmanager-onkeydown-ev-win-">WindowManager::onKeyDown(ev, win)</h3>
 <pre>
 When Key Down Event received
 </pre>
@@ -398,7 +398,7 @@ Gets a list of themes
 
 </div>
 <div class="section-method" id="windowmanager-setsetting">
-<h3 id="windowmanager-setsetting-">WindowManager::setSetting()</h3>
+<h3 id="windowmanager-setsetting-k-v-">WindowManager::setSetting(k, v)</h3>
 <pre>
 Sets a setting
 </pre>
@@ -455,7 +455,7 @@ Get next window position
 
 </div>
 <div class="section-method" id="windowmanager-getsetting">
-<h3 id="windowmanager-getsetting-">WindowManager::getSetting()</h3>
+<h3 id="windowmanager-getsetting-k-">WindowManager::getSetting(k)</h3>
 <pre>
 Gets a setting
 </pre>
@@ -704,7 +704,7 @@ Window Class
 <p>&nbsp;</p>
 
 <div class="section-method" id="window-init">
-<h3 id="window-init-">Window::init()</h3>
+<h3 id="window-init-_wm-">Window::init(_wm)</h3>
 <pre>
 Initialize the Window
 </pre>
@@ -744,7 +744,7 @@ Destroy the Window
 
 </div>
 <div class="section-method" id="window-_addeventlistener">
-<h3 id="window-_addeventlistener-">Window::_addEventListener()</h3>
+<h3 id="window-_addeventlistener-el-ev-callback-">Window::_addEventListener(el, ev, callback)</h3>
 <pre>
 Adds a listener for an event
 </pre>
@@ -782,7 +782,7 @@ Adds a listener for an event
 
 </div>
 <div class="section-method" id="window-_addhook">
-<h3 id="window-_addhook-">Window::_addHook()</h3>
+<h3 id="window-_addhook-k-func-">Window::_addHook(k, func)</h3>
 <pre>
 Adds a hook (internal events)
 </pre>
@@ -815,7 +815,7 @@ Adds a hook (internal events)
 
 </div>
 <div class="section-method" id="window-_firehook">
-<h3 id="window-_firehook-">Window::_fireHook()</h3>
+<h3 id="window-_firehook-k-">Window::_fireHook(k)</h3>
 <pre>
 Fire a hook (internal event)
 </pre>
@@ -843,7 +843,7 @@ Fire a hook (internal event)
 
 </div>
 <div class="section-method" id="window-_removeguielement">
-<h3 id="window-_removeguielement-">Window::_removeGUIElement()</h3>
+<h3 id="window-_removeguielement-gel-">Window::_removeGUIElement(gel)</h3>
 <pre>
 Remove a GUIElement
 </pre>
@@ -883,7 +883,7 @@ Update IFrame GUIElement "fix"
 
 </div>
 <div class="section-method" id="window-_addguielement">
-<h3 id="window-_addguielement-">Window::_addGUIElement()</h3>
+<h3 id="window-_addguielement-gel-parentnode-">Window::_addGUIElement(gel, parentNode)</h3>
 <pre>
 Adds a GUIElement
 </pre>
@@ -916,7 +916,7 @@ Adds a GUIElement
 
 </div>
 <div class="section-method" id="window-_removechild">
-<h3 id="window-_removechild-">Window::_removeChild()</h3>
+<h3 id="window-_removechild-w-">Window::_removeChild(w)</h3>
 <pre>
 Removes a child Window
 </pre>
@@ -944,7 +944,7 @@ Removes a child Window
 
 </div>
 <div class="section-method" id="window-_getchild">
-<h3 id="window-_getchild-">Window::_getChild()</h3>
+<h3 id="window-_getchild-id-key-">Window::_getChild(id, key)</h3>
 <pre>
 Get a Window child by X
 </pre>
@@ -1078,7 +1078,7 @@ Maximize the Window
 
 </div>
 <div class="section-method" id="window-_restore">
-<h3 id="window-_restore-">Window::_restore()</h3>
+<h3 id="window-_restore-max-min-">Window::_restore(max, min)</h3>
 <pre>
 Restore the Window
 </pre>
@@ -1111,7 +1111,7 @@ Restore the Window
 
 </div>
 <div class="section-method" id="window-_focus">
-<h3 id="window-_focus-">Window::_focus()</h3>
+<h3 id="window-_focus-force-">Window::_focus(force)</h3>
 <pre>
 Focus the window
 </pre>
@@ -1139,7 +1139,7 @@ Focus the window
 
 </div>
 <div class="section-method" id="window-_blur">
-<h3 id="window-_blur-">Window::_blur()</h3>
+<h3 id="window-_blur-force-">Window::_blur(force)</h3>
 <pre>
 Blur the window
 </pre>
@@ -1167,7 +1167,7 @@ Blur the window
 
 </div>
 <div class="section-method" id="window-_resizeto">
-<h3 id="window-_resizeto-">Window::_resizeTo()</h3>
+<h3 id="window-_resizeto-dw-dh-limit-move-container-force-">Window::_resizeTo(dw, dh, limit, move, container, force)</h3>
 <pre>
 Resize Window to given size
 
@@ -1224,7 +1224,7 @@ just set a specific size
 
 </div>
 <div class="section-method" id="window-_moveto">
-<h3 id="window-_moveto-">Window::_moveTo()</h3>
+<h3 id="window-_moveto-pos-">Window::_moveTo(pos)</h3>
 <pre>
 Move window to position
 </pre>
@@ -1252,7 +1252,7 @@ Move window to position
 
 </div>
 <div class="section-method" id="window-_move">
-<h3 id="window-_move-">Window::_move()</h3>
+<h3 id="window-_move-x-y-">Window::_move(x, y)</h3>
 <pre>
 Move window to position
 </pre>
@@ -1285,7 +1285,7 @@ Move window to position
 
 </div>
 <div class="section-method" id="window-_error">
-<h3 id="window-_error-">Window::_error()</h3>
+<h3 id="window-_error-title-description-message-exception-bugreport-">Window::_error(title, description, message, exception, bugreport)</h3>
 <pre>
 Creates an error dialog
 </pre>
@@ -1333,7 +1333,7 @@ Creates an error dialog
 
 </div>
 <div class="section-method" id="window-_toggledisabled">
-<h3 id="window-_toggledisabled-">Window::_toggleDisabled()</h3>
+<h3 id="window-_toggledisabled-t-">Window::_toggleDisabled(t)</h3>
 <pre>
 Toggle disabled overlay
 </pre>
@@ -1361,7 +1361,7 @@ Toggle disabled overlay
 
 </div>
 <div class="section-method" id="window-_toggleloading">
-<h3 id="window-_toggleloading-">Window::_toggleLoading()</h3>
+<h3 id="window-_toggleloading-t-">Window::_toggleLoading(t)</h3>
 <pre>
 Toggle loading overlay
 </pre>
@@ -1389,7 +1389,7 @@ Toggle loading overlay
 
 </div>
 <div class="section-method" id="window-_toggleattentionblink">
-<h3 id="window-_toggleattentionblink-">Window::_toggleAttentionBlink()</h3>
+<h3 id="window-_toggleattentionblink-t-">Window::_toggleAttentionBlink(t)</h3>
 <pre>
 Toggle attention
 </pre>
@@ -1429,7 +1429,7 @@ Check next Tab (cycle GUIElement)
 
 </div>
 <div class="section-method" id="window-_ondndevent">
-<h3 id="window-_ondndevent-">Window::_onDndEvent()</h3>
+<h3 id="window-_ondndevent-ev-type-">Window::_onDndEvent(ev, type)</h3>
 <pre>
 On Drag-and-drop event
 </pre>
@@ -1462,7 +1462,7 @@ On Drag-and-drop event
 
 </div>
 <div class="section-method" id="window-_onkeyevent">
-<h3 id="window-_onkeyevent-">Window::_onKeyEvent()</h3>
+<h3 id="window-_onkeyevent-ev-type-">Window::_onKeyEvent(ev, type)</h3>
 <pre>
 On Key event
 </pre>
@@ -1495,7 +1495,7 @@ On Key event
 
 </div>
 <div class="section-method" id="window-_onwindowiconclick">
-<h3 id="window-_onwindowiconclick-">Window::_onWindowIconClick()</h3>
+<h3 id="window-_onwindowiconclick-ev-el-">Window::_onWindowIconClick(ev, el)</h3>
 <pre>
 On Window Icon Click
 </pre>
@@ -1528,7 +1528,7 @@ On Window Icon Click
 
 </div>
 <div class="section-method" id="window-_onwindowbuttonclick">
-<h3 id="window-_onwindowbuttonclick-">Window::_onWindowButtonClick()</h3>
+<h3 id="window-_onwindowbuttonclick-ev-el-btn-">Window::_onWindowButtonClick(ev, el, btn)</h3>
 <pre>
 On Window Button Click
 </pre>
@@ -1566,7 +1566,7 @@ On Window Button Click
 
 </div>
 <div class="section-method" id="window-_onchange">
-<h3 id="window-_onchange-">Window::_onChange()</h3>
+<h3 id="window-_onchange-ev-byuser-">Window::_onChange(ev, byUser)</h3>
 <pre>
 On Window has changed
 </pre>
@@ -1648,7 +1648,7 @@ Get Window z-index
 
 </div>
 <div class="section-method" id="window-_settitle">
-<h3 id="window-_settitle-">Window::_setTitle()</h3>
+<h3 id="window-_settitle-t-">Window::_setTitle(t)</h3>
 <pre>
 Set Window title
 </pre>
@@ -1676,7 +1676,7 @@ Set Window title
 
 </div>
 <div class="section-method" id="window-_seticon">
-<h3 id="window-_seticon-">Window::_setIcon()</h3>
+<h3 id="window-_seticon-i-">Window::_setIcon(i)</h3>
 <pre>
 Set Windoc icon
 </pre>

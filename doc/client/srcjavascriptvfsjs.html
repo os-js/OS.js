@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/vfs.js, Generated: </i>Sun Jan 11 2015 21:58:14 GMT+0100 (CET)</div>
+<div><i>src/javascript/vfs.js, Generated: </i>Sun Jan 11 2015 22:03:22 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <pre>
   This is a wrapper for handling all VFS functions
@@ -155,7 +155,7 @@
 </ul>
 <h1>Functions</h1>
 <div class="section-function" id="osjs-vfs-addformfile">
-<h2 id="osjs-vfs-addformfile-">OSjs.VFS.addFormFile()</h2>
+<h2 id="osjs-vfs-addformfile-fd-key-data-file-">OSjs.VFS.addFormFile(fd, key, data, file)</h2>
 <pre>
 This is a helper to add a File to FormData
 </pre>
@@ -198,7 +198,7 @@ This is a helper to add a File to FormData
 
 </div>
 <div class="section-function" id="osjs-vfs-datasourcetoab">
-<h2 id="osjs-vfs-datasourcetoab-">OSjs.VFS.dataSourceToAb()</h2>
+<h2 id="osjs-vfs-datasourcetoab-data-mime-callback-">OSjs.VFS.dataSourceToAb(data, mime, callback)</h2>
 <pre>
 Convert DataSourceURL to ArrayBuffer
 </pre>
@@ -236,7 +236,7 @@ Convert DataSourceURL to ArrayBuffer
 
 </div>
 <div class="section-function" id="osjs-vfs-texttoab">
-<h2 id="osjs-vfs-texttoab-">OSjs.VFS.textToAb()</h2>
+<h2 id="osjs-vfs-texttoab-data-mime-callback-">OSjs.VFS.textToAb(data, mime, callback)</h2>
 <pre>
 Convert PlainText to ArrayBuffer
 </pre>
@@ -274,7 +274,7 @@ Convert PlainText to ArrayBuffer
 
 </div>
 <div class="section-function" id="osjs-vfs-abtodatasource">
-<h2 id="osjs-vfs-abtodatasource-">OSjs.VFS.abToDataSource()</h2>
+<h2 id="osjs-vfs-abtodatasource-arraybuffer-mime-callback-">OSjs.VFS.abToDataSource(arrayBuffer, mime, callback)</h2>
 <pre>
 Convert ArrayBuffer to DataSourceURL
 </pre>
@@ -312,7 +312,7 @@ Convert ArrayBuffer to DataSourceURL
 
 </div>
 <div class="section-function" id="osjs-vfs-abtotext">
-<h2 id="osjs-vfs-abtotext-">OSjs.VFS.abToText()</h2>
+<h2 id="osjs-vfs-abtotext-arraybuffer-mime-callback-">OSjs.VFS.abToText(arrayBuffer, mime, callback)</h2>
 <pre>
 Convert ArrayBuffer to PlainText
 </pre>
@@ -350,7 +350,7 @@ Convert ArrayBuffer to PlainText
 
 </div>
 <div class="section-function" id="osjs-vfs-abtobinarystring">
-<h2 id="osjs-vfs-abtobinarystring-">OSjs.VFS.abToBinaryString()</h2>
+<h2 id="osjs-vfs-abtobinarystring-arraybuffer-mime-callback-">OSjs.VFS.abToBinaryString(arrayBuffer, mime, callback)</h2>
 <pre>
 Convert ArrayBuffer to BinaryString
 </pre>
@@ -388,7 +388,7 @@ Convert ArrayBuffer to BinaryString
 
 </div>
 <div class="section-function" id="osjs-vfs-getmodules">
-<h2 id="osjs-vfs-getmodules-">OSjs.VFS.getModules()</h2>
+<h2 id="osjs-vfs-getmodules-visible-">OSjs.VFS.getModules(visible)</h2>
 <pre>
 Returns a list of all enabled VFS modules
 </pre>
@@ -416,7 +416,7 @@ Returns a list of all enabled VFS modules
 
 </div>
 <div class="section-function" id="osjs-vfs-scandir">
-<h2 id="osjs-vfs-scandir-">OSjs.VFS.scandir()</h2>
+<h2 id="osjs-vfs-scandir-item-callback-options-">OSjs.VFS.scandir(item, callback, options)</h2>
 <pre>
 Scandir
 </pre>
@@ -454,7 +454,7 @@ Scandir
 
 </div>
 <div class="section-function" id="osjs-vfs-write">
-<h2 id="osjs-vfs-write-">OSjs.VFS.write()</h2>
+<h2 id="osjs-vfs-write-item-data-callback-options-appref-">OSjs.VFS.write(item, data, callback, options, appRef)</h2>
 <pre>
 Write File
 
@@ -504,7 +504,7 @@ This function currently have no options.
 
 </div>
 <div class="section-function" id="osjs-vfs-read">
-<h2 id="osjs-vfs-read-">OSjs.VFS.read()</h2>
+<h2 id="osjs-vfs-read-item-callback-options-">OSjs.VFS.read(item, callback, options)</h2>
 <pre>
 Read File
 </pre>
@@ -559,7 +559,7 @@ Read File
 
 </div>
 <div class="section-function" id="osjs-vfs-copy">
-<h2 id="osjs-vfs-copy-">OSjs.VFS.copy()</h2>
+<h2 id="osjs-vfs-copy-src-dest-callback-options-appref-">OSjs.VFS.copy(src, dest, callback, options, appRef)</h2>
 <pre>
 Copy File
 </pre>
@@ -624,7 +624,7 @@ Copy File
 
 </div>
 <div class="section-function" id="osjs-vfs-move">
-<h2 id="osjs-vfs-move-">OSjs.VFS.move()</h2>
+<h2 id="osjs-vfs-move-src-dest-callback-options-appref-">OSjs.VFS.move(src, dest, callback, options, appRef)</h2>
 <pre>
 Move File
 </pre>
@@ -689,7 +689,7 @@ Move File
 
 </div>
 <div class="section-function" id="osjs-vfs-unlink">
-<h2 id="osjs-vfs-unlink-">OSjs.VFS.unlink()</h2>
+<h2 id="osjs-vfs-unlink-item-callback-options-appref-">OSjs.VFS.unlink(item, callback, options, appRef)</h2>
 <pre>
 Delete File
 
@@ -734,7 +734,7 @@ This function currently have no options.
 
 </div>
 <div class="section-function" id="osjs-vfs-mkdir">
-<h2 id="osjs-vfs-mkdir-">OSjs.VFS.mkdir()</h2>
+<h2 id="osjs-vfs-mkdir-item-callback-options-appref-">OSjs.VFS.mkdir(item, callback, options, appRef)</h2>
 <pre>
 Create Directory
 </pre>
@@ -794,7 +794,7 @@ Create Directory
 
 </div>
 <div class="section-function" id="osjs-vfs-exists">
-<h2 id="osjs-vfs-exists-">OSjs.VFS.exists()</h2>
+<h2 id="osjs-vfs-exists-item-callback-">OSjs.VFS.exists(item, callback)</h2>
 <pre>
 Check if file exists
 </pre>
@@ -827,7 +827,7 @@ Check if file exists
 
 </div>
 <div class="section-function" id="osjs-vfs-fileinfo">
-<h2 id="osjs-vfs-fileinfo-">OSjs.VFS.fileinfo()</h2>
+<h2 id="osjs-vfs-fileinfo-item-callback-">OSjs.VFS.fileinfo(item, callback)</h2>
 <pre>
 Get file info
 </pre>
@@ -860,7 +860,7 @@ Get file info
 
 </div>
 <div class="section-function" id="osjs-vfs-url">
-<h2 id="osjs-vfs-url-">OSjs.VFS.url()</h2>
+<h2 id="osjs-vfs-url-item-callback-">OSjs.VFS.url(item, callback)</h2>
 <pre>
 Get file URL
 </pre>
@@ -893,7 +893,7 @@ Get file URL
 
 </div>
 <div class="section-function" id="osjs-vfs-upload">
-<h2 id="osjs-vfs-upload-">OSjs.VFS.upload()</h2>
+<h2 id="osjs-vfs-upload-args-callback-options-appref-">OSjs.VFS.upload(args, callback, options, appRef)</h2>
 <pre>
 Upload file(s)
 
@@ -963,7 +963,7 @@ args:
 
 </div>
 <div class="section-function" id="osjs-vfs-download">
-<h2 id="osjs-vfs-download-">OSjs.VFS.download()</h2>
+<h2 id="osjs-vfs-download-args-callback-">OSjs.VFS.download(args, callback)</h2>
 <pre>
 Download a file
 </pre>
@@ -996,7 +996,7 @@ Download a file
 
 </div>
 <div class="section-function" id="osjs-vfs-trash">
-<h2 id="osjs-vfs-trash-">OSjs.VFS.trash()</h2>
+<h2 id="osjs-vfs-trash-item-callback-">OSjs.VFS.trash(item, callback)</h2>
 <pre>
 Move file to trash (Not used in internal storage)
 
@@ -1031,7 +1031,7 @@ THIS IS NOT USED FOR INTERNAL MODULES
 
 </div>
 <div class="section-function" id="osjs-vfs-untrash">
-<h2 id="osjs-vfs-untrash-">OSjs.VFS.untrash()</h2>
+<h2 id="osjs-vfs-untrash-item-callback-">OSjs.VFS.untrash(item, callback)</h2>
 <pre>
 Restore file from trash
 
@@ -1066,7 +1066,7 @@ THIS IS NOT USED FOR INTERNAL MODULES
 
 </div>
 <div class="section-function" id="osjs-vfs-emptytrash">
-<h2 id="osjs-vfs-emptytrash-">OSjs.VFS.emptyTrash()</h2>
+<h2 id="osjs-vfs-emptytrash-callback-">OSjs.VFS.emptyTrash(callback)</h2>
 <pre>
 Permanently empty trash
 
@@ -1096,7 +1096,7 @@ THIS IS NOT USED FOR INTERNAL MODULES
 
 </div>
 <div class="section-function" id="osjs-vfs-remoteread">
-<h2 id="osjs-vfs-remoteread-">OSjs.VFS.remoteRead()</h2>
+<h2 id="osjs-vfs-remoteread-url-mime-callback-options-">OSjs.VFS.remoteRead(url, mime, callback, options)</h2>
 <pre>
 Read a remote file with URL (CORS)
 
