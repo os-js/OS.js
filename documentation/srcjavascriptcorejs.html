@@ -27,7 +27,7 @@
 
     <content>
 
-<div><i>src/javascript/core.js, Generated: </i>Sun Jan 11 2015 02:23:06 GMT+0100 (CET)</div>
+<div><i>src/javascript/core.js, Generated: </i>Sun Jan 11 2015 02:24:40 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -115,20 +115,20 @@ Method for adding a hook
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Hook name</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>fn</td>
+<td>Function</td>
 <td>Callback</td>
 </tr>
 </tbody>
@@ -148,25 +148,25 @@ Create (or show) loading indicator
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Name of dialog (unique)</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>opts</td>
+<td>Object</td>
 <td>Options</td>
 </tr>
 <tr>
-<td>int</td>
 <td>panelId</td>
+<td>int</td>
 <td>Panel ID (optional)</td>
 </tr>
 </tbody>
@@ -186,20 +186,20 @@ Destroy (or hide) loading indicator
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Name of dialog (unique)</td>
 </tr>
 <tr>
-<td>int</td>
 <td>panelId</td>
+<td>int</td>
 <td>Panel ID (optional)</td>
 </tr>
 </tbody>
@@ -233,15 +233,15 @@ Shut down OS.js
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>boolean</td>
 <td>save</td>
+<td>boolean</td>
 <td>Save the current session ?</td>
 </tr>
 </tbody>
@@ -273,30 +273,30 @@ Global function for calling API (backend)
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>m</td>
+<td>String</td>
 <td>Method name</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>a</td>
+<td>Object</td>
 <td>Method arguments</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>cok</td>
+<td>Function</td>
 <td>Callback on success</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>cerror</td>
+<td>Function</td>
 <td>Callback on error</td>
 </tr>
 </tbody>
@@ -316,35 +316,35 @@ Global function for showing an error dialog
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>title</td>
+<td>String</td>
 <td>Dialog title</td>
 </tr>
 <tr>
-<td>String</td>
 <td>message</td>
+<td>String</td>
 <td>Dialog message</td>
 </tr>
 <tr>
-<td>String</td>
 <td>error</td>
+<td>String</td>
 <td>Error message</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>exception</td>
+<td>Object</td>
 <td>Exception reference (optional)</td>
 </tr>
 <tr>
-<td>boolean</td>
 <td>bugreport</td>
+<td>boolean</td>
 <td>Enable bugreporting for this error (default=fale)</td>
 </tr>
 </tbody>
@@ -365,20 +365,20 @@ Open a file
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Object</td>
 <td>file</td>
+<td>Object</td>
 <td>File</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>launchArgs</td>
+<td>Object</td>
 <td>Arguments to send to process launch function</td>
 </tr>
 </tbody>
@@ -398,35 +398,35 @@ Launch a Process
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>n</td>
+<td>String</td>
 <td>Application Name</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>arg</td>
+<td>Object</td>
 <td>Launch arguments</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onFinished</td>
+<td>Function</td>
 <td>Callback on success</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onError</td>
+<td>Function</td>
 <td>Callback on error</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onConstructed</td>
+<td>Function</td>
 <td>Callback on application init</td>
 </tr>
 </tbody>
@@ -447,30 +447,30 @@ Launch Processes from a List
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Array</td>
 <td>list</td>
+<td>Array</td>
 <td>List of launch application arguments</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onSuccess</td>
+<td>Function</td>
 <td>Callback on success</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onError</td>
+<td>Function</td>
 <td>Callback on error</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onFinished</td>
+<td>Function</td>
 <td>Callback on finished running</td>
 </tr>
 </tbody>
@@ -490,20 +490,20 @@ Global function for playing a sound
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Sound name</td>
 </tr>
 <tr>
-<td>float</td>
 <td>volume</td>
+<td>float</td>
 <td>Sound volume (0.0 - 1.0)</td>
 </tr>
 </tbody>
@@ -523,15 +523,15 @@ Kills a process
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>int</td>
 <td>pid</td>
+<td>int</td>
 <td>Process ID</td>
 </tr>
 </tbody>
@@ -554,20 +554,20 @@ Example: VFS uses this to signal file changes etc.
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>msg</td>
+<td>String</td>
 <td>Message name</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>opts</td>
+<td>Object</td>
 <td>Options</td>
 </tr>
 </tbody>
@@ -587,20 +587,20 @@ Get a process by name
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Process Name</td>
 </tr>
 <tr>
-<td>boolean</td>
 <td>first</td>
+<td>boolean</td>
 <td>Return the first found</td>
 </tr>
 </tbody>
@@ -620,20 +620,20 @@ Translate given string
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>s</td>
+<td>String</td>
 <td>Translation key/string</td>
 </tr>
 <tr>
-<td>Mixed</td>
 <td>...</td>
+<td>Mixed</td>
 <td>Format values</td>
 </tr>
 </tbody>
@@ -675,15 +675,15 @@ Set locale
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>s</td>
+<td>String</td>
 <td>Locale name</td>
 </tr>
 </tbody>
@@ -705,20 +705,20 @@ Perform cURL call
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Object</td>
 <td>args</td>
+<td>Object</td>
 <td>cURL Arguments (see backend)</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>callback</td>
+<td>Function</td>
 <td>Callback function</td>
 </tr>
 </tbody>
@@ -740,20 +740,20 @@ Get a resource from application
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Process</td>
 <td>app</td>
+<td>Process</td>
 <td>Application instance reference</td>
 </tr>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Resource Name</td>
 </tr>
 </tbody>
@@ -773,15 +773,15 @@ Get path to css theme
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>CSS Stylesheet name (without extension)</td>
 </tr>
 </tbody>
@@ -811,25 +811,25 @@ If the given name is specified with "./something.png" it will use the
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Icon Name</td>
 </tr>
 <tr>
-<td>Process</td>
 <td>app</td>
+<td>Process</td>
 <td>Application instance reference (Optional)</td>
 </tr>
 <tr>
-<td>String</td>
 <td>args</td>
+<td>String</td>
 <td>Optional argument to getThemeResource</td>
 </tr>
 </tbody>
@@ -847,35 +847,35 @@ Get a icon based in file and mime
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>filename</td>
+<td>String</td>
 <td>Filename</td>
 </tr>
 <tr>
-<td>String</td>
 <td>mime</td>
+<td>String</td>
 <td>MIME type</td>
 </tr>
 <tr>
-<td>String</td>
 <td>type</td>
+<td>String</td>
 <td>Filetype (dir or file, default=&quot;file&quot;)</td>
 </tr>
 <tr>
-<td>String</td>
 <td>icon</td>
+<td>String</td>
 <td>Default icon (optional)</td>
 </tr>
 <tr>
-<td>String</td>
 <td>size</td>
+<td>String</td>
 <td>Icon size (default=&quot;16x16&quot;)</td>
 </tr>
 </tbody>
@@ -895,25 +895,25 @@ Default method for getting a resource from current theme
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Resource filename</td>
 </tr>
 <tr>
-<td>String</td>
 <td>type</td>
+<td>String</td>
 <td>Type (icon, sound, wm, base)</td>
 </tr>
 <tr>
-<td>String</td>
 <td>args</td>
+<td>String</td>
 <td>Used for &#39;icon&#39;, defines the size (optional)</td>
 </tr>
 </tbody>
@@ -947,15 +947,15 @@ Get default configured path
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>fallback</td>
+<td>String</td>
 <td>Fallback path on error (default= &quot;/&quot;)</td>
 </tr>
 </tbody>
@@ -1011,20 +1011,20 @@ Create a droppable DOM element
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>DOMElement</td>
 <td>el</td>
+<td>DOMElement</td>
 <td>DOMElement</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>args</td>
+<td>Object</td>
 <td>JSON of droppable params</td>
 </tr>
 </tbody>
@@ -1044,20 +1044,20 @@ Create a draggable DOM element
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>DOMElement</td>
 <td>el</td>
+<td>DOMElement</td>
 <td>DOMElement</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>args</td>
+<td>Object</td>
 <td>JSON of draggable params</td>
 </tr>
 </tbody>
@@ -1077,20 +1077,20 @@ Create and show a GUI Menu
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Array</td>
 <td>items</td>
+<td>Array</td>
 <td>Array of items</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>pos</td>
+<td>Object</td>
 <td>Object with x and y</td>
 </tr>
 </tbody>
@@ -1123,15 +1123,15 @@ Process Template Class
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Process Name</td>
 </tr>
 </tbody>
@@ -1149,15 +1149,15 @@ Destroys the process
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>boolean</td>
 <td>kill</td>
+<td>boolean</td>
 <td>Force kill ?</td>
 </tr>
 </tbody>
@@ -1191,20 +1191,20 @@ Service Class
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Process name</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>args</td>
+<td>Object</td>
 <td>Process arguments</td>
 </tr>
 </tbody>
@@ -1252,30 +1252,30 @@ Applications was launched with. Just like 'argv'
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>name</td>
+<td>String</td>
 <td>Process name</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>args</td>
+<td>Object</td>
 <td>Process arguments</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>metadata</td>
+<td>Object</td>
 <td>Application metadata</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>settings</td>
+<td>Object</td>
 <td>Application settings</td>
 </tr>
 </tbody>
@@ -1293,20 +1293,20 @@ Initialize the Application
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Object</td>
 <td>settings</td>
+<td>Object</td>
 <td>Settings JSON</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>metadata</td>
+<td>Object</td>
 <td>Metadata JSON</td>
 </tr>
 </tbody>
@@ -1336,25 +1336,25 @@ Application has received a message
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Object</td>
 <td>obj</td>
+<td>Object</td>
 <td>Where it came from</td>
 </tr>
 <tr>
-<td>String</td>
 <td>msg</td>
+<td>String</td>
 <td>Name of message</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>args</td>
+<td>Object</td>
 <td>Message arguments</td>
 </tr>
 </tbody>
@@ -1376,30 +1376,30 @@ This is used for calling 'api.php' or 'api.js' in your Application.
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>method</td>
+<td>String</td>
 <td>Name of method</td>
 </tr>
 <tr>
-<td>Object</td>
 <td>args</td>
+<td>Object</td>
 <td>Arguments in JSON</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onSuccess</td>
+<td>Function</td>
 <td>When request is done callback fn(result)</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>onError</td>
+<td>Function</td>
 <td>When an error occured fn(error)</td>
 </tr>
 </tbody>
@@ -1423,25 +1423,25 @@ be destroyed on close.
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>className</td>
+<td>String</td>
 <td>ClassName in OSjs.Dialogs namespace</td>
 </tr>
 <tr>
-<td>Array</td>
 <td>args</td>
+<td>Array</td>
 <td>Array of arguments for constructor</td>
 </tr>
 <tr>
-<td>Window</td>
 <td>parentClass</td>
+<td>Window</td>
 <td>The parent window</td>
 </tr>
 </tbody>
@@ -1463,15 +1463,15 @@ This will automatically add it to the WindowManager and show it to you
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Window</td>
 <td>w</td>
+<td>Window</td>
 <td>The Window</td>
 </tr>
 </tbody>
@@ -1491,15 +1491,15 @@ Removes given Window
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Window</td>
 <td>w</td>
+<td>Window</td>
 <td>The Windo</td>
 </tr>
 </tbody>
@@ -1523,20 +1523,20 @@ these are not unique.
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>checkfor</td>
+<td>String</td>
 <td>The argument to check for</td>
 </tr>
 <tr>
-<td>Mixed</td>
 <td>key</td>
+<td>Mixed</td>
 <td>What to match against</td>
 </tr>
 </tbody>
@@ -1601,30 +1601,30 @@ Set a setting
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>k</td>
+<td>String</td>
 <td>Key</td>
 </tr>
 <tr>
-<td>String</td>
 <td>v</td>
+<td>String</td>
 <td>Value</td>
 </tr>
 <tr>
-<td>boolean</td>
 <td>save</td>
+<td>boolean</td>
 <td>Immediately save settings ?</td>
 </tr>
 <tr>
-<td>Function</td>
 <td>saveCallback</td>
+<td>Function</td>
 <td>If you save, this will be called when done</td>
 </tr>
 </tbody>
@@ -1656,20 +1656,20 @@ Set a launch/session argument
 <table>
 <thead>
 <tr>
-<th>Type</th>
 <th>Name</th>
+<th>Type</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>String</td>
 <td>k</td>
+<td>String</td>
 <td>Key</td>
 </tr>
 <tr>
-<td>String</td>
 <td>v</td>
+<td>String</td>
 <td>Value</td>
 </tr>
 </tbody>

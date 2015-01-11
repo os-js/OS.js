@@ -78,10 +78,10 @@ content tbody * {
 }
 content tbody td:nth-child(1) {
   width : 100px;
-  text-decoration : underline;
 }
 content tbody td:nth-child(2) {
   width : 100px;
+  text-decoration : underline;
 }
 content tbody td:nth-child(3) {
   min-width : 300px;
