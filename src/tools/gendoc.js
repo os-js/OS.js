@@ -290,7 +290,7 @@ Array.prototype.unique = function(){
   }
 
   function generateIndex(menu, fileList) {
-    generatePage(['<h1>OS.js Documentation</h1>'], 'index.html', fileList, menu);
+    generatePage(['<h1>OS.js Documentation</h1><p>THIS IS A WORK IN PROGRESS. DOCUMENTATION NOT COMPLETE</p>'], 'index.html', fileList, menu);
   }
 
   function generatePage(buffer, filename, fileList, menu) {
