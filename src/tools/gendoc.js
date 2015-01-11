@@ -172,19 +172,28 @@ Array.prototype.unique = function(){
 
   function parseMethod(head) {
     var mark = [];
+    var self = this;
 
     function addToBuffer() {
       var line = Array.prototype.slice.call(arguments).join(' ');
       mark.push(line);
     }
 
+    function createParamList() {
+      var lst = [];
+      self.parameters.forEach(function(p) {
+        lst.push(p.key);
+      });
+      return '(' + lst.join(', ') + ')';
+    }
+
     if ( this.isClass ) {
       addToBuffer('##', this.className);
     } else {
       if ( this.methodName ) {
-        addToBuffer('###', this.methodName);
+        addToBuffer('###', this.methodName.replace('()', createParamList()));
       } else {
-        addToBuffer('##', this.api);
+        addToBuffer('##', this.api.replace('()', createParamList()));
       }
     }
 
@@ -240,7 +249,6 @@ Array.prototype.unique = function(){
       }
     }
 
-    var self = this;
     if ( Object.keys(this.options).length ) {
       Object.keys(this.options).forEach(function(o) {
         addToBuffer('####', 'Options for', '*' + o + '*');
