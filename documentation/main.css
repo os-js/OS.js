@@ -64,13 +64,13 @@ content div.section-class > div {
 content table {
   border : 0 none;
   border-collapse : collapse;
-  min-width : 400px;
+  margin-left : 20px;
 }
 content thead * {
   text-align : left;
   font-weight : bold;
   padding : 10px;
-  background : #fff;
+  background : #aaa;
 }
 content tbody * {
   padding : 10px;
@@ -84,7 +84,7 @@ content tbody td:nth-child(2) {
   text-decoration : underline;
 }
 content tbody td:nth-child(3) {
-  min-width : 300px;
+  min-width : 400px;
   font-style : italic;
 }
 
