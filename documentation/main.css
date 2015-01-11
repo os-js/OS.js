@@ -1,5 +1,6 @@
 body {
   font-family : sans-serif;
+  font-size : 14px;
   margin : 0;
   padding : 0;
   overflow : hidden;
@@ -23,6 +24,11 @@ nav {
   background : #eee;
   box-sizing : border-box;
   padding : 20px;
+  overflow : auto;
+}
+
+nav ul {
+  padding-left : 20px;
 }
 
 content {
@@ -34,6 +40,7 @@ content {
   overflow : auto;
   box-sizing : border-box;
   padding : 20px;
+  overflow : auto;
 }
 
 content div.section-function {
