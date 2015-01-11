@@ -27,7 +27,7 @@
 
     <content>
 
-<div><i>src/javascript/core.js, Generated: </i>Sun Jan 11 2015 02:20:35 GMT+0100 (CET)</div>
+<div><i>src/javascript/core.js, Generated: </i>Sun Jan 11 2015 02:23:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -110,7 +110,7 @@ OSjs.Core.<a href="#osjs-core-application">Application</a>
 Method for adding a hook
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.Core.addHook()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -143,7 +143,7 @@ Method for adding a hook
 Create (or show) loading indicator
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.createLoading()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -181,7 +181,7 @@ Create (or show) loading indicator
 Destroy (or hide) loading indicator
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.destroyLoading()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -216,7 +216,8 @@ This is the main initialization function
 the first thing that is called after page has loaded
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.Core.initialize()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>void</u></p>
 
@@ -227,7 +228,7 @@ the first thing that is called after page has loaded
 Shut down OS.js
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.Core.shutdown()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -255,7 +256,8 @@ Shut down OS.js
 Sign Out of OS.js
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.Core.signOut()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>void</u></p>
 
@@ -266,7 +268,7 @@ Sign Out of OS.js
 Global function for calling API (backend)
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.call()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -309,7 +311,7 @@ Global function for calling API (backend)
 Global function for showing an error dialog
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.error()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -357,7 +359,7 @@ Global function for showing an error dialog
 Open a file
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.launch()</p>
+
 <p><strong>See:</strong> doLaunchProcess</p>
 <h4 id="parameters">Parameters</h4>
 <table>
@@ -391,7 +393,7 @@ Open a file
 Launch a Process
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.launch()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -439,7 +441,7 @@ Launch a Process
 Launch Processes from a List
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.launchList()</p>
+
 <p><strong>See:</strong> doLaunchProcess</p>
 <h4 id="parameters">Parameters</h4>
 <table>
@@ -483,7 +485,7 @@ Launch Processes from a List
 Global function for playing a sound
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.playSound()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -516,7 +518,7 @@ Global function for playing a sound
 Kills a process
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.kill()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -546,7 +548,7 @@ Sends a message to all processes
 Example: VFS uses this to signal file changes etc.
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.message()</p>
+
 <p><strong>See:</strong> Process::_onMessage()</p>
 <h4 id="parameters">Parameters</h4>
 <table>
@@ -580,7 +582,7 @@ Example: VFS uses this to signal file changes etc.
 Get a process by name
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getProcess()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -613,7 +615,7 @@ Get a process by name
 Translate given string
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API._()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -646,7 +648,7 @@ Translate given string
 Same as _ only you can supply the list as first argument
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.__()</p>
+
 <p><strong>See:</strong> doTranslate()</p>
 
 </div>
@@ -656,7 +658,8 @@ Same as _ only you can supply the list as first argument
 Get current locale
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getLocale()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>String</u></p>
 
@@ -667,7 +670,7 @@ Get current locale
 Set locale
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.setLocale()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -697,7 +700,7 @@ Perform cURL call
  fn(error, result)
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.curl()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -732,7 +735,7 @@ Get a resource from application
  You can also specify a name by String
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getApplicationResource()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -765,7 +768,7 @@ Get a resource from application
 Get path to css theme
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getThemeCSS()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -803,7 +806,7 @@ If the given name is specified with "./something.png" it will use the
 @retrurn String The absolute URL of the icon
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getIcon()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -839,7 +842,7 @@ If the given name is specified with "./something.png" it will use the
 Get a icon based in file and mime
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getFileIcon()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -887,7 +890,7 @@ Get a icon based in file and mime
 Default method for getting a resource from current theme
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getThemeResource()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -927,7 +930,8 @@ Get default configured settings
 THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getDefaultSettings()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>Object</u></p>
 
@@ -938,7 +942,7 @@ THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
 Get default configured path
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getDefaultPath()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -966,7 +970,8 @@ Get default configured path
 Get all processes
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getProcesses()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>Array</u></p>
 
@@ -977,7 +982,8 @@ Get all processes
 Get running 'Handler' instance
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getHandlerInstance()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>Handler</u></p>
 
@@ -988,7 +994,8 @@ Get running 'Handler' instance
 Get running 'WindowManager' instance
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.getWMInstance()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>WindowManager</u></p>
 
@@ -999,7 +1006,7 @@ Get running 'WindowManager' instance
 Create a droppable DOM element
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.createDroppable()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -1032,7 +1039,7 @@ Create a droppable DOM element
 Create a draggable DOM element
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.createDraggable()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -1065,7 +1072,7 @@ Create a draggable DOM element
 Create and show a GUI Menu
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.createMenu()</p>
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -1098,7 +1105,8 @@ Create and show a GUI Menu
 Blur (Hide) current Menu
 </pre>
 
-<p><strong>Namespace: </strong> OSjs.API.blurMenu()</p>
+
+
 <h4 id="returns">Returns</h4>
 <p><u>void</u></p>
 
