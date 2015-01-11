@@ -1,3 +1,8 @@
+//
+// THIS IS AN UGLY-ASS PIECE OF CODE, BUT IT WORKS
+// I SHOULD PROBABLY REWRITE THIS SOME TIME
+//
+
 Array.prototype.unique = function(){
   var u = {}, a = [];
   for(var i = 0, l = this.length; i < l; ++i){
@@ -140,6 +145,20 @@ Array.prototype.unique = function(){
 
     return parseMethod.call(this);
   };
+
+  function parseNotice(comment) {
+    var lines = comment.split('\n');
+    var newlines = [];
+    lines.forEach(function(line) {
+      var inner = line.match(/^\s*\*( (.*))?/);
+      if ( inner && inner[1] ) {
+        newlines.push(inner[1]);
+      } else {
+        newlines.push('\n');
+      }
+    });
+    return newlines.join('\n').replace(/^\n+/g, '').replace(/\n+$/, '');
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // HTML
@@ -380,11 +399,14 @@ Array.prototype.unique = function(){
     var raw = _fs.readFileSync(filename).toString('utf-8');
     var comments = raw.match(/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/g);
     var blocks = [];
+    var notices = [];
 
     comments.forEach(function(comment) {
-      if ( comment.match(/^\/\*\*/) ) {
+      if ( comment.match(/^\/\*\*/) ) { // Docbloc
         var block = new DocumentationBlock(comment)
         blocks.push(block);
+      } else if ( comment.match(/^\/\*\@/) ) { // Notice
+        notices.push(parseNotice(comment));
       }
     });
 
@@ -413,6 +435,11 @@ Array.prototype.unique = function(){
     var output = [];
     output.push('<div><i>' + filename + ', Generated: </i>' + (new Date()) + '</div>');
     output.push('<h1>Overview</h1>');
+    notices.forEach(function(n) {
+      output.push('<pre>');
+      output.push(n);
+      output.push('</pre>');
+    });
 
     output.push('<h2>Functions</h2>');
     output.push('<ul>');

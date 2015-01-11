@@ -30,50 +30,52 @@
 (function(Utils, API) {
   'use strict';
 
-  //
-  // This is a wrapper for handling all VFS functions
-  // read() write() scandir() and so on.
-  //
-  // See 'src/javascript/vfs/' for the specific modules.
-  //
-  // You should read the information below!
-  //
-  // ---------------------------------------------------------------------------
-  //
-  // Functions that take 'metadata' (File Metadata) as an argument (like all of them)
-  // it expects you to use an instance of OSjs.VFS.File()
-  //
-  //    VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
-  //
-  // ---------------------------------------------------------------------------
-  //
-  // By default all functions that read data will return ArrayBuffer, but you can also return:
-  //    String
-  //    dataSource
-  //    TODO: Blob ?
-  //
-  // ---------------------------------------------------------------------------
-  //
-  // Functions that take 'data' (File Data) as an argument supports these types:
-  //
-  //    File                      Browser internal
-  //    Blob                      Browser internal
-  //    ArrayBuffer               Browser internal
-  //    String                    Just a normal string
-  //    OSjs.VFS.FileDataURL      Wrapper for dataSource URL strings
-  //    JSON                      JSON Data defined as: {filename: foo, data: bar}
-  //
-  // ---------------------------------------------------------------------------
-  //
-  // This a list of modules and their paths
-  //
-  //    Public       /                   OS.js Public Storage
-  //    User         home:///            OS.js User Storage
-  //    OS.js        osjs:///            OS.js Dist (Read-only)
-  //    GoogleDrive  google-drive:///    Google Drive Storage
-  //    OneDrive     onedrive:///        Microsoft OneDrive (SkyDrive)
-  //    Dropbox      dropbox:///         Dropbox Storage
-  //
+  /*@
+   *
+   *  This is a wrapper for handling all VFS functions
+   *  read() write() scandir() and so on.
+   *
+   *  See 'src/javascript/vfs/' for the specific modules.
+   *
+   *  You should read the information below!
+   *
+   *  ---------------------------------------------------------------------------
+   *
+   *  Functions that take 'metadata' (File Metadata) as an argument (like all of them)
+   *  it expects you to use an instance of OSjs.VFS.File()
+   *
+   *     VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
+   *
+   *  ---------------------------------------------------------------------------
+   *
+   *  By default all functions that read data will return ArrayBuffer, but you can also return:
+   *     String
+   *     dataSource
+   *     TODO: Blob ?
+   *
+   *  ---------------------------------------------------------------------------
+   *
+   *  Functions that take 'data' (File Data) as an argument supports these types:
+   *
+   *     File                      Browser internal
+   *     Blob                      Browser internal
+   *     ArrayBuffer               Browser internal
+   *     String                    Just a normal string
+   *     OSjs.VFS.FileDataURL      Wrapper for dataSource URL strings
+   *     JSON                      JSON Data defined as: {filename: foo, data: bar}
+   *
+   *  ---------------------------------------------------------------------------
+   *
+   *  This a list of modules and their paths
+   *
+   *     Public       /                   OS.js Public Storage
+   *     User         home:///            OS.js User Storage
+   *     OS.js        osjs:///            OS.js Dist (Read-only)
+   *     GoogleDrive  google-drive:///    Google Drive Storage
+   *     OneDrive     onedrive:///        Microsoft OneDrive (SkyDrive)
+   *     Dropbox      dropbox:///         Dropbox Storage
+   *
+   */
 
   window.OSjs       = window.OSjs       || {};
   OSjs.VFS          = OSjs.VFS          || {};
