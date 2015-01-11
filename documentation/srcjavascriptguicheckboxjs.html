@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/dialogs.js, Generated: </i>Sun Jan 11 2015 21:52:18 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/checkbox.js, Generated: </i>Sun Jan 11 2015 21:52:18 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -63,154 +63,69 @@
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-core-standarddialog">StandardDialog</a> (OSjs.Core.StandardDialog)
+<a href="#osjs-gui-checkbox">Checkbox</a> (OSjs.GUI.Checkbox)
 <ul>
-<li><a href="#standarddialog-destroy">destroy()</a></li>
-<li><a href="#standarddialog-init">init()</a></li>
-<li><a href="#standarddialog-_inited">_inited()</a></li>
-<li><a href="#standarddialog-oncloseclick">onCloseClick()</a></li>
-<li><a href="#standarddialog-oncancelclick">onCancelClick()</a></li>
-<li><a href="#standarddialog-onconfirmclick">onConfirmClick()</a></li>
-<li><a href="#standarddialog-_onkeyevent">_onKeyEvent()</a></li>
-<li><a href="#standarddialog-end">end()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-core-standarddialog">
-<h2 id="standarddialog">StandardDialog</h2>
+<div class="section-class" id="osjs-gui-checkbox">
+<h2 id="checkbox">Checkbox</h2>
 <pre>
-Standard Dialog Window Implementation
-
-This is a version of Dialog Window that makes
-
-it easy to add buttons etc.
-
-TODO https://github.com/andersevenrud/OS.js-v2/issues/13
+Checkbox
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Core.StandardDialog</li>
-</ul>
-<h4 id="extends">Extends</h4>
-<ul>
-<li>DialogWindow</li>
+<li>OSjs.GUI.Checkbox</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
-<li>OSjs.Core.DialogWindow</li>
+<li>OSjs.GUI._Input</li>
 </ul>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Name of GUIElement (unique)</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>A list of options</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>label</td>
+<td>String</td>
+<td>The Label of Element</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
 
-<div class="section-method" id="standarddialog-destroy">
-<h3 id="standarddialog-destroy-">StandardDialog::destroy()</h3>
-<pre>
-Destroy the Dialog Window
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Core.DialogWindow::destroy()</li>
-</ul>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-init">
-<h3 id="standarddialog-init-">StandardDialog::init()</h3>
-<pre>
-Initialize Dialog Window
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Core.DialogWindow::init()</li>
-</ul>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-_inited">
-<h3 id="standarddialog-_inited-">StandardDialog::_inited()</h3>
-<pre>
-When Dialog Windows has been inited
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Core.DialogWindow::_inited()</li>
-</ul>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-oncloseclick">
-<h3 id="standarddialog-oncloseclick-">StandardDialog::onCloseClick()</h3>
-<pre>
-When Close has been clicked
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-oncancelclick">
-<h3 id="standarddialog-oncancelclick-">StandardDialog::onCancelClick()</h3>
-<pre>
-When Cancel has been clicked
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-onconfirmclick">
-<h3 id="standarddialog-onconfirmclick-">StandardDialog::onConfirmClick()</h3>
-<pre>
-When Confirm has been clicked
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-_onkeyevent">
-<h3 id="standarddialog-_onkeyevent-">StandardDialog::_onKeyEvent()</h3>
-<pre>
-On Key event
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Core.DialogWindow::_onKeyEvent()</li>
-</ul>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-end">
-<h3 id="standarddialog-end-">StandardDialog::end()</h3>
-<pre>
-End/Close Dialog Window
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
 </div>
 
     </content>
