@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OS.js Client Documentation</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+  </head>
+  <body>
+    <nav>
+      <h1>Files</h1>
+      <ul>
+
+<li><a href="srcjavascriptutilsjs.html">src/javascript/utils.js</a></li>
+<li><a href="srcjavascriptguielementjs.html">src/javascript/guielement.js</a></li>
+<li><a href="srcjavascriptdialogsjs.html">src/javascript/dialogs.js</a></li>
+<li><a href="srcjavascriptcorejs.html">src/javascript/core.js</a></li>
+<li><a href="srcjavascriptwindowsjs.html">src/javascript/windows.js</a></li>
+<li><a href="srcjavascripthandlerjs.html">src/javascript/handler.js</a></li>
+<li><a href="srcjavascriptvfsjs.html">src/javascript/vfs.js</a></li>
+<li><a href="srcjavascriptgui_dataviewjs.html">src/javascript/gui/_dataview.js</a></li>
+<li><a href="srcjavascriptgui_inputjs.html">src/javascript/gui/_input.js</a></li>
+<li><a href="srcjavascriptguibuttonjs.html">src/javascript/gui/button.js</a></li>
+<li><a href="srcjavascriptguicanvasjs.html">src/javascript/gui/canvas.js</a></li>
+<li><a href="srcjavascriptguicheckboxjs.html">src/javascript/gui/checkbox.js</a></li>
+<li><a href="srcjavascriptguicolorswatchjs.html">src/javascript/gui/colorswatch.js</a></li>
+<li><a href="srcjavascriptguifileviewjs.html">src/javascript/gui/fileview.js</a></li>
+<li><a href="srcjavascriptguiiconviewjs.html">src/javascript/gui/iconview.js</a></li>
+<li><a href="srcjavascriptguilabeljs.html">src/javascript/gui/label.js</a></li>
+<li><a href="srcjavascriptguilistviewjs.html">src/javascript/gui/listview.js</a></li>
+<li><a href="srcjavascriptguimenujs.html">src/javascript/gui/menu.js</a></li>
+<li><a href="srcjavascriptguimenubarjs.html">src/javascript/gui/menubar.js</a></li>
+<li><a href="srcjavascriptguipanedviewjs.html">src/javascript/gui/panedview.js</a></li>
+<li><a href="srcjavascriptguiprogressbarjs.html">src/javascript/gui/progressbar.js</a></li>
+<li><a href="srcjavascriptguiradiojs.html">src/javascript/gui/radio.js</a></li>
+<li><a href="srcjavascriptguirichtextjs.html">src/javascript/gui/richtext.js</a></li>
+<li><a href="srcjavascriptguiscrollviewjs.html">src/javascript/gui/scrollview.js</a></li>
+<li><a href="srcjavascriptguiselectjs.html">src/javascript/gui/select.js</a></li>
+<li><a href="srcjavascriptguiselectlistjs.html">src/javascript/gui/selectlist.js</a></li>
+<li><a href="srcjavascriptguisliderjs.html">src/javascript/gui/slider.js</a></li>
+<li><a href="srcjavascriptguistatusbarjs.html">src/javascript/gui/statusbar.js</a></li>
+<li><a href="srcjavascriptguitabsjs.html">src/javascript/gui/tabs.js</a></li>
+<li><a href="srcjavascriptguitextjs.html">src/javascript/gui/text.js</a></li>
+<li><a href="srcjavascriptguitextareajs.html">src/javascript/gui/textarea.js</a></li>
+<li><a href="srcjavascriptguitoolbarjs.html">src/javascript/gui/toolbar.js</a></li>
+<li><a href="srcjavascriptguitreeviewjs.html">src/javascript/gui/treeview.js</a></li>
+
+      </ul>
+
+      <h1>Namespace</h1>
+      <ul>
+
+<li>OSjs<ul><li>Utils<ul><li><a class="Class" href="srcjavascriptutilsjs.html#osjs-utils-keys">Keys</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-mousebutton">mouseButton()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-format">format()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-mergeobject">mergeObject()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-cloneobject">cloneObject()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-inarray">inArray()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-checkacceptmime">checkAcceptMime()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-getcompability">getCompability()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-isie">isIE()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-btoaurlsafe">btoaUrlsafe()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-atoburlsafe">atobUrlsafe()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-btoautf">btoaUtf()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-atobutf">atobUtf()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-getuserlocale">getUserLocale()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-fixjson">fixJSON()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-filext">filext()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-dirname">dirname()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-filename">filename()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-humanfilesize">humanFileSize()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-escapefilename">escapeFilename()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-replacefileextension">replaceFileExtension()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-replacefilename">replaceFilename()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-getfilenamerange">getFilenameRange()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-converttorgb">convertToRGB()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-converttohex">convertToHEX()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-inverthex">invertHEX()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-">$()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-safename">$safeName()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-empty">$empty()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-getstyle">$getStyle()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-position">$position()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-index">$index()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-selectrange">$selectRange()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-addclass">$addClass()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-removeclass">$removeClass()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-hasclass">$hasClass()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-createcss">$createCSS()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-createjs">$createJS()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-isformelement">isFormElement()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-isinputelement">isInputElement()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-ajax">ajax()</a></li><li><a class="" href="srcjavascriptutilsjs.html#osjs-utils-preload">Preload()</a></li></ul></li><li>GUI<ul><li><a class="Class" href="srcjavascriptguielementjs.html#osjs-gui-guielement">GUIElement</a></li><li><a class="Class" href="srcjavascriptgui_dataviewjs.html#osjs-gui-_dataview">_DataView</a></li><li><a class="Class" href="srcjavascriptgui_inputjs.html#osjs-gui-_input">_Input</a></li><li><a class="Class" href="srcjavascriptguibuttonjs.html#osjs-gui-button">Button</a></li><li><a class="Class" href="srcjavascriptguicanvasjs.html#osjs-gui-canvas">Canvas</a></li><li><a class="Class" href="srcjavascriptguicheckboxjs.html#osjs-gui-checkbox">Checkbox</a></li><li><a class="Class" href="srcjavascriptguicolorswatchjs.html#osjs-gui-colorswatch">ColorSwatch</a></li><li><a class="Class" href="srcjavascriptguifileviewjs.html#osjs-gui-fileview">FileView</a></li><li><a class="Class" href="srcjavascriptguiiconviewjs.html#osjs-gui-iconview">IconView</a></li><li><a class="Class" href="srcjavascriptguilabeljs.html#osjs-gui-label">Label</a></li><li><a class="Class" href="srcjavascriptguilistviewjs.html#osjs-gui-listview">ListView</a></li><li><a class="Class" href="srcjavascriptguimenujs.html#osjs-gui-menu">Menu</a></li><li><a class="Class" href="srcjavascriptguimenubarjs.html#osjs-gui-menubar">MenuBar</a></li><li><a class="Class" href="srcjavascriptguipanedviewjs.html#osjs-gui-panedview">PanedView</a></li><li><a class="Class" href="srcjavascriptguiprogressbarjs.html#osjs-gui-progressbar">ProgressBar</a></li><li><a class="Class" href="srcjavascriptguiradiojs.html#osjs-gui-radio">Radio</a></li><li><a class="Class" href="srcjavascriptguirichtextjs.html#osjs-gui-richtext">RichText</a></li><li><a class="Class" href="srcjavascriptguiscrollviewjs.html#osjs-gui-scrollview">ScrollView</a></li><li><a class="Class" href="srcjavascriptguiselectjs.html#osjs-gui-select">Select</a></li><li><a class="Class" href="srcjavascriptguiselectlistjs.html#osjs-gui-selectlist">SelectList</a></li><li><a class="Class" href="srcjavascriptguisliderjs.html#osjs-gui-slider">Slider</a></li><li><a class="Class" href="srcjavascriptguistatusbarjs.html#osjs-gui-statusbar">StatusBar</a></li><li><a class="Class" href="srcjavascriptguitabsjs.html#osjs-gui-tabs">Tabs</a></li><li><a class="Class" href="srcjavascriptguitextjs.html#osjs-gui-text">Text</a></li><li><a class="Class" href="srcjavascriptguitextareajs.html#osjs-gui-textarea">Textarea</a></li><li><a class="Class" href="srcjavascriptguitoolbarjs.html#osjs-gui-toolbar">Toolbar</a></li><li><a class="Class" href="srcjavascriptguitreeviewjs.html#osjs-gui-treeview">TreeView</a></li></ul></li><li>Core<ul><li><a class="Class" href="srcjavascriptdialogsjs.html#osjs-core-standarddialog">StandardDialog</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-core-addhook">addHook()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-core-initialize">initialize()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-core-shutdown">shutdown()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-core-signout">signOut()</a></li><li><a class="Class" href="srcjavascriptcorejs.html#osjs-core-process">Process</a></li><li><a class="Class" href="srcjavascriptcorejs.html#osjs-core-service">Service</a></li><li><a class="Class" href="srcjavascriptcorejs.html#osjs-core-application">Application</a></li><li><a class="Class" href="srcjavascriptwindowsjs.html#osjs-core-windowmanager">WindowManager</a></li><li><a class="Class" href="srcjavascriptwindowsjs.html#osjs-core-window">Window</a></li></ul></li><li>API<ul><li><a class="" href="srcjavascriptcorejs.html#osjs-api-createloading">createLoading()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-destroyloading">destroyLoading()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-call">call()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-error">error()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-launch">launch()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-launchlist">launchList()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-playsound">playSound()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-kill">kill()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-message">message()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getprocess">getProcess()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-_">_()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-__">__()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getlocale">getLocale()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-setlocale">setLocale()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-curl">curl()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getapplicationresource">getApplicationResource()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getthemecss">getThemeCSS()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-geticon">getIcon()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getfileicon">getFileIcon()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getthemeresource">getThemeResource()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getdefaultsettings">getDefaultSettings()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getdefaultpath">getDefaultPath()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getprocesses">getProcesses()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-gethandlerinstance">getHandlerInstance()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-getwminstance">getWMInstance()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-createdroppable">createDroppable()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-createdraggable">createDraggable()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-createmenu">createMenu()</a></li><li><a class="" href="srcjavascriptcorejs.html#osjs-api-blurmenu">blurMenu()</a></li></ul></li><li>Handlers<ul><li><a class="Class" href="srcjavascripthandlerjs.html#osjs-handlers-default">Default</a></li></ul></li><li>VFS<ul><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-addformfile">addFormFile()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-datasourcetoab">dataSourceToAb()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-texttoab">textToAb()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-abtodatasource">abToDataSource()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-abtotext">abToText()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-abtobinarystring">abToBinaryString()</a></li><li><a class="Class" href="srcjavascriptvfsjs.html#osjs-vfs-filedataurl">FileDataURL</a></li><li><a class="Class" href="srcjavascriptvfsjs.html#osjs-vfs-file">File</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-getmodules">getModules()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-scandir">scandir()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-write">write()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-read">read()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-copy">copy()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-move">move()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-unlink">unlink()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-mkdir">mkdir()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-exists">exists()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-fileinfo">fileinfo()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-url">url()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-upload">upload()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-download">download()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-trash">trash()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-untrash">untrash()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-emptytrash">emptyTrash()</a></li><li><a class="" href="srcjavascriptvfsjs.html#osjs-vfs-remoteread">remoteRead()</a></li></ul></li></ul></li>
+
+      </ul>
+    </nav>
+
+    <content>
+
+<div><i>src/javascript/handler.js, Generated: </i>Sun Jan 11 2015 21:53:49 GMT+0100 (CET)</div>
+<h1>Overview</h1>
+<h2>Functions</h2>
+<ul>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-handlers-default">DefaultHandler</a> (OSjs.Handlers.Default)
+<ul>
+<li><a href="#defaulthandler-init">init()</a></li>
+<li><a href="#defaulthandler-destroy">destroy()</a></li>
+<li><a href="#defaulthandler-boot">boot()</a></li>
+<li><a href="#defaulthandler-login">login()</a></li>
+<li><a href="#defaulthandler-logout">logout()</a></li>
+<li><a href="#defaulthandler-loadsession">loadSession()</a></li>
+<li><a href="#defaulthandler-callapi">callAPI()</a></li>
+<li><a href="#defaulthandler-onlogin">onLogin()</a></li>
+<li><a href="#defaulthandler-onvfsrequest">onVFSRequest()</a></li>
+<li><a href="#defaulthandler-getapplicationmetadata">getApplicationMetadata()</a></li>
+<li><a href="#defaulthandler-getapplicationsmetadata">getApplicationsMetadata()</a></li>
+<li><a href="#defaulthandler-getapplicationnamebymime">getApplicationNameByMime()</a></li>
+<li><a href="#defaulthandler-getthemes">getThemes()</a></li>
+<li><a href="#defaulthandler-gettheme">getTheme()</a></li>
+<li><a href="#defaulthandler-setdefaultapplication">setDefaultApplication()</a></li>
+<li><a href="#defaulthandler-savesettings">saveSettings()</a></li>
+<li><a href="#defaulthandler-setsetting">setSetting()</a></li>
+<li><a href="#defaulthandler-getsetting">getSetting()</a></li>
+<li><a href="#defaulthandler-setusersettings">setUserSettings()</a></li>
+<li><a href="#defaulthandler-getusersettings">getUserSettings()</a></li>
+<li><a href="#defaulthandler-setusersession">setUserSession()</a></li>
+<li><a href="#defaulthandler-getusersession">getUserSession()</a></li>
+<li><a href="#defaulthandler-setapplicationsettings">setApplicationSettings()</a></li>
+<li><a href="#defaulthandler-getapplicationsettings">getApplicationSettings()</a></li>
+<li><a href="#defaulthandler-getconfig">getConfig()</a></li>
+<li><a href="#defaulthandler-getuserdata">getUserData()</a></li>
+<li><a href="#defaulthandler-getsettings">getSettings()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-handlers-default">
+<h2 id="defaulthandler">DefaultHandler</h2>
+<pre>
+Default Handler Implementation
+
+Used for communication, resources, settings and session handling
+
+You can implement your own, see documentation on Wiki.
+
+NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
+
+OSjs.API.getHandlerInstance();
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Handlers.Default</li>
+</ul>
+
+<div class="section-method" id="defaulthandler-init">
+<h3 id="defaulthandler-init-">DefaultHandler::init()</h3>
+<pre>
+Called upon window loaded from 'main.js'
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.API.initialize()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-destroy">
+<h3 id="defaulthandler-destroy-">DefaultHandler::destroy()</h3>
+<pre>
+Destroy the handler
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-boot">
+<h3 id="defaulthandler-boot-">DefaultHandler::boot()</h3>
+<pre>
+Called after successfull login in 'core.js'
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-login">
+<h3 id="defaulthandler-login-">DefaultHandler::login()</h3>
+<pre>
+Default login method
+
+NOTE: This is just a placeholder.
+
+ To implement your own login handler, see the Wiki :)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>String</td>
+<td>Login username</td>
+</tr>
+<tr>
+<td>password</td>
+<td>String</td>
+<td>Login password</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-logout">
+<h3 id="defaulthandler-logout-">DefaultHandler::logout()</h3>
+<pre>
+Default logout method
+
+NOTE: You should call this in your implemented handler
+
+ or else your data will not be stored
+
+@parm boolean save Save session?
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-loadsession">
+<h3 id="defaulthandler-loadsession-">DefaultHandler::loadSession()</h3>
+<pre>
+Default method to restore last running session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-callapi">
+<h3 id="defaulthandler-callapi-">DefaultHandler::callAPI()</h3>
+<pre>
+Default method to perform a call to the backend (API)
+
+Use this shorthand method: API.call() instead :)
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.API.call()</li>
+</ul>
+
+</div>
+<div class="section-method" id="defaulthandler-onlogin">
+<h3 id="defaulthandler-onlogin-">DefaultHandler::onLogin()</h3>
+<pre>
+Called when login() is finished
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userData</td>
+<td>Object</td>
+<td>JSON User Data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-onvfsrequest">
+<h3 id="defaulthandler-onvfsrequest-">DefaultHandler::onVFSRequest()</h3>
+<pre>
+Called upon a VFS request
+
+You can use this to interrupt operations
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vfsModule</td>
+<td>String</td>
+<td>VFS Module Name</td>
+</tr>
+<tr>
+<td>vfsMethod</td>
+<td>String</td>
+<td>VFS Method Name</td>
+</tr>
+<tr>
+<td>vfsArguments</td>
+<td>Object</td>
+<td>VFS Method Arguments</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationmetadata">
+<h3 id="defaulthandler-getapplicationmetadata-">DefaultHandler::getApplicationMetadata()</h3>
+<pre>
+Get metadata for application by class-name
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON data</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationsmetadata">
+<h3 id="defaulthandler-getapplicationsmetadata-">DefaultHandler::getApplicationsMetadata()</h3>
+<pre>
+Get all package metadata
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON data</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationnamebymime">
+<h3 id="defaulthandler-getapplicationnamebymime-">DefaultHandler::getApplicationNameByMime()</h3>
+<pre>
+Get a list of application supporting mime type
+
+FIXME: There is a unused parameter here!
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The MIME type</td>
+</tr>
+<tr>
+<td>fname</td>
+<td>String</td>
+<td>Filename (unused)</td>
+</tr>
+<tr>
+<td>forceList</td>
+<td>boolean</td>
+<td>Force entry to show up</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getthemes">
+<h3 id="defaulthandler-getthemes-">DefaultHandler::getThemes()</h3>
+<pre>
+Gets a list of all themes metadata
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-gettheme">
+<h3 id="defaulthandler-gettheme-">DefaultHandler::getTheme()</h3>
+<pre>
+Gets a theme by name
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON Data</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setdefaultapplication">
+<h3 id="defaulthandler-setdefaultapplication-">DefaultHandler::setDefaultApplication()</h3>
+<pre>
+Set the default application for given mime type
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>MIME Type</td>
+</tr>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-savesettings">
+<h3 id="defaulthandler-savesettings-">DefaultHandler::saveSettings()</h3>
+<pre>
+Internal method for saving settings (wrapper)
+
+NOTE: This is should be called from the implemented handler
+
+ See 'demo' handler for example
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setsetting">
+<h3 id="defaulthandler-setsetting-">DefaultHandler::setSetting()</h3>
+<pre>
+Sets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category</td>
+<td>String</td>
+<td>The group/category of setting</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>The setting value</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+<tr>
+<td>save</td>
+<td>boolean</td>
+<td>Also save settings? (default=true)</td>
+</tr>
+<tr>
+<td>merge</td>
+<td>boolean</td>
+<td>Merge instead of set?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getsetting">
+<h3 id="defaulthandler-getsetting-">DefaultHandler::getSetting()</h3>
+<pre>
+Gets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category</td>
+<td>String</td>
+<td>The group/category of setting</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+<tr>
+<td>defaultValue</td>
+<td>Mixed</td>
+<td>Use as default if none found</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setusersettings">
+<h3 id="defaulthandler-setusersettings-">DefaultHandler::setUserSettings()</h3>
+<pre>
+Wrapper for setting user settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>values</td>
+<td>Object</td>
+<td>JSON of settings</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getusersettings">
+<h3 id="defaulthandler-getusersettings-">DefaultHandler::getUserSettings()</h3>
+<pre>
+Wrapper for getting user settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setusersession">
+<h3 id="defaulthandler-setusersession-">DefaultHandler::setUserSession()</h3>
+<pre>
+Wrapper for setting user session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>session</td>
+<td>Array</td>
+<td>Array of session JSON data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getusersession">
+<h3 id="defaulthandler-getusersession-">DefaultHandler::getUserSession()</h3>
+<pre>
+Wrapper for getting user session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setapplicationsettings">
+<h3 id="defaulthandler-setapplicationsettings-">DefaultHandler::setApplicationSettings()</h3>
+<pre>
+Wrapper for setting application settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>settings</td>
+<td>Array</td>
+<td>Array of setting JSON data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationsettings">
+<h3 id="defaulthandler-getapplicationsettings-">DefaultHandler::getApplicationSettings()</h3>
+<pre>
+Wrapper for getting application settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getconfig">
+<h3 id="defaulthandler-getconfig-">DefaultHandler::getConfig()</h3>
+<pre>
+Get entire configuration
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>Optionally get just this value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>All settings or just value by key</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getuserdata">
+<h3 id="defaulthandler-getuserdata-">DefaultHandler::getUserData()</h3>
+<pre>
+Get data for logged in user
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON With user data</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getsettings">
+<h3 id="defaulthandler-getsettings-">DefaultHandler::getSettings()</h3>
+<pre>
+Get the settings manager
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>All settings in JSON</em></p>
+
+</div>
+</div>
+
+    </content>
+  </body>
+</body>
