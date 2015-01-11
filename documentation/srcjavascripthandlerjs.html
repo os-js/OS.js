@@ -29,112 +29,78 @@
 
     <content>
 
-<div><i>src/javascript/vfs.js, Generated: </i>Sun Jan 11 2015 17:09:33 GMT+0100 (CET)</div>
+<div><i>src/javascript/handler.js, Generated: </i>Sun Jan 11 2015 17:09:33 GMT+0100 (CET)</div>
 <h1>Overview</h1>
-<pre>
-  This is a wrapper for handling all VFS functions
-  read() write() scandir() and so on.
-
-
-  See 'src/javascript/vfs/' for the specific modules.
-
-
-  You should read the information below!
-
-
-  ---------------------------------------------------------------------------
-
-
-  Functions that take 'metadata' (File Metadata) as an argument (like all of them)
-  it expects you to use an instance of OSjs.VFS.File()
-
-
-     VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
-
-
-  ---------------------------------------------------------------------------
-
-
-  By default all functions that read data will return ArrayBuffer, but you can also return:
-     String
-     dataSource
-     TODO: Blob ?
-
-
-  ---------------------------------------------------------------------------
-
-
-  Functions that take 'data' (File Data) as an argument supports these types:
-
-
-     File                      Browser internal
-     Blob                      Browser internal
-     ArrayBuffer               Browser internal
-     String                    Just a normal string
-     OSjs.VFS.FileDataURL      Wrapper for dataSource URL strings
-     JSON                      JSON Data defined as: {filename: foo, data: bar}
-
-
-  ---------------------------------------------------------------------------
-
-
-  This a list of modules and their paths
-
-
-     Public       /                   OS.js Public Storage
-     User         home:///            OS.js User Storage
-     OS.js        osjs:///            OS.js Dist (Read-only)
-     GoogleDrive  google-drive:///    Google Drive Storage
-     OneDrive     onedrive:///        Microsoft OneDrive (SkyDrive)
-     Dropbox      dropbox:///         Dropbox Storage
-</pre>
 <h2>Functions</h2>
 <ul>
-<li>OSjs.VFS.<a href="#osjs-vfs-addformfile">addFormFile()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-datasourcetoab">dataSourceToAb()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-texttoab">textToAb()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-abtodatasource">abToDataSource()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-abtotext">abToText()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-abtobinarystring">abToBinaryString()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-getmodules">getModules()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-scandir">scandir()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-write">write()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-read">read()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-copy">copy()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-move">move()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-unlink">unlink()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-mkdir">mkdir()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-exists">exists()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-fileinfo">fileinfo()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-url">url()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-upload">upload()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-download">download()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-trash">trash()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-untrash">untrash()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-emptytrash">emptyTrash()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-remoteread">remoteRead()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-vfs-filedataurl">FileDataURL</a> (OSjs.VFS.)
+<a href="#osjs-handlers-default">DefaultHandler</a> (OSjs.Handlers.Default)
 <ul>
-</ul>
-</li>
-<li>
-<a href="#osjs-vfs-file">File</a> (OSjs.VFS.)
-<ul>
+<li><a href="#defaulthandler-init">init()</a></li>
+<li><a href="#defaulthandler-destroy">destroy()</a></li>
+<li><a href="#defaulthandler-boot">boot()</a></li>
+<li><a href="#defaulthandler-login">login()</a></li>
+<li><a href="#defaulthandler-logout">logout()</a></li>
+<li><a href="#defaulthandler-loadsession">loadSession()</a></li>
+<li><a href="#defaulthandler-callapi">callAPI()</a></li>
+<li><a href="#defaulthandler-onlogin">onLogin()</a></li>
+<li><a href="#defaulthandler-onvfsrequest">onVFSRequest()</a></li>
+<li><a href="#defaulthandler-getapplicationmetadata">getApplicationMetadata()</a></li>
+<li><a href="#defaulthandler-getapplicationsmetadata">getApplicationsMetadata()</a></li>
+<li><a href="#defaulthandler-getapplicationnamebymime">getApplicationNameByMime()</a></li>
+<li><a href="#defaulthandler-getthemes">getThemes()</a></li>
+<li><a href="#defaulthandler-gettheme">getTheme()</a></li>
+<li><a href="#defaulthandler-setdefaultapplication">setDefaultApplication()</a></li>
+<li><a href="#defaulthandler-savesettings">saveSettings()</a></li>
+<li><a href="#defaulthandler-setsetting">setSetting()</a></li>
+<li><a href="#defaulthandler-getsetting">getSetting()</a></li>
+<li><a href="#defaulthandler-setusersettings">setUserSettings()</a></li>
+<li><a href="#defaulthandler-getusersettings">getUserSettings()</a></li>
+<li><a href="#defaulthandler-setusersession">setUserSession()</a></li>
+<li><a href="#defaulthandler-getusersession">getUserSession()</a></li>
+<li><a href="#defaulthandler-setapplicationsettings">setApplicationSettings()</a></li>
+<li><a href="#defaulthandler-getapplicationsettings">getApplicationSettings()</a></li>
+<li><a href="#defaulthandler-getconfig">getConfig()</a></li>
+<li><a href="#defaulthandler-getuserdata">getUserData()</a></li>
+<li><a href="#defaulthandler-getsettings">getSettings()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<div class="section-function" id="osjs-vfs-addformfile">
-<h2 id="osjs-vfs-addformfile-">OSjs.VFS.addFormFile()</h2>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-handlers-default">
+<h2 id="defaulthandler">DefaultHandler</h2>
 <pre>
-This is a helper to add a File to FormData
+Default Handler Implementation
+
+Used for communication, resources, settings and session handling
+
+You can implement your own, see documentation on Wiki.
+
+NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
+
+OSjs.API.getHandlerInstance();
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Handlers.Default</li>
+</ul>
+
+<div class="section-method" id="defaulthandler-init">
+<h3 id="defaulthandler-init-">DefaultHandler::init()</h3>
+<pre>
+Called upon window loaded from 'main.js'
 </pre>
 
 
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.API.initialize()</li>
+</ul>
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -146,24 +112,9 @@ This is a helper to add a File to FormData
 </thead>
 <tbody>
 <tr>
-<td>fd</td>
-<td>FormData</td>
-<td>FormData instance</td>
-</tr>
-<tr>
-<td>key</td>
-<td>String</td>
-<td>FormData entry name</td>
-</tr>
-<tr>
-<td>data</td>
-<td>[File]</td>
-<td>File Data (see supported types)</td>
-</tr>
-<tr>
-<td>file</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
 </tr>
 </tbody>
 </table>
@@ -171,10 +122,22 @@ This is a helper to add a File to FormData
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-function" id="osjs-vfs-datasourcetoab">
-<h2 id="osjs-vfs-datasourcetoab-">OSjs.VFS.dataSourceToAb()</h2>
+<div class="section-method" id="defaulthandler-destroy">
+<h3 id="defaulthandler-destroy-">DefaultHandler::destroy()</h3>
 <pre>
-Convert DataSourceURL to ArrayBuffer
+Destroy the handler
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-boot">
+<h3 id="defaulthandler-boot-">DefaultHandler::boot()</h3>
+<pre>
+Called after successfull login in 'core.js'
 </pre>
 
 
@@ -189,237 +152,275 @@ Convert DataSourceURL to ArrayBuffer
 </thead>
 <tbody>
 <tr>
-<td>data</td>
-<td>String</td>
-<td>The datasource string</td>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
 </tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-login">
+<h3 id="defaulthandler-login-">DefaultHandler::login()</h3>
+<pre>
+Default login method
+
+NOTE: This is just a placeholder.
+
+ To implement your own login handler, see the Wiki :)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>String</td>
+<td>Login username</td>
+</tr>
+<tr>
+<td>password</td>
+<td>String</td>
+<td>Login password</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-logout">
+<h3 id="defaulthandler-logout-">DefaultHandler::logout()</h3>
+<pre>
+Default logout method
+
+NOTE: You should call this in your implemented handler
+
+ or else your data will not be stored
+
+@parm boolean save Save session?
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-loadsession">
+<h3 id="defaulthandler-loadsession-">DefaultHandler::loadSession()</h3>
+<pre>
+Default method to restore last running session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-callapi">
+<h3 id="defaulthandler-callapi-">DefaultHandler::callAPI()</h3>
+<pre>
+Default method to perform a call to the backend (API)
+
+Use this shorthand method: API.call() instead :)
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.API.call()</li>
+</ul>
+
+</div>
+<div class="section-method" id="defaulthandler-onlogin">
+<h3 id="defaulthandler-onlogin-">DefaultHandler::onLogin()</h3>
+<pre>
+Called when login() is finished
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userData</td>
+<td>Object</td>
+<td>JSON User Data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-onvfsrequest">
+<h3 id="defaulthandler-onvfsrequest-">DefaultHandler::onVFSRequest()</h3>
+<pre>
+Called upon a VFS request
+
+You can use this to interrupt operations
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vfsModule</td>
+<td>String</td>
+<td>VFS Module Name</td>
+</tr>
+<tr>
+<td>vfsMethod</td>
+<td>String</td>
+<td>VFS Method Name</td>
+</tr>
+<tr>
+<td>vfsArguments</td>
+<td>Object</td>
+<td>VFS Method Arguments</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationmetadata">
+<h3 id="defaulthandler-getapplicationmetadata-">DefaultHandler::getApplicationMetadata()</h3>
+<pre>
+Get metadata for application by class-name
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON data</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationsmetadata">
+<h3 id="defaulthandler-getapplicationsmetadata-">DefaultHandler::getApplicationsMetadata()</h3>
+<pre>
+Get all package metadata
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON data</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationnamebymime">
+<h3 id="defaulthandler-getapplicationnamebymime-">DefaultHandler::getApplicationNameByMime()</h3>
+<pre>
+Get a list of application supporting mime type
+
+FIXME: There is a unused parameter here!
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td>mime</td>
 <td>String</td>
-<td>The mime type</td>
+<td>The MIME type</td>
 </tr>
 <tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-texttoab">
-<h2 id="osjs-vfs-texttoab-">OSjs.VFS.textToAb()</h2>
-<pre>
-Convert PlainText to ArrayBuffer
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>data</td>
+<td>fname</td>
 <td>String</td>
-<td>The plaintext string</td>
+<td>Filename (unused)</td>
 </tr>
 <tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-abtodatasource">
-<h2 id="osjs-vfs-abtodatasource-">OSjs.VFS.abToDataSource()</h2>
-<pre>
-Convert ArrayBuffer to DataSourceURL
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>arrayBuffer</td>
-<td>ArrayBuffer</td>
-<td>The ArrayBuffer</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-abtotext">
-<h2 id="osjs-vfs-abtotext-">OSjs.VFS.abToText()</h2>
-<pre>
-Convert ArrayBuffer to PlainText
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>arrayBuffer</td>
-<td>ArrayBuffer</td>
-<td>The ArrayBuffer</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-abtobinarystring">
-<h2 id="osjs-vfs-abtobinarystring-">OSjs.VFS.abToBinaryString()</h2>
-<pre>
-Convert ArrayBuffer to BinaryString
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>arrayBuffer</td>
-<td>ArrayBuffer</td>
-<td>The ArrayBuffer</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-getmodules">
-<h2 id="osjs-vfs-getmodules-">OSjs.VFS.getModules()</h2>
-<pre>
-Returns a list of all enabled VFS modules
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>visible</td>
+<td>forceList</td>
 <td>boolean</td>
-<td>All visible modules only (default=true)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>List of all Modules found</em></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-scandir">
-<h2 id="osjs-vfs-scandir-">OSjs.VFS.scandir()</h2>
-<pre>
-Scandir
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
+<td>Force entry to show up</td>
 </tr>
 <tr>
 <td>callback</td>
 <td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
+<td>Callback function</td>
 </tr>
 </tbody>
 </table>
@@ -427,115 +428,34 @@ Scandir
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-function" id="osjs-vfs-write">
-<h2 id="osjs-vfs-write-">OSjs.VFS.write()</h2>
+<div class="section-method" id="defaulthandler-getthemes">
+<h3 id="defaulthandler-getthemes-">DefaultHandler::getThemes()</h3>
 <pre>
-Write File
-
-This function currently have no options.
+Gets a list of all themes metadata
 </pre>
 
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>data</td>
-<td>[File]</td>
-<td>File Data (see supported types)</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
+
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON</em></p>
 
 </div>
-<div class="section-function" id="osjs-vfs-read">
-<h2 id="osjs-vfs-read-">OSjs.VFS.read()</h2>
+<div class="section-method" id="defaulthandler-gettheme">
+<h3 id="defaulthandler-gettheme-">DefaultHandler::getTheme()</h3>
 <pre>
-Read File
+Gets a theme by name
 </pre>
 
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>type</td>
-<td>String</td>
-<td>What to return, default: binary. Can also be: text, datasource</td>
-</tr>
-</tbody>
-</table>
+
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON Data</em></p>
 
 </div>
-<div class="section-function" id="osjs-vfs-copy">
-<h2 id="osjs-vfs-copy-">OSjs.VFS.copy()</h2>
+<div class="section-method" id="defaulthandler-setdefaultapplication">
+<h3 id="defaulthandler-setdefaultapplication-">DefaultHandler::setDefaultApplication()</h3>
 <pre>
-Copy File
+Set the default application for given mime type
 </pre>
 
 
@@ -549,570 +469,39 @@ Copy File
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>src</td>
-<td>OSjs.VFS.File</td>
-<td>Source File Metadata</td>
-</tr>
-<tr>
-<td>dest</td>
-<td>OSjs.VFS.File</td>
-<td>Destination File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-move">
-<h2 id="osjs-vfs-move-">OSjs.VFS.move()</h2>
-<pre>
-Move File
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>src</td>
-<td>OSjs.VFS.File</td>
-<td>Source File Metadata</td>
-</tr>
-<tr>
-<td>dest</td>
-<td>OSjs.VFS.File</td>
-<td>Destination File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-unlink">
-<h2 id="osjs-vfs-unlink-">OSjs.VFS.unlink()</h2>
-<pre>
-Delete File
-
-This function currently have no options.
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-mkdir">
-<h2 id="osjs-vfs-mkdir-">OSjs.VFS.mkdir()</h2>
-<pre>
-Create Directory
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-exists">
-<h2 id="osjs-vfs-exists-">OSjs.VFS.exists()</h2>
-<pre>
-Check if file exists
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-fileinfo">
-<h2 id="osjs-vfs-fileinfo-">OSjs.VFS.fileinfo()</h2>
-<pre>
-Get file info
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-url">
-<h2 id="osjs-vfs-url-">OSjs.VFS.url()</h2>
-<pre>
-Get file URL
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-upload">
-<h2 id="osjs-vfs-upload-">OSjs.VFS.upload()</h2>
-<pre>
-Upload file(s)
-
-args:
-
- app - (optional) If specified (Application ref) it will create a Dialog window
-
- win - (optional) Save as above only will add as child to this window
-
- destination - Full path to destination
-
- files - Array of 'File'
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>args</td>
-<td>Object</td>
-<td>Function arguments (see below)</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-download">
-<h2 id="osjs-vfs-download-">OSjs.VFS.download()</h2>
-<pre>
-Download a file
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>args</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-trash">
-<h2 id="osjs-vfs-trash-">OSjs.VFS.trash()</h2>
-<pre>
-Move file to trash (Not used in internal storage)
-
-THIS IS NOT USED FOR INTERNAL MODULES
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-untrash">
-<h2 id="osjs-vfs-untrash-">OSjs.VFS.untrash()</h2>
-<pre>
-Restore file from trash
-
-THIS IS NOT USED FOR INTERNAL MODULES
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-emptytrash">
-<h2 id="osjs-vfs-emptytrash-">OSjs.VFS.emptyTrash()</h2>
-<pre>
-Permanently empty trash
-
-THIS IS NOT USED FOR INTERNAL MODULES
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-remoteread">
-<h2 id="osjs-vfs-remoteread-">OSjs.VFS.remoteRead()</h2>
-<pre>
-Read a remote file with URL (CORS)
-
-This function basically does a cURL call and downloads
-
-the data.
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>url</td>
-<td>String</td>
-<td>URL</td>
-</tr>
 <tr>
 <td>mime</td>
 <td>String</td>
 <td>MIME Type</td>
 </tr>
 <tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
 </tr>
 <tr>
-<td>options</td>
-<td>Object</td>
-<td>Options</td>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
 </tr>
 </tbody>
 </table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-savesettings">
+<h3 id="defaulthandler-savesettings-">DefaultHandler::saveSettings()</h3>
+<pre>
+Internal method for saving settings (wrapper)
+
+NOTE: This is should be called from the implemented handler
+
+ See 'demo' handler for example
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
@@ -1123,9 +512,9 @@ the data.
 </thead>
 <tbody>
 <tr>
-<td>type</td>
-<td>String</td>
-<td>What to return, default: binary. Can also be: text, datasource</td>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
 </tr>
 </tbody>
 </table>
@@ -1133,38 +522,357 @@ the data.
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-vfs-filedataurl">
-<h2 id="filedataurl">FileDataURL</h2>
+<div class="section-method" id="defaulthandler-setsetting">
+<h3 id="defaulthandler-setsetting-">DefaultHandler::setSetting()</h3>
 <pre>
-This is a object you can pass around in VFS when
-
-handling DataURL()s (strings). Normally you would
-
-use a File, Blob or ArrayBuffer, but this is an alternative.
-
-Useful for canvas data etc.
+Sets a setting
 </pre>
 
-<h4 id="namespace">Namespace</h4>
-<ul>
-<li>OSjs.VFS.FileDataURL</li>
-</ul>
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category</td>
+<td>String</td>
+<td>The group/category of setting</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>The setting value</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+<tr>
+<td>save</td>
+<td>boolean</td>
+<td>Also save settings? (default=true)</td>
+</tr>
+<tr>
+<td>merge</td>
+<td>boolean</td>
+<td>Merge instead of set?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-class" id="osjs-vfs-file">
-<h2 id="file">File</h2>
+<div class="section-method" id="defaulthandler-getsetting">
+<h3 id="defaulthandler-getsetting-">DefaultHandler::getSetting()</h3>
 <pre>
-This is the Metadata object you have to use when passing files around
-
-in the VFS API.
+Gets a setting
 </pre>
 
-<h4 id="namespace">Namespace</h4>
-<ul>
-<li>OSjs.VFS.File</li>
-</ul>
 
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category</td>
+<td>String</td>
+<td>The group/category of setting</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+<tr>
+<td>defaultValue</td>
+<td>Mixed</td>
+<td>Use as default if none found</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setusersettings">
+<h3 id="defaulthandler-setusersettings-">DefaultHandler::setUserSettings()</h3>
+<pre>
+Wrapper for setting user settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>values</td>
+<td>Object</td>
+<td>JSON of settings</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getusersettings">
+<h3 id="defaulthandler-getusersettings-">DefaultHandler::getUserSettings()</h3>
+<pre>
+Wrapper for getting user settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setusersession">
+<h3 id="defaulthandler-setusersession-">DefaultHandler::setUserSession()</h3>
+<pre>
+Wrapper for setting user session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>session</td>
+<td>Array</td>
+<td>Array of session JSON data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getusersession">
+<h3 id="defaulthandler-getusersession-">DefaultHandler::getUserSession()</h3>
+<pre>
+Wrapper for getting user session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-setapplicationsettings">
+<h3 id="defaulthandler-setapplicationsettings-">DefaultHandler::setApplicationSettings()</h3>
+<pre>
+Wrapper for setting application settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>settings</td>
+<td>Array</td>
+<td>Array of setting JSON data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getapplicationsettings">
+<h3 id="defaulthandler-getapplicationsettings-">DefaultHandler::getApplicationSettings()</h3>
+<pre>
+Wrapper for getting application settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getconfig">
+<h3 id="defaulthandler-getconfig-">DefaultHandler::getConfig()</h3>
+<pre>
+Get entire configuration
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>Optionally get just this value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>All settings or just value by key</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getuserdata">
+<h3 id="defaulthandler-getuserdata-">DefaultHandler::getUserData()</h3>
+<pre>
+Get data for logged in user
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON With user data</em></p>
+
+</div>
+<div class="section-method" id="defaulthandler-getsettings">
+<h3 id="defaulthandler-getsettings-">DefaultHandler::getSettings()</h3>
+<pre>
+Get the settings manager
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>All settings in JSON</em></p>
+
+</div>
 </div>
 
     </content>
