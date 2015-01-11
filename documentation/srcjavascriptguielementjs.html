@@ -27,7 +27,7 @@
 
     <content>
 
-<div><i>src/javascript/guielement.js, Generated: </i>Sun Jan 11 2015 02:11:37 GMT+0100 (CET)</div>
+<div><i>src/javascript/guielement.js, Generated: </i>Sun Jan 11 2015 02:19:49 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -59,15 +59,26 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 <h1>Classes</h1>
 <div class="section-class" id="osjs-gui-guielement">
 <h2 id="guielement">GUIElement</h2>
-<p>GUI Element</p>
-<p>options:</p>
-<p> onItemDropped Function Callback - When internal object dropped (requires dnd enabled)</p>
-<p> onFilesDropped Function Callback - When external file object dropped (requires dnd enabled)</p>
-<p> dnd bool Enable DnD (Default = false)</p>
-<p> dndDrop bool Enable DnD Droppable (Default = DnD)</p>
-<p> dndDrag bool Enable DnD Draggable (Default = DnD)</p>
-<p> dndOpts Object DnD Options</p>
-<p> focusable bool If element is focusable (Default = true)</p>
+<pre>
+GUI Element
+
+options:
+
+ onItemDropped Function Callback - When internal object dropped (requires dnd enabled)
+
+ onFilesDropped Function Callback - When external file object dropped (requires dnd enabled)
+
+ dnd bool Enable DnD (Default = false)
+
+ dndDrop bool Enable DnD Droppable (Default = DnD)
+
+ dndDrag bool Enable DnD Draggable (Default = DnD)
+
+ dndOpts Object DnD Options
+
+ focusable bool If element is focusable (Default = true)
+</pre>
+
 <p><strong>Namespace: </strong> OSjs.GUI.GUIElement</p>
 <h4 id="constructor">Constructor</h4>
 <table>
@@ -95,25 +106,47 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 
 <div class="section-method" id="guielement-init">
 <h3 id="guielement-init-">GUIElement::init()</h3>
-<p>Initializes the GUI Element</p>
-<p><strong>Returns:</strong> DOMElement <em>The outer container of created element</em></p>
+<pre>
+Initializes the GUI Element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p><u>DOMElement</u> <em>The outer container of created element</em></p>
 
 </div>
 <div class="section-method" id="guielement-update">
 <h3 id="guielement-update-">GUIElement::update()</h3>
-<p>When element receives update event</p>
-<p><strong>Returns:</strong> void</p>
+<pre>
+When element receives update event
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p><u>void</u></p>
 
 </div>
 <div class="section-method" id="guielement-destroy">
 <h3 id="guielement-destroy-">GUIElement::destroy()</h3>
-<p>Destroys the GUI Element</p>
-<p><strong>Returns:</strong> void</p>
+<pre>
+Destroys the GUI Element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p><u>void</u></p>
 
 </div>
 <div class="section-method" id="guielement-_addeventlistener">
 <h3 id="guielement-_addeventlistener-">GUIElement::_addEventListener()</h3>
-<p>Adds a listener for an event</p>
+<pre>
+Adds a listener for an event
+</pre>
+
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -141,12 +174,17 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> void</p>
+<h4 id="returns">Returns</h4>
+<p><u>void</u></p>
 
 </div>
 <div class="section-method" id="guielement-_addhook">
 <h3 id="guielement-_addhook-">GUIElement::_addHook()</h3>
-<p>Adds a hook (internal events)</p>
+<pre>
+Adds a hook (internal events)
+</pre>
+
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -169,12 +207,17 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> void</p>
+<h4 id="returns">Returns</h4>
+<p><u>void</u></p>
 
 </div>
 <div class="section-method" id="guielement-_firehook">
 <h3 id="guielement-_firehook-">GUIElement::_fireHook()</h3>
-<p>Fire a hook (internal event)</p>
+<pre>
+Fire a hook (internal event)
+</pre>
+
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -192,18 +235,29 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> void</p>
+<h4 id="returns">Returns</h4>
+<p><u>void</u></p>
 
 </div>
 <div class="section-method" id="guielement-getroot">
 <h3 id="guielement-getroot-">GUIElement::getRoot()</h3>
-<p>Get root DOM Element</p>
-<p><strong>Returns:</strong> DOMElement <em>The outer container</em></p>
+<pre>
+Get root DOM Element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p><u>DOMElement</u> <em>The outer container</em></p>
 
 </div>
 <div class="section-method" id="guielement-ondnddrop">
 <h3 id="guielement-ondnddrop-">GUIElement::onDndDrop()</h3>
-<p>Event for DnD</p>
+<pre>
+Event for DnD
+</pre>
+
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -221,12 +275,17 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> boolean</p>
+<h4 id="returns">Returns</h4>
+<p><u>boolean</u></p>
 
 </div>
 <div class="section-method" id="guielement-onglobalkeypress">
 <h3 id="guielement-onglobalkeypress-">GUIElement::onGlobalKeyPress()</h3>
-<p>Event for Key Press</p>
+<pre>
+Event for Key Press
+</pre>
+
+
 <p><strong>See:</strong> OSjs.Core.Window::_onKeyEvent</p>
 <h4 id="parameters">Parameters</h4>
 <table>
@@ -245,12 +304,17 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> boolean</p>
+<h4 id="returns">Returns</h4>
+<p><u>boolean</u></p>
 
 </div>
 <div class="section-method" id="guielement-onkeyup">
 <h3 id="guielement-onkeyup-">GUIElement::onKeyUp()</h3>
-<p>Event for Key Release</p>
+<pre>
+Event for Key Release
+</pre>
+
+
 <p><strong>See:</strong> OSjs.Core.Window::_onKeyEvent</p>
 <h4 id="parameters">Parameters</h4>
 <table>
@@ -269,12 +333,17 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> boolean</p>
+<h4 id="returns">Returns</h4>
+<p><u>boolean</u></p>
 
 </div>
 <div class="section-method" id="guielement-_onfocus">
 <h3 id="guielement-_onfocus-">GUIElement::_onFocus()</h3>
-<p>Event for focus</p>
+<pre>
+Event for focus
+</pre>
+
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -292,24 +361,41 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> boolean</p>
+<h4 id="returns">Returns</h4>
+<p><u>boolean</u></p>
 
 </div>
 <div class="section-method" id="guielement-focus">
 <h3 id="guielement-focus-">GUIElement::focus()</h3>
-<p>Set focus to the GUI Element</p>
-<p><strong>Returns:</strong> boolean</p>
+<pre>
+Set focus to the GUI Element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p><u>boolean</u></p>
 
 </div>
 <div class="section-method" id="guielement-blur">
 <h3 id="guielement-blur-">GUIElement::blur()</h3>
-<p>Unset focus for the GUI Element</p>
-<p><strong>Returns:</strong> boolean</p>
+<pre>
+Unset focus for the GUI Element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p><u>boolean</u></p>
 
 </div>
 <div class="section-method" id="guielement-_setwindow">
 <h3 id="guielement-_setwindow-">GUIElement::_setWindow()</h3>
-<p>Set what Window we belong to</p>
+<pre>
+Set what Window we belong to
+</pre>
+
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -327,12 +413,17 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> void</p>
+<h4 id="returns">Returns</h4>
+<p><u>void</u></p>
 
 </div>
 <div class="section-method" id="guielement-_settabindex">
 <h3 id="guielement-_settabindex-">GUIElement::_setTabIndex()</h3>
-<p>Sets the tabindex</p>
+<pre>
+Sets the tabindex
+</pre>
+
+
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -350,7 +441,8 @@ OSjs.GUI.<a href="#osjs-gui-guielement">GUIElement</a>
 </tr>
 </tbody>
 </table>
-<p><strong>Returns:</strong> void</p>
+<h4 id="returns">Returns</h4>
+<p><u>void</u></p>
 
 </div>
 </div>

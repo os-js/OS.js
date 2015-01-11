@@ -4,6 +4,7 @@ body {
   margin : 0;
   padding : 0;
   overflow : hidden;
+  color : #111;
 }
 
 li {
@@ -74,4 +75,9 @@ content thead * {
 content tbody * {
   padding : 10px;
   background : #ccc;
+}
+
+content div pre {
+  padding : 20px;
+  color : #333;
 }
