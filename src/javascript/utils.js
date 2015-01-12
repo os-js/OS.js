@@ -937,7 +937,7 @@
   };
 
   /**
-   * Create a <link> stylesheet tag
+   * Create a link stylesheet tag
    *
    * @param   String      src     The URL of resource
    *
@@ -957,7 +957,7 @@
   };
 
   /**
-   * Create a <script> tag
+   * Create a script tag
    *
    * @param   String      src                   The URL of resource
    * @param   Function    onreadystatechange    readystatechange callback
