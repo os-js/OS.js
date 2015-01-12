@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/utils.js, Generated: </i>Mon Jan 12 2015 01:16:29 GMT+0100 (CET)</div>
+<div><i>src/javascript/utils.js, Generated: </i>Mon Jan 12 2015 01:17:56 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -1294,32 +1294,6 @@ Alias
 Common function for handling all types of XHR calls
 
 including download/upload and JSONP
-
-arguments:
-
- url String The URL
-
- method String HTTP Call method: (POST/GET, default = GET)
-
- body Mixed Optional body to send (for POST)
-
- responseType String HTTP Response type (default = null)
-
- requestHeaders Object Tuple with headers (default = null)
-
- json boolean Handle as a JSON request/response (default = false)
-
- jsonp boolean Handle as a JSONP request (default = false)
-
- onerror Function onerror callback
-
- onsuccess Function onsuccess callback
-
- oncreated Function oncreated callback
-
- onfailed Function onfailed callback
-
- oncanceled Function oncanceled callback
 </pre>
 
 
@@ -1337,6 +1311,78 @@ arguments:
 <td>args</td>
 <td>Object</td>
 <td>Aguments (see below)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>String</td>
+<td>The URL</td>
+</tr>
+<tr>
+<td>method</td>
+<td>String</td>
+<td>HTTP Call method: (POST/GET, default = GET)</td>
+</tr>
+<tr>
+<td>body</td>
+<td>Mixed</td>
+<td>Optional body to send (for POST)</td>
+</tr>
+<tr>
+<td>responseType</td>
+<td>String</td>
+<td>HTTP Response type (default = null)</td>
+</tr>
+<tr>
+<td>requestHeaders</td>
+<td>Object</td>
+<td>Tuple with headers (default = null)</td>
+</tr>
+<tr>
+<td>json</td>
+<td>boolean</td>
+<td>Handle as a JSON request/response (default = false)</td>
+</tr>
+<tr>
+<td>jsonp</td>
+<td>boolean</td>
+<td>Handle as a JSONP request (default = false)</td>
+</tr>
+<tr>
+<td>onerror</td>
+<td>Function</td>
+<td>onerror callback</td>
+</tr>
+<tr>
+<td>onsuccess</td>
+<td>Function</td>
+<td>onsuccess callback</td>
+</tr>
+<tr>
+<td>oncreated</td>
+<td>Function</td>
+<td>oncreated callback</td>
+</tr>
+<tr>
+<td>onfailed</td>
+<td>Function</td>
+<td>onfailed callback</td>
+</tr>
+<tr>
+<td>oncanceled</td>
+<td>Function</td>
+<td>oncanceled callback</td>
 </tr>
 </tbody>
 </table>
