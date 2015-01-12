@@ -1,181 +1,162 @@
 @font-face {
   font-family: OSjsFont;
-  src: url('fonts/Karla-Regular.eot');
-  src: url('fonts/Karla-Regular.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Regular.svg#karla') format('svg'), url('fonts/Karla-Regular.woff') format('woff'), url('fonts/Karla-Regular.ttf') format('truetype');
+  src: url('fonts/SourceSansPro-Regular.eot');
+  src: url('fonts/SourceSansPro-Regular.eot?#iefix') format('embedded-opentype'), url('fonts/SourceSansPro-Regular.svg#karla') format('svg'), url('fonts/SourceSansPro-Regular.woff') format('woff'), url('fonts/SourceSansPro-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: OSjsFont;
-  src: url('fonts/Karla-Bold.eot');
-  src: url('fonts/Karla-Bold.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Bold.svg#karla_bold') format('svg'), url('fonts/Karla-Bold.woff') format('woff'), url('fonts/Karla-Bold.ttf') format('truetype');
+  src: url('fonts/SourceSansPro-Bold.eot');
+  src: url('fonts/SourceSansPro-Bold.eot?#iefix') format('embedded-opentype'), url('fonts/SourceSansPro-Bold.svg#karla_bold') format('svg'), url('fonts/SourceSansPro-Bold.woff') format('woff'), url('fonts/SourceSansPro-Bold.ttf') format('truetype');
   font-weight: bold;
 }
 @font-face {
   font-family: OSjsFont;
-  src: url('fonts/Karla-Italic.eot');
-  src: url('fonts/Karla-Italic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Italic.svg#karla_italic') format('svg'), url('fonts/Karla-Italic.woff') format('woff'), url('fonts/Karla-Italic.ttf') format('truetype');
+  src: url('fonts/SourceSansPro-It.eot');
+  src: url('fonts/SourceSansPro-It.eot?#iefix') format('embedded-opentype'), url('fonts/SourceSansPro-It.svg#karla_italic') format('svg'), url('fonts/SourceSansPro-It.woff') format('woff'), url('fonts/SourceSansPro-It.ttf') format('truetype');
   font-style: italic;
 }
 @font-face {
   font-family: OSjsFont;
-  src: url('fonts/Karla-Italic.eot');
-  src: url('fonts/Karla-Italic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-Italic.svg#karla_italic') format('svg'), url('fonts/Karla-Italic.woff') format('woff'), url('fonts/Karla-Italic.ttf') format('truetype');
+  src: url('fonts/SourceSansPro-It.eot');
+  src: url('fonts/SourceSansPro-It.eot?#iefix') format('embedded-opentype'), url('fonts/SourceSansPro-It.svg#karla_italic') format('svg'), url('fonts/SourceSansPro-It.woff') format('woff'), url('fonts/SourceSansPro-It.ttf') format('truetype');
   font-style: oblique;
+}
+@font-face {
+  font-family: OSjsFont;
+  src: url('fonts/SourceSansPro-BoldIt.eot');
+  src: url('fonts/SourceSansPro-BoldIt.eot?#iefix') format('embedded-opentype'), url('fonts/SourceSansPro-BoldIt.svg#karla_bolditalic') format('svg'), url('fonts/SourceSansPro-BoldIt.woff') format('woff'), url('fonts/SourceSansPro-BoldIt.ttf') format('truetype');
+  font-style: italic;
+  font-style: italic;
 }
 @font-face {
   font-family: OSjsFont;
   src: url('fonts/Karla-BoldItalic.eot');
   src: url('fonts/Karla-BoldItalic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-BoldItalic.svg#karla_bolditalic') format('svg'), url('fonts/Karla-BoldItalic.woff') format('woff'), url('fonts/Karla-BoldItalic.ttf') format('truetype');
   font-style: italic;
-  font-style: italic;
-}
-@font-face {
-  font-family: OSjsFont;
-  src: url('fonts/Karla-BoldItalic.eot');
-  src: url('fonts/Karla-BoldItalic.eot?#iefix') format('embedded-opentype'), url('fonts/Karla-BoldItalic.svg#karla_bolditalic') format('svg'), url('fonts/Karla-BoldItalic.woff') format('woff'), url('fonts/Karla-BoldItalic.ttf') format('truetype');
-  font-style: italic;
   font-style: oblique;
+}
+html, body {
+  margin : 0;
+  padding : 0;
 }
 
 body {
-  font-family: OSjsFont, sans-serif;
-  font-size : 120%;
-  color : #222;
-  background : #fff url('back.png');
-  background-repeat : no-repeat;
-  background-size : 100% auto;
-}
-a {
-  text-decoration : none;
-}
-a.super {
-  vertical-align : super;
-  font-size : 50%;
-}
-span.small {
-  font-size : 60%;
-}
-.indented {
-  padding-left : 20px;
-}
-.indented.spaced {
-  margin-bottom : 20px;
+  font-family: OSjsFont;
+  font-size: 18px;
+  color: #4D4545;
+  line-height: 26px;
+  background : #fff;
 }
 
-iframe {
-  margin : 0;
-  padding : 0;
-  border : 0 none;
-  outline : none;
-}
-
-p.code {
-  background : #e6e6e6;
-  color : #000;
-  padding : 20px;
-  display : inline-block;
-}
-
-main, nav, section, footer {
-  display : block;
-}
-
-main {
-  width : 970px;
+.wrapper {
+  width : 770px;
   margin : 0 auto;
 }
 
-section {
+.indented {
+  margin : 20px;
 }
 
-section.Rakklam {
+p.code {
+  background : #f2f2f2;
+  font-family : Monospace;
+  padding : 20px;
+}
+
+header, content, footer, nav {
+  display : block;
+  position : relative;
+}
+
+header, footer {
   text-align : center;
-  margin-bottom : 80px;
-  margin-top : 80px;
 }
 
-section#Main {
-  color : #000;
-  margin-top : 100px;
+header {
+  height : 330px;
+  background : #572a79;
+  color : #fff;
 }
-  section#Main h1 {
-    font-size : 400%;
-    margin-bottom : 0;
-    padding-bottom : 0;
-    color : #000;
-  }
-  section#Main h2 {
-    margin-top : 20px;
-    padding-top : 0;
-    font-size : 120%;
-  }
+header h1 {
+  margin : 0;
+  padding : 0;
+  font-size : 20px;
+}
+header .wrapper {
+  width : 370px;
+}
+header img {
+  margin-top : 65px;
+  margin-bottom : 10px;
+}
 
-section.Point {
-  line-height : 160%;
-  margin-bottom : 100px;
-  color : #444;
+nav {
+  background : #f2f2f2;
+  height : 370px;
 }
-  section.Point h1 {
-    font-size : 220%;
-    padding-top : 0;
-    margin-top : 0;
-    color : #222;
-  }
-  section.Point a {
-    color : #DD7940;
-  }
 
-section.Notice {
-  margin-bottom : 40px;
+nav ul {
+  margin : -16px;
+  padding : 0;
+  padding-top : 40px;
+  padding-bottom : 40px;
+  list-style : none;
+  font-size : 0;
+  text-align : center;
 }
-  section.Notice p {
-    vertical-align : super;
-    font-size : 80%;
-    text-align : center;
-    color : #999;
-  }
+
+nav li {
+  background: #528E47;
+  box-shadow: 0px 3px 1px 0px rgba(0,0,0,0.20);
+  border-radius: 10px;
+  width : 235px;
+  height : 100px;
+  line-height : 100px;
+  text-align : center;
+  display : inline-block;
+  margin : 16px;
+  font-size : 18px;
+}
+nav li a {
+  display : block;
+  height : 100px;
+  color : #fff;
+  font-weight : bold;
+  text-decoration : none;
+}
+nav li#button_try {
+  background : #572a79;
+}
+nav li#button_view {
+  background : #777777;
+}
+
+content {
+  min-height : 300px;
+}
+
+content a {
+  color : #572A79;
+}
+
+content h2 {
+  font-family: OSjsFont;
+  font-size: 40px;
+  color: #4D4545;
+  line-height: 50px;
+  padding-top : 80px;
+}
 
 footer {
-  margin-top : 120px;
-  padding : 40px;
-  font-size : 80%;
-  line-height : 200%;
-  text-align : center;
+  height : 270px;
+  background : #f2f2f2;
+}
+footer img {
+  margin-top : 30px;
 }
 
-a.Button {
-  display : inline-block;
-  text-align : center;
-  min-width : 160px;
-  padding : 52px;
-  background : #e6e6e6;
-  color : #000;
-  margin : 20px;
-  border : 5px solid #fff;
-  font-size : 140%;
-
-  -webkit-border-radius : 10px;
-  -moz-border-radius : 10px;
-  -ms-border-radius : 10px;
-  -o-border-radius : 10px;
-  border-radius : 10px;
+iframe {
+  border : 0 none;
 }
-a.Button:hover {
-  border : 5px solid rgba(0, 0, 0, .5);
-}
-a.Button.Download {
-  background : #A7F1B0;
-  color : #252525;
-}
-a.Button.Try {
-  background : #d7d7ff;
-  color : #3E3E4D;
-}
-
-div#Buttons {
-  text-align : center;
-  margin-top : 40px;
-  margin-bottom : 40px;
-}
-
