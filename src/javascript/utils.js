@@ -1026,19 +1026,18 @@
    *
    * @param   Object      args      Aguments (see below)
    *
-   * arguments:
-   *  url             String          The URL
-   *  method          String          HTTP Call method: (POST/GET, default = GET)
-   *  body            Mixed           Optional body to send (for POST)
-   *  responseType    String          HTTP Response type (default = null)
-   *  requestHeaders  Object          Tuple with headers (default = null)
-   *  json            boolean         Handle as a JSON request/response (default = false)
-   *  jsonp           boolean         Handle as a JSONP request (default = false)
-   *  onerror         Function        onerror callback
-   *  onsuccess       Function        onsuccess callback
-   *  oncreated       Function        oncreated callback
-   *  onfailed        Function        onfailed callback
-   *  oncanceled      Function        oncanceled callback
+   * @option args String     url                  The URL
+   * @option args String     method               HTTP Call method: (POST/GET, default = GET)
+   * @option args Mixed      body                 Optional body to send (for POST)
+   * @option args String     responseType         HTTP Response type (default = null)
+   * @option args Object     requestHeaders       Tuple with headers (default = null)
+   * @option args boolean    json                 Handle as a JSON request/response (default = false)
+   * @option args boolean    jsonp                Handle as a JSONP request (default = false)
+   * @option args Function   onerror              onerror callback
+   * @option args Function   onsuccess            onsuccess callback
+   * @option args Function   oncreated            oncreated callback
+   * @option args Function   onfailed             onfailed callback
+   * @option args Function   oncanceled           oncanceled callback
    *
    * @return  void
    *
