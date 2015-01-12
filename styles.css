@@ -194,6 +194,7 @@ iframe {
   header img {
     width : 90%;
     margin-top : 10px;
+    max-width : 370px;
   }
 
   nav {
