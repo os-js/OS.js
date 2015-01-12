@@ -34,12 +34,12 @@
  */
 #LoadingScreen {
   position : absolute;
-  width : 392px;
-  height : 169px;
+  width : 120px;
+  height : 180px;
   top : 50%;
   left : 50%;
-  margin-top : -105px;
-  margin-left : -196px;
+  margin-top : -90px;
+  margin-left : -60px;
   background : #fff;
   z-index : 9999999;
 }
