@@ -135,6 +135,7 @@ nav li#button_view {
 
 content {
   min-height : 300px;
+  padding-bottom : 60px;
 }
 
 content a {
