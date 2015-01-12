@@ -1132,7 +1132,7 @@
   ApplicationDraw.prototype.onCheckDataType = function(file) {
     var ext = Utils.filext(file.path).toLowerCase();
     if ( ext === 'odraw' ) {
-      return 'datasource';
+      return 'text';
     }
     return Application.prototype.onCheckDataType.apply(this, arguments);
   };
