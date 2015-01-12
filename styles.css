@@ -165,3 +165,64 @@ footer img {
 iframe {
   border : 0 none;
 }
+
+@media screen and (max-width : 1000px) {
+  body {
+    font-size : 14px;
+    line-height : 22px;
+    overflow-x : hidden;
+  }
+
+  .wrapper {
+    width : 90%;
+  }
+
+  header {
+    height : auto;
+    padding-bottom : 40px;
+  }
+
+  header h1 {
+    font-size : 14px;
+    line-height : 22px;
+  }
+
+  header .wrapper {
+    width : 90%;
+  }
+
+  header img {
+    width : 90%;
+    margin-top : 10px;
+  }
+
+  nav {
+    height : auto;
+    padding-bottom : 20px;
+  }
+
+  nav ul li {
+    width : 30%;
+    height : 60px;
+    margin : 5px;
+    font-size : 12px;
+  }
+  nav ul li a {
+    height : 60px;
+    line-height : 60px;
+  }
+
+  content h2 {
+    font-size : 24px;
+    line-height : 30px;
+  }
+
+  content ul {
+    padding-left : 20px;
+  }
+
+  iframe {
+    width : 100%;
+    height : 300px;
+  }
+}
