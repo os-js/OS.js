@@ -54,7 +54,7 @@
     this.$container = document.createElement('ul');
     root.appendChild(this.$container);
 
-    this.addButton(API._('LBL_APPLICATIONS'), 'categories/applications-other.png', function(ev) {
+    this.addButton(API._('LBL_APPLICATIONS'), 'osjs.png', function(ev) {
       ev.stopPropagation();
       var wm = API.getWMInstance();
       if ( wm && wm.getSetting('menuCategories') ) {
