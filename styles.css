@@ -65,7 +65,7 @@ p.code {
   padding : 20px;
 }
 
-header, content, footer, nav {
+header, main, footer, nav {
   display : block;
   position : relative;
 }
@@ -137,16 +137,16 @@ nav li#button_view {
   background : #777777;
 }
 
-content {
+main {
   min-height : 300px;
   padding-bottom : 60px;
 }
 
-content a {
+main a {
   color : #572A79;
 }
 
-content h2 {
+main h2 {
   font-family: OSjsFont;
   font-size: 40px;
   color: #4D4545;
@@ -154,7 +154,7 @@ content h2 {
   padding-top : 80px;
 }
 
-content .adddshere {
+main .adddshere {
   margin-top : 60px;
 }
 
@@ -217,12 +217,12 @@ iframe {
     line-height : 60px;
   }
 
-  content h2 {
+  main h2 {
     font-size : 24px;
     line-height : 30px;
   }
 
-  content ul {
+  main ul {
     padding-left : 20px;
   }
 
