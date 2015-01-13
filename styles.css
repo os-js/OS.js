@@ -84,6 +84,9 @@ header h1 {
   padding : 0;
   font-size : 20px;
 }
+header h1:first-child {
+  display : none;
+}
 header .wrapper {
   width : 370px;
 }
@@ -95,6 +98,7 @@ header img {
 nav {
   background : #f2f2f2;
   height : 370px;
+  text-align : center;
 }
 
 nav ul {

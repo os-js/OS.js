@@ -36,6 +36,7 @@
   <body>
     <header>
       <div class="wrapper">
+        <h1>OS.js</h1>
         <img alt="" src="logo-header.png" />
         <h1>JavaScript Web/Cloud Desktop Platform</h1>
       </div>
@@ -60,116 +61,128 @@
 
     <content>
       <div class="wrapper">
-        <h2>Open-source</h2>
-        <p>
-          OS.js is completely free and open-source which means you can contribute to the development or use the code as you like. <a href="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE" class="super" target="_blank">View License</a>
-        </p>
+        <section>
+          <h2>Open-source</h2>
+          <p>
+            OS.js is completely free and open-source which means you can contribute to the development or use the code as you like. <a href="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE" class="super" target="_blank">View License</a>
+          </p>
+        </section>
 
-        <h2>Fast and flexible</h2>
-        <p>
-          Features simple and flexible JavaScript APIs so you can create applications without doing all the hard work.
-          Comes with a build system so you can add and remove components as you wish.
-        </p>
-        <p>
-          OS.js is really small and <b>lighting fast</b>!
-        </p>
+        <section>
+          <h2>Feature-rich</h2>
+          <p>
+            Comes with a ton of features, including a fully customizable Web Desktop and Window Manager that is built to feel like the real thing.
+          </p>
+          <p>
+            With the Virtual Filesystem you can upload, download and modify your files across several cloud storage soultions, including <i>Google Drive</i>, <i>Dropbox</i> and <i>OneDrive</i>
+          </p>
+          <p>
+            The default suite of applications have you covered: File Manager, Drawing Application, Music and Video player, Calculator, Text-editor and a Richtext-editor.
+          </p>
+          <p>
+            You can easily add more applications if you want using external repositories. Some examples include: XMPP Chat, Archive File Manager and a Drum-Sampler
+          </p>
+          <p>
+            These languages are currently supported: Norwegian, French, German and Russian.
+          </p>
+          <p>
+            The complete feature list of OS.js can be found below.
+          </p>
+          <div>
+            <iframe width="770" height="480" src="//www.youtube.com/embed/bDlbblG4FsE" allowfullscreen></iframe>
+          </div>
+        </section>
 
-        <h2>Feature rich</h2>
-        <p>
-          Comes with a ton of features, including a fully customizable Desktop and Window Manager that is built to feel like the real thing.
-        </p>
-        <p>
-          With the Virtual Filesystem you can upload, download and modify your files across several cloud storage soultions, including <i>Google Drive</i>,
-          <i>Dropbox</i> and <i>OneDrive</i>
-        </p>
-        <p>
-          The default suite of applications have you covered: File Manager, Drawing Application, Music and Video player, Calculator, Text-editor and a Richtext-editor.
-        </p>
-        <p>
-          You can easily add more applications if you want using external repositories. Some examples include: XMPP Chat, Archive File Manager and a Drum-Sampler
-        </p>
-        <p>
-          These languages are currently supported: Norwegian, French, German and Russian
-        </p>
-        <div>
-          <iframe width="770" height="480" src="//www.youtube.com/embed/bDlbblG4FsE" allowfullscreen></iframe>
-        </div>
+        <section>
+          <h2>Flexible and really fast</h2>
+          <p>
+            Features simple and flexible JavaScript APIs so you can create applications without doing all the hard work.
+            Comes with a build system so you can add and remove components as you wish.
+          </p>
+          <p>
+            OS.js is also really <b>small</b> and <b>lighting fast</b>!
+          </p>
+        </section>
 
+        <section>
+          <h2>Compability</h2>
+          <p>
+            Works in any modern browser that supports HTML5 and JavaScript 1.6:
+          </p>
+          <ul>
+            <li>Google Chrome</li>
+            <li>Mozilla Firefox</li>
+            <li>Opera</li>
+            <li>Safari</li>
+            <li>Internet Explorer 10+</li>
+            <li>iOS</li>
+            <li>Android</li>
+          </ul>
+          <p>
+            You can deploy OS.js on these platforms:
+          </p>
+          <ul>
+            <li>Linux</li>
+            <li>BSD</li>
+            <li>OSX</li>
+            <li>Windows using Cygwin or the WAMP stack</li>
+          </ul>
+        </section>
 
+        <section>
+          <h2>Documentation</h2>
+          <p>
+            You can read the documentation directly from the <a href="https://github.com/andersevenrud/OS.js-v2">source-code</a>, 
+            or <a href="http://andersevenrud.github.io/OS.js-v2/doc/client/">see here</a> for the generated API documents.
+          </p>
+          <p>
+            Examples and tutorials is located on the <a href="https://github.com/andersevenrud/OS.js-v2/wiki">Github project page wiki</a>
+          </p>
+        </section>
 
-        <h2>Compability</h2>
-        <p>
-          Works in any modern browser that supports HTML5 and JavaScript 1.6:
-        </p>
-        <ul>
-          <li>Google Chrome</li>
-          <li>Mozilla Firefox</li>
-          <li>Opera</li>
-          <li>Safari</li>
-          <li>Internet Explorer 10+</li>
-          <li>iOS</li>
-          <li>Android</li>
-        </ul>
-        <p>
-          You can deploy OS.js on these platforms:
-        </p>
-        <ul>
-          <li>Linux</li>
-          <li>BSD</li>
-          <li>OSX</li>
-          <li>Windows using Cygwin or the WAMP stack</li>
-        </ul>
+        <section>
+          <h2 id="install">Installation</h2>
+          <p>
+            Just run the automated installer and you will be ready to go:
+          </p>
+          <p class="code">
+            curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh
+          </p>
+          <p>
+            Make sure to read the <a href="https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md">installation documentation</a> before you begin. There you will also find instructions on how to download and install manually.
+          </p>
+        </section>
 
-        <h2>Documentation</h2>
-        <p>
-          You can find the documentation in the <a href="https://github.com/andersevenrud/OS.js-v2">source-code</a>. Examples and tutorials is located on the <a href="https://github.com/andersevenrud/OS.js-v2/wiki">Github project page wiki</a>
-        </p>
-        <p>
-          Client API documentation is <a href="http://andersevenrud.github.io/OS.js-v2/doc/client/">hosted here</a>.
-        </p>
-        <p>
-          Want to check out OS.js for yourself ? No problem! Take a look at the <a href="https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md">installation documentation</a> on how to get started.
-        </p>
-
-        <h2 id="install">Installation</h2>
-        <p>
-          Just run the automated installer and you will be ready to go:
-        </p>
-        <p class="code">
-          curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh
-        </p>
-        <p>
-          Make sure to read the <a href="https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md">installation documentation</a> before you begin. There you will also find instructions on how to download and install manually.
-        </p>
-
-        <h2>Full list of features</h2>
-        <ul>
-          <li>Free and Open-source</li>
-          <li>Very simple installation</li>
-          <li>Works in any modern browser</li>
-          <li>Server is deployable on any platform (Windows Node users must use Cygwin or similar)</li>
-          <li>Can be built to run entirely in-browser without any server</li>
-          <li>Dependency-free JavaScript frontend</li>
-          <li>Easy to use APIs</li>
-          <li>Customizable and easy to extend with custom code and modules etc.</li>
-          <li>Virtual File System - Store your files across many different storage/cloud providers</li>
-          <li>Desktop and Window Manager built to feel familiar to most users</li>
-          <li>Drag-and-drop between applications</li>
-          <li>Supports sessions so you can reload workspaces on any computer</li>
-          <li>Localization and translations</li>
-          <li>Comes with a small application suite</li>
-          <li>Supports adding of packages via external repositories</li>
-          <li>Comes with all the tools nesessry to build your own applications</li>
-          <li>Client is written in Strict Mode JavaScript and uses ECMAScript 5.1 standards</li>
-          <li>Follows industry standard style guides</li>
-          <li>Comes with Google API Javascript Support</li>
-          <li>Comes with Windows Live API Javascript Support</li>
-          <li>Google Drive support</li>
-          <li>Dropbox support</li>
-          <li>OneDrive support</li>
-          <li>Run native GTK+ 3.x Applications via Broadway (<a href="https://github.com/andersevenrud/OS.js-v2/issues/29">very experimental</a>)</li>
-          <li>Can be deployed using X11 to work as a full-fletched desktop solution</li>
-        </ul>
+        <section>
+          <h2>Full list of features</h2>
+          <ul>
+            <li>Free and Open-source</li>
+            <li>Very simple installation</li>
+            <li>Works in any modern browser</li>
+            <li>Server is deployable on any platform (Windows Node users must use Cygwin or similar)</li>
+            <li>Can be built to run entirely in-browser without any server</li>
+            <li>Dependency-free JavaScript frontend</li>
+            <li>Easy to use APIs</li>
+            <li>Customizable and easy to extend with custom code and modules etc.</li>
+            <li>Virtual File System - Store your files across many different storage/cloud providers</li>
+            <li>Desktop and Window Manager built to feel familiar to most users</li>
+            <li>Drag-and-drop between applications</li>
+            <li>Supports sessions so you can reload workspaces on any computer</li>
+            <li>Localization and translations</li>
+            <li>Comes with a small application suite</li>
+            <li>Supports adding of packages via external repositories</li>
+            <li>Comes with all the tools nesessry to build your own applications</li>
+            <li>Client is written in Strict Mode JavaScript and uses ECMAScript 5.1 standards</li>
+            <li>Follows industry standard style guides</li>
+            <li>Comes with Google API Javascript Support</li>
+            <li>Comes with Windows Live API Javascript Support</li>
+            <li>Google Drive support</li>
+            <li>Dropbox support</li>
+            <li>OneDrive support</li>
+            <li>Run native GTK+ 3.x Applications via Broadway (<a href="https://github.com/andersevenrud/OS.js-v2/issues/29">very experimental</a>)</li>
+            <li>Can be deployed using X11 to work as a full-fletched desktop solution</li>
+          </ul>
+        </section>
 
         <div class="adddshere">
           <ins class="adsbygoogle"
@@ -181,43 +194,45 @@
           </script>
         </div>
 
-        <h2>Contact information and Community</h2>
-        <p>
-          Official social-media pages:
-        </p>
-        <p class="indented">
-          <a href="https://plus.google.com/b/113399210633478618934/113399210633478618934">Google+</a>
-          <br />
-          <a href="https://www.facebook.com/pages/OSjs/226644300734574">Facebook</a>
-        </p>
-        <p>
-          Contact author via:
-        </p>
-        <p class="indented">
-          <a href="http://twitter.com/andersevenrud">Twitter @andersevenrud</a>
-          <br />
-          <a href="https://plus.google.com/101576798387217383063?rel=author">Google+</a>
-          <br />
-          <a href="http://andersevenrud.github.io/">Homepage</a>
-          <br />
-          <a href="mailto:andersevenrud@gmail.com">Email</a>
-        </p>
-        <p>
-          Show your support:
-        </p>
-        <div class="indented spaced">
-          <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="250"></div>
-          <br />
-          <div class="fb-like" data-href="http://andersevenrud.github.com/OS.js-v2/" data-send="true" data-layout="button_count" data-width="250" data-show-faces="false"></div>
+        <section>
+          <h2>Contact &amp; Community</h2>
+          <p>
+            Official social-media pages:
+          </p>
+          <p class="indented">
+            <a href="https://plus.google.com/b/113399210633478618934/113399210633478618934">Google+</a>
+            <br />
+            <a href="https://www.facebook.com/pages/OSjs/226644300734574">Facebook</a>
+          </p>
+          <p>
+            Contact author via:
+          </p>
+          <p class="indented">
+            <a href="http://twitter.com/andersevenrud">Twitter @andersevenrud</a>
+            <br />
+            <a href="https://plus.google.com/101576798387217383063?rel=author">Google+</a>
+            <br />
+            <a href="http://andersevenrud.github.io/">Homepage</a>
+            <br />
+            <a href="mailto:andersevenrud@gmail.com">Email</a>
+          </p>
+          <p>
+            Show your support:
+          </p>
+          <div class="indented spaced">
+            <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="250"></div>
+            <br />
+            <div class="fb-like" data-href="http://andersevenrud.github.com/OS.js-v2/" data-send="true" data-layout="button_count" data-width="250" data-show-faces="false"></div>
+          </div>
+          <div class="indented">
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+              <input type="hidden" name="cmd" value="_s-xclick" />
+              <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----" />
+              <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="PayPal - The safer, easier way to pay online!" />
+            </form>
+          </div>
         </div>
-        <div class="indented">
-          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_s-xclick" />
-            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----" />
-            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" name="submit" alt="PayPal - The safer, easier way to pay online!" />
-          </form>
-        </div>
-      </div>
+      </section>
     </content>
 
     <footer>
