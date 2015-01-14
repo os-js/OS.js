@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/_input.js, Generated: </i>Mon Jan 12 2015 01:17:56 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/_input.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,16 @@
 <li>
 <a href="#osjs-gui-_input">_Input</a> (OSjs.GUI._Input)
 <ul>
+<li><a href="#_input-destroy">destroy()</a></li>
+<li><a href="#_input-init">init()</a></li>
+<li><a href="#_input-blur">blur()</a></li>
+<li><a href="#_input-focus">focus()</a></li>
+<li><a href="#_input-onglobalkeypress">onGlobalKeypress()</a></li>
+<li><a href="#_input-getdisabled">getDisabled()</a></li>
+<li><a href="#_input-setdisabled">setDisabled()</a></li>
+<li><a href="#_input-isdisabled">isDisabled()</a></li>
+<li><a href="#_input-setvalue">setValue()</a></li>
+<li><a href="#_input-getvalue">getValue()</a></li>
 </ul>
 </li>
 </ul>
@@ -177,6 +187,185 @@ HTML Input Element Wrapper
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="_input-destroy">
+<h3 id="_input-destroy-">_Input::destroy()</h3>
+<pre>
+Destroy and remove Input Element from DOM
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>GUIElement::destroy();</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_input-init">
+<h3 id="_input-init-">_Input::init()</h3>
+<pre>
+Initializes the Input Element
+
+Inserts into DOM and attaches events
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>GUIElement::init();</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="_input-blur">
+<h3 id="_input-blur-">_Input::blur()</h3>
+<pre>
+Blur the input element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="_input-focus">
+<h3 id="_input-focus-">_Input::focus()</h3>
+<pre>
+Focus the input element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="_input-onglobalkeypress">
+<h3 id="_input-onglobalkeypress-ev-">_Input::onGlobalKeypress(ev)</h3>
+<pre>
+This is a special event to make elements
+
+behave a bit better
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>The Event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="_input-getdisabled">
+<h3 id="_input-getdisabled-">_Input::getDisabled()</h3>
+<pre>
+Gets if element is disabled
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="_input-setdisabled">
+<h3 id="_input-setdisabled-d-">_Input::setDisabled(d)</h3>
+<pre>
+Sets if the element is disabled
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d</td>
+<td>boolean</td>
+<td>Disabled</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_input-isdisabled">
+<h3 id="_input-isdisabled-">_Input::isDisabled()</h3>
+<pre>
+Alias of getDisabled()
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>_Input::getDisabled()</li>
+</ul>
+
+</div>
+<div class="section-method" id="_input-setvalue">
+<h3 id="_input-setvalue-val-">_Input::setValue(val)</h3>
+<pre>
+Sets the value
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>val</td>
+<td>Mixed</td>
+<td>The value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_input-getvalue">
+<h3 id="_input-getvalue-">_Input::getValue()</h3>
+<pre>
+Gets the value
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>Result depends on input type</em></p>
+
+</div>
 </div>
 
     </content>

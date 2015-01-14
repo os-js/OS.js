@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/slider.js, Generated: </i>Mon Jan 12 2015 01:17:56 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/slider.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,11 @@
 <li>
 <a href="#osjs-gui-slider">Slider</a> (OSjs.GUI.Slider)
 <ul>
+<li><a href="#slider-setpercentage">setPercentage()</a></li>
+<li><a href="#slider-onsliderclick">onSliderClick()</a></li>
+<li><a href="#slider-onsliderupdate">onSliderUpdate()</a></li>
+<li><a href="#slider-setvalue">setValue()</a></li>
+<li><a href="#slider-getvalue">getValue()</a></li>
 </ul>
 </li>
 </ul>
@@ -130,7 +135,7 @@ Slider Element
 <tr>
 <td>val</td>
 <td>int</td>
-<td>Current value</td>
+<td>Current value (alias=value)</td>
 </tr>
 <tr>
 <td>orientation</td>
@@ -156,6 +161,185 @@ Slider Element
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="slider-setpercentage">
+<h3 id="slider-setpercentage-p-evt-">Slider::setPercentage(p, evt)</h3>
+<pre>
+Set the value in percentage
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p</td>
+<td>int</td>
+<td>Percentage</td>
+</tr>
+<tr>
+<td>evt</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="slider-onsliderclick">
+<h3 id="slider-onsliderclick-ev-cx-xy-tw-th-rh-bg-">Slider::onSliderClick(ev, cx, xy, tw, th, rh, bg)</h3>
+<pre>
+Event when slider was clicked
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>The DOM Event</td>
+</tr>
+<tr>
+<td>cx</td>
+<td>int</td>
+<td>Click X</td>
+</tr>
+<tr>
+<td>xy</td>
+<td>int</td>
+<td>Click Y</td>
+</tr>
+<tr>
+<td>tw</td>
+<td>int</td>
+<td>Total width</td>
+</tr>
+<tr>
+<td>th</td>
+<td>int</td>
+<td>Total height</td>
+</tr>
+<tr>
+<td>rh</td>
+<td>int</td>
+<td>Element height</td>
+</tr>
+<tr>
+<td>bg</td>
+<td>int</td>
+<td>Button height</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="slider-onsliderupdate">
+<h3 id="slider-onsliderupdate-x-y-maxx-maxy-evt-">Slider::onSliderUpdate(x, y, maxX, maxY, evt)</h3>
+<pre>
+Event when slider was updated
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>int</td>
+<td>Slider X value</td>
+</tr>
+<tr>
+<td>y</td>
+<td>int</td>
+<td>Slider Y value</td>
+</tr>
+<tr>
+<td>maxX</td>
+<td>int</td>
+<td>Max X value</td>
+</tr>
+<tr>
+<td>maxY</td>
+<td>int</td>
+<td>Max y value</td>
+</tr>
+<tr>
+<td>evt</td>
+<td>DOMEvent</td>
+<td>The DOM Event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="slider-setvalue">
+<h3 id="slider-setvalue-val-">Slider::setValue(val)</h3>
+<pre>
+Set the value of slider
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>val</td>
+<td>int</td>
+<td>The value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="slider-getvalue">
+<h3 id="slider-getvalue-">Slider::getValue()</h3>
+<pre>
+Get the value
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u></p>
+
+</div>
 </div>
 
     </content>
