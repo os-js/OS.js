@@ -51,6 +51,15 @@
   };
   Text.prototype = Object.create(_Input.prototype);
 
+  /**
+   * Select a range (highlight)
+   *
+   * @param   Object      range     Range of {min, max}
+   *
+   * @return  void
+   *
+   * @method  Text::select()
+   */
   Text.prototype.select = function(range) {
     if ( this.$input ) {
       if ( range ) {

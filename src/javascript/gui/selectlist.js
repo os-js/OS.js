@@ -55,6 +55,17 @@
     return el;
   };
 
+  /**
+   * Add a list of items
+   *
+   * @param   Array     items     List of items
+   *
+   * @return  void
+   *
+   * @see     SelectList::addItem()
+   *
+   * @method  SelectList::addItems()
+   */
   SelectList.prototype.addItems = function(items) {
     for ( var i in items ) {
       if ( items.hasOwnProperty(i) ) {
@@ -63,6 +74,16 @@
     }
   };
 
+  /**
+   * Add a item to the list
+   *
+   * @param   Mixed   value       The value
+   * @param   String  label       The label
+   *
+   * @return  void
+   *
+   * @method  SelectList::addItem()
+   */
   SelectList.prototype.addItem = function(value, label) {
     var el        = document.createElement('option');
     el.value      = value;
@@ -70,10 +91,25 @@
     this.$input.appendChild(el);
   };
 
+  /**
+   * Alias of setValue()
+   *
+   * @see     SelectList::setSelected()
+   * @method  SelectList::setValue()
+   */
   SelectList.prototype.setValue = function(val) {
     this.setSelected(val);
   };
 
+  /**
+   * Set the currently selected item/value
+   *
+   * @param   Mixed     val   The value of added item
+   *
+   * @return  boolean         If it was selected
+   *
+   * @method  SelectList::setSelected()
+   */
   SelectList.prototype.setSelected = function(val) {
     if ( !this.$input ) { return; }
 
@@ -94,6 +130,13 @@
     }
   };
 
+  /**
+   * Gets selected values
+   *
+   * @return  Array
+   *
+   * @method  SelectList::getValue()
+   */
   SelectList.prototype.getValue = function() {
     var selected = [];
     if ( this.$input ) {

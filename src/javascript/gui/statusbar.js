@@ -63,10 +63,28 @@
     return el;
   };
 
+  /**
+   * Set the statusbar text
+   *
+   * @param   String      t     The string
+   *
+   * @return  void
+   *
+   * @method  StatusBar::setText()
+   */
   StatusBar.prototype.setText = function(t) {
     this.$contents.innerHTML = t;
   };
 
+  /**
+   * Add a DOM Element to statusbar
+   *
+   * @param   DOMElement    el      The element
+   *
+   * @return  void
+   *
+   * @method  StatusBar::appendChild()
+   */
   StatusBar.prototype.appendChild = function(el) {
     this.$contents.appendChild(el);
   };

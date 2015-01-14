@@ -47,6 +47,17 @@
 
   Select.prototype = Object.create(_Input.prototype);
 
+  /**
+   * Add a list of items
+   *
+   * @param   Array     items     List of items
+   *
+   * @return  void
+   *
+   * @see     Select::addItem()
+   *
+   * @method  Select::addItems()
+   */
   Select.prototype.addItems = function(items) {
     var self = this;
     Object.keys(items).forEach(function(i) {
@@ -54,6 +65,16 @@
     });
   };
 
+  /**
+   * Add a item to the list
+   *
+   * @param   Mixed   value       The value
+   * @param   String  label       The label
+   *
+   * @return  void
+   *
+   * @method  Select::addItem()
+   */
   Select.prototype.addItem = function(value, label, icon) {
     var self      = this;
     var el        = document.createElement('option');
@@ -69,10 +90,25 @@
     this.$input.appendChild(el);
   };
 
+  /**
+   * Alias of setValue()
+   *
+   * @see     Select::setSelected()
+   * @method  Select::setValue()
+   */
   Select.prototype.setValue = function(val) {
     return this.setSelected(val);
   };
 
+  /**
+   * Set the currently selected item/value
+   *
+   * @param   Mixed     val   The value of added item
+   *
+   * @return  boolean         If it was selected
+   *
+   * @method  Select::setSelected()
+   */
   Select.prototype.setSelected = function(val) {
     var found = false;
 

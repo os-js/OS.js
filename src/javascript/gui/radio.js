@@ -40,6 +40,7 @@
    * @option  opts  String    group       The Group of Radio
    *
    * @see OSjs.GUI._Input
+   * @see OSjs.GUI.Checkbox
    * @api OSjs.GUI.Radio
    *
    * @class

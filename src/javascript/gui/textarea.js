@@ -78,10 +78,25 @@
     return el;
   };
 
+  /**
+   * Alias of SetText()
+   *
+   * @see Textarea::setText()
+   * @method Textarea::setValue()
+   */
   Textarea.prototype.setValue = function(t) {
     return this.setText(t);
   };
 
+  /**
+   * Sets the value
+   *
+   * @param   String      t       The text
+   *
+   * @return  void
+   *
+   * @method  Textarea::setText()
+   */
   Textarea.prototype.setText = function(t) {
     this.hasChanged = false;
     if ( this.$input ) {
@@ -92,20 +107,47 @@
     return false;
   };
 
+  /**
+   * Alias of getText()
+   *
+   * @see Textarea::getText()
+   * @method Textarea::getValue()
+   */
   Textarea.prototype.getValue = function() {
     return this.getText();
   };
 
+  /**
+   * Gets the value
+   *
+   * @return  String
+   *
+   * @method  TextArea::getText()
+   */
   Textarea.prototype.getText = function() {
     return this.$input ? this.$input.value : '';
   };
 
+  /**
+   * Focus the input element
+   *
+   * @return  boolean     On success
+   *
+   * @method  Textarea::focus()
+   */
   Textarea.prototype.focus = function() {
     if ( !GUIElement.prototype.focus.apply(this, arguments) ) { return false; }
     if ( this.$input ) { this.$input.focus(); }
     return true;
   };
 
+  /**
+   * Blur the input element
+   *
+   * @return  boolean     On success
+   *
+   * @method  Textarea::blur()
+   */
   Textarea.prototype.blur = function() {
     if ( !GUIElement.prototype.blur.apply(this, arguments) ) { return false; }
     if ( this.$input ) { this.$input.blur(); }

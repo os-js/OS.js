@@ -69,6 +69,16 @@
     this.setScroll(this.opts.scrollX, this.opts.scrollY);
   };
 
+  /**
+   * Add a DOM Element to the view
+   *
+   * @param   DOMElement    el        The dom element
+   * @param   boolean       clear     Clear before adding this element?
+   *
+   * @return  void
+   *
+   * @method  ScrollView::addElement()
+   */
   ScrollView.prototype.addElement = function(el, clear) {
     if ( clear ) {
       OSjs.Utils.$empty(this.$element);
@@ -76,6 +86,16 @@
     this.$element.appendChild(el);
   };
 
+  /**
+   * Sets scroll directions
+   *
+   * @param   boolean   x     Horizontal
+   * @param   boolean   y     Vertical
+   *
+   * @return  void
+   *
+   * @method  ScrollView::setScroll()
+   */
   ScrollView.prototype.setScroll = function(x, y) {
     var classNames = ['GUIScrollView', OSjs.Utils.$safeName(this.name)];
     if ( x ) { classNames.push('ScrollX'); }

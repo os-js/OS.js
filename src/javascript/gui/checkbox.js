@@ -86,10 +86,26 @@
     return el;
   };
 
+  /**
+   * Alias of setValue()
+   *
+   * @see Checkbox::setValue()
+   *
+   * @method Checkbox::setChecked()
+   */
   Checkbox.prototype.setChecked = function(val) {
     this.setValue(val);
   };
 
+  /**
+   * Sets the value
+   *
+   * @param   boolean     val     Checked state
+   *
+   * @return  void
+   *
+   * @method  Checkbox::setValue()
+   */
   Checkbox.prototype.setValue = function(val) {
     this.value = val ? true : false;
     if ( this.value ) {
@@ -99,6 +115,13 @@
     }
   };
 
+  /**
+   * Gets the value
+   *
+   * @return  boolean
+   *
+   * @method  Checkbox::getValue()
+   */
   Checkbox.prototype.getValue = function() {
     return this.$input.checked ? true : false;
   };

@@ -63,6 +63,15 @@
     return el;
   };
 
+  /**
+   * Set the label value
+   *
+   * @param   String    l       The value
+   *
+   * @return  void
+   *
+   * @method  Label::setLabel()
+   */
   Label.prototype.setLabel = function(l) {
     this.opts.label = l;
     this.$element.innerHTML = '';

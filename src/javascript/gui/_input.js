@@ -84,6 +84,14 @@
 
   _Input.prototype = Object.create(GUIElement.prototype);
 
+  /**
+   * Destroy and remove Input Element from DOM
+   *
+   * @return  void
+   *
+   * @see     GUIElement::destroy();
+   * @method  _Input::destroy()
+   */
   _Input.prototype.destroy = function() {
     GUIElement.prototype.destroy.apply(this, arguments);
     if ( this.$input && this.$input.parentNode ) {
@@ -92,6 +100,16 @@
     }
   };
 
+  /**
+   * Initializes the Input Element
+   *
+   * Inserts into DOM and attaches events
+   *
+   * @return  DOMElement
+   *
+   * @see     GUIElement::init();
+   * @method  _Input::init()
+   */
   _Input.prototype.init = function() {
     var self = this;
     var el = GUIElement.prototype.init.apply(this, [this.className]);
@@ -148,24 +166,50 @@
     return el;
   };
 
+  /**
+   * Blur the input element
+   *
+   * @return  boolean     On success
+   *
+   * @method  _Input::blur()
+   */
   _Input.prototype.blur = function() {
     if ( GUIElement.prototype.blur.apply(this, arguments) ) {
       if ( this.$input ) {
         this.$input.blur();
+        return true;
       }
     }
     return false;
   };
 
+  /**
+   * Focus the input element
+   *
+   * @return  boolean     On success
+   *
+   * @method  _Input::focus()
+   */
   _Input.prototype.focus = function() {
     if ( GUIElement.prototype.focus.apply(this, arguments) ) {
       if ( this.$input ) {
         this.$input.focus();
+        return true;
       }
     }
     return false;
   };
 
+  /**
+   * This is a special event to make elements
+   * behave a bit better
+   *
+   * @param   DOMEvent      ev      The Event
+   *
+   * @return  boolean
+   *
+   * @method  _Input::onGlobalKeypress()
+   */
   _Input.prototype.onGlobalKeyPress = function(ev) {
     if ( this.destroyed ) { return false; }
     if ( !this.focused ) { return false; }
@@ -182,10 +226,26 @@
     return GUIElement.prototype.onGlobalKeyPress.apply(this, arguments);
   };
 
+  /**
+   * Gets if element is disabled
+   *
+   * @return  boolean
+   *
+   * @method  _Input::getDisabled()
+   */
   _Input.prototype.getDisabled = function() {
     return this.disabled;
   };
 
+  /**
+   * Sets if the element is disabled
+   *
+   * @param   boolean   d     Disabled
+   *
+   * @return  void
+   *
+   * @method  _Input::setDisabled()
+   */
   _Input.prototype.setDisabled = function(d) {
     this.disabled = d;
     if ( this.$input && d ) {
@@ -197,10 +257,26 @@
     }
   };
 
+  /**
+   * Alias of getDisabled()
+   *
+   * @see _Input::getDisabled()
+   *
+   * @method _Input::isDisabled()
+   */
   _Input.prototype.isDisabled = function() {
     return this.disabled;
   };
 
+  /**
+   * Sets the value
+   *
+   * @param   Mixed     val     The value
+   *
+   * @return  void
+   *
+   * @method  _Input::setValue()
+   */
   _Input.prototype.setValue = function(val) {
     if ( this.tagName === 'button' ) {
       return;
@@ -209,6 +285,13 @@
     this.$input.value = val;
   };
 
+  /**
+   * Gets the value
+   *
+   * @return  Mixed     Result depends on input type
+   *
+   * @method  _Input::getValue()
+   */
   _Input.prototype.getValue = function() {
     if ( this.tagName === 'button' ) {
       return null;
