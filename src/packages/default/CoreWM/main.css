@@ -80,6 +80,14 @@ body.WallpaperStrech {
       -ms-user-select: none;
           user-select: none;
 }
+.WMPanel .WMPanelBackground {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : 1;
+}
 .WMPanel.Ontop {
   z-index : 9999998;
 }

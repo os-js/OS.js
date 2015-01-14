@@ -37,7 +37,7 @@
   var PANEL_SHOW_TIMEOUT = 150;
   var PANEL_HIDE_TIMEOUT = 600;
 
-  var Panel = function(name, options) {
+  var Panel = function(name, options, wm) {
     options = options || {};
 
     this._name = name;
@@ -47,10 +47,31 @@
     this._outtimeout = null;
     this._intimeout = null;
     this._options = {
-      position: options.position || 'top',
-      ontop:    options.ontop === true,
-      autohide: options.autohide === true
+      position:   options.position || 'top',
+      ontop:      options.ontop === true,
+      autohide:   options.autohide === true,
+      background: options.background,
+      opacity:    options.opacity
     };
+
+    if ( wm ) {
+      // Use default options if they are undefined
+      // This normaly happens when settings are modified in a client update.
+      // This will not synchronize over to the new settings tree, so this is a quick fix
+      var defaultPanel = wm.getDefaultSetting('panels')[0];
+      if ( defaultPanel ) {
+        var opts = this._options;
+        Object.keys(opts).forEach(function(k) {
+          if ( typeof opts[k] === 'undefined' ) {
+            if ( typeof defaultPanel.options[k] !== 'undefined' ) {
+              opts[k] = defaultPanel.options[k];
+            }
+          }
+        });
+      }
+    }
+
+    console.debug('Panel::construct()', this._name, this._options);
   };
 
   Panel.prototype.init = function(root) {
@@ -88,6 +109,10 @@
       self.onMouseLeave(ev);
     }, false);
 
+    var background = document.createElement('div');
+    background.className = 'WMPanelBackground';
+
+    this._$element.appendChild(background);
     this._$element.appendChild(this._$container);
     root.appendChild(this._$element);
 

@@ -130,7 +130,9 @@
           options: {
             position: 'top',
             ontop:    true,
-            autohide: false
+            autohide: false,
+            background: '#101010',
+            opacity: 85
           },
           items:    [
             {name: 'Buttons'},
@@ -435,7 +437,7 @@
       if ( ps && ps.length ) {
         var p, j, n;
         for ( var i = 0; i < ps.length; i++ ) {
-          p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options);
+          p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options, this);
           p.init(document.body);
 
           if ( ps[i].items && ps[i].items.length ) {
