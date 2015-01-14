@@ -493,7 +493,7 @@
     tabPanels.appendChild(outer);
 
     var bgcolor = settings.panels[0].options.background || '#000000';
-    outer = _createContainer('PanelBackgroundColor', _('Panel Background color ?')); // FIXME: Translation
+    outer = _createContainer('PanelBackgroundColor', _('Panel Background color')); // FIXME: Translation
     var panelBackground = this._addGUIElement(new OSjs.GUI.Text('SettingsPanelBackground', {disabled: true, value: bgcolor}), outer);
     panelBackground.$input.style.backgroundColor = bgcolor;
     panelBackground.$input.style.color = OSjs.Utils.invertHEX(bgcolor);
