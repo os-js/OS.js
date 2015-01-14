@@ -38,7 +38,7 @@
    *
    * @option  opts  int       min           Minimum value
    * @option  opts  int       max           Maximum value
-   * @option  opts  int       val           Current value
+   * @option  opts  int       val           Current value (alias=value)
    * @option  opts  String    orientation   Orientation (default=horizontal)
    * @option  opts  int       steps         Stepping value (default=1)
    * @option  opts  Function  onChange      On Change callback
@@ -52,7 +52,7 @@
   var Slider = function(name, opts) {
     this.min      = opts.min          || 0;
     this.max      = opts.max          || 0;
-    this.val      = opts.val          || 0;
+    this.val      = opts.val          || opts.value || 0;
     this.type     = opts.orientation  || 'horizontal';
     this.steps    = opts.steps        || 1;
     this.onChange = opts.onChange     || function() {};
@@ -215,6 +215,8 @@
 
     var cd = (this.max - this.min);
     var cp = this.val / (cd/100);
+
+    this.$root.setAttribute('data-value', val.toString());
 
     if ( this.type === 'horizontal' ) {
       var rw    = this.$element.offsetWidth;
