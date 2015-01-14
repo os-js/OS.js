@@ -171,6 +171,16 @@
     this.setValue(this.val);
   };
 
+  /**
+   * Set the value in percentage
+   *
+   * @param   int         p     Percentage
+   * @param   DOMEvent    evt   DOM Event
+   *
+   * @return  void
+   *
+   * @method Slider::setPercentage()
+   */
   Slider.prototype.setPercentage = function(p, evt) {
     p = parseInt(p, 10);
 
@@ -180,6 +190,21 @@
     this.onUpdate.call(this, val, p, evt);
   };
 
+  /**
+   * Event when slider was clicked
+   *
+   * @param   DOMEvent      ev    The DOM Event
+   * @param   int           cx    Click X
+   * @param   int           xy    Click Y
+   * @param   int           tw    Total width
+   * @param   int           th    Total height
+   * @param   int           rh    Element height
+   * @param   int           bg    Button height
+   *
+   * @return  void
+   *
+   * @method  Slider::onSliderClick()
+   */
   Slider.prototype.onSliderClick = function(ev, cx, cy, tw, th, rh, bh) {
     var cd = (this.max - this.min);
     var tmp;
@@ -195,6 +220,19 @@
     this.setPercentage(tmp, 'click');
   };
 
+  /**
+   * Event when slider was updated
+   *
+   * @param   int         x       Slider X value
+   * @param   int         y       Slider Y value
+   * @param   int         maxX    Max X value
+   * @param   int         maxY    Max y value
+   * @param   DOMEvent    evt     The DOM Event
+   *
+   * @return  void
+   *
+   * @method  Slider::onSliderUpdate()
+   */
   Slider.prototype.onSliderUpdate = function(x, y, maxX, maxY, evt) {
     var p = null;
     if ( typeof x !== 'undefined' ) {
@@ -207,6 +245,15 @@
     }
   };
 
+  /**
+   * Set the value of slider
+   *
+   * @param   int     val     The value
+   *
+   * @return  void
+   *
+   * @method  Slider::setValue()
+   */
   Slider.prototype.setValue = function(val) {
     if ( !this.inited ) { return; }
 
@@ -237,6 +284,13 @@
     }
   };
 
+  /**
+   * Get the value
+   *
+   * @return int
+   *
+   * @method Slider::getValue()
+   */
   Slider.prototype.getValue = function() {
     return this.val;
   };
