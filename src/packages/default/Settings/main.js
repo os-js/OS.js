@@ -240,7 +240,7 @@
       allow_maximize: false,
       gravity: 'center',
       width: 500,
-      height: 450
+      height: 550
     }, app]);
 
     this.currentPanelItem = null;
@@ -267,6 +267,7 @@
     var themes        = wm.getThemes();
     var theme         = wm.getSetting('theme');
     var desktopMargin = settings.desktop.margin;
+    var opacity       = 85;
     var themelist     = {};
 
     var panels = wm.getSetting('panels');
@@ -295,7 +296,7 @@
       return outer;
     };
 
-    var outer, slider;
+    var outer, slider, panelOpacity;
 
     var tabs      = this._addGUIElement(new OSjs.GUI.Tabs('SettingTabs'), root);
     var tabStyles = tabs.addTab('Theme', {title: _('Theme and Background')});
@@ -304,7 +305,9 @@
       slider.setValue(desktopMargin);
     }});
 
-    var tabPanels = tabs.addTab('Panels', {title: API._('LBL_PANELS')});
+    var tabPanels = tabs.addTab('Panels', {title: API._('LBL_PANELS'), onSelect: function() {
+      panelOpacity.setValue(opacity);
+    }});
     var tabLocale = tabs.addTab('Locales', {title: API._('LBL_LOCALES')});
 
     //
@@ -347,7 +350,7 @@
 
     var backgroundColor = this._addGUIElement(new OSjs.GUI.Text('SettingsBackgroundColor', {disabled: true, value: settings.style.backgroundColor}), outer);
     backgroundColor.$input.style.backgroundColor = settings.style.backgroundColor;
-    backgroundColor.$input.style.color = "#fff";
+    backgroundColor.$input.style.color = OSjs.Utils.invertHEX(settings.style.backgroundColor);
 
     this._addGUIElement(new OSjs.GUI.Button('OpenDialog', {label: '...', onClick: function(el, ev) {
       self.openBackgroundColorSelect(ev, backgroundColor);
@@ -435,7 +438,7 @@
     useIconView.setSelected(settings.enableIconView ? 'yes' : 'no');
     tabOther.appendChild(outer);
 
-    // TODO: Translations!!!
+    // FIXME: Translations!!!
     outer = _createContainer('IconView SettingsNoButton', _('Invert iconview colors (uses background color)'));
     var useInvertedColor = this._addGUIElement(new OSjs.GUI.Select('SettingsInvertIconView'), outer);
     useInvertedColor.addItems({
@@ -477,6 +480,39 @@
       'no':   API._('LBL_NO')
     });
     panelOntop.setSelected(settings.panels[0].options.ontop ? 'yes' : 'no');
+    tabPanels.appendChild(outer);
+
+    // Panel Custom Color
+    outer = _createContainer('PanelUseCustomColor SettingsNoButton', _('Use Custom panel color ?')); // FIXME: Translation
+    var panelUseCustomColor = this._addGUIElement(new OSjs.GUI.Select('SettingsPanelUseCustomColor'), outer);
+    panelUseCustomColor.addItems({
+      'yes':  API._('LBL_YES'),
+      'no':   API._('LBL_NO')
+    });
+    panelUseCustomColor.setSelected(settings.panels[0].options.background ? 'yes' : 'no');
+    tabPanels.appendChild(outer);
+
+    var bgcolor = settings.panels[0].options.background || '#000000';
+    outer = _createContainer('PanelBackgroundColor', _('Panel Background color ?')); // FIXME: Translation
+    var panelBackground = this._addGUIElement(new OSjs.GUI.Text('SettingsPanelBackground', {disabled: true, value: bgcolor}), outer);
+    panelBackground.$input.style.backgroundColor = bgcolor;
+    panelBackground.$input.style.color = OSjs.Utils.invertHEX(bgcolor);
+
+    this._addGUIElement(new OSjs.GUI.Button('OpenDialogPanelBackground', {label: '...', onClick: function(el, ev) {
+      self.openBackgroundColorSelect(ev, panelBackground);
+    }}), outer);
+    tabPanels.appendChild(outer);
+
+
+    // Panel Opacity
+    if ( typeof settings.panels[0].options.opacity === 'number' ) {
+      opacity = settings.panels[0].options.opacity;
+    }
+
+    outer = _createContainer('PanelOpacity SettingsNoButton', _('Panel Opacity')); // FIXME: Translation
+    panelOpacity = this._addGUIElement(new OSjs.GUI.Slider('SettingsPanelOpacity', {min:0, max:100, steps:1, value:opacity, onUpdate: function(val) {
+      opacity = val;
+    }}), outer);
     tabPanels.appendChild(outer);
 
     // Panel items
@@ -572,8 +608,10 @@
       // First validate
       var settings = {
         language:             useLanguage.getValue(),
-        panelItems:           self.panelItems,
         animations:           useAnimations.getValue() == 'yes',
+        panelItems:           self.panelItems,
+        panelBackground:      (panelUseCustomColor.getValue() === 'no' ? null : panelBackground.getValue()),
+        panelOpacity:         panelOpacity.getValue(),
         panelOntop:           panelOntop.getValue() == 'yes',
         panelAutohide:        panelAutohide.getValue() == 'yes',
         panelPosition:        panelPosition.getValue(),
@@ -604,9 +642,11 @@
           panels     : [
             {
               options: {
-                position: settings.panelPosition,
-                ontop:    settings.panelOntop,
-                autohide: settings.panelAutohide
+                position:   settings.panelPosition,
+                ontop:      settings.panelOntop,
+                autohide:   settings.panelAutohide,
+                background: settings.panelBackground,
+                opacity:    settings.panelOpacity
               },
               items: settings.panelItems
             }
@@ -648,6 +688,8 @@
     var tabs = this._getGUIElement('SettingTabs');
     if ( !tab || !tabs ) { return; }
     tabs.setTab(tab);
+
+    this._appRef._setArgument('tab', tab);
   };
 
   ApplicationSettingsWindow.prototype.showPanelItemWindow = function() {

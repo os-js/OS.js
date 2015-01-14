@@ -43,6 +43,7 @@
     this._name = name;
     this._$element = null;
     this._$container = null;
+    this._$background = null;
     this._items = [];
     this._outtimeout = null;
     this._intimeout = null;
@@ -53,23 +54,6 @@
       background: options.background,
       opacity:    options.opacity
     };
-
-    if ( wm ) {
-      // Use default options if they are undefined
-      // This normaly happens when settings are modified in a client update.
-      // This will not synchronize over to the new settings tree, so this is a quick fix
-      var defaultPanel = wm.getDefaultSetting('panels')[0];
-      if ( defaultPanel ) {
-        var opts = this._options;
-        Object.keys(opts).forEach(function(k) {
-          if ( typeof opts[k] === 'undefined' ) {
-            if ( typeof defaultPanel.options[k] !== 'undefined' ) {
-              opts[k] = defaultPanel.options[k];
-            }
-          }
-        });
-      }
-    }
 
     console.debug('Panel::construct()', this._name, this._options);
   };
@@ -109,10 +93,10 @@
       self.onMouseLeave(ev);
     }, false);
 
-    var background = document.createElement('div');
-    background.className = 'WMPanelBackground';
+    this._$background = document.createElement('div');
+    this._$background.className = 'WMPanelBackground';
 
-    this._$element.appendChild(background);
+    this._$element.appendChild(this._$background);
     this._$element.appendChild(this._$container);
     root.appendChild(this._$element);
 
@@ -141,6 +125,9 @@
       this._$element.parentNode.removeChild(this._$element);
       this._$element = null;
     }
+
+    this._$container = null;
+    this._$background = null;
   };
 
   Panel.prototype.update = function(options) {
@@ -160,6 +147,18 @@
       this._$element.className = cn.join(' ');
     }
     this._options = options;
+
+    if ( this._$background ) {
+      this._$background.style.background = '';
+      this._$background.style.opacity = '';
+
+      if ( this._options.background ) {
+        this._$background.style.background = this._options.background;
+      }
+      if ( typeof this._options.opacity !== 'undefined' ) {
+        this._$background.style.opacity = this._options.opacity / 100;
+      }
+    }
   };
 
   Panel.prototype.autohide = function(hide) {

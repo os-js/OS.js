@@ -131,7 +131,7 @@
             position: 'top',
             ontop:    true,
             autohide: false,
-            background: '#101010',
+            background: null,
             opacity: 85
           },
           items:    [
