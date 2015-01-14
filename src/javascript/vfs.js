@@ -251,6 +251,18 @@
       fsuri = handler.getConfig('Core').FSURI;
     }
 
+    if ( typeof file.size !== 'undefined' ) {
+      var maxSize = API.getHandlerInstance().getConfig('Core').MaxUploadSize;
+      if ( maxSize > 0 ) {
+        var bytes = file.size;
+        if ( bytes > maxSize ) {
+          var msg = API._('DIALOG_UPLOAD_TOO_BIG_FMT', Utils.humanFileSize(maxSize));
+          callback('error', msg);
+          return;
+        }
+      }
+    }
+
     var fd  = new FormData();
     fd.append('upload', 1);
     fd.append('path', dest);
@@ -1021,6 +1033,8 @@
             callback(msg, null, arg);
           } else if ( type === 'canceled' ) {
             callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, arg);
+          } else {
+            callback(arg);
           }
         });
       }

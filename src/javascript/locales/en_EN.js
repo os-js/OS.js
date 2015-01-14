@@ -131,6 +131,8 @@
     'DIALOG_UPLOAD_FAILED_MSG'      : 'The upload has failed',
     'DIALOG_UPLOAD_FAILED_UNKNOWN'  : 'Reason unknown...',
     'DIALOG_UPLOAD_FAILED_CANCELLED': 'Cancelled by user...',
+    'DIALOG_UPLOAD_TOO_BIG': 'File is too big',
+    'DIALOG_UPLOAD_TOO_BIG_FMT': 'File is too big, exceeds {0}',
 
     'DIALOG_FONT_TITLE' : 'Font Dialog',
 

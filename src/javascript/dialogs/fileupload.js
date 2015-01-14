@@ -135,6 +135,8 @@
         self.onUploadCanceled.call(self, arg);
       } else if ( type === 'progress' ) {
         self.onUploadProgress.call(self, arg);
+      } else {
+        self.onUploadFailed.call(self, null, arg);
       }
     });
 
