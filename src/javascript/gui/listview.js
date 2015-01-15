@@ -324,6 +324,13 @@
     this.fixScrollbar();
   };
 
+  /**
+   * Render the list inside the view
+   *
+   * @return void
+   * @see _DataView::render()
+   * @method ListView::render()
+   */
   ListView.prototype.render = function(data, reset) {
     if ( !_DataView.prototype.render.apply(this, arguments) ) {
       return;
@@ -346,18 +353,56 @@
     this.$tableTop.style.top = this.$element.scrollTop + 'px';
   };
 
+  /**
+   * Add a column
+   *
+   * @param   Object      c       The object (see constructor for info)
+   *
+   * @return  void
+   *
+   * @method  ListView::addColumn()
+   */
   ListView.prototype.addColumn = function(c) {
     this.columns.push(c);
   };
 
+  /**
+   * Add a row
+   *
+   * @param   Object    r       The object (see constructor for info)
+   *
+   * @return  void
+   *
+   * @method  ListVIew::addRow()
+   */
   ListView.prototype.addRow = function(r) {
     this.rows.push(r);
   };
 
+  /**
+   * Set the column list
+   *
+   * @param   Array   cols    Column Array
+   * @return  void
+   *
+   * @see     ListView::addColumn()
+   * @method  ListView::setColumns()
+   */
   ListView.prototype.setColumns = function(cols) {
     this.columns = cols || [];
   };
 
+  /**
+   * Set the row list
+   *
+   * @param   Array   rows    Row Array
+   * @param   boolean render  Render right away ?
+   *
+   * @return  void
+   *
+   * @see     ListView::addRow()
+   * @method  ListView::setRows()
+   */
   ListView.prototype.setRows = function(rows, render) {
     this.setData.apply(this, arguments);
   };

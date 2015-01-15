@@ -56,6 +56,7 @@
    * @option  opts render            bool            Render on create (default = true when data is supplied)
    *
    * @api OSjs.GUI._DataView
+   * @see OSjs.GUI.GUIElement
    *
    * @class
    */
@@ -109,14 +110,36 @@
     return el;
   };
 
+  /**
+   * Clears the view
+   *
+   * @return  void
+   * @method  _DataView::clear()
+   */
   _DataView.prototype.clear = function() {
     this.render([], true);
   };
 
+  /**
+   * Refresh the view
+   *
+   * @return  void
+   * @method  _DataView::refresh()
+   */
   _DataView.prototype.refresh = function() {
     this.render(this.data, false);
   };
 
+  /**
+   * Render the view
+   *
+   * @param   Array     data      The data to render
+   * @param   boolean   reset     Resets the view (false if refreshing)
+   *
+   * @return  boolean             On success
+   *
+   * @method  _DataView::render()
+   */
   _DataView.prototype.render = function(data, reset) {
     if ( !this.$view ) { return false; }
 

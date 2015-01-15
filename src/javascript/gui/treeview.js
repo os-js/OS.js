@@ -221,6 +221,13 @@
     return _render.call(this, list, root, ul, expandLevel);
   };
 
+  /**
+   * Render the tree inside the view
+   *
+   * @return void
+   * @see _DataView::render()
+   * @method TreeView::render()
+   */
   TreeView.prototype.render = function(data, reset) {
     if ( !_DataView.prototype.render.call(this, data, reset) ) {
       return;
@@ -249,6 +256,13 @@
     _DataView.prototype.setData.apply(this, arguments);
   };
 
+  /**
+   * Gets an item in the tree by key/value pair
+   *
+   * @return Object
+   * @see _DataView::getItemByKey()
+   * @method TreeView::getItemByKey()
+   */
   TreeView.prototype.getItemByKey = function(key, val) {
     function _search(list) {
       var ret = null;

@@ -80,6 +80,13 @@
     return el;
   };
 
+  /**
+   * Clears the canvas
+   *
+   * @return  boolean       On success
+   *
+   * @methdo  Canvas::clear()
+   */
   Canvas.prototype.clear = function() {
     if ( this.$context ) {
       this.$context.clearRect(0, 0, this.width, this.height);
@@ -88,11 +95,30 @@
     return false;
   };
 
+  /**
+   * Fills canvas with color
+   *
+   * @param     Mixed       color       Color hex or RGB
+   *
+   * @return    void
+   *
+   * @method    Canvas::fillColor()
+   */
   Canvas.prototype.fillColor = function(color) {
     this.$context.fillStyle = color;
     this.$context.fillRect(0, 0, this.width, this.height);
   };
 
+  /**
+   * Resize the canvas
+   *
+   * @param   int     w       Width
+   * @param   int     h       Height
+   *
+   * @return  void
+   *
+   * @method  Canvas::resize()
+   */
   Canvas.prototype.resize = function(w, h) {
     this.width  = w;
     this.height = h;
@@ -104,6 +130,16 @@
     this.$element.style.height  = h + 'px';
   };
 
+  /**
+   * Run .apply() on the canvas context
+   *
+   * @param   String        Method name
+   * @param   Array         Method arguments
+   *
+   * @return  Mixed         Result
+   *
+   * @method  Canvas::func()
+   */
   Canvas.prototype.func = function(f, args) {
     if ( !f || !args ) {
       throw new Error('Canvas::func() expects a function name and arguments');
@@ -114,6 +150,17 @@
     return null;
   };
 
+  /**
+   * Sets the image data
+   *
+   * @param   String    src     The image source URL
+   * @param   Function  onDone  Callback on done
+   * @param   Function  onError Callback on error
+   *
+   * @return  void
+   *
+   * @method  Canvas::setImageData()
+   */
   Canvas.prototype.setImageData = function(src, onDone, onError) {
     if ( !this.$context ) { return; }
 
@@ -145,14 +192,38 @@
     img.src = src;
   };
 
+  /**
+   * Get the Canvas Element
+   *
+   * @return  DOMElement
+   *
+   * @method  Canvas::getCanvas()
+   */
   Canvas.prototype.getCanvas = function() {
     return this.$canvas;
   };
 
+  /**
+   * Get the Canvas Context
+   *
+   * @return  Canvas2DContext
+   *
+   * @method  Canvas::getContext()
+   */
   Canvas.prototype.getContext = function() {
     return this.$context;
   };
 
+  /**
+   * Get the Color at position
+   *
+   * @param   int     x       X position
+   * @param   int     y       Y position
+   *
+   * @return  Object          Result {rgb:, hex}
+   *
+   * @method  Canvas::getColorAt()
+   */
   Canvas.prototype.getColorAt = function(x, y) {
     var imageData = this.$context.getImageData(0, 0, this.$canvas.width, this.$canvas.height).data;
     var index = ((x + y * this.$canvas.width) * 4);
@@ -162,6 +233,15 @@
     return {rgb: rgb, hex:  hex};
   };
 
+  /**
+   * Get the image data
+   *
+   * @param   String    type      The type (ex:image/png)
+   *
+   * @return  String              Or null on failure
+   *
+   * @method  Canvas::getImageData()
+   */
   Canvas.prototype.getImageData = function(type) {
     if ( this.$context && this.$canvas ) {
       type = type || this.type;

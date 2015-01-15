@@ -166,6 +166,13 @@
 
   };
 
+  /**
+   * Render the icons inside the view
+   *
+   * @return void
+   * @see _DataView::render()
+   * @method IconView::render()
+   */
   IconView.prototype.render = function(data, reset) {
     if ( !_DataView.prototype.render.call(this, data, reset) ) {
       return;

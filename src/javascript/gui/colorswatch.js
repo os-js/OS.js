@@ -38,7 +38,7 @@
    *
    * @option opts int       width     The width
    * @option opts int       height    The height
-   * @option opts Function  onSelect  Callback for when color is selected
+   * @option opts Function  onSelect  Callback for when color is selected => fn(r, g, b)
    *
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.ColorSwatch
