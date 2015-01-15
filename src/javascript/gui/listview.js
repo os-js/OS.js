@@ -54,6 +54,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.ListView
    *
+   * @extends _DataView
    * @class
    */
   var ListView = function(name, opts) {

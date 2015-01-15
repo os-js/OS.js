@@ -41,6 +41,7 @@
    * @see OSjs.GUI._Input
    * @api OSjs.GUI.Text
    *
+   * @extends _Input
    * @class
    */
   var Text = function(name, opts) {

@@ -39,6 +39,7 @@
    * @see OSjs.GUI._Input
    * @api OSjs.GUI.SelectList
    *
+   * @extends _Input
    * @class
    */
   var SelectList = function(name, opts) {

@@ -41,6 +41,7 @@
    * @api OSjs.GUI.MenuBar
    * @see OSjs.GUI.GUIElement
    *
+   * @extends GUIElement
    * @class
    */
   var MenuBar = function(name, opts) {

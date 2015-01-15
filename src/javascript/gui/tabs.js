@@ -156,6 +156,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.Tabs
    *
+   * @extends GUIElement
    * @class
    */
   var Tabs = function(name, opts) {

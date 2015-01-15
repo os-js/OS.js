@@ -39,6 +39,7 @@
    * @see OSjs.GUI._Input
    * @api OSjs.GUI.Select
    *
+   * @extends _Input
    * @class
    */
   var Select = function(name, opts) {

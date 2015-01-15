@@ -47,6 +47,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.IconView
    *
+   * @extends _DataView
    * @class
    */
   var IconView = function(name, opts) {

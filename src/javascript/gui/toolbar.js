@@ -41,6 +41,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.Toolbar
    *
+   * @extends GUIElement
    * @class
    */
   var ToolBar = function(name, opts) {

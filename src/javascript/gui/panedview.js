@@ -41,6 +41,7 @@
    * @api OSjs.GUI.PanedView
    * @see OSjs.GUI.GUIElement
    *
+   * @extends GUIElement
    * @class
    */
   var PanedView = function(name, opts) {

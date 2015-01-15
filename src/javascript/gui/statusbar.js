@@ -41,6 +41,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.StatusBar
    *
+   * @extends GUIElement
    * @class
    */
   var StatusBar = function(name) {

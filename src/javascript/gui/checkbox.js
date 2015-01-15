@@ -43,6 +43,7 @@
    * @see OSjs.GUI._Input
    * @api OSjs.GUI.Checkbox
    *
+   * @extends _Input
    * @class
    */
   var Checkbox = function(name, opts) {

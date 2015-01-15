@@ -39,6 +39,7 @@
    * @see OSjs.GUI._Input
    * @api OSjs.GUI.Textarea
    *
+   * @extends _Input
    * @class
    */
   var Textarea = function(name, opts) {

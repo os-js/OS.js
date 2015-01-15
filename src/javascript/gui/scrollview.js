@@ -42,6 +42,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.ScrollView
    *
+   * @extends GUIElement
    * @class
    */
   var ScrollView = function(name, opts) {

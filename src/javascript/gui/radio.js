@@ -43,6 +43,7 @@
    * @see OSjs.GUI.Checkbox
    * @api OSjs.GUI.Radio
    *
+   * @extends Checkbox
    * @class
    */
   var Radio = function(name, opts) {

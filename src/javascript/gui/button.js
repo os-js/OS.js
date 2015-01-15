@@ -39,6 +39,7 @@
    * @see OSjs.GUI._Input
    * @api OSjs.GUI.Button
    *
+   * @extends _Input
    * @class
    */
   var Button = function(name, opts) {

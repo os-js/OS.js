@@ -42,6 +42,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.RichText
    *
+   * @extends GUIElement
    * @class
    */
   var RichText = function(name, opts) {

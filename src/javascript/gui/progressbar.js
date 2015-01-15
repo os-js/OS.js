@@ -39,6 +39,7 @@
    * @api OSjs.GUI.ProgressBar
    * @see OSjs.GUI.GUIElement
    *
+   * @extends GUIElement
    * @class
    */
   var ProgressBar = function(name, percentage) {

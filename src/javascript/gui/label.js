@@ -39,9 +39,9 @@
    * @option  opts  String    label       The Label of Element
    * @option  opts  String    forInput    ID/Name of input element (optional HTML feature)
    *
-   * @see OSjs.GUI._Input
    * @api OSjs.GUI.Label
    *
+   * @extends GUIElement
    * @class
    */
   var Label = function(name, opts) {

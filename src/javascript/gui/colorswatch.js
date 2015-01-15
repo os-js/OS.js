@@ -43,6 +43,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.ColorSwatch
    *
+   * @extends GUIElement
    * @class
    */
   var ColorSwatch = function(name, opts) {

@@ -47,6 +47,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.Slider
    *
+   * @extends GUIElement
    * @class
    */
   var Slider = function(name, opts) {

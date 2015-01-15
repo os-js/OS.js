@@ -43,6 +43,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.Canvas
    *
+   * @extends GUIElement
    * @class
    */
   var Canvas = function(name, opts) {

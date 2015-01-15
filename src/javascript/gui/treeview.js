@@ -49,6 +49,7 @@
    * @see OSjs.GUI.GUIElement
    * @api OSjs.GUI.TreeView
    *
+   * @extends _DataView
    * @class
    */
   var TreeView = function(name, opts) {
