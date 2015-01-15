@@ -568,7 +568,20 @@ Array.prototype.unique = function(){
     'src/javascript/gui/text.js',
     'src/javascript/gui/textarea.js',
     'src/javascript/gui/toolbar.js',
-    'src/javascript/gui/treeview.js'
+    'src/javascript/gui/treeview.js',
+
+    'src/javascript/dialogs/alert.js',
+    'src/javascript/dialogs/applicationchooser.js',
+    'src/javascript/dialogs/color.js',
+    'src/javascript/dialogs/confirm.js',
+    'src/javascript/dialogs/errormessage.js',
+    'src/javascript/dialogs/file.js',
+    'src/javascript/dialogs/fileinfo.js',
+    'src/javascript/dialogs/fileprogress.js',
+    'src/javascript/dialogs/fileupload.js',
+    'src/javascript/dialogs/font.js',
+    'src/javascript/dialogs/input.js'
+
   ];
 
   var menu = generateMenu(files);
