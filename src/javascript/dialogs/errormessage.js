@@ -32,6 +32,14 @@
 
   /**
    * ErrorDialog implementation
+   *
+   * THIS IS FOR INTERNAL USAGE ONLY
+   *
+   * @api OSjs.Dialogs.ErrorDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var ErrorDialog = function() {
     this.data = {title: 'No title', message: 'No message', error: ''};

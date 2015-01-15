@@ -32,6 +32,16 @@
 
   /**
    * Confirmation Dialog
+   *
+   * @param   String          msg     Confirm message
+   * @param   Function        onClose Callback on close => fn(button)
+   * @param   Object          args    List of arguments (Will be passed on to StandardDialog)
+   *
+   * @api OSjs.Dialogs.ConfirmDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var ConfirmDialog = function(msg, onClose, args) {
     args = Utils.mergeObject({title: API._('DIALOG_CONFIRM_TITLE'), message: msg}, (args || {}));

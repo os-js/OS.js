@@ -32,6 +32,15 @@
 
   /**
    * File Information Dialog
+   *
+   * @param   OSjs.VFS.File   file    The requested File
+   * @param   Function        onClose Callback on close => fn(button)
+   *
+   * @api OSjs.Dialogs.FileInformationDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var FileInformationDialog = function(file, onClose) {
     this.path = file ? file.path : null;

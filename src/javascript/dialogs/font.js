@@ -32,6 +32,25 @@
 
   /**
    * Font Dialog
+   *
+   * @param   Object          args    Options
+   * @param   Function        onClose Callback on close => fn(button, fontName, fontSize)
+   *
+   * @option  args    String    name            Default font name (optional)
+   * @option  args    int       size            Default font size (optional)
+   * @option  args    String    background      Background color (default=#ffffff)
+   * @option  args    String    color           Foreground color (default=#000000)
+   * @option  args    Array     list            List of fonts (optional)
+   * @option  args    String    sizeType        Font size type (default=px)
+   * @option  args    String    text            Text to display on preview (optional)
+   * @option  args    int       minSize         Minimum font size (optional)
+   * @option  args    int       maxSize         Maximum font size (optional)
+   *
+   * @api OSjs.Dialogs.FontDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var FontDialog = function(args, onClose) {
     args = args || {};

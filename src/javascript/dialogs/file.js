@@ -31,18 +31,27 @@
   'use strict';
 
   /**
-   * Init
+   * File Chooser Dialog
    *
-   * Arguments:
-   *  type                  Dialog type: "open" or "save"
-   *  select                Selection type: "file" or "dir"
-   *  path                  Current path
-   *  filename              Current filename
-   *  mime                  Current file MIME
-   *  mimes                 Browse filetype filter (defaults to [none] all files)
-   *  filetypes             Save filetypes dict (ext => mime)
-   *  defaultFilename       Default filename
-   *  defaultFilemime       Default filemime (defaults to given MIME)
+   *
+   * @param   Object          args    Options
+   * @param   Function        onClose Callback on close => fn(button, file)
+   *
+   * @option args String  type                  Dialog type: "open" or "save"
+   * @option args String  select                Selection type: "file" or "dir"
+   * @option args String  path                  Current path
+   * @option args String  filename              Current filename
+   * @option args String  mime                  Current file MIME
+   * @option args String  mimes                 Browse filetype filter (defaults to [none] all files)
+   * @option args String  filetypes             Save filetypes dict (ext => mime)
+   * @option args String  defaultFilename       Default filename
+   * @option args String  defaultFilemime       Default filemime (defaults to given MIME)
+   *
+   * @api OSjs.Dialogs.FileDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var FileDialog = function(args, onClose) {
     args = args || {};

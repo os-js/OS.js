@@ -32,6 +32,15 @@
 
   /**
    * Color Dialog
+   *
+   * @param   Object          opts    Options
+   * @param   Function        onClose Callback on close => fn(button, rgb, hex, alpha)
+   *
+   * @api OSjs.Dialogs.ColorDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var ColorDialog = function(opts, onClose) {
     opts = opts || {};

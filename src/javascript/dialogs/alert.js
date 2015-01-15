@@ -32,6 +32,16 @@
 
   /**
    * Alert/Message Dialog
+   *
+   * @param   String    msg     Message
+   * @param   Function  onClose Callback on close => fn(button)
+   * @param   Object    args    List of arguments (Will be passed on to StandardDialog)
+   *
+   * @api OSjs.Dialogs.AlertDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var AlertDialog = function(msg, onClose, args) {
     args = Utils.mergeObject({title: API._('DIALOG_ALERT_TITLE'), message: msg, buttonCancel: false, buttonOkLabel: API._('DIALOG_CLOSE')}, (args || {}));

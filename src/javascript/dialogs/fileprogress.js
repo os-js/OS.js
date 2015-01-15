@@ -32,6 +32,14 @@
 
   /**
    * File Progress dialog
+   *
+   * @param   String          title   Dialog title/message
+   *
+   * @api OSjs.Dialogs.FileProgressDialog
+   * @see OSjs.Core.DialogWindow
+   *
+   * @extends DialogWindow
+   * @class
    */
   var FileProgressDialog = function(title) {
     DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
@@ -69,11 +77,29 @@
     this.$desc = desc;
   };
 
+  /**
+   * Set the description
+   *
+   * @param   String    d     Description
+   *
+   * @return  void
+   *
+   * @method  FileProgressDialog::setDescription()
+   */
   FileProgressDialog.prototype.setDescription = function(d) {
     if ( !this.$desc ) { return; }
     this.$desc.innerHTML = d;
   };
 
+  /**
+   * Set the progress
+   *
+   * @param   int     p       Percentage
+   *
+   * @return  void
+   *
+   * @method  FileProgressDialog::setProgress()
+   */
   FileProgressDialog.prototype.setProgress = function(p) {
     var el = this._getGUIElement('FileProgressBar');
     if ( el ) {

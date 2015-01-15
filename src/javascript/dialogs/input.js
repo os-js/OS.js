@@ -32,6 +32,17 @@
 
   /**
    * Input Dialog
+   *
+   * @param   String          msg         Message to display
+   * @param   String          val         Default input value (optional)
+   * @param   Function        onClose     Callback on close => fn(button, input)
+   * @param   Function        onCreated   Callback on input init/create
+   *
+   * @api OSjs.Dialogs.InputDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var InputDialog = function(msg, val, onClose, onCreated) {
     StandardDialog.apply(this, ['InputDialog', {title: API._('DIALOG_INPUT_TITLE'), message: msg}, {width:300, height:150}, onClose]);

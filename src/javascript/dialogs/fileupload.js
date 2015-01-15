@@ -34,6 +34,16 @@
 
   /**
    * File Upload Dialog
+   *
+   * @param   String          dest    Destination path
+   * @param   [File]          file    File to upload (If null, you will be asked)
+   * @param   Function        onClose Callback on close => fn(button)
+   *
+   * @api OSjs.Dialogs.FileUploadDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var FileUploadDialog = function(dest, file, onClose) {
     this.dest             = dest;

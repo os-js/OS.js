@@ -32,6 +32,16 @@
 
   /**
    * Application Chooser Dialog
+   *
+   * @param   OSjs.VFS.File   file    The requested File
+   * @param   Array           list    The list of applications
+   * @param   Function        onClose Callback on close => fn(button)
+   *
+   * @api OSjs.Dialogs.ApplicationChooserDialog
+   * @see OSjs.Dialogs.StandardDialog
+   *
+   * @extends StandardDialog
+   * @class
    */
   var ApplicationChooserDialog = function(file, list, onClose) {
     this.filename     = Utils.filename(file.path);
