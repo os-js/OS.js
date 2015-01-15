@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/panedview.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/panedview.js, Generated: </i>Thu Jan 15 2015 18:22:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,8 @@
 <li>
 <a href="#osjs-gui-panedview">PanedView</a> (OSjs.GUI.PanedView)
 <ul>
+<li><a href="#panedview-createview">createView()</a></li>
+<li><a href="#panedview-additem">addItem()</a></li>
 </ul>
 </li>
 </ul>
@@ -79,6 +81,10 @@ PanedView
 <h4 id="namespace">Namespace</h4>
 <ul>
 <li>OSjs.GUI.PanedView</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>GUIElement</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
@@ -126,6 +132,91 @@ PanedView
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="panedview-createview">
+<h3 id="panedview-createview-name-otps-">PanedView::createView(name, otps)</h3>
+<pre>
+Create a view inside the Pane
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>View Name (unique)</td>
+</tr>
+<tr>
+<td>otps</td>
+<td>Object</td>
+<td>View Options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>width</td>
+<td>int</td>
+<td>View width</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The container</em></p>
+
+</div>
+<div class="section-method" id="panedview-additem">
+<h3 id="panedview-additem-el-name-">PanedView::addItem(el, name)</h3>
+<pre>
+Adds a GUIElement or DOMElement to the given Pane
+
+This also creates the pane
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>Mixed</td>
+<td>The element</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>View name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
 </div>
 
     </content>

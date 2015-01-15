@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/richtext.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/richtext.js, Generated: </i>Thu Jan 15 2015 18:22:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,12 @@
 <li>
 <a href="#osjs-gui-richtext">RichText</a> (OSjs.GUI.RichText)
 <ul>
+<li><a href="#richtext-command">command()</a></li>
+<li><a href="#richtext-commandvalue">commandValue()</a></li>
+<li><a href="#richtext-setcontent">setContent()</a></li>
+<li><a href="#richtext-getcontent">getContent()</a></li>
+<li><a href="#richtext-getdocument">getDocument()</a></li>
+<li><a href="#richtext-getwindow">getWindow()</a></li>
 </ul>
 </li>
 </ul>
@@ -79,6 +85,10 @@ Richt Text Element
 <h4 id="namespace">Namespace</h4>
 <ul>
 <li>OSjs.GUI.RichText</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>GUIElement</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
@@ -131,6 +141,133 @@ Richt Text Element
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="richtext-command">
+<h3 id="richtext-command-cmd-args-">RichText::command(cmd, args)</h3>
+<pre>
+Send a command
+
+@parm boolean defaultUI ???
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cmd</td>
+<td>String</td>
+<td>Command name</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Array</td>
+<td>Command argument list</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>Result or &#39;false&#39;</em></p>
+
+</div>
+<div class="section-method" id="richtext-commandvalue">
+<h3 id="richtext-commandvalue-q-">RichText::commandValue(q)</h3>
+<pre>
+Gets the current command value
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q</td>
+<td>String</td>
+<td>The query</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u></p>
+
+</div>
+<div class="section-method" id="richtext-setcontent">
+<h3 id="richtext-setcontent-c-">RichText::setContent(c)</h3>
+<pre>
+Set the content
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c</td>
+<td>String</td>
+<td>Content (innerHTML)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="richtext-getcontent">
+<h3 id="richtext-getcontent-">RichText::getContent()</h3>
+<pre>
+Get the content
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Content (innerHTML)</em></p>
+
+</div>
+<div class="section-method" id="richtext-getdocument">
+<h3 id="richtext-getdocument-">RichText::getDocument()</h3>
+<pre>
+Get the document
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMDocument</u></p>
+
+</div>
+<div class="section-method" id="richtext-getwindow">
+<h3 id="richtext-getwindow-">RichText::getWindow()</h3>
+<pre>
+Get the window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMWindow</u></p>
+
+</div>
 </div>
 
     </content>

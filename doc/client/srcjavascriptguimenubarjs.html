@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/menubar.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/menubar.js, Generated: </i>Thu Jan 15 2015 18:22:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,9 @@
 <li>
 <a href="#osjs-gui-menubar">MenuBar</a> (OSjs.GUI.MenuBar)
 <ul>
+<li><a href="#menubar-additem">addItem()</a></li>
+<li><a href="#menubar-createcontextmenu">createContextMenu()</a></li>
+<li><a href="#menubar-getitem">getItem()</a></li>
 </ul>
 </li>
 </ul>
@@ -79,6 +82,10 @@ MenuBar Class
 <h4 id="namespace">Namespace</h4>
 <ul>
 <li>OSjs.GUI.MenuBar</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>GUIElement</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
@@ -126,6 +133,124 @@ MenuBar Class
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="menubar-additem">
+<h3 id="menubar-additem-item-menu-">MenuBar::addItem(item, menu)</h3>
+<pre>
+Add an item to the bar
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>Object</td>
+<td>The item (You can also just use a string here)</td>
+</tr>
+<tr>
+<td>menu</td>
+<td>Array</td>
+<td>The submenu items</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>Item title</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Item name (unique)</td>
+</tr>
+<tr>
+<td>disabled</td>
+<td>boolean</td>
+<td>Is disabled ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="menubar-createcontextmenu">
+<h3 id="menubar-createcontextmenu-ev-">MenuBar::createContextMenu(ev)</h3>
+<pre>
+Creates the context menu for given event/click
+
+@parm int idx The menubar item index
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>The event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="menubar-getitem">
+<h3 id="menubar-getitem-name-">MenuBar::getItem(name)</h3>
+<pre>
+Get a menu item
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Menu item name (unique)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Or null on fail</em></p>
+
+</div>
 </div>
 
     </content>

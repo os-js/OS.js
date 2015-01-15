@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/menu.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/menu.js, Generated: </i>Thu Jan 15 2015 18:22:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,10 @@
 <li>
 <a href="#osjs-gui-menu">Menu</a> (OSjs.GUI.Menu)
 <ul>
+<li><a href="#menu-destroy">destroy()</a></li>
+<li><a href="#menu-show">show()</a></li>
+<li><a href="#menu-getroot">getRoot()</a></li>
+<li><a href="#menu-setitemdisabled">setItemDisabled()</a></li>
 </ul>
 </li>
 </ul>
@@ -103,6 +107,96 @@ Just provide an array with a collection of tuples containing these parameters:
 <li>OSjs.GUI.Menu</li>
 </ul>
 
+<div class="section-method" id="menu-destroy">
+<h3 id="menu-destroy-">Menu::destroy()</h3>
+<pre>
+Destroy the Menu
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="menu-show">
+<h3 id="menu-show-pos-submenu-">Menu::show(pos, submenu)</h3>
+<pre>
+Show the Menu
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pos</td>
+<td>Object</td>
+<td>The position {x, y}</td>
+</tr>
+<tr>
+<td>submenu</td>
+<td>DOMElement</td>
+<td>If this is a submenu, give the dom element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="menu-getroot">
+<h3 id="menu-getroot-">Menu::getRoot()</h3>
+<pre>
+Get the root DOM Element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="menu-setitemdisabled">
+<h3 id="menu-setitemdisabled-name-d-">Menu::setItemDisabled(name, d)</h3>
+<pre>
+Sets the disabled state of an item
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Item name</td>
+</tr>
+<tr>
+<td>d</td>
+<td>boolean</td>
+<td>Disabled ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
 </div>
 
     </content>

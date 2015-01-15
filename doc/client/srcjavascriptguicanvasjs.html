@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/canvas.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/canvas.js, Generated: </i>Thu Jan 15 2015 18:22:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,14 @@
 <li>
 <a href="#osjs-gui-canvas">Canvas</a> (OSjs.GUI.Canvas)
 <ul>
+<li><a href="#canvas-fillcolor">fillColor()</a></li>
+<li><a href="#canvas-resize">resize()</a></li>
+<li><a href="#canvas-func">func()</a></li>
+<li><a href="#canvas-setimagedata">setImageData()</a></li>
+<li><a href="#canvas-getcanvas">getCanvas()</a></li>
+<li><a href="#canvas-getcontext">getContext()</a></li>
+<li><a href="#canvas-getcolorat">getColorAt()</a></li>
+<li><a href="#canvas-getimagedata">getImageData()</a></li>
 </ul>
 </li>
 </ul>
@@ -79,6 +87,10 @@ Canvas Element
 <h4 id="namespace">Namespace</h4>
 <ul>
 <li>OSjs.GUI.Canvas</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>GUIElement</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
@@ -136,6 +148,223 @@ Canvas Element
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="canvas-fillcolor">
+<h3 id="canvas-fillcolor-color-">Canvas::fillColor(color)</h3>
+<pre>
+Fills canvas with color
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>color</td>
+<td>Mixed</td>
+<td>Color hex or RGB</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="canvas-resize">
+<h3 id="canvas-resize-w-h-">Canvas::resize(w, h)</h3>
+<pre>
+Resize the canvas
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>int</td>
+<td>Width</td>
+</tr>
+<tr>
+<td>h</td>
+<td>int</td>
+<td>Height</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="canvas-func">
+<h3 id="canvas-func-method-method-">Canvas::func(Method, Method)</h3>
+<pre>
+Run .apply() on the canvas context
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Method</td>
+<td>String</td>
+<td>name</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>Array</td>
+<td>arguments</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>Result</em></p>
+
+</div>
+<div class="section-method" id="canvas-setimagedata">
+<h3 id="canvas-setimagedata-src-ondone-onerror-">Canvas::setImageData(src, onDone, onError)</h3>
+<pre>
+Sets the image data
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>String</td>
+<td>The image source URL</td>
+</tr>
+<tr>
+<td>onDone</td>
+<td>Function</td>
+<td>Callback on done</td>
+</tr>
+<tr>
+<td>onError</td>
+<td>Function</td>
+<td>Callback on error</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="canvas-getcanvas">
+<h3 id="canvas-getcanvas-">Canvas::getCanvas()</h3>
+<pre>
+Get the Canvas Element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="canvas-getcontext">
+<h3 id="canvas-getcontext-">Canvas::getContext()</h3>
+<pre>
+Get the Canvas Context
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Canvas2DContext</u></p>
+
+</div>
+<div class="section-method" id="canvas-getcolorat">
+<h3 id="canvas-getcolorat-x-y-">Canvas::getColorAt(x, y)</h3>
+<pre>
+Get the Color at position
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>int</td>
+<td>X position</td>
+</tr>
+<tr>
+<td>y</td>
+<td>int</td>
+<td>Y position</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Result {rgb:, hex}</em></p>
+
+</div>
+<div class="section-method" id="canvas-getimagedata">
+<h3 id="canvas-getimagedata-type-">Canvas::getImageData(type)</h3>
+<pre>
+Get the image data
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>The type (ex:image/png)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Or null on failure</em></p>
+
+</div>
 </div>
 
     </content>

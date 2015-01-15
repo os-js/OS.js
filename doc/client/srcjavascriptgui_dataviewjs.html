@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/_dataview.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/_dataview.js, Generated: </i>Thu Jan 15 2015 18:22:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,9 @@
 <li>
 <a href="#osjs-gui-_dataview">_DataView</a> (OSjs.GUI._DataView)
 <ul>
+<li><a href="#_dataview-clear">clear()</a></li>
+<li><a href="#_dataview-refresh">refresh()</a></li>
+<li><a href="#_dataview-render">render()</a></li>
 </ul>
 </li>
 </ul>
@@ -81,6 +84,10 @@ This is for handling data lists in some sort of view
 <h4 id="namespace">Namespace</h4>
 <ul>
 <li>OSjs.GUI._DataView</li>
+</ul>
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.GUI.GUIElement</li>
 </ul>
 <h4 id="constructor">Constructor</h4>
 <table>
@@ -164,6 +171,63 @@ This is for handling data lists in some sort of view
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="_dataview-clear">
+<h3 id="_dataview-clear-">_DataView::clear()</h3>
+<pre>
+Clears the view
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_dataview-refresh">
+<h3 id="_dataview-refresh-">_DataView::refresh()</h3>
+<pre>
+Refresh the view
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_dataview-render">
+<h3 id="_dataview-render-data-reset-">_DataView::render(data, reset)</h3>
+<pre>
+Render the view
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>Array</td>
+<td>The data to render</td>
+</tr>
+<tr>
+<td>reset</td>
+<td>boolean</td>
+<td>Resets the view (false if refreshing)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
 </div>
 
     </content>

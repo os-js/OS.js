@@ -55,7 +55,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/tabs.js, Generated: </i>Wed Jan 14 2015 20:38:47 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/tabs.js, Generated: </i>Thu Jan 15 2015 18:22:06 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -65,6 +65,10 @@
 <li>
 <a href="#osjs-gui-tabs">Tabs</a> (OSjs.GUI.Tabs)
 <ul>
+<li><a href="#tabs-settab">setTab()</a></li>
+<li><a href="#tabs-removetab">removeTab()</a></li>
+<li><a href="#tabs-selectfirsttab">selectFirstTab()</a></li>
+<li><a href="#tabs-adtab">adTab()</a></li>
 </ul>
 </li>
 </ul>
@@ -79,6 +83,10 @@ Tabs Container
 <h4 id="namespace">Namespace</h4>
 <ul>
 <li>OSjs.GUI.Tabs</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>GUIElement</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
@@ -126,6 +134,151 @@ Tabs Container
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="tabs-settab">
+<h3 id="tabs-settab-idx-">Tabs::setTab(idx)</h3>
+<pre>
+Set the currently active tab
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idx</td>
+<td>int</td>
+<td>Tab index</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="tabs-removetab">
+<h3 id="tabs-removetab-idx-">Tabs::removeTab(idx)</h3>
+<pre>
+Remve a tab
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idx</td>
+<td>int</td>
+<td>Tab index</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="tabs-selectfirsttab">
+<h3 id="tabs-selectfirsttab-">Tabs::selectFirstTab()</h3>
+<pre>
+Select the first tab
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="tabs-adtab">
+<h3 id="tabs-adtab-name-opts-">Tabs::adTab(name, opts)</h3>
+<pre>
+Add a tab
+
+Will return a private class instance of a Tab
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The tab name</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Tab options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>Tab title/label</td>
+</tr>
+<tr>
+<td>onCreate</td>
+<td>Function</td>
+<td>Callback - On creation</td>
+</tr>
+<tr>
+<td>onSelect</td>
+<td>Function</td>
+<td>Callback - On selected</td>
+</tr>
+<tr>
+<td>onUnselect</td>
+<td>Function</td>
+<td>Callback - On unselected</td>
+</tr>
+<tr>
+<td>onDestroy</td>
+<td>Function</td>
+<td>Callback - When destroyed</td>
+</tr>
+<tr>
+<td>onClose</td>
+<td>Function</td>
+<td>Callback - When closed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Tab</u></p>
+
+</div>
 </div>
 
     </content>
