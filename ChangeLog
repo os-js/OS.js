@@ -1,3 +1,19 @@
+# 2.0.0-alpha50
+
+New Logo and Homepage :) Documentation update and some fixes
+
+References: #12
+
+* GUI - Toolbar: Re-added toggleable (Thanks @RyanRiffle)
+* Docs: Added to all core js files
+* Docs: Added to all gui js files
+* Docs: Added to all dialog js files
+* Docs: Added documentation generator
+* CoreWM: You can now style panel opacity and background color
+* VFS: Aborts if file is to big upon upload before sending to server
+* New logo
+* jslinted
+
 # 2.0.0-alpha49
 
 WARNING: API CHANGES. All helper functions have been moved into `OSjs.API`
