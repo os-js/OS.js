@@ -66,7 +66,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/_dataview.js, Generated: </i>Thu Jan 15 2015 19:29:45 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/_dataview.js, Generated: </i>Thu Jan 15 2015 19:57:16 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -79,6 +79,18 @@
 <li><a href="#_dataview-clear">clear()</a></li>
 <li><a href="#_dataview-refresh">refresh()</a></li>
 <li><a href="#_dataview-render">render()</a></li>
+<li><a href="#_dataview-_onrender">_onRender()</a></li>
+<li><a href="#_dataview-__onselect">__onSelect()</a></li>
+<li><a href="#_dataview-_onselect">_onSelect()</a></li>
+<li><a href="#_dataview-_onactivate">_onActivate()</a></li>
+<li><a href="#_dataview-_oncontextmenu">_onContextMenu()</a></li>
+<li><a href="#_dataview-setdata">setData()</a></li>
+<li><a href="#_dataview-setselected">setSelected()</a></li>
+<li><a href="#_dataview-setselectedindex">setSelectedIndex()</a></li>
+<li><a href="#_dataview-setitems">setItems()</a></li>
+<li><a href="#_dataview-getitembykey">getItemByKey()</a></li>
+<li><a href="#_dataview-getitem">getItem()</a></li>
+<li><a href="#_dataview-getselected">getSelected()</a></li>
 </ul>
 </li>
 </ul>
@@ -237,6 +249,334 @@ Render the view
 </table>
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="_dataview-_onrender">
+<h3 id="_dataview-_onrender-">_DataView::_onRender()</h3>
+<pre>
+Event: On render
+</pre>
+
+
+
+</div>
+<div class="section-method" id="_dataview-__onselect">
+<h3 id="_dataview-__onselect-">_DataView::__onSelect()</h3>
+<pre>
+Event: On select (abstraction)
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>_DataView::_onSelect()</li>
+</ul>
+
+</div>
+<div class="section-method" id="_dataview-_onselect">
+<h3 id="_dataview-_onselect-ev-item-scroll-callback-">_DataView::_onSelect(ev, item, scroll, callback)</h3>
+<pre>
+Event: On select
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>Event</td>
+</tr>
+<tr>
+<td>item</td>
+<td>Object</td>
+<td>Item</td>
+</tr>
+<tr>
+<td>scroll</td>
+<td>boolean</td>
+<td>Scroll item into view ?</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The selected object</em></p>
+
+</div>
+<div class="section-method" id="_dataview-_onactivate">
+<h3 id="_dataview-_onactivate-ev-item-callback-">_DataView::_onActivate(ev, item, callback)</h3>
+<pre>
+Event: On activate
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>Event</td>
+</tr>
+<tr>
+<td>item</td>
+<td>Object</td>
+<td>Item</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The activated object</em></p>
+
+</div>
+<div class="section-method" id="_dataview-_oncontextmenu">
+<h3 id="_dataview-_oncontextmenu-ev-item-">_DataView::_onContextMenu(ev, item)</h3>
+<pre>
+Event: On contextmenu
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>Event</td>
+</tr>
+<tr>
+<td>item</td>
+<td>Object</td>
+<td>Item</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The contextmenu object</em></p>
+
+</div>
+<div class="section-method" id="_dataview-setdata">
+<h3 id="_dataview-setdata-data-render-">_DataView::setData(data, render)</h3>
+<pre>
+Set the view data
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>Array</td>
+<td>Data array (filled with key/value pairs)</td>
+</tr>
+<tr>
+<td>render</td>
+<td>boolean</td>
+<td>Render immediately ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_dataview-setselected">
+<h3 id="_dataview-setselected-val-key-scrollto-">_DataView::setSelected(val, key, scrollTo)</h3>
+<pre>
+Set the selected item
+
+This method does a search
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>val</td>
+<td>String</td>
+<td>Item value</td>
+</tr>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>Item key</td>
+</tr>
+<tr>
+<td>scrollTo</td>
+<td>boolean</td>
+<td>Scroll item into view?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="_dataview-setselectedindex">
+<h3 id="_dataview-setselectedindex-idx-scrollto-">_DataView::setSelectedIndex(idx, scrollTo)</h3>
+<pre>
+Set the selected item by index
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idx</td>
+<td>int</td>
+<td>The item index</td>
+</tr>
+<tr>
+<td>scrollTo</td>
+<td>boolean</td>
+<td>Scroll item into view?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_dataview-setitems">
+<h3 id="_dataview-setitems-">_DataView::setItems()</h3>
+<pre>
+Alias of setData()
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>_DataView::setData()</li>
+</ul>
+
+</div>
+<div class="section-method" id="_dataview-getitembykey">
+<h3 id="_dataview-getitembykey-key-val-">_DataView::getItemByKey(key, val)</h3>
+<pre>
+Gets an item by key/value
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>Item key</td>
+</tr>
+<tr>
+<td>val</td>
+<td>String</td>
+<td>Item value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Found item or null</em></p>
+
+</div>
+<div class="section-method" id="_dataview-getitem">
+<h3 id="_dataview-getitem-idx-">_DataView::getItem(idx)</h3>
+<pre>
+Gets an item by index
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idx</td>
+<td>int</td>
+<td>Item index</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Found item</em></p>
+
+</div>
+<div class="section-method" id="_dataview-getselected">
+<h3 id="_dataview-getselected-">_DataView::getSelected()</h3>
+<pre>
+Gets the currently selected item
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Selected item or null</em></p>
 
 </div>
 </div>

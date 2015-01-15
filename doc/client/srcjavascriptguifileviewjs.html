@@ -66,7 +66,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/fileview.js, Generated: </i>Thu Jan 15 2015 19:29:45 GMT+0100 (CET)</div>
+<div><i>src/javascript/gui/fileview.js, Generated: </i>Thu Jan 15 2015 19:57:16 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -76,6 +76,12 @@
 <li>
 <a href="#osjs-gui-fileview">FileView</a> (OSjs.GUI.FileView)
 <ul>
+<li><a href="#fileview-refresh">refresh()</a></li>
+<li><a href="#fileview-_getdir">_getDir()</a></li>
+<li><a href="#fileview-setviewtype">setViewType()</a></li>
+<li><a href="#fileview-setsort">setSort()</a></li>
+<li><a href="#fileview-getpath">getPath()</a></li>
+<li><a href="#fileview-getviewtype">getViewType()</a></li>
 </ul>
 </li>
 </ul>
@@ -192,6 +198,162 @@ FileView
 </table>
 <p>&nbsp;</p>
 
+<div class="section-method" id="fileview-refresh">
+<h3 id="fileview-refresh-onrefreshed-onerror-restorescroll-">FileView::refresh(onRefreshed, onError, restoreScroll)</h3>
+<pre>
+Refreshes the view
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>onRefreshed</td>
+<td>Function</td>
+<td>Callback on refreshed</td>
+</tr>
+<tr>
+<td>onError</td>
+<td>Function</td>
+<td>Callback on error</td>
+</tr>
+<tr>
+<td>restoreScroll</td>
+<td>boolean</td>
+<td>Restore previous scroll position ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="fileview-_getdir">
+<h3 id="fileview-_getdir-dir-onsuccess-onerror-">FileView::_getDir(dir, onSuccess, onError)</h3>
+<pre>
+Performs a scandir and sorts the list
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dir</td>
+<td>String</td>
+<td>The directory</td>
+</tr>
+<tr>
+<td>onSuccess</td>
+<td>Function</td>
+<td>Callback on success</td>
+</tr>
+<tr>
+<td>onError</td>
+<td>Function</td>
+<td>Callback on error</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="fileview-setviewtype">
+<h3 id="fileview-setviewtype-v-">FileView::setViewType(v)</h3>
+<pre>
+Set the view type
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v</td>
+<td>String</td>
+<td>View type (treeview/iconview/listview)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="fileview-setsort">
+<h3 id="fileview-setsort-col-">FileView::setSort(col)</h3>
+<pre>
+Set what key to sort by
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>col</td>
+<td>String</td>
+<td>The key to sort by</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="fileview-getpath">
+<h3 id="fileview-getpath-">FileView::getPath()</h3>
+<pre>
+Get the current path
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-method" id="fileview-getviewtype">
+<h3 id="fileview-getviewtype-">FileView::getViewType()</h3>
+<pre>
+Gets the current view type
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
 </div>
 
     </content>
