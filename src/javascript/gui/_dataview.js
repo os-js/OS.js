@@ -177,9 +177,20 @@
     return true;
   };
 
+  /**
+   * Event: On render
+   *
+   * @method  _DataView::_onRender()
+   */
   _DataView.prototype._onRender = function() {
   };
 
+  /**
+   * Event: On select (abstraction)
+   *
+   * @see _DataView::_onSelect()
+   * @method _DataView::__onSelect()
+   */
   _DataView.prototype.__onSelect = function(ev, item, scroll) {
     if ( this.selected && this.selected._element ) {
       Utils.$removeClass(this.selected._element, 'Active');
@@ -202,6 +213,18 @@
     }
   };
 
+  /**
+   * Event: On select
+   *
+   * @param DOMEvent  ev          Event
+   * @param Object    item        Item
+   * @param boolean   scroll      Scroll item into view ?
+   * @param Function  callback    Callback function
+   *
+   * @return  Object              The selected object
+   *
+   * @method _DataView::_onSelect()
+   */
   _DataView.prototype._onSelect = function(ev, item, scroll, callback) {
     this.__onSelect(ev, item, scroll);
 
@@ -213,6 +236,17 @@
     return this.selected;
   };
 
+  /**
+   * Event: On activate
+   *
+   * @param DOMEvent  ev          Event
+   * @param Object    item        Item
+   * @param Function  callback    Callback function
+   *
+   * @return Object               The activated object
+   *
+   * @method  _DataView::_onActivate()
+   */
   _DataView.prototype._onActivate = function(ev, item, callback) {
     if ( typeof callback === 'undefined' || callback === true ) {
       this.onActivate.apply(this, [ev, (item ? item._element : null), item]);
@@ -220,6 +254,16 @@
     return item;
   };
 
+  /**
+   * Event: On contextmenu
+   *
+   * @param DOMEvent  ev      Event
+   * @param Object    item    Item
+   *
+   * @return  Object          The contextmenu object
+   *
+   * @method  _DataView::_onContextMenu()
+   */
   _DataView.prototype._onContextMenu = function(ev, item) {
     this._onSelect(ev, item);
 
@@ -227,6 +271,15 @@
     return item;
   };
 
+  /**
+   * Keyboard movment
+   *
+   * This is an internal event and is received from a Widow
+   *
+   * @param   DOMEvent      ev      The event
+   *
+   * @return  boolean
+   */
   _DataView.prototype.onGlobalKeyPress = function(ev) {
     if ( this.destroyed ) { return false; }
     if ( GUIElement.prototype.onGlobalKeyPress.apply(this, arguments) ) { return false; }
@@ -289,6 +342,15 @@
     return true;
   };
 
+  /**
+   * Set the view data
+   *
+   * @param   Array     data      Data array (filled with key/value pairs)
+   * @param   boolean   render    Render immediately ?
+   *
+   * @return  void
+   * @method  _DataView::setData()
+   */
   _DataView.prototype.setData = function(data, render) {
     this.data = data;
     if ( render ) {
@@ -296,6 +358,19 @@
     }
   };
 
+  /**
+   * Set the selected item
+   *
+   * This method does a search
+   *
+   * @param   String      val       Item value
+   * @param   String      key       Item key
+   * @param   boolean     scrollTo  Scroll item into view?
+   *
+   * @return  boolean               On success
+   *
+   * @method  _DataView::setSelected()
+   */
   _DataView.prototype.setSelected = function(val, key, scrollTo) {
     if ( !key && !val ) {
       this._onSelect(null, null, false);
@@ -310,16 +385,42 @@
     return false;
   };
 
+  /**
+   * Set the selected item by index
+   *
+   * @param   int       idx         The item index
+   * @param   boolean   scrollTo    Scroll item into view?
+   *
+   * @return  void
+   *
+   * @method  _DataView::setSelectedIndex()
+   */
   _DataView.prototype.setSelectedIndex = function(idx, scrollTo) {
     if ( this.data[idx] ) {
       this._onSelect(null, this.data[idx], scrollTo);
     }
   };
 
+  /**
+   * Alias of setData()
+   *
+   * @see _DataView::setData()
+   * @method _DataView::setItems()
+   */
   _DataView.prototype.setItems = function() {
     this.setData.apply(this, arguments);
   };
 
+  /**
+   * Gets an item by key/value
+   *
+   * @param   String      key     Item key
+   * @param   String      val     Item value
+   *
+   * @return  Object              Found item or null
+   *
+   * @method  _DataView::getItemByKey()
+   */
   _DataView.prototype.getItemByKey = function(key, val) {
     var result = null;
     this.data.forEach(function(iter, i) {
@@ -332,10 +433,26 @@
     return result;
   };
 
+  /**
+   * Gets an item by index
+   *
+   * @param   int     idx       Item index
+   *
+   * @return  Object            Found item
+   *
+   * @method  _DataView::getItem()
+   */
   _DataView.prototype.getItem = function(idx) {
     return this.data[idx];
   };
 
+  /**
+   * Gets the currently selected item
+   *
+   * @return  Object      Selected item or null
+   *
+   * @method  _DataView::getSelected()
+   */
   _DataView.prototype.getSelected = function() {
     return this.selected;
   };

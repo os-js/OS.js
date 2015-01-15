@@ -545,6 +545,17 @@
     }
   };
 
+  /**
+   * Refreshes the view
+   *
+   * @param   Function      onRefreshed       Callback on refreshed
+   * @param   Function      onError           Callback on error
+   * @param   boolean       restoreScroll     Restore previous scroll position ?
+   *
+   * @return  void
+   *
+   * @method  FileView::refresh()
+   */
   FileView.prototype.refresh = function(onRefreshed, onError, restoreScroll) {
     onRefreshed = onRefreshed || function() {};
     onError = onError || function() {};
@@ -566,6 +577,17 @@
     }
   };
 
+  /**
+   * Performs a scandir and sorts the list
+   *
+   * @param   String    dir       The directory
+   * @param   Function  onSuccess Callback on success
+   * @param   Function  onError   Callback on error
+   *
+   * @return  void
+   *
+   * @method  FileView::_getDir()
+   */
   FileView.prototype._getDir = function(dir, onSuccess, onError) {
     var self = this;
 
@@ -722,6 +744,15 @@
     return false;
   };
 
+  /**
+   * Set the view type
+   *
+   * @param   String      v       View type (treeview/iconview/listview)
+   *
+   * @return  void
+   *
+   * @method  FileView::setViewType()
+   */
   FileView.prototype.setViewType = function(v) {
     this.createView(v);
 
@@ -730,6 +761,15 @@
     }
   };
 
+  /**
+   * Set what key to sort by
+   *
+   * @param   String      col     The key to sort by
+   *
+   * @return  void
+   *
+   * @method  FileView::setSort()
+   */
   FileView.prototype.setSort = function(col) {
     if ( this.wasUpdated ) {
       if ( this.sortKey === col && this.sortDir === false ) {
@@ -747,20 +787,52 @@
     }
   };
 
+  /**
+   * Set the selected item
+   *
+   * @see     IconView::setSelected()
+   * @see     TreeView::setSelected()
+   * @see     ListView::setSelected()
+   * @method  _DataView::setSelected()
+   */
   FileView.prototype.setSelected = function(val, key) {
     if ( this.viewRef ) {
       this.viewRef.setSelected.apply(this.viewRef, [val, key, true]);
     }
   };
 
+  /**
+   * Get the current path
+   *
+   * @return  String
+   *
+   * @method FileView::getPath()
+   */
   FileView.prototype.getPath = function() {
     return this.lastDir;
   };
 
+  /**
+   * Gets the selected item
+   *
+   * @return  Object
+   *
+   * @see     IconView::getSelected()
+   * @see     TreeView::getSelected()
+   * @see     ListView::getSelected()
+   * @method  _DataView::getSelected()
+   */
   FileView.prototype.getSelected = function() {
     return this.viewRef ? this.viewRef.getSelected() : null;
   };
 
+  /**
+   * Gets the current view type
+   *
+   * @return  String
+   *
+   * @method FileView::getViewType()
+   */
   FileView.prototype.getViewType = function() {
     return this.viewType;
   };
