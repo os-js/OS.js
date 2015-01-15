@@ -609,6 +609,8 @@ Array.prototype.unique = function(){
     'src/javascript/handler.js',
     'src/javascript/vfs.js',
 
+    'src/javascript/helpers/default-application.js',
+
     'src/javascript/gui/_dataview.js',
     'src/javascript/gui/_input.js',
     'src/javascript/gui/button.js',

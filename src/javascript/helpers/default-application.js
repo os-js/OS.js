@@ -43,6 +43,11 @@
    * with support for file handling and drag-and-drop
    *
    * Use this in combination with 'DefaultApplication'
+   *
+   * @api OSjs.Helpers.DefaultApplicationWindow
+   * @see OSjs.Core.Window
+   * @extends Window
+   * @class
    */
   var DefaultApplicationWindow = function(name, opts, app) {
     Window.apply(this, arguments);
@@ -55,6 +60,10 @@
   /**
    * You need to implement this in your application.
    * For an example see the 'Textpad' application
+   *
+   * @return  boolean     If the document has changed
+   *
+   * @method  DefaultApplicationWindow::checkChanged()
    */
   DefaultApplicationWindow.prototype.checkChanged = function() {
     return false;
@@ -62,6 +71,11 @@
 
   /**
    * Default DnD event
+   *
+   * @see OSjs.Core.Window::_onDndEvent()
+   * @return void
+   *
+   * @method DefaultApplicationWindow::_onDndEvent()
    */
   DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
     if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
@@ -78,6 +92,11 @@
   /**
    * Display confirmation dialog of out file has changed
    * Prevent closing of window
+   *
+   * @return  boolean
+   *
+   * @see OSjs.Core.Window.Window._close()
+   * @method  DefaultApplicationWindow::_close()
    */
   DefaultApplicationWindow.prototype._close = function() {
     var self = this;
@@ -105,6 +124,18 @@
    * Implement this as your base-class and set `dialogOptions` on construct.
    * Then add these methods to your Application class: onNew, onOpen, onSave, onGetSaveData
    * In init() assign your main window to `this.mainWindow`
+   *
+   * Methods you shuld use as interface
+   *    onNew()
+   *    onOpen()
+   *    onSave()
+   *    onGetSaveData()
+   *    onCheckDataType()
+   *    onError() (optional)
+   *
+   * @api OSjs.Helpers.DefaultApplication
+   * @extends Application
+   * @class
    */
   var DefaultApplication = function() {
     Application.apply(this, arguments);
@@ -138,12 +169,14 @@
 
   /**
    * Default init() code (run this last in your Application init() method)
+   *
+   * @see Application::init()
+   * @method DefaultApplication::init()
    */
   DefaultApplication.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     // Get launch/restore argument(s)
-
     var file = this._getArgument('file');
     if ( file && (typeof file === 'object') ) {
       this.currentFile = new VFS.File(file);
@@ -153,6 +186,9 @@
 
   /**
    * Default Messaging handler
+   *
+   * @see Application::_onMessage()
+   * @method DefaultApplication::_onMessage()
    */
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
@@ -173,31 +209,89 @@
     }
   };
 
+  /**
+   * When creating a new file is requested
+   *
+   * IMPLEMENT THIS IN YOUR CLASS
+   *
+   * @return  void
+   * @method  DefaultApplication::onNew()
+   */
   DefaultApplication.prototype.onNew = function() {
-    // IMPLEMENT THIS IN YOUR CLASS
   };
 
+  /**
+   * When opening a file is requested
+   *
+   * IMPLEMENT THIS IN YOUR CLASS
+   *
+   * @param   OSjs.VFS.File   file        File metadata
+   * @param   Misxed          data        File data
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::onOpen()
+   */
   DefaultApplication.prototype.onOpen = function(file, data) {
-    // IMPLEMENT THIS IN YOUR CLASS
   };
 
+  /**
+   * When saving file is requested
+   *
+   * IMPLEMENT THIS IN YOUR CLASS
+   *
+   * @param   OSjs.VFS.File   file        File metadata
+   * @param   Misxed          data        File data
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::onSave()
+   */
   DefaultApplication.prototype.onSave = function(file, data) {
-    // IMPLEMENT THIS IN YOUR CLASS
   };
 
+  /**
+   * When saving data is requested
+   *
+   * IMPLEMENT THIS IN YOUR CLASS
+   *
+   * @param   Function      callback      Callback => fn(data)
+   * @param   OSjs.VFS.File item          File metadata
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::onGetSaveData()
+   */
   DefaultApplication.prototype.onGetSaveData = function(callback, item) {
-    // IMPLEMENT THIS IN YOUR CLASS
     callback(null);
   };
 
   /**
-   * Returns the appropriate datatype for loading file
+   * When loading data type is requested
+   *
+   * IMPLEMENT THIS IN YOUR CLASS
+   *
+   * @param   OSjs.VFS.File     file      File metadata
+   *
+   * @return  String                      Data type (ex: binary, string)
+   *
+   * @method  DefaultApplication::onCheckDataType()
    */
   DefaultApplication.prototype.onCheckDataType = function(file) {
-    // IMPLEMENT THIS IN YOUR CLASS TO OVERRIDE PR FILETYPE
     return this.dialogOptions.binary ? 'binary' : 'text';
   };
 
+  /**
+   * When the file has changed
+   *
+   * If a user modifies the file and it is open, this is triggered
+   *
+   * @param   OSjs.VFS.File     file      File metadata
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::onFileHasChanged()
+   */
   DefaultApplication.prototype.onFileHasChanged = function(file) {
     if ( !file ) { return; }
 
@@ -218,6 +312,15 @@
     }, win]);
   };
 
+  /**
+   * When requesting check for if file has changed
+   *
+   * @param   Function    callback      Callback function => fn(discard)
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::onCheckChanged()
+   */
   DefaultApplication.prototype.onCheckChanged = function(callback) {
     function _cb(discard) {
       self.mainWindow._focus();
@@ -241,6 +344,14 @@
 
   /**
    * Confirmation dialog creator
+   *
+   * @param   Window      win       On this window
+   * @param   String      msg       Message
+   * @param   Function    callback  Callback on dialog close => fn(ok)
+   *
+   * @return  boolean
+   *
+   * @method  DefaultApplication::onConfirmDialog()
    */
   DefaultApplication.prototype.onConfirmDialog = function(win, msg, callback) {
     msg = msg || OSjs.API._('MSG_GENERIC_APP_DISCARD');
@@ -254,6 +365,15 @@
 
   /**
    * Default Error Handler
+   *
+   * IMPLEMENT THIS IN YOUR CLASS
+   *
+   * @param   String    title     The title
+   * @param   String    message   The message
+   * @param   String    action    From which action this this error spawn?
+   * @return  boolean             false if you want to use internal error handler
+   *
+   * @method  DefaultApplication::onError()
    */
   DefaultApplication.prototype.onError = function(title, message, action) {
     return false; // Use internal error handler
@@ -261,6 +381,13 @@
 
   /**
    * Perform an external action
+   *
+   * @param   String          action      Action name (ex: open, new, save)
+   * @param   OSjs.VFS.File   file        File metadata (not available on all actions)
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::action()
    */
   DefaultApplication.prototype.action = function(action, file) {
     var self = this;
@@ -299,6 +426,14 @@
 
   /**
    * Open given file
+   *
+   * @param   OSjs.VFS.File     file      File metadata
+   * @param   Mixed             data      File data
+   * @param   Object            sendArgs  Arguments to send to onOpen()
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_doOpen()
    */
   DefaultApplication.prototype._doOpen = function(file, data, sendArgs) {
     this._setCurrentFile(file);
@@ -310,6 +445,12 @@
 
   /**
    * Save to given file
+   *
+   * @param   OSjs.VFS.File     file        File metadata
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_doSave()
    */
   DefaultApplication.prototype._doSave = function(file) {
     var self = this;
@@ -390,6 +531,14 @@
 
   /**
    * File operation error
+   *
+   * @param   String    title     The title
+   * @param   String    message   The message
+   * @param   String    action    From which action this this error spawn?
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_onError()
    */
   DefaultApplication.prototype._onError = function(title, message, action) {
     action = action || 'unknown';
@@ -414,6 +563,12 @@
 
   /**
    * Wrapper for save action
+   *
+   * @param   OSjs.VFS.File   file        File metadata (not available on all actions)
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_onSave()
    */
   DefaultApplication.prototype._onSave = function(file) {
     if ( !file && this.currentFile && this.currentFile.path) {
@@ -437,6 +592,12 @@
 
   /**
    * Wrapper for save as action
+   *
+   * @param   Function      callback      Callback function => fn(ok)
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_onSaveAs()
    */
   DefaultApplication.prototype._onSaveAs = function(callback) {
     var self = this;
@@ -480,6 +641,13 @@
 
   /**
    * Wrapper for open action
+   *
+   * @param   OSjs.VFS.File     file      File metadata
+   * @param   Object            sendArgs  Arguments to send to onOpen()
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_onOpen()
    */
   DefaultApplication.prototype._onOpen = function(file, sendArgs) {
     var self = this;
@@ -537,6 +705,10 @@
 
   /**
    * Wrapper for new action
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_onNew()
    */
   DefaultApplication.prototype._onNew = function() {
     this._setCurrentFile(null);
@@ -545,6 +717,12 @@
 
   /**
    * Sets current active file
+   *
+   * @param   OSjs.VFS.File     file        File metadata
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::_setCurrentFile()
    */
   DefaultApplication.prototype._setCurrentFile = function(file) {
     this.currentFile = file || null;
