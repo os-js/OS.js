@@ -1,10 +1,14 @@
 body {
-  font-family : sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size : 14px;
   margin : 0;
   padding : 0;
   overflow : hidden;
-  color : #111;
+  color : #4D4545;
+}
+
+a {
+  color : #572A79;
 }
 
 li {
@@ -13,23 +17,40 @@ li {
 
 li a {
   text-decoration : none;
-  color : blue;
+}
+
+header {
+  background : #572a79 url('logo.png') no-repeat 20px 20px;
+  color : #fff;
+  height : 80px;
+  line-height : 80px;
+  padding-left : 180px;
+}
+header h1 {
+  font-size : 20px;
+  margin : 0;
+  padding : 0;
+  visibility : hidden;
 }
 
 nav {
   position : absolute;
   left : 0px;
-  top : 0px;
+  top : 80px;
   bottom : 0px;
   width : 300px;
-  background : #eee;
+  background : #f2f2f2;
   box-sizing : border-box;
   padding : 20px;
   overflow : auto;
 }
 
 nav ul {
-  padding-left : 20px;
+  padding-left : 15px;
+}
+
+nav > ul ul {
+  padding-top : 5px;
 }
 
 nav li a.Class {
@@ -39,7 +60,7 @@ nav li a.Class {
 content {
   position : absolute;
   left : 300px;
-  top : 0px;
+  top : 80px;
   right : 0px;
   bottom : 0px;
   overflow : auto;
@@ -49,13 +70,13 @@ content {
 }
 
 content div.section-function {
-  background : #eee;
+  background : #f2f2f2;
   padding : 20px;
   margin-bottom : 20px;
 }
 
 content div.section-class {
-  background : #eee;
+  background : #f2f2f2;
   padding : 20px;
   margin-bottom : 20px;
 }
