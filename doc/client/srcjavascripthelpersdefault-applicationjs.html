@@ -29,68 +29,201 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/progressbar.js</i></p>
+<p><i>src/javascript/helpers/default-application.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-progressbar">ProgressBar</a> (OSjs.GUI.ProgressBar)
+<a href="#osjs-helpers-defaultapplicationwindow">DefaultApplicationWindow</a> (OSjs.Helpers.DefaultApplicationWindow)
 <ul>
-<li><a href="#progressbar-setpercentage">setPercentage()</a></li>
-<li><a href="#progressbar-setprogress">setProgress()</a></li>
+<li><a href="#defaultapplicationwindow-checkchanged">checkChanged()</a></li>
+<li><a href="#defaultapplicationwindow-_ondndevent">_onDndEvent()</a></li>
+<li><a href="#defaultapplicationwindow-_close">_close()</a></li>
+</ul>
+</li>
+<li>
+<a href="#osjs-helpers-defaultapplication">DefaultApplication</a> (OSjs.Helpers.DefaultApplication)
+<ul>
+<li><a href="#defaultapplication-init">init()</a></li>
+<li><a href="#defaultapplication-_onmessage">_onMessage()</a></li>
+<li><a href="#defaultapplication-onnew">onNew()</a></li>
+<li><a href="#defaultapplication-onopen">onOpen()</a></li>
+<li><a href="#defaultapplication-onsave">onSave()</a></li>
+<li><a href="#defaultapplication-ongetsavedata">onGetSaveData()</a></li>
+<li><a href="#defaultapplication-oncheckdatatype">onCheckDataType()</a></li>
+<li><a href="#defaultapplication-onfilehaschanged">onFileHasChanged()</a></li>
+<li><a href="#defaultapplication-oncheckchanged">onCheckChanged()</a></li>
+<li><a href="#defaultapplication-onconfirmdialog">onConfirmDialog()</a></li>
+<li><a href="#defaultapplication-onerror">onError()</a></li>
+<li><a href="#defaultapplication-action">action()</a></li>
+<li><a href="#defaultapplication-_doopen">_doOpen()</a></li>
+<li><a href="#defaultapplication-_dosave">_doSave()</a></li>
+<li><a href="#defaultapplication-_onerror">_onError()</a></li>
+<li><a href="#defaultapplication-_onsave">_onSave()</a></li>
+<li><a href="#defaultapplication-_onsaveas">_onSaveAs()</a></li>
+<li><a href="#defaultapplication-_onopen">_onOpen()</a></li>
+<li><a href="#defaultapplication-_onnew">_onNew()</a></li>
+<li><a href="#defaultapplication-_setcurrentfile">_setCurrentFile()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-progressbar">
-<h2 id="progressbar">ProgressBar</h2>
+<div class="section-class" id="osjs-helpers-defaultapplicationwindow">
+<h2 id="defaultapplicationwindow">DefaultApplicationWindow</h2>
 <pre>
-ProgressBar Element
+This class is a basic implementation of OSjs.Core.Window
+
+with support for file handling and drag-and-drop
+
+Use this in combination with 'DefaultApplication'
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.ProgressBar</li>
+<li>OSjs.Helpers.DefaultApplicationWindow</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>GUIElement</li>
+<li>Window</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
-<li>OSjs.GUI.GUIElement</li>
+<li>OSjs.Core.Window</li>
 </ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>Name of GUIElement (unique)</td>
-</tr>
-<tr>
-<td>percentage</td>
-<td>int</td>
-<td>Start at this value</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
 
-<div class="section-method" id="progressbar-setpercentage">
-<h3 id="progressbar-setpercentage-p-">ProgressBar::setPercentage(p)</h3>
+<div class="section-method" id="defaultapplicationwindow-checkchanged">
+<h3 id="defaultapplicationwindow-checkchanged-">DefaultApplicationWindow::checkChanged()</h3>
 <pre>
-Set the current value of progressbar
+You need to implement this in your application.
+
+For an example see the 'Textpad' application
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>If the document has changed</em></p>
+
+</div>
+<div class="section-method" id="defaultapplicationwindow-_ondndevent">
+<h3 id="defaultapplicationwindow-_ondndevent-">DefaultApplicationWindow::_onDndEvent()</h3>
+<pre>
+Default DnD event
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.Window::_onDndEvent()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplicationwindow-_close">
+<h3 id="defaultapplicationwindow-_close-">DefaultApplicationWindow::_close()</h3>
+<pre>
+Display confirmation dialog of out file has changed
+
+Prevent closing of window
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.Window.Window._close()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+</div>
+<div class="section-class" id="osjs-helpers-defaultapplication">
+<h2 id="defaultapplication">DefaultApplication</h2>
+<pre>
+Application constructor
+
+Usage: (Look at Textpad as an example)
+
+Implement this as your base-class and set `dialogOptions` on construct.
+
+Then add these methods to your Application class: onNew, onOpen, onSave, onGetSaveData
+
+In init() assign your main window to `this.mainWindow`
+
+Methods you shuld use as interface
+
+ onNew()
+
+ onOpen()
+
+ onSave()
+
+ onGetSaveData()
+
+ onCheckDataType()
+
+ onError() (optional)
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Helpers.DefaultApplication</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>Application</li>
+</ul>
+
+<div class="section-method" id="defaultapplication-init">
+<h3 id="defaultapplication-init-">DefaultApplication::init()</h3>
+<pre>
+Default init() code (run this last in your Application init() method)
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Application::init()</li>
+</ul>
+
+</div>
+<div class="section-method" id="defaultapplication-_onmessage">
+<h3 id="defaultapplication-_onmessage-">DefaultApplication::_onMessage()</h3>
+<pre>
+Default Messaging handler
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Application::_onMessage()</li>
+</ul>
+
+</div>
+<div class="section-method" id="defaultapplication-onnew">
+<h3 id="defaultapplication-onnew-">DefaultApplication::onNew()</h3>
+<pre>
+When creating a new file is requested
+
+IMPLEMENT THIS IN YOUR CLASS
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-onopen">
+<h3 id="defaultapplication-onopen-file-data-">DefaultApplication::onOpen(file, data)</h3>
+<pre>
+When opening a file is requested
+
+IMPLEMENT THIS IN YOUR CLASS
 </pre>
 
 
@@ -105,9 +238,14 @@ Set the current value of progressbar
 </thead>
 <tbody>
 <tr>
-<td>p</td>
-<td>int</td>
-<td>Progress percentage</td>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Misxed</td>
+<td>File data</td>
 </tr>
 </tbody>
 </table>
@@ -115,17 +253,506 @@ Set the current value of progressbar
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="progressbar-setprogress">
-<h3 id="progressbar-setprogress-">ProgressBar::setProgress()</h3>
+<div class="section-method" id="defaultapplication-onsave">
+<h3 id="defaultapplication-onsave-file-data-">DefaultApplication::onSave(file, data)</h3>
 <pre>
-Alias of setPercentage()
+When saving file is requested
+
+IMPLEMENT THIS IN YOUR CLASS
 </pre>
 
 
-<h4 id="see">See</h4>
-<ul>
-<li>ProgressBar::setPercentage()</li>
-</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Misxed</td>
+<td>File data</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-ongetsavedata">
+<h3 id="defaultapplication-ongetsavedata-callback-item-">DefaultApplication::onGetSaveData(callback, item)</h3>
+<pre>
+When saving data is requested
+
+IMPLEMENT THIS IN YOUR CLASS
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback =&gt; fn(data)</td>
+</tr>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-oncheckdatatype">
+<h3 id="defaultapplication-oncheckdatatype-file-">DefaultApplication::onCheckDataType(file)</h3>
+<pre>
+When loading data type is requested
+
+IMPLEMENT THIS IN YOUR CLASS
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Data type (ex: binary, string)</em></p>
+
+</div>
+<div class="section-method" id="defaultapplication-onfilehaschanged">
+<h3 id="defaultapplication-onfilehaschanged-file-">DefaultApplication::onFileHasChanged(file)</h3>
+<pre>
+When the file has changed
+
+If a user modifies the file and it is open, this is triggered
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-oncheckchanged">
+<h3 id="defaultapplication-oncheckchanged-callback-">DefaultApplication::onCheckChanged(callback)</h3>
+<pre>
+When requesting check for if file has changed
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(discard)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-onconfirmdialog">
+<h3 id="defaultapplication-onconfirmdialog-win-msg-callback-">DefaultApplication::onConfirmDialog(win, msg, callback)</h3>
+<pre>
+Confirmation dialog creator
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>On this window</td>
+</tr>
+<tr>
+<td>msg</td>
+<td>String</td>
+<td>Message</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback on dialog close =&gt; fn(ok)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-onerror">
+<h3 id="defaultapplication-onerror-title-message-action-">DefaultApplication::onError(title, message, action)</h3>
+<pre>
+Default Error Handler
+
+IMPLEMENT THIS IN YOUR CLASS
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>The title</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>The message</td>
+</tr>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>From which action this this error spawn?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>false if you want to use internal error handler</em></p>
+
+</div>
+<div class="section-method" id="defaultapplication-action">
+<h3 id="defaultapplication-action-action-file-">DefaultApplication::action(action, file)</h3>
+<pre>
+Perform an external action
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>Action name (ex: open, new, save)</td>
+</tr>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata (not available on all actions)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_doopen">
+<h3 id="defaultapplication-_doopen-file-data-sendargs-">DefaultApplication::_doOpen(file, data, sendArgs)</h3>
+<pre>
+Open given file
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Mixed</td>
+<td>File data</td>
+</tr>
+<tr>
+<td>sendArgs</td>
+<td>Object</td>
+<td>Arguments to send to onOpen()</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_dosave">
+<h3 id="defaultapplication-_dosave-file-">DefaultApplication::_doSave(file)</h3>
+<pre>
+Save to given file
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_onerror">
+<h3 id="defaultapplication-_onerror-title-message-action-">DefaultApplication::_onError(title, message, action)</h3>
+<pre>
+File operation error
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>The title</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>The message</td>
+</tr>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>From which action this this error spawn?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_onsave">
+<h3 id="defaultapplication-_onsave-file-">DefaultApplication::_onSave(file)</h3>
+<pre>
+Wrapper for save action
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata (not available on all actions)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_onsaveas">
+<h3 id="defaultapplication-_onsaveas-callback-">DefaultApplication::_onSaveAs(callback)</h3>
+<pre>
+Wrapper for save as action
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(ok)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_onopen">
+<h3 id="defaultapplication-_onopen-file-sendargs-">DefaultApplication::_onOpen(file, sendArgs)</h3>
+<pre>
+Wrapper for open action
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+<tr>
+<td>sendArgs</td>
+<td>Object</td>
+<td>Arguments to send to onOpen()</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_onnew">
+<h3 id="defaultapplication-_onnew-">DefaultApplication::_onNew()</h3>
+<pre>
+Wrapper for new action
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-_setcurrentfile">
+<h3 id="defaultapplication-_setcurrentfile-file-">DefaultApplication::_setCurrentFile(file)</h3>
+<pre>
+Sets current active file
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
 </div>
