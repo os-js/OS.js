@@ -66,7 +66,7 @@
 
     <content>
 
-<div><i>src/javascript/gui/selectlist.js, Generated: </i>Thu Jan 15 2015 19:29:45 GMT+0100 (CET)</div>
+<div><i>src/javascript/dialogs/applicationchooser.js, Generated: </i>Thu Jan 15 2015 19:29:45 GMT+0100 (CET)</div>
 <h1>Overview</h1>
 <h2>Functions</h2>
 <ul>
@@ -74,35 +74,30 @@
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-selectlist">SelectList</a> (OSjs.GUI.SelectList)
+<a href="#osjs-dialogs-applicationchooserdialog">ApplicationChooserDialog</a> (OSjs.Dialogs.ApplicationChooserDialog)
 <ul>
-<li><a href="#selectlist-additems">addItems()</a></li>
-<li><a href="#selectlist-additem">addItem()</a></li>
-<li><a href="#selectlist-setvalue">setValue()</a></li>
-<li><a href="#selectlist-setselected">setSelected()</a></li>
-<li><a href="#selectlist-getvalue">getValue()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-selectlist">
-<h2 id="selectlist">SelectList</h2>
+<div class="section-class" id="osjs-dialogs-applicationchooserdialog">
+<h2 id="applicationchooserdialog">ApplicationChooserDialog</h2>
 <pre>
-SelectList
+Application Chooser Dialog
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.SelectList</li>
+<li>OSjs.Dialogs.ApplicationChooserDialog</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>_Input</li>
+<li>StandardDialog</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
-<li>OSjs.GUI._Input</li>
+<li>OSjs.Dialogs.StandardDialog</li>
 </ul>
 <h4 id="constructor">Constructor</h4>
 <table>
@@ -115,137 +110,24 @@ SelectList
 </thead>
 <tbody>
 <tr>
-<td>name</td>
-<td>String</td>
-<td>Name of GUIElement (unique)</td>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>The requested File</td>
 </tr>
 <tr>
-<td>opts</td>
-<td>Object</td>
-<td>A list of options</td>
+<td>list</td>
+<td>Array</td>
+<td>The list of applications</td>
+</tr>
+<tr>
+<td>onClose</td>
+<td>Function</td>
+<td>Callback on close =&gt; fn(button)</td>
 </tr>
 </tbody>
 </table>
 <p>&nbsp;</p>
 
-<div class="section-method" id="selectlist-additems">
-<h3 id="selectlist-additems-items-">SelectList::addItems(items)</h3>
-<pre>
-Add a list of items
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>SelectList::addItem()</li>
-</ul>
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>items</td>
-<td>Array</td>
-<td>List of items</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="selectlist-additem">
-<h3 id="selectlist-additem-value-label-">SelectList::addItem(value, label)</h3>
-<pre>
-Add a item to the list
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>value</td>
-<td>Mixed</td>
-<td>The value</td>
-</tr>
-<tr>
-<td>label</td>
-<td>String</td>
-<td>The label</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="selectlist-setvalue">
-<h3 id="selectlist-setvalue-">SelectList::setValue()</h3>
-<pre>
-Alias of setValue()
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>SelectList::setSelected()</li>
-</ul>
-
-</div>
-<div class="section-method" id="selectlist-setselected">
-<h3 id="selectlist-setselected-val-">SelectList::setSelected(val)</h3>
-<pre>
-Set the currently selected item/value
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>val</td>
-<td>Mixed</td>
-<td>The value of added item</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>If it was selected</em></p>
-
-</div>
-<div class="section-method" id="selectlist-getvalue">
-<h3 id="selectlist-getvalue-">SelectList::getValue()</h3>
-<pre>
-Gets selected values
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
-
-</div>
 </div>
 
     </content>
