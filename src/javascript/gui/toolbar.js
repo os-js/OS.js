@@ -67,10 +67,33 @@
     return el;
   };
 
+  /**
+   * Add an item to the toolbar
+   *
+   * @param   String      name      Item Name (unique)
+   * @param   Object      opts      Item Options
+   *
+   * @option  opts    String      type          The item type ('custom' to render something other than a button)
+   * @option  opts    Function    onCreate      If 'custom' => fn(itemName, itemOptions, outerEl, innerEl)
+   * @option  opts    String      title         Button title
+   * @option  opts    String      icon          Button icon
+   * @option  opts    String      tooltip       Button tooltip (defaults to title)
+   * @option  opts    boolean     toggleable    Button toggleable?
+   *
+   * @return  void
+   *
+   * @method ToolBar::addItem()
+   */
   ToolBar.prototype.addItem = function(name, opts) {
     this.items[name] = opts;
   };
 
+  /**
+   * Add a separator to the toolbar
+   *
+   * @return  void
+   * @method  ToolBar::addSeparator()
+   */
   ToolBar.prototype.addSeparator = (function() {
     var _sid = 1;
     return function() {
@@ -79,6 +102,13 @@
     };
   })();
 
+  /**
+   * Render the Toolbar
+   *
+   * @return  void
+   *
+   * @method  ToolBar::render()
+   */
   ToolBar.prototype.render = function() {
     if ( !this.$container ) { return; }
     var self = this;
@@ -169,6 +199,13 @@
     }
   };
 
+  /**
+   * Gets an item
+   *
+   * @param   String    name      The item name (unique)
+   *
+   * @return  Object
+   */
   ToolBar.prototype.getItem = function(name) {
     return this.items[name];
   };

@@ -73,6 +73,15 @@
     return el;
   };
 
+  /**
+   * Set the current value of progressbar
+   *
+   * @param   int     p     Progress percentage
+   *
+   * @return  void
+   *
+   * @method  ProgressBar::setPercentage()
+   */
   ProgressBar.prototype.setPercentage = function(p) {
     if ( p < 0 || p > 100 ) { return; }
     this.percentage       = parseInt(p, 10);
@@ -80,6 +89,11 @@
     this.$label.innerHTML = this.percentage + '%';
   };
 
+  /**
+   * Alias of setPercentage()
+   * @see ProgressBar::setPercentage()
+   * @method ProgressBar::setProgress()
+   */
   ProgressBar.prototype.setProgress = function(p) {
     this.setPercentage(p);
   };

@@ -140,12 +140,24 @@
 
   };
 
-  PanedView.prototype.Destroy = function() {
+  PanedView.prototype.destroy = function() {
     this.$container = null;
     this.views      = {};
-    GUIElement.prototype.Destroy.apply(this, arguments);
+    return GUIElement.prototype.destroy.apply(this, arguments);
   };
 
+  /**
+   * Create a view inside the Pane
+   *
+   * @param   String      name      View Name (unique)
+   * @param   Object      otps      View Options
+   *
+   * @option  opts    int   width     View width
+   *
+   * @return  DOMElement    The container
+   *
+   * @method  PanedView::createView()
+   */
   PanedView.prototype.createView = function(name, opts) {
     opts = opts || {};
 
@@ -167,6 +179,18 @@
     return container;
   };
 
+  /**
+   * Adds a GUIElement or DOMElement to the given Pane
+   *
+   * This also creates the pane
+   *
+   * @param   Mixed     el      The element
+   * @param   String    name    View name
+   *
+   * @return  void
+   *
+   * @method  PanedView::addItem()
+   */
   PanedView.prototype.addItem = function(el, name) {
     var container = this.createView(name);
 

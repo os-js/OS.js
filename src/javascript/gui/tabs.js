@@ -32,14 +32,6 @@
 
   /**
    * Tabs > Tab Container
-   *
-   * options:
-   *  title           String        Tab title/label
-   *  onCreate        Function      Callback - On creation
-   *  onSelect        Function      Callback - On selected
-   *  onUnselect      Function      Callback - On unselected
-   *  onDestroy       Function      Callback - When destroyed
-   *  onClose         Function      Callback - When closed
    */
   var Tab = function(name, opts, index, $tabs, $container, _tabs) {
     var self = this;
@@ -203,6 +195,15 @@
 
   };
 
+  /**
+   * Set the currently active tab
+   *
+   * @param   int     idx     Tab index
+   *
+   * @return  void
+   *
+   * @method Tabs::setTab()
+   */
   Tabs.prototype.setTab = function(idx) {
     console.debug('OSjs::GUI::Tabs::setTab()', idx);
 
@@ -217,6 +218,15 @@
     }
   };
 
+  /**
+   * Remve a tab
+   *
+   * @param   int     idx     Tab index
+   *
+   * @return  void
+   *
+   * @method Tabs::removeTab()
+   */
   Tabs.prototype.removeTab = function(idx) {
     console.debug('OSjs::GUI::Tabs::removeTab()', idx);
 
@@ -233,6 +243,12 @@
     this.selectFirstTab();
   };
 
+  /**
+   * Select the first tab
+   *
+   * @return  void
+   * @method  Tabs::selectFirstTab()
+   */
   Tabs.prototype.selectFirstTab = function() {
     if ( !this.$tabs || !this.$container ) { return; }
 
@@ -241,6 +257,25 @@
     }
   };
 
+  /**
+   * Add a tab
+   *
+   * Will return a private class instance of a Tab
+   *
+   * @param   String      name      The tab name
+   * @param   Object      opts      Tab options
+   *
+   * @option  opts   String     title            Tab title/label
+   * @option  opts   Function   onCreate         Callback - On creation
+   * @option  opts   Function   onSelect         Callback - On selected
+   * @option  opts   Function   onUnselect       Callback - On unselected
+   * @option  opts   Function   onDestroy        Callback - When destroyed
+   * @option  opts   Function   onClose          Callback - When closed
+   *
+   * @return  Tab
+   *
+   * @method  Tabs::adTab()
+   */
   Tabs.prototype.addTab = function(name, opts) {
     var self  = this;
 

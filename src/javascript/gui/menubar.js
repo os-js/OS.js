@@ -70,6 +70,20 @@
     return el;
   };
 
+  /**
+   * Add an item to the bar
+   *
+   * @param   Object      item        The item (You can also just use a string here)
+   * @param   Array       menu        The submenu items
+   *
+   * @option  opts  String  title       Item title
+   * @option  opts  String  name        Item name (unique)
+   * @option  opts  boolean disabled    Is disabled ?
+   *
+   * @return  void
+   *
+   * @method  MenuBar::addItem()
+   */
   MenuBar.prototype.addItem = function(item, menu, pos) {
     if ( !this.$ul ) { return; }
     var self = this;
@@ -118,10 +132,29 @@
     this.items.push(nitem);
   };
 
+  /**
+   * Creates the context menu for given event/click
+   *
+   * @param   DOMEvent      ev      The event
+   * @parm    int           idx     The menubar item index
+   *
+   * @return  void
+   *
+   * @method  MenuBar::createContextMenu()
+   */
   MenuBar.prototype.createContextMenu = function(ev, idx) {
     this.$ul.childNodes[idx].onclick(ev, true);
   };
 
+  /**
+   * Get a menu item
+   *
+   * @param   String      name      Menu item name (unique)
+   *
+   * @return  Object                Or null on fail
+   *
+   * @method  MenuBar::getItem()
+   */
   MenuBar.prototype.getItem = function(name) {
     for ( var i = 0; i < this.items.length; i++ ) {
       if ( this.items[i].name === name ) {

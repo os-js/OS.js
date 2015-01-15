@@ -155,6 +155,13 @@
     this.$element = _createMenu(menuList);
   };
 
+  /**
+   * Destroy the Menu
+   *
+   * @return  void
+   *
+   * @method  Menu::destroy()
+   */
   Menu.prototype.destroy = function() {
     if ( this.$element ) {
       var ul = this.$element.getElementsByTagName('UL')[0];
@@ -171,6 +178,16 @@
     this.$element = null;
   };
 
+  /**
+   * Show the Menu
+   *
+   * @param   Object      pos         The position {x, y}
+   * @param   DOMElement  submenu     If this is a submenu, give the dom element
+   *
+   * @return  void
+   *
+   * @method  Menu::show()
+   */
   Menu.prototype.show = function(pos, submenu) {
     var tw, th, px, py;
     if ( submenu ) {
@@ -204,10 +221,27 @@
     this.$element.style.top = py + 'px';
   };
 
+  /**
+   * Get the root DOM Element
+   *
+   * @return  DOMElement
+   *
+   * @method  Menu::getRoot()
+   */
   Menu.prototype.getRoot = function() {
     return this.$element;
   };
 
+  /**
+   * Sets the disabled state of an item
+   *
+   * @param   String    name      Item name
+   * @param   boolean   d         Disabled ?
+   *
+   * @return  void
+   *
+   * @method  Menu::setItemDisabled()
+   */
   Menu.prototype.setItemDisabled = function(name, d) {
     var root = this.getRoot();
     var el = root.getElementsByClassName('MenuItem_' + name);

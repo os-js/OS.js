@@ -141,6 +141,17 @@
     }
   };
 
+  /**
+   * Send a command
+   *
+   * @param   String      cmd       Command name
+   * @parm    boolean     defaultUI ???
+   * @param   Array       args      Command argument list
+   *
+   * @return  Mixed                 Result or 'false'
+   *
+   * @method  RichText::command()
+   */
   RichText.prototype.command = function(cmd, defaultUI, args) {
     var d = this.getDocument();
     if ( d ) {
@@ -160,6 +171,15 @@
     return false;
   };
 
+  /**
+   * Gets the current command value
+   *
+   * @param   String      q     The query
+   *
+   * @return  Mixed
+   *
+   * @method  RichText::commandValue()
+   */
   RichText.prototype.commandValue = function(q) {
     try {
       return this.getDocument().queryCommandValue(q);
@@ -169,6 +189,15 @@
     return null;
   };
 
+  /**
+   * Set the content
+   *
+   * @param   String      c       Content (innerHTML)
+   *
+   * @return  boolean
+   *
+   * @method  RichText::setContent()
+   */
   RichText.prototype.setContent = function(c) {
     this.hasChanged = false;
     this.strlen = c.length;
@@ -181,6 +210,13 @@
     return false;
   };
 
+  /**
+   * Get the content
+   *
+   * @return  String      Content (innerHTML)
+   *
+   * @method  RichText::getContent()
+   */
   RichText.prototype.getContent = function() {
     var self = this;
     function _getContent() {
@@ -198,6 +234,13 @@
     return _getContent();
   };
 
+  /**
+   * Get the document
+   *
+   * @return  DOMDocument
+   *
+   * @method  RichText::getDocument()
+   */
   RichText.prototype.getDocument = function() {
     if ( this.$view ) {
       return this.$view.contentDocument || this.$view.contentWindow.document;
@@ -205,6 +248,13 @@
     return null;
   };
 
+  /**
+   * Get the window
+   *
+   * @return  DOMWindow
+   *
+   * @method  RichText::getWindow()
+   */
   RichText.prototype.getWindow = function() {
     if ( this.$view ) {
       return this.$view.contentWindow;
