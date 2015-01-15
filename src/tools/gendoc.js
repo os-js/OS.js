@@ -281,11 +281,66 @@ Array.prototype.unique = function(){
 
   function generateMenu(fileList) {
     var menuHTML = [];
+
+    var sorted = {};
     fileList.forEach(function(m) {
+      var tmp = m.split('/');
+
+      var lastRef;
+      tmp.forEach(function(t, i) {
+        var isLast = ( i >= tmp.length-1 );
+        if ( lastRef ) {
+          if ( typeof lastRef[t] === 'undefined' ) {
+            if ( isLast ) {
+              lastRef[t] = m;
+            } else {
+              lastRef[t] = {};
+            }
+          }
+          lastRef = lastRef[t];
+        } else {
+          if ( typeof sorted[t] === 'undefined' ) {
+            sorted[t] = {};
+          }
+          lastRef = sorted[t];
+        }
+      });
+
+    });
+
+    function generateList(lst, level) {
+      var html = '';
+      var lastRef;
+      Object.keys(lst).forEach(function(l) {
+        lastRef = lastRef || l;
+        var inner = '';
+
+        if ( typeof lst[l] !== 'string' ) {
+          inner += l;
+          inner += '<ul>';
+          inner += generateList(lst[l], level + 1);
+          inner += '</ul>';
+        } else {
+          var filename = lst[l].replace(/[^A-z0-9_\-]/g, '') + '.html';
+          inner += '<a href="' + filename + '">' + l + '</a>';
+        }
+
+        html += '<li>' + inner + '</li>';
+
+      });
+      return html;
+    }
+
+    return generateList(sorted, 0);
+
+    /*
+    fileList.forEach(function(m) {
+      console.log(m);
       var filename = m.replace(/[^A-z0-9_\-]/g, '') + '.html';
       menuHTML.push('<li><a href="' + filename + '">' + m + '</a></li>');
     });
     return menuHTML.join('\n');
+    */
   }
 
   function runReplace(tpl, menu, content) {
@@ -298,7 +353,8 @@ Array.prototype.unique = function(){
   }
 
   function generateIndex(menu, fileList) {
-    generatePage(['<h1>OS.js Documentation</h1><p>THIS IS A WORK IN PROGRESS. DOCUMENTATION NOT COMPLETE</p>'], 'index.html', fileList, menu);
+    var pageContent = _fs.readFileSync(_path.join(TPLDIR, 'doc-index.html'));
+    generatePage([pageContent], 'index.html', fileList, menu);
   }
 
   function generatePage(buffer, filename, fileList, menu) {
@@ -447,8 +503,10 @@ Array.prototype.unique = function(){
 
     // Finally output
     var output = [];
-    output.push('<div><i>' + filename + ', Generated: </i>' + (new Date()) + '</div>');
     output.push('<h1>Overview</h1>');
+
+    output.push('<p><i>' + filename + '</i></p>');
+
     notices.forEach(function(n) {
       output.push('<pre>');
       output.push(n);
@@ -509,6 +567,9 @@ Array.prototype.unique = function(){
       }
     });
 
+    output.push('<p><i>Generated: ' + (new Date()) + '</i></p>');
+    output.push('<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>');
+
     return output.join('\n');
   }
 
@@ -532,6 +593,11 @@ Array.prototype.unique = function(){
   _fs.copy(
     _path.join(TPLDIR, 'doc-style.css'),
     _path.join(OUTDIR, 'main.css')
+  );
+
+  _fs.copy(
+    _path.join(TPLDIR, 'doc-logo.png'),
+    _path.join(OUTDIR, 'logo.png')
   );
 
   var files = [
