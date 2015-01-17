@@ -1,3 +1,6 @@
+html, body {
+  height : 100%;
+}
 body {
   font-family: 'Source Sans Pro', sans-serif;
   font-size : 14px;
@@ -31,6 +34,11 @@ pre {
 pre.code {
   font-weight : normal;
   padding : 20px;
+}
+
+.wrapper {
+  width : 770px;
+  margin : 0 auto;
 }
 
 header {
@@ -72,8 +80,24 @@ header li a {
   text-decoration : none;
 }
 
-content {
+main {
   display : block;
   margin : 20px;
+  min-height : 80%;
 }
 
+footer {
+  display : block;
+  height : 270px;
+  background : #f2f2f2;
+  text-align : center;
+}
+footer img {
+  margin-top : 40px;
+}
+
+@media screen and (max-width : 1000px) {
+  .wrapper {
+    width : 90%;
+  }
+}
