@@ -1,0 +1,55 @@
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size : 14px;
+  margin : 0;
+  padding : 0;
+  color : #4D4545;
+}
+
+a {
+  color : #572A79;
+}
+
+li {
+  padding : 5px;
+}
+
+li a {
+  text-decoration : none;
+}
+
+div.indent {
+  padding-left : 20px;
+}
+
+pre {
+  font-weight : bold;
+  font-family : Monospace;
+  background : #f2f2f2;
+}
+
+pre.code {
+  font-weight : normal;
+  padding : 20px;
+}
+
+header {
+  background : #572a79 url('logo.png') no-repeat 20px 20px;
+  color : #fff;
+  height : 80px;
+  line-height : 80px;
+  padding-left : 180px;
+  display : block;
+}
+header h1 {
+  font-size : 20px;
+  margin : 0;
+  padding : 0;
+  visibility : hidden;
+}
+
+content {
+  display : block;
+  margin : 20px;
+}
+
