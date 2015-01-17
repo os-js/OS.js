@@ -32,6 +32,30 @@ header h1 {
   padding : 0;
   visibility : hidden;
 }
+header ul {
+  list-style-type : none;
+  display : block;
+  position : absolute;
+  left : 0px;
+  top : 0px;
+  right : 0px;
+  height : 80px;
+  line-height : 80px;
+  margin : 0;
+  padding : 0;
+  text-align : right;
+}
+header li {
+  display : inline-block;
+  margin : 0;
+  padding : 0;
+  margin-right : 20px;
+}
+header li a {
+  font-size : 20px;
+  color : #fff;
+  text-decoration : none;
+}
 
 nav {
   position : absolute;
