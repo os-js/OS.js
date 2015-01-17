@@ -29,39 +29,43 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/dialogs/fileinfo.js</i></p>
+<p><i>src/javascript/helpers/google-api.js</i></p>
 <h2>Functions</h2>
 <ul>
+<li>OSjs.Helpers.GoogleAPI.<a href="#osjs-helpers-googleapi-getinstance">getInstance()</a></li>
+<li>OSjs.Helpers.GoogleAPI.<a href="#osjs-helpers-googleapi-createinstance">createInstance()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-dialogs-fileinformationdialog">FileInformationDialog</a> (OSjs.Dialogs.FileInformationDialog)
+<a href="#osjs-helpers-googleapi-googleapi">GoogleAPI</a> (OSjs.Helpers.GoogleAPI.GoogleAPI)
 <ul>
+<li><a href="#googleapi-signout">signOut()</a></li>
+<li><a href="#googleapi-revoke">revoke()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-dialogs-fileinformationdialog">
-<h2 id="fileinformationdialog">FileInformationDialog</h2>
+<div class="section-function" id="osjs-helpers-googleapi-getinstance">
+<h2 id="osjs-helpers-googleapi-getinstance-">OSjs.Helpers.GoogleAPI.getInstance()</h2>
 <pre>
-File Information Dialog
+Gets the currently running instance
 </pre>
 
-<h4 id="namespace">Namespace</h4>
-<ul>
-<li>OSjs.Dialogs.FileInformationDialog</li>
-</ul>
-<h4 id="extends">Extends</h4>
-<ul>
-<li>StandardDialog</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Dialogs.StandardDialog</li>
-</ul>
-<h4 id="constructor">Constructor</h4>
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>GoogleAPI</u> <em>Can also be null</em></p>
+
+</div>
+<div class="section-function" id="osjs-helpers-googleapi-createinstance">
+<h2 id="osjs-helpers-googleapi-createinstance-args-callback-">OSjs.Helpers.GoogleAPI.createInstance(args, callback)</h2>
+<pre>
+Create an instance of GoogleAPI
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
@@ -72,19 +76,131 @@ File Information Dialog
 </thead>
 <tbody>
 <tr>
-<td>file</td>
-<td>OSjs.VFS.File</td>
-<td>The requested File</td>
+<td>args</td>
+<td>Object</td>
+<td>Arguments</td>
 </tr>
 <tr>
-<td>onClose</td>
+<td>callback</td>
 <td>Function</td>
-<td>Callback on close =&gt; fn(button)</td>
+<td>Callback function =&gt; fn(error, instance)</td>
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>load</td>
+<td>Array</td>
+<td>What functions to load</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>Array</td>
+<td>What scope to load</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-helpers-googleapi-googleapi">
+<h2 id="googleapi">GoogleAPI</h2>
+<pre>
+The GoogleAPI wrapper class
+
+This is a private class and can only be aquired through
+
+OSjs.Helpers.GoogleAPI.createInsatance()
+
+Generally you want to create an instance of this helper
+
+and when successfully created use `window.gapi`.
+
+@private
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Helpers.GoogleAPI.GoogleAPI</li>
+</ul>
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Helpers.GoogleAPI.createInsatance()</li>
+</ul>
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="https://developers.google.com/api-client-library/javascript/start/start-js">https://developers.google.com/api-client-library/javascript/start/start-js</a></li>
+<li><a href="https://developers.google.com/api-client-library/javascript/">https://developers.google.com/api-client-library/javascript/</a></li>
+<li><a href="https://console.developers.google.com/project">https://console.developers.google.com/project</a></li>
+</ul>
+
+<div class="section-method" id="googleapi-signout">
+<h3 id="googleapi-signout-cb-">GoogleAPI::signOut(cb)</h3>
+<pre>
+Sign out of GoogleAPI
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cb</td>
+<td>Function</td>
+<td>Callback =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="googleapi-revoke">
+<h3 id="googleapi-revoke-cb-">GoogleAPI::revoke(cb)</h3>
+<pre>
+Revoke Google permissions for this app
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cb</td>
+<td>Function</td>
+<td>Callback =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
 </div>
 <p><i>Generated: Sat Jan 17 2015 20:39:21 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
