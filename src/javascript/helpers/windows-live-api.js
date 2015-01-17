@@ -28,14 +28,6 @@
  * @licence Simplified BSD License
  */
 
-// http://msdn.microsoft.com/en-us/library/hh826547.aspx
-// http://msdn.microsoft.com/en-us/library/hh826538.aspx
-// http://msdn.microsoft.com/en-us/library/hh550837.aspx
-// http://msdn.microsoft.com/en-us/library/dn631844.aspx
-//
-// http://msdn.microsoft.com/en-us/library/dn631839.aspx
-// http://msdn.microsoft.com/en-us/library/hh243643.aspx
-
 (function(Utils, API) {
   'use strict';
 
@@ -52,6 +44,30 @@
 
   var SingletonInstance = null;
 
+
+  /**
+   * The WindowsLiveAPI wrapper class
+   *
+   * This is a private class and can only be aquired through
+   * OSjs.Helpers.WindowsLiveAPI.createInsatance()
+   *
+   * Generally you want to create an instance of this helper
+   * and when successfully created use `window.WL`.
+   *
+   * @see OSjs.Helpers.WindowsLiveAPI.createInsatance()
+   * @api OSjs.Helpers.WindowsLiveAPI.WindowsLiveAPI
+   *
+   * @link http://msdn.microsoft.com/en-us/library/hh826547.aspx
+   * @link http://msdn.microsoft.com/en-us/library/hh826538.aspx
+   * @link http://msdn.microsoft.com/en-us/library/hh550837.aspx
+   * @link http://msdn.microsoft.com/en-us/library/dn631844.aspx
+   * @link http://msdn.microsoft.com/en-us/library/dn631839.aspx
+   * @link http://msdn.microsoft.com/en-us/library/hh243643.aspx
+   * @link https://account.live.com/developers/applications/index
+   *
+   * @private
+   * @class
+   */
   function WindowsLiveAPI(clientId) {
     this.hasSession = false;
     this.clientId = clientId;
@@ -65,9 +81,15 @@
     }];
   }
 
+  /**
+   * Destroy the class
+   */
   WindowsLiveAPI.prototype.destroy = function() {
   };
 
+  /**
+   * Initializes (preloads) the API
+   */
   WindowsLiveAPI.prototype.init = function(callback) {
     callback = callback || function() {};
     var self = this;
@@ -83,6 +105,9 @@
     }
   };
 
+  /**
+   * Loads the API
+   */
   WindowsLiveAPI.prototype.load = function(scope, callback) {
     console.debug('WindowsLiveAPI::load()', scope);
 
@@ -170,6 +195,15 @@
     }
   };
 
+  /**
+   * Sign out of WindowsLiveAPI
+   *
+   * @param   Function    cb      Callback => fn(error, result)
+   *
+   * @return  void
+   *
+   * @method  WindowsLiveAPI::logout()
+   */
   WindowsLiveAPI.prototype.logout = function(callback) {
     callback = callback || function() {};
 
@@ -193,6 +227,9 @@
     }
   };
 
+  /**
+   * Authenticates the user
+   */
   WindowsLiveAPI.prototype.login = function(scope, callback) {
     var self = this;
     if ( this.hasSession ) {
@@ -214,6 +251,9 @@
     });
   };
 
+  /**
+   * If the API session was changed
+   */
   WindowsLiveAPI.prototype.onSessionChange = function() {
     console.warn('WindowsLiveAPI::onSessionChange()', arguments);
     var session = WL.getSession();
@@ -224,6 +264,9 @@
     }
   };
 
+  /**
+   * When user logged in
+   */
   WindowsLiveAPI.prototype.onLogin = function() {
     console.warn('WindowsLiveAPI::onLogin()', arguments);
     this.hasSession = true;
@@ -240,12 +283,18 @@
     }
   };
 
+  /**
+   * When user logs out
+   */
   WindowsLiveAPI.prototype.onLogout = function() {
     console.warn('WindowsLiveAPI::onLogout()', arguments);
     this.hasSession = false;
     this._removeRing();
   };
 
+  /**
+   * When API sends a log message
+   */
   WindowsLiveAPI.prototype.onLog = function() {
     console.debug('WindowsLiveAPI::onLog()', arguments);
   };
@@ -256,10 +305,29 @@
 
   OSjs.Helpers.WindowsLiveAPI = OSjs.Helpers.WindowsLiveAPI || {};
 
+  /**
+   * Gets the currently running instance
+   *
+   * @api OSjs.Helpers.WindowsLiveAPI.getInstance()
+   *
+   * @return  WindowsLiveAPI       Can also be null
+   */
   OSjs.Helpers.WindowsLiveAPI.getInstance = function() {
     return SingletonInstance;
   };
 
+  /**
+   * Create an instance of WindowsLiveAPI
+   *
+   * @param   Object    args      Arguments
+   * @param   Function  callback  Callback function => fn(error, instance)
+   *
+   * @option  args    Array     scope     What scope to load
+   *
+   * @api OSjs.Helpers.WindowsLiveAPI.createInstance()
+   *
+   * @return  void
+   */
   OSjs.Helpers.WindowsLiveAPI.createInstance = function(args, callback) {
     args = args || {};
 

@@ -42,6 +42,25 @@
 
   var SingletonInstance = null;
 
+  /**
+   * The GoogleAPI wrapper class
+   *
+   * This is a private class and can only be aquired through
+   * OSjs.Helpers.GoogleAPI.createInsatance()
+   *
+   * Generally you want to create an instance of this helper
+   * and when successfully created use `window.gapi`.
+   *
+   * @link  https://developers.google.com/api-client-library/javascript/start/start-js
+   * @link  https://developers.google.com/api-client-library/javascript/
+   * @link  https://console.developers.google.com/project
+   *
+   * @see OSjs.Helpers.GoogleAPI.createInsatance()
+   * @api OSjs.Helpers.GoogleAPI.GoogleAPI
+   *
+   * @private
+   * @class
+   */
   function GoogleAPI(clientId) {
     this.clientId       = clientId;
     this.accessToken    = null;
@@ -56,9 +75,15 @@
     ];
   }
 
+  /**
+   * Destroy the class
+   */
   GoogleAPI.prototype.destroy = function() {
   };
 
+  /**
+   * Initializes (preloads) the API
+   */
   GoogleAPI.prototype.init = function(callback) {
     callback = callback || function() {};
     var self = this;
@@ -74,6 +99,9 @@
     }
   };
 
+  /**
+   * Loads the API
+   */
   GoogleAPI.prototype.load = function(load, scope, callback) {
     load = (['auth:client']).concat(load);
 
@@ -105,6 +133,15 @@
     });
   };
 
+  /**
+   * Sign out of GoogleAPI
+   *
+   * @param   Function    cb      Callback => fn(error, result)
+   *
+   * @return  void
+   *
+   * @method  GoogleAPI::signOut()
+   */
   GoogleAPI.prototype.signOut = function(cb) {
     cb = cb || function() {};
 
@@ -132,6 +169,15 @@
     cb(false, true);
   };
 
+  /**
+   * Revoke Google permissions for this app
+   *
+   * @param   Function    cb      Callback => fn(error, result)
+   *
+   * @return  void
+   *
+   * @method  GoogleAPI::revoke()
+   */
   GoogleAPI.prototype.revoke = function(callback) {
     console.info('GoogleAPI::revoke()');
 
@@ -152,6 +198,9 @@
     });
   };
 
+  /**
+   * Authenticates the user
+   */
   GoogleAPI.prototype.authenticate = function(scope, callback) {
     console.info('GoogleAPI::authenticate()');
 
@@ -238,10 +287,30 @@
 
   OSjs.Helpers.GoogleAPI = OSjs.Helpers.GoogleAPI || {};
 
+  /**
+   * Gets the currently running instance
+   *
+   * @api OSjs.Helpers.GoogleAPI.getInstance()
+   *
+   * @return  GoogleAPI       Can also be null
+   */
   OSjs.Helpers.GoogleAPI.getInstance = function() {
     return SingletonInstance;
   };
 
+  /**
+   * Create an instance of GoogleAPI
+   *
+   * @param   Object    args      Arguments
+   * @param   Function  callback  Callback function => fn(error, instance)
+   *
+   * @option  args    Array     load      What functions to load
+   * @option  args    Array     scope     What scope to load
+   *
+   * @api OSjs.Helpers.GoogleAPI.createInstance()
+   *
+   * @return  void
+   */
   OSjs.Helpers.GoogleAPI.createInstance = function(args, callback) {
     var load = args.load || [];
     var scope = args.scope || [];

@@ -61,6 +61,8 @@
    * You need to implement this in your application.
    * For an example see the 'Textpad' application
    *
+   * TODO Rename to onCheckChanged()
+   *
    * @return  boolean     If the document has changed
    *
    * @method  DefaultApplicationWindow::checkChanged()
@@ -314,6 +316,8 @@
 
   /**
    * When requesting check for if file has changed
+   *
+   * TODO: Rename to _onCheckChanged()
    *
    * @param   Function    callback      Callback function => fn(discard)
    *
