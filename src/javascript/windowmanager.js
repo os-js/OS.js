@@ -451,6 +451,17 @@
   };
 
   /**
+   * Sets the current Window
+   *
+   * @param   Window    w       Window
+   * @return  void
+   * @method  WindowManager::setCurrentWindow()
+   */
+  WindowManager.prototype.setCurrentWindow = function(w) {
+    this._currentWin = w || null;
+  };
+
+  /**
    * Gets previous Window
    *
    * @return      Window        Current Window or 'null'
@@ -461,10 +472,13 @@
     return this._lastWin;
   };
 
-  WindowManager.prototype.setCurrentWindow = function(w) {
-    this._currentWin = w || null;
-  };
-
+  /**
+   * Sets the last Window
+   *
+   * @param   Window    w       Window
+   * @return  void
+   * @method  WindowManager::setLastWindow()
+   */
   WindowManager.prototype.setLastWindow = function(w) {
     this._lastWin = w || null;
   };

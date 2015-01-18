@@ -74,7 +74,7 @@
     });
 
     this.addButton(API._('DIALOG_LOGOUT_TITLE'), 'actions/exit.png', function(ev) {
-      OSjs.Core.signOut();
+      OSjs.Session.signOut();
     });
 
     return root;

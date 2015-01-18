@@ -53,6 +53,7 @@
   OSjs.GUI          = OSjs.GUI          || {};
   OSjs.Locales      = OSjs.Locales      || {};
   OSjs.VFS          = OSjs.VFS          || {};
+  OSjs.Session      = OSjs.Session      || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HOOKS
@@ -81,7 +82,7 @@
    * @param   Object    thisarg   'this' ref
    *
    * @return  void
-   * @api     OSjs.Core.triggerHook()
+   * @api     OSjs.Session.triggerHook()
    */
   function doTriggerHook(name, args, thisarg) {
     thisarg = thisarg || OSjs;
@@ -109,7 +110,7 @@
    * @param   Function  fn      Callback
    *
    * @return  void
-   * @api     OSjs.Core.addHook()
+   * @api     OSjs.Session.addHook()
    * @see     core.js For a list of hooks
    */
   function doAddHook(name, fn) {
@@ -346,7 +347,7 @@
    * the first thing that is called after page has loaded
    *
    * @return  void
-   * @api     OSjs.Core.initialize()
+   * @api     OSjs.Session.init()
    */
   function doInitialize() {
     if ( _INITED ) { return; }
@@ -375,10 +376,10 @@
     }
 
     function _Loaded() {
-      OSjs.Core.triggerHook('onInited');
+      OSjs.Session.triggerHook('onInited');
 
       _LaunchWM(function(/*app*/) {
-        OSjs.Core.triggerHook('onWMInited');
+        OSjs.Session.triggerHook('onWMInited');
 
         _$LOADING.style.display = 'none';
         OSjs.API.playSound('service-login');
@@ -391,7 +392,7 @@
               globalOnResize();
             }, 500);
 
-            OSjs.Core.triggerHook('onSessionLoaded');
+            OSjs.Session.triggerHook('onSessionLoaded');
 
             doAutostart();
           });
@@ -497,7 +498,7 @@
 
       createVersionStamp();
 
-      OSjs.Core.triggerHook('onInitialize');
+      OSjs.Session.triggerHook('onInitialize');
 
       _$SPLASH              = document.getElementById('LoadingScreen');
       _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
@@ -517,7 +518,7 @@
    * @param   boolean     save      Save the current session ?
    *
    * @return  void
-   * @api     OSjs.Core.shutdown()
+   * @api     OSjs.Session.destroy()
    */
   function doShutdown(save) {
     if ( !_INITED ) { return; }
@@ -598,10 +599,10 @@
       ring.destroy();
     }
 
-    OSjs.Core.triggerHook('onLogout');
+    OSjs.Session.triggerHook('onLogout');
 
     handler.logout(save, function() {
-      OSjs.Core.triggerHook('onShutdown');
+      OSjs.Session.triggerHook('onShutdown');
 
       OSjs.API.playSound('service-logout');
       _shutdown();
@@ -612,7 +613,7 @@
    * Sign Out of OS.js
    *
    * @return  void
-   * @api     OSjs.Core.signOut()
+   * @api     OSjs.Session.signOut()
    */
   function doSignOut() {
     var handler = OSjs.API.getHandlerInstance();
@@ -621,14 +622,14 @@
       var user = handler.getUserData() || {name: OSjs.API._('LBL_UNKNOWN')};
       var conf = new OSjs.Dialogs.Confirm(OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name), function(btn) {
         if ( btn === 'ok' ) {
-          OSjs.Core.shutdown(true, false);
+          OSjs.Session.destroy(true, false);
         } else if ( btn === 'cancel' ) {
-          OSjs.Core.shutdown(false, false);
+          OSjs.Session.destroy(false, false);
         }
       }, {title: OSjs.API._('DIALOG_LOGOUT_TITLE'), buttonClose: true, buttonCloseLabel: OSjs.API._('LBL_CANCEL'), buttonOkLabel: OSjs.API._('LBL_YES'), buttonCancelLabel: OSjs.API._('LBL_NO')});
       wm.addWindow(conf);
     } else {
-      OSjs.Core.shutdown(true, false);
+      OSjs.Session.destroy(true, false);
     }
   }
 
@@ -657,14 +658,13 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  // Classes and Core functions
-  OSjs.Core.initialize        = doInitialize;
-  OSjs.Core.addHook           = doAddHook;
-  OSjs.Core.triggerHook       = doTriggerHook;
-  OSjs.Core.shutdown          = doShutdown;
-  OSjs.Core.signOut           = doSignOut;
+  OSjs.Session.init         = doInitialize;
+  OSjs.Session.destroy      = doShutdown;
+  OSjs.Session.signOut      = doSignOut;
+  OSjs.Session.addHook      = doAddHook;
+  OSjs.Session.triggerHook  = doTriggerHook;
 
-  OSjs.API._isMouseLock           = function() { return _MOUSELOCK; };
-  OSjs.API._onMouseDown           = globalOnMouseDown;
+  OSjs.API._isMouseLock     = function() { return _MOUSELOCK; };
+  OSjs.API._onMouseDown     = globalOnMouseDown;
 
 })();

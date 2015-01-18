@@ -56,15 +56,15 @@
   document.addEventListener('DOMContentLoaded', function() {
     if ( loaded ) { return; }
     loaded = true;
-    OSjs.Core.initialize();
+    OSjs.Session.init();
   });
   document.addEventListener('load', function() {
     if ( loaded ) { return; }
     loaded = true;
-    OSjs.Core.initialize();
+    OSjs.Session.init();
   });
   document.addEventListener('unload', function() {
-    OSjs.Core.shutdown(false, true);
+    OSjs.Session.destroy(false, true);
   });
 
 })();

@@ -412,7 +412,7 @@
               a.init(settings, result);
               onFinished(a, result);
 
-              OSjs.Core.triggerHook('onApplicationLaunched', [{
+              OSjs.Session.triggerHook('onApplicationLaunched', [{
                 application: a,
                 name: n,
                 args: arg,
@@ -432,7 +432,7 @@
       }
     }
 
-    OSjs.Core.triggerHook('onApplicationLaunch', [n, arg]);
+    OSjs.Session.triggerHook('onApplicationLaunch', [n, arg]);
 
     // Get metadata and check compability
     var data = handler.getApplicationMetadata(n);
@@ -1092,4 +1092,5 @@
   OSjs.API.error                  = doErrorDialog;
   OSjs.API.playSound              = doPlaySound;
   OSjs.API.getHandlerInstance     = doGetHandlerInstance;
+
 })();
