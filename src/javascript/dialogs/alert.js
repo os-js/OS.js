@@ -47,11 +47,11 @@
     args = Utils.mergeObject({
       title: API._('DIALOG_ALERT_TITLE'),
       message: msg,
+      icon: 'status/dialog-warning.png',
       buttons: [{name: 'ok', label: API._('DIALOG_CLOSE')}]
     }, (args || {}));
 
     StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
-    this._icon = 'status/dialog-warning.png';
   };
   AlertDialog.prototype = Object.create(StandardDialog.prototype);
 

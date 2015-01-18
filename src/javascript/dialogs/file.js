@@ -94,14 +94,9 @@
 
     StandardDialog.apply(this, [className, {
       title: title,
+      icon: (this.type === 'open' ? 'actions/gtk-open.png' : 'actions/gtk-save-as.png'),
       buttons: ['cancel', 'ok']
     }, {width:600, height:380}, onClose]);
-
-    if ( this.type === 'open' ) {
-      this._icon = 'actions/gtk-open.png';
-    } else {
-      this._icon = 'actions/gtk-save-as.png';
-    }
   };
 
   FileDialog.prototype = Object.create(StandardDialog.prototype);

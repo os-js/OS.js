@@ -61,10 +61,10 @@
     var msg = OSjs.API._('DIALOG_UPLOAD_DESC', this.dest, maxSize);
     StandardDialog.apply(this, ['FileUploadDialog', {
       title: OSjs.API._('DIALOG_UPLOAD_TITLE'),
+      icon: 'actions/filenew.png',
       message: msg,
       buttons: ['cancel']
     }, {width:400, height:140}, onClose]);
-    this._icon = 'actions/filenew.png';
 
     _ID++;
   };

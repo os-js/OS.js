@@ -47,10 +47,10 @@
   var InputDialog = function(msg, val, onClose, onCreated) {
     StandardDialog.apply(this, ['InputDialog', {
       title: API._('DIALOG_INPUT_TITLE'),
+      icon: 'status/dialog-information.png',
       message: msg,
       buttons: ['cancel', 'ok']
     }, {width:300, height:150}, onClose]);
-    this._icon = 'status/dialog-information.png';
 
     this.value = val || '';
     this.input = null;

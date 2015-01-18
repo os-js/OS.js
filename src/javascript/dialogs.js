@@ -51,8 +51,12 @@
    *
    * @param   String      className       Dialog Class Name
    * @param   Object      args            Dialog Arguments
-   * @parm    Object      opts            Window Options
+   * @param   Object      opts            Window Options
    * @param   Function    onClose         Callback => fn(button)
+   *
+   * @option  args    String      title     Dialog title
+   * @option  args    String      message   Dialog message
+   * @option  args    Array       buttons   List of buttons: ['ok', 'cancel', 'close', {name:'custom', label:'Custom'}]
    *
    * @see     OSjs.Core.DialogWindow
    * @api     OSjs.Core.StandardDialog
@@ -73,6 +77,9 @@
     DialogWindow.apply(this, [className, opts]);
     if ( this.args.title ) {
       this._title = this.args.title;
+    }
+    if ( this.args.icon ) {
+      this._icon = this.args.icon;
     }
 
     this._sound = 'dialog-information';

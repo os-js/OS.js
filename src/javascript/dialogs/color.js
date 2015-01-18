@@ -50,10 +50,9 @@
 
     StandardDialog.apply(this, ['ColorDialog', {
       title: API._('DIALOG_COLOR_TITLE'),
+      icon: 'apps/gnome-settings-theme.png',
       buttons: ['cancel', 'ok']
     }, {width:450, height:250}, onClose]);
-
-    this._icon = 'apps/gnome-settings-theme.png';
 
     if ( typeof opts.color === 'object' ) {
       this.currentRGB = opts.color;
