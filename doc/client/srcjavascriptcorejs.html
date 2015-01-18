@@ -36,6 +36,17 @@
 
 <h1>Overview</h1>
 <p><i>src/javascript/core.js</i></p>
+<pre>
+ List of Hooks:
+     onInitialize             When OS.js is starting
+     onInited                 When all resources has been loaded
+     onWMInited               When Window Manager has started
+     onSessionLoaded          After session has been loaded or restored
+     onLogout                 When logout is requested
+     onShutdown               When shutting down after successfull logout
+     onApplicationLaunch      On application launch request
+     onApplicationLaunched    When application has been launched
+</pre>
 <h2>Functions</h2>
 <ul>
 <li>OSjs.Core.<a href="#osjs-core-addhook">addHook()</a></li>
@@ -118,6 +129,10 @@ Method for adding a hook
 </pre>
 
 
+<h4 id="see">See</h4>
+<ul>
+<li>core.js</li>
+</ul>
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -1722,7 +1737,7 @@ Set a launch/session argument
 
 </div>
 </div>
-<p><i>Generated: Sun Jan 18 2015 01:25:11 GMT+0100 (CET)</i></p>
+<p><i>Generated: Sun Jan 18 2015 01:26:31 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
