@@ -47,9 +47,7 @@
 <li><a href="#standarddialog-destroy">destroy()</a></li>
 <li><a href="#standarddialog-init">init()</a></li>
 <li><a href="#standarddialog-_inited">_inited()</a></li>
-<li><a href="#standarddialog-oncloseclick">onCloseClick()</a></li>
-<li><a href="#standarddialog-oncancelclick">onCancelClick()</a></li>
-<li><a href="#standarddialog-onconfirmclick">onConfirmClick()</a></li>
+<li><a href="#standarddialog-onbuttonclick">onButtonClick()</a></li>
 <li><a href="#standarddialog-_onkeyevent">_onKeyEvent()</a></li>
 <li><a href="#standarddialog-end">end()</a></li>
 </ul>
@@ -65,8 +63,6 @@ Standard Dialog Window Implementation
 This is a version of Dialog Window that makes
 
 it easy to add buttons etc.
-
-TODO https://github.com/andersevenrud/OS.js-v2/issues/13
 </pre>
 
 <h4 id="namespace">Namespace</h4>
@@ -81,6 +77,67 @@ TODO https://github.com/andersevenrud/OS.js-v2/issues/13
 <ul>
 <li>OSjs.Core.DialogWindow</li>
 </ul>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>className</td>
+<td>String</td>
+<td>Dialog Class Name</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Dialog Arguments</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Window Options</td>
+</tr>
+<tr>
+<td>onClose</td>
+<td>Function</td>
+<td>Callback =&gt; fn(button)</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>Dialog title</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>Dialog message</td>
+</tr>
+<tr>
+<td>buttons</td>
+<td>Array</td>
+<td>List of buttons: [&#39;ok&#39;, &#39;cancel&#39;, &#39;close&#39;, {name:&#39;custom&#39;, label:&#39;Custom&#39;}]</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
 
 <div class="section-method" id="standarddialog-destroy">
 <h3 id="standarddialog-destroy-">StandardDialog::destroy()</h3>
@@ -127,38 +184,35 @@ When Dialog Windows has been inited
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="standarddialog-oncloseclick">
-<h3 id="standarddialog-oncloseclick-">StandardDialog::onCloseClick()</h3>
+<div class="section-method" id="standarddialog-onbuttonclick">
+<h3 id="standarddialog-onbuttonclick-btn-ev-">StandardDialog::onButtonClick(btn, ev)</h3>
 <pre>
 When Close has been clicked
 </pre>
 
 
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-oncancelclick">
-<h3 id="standarddialog-oncancelclick-">StandardDialog::onCancelClick()</h3>
-<pre>
-When Cancel has been clicked
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="standarddialog-onconfirmclick">
-<h3 id="standarddialog-onconfirmclick-">StandardDialog::onConfirmClick()</h3>
-<pre>
-When Confirm has been clicked
-</pre>
-
-
-
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>btn</td>
+<td>String</td>
+<td>Button name</td>
+</tr>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>Event</td>
+</tr>
+</tbody>
+</table>
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
@@ -191,7 +245,7 @@ End/Close Dialog Window
 
 </div>
 </div>
-<p><i>Generated: Sun Jan 18 2015 01:26:31 GMT+0100 (CET)</i></p>
+<p><i>Generated: Sun Jan 18 2015 21:08:24 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
