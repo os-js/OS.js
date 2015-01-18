@@ -45,7 +45,11 @@
    * @class
    */
   var InputDialog = function(msg, val, onClose, onCreated) {
-    StandardDialog.apply(this, ['InputDialog', {title: API._('DIALOG_INPUT_TITLE'), message: msg}, {width:300, height:150}, onClose]);
+    StandardDialog.apply(this, ['InputDialog', {
+      title: API._('DIALOG_INPUT_TITLE'),
+      message: msg,
+      buttons: ['cancel', 'ok']
+    }, {width:300, height:150}, onClose]);
     this._icon = 'status/dialog-information.png';
 
     this.value = val || '';
@@ -63,7 +67,7 @@
 
     this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(ev) {
       if ( ev.keyCode === Utils.Keys.ENTER ) {
-        self.buttonConfirm.onClick(ev);
+        self.buttons['confirm'].onClick(ev);
         return;
       }
     }}), inputd);
@@ -89,9 +93,14 @@
     }
   };
 
-  InputDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) { return; }
-    this.end('ok', this.input.getValue());
+  InputDialog.prototype.onButtonClick = function(btn, ev) {
+    if ( btn === 'ok' ) {
+      if ( this.buttons[btn] ) {
+        this.end('ok', this.input.getValue());
+      }
+      return;
+    }
+    StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////

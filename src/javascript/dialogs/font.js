@@ -68,7 +68,10 @@
     this.$selectFonts = null;
     this.$selectSize  = null;
 
-    StandardDialog.apply(this, ['FontDialog', {title: API._('DIALOG_FONT_TITLE')}, {width:450, height:250}, onClose]);
+    StandardDialog.apply(this, ['FontDialog', {
+      title: API._('DIALOG_FONT_TITLE'),
+      buttons: ['cancel', 'ok']
+    }, {width:450, height:250}, onClose]);
   };
 
   FontDialog.prototype = Object.create(StandardDialog.prototype);
@@ -170,9 +173,14 @@
     this.updateFont();
   };
 
-  FontDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) { return; }
-    this.end('ok', this.fontName, this.fontSize);
+  FontDialog.prototype.onButtonClick = function(btn, ev) {
+    if ( btn === 'ok' ) {
+      if ( this.buttons[btn] ) {
+        this.end('ok', this.fontName, this.fontSize);
+      }
+      return;
+    }
+    StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////

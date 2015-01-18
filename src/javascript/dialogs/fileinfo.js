@@ -46,7 +46,12 @@
     this.path = file ? file.path : null;
     this.file = file;
     onClose = onClose || function() {};
-    StandardDialog.apply(this, ['FileInformationDialog', {title: API._('DIALOG_FILEINFO_TITLE'), buttonCancel: false, buttonOkLabel: API._('DIALOG_CLOSE')}, {width:300, height:370}, onClose]);
+    StandardDialog.apply(this, ['FileInformationDialog', {
+      title: API._('DIALOG_FILEINFO_TITLE'),
+      buttons: [
+        {name: 'ok', label: API._('DIALOG_CLOSE')}
+      ]
+    }, {width:300, height:370}, onClose]);
   };
   FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
 

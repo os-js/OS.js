@@ -44,7 +44,11 @@
    * @class
    */
   var ConfirmDialog = function(msg, onClose, args) {
-    args = Utils.mergeObject({title: API._('DIALOG_CONFIRM_TITLE'), message: msg}, (args || {}));
+    args = Utils.mergeObject({
+      title: API._('DIALOG_CONFIRM_TITLE'),
+      message: msg,
+      buttons: ['cancel', 'ok']
+    }, (args || {}));
     StandardDialog.apply(this, ['ConfirmDialog', args, {width:350, height:120}, onClose]);
     this._icon = 'status/dialog-question.png';
   };

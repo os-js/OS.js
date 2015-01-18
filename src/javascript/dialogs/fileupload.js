@@ -59,7 +59,11 @@
 
     var maxSize = OSjs.API.getHandlerInstance().getConfig('Core').MaxUploadSize;
     var msg = OSjs.API._('DIALOG_UPLOAD_DESC', this.dest, maxSize);
-    StandardDialog.apply(this, ['FileUploadDialog', {title: OSjs.API._('DIALOG_UPLOAD_TITLE'), message: msg, buttonOk: false}, {width:400, height:140}, onClose]);
+    StandardDialog.apply(this, ['FileUploadDialog', {
+      title: OSjs.API._('DIALOG_UPLOAD_TITLE'),
+      message: msg,
+      buttons: ['cancel']
+    }, {width:400, height:140}, onClose]);
     this._icon = 'actions/filenew.png';
 
     _ID++;
@@ -97,7 +101,7 @@
   };
 
   FileUploadDialog.prototype._close = function() {
-    if ( this.buttonCancel && (this.buttonCancel.isDisabled()) ) {
+    if ( this.buttons['cancel'] && (this.buttons['cancel'].isDisabled()) ) {
       return;
     }
     StandardDialog.prototype._close.apply(this, arguments);
@@ -119,7 +123,7 @@
 
   FileUploadDialog.prototype.upload = function(file, size) {
     this.$file.disabled = 'disabled';
-    this.buttonCancel.setDisabled(true);
+    this.buttons['cancel'].setDisabled(true);
 
     var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, size, this.dest);
     this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs.API._('DIALOG_UPLOAD_MSG')));
@@ -183,8 +187,8 @@
   FileUploadDialog.prototype.onUploadComplete = function(evt) {
     console.info('FileUploadDialog::onUploadComplete()');
 
-    if ( this.buttonCancel ) {
-      this.buttonCancel.setDisabled(false);
+    if ( this.buttons['cancel'] ) {
+      this.buttons['cancel'].setDisabled(false);
     }
 
     this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
@@ -197,8 +201,8 @@
     } else {
       this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), OSjs.API._('DIALOG_UPLOAD_FAILED_UNKNOWN'));
     }
-    if ( this.buttonCancel ) {
-      this.buttonCancel.setDisabled(false);
+    if ( this.buttons['cancel'] ) {
+      this.buttons['cancel'].setDisabled(false);
     }
     this.end('fail', error);
   };
@@ -206,8 +210,8 @@
   FileUploadDialog.prototype.onUploadCanceled = function(evt) {
     console.info('FileUploadDialog::onUploadCanceled()');
     this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'));
-    if ( this.buttonCancel ) {
-      this.buttonCancel.setDisabled(false);
+    if ( this.buttons['cancel'] ) {
+      this.buttons['cancel'].setDisabled(false);
     }
     this.end('cancelled', evt);
   };

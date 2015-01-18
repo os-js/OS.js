@@ -48,7 +48,11 @@
       opts.alpha = 1.0;
     }
 
-    StandardDialog.apply(this, ['ColorDialog', {title: API._('DIALOG_COLOR_TITLE')}, {width:450, height:250}, onClose]);
+    StandardDialog.apply(this, ['ColorDialog', {
+      title: API._('DIALOG_COLOR_TITLE'),
+      buttons: ['cancel', 'ok']
+    }, {width:450, height:250}, onClose]);
+
     this._icon = 'apps/gnome-settings-theme.png';
 
     if ( typeof opts.color === 'object' ) {
@@ -145,14 +149,14 @@
 
   };
 
-  ColorDialog.prototype.onCancelClick = function(ev) {
-    if ( !this.buttonCancel ) { return; }
-    this.end('cancel', null, null);
-  };
-
-  ColorDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) { return; }
-    this.end('ok', this.currentRGB, Utils.convertToHEX(this.currentRGB), (this.currentAlpha/100));
+  ColorDialog.prototype.onButtonClick = function(btn, ev) {
+    if ( this.buttons[btn] ) {
+      if ( btn === 'cancel' ) {
+        this.end('cancel', null, null);
+      } else if ( btn === 'ok' ) {
+        this.end('ok', this.currentRGB, Utils.convertToHEX(this.currentRGB), (this.currentAlpha/100));
+      }
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////

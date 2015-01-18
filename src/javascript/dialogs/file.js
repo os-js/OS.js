@@ -92,7 +92,10 @@
     var title     = API._(this.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
     var className = this.type === 'save' ? 'FileSaveDialog' : 'FileOpenDialog';
 
-    StandardDialog.apply(this, [className, {title: title}, {width:600, height:380}, onClose]);
+    StandardDialog.apply(this, [className, {
+      title: title,
+      buttons: ['cancel', 'ok']
+    }, {width:600, height:380}, onClose]);
 
     if ( this.type === 'open' ) {
       this._icon = 'actions/gtk-open.png';
@@ -235,7 +238,7 @@
       this.$selectRoot.setSelected(cur);
     }
 
-    if ( this.showMkdir && this.buttonContainer ) {
+    if ( this.showMkdir && this.$buttons ) {
       this._addGUIElement(new OSjs.GUI.Button('ButtonMkdir', {label: 'New Folder', onClick: function() {
 
         var dir = self.$fileView.getPath();
@@ -252,7 +255,7 @@
         });
 
         self._addChild(diag, true);
-      }}), this.buttonContainer);
+      }}), this.$buttons);
     }
 
     return root;
@@ -278,9 +281,9 @@
       this.$fileView.chdir(this.path);
     }
 
-    if ( this.buttonConfirm ) {
+    if ( this.buttons['ok'] ) {
       if ( this.type === 'save' && this.$input && this.$input.getValue() ) {
-        this.buttonConfirm.setDisabled(false);
+        this.buttons['ok'].setDisabled(false);
       }
     }
 
@@ -370,12 +373,12 @@
 
   FileDialog.prototype.checkInput = function() {
     if ( this.type !== 'save' ) { return; }
-    if ( !this.buttonConfirm ) { return; }
+    if ( !this.buttons['ok'] ) { return; }
 
     if ( this.$input.getValue().length ) {
-      this.buttonConfirm.setDisabled(false);
+      this.buttons['ok'].setDisabled(false);
     } else {
-      this.buttonConfirm.setDisabled(true);
+      this.buttons['ok'].setDisabled(true);
     }
   };
 
@@ -454,8 +457,8 @@
       }
     }
 
-    if ( this.buttonConfirm ) {
-      this.buttonConfirm.setDisabled(selected === null);
+    if ( this.buttons['ok'] ) {
+      this.buttons['ok'].setDisabled(selected === null);
     }
 
     if ( this.$input ) {
@@ -490,7 +493,7 @@
 
     if ( this.select === 'path' ) {
       this.selectedFile = this.path; // Dir selection dialog needs to start on default
-      this.buttonConfirm.setDisabled(false);
+      this.buttons['ok'].setDisabled(false);
     }
 
     this.checkInput();
@@ -507,8 +510,8 @@
     }
     this._toggleLoading(true);
 
-    if ( this.buttonConfirm ) {
-      this.buttonConfirm.setDisabled(true);
+    if ( this.buttons['ok'] ) {
+      this.buttons['ok'].setDisabled(true);
     }
   };
 
@@ -520,7 +523,7 @@
     this.selectedFile = null;
 
     function _activated() {
-      self.buttonConfirm.setDisabled(false);
+      self.buttons['ok'].setDisabled(false);
       self.finishDialog.call(self, item);
     }
 
@@ -556,7 +559,7 @@
    * Input: enter pressed
    */
   FileDialog.prototype.onInputEnter = function(ev) {
-    if ( this.buttonConfirm && this.buttonConfirm.getDisabled() ) {
+    if ( this.buttons['ok'] && this.buttons['ok'].getDisabled() ) {
       return;
     }
 
@@ -566,26 +569,31 @@
   /**
    * Button: pressed
    */
-  FileDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) { return; }
-
-    var sel = this.$input ? this.$input.getValue() : this.selectedFile;
-    if ( !sel ) {
-      var wm = API.getWMInstance();
-      if ( wm ) {
-        var dwin;
-        if ( this.type === 'save' ) {
-          dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_FILENAME'));
-        } else {
-          dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_SELECTION'));
+  FileDialog.prototype.onButtonClick = function(btn, ev) {
+    if ( btn === 'ok' ) {
+      if ( this.buttons[btn] ) {
+        var sel = this.$input ? this.$input.getValue() : this.selectedFile;
+        if ( !sel ) {
+          var wm = API.getWMInstance();
+          if ( wm ) {
+            var dwin;
+            if ( this.type === 'save' ) {
+              dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_FILENAME'));
+            } else {
+              dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_SELECTION'));
+            }
+            wm.addWindow(dwin);
+            this._addChild(dwin);
+          }
+          return;
         }
-        wm.addWindow(dwin);
-        this._addChild(dwin);
+
+        this.finishDialog();
       }
       return;
     }
 
-    this.finishDialog();
+    StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////

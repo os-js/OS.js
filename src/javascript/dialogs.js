@@ -33,6 +33,12 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
+  var StandardDialogButtons = {
+    'ok': 'DIALOG_OK',
+    'cancel': 'DIALOG_CANCEL',
+    'close': 'DIALOG_CLOSE'
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +49,10 @@
    * This is a version of Dialog Window that makes
    * it easy to add buttons etc.
    *
-   * TODO https://github.com/andersevenrud/OS.js-v2/issues/13
+   * @param   String      className       Dialog Class Name
+   * @param   Object      args            Dialog Arguments
+   * @parm    Object      opts            Window Options
+   * @param   Function    onClose         Callback => fn(button)
    *
    * @see     OSjs.Core.DialogWindow
    * @api     OSjs.Core.StandardDialog
@@ -51,17 +60,15 @@
    * @class
    */
   var StandardDialog = function(className, args, opts, onClose) {
-    this.$element       = null;
-    this.$message       = null;
-    this.buttonConfirm  = null;
-    this.buttonCancel   = null;
-    this.buttonClose    = null;
-    this.buttonContainer= null;
+    this.$buttons = null;
+    this.$element = null;
+    this.$message = null;
 
     this.className      = className;
-    this.args           = args          || {};
-    this.message        = args.message  || null;
-    this.onClose        = onClose       || function() {};
+    this.args           = args              || {};
+    this.message        = args.message      || null;
+    this.onClose        = onClose           || function() {};
+    this.buttons        = {};
 
     DialogWindow.apply(this, [className, opts]);
     if ( this.args.title ) {
@@ -87,7 +94,7 @@
 
     this.onClose.apply(this, ['destroy']);
     DialogWindow.prototype.destroy.apply(this, arguments);
-    this.buttonContainer = null;
+    this.$buttons = null;
   };
 
   /**
@@ -102,8 +109,8 @@
     var root = DialogWindow.prototype.init.apply(this, arguments);
     var self = this;
 
-    this.buttonContainer = document.createElement('div');
-    this.buttonContainer.className = 'Buttons';
+    this.$buttons = document.createElement('div');
+    this.$buttons.className = 'Buttons';
 
     this.$element = document.createElement('div');
     Utils.$addClass(this.$element, 'StandardDialog');
@@ -116,35 +123,39 @@
       this.$element.appendChild(this.$message);
     }
 
-    var lbl;
-    if ( (typeof this.args.buttonClose !== 'undefined') && (this.args.buttonClose === true) ) {
-      lbl = (this.args.buttonCloseLabel || API._('DIALOG_CLOSE'));
-      this.buttonClose = this._addGUIElement(new OSjs.GUI.Button('Close', {label: lbl, onClick: function(el, ev) {
+    function createButton(b, i, buttonName, buttonLabel) {
+      self.buttons[buttonName] = self._addGUIElement(new OSjs.GUI.Button(buttonName, {label: buttonLabel, onClick: function(el, ev) {
         if ( !this.isDisabled() ) {
-          self.onCloseClick(ev);
+          self.onButtonClick(buttonName, ev);
         }
-      }}), this.buttonContainer);
+      }}), self.$buttons);
     }
 
-    if ( (typeof this.args.buttonCancel === 'undefined') || (this.args.buttonCancel === true) ) {
-      lbl = (this.args.buttonCancelLabel || API._('DIALOG_CANCEL'));
-      this.buttonCancel = this._addGUIElement(new OSjs.GUI.Button('Cancel', {label: lbl, onClick: function(el, ev) {
-        if ( !this.isDisabled() ) {
-          self.onCancelClick(ev);
+    if ( this.args.buttons ) {
+      this.args.buttons.forEach(function(b, i) {
+        var buttonName;
+        var buttonLabel;
+
+        if ( typeof b === 'string' ) {
+          buttonName = b;
+          buttonLabel = API._(StandardDialogButtons[b]);
+        } else {
+          buttonName = b.name;
+          buttonLabel = b.label;
         }
-      }}), this.buttonContainer);
+
+        if ( !buttonName ) {
+          buttonName = 'Button' + i.toString();
+        }
+        if ( !buttonLabel ) {
+          buttonLabel = buttonName;
+        }
+
+        createButton(b, i, buttonName, buttonLabel);
+      });
     }
 
-    if ( (typeof this.args.buttonOk === 'undefined') || (this.args.buttonOk === true) ) {
-      lbl = (this.args.buttonOkLabel || API._('DIALOG_OK'));
-      this.buttonConfirm = this._addGUIElement(new OSjs.GUI.Button('OK', {label: lbl, onClick: function(el, ev) {
-        if ( !this.isDisabled() ) {
-          self.onConfirmClick.call(self, ev);
-        }
-      }}), this.buttonContainer);
-    }
-
-    this.$element.appendChild(this.buttonContainer);
+    this.$element.appendChild(this.$buttons);
     root.appendChild(this.$element);
     return root;
   };
@@ -159,11 +170,12 @@
    */
   StandardDialog.prototype._inited = function() {
     DialogWindow.prototype._inited.apply(this, arguments);
-    if ( this.buttonConfirm ) {
-      this.buttonConfirm.focus();
+
+    if ( this.buttons['ok'] ) {
+      this.buttons['ok'].focus();
     } else {
-      if ( this.buttonCancel ) {
-        this.buttonCancel.focus();
+      if ( this.buttons['cancel'] ) {
+        this.buttons['cancel'].focus();
       }
     }
   };
@@ -171,39 +183,17 @@
   /**
    * When Close has been clicked
    *
-   * @return  void
-   *
-   * @method  StandardDialog::onCloseClick()
-   */
-  StandardDialog.prototype.onCloseClick = function(ev) {
-    if ( !this.buttonClose ) { return; }
-    this.end('close');
-  };
-
-  /**
-   * When Cancel has been clicked
+   * @param   String      btn     Button name
+   * @param   DOMEvent    ev      Event
    *
    * @return  void
    *
-   * @method  StandardDialog::onCancelClick()
+   * @method  StandardDialog::onButtonClick()
    */
-  StandardDialog.prototype.onCancelClick = function(ev) {
-    if ( !this.buttonCancel ) { return; }
-    this.end('cancel');
+  StandardDialog.prototype.onButtonClick = function(btn, ev) {
+    if ( !this.buttons[btn] ) { return; }
+    this.end(btn);
   };
-
-  /**
-   * When Confirm has been clicked
-   *
-   * @return  void
-   *
-   * @method  StandardDialog::onConfirmClick()
-   */
-  StandardDialog.prototype.onConfirmClick = function(ev) {
-    if ( !this.buttonConfirm ) { return; }
-    this.end('ok');
-  };
-
 
   /**
    * On Key event
@@ -216,7 +206,7 @@
   StandardDialog.prototype._onKeyEvent = function(ev) {
     DialogWindow.prototype._onKeyEvent.apply(this, arguments);
     if ( ev.keyCode === Utils.Keys.ESC ) {
-      if ( this.args.buttonClose ) {
+      if ( this.buttons['close'] ) {
         this.end('close');
       } else {
         this.end('cancel');

@@ -51,7 +51,11 @@
     this.useDefault   = false;
 
     var msg = ([API._('DIALOG_APPCHOOSER_MSG'), '<br />' ,Utils.format('<span>{0}</span>', this.filename), Utils.format('({0})', this.mime)]).join(' ');
-    StandardDialog.apply(this, ['ApplicationChooserDialog', {title: API._('DIALOG_APPCHOOSER_TITLE'), message: msg}, {width:400, height:360}, onClose]);
+    StandardDialog.apply(this, ['ApplicationChooserDialog', {
+      title: API._('DIALOG_APPCHOOSER_TITLE'),
+      message: msg,
+      buttons: ['cancel', 'ok']
+    }, {width:400, height:360}, onClose]);
   };
 
   ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
@@ -60,19 +64,26 @@
     StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationChooserDialog.prototype.onConfirmClick = function(ev, val) {
-    if ( !this.buttonConfirm ) { return; }
-    /*var*/ val  = this.selectedApp;
-    if ( !val ) {
-      var wm = API.getWMInstance();
-      if ( wm ) {
-        var d = new OSjs.Dialogs.Alert(API._('DIALOG_APPCHOOSER_NO_SELECTION'));
-        wm.addWindow(d);
-        this._addChild(d);
+  ApplicationChooserDialog.prototype.onButtonClick = function(btn, ev) {
+    if ( btn === 'ok' ) {
+      if ( this.buttons[btn] ) {
+        var val = this.selectedApp;
+        if ( !val ) {
+          var wm = API.getWMInstance();
+          if ( wm ) {
+            var d = new OSjs.Dialogs.Alert(API._('DIALOG_APPCHOOSER_NO_SELECTION'));
+            wm.addWindow(d);
+            this._addChild(d);
+          }
+          return;
+        }
+
+        this.end('ok', val, this.useDefault);
       }
       return;
     }
-    this.end('ok', val, this.useDefault);
+
+    StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   ApplicationChooserDialog.prototype.init = function(wm) {
@@ -120,18 +131,18 @@
     listView.onActivate = function(ev, el, item) {
       if ( item && item.key ) {
         self.selectedApp = item.key;
-        self.buttonConfirm.setDisabled(false);
+        self.buttons['ok'].setDisabled(false);
         self.end('ok', item.key, self.useDefault);
       }
     };
     listView.onSelect = function(ev, el, item) {
       if ( item && item.key ) {
         self.selectedApp = item.key;
-        self.buttonConfirm.setDisabled(false);
+        self.buttons['ok'].setDisabled(false);
       }
     };
 
-    this.buttonConfirm.setDisabled(true);
+    this.buttons['ok'].setDisabled(true);
 
     listView.setRows(list);
     listView.render();
