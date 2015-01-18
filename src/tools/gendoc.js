@@ -601,13 +601,13 @@ Array.prototype.unique = function(){
   );
 
   var files = [
-    'src/javascript/utils.js',
-    'src/javascript/guielement.js',
-    'src/javascript/dialogs.js',
     'src/javascript/core.js',
     'src/javascript/windows.js',
     'src/javascript/handler.js',
     'src/javascript/vfs.js',
+    'src/javascript/guielement.js',
+    'src/javascript/dialogs.js',
+    'src/javascript/utils.js',
 
     'src/javascript/helpers/default-application.js',
     'src/javascript/helpers/google-api.js',

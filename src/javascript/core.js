@@ -30,6 +30,18 @@
 (function() {
   'use strict';
 
+  /*@
+   * List of Hooks:
+   *     onInitialize             When OS.js is starting
+   *     onInited                 When all resources has been loaded
+   *     onWMInited               When Window Manager has started
+   *     onSessionLoaded          After session has been loaded or restored
+   *     onLogout                 When logout is requested
+   *     onShutdown               When shutting down after successfull logout
+   *     onApplicationLaunch      On application launch request
+   *     onApplicationLaunched    When application has been launched
+   */
+
   window.OSjs       = window.OSjs       || {};
   OSjs.API          = OSjs.API          || {};
   OSjs.Core         = OSjs.Core         || {};
@@ -51,14 +63,14 @@
   //
 
   var _hooks = {
-    'onInitialize':          [], // 1: When OS.js is starting
-    'onInited':              [], // 2: When all resources has been loaded
-    'onWMInited':            [], // 3: When Window Manager has started
-    'onSessionLoaded':       [], // 4: After session has been loaded or restored
-    'onLogout':              [], // When logout is requested
-    'onShutdown':            [], // When shutting down after successfull logout
-    'onApplicationLaunch':   [], // On application launch request
-    'onApplicationLaunched': []  // When application has been launched
+    'onInitialize':          [],
+    'onInited':              [],
+    'onWMInited':            [],
+    'onSessionLoaded':       [],
+    'onLogout':              [],
+    'onShutdown':            [],
+    'onApplicationLaunch':   [],
+    'onApplicationLaunched': [] 
   };
 
   /**
@@ -97,6 +109,7 @@
    *
    * @return  void
    * @api     OSjs.Core.addHook()
+   * @see     core.js For a list of hooks
    */
   function doAddHook(name, fn) {
     if ( typeof _hooks[name] !== 'undefined' ) {
