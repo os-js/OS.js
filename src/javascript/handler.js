@@ -104,6 +104,8 @@
     this.packages = null;
     this.settings = null;
     this.config   = {};
+
+    _handlerInstance = null;
   };
 
   /**

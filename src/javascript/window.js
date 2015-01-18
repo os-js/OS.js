@@ -1,4 +1,3 @@
-
 /*!
  * OS.js - JavaScript Operating System
  *
@@ -33,14 +32,6 @@
 
   window.OSjs = window.OSjs || {};
   OSjs.Core   = OSjs.Core   || {};
-
-  /////////////////////////////////////////////////////////////////////////////
-  // GLOBALS
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _WM;             // Running Window Manager process
-  var _WIN;            // Currently selected Window
-  var _LASTWIN;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -87,23 +78,28 @@
 
   /**
    * Get viewport (Wrapper)
-   * @return Object
+   *
+   * @return Object {top, left, width, height}
+   * @api OSjs.API.getWindowSpace()
    */
   function getWindowSpace() {
-    if ( _WM ) {
-      return _WM.getWindowSpace();
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      return wm.getWindowSpace();
     }
     return _getWindowSpace();
   }
 
   /**
-   * Get animation duration
-   * @return int
+   * Get CSS animation duration
+   * @return int Duration length in ms
+   * @api OSjs.API.getAnimDuration()
    */
   function getAnimDuration() {
-    if ( _WM ) {
-      var name  = _WM.getSetting('theme');
-      var theme = _WM.getTheme(name);
+    var wm = OSjs.API.getWMInstance();
+    if ( wm ) {
+      var name  = wm.getSetting('theme');
+      var theme = wm.getTheme(name);
       if ( theme && (typeof theme.animduration !== 'undefined') ) {
         return parseInt(theme.animduration, 10) + 1;
       }
@@ -115,6 +111,7 @@
    * Create Window move/resize events (FIXME: Optimize)
    */
   function attachWindowEvents(self, main, windowTop, windowResize, isTouch) {
+    var wm = OSjs.API.getWMInstance();
     var sx = 0;
     var sy = 0;
     var action = null;
@@ -127,7 +124,7 @@
       ev.preventDefault();
 
       if ( self._state.maximized ) { return false; }
-      startRect = _WM.getWindowSpace();
+      startRect = wm.getWindowSpace();
 
       startDimension.x = self._position.x;
       startDimension.y = self._position.y;
@@ -184,7 +181,7 @@
 
     function onMouseUp(ev) {
       if ( moved ) {
-        if ( _WM ) {
+        if ( wm ) {
           if ( action === 'move' ) {
             self._onChange('move', true);
             self._fireHook('moved');
@@ -283,402 +280,6 @@
       });
     }
   }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOW
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * WindowManager Process Class
-   * The default implementation of this is in apps/CoreWM/main.js
-   *
-   * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
-   * OSjs.API.getWMInstance();
-   *
-   * @see     OSjs.Core.Process
-   * @api     OSjs.Core.WindowManager
-   * @extends Process
-   * @class
-   */
-  var WindowManager = function(name, ref, args, metadata) {
-    console.group('OSjs::Core::WindowManager::__construct()');
-    console.log('Name', name);
-    console.log('Arguments', args);
-
-    this._$notifications = null;
-    this._windows        = [];
-    this._settings       = {};
-
-    // Important for usage as "Application"
-    this.__name    = (name || 'WindowManager');
-    this.__path    = metadata.path;
-    this.__iter    = metadata.iter;
-
-    Process.apply(this, [this.__name]);
-
-    _WM = (ref || this);
-
-    console.groupEnd();
-  };
-
-  WindowManager.prototype = Object.create(Process.prototype);
-
-  /**
-   * Destroy the WindowManager
-   *
-   * @see Process::destroy()
-   *
-   * @method    WindowManager::destroy()
-   */
-  WindowManager.prototype.destroy = function() {
-    console.log('OSjs::Core::WindowManager::destroy()');
-
-    // Destroy all windows
-    var self = this;
-    this._windows.forEach(function(win, i) {
-      if ( win ) {
-        win.destroy();
-        self._windows[i] = null;
-      }
-    });
-    this._windows = [];
-
-    _WM = null;
-    _WIN = null;
-
-    return Process.prototype.destroy.apply(this, []);
-  };
-
-
-  /**
-   * Initialize the WindowManager
-   *
-   * @return  void
-   *
-   * @method  WindowManager::init()
-   */
-  WindowManager.prototype.init = function() {
-    console.log('OSjs::Core::WindowManager::init()');
-  };
-
-  /**
-   * Get a Window by name
-   *
-   * @param   String      name        Window name
-   *
-   * @return  Window
-   *
-   * @method  WindowManager::getWindow()
-   */
-  WindowManager.prototype.getWindow = function(name) {
-    var result = null;
-    this._windows.forEach(function(w) {
-      if ( w && w._name === name ) {
-        result = w;
-      }
-      return w ? false : true;
-    });
-    return result;
-  };
-
-  /**
-   * Add a Window
-   *
-   * @param   Window      w         Window reference
-   * @param   boolean     focus     Focus the window
-   *
-   * @return  Window                The added window
-   *
-   * @method  WindowManager::addWindow()
-   */
-  WindowManager.prototype.addWindow = function(w, focus) {
-    if ( !(w instanceof Window) ) {
-      console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
-      throw new Error('addWindow() expects a "Window" class');
-    }
-    console.log('OSjs::Core::WindowManager::addWindow()');
-
-    w.init(this, w._appRef);
-    this._windows.push(w);
-    if ( focus === true || (w instanceof DialogWindow) ) {
-      w._focus();
-    }
-
-    w._inited();
-
-    return w;
-  };
-
-  /**
-   * Remove a Window
-   *
-   * @param   Window      w         Window reference
-   *
-   * @return  boolean               On success
-   *
-   * @method  WindowManager::removeWindow()
-   */
-  WindowManager.prototype.removeWindow = function(w) {
-    if ( !(w instanceof Window) ) {
-      console.warn('OSjs::Core::WindowManager::removeWindow()', 'Got', w);
-      throw new Error('removeWindow() expects a "Window" class');
-    }
-    console.log('OSjs::Core::WindowManager::removeWindow()');
-
-    var result = false;
-    var self = this;
-    this._windows.forEach(function(win, i) {
-      if ( win && win._wid === w._wid ) {
-        self._windows[i] = null;
-        result = true;
-        return false;
-      }
-      return true;
-    });
-    return result;
-  };
-
-  /**
-   * Set WindowManager settings
-   *
-   * @param   Object      settings        JSON Settings
-   * @param   boolean     force           If forced, no merging will take place
-   *
-   * @return  boolean                     On success
-   *
-   * @method  WindowManager::applySettings()
-   */
-  WindowManager.prototype.applySettings = function(settings, force) {
-    settings = settings || {};
-    console.log('OSjs::Core::WindowManager::applySettings', 'forced?', force);
-
-    if ( force ) {
-      this._settings = settings;
-    } else {
-      this._settings = Utils.mergeObject(this._settings, settings);
-    }
-
-    return true;
-  };
-
-
-  /**
-   * When Key Down Event received
-   *
-   * @param   DOMEvent      ev      DOM Event
-   * @param   Window        win     Active window
-   *
-   * @return  void
-   *
-   * @method  WindowManager::onKeyDown()
-   */
-  WindowManager.prototype.onKeyDown = function(ev, win) {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.resize = function(ev, rect) {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.notification = function() {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.createNotificationIcon = function() {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.destroyNotificationIcon = function() {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.eventWindow = function(ev, win) {
-    // Implement in your WM
-  };
-
-  WindowManager.prototype.showSettings = function() {
-    // Implement in your WM
-  };
-
-  /**
-   * Get default Settings
-   *
-   * @return  Object      JSON Data
-   *
-   * @method  WindowManager::getDefaultSettings()
-   */
-  WindowManager.prototype.getDefaultSetting = function() {
-    // Implement in your WM
-    return null;
-  };
-
-  /**
-   * Get panel
-   *
-   * @method  WindowManager::getPanel()
-   */
-  WindowManager.prototype.getPanel = function() {
-    // Implement in your WM
-    return null;
-  };
-
-  /**
-   * Gets all panels
-   *
-   * @return  Array       Panel List
-   *
-   * @method  WindowManager::getPanels()
-   */
-  WindowManager.prototype.getPanels = function() {
-    // Implement in your WM
-    return [];
-  };
-
-  /**
-   * Gets current theme
-   *
-   * @return  String      Theme name or 'null'
-   *
-   * @method  WindowManager::getTheme()
-   */
-  WindowManager.prototype.getTheme = function() {
-    // Implement in your WM
-    return null;
-  };
-
-  /**
-   * Gets a list of themes
-   *
-   * @return  Array   The list of themes
-   *
-   * @method  WindowManager::getThemes()
-   */
-  WindowManager.prototype.getThemes = function() {
-    // Implement in your WM
-    return [];
-  };
-
-  /**
-   * Sets a setting
-   *
-   * @param   String      k       Key
-   * @param   Mixed       v       Value
-   *
-   * @return  boolean             On success
-   *
-   * @method  WindowManager::setSetting()
-   */
-  WindowManager.prototype.setSetting = function(k, v) {
-    if ( v !== null ) {
-      if ( typeof this._settings[k] !== 'undefined' ) {
-        if ( (typeof this._settings[k] === 'object') && !(this._settings[k] instanceof Array) ) {
-          if ( typeof v === 'object' ) {
-            Object.keys(v).forEach(function(i) {
-              if ( this._settings[k].hasOwnProperty(i) ) {
-                if ( v[i] !== null ) {
-                  this._settings[k][i] = v[i];
-                }
-              }
-            });
-            return true;
-          }
-        } else {
-          this._settings[k] = v;
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  /**
-   * Gets the rectangle for window space
-   *
-   * @return    Object {top:, left:, width:, height:}
-   *
-   * @method    WindowManager::getWindowSpace()
-   */
-  WindowManager.prototype.getWindowSpace = function() {
-    return _getWindowSpace();
-  };
-
-  /**
-   * Get next window position
-   *
-   * @return    Object    {x:, y:}
-   *
-   * @method    WindowManager::getWindowPosition()
-   */
-  WindowManager.prototype.getWindowPosition = (function() {
-    var _LNEWX = 0;
-    var _LNEWY = 0;
-
-    return function() {
-      if ( _LNEWY >= (window.innerHeight - 100) ) { _LNEWY = 0; }
-      if ( _LNEWX >= (window.innerWidth - 100) )  { _LNEWX = 0; }
-      return {x: _LNEWX+=10, y: _LNEWY+=10};
-    };
-  })();
-
-  /**
-   * Gets a setting
-   *
-   * @param   String    k     Key
-   *
-   * @return  Mixed           Setting value or 'null'
-   *
-   * @method  WindowManager::getSetting()
-   */
-  WindowManager.prototype.getSetting = function(k) {
-    if ( typeof this._settings[k] !== 'undefined' ) {
-      return this._settings[k];
-    }
-    return null;
-  };
-
-  /**
-   * Gets all settings
-   *
-   * @return    Object        JSON With all settings
-   *
-   * @method    WindowManager::getSettings()
-   */
-  WindowManager.prototype.getSettings = function() {
-    return this._settings;
-  };
-
-  /**
-   * Gets all Windows
-   *
-   * @return    Array           List of all Windows
-   *
-   * @method    WindowManager::getWindows()
-   */
-  WindowManager.prototype.getWindows = function() {
-    return this._windows;
-  };
-
-  /**
-   * Gets current Window
-   *
-   * @return      Window        Current Window or 'null'
-   *
-   * @method      WindowManager::getCurrentWindow()
-   */
-  WindowManager.prototype.getCurrentWindow = function() {
-    return _WIN;
-  };
-
-  /**
-   * Gets previous Window
-   *
-   * @return      Window        Current Window or 'null'
-   *
-   * @method      WindowManager::getLastWindow()
-   */
-  WindowManager.prototype.getLastWindow = function() {
-    return _LASTWIN;
-  };
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
@@ -836,6 +437,7 @@
   Window.prototype.init = function(_wm) {
     var self = this;
     var isTouch = OSjs.Compability.touch;
+    var wm = OSjs.API.getWMInstance();
 
     console.group('OSjs::Core::Window::init()');
 
@@ -846,7 +448,7 @@
     // Initial position
     if ( !this._properties.gravity ) {
       if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
-        var np = _WM ? _WM.getWindowPosition() : {x:0, y:0};
+        var np = wm ? wm.getWindowPosition() : {x:0, y:0};
         this._position.x = np.x;
         this._position.y = np.y;
       }
@@ -1177,6 +779,8 @@
     }
 
     if ( this._destroyed ) { return; }
+    var wm = OSjs.API.getWMInstance();
+
     this._destroyed = true;
     console.log('OSjs::Core::Window::destroy()');
 
@@ -1203,18 +807,22 @@
     this._removeChildren();
 
     // Instance
-    if ( _WM ) {
-      _WM.removeWindow(this);
+    if ( wm ) {
+      wm.removeWindow(this);
     }
-    if ( _WIN && _WIN._wid === this._wid ) {
-      _WIN = null;
+
+    var curWin = wm ? wm.getCurrentWindow() : null;
+    if ( curWin && curWin._wid === this._wid ) {
+      wm.setCurrentWindow(null);
     }
-    if ( _LASTWIN && _LASTWIN._wid === this._wid ) {
-      _LASTWIN = null;
+
+    var lastWin = wm ? wm.getLastWindow() : null;
+    if ( lastWin && lastWin._wid === this._wid ) {
+      wm.setLastWindow(null);
     }
 
     if ( this._$element ) {
-      var anim = _WM ? _WM.getSetting('animations') : false;
+      var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
         Utils.$addClass(this._$element, 'WindowHintClosing');
         setTimeout(function() {
@@ -1463,8 +1071,10 @@
   Window.prototype._addChild = function(w, wmAdd) {
     console.info('OSjs::Core::Window::_addChild()');
     w._parent = this;
-    if ( wmAdd && _WM ) {
-      _WM.addWindow(w);
+
+    var wm = OSjs.API.getWMInstance();
+    if ( wmAdd && wm ) {
+      wm.addWindow(w);
     }
     this._children.push(w);
   };
@@ -1632,7 +1242,8 @@
       self._$element.style.display = 'none';
     }
 
-    var anim = _WM ? _WM.getSetting('animations') : false;
+    var wm = OSjs.API.getWMInstance();
+    var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       setTimeout(function() {
         _hideDOM();
@@ -1644,8 +1255,9 @@
     this._onChange('minimize');
     this._fireHook('minimize');
 
-    if ( _WIN && _WIN._wid === this._wid ) {
-      _WIN = null;
+    var win = wm ? wm.getCurrentWindow() : null;
+    if ( win && win._wid === this._wid ) {
+      wm.setCurrentWindow(null);
     }
 
     return true;
@@ -1688,7 +1300,8 @@
     this._onChange('maximize');
     this._focus();
 
-    var anim = _WM ? _WM.getSetting('animations') : false;
+    var wm = OSjs.API.getWMInstance();
+    var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       var self = this;
       setTimeout(function() {
@@ -1734,7 +1347,8 @@
 
     this._onChange('restore');
 
-    var anim = _WM ? _WM.getSetting('animations') : false;
+    var wm = OSjs.API.getWMInstance();
+    var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       var self = this;
       setTimeout(function() {
@@ -1766,12 +1380,16 @@
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     Utils.$addClass(this._$element, 'WindowHintFocused');
 
-    if ( _WIN && _WIN._wid !== this._wid ) {
-      _WIN._blur();
+    var wm = OSjs.API.getWMInstance();
+    var win = wm ? wm.getCurrentWindow() : null;
+    if ( win && win._wid !== this._wid ) {
+      win._blur();
     }
 
-    _WIN = this;
-    _LASTWIN = this;
+    if ( wm ) {
+      wm.setCurrentWindow(this);
+      wm.setLastWindow(this);
+    }
 
     if ( !this._state.focused || force) {
       this._onChange('focus');
@@ -1806,8 +1424,10 @@
     this._onChange('blur');
     this._fireHook('blur');
 
-    if ( _WIN && _WIN._wid === this._wid ) {
-      _WIN = null;
+    var wm = OSjs.API.getWMInstance();
+    var win = wm ? wm.getCurrentWindow() : null;
+    if ( win && win._wid === this._wid ) {
+      wm.setCurrentWindow(null);
     }
 
     if ( this._$iframefix ) {
@@ -1892,7 +1512,8 @@
       this._move(this._position.x, newY);
     }
 
-    var anim = _WM ? _WM.getSetting('animations') : false;
+    var wm = OSjs.API.getWMInstance();
+    var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       setTimeout(function() {
         self._fireHook('resized');
@@ -1943,9 +1564,10 @@
    * @method  Window::_moveTo()
    */
   Window.prototype._moveTo = function(pos) {
-    if ( !_WM ) { return; }
+    var wm = OSjs.API.getWMInstance();
+    if ( !wm ) { return; }
 
-    var s = _WM.getWindowSpace();
+    var s = wm.getWindowSpace();
     var cx = this._position.x;
     var cy = this._position.y;
 
@@ -2281,8 +1903,9 @@
     ev = ev || '';
     if ( ev ) {
       console.debug(this._name, '>' , 'OSjs::Core::Window::_onChange()', ev);
-      if ( _WM ) {
-        _WM.eventWindow(ev, this);
+      var wm = OSjs.API.getWMInstance();
+      if ( wm ) {
+        wm.eventWindow(ev, this);
       }
     }
   };
@@ -2411,34 +2034,11 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // DIALOG WINDOW
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Dialog Window
-   */
-  var DialogWindow = function(/* See Window */) {
-    Window.apply(this, arguments);
-
-    this._properties.gravity          = 'center';
-    this._properties.allow_resize     = false;
-    this._properties.allow_minimize   = false;
-    this._properties.allow_maximize   = false;
-    this._properties.allow_windowlist = false;
-    this._properties.allow_session    = false;
-    this._state.ontop                 = true;
-  };
-
-  DialogWindow.prototype = Object.create(Window.prototype);
-
-  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   // Classes
   OSjs.Core.Window            = Window;
-  OSjs.Core.DialogWindow      = DialogWindow;
-  OSjs.Core.WindowManager     = WindowManager;
 
   // Common API functions
   OSjs.API.getWindowSpace     = getWindowSpace;
