@@ -76,11 +76,11 @@
    * Demo handler - Uses localStorage for sessions, for testing purposes
    */
   var DemoHandler = function() {
-    OSjs.Handlers.Default.apply(this, arguments);
+    OSjs.Core._Handler.apply(this, arguments);
 
     this.storage = new DefaultStorage();
   };
-  DemoHandler.prototype = Object.create(OSjs.Handlers.Default.prototype);
+  DemoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
   /**
    * Demo initialization
@@ -127,5 +127,5 @@
   //
   // Exports
   //
-  OSjs.Handlers.Current  = DemoHandler;
+  OSjs.Core.Handler = DemoHandler;
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

@@ -47,7 +47,6 @@
   OSjs.Core         = OSjs.Core         || {};
   OSjs.Compability  = OSjs.Compability  || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
-  OSjs.Handlers     = OSjs.Handlers     || {};
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Dialogs      = OSjs.Dialogs      || {};
   OSjs.GUI          = OSjs.GUI          || {};
@@ -459,7 +458,7 @@
     OSjs.Compability = OSjs.Utils.getCompability();
 
     // Launch handler
-    handler = new OSjs.Handlers.Current();
+    handler = new OSjs.Core.Handler();
     handler.init(function() {
 
       createVersionStamp();

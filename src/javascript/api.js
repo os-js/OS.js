@@ -159,7 +159,7 @@
 
       _cidx++;
 
-      var handler = OSjs.Handlers.getInstance();
+      var handler = OSjs.Core.getHandler();
       return handler.callAPI(m, a, function() {
         destroyLoading(lname);
         cok.apply(this, arguments);
@@ -190,7 +190,7 @@
     if ( !file.mime )  { throw new Error('Cannot doLaunchFile() without a mime type'); }
 
     var wm = OSjs.Core.getWindowManager();
-    var handler = OSjs.Handlers.getInstance();
+    var handler = OSjs.Core.getHandler();
     var args = {file: file};
 
     if ( launchArgs.args ) {
@@ -261,7 +261,7 @@
     console.group('doLaunchProcess()', n, arg);
 
     var splash = null;
-    var handler = OSjs.Handlers.getInstance();
+    var handler = OSjs.Core.getHandler();
 
     function createLaunchSplash(data, n) {
       var splash = null;
@@ -699,7 +699,7 @@
    * @api     OSjs.API.getDefaultPath()
    */
   function doGetDefaultPath(fallback) {
-    var handler = OSjs.Handlers.getInstance();
+    var handler = OSjs.Core.getHandler();
     var result;
     if ( handler ) {
       result = handler.getConfig('Core').Home;
@@ -972,7 +972,7 @@
    * @api     OSjs.API.error()
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
-    var handler = OSjs.Handlers.getInstance();
+    var handler = OSjs.Core.getHandler();
     if ( handler.getConfig('Core').BugReporting ) {
       bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {
@@ -1013,7 +1013,7 @@
       console.debug('doPlaySound()', 'Browser has no support for sounds!');
       return false;
     }
-    var handler = OSjs.Handlers.getInstance();
+    var handler = OSjs.Core.getHandler();
     if ( handler && !handler.getConfig('Core').Sounds ) {
       console.debug('doPlaySound()', 'Core Config has disabled sounds!');
       return false;

@@ -45,12 +45,12 @@ See doc/example-handler.txt
    * Handler
    */
   var ExampleHandler = function() {
-    OSjs.Handlers.Default.apply(this, arguments);
+    OSjs.Core._Handler.apply(this, arguments);
   };
-  ExampleHandler.prototype = Object.create(OSjs.Handlers.Default.prototype);
+  ExampleHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
   ExampleHandler.prototype.init = function(callback) {
-    //OSjs.Handlers.Default.prototype.init.apply(this, arguments);
+    //OSjs.Core._Handler.prototype.init.apply(this, arguments);
 
     var self      = this;
 
@@ -157,7 +157,7 @@ See doc/example-handler.txt
     }
 
 
-    OSjs.Handlers.Default.prototype.logout.call(this, save, _finished);
+    OSjs.Core._Handler.prototype.logout.call(this, save, _finished);
   };
 
   ExampleHandler.prototype.saveSettings = function(callback) {
@@ -183,5 +183,6 @@ See doc/example-handler.txt
   //
   // EXPORTS
   //
-  OSjs.Handlers.Current  = ExampleHandler;
+  OSjs.Core.Handler = ExampleHandler;
+
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

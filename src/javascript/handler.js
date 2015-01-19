@@ -32,7 +32,7 @@
   'use strict';
 
   window.OSjs   = window.OSjs   || {};
-  OSjs.Handlers = OSjs.Handlers || {};
+  OSjs.Core     = OSjs.Core     || {};
 
   var _handlerInstance;
 
@@ -51,9 +51,9 @@
    * OSjs.Core.getHandler();
    *
    * @api   OSjs.Handlers.Default
-   * @class DefaultHandler
+   * @class _Handler
    */
-  var DefaultHandler = function() {
+  var _Handler = function() {
     if ( _handlerInstance ) {
       throw Error('Cannot create another Handler Instance');
     }
@@ -76,10 +76,10 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::init()
+   * @method  _Handler::init()
    */
-  DefaultHandler.prototype.init = function(callback) {
-    console.info('OSjs::DefaultHandler::init()');
+  _Handler.prototype.init = function(callback) {
+    console.info('OSjs::_Handler::init()');
 
     API.setLocale(this.config.Core.Locale);
 
@@ -91,9 +91,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::destroy()
+   * @method  _Handler::destroy()
    */
-  DefaultHandler.prototype.destroy = function() {
+  _Handler.prototype.destroy = function() {
     if ( this.connection ) {
       this.connection.destroy();
       this.connection = null;
@@ -115,10 +115,10 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::boot()
+   * @method  _Handler::boot()
    */
-  DefaultHandler.prototype.boot = function(callback) {
-    console.info('OSjs::DefaultHandler::boot()');
+  _Handler.prototype.boot = function(callback) {
+    console.info('OSjs::_Handler::boot()');
 
     var self = this;
     this.themes.load(function(tresult, terror) {
@@ -144,10 +144,10 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::login()
+   * @method  _Handler::login()
    */
-  DefaultHandler.prototype.login = function(username, password, callback) {
-    console.info('OSjs::DefaultHandler::login()', username);
+  _Handler.prototype.login = function(username, password, callback) {
+    console.info('OSjs::_Handler::login()', username);
     this.onLogin({}, function() {
       callback(true);
     });
@@ -164,14 +164,14 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::logout()
+   * @method  _Handler::logout()
    */
-  DefaultHandler.prototype.logout = function(save, callback) {
-    console.info('OSjs::DefaultHandler::logout()');
+  _Handler.prototype.logout = function(save, callback) {
+    console.info('OSjs::_Handler::logout()');
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      wm.destroyNotificationIcon('DefaultHandlerUserNotification');
+      wm.destroyNotificationIcon('_HandlerUserNotification');
     }
 
     if ( save ) {
@@ -191,12 +191,12 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::loadSession()
+   * @method  _Handler::loadSession()
    */
-  DefaultHandler.prototype.loadSession = function(callback) {
+  _Handler.prototype.loadSession = function(callback) {
     callback = callback || function() {};
 
-    console.info('OSjs::DefaultHandler::loadSession()');
+    console.info('OSjs::_Handler::loadSession()');
 
     var self = this;
     this.getUserSession(function(res) {
@@ -212,9 +212,9 @@
    *
    * @see OSjs.API.call()
    *
-   * @method  DefaultHandler::callAPI()
+   * @method  _Handler::callAPI()
    */
-  DefaultHandler.prototype.callAPI = function(method, args, cbSuccess, cbError) {
+  _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError) {
     return this.connection.callAPI(method, args, cbSuccess, cbError);
   };
 
@@ -230,9 +230,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::onLogin()
+   * @method  _Handler::onLogin()
    */
-  DefaultHandler.prototype.onLogin = function(userData, callback) {
+  _Handler.prototype.onLogin = function(userData, callback) {
     callback = callback || function() {};
 
     var found = Utils.getUserLocale();
@@ -271,14 +271,14 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::onVFSRequest()
+   * @method  _Handler::onVFSRequest()
    */
-  DefaultHandler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
+  _Handler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
     // If you want to interrupt or modify somehow
     callback();
   };
 
-  DefaultHandler.prototype.onWMLaunched = function(wm, callback) {
+  _Handler.prototype.onWMLaunched = function(wm, callback) {
     var user = this.user.getUserData();
 
     function displayMenu(ev) {
@@ -292,7 +292,7 @@
     }
 
     if ( wm ) {
-      wm.createNotificationIcon('DefaultHandlerUserNotification', {
+      wm.createNotificationIcon('_HandlerUserNotification', {
         onContextMenu: function(ev) {
           displayMenu(ev);
           return false;
@@ -325,9 +325,9 @@
    *
    * @return  Object        JSON data
    *
-   * @method  DefaultHandler::getApplicationMetadata()
+   * @method  _Handler::getApplicationMetadata()
    */
-  DefaultHandler.prototype.getApplicationMetadata = function(name) {
+  _Handler.prototype.getApplicationMetadata = function(name) {
     return this.packages.getPackage(name);
   };
 
@@ -336,9 +336,9 @@
    *
    * @return  Array       Array of JSON data
    *
-   * @method  DefaultHandler::getApplicationsMetadata()
+   * @method  _Handler::getApplicationsMetadata()
    */
-  DefaultHandler.prototype.getApplicationsMetadata = function() {
+  _Handler.prototype.getApplicationsMetadata = function() {
     return this.packages.getPackages();
   };
 
@@ -354,12 +354,12 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::getApplicationNameByMime()
+   * @method  _Handler::getApplicationNameByMime()
    */
-  DefaultHandler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
+  _Handler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
     var pacman = this.packages;
     this.getSetting('defaultApplication', mime, function(val) {
-      console.debug('OSjs::DefaultHandler::getApplicationNameByMime()', 'default application', val);
+      console.debug('OSjs::_Handler::getApplicationNameByMime()', 'default application', val);
       if ( !forceList && val ) {
         if ( pacman.getPackage(val) ) {
           callback([val]);
@@ -379,9 +379,9 @@
    *
    * @return  Array       Array of JSON
    *
-   * @method  DefaultHandler::getThemes()
+   * @method  _Handler::getThemes()
    */
-  DefaultHandler.prototype.getThemes = function() {
+  _Handler.prototype.getThemes = function() {
     if ( this.themes ) {
       return this.themes.getThemes();
     }
@@ -393,9 +393,9 @@
    *
    * @return  Object        JSON Data
    *
-   * @method  DefaultHandler::getTheme()
+   * @method  _Handler::getTheme()
    */
-  DefaultHandler.prototype.getTheme = function(name) {
+  _Handler.prototype.getTheme = function(name) {
     if ( this.themes ) {
       return this.themes.getTheme(name);
     }
@@ -415,11 +415,11 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::setDefaultApplication()
+   * @method  _Handler::setDefaultApplication()
    */
-  DefaultHandler.prototype.setDefaultApplication = function(mime, app, callback) {
+  _Handler.prototype.setDefaultApplication = function(mime, app, callback) {
     callback = callback || function() {};
-    console.debug('OSjs::DefaultHandler::setDefaultApplication()', mime, app);
+    console.debug('OSjs::_Handler::setDefaultApplication()', mime, app);
     this.setSetting('defaultApplication', mime, app, callback);
   };
 
@@ -432,10 +432,10 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::saveSettings()
+   * @method  _Handler::saveSettings()
    */
-  DefaultHandler.prototype.saveSettings = function(callback) {
-    console.debug('OSjs::DefaultHandler::saveSettings()');
+  _Handler.prototype.saveSettings = function(callback) {
+    console.debug('OSjs::_Handler::saveSettings()');
     callback.call(this, true);
   };
 
@@ -451,9 +451,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::setSetting()
+   * @method  _Handler::setSetting()
    */
-  DefaultHandler.prototype.setSetting = function(category, name, value, callback, save, merge) {
+  _Handler.prototype.setSetting = function(category, name, value, callback, save, merge) {
     save = (typeof save === 'undefined' || save === true);
     callback = callback || function() {};
     var stored = this.settings.set(category, name, value, merge);
@@ -476,9 +476,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::getSetting()
+   * @method  _Handler::getSetting()
    */
-  DefaultHandler.prototype.getSetting = function(category, name, callback, defaultValue) {
+  _Handler.prototype.getSetting = function(category, name, callback, defaultValue) {
     callback = callback || function() {};
     callback.call(this, this.settings.get(category, name, defaultValue));
   };
@@ -492,9 +492,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::setUserSettings()
+   * @method  _Handler::setUserSettings()
    */
-  DefaultHandler.prototype.setUserSettings = function(name, values, callback) {
+  _Handler.prototype.setUserSettings = function(name, values, callback) {
     callback = callback || function() {};
     if ( typeof name === 'object' ) {
       var self = this;
@@ -518,9 +518,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::getUserSettings()
+   * @method  _Handler::getUserSettings()
    */
-  DefaultHandler.prototype.getUserSettings = function(name, callback) {
+  _Handler.prototype.getUserSettings = function(name, callback) {
     callback = callback || function() {};
     this.getSetting('userSettings', name, callback);
   };
@@ -533,9 +533,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::setUserSession()
+   * @method  _Handler::setUserSession()
    */
-  DefaultHandler.prototype.setUserSession = function(session, callback) {
+  _Handler.prototype.setUserSession = function(session, callback) {
     callback = callback || function() {};
     this.setSetting('userSession', null, session, callback, true, false);
   };
@@ -547,9 +547,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::getUserSession()
+   * @method  _Handler::getUserSession()
    */
-  DefaultHandler.prototype.getUserSession = function(callback) {
+  _Handler.prototype.getUserSession = function(callback) {
     callback = callback || function() {};
     this.getSetting('userSession', null, callback);
   };
@@ -563,9 +563,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::setApplicationSettings()
+   * @method  _Handler::setApplicationSettings()
    */
-  DefaultHandler.prototype.setApplicationSettings = function(app, settings, callback) {
+  _Handler.prototype.setApplicationSettings = function(app, settings, callback) {
     callback = callback || function() {};
     this.setSetting(app, null, settings, callback, true, false);
   };
@@ -578,9 +578,9 @@
    *
    * @return  void
    *
-   * @method  DefaultHandler::getApplicationSettings()
+   * @method  _Handler::getApplicationSettings()
    */
-  DefaultHandler.prototype.getApplicationSettings = function(app, callback) {
+  _Handler.prototype.getApplicationSettings = function(app, callback) {
     callback = callback || function() {};
     this.getSetting(app, null, callback);
   };
@@ -592,9 +592,9 @@
    *
    * @return  Object    All settings or just value by key
    *
-   * @method  DefaultHandler::getConfig()
+   * @method  _Handler::getConfig()
    */
-  DefaultHandler.prototype.getConfig = function(key) {
+  _Handler.prototype.getConfig = function(key) {
     return key ? this.config[key] : this.config;
   };
 
@@ -603,9 +603,9 @@
    *
    * @return  Object      JSON With user data
    *
-   * @method  DefaultHandler::getUserData()
+   * @method  _Handler::getUserData()
    */
-  DefaultHandler.prototype.getUserData = function() {
+  _Handler.prototype.getUserData = function() {
     return this.user.getUserData();
   };
 
@@ -614,9 +614,9 @@
    *
    * @return  Object    All settings in JSON
    *
-   * @method  DefaultHandler::getSettings()
+   * @method  _Handler::getSettings()
    */
-  DefaultHandler.prototype.getSettings = function() {
+  _Handler.prototype.getSettings = function() {
     return this.settings;
   };
 
@@ -624,26 +624,14 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Handlers.Current           = null;
-  OSjs.Handlers.Default           = DefaultHandler;
+  OSjs.Core._Handler = _Handler;
+  OSjs.Core.Handler  = null;
 
   /**
    * Get running 'Handler' instance
    *
    * @return  Handler
    *
-   * @api     OSjs.Core.getHandler()
-   */
-  OSjs.Handlers.getInstance = function() {
-    return _handlerInstance;
-  };
-
-  /**
-   * Alias of 'OSjs.Handlers.getHandler()'
-   *
-   * @return  Handler
-   *
-   * @see     OSjs.Handlers.getInstance()
    * @api     OSjs.Core.getHandler()
    */
   OSjs.Core.getHandler = function() {
