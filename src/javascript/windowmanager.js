@@ -56,7 +56,7 @@
    * Get the current WindowManager instance
    *
    * @return WindowManager
-   * @api OSjs.API.getWMInstance()
+   * @api OSjs.Core.getWindowManager()
    */
   function getWMInstance() {
     return _WM;
@@ -71,7 +71,7 @@
    * The default implementation of this is in apps/CoreWM/main.js
    *
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
-   * OSjs.API.getWMInstance();
+   * OSjs.Core.getWindowManager();
    *
    * @see     OSjs.Core.Process
    * @api     OSjs.Core.WindowManager
@@ -483,12 +483,26 @@
     this._lastWin = w || null;
   };
 
+  /**
+   * Get CSS animation duration
+   * @return int Duration length in ms
+   * @method WindowManager::getAnimDuration()
+   */
+  WindowManager.prototype.getAnimDuration = function() {
+    var name  = this.getSetting('theme');
+    var theme = this.getTheme(name);
+    if ( theme && (typeof theme.animduration !== 'undefined') ) {
+      return parseInt(theme.animduration, 10) + 1;
+    }
+    return 301;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Core.WindowManager     = WindowManager;
 
-  OSjs.API.getWMInstance      = getWMInstance;
+  OSjs.Core.getWindowManager  = getWMInstance;
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process, OSjs.Core.Window, OSjs.Core.DialogWindow);

@@ -48,7 +48,7 @@
   }
 
   ServiceRing.prototype.init = function() {
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var self = this;
 
     if ( wm ) {
@@ -78,7 +78,7 @@
   };
 
   ServiceRing.prototype.destroy = function() {
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       wm.removeNotificationIcon('ServiceRing');
     }

@@ -83,7 +83,7 @@
    * @api OSjs.API.getWindowSpace()
    */
   function getWindowSpace() {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       return wm.getWindowSpace();
     }
@@ -92,17 +92,11 @@
 
   /**
    * Get CSS animation duration
-   * @return int Duration length in ms
-   * @api OSjs.API.getAnimDuration()
    */
   function getAnimDuration() {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      var name  = wm.getSetting('theme');
-      var theme = wm.getTheme(name);
-      if ( theme && (typeof theme.animduration !== 'undefined') ) {
-        return parseInt(theme.animduration, 10) + 1;
-      }
+      return wm.getAnimDuration();
     }
     return 301;
   }
@@ -111,7 +105,7 @@
    * Create Window move/resize events (FIXME: Optimize)
    */
   function attachWindowEvents(self, main, windowTop, windowResize, isTouch) {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var sx = 0;
     var sy = 0;
     var action = null;
@@ -437,7 +431,7 @@
   Window.prototype.init = function(_wm) {
     var self = this;
     var isTouch = OSjs.Compability.touch;
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
 
     console.group('OSjs::Core::Window::init()');
 
@@ -779,7 +773,7 @@
     }
 
     if ( this._destroyed ) { return; }
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
 
     this._destroyed = true;
     console.log('OSjs::Core::Window::destroy()');
@@ -1072,7 +1066,7 @@
     console.info('OSjs::Core::Window::_addChild()');
     w._parent = this;
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wmAdd && wm ) {
       wm.addWindow(w);
     }
@@ -1242,7 +1236,7 @@
       self._$element.style.display = 'none';
     }
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       setTimeout(function() {
@@ -1300,7 +1294,7 @@
     this._onChange('maximize');
     this._focus();
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       var self = this;
@@ -1347,7 +1341,7 @@
 
     this._onChange('restore');
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       var self = this;
@@ -1380,7 +1374,7 @@
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     Utils.$addClass(this._$element, 'WindowHintFocused');
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid !== this._wid ) {
       win._blur();
@@ -1424,7 +1418,7 @@
     this._onChange('blur');
     this._fireHook('blur');
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
@@ -1512,7 +1506,7 @@
       this._move(this._position.x, newY);
     }
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
       setTimeout(function() {
@@ -1564,7 +1558,7 @@
    * @method  Window::_moveTo()
    */
   Window.prototype._moveTo = function(pos) {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( !wm ) { return; }
 
     var s = wm.getWindowSpace();
@@ -1903,7 +1897,7 @@
     ev = ev || '';
     if ( ev ) {
       console.debug(this._name, '>' , 'OSjs::Core::Window::_onChange()', ev);
-      var wm = OSjs.API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         wm.eventWindow(ev, this);
       }
@@ -2037,11 +2031,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  // Classes
-  OSjs.Core.Window            = Window;
-
-  // Common API functions
-  OSjs.API.getWindowSpace     = getWindowSpace;
-  OSjs.API.getAnimDuration    = getAnimDuration;
+  OSjs.Core.Window = Window;
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process);

@@ -93,7 +93,7 @@
     }
 
     if ( this.__windows.length ) {
-      var wm = OSjs.API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         var last = null;
 
@@ -232,7 +232,7 @@
     this.__windows.push(w);
 
     if ( this.__inited ) {
-      var wm = OSjs.API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         wm.addWindow(w);
       }
@@ -369,7 +369,7 @@
     save = (typeof save === 'undefined' || save === true);
     this.__settings[k] = v;
 
-    var handler = OSjs.API.getHandlerInstance();
+    var handler = OSjs.Core.getHandler();
     if ( save && handler ) {
       handler.setApplicationSettings(this.__name, this.__settings, saveCallback);
     }

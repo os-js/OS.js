@@ -56,7 +56,7 @@
 
     this.addButton(API._('LBL_APPLICATIONS'), 'osjs.png', function(ev) {
       ev.stopPropagation();
-      var wm = API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       if ( wm && wm.getSetting('menuCategories') ) {
         OSjs.Applications.CoreWM.BuildCategoryMenu(ev);
       } else {
@@ -66,7 +66,7 @@
     });
 
     this.addButton(API._('LBL_SETTINGS'), 'categories/applications-system.png', function(ev) {
-      var wm = API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         wm.showSettings();
       }
@@ -124,7 +124,7 @@
     this.$element = document.createElement('ul');
     root.appendChild(this.$element);
 
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       var wins = wm.getWindows();
       for ( var i = 0; i < wins.length; i++ ) {

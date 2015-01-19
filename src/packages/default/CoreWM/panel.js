@@ -81,7 +81,7 @@
     };
     this._$element.oncontextmenu = function(ev) {
       OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
-        var wm = API.getWMInstance();
+        var wm = OSjs.Core.getWindowManager();
         if ( wm ) {
           wm.showSettings('Panels');
         }

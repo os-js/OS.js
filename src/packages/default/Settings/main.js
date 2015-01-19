@@ -261,7 +261,7 @@
   ApplicationSettingsWindow.prototype.init = function() {
     var self      = this;
     var root      = Window.prototype.init.apply(this, arguments);
-    var wm        = API.getWMInstance();
+    var wm        = OSjs.Core.getWindowManager();
 
     var settings      = wm.getSettings();
     var themes        = wm.getThemes();
@@ -596,7 +596,7 @@
 
     outer.appendChild(label);
     var useLanguage = this._addGUIElement(new OSjs.GUI.Select('SettingsUseLanguage'), outer);
-    var languages = API.getHandlerInstance().getConfig('Core').Languages;
+    var languages = OSjs.Core.getHandler().getConfig('Core').Languages;
     useLanguage.addItems(languages);
     useLanguage.setSelected(API.getLocale());
     tabLocale.appendChild(outer);
@@ -629,7 +629,7 @@
       };
 
       // Then apply
-      var wm = API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       console.warn("CoreWM::ApplicationSettingsWindow::save()", settings);
       if ( wm ) {
         wm.applySettings({
@@ -694,7 +694,7 @@
 
   ApplicationSettingsWindow.prototype.showPanelItemWindow = function() {
     var self = this;
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var win = wm.getWindow('CoreWMPanelItemWindow');
     if ( !win ) {
       win = new PanelItemWindow(this._appRef, this);
@@ -775,7 +775,7 @@
   };
 
   ApplicationSettingsWindow.prototype.resetPanelItems = function() {
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var defaults = wm.getDefaultSetting('panels');
     console.debug("CoreWM::resetPanelItems()", defaults);
 

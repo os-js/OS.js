@@ -178,7 +178,7 @@
     console.warn('ConnectionManager::onOnline()', 'Going online...');
     this.offline = false;
 
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       wm.notification({title: 'Warning!', message: 'You are On-line!'});
     }
@@ -188,7 +188,7 @@
     console.warn('ConnectionManager::onOffline()', 'Going offline...');
     this.offline = true;
 
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       wm.notification({title: 'Warning!', message: 'You are Off-line!'});
     }

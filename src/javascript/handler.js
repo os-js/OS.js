@@ -48,7 +48,7 @@
    * You can implement your own, see documentation on Wiki.
    *
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
-   * OSjs.API.getHandlerInstance();
+   * OSjs.Core.getHandler();
    *
    * @api   OSjs.Handlers.Default
    * @class DefaultHandler
@@ -169,7 +169,7 @@
   DefaultHandler.prototype.logout = function(save, callback) {
     console.info('OSjs::DefaultHandler::logout()');
 
-    var wm = API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       wm.destroyNotificationIcon('DefaultHandlerUserNotification');
     }
@@ -620,13 +620,33 @@
     return this.settings;
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Handlers.Current           = null;
   OSjs.Handlers.Default           = DefaultHandler;
 
+  /**
+   * Get running 'Handler' instance
+   *
+   * @return  Handler
+   *
+   * @api     OSjs.Core.getHandler()
+   */
   OSjs.Handlers.getInstance = function() {
+    return _handlerInstance;
+  };
+
+  /**
+   * Alias of 'OSjs.Handlers.getHandler()'
+   *
+   * @return  Handler
+   *
+   * @see     OSjs.Handlers.getInstance()
+   * @api     OSjs.Core.getHandler()
+   */
+  OSjs.Core.getHandler = function() {
     return _handlerInstance;
   };
 

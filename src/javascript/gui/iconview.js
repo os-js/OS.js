@@ -88,6 +88,11 @@
     return el;
   };
 
+  IconView.prototype.destroy = function() {
+    _DataView.prototype.destroy.apply(this, arguments);
+    this.$ul = null;
+  };
+
   IconView.prototype._onRender = function() {
     OSjs.Utils.$empty(this.$ul);
   };

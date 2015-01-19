@@ -35,8 +35,6 @@
    * Please note that there are some other API functions declared in:
    * - src/javascript/core.js
    * - src/javascript/process.js
-   * - src/javascript/windows.js
-   * - src/javascript/windowmanager.js
    *
    */
 
@@ -199,7 +197,7 @@
     if ( !file.path ) { throw new Error('Cannot doLaunchFile() without a path'); }
     if ( !file.mime )  { throw new Error('Cannot doLaunchFile() without a mime type'); }
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var handler = OSjs.Handlers.getInstance();
     var args = {file: file};
 
@@ -659,7 +657,7 @@
     args = args || null;
 
     if ( name ) {
-      var wm = OSjs.API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
       var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
       if ( !name.match(/^\//) ) {
@@ -935,7 +933,7 @@
    * @api     OSjs.API.createLoading()
    */
   function createLoading(name, opts, panelId) {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       if ( wm.createNotificationIcon(name, opts, panelId) ) {
         return name;
@@ -954,7 +952,7 @@
    * @api     OSjs.API.destroyLoading()
    */
   function destroyLoading(name, panelId) {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( name ) {
       if ( wm ) {
         if ( wm.removeNotificationIcon(name, panelId) ) {
@@ -991,7 +989,7 @@
 
     OSjs.API.blurMenu();
 
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       try {
         var w = new OSjs.Dialogs.ErrorMessage();
@@ -1028,7 +1026,7 @@
       console.debug('doPlaySound()', 'Core Config has disabled sounds!');
       return false;
     }
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm && !wm.getSetting('enableSounds') ) {
       console.debug('doPlaySound()', 'Window Manager has disabled sounds!');
       return false;
@@ -1044,17 +1042,6 @@
     a.volume = volume;
     a.play();
     return a;
-  }
-
-  /**
-   * Get running 'Handler' instance
-   *
-   * @return  Handler
-   *
-   * @api     OSjs.API.getHandlerInstance()
-   */
-  function doGetHandlerInstance() {
-    return OSjs.Handlers.getInstance();
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1091,6 +1078,5 @@
 
   OSjs.API.error                  = doErrorDialog;
   OSjs.API.playSound              = doPlaySound;
-  OSjs.API.getHandlerInstance     = doGetHandlerInstance;
 
 })();

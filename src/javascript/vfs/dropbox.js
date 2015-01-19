@@ -44,7 +44,7 @@
 
   function _getConfig(cfg) {
     try {
-      var handler = API.getHandlerInstance();
+      var handler = OSjs.Core.getHandler();
       if ( handler ) {
         return handler.getConfig('Core').VFS.Dropbox[cfg];
       }

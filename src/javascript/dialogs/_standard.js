@@ -101,7 +101,10 @@
 
     this.onClose.apply(this, ['destroy']);
     DialogWindow.prototype.destroy.apply(this, arguments);
+
+    this.$element = null;
     this.$buttons = null;
+    this.$message = null;
   };
 
   /**

@@ -143,7 +143,7 @@
   function request(test, method, args, callback, options) {
     var m = OSjs.VFS.Modules;
     var d = getModuleFromPath(test);
-    var h = API.getHandlerInstance();
+    var h = OSjs.Core.getHandler();
 
     h.onVFSRequest(d, method, args, function() {
       m[d].request(method, args, callback, options);
@@ -245,14 +245,14 @@
    * Wrapper for internal file uploads
    */
   function internalUpload(file, dest, callback) {
-    var handler = OSjs.API.getHandlerInstance();
+    var handler = OSjs.Core.getHandler();
     var fsuri   = '/';
     if ( handler ) {
       fsuri = handler.getConfig('Core').FSURI;
     }
 
     if ( typeof file.size !== 'undefined' ) {
-      var maxSize = API.getHandlerInstance().getConfig('Core').MaxUploadSize;
+      var maxSize = OSjs.Core.getHandler().getConfig('Core').MaxUploadSize;
       if ( maxSize > 0 ) {
         var bytes = file.size;
         if ( bytes > maxSize ) {

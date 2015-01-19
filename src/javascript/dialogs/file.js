@@ -323,7 +323,7 @@
     }
 
     function _confirm() {
-      var wm = API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         self._toggleDisabled(true);
         var conf = new OSjs.Dialogs.Confirm(API._('DIALOG_FILE_OVERWRITE', Utils.filename(file.path)), function(btn) {
@@ -569,7 +569,7 @@
       if ( this.buttons[btn] ) {
         var sel = this.$input ? this.$input.getValue() : this.selectedFile;
         if ( !sel ) {
-          var wm = API.getWMInstance();
+          var wm = OSjs.Core.getWindowManager();
           if ( wm ) {
             var dwin;
             if ( this.type === 'save' ) {

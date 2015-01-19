@@ -169,12 +169,17 @@
   GUIElement.prototype.destroy = function() {
     if ( this.destroyed ) { return; }
 
+    console.debug('GUIElement::destroy()', this.name);
+    if ( _PreviousGUIElement && _PreviousGUIElement.id !== this.id ) {
+      _PreviousGUIElement = null;
+    }
+
     this.destroyed = true;
     this._fireHook('destroy');
     if ( this.$element && this.$element.parentNode ) {
       this.$element.parentNode.removeChild(this.$element);
-      this.$element = null;
     }
+    this.$element = null;
     this._hooks = {};
   };
 

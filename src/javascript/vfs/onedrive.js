@@ -640,7 +640,7 @@
       return _isMounted;
     },
     enabled: function() {
-      var handler = API.getHandlerInstance();
+      var handler = OSjs.Core.getHandler();
       if ( handler ) {
         try {
           if ( handler.getConfig('Core').VFS.OneDrive.Enabled ) {

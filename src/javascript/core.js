@@ -140,7 +140,7 @@
    * @return  void
    */
   function createVersionStamp() {
-    var handler = OSjs.API.getHandlerInstance();
+    var handler = OSjs.Core.getHandler();
     var append = handler.getConfig('Core').VersionAppend;
 
     var ver = OSjs.API.getDefaultSettings().Version || 'unknown verion';
@@ -179,9 +179,9 @@
     var _timeout;
 
     function _resize(ev) {
-      var wm = OSjs.API.getWMInstance();
+      var wm = OSjs.Core.getWindowManager();
       if ( !wm ) { return; }
-      wm.resize(ev, OSjs.API.getWindowSpace());
+      wm.resize(ev, wm.getWindowSpace());
     }
 
     return function(ev) {
@@ -206,7 +206,7 @@
    * @return  void
    */
   function globalOnMouseDown(ev) {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win ) {
       win._blur();
@@ -267,7 +267,7 @@
    * @return  void
    */
   function globalOnKeyUp(ev) {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       wm.onKeyUp(ev, wm.getCurrentWindow());
 
@@ -287,7 +287,7 @@
    * @return  void
    */
   function globalOnKeyPress(ev) {
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       var win = wm.getCurrentWindow();
       if ( win ) {
@@ -306,7 +306,7 @@
    */
   function globalOnKeyDown(ev) {
     var d = ev.srcElement || ev.target;
-    var wm = OSjs.API.getWMInstance();
+    var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
 
     // Some keys must be cancelled
@@ -384,7 +384,7 @@
         _$LOADING.style.display = 'none';
         OSjs.API.playSound('service-login');
 
-        var wm = OSjs.API.getWMInstance();
+        var wm = OSjs.Core.getWindowManager();
         handler.onWMLaunched(wm, function() {
 
           handler.loadSession(function() {
@@ -524,7 +524,7 @@
     if ( !_INITED ) { return; }
     _INITED = false;
 
-    var handler = OSjs.API.getHandlerInstance();
+    var handler = OSjs.Core.getHandler();
 
     function _Destroy() {
       OSjs.API.blurMenu();
@@ -616,8 +616,8 @@
    * @api     OSjs.Session.signOut()
    */
   function doSignOut() {
-    var handler = OSjs.API.getHandlerInstance();
-    var wm = OSjs.API.getWMInstance();
+    var handler = OSjs.Core.getHandler();
+    var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       var user = handler.getUserData() || {name: OSjs.API._('LBL_UNKNOWN')};
       var conf = new OSjs.Dialogs.Confirm(OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name), function(btn) {
@@ -637,7 +637,7 @@
    * Autostart applications from config
    */
   function doAutostart() {
-    var handler = OSjs.API.getHandlerInstance();
+    var handler = OSjs.Core.getHandler();
     if ( handler ) {
       var autostart;
 

@@ -535,8 +535,8 @@
     }
     notificationWasDisplayed[type] = true;
 
-    var wm = API.getWMInstance();
-    var ha = API.getHandlerInstance();
+    var wm = OSjs.Core.getWindowManager();
+    var ha = OSjs.Core.getHandler();
     if ( wm ) {
       wm.notification({
         title: 'External Storage',

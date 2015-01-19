@@ -69,7 +69,7 @@
       if ( this.buttons[btn] ) {
         var val = this.selectedApp;
         if ( !val ) {
-          var wm = API.getWMInstance();
+          var wm = OSjs.Core.getWindowManager();
           if ( wm ) {
             var d = new OSjs.Dialogs.Alert(API._('DIALOG_APPCHOOSER_NO_SELECTION'));
             wm.addWindow(d);
@@ -91,7 +91,7 @@
     var root = StandardDialog.prototype.init.apply(this, arguments);
     var container = this.$element;
     var list = [];
-    var refs = API.getHandlerInstance().getApplicationsMetadata();
+    var refs = OSjs.Core.getHandler().getApplicationsMetadata();
 
     function _createIcon(icon, appname) {
       return API.getIcon(icon, appname);

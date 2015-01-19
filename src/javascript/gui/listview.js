@@ -89,6 +89,14 @@
 
   ListView.prototype.destroy = function() {
     _DataView.prototype.destroy.apply(this, arguments);
+
+    this.$head            = null;
+    this.$headTop         = null;
+    this.$body            = null;
+    this.$table           = null;
+    this.$tableTop        = null;
+    this.$scroll          = null;
+    this.lastSelectedDOM  = null;
   };
 
   ListView.prototype.init = function() {

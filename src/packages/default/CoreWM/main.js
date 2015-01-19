@@ -184,7 +184,7 @@
    * Create default application menu
    */
   function BuildMenu(ev) {
-    var apps = API.getHandlerInstance().getApplicationsMetadata();
+    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
     var list = [];
     for ( var a in apps ) {
       if ( apps.hasOwnProperty(a) ) {
@@ -208,7 +208,7 @@
    * Create default application menu with categories (sub-menus)
    */
   function BuildCategoryMenu(ev) {
-    var apps = API.getHandlerInstance().getApplicationsMetadata();
+    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
     var list = [];
     var cats = {};
 
@@ -403,7 +403,7 @@
       });
     }
 
-    API.getHandlerInstance().getUserSettings(SETTING_STORAGE_NAME, function(s) {
+    OSjs.Core.getHandler().getUserSettings(SETTING_STORAGE_NAME, function(s) {
       if ( s ) {
         self.applySettings(s);
       } else {
@@ -529,7 +529,7 @@
       self.iconView.resize(self);
 
       _setForegroundColor();
-    }, API.getAnimDuration());
+    }, this.getAnimDuration());
   };
 
   //
@@ -707,9 +707,9 @@
       if ( settings.language ) {
         store.Core = { Locale: settings.language };
       }
-      API.getHandlerInstance().setUserSettings(store);
+      OSjs.Core.getHandler().setUserSettings(store);
     } else {
-      API.getHandlerInstance().setUserSettings(SETTING_STORAGE_NAME, this.getSettings());
+      OSjs.Core.getHandler().setUserSettings(SETTING_STORAGE_NAME, this.getSettings());
     }
   };
 
@@ -1070,7 +1070,7 @@
   };
 
   CoreWM.prototype.getThemes = function() {
-    var handler = API.getHandlerInstance();
+    var handler = OSjs.Core.getHandler();
     if ( handler ) {
       return handler.getThemes();
     }

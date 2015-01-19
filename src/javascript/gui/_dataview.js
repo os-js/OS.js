@@ -80,6 +80,12 @@
 
   _DataView.prototype = Object.create(GUIElement.prototype);
 
+  _DataView.prototype.destroy = function() {
+    GUIElement.prototype.destroy.apply(this, arguments);
+
+    this.$view = null;
+  };
+
   _DataView.prototype.update = function() {
     GUIElement.prototype.update.apply(this, arguments);
 

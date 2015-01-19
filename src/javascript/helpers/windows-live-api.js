@@ -344,7 +344,7 @@
     }
 
     var clientId = null;
-    var handler = API.getHandlerInstance();
+    var handler = OSjs.Core.getHandler();
     if ( handler ) {
       try {
         clientId = handler.getConfig('WindowsLiveAPI').ClientId;
