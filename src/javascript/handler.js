@@ -50,7 +50,7 @@
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
    * OSjs.Core.getHandler();
    *
-   * @api   OSjs.Handlers.Default
+   * @api   OSjs.Core._Handler
    * @class _Handler
    */
   var _Handler = function() {
