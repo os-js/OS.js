@@ -1,3 +1,21 @@
+# 2.0.0-alpha51
+
+WARNING: API Changes
+
+API Namespace cleanups, file splitting and documentation
+
+References: #12, #13, #55, #59
+
+* Updated client source-code documentation
+* Updated document generation tool
+* Dialogs: Refactored buttons (#13)
+* Misc: Split up core.js (#55)
+* Misc: Renamed some files
+* Misc: Split up more js and css files
+* Misc: Moved API functions around (#59)
+* Misc: Moved API functions around again (no issue)
+* Misc: Removed a lot of "global" variables
+
 # 2.0.0-alpha50
 
 New Logo and Homepage :) Documentation update and some fixes
