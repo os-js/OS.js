@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, StandardDialog) {
+(function(API, Utils, VFS, _StandardDialog) {
   'use strict';
 
   /**
@@ -37,27 +37,27 @@
    * @param   Function        onClose Callback on close => fn(button)
    *
    * @api OSjs.Dialogs.FileInformationDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var FileInformationDialog = function(file, onClose) {
     this.path = file ? file.path : null;
     this.file = file;
     onClose = onClose || function() {};
-    StandardDialog.apply(this, ['FileInformationDialog', {
+    _StandardDialog.apply(this, ['FileInformationDialog', {
       title: API._('DIALOG_FILEINFO_TITLE'),
       buttons: [
         {name: 'ok', label: API._('DIALOG_CLOSE')}
       ]
     }, {width:300, height:370}, onClose]);
   };
-  FileInformationDialog.prototype = Object.create(StandardDialog.prototype);
+  FileInformationDialog.prototype = Object.create(_StandardDialog.prototype);
 
   FileInformationDialog.prototype.init = function() {
     var self = this;
-    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var root = _StandardDialog.prototype.init.apply(this, arguments);
 
     var desc = API._('DIALOG_FILEINFO_LOADING', this.path);
     var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
@@ -97,4 +97,4 @@
 
   OSjs.Dialogs.FileInfo           = FileInformationDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.Dialogs._StandardDialog);

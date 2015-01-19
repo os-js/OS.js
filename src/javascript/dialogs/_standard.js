@@ -33,7 +33,7 @@
   window.OSjs = window.OSjs || {};
   OSjs.Dialogs = OSjs.Dialogs || {};
 
-  var StandardDialogButtons = {
+  var _StandardDialogButtons = {
     'ok': 'DIALOG_OK',
     'cancel': 'DIALOG_CANCEL',
     'close': 'DIALOG_CLOSE'
@@ -59,11 +59,11 @@
    * @option  args    Array       buttons   List of buttons: ['ok', 'cancel', 'close', {name:'custom', label:'Custom'}]
    *
    * @see     OSjs.Core.DialogWindow
-   * @api     OSjs.Dialogs.StandardDialog
+   * @api     OSjs.Dialogs._StandardDialog
    * @extends DialogWindow
    * @class
    */
-  var StandardDialog = function(className, args, opts, onClose) {
+  var _StandardDialog = function(className, args, opts, onClose) {
     this.$buttons = null;
     this.$element = null;
     this.$message = null;
@@ -86,7 +86,7 @@
     this._soundVolume = 0.5;
   };
 
-  StandardDialog.prototype = Object.create(DialogWindow.prototype);
+  _StandardDialog.prototype = Object.create(DialogWindow.prototype);
 
   /**
    * Destroy the Dialog Window
@@ -94,9 +94,9 @@
    * @see     OSjs.Core.DialogWindow::destroy()
    * @return  void
    *
-   * @method  StandardDialog::destroy()
+   * @method  _StandardDialog::destroy()
    */
-  StandardDialog.prototype.destroy = function() {
+  _StandardDialog.prototype.destroy = function() {
     if ( this._destroyed ) { return; }
 
     this.onClose.apply(this, ['destroy']);
@@ -113,9 +113,9 @@
    * @see     OSjs.Core.DialogWindow::init()
    * @return  DOMElement
    *
-   * @method  StandardDialog::init()
+   * @method  _StandardDialog::init()
    */
-  StandardDialog.prototype.init = function() {
+  _StandardDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
     var self = this;
 
@@ -148,7 +148,7 @@
 
         if ( typeof b === 'string' ) {
           buttonName = b;
-          buttonLabel = API._(StandardDialogButtons[b]);
+          buttonLabel = API._(_StandardDialogButtons[b]);
         } else {
           buttonName = b.name;
           buttonLabel = b.label;
@@ -176,9 +176,9 @@
    * @see     OSjs.Core.DialogWindow::_inited()
    * @return  void
    *
-   * @method  StandardDialog::_inited()
+   * @method  _StandardDialog::_inited()
    */
-  StandardDialog.prototype._inited = function() {
+  _StandardDialog.prototype._inited = function() {
     DialogWindow.prototype._inited.apply(this, arguments);
 
     if ( this.buttons['ok'] ) {
@@ -198,9 +198,9 @@
    *
    * @return  void
    *
-   * @method  StandardDialog::onButtonClick()
+   * @method  _StandardDialog::onButtonClick()
    */
-  StandardDialog.prototype.onButtonClick = function(btn, ev) {
+  _StandardDialog.prototype.onButtonClick = function(btn, ev) {
     if ( !this.buttons[btn] ) { return; }
     this.end(btn);
   };
@@ -211,9 +211,9 @@
    * @see     OSjs.Core.DialogWindow::_onKeyEvent()
    * @return  void
    *
-   * @method  StandardDialog::_onKeyEvent()
+   * @method  _StandardDialog::_onKeyEvent()
    */
-  StandardDialog.prototype._onKeyEvent = function(ev) {
+  _StandardDialog.prototype._onKeyEvent = function(ev) {
     DialogWindow.prototype._onKeyEvent.apply(this, arguments);
     if ( ev.keyCode === Utils.Keys.ESC ) {
       if ( this.buttons['close'] ) {
@@ -229,9 +229,9 @@
    *
    * @return  void
    *
-   * @method  StandardDialog::end()
+   * @method  _StandardDialog::end()
    */
-  StandardDialog.prototype.end = function() {
+  _StandardDialog.prototype.end = function() {
     this.onClose.apply(this, arguments);
     this._close();
   };
@@ -240,6 +240,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.StandardDialog    = StandardDialog;
+  OSjs.Dialogs._StandardDialog    = _StandardDialog;
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.DialogWindow, OSjs.GUI);

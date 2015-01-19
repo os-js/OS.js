@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, StandardDialog) {
+(function(API, Utils, _StandardDialog) {
   'use strict';
 
   /**
@@ -35,12 +35,12 @@
    *
    * @param   String    msg     Message
    * @param   Function  onClose Callback on close => fn(button)
-   * @param   Object    args    List of arguments (Will be passed on to StandardDialog)
+   * @param   Object    args    List of arguments (Will be passed on to _StandardDialog)
    *
    * @api OSjs.Dialogs.AlertDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var AlertDialog = function(msg, onClose, args) {
@@ -51,9 +51,9 @@
       buttons: [{name: 'ok', label: API._('DIALOG_CLOSE')}]
     }, (args || {}));
 
-    StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
+    _StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
   };
-  AlertDialog.prototype = Object.create(StandardDialog.prototype);
+  AlertDialog.prototype = Object.create(_StandardDialog.prototype);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
@@ -61,4 +61,4 @@
 
   OSjs.Dialogs.Alert              = AlertDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);

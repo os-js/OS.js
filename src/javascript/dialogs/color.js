@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, StandardDialog) {
+(function(API, Utils, _StandardDialog) {
   'use strict';
 
   /**
@@ -37,9 +37,9 @@
    * @param   Function        onClose Callback on close => fn(button, rgb, hex, alpha)
    *
    * @api OSjs.Dialogs.ColorDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var ColorDialog = function(opts, onClose) {
@@ -48,7 +48,7 @@
       opts.alpha = 1.0;
     }
 
-    StandardDialog.apply(this, ['ColorDialog', {
+    _StandardDialog.apply(this, ['ColorDialog', {
       title: API._('DIALOG_COLOR_TITLE'),
       icon: 'apps/gnome-settings-theme.png',
       buttons: ['cancel', 'ok']
@@ -64,11 +64,11 @@
     this.$color       = null;
   };
 
-  ColorDialog.prototype = Object.create(StandardDialog.prototype);
+  ColorDialog.prototype = Object.create(_StandardDialog.prototype);
 
   ColorDialog.prototype.init = function() {
     var self  = this;
-    var root  = StandardDialog.prototype.init.apply(this, arguments);
+    var root  = _StandardDialog.prototype.init.apply(this, arguments);
     var color = this.currentRGB;
 
     var el        = document.createElement('div');
@@ -164,4 +164,4 @@
 
   OSjs.Dialogs.Color              = ColorDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);

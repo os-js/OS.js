@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog) {
+(function(_StandardDialog) {
   'use strict';
 
   var _ID = 0;
@@ -40,9 +40,9 @@
    * @param   Function        onClose Callback on close => fn(button)
    *
    * @api OSjs.Dialogs.FileUploadDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var FileUploadDialog = function(dest, file, onClose) {
@@ -59,7 +59,7 @@
 
     var maxSize = OSjs.Core.getHandler().getConfig('Core').MaxUploadSize;
     var msg = OSjs.API._('DIALOG_UPLOAD_DESC', this.dest, maxSize);
-    StandardDialog.apply(this, ['FileUploadDialog', {
+    _StandardDialog.apply(this, ['FileUploadDialog', {
       title: OSjs.API._('DIALOG_UPLOAD_TITLE'),
       icon: 'actions/filenew.png',
       message: msg,
@@ -69,11 +69,11 @@
     _ID++;
   };
 
-  FileUploadDialog.prototype = Object.create(StandardDialog.prototype);
+  FileUploadDialog.prototype = Object.create(_StandardDialog.prototype);
 
   FileUploadDialog.prototype.init = function(wm) {
     var self = this;
-    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var root = _StandardDialog.prototype.init.apply(this, arguments);
     this._wmref = wm;
 
     var file = document.createElement('input');
@@ -97,14 +97,14 @@
       this.dialog = null;
     }
 
-    StandardDialog.prototype.destroy.apply(this, arguments);
+    _StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
   FileUploadDialog.prototype._close = function() {
     if ( this.buttons['cancel'] && (this.buttons['cancel'].isDisabled()) ) {
       return;
     }
-    StandardDialog.prototype._close.apply(this, arguments);
+    _StandardDialog.prototype._close.apply(this, arguments);
   };
 
   FileUploadDialog.prototype.end = function() {
@@ -226,4 +226,4 @@
 
   OSjs.Dialogs.FileUpload         = FileUploadDialog;
 
-})(OSjs.Dialogs.StandardDialog);
+})(OSjs.Dialogs._StandardDialog);

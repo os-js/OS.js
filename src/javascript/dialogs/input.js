@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, StandardDialog) {
+(function(API, Utils, _StandardDialog) {
   'use strict';
 
   /**
@@ -39,13 +39,13 @@
    * @param   Function        onCreated   Callback on input init/create
    *
    * @api OSjs.Dialogs.InputDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var InputDialog = function(msg, val, onClose, onCreated) {
-    StandardDialog.apply(this, ['InputDialog', {
+    _StandardDialog.apply(this, ['InputDialog', {
       title: API._('DIALOG_INPUT_TITLE'),
       icon: 'status/dialog-information.png',
       message: msg,
@@ -57,11 +57,11 @@
     this.onInputCreated = onCreated || function _noop() {};
   };
 
-  InputDialog.prototype = Object.create(StandardDialog.prototype);
+  InputDialog.prototype = Object.create(_StandardDialog.prototype);
 
   InputDialog.prototype.init = function() {
     var self = this;
-    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var root = _StandardDialog.prototype.init.apply(this, arguments);
 
     var inputd = document.createElement('div');
 
@@ -77,7 +77,7 @@
   };
 
   InputDialog.prototype._inited = function() {
-    StandardDialog.prototype._inited.apply(this, arguments);
+    _StandardDialog.prototype._inited.apply(this, arguments);
 
     var self = this;
     setTimeout(function() {
@@ -86,7 +86,7 @@
   };
 
   InputDialog.prototype._focus = function() {
-    StandardDialog.prototype._focus.apply(this, arguments);
+    _StandardDialog.prototype._focus.apply(this, arguments);
     if ( this.input ) {
       this.input.focus();
       this.input.select();
@@ -100,7 +100,7 @@
       }
       return;
     }
-    StandardDialog.prototype.onButtonClick.apply(this, arguments);
+    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -109,4 +109,4 @@
 
   OSjs.Dialogs.Input              = InputDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);

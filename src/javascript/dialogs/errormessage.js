@@ -36,9 +36,9 @@
    * THIS IS FOR INTERNAL USAGE ONLY
    *
    * @api OSjs.Dialogs.ErrorDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var ErrorDialog = function() {

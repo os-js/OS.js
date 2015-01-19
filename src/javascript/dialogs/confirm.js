@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, StandardDialog) {
+(function(API, Utils, _StandardDialog) {
   'use strict';
 
   /**
@@ -35,12 +35,12 @@
    *
    * @param   String          msg     Confirm message
    * @param   Function        onClose Callback on close => fn(button)
-   * @param   Object          args    List of arguments (Will be passed on to StandardDialog)
+   * @param   Object          args    List of arguments (Will be passed on to _StandardDialog)
    *
    * @api OSjs.Dialogs.ConfirmDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var ConfirmDialog = function(msg, onClose, args) {
@@ -50,9 +50,9 @@
       message: msg,
       buttons: ['cancel', 'ok']
     }, (args || {}));
-    StandardDialog.apply(this, ['ConfirmDialog', args, {width:350, height:120}, onClose]);
+    _StandardDialog.apply(this, ['ConfirmDialog', args, {width:350, height:120}, onClose]);
   };
-  ConfirmDialog.prototype = Object.create(StandardDialog.prototype);
+  ConfirmDialog.prototype = Object.create(_StandardDialog.prototype);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
@@ -60,4 +60,4 @@
 
   OSjs.Dialogs.Confirm            = ConfirmDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);

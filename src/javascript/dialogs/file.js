@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(StandardDialog, Utils, API, VFS) {
+(function(_StandardDialog, Utils, API, VFS) {
   'use strict';
 
   /**
@@ -48,9 +48,9 @@
    * @option args String  defaultFilemime       Default filemime (defaults to given MIME)
    *
    * @api OSjs.Dialogs.FileDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var FileDialog = function(args, onClose) {
@@ -92,14 +92,14 @@
     var title     = API._(this.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
     var className = this.type === 'save' ? 'FileSaveDialog' : 'FileOpenDialog';
 
-    StandardDialog.apply(this, [className, {
+    _StandardDialog.apply(this, [className, {
       title: title,
       icon: (this.type === 'open' ? 'actions/gtk-open.png' : 'actions/gtk-save-as.png'),
       buttons: ['cancel', 'ok']
     }, {width:600, height:380}, onClose]);
   };
 
-  FileDialog.prototype = Object.create(StandardDialog.prototype);
+  FileDialog.prototype = Object.create(_StandardDialog.prototype);
 
   /**
    * Destroy
@@ -111,7 +111,7 @@
     this.$select      = null;
     this.$selectRoot  = null;
 
-    StandardDialog.prototype.destroy.apply(this, arguments);
+    _StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
   /**
@@ -119,7 +119,7 @@
    */
   FileDialog.prototype.init = function() {
     var self = this;
-    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var root = _StandardDialog.prototype.init.apply(this, arguments);
 
     this.$fileView = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {
       mimeFilter: this.filter,
@@ -260,7 +260,7 @@
    * Window has been displayed
    */
   FileDialog.prototype._inited = function() {
-    StandardDialog.prototype._inited.apply(this, arguments);
+    _StandardDialog.prototype._inited.apply(this, arguments);
 
     // Force override of default MIME if we have a selector
     if ( this.filetypes && this.$select ) {
@@ -289,7 +289,7 @@
    * Window has been focused
    */
   FileDialog.prototype._focus = function() {
-    StandardDialog.prototype._focus.apply(this, arguments);
+    _StandardDialog.prototype._focus.apply(this, arguments);
 
     this.highlightFilename();
   };
@@ -588,7 +588,7 @@
       return;
     }
 
-    StandardDialog.prototype.onButtonClick.apply(this, arguments);
+    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -597,4 +597,4 @@
 
   OSjs.Dialogs.File               = FileDialog;
 
-})(OSjs.Dialogs.StandardDialog, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Dialogs._StandardDialog, OSjs.Utils, OSjs.API, OSjs.VFS);

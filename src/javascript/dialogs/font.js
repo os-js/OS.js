@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, StandardDialog) {
+(function(API, Utils, _StandardDialog) {
   'use strict';
 
   /**
@@ -47,9 +47,9 @@
    * @option  args    int       maxSize         Maximum font size (optional)
    *
    * @api OSjs.Dialogs.FontDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var FontDialog = function(args, onClose) {
@@ -68,13 +68,13 @@
     this.$selectFonts = null;
     this.$selectSize  = null;
 
-    StandardDialog.apply(this, ['FontDialog', {
+    _StandardDialog.apply(this, ['FontDialog', {
       title: API._('DIALOG_FONT_TITLE'),
       buttons: ['cancel', 'ok']
     }, {width:450, height:250}, onClose]);
   };
 
-  FontDialog.prototype = Object.create(StandardDialog.prototype);
+  FontDialog.prototype = Object.create(_StandardDialog.prototype);
 
   FontDialog.prototype.updateFont = function(name, size) {
     var rt = this._getGUIElement('GUIRichText');
@@ -107,7 +107,7 @@
 
   FontDialog.prototype.init = function() {
     var self = this;
-    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var root = _StandardDialog.prototype.init.apply(this, arguments);
     var option;
 
     var rt = this._addGUIElement(new OSjs.GUI.RichText('GUIRichText'), this.$element);
@@ -169,7 +169,7 @@
   };
 
   FontDialog.prototype._inited = function() {
-    StandardDialog.prototype._inited.apply(this, arguments);
+    _StandardDialog.prototype._inited.apply(this, arguments);
     this.updateFont();
   };
 
@@ -180,7 +180,7 @@
       }
       return;
     }
-    StandardDialog.prototype.onButtonClick.apply(this, arguments);
+    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -189,4 +189,4 @@
 
   OSjs.Dialogs.Font               = FontDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);

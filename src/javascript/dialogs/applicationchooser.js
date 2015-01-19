@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, StandardDialog) {
+(function(API, Utils, _StandardDialog) {
   'use strict';
 
   /**
@@ -38,9 +38,9 @@
    * @param   Function        onClose Callback on close => fn(button)
    *
    * @api OSjs.Dialogs.ApplicationChooserDialog
-   * @see OSjs.Dialogs.StandardDialog
+   * @see OSjs.Dialogs._StandardDialog
    *
-   * @extends StandardDialog
+   * @extends _StandardDialog
    * @class
    */
   var ApplicationChooserDialog = function(file, list, onClose) {
@@ -51,17 +51,17 @@
     this.useDefault   = false;
 
     var msg = ([API._('DIALOG_APPCHOOSER_MSG'), '<br />' ,Utils.format('<span>{0}</span>', this.filename), Utils.format('({0})', this.mime)]).join(' ');
-    StandardDialog.apply(this, ['ApplicationChooserDialog', {
+    _StandardDialog.apply(this, ['ApplicationChooserDialog', {
       title: API._('DIALOG_APPCHOOSER_TITLE'),
       message: msg,
       buttons: ['cancel', 'ok']
     }, {width:400, height:360}, onClose]);
   };
 
-  ApplicationChooserDialog.prototype = Object.create(StandardDialog.prototype);
+  ApplicationChooserDialog.prototype = Object.create(_StandardDialog.prototype);
 
   ApplicationChooserDialog.prototype.destroy = function(wm) {
-    StandardDialog.prototype.destroy.apply(this, arguments);
+    _StandardDialog.prototype.destroy.apply(this, arguments);
   };
 
   ApplicationChooserDialog.prototype.onButtonClick = function(btn, ev) {
@@ -83,12 +83,12 @@
       return;
     }
 
-    StandardDialog.prototype.onButtonClick.apply(this, arguments);
+    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   ApplicationChooserDialog.prototype.init = function(wm) {
     var self = this;
-    var root = StandardDialog.prototype.init.apply(this, arguments);
+    var root = _StandardDialog.prototype.init.apply(this, arguments);
     var container = this.$element;
     var list = [];
     var refs = OSjs.Core.getHandler().getApplicationsMetadata();
@@ -160,4 +160,4 @@
 
   OSjs.Dialogs.ApplicationChooser = ApplicationChooserDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs.StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);
