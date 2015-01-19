@@ -305,7 +305,6 @@ Array.prototype.unique = function(){
           lastRef = sorted[t];
         }
       });
-
     });
 
     function generateList(lst, level) {
@@ -375,6 +374,16 @@ Array.prototype.unique = function(){
   function generateNamespaces() {
     var list = {};
 
+    function sortList(lastRef) {
+      var keys = Object.keys(lastRef).sort();
+      var newRef = {};
+      keys.forEach(function(k) {
+        newRef[k] = lastRef[k];
+      });
+
+      return newRef;
+    }
+
     Object.keys(NAMESPACES).forEach(function(n) {
       var tmp = n.split('.');
       var lastRef;
@@ -409,7 +418,7 @@ Array.prototype.unique = function(){
         if ( typeof lst[l] !== 'string' ) {
           inner += l;
           inner += '<ul>';
-          inner += generateList(lst[l], level + 1);
+          inner += generateList(sortList(lst[l]), level + 1);
           inner += '</ul>';
         } else {
           var href = '';
