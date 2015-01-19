@@ -880,7 +880,7 @@
     var valid = ['backgroundColor', 'fontFamily'];
     console.log('Styles', opts);
     for ( var i in opts ) {
-      if ( opts.hasOwnProperty(i) && Utils.inArray(valid, i) ) {
+      if ( opts.hasOwnProperty(i) && valid.indexOf(i) >= 0 ) {
         document.body.style[i] = opts[i];
       }
     }

@@ -271,11 +271,11 @@
     // Some keys must be cancelled
     var doPrevent = d.tagName === 'BODY' ? true : false;
     if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
-      if ( !OSjs.Utils.isInputElement(ev) ) {
+      if ( !OSjs.Utils.$isInput(ev) ) {
         doPrevent = true;
       }
     } else if ( ev.keyCode === OSjs.Utils.Keys.TAB ) {
-      if ( OSjs.Utils.isFormElement(ev) ) {
+      if ( OSjs.Utils.$isFormElement(ev) ) {
         doPrevent = true;
       }
     }
@@ -393,7 +393,7 @@
       _$ROOT = document.createElement('div');
       _$ROOT.id = 'Background';
       _$ROOT.addEventListener('contextmenu', function(ev) {
-        if ( !OSjs.Utils.isInputElement(ev) ) {
+        if ( !OSjs.Utils.$isInput(ev) ) {
           ev.preventDefault();
           return false;
         }
@@ -495,7 +495,7 @@
 
       if ( _$ROOT ) {
         _$ROOT.removeEventListener('contextmenu', function(ev) {
-          if ( !OSjs.Utils.isInputElement(ev) ) {
+          if ( !OSjs.Utils.$isInput(ev) ) {
             ev.preventDefault();
             return false;
           }

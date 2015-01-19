@@ -135,7 +135,7 @@
       li.setAttribute('data-index', i);
 
       Object.keys(iter).forEach(function(k) {
-        if ( !OSjs.Utils.inArray(['title', 'icon'], k) ) {
+        if ( (['title', 'icon']).indexOf(k) === -1 ) {
           li.setAttribute('data-' + k, iter[k]);
         }
       });

@@ -291,7 +291,7 @@
     if ( GUIElement.prototype.onGlobalKeyPress.apply(this, arguments) ) { return false; }
 
     var valid = [Utils.Keys.UP, Utils.Keys.DOWN, Utils.Keys.LEFT, Utils.Keys.RIGHT, Utils.Keys.ENTER];
-    if ( !Utils.inArray(valid, ev.keyCode) ) {
+    if ( valid.indexOf(ev.keyCore) === -1 ) {
       return true;
     }
     if ( this.className === 'TreeView' ) {

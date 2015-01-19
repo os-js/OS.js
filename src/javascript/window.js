@@ -327,7 +327,7 @@
     return function(name, opts, appRef) {
       var self = this;
 
-      if ( Utils.inArray(_NAMES, name) ) {
+      if ( _NAMES.indexOf(name) >= 0 ) {
         throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
       }
 
@@ -498,7 +498,7 @@
     var main = document.createElement('div');
 
     this._addEventListener(main, 'contextmenu', function(ev) {
-      var r = Utils.isInputElement(ev);
+      var r = Utils.$isInput(ev);
 
       if ( !r ) {
         ev.preventDefault();

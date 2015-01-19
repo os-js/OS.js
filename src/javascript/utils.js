@@ -181,24 +181,6 @@
   };
 
   /**
-   * Check if item is in array
-   * TODO: This is deprecated, remove
-   *
-   * @param   Array     arr       The array
-   * @param   Mixed     val       The value to check for
-   *
-   * @return  int                 The index where found or false
-   *
-   * @api     OSjs.Utils.inArray()
-   */
-  OSjs.Utils.inArray = function(arr, val) {
-    for ( var i = 0, l = arr.length; i < l; i++ ) {
-      if ( arr[i] === val ) { return true; }
-    }
-    return false;
-  };
-
-  /**
    * Check if this MIME type is inside list
    * This matches by regex
    *
@@ -990,9 +972,9 @@
    *
    * @return  boolean             If is a form element
    *
-   * @api     OSjs.Utils.isFormElement()
+   * @api     OSjs.Utils.$isFormElement()
    */
-  OSjs.Utils.isFormElement = function(ev, types) {
+  OSjs.Utils.$isFormElement = function(ev, types) {
     types = types || ['TEXTAREA', 'INPUT', 'SELECT'];
 
     var d = ev.srcElement || ev.target;
@@ -1009,11 +991,11 @@
   /**
    * Alias
    *
-   * @see OSjs.Utils.isFormElement()
-   * @api OSjs.Utils.isInputElement()
+   * @see OSjs.Utils.$isFormElement()
+   * @api OSjs.Utils.$isInput()
    */
-  OSjs.Utils.isInputElement = function(ev) {
-    return this.isFormElement(ev); //, ['TEXTAREA', 'INPUT']);
+  OSjs.Utils.$isInput = function(ev) {
+    return this.$isFormElement(ev); //, ['TEXTAREA', 'INPUT']);
   };
 
   /////////////////////////////////////////////////////////////////////////////
