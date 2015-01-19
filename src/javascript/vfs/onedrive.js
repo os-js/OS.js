@@ -592,7 +592,7 @@
         }
 
         _isMounted = true;
-        OSjs.Core.message('vfs', {type: 'mount', module: 'OneDrive', source: null});
+        API.message('vfs', {type: 'mount', module: 'OneDrive', source: null});
         callback(OneDriveStorage);
       });
       return;
@@ -633,7 +633,7 @@
       // FIXME: Should we sign out here too ?
       cb = cb || function() {};
       _isMounted = false;
-      OSjs.Core.message('vfs', {type: 'unmount', module: 'OneDrive', source: null});
+      API.message('vfs', {type: 'unmount', module: 'OneDrive', source: null});
       cb(false, true);
     },
     mounted: function() {

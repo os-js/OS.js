@@ -577,7 +577,7 @@
       if ( error ) {
         error = API._('ERR_VFSMODULE_WRITE_FMT', error);
       } else {
-        OSjs.Core.message('vfs', {type: 'write', file: item, source: appRef ? appRef.__pid : null});
+        API.message('vfs', {type: 'write', file: item, source: appRef ? appRef.__pid : null});
       }
 
       callback(error, result);
@@ -689,7 +689,7 @@
     function doRequest() {
       function _finished(error, result) {
         if ( !error ) {
-          OSjs.Core.message('vfs', {type: 'mkdir', file: dest, source: appRef ? appRef.__pid : null});
+          API.message('vfs', {type: 'mkdir', file: dest, source: appRef ? appRef.__pid : null});
         }
         callback(error, result);
       }
@@ -767,7 +767,7 @@
     function doRequest() {
       function _finished(error, result) {
         if ( !error ) {
-          OSjs.Core.message('vfs', {type: 'move', file: dest, source: appRef ? appRef.__pid : null});
+          API.message('vfs', {type: 'move', file: dest, source: appRef ? appRef.__pid : null});
         }
         callback(error, result);
       }
@@ -843,7 +843,7 @@
       if ( error ) {
         error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
       } else {
-        OSjs.Core.message('vfs', {type: 'delete', file: item, source: appRef ? appRef.__pid : null});
+        API.message('vfs', {type: 'delete', file: item, source: appRef ? appRef.__pid : null});
       }
       callback(error, result);
     }
@@ -876,7 +876,7 @@
         if ( error ) {
           error = API._('ERR_VFSMODULE_MKDIR_FMT', error);
         } else {
-          OSjs.Core.message('vfs', {type: 'mkdir', file: item, source: appRef ? appRef.__pid : null});
+          API.message('vfs', {type: 'mkdir', file: item, source: appRef ? appRef.__pid : null});
         }
         callback(error, result);
       }
@@ -1001,7 +1001,7 @@
         size: size
       });
 
-      OSjs.Core.message('vfs', {type: 'upload', file: file, source: args.app.__pid});
+      API.message('vfs', {type: 'upload', file: file, source: args.app.__pid});
 
       callback(false, file);
     }

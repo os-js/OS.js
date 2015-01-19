@@ -48,7 +48,7 @@
   };
 
   UserSession.prototype.getSession = function() {
-    var procs = OSjs.Core.getProcesses();
+    var procs = API.getProcesses();
 
     function getSessionSaveData(app) {
       var args = app.__args;

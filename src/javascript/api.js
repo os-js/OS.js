@@ -30,6 +30,10 @@
 (function() {
   'use strict';
 
+  /*@
+   * Please note that there are some more methods defined in `process.js`
+   */
+
   window.OSjs       = window.OSjs       || {};
   OSjs.API          = OSjs.API          || {};
 
@@ -357,7 +361,7 @@
         // Only allow one instance if specified
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
-          var sproc = OSjs.Core.getProcess(n, true);
+          var sproc = OSjs.API.getProcess(n, true);
           if ( sproc ) {
             console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
             if ( sproc instanceof OSjs.Core.Application ) {

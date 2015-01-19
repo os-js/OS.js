@@ -123,7 +123,7 @@
 
     if ( r ) {
       var rows = [];
-      var procs = OSjs.Core.getProcesses();
+      var procs = API.getProcesses();
       var now = new Date();
 
       var i = 0, l = procs.length;
@@ -136,7 +136,7 @@
             return function(ev) {
               ev.preventDefault();
               ev.stopPropagation();
-              OSjs.Core.kill(pid);
+              OSjs.API.kill(pid);
               return false;
             };
           })(procs[i].__pid);

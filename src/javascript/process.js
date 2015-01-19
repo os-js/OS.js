@@ -31,6 +31,7 @@
   'use strict';
 
   window.OSjs = window.OSjs || {};
+  OSjs.API    = OSjs.API    || {};
   OSjs.Core   = OSjs.Core   || {};
 
   /////////////////////////////////////////////////////////////////////////////
@@ -47,7 +48,7 @@
    * Kills all processes
    *
    * @return  void
-   * @api     OSjs.Core.killAll()
+   * @api     OSjs.API.killAll()
    */
   function doKillAllProcesses() {
     _PROCS.forEach(function(proc, i) {
@@ -65,7 +66,7 @@
    * @param   int     pid       Process ID
    *
    * @return  void
-   * @api     OSjs.Core.kill()
+   * @api     OSjs.API.kill()
    */
   function doKillProcess(pid) {
     if ( pid >= 0 ) {
@@ -89,7 +90,7 @@
    *
    * @return  void
    * @see     Process::_onMessage()
-   * @api     OSjs.Core.message()
+   * @api     API.message()
    */
   function doProcessMessage(msg, opts) {
     console.info('doProcessMessage', msg, opts);
@@ -107,7 +108,7 @@
    * @param   boolean   first   Return the first found
    *
    * @return  Process           Or an Array of Processes
-   * @api     OSjs.Core.getProcess()
+   * @api     OSjs.API.getProcess()
    */
   function doGetProcess(name, first) {
     var p;
@@ -135,7 +136,7 @@
    *
    * @return  Array
    *
-   * @api     OSjs.Core.getProcesses()
+   * @api     OSjs.API.getProcesses()
    */
   function doGetProcesses() {
     return _PROCS;
@@ -210,12 +211,12 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Process           = Process;
+  OSjs.Core.Process          = Process;
 
-  OSjs.Core.killAll           = doKillAllProcesses;
-  OSjs.Core.kill              = doKillProcess;
-  OSjs.Core.message           = doProcessMessage;
-  OSjs.Core.getProcess        = doGetProcess;
-  OSjs.Core.getProcesses      = doGetProcesses;
+  OSjs.API.killAll           = doKillAllProcesses;
+  OSjs.API.kill              = doKillProcess;
+  OSjs.API.message           = doProcessMessage;
+  OSjs.API.getProcess        = doGetProcess;
+  OSjs.API.getProcesses      = doGetProcesses;
 
 })(OSjs.Utils, OSjs.API);
