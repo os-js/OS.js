@@ -340,7 +340,6 @@
       _LaunchWM(function(/*app*/) {
         OSjs.Session.triggerHook('onWMInited');
 
-        return;
         var splash = document.getElementById('LoadingScreen');
         if ( splash && splash.parentNode ) {
           splash.parentNode.removeChild(splash);
