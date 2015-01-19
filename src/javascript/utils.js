@@ -1149,9 +1149,9 @@
    *
    * @return  void
    *
-   * @api     OSjs.Utils.Preload()
+   * @api     OSjs.Utils.preload()
    */
-  OSjs.Utils.Preload = (function() {
+  OSjs.Utils.preload = (function() {
     var _LOADED = {};
 
     var checkLoadedStyle = function(path) {

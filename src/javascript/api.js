@@ -442,7 +442,7 @@
 
     // Preload
     splash = createLaunchSplash(data, n);
-    OSjs.Utils.Preload(data.preload, function(total, errors, failed) {
+    OSjs.Utils.preload(data.preload, function(total, errors, failed) {
       destroyLoading(n);
 
       if ( errors ) {

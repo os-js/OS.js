@@ -364,7 +364,7 @@
     }
 
     function _Preload(list, callback) {
-      OSjs.Utils.Preload(list, function(total, errors) {
+      OSjs.Utils.preload(list, function(total, errors) {
         if ( errors ) {
           _error(OSjs.API._('ERR_CORE_INIT_PRELOAD_FAILED'));
           return;

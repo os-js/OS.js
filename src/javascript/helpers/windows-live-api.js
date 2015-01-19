@@ -96,7 +96,7 @@
     if ( this.loaded ) {
       callback(false, true);
     } else {
-      Utils.Preload(this.preloads, function(total, errors) {
+      Utils.preload(this.preloads, function(total, errors) {
         if ( !errors ) {
           self.loaded = true;
         }
