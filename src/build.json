@@ -182,7 +182,6 @@
       "src/stylesheets/api.css",
       "src/stylesheets/session.css",
       "src/stylesheets/window.css",
-      "src/stylesheets/windowmanager.css",
       "src/stylesheets/guielement.css",
       "src/stylesheets/dialogs.css",
       "src/stylesheets/dialogs/alert.css",

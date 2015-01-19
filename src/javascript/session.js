@@ -113,9 +113,6 @@
   // INTERNAL VARIABLES
   /////////////////////////////////////////////////////////////////////////////
 
-  var _$LOADING;          // Loading DOM Element
-  var _$SPLASH_TXT;       //   It's description field
-  var _$SPLASH;           // Loading Screen DOM Element
   var _$ROOT;             // Root element
   var _INITED = false;
 
@@ -343,7 +340,12 @@
       _LaunchWM(function(/*app*/) {
         OSjs.Session.triggerHook('onWMInited');
 
-        _$LOADING.style.display = 'none';
+        return;
+        var splash = document.getElementById('LoadingScreen');
+        if ( splash && splash.parentNode ) {
+          splash.parentNode.removeChild(splash);
+        }
+
         OSjs.API.playSound('service-login');
 
         var wm = OSjs.Core.getWindowManager();
@@ -359,10 +361,6 @@
             doAutostart();
           });
         });
-
-        if ( _$SPLASH ) {
-          _$SPLASH.style.display = 'none';
-        }
       });
     }
 
@@ -456,14 +454,6 @@
 
       OSjs.Session.triggerHook('onInitialize');
 
-      _$SPLASH              = document.getElementById('LoadingScreen');
-      _$SPLASH_TXT          = _$SPLASH ? _$SPLASH.getElementsByTagName('p')[0] : null;
-
-      _$LOADING             = document.createElement('div');
-      _$LOADING.id          = 'Loading';
-      _$LOADING.innerHTML   = '<div class="loader"></div>';
-      document.body.appendChild(_$LOADING);
-
       _Boot();
     });
   }
@@ -536,11 +526,6 @@
         handler.destroy();
         handler = null;
       }
-
-      if ( _$LOADING && _$LOADING.parentNode ) {
-        _$LOADING.parentNode.removeChild(_$LOADING);
-      }
-      _$LOADING = null;
     }
 
     var ring = OSjs.Helpers.getServiceRing();

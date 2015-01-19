@@ -42,3 +42,28 @@ body, input, button, textarea, label, select {
   font-size : 12px;
   font-family : Sans-serif, Arial;
 }
+
+/**
+ * Loading Screen
+ */
+#LoadingScreen {
+  position : absolute;
+  width : 120px;
+  height : 180px;
+  padding : 40px;
+  top : 50%;
+  left : 50%;
+  margin-top : -110px;
+  margin-left : -80px;
+  background : #fff;
+  z-index : 9999999;
+  border-radius : 10px;
+}
+#LoadingScreen span {
+  font-size : 22px;
+  padding : 0;
+  margin : 20px;
+  display : block;
+  color : #000;
+  text-align : center;
+}

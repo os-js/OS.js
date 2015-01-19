@@ -29,32 +29,15 @@
  * @licence Simplified BSD License
  */
 
-/**
- * Loading Screen
- */
-#LoadingScreen {
-  position : absolute;
-  width : 120px;
-  height : 180px;
-  top : 50%;
-  left : 50%;
-  margin-top : -90px;
-  margin-left : -60px;
-  background : #fff;
-  z-index : 9999999;
-}
-#LoadingScreen span {
-  font-size : 22px;
-  padding : 0;
-  margin : 20px;
-  display : block;
-  color : #000;
-  text-align : center;
+#Background {
+  position : fixed;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : 1;
 }
 
-/**
- * Debug Notification
- */
 #DebugNotice {
   position : absolute;
   bottom : 5px;
@@ -68,79 +51,8 @@
   opacity : .7;
 }
 
-#DebugNotice a {
-  color : #fff;
-  text-decoration : underline;
-  font-weight : normal;
-}
-
-/**
- * Misc
- */
-
-#Loading {
-  display : block;
-  position : absolute;
-  top : 2px;
-  right : 10px;
-  width : 20px;
-  height : 20px;
-  z-index : 999999999;
-}
-
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-@-moz-keyframes spin {
-  0% { -moz-transform: rotate(0deg); }
-  100% { -moz-transform: rotate(360deg); }
-}
-@-ms-keyframes spin {
-  0% { -ms-transform: rotate(0deg); }
-  100% { -ms-transform: rotate(360deg); }
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-#Loading .loader {
-  position: relative;
-  display: inline-block;
-  margin: 0 12.5% 100px;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #000;
-  border-radius: 50%;
-
-  -webkit-animation: spin 0.75s infinite linear;
-     -moz-animation: spin 0.75s infinite linear;
-      -ms-animation: spin 0.75s infinite linear;
-          animation: spin 0.75s infinite linear;
-}
-#Loading .loader::before,
-#Loading .loader::after {
-  left: -2px;
-  top: -2px;
-  display: none;
-  position: absolute;
-  content: '';
-  width: inherit;
-  height: inherit;
-  border: inherit;
-  border-radius: inherit;
-}
-
-#Loading .loader,
-#Loading .loader::before {
-  display: inline-block;
-  border-color: transparent;
-  border-top-color: #000;
-}
-#Loading .loader::before {
-  -webkit-animation: spin 1.5s infinite ease;
-     -moz-animation: spin 1.5s infinite ease;
-      -ms-animation: spin 1.5s infinite ease;
-          animation: spin 1.5s infinite ease;
-}
+  #DebugNotice a {
+    color : #fff;
+    text-decoration : underline;
+    font-weight : normal;
+  }
