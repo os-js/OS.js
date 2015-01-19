@@ -75,7 +75,7 @@
     'TITLE_SIGNED_IN_AS_FMT' : 'Connecté en tant que: {0}',
 
     // Dialogs
-    'DIALOG_LOGOUT_TITLE' : 'Déconnexion (quitter)', // Actually located in core.js
+    'DIALOG_LOGOUT_TITLE' : 'Déconnexion (quitter)', // Actually located in session.js
     'DIALOG_LOGOUT_MSG_FMT' : 'Déconnexion de l\'utilisateur \'{0}\'.\nVoulez-vous enregistrer votre session courante ?',
 
     'DIALOG_CLOSE' : 'Fermer',

@@ -75,7 +75,7 @@
     'TITLE_SIGNED_IN_AS_FMT' : 'Logget inn som: {0}',
 
     // Dialogs
-    'DIALOG_LOGOUT_TITLE' : 'Logg ut (Avslutt)', // Actually located in core.js
+    'DIALOG_LOGOUT_TITLE' : 'Logg ut (Avslutt)', // Actually located in session.js
     'DIALOG_LOGOUT_MSG_FMT' : 'Logger ut bruker \'{0}\'.\nVil du lagre gjeldende sessjon?',
 
     'DIALOG_CLOSE' : 'Lukk',

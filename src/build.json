@@ -101,7 +101,7 @@
     "output": "dist/osjs.js",
     "files": [
       "src/javascript/utils.js",
-      "src/javascript/core.js",
+      "src/javascript/session.js",
       "src/javascript/api.js",
       "src/javascript/process.js",
       "src/javascript/application.js",

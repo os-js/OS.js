@@ -75,7 +75,7 @@
     'TITLE_SIGNED_IN_AS_FMT' : 'Angemeldet als: {0}',
 
     // Dialogs
-    'DIALOG_LOGOUT_TITLE' : 'Abmelden (Exit)', // Actually located in core.js
+    'DIALOG_LOGOUT_TITLE' : 'Abmelden (Exit)', // Actually located in session.js
     'DIALOG_LOGOUT_MSG_FMT' : 'Benutzer wird abgemeldet \'{0}\'.\nWollen Sie die aktuelle Sitzung speichern?',
 
     'DIALOG_CLOSE' : 'Schließen',

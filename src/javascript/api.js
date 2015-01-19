@@ -33,7 +33,7 @@
   /*@
    *
    * Please note that there are some other API functions declared in:
-   * - src/javascript/core.js
+   * - src/javascript/session.js
    *
    */
 

@@ -601,7 +601,7 @@ Array.prototype.unique = function(){
   );
 
   var files = [
-    'src/javascript/core.js',
+    'src/javascript/session.js',
     'src/javascript/api.js',
     'src/javascript/process.js',
     'src/javascript/application.js',

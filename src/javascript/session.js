@@ -111,7 +111,7 @@
    *
    * @return  void
    * @api     OSjs.Session.addHook()
-   * @see     core.js For a list of hooks
+   * @see     session.js For a list of hooks
    */
   function doAddHook(name, fn) {
     if ( typeof _hooks[name] !== 'undefined' ) {

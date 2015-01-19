@@ -109,7 +109,7 @@
   };
 
   /**
-   * Called after successfull login in 'core.js'
+   * Called after successfull login in 'session.js'
    *
    * @param   Function      callback        Callback function
    *

@@ -75,7 +75,7 @@
     'TITLE_SIGNED_IN_AS_FMT' : 'Вы вошли как: {0}',
 
     // Dialogs
-    'DIALOG_LOGOUT_TITLE' : 'Выйти (Выход)', // Actually located in core.js
+    'DIALOG_LOGOUT_TITLE' : 'Выйти (Выход)', // Actually located in session.js
     'DIALOG_LOGOUT_MSG_FMT' : 'Выход как пользователь: \'{0}\'.\nЖелаете сохранить текущую сессию?',
 
     'DIALOG_CLOSE' : 'Закрыть',

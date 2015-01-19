@@ -75,7 +75,7 @@
     'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
 
     // Dialogs
-    'DIALOG_LOGOUT_TITLE' : 'Log out (Exit)', // Actually located in core.js
+    'DIALOG_LOGOUT_TITLE' : 'Log out (Exit)', // Actually located in session.js
     'DIALOG_LOGOUT_MSG_FMT' : 'Logging out user \'{0}\'.\nDo you want to save current session?',
 
     'DIALOG_CLOSE' : 'Close',
