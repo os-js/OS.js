@@ -602,11 +602,16 @@ Array.prototype.unique = function(){
 
   var files = [
     'src/javascript/core.js',
-    'src/javascript/windows.js',
+    'src/javascript/api.js',
+    'src/javascript/process.js',
+    'src/javascript/application.js',
+    'src/javascript/service.js',
+    'src/javascript/window.js',
+    'src/javascript/dialog.js',
+    'src/javascript/windowmanager.js',
     'src/javascript/handler.js',
     'src/javascript/vfs.js',
     'src/javascript/guielement.js',
-    'src/javascript/dialogs.js',
     'src/javascript/utils.js',
 
     'src/javascript/helpers/default-application.js',
@@ -640,6 +645,7 @@ Array.prototype.unique = function(){
     'src/javascript/gui/toolbar.js',
     'src/javascript/gui/treeview.js',
 
+    'src/javascript/dialogs/_standard.js',
     'src/javascript/dialogs/alert.js',
     'src/javascript/dialogs/applicationchooser.js',
     'src/javascript/dialogs/color.js',
