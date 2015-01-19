@@ -39,40 +39,39 @@
 <h2>Functions</h2>
 <ul>
 <li>OSjs.Core.<a href="#osjs-core-gethandler">getHandler()</a></li>
-<li>OSjs.Core.<a href="#osjs-core-gethandler">getHandler()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-handlers-default">DefaultHandler</a> (OSjs.Handlers.Default)
+<a href="#osjs-handlers-default">_Handler</a> (OSjs.Handlers.Default)
 <ul>
-<li><a href="#defaulthandler-init">init()</a></li>
-<li><a href="#defaulthandler-destroy">destroy()</a></li>
-<li><a href="#defaulthandler-boot">boot()</a></li>
-<li><a href="#defaulthandler-login">login()</a></li>
-<li><a href="#defaulthandler-logout">logout()</a></li>
-<li><a href="#defaulthandler-loadsession">loadSession()</a></li>
-<li><a href="#defaulthandler-callapi">callAPI()</a></li>
-<li><a href="#defaulthandler-onlogin">onLogin()</a></li>
-<li><a href="#defaulthandler-onvfsrequest">onVFSRequest()</a></li>
-<li><a href="#defaulthandler-getapplicationmetadata">getApplicationMetadata()</a></li>
-<li><a href="#defaulthandler-getapplicationsmetadata">getApplicationsMetadata()</a></li>
-<li><a href="#defaulthandler-getapplicationnamebymime">getApplicationNameByMime()</a></li>
-<li><a href="#defaulthandler-getthemes">getThemes()</a></li>
-<li><a href="#defaulthandler-gettheme">getTheme()</a></li>
-<li><a href="#defaulthandler-setdefaultapplication">setDefaultApplication()</a></li>
-<li><a href="#defaulthandler-savesettings">saveSettings()</a></li>
-<li><a href="#defaulthandler-setsetting">setSetting()</a></li>
-<li><a href="#defaulthandler-getsetting">getSetting()</a></li>
-<li><a href="#defaulthandler-setusersettings">setUserSettings()</a></li>
-<li><a href="#defaulthandler-getusersettings">getUserSettings()</a></li>
-<li><a href="#defaulthandler-setusersession">setUserSession()</a></li>
-<li><a href="#defaulthandler-getusersession">getUserSession()</a></li>
-<li><a href="#defaulthandler-setapplicationsettings">setApplicationSettings()</a></li>
-<li><a href="#defaulthandler-getapplicationsettings">getApplicationSettings()</a></li>
-<li><a href="#defaulthandler-getconfig">getConfig()</a></li>
-<li><a href="#defaulthandler-getuserdata">getUserData()</a></li>
-<li><a href="#defaulthandler-getsettings">getSettings()</a></li>
+<li><a href="#_handler-init">init()</a></li>
+<li><a href="#_handler-destroy">destroy()</a></li>
+<li><a href="#_handler-boot">boot()</a></li>
+<li><a href="#_handler-login">login()</a></li>
+<li><a href="#_handler-logout">logout()</a></li>
+<li><a href="#_handler-loadsession">loadSession()</a></li>
+<li><a href="#_handler-callapi">callAPI()</a></li>
+<li><a href="#_handler-onlogin">onLogin()</a></li>
+<li><a href="#_handler-onvfsrequest">onVFSRequest()</a></li>
+<li><a href="#_handler-getapplicationmetadata">getApplicationMetadata()</a></li>
+<li><a href="#_handler-getapplicationsmetadata">getApplicationsMetadata()</a></li>
+<li><a href="#_handler-getapplicationnamebymime">getApplicationNameByMime()</a></li>
+<li><a href="#_handler-getthemes">getThemes()</a></li>
+<li><a href="#_handler-gettheme">getTheme()</a></li>
+<li><a href="#_handler-setdefaultapplication">setDefaultApplication()</a></li>
+<li><a href="#_handler-savesettings">saveSettings()</a></li>
+<li><a href="#_handler-setsetting">setSetting()</a></li>
+<li><a href="#_handler-getsetting">getSetting()</a></li>
+<li><a href="#_handler-setusersettings">setUserSettings()</a></li>
+<li><a href="#_handler-getusersettings">getUserSettings()</a></li>
+<li><a href="#_handler-setusersession">setUserSession()</a></li>
+<li><a href="#_handler-getusersession">getUserSession()</a></li>
+<li><a href="#_handler-setapplicationsettings">setApplicationSettings()</a></li>
+<li><a href="#_handler-getapplicationsettings">getApplicationSettings()</a></li>
+<li><a href="#_handler-getconfig">getConfig()</a></li>
+<li><a href="#_handler-getuserdata">getUserData()</a></li>
+<li><a href="#_handler-getsettings">getSettings()</a></li>
 </ul>
 </li>
 </ul>
@@ -89,24 +88,9 @@ Get running 'Handler' instance
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Handler</u></p>
 
 </div>
-<div class="section-function" id="osjs-core-gethandler">
-<h2 id="osjs-core-gethandler-">OSjs.Core.getHandler()</h2>
-<pre>
-Alias of 'OSjs.Handlers.getHandler()'
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Handlers.getInstance()</li>
-</ul>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Handler</u></p>
-
-</div>
 <h1>Classes</h1>
 <div class="section-class" id="osjs-handlers-default">
-<h2 id="defaulthandler">DefaultHandler</h2>
+<h2 id="_handler">_Handler</h2>
 <pre>
 Default Handler Implementation
 
@@ -124,8 +108,8 @@ OSjs.Core.getHandler();
 <li>OSjs.Handlers.Default</li>
 </ul>
 
-<div class="section-method" id="defaulthandler-init">
-<h3 id="defaulthandler-init-callback-">DefaultHandler::init(callback)</h3>
+<div class="section-method" id="_handler-init">
+<h3 id="_handler-init-callback-">_Handler::init(callback)</h3>
 <pre>
 Called upon window loaded from 'main.js'
 </pre>
@@ -156,8 +140,8 @@ Called upon window loaded from 'main.js'
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-destroy">
-<h3 id="defaulthandler-destroy-">DefaultHandler::destroy()</h3>
+<div class="section-method" id="_handler-destroy">
+<h3 id="_handler-destroy-">_Handler::destroy()</h3>
 <pre>
 Destroy the handler
 </pre>
@@ -168,8 +152,8 @@ Destroy the handler
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-boot">
-<h3 id="defaulthandler-boot-callback-">DefaultHandler::boot(callback)</h3>
+<div class="section-method" id="_handler-boot">
+<h3 id="_handler-boot-callback-">_Handler::boot(callback)</h3>
 <pre>
 Called after successfull login in 'session.js'
 </pre>
@@ -196,8 +180,8 @@ Called after successfull login in 'session.js'
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-login">
-<h3 id="defaulthandler-login-username-password-callback-">DefaultHandler::login(username, password, callback)</h3>
+<div class="section-method" id="_handler-login">
+<h3 id="_handler-login-username-password-callback-">_Handler::login(username, password, callback)</h3>
 <pre>
 Default login method
 
@@ -238,8 +222,8 @@ NOTE: This is just a placeholder.
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-logout">
-<h3 id="defaulthandler-logout-callback-">DefaultHandler::logout(callback)</h3>
+<div class="section-method" id="_handler-logout">
+<h3 id="_handler-logout-callback-">_Handler::logout(callback)</h3>
 <pre>
 Default logout method
 
@@ -272,8 +256,8 @@ NOTE: You should call this in your implemented handler
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-loadsession">
-<h3 id="defaulthandler-loadsession-callback-">DefaultHandler::loadSession(callback)</h3>
+<div class="section-method" id="_handler-loadsession">
+<h3 id="_handler-loadsession-callback-">_Handler::loadSession(callback)</h3>
 <pre>
 Default method to restore last running session
 </pre>
@@ -300,8 +284,8 @@ Default method to restore last running session
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-callapi">
-<h3 id="defaulthandler-callapi-">DefaultHandler::callAPI()</h3>
+<div class="section-method" id="_handler-callapi">
+<h3 id="_handler-callapi-">_Handler::callAPI()</h3>
 <pre>
 Default method to perform a call to the backend (API)
 
@@ -315,8 +299,8 @@ Use this shorthand method: API.call() instead :)
 </ul>
 
 </div>
-<div class="section-method" id="defaulthandler-onlogin">
-<h3 id="defaulthandler-onlogin-userdata-callback-">DefaultHandler::onLogin(userData, callback)</h3>
+<div class="section-method" id="_handler-onlogin">
+<h3 id="_handler-onlogin-userdata-callback-">_Handler::onLogin(userData, callback)</h3>
 <pre>
 Called when login() is finished
 </pre>
@@ -348,8 +332,8 @@ Called when login() is finished
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-onvfsrequest">
-<h3 id="defaulthandler-onvfsrequest-vfsmodule-vfsmethod-vfsarguments-callback-">DefaultHandler::onVFSRequest(vfsModule, vfsMethod, vfsArguments, callback)</h3>
+<div class="section-method" id="_handler-onvfsrequest">
+<h3 id="_handler-onvfsrequest-vfsmodule-vfsmethod-vfsarguments-callback-">_Handler::onVFSRequest(vfsModule, vfsMethod, vfsArguments, callback)</h3>
 <pre>
 Called upon a VFS request
 
@@ -393,8 +377,8 @@ You can use this to interrupt operations
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getapplicationmetadata">
-<h3 id="defaulthandler-getapplicationmetadata-">DefaultHandler::getApplicationMetadata()</h3>
+<div class="section-method" id="_handler-getapplicationmetadata">
+<h3 id="_handler-getapplicationmetadata-">_Handler::getApplicationMetadata()</h3>
 <pre>
 Get metadata for application by class-name
 </pre>
@@ -405,8 +389,8 @@ Get metadata for application by class-name
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON data</em></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getapplicationsmetadata">
-<h3 id="defaulthandler-getapplicationsmetadata-">DefaultHandler::getApplicationsMetadata()</h3>
+<div class="section-method" id="_handler-getapplicationsmetadata">
+<h3 id="_handler-getapplicationsmetadata-">_Handler::getApplicationsMetadata()</h3>
 <pre>
 Get all package metadata
 </pre>
@@ -417,8 +401,8 @@ Get all package metadata
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON data</em></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getapplicationnamebymime">
-<h3 id="defaulthandler-getapplicationnamebymime-mime-fname-forcelist-callback-">DefaultHandler::getApplicationNameByMime(mime, fname, forceList, callback)</h3>
+<div class="section-method" id="_handler-getapplicationnamebymime">
+<h3 id="_handler-getapplicationnamebymime-mime-fname-forcelist-callback-">_Handler::getApplicationNameByMime(mime, fname, forceList, callback)</h3>
 <pre>
 Get a list of application supporting mime type
 
@@ -462,8 +446,8 @@ FIXME: There is a unused parameter here!
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getthemes">
-<h3 id="defaulthandler-getthemes-">DefaultHandler::getThemes()</h3>
+<div class="section-method" id="_handler-getthemes">
+<h3 id="_handler-getthemes-">_Handler::getThemes()</h3>
 <pre>
 Gets a list of all themes metadata
 </pre>
@@ -474,8 +458,8 @@ Gets a list of all themes metadata
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON</em></p>
 
 </div>
-<div class="section-method" id="defaulthandler-gettheme">
-<h3 id="defaulthandler-gettheme-">DefaultHandler::getTheme()</h3>
+<div class="section-method" id="_handler-gettheme">
+<h3 id="_handler-gettheme-">_Handler::getTheme()</h3>
 <pre>
 Gets a theme by name
 </pre>
@@ -486,8 +470,8 @@ Gets a theme by name
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON Data</em></p>
 
 </div>
-<div class="section-method" id="defaulthandler-setdefaultapplication">
-<h3 id="defaulthandler-setdefaultapplication-mime-app-callback-">DefaultHandler::setDefaultApplication(mime, app, callback)</h3>
+<div class="section-method" id="_handler-setdefaultapplication">
+<h3 id="_handler-setdefaultapplication-mime-app-callback-">_Handler::setDefaultApplication(mime, app, callback)</h3>
 <pre>
 Set the default application for given mime type
 </pre>
@@ -524,8 +508,8 @@ Set the default application for given mime type
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-savesettings">
-<h3 id="defaulthandler-savesettings-callback-">DefaultHandler::saveSettings(callback)</h3>
+<div class="section-method" id="_handler-savesettings">
+<h3 id="_handler-savesettings-callback-">_Handler::saveSettings(callback)</h3>
 <pre>
 Internal method for saving settings (wrapper)
 
@@ -556,8 +540,8 @@ NOTE: This is should be called from the implemented handler
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-setsetting">
-<h3 id="defaulthandler-setsetting-category-name-value-callback-save-merge-">DefaultHandler::setSetting(category, name, value, callback, save, merge)</h3>
+<div class="section-method" id="_handler-setsetting">
+<h3 id="_handler-setsetting-category-name-value-callback-save-merge-">_Handler::setSetting(category, name, value, callback, save, merge)</h3>
 <pre>
 Sets a setting
 </pre>
@@ -609,8 +593,8 @@ Sets a setting
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getsetting">
-<h3 id="defaulthandler-getsetting-category-name-callback-defaultvalue-">DefaultHandler::getSetting(category, name, callback, defaultValue)</h3>
+<div class="section-method" id="_handler-getsetting">
+<h3 id="_handler-getsetting-category-name-callback-defaultvalue-">_Handler::getSetting(category, name, callback, defaultValue)</h3>
 <pre>
 Gets a setting
 </pre>
@@ -652,8 +636,8 @@ Gets a setting
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-setusersettings">
-<h3 id="defaulthandler-setusersettings-name-values-callback-">DefaultHandler::setUserSettings(name, values, callback)</h3>
+<div class="section-method" id="_handler-setusersettings">
+<h3 id="_handler-setusersettings-name-values-callback-">_Handler::setUserSettings(name, values, callback)</h3>
 <pre>
 Wrapper for setting user settings
 </pre>
@@ -690,8 +674,8 @@ Wrapper for setting user settings
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getusersettings">
-<h3 id="defaulthandler-getusersettings-name-callback-">DefaultHandler::getUserSettings(name, callback)</h3>
+<div class="section-method" id="_handler-getusersettings">
+<h3 id="_handler-getusersettings-name-callback-">_Handler::getUserSettings(name, callback)</h3>
 <pre>
 Wrapper for getting user settings
 </pre>
@@ -723,8 +707,8 @@ Wrapper for getting user settings
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-setusersession">
-<h3 id="defaulthandler-setusersession-session-callback-">DefaultHandler::setUserSession(session, callback)</h3>
+<div class="section-method" id="_handler-setusersession">
+<h3 id="_handler-setusersession-session-callback-">_Handler::setUserSession(session, callback)</h3>
 <pre>
 Wrapper for setting user session
 </pre>
@@ -756,8 +740,8 @@ Wrapper for setting user session
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getusersession">
-<h3 id="defaulthandler-getusersession-callback-">DefaultHandler::getUserSession(callback)</h3>
+<div class="section-method" id="_handler-getusersession">
+<h3 id="_handler-getusersession-callback-">_Handler::getUserSession(callback)</h3>
 <pre>
 Wrapper for getting user session
 </pre>
@@ -784,8 +768,8 @@ Wrapper for getting user session
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-setapplicationsettings">
-<h3 id="defaulthandler-setapplicationsettings-app-settings-callback-">DefaultHandler::setApplicationSettings(app, settings, callback)</h3>
+<div class="section-method" id="_handler-setapplicationsettings">
+<h3 id="_handler-setapplicationsettings-app-settings-callback-">_Handler::setApplicationSettings(app, settings, callback)</h3>
 <pre>
 Wrapper for setting application settings
 </pre>
@@ -822,8 +806,8 @@ Wrapper for setting application settings
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getapplicationsettings">
-<h3 id="defaulthandler-getapplicationsettings-app-callback-">DefaultHandler::getApplicationSettings(app, callback)</h3>
+<div class="section-method" id="_handler-getapplicationsettings">
+<h3 id="_handler-getapplicationsettings-app-callback-">_Handler::getApplicationSettings(app, callback)</h3>
 <pre>
 Wrapper for getting application settings
 </pre>
@@ -855,8 +839,8 @@ Wrapper for getting application settings
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getconfig">
-<h3 id="defaulthandler-getconfig-key-">DefaultHandler::getConfig(key)</h3>
+<div class="section-method" id="_handler-getconfig">
+<h3 id="_handler-getconfig-key-">_Handler::getConfig(key)</h3>
 <pre>
 Get entire configuration
 </pre>
@@ -883,8 +867,8 @@ Get entire configuration
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>All settings or just value by key</em></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getuserdata">
-<h3 id="defaulthandler-getuserdata-">DefaultHandler::getUserData()</h3>
+<div class="section-method" id="_handler-getuserdata">
+<h3 id="_handler-getuserdata-">_Handler::getUserData()</h3>
 <pre>
 Get data for logged in user
 </pre>
@@ -895,8 +879,8 @@ Get data for logged in user
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON With user data</em></p>
 
 </div>
-<div class="section-method" id="defaulthandler-getsettings">
-<h3 id="defaulthandler-getsettings-">DefaultHandler::getSettings()</h3>
+<div class="section-method" id="_handler-getsettings">
+<h3 id="_handler-getsettings-">_Handler::getSettings()</h3>
 <pre>
 Get the settings manager
 </pre>
@@ -908,7 +892,7 @@ Get the settings manager
 
 </div>
 </div>
-<p><i>Generated: Mon Jan 19 2015 18:47:25 GMT+0100 (CET)</i></p>
+<p><i>Generated: Mon Jan 19 2015 20:13:16 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
