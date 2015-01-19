@@ -37,7 +37,7 @@
    * @param   Function        onClose Callback on close => fn(button)
    * @param   Object          args    List of arguments (Will be passed on to _StandardDialog)
    *
-   * @api OSjs.Dialogs.ConfirmDialog
+   * @api OSjs.Dialogs.Confirm
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

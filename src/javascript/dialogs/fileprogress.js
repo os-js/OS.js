@@ -35,7 +35,7 @@
    *
    * @param   String          title   Dialog title/message
    *
-   * @api OSjs.Dialogs.FileProgressDialog
+   * @api OSjs.Dialogs.FileProgress
    * @see OSjs.Core.DialogWindow
    *
    * @extends DialogWindow
@@ -84,7 +84,7 @@
    *
    * @return  void
    *
-   * @method  FileProgressDialog::setDescription()
+   * @method  FileProgress::setDescription()
    */
   FileProgressDialog.prototype.setDescription = function(d) {
     if ( !this.$desc ) { return; }
@@ -98,7 +98,7 @@
    *
    * @return  void
    *
-   * @method  FileProgressDialog::setProgress()
+   * @method  FileProgress::setProgress()
    */
   FileProgressDialog.prototype.setProgress = function(p) {
     var el = this._getGUIElement('FileProgressBar');

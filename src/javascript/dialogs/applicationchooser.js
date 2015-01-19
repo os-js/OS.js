@@ -37,7 +37,7 @@
    * @param   Array           list    The list of applications
    * @param   Function        onClose Callback on close => fn(button)
    *
-   * @api OSjs.Dialogs.ApplicationChooserDialog
+   * @api OSjs.Dialogs.ApplicationChooser
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

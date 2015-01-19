@@ -47,7 +47,7 @@
    * @option args String  defaultFilename       Default filename
    * @option args String  defaultFilemime       Default filemime (defaults to given MIME)
    *
-   * @api OSjs.Dialogs.FileDialog
+   * @api OSjs.Dialogs.File
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

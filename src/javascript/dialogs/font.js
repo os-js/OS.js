@@ -46,7 +46,7 @@
    * @option  args    int       minSize         Minimum font size (optional)
    * @option  args    int       maxSize         Maximum font size (optional)
    *
-   * @api OSjs.Dialogs.FontDialog
+   * @api OSjs.Dialogs.Font
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

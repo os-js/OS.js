@@ -38,7 +38,7 @@
    * @param   Function        onClose     Callback on close => fn(button, input)
    * @param   Function        onCreated   Callback on input init/create
    *
-   * @api OSjs.Dialogs.InputDialog
+   * @api OSjs.Dialogs.Input
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

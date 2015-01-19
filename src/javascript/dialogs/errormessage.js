@@ -35,7 +35,7 @@
    *
    * THIS IS FOR INTERNAL USAGE ONLY
    *
-   * @api OSjs.Dialogs.ErrorDialog
+   * @api OSjs.Dialogs.Error
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

@@ -36,7 +36,7 @@
    * @param   OSjs.VFS.File   file    The requested File
    * @param   Function        onClose Callback on close => fn(button)
    *
-   * @api OSjs.Dialogs.FileInformationDialog
+   * @api OSjs.Dialogs.FileInformation
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

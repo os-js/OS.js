@@ -39,7 +39,7 @@
    * @param   [File]          file    File to upload (If null, you will be asked)
    * @param   Function        onClose Callback on close => fn(button)
    *
-   * @api OSjs.Dialogs.FileUploadDialog
+   * @api OSjs.Dialogs.FileUpload
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog

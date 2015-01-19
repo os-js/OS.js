@@ -36,7 +36,7 @@
    * @param   Object          opts    Options
    * @param   Function        onClose Callback on close => fn(button, rgb, hex, alpha)
    *
-   * @api OSjs.Dialogs.ColorDialog
+   * @api OSjs.Dialogs.Color
    * @see OSjs.Dialogs._StandardDialog
    *
    * @extends _StandardDialog
