@@ -40,6 +40,12 @@
 
   /**
    * Dialog Window
+   *
+   * A simple wrapper with some pre-defined options
+   *
+   * @see OSjs.Core.Window
+   * @api OSjs.Core.DialogWindow
+   * @class DialogWindow
    */
   var DialogWindow = function(/* See Window */) {
     Window.apply(this, arguments);

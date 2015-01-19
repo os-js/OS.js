@@ -59,7 +59,7 @@
    * @option  args    Array       buttons   List of buttons: ['ok', 'cancel', 'close', {name:'custom', label:'Custom'}]
    *
    * @see     OSjs.Core.DialogWindow
-   * @api     OSjs.Core.StandardDialog
+   * @api     OSjs.Dialogs.StandardDialog
    * @extends DialogWindow
    * @class
    */
