@@ -35,86 +35,109 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/panedview.js</i></p>
+<p><i>src/javascript/windowmanager.js</i></p>
 <h2>Functions</h2>
 <ul>
+<li>OSjs.API.<a href="#osjs-api-getwminstance">getWMInstance()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-panedview">PanedView</a> (OSjs.GUI.PanedView)
+<a href="#osjs-core-windowmanager">WindowManager</a> (OSjs.Core.WindowManager)
 <ul>
-<li><a href="#panedview-createview">createView()</a></li>
-<li><a href="#panedview-additem">addItem()</a></li>
+<li><a href="#windowmanager-destroy">destroy()</a></li>
+<li><a href="#windowmanager-init">init()</a></li>
+<li><a href="#windowmanager-getwindow">getWindow()</a></li>
+<li><a href="#windowmanager-addwindow">addWindow()</a></li>
+<li><a href="#windowmanager-removewindow">removeWindow()</a></li>
+<li><a href="#windowmanager-applysettings">applySettings()</a></li>
+<li><a href="#windowmanager-onkeydown">onKeyDown()</a></li>
+<li><a href="#windowmanager-getdefaultsettings">getDefaultSettings()</a></li>
+<li><a href="#windowmanager-getpanel">getPanel()</a></li>
+<li><a href="#windowmanager-getpanels">getPanels()</a></li>
+<li><a href="#windowmanager-gettheme">getTheme()</a></li>
+<li><a href="#windowmanager-getthemes">getThemes()</a></li>
+<li><a href="#windowmanager-setsetting">setSetting()</a></li>
+<li><a href="#windowmanager-getwindowspace">getWindowSpace()</a></li>
+<li><a href="#windowmanager-getwindowposition">getWindowPosition()</a></li>
+<li><a href="#windowmanager-getsetting">getSetting()</a></li>
+<li><a href="#windowmanager-getsettings">getSettings()</a></li>
+<li><a href="#windowmanager-getwindows">getWindows()</a></li>
+<li><a href="#windowmanager-getcurrentwindow">getCurrentWindow()</a></li>
+<li><a href="#windowmanager-setcurrentwindow">setCurrentWindow()</a></li>
+<li><a href="#windowmanager-getlastwindow">getLastWindow()</a></li>
+<li><a href="#windowmanager-setlastwindow">setLastWindow()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-gui-panedview">
-<h2 id="panedview">PanedView</h2>
+<div class="section-function" id="osjs-api-getwminstance">
+<h2 id="osjs-api-getwminstance-">OSjs.API.getWMInstance()</h2>
 <pre>
-PanedView
+Get the current WindowManager instance
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>WindowManager</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-windowmanager">
+<h2 id="windowmanager">WindowManager</h2>
+<pre>
+WindowManager Process Class
+
+The default implementation of this is in apps/CoreWM/main.js
+
+NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
+
+OSjs.API.getWMInstance();
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.PanedView</li>
+<li>OSjs.Core.WindowManager</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>GUIElement</li>
+<li>Process</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
-<li>OSjs.GUI.GUIElement</li>
+<li>OSjs.Core.Process</li>
 </ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>Name of GUIElement (unique)</td>
-</tr>
-<tr>
-<td>opts</td>
-<td>Object</td>
-<td>A list of options</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>orientation</td>
-<td>String</td>
-<td>The Orientation (Default=horizontal)</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
 
-<div class="section-method" id="panedview-createview">
-<h3 id="panedview-createview-name-otps-">PanedView::createView(name, otps)</h3>
+<div class="section-method" id="windowmanager-destroy">
+<h3 id="windowmanager-destroy-">WindowManager::destroy()</h3>
 <pre>
-Create a view inside the Pane
+Destroy the WindowManager
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Process::destroy()</li>
+</ul>
+
+</div>
+<div class="section-method" id="windowmanager-init">
+<h3 id="windowmanager-init-">WindowManager::init()</h3>
+<pre>
+Initialize the WindowManager
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindow">
+<h3 id="windowmanager-getwindow-name-">WindowManager::getWindow(name)</h3>
+<pre>
+Get a Window by name
 </pre>
 
 
@@ -131,42 +154,18 @@ Create a view inside the Pane
 <tr>
 <td>name</td>
 <td>String</td>
-<td>View Name (unique)</td>
-</tr>
-<tr>
-<td>otps</td>
-<td>Object</td>
-<td>View Options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>width</td>
-<td>int</td>
-<td>View width</td>
+<td>Window name</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The container</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u></p>
 
 </div>
-<div class="section-method" id="panedview-additem">
-<h3 id="panedview-additem-el-name-">PanedView::addItem(el, name)</h3>
+<div class="section-method" id="windowmanager-addwindow">
+<h3 id="windowmanager-addwindow-w-focus-">WindowManager::addWindow(w, focus)</h3>
 <pre>
-Adds a GUIElement or DOMElement to the given Pane
-
-This also creates the pane
+Add a Window
 </pre>
 
 
@@ -181,14 +180,354 @@ This also creates the pane
 </thead>
 <tbody>
 <tr>
-<td>el</td>
-<td>Mixed</td>
-<td>The element</td>
+<td>w</td>
+<td>Window</td>
+<td>Window reference</td>
 </tr>
 <tr>
-<td>name</td>
+<td>focus</td>
+<td>boolean</td>
+<td>Focus the window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>The added window</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-removewindow">
+<h3 id="windowmanager-removewindow-w-">WindowManager::removeWindow(w)</h3>
+<pre>
+Remove a Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-applysettings">
+<h3 id="windowmanager-applysettings-settings-force-">WindowManager::applySettings(settings, force)</h3>
+<pre>
+Set WindowManager settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>settings</td>
+<td>Object</td>
+<td>JSON Settings</td>
+</tr>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>If forced, no merging will take place</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-onkeydown">
+<h3 id="windowmanager-onkeydown-ev-win-">WindowManager::onKeyDown(ev, win)</h3>
+<pre>
+When Key Down Event received
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>Active window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getdefaultsettings">
+<h3 id="windowmanager-getdefaultsettings-">WindowManager::getDefaultSettings()</h3>
+<pre>
+Get default Settings
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON Data</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getpanel">
+<h3 id="windowmanager-getpanel-">WindowManager::getPanel()</h3>
+<pre>
+Get panel
+</pre>
+
+
+
+</div>
+<div class="section-method" id="windowmanager-getpanels">
+<h3 id="windowmanager-getpanels-">WindowManager::getPanels()</h3>
+<pre>
+Gets all panels
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Panel List</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-gettheme">
+<h3 id="windowmanager-gettheme-">WindowManager::getTheme()</h3>
+<pre>
+Gets current theme
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Theme name or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getthemes">
+<h3 id="windowmanager-getthemes-">WindowManager::getThemes()</h3>
+<pre>
+Gets a list of themes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>The list of themes</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-setsetting">
+<h3 id="windowmanager-setsetting-k-v-">WindowManager::setSetting(k, v)</h3>
+<pre>
+Sets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
 <td>String</td>
-<td>View name</td>
+<td>Key</td>
+</tr>
+<tr>
+<td>v</td>
+<td>Mixed</td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindowspace">
+<h3 id="windowmanager-getwindowspace-">WindowManager::getWindowSpace()</h3>
+<pre>
+Gets the rectangle for window space
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>{top:, left:, width:, height:}</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindowposition">
+<h3 id="windowmanager-getwindowposition-">WindowManager::getWindowPosition()</h3>
+<pre>
+Get next window position
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>{x:, y:}</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getsetting">
+<h3 id="windowmanager-getsetting-k-">WindowManager::getSetting(k)</h3>
+<pre>
+Gets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Key</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>Setting value or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getsettings">
+<h3 id="windowmanager-getsettings-">WindowManager::getSettings()</h3>
+<pre>
+Gets all settings
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON With all settings</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindows">
+<h3 id="windowmanager-getwindows-">WindowManager::getWindows()</h3>
+<pre>
+Gets all Windows
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>List of all Windows</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getcurrentwindow">
+<h3 id="windowmanager-getcurrentwindow-">WindowManager::getCurrentWindow()</h3>
+<pre>
+Gets current Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Current Window or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-setcurrentwindow">
+<h3 id="windowmanager-setcurrentwindow-w-">WindowManager::setCurrentWindow(w)</h3>
+<pre>
+Sets the current Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getlastwindow">
+<h3 id="windowmanager-getlastwindow-">WindowManager::getLastWindow()</h3>
+<pre>
+Gets previous Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Current Window or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-setlastwindow">
+<h3 id="windowmanager-setlastwindow-w-">WindowManager::setLastWindow(w)</h3>
+<pre>
+Sets the last Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window</td>
 </tr>
 </tbody>
 </table>

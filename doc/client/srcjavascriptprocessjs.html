@@ -35,39 +35,160 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/panedview.js</i></p>
+<p><i>src/javascript/process.js</i></p>
 <h2>Functions</h2>
 <ul>
+<li>OSjs.API.<a href="#osjs-api-killall">killAll()</a></li>
+<li>OSjs.API.<a href="#osjs-api-kill">kill()</a></li>
+<li>OSjs.API.<a href="#osjs-api-message">message()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getprocess">getProcess()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getprocesses">getProcesses()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-panedview">PanedView</a> (OSjs.GUI.PanedView)
+<a href="#osjs-core-process">Process</a> (OSjs.Core.Process)
 <ul>
-<li><a href="#panedview-createview">createView()</a></li>
-<li><a href="#panedview-additem">addItem()</a></li>
+<li><a href="#process-destroy">destroy()</a></li>
+<li><a href="#process-_onmessage">_onMessage()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-gui-panedview">
-<h2 id="panedview">PanedView</h2>
+<div class="section-function" id="osjs-api-killall">
+<h2 id="osjs-api-killall-">OSjs.API.killAll()</h2>
 <pre>
-PanedView
+Kills all processes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-kill">
+<h2 id="osjs-api-kill-pid-">OSjs.API.kill(pid)</h2>
+<pre>
+Kills a process
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pid</td>
+<td>int</td>
+<td>Process ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-message">
+<h2 id="osjs-api-message-msg-opts-">OSjs.API.message(msg, opts)</h2>
+<pre>
+Sends a message to all processes
+
+Example: VFS uses this to signal file changes etc.
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Process::_onMessage()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>msg</td>
+<td>String</td>
+<td>Message name</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-getprocess">
+<h2 id="osjs-api-getprocess-name-first-">OSjs.API.getProcess(name, first)</h2>
+<pre>
+Get a process by name
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Process Name</td>
+</tr>
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>Return the first found</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Process</u> <em>Or an Array of Processes</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getprocesses">
+<h2 id="osjs-api-getprocesses-">OSjs.API.getProcesses()</h2>
+<pre>
+Get all processes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-process">
+<h2 id="process">Process</h2>
+<pre>
+Process Template Class
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.PanedView</li>
-</ul>
-<h4 id="extends">Extends</h4>
-<ul>
-<li>GUIElement</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.GUI.GUIElement</li>
+<li>OSjs.Core.Process</li>
 </ul>
 <h4 id="constructor">Constructor</h4>
 <table>
@@ -82,39 +203,16 @@ PanedView
 <tr>
 <td>name</td>
 <td>String</td>
-<td>Name of GUIElement (unique)</td>
-</tr>
-<tr>
-<td>opts</td>
-<td>Object</td>
-<td>A list of options</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>orientation</td>
-<td>String</td>
-<td>The Orientation (Default=horizontal)</td>
+<td>Process Name</td>
 </tr>
 </tbody>
 </table>
 <p>&nbsp;</p>
 
-<div class="section-method" id="panedview-createview">
-<h3 id="panedview-createview-name-otps-">PanedView::createView(name, otps)</h3>
+<div class="section-method" id="process-destroy">
+<h3 id="process-destroy-kill-">Process::destroy(kill)</h3>
 <pre>
-Create a view inside the Pane
+Destroys the process
 </pre>
 
 
@@ -129,69 +227,24 @@ Create a view inside the Pane
 </thead>
 <tbody>
 <tr>
-<td>name</td>
-<td>String</td>
-<td>View Name (unique)</td>
-</tr>
-<tr>
-<td>otps</td>
-<td>Object</td>
-<td>View Options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>width</td>
-<td>int</td>
-<td>View width</td>
+<td>kill</td>
+<td>boolean</td>
+<td>Force kill ?</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The container</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
 
 </div>
-<div class="section-method" id="panedview-additem">
-<h3 id="panedview-additem-el-name-">PanedView::addItem(el, name)</h3>
+<div class="section-method" id="process-_onmessage">
+<h3 id="process-_onmessage-">Process::_onMessage()</h3>
 <pre>
-Adds a GUIElement or DOMElement to the given Pane
-
-This also creates the pane
+Placeholder for messages sendt via API
 </pre>
 
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>el</td>
-<td>Mixed</td>
-<td>The element</td>
-</tr>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>View name</td>
-</tr>
-</tbody>
-</table>
+
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 

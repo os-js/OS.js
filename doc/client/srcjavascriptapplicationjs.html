@@ -35,39 +35,52 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/panedview.js</i></p>
+<p><i>src/javascript/application.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-panedview">PanedView</a> (OSjs.GUI.PanedView)
+<a href="#osjs-core-application">Application</a> (OSjs.Core.Application)
 <ul>
-<li><a href="#panedview-createview">createView()</a></li>
-<li><a href="#panedview-additem">addItem()</a></li>
+<li><a href="#application-init">init()</a></li>
+<li><a href="#application-destroy">destroy()</a></li>
+<li><a href="#application-_onmessage">_onMessage()</a></li>
+<li><a href="#application-_call">_call()</a></li>
+<li><a href="#application-_createdialog">_createDialog()</a></li>
+<li><a href="#application-_addwindow">_addWindow()</a></li>
+<li><a href="#application-_removewindow">_removeWindow()</a></li>
+<li><a href="#application-_getwindow">_getWindow()</a></li>
+<li><a href="#application-_getwindowsbyname">_getWindowsByName()</a></li>
+<li><a href="#application-_getwindowsbytag">_getWindowsByTag()</a></li>
+<li><a href="#application-_getwindows">_getWindows()</a></li>
+<li><a href="#application-_getsettings">_getSettings()</a></li>
+<li><a href="#application-_setsetting">_setSetting()</a></li>
+<li><a href="#application-_getargument">_getArgument()</a></li>
+<li><a href="#application-_setargument">_setArgument()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-panedview">
-<h2 id="panedview">PanedView</h2>
+<div class="section-class" id="osjs-core-application">
+<h2 id="application">Application</h2>
 <pre>
-PanedView
+Application Class
+
+The 'Process arguments' is a JSON object with the arguments the
+
+Applications was launched with. Just like 'argv'
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.PanedView</li>
+<li>OSjs.Core.Application</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>GUIElement</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.GUI.GUIElement</li>
+<li>Process</li>
 </ul>
 <h4 id="constructor">Constructor</h4>
 <table>
@@ -82,39 +95,31 @@ PanedView
 <tr>
 <td>name</td>
 <td>String</td>
-<td>Name of GUIElement (unique)</td>
+<td>Process name</td>
 </tr>
 <tr>
-<td>opts</td>
+<td>args</td>
 <td>Object</td>
-<td>A list of options</td>
+<td>Process arguments</td>
 </tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
 <tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
+<td>metadata</td>
+<td>Object</td>
+<td>Application metadata</td>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>orientation</td>
-<td>String</td>
-<td>The Orientation (Default=horizontal)</td>
+<td>settings</td>
+<td>Object</td>
+<td>Application settings</td>
 </tr>
 </tbody>
 </table>
 <p>&nbsp;</p>
 
-<div class="section-method" id="panedview-createview">
-<h3 id="panedview-createview-name-otps-">PanedView::createView(name, otps)</h3>
+<div class="section-method" id="application-init">
+<h3 id="application-init-settings-metadata-">Application::init(settings, metadata)</h3>
 <pre>
-Create a view inside the Pane
+Initialize the Application
 </pre>
 
 
@@ -129,44 +134,38 @@ Create a view inside the Pane
 </thead>
 <tbody>
 <tr>
-<td>name</td>
-<td>String</td>
-<td>View Name (unique)</td>
-</tr>
-<tr>
-<td>otps</td>
+<td>settings</td>
 <td>Object</td>
-<td>View Options</td>
+<td>Settings JSON</td>
 </tr>
-</tbody>
-</table>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
 <tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>width</td>
-<td>int</td>
-<td>View width</td>
+<td>metadata</td>
+<td>Object</td>
+<td>Metadata JSON</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The container</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="panedview-additem">
-<h3 id="panedview-additem-el-name-">PanedView::addItem(el, name)</h3>
+<div class="section-method" id="application-destroy">
+<h3 id="application-destroy-">Application::destroy()</h3>
 <pre>
-Adds a GUIElement or DOMElement to the given Pane
+Destroy the application
+</pre>
 
-This also creates the pane
+
+<h4 id="see">See</h4>
+<ul>
+<li>Process::destroy()</li>
+</ul>
+
+</div>
+<div class="section-method" id="application-_onmessage">
+<h3 id="application-_onmessage-obj-msg-args-">Application::_onMessage(obj, msg, args)</h3>
+<pre>
+Application has received a message
 </pre>
 
 
@@ -181,14 +180,340 @@ This also creates the pane
 </thead>
 <tbody>
 <tr>
-<td>el</td>
-<td>Mixed</td>
-<td>The element</td>
+<td>obj</td>
+<td>Object</td>
+<td>Where it came from</td>
 </tr>
 <tr>
-<td>name</td>
+<td>msg</td>
 <td>String</td>
-<td>View name</td>
+<td>Name of message</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Message arguments</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="application-_call">
+<h3 id="application-_call-method-args-onsuccess-onerror-">Application::_call(method, args, onSuccess, onError)</h3>
+<pre>
+Call the ApplicationAPI
+
+This is used for calling 'api.php' or 'api.js' in your Application.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>method</td>
+<td>String</td>
+<td>Name of method</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Arguments in JSON</td>
+</tr>
+<tr>
+<td>onSuccess</td>
+<td>Function</td>
+<td>When request is done callback fn(result)</td>
+</tr>
+<tr>
+<td>onError</td>
+<td>Function</td>
+<td>When an error occured fn(error)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="application-_createdialog">
+<h3 id="application-_createdialog-classname-args-parentclass-">Application::_createDialog(className, args, parentClass)</h3>
+<pre>
+Wrapper for creating dialogs
+
+Using this function will add them as children, making sure they will
+
+be destroyed on close.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>className</td>
+<td>String</td>
+<td>ClassName in OSjs.Dialogs namespace</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Array</td>
+<td>Array of arguments for constructor</td>
+</tr>
+<tr>
+<td>parentClass</td>
+<td>Window</td>
+<td>The parent window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Or false on error</em></p>
+
+</div>
+<div class="section-method" id="application-_addwindow">
+<h3 id="application-_addwindow-w-">Application::_addWindow(w)</h3>
+<pre>
+Add a window to the application
+
+This will automatically add it to the WindowManager and show it to you
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>The Window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u></p>
+
+</div>
+<div class="section-method" id="application-_removewindow">
+<h3 id="application-_removewindow-w-">Application::_removeWindow(w)</h3>
+<pre>
+Removes given Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>The Windo</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="application-_getwindow">
+<h3 id="application-_getwindow-checkfor-key-">Application::_getWindow(checkfor, key)</h3>
+<pre>
+Gets a Window by X
+
+If you specify 'tag' the result will end with an Array because
+
+these are not unique.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>checkfor</td>
+<td>String</td>
+<td>The argument to check for</td>
+</tr>
+<tr>
+<td>key</td>
+<td>Mixed</td>
+<td>What to match against</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Or null on error or nothing</em></p>
+
+</div>
+<div class="section-method" id="application-_getwindowsbyname">
+<h3 id="application-_getwindowsbyname-">Application::_getWindowsByName()</h3>
+<pre>
+Get a Window by Name
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Application::_getWindow()</li>
+</ul>
+
+</div>
+<div class="section-method" id="application-_getwindowsbytag">
+<h3 id="application-_getwindowsbytag-">Application::_getWindowsByTag()</h3>
+<pre>
+Get Windows(!) by Tag
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Application::_getWindow()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<div class="section-method" id="application-_getwindows">
+<h3 id="application-_getwindows-">Application::_getWindows()</h3>
+<pre>
+Get a list of all windows
+
+@retrun Array
+</pre>
+
+
+
+</div>
+<div class="section-method" id="application-_getsettings">
+<h3 id="application-_getsettings-">Application::_getSettings()</h3>
+<pre>
+Get the sessions JSON
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>the current settings</em></p>
+
+</div>
+<div class="section-method" id="application-_setsetting">
+<h3 id="application-_setsetting-k-v-save-savecallback-">Application::_setSetting(k, v, save, saveCallback)</h3>
+<pre>
+Set a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Key</td>
+</tr>
+<tr>
+<td>v</td>
+<td>String</td>
+<td>Value</td>
+</tr>
+<tr>
+<td>save</td>
+<td>boolean</td>
+<td>Immediately save settings ?</td>
+</tr>
+<tr>
+<td>saveCallback</td>
+<td>Function</td>
+<td>If you save, this will be called when done</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="application-_getargument">
+<h3 id="application-_getargument-">Application::_getArgument()</h3>
+<pre>
+Get a launch/session argument
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>Argument value or null</em></p>
+
+</div>
+<div class="section-method" id="application-_setargument">
+<h3 id="application-_setargument-k-v-">Application::_setArgument(k, v)</h3>
+<pre>
+Set a launch/session argument
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Key</td>
+</tr>
+<tr>
+<td>v</td>
+<td>String</td>
+<td>Value</td>
 </tr>
 </tbody>
 </table>

@@ -35,108 +35,262 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/vfs.js</i></p>
-<pre>
-  This is a wrapper for handling all VFS functions
-  read() write() scandir() and so on.
-
-
-  See 'src/javascript/vfs/' for the specific modules.
-
-
-  You should read the information below!
-
-
-  ---------------------------------------------------------------------------
-
-
-  Functions that take 'metadata' (File Metadata) as an argument (like all of them)
-  it expects you to use an instance of OSjs.VFS.File()
-
-
-     VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
-
-
-  ---------------------------------------------------------------------------
-
-
-  By default all functions that read data will return ArrayBuffer, but you can also return:
-     String
-     dataSource
-     TODO: Blob ?
-
-
-  ---------------------------------------------------------------------------
-
-
-  Functions that take 'data' (File Data) as an argument supports these types:
-
-
-     File                      Browser internal
-     Blob                      Browser internal
-     ArrayBuffer               Browser internal
-     String                    Just a normal string
-     OSjs.VFS.FileDataURL      Wrapper for dataSource URL strings
-     JSON                      JSON Data defined as: {filename: foo, data: bar}
-
-
-  ---------------------------------------------------------------------------
-
-
-  This a list of modules and their paths
-
-
-     Public       /                   OS.js Public Storage
-     User         home:///            OS.js User Storage
-     OS.js        osjs:///            OS.js Dist (Read-only)
-     GoogleDrive  google-drive:///    Google Drive Storage
-     OneDrive     onedrive:///        Microsoft OneDrive (SkyDrive)
-     Dropbox      dropbox:///         Dropbox Storage
-</pre>
+<p><i>src/javascript/window.js</i></p>
 <h2>Functions</h2>
 <ul>
-<li>OSjs.VFS.<a href="#osjs-vfs-addformfile">addFormFile()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-datasourcetoab">dataSourceToAb()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-texttoab">textToAb()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-abtodatasource">abToDataSource()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-abtotext">abToText()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-abtobinarystring">abToBinaryString()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-getmodules">getModules()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-scandir">scandir()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-write">write()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-read">read()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-copy">copy()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-move">move()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-unlink">unlink()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-mkdir">mkdir()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-exists">exists()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-fileinfo">fileinfo()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-url">url()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-upload">upload()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-download">download()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-trash">trash()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-untrash">untrash()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-emptytrash">emptyTrash()</a></li>
-<li>OSjs.VFS.<a href="#osjs-vfs-remoteread">remoteRead()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getwindowspace">getWindowSpace()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getanimduration">getAnimDuration()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-vfs-filedataurl">FileDataURL</a> (OSjs.VFS.FileDataURL)
+<a href="#osjs-core-window">Window</a> (OSjs.Core.Window)
 <ul>
-</ul>
-</li>
-<li>
-<a href="#osjs-vfs-file">File</a> (OSjs.VFS.File)
-<ul>
+<li><a href="#window-init">init()</a></li>
+<li><a href="#window-destroy">destroy()</a></li>
+<li><a href="#window-_addeventlistener">_addEventListener()</a></li>
+<li><a href="#window-_addhook">_addHook()</a></li>
+<li><a href="#window-_firehook">_fireHook()</a></li>
+<li><a href="#window-_removeguielement">_removeGUIElement()</a></li>
+<li><a href="#window-_updateiframefix">_updateIframeFix()</a></li>
+<li><a href="#window-_addguielement">_addGUIElement()</a></li>
+<li><a href="#window-_removechild">_removeChild()</a></li>
+<li><a href="#window-_getchild">_getChild()</a></li>
+<li><a href="#window-_getchildbyid">_getChildById()</a></li>
+<li><a href="#window-_getchildbyname">_getChildByName()</a></li>
+<li><a href="#window-_getchildrenbytag">_getChildrenByTag()</a></li>
+<li><a href="#window-_getchildren">_getChildren()</a></li>
+<li><a href="#window-_removechildren">_removeChildren()</a></li>
+<li><a href="#window-_close">_close()</a></li>
+<li><a href="#window-_minimize">_minimize()</a></li>
+<li><a href="#window-_maximize">_maximize()</a></li>
+<li><a href="#window-_restore">_restore()</a></li>
+<li><a href="#window-_focus">_focus()</a></li>
+<li><a href="#window-_blur">_blur()</a></li>
+<li><a href="#window-_resizeto">_resizeTo()</a></li>
+<li><a href="#window-_moveto">_moveTo()</a></li>
+<li><a href="#window-_move">_move()</a></li>
+<li><a href="#window-_error">_error()</a></li>
+<li><a href="#window-_toggledisabled">_toggleDisabled()</a></li>
+<li><a href="#window-_toggleloading">_toggleLoading()</a></li>
+<li><a href="#window-_toggleattentionblink">_toggleAttentionBlink()</a></li>
+<li><a href="#window-_nexttabindex">_nextTabIndex()</a></li>
+<li><a href="#window-_ondndevent">_onDndEvent()</a></li>
+<li><a href="#window-_onkeyevent">_onKeyEvent()</a></li>
+<li><a href="#window-_onwindowiconclick">_onWindowIconClick()</a></li>
+<li><a href="#window-_onwindowbuttonclick">_onWindowButtonClick()</a></li>
+<li><a href="#window-_onchange">_onChange()</a></li>
+<li><a href="#window-_getmaximizedsize">_getMaximizedSize()</a></li>
+<li><a href="#window-_getviewrect">_getViewRect()</a></li>
+<li><a href="#window-_getroot">_getRoot()</a></li>
+<li><a href="#window-_getzindex">_getZindex()</a></li>
+<li><a href="#window-_settitle">_setTitle()</a></li>
+<li><a href="#window-_seticon">_setIcon()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<div class="section-function" id="osjs-vfs-addformfile">
-<h2 id="osjs-vfs-addformfile-fd-key-data-file-">OSjs.VFS.addFormFile(fd, key, data, file)</h2>
+<div class="section-function" id="osjs-api-getwindowspace">
+<h2 id="osjs-api-getwindowspace-">OSjs.API.getWindowSpace()</h2>
 <pre>
-This is a helper to add a File to FormData
+Get viewport (Wrapper)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>{top, left, width, height}</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getanimduration">
+<h2 id="osjs-api-getanimduration-">OSjs.API.getAnimDuration()</h2>
+<pre>
+Get CSS animation duration
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u> <em>Duration length in ms</em></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-window">
+<h2 id="window">Window</h2>
+<pre>
+Window Class
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Core.Window</li>
+</ul>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Window name (unique)</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>List of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>OSjs.Core.Application</td>
+<td>Application Reference</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>Window Title</td>
+</tr>
+<tr>
+<td>icon</td>
+<td>String</td>
+<td>Window Icon</td>
+</tr>
+<tr>
+<td>x</td>
+<td>int</td>
+<td>(Optional) X Position</td>
+</tr>
+<tr>
+<td>y</td>
+<td>int</td>
+<td>(Optional) Y Position</td>
+</tr>
+<tr>
+<td>w</td>
+<td>int</td>
+<td>(Optional) Width</td>
+</tr>
+<tr>
+<td>h</td>
+<td>int</td>
+<td>(Optional) Height</td>
+</tr>
+<tr>
+<td>tag</td>
+<td>String</td>
+<td>(Optional) Window Tag</td>
+</tr>
+<tr>
+<td>gravity</td>
+<td>String</td>
+<td>(Optional) Window Gravity</td>
+</tr>
+<tr>
+<td>allow_move</td>
+<td>boolean</td>
+<td>(Optional) Allow movment</td>
+</tr>
+<tr>
+<td>allow_resize</td>
+<td>boolean</td>
+<td>(Optional) Allow resize</td>
+</tr>
+<tr>
+<td>allow_minimize</td>
+<td>boolean</td>
+<td>(Optional) Allow minimize</td>
+</tr>
+<tr>
+<td>allow_maximize</td>
+<td>boolean</td>
+<td>(Optional) Allow maximize</td>
+</tr>
+<tr>
+<td>allow_close</td>
+<td>boolean</td>
+<td>(Optional) Allow closing</td>
+</tr>
+<tr>
+<td>allow_windowlist</td>
+<td>boolean</td>
+<td>(Optional) Allow appear in WindowList (Panel)</td>
+</tr>
+<tr>
+<td>allow_drop</td>
+<td>boolean</td>
+<td>(Optional) Allow DnD</td>
+</tr>
+<tr>
+<td>allow_iconmenu</td>
+<td>boolean</td>
+<td>(Optional) Allow Menu when click on Window Icon</td>
+</tr>
+<tr>
+<td>allow_ontop</td>
+<td>boolean</td>
+<td>(Optional) Allow ontop</td>
+</tr>
+<tr>
+<td>allow_hotkeys</td>
+<td>boolean</td>
+<td>(Optional) Allow usage of hotkeys</td>
+</tr>
+<tr>
+<td>allow_session</td>
+<td>boolean</td>
+<td>(Optional) Allow to store for session</td>
+</tr>
+<tr>
+<td>key_capture</td>
+<td>boolean</td>
+<td>(Optional) Allow key capture (UNSUSED ?!)</td>
+</tr>
+<tr>
+<td>min_width</td>
+<td>boolean</td>
+<td>(Optional) Minimum allowed width</td>
+</tr>
+<tr>
+<td>min_height</td>
+<td>boolean</td>
+<td>(Optional) Minimum allowed height</td>
+</tr>
+<tr>
+<td>max_width</td>
+<td>boolean</td>
+<td>(Optional) Maximum allowed width</td>
+</tr>
+<tr>
+<td>max_height</td>
+<td>boolean</td>
+<td>(Optional) Maximum allowed height</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+<div class="section-method" id="window-init">
+<h3 id="window-init-_wm-">Window::init(_wm)</h3>
+<pre>
+Initialize the Window
 </pre>
 
 
@@ -151,1047 +305,988 @@ This is a helper to add a File to FormData
 </thead>
 <tbody>
 <tr>
-<td>fd</td>
-<td>FormData</td>
-<td>FormData instance</td>
+<td>_wm</td>
+<td>WindowManager</td>
+<td>Window Manager reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The Window DOM element</em></p>
+
+</div>
+<div class="section-method" id="window-destroy">
+<h3 id="window-destroy-">Window::destroy()</h3>
+<pre>
+Destroy the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_addeventlistener">
+<h3 id="window-_addeventlistener-el-ev-callback-">Window::_addEventListener(el, ev, callback)</h3>
+<pre>
+Adds a listener for an event
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOM Element to attach event to</td>
+</tr>
+<tr>
+<td>ev</td>
+<td>String</td>
+<td>DOM Event Name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback on event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_addhook">
+<h3 id="window-_addhook-k-func-">Window::_addHook(k, func)</h3>
+<pre>
+Adds a hook (internal events)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Hook name: focus, blur, destroy</td>
+</tr>
+<tr>
+<td>func</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_firehook">
+<h3 id="window-_firehook-k-">Window::_fireHook(k)</h3>
+<pre>
+Fire a hook (internal event)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Hook name: focus, blur, destroy, maximize, minimize, restore, resize, resized</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_removeguielement">
+<h3 id="window-_removeguielement-gel-">Window::_removeGUIElement(gel)</h3>
+<pre>
+Remove a GUIElement
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gel</td>
+<td>OSjs.GUI.GUIElement</td>
+<td>GUI Element reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_updateiframefix">
+<h3 id="window-_updateiframefix-">Window::_updateIframeFix()</h3>
+<pre>
+Update IFrame GUIElement "fix"
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_addguielement">
+<h3 id="window-_addguielement-gel-parentnode-">Window::_addGUIElement(gel, parentNode)</h3>
+<pre>
+Adds a GUIElement
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gel</td>
+<td>GUIElement</td>
+<td>GUIElement reference</td>
+</tr>
+<tr>
+<td>parentNode</td>
+<td>DOMElement</td>
+<td>DOM Node to add to</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>GUIElement</u> <em>On success or &#39;false&#39;</em></p>
+
+</div>
+<div class="section-method" id="window-_removechild">
+<h3 id="window-_removechild-w-">Window::_removeChild(w)</h3>
+<pre>
+Removes a child Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Widow reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_getchild">
+<h3 id="window-_getchild-id-key-">Window::_getChild(id, key)</h3>
+<pre>
+Get a Window child by X
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>Value to look for</td>
 </tr>
 <tr>
 <td>key</td>
 <td>String</td>
-<td>FormData entry name</td>
-</tr>
-<tr>
-<td>data</td>
-<td>[File]</td>
-<td>File Data (see supported types)</td>
-</tr>
-<tr>
-<td>file</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
+<td>Key to look for</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Resulted Window or &#39;null&#39;</em></p>
 
 </div>
-<div class="section-function" id="osjs-vfs-datasourcetoab">
-<h2 id="osjs-vfs-datasourcetoab-data-mime-callback-">OSjs.VFS.dataSourceToAb(data, mime, callback)</h2>
+<div class="section-method" id="window-_getchildbyid">
+<h3 id="window-_getchildbyid-">Window::_getChildById()</h3>
 <pre>
-Convert DataSourceURL to ArrayBuffer
+Get a Window child by ID
 </pre>
 
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>data</td>
-<td>String</td>
-<td>The datasource string</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-texttoab">
-<h2 id="osjs-vfs-texttoab-data-mime-callback-">OSjs.VFS.textToAb(data, mime, callback)</h2>
-<pre>
-Convert PlainText to ArrayBuffer
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>data</td>
-<td>String</td>
-<td>The plaintext string</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-abtodatasource">
-<h2 id="osjs-vfs-abtodatasource-arraybuffer-mime-callback-">OSjs.VFS.abToDataSource(arrayBuffer, mime, callback)</h2>
-<pre>
-Convert ArrayBuffer to DataSourceURL
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>arrayBuffer</td>
-<td>ArrayBuffer</td>
-<td>The ArrayBuffer</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-abtotext">
-<h2 id="osjs-vfs-abtotext-arraybuffer-mime-callback-">OSjs.VFS.abToText(arrayBuffer, mime, callback)</h2>
-<pre>
-Convert ArrayBuffer to PlainText
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>arrayBuffer</td>
-<td>ArrayBuffer</td>
-<td>The ArrayBuffer</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-abtobinarystring">
-<h2 id="osjs-vfs-abtobinarystring-arraybuffer-mime-callback-">OSjs.VFS.abToBinaryString(arrayBuffer, mime, callback)</h2>
-<pre>
-Convert ArrayBuffer to BinaryString
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>arrayBuffer</td>
-<td>ArrayBuffer</td>
-<td>The ArrayBuffer</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>The mime type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-getmodules">
-<h2 id="osjs-vfs-getmodules-visible-">OSjs.VFS.getModules(visible)</h2>
-<pre>
-Returns a list of all enabled VFS modules
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>visible</td>
-<td>boolean</td>
-<td>All visible modules only (default=true)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>List of all Modules found</em></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-scandir">
-<h2 id="osjs-vfs-scandir-item-callback-options-">OSjs.VFS.scandir(item, callback, options)</h2>
-<pre>
-Scandir
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-write">
-<h2 id="osjs-vfs-write-item-data-callback-options-appref-">OSjs.VFS.write(item, data, callback, options, appRef)</h2>
-<pre>
-Write File
-
-This function currently have no options.
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>data</td>
-<td>[File]</td>
-<td>File Data (see supported types)</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-read">
-<h2 id="osjs-vfs-read-item-callback-options-">OSjs.VFS.read(item, callback, options)</h2>
-<pre>
-Read File
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>type</td>
-<td>String</td>
-<td>What to return, default: binary. Can also be: text, datasource</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-copy">
-<h2 id="osjs-vfs-copy-src-dest-callback-options-appref-">OSjs.VFS.copy(src, dest, callback, options, appRef)</h2>
-<pre>
-Copy File
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>src</td>
-<td>OSjs.VFS.File</td>
-<td>Source File Metadata</td>
-</tr>
-<tr>
-<td>dest</td>
-<td>OSjs.VFS.File</td>
-<td>Destination File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-move">
-<h2 id="osjs-vfs-move-src-dest-callback-options-appref-">OSjs.VFS.move(src, dest, callback, options, appRef)</h2>
-<pre>
-Move File
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>src</td>
-<td>OSjs.VFS.File</td>
-<td>Source File Metadata</td>
-</tr>
-<tr>
-<td>dest</td>
-<td>OSjs.VFS.File</td>
-<td>Destination File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-unlink">
-<h2 id="osjs-vfs-unlink-item-callback-options-appref-">OSjs.VFS.unlink(item, callback, options, appRef)</h2>
-<pre>
-Delete File
-
-This function currently have no options.
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-mkdir">
-<h2 id="osjs-vfs-mkdir-item-callback-options-appref-">OSjs.VFS.mkdir(item, callback, options, appRef)</h2>
-<pre>
-Create Directory
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-exists">
-<h2 id="osjs-vfs-exists-item-callback-">OSjs.VFS.exists(item, callback)</h2>
-<pre>
-Check if file exists
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-fileinfo">
-<h2 id="osjs-vfs-fileinfo-item-callback-">OSjs.VFS.fileinfo(item, callback)</h2>
-<pre>
-Get file info
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-url">
-<h2 id="osjs-vfs-url-item-callback-">OSjs.VFS.url(item, callback)</h2>
-<pre>
-Get file URL
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-upload">
-<h2 id="osjs-vfs-upload-args-callback-options-appref-">OSjs.VFS.upload(args, callback, options, appRef)</h2>
-<pre>
-Upload file(s)
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>args</td>
-<td>Object</td>
-<td>Function arguments (see below)</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Optional set of options</td>
-</tr>
-<tr>
-<td>appRef</td>
-<td>Application</td>
-<td>Optional reference to an Application</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>overwrite</td>
-<td>boolean</td>
-<td>If set to true it will not check if the destination exists</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>app</td>
-<td>Application</td>
-<td>(optional) If specified (Application ref) it will create a Dialog window</td>
-</tr>
-<tr>
-<td>win</td>
-<td>Window</td>
-<td>(optional) Save as above only will add as child to this window</td>
-</tr>
-<tr>
-<td>destination</td>
-<td>String</td>
-<td>Full path to destination</td>
-</tr>
-<tr>
-<td>files</td>
-<td>Array</td>
-<td>Array of &#39;File&#39;</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-download">
-<h2 id="osjs-vfs-download-args-callback-">OSjs.VFS.download(args, callback)</h2>
-<pre>
-Download a file
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>args</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-trash">
-<h2 id="osjs-vfs-trash-item-callback-">OSjs.VFS.trash(item, callback)</h2>
-<pre>
-Move file to trash (Not used in internal storage)
-
-THIS IS NOT USED FOR INTERNAL MODULES
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-untrash">
-<h2 id="osjs-vfs-untrash-item-callback-">OSjs.VFS.untrash(item, callback)</h2>
-<pre>
-Restore file from trash
-
-THIS IS NOT USED FOR INTERNAL MODULES
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>item</td>
-<td>OSjs.VFS.File</td>
-<td>File Metadata</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-emptytrash">
-<h2 id="osjs-vfs-emptytrash-callback-">OSjs.VFS.emptyTrash(callback)</h2>
-<pre>
-Permanently empty trash
-
-THIS IS NOT USED FOR INTERNAL MODULES
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-function" id="osjs-vfs-remoteread">
-<h2 id="osjs-vfs-remoteread-url-mime-callback-options-">OSjs.VFS.remoteRead(url, mime, callback, options)</h2>
-<pre>
-Read a remote file with URL (CORS)
-
-This function basically does a cURL call and downloads
-
-the data.
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>url</td>
-<td>String</td>
-<td>URL</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>MIME Type</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, result)</td>
-</tr>
-<tr>
-<td>options</td>
-<td>Object</td>
-<td>Options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-options-">Options for <em>options</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>type</td>
-<td>String</td>
-<td>What to return, default: binary. Can also be: text, datasource</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-vfs-filedataurl">
-<h2 id="filedataurl">FileDataURL</h2>
-<pre>
-This is a object you can pass around in VFS when
-
-handling DataURL()s (strings). Normally you would
-
-use a File, Blob or ArrayBuffer, but this is an alternative.
-
-Useful for canvas data etc.
-</pre>
-
-<h4 id="namespace">Namespace</h4>
+<h4 id="see">See</h4>
 <ul>
-<li>OSjs.VFS.FileDataURL</li>
+<li>Window::_getChild()</li>
 </ul>
 
 </div>
-<div class="section-class" id="osjs-vfs-file">
-<h2 id="file">File</h2>
+<div class="section-method" id="window-_getchildbyname">
+<h3 id="window-_getchildbyname-">Window::_getChildByName()</h3>
 <pre>
-This is the Metadata object you have to use when passing files around
-
-in the VFS API.
+Get a Window child by Name
 </pre>
 
-<h4 id="namespace">Namespace</h4>
+
+<h4 id="see">See</h4>
 <ul>
-<li>OSjs.VFS.File</li>
+<li>Window::_getChild()</li>
 </ul>
 
+</div>
+<div class="section-method" id="window-_getchildrenbytag">
+<h3 id="window-_getchildrenbytag-">Window::_getChildrenByTag()</h3>
+<pre>
+Get Window(s) child by Tag
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Window::_getChild()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<div class="section-method" id="window-_getchildren">
+<h3 id="window-_getchildren-">Window::_getChildren()</h3>
+<pre>
+Gets all children Windows
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<div class="section-method" id="window-_removechildren">
+<h3 id="window-_removechildren-">Window::_removeChildren()</h3>
+<pre>
+Removes all children Windows
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_close">
+<h3 id="window-_close-">Window::_close()</h3>
+<pre>
+Close the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On succes</em></p>
+
+</div>
+<div class="section-method" id="window-_minimize">
+<h3 id="window-_minimize-">Window::_minimize()</h3>
+<pre>
+Minimize the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_maximize">
+<h3 id="window-_maximize-">Window::_maximize()</h3>
+<pre>
+Maximize the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_restore">
+<h3 id="window-_restore-max-min-">Window::_restore(max, min)</h3>
+<pre>
+Restore the Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>max</td>
+<td>boolean</td>
+<td>Revert maximize state</td>
+</tr>
+<tr>
+<td>min</td>
+<td>boolean</td>
+<td>Revert minimize state</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_focus">
+<h3 id="window-_focus-force-">Window::_focus(force)</h3>
+<pre>
+Focus the window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>Forces focus</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_blur">
+<h3 id="window-_blur-force-">Window::_blur(force)</h3>
+<pre>
+Blur the window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>Forces blur</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_resizeto">
+<h3 id="window-_resizeto-dw-dh-limit-move-container-force-">Window::_resizeTo(dw, dh, limit, move, container, force)</h3>
+<pre>
+Resize Window to given size
+
+Use this method if you want the window to fit into the viewport and not
+
+just set a specific size
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dw</td>
+<td>int</td>
+<td>Width</td>
+</tr>
+<tr>
+<td>dh</td>
+<td>int</td>
+<td>Height</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>boolean</td>
+<td>Limit to this size (default=true)</td>
+</tr>
+<tr>
+<td>move</td>
+<td>boolean</td>
+<td>Move window if too big (default=false)</td>
+</tr>
+<tr>
+<td>container</td>
+<td>DOMElement</td>
+<td>Relative to this container (default=null)</td>
+</tr>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>Force movment (default=false)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_moveto">
+<h3 id="window-_moveto-pos-">Window::_moveTo(pos)</h3>
+<pre>
+Move window to position
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pos</td>
+<td>Object</td>
+<td>Object with {x:, y:}</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_move">
+<h3 id="window-_move-x-y-">Window::_move(x, y)</h3>
+<pre>
+Move window to position
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>int</td>
+<td>X Position</td>
+</tr>
+<tr>
+<td>y</td>
+<td>int</td>
+<td>Y Position</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_error">
+<h3 id="window-_error-title-description-message-exception-bugreport-">Window::_error(title, description, message, exception, bugreport)</h3>
+<pre>
+Creates an error dialog
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>Dialog title</td>
+</tr>
+<tr>
+<td>description</td>
+<td>String</td>
+<td>Error description</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>Error message</td>
+</tr>
+<tr>
+<td>exception</td>
+<td>Error</td>
+<td>(Optional) Exception</td>
+</tr>
+<tr>
+<td>bugreport</td>
+<td>boolean</td>
+<td>Set if this bug can be reported</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_toggledisabled">
+<h3 id="window-_toggledisabled-t-">Window::_toggleDisabled(t)</h3>
+<pre>
+Toggle disabled overlay
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>boolean</td>
+<td>Toggle</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_toggleloading">
+<h3 id="window-_toggleloading-t-">Window::_toggleLoading(t)</h3>
+<pre>
+Toggle loading overlay
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>boolean</td>
+<td>Toggle</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_toggleattentionblink">
+<h3 id="window-_toggleattentionblink-t-">Window::_toggleAttentionBlink(t)</h3>
+<pre>
+Toggle attention
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>boolean</td>
+<td>Toggle</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_nexttabindex">
+<h3 id="window-_nexttabindex-">Window::_nextTabIndex()</h3>
+<pre>
+Check next Tab (cycle GUIElement)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_ondndevent">
+<h3 id="window-_ondndevent-ev-type-">Window::_onDndEvent(ev, type)</h3>
+<pre>
+On Drag-and-drop event
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEevent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>DnD type</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_onkeyevent">
+<h3 id="window-_onkeyevent-ev-type-">Window::_onKeyEvent(ev, type)</h3>
+<pre>
+On Key event
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>Key type</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_onwindowiconclick">
+<h3 id="window-_onwindowiconclick-ev-el-">Window::_onWindowIconClick(ev, el)</h3>
+<pre>
+On Window Icon Click
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOM Element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_onwindowbuttonclick">
+<h3 id="window-_onwindowbuttonclick-ev-el-btn-">Window::_onWindowButtonClick(ev, el, btn)</h3>
+<pre>
+On Window Button Click
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOM Element</td>
+</tr>
+<tr>
+<td>btn</td>
+<td>String</td>
+<td>Button name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_onchange">
+<h3 id="window-_onchange-ev-byuser-">Window::_onChange(ev, byUser)</h3>
+<pre>
+On Window has changed
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>byUser</td>
+<td>boolean</td>
+<td>Performed by user?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_getmaximizedsize">
+<h3 id="window-_getmaximizedsize-">Window::_getMaximizedSize()</h3>
+<pre>
+Get Window maximized size
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Size of {left:, top:, right:, bottom: }</em></p>
+
+</div>
+<div class="section-method" id="window-_getviewrect">
+<h3 id="window-_getviewrect-">Window::_getViewRect()</h3>
+<pre>
+Get Window position in DOM
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Utils.$position()</li>
+</ul>
+
+</div>
+<div class="section-method" id="window-_getroot">
+<h3 id="window-_getroot-">Window::_getRoot()</h3>
+<pre>
+Get Window main DOM element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="window-_getzindex">
+<h3 id="window-_getzindex-">Window::_getZindex()</h3>
+<pre>
+Get Window z-index
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u></p>
+
+</div>
+<div class="section-method" id="window-_settitle">
+<h3 id="window-_settitle-t-">Window::_setTitle(t)</h3>
+<pre>
+Set Window title
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>String</td>
+<td>Title</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_seticon">
+<h3 id="window-_seticon-i-">Window::_setIcon(i)</h3>
+<pre>
+Set Windoc icon
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i</td>
+<td>String</td>
+<td>Icon path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
 </div>
 <p><i>Generated: Mon Jan 19 2015 01:04:21 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>

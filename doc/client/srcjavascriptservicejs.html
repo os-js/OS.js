@@ -35,39 +35,35 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/panedview.js</i></p>
+<p><i>src/javascript/service.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-panedview">PanedView</a> (OSjs.GUI.PanedView)
+<a href="#osjs-core-service">Service</a> (OSjs.Core.Service)
 <ul>
-<li><a href="#panedview-createview">createView()</a></li>
-<li><a href="#panedview-additem">addItem()</a></li>
+<li><a href="#service-init">init()</a></li>
+<li><a href="#service-_call">_call()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-panedview">
-<h2 id="panedview">PanedView</h2>
+<div class="section-class" id="osjs-core-service">
+<h2 id="service">Service</h2>
 <pre>
-PanedView
+Service Class
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.PanedView</li>
+<li>OSjs.Core.Service</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>GUIElement</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.GUI.GUIElement</li>
+<li>Process</li>
 </ul>
 <h4 id="constructor">Constructor</h4>
 <table>
@@ -82,118 +78,39 @@ PanedView
 <tr>
 <td>name</td>
 <td>String</td>
-<td>Name of GUIElement (unique)</td>
+<td>Process name</td>
 </tr>
 <tr>
-<td>opts</td>
+<td>args</td>
 <td>Object</td>
-<td>A list of options</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>orientation</td>
-<td>String</td>
-<td>The Orientation (Default=horizontal)</td>
+<td>Process arguments</td>
 </tr>
 </tbody>
 </table>
 <p>&nbsp;</p>
 
-<div class="section-method" id="panedview-createview">
-<h3 id="panedview-createview-name-otps-">PanedView::createView(name, otps)</h3>
+<div class="section-method" id="service-init">
+<h3 id="service-init-">Service::init()</h3>
 <pre>
-Create a view inside the Pane
+Intiaialize the Service
 </pre>
 
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>View Name (unique)</td>
-</tr>
-<tr>
-<td>otps</td>
-<td>Object</td>
-<td>View Options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>width</td>
-<td>int</td>
-<td>View width</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The container</em></p>
 
-</div>
-<div class="section-method" id="panedview-additem">
-<h3 id="panedview-additem-el-name-">PanedView::addItem(el, name)</h3>
-<pre>
-Adds a GUIElement or DOMElement to the given Pane
-
-This also creates the pane
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>el</td>
-<td>Mixed</td>
-<td>The element</td>
-</tr>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>View name</td>
-</tr>
-</tbody>
-</table>
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="service-_call">
+<h3 id="service-_call-">Service::_call()</h3>
+<pre>
+Call the ApplicationAPI
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
 
 </div>
 </div>

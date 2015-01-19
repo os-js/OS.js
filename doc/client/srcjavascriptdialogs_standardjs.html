@@ -35,39 +35,47 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/panedview.js</i></p>
+<p><i>src/javascript/dialogs/_standard.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-panedview">PanedView</a> (OSjs.GUI.PanedView)
+<a href="#osjs-core-standarddialog">StandardDialog</a> (OSjs.Core.StandardDialog)
 <ul>
-<li><a href="#panedview-createview">createView()</a></li>
-<li><a href="#panedview-additem">addItem()</a></li>
+<li><a href="#standarddialog-destroy">destroy()</a></li>
+<li><a href="#standarddialog-init">init()</a></li>
+<li><a href="#standarddialog-_inited">_inited()</a></li>
+<li><a href="#standarddialog-onbuttonclick">onButtonClick()</a></li>
+<li><a href="#standarddialog-_onkeyevent">_onKeyEvent()</a></li>
+<li><a href="#standarddialog-end">end()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-panedview">
-<h2 id="panedview">PanedView</h2>
+<div class="section-class" id="osjs-core-standarddialog">
+<h2 id="standarddialog">StandardDialog</h2>
 <pre>
-PanedView
+Standard Dialog Window Implementation
+
+This is a version of Dialog Window that makes
+
+it easy to add buttons etc.
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.PanedView</li>
+<li>OSjs.Core.StandardDialog</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>GUIElement</li>
+<li>DialogWindow</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
-<li>OSjs.GUI.GUIElement</li>
+<li>OSjs.Core.DialogWindow</li>
 </ul>
 <h4 id="constructor">Constructor</h4>
 <table>
@@ -80,19 +88,29 @@ PanedView
 </thead>
 <tbody>
 <tr>
-<td>name</td>
+<td>className</td>
 <td>String</td>
-<td>Name of GUIElement (unique)</td>
+<td>Dialog Class Name</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Dialog Arguments</td>
 </tr>
 <tr>
 <td>opts</td>
 <td>Object</td>
-<td>A list of options</td>
+<td>Window Options</td>
+</tr>
+<tr>
+<td>onClose</td>
+<td>Function</td>
+<td>Callback =&gt; fn(button)</td>
 </tr>
 </tbody>
 </table>
 <p>&nbsp;</p>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
 <table>
 <thead>
 <tr>
@@ -103,18 +121,73 @@ PanedView
 </thead>
 <tbody>
 <tr>
-<td>orientation</td>
+<td>title</td>
 <td>String</td>
-<td>The Orientation (Default=horizontal)</td>
+<td>Dialog title</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>Dialog message</td>
+</tr>
+<tr>
+<td>buttons</td>
+<td>Array</td>
+<td>List of buttons: [&#39;ok&#39;, &#39;cancel&#39;, &#39;close&#39;, {name:&#39;custom&#39;, label:&#39;Custom&#39;}]</td>
 </tr>
 </tbody>
 </table>
 <p>&nbsp;</p>
 
-<div class="section-method" id="panedview-createview">
-<h3 id="panedview-createview-name-otps-">PanedView::createView(name, otps)</h3>
+<div class="section-method" id="standarddialog-destroy">
+<h3 id="standarddialog-destroy-">StandardDialog::destroy()</h3>
 <pre>
-Create a view inside the Pane
+Destroy the Dialog Window
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.DialogWindow::destroy()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="standarddialog-init">
+<h3 id="standarddialog-init-">StandardDialog::init()</h3>
+<pre>
+Initialize Dialog Window
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.DialogWindow::init()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="standarddialog-_inited">
+<h3 id="standarddialog-_inited-">StandardDialog::_inited()</h3>
+<pre>
+When Dialog Windows has been inited
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.DialogWindow::_inited()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="standarddialog-onbuttonclick">
+<h3 id="standarddialog-onbuttonclick-btn-ev-">StandardDialog::onButtonClick(btn, ev)</h3>
+<pre>
+When Close has been clicked
 </pre>
 
 
@@ -129,69 +202,44 @@ Create a view inside the Pane
 </thead>
 <tbody>
 <tr>
-<td>name</td>
+<td>btn</td>
 <td>String</td>
-<td>View Name (unique)</td>
+<td>Button name</td>
 </tr>
 <tr>
-<td>otps</td>
-<td>Object</td>
-<td>View Options</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>width</td>
-<td>int</td>
-<td>View width</td>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>Event</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The container</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="panedview-additem">
-<h3 id="panedview-additem-el-name-">PanedView::addItem(el, name)</h3>
+<div class="section-method" id="standarddialog-_onkeyevent">
+<h3 id="standarddialog-_onkeyevent-">StandardDialog::_onKeyEvent()</h3>
 <pre>
-Adds a GUIElement or DOMElement to the given Pane
-
-This also creates the pane
+On Key event
 </pre>
 
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>el</td>
-<td>Mixed</td>
-<td>The element</td>
-</tr>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>View name</td>
-</tr>
-</tbody>
-</table>
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.DialogWindow::_onKeyEvent()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="standarddialog-end">
+<h3 id="standarddialog-end-">StandardDialog::end()</h3>
+<pre>
+End/Close Dialog Window
+</pre>
+
+
+
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
