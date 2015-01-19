@@ -127,7 +127,6 @@
   var _$SPLASH_TXT;       //   It's description field
   var _$SPLASH;           // Loading Screen DOM Element
   var _$ROOT;             // Root element
-  var _MOUSELOCK = true;  // Mouse inside view ?!
   var _INITED = false;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -210,33 +209,6 @@
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win ) {
       win._blur();
-    }
-  }
-
-  /**
-   * Global onEnter Event
-   *
-   * @param   DOMEvent    ev      Event
-   *
-   * @return  void
-   */
-  function globalOnEnter(ev) {
-    _MOUSELOCK = true;
-  }
-
-  /**
-   * Global onLeave Event
-   *
-   * @param   DOMEvent    ev      Event
-   *
-   * @return  void
-   */
-  function globalOnLeave(ev) {
-    var from = ev.relatedTarget || ev.toElement;
-    if ( !from || from.nodeName === 'HTML' ) {
-      _MOUSELOCK = false;
-    } else {
-      _MOUSELOCK = true;
     }
   }
 
@@ -465,12 +437,6 @@
       window.addEventListener('scroll', function(ev) {
         return globalOnScroll(ev);
       }, false);
-      document.addEventListener('mouseout', function(ev) {
-        globalOnLeave(ev);
-      }, false);
-      document.addEventListener('mouseenter', function(ev) {
-        globalOnEnter(ev);
-      }, false);
 
       handler.boot(function(result, error) {
 
@@ -546,13 +512,6 @@
       }, false);
       window.removeEventListener('scroll', function(ev) {
         return globalOnScroll(ev);
-      }, false);
-
-      document.removeEventListener('mouseout', function(ev) {
-        globalOnLeave(ev);
-      }, false);
-      document.removeEventListener('mouseenter', function(ev) {
-        globalOnEnter(ev);
       }, false);
 
       if ( _$ROOT ) {
@@ -663,8 +622,5 @@
   OSjs.Session.signOut      = doSignOut;
   OSjs.Session.addHook      = doAddHook;
   OSjs.Session.triggerHook  = doTriggerHook;
-
-  OSjs.API._isMouseLock     = function() { return _MOUSELOCK; };
-  OSjs.API._onMouseDown     = globalOnMouseDown;
 
 })();

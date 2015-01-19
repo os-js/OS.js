@@ -30,13 +30,6 @@
 (function() {
   'use strict';
 
-  /*@
-   *
-   * Please note that there are some other API functions declared in:
-   * - src/javascript/session.js
-   *
-   */
-
   window.OSjs       = window.OSjs       || {};
   OSjs.API          = OSjs.API          || {};
 

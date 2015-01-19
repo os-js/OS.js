@@ -199,7 +199,7 @@
     }
 
     function onMouseMove(ev) {
-      if ( !API._isMouseLock() ) { return; }
+      if ( !wm || !wm.getMouseLocked() ) { return; }
       if ( action === null ) { return; }
       var cx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
       var cy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;

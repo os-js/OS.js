@@ -88,7 +88,14 @@
       this._addEventListener(el, 'mousedown', function(ev) {
         ev.preventDefault();
         OSjs.API.blurMenu();
-        API._onMouseDown(ev);
+
+        try {
+          var tev = new CustomEvent('mousedown');
+          document.dispatchEvent(tev);
+        } catch ( exx ) {
+          console.warn('DesktopIconView::update()', 'mousedown trigger error', exx);
+        }
+
         return false;
       });
       this._addEventListener(el, 'contextmenu', function(ev) {

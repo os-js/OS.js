@@ -88,6 +88,7 @@
     this._settings       = {};
     this._currentWin     = null;
     this._lastWin        = null;
+    this._mouselock      = true;
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');
@@ -111,10 +112,17 @@
    * @method    WindowManager::destroy()
    */
   WindowManager.prototype.destroy = function() {
+    var self = this;
     console.log('OSjs::Core::WindowManager::destroy()');
 
+    document.removeEventListener('mouseout', function(ev) {
+      self._onMouseLeave(ev);
+    }, false);
+    document.removeEventListener('mouseenter', function(ev) {
+      self._onMouseEnter(ev);
+    }, false);
+
     // Destroy all windows
-    var self = this;
     this._windows.forEach(function(win, i) {
       if ( win ) {
         win.destroy();
@@ -140,6 +148,14 @@
    */
   WindowManager.prototype.init = function() {
     console.log('OSjs::Core::WindowManager::init()');
+
+    var self = this;
+    document.addEventListener('mouseout', function(ev) {
+      self._onMouseLeave(ev);
+    }, false);
+    document.addEventListener('mouseenter', function(ev) {
+      self._onMouseEnter(ev);
+    }, false);
   };
 
   /**
@@ -279,6 +295,19 @@
 
   WindowManager.prototype.showSettings = function() {
     // Implement in your WM
+  };
+
+  WindowManager.prototype._onMouseEnter = function(ev) {
+    this._mouselock = true;
+  };
+
+  WindowManager.prototype._onMouseLeave = function(ev) {
+    var from = ev.relatedTarget || ev.toElement;
+    if ( !from || from.nodeName === 'HTML' ) {
+      this._mouselock = false;
+    } else {
+      this._mouselock = true;
+    }
   };
 
   /**
@@ -495,6 +524,16 @@
       return parseInt(theme.animduration, 10) + 1;
     }
     return 301;
+  };
+
+  /**
+   * If the pointer is inside the browser window
+   *
+   * @return  boolean
+   * @method  WindowManager::getMouseLocked()
+   */
+  WindowManager.prototype.getMouseLocked = function() {
+    return this._mouselock;
   };
 
   /////////////////////////////////////////////////////////////////////////////
