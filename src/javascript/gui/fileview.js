@@ -415,7 +415,7 @@
    * @option  opts Function    onViewContextMenu       Callback - On view context menu (background / view)
    * @option  opts Function    onColumnSort            Callback - On sort
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.FileView
    *
    * @class
@@ -843,4 +843,4 @@
 
   OSjs.GUI.FileView     = FileView;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI.ListView, OSjs.GUI.TreeView, OSjs.GUI.IconView, OSjs.GUI._DataView, OSjs.VFS);
+})(OSjs.Core.GUIElement, OSjs.GUI.ListView, OSjs.GUI.TreeView, OSjs.GUI.IconView, OSjs.GUI._DataView, OSjs.VFS);

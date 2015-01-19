@@ -305,4 +305,4 @@
 
   OSjs.GUI._Input           = _Input;
 
-})(OSjs.GUI.GUIElement, OSjs.API, OSjs.Utils);
+})(OSjs.Core.GUIElement, OSjs.API, OSjs.Utils);

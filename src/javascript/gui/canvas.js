@@ -40,7 +40,7 @@
    * @option opts int   height    The height
    * @option opts type  String    Image type (default=image/png)
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.Canvas
    *
    * @extends GUIElement
@@ -257,4 +257,4 @@
 
   OSjs.GUI.Canvas       = Canvas;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

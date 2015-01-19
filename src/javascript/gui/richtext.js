@@ -39,7 +39,7 @@
    * @option opts String    fontName      Name of the font used
    * @option opts Function  onInited      Callback when inited
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.RichText
    *
    * @extends GUIElement
@@ -284,4 +284,4 @@
 
   OSjs.GUI.RichText     = RichText;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

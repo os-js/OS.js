@@ -56,7 +56,7 @@
    * @option  opts render            bool            Render on create (default = true when data is supplied)
    *
    * @api OSjs.GUI._DataView
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    *
    * @class
    */
@@ -469,4 +469,4 @@
 
   OSjs.GUI._DataView        = _DataView;
 
-})(OSjs.GUI.GUIElement, OSjs.API, OSjs.Utils);
+})(OSjs.Core.GUIElement, OSjs.API, OSjs.Utils);

@@ -158,4 +158,4 @@
 
   OSjs.GUI.SelectList   = SelectList;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._Input);
+})(OSjs.Core.GUIElement, OSjs.GUI._Input);

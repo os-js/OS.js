@@ -39,7 +39,7 @@
    * @option  opts    String  orientation     The Orientation (Default=horizontal)
    *
    * @api OSjs.GUI.PanedView
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    *
    * @extends GUIElement
    * @class
@@ -209,4 +209,4 @@
 
   OSjs.GUI.PanedView    = PanedView;
 
-})(OSjs.GUI.GUIElement, OSjs.Utils);
+})(OSjs.Core.GUIElement, OSjs.Utils);

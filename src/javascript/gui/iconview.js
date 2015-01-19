@@ -44,7 +44,7 @@
    * @option opts boolean   singleClick   Single click to Activate (dblclick) forced on touch devices
    * @option opts Function  onRenderItem  Callback on item rendered
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.IconView
    *
    * @extends _DataView
@@ -192,4 +192,4 @@
 
   OSjs.GUI.IconView     = IconView;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._DataView);
+})(OSjs.Core.GUIElement, OSjs.GUI._DataView);

@@ -39,7 +39,7 @@
    * @option  opts  int   scrollX   Scroll X ? (default=true)
    * @option  opts  int   scrollY   Scroll Y ? (default=true)
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.ScrollView
    *
    * @extends GUIElement
@@ -114,4 +114,4 @@
 
   OSjs.GUI.ScrollView   = ScrollView;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

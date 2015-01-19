@@ -51,7 +51,7 @@
    * @option opts Object    columns       Column data
    * @option opts Array     rows          Rows of data
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.ListView
    *
    * @extends _DataView
@@ -422,4 +422,4 @@
 
   OSjs.GUI.ListView     = ListView;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._DataView);
+})(OSjs.Core.GUIElement, OSjs.GUI._DataView);

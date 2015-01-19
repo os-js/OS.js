@@ -84,4 +84,4 @@
 
   OSjs.GUI.Label        = Label;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

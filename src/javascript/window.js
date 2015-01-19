@@ -908,7 +908,7 @@
   /**
    * Remove a GUIElement
    *
-   * @param   OSjs.GUI.GUIElement     gel       GUI Element reference
+   * @param   OSjs.Core.GUIElement     gel       GUI Element reference
    *
    * @return  boolean                           On success
    *
@@ -920,7 +920,7 @@
       var destroy = false;
 
       if ( iter ) {
-        if ( gel instanceof OSjs.GUI.GUIElement ) {
+        if ( gel instanceof OSjs.Core.GUIElement ) {
           if ( iter.id === gel.id ) {
             destroy = i;
           }
@@ -976,7 +976,7 @@
       throw new Error('Adding a GUI Element requires a parentNode');
     }
 
-    if ( gel instanceof OSjs.GUI.GUIElement ) {
+    if ( gel instanceof OSjs.Core.GUIElement ) {
       gel._setWindow(this);
       gel._setTabIndex(this._guiElements.length + 1);
 

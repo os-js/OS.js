@@ -161,4 +161,4 @@
 
   OSjs.GUI.Textarea     = Textarea;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._Input);
+})(OSjs.Core.GUIElement, OSjs.GUI._Input);

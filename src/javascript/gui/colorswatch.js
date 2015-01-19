@@ -40,7 +40,7 @@
    * @option opts int       height    The height
    * @option opts Function  onSelect  Callback for when color is selected => fn(r, g, b)
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.ColorSwatch
    *
    * @extends GUIElement
@@ -119,4 +119,4 @@
 
   OSjs.GUI.ColorSwatch  = ColorSwatch;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

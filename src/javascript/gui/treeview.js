@@ -46,7 +46,7 @@
    * @option opts Function  onCollapse    Callback when item is collapsed
    * @option opts Mixed     expanded      What level to expand on render (Default = false (none), true = (1), int for level)
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.TreeView
    *
    * @extends _DataView
@@ -295,4 +295,4 @@
 
   OSjs.GUI.TreeView     = TreeView;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._DataView);
+})(OSjs.Core.GUIElement, OSjs.GUI._DataView);

@@ -39,7 +39,7 @@
    * @option  opts    Function    onMenuOpen      Callback when menu is opened
    *
    * @api OSjs.GUI.MenuBar
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    *
    * @extends GUIElement
    * @class
@@ -170,4 +170,4 @@
 
   OSjs.GUI.MenuBar      = MenuBar;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

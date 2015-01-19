@@ -136,4 +136,4 @@
 
   OSjs.GUI.Select       = Select;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._Input);
+})(OSjs.Core.GUIElement, OSjs.GUI._Input);

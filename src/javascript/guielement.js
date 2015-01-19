@@ -53,7 +53,7 @@
    * @option  opts   Object       dndOpts            DnD Options
    * @option  opts   bool         focusable          If element is focusable (Default = true)
    *
-   * @api     OSjs.GUI.GUIElement
+   * @api     OSjs.Core.GUIElement
    * @class
    */
   var GUIElement = (function() {
@@ -401,6 +401,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.GUIElement       = GUIElement;
+  OSjs.Core.GUIElement       = GUIElement;
 
 })(OSjs.API, OSjs.Utils);

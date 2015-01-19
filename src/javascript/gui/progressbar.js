@@ -37,7 +37,7 @@
    * @param int       percentage  Start at this value
    *
    * @api OSjs.GUI.ProgressBar
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    *
    * @extends GUIElement
    * @class
@@ -104,4 +104,4 @@
 
   OSjs.GUI.ProgressBar  = ProgressBar;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

@@ -38,7 +38,7 @@
    *
    * @option  opts  String    orientation     Orientation (default=horizontal)
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.Toolbar
    *
    * @extends GUIElement
@@ -216,4 +216,4 @@
 
   OSjs.GUI.ToolBar      = ToolBar;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

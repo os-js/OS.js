@@ -133,4 +133,4 @@
 
   OSjs.GUI.Checkbox     = Checkbox;
 
-})(OSjs.GUI._Input, OSjs.GUI.GUIElement);
+})(OSjs.GUI._Input, OSjs.Core.GUIElement);

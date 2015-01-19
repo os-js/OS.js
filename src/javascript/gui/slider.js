@@ -44,7 +44,7 @@
    * @option  opts  Function  onChange      On Change callback
    * @option  opts  Function  onUpdate      On Update callback
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.Slider
    *
    * @extends GUIElement
@@ -302,4 +302,4 @@
 
   OSjs.GUI.Slider       = Slider;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

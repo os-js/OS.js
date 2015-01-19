@@ -145,7 +145,7 @@
    *
    * @option  opts  String    orientation     Orientation (default=horizontal)
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.Tabs
    *
    * @extends GUIElement
@@ -309,4 +309,4 @@
 
   OSjs.GUI.Tabs         = Tabs;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

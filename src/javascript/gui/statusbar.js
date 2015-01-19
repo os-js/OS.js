@@ -38,7 +38,7 @@
    *
    * @option  opts  String    value         The value in text
    *
-   * @see OSjs.GUI.GUIElement
+   * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.StatusBar
    *
    * @extends GUIElement
@@ -96,4 +96,4 @@
 
   OSjs.GUI.StatusBar    = StatusBar;
 
-})(OSjs.GUI.GUIElement);
+})(OSjs.Core.GUIElement);

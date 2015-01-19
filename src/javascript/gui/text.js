@@ -85,4 +85,4 @@
 
   OSjs.GUI.Text         = Text;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._Input);
+})(OSjs.Core.GUIElement, OSjs.GUI._Input);

@@ -72,4 +72,4 @@
 
   OSjs.GUI.Radio        = Radio;
 
-})(OSjs.GUI.GUIElement, OSjs.GUI._Input, OSjs.GUI.Checkbox);
+})(OSjs.Core.GUIElement, OSjs.GUI._Input, OSjs.GUI.Checkbox);
