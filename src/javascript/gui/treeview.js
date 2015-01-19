@@ -164,7 +164,7 @@
         li.setAttribute('data-index', i);
 
         Object.keys(iter).forEach(function(j) {
-          if ( (['items', 'title', 'icon']).indexIf(j) === -1 ) {
+          if ( (['items', 'title', 'icon']).indexOf(j) === -1 ) {
             li.setAttribute('data-' + j, iter[j]);
           }
         });
