@@ -282,7 +282,7 @@
 
         createRingNotification();
 
-        API.message('vfs', {type: 'mount', module: 'Dropbox', source: null});
+        OSjs.Core.message('vfs', {type: 'mount', module: 'Dropbox', source: null});
 
         callback(_cachedClient);
       });
@@ -302,7 +302,7 @@
       _isMounted = false;
       _cachedClient = null;
 
-      API.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
+      OSjs.Core.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
 
       destroyRingNotification();
 
@@ -352,7 +352,7 @@
       // FIXME: Should we sign out here too ?
       cb = cb || function() {};
       _isMounted = false;
-      API.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
+      OSjs.Core.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
       cb(false, true);
     },
     mounted: function() {

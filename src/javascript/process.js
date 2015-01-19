@@ -89,7 +89,7 @@
    *
    * @return  void
    * @see     Process::_onMessage()
-   * @api     OSjs.API.message()
+   * @api     OSjs.Core.message()
    */
   function doProcessMessage(msg, opts) {
     console.info('doProcessMessage', msg, opts);
@@ -214,7 +214,7 @@
 
   OSjs.Core.killAll           = doKillAllProcesses;
   OSjs.Core.kill              = doKillProcess;
-  OSjs.API.message            = doProcessMessage;
+  OSjs.Core.message           = doProcessMessage;
   OSjs.Core.getProcess        = doGetProcess;
   OSjs.Core.getProcesses      = doGetProcesses;
 
