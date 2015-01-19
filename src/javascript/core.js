@@ -570,7 +570,7 @@
       }
 
 
-      OSjs.API.killAll();
+      OSjs.Core.killAll();
 
       if ( _$ROOT && _$ROOT.parentNode ) {
         _$ROOT.parentNode.removeChild(_$ROOT);

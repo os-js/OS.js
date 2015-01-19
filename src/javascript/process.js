@@ -47,7 +47,7 @@
    * Kills all processes
    *
    * @return  void
-   * @api     OSjs.API.killAll()
+   * @api     OSjs.Core.killAll()
    */
   function doKillAllProcesses() {
     _PROCS.forEach(function(proc, i) {
@@ -65,15 +65,17 @@
    * @param   int     pid       Process ID
    *
    * @return  void
-   * @api     OSjs.API.kill()
+   * @api     OSjs.Core.kill()
    */
   function doKillProcess(pid) {
-    if ( _PROCS[pid] ) {
-      console.warn('Killing application', pid);
-      if ( _PROCS[pid].destroy(true) === false ) {
-        return;
+    if ( pid >= 0 ) {
+      if ( _PROCS[pid] ) {
+        console.warn('Killing application', pid);
+        if ( _PROCS[pid].destroy(true) === false ) {
+          return;
+        }
+        _PROCS[pid] = null;
       }
-      _PROCS[pid] = null;
     }
   }
 
@@ -105,7 +107,7 @@
    * @param   boolean   first   Return the first found
    *
    * @return  Process           Or an Array of Processes
-   * @api     OSjs.API.getProcess()
+   * @api     OSjs.Core.getProcess()
    */
   function doGetProcess(name, first) {
     var p;
@@ -133,7 +135,7 @@
    *
    * @return  Array
    *
-   * @api     OSjs.API.getProcesses()
+   * @api     OSjs.Core.getProcesses()
    */
   function doGetProcesses() {
     return _PROCS;
@@ -210,10 +212,10 @@
 
   OSjs.Core.Process           = Process;
 
-  OSjs.API.killAll            = doKillAllProcesses;
-  OSjs.API.kill               = doKillProcess;
+  OSjs.Core.killAll           = doKillAllProcesses;
+  OSjs.Core.kill              = doKillProcess;
   OSjs.API.message            = doProcessMessage;
-  OSjs.API.getProcess         = doGetProcess;
-  OSjs.API.getProcesses       = doGetProcesses;
+  OSjs.Core.getProcess        = doGetProcess;
+  OSjs.Core.getProcesses      = doGetProcesses;
 
 })(OSjs.Utils, OSjs.API);

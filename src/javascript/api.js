@@ -34,7 +34,6 @@
    *
    * Please note that there are some other API functions declared in:
    * - src/javascript/core.js
-   * - src/javascript/process.js
    *
    */
 
@@ -365,7 +364,7 @@
         // Only allow one instance if specified
         var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
         if ( singular ) {
-          var sproc = OSjs.API.getProcess(n, true);
+          var sproc = OSjs.Core.getProcess(n, true);
           if ( sproc ) {
             console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
             if ( sproc instanceof OSjs.Core.Application ) {
