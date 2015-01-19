@@ -90,7 +90,7 @@
    *
    * @return  void
    * @see     Process::_onMessage()
-   * @api     API.message()
+   * @api     OSjs.API.message()
    */
   function doProcessMessage(msg, opts) {
     console.info('doProcessMessage', msg, opts);
