@@ -30,8 +30,8 @@
 (function(API, Utils, VFS) {
   'use strict';
 
-  window.OSjs   = window.OSjs   || {};
-  OSjs.Handlers = OSjs.Handlers || {};
+  window.OSjs = window.OSjs || {};
+  OSjs.Core   = OSjs.Core   || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // DEMO STORAGE

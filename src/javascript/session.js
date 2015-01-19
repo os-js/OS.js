@@ -43,15 +43,6 @@
    */
 
   window.OSjs       = window.OSjs       || {};
-  OSjs.API          = OSjs.API          || {};
-  OSjs.Core         = OSjs.Core         || {};
-  OSjs.Compability  = OSjs.Compability  || {};
-  OSjs.Helpers      = OSjs.Helpers      || {};
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Dialogs      = OSjs.Dialogs      || {};
-  OSjs.GUI          = OSjs.GUI          || {};
-  OSjs.Locales      = OSjs.Locales      || {};
-  OSjs.VFS          = OSjs.VFS          || {};
   OSjs.Session      = OSjs.Session      || {};
 
   /////////////////////////////////////////////////////////////////////////////

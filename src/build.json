@@ -100,6 +100,7 @@
   "javascript": {
     "output": "dist/osjs.js",
     "files": [
+      "src/javascript/init.js",
       "src/javascript/utils.js",
       "src/javascript/session.js",
       "src/javascript/api.js",
@@ -170,8 +171,7 @@
       "src/javascript/dialogs/font.js",
       "src/javascript/dialogs/input.js",
       "src/javascript/handler.js",
-      "src/javascript/handlers/%HANDLER%/handler.js",
-      "src/javascript/main.js"
+      "src/javascript/handlers/%HANDLER%/handler.js"
     ]
   },
 

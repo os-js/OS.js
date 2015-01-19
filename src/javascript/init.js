@@ -30,8 +30,18 @@
 (function() {
   'use strict';
 
-  // Make sure namespaces exist
   window.OSjs       = window.OSjs       || {};
+  OSjs.API          = OSjs.API          || {};
+  OSjs.Core         = OSjs.Core         || {};
+  OSjs.Compability  = OSjs.Compability  || {};
+  OSjs.Helpers      = OSjs.Helpers      || {};
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Dialogs      = OSjs.Dialogs      || {};
+  OSjs.GUI          = OSjs.GUI          || {};
+  OSjs.Locales      = OSjs.Locales      || {};
+  OSjs.VFS          = OSjs.VFS          || {};
+  OSjs.Session      = OSjs.Session      || {};
+
   window.console    = window.console    || {};
   console.log       = console.log       || function() {};
   console.debug     = console.debug     || console.log;
@@ -40,10 +50,10 @@
   console.group     = console.group     || console.log;
   console.groupEnd  = console.groupEnd  || console.log;
 
-  // Make forEach on all DOM Elements etc
   if ( window.NodeList ) {
     window.NodeList.prototype.forEach = Array.prototype.forEach;
   }
+
   if ( window.FileList ) {
     window.FileList.prototype.forEach = Array.prototype.forEach;
   }
@@ -53,16 +63,19 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var loaded = false;
+
   document.addEventListener('DOMContentLoaded', function() {
     if ( loaded ) { return; }
     loaded = true;
     OSjs.Session.init();
   });
+
   document.addEventListener('load', function() {
     if ( loaded ) { return; }
     loaded = true;
     OSjs.Session.init();
   });
+
   document.addEventListener('unload', function() {
     OSjs.Session.destroy(false, true);
   });
