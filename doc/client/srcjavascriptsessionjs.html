@@ -35,52 +35,38 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/_dataview.js</i></p>
+<p><i>src/javascript/session.js</i></p>
+<pre>
+ List of Hooks:
+     onInitialize             When OS.js is starting
+     onInited                 When all resources has been loaded
+     onWMInited               When Window Manager has started
+     onSessionLoaded          After session has been loaded or restored
+     onLogout                 When logout is requested
+     onShutdown               When shutting down after successfull logout
+     onApplicationLaunch      On application launch request
+     onApplicationLaunched    When application has been launched
+</pre>
 <h2>Functions</h2>
 <ul>
+<li>OSjs.Session.<a href="#osjs-session-triggerhook">triggerHook()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-addhook">addHook()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-init">init()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-destroy">destroy()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-signout">signOut()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
-<li>
-<a href="#osjs-gui-_dataview">_DataView</a> (OSjs.GUI._DataView)
-<ul>
-<li><a href="#_dataview-clear">clear()</a></li>
-<li><a href="#_dataview-refresh">refresh()</a></li>
-<li><a href="#_dataview-render">render()</a></li>
-<li><a href="#_dataview-_onrender">_onRender()</a></li>
-<li><a href="#_dataview-__onselect">__onSelect()</a></li>
-<li><a href="#_dataview-_onselect">_onSelect()</a></li>
-<li><a href="#_dataview-_onactivate">_onActivate()</a></li>
-<li><a href="#_dataview-_oncontextmenu">_onContextMenu()</a></li>
-<li><a href="#_dataview-setdata">setData()</a></li>
-<li><a href="#_dataview-setselected">setSelected()</a></li>
-<li><a href="#_dataview-setselectedindex">setSelectedIndex()</a></li>
-<li><a href="#_dataview-setitems">setItems()</a></li>
-<li><a href="#_dataview-getitembykey">getItemByKey()</a></li>
-<li><a href="#_dataview-getitem">getItem()</a></li>
-<li><a href="#_dataview-getselected">getSelected()</a></li>
-</ul>
-</li>
 </ul>
 <h1>Functions</h1>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-gui-_dataview">
-<h2 id="_dataview">_DataView</h2>
+<div class="section-function" id="osjs-session-triggerhook">
+<h2 id="osjs-session-triggerhook-name-args-thisarg-">OSjs.Session.triggerHook(name, args, thisarg)</h2>
 <pre>
-Data View Base Class
-
-This is for handling data lists in some sort of view
+Method for triggering a hook
 </pre>
 
-<h4 id="namespace">Namespace</h4>
-<ul>
-<li>OSjs.GUI._DataView</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.GUI.GUIElement</li>
-</ul>
-<h4 id="constructor">Constructor</h4>
+
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
@@ -90,164 +76,38 @@ This is for handling data lists in some sort of view
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>className</td>
-<td>String</td>
-<td>The element className</td>
-</tr>
 <tr>
 <td>name</td>
 <td>String</td>
-<td>The element name</td>
+<td>Hook name</td>
 </tr>
 <tr>
-<td>opts</td>
+<td>args</td>
+<td>Array</td>
+<td>List of arguments</td>
+</tr>
+<tr>
+<td>thisarg</td>
 <td>Object</td>
-<td>A list of options</td>
+<td>&#39;this&#39; ref</td>
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Function</td>
-<td>onSelect</td>
-<td>Callback - When item is selected (clicked item)</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>onActivate</td>
-<td>Callback - When item is activated (double-click item)</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>onContextMenu</td>
-<td>Callback - When item menu is activated (right click on item)</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>onViewContextMenu</td>
-<td>Callback - When view menu is activated (right click background)</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>onCreateItem</td>
-<td>Callback - When item is created</td>
-</tr>
-<tr>
-<td>Array</td>
-<td>data</td>
-<td>Data (Items)</td>
-</tr>
-<tr>
-<td>String</td>
-<td>indexKey</td>
-<td>What key is used as an index (usefull for autoselecting last selected row on re-render)</td>
-</tr>
-<tr>
-<td>bool</td>
-<td>render</td>
-<td>Render on create (default = true when data is supplied)</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-
-<div class="section-method" id="_dataview-clear">
-<h3 id="_dataview-clear-">_DataView::clear()</h3>
-<pre>
-Clears the view
-</pre>
-
-
-
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="_dataview-refresh">
-<h3 id="_dataview-refresh-">_DataView::refresh()</h3>
+<div class="section-function" id="osjs-session-addhook">
+<h2 id="osjs-session-addhook-name-fn-">OSjs.Session.addHook(name, fn)</h2>
 <pre>
-Refresh the view
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="_dataview-render">
-<h3 id="_dataview-render-data-reset-">_DataView::render(data, reset)</h3>
-<pre>
-Render the view
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>data</td>
-<td>Array</td>
-<td>The data to render</td>
-</tr>
-<tr>
-<td>reset</td>
-<td>boolean</td>
-<td>Resets the view (false if refreshing)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
-
-</div>
-<div class="section-method" id="_dataview-_onrender">
-<h3 id="_dataview-_onrender-">_DataView::_onRender()</h3>
-<pre>
-Event: On render
-</pre>
-
-
-
-</div>
-<div class="section-method" id="_dataview-__onselect">
-<h3 id="_dataview-__onselect-">_DataView::__onSelect()</h3>
-<pre>
-Event: On select (abstraction)
+Method for adding a hook
 </pre>
 
 
 <h4 id="see">See</h4>
 <ul>
-<li>_DataView::_onSelect()</li>
+<li>session.js</li>
 </ul>
-
-</div>
-<div class="section-method" id="_dataview-_onselect">
-<h3 id="_dataview-_onselect-ev-item-scroll-callback-">_DataView::_onSelect(ev, item, scroll, callback)</h3>
-<pre>
-Event: On select
-</pre>
-
-
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -259,128 +119,14 @@ Event: On select
 </thead>
 <tbody>
 <tr>
-<td>ev</td>
-<td>DOMEvent</td>
-<td>Event</td>
+<td>name</td>
+<td>String</td>
+<td>Hook name</td>
 </tr>
 <tr>
-<td>item</td>
-<td>Object</td>
-<td>Item</td>
-</tr>
-<tr>
-<td>scroll</td>
-<td>boolean</td>
-<td>Scroll item into view ?</td>
-</tr>
-<tr>
-<td>callback</td>
+<td>fn</td>
 <td>Function</td>
-<td>Callback function</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The selected object</em></p>
-
-</div>
-<div class="section-method" id="_dataview-_onactivate">
-<h3 id="_dataview-_onactivate-ev-item-callback-">_DataView::_onActivate(ev, item, callback)</h3>
-<pre>
-Event: On activate
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ev</td>
-<td>DOMEvent</td>
-<td>Event</td>
-</tr>
-<tr>
-<td>item</td>
-<td>Object</td>
-<td>Item</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The activated object</em></p>
-
-</div>
-<div class="section-method" id="_dataview-_oncontextmenu">
-<h3 id="_dataview-_oncontextmenu-ev-item-">_DataView::_onContextMenu(ev, item)</h3>
-<pre>
-Event: On contextmenu
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ev</td>
-<td>DOMEvent</td>
-<td>Event</td>
-</tr>
-<tr>
-<td>item</td>
-<td>Object</td>
-<td>Item</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The contextmenu object</em></p>
-
-</div>
-<div class="section-method" id="_dataview-setdata">
-<h3 id="_dataview-setdata-data-render-">_DataView::setData(data, render)</h3>
-<pre>
-Set the view data
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>data</td>
-<td>Array</td>
-<td>Data array (filled with key/value pairs)</td>
-</tr>
-<tr>
-<td>render</td>
-<td>boolean</td>
-<td>Render immediately ?</td>
+<td>Callback</td>
 </tr>
 </tbody>
 </table>
@@ -388,50 +134,24 @@ Set the view data
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="_dataview-setselected">
-<h3 id="_dataview-setselected-val-key-scrollto-">_DataView::setSelected(val, key, scrollTo)</h3>
+<div class="section-function" id="osjs-session-init">
+<h2 id="osjs-session-init-">OSjs.Session.init()</h2>
 <pre>
-Set the selected item
+This is the main initialization function
 
-This method does a search
+the first thing that is called after page has loaded
 </pre>
 
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>val</td>
-<td>String</td>
-<td>Item value</td>
-</tr>
-<tr>
-<td>key</td>
-<td>String</td>
-<td>Item key</td>
-</tr>
-<tr>
-<td>scrollTo</td>
-<td>boolean</td>
-<td>Scroll item into view?</td>
-</tr>
-</tbody>
-</table>
+
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="_dataview-setselectedindex">
-<h3 id="_dataview-setselectedindex-idx-scrollto-">_DataView::setSelectedIndex(idx, scrollTo)</h3>
+<div class="section-function" id="osjs-session-destroy">
+<h2 id="osjs-session-destroy-save-">OSjs.Session.destroy(save)</h2>
 <pre>
-Set the selected item by index
+Shut down OS.js
 </pre>
 
 
@@ -446,14 +166,9 @@ Set the selected item by index
 </thead>
 <tbody>
 <tr>
-<td>idx</td>
-<td>int</td>
-<td>The item index</td>
-</tr>
-<tr>
-<td>scrollTo</td>
+<td>save</td>
 <td>boolean</td>
-<td>Scroll item into view?</td>
+<td>Save the current session ?</td>
 </tr>
 </tbody>
 </table>
@@ -461,93 +176,19 @@ Set the selected item by index
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="_dataview-setitems">
-<h3 id="_dataview-setitems-">_DataView::setItems()</h3>
+<div class="section-function" id="osjs-session-signout">
+<h2 id="osjs-session-signout-">OSjs.Session.signOut()</h2>
 <pre>
-Alias of setData()
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>_DataView::setData()</li>
-</ul>
-
-</div>
-<div class="section-method" id="_dataview-getitembykey">
-<h3 id="_dataview-getitembykey-key-val-">_DataView::getItemByKey(key, val)</h3>
-<pre>
-Gets an item by key/value
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>key</td>
-<td>String</td>
-<td>Item key</td>
-</tr>
-<tr>
-<td>val</td>
-<td>String</td>
-<td>Item value</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Found item or null</em></p>
-
-</div>
-<div class="section-method" id="_dataview-getitem">
-<h3 id="_dataview-getitem-idx-">_DataView::getItem(idx)</h3>
-<pre>
-Gets an item by index
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>idx</td>
-<td>int</td>
-<td>Item index</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Found item</em></p>
-
-</div>
-<div class="section-method" id="_dataview-getselected">
-<h3 id="_dataview-getselected-">_DataView::getSelected()</h3>
-<pre>
-Gets the currently selected item
+Sign Out of OS.js
 </pre>
 
 
 
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Selected item or null</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-</div>
+<h1>Classes</h1>
 <p><i>Generated: Mon Jan 19 2015 18:47:25 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
