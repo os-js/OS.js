@@ -46,6 +46,7 @@
    * @see OSjs.Core.Window
    * @api OSjs.Core.DialogWindow
    * @class DialogWindow
+   * @extends Window
    */
   var DialogWindow = function(/* See Window */) {
     Window.apply(this, arguments);
