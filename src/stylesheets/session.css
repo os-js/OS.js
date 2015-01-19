@@ -1,0 +1,146 @@
+@charset "UTF-8";
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+/**
+ * Loading Screen
+ */
+#LoadingScreen {
+  position : absolute;
+  width : 120px;
+  height : 180px;
+  top : 50%;
+  left : 50%;
+  margin-top : -90px;
+  margin-left : -60px;
+  background : #fff;
+  z-index : 9999999;
+}
+#LoadingScreen span {
+  font-size : 22px;
+  padding : 0;
+  margin : 20px;
+  display : block;
+  color : #000;
+  text-align : center;
+}
+
+/**
+ * Debug Notification
+ */
+#DebugNotice {
+  position : absolute;
+  bottom : 5px;
+  right : 5px;
+  font-size : 12px;
+  color : #fff;
+  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  text-align : right;
+  line-height : 20px;
+  z-index : 2;
+  opacity : .7;
+}
+
+#DebugNotice a {
+  color : #fff;
+  text-decoration : underline;
+  font-weight : normal;
+}
+
+/**
+ * Misc
+ */
+
+#Loading {
+  display : block;
+  position : absolute;
+  top : 2px;
+  right : 10px;
+  width : 20px;
+  height : 20px;
+  z-index : 999999999;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+  0% { -moz-transform: rotate(0deg); }
+  100% { -moz-transform: rotate(360deg); }
+}
+@-ms-keyframes spin {
+  0% { -ms-transform: rotate(0deg); }
+  100% { -ms-transform: rotate(360deg); }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#Loading .loader {
+  position: relative;
+  display: inline-block;
+  margin: 0 12.5% 100px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #000;
+  border-radius: 50%;
+
+  -webkit-animation: spin 0.75s infinite linear;
+     -moz-animation: spin 0.75s infinite linear;
+      -ms-animation: spin 0.75s infinite linear;
+          animation: spin 0.75s infinite linear;
+}
+#Loading .loader::before,
+#Loading .loader::after {
+  left: -2px;
+  top: -2px;
+  display: none;
+  position: absolute;
+  content: '';
+  width: inherit;
+  height: inherit;
+  border: inherit;
+  border-radius: inherit;
+}
+
+#Loading .loader,
+#Loading .loader::before {
+  display: inline-block;
+  border-color: transparent;
+  border-top-color: #000;
+}
+#Loading .loader::before {
+  -webkit-animation: spin 1.5s infinite ease;
+     -moz-animation: spin 1.5s infinite ease;
+      -ms-animation: spin 1.5s infinite ease;
+          animation: spin 1.5s infinite ease;
+}

@@ -29,15 +29,6 @@
  * @licence Simplified BSD License
  */
 
-#Background {
-  position : fixed;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  z-index : 1;
-}
-
 .Window {
   position : absolute;
   top : 0px;

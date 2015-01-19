@@ -110,6 +110,8 @@
       "src/javascript/window.js",
       "src/javascript/dialog.js",
       "src/javascript/windowmanager.js",
+      "src/javascript/handler.js",
+      "src/javascript/handlers/%HANDLER%/handler.js",
       "src/javascript/vfs.js",
       "src/javascript/vfs/osjs.js",
       "src/javascript/vfs/public.js",
@@ -169,18 +171,18 @@
       "src/javascript/dialogs/fileprogress.js",
       "src/javascript/dialogs/fileupload.js",
       "src/javascript/dialogs/font.js",
-      "src/javascript/dialogs/input.js",
-      "src/javascript/handler.js",
-      "src/javascript/handlers/%HANDLER%/handler.js"
+      "src/javascript/dialogs/input.js"
     ]
   },
 
   "stylesheets": {
     "output": "dist/osjs.css",
     "files": [
-      "src/stylesheets/main.css",
-      "src/stylesheets/core.css",
-      "src/stylesheets/windows.css",
+      "src/stylesheets/init.css",
+      "src/stylesheets/api.css",
+      "src/stylesheets/session.css",
+      "src/stylesheets/window.css",
+      "src/stylesheets/windowmanager.css",
       "src/stylesheets/guielement.css",
       "src/stylesheets/dialogs.css",
       "src/stylesheets/dialogs/alert.css",

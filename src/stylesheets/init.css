@@ -29,25 +29,16 @@
  * @licence Simplified BSD License
  */
 
-/**
- * Loading Screen
- */
-#LoadingScreen {
-  position : absolute;
-  width : 120px;
-  height : 180px;
-  top : 50%;
-  left : 50%;
-  margin-top : -90px;
-  margin-left : -60px;
-  background : #fff;
-  z-index : 9999999;
+html, body {
+  height : 100%;
 }
-#LoadingScreen span {
-  font-size : 22px;
+body {
+  margin : 0;
   padding : 0;
-  margin : 20px;
-  display : block;
-  color : #000;
-  text-align : center;
+  background-color : #fff;
+  overflow : hidden;
+}
+body, input, button, textarea, label, select {
+  font-size : 12px;
+  font-family : Sans-serif, Arial;
 }

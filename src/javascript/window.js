@@ -776,7 +776,8 @@
     var wm = OSjs.Core.getWindowManager();
 
     this._destroyed = true;
-    console.log('OSjs::Core::Window::destroy()');
+
+    console.group('OSjs::Core::Window::destroy()');
 
     this._onChange('close');
 
@@ -835,6 +836,8 @@
 
     this._appRef = null;
     this._hooks = {};
+
+    console.groupEnd();
   };
 
   //
