@@ -456,7 +456,8 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    */
   function buildConfig() {
     // PHP
-    var settings = JSON.parse(JSON.stringify(BUILD.settings.backend));
+    var root = JSON.parse(JSON.stringify(BUILD.settings));
+    var settings = root.backend;
     var extensions = getCoreExtensions();
 
     var loadExtensions = [];
@@ -468,6 +469,10 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     });
     if ( loadExtensions ) {
       settings.extensions = JSON.stringify(loadExtensions);
+    }
+    try {
+      settings.MaxUpload = root.frontend.Core.MaxUploadSize;
+    } catch ( exc ) {
     }
 
     var out_php  = _path.join(ROOT, 'src', 'server-php', 'settings.php');
