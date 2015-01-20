@@ -67,7 +67,7 @@
 
     this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(ev) {
       if ( ev.keyCode === Utils.Keys.ENTER ) {
-        self.buttons['confirm'].onClick(ev);
+        self.buttons['ok'].onClick(ev);
         return;
       }
     }}), inputd);
