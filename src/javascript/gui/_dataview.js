@@ -277,6 +277,22 @@
     return item;
   };
 
+
+  /**
+   * CTRL+C / CTRL+V / CTRL+X
+   *
+   * @return  Object
+   */
+  _DataView.prototype.onClipboardRequest = function(type, ev) {
+    if ( type === 'get' ) {
+      var sel = this.getSelected();
+      if ( sel ) {
+        return sel;
+      }
+    }
+    return null;
+  };
+
   /**
    * Keyboard movment
    *

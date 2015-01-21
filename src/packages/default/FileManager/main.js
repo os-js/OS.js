@@ -453,6 +453,31 @@
 
   ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev) {
     Window.prototype._onKeyEvent.apply(this, arguments);
+    var self = this;
+
+    // CTRL+V
+    if ( ev.keyCode === 86 && ev.ctrlKey && ev.type === 'keydown' ) {
+      var clip = OSjs.API.getClipboard();
+      if ( clip !== null ) {
+        if ( clip instanceof VFS.File ) {
+          var view = this._getGUIElement('FileManagerFileView');
+          if ( view ) {
+            var src = new VFS.File(clip);
+            var dst = new VFS.File(view.getPath() + '/' + src.filename);
+
+            this._appRef.copy(src, dst, function(result) {
+              if ( result ) {
+                view.refresh(function() {
+                  view.setSelected(src.filename, 'filename', true);
+                });
+                self._focus();
+              }
+            });
+          }
+        }
+      }
+      return true;
+    }
 
     if ( ev.keyCode === Utils.Keys.F2 ) {
       this.menuAction('rename');
@@ -490,7 +515,7 @@
       } else {
         if (file && fileView ) {
           fileView.refresh(function() {
-            fileView.setSelected(file.filename, 'filename');
+            fileView.setSelected(file.filename, 'filename', true);
             self._focus();
           });
         }

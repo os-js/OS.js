@@ -281,11 +281,39 @@
   GUIElement.prototype.onGlobalKeyPress = function(ev) {
     if ( this.hasCustomKeys ) { return false; }
     if ( !this.focused ) { return false; }
+
+    // CTRL+C
+    if ( ev.keyCode === 67 && ev.ctrlKey ) {
+      var clip = this.onClipboardRequest('get', ev);
+      if ( clip !== null ) {
+        API.setClipboard(clip);
+      }
+      return true;
+    }
+
+
     if ( !this.opts.onKeyPress ) { return false; }
 
     this.opts.onKeyPress.call(this, ev);
 
     return true;
+  };
+
+  /**
+   * Event for Clipboard data request
+   *
+   * Normally called when CTRL+C or CTRL+V etc.
+   * is used
+   *
+   * @param   String    type      Request type (get/put)
+   * @param   DOMEvent  ev        Event
+   *
+   * @return  Mixed               get returns data, put returns null
+   * @method  GUIElement::onClipboardRequest()
+   */
+  GUIElement.prototype.onClipboardRequest = function(type, ev) {
+    console.debug('GUIElement::onClipboardRequest()', type, ev);
+    return null;
   };
 
   /**

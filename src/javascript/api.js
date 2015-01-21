@@ -39,7 +39,9 @@
 
   var DefaultLocale = 'en_EN';
   var CurrentLocale = 'en_EN';
+
   var _MENU;              // Current open 'OSjs.GUI.Menu'
+  var _CLIPBOARD;         // Current 'clipboard' data
 
   /////////////////////////////////////////////////////////////////////////////
   // SERVICERING
@@ -1197,6 +1199,32 @@
     return a;
   }
 
+  /**
+   * Set the "clipboard" data
+   *
+   * NOTE: This does not set the operating system clipboard (yet...)
+   *
+   * @param   Mixed       data      What data to set
+   * @return  void
+   * @api     OSjs.API.setClipboard()
+   */
+  function doSetClipboard(data) {
+    console.info('OSjs.API.setClipboard()', data);
+    _CLIPBOARD = data;
+  }
+
+  /**
+   * Get the "clipboard" data
+   *
+   * NOTE: This does not the operating system clipboard (yet...)
+   *
+   * @return  Mixed
+   * @api     OSjs.API.getClipboard()
+   */
+  function doGetClipboard() {
+    return _CLIPBOARD;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -1232,5 +1260,7 @@
 
   OSjs.API.error                  = doErrorDialog;
   OSjs.API.playSound              = doPlaySound;
+  OSjs.API.setClipboard           = doSetClipboard;
+  OSjs.API.getClipboard           = doGetClipboard;
 
 })();
