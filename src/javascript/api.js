@@ -180,26 +180,6 @@
     }
   };
 
-  /**
-   * Returns an instance of ServiceNotificationIcon
-   *
-   * This is the icon in the panel where external connections
-   * etc gets a menu entry.
-   *
-   * @return  ServiceNotificationIcon
-   * @api     OSjs.API.getServiceNotificationIcon()
-   */
-  var doGetServiceNotificationIcon = (function() {
-    var _instance;
-
-    return function() {
-      if ( !_instance ) {
-        _instance = new ServiceNotificationIcon();
-      }
-      return _instance;
-    };
-  })();
-
   /////////////////////////////////////////////////////////////////////////////
   // LOCALE API METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -1225,6 +1205,26 @@
     return _CLIPBOARD;
   }
 
+  /**
+   * Returns an instance of ServiceNotificationIcon
+   *
+   * This is the icon in the panel where external connections
+   * etc gets a menu entry.
+   *
+   * @return  ServiceNotificationIcon
+   * @api     OSjs.API.getServiceNotificationIcon()
+   */
+  var doGetServiceNotificationIcon = (function() {
+    var _instance;
+
+    return function() {
+      if ( !_instance ) {
+        _instance = new ServiceNotificationIcon();
+      }
+      return _instance;
+    };
+  })();
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -1247,9 +1247,8 @@
   OSjs.API.getFileIcon            = doGetFileIcon;
   OSjs.API.getThemeResource       = doGetThemeResource;
 
-  OSjs.API.getDefaultSettings           = OSjs.API.getDefaultSettings || doGetDefaultSettings;
-  OSjs.API.getDefaultPath               = doGetDefaultPath;
-  OSjs.API.getServiceNotificationIcon   = doGetServiceNotificationIcon;
+  OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || doGetDefaultSettings;
+  OSjs.API.getDefaultPath         = doGetDefaultPath;
 
   OSjs.API.createDraggable        = doCreateDraggable;
   OSjs.API.createDroppable        = doCreateDroppable;
@@ -1258,9 +1257,10 @@
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
 
-  OSjs.API.error                  = doErrorDialog;
-  OSjs.API.playSound              = doPlaySound;
-  OSjs.API.setClipboard           = doSetClipboard;
-  OSjs.API.getClipboard           = doGetClipboard;
+  OSjs.API.error                      = doErrorDialog;
+  OSjs.API.playSound                  = doPlaySound;
+  OSjs.API.setClipboard               = doSetClipboard;
+  OSjs.API.getClipboard               = doGetClipboard;
+  OSjs.API.getServiceNotificationIcon = doGetServiceNotificationIcon;
 
 })();
