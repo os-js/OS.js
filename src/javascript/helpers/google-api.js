@@ -156,7 +156,7 @@
 
       this.authenticated = false;
 
-      var ring = OSjs.Helpers.getServiceRing();
+      var ring = API.getServiceNotificationIcon();
       if ( ring ) {
         ring.remove('Google API');
       }
@@ -231,7 +231,7 @@
     }
 
     function createRingNotification() {
-      var ring = OSjs.Helpers.getServiceRing();
+      var ring = API.getServiceNotificationIcon();
       if ( ring ) {
         ring.add('Google API', [{
           title: API._('GAPI_SIGN_OUT'),

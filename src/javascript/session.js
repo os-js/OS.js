@@ -527,7 +527,7 @@
       }
     }
 
-    var ring = OSjs.Helpers.getServiceRing();
+    var ring = OSjs.API.getServiceNotificationIcon();
     if ( ring ) {
       ring.destroy();
     }

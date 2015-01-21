@@ -189,7 +189,7 @@
   };
 
   WindowsLiveAPI.prototype._removeRing = function() {
-    var ring = OSjs.Helpers.getServiceRing();
+    var ring = API.getServiceNotificationIcon();
     if ( ring ) {
       ring.remove('Windows Live API');
     }
@@ -272,7 +272,7 @@
     this.hasSession = true;
 
     var self = this;
-    var ring = OSjs.Helpers.getServiceRing();
+    var ring = API.getServiceNotificationIcon();
     if ( ring ) {
       ring.add('Windows Live API', [{
         title: API._('WLAPI_SIGN_OUT'),

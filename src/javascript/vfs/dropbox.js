@@ -55,14 +55,14 @@
   }
 
   function destroyRingNotification() {
-    var ring = OSjs.Helpers.getServiceRing();
+    var ring = API.getServiceNotificationIcon();
     if ( ring ) {
       ring.remove('Dropbox.js');
     }
   }
 
   function createRingNotification() {
-    var ring = OSjs.Helpers.getServiceRing();
+    var ring = API.getServiceNotificationIcon();
     if ( ring ) {
       ring.add('Dropbox.js', [{
         title: API._('DROPBOX_SIGN_OUT'),

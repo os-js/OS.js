@@ -42,6 +42,163 @@
   var _MENU;              // Current open 'OSjs.GUI.Menu'
 
   /////////////////////////////////////////////////////////////////////////////
+  // SERVICERING
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Service Notification Icon Class
+   *
+   * This is a private class and can only be retrieved through
+   * OSjs.API.getServiceNotificationIcon()
+   *
+   * @see OSjs.API.getServiceNotificationIcon()
+   * @class
+   */
+  function ServiceNotificationIcon() {
+    this.entries = {};
+    this.size = 0;
+    this.icon = null;
+    this.element = null;
+
+    this.init();
+  }
+
+  ServiceNotificationIcon.prototype.init = function() {
+    var wm = OSjs.Core.getWindowManager();
+    var self = this;
+
+    if ( wm ) {
+
+      wm.createNotificationIcon('ServiceNotificationIcon', {
+        onContextMenu: function(ev) {
+          self.displayMenu(ev);
+          return false;
+        },
+        onClick: function(ev) {
+          self.displayMenu(ev);
+          return false;
+        },
+        onInited: function(el) {
+          self.element = el;
+
+          if ( el.firstChild ) {
+            var img = document.createElement('img');
+            img.src = OSjs.API.getThemeResource('status/gtk-dialog-authentication.png', 'icon', '16x16');
+            el.firstChild.appendChild(img);
+            self.icon = img;
+            self._updateIcon();
+          }
+        }
+      });
+    }
+  };
+
+  /**
+   * Destroys the notification icon
+   *
+   * @return  void
+   * @method  ServiceNotificationIcon::destroy()
+   */
+  ServiceNotificationIcon.prototype.destroy = function() {
+    var wm = OSjs.Core.getWindowManager();
+    if ( wm ) {
+      wm.removeNotificationIcon('ServiceNotificationIcon');
+    }
+
+    this.size = 0;
+    this.entries = {};
+    this.element = null;
+    this.icon = null;
+  };
+
+  ServiceNotificationIcon.prototype._updateIcon = function() {
+    if ( this.element ) {
+      this.element.style.display = this.size ? 'inline-block' : 'none';
+    }
+    if ( this.icon ) {
+      this.icon.title = 'Logged into external services: ' + this.size.toString(); // FIXME: Translation
+      this.icon.alt   = this.icon.title;
+    }
+  };
+
+  /**
+   * Show the menu
+   *
+   * @param   DOMEvent      ev      Event
+   *
+   * @return  void
+   * @method  ServiceNotificationIcon::displayMenu()
+   */
+  ServiceNotificationIcon.prototype.displayMenu = function(ev) {
+    var menu = [];
+    var entries = this.entries;
+
+    Object.keys(entries).forEach(function(name) {
+      menu.push({
+        title: name,
+        menu: entries[name]
+      });
+    });
+
+    OSjs.API.createMenu(menu, {x: ev.clientX, y: ev.clientY});
+  };
+
+  /**
+   * Adds an entry
+   *
+   * @param   String      name      Name (unique)
+   * @param   Array       menu      Menu
+   *
+   * @see     OSjs.GUI.Menu
+   * @return  void
+   * @method  ServiceNotificationIcon::add()
+   */
+  ServiceNotificationIcon.prototype.add = function(name, menu) {
+    if ( !this.entries[name] ) {
+      this.entries[name] = menu;
+
+      this.size++;
+      this._updateIcon();
+    }
+  };
+
+  /**
+   * Removes an entry
+   *
+   * @param   String      name      Name (unique)
+   *
+   * @return  void
+   * @method  ServiceNotificationIcon::remove()
+   */
+  ServiceNotificationIcon.prototype.remove = function(name) {
+    if ( this.entries[name] ) {
+      delete this.entries[name];
+      this.size--;
+      this._updateIcon();
+    }
+  };
+
+  /**
+   * Returns an instance of ServiceNotificationIcon
+   *
+   * This is the icon in the panel where external connections
+   * etc gets a menu entry.
+   *
+   * @return  ServiceNotificationIcon
+   * @api     OSjs.API.getServiceNotificationIcon()
+   */
+  var doGetServiceNotificationIcon = (function() {
+    var _instance;
+
+    return function() {
+      if ( !_instance ) {
+        _instance = new ServiceNotificationIcon();
+      }
+      return _instance;
+    };
+  })();
+
+  /////////////////////////////////////////////////////////////////////////////
   // LOCALE API METHODS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -1062,8 +1219,9 @@
   OSjs.API.getFileIcon            = doGetFileIcon;
   OSjs.API.getThemeResource       = doGetThemeResource;
 
-  OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || doGetDefaultSettings;
-  OSjs.API.getDefaultPath         = doGetDefaultPath;
+  OSjs.API.getDefaultSettings           = OSjs.API.getDefaultSettings || doGetDefaultSettings;
+  OSjs.API.getDefaultPath               = doGetDefaultPath;
+  OSjs.API.getServiceNotificationIcon   = doGetServiceNotificationIcon;
 
   OSjs.API.createDraggable        = doCreateDraggable;
   OSjs.API.createDroppable        = doCreateDroppable;
