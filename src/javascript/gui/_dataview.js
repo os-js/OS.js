@@ -290,10 +290,8 @@
     if ( this.destroyed ) { return false; }
     if ( GUIElement.prototype.onGlobalKeyPress.apply(this, arguments) ) { return false; }
 
-    console.log("XXX", ev);
-
     var valid = [Utils.Keys.UP, Utils.Keys.DOWN, Utils.Keys.LEFT, Utils.Keys.RIGHT, Utils.Keys.ENTER];
-    if ( valid.indexOf(ev.keyCore) === -1 ) {
+    if ( valid.indexOf(ev.keyCode) === -1 ) {
       return true;
     }
     if ( this.className === 'TreeView' ) {

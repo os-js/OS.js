@@ -283,8 +283,6 @@
     if ( !this.focused ) { return false; }
     if ( !this.opts.onKeyPress ) { return false; }
 
-    console.log("XXX", ev);
-
     this.opts.onKeyPress.call(this, ev);
 
     return true;
