@@ -448,6 +448,16 @@
     useInvertedColor.setSelected(settings.invertIconViewColor ? 'yes' : 'no');
     tabOther.appendChild(outer);
 
+    // FIXME: Translations!!!
+    outer = _createContainer('IconView SettingsNoButton', _('Use touch-based application menu'));
+    var useTouchMenu = this._addGUIElement(new OSjs.GUI.Select('SettingsUseTouchMenu'), outer);
+    useTouchMenu.addItems({
+      'yes':  API._('LBL_YES'),
+      'no':   API._('LBL_NO')
+    });
+    useTouchMenu.setSelected(settings.useTouchMenu ? 'yes' : 'no');
+    tabOther.appendChild(outer);
+
     //
     // Tab: Panels
     //
@@ -620,6 +630,7 @@
         enableSounds:         useSounds.getValue() == 'yes',
         enableIconView:       useIconView.getValue() == 'yes',
         invertIconViewColor:  useInvertedColor.getValue() == 'yes',
+        useTouchMenu:         useTouchMenu.getValue() == 'yes',
         desktopMargin:        desktopMargin,
         desktopFont:          fontName.getValue(),
         theme:                themeName.getValue(),
@@ -655,6 +666,7 @@
             fontFamily       : settings.desktopFont,
             backgroundColor  : settings.backgroundColor
           },
+          useTouchMenu:   settings.useTouchMenu,
           enableSwitcher: settings.enableSwitcher,
           enableHotkeys:  settings.enableHotkeys,
           enableSounds:   settings.enableSounds,

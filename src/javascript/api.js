@@ -1029,19 +1029,24 @@
   /**
    * Create and show a GUI Menu
    *
-   * @param   Array     items   Array of items
-   * @param   Object    pos     Object with x and y
+   * @param   Array     items           Array of items
+   * @param   Object    pos             Object with x and y
+   * @param   Object    customInstance  (Optional) If you have a custom Menu Class
    *
    * @return  OSjs.GUI.Menu
    * @api     OSjs.API.createMenu()
    */
-  function doCreateMenu(items, pos) {
+  function doCreateMenu(items, pos, customInstance) {
     items = items || [];
     pos = pos || {x: 0, y: 0};
 
     OSjs.API.blurMenu();
 
-    _MENU = new OSjs.GUI.Menu(items);
+    if ( customInstance ) {
+      _MENU = customInstance;
+    } else {
+      _MENU = new OSjs.GUI.Menu(items);
+    }
     _MENU.show(pos);
     return _MENU;
   }

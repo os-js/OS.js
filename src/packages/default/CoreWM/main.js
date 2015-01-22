@@ -118,7 +118,7 @@
       wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
       theme               : 'default',
       background          : 'image-fill',
-      menuCategories      : true,
+      useTouchMenu        : false,
       enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,

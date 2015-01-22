@@ -43,8 +43,8 @@
     unknown     : {icon: 'categories/applications-other.png',  title: 'Other'}
   };
 
-  function _createIcon(aiter, aname) {
-    return API.getIcon(aiter.icon, aiter);
+  function _createIcon(aiter, aname, arg) {
+    return API.getIcon(aiter.icon, aiter, arg);
   }
 
   /**
@@ -68,7 +68,7 @@
         });
       }
     }
-    API.createMenu(list, {x: ev.clientX, y: ev.clientY});
+    return list;
   }
 
   /**
@@ -123,8 +123,82 @@
       }
     }
 
-    API.createMenu(list, {x: ev.clientX, y: ev.clientY});
+    return list;
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // NEW MENU
+  /////////////////////////////////////////////////////////////////////////////
+
+  function ApplicationMenu() {
+    this.$element = document.createElement('div');
+    this.$element.id = 'CoreWMApplicationMenu';
+    this.$element.className = 'Menu';
+
+    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
+    var ul = document.createElement('ul');
+    Object.keys(apps).forEach(function(a) {
+      var iter = apps[a];
+      if ( iter.type === 'application' ) {
+        var li = document.createElement('li');
+        li.title = iter.description;
+        li.onclick = function(ev) {
+          API.launch(a);
+          OSjs.API.blurMenu(ev);
+        };
+        li.touchstart = function(ev) {
+          API.launch(a);
+          OSjs.API.blurMenu(ev);
+        };
+
+        var img = document.createElement('img');
+        img.src = _createIcon(iter, a, '32x32');
+
+        var txt = document.createElement('div');
+        txt.appendChild(document.createTextNode(iter.name.replace(/([^\s-]{6})([^\s-]{6})/, '$1-$2')));
+
+        li.appendChild(img);
+        li.appendChild(txt);
+        ul.appendChild(li);
+      }
+    });
+
+    this.$element.appendChild(ul);
+  }
+
+  ApplicationMenu.prototype.destroy = function() {
+    if ( this.$element && this.$element.parentNode ) {
+      this.$element.parentNode.removeChild(this.$element);
+    }
+    this.$element = null;
+  };
+
+  ApplicationMenu.prototype.show = function(pos) {
+    if ( !this.$element ) { return; }
+
+    if ( !this.$element.parentNode ) {
+      document.body.appendChild(this.$element);
+    }
+
+    var tw = pos.x + this.$element.offsetWidth;
+    var th = pos.y + this.$element.offsetHeight;
+    var px = pos.x;
+    var py = pos.y;
+
+    if ( tw > window.innerWidth ) {
+      px = window.innerWidth - this.$element.offsetWidth;
+    }
+    this.$element.style.left = px + 'px';
+
+    if ( th > window.innerHeight ) {
+      py = window.innerHeight - this.$element.offsetHeight;
+    }
+    this.$element.style.top = py + 'px';
+  };
+
+  ApplicationMenu.prototype.getRoot = function() {
+    return this.$element;
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // MENU
@@ -132,10 +206,29 @@
 
   function doShowMenu(ev) {
     var wm = OSjs.Core.getWindowManager();
-    if ( wm && wm.getSetting('menuCategories') ) {
-      doBuildCategoryMenu(ev);
+
+    function isTouchDevice() {
+      if ( "ontouchstart" in document.documentElement ) {
+        return true;
+      }
+      try {
+        if ( document.createEvent("TouchEvent") ) {
+          return true;
+        }
+      } catch ( e ) {}
+
+      var el = document.createElement('div');
+      el.setAttribute('ongesturestart', 'return;'); // or try "ontouchstart"
+      return typeof el.ongesturestart === "function";
+    }
+
+    if ( isTouchDevice() || (wm && wm.getSetting('useTouchMenu') === true) ) {
+      var inst = new ApplicationMenu();
+      API.createMenu(null, {x: ev.clientX, y: ev.clientY}, inst);
     } else {
-      doBuildMenu(ev);
+      //var list = doBuildMenu(ev);
+      var list = doBuildCategoryMenu(ev);
+      API.createMenu(list, {x: ev.clientX, y: ev.clientY});
     }
   }
 

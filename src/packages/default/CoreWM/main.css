@@ -231,3 +231,37 @@ body.WallpaperStrech {
   filter: invert(100%);
 }
 */
+
+#CoreWMApplicationMenu {
+  z-index : 9999999999;
+  position : absolute;
+  min-width : 100px;
+  min-height : 100px;
+}
+
+#CoreWMApplicationMenu ul {
+  width : 480px;
+  overflow : hidden;
+  margin : 10px;
+}
+
+#CoreWMApplicationMenu li {
+  width : 72px;
+  height : 72px;
+  padding : 4px;
+  display : inline-block;
+  overflow : hidden;
+  text-align : center;
+  line-height : 16px;
+  position : relative;
+}
+
+#CoreWMApplicationMenu li img {
+  padding-top : 4px;
+  width : 32px;
+}
+#CoreWMApplicationMenu li div {
+  white-space : normal;
+  max-height : 30px;
+  padding : 4px;
+}
