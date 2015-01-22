@@ -17,7 +17,8 @@ body.WallpaperCenter {
 body.WallpaperFill {
   background-repeat : no-repeat;
   background-size : cover;
-  background-position : center center fixed;
+  background-position : center center;
+  background-attachment : fixed;
 }
 body.WallpaperStrech {
   background-repeat : no-repeat;
