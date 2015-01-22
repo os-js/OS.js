@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>OS.js Tutorials</title>
+    <title>Create your own theme | OS.js Tutorials</title>
     <link rel="stylesheet" type="text/css" href="/OS.js-v2/doc/main.css" />
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css" />
   </head>
@@ -19,24 +19,46 @@
 
     <main>
 
-<h1>Tutorials</h1>
+<h1>Tutorial: Create your own theme</h1>
+
+<h2>Step 1 - Create directories and Manifest</h2>
+
 <p>
-  Official home page: <a href="http://andersevenrud.github.io/OS.js-v2/">http://andersevenrud.github.io/OS.js-v2/</a>
+  Just copy the default theme and use it as a template:
+</p>
+<pre>
+cp -r src/themes/default src/themes/mytheme
+</pre>
+
+Then edit <i>metadata.json</i>
+
+<h2>Step 2 - Create CSS (LESS)</h2>
+
+<p>
+  Just copy the default theme and use it as a template:
+</p>
+<pre>
+cp src/themes/default.less src/themes/mytheme.less
+</pre>
+
+<h2>Step 3 - Add icons and sounds</h2>
+
+<p>
+  If you used the command in step 1, you're currently using the default resources via symlinks.
 </p>
 <p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
+  If you want to customize the icons and sounds, just replace the symlinks with normal directories and fill them up.
 </p>
 
-<h2>Table of contents</h2>
-<ul>
-  <li><a href="/OS.js-v2/doc/tutorials/create-application.html">Create your own application</a></li>
-  <li><a href="/OS.js-v2/doc/tutorials/create-theme.html">Create your own theme</a></li>
-  <li><a href="/OS.js-v2/doc/tutorials/create-panelitem.html">Create your own panel item</a></li>
-  <li><a href="/OS.js-v2/doc/tutorials/create-handler.html">Create your own handler</a></li>
-</ul>
+<h2>Step 4 - Build</h2>
+
 <p>
-  <b>Stay tuned, more to come!</b>
+  Just run
 </p>
+
+<pre>
+make themes
+</pre>
 
   </main>
 
