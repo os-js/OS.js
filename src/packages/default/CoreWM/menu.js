@@ -230,7 +230,9 @@
       return typeof el.ongesturestart === "function";
     }
 
-    if ( isTouchDevice() || (wm && wm.getSetting('useTouchMenu') === true) ) {
+    //if ( isTouchDevice() || (wm && wm.getSetting('useTouchMenu') === true) ) {
+    //FIXME
+    if ( (wm && wm.getSetting('useTouchMenu') === true) ) {
       var inst = new ApplicationMenu();
       var pos = {x: ev.clientX, y: ev.clientY};
       if ( ev.target ) {
