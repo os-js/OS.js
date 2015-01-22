@@ -762,6 +762,8 @@
           icon = 'mimetypes/video.png';
         } else if ( mime.match(/^image\//) || mime === 'osjs/draw' ) {
           icon = 'mimetypes/image.png';
+        } else if ( mime === 'application/pdf' ) {
+          icon = 'mimetypes/gnome-mime-application-pdf.png';
         } else if ( mime.match(/^application\//) ) {
           icon = 'mimetypes/binary.png';
         } else if ( mime === 'osjs/document' ) {
