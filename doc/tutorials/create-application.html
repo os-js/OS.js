@@ -71,6 +71,22 @@
 }
 </pre>
 
+<p>
+  Now run this command to add it to global manifest (make it visible in OS.js)
+</p>
+
+<pre>
+make manifest
+</pre>
+
+<p>
+  And, if you're using dist (prodiction environment)
+</p>
+<pre>
+  make packages
+</pre>
+
+
 
 <h2>Add a GUI Element</h2>
 
@@ -158,6 +174,7 @@ OSjs.Core.launch('MyApplicationName', {path: '/some/file.png', mime: 'image/png'
 <p>
   You can extend the classes <b>DefaultApplication</b> and <b>DefaultApplicationWindow</b> for super-simple handling of opening/saving and creating files. It will also handle dnd and launch/restore arguments for you. Almost all internal OS.js applications use these.
 </p>
+
 
   </main>
 
