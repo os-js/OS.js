@@ -40,7 +40,7 @@
   The manifest holds information about your package, like name, description, icon and used resources.
   Update <b>package.json</b> to fit your application.
 </p>
-<pre>
+<pre class="code">
 
 {
   "className":  "ApplicationApplicationName",  // ClassName used in namespaces
@@ -93,7 +93,7 @@ make manifest
 <p>
   Inside <b>Window::init()</b>
 </p>
-<pre>
+<pre class="code">
     var root = null; // Some DOM element to add to
     var listView = this._addGUIElement(new OSjs.GUI.ListView('MyListView'), root);
     listView.setColumns([
@@ -106,7 +106,7 @@ make manifest
 <p>
   To retrieve this element later, just use:
 </p>
-<pre>
+<pre class="code">
 var gel = this._getGUIElement('MyListView');
 </pre>
 
@@ -123,7 +123,7 @@ OSjs.Core.launch('MyApplicationName', {path: '/some/file.png', mime: 'image/png'
 <p>
   Use this to handle it correctly:
 </p>
-<pre>
+<pre class="code">
     ApplicationProjectName.prototype.init = function(core, session) {
       Application.prototype.init.apply(this, arguments);
 
@@ -149,7 +149,7 @@ OSjs.Core.launch('MyApplicationName', {path: '/some/file.png', mime: 'image/png'
 <p>
   Example:
 </p>
-<pre>
+<pre class="code">
   var MyApplicationNameWindow = function(app, opts) {
     Window.apply(this, ['MyApplicationNameWindow', opts, app]);
     this._icon = "apps/accessories-text-editor.png";
