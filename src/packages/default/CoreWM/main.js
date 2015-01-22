@@ -156,110 +156,6 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // SETTINGS
-  /////////////////////////////////////////////////////////////////////////////
-
-  var DefaultCategories = {
-    development : {icon: 'categories/package_development.png', title: 'Development'},
-    education   : {icon: 'categories/applications-sience.png', title: 'Education'},
-    games       : {icon: 'categories/package_games.png',       title: 'Games'},
-    graphics    : {icon: 'categories/package_graphics.png',    title: 'Graphics'},
-    network     : {icon: 'categories/package_network.png',     title: 'Network'},
-    multimedia  : {icon: 'categories/package_multimedia.png',  title: 'Multimedia'},
-    office      : {icon: 'categories/package_office.png',      title: 'Office'},
-    system      : {icon: 'categories/package_system.png',      title: 'System'},
-    utilities   : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
-    unknown     : {icon: 'categories/applications-other.png',  title: 'Other'}
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function _createIcon(aiter, aname) {
-    return API.getIcon(aiter.icon, aiter);
-  }
-
-  /**
-   * Create default application menu
-   */
-  function BuildMenu(ev) {
-    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
-    var list = [];
-    for ( var a in apps ) {
-      if ( apps.hasOwnProperty(a) ) {
-        if ( apps[a].type !== "application" ) { continue; }
-        list.push({
-          title: apps[a].name,
-          icon: _createIcon(apps[a], a),
-          tooltip : iter.description,
-          onClick: (function(name, iter) {
-            return function() {
-              API.launch(name);
-            };
-          })(a, apps[a])
-        });
-      }
-    }
-    API.createMenu(list, {x: ev.clientX, y: ev.clientY});
-  }
-
-  /**
-   * Create default application menu with categories (sub-menus)
-   */
-  function BuildCategoryMenu(ev) {
-    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
-    var list = [];
-    var cats = {};
-
-    var c, a, iter, cat, submenu;
-
-    for ( c in DefaultCategories ) {
-      if ( DefaultCategories.hasOwnProperty(c) ) {
-        cats[c] = [];
-      }
-    }
-
-    for ( a in apps ) {
-      if ( apps.hasOwnProperty(a) ) {
-        iter = apps[a];
-        if ( iter.type !== "application" ) { continue; }
-        cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
-        cats[cat].push({name: a, data: iter})
-      }
-    }
-
-    for ( c in cats ) {
-      if ( cats.hasOwnProperty(c) ) {
-        submenu = [];
-        for ( a = 0; a < cats[c].length; a++ ) {
-          iter = cats[c][a];
-          submenu.push({
-            title: iter.data.name,
-            icon: _createIcon(iter.data, iter.name),
-            tooltip : iter.data.description,
-            onClick: (function(name, iter) {
-              return function() {
-                API.launch(name);
-              };
-            })(iter.name, iter.data)
-          });
-        }
-
-        if ( submenu.length ) {
-          list.push({
-            title: _(DefaultCategories[c].title),
-            icon:  API.getThemeResource(DefaultCategories[c].icon, 'icon', '16x16'),
-            menu:  submenu
-          });
-        }
-      }
-    }
-
-    API.createMenu(list, {x: ev.clientX, y: ev.clientY});
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
@@ -1085,8 +981,6 @@
   OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Class             = CoreWM;
   OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.BuildMenu         = BuildMenu;
-  OSjs.Applications.CoreWM.BuildCategoryMenu = BuildCategoryMenu;
   OSjs.Applications.CoreWM._                 = _;
 
 })(OSjs.Core.WindowManager, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

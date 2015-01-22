@@ -56,12 +56,8 @@
 
     this.addButton(API._('LBL_APPLICATIONS'), 'osjs.png', function(ev) {
       ev.stopPropagation();
-      var wm = OSjs.Core.getWindowManager();
-      if ( wm && wm.getSetting('menuCategories') ) {
-        OSjs.Applications.CoreWM.BuildCategoryMenu(ev);
-      } else {
-        OSjs.Applications.CoreWM.BuildMenu(ev);
-      }
+
+      OSjs.Applications.CoreWM.showMenu(ev);
       return false;
     });
 
