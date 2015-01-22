@@ -22,13 +22,14 @@
 <h1>Tutorial: Create your own application</h1>
 
 <h2>Create from template</h2>
+<div class="indent">
 
 <p>
   Simply run:
 </p>
 
 <pre>
-./obt create-package ApplicationMyName
+./obt create-package MyName
 </pre>
 
 <p>
@@ -87,7 +88,9 @@ make packages
 
 
 
+</div>
 <h2>Add a GUI Element</h2>
+<div class="indent">
 
 <p>
   Example:
@@ -150,8 +153,10 @@ ApplicationMyName.prototype.openFile = function(file) {
   this._setArgument('file', file);
 };
 </pre>
+</div>
 
 <h2>Adding Drag-and-Drop support</h2>
+<div class="indent">
 <p>
   Example:
 </p>
@@ -174,12 +179,15 @@ ApplicationMyNameWindow.prototype._onDndEvent = function(ev, type, item, args) {
   }
 };
 </pre>
+</div>
 
 
 <h2>More advanced examples</h2>
+<div class="indent">
 <p>
   You can extend the classes <b>DefaultApplication</b> and <b>DefaultApplicationWindow</b> for super-simple handling of opening/saving and creating files. It will also handle dnd and launch/restore arguments for you. Almost all internal OS.js applications use these.
 </p>
+</div>
 
 
   </main>
