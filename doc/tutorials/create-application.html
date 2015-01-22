@@ -19,30 +19,27 @@
 
     <main>
 
-<h1>Tutorial: Create your own application</h1>
+      <h1>Tutorial: Create your own application</h1>
 
-<h2>Create from template</h2>
-<div class="indent">
+      <h2>Create from template</h2>
+      <div class="indent">
 
-<p>
-  Simply run:
-</p>
+        <p>Simply run:</p>
 
-<pre>
+        <pre>
 ./obt create-package MyName
-</pre>
+        </pre>
 
-<p>
-  This will create some source files for you with usable code. You'll have a basic running application with a Window.
-</p>
-</div>
+        <p>This will create some source files for you with usable code. You'll have a basic running application with a Window.</p>
+      </div>
 
-<h2>Update manifest</h2>
-<p>
-  The manifest holds information about your package, like name, description, icon and used resources.
-  Update <b>package.json</b> to fit your application.
-</p>
-<pre class="code">
+      <h2>Update manifest</h2>
+      <div class="indent">
+        <p>
+          The manifest holds information about your package, like name, description, icon and used resources.
+          Update <b>package.json</b> to fit your application.
+        </p>
+        <pre class="code">
 {
   "className":  "ApplicationApplicationName",      // ClassName used in namespaces
   "enabled":    true,                              // If 'false' application will not be loaded or launchable (Optional)
@@ -70,31 +67,25 @@
     "no_NO" : "Norwegian description"
   }
 }
-</pre>
+        </pre>
 
-<p>
-  Now run this command to add it to global manifest (make it visible in OS.js)
-</p>
+        <p>Now run this command to add it to global manifest (make it visible in OS.js)</p>
 
-<pre>
+        <pre>
 make manifest
-</pre>
+        </pre>
 
-<p>
-  And, if you're using dist (prodiction environment)
-</p>
-<pre>
+        <p>And, if you're using dist (prodiction environment)</p>
+        <pre>
 make packages
-</pre>
-</div>
+        </pre>
+      </div>
 
-<h2>Add a GUI Element</h2>
-<div class="indent">
+      <h2>Add a GUI Element</h2>
+      <div class="indent">
 
-<p>
-  Example:
-</p>
-<pre class="code">
+        <p>Example:</p>
+        <pre class="code">
 ApplicationMyNameWindow.prototype.init = function() {
   var self = this;
   var root = Window.prototype.init.apply(this, arguments);
@@ -109,30 +100,25 @@ ApplicationMyNameWindow.prototype.init = function() {
 
   return root;
 };
-</pre>
+        </pre>
 
-<p>
-  To retrieve this element later, just use:
-</p>
-<pre class="code">
-  var gel = this._getGUIElement('MyListView');
-</pre>
-</div>
+        <p>To retrieve this element later, just use:</p>
+        <pre class="code">
+var gel = this._getGUIElement('MyListView');
+        </pre>
+      </div>
 
-<h2>Handling launch/restore arguments</h2>
+      <h2>Handling launch/restore arguments</h2>
+      <div class="indent">
 
-<p>
-  Let's say you open your application with:
-</p>
+        <p>Let's say you open your application with:</p>
 
-<pre>
+        <pre>
 OSjs.Core.launch('ApplicationMyName', {path: '/some/file.png', mime: 'image/png'});
-</pre>
+        </pre>
 
-<p>
-  Use this to handle it correctly:
-</p>
-<pre class="code">
+        <p>Use this to handle it correctly:</p>
+        <pre class="code">
 ApplicationMyName.prototype.init = function(core, session) {
   Application.prototype.init.apply(this, arguments);
 
@@ -152,15 +138,13 @@ ApplicationMyName.prototype.openFile = function(file) {
   // Setting values
   this._setArgument('file', file);
 };
-</pre>
-</div>
+        </pre>
+      </div>
 
-<h2>Adding Drag-and-Drop support</h2>
-<div class="indent">
-<p>
-  Example:
-</p>
-<pre class="code">
+      <h2>Adding Drag-and-Drop support</h2>
+      <div class="indent">
+        <p>Example:</p>
+        <pre class="code">
 var ApplicationMyNameWindow = function(app, opts) {
   Window.apply(this, ['ApplicationMyNameWindow', opts, app]);
   this._icon = "apps/accessories-text-editor.png";
@@ -178,17 +162,14 @@ ApplicationMyNameWindow.prototype._onDndEvent = function(ev, type, item, args) {
     }
   }
 };
-</pre>
-</div>
+        </pre>
+      </div>
 
 
-<h2>More advanced examples</h2>
-<div class="indent">
-<p>
-  You can extend the classes <b>DefaultApplication</b> and <b>DefaultApplicationWindow</b> for super-simple handling of opening/saving and creating files. It will also handle dnd and launch/restore arguments for you. Almost all internal OS.js applications use these.
-</p>
-</div>
-
+      <h2>More advanced examples</h2>
+      <div class="indent">
+        <p>You can extend the classes <b>DefaultApplication</b> and <b>DefaultApplicationWindow</b> for super-simple handling of opening/saving and creating files. It will also handle dnd and launch/restore arguments for you. Almost all internal OS.js applications use these.</p>
+      </div>
 
   </main>
 
