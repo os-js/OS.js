@@ -163,6 +163,11 @@
       }
     });
 
+    var ac = document.createElement('div');
+    ac.className = 'Pointer';
+
+
+    this.$element.appendChild(ac);
     this.$element.appendChild(ul);
   }
 
@@ -180,20 +185,23 @@
       document.body.appendChild(this.$element);
     }
 
-    var tw = pos.x + this.$element.offsetWidth;
-    var th = pos.y + this.$element.offsetHeight;
-    var px = pos.x;
-    var py = pos.y;
 
-    if ( tw > window.innerWidth ) {
-      px = window.innerWidth - this.$element.offsetWidth;
-    }
-    this.$element.style.left = px + 'px';
+    // FIXME: This is a very hackish way of doing it and does not work when button is moved!
+    Utils.$removeClass(this.$element, 'AtBottom');
+    Utils.$removeClass(this.$element, 'AtTop');
+    if ( pos.y > (window.innerHeight/2) ) {
+      Utils.$addClass(this.$element, 'AtBottom');
 
-    if ( th > window.innerHeight ) {
-      py = window.innerHeight - this.$element.offsetHeight;
+      this.$element.style.top = 'auto';
+      this.$element.style.bottom = '30px';
+    } else {
+      Utils.$addClass(this.$element, 'AtTop');
+
+      this.$element.style.bottom = 'auto';
+      this.$element.style.top = '30px';
     }
-    this.$element.style.top = py + 'px';
+
+    this.$element.style.left = pos.x + 'px';
   };
 
   ApplicationMenu.prototype.getRoot = function() {
@@ -224,7 +232,19 @@
 
     if ( isTouchDevice() || (wm && wm.getSetting('useTouchMenu') === true) ) {
       var inst = new ApplicationMenu();
-      API.createMenu(null, {x: ev.clientX, y: ev.clientY}, inst);
+      var pos = {x: ev.clientX, y: ev.clientY};
+      if ( ev.target ) {
+        var target = ev.target;
+        if ( target.tagName === 'IMG' ) {
+          target = target.parentNode;
+        }
+        var rect = Utils.$position(target, document.body);
+        if ( rect.left && rect.top && rect.width && rect.height ) {
+          pos.x = rect.left - (rect.width/2) + 4;
+          pos.y = rect.top + rect.height + 4;
+        }
+      }
+      API.createMenu(null, pos, inst);
     } else {
       //var list = doBuildMenu(ev);
       var list = doBuildCategoryMenu(ev);

@@ -265,3 +265,17 @@ body.WallpaperStrech {
   max-height : 30px;
   padding : 4px;
 }
+#CoreWMApplicationMenu .Pointer {
+  position : absolute;
+  width : 20px;
+  height : 20px;
+  transform : rotate(45deg);
+}
+#CoreWMApplicationMenu.AtTop .Pointer {
+  left : 10px;
+  top : -10px;
+}
+#CoreWMApplicationMenu.AtBottom .Pointer {
+  left : 10px;
+  bottom : -10px;
+}
