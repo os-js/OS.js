@@ -26,9 +26,7 @@
 
         <p>Simply run:</p>
 
-        <pre>
-./obt create-package MyName
-        </pre>
+        <pre>./obt create-package MyName</pre>
 
         <p>This will create some source files for you with usable code. You'll have a basic running application with a Window.</p>
       </div>
@@ -70,15 +68,10 @@
         </pre>
 
         <p>Now run this command to add it to global manifest (make it visible in OS.js)</p>
-
-        <pre>
-make manifest
-        </pre>
+        <pre>make manifest</pre>
 
         <p>And, if you're using dist (prodiction environment)</p>
-        <pre>
-make packages
-        </pre>
+        <pre>make packages</pre>
       </div>
 
       <h2>Add a GUI Element</h2>
@@ -112,10 +105,7 @@ var gel = this._getGUIElement('MyListView');
       <div class="indent">
 
         <p>Let's say you open your application with:</p>
-
-        <pre>
-OSjs.Core.launch('ApplicationMyName', {path: '/some/file.png', mime: 'image/png'});
-        </pre>
+        <pre>OSjs.Core.launch('ApplicationMyName', {path: '/some/file.png', mime: 'image/png'});</pre>
 
         <p>Use this to handle it correctly:</p>
         <pre class="code">
