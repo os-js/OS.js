@@ -28,7 +28,7 @@ Vagrant.configure(2) do |config|
     # build OS.js-v2
     git clone https://github.com/andersevenrud/OS.js-v2.git
     pushd OS.js-v2
-    nmp install
+    npm install
     make
 
     # configure apache2 to serve OS.js-v2 dist-dev
