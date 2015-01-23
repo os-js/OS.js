@@ -1,0 +1,71 @@
+{
+  "index.html": {
+    "title": "OS.js Documentation"
+  },
+
+  "manuals/index.html": {
+    "title": "OS.js Manuals"
+  },
+
+  "manuals/app-corewm.html": {
+    "title": "CoreWM - OS.js Manuals"
+  },
+
+  "manuals/app-filemanager.html": {
+    "title": "File Manager - OS.js Manuals"
+  },
+
+  "manuals/man-install.html": {
+    "title": "Installing OS.js - OS.js Manuals"
+  },
+
+  "manuals/man-configuration.html": {
+    "title": "Adding Google API and VFS support - OS.js Manuals"
+  },
+
+  "manuals/man-google-api.html": {
+    "title": "Adding Google API and VFS support - OS.js Manuals"
+  },
+
+  "manuals/man-windows-live-api.html": {
+    "title": "Adding Windows Live API and OneDrive VFS support - OS.js Manuals"
+  },
+
+  "manuals/man-dropbox.html": {
+    "title": "Adding Dropbox VFS support - OS.js Manuals"
+  },
+
+  "manuals/man-broadway.html": {
+    "title": "Setting up Broadway - OS.js Manuals"
+  },
+
+  "manuals/man-package-manager.html": {
+    "title": "Managing packages/applications - OS.js Manuals"
+  },
+
+  "server/index.html": {
+    "title": "OS.js Server Documentation"
+  },
+
+  "tutorials/create-application.html": {
+    "title": "Create your own Application - OS.js Tutorials"
+  },
+
+  "tutorials/create-handler.html": {
+    "title": "Create your own Handler - OS.js Tutorials"
+  },
+
+  "tutorials/create-panelitem.html": {
+    "title": "Create your own Panel Item - OS.js Tutorials"
+  },
+
+  "tutorials/create-theme.html": {
+    "title": "Create your own Theme - OS.js Tutorials"
+  },
+
+  "tutorials/index.html": {
+    "title": "OS.js Tutorials"
+  }
+
+
+}

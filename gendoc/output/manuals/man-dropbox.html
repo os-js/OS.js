@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Setting up Broadway - OS.js Manuals</title>
+    <title>Adding Dropbox VFS support - OS.js Manuals</title>
     <link rel="stylesheet" type="text/css" href="/OS.js-v2/doc/main.css" />
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <header>
-      <h1>Setting up Broadway - OS.js Manuals</h1>
+      <h1>Adding Dropbox VFS support - OS.js Manuals</h1>
       <ul>
         <li><a href="/OS.js-v2/doc/">Index</a></li>
         <li><a href="/OS.js-v2/doc/client/">Client API</a></li>
@@ -19,34 +19,53 @@
 
     <main>
 
-<h1>Setting up Broadway</h1>
-<p>
-  With Broadway you can run native GTK+ 3.x Linux applications in OS.js via WebSockets.
-</p>
-<p>This is not yet ready for production: <a href="https://github.com/andersevenrud/OS.js-v2/issues/29">Github issue</a></p>
-
-<h2>Add repository</h2>
-<pre>./obt repository clone https://github.com/andersevenrud/OS.js-v2-expermiments</pre>
-
-<h2>Build</h2>
-
-<p><i>dist</i></p>
-<pre>make config core packages manifest</pre>
-
-<p><i>dist-dev</i></p>
-<pre>make config manifest</pre>
-
-<h2>Prepare X server</h2>
+<h1>Adding Dropbox VFS support</h1>
 
 <p>
-  Run these commands on the server:
+  <b>HTTPS ONLY!</b>
 </p>
-<pre>xhost +</pre>
-<pre>./Broadway/vendor/broadway-server.sh</pre>
 
 <p>
-  To use in OS.js just click the notification icon in panel and connect.
+  Dropbox support requires you to install an external repository:
 </p>
+
+<pre class="code">
+git clone https://github.com/dropbox/dropbox-js.git vendor/dropbox-js
+
+# You may have to build dropbox.js manually before continuing
+
+ln -sf vendor/dropbox-js/lib/dropbox.js dist/vendor/dropbox.js
+ln -sf vendor/dropbox-js/lib/dropbox.min.map dist/vendor/dropbox.min.map
+ln -sf vendor/dropbox-js/lib/dropbox.js dist-dev/vendor/dropbox.js
+ln -sf vendor/dropbox-js/lib/dropbox.min.map dist-dev/vendor/dropbox.min.map
+</pre>
+
+<p>
+  Then you have to add your <i>ClientKey</i> to <b>build.json</b> and add dropbox.js to the preload list:
+</p>
+<pre class="code">
+{
+  "settings" : {
+    "frontend" : {
+      "Core" : {
+        "Preloads": [
+          {"type": "javascript", "src": "/vendor/dropbox.js"}
+        ]
+      }
+    }
+  }
+}
+</pre>
+
+<p>
+  Then, just add your <i>ClientID</i> to <b>build.json</b>. If you want to enable the VFS module, just toggle the "enabled" option.
+</p>
+
+<p>
+  Then run:
+</p>
+<pre>make config</pre>
+
 
 
   </main>

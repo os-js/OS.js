@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Setting up Broadway - OS.js Manuals</title>
+    <title>Adding Google API and VFS support - OS.js Manuals</title>
     <link rel="stylesheet" type="text/css" href="/OS.js-v2/doc/main.css" />
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <header>
-      <h1>Setting up Broadway - OS.js Manuals</h1>
+      <h1>Adding Google API and VFS support - OS.js Manuals</h1>
       <ul>
         <li><a href="/OS.js-v2/doc/">Index</a></li>
         <li><a href="/OS.js-v2/doc/client/">Client API</a></li>
@@ -19,33 +19,40 @@
 
     <main>
 
-<h1>Setting up Broadway</h1>
+<h1>Configuring and building</h1>
+
 <p>
-  With Broadway you can run native GTK+ 3.x Linux applications in OS.js via WebSockets.
+  All configuration takes place in <b>build.json</b>. You can edit this file or copy it to <b>build.custom.json</b> if you want a custom one.
 </p>
-<p>This is not yet ready for production: <a href="https://github.com/andersevenrud/OS.js-v2/issues/29">Github issue</a></p>
-
-<h2>Add repository</h2>
-<pre>./obt repository clone https://github.com/andersevenrud/OS.js-v2-expermiments</pre>
-
-<h2>Build</h2>
-
-<p><i>dist</i></p>
-<pre>make config core packages manifest</pre>
-
-<p><i>dist-dev</i></p>
-<pre>make config manifest</pre>
-
-<h2>Prepare X server</h2>
 
 <p>
-  Run these commands on the server:
+  If you make any changes, issue this command to rebuild configuration files:
 </p>
-<pre>xhost +</pre>
-<pre>./Broadway/vendor/broadway-server.sh</pre>
+<pre>make config</pre>
+
+<h1>Building OS.js</h1>
+
+OS.js has two build directories.
+
+<h2>dist</h1>
 
 <p>
-  To use in OS.js just click the notification icon in panel and connect.
+  This is the production build of OS.js. All files have been compiled into single files (and can be compressed) to increase loading speed. This will however make it harder to debug.
+</p>
+
+<p>
+  To build simply do:
+</p>
+<pre>make all</pre>
+
+<h2>dist-dev</h1>
+
+<p>
+  This is what you should use when developing or testing changes.
+</p>
+
+<p>
+  You don't need to run any commands to update source files, since they are loaded directly.
 </p>
 
 

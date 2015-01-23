@@ -1,0 +1,91 @@
+<h1>Server API Documentation</h1>
+<p>
+  This is the server documentation for OS.js
+</p>
+<p>
+  <b>Please note that this is not finalized</b>
+</p>
+<p>
+  Official home page: <a href="http://andersevenrud.github.io/OS.js-v2/">http://andersevenrud.github.io/OS.js-v2/</a>
+</p>
+<p>
+  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
+</p>
+
+<h1>Overview</h1>
+
+The OS.js server is really simple.
+
+It only serves files and handles requests via GET/POST with JSON.
+
+<h2>API Requests</h2>
+<div class="indent">
+
+  <pre>POST //osjs-host.net/API</pre>
+
+  Request example:
+  <pre class="code">
+  //
+  // Available methods and their arguments:
+  //
+  //  application:
+  //    All applications support their own internal API
+  //
+  //    Arguments: path, application, method, arguments
+  //
+  //  fs:
+  //    Call the OS.js internal VFS
+  //
+  //    Arguments: method, arguments
+  //
+  //  curl:
+  //    Do a HTTP call
+  //
+  //    Arguments: url, method, query, timeout, binary, mime
+  //
+  //  login:
+  //    Depends on the Handler implementation
+  //
+  //    Arguments: username, password
+  //
+  //  logout:
+  //    Depends on the Handler implementation
+  //
+  {
+    "method": "method_you_want_to_call",
+    "arguments: {"arg": "value"}
+  }
+  </pre>
+
+  Responds with:
+  <pre class="code">
+  {
+    "error": null, // String if error
+    "result": null
+  }
+  </pre>
+</div>
+
+<h2>Files</h2>
+<div class="indent">
+
+  <h3>Resources</h3>
+
+  Should be handleded by the web-server normally.
+
+  <h3>Downloading</h3>
+
+  OS.js expects a file return when using this URL:
+
+  <pre>GET //osjs-host.net/FS/osjs/vfs/path/file.ext</pre>
+
+  <h3>Uploading</h3>
+
+  <pre>POST //osjs-host.net/FS</pre>
+
+  With form data
+  <pre class="code">
+path: /upload/path
+upload: FILE</pre>
+
+</div>

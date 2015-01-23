@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Setting up Broadway - OS.js Manuals</title>
+    <title>Create your own Panel Item - OS.js Tutorials</title>
     <link rel="stylesheet" type="text/css" href="/OS.js-v2/doc/main.css" />
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <header>
-      <h1>Setting up Broadway - OS.js Manuals</h1>
+      <h1>Create your own Panel Item - OS.js Tutorials</h1>
       <ul>
         <li><a href="/OS.js-v2/doc/">Index</a></li>
         <li><a href="/OS.js-v2/doc/client/">Client API</a></li>
@@ -19,33 +19,17 @@
 
     <main>
 
-<h1>Setting up Broadway</h1>
+<h1>Tutorial: Create your own Panel Item</h1>
+
 <p>
-  With Broadway you can run native GTK+ 3.x Linux applications in OS.js via WebSockets.
+  Look at this file for examples:
 </p>
-<p>This is not yet ready for production: <a href="https://github.com/andersevenrud/OS.js-v2/issues/29">Github issue</a></p>
-
-<h2>Add repository</h2>
-<pre>./obt repository clone https://github.com/andersevenrud/OS.js-v2-expermiments</pre>
-
-<h2>Build</h2>
-
-<p><i>dist</i></p>
-<pre>make config core packages manifest</pre>
-
-<p><i>dist-dev</i></p>
-<pre>make config manifest</pre>
-
-<h2>Prepare X server</h2>
+<pre>
+src/packages/default/CoreWM/panel_items.js
+</pre>
 
 <p>
-  Run these commands on the server:
-</p>
-<pre>xhost +</pre>
-<pre>./Broadway/vendor/broadway-server.sh</pre>
-
-<p>
-  To use in OS.js just click the notification icon in panel and connect.
+  You simply just have to extend the class <b>OSjs.Applications.CoreWM.PanelItem</b> and put it in the namespace <b>OSjs.Applications.CoreWM.PanelItems</b>
 </p>
 
 

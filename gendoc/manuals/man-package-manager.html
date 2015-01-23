@@ -1,0 +1,34 @@
+<h1>Managing packages/applications</h1>
+<p>
+  You can use the built-in tools to add and remove custom packages
+</p>
+
+<pre class="code">
+
+# Clone and add to list
+./obt repositry clone foobar https://github.com/username/package-repository
+
+# Or if you want to add a custom folder of packages
+cp /path/to/packages src/packages/my-repo-name
+./obt repositry add my-repo-name
+
+# Clone and add to list
+./obt repositry clone foobar https://github.com/username/package-repository
+
+# Or if you want to add a custom folder of packages
+cp /path/to/packages src/packages/my-repo-name
+./obt repositry add my-repo-name
+
+# Then remove with
+./obt repository remove foobar
+
+# Or delete entirely with
+./obt repository delete foobar
+
+</pre>
+
+<p>
+  Remember to update manifest with <b>make manifest</b>. And if you are planning on deploying or creating a dist build: <b>make packages</b>
+</p>
+
+<p>Full list of packages can be found on <a href="https://github.com/andersevenrud/OS.js-v2/wiki/Package-Repositories">this Wiki article</a></p>

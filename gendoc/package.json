@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node-fs-extra": "latest"
+  }
+
+}
