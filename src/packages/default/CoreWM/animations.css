@@ -1,5 +1,14 @@
 
 /* Animations */
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-o-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+@-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@-o-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
 
 @-webkit-keyframes windowloadinganim {
   to {
@@ -213,3 +222,20 @@
       -ms-animation: attention 2s linear infinite;
           animation: attention 2s linear infinite;
 }
+
+/* Menus */
+.Menu,
+#Notifications .Notification {
+ -webkit-animation: fadeIn .3s;
+    -moz-animation: fadeIn .3s;
+     -ms-animation: fadeIn .3s;
+         animation: fadeIn .3s;
+}
+.Menu.Closing,
+#Notifications .Notification.Closing {
+ -webkit-animation: fadeOut .3s;
+    -moz-animation: fadeOut .3s;
+     -ms-animation: fadeOut .3s;
+         animation: fadeOut .3s;
+}
+

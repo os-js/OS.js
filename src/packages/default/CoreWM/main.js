@@ -657,6 +657,7 @@
       var classNames = ['Notification'];
       var self       = this;
       var timeout    = null;
+      var wm         = OSjs.Core.getWindowManager();
 
       function _remove() {
         if ( timeout ) {
@@ -665,12 +666,25 @@
         }
 
         container.onclick = null;
-        if ( container.parentNode ) {
-          container.parentNode.removeChild(container);
+        function _removeDOM() {
+          if ( container.parentNode ) {
+            container.parentNode.removeChild(container);
+          }
+          _visible--;
+          if ( _visible <= 0 ) {
+            self._$notifications.style.display = 'none';
+          }
         }
-        _visible--;
-        if ( _visible <= 0 ) {
-          self._$notifications.style.display = 'none';
+
+        var anim = wm ? wm.getSetting('animations') : false;
+        if ( anim ) {
+          Utils.$addClass(container, 'Closing');
+          setTimeout(function() {
+            _removeDOM();
+          }, wm.getAnimDuration());
+        } else {
+          container.style.display = 'none';
+          _removeDOM();
         }
       }
 
