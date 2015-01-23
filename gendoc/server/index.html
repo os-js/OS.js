@@ -93,18 +93,29 @@ It only serves files and handles requests via GET/POST with JSON.
   Example request:
   <pre>GET //osjs-host.net/osjs.js</pre>
 
-  <h3>Downloading</h3>
-
-  OS.js expects a raw file return when using this URL:
-
-  <pre>GET //osjs-host.net/FS/osjs/vfs/path/file.ext</pre>
-
   Example Response:
   <pre class="code">
-  Content-Length:7196
-  Content-Type:text/plain; charset=utf-8
+Content-Length:7196
+Content-Type:text/plain; charset=utf-8
 
-  [RAW FILE DATA]
+[RAW FILE DATA]
+  </pre>
+
+  <h3>Downloading</h3>
+
+  <p>
+    OS.js expects a raw file return.
+  </p>
+
+  <p>Example Request:</p>
+  <pre>GET //osjs-host.net/FS/osjs/vfs/path/file.ext</pre>
+
+  <p>Example Response:</p>
+  <pre class="code">
+Content-Length:7196
+Content-Type:text/plain; charset=utf-8
+
+[RAW FILE DATA]
   </pre>
 
   <h3>Uploading</h3>
