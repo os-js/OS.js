@@ -52,22 +52,39 @@ It only serves files and handles requests via GET/POST with JSON.
   //  application:
   //    All applications support their own internal API
   //
-  //    Arguments: path, application, method, arguments
+  //    Arguments:
+  //      String    path            Application path (ex: repo/PackageName)
+  //      String    application     Class name
+  //      String    method          Class static method to call
+  //      Object    arguments       Tuple/JSON of arguments
   //
   //  fs:
   //    Call the OS.js internal VFS
   //
-  //    Arguments: method, arguments
+  //    Arguments:
+  //      String    method      The VFS function name
+  //      Array     arguments   List of arguments
+  //
+  //    Available VFS methods: scandir, write, read, delete, copy, move, mkdir, fileinfo exist
+  //    Arguments can be found in the client API documentation
   //
   //  curl:
   //    Do a HTTP call
   //
-  //    Arguments: url, method, query, timeout, binary, mime
+  //    Arguments:
+  //      String    url           URL to call
+  //      String    method        HTTP Method (POST/GET)
+  //      Object    query         If POST. Payload tuple
+  //      int       timeout       (Optional) Define timeout in seconds
+  //      boolean   binary        (Optional) Return a binary ?
+  //      String    mime          (Optional) If a binary, which MIME?
   //
   //  login:
   //    Depends on the Handler implementation
   //
-  //    Arguments: username, password
+  //    Arguments:
+  //      String    username
+  //      String    password
   //
   //  logout:
   //    Depends on the Handler implementation
@@ -92,7 +109,10 @@ It only serves files and handles requests via GET/POST with JSON.
 
   <h3>Resources</h3>
 
-  Should be handleded by the web-server normally.
+  Should be handleded by the web-server normally. You just serve files from <i>dist</i> or <i>dist-dev</i> directory.
+
+  Example request:
+  <pre>GET //osjs-host.net/osjs.js</pre>
 
   <h3>Downloading</h3>
 
