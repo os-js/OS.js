@@ -1,29 +1,369 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" 
-  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
 <url>
   <loc>http://andersevenrud.github.io/OS.js-v2/</loc>
-  <lastmod>2015-01-16T02:03:47+00:00</lastmod>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>monthly</changefreq>
 </url>
 <url>
-  <loc>http://andersevenrud.github.io/OS.js-v2/doc</loc>
-  <lastmod>2015-01-17T02:03:47+00:00</lastmod>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/</loc>
-  <lastmod>2015-01-16T02:03:47+00:00</lastmod>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>http://andersevenrud.github.io/OS.js-v2/doc/server/</loc>
-  <lastmod>2015-01-16T02:03:47+00:00</lastmod>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/</loc>
-  <lastmod>2015-01-19T02:03:47+00:00</lastmod>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>http://andersevenrud.github.io/OS.js-v2/doc/tutorials/</loc>
-  <lastmod>2015-01-20T02:03:47+00:00</lastmod>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptapijs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptprocessjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptwindowjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptapplicationjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguielementjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptservicejs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptwindowmanagerjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascripthandlerjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsalertjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsapplicationchooserjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogscolorjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsconfirmjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogserrormessagejs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsfilejs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsfileinfojs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsfileprogressjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsfileuploadjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsfontjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogsinputjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptdialogs_standardjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguibuttonjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguicanvasjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguicheckboxjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguicolorswatchjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguifileviewjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguiiconviewjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguilabeljs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguilistviewjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguimenujs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguimenubarjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguipanedviewjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguiprogressbarjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguiradiojs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguirichtextjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguiscrollviewjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguiselectjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguiselectlistjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguisliderjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguistatusbarjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguitabsjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguitextjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguitextareajs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguitoolbarjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptguitreeviewjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptgui_dataviewjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptgui_inputjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascripthelpersdefault-applicationjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascripthelpersgoogle-apijs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascripthelperswindows-live-apijs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptsessionjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptutilsjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/client/srcjavascriptvfsjs.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/man-install.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/man-configuration.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/man-google-api.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/man-windows-live-api.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/man-dropbox.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/man-broadway.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/man-package-manager.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/app-corewm.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/manuals/app-filemanager.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/tutorials/create-application.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/tutorials/create-theme.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/tutorials/create-panelitem.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://andersevenrud.github.io/OS.js-v2/doc/tutorials/create-handler.html</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
 </url>
 </urlset>
