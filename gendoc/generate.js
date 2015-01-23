@@ -17,8 +17,8 @@
     }
 
     var data = tpl;
-    data = data.replace("%TITLE%", title);
-    data = data.replace("%TITLE%", title);
+    data = data.replace(/\%TITLE\%/g, title);
+    data = data.replace("%REL%", f);
     data = data.replace("%CONTENT%", content);
 
     console.log("Writing", f, "=>", dest);
