@@ -24,8 +24,21 @@
   The handler is the basis for communication, resource handling, settings and sessions.
 </p>
 <p>
-  There is an Example handler included for you to use as a template. Everything is documented in the Client API reference.
+  <i>This tutorial only shows you how to use the included example handler. It's currently only included in PHP server</i>
 </p>
+<p>
+  There is an Example handler included for you to use as a template. It includes a login screen.
+</p>
+<p>
+  Everything is documented in the Client API reference.
+</p>
+<h2>Add login HTML template</h2>
+<p>
+  Copy these files:
+</p>
+<pre>cp src/javascript/handlers/example/index.html dist/example.html</pre>
+
+<pre>cp src/javascript/handlers/example/index.html dist-dev/example.html</pre>
 <h2>Changing handler</h2>
 <p>
   You just have to edit <b>build.json</b> and swap out the configured handler name.
@@ -36,13 +49,28 @@
 <pre>
 make core config
 </pre>
-<h2>More information</h2>
+
+<h2>Setting up database</h2>
+
 <p>
-  There is some more information located:
+  Create a new mysql user and database, then insert this table:
 </p>
-<pre>
-doc/example-handler.txt
+
+<pre class="code">
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `groups` text,
+  `settings` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 </pre>
+
+<p>Apply your connection settings to:</p>
+<pre>src/server-php/handlers/example/handler.php</pre>
+<p><b>IT IS HIGHLY RECOMENDED TO PUT YOUR CONNECTION SETTINGS IN THE ROOT DIRECTORY AND INCLUDE THEM INSTEAD OF HAVING THEM IN THE HANDLER SCRIPT. IT CAN BE READ BY USERS</b></p>
 
 
 
