@@ -119,7 +119,7 @@
       theme               : 'default',
       background          : 'image-fill',
       useTouchMenu        : false,
-      enableIconView      : true,
+      enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,
       enableSounds        : API.getDefaultSettings().Core.Sounds,
