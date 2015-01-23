@@ -78,4 +78,4 @@ A [Vargant](https://www.vagrantup.com/) file is also included so you can easily 
 
 # Links
 
-* [Installation and configuration help](https://github.com/andersevenrud/OS.js-v2/wiki/Installation%20and%20Configuration)
+* [Manuals](http://osjs-homepage.local/OS.js-v2/doc/manuals/)
