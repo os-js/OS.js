@@ -164,7 +164,7 @@
     var self = this;
     this._appRef._createDialog('Color', [{color: cur}, function(btn, rgb, hex) {
       self._focus();
-      if ( btn != 'ok' ) return;
+      if ( btn !== 'ok' ) {return; }
 
       callback(hex);
     }], this);
@@ -177,7 +177,7 @@
     var self = this;
     this._appRef._createDialog('File', [{type: 'open', path: curf, filename: curn, mimes: ['^image']}, function(btn, file) {
       self._focus();
-      if ( btn !== 'ok' ) return;
+      if ( btn !== 'ok' ) {return; }
       callback(file.path);
     }], this);
   };
@@ -186,7 +186,7 @@
     var self = this;
     this._appRef._createDialog('Font', [{name: cur, minSize: 0, maxSize: 0}, function(btn, fontName, fontSize) {
       self._focus();
-      if ( btn != 'ok' ) return;
+      if ( btn !== 'ok' ) {return; }
       callback(fontName);
     }], this);
   };
@@ -225,7 +225,7 @@
 
   ApplicationSettings.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationSettingsWindow' ) {
+    if ( msg === 'destroyWindow' && obj._name === 'ApplicationSettingsWindow' ) {
       this.destroy();
     }
   };

@@ -273,7 +273,7 @@
     win._addGUIElement(new OSjs.GUI.Switch('PanelEnableCustomColor', {value: settings.panels[0].options.background}), outer);
     tab.appendChild(outer);
 
-    var wrapper = document.createElement('div');
+    wrapper = document.createElement('div');
     wrapper.className = 'ButtonWrapper';
 
     outer = document.createElement('div');
@@ -369,7 +369,7 @@
       }
     };
 
-    var outer = document.createElement('div');
+    outer = document.createElement('div');
     outer.className = 'OuterWrapper';
     panelItemContainer.appendChild(panelItemButtons);
     outer.appendChild(panelItemContainer);

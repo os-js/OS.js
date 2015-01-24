@@ -254,10 +254,10 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
             src = src.toString().replace('@charset "UTF-8";', "");
           } else {
             src = src.toString().replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, "");
-            //src = src.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '');
-            src = src.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '');
-            src = src.replace(/^\s*[\r\n]/gm, '');
           }
+
+          src = src.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '');
+          src = src.replace(/^\s*[\r\n]/gm, '');
 
           data.push(src);
         }
