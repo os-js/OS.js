@@ -119,7 +119,7 @@ var gel = this._getGUIElement('MyListView');
 
         <p>Use this to handle it correctly:</p>
         <pre class="code">
-ApplicationMyName.prototype.init = function(core, session) {
+ApplicationMyName.prototype.init = function(settings, metadata) {
   Application.prototype.init.apply(this, arguments);
 
   // Get an argument, ex. the filename and mime
@@ -145,11 +145,12 @@ ApplicationMyName.prototype.openFile = function(file) {
       <div class="indent">
         <p>Example:</p>
         <pre class="code">
-var ApplicationMyNameWindow = function(app, opts) {
-  Window.apply(this, ['ApplicationMyNameWindow', opts, app]);
-  this._icon = "apps/accessories-text-editor.png";
-  this._title = "DnD Support";
-  this._properties.allow_drop = true;
+var ApplicationMyNameWindow = function(app, metadata) {
+  Window.apply(this, ['ApplicationMyNameWindow', {
+    icon: "apps/accessories-text-editor.png",
+    title: "DnD Support",
+    allow_drop: true // This
+  }, app]);
 };
 
 
