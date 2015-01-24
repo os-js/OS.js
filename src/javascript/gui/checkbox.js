@@ -114,6 +114,12 @@
     } else {
       this.$input.removeAttribute('checked');
     }
+    if ( this.$element ) {
+      OSjs.Utils.$removeClass(this.$element, 'Checked');
+      if ( this.value ) {
+        OSjs.Utils.$addClass(this.$element, 'Checked');
+      }
+    }
   };
 
   /**
