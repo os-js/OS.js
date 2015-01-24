@@ -55,7 +55,8 @@
       'Enable Window Switcher' : 'Skru på Vindu-bytter',
       'Enable Hotkeys' : 'Skru på Hurtigtaster',
       'Enable Icon View' : 'Skru på Ikonvisning',
-      'Remove shortcut' : 'Fjern snarvei'
+      'Remove shortcut' : 'Fjern snarvei',
+      'General' : 'Generelt'
     },
     de_DE : {
       'Theme' : 'Thema',
@@ -76,7 +77,8 @@
       'Enable Sounds' : 'Aktiviere Sounds',
       'Enable Window Switcher' : 'Aktiviere Fensterwechsler',
       'Enable Hotkeys' : 'Aktiviere Hotkeys',
-      'Enable Icon View' : 'Aktiviere Icon-Ansicht'
+      'Enable Icon View' : 'Aktiviere Icon-Ansicht',
+      'General': 'General'
     },
     fr_FR : {
     },
@@ -99,7 +101,10 @@
       'Enable Sounds' : 'Включить звук',
       'Enable Window Switcher' : 'Включить растягивание окон',
       'Enable Hotkeys' : 'Включить горячии клавиши',
-      'Enable Icon View' : 'Включить иконки'
+      'Enable Icon View' : 'Включить иконки',
+      'Autohide' : 'Автоматически скрывать',
+      'Opacity' : 'Прозрачность',
+      'General' : 'Основные'
     }
   };
 
