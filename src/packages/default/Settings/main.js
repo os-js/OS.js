@@ -108,7 +108,7 @@
     root.appendChild(this.$header);
     root.appendChild(this.$content);
 
-    this._addGUIElement(new GUI.Button('SettingsNewSave', {label: 'Save', onClick: function() {
+    this._addGUIElement(new GUI.Button('SettingsNewSave', {label: API._('LBL_SAVE'), onClick: function() {
       self.applySettings();
     }}), root);
 

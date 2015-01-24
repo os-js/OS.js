@@ -224,7 +224,7 @@
   function createAppearenceTab(win, root, tabs, settings) {
     var _ = OSjs.Applications.ApplicationSettings._;
     var outer, wrapper;
-    var tab = tabs.addTab('Appearence', {title: _('Appearence'), onSelect: function() { // FIXME: Translation
+    var tab = tabs.addTab('Appearence', {title: API._('LBL_APPEARANCE'), onSelect: function() { // FIXME: Translation
     }});
 
     // Position
