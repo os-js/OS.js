@@ -144,6 +144,7 @@
    * @param Object    opts    A list of options
    *
    * @option  opts  String    orientation     Orientation (default=horizontal)
+   * @option  opts  int       defaultTab      (Optional) The default tab index (defaults to last added)
    *
    * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.Tabs
@@ -157,6 +158,7 @@
     this.$container   = null;
     this.$tabs        = null;
     this.orientation  = opts.orientation || 'horizontal';
+    this.defaultTab   = typeof opts.defaultTab === 'number' ? opts.defaultTab : null;
     this.tabs         = {};
     this.tabCount     = 0;
     this.currentTab   = null;
@@ -289,8 +291,16 @@
     this.tabs[name] = tab;
     this.tabCount++;
 
-    if ( this.inited && this.tabCount > 0 ) {
-      this.setTab(name);
+    if ( this.inited ) {
+      if ( this.defaultTab === null ) {
+        if ( this.tabCount > 0 ) {
+          this.setTab(name);
+        }
+      } else {
+        if ( this.defaultTab === this.tabCount-1 ) {
+          this.setTab(name);
+        }
+      }
     }
 
     return tab;
