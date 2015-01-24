@@ -31,85 +31,116 @@
 .Window_ApplicationSettingsWindow .WindowWrapper {
 }
 
-.Window_ApplicationSettingsWindow .WindowWrapper {
-  overflow : auto;
-  padding : 5px;
-}
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting {
-  position : relative;
-  height : 42px;
-  margin : 5px;
-}
-
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting label {
-  display : block;
-  height : 16px;
-}
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting input[type=text],
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting select {
-  position : absolute;
-  left : 0px;
-  width : 100%;
-}
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton input[type=text],
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting.SettingsNoButton select {
-  right : 0px;
-  width : 100%;
-}
-.Window_ApplicationSettingsWindow .WindowWrapper .Setting .GUIButton {
-  position : absolute;
-  right : 0px;
-}
-.Window_ApplicationSettingsWindow .WindowWrapper .GUIButton.Save {
+.Window_ApplicationSettingsWindow .WindowWrapper > .GUIButton {
   position : absolute;
   right : 5px;
   bottom : 5px;
 }
 
-.Window_ApplicationSettingsWindow .WindowWrapper .SettingTabs {
+.Window_ApplicationSettingsWindow .WindowWrapper .Side {
   position : absolute;
-  top : 5px;
   left : 5px;
-  right : 5px;
-  bottom : 34px;
-  z-index : 9999;
+  top : 5px;
+  bottom : 40px;
+  width : 130px;
 }
 
-
-.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemsContainer {
-  height : 200px;
-  position : relative;
+.Window_ApplicationSettingsWindow .WindowWrapper .Side .GUIListView {
+  width : 100%;
+  height : 100%;
 }
-
-.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemListView {
-  height : 168px;
-  width : 435px;
-}
-.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemListView .Header {
+.Window_ApplicationSettingsWindow .WindowWrapper .Side .GUIListView thead,
+.Window_ApplicationSettingsWindow .WindowWrapper .Side .GUIListView .Header {
   display : none;
 }
-.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemListView .Scroll {
-  top : 0;
-  margin-top : 0;
+.Window_ApplicationSettingsWindow .WindowWrapper .Side .GUIListView .Scroll {
+  top : 0px;
+  overflow : hidden;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Side .GUIListView img {
+  vertical-align : middle;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Side .GUIListView span {
+  padding-left : 5px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Side .GUIListView .Scroll td {
+  padding : 5px;
 }
 
-.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemButtons {
+.Window_ApplicationSettingsWindow .WindowWrapper .Content {
   position : absolute;
+  top : 45px;
+  bottom : 40px;
+  left : 145px;
+  right : 5px;
+}
+.Window_ApplicationSettingsWindow .WindowWrapper .Header {
+  position : absolute;
+  top : 5px;
+  left : 145px;
+  right : 5px;
+  height : 30px;
+  line-height : 30px;
+  font-size : 20px;
+  font-weight : bold;
+}
+
+.Window_ApplicationSettingsWindow .WindowWrapper .Content > div {
+  position : absolute;
+  left : 0px;
   right : 0px;
-  top : 0px;
   bottom : 0px;
-  width : 30px;
+  top : 0px;
 }
-.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemButtons > .GUIButton {
-  display : block;
-  position : relative;
+.Window_ApplicationSettingsWindow .WindowWrapper .Content .GUILabel {
   margin-bottom : 5px;
-  height : 30px;
 }
-.Window_ApplicationSettingsWindow .WindowWrapper .PanelItemButtons > .GUIButton button {
-  height : 30px;
-  text-align : center;
+.Window_ApplicationSettingsWindow .WindowWrapper .Content .GUITabs {
+  width : 100%;
+  height : 100%;
 }
+
+.Window_ApplicationSettingsWindow .PanelItemsContainer .PanelItemListView {
+  height : 280px;
+  text-align : left;
+}
+.Window_ApplicationSettingsWindow .PanelItemsContainer .PanelItemListView .Header {
+  display : none;
+}
+.Window_ApplicationSettingsWindow .PanelItemsContainer .PanelItemListView .Scroll {
+  top : 0px;
+}
+
+.Window_ApplicationSettingsWindow .PanelItemButtons {
+  margin-top : 5px;
+}
+.Window_ApplicationSettingsWindow .PanelItemButtons .GUIButton {
+  display : inline-block;
+  margin-right : 5px;
+}
+
+.Window_ApplicationSettingsWindow .OuterWrapper {
+  padding : 10px;
+  padding-bottom : 0;
+}
+.Window_ApplicationSettingsWindow .ButtonWrapper {
+  position : relative;
+}
+
+.Window_ApplicationSettingsWindow .ButtonWrapper .GUIText {
+  margin-right : 50px;
+}
+.Window_ApplicationSettingsWindow .ButtonWrapper .GUIButton {
+  width : auto;
+  display : block;
+  width : 40px;
+  top : 0px;
+  right : 0px;
+  height : 100%;
+  position : absolute;
+  z-index : 1000;
+}
+
 
 .Window_CoreWMPanelItemWindow .WindowWrapper {
   padding : 5px;

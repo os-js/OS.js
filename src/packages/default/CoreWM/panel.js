@@ -83,7 +83,7 @@
       OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
         var wm = OSjs.Core.getWindowManager();
         if ( wm ) {
-          wm.showSettings('Panels');
+          wm.showSettings('panel');
         }
       }}], {x: ev.clientX, y: ev.clientY});
       return false;

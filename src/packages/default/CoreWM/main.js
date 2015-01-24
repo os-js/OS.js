@@ -609,10 +609,10 @@
     }
   };
 
-  CoreWM.prototype.showSettings = function(tab) {
+  CoreWM.prototype.showSettings = function(category) {
     var self = this;
 
-    OSjs.API.launch('ApplicationSettings', {tab: tab});
+    OSjs.API.launch('ApplicationSettings', {category: category});
   };
 
   CoreWM.prototype.eventWindow = function(ev, win) {
