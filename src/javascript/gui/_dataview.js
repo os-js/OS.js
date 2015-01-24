@@ -46,10 +46,10 @@
    * @param   String      name          The element name
    * @param   Object      opts          A list of options
    *
-   * @option  opts onSelect          Function        Callback - When item is selected (clicked item)
-   * @option  opts onActivate        Function        Callback - When item is activated (double-click item)
-   * @option  opts onContextMenu     Function        Callback - When item menu is activated (right click on item)
-   * @option  opts onViewContextMenu Function        Callback - When view menu is activated (right click background)
+   * @option  opts onSelect          Function        Callback - When item is selected (clicked item) => fn(ev, el, item)
+   * @option  opts onActivate        Function        Callback - When item is activated (double-click item) => fn(ev, el, item)
+   * @option  opts onContextMenu     Function        Callback - When item menu is activated (right click on item) => fn(ev, el, item)
+   * @option  opts onViewContextMenu Function        Callback - When view menu is activated (right click background) => fn(ev)
    * @option  opts onCreateItem      Function        Callback - When item is created
    * @option  opts data              Array           Data (Items)
    * @option  opts indexKey          String          What key is used as an index (usefull for autoselecting last selected row on re-render)
@@ -235,7 +235,8 @@
     this.__onSelect(ev, item, scroll);
 
     if ( typeof callback === 'undefined' || callback === true ) {
-      if ( ev !== null && item !== null ) {
+      //if ( ev !== null && item !== null ) {
+      if ( item !== null ) {
         this.onSelect.apply(this, [ev, (item ? item._element : null), item]);
       }
     }
