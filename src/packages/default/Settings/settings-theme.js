@@ -173,6 +173,13 @@
     return container;
   }
 
+  function onDestroy(win) {
+    var list = ['LabelThemeThemeName', 'ThemeThemeName', 'LabelThemeEnableAnimation', 'ThemeEnableAnimation', 'LabelThemeBackgroundImage', 'ThemeBackgroundImage', 'ButtonThemeBackgroundImage', 'LabelThemeBackgroundColor', 'ThemeBackgroundColor', 'ButtonThemeBackgroundColor', 'LabelThemeBackgroundType', 'ThemeBackgroundType', 'LabelThemeFont', 'ThemeFont', 'ButtonThemeFont', 'TabsTheme'];
+    list.forEach(function(i) {
+      win._removeGUIElement(i);
+    });
+  }
+
   function applySettings(win, settings) {
     settings.theme                 = win._getGUIElement('ThemeThemeName').getValue();
     settings.animations            = win._getGUIElement('ThemeEnableAnimation').getValue();
@@ -187,6 +194,7 @@
     title: 'Theme',
     icon: 'apps/background.png',
     onCreate: onCreate,
+    onDestroy: onDestroy,
     applySettings: applySettings
   };
 

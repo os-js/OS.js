@@ -47,8 +47,8 @@
     this.$side = null;
     this.$content = null;
     this.$header = null;
-    this.modules = {};
     this.settings = {};
+    this.currentModule = null;
   };
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
@@ -100,7 +100,6 @@
         title: m.title.match(/^[A-Z]*_/) ? API._(m.title) : _(m.title),
         icon: _createIcon(m.icon)
       });
-      self.modules[m.name] = m.onCreate(self, self.$content, self.settings);
     });
     sidePanel.setRows(rows);
     sidePanel.render();
@@ -146,18 +145,16 @@
     this.$side = null;
     this.$content = null;
     this.$header = null;
-    this.modules = [];
+    this.currentModule = null;
   };
 
   ApplicationSettingsWindow.prototype.applySettings = function() {
-    var self = this;
-    var modules = OSjs.Applications.ApplicationSettings.Modules;
-    modules.forEach(function(m) {
-      m.applySettings(self, self.settings);
-    });
+    if ( this.currentModule ) {
+      this.currentModule.applySettings(this, this.settings);
 
-    var wm = OSjs.Core.getWindowManager();
-    wm.applySettings(this.settings, false, true);
+      var wm = OSjs.Core.getWindowManager();
+      wm.applySettings(this.settings, false, true);
+    }
   };
 
   ApplicationSettingsWindow.prototype.createColorDialog = function(cur, callback) {
@@ -193,15 +190,23 @@
 
   ApplicationSettingsWindow.prototype.setCategory = function(item) {
     Utils.$empty(this.$header);
-    this.$content.childNodes.forEach(function(node) {
-      node.style.display = 'none';
-    });
 
-    if ( this.modules[item.name] ) {
-      this.modules[item.name].style.display = 'block';
-      var title = OSjs.Applications.ApplicationSettings._(item.title);
-      this.$header.appendChild(document.createTextNode(title));
+    Utils.$empty(this.$content);
+    if ( this.currentModule ) {
+      this.currentModule.onDestroy(this);
+      this.currentModule = null;
     }
+
+    var self = this;
+    var modules = OSjs.Applications.ApplicationSettings.Modules;
+    modules.forEach(function(m) {
+      if ( m.name === item.name ) {
+        self.$header.appendChild(document.createTextNode(item.title));
+        m.onCreate(self, self.$content, self.settings);
+        self.currentModule = m;
+        return false;
+      }
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////

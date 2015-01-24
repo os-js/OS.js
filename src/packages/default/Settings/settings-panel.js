@@ -396,6 +396,13 @@
     return container;
   }
 
+  function onDestroy(win) {
+    var list = ['LabelPanelPosition', 'PanelPosition', 'LabelPanelAutohide', 'PanelAutohide', 'LabelPanelOntop', 'PanelOntop', 'LabelPanelOpacity', 'PanelOpacity', 'LabelPanelEnableCustomColor', 'PanelEnableCustomColor', 'LabelPanelBackgroundColor', 'PanelBackgroundColor', 'ButtonPanelBackgroundColor', 'PanelItemButtonAdd', 'PanelItemButtonRemove', 'PanelItemButtonUp', 'PanelItemButtonDown', 'PanelItemButtonReset', 'PanelItemListView', 'TabsPanel'];
+    list.forEach(function(i) {
+      win._removeGUIElement(i);
+    });
+  }
+
   function applySettings(win, settings) {
     var color = null;
     if ( win._getGUIElement('PanelEnableCustomColor').getValue() ) {
@@ -414,6 +421,7 @@
     title: 'Panel',
     icon: 'categories/applications-utilities.png',
     onCreate: onCreate,
+    onDestroy: onDestroy,
     applySettings: applySettings
   };
 

@@ -59,7 +59,7 @@
     // Enable Window Switcher
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new GUI.Label('LabelDesktopEnableWindow Switcher', {label: _('Enable Window Switcher')}), outer);
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableWindowSwitcher', {label: _('Enable Window Switcher')}), outer);
     win._addGUIElement(new GUI.Switch('DesktopEnableWindowSwitcher', {value: settings.enableSwitcher}), outer);
     tab.appendChild(outer);
 
@@ -109,6 +109,13 @@
     return container;
   }
 
+  function onDestroy(win) {
+    var list = ['LabelDesktopEnableSound', 'DesktopEnableSound', 'LabelDesktopEnableHotkey', 'DesktopEnableHotkey', 'LabelDesktopEnableWindowSwitcher', 'DesktopEnableWindowSwitcher', 'LabelDesktopMargin', 'SliderMargin', 'LabelDesktopEnableIconView', 'DesktopEnableIconView', 'LabelDesktopInvertIconViewColor', 'DesktopInvertIconViewColor', 'TabsDesktop'];
+    list.forEach(function(i) {
+      win._removeGUIElement(i);
+    });
+  }
+
   function applySettings(win, settings) {
     settings.enableSounds         = win._getGUIElement('DesktopEnableSound').getValue();
     settings.enableHotkeys        = win._getGUIElement('DesktopEnableHotkey').getValue();
@@ -123,6 +130,7 @@
     title: 'Desktop',
     icon: 'devices/display.png',
     onCreate: onCreate,
+    onDestroy: onDestroy,
     applySettings: applySettings
   };
 

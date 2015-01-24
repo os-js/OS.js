@@ -56,6 +56,13 @@
     return container;
   }
 
+  function onDestroy(win) {
+    var list = ['LabelLocaleLanguage', 'LocaleLanguage', 'TabsUser'];
+    list.forEach(function(i) {
+      win._removeGUIElement(i);
+    });
+  }
+
   function applySettings(win, settings) {
     settings.language = win._getGUIElement('LocaleLanguage').getValue();
   }
@@ -65,6 +72,7 @@
     title: 'LBL_USER',
     icon: 'categories/preferences-desktop-personal.png',
     onCreate: onCreate,
+    onDestroy: onDestroy,
     applySettings: applySettings
   };
 
