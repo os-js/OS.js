@@ -235,6 +235,7 @@
     // General
 
     'LBL_UNKNOWN'  : 'Unknown',
+    'LBL_USER'     : 'User',
     'LBL_NAME'     : 'Name',
     'LBL_APPLY'    : 'Apply',
     'LBL_FILENAME' : 'Filename',

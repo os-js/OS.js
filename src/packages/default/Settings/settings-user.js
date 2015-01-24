@@ -61,7 +61,7 @@
 
   var SettingsModule = {
     name: 'user',
-    title: 'User',
+    title: 'LBL_USER',
     icon: 'categories/preferences-desktop-personal.png',
     onCreate: onCreate,
     applySettings: applySettings

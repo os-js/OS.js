@@ -232,6 +232,7 @@
     // General
 
     'LBL_UNKNOWN'  : 'Ukjent',
+    'LBL_USER'     : 'Bruker',
     'LBL_NAME'     : 'Navn',
     'LBL_APPLY'    : 'Angi',
     'LBL_FILENAME' : 'Filnavn',

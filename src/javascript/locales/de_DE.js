@@ -186,6 +186,7 @@
 
     // General
     'LBL_UNKNOWN'  : 'Unbekannt',
+    'LBL_USER'     : 'Benutzer',
     'LBL_NAME'     : 'Name',
     'LBL_APPLY'    : 'Übernehmen',
     'LBL_FILENAME' : 'Dateiname',

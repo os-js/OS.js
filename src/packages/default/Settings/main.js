@@ -53,6 +53,7 @@
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
 
   ApplicationSettingsWindow.prototype.init = function(wmRef, app) {
+    var _ = OSjs.Applications.ApplicationSettings._;
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
@@ -95,7 +96,7 @@
     modules.forEach(function(m, i) {
       rows.push({
         name: m.name,
-        title: m.title,
+        title: m.title.match(/^[A-Z]*_/) ? API._(m.title) : _(m.title),
         icon: _createIcon(m.icon)
       });
       self.modules[m.name] = m.onCreate(self, self.$content, self.settings);

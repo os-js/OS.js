@@ -425,7 +425,7 @@
 
   var SettingsModule = {
     name: 'panel',
-    title: 'Panels',
+    title: 'Panel',
     icon: 'categories/applications-utilities.png',
     onCreate: onCreate,
     applySettings: applySettings
