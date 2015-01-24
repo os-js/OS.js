@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+  'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
@@ -37,7 +38,6 @@
     var outer;
 
     var _ = OSjs.Applications.ApplicationSettings._;
-    console.warn("XXXXXX", _, OSjs.Applications.ApplicationSettings);
     var wm = OSjs.Core.getWindowManager();
     var themes = {};
 
