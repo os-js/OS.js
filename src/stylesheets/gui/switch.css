@@ -1,0 +1,40 @@
+
+/**
+ * GUISwitch
+ */
+.GUISwitch {
+  position : relative;
+  display : inline-block;
+  min-width : 50px;
+  min-height : 24px;
+}
+
+.GUISwitch input {
+  margin : 0;
+  padding : 0;
+  width : 100%;
+  height : 100%;
+  display : block;
+}
+
+.GUISwitch .Overlay {
+  display : block;
+  position  : absolute;
+  top : 0px;
+  left : 0px;
+  height : 100%;
+  width : 100%;
+}
+.GUISwitch .Overlay:after {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : auto;
+  width : 50%;
+  text-align : center;
+  height : 100%;
+}
+.GUISwitch.Checked .Overlay:after {
+  left : auto;
+  right : 0px;
+}

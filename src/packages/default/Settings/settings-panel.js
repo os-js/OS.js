@@ -243,24 +243,14 @@
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
     win._addGUIElement(new OSjs.GUI.Label('LabelPanelAutohide', {label: _('Autohide')}), outer);
-    var selectPanelAutohide = win._addGUIElement(new OSjs.GUI.Select('PanelAutohide'), outer);
-    selectPanelAutohide.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectPanelAutohide.setSelected(settings.panels[0].options.autohide ? 'yes' : 'no');
+    win._addGUIElement(new OSjs.GUI.Switch('PanelAutohide', {value: settings.panels[0].options.autohide}), outer);
     tab.appendChild(outer);
 
     // Ontop
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
     win._addGUIElement(new OSjs.GUI.Label('LabelPanelOntop', {label: _('Ontop')}), outer);
-    var selectPanelOntop = win._addGUIElement(new OSjs.GUI.Select('PanelOntop'), outer);
-    selectPanelOntop.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectPanelOntop.setSelected();
+    win._addGUIElement(new OSjs.GUI.Switch('PanelOntop', {value: settings.panels[0].options.ontop}), outer);
     tab.appendChild(outer);
 
     // Opacity
@@ -279,12 +269,7 @@
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
     win._addGUIElement(new OSjs.GUI.Label('LabelPanelEnableCustomColor', {label: _('Enable custom color')}), outer); // FIXME: Translation
-    var selectPanelEnableCustomColor = win._addGUIElement(new OSjs.GUI.Select('PanelEnableCustomColor'), outer);
-    selectPanelEnableCustomColor.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectPanelEnableCustomColor.setSelected(settings.panels[0].options.background ? 'yes' : 'no');
+    win._addGUIElement(new OSjs.GUI.Switch('PanelEnableCustomColor', {value: settings.panels[0].options.background}), outer);
     tab.appendChild(outer);
 
     var wrapper = document.createElement('div');
@@ -412,12 +397,12 @@
 
   function applySettings(win, settings) {
     var color = null;
-    if ( win._getGUIElement('PanelEnableCustomColor').getValue() === 'yes' ) {
+    if ( win._getGUIElement('PanelEnableCustomColor').getValue() ) {
       color = win._getGUIElement('PanelBackgroundColor').getValue();
     }
 
     settings.panels[0].options.position   = win._getGUIElement('PanelPosition').getValue();
-    settings.panels[0].options.autohide   = win._getGUIElement('PanelAutohide').getValue() === 'yes';
+    settings.panels[0].options.autohide   = win._getGUIElement('PanelAutohide').getValue();
     settings.panels[0].options.opacity    = win._getGUIElement('PanelOpacity').getValue();
     settings.panels[0].options.background = color;
     settings.panels[0].items              = Array.prototype.concat.call(panelItems);

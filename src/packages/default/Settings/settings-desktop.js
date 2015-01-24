@@ -44,47 +44,32 @@
     // Enable Sounds
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelDesktopEnableSound', {label: _('Enable Sounds')}), outer);
-    var selectDesktop = win._addGUIElement(new OSjs.GUI.Select('DesktopEnableSound'), outer);
-    selectDesktop.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectDesktop.setSelected(settings.enableSounds ? 'yes' : 'no');
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableSound', {label: _('Enable Sounds')}), outer);
+    win._addGUIElement(new GUI.Switch('DesktopEnableSound', {value: settings.enableSounds}), outer);
     tab.appendChild(outer);
 
     // Enable Hotkeys
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelDesktopEnableHotkey', {label: _('Enable Hotkeys')}), outer);
-    var selectDesktop = win._addGUIElement(new OSjs.GUI.Select('DesktopEnableHotkey'), outer);
-    selectDesktop.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectDesktop.setSelected(settings.enableHotkeys ? 'yes' : 'no');
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableHotkey', {label: _('Enable Hotkeys')}), outer);
+    win._addGUIElement(new GUI.Switch('DesktopEnableHotkey', {value: settings.enableHotkeys}), outer);
     tab.appendChild(outer);
 
     // Enable Window Switcher
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelDesktopEnableWindow Switcher', {label: _('Enable Window Switcher')}), outer);
-    var selectDesktop = win._addGUIElement(new OSjs.GUI.Select('DesktopEnableWindowSwitcher'), outer);
-    selectDesktop.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectDesktop.setSelected(settings.enableSwitcher ? 'yes' : 'no');
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableWindow Switcher', {label: _('Enable Window Switcher')}), outer);
+    win._addGUIElement(new GUI.Switch('DesktopEnableWindowSwitcher', {value: settings.enableSwitcher}), outer);
     tab.appendChild(outer);
 
     // Desktop Margin
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    var labelMargin = win._addGUIElement(new OSjs.GUI.Label('LabelDesktopMargin', {label: _('Desktop Margin')}), outer);
+    var labelMargin = win._addGUIElement(new GUI.Label('LabelDesktopMargin', {label: _('Desktop Margin')}), outer);
     function updateMargin(value) {
       labelMargin.$element.innerHTML = _('Desktop Margin ({0}px)', value);
     }
-    win._addGUIElement(new OSjs.GUI.Slider('SliderMargin', {min: 0, max: 50, val: settings.desktop.margin, onChange: function(value, percentage) {
+    win._addGUIElement(new GUI.Slider('SliderMargin', {min: 0, max: 50, val: settings.desktop.margin, onChange: function(value, percentage) {
       updateMargin(value);
     }}), outer);
     updateMargin(settings.desktop.margin);
@@ -100,25 +85,15 @@
     // Enable IconView
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelDesktopEnableIconView', {label: _('Enable Icon View')}), outer);
-    var selectDesktop = win._addGUIElement(new OSjs.GUI.Select('DesktopEnableIconView'), outer);
-    selectDesktop.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectDesktop.setSelected(settings.enableIconView ? 'yes' : 'no');
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableIconView', {label: _('Enable Icon View')}), outer);
+    win._addGUIElement(new GUI.Switch('DesktopEnableIconView', {value: settings.enableIconView}), outer);
     tab.appendChild(outer);
 
     // Enable IconView Invert Color
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelDesktopInvertIconViewColor', {label: _('Invert Text Color')}), outer); // FIXME: Translation
-    var selectDesktop = win._addGUIElement(new OSjs.GUI.Select('DesktopInvertIconViewColor'), outer);
-    selectDesktop.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectDesktop.setSelected(settings.invertIconViewColor ? 'yes' : 'no');
+    win._addGUIElement(new GUI.Label('LabelDesktopInvertIconViewColor', {label: _('Invert Text Color')}), outer); // FIXME: Translation
+    win._addGUIElement(new GUI.Switch('DesktopInvertIconViewColor', {value: settings.invertIconViewColor}), outer);
     tab.appendChild(outer);
   }
 
@@ -134,11 +109,11 @@
   }
 
   function applySettings(win, settings) {
-    settings.enableSounds         = win._getGUIElement('DesktopEnableSound').getValue() === 'yes';
-    settings.enableHotkeys        = win._getGUIElement('DesktopEnableHotkey').getValue() === 'yes';
-    settings.enableSwitched       = win._getGUIElement('DesktopEnableWindowSwitcher').getValue() === 'yes';
-    settings.enableIconView       = win._getGUIElement('DesktopEnableIconView').getValue() === 'yes';
-    settings.invertIconViewColor  = win._getGUIElement('DesktopInvertIconViewColor').getValue() === 'yes';
+    settings.enableSounds         = win._getGUIElement('DesktopEnableSound').getValue();
+    settings.enableHotkeys        = win._getGUIElement('DesktopEnableHotkey').getValue();
+    settings.enableSwitched       = win._getGUIElement('DesktopEnableWindowSwitcher').getValue();
+    settings.enableIconView       = win._getGUIElement('DesktopEnableIconView').getValue();
+    settings.invertIconViewColor  = win._getGUIElement('DesktopInvertIconViewColor').getValue();
     settings.desktop.margin       = win._getGUIElement('SliderMargin').getValue();
   }
 

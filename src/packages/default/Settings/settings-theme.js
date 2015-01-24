@@ -51,8 +51,8 @@
     // Theme selection
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelThemeThemeName', {label: _('Theme')}), outer);
-    var selectTheme = win._addGUIElement(new OSjs.GUI.Select('ThemeThemeName'), outer);
+    win._addGUIElement(new GUI.Label('LabelThemeThemeName', {label: _('Theme')}), outer);
+    var selectTheme = win._addGUIElement(new GUI.Select('ThemeThemeName'), outer);
     selectTheme.addItems(themes);
     selectTheme.setSelected(settings.theme);
     tab.appendChild(outer);
@@ -60,13 +60,8 @@
     // Enable animations
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelThemeEnableAnimation', {label: _('Enable Animations')}), outer);
-    var selectTheme = win._addGUIElement(new OSjs.GUI.Select('ThemeEnableAnimation'), outer);
-    selectTheme.addItems({
-      'yes':  API._('LBL_YES'),
-      'no':   API._('LBL_NO')
-    });
-    selectTheme.setSelected(settings.animations ? 'yes' : 'no');
+    win._addGUIElement(new GUI.Label('LabelThemeEnableAnimation', {label: _('Enable Animations')}), outer);
+    win._addGUIElement(new GUI.Switch('ThemeEnableAnimation', {value: settings.animations}), outer);
     tab.appendChild(outer);
   }
 
@@ -91,11 +86,11 @@
     outer.className = 'OuterWrapper';
     wrapper = document.createElement('div');
     wrapper.className = 'ButtonWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelThemeBackgroundImage', {label: _('Background Image')}), outer);
-    var inputBackgroundImage = win._addGUIElement(new OSjs.GUI.Text('ThemeBackgroundImage'), wrapper);
+    win._addGUIElement(new GUI.Label('LabelThemeBackgroundImage', {label: _('Background Image')}), outer);
+    var inputBackgroundImage = win._addGUIElement(new GUI.Text('ThemeBackgroundImage'), wrapper);
     inputBackgroundImage.setValue(settings.wallpaper);
     inputBackgroundImage.setDisabled(true);
-    var buttonBackgroundImage = win._addGUIElement(new OSjs.GUI.Button('ButtonThemeBackgroundImage', {label: '...', onClick: function() {
+    var buttonBackgroundImage = win._addGUIElement(new GUI.Button('ButtonThemeBackgroundImage', {label: '...', onClick: function() {
       win.createFileDialog(inputBackgroundImage.getValue(), function(file) {
         inputBackgroundImage.setValue(file);
       });
@@ -108,8 +103,8 @@
     outer.className = 'OuterWrapper';
     wrapper = document.createElement('div');
     wrapper.className = 'ButtonWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelThemeBackgroundColor', {label: API._('LBL_BACKGROUND_COLOR')}), outer);
-    var inputBackgroundColor = win._addGUIElement(new OSjs.GUI.Text('ThemeBackgroundColor'), wrapper);
+    win._addGUIElement(new GUI.Label('LabelThemeBackgroundColor', {label: API._('LBL_BACKGROUND_COLOR')}), outer);
+    var inputBackgroundColor = win._addGUIElement(new GUI.Text('ThemeBackgroundColor'), wrapper);
 
     function updateColor(color) {
       inputBackgroundColor.$input.style.backgroundColor = color;
@@ -118,7 +113,7 @@
 
     inputBackgroundColor.setValue(settings.style.backgroundColor);
     inputBackgroundColor.setDisabled(true);
-    var buttonBackgroundColor = win._addGUIElement(new OSjs.GUI.Button('ButtonThemeBackgroundColor', {label: '...', onClick: function() {
+    var buttonBackgroundColor = win._addGUIElement(new GUI.Button('ButtonThemeBackgroundColor', {label: '...', onClick: function() {
       win.createColorDialog(inputBackgroundColor.getValue(), updateColor);
     }}), wrapper);
     outer.appendChild(wrapper);
@@ -128,8 +123,8 @@
     // Background Type
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelThemeBackgroundType', {label: API._('LBL_BACKGROUND_IMAGE')}), outer);
-    var selectBackgroundType = win._addGUIElement(new OSjs.GUI.Select('ThemeBackgroundType'), outer);
+    win._addGUIElement(new GUI.Label('LabelThemeBackgroundType', {label: API._('LBL_BACKGROUND_IMAGE')}), outer);
+    var selectBackgroundType = win._addGUIElement(new GUI.Select('ThemeBackgroundType'), outer);
     selectBackgroundType.addItems(backgroundTypes);
     selectBackgroundType.setSelected(settings.background);
     tab.appendChild(outer);
@@ -147,14 +142,14 @@
     outer.className = 'OuterWrapper';
     wrapper = document.createElement('div');
     wrapper.className = 'ButtonWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelThemeFont', {label: API._('LBL_FONT')}), outer);
-    var inputFont = win._addGUIElement(new OSjs.GUI.Text('ThemeFont'), wrapper);
+    win._addGUIElement(new GUI.Label('LabelThemeFont', {label: API._('LBL_FONT')}), outer);
+    var inputFont = win._addGUIElement(new GUI.Text('ThemeFont'), wrapper);
 
     function updateFont(font) {
       inputFont.setValue(font);
       inputFont.$input.style.fontFamily = font;
     }
-    var buttonFont = win._addGUIElement(new OSjs.GUI.Button('ButtonThemeFont', {label: '...', onClick: function() {
+    var buttonFont = win._addGUIElement(new GUI.Button('ButtonThemeFont', {label: '...', onClick: function() {
       win.createFontDialog(inputFont.getValue(), function(font) {
         updateFont(font);
       });
@@ -180,7 +175,7 @@
 
   function applySettings(win, settings) {
     settings.theme                 = win._getGUIElement('ThemeThemeName').getValue();
-    settings.animations            = win._getGUIElement('ThemeEnableAnimation').getValue() === 'yes';
+    settings.animations            = win._getGUIElement('ThemeEnableAnimation').getValue();
     settings.wallpaper             = win._getGUIElement('ThemeBackgroundImage').getValue();
     settings.background            = win._getGUIElement('ThemeBackgroundType').getValue();
     settings.style.fontFamily      = win._getGUIElement('ThemeFont').getValue();
