@@ -379,7 +379,7 @@
   function onCreate(win, root, settings) {
     var container = document.createElement('div');
 
-    var tabs = win._addGUIElement(new GUI.Tabs('TabsPanel'), container);
+    var tabs = win._addGUIElement(new GUI.Tabs('TabsPanel', {defaultTab: 0}), container);
     createAppearenceTab(win, root, tabs, settings);
     createItemsTab(win, root, tabs, settings);
     root.appendChild(container);

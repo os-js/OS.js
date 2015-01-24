@@ -164,7 +164,7 @@
   function onCreate(win, root, settings) {
     var container = document.createElement('div');
 
-    var tabs = win._addGUIElement(new GUI.Tabs('TabsTheme'), container);
+    var tabs = win._addGUIElement(new GUI.Tabs('TabsTheme', {defaultTab: 0}), container);
     createThemeTab(win, root, tabs, settings);
     createBackgroundTab(win, root, tabs, settings);
     createFontTab(win, root, tabs, settings);

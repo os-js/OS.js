@@ -193,6 +193,7 @@
 
     Utils.$empty(this.$content);
     if ( this.currentModule ) {
+      this.currentModule.applySettings(this, this.settings);
       this.currentModule.onDestroy(this);
       this.currentModule = null;
     }

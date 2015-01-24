@@ -101,7 +101,7 @@
   function onCreate(win, root, settings) {
     var container = document.createElement('div');
 
-    var tabs = win._addGUIElement(new GUI.Tabs('TabsDesktop'), container);
+    var tabs = win._addGUIElement(new GUI.Tabs('TabsDesktop', {defaultTab: 0}), container);
     createGeneralTab(win, root, tabs, settings);
     createIconViewTab(win, root, tabs, settings);
     root.appendChild(container);
