@@ -63,6 +63,13 @@
     win._addGUIElement(new GUI.Label('LabelThemeEnableAnimation', {label: _('Enable Animations')}), outer);
     win._addGUIElement(new GUI.Switch('ThemeEnableAnimation', {value: settings.animations}), outer);
     tab.appendChild(outer);
+
+    // Enable Sounds
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableSound', {label: _('Enable Sounds')}), outer);
+    win._addGUIElement(new GUI.Switch('DesktopEnableSound', {value: settings.enableSounds}), outer);
+    tab.appendChild(outer);
   }
 
   function createBackgroundTab(win, root, tabs, settings) {
@@ -176,6 +183,7 @@
   function applySettings(win, settings) {
     settings.theme           = win._getGUIElement('ThemeThemeName').getValue();
     settings.animations      = win._getGUIElement('ThemeEnableAnimation').getValue();
+    settings.enableSounds    = win._getGUIElement('DesktopEnableSound').getValue();
     settings.wallpaper       = win._getGUIElement('ThemeBackgroundImage').getValue();
     settings.background      = win._getGUIElement('ThemeBackgroundType').getValue();
     settings.fontFamily      = win._getGUIElement('ThemeFont').getValue();

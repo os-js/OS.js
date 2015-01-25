@@ -42,13 +42,6 @@
     var tab = tabs.addTab('General', {title: _('General'), onSelect: function() {
     }});
 
-    // Enable Sounds
-    outer = document.createElement('div');
-    outer.className = 'OuterWrapper';
-    win._addGUIElement(new GUI.Label('LabelDesktopEnableSound', {label: _('Enable Sounds')}), outer);
-    win._addGUIElement(new GUI.Switch('DesktopEnableSound', {value: settings.enableSounds}), outer);
-    tab.appendChild(outer);
-
     // Enable Hotkeys
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
@@ -110,7 +103,6 @@
   }
 
   function applySettings(win, settings) {
-    settings.enableSounds        = win._getGUIElement('DesktopEnableSound').getValue();
     settings.enableHotkeys       = win._getGUIElement('DesktopEnableHotkey').getValue();
     settings.enableSwitched      = win._getGUIElement('DesktopEnableWindowSwitcher').getValue();
     settings.enableIconView      = win._getGUIElement('DesktopEnableIconView').getValue();
