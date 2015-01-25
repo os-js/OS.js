@@ -1,3 +1,33 @@
+# 2.0.0-alpha52
+
+WARNING: API Changes
+
+* Dialogs: Fixed input dialog
+* GUI: Fixed keyevents that was blocked in _DataView
+* GUI: Remved ev = null blocking an event
+* GUI: Added new 'Switch' element (#66)
+* GUI: Added border-box sizing to all GUIElements
+* GUI: StatusBar height fix
+* GUI: Added defaultTab option to GUITabs
+* API: Moved and renamed servicering to API.getServiceNotificationIcon()
+* API: Implemented a crude clipboard
+* CoreWM: Made some changes to the settings tree (simplified)
+* CoreWM: Split up panel items into separate files
+* CoreWM: Split menu out of main.js into separate file
+* CoreWM: Added new touch based application menu (#61)
+* CoreWM: Fixed background setting CSS
+* CoreWM: Added fadein/out to notifications and menus
+* FileManager: Added support for CTRL+C CTRL+V
+* Settings: Entirely new application and implementation (#65)
+* Vendor: Updated closure compiler
+* Misc: Updated dialog docs
+* Misc: Updated TODO
+* Misc: Updated INSTALL
+* Misc: Added new default wallpaper
+* Misc: Fixed a typo in Vargantfile (#67)
+* obt: Added max file size setting to server-php
+* obt: Now strips all comments and wasted newlines on dist
+
 # 2.0.0-alpha51
 
 WARNING: API Changes
