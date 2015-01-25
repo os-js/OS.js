@@ -291,7 +291,7 @@
 
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelPanelForegroundColor', {label: API._('LBL_BACKGROUND_COLOR')}), outer);
+    win._addGUIElement(new OSjs.GUI.Label('LabelPanelForegroundColor', {label: API._('LBL_FOREGROUND_COLOR')}), outer);
     var inputForegroundColor = win._addGUIElement(new OSjs.GUI.Text('PanelForegroundColor'), wrapper);
 
     function updateForeground(color) {
