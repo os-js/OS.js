@@ -736,12 +736,9 @@
   };
 
   Window.prototype._inited = function() {
+    console.info('OSjs::Core::Window::_inited()', this._name);
     if ( !this._rendered ) {
-      this._guiElements.forEach(function(el, i) {
-        if ( el ) {
-          el.update();
-        }
-      });
+      this._updateGUIElements();
     }
     this._rendered = true;
 
@@ -941,6 +938,21 @@
       }
 
       return true;
+    });
+  };
+
+  /**
+   * Sends an update command to all GUI Elements
+   *
+   * @return  void
+   *
+   * @method  Window::_updateGUIElements()
+   */
+  Window.prototype._updateGUIElements = function() {
+    this._guiElements.forEach(function(el, i) {
+      if ( el ) {
+        el.update();
+      }
     });
   };
 

@@ -151,11 +151,15 @@
   /**
    * When element receives update event
    *
+   * Normally received on Window::_init()
+   *
+   * @param   boolean     force       Force update?
+   *
    * @return  void
    *
    * @method  GUIElement::update()
    */
-  GUIElement.prototype.update = function() {
+  GUIElement.prototype.update = function(force) {
     this.inited = true;
   };
 

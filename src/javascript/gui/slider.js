@@ -167,7 +167,7 @@
     return el;
   };
 
-  Slider.prototype.update = function() {
+  Slider.prototype.update = function(force) {
     GUIElement.prototype.update.apply(this, arguments);
     this.setValue(this.val);
   };

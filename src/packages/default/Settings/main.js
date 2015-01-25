@@ -202,6 +202,8 @@
       var title = OSjs.Applications.ApplicationSettings._(item.title);
       this.$header.appendChild(document.createTextNode(title));
     }
+
+    this._updateGUIElements();
   };
 
   /////////////////////////////////////////////////////////////////////////////
