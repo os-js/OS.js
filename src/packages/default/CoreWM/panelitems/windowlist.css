@@ -1,0 +1,8 @@
+
+/**
+ * PanelItemWindowList
+ */
+.WMPanel .PanelItemWindowList {
+  overflow : hidden;
+  min-width : 100px;
+}

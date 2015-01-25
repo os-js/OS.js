@@ -15,9 +15,14 @@
     {"src": "iconview.js", "type": "javascript"},
     {"src": "windowswitcher.js", "type": "javascript"},
     {"src": "panel.js", "type": "javascript"},
-    {"src": "panel_items.js", "type": "javascript"},
+    {"src": "panelitems/buttons.js", "type": "javascript"},
+    {"src": "panelitems/clock.js", "type": "javascript"},
+    {"src": "panelitems/notificationarea.js", "type": "javascript"},
+    {"src": "panelitems/windowlist.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
-    {"src": "panel_items.css", "type": "stylesheet"},
+    {"src": "panelitems/clock.css", "type": "stylesheet"},
+    {"src": "panelitems/buttons.css", "type": "stylesheet"},
+    {"src": "panelitems/notificationarea.css", "type": "stylesheet"},
     {"src": "main.css", "type": "stylesheet"}
   ]
 }

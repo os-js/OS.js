@@ -1,0 +1,16 @@
+
+/**
+ * PanelItemClock
+ */
+.WMPanel .PanelItemClock {
+  flex : 0 0 55px;
+  cursor : default;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-align : center;
+}
+.WMPanel .PanelItemClock > div {
+  display : inline-block;
+  vertical-align : middle;
+}
