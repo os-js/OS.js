@@ -225,6 +225,11 @@
   function createAppearenceTab(win, root, tabs, settings) {
     var _ = OSjs.Applications.ApplicationSettings._;
     var outer, wrapper;
+    var opacity = 85;
+    if ( typeof settings.panels[0].options.opacity === 'number' ) {
+      opacity = settings.panels[0].options.opacity;
+    }
+
     var tab = tabs.addTab('Appearence', {title: API._('LBL_APPEARANCE'), onSelect: function() { // FIXME: Translation
     }});
 
@@ -252,18 +257,6 @@
     outer.className = 'OuterWrapper';
     win._addGUIElement(new OSjs.GUI.Label('LabelPanelOntop', {label: _('Ontop')}), outer);
     win._addGUIElement(new OSjs.GUI.Switch('PanelOntop', {value: settings.panels[0].options.ontop}), outer);
-    tab.appendChild(outer);
-
-    // Opacity
-    var opacity = 85;
-    if ( typeof settings.panels[0].options.opacity === 'number' ) {
-      opacity = settings.panels[0].options.opacity;
-    }
-
-    outer = document.createElement('div');
-    outer.className = 'OuterWrapper';
-    var labelMargin = win._addGUIElement(new OSjs.GUI.Label('LabelPanelOpacity', {label: _('Opacity')}), outer); // FIXME: Translation
-    win._addGUIElement(new OSjs.GUI.Slider('PanelOpacity', {min: 0, max:100, val: opacity}), outer);
     tab.appendChild(outer);
 
     // Custom color
@@ -298,6 +291,13 @@
     outer.appendChild(wrapper);
     tab.appendChild(outer);
     updateColor(inputBackgroundColor.getValue());
+
+    // Opacity
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    var labelMargin = win._addGUIElement(new OSjs.GUI.Label('LabelPanelOpacity', {label: _('Opacity')}), outer); // FIXME: Translation
+    win._addGUIElement(new OSjs.GUI.Slider('PanelOpacity', {min: 0, max:100, val: opacity}), outer);
+    tab.appendChild(outer);
   }
 
   function createItemsTab(win, root, tabs, settings) {
