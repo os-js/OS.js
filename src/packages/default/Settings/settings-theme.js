@@ -164,20 +164,13 @@
   function onCreate(win, root, settings) {
     var container = document.createElement('div');
 
-    var tabs = win._addGUIElement(new GUI.Tabs('TabsTheme', {defaultTab: 0}), container);
+    var tabs = win._addGUIElement(new GUI.Tabs('TabsTheme'), container);
     createThemeTab(win, root, tabs, settings);
     createBackgroundTab(win, root, tabs, settings);
     createFontTab(win, root, tabs, settings);
     root.appendChild(container);
 
     return container;
-  }
-
-  function onDestroy(win) {
-    var list = ['LabelThemeThemeName', 'ThemeThemeName', 'LabelThemeEnableAnimation', 'ThemeEnableAnimation', 'LabelThemeBackgroundImage', 'ThemeBackgroundImage', 'ButtonThemeBackgroundImage', 'LabelThemeBackgroundColor', 'ThemeBackgroundColor', 'ButtonThemeBackgroundColor', 'LabelThemeBackgroundType', 'ThemeBackgroundType', 'LabelThemeFont', 'ThemeFont', 'ButtonThemeFont', 'TabsTheme'];
-    list.forEach(function(i) {
-      win._removeGUIElement(i);
-    });
   }
 
   function applySettings(win, settings) {
@@ -194,7 +187,6 @@
     title: 'Theme',
     icon: 'apps/background.png',
     onCreate: onCreate,
-    onDestroy: onDestroy,
     applySettings: applySettings
   };
 
