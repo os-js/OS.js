@@ -98,7 +98,7 @@
       'Items' : 'Элементы',
       'Enable Animations' : 'Использовать анимацию',
       'Language (requires restart)' : 'Язык (необходим перезапуск)',
-      'Open Panel Settings' : 'Открыть настройки панели',
+      'Open Panel Settings' : 'Открыть панель настроек',
       'Enable Sounds' : 'Включить звук',
       'Enable Window Switcher' : 'Включить растягивание окон',
       'Enable Hotkeys' : 'Включить горячии клавиши',
