@@ -29,11 +29,6 @@
  * @licence Simplified BSD License
  */
 
-@theme_panel_bg_color           : #101010;
-@theme_panel_fg_color           : #ffffff;
-@theme_panelitem_hover_bg_color : #222222;
-@theme_panelitem_hover_fg_color : #ffffff;
-
 .theme_gui_button {
   cursor : pointer;
   background : @theme_gui_button_bg_color;
@@ -185,10 +180,10 @@ body, input, button, textarea, label, select {
  */
 
 .WMPanel {
-  color : @theme_panel_fg_color;
+  color : #ffffff; /* Window Manager manages this */
 }
 .WMPanel .WMPanelBackground {
-  background : @theme_panel_bg_color;
+  background : #101010; /* Window Manager manages this */
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
 }
@@ -196,19 +191,10 @@ body, input, button, textarea, label, select {
     margin-top : -1px;
     cursor : pointer;
     background : transparent !important;
-    color : @theme_panel_fg_color;
     text-shadow: @theme_text_shadow;
-  }
-  .WMPanel li.Button:hover {
-    color : @theme_panelitem_hover_fg_color !important;
-    background : @theme_panelitem_hover_bg_color !important;
-  }
-  .WMPanel li.Button:active {
-    color : @theme_base_fg_color;
   }
 
 .WMPanel .PanelItemClock {
-  color : @theme_panel_fg_color;
   text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
   font-weight : bold;
   text-align : right;
@@ -231,8 +217,8 @@ body, input, button, textarea, label, select {
   cursor : pointer;
 }
 .Notification {
-  color : @theme_panel_fg_color;
-  background : @theme_panel_bg_color;
+  background : #101010; /* Window Manager manages this */
+  color : #fff; /* Window Manager manages this */
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
   cursor : pointer;

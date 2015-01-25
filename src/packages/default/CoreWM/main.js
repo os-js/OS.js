@@ -134,7 +134,8 @@
             position: 'top',
             ontop:    true,
             autohide: false,
-            background: null,
+            background: '#101010',
+            foreground: '#ffffff',
             opacity: 85
           },
           items:    [
@@ -866,6 +867,29 @@
       this.initPanels(true);
       this.saveSettings(settings);
     }
+
+    var styles = {};
+
+    if ( settings.panels ) {
+      settings.panels.forEach(function(p, i) {
+        styles['.WMPanel'] = {};
+        styles['.DesktopNotification'] = {}
+        styles['.WMPanel .WMPanelBackground'] = {
+          'opacity': p.options.opacity / 100
+        };
+        if ( p.options.background ) {
+          styles['.WMPanel .WMPanelBackground']['background-color'] = p.options.background;
+          styles['.DesktopNotification']['background-color'] = p.options.background;
+        }
+        if ( p.options.foreground ) {
+          styles['.WMPanel']['color'] = p.options.foreground;
+          styles['.DesktopNotification']['color'] = p.options.foreground;
+        }
+
+      });
+    }
+
+    this.createStylesheet(styles);
 
     return true;
   };
