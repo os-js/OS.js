@@ -182,7 +182,7 @@ body, input, button, textarea, label, select {
 .WMPanel {
   color : #ffffff; /* Window Manager manages this */
 }
-.WMPanel .WMPanelBackground {
+.WMPanel:before {
   background : #101010; /* Window Manager manages this */
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
@@ -216,19 +216,21 @@ body, input, button, textarea, label, select {
   opacity : .85;
   cursor : pointer;
 }
-.Notification {
-  background : #101010; /* Window Manager manages this */
+.WMNotification {
   color : #fff; /* Window Manager manages this */
-  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
-  opacity : .85;
   cursor : pointer;
 }
-.Notification .Title {
+.WMNotification:before {
+  background : #101010; /* Window Manager manages this */
+  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+  opacity : .85;
+}
+.WMNotification .Title {
   font-weight : bold;
 }
 
-.Notification .Title,
-.Notification .Message {
+.WMNotification .Title,
+.WMNotification .Message {
   line-height : 16px;
 }
 

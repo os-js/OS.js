@@ -173,7 +173,7 @@
     this.$animationLink = null;
 
     this._$notifications    = document.createElement('div');
-    this._$notifications.id = 'Notifications';
+    this._$notifications.id = 'WMNotifications';
     document.body.appendChild(this._$notifications);
   };
 
@@ -652,7 +652,7 @@
       console.log('OSjs::Core::WindowManager::notification()', opts);
 
       var container  = document.createElement('div');
-      var classNames = ['Notification'];
+      var classNames = ['WMNotification'];
       var self       = this;
       var timeout    = null;
       var wm         = OSjs.Core.getWindowManager();
@@ -873,17 +873,20 @@
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
         styles['.WMPanel'] = {};
-        styles['.DesktopNotification'] = {}
+        styles['.WMNotification'] = {}
+        styles['.WMNotification:before'] = {
+          'opacity': p.options.opacity / 100
+        }
         styles['.WMPanel .WMPanelBackground'] = {
           'opacity': p.options.opacity / 100
         };
         if ( p.options.background ) {
           styles['.WMPanel .WMPanelBackground']['background-color'] = p.options.background;
-          styles['.DesktopNotification']['background-color'] = p.options.background;
+          styles['.WMNotification:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {
           styles['.WMPanel']['color'] = p.options.foreground;
-          styles['.DesktopNotification']['color'] = p.options.foreground;
+          styles['.WMNotification']['color'] = p.options.foreground;
         }
 
       });

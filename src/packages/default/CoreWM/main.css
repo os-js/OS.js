@@ -28,7 +28,7 @@ body.WallpaperStrech {
 /**
  * Desktop Notification
  */
-#Notifications {
+#WMNotifications {
   position : absolute;
   top : 0px;
   right : 0px;
@@ -36,7 +36,7 @@ body.WallpaperStrech {
   width : 400px;
 }
 
-#Notifications .Notification {
+#WMNotifications .WMNotification {
   position : relative;
   min-height : 10px;
   padding : 10px;
@@ -44,14 +44,14 @@ body.WallpaperStrech {
   overflow : hidden;
   white-space : nowrap;
 }
-#Notifications .Notification.HasIcon {
+#WMNotifications .WMNotification.HasIcon {
   min-height : 32px;
 }
-#Notifications .Notification.HasIcon img {
+#WMNotifications .WMNotification.HasIcon img {
   position : absolute;
 }
-#Notifications .Notification.HasIcon .Title,
-#Notifications .Notification.HasIcon .Message {
+#WMNotifications .WMNotification.HasIcon .Title,
+#WMNotifications .WMNotification.HasIcon .Message {
   margin-left : 32px;
   padding-left : 5px;
   white-space: -moz-pre-wrap;
@@ -59,6 +59,15 @@ body.WallpaperStrech {
   white-space:     -pre-wrap;
   white-space:      pre-wrap;
   word-wrap: break-word;
+}
+#WMNotifications .WMNotification:before {
+  content : '';
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
+  z-index : -1;
 }
 
 /**
