@@ -109,16 +109,16 @@
     function updateColor(color) {
       inputBackgroundColor.$input.style.backgroundColor = color;
       inputBackgroundColor.$input.style.color = Utils.invertHEX(color);
+      inputBackgroundColor.setValue(color);
     }
 
-    inputBackgroundColor.setValue(settings.style.backgroundColor);
     inputBackgroundColor.setDisabled(true);
     var buttonBackgroundColor = win._addGUIElement(new GUI.Button('ButtonThemeBackgroundColor', {label: '...', onClick: function() {
       win.createColorDialog(inputBackgroundColor.getValue(), updateColor);
     }}), wrapper);
     outer.appendChild(wrapper);
     tab.appendChild(outer);
-    updateColor(settings.style.backgroundColor);
+    updateColor(settings.backgroundColor);
 
     // Background Type
     outer = document.createElement('div');
@@ -156,7 +156,7 @@
     }}), wrapper);
 
     inputFont.setDisabled(true);
-    updateFont(settings.style.fontFamily);
+    updateFont(settings.fontFamily);
     outer.appendChild(wrapper);
     tab.appendChild(outer);
   }
@@ -174,12 +174,12 @@
   }
 
   function applySettings(win, settings) {
-    settings.theme                 = win._getGUIElement('ThemeThemeName').getValue();
-    settings.animations            = win._getGUIElement('ThemeEnableAnimation').getValue();
-    settings.wallpaper             = win._getGUIElement('ThemeBackgroundImage').getValue();
-    settings.background            = win._getGUIElement('ThemeBackgroundType').getValue();
-    settings.style.fontFamily      = win._getGUIElement('ThemeFont').getValue();
-    settings.style.backgroundColor = win._getGUIElement('ThemeBackgroundColor').getValue();
+    settings.theme           = win._getGUIElement('ThemeThemeName').getValue();
+    settings.animations      = win._getGUIElement('ThemeEnableAnimation').getValue();
+    settings.wallpaper       = win._getGUIElement('ThemeBackgroundImage').getValue();
+    settings.background      = win._getGUIElement('ThemeBackgroundType').getValue();
+    settings.fontFamily      = win._getGUIElement('ThemeFont').getValue();
+    settings.backgroundColor = win._getGUIElement('ThemeBackgroundColor').getValue();
   }
 
   var SettingsModule = {

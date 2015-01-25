@@ -114,8 +114,10 @@
     var cfg = {
       animations          : OSjs.Compability.css.animation,
       fullscreen          : false,
-      desktop             : {margin: 5},
+      desktopMargin       : 5,
       wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
+      backgroundColor     : '#0B615E',
+      fontFamily          : 'OSjsFont',
       theme               : 'default',
       background          : 'image-fill',
       useTouchMenu        : false,
@@ -125,6 +127,7 @@
       enableSounds        : API.getDefaultSettings().Core.Sounds,
       invertIconViewColor : false,
       moveOnResize        : true,       // Move windows into viewport on resize
+      desktopIcons        : [],
       panels              : [
         {
           options: {
@@ -141,12 +144,7 @@
             {name: 'Clock'}
           ]
         }
-      ],
-      desktopIcons      : [],
-      style             : {
-        backgroundColor  : '#0B615E',
-        fontFamily       : 'OSjsFont'
-      }
+      ]
     };
 
     if ( defaults ) {
@@ -401,8 +399,7 @@
         return;
       }
 
-      var style = self.getSetting('style');
-      var backColor = style ? style.backgroundColor : null;
+      var backColor = self.getSetting('backgroundColor');
       if ( backColor ) {
         var invertedColor = Utils.invertHEX(backColor);
         self.iconView.setForegroundColor(invertedColor || null);
@@ -436,7 +433,7 @@
     if ( !this.getSetting('moveOnResize') ) { return; }
 
     var space = this.getWindowSpace();
-    var margin = this.getSetting('desktop').margin;
+    var margin = this.getSetting('desktopMargin');
     var i = 0, l = this._windows.length, iter, wrect;
     var mx, my, moved;
 
@@ -786,13 +783,13 @@
     console.group('OSjs::Applications::CoreWM::applySettings');
 
     // Styles
-    var opts = this.getSetting('style');
-    var valid = ['backgroundColor', 'fontFamily'];
-    console.log('Styles', opts);
-    for ( var i in opts ) {
-      if ( opts.hasOwnProperty(i) && valid.indexOf(i) >= 0 ) {
-        document.body.style[i] = opts[i];
-      }
+    var bg = this.getSetting('backgroundColor');
+    if ( bg ) {
+      document.body.style.backgroundColor = bg;
+    }
+    var ff = this.getSetting('fontFamily');
+    if ( ff ) {
+      document.body.style.fontFamily = ff;
     }
 
     // Wallpaper and Background
@@ -900,7 +897,7 @@
 
   CoreWM.prototype.getWindowSpace = function() {
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
-    var d = this.getSetting('desktop');
+    var d = this.getSetting('desktopMargin');
 
     var p, ph;
     for ( var i = 0; i < this.panels.length; i++ ) {
@@ -919,11 +916,11 @@
       }
     }
 
-    if ( d.margin ) {
-      s.top    += d.margin;
-      s.left   += d.margin;
-      s.width  -= (d.margin * 2);
-      s.height -= (d.margin * 2);
+    if ( d > 0 ) {
+      s.top    += d;
+      s.left   += d;
+      s.width  -= (d * 2);
+      s.height -= (d * 2);
     }
 
     return s;
@@ -933,7 +930,7 @@
     borders = (typeof borders === 'undefined') || (borders === true);
     var pos = WindowManager.prototype.getWindowPosition.apply(this, arguments);
 
-    var m = borders ? this.getSetting('desktop').margin : 0;
+    var m = borders ? this.getSetting('desktopMargin') : 0;
     pos.x += m || 0;
     pos.y += m || 0;
 

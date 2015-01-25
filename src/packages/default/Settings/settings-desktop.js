@@ -70,10 +70,10 @@
     function updateMargin(value) {
       labelMargin.$element.innerHTML = _('Desktop Margin ({0}px)', value);
     }
-    win._addGUIElement(new GUI.Slider('SliderMargin', {min: 0, max: 50, val: settings.desktop.margin, onChange: function(value, percentage) {
+    win._addGUIElement(new GUI.Slider('SliderMargin', {min: 0, max: 50, val: settings.desktopMargin, onChange: function(value, percentage) {
       updateMargin(value);
     }}), outer);
-    updateMargin(settings.desktop.margin);
+    updateMargin(settings.desktopMargin);
     tab.appendChild(outer);
   }
 
@@ -110,12 +110,12 @@
   }
 
   function applySettings(win, settings) {
-    settings.enableSounds         = win._getGUIElement('DesktopEnableSound').getValue();
-    settings.enableHotkeys        = win._getGUIElement('DesktopEnableHotkey').getValue();
-    settings.enableSwitched       = win._getGUIElement('DesktopEnableWindowSwitcher').getValue();
-    settings.enableIconView       = win._getGUIElement('DesktopEnableIconView').getValue();
-    settings.invertIconViewColor  = win._getGUIElement('DesktopInvertIconViewColor').getValue();
-    settings.desktop.margin       = win._getGUIElement('SliderMargin').getValue();
+    settings.enableSounds        = win._getGUIElement('DesktopEnableSound').getValue();
+    settings.enableHotkeys       = win._getGUIElement('DesktopEnableHotkey').getValue();
+    settings.enableSwitched      = win._getGUIElement('DesktopEnableWindowSwitcher').getValue();
+    settings.enableIconView      = win._getGUIElement('DesktopEnableIconView').getValue();
+    settings.invertIconViewColor = win._getGUIElement('DesktopInvertIconViewColor').getValue();
+    settings.desktopMargin       = win._getGUIElement('SliderMargin').getValue();
   }
 
   var SettingsModule = {
