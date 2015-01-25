@@ -38,7 +38,7 @@
     Window.apply(this, ['ApplicationSettingsWindow', {
       icon: metadata.icon,
       title: metadata.name,
-      width: 580,
+      width: 500,
       height: 450,
       allow_maximize: false,
       allow_resize: false
