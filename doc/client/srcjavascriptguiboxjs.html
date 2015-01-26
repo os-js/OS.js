@@ -36,63 +36,56 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/listview.js</i></p>
+<p><i>src/javascript/gui/box.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-listview">ListView</a> (OSjs.GUI.ListView)
+<a href="#osjs-gui-box">Box</a> (OSjs.GUI.Box)
 <ul>
-<li><a href="#listview-render">render()</a></li>
-<li><a href="#listview-addcolumn">addColumn()</a></li>
-<li><a href="#listview-setcolumns">setColumns()</a></li>
-<li><a href="#listview-setrows">setRows()</a></li>
+<li><a href="#box-insert">insert()</a></li>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-hbox">HBox</a> (OSjs.GUI.HBox)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-vbox">VBox</a> (OSjs.GUI.VBox)
+<ul>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-listview">
-<h2 id="listview">ListView</h2>
+<div class="section-class" id="osjs-gui-box">
+<h2 id="box">Box</h2>
 <pre>
-List View Class
+Flex Box Class
 
-column data example:
+Use this to create flexible column/row layouts
 
-[
+without having to set element positions and sizes with CSS
 
- {key: 'mykey', title: 'Title'},
-
- {key: 'id', visible: false}
-
-]
-
-row data example:
-
-[
-
- {mykey: 'Some title', id: 1},
-
- {mykey: 'Some title', id: 2}
-
-]
+This is a private class
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.ListView</li>
+<li>OSjs.GUI.Box</li>
 </ul>
-<h4 id="extends">Extends</h4>
-<ul>
-<li>_DataView</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Core.GUIElement</li>
-</ul>
-<h4 id="constructor">Constructor</h4>
+
+<div class="section-method" id="box-insert">
+<h3 id="box-insert-name-grow-shrink-basis-opts-">Box::insert(name, grow, shrink, basis, opts)</h3>
+<pre>
+Insert a row/column into the Flex Box
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
@@ -105,16 +98,30 @@ row data example:
 <tr>
 <td>name</td>
 <td>String</td>
-<td>Name of GUIElement (unique)</td>
+<td>Name of item (unique)</td>
+</tr>
+<tr>
+<td>grow</td>
+<td>int</td>
+<td>(Optional) Grow factor (null=default)</td>
+</tr>
+<tr>
+<td>shrink</td>
+<td>int</td>
+<td>(Optional) Shrink factor (null=default)</td>
+</tr>
+<tr>
+<td>basis</td>
+<td>String</td>
+<td>(Optional) Basis (static width/height or &#39;auto&#39;)</td>
 </tr>
 <tr>
 <td>opts</td>
 <td>Object</td>
-<td>A list of options</td>
+<td>(Optional) Options</td>
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>
 <h4 id="options-for-opts-">Options for <em>opts</em></h4>
 <table>
 <thead>
@@ -126,136 +133,61 @@ row data example:
 </thead>
 <tbody>
 <tr>
-<td>singleClick</td>
+<td>fill</td>
 <td>boolean</td>
-<td>Single click to Activate (dblclick) forced on touch devices</td>
+<td>Should the child item fill/strecth the entire space?</td>
 </tr>
 <tr>
-<td>columns</td>
-<td>Object</td>
-<td>Column data</td>
-</tr>
-<tr>
-<td>rows</td>
-<td>Array</td>
-<td>Rows of data</td>
+<td>flex</td>
+<td>Strign</td>
+<td>Manual flex CSS style (overrides function arguments)</td>
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The row or column</em></p>
 
-<div class="section-method" id="listview-render">
-<h3 id="listview-render-">ListView::render()</h3>
+</div>
+</div>
+<div class="section-class" id="osjs-gui-hbox">
+<h2 id="hbox">HBox</h2>
 <pre>
-Render the list inside the view
+Horizontal (column) Flex Box
 </pre>
 
-
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.HBox</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>OSjs.GUI.Box</li>
+</ul>
 <h4 id="see">See</h4>
 <ul>
-<li>_DataView::render()</li>
+<li>OSjs.GUI.Box</li>
 </ul>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="listview-addcolumn">
-<h3 id="listview-addcolumn-c-">ListView::addColumn(c)</h3>
+<div class="section-class" id="osjs-gui-vbox">
+<h2 id="vbox">VBox</h2>
 <pre>
-Add a column
+Vertical (row) Flex Box
 </pre>
 
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>c</td>
-<td>Object</td>
-<td>The object (see constructor for info)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="listview-setcolumns">
-<h3 id="listview-setcolumns-cols-">ListView::setColumns(cols)</h3>
-<pre>
-Set the column list
-</pre>
-
-
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.VBox</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>OSjs.GUI.Box</li>
+</ul>
 <h4 id="see">See</h4>
 <ul>
-<li>ListView::addColumn()</li>
+<li>OSjs.GUI.Box</li>
 </ul>
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>cols</td>
-<td>Array</td>
-<td>Column Array</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
-</div>
-<div class="section-method" id="listview-setrows">
-<h3 id="listview-setrows-rows-render-">ListView::setRows(rows, render)</h3>
-<pre>
-Set the row list
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>ListView::addRow()</li>
-</ul>
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>rows</td>
-<td>Array</td>
-<td>Row Array</td>
-</tr>
-<tr>
-<td>render</td>
-<td>boolean</td>
-<td>Render right away ?</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
 </div>
 <p><i>Generated: Mon Jan 26 2015 22:05:55 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
