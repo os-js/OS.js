@@ -4,6 +4,7 @@
  */
 .GUITextarea {
   position : relative;
+  min-height : 24px;
 }
 
 .GUITextarea textarea {

@@ -2,6 +2,10 @@
 /**
  * Color Swatch
  */
-/*.GUIColorSwatch {
-}*/
+.GUIColorSwatch {
+  display : inline-block;
+}
+.GUIColorSwatch canvas {
+  display : block;
+}
 
