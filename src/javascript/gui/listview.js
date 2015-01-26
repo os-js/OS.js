@@ -247,7 +247,7 @@
       label.appendChild(document.createTextNode(colref.title));
 
       if ( typeof colref.resizable === 'undefined' || colref.resizable === true ) {
-        if ( i < (l-1) ) {
+        if ( i < (l-i) ) {
           resizer           = document.createElement('div');
           resizer.className = 'Resizer';
           label.appendChild(resizer);
