@@ -1,0 +1,142 @@
+
+/**
+ * Box
+ */
+.GUIBox {
+  width : 100%;
+  height : 100%;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+  .GUIBox > div {
+    position : relative;
+
+    -webkit-flex: 0 0 auto;
+       -moz-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+         -o-flex: 0 0 auto;
+            flex: 0 0 auto;
+  }
+
+  .GUIBox > div.Expand {
+  }
+
+  .GUIBox > div.Fill {
+    -webkit-align-items: stretch;
+       -moz-align-items: stretch;
+        -ms-align-items: stretch;
+         -o-align-items: stretch;
+            align-items: stretch;
+
+    -webkit-align-content: stretch;
+       -moz-align-content: stretch;
+        -ms-align-content: stretch;
+         -o-align-content: stretch;
+            align-content: stretch;
+  }
+  .GUIBox > div.Fill > .GUIElement {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    bottom : 0px;
+    right : 0px;
+  }
+
+  .GUIBox .GUIStatusBar {
+    position : static;
+    left : auto;
+    right : auto;
+    bottom : auto;
+  }
+
+/**
+ * VBox
+ */
+.GUIVBox {
+  -webkit-flex-direction: column;
+     -moz-flex-direction: column;
+      -ms-flex-direction: column;
+       -o-flex-direction: column;
+          flex-direction: column;
+}
+
+.GUIVBox.PackStart {
+  -webkit-flex-pack: start;
+     -moz-flex-pack: start;
+      -ms-flex-pack: start;
+       -o-flex-pack: start;
+          flex-pack: start;
+}
+
+.GUIVBox.PackEnd {
+  -webkit-flex-pack: end;
+     -moz-flex-pack: end;
+      -ms-flex-pack: end;
+       -o-flex-pack: end;
+          flex-pack: end;
+}
+
+.GUIVBox.PackCenter {
+  -webkit-flex-pack: center;
+     -moz-flex-pack: center;
+      -ms-flex-pack: center;
+       -o-flex-pack: center;
+          flex-pack: center;
+}
+
+.GUIVBox.PackJustify {
+  -webkit-flex-pack: justify;
+     -moz-flex-pack: justify;
+      -ms-flex-pack: justify;
+       -o-flex-pack: justify;
+          flex-pack: justify;
+}
+
+/**
+ * VBox
+ */
+.GUIVBox {
+  -webkit-flex-direction: column;
+     -moz-flex-direction: column;
+      -ms-flex-direction: column;
+       -o-flex-direction: column;
+          flex-direction: column;
+}
+
+.GUIVBox.PackStart {
+  -webkit-flex-align: start;
+     -moz-flex-align: start;
+      -ms-flex-align: start;
+       -o-flex-align: start;
+          flex-align: start;
+}
+
+.GUIVBox.PackEnd {
+  -webkit-flex-align: end;
+     -moz-flex-align: end;
+      -ms-flex-align: end;
+       -o-flex-align: end;
+          flex-align: end;
+}
+
+.GUIVBox.PackCenter {
+  -webkit-flex-align: center;
+     -moz-flex-align: center;
+      -ms-flex-align: center;
+       -o-flex-align: center;
+          flex-align: center;
+}
+
+.GUIVBox.PackJustify {
+  -webkit-flex-align: justify;
+     -moz-flex-align: justify;
+      -ms-flex-align: justify;
+       -o-flex-align: justify;
+          flex-align: justify;
+}
+

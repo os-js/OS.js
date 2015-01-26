@@ -654,6 +654,7 @@ Array.prototype.unique = function(){
     'src/javascript/gui/toolbar.js',
     'src/javascript/gui/treeview.js',
     'src/javascript/gui/switch.js',
+    'src/javascript/gui/box.js',
 
     'src/javascript/dialogs/_standard.js',
     'src/javascript/dialogs/alert.js',
