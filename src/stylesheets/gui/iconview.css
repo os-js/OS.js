@@ -4,8 +4,8 @@
  */
 .GUIIconView {
   position : relative;
-  min-width : 100px;
-  min-height : 100px;
+  min-width : 48px;
+  min-height : 48px;
 }
 .GUIIconView > div {
   position : absolute;

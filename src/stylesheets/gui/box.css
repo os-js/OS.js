@@ -22,6 +22,12 @@
          -o-flex: 0 0 auto;
             flex: 0 0 auto;
   }
+    .GUIBox > div > .GUIElement {
+      margin : 2px;
+    }
+    .GUIBox > div > .GUIElement.GUIBox {
+      margin : 0;
+    }
 
   .GUIBox > div.Expand {
   }
