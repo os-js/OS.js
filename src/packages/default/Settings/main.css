@@ -74,7 +74,7 @@
   left : 145px;
   right : 5px;
 }
-.Window_ApplicationSettingsWindow .WindowWrapper .Header {
+.Window_ApplicationSettingsWindow .WindowWrapper > .Header {
   position : absolute;
   top : 5px;
   left : 145px;
@@ -174,6 +174,16 @@
       -ms-box-sizing : border-box;
        -o-box-sizing : border-box;
           box-sizing : border-box;
+}
+.Window_ApplicationSettingsWindow .Tab_GUI .TesterPanedView .View {
+  background : #000;
+}
+.Window_ApplicationSettingsWindow .Tab_GUI .GUIElement {
+  margin-bottom : 10px;
+}
+.Window_ApplicationSettingsWindow .Tab_GUI .GUITextArea,
+.Window_ApplicationSettingsWindow .Tab_GUI .GUIListView {
+  height : 100px;
 }
 
 .Window_CoreWMPanelItemWindow .WindowWrapper {

@@ -237,9 +237,9 @@
     }, onUpdate: function() {}}));
 
     var toolBar = _createElement(new GUI.ToolBar('TesterToolBar'));
-    toolBar.addItem("Button1", {title: 'Toolbar Button 1'});
-    toolBar.addItem("Button2", {title: 'Toolbar Button 2'});
-    toolBar.addItem("Button3", {title: 'Toolbar Button 3'});
+    toolBar.addItem("Button1", {title: 'ToolbarBtn 1'});
+    toolBar.addItem("Button2", {title: 'ToolbarBtn 2'});
+    toolBar.addItem("Button3", {title: 'ToolbarBtn 3'});
     toolBar.render();
 
     var panedView = _createElement(new GUI.PanedView('TesterPanedView'));
@@ -322,6 +322,7 @@
     var checkbox = _createElement(new GUI.Checkbox('TesterCheckbox', {label: 'Checkbox'}));
     var radio1 = _createElement(new GUI.Radio('TesterRadio1', {label: 'Radio 1'}));
     var radio2 = _createElement(new GUI.Radio('TesterRadio2', {label: 'Radio 2'}));
+    var switcher = _createElement(new GUI.Switch('TesterSwitch', {label: 'Switcher'}));
 
     tab.appendChild(outer);
   }
