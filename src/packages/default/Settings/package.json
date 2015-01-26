@@ -22,6 +22,7 @@
     {"src": "settings-desktop.js", "type": "javascript"},
     {"src": "settings-panel.js", "type": "javascript"},
     {"src": "settings-user.js", "type": "javascript"},
+    {"src": "settings-debug.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
   ]
 }

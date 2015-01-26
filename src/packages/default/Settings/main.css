@@ -124,6 +124,16 @@
   padding : 10px;
   padding-bottom : 0;
 }
+.Window_ApplicationSettingsWindow .Tab_GUI {
+  height : 100%;
+  position : relative;
+  overflow : auto;
+}
+.Window_ApplicationSettingsWindow .Tab_GUI .GUIStatusBar {
+  position : relative;
+  bottom : auto;
+  left : auto;
+}
 .Window_ApplicationSettingsWindow .ButtonWrapper {
   position : relative;
 }
@@ -142,6 +152,29 @@
   z-index : 1000;
 }
 
+.Window_ApplicationSettingsWindow .Tab_DnD .GUITextarea {
+  margin-top : 10px;
+  height : 100px;
+}
+
+.Window_ApplicationSettingsWindow .TabsDebug .GUIButton {
+  margin-bottom : 5px;
+}
+.Window_ApplicationSettingsWindow .TabsDebug .APIOutput {
+  width : 100%;
+  height : 100px;
+  background : #fff;
+  padding : 10px;
+  overflow : hidden;
+  word-break: break-all;
+  font-family : Monospace;
+
+  -webkit-box-sizing : border-box;
+     -moz-box-sizing : border-box;
+      -ms-box-sizing : border-box;
+       -o-box-sizing : border-box;
+          box-sizing : border-box;
+}
 
 .Window_CoreWMPanelItemWindow .WindowWrapper {
   padding : 5px;
