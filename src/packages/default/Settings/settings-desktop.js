@@ -73,7 +73,7 @@
   function createIconViewTab(win, root, tabs, settings) {
     var _ = OSjs.Applications.ApplicationSettings._;
     var outer, wrapper;
-    var tab = tabs.addTab('IconView', {title: 'Icon View', onSelect: function() {
+    var tab = tabs.addTab('IconView', {title: _('Icon View'), onSelect: function() {
     }});
 
     // Enable IconView
