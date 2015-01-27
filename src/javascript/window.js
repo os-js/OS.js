@@ -411,6 +411,9 @@
         if ( typeof self._properties[k] !== 'undefined' ) {
           self._properties[k] = opts[k];
         }
+        if ( typeof self._state[k] !== 'undefined' ) {
+          self._state[k] = opts[k];
+        }
       });
 
       console.info('OSjs::Core::Window::__construct()', this._wid, this._name);
@@ -932,8 +935,10 @@
       }
 
       if ( destroy !== false ) {
-        self._guiElements[destroy].destroy();
-        self._guiElements[destroy] = null;
+        if ( self._guiElements[destroy] ) {
+          self._guiElements[destroy].destroy();
+          self._guiElements[destroy] = null;
+        }
         return false;
       }
 
@@ -980,18 +985,28 @@
    *
    * @param   GUIElement      gel           GUIElement reference
    * @param   DOMElement      parentNode    DOM Node to add to
+   * @param   GUIElement      parentGel     (Optional) The parent GUIElement
    *
    * @return  GUIElement                    On success or 'false'
    *
    * @method  Window::_addGUIElement()
    */
-  Window.prototype._addGUIElement = function(gel, parentNode) {
+  Window.prototype._addGUIElement = function(gel, parentNode, parentGel) {
     var self = this;
+
+    if ( !parentNode && (parentNode instanceof OSjs.Core.GUIElement) ) {
+      parentNode = parentGel.$element;
+    }
+
     if ( !parentNode ) {
       throw new Error('Adding a GUI Element requires a parentNode');
     }
 
     if ( gel instanceof OSjs.Core.GUIElement ) {
+      if ( parentGel ) {
+        parentGel._addChild(gel.name);
+        gel._setParent(parentGel.name);
+      }
       gel._setWindow(this);
       gel._setTabIndex(this._guiElements.length + 1);
 

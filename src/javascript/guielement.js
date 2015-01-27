@@ -56,12 +56,21 @@
    * @api     OSjs.Core.GUIElement
    * @class
    */
+  Object.prototype.getConstructorName = function () {
+       var str = (this.prototype ? this.prototype.constructor : this.constructor).toString();
+          var cname = str.match(/function\s(\w*)/)[1];
+             var aliases = ["", "anonymous", "Anonymous"];
+                return aliases.indexOf(cname) > -1 ? "Function" : cname;
+  }
+
   var GUIElement = (function() {
     var _Count = 0;
 
     return function(name, opts) {
       opts = opts || {};
 
+      this.tagName        = this.tagName || 'div';
+      this.className      = this.className || null;
       this.name           = name || ('Unknown_' + _Count);
       this.opts           = opts || {};
       this.id             = _Count;
@@ -77,6 +86,8 @@
       this._onFocusWindow = function() {};
       this.$element       = null;
       this.inited         = false;
+      this._children      = [];
+      this._parent        = null;
       this._window        = null;
       this._hooks         = {
         focus   : [],
@@ -114,6 +125,12 @@
    */
   GUIElement.prototype.init = function(className, tagName) {
     tagName = tagName || 'div';
+    if ( !this.tagName ) {
+      this.tagName = tagName;
+    }
+    if ( !this.className ) {
+      this.className = className;
+    }
 
     var self = this;
 
@@ -178,6 +195,13 @@
       _PreviousGUIElement = null;
     }
 
+    var self = this;
+    if ( this._window ) {
+      this._children.forEach(function(id) {
+        self._window._removeGUIElement(id);
+      });
+    }
+
     this.destroyed = true;
     this._fireHook('destroy');
     if ( this.$element && this.$element.parentNode ) {
@@ -185,6 +209,9 @@
     }
     this.$element = null;
     this._hooks = {};
+    this._window = null;
+    this._parent = null;
+    this._children = [];
   };
 
   /**
@@ -427,6 +454,63 @@
     if ( this.$element ) {
       this.$element.setAttribute('data-tabindex', this.tabIndex.toString());
     }
+  };
+
+  /**
+   * Add a child GUIElement
+   *
+   * @param   String      id        GUIElement id
+   * @return  void
+   * @method  GUIElement::_addChild()
+   */
+  GUIElement.prototype._addChild = function(id) {
+    if ( this._children.indexOf(id) < 0 ) {
+      this._children.push(id);
+    }
+  };
+
+  /**
+   * Remove a child GUIElement
+   *
+   * @param   String      id        GUIElement id
+   * @return  void
+   * @method  GUIElement::_removeChild()
+   */
+  GUIElement.prototype._removeChild = function(id) {
+    var idx = this._children.indexOf(id);
+    if ( idx >= 0 ) {
+      this._children = this._children.splice(idx, 1);
+    }
+  };
+
+  /**
+   * Gets the list of GUIElement children (ids)
+   *
+   * @return  Array
+   * @method  GUIElement::_getChildren()
+   */
+  GUIElement.prototype._getChildren = function() {
+    return this._children;
+  };
+
+  /**
+   * Set the parent GUIElement id of this instance
+   *
+   * @param   String    id      GUIElement id
+   * @return  void
+   * @method  GUIElement::_setParent()
+   */
+  GUIElement.prototype._setParent = function(id) {
+    this._parent = id;
+  };
+
+  /**
+   * Get the parent GUIElement id of this instance
+   * @return  String
+   * @method  GUIElement::_getParent()
+   */
+  GUIElement.prototype._getParent = function() {
+    return this._parent;
   };
 
   /////////////////////////////////////////////////////////////////////////////
