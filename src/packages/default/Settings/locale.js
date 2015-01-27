@@ -94,18 +94,21 @@
       'Desktop Margin ({0}px)' : 'Отсутуп рабочего стола ({0}px)',
       'Panel' : 'Панель',
       'Position' : 'Расположение',
-      'Ontop' : 'вверху',
+      'Ontop' : 'Вверху',
       'Items' : 'Элементы',
       'Enable Animations' : 'Использовать анимацию',
+      'TouchMenu' : 'Крупное меню',
       'Language (requires restart)' : 'Язык (необходим перезапуск)',
-      'Open Panel Settings' : 'Открыть панель настроек',
       'Enable Sounds' : 'Включить звук',
       'Enable Window Switcher' : 'Включить растягивание окон',
       'Enable Hotkeys' : 'Включить горячии клавиши',
-      'Enable Icon View' : 'Включить иконки',
+      'Enable Icon View' : 'Включить ярлыки',
+      'Icon View' : 'Ярлыки рабочего стола',
+      'Invert Text Color' : 'Обратить цвет текста',
       'Autohide' : 'Автоматически скрывать',
       'Opacity' : 'Прозрачность',
-      'General' : 'Основные'
+      'General' : 'Основные',
+      'Debug' : 'Отладка'
     }
   };
 
