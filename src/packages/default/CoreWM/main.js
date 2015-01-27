@@ -34,79 +34,6 @@
   var PADDING_PANEL_AUTOHIDE = 10; // FIXME: Replace with a constant ?!
 
   /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _Locales = {
-    no_NO : {
-      'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
-      'Open settings' : 'Åpne instillinger',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
-      'Create shortcut' : 'Lag snarvei',
-      'Set as wallpaper' : 'Sett som bakgrunn',
-      'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}',
-
-      'Development' : 'Utvikling',
-      'Education' : 'Utdanning',
-      'Games' : 'Spill',
-      'Graphics' : 'Grafikk',
-      'Network' : 'Nettverk',
-      'Multimedia' : 'Multimedia',
-      'Office' : 'Kontor',
-      'System' : 'System',
-      'Utilities' : 'Verktøy',
-      'Other' : 'Andre'
-    },
-    de_DE : {
-      'Killing this process will stop things from working!' : 'Das Beenden dieses Prozesses wird Konsequenzen haben!',
-      'Open settings' : 'Einstellungen öffnen',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ihr Panel enthält keine Items. Öffnen Sie die Einstellungen um die Panel-Einstellungen zurückzusetzen oder manuell zu ändern (Dieser Fehler kann nach einem Upgrade von OS.js entstehen)',
-      'Create shortcut' : 'Verknüpfung erstellen',
-      'Set as wallpaper' : 'Als Hintergrund verwenden',
-      'An error occured while creating PanelItem: {0}' : 'Während des Erstellens eines Panel-Items ist folgender Fehler aufgetreten: {0}',
-
-      'Development' : 'Entwicklung',
-      'Education' : 'Bildung',
-      'Games' : 'Spiele',
-      'Graphics' : 'Grafik',
-      'Network' : 'Netzwerk',
-      'Multimedia' : 'Multimedia',
-      'Office' : 'Büro',
-      'System' : 'System',
-      'Utilities' : 'Zubehör',
-      'Other' : 'Andere'
-    },
-    fr_FR : {
-      // TODO
-    },
-    ru_RU : {
-      'Killing this process will stop things from working!' : 'Завершение этого процесса остановит работу системы!',
-      'Open settings': 'Открыть настройки',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'На вашей панели отсутствуют элементы. Откройте настройки для сброса панели к начальному состоянию или ручной настройки\n(Эта ошибка может произойти после обновления OS.js)',
-      'Create shortcut': 'Создать ярлык',
-      'Set as wallpaper' : 'Установить как обои',
-      'An error occured while creating PanelItem: {0}' : 'Произошла обшибка при создании PanelItem: {0}',
-
-      'Development' : 'Разработка',
-      'Education' : 'Образование',
-      'Games' : 'Игры',
-      'Graphics' : 'Графика',
-      'Network' : 'Интернет',
-      'Multimedia' : 'Мультимедиа',
-      'Office' : 'Офис',
-      'System' : 'Система',
-      'Utilities' : 'Утилиты',
-      'Other' : 'Другое'
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return API.__.apply(this, args);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // SETTINGS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -195,7 +122,7 @@
   };
 
   CoreWM.prototype.destroy = function(kill) {
-    if ( kill && !confirm(_('Killing this process will stop things from working!')) ) {
+    if ( kill && !confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
       return false;
     }
 
@@ -348,7 +275,7 @@
                 this.notification({
                   icon: 'status/important.png',
                   title: 'CoreWM',
-                  message: _('An error occured while creating PanelItem: {0}', e)
+                  message: OSjs.Applications.CoreWM._('An error occured while creating PanelItem: {0}', e)
                 });
               }
             }
@@ -364,7 +291,7 @@
         timeout : 0,
         icon: 'status/important.png',
         title: 'CoreWM',
-        message: _('Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)')
+        message: OSjs.Applications.CoreWM._('Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)')
       });
     }
 
@@ -509,12 +436,12 @@
     var _openMenu = function(data, self) {
       var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.API.createMenu([{
-        title: _('Create shortcut'),
+        title: OSjs.Applications.CoreWM._('Create shortcut'),
         onClick: function() {
           _createShortcut.call(self, data);
         }
       }, {
-        title: _('Set as wallpaper'),
+        title: OSjs.Applications.CoreWM._('Set as wallpaper'),
         onClick: function() {
           _applyWallpaper.call(self, data);
         }
@@ -774,7 +701,7 @@
     var _openDesktopSettings = function() {
       self.showSettings();
     };
-    OSjs.API.createMenu([{title: _('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save) {
@@ -1019,6 +946,5 @@
   OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Class             = CoreWM;
   OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM._                 = _;
 
 })(OSjs.Core.WindowManager, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

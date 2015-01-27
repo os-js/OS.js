@@ -20,6 +20,7 @@
     {"src": "panelitems/notificationarea.js", "type": "javascript"},
     {"src": "panelitems/windowlist.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
+    {"src": "locales.js", "type": "javascript"},
     {"src": "panelitems/clock.css", "type": "stylesheet"},
     {"src": "panelitems/notificationarea.css", "type": "stylesheet"},
     {"src": "panelitems/windowlist.css", "type": "stylesheet"},
