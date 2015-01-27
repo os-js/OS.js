@@ -46,8 +46,11 @@
    * @class
    */
   function Box(type, name, opts) {
+    opts = opts || {};
+
     this.type = type;
     this.elements = [];
+    this.onInserted = opts.onInserted || function() {};
 
     GUIElement.apply(this, [name, opts]);
   }
@@ -116,6 +119,10 @@
       opts: opts,
       el: el
     });
+
+    if ( typeof this.onInserted === 'function' ) {
+      this.onInserted(el, opts);
+    }
 
     return el;
   };
