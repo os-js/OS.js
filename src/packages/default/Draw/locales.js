@@ -77,7 +77,10 @@
       'Invert colors' : 'Inverter farger',
       'Grayscale' : 'Gråskala',
       'Sharpen' : 'Skarpgjør',
-      'Simple Blur' : 'Simpel Klatte (Blur)'
+      'Simple Blur' : 'Simpel Klatte (Blur)',
+
+      'Radius' : 'Radius',
+      'Iterations' : 'Itereringer'
     },
     de_DE : {
       'Toggle tools toolbar' : 'Tools Toolbar',
@@ -121,7 +124,10 @@
       'Invert colors' : 'Farben invertieren',
       'Grayscale' : 'Graustufen',
       'Sharpen' : 'Schärfen',
-      'Simple Blur' : 'Einfacher Weichzeichner (Blur)'
+      'Simple Blur' : 'Einfacher Weichzeichner (Blur)',
+
+      'Radius' : 'Radius',
+      'Iterations' : 'Iterationen'
     },
     fr_FR : {
     },
@@ -167,7 +173,10 @@
       'Invert colors' : 'Инвертировать цвета',
       'Grayscale' : 'Обесцветить',
       'Sharpen' : 'Сточить',
-      'Simple Blur' : 'Простое размытие (Blur)'
+      'Simple Blur' : 'Простое размытие (Blur)',
+
+      'Radius' : 'Радиус',
+      'Iterations' : 'Итерации'
     }
   };
 

@@ -31,93 +31,6 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _Locales = {
-    no_NO : {
-      'Pointer' : 'Peker',
-      'Move active layer' : 'Flytt aktivt lag',
-      'Picket' : 'Fargevelger',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: sett fg farge, RMB: sett bg farge',
-      'Bucket' : 'Bøtte',
-      'LMB: fill with fg color, RMB: fill with bg color' : 'LMB: fyll med fg farge, RMB: fyll med bg farge',
-      'Pencil' : 'Penn',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Tegn med fg/bg farge',
-      'Path' : 'Sti',
-      'Square/Rectangle' : 'Firkant/Rektangel',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fb/bg farge, SHIFT: Tegn rektangel',
-      'Circle/Ellipse' : 'Sirkel/Oval',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Tegn med fb/bg farge, SHIFT: Tegn oval',
-      'Radius' : 'Radius',
-      'Iterations' : 'Itereringer',
-
-      'Blur' : 'Klatte (Blur)',
-      'Noise' : 'Støy',
-      'Invert colors' : 'Inverter farger',
-      'Grayscale' : 'Gråskala',
-      'Sharpen' : 'Skarpgjør',
-      'Simple Blur' : 'Simpel Klatte (Blur)'
-    },
-    de_DE : {
-      'Pointer' : 'Zeiger',
-      'Move active layer' : 'Bewege aktive Ebene',
-      'Picket' : 'Farbauswahl',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: setze Vordergrundfarbe, RMB: setze Hintergrundfarbe',
-      'Bucket' : 'Farbfüller',
-      'LMB: fill with fg color, RMB: fill with bg color' : 'LMB: mit Vordergrundfarbe füllen, RMB: mit Hintergrundfarbe füllen',
-      'Pencil' : 'Stift',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Zeichnen mit Vorder-/Hintergrundfarbe',
-      'Path' : 'Pfad',
-      'Square/Rectangle' : 'Quadrat/Rechteck',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Zeichnen mit Vorder-/Hintergrundfarbe, SHIFT: Rechteck zeichnen',
-      'Circle/Ellipse' : 'Kreis/Ellipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Zeichnen mit Vorder-/Hintergrundfarbe, SHIFT: Ellipse zeichnen',
-      'Radius' : 'Radius',
-      'Iterations' : 'Iterationen',
-
-      'Blur' : 'Weichzeichner (Blur)',
-      'Noise' : 'Rauschen',
-      'Invert colors' : 'Farben invertieren',
-      'Grayscale' : 'Graustufen',
-      'Sharpen' : 'Schärfen',
-      'Simple Blur' : 'Einfacher Weichzeichner (Blur)'
-    },
-    fr_FR : {
-    },
-    ru_RU : {
-      'Pointer' : 'Указатель',
-      'Move active layer' : 'Перемещение активного слоя',
-      'Picket' : 'Пипетка',
-      'LMB: set fg color, RMB: set bg color' : 'ЛКМ: устананавливает первичный цвет, ПКМ: устанавливает вторичный(фоновый) цвет',
-      'Bucket' : 'Заливка',
-      'LMB: fill with fg color, RMB: fill with bg color' : 'ЛКМ: заполняет побелы первичным цветом, ПКМ: заполняет вторичным(фоновым) цветом',
-      'Pencil' : 'Карандаш',
-      'LMB/RMB: Draw with fg/bg color' : 'ЛКМ/ПКМ: Рисует первичным/вторичным цветом',
-      'Path' : 'Прямая',
-      'Square/Rectangle' : 'Квадрат/Прямоуголник',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
-      'Circle/Ellipse' : 'Круг/Эллипс',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
-      'Radius' : 'Радиус',
-      'Iterations' : 'Итерации',
-
-      'Blur' : 'Размытие (Blur)',
-      'Noise' : 'Шум',
-      'Invert colors' : 'Инвертировать цвета',
-      'Grayscale' : 'Обесцветить',
-      'Sharpen' : 'Сточить',
-      'Simple Blur' : 'Простое размытие (Blur)'
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return API.__.apply(this, args);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // TOOLS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -200,7 +113,7 @@
    * Tool: Pointer
    */
   var ToolPointer = function() {
-    Tool.call(this, "pointer", _("Pointer"), "stock-cursor", _("Move active layer"));
+    Tool.call(this, "pointer", OSjs.Applications.ApplicationDraw._("Pointer"), "stock-cursor", OSjs.Applications.ApplicationDraw._("Move active layer"));
 
     this.layerStartLeft   = 0;
     this.layerStartTop    = 0;
@@ -241,7 +154,7 @@
    * Tool: Picker
    */
   var ToolPicker = function() {
-    Tool.call(this, "picker", _("Picker"), "stock-color-pick-from-screen", "LMB: set fg color, RMB: set bg color");
+    Tool.call(this, "picker", OSjs.Applications.ApplicationDraw._("Picker"), "stock-color-pick-from-screen", "LMB: set fg color, RMB: set bg color");
   };
   ToolPicker.prototype = Object.create(Tool.prototype);
 
@@ -291,7 +204,7 @@
    * Tool: Bucket
    */
   var ToolBucket = function() {
-    Tool.call(this, "bucket", _("Bucket"), "stock-tool-bucket-fill", "LMB: fill with fg color, RMB: fill with bg color");
+    Tool.call(this, "bucket", OSjs.Applications.ApplicationDraw._("Bucket"), "stock-tool-bucket-fill", "LMB: fill with fg color, RMB: fill with bg color");
   };
   ToolBucket.prototype = Object.create(Tool.prototype);
 
@@ -307,7 +220,7 @@
    * Tool: Pencil
    */
   var ToolPencil = function() {
-    Tool.call(this, "pencil", _("Pencil"), "stock-tool-pencil", _("LMB/RMB: Draw with fg/bg color"));
+    Tool.call(this, "pencil", OSjs.Applications.ApplicationDraw._("Pencil"), "stock-tool-pencil", OSjs.Applications.ApplicationDraw._("LMB/RMB: Draw with fg/bg color"));
   };
   ToolPencil.prototype = Object.create(Tool.prototype);
 
@@ -338,7 +251,7 @@
    * Tool: Path
    */
   var ToolPath = function() {
-    Tool.call(this, "path", _("Path"), "stock-tool-path", _("LMB/RMB: Draw with fg/bg color"), true);
+    Tool.call(this, "path", OSjs.Applications.ApplicationDraw._("Path"), "stock-tool-path", OSjs.Applications.ApplicationDraw._("LMB/RMB: Draw with fg/bg color"), true);
   };
   ToolPath.prototype = Object.create(Tool.prototype);
 
@@ -372,7 +285,7 @@
    * Tool: Square
    */
   var ToolSquare = function() {
-    Tool.call(this, "square", _("Square/Rectangle"), "stock-shape-square", _("LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle"), true);
+    Tool.call(this, "square", OSjs.Applications.ApplicationDraw._("Square/Rectangle"), "stock-shape-square", OSjs.Applications.ApplicationDraw._("LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle"), true);
   };
   ToolSquare.prototype = Object.create(Tool.prototype);
 
@@ -406,7 +319,7 @@
    * Tool: Circle
    */
   var ToolCircle = function() {
-    Tool.call(this, "circle", _("Circle/Ellipse"), "stock-shape-circle", _("LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse"), true);
+    Tool.call(this, "circle", OSjs.Applications.ApplicationDraw._("Circle/Ellipse"), "stock-shape-circle", OSjs.Applications.ApplicationDraw._("LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse"), true);
   };
   ToolCircle.prototype = Object.create(Tool.prototype);
 
@@ -860,13 +773,13 @@
 
     var labelRadius = this._addGUIElement(new GUI.Label("EffectBlurWindowLabel1", {label: "Radius: " + this.radius}), root);
     var sliderRadius = this._addGUIElement(new GUI.Slider("EffectBlurWindowSlider1", {min:1, max:20, val: this.radius, onUpdate: function(val) {
-      labelRadius.setLabel(_("Radius") + ": " + val);
+      labelRadius.setLabel(OSjs.Applications.ApplicationDraw._("Radius") + ": " + val);
       self.radius = val;
     }}), root);
 
     var labelIterations = this._addGUIElement(new GUI.Label("EffectBlurWindowLabel1", {label: "Iterations: " + this.iterations}), root);
     var sliderIterations = this._addGUIElement(new GUI.Slider("EffectBlurWindowSlider1", {min:1, max:4, val: this.iterations, onUpdate: function(val) {
-      labelIterations.setLabel(_("Iterations") + ": " + val);
+      labelIterations.setLabel(OSjs.Applications.ApplicationDraw._("Iterations") + ": " + val);
       self.iterations = val;
     }}), root);
 
@@ -883,7 +796,7 @@
   };
 
   var EffectBlur = function() {
-    Effect.call(this, "blur", _("Blur"));
+    Effect.call(this, "blur", OSjs.Applications.ApplicationDraw._("Blur"));
   };
 
   EffectBlur.prototype = Object.create(Effect.prototype);
@@ -914,7 +827,7 @@
    * Effect: Noise
    */
   var EffectNoise = function() {
-    Effect.call(this, "noise", _("Noise"));
+    Effect.call(this, "noise", OSjs.Applications.ApplicationDraw._("Noise"));
   };
 
   EffectNoise.prototype = Object.create(Effect.prototype);
@@ -945,7 +858,7 @@
    * Effect: Invert
    */
   var EffectInvert = function() {
-    Effect.call(this, "invert", _("Invert colors"));
+    Effect.call(this, "invert", OSjs.Applications.ApplicationDraw._("Invert colors"));
   };
 
   EffectInvert.prototype = Object.create(Effect.prototype);
@@ -973,7 +886,7 @@
    * Effect: Grayscale
    */
   var EffectGrayscale = function() {
-    Effect.call(this, "grayscale", _("Grayscale"));
+    Effect.call(this, "grayscale", OSjs.Applications.ApplicationDraw._("Grayscale"));
   };
 
   EffectGrayscale.prototype = Object.create(Effect.prototype);
@@ -1004,7 +917,7 @@
    * Effect: Sharpen
    */
   var EffectSharpen = function() {
-    Effect.call(this, "sharpen", _("Sharpen"));
+    Effect.call(this, "sharpen", OSjs.Applications.ApplicationDraw._("Sharpen"));
   };
 
   EffectSharpen.prototype = Object.create(Effect.prototype);
@@ -1028,7 +941,7 @@
    * Effect: SimpleBlur
    */
   var EffectSimpleBlur = function() {
-    Effect.call(this, "simpleblur", _("Simple Blur"));
+    Effect.call(this, "simpleblur", OSjs.Applications.ApplicationDraw._("Simple Blur"));
   };
 
   EffectSimpleBlur.prototype = Object.create(Effect.prototype);
