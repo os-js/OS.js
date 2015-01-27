@@ -30,31 +30,7 @@
 (function(Application, Window, GUI, Dialogs, VFS, Utils) {
   'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
-  /////////////////////////////////////////////////////////////////////////////
-
   var DEFAULT_FILENAME = "New text document.odoc";
-
-  var _Locales = {
-    no_NO : {
-      'Insert URL' : 'Sett inn URL'
-    },
-    de_DE : {
-      'Insert URL' : 'URL einfügen'
-    },
-    fr_FR : {
-    },
-    ru_RU : {
-      'Insert URL' : 'Вставить ссылку'
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return OSjs.API.__.apply(this, args);
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -311,7 +287,7 @@
         }]);
       }},
       {title: OSjs.API._('LBL_LINK'), name: 'A', onClick: function() {
-        self._appRef._createDialog('Input', [_('Insert URL'), 'http://', function(btn, val) {
+        self._appRef._createDialog('Input', [OSjs.Applications.ApplicationWriter._('Insert URL'), 'http://', function(btn, val) {
           if ( btn !== 'ok' || ! val ) return;
           self.command('createLink', val);
         }]);
@@ -448,6 +424,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationWriter = ApplicationWriter;
+  OSjs.Applications.ApplicationWriter = OSjs.Applications.ApplicationWriter || {};
+  OSjs.Applications.ApplicationWriter.Class = ApplicationWriter;
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs, OSjs.VFS, OSjs.Utils);

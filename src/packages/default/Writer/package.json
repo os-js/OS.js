@@ -17,6 +17,7 @@
   "icon":       "apps/libreoffice34-writer.png",
   "compability":["richtext"],
   "preload":    [
+    {"src": "locales.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
   ]
