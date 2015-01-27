@@ -100,7 +100,7 @@
         var src = new VFS.File(item.data);
         var dst = new VFS.File((dir + '/' + src.filename));
 
-        var d = app._createDialog('FileProgress', [_('Copying file...')], self);
+        var d = app._createDialog('FileProgress', [OSjs.Applications.ApplicationFileManager._('Copying file...')], self);
         d.setDescription(OSjs.Applications.ApplicationFileManager._("Copying <span>{0}</span> to <span>{1}</span>", src.filename, dir));
 
         app.copy(src, dst, function(result) {
@@ -175,7 +175,7 @@
       var fname = cur ? Utils.filename(cur.path) : null;
 
       if ( action == 'mkdir' ) {
-        app._createDialog('Input', [_("Create a new directory in <span>{0}</span>", dir), '', function(btn, value) {
+        app._createDialog('Input', [OSjs.Applications.ApplicationFileManager._("Create a new directory in <span>{0}</span>", dir), '', function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
 
@@ -204,7 +204,7 @@
       }
 
       else if ( action == 'rename' ) {
-        app._createDialog('Input', [_("Rename <span>{0}</span>", fname), fname, function(btn, value) {
+        app._createDialog('Input', [OSjs.Applications.ApplicationFileManager._("Rename <span>{0}</span>", fname), fname, function(btn, value) {
           self._focus();
           if ( btn !== 'ok' || !value ) return;
 
@@ -229,7 +229,7 @@
       }
 
       else if ( action == 'delete' ) {
-        app._createDialog('Confirm', [_("Delete <span>{0}</span> ?", fname), function(btn) {
+        app._createDialog('Confirm', [OSjs.Applications.ApplicationFileManager._("Delete <span>{0}</span> ?", fname), function(btn) {
           self._focus();
           if ( btn !== 'ok' ) return;
           app.unlink(cur, function(result) {
