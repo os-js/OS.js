@@ -101,7 +101,7 @@
     outer.className = 'OuterWrapper';
     wrapper = document.createElement('div');
     wrapper.className = 'ButtonWrapper';
-    win._addGUIElement(new GUI.Label('LabelThemeBackgroundImage', {label: _('Background Image')}), outer);
+    win._addGUIElement(new GUI.Label('LabelThemeBackgroundImage', {label: API._('LBL_BACKGROUND_IMAGE')}), outer);
     var inputBackgroundImage = win._addGUIElement(new GUI.Text('ThemeBackgroundImage'), wrapper);
     inputBackgroundImage.setValue(settings.wallpaper);
     inputBackgroundImage.setDisabled(true);
