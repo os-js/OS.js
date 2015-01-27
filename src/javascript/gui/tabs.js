@@ -47,7 +47,7 @@
     this.firstTab     = null;
 
     this.$c           = document.createElement('div');
-    this.$c.className = 'TabContent';
+    this.$c.className = 'TabContent Tab_' + OSjs.Utils.$safeName(name);
 
     this.$t           = document.createElement('div');
     this.$t.className = 'Tab';

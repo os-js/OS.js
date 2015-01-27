@@ -40,6 +40,7 @@
       title: metadata.name,
       width: 500,
       height: 450,
+      allow_drop: true,
       allow_maximize: false,
       allow_resize: false
     }, app]);
@@ -138,6 +139,17 @@
         sidePanel.setSelectedIndex(0);
       }
     }
+  };
+
+  ApplicationSettingsWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+
+    var self = this;
+    OSjs.Applications.ApplicationSettings.Modules.forEach(function(m) {
+      if ( m.onDnD ) {
+        m.onDnD(self, ev, type, item, args);
+      }
+    });
   };
 
   ApplicationSettingsWindow.prototype.destroy = function() {

@@ -8,5 +8,6 @@
 }
 .GUICanvas canvas {
   position : relative;
+  display : block;
 }
 

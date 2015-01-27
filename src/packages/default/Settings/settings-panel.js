@@ -259,13 +259,7 @@
     win._addGUIElement(new OSjs.GUI.Switch('PanelOntop', {value: settings.panels[0].options.ontop}), outer);
     tab.appendChild(outer);
 
-    // Custom color
-    outer = document.createElement('div');
-    outer.className = 'OuterWrapper';
-    win._addGUIElement(new OSjs.GUI.Label('LabelPanelEnableCustomColor', {label: _('Enable custom color')}), outer); // FIXME: Translation
-    win._addGUIElement(new OSjs.GUI.Switch('PanelEnableCustomColor', {value: settings.panels[0].options.background}), outer);
-    tab.appendChild(outer);
-
+    // Background color
     wrapper = document.createElement('div');
     wrapper.className = 'ButtonWrapper';
 
@@ -274,7 +268,7 @@
     win._addGUIElement(new OSjs.GUI.Label('LabelPanelBackgroundColor', {label: API._('LBL_BACKGROUND_COLOR')}), outer);
     var inputBackgroundColor = win._addGUIElement(new OSjs.GUI.Text('PanelBackgroundColor'), wrapper);
 
-    function updateColor(color) {
+    function updateBackground(color) {
       inputBackgroundColor.$input.style.backgroundColor = color;
       inputBackgroundColor.$input.color = Utils.invertHEX(color);
       inputBackgroundColor.setValue(color);
@@ -283,14 +277,39 @@
 
     var buttonBackgroundColor = win._addGUIElement(new OSjs.GUI.Button('ButtonPanelBackgroundColor', {label: '...', onClick: function() {
       win.createColorDialog(inputBackgroundColor.getValue(), function(color) {
-        updateColor(color);
+        updateBackground(color);
       });
     }}), wrapper);
 
-    updateColor(settings.panels[0].options.background || '#000000');
+    updateBackground(settings.panels[0].options.background || '#101010');
     outer.appendChild(wrapper);
     tab.appendChild(outer);
-    updateColor(inputBackgroundColor.getValue());
+
+    // Foreground color
+    wrapper = document.createElement('div');
+    wrapper.className = 'ButtonWrapper';
+
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    win._addGUIElement(new OSjs.GUI.Label('LabelPanelForegroundColor', {label: API._('LBL_TEXT_COLOR')}), outer);
+    var inputForegroundColor = win._addGUIElement(new OSjs.GUI.Text('PanelForegroundColor'), wrapper);
+
+    function updateForeground(color) {
+      inputForegroundColor.$input.style.backgroundColor = color;
+      inputForegroundColor.$input.color = Utils.invertHEX(color);
+      inputForegroundColor.setValue(color);
+    }
+    inputForegroundColor.setDisabled(true);
+
+    var buttonForegroundColor = win._addGUIElement(new OSjs.GUI.Button('ButtonPanelForegroundColor', {label: '...', onClick: function() {
+      win.createColorDialog(inputForegroundColor.getValue(), function(color) {
+        updateForeground(color);
+      });
+    }}), wrapper);
+
+    updateForeground(settings.panels[0].options.foreground || '#ffffff');
+    outer.appendChild(wrapper);
+    tab.appendChild(outer);
 
     // Opacity
     outer = document.createElement('div');
@@ -397,15 +416,11 @@
   }
 
   function applySettings(win, settings) {
-    var color = null;
-    if ( win._getGUIElement('PanelEnableCustomColor').getValue() ) {
-      color = win._getGUIElement('PanelBackgroundColor').getValue();
-    }
-
     settings.panels[0].options.position   = win._getGUIElement('PanelPosition').getValue();
     settings.panels[0].options.autohide   = win._getGUIElement('PanelAutohide').getValue();
     settings.panels[0].options.opacity    = win._getGUIElement('PanelOpacity').getValue();
-    settings.panels[0].options.background = color;
+    settings.panels[0].options.background = win._getGUIElement('PanelBackgroundColor').getValue();
+    settings.panels[0].options.foreground = win._getGUIElement('PanelForegroundColor').getValue();
     settings.panels[0].items              = Array.prototype.concat.call(panelItems);
   }
 

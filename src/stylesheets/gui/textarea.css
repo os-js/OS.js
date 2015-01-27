@@ -4,17 +4,20 @@
  */
 .GUITextarea {
   position : relative;
+  min-height : 24px;
 }
 
 .GUITextarea textarea {
   display : block;
-  position : absolute;
   height : 100%;
   width : 100%;
+  /*
+  position : absolute;
   left : 0px;
   right : 0px;
   bottom : 0px;
   top : 0px;
+  */
   resize : none;
   font-family : Monospace;
   overflow : auto;

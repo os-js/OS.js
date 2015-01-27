@@ -39,7 +39,8 @@
           "no_NO": "Norsk (Norwegian)",
           "de_DE": "Deutsch (German)",
           "fr_FR": "French (France)",
-          "ru_RU": "Russian (Russia)"
+          "ru_RU": "Russian (Russia)",
+          "zh_CN": "Chinese (China)"
         }
       },
 
@@ -132,6 +133,7 @@
       "src/javascript/locales/de_DE.js",
       "src/javascript/locales/fr_FR.js",
       "src/javascript/locales/ru_RU.js",
+      "src/javascript/locales/zh_CN.js",
       "src/javascript/guielement.js",
       "src/javascript/gui/_input.js",
       "src/javascript/gui/_dataview.js",
@@ -160,6 +162,7 @@
       "src/javascript/gui/toolbar.js",
       "src/javascript/gui/treeview.js",
       "src/javascript/gui/fileview.js",
+      "src/javascript/gui/box.js",
       "src/javascript/dialogs/_standard.js",
       "src/javascript/dialogs/alert.js",
       "src/javascript/dialogs/applicationchooser.js",
@@ -200,6 +203,7 @@
       "src/stylesheets/gui/checkbox.css",
       "src/stylesheets/gui/colorswatch.css",
       "src/stylesheets/gui/fileview.css",
+      "src/stylesheets/gui/box.css",
       "src/stylesheets/gui/iconview.css",
       "src/stylesheets/gui/label.css",
       "src/stylesheets/gui/listview.css",

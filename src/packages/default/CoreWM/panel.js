@@ -52,6 +52,7 @@
       ontop:      options.ontop === true,
       autohide:   options.autohide === true,
       background: options.background,
+      foreground: options.foreground,
       opacity:    options.opacity
     };
 
@@ -133,6 +134,8 @@
   Panel.prototype.update = function(options) {
     options = options || this._options;
 
+    // CSS IS SET IN THE WINDOW MANAGER!
+
     var cn = ['WMPanel'];
     if ( options.ontop ) {
       cn.push('Ontop');
@@ -147,18 +150,6 @@
       this._$element.className = cn.join(' ');
     }
     this._options = options;
-
-    if ( this._$background ) {
-      this._$background.style.background = '';
-      this._$background.style.opacity = '';
-
-      if ( this._options.background ) {
-        this._$background.style.background = this._options.background;
-      }
-      if ( typeof this._options.opacity !== 'undefined' ) {
-        this._$background.style.opacity = this._options.opacity / 100;
-      }
-    }
   };
 
   Panel.prototype.autohide = function(hide) {

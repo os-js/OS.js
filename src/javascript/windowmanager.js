@@ -89,6 +89,7 @@
     this._currentWin     = null;
     this._lastWin        = null;
     this._mouselock      = true;
+    this._stylesheet     = null;
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');
@@ -114,6 +115,8 @@
   WindowManager.prototype.destroy = function() {
     var self = this;
     console.log('OSjs::Core::WindowManager::destroy()');
+
+    this.destroyStylesheet();
 
     document.removeEventListener('mouseout', function(ev) {
       self._onMouseLeave(ev);
@@ -256,6 +259,60 @@
     }
 
     return true;
+  };
+
+  /**
+   * Create Window Manager self-contained CSS from this object
+   *
+   * {
+   *    '.classname': {
+   *      'background-image': 'url()'
+   *    }
+   * }
+   *
+   * @param   Object    styles      Style object
+   *
+   * @return  void
+   * @method  WindowManager::createStylesheet()
+   */
+  WindowManager.prototype.createStylesheet = function(styles) {
+    this.destroyStylesheet();
+
+    var innerHTML = [];
+    Object.keys(styles).forEach(function(key) {
+      var rules = [];
+      Object.keys(styles[key]).forEach(function(r) {
+        rules.push(Utils.format('    {0}: {1};', r, styles[key][r]));
+      });
+
+      rules = rules.join('\n');
+      innerHTML.push(Utils.format('{0} {\n{1}\n}', key, rules));
+    });
+
+    innerHTML = innerHTML.join('\n');
+
+    var style       = document.createElement('style');
+    style.type      = 'text/css';
+    style.id        = 'WMGeneratedStyles';
+    style.innerHTML = innerHTML;
+    document.getElementsByTagName('head')[0].appendChild(style);
+
+    this._stylesheet = style;
+  };
+
+  /**
+   * Destroy Window Manager self-contained CSS
+   *
+   * @return  void
+   * @method  WindowManager::destroyStylesheet()
+   */
+  WindowManager.prototype.destroyStylesheet = function() {
+    if ( this._stylesheet ) {
+      if ( this._stylesheet.parentNode ) {
+        this._stylesheet.parentNode.removeChild(this._stylesheet);
+      }
+    }
+    this._stylesheet = null;
   };
 
   /**

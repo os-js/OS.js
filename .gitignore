@@ -16,6 +16,10 @@ dist/themes.json
 dist-dev/test.*
 dist-dev/packages.json
 dist-dev/themes.json
+dist-dev/vendor/dropbox*
+dist/vendor/dropbox*
+vendor/dropbox*
+doc/generated
 vfs/*/*
 src/build.custom.json
 .vagrant/*
