@@ -17,6 +17,7 @@
   "icon":       "apps/file-manager.png",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
+    {"src": "locales.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
   ]
 }

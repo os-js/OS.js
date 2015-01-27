@@ -30,54 +30,6 @@
 (function(Application, Window, GUI, Utils, API, VFS) {
   'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _Locales = {
-    no_NO : {
-      'Show Sidebar' : 'Vis Sidebar',
-      'Copying file...' : 'Kopierer fil...',
-      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopierer <span>{0}</span> to <span>{1}</span>",
-      "Showing {0} item(s), {1}" : "Viser {0} objekt(er), {1}",
-      "Refreshing..." : "Gjenoppfrisker...",
-      "Loading..." : "Laster...",
-      "Create a new directory in <span>{0}</span>" : "Opprett ny mappe i <span>{0}</span>",
-      "Rename <span>{0}</span>" : "Navngi <span>{0}</span>",
-      "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"
-    },
-    de_DE : {
-      'Show Sidebar' : 'Seitenleiste anzeigen',
-      'Copying file...' : 'Kopiere Datei...',
-      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiere <span>{0}</span> nach <span>{1}</span>",
-      "Showing {0} item(s), {1}" : "Viser {0} objekt(er), {1}",
-      "Refreshing..." : "Aktualisiere...",
-      "Loading..." : "Lade...",
-      "Create a new directory in <span>{0}</span>" : "Erstelle ein neues Verzeichnis in <span>{0}</span>",
-      "Rename <span>{0}</span>" : "<span>{0}</span> umbenennen",
-      "Delete <span>{0}</span> ?" : "<span>{0}</span> löschen?"
-    },
-    fr_FR : {
-    },
-    ru_RU : {
-      'Show Sidebar' : 'Отобразить боковую панель',
-      'Copying file...' : 'Копирование файла...',
-      "Copying <span>{0}</span> to <span>{1}</span>" : "Копирование <span>{0}</span> в <span>{1}</span>",
-      "Showing {0} item(s), {1}" : "Показан(ы) {0} объект(ы), {1}",
-      "Refreshing..." : "Обновление...",
-      "Loading..." : "Загрузка...",
-      "Create a new directory in <span>{0}</span>" : "Создать новый каталог в <span>{0}</span>",
-      "Rename <span>{0}</span>" : "Переименовать <span>{0}</span>",
-      "Delete <span>{0}</span> ?" : "Удалить <span>{0}</span> ?"
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return API.__.apply(this, args);
-  }
-
   var notificationWasDisplayed = {};
 
   /////////////////////////////////////////////////////////////////////////////
@@ -149,7 +101,7 @@
         var dst = new VFS.File((dir + '/' + src.filename));
 
         var d = app._createDialog('FileProgress', [_('Copying file...')], self);
-        d.setDescription(_("Copying <span>{0}</span> to <span>{1}</span>", src.filename, dir));
+        d.setDescription(OSjs.Applications.ApplicationFileManager._("Copying <span>{0}</span> to <span>{1}</span>", src.filename, dir));
 
         app.copy(src, dst, function(result) {
           d.setProgress(100);
@@ -172,7 +124,7 @@
 
     fileView.onFinished = function(dir, numItems, totalBytes) {
       var hifs = Utils.humanFileSize(totalBytes);
-      defaultStatusText = _("Showing {0} item(s), {1}", numItems, hifs);
+      defaultStatusText =OSjs.Applications.ApplicationFileManager._("Showing {0} item(s), {1}", numItems, hifs);
       statusBar.setText(defaultStatusText);
 
       self._toggleLoading(false);
@@ -183,7 +135,7 @@
       }
     };
     fileView.onRefresh = function() {
-      statusBar.setText(_("Refreshing..."));
+      statusBar.setText(OSjs.Applications.ApplicationFileManager._("Refreshing..."));
       self._toggleLoading(true);
     };
     fileView.onActivated = function(item) {
@@ -191,7 +143,7 @@
         if ( item.type === 'file' ) {
           app.open(item);
         } else {
-          statusBar.setText(_("Loading..."));
+          statusBar.setText(OSjs.Applications.ApplicationFileManager._("Loading..."));
         }
       }
     };
@@ -362,7 +314,7 @@
         fileView.refresh();
         self._focus();
       }},
-      {title: _('Show Sidebar'),
+      {title:OSjs.Applications.ApplicationFileManager._('Show Sidebar'),
         onCreate: function(menu, item) {
           var span = document.createElement('span');
           chk  = document.createElement('input');
