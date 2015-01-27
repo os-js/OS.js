@@ -26,6 +26,15 @@
   padding : 5px;
   position : relative;
   float : left;
+
+  -webkit-box-sizing : border-box;
+     -moz-box-sizing : border-box;
+      -ms-box-sizing : border-box;
+       -o-box-sizing : border-box;
+          box-sizing : border-box;
+}
+.GUIToolbar li.Item button {
+  width : 100%;
 }
 .GUIToolbar.horizontal li.Separator {
   float : left;
