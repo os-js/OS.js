@@ -911,6 +911,7 @@
           ev.dataTransfer.setData(args.mime, _toString(args.mime));
         } catch ( e ) {
           console.warn('Failed to dragstart: ' + e);
+          console.warn(e.stack);
         }
       }
 
