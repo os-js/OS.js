@@ -56,13 +56,6 @@
    * @api     OSjs.Core.GUIElement
    * @class
    */
-  Object.prototype.getConstructorName = function () {
-       var str = (this.prototype ? this.prototype.constructor : this.constructor).toString();
-          var cname = str.match(/function\s(\w*)/)[1];
-             var aliases = ["", "anonymous", "Anonymous"];
-                return aliases.indexOf(cname) > -1 ? "Function" : cname;
-  }
-
   var GUIElement = (function() {
     var _Count = 0;
 
