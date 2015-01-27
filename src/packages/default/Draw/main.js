@@ -46,153 +46,6 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _Locales = {
-    no_NO : {
-      'Toggle tools toolbar' : 'Svitsj verktøylinje',
-      'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',
-      'Layer' : 'Lag',
-      'Effect' : 'Effekt',
-      'Flip Horizontally' : 'Flipp Horisontalt',
-      'Flip Vertically' : 'Flipp Vertikalt',
-      'Foreground' : 'Forgrunn',
-      'Bakgrunn' : 'Bakgrunn',
-      'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
-      'Background (Stroke) Color' : 'Bakgrunn (Strøk) Farge',
-      'Line Join' : 'Linje Knytting',
-      'Line Width' : 'Linje Bredde',
-      'Toggle Stroke' : 'Svitsj strøk',
-      'Enable stroke' : 'Skru på strøk',
-      'Round' : 'Rund',
-      'Miter' : 'Skjev',
-      'Bevel' : 'Kantet',
-      'Stroked' : 'Strøk På',
-      'No stroke' : 'Strøk Av',
-
-      'Pointer' : 'Peker',
-      'Move active layer' : 'Flytt aktivt lag',
-
-      'Picker' : 'Plukker',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: sett bg farge, RMB: sett fg farge',
-
-      'Pencil' : 'Penn',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Tegn med fg/bg farge',
-      'Path' : 'Sti',
-
-      'Square/Rectangle' : 'Firkant/Rektangel',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
-
-      'Circle/Ellipse' : 'Sirkel/Ellipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn ellipse',
-
-      'Blur' : 'Klatte (Blur)',
-      'Noise' : 'Støy',
-      'Invert colors' : 'Inverter farger',
-      'Grayscale' : 'Gråskala',
-      'Sharpen' : 'Skarpgjør',
-      'Simple Blur' : 'Simpel Klatte (Blur)'
-    },
-    de_DE : {
-      'Toggle tools toolbar' : 'Tools Toolbar',
-      'Toggle layers toolbar' : 'Ebenen Toolbar',
-      'Layer' : 'Ebene',
-      'Effect' : 'Effekt',
-      'Flip Horizontally' : 'Horizontal spiegeln',
-      'Flip Vertically' : 'Vertikal spiegeln',
-      'Foreground' : 'Vordergrund',
-      'Bakgrunn' : 'Hintergrund',
-      'Foreground (Fill) Color' : 'Vordergrund (Füll-) Farbe',
-      'Background (Stroke) Color' : 'Hintergrund (Streich-) Farbe',
-      'Line Join' : 'Linienverbindung',
-      'Line Width' : 'Linienbreite',
-      'Toggle Stroke' : 'Streichen',
-      'Enable stroke' : 'Streichen aktivieren',
-      'Round' : 'Runde',
-      'Miter' : 'Live',
-      'Bevel' : 'Schräge',
-      'Stroked' : 'Gestrichen',
-      'No stroke' : 'Nicht gestrichen',
-
-      'Pointer' : 'Zeiger',
-      'Move active layer' : 'Bewege aktive Ebene',
-
-      'Picker' : 'Wähler',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: wähle Vordergrundfarbe, RMB: wähle Hintergrundfarbe',
-
-      'Pencil' : 'Stift',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Zeichnen mit fg/bg Farbe',
-      'Path' : 'Pfad',
-        
-      'Square/Rectangle' : 'Quadrat/Rechteck',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Zeichnen mit fb/bg Farbe, SHIFT: Rechteck zeichnen',
-        
-      'Circle/Ellipse' : 'Kreis/Ellipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Zeichnen mit fb/bg Farbe, SHIFT: Ellipse zeichnen',
-      
-      'Blur' : 'Weichzeichner (Blur)',
-      'Noise' : 'Rauschen',
-      'Invert colors' : 'Farben invertieren',
-      'Grayscale' : 'Graustufen',
-      'Sharpen' : 'Schärfen',
-      'Simple Blur' : 'Einfacher Weichzeichner (Blur)'
-    },
-    fr_FR : {
-    },
-    ru_RU : {
-      'Toggle tools toolbar' : 'Панель инструментов',
-      'Toggle layers toolbar' : 'Панель слоев',
-      'Layer' : 'Слой',
-      'Effect' : 'Эффекты',
-      'Flip Horizontally' : 'Отразить горизонтально',
-      'Flip Vertically' : 'Отразить вертикально',
-      'Foreground' : 'Передний план',
-      'Bakgrunn' : 'Фон',
-      'Foreground (Fill) Color' : 'Передний план (Заливка) цвет',
-      'Background (Stroke) Color' : 'Фоновый (Обводка) цвет',
-      'Line Join' : 'Замкнутая линия',
-      'Line Width' : 'Ширина линии',
-      'Toggle Stroke' : 'Вкл/выкл обводку',
-      'Enable stroke' : 'Включить обводку',
-      'Round' : 'Закругленный',
-      'Miter' : 'Прямой',
-      'Bevel' : 'Скошенный',
-      'Stroked' : 'С обводкой',
-      'No stroke' : 'Без обводки',
-
-      'Pointer' : 'Указатель',
-      'Move active layer' : 'Перемещает активный слой',
-
-      'Picker' : 'Пипетка',
-      'LMB: set fg color, RMB: set gb color' : 'ЛКМ: устананавливает первичный цвет, ПКМ: устанавливает вторичный(фоновый) цвет',
-
-      'Pencil' : 'Карандаш',
-      'LMB/RMB: Draw with fg/bg color' : 'ЛКМ/ПКМ: Рисует первичным/вторичным цветом',
-      'Path' : 'Прямая',
-
-      'Square/Rectangle' : 'Квадрат/Прямоугольник',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
-
-      'Circle/Ellipse' : 'Круг/Эллипс',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
-
-      'Blur' : 'Размытие (Blur)',
-      'Noise' : 'Шум',
-      'Invert colors' : 'Инвертировать цвета',
-      'Grayscale' : 'Обесцветить',
-      'Sharpen' : 'Сточить',
-      'Simple Blur' : 'Простое размытие (Blur)'
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return API.__.apply(this, args);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -311,10 +164,10 @@
       }}
     ]);
     menuBar.addItem(API._("LBL_VIEW"), [
-      {title: _('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
+      {title:OSjs.Applications.ApplicationDraw._('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
         _toggleToolsToolbar();
       }},
-      {title: _('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
+      {title:OSjs.Applications.ApplicationDraw._('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
         _toggleLayersToolbar();
       }}
     ]);
@@ -329,7 +182,7 @@
     var items = [];
     for ( var f = 0; f < effects.length; f++ ) {
       items.push({
-        title: _(effects[f].title),
+        title:OSjs.Applications.ApplicationDraw._(effects[f].title),
         name: effects[f].name,
         onClick: (function(instance) {
           return function() {
@@ -339,12 +192,12 @@
       });
     }
 
-    menuBar.addItem(_("Layer"), [
-      {title: _('Effect'), name: 'Effect', menu: items},
-      {title: _('Flip Horizontally'), name: 'FlipX', onClick : function() {
+    menuBar.addItem(OSjs.Applications.ApplicationDraw._("Layer"), [
+      {title:OSjs.Applications.ApplicationDraw._('Effect'), name: 'Effect', menu: items},
+      {title:OSjs.Applications.ApplicationDraw._('Flip Horizontally'), name: 'FlipX', onClick : function() {
         self.applyModifier("flip", "x");
       }},
-      {title: _('Flip Vertically'), name: 'FlipY', onClick : function() {
+      {title:OSjs.Applications.ApplicationDraw._('Flip Vertically'), name: 'FlipY', onClick : function() {
         self.applyModifier("flip", "y");
       }}
     ]);
@@ -360,7 +213,7 @@
       var color = document.createElement('div');
       color.className = 'Color';
       color.style.backgroundColor = name === 'foregroundColor' ? self.currentStyle.fg : self.currentStyle.bg;
-      button.title = _(name === 'foregroundColor' ? 'Foreground (Fill) Color' : 'Background (Stroke) Color');
+      button.title =OSjs.Applications.ApplicationDraw._(name === 'foregroundColor' ? 'Foreground (Fill) Color' : 'Background (Stroke) Color');
       button.appendChild(color);
     };
 
@@ -368,7 +221,7 @@
       var join = document.createElement('div');
       join.className = 'LineJoin';
 
-      button.title = _("Line Join");
+      button.title =OSjs.Applications.ApplicationDraw._("Line Join");
       button.appendChild(join);
     };
 
@@ -376,7 +229,7 @@
       var width = document.createElement('div');
       width.className = 'LineWidth';
 
-      button.title = _("Line Width");
+      button.title =OSjs.Applications.ApplicationDraw._("Line Width");
       button.appendChild(width);
     };
 
@@ -384,7 +237,7 @@
       var en = document.createElement('div');
       en.className = 'EnableStroke';
 
-      button.title = _("Toggle Stroke");
+      button.title =OSjs.Applications.ApplicationDraw._("Toggle Stroke");
       button.appendChild(en);
     };
 
@@ -400,7 +253,7 @@
       var txt = {round: "Round", miter: "Miter", bevel: "Bevel"};
       self.currentStyle.lineJoin = type;
       if ( toolBar ) {
-        toolBar.getItem('lineJoin')._element.getElementsByClassName('LineJoin')[0].innerHTML = _(txt[type]);
+        toolBar.getItem('lineJoin')._element.getElementsByClassName('LineJoin')[0].innerHTML =OSjs.Applications.ApplicationDraw._(txt[type]);
       }
     };
 
@@ -418,11 +271,11 @@
         self.currentStyle.stroke = !self.currentStyle.stroke;
       }
       if ( toolBar ) {
-        toolBar.getItem('enableStroke')._element.getElementsByClassName('EnableStroke')[0].innerHTML = _(self.currentStyle.stroke ? "Stroked" : "No stroke");
+        toolBar.getItem('enableStroke')._element.getElementsByClassName('EnableStroke')[0].innerHTML =OSjs.Applications.ApplicationDraw._(self.currentStyle.stroke ? "Stroked" : "No stroke");
       }
     };
 
-    toolBar.addItem('foregroundColor', {title: _('Foreground'), onClick: function() {
+    toolBar.addItem('foregroundColor', {title:OSjs.Applications.ApplicationDraw._('Foreground'), onClick: function() {
       app._createDialog('Color', [{color: self.currentStyle.fg}, function(btn, rgb, hex) {
         self._focus();
         if ( btn !== 'ok' ) return;
@@ -430,7 +283,7 @@
       }], self);
     }, onCreate: _createColorButton});
 
-    toolBar.addItem('backgroundColor', {title: _('Background'), onClick: function() {
+    toolBar.addItem('backgroundColor', {title:OSjs.Applications.ApplicationDraw._('Background'), onClick: function() {
       app._createDialog('Color', [{color: self.currentStyle.bg}, function(btn, rgb, hex) {
         self._focus();
         if ( btn !== 'ok' ) return;
@@ -438,22 +291,22 @@
       }], self);
     }, onCreate: _createColorButton});
 
-    toolBar.addItem('lineJoin', {title: _('Line Join'), onClick: function(ev) {
+    toolBar.addItem('lineJoin', {title:OSjs.Applications.ApplicationDraw._('Line Join'), onClick: function(ev) {
       API.createMenu([
         {
-          title: _("Round"),
+          title:OSjs.Applications.ApplicationDraw._("Round"),
           onClick: function(ev) {
             _selectLineJoin("round");
           }
         },
         {
-          title: _("Miter"),
+          title:OSjs.Applications.ApplicationDraw._("Miter"),
           onClick: function(ev) {
             _selectLineJoin("miter");
           }
         },
         {
-          title: _("Bevel"),
+          title:OSjs.Applications.ApplicationDraw._("Bevel"),
           onClick: function(ev) {
             _selectLineJoin("bevel");
           }
@@ -462,7 +315,7 @@
 
     }, onCreate: _createLineJoin});
 
-    toolBar.addItem('lineWidth', {title: _('Line Width'), onClick: function(ev) {
+    toolBar.addItem('lineWidth', {title:OSjs.Applications.ApplicationDraw._('Line Width'), onClick: function(ev) {
       var items = [];
       for ( var i = 1; i < 20; i++ ) {
         items.push({
@@ -478,7 +331,7 @@
       API.createMenu(items, {x: ev.clientX, y: ev.clientY});
     }, onCreate: _createLineWidth});
 
-    toolBar.addItem('enableStroke', {title: _('Enable stroke'), onClick: function(ev) {
+    toolBar.addItem('enableStroke', {title:OSjs.Applications.ApplicationDraw._('Enable stroke'), onClick: function(ev) {
       _toggleStroke();
     }, onCreate: _createEnableStroke});
 
@@ -938,7 +791,7 @@
 
     var statusBar = this._getGUIElement('ApplicationDrawStatusBar');
     if ( statusBar ) {
-      statusBar.setText(_(tool.statusText));
+      statusBar.setText(OSjs.Applications.ApplicationDraw._(tool.statusText));
     }
   };
 
