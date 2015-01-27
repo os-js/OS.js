@@ -12,6 +12,7 @@
   "singular":   true,
   "compability":["audio"],
   "preload":    [
+    {"src": "locales.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
   ]

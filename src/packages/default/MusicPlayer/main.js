@@ -31,66 +31,6 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
-  /////////////////////////////////////////////////////////////////////////////
-
-  var _Locales = {
-    no_NO : {
-      'Playlist' : 'Spilleliste',
-      'Playback aborted' : 'Avspilling avbrutt',
-      'Network or communication error' : 'Nettverks- eller kommunikasjonsfeil',
-      'Decoding failed. Corruption or unsupported media' : 'Dekoding feilet. Korrupt eller ustøttet media',
-      'Media source not supported' : 'Media-kilde ikke støttet',
-      'Failed to play file' : 'Klarte ikke spille av fil',
-      'Artist' : 'Artist',
-      'Album' : 'Album',
-      'Track' : 'Låt',
-      'Time' : 'Tid',
-      'Media information query failed' : 'Media-informasjon forespursel feil',
-      'seek unavailable in format' : 'spoling utilgjenglig i format',
-      'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}',
-    },
-    de_DE : {
-      'Playlist' : 'Wiedergabeliste',
-      'Playback aborted' : 'Wiedergabe abgebrochen',
-      'Network or communication error' : 'Netzwerk Kommunikationsfehler',
-      'Decoding failed. Corruption or unsupported media' : 'Dekodierung gescheitert. Fehlerhafte oder nicht unterstützte Datei',
-      'Media source not supported' : 'Medienquelle nicht unterstützt',
-      'Failed to play file' : 'Wiedergabe der Datei gescheitert',
-      'Artist' : 'Künstler',
-      'Album' : 'Album',
-      'Track' : 'Titel',
-      'Time' : 'Zeit',
-      'Media information query failed' : 'Media Informationssuche gescheitert',
-      'seek unavailable in format' : 'Spulen im Format nicht verfügbar',
-      'The audio type is not supported: {0}' : 'Der Audio-Typ {0} ist nicht unterstützt',
-    },
-    fr_FR : {
-    },
-    ru_RU : {
-      'Playlist' : 'Список воспроизведения',
-      'Playback aborted' : 'Воспроизведение прервано',
-      'Network or communication error' : 'Ошибка соединения',
-      'Decoding failed. Corruption or unsupported media' : 'Не удалось декодировать файл. Файл поврежден или данынй формат не поддерживается',
-      'Media source not supported' : 'Медиа этого типа не поддерживается',
-      'Failed to play file' : 'Ошибка воспроизведения',
-      'Artist' : 'Артист',
-      'Album' : 'Альбом',
-      'Track' : 'Трек',
-      'Time' : 'Время',
-      'Media information query failed' : 'Ошибка в запросе медиа-информации',
-      'seek unavailable in format' : 'Перемотка недоступна в этом формате',
-      'The audio type is not supported: {0}' : 'Тип аудио не поддерживается: {0}'
-    }
-  };
-
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return OSjs.API.__.apply(this, args);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -340,16 +280,16 @@
         try {
           switch ( ev.target.error.code ) {
             case ev.target.error.MEDIA_ERR_ABORTED:
-              msg = _('Playback aborted');
+              msg = OSjs.Applications.ApplicationMusicPlayer._('Playback aborted');
               break;
             case ev.target.error.MEDIA_ERR_NETWORK:
-              msg = _('Network or communication error');
+              msg = OSjs.Applications.ApplicationMusicPlayer._('Network or communication error');
               break;
             case ev.target.error.MEDIA_ERR_DECODE:
-              msg = _('Decoding failed. Corruption or unsupported media');
+              msg = OSjs.Applications.ApplicationMusicPlayer._('Decoding failed. Corruption or unsupported media');
               break;
             case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-              msg = _('Media source not supported');
+              msg = OSjs.Applications.ApplicationMusicPlayer._('Media source not supported');
               break;
             default:
               msg = OSjs.API._('ERR_APP_UNKNOWN_ERROR');
@@ -473,10 +413,10 @@
         self._close();
       }}
     ]);
-    menuBar.addItem(_("Playlist"), []);
+    menuBar.addItem(OSjs.Applications.ApplicationMusicPlayer._("Playlist"), []);
 
     menuBar.onMenuOpen = function(menu, pos, title) {
-      if ( title == _("Playlist") ) {
+      if ( title == OSjs.Applications.ApplicationMusicPlayer._("Playlist") ) {
         self.togglePlaylist();
       }
     };
@@ -492,7 +432,7 @@
     var spanArtist = document.createElement('span');
     var infoArtist = document.createElement('span');
     spanArtist.className = 'Label';
-    spanArtist.innerHTML = _('Artist');
+    spanArtist.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Artist');
     infoArtist.innerHTML = '-';
     lblArtist.appendChild(spanArtist);
     lblArtist.appendChild(infoArtist);
@@ -503,7 +443,7 @@
     var spanAlbum = document.createElement('span');
     var infoAlbum = document.createElement('span');
     spanAlbum.className = 'Label';
-    spanAlbum.innerHTML = _('Album');
+    spanAlbum.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Album');
     infoAlbum.innerHTML = '-';
     lblAlbum.appendChild(spanAlbum);
     lblAlbum.appendChild(infoAlbum);
@@ -514,7 +454,7 @@
     var spanTrack = document.createElement('span');
     var infoTrack = document.createElement('span');
     spanTrack.className = 'Label';
-    spanTrack.innerHTML = _('Track');
+    spanTrack.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Track');
     infoTrack.innerHTML = '-';
     lblTrack.appendChild(spanTrack);
     lblTrack.appendChild(infoTrack);
@@ -525,7 +465,7 @@
     var spanTime = document.createElement('span');
     var infoTime = document.createElement('span');
     spanTime.className = 'Label';
-    spanTime.innerHTML = _('Time');
+    spanTime.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Time');
     infoTime.innerHTML = '00:00 / 00:00';
     lblTime.appendChild(spanTime);
     lblTime.appendChild(infoTime);
@@ -578,7 +518,7 @@
     };
     this.player.onError = function(ev, player, msg) {
       self.updateInfo(ev, null, slider);
-      self._error(OSjs.API._('ERR_GENERIC_APP_FMT', self.title), _('Failed to play file'), msg);
+      self._error(OSjs.API._('ERR_GENERIC_APP_FMT', self.title), OSjs.Applications.ApplicationMusicPlayer._('Failed to play file'), msg);
     };
     this.player.onTrackEnded = function(ev, player) {
       if ( self.playlist.isLast() ) return;
@@ -724,7 +664,7 @@
     info = info || {};
     var msg = '-';
     if ( !info.Artist && !info.Album && !info.Track ) {
-      msg = "<i>" + _("Media information query failed") + "</i>";
+      msg = "<i>" + OSjs.Applications.ApplicationMusicPlayer._("Media information query failed") + "</i>";
     }
     this.$labels.Artist.innerHTML = info.Artist || msg;
     this.$labels.Album.innerHTML  = info.Album  || OSjs.Utils.dirname(this.player.currentFilename);
@@ -746,7 +686,7 @@
 
     var times = this.player.getTimes(error);
     if ( times.unknown ) {
-      this.$labels.Time.innerHTML = times.currentStamp  + " / -" + times.totalStamp + ' <i>(' + _('seek unavailable in format') + ')</i>';
+      this.$labels.Time.innerHTML = times.currentStamp  + " / -" + times.totalStamp + ' <i>(' + OSjs.Applications.ApplicationMusicPlayer._('seek unavailable in format') + ')</i>';
     } else {
       this.$labels.Time.innerHTML = times.currentStamp  + " / " + times.totalStamp;
     }
@@ -824,9 +764,9 @@
   ApplicationMusicPlayer.prototype.play = function(filename, mime, append) {
     mime = mime || '';
     if ( !mime.match(/^audio/) ) {
-      var msg = _('The audio type is not supported: {0}', mime);
+      var msg = OSjs.Applications.ApplicationMusicPlayer._('The audio type is not supported: {0}', mime);
       var win = this._getWindow('ApplicationMusicPlayerWindow');
-      win._error(OSjs.API._("ERR_GENERIC_APP_FMT", win.title), _("Failed to play file"), msg);
+      win._error(OSjs.API._("ERR_GENERIC_APP_FMT", win.title), OSjs.Applications.ApplicationMusicPlayer._("Failed to play file"), msg);
       return;
     }
 
@@ -858,6 +798,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationMusicPlayer = ApplicationMusicPlayer;
+  OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
+  OSjs.Applications.ApplicationMusicPlayer.Class = ApplicationMusicPlayer;
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.VFS);
