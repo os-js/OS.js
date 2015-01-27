@@ -162,6 +162,7 @@
     this.tabs         = {};
     this.tabCount     = 0;
     this.currentTab   = null;
+    this.onInserted   = opts.onInserted || function() {};
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -301,6 +302,10 @@
           this.setTab(name);
         }
       }
+    }
+
+    if ( typeof this.onInserted === 'function' ) {
+      this.onInserted(tab.$c, name, opts);
     }
 
     return tab;
