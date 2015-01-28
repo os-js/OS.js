@@ -6,3 +6,6 @@
   overflow : hidden;
   min-width : 100px;
 }
+.WMPanel .PanelItemWindowList img {
+  width : 16px;
+}
