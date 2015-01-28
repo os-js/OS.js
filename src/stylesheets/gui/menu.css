@@ -29,6 +29,7 @@
   vertical-align : middle;
   margin-right : 5px;
   pointer-events: none;
+  width : 16px;
 }
 
 .Menu li > .Menu {
