@@ -49,10 +49,17 @@
     win._addGUIElement(new GUI.Switch('DesktopEnableHotkey', {value: settings.enableHotkeys}), outer);
     tab.appendChild(outer);
 
+    // Enable Window Corner snapping
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableWindowCornerSnapping', {label: _('Enable Window Corner Snapping')}), outer); // FIXME: Translation!
+    win._addGUIElement(new GUI.Switch('DesktopEnableWindowCornerSnapping', {value: settings.enableCornerSnap}), outer);
+    tab.appendChild(outer);
+
     // Enable Window Switcher
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    win._addGUIElement(new GUI.Label('LabelDesktopEnableWindow Switcher', {label: _('Enable Window Switcher')}), outer);
+    win._addGUIElement(new GUI.Label('LabelDesktopEnableWindowSwitcher', {label: _('Enable Window Switcher')}), outer);
     win._addGUIElement(new GUI.Switch('DesktopEnableWindowSwitcher', {value: settings.enableSwitcher}), outer);
     tab.appendChild(outer);
 
@@ -103,6 +110,7 @@
   }
 
   function applySettings(win, settings) {
+    settings.enableCornerSnap    = win._getGUIElement('DesktopEnableWindowCornerSnapping').getValue();
     settings.enableHotkeys       = win._getGUIElement('DesktopEnableHotkey').getValue();
     settings.enableSwitched      = win._getGUIElement('DesktopEnableWindowSwitcher').getValue();
     settings.enableIconView      = win._getGUIElement('DesktopEnableIconView').getValue();

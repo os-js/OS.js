@@ -113,10 +113,18 @@
     var startRect = null;
     var direction = null;
     var startDimension = {x: 0, y: 0, w: 0, h: 0};
+    var snapSize = 10;
+    var topMargin = 26; // FIXME: This is kinda bad
+    var cornerSnap = false;
+    var browserDimension = {
+      w: window.innerWidth,
+      h: window.innerHeight
+    };
 
     function onMouseDown(ev, a) {
       ev.preventDefault();
 
+      cornerSnap = wm ? wm.getSetting('enableCornerSnap') === true : false;
       if ( self._state.maximized ) { return false; }
       startRect = wm.getWindowSpace();
 
@@ -214,6 +222,23 @@
         newLeft = startDimension.x + dx;
         newTop = startDimension.y + dy;
         if ( newTop < startRect.top ) { newTop = startRect.top; }
+
+        // 8-directional window snapping
+        if ( cornerSnap ) {
+          var wright = newLeft + startDimension.w;
+          if ( newLeft <= snapSize ) { // Left
+            newLeft = 5;
+          } else if ( wright >= (browserDimension.w - snapSize) ) { // Right
+            newLeft = browserDimension.w - startDimension.w - 5;
+          }
+
+          var wbottom = newTop + startDimension.h + topMargin;
+          if ( newTop <= (startRect.top + snapSize) ) { // Top
+            newTop = startRect.top;
+          } else if ( wbottom >= (startRect.height + startRect.top - snapSize) ) { // Bottom
+            newTop = (startRect.height + startRect.top) - startDimension.h - topMargin;
+          }
+        }
       } else {
         if ( direction === 's' ) {
           newWidth = startDimension.w;
@@ -1575,6 +1600,8 @@
       this._dimension.h = h;
     }
 
+    this._onResize();
+
     return true;
   };
 
@@ -1802,6 +1829,15 @@
         this._guiElement.onGlobalKeyPress(ev);
       }
     }
+  };
+
+  /**
+   * On Window resized
+   *
+   * @return  void
+   * @method  Window::_onResize()
+   */
+  Window.prototype._onResize = function() {
   };
 
   /**
