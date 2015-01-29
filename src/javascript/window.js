@@ -113,18 +113,17 @@
     var startRect = null;
     var direction = null;
     var startDimension = {x: 0, y: 0, w: 0, h: 0};
-    var snapSize = 10;
+    var snapSize = 0;
     var topMargin = 26; // FIXME: This is kinda bad
-    var cornerSnap = false;
     var browserDimension = {
       w: window.innerWidth,
       h: window.innerHeight
     };
 
     function onMouseDown(ev, a) {
+      snapSize = wm ? (wm.getSetting('windowCornerSnap') || 0) : 0;
       ev.preventDefault();
 
-      cornerSnap = wm ? wm.getSetting('enableCornerSnap') === true : false;
       if ( self._state.maximized ) { return false; }
       startRect = wm.getWindowSpace();
 
@@ -224,11 +223,11 @@
         if ( newTop < startRect.top ) { newTop = startRect.top; }
 
         // 8-directional window snapping
-        if ( cornerSnap ) {
+        if ( snapSize > 0 ) {
           var wright = newLeft + startDimension.w;
-          if ( newLeft <= snapSize ) { // Left
+          if ( (newLeft-5) <= snapSize ) { // Left
             newLeft = 5;
-          } else if ( wright >= (browserDimension.w - snapSize) ) { // Right
+          } else if ( (wright+5) >= (browserDimension.w - snapSize) ) { // Right
             newLeft = browserDimension.w - startDimension.w - 5;
           }
 

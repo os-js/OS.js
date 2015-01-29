@@ -49,13 +49,6 @@
     win._addGUIElement(new GUI.Switch('DesktopEnableHotkey', {value: settings.enableHotkeys}), outer);
     tab.appendChild(outer);
 
-    // Enable Window Corner snapping
-    outer = document.createElement('div');
-    outer.className = 'OuterWrapper';
-    win._addGUIElement(new GUI.Label('LabelDesktopEnableWindowCornerSnapping', {label: _('Enable Window Corner Snapping')}), outer); // FIXME: Translation!
-    win._addGUIElement(new GUI.Switch('DesktopEnableWindowCornerSnapping', {value: settings.enableCornerSnap}), outer);
-    tab.appendChild(outer);
-
     // Enable Window Switcher
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
@@ -74,6 +67,19 @@
       updateMargin(value);
     }}), outer);
     updateMargin(settings.desktopMargin);
+    tab.appendChild(outer);
+
+    // Enable Window Corner snapping
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    var labelCornerSnapping = win._addGUIElement(new GUI.Label('LabelDesktopCornerSnapping', {label: _('Desktop CornerSnapping')}), outer);
+    function updateCornerSnapping(value) {
+      labelCornerSnapping.$element.innerHTML = _('Window Corner Snapping ({0}px)', value);
+    }
+    win._addGUIElement(new GUI.Slider('SliderCornerSnapping', {min: 0, max: 80, steps: 10, val: settings.windowCornerSnap, onChange: function(value, percentage) {
+      updateCornerSnapping(value);
+    }}), outer);
+    updateCornerSnapping(settings.windowCornerSnap);
     tab.appendChild(outer);
   }
 
@@ -110,7 +116,7 @@
   }
 
   function applySettings(win, settings) {
-    settings.enableCornerSnap    = win._getGUIElement('DesktopEnableWindowCornerSnapping').getValue();
+    settings.windowCornerSnap    = win._getGUIElement('SliderCornerSnapping').getValue();
     settings.enableHotkeys       = win._getGUIElement('DesktopEnableHotkey').getValue();
     settings.enableSwitched      = win._getGUIElement('DesktopEnableWindowSwitcher').getValue();
     settings.enableIconView      = win._getGUIElement('DesktopEnableIconView').getValue();

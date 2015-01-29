@@ -47,11 +47,11 @@
       fontFamily          : 'OSjsFont',
       theme               : 'default',
       background          : 'image-fill',
+      windowCornerSnap    : 0,
       useTouchMenu        : false,
       enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,
-      enableCornerSnap    : false,
       enableSounds        : API.getDefaultSettings().Core.Sounds,
       invertIconViewColor : false,
       moveOnResize        : true,       // Move windows into viewport on resize
