@@ -1,0 +1,93 @@
+      <h1>Tutorial: Create your own application (continued)</h1>
+
+      <p>
+        <b>THIS ARTICLE IS NOT FINISHED</b>
+      </p>
+
+      <h2>Add a GUI Element</h2>
+      <div class="indent">
+
+        <p>Example:</p>
+        <pre class="code">
+ApplicationMyNameWindow.prototype.init = function() {
+  var self = this;
+  var root = Window.prototype.init.apply(this, arguments);
+
+  var listView = this._addGUIElement(new OSjs.GUI.ListView('MyListView'), root);
+  listView.setColumns([
+    {key: 'col1',    title: 'Foo', domProperties: {width: "50"}},
+    {key: 'col2',   title: 'Bar'},
+    {key: 'col3',  title: 'Baz', domProperties: {width: "100"}}
+  ]);
+  listView.render();
+
+  return root;
+};
+        </pre>
+
+        <p>To retrieve this element later, just use:</p>
+        <pre class="code">
+var gel = this._getGUIElement('MyListView');
+        </pre>
+      </div>
+
+      <h2>Handling launch/restore arguments</h2>
+      <div class="indent">
+
+        <p>Let's say you open your application with:</p>
+        <pre>OSjs.API.launch('ApplicationMyName', {path: '/some/file.png', mime: 'image/png'});</pre>
+
+        <p>Use this to handle it correctly:</p>
+        <pre class="code">
+ApplicationMyName.prototype.init = function(settings, metadata) {
+  Application.prototype.init.apply(this, arguments);
+
+  // Get an argument, ex. the filename and mime
+  var file = this._getArgument('file');
+  if ( file && file.path ) {
+    this.openFile(file);
+  }
+};
+
+ApplicationMyName.prototype.openFile = function(file) {
+  if ( file && !file.mime.match(/^image/) ) {
+    throw "Unsupported MIME";
+  }
+  this.currentFile = fname;
+
+  // Setting values
+  this._setArgument('file', file);
+};
+        </pre>
+      </div>
+
+      <h2>Adding Drag-and-Drop support</h2>
+      <div class="indent">
+        <p>Example:</p>
+        <pre class="code">
+var ApplicationMyNameWindow = function(app, metadata) {
+  Window.apply(this, ['ApplicationMyNameWindow', {
+    icon: "apps/accessories-text-editor.png",
+    title: "DnD Support",
+    allow_drop: true // This
+  }, app]);
+};
+
+
+ApplicationMyNameWindow.prototype._onDndEvent = function(ev, type, item, args) {
+  Window.prototype._onDndEvent.apply(this, arguments);
+  if ( type === 'itemDrop' && item ) {
+    var data = item.data;
+    if ( data && data.type === 'file' && data.mime ) {
+      this.openFile(data.path, data.mime);
+    }
+  }
+};
+        </pre>
+      </div>
+
+
+      <h2>More advanced examples</h2>
+      <div class="indent">
+        <p>You can extend the classes <b>DefaultApplication</b> and <b>DefaultApplicationWindow</b> for super-simple handling of opening/saving and creating files. It will also handle dnd and launch/restore arguments for you. Almost all internal OS.js applications use these.</p>
+      </div>

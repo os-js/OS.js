@@ -51,6 +51,10 @@
     "title": "Create your own Application - OS.js Tutorials"
   },
 
+  "tutorials/create-application-continued.html": {
+    "title": "Create your own Application (continued) - OS.js Tutorials"
+  },
+
   "tutorials/create-handler.html": {
     "title": "Create your own Handler - OS.js Tutorials"
   },
