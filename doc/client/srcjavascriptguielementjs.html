@@ -61,6 +61,11 @@
 <li><a href="#guielement-blur">blur()</a></li>
 <li><a href="#guielement-_setwindow">_setWindow()</a></li>
 <li><a href="#guielement-_settabindex">_setTabIndex()</a></li>
+<li><a href="#guielement-_addchild">_addChild()</a></li>
+<li><a href="#guielement-_removechild">_removeChild()</a></li>
+<li><a href="#guielement-_getchildren">_getChildren()</a></li>
+<li><a href="#guielement-_setparent">_setParent()</a></li>
+<li><a href="#guielement-_getparent">_getParent()</a></li>
 </ul>
 </li>
 </ul>
@@ -550,8 +555,116 @@ Sets the tabindex
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
+<div class="section-method" id="guielement-_addchild">
+<h3 id="guielement-_addchild-id-">GUIElement::_addChild(id)</h3>
+<pre>
+Add a child GUIElement
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>GUIElement id</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
 </div>
-<p><i>Generated: Mon Jan 26 2015 22:05:55 GMT+0100 (CET)</i></p>
+<div class="section-method" id="guielement-_removechild">
+<h3 id="guielement-_removechild-id-">GUIElement::_removeChild(id)</h3>
+<pre>
+Remove a child GUIElement
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>GUIElement id</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="guielement-_getchildren">
+<h3 id="guielement-_getchildren-">GUIElement::_getChildren()</h3>
+<pre>
+Gets the list of GUIElement children (ids)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<div class="section-method" id="guielement-_setparent">
+<h3 id="guielement-_setparent-id-">GUIElement::_setParent(id)</h3>
+<pre>
+Set the parent GUIElement id of this instance
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>GUIElement id</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="guielement-_getparent">
+<h3 id="guielement-_getparent-">GUIElement::_getParent()</h3>
+<pre>
+Get the parent GUIElement id of this instance
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+</div>
+<p><i>Generated: Fri Jan 30 2015 23:41:13 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>

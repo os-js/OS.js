@@ -78,6 +78,7 @@
 <li><a href="#window-_nexttabindex">_nextTabIndex()</a></li>
 <li><a href="#window-_ondndevent">_onDndEvent()</a></li>
 <li><a href="#window-_onkeyevent">_onKeyEvent()</a></li>
+<li><a href="#window-_onresize">_onResize()</a></li>
 <li><a href="#window-_onwindowiconclick">_onWindowIconClick()</a></li>
 <li><a href="#window-_onwindowbuttonclick">_onWindowButtonClick()</a></li>
 <li><a href="#window-_onchange">_onChange()</a></li>
@@ -468,7 +469,7 @@ Update IFrame GUIElement "fix"
 
 </div>
 <div class="section-method" id="window-_addguielement">
-<h3 id="window-_addguielement-gel-parentnode-">Window::_addGUIElement(gel, parentNode)</h3>
+<h3 id="window-_addguielement-gel-parentnode-parentgel-">Window::_addGUIElement(gel, parentNode, parentGel)</h3>
 <pre>
 Adds a GUIElement
 </pre>
@@ -493,6 +494,11 @@ Adds a GUIElement
 <td>parentNode</td>
 <td>DOMElement</td>
 <td>DOM Node to add to</td>
+</tr>
+<tr>
+<td>parentGel</td>
+<td>GUIElement</td>
+<td>(Optional) The parent GUIElement</td>
 </tr>
 </tbody>
 </table>
@@ -1079,6 +1085,18 @@ On Key event
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
+<div class="section-method" id="window-_onresize">
+<h3 id="window-_onresize-">Window::_onResize()</h3>
+<pre>
+On Window resized
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
 <div class="section-method" id="window-_onwindowiconclick">
 <h3 id="window-_onwindowiconclick-ev-el-">Window::_onWindowIconClick(ev, el)</h3>
 <pre>
@@ -1289,7 +1307,7 @@ Set Windoc icon
 
 </div>
 </div>
-<p><i>Generated: Mon Jan 26 2015 22:05:54 GMT+0100 (CET)</i></p>
+<p><i>Generated: Fri Jan 30 2015 23:41:13 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
