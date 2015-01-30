@@ -48,6 +48,7 @@
       theme               : 'default',
       background          : 'image-fill',
       windowCornerSnap    : 0,
+      windowSnap          : 0,
       useTouchMenu        : false,
       enableIconView      : false,
       enableSwitcher      : true,

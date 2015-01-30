@@ -113,19 +113,39 @@
     var startRect = null;
     var direction = null;
     var startDimension = {x: 0, y: 0, w: 0, h: 0};
-    var snapSize = 0;
+    var cornerSnapSize = 0;
+    var windowSnapSize = 0;
     var topMargin = 26; // FIXME: This is kinda bad
+    var borderSize = 6; // FIXME: This is kinda bad
+    var windowRects = [];
     var browserDimension = {
       w: window.innerWidth,
       h: window.innerHeight
     };
 
     function onMouseDown(ev, a) {
-      snapSize = wm ? (wm.getSetting('windowCornerSnap') || 0) : 0;
+      cornerSnapSize = wm ? (wm.getSetting('windowCornerSnap') || 0) : 0;
+      windowSnapSize = wm ? (wm.getSetting('windowSnap') || 0) : 0;
+      windowRects = [];
       ev.preventDefault();
 
       if ( self._state.maximized ) { return false; }
+
       startRect = wm.getWindowSpace();
+      wm.getWindows().forEach(function(win) {
+        if ( win && win._wid !== self._wid ) {
+          windowRects.push({
+            left: win._position.x,
+            top: win._position.y,
+            right: win._position.x + win._dimension.w,
+            bottom: win._position.y + win._dimension.h + topMargin,
+            width: win._dimension.w,
+            height: win._dimension.h
+          });
+        }
+      });
+
+      console.log(windowRects);
 
       startDimension.x = self._position.x;
       startDimension.y = self._position.y;
@@ -221,22 +241,49 @@
         newLeft = startDimension.x + dx;
         newTop = startDimension.y + dy;
         if ( newTop < startRect.top ) { newTop = startRect.top; }
+        var newRight = newLeft + startDimension.w + borderSize;
+        var newBottom = newTop + startDimension.h + topMargin + borderSize;
 
-        // 8-directional window snapping
-        if ( snapSize > 0 ) {
-          var wright = newLeft + startDimension.w;
-          if ( (newLeft-5) <= snapSize ) { // Left
-            newLeft = 5;
-          } else if ( (wright+5) >= (browserDimension.w - snapSize) ) { // Right
-            newLeft = browserDimension.w - startDimension.w - 5;
+        // 8-directional corner window snapping
+        if ( cornerSnapSize > 0 ) {
+          if ( (newLeft-borderSize) <= cornerSnapSize ) { // Left
+            newLeft = borderSize;
+          } else if ( (newRight+borderSize) >= (browserDimension.w - cornerSnapSize) ) { // Right
+            newLeft = browserDimension.w - startDimension.w - borderSize;
           }
-
-          var wbottom = newTop + startDimension.h + topMargin;
-          if ( newTop <= (startRect.top + snapSize) ) { // Top
+          if ( newTop <= (startRect.top + cornerSnapSize) ) { // Top
             newTop = startRect.top;
-          } else if ( wbottom >= (startRect.height + startRect.top - snapSize) ) { // Bottom
+          } else if ( newBottom >= (startRect.height + cornerSnapSize) ) { // Bottom
             newTop = (startRect.height + startRect.top) - startDimension.h - topMargin;
           }
+        }
+
+        // Snapping to other windows
+        if ( windowSnapSize > 0 ) {
+          windowRects.forEach(function(rect) {
+            if ( newRight >= (rect.left - windowSnapSize) && newRight <= rect.left ) { // [ ]
+              newLeft = rect.left - (startDimension.w + borderSize);
+              return false;
+            }
+
+            if ( newLeft <= (rect.right + windowSnapSize) && newLeft >= rect.right ) { // Right
+              newLeft = rect.right + borderSize;
+              return false;
+            }
+
+            if ( newBottom >= (rect.top - windowSnapSize) && newBottom <= rect.top ) { // Top
+              newTop = rect.top - (startDimension.h + borderSize + topMargin);
+              return false;
+            }
+
+            if ( newTop <= (rect.bottom + windowSnapSize) && newTop >= rect.bottom ) { // Bottom
+              newTop = rect.bottom + borderSize;
+              return false;
+            }
+
+            return true;
+          });
+
         }
       } else {
         if ( direction === 's' ) {

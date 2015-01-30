@@ -69,17 +69,30 @@
     updateMargin(settings.desktopMargin);
     tab.appendChild(outer);
 
-    // Enable Window Corner snapping
+    // Enable Desktop Corner snapping
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    var labelCornerSnapping = win._addGUIElement(new GUI.Label('LabelDesktopCornerSnapping', {label: _('Desktop CornerSnapping')}), outer);
+    var labelCornerSnapping = win._addGUIElement(new GUI.Label('LabelDesktopCornerSnapping', {label: _('Desktop Corner Snapping')}), outer);
     function updateCornerSnapping(value) {
-      labelCornerSnapping.$element.innerHTML = _('Window Corner Snapping ({0}px)', value);
+      labelCornerSnapping.$element.innerHTML = _('Desktop Corner Snapping ({0}px)', value);
     }
-    win._addGUIElement(new GUI.Slider('SliderCornerSnapping', {min: 0, max: 80, steps: 10, val: settings.windowCornerSnap, onChange: function(value, percentage) {
+    win._addGUIElement(new GUI.Slider('SliderCornerSnapping', {min: 0, max: 50, steps: 5, val: settings.windowCornerSnap, onChange: function(value, percentage) {
       updateCornerSnapping(value);
     }}), outer);
     updateCornerSnapping(settings.windowCornerSnap);
+    tab.appendChild(outer);
+
+    // Enable Window snapping
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    var labelCornerSnapping = win._addGUIElement(new GUI.Label('LabelWindowSnapping', {label: _('Window Snapping')}), outer);
+    function updateCornerSnapping(value) {
+      labelCornerSnapping.$element.innerHTML = _('Window Snapping ({0}px)', value);
+    }
+    win._addGUIElement(new GUI.Slider('SliderWindowSnapping', {min: 0, max: 50, steps: 5, val: settings.windowSnap, onChange: function(value, percentage) {
+      updateCornerSnapping(value);
+    }}), outer);
+    updateCornerSnapping(settings.windowSnap);
     tab.appendChild(outer);
   }
 
@@ -117,6 +130,7 @@
 
   function applySettings(win, settings) {
     settings.windowCornerSnap    = win._getGUIElement('SliderCornerSnapping').getValue();
+    settings.windowSnap          = win._getGUIElement('SliderWindowSnapping').getValue();
     settings.enableHotkeys       = win._getGUIElement('DesktopEnableHotkey').getValue();
     settings.enableSwitched      = win._getGUIElement('DesktopEnableWindowSwitcher').getValue();
     settings.enableIconView      = win._getGUIElement('DesktopEnableIconView').getValue();
