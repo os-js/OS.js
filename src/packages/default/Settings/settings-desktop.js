@@ -85,12 +85,12 @@
     // Enable Window snapping
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
-    var labelCornerSnapping = win._addGUIElement(new GUI.Label('LabelWindowSnapping', {label: _('Window Snapping')}), outer);
-    function updateCornerSnapping(value) {
-      labelCornerSnapping.$element.innerHTML = _('Window Snapping ({0}px)', value);
+    var labelWindowSnapping = win._addGUIElement(new GUI.Label('LabelWindowSnapping', {label: _('Window Snapping')}), outer);
+    function updateWindowSnapping(value) {
+      labelWindowSnapping.$element.innerHTML = _('Window Snapping ({0}px)', value);
     }
     win._addGUIElement(new GUI.Slider('SliderWindowSnapping', {min: 0, max: 50, steps: 5, val: settings.windowSnap, onChange: function(value, percentage) {
-      updateCornerSnapping(value);
+      updateWindowSnapping(value);
     }}), outer);
     updateCornerSnapping(settings.windowSnap);
     tab.appendChild(outer);
