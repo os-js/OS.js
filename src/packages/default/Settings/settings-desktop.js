@@ -76,7 +76,7 @@
     function updateCornerSnapping(value) {
       labelCornerSnapping.$element.innerHTML = _('Desktop Corner Snapping ({0}px)', value);
     }
-    win._addGUIElement(new GUI.Slider('SliderCornerSnapping', {min: 0, max: 50, steps: 5, val: settings.windowCornerSnap, onChange: function(value, percentage) {
+    win._addGUIElement(new GUI.Slider('SliderCornerSnapping', {min: 0, max: 50, val: settings.windowCornerSnap, onChange: function(value, percentage) {
       updateCornerSnapping(value);
     }}), outer);
     updateCornerSnapping(settings.windowCornerSnap);
@@ -89,7 +89,7 @@
     function updateWindowSnapping(value) {
       labelWindowSnapping.$element.innerHTML = _('Window Snapping ({0}px)', value);
     }
-    win._addGUIElement(new GUI.Slider('SliderWindowSnapping', {min: 0, max: 50, steps: 5, val: settings.windowSnap, onChange: function(value, percentage) {
+    win._addGUIElement(new GUI.Slider('SliderWindowSnapping', {min: 0, max: 50, val: settings.windowSnap, onChange: function(value, percentage) {
       updateWindowSnapping(value);
     }}), outer);
     updateWindowSnapping(settings.windowSnap);
