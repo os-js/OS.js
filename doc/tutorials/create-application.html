@@ -50,29 +50,48 @@
           <i>This is not required and can be done later</i>
         </p>
         <p>
-          Full example:
+          Example with all available entries:
         </p>
         <pre class="code">
 {
-  "className":  "ApplicationMyName",               // ClassName used in namespaces
-  "enabled":    true,                              // If 'false' application will not be loaded or launchable (Optional)
-  "description":"Application Long Description",    // Application description (optional)
-  "name":       "Application Name",                // Application name
-  "category":   "unknown",                         // Application category (optional)
-  "mime":       null,                              // Or an array of regext match MIME strings (Optional)
-  "icon":       "apps/file-manager.png",           // Application icon (use ./my-icon.png for icon inside app folder)
-  "singular":   false,                             // Allow only one instance ? (Optional)
-  "splash":     false,                             // Show a splash screen when loading application (Optional)
-  "compability":[],                                // Array of features to check for (Optional, uses Utils.getCompability())
-  "preload":    [                                  // A list of files to preload in order to run app
+  // ClassName used in namespaces
+  "className":  "ApplicationMyName",
+
+  // If 'false' application will not be loaded or launchable (Optional)
+  "enabled":    true,
+
+  // Application description (optional)
+  "description":"Application Long Description",
+
+  // Application name
+  "name":       "Application Name",
+
+  // Application category (optional)
+  "category":   "unknown",
+
+  // Or an array of regext match MIME strings (Optional)
+  "mime":       null,
+
+  // Application icon (use ./my-icon.png for icon inside app folder)
+  "icon":       "apps/file-manager.png",
+
+  // Allow only one instance ? (Optional)
+  "singular":   false,
+
+  // Show a splash screen when loading application (Optional)
+  "splash":     false,
+
+  // Array of features to check for (Optional, uses Utils.getCompability())
+  "compability":[],
+
+  // A list of files to preload in order to run app
+  "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"},
     {"src": "foo.js", "type": "javascript", combine: false} // Do not combine this script in 'dist'
-  ]
-}
+  ],
 
-// For translations use
-{
+  // For translations of name and description
   "names" : {
     "no_NO" : "Norwegian name"
   }
