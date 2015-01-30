@@ -15,9 +15,21 @@ ApplicationMyNameWindow.prototype.init = function() {
 
   var listView = this._addGUIElement(new OSjs.GUI.ListView('MyListView'), root);
   listView.setColumns([
-    {key: 'col1',    title: 'Foo', domProperties: {width: "50"}},
-    {key: 'col2',   title: 'Bar'},
+    {key: 'col1',  title: 'Foo', domProperties: {width: "50"}},
+    {key: 'col2',  title: 'Bar'},
     {key: 'col3',  title: 'Baz', domProperties: {width: "100"}}
+  ]);
+  listView.setRows([
+    {
+      col1: 'Item 1 Col 1',
+      col2: 'Item 1 Col 2',
+      col3: 'Item 1 Col 3,
+    },
+    {
+      col1: 'Item 2 Col 1',
+      col2: 'Item 2 Col 2',
+      col3: 'Item 2 Col 3,
+    }
   ]);
   listView.render();
 
@@ -69,7 +81,7 @@ var ApplicationMyNameWindow = function(app, metadata) {
   Window.apply(this, ['ApplicationMyNameWindow', {
     icon: "apps/accessories-text-editor.png",
     title: "DnD Support",
-    allow_drop: true // This
+    allow_drop: true // This is what makes dropping work automagically
   }, app]);
 };
 
@@ -79,7 +91,7 @@ ApplicationMyNameWindow.prototype._onDndEvent = function(ev, type, item, args) {
   if ( type === 'itemDrop' && item ) {
     var data = item.data;
     if ( data && data.type === 'file' && data.mime ) {
-      this.openFile(data.path, data.mime);
+      this._appRef.openFile(data.path, data.mime); // If using above example. _appRef is the Application
     }
   }
 };
