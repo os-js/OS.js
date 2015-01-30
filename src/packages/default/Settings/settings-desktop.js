@@ -92,7 +92,7 @@
     win._addGUIElement(new GUI.Slider('SliderWindowSnapping', {min: 0, max: 50, steps: 5, val: settings.windowSnap, onChange: function(value, percentage) {
       updateWindowSnapping(value);
     }}), outer);
-    updateCornerSnapping(settings.windowSnap);
+    updateWindowSnapping(settings.windowSnap);
     tab.appendChild(outer);
   }
 
