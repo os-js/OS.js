@@ -253,7 +253,7 @@
           }
           if ( newTop <= (startRect.top + cornerSnapSize) ) { // Top
             newTop = startRect.top;
-          } else if ( newBottom >= (startRect.height + cornerSnapSize) ) { // Bottom
+          } else if ( newBottom >= (startRect.height + startRect.top - cornerSnapSize) ) { // Bottom
             newTop = (startRect.height + startRect.top) - startDimension.h - topMargin;
           }
         }
