@@ -44,7 +44,7 @@ ApplicationMyNameWindow.prototype.init = function() {
   var self = this;
   var root = Window.prototype.init.apply(this, arguments);
 
-  var listView = this._addGUIElement(new OSjs.GUI.ListView('MyListView'), root);
+  var listView = this._addGUIElement(new GUI.ListView('MyListView'), root);
   listView.setColumns([
     {key: 'col1',  title: 'Foo', domProperties: {width: "50"}},
     {key: 'col2',  title: 'Bar'},
@@ -93,7 +93,9 @@ ApplicationMyName.prototype.init = function(settings, metadata) {
 };
 
 ApplicationMyName.prototype.openFile = function(file) {
-  if ( file && !file.mime.match(/^image/) ) {
+  if ( !file ) { return; }
+
+  if ( !file.mime.match(/^image/) ) {
     throw "Unsupported MIME";
   }
   this.currentFile = fname;
@@ -122,7 +124,8 @@ ApplicationMyNameWindow.prototype._onDndEvent = function(ev, type, item, args) {
   if ( type === 'itemDrop' && item ) {
     var data = item.data;
     if ( data && data.type === 'file' && data.mime ) {
-      this._appRef.openFile(data.path, data.mime); // If using above example. _appRef is the Application
+      var file = new VFS.File(data);
+      this._appRef.openFile(file); // If using above example. _appRef is the Application
     }
   }
 };
