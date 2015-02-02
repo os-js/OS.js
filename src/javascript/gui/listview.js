@@ -234,6 +234,14 @@
 
     // Columns (header)
     row = document.createElement('tr');
+    var x = 0;
+    var total = 0;
+    columns.forEach(function(iter) {
+      if ( iter && (typeof iter.visible === 'undefined' || iter.visible === true) ) {
+        total++;
+      }
+    });
+
     for ( i = 0, l = columns.length; i < l; i++ ) {
       colref = columns[i];
       if ( typeof colref.visible !== 'undefined' && colref.visible === false ) { continue; }
@@ -247,7 +255,7 @@
       label.appendChild(document.createTextNode(colref.title));
 
       if ( typeof colref.resizable === 'undefined' || colref.resizable === true ) {
-        if ( i < (l-i) ) {
+        if ( x < (total-1) ) {
           resizer           = document.createElement('div');
           resizer.className = 'Resizer';
           label.appendChild(resizer);
@@ -263,6 +271,8 @@
         }
       }
       row.appendChild(col);
+
+      x++;
     }
     this.$head.appendChild(row);
     this.$headTop.appendChild(row);
