@@ -1,3 +1,27 @@
+# 2.0.0-alpha53
+
+* Locales: Updated russian locales (Thanks @vlad008)
+* Locales: Added chinese locale (Thanks @zqqq)
+* CoreWM: Now sets styles with a custom CSS sheet
+* CoreWM: Now possible to set panel opacity
+* CoreWM: Desktop notifications now use same colors as panel
+* CoreWM: Split locales into separate file
+* CoreWM: Added static icon sizes to certain elements
+* CoreWM: Added support for window snapping (#68)
+* Applications: Split out all locales into separate files
+* GUI: Added VBox
+* GUI: Added HBox
+* GUI: GUIElement can now refer to it's children and parent (more for internal usage)
+* GUI: Tabs now has onInserted() event
+* GUI: Fixed resize header generation  in ListView
+* GUI: Refactored GUISlider (#78) API Compatible, but fixes a lot of stuff
+* Settings: Moved some settings around
+* Settings: Added 'Debug' tab
+* Settings: Added 'Touch Menu' switch (@thanks @vlad008)
+* Misc: Fixed some typos
+* Misc: Cross-platform CSS update
+* Misc: Some minor improvments to default sizes of GUIElements
+
 # 2.0.0-alpha52
 
 WARNING: API Changes
