@@ -41,8 +41,8 @@
    * @option  opts  int       val           Current value (alias=value)
    * @option  opts  String    orientation   Orientation (default=horizontal)
    * @option  opts  int       steps         Stepping value (default=1)
-   * @option  opts  Function  onChange      On Change callback
-   * @option  opts  Function  onUpdate      On Update callback
+   * @option  opts  Function  onChange      On Change (after change) callback => fn(val, percentage)
+   * @option  opts  Function  onUpdate      Same as above
    *
    * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.Slider
@@ -51,199 +51,188 @@
    * @class
    */
   var Slider = function(name, opts) {
+    opts = opts || {};
+
     this.min      = opts.min          || 0;
     this.max      = opts.max          || 0;
     this.val      = opts.val          || opts.value || 0;
+    this.perc     = 0;
     this.type     = opts.orientation  || 'horizontal';
     this.steps    = opts.steps        || 1;
     this.onChange = opts.onChange     || function() {};
+    this.onUpdate = opts.onUpdate     || function() {};
     this.$root    = null;
     this.$button  = null;
-
-    var self = this;
-    this.onUpdate = function(val, perc) {
-      (opts.onUpdate || function(val, perc) {
-        console.warn('GUIScroll onUpdate() missing...', val, '('+perc+'%)');
-      }).apply(self, arguments);
-      self.onChange.apply(this, arguments);
-    };
 
     GUIElement.apply(this, [name, {}]);
   };
 
   Slider.prototype = Object.create(GUIElement.prototype);
 
+  /**
+   * When GUIElement is inited
+   */
   Slider.prototype.init = function() {
+    var self = this;
+
     var el        = GUIElement.prototype.init.apply(this, ['GUISlider']);
     el.className += ' ' + this.type;
 
-    this.$root            = document.createElement('div');
-    this.$root.className  = 'Root';
-
-    this.$button            = document.createElement('div');
-    this.$button.className  = 'Button';
-
-    var scrolling = false;
-    var startX    = 0;
-    var startY    = 0;
-    var elX       = 0;
-    var elY       = 0;
-    var maxX      = 0;
-    var maxY      = 0;
-    var snapping  = 0;
-    var self      = this;
-
-    function _onMouseMove(ev) {
-      if ( !scrolling ) { return; }
-
-      var newX, newY;
-      if ( self.type === 'horizontal' ) {
-        var diffX = (ev.clientX - startX);
-        newX = elX + diffX;
-        newX = snapping * Math.round(newX / snapping);
-
-        if ( newX < 0 ) { newX = 0; }
-        if ( newX > maxX ) { newX = maxX; }
-        self.$button.style.left = newX + 'px';
-      } else {
-        var diffY = (ev.clientY - startY);
-        newY = elY + diffY;
-        newY = snapping * Math.round(newY / snapping);
-
-        if ( newY < 0 ) { newY = 0; }
-        if ( newY > maxY ) { newY = maxY; }
-        self.$button.style.top = newY + 'px';
-      }
-
-      self.onSliderUpdate(newX, newY, maxX, maxY, 'mousemove');
-    }
-
-    function _onMouseUp(ev) {
-      scrolling = false;
-      document.removeEventListener('mousemove', _onMouseMove, false);
-      document.removeEventListener('mouseup', _onMouseUp, false);
-
-      var p = (self.max / 100) * self.val; //self.val) * 100;
-      self.onChange.call(self, self.val, p, 'mouseup');
-    }
-
-    function _onMouseDown(ev) {
-      ev.preventDefault();
-
-      scrolling = true;
-      if ( self.type === 'horizontal' ) {
-        startX    = ev.clientX;
-        elX       = self.$button.offsetLeft;
-        maxX      = self.$element.offsetWidth - self.$button.offsetWidth;
-        snapping  = (self.$element.offsetWidth / ((self.max - self.min) / self.steps));
-      } else {
-        startY    = ev.clientY;
-        elY       = self.$button.offsetTop;
-        maxY      = self.$element.offsetHeight - self.$button.offsetHeight;
-        snapping  = (self.$element.offsetHeight / ((self.max - self.min) / self.steps));
-      }
-
-      document.addEventListener('mousemove', _onMouseMove, false);
-      document.addEventListener('mouseup', _onMouseUp, false);
-    }
-
-    this._addEventListener(this.$button, 'mousedown', function(ev) {
-      return _onMouseDown(ev);
-    });
-
-    this._addEventListener(el, 'click', function(ev) {
-      if ( ev.target && ev.target.className === 'Button' ) { return; }
-
-      var p  = OSjs.Utils.$position(el);
-      var cx = ev.clientX - p.left;
-      var cy = ev.clientY - p.top;
-
-      self.onSliderClick(ev, cx, cy, (self.$element.offsetWidth - (self.$button.offsetWidth/2)), (self.$element.offsetHeight - (self.$button.offsetHeight/2)), self.$element.offsetHeight, self.$button.offsetHeight);
-    });
+    this.$root             = document.createElement('div');
+    this.$root.className   = 'Root';
+    this.$button           = document.createElement('div');
+    this.$button.className = 'Button';
 
     el.appendChild(this.$root);
     el.appendChild(this.$button);
 
+    this._addEventListener(this.$button, 'mousedown', function(ev) {
+      return self._onMouseDown(ev);
+    });
+
+    this._addEventListener(this.$root, 'click', function(ev) {
+      if ( ev.target && ev.target.className === 'Button' ) { return; }
+      return self._onSliderClick(ev);
+    });
+
     return el;
   };
 
+  /**
+   * When GUIElement has rendered
+   */
   Slider.prototype.update = function(force) {
     GUIElement.prototype.update.apply(this, arguments);
-    this.setValue(this.val);
+    this.setValue(this.val, false, true);
   };
 
   /**
-   * Set the value in percentage
-   *
-   * @param   int         p     Percentage
-   * @param   DOMEvent    evt   DOM Event
-   *
-   * @return  void
-   *
-   * @method Slider::setPercentage()
+   * When user clicks/drags button
    */
-  Slider.prototype.setPercentage = function(p, evt) {
-    p = parseInt(p, 10);
+  Slider.prototype._onMouseDown = function(ev) {
+    var self = this;
+    if ( !this.inited ) { return; }
 
-    var cd  = (this.max - this.min);
-    var val = parseInt(cd*(p/100), 10);
-    this.val = val;
-    this.onUpdate.call(this, val, p, evt);
+    var newX = null;
+    var newY = null;
+
+    var mouseStart = {x: ev.clientX, y: ev.clientY};
+    var mouseDiff  = {x: 0, y: 0};
+    var elPos      = {x: this.$button.offsetLeft, y: this.$button.offsetTop};
+    var moved      = false;
+
+    function _onMouseMove(evt) {
+      moved = true;
+
+      if ( self.type === 'horizontal' ) {
+        mouseDiff.x = evt.clientX - mouseStart.x;
+        newX = elPos.x + mouseDiff.x;
+      } else {
+        mouseDiff.y = evt.clientY - mouseStart.y;
+        newY = elPos.y + mouseDiff.y;
+      }
+
+      self._onSliderMove(evt, newX, newY);
+    }
+
+    function _onMouseUp(evt) {
+      if ( moved ) {
+        self.onChange.call(self, self.val, self.perc, evt);
+        self.onUpdate.call(self, self.val, self.perc, evt);
+      }
+      document.removeEventListener('mousemove', _onMouseMove, false);
+      document.removeEventListener('mouseup', _onMouseUp, false);
+    }
+
+    document.addEventListener('mousemove', _onMouseMove, false);
+    document.addEventListener('mouseup', _onMouseUp, false);
+
+    return true;
   };
 
   /**
-   * Event when slider was clicked
-   *
-   * @param   DOMEvent      ev    The DOM Event
-   * @param   int           cx    Click X
-   * @param   int           xy    Click Y
-   * @param   int           tw    Total width
-   * @param   int           th    Total height
-   * @param   int           rh    Element height
-   * @param   int           bg    Button height
-   *
-   * @return  void
-   *
-   * @method  Slider::onSliderClick()
+   * When user slides the button
    */
-  Slider.prototype.onSliderClick = function(ev, cx, cy, tw, th, rh, bh) {
-    var cd = (this.max - this.min);
-    var tmp;
+  Slider.prototype._onSliderMove = function(ev, newX, newY, ignoreEvent, ignoreValue) {
+    if ( !this.inited ) { return; }
+    if ( newX === null && newY === null ) { return; }
+
+    var maxPos = {x: (this.$element.offsetWidth  - this.$button.offsetWidth), y: (this.$element.offsetHeight - this.$button.offsetHeight)};
+    var snapping = 0;
+    var perc;
+
+    if ( this.steps > 0 ) {
+      if ( this.type === 'horizontal' ) {
+        snapping  = (maxPos.x / ((this.max - this.min) / this.steps));
+      } else {
+        snapping  = (maxPos.y / ((this.max - this.min) / this.steps));
+      }
+    }
+
+    if ( newX !== null ) {
+      if ( newX < 0 ) { newX = 0; }
+      if ( newX > maxPos.x ) { newX = maxPos.x; }
+      if ( snapping > 0.0 ) {
+        newX = snapping * Math.round(newX / snapping);
+      }
+
+      this.$button.style.left = parseInt(newX, 10).toString() + 'px';
+      perc = (newX/(maxPos.x)) * 100;
+    }
+
+    if ( newY !== null ) {
+      if ( newY < 0 ) { newY = 0; }
+      if ( newY > maxPos.y ) { newY = maxPos.y; }
+      if ( snapping > 0.0 ) {
+        newY = snapping * Math.round(newY / snapping);
+      }
+      this.$button.style.top = parseInt(newY, 10).toString() + 'px';
+      perc = 100 - ((newY/maxPos.y) * 100);
+    }
+
+    if ( !ignoreValue ) {
+      var tmp = (this.max - this.min) / 100;
+      var val = perc * tmp;
+
+      if ( this.steps > 0 ) {
+        // Kudos to jQuery UI here. I was having some trouble with this one
+        var valModStep = (val - this.min) % this.steps;
+        var alignValue = val - valModStep;
+        if ( Math.abs(valModStep) * 2 >= this.steps ) {
+          alignValue += ( valModStep > 0 ) ? this.steps : ( -this.steps );
+        }
+        val = alignValue;
+      }
+
+      if ( !isNaN(val) ) {
+        this.setValue(val, true);
+      }
+    }
+
+    if ( !ignoreEvent ) {
+      this.onChange.call(this, this.val, this.perc, ev);
+      this.onUpdate.call(this, this.val, this.perc, ev);
+    }
+  };
+
+  /**
+   * When user clicks on slider
+   */
+  Slider.prototype._onSliderClick = function(ev) {
+    if ( !this.inited ) { return; }
+    var newX = null;
+    var newY = null;
+    var p = OSjs.Utils.$position(this.$root);
 
     if ( this.type === 'horizontal' ) {
-      tmp = (cx/tw)*100;
+      newX = ev.clientX - p.left - (this.$button.offsetWidth/2);
     } else {
-      tmp = (rh + (bh/2)) - ((cy/th)*100);
+      newY = ev.clientY - p.top - (this.$button.offsetHeight/2);
     }
 
-    var val = parseInt(cd*(tmp/100), 10);
-    this.setValue(val);
-    this.setPercentage(tmp, 'click');
-  };
+    this._onSliderMove(ev, newX, newY);
 
-  /**
-   * Event when slider was updated
-   *
-   * @param   int         x       Slider X value
-   * @param   int         y       Slider Y value
-   * @param   int         maxX    Max X value
-   * @param   int         maxY    Max y value
-   * @param   DOMEvent    evt     The DOM Event
-   *
-   * @return  void
-   *
-   * @method  Slider::onSliderUpdate()
-   */
-  Slider.prototype.onSliderUpdate = function(x, y, maxX, maxY, evt) {
-    var p = null;
-    if ( typeof x !== 'undefined' ) {
-      p = (x/maxX) * 100;
-    } else if ( typeof y !== 'undefined' ) {
-      p = 100 - ((y/maxY) * 100);
-    }
-    if ( p !== null ) {
-      this.setPercentage(p, evt);
-    }
+    return true;
   };
 
   /**
@@ -255,33 +244,33 @@
    *
    * @method  Slider::setValue()
    */
-  Slider.prototype.setValue = function(val) {
-    if ( !this.inited ) { return; }
-
+  Slider.prototype.setValue = function(val, internalEvent, ignoreUpdate) {
     if ( val < this.min || val > this.max ) { return; }
+    var tmp = (this.max - this.min);
     this.val = val;
+    this.perc = (this.val / tmp) * 100;
 
-    var cd = (this.max - this.min);
-    var cp = this.val / (cd/100);
+    if ( !internalEvent ) {
+      var newX = null;
+      var newY = null;
 
-    this.$root.setAttribute('data-value', val.toString());
+      if ( this.type === 'horizontal' ) {
+        newX = ((this.$root.offsetWidth-this.$button.offsetWidth) / 100) * this.perc;
+      } else {
+        newY = this.$root.offsetHeight - (((this.$root.offsetHeight-this.$button.offsetHeight) / 100) * this.perc);
+      }
 
-    if ( this.type === 'horizontal' ) {
-      var rw    = this.$element.offsetWidth;
-      var bw    = this.$button.offsetWidth;
-      var dw    = (rw - bw);
-      var left  = (dw/100)*cp;
+      this._onSliderMove(null, newX, newY, true, true);
+    }
 
-      this.$button.style.left = left + 'px';
-    } else {
-      var rh    = this.$element.offsetHeight;
-      var bh    = this.$button.offsetHeight;
-      var dh    = (rh - bh);
-      var top   = (dh/100)*cp;
+    if ( !ignoreUpdate ) {
+      this.onChange.call(this, this.val, this.perc, null);
+      this.onUpdate.call(this, this.val, this.perc, null);
+    }
 
-      top = (rh-bh) - top;
-
-      this.$button.style.top = top + 'px';
+    if ( this.$root ) {
+      this.$root.setAttribute('data-percentage', this.perc.toString());
+      this.$root.setAttribute('data-value', this.val.toString());
     }
   };
 
