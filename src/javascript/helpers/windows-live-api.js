@@ -112,6 +112,7 @@
     console.debug('WindowsLiveAPI::load()', scope);
 
     var self = this;
+    var WL = window.WL || {};
 
     function _login() {
       var lastScope = (self.lastScope || []).sort();
@@ -144,6 +145,7 @@
         callback(API._('WLAPI_LOAD_FAILURE'));
         return;
       }
+      WL = window.WL || {};
 
       if ( self.inited ) {
         _login();
@@ -208,6 +210,8 @@
     callback = callback || function() {};
 
     var self = this;
+    var WL = window.WL || {};
+
     if ( this.hasSession ) {
       callback(false, false);
     }
@@ -232,6 +236,8 @@
    */
   WindowsLiveAPI.prototype.login = function(scope, callback) {
     var self = this;
+    var WL = window.WL || {};
+
     if ( this.hasSession ) {
       callback(false, true);
       return;
@@ -256,6 +262,7 @@
    */
   WindowsLiveAPI.prototype.onSessionChange = function() {
     console.warn('WindowsLiveAPI::onSessionChange()', arguments);
+    var WL = window.WL || {};
     var session = WL.getSession();
     if ( session ) {
       this.hasSession = true;

@@ -52,6 +52,7 @@
   function onedriveCall(args, callback) {
     console.debug('OneDrive::*onedriveCall()', args);
 
+    var WL = window.WL || {};
     WL.api(args).then(
       function(response) {
         callback(false, response);
