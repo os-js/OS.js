@@ -21,7 +21,6 @@
         "MaxUploadSize":    2097152,
         "BugReporting":     true,
         "Preloads":         [],
-        "Sounds":           true,
         "Locale":           "en_EN",
         "VersionAppend":    "",
         "VFS": {

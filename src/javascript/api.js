@@ -1193,11 +1193,7 @@
       console.debug('doPlaySound()', 'Browser has no support for sounds!');
       return false;
     }
-    var handler = OSjs.Core.getHandler();
-    if ( handler && !handler.getConfig('Core').Sounds ) {
-      console.debug('doPlaySound()', 'Core Config has disabled sounds!');
-      return false;
-    }
+
     var wm = OSjs.Core.getWindowManager();
     if ( wm && !wm.getSetting('enableSounds') ) {
       console.debug('doPlaySound()', 'Window Manager has disabled sounds!');
