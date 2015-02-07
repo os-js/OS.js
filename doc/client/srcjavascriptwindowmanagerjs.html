@@ -59,8 +59,12 @@
 <li><a href="#windowmanager-getdefaultsettings">getDefaultSettings()</a></li>
 <li><a href="#windowmanager-getpanel">getPanel()</a></li>
 <li><a href="#windowmanager-getpanels">getPanels()</a></li>
-<li><a href="#windowmanager-gettheme">getTheme()</a></li>
-<li><a href="#windowmanager-getthemes">getThemes()</a></li>
+<li><a href="#windowmanager-getstyletheme">getStyleTheme()</a></li>
+<li><a href="#windowmanager-getsoundtheme">getSoundTheme()</a></li>
+<li><a href="#windowmanager-geticontheme">getIconTheme()</a></li>
+<li><a href="#windowmanager-getstylethemes">getStyleThemes()</a></li>
+<li><a href="#windowmanager-getsoundthemes">getSoundThemes()</a></li>
+<li><a href="#windowmanager-geticonthemes">getIconThemes()</a></li>
 <li><a href="#windowmanager-setsetting">setSetting()</a></li>
 <li><a href="#windowmanager-getwindowspace">getWindowSpace()</a></li>
 <li><a href="#windowmanager-getwindowposition">getWindowPosition()</a></li>
@@ -410,22 +414,61 @@ Gets all panels
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Panel List</em></p>
 
 </div>
-<div class="section-method" id="windowmanager-gettheme">
-<h3 id="windowmanager-gettheme-">WindowManager::getTheme()</h3>
+<div class="section-method" id="windowmanager-getstyletheme">
+<h3 id="windowmanager-getstyletheme-">WindowManager::getStyleTheme()</h3>
 <pre>
-Gets current theme
+Gets current Style theme
+</pre>
+
+
+
+</div>
+<div class="section-method" id="windowmanager-getsoundtheme">
+<h3 id="windowmanager-getsoundtheme-">WindowManager::getSoundTheme()</h3>
+<pre>
+Gets current Sound theme
+</pre>
+
+
+
+</div>
+<div class="section-method" id="windowmanager-geticontheme">
+<h3 id="windowmanager-geticontheme-">WindowManager::getIconTheme()</h3>
+<pre>
+Gets current Icon theme
+</pre>
+
+
+
+</div>
+<div class="section-method" id="windowmanager-getstylethemes">
+<h3 id="windowmanager-getstylethemes-">WindowManager::getStyleThemes()</h3>
+<pre>
+Gets a list of Style themes
 </pre>
 
 
 
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Theme name or &#39;null&#39;</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>The list of themes</em></p>
 
 </div>
-<div class="section-method" id="windowmanager-getthemes">
-<h3 id="windowmanager-getthemes-">WindowManager::getThemes()</h3>
+<div class="section-method" id="windowmanager-getsoundthemes">
+<h3 id="windowmanager-getsoundthemes-">WindowManager::getSoundThemes()</h3>
 <pre>
-Gets a list of themes
+Gets a list of Sound themes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>The list of themes</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-geticonthemes">
+<h3 id="windowmanager-geticonthemes-">WindowManager::getIconThemes()</h3>
+<pre>
+Gets a list of Icon themes
 </pre>
 
 
@@ -627,6 +670,8 @@ Sets the last Window
 <h3 id="windowmanager-getanimduration-">WindowManager::getAnimDuration()</h3>
 <pre>
 Get CSS animation duration
+
+TODO: Not included in theme atm
 </pre>
 
 
@@ -648,7 +693,7 @@ If the pointer is inside the browser window
 
 </div>
 </div>
-<p><i>Generated: Sun Feb 08 2015 00:22:18 GMT+0100 (CET)</i></p>
+<p><i>Generated: Sun Feb 08 2015 00:53:40 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
