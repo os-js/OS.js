@@ -851,7 +851,7 @@
   // Getters / Setters
   //
 
-  CoreWM.prototype.getWindowSpace = function() {
+  CoreWM.prototype.getWindowSpace = function(noMargin) {
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
     var d = this.getSetting('desktopMargin');
 
@@ -872,11 +872,13 @@
       }
     }
 
-    if ( d > 0 ) {
-      s.top    += d;
-      s.left   += d;
-      s.width  -= (d * 2);
-      s.height -= (d * 2);
+    if ( !noMargin ) {
+      if ( d > 0 ) {
+        s.top    += d;
+        s.left   += d;
+        s.width  -= (d * 2);
+        s.height -= (d * 2);
+      }
     }
 
     return s;
