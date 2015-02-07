@@ -795,7 +795,7 @@
     name = name || null;
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
-      var theme = (wm ? wm.getSetting('sounds') : 'default') || 'default';
+      var theme = wm ? wm.getSoundTheme() : 'default';
       var root = OSjs.API.getDefaultSettings().Core.SoundURI;
       if ( !name.match(/^\//) ) {
         var ext = 'oga';
@@ -826,7 +826,7 @@
 
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
-      var theme = (wm ? wm.getSetting('icons') : 'default') || 'default';
+      var theme = wm ? wm.getIconTheme() : 'default';
       var root = OSjs.API.getDefaultSettings().Core.IconURI;
       if ( name.match(/^\.\//) ) {
         name = name.replace(/^\.\//, '');

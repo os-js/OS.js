@@ -79,7 +79,7 @@
 
       if ( win._state.maximized ) { return false; }
 
-      var theme = wm.getTheme(true);
+      var theme = wm.getStyleTheme(true);
       if ( theme && theme.style && theme.style.window ) {
         topMargin = theme.style.window.margin;
         borderSize = theme.style.window.border;
@@ -670,27 +670,77 @@
   };
 
   /**
-   * Gets current theme
+   * Gets current Style theme
    *
-   * @return  String      Theme name or 'null'
-   *
-   * @method  WindowManager::getTheme()
+   * @method  WindowManager::getStyleTheme()
    */
-  WindowManager.prototype.getTheme = function() {
+  WindowManager.prototype.getStyleTheme = function() {
     // Implement in your WM
     return null;
   };
 
   /**
-   * Gets a list of themes
+   * Gets current Sound theme
+   *
+   * @method  WindowManager::getSoundTheme()
+   */
+  WindowManager.prototype.getSoundTheme = function() {
+    // Implement in your WM
+    return null;
+  };
+
+  /**
+   * Gets current Icon theme
+   *
+   * @method  WindowManager::getIconTheme()
+   */
+  WindowManager.prototype.getIconTheme = function() {
+    // Implement in your WM
+    return null;
+  };
+
+  /**
+   * Gets a list of Style themes
    *
    * @return  Array   The list of themes
    *
-   * @method  WindowManager::getThemes()
+   * @method  WindowManager::getStyleThemes()
    */
-  WindowManager.prototype.getThemes = function() {
+  WindowManager.prototype.getStyleThemes = function() {
     // Implement in your WM
     return [];
+  };
+
+  /**
+   * Gets a list of Sound themes
+   *
+   * @return  Array   The list of themes
+   *
+   * @method  WindowManager::getSoundThemes()
+   */
+  WindowManager.prototype.getSoundThemes = function() {
+    var handler = OSjs.Core.getHandler();
+    var list = [];
+    if ( handler ) {
+      list = handler.getConfig('Sounds') || [];
+    }
+    return list;
+  };
+
+  /**
+   * Gets a list of Icon themes
+   *
+   * @return  Array   The list of themes
+   *
+   * @method  WindowManager::getIconThemes()
+   */
+  WindowManager.prototype.getIconThemes = function() {
+    var handler = OSjs.Core.getHandler();
+    var list = [];
+    if ( handler ) {
+      list = handler.getConfig('Icons') || [];
+    }
+    return list;
   };
 
   /**
@@ -839,15 +889,11 @@
 
   /**
    * Get CSS animation duration
+   * TODO: Not included in theme atm
    * @return int Duration length in ms
    * @method WindowManager::getAnimDuration()
    */
   WindowManager.prototype.getAnimDuration = function() {
-    var name  = this.getSetting('theme');
-    var theme = this.getTheme(name);
-    if ( theme && (typeof theme.animduration !== 'undefined') ) {
-      return parseInt(theme.animduration, 10) + 1;
-    }
     return 301;
   };
 

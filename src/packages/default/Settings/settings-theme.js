@@ -40,21 +40,42 @@
     var _ = OSjs.Applications.ApplicationSettings._;
     var wm = OSjs.Core.getWindowManager();
     var themes = {};
+    var themesSound = wm.getSoundThemes();
+    var themesIcon = wm.getIconThemes();
 
-    wm.getThemes().forEach(function(t) {
+    wm.getStyleThemes().forEach(function(t) {
       themes[t.name] = t.title;
     });
 
-    var tab = tabs.addTab('Theme', {title: 'Theme', onSelect: function() {
+    var tab = tabs.addTab('Theme', {title: 'Theme', onSelect: function() { // FIXME: Translation
     }});
 
-    // Theme selection
+    // Style Theme selection
     outer = document.createElement('div');
     outer.className = 'OuterWrapper';
     win._addGUIElement(new GUI.Label('LabelThemeThemeName', {label: _('Theme')}), outer);
     var selectTheme = win._addGUIElement(new GUI.Select('ThemeThemeName'), outer);
     selectTheme.addItems(themes);
     selectTheme.setSelected(settings.theme);
+    tab.appendChild(outer);
+
+    // Sound Theme selection
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    win._addGUIElement(new GUI.Label('LabelSoundThemeName', {label: _('Sounds')}), outer); // FIXME: Translation
+    var selectSounds = win._addGUIElement(new GUI.Select('SoundThemeName'), outer);
+    selectSounds.addItems(themesSound);
+    selectSounds.setSelected(settings.sounds);
+    tab.appendChild(outer);
+
+
+    // Icon Theme selection
+    outer = document.createElement('div');
+    outer.className = 'OuterWrapper';
+    win._addGUIElement(new GUI.Label('LabelIconThemeName', {label: _('Icons')}), outer); // FIXME: Translation
+    var selectIcons = win._addGUIElement(new GUI.Select('IconThemeName'), outer);
+    selectIcons.addItems(themesIcon);
+    selectIcons.setSelected(settings.icons);
     tab.appendChild(outer);
 
     // Enable animations
@@ -77,7 +98,6 @@
     win._addGUIElement(new OSjs.GUI.Label('LabelTouchMenu', {label: _('TouchMenu')}), outer);
     win._addGUIElement(new OSjs.GUI.Switch('PanelTouchMenu', {value: settings.useTouchMenu}), outer);
     tab.appendChild(outer);
-
   }
 
   function createBackgroundTab(win, root, tabs, settings) {
@@ -190,6 +210,8 @@
 
   function applySettings(win, settings) {
     settings.theme           = win._getGUIElement('ThemeThemeName').getValue();
+    settings.sounds          = win._getGUIElement('SoundThemeName').getValue();
+    settings.icons           = win._getGUIElement('IconThemeName').getValue();
     settings.animations      = win._getGUIElement('ThemeEnableAnimation').getValue();
     settings.enableSounds    = win._getGUIElement('DesktopEnableSound').getValue();
     settings.useTouchMenu    = win._getGUIElement('PanelTouchMenu').getValue();

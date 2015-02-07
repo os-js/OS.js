@@ -57,6 +57,14 @@
         "ClientId": ""
       },
 
+      "Sounds": {
+        "default": "Default (Freedesktop)"
+      },
+
+      "Icons": {
+        "default": "Default (Gnome)"
+      },
+
       "Fonts" : {
         "default" : "OSjsFont",
         "list"    : [

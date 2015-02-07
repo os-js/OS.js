@@ -936,7 +936,7 @@
     return this.panels[(idx || 0)];
   };
 
-  CoreWM.prototype.getTheme = function(returnMetadata) {
+  CoreWM.prototype.getStyleTheme = function(returnMetadata) {
     var name = this.getSetting('theme') || null;
     if ( returnMetadata ) {
       var handler = OSjs.Core.getHandler();
@@ -948,7 +948,15 @@
     return name;
   };
 
-  CoreWM.prototype.getThemes = function() {
+  CoreWM.prototype.getSoundTheme = function() {
+    return this.getSetting('sounds') || 'default';
+  };
+
+  CoreWM.prototype.getIconTheme = function() {
+    return this.getSetting('icons') || 'default';
+  };
+
+  CoreWM.prototype.getStyleThemes = function() {
     var handler = OSjs.Core.getHandler();
     if ( handler ) {
       return handler.getThemes();
