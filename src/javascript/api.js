@@ -698,36 +698,6 @@
   }
 
   /**
-   * Get a icon (wrapper for above methods)
-   *
-   * If the given name is specified with "./something.png" it will use the
-   * 'app' parameter.
-   *
-   * @param   String    name    Icon Name
-   * @param   Process   app     Application instance reference (Optional)
-   *                            You can also specify a name by String
-   * @param   String    args    Optional argument to getThemeResource
-   *                            (default="16x16")
-   *
-   * @retrurn String            The absolute URL of the icon
-   *
-   * @api     OSjs.API.getIcon()
-   */
-  function doGetIcon(name, app, args) {
-    name = name || '';
-    if ( name.match(/\.\//) ) {
-      if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
-          return OSjs.API.getApplicationResource(app, name);
-      } else {
-        if ( typeof app === 'object' ) {
-          return OSjs.API.getApplicationResource(app.path, name);
-        }
-      }
-    }
-    return OSjs.API.getThemeResource(name, 'icon', args);
-  }
-
-  /**
    * Get a icon based in file and mime
    *
    * @param   String    filename    Filename
@@ -774,43 +744,97 @@
       }
     }
 
-    return OSjs.API.getThemeResource(icon, 'icon', size);
+    return OSjs.API.getIcon(icon, size);
   }
 
   /**
    * Default method for getting a resource from current theme
    *
    * @param   String    name    Resource filename
-   * @param   String    type    Type (icon, sound, wm, base)
-   * @param   String    args    Used for 'icon', defines the size (optional)
+   * @param   String    type    Type ('base' or a sub-folder)
    *
    * @return  String            The absolute URL to the resource
    *
    * @api     OSjs.API.getThemeResource()
    */
-  function doGetThemeResource(name, type, args) {
+  function doGetThemeResource(name, type) {
     name = name || null;
     type = type || null;
-    args = args || null;
 
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
       var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
       if ( !name.match(/^\//) ) {
-        if ( type === 'icon' ) {
-          var size = args || '16x16';
-          name = root + '/' + theme + '/icons/' + size + '/' + name;
-        } else if ( type === 'sound' ) {
-          var ext = 'oga';
-          if ( !OSjs.Compability.audioTypes.ogg ) {
-            ext = 'mp3';
-          }
-          name = root + '/' + theme + '/sounds/' + name + '.' + ext;
-        } else if ( type === 'wm' ) {
-          name = root + '/' + theme + '/wm/' + name;
-        } else if ( type === 'base' ) {
+        if ( type === 'base' || type === null ) {
           name = root + '/' + theme + '/' + name;
+        } else {
+          name = root + '/' + theme + '/' + type + '/' + name;
+        }
+      }
+    }
+
+    return name;
+  }
+
+  /**
+   * Default method for getting a sound from theme
+   *
+   * @param   String    name    Resource filename
+   *
+   * @return  String            The absolute URL to the resource
+   *
+   * @api     OSjs.API.getSound()
+   */
+  function doGetSound(name) {
+    name = name || null;
+    if ( name ) {
+      var wm = OSjs.Core.getWindowManager();
+      var theme = (wm ? wm.getSetting('sounds') : 'default') || 'default';
+      var root = OSjs.API.getDefaultSettings().Core.SoundURI;
+      if ( !name.match(/^\//) ) {
+        var ext = 'oga';
+        if ( !OSjs.Compability.audioTypes.ogg ) {
+          ext = 'mp3';
+        }
+        name = root + '/' + theme + '/' + name + '.' + ext;
+      }
+    }
+    return name;
+  }
+
+  /**
+   * Default method for getting a icon from theme
+   *
+   * @param   String    name    Resource filename
+   * @param   String    size    (Optional) Icon size (default=16x16)
+   * @param   Process   app     (Optional) Application instance reference. Can also be String. For `name` starting with './'
+   *
+   * @return  String            The absolute URL to the resource
+   *
+   * @api     OSjs.API.getIcon()
+   */
+  function doGetIcon(name, size, app) {
+    name = name || null;
+    size = size || '16x16';
+    app  = app  || null;
+
+    if ( name ) {
+      var wm = OSjs.Core.getWindowManager();
+      var theme = (wm ? wm.getSetting('icons') : 'default') || 'default';
+      var root = OSjs.API.getDefaultSettings().Core.IconURI;
+      if ( name.match(/^\.\//) ) {
+        name = name.replace(/^\.\//, '');
+        if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
+          return OSjs.API.getApplicationResource(app, name);
+        } else {
+          if ( app !== null && typeof app === 'object' ) {
+            return OSjs.API.getApplicationResource(app.path, name);
+          }
+        }
+      } else {
+        if ( !name.match(/^\//) ) {
+          name = root + '/' + theme + '/' + size + '/' + name;
         }
       }
     }
@@ -1179,7 +1203,7 @@
       volume = 1.0;
     }
 
-    var f = OSjs.API.getThemeResource(name, 'sound');
+    var f = OSjs.API.getSound(name);
     console.info('doPlaySound()', name, f);
     var a = new Audio(f);
     a.volume = volume;
@@ -1254,6 +1278,7 @@
   OSjs.API.getIcon                = doGetIcon;
   OSjs.API.getFileIcon            = doGetFileIcon;
   OSjs.API.getThemeResource       = doGetThemeResource;
+  OSjs.API.getSound               = doGetSound;
 
   OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || doGetDefaultSettings;
   OSjs.API.getDefaultPath         = doGetDefaultPath;

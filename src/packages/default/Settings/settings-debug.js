@@ -209,7 +209,7 @@
 
     _createElement(new GUI.Button('ButtonTest1', {label: 'Normal Button'}), buttonouter);
     _createElement(new GUI.Button('ButtonTest2', {label: 'Disabled Button', disabled: true}), buttonouter);
-    _createElement(new GUI.Button('ButtonTest3', {label: 'Image Button', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')}), buttonouter);
+    _createElement(new GUI.Button('ButtonTest3', {label: 'Image Button', icon: OSjs.API.getIcon('apps/xfwm4.png')}), buttonouter);
 
     outer.appendChild(buttonouter);
 
@@ -265,25 +265,25 @@
 
     var iconView = _createElement(new GUI.IconView('TesterIconView'));
     iconView.setData([
-      {label: 'IconView 1', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')},
-      {label: 'IconView 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')},
-      {label: 'IconView 3', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')}
+      {label: 'IconView 1', icon: OSjs.API.getIcon('apps/xfwm4.png')},
+      {label: 'IconView 2', icon: OSjs.API.getIcon('apps/xfwm4.png')},
+      {label: 'IconView 3', icon: OSjs.API.getIcon('apps/xfwm4.png')}
     ]);
     iconView.render();
 
     var treeView = _createElement(new GUI.TreeView('TesterTreeView'));
     treeView.setData([
-      {title: 'TreeView root 1', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')},
-      {title: 'TreeView root 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon'), items: [
-        {title: 'TreeView child 1 -> 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')},
-        {title: 'TreeView child 2 -> 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')},
-        {title: 'TreeView child 3 -> 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')},
-        {title: 'TreeView child 4 -> 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon'), items: [
-          {title: 'TreeView child 1 -> 4 -> 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')},
-          {title: 'TreeView child 2 -> 4 -> 2', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')}
+      {title: 'TreeView root 1', icon: OSjs.API.getIcon('apps/xfwm4.png')},
+      {title: 'TreeView root 2', icon: OSjs.API.getIcon('apps/xfwm4.png'), items: [
+        {title: 'TreeView child 1 -> 2', icon: OSjs.API.getIcon('apps/xfwm4.png')},
+        {title: 'TreeView child 2 -> 2', icon: OSjs.API.getIcon('apps/xfwm4.png')},
+        {title: 'TreeView child 3 -> 2', icon: OSjs.API.getIcon('apps/xfwm4.png')},
+        {title: 'TreeView child 4 -> 2', icon: OSjs.API.getIcon('apps/xfwm4.png'), items: [
+          {title: 'TreeView child 1 -> 4 -> 2', icon: OSjs.API.getIcon('apps/xfwm4.png')},
+          {title: 'TreeView child 2 -> 4 -> 2', icon: OSjs.API.getIcon('apps/xfwm4.png')}
         ]}
       ]},
-      {title: 'TreeView root 3', icon: OSjs.API.getThemeResource('apps/xfwm4.png', 'icon')}
+      {title: 'TreeView root 3', icon: OSjs.API.getIcon('apps/xfwm4.png')}
     ]);
     treeView.render();
 

@@ -306,7 +306,7 @@
             var img = document.createElement('img');
             img.title = API._('TITLE_SIGNED_IN_AS_FMT', user.username);
             img.alt = img.title;
-            img.src = API.getThemeResource('status/avatar-default.png', 'icon', '16x16');
+            img.src = API.getIcon('status/avatar-default.png', '16x16');
             el.firstChild.appendChild(img);
           }
         }

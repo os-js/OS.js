@@ -38,7 +38,7 @@
     var self = this;
     var opts = {
       data : [{
-        icon: API.getThemeResource('places/folder_home.png', 'icon', '32x32'),
+        icon: API.getIcon('places/folder_home.png', '32x32'),
         label: 'Home',
         launch: 'ApplicationFileManager',
         index: 0,

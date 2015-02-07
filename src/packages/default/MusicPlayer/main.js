@@ -377,7 +377,7 @@
     var _createButton = function(container, img, onclick) {
       var i = document.createElement('img');
       i.alt = '';
-      i.src = OSjs.API.getThemeResource('actions/' + img + '.png', 'icon', '32x32');
+      i.src = OSjs.API.getIcon('actions/' + img + '.png', '32x32');
 
       var b = self._addGUIElement(new GUI.Button('ControllerButton', {label: '', onClick: onclick}), container);
       b.$input.appendChild(i);

@@ -101,7 +101,7 @@
     var self = this;
 
     function _createImage(i) {
-      return OSjs.API.getThemeResource(i, 'icon');
+      return OSjs.API.getIcon(i);
     }
 
     function _bindEvents(li, iter, singleClick) {

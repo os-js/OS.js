@@ -46,6 +46,8 @@
       backgroundColor     : '#0B615E',
       fontFamily          : 'OSjsFont',
       theme               : 'default',
+      icons               : 'default',
+      sounds              : 'default',
       background          : 'image-fill',
       windowCornerSnap    : 0,
       windowSnap          : 0,
@@ -53,7 +55,7 @@
       enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,
-      enableSounds        : API.getDefaultSettings().Core.Sounds,
+      enableSounds        : true,
       invertIconViewColor : false,
       moveOnResize        : true,       // Move windows into viewport on resize
       desktopIcons        : [],
@@ -618,7 +620,7 @@
       if ( opts.icon ) {
         var icon = document.createElement('img');
         icon.alt = '';
-        icon.src = API.getThemeResource(opts.icon, 'icon', '32x32');
+        icon.src = API.getIcon(opts.icon, '32x32');
         classNames.push('HasIcon');
         container.appendChild(icon);
       }

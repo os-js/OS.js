@@ -528,7 +528,7 @@
     var self = this;
 
     var _getFileIcon = function(r) {
-      return API.getThemeResource(r, 'icon');
+      return API.getIcon(r);
     };
 
     var sideViewItems = [];

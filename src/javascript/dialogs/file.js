@@ -224,7 +224,7 @@
       }}), this.$element);
 
       roots.forEach(function(m, i) {
-        var icon = API.getIcon(m.module.icon, null, '16x16');
+        var icon = API.getIcon(m.module.icon);
         var desc = m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : '');
         self.$selectRoot.addItem(m.name, desc, icon);
       });

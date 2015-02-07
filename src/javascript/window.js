@@ -271,7 +271,7 @@
 
     this._state.focused = false;
 
-    this._icon = API.getIcon(this._icon, this._appRef);
+    this._icon = API.getIcon(this._icon, null, this._appRef);
 
     // Initial position
     if ( !this._properties.gravity ) {

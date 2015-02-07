@@ -67,7 +67,7 @@
     var rt;
 
     var _createIcon = function(i) {
-      return OSjs.API.getThemeResource(i, 'icon');
+      return OSjs.API.getIcon(i);
     };
 
     var _createColorDialog = function(callback, current) {

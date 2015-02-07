@@ -63,7 +63,7 @@
       if ( items.hasOwnProperty(i) ) {
         list.push({
           key:   i,
-          image: API.getThemeResource(items[i].Icon, 'icon', '16x16'),
+          image: API.getIcon(items[i].Icon),
           name:  Utils.format("{0} ({1})", items[i].Name, items[i].Description)
         });
       }

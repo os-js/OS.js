@@ -81,7 +81,7 @@
   };
 
   PanelItemButtons.prototype.addButton = function(title, icon, callback) {
-    icon = API.getThemeResource(icon, 'icon');
+    icon = API.getIcon(icon);
 
     var sel = document.createElement('li');
     sel.className = 'Button';

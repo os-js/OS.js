@@ -44,7 +44,7 @@
   };
 
   function _createIcon(aiter, aname, arg) {
-    return API.getIcon(aiter.icon, aiter, arg);
+    return API.getIcon(aiter.icon, arg, aiter);
   }
 
   /**
@@ -116,7 +116,7 @@
         if ( submenu.length ) {
           list.push({
             title: OSjs.Applications.CoreWM._(DefaultCategories[c].title),
-            icon:  API.getThemeResource(DefaultCategories[c].icon, 'icon', '16x16'),
+            icon:  API.getIcon(DefaultCategories[c].icon, '16x16'),
             menu:  submenu
           });
         }

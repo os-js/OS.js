@@ -115,7 +115,7 @@
             if ( iter.icon ) {
               var img = document.createElement('img');
               img.alt = '';
-              img.src = OSjs.API.getThemeResource(iter.icon, 'icon');
+              img.src = OSjs.API.getIcon(iter.icon);
               m.appendChild(img);
             }
 

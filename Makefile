@@ -51,8 +51,12 @@ packages:
 themes:
 	@echo "\033[1;35mBuilding Themes\033[0m"
 	rm -rf dist/themes/* ||:
+	mkdir -p dist/themes/styles ||:
 	(src/tools/obt themes)
-	cp -R src/themes/wallpapers dist/themes/
+	cp -R src/themes/wallpapers dist/themes/wallpapers
+	cp -R src/themes/icons dist/themes/icons
+	cp -R src/themes/fonts dist/themes/fonts
+	cp -R src/themes/sounds dist/themes/sounds
 
 compress:
 	@echo "\033[1;35mMaking compressed distro\033[0m"

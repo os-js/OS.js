@@ -283,7 +283,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    * Action: Build Themes
    */
   function buildThemes() {
-    var dir   = _path.join(ROOT, 'src', 'themes');
+    var dir   = _path.join(ROOT, 'src', 'themes', 'styles');
     var files = getFilesByExtension(dir, 'less');
 
     var q = new AQ();
@@ -296,7 +296,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
       q.add(function(cb) {
         var src = _path.join(dir, iter);
-        var dest = _path.join(ROOT, 'dist', 'themes', name + '.css');
+        var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name + '.css');
 
         exec([LESSC, src, dest], function() {
           cb();
@@ -305,7 +305,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
       q.add(function(cb) {
         var src = _path.join(dir, name);
-        var dest = _path.join(ROOT, 'dist', 'themes', name);
+        var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name);
         exec(['cp', '-Rf', src, dest], function() {
           cb();
         });

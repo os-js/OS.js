@@ -61,7 +61,7 @@
 
     function _createIcon(iter) {
       iter = iter || 'status/gtk-dialog-question.png';
-      return OSjs.API.getIcon(iter, null, '32x32');
+      return OSjs.API.getIcon(iter, '32x32');
     }
 
     var columns = [
