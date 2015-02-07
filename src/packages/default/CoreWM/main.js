@@ -932,6 +932,18 @@
     return this.panels[(idx || 0)];
   };
 
+  CoreWM.prototype.getTheme = function(returnMetadata) {
+    var name = this.getSetting('theme') || null;
+    if ( returnMetadata ) {
+      var handler = OSjs.Core.getHandler();
+      if ( handler ) {
+        return handler.getTheme(name);
+      }
+      return null;
+    }
+    return name;
+  };
+
   CoreWM.prototype.getThemes = function() {
     var handler = OSjs.Core.getHandler();
     if ( handler ) {
