@@ -246,14 +246,17 @@
 
         // 8-directional corner window snapping
         if ( cornerSnapSize > 0 ) {
-          if ( (newLeft-borderSize) <= cornerSnapSize ) { // Left
+          if ( ((newLeft-borderSize) <= cornerSnapSize) && ((newLeft-borderSize) >= -cornerSnapSize) ) { // Left
             newLeft = borderSize;
-          } else if ( newRight >= (startRect.width - cornerSnapSize) ) { // Right
+          } else if ( (newRight >= (startRect.width - cornerSnapSize)) && (newRight <= (startRect.width + cornerSnapSize)) ) { // Right
             newLeft = startRect.width - startDimension.w - borderSize;
           }
-          if ( newTop <= (startRect.top + cornerSnapSize) ) { // Top
+          if ( (newTop <= (startRect.top + cornerSnapSize)) && (newTop >= (startRect.top - cornerSnapSize)) ) { // Top
             newTop = startRect.top + (borderSize);
-          } else if ( newBottom >= ((startRect.height + startRect.top) - cornerSnapSize) ) { // Bottom
+          } else if ( 
+                      (newBottom >= ((startRect.height + startRect.top) - cornerSnapSize)) &&
+                      (newBottom <= ((startRect.height + startRect.top) + cornerSnapSize))
+                    ) { // Bottom
             newTop = (startRect.height + startRect.top) - startDimension.h - topMargin + borderSize;
           }
         }
@@ -261,22 +264,22 @@
         // Snapping to other windows
         if ( windowSnapSize > 0 ) {
           windowRects.forEach(function(rect) {
-            if ( newRight >= (rect.left - windowSnapSize) && newRight <= rect.left ) { // Left
+            if ( newRight >= (rect.left - windowSnapSize) && newRight <= (rect.left + windowSnapSize) ) { // Left
               newLeft = rect.left - (startDimension.w + (borderSize*2));
               return false;
             }
 
-            if ( newLeft <= (rect.right + windowSnapSize) && newLeft >= rect.right ) { // Right
+            if ( (newLeft-borderSize) <= (rect.right + windowSnapSize) && (newLeft-borderSize) >= (rect.right - windowSnapSize) ) { // Right
               newLeft = rect.right + (borderSize*2);
               return false;
             }
 
-            if ( newBottom >= (rect.top - windowSnapSize) && newBottom <= rect.top ) { // Top
+            if ( newBottom >= (rect.top - windowSnapSize) && newBottom <= (rect.top + windowSnapSize) ) { // Top
               newTop = rect.top - (startDimension.h + borderSize + topMargin);
               return false;
             }
 
-            if ( newTop <= (rect.bottom + windowSnapSize) && newTop >= rect.bottom ) { // Bottom
+            if ( newTop <= (rect.bottom + windowSnapSize) && newTop >= (rect.bottom - windowSnapSize) ) { // Bottom
               newTop = rect.bottom + borderSize;
               return false;
             }
