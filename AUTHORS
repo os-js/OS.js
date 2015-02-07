@@ -1,11 +1,11 @@
+OS.js is created and maintaned by:
 Anders Evenrud <andersevenrud@gmail.com>
 
-Thanks to:
-* Daniel Lang - German Translations (de_DE)
-* Emersion - French Translations (fr_FR)
-* Fedor Tarasov - Russian Translations (ru_RU)
+For a full list of contributions, see:
+* https://github.com/andersevenrud/OS.js-v2/graphs/contributors
+* https://github.com/andersevenrud/OS.js-v2/wiki/Hall-of-Fame
 
-OS.js is using resources from:
+I'm using the following resources from outside sources:
 * Gnome - Icon theme
 * Freedesktop - Sound theme
 * Jonathan Pinhorn - 'Karla' fonts
