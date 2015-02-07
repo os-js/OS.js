@@ -53,12 +53,11 @@
    *
    * FIXME: Optimize
    */
-  function attachWindowEvents(win) {
+  function attachWindowEvents(win, wm) {
     var isTouch = OSjs.Compability.touch;
     var main = win._$element;
     var windowTop = win._$top;
     var windowResize = win._$resize;
-    var wm = OSjs.Core.getWindowManager();
     var sx = 0;
     var sy = 0;
     var action = null;
@@ -449,7 +448,7 @@
    */
   WindowManager.prototype._initWindow = function(w) {
     w.init(this, w._appRef);
-    attachWindowEvents(w);
+    attachWindowEvents(w, this);
   };
 
   /**

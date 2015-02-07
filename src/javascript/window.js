@@ -600,6 +600,7 @@
       self._$disabled   = null;
       self._$iframefix  = null;
       self._iframeFixEl = null;
+      self._$resize     = null;
     }
 
     if ( this._destroyed ) { return; }
