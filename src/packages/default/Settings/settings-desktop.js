@@ -87,7 +87,7 @@
     outer.className = 'OuterWrapper';
     var labelWindowSnapping = win._addGUIElement(new GUI.Label('LabelWindowSnapping', {label: _('Window Snapping')}), outer);
     function updateWindowSnapping(value) {
-      labelWindowSnapping.$element.innerHTML = _('Window Snapping ({0}px)', value);
+      labelWindowSnapping.$element.innerHTML = _('Window Snapping ({0}px) EXPERIMENTAL!', value);
     }
     win._addGUIElement(new GUI.Slider('SliderWindowSnapping', {steps: 5, min: 0, max: 50, val: settings.windowSnap, onChange: function(value, percentage) {
       updateWindowSnapping(value);
