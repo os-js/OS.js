@@ -49,6 +49,7 @@
 <li><a href="#windowmanager-destroy">destroy()</a></li>
 <li><a href="#windowmanager-init">init()</a></li>
 <li><a href="#windowmanager-getwindow">getWindow()</a></li>
+<li><a href="#windowmanager-_initwindow">_initWindow()</a></li>
 <li><a href="#windowmanager-addwindow">addWindow()</a></li>
 <li><a href="#windowmanager-removewindow">removeWindow()</a></li>
 <li><a href="#windowmanager-applysettings">applySettings()</a></li>
@@ -165,6 +166,38 @@ Get a Window by name
 </table>
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-_initwindow">
+<h3 id="windowmanager-_initwindow-w-">WindowManager::_initWindow(w)</h3>
+<pre>
+Internal method for initing a window
+
+You can use this method in your WindowManager implementation
+
+to cusomize how the process works. ex, custom events
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
 <div class="section-method" id="windowmanager-addwindow">
@@ -615,7 +648,7 @@ If the pointer is inside the browser window
 
 </div>
 </div>
-<p><i>Generated: Sat Feb 07 2015 00:43:29 GMT+0100 (CET)</i></p>
+<p><i>Generated: Sat Feb 07 2015 21:12:27 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
