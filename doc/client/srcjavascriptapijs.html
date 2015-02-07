@@ -440,12 +440,16 @@ Get path to css theme
 
 </div>
 <div class="section-function" id="osjs-api-getfileicon">
-<h2 id="osjs-api-getfileicon-filename-mime-type-icon-size-">OSjs.API.getFileIcon(filename, mime, type, icon, size)</h2>
+<h2 id="osjs-api-getfileicon-file-size-icon-">OSjs.API.getFileIcon(file, size, icon)</h2>
 <pre>
 Get a icon based in file and mime
 </pre>
 
 
+<h4 id="see">See</h4>
+<ul>
+<li>vfs.js</li>
+</ul>
 <h4 id="parameters">Parameters</h4>
 <table>
 <thead>
@@ -457,29 +461,19 @@ Get a icon based in file and mime
 </thead>
 <tbody>
 <tr>
-<td>filename</td>
-<td>String</td>
-<td>Filename</td>
-</tr>
-<tr>
-<td>mime</td>
-<td>String</td>
-<td>MIME type</td>
-</tr>
-<tr>
-<td>type</td>
-<td>String</td>
-<td>Filetype (dir or file, default=&quot;file&quot;)</td>
-</tr>
-<tr>
-<td>icon</td>
-<td>String</td>
-<td>Default icon (optional)</td>
+<td>file</td>
+<td>[File]</td>
+<td>File Data (see supported types)</td>
 </tr>
 <tr>
 <td>size</td>
 <td>String</td>
-<td>Icon size (default=&quot;16x16&quot;)</td>
+<td>(Optional) Icon size (default=&quot;16x16&quot;)</td>
+</tr>
+<tr>
+<td>icon</td>
+<td>String</td>
+<td>(Optional) Default icon</td>
 </tr>
 </tbody>
 </table>
@@ -957,7 +951,7 @@ etc gets a menu entry.
 
 </div>
 <h1>Classes</h1>
-<p><i>Generated: Sun Feb 08 2015 00:03:11 GMT+0100 (CET)</i></p>
+<p><i>Generated: Sun Feb 08 2015 00:22:18 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
