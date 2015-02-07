@@ -1,4 +1,10 @@
 {
   "name": "flat",
-  "title": "A very flat theme"
+  "title": "A very flat theme",
+  "style": {
+    "window": {
+      "margin": 29,
+      "border": 3
+    }
+  }
 }

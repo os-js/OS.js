@@ -1,4 +1,10 @@
 {
   "name": "uncomplicated",
-  "title": "Uncomplicated (Gnome Theme)"
+  "title": "Uncomplicated (Gnome Theme)",
+  "style": {
+    "window": {
+      "margin": 29,
+      "border": 3
+    }
+  }
 }

@@ -1,4 +1,10 @@
 {
   "name": "dark",
-  "title": "A dark grey-ish theme"
+  "title": "A dark grey-ish theme",
+  "style": {
+    "window": {
+      "margin": 29,
+      "border": 3
+    }
+  }
 }
