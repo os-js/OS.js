@@ -215,7 +215,7 @@
       this.$header.appendChild(document.createTextNode(title));
     }
 
-    this._updateGUIElements();
+    this._updateGUIElements(true);
   };
 
   /////////////////////////////////////////////////////////////////////////////
