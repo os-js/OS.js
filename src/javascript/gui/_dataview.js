@@ -87,6 +87,7 @@
   };
 
   _DataView.prototype.update = function() {
+    if ( this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
 
     // Automatic render when user supplies data

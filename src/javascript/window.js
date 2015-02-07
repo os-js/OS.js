@@ -1024,10 +1024,11 @@
    *
    * @method  Window::_updateGUIElements()
    */
-  Window.prototype._updateGUIElements = function() {
+  Window.prototype._updateGUIElements = function(force) {
+    force = (force === true);
     this._guiElements.forEach(function(el, i) {
       if ( el ) {
-        el.update();
+        el.update(force);
       }
     });
   };
@@ -1143,6 +1144,13 @@
             overlay.parentNode.removeChild(overlay);
             overlay = null;
           }
+        });
+      }
+
+      // NOTE: Fixes problems with GUIElements values not setting properly
+      if ( (gel instanceof OSjs.GUI.Tabs) ) {
+        gel._addHook('select', function() {
+          self._updateGUIElements(true);
         });
       }
 

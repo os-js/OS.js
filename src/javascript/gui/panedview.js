@@ -67,6 +67,7 @@
   };
 
   PanedView.prototype.update = function() {
+    if ( this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
 
     var self  = this;
@@ -137,7 +138,6 @@
 
       createResizer(v, idx, sep);
     });
-
   };
 
   PanedView.prototype.destroy = function() {

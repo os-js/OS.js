@@ -218,6 +218,8 @@
 
       this.currentTab = this.tabs[idx];
       this.currentTab.select();
+
+      this._fireHook('select', this.currentTab);
     }
   };
 
@@ -312,10 +314,10 @@
   };
 
   Tabs.prototype.update = function() {
-    if ( !this.inited ) {
-      this.selectFirstTab();
-    }
+    if ( this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
+
+    this.selectFirstTab();
   };
 
   /////////////////////////////////////////////////////////////////////////////

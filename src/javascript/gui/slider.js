@@ -102,7 +102,9 @@
    * When GUIElement has rendered
    */
   Slider.prototype.update = function(force) {
+    if ( !force && this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
+
     this.setValue(this.val, false, true);
   };
 
@@ -113,6 +115,8 @@
     var self = this;
     if ( !this.inited ) { return; }
 
+    ev.preventDefault();
+
     var newX = null;
     var newY = null;
 
@@ -122,6 +126,8 @@
     var moved      = false;
 
     function _onMouseMove(evt) {
+      evt.preventDefault();
+
       moved = true;
 
       if ( self.type === 'horizontal' ) {
@@ -133,6 +139,8 @@
       }
 
       self._onSliderMove(evt, newX, newY);
+
+      return false;
     }
 
     function _onMouseUp(evt) {
@@ -147,7 +155,7 @@
     document.addEventListener('mousemove', _onMouseMove, false);
     document.addEventListener('mouseup', _onMouseUp, false);
 
-    return true;
+    return false;
   };
 
   /**
@@ -257,7 +265,8 @@
       if ( this.type === 'horizontal' ) {
         newX = ((this.$root.offsetWidth-this.$button.offsetWidth) / 100) * this.perc;
       } else {
-        newY = this.$root.offsetHeight - (((this.$root.offsetHeight-this.$button.offsetHeight) / 100) * this.perc);
+        var tmp2 = (this.$root.offsetHeight-this.$button.offsetHeight);
+        newY = tmp2 - ((tmp2 / 100) * this.perc);
       }
 
       this._onSliderMove(null, newX, newY, true, true);

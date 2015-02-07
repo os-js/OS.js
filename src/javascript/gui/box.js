@@ -63,10 +63,6 @@
     return el;
   };
 
-  Box.prototype.update = function() {
-    GUIElement.prototype.update.apply(this, arguments);
-  };
-
   Box.prototype.destroy = function() {
     GUIElement.prototype.destroy.apply(this, arguments);
     this.elements = [];

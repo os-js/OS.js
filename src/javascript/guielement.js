@@ -85,6 +85,7 @@
       this._hooks         = {
         focus   : [],
         blur    : [],
+        select  : [], // Reserved for internal usage
         destroy : []
       };
 
@@ -170,6 +171,7 @@
    * @method  GUIElement::update()
    */
   GUIElement.prototype.update = function(force) {
+    if ( this.inited ) { return; }
     this.inited = true;
   };
 

@@ -65,6 +65,7 @@
   };
 
   ScrollView.prototype.update = function() {
+    if ( this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
 
     this.setScroll(this.opts.scrollX, this.opts.scrollY);

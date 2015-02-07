@@ -224,13 +224,13 @@
     var statusBar = _createElement(new GUI.StatusBar('TesterStatusBar'));
     statusBar.setText('This is a status bar');
 
-    var sliderHorizontal = _createElement(new GUI.Slider('TesterSliderHorizontal', {min: 0, max: 100, val: 0, onChange: function(value, percentage, evt) {
+    var sliderHorizontal = _createElement(new GUI.Slider('TesterSliderHorizontal', {min: 0, max: 100, val: 50, onChange: function(value, percentage, evt) {
       if ( evt && (evt.type === 'click' || evt.type == 'mouseup') ) {
         alert("Slider value: " + value + " " + percentage + "%");
       }
     }, onUpdate: function() {}}));
 
-    var sliderVertical = _createElement(new GUI.Slider('TesterSliderVertical', {min: 0, max: 100, val: 0, orientation: 'vertical', onChange: function(value, percentage, evt) {
+    var sliderVertical = _createElement(new GUI.Slider('TesterSliderVertical', {min: 0, max: 100, val: 50, orientation: 'vertical', onChange: function(value, percentage, evt) {
       if ( evt && (evt.type === 'click' || evt.type == 'mouseup') ) {
         alert("Slider value: " + value + " " + percentage + "%");
       }

@@ -485,8 +485,11 @@
   };
 
   FileView.prototype.update = function() {
-    GUIElement.prototype.update.apply(this, arguments);
-    this.createView(this.startViewType, this.getRoot());
+    if ( !this.inited ) {
+      GUIElement.prototype.update.apply(this, arguments);
+
+      this.createView(this.startViewType, this.getRoot());
+    }
   };
 
   FileView.prototype.createView = function(v, root) {

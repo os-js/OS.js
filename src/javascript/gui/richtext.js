@@ -75,6 +75,7 @@
   };
 
   RichText.prototype.update = function() {
+    if  ( this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
 
     var self = this;
