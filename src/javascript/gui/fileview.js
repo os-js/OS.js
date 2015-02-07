@@ -115,7 +115,7 @@
     var fileList = [];
     function _createIcon(iter) {
       var defIcon = 'status/gtk-dialog-question.png';
-      return OSjs.API.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '16x16');
+      return OSjs.API.getFileIcon(iter, '16x16', defIcon);
     }
 
     list.forEach(function(iter, i) {
@@ -254,7 +254,7 @@
     var fileList = [];
     function _createIcon(iter) {
       var defIcon = 'status/gtk-dialog-question.png';
-      return OSjs.API.getFileIcon(iter.filename, iter.mime, iter.type, defIcon, '32x32');
+      return OSjs.API.getFileIcon(iter, '32x32', defIcon);
     }
 
     list.forEach(function(iter, i) {
@@ -354,7 +354,7 @@
 
     function _callbackIcon(iter) {
       var icon = 'status/gtk-dialog-question.png';
-      return OSjs.API.getFileIcon(iter.filename, iter.mime, iter.type, icon);
+      return OSjs.API.getFileIcon(iter, null, icon);
     }
 
     function _callbackSize(iter) {

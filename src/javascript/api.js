@@ -700,21 +700,26 @@
   /**
    * Get a icon based in file and mime
    *
-   * @param   String    filename    Filename
-   * @param   String    mime        MIME type
-   * @param   String    type        Filetype (dir or file, default="file")
-   * @param   String    icon        Default icon (optional)
-   * @param   String    size        Icon size (default="16x16")
+   * @param   [File]    file    File Data (see supported types)
+   * @param   String    size    (Optional) Icon size (default="16x16")
+   * @param   String    icon    (Optional) Default icon
    *
-   * @return  String                The absolute URL to the icon
+   * @return  String            The absolute URL to the icon
    *
+   * @see     vfs.js
    * @api     OSjs.API.getFileIcon()
    */
-  function doGetFileIcon(filename, mime, type, icon, size) {
+  function doGetFileIcon(file, size, icon) {
+    if ( typeof file === 'object' && !(file instanceof OSjs.VFS.File) ) {
+      file = new OSjs.VFS.File(file);
+    }
+
+    var filename = file.filename  || null;
+    var type     = file.type      || 'file';
+    var icon     = icon           || 'mimetypes/gnome-fs-regular.png';
+    var size     = size           || '16x16';
+
     if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
-    type = type || 'file';
-    icon = icon || 'mimetypes/gnome-fs-regular.png';
-    size = size || '16x16';
 
     if ( type === 'dir' ) {
       icon = 'places/folder.png';

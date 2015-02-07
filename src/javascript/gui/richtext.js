@@ -78,8 +78,11 @@
     if  ( this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
 
+    var wm = OSjs.Core.getWindowManager();
+    var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
+    var themeSrc = OSjs.API.getThemeCSS(theme);
     var self = this;
-    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="/themes/default.css" /></head><body contentEditable="true"></body></html>';
+    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /></head><body contentEditable="true"></body></html>';
     var doc;
     try {
       doc = this.getDocument();

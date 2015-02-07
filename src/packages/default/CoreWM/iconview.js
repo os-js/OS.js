@@ -163,7 +163,7 @@
 
   DesktopIconView.prototype._addShortcut = function(data) {
     this.data.push({
-      icon: API.getFileIcon(data.path, data.mime, null, null, '32x32'),
+      icon: API.getFileIcon(data, '32x32'),
       label: data.filename,
       index: this.data.length,
       args: data
