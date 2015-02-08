@@ -716,8 +716,9 @@
 
     var filename = file.filename  || null;
     var type     = file.type      || 'file';
-    var icon     = icon           || 'mimetypes/gnome-fs-regular.png';
-    var size     = size           || '16x16';
+    var mime     = file.mime      || 'application/octet-stream';
+    icon         = icon           || 'mimetypes/gnome-fs-regular.png';
+    size         = size           || '16x16';
 
     if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
 
