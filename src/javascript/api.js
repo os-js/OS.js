@@ -85,7 +85,7 @@
 
           if ( el.firstChild ) {
             var img = document.createElement('img');
-            img.src = OSjs.API.getThemeResource('status/gtk-dialog-authentication.png', 'icon', '16x16');
+            img.src = OSjs.API.getIcon('status/gtk-dialog-authentication.png');
             el.firstChild.appendChild(img);
             self.icon = img;
             self._updateIcon();
