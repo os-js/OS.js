@@ -1,3 +1,21 @@
+# 2.0.0-alpha54
+
+* Core: New core settings generation in src/conf for much easier managment (no more build.json)
+* Themes: New folder structure
+* Themes: Reworked the Theme settings in core #79
+* Themes: You can now add custom icon themes #79
+* Themes: You can now add custom sound themes #79
+* Themes: You can now add custom font themes #79
+* Themes: Metadata now includes some important CSS margin stuff
+* CoreWM: Better Window Desktop Corner snapping #68
+* Windows: Moved some event code to WindowManager
+* API: getFileIcon() now only accepts OSjs.VFS.File as argument
+* GUI: Fixed GUIElements not updating correctly in Tabs
+* Misc: Centered loading correctly in CSS
+* Misc: Cleanups
+* Misc: jslint for window.WL
+* Misc: Added installer.sh script to source
+
 # 2.0.0-alpha53
 
 * Locales: Updated russian locales (Thanks @vlad008)
