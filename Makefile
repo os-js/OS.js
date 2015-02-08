@@ -56,6 +56,12 @@ themes:
 	cp -R src/themes/icons dist/themes/icons
 	cp -R src/themes/fonts dist/themes/fonts
 	cp -R src/themes/sounds dist/themes/sounds
+	rm -f dist/themes/styles/*/metadata.json ||:
+	rm -f dist/themes/styles/*/style.less ||:
+	rm dist/themes/styles/*/base.less ||:
+	rm -f dist/themes/fonts/*/style.css ||:
+	rm -f dist/themes/sounds/*/metadata.json ||:
+	rm -f dist/themes/icons/*/metadata.json ||:
 
 compress:
 	@echo "\033[1;35mMaking compressed distro\033[0m"

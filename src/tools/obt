@@ -372,14 +372,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
           cb();
         });
       });
-
-      q.add(function(cb) {
-        var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name, 'style.less');
-        console.log('rm', dest);
-        exec(['rm', dest], function() {
-          cb();
-        });
-      });
     }
 
     console.log("\033[1;32mBuilding fonts\033[0m");
