@@ -44,7 +44,7 @@
       desktopMargin       : 5,
       wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
       backgroundColor     : '#0B615E',
-      fontFamily          : 'OSjsFont',
+      fontFamily          : 'Karla',
       theme               : 'default',
       icons               : 'default',
       sounds              : 'default',
@@ -82,6 +82,7 @@
     if ( defaults ) {
       cfg = Utils.mergeObject(cfg, defaults);
     }
+
     return cfg;
   }
 

@@ -344,17 +344,18 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    */
   function buildThemes() {
     var dir   = _path.join(ROOT, 'src', 'themes', 'styles');
+    var dir2  = _path.join(ROOT, 'src', 'themes', 'fonts');
 
     var q = new AQ();
 
-    function aq(iter, name) {
+    function aq(name) {
       q.add(function(cb) {
         console.log("\033[1;32mBuilding theme \033[0;33m%s\033[0m", name);
         cb();
       });
 
       q.add(function(cb) {
-        var src = _path.join(dir, iter, 'style.less');
+        var src = _path.join(dir, name, 'style.less');
         var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name + '.css');
 
         console.log('less', src, dest);
@@ -381,15 +382,26 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       });
     }
 
-    var name;
-    var dirs = getDirs(dir);
-    for ( var i = 0; i < dirs.length; i++ ) {
-      name = dirs[i];
+    console.log("\033[1;32mBuilding fonts\033[0m");
+    var fontStyles = [];
+    getDirs(dir2).forEach(function(name) {
       if ( !name.match(/^\.|\_/) ) {
-        aq(dirs[i], name);
+        var stylesheet = _path.join(dir2, name, 'style.css');
+        if ( _fs.existsSync(stylesheet) ) {
+          console.log('Found', name);
+          fontStyles.push(_fs.readFileSync(stylesheet).toString());
+        }
       }
-    }
+    });
+    var dest = _path.join(ROOT, 'dist', 'themes', 'fonts.css');
+    _fs.writeFileSync(dest, fontStyles.join("\n"));
 
+
+    getDirs(dir).forEach(function(name) {
+      if ( !name.match(/^\.|\_/) ) {
+        aq(name);
+      }
+    });
     q.run(function() {
     });
   }
@@ -655,10 +667,22 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       return scan_themes(src, 'icon', true);
     })();
 
+    var fonts = (function() {
+      var list = [];
+      var src = _path.join(ROOT, 'src', 'themes', 'fonts');
+      getDirs(src).forEach(function(name) {
+        if ( !name.match(/^\.|\_/) ) {
+          list.push(name);
+        }
+      });
+      return list;
+    })();
+
 
     settings.Styles = styles;
     settings.Icons = icons;
     settings.Sounds = sounds;
+    settings.Fonts.list = fonts.concat(settings.Fonts.list);
     settings.MIME = MIMES.descriptions;
     settings.EXTMIME = MIMES.mapping;
     settings.Core.Repositories = REPOS;

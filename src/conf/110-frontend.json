@@ -48,9 +48,8 @@
       "Sounds"  : {},
       "Icons"   : {},
       "Fonts"   : {
-        "default" : "OSjsFont",
+        "default" : "Karla",
         "list"    : [
-          "OSjsFont",
           "Arial",
           "Arial Black",
           "Sans-serif",
