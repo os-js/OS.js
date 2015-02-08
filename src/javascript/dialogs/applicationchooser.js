@@ -94,7 +94,7 @@
     var refs = OSjs.Core.getHandler().getApplicationsMetadata();
 
     function _createIcon(icon, appname) {
-      return API.getIcon(icon, appname);
+      return API.getIcon(icon, null, appname);
     }
 
     this.list.forEach(function(key, i) {
