@@ -32,14 +32,7 @@
             "ClientKey": ""
           }
         },
-        "Languages":        {
-          "en_EN": "English",
-          "no_NO": "Norsk (Norwegian)",
-          "de_DE": "Deutsch (German)",
-          "fr_FR": "French (France)",
-          "ru_RU": "Russian (Russia)",
-          "zh_CN": "Chinese (China)"
-        }
+        "Languages": {}
       },
 
       "System" : {
