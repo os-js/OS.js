@@ -1,8 +1,6 @@
 {
   "settings" : {
     "frontend" : {
-      "Version" : "2.0-alpha53",
-
       "Core" : {
         "APIURI":           "/API",
         "FSURI":            "/FS",
@@ -47,45 +45,11 @@
         "ClientId": ""
       },
 
-      "Sounds": {
-        "default": "Default (Freedesktop)"
-      },
-
-      "Icons": {
-        "default": "Default (Gnome)"
-      },
-
-      "Fonts" : {
-        "default" : "OSjsFont",
-        "list"    : [
-          "OSjsFont",
-          "Arial",
-          "Arial Black",
-          "Sans-serif",
-          "Serif",
-          "Trebuchet MS",
-          "Impact",
-          "Georgia",
-          "Courier New",
-          "Comic Sans MS",
-          "Monospace",
-          "Symbol",
-          "Webdings"
-        ]
-      },
-
-      "MIME" : {
-
-      },
-
-      "WM" : {
-        "exec": "CoreWM",
-        "args": {
-          "defaults": {
-            "theme": "uncomplicated"
-          }
-        }
-      }
+      "Sounds": {},
+      "Icons" : {},
+      "Fonts" : {},
+      "MIME"  : {},
+      "WM"    : {}
     }
   }
 }

@@ -1,0 +1,14 @@
+{
+  "settings" : {
+    "frontend" : {
+      "WM" : {
+        "exec": "CoreWM",
+        "args": {
+          "defaults": {
+            "theme": "uncomplicated"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "settings" : {
+    "frontend" : {
+      "Fonts" : {
+        "default" : "OSjsFont",
+        "list"    : [
+          "OSjsFont",
+          "Arial",
+          "Arial Black",
+          "Sans-serif",
+          "Serif",
+          "Trebuchet MS",
+          "Impact",
+          "Georgia",
+          "Courier New",
+          "Comic Sans MS",
+          "Monospace",
+          "Symbol",
+          "Webdings"
+        ]
+      }
+    }
+  }
+}
