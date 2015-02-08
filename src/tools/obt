@@ -284,7 +284,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
    */
   function buildThemes() {
     var dir   = _path.join(ROOT, 'src', 'themes', 'styles');
-    var files = getFilesByExtension(dir, 'less');
 
     var q = new AQ();
 
@@ -295,8 +294,10 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       });
 
       q.add(function(cb) {
-        var src = _path.join(dir, iter);
+        var src = _path.join(dir, iter, 'style.less');
         var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name + '.css');
+
+        console.log('less', src, dest);
 
         exec([LESSC, src, dest], function() {
           cb();
@@ -310,13 +311,22 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
           cb();
         });
       });
+
+      q.add(function(cb) {
+        var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name, 'style.less');
+        console.log('rm', dest);
+        exec(['rm', dest], function() {
+          cb();
+        });
+      });
     }
 
     var name;
-    for ( var i = 0; i < files.length; i++ ) {
-      name = _path.basename(files[i]).replace(/\.[A-z]+$/, '');
+    var dirs = getDirs(dir);
+    for ( var i = 0; i < dirs.length; i++ ) {
+      name = dirs[i];
       if ( !name.match(/^\.|\_/) ) {
-        aq(files[i], name);
+        aq(dirs[i], name);
       }
     }
 
