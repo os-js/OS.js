@@ -599,50 +599,66 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       });
     }
 
-    var styles = (function() {
+    function get_metadata(path, file, type) {
+      var json_path = _path.join(path, "metadata.json");
+      if ( _fs.existsSync(json_path) ) {
+        try {
+          var manifest = JSON.parse(_fs.readFileSync(json_path));
 
-      function get_metadata(path, file) {
-        var json_path = _path.join(path, "metadata.json");
-        if ( _fs.existsSync(json_path) ) {
-          try {
-            var manifest = JSON.parse(_fs.readFileSync(json_path));
+          console.log("- Added %s theme \033[1;37m%s\033[0m", type, file);
 
-            console.log("- Added theme \033[1;37m%s\033[0m", file);
-
-            return manifest;
-          } catch ( e ) {
-            console.log("- \033[0;31mSkipped '%s' (parse error)\033[0m", file);
-            console.error(e);
-          }
+          return manifest;
+        } catch ( e ) {
+          console.log("- \033[0;31mSkipped '%s' (parse error)\033[0m", file);
+          console.error(e);
         }
-        return null;
       }
+      return null;
+    }
 
-      function scan_themes(pkgdir) {
-        var files = _fs.readdirSync(pkgdir);
-        var file, path, metadata;
-        var result = [];
-        for ( var f = 0; f < files.length; f++ ) {
-          file = files[f];
-          if ( !file.length || file.match(/^\./) ) continue;
+    function scan_themes(pkgdir, type, compact) {
+      var files = _fs.readdirSync(pkgdir);
+      var file, path, metadata;
+      var result = compact ? {} : [];
+      for ( var f = 0; f < files.length; f++ ) {
+        file = files[f];
+        if ( !file.length || file.match(/^\./) ) continue;
 
-          path = _path.join(pkgdir, file);
-          if ( _fs.statSync(path).isDirectory() ) {
-            metadata = get_metadata(path, file);
-            if ( metadata !== null ) {
+        path = _path.join(pkgdir, file);
+        if ( _fs.statSync(path).isDirectory() ) {
+          metadata = get_metadata(path, file, type);
+          if ( metadata !== null ) {
+            if ( compact ) {
+              result[metadata.name] = metadata.title;
+            } else {
               result.push(metadata);
             }
           }
         }
-        return result;
       }
+      return result;
+    }
 
+
+    var styles = (function() {
       var src = _path.join(ROOT, 'src', 'themes', 'styles');
-      return scan_themes(src);
+      return scan_themes(src, 'style');
+    })();
+
+    var sounds = (function() {
+      var src = _path.join(ROOT, 'src', 'themes', 'sounds');
+      return scan_themes(src, 'sound', true);
+    })();
+
+    var icons = (function() {
+      var src = _path.join(ROOT, 'src', 'themes', 'icons');
+      return scan_themes(src, 'icon', true);
     })();
 
 
     settings.Styles = styles;
+    settings.Icons = icons;
+    settings.Sounds = sounds;
     settings.MIME = MIMES.descriptions;
     settings.EXTMIME = MIMES.mapping;
     settings.Core.Repositories = REPOS;
