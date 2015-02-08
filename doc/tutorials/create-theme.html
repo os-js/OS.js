@@ -62,21 +62,15 @@ cp -r src/themes/sounds/default src/themes/sound/mytheme
 
 <h2>Create your own Font theme</h2>
 <p>
-  <b>THIS IS NOT FINALIZED. AN EASIER PROCESS IS UNDER WAY</b>
-</p>
-<p>
-  Just create a subfolder in <i>src/themes/fonts</i> and add them to your theme CSS.
-</p>
-<p>
-  Make sure you keep the same filename format as the default included Karla font.
-</p>
-<p>
-  Then add your it to <i>src/conf/110-themes.json</i>.
+  Just add your fonts in a sub-folder like <b>Karla</b>. Then update the included stylesheet with correct name(s).
 </p>
 
 
 <h1>Update your changes</h1>
-Whenever you add or modify your themes, run this:
+<p>
+  Whenever you add or modify your themes, run this:
+</p>
+
 <pre>
 make config themes
 </pre>
