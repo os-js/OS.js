@@ -1,0 +1,98 @@
+{
+  "settings" : {
+    "frontend" : {
+      "Version" : "2.0-alpha53",
+
+      "Core" : {
+        "APIURI":           "/API",
+        "FSURI":            "/FS",
+        "MetadataURI":      "/packages.json",
+        "ThemeMetadataURI": "/themes.json",
+        "ThemeURI":         "/themes/styles",
+        "SoundURI":         "/themes/sounds",
+        "IconURI":          "/themes/icons",
+        "PackageURI":       "/packages",
+        "Home":             "home:///",
+        "Handler":          "%HANDLER%",
+        "Connection":       "%CONNECTION%",
+        "MaxUploadSize":    2097152,
+        "BugReporting":     true,
+        "Preloads":         {},
+        "Locale":           "en_EN",
+        "VersionAppend":    "",
+        "VFS": {
+          "GoogleDrive": {
+            "Enabled": false
+          },
+          "OneDrive": {
+            "Enabled": false
+          },
+          "Dropbox": {
+            "Enabled": false,
+            "ClientKey": ""
+          }
+        },
+        "Languages":        {
+          "en_EN": "English",
+          "no_NO": "Norsk (Norwegian)",
+          "de_DE": "Deutsch (German)",
+          "fr_FR": "French (France)",
+          "ru_RU": "Russian (Russia)",
+          "zh_CN": "Chinese (China)"
+        }
+      },
+
+      "System" : {
+        "AutoStart": []
+      },
+
+      "GoogleAPI": {
+        "ClientId": ""
+      },
+
+      "WindowsLiveAPI": {
+        "ClientId": ""
+      },
+
+      "Sounds": {
+        "default": "Default (Freedesktop)"
+      },
+
+      "Icons": {
+        "default": "Default (Gnome)"
+      },
+
+      "Fonts" : {
+        "default" : "OSjsFont",
+        "list"    : [
+          "OSjsFont",
+          "Arial",
+          "Arial Black",
+          "Sans-serif",
+          "Serif",
+          "Trebuchet MS",
+          "Impact",
+          "Georgia",
+          "Courier New",
+          "Comic Sans MS",
+          "Monospace",
+          "Symbol",
+          "Webdings"
+        ]
+      },
+
+      "MIME" : {
+
+      },
+
+      "WM" : {
+        "exec": "CoreWM",
+        "args": {
+          "defaults": {
+            "theme": "uncomplicated"
+          }
+        }
+      }
+    }
+  }
+}

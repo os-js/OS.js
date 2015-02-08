@@ -1,0 +1,22 @@
+{
+  "handler": "demo",
+  "connection": "http",
+
+  "settings" : {
+    "frontend" : {
+      "Version" : "2.0-alpha53"
+    },
+    "backend" : {
+    }
+  },
+
+  "javascript": {
+    "output": "dist/osjs.js",
+    "files": []
+  },
+
+  "stylesheets": {
+    "output": "dist/osjs.css",
+    "files": []
+  }
+}

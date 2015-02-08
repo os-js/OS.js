@@ -44,33 +44,93 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
 (function(argv, _fs, _path, _exec) {
   var ROOT    = _path.join(__dirname, '../../');
-
-  var buildFile = _path.join(ROOT, "src", "build.json");
-  if ( _fs.existsSync(_path.join(ROOT, "src", "build.custom.json")) ) {
-    buildFile = _path.join(ROOT, "src", "build.custom.json");
-    console.log('Using', buildFile);
-  }
-
   var LESSC   = _path.join(ROOT, 'node_modules/less/bin/lessc');
-  var BUILD   = JSON.parse(_fs.readFileSync(buildFile));
   var REPOS   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "packages", "repositories.json")));
   var MIMES   = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "mime.json")));
-  var HANDLER = '';
   var YUI     = _path.join(ROOT, 'vendor', 'yuicompressor-2.4.8.jar');
   var CC      = _path.join(ROOT, 'vendor', 'closurecompiler.jar');
+  var BUILD   = generateBuildConfig();
+  var HANDLER = BUILD.handler || 'demo';
 
-  (function() {
-    var build      = JSON.stringify(BUILD);
-    var handler    = BUILD.handler    || "demo";
-    var connection = BUILD.connection || "http";
+  /**
+   * Generates an internal buld.json file from src/conf
+   * Works sort of line in some linux applications.
+   * Files in directory are loaded in alphabetical order and merged together
+   */
+  function generateBuildConfig() {
 
-    build = build.replaceAll("%ROOT%",       ROOT);
-    build = build.replaceAll("%HANDLER%",    handler);
-    build = build.replaceAll("%CONNECTION%", connection);
+    var getBuildConfig = (function() {
+      var _cache = null;
 
-    BUILD   = JSON.parse(build);
-    HANDLER = BUILD.handler || 'demo';
-  })();
+      function getConfigFiles(dir) {
+        var list = [];
+        _fs.readdirSync(dir).forEach(function(iter) {
+          if ( !iter.match(/^\./) ) {
+            list.push(_path.join(dir, iter));
+          }
+        });
+        return list;
+      }
+
+      function mergeObject(into, from) {
+        function mergeJSON(obj1, obj2) {
+          for ( var p in obj2 ) {
+            if ( obj2.hasOwnProperty(p) ) {
+              try {
+                if ( obj2[p].constructor === Object ) {
+                  obj1[p] = mergeJSON(obj1[p], obj2[p]);
+                } else {
+                  obj1[p] = obj2[p];
+                }
+              } catch(e) {
+                obj1[p] = obj2[p];
+              }
+            }
+          }
+          return obj1;
+        }
+        return mergeJSON(into, from);
+      }
+
+      return function() {
+
+        var path = _path.join(ROOT, 'src', 'conf');
+        var tmp = _path.join(path, '000-base.json');
+        var config = {};
+
+        if ( _cache === null ) {
+          var files = getConfigFiles(path);
+          files.forEach(function(iter) {
+            //console.log('Merging', iter);
+            try {
+              var json = JSON.parse(_fs.readFileSync(iter));
+              var tjson = JSON.parse(JSON.stringify(config));
+              config = mergeObject(tjson, json);
+            } catch ( e ) {
+              console.error('failed to parse', iter);
+              console.error(e.stack);
+            }
+          });
+
+          _cache = config;
+        }
+
+        return JSON.parse(JSON.stringify(_cache));
+      };
+    })();
+
+    var json = getBuildConfig();
+    var build = JSON.stringify(json, null, 2).toString();
+
+    var handler    = json.handler    || "demo";
+    var connection = json.connection || "http";
+
+    build = build.replace(/%ROOT%/g,       ROOT);
+    build = build.replace(/%HANDLER%/g,    handler);
+    build = build.replace(/%CONNECTION%/g, connection);
+
+    return JSON.parse(build);
+  }
 
   /**
    * Simple Async Queue
@@ -530,11 +590,20 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
 
     var cfg_js = tmp.join('\n');
     var out_js = _path.join(ROOT, 'dist', 'settings.js');
-    settings = BUILD.settings.frontend;
+    var preloads = [];
+
+    settings = JSON.parse(JSON.stringify(BUILD.settings.frontend));
+    if ( settings.Core.Preloads ) {
+      Object.keys(settings.Core.Preloads).forEach(function(k) {
+        preloads.push(settings.Core.Preloads[k]);
+      });
+    }
+
+
     settings.MIME = MIMES.descriptions;
     settings.EXTMIME = MIMES.mapping;
     settings.Core.Repositories = REPOS;
-    settings.Core.Preloads = settings.Core.Preloads || [];
+    settings.Core.Preloads = preloads;
     extensions.forEach(function(e) {
       if ( e.sources ) {
         e.sources.forEach(function(ee) {

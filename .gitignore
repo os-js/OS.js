@@ -5,6 +5,7 @@ node_modules
 .git-old
 *-tmp.*
 twistd.*
+src/conf/999-*
 src/server-node/node_modules/
 src/server-php/settings.php
 src/server-node/settings.json
@@ -21,5 +22,6 @@ dist/vendor/dropbox*
 vendor/dropbox*
 doc/generated
 vfs/*/*
+src/build.json
 src/build.custom.json
 .vagrant/*
