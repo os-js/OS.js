@@ -32,6 +32,28 @@
 <h1>Adding Windows Live API and OneDrive VFS support</h1>
 
 <p>
+  Simply create a config file to enable both API and VFS. Ex <b>src/conf/901-gapi.json</b>:
+</p>
+<pre class="code">
+{
+  "settings" : {
+    "frontend" : {
+      "WindowsLiveAPI": {
+        "ClientId": "INSERT YOUR CLIENT ID HERE"
+      },
+      "Core" : {
+        "VFS": {
+          "OneDrive": {
+            "Enabled": true
+          }
+        }
+      }
+    }
+  }
+}
+</pre>
+
+<p>
   Just add your <i>ClientID</i> to <b>build.json</b>. If you want to enable the VFS module, just toggle the "enabled" option.
 </p>
 

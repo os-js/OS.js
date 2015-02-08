@@ -51,7 +51,7 @@ ln -sf vendor/dropbox-js/lib/dropbox.min.map dist-dev/vendor/dropbox.min.map
 </pre>
 
 <p>
-  Then you have to add your <i>ClientKey</i> to <b>build.json</b> and add dropbox.js to the preload list:
+  Then create <b>src/conf/900-dropbox.json</b>:
 </p>
 <pre class="code">
 {
@@ -59,17 +59,19 @@ ln -sf vendor/dropbox-js/lib/dropbox.min.map dist-dev/vendor/dropbox.min.map
     "frontend" : {
       "Core" : {
         "Preloads": [
-          {"type": "javascript", "src": "/vendor/dropbox.js"}
-        ]
+          "dropbox": {"type": "javascript", "src": "/vendor/dropbox.js"}
+        ],
+        "VFS": {
+          "Dropbox": {
+            "Enabled": true,
+            "ClientKey": "INSERT YOUR CLIENT ID HERE"
+          }
+        }
       }
     }
   }
 }
 </pre>
-
-<p>
-  Then, just add your <i>ClientID</i> to <b>build.json</b>. If you want to enable the VFS module, just toggle the "enabled" option.
-</p>
 
 <p>
   Then run:
