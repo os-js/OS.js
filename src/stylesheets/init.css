@@ -53,10 +53,14 @@ body, input, button, textarea, label, select {
   padding : 40px;
   top : 50%;
   left : 50%;
-  margin-top : -110px;
-  margin-left : -80px;
+  margin-top : -130px;
+  margin-left : -100px;
   background : #fff;
   z-index : 9999999;
+  -webkit-border-radius : 10px;
+  -moz-border-radius : 10px;
+  -ms-border-radius : 10px;
+  -o-border-radius : 10px;
   border-radius : 10px;
 }
 #LoadingScreen span {
