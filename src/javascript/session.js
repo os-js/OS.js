@@ -326,7 +326,6 @@
       }
 
       var wargs = wm.args || {};
-      wargs.themes = handler.getThemes();
       OSjs.API.launch(wm.exec, wargs, function(app) {
         callback();
       }, function(error, name, args, exception) {

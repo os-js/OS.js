@@ -27,7 +27,6 @@ all: clean config core themes packages manifest
 
 clean:
 	rm -f dist/themes.json ||:
-	rm -f dist-dev/themes.json ||:
 	rm -f dist/packages.json ||:
 	rm -f dist-dev/packages.json ||:
 	rm -f dist/osjs.* ||:
@@ -67,9 +66,6 @@ manifest:
 	rm -f dist/packages.json ||:
 	rm -f dist-dev/packages.json ||:
 	(src/tools/obt package-manifest)
-	rm -f dist/themes.json ||:
-	rm -f dist-dev/themes.json ||:
-	(src/tools/obt theme-manifest)
 
 apache-htaccess:
 	(src/tools/obt apache-htaccess)

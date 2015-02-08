@@ -956,14 +956,6 @@
     return this.getSetting('icons') || 'default';
   };
 
-  CoreWM.prototype.getStyleThemes = function() {
-    var handler = OSjs.Core.getHandler();
-    if ( handler ) {
-      return handler.getThemes();
-    }
-    return [];
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

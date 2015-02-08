@@ -599,11 +599,55 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       });
     }
 
+    var styles = (function() {
 
+      function get_metadata(path, file) {
+        var json_path = _path.join(path, "metadata.json");
+        if ( _fs.existsSync(json_path) ) {
+          try {
+            var manifest = JSON.parse(_fs.readFileSync(json_path));
+
+            console.log("- Added theme \033[1;37m%s\033[0m", file);
+
+            return manifest;
+          } catch ( e ) {
+            console.log("- \033[0;31mSkipped '%s' (parse error)\033[0m", file);
+            console.error(e);
+          }
+        }
+        return null;
+      }
+
+      function scan_themes(pkgdir) {
+        var files = _fs.readdirSync(pkgdir);
+        var file, path, metadata;
+        var result = [];
+        for ( var f = 0; f < files.length; f++ ) {
+          file = files[f];
+          if ( !file.length || file.match(/^\./) ) continue;
+
+          path = _path.join(pkgdir, file);
+          if ( _fs.statSync(path).isDirectory() ) {
+            metadata = get_metadata(path, file);
+            if ( metadata !== null ) {
+              result.push(metadata);
+            }
+          }
+        }
+        return result;
+      }
+
+      var src = _path.join(ROOT, 'src', 'themes', 'styles');
+      return scan_themes(src);
+    })();
+
+
+    settings.Styles = styles;
     settings.MIME = MIMES.descriptions;
     settings.EXTMIME = MIMES.mapping;
     settings.Core.Repositories = REPOS;
     settings.Core.Preloads = preloads;
+
     extensions.forEach(function(e) {
       if ( e.sources ) {
         e.sources.forEach(function(ee) {
@@ -787,60 +831,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       }
 
       var dest = _path.join(ROOT, dist, 'packages.json');
-      _fs.writeFileSync(dest, JSON.stringify(packages, null, 2));
-    }
-
-    create_dist_manifest("dist");
-    create_dist_manifest("dist-dev");
-  }
-
-  /**
-   * Action: Create Theme Manifest
-   */
-  function createThemeManifest() {
-
-    function get_metadata(path, file) {
-      var json_path = _path.join(path, "metadata.json");
-      if ( _fs.existsSync(json_path) ) {
-        try {
-          var manifest = JSON.parse(_fs.readFileSync(json_path));
-
-          console.log("- Added theme \033[1;37m%s\033[0m", file);
-
-          return manifest;
-        } catch ( e ) {
-          console.log("- \033[0;31mSkipped '%s' (parse error)\033[0m", file);
-          console.error(e);
-        }
-      }
-      return null;
-    }
-
-    function scan_themes(pkgdir) {
-      var files = _fs.readdirSync(pkgdir);
-      var file, path, metadata;
-      var result = [];
-      for ( var f = 0; f < files.length; f++ ) {
-        file = files[f];
-        if ( !file.length || file.match(/^\./) ) continue;
-
-        path = _path.join(pkgdir, file);
-        if ( _fs.statSync(path).isDirectory() ) {
-          metadata = get_metadata(path, file);
-          if ( metadata !== null ) {
-            result.push(metadata);
-          }
-        }
-      }
-      return result;
-    }
-
-    function create_dist_manifest(dist) {
-      console.log("\033[1;32mCreating theme manifest for '%s'\033[0m", dist);
-
-      var src = _path.join(ROOT, dist, 'themes', 'styles');
-      var packages = scan_themes(src);
-      var dest = _path.join(ROOT, dist, 'themes.json');
       _fs.writeFileSync(dest, JSON.stringify(packages, null, 2));
     }
 
@@ -1129,11 +1119,6 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     'package-manifest' : {
       description: 'Creates package manifest',
       cb: createPackageManifest
-    },
-
-    'theme-manifest' : {
-      description: 'Creates theme manifest',
-      cb: createThemeManifest
     },
 
     'apache-htaccess' : {

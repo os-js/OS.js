@@ -675,8 +675,7 @@
    * @method  WindowManager::getStyleTheme()
    */
   WindowManager.prototype.getStyleTheme = function() {
-    // Implement in your WM
-    return null;
+    return 'default';
   };
 
   /**
@@ -685,8 +684,7 @@
    * @method  WindowManager::getSoundTheme()
    */
   WindowManager.prototype.getSoundTheme = function() {
-    // Implement in your WM
-    return null;
+    return 'default';
   };
 
   /**
@@ -695,8 +693,7 @@
    * @method  WindowManager::getIconTheme()
    */
   WindowManager.prototype.getIconTheme = function() {
-    // Implement in your WM
-    return null;
+    return 'default';
   };
 
   /**
@@ -707,8 +704,12 @@
    * @method  WindowManager::getStyleThemes()
    */
   WindowManager.prototype.getStyleThemes = function() {
-    // Implement in your WM
-    return [];
+    var handler = OSjs.Core.getHandler();
+    var list = [];
+    if ( handler ) {
+      list = handler.getConfig('Styles') || [];
+    }
+    return list;
   };
 
   /**

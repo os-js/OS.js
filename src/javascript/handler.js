@@ -61,7 +61,6 @@
     this.settings   = new OSjs.Helpers.SettingsManager();
     this.connection = new OSjs.Helpers.ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
     this.packages   = new OSjs.Helpers.PackageManager(this.config.Core.MetadataURI);
-    this.themes     = new OSjs.Helpers.ThemeManager(this.config.Core.ThemeMetadataURI);
     this.user       = new OSjs.Helpers.UserSession(this.config.Core.DefaultUser);
 
     _handlerInstance = this;
@@ -100,7 +99,6 @@
     }
 
     this.user     = null;
-    this.themes   = null;
     this.packages = null;
     this.settings = null;
     this.config   = {};
@@ -119,17 +117,8 @@
    */
   _Handler.prototype.boot = function(callback) {
     console.info('OSjs::_Handler::boot()');
-
-    var self = this;
-    this.themes.load(function(tresult, terror) {
-      if ( !tresult ) {
-        callback(tresult, terror);
-        return;
-      }
-
-      self.packages.load(function(presult, perror) {
-        callback(presult, perror);
-      });
+    this.packages.load(function(presult, perror) {
+      callback(presult, perror);
     });
   };
 
@@ -368,38 +357,6 @@
       }
       callback(pacman.getPackagesByMime(mime));
     });
-  };
-
-  //
-  // Themes
-  //
-
-  /**
-   * Gets a list of all themes metadata
-   *
-   * @return  Array       Array of JSON
-   *
-   * @method  _Handler::getThemes()
-   */
-  _Handler.prototype.getThemes = function() {
-    if ( this.themes ) {
-      return this.themes.getThemes();
-    }
-    return [];
-  };
-
-  /**
-   * Gets a theme by name
-   *
-   * @return  Object        JSON Data
-   *
-   * @method  _Handler::getTheme()
-   */
-  _Handler.prototype.getTheme = function(name) {
-    if ( this.themes ) {
-      return this.themes.getTheme(name);
-    }
-    return null;
   };
 
   //

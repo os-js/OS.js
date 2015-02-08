@@ -7,7 +7,7 @@
       "Icons": {
         "default": "Default (Gnome)"
       },
-      "Fonts" : {
+      "Fonts": {
         "default" : "OSjsFont",
         "list"    : [
           "OSjsFont",

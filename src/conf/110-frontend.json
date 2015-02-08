@@ -5,7 +5,6 @@
         "APIURI":           "/API",
         "FSURI":            "/FS",
         "MetadataURI":      "/packages.json",
-        "ThemeMetadataURI": "/themes.json",
         "ThemeURI":         "/themes/styles",
         "SoundURI":         "/themes/sounds",
         "IconURI":          "/themes/icons",
@@ -45,11 +44,12 @@
         "ClientId": ""
       },
 
-      "Sounds": {},
-      "Icons" : {},
-      "Fonts" : {},
-      "MIME"  : {},
-      "WM"    : {}
+      "Styles"  : [],
+      "Sounds"  : {},
+      "Icons"   : {},
+      "Fonts"   : {},
+      "MIME"    : {},
+      "WM"      : {}
     }
   }
 }
