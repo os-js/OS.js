@@ -939,11 +939,16 @@
   CoreWM.prototype.getStyleTheme = function(returnMetadata) {
     var name = this.getSetting('theme') || null;
     if ( returnMetadata ) {
-      var handler = OSjs.Core.getHandler();
-      if ( handler ) {
-        return handler.getTheme(name);
+      var found = null;
+      if ( name ) {
+        this.getStyleThemes().forEach(function(t) {
+          if ( t && t.name === name ) {
+            found = t;
+          }
+          return found ? false : true;
+        });
       }
-      return null;
+      return found;
     }
     return name;
   };
