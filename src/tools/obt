@@ -759,7 +759,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     function create_dist_manifest(dist) {
       console.log("\033[1;32mCreating theme manifest for '%s'\033[0m", dist);
 
-      var src = _path.join(ROOT, dist, 'themes');
+      var src = _path.join(ROOT, dist, 'themes', 'styles');
       var packages = scan_themes(src);
       var dest = _path.join(ROOT, dist, 'themes.json');
       _fs.writeFileSync(dest, JSON.stringify(packages, null, 2));
