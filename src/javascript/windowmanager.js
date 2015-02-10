@@ -672,14 +672,20 @@
   /**
    * Gets current Style theme
    *
+   * @param   bool    returnMetadata      Return theme metadata instead of name
+   *
+   * @return  String                      Or JSON
+   *
    * @method  WindowManager::getStyleTheme()
    */
-  WindowManager.prototype.getStyleTheme = function() {
-    return 'default';
+  WindowManager.prototype.getStyleTheme = function(returnMetadata) {
+    return returnMetadata ? {} : 'default';
   };
 
   /**
    * Gets current Sound theme
+   *
+   * @return  String
    *
    * @method  WindowManager::getSoundTheme()
    */
@@ -689,6 +695,8 @@
 
   /**
    * Gets current Icon theme
+   *
+   * @return  String
    *
    * @method  WindowManager::getIconTheme()
    */
@@ -890,11 +898,16 @@
 
   /**
    * Get CSS animation duration
-   * TODO: Not included in theme atm
    * @return int Duration length in ms
    * @method WindowManager::getAnimDuration()
    */
   WindowManager.prototype.getAnimDuration = function() {
+    var theme = this.getStyleTheme(true);
+    if ( theme && theme.style && theme.style.animation ) {
+      if ( typeof theme.style.animation.duration === 'number' ) {
+        return theme.style.animation.dudation;
+      }
+    }
     return 301;
   };
 
