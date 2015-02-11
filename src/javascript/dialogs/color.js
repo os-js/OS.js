@@ -82,7 +82,7 @@
     label.innerHTML = API._('DIALOG_COLOR_R', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, val: color.r, onUpdate: function(value, percentage) {
-      self.setColor(value, self.currentRGB.g, self.currentRGB.b);
+      self.setColor(value, self.currentRGB.g, self.currentRGB.b, null, true);
     }}), sliders);
 
     label           = document.createElement('div');
@@ -90,7 +90,7 @@
     label.innerHTML = API._('DIALOG_COLOR_G', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, val: color.g, onUpdate: function(value, percentage) {
-      self.setColor(self.currentRGB.r, value, self.currentRGB.b);
+      self.setColor(self.currentRGB.r, value, self.currentRGB.b, null, true);
     }}), sliders);
 
     label           = document.createElement('div');
@@ -98,7 +98,7 @@
     label.innerHTML = API._('DIALOG_COLOR_B', 0);
     sliders.appendChild(label);
     this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, val: color.b, onUpdate: function(value, percentage) {
-      self.setColor(self.currentRGB.r, self.currentRGB.g, value);
+      self.setColor(self.currentRGB.r, self.currentRGB.g, value, null, true);
     }}), sliders);
 
     if ( this.showAlpha ) {
@@ -107,7 +107,7 @@
       label.innerHTML = API._('DIALOG_COLOR_A', 0);
       sliders.appendChild(label);
       this._addGUIElement(new OSjs.GUI.Slider('SliderA', {min: 0, max: 100, val: this.currentAlpha, onUpdate: function(value, percentage) {
-        self.setColor(self.currentRGB.r, self.currentRGB.g, self.currentRGB.b, value);
+        self.setColor(self.currentRGB.r, self.currentRGB.g, self.currentRGB.b, value, true);
       }}), sliders);
     }
 
@@ -121,28 +121,37 @@
     this.$element.appendChild(sliders);
     this.$element.appendChild(this.$color);
 
-    var rgb = this.currentRGB;
-    this.setColor(rgb.r, rgb.g, rgb.b, this.currentAlpha);
+  };
+  ColorDialog.prototype._inited = function() {
+    if ( !this._rendered ) {
+      var rgb = this.currentRGB;
+      this.setColor(rgb.r, rgb.g, rgb.b, this.currentAlpha, false);
+    }
+
+    _StandardDialog.prototype._inited.apply(this, arguments);
   };
 
-  ColorDialog.prototype.setColor = function(r, g, b, a) {
+  ColorDialog.prototype.setColor = function(r, g, b, a, fromElement) {
     this.currentAlpha = (typeof a === 'undefined' ? this.currentAlpha : a);
     this.currentRGB   = {r:r, g:g, b:b};
 
     this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
 
-    this._getGUIElement('SliderR').setValue(r);
+    if ( !fromElement ) {
+      this._getGUIElement('SliderR').setValue(r);
+      this._getGUIElement('SliderG').setValue(g);
+      this._getGUIElement('SliderB').setValue(b);
+    }
+
     this.$element.getElementsByClassName('LabelR')[0].innerHTML = API._('DIALOG_COLOR_R', r);
-
-    this._getGUIElement('SliderG').setValue(g);
     this.$element.getElementsByClassName('LabelG')[0].innerHTML = API._('DIALOG_COLOR_G', g);
-
-    this._getGUIElement('SliderB').setValue(b);
     this.$element.getElementsByClassName('LabelB')[0].innerHTML = API._('DIALOG_COLOR_B', b);
 
     if ( this.showAlpha ) {
       var ca = (this.currentAlpha/100);
-      this._getGUIElement('SliderA').setValue(this.currentAlpha);
+      if ( !fromElement ) {
+        this._getGUIElement('SliderA').setValue(this.currentAlpha);
+      }
       this.$element.getElementsByClassName('LabelA')[0].innerHTML = API._('DIALOG_COLOR_A', ca);
     }
 

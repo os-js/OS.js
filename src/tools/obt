@@ -512,13 +512,24 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
       exec(['mkdir', _path.join(ROOT, 'dist', 'packages')], cb);
     });
 
+    function insert_repofile(dir) {
+      q.add(function(cb) {
+        var src = _path.join(ROOT, 'src', 'packages', dir, 'repository.json');
+        var dst = _path.join(ROOT, 'dist', 'packages', dir, 'repository.json');
+        exec(['cp', src, dst], cb);
+      });
+    }
+
     var dirs;
     for ( var i = 0; i < REPOS.length; i++ ) {
       try {
         dirs = getDirs(_path.join(ROOT, 'src', 'packages', REPOS[i]));
+
         for ( var d = 0; d < dirs.length; d++ ) {
           build_package(REPOS[i], dirs[d]);
         }
+
+        insert_repofile(REPOS[i]);
       } catch ( e ) {
         console.warn('\033[1;33mWARNING:\033[0m Failed to list directory', REPOS[i], e);
       }
