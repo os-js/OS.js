@@ -1094,7 +1094,7 @@
 
     if ( args.responseType === 'arraybuffer' ) {
       request.onerror = function(evt) {
-        var error = request.response || 'Fatal Error'; // FIXME: Translation
+        var error = request.response || OSjs.API._('ERR_UTILS_XHR_FATAL');
         args.onerror(error, evt, request, args.url);
       };
       request.onload = function() {
@@ -1115,7 +1115,7 @@
           if ( request.status === 200 || request.status === 201 ) {
             args.onsuccess(result, request, args.url);
           } else {
-            var error = 'AJAX Error: ' + request.status.toString(); // FIXME: Translation
+            var error = OSjs.API._('ERR_UTILS_XHR_FMT', request.status.toString());
             args.onerror(error, result, request, args.url);
           }
         }

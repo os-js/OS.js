@@ -180,7 +180,7 @@
           } else if ( result.status === 'success' ) {
             _login();
           } else {
-            callback('Windows Live API returned ' + result.status + ' status'); // FIXME: Translation
+            callback(API._('WLAPI_INIT_FAILED_FMT', result.status.toString()));
           }
         }, function(result) {
           console.error('WindowsLiveAPI::load()', 'init() error', result);

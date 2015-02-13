@@ -33,6 +33,10 @@
   OSjs.Locales = OSjs.Locales || {};
 
   OSjs.Locales.en_EN = {
+    //
+    // CORE
+    //
+
     'ERR_FILE_OPEN'             : 'Error opening file',
     'ERR_WM_NOT_RUNNING'        : 'Window manager is not running',
     'ERR_FILE_OPEN_FMT'         : 'The file \'<span>{0}</span>\' could not be opened',
@@ -74,7 +78,19 @@
     'TITLE_SIGN_OUT' : 'Sign out',
     'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
 
-    // Dialogs
+    // Service
+    'BUGREPORT_MSG' : 'Please report this if you think this is a bug.\nInclude a brief description on how the error occured, and if you can; how to replicate it',
+
+    // API
+    'SERVICENOTIFICATION_TOOLTIP' : 'Logged into external services: {0}',
+
+    // Utils
+    'ERR_UTILS_XHR_FATAL' : 'Fatal Error',
+    'ERR_UTILS_XHR_FMT' : 'AJAX/XHR Error: {0}',
+
+    //
+    // DIALOGS
+    //
     'DIALOG_LOGOUT_TITLE' : 'Log out (Exit)', // Actually located in session.js
     'DIALOG_LOGOUT_MSG_FMT' : 'Logging out user \'{0}\'.\nDo you want to save current session?',
 
@@ -141,6 +157,10 @@
     'DIALOG_APPCHOOSER_NO_SELECTION' : 'You need to select an application',
     'DIALOG_APPCHOOSER_SET_DEFAULT'  : 'Use as default application for {0}',
 
+    //
+    // HELPERS
+    //
+
     // GoogleAPI
     'GAPI_DISABLED'           : 'GoogleAPI Module not configured or disabled',
     'GAPI_SIGN_OUT'           : 'Sign out from Google API Services',
@@ -155,12 +175,15 @@
     'WLAPI_LOAD_FAILURE'      : 'Failed to load Windows Live API',
     'WLAPI_LOGIN_FAILED'      : 'Failed to log into Windows Live API',
     'WLAPI_LOGIN_FAILED_FMT'  : 'Failed to log into Windows Live API: {0}',
+    'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API returned {0} status',
 
     // IndexedDB
     'IDB_MISSING_DBNAME' : 'Cannot create IndexedDB without Database Name',
     'IDB_NO_SUCH_ITEM'   : 'No such item',
 
+    //
     // VFS
+    //
     'ERR_VFS_FATAL'           : 'Fatal Error',
     'ERR_VFS_UNAVAILABLE'     : 'Not available',
     'ERR_VFS_FILE_ARGS'       : 'File expects at least one argument',
@@ -176,6 +199,7 @@
     'ERR_VFS_UPLOAD_CANCELLED': 'File upload was cancelled',
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
     'ERR_VFS_DOWNLOAD_FAILED' : 'An error occured while downloading: {0}',
+    'ERR_VFS_REMOTEREAD_EMPTY': 'Response was empty',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'XHR Error',
@@ -217,7 +241,9 @@
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Failed to resolve path: item not found',
 
+    //
     // DefaultApplication
+    //
     'ERR_FILE_APP_OPEN'         : 'Cannot open file',
     'ERR_FILE_APP_OPEN_FMT'     : 'The file {0} could not be opened because the mime {1} is not supported',
     'ERR_FILE_APP_OPEN_ALT_FMT' : 'The file {0} could not be opened',
@@ -232,7 +258,9 @@
     'MSG_APPLICATION_WARNING'   : 'Application Warning',
     'MSG_MIME_OVERRIDE'         : 'The filetype "{0}" is not supported, using "{1}" instead.',
 
+    //
     // General
+    //
 
     'LBL_UNKNOWN'      : 'Unknown',
     'LBL_APPEARANCE'   : 'Appearance',
@@ -321,11 +349,7 @@
     'LBL_BACKGROUND_IMAGE' : 'Background Image',
     'LBL_BACKGROUND_COLOR' : 'Background Color',
     'LBL_UNORDERED_LIST'   : 'Unordered List',
-
-    //
-    // NEW
-    //
-    'LBL_STATUS' : 'Status',
+    'LBL_STATUS'   : 'Status',
     'LBL_READONLY' : 'Read-Only'
   };
 

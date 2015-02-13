@@ -118,7 +118,7 @@
       this.element.style.display = this.size ? 'inline-block' : 'none';
     }
     if ( this.icon ) {
-      this.icon.title = 'Logged into external services: ' + this.size.toString(); // FIXME: Translation
+      this.icon.title = OSjs.API._('SERVICENOTIFICATION_TOOLTIP', this.size.toString());
       this.icon.alt   = this.icon.title;
     }
   };

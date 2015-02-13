@@ -188,7 +188,7 @@
         var foundFile = getMetadataFromItem(dir, found);
         callback(false, foundFile);
       } else {
-        callback('Could not find requested file'); // FIXME: Translation
+        callback('Could not find requested file');
       }
     });
   }

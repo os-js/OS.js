@@ -1237,7 +1237,7 @@
       }
 
       if ( !response.body ) {
-        callback('Response was empty'); // FIXME: Translation
+        callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
         return;
       }
 
