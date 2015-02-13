@@ -317,15 +317,13 @@
   /**
    * When requesting check for if file has changed
    *
-   * TODO: Rename to _onCheckChanged()
-   *
    * @param   Function    callback      Callback function => fn(discard)
    *
    * @return  void
    *
-   * @method  DefaultApplication::onCheckChanged()
+   * @method  DefaultApplication::_onCheckChanged()
    */
-  DefaultApplication.prototype.onCheckChanged = function(callback) {
+  DefaultApplication.prototype._onCheckChanged = function(callback) {
     function _cb(discard) {
       self.mainWindow._focus();
 
@@ -398,7 +396,7 @@
 
     switch ( action ) {
       case 'new' :
-        this.onCheckChanged(function(discard) {
+        this._onCheckChanged(function(discard) {
           if ( discard ) {
             self._onNew();
           }
@@ -406,7 +404,7 @@
       break;
 
       case 'open' :
-        this.onCheckChanged(function(discard) {
+        this._onCheckChanged(function(discard) {
           if ( discard ) {
             self._onOpen(file);
           }
