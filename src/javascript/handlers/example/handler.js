@@ -41,18 +41,26 @@ See doc/example-handler.txt
   window.OSjs  = window.OSjs || {};
   OSjs.Core    = OSjs.Core   || {};
 
+  /////////////////////////////////////////////////////////////////////////////
+  // HANDLER
+  /////////////////////////////////////////////////////////////////////////////
+
   /**
-   * Handler
+   * @extends OSjs.Core._Handler
+   * @class
    */
   var ExampleHandler = function() {
     OSjs.Core._Handler.apply(this, arguments);
+    this._saveTimeout;
   };
+
   ExampleHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
+  /**
+   * Override default init() method
+   */
   ExampleHandler.prototype.init = function(callback) {
-    //OSjs.Core._Handler.prototype.init.apply(this, arguments);
-
-    var self      = this;
+    var self = this;
 
     function _onLoaded() {
       var container = document.getElementById('Login');
@@ -124,6 +132,9 @@ See doc/example-handler.txt
     });
   };
 
+  /**
+   * Example login api call
+   */
   ExampleHandler.prototype.login = function(username, password, callback) {
     console.debug('OSjs::Handlers::ExampleHandler::login()');
     var opts = {username: username, password: password};
@@ -139,6 +150,9 @@ See doc/example-handler.txt
     });
   };
 
+  /**
+   * Example logout api call
+   */
   ExampleHandler.prototype.logout = function(save, callback) {
     console.debug('OSjs::Handlers::ExampleHandler::logout()', save);
     var self = this;
@@ -160,29 +174,41 @@ See doc/example-handler.txt
     OSjs.Core._Handler.prototype.logout.call(this, save, _finished);
   };
 
+  /**
+   * Override default settings saving
+   */
   ExampleHandler.prototype.saveSettings = function(callback) {
-    // TODO: You should do an interval here so you don't do stuff multiple times in a row
     console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
 
     var self = this;
     var settings = this.settings.get();
     var opts = {settings: settings};
-    this.callAPI('settings', opts, function(response) {
-      console.debug('ExampleHandler::syncSettings()', response);
-      if ( response.result ) {
-        callback.call(self, true);
-      } else {
+
+    function _save() {
+      this.callAPI('settings', opts, function(response) {
+        console.debug('ExampleHandler::syncSettings()', response);
+        if ( response.result ) {
+          callback.call(self, true);
+        } else {
+          callback.call(self, false);
+        }
+      }, function(error) {
+        console.warn('ExampleHandler::syncSettings()', 'Call error', error);
         callback.call(self, false);
-      }
-    }, function(error) {
-      console.warn('ExampleHandler::syncSettings()', 'Call error', error);
-      callback.call(self, false);
-    });
+      });
+    }
+
+    if ( this._saveTimeout ) {
+      clearTimeout(this._saveTimeout);
+      this._saveTimeout = null;
+    }
+    setTimeout(_save, 100);
   };
 
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Core.Handler = ExampleHandler;
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);
