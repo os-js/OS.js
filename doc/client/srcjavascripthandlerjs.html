@@ -57,7 +57,7 @@
 <li><a href="#_handler-onvfsrequest">onVFSRequest()</a></li>
 <li><a href="#_handler-getapplicationmetadata">getApplicationMetadata()</a></li>
 <li><a href="#_handler-getapplicationsmetadata">getApplicationsMetadata()</a></li>
-<li><a href="#_handler-getapplicationnamebymime">getApplicationNameByMime()</a></li>
+<li><a href="#_handler-getapplicationnamebyfile">getApplicationNameByFile()</a></li>
 <li><a href="#_handler-setdefaultapplication">setDefaultApplication()</a></li>
 <li><a href="#_handler-savesettings">saveSettings()</a></li>
 <li><a href="#_handler-setsetting">setSetting()</a></li>
@@ -400,12 +400,10 @@ Get all package metadata
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON data</em></p>
 
 </div>
-<div class="section-method" id="_handler-getapplicationnamebymime">
-<h3 id="_handler-getapplicationnamebymime-mime-fname-forcelist-callback-">_Handler::getApplicationNameByMime(mime, fname, forceList, callback)</h3>
+<div class="section-method" id="_handler-getapplicationnamebyfile">
+<h3 id="_handler-getapplicationnamebyfile-file-forcelist-callback-">_Handler::getApplicationNameByFile(file, forceList, callback)</h3>
 <pre>
 Get a list of application supporting mime type
-
-FIXME: There is a unused parameter here!
 </pre>
 
 
@@ -420,14 +418,9 @@ FIXME: There is a unused parameter here!
 </thead>
 <tbody>
 <tr>
-<td>mime</td>
-<td>String</td>
-<td>The MIME type</td>
-</tr>
-<tr>
-<td>fname</td>
-<td>String</td>
-<td>Filename (unused)</td>
+<td>file</td>
+<td>VFS.File</td>
+<td>File</td>
 </tr>
 <tr>
 <td>forceList</td>
@@ -867,7 +860,7 @@ Get the settings manager
 
 </div>
 </div>
-<p><i>Generated: Sun Feb 08 2015 20:04:28 GMT+0100 (CET)</i></p>
+<p><i>Generated: Fri Feb 13 2015 22:31:02 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>

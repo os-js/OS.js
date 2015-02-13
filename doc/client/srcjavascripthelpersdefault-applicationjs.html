@@ -45,7 +45,7 @@
 <li>
 <a href="#osjs-helpers-defaultapplicationwindow">DefaultApplicationWindow</a> (OSjs.Helpers.DefaultApplicationWindow)
 <ul>
-<li><a href="#defaultapplicationwindow-checkchanged">checkChanged()</a></li>
+<li><a href="#defaultapplicationwindow-oncheckchanged">onCheckChanged()</a></li>
 <li><a href="#defaultapplicationwindow-_ondndevent">_onDndEvent()</a></li>
 <li><a href="#defaultapplicationwindow-_close">_close()</a></li>
 </ul>
@@ -61,7 +61,7 @@
 <li><a href="#defaultapplication-ongetsavedata">onGetSaveData()</a></li>
 <li><a href="#defaultapplication-oncheckdatatype">onCheckDataType()</a></li>
 <li><a href="#defaultapplication-onfilehaschanged">onFileHasChanged()</a></li>
-<li><a href="#defaultapplication-oncheckchanged">onCheckChanged()</a></li>
+<li><a href="#defaultapplication-_oncheckchanged">_onCheckChanged()</a></li>
 <li><a href="#defaultapplication-onconfirmdialog">onConfirmDialog()</a></li>
 <li><a href="#defaultapplication-onerror">onError()</a></li>
 <li><a href="#defaultapplication-action">action()</a></li>
@@ -101,14 +101,12 @@ Use this in combination with 'DefaultApplication'
 <li>OSjs.Core.Window</li>
 </ul>
 
-<div class="section-method" id="defaultapplicationwindow-checkchanged">
-<h3 id="defaultapplicationwindow-checkchanged-">DefaultApplicationWindow::checkChanged()</h3>
+<div class="section-method" id="defaultapplicationwindow-oncheckchanged">
+<h3 id="defaultapplicationwindow-oncheckchanged-">DefaultApplicationWindow::onCheckChanged()</h3>
 <pre>
 You need to implement this in your application.
 
 For an example see the 'Textpad' application
-
-TODO Rename to onCheckChanged()
 </pre>
 
 
@@ -392,12 +390,10 @@ If a user modifies the file and it is open, this is triggered
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="defaultapplication-oncheckchanged">
-<h3 id="defaultapplication-oncheckchanged-callback-">DefaultApplication::onCheckChanged(callback)</h3>
+<div class="section-method" id="defaultapplication-_oncheckchanged">
+<h3 id="defaultapplication-_oncheckchanged-callback-">DefaultApplication::_onCheckChanged(callback)</h3>
 <pre>
 When requesting check for if file has changed
-
-TODO: Rename to _onCheckChanged()
 </pre>
 
 
@@ -767,7 +763,7 @@ Sets current active file
 
 </div>
 </div>
-<p><i>Generated: Sun Feb 08 2015 20:04:28 GMT+0100 (CET)</i></p>
+<p><i>Generated: Fri Feb 13 2015 22:31:02 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
