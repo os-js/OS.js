@@ -334,28 +334,30 @@
   /**
    * Get a list of application supporting mime type
    *
-   * FIXME: There is a unused parameter here!
    *
-   * @param   String    mime      The MIME type
-   * @param   String    fname     Filename (unused)
+   * @param   VFS.File  file      File
    * @param   boolean   forceList Force entry to show up
    * @param   Function  callback  Callback function
    *
    * @return  void
    *
-   * @method  _Handler::getApplicationNameByMime()
+   * @method  _Handler::getApplicationNameByFile()
    */
-  _Handler.prototype.getApplicationNameByMime = function(mime, fname, forceList, callback) {
+  _Handler.prototype.getApplicationNameByFile = function(file, forceList, callback) {
+    if ( !(file instanceof OSjs.VFS.File) ) {
+      throw new Error('This function excepts a OSjs.VFS.File object');
+    }
+
     var pacman = this.packages;
-    this.getSetting('defaultApplication', mime, function(val) {
-      console.debug('OSjs::_Handler::getApplicationNameByMime()', 'default application', val);
+    this.getSetting('defaultApplication', file.mime, function(val) {
+      console.debug('OSjs::_Handler::getApplicationNameByFile()', 'default application', val);
       if ( !forceList && val ) {
         if ( pacman.getPackage(val) ) {
           callback([val]);
           return;
         }
       }
-      callback(pacman.getPackagesByMime(mime));
+      callback(pacman.getPackagesByMime(file.mime));
     });
   };
 

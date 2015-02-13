@@ -378,7 +378,7 @@
       }
     }
 
-    handler.getApplicationNameByMime(file.mime, file.path, launchArgs.forceList, _onDone);
+    handler.getApplicationNameByFile(file, launchArgs.forceList, _onDone);
   }
 
   /**
