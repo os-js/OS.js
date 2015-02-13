@@ -107,7 +107,7 @@
     }
   };
 
-  ApplicationTextpadWindow.prototype.checkChanged = function(callback, msg) {
+  ApplicationTextpadWindow.prototype.onCheckChanged = function(callback, msg) {
     var gel = this._getGUIElement('TextpadTextarea');
     if ( gel && gel.hasChanged ) {
       return this._appRef.onConfirmDialog(this, msg, function(discard) {

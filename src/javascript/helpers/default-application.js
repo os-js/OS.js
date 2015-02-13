@@ -61,13 +61,11 @@
    * You need to implement this in your application.
    * For an example see the 'Textpad' application
    *
-   * TODO Rename to onCheckChanged()
-   *
    * @return  boolean     If the document has changed
    *
-   * @method  DefaultApplicationWindow::checkChanged()
+   * @method  DefaultApplicationWindow::onCheckChanged()
    */
-  DefaultApplicationWindow.prototype.checkChanged = function() {
+  DefaultApplicationWindow.prototype.onCheckChanged = function() {
     return false;
   };
 
@@ -108,7 +106,7 @@
       }
     }
 
-    if ( this.checkChanged(callback) !== false ) {
+    if ( this.onCheckChanged(callback) !== false ) {
       return false;
     }
     return Window.prototype._close.apply(this, arguments);
@@ -335,7 +333,7 @@
 
       var msg = OSjs.API._('MSG_GENERIC_APP_DISCARD');
       if ( this.mainWindow ) {
-        if ( this.mainWindow.checkChanged(function(discard) { _cb(discard); }, msg) === false ) {
+        if ( this.mainWindow.onCheckChanged(function(discard) { _cb(discard); }, msg) === false ) {
           _cb(true);
         }
       }

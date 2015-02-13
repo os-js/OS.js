@@ -342,7 +342,7 @@
     return rt ? rt.getContent() : '';
   };
 
-  ApplicationWriterWindow.prototype.checkChanged = function(callback, msg) {
+  ApplicationWriterWindow.prototype.onCheckChanged = function(callback, msg) {
     var gel = this._getGUIElement('WriterRichText');
     if ( gel && gel.hasChanged ) {
       return this._appRef.onConfirmDialog(this, msg, function(discard) {
