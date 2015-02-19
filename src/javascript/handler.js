@@ -310,6 +310,17 @@
   //
 
   /**
+   * Get the package manager
+   *
+   * @return    PackageManager        Package Manager instance
+   *
+   * @method    _Handler::getPackageManager()
+   */
+  _Handler.prototype.getPackageManager = function() {
+    return this.packages;
+  };
+
+  /**
    * Get metadata for application by class-name
    *
    * @return  Object        JSON data

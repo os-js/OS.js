@@ -40,7 +40,7 @@
 
   var PackageManager = function(uri) {
     this.packages = {};
-    this.uri = uri;
+    this.uri = uri; // TODO: Split up into user and system
   };
 
   /**
@@ -52,37 +52,168 @@
 
     console.info('PackageManager::load()');
 
-    return Utils.ajax({
-      url: this.uri,
-      json: true,
-      onsuccess: function(response, request, url) {
-        response = Utils.fixJSON(response);
-
-        if ( response ) {
-          self._setPackages(response);
-          callback(true);
-        } else {
-          callback(false, 'No packages found!');
-        }
-      },
-      onerror: function(error, response, request, url) {
-        if ( request && request.status !== 200 ) {
-          error = 'Failed to load package manifest from ' + self.uri + ' - HTTP Error: ' + request.status;
-        }
-        callback(false, error);
+    this._loadMetadata(function() {
+      var len = Object.keys(self.packages).length;
+      if ( len ) {
+        callback(true);
+        return;
       }
+      callback(false, 'No packages found!');
     });
   };
 
   /**
-   * Set package list (does some corrections for locale)
+   * Internal method for loading all package metadata
    */
-  PackageManager.prototype._setPackages = function(result) {
-    console.debug('PackageManager::_setPackages()', result);
-    var currLocale = API.getLocale();
-    var resulted = {};
+  PackageManager.prototype._loadMetadata = function(callback) {
+    var self = this;
 
-    Object.keys(result).forEach(function(i) {
+    function _loadSystemMetadata(cb) {
+      Utils.ajax({
+        url: self.uri,
+        json: true,
+        onsuccess: function(response, request, url) {
+          response = Utils.fixJSON(response);
+          if ( response ) {
+            self._addPackages(response, 'system');
+          }
+          cb();
+        },
+        onerror: function(error, response, request, url) {
+          if ( request && request.status !== 200 ) {
+            error = 'Failed to load package manifest from ' + self.uri + ' - HTTP Error: ' + request.status;
+          }
+          callback(false, error);
+        }
+      });
+    }
+
+    function _loadUserMetadata(cb) {
+      var path = 'home:///Packages/packages.json';
+      var file = new OSjs.VFS.File(path, 'application/json');
+      OSjs.VFS.read(file, function(err, resp) {
+        resp = OSjs.Utils.fixJSON(resp || '');
+        if ( resp ) {
+          self._addPackages(resp, 'user');
+        }
+        cb();
+      }, {type: 'text'});
+    }
+
+    _loadSystemMetadata(function() {
+      _loadUserMetadata(function() {
+        callback();
+      });
+    });
+  };
+
+  /**
+   * Generates user-installed package metadata (on runtime)
+   */
+  PackageManager.prototype.generateUserMetadata = function(callback) {
+    var dir = new OSjs.VFS.File('home:///Packages'); // FIXME
+    var found = {};
+    var queue = [];
+
+    function _checkDirectory(cb) {
+      OSjs.VFS.mkdir(dir, function() {
+        cb();
+      });
+    }
+
+    function _runQueue(cb) {
+      function __handleMetadata(path, meta, cbf) {
+        var preloads = meta.preload || [];
+        var newpreloads = [];
+
+        preloads.forEach(function(p) {
+          var src = path.replace(/package\.json$/, p.src);
+          var file = new OSjs.VFS.File(src);
+
+          OSjs.VFS.url(file, function(err, resp) { // NOTE: This only works for internal FIXME
+            if ( err || !resp ) { return; }
+
+            newpreloads.push({
+              type: p.type,
+              src: resp
+            });
+          });
+
+        });
+
+        meta.path    = OSjs.Utils.filename(path.replace(/\/package\.json$/, ''));
+        meta.preload = newpreloads;
+
+        cbf(meta);
+      }
+
+      function __next() {
+        if ( !queue.length ) {
+          cb();
+          return;
+        }
+
+        var iter = queue.pop();
+        var file = new OSjs.VFS.File(iter, 'application/json');
+        OSjs.VFS.read(file, function(err, resp) {
+          resp = OSjs.Utils.fixJSON(resp);
+          if ( !err && resp ) {
+            __handleMetadata(iter, resp, function(data) {
+              found[resp.className] = data;
+              __next();
+            });
+            return;
+          }
+          __next();
+        }, {type: 'text'});
+      }
+
+      __next();
+    }
+
+    function _enumPackages(cb) {
+      OSjs.VFS.scandir(dir, function(err, resp) {
+        if ( resp && (resp instanceof Array) ) {
+          resp.forEach(function(iter) {
+            if ( !iter.filename.match(/^\./) && iter.type === 'dir' ) {
+              queue.push(dir.path + '/' + iter.filename + '/package.json');
+            }
+          });
+        }
+        _runQueue(cb);
+      });
+    }
+
+    function _writeMetadata(cb) {
+      var file = new OSjs.VFS.File(dir.path + '/packages.json', 'application/json');
+      var meta = JSON.stringify(found, null, 4);
+      OSjs.VFS.write(file, meta, function() {
+        cb();
+      });
+    }
+
+    _checkDirectory(function() {
+      _enumPackages(function() {
+        _writeMetadata(function() {
+          callback();
+        });
+      });
+    });
+  };
+
+  /**
+   * Add a list of packages
+   */
+  PackageManager.prototype._addPackages = function(result, scope) {
+    console.debug('PackageManager::_addPackages()', result);
+
+    var self = this;
+    var keys = Object.keys(result);
+    if ( !keys.length ) { return; }
+
+    var currLocale = API.getLocale();
+
+    keys.forEach(function(i) {
       var newIter = result[i];
       if ( typeof newIter.names !== 'undefined' ) {
         if ( newIter.names[currLocale] ) {
@@ -99,10 +230,11 @@
         newIter.description = newIter.name;
       }
 
-      resulted[i] = newIter;
-    });
+      newIter.scope = scope || 'system';
+      newIter.type  = newIter.type || 'application';
 
-    this.packages = resulted;
+      self.packages[i] = newIter;
+    });
   };
 
   /**

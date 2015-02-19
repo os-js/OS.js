@@ -675,9 +675,37 @@
    * @api     OSjs.API.getApplicationResource()
    */
   function doGetApplicationResource(app, name) {
-    var aname = ((app instanceof OSjs.Core.Process)) ? (app.__path || '') : app;
-    var root = OSjs.API.getDefaultSettings().Core.PackageURI;
-    return root + '/' + aname + '/' + name;
+    var path = '';
+    var appname = null;
+
+    if ( app instanceof OSjs.Core.Process ) {
+      if ( app.__path ) {
+        appname = app.__path;
+      }
+    } else if ( typeof app === 'string' ) {
+      appname = app;
+
+      var handler = OSjs.Core.getHandler();
+      var pacman = handler.getPackageManager();
+      var packs = pacman ? pacman.getPackages() : {};
+      if ( packs[appname] ) {
+        appname = packs[appname].path;
+      }
+    }
+
+    if ( appname ) {
+      var root;
+      if ( appname.match(/^(.*)\/(.*)$/) ) {
+        root = OSjs.API.getDefaultSettings().Core.PackageURI;
+        path = root + '/' + appname + '/' + name;
+      } else {
+        // TODO: Add support for external VFS modules ?
+        root = OSjs.Core.getHandler().getConfig('Core').FSURI;
+        path = root + 'home:///Packages/' + appname + '/' + name; // FIXME
+      }
+    }
+
+    return path;
   }
 
   /**

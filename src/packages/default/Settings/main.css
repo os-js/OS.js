@@ -186,6 +186,21 @@
   height : 100px;
 }
 
+.Window_ApplicationSettingsWindow .Tab_Packages .GUIListView {
+  height : 290px;
+}
+.Window_ApplicationSettingsWindow .Tab_Packages .ButtonContainer {
+  margin : -5px;
+  margin-top : 0;
+}
+.Window_ApplicationSettingsWindow .Tab_Packages .ButtonContainer > .GUIButton {
+  display : inline-block;
+  margin : 5px;
+}
+
+/*
+ * Panel Item Window
+ */
 .Window_CoreWMPanelItemWindow .WindowWrapper {
   padding : 5px;
 }
@@ -195,3 +210,4 @@
 .Window_CoreWMPanelItemWindow .GUIButton {
   margin-top : 5px;
 }
+

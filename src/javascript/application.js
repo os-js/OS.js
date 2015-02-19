@@ -57,6 +57,7 @@
     this.__name       = name;
     this.__label      = metadata.name;
     this.__path       = metadata.path;
+    this.__scope      = metadata.scope || 'system';
     this.__iter       = metadata.className;
     this.__destroyed  = false;
     this.__running    = true;
