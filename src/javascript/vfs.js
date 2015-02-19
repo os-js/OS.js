@@ -634,6 +634,8 @@
     function _finished(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_READ_FMT', error);
+        callback(error);
+        return;
       }
 
       if ( options.type ) {

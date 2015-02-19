@@ -78,7 +78,11 @@
         url: url,
         method: 'GET',
         responseType: 'arraybuffer',
-        onsuccess: function(response) {
+        onsuccess: function(response, xhr) {
+          if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
+            callback(xhr.statusText || response);
+            return;
+          }
           callback(false, response);
         },
         onerror: function(error) {
