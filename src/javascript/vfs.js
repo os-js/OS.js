@@ -1217,6 +1217,7 @@
    */
   OSjs.VFS.remoteRead = function(url, mime, callback, options) {
     options = options || {};
+    options.type = options.type || 'binary';
     mime = options.mime || 'application/octet-stream';
 
     console.info('VFS::remoteRead()', url, mime);
