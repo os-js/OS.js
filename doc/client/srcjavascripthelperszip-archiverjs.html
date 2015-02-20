@@ -36,84 +36,38 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/textarea.js</i></p>
+<p><i>src/javascript/helpers/zip-archiver.js</i></p>
 <h2>Functions</h2>
 <ul>
+<li>OSjs.Helpers.ZipArchiver.<a href="#osjs-helpers-ziparchiver-getinstance">getInstance()</a></li>
+<li>OSjs.Helpers.ZipArchiver.<a href="#osjs-helpers-ziparchiver-createinstance">createInstance()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-textarea">Textarea</a> (OSjs.GUI.Textarea)
+<a href="#osjs-helpers-ziparchiver-ziparchiver">ZipArchiver</a> (OSjs.Helpers.ZipArchiver.ZipArchiver)
 <ul>
-<li><a href="#textarea-setvalue">setValue()</a></li>
-<li><a href="#textarea-settext">setText()</a></li>
-<li><a href="#textarea-getvalue">getValue()</a></li>
-<li><a href="#textarea-focus">focus()</a></li>
-<li><a href="#textarea-blur">blur()</a></li>
+<li><a href="#ziparchiver-extract">extract()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-gui-textarea">
-<h2 id="textarea">Textarea</h2>
+<div class="section-function" id="osjs-helpers-ziparchiver-getinstance">
+<h2 id="osjs-helpers-ziparchiver-getinstance-">OSjs.Helpers.ZipArchiver.getInstance()</h2>
 <pre>
-Textarea
-</pre>
-
-<h4 id="namespace">Namespace</h4>
-<ul>
-<li>OSjs.GUI.Textarea</li>
-</ul>
-<h4 id="extends">Extends</h4>
-<ul>
-<li>_Input</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.GUI._Input</li>
-</ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>Name of GUIElement (unique)</td>
-</tr>
-<tr>
-<td>opts</td>
-<td>Object</td>
-<td>A list of options</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-
-<div class="section-method" id="textarea-setvalue">
-<h3 id="textarea-setvalue-">Textarea::setValue()</h3>
-<pre>
-Alias of SetText()
+Gets the currently running instance
 </pre>
 
 
-<h4 id="see">See</h4>
-<ul>
-<li>Textarea::setText()</li>
-</ul>
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>ZipArchiver</u> <em>Can also be null</em></p>
 
 </div>
-<div class="section-method" id="textarea-settext">
-<h3 id="textarea-settext-t-">Textarea::setText(t)</h3>
+<div class="section-function" id="osjs-helpers-ziparchiver-createinstance">
+<h2 id="osjs-helpers-ziparchiver-createinstance-args-callback-">OSjs.Helpers.ZipArchiver.createInstance(args, callback)</h2>
 <pre>
-Sets the value
+Create an instance of ZipArchiver
 </pre>
 
 
@@ -128,9 +82,31 @@ Sets the value
 </thead>
 <tbody>
 <tr>
-<td>t</td>
-<td>String</td>
-<td>The text</td>
+<td>args</td>
+<td>Object</td>
+<td>Arguments</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, instance)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td>Array</td>
+<td>What scope to load</td>
 </tr>
 </tbody>
 </table>
@@ -138,41 +114,90 @@ Sets the value
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="textarea-getvalue">
-<h3 id="textarea-getvalue-">Textarea::getValue()</h3>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-helpers-ziparchiver-ziparchiver">
+<h2 id="ziparchiver">ZipArchiver</h2>
 <pre>
-Alias of getText()
+The GoogleAPI wrapper class
+
+This is a private class and can only be aquired through
+
+OSjs.Helpers.ZipArchiver.createInsatance()
+
+Generally you want to create an instance of this helper
+
+and when successfully created use `window.zip` use the instance helpers.
+
+@private
 </pre>
 
-
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Helpers.ZipArchiver.ZipArchiver</li>
+</ul>
 <h4 id="see">See</h4>
 <ul>
-<li>Textarea::getText()</li>
+<li>OSjs.Helpers.ZipArchiver.createInsatance()</li>
 </ul>
 
-</div>
-<div class="section-method" id="textarea-focus">
-<h3 id="textarea-focus-">Textarea::focus()</h3>
+<div class="section-method" id="ziparchiver-extract">
+<h3 id="ziparchiver-extract-file-destination-args-">ZipArchiver::extract(file, destination, args)</h3>
 <pre>
-Focus the input element
+Extract a File to destination
 </pre>
 
 
-
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File to extract</td>
+</tr>
+<tr>
+<td>destination</td>
+<td>String</td>
+<td>Destination path</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Arguments</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>onprogress</td>
+<td>Function</td>
+<td>Callback on progress =&gt; fn(filename, currentIndex, totalIndex)</td>
+</tr>
+<tr>
+<td>oncomplete</td>
+<td>Function</td>
+<td>Callback on complete =&gt; fn(error, warnings, result)</td>
+</tr>
+</tbody>
+</table>
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
-
-</div>
-<div class="section-method" id="textarea-blur">
-<h3 id="textarea-blur-">Textarea::blur()</h3>
-<pre>
-Blur the input element
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
 </div>
