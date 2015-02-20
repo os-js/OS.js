@@ -82,7 +82,7 @@
     var self = this;
     Utils.preload(this.preloads, function(total, errors) {
       if ( errors ) {
-        cb(errors.join('\n'));
+        cb('Failed to load zip.js'); // FIXME: Translation
         return;
       }
 
@@ -245,7 +245,7 @@
     SingletonInstance.init(function(error) {
       if ( !error ) {
         if ( !window.zip ) {
-          error = 'ZIP library was not found. Did it load properly?'; // FIXME: Translation
+          error = 'zip.js library was not found. Did it load properly?'; // FIXME: Translation
         }
       }
       callback(error, error ? false : SingletonInstance);
