@@ -222,20 +222,23 @@
    * This will automatically add it to the WindowManager and show it to you
    *
    * @param   Window    w     The Window
+   * @param   Function  cb    (Optional) Callback for when window was successfully inited
    *
    * @return  Window
    *
    * @method  Application::_addWindow()
    */
-  Application.prototype._addWindow = function(w) {
+  Application.prototype._addWindow = function(w, cb) {
+    cb = cb || function() {};
+
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
     console.info('OSjs::Core::Application::_addWindow()');
     this.__windows.push(w);
 
+    var wm = OSjs.Core.getWindowManager();
     if ( this.__inited ) {
-      var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
-        wm.addWindow(w);
+        wm.addWindow(w, null, cb);
       }
       if ( w._properties.start_focused ) {
         setTimeout(function() {
@@ -243,6 +246,8 @@
         }, 5);
       }
     }
+
+    cb(w, wm);
 
     return w;
   };
