@@ -1,0 +1,11 @@
+[
+  {
+    "className": "ApplicationTest",
+    "name": "Test",
+    "description": "Just the official test application",
+    "category": "system",
+    "author": "andersevenrud@gmail.com",
+    "version": "1.0",
+    "download": "http://andersevenrud.github.io/OS.js-v2/store/packages/Test.zip"
+  }
+]
