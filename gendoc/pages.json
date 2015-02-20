@@ -39,6 +39,10 @@
     "title": "Setting up Broadway - OS.js Manuals"
   },
 
+  "manuals/man-zip.html": {
+    "title": "Setting up Zip support - OS.js Manuals"
+  },
+
   "manuals/man-package-manager.html": {
     "title": "Managing packages/applications - OS.js Manuals"
   },
