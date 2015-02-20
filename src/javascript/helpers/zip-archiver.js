@@ -62,6 +62,21 @@
 
   var SingletonInstance = null;
 
+  /**
+   * The GoogleAPI wrapper class
+   *
+   * This is a private class and can only be aquired through
+   * OSjs.Helpers.ZipArchiver.createInsatance()
+   *
+   * Generally you want to create an instance of this helper
+   * and when successfully created use `window.zip` use the instance helpers.
+   *
+   * @see OSjs.Helpers.ZipArchiver.createInsatance()
+   * @api OSjs.Helpers.ZipArchiver.ZipArchiver
+   *
+   * @private
+   * @class
+   */
   function ZipArchiver(opts) {
     this.opts = opts;
     this.inited = false;
@@ -96,6 +111,19 @@
     });
   };
 
+  /**
+   * Extract a File to destination
+   *
+   * @param   OSjs.VFS.File     file          File to extract
+   * @param   String            destination   Destination path
+   * @param   Object            args          Arguments
+   *
+   * @option  args    Function    onprogress      Callback on progress => fn(filename, currentIndex, totalIndex)
+   * @option  args    Function    oncomplete      Callback on complete => fn(error, warnings, result)
+   *
+   * @return  void
+   * @method  ZipArchiver::extract()
+   */
   ZipArchiver.prototype.extract = function(file, destination, args) {
     args = args || {};
 
