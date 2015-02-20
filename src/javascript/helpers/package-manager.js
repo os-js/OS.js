@@ -67,6 +67,7 @@
    */
   PackageManager.prototype._loadMetadata = function(callback) {
     var self = this;
+    this.packages = {};
 
     function _loadSystemMetadata(cb) {
       Utils.ajax({
@@ -114,6 +115,9 @@
     var dir = new OSjs.VFS.File('home:///Packages'); // FIXME
     var found = {};
     var queue = [];
+    var self = this;
+
+    console.debug('PackageManager::generateUserMetadata()');
 
     function _checkDirectory(cb) {
       OSjs.VFS.mkdir(dir, function() {
@@ -122,6 +126,8 @@
     }
 
     function _runQueue(cb) {
+      console.debug('PackageManager::generateUserMetadata()', '_runQueue()');
+
       function __handleMetadata(path, meta, cbf) {
         var preloads = meta.preload || [];
         var newpreloads = [];
@@ -155,10 +161,12 @@
 
         var iter = queue.pop();
         var file = new OSjs.VFS.File(iter, 'application/json');
+        console.debug('PackageManager::generateUserMetadata()', '_runQueue()', '__next()', queue.length, iter);
         OSjs.VFS.read(file, function(err, resp) {
           resp = OSjs.Utils.fixJSON(resp);
           if ( !err && resp ) {
             __handleMetadata(iter, resp, function(data) {
+              console.debug('PackageManager::generateUserMetadata()', 'ADDING PACKAGE', resp);
               found[resp.className] = data;
               __next();
             });
@@ -172,6 +180,8 @@
     }
 
     function _enumPackages(cb) {
+      console.debug('PackageManager::generateUserMetadata()', '_enumPackages()');
+
       OSjs.VFS.scandir(dir, function(err, resp) {
         if ( resp && (resp instanceof Array) ) {
           resp.forEach(function(iter) {
@@ -185,6 +195,8 @@
     }
 
     function _writeMetadata(cb) {
+      console.debug('PackageManager::generateUserMetadata()', '_writeMetadata()');
+
       var file = new OSjs.VFS.File(dir.path + '/packages.json', 'application/json');
       var meta = JSON.stringify(found, null, 4);
       OSjs.VFS.write(file, meta, function() {
@@ -195,7 +207,9 @@
     _checkDirectory(function() {
       _enumPackages(function() {
         _writeMetadata(function() {
-          callback();
+          self._loadMetadata(function() {
+            callback();
+          });
         });
       });
     });
