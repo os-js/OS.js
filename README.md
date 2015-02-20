@@ -40,6 +40,8 @@ My contact information is located on my [Github profile](https://github.com/ande
 
 [Want to join the translation team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-translation-team)
 
+[Submit your application](https://github.com/andersevenrud/OS.js-v2/issues/81)
+
 # Links
 * [Homepage](http://andersevenrud.github.io/OS.js-v2/)
 * [Wiki](https://github.com/andersevenrud/OS.js-v2/wiki)
