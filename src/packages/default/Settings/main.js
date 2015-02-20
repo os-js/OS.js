@@ -101,7 +101,7 @@
         title: m.title.match(/^[A-Z]*_/) ? API._(m.title) : _(m.title),
         icon: _createIcon(m.icon)
       });
-      self.modules[m.name] = m.onCreate(self, self.$content, self.settings);
+      self.modules[m.name] = m.onCreate(self, self.$content, self.settings, self._appRef);
     });
     sidePanel.setRows(rows);
     sidePanel.render();

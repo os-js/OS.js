@@ -30,16 +30,35 @@
 (function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
   'use strict';
 
+  function installPackage(file, cb) {
+    OSjs.Helpers.ZipArchiver.createInstance({}, function(error, instance) {
+      if ( instance ) {
+        var dest = 'home:///Packages/' + file.filename.replace(/\.zip$/i, '');
+        instance.extract(file, dest, {
+          onprogress: function() {
+          },
+          oncomplete: function() {
+            cb();
+          }
+        });
+      }
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
-  // MODULE
+  // APP STORE
   /////////////////////////////////////////////////////////////////////////////
 
-  function onCreate(win, root, settings) {
+  function createStoreTab(app, win, root, settings, container, tabs) {
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // INSTALLED PACKAGES
+  /////////////////////////////////////////////////////////////////////////////
+
+  function createInstalledTab(app, win, root, settings, container, tabs) {
     var handler = OSjs.Core.getHandler();
     var pacman = handler.getPackageManager();
-
-    var container = document.createElement('div');
-    var tabs = win._addGUIElement(new GUI.Tabs('TabsUser'), container);
     var _ = OSjs.Applications.ApplicationSettings._;
 
     var outer = document.createElement('div');
@@ -47,6 +66,21 @@
 
     var buttonContainer = document.createElement('div');
     buttonContainer.className = 'ButtonContainer';
+
+    function openInstallPackage() {
+      var opt = {
+        mimes: ['application/zip'],
+        type:  'open',
+        path:  OSjs.API.getDefaultPath()
+      };
+
+      app._createDialog('File', [opt, function(btn, item) {
+        if ( btn !== 'ok' ) { return; }
+        installPackage(item, function() {
+          renderList(true);
+        });
+      }], win);
+    }
 
     function renderList(force) {
       if ( !packageList ) { return; }
@@ -79,7 +113,9 @@
       _render();
     }
 
-    var tab = tabs.addTab('Packages', {title: 'Packages', onSelect: function() {}}); // FIXME: Translation!
+    var tab = tabs.addTab('Packages', {title: 'Installed Packages', onSelect: function() { // FIXME: Translation!
+      renderList();
+    }});
 
     var packageList = win._addGUIElement(new OSjs.GUI.ListView('PackageList'), outer);
     packageList.setColumns([
@@ -89,15 +125,29 @@
     ]);
     packageList.render();
 
-    var buttonRefresh = win._addGUIElement(new OSjs.GUI.Button('ButtonPackageRefresh', {icon: API.getIcon('actions/reload.png'), onClick: function() {
+    var buttonRefresh = win._addGUIElement(new OSjs.GUI.Button('ButtonPackageRefresh', {label: 'Refresh', onClick: function() { // FIXME: Translation
       renderList(true);
+    }}), buttonContainer);
+
+    var buttonInstall = win._addGUIElement(new OSjs.GUI.Button('ButtonPackageInstall', {label: 'Install', onClick: function() { // FIXME: Translation
+      openInstallPackage();
     }}), buttonContainer);
 
     outer.appendChild(buttonContainer);
     tab.appendChild(outer);
     root.appendChild(container);
+  }
 
-    renderList();
+  /////////////////////////////////////////////////////////////////////////////
+  // MODULE
+  /////////////////////////////////////////////////////////////////////////////
+
+  function onCreate(win, root, settings, app) {
+    var container = document.createElement('div');
+    var tabs = win._addGUIElement(new GUI.Tabs('TabsPackages'), container);
+
+    createInstalledTab(app, win, root, settings, container, tabs);
+    createStoreTab(app, win, root, settings, container, tabs);
 
     return container;
   }
