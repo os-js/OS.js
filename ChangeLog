@@ -1,3 +1,28 @@
+# 2.0.0-alpha55
+
+Now features installable packages via zip or App Store in the Settings application.
+
+For this to work you need to add zip.js support. See manuals on documentation page
+on how to set up.
+
+* PackageManager: Updated with support for user packages in home directory
+* Settings: Added 'Installed Packages' tab
+* Settings: Added support for installing packages via zip
+* Settings: Added 'App Store' tab with an official application store
+* Helpers: Added ZipArchiver helper (currently for extracting files only)
+* Application: _addWindow() now has a callback argument
+* VFS: HTTP Errors no longer result in successful read()
+* VFS: Added a default parameter value in remoteRead()
+* Dialogs: Fixed an infinite loop in color dialog
+* obt: Now writes packages.json in dist
+* Handler: Renamed an internal method and updated arguments
+* DefaultApplication: Renamed an internal method
+* ExampleHandler: Updated
+* Misc: Fixed some icon paths
+* Misc: Fixed some minor TODOs and FIXMEs
+* Misc: Added some missing translation calls
+* Misc: Updated documentation
+
 # 2.0.0-alpha54
 
 * Core: New core settings generation in src/conf for much easier managment (no more build.json)
