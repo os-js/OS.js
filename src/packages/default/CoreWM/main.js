@@ -87,6 +87,74 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
+  // MISC
+  /////////////////////////////////////////////////////////////////////////////
+
+  function generateFrost(twin, cb) {
+    cb = cb || function() {};
+
+    if ( !window.html2canvas ) {
+      cb();
+      return;
+    }
+
+    var wm = OSjs.Core.getWindowManager();
+    var theme = wm ? wm.getStyleTheme(true) : null;
+    var enabled = theme && theme.style && (theme.style.frost === true);
+    twin._$element.removeAttribute('data-html2canvas-ignore');
+
+    if ( !enabled && twin._$frost ) {
+      destroyFrost(twin);
+    }
+
+    if ( twin._state.minimized || !enabled ) {
+      cb();
+      return;
+    }
+
+
+    if ( !twin._$frost ) {
+      twin._$frost = document.createElement('canvas');
+      twin._$frost.className = 'WindowFrost';
+    }
+
+    if ( !twin._$frost.parentNode ) {
+      twin._$top.appendChild(twin._$frost);
+    }
+
+    twin._$element.setAttribute('data-html2canvas-ignore', 'true');
+    window.html2canvas(document.body).then(function(c) {
+      twin._$element.removeAttribute('data-html2canvas-ignore');
+      twin._$frostc = c;
+      updateFrost.call(twin);
+      cb();
+    });
+  }
+
+  function updateFrost(twin) {
+    if ( !twin._$frost || !twin._$frostc ) { return; }
+
+    var rect = {
+      x: twin._position.x,
+      y: twin._position.y,
+      h: 32,
+      w: twin._dimension.w
+    };
+
+    twin._$frost.width = rect.w;
+    twin._$frost.height = rect.h;
+    twin._$frost.getContext('2d').drawImage(twin._$frostc, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
+  }
+
+  function destroyFrost(twin) {
+    if ( twin._$frost && twin._$frost.parentNode ) {
+      twin._$frost.parentNode.removeChild(twin._$frost);
+    }
+    twin._$frost = null;
+    twin._$frostc = null;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
@@ -193,6 +261,90 @@
       return w;
     }
     return false;
+  };
+
+  CoreWM.prototype.addWindow = function(w, focus) {
+    var self = this;
+    var ret = WindowManager.prototype.addWindow.apply(this, arguments);
+
+    // Add the frosty effect (if available)
+    if ( this._currentWin && (this._currentWin._wid !== w._wid) && this._sessionLoaded ) {
+      generateFrost(this._currentWin);
+    }
+
+    w._addHook('destroy', function() {
+      destroyFrost(this);
+    });
+    w._addHook('maximize', function() {
+      generateFrost(this);
+    });
+    w._addHook('restore', function() {
+      generateFrost(this);
+    });
+    w._addHook('resized', function() {
+      generateFrost(this);
+    });
+    w._addHook('resize', function() {
+      updateFrost(this);
+    });
+    w._addHook('move', function() {
+      updateFrost(this);
+    });
+    w._addHook('focus', function() {
+      if ( self._sessionLoaded ) {
+        generateFrost(this);
+      }
+    });
+
+    return ret;
+  };
+
+  CoreWM.prototype.removeWindow = function(w) {
+    var result = WindowManager.prototype.removeWindow.apply(this, arguments);
+
+    if ( result ) {
+      setTimeout(function() {
+        if ( self._currentWin ) {
+          self._currentWin._generateFrost();
+        }
+      }, this.getAnimDuration()+100);
+    }
+
+    return result;
+  };
+
+  CoreWM.prototype.onSessionLoaded = function() {
+    var result = WindowManager.prototype.onSessionLoaded.apply(this, arguments);
+    var self = this;
+    if ( result ) {
+      setTimeout(function() {
+        self._frostWindows();
+      }, 500);
+    }
+    return result;
+  };
+
+  CoreWM.prototype._frostWindows = function() {
+    var idx = 0;
+    var total = this._windows.length;
+    var self = this;
+
+    function _next() {
+      if ( idx >= total ) {
+        return;
+      }
+      var win = self._windows[idx];
+      idx++;
+
+      if ( win ) {
+        generateFrost(win, function() {
+          _next();
+        });
+      } else {
+        _next();
+      }
+    }
+    _next();
   };
 
   //

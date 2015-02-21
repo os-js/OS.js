@@ -169,8 +169,6 @@
       this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
       this._$iframefix    = null;                 // DOMElement: Window IFrame Fix Overlay
       this._$resize       = null;                 // DOMElement: Window Resizer
-      this._$frost        = null;
-      this._$frostc       = null;
 
       this._rendered      = false;                // If Window has been initially rendered
       this._appRef        = appRef || null;       // Reference to Application Window was created from
@@ -232,6 +230,7 @@
         maximize  : [],
         minimize  : [],
         restore   : [],
+        move      : [], // Called inside the mosuemove event
         resize    : [], // Called inside the mousemove event
         resized   : []  // Called inside the mouseup event
       };
@@ -580,71 +579,6 @@
     this._updateIframeFix();
   };
 
-  Window.prototype._destroyFrost = function() {
-    if ( this._$frost && this._$frost.parentNode ) {
-      this._$frost.parentNode.removeChild(this._$frost);
-    }
-    this._$frost = null;
-    this._$frostc = null;
-  };
-
-  Window.prototype._generateFrost = function(cb) {
-    cb = cb || function() {};
-
-    if ( !window.html2canvas ) {
-      cb();
-      return;
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    var theme = wm ? wm.getStyleTheme(true) : null;
-    var enabled = theme && theme.style && (theme.style.frost === true);
-    this._$element.removeAttribute('data-html2canvas-ignore');
-
-    if ( !enabled && this._$frost ) {
-      this._destroyFrost();
-    }
-
-    if ( this._state.minimized || !enabled ) {
-      cb();
-      return;
-    }
-
-
-    if ( !this._$frost ) {
-      this._$frost = document.createElement('canvas');
-      this._$frost.className = 'WindowFrost';
-    }
-
-    if ( !this._$frost.parentNode ) {
-      this._$top.appendChild(this._$frost);
-    }
-
-    var self = this;
-    this._$element.setAttribute('data-html2canvas-ignore', 'true');
-    window.html2canvas(document.body).then(function(c) {
-      self._$element.removeAttribute('data-html2canvas-ignore');
-      self._$frostc = c;
-      self._updateFrost();
-      cb();
-    });
-  };
-
-  Window.prototype._updateFrost = function() {
-    if ( !this._$frost || !this._$frostc ) { return; }
-
-    var rect = {
-      x: this._position.x,
-      y: this._position.y,
-      h: 32,
-      w: this._dimension.w
-    };
-
-    this._$frost.width = rect.w;
-    this._$frost.height = rect.h;
-    this._$frost.getContext('2d').drawImage(this._$frostc, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
-  };
-
   /**
    * Destroy the Window
    *
@@ -680,8 +614,6 @@
     this._onChange('close');
 
     this._fireHook('destroy');
-
-    this._destroyFrost();
 
     // Children etc
     if ( this._parent ) {
@@ -792,11 +724,12 @@
    */
   Window.prototype._fireHook = function(k, args) {
     args = args || {};
+    var self = this;
     if ( this._hooks[k] ) {
       this._hooks[k].forEach(function(hook, i) {
         if ( hook ) {
           try {
-            hook.apply(this, args);
+            hook.apply(self, args);
           } catch ( e ) {
             console.warn('Window::_fireHook() failed to run hook', k, i, e);
             console.warn(e.stack);
@@ -1238,11 +1171,9 @@
       var self = this;
       setTimeout(function() {
         self._fireHook('maximize');
-        self._generateFrost();
       }, getAnimDuration());
     } else {
       this._fireHook('maximize');
-      this._generateFrost();
     }
 
     return true;
@@ -1287,11 +1218,9 @@
       var self = this;
       setTimeout(function() {
         self._fireHook('restore');
-        self._generateFrost();
       }, getAnimDuration());
     } else {
       this._fireHook('restore');
-      this._generateFrost();
     }
 
     this._focus();
@@ -1308,9 +1237,7 @@
    * @method  Window::_focus()
    */
   Window.prototype._focus = function(force) {
-    var wasFocused = this._state.focused;
     if ( !this._$element ) { return false; }
-    var wasFocused = this._state.focused;
 
     //if ( !force && this._state.focused ) { return false; }
     //console.debug(this._name, '>' , 'OSjs::Core::Window::_focus()');
@@ -1339,10 +1266,6 @@
 
     if ( this._$iframefix ) {
       this._$iframefix.style.display = 'none';
-    }
-
-    if ( !wasFocused && wm._sessionLoaded ) {
-      this._generateFrost();
     }
 
     return true;
@@ -1460,11 +1383,9 @@
     if ( anim ) {
       setTimeout(function() {
         self._fireHook('resized');
-        self._generateFrost();
       }, getAnimDuration());
     } else {
       this._fireHook('resized');
-      this._generateFrost();
     }
   };
 
@@ -1497,8 +1418,6 @@
     }
 
     this._onResize();
-
-    this._updateFrost();
 
     return true;
   };
@@ -1550,8 +1469,6 @@
     this._$element.style.left = x + 'px';
     this._position.x          = x;
     this._position.y          = y;
-
-    this._updateFrost();
 
     return true;
   };

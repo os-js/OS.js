@@ -280,6 +280,7 @@
 
       if ( newLeft !== null && newTop !== null ) {
         win._move(newLeft, newTop);
+        win._fireHook('move');
       }
       if ( newWidth !== null && newHeight !== null ) {
         win._resize(newWidth, newHeight);
@@ -453,35 +454,6 @@
   };
 
   /**
-   * Applies the "frost" effect to all windows (if available)
-   *
-   * @return void
-   * @method WindowManager::_frostWindows()
-   */
-  WindowManager.prototype._frostWindows = function() {
-    var idx = 0;
-    var total = this._windows.length;
-    var self = this;
-
-    function _next() {
-      if ( idx >= total ) {
-        return;
-      }
-      var win = self._windows[idx];
-      idx++;
-
-      if ( win ) {
-        win._generateFrost(function() {
-          _next();
-        });
-      } else {
-        _next();
-      }
-    }
-    _next();
-  };
-
-  /**
    * Add a Window
    *
    * @param   Window      w         Window reference
@@ -505,9 +477,6 @@
 
     w._inited();
 
-    if ( this._currentWin && (this._currentWin._wid !== w._wid) && this._sessionLoaded ) {
-      this._currentWin._generateFrost();
-    }
     this._windows.push(w);
 
     return w;
@@ -538,14 +507,6 @@
       }
       return result ? false : true;
     });
-
-    if ( result ) {
-      setTimeout(function() {
-        if ( self._currentWin ) {
-          self._currentWin._generateFrost();
-        }
-      }, this.getAnimDuration()+100);
-    }
 
     return result;
   };
@@ -642,13 +603,9 @@
   };
 
   WindowManager.prototype.onSessionLoaded = function() {
-    if ( this._sessionLoaded ) { return; }
-
-    var self = this;
-    setTimeout(function() {
-      self._frostWindows();
-      self._sessionLoaded = true;
-    }, 500);
+    if ( this._sessionLoaded ) { return false; }
+    this._sessionLoaded = true;
+    return true;
   };
 
   WindowManager.prototype.resize = function(ev, rect) {
