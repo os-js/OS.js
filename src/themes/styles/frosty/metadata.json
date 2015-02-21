@@ -1,0 +1,11 @@
+{
+  "name": "frosty",
+  "title": "Frosty Mint (EXPERIMENTAL. Requires html2canvas)",
+  "style": {
+    "frost": true,
+    "window": {
+      "margin": 35,
+      "border": 3
+    }
+  }
+}

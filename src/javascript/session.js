@@ -356,6 +356,7 @@
 
             OSjs.Session.triggerHook('onSessionLoaded');
 
+            wm.onSessionLoaded();
             doAutostart();
           });
         });

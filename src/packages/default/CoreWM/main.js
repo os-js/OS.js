@@ -826,6 +826,8 @@
 
     this.createStylesheet(styles);
 
+    this._frostWindows();
+
     return true;
   };
 

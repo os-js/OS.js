@@ -343,6 +343,7 @@
     this._lastWin        = null;
     this._mouselock      = true;
     this._stylesheet     = null;
+    this._sessionLoaded  = false;
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');
@@ -452,6 +453,35 @@
   };
 
   /**
+   * Applies the "frost" effect to all windows (if available)
+   *
+   * @return void
+   * @method WindowManager::_frostWindows()
+   */
+  WindowManager.prototype._frostWindows = function() {
+    var idx = 0;
+    var total = this._windows.length;
+    var self = this;
+
+    function _next() {
+      if ( idx >= total-1 ) {
+        return;
+      }
+      var win = self._windows[idx];
+      idx++;
+
+      if ( win ) {
+        win._generateFrost(function() {
+          _next();
+        });
+      } else {
+        _next();
+      }
+    }
+    _next();
+  };
+
+  /**
    * Add a Window
    *
    * @param   Window      w         Window reference
@@ -475,6 +505,11 @@
 
     w._inited();
 
+    if ( this._currentWin && (this._currentWin._wid !== w._wid) && this._sessionLoaded ) {
+      this._currentWin._generateFrost();
+    }
+    this._windows.push(w);
+
     return w;
   };
 
@@ -488,22 +523,30 @@
    * @method  WindowManager::removeWindow()
    */
   WindowManager.prototype.removeWindow = function(w) {
+    var self = this;
     if ( !(w instanceof Window) ) {
       console.warn('OSjs::Core::WindowManager::removeWindow()', 'Got', w);
       throw new Error('removeWindow() expects a "Window" class');
     }
-    console.log('OSjs::Core::WindowManager::removeWindow()');
+    console.log('OSjs::Core::WindowManager::removeWindow()', w._wid);
 
     var result = false;
-    var self = this;
     this._windows.forEach(function(win, i) {
       if ( win && win._wid === w._wid ) {
         self._windows[i] = null;
         result = true;
-        return false;
       }
-      return true;
+      return result ? false : true;
     });
+
+    if ( result ) {
+      setTimeout(function() {
+        if ( self._currentWin ) {
+          self._currentWin._generateFrost();
+        }
+      }, this.getAnimDuration()+100);
+    }
+
     return result;
   };
 
@@ -596,6 +639,16 @@
    */
   WindowManager.prototype.onKeyDown = function(ev, win) {
     // Implement in your WM
+  };
+
+  WindowManager.prototype.onSessionLoaded = function() {
+    if ( this._sessionLoaded ) { return; }
+
+    var self = this;
+    setTimeout(function() {
+      self._frostWindows();
+      self._sessionLoaded = true;
+    }, 500);
   };
 
   WindowManager.prototype.resize = function(ev, rect) {
