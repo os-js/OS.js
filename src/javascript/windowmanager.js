@@ -464,7 +464,7 @@
     var self = this;
 
     function _next() {
-      if ( idx >= total-1 ) {
+      if ( idx >= total ) {
         return;
       }
       var win = self._windows[idx];
