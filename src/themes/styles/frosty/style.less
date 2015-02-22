@@ -1,7 +1,7 @@
 @import "base.less";
 
 @theme_base_bg_color          : #fefefe;
-@theme_base_fg_color          : #000000;
+@theme_base_fg_color          : #656565;
 @theme_base_border_color      : #c3c3c3;
 
 @theme_secondary_bg_color     : #fafafa;
@@ -15,29 +15,29 @@
 
 @theme_input_bg_color         : #ffffff;
 
-@theme_gui_button_bg_color    : #f8f8f8;
-@theme_gui_button_fg_color    : #242424;
-@theme_gui_button_bg_from     : #f8f8f8;
-@theme_gui_button_gb_to       : #f4f4f4;
-@theme_gui_button_border_color: #c1c1c1;
+@theme_gui_button_bg_color    : @theme_secondary_bg_color;
+@theme_gui_button_fg_color    : @theme_base_fg_color;
+@theme_gui_button_bg_from     : @theme_secondary_bg_color;
+@theme_gui_button_gb_to       : @theme_secondary_bg_color;
+@theme_gui_button_border_color: @theme_secondary_border_color;
 
-@theme_gui_hbutton_bg_color    : @theme_gui_button_bg_color;
-@theme_gui_hbutton_fg_color    : @theme_gui_button_fg_color;
-@theme_gui_hbutton_bg_from     : @theme_gui_button_bg_from;
-@theme_gui_hbutton_gb_to       : @theme_gui_button_gb_to;
-@theme_gui_hbutton_border_color: #909090;
+@theme_gui_hbutton_bg_color    : @theme_secondary_bg_color;
+@theme_gui_hbutton_fg_color    : @theme_base_fg_color;
+@theme_gui_hbutton_bg_from     : @theme_secondary_bg_color;
+@theme_gui_hbutton_gb_to       : @theme_secondary_bg_color;
+@theme_gui_hbutton_border_color: @theme_secondary_border_color;
 
-@theme_gui_abutton_bg_color    : @theme_gui_button_bg_color;
-@theme_gui_abutton_fg_color    : @theme_gui_button_fg_color;
-@theme_gui_abutton_bg_from     : #c8c8c8;
-@theme_gui_abutton_gb_to       : #a8a8a8;
-@theme_gui_abutton_border_color: #717171;
+@theme_gui_abutton_bg_color    : @theme_selected_bg_color;
+@theme_gui_abutton_fg_color    : @theme_selected_fg_color;
+@theme_gui_abutton_bg_from     : @theme_selected_bg_color;
+@theme_gui_abutton_gb_to       : @theme_selected_bg_color;
+@theme_gui_abutton_border_color: @theme_secondary_border_color;
 
-@theme_gui_dbutton_bg_color    : @theme_gui_button_border_color;
-@theme_gui_dbutton_fg_color    : #333333;
-@theme_gui_dbutton_bg_from     : #ededed;
-@theme_gui_dbutton_gb_to       : #e6e6e6;
-@theme_gui_dbutton_border_color: @theme_gui_hbutton_border_color;
+@theme_gui_dbutton_bg_color    : @theme_base_bg_color;
+@theme_gui_dbutton_fg_color    : @theme_secondary_border_color;
+@theme_gui_dbutton_bg_from     : @theme_base_bg_color;
+@theme_gui_dbutton_gb_to       : @theme_base_bg_color;
+@theme_gui_dbutton_border_color: @theme_secondary_border_color;
 
 @theme_base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 @theme_base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
@@ -91,6 +91,7 @@ body > .WMPanel > ul {
 }
 .Window > .WindowTop > .WindowTitle {
   text-align : center;
+  color : #000;
 }
 .Window.WindowHintDnD:after {
   .theme_border_top(3px);
@@ -179,12 +180,11 @@ body .GUIToolbar button.Active {
   background : @theme_secondary_bg_color;
 }
 
-/*
-.GUITabs .Tabs .Tab {
-  background-color : @theme_base_bg_color;
-}
-*/
 .GUITabs .Tab.Active,
 .GUITabs .TabContents {
   background-color : @theme_input_bg_color;
+}
+
+.GUISlider .Root {
+  border : 1px solid @theme_secondary_border_color;
 }
