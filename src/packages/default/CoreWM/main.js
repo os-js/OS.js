@@ -127,7 +127,7 @@
     window.html2canvas(document.body).then(function(c) {
       twin._$element.removeAttribute('data-html2canvas-ignore');
       twin._$frostc = c;
-      updateFrost.call(twin);
+      updateFrost(twin);
       cb();
     });
   }
