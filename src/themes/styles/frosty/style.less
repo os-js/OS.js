@@ -108,8 +108,9 @@ body > .WMPanel > ul {
   left : -3px;
   right : -3px;
   bottom : -3px;
-  background : @theme_base_bg_color;
+  background : #fff;
   opacity : .5;
+  z-index : 5;
 }
 
 .Window > .WindowTop > .WindowIcon,
@@ -117,8 +118,13 @@ body > .WMPanel > ul {
 .Window > .WindowTop > .WindowButtons {
   top : 3px;
 }
+.Window > .WindowTop > .WindowIcon,
+.Window > .WindowTop > .WindowButtons {
+  z-index : 20;
+}
 .Window > .WindowTop > .WindowTitle {
   font-size : 110%;
+  z-index : 10;
 }
 
 .Window > .WindowTop .WindowButton {

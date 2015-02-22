@@ -14,11 +14,11 @@
        -o-filter : blur(4px);
           filter : blur(4px);
 
-  -webkit-opacity : .5;
-     -moz-opacity : .5;
-      -ms-opacity : .5;
-       -o-opacity : .5;
-          opacity : .5;
+  -webkit-opacity : .8;
+     -moz-opacity : .8;
+      -ms-opacity : .8;
+       -o-opacity : .8;
+          opacity : .8;
 }
 
 /**
