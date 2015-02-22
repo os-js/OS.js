@@ -94,6 +94,7 @@
     cb = cb || function() {};
 
     if ( !window.html2canvas ) {
+      console.warn('COULD NOT GENERATE FROST. DID NOT FIND html2canvas :(');
       cb();
       return;
     }
