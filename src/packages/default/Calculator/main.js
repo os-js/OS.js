@@ -87,7 +87,7 @@
       allow_resize: false,
       allow_maximize: false,
       width: 220,
-      height: 310
+      height: 315
     }, app]);
 
     this.calc_array = ['=', 1, '0', '0', 0];
