@@ -979,7 +979,10 @@
 
     this.createStylesheet(styles);
 
-    this._frostWindows();
+    var self = this;
+    setTimeout(function() {
+      self._frostWindows();
+    }, 100);
 
     return true;
   };
