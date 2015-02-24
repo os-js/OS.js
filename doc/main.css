@@ -25,6 +25,11 @@ div.indent {
   padding-left : 20px;
 }
 
+p.dia {
+  margin : 20px;
+  padding : 20px;
+}
+
 pre {
   font-weight : bold;
   font-family : Monospace;
