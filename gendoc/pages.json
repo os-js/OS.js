@@ -7,6 +7,10 @@
     "title": "OS.js Manuals"
   },
 
+  "manuals/overview.html": {
+    "title": "OS.js Overview"
+  },
+
   "manuals/app-corewm.html": {
     "title": "CoreWM - OS.js Manuals"
   },

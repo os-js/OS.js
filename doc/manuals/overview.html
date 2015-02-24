@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OS.js Overview</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="description" content="OS.js -- OS.js Overview" />
+    <meta name="keywords" content="OS.js,Documentation,Client,Server,API,Tutorial,Tutorials,Manual,Manuals" />
+    <link rel="stylesheet" type="text/css" href="/OS.js-v2/doc/main.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Source+Sans+Pro" />
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/OS.js-v2/favicon.ico" />
+    <link rel="icon" type="image/png" href="/OS.js-v2/favicon.png" />
+    <link rel="apple-touch-icon-precomposed" href="/OS.js-v2/favicon.png" />
+    <link rel="author" href="https://plus.google.com/101576798387217383063" />
+    <link rel="publisher" href="https://plus.google.com/101576798387217383063" />
+    <link rel="canonical" href="http://andersevenrud.github.io/OS.js-v2/doc/manuals/overview.html" />
+  </head>
+  <body>
+    <header>
+      <h1>OS.js Overview</h1>
+      <ul>
+        <li><a href="/OS.js-v2/doc/">Index</a></li>
+        <li><a href="/OS.js-v2/doc/client/">Client API</a></li>
+        <li><a href="/OS.js-v2/doc/server/">Server API</a></li>
+        <li><a href="/OS.js-v2/doc/manuals/">Manuals</a></li>
+        <li><a href="/OS.js-v2/doc/tutorials/">Tutorials</a></li>
+      </ul>
+    </header>
+
+    <main>
+
+<h1>OS.js Overview</h1>
+<p>
+  Here I will try to explain the basics of how OS.js works
+</p>
+
+<h2>Server</h2>
+<div class="indent">
+  <p>
+    The server is very simple. It just serves file like a normal web-server would (think Apache).
+  </p>
+  <p>
+    There is also an API for calling functions from the client via XHR. It operates using a simple JSON-based messaging system with HTTP POST requests (or Websockets).
+  </p>
+  <p>
+    You can easily extend this API. Includes support for <i>Node</i> and <i>PHP</i>.
+  </p>
+  <p>
+    Read more about the Server API <a href="/OS.js-v2/doc/server/">here</a>.
+  </p>
+</div>
+
+<h2>Client</h2>
+<div class="indent">
+  <p>
+    The client is split up into two distribution types. <b>dist</b> and <b>dist-dev</b>. The only difference here is that <b>dist</b> is a production version of OS.js that contains minimized sources for optimal performance.
+  </p>
+  <p>
+    You should use <b>dist-dev</b> if you're testing and/or developing (making changes) to OS.js. This way you don't have to recompile everything every time you do something.
+  </p>
+
+  <h3>Initialization process</h3>
+  <ol>
+    <li>Server sends the index.html file</li>
+    <li>
+      All resources required to boot is loaded
+      <ol>
+        <li>A session is requested</li>
+        <li>The <i>Handler</i> is initialized</li>
+        <li>Depending on the <i>Handler</i> login is now taking place</li>
+        <li>
+          If login was successfull, start a session
+          <ol>
+            <li>Browser events are bound</li>
+            <li>Any extra defined resources are loaded</li>
+            <li>All packages are loaded and their manifest is cached</li>
+            <li>
+              The Window Manager launches
+              <ol>
+                <li>Themes are loaded</li>
+                <li>Settings are restored</li>
+                <li>Panels initializes</li>
+                <li>IconView and any other extras are loaded</li>
+              </ol>
+            </li>
+            <li>Previous session (if any) is restored</li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><i>Initialization complete</i></li>
+  </ol>
+
+  <h3>About the Code</h3>
+  <p>
+    JavaScript is written in Strict ECMAScript 5.1.
+  </p>
+  <p>
+    Uses <i>prototype</i> patterns for class inheritance. Everything is namespaced and fully linted.
+  </p>
+  <p>
+    All operations (except DOM) are asynchronous. Does not use <i>Promises</i>, but simple callbacks with this pattern:
+  </p>
+  <pre clas="code">
+  asyncOperation(args, function(error, result, ...) {
+  });
+  </pre>
+
+  <h3>Configuration</h3>
+  <p>
+    Configuration is done via a JSON-based system in <i>src/conf</i>.
+  </p>
+  <p>
+    These files are loaded in alphabetical order and merged together. They are separated into several categories to make it easier on the end-user.
+  </p>
+
+  <h3>Building</h3>
+  <p>
+    OS.js features a custom build system that is super easy to use. The build tool is called <b>obt</b>.
+  </p>
+  <p>
+    A <i>Makefile</i> is included to make it easy to use. One command to rule them all: <b>make</b>.
+  </p>
+  <p>
+    <a href="/OS.js-v2/doc/manuals/man-configuration.html">See here for more information on building</a>
+  </p>
+
+  <h3>Packages</h3>
+  <p>
+    Any <i>Service</i>, <i>Application</i> or <i>Extension</i> in OS.js is called a <b>package</b>.
+  </p>
+  <p>
+    A package consists of a manifest file that describes the package and sources/resources.
+  </p>
+  <p>
+    They can also contain an API script so you can do XHR requests to the server to perform certain operations in the backend.
+  </p>
+  <p>
+    Packages are installable system-wide (not available from client) or can be installed by the user (user packages cannot use XHR because of security reasons).
+  </p>
+
+  <h3>The API</h3>
+  <p>
+    OS.js features a fully loaded API separated by namespaces.
+    The entire API is <a href="/OS.js-v2/doc/client/">documented here</a>.
+  </p>
+  <div class="indent">
+    <h4>Core</h4>
+    <p>
+      The Core API contains all the base Classes and Session methods (login, logout, process launching, etc.).
+    </p>
+    <h4>Utils</h4>
+    <p>
+      DOM functions and general usefull functions.
+    </p>
+    <h4>GUI</h4>
+    <p>
+      This is where all the GUI Elements are.
+    </p>
+    <h4>Dialogs</h4>
+    <p>
+      This is where all the Dialog Classes are.
+    </p>
+    <h4>Helpers</h4>
+    <p>
+      Helpers are, you guessed it, here to help you out. These are classes that makes it easier for you to write applications or access external APIs (for example).
+    </p>
+    <h4>VFS</h4>
+    <p>
+      The <i>Virtual Filesystem</i> lets you manipulate files on the server or any external services (like GoogleDrive, OneDrive and Dropbox).
+    </p>
+  </div>
+
+  <h3>Sources</h3>
+  <p>
+    The filetree itself should be pretty self-explainatory.
+  </p>
+  <p>
+    All JavaScript classes are separated into individual files with the filename matching the classname.
+    Files without classes normally contains a collection of functions (like API methods).
+  </p>
+  <p>
+    Stylesheets are also separated into individial files with the filename describing where they are applied.
+  </p>
+  <p>
+    The freferred format for config files, metadata, etc. is <i>JSON</i>.
+  </p>
+
+  <h3>Themes</h3>
+  <p>
+    Themes are separated into these categories: <i>style</i>, <i>icons</i> and <i>fonts</i>. These contains a manifest file just like packages does, but is quite a bit simpler.
+  </p>
+</div>
+
+
+  </main>
+
+  <footer>
+    <div class="wrapper">
+      <img alt="" src="/OS.js-v2/logo-footer.png" />
+      <p>
+        OS.js &copy; Anders Evenrud 2011-2014
+        <br />
+        Hosting by Github
+      </p>
+    </div>
+  </footer>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-46087265-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</body>
