@@ -558,7 +558,7 @@
       return;
     }
 
-    this.onConfirmClick(ev);
+    this.onButtonClick('ok', ev);
   };
 
   /**
