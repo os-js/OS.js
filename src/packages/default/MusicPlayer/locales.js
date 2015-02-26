@@ -81,6 +81,21 @@
       'Media information query failed' : 'Ошибка в запросе медиа-информации',
       'seek unavailable in format' : 'Перемотка недоступна в этом формате',
       'The audio type is not supported: {0}' : 'Тип аудио не поддерживается: {0}'
+    },
+    nl_NL : {
+      'Playlist' : 'Afspeel lijst',
+      'Playback aborted' : 'Spelen onderbroken',
+      'Network or communication error' : 'Netwerk communicatie fout',
+      'Decoding failed. Corruption or unsupported media' : 'Dekoderen lukt niet: bestandstype wordt niet ondersteund',
+      'Media source not supported' : 'Media bron wordt niet ondersteund',
+      'Failed to play file' : 'Afspelen lukt niet',
+      'Artist' : 'Artiest',
+      'Album' : 'Album',
+      'Track' : 'Naam',
+      'Time' : 'Tijd',
+      'Media information query failed' : 'Zoeken naar media is niet gelukt',
+      'seek unavailable in format' : 'Voor/acteruit spoelen is niet beschikbaar in dit formaat',
+      'The audio type is not supported: {0}' : 'Audio type {0} wordt niet ondersteund',
     }
   };
 

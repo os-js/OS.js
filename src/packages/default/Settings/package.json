@@ -1,15 +1,17 @@
 {
   "className":  "ApplicationSettings",
-  "name":       "OS.js Settings",
+  "name":       "Settings",
   "names":      {
     "no_NO":      "OS.js Instillinger",
     "de_DE":      "OS.js Einstellungen",
-    "ru_RU":      "OS.js Настройки"
+    "ru_RU":      "OS.js Настройки",
+	 "nl_NL":      "OS.js Instellingen"
   },
   "descriptions":      {
     "no_NO":      "OS.js Instillinger",
     "de_DE":      "OS.js Einstellungen",
-    "ru_RU":      "OS.js Настройки"
+    "ru_RU":      "OS.js Настройки",
+	 "nl_NL":      "OS.js Instellingen"
   },
   "mime":       null,
   "icon":       "categories/applications-system.png",

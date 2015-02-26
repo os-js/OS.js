@@ -5,12 +5,14 @@
   "names":      {
     "no_NO":      "Tegne",
     "de_DE":      "Zeichnen",
-    "ru_RU":      "Графический редактор"
+    "ru_RU":      "Графический редактор",
+	 "nl_NL":		"Tekenen"
   },
   "descriptions":      {
     "no_NO":      "Simpelt tegne-program",
     "de_DE":      "Einfaches Zeichen-Programm",
-    "ru_RU":      "Простой графический редактор"
+    "ru_RU":      "Простой графический редактор",
+	 "nl_NL":		"Eenvoudig tekenprogramma"
   },
   "mime":       ["^image", "osjs\\/draw"],
   "category":   "graphics",

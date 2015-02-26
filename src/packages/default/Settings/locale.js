@@ -109,7 +109,29 @@
       'Opacity' : 'Прозрачность',
       'General' : 'Основные',
       'Debug' : 'Отладка'
-    }
+    },
+    nl_NL : {
+      'Theme' : 'Thema',
+      'Background' : 'Achtergrond',
+      'Desktop' : 'Buroblad',
+      'Background Type' : 'Achtergrond soort',
+      'Image (Repeat)' : 'Afbeelding (Herhalend)',
+      'Image (Centered)' : 'Afbeelding (Gecentreerd)',
+      'Image (Fill)' : 'Afbeelding (Passend)',
+      'Image (Streched)' : 'Afbeelding (Gestreched)',
+      'Desktop Margin ({0}px)' : 'Achtergrond kantlijn ({0}px)',
+      'Panel' : 'Paneel',
+      'Position' : 'Positie',
+      'Ontop' : 'Voorgrond',
+      'Items' : 'Items',
+      'Enable Animations' : 'Animaties gebruiken',
+      'Language (requires restart)' : 'Spraak (Herstarten)',
+      'Enable Sounds' : 'Geluiden actief',
+      'Enable Window Switcher' : 'Activeer venster wisselaar',
+      'Enable Hotkeys' : 'Activeer hotkeys',
+      'Enable Icon View' : 'Activeer Iconen-weergave',
+      'General': 'Algemeen'
+    },
   };
 
   function _() {

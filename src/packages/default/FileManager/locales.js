@@ -69,6 +69,17 @@
       "Create a new directory in <span>{0}</span>" : "Создать новый каталог в <span>{0}</span>",
       "Rename <span>{0}</span>" : "Переименовать <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Удалить <span>{0}</span> ?"
+    },
+    nl_NL : {
+      'Show Sidebar' : 'Zijbar tonen',
+      'Copying file...' : 'Bestand kopieren...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopieer <span>{0}</span> naar <span>{1}</span>",
+      "Showing {0} item(s), {1}" : "Toont {0} item(s), {1}",
+      "Refreshing..." : "Aktualiseren...",
+      "Loading..." : "Laden...",
+      "Create a new directory in <span>{0}</span>" : "Maak een neiuwe map in <span>{0}</span>",
+      "Rename <span>{0}</span>" : "<span>{0}</span> hernoemen",
+      "Delete <span>{0}</span> ?" : "<span>{0}</span> verwijderen?"
     }
   };
 

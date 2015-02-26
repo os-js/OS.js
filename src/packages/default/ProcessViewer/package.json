@@ -5,12 +5,14 @@
   "names":      {
     "no_NO":      "Prosess oversikt",
     "de_DE":      "Prozess-Manager",
-    "ru_RU":      "Менеджер процессов"
+    "ru_RU":      "Менеджер процессов",
+	 "nl_NL":      "Proces manager"
   },
   "descriptions":      {
     "no_NO":      "Se oversikt over kjørende prosesser",
     "de_DE":      "Laufende Prozesse verwalten",
-    "ru_RU":      "Менеджер запущенных процессов"
+    "ru_RU":      "Менеджер запущенных процессов",
+	 "nl_NL":      "Bekijk de lopende processen"
   },
   "singular":   true,
   "mime":       null,

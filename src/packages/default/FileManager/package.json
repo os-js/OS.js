@@ -5,12 +5,14 @@
   "names":      {
     "no_NO":      "Fil-håndtering",
     "de_DE":      "Dateimanager",
-    "ru_RU":      "Файловый менеджер"
+    "ru_RU":      "Файловый менеджер",
+	 "nl_NL":		"bestands beheer"
   },
   "descriptions":      {
     "no_NO":      "Standard Fil-håndtering program",
     "de_DE":      "Standardmäßiger Dateimanager",
-    "ru_RU":      "Стандартный файловый менеджер"
+    "ru_RU":      "Стандартный файловый менеджер",
+	 "nl_NL":	   "Standaard bestands beheerder"
   },
   "mime":       null,
   "category":   "utilities",

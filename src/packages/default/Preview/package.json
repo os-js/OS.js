@@ -5,12 +5,14 @@
   "names":      {
     "no_NO":      "Forhåndsviser",
     "de_DE":      "Vorschau",
-    "ru_RU":      "Просмотрщик"
+    "ru_RU":      "Просмотрщик",
+	 "nl_NL":      "Foto viewer"
   },
   "descriptions":      {
     "no_NO":      "Forhåndsvisning av bilde-filer",
     "de_DE":      "Bildervorschau",
-    "ru_RU":      "Просмотрщик изображений"
+    "ru_RU":      "Просмотрщик изображений",
+    "nl_NL":	   "Foto viewer"
   },
   "mime":       ["^image", "^video"],
   "category":   "multimedia",

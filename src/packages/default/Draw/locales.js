@@ -177,7 +177,55 @@
 
       'Radius' : 'Радиус',
       'Iterations' : 'Итерации'
+    },
+  	nl_NL : {
+      'Toggle tools toolbar' : 'Toolbar gereedschappen',
+      'Toggle layers toolbar' : 'Toolbar lagen',
+      'Layer' : 'Laag',
+      'Effect' : 'Effekten',
+      'Flip Horizontally' : 'Horizontaal spiegelen',
+      'Flip Vertically' : 'Vertikaal spiegelen',
+      'Foreground' : 'Voorgrond',
+      'Bakgrunn' : 'Achtergrond',
+      'Foreground (Fill) Color' : 'Voorgrond (vul) kleur',
+      'Background (Stroke) Color' : 'Achtergrond (penseel-) kleur',
+      'Line Join' : 'Lijnverbinding',
+      'Line Width' : 'Lijnbreedte',
+      'Toggle Stroke' : 'Penseel streek',
+      'Enable stroke' : 'Penseel aktiveren',
+      'Round' : 'Rond',
+      'Miter' : 'Live',
+      'Bevel' : 'Schuin',
+      'Stroked' : 'Gestreken',
+      'No stroke' : 'Geen penseel streken',
+
+      'Pointer' : 'Aanwijzer',
+      'Move active layer' : 'Verplaats de aktieve laag',
+
+      'Picker' : 'Kiezer',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: Kies voorgrond-kleur, RMB: Kies achtergrondkleur',
+
+      'Pencil' : 'Penseel',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Teken met voor- en achtergrondkleur',
+      'Path' : 'Pfad',
+        
+      'Square/Rectangle' : 'Vierkant/rechthoek',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechnthoek tekenen',
+        
+      'Circle/Ellipse' : 'Cirkel/elipse',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Elipse tekenen',
+      
+      'Blur' : 'Vager maken (Blur)',
+      'Noise' : 'Ruis',
+      'Invert colors' : 'Kleuren inverteren',
+      'Grayscale' : 'Grijstinten',
+      'Sharpen' : 'Scherper',
+      'Simple Blur' : 'Eenvoudig vager maken (Blur)',
+
+      'Radius' : 'Radius',
+      'Iterations' : 'Doorgangen'
     }
+
   };
 
   function _() {

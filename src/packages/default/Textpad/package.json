@@ -5,12 +5,14 @@
   "names":      {
     "no_NO":      "Tekstblokk",
     "de_DE":      "Texteditor",
-    "ru_RU":      "Редактор текста"
+    "ru_RU":      "Редактор текста",
+	 "nl_NL":	   "Notities"
   },
   "descriptions":      {
     "no_NO":      "Simpel tekst redigering",
     "de_DE":      "Einfacher Texteditor",
-    "ru_RU":      "Простой текстовый редактор"
+    "ru_RU":      "Простой текстовый редактор",
+	 "nl_NL":	   "Eenvoudige Tekstverwerker"
   },
   "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
   "category":   "utilities",

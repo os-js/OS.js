@@ -5,12 +5,14 @@
   "names":      {
     "no_NO":      "Writer",
     "de_DE":      "Writer",
-    "ru_RU":      "Текстовый процессор"
+    "ru_RU":      "Текстовый процессор",
+	 "nl_NL": 	   "Tekstverwerker"
   },
   "descriptions":      {
     "no_NO":      "Skriv riktekst dokumenter",
     "de_DE":      "Verfassen Sie Rich-Text-Dokumente",
-    "ru_RU":      "Текстовый процессор"
+    "ru_RU":      "Текстовый процессор",
+	 "nl_NL":		"Tekst verwerker met opmaak"
   },
   "mime":       ["^text", "osjs\\/document"],
   "category":   "office",
