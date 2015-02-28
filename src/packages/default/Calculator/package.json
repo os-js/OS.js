@@ -2,7 +2,10 @@
   "className":  "ApplicationCalculator",
   "name":       "Calculator",
   "names":      {
-    "ru_RU":      "Калькулятор"
+
+    "ru_RU": "Калькулятор",
+	 "nl_NL": "Rekenmachine"
+	
   },
   "mime":       null,
   "icon":       "apps/calc.png",
