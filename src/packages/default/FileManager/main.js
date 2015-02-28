@@ -84,9 +84,7 @@
 
     function _toggleListViewColumn(col) {
       if ( fileView && fileView.getViewType() === 'ListView' ) {
-        console.error("XXXXX", fileView.viewRef.listColumns[col], col);
         fileView.viewRef.listColumns[col] = !fileView.viewRef.listColumns[col];
-        console.error("XXXXX", fileView.viewRef.listColumns[col]);
         fileView.refresh();
       }
     }
