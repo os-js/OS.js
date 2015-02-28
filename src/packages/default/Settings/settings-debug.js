@@ -254,7 +254,7 @@
 
     var listView = _createElement(new GUI.ListView('TesterListView'));
     listView.setColumns([
-      {'key': 'Column1', 'title': 'Column 1', domProperties: {width: 100}},
+      {'key': 'Column1', 'title': 'Column 1', width: 100},
       {'key': 'Column2', 'title': 'Column 2'}
     ]);
     listView.setRows([

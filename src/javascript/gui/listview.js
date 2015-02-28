@@ -249,6 +249,9 @@
       col           = document.createElement('td');
       col.className = 'Column_' + colref.key;
       col.setAttribute('data-index', i);
+      if ( typeof colref.width !== 'undefined' ) {
+        col.setAttribute('width', colref.width);
+      }
 
       label           = document.createElement('div');
       label.className = 'Label';
@@ -262,14 +265,6 @@
         }
       }
       col.appendChild(label);
-
-      if ( colref.domProperties ) {
-        for ( d in colref.domProperties ) {
-          if ( colref.domProperties.hasOwnProperty(d) ) {
-            col.setAttribute(d, colref.domProperties[d]);
-          }
-        }
-      }
       row.appendChild(col);
 
       x++;
@@ -292,19 +287,14 @@
         type = (typeof colref.type === 'undefined') ? 'text' : colref.type;
         col = document.createElement('td');
         col.className = 'Column_' + colref.key;
+        if ( typeof colref.width !== 'undefined' ) {
+          col.setAttribute('width', colref.width);
+        }
 
         if ( colref.callback ) {
           val = colref.callback(iter);
         } else {
           val = iter[colref.key];
-        }
-
-        if ( colref.domProperties ) {
-          for ( d in colref.domProperties ) {
-            if ( colref.domProperties.hasOwnProperty(d) ) {
-              col.setAttribute(d, colref.domProperties[d]);
-            }
-          }
         }
 
         if ( type === 'image' ) {

@@ -53,10 +53,10 @@
 
     var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView', {indexKey: 'pid'}), root);
     listView.setColumns([
-      {key: 'pid',    title: API._('LBL_PID'), domProperties: {width: "50"}},
+      {key: 'pid',    title: API._('LBL_PID'), width: 50},
       {key: 'name',   title: API._('LBL_NAME')},
-      {key: 'alive',  title: API._('LBL_ALIVE'), domProperties: {width: "100"}},
-      {key: 'kill',   title: '', type: 'button', domProperties: {width: "45"}}
+      {key: 'alive',  title: API._('LBL_ALIVE'), width: 100},
+      {key: 'kill',   title: '', type: 'button', width: 45}
     ]);
 
 

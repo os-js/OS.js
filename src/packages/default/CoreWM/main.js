@@ -94,7 +94,6 @@
     cb = cb || function() {};
 
     if ( !window.html2canvas ) {
-      console.warn('COULD NOT GENERATE FROST. DID NOT FIND html2canvas :(');
       cb();
       return;
     }
@@ -127,7 +126,7 @@
     window.html2canvas(document.body).then(function(c) {
       twin._$element.removeAttribute('data-html2canvas-ignore');
       twin._$frostc = c;
-      updateFrost(twin);
+      updateFrost.call(twin);
       cb();
     });
   }
@@ -979,10 +978,7 @@
 
     this.createStylesheet(styles);
 
-    var self = this;
-    setTimeout(function() {
-      self._frostWindows();
-    }, 100);
+    this._frostWindows();
 
     return true;
   };

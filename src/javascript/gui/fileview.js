@@ -366,10 +366,10 @@
     }
 
     this.setColumns([
-      {key: 'image',    title: '', type: 'image', callback: _callbackIcon, domProperties: {width: '16'}, resizable: false},
+      {key: 'image',    title: '', type: 'image', callback: _callbackIcon, width: 16, resizable: false},
       {key: 'filename', title: OSjs.API._('LBL_FILENAME')},
-      {key: 'mime',     title: OSjs.API._('LBL_MIME'), domProperties: {width: '150'}},
-      {key: 'size',     title: OSjs.API._('LBL_SIZE'), callback: _callbackSize, domProperties: {width: '80'}},
+      {key: 'mime',     title: OSjs.API._('LBL_MIME'), width: 150},
+      {key: 'size',     title: OSjs.API._('LBL_SIZE'), callback: _callbackSize, width: 80},
       {key: 'path',     title: OSjs.API._('LBL_PATH'), visible: false},
       {key: 'type',     title: OSjs.API._('LBL_TYPE'), visible: false}
      ]);

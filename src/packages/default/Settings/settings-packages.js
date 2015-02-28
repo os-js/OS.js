@@ -164,7 +164,7 @@
     packageList = win._addGUIElement(new OSjs.GUI.ListView('PackageList'), outer);
     packageList.setColumns([
       {key: 'name', title: 'Name'},
-      {key: 'version', title: 'Version', domProperties: {width: 50}},
+      {key: 'version', title: 'Version', width: 50},
       {key: 'author', title: 'Author'},
       {key: 'className', title: 'Class Name', visible: false},
       {key: 'download', title: 'Download URL', visible: false}

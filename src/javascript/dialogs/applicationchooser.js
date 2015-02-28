@@ -124,7 +124,7 @@
 
     var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
     listView.setColumns([
-      {key: 'image', title: '', type: 'image', domProperties: {width: '16'}},
+      {key: 'image', title: '', type: 'image', width: 16},
       {key: 'name',  title: API._('Name')},
       {key: 'key',   title: 'Key', visible: false}
      ]);

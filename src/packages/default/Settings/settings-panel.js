@@ -78,7 +78,7 @@
 
     var listView = this._addGUIElement(new OSjs.GUI.ListView('PanelItemChooserDialogListView'), root);
     listView.setColumns([
-      {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
+      {key: 'image', title: '', type: 'image', width: 16},
       {key: 'name',  title: API._('LBL_NAME')},
       {key: 'key',   title: 'Key', visible: false}
      ]);

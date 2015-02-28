@@ -66,7 +66,7 @@
 
     var columns = [
       {key: 'name', title: 'name', visible: false},
-      {key: 'icon', title: 'Icon', type: 'image', domProperties: {width: 32}},
+      {key: 'icon', title: 'Icon', type: 'image', width: 32},
       {key: 'title', title: 'Title'}
     ];
 

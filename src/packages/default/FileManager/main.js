@@ -383,13 +383,13 @@
     };
 
     this.sideView.setColumns([
-      {key: 'image', title: '', type: 'image', domProperties: {width: "16"}},
+      {key: 'image', title: '', type: 'image', width: 16},
       {key: 'filename', title: API._('LBL_FILENAME')},
       {key: 'mime', title: API._('LBL_MIME'), visible: false},
       {key: 'size', title: API._('LBL_SIZE'), visible: false},
       {key: 'internal', title: 'Internal', visible: false},
-      {key: 'path', title: API._('LBL_PATH'), visible: false, domProperties: {width: "70"}},
-      {key: 'type', title: API._('LBL_TYPE'), visible: false, domProperties: {width: "50"}}
+      {key: 'path', title: API._('LBL_PATH'), visible: false, width: 70},
+      {key: 'type', title: API._('LBL_TYPE'), visible: false, width: 50}
      ]);
 
     this.renderRootList();
