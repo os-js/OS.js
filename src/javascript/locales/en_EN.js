@@ -350,7 +350,10 @@
     'LBL_BACKGROUND_COLOR' : 'Background Color',
     'LBL_UNORDERED_LIST'   : 'Unordered List',
     'LBL_STATUS'   : 'Status',
-    'LBL_READONLY' : 'Read-Only'
+    'LBL_READONLY' : 'Read-Only',
+    'LBL_CREATED' : 'Created',
+    'LBL_MODIFIED' : 'Modified',
+    'LBL_SHOW_COLUMNS' : 'Show Columns'
   };
 
 })();

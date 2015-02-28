@@ -71,7 +71,7 @@
 
     var defaultStatusText = '';
 
-    var _toggleSidebar = function(val) {
+    function _toggleSidebar(val) {
       vs = val;
       app._setArgument('viewSidebar', vs);
       viewSide.style.display = vs ? 'block' : 'none';
@@ -80,7 +80,16 @@
       } else {
         Utils.$addClass(panedView.$container, 'Sidebar');
       }
-    };
+    }
+
+    function _toggleListViewColumn(col) {
+      if ( fileView && fileView.getViewType() === 'ListView' ) {
+        console.error("XXXXX", fileView.viewRef.listColumns[col], col);
+        fileView.viewRef.listColumns[col] = !fileView.viewRef.listColumns[col];
+        console.error("XXXXX", fileView.viewRef.listColumns[col]);
+        fileView.refresh();
+      }
+    }
 
     fileView.onContextMenu = function(ev, el, item) {
       if ( menuBar ) {
@@ -308,6 +317,21 @@
       }}
     ];
 
+    var viewListColumns = [
+      {name: 'ColumnMIME', title: API._('LBL_MIME'), onClick: function() {
+        _toggleListViewColumn('mime');
+      }},
+      {name: 'ColumnCtime', title: API._('LBL_CREATED'), onClick: function() {
+        _toggleListViewColumn('ctime');
+      }},
+      {name: 'ColumnMtime', title: API._('LBL_MODIFIED'), onClick: function() {
+        _toggleListViewColumn('mtime');
+      }},
+      {name: 'ColumnSize', title: API._('LBL_SIZE'), onClick: function() {
+        _toggleListViewColumn('size');
+      }}
+    ];
+
     var chk;
     menuBar.addItem(API._("LBL_VIEW"), [
       {title: API._('LBL_REFRESH'), onClick: function() {
@@ -339,7 +363,8 @@
           self._focus();
         }
       },
-      {title: API._('LBL_VIEWTYPE'), menu: viewTypeMenu}
+      {title: API._('LBL_VIEWTYPE'), menu: viewTypeMenu},
+      {title: API._('LBL_SHOW_COLUMNS'), menu: viewListColumns}
     ]);
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {

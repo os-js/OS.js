@@ -302,6 +302,12 @@
     this.onSelected   = function(item, el) {};
     this.onSort       = function() { console.warn('Not implemented yet!'); };
     this.fileView     = fileView;
+    this.listColumns  = {
+      mime: true,
+      ctime: false,
+      mtime: false,
+      size: true
+    };
   };
 
   FileListView.prototype = Object.create(ListView.prototype);
@@ -365,14 +371,17 @@
       return iter.size;
     }
 
-    this.setColumns([
+    var cols = [
       {key: 'image',    title: '', type: 'image', callback: _callbackIcon, width: 16, resizable: false},
       {key: 'filename', title: OSjs.API._('LBL_FILENAME')},
-      {key: 'mime',     title: OSjs.API._('LBL_MIME'), width: 150},
-      {key: 'size',     title: OSjs.API._('LBL_SIZE'), callback: _callbackSize, width: 80},
+      {key: 'mime',     title: OSjs.API._('LBL_MIME'), width: 150, visible: this.listColumns.mime},
+      {key: 'ctime',    title: OSjs.API._('LBL_CREATED'), width: 150, visible: this.listColumns.ctime},
+      {key: 'mtime',    title: OSjs.API._('LBL_MODIFIED'), width: 150, visible: this.listColumns.mtime},
+      {key: 'size',     title: OSjs.API._('LBL_SIZE'), callback: _callbackSize, width: 80, visible: this.listColumns.size},
       {key: 'path',     title: OSjs.API._('LBL_PATH'), visible: false},
       {key: 'type',     title: OSjs.API._('LBL_TYPE'), visible: false}
-     ]);
+    ];
+    this.setColumns(cols);
 
     ListView.prototype.render.apply(this, [list, true]);
   };
