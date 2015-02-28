@@ -45,8 +45,8 @@
     },
     ru_RU : {
       'Insert URL' : 'Вставить ссылку'
-    }
-   nl_NL : {
+    },
+    nl_NL : {
       'Insert URL' : 'URL invoegen'
     }
   };
