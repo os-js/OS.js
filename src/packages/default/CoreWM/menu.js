@@ -31,16 +31,16 @@
   'use strict';
 
   var DefaultCategories = {
-    development : {icon: 'categories/package_development.png', title: 'Ontwikkeling'},
-    education   : {icon: 'categories/applications-sience.png', title: 'Onderwijs'},
-    games       : {icon: 'categories/package_games.png',       title: 'Spellen'},
-    graphics    : {icon: 'categories/package_graphics.png',    title: 'Grafisch'},
-    network     : {icon: 'categories/package_network.png',     title: 'Netwerk'},
+    development : {icon: 'categories/package_development.png', title: 'Development'},
+    education   : {icon: 'categories/applications-sience.png', title: 'Education'},
+    games       : {icon: 'categories/package_games.png',       title: 'Games'},
+    graphics    : {icon: 'categories/package_graphics.png',    title: 'Graphics'},
+    network     : {icon: 'categories/package_network.png',     title: 'Network'},
     multimedia  : {icon: 'categories/package_multimedia.png',  title: 'Multimedia'},
-    office      : {icon: 'categories/package_office.png',      title: 'Kantoor'},
-    system      : {icon: 'categories/package_system.png',      title: 'Systeem'},
+    office      : {icon: 'categories/package_office.png',      title: 'Office'},
+    system      : {icon: 'categories/package_system.png',      title: 'System'},
     utilities   : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
-    unknown     : {icon: 'categories/applications-other.png',  title: 'Overig'}
+    unknown     : {icon: 'categories/applications-other.png',  title: 'Unkown'}
   };
 
   function _createIcon(aiter, aname, arg) {
