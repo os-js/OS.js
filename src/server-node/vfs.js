@@ -237,12 +237,15 @@
             if ( error ) {
               respond({result: false, error: 'Error getting file information: ' + error});
             } else {
+
               var data = {
                 path:         _path.dirname(realPath.root),
                 filename:     _path.basename(realPath.root),
                 size:         stat.size,
                 mime:         vfs.getMime(realPath.root, config),
-                permissions:  readPermission(stat.mode)
+                permissions:  readPermission(stat.mode),
+                ctime:        stat.ctime || null,
+                mtime:        stat.mtime || null
               };
 
               readExif(data, function(data) {

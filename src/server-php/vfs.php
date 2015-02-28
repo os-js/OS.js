@@ -63,12 +63,13 @@ class MIME
 class FS
 {
 
+  const DATE_FORMAT = "D, d M Y H:i:s T";
+
   public static function scandir($scandir, Array $opts = Array()) {
     list($dirname, $root, $protocol) = getRealPath($scandir);
 
     $result = Array();
     $on_root = !$dirname || $dirname == "/";
-    $dfmt = "D, d M Y H:i:s T";
     if ( file_exists($root) && is_dir($root) ) {
       if ( ($files = scandir($root)) !== false ) {
         foreach ( $files as $f ) {
@@ -93,10 +94,10 @@ class FS
           );
 
           if ( ($mtime = filemtime($opath)) > 0 ) {
-            $iter["mtime"] = date($dfmt, $mtime);
+            $iter["mtime"] = date(self::DATE_FORMAT, $mtime);
           }
           if ( ($ctime = filectime($opath)) > 0 ) {
-            $iter["ctime"] = date($dfmt, $ctime);
+            $iter["ctime"] = date(self::DATE_FORMAT, $ctime);
           }
 
           if ( $iter["type"] == "file" ) {
@@ -275,8 +276,17 @@ class FS
       'filename'      => basename($fname),
       'size'          => filesize($fname),
       'mime'          => $mime,
-      'permissions'   => filePermissions($fname)
+      'permissions'   => filePermissions($fname),
+      'ctime'         => null,
+      'mtime'         => null
     );
+
+    if ( ($mtime = filemtime($fname)) > 0 ) {
+      $data["mtime"] = date(self::DATE_FORMAT, $mtime);
+    }
+    if ( ($ctime = filectime($fname)) > 0 ) {
+      $data["ctime"] = date(self::DATE_FORMAT, $ctime);
+    }
 
     if ( $mime && preg_match("/^image/", $mime) ) {
       if ( function_exists('exif_read_data') ) {
