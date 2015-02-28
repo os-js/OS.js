@@ -68,6 +68,7 @@ class FS
 
     $result = Array();
     $on_root = !$dirname || $dirname == "/";
+    $dfmt = "D, d M Y H:i:s T";
     if ( file_exists($root) && is_dir($root) ) {
       if ( ($files = scandir($root)) !== false ) {
         foreach ( $files as $f ) {
@@ -86,8 +87,17 @@ class FS
             "path"     => $vpath,
             "size"     => 0,
             "mime"     => null,
-            "type"     => is_dir($opath) ? "dir" : "file"
+            "type"     => is_dir($opath) ? "dir" : "file",
+            "ctime"    => null,
+            "mtime"    => null
           );
+
+          if ( ($mtime = filemtime($opath)) > 0 ) {
+            $iter["mtime"] = date($dfmt, $mtime);
+          }
+          if ( ($ctime = filectime($opath)) > 0 ) {
+            $iter["ctime"] = date($dfmt, $ctime);
+          }
 
           if ( $iter["type"] == "file" ) {
             if ( is_writable($opath) || is_readable($opath) ) {

@@ -266,7 +266,7 @@
           respond({result: null, error: 'Error reading directory: ' + error});
         } else {
           var result = [];
-          var ofpath, fpath, ftype, fsize, fstat;
+          var ofpath, fpath, ftype, fsize, fstat, ctime, mtime;
           for ( var i = 0; i < files.length; i++ ) {
             ofpath = _path.join(path, files[i]);
             fpath  = _path.join(realPath.root, files[i]);
@@ -275,9 +275,13 @@
               fsstat = _fs.statSync(fpath);
               ftype  = fsstat.isFile() ? 'file' : 'dir';
               fsize  = fsstat.size;
+              mtime  = fsstat.mtime;
+              ctime  = fsstat.ctime;
             } catch ( e ) {
               ftype = 'file';
               fsize = 0;
+              ctime = null;
+              mtime = null;
             }
 
             result.push({
@@ -285,7 +289,9 @@
               path:     realPath.protocol + ofpath,
               size:     fsize,
               mime:     ftype === 'file' ? vfs.getMime(files[i], config) : '',
-              type:     ftype
+              type:     ftype,
+              ctime:    ctime,
+              mtime:    mtime
             });
           }
 
