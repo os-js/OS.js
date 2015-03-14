@@ -74,13 +74,13 @@ manifest:
 	(src/tools/obt package-manifest)
 
 apache-htaccess:
-	(src/tools/obt apache-htaccess)
+	@(src/tools/obt apache-htaccess)
 
 apache-vhost:
-	(src/tools/obt apache-vhost)
+	@(src/tools/obt apache-vhost)
 
 lighttpd-config:
-	(src/tools/obt lighttpd-config)
+	@(src/tools/obt lighttpd-config)
 
 dist-dev-index:
 	(src/tools/obt dist-dev-index)

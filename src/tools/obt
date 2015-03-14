@@ -923,7 +923,7 @@ String.prototype.replaceAll = function(stringToFind,stringToReplace){
     for ( var i in maps ) {
       if ( maps.hasOwnProperty(i) ) {
         if ( !i.match(/^\./) ) { continue; }
-        mimes.push('  ' + i + ' => ' + maps[i]);
+        mimes.push('  "' + i + '" => "' + maps[i] + '"');
       }
     }
     mimes = mimes.join(',\n');
