@@ -4,6 +4,7 @@
   "description":"Simple text editor",
   "names":      {
     "no_NO":      "Tekstblokk",
+    "pl_PL":      "Notatnik",
     "de_DE":      "Texteditor",
     "ru_RU":      "Редактор текста",
 	 "nl_NL":	   "Notities"

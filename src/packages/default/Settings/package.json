@@ -3,6 +3,7 @@
   "name":       "Settings",
   "names":      {
     "no_NO":      "OS.js Instillinger",
+    "pl_PL":      "Ustawienia",
     "de_DE":      "OS.js Einstellungen",
     "ru_RU":      "OS.js Настройки",
 	 "nl_NL":      "OS.js Instellingen"

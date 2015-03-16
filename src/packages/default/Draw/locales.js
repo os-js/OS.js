@@ -82,6 +82,42 @@
       'Radius' : 'Radius',
       'Iterations' : 'Itereringer'
     },
+    pl_PL : {
+      'Toggle tools toolbar' : 'Przełącz Pasek narzędzi',
+      'Toggle layers toolbar' : 'Przełącz Pasek warstw',
+      'Layer' : 'Warstwy',
+      'Effect' : 'Efekty',
+      'Flip Horizontally' : 'Przerzuć w poziomie',
+      'Flip Vertically' : 'Przerzuć w pionie',
+      'Foreground' : 'Pierwszy plan',
+      'Bakgrunn' : 'Bakgrunn',
+
+      'Pointer' : 'Wskaźnik',
+      'Move active layer' : 'Przenieś aktywne warstwy',
+
+      'Picker' : 'Wybór',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: Wstaw kolor bg, RMB: ustaw kolor fg',
+
+      'Pencil' : 'Ołówek',
+      'LMB/RMB: Draw with fg/bg color' : 'Maluj w kolorze fg/bg',
+      'Path' : 'Ścieżka',
+
+      'Square/Rectangle' : 'Kwadratowe / prostokątne',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj prostokąt',
+
+      'Circle/Ellipse' : 'Koło / Elipsa',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj elipse',
+
+      'Blur' : 'Blur',
+      'Noise' : 'Szum',
+      'Invert colors' : 'Odwróc kolory',
+      'Grayscale' : 'Skala szaroścu',
+      'Sharpen' : 'Zaostrzone',
+      'Simple Blur' : 'Łatwy Blur',
+
+      'Radius' : 'Promień',
+      'Iterations' : 'Powtórzenia'
+    },
     de_DE : {
       'Toggle tools toolbar' : 'Tools Toolbar',
       'Toggle layers toolbar' : 'Ebenen Toolbar',

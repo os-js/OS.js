@@ -26,6 +26,7 @@
  *
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
+ * Polish translate by michal4132 <http://michal413.tk>
  */
 (function(Application, Window, GUI, Utils, API, VFS) {
   'use strict';
@@ -45,6 +46,17 @@
       "Create a new directory in <span>{0}</span>" : "Opprett ny mappe i <span>{0}</span>",
       "Rename <span>{0}</span>" : "Navngi <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"
+    },
+    pl_PL : {
+      'Show Sidebar' : 'Pokaż pasek',
+      'Copying file...' : 'Kopiowanie pliku...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiowanie <span>{0}</span> do <span>{1}</span>",
+      "Showing {0} item(s), {1}" : "Pokzaywanie {0} pliku(ów), {1}",
+      "Refreshing..." : "Odświeżanie...",
+      "Loading..." : "Ładowanie...",
+      "Create a new directory in <span>{0}</span>" : "Utwórz nowy folder w <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Zmień nazwe <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Usunąć <span>{0}</span> ?"
     },
     de_DE : {
       'Show Sidebar' : 'Seitenleiste anzeigen',

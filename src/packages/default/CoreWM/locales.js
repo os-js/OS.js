@@ -54,6 +54,23 @@
       'Utilities' : 'Verktøy',
       'Other' : 'Andre'
     },
+    pl_PL : {
+      'Open settings' : 'Otwórz ustawienia',
+      'Create shortcut' : 'Utwórz skrót',
+      'Set as wallpaper' : 'Ustaw jako tapete',
+      'An error occured while creating PanelItem: {0}' : 'Błąd podczas tworzenia panelu: {0}',
+
+      'Development' : 'Utvikling',
+      'Education' : 'Edukacja',
+      'Games' : 'Gry',
+      'Graphics' : 'Grafika',
+      'Network' : 'Internet',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Office',
+      'System' : 'System',
+      'Utilities' : 'Dodatki',
+      'Other' : 'Inne'
+    },
     de_DE : {
       'Killing this process will stop things from working!' : 'Das Beenden dieses Prozesses wird Konsequenzen haben!',
       'Open settings' : 'Einstellungen öffnen',

@@ -38,6 +38,9 @@
     no_NO : {
       'Insert URL' : 'Sett inn URL'
     },
+    pl_PL : {
+      'Insert URL' : 'Wpisz URL'
+    },
     de_DE : {
       'Insert URL' : 'URL einfügen'
     },

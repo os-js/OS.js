@@ -4,12 +4,14 @@
   "description":"Simple drawing application",
   "names":      {
     "no_NO":      "Tegne",
+    "no_NO":      "Rysowanie",
     "de_DE":      "Zeichnen",
     "ru_RU":      "Графический редактор",
 	 "nl_NL":		"Tekenen"
   },
   "descriptions":      {
     "no_NO":      "Simpelt tegne-program",
+    "pl_PL":      "Prosta aplikacja do rysowania",
     "de_DE":      "Einfaches Zeichen-Programm",
     "ru_RU":      "Простой графический редактор",
 	 "nl_NL":		"Eenvoudig tekenprogramma"

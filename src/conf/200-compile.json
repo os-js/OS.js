@@ -35,6 +35,7 @@
       "src/javascript/locales/ru_RU.js",
       "src/javascript/locales/zh_CN.js",
       "src/javascript/locales/nl_NL.js",
+      "src/javascript/locales/pl_PL.js",
       "src/javascript/guielement.js",
       "src/javascript/gui/_input.js",
       "src/javascript/gui/_dataview.js",
