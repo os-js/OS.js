@@ -3,6 +3,7 @@
   "name":       "OS.js Window Manager",
   "names":      {
     "no_NO":      "OS.js Vinduhåndterer",
+    "pl_PL":      "Manager Okien OS.js",
     "de_DE":      "OS.js Fenster-Manager",
     "ru_RU":      "OS.js Оконный менеджер",
 	 "nl_NL":		"OS.js venster beheer" 	

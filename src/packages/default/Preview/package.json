@@ -4,12 +4,14 @@
   "description":"Preview image files",
   "names":      {
     "no_NO":      "Forhåndsviser",
+    "pl_PL":      "Podgląd",
     "de_DE":      "Vorschau",
     "ru_RU":      "Просмотрщик",
 	 "nl_NL":      "Foto viewer"
   },
   "descriptions":      {
     "no_NO":      "Forhåndsvisning av bilde-filer",
+    "pl_PL":      "Podgląd zdjęć",
     "de_DE":      "Bildervorschau",
     "ru_RU":      "Просмотрщик изображений",
     "nl_NL":	   "Foto viewer"

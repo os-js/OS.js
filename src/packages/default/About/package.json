@@ -4,12 +4,14 @@
   "description":  "About OS.js",
   "names":      {
     "no_NO":      "Om OS.js",
+    "pl_PL":      "o OS.js",
     "de_DE":      "Über OS.js",
     "ru_RU":      "Об OS.js",
 	 "nl_NL": 		"Over OS.js"
   },
   "descriptions": {
     "no_NO":      "Om OS.js",
+    "pl_PL":      "o OS.js",
     "de_DE":      "Über OS.js",
     "ru_RU":      "Об OS.js",
 	 "nl_NL": 		"Over OS.js"

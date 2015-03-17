@@ -60,7 +60,7 @@
       'Set as wallpaper' : 'Ustaw jako tapete',
       'An error occured while creating PanelItem: {0}' : 'Błąd podczas tworzenia panelu: {0}',
 
-      'Development' : 'Utvikling',
+      'Development' : 'Development',
       'Education' : 'Edukacja',
       'Games' : 'Gry',
       'Graphics' : 'Grafika',

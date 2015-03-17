@@ -4,7 +4,7 @@
   "description":"Simple drawing application",
   "names":      {
     "no_NO":      "Tegne",
-    "no_NO":      "Rysowanie",
+    "pl_PL":      "Rysowanie",
     "de_DE":      "Zeichnen",
     "ru_RU":      "Графический редактор",
 	 "nl_NL":		"Tekenen"

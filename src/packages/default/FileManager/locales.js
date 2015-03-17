@@ -26,7 +26,6 @@
  *
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
- * Polish translate by michal4132 <http://michal413.tk>
  */
 (function(Application, Window, GUI, Utils, API, VFS) {
   'use strict';
