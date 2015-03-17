@@ -756,8 +756,8 @@
 
     if ( msg == 'destroyWindow' && obj._name === 'ApplicationMusicPlayerWindow' ) {
       this.destroy();
-    } else if ( msg == 'attention' && args ) {
-      this.play(args.file, args.mime, true);
+    } else if ( msg == 'attention' && args && args.file ) {
+      this.play(args.file.path, args.file.mime, true);
     }
   };
 
