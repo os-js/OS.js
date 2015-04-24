@@ -1,11 +1,11 @@
 # Requirements
-Server runs on OSX, BSD and Linux (also Windows if you have Cygwin)
+Server runs on Linux, OS X, BSD and Windows.
 
 ## System dependencies
 
 Make sure you have these dependencies installed
 
-* **GNU Make**
+* **GNU Make** for non-Windows users
 * **nodejs** and **npm** (Ubuntu/Debian users: make sure to install the *legacy* package)
 * Optional: **Git** for the automated installer
 * Optional: **java** to compress/minimize sources
@@ -13,6 +13,11 @@ Make sure you have these dependencies installed
 You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttpd)
 
 # Installation
+
+## Windows
+
+To install OS.js on Windows platforms you have to download the **windows** branch and manually install.
+This is experimental, but working. Look at the INSTALL instructions in that branch for more information.
 
 ## Automated
 

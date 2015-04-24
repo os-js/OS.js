@@ -2,7 +2,7 @@
 
 OS.js is a desktop implementation for your browser with a fully-fletched window manager, Application APIs, GUI toolkits and filesystem abstraction.
 
-Works in any modern browser and can be deployed on any server using Node or PHP (Windows requries cygwin).
+Works in any modern browser and can be deployed on any OS using Node or PHP.
 
 Is available under the [BSD Clause 2 License](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
 
