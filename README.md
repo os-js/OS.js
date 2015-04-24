@@ -44,12 +44,15 @@ My contact information is located on my [Github profile](https://github.com/ande
 
 # Links
 * [Homepage](http://andersevenrud.github.io/OS.js-v2/)
-* [Wiki](https://github.com/andersevenrud/OS.js-v2/wiki)
-* [Sources](https://github.com/andersevenrud/OS.js-v2)
-* [Demo](http://osjsv2.0o.no/)
-* [Google+ Page](https://plus.google.com/b/113399210633478618934/113399210633478618934)
-* [Facebook Page](https://www.facebook.com/pages/OSjs/226644300734574)
 * [Documentation](http://andersevenrud.github.io/OS.js-v2/doc/)
+* [Sources](https://github.com/andersevenrud/OS.js-v2)
+* [Issue Tracker](https://github.com/andersevenrud/OS.js-v2/issues)
+* [Demo](http://osjsv2.0o.no/)
+
+# Social
+* [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934)
+* [Facebook](https://www.facebook.com/pages/OSjs/226644300734574)
+* [Reddit](http://www.reddit.com/r/osjs)
 
 # Contact
 * [Author Homepage](http://andersevenrud.github.io/)
