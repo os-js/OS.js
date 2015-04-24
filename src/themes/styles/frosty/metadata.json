@@ -1,6 +1,6 @@
 {
   "name": "frosty",
-  "title": "Frosty Mint (EXPERIMENTAL. Requires html2canvas)",
+  "title": "Frosty Mint (EXPERIMENTAL. Restart if you use this)",
   "style": {
     "frost": true,
     "window": {
