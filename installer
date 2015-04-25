@@ -17,7 +17,7 @@ fi
 git clone --recursive $REPO $DEST
 cd $DEST
 npm install
-make
+grunt
 
 echo "INSTALLATION COMPLETE :-)"
 echo "Look at INSTALL.md for documentation on how to start the a server"
