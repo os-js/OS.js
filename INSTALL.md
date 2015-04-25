@@ -5,8 +5,8 @@ Server runs on Linux, OS X, BSD and Windows.
 
 Make sure you have these dependencies installed
 
-* **nodejs** and **npm** (Ubuntu/Debian users: make sure to install the *legacy* package)
-* **grunt CLI** (`npm install -g grunt-cli`)
+* **node** and **npm** (Ubuntu/Debian users: make sure to install the *legacy* package)
+* **grunt CLI** (`npm install -g grunt-cli` as admin/sudo)
 * Optional: **Git** for the automated installer
 * Optional: **java** to compress/minimize sources
 
@@ -14,14 +14,11 @@ You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttp
 
 # Installation
 
-## Windows
-
-To install OS.js on Windows platforms you have to download the **windows** branch and manually install.
-This is experimental, but working. Look at the INSTALL instructions in that branch for more information.
-
 ## Automated
 
 Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh` if you have the required dependencies.
+
+[Not available for Windows users at the moment](https://github.com/andersevenrud/OS.js-v2/issues/94), see manual instructions below.
 
 ## Manual
 
@@ -38,7 +35,7 @@ cd OS.js-v2
 #cd OS.js-v2-master
 
 # Install node.js packages
-sudo npm install -g grunt-cli
+sudo npm install -g grunt-cli # Windows users, run cmd as admin to do this
 npm install
 
 # Build OS.js
@@ -59,6 +56,8 @@ Or run `./obt apache-vhost` to generate one
 
 *Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
 
+*This has not been tested on Windows, but is probably working with a WAMP stack*
+
 ## PHP5 on Lighttpd
 
 See `doc/lighttpd.conf` for an example
@@ -75,6 +74,8 @@ Or run `./obt lighttpd-config` to generate one
 
 * Production dist: `node src/server-node/server.js`
 * Developer dist: `node src/server-node/server.js dist-dev`
+
+[dist-dev does not currently work on Windows platforms](https://github.com/andersevenrud/OS.js-v2/issues/94)
 
 ## Vargant
 
