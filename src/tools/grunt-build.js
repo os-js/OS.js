@@ -1,6 +1,8 @@
 //'use strict';
 
 (function(_fs, _path, _exec) {
+  var NODE_EXE  = 'node';
+  var ISWIN     = /^win/.test(process.platform);
 
   var ROOT      = _path.dirname(_path.join(__dirname, '../'));
   var LESSC     = _path.join(ROOT, 'node_modules/less/bin/lessc');
@@ -10,8 +12,6 @@
   var CC        = _path.join(ROOT, 'vendor', 'closurecompiler.jar');
   var BUILD     = generateBuildConfig();
   var HANDLER   = BUILD.handler || 'demo';
-  var NODE_EXE  = 'node';
-  var ISWIN     = /^win/.test(process.platform);
 
   /////////////////////////////////////////////////////////////////////////////
   // QUEUE
@@ -433,9 +433,11 @@
         q.add(function(next) {
           grunt.log.subhead('* Building theme styles for "' + name + '"');
 
+          // FIXME: THIS IS A HACK!
           if ( ISWIN ) {
-            var fixsrc = _path.join(dir, name, 'base.less');
-            var fixdst = _path.join(ROOT, 'dist', 'themes', 'styles', 'base.less');
+            console.log("WARNING!!! WINDOWS IS EXPERIMENTAL! OVERWRITING SOME SYMLINKS WITH FILE COPIES");
+            var fixsrc = _path.join(ROOT, 'src', 'stylesheets', 'theme.less');
+            var fixdst = _path.join(ROOT, 'src', 'themes', 'styles', name, 'base.less');
 
             try {
               _fs.removeSync(fixdst);
@@ -924,6 +926,41 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  function createPackage(grunt, name, finished) {
+    var repo = repo || 'default';
+
+    var src = _path.join(ROOT, 'src', 'tools', 'templates', 'package');
+    var dst = _path.join(ROOT, 'src', 'packages', repo, name);
+
+    if ( !_fs.existsSync(src) ) {
+      finished('Template not found!');
+      return;
+    }
+
+    if ( _fs.existsSync(dst) ) {
+      finished('Package already exist!');
+      return;
+    }
+
+    function rep(file) {
+      var c = _fs.readFileSync(file).toString();
+      c = replaceAll(c, 'EXAMPLE', name);
+      _fs.writeFileSync(file, c);
+    }
+
+    _fs.copySync(src, dst);
+
+    rep(_path.join(dst, 'main.js'));
+    rep(_path.join(dst, 'main.css'));
+    rep(_path.join(dst, 'package.json'));
+
+    finished();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
   module.exports = {
     ROOT: ROOT,
     LESSC: LESSC,
@@ -936,6 +973,8 @@
     ISWIN: ISWIN,
 
     getDirs: getDirs,
+
+    createPackage: createPackage,
 
     buildDistCore: buildDistCore,
     buildConfig: buildConfig,
