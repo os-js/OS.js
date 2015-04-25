@@ -271,6 +271,30 @@
       grunt.verbose.ok();
     });
 
+    /**
+     * Task: Create a new package
+     */
+    grunt.registerTask('create-package', 'Create a new package/application', function(arg) {
+      var done = this.async();
+      if ( !arg ) {
+        grunt.log.error('Expects an argument. Example: MyPackageName');
+        done();
+        return;
+      }
+
+      _build.createPackage(grunt, arg, function(err) {
+        if ( err ) {
+          grunt.log.error('Failed to create package: ' + err);
+          done();
+          return;
+        }
+
+        done();
+        grunt.verbose.ok();
+      });
+
+    });
+
 
     grunt.registerTask('all', ['clean', 'config', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
