@@ -1,3 +1,26 @@
+# 2.0.0-alpha56
+
+Grunt is now used as build system.
+
+Widows support :)
+
+* Updated README
+* Updated INSTALL
+* Themes: Added EXPERIMENTAL "Frosty Mint" theme with Windows Glass-like effect #82
+* Misc: Minor bugfixes
+* Misc: Updated lighttpd.conf generation
+* Misc: Removed 'obt' build system
+* Misc: Grunt is now used as task managment
+* Locales: Added nl_NL (Dutch)
+* Locales: Updated Polish (pl_PL)
+* Dialogs: Fixed enter in file dialog
+* GUI: ListView - Updated and removed some deprecated stuff
+* CoreWM: Fixed some translation mistakes
+* VFS: fileinfo() now has mtime/ctime
+* MusicPlayer: Fixed file open bug #91
+* FileManager: Columns now toggleable in list view
+
+
 # 2.0.0-alpha55
 
 Now features installable packages via zip or App Store in the Settings application.
