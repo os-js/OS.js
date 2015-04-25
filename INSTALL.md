@@ -52,7 +52,7 @@ Example for Apache on Ubuntu: `sudo chown -R www-data:www-data vfs/`
 
 See `doc/apache.conf` for an example
 
-Or run `./obt apache-vhost` to generate one
+Or run `grunt apache-vhost` to generate one
 
 *Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
 
@@ -62,7 +62,7 @@ Or run `./obt apache-vhost` to generate one
 
 See `doc/lighttpd.conf` for an example
 
-Or run `./obt lighttpd-config` to generate one
+Or run `grunt lighttpd-config` to generate one
 
 ## PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
