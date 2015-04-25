@@ -26,13 +26,14 @@ Vagrant.configure(2) do |config|
     ln -s /usr/bin/nodejs /usr/bin/node
 
     # build OS.js-v2
+    sudo npm install -g grub-cli
     git clone https://github.com/andersevenrud/OS.js-v2.git
     pushd OS.js-v2
     npm install
-    make
+    grunt
 
     # configure apache2 to serve OS.js-v2 dist-dev
-    ./obt apache-vhost > apache-vhost.conf
+    grunt apache-vhost | sed '1d' | sed '$d' > apache-vhost.conf
     sed -i -e 's/#Require/Require/' apache-vhost.conf
     sudo cp apache-vhost.conf /etc/apache2/sites-available/000-default.conf
     sudo service apache2 restart
