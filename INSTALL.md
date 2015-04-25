@@ -5,8 +5,8 @@ Server runs on Linux, OS X, BSD and Windows.
 
 Make sure you have these dependencies installed
 
-* **GNU Make** for non-Windows users
 * **nodejs** and **npm** (Ubuntu/Debian users: make sure to install the *legacy* package)
+* **grunt CLI** (`npm install -g grunt-cli`)
 * Optional: **Git** for the automated installer
 * Optional: **java** to compress/minimize sources
 
@@ -21,7 +21,7 @@ This is experimental, but working. Look at the INSTALL instructions in that bran
 
 ## Automated
 
-Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`.
+Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh` if you have the required dependencies.
 
 ## Manual
 
@@ -38,10 +38,11 @@ cd OS.js-v2
 #cd OS.js-v2-master
 
 # Install node.js packages
+sudo npm install -g grunt-cli
 npm install
 
 # Build OS.js
-make
+grunt
 ```
 
 # Setting up a server
