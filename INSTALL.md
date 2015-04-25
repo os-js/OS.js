@@ -26,7 +26,7 @@ This only requires a few simple steps
 
 ```shell
 # Clone repository
-git pull https://github.com/andersevenrud/OS.js-v2.git
+git clone https://github.com/andersevenrud/OS.js-v2.git
 cd OS.js-v2
 
 # Or alternatively download the latest zip
