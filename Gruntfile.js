@@ -306,6 +306,17 @@
     grunt.registerTask('create-nightly-build', 'Creates a new OS.js nightly zip distribution', function(arg) {
       clean(['.nightly'], ['.nightly']);
 
+      function generate(dist) {
+        var packages = _build.buildManifest(grunt, 'nightly');
+        var dest = _path.join(ROOT, '.nightly', 'packages.js');
+        var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'packages.js')).toString();
+        var out = tpl.replace("%PACKAGES%", JSON.stringify(packages, null, 2));
+
+        grunt.log.writeln('>>> ' + dest);
+        _fs.writeFileSync(dest, out);
+      }
+
+
       var done = this.async();
       _build.createNightly(grunt, function(err) {
         if ( err ) {
@@ -313,6 +324,8 @@
           done();
           return;
         }
+
+        generate();
         done();
         grunt.verbose.ok();
       });

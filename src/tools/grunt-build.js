@@ -568,7 +568,11 @@
     for ( var i = 0; i < REPOS.length; i++ ) {
       repo = REPOS[i];
       grunt.log.subhead('* Scanning repository "' + repo + '"');
-      src = _path.join(ROOT, dist, 'packages');
+      if ( dist === 'nightly' ) {
+        src = _path.join(ROOT, '.nightly', 'packages');
+      } else {
+        src = _path.join(ROOT, dist, 'packages');
+      }
       try {
         scan_packages(src, repo);
 
@@ -976,7 +980,6 @@
       'packages.js',
       'settings.js'
     ];
-
 
     var dest = _path.join(ROOT, '.nightly');
     _fs.mkdirSync(_path.join(dest, 'themes'));
