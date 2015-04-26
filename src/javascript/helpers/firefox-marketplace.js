@@ -213,6 +213,11 @@
       app_types: 'hosted'
     };
 
+    if ( q ) {
+      func = 'v1/apps/search/';
+      data.q = q;
+    }
+
     callback = callback || function() {};
 
     this._call(func, data, function(error, response) {
