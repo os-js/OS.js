@@ -81,7 +81,26 @@ Or run `grunt lighttpd-config` to generate one
 
 A [Vargant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
 
-[More information here](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/vargant.md)
+Requires VirtualBox and Vargant installed
+
+```
+
+# Alternative 1:
+
+$ git clone https://github.com/andersevenrud/OS.js-v2.git
+$ cd OS.js-v2
+$ vagrant up
+
+# Alternative 2:
+
+$ mkdir ~/OS.js && cd ~/OS.js
+$ wget https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile
+$ vagrant up
+
+
+```
+
+You should now be able to access ```http://localhost:8080``` and see the OS.js desktop.
 
 # Links
 
