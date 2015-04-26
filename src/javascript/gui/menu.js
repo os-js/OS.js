@@ -115,7 +115,7 @@
             if ( iter.icon ) {
               var img = document.createElement('img');
               img.alt = '';
-              img.src = OSjs.API.getIcon(iter.icon);
+              img.src = iter.icon.match(/^\//) ? OSjs.API.getIcon(iter.icon) : iter.icon;
               m.appendChild(img);
             }
 

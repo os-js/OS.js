@@ -70,6 +70,7 @@
     this.packages = {};
 
     function _loadSystemMetadata(cb) {
+      /*
       Utils.ajax({
         url: self.uri,
         json: true,
@@ -86,6 +87,17 @@
           }
           callback(false, error);
         }
+      });
+      */
+      var preload = [{type: 'javascript', src: self.uri}];
+      Utils.preload(preload, function(total, errors, failed) {
+        if ( errors ) {
+          _error('Failed to load package manifest');
+          return;
+        }
+        var packages = OSjs.API.getDefaultPackages();
+        self._addPackages(packages, 'system');
+        cb();
       });
     }
 

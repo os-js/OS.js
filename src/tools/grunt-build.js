@@ -462,7 +462,7 @@
             var src  = _path.join(dir, name);
             var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name);
 
-            grunt.log.writeln('  cp ' + src + ' ' + dest);
+            grunt.log.writeln('  cp ' + src + ' -> ' + dest);
 
             _fs.copy(src, dest, function() {
               next();
@@ -923,7 +923,7 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // CREATE PACKAGE
   /////////////////////////////////////////////////////////////////////////////
 
   function createPackage(grunt, name, finished) {

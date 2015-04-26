@@ -60,7 +60,7 @@
     this.config     = API.getDefaultSettings();
     this.settings   = new OSjs.Helpers.SettingsManager();
     this.connection = new OSjs.Helpers.ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
-    this.packages   = new OSjs.Helpers.PackageManager(this.config.Core.MetadataURI);
+    this.packages   = new OSjs.Helpers.PackageManager(Utils.checkdir(this.config.Core.MetadataURI));
     this.user       = new OSjs.Helpers.UserSession(this.config.Core.DefaultUser);
 
     _handlerInstance = this;

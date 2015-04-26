@@ -950,7 +950,7 @@
       if ( error ) {
         error = API._('ERR_VFSMODULE_URL_FMT', error);
       }
-      callback(error, response);
+      callback(error, Utils.checkdir(response));
     });
   };
 

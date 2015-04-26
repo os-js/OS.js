@@ -581,6 +581,15 @@
 
     // Preload
     splash = createLaunchSplash(data, n);
+
+    if ( window.location.href.match(/^file\:\/\//) ) {
+      data.preload.forEach(function(file, idx) {
+        if ( file.src && file.src.match(/^\//) ) {
+          file.src = file.src.replace(/^\//, '');
+        }
+      });
+    }
+
     OSjs.Utils.preload(data.preload, function(total, errors, failed) {
       destroyLoading(n);
 
@@ -705,7 +714,7 @@
       }
     }
 
-    return path;
+    return OSjs.Utils.checkdir(path);
   }
 
   /**
@@ -722,7 +731,7 @@
       return '/blank.css';
     }
     var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
-    return root + '/' + name + '.css';
+    return OSjs.Utils.checkdir(root + '/' + name + '.css');
   }
 
   /**
@@ -808,7 +817,7 @@
       }
     }
 
-    return name;
+    return OSjs.Utils.checkdir(name);
   }
 
   /**
@@ -834,7 +843,7 @@
         name = root + '/' + theme + '/' + name + '.' + ext;
       }
     }
-    return name;
+    return OSjs.Utils.checkdir(name);
   }
 
   /**
@@ -872,13 +881,25 @@
         }
       }
     }
-
-    return name;
+    return OSjs.Utils.checkdir(name);
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // SETTINGS API METHODS
   /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Get default configured packages
+   *
+   * THIS IS JUST A PLACEHOLDER. 'packages.js' SHOULD HAVE THIS!
+   *
+   * @return  Object
+   *
+   * @api     OSjs.API.getDefaultPackages()
+   */
+  function doGetDefaultPackages() {
+    return {};
+  }
 
   /**
    * Get default configured settings
@@ -1310,6 +1331,7 @@
   OSjs.API.getThemeResource       = doGetThemeResource;
   OSjs.API.getSound               = doGetSound;
 
+  OSjs.API.getDefaultPackages     = OSjs.API.getDefaultPackages || doGetDefaultPackages;
   OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || doGetDefaultSettings;
   OSjs.API.getDefaultPath         = doGetDefaultPath;
 

@@ -48,6 +48,14 @@ Make sure the _VFS_ directories in `vfs/` are given the correct web-server permi
 
 Example for Apache on Ubuntu: `sudo chown -R www-data:www-data vfs/`
 
+## Standalone
+
+You can run OS.js in `file://` (locally in browser), but this will disable any server-call and filesystem functions.
+
+Just open `dist/index.html` after you build.
+
+*Nightly build zip downloads are coming. Issue #95*
+
 ## PHP5 on Apache
 
 See `doc/apache.conf` for an example

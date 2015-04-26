@@ -35,7 +35,9 @@
         BUILD.javascript.output,
         BUILD.stylesheets.output,
         'dist/packages.json',
+        'dist/packages.js',
         'dist-dev/packages.json',
+        'dist-dev/packages.js',
         'dist/packages',
         'dist/themes'
       ];
@@ -209,9 +211,12 @@
         grunt.log.subhead('Generating package manifest for "' + dist + '"');
 
         var packages = _build.buildManifest(grunt, dist);
-        var dest = _path.join(ROOT, dist, 'packages.json');
+        var dest = _path.join(ROOT, dist, 'packages.js');
+        var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'packages.js')).toString();
+        var out = tpl.replace("%PACKAGES%", JSON.stringify(packages, null, 2));
+
         grunt.log.writeln('>>> ' + dest);
-        _fs.writeFileSync(dest, JSON.stringify(packages, null, 2));
+        _fs.writeFileSync(dest, out);
       }
 
       (['dist', 'dist-dev']).forEach(function(d) {

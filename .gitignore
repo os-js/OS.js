@@ -13,11 +13,13 @@ dist/settings.js
 dist/osjs.js
 dist/osjs.css
 dist/packages.json
+dist/packages.js
 dist/themes.json
 dist/themes
 dist/packages
 dist-dev/test.*
 dist-dev/packages.json
+dist-dev/packages.js
 dist-dev/themes.json
 dist-dev/vendor/dropbox*
 dist/vendor/dropbox*

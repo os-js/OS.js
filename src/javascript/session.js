@@ -310,7 +310,6 @@
    */
   function doInitialize() {
     if ( _INITED ) { return; }
-    _INITED = true;
 
     var handler;
 
@@ -364,10 +363,13 @@
     }
 
     function _Preload(list, callback) {
-      OSjs.Utils.preload(list, function(total, errors) {
+      OSjs.Utils.preload(list, function(total, errors, failed) {
         if ( errors ) {
+          /*
           _error(OSjs.API._('ERR_CORE_INIT_PRELOAD_FAILED'));
           return;
+          */
+          console.warn('doInitialize()', errors, 'preloads failed to load:', failed);
         }
 
         callback();
@@ -432,6 +434,10 @@
         }
 
         var preloads = handler.getConfig('Core').Preloads;
+        preloads.forEach(function(val, index) {
+          val.src = OSjs.Utils.checkdir(val.src);
+        });
+
         _Preload(preloads, function() {
           setTimeout(function() {
             _Loaded();
@@ -447,6 +453,8 @@
     // Launch handler
     handler = new OSjs.Core.Handler();
     handler.init(function() {
+      if ( _INITED ) { return; }
+      _INITED = true;
 
       createVersionStamp();
 

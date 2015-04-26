@@ -180,8 +180,9 @@
   CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.init = function() {
-    this.setThemeLink('/blank.css');
-    this.setAnimationLink('/blank.css');
+    var link = '/blank.css';
+    this.setThemeLink(Utils.checkdir(link));
+    this.setAnimationLink(Utils.checkdir(link));
 
     WindowManager.prototype.init.apply(this, arguments);
 

@@ -4,7 +4,7 @@
       "Core" : {
         "APIURI":           "/API",
         "FSURI":            "/FS",
-        "MetadataURI":      "/packages.json",
+        "MetadataURI":      "/packages.js",
         "ThemeURI":         "/themes/styles",
         "SoundURI":         "/themes/sounds",
         "IconURI":          "/themes/icons",

@@ -469,6 +469,20 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Check the directory and rewrite it if running on file://
+   *
+   * @param   String    path      Input path
+   *
+   * @return  String              Output path
+   */
+  OSjs.Utils.checkdir = function(path) {
+    if ( path && window.location.href.match(/^file\:\/\//) ) {
+      path = path.replace(/^\//, '');
+    }
+    return path;
+  };
+
+  /**
    * Get file extension of filename/path
    *
    * @param   String    d       filename/path
@@ -1041,6 +1055,11 @@
     args.url            = args.url              || '';
     args.jsonp          = args.jsonp            || false;
 
+    if ( window.location.href.match(/^file\:\/\//) ) {
+      args.onerror('You are currently running locally and cannot perform this operation!');
+      return;
+    }
+
     console.debug('Utils::ajax()', args);
 
     if ( args.jsonp ) {
@@ -1271,11 +1290,7 @@
         }
 
 
-        if ( newList.length ) {
-          _next();
-        } else {
-          _finished();
-        }
+        _next();
       }
 
       function _next() {
@@ -1292,15 +1307,17 @@
           } else if ( item.type.match(/script$/) ) {
             createScript(item.src, _loaded);
           }
+          return;
         }
+
+        _finished();
       }
 
       if ( newList.length ) {
         console.log('Preloader', count, 'file(s)', newList);
-        _next();
-      } else {
-        _finished();
       }
+
+      _next();
     };
   })();
 
