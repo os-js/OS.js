@@ -36,91 +36,41 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/scrollview.js</i></p>
+<p><i>src/javascript/helpers/firefox-marketplace.js</i></p>
 <h2>Functions</h2>
 <ul>
+<li>OSjs.Helpers.FirefoxMarketplace.<a href="#osjs-helpers-firefoxmarketplace-getinstance">getInstance()</a></li>
+<li>OSjs.Helpers.FirefoxMarketplace.<a href="#osjs-helpers-firefoxmarketplace-createinstance">createInstance()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-scrollview">ScrollView</a> (OSjs.GUI.ScrollView)
+<a href="#osjs-helpers-firefoxmarketplace-firefoxmarketplace">FirefoxMarketplace</a> (OSjs.Helpers.FirefoxMarketplace.FirefoxMarketplace)
 <ul>
-<li><a href="#scrollview-addelement">addElement()</a></li>
-<li><a href="#scrollview-setscroll">setScroll()</a></li>
+<li><a href="#firefoxmarketplace-_call">_call()</a></li>
+<li><a href="#firefoxmarketplace-_metadata">_metadata()</a></li>
+<li><a href="#firefoxmarketplace-search">search()</a></li>
+<li><a href="#firefoxmarketplace-launch">launch()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-gui-scrollview">
-<h2 id="scrollview">ScrollView</h2>
+<div class="section-function" id="osjs-helpers-firefoxmarketplace-getinstance">
+<h2 id="osjs-helpers-firefoxmarketplace-getinstance-">OSjs.Helpers.FirefoxMarketplace.getInstance()</h2>
 <pre>
-ScrollView
+Gets the currently running instance
 </pre>
 
-<h4 id="namespace">Namespace</h4>
-<ul>
-<li>OSjs.GUI.ScrollView</li>
-</ul>
-<h4 id="extends">Extends</h4>
-<ul>
-<li>GUIElement</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Core.GUIElement</li>
-</ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>Name of GUIElement (unique)</td>
-</tr>
-<tr>
-<td>opts</td>
-<td>Object</td>
-<td>A list of options</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>scrollX</td>
-<td>int</td>
-<td>Scroll X ? (default=true)</td>
-</tr>
-<tr>
-<td>scrollY</td>
-<td>int</td>
-<td>Scroll Y ? (default=true)</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
 
-<div class="section-method" id="scrollview-addelement">
-<h3 id="scrollview-addelement-el-clear-">ScrollView::addElement(el, clear)</h3>
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>FirefoxMarketplace</u> <em>Can also be null</em></p>
+
+</div>
+<div class="section-function" id="osjs-helpers-firefoxmarketplace-createinstance">
+<h2 id="osjs-helpers-firefoxmarketplace-createinstance-args-callback-">OSjs.Helpers.FirefoxMarketplace.createInstance(args, callback)</h2>
 <pre>
-Add a DOM Element to the view
+Create an instance of FirefoxMarketplace
 </pre>
 
 
@@ -135,14 +85,31 @@ Add a DOM Element to the view
 </thead>
 <tbody>
 <tr>
-<td>el</td>
-<td>DOMElement</td>
-<td>The dom element</td>
+<td>args</td>
+<td>Object</td>
+<td>Arguments</td>
 </tr>
 <tr>
-<td>clear</td>
-<td>boolean</td>
-<td>Clear before adding this element?</td>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, instance)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td>Array</td>
+<td>What scope to load</td>
 </tr>
 </tbody>
 </table>
@@ -150,10 +117,36 @@ Add a DOM Element to the view
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="scrollview-setscroll">
-<h3 id="scrollview-setscroll-x-y-">ScrollView::setScroll(x, y)</h3>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-helpers-firefoxmarketplace-firefoxmarketplace">
+<h2 id="firefoxmarketplace">FirefoxMarketplace</h2>
 <pre>
-Sets scroll directions
+The FirefoxMarketplace wrapper class
+
+This is a private class and can only be aquired through
+
+OSjs.Helpers.FirefoxMarketplace.createInsatance()
+
+@private
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Helpers.FirefoxMarketplace.FirefoxMarketplace</li>
+</ul>
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Helpers.FirefoxMarketplace.createInsatance()</li>
+</ul>
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://firefox-marketplace-api.readthedocs.org/en/latest">http://firefox-marketplace-api.readthedocs.org/en/latest</a></li>
+</ul>
+
+<div class="section-method" id="firefoxmarketplace-_call">
+<h3 id="firefoxmarketplace-_call-func-data-callback-">FirefoxMarketplace::_call(func, data, callback)</h3>
+<pre>
+Call the Marketplace API
 </pre>
 
 
@@ -168,14 +161,120 @@ Sets scroll directions
 </thead>
 <tbody>
 <tr>
-<td>x</td>
-<td>boolean</td>
-<td>Horizontal</td>
+<td>func</td>
+<td>String</td>
+<td>The URI (function)</td>
 </tr>
 <tr>
-<td>y</td>
-<td>boolean</td>
-<td>Vertical</td>
+<td>data</td>
+<td>Object</td>
+<td>Tuple with arguments</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback =&gt; fn(error, result, url)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="firefoxmarketplace-_metadata">
+<h3 id="firefoxmarketplace-_metadata-id-callback-">FirefoxMarketplace::_metadata(id, callback)</h3>
+<pre>
+Get metadata for application by id
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int</td>
+<td>Application ID</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback =&gt; fn(error, result, url)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="firefoxmarketplace-search">
+<h3 id="firefoxmarketplace-search-q-callback-">FirefoxMarketplace::search(q, callback)</h3>
+<pre>
+Search for an application
+
+If no query is given, the featured list is retrieved
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q</td>
+<td>String</td>
+<td>Query string (optional)</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="firefoxmarketplace-launch">
+<h3 id="firefoxmarketplace-launch-id-callback-">FirefoxMarketplace::launch(id, callback)</h3>
+<pre>
+Launch an application by Id
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>int</td>
+<td>Application ID</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback =&gt; fn(error, result)</td>
 </tr>
 </tbody>
 </table>
