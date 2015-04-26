@@ -1,0 +1,14 @@
+{
+  "className":  "ApplicationFirefoxMarketplace",
+  "name":       "Firefox Marketplace",
+  "description":"Firefox Marketplace",
+  "mime":       null,
+  "icon":       "./icon.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+

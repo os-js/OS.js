@@ -61,102 +61,6 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // FIREFOX MARKETPLACE
-  /////////////////////////////////////////////////////////////////////////////
-
-  function createMarketplaceTab(app, win, root, settings, container, tabs) {
-    var packageList;
-
-    function renderList(q) {
-      win._toggleLoading(true);
-
-      OSjs.Helpers.FirefoxMarketplace.createInstance({}, function(err, instance) {
-        win._toggleLoading(false);
-        if ( !err && !instance ) {
-          err = 'No instance';
-        }
-        if ( err ) {
-          alert('Failed initializing marketplace: ' + err);
-          return;
-        }
-
-        win._toggleLoading(true);
-        instance.search(q, function(err, list) {
-          win._toggleLoading(false);
-          if ( err ) {
-            alert('Failed listing marketplace: ' + err);
-            return;
-          }
-
-          var rows = [];
-          list.forEach(function(i) {
-            rows.push({
-              name: i.name['en-US'] || i.name[Object.keys(i.name)[0]],
-              version: i.current_version,
-              description: i.description['en-US'],
-              author: i.author,
-              id: i.id
-            });
-          });
-
-          packageList.setRows(rows);
-          packageList.render();
-        });
-      });
-    }
-
-    function launchSelected(sel) {
-      if ( !sel || !sel.id ) {
-        return;
-      }
-
-      win._toggleLoading(true);
-      OSjs.Helpers.FirefoxMarketplace.getInstance().launch(sel.id, function() {
-        win._toggleLoading(false);
-      });
-    }
-
-    var outer = document.createElement('div');
-    outer.className = 'OuterWrapper';
-
-    var buttonContainer = document.createElement('div');
-    buttonContainer.className = 'ButtonContainer';
-
-    var search = win._addGUIElement(new OSjs.GUI.Text('MarketplaceSearch', {placeholder: 'Search marketplace...', onKeyPress: function(ev) {
-      if ( ev.keyCode === Utils.Keys.ENTER ) {
-        renderList(search.getValue());
-      }
-    }}), outer);
-
-    var tab = tabs.addTab('Marketplace', {title: 'Firefox Marketplace', onSelect: function() { // FIXME: Translation!
-      renderList();
-    }});
-
-    packageList = win._addGUIElement(new OSjs.GUI.ListView('PackageListMarketplace'), outer);
-    packageList.setColumns([
-      {key: 'name', title: 'Name'},
-      {key: 'description', title: 'Description'},
-      {key: 'version', title: 'Version', width: 50, visible: false},
-      {key: 'author', title: 'Author', visible: false},
-      {key: 'id', title: 'id', visible: false}
-    ]);
-    packageList.render();
-
-    var buttonRefresh = win._addGUIElement(new OSjs.GUI.Button('ButtonMarketplaceRefresh', {label: 'Refresh', onClick: function() { // FIXME: Translation
-      search.setValue('');
-      renderList();
-    }}), buttonContainer);
-
-    var buttonRun = win._addGUIElement(new OSjs.GUI.Button('ButtonMarketplaceRun', {label: 'Launch Selected', onClick: function() { // FIXME: Translation
-      launchSelected(packageList.getSelected());
-    }}), buttonContainer);
-
-    outer.appendChild(buttonContainer);
-    tab.appendChild(outer);
-    root.appendChild(container);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // APP STORE
   /////////////////////////////////////////////////////////////////////////////
 
@@ -376,7 +280,6 @@
 
     createInstalledTab(app, win, root, settings, container, tabs);
     createStoreTab(app, win, root, settings, container, tabs);
-    createMarketplaceTab(app, win, root, settings, container, tabs);
 
     return container;
   }

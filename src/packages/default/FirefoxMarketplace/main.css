@@ -1,0 +1,99 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper {
+}
+
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnLeft {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  bottom : 32px;
+  width : 400px;
+}
+
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight {
+  position : absolute;
+  top : 0px;
+  left : 405px;
+  right : 0px;
+  bottom : 32px;
+  background : #fff;
+  overflow : auto;
+}
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div {
+  position : absolute;
+  top : 10px;
+  left : 10px;
+  right : 10px;
+  bottom : 10px;
+  overflow : visible;
+  word-break: break-all;
+}
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > h1 {
+  margin : 0;
+  padding : 0;
+  font-size : 180%;
+}
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > h2 {
+  margin : 0;
+  padding : 0;
+  font-size : 140%;
+  font-style : italic;
+}
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > h3 {
+  margin : 0;
+  padding : 0;
+  font-size : 100%;
+  font-weight : normal;
+  margin-top : 10px;
+}
+
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > img {
+  margin-top : 10px;
+  width : 100%;
+}
+
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ApplicationList {
+  margin-top : 5px;
+  height : 340px;
+}
+
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ButtonContainer {
+  position : absolute;
+  bottom : 0px;
+  left : 0px;
+  right : 0px;
+  text-align : right;
+}
+.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ButtonContainer .GUIButton {
+  display : inline-block;
+  margin-left : 5px;
+}
