@@ -38,6 +38,7 @@
       "src/javascript/locales/zh_CN.js",
       "src/javascript/locales/nl_NL.js",
       "src/javascript/locales/pl_PL.js",
+      "src/javascript/locales/vi_VN.js",
       "src/javascript/gui/_input.js",
       "src/javascript/gui/_dataview.js",
       "src/javascript/gui/button.js",
