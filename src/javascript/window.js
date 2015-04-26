@@ -863,6 +863,9 @@
             ev.preventDefault();
             return false;
           };
+          this._$iframefix.onclick = function() {
+            self._focus();
+          };
           this._$element.appendChild(this._$iframefix);
           this._iframeFixEl = gel;
 
