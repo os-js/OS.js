@@ -1,6 +1,10 @@
 # Requirements
 Server runs on Linux, OS X, BSD and Windows.
 
+If you don't want to set up a server and just want to test OS.js in your browser, 
+I provide minimalistic [nightly builds](http://andersevenrud.github.io/OS.js-v2-nightly.zip). 
+Please note networking and filesystem functions is disabled here.
+
 ## System dependencies
 
 Make sure you have these dependencies installed
@@ -48,14 +52,6 @@ Make sure the _VFS_ directories in `vfs/` are given the correct web-server permi
 
 Example for Apache on Ubuntu: `sudo chown -R www-data:www-data vfs/`
 
-## Standalone
-
-You can run OS.js in `file://` (locally in browser), but this will disable any server-call and filesystem functions.
-
-Just open `dist/index.html` after you build.
-
-*Nightly build zip downloads are coming. Issue #95*
-
 ## PHP5 on Apache
 
 See `doc/apache.conf` for an example
@@ -84,6 +80,12 @@ Or run `grunt lighttpd-config` to generate one
 * Developer dist: `node src/server-node/server.js dist-dev`
 
 [dist-dev does not currently work on Windows platforms](https://github.com/andersevenrud/OS.js-v2/issues/94)
+
+## Standalone
+
+You can run OS.js in `file://` (locally in browser), but this will disable any server-call and filesystem functions.
+
+Just open `dist/index.html` after you build.
 
 ## Vargant
 
