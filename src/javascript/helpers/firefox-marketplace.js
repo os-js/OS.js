@@ -85,15 +85,17 @@
 
   IframeElement.prototype.init = function() {
     var self = this;
-    var el = GUIElement.prototype.init.apply(this, ['GUIWolfenstenIframe']);
+    var el = GUIElement.prototype.init.apply(this, ['GUIFirefoxAppIframe']);
     this.frame = document.createElement('iframe');
+    /*
     this.frame.style.position = 'absolute';
     this.frame.style.top = '0px';
     this.frame.style.right = '0px';
     this.frame.style.bottom = '0px';
     this.frame.style.left = '0px';
-    this.frame.style.width = '100%';
-    this.frame.style.height = '100%';
+    */
+    this.frame.style.width = '320px';
+    this.frame.style.height = '480px';
     this.frame.style.border = '0 none';
     this.frame.frameborder = '0';
     this.frame.onload = function() {
@@ -131,7 +133,7 @@
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
 
-    var w = this._addGUIElement(new IframeElement('WolfensteinIframe', this.firefoxAppUrl, function(contentWindow) {
+    var w = this._addGUIElement(new IframeElement('FirefoxIframe' + this.firefoxAppId.toString(), this.firefoxAppUrl, function(contentWindow) {
       self._addHook('focus', function() {
         if ( contentWindow ) {
           contentWindow.focus();
