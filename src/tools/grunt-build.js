@@ -958,6 +958,45 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
+  // NIGHTLY BUILD
+  /////////////////////////////////////////////////////////////////////////////
+
+  function createNightly(grunt, callback) {
+    var list = [
+      'packages/default',
+      'themes',
+      'vendor',
+      'blank.css',
+      'favicon.ico',
+      'favicon.png',
+      'index.html',
+      'osjs.css',
+      'osjs.js',
+      'osjs-logo.png',
+      'packages.js',
+      'settings.js'
+    ];
+
+
+    var dest = _path.join(ROOT, '.nightly');
+    _fs.mkdirSync(_path.join(dest, 'themes'));
+    _fs.mkdirSync(_path.join(dest, 'vendor'));
+    _fs.mkdirSync(_path.join(dest, 'packages'));
+    _fs.mkdirSync(_path.join(dest, 'packages', 'default'));
+
+    list.forEach(function(src) {
+      var dst = _path.join(dest, src);
+      src = _path.join(ROOT, 'dist', src);
+
+      grunt.log.writeln('cp ' + src + ' -> ' + dst);
+
+      _fs.copySync(src, dst);
+    });
+
+    callback();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -983,6 +1022,7 @@
     buildPackages: buildPackages,
     buildManifest: buildManifest,
     compress: doCompress,
+    createNightly: createNightly,
 
     generateLighttpdConfig: generateLighttpdConfig,
     generateApacheHtaccess: generateApacheHtaccess,

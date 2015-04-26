@@ -300,6 +300,24 @@
 
     });
 
+    /**
+     * Task: Create a nightly build
+     */
+    grunt.registerTask('create-nightly-build', 'Creates a new OS.js nightly zip distribution', function(arg) {
+      clean(['.nightly'], ['.nightly']);
+
+      var done = this.async();
+      _build.createNightly(grunt, function(err) {
+        if ( err ) {
+          grunt.log.error('Failed to create nightly: ' + err);
+          done();
+          return;
+        }
+        done();
+        grunt.verbose.ok();
+      });
+    });
+
 
     grunt.registerTask('all', ['clean', 'config', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
