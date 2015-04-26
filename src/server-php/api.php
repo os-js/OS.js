@@ -483,7 +483,7 @@ class CoreAPIHandler
         }
         if ( $data ) {
           curl_setopt($ch, CURLOPT_POST, true);
-          curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         }
 
         $response = curl_exec($ch);
