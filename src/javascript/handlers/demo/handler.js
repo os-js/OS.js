@@ -88,6 +88,15 @@
   DemoHandler.prototype.init = function(callback) {
     console.info('OSjs::DemoHandler::init()');
 
+    if ( window.location.href.match(/^file\:\/\//) ) {
+      callback({
+        id: 0,
+        username: 'demo',
+        name: 'Local Server',
+        groups: ['demo']
+      });
+    }
+
     // Use the 'demo' user
     var self = this;
     this.login('demo', 'demo', function(userData) {

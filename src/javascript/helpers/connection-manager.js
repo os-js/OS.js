@@ -118,6 +118,10 @@
       cbError('You are currently off-line and cannot perform this operation!');
       return false;
     }
+    if ( window.location.href.match(/^file\:\/\//) ) {
+      cbError('You are currently running locally and cannot perform this operation!');
+      return false;
+    }
 
     args      = args      || {};
     cbSuccess = cbSuccess || function() {};
