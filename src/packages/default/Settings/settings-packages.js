@@ -91,7 +91,7 @@
           var rows = [];
           list.forEach(function(i) {
             rows.push({
-              name: i.name['en-US'],
+              name: i.name['en-US'] || i.name[Object.keys(i.name)[0]],
               version: i.current_version,
               description: i.description['en-US'],
               author: i.author,
@@ -142,11 +142,12 @@
     ]);
     packageList.render();
 
-    var buttonRefresh = win._addGUIElement(new OSjs.GUI.Button('ButtonPackageRefresh', {label: 'Refresh', onClick: function() { // FIXME: Translation
+    var buttonRefresh = win._addGUIElement(new OSjs.GUI.Button('ButtonMarketplaceRefresh', {label: 'Refresh', onClick: function() { // FIXME: Translation
+      search.setValue('');
       renderList();
     }}), buttonContainer);
 
-    var buttonRun = win._addGUIElement(new OSjs.GUI.Button('ButtonPackageRun', {label: 'Launch Selected', onClick: function() { // FIXME: Translation
+    var buttonRun = win._addGUIElement(new OSjs.GUI.Button('ButtonMarketplaceRun', {label: 'Launch Selected', onClick: function() { // FIXME: Translation
       launchSelected(packageList.getSelected());
     }}), buttonContainer);
 

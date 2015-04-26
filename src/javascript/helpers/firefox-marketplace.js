@@ -210,7 +210,7 @@
     var func = 'v1/fireplace/search/featured';
     var data = {
       type: 'app',
-      app_types: 'hosted'
+      app_type: 'hosted'
     };
 
     if ( q ) {
@@ -236,7 +236,8 @@
       var resolve = document.createElement('a');
       resolve.href = url;
 
-      var launcher = resolve.protocol + '//' + resolve.host + (metadata.launch_path ? ('/' + metadata.launch_path) : '');
+      var launcher = resolve.host + (metadata.launch_path ? ('/' + metadata.launch_path) : '');
+      launcher = resolve.protocol + '//' + launcher.replace(/\/+/g, '/');
 
       var wm = OSjs.Core.getWindowManager();
       var icon = metadata.icons ? metadata.icons["128"] : null;
