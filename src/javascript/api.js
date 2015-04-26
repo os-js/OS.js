@@ -853,7 +853,7 @@
     size = size || '16x16';
     app  = app  || null;
 
-    if ( name ) {
+    if ( name && !name.match(/^(http|\/\/)/) ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getIconTheme() : 'default';
       var root = OSjs.API.getDefaultSettings().Core.IconURI;
