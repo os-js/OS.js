@@ -100,7 +100,26 @@ $ vagrant up
 
 ```
 
-You should now be able to access ```http://localhost:8080``` and see the OS.js desktop.
+You should now be able to access `http://localhost:8080` and see the OS.js desktop.
+
+## X11
+
+OS.js can run as a *X11* Desktop. Slim login manager theme is included.
+
+*This is very experimental and has only been tested on a bare-bones Ubuntu installation*
+
+```
+# Expects you to have a user named 'osjs' with sudo permissions
+
+$ sudo apt-get install nodejs virtualbox-x11 npm libwebkit-dev ligbwebkitgtk-dev build-essential
+$ git clone https://github.com/andersevenrud/OS.js-v2.git OS.js
+$ cd OS.js
+$ sudo npm install -g grunt-cli
+$ npm install
+$ grunt
+$ sudo cp -rv vendor/system-image/* /
+$ sudo /etc/init.d/osjs start
+```
 
 # Links
 
