@@ -190,12 +190,19 @@
 .Window_ApplicationSettingsWindow .Tab_AppStore .GUIListView {
   height : 290px;
 }
+.Window_ApplicationSettingsWindow .Tab_Marketplace .GUIListView {
+  height : 260px;
+  margin-top : 5px;
+}
+
 .Window_ApplicationSettingsWindow .Tab_Packages .ButtonContainer,
+.Window_ApplicationSettingsWindow .Tab_Marketplace .ButtonContainer,
 .Window_ApplicationSettingsWindow .Tab_AppStore .ButtonContainer {
   margin : -5px;
   margin-top : 0;
 }
 .Window_ApplicationSettingsWindow .Tab_Packages .ButtonContainer > .GUIButton,
+.Window_ApplicationSettingsWindow .Tab_Marketplace .ButtonContainer > .GUIButton,
 .Window_ApplicationSettingsWindow .Tab_AppStore .ButtonContainer > .GUIButton {
   display : inline-block;
   margin : 5px;
