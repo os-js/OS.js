@@ -189,11 +189,32 @@
     callback();
   };
 
+  /**
+   * Call the Marketplace API
+   *
+   * @param   String      func          The URI (function)
+   * @param   Object      data          Tuple with arguments
+   * @param   Function    callback      Callback => fn(error, result, url)
+   *
+   * @return  void
+   *
+   * @method  FirefoxMarketplace::_call()
+   */
   FirefoxMarketplace.prototype._call = function(func, data, callback) {
     var url = buildURL(func, data);
     apiCall(url, callback);
   };
 
+  /**
+   * Get metadata for application by id
+   *
+   * @param   int         id            Application ID
+   * @param   Function    callback      Callback => fn(error, result, url)
+   *
+   * @return  void
+   *
+   * @method  FirefoxMarketplace::_metadata()
+   */
   FirefoxMarketplace.prototype._metadata = function(appId, callback) {
     var func = 'v2/apps/app/' + appId.toString() + '/';
     var data = {};
@@ -214,6 +235,18 @@
     });
   };
 
+  /**
+   * Search for an application
+   *
+   * If no query is given, the featured list is retrieved
+   *
+   * @param   String      q             Query string (optional)
+   * @param   Function    callback      Callback => fn(error, result)
+   *
+   * @return  void
+   *
+   * @method  FirefoxMarketplace::search()
+   */
   FirefoxMarketplace.prototype.search = function(q, callback) {
     var func = 'v1/fireplace/search/featured';
     var data = {
@@ -235,6 +268,16 @@
     });
   };
 
+  /**
+   * Launch an application by Id
+   *
+   * @param   int         id            Application ID
+   * @param   Function    callback      Callback => fn(error, result)
+   *
+   * @return  void
+   *
+   * @method  FirefoxMarketplace::launch()
+   */
   FirefoxMarketplace.prototype.launch = function(id, callback) {
     callback = callback || function() {};
 
