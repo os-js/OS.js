@@ -71,7 +71,9 @@
 
   // TODO: REMOVE WHEN #89 is done
   function IframeElement(name, src, cb) {
+    this.frameCallback = cb || function() {};
     this.frameSource = src;
+    this.frameWindow = null;
     this.frame = null;
 
     GUIElement.apply(this, [name, {
@@ -94,6 +96,10 @@
     this.frame.style.height = '100%';
     this.frame.style.border = '0 none';
     this.frame.frameborder = '0';
+    this.frame.onload = function() {
+      self.frameWindow = self.frame.contentWindow;
+      self.frameCallback(self.frameWindow);
+    };
     this.frame.src = this.frameSource;
     el.appendChild(this.frame);
     return el;
@@ -232,6 +238,8 @@
 
     this._metadata(id, function(error, metadata, url) {
       if ( error ) { callback(error); }
+
+      metadata = metadata || {};
 
       var resolve = document.createElement('a');
       resolve.href = url;
