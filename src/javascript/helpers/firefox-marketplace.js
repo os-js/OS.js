@@ -222,7 +222,7 @@
     callback = callback || function() {};
 
     this._call(func, data, function(error, response) {
-      if ( error ) { callback(error); }
+      if ( error ) { callback(error); return; }
 
       var url = response.manifest_url;
 
@@ -262,7 +262,7 @@
     callback = callback || function() {};
 
     this._call(func, data, function(error, response) {
-      if ( error ) { callback(error); }
+      if ( error ) { callback(error); return; }
 
       callback(false, response.objects);
     });
@@ -282,7 +282,7 @@
     callback = callback || function() {};
 
     this._metadata(id, function(error, metadata, url) {
-      if ( error ) { callback(error); }
+      if ( error ) { callback(error); return; }
 
       metadata = metadata || {};
 
@@ -294,9 +294,10 @@
 
       var wm = OSjs.Core.getWindowManager();
       var icon = metadata.icons ? metadata.icons["128"] : null;
-      if ( icon.match(/^\//) ) {
+      if ( icon && icon.match(/^\//) ) {
         icon = resolve.protocol + '//' + resolve.host + icon;
       }
+
       var win = new FirefoxAppWindow(id, metadata.name, icon, launcher);
       wm.addWindow(win);
 

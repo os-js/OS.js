@@ -135,7 +135,6 @@
   };
 
   ApplicationFirefoxMarketplaceWindow.prototype.showPreview = function(item) {
-    console.warn("XCXXX", item);
     if ( !this.previewContainer ) { return; }
     Utils.$empty(this.previewContainer);
 
