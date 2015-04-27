@@ -986,6 +986,9 @@
     _fs.mkdirSync(_path.join(dest, 'vendor'));
     _fs.mkdirSync(_path.join(dest, 'packages'));
     _fs.mkdirSync(_path.join(dest, 'packages', 'default'));
+    _fs.copySync(_path.join(ROOT, 'README.md'), _path.join(dest, 'README.md'));
+    _fs.copySync(_path.join(ROOT, 'LICENSE'), _path.join(dest, 'LICENSE'));
+    _fs.copySync(_path.join(ROOT, 'AUTHORS'), _path.join(dest, 'AUTHORS'));
 
     list.forEach(function(src) {
       var dst = _path.join(dest, src);
