@@ -2,7 +2,7 @@
 Server runs on Linux, OS X, BSD and Windows.
 
 If you don't want to set up a server and just want to test OS.js in your browser, 
-I provide minimalistic [nightly builds](http://andersevenrud.github.io/OS.js-v2-nightly.zip). 
+I provide minimalistic [nightly builds](http://osjsv2.0o.no/OS.js-v2-minimal-nightly.zip). 
 Please note networking and filesystem functions is disabled here.
 
 ## System dependencies
