@@ -52,7 +52,12 @@
 
     console.info('PackageManager::load()');
 
-    this._loadMetadata(function() {
+    this._loadMetadata(function(err) {
+      if ( err ) {
+        callback(err);
+        return;
+      }
+
       var len = Object.keys(self.packages).length;
       if ( len ) {
         callback(true);
@@ -92,7 +97,7 @@
       var preload = [{type: 'javascript', src: self.uri}];
       Utils.preload(preload, function(total, errors, failed) {
         if ( errors ) {
-          _error('Failed to load package manifest');
+          callback('Failed to load package manifest');
           return;
         }
         var packages = OSjs.API.getDefaultPackages();
@@ -113,7 +118,12 @@
       }, {type: 'text'});
     }
 
-    _loadSystemMetadata(function() {
+    _loadSystemMetadata(function(err) {
+      if ( err ) {
+        callback(err);
+        return;
+      }
+
       _loadUserMetadata(function() {
         callback();
       });

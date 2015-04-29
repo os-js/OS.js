@@ -1,6 +1,6 @@
 {
   "className":  "ApplicationFirefoxMarketplace",
-  "name":       "Firefox Marketplace",
+  "name":       "Firefox Marketplace (Experimental)",
   "description":"Firefox Marketplace",
   "mime":       null,
   "icon":       "./icon.png",
