@@ -293,7 +293,7 @@
       launcher = resolve.protocol + '//' + launcher.replace(/\/+/g, '/');
 
       var wm = OSjs.Core.getWindowManager();
-      var icon = metadata.icons ? metadata.icons["128"] : null;
+      var icon = metadata.icons ? metadata.icons['128'] : null;
       if ( icon && icon.match(/^\//) ) {
         icon = resolve.protocol + '//' + resolve.host + icon;
       }

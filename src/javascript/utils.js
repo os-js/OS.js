@@ -1313,9 +1313,7 @@
         _finished();
       }
 
-      if ( newList.length ) {
-        console.log('Preloader', count, 'file(s)', newList);
-      }
+      console.log('Preloader', count, 'file(s)', newList);
 
       _next();
     };
