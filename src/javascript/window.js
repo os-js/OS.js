@@ -908,7 +908,6 @@
             overlay.style.zIndex      = 9999999999;
             document.body.appendChild(overlay);
           }
-          console.log(overlay);
           overlay.style.top      = elpos.top + 'px';
           overlay.style.left     = elpos.left + 'px';
           overlay.style.width    = (gel.$element.offsetWidth||0) + 'px';
