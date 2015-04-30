@@ -857,7 +857,8 @@
         }
 
         // NOTE: This is a fix for iframes blocking mousemove events (ex. moving windows)
-        if ( gel.opts.isIframe ) {
+        //if ( gel.opts.isIframe ) {
+        if ( (gel instanceof OSjs.GUI.RichText) || gel.opts.isIframe ) {
           this._$iframefix = document.createElement('div');
           this._$iframefix.className = 'WindowIframeFix';
           this._$iframefix.onmousemove = function(ev) {
@@ -889,10 +890,8 @@
           });
           this._updateIframeFix();
         }
-      }
 
-      // NOTE: Fixes for Iframe "bugs"
-      if ( (gel instanceof OSjs.GUI.RichText) ) {
+        // NOTE: Fixes for Iframe "bugs"
         gel._addHook('focus', function() {
           OSjs.API.blurMenu();
           self._focus();
@@ -907,9 +906,9 @@
             overlay.className         = 'IFrameResizeFixer';
             overlay.style.position    = 'absolute';
             overlay.style.zIndex      = 9999999999;
-            overlay.style.background  = 'transparent';
             document.body.appendChild(overlay);
           }
+          console.log(overlay);
           overlay.style.top      = elpos.top + 'px';
           overlay.style.left     = elpos.left + 'px';
           overlay.style.width    = (gel.$element.offsetWidth||0) + 'px';
