@@ -37,8 +37,10 @@
    * @param Object    opts    A list of options
    *
    * @option opts String    src           HREF to load
-   * @option opts Function  onFocus       When frame gets focused callback
-   * @option opts Function  onBlur        When frame gets blurred callback
+   * @option opts int       width         Static width (optional in px)
+   * @option opts int       height        Static height (optional in px)
+   * @option opts Function  onFocus       When frame gets focused callback (optional)
+   * @option opts Function  onBlur        When frame gets blurred callback (optional)
    *
    * @see OSjs.Core.GUIElement
    * @api OSjs.GUI.IFrame
