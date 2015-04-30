@@ -70,6 +70,10 @@
     var self = this;
     var el = GUIElement.prototype.init.apply(this, ['GUIIFrame']);
     this.frame = document.createElement('iframe');
+
+    el.style.width = this.opts.width ? this.opts.width + 'px' : '100%';
+    el.style.height = this.opts.height ? this.opts.height + 'px' : '100%';
+
     this.frame.style.width = this.opts.width ? this.opts.width + 'px' : '100%';
     this.frame.style.height = this.opts.height ? this.opts.height + 'px' : '100%';
     this.frame.style.border = '0 none';
