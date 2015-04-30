@@ -631,6 +631,7 @@ Array.prototype.unique = function(){
 
     'src/javascript/gui/_dataview.js',
     'src/javascript/gui/_input.js',
+    'src/javascript/gui/iframe.js',
     'src/javascript/gui/button.js',
     'src/javascript/gui/canvas.js',
     'src/javascript/gui/checkbox.js',

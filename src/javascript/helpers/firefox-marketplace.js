@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-(function(Utils, API, GUIElement, Window) {
+(function(Utils, API, GUI, Window) {
   'use strict';
 
   var OSjs = window.OSjs = window.OSjs || {};
@@ -69,44 +69,6 @@
     });
   }
 
-  // TODO: REMOVE WHEN #89 is done
-  function IframeElement(name, src, cb) {
-    this.frameCallback = cb || function() {};
-    this.frameSource = src;
-    this.frameWindow = null;
-    this.frame = null;
-
-    GUIElement.apply(this, [name, {
-      isIframe: true
-    }]);
-  }
-
-  IframeElement.prototype = Object.create(GUIElement.prototype);
-
-  IframeElement.prototype.init = function() {
-    var self = this;
-    var el = GUIElement.prototype.init.apply(this, ['GUIFirefoxAppIframe']);
-    this.frame = document.createElement('iframe');
-    /*
-    this.frame.style.position = 'absolute';
-    this.frame.style.top = '0px';
-    this.frame.style.right = '0px';
-    this.frame.style.bottom = '0px';
-    this.frame.style.left = '0px';
-    */
-    this.frame.style.width = '320px';
-    this.frame.style.height = '480px';
-    this.frame.style.border = '0 none';
-    this.frame.frameborder = '0';
-    this.frame.onload = function() {
-      self.frameWindow = self.frame.contentWindow;
-      self.frameCallback(self.frameWindow);
-    };
-    this.frame.src = this.frameSource;
-    el.appendChild(this.frame);
-    return el;
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // FFAPP WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -117,7 +79,7 @@
       title: title,
       width: 320,
       height: 480,
-      allow_resise: false,
+      allow_resize: false,
       allow_restore: false,
       allow_maximize: false
     }, null]);
@@ -132,22 +94,12 @@
   FirefoxAppWindow.prototype.init = function(wmRef, app) {
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
-
-    var w = this._addGUIElement(new IframeElement('FirefoxIframe' + this.firefoxAppId.toString(), this.firefoxAppUrl, function(contentWindow) {
-      self._addHook('focus', function() {
-        if ( contentWindow ) {
-          contentWindow.focus();
-          w.frame.focus();
-        }
-      });
-      self._addHook('blur', function() {
-        if ( contentWindow ) {
-          contentWindow.blur();
-          w.frame.blur();
-        }
-      });
+    root.style.overflow = 'visible';
+    this._addGUIElement(new GUI.IFrame('FirefoxIframe' + this.firefoxAppId.toString(), {
+      src: self.firefoxAppUrl,
+      width: 320,
+      height: 480
     }), root);
-
     return root;
   };
 
@@ -348,4 +300,4 @@
     callback(false, SingletonInstance);
   };
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.GUIElement, OSjs.Core.Window);
+})(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Window);
