@@ -231,6 +231,7 @@
         minimize  : [],
         restore   : [],
         move      : [], // Called inside the mosuemove event
+        moved     : [], // Called inside the mouseup event
         resize    : [], // Called inside the mousemove event
         resized   : []  // Called inside the mouseup event
       };
@@ -868,6 +869,17 @@
           };
           this._$element.appendChild(this._$iframefix);
           this._iframeFixEl = gel;
+
+          this._addHook('move', function() {
+            if ( self._$iframefix && self._state.focused ) {
+              self._$iframefix.style.display = 'block';
+            }
+          });
+          this._addHook('moved', function() {
+            if ( self._$iframefix && self._state.focused ) {
+              self._$iframefix.style.display = 'none';
+            }
+          });
 
           this._addHook('resized', function() {
             self._updateIframeFix();
