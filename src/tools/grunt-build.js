@@ -267,7 +267,6 @@
     var extensions = getCoreExtensions();
 
     function buildPHPConfig() {
-      var cfg_php = [];
       var root = JSON.parse(JSON.stringify(BUILD.settings));
       var loadExtensions = [];
 
@@ -279,20 +278,15 @@
         }
       });
       if ( loadExtensions ) {
-        settings.extensions = JSON.stringify(loadExtensions);
+        settings.extensions = loadExtensions;
       }
       try {
         settings.MaxUpload = root.frontend.Core.MaxUploadSize;
       } catch ( exc ) {}
 
-      for ( var i in settings ) {
-        if ( settings.hasOwnProperty(i) ) {
-          cfg_php.push("define('" + i.toUpperCase() + "', '" + settings[i] + "');");
-        }
-      }
-      cfg_php = "<?php\n" + cfg_php.join("\n") + "\n?>";
-
-      return cfg_php;
+      var tmp = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'settings.php')).toString();
+      tmp = tmp.replace('%JSON%', JSON.stringify(settings, null, 4));
+      return tmp;
     }
 
 

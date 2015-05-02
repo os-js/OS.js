@@ -132,7 +132,8 @@ class FS
       throw new Exception("Destination already exist!");
     }
      */
-    if ( $file['size'] <= 0 || $file['size'] > MAXUPLOAD ) {
+    $settings = Settings::get();
+    if ( $file['size'] <= 0 || $file['size'] > $settings["MaxUpload"] ) {
       throw new Exception("The upload request is either empty or too large!");
     }
 
@@ -330,6 +331,7 @@ function getRealPath(&$scandir) {
   $protocol = "";
   $dirname  = $scandir;
   $realpath = "";
+  $settings = Settings::get();
 
   if ( (preg_match("/^([A-z0-9\-_]+)?\:\/\/?(.*)/", $scandir, $matches)) !== false ) {
     if ( sizeof($matches) === 3 ) {
@@ -350,12 +352,12 @@ function getRealPath(&$scandir) {
       throw new Exception("No username was found, cannot access home directory");
     }
 
-    $vfsdir = sprintf("%s/%s", VFSDIR, $username);
+    $vfsdir = sprintf("%s/%s", $settings['vfs']['homes'], $username);
     $root = sprintf("%s/%s", $vfsdir, preg_replace("/^\//", "", $dirname));
     if ( strstr($root, $vfsdir) === false ) throw new Exception("Access denied in directory '{$root}'");
   } else {
-    $root = sprintf("%s/%s", PUBLICDIR, preg_replace("/^\//", "", $dirname));
-    if ( strstr($root, PUBLICDIR) === false ) throw new Exception("Access denied in directory '{$root}'");
+    $root = sprintf("%s/%s", $settings['vfs']['public'], preg_replace("/^\//", "", $dirname));
+    if ( strstr($root, $settings['vfs']['public']) === false ) throw new Exception("Access denied in directory '{$root}'");
   }
 
   $realpath = str_replace(Array("../", "./"), "", $root);

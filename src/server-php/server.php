@@ -48,26 +48,20 @@ require "{$root}/settings.php";
 
 if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'));                   // The path to root dir
 if ( !defined("DISTDIR") )    define("DISTDIR",     ROOTDIR . "/dist");                               // Dist dir
-if ( !defined("VFSDIR") )     define("VFSDIR",      ROOTDIR . "/vfs/home");                           // Filesystem API default dir
-if ( !defined("TMPDIR") )     define("TMPDIR",      ROOTDIR . "/vfs/tmp");                            // Temporary files
-if ( !defined("PUBLICDIR") )  define("PUBLICDIR",   ROOTDIR . "/vfs/public");                         // Public (shared) files
-if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");                       // Packages
-if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.json");                  // Package repositories
-if ( !defined("MAXUPLOAD") )  define("MAXUPLOAD",   return_bytes(ini_get('upload_max_filesize')));    // Upload size limit
-if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
-if ( !defined("HANDLER") )    define("HANDLER",     null);
-if ( !defined("EXTENSIONS") ) define("EXTENSIONS",  null);
+if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
+if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");                       // Packages
+if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.json");                  // Package repositories
 
-if ( HANDLER ) {
-  require sprintf("%s/src/server-php/handlers/%s/handler.php", ROOTDIR, HANDLER);
+$settings = Settings::get();
+
+if ( !empty($settings['handler']) ) {
+  require sprintf("%s/src/server-php/handlers/%s/handler.php", ROOTDIR, $settings['handler']);
 }
-if ( EXTENSIONS ) {
-  if ( $load = (array)json_decode(EXTENSIONS) ) {
-    foreach ( $load as $l ) {
-      require $l;
-    }
+if ( !empty($settings['extensions']) ) {
+  foreach ( $settings['extensions'] as $l ) {
+    require $l;
   }
 }
 
