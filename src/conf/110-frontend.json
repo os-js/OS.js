@@ -27,6 +27,9 @@
           "Dropbox": {
             "Enabled": false,
             "ClientKey": ""
+          },
+          "Mountpoints": {
+            "Enabled": true
           }
         },
         "Languages": {}

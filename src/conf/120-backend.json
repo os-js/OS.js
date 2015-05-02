@@ -1,9 +1,13 @@
 {
   "settings" : {
     "backend" : {
-      "vfsdir" : "%ROOT%/vfs/home",
-      "tmpdir" : "%ROOT%/vfs/tmp",
-      "publicdir" : "%ROOT%/vfs/public",
+      "vfs": {
+        "homes":  "%ROOT%/vfs/home",
+        "tmp":    "%ROOT%/vfs/tmp",
+        "public": "%ROOT%/vfs/public",
+        "mounts": {
+        }
+      },
       "handler" : "%HANDLER%",
       "port" : 8000
     }
