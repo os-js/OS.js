@@ -1,3 +1,24 @@
+# 2.0.0-alpha57
+
+Standalone support (file://). Firefox Marketplace support :)
+
+I now also started providing nightly builds
+
+* Updated INSTALL
+* Updated README
+* Updated gendoc
+* GUI: Added IFrame Element for much simpler app creation
+* VFS: You can now add local mount points
+* Helpers: Added FirefoxMarketplace (supports hosted apps)
+* Applications: Added FirefoxMarketplace
+* API: getIcon() now ignores http based paths
+* Window: Windows with iframes now clickable (fix)
+* Window: Now possible to set warnings
+* Locales: Added Vietnamese (vi_VN) core translations (Thanks @khoaakt)
+* Core: Now can run in standalone mode
+* Build: Added nightly generator
+* Misc: jshint
+
 # 2.0.0-alpha56
 
 Grunt is now used as build system.
