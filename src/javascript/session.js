@@ -335,6 +335,10 @@
     function _Loaded() {
       OSjs.Session.triggerHook('onInited');
 
+      if ( OSjs.VFS.registerMounts ) {
+        OSjs.VFS.registerMounts();
+      }
+
       _LaunchWM(function(/*app*/) {
         OSjs.Session.triggerHook('onWMInited');
 

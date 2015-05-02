@@ -52,7 +52,18 @@
       }
       fullPath = _path.join(config.vfs.homes, userdir, path);
       protocol = 'home://';
+    } else {
+      var tmp = path.split(/^(\w+)\:\/\//);
+      if ( tmp.length === 3 ) {
+        tmp = tmp[1];
+        if ( config.vfs.mounts && config.vfs.mounts[tmp] ) {
+          protocol = tmp + '://';
+          path = path.replace(/^(\w+)\:\/\//, '');
+          fullPath = _path.join(config.vfs.mounts[tmp], path);
+        }
+      }
     }
+
     return {root: fullPath, path: path, protocol: protocol};
   }
 

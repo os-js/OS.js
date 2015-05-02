@@ -93,10 +93,10 @@ class FS
             "mtime"    => null
           );
 
-          if ( ($mtime = filemtime($opath)) > 0 ) {
+          if ( ($mtime = @filemtime($opath)) > 0 ) {
             $iter["mtime"] = date(self::DATE_FORMAT, $mtime);
           }
-          if ( ($ctime = filectime($opath)) > 0 ) {
+          if ( ($ctime = @filectime($opath)) > 0 ) {
             $iter["ctime"] = date(self::DATE_FORMAT, $ctime);
           }
 
@@ -356,8 +356,20 @@ function getRealPath(&$scandir) {
     $root = sprintf("%s/%s", $vfsdir, preg_replace("/^\//", "", $dirname));
     if ( strstr($root, $vfsdir) === false ) throw new Exception("Access denied in directory '{$root}'");
   } else {
-    $root = sprintf("%s/%s", $settings['vfs']['public'], preg_replace("/^\//", "", $dirname));
-    if ( strstr($root, $settings['vfs']['public']) === false ) throw new Exception("Access denied in directory '{$root}'");
+    if ( $protocol ) {
+      $tmp = explode(":", $protocol);
+      $proto = reset($tmp);
+      if ( isset($settings['vfs']['mounts'][$proto]) ) {
+        $value = $settings['vfs']['mounts'][$proto];
+        $root = sprintf("%s/%s", $value, preg_replace("/^\//", "", $dirname));
+        if ( strstr($root, $value) === false ) throw new Exception("Access denied in directory '{$root}'");
+      } else {
+        throw new Exception("No such mountpoint");
+      }
+    } else {
+      $root = sprintf("%s/%s", $settings['vfs']['public'], preg_replace("/^\//", "", $dirname));
+      if ( strstr($root, $settings['vfs']['public']) === false ) throw new Exception("Access denied in directory '{$root}'");
+    }
   }
 
   $realpath = str_replace(Array("../", "./"), "", $root);

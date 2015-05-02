@@ -21,6 +21,7 @@
       "src/javascript/vfs/googledrive.js",
       "src/javascript/vfs/dropbox.js",
       "src/javascript/vfs/onedrive.js",
+      "src/javascript/vfs/mountpoints.js",
       "src/javascript/helpers/default-application.js",
       "src/javascript/helpers/google-api.js",
       "src/javascript/helpers/windows-live-api.js",

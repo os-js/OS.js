@@ -29,7 +29,6 @@
             "ClientKey": ""
           },
           "Mountpoints": {
-            "Enabled": true
           }
         },
         "Languages": {}
