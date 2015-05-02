@@ -82,6 +82,7 @@
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
   var DefaultModule = 'Public';
+  var MountsRegistered = false;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -530,6 +531,62 @@
       }
     });
     return a;
+  };
+
+  /**
+   * Registeres all configured mount points
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.registerMounts()
+   */
+  OSjs.VFS.registerMounts = function() {
+    if ( MountsRegistered ) { return; }
+    MountsRegistered = true;
+
+    var settings = OSjs.API.getDefaultSettings();
+    var config = null;
+
+    try {
+      config = settings.Core.VFS.Mountpoints;
+    } catch ( e ) {
+      console.warn('mountpoints.js initialization error', e, e.stack);
+    }
+
+    console.debug('Registering mountpoints...', config);
+
+    if ( config ) {
+      var points = Object.keys(config);
+      points.forEach(function(key) {
+        var iter = config[key];
+        console.info('VFS', 'Registering mountpoint', key, iter);
+
+        var re = new RegExp('^' + key + '\\:\\/\\/');
+        OSjs.VFS.Modules[key] = {
+          readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
+          description: iter.description || key,
+          icon: iter.icon || 'devices/harddrive.png',
+          root: key + ':///',
+          visible: true,
+          internal: true,
+          match: re,
+          unmount: function(cb) {
+            cb = cb || function() {};
+            cb(API._('ERR_VFS_UNAVAILABLE'), false);
+          },
+          mounted: function() {
+            return true;
+          },
+          enabled: function() {
+            return true;
+          },
+          request: function() {
+            // This module uses the same API as public
+            OSjs.VFS.Modules.Public.request.apply(null, arguments);
+          }
+        };
+      });
+    }
   };
 
   /**
