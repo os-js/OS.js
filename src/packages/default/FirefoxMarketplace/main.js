@@ -101,6 +101,10 @@
     root.appendChild(right);
     root.appendChild(buttonContainer);
 
+    if ( window.location.protocol.match(/^https/) ) {
+      this._setWarning('Most hosted applications does not support https');
+    }
+
     return root;
   };
 

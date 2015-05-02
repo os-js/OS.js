@@ -179,3 +179,30 @@
   position : absolute;
   z-index : 9999999999;
 }
+.Window > .WindowWrapper > .WindowWarning {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  height : 30px;
+  line-height : 20px;
+  margin : 4px;
+  border : 1px solid transparent;
+  z-index : 99999;
+}
+.Window > .WindowWrapper > .WindowWarning > .Close {
+  position : absolute;
+  top : 0px;
+  right : 0px;
+  bottom : 0px;
+  padding : 5px;
+}
+.Window > .WindowWrapper > .WindowWarning > .Message {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 20px;
+  bottom : 0px;
+  padding : 5px;
+  overflow : hidden;
+}

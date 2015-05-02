@@ -169,6 +169,7 @@
       this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
       this._$iframefix    = null;                 // DOMElement: Window IFrame Fix Overlay
       this._$resize       = null;                 // DOMElement: Window Resizer
+      this._$warning      = null;                 // DOMElement: Warning message
 
       this._rendered      = false;                // If Window has been initially rendered
       this._appRef        = appRef || null;       // Reference to Application Window was created from
@@ -591,6 +592,8 @@
     var self = this;
 
     function _removeDOM() {
+      self._setWarning(null);
+
       if ( self._$element.parentNode ) {
         self._$element.parentNode.removeChild(self._$element);
       }
@@ -1925,6 +1928,43 @@
     }
     this._icon = i;
     this._onChange('icon');
+  };
+
+  /**
+   * Set Window warning message (Displays as a popup inside window)
+   *
+   * @param   String      message       Warning message
+   */
+  Window.prototype._setWarning = function(message) {
+    var self = this;
+    if ( this._$warning ) {
+      if ( this._$warning.parentNode ) {
+        this._$warning.parentNode.removeChild(this._$warning);
+      }
+      this._$warning = null;
+    }
+
+    if ( message === null ) { return; }
+    message = message || '';
+
+    var container = document.createElement('div');
+    container.className = 'WindowWarning';
+
+    var close = document.createElement('div');
+    close.className = 'Close';
+    close.innerHTML = 'X';
+    close.addEventListener('click', function() {
+      self._setWarning(null);
+    });
+
+    var msg = document.createElement('div');
+    msg.className = 'Message';
+    msg.appendChild(document.createTextNode(message));
+
+    container.appendChild(close);
+    container.appendChild(msg);
+    this._$warning = container;
+    this._$root.appendChild(this._$warning);
   };
 
   /////////////////////////////////////////////////////////////////////////////

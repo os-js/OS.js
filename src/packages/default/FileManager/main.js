@@ -420,6 +420,10 @@
     if ( app._getArgument('viewSidebar') === false ) {
       _toggleSidebar(false);
     }
+
+    if ( window.location.protocol.match(/^file/) ) { // FIXME: Translation
+      this._setWarning('VFS does not work when in standalone mode');
+    }
   };
 
   ApplicationFileManagerWindow.prototype.destroy = function() {
