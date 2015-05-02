@@ -41,9 +41,11 @@
     port:       8000,
     directory:  null, // Automatic
     appdirs:    null, // Automatic, but overrideable
-    vfsdir:     _path.join(ROOTDIR, 'vfs/home'),
-    tmpdir:     _path.join(ROOTDIR, 'vfs/tmp'),
-    publicdir:  _path.join(ROOTDIR, 'vfs/public'),
+    vfs:        {
+      'homes':   _path.join(ROOTDIR, 'vfs/home'),
+      'tmp':     _path.join(ROOTDIR, 'vfs/tmp'),
+      'public':  _path.join(ROOTDIR, 'vfs/public')
+    },
     repodir:    _path.join(ROOTDIR, 'src/packages'),
     distdir:    _path.join(ROOTDIR, DISTDIR),
     mimes:      {}

@@ -38,7 +38,7 @@
   };
 
   function getRealPath(path, config, request) {
-    var fullPath = _path.join(config.publicdir, path);
+    var fullPath = _path.join(config.vfs.public, path);
     var protocol = '';
     if ( path.match(/^osjs\:\/\//) ) {
       path = path.replace(/^osjs\:\/\//, '');
@@ -50,7 +50,7 @@
       if ( !userdir ) {
         throw "No user session was found";
       }
-      fullPath = _path.join(config.vfsdir, userdir, path);
+      fullPath = _path.join(config.vfs.homes, userdir, path);
       protocol = 'home://';
     }
     return {root: fullPath, path: path, protocol: protocol};
