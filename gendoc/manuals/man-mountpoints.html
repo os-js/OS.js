@@ -1,0 +1,45 @@
+<h1>Adding Google API and VFS support</h1>
+
+<p>
+  Simply update the configurations with the name, description and a path.
+</p>
+
+<p><b>110-frontend.json</b></p>
+<pre class="code">
+{
+  "settings" : {
+    "frontend" : {
+      "Core" : {
+        "VFS": {
+          "Mountpoints": {
+            "example": {
+              "description": "Example"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</pre>
+
+<p><b>120-backend.json</b></p>
+<pre class="code">
+{
+  "settings" : {
+    "backend" : {
+      "vfs": {
+        "mounts": {
+          "example": "/opt/example/directory"
+        }
+      }
+    }
+  }
+}
+</pre>
+
+
+<p>
+  Then run:
+</p>
+<pre>grunt config</pre>

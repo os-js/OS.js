@@ -39,6 +39,10 @@
     "title": "Adding Dropbox VFS support - OS.js Manuals"
   },
 
+  "manuals/man-mountpoints.html": {
+    "title": "Adding Folders to VFS - OS.js Manuals"
+  },
+
   "manuals/man-broadway.html": {
     "title": "Setting up Broadway - OS.js Manuals"
   },
