@@ -281,6 +281,24 @@
         } else {
           var result = [];
           var ofpath, fpath, ftype, fsize, fstat, ctime, mtime;
+
+          var tmp = realPath.path.replace(/^\/+?/, '');
+          if ( tmp.length && tmp.split('/').length ) {
+            tmp = tmp.split('/');
+            tmp.pop();
+            tmp = tmp.join('/');
+
+            result.push({
+              filename: '..',
+              path:     realPath.protocol + _path.join('/', tmp),
+              size:     0,
+              mime:     '',
+              type:     'dir',
+              ctime:    null,
+              mtime:    null
+            });
+          }
+
           for ( var i = 0; i < files.length; i++ ) {
             ofpath = _path.join(path, files[i]);
             fpath  = _path.join(realPath.root, files[i]);
