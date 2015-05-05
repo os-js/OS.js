@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(OSjs, Utils, API) {
   'use strict';
 
   /*@
@@ -77,7 +77,6 @@
    *
    */
 
-  window.OSjs       = window.OSjs       || {};
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
@@ -1337,4 +1336,4 @@
   OSjs.VFS.FileDataURL           = FileDataURL;
   OSjs.VFS.File                  = FileMetadata;
 
-})(OSjs.Utils, OSjs.API);
+})((window.OSjs = window.OSjs || {}), window.OSjs.Utils, window.OSjs.API);

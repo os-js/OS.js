@@ -1,0 +1,19 @@
+{
+  "ignore": [
+    "vendor/*",
+    "src/conf/**",
+    "src/stylesheets/**",
+    "src/themes/**",
+    "src/tools/**",
+    "src/locales/**",
+    "src/server-php/**",
+    "src/server-node/**",
+    "src/server-x11/**",
+    "src/packages/**",
+    "dist/**",
+    "vfs/**",
+    "doc/**",
+    "dist-dev/**",
+    "Gruntfile.js"
+  ]
+}
