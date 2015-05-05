@@ -1,4 +1,7 @@
 {
+  "globals": {
+    "OSjs": true
+  },
   "browser": true,
   "curly": true,
   "bitwise": false,
