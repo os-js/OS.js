@@ -1182,13 +1182,10 @@
 
     function createStyle(src, callback, opts) {
       opts = opts || {};
+      opts.check = (typeof opts.check === 'undefined') ? true : (opts.check === true);
+      opts.interval = opts.interval || 50;
+      opts.maxTries = opts.maxTries || 10;
 
-      if ( typeof opts.check === 'undefined' ) {
-        opts.check = true;
-      }
-
-      var interval  = opts.interval || 50;
-      var maxTries  = opts.maxTries || 10;
 
       function _finished(result) {
         _LOADED[src] = result;
@@ -1196,30 +1193,30 @@
         callback(result, src);
       }
 
-      function _poll() {
-        var ival = setInterval(function() {
-          console.debug('Preloader->createStyle()', 'check', src);
-          if ( isLoaded(src) || (maxTries <= 0) ) {
-            ival = clearInterval(ival);
-            _finished(maxTries > 0);
-            return;
-          }
-          maxTries--;
-        }, interval);
-      }
-
+      /*
       if ( document.createStyleSheet ) {
         document.createStyleSheet(src);
         _finished(true);
         return;
       }
+      */
 
       OSjs.Utils.$createCSS(src);
-      if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
+      if ( opts.check === false || (typeof document.styleSheet === 'undefined') || isLoaded(src) ) {
         _finished(true);
-      } else if ( !isLoaded(src) ) {
-        _poll();
+        return;
       }
+
+      var tries = opts.maxTries;
+      var ival = setInterval(function() {
+        console.debug('Preloader->createStyle()', 'check', src);
+        if ( isLoaded(src) || (tries <= 0) ) {
+          ival = clearInterval(ival);
+          _finished(tries > 0);
+          return;
+        }
+        tries--;
+      }, opts.interval);
     }
 
     var createScript = function(src, callback) {
