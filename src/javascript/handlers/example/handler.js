@@ -185,7 +185,7 @@ See doc/example-handler.txt
     var opts = {settings: settings};
 
     function _save() {
-      this.callAPI('settings', opts, function(response) {
+      self.callAPI('settings', opts, function(response) {
         console.debug('ExampleHandler::syncSettings()', response);
         if ( response.result ) {
           callback.call(self, true);
