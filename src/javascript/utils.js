@@ -1040,6 +1040,7 @@
    * @api     OSjs.Utils.ajax()
    */
   OSjs.Utils.ajax = function(args) {
+    var request;
 
     args.onerror        = args.onerror          || function() {};
     args.onsuccess      = args.onsuccess        || function() {};
@@ -1060,8 +1061,13 @@
       return;
     }
 
+    if ( args.json && (typeof args.body !== 'string') && !(args.body instanceof FormData) ) {
+      args.body = JSON.stringify(args.body);
+    }
+
     console.debug('Utils::ajax()', args);
 
+    // JSONP requires another type of request
     if ( args.jsonp ) {
       var loaded  = false;
       OSjs.Utils.$createJS(args.url, function() {
@@ -1081,15 +1087,6 @@
       return;
     }
 
-
-    if ( args.json ) {
-      if ( typeof args.body !== 'string' ) {
-        if ( !(args.body instanceof FormData) ) {
-          args.body = JSON.stringify(args.body);
-        }
-      }
-    }
-
     function getResponse(ctype) {
       var response = request.responseText;
       if ( args.json && ctype.match(/^application\/json/) ) {
@@ -1103,15 +1100,34 @@
       return response;
     }
 
+    function onReadyStateChange() {
+      if ( request.readyState === 4 ) {
+        var ctype = request.getResponseHeader('content-type');
+        var result = getResponse(ctype);
 
-    var request = new XMLHttpRequest();
-    request.open(args.method, args.url, true);
-
-    if ( args.responseType ) {
-      request.responseType = args.responseType;
+        if ( request.status === 200 || request.status === 201 ) {
+          args.onsuccess(result, request, args.url);
+        } else {
+          var error = OSjs.API._('ERR_UTILS_XHR_FMT', request.status.toString());
+          args.onerror(error, result, request, args.url);
+        }
+      }
     }
 
-    if ( args.responseType === 'arraybuffer' ) {
+    // Normal AJAX request
+    request = new XMLHttpRequest();
+    request.open(args.method, args.url, true);
+    request.responseType = args.responseType || '';
+
+    Object.keys(args.requestHeaders).forEach(function(h) {
+      request.setRequestHeader(h, args.requestHeaders[h]);
+    });
+
+    if ( request.upload ) {
+      request.upload.addEventListener('progress', function(evt) { args.onprogress(evt); }, false);
+    }
+
+    if ( args.responseType === 'arraybuffer' ) { // Binary
       request.onerror = function(evt) {
         var error = request.response || OSjs.API._('ERR_UTILS_XHR_FATAL');
         args.onerror(error, evt, request, args.url);
@@ -1120,33 +1136,12 @@
         args.onsuccess(request.response, request);
       };
     } else {
-      if ( request.upload ) {
-        request.upload.addEventListener('progress', function(evt) { args.onprogress(evt); }, false);
-      }
       request.addEventListener('error', function(evt) { args.onfailed(evt); }, false);
       request.addEventListener('abort', function(evt) { args.oncanceled(evt); }, false);
-
-      request.onreadystatechange = function() {
-        if ( request.readyState === 4 ) {
-          var ctype = request.getResponseHeader('content-type');
-          var result = getResponse(ctype);
-
-          if ( request.status === 200 || request.status === 201 ) {
-            args.onsuccess(result, request, args.url);
-          } else {
-            var error = OSjs.API._('ERR_UTILS_XHR_FMT', request.status.toString());
-            args.onerror(error, result, request, args.url);
-          }
-        }
-      };
+      request.onreadystatechange = onReadyStateChange;
     }
 
-    Object.keys(args.requestHeaders).forEach(function(h) {
-      request.setRequestHeader(h, args.requestHeaders[h]);
-    });
-
     args.oncreated(request);
-
     request.send(args.body);
   };
 
@@ -1173,7 +1168,7 @@
   OSjs.Utils.preload = (function() {
     var _LOADED = {};
 
-    var checkLoadedStyle = function(path) {
+    function isLoaded(path) {
       var result = false;
       (document.styleSheet || []).forEach(function(iter, i) {
         if ( iter.href.indexOf(path) !== -1 ) {
@@ -1183,9 +1178,9 @@
         return true;
       });
       return result;
-    };
+    }
 
-    var createStyle = function(src, callback, opts) {
+    function createStyle(src, callback, opts) {
       opts = opts || {};
 
       if ( typeof opts.check === 'undefined' ) {
@@ -1195,44 +1190,52 @@
       var interval  = opts.interval || 50;
       var maxTries  = opts.maxTries || 10;
 
-      var _finished = function(result) {
+      function _finished(result) {
         _LOADED[src] = result;
         console.info('Preloader->createStyle()', result ? 'success' : 'error', src);
         callback(result, src);
-      };
+      }
+
+      function _checkLoaded() {
+        var ival;
+
+        var _clear = function(result) {
+          if ( ival ) {
+            clearInterval(ival);
+            ival = null;
+          }
+          _finished(result);
+        };
+
+        ival = setInterval(function() {
+          console.debug('Preloader->createStyle()', 'check', src);
+          if ( isLoaded(src) ) {
+            _clear(true);
+            return;
+          }
+
+          if ( maxTries <= 0 ) {
+            _clear(false);
+            return;
+          }
+
+          maxTries--;
+        }, interval);
+      }
 
       if ( document.createStyleSheet ) {
         document.createStyleSheet(src);
         _finished(true);
       } else {
         OSjs.Utils.$createCSS(src);
+
         if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
           _finished(true);
-        } else if ( !checkLoadedStyle(src) ) {
-          var ival;
-
-          var _clear = function(result) {
-            if ( ival ) {
-              clearInterval(ival);
-              ival = null;
-            }
-            _finished(result);
-          };
-
-          ival = setInterval(function() {
-            console.debug('Preloader->createStyle()', 'check', src);
-            if ( checkLoadedStyle(src) ) {
-              _clear(true);
-              return;
-            } else if ( maxTries <= 0 ) {
-              _clear(false);
-              return;
-            }
-            maxTries--;
-          }, interval);
+        } else if ( !isLoaded(src) ) {
+          _checkLoaded();
         }
       }
-    };
+    }
 
     var createScript = function(src, callback) {
       var _finished = function(result) {
