@@ -69,17 +69,16 @@
     var wm = OSjs.Core.getWindowManager();
     var self = this;
 
+    function show(ev) {
+      self.displayMenu(ev);
+      return false;
+    }
+
     if ( wm ) {
 
       wm.createNotificationIcon('ServiceNotificationIcon', {
-        onContextMenu: function(ev) {
-          self.displayMenu(ev);
-          return false;
-        },
-        onClick: function(ev) {
-          self.displayMenu(ev);
-          return false;
-        },
+        onContextMenu: show,
+        onClick: show,
         onInited: function(el) {
           self.element = el;
 
@@ -493,75 +492,87 @@
       onError(msg, n, arg, exception);
     }
 
+    function _checkSingular(result) {
+      var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
+      if ( singular ) {
+        var sproc = OSjs.API.getProcess(n, true);
+        if ( sproc ) {
+          console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
+          if ( sproc instanceof OSjs.Core.Application ) {
+            sproc._onMessage(null, 'attention', arg);
+          } else {
+            _error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
+          }
+          console.groupEnd();
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function _createInstance(result) {
+      var a = null;
+      try {
+        if ( typeof OSjs.Applications[n].Class !== 'undefined' ) {
+          a = new OSjs.Applications[n].Class(arg, result);
+        } else {
+          a = new OSjs.Applications[n](arg, result);
+        }
+        a.__sname = n;
+
+        onConstructed(a, result);
+      } catch ( e ) {
+        console.warn('Error on constructing application', e, e.stack);
+        _error(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', n, e), e);
+
+        if ( a ) {
+          try {
+            a.destroy();
+            a = null;
+          } catch ( e ) {
+            console.warn('Something awful happened when trying to clean up failed launch Oo', e);
+            console.warn(e.stack);
+          }
+        }
+      }
+
+      return a;
+    }
+
     function _callback(result) {
       _done();
 
-      if ( typeof OSjs.Applications[n] !== 'undefined' ) {
-        // Only allow one instance if specified
-        var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
-        if ( singular ) {
-          var sproc = OSjs.API.getProcess(n, true);
-          if ( sproc ) {
-            console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
-            if ( sproc instanceof OSjs.Core.Application ) {
-              sproc._onMessage(null, 'attention', arg);
-            } else {
-              _error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
-            }
-            console.groupEnd();
-            return;
-          }
-        }
-
-        var a = null, err = false;
-        try {
-          if ( typeof OSjs.Applications[n].Class !== 'undefined' ) {
-            a = new OSjs.Applications[n].Class(arg, result);
-          } else {
-            a = new OSjs.Applications[n](arg, result);
-          }
-          a.__sname = n;
-
-          onConstructed(a, result);
-        } catch ( e ) {
-          console.warn('Error on constructing application', e, e.stack);
-          _error(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', n, e), e);
-          err = true;
-        }
-
-        if ( err ) {
-          if ( a ) {
-            try {
-              a.destroy();
-              a = null;
-            } catch ( e ) {
-              console.warn('Something awful happened when trying to clean up failed launch Oo', e);
-              console.warn(e.stack);
-            }
-          }
-        } else {
-          try {
-            handler.getApplicationSettings(a.__name, function(settings) {
-              a.init(settings, result);
-              onFinished(a, result);
-
-              OSjs.Session.triggerHook('onApplicationLaunched', [{
-                application: a,
-                name: n,
-                args: arg,
-                settings: settings,
-                metadata: result
-              }]);
-
-              console.groupEnd();
-            });
-          } catch ( ex ) {
-            console.warn('Error on init() application', ex, ex.stack);
-            _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
-          }
-        }
-      } else {
+      if ( typeof OSjs.Applications[n] === 'undefined' ) {
         _error(OSjs.API._('ERR_APP_RESOURCES_MISSING_FMT', n));
+        return;
+      }
+
+      // Only allow one instance if specified
+      if ( _checkSingular(result) ) {
+        return;
+      }
+
+      // Create instance and restore settings
+      var a = _createInstance(result);
+
+      try {
+        handler.getApplicationSettings(a.__name, function(settings) {
+          a.init(settings, result);
+          onFinished(a, result);
+
+          OSjs.Session.triggerHook('onApplicationLaunched', [{
+            application: a,
+            name: n,
+            args: arg,
+            settings: settings,
+            metadata: result
+          }]);
+
+          console.groupEnd();
+        });
+      } catch ( ex ) {
+        console.warn('Error on init() application', ex, ex.stack);
+        _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
       }
     }
 
@@ -759,32 +770,60 @@
 
     if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
 
-    if ( type === 'dir' ) {
-      icon = 'places/folder.png';
-    } else if  ( type === 'trash' ) {
-      icon = 'places/user-trash.png';
-    } else if ( type === 'file' ) {
-      if ( mime ) {
-        if ( mime.match(/^application\/(x\-python|javascript)/) || mime.match(/^text\/(html|xml|css)/) ) {
-          icon = 'mimetypes/stock_script.png';
-        } else if ( mime.match(/^text\//) ) {
-          icon = 'mimetypes/txt.png';
-        } else if ( mime.match(/^audio\//) ) {
-          icon = 'mimetypes/sound.png';
-        } else if ( mime.match(/^video\//) ) {
-          icon = 'mimetypes/video.png';
-        } else if ( mime.match(/^image\//) || mime === 'osjs/draw' ) {
-          icon = 'mimetypes/image.png';
-        } else if ( mime === 'application/pdf' ) {
-          icon = 'mimetypes/gnome-mime-application-pdf.png';
-        } else if ( mime.match(/^application\//) ) {
-          icon = 'mimetypes/binary.png';
-        } else if ( mime === 'osjs/document' ) {
-          icon = 'mimetypes/gnome-mime-application-msword.png';
-        } else if ( mime === 'application/zip' ) {
-          icon = 'mimetypes/folder_tar.png';
+    switch ( type ) {
+      case 'dir' :
+        icon = 'places/folder.png';
+        break;
+
+      case 'trash' :
+        icon = 'places/user-trash.png';
+        break;
+
+      case 'file' :
+        switch ( mime ) {
+          case 'application/pdf' :
+            icon = 'mimetypes/gnome-mime-application-pdf.png';
+            break;
+
+          case 'osjs/document' :
+            icon = 'mimetypes/gnome-mime-application-msword.png';
+            break;
+
+          case 'osjs/draw' :
+            icon = 'mimetypes/image.png';
+            break;
+
+          case 'application/zip' :
+            icon = 'mimetypes/folder_tar.png';
+            break;
+
+          case 'application/x-python' :
+          case 'application/javascript' :
+          case 'text/html' :
+          case 'text/xml' :
+          case 'text/css' :
+            icon = 'mimetypes/stock_script.png';
+            break;
+
+          default:
+            if ( mime.match(/^text\//) ) {
+              icon = 'mimetypes/txt.png';
+            } else if ( mime.match(/^audio\//) ) {
+              icon = 'mimetypes/sound.png';
+            } else if ( mime.match(/^video\//) ) {
+              icon = 'mimetypes/video.png';
+            } else if ( mime.match(/^image\//) ) {
+              icon = 'mimetypes/image.png';
+            } else if ( mime.match(/^application\//) ) {
+              icon = 'mimetypes/binary.png';
+            }
+            break;
         }
-      }
+        break;
+
+      default:
+        icon = 'mimetypes/gnome-fs-regular.png';
+        break;
     }
 
     return OSjs.API.getIcon(icon, size);
@@ -1225,7 +1264,8 @@
       }
     }
 
-    alert(title + '\n\n' + message + '\n\n' + error);
+    window.alert(title + '\n\n' + message + '\n\n' + error);
+
     return null;
   }
 
