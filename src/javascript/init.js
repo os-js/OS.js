@@ -62,22 +62,23 @@
   // Main initialization code
   /////////////////////////////////////////////////////////////////////////////
 
-  var loaded = false;
+  var onLoaded = (function() {
+    var loaded = false;
 
-  document.addEventListener('DOMContentLoaded', function() {
-    if ( loaded ) { return; }
-    loaded = true;
-    OSjs.Session.init();
-  });
+    return function() {
+      if ( !loaded ) {
+        loaded = true;
+        OSjs.Session.init();
+      }
+    };
+  })();
 
-  document.addEventListener('load', function() {
-    if ( loaded ) { return; }
-    loaded = true;
-    OSjs.Session.init();
-  });
-
-  document.addEventListener('unload', function() {
+  function onUnload() {
     OSjs.Session.destroy(false, true);
-  });
+  }
+
+  document.addEventListener('DOMContentLoaded', onLoaded);
+  document.addEventListener('load', onLoaded);
+  document.addEventListener('unload', onUnload);
 
 })();
