@@ -30,55 +30,55 @@
 (function() {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.API          = OSjs.API          || {};
-  OSjs.Core         = OSjs.Core         || {};
-  OSjs.Compability  = OSjs.Compability  || {};
-  OSjs.Helpers      = OSjs.Helpers      || {};
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Dialogs      = OSjs.Dialogs      || {};
-  OSjs.GUI          = OSjs.GUI          || {};
-  OSjs.Locales      = OSjs.Locales      || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.Session      = OSjs.Session      || {};
+  window.OSjs = window.OSjs || {};
 
-  window.console    = window.console    || {};
-  console.log       = console.log       || function() {};
-  console.debug     = console.debug     || console.log;
-  console.error     = console.error     || console.log;
-  console.warn      = console.warn      || console.log;
-  console.group     = console.group     || console.log;
-  console.groupEnd  = console.groupEnd  || console.log;
+  // Make sure these namespaces exist
+  (['API', 'Core', 'Compability', 'Helpers', 'Applications', 'Dialogs', 'GUI', 'Locales', 'VFS', 'Session']).forEach(function(ns) {
+    OSjs[ns] = OSjs[ns] || {};
+  });
 
-  if ( window.NodeList ) {
-    window.NodeList.prototype.forEach = Array.prototype.forEach;
-  }
-
-  if ( window.FileList ) {
-    window.FileList.prototype.forEach = Array.prototype.forEach;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Main initialization code
-  /////////////////////////////////////////////////////////////////////////////
-
-  var onLoaded = (function() {
-    var loaded = false;
-
-    return function() {
-      if ( !loaded ) {
-        loaded = true;
-        OSjs.Session.init();
-      }
-    };
+  // For browsers without "console" for some reason
+  (function() {
+    window.console    = window.console    || {};
+    console.log       = console.log       || function() {};
+    console.debug     = console.debug     || console.log;
+    console.error     = console.error     || console.log;
+    console.warn      = console.warn      || console.log;
+    console.group     = console.group     || console.log;
+    console.groupEnd  = console.groupEnd  || console.log;
   })();
 
-  function onUnload() {
-    OSjs.Session.destroy(false, true);
-  }
+  // Compability
+  (function() {
+    if ( window.NodeList ) {
+      window.NodeList.prototype.forEach = Array.prototype.forEach;
+    }
 
-  document.addEventListener('DOMContentLoaded', onLoaded);
-  document.addEventListener('load', onLoaded);
-  document.addEventListener('unload', onUnload);
+    if ( window.FileList ) {
+      window.FileList.prototype.forEach = Array.prototype.forEach;
+    }
+  })();
+
+  // Initialize
+  (function() {
+    var onLoaded = (function() {
+      var loaded = false;
+
+      return function() {
+        if ( !loaded ) {
+          loaded = true;
+          OSjs.Session.init();
+        }
+      };
+    })();
+
+    function onUnload() {
+      OSjs.Session.destroy(false, true);
+    }
+
+    document.addEventListener('DOMContentLoaded', onLoaded);
+    document.addEventListener('load', onLoaded);
+    document.addEventListener('unload', onUnload);
+  })();
 
 })();
