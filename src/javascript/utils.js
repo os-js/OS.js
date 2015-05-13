@@ -38,6 +38,32 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Gets the browser window rect (x, y, width, height)
+   *
+   * @api OSjs.Utils.getRect()
+   * @return Object
+   */
+  OSjs.Utils.getRect = function() {
+    return {
+      top    : 0,
+      left   : 0,
+      width  : window.innerWidth,
+      height : window.innerHeight
+    };
+  };
+
+  /**
+   * Prevents default Event (shortcut)
+   *
+   * @api OSjs.Utils._preventDefault()
+   * @return bool
+   */
+  OSjs.Utils._preventDefault = function(ev) {
+    ev.preventDefault();
+    return false;
+  };
+
+  /**
    * A collection of keycode mappings
    *
    * @api OSjs.Utils.Keys

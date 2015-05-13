@@ -110,11 +110,24 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // INTERNAL VARIABLES
+  // INTERNAL VARIABLES AND FUNCTIONS
   /////////////////////////////////////////////////////////////////////////////
 
   var _$ROOT;             // Root element
   var _INITED = false;
+
+  function onContextMenu(ev) {
+    if ( !OSjs.Utils.$isInput(ev) ) {
+      ev.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
+  function onMouseDown(ev) {
+    ev.preventDefault();
+    OSjs.API.blurMenu();
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // API HELPERS
@@ -397,17 +410,8 @@
 
       _$ROOT = document.createElement('div');
       _$ROOT.id = 'Background';
-      _$ROOT.addEventListener('contextmenu', function(ev) {
-        if ( !OSjs.Utils.$isInput(ev) ) {
-          ev.preventDefault();
-          return false;
-        }
-        return true;
-      }, false);
-      _$ROOT.addEventListener('mousedown', function(ev) {
-        ev.preventDefault();
-        OSjs.API.blurMenu();
-      }, false);
+      _$ROOT.addEventListener('contextmenu', onContextMenu, false);
+      _$ROOT.addEventListener('mousedown', onMouseDown, false);
 
       document.body.appendChild(_$ROOT);
 
@@ -505,17 +509,8 @@
       }, false);
 
       if ( _$ROOT ) {
-        _$ROOT.removeEventListener('contextmenu', function(ev) {
-          if ( !OSjs.Utils.$isInput(ev) ) {
-            ev.preventDefault();
-            return false;
-          }
-          return true;
-        }, false);
-        _$ROOT.removeEventListener('mousedown', function(ev) {
-          ev.preventDefault();
-          OSjs.API.blurMenu();
-        }, false);
+        _$ROOT.removeEventListener('contextmenu', onContextMenu, false);
+        _$ROOT.removeEventListener('mousedown', onMouseDown, false);
       }
 
 

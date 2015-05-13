@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
+(function(Utils, API) {
   'use strict';
 
   /**
@@ -56,7 +56,7 @@
     function _onclick(ev, func) {
       func = func || function() { console.warn('Warning -- you forgot to implement a handler'); };
       if ( !func(ev) ) {
-        OSjs.API.blurMenu();
+        API.blurMenu();
       }
     }
 
@@ -80,16 +80,10 @@
 
     function _createMenu(list) {
 
-      var el          = document.createElement('div');
-      el.className    = 'Menu';
-      el.oncontextmenu= function(ev) {
-        ev.preventDefault();
-        return false;
-      };
-      el.onmousedown  = function(ev) {
-        ev.preventDefault();
-        return false;
-      };
+      var el            = document.createElement('div');
+      el.className      = 'Menu';
+      el.oncontextmenu  = Utils._preventDefault;
+      el.onmousedown    = Utils._preventDefault;
 
       if ( list ) {
         var ul = document.createElement('ul');
@@ -115,7 +109,7 @@
             if ( iter.icon ) {
               var img = document.createElement('img');
               img.alt = '';
-              img.src = iter.icon.match(/^\//) ? OSjs.API.getIcon(iter.icon) : iter.icon;
+              img.src = iter.icon.match(/^\//) ? API.getIcon(iter.icon) : iter.icon;
               m.appendChild(img);
             }
 
@@ -191,7 +185,7 @@
   Menu.prototype.show = function(pos, submenu) {
     var tw, th, px, py;
     if ( submenu ) {
-      var off = OSjs.Utils.$position(submenu);
+      var off = Utils.$position(submenu);
       if ( off.bottom > window.innerHeight ) {
         submenu.style.top = (window.innerHeight-off.bottom) + 'px';
       }
@@ -248,9 +242,9 @@
     el = (el && el.length) ? el[0] : null;
     if ( el ) {
       if ( d ) {
-        OSjs.Utils.$addClass(el, 'Disabled');
+        Utils.$addClass(el, 'Disabled');
       } else {
-        OSjs.Utils.$removeClass(el, 'Disabled');
+        Utils.$removeClass(el, 'Disabled');
       }
       return true;
     }
@@ -263,4 +257,4 @@
 
   OSjs.GUI.Menu = Menu;
 
-})();
+})(OSjs.Utils, OSjs.API);

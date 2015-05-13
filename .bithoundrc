@@ -9,6 +9,7 @@
     "src/server-php/**",
     "src/server-node/**",
     "src/server-x11/**",
+    "src/javascript/handlers/**",
     "src/packages/**",
     "dist/**",
     "vfs/**",

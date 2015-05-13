@@ -64,19 +64,6 @@
   }
 
   /**
-   * Get viewport
-   * @return Object
-   */
-  function _getWindowSpace() {
-    return {
-      top    : 0,
-      left   : 0,
-      width  : window.innerWidth,
-      height : window.innerHeight
-    };
-  }
-
-  /**
    * Get viewport (Wrapper)
    *
    * @return Object {top, left, width, height}
@@ -87,7 +74,7 @@
     if ( wm ) {
       return wm.getWindowSpace();
     }
-    return _getWindowSpace();
+    return Utils.getRect();
   }
 
   /**
@@ -411,9 +398,7 @@
     windowIconImage.src         = this._icon;
     windowIconImage.width       = 16;
     windowIconImage.height      = 16;
-    this._addEventListener(windowIcon, 'dblclick', function(ev) {
-      ev.preventDefault();
-    });
+    this._addEventListener(windowIcon, 'dblclick', Utils._preventDefault);
     this._addEventListener(windowIcon, (isTouch ? 'touchend' : 'click'), function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -491,10 +476,7 @@
     // Window -> Loading Indication
     var windowLoading       = document.createElement('div');
     windowLoading.className = 'WindowLoading';
-    this._addEventListener(windowLoading, 'click', function(ev) {
-      ev.preventDefault();
-      return false;
-    });
+    this._addEventListener(windowLoading, 'click', Utils._preventDefault);
 
     var windowLoadingImage        = document.createElement('div');
     windowLoadingImage.className  = 'WindowLoadingIndicator';
@@ -864,10 +846,7 @@
         if ( (gel instanceof OSjs.GUI.RichText) || gel.opts.isIframe ) {
           this._$iframefix = document.createElement('div');
           this._$iframefix.className = 'WindowIframeFix';
-          this._$iframefix.onmousemove = function(ev) {
-            ev.preventDefault();
-            return false;
-          };
+          this._$iframefix.onmousemove = Utils._preventDefault;
           this._$iframefix.onclick = function() {
             self._focus();
           };

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement) {
+(function(GUIElement, Utils) {
   'use strict';
 
   /**
@@ -60,10 +60,7 @@
     var el = GUIElement.prototype.init.apply(this, ['GUIMenuBar']);
     this.$ul = document.createElement('ul');
     el.appendChild(this.$ul);
-    el.onmousedown = function(ev) {
-      ev.preventDefault();
-      return false;
-    };
+    el.onmousedown = Utils._preventDefault;
     el.oncontextmenu = function(ev) {
       return false;
     };
@@ -111,7 +108,7 @@
 
       var pos = {x: ev.clientX, y: ev.clientY};
       if ( !mpos ) {
-        var tpos = OSjs.Utils.$position(this);
+        var tpos = Utils.$position(this);
         if ( tpos ) {
           pos.x = tpos.left;
           //pos.y = tpos.top + (el.offsetHeight || 0);
@@ -170,4 +167,4 @@
 
   OSjs.GUI.MenuBar      = MenuBar;
 
-})(OSjs.Core.GUIElement);
+})(OSjs.Core.GUIElement, OSjs.Utils);

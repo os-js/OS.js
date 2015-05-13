@@ -36,19 +36,6 @@
   var _WM;             // Running Window Manager process
 
   /**
-   * Get viewport
-   * @return Object
-   */
-  function _getWindowSpace() {
-    return {
-      top    : 0,
-      left   : 0,
-      width  : window.innerWidth,
-      height : window.innerHeight
-    };
-  }
-
-  /**
    * Create Window move/resize events
    *
    * FIXME: Optimize
@@ -803,7 +790,7 @@
    * @method    WindowManager::getWindowSpace()
    */
   WindowManager.prototype.getWindowSpace = function() {
-    return _getWindowSpace();
+    return Utils.getRect();
   };
 
   /**
