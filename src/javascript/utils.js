@@ -1196,29 +1196,14 @@
         callback(result, src);
       }
 
-      function _checkLoaded() {
-        var ival;
-
-        var _clear = function(result) {
-          if ( ival ) {
-            clearInterval(ival);
-            ival = null;
-          }
-          _finished(result);
-        };
-
-        ival = setInterval(function() {
+      function _poll() {
+        var ival = setInterval(function() {
           console.debug('Preloader->createStyle()', 'check', src);
-          if ( isLoaded(src) ) {
-            _clear(true);
+          if ( isLoaded(src) || (maxTries <= 0) ) {
+            ival = clearInterval(ival);
+            _finished(maxTries > 0);
             return;
           }
-
-          if ( maxTries <= 0 ) {
-            _clear(false);
-            return;
-          }
-
           maxTries--;
         }, interval);
       }
@@ -1226,14 +1211,14 @@
       if ( document.createStyleSheet ) {
         document.createStyleSheet(src);
         _finished(true);
-      } else {
-        OSjs.Utils.$createCSS(src);
+        return;
+      }
 
-        if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
-          _finished(true);
-        } else if ( !isLoaded(src) ) {
-          _checkLoaded();
-        }
+      OSjs.Utils.$createCSS(src);
+      if ( opts.check === false || (typeof document.styleSheet === 'undefined') ) {
+        _finished(true);
+      } else if ( !isLoaded(src) ) {
+        _poll();
       }
     }
 
@@ -1298,7 +1283,6 @@
 
       function _next() {
         if ( newList.length ) {
-          //var item = newList.pop();
           var item = newList.shift();
           if ( _LOADED[item.src] === true ) {
             _loaded(true);
