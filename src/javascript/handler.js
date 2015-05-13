@@ -278,18 +278,14 @@
           OSjs.Session.signOut();
         }
       }], pos);
+
+      return false;
     }
 
     if ( wm ) {
       wm.createNotificationIcon('_HandlerUserNotification', {
-        onContextMenu: function(ev) {
-          displayMenu(ev);
-          return false;
-        },
-        onClick: function(ev) {
-          displayMenu(ev);
-          return false;
-        },
+        onContextMenu: displayMenu,
+        onClick: displayMenu,
         onInited: function(el) {
           if ( el.firstChild ) {
             var img = document.createElement('img');
