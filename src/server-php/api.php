@@ -56,7 +56,7 @@ abstract class APIHandler
     if ( !in_array(APIUser::GROUP_ADMIN, $groups) ) {
       foreach ( $requires as $req ) {
         if ( !in_array($req, $groups) ) {
-          throw new Exception("You are not allowed to use this API function");
+          throw new Exception("You are not allowed to use this API function!");
         }
       }
     }
