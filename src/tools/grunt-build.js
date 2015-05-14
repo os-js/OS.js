@@ -728,6 +728,23 @@
   // WEB SERVER CONFIG GENERATION
   /////////////////////////////////////////////////////////////////////////////
 
+  function generateNginxConfig(dist) {
+    var mimes = [];
+    var maps = MIMES.mapping;
+    Object.keys(maps).forEach(function(i) {
+      if ( !i.match(/^\./) ) { return; }
+      mimes.push('        ' + maps[i] + ' ' + i.replace(/^\./, '') + ';');
+    });
+    mimes = mimes.join('\n');
+
+    var src = _path.join(ROOT, 'src', 'tools', 'templates', 'nginx.conf');
+    var tpl = _fs.readFileSync(src).toString();
+    tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, dist));
+    tpl = tpl.replace(/%MIMES%/, mimes);
+
+    return tpl;
+  }
+
   function generateLighttpdConfig(dist) {
     var mimes = [];
     var maps = MIMES.mapping;
@@ -1027,6 +1044,7 @@
     generateLighttpdConfig: generateLighttpdConfig,
     generateApacheHtaccess: generateApacheHtaccess,
     generateApacheVhost: generateApacheVhost,
+    generateNginxConfig: generateNginxConfig,
     generateIndex: generateIndex
   };
 

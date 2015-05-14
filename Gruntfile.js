@@ -277,6 +277,16 @@
     });
 
     /**
+     * Task: Generate Nginx config
+     */
+    grunt.registerTask('nginx-config', 'Generate Nginx configuration file', function(arg) {
+      var dist = arg || 'dist';
+      var config = _build.generateNginxConfig(dist);
+      console.log('\n' + config + '\n');
+      grunt.verbose.ok();
+    });
+
+    /**
      * Task: Create a new package
      */
     grunt.registerTask('create-package', 'Create a new package/application', function(arg) {

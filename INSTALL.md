@@ -68,6 +68,12 @@ See `doc/lighttpd.conf` for an example
 
 Or run `grunt lighttpd-config` to generate one
 
+## PHP5 on Nginx
+
+See `doc/nginx.conf` for an example
+
+Or run `grunt nginx-config` to generate one
+
 ## PHP5 Internal Web-server
 *This is mostly used for debugging and testing purposes (PHP 5.4+)*
 
