@@ -441,7 +441,7 @@
   /**
    * Gets the browser Locale
    *
-   * For example 'en'
+   * For example 'en_EN'
    *
    * @return  String          Locale string
    *
