@@ -29,10 +29,14 @@
  */
 (function(_path, _url, _request, _vfs) {
 
-  exports.register = function(CONFIG, API) {
+  exports.register = function(CONFIG, API, HANDLER) {
     console.info('-->', 'Registering default API methods');
 
     API.application = function(args, callback, request, response) {
+      if ( !HANDLER.checkPrivilege(request, response, 'application') ) {
+        return;
+      }
+
       var apath = args.path || null;
       var aname = args.application || null;
       var ameth = args.method || null;
@@ -56,6 +60,10 @@
     };
 
     API.fs = function(args, callback, request, response) {
+      if ( !HANDLER.checkPrivilege(request, response, 'vfs') ) {
+        return;
+      }
+
       var m = args.method;
       var a = args['arguments'] || [];
 
@@ -70,6 +78,10 @@
     };
 
     API.curl = function(args, callback, request, response) {
+      if ( !HANDLER.checkPrivilege(request, response, 'curl') ) {
+        return;
+      }
+
       var url = args.url;
       var method = args.method || 'GET';
       var query = args.query || {};

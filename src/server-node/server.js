@@ -121,6 +121,48 @@
     return false;
   };
 
+  var checkPrivilege = function(request, response, privilege) {
+    if ( typeof privilege !== 'boolean' ) {
+      if ( !privilege ) privilege = [];
+      if ( !(privilege instanceof Array) && privilege ) privilege = [privilege];
+    }
+
+    function check() {
+      var groups = [];
+      try {
+        groups = JSON.parse(request.cookies.get('groups'));
+      } catch ( e ) {
+        groups = [];
+      }
+
+      if ( !('admin' in groups) ) {
+        var allowed = true;
+        privilege.forEach(function(p) {
+          if ( groups.indexOf(p) < 0 ) {
+            allowed = false;
+          }
+          return allowed;
+        });
+        return allowed;
+      }
+
+      return false;
+    }
+
+    var uname = request.cookies.get('username');
+    if ( !uname ) {
+      respond('You have no OS.js Session, please log in!', "text/plain", response, null, 500);
+      return false;
+    }
+
+    if ( privilege.length && !check() ) {
+      respond('You are not allowed to use this API function!', "text/plain", response, null, 403);
+      return false;
+    }
+
+    return true;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -132,11 +174,19 @@
     FileGET : function(path, request, response, arg) {
       if ( !arg ) {
         console.log('---', 'FileGET', path);
+        if ( !HANDLER.checkPrivilege(request, response, 'vfs') ) {
+          return;
+        }
       }
+
       respondFile(unescape(path), request, response, arg);
     },
 
     FilePOST : function(fields, files, request, response) {
+      if ( !HANDLER.checkPrivilege(request, response, 'upload') ) {
+        return;
+      }
+
       var srcPath = files.upload.path;
       var tmpPath = (fields.path + '/' + files.upload.name).replace('////', '///'); // FIXME
       var dstPath = _vfs.getRealPath(tmpPath, CONFIG, request).root;
@@ -163,6 +213,12 @@
     },
 
     CoreAPI : function(url, path, POST, request, response) {
+                /*
+      if ( !HANDLER.checkPrivilege(request, response, 'upload') ) {
+        return;
+      }
+      */
+
       if ( path.match(/^\/API/) ) {
         try {
           var data   = JSON.parse(POST);
@@ -226,13 +282,16 @@
     }
 
     HANDLER = require(_path.join(ROOTDIR, 'src', 'server-node', 'handlers', settConfig.handler , 'handler.js'));
+    if ( !HANDLER.checkPrivilege ) {
+      HANDLER.checkPrivilege = checkPrivilege;
+    }
 
-    _api.register(CONFIG, API);
+    _api.register(CONFIG, API, HANDLER);
     if ( settConfig.extensions ) {
       var exts = JSON.parse(settConfig.extensions);
       exts.forEach(function(f) {
         console.info('-->', 'Registering external API methods', f);
-        require(f).register(settConfig, API);
+        require(f).register(settConfig, API, HANDLER);
       });
     }
 
@@ -243,7 +302,7 @@
     console.log("Invalid handler %s defined", CONFIG.handler);
     return;
   }
-  HANDLER.register(CONFIG, API);
+  HANDLER.register(CONFIG, API, HANDLER);
 
   /**
    * Server instance
