@@ -36,6 +36,7 @@
  * DemoAPIHandler for demoing
  */
 class DemoAPIHandler
+  extends APIHandler
 {
   public static function login(Array $arguments) {
     $user = APIUser::login(Array(
@@ -51,9 +52,18 @@ class DemoAPIHandler
     APIUser::logout();
     return Array(false, true);
   }
+
+  /**
+   * Demo handler allows EVERYTHING
+   */
+  public static function checkPrivilege($requires = null) {
+    APIHandler::checkPrivilege(true);
+  }
+
 }
 
 API::AddHandler('login', Array('DemoAPIHandler', 'login'));
 API::AddHandler('logout', Array('DemoAPIHandler', 'logout'));
+API::SetHandler('DemoAPIHandler');
 
 ?>

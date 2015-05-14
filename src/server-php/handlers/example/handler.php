@@ -124,11 +124,20 @@ class ExampleAPIHandler
 
     return Array(false, $result);
   }
+
+  /**
+   * This enables full privileges for all users. Simply remove to make use of the groups
+   * @see APIUser
+   */
+  public static function checkPrivilege($requires = null) {
+    APIHandler::checkPrivilege(true);
+  }
 }
 
 
 API::AddHandler('login', Array('ExampleAPIHandler', 'login'));
 API::AddHandler('logout', Array('ExampleAPIHandler', 'logout'));
 API::AddHandler('settings', Array('ExampleAPIHandler', 'settings'));
+API::SetHandler('ExampleAPIHandler');
 
 ?>

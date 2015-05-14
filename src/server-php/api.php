@@ -30,10 +30,51 @@
  */
 
 /**
+ * OS.js Handler Instance
+ */
+abstract class APIHandler
+{
+  /**
+   * This function will check for privileges
+   */
+  public static function checkPrivilege($requires = null) {
+    if ( !($user = APIUser::get()) ) {
+      throw new Exception("You have no OS.js Session, please log in!");
+    }
+
+    if ( is_bool($requires) ) return;
+
+    if ( $requires === null ) {
+      $requires = Array();
+    } else {
+      if ( !is_array($requires) ) {
+        $requires = Array($requires);
+      }
+    }
+
+    $groups = $user->getGroups();
+    if ( !in_array(APIUser::GROUP_ADMIN, $groups) ) {
+      foreach ( $requires as $req ) {
+        if ( !in_array($req, $groups) ) {
+          throw new Exception("You are not allowed to use this API function");
+        }
+      }
+    }
+  }
+}
+
+/**
  * OS.js API User
  */
 class APIUser
 {
+  const GROUP_VFS = 'vfs';
+  const GROUP_API = 'api';
+  const GROUP_APPLICATION = 'application';
+  const GROUP_CURL = 'curl';
+  const GROUP_UPLOAD = 'upload';
+  const GROUP_ADMIN = 'admin';
+
   protected static $_instance;
 
   protected $id       = -1;
@@ -273,19 +314,18 @@ class API
 {
 
   protected static $Methods = Array();
+  public static $Handler = null;
 
   /**
    * File Download Request
    */
   public static function FileGET(APIRequest $req) {
-    if ( !APIUser::get() ) {
-      throw new Exception("You have no OS.js Session, please log in!");
-    }
-
     $result   = false;
     $error    = false;
     $headers  = Array();
     $code     = 0;
+
+    call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 
     try {
       if ( $arg = preg_replace("/^\/FS/", "", urldecode($req->data)) ) {
@@ -318,12 +358,11 @@ class API
    * File Upload Requests
    */
   public static function FilePOST(APIRequest $req) {
-    if ( !APIUser::get() ) {
-      throw new Exception("You have no OS.js Session, please log in!");
-    }
-
     $result = false;
     $error  = false;
+
+    // FIXME: Frontend does not show error
+    call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_UPLOAD));
 
     try {
       if ( isset($_POST['path']) && isset($_FILES['upload']) ) {
@@ -358,8 +397,13 @@ class API
         $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
 
         try {
-          if ( isset(self::$Methods[$method]) ) {
-            list($error, $result) = call_user_func_array(self::$Methods[$method], Array($arguments));
+
+          if ( isset(self::$Methods[$method]["method"]) ) {
+            if ( !empty(self::$Methods[$method]["privileges"]) && ($p = self::$Methods[$method]["privileges"]) ) {
+              call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array($p));
+            }
+
+            list($error, $result) = call_user_func_array(self::$Methods[$method]["method"], Array($arguments));
           } else {
             $error = "No such API method: {$method}";
           }
@@ -371,8 +415,15 @@ class API
     return new APIResponse(true, $result, $error);
   }
 
-  public static function AddHandler($name, $cb) {
-    self::$Methods[$name] = $cb;
+  public static function SetHandler($name) {
+    API::$Handler = $name;
+  }
+
+  public static function AddHandler($name, $cb, $privileges = null) {
+    self::$Methods[$name] = Array(
+      "method" => $cb,
+      "privileges" => $privileges
+    );
   }
 
 }
@@ -383,9 +434,13 @@ class CoreAPIHandler
     $error = null;
     $result = null;
 
-    if ( !APIUser::get() ) {
-      $error = "You have no OS.js Session, please log in!";
-    } else {
+    try {
+      call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_APPLICATION));
+    } catch ( Exception $e ) {
+      $error = $e->getMessage();
+    }
+
+    if ( !$error ) {
       $path = empty($arguments['path'])        ? null     : $arguments['path'];
       $an   = empty($arguments['application']) ? null     : $arguments['application'];
       $am   = empty($arguments['method'])      ? null     : $arguments['method'];
@@ -417,9 +472,13 @@ class CoreAPIHandler
     $error = null;
     $result = null;
 
-    if ( !APIUser::get() ) {
-      $error = "You have no OS.js Session, please log in!";
-    } else {
+    try {
+      call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
+    } catch ( Exception $e ) {
+      $error = $e->getMessage();
+    }
+
+    if ( !$error ) {
       $m = $arguments['method'];
       $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
 
@@ -448,9 +507,13 @@ class CoreAPIHandler
       throw new Exception("cURL is not supported on this platform");
     }
 
-    if ( !APIUser::get() ) {
-      $error = "You have no OS.js Session, please log in!";
-    } else {
+    try {
+      call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_CURL));
+    } catch ( Exception $e ) {
+      $error = $e->getMessage();
+    }
+
+    if ( !$error ) {
       $url      = empty($arguments['url'])     ? null    : $arguments['url'];
       $method   = empty($arguments['method'])  ? "GET"   : strtoupper($arguments['method']);
       $query    = empty($arguments['query'])   ? Array() : $arguments['query'];
