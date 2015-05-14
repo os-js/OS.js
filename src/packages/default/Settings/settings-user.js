@@ -40,7 +40,35 @@
     var tabs = win._addGUIElement(new GUI.Tabs('TabsUser'), container);
     var _ = OSjs.Applications.ApplicationSettings._;
 
-    var tab = tabs.addTab('Locale', {title: API._('LBL_LOCALES'), onSelect: function() {
+    var tab;
+
+    // Info
+    tab = tabs.addTab('Information', {title: API._('LBL_INFORMATION'), onSelect: function() {
+    }});
+
+    var data = OSjs.Core.getHandler().getUserData();
+    function createSection(id, label, key) {
+      var val = data[key];
+      if ( val instanceof Array ) {
+        val = val.join(', ');
+      } else {
+        val = val.toString();
+      }
+
+      var outer = document.createElement('div');
+      outer.className = 'OuterWrapper';
+      win._addGUIElement(new OSjs.GUI.Label('LabelUser' + id, {label: label}), outer);
+      win._addGUIElement(new OSjs.GUI.Text('TextUser' + id, {value: val, disabled: true}), outer);
+      tab.appendChild(outer);
+    }
+
+    createSection('ID', 'ID', 'id');
+    createSection('Name', 'Name', 'name');
+    createSection('Username', 'Username', 'username');
+    createSection('Groups', 'Groups', 'groups');
+
+    // Locales
+    tab = tabs.addTab('Locale', {title: API._('LBL_LOCALES'), onSelect: function() {
     }});
 
     var outer = document.createElement('div');
@@ -49,8 +77,8 @@
     var selectLanguage = win._addGUIElement(new OSjs.GUI.Select('LocaleLanguage'), outer);
     selectLanguage.addItems(OSjs.Core.getHandler().getConfig('Core').Languages);
     selectLanguage.setSelected(API.getLocale());
-
     tab.appendChild(outer);
+
     root.appendChild(container);
 
     return container;
