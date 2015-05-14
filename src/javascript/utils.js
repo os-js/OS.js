@@ -1158,8 +1158,15 @@
         var error = request.response || OSjs.API._('ERR_UTILS_XHR_FATAL');
         args.onerror(error, evt, request, args.url);
       };
-      request.onload = function() {
-        args.onsuccess(request.response, request);
+      request.onload = function(evt) {
+        if ( request.status === 200 || request.status === 201 || request.status === 304 ) {
+          args.onsuccess(request.response, request);
+        } else {
+          OSjs.VFS.abToText(request.response, 'text/plain', function(err, txt) {
+            var error = txt || OSjs.API._('ERR_UTILS_XHR_FATAL');
+            args.onerror(error, evt, request, args.url);
+          });
+        }
       };
     } else {
       request.addEventListener('error', function(evt) { args.onfailed(evt); }, false);
