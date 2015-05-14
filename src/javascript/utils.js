@@ -448,24 +448,24 @@
    * @api     OSjs.Utils.getUserLocale()
    */
   OSjs.Utils.getUserLocale = function() {
-    var loc = (window.navigator.userLanguage || window.navigator.language) || 'en-EN';
+    var loc = ((window.navigator.userLanguage || window.navigator.language) || 'en-EN').replace('-', '_');
+
+    // Restricts to a certain type of language.
+    // Example: There are lots of variants of the English language, but currently we only
+    // provide locales for one of them, so we force to use the one available.
     var map = {
       'nb'    : 'no_NO',
-      'no'    : 'no_NO',
-      'en'    : 'en_EN',
       'es'    : 'es_ES',
       'ru'    : 'ru_RU',
-      'fr'    : 'fr_FR'
+      'en'    : 'en_EN'
     };
 
-    if ( loc.match(/\-/) ) {
-      var tmp = loc.split('-')[0];
-      if ( map[tmp] ) {
-        return map[tmp];
-      }
-      return loc.replace('-', '_');
+    var major = loc.split('_')[0] || 'en';
+    var minor = loc.split('_')[1] || major.toUpperCase();
+    if ( map[major] ) {
+      return map[major];
     }
-    return map[loc] || loc;
+    return major + '_' + minor;
   };
 
   /**
