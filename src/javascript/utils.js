@@ -238,9 +238,120 @@
    * @api       OSjs.Utils.getCompability()
    */
   OSjs.Utils.getCompability = (function() {
-    var canvas_supported  = !!document.createElement('canvas').getContext   ? document.createElement('canvas')  : null;
-    var video_supported   = !!document.createElement('video').canPlayType   ? document.createElement('video')   : null;
-    var audio_supported   = !!document.createElement('audio').canPlayType   ? document.createElement('audio')   : null;
+    function _checkSupport(enabled, check, isSupported) {
+      var supported = {};
+
+      Object.keys(check).forEach(function(key) {
+        var chk = check[key];
+        var value = false;
+
+        if ( chk instanceof Array ) {
+          chk.forEach(function(c) {
+            value = isSupported(c);
+            return !value;
+          });
+        } else {
+          value = isSupported(chk);
+        }
+        supported[key] = value;
+      });
+
+      return supported;
+    }
+
+    function getUpload() {
+      try {
+        var xhr = new XMLHttpRequest();
+        return (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
+      } catch ( e ) {}
+      return false;
+    }
+
+    function getCanvasSupported() {
+      return document.createElement('canvas').getContext ? document.createElement('canvas') : null;
+    }
+
+    function getVideoSupported() {
+      return document.createElement('video').canPlayType ? document.createElement('video') : null;
+    }
+
+    function getVideoTypesSupported() {
+      var enabled = getVideoSupported();
+      var check = {
+        webm     : 'video/webm; codecs="vp8.0, vorbis"',
+        ogg      : 'video/ogg; codecs="theora"',
+        h264     : [
+          'video/mp4; codecs="avc1.42E01E"',
+          'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+        ],
+        mpeg     : 'video/mp4; codecs="mp4v.20.8"',
+        mkv      : 'video/x-matroska; codecs="theora, vorbis"'
+      };
+
+      return _checkSupport(getVideoSupported(), check, function(codec) {
+        return !!enabled.canPlayType(codec);
+      });
+    }
+
+    function getAudioSupported() {
+      return document.createElement('audio').canPlayType ? document.createElement('audio') : null;
+    }
+
+    function getAudioTypesSupported() {
+      var enabled = getAudioSupported();
+      var check = {
+        ogg   : 'audio/ogg; codecs="vorbis',
+        mp3   : 'audio/mpeg',
+        wav   : 'audio/wav; codecs="1"'
+      };
+
+      return _checkSupport(getVideoSupported(), check, function(codec) {
+        return !!enabled.canPlayType(codec);
+      });
+    }
+
+    function getAudioContext() {
+      if ( window.hasOwnProperty('AudioContext') || window.hasOwnProperty('webkitAudioContext') ) {
+        return true;
+      }
+      return false;
+    }
+
+    var getCanvasContexts = (function() {
+      var cache = [];
+
+      return function() {
+        if ( !cache.length ) {
+          var canvas = getCanvasSupported();
+          if ( canvas ) {
+            var test = ['2d', 'webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
+            test.forEach(function(tst, i) {
+              try {
+                if ( !!canvas.getContext(tst) ) {
+                  cache.push(tst);
+                }
+              } catch ( eee ) {}
+            });
+          }
+        }
+
+        return cache;
+      };
+    })();
+
+    function getWebGL() {
+      var result = false;
+      var contexts = getCanvasContexts();
+      try {
+        result = (contexts.length > 1);
+        if ( !result ) {
+          if ( 'WebGLRenderingContext' in window ) {
+            result = true;
+          }
+        }
+      } catch ( e ) {}
+      return result;
+    }
 
     function detectCSSFeature(featurename) {
       var feature             = false,
@@ -264,91 +375,90 @@
       return feature;
     }
 
-    var getMedia = false;
-    if ( window.navigator ) {
-      getMedia = ( navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia ||
-                       navigator.msGetUserMedia);
+    function getUserMedia() {
+      var getMedia = false;
+      if ( window.navigator ) {
+        getMedia = ( navigator.getUserMedia ||
+                         navigator.webkitGetUserMedia ||
+                         navigator.mozGetUserMedia ||
+                         navigator.msGetUserMedia);
+      }
+      return !!getMedia;
     }
 
+    function getRichText() {
+      try {
+        return !!document.createElement('textarea').contentEditable;
+      } catch ( e ) {}
+      return false;
+    }
+
+    function getTouch() {
+      return !!(('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch)));
+    }
+
+    function getDnD() {
+      return !!('draggable' in document.createElement('span'));
+    }
+
+    function getSVG() {
+      return (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
+    }
+
+    function getFileSystem() {
+      return (('requestFileSystem' in window) || ('webkitRequestFileSystem' in window));
+    }
+
+    var checkWindow = {
+      localStorage   : 'localStorage',
+      sessionStorage : 'sessionStorage',
+      globalStorage  : 'globalStorage',
+      openDatabase   : 'openDatabase',
+      socket         : 'WebSocket',
+      worker         : 'Worker',
+      file           : 'File',
+      blob           : 'Blob',
+      orientation    : 'onorientationchange',
+    };
+
     var compability = {
-      upload         : false,
-      getUserMedia   : !!getMedia,
-      fileSystem     : (('requestFileSystem' in window) || ('webkitRequestFileSystem' in window)),
-      localStorage   : (('localStorage'    in window) && window['localStorage']   !== null),
-      sessionStorage : (('sessionStorage'  in window) && window['sessionStorage'] !== null),
-      globalStorage  : (('globalStorage'   in window) && window['globalStorage']  !== null),
-      openDatabase   : (('openDatabase'    in window) && window['openDatabase']   !== null),
-      socket         : (('WebSocket'       in window) && window['WebSocket']      !== null),
-      worker         : (('Worker'          in window) && window['Worker']         !== null),
-      file           : (('File'            in window) && window['File']           !== null),
-      blob           : (('Blob'            in window) && window['Blob']           !== null),
-      dnd            : ('draggable' in document.createElement('span')),
-      touch          : ('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch)),
-      orientation    : ('onorientationchange' in window),
+      touch          : getTouch(),
+      upload         : getUpload(),
+      getUserMedia   : getUserMedia(),
+      fileSystem     : getFileSystem(),
+      localStorage   : false,
+      sessionStorage : false,
+      globalStorage  : false,
+      openDatabase   : false,
+      socket         : false,
+      worker         : false,
+      file           : false,
+      blob           : false,
+      orientation    : false,
+      dnd            : getDnD(),
       css            : {
         transition : detectCSSFeature('transition'),
         animation : detectCSSFeature('animation')
       },
-
-      canvas         : (!!canvas_supported),
-      canvasContext  : [],
-      webgl          : false,
-      audioContext   : false,
-      svg            : (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect),
-      video          : (!!video_supported),
-      videoTypes     : {
-        webm     : (video_supported && !!video_supported.canPlayType('video/webm; codecs="vp8.0, vorbis"')),
-        ogg      : (video_supported && !!video_supported.canPlayType('video/ogg; codecs="theora"')),
-        h264     : (video_supported && !!(video_supported.canPlayType('video/mp4; codecs="avc1.42E01E"') || video_supported.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"'))),
-        mpeg     : (video_supported && !!video_supported.canPlayType('video/mp4; codecs="mp4v.20.8"')),
-        mkv      : (video_supported && !!video_supported.canPlayType('video/x-matroska; codecs="theora, vorbis"'))
-      },
-      audio          : (!!audio_supported),
-      audioTypes     : {
-        ogg      : (audio_supported && !!audio_supported.canPlayType('audio/ogg; codecs="vorbis')),
-        mp3      : (audio_supported && !!audio_supported.canPlayType('audio/mpeg')),
-        wav      : (audio_supported && !!audio_supported.canPlayType('audio/wav; codecs="1"'))
-      },
-      richtext       : (!!document.createElement('textarea').contentEditable)
+      canvas         : !!getCanvasSupported(),
+      canvasContext  : getCanvasContexts(),
+      webgl          : getWebGL(),
+      audioContext   : getAudioContext(),
+      svg            : getSVG(),
+      video          : !!getVideoSupported(),
+      videoTypes     : getVideoTypesSupported(),
+      audio          : !!getAudioSupported(),
+      audioTypes     : getAudioTypesSupported(),
+      richtext       : getRichText()
     };
 
-    if ( canvas_supported ) {
-      var test = ['2d', 'webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
-      test.forEach(function(tst, i) {
-        try {
-          if ( !!canvas_supported.getContext(tst) ) {
-            compability.canvasContext.push(tst);
-          }
-        } catch ( eee ) {}
-      });
-
-      compability.webgl = (compability.canvasContext.length > 1);
-      if ( !compability.webgl ) {
-        if ( 'WebGLRenderingContext' in window ) {
-          compability.webgl = true;
-        }
-      }
-    }
-
-    try {
-      var xhr = new XMLHttpRequest();
-      compability.upload = (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
-    } catch ( e ) {}
-
-    if ( window.hasOwnProperty('AudioContext') || window.hasOwnProperty('webkitAudioContext') ) {
-      compability.audioContext = true;
-    }
-
-    canvas_supported = null;
-    video_supported = null;
-    audio_supported = null;
+    Object.keys(checkWindow).forEach(function(key) {
+      compability[key] = (checkWindow[key] in window) && window[checkWindow[key]] !== null;
+    });
 
     return function() {
       return compability;
     };
-
   })();
 
   /**
@@ -1067,51 +1177,21 @@
    */
   OSjs.Utils.ajax = function(args) {
     var request;
-
-    args.onerror        = args.onerror          || function() {};
-    args.onsuccess      = args.onsuccess        || function() {};
-    args.onprogress     = args.onprogress       || function() {};
-    args.oncreated      = args.oncreated        || function() {};
-    args.onfailed       = args.onfailed         || function() {};
-    args.oncanceled     = args.oncanceled       || function() {};
-    args.method         = args.method           || 'GET';
-    args.responseType   = args.responseType     || null;
-    args.requestHeaders = args.requestHeaders   || {};
-    args.body           = args.body             || null;
-    args.json           = args.json             || false;
-    args.url            = args.url              || '';
-    args.jsonp          = args.jsonp            || false;
-
-    if ( window.location.href.match(/^file\:\/\//) ) {
-      args.onerror('You are currently running locally and cannot perform this operation!');
-      return;
-    }
-
-    if ( args.json && (typeof args.body !== 'string') && !(args.body instanceof FormData) ) {
-      args.body = JSON.stringify(args.body);
-    }
-
-    console.debug('Utils::ajax()', args);
-
-    // JSONP requires another type of request
-    if ( args.jsonp ) {
-      var loaded  = false;
-      OSjs.Utils.$createJS(args.url, function() {
-        if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
-          loaded = true;
-          args.onsuccess();
-        }
-      }, function() {
-        if ( loaded ) { return; }
-        loaded = true;
-        args.onsuccess();
-      }, function() {
-        if ( loaded ) { return; }
-        loaded = true;
-        args.onerror();
-      });
-      return;
-    }
+    var defaults = {
+      onerror          : function() {},
+      onsuccess        : function() {},
+      onprogress       : function() {},
+      oncreated        : function() {},
+      onfailed         : function() {},
+      oncanceled       : function() {},
+      method           : 'GET',
+      responseType     : null,
+      requestHeaders   : {},
+      body             : null,
+      json             : false,
+      url              : '',
+      jsonp            : false
+    };
 
     function getResponse(ctype) {
       var response = request.responseText;
@@ -1140,42 +1220,83 @@
       }
     }
 
-    // Normal AJAX request
-    request = new XMLHttpRequest();
-    request.open(args.method, args.url, true);
-    request.responseType = args.responseType || '';
+    function requestJSONP() {
+      var loaded  = false;
+      OSjs.Utils.$createJS(args.url, function() {
+        if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
+          loaded = true;
+          args.onsuccess();
+        }
+      }, function() {
+        if ( loaded ) { return; }
+        loaded = true;
+        args.onsuccess();
+      }, function() {
+        if ( loaded ) { return; }
+        loaded = true;
+        args.onerror();
+      });
+    }
 
-    Object.keys(args.requestHeaders).forEach(function(h) {
-      request.setRequestHeader(h, args.requestHeaders[h]);
+    function requestJSON() {
+      request = new XMLHttpRequest();
+      request.open(args.method, args.url, true);
+      request.responseType = args.responseType || '';
+
+      Object.keys(args.requestHeaders).forEach(function(h) {
+        request.setRequestHeader(h, args.requestHeaders[h]);
+      });
+
+      if ( request.upload ) {
+        request.upload.addEventListener('progress', function(evt) { args.onprogress(evt); }, false);
+      }
+
+      if ( args.responseType === 'arraybuffer' ) { // Binary
+        request.onerror = function(evt) {
+          var error = request.response || OSjs.API._('ERR_UTILS_XHR_FATAL');
+          args.onerror(error, evt, request, args.url);
+        };
+        request.onload = function(evt) {
+          if ( request.status === 200 || request.status === 201 || request.status === 304 ) {
+            args.onsuccess(request.response, request);
+          } else {
+            OSjs.VFS.abToText(request.response, 'text/plain', function(err, txt) {
+              var error = txt || err || OSjs.API._('ERR_UTILS_XHR_FATAL');
+              args.onerror(error, evt, request, args.url);
+            });
+          }
+        };
+      } else {
+        request.addEventListener('error', function(evt) { args.onfailed(evt); }, false);
+        request.addEventListener('abort', function(evt) { args.oncanceled(evt); }, false);
+        request.onreadystatechange = onReadyStateChange;
+      }
+
+      args.oncreated(request);
+      request.send(args.body);
+    }
+
+    Object.keys(defaults).forEach(function(key) {
+      args[key] = args[key] || defaults[key];
     });
 
-    if ( request.upload ) {
-      request.upload.addEventListener('progress', function(evt) { args.onprogress(evt); }, false);
+    if ( window.location.href.match(/^file\:\/\//) ) {
+      args.onerror('You are currently running locally and cannot perform this operation!');
+      return;
     }
 
-    if ( args.responseType === 'arraybuffer' ) { // Binary
-      request.onerror = function(evt) {
-        var error = request.response || OSjs.API._('ERR_UTILS_XHR_FATAL');
-        args.onerror(error, evt, request, args.url);
-      };
-      request.onload = function(evt) {
-        if ( request.status === 200 || request.status === 201 || request.status === 304 ) {
-          args.onsuccess(request.response, request);
-        } else {
-          OSjs.VFS.abToText(request.response, 'text/plain', function(err, txt) {
-            var error = txt || err || OSjs.API._('ERR_UTILS_XHR_FATAL');
-            args.onerror(error, evt, request, args.url);
-          });
-        }
-      };
-    } else {
-      request.addEventListener('error', function(evt) { args.onfailed(evt); }, false);
-      request.addEventListener('abort', function(evt) { args.oncanceled(evt); }, false);
-      request.onreadystatechange = onReadyStateChange;
+    if ( args.json && (typeof args.body !== 'string') && !(args.body instanceof FormData) ) {
+      args.body = JSON.stringify(args.body);
     }
 
-    args.oncreated(request);
-    request.send(args.body);
+    console.debug('Utils::ajax()', args);
+
+    if ( args.jsonp ) {
+      requestJSONP();
+      return;
+    }
+
+    requestJSON();
   };
 
   /**
