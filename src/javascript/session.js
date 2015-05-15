@@ -415,24 +415,12 @@
 
       document.body.appendChild(_$ROOT);
 
-      document.addEventListener('keydown', function(ev) {
-        return globalOnKeyDown(ev);
-      }, false);
-      document.addEventListener('keypress', function(ev) {
-        return globalOnKeyPress(ev);
-      }, false);
-      document.addEventListener('keyup', function(ev) {
-        return globalOnKeyUp(ev);
-      }, false);
-      document.addEventListener('mousedown', function(ev) {
-        globalOnMouseDown(ev);
-      }, false);
-      window.addEventListener('resize', function(ev) {
-        globalOnResize(ev);
-      }, false);
-      window.addEventListener('scroll', function(ev) {
-        return globalOnScroll(ev);
-      }, false);
+      document.addEventListener('keydown', globalOnKeyDown, false);
+      document.addEventListener('keypress', globalOnKeyPress, false);
+      document.addEventListener('keyup', globalOnKeyUp, false);
+      document.addEventListener('mousedown', globalOnMouseDown, false);
+      window.addEventListener('resize', globalOnResize, false);
+      window.addEventListener('scroll', globalOnScroll, false);
 
       handler.boot(function(result, error) {
 
@@ -489,24 +477,12 @@
     function _Destroy() {
       OSjs.API.blurMenu();
 
-      document.removeEventListener('keydown', function(ev) {
-        return globalOnKeyDown(ev);
-      }, false);
-      document.removeEventListener('keyup', function(ev) {
-        return globalOnKeyUp(ev);
-      }, false);
-      document.removeEventListener('keypress', function(ev) {
-        return globalOnKeyPress(ev);
-      }, false);
-      document.removeEventListener('mousedown', function(ev) {
-        globalOnMouseDown(ev);
-      }, false);
-      window.removeEventListener('resize', function(ev) {
-        globalOnResize(ev);
-      }, false);
-      window.removeEventListener('scroll', function(ev) {
-        return globalOnScroll(ev);
-      }, false);
+      document.removeEventListener('keydown', globalOnKeyDown, false);
+      document.removeEventListener('keypress', globalOnKeyPress, false);
+      document.removeEventListener('keyup', globalOnKeyUp, false);
+      document.removeEventListener('mousedown', globalOnMouseDown, false);
+      window.removeEventListener('resize', globalOnResize, false);
+      window.removeEventListener('scroll', globalOnScroll, false);
 
       if ( _$ROOT ) {
         _$ROOT.removeEventListener('contextmenu', onContextMenu, false);
