@@ -17,6 +17,7 @@
         "Preloads":         {},
         "Locale":           "en_EN",
         "VersionAppend":    "",
+        "ShowQuitWarning":  false,
         "VFS": {
           "GoogleDrive": {
             "Enabled": false

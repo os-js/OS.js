@@ -78,6 +78,9 @@
     'TITLE_SIGN_OUT' : 'Sign out',
     'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
 
+    // SESSION
+    'MSG_SESSION_WARNING' : 'Are you sure you want to quit OS.js? All unsaved settings and application data will be lost!',
+
     // Service
     'BUGREPORT_MSG' : 'Please report this if you think this is a bug.\nInclude a brief description on how the error occured, and if you can; how to replicate it',
 

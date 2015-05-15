@@ -45,6 +45,8 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.Session      = OSjs.Session      || {};
 
+  var signingOut = false;
+
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HOOKS
   /////////////////////////////////////////////////////////////////////////////
@@ -217,7 +219,7 @@
    *
    * @param   DOMEvent    ev      Event
    *
-   * @return  void
+   * @return  boolean
    */
   function globalOnScroll(ev) {
     if ( ev.target === document || ev.target === document.body || ev.target.id === 'Background' ) {
@@ -236,7 +238,7 @@
    *
    * @param   DOMEvent    ev      Event
    *
-   * @return  void
+   * @return  boolean
    */
   function globalOnKeyUp(ev) {
     var wm = OSjs.Core.getWindowManager();
@@ -256,7 +258,7 @@
    *
    * @param   DOMEvent    ev      Event
    *
-   * @return  void
+   * @return  boolean
    */
   function globalOnKeyPress(ev) {
     var wm = OSjs.Core.getWindowManager();
@@ -274,7 +276,7 @@
    *
    * @param   DOMEvent    ev      Event
    *
-   * @return  void
+   * @return  boolean
    */
   function globalOnKeyDown(ev) {
     var d = ev.srcElement || ev.target;
@@ -308,6 +310,24 @@
     }
 
     return true;
+  }
+
+  /**
+   * Global onUnload Event
+   *
+   * @param   DOMEvent    ev      Event
+   *
+   * @return  void
+   */
+  function globalOnBeforeUnload(ev) {
+    if ( signingOut ) { return; }
+
+    try {
+      var handler = OSjs.Core.getHandler();
+      if ( handler.getConfig('Core').ShowQuitWarning ) {
+        return OSjs.API._('MSG_SESSION_WARNING');
+      }
+    } catch ( e ) {}
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -421,6 +441,8 @@
       document.addEventListener('mousedown', globalOnMouseDown, false);
       window.addEventListener('resize', globalOnResize, false);
       window.addEventListener('scroll', globalOnScroll, false);
+      window.onbeforeunload = globalOnBeforeUnload;
+      //window.addEventListener('beforeunload', globalOnBeforeUnload, false);
 
       handler.boot(function(result, error) {
 
@@ -472,6 +494,8 @@
     if ( !_INITED ) { return; }
     _INITED = false;
 
+    signingOut = true;
+
     var handler = OSjs.Core.getHandler();
 
     function _Destroy() {
@@ -483,6 +507,8 @@
       document.removeEventListener('mousedown', globalOnMouseDown, false);
       window.removeEventListener('resize', globalOnResize, false);
       window.removeEventListener('scroll', globalOnScroll, false);
+      window.onbeforeunload = null;
+      //window.removeEventListener('beforeunload', globalOnBeforeUnload, false);
 
       if ( _$ROOT ) {
         _$ROOT.removeEventListener('contextmenu', onContextMenu, false);
@@ -531,6 +557,8 @@
    * @api     OSjs.Session.signOut()
    */
   function doSignOut() {
+    signingOut = true;
+
     var handler = OSjs.Core.getHandler();
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
