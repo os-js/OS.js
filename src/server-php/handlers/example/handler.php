@@ -91,8 +91,10 @@ class ExampleAPIHandler
     }
 
     if ( $result = $response ) {
+      $settings = Settings::get();
       $user = APIUser::login($response["userData"]);
-      $homedir = sprintf("%s/%s", VFSDIR, $user->getUsername());
+
+      $homedir = sprintf("%s/%s", $settings['vfs']['homes'], $user->getUsername());
       if ( !file_exists($homedir) ) {
         @mkdir($homedir);
       }
