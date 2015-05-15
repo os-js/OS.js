@@ -1,3 +1,17 @@
+# 2.0.0-alpha58
+
+* API: Introduced group permissions for API/FS calls
+* Session: Added config for showing warning message when closing tab
+* Misc: Bugfixes in Example handler
+* Misc: Reduced complexity of some code
+* Misc: Some code cleanups and removal of duplicates
+* Misc: Removed some dead files
+* Utils: getUserLocale() reworked
+* Utils: ajax() now recognizes errors better in ArrayBuffer calls
+* PackageManager: Gracefull error on user pacakges load failure
+* Doc: Updated docs
+* grunt: Added nginx config generation
+
 # 2.0.0-alpha57
 
 Standalone support (file://). Firefox Marketplace support :)
