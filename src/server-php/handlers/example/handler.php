@@ -56,7 +56,6 @@ class ExampleAPIHandler
 
   public static function login(Array $arguments) {
     $db = self::_initDB();
-    $result = false;
 
     unset($_SESSION['user']);
 
@@ -90,7 +89,7 @@ class ExampleAPIHandler
       }
     }
 
-    if ( $result = $response ) {
+    if ( $response ) {
       $settings = Settings::get();
       $user = APIUser::login($response["userData"]);
 
@@ -100,7 +99,7 @@ class ExampleAPIHandler
       }
     }
 
-    return Array(false, $result);
+    return Array(false, $response);
   }
 
   public static function logout(Array $arguments) {
