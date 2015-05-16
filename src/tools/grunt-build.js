@@ -134,8 +134,8 @@
             var tjson = JSON.parse(JSON.stringify(config));
             config = mergeObject(tjson, json);
           } catch ( e ) {
-            grunt.log.errorlns('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
-            grunt.log.errorlns(e.stack);
+            grunt.fail.warn('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
+            grunt.fail.warn(e.stack);
           }
         });
 
@@ -210,8 +210,8 @@
             list.push(data);
           }
         } catch ( e ) {
-          grunt.log.errorlns('WARNING: Failed to read metadata of ' + r + ':' + d);
-          grunt.log.errorlns(e);
+          grunt.fail.warn('WARNING: Failed to read metadata of ' + r + ':' + d);
+          grunt.fail.warn(e);
         }
       });
     });
@@ -503,7 +503,7 @@
         try {
           checkManifest(manifest, relpath);
         } catch ( e ) {
-          grunt.log.writeln("  - \033[0;31mSkipped '" + relpath + "' (" + e + ")\033[0m");
+          console.log("  - \033[0;31mSkipped '" + relpath + "' (" + e + ")\033[0m");
           return null;
         }
 
@@ -534,7 +534,7 @@
 
         return manifest;
       } catch ( e ) {
-        grunt.log.errorlns('WARNING: Failed to parse ' + file.replace(ROOT, '') + ': ' + e);
+        grunt.fail.warn('WARNING: Failed to parse ' + file.replace(ROOT, '') + ': ' + e);
       }
 
       return null;
@@ -571,7 +571,7 @@
         scan_packages(src, repo);
 
       } catch ( e ) {
-        grunt.log.errorlns('WARNING: Failed to list directory ' + repo + ': ' + e);
+        grunt.fail.warn('WARNING: Failed to list directory ' + repo + ': ' + e);
       }
     }
 
@@ -603,7 +603,7 @@
           man = JSON.parse(_fs.readFileSync(manpath));
           checkManifest(man, app);
         } catch ( e ) {
-          grunt.log.errorlns('WARNING: Failed to parse ' + manpath.replace(ROOT, '') + ': ' + e);
+          grunt.fail.warn('WARNING: Failed to parse ' + manpath.replace(ROOT, '') + ': ' + e);
           cb();
           return;
         }
@@ -715,7 +715,7 @@
         });
 
       } catch ( e ) {
-        grunt.log.errorlns('WARNING: Failed to list directory ' + REPOS[i] + ': ' + e);
+        grunt.fail.warn('WARNING: Failed to list directory ' + REPOS[i] + ': ' + e);
       }
     }
 
