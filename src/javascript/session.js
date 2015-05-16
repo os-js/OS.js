@@ -283,22 +283,17 @@
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
 
-    // Some keys must be cancelled
+    // We don't want backspace and tab triggering default browser events
     var doPrevent = d.tagName === 'BODY' ? true : false;
-    if ( ev.keyCode === OSjs.Utils.Keys.BACKSPACE ) {
-      if ( !OSjs.Utils.$isInput(ev) ) {
-        doPrevent = true;
-      }
-    } else if ( ev.keyCode === OSjs.Utils.Keys.TAB ) {
-      if ( OSjs.Utils.$isFormElement(ev) ) {
-        doPrevent = true;
-      }
+    if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isInput(ev) ) {
+      doPrevent = true;
+    } else if ( (ev.keyCode === OSjs.Utils.Keys.TAB) && OSjs.Utils.$isFormElement(ev) ) {
+      doPrevent = true;
     }
 
-    if ( doPrevent ) {
-      if ( !win || !win._properties.key_capture ) {
-        ev.preventDefault();
-      }
+    // Only prevent default event if current window is not set up to capture them by force
+    if ( doPrevent && (!win || !win._properties.key_capture) ) {
+      ev.preventDefault();
     }
 
     // WindowManager and Window must always recieve events
