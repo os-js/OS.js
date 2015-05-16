@@ -38,6 +38,23 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Wrapper for merging function argument dictionaries
+   *
+   * @api    OSjs.Utils.argumentDefaults()
+   *
+   * @param  Object   args      Given function Dictionary
+   * @param  Object   defaults  Defaults Dictionary
+   * @return Object
+   */
+  OSjs.Utils.argumentDefaults = function(args, defaults) {
+    args = args || {};
+    Object.keys(defaults).forEach(function(key) {
+      args[key] = args[key] || defaults[key];
+    });
+    return args;
+  };
+
+  /**
    * Gets the browser window rect (x, y, width, height)
    *
    * @api OSjs.Utils.getRect()
@@ -1177,7 +1194,7 @@
    */
   OSjs.Utils.ajax = function(args) {
     var request;
-    var defaults = {
+    args = OSjs.Utils.argumentDefaults(args, {
       onerror          : function() {},
       onsuccess        : function() {},
       onprogress       : function() {},
@@ -1191,7 +1208,7 @@
       json             : false,
       url              : '',
       jsonp            : false
-    };
+    });
 
     function getResponse(ctype) {
       var response = request.responseText;
@@ -1275,10 +1292,6 @@
       args.oncreated(request);
       request.send(args.body);
     }
-
-    Object.keys(defaults).forEach(function(key) {
-      args[key] = args[key] || defaults[key];
-    });
 
     if ( window.location.href.match(/^file\:\/\//) ) {
       args.onerror('You are currently running locally and cannot perform this operation!');

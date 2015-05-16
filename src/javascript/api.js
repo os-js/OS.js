@@ -576,49 +576,53 @@
       }
     }
 
-    OSjs.Session.triggerHook('onApplicationLaunch', [n, arg]);
+    function launch() {
+      OSjs.Session.triggerHook('onApplicationLaunch', [n, arg]);
 
-    // Get metadata and check compability
-    var data = handler.getApplicationMetadata(n);
-    if ( !data ) {
-      _error(OSjs.API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
-      return false;
-    }
-    var nosupport = checkApplicationCompability(data.compability);
-    if ( nosupport.length ) {
-      _error(OSjs.API._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
-      return false;
-    }
+      // Get metadata and check compability
+      var data = handler.getApplicationMetadata(n);
+      if ( !data ) {
+        _error(OSjs.API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
+        return false;
+      }
+      var nosupport = checkApplicationCompability(data.compability);
+      if ( nosupport.length ) {
+        _error(OSjs.API._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
+        return false;
+      }
 
-    // Preload
-    splash = createLaunchSplash(data, n);
+      // Preload
+      splash = createLaunchSplash(data, n);
 
-    if ( window.location.href.match(/^file\:\/\//) ) {
-      data.preload.forEach(function(file, idx) {
-        if ( file.src && file.src.match(/^\//) ) {
-          file.src = file.src.replace(/^\//, '');
+      if ( window.location.href.match(/^file\:\/\//) ) {
+        data.preload.forEach(function(file, idx) {
+          if ( file.src && file.src.match(/^\//) ) {
+            file.src = file.src.replace(/^\//, '');
+          }
+        });
+      }
+
+      OSjs.Utils.preload(data.preload, function(total, errors, failed) {
+        destroyLoading(n);
+
+        if ( errors ) {
+          _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
+          return;
+        }
+
+        setTimeout(function() {
+          _callback(data);
+        }, 0);
+      }, function(progress, count) {
+        if ( splash ) {
+          splash.update(progress, count);
         }
       });
+
+      return true;
     }
 
-    OSjs.Utils.preload(data.preload, function(total, errors, failed) {
-      destroyLoading(n);
-
-      if ( errors ) {
-        _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
-        return;
-      }
-
-      setTimeout(function() {
-        _callback(data);
-      }, 0);
-    }, function(progress, count) {
-      if ( splash ) {
-        splash.update(progress, count);
-      }
-    });
-
-    return true;
+    return launch();
   }
 
   /**
@@ -770,60 +774,42 @@
 
     if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
 
-    switch ( type ) {
-      case 'dir' :
-        icon = 'places/folder.png';
-        break;
+    var map = [
+      {match: 'application/pdf', icon: 'mimetypes/gnome-mime-application-pdf.png'},
+      {match: 'osjs/document', icon: 'mimetypes/gnome-mime-application-msword.png'},
+      {match: 'osjs/draw', icon: 'mimetypes/image.png'},
+      {match: 'application/zip', icon: 'mimetypes/folder_tar.png'},
+      {match: 'application/x-python', icon: 'mimetypes/stock_script.png'},
+      {match: 'application/javascript', icon: 'mimetypes/stock_script.png'},
+      {match: 'text/html', icon: 'mimetypes/stock_script.png'},
+      {match: 'text/xml', icon: 'mimetypes/stock_script.png'},
+      {match: 'text/css', icon: 'mimetypes/stock_script.png'},
 
-      case 'trash' :
-        icon = 'places/user-trash.png';
-        break;
+      {match: /^text\//, icon: 'mimetypes/txt.png'},
+      {match: /^audio\//, icon: 'mimetypes/sound.png'},
+      {match: /^video\//, icon: 'mimetypes/video.png'},
+      {match: /^image\//, icon: 'mimetypes/image.png'},
+      {match: /^application\//, icon: 'mimetypes/binary.png'}
+    ];
 
-      case 'file' :
-        switch ( mime ) {
-          case 'application/pdf' :
-            icon = 'mimetypes/gnome-mime-application-pdf.png';
-            break;
-
-          case 'osjs/document' :
-            icon = 'mimetypes/gnome-mime-application-msword.png';
-            break;
-
-          case 'osjs/draw' :
-            icon = 'mimetypes/image.png';
-            break;
-
-          case 'application/zip' :
-            icon = 'mimetypes/folder_tar.png';
-            break;
-
-          case 'application/x-python' :
-          case 'application/javascript' :
-          case 'text/html' :
-          case 'text/xml' :
-          case 'text/css' :
-            icon = 'mimetypes/stock_script.png';
-            break;
-
-          default:
-            if ( mime.match(/^text\//) ) {
-              icon = 'mimetypes/txt.png';
-            } else if ( mime.match(/^audio\//) ) {
-              icon = 'mimetypes/sound.png';
-            } else if ( mime.match(/^video\//) ) {
-              icon = 'mimetypes/video.png';
-            } else if ( mime.match(/^image\//) ) {
-              icon = 'mimetypes/image.png';
-            } else if ( mime.match(/^application\//) ) {
-              icon = 'mimetypes/binary.png';
-            }
-            break;
+    if ( type === 'dir' ) {
+      icon = 'places/folder.png';
+    } else if ( type === 'trash' ) {
+      icon = 'places/user-trash.png';
+    } else {
+      map.forEach(function(iter) {
+        var match = false;
+        if ( typeof iter.match === 'string' ) {
+          match = (mime === iter.match);
+        } else {
+          match = mime.match(iter.match);
         }
-        break;
-
-      default:
-        icon = 'mimetypes/gnome-fs-regular.png';
-        break;
+        if ( match ) {
+          icon = iter.icon;
+          return false;
+        }
+        return true;
+      });
     }
 
     return OSjs.API.getIcon(icon, size);
@@ -843,17 +829,22 @@
     name = name || null;
     type = type || null;
 
+    function getName(str, theme) {
+      if ( !str.match(/^\//) ) {
+        if ( type === 'base' || type === null ) {
+          str = root + '/' + theme + '/' + str;
+        } else {
+          str = root + '/' + theme + '/' + type + '/' + str;
+        }
+      }
+      return str;
+    }
+
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
       var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
-      if ( !name.match(/^\//) ) {
-        if ( type === 'base' || type === null ) {
-          name = root + '/' + theme + '/' + name;
-        } else {
-          name = root + '/' + theme + '/' + type + '/' + name;
-        }
-      }
+      name = getName(name, theme);
     }
 
     return OSjs.Utils.checkdir(name);
@@ -920,6 +911,7 @@
         }
       }
     }
+
     return OSjs.Utils.checkdir(name);
   }
 
@@ -985,60 +977,62 @@
    * @api     OSjs.API.createDraggable()
    */
   function doCreateDraggable(el, args) {
-    args        = args        || {};
-    args.type   = args.type   || null;
-    args.effect = args.effect || 'move';
-    args.data   = args.data   || null;
-    args.mime   = args.mime   || 'application/json';
-
-    args.dragImage  = args.dragImage  || null;
-    args.onStart    = args.onStart    || function() { return true; };
-    args.onEnd      = args.onEnd      || function() { return true; };
+    args = OSjs.Utils.argumentDefaults(args, {
+      type       : null,
+      effect     : 'move',
+      data       : null,
+      mime       : 'application/json',
+      dragImage  : null,
+      onStart    : function() { return true; },
+      onEnd      : function() { return true; }
+    });
 
     if ( OSjs.Utils.isIE() ) {
       args.mime = 'text';
     }
 
-    var _toString = function(mime) {
+    function _toString(mime) {
       return JSON.stringify({
         type:   args.type,
         effect: args.effect,
         data:   args.data,
         mime:   args.mime
       });
-    };
+    }
+
+    function _dragStart(ev) {
+      try {
+        ev.dataTransfer.effectAllowed = args.effect;
+        if ( args.dragImage && (typeof args.dragImage === 'function') ) {
+          if ( ev.dataTransfer.setDragImage ) {
+            var dragImage = args.dragImage(ev, el);
+            if ( dragImage ) {
+              var dragEl    = dragImage.element;
+              var dragPos   = dragImage.offset;
+
+              document.body.appendChild(dragEl);
+              ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
+            }
+          }
+        }
+        ev.dataTransfer.setData(args.mime, _toString(args.mime));
+      } catch ( e ) {
+        console.warn('Failed to dragstart: ' + e);
+        console.warn(e.stack);
+      }
+    }
 
     el.setAttribute('draggable', 'true');
     el.addEventListener('dragstart', function(ev) {
       this.style.opacity = '0.4';
       if ( ev.dataTransfer ) {
-        try {
-          ev.dataTransfer.effectAllowed = args.effect;
-          if ( args.dragImage && (typeof args.dragImage === 'function') ) {
-            if ( ev.dataTransfer.setDragImage ) {
-              var dragImage = args.dragImage(ev, el);
-              if ( dragImage ) {
-                var dragEl    = dragImage.element;
-                var dragPos   = dragImage.offset;
-
-                document.body.appendChild(dragEl);
-                ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
-              }
-            }
-          }
-          ev.dataTransfer.setData(args.mime, _toString(args.mime));
-        } catch ( e ) {
-          console.warn('Failed to dragstart: ' + e);
-          console.warn(e.stack);
-        }
+        _dragStart(ev);
       }
-
       return args.onStart(ev, this, args);
     }, false);
 
     el.addEventListener('dragend', function(ev) {
       this.style.opacity = '1.0';
-
       return args.onEnd(ev, this, args);
     }, false);
   }
@@ -1054,7 +1048,22 @@
    * @api     OSjs.API.createDroppable()
    */
   function doCreateDroppable(el, args) {
-    args = args || {};
+    args = OSjs.Utils.argumentDefaults(args, {
+      accept         : null,
+      effect         : 'move',
+      mime           : 'application/json',
+      files          : true,
+      onFilesDropped : function() { return true; },
+      onItemDropped  : function() { return true; },
+      onEnter        : function() { return true; },
+      onOver         : function() { return true; },
+      onLeave        : function() { return true; },
+      onDrop         : function() { return true; }
+    });
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = 'text';
+    }
 
     function getParent(start, matcher) {
       if ( start === matcher ) { return true; }
@@ -1070,24 +1079,7 @@
       return false;
     }
 
-
-    args.accept = args.accept || null;
-    args.effect = args.effect || 'move';
-    args.mime   = args.mime   || 'application/json';
-    args.files  = args.files  || true;
-
-    if ( OSjs.Utils.isIE() ) {
-      args.mime = 'text';
-    }
-
-    args.onFilesDropped = args.onFilesDropped || function() { return true; };
-    args.onItemDropped  = args.onItemDropped  || function() { return true; };
-    args.onEnter        = args.onEnter        || function() { return true; };
-    args.onOver         = args.onOver         || function() { return true; };
-    args.onLeave        = args.onLeave        || function() { return true; };
-    args.onDrop         = args.onDrop         || function() { return true; };
-
-    var _onDrop = function(ev, el) {
+    function _onDrop(ev, el) {
       ev.stopPropagation();
       ev.preventDefault();
 
@@ -1116,7 +1108,7 @@
       }
 
       return false;
-    };
+    }
 
     el.addEventListener('drop', function(ev) {
       //Utils.$removeClass(el, 'onDragEnter');
