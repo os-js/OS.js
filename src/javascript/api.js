@@ -1083,18 +1083,17 @@
       ev.stopPropagation();
       ev.preventDefault();
 
-      args.onDrop.call(this, ev, el);
+      args.onDrop(ev, el);
       if ( !ev.dataTransfer ) { return true; }
 
       if ( args.files ) {
         var files = ev.dataTransfer.files;
         if ( files && files.length ) {
-          return args.onFilesDropped.call(this, ev, el, files, args);
+          return args.onFilesDropped(ev, el, files, args);
         }
       }
 
       var data;
-      var self = this;
       try {
         data = ev.dataTransfer.getData(args.mime);
       } catch ( e ) {
@@ -1103,7 +1102,7 @@
       if ( data ) {
         var item = JSON.parse(data);
         if ( args.accept === null || args.accept === item.type ) {
-          return args.onItemDropped.call(self, ev, el, item, args);
+          return args.onItemDropped(ev, el, item, args);
         }
       }
 
