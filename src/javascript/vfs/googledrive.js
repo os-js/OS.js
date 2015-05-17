@@ -93,7 +93,7 @@
       });
     } else {
       OSjs.VFS.abToBinaryString(data, contentType, function(error, response) {
-        callback(false, {
+        callback(error, error ? false : {
           contentType: reqContentType,
           body: createBody(btoa(response))
         });
@@ -166,33 +166,35 @@
     var rdir = dir.replace(/^google-drive\:\/+/, '/'); // FIXME
     var isOnRoot = rdir === '/';
 
+    function createItem(iter, i) {
+      var path = dir;
+      if ( iter.title === '..' ) {
+        path = Utils.dirname(dir);
+      } else {
+        if ( !isOnRoot ) {
+          path += '/';
+        }
+        path += iter.title;
+      }
+      var fileType = iter.mimeType === 'application/vnd.google-apps.folder' ? 'dir' : (iter.kind === 'drive#file' ? 'file' : 'dir');
+      if ( iter.mimeType === 'application/vnd.google-apps.trash' ) {
+        fileType = 'trash';
+      }
+
+      return new OSjs.VFS.File({
+        filename: iter.title,
+        path:     path,
+        id:       iter.id,
+        size:     iter.quotaBytesUsed || 0,
+        mime:     iter.mimeType === 'application/vnd.google-apps.folder' ? null : iter.mimeType,
+        type:     fileType
+      });
+    }
+
     if ( list ) {
       list.forEach(function(iter, i) {
         if ( !iter ) { return; }
-
-        var path = dir;
-
-        if ( iter.title === '..' ) {
-          path = Utils.dirname(dir);
-        } else {
-          if ( !isOnRoot ) {
-            path += '/';
-          }
-          path += iter.title;
-        }
-        var fileType = iter.mimeType === 'application/vnd.google-apps.folder' ? 'dir' : (iter.kind === 'drive#file' ? 'file' : 'dir');
-        if ( iter.mimeType === 'application/vnd.google-apps.trash' ) {
-          fileType = 'trash';
-        }
-
-        result.push(new OSjs.VFS.File({
-          filename: iter.title,
-          path:     path,
-          id:       iter.id,
-          size:     iter.quotaBytesUsed || 0,
-          mime:     iter.mimeType === 'application/vnd.google-apps.folder' ? null : iter.mimeType,
-          type:     fileType
-        }));
+        result.push(createItem(iter, i));
       });
     }
     return result ? OSjs.VFS.filterScandir(result, options) : [];
@@ -352,6 +354,11 @@
       function doRetrieve() {
         retrieveAllFiles(function(error, list) {
           var root = item.path;
+          if ( error ) {
+            callback(error, false, root);
+            return;
+          }
+
           getFilesBelongingTo(list, root, function(error, response) {
             console.groupEnd();
 
@@ -510,6 +517,11 @@
       }
 
       var fileData = createBoundary(file, data, function(error, fileData) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
         var request = gapi.client.request({
           path: uri,
           method: method,
@@ -720,6 +732,7 @@
       request.execute(function(resp) {
         console.info('GoogleDrive::mkdir()', '=>', resp);
         if ( resp && resp.id ) {
+          _treeCache = null; // Make sure we refetch any cached stuff
           callback(false, true);
         } else {
           var msg = resp && resp.message ? resp.message : API._('ERR_APP_UNKNOWN_ERROR');
