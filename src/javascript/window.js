@@ -257,92 +257,113 @@
     var isTouch = OSjs.Compability.touch;
     var wm = OSjs.Core.getWindowManager();
 
-    console.group('OSjs::Core::Window::init()');
+    var main, buttonMaximize, buttonMinimize, buttonClose;
 
-    this._state.focused = false;
-
-    this._icon = API.getIcon(this._icon, null, this._appRef);
-
-    // Initial position
-    if ( !this._properties.gravity ) {
-      if ( (typeof this._position.x === 'undefined') || (typeof this._position.y === 'undefined') ) {
-        var np = wm ? wm.getWindowPosition() : {x:0, y:0};
-        this._position.x = np.x;
-        this._position.y = np.y;
+    function _initPosition() {
+      if ( !self._properties.gravity ) {
+        if ( (typeof self._position.x === 'undefined') || (typeof self._position.y === 'undefined') ) {
+          var np = wm ? wm.getWindowPosition() : {x:0, y:0};
+          self._position.x = np.x;
+          self._position.y = np.y;
+        }
       }
     }
 
-    if ( this._properties.min_height ) {
-      if ( this._dimension.h < this._properties.min_height ) {
-        this._dimension.h = this._properties.min_height;
+    function _initDimension() {
+      if ( self._properties.min_height ) {
+        if ( self._dimension.h < self._properties.min_height ) {
+          self._dimension.h = self._properties.min_height;
+        }
       }
-    }
-    if ( this._properties.max_width ) {
-      if ( this._dimension.w < this._properties.max_width ) {
-        this._dimension.w = this._properties.max_width;
+      if ( self._properties.max_width ) {
+        if ( self._dimension.w < self._properties.max_width ) {
+          self._dimension.w = self._properties.max_width;
+        }
       }
-    }
-    if ( this._properties.max_height ) {
-      if ( this._dimension.h > this._properties.max_height ) {
-        this._dimension.h = this._properties.max_height;
+      if ( self._properties.max_height ) {
+        if ( self._dimension.h > self._properties.max_height ) {
+          self._dimension.h = self._properties.max_height;
+        }
       }
-    }
-    if ( this._properties.max_width ) {
-      if ( this._dimension.w > this._properties.max_width ) {
-        this._dimension.w = this._properties.max_width;
+      if ( self._properties.max_width ) {
+        if ( self._dimension.w > self._properties.max_width ) {
+          self._dimension.w = self._properties.max_width;
+        }
       }
     }
 
-    // Gravity
-    var grav = this._properties.gravity;
-    if ( grav ) {
-      if ( grav === 'center' ) {
-        this._position.y = (window.innerHeight / 2) - (this._dimension.h / 2);
-        this._position.x = (window.innerWidth / 2) - (this._dimension.w / 2);
+    function _initGravity() {
+      var grav = self._properties.gravity;
+      if ( grav ) {
+        if ( grav === 'center' ) {
+          self._position.y = (window.innerHeight / 2) - (self._dimension.h / 2);
+          self._position.x = (window.innerWidth / 2) - (self._dimension.w / 2);
+        } else {
+          var space = getWindowSpace();
+          if ( grav.match(/^south/) ) {
+            self._position.y = space.height - self._dimension.h;
+          } else {
+            self._position.y = space.top;
+          }
+          if ( grav.match(/west$/) ) {
+            self._position.x = space.left;
+          } else {
+            self._position.x = space.width - self._dimension.w;
+          }
+        }
+      }
+    }
+
+    function _initMinButton() {
+      buttonMinimize            = document.createElement('div');
+      buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
+      buttonMinimize.innerHTML  = '&nbsp;';
+      if ( self._properties.allow_minimize ) {
+        self._addEventListener(buttonMinimize, (isTouch ? 'touchend' : 'click'), function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          self._onWindowButtonClick(ev, self, 'minimize');
+          return false;
+        });
       } else {
-        var space = getWindowSpace();
-        if ( grav.match(/^south/) ) {
-          this._position.y = space.height - this._dimension.h;
-        } else {
-          this._position.y = space.top;
-        }
-        if ( grav.match(/west$/) ) {
-          this._position.x = space.left;
-        } else {
-          this._position.x = space.width - this._dimension.w;
-        }
+        buttonMinimize.style.display = 'none';
       }
     }
 
-    console.log('Properties', this._properties);
-    console.log('Position', this._position);
-    console.log('Dimension', this._dimension);
-
-    // Main outer container
-    var main = document.createElement('div');
-
-    this._addEventListener(main, 'contextmenu', function(ev) {
-      var r = Utils.$isInput(ev);
-
-      if ( !r ) {
-        ev.preventDefault();
+    function _initMaxButton() {
+      buttonMaximize            = document.createElement('div');
+      buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
+      buttonMaximize.innerHTML  = '&nbsp;';
+      if ( self._properties.allow_maximize ) {
+        self._addEventListener(buttonMaximize, (isTouch ? 'touchend' : 'click'), function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          self._onWindowButtonClick(ev, self, 'maximize');
+          return false;
+        });
+      } else {
+        buttonMaximize.style.display = 'none';
       }
-
-      OSjs.API.blurMenu();
-
-      return r;
-    });
-
-    function _showBorder() {
-      Utils.$addClass(main, 'WindowHintDnD');
     }
 
-    function _hideBorder() {
-      Utils.$removeClass(main, 'WindowHintDnD');
+    function _initCloseButton() {
+      buttonClose           = document.createElement('div');
+      buttonClose.className = 'WindowButton WindowButtonClose';
+      buttonClose.innerHTML = '&nbsp;';
+      if ( self._properties.allow_close ) {
+        self._addEventListener(buttonClose, (isTouch ? 'touchend' : 'click'), function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          self._onWindowButtonClick(ev, self, 'close');
+          return false;
+        });
+      } else {
+        buttonClose.style.display = 'none';
+      }
     }
 
-    if ( this._properties.allow_drop ) {
-      if ( OSjs.Compability.dnd ) {
+    function _initDnD() {
+      if ( self._properties.allow_drop && OSjs.Compability.dnd ) {
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
@@ -385,6 +406,45 @@
       }
     }
 
+    function _showBorder() {
+      Utils.$addClass(main, 'WindowHintDnD');
+    }
+
+    function _hideBorder() {
+      Utils.$removeClass(main, 'WindowHintDnD');
+    }
+
+    console.group('OSjs::Core::Window::init()');
+
+    this._state.focused = false;
+    this._icon = API.getIcon(this._icon, null, this._appRef);
+
+    _initPosition();
+    _initDimension();
+    _initGravity();
+
+    console.log('Properties', this._properties);
+    console.log('Position', this._position);
+    console.log('Dimension', this._dimension);
+
+    // Main outer container
+    main = document.createElement('div');
+
+    this._addEventListener(main, 'contextmenu', function(ev) {
+      var r = Utils.$isInput(ev);
+
+      if ( !r ) {
+        ev.preventDefault();
+      }
+
+      OSjs.API.blurMenu();
+
+      return r;
+    });
+
+    _initDnD();
+
+
     // Window -> Top
     var windowTop           = document.createElement('div');
     windowTop.className     = 'WindowTop';
@@ -420,47 +480,10 @@
       });
     }
 
-    var buttonMinimize        = document.createElement('div');
-    buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
-    buttonMinimize.innerHTML  = '&nbsp;';
-    if ( this._properties.allow_minimize ) {
-      this._addEventListener(buttonMinimize, (isTouch ? 'touchend' : 'click'), function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        self._onWindowButtonClick(ev, this, 'minimize');
-        return false;
-      });
-    } else {
-      buttonMinimize.style.display = 'none';
-    }
+    _initMinButton();
+    _initMaxButton();
+    _initCloseButton();
 
-    var buttonMaximize        = document.createElement('div');
-    buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
-    buttonMaximize.innerHTML  = '&nbsp;';
-    if ( this._properties.allow_maximize ) {
-      this._addEventListener(buttonMaximize, (isTouch ? 'touchend' : 'click'), function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        self._onWindowButtonClick(ev, this, 'maximize');
-        return false;
-      });
-    } else {
-      buttonMaximize.style.display = 'none';
-    }
-
-    var buttonClose       = document.createElement('div');
-    buttonClose.className = 'WindowButton WindowButtonClose';
-    buttonClose.innerHTML = '&nbsp;';
-    if ( this._properties.allow_close ) {
-      this._addEventListener(buttonClose, (isTouch ? 'touchend' : 'click'), function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        self._onWindowButtonClick(ev, this, 'close');
-        return false;
-      });
-    } else {
-      buttonClose.style.display = 'none';
-    }
 
     // Window -> Top -> Content Container (Wrapper)
     var windowWrapper       = document.createElement('div');
@@ -573,6 +596,14 @@
   Window.prototype.destroy = function() {
     var self = this;
 
+    if ( this._destroyed ) { return; }
+    this._destroyed = true;
+
+    var wm = OSjs.Core.getWindowManager();
+
+    console.group('OSjs::Core::Window::destroy()');
+
+    // Nulls out stuff
     function _removeDOM() {
       self._setWarning(null);
 
@@ -590,49 +621,48 @@
       self._$resize     = null;
     }
 
-    if ( this._destroyed ) { return; }
-    var wm = OSjs.Core.getWindowManager();
+    // Removed DOM elements and their referring objects (GUI Elements etc)
+    function _destroyDOM() {
+      if ( self._parent ) {
+        self._parent._removeChild(self);
+      }
+      self._parent = null;
 
-    this._destroyed = true;
+      if ( self._guiElements && self._guiElements.length ) {
+        self._guiElements.forEach(function(el, i) {
+          if ( el ) {
+            el.destroy();
+          }
+          self._guiElements[i] = null;
+        });
+      }
+      self._guiElements = [];
 
-    console.group('OSjs::Core::Window::destroy()');
+      self._removeChildren();
+    }
+
+    // Destroys the window
+    function _destroyWin() {
+      if ( wm ) {
+        wm.removeWindow(self);
+      }
+
+      var curWin = wm ? wm.getCurrentWindow() : null;
+      if ( curWin && curWin._wid === self._wid ) {
+        wm.setCurrentWindow(null);
+      }
+
+      var lastWin = wm ? wm.getLastWindow() : null;
+      if ( lastWin && lastWin._wid === self._wid ) {
+        wm.setLastWindow(null);
+      }
+    }
 
     this._onChange('close');
-
     this._fireHook('destroy');
 
-    // Children etc
-    if ( this._parent ) {
-      this._parent._removeChild(this);
-    }
-    this._parent = null;
-
-    if ( this._guiElements && this._guiElements.length ) {
-      this._guiElements.forEach(function(el, i) {
-        if ( el ) {
-          el.destroy();
-        }
-        self._guiElements[i] = null;
-      });
-    }
-    this._guiElements = [];
-
-    this._removeChildren();
-
-    // Instance
-    if ( wm ) {
-      wm.removeWindow(this);
-    }
-
-    var curWin = wm ? wm.getCurrentWindow() : null;
-    if ( curWin && curWin._wid === this._wid ) {
-      wm.setCurrentWindow(null);
-    }
-
-    var lastWin = wm ? wm.getLastWindow() : null;
-    if ( lastWin && lastWin._wid === this._wid ) {
-      wm.setLastWindow(null);
-    }
+    _destroyDOM();
+    _destroyWin();
 
     if ( this._$element ) {
       var anim = wm ? wm.getSetting('animations') : false;
@@ -814,6 +844,94 @@
   Window.prototype._addGUIElement = function(gel, parentNode, parentGel) {
     var self = this;
 
+    // Fixes problems with iframes blocking certain events
+    function _fixIframe() {
+      self._$iframefix = document.createElement('div');
+      self._$iframefix.className = 'WindowIframeFix';
+      self._$iframefix.onmousemove = Utils._preventDefault;
+      self._$iframefix.onclick = function() {
+        self._focus();
+      };
+      self._$element.appendChild(self._$iframefix);
+      self._iframeFixEl = gel;
+
+      self._addHook('move', function() {
+        if ( self._$iframefix && self._state.focused ) {
+          self._$iframefix.style.display = 'block';
+        }
+      });
+      self._addHook('moved', function() {
+        if ( self._$iframefix && self._state.focused ) {
+          self._$iframefix.style.display = 'none';
+        }
+      });
+
+      self._addHook('resized', function() {
+        self._updateIframeFix();
+      });
+      self._addHook('blur', function() {
+        self._updateIframeFix();
+      });
+      self._updateIframeFix();
+    }
+
+    // Make sure all events are properly set up for various GUI elements
+    function _addHooks() {
+      if ( gel.opts ) {
+        if ( gel.opts.focusable ) {
+          gel._addHook('focus', function() {
+            self._guiElement = self;
+          });
+          self._addHook('blur', function() {
+            gel.blur();
+          });
+        }
+
+        // NOTE: self is a fix for iframes blocking mousemove events (ex. moving windows)
+        //if ( gel.opts.isIframe ) {
+        if ( (gel instanceof OSjs.GUI.RichText) || gel.opts.isIframe ) {
+          _fixIframe();
+        }
+
+        // NOTE: Fixes for Iframe "bugs"
+        gel._addHook('focus', function() {
+          OSjs.API.blurMenu();
+          self._focus();
+        });
+
+        var overlay = null, elpos;
+        self._addHook('resize', function() {
+          if ( !overlay ) {
+            elpos = Utils.$position(gel.$element);
+
+            overlay                   = document.createElement('div');
+            overlay.className         = 'IFrameResizeFixer';
+            overlay.style.position    = 'absolute';
+            overlay.style.zIndex      = 9999999999;
+            document.body.appendChild(overlay);
+          }
+          overlay.style.top      = elpos.top + 'px';
+          overlay.style.left     = elpos.left + 'px';
+          overlay.style.width    = (gel.$element.offsetWidth||0) + 'px';
+          overlay.style.height   = (gel.$element.offsetHeight||0) + 'px';
+        });
+
+        self._addHook('resized', function() {
+          if ( overlay && overlay.parentNode ) {
+            overlay.parentNode.removeChild(overlay);
+            overlay = null;
+          }
+        });
+      }
+
+      // NOTE: Fixes problems with GUIElements values not setting properly
+      if ( (gel instanceof OSjs.GUI.Tabs) ) {
+        gel._addHook('select', function() {
+          self._updateGUIElements(true);
+        });
+      }
+    }
+
     if ( !parentNode && (parentNode instanceof OSjs.Core.GUIElement) ) {
       parentNode = parentGel.$element;
     }
@@ -830,86 +948,7 @@
       gel._setWindow(this);
       gel._setTabIndex(this._guiElements.length + 1);
 
-      //console.log('OSjs::Core::Window::_addGUIElement()');
-      if ( gel.opts ) {
-        if ( gel.opts.focusable ) {
-          gel._addHook('focus', function() {
-            self._guiElement = this;
-          });
-          this._addHook('blur', function() {
-            gel.blur();
-          });
-        }
-
-        // NOTE: This is a fix for iframes blocking mousemove events (ex. moving windows)
-        //if ( gel.opts.isIframe ) {
-        if ( (gel instanceof OSjs.GUI.RichText) || gel.opts.isIframe ) {
-          this._$iframefix = document.createElement('div');
-          this._$iframefix.className = 'WindowIframeFix';
-          this._$iframefix.onmousemove = Utils._preventDefault;
-          this._$iframefix.onclick = function() {
-            self._focus();
-          };
-          this._$element.appendChild(this._$iframefix);
-          this._iframeFixEl = gel;
-
-          this._addHook('move', function() {
-            if ( self._$iframefix && self._state.focused ) {
-              self._$iframefix.style.display = 'block';
-            }
-          });
-          this._addHook('moved', function() {
-            if ( self._$iframefix && self._state.focused ) {
-              self._$iframefix.style.display = 'none';
-            }
-          });
-
-          this._addHook('resized', function() {
-            self._updateIframeFix();
-          });
-          this._addHook('blur', function() {
-            self._updateIframeFix();
-          });
-          this._updateIframeFix();
-        }
-
-        // NOTE: Fixes for Iframe "bugs"
-        gel._addHook('focus', function() {
-          OSjs.API.blurMenu();
-          self._focus();
-        });
-
-        var overlay = null, elpos;
-        this._addHook('resize', function() {
-          if ( !overlay ) {
-            elpos = Utils.$position(gel.$element);
-
-            overlay                   = document.createElement('div');
-            overlay.className         = 'IFrameResizeFixer';
-            overlay.style.position    = 'absolute';
-            overlay.style.zIndex      = 9999999999;
-            document.body.appendChild(overlay);
-          }
-          overlay.style.top      = elpos.top + 'px';
-          overlay.style.left     = elpos.left + 'px';
-          overlay.style.width    = (gel.$element.offsetWidth||0) + 'px';
-          overlay.style.height   = (gel.$element.offsetHeight||0) + 'px';
-        });
-
-        this._addHook('resized', function() {
-          if ( overlay && overlay.parentNode ) {
-            overlay.parentNode.removeChild(overlay);
-            overlay = null;
-          }
-        });
-      }
-
-      // NOTE: Fixes problems with GUIElements values not setting properly
-      if ( (gel instanceof OSjs.GUI.Tabs) ) {
-        gel._addHook('select', function() {
-          self._updateGUIElements(true);
-        });
-      }
+      _addHooks();
 
       this._guiElements.push(gel);
       parentNode.appendChild(gel.getRoot());
@@ -1316,9 +1355,8 @@
    * @method  Window::_resizeTo()
    */
   Window.prototype._resizeTo = function(dw, dh, limit, move, container, force) {
-    if ( !this._$element ) { return; }
-
     var self = this;
+    if ( !this._$element ) { return; }
     if ( dw <= 0 || dh <= 0 ) { return; }
 
     limit = (typeof limit === 'undefined' || limit === true);
@@ -1340,7 +1378,7 @@
     var newX  = null;
     var newY  = null;
 
-    if ( limit ) {
+    function _limitTo() {
       if ( (cx + newW) > space.width ) {
         if ( move ) {
           newW = space.width;
@@ -1357,11 +1395,27 @@
           newH = space.height;
           newY = space.top;
         } else {
-          newH = (space.height - cy + this._$top.offsetHeight) + dy;
+          newH = (space.height - cy + self._$top.offsetHeight) + dy;
         }
       } else {
         newH += dy;
       }
+    }
+
+    function _resizeFinished() {
+      var wm = OSjs.Core.getWindowManager();
+      var anim = wm ? wm.getSetting('animations') : false;
+      if ( anim ) {
+        setTimeout(function() {
+          self._fireHook('resized');
+        }, getAnimDuration());
+      } else {
+        self._fireHook('resized');
+      }
+    }
+
+    if ( limit ) {
+      _limitTo();
     }
 
     this._resize(newW, newH, force);
@@ -1373,34 +1427,29 @@
       this._move(this._position.x, newY);
     }
 
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      setTimeout(function() {
-        self._fireHook('resized');
-      }, getAnimDuration());
-    } else {
-      this._fireHook('resized');
-    }
+    _resizeFinished();
   };
 
   Window.prototype._resize = function(w, h, force) {
     if ( !this._$element ) { return false; }
+    var p = this._properties;
 
-    if ( !force ) {
-      if ( !this._properties.allow_resize ) { return false; }
-
-      if ( w < this._properties.min_width ) { w = this._properties.min_width; }
-      if ( this._properties.max_width !== null ) {
-        if ( w > this._properties.max_width ) { w = this._properties.max_width; }
+    function _resize() {
+      if ( w < p.min_width ) { w = p.min_width; }
+      if ( p.max_width !== null ) {
+        if ( w > p.max_width ) { w = p.max_width; }
       }
 
-      if ( h < this._properties.min_height ) { h = this._properties.min_height; }
-      if ( this._properties.max_height !== null ) {
-        if ( h > this._properties.max_height ) { h = this._properties.max_height; }
+      if ( h < p.min_height ) { h = p.min_height; }
+      if ( p.max_height !== null ) {
+        if ( h > p.max_height ) { h = p.max_height; }
       }
     }
-    //if ( typeof w === 'undefined' || typeof h === 'undefined' ) return false;
+
+    if ( !force ) {
+      if ( !p.allow_resize ) { return false; }
+      _resize();
+    }
 
     if ( w ) {
       this._$element.style.width = w + 'px';
