@@ -44,9 +44,10 @@
    *
    * @param  Object   args      Given function Dictionary
    * @param  Object   defaults  Defaults Dictionary
+   * @param  boolean  undef     Check with 'undefined'
    * @return Object
    */
-  OSjs.Utils.argumentDefaults = function(args, defaults) {
+  OSjs.Utils.argumentDefaults = function(args, defaults, undef) {
     args = args || {};
     Object.keys(defaults).forEach(function(key) {
       args[key] = args[key] || defaults[key];
