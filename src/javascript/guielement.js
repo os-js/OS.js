@@ -61,11 +61,20 @@
 
     return function(name, opts) {
       opts = opts || {};
+      Utils.argumentDefaults(opts, {
+        dnd: false,
+        focusable: true,
+        dndOpts: {}
+      }, true);
+      Utils.argumentDefaults(opts, {
+        dndDrop: opts.dnd,
+        dndDrag: opts.dnd
+      }, true);
 
       this.tagName        = this.tagName || 'div';
       this.className      = this.className || null;
       this.name           = name || ('Unknown_' + _Count);
-      this.opts           = opts || {};
+      this.opts           = opts;
       this.id             = _Count;
       this.destroyed      = false;
       this.focused        = false;
@@ -88,22 +97,6 @@
         select  : [], // Reserved for internal usage
         destroy : []
       };
-
-      if ( typeof this.opts.dnd === 'undefined' ) {
-        this.opts.dnd     = false;
-      }
-      if ( typeof this.opts.dndDrop === 'undefined' ) {
-        this.opts.dndDrop = this.opts.dnd;
-      }
-      if ( typeof this.opts.dndDrag === 'undefined' ) {
-        this.opts.dndDrag = this.opts.dnd;
-      }
-      if ( typeof this.opts.dndOpts === 'undefined' ) {
-        this.opts.dndOpts = {};
-      }
-      if ( typeof this.opts.focusable === 'undefined' ) {
-        this.opts.focusable = true;
-      }
 
       this.init();
       _Count++;
