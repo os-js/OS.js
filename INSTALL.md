@@ -60,7 +60,7 @@ Or run `grunt apache-vhost` to generate one
 
 *Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
 
-*This has not been tested on Windows, but is probably working with a WAMP stack*
+*Also works with the WAMP stack on Windows*
 
 ## PHP5 on Lighttpd
 
@@ -85,7 +85,7 @@ Or run `grunt nginx-config` to generate one
 * Production dist: `node src/server-node/server.js`
 * Developer dist: `node src/server-node/server.js dist-dev`
 
-[dist-dev does not currently work on Windows platforms](https://github.com/andersevenrud/OS.js-v2/issues/94)
+Windows users, [see here for getting dist-dev to work](https://github.com/andersevenrud/OS.js-v2/issues/94)
 
 ## Standalone
 
