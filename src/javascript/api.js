@@ -762,17 +762,15 @@
    * @api     OSjs.API.getFileIcon()
    */
   function doGetFileIcon(file, size, icon) {
+    icon = icon || 'mimetypes/gnome-fs-regular.png';
+
     if ( typeof file === 'object' && !(file instanceof OSjs.VFS.File) ) {
       file = new OSjs.VFS.File(file);
     }
 
-    var filename = file.filename  || null;
-    var type     = file.type      || 'file';
-    var mime     = file.mime      || 'application/octet-stream';
-    icon         = icon           || 'mimetypes/gnome-fs-regular.png';
-    size         = size           || '16x16';
-
-    if ( !filename ) { throw new Error('Filename is required for getFileIcon()'); }
+    if ( !file.filename ) {
+      throw new Error('Filename is required for getFileIcon()');
+    }
 
     var map = [
       {match: 'application/pdf', icon: 'mimetypes/gnome-mime-application-pdf.png'},
@@ -792,11 +790,13 @@
       {match: /^application\//, icon: 'mimetypes/binary.png'}
     ];
 
-    if ( type === 'dir' ) {
+    if ( file.type === 'dir' ) {
       icon = 'places/folder.png';
-    } else if ( type === 'trash' ) {
+    } else if ( file.type === 'trash' ) {
       icon = 'places/user-trash.png';
     } else {
+      var mime = file.mime || 'application/octet-stream';
+
       map.forEach(function(iter) {
         var match = false;
         if ( typeof iter.match === 'string' ) {
@@ -892,10 +892,7 @@
     size = size || '16x16';
     app  = app  || null;
 
-    if ( name && !name.match(/^(http|\/\/)/) ) {
-      var wm = OSjs.Core.getWindowManager();
-      var theme = wm ? wm.getIconTheme() : 'default';
-      var root = OSjs.API.getDefaultSettings().Core.IconURI;
+    function checkIcon() {
       if ( name.match(/^\.\//) ) {
         name = name.replace(/^\.\//, '');
         if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
@@ -909,6 +906,17 @@
         if ( !name.match(/^\//) ) {
           name = root + '/' + theme + '/' + size + '/' + name;
         }
+      }
+      return null;
+    }
+
+    if ( name && !name.match(/^(http|\/\/)/) ) {
+      var wm = OSjs.Core.getWindowManager();
+      var theme = wm ? wm.getIconTheme() : 'default';
+      var root = OSjs.API.getDefaultSettings().Core.IconURI;
+      var chk = checkIcon();
+      if ( chk !== null ) {
+        return chk;
       }
     }
 
