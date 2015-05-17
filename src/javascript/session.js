@@ -279,20 +279,29 @@
    * @return  boolean
    */
   function globalOnKeyDown(ev) {
-    var d = ev.srcElement || ev.target;
-    var wm = OSjs.Core.getWindowManager();
+    var wm  = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
 
-    // We don't want backspace and tab triggering default browser events
-    var doPrevent = d.tagName === 'BODY' ? true : false;
-    if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isInput(ev) ) {
-      doPrevent = true;
-    } else if ( (ev.keyCode === OSjs.Utils.Keys.TAB) && OSjs.Utils.$isFormElement(ev) ) {
-      doPrevent = true;
+    function checkPrevent() {
+      var d = ev.srcElement || ev.target;
+      var doPrevent = d.tagName === 'BODY' ? true : false;
+
+      // We don't want backspace and tab triggering default browser events
+      if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isInput(ev) ) {
+        doPrevent = true;
+      } else if ( (ev.keyCode === OSjs.Utils.Keys.TAB) && OSjs.Utils.$isFormElement(ev) ) {
+        doPrevent = true;
+      }
+
+      // Only prevent default event if current window is not set up to capture them by force
+      if ( doPrevent && (!win || !win._properties.key_capture) ) {
+        return true;
+      }
+
+      return false;
     }
 
-    // Only prevent default event if current window is not set up to capture them by force
-    if ( doPrevent && (!win || !win._properties.key_capture) ) {
+    if ( checkPrevent() ) {
       ev.preventDefault();
     }
 
