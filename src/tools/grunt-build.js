@@ -284,8 +284,17 @@
         settings.MaxUpload = root.frontend.Core.MaxUploadSize;
       } catch ( exc ) {}
 
+      if ( ISWIN ) {
+        Object.keys(settings.vfs).forEach(function(key) {
+          if ( typeof settings.vfs[key] === 'string' ) {
+            settings.vfs[key] = settings.vfs[key].replace(/\\/g, '/');
+          }
+        });
+      }
+
       var tmp = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'settings.php')).toString();
       tmp = tmp.replace('%JSON%', JSON.stringify(settings, null, 4));
+
       return tmp;
     }
 
