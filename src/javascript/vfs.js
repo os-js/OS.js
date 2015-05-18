@@ -157,14 +157,16 @@
     options = options || {};
     var result = [];
 
-    var typeFilter = options.typeFilter || null;
-    var mimeFilter = options.mimeFilter || [];
+    var typeFilter     = options.typeFilter || null;
+    var mimeFilter     = options.mimeFilter || [];
+    var showDotFiles   = options.showDotFiles === true;
+
     list.forEach(function(iter) {
       if ( iter.mime === 'application/vnd.google-apps.folder' ) {
         iter.type = 'dir';
       }
 
-      if ( typeFilter && iter.type !== typeFilter ) {
+      if ( (typeFilter && iter.type !== typeFilter) || (!showDotFiles && iter.filename.match(/^\./)) ) {
         return;
       }
 

@@ -55,17 +55,18 @@
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
 
   ApplicationFileManagerWindow.prototype.init = function() {
-    var self  = this;
-    var app   = this._appRef;
-    var root  = Window.prototype.init.apply(this, arguments);
-    var vt    = app._getArgument('viewType');
-    var vs    = true;
+    var self    = this;
+    var app     = this._appRef;
+    var root    = Window.prototype.init.apply(this, arguments);
+    var vt      = app._getArgument('viewType');
+    var vs      = true;
+    var showdf  = false;
 
     var panedView  = this._addGUIElement(new GUI.PanedView('FileManagerPanedView'), root);
     var viewSide   = panedView.createView('Side', {width: 140});
     var viewFile   = panedView.createView('File');
     this.sideView  = this._addGUIElement(new GUI.ListView('FileManagerSideView', {dnd: false, singleClick: true}), viewSide);
-    var fileView   = this._addGUIElement(new GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt}), viewFile);
+    var fileView   = this._addGUIElement(new GUI.FileView('FileManagerFileView', {path: '/', dnd: true, summary: true, viewType: vt, showDotFiles: showdf}), viewFile);
     var statusBar  = this._addGUIElement(new GUI.StatusBar('FileManagerStatusBar'), root);
     var menuBar    = this._addGUIElement(new GUI.MenuBar('FileManagerMenuBar'), root);
 
@@ -331,6 +332,7 @@
     ];
 
     var chk;
+    var chk2;
     menuBar.addItem(API._("LBL_VIEW"), [
       {title: API._('LBL_REFRESH'), onClick: function() {
         fileView.refresh();
@@ -361,9 +363,40 @@
           self._focus();
         }
       },
+      {title:OSjs.Applications.ApplicationFileManager._('Show (hidden) Dotfiles'),
+        onCreate: function(menu, item) {
+          var span = document.createElement('span');
+          chk2  = document.createElement('input');
+          chk2.type = 'checkbox';
+          if ( showdf ) {
+            chk2.setAttribute('checked', 'checked');
+          }
+          span.appendChild(document.createTextNode(item.title));
+          span.appendChild(chk2);
+          menu.appendChild(span);
+        }, onClick: function() {
+          fileView.refresh();
+          if ( chk2 ) {
+            if ( chk2.checked ) {
+              chk2.removeAttribute('checked');
+              showdf = false;
+            } else {
+              chk2.setAttribute('checked', 'checked');
+              showdf = true;
+            }
+
+            if ( fileView ) {
+              fileView.setShowDotFiles(showdf);
+              fileView.refresh();
+            }
+          }
+          self._focus();
+        }
+      },
       {title: API._('LBL_VIEWTYPE'), menu: viewTypeMenu},
       {title: API._('LBL_SHOW_COLUMNS'), menu: viewListColumns}
     ]);
+
 
     menuBar.onMenuOpen = function(menu, mpos, mtitle, menuBar) {
       if ( mtitle === API._('LBL_FILE') ) return;

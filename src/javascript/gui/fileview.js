@@ -456,6 +456,7 @@
     this.wasUpdated     = false;
     this.sortKey        = null;
     this.sortDir        = true; // true = asc, false = desc
+    this.showDotFiles   = (typeof opts.showDotFiles === 'undefined') || opts.showDotFiles === true;
     this.locked         = opts.locked || false;
     this.viewRef        = null;
 
@@ -675,7 +676,7 @@
         var list = self.sortKey ? sortList(result, self.sortKey, self.sortDir) : result;
         onSuccess.call(self, list, dir, num, size);
       }
-    }, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter});
+    }, {mimeFilter: this.mimeFilter, typeFilter: this.typeFilter, showDotFiles: this.showDotFiles});
   };
 
   FileView.prototype.chdir = function(dir, onRefreshed, onError) {
@@ -754,6 +755,19 @@
       }
     }
     return false;
+  };
+
+  /**
+   * Sets if to display (hidden) dotfiles
+   *
+   * @param   boolean     t         Toggle on/off
+   *
+   * @return  void
+   *
+   * @method  FileView::setShowDotFiles()
+   */
+  FileView.prototype.setShowDotFiles = function(t) {
+    this.showDotFiles = (t === true);
   };
 
   /**
