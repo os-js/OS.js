@@ -2,7 +2,7 @@
 
 OS.js is a desktop implementation for your browser with a fully-fletched window manager, Application APIs, GUI toolkits and filesystem abstraction.
 
-Works in any modern browser and can be deployed on any OS using Node or PHP.
+Works in any modern browser and can be deployed on any platform using Node or PHP.
 
 Is available under the [BSD Clause 2 License](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
 
@@ -40,22 +40,29 @@ My contact information is located on my [Github profile](https://github.com/ande
 
 [Want to join the translation team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-translation-team)
 
-[Submit your application](https://github.com/andersevenrud/OS.js-v2/issues/81)
+[Got questions or suggestions?](https://github.com/andersevenrud/OS.js-v2/issues/49)
+
+
 
 # Links
+
 * [Homepage](http://andersevenrud.github.io/OS.js-v2/)
 * [Documentation](http://andersevenrud.github.io/OS.js-v2/doc/)
 * [Sources](https://github.com/andersevenrud/OS.js-v2)
 * [Issue Tracker](https://github.com/andersevenrud/OS.js-v2/issues)
-* [Demo](http://osjsv2.0o.no/)
+* [Demo Site](http://osjsv2.0o.no/)
 
-# Social
+## Social Media
+
+* [YouTube](https://www.youtube.com/playlist?list=PLzC5Z5D-YLyEoYXWrxplUIek5uRyF92iG)
 * [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934)
 * [Facebook](https://www.facebook.com/pages/OSjs/226644300734574)
 * [Reddit](http://www.reddit.com/r/osjs)
 
-# Contact
-* [Author Homepage](http://andersevenrud.github.io/)
-* [Author Blog](http://anderse.wordpress.com)
-* [Author Twitter](https://twitter.com/andersevenrud)
-* Author Mail: <andersevenrud@gmail.com>
+## Author
+
+* [Homepage](http://andersevenrud.github.io/)
+* [Blog](http://anderse.wordpress.com)
+* [Twitter](https://twitter.com/andersevenrud)
+* [LinkedIn](http://linkedin.com/in/andersevenrud)
+* [Mail](andersevenrud@gmail.com)
