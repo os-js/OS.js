@@ -880,7 +880,7 @@
       if ( gel.opts ) {
         if ( gel.opts.focusable ) {
           gel._addHook('focus', function() {
-            self._guiElement = self;
+            self._guiElement = this;
           });
           self._addHook('blur', function() {
             gel.blur();
