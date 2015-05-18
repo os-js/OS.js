@@ -161,12 +161,21 @@
     var mimeFilter     = options.mimeFilter || [];
     var showDotFiles   = options.showDotFiles === true;
 
+    function filterFile(iter) {
+      if ( iter.filename !== '..' ) {
+        if ( (typeFilter && iter.type !== typeFilter) || (!showDotFiles && iter.filename.match(/^\./)) ) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     list.forEach(function(iter) {
       if ( iter.mime === 'application/vnd.google-apps.folder' ) {
         iter.type = 'dir';
       }
 
-      if ( (typeFilter && iter.type !== typeFilter) || (!showDotFiles && iter.filename.match(/^\./)) ) {
+      if ( !filterFile(iter) ) {
         return;
       }
 
