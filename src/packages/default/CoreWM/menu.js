@@ -40,7 +40,7 @@
     office      : {icon: 'categories/package_office.png',      title: 'Office'},
     system      : {icon: 'categories/package_system.png',      title: 'System'},
     utilities   : {icon: 'categories/package_utilities.png',   title: 'Utilities'},
-    unknown     : {icon: 'categories/applications-other.png',  title: 'Unknown'}
+    other     : {icon: 'categories/applications-other.png',  title: 'Other'}
   };
 
   function _createIcon(aiter, aname, arg) {
