@@ -230,18 +230,24 @@
         if ( current ) {
           getFilesInFolder(currentParentId, function(error, list) {
             list = list || [];
-            var lfound;
-            list.forEach(function(iter) { // FIXME: Not very precise
-              if ( iter ) {
-                if ( iter.name === current ) {
-                  lfound = iter.id;
-                }
-              }
-            });
 
-            if ( lfound ) {
-              currentParentId = lfound;
+            if ( !error ) {
+              var lfound;
+              list.forEach(function(iter) { // FIXME: Not very precise
+                if ( iter ) {
+                  if ( iter.name === current ) {
+                    lfound = iter.id;
+                  }
+                }
+              });
+
+              if ( lfound ) {
+                currentParentId = lfound;
+              }
+            } else {
+              console.warn('OneDrive', 'resolvePath()', 'getFilesInFolder() error', error);
             }
+
 
             if ( done ) {
               completed(lfound);
