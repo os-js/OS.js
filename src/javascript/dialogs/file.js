@@ -194,23 +194,25 @@
         Utils.$addClass(root.firstChild, 'HasFileTypes');
       }
 
-      this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {value: curval, onKeyPress: function(ev) {
-        self.onInputKey(ev);
-        if ( ev.keyCode === Utils.Keys.ENTER ) {
-          self.onInputEnter(ev);
-          return;
-        }
-      }, onChange: function(ev) {
+      function _change(ev) {
         if ( self.$input ) {
           setSelectedType(self.$input.getValue());
         }
         self.onInputKey(ev);
-      }, onKeyUp: function(ev) {
-        if ( self.$input ) {
-          setSelectedType(self.$input.getValue());
-        }
-        self.onInputKey(ev);
-      }}), this.$element);
+      }
+
+      this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {
+        value: curval,
+        onKeyPress: function(ev) {
+          self.onInputKey(ev);
+          if ( ev.keyCode === Utils.Keys.ENTER ) {
+            self.onInputEnter(ev);
+            return;
+          }
+        },
+        onChange: _change,
+        onKeyUp: _change
+      }), this.$element);
     }
 
     var roots = VFS.getModules(); // FIXME Does not work if Internal is disabled for some reason
