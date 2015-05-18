@@ -270,25 +270,17 @@
     }
 
     function _initDimension() {
-      if ( self._properties.min_height ) {
-        if ( self._dimension.h < self._properties.min_height ) {
-          self._dimension.h = self._properties.min_height;
-        }
+      if ( self._properties.min_height && (self._dimension.h < self._properties.min_height) ) {
+        self._dimension.h = self._properties.min_height;
       }
-      if ( self._properties.max_width ) {
-        if ( self._dimension.w < self._properties.max_width ) {
-          self._dimension.w = self._properties.max_width;
-        }
+      if ( self._properties.max_width && (self._dimension.w < self._properties.max_width) ) {
+        self._dimension.w = self._properties.max_width;
       }
-      if ( self._properties.max_height ) {
-        if ( self._dimension.h > self._properties.max_height ) {
-          self._dimension.h = self._properties.max_height;
-        }
+      if ( self._properties.max_height && (self._dimension.h > self._properties.max_height) ) {
+        self._dimension.h = self._properties.max_height;
       }
-      if ( self._properties.max_width ) {
-        if ( self._dimension.w > self._properties.max_width ) {
-          self._dimension.w = self._properties.max_width;
-        }
+      if ( self._properties.max_width && (self._dimension.w > self._properties.max_width) ) {
+        self._dimension.w = self._properties.max_width;
       }
     }
 
