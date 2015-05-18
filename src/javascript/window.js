@@ -1394,6 +1394,15 @@
       }
     }
 
+    function _moveTo() {
+      if ( newX !== null ) {
+        self._move(newX, self._position.y);
+      }
+      if ( newY !== null ) {
+        self._move(self._position.x, newY);
+      }
+    }
+
     function _resizeFinished() {
       var wm = OSjs.Core.getWindowManager();
       var anim = wm ? wm.getSetting('animations') : false;
@@ -1412,13 +1421,7 @@
 
     this._resize(newW, newH, force);
 
-    if ( newX !== null ) {
-      this._move(newX, this._position.y);
-    }
-    if ( newY !== null ) {
-      this._move(this._position.x, newY);
-    }
-
+    _moveTo();
     _resizeFinished();
   };
 
