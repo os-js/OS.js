@@ -10,6 +10,8 @@
         "IconURI":          "/themes/icons",
         "PackageURI":       "/packages",
         "Home":             "home:///",
+        "UserPackages":     "home:///.packages",
+        "UserMetadata":     "home:///.packages/packages.json",
         "Handler":          "%HANDLER%",
         "Connection":       "%CONNECTION%",
         "MaxUploadSize":    2097152,

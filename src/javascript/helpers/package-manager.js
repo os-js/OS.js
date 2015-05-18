@@ -107,7 +107,7 @@
     }
 
     function _loadUserMetadata(cb) {
-      var path = 'home:///Packages/packages.json';
+      var path = OSjs.API.getDefaultSettings().Core.UserMetadata;
       var file = new OSjs.VFS.File(path, 'application/json');
       OSjs.VFS.read(file, function(err, resp) {
         resp = OSjs.Utils.fixJSON(resp || '');
@@ -138,7 +138,7 @@
    * Generates user-installed package metadata (on runtime)
    */
   PackageManager.prototype.generateUserMetadata = function(callback) {
-    var dir = new OSjs.VFS.File('home:///Packages'); // FIXME
+    var dir = new OSjs.VFS.File(OSjs.API.getDefaultSettings().Core.UserPackages);
     var found = {};
     var queue = [];
     var self = this;

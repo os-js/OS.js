@@ -96,6 +96,7 @@ class ExampleAPIHandler
       $homedir = sprintf("%s/%s", $settings['vfs']['homes'], $user->getUsername());
       if ( !file_exists($homedir) ) {
         @mkdir($homedir);
+        @mkdir("{$homedir}/.packages");
       }
     }
 

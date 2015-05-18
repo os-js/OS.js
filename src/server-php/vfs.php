@@ -327,7 +327,8 @@ class FS
 
 function getRealPath(&$scandir) {
   $scandir  = preg_replace("/\/$/", "", $scandir);
-  $scandir  = preg_replace("/\/\.\.?/", "/", $scandir);
+  $scandir  = preg_replace("/\/\.\.\/?/", "/", $scandir);
+  $scandir  = preg_replace("/\/$/", "", $scandir);
   $protocol = "";
   $dirname  = $scandir;
   $realpath = "";
