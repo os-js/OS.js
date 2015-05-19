@@ -66,6 +66,7 @@
       value: '',
       label: '',
       placeholder: '',
+      onClick: function() {},
       onChange: function() {},
       onKeyPress: function() {},
       onKeyUp: function() {},
@@ -156,8 +157,9 @@
 
     function _addInputEvents($input) {
       var evt = self.tagName === 'button' ? 'click' : 'change';
+      var evtName = self.tagName === 'button' ? 'onClick' : 'onChange';
       self._addEventListener($input, evt, function(ev) {
-        self.onChange.apply(self, [this, ev, self.getValue()]);
+        self[evtName].apply(self, [this, ev, self.getValue()]);
       });
     }
 
