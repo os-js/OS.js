@@ -61,23 +61,33 @@
    * @class
    */
   var _Input = function(className, tagName, name, opts) {
-    opts = opts || {};
+    opts = Utils.argumentDefaults(opts, {
+      disabled: false,
+      value: '',
+      label: '',
+      placeholder: '',
+      onChange: function() {},
+      onKeyPress: function() {},
+      onKeyUp: function() {},
+      onMouseUp: function() {},
+      onMouseDown: function() {}
+    });
     opts.hasCustomKeys = true;
 
     this.$input       = null;
     this.type         = tagName === 'input' ? (opts.type || 'text') : null;
-    this.disabled     = opts.disabled     || false;
-    this.value        = opts.value        || '';
-    this.label        = opts.label        || '';
-    this.placeholder  = opts.placeholder  || '';
+    this.disabled     = opts.disabled;
+    this.value        = opts.value;
+    this.label        = opts.label;
+    this.placeholder  = opts.placeholder;
     this.className    = className;
     this.tagName      = tagName;
-    this.onChange     = opts.onChange     || function() {};
-    this.onClick      = opts.onClick      || function() {};
-    this.onKeyPress   = opts.onKeyPress   || function() {};
-    this.onKeyUp      = opts.onKeyUp      || function() {};
-    this.onMouseUp    = opts.onMouseUp    || function() {};
-    this.onMouseDown  = opts.onMouseDown  || function() {};
+    this.onChange     = opts.onChange;
+    this.onClick      = opts.onClick;
+    this.onKeyPress   = opts.onKeyPress;
+    this.onKeyUp      = opts.onKeyUp;
+    this.onMouseUp    = opts.onMouseUp;
+    this.onMouseDown  = opts.onMouseDown;
 
     GUIElement.apply(this, [name, opts]);
   };
@@ -113,33 +123,46 @@
   _Input.prototype.init = function() {
     var self = this;
     var el = GUIElement.prototype.init.apply(this, [this.className]);
+
+    function _addPlaceholder($input) {
+      if ( self.tagName === 'textarea' || self.type === 'text' || self.type === 'password' ) {
+        if ( self.placeholder ) {
+          $input.setAttribute('placeholder', self.placeholder);
+        }
+      }
+    }
+
+    function _addKeyEvents($input) {
+      if ( self.tagName === 'input' ) {
+        if ( self.type === 'text' || self.type === 'password' ) {
+          self._addEventListener($input, 'keypress', function(ev) {
+            self.onKeyPress.apply(self, [ev]);
+          });
+          self._addEventListener($input, 'keyup', function(ev) {
+            self.onKeyUp.apply(self, [ev]);
+          });
+        }
+      }
+    }
+
+    function _addMouseEvents($input) {
+      self._addEventListener($input, 'mousedown', function(ev) {
+        self.onMouseDown.apply(self, [ev]);
+      });
+      self._addEventListener($input, 'mouseup', function(ev) {
+        self.onMouseUp.apply(self, [ev]);
+      });
+    }
+
+    function _addInputEvents($input) {
+      var evt = self.tagName === 'button' ? 'click' : 'change';
+      self._addEventListener($input, evt, function(ev) {
+        self.onChange.apply(self, [this, ev, self.getValue()]);
+      });
+    }
+
     this.$input = document.createElement(this.tagName);
     this.$input.setAttribute('tabindex', '-1');
-
-    if ( this.tagName === 'textarea' || this.type === 'text' || this.type === 'password' ) {
-      if ( this.placeholder ) {
-        this.$input.setAttribute('placeholder', this.placeholder);
-      }
-    }
-
-    if ( this.tagName === 'input' ) {
-      this.$input.type = this.type;
-      if ( this.type === 'text' || this.type === 'password' ) {
-        this._addEventListener(this.$input, 'keypress', function(ev) {
-          self.onKeyPress.apply(self, [ev]);
-        });
-        this._addEventListener(this.$input, 'keyup', function(ev) {
-          self.onKeyUp.apply(self, [ev]);
-        });
-      }
-    }
-
-    this._addEventListener(this.$input, 'mousedown', function(ev) {
-      self.onMouseDown.apply(self, [ev]);
-    });
-    this._addEventListener(this.$input, 'mouseup', function(ev) {
-      self.onMouseUp.apply(self, [ev]);
-    });
 
     if ( this.tagName === 'button' ) {
       if ( this.opts.icon ) {
@@ -148,21 +171,23 @@
         img.src = this.opts.icon;
         this.$input.appendChild(img);
       }
+
       this.$input.appendChild(document.createTextNode(this.value || this.label));
-      this._addEventListener(this.$input, 'click', function(ev) {
-        if ( self.isDisabled() ) { return; }
-        self.onClick.apply(self, [this, ev]);
-      });
     } else {
-      this._addEventListener(this.$input, 'change', function(ev) {
-        self.onChange.apply(self, [this, ev, self.getValue()]);
-      });
+      this.$input.type = this.type;
+
+      _addPlaceholder(this.$input);
+      _addKeyEvents(this.$input);
+      _addMouseEvents(this.$input);
     }
+
+    _addInputEvents(this.$input);
 
     el.appendChild(this.$input);
 
     this.setDisabled(this.disabled);
     this.setValue(this.value);
+
     return el;
   };
 
