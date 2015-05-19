@@ -52,7 +52,7 @@
       if ( val instanceof Array ) {
         val = val.join(', ');
       } else {
-        val = val.toString();
+        val = (val || '').toString();
       }
 
       var outer = document.createElement('div');
