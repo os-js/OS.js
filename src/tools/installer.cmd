@@ -5,28 +5,28 @@ REM EX: src\tools\installer.cmd
 SET srcdir=%CD%
 SET dstdir=%CD%\dist-dev
 
-del /N %dstdir%\blank.css
+del /Q %dstdir%\blank.css
 mklink "%dstdir%\blank.css" "%srcdir%\dist\blank.css"
 
-del /N %dstdir%\favicon.ico
+del /Q %dstdir%\favicon.ico
 mklink "%dstdir%\favicon.ico" "%srcdir%\dist\favicon.ico"
 
-del /N %dstdir%\favicon.png
+del /Q %dstdir%\favicon.png
 mklink "%dstdir%\favicon.png" "%srcdir%\dist\favicon.png"
 
-del /N %dstdir%\settings.js
+del /Q %dstdir%\settings.js
 mklink "%dstdir%\settings.js" "%srcdir%\dist\settings.js"
 
-del /N %dstdir%\css || rmdir %dstdir%\css
+del /Q %dstdir%\css || rmdir %dstdir%\css
 mklink /j "%dstdir%\css" "%srcdir%\src\stylesheets"
 
-del /N %dstdir%\js || rmdir %dstdir%\js
+del /Q %dstdir%\js || rmdir %dstdir%\js
 mklink /j "%dstdir%\js" "%srcdir%\src\javascript"
 
-del /N %dstdir%\packages || rmdir %dstdir%\packages
+del /Q %dstdir%\packages || rmdir %dstdir%\packages
 mklink /j "%dstdir%\packages" "%srcdir%\src\packages"
 
-del /N %dstdir%\themes || rmdir %dstdir%\themes
+del /Q %dstdir%\themes || rmdir %dstdir%\themes
 mklink /j "%dstdir%\themes" "%srcdir%\src\themes"
 
 npm install & grunt --force
