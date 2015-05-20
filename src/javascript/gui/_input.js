@@ -176,7 +176,9 @@
 
       this.$input.appendChild(document.createTextNode(this.value || this.label));
     } else {
-      this.$input.type = this.type;
+      try {
+        this.$input.type = this.type;
+      } catch ( e ) {}
 
       _addPlaceholder(this.$input);
       _addKeyEvents(this.$input);
