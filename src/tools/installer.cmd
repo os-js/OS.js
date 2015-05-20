@@ -30,4 +30,4 @@ del %dstdir%\themes
 mklink /j "%dstdir%\themes" "%srcdir%\src\themes"
 
 npm install
-grunt
+grunt --force
