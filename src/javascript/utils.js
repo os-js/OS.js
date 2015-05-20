@@ -414,7 +414,7 @@
     function getTouch() {
       // False positives in win 8+
       try {
-        if ( navigator.userAgent.match(/Windows NT 6\.2|3\ /) ) {
+        if ( navigator.userAgent.match(/Windows NT 6\.(2|3)/) ) {
           return false;
         }
       } catch ( e ) {}
