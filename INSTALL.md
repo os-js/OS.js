@@ -1,11 +1,12 @@
-# Requirements
+# Installation instructions
+
 Server runs on Linux, OS X, BSD and Windows.
 
 If you don't want to set up a server and just want to test OS.js in your browser, 
 I provide minimalistic [nightly builds](http://osjsv2.0o.no/OS.js-v2-minimal-nightly.zip). 
 Please note networking and filesystem functions is disabled here.
 
-## System dependencies
+## Dependencies
 
 Make sure you have these dependencies installed
 
@@ -16,9 +17,9 @@ Make sure you have these dependencies installed
 
 You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttpd)
 
-# Installation
+## Installation
 
-## Automated
+### Automated
 
 Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh` if you have the required dependencies.
 
@@ -38,7 +39,7 @@ grunt --force
 
 Now you're ready to set up a server.
 
-# Setting up a server
+## Setting up a server
 
 Make sure the _VFS_ directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.
 
@@ -46,47 +47,51 @@ Example for Apache on Ubuntu: `sudo chown -R www-data:www-data vfs/`
 
 **Windows users:** dist-dev does not work at the moment because of symlinks not supported
 
-## Node
+### Node
 
 * Production: `node src/server-node/server.js`
 * Developement: `node src/server-node/server.js dist-dev`
 
-## PHP5
+### PHP5
 
-## Internal Web-server for PHP 5.4+
+#### Internal Web-server for PHP 5.4+
 
 * Production: `(cd dist; php -S localhost:8000 ../src/server-php/server.php)`
 * Developer: `(cd dist-dev; php -S localhost:8000 ../src/server-php/server.php)`
 
-### Apache
+#### Apache
 
 Run `grunt apache-vhost` to generate one (or look in doc/ for example)
 
 *Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
 
-## Lighttpd
+#### Lighttpd
 
 Run `grunt lighttpd-config` to generate one (or look in doc/ for example)
 
-## Nginx
+#### Nginx
 
 Run `grunt nginx-config` to generate one (or look in doc/ for example)
 
-# Deployment
+## Deployment
 
-## Standalone
+### Production
+
+Use `dist` folder.
+
+### Standalone
 
 You can run OS.js in `file://` (locally in browser), but this will disable any server-call and filesystem functions.
 
 Just open `dist/index.html` after you build.
 
-## Vargant
+### Vargant
 
 A [Vargant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
 
 Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
 
-## X11
+### X11
 
 OS.js can run as a *X11* Desktop. Slim login manager theme is included.
 
