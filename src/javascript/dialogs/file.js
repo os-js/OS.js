@@ -159,6 +159,14 @@
       }
     }
 
+    function _change(ev) {
+      if ( self.$input ) {
+        setSelectedType(self.$input.getValue());
+      }
+      self.onInputKey(ev);
+    }
+
+
     if ( this.type === 'save' ) {
       var curval = Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
 
@@ -192,13 +200,6 @@
 
         setSelectedType(curval);
         Utils.$addClass(root.firstChild, 'HasFileTypes');
-      }
-
-      function _change(ev) {
-        if ( self.$input ) {
-          setSelectedType(self.$input.getValue());
-        }
-        self.onInputKey(ev);
       }
 
       this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {
