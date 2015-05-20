@@ -67,6 +67,10 @@
     "title": "Create your own Application (continued) - OS.js Tutorials"
   },
 
+  "tutorials/application-with-server-api.html": {
+    "title": "Create your own Application with server API - OS.js Tutorials"
+  },
+
   "tutorials/create-handler.html": {
     "title": "Create your own Handler - OS.js Tutorials"
   },

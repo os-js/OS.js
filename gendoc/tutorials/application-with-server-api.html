@@ -1,0 +1,75 @@
+
+      <h1>Tutorial: Create your own application (continued)</h1>
+
+      <h2>Set up server method</h2>
+      <div class="indent">
+
+        <p>
+          Create the file "api.js" inside the package directory and use this as a template:
+        </p>
+        <pre class="code">
+
+(function() {
+
+  exports.register = function(CONFIG, API) {
+    API.MyServerMethod = function(args, callback, request, response) {
+      // Here you get args.Argument from call in application example below
+
+      callback(
+        false, // Error message (if any)
+        {      // Result data
+          foo: "bar"
+        }
+      );
+    };
+  };
+
+})();
+
+        </pre>
+      </div>
+
+      <h2>Set up application method</h2>
+      <div class="indent">
+
+        <p>
+          To call the method you just created, simply create a new method in your Application:
+        </p>
+        <pre class="code">
+ApplicationMyName.prototype.myServerMethod = function(callback) {
+  this._call('MyServerMethod', {'Argument': 'Some Value'}, function(data) {
+    callback(false, response);
+  }, function(error) {
+    callback(error);
+  });
+};
+        </pre>
+      </div>
+
+      <h2>Calling the method</h2>
+      <div class="indent">
+
+        <p>
+          For example, when you click a button in your window:
+        </p>
+        <pre class="code">
+ApplicationMyNameWindow.prototype.init = function() {
+  var self = this;
+  var root = Window.prototype.init.apply(this, arguments);
+
+  win._addGUIElement(new GUI.Button('MyTestButton', {label: 'Test Server Call', onClick: function() {
+    self._appRef.myServerMethod(function(error, result) {
+      if ( error ) {
+        alert('An error occured: ' + error);
+        return;
+      }
+      // Or else do something with 'result'
+      // In this example it should return {foo: bar}
+      alert(result.foo);
+    });
+  }}), root);
+
+  return root;
+};
+        </pre>
+      </div>
