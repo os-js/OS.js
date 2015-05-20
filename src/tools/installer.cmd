@@ -17,17 +17,16 @@ mklink "%dstdir%\favicon.png" "%srcdir%\dist\favicon.png"
 del %dstdir%\settings.js
 mklink "%dstdir%\settings.js" "%srcdir%\dist\settings.js"
 
-del %dstdir%\css
+rmdir %dstdir%\css
 mklink /j "%dstdir%\css" "%srcdir%\src\stylesheets"
 
-del %dstdir%\js
+rmdir %dstdir%\js
 mklink /j "%dstdir%\js" "%srcdir%\src\javascript"
 
-del %dstdir%\packages
+rmdir %dstdir%\packages
 mklink /j "%dstdir%\packages" "%srcdir%\src\packages"
 
-del %dstdir%\themes
+rmdir %dstdir%\themes
 mklink /j "%dstdir%\themes" "%srcdir%\src\themes"
 
-npm install
-grunt --force
+npm install & grunt --force
