@@ -314,7 +314,7 @@
         self._addEventListener(buttonMinimize, (isTouch ? 'touchend' : 'click'), function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
-          self._onWindowButtonClick(ev, self, 'minimize');
+          this._onWindowButtonClick(ev, this, 'minimize');
           return false;
         });
       } else {
@@ -330,7 +330,7 @@
         self._addEventListener(buttonMaximize, (isTouch ? 'touchend' : 'click'), function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
-          self._onWindowButtonClick(ev, self, 'maximize');
+          this._onWindowButtonClick(ev, this, 'maximize');
           return false;
         });
       } else {
@@ -346,7 +346,7 @@
         self._addEventListener(buttonClose, (isTouch ? 'touchend' : 'click'), function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
-          self._onWindowButtonClick(ev, self, 'close');
+          this._onWindowButtonClick(ev, this, 'close');
           return false;
         });
       } else {
