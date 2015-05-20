@@ -412,7 +412,7 @@
     }
 
     function getTouch() {
-      return !!(('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch)));
+      return ('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch));
     }
 
     function getDnD() {
