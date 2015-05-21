@@ -1717,7 +1717,7 @@
     if ( this._properties.allow_minimize ) {
       list.push({
         title:    API._('WINDOW_MINIMIZE'),
-        icon:     'actions/stock_up.png',
+        icon:     API.getIcon('actions/stock_up.png'),
         onClick:  function(name, iter) {
           self._minimize();
         }
@@ -1726,7 +1726,7 @@
     if ( this._properties.allow_maximize ) {
       list.push({
         title:    API._('WINDOW_MAXIMIZE'),
-        icon:     'actions/window_fullscreen.png',
+        icon:     API.getIcon('actions/window_fullscreen.png'),
         onClick:  function(name, iter) {
           self._maximize();
           self._focus();
@@ -1736,7 +1736,7 @@
     if ( this._state.maximized ) {
       list.push({
         title:    API._('WINDOW_RESTORE'),
-        icon:     'actions/view-restore.png',
+        icon:     API.getIcon('actions/view-restore.png'),
         onClick:  function(name, iter) {
           self._restore();
           self._focus();
@@ -1747,7 +1747,7 @@
       if ( this._state.ontop ) {
         list.push({
           title:    API._('WINDOW_ONTOP_OFF'),
-          icon:     'actions/window-new.png',
+          icon:     API.getIcon('actions/window-new.png'),
           onClick:  function(name, iter) {
             self._state.ontop = false;
             if ( self._$element ) {
@@ -1759,7 +1759,7 @@
       } else {
         list.push({
           title:    API._('WINDOW_ONTOP_ON'),
-          icon:     'actions/window-new.png',
+          icon:     API.getIcon('actions/window-new.png'),
           onClick:  function(name, iter) {
             self._state.ontop = true;
             if ( self._$element ) {
@@ -1773,7 +1773,7 @@
     if ( this._properties.allow_close ) {
       list.push({
         title:    API._('WINDOW_CLOSE'),
-        icon:     'actions/window-close.png',
+        icon:     API.getIcon('actions/window-close.png'),
         onClick:  function(name, iter) {
           self._close();
         }
