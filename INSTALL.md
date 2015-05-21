@@ -55,8 +55,8 @@ Make sure the _VFS_ directories in `vfs/` are given the same permissions as the 
 
 ## Node
 
-* Production: `./bin/start-node-dist.sh`
-* Developement: `./bin/start-node-dev.sh`
+* Production: `./bin/start-node-dist.sh` or `bin\win-start-node-dist`
+* Developement: `./bin/start-node-dev.sh` or `bin\win-start-node-dev`
 
 ## PHP5
 
