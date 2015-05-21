@@ -55,15 +55,15 @@ Make sure the _VFS_ directories in `vfs/` are given the same permissions as the 
 
 ## Node
 
-* Production: `node src/server-node/server.js`
-* Developement: `node src/server-node/server.js dist-dev`
+* Production: `./bin/start-node-dist.sh`
+* Developement: `./bin/start-node-dev.sh`
 
 ## PHP5
 
 ### Internal Web-server for PHP 5.4+
 
-* Production: `(cd dist; php -S localhost:8000 ../src/server-php/server.php)`
-* Developement: `(cd dist-dev; php -S localhost:8000 ../src/server-php/server.php)`
+* Production: `./bin/start-php-dist.sh`
+* Developement: `./bin/start-php-dev.sh`
 
 ### Apache
 
