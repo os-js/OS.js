@@ -10,26 +10,31 @@ Please note networking and filesystem functions is disabled here.
 
 Make sure you have these dependencies installed
 
-* **node** and **npm** (Ubuntu/Debian users: make sure to install the *legacy* package)
-* **grunt CLI** (`npm install -g grunt-cli` as admin/sudo. Windows users use "cmd" as *Administrator*)
-* Optional: **Git** for the automated installer
-* Optional: **java** to compress/minimize sources
+* **node** and **npm**
+  * Ubuntu/Debian: make sure to install the *legacy* package
+  * Windows: Just download the official installer from https://nodejs.org/
+* **grunt CLI**
+  * NIX: `sudo npm install -g grunt-cli`
+  * Windows: Open "cmd" as administrator and do `npm install -g grunt-cli`
+* Optional
+  * **Git** for the automated installer and/or updating changes easily
+  * **java** to compress/minimize sources for production builds
 
 You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttpd)
 
 # Installation
 
+**Make sure you have dependencies installed before beginning**
+
 ## Automated
 
-Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh` if you have the required dependencies.
+Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`.
 
-*Not available for Windows users yet. See instructions below*
+*Currently there is no automated installer for Windows, so you have to follow the manual instructions below.*
 
 ## Manual
 
-This only requires a few simple steps. First, make sure you have all the dependencies listed above installer.
-
-Then just clone or download OS.js somewhere and run these commands:
+This only requires a few simple steps. Just clone or download OS.js somewehere and run these commands:
 
 ```shell
 cd OS.js-v2
@@ -37,15 +42,13 @@ npm install
 grunt --force
 ```
 
-Now you're ready to set up a server.
+If building was successful, you can now start up a server.
 
 ## Setting up a server
 
-Make sure the _VFS_ directories in `vfs/` are given the correct web-server permissions to make filesystem work properly.
+Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
 
-Example for Apache on Ubuntu: `sudo chown -R www-data:www-data vfs/`
-
-**Windows users:** dist-dev does not work at the moment because of symlinks not supported
+**Windows users:** dist-dev does not work at the moment because it relies on symbolic links intended for POSIX type systems.
 
 ## Node
 
@@ -61,17 +64,17 @@ Example for Apache on Ubuntu: `sudo chown -R www-data:www-data vfs/`
 
 ### Apache
 
-Run `grunt apache-vhost` to generate one (or look in doc/ for example)
+Run `grunt apache-vhost` to generate config file (or look in doc/ for example)
 
 *Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
 
 ### Lighttpd
 
-Run `grunt lighttpd-config` to generate one (or look in doc/ for example)
+Run `grunt lighttpd-config` to generate config file (or look in doc/ for example)
 
 ### Nginx
 
-Run `grunt nginx-config` to generate one (or look in doc/ for example)
+Run `grunt nginx-config` to generate config file (or look in doc/ for example)
 
 # Deployment
 
