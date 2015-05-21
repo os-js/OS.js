@@ -117,6 +117,22 @@ $ sudo cp -rv vendor/system-image/* /
 $ sudo /etc/init.d/osjs start
 ```
 
+# Update instructions
+
+Updating the codebase is done with *git*
+
+```
+
+$ git pull
+
+# Build all changes
+$ grunt --force
+
+# Or just core and packages
+$ grunt --force core packages
+
+```
+
 # Links
 
 * [Manuals](http://osjs-homepage.local/OS.js-v2/doc/manuals/)
