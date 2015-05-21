@@ -79,6 +79,10 @@ Run `grunt lighttpd-config` to generate config file (or look in doc/ for example
 
 Run `grunt nginx-config` to generate config file (or look in doc/ for example)
 
+### WAMP
+
+Works fine. Just look up the Apache section above for configuration.
+
 # Deployment
 
 ## Development
