@@ -55,6 +55,10 @@
     "title": "Managing packages/applications - OS.js Manuals"
   },
 
+  "manuals/man-file-tree.html": {
+    "title": "File Tree Overview - OS.js Manuals"
+  },
+
   "server/index.html": {
     "title": "OS.js Server Documentation"
   },
