@@ -856,7 +856,7 @@
             return _finished(error);
           }
 
-          OSjs.VFS.Module[msrc].request('unlink', [src], function(error, result) {
+          OSjs.VFS.Modules[msrc].request('unlink', [src], function(error, result) {
             if ( error ) {
               error = API._('ERR_VFS_TRANSFER_FMT', error);
             }
