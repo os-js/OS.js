@@ -34,12 +34,15 @@ Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`.
 
 ## Manual
 
-This only requires a few simple steps. Just clone or download OS.js somewehere and run these commands:
+This only requires a few simple steps.
 
 ```shell
-cd OS.js-v2
-npm install
-grunt --force
+# In this example we clone with git, you can also download the zip-file from github and extract it.
+$ git clone https://github.com/andersevenrud/OS.js-v2.git
+
+$ cd OS.js-v2
+$ npm install
+$ grunt --force
 ```
 
 If building was successful, you can now start up a server.
