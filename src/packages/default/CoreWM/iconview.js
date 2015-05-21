@@ -46,7 +46,8 @@
       }],
       onActivate : function(ev, el, item) {
         if ( typeof item.launch === 'undefined' ) {
-          API.open(item.args);
+          var file = new VFS.File(item.args);
+          API.open(file);
         } else {
           API.launch(item.launch, item.args);
         }
