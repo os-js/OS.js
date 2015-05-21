@@ -80,13 +80,13 @@
     }
 
     // Stored elements etc.
-    this.errors       = 0;
     this.selectedFile = null;
     this.$input       = null;
     this.$fileView    = null;
     this.$statusBar   = null;
     this.$select      = null;
     this.$selectRoot  = null;
+    this.$goRoot      = null;
 
     // Window
     var title     = API._(this.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
@@ -110,6 +110,7 @@
     this.$statusBar   = null;
     this.$select      = null;
     this.$selectRoot  = null;
+    this.$goRoot      = null;
 
     _StandardDialog.prototype.destroy.apply(this, arguments);
   };
@@ -125,6 +126,7 @@
       mimeFilter: this.filter,
       typeFilter: (this.select === 'path' ? 'dir' : null)
     }), this.$element);
+
     this.$fileView.onError = function() {
       self.onError.apply(self, arguments);
     };
@@ -147,8 +149,31 @@
       self.onFileActivated(item);
     };
 
+    var goHomeSelected = false;
+
     this.$statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
     this.$statusBar.setText('');
+
+    this.$goRoot = this._addGUIElement(new OSjs.GUI.Button('FileDialogGoRoot', {
+      icon: OSjs.API.getIcon('places/folder_home.png'),
+      onClick: function() {
+        var path = API.getDefaultPath('/');
+
+        if ( self.$selectRoot ) {
+          goHomeSelected = true;
+          var m = OSjs.VFS.getModuleFromPath(path);
+          self.$selectRoot.setValue(m);
+        }
+
+        if ( self.$fileView ) {
+          self.$fileView.chdir(path, function() {
+            goHomeSelected = false;
+          }, function() {
+            goHomeSelected = false;
+          });
+        }
+       }
+    }), this.$element);
 
     function setSelectedType(val) {
       if ( val && self.$select ) {
@@ -220,6 +245,11 @@
     if ( roots.length > 1 ) {
       Utils.$addClass(this.$element, 'HasRootSelection');
       this.$selectRoot = this._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
+        if ( goHomeSelected ) {
+          goHomeSelected = false;
+          return;
+        }
+
         if ( self.$fileView ) {
           var root = VFS.Modules[value].root;
           self.$fileView.chdir(root);
@@ -263,6 +293,7 @@
    * Window has been displayed
    */
   FileDialog.prototype._inited = function() {
+    var self = this;
     _StandardDialog.prototype._inited.apply(this, arguments);
 
     // Force override of default MIME if we have a selector
@@ -345,7 +376,8 @@
     } else {
       VFS.exists(file, function(error, result) {
         if ( error ) {
-          self.onError((error || 'Failed to stat file'), file.path, false, true);
+          error = error || 'Failed to stat file';
+          self._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', dirname), err);
           return;
         }
         if ( result ) {
@@ -407,24 +439,17 @@
   /**
    * Error wrapper
    */
-  FileDialog.prototype.onError = function(err, dirname, fatal, nochdir) {
+  FileDialog.prototype.onError = function(err, dirname) {
+    var self = this;
+
     this._toggleLoading(false);
+    if ( !err ) {
+      return;
+    }
 
-    if ( err ) {
-      if ( !fatal ) {
-        if ( this.errors < 2 ) {
-          if ( this.$fileView ) {
-            if ( !nochdir ) { // NOTE ISSUE #44
-              this.$fileView.chdir(API.getDefaultPath('/'));
-            }
-          }
-        } else {
-          this.errors = 0;
-        }
-        this.errors++;
-      }
-
-      this._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', dirname), err);
+    this._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', dirname), err);
+    if ( this.$fileView && this.$fileView.viewRef ) {
+      this.$fileView.viewRef.clear();
     }
   };
 

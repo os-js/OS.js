@@ -720,8 +720,8 @@
 
       onRefreshed.call(this);
     }, function(error, dir, arg) {
-      this.onError.call(this, error, dir, (arg || false));
-      onError.call(this, error, dir, (arg || false));
+      this.onError.call(this, error, dir);
+      onError.call(this, error, dir);
     });
   };
 
