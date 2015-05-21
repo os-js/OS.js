@@ -606,18 +606,22 @@
       }], pos)
     };
 
-    if ( item && item.type === 'file' ) {
+    if ( item ) {
       var data = item.data;
-      if ( data && data.mime ) {
-        if ( data.mime.match(/^image/) ) {
-          if ( this.iconView ) {
-            _openMenu.call(this, data, this);
+      if ( item.type === 'file' ) {
+        if ( data && data.mime ) {
+          if ( data.mime.match(/^image/) ) {
+            if ( this.iconView ) {
+              _openMenu.call(this, data, this);
+            } else {
+              _applyWallpaper.call(this, data);
+            }
           } else {
-            _applyWallpaper.call(this, data);
+            _createShortcut.call(this, data);
           }
-        } else {
-          _createShortcut.call(this, data);
         }
+      } else if ( item.type === 'application' ) {
+        _createShortcut.call(this, data);
       }
     }
   };

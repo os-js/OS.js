@@ -24,6 +24,7 @@
   line-height : 26px;
   white-space : nowrap;
   position : relative;
+  display : block;
 }
 .Menu li img {
   vertical-align : middle;

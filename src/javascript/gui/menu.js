@@ -83,7 +83,7 @@
       var el            = document.createElement('div');
       el.className      = 'Menu';
       el.oncontextmenu  = Utils._preventDefault;
-      el.onmousedown    = Utils._preventDefault;
+      el.onselectstart  = Utils._preventDefault;
 
       if ( list ) {
         var ul = document.createElement('ul');
@@ -138,6 +138,10 @@
           }
 
           ul.appendChild(m);
+          if ( typeof iter.onCreated === 'function' ) {
+            iter.onCreated(m, iter);
+          }
+
         });
 
         el.appendChild(ul);

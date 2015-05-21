@@ -48,30 +48,6 @@
   }
 
   /**
-   * Create default application menu
-   */
-  function doBuildMenu(ev) {
-    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
-    var list = [];
-    for ( var a in apps ) {
-      if ( apps.hasOwnProperty(a) ) {
-        if ( apps[a].type !== "application" ) { continue; }
-        list.push({
-          title: apps[a].name,
-          icon: _createIcon(apps[a], a),
-          tooltip : iter.description,
-          onClick: (function(name, iter) {
-            return function() {
-              API.launch(name);
-            };
-          })(a, apps[a])
-        });
-      }
-    }
-    return list;
-  }
-
-  /**
    * Create default application menu with categories (sub-menus)
    */
   function doBuildCategoryMenu(ev) {
@@ -105,6 +81,16 @@
             title: iter.data.name,
             icon: _createIcon(iter.data, iter.name),
             tooltip : iter.data.description,
+            onCreated: (function(name, iter) {
+              return function(el) {
+                OSjs.API.createDraggable(el, {
+                  type   : 'application',
+                  data   : {
+                    launch: name
+                  }
+                });
+              };
+            })(iter.name, iter.data),
             onClick: (function(name, iter) {
               return function() {
                 API.launch(name);
@@ -248,7 +234,6 @@
       }
       API.createMenu(null, pos, inst);
     } else {
-      //var list = doBuildMenu(ev);
       var list = doBuildCategoryMenu(ev);
       API.createMenu(list, {x: ev.clientX, y: ev.clientY});
     }

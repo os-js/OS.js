@@ -62,11 +62,13 @@
         OSjs.API.createMenu([{
           title: OSjs.Applications.CoreWM._('Remove shortcut'),
           disabled: item.index === 0,
-          onClick: function() {
-            if ( item.launch ) { return; }
+          onClick: (function(i, l){
+            return function() {
+              if ( /*l &&*/ i === 0 ) { return; }
 
-            self.removeShortcut(item, wm);
-          }
+              self.removeShortcut(item, wm);
+            };
+          })(item.index, item.launch)
         }], pos)
       }
     };
@@ -163,12 +165,35 @@
   };
 
   DesktopIconView.prototype._addShortcut = function(data) {
-    this.data.push({
-      icon: API.getFileIcon(data, '32x32'),
-      label: data.filename,
-      index: this.data.length,
-      args: data
-    });
+    if ( !Object.keys(data).length ) {
+      return;
+    }
+
+    var iter = {};
+    if ( data.launch ) {
+      var apps = OSjs.Core.getHandler().getApplicationsMetadata();
+      var meta = apps[data.launch];
+
+      if ( !meta ) {
+        return;
+      }
+
+      iter = {
+        icon: API.getIcon(meta.icon, '32x32', data.launch),
+        label: meta.name,
+        launch: data.launch
+      };
+    } else {
+      iter = {
+        icon: API.getFileIcon(data, '32x32'),
+        label: data.filename
+      };
+    }
+
+    iter.index = this.data.length;
+    iter.args = data;
+
+    this.data.push(iter);
   };
 
   DesktopIconView.prototype.addShortcut = function(data, wm) {
