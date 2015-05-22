@@ -1,3 +1,43 @@
+# 2.0.0-alpha59
+
+Thanks to the community this release contains a lot of bugfixes and useful additions.
+
+Also done some effort in reducing the complexity of the code.
+
+* Locales: Added Vietnamese (vi_VN). Thanks Khoa :)
+* Locales: Cleanups
+* API: Workaround for Win 8.x touch false positive
+* API: Moved user packages to ~/.packages
+* VFS: You can now filter dotfiles in scandir()
+* GUI: FileView added dotfile handling
+* CoreWM: Unknown category renamed to Other
+* CoreWM: Bugfix in IconView not casting to VFS.File()
+* CoreWM: You can now drag applications from the menu to desktop as shortcuts
+* Dialogs: File dialog now has Home button
+* Dialogs: Fixed infinite loop on error in file dialog
+* Dialogs: Fixed file dialog for locally running instances
+* Windows: Fixed context menu icons
+* VFS: Fixed rename bug (typo in function call)
+* utils.js: Added function for default argument resolvment
+* utils.js: Fixed an ignored error
+* utils.js: Cleanups and complexity reduction
+* session.js: Cleanups and complexity reduction
+* api.js: Cleanups and complexity reduction
+* guielement.js: Cleanups and complexity reduction
+* window.js: Cleanups and complexity reduction
+* _input.js: Cleanups and complexity reduction
+* file.js: Removed duplicate code
+* build: Updated error handling
+* buils: WAMP now working after config updates
+* google-drive: Better error handling
+* google-drive: Fixed mkdir not erasing cache
+* onedrive: Better error handling
+* misc: Re-introduced bin/ folder with some helpers
+* misc: Removed some unused files
+* misc: Updated INSTALL
+* misc: Updated README
+* misc: Updated docs
+
 # 2.0.0-alpha58
 
 * API: Introduced group permissions for API/FS calls
