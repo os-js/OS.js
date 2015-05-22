@@ -149,11 +149,11 @@
       }
     });
 
+    /*
     var ac = document.createElement('div');
     ac.className = 'Pointer';
-
-
     this.$element.appendChild(ac);
+    */
     this.$element.appendChild(ul);
   }
 

@@ -51,7 +51,7 @@
       background          : 'image-fill',
       windowCornerSnap    : 0,
       windowSnap          : 0,
-      useTouchMenu        : false,
+      useTouchMenu        : OSjs.Compability.touch,
       enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,
