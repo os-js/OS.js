@@ -7,14 +7,16 @@
     "pl_PL":      "Rysowanie",
     "de_DE":      "Zeichnen",
     "ru_RU":      "Графический редактор",
-	 "nl_NL":		"Tekenen"
+    "nl_NL":      "Tekenen",
+    "vi_VN":      "Vẽ"
   },
   "descriptions":      {
     "no_NO":      "Simpelt tegne-program",
     "pl_PL":      "Prosta aplikacja do rysowania",
     "de_DE":      "Einfaches Zeichen-Programm",
     "ru_RU":      "Простой графический редактор",
-	 "nl_NL":		"Eenvoudig tekenprogramma"
+    "nl_NL":      "Eenvoudig tekenprogramma",
+    "vi_VN":      "Phần mềm vẽ đơn giản"
   },
   "mime":       ["^image", "osjs\\/draw"],
   "category":   "graphics",

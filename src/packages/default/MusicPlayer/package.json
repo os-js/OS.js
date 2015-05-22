@@ -6,7 +6,8 @@
     "pl_PL":      "Odtwarzacz muzyki",
     "de_DE":      "Musikspieler",
     "ru_RU":      "Аудиоплеер",
-	 "nl_NL":		"Audio speler"
+    "nl_NL":      "Audio speler",
+    "vi_VN":      "Nghe nhạc"
   },
   "mime":       ["^audio", "osjs\\/playlist"],
   "category":   "multimedia",

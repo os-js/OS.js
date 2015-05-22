@@ -157,13 +157,13 @@
       'Pencil' : 'Stift',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Zeichnen mit fg/bg Farbe',
       'Path' : 'Pfad',
-        
+
       'Square/Rectangle' : 'Quadrat/Rechteck',
       'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Zeichnen mit fb/bg Farbe, SHIFT: Rechteck zeichnen',
-        
+
       'Circle/Ellipse' : 'Kreis/Ellipse',
       'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Zeichnen mit fb/bg Farbe, SHIFT: Ellipse zeichnen',
-      
+
       'Blur' : 'Weichzeichner (Blur)',
       'Noise' : 'Rauschen',
       'Invert colors' : 'Farben invertieren',
@@ -223,7 +223,7 @@
       'Radius' : 'Радиус',
       'Iterations' : 'Итерации'
     },
-  	nl_NL : {
+    nl_NL : {
       'Toggle tools toolbar' : 'Toolbar gereedschappen',
       'Toggle layers toolbar' : 'Toolbar lagen',
       'Layer' : 'Laag',
@@ -253,13 +253,13 @@
       'Pencil' : 'Penseel',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Teken met voor- en achtergrondkleur',
       'Path' : 'Pfad',
-        
+
       'Square/Rectangle' : 'Vierkant/rechthoek',
       'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechnthoek tekenen',
-        
+
       'Circle/Ellipse' : 'Cirkel/elipse',
       'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Elipse tekenen',
-      
+
       'Blur' : 'Vager maken (Blur)',
       'Noise' : 'Ruis',
       'Invert colors' : 'Kleuren inverteren',
@@ -269,6 +269,53 @@
 
       'Radius' : 'Radius',
       'Iterations' : 'Doorgangen'
+    },
+    vi_VN : {
+      'Toggle tools toolbar' : 'Công cụ bật tắt thanh công cụ',
+      'Toggle layers toolbar' : 'Bật tắt cửa sổ layer',
+      'Layer' : 'Lớp',
+      'Effect' : 'Hiệu ứng',
+      'Flip Horizontally' : 'Lật ngang',
+      'Flip Vertically' : 'Lật theo chiều dọc',
+      'Foreground' : 'Nền trước',
+      'Background' : 'Nền dưới',
+      'Foreground (Fill) Color' : 'Màu nền trước',
+      'Background (Stroke) Color' : 'Màu nền dưới',
+      'Line Join' : 'Ghép đoạn thằng',
+      'Line Width' : 'Độ rộng dòng',
+      'Toggle Stroke' : 'Bật tắt nét',
+      'Enable stroke' : 'Bật nét',
+      'Round' : 'Tròn',
+      'Miter' : 'Góc',
+      'Bevel' : 'Góc xiên',
+      'Stroked' : 'Vuốt',
+      'No stroke' : 'Không vuốt',
+
+      'Pointer' : 'Con trỏ',
+      'Move active layer' : 'Di chuyển layer đang chọn',
+
+      'Picker' : 'Bảng chọn',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: chọn màu fg, RMB: chọn màu gb',
+
+      'Pencil' : 'Bút chì',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: vẽ với màu fg/bg',
+      'Path' : 'Đường',
+
+      'Square/Rectangle' : 'Firkant/Rektangel',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
+
+      'Circle/Ellipse' : 'Vuông / chữ nhật',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: vẽ với màu fg/bg, SHIFT: Vẽ ê-líp',
+
+      'Blur' : 'Làm mờ',
+      'Noise' : 'Làm nhiễu',
+      'Invert colors' : 'Nghịch đảo màu',
+      'Grayscale' : 'Độ xám',
+      'Sharpen' : 'Làm sắc nét',
+      'Simple Blur' : 'Làm mờ đơn giản',
+
+      'Radius' : 'Bán kính',
+      'Iterations' : 'Lặp đi lặp lại'
     }
 
   };

@@ -111,6 +111,21 @@
       'Media information query failed' : 'Zoeken naar media is niet gelukt',
       'seek unavailable in format' : 'Voor/acteruit spoelen is niet beschikbaar in dit formaat',
       'The audio type is not supported: {0}' : 'Audio type {0} wordt niet ondersteund',
+    },
+    vi_VN : {
+      'Playlist' : 'Danh sách phát',
+      'Playback aborted' : 'Phát lại bị hủy',
+      'Network or communication error' : 'Mạng lưới hoặc thông tin liên lạc bị lỗi',
+      'Decoding failed. Corruption or unsupported media' : 'Giải mã thất bại. Phương tiện truyền thông bị hỏng hoặc không được hỗ trợ',
+      'Media source not supported' : 'Nguồn phương tiện không được hỗ trợ',
+      'Failed to play file' : 'Không thể chơi tập tin',
+      'Artist' : 'Ca sĩ',
+      'Album' : 'Album',
+      'Track' : 'Bài hát',
+      'Time' : 'Thời gian',
+      'Media information query failed' : 'Truy vấn phương tiện thông tin thất bại',
+      'seek unavailable in format' : 'không tua được trong định dạng này',
+      'The audio type is not supported: {0}' : 'Loại âm thanh {0} không được hỗ trợ',
     }
   };
 

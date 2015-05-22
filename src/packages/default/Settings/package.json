@@ -6,14 +6,16 @@
     "pl_PL":      "Ustawienia",
     "de_DE":      "OS.js Einstellungen",
     "ru_RU":      "OS.js Настройки",
-	 "nl_NL":      "OS.js Instellingen"
+    "nl_NL":      "OS.js Instellingen",
+    "vi_VN":      "Cài đặt"
   },
   "descriptions":      {
     "no_NO":      "OS.js Instillinger",
     "pl_PL":      "Ustawienia",
     "de_DE":      "OS.js Einstellungen",
     "ru_RU":      "OS.js Настройки",
-	 "nl_NL":      "OS.js Instellingen"
+    "nl_NL":      "OS.js Instellingen",
+    "vi_VN":      "Cài đặt OS.js"
   },
   "mime":       null,
   "icon":       "categories/applications-system.png",

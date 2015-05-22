@@ -2,11 +2,10 @@
   "className":  "ApplicationCalculator",
   "name":       "Calculator",
   "names":      {
-
     "ru_RU": "Калькулятор",
     "pl_PL": "Kalkulator",
-	 "nl_NL": "Rekenmachine"
-	
+    "nl_NL": "Rekenmachine",
+    "vi_VN": "Máy tính"
   },
   "mime":       null,
   "icon":       "apps/calc.png",

@@ -155,6 +155,28 @@
       'Enable Icon View' : 'Activeer Iconen-weergave',
       'General': 'Algemeen'
     },
+    vi_VN : {
+      'Theme' : 'Giao diện',
+      'Background' : 'Ảnh nền',
+      'Desktop' : 'Màn hình chính',
+      'Background Type' : 'Kiểu nền',
+      'Image (Repeat)' : 'Lặp lại',
+      'Image (Centered)' : 'Căn giữa',
+      'Image (Fill)' : 'Lấp đầy',
+      'Image (Streched)' : 'Trải dài',
+      'Desktop Margin ({0}px)' : 'Phần biên màn hình ({0}px)',
+      'Panel' : 'Khung',
+      'Position' : 'Vị trí',
+      'Ontop' : 'Ở trên',
+      'Items' : 'Các mục',
+      'Enable Animations' : 'Bật hiệu ứng',
+      'Language (requires restart)' : 'Ngôn ngữ (cần khởi động lại)',
+      'Enable Sounds' : 'Bật âm thanh',
+      'Enable Window Switcher' : 'Bật chuyển đổi cửa sổ',
+      'Enable Hotkeys' : 'Bật phím nõng',
+      'Enable Icon View' : 'Bật kiểu xem biểu tượng',
+      'General': 'Tổng quát'
+    }
   };
 
   function _() {

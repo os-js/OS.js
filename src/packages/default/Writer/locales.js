@@ -51,6 +51,9 @@
     },
     nl_NL : {
       'Insert URL' : 'URL invoegen'
+    },
+    vi_VN : {
+      'Insert URL' : 'Thêm URL'
     }
   };
 

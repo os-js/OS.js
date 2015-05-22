@@ -7,14 +7,16 @@
     "pl_PL":      "Manager Plików",
     "de_DE":      "Dateimanager",
     "ru_RU":      "Файловый менеджер",
-	 "nl_NL":		"bestands beheer"
+    "nl_NL":      "bestands beheer",
+    "vi_VN":      "Quản lí file"
   },
   "descriptions":      {
     "no_NO":      "Standard Fil-håndtering program",
     "pl_PL":      "Domyślny Manager Plików",
     "de_DE":      "Standardmäßiger Dateimanager",
     "ru_RU":      "Стандартный файловый менеджер",
-	 "nl_NL":	   "Standaard bestands beheerder"
+    "nl_NL":      "Standaard bestands beheerder",
+    "vi_VN":      "Trình quản lí file mặc định"
   },
   "mime":       null,
   "category":   "utilities",

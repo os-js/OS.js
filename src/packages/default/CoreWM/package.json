@@ -6,7 +6,8 @@
     "pl_PL":      "Manager Okien OS.js",
     "de_DE":      "OS.js Fenster-Manager",
     "ru_RU":      "OS.js Оконный менеджер",
-	 "nl_NL":		"OS.js venster beheer" 	
+    "nl_NL":      "OS.js venster beheer",
+    "vi_VN":      "Quản lí cửa sổ OS.js"
   },
   "singular":   true,
   "type":       "windowmanager",

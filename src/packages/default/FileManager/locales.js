@@ -91,7 +91,19 @@
       "Create a new directory in <span>{0}</span>" : "Maak een neiuwe map in <span>{0}</span>",
       "Rename <span>{0}</span>" : "<span>{0}</span> hernoemen",
       "Delete <span>{0}</span> ?" : "<span>{0}</span> verwijderen?"
+    },
+    vi_VN : {
+      'Show Sidebar' : 'Hiện Sidebar',
+      'Copying file...' : 'Đang sao chép...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Đang chép <span>{0}</span> tới <span>{1}</span>",
+      "Showing {0} item(s), {1}" : "Đang hiện {0} tệp, {1}",
+      "Refreshing..." : "Đang làm mới...",
+      "Loading..." : "Đang tải...",
+      "Create a new directory in <span>{0}</span>" : "Tạo một thư mục mới trong <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Đổi tên <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Xóa <span>{0}</span>?"
     }
+
   };
 
   function _() {
