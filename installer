@@ -14,7 +14,13 @@ if [ -d "$DEST" ]; then
   exit 1
 fi
 
+echo "Installing 'grunt' (requires sudo)"
+sudo npm install -g grunt-cli
+
+echo "Downloading OS.js"
 git clone --recursive $REPO $DEST
+
+echo "Building"
 cd $DEST
 npm install
 grunt
