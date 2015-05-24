@@ -6,6 +6,7 @@
 #   curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh
 #
 
+
 REPO="https://github.com/andersevenrud/OS.js-v2.git"
 DEST="OS.js-v2"
 
@@ -14,7 +15,13 @@ if [ -d "$DEST" ]; then
   exit 1
 fi
 
+echo "Installing 'grunt' (requires sudo)"
+sudo npm install -g grunt-cli
+
+echo "Downloading OS.js"
 git clone --recursive $REPO $DEST
+
+echo "Building"
 cd $DEST
 npm install
 grunt

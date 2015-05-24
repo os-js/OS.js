@@ -8,17 +8,15 @@ Please note networking and filesystem functions is disabled here.
 
 # Dependencies
 
-Make sure you have these dependencies installed
-
 * **node** and **npm**
   * Ubuntu/Debian: make sure to install the *legacy* package
   * Windows: Just download the official installer from https://nodejs.org/
-* **grunt CLI**
-  * NIX: `sudo npm install -g grunt-cli`
-  * Windows: Open "cmd" as administrator and do `npm install -g grunt-cli` (Automated installer does this for you)
 * Optional
   * **Git** for the automated installer and/or updating changes easily
   * **java** to compress/minimize sources for production builds
+* Optional
+  * PHP5
+  * CGI Webserver (Like Apache)
 
 You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttpd)
 
@@ -42,6 +40,9 @@ Download and run `http://andersevenrud.github.io/OS.js-v2/installer.exe`.
 This only requires a few simple steps.
 
 ```shell
+# Install grunt (Windows users: Run "cmd" as Administrator for this without sudo in front)
+$ sudo npm install -g grunt-cli
+
 # In this example we clone with git, you can also download the zip-file from github and extract it.
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
 
