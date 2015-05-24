@@ -28,11 +28,16 @@ You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttp
 
 ## Automated
 
-NIX: `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
+### NIX
 
-Windows: `http://andersevenrud.github.io/OS.js-v2/installer.exe`
+Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
 
-*Currently there is no automated installer for Windows, so you have to follow the manual instructions below.*
+### Windows
+
+Download and run `http://andersevenrud.github.io/OS.js-v2/installer.exe`.
+
+*This is experimental. Make sure to install to C:\osjs for now*
+
 
 ## Manual
 
