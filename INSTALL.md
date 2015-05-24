@@ -15,7 +15,7 @@ Make sure you have these dependencies installed
   * Windows: Just download the official installer from https://nodejs.org/
 * **grunt CLI**
   * NIX: `sudo npm install -g grunt-cli`
-  * Windows: Open "cmd" as administrator and do `npm install -g grunt-cli`
+  * Windows: Open "cmd" as administrator and do `npm install -g grunt-cli` (Automated installer does this for you)
 * Optional
   * **Git** for the automated installer and/or updating changes easily
   * **java** to compress/minimize sources for production builds
