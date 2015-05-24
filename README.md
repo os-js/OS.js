@@ -22,9 +22,9 @@ Please note that it may be unavailable at times and slightly out-of-date.
 
 Just run the automated installer and you will be ready to go:
 
-```
-curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh
-```
+NIX: `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
+
+Windows: `http://andersevenrud.github.io/OS.js-v2/installer.exe`
 
 Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
 
