@@ -36,8 +36,6 @@ Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
 
 Download and run `http://andersevenrud.github.io/OS.js-v2/installer.exe`.
 
-*This is experimental. Make sure to install to C:\osjs for now*
-
 
 ## Manual
 

@@ -3,7 +3,7 @@
 ;--------------------------------
 
 Name "OS.js"
-OutFile "osjs-installer.exe"
+OutFile "installer.exe"
 InstallDir "C:\osjs"
 RequestExecutionLevel admin
 
@@ -26,7 +26,7 @@ Section ""
       Quit
 
   ;ExecWait "$INSTDIR\temp\installer.cmd"
-  ExecWait "PowerShell.exe -ExecutionPolicy ByPass -File $INSTDIR\temp\installer.ps1"
+  ExecWait "PowerShell.exe -ExecutionPolicy ByPass -File $INSTDIR\temp\installer.ps1 $INSTDIR"
 
 
 SectionEnd
