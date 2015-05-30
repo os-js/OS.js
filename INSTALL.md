@@ -25,11 +25,11 @@ You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttp
 
 ### NIX
 
-Simply run `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
+Simply run `curl -sS http://os.js.org/installer | sh`
 
 ### Windows
 
-Download and run `http://andersevenrud.github.io/OS.js-v2/installer.exe`.
+Download and run `http://os.js.org/installer.exe`.
 
 
 ## Manual

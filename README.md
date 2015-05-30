@@ -6,7 +6,7 @@ Works in any modern browser and can be deployed on any platform using Node or PH
 
 Is available under the [BSD Clause 2 License](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
 
-You can read more on [the official homepage](http://andersevenrud.github.io/OS.js-v2/)
+You can read more on [the official homepage](http://os.js.org/)
 
 Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
 
@@ -22,9 +22,9 @@ Please note that it may be unavailable at times and slightly out-of-date.
 
 Just run the automated installer and you will be ready to go:
 
-NIX: `curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh`
+NIX: `curl -sS http://os.js.org/installer | sh`
 
-Windows: `http://andersevenrud.github.io/OS.js-v2/installer.exe`
+Windows: `http://os.js.org/installer.exe`
 
 Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
 
@@ -46,8 +46,8 @@ My contact information is located on my [Github profile](https://github.com/ande
 
 # Links
 
-* [Homepage](http://andersevenrud.github.io/OS.js-v2/)
-* [Documentation](http://andersevenrud.github.io/OS.js-v2/doc/)
+* [Homepage](http://os.js.org/)
+* [Documentation](http://os.js.org/doc/)
 * [Sources](https://github.com/andersevenrud/OS.js-v2)
 * [Issue Tracker](https://github.com/andersevenrud/OS.js-v2/issues)
 * [Demo Site](http://osjsv2.0o.no/)
