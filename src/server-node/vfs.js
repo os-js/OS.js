@@ -29,13 +29,18 @@
  */
 (function(_path, _fs) {
 
-  var readExif = function(data, cb) {
+  function readExif(data, cb) {
     cb(data); // TODO
-  };
+  }
 
-  var readPermission = function(mode) {
+  function readPermission(mode) {
     return mode; // TODO
-  };
+  }
+
+  function pathJoin() {
+    var s = _path.join.apply(null, arguments);
+    return s.replace(/\\/g, '/');
+  }
 
   function getRealPath(path, config, request) {
     var fullPath = _path.join(config.vfs.public, path);
@@ -300,7 +305,7 @@
           }
 
           for ( var i = 0; i < files.length; i++ ) {
-            ofpath = _path.join(path, files[i]);
+            ofpath = pathJoin(path, files[i]);
             fpath  = _path.join(realPath.root, files[i]);
 
             try {
