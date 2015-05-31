@@ -36,85 +36,53 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/gui/listview.js</i></p>
+<p><i>src/javascript/helpers/iframe-application.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-listview">ListView</a> (OSjs.GUI.ListView)
+<a href="#osjs-helpers-iframeapplicationwindow">IFrameApplicationWindow</a> (OSjs.Helpers.IFrameApplicationWindow)
 <ul>
-<li><a href="#listview-render">render()</a></li>
-<li><a href="#listview-addcolumn">addColumn()</a></li>
-<li><a href="#listview-setcolumns">setColumns()</a></li>
-<li><a href="#listview-setrows">setRows()</a></li>
+</ul>
+</li>
+<li>
+<a href="#osjs-helpers-iframeapplication">IFrameApplication</a> (OSjs.Helpers.IFrameApplication)
+<ul>
+<li><a href="#iframeapplication-init">init()</a></li>
+<li><a href="#iframeapplication-_onmessage">_onMessage()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-listview">
-<h2 id="listview">ListView</h2>
+<div class="section-class" id="osjs-helpers-iframeapplicationwindow">
+<h2 id="iframeapplicationwindow">IFrameApplicationWindow</h2>
 <pre>
-List View Class
+IFrame Application Window constructor
 
-column data example:
+This class is a basic implementation of OSjs.Core.Window
 
-[
+that uses Iframe as window content. It's usefull for creating
 
- {key: 'mykey', title: 'Title'},
+applications that is not using OS.js API.
 
- {key: 'id', visible: false}
-
-]
-
-row data example:
-
-[
-
- {mykey: 'Some title', id: 1},
-
- {mykey: 'Some title', id: 2}
-
-]
+You can use this in combination with 'IFrameApplication'
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.ListView</li>
+<li>OSjs.Helpers.IFrameApplicationWindow</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>_DataView</li>
+<li>Window</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
-<li>OSjs.Core.GUIElement</li>
+<li>OSjs.Core.Window</li>
 </ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>name</td>
-<td>String</td>
-<td>Name of GUIElement (unique)</td>
-</tr>
-<tr>
-<td>opts</td>
-<td>Object</td>
-<td>A list of options</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
 <h4 id="options-for-opts-">Options for <em>opts</em></h4>
 <table>
 <thead>
@@ -126,47 +94,50 @@ row data example:
 </thead>
 <tbody>
 <tr>
-<td>singleClick</td>
-<td>boolean</td>
-<td>Single click to Activate (dblclick) forced on touch devices</td>
+<td>String</td>
+<td>src</td>
+<td>The Iframe source</td>
 </tr>
 <tr>
-<td>columns</td>
-<td>Object</td>
-<td>Column data</td>
+<td>String</td>
+<td>icon</td>
+<td>The Icon relative/absolute path (./ for app dir)</td>
 </tr>
 <tr>
-<td>rows</td>
-<td>Array</td>
-<td>Rows of data</td>
+<td>String</td>
+<td>title</td>
+<td>The Window title</td>
 </tr>
 </tbody>
 </table>
 <p>&nbsp;</p>
 
-<div class="section-method" id="listview-render">
-<h3 id="listview-render-">ListView::render()</h3>
-<pre>
-Render the list inside the view
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>_DataView::render()</li>
-</ul>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
 </div>
-<div class="section-method" id="listview-addcolumn">
-<h3 id="listview-addcolumn-c-">ListView::addColumn(c)</h3>
+<div class="section-class" id="osjs-helpers-iframeapplication">
+<h2 id="iframeapplication">IFrameApplication</h2>
 <pre>
-Add a column
+IFrame Application constructor
+
+Usage: Just apply the correct options and this should work
+
+automatically.
+
+This just inits an empty application with a window that uses
+
+iframe for contents. Look at the IFrameApplicationWindow
+
+constructor for more options you can apply here.
 </pre>
 
-
-<h4 id="parameters">Parameters</h4>
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Helpers.IFrameApplication</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>Application</li>
+</ul>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
 <table>
 <thead>
 <tr>
@@ -177,83 +148,43 @@ Add a column
 </thead>
 <tbody>
 <tr>
-<td>c</td>
-<td>Object</td>
-<td>The object (see constructor for info)</td>
+<td>String</td>
+<td>icon</td>
+<td>Window Icon</td>
+</tr>
+<tr>
+<td>String</td>
+<td>title</td>
+<td>Window Title</td>
 </tr>
 </tbody>
 </table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+<p>&nbsp;</p>
 
-</div>
-<div class="section-method" id="listview-setcolumns">
-<h3 id="listview-setcolumns-cols-">ListView::setColumns(cols)</h3>
+<div class="section-method" id="iframeapplication-init">
+<h3 id="iframeapplication-init-">IFrameApplication::init()</h3>
 <pre>
-Set the column list
+Default init() code (run this last in your Application init() method)
 </pre>
 
 
 <h4 id="see">See</h4>
 <ul>
-<li>ListView::addColumn()</li>
+<li>Application::init()</li>
 </ul>
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>cols</td>
-<td>Array</td>
-<td>Column Array</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
-<div class="section-method" id="listview-setrows">
-<h3 id="listview-setrows-rows-render-">ListView::setRows(rows, render)</h3>
+<div class="section-method" id="iframeapplication-_onmessage">
+<h3 id="iframeapplication-_onmessage-">IFrameApplication::_onMessage()</h3>
 <pre>
-Set the row list
+Default Messaging handler
 </pre>
 
 
 <h4 id="see">See</h4>
 <ul>
-<li>ListView::addRow()</li>
+<li>Application::_onMessage()</li>
 </ul>
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>rows</td>
-<td>Array</td>
-<td>Row Array</td>
-</tr>
-<tr>
-<td>render</td>
-<td>boolean</td>
-<td>Render right away ?</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
 </div>
 </div>
