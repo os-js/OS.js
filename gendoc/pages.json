@@ -87,6 +87,10 @@
     "title": "Create your own Theme - OS.js Tutorials"
   },
 
+  "tutorials/iframe-application.html": {
+    "title": "Create IFrame Application - OS.js Tutorials"
+  },
+
   "tutorials/index.html": {
     "title": "OS.js Tutorials"
   }

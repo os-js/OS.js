@@ -1,0 +1,34 @@
+<h1>Tutorial: Create IFrame Application</h1>
+<div class="indent">
+  <p>
+    Very useful if you want to convert something you already made or don't want to use the OS.js API.
+  </p>
+  <p>
+    In this example we have a simple directory called "data" inside the application with the file "index.html" where
+    your code will be
+  </p>
+  <pre class="code">
+(function(Application, GUI, Dialogs, Utils, API, VFS) {
+
+  var ApplicationExample = function(args, metadata) {
+    Application.apply(this, ['ApplicationExample', args, metadata, {
+      src: 'data/index.html',
+      title: metadata.name,
+      icon: metadata.icon,
+      width: 640,
+      height: 480,
+      allow_resize: false,
+      allow_restore: false,
+      allow_maximize: false
+    }]);
+  };
+
+  ApplicationExample.prototype = Object.create(Application.prototype);
+
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationExample = OSjs.Applications.ApplicationExample || {};
+  OSjs.Applications.ApplicationExample.Class = ApplicationExample;
+
+})(OSjs.Helpers.IFrameApplication, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+  </pre>
+</div>
