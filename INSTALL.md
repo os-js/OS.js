@@ -48,6 +48,8 @@ $ npm install
 $ grunt --force
 ```
 
+[![asciicast](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx.png)](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx)
+
 If building was successful, you can now start up a server.
 
 ## Setting up a server
