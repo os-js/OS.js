@@ -70,45 +70,10 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // FFAPP WINDOW
-  /////////////////////////////////////////////////////////////////////////////
-
-  var FirefoxAppWindow = function(id, title, icon, url) {
-    Window.apply(this, ['FirefoxAppWindow' + id.toString(), {
-      icon: icon,
-      title: title,
-      width: 320,
-      height: 480,
-      allow_resize: false,
-      allow_restore: false,
-      allow_maximize: false
-    }, null]);
-
-    this.iframeWindow = null;
-    this.firefoxAppId  = id;
-    this.firefoxAppUrl = url;
-  };
-
-  FirefoxAppWindow.prototype = Object.create(Window.prototype);
-
-  FirefoxAppWindow.prototype.init = function(wmRef, app) {
-    var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
-    root.style.overflow = 'visible';
-    this._addGUIElement(new GUI.IFrame('FirefoxIframe' + this.firefoxAppId.toString(), {
-      src: self.firefoxAppUrl,
-      width: 320,
-      height: 480
-    }), root);
-    return root;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
   var SingletonInstance = null;
-
 
   /**
    * The FirefoxMarketplace wrapper class
@@ -200,7 +165,7 @@
    * @method  FirefoxMarketplace::search()
    */
   FirefoxMarketplace.prototype.search = function(q, callback) {
-    var func = 'v1/fireplace/search/featured';
+    var func = 'v1/fireplace/search/featured/';
     var data = {
       type: 'app',
       app_type: 'hosted'
@@ -250,7 +215,14 @@
         icon = resolve.protocol + '//' + resolve.host + icon;
       }
 
-      var win = new FirefoxAppWindow(id, metadata.name, icon, launcher);
+      var name = 'FirefoxMarketplace' + id.toString();
+      var win = new OSjs.Helpers.IFrameApplicationWindow(name, {
+        width: 300,
+        height: 155,
+        title: metadata.name,
+        icon: icon,
+        src: launcher
+      });
       wm.addWindow(win);
 
       callback(false, win);

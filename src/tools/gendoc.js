@@ -624,6 +624,7 @@ Array.prototype.unique = function(){
     'src/javascript/utils.js',
 
     'src/javascript/helpers/default-application.js',
+    'src/javascript/helpers/iframe-application.js',
     'src/javascript/helpers/google-api.js',
     'src/javascript/helpers/windows-live-api.js',
     'src/javascript/helpers/firefox-marketplace.js',

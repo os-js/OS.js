@@ -158,6 +158,7 @@
       this._$resize       = null;                 // DOMElement: Window Resizer
       this._$warning      = null;                 // DOMElement: Warning message
 
+      this._opts          = opts;                 // Construction opts
       this._rendered      = false;                // If Window has been initially rendered
       this._appRef        = appRef || null;       // Reference to Application Window was created from
       this._destroyed     = false;                // If Window has been destroyed
