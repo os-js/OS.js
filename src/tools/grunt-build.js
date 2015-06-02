@@ -785,6 +785,8 @@
   function generateApacheHtaccess(grunt, a) {
     var mimes = [];
     var maps = MIMES.mapping;
+    var rootURI = '/';
+
     for ( var i in maps ) {
       if ( maps.hasOwnProperty(i) ) {
         if ( !i.match(/^\./) ) { continue; }
@@ -793,11 +795,16 @@
     }
     mimes = mimes.join('\n');
 
+    try {
+      rootURI = BUILD.path || '/';
+    } catch ( e ) {}
+
     function generate_htaccess(t, d) {
       var src = _path.join(ROOT, 'src', 'tools', 'templates', t);
       var dst = _path.join(ROOT, d, '.htaccess');
       var tpl = _fs.readFileSync(src).toString();
       tpl = tpl.replace(/%MIMES%/, mimes);
+      tpl = tpl.replace(/%ROOTURI%/, rootURI);
 
       grunt.log.writeln('>>> ' + dst);
       _fs.writeFileSync(dst, tpl);
