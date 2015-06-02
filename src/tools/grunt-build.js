@@ -508,6 +508,12 @@
   function buildManifest(grunt, dist) {
     var packages = {};
 
+    var rootURI = '/';
+    try {
+      rootURI = BUILD.path || '/';
+    } catch ( e ) {}
+    rootURI = rootURI.replace(/\/$/, '') + '/packages';
+
     function get_metadata(path, file, repo) {
       var json_path = _path.join(path, "package.json");
       try {
@@ -524,7 +530,7 @@
         if ( typeof manifest.preload !== 'undefined' && (manifest.preload instanceof Array)) {
           manifest.preload.forEach(function(p, i) {
             if ( !p.src.match(/^(ftp|https?\:)?\/\//) ) {
-              manifest.preload[i].src = (["/packages", repo, file, p.src]).join("/");
+              manifest.preload[i].src = ([rootURI, repo, file, p.src]).join("/");
             }
           });
         }
@@ -532,7 +538,7 @@
         if ( typeof manifest.sources !== 'undefined' && (manifest.sources instanceof Array)) {
           manifest.sources.forEach(function(p, i) {
             if ( !p.src.match(/^(ftp|https?\:)?\/\//) ) {
-              manifest.sources[i].src = (["/packages", repo, file, p.src]).join("/");
+              manifest.sources[i].src = ([rootURI, repo, file, p.src]).join("/");
             }
           });
         }
