@@ -40,7 +40,10 @@
 
   var OSjsStorage = {};
   OSjsStorage.url = function(item, callback) {
-    var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, '');
+    var root = window.location.pathname || '/';
+    if ( root === '/' ) { root = ''; }
+
+    var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
     callback(false, url);
   };
 

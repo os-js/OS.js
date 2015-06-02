@@ -158,11 +158,17 @@ class APIRequest
   public static function call() {
     $request = new APIRequest();
 
-    if ( preg_match('/^\/API/', $request->uri) ) {
+    $root = "/";
+    if ( ($settings = Settings::get()) && !empty($settings['http']) && !empty($settings['http']['path']) ) {
+      $root = $settings['http']['path'];
+    }
+    $root = preg_quote($root, '/');
+
+    if ( preg_match(sprintf('/^%sAPI/', $root), $request->uri) ) {
       $response = API::CoreAPI($request);
-    } else if ( preg_match('/^\/FS$/', $request->uri) ) {
+    } else if ( preg_match(sprintf('/^%sFS$/', $root), $request->uri) ) {
       $response = API::FilePOST($request);
-    } else if ( preg_match('/^\/FS(.*)/', $request->uri) ) {
+    } else if ( preg_match(sprintf('/^%sFS(.*)/', $root), $request->uri) ) {
       $response = API::FileGET($request);
     } else {
       $response = null;

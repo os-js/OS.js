@@ -3,8 +3,8 @@
 Options +FollowSymlinks
 RewriteEngine on
 RewriteBase /
-RewriteCond %{REQUEST_URI} !^/index.html
-RewriteCond %{REQUEST_URI} !^/http-bind-jabber
+RewriteCond %{REQUEST_URI} !^index.html
+RewriteCond %{REQUEST_URI} !^http-bind-jabber
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ api.php [QSA,L]
@@ -57,6 +57,7 @@ AddCharset UTF-8 .html
   AddType font/opentype .otf
   AddType font/opentype .ttf
   AddType image/png .png
+  AddType application/zip .zip
   AddType audio/aac .aac
   AddType video/mp4 .mp4
   AddType audio/mp4 .m4a
@@ -77,6 +78,7 @@ AddCharset UTF-8 .html
   AddType application/x-python .py
   AddType text/xml .xml
   AddType text/plain .txt
+  AddType text/plain .log
   AddType text/plain .doc
   AddType osjs/dbeat .odbeat
   AddType osjs/playlist .oplist
