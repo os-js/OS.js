@@ -151,7 +151,7 @@
       var connection = json.connection || "http";
       var rooturi    = "/";
       try {
-        rooturi = json.http.path || "/";
+        rooturi = json.path || "/";
       } catch ( e ) {}
 
       if ( ISWIN ) {

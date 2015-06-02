@@ -1,6 +1,7 @@
 {
   "handler": "demo",
   "connection": "http",
+  "path": "/",
 
   "settings" : {
     "frontend" : {

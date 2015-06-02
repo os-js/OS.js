@@ -1,9 +1,6 @@
 {
   "settings" : {
     "backend" : {
-      "http": {
-        "path": "/"
-      },
       "vfs": {
         "homes":  "%ROOT%/vfs/home",
         "tmp":    "%ROOT%/vfs/tmp",

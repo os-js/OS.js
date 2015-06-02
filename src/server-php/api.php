@@ -160,7 +160,7 @@ class APIRequest
 
     $root = "/";
     if ( ($settings = Settings::get()) && !empty($settings['http']) && !empty($settings['http']['path']) ) {
-      $root = $settings['http']['path'];
+      $root = $settings['path'];
     }
     $root = preg_quote($root, '/');
 
