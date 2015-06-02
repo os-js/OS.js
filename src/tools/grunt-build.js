@@ -149,6 +149,10 @@
 
       var handler    = json.handler    || "demo";
       var connection = json.connection || "http";
+      var rooturi    = "/";
+      try {
+        rooturi = json.http.path || "/";
+      } catch ( e ) {}
 
       if ( ISWIN ) {
         build = build.replace(/%ROOT%/g,       ROOT.replace(/(["\s'$`\\])/g,'\\$1'));
@@ -158,6 +162,7 @@
 
       build = build.replace(/%HANDLER%/g,    handler);
       build = build.replace(/%CONNECTION%/g, connection);
+      build = build.replace(/%ROOTURI%/g,    rooturi);
 
       _cache = JSON.parse(build);
     }
