@@ -98,6 +98,14 @@ User `dist-dev` folder.
 
 Use `dist` folder.
 
+## Webhost
+
+If you're using a webhost that only offers simple file-hosting; you can actually run OS.js, but it has to be built on another computer
+and then transfered over.
+
+For example, if you have to use http://my-host.net/OS.js-v2/dist/, simply change the path in `src/conf/000-base.json` to "/OS.js-v2/dist/"
+and run `grunt all apache-vhost` to rebuild. Then simply transfer the files over to your server with FTP or similar.
+
 ## Standalone
 
 You can run OS.js in `file://` (locally in browser), but this will disable any server-call and filesystem functions.
