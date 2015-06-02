@@ -6,7 +6,11 @@
 
     return function() {
       var rootURI = window.location.pathname || '/';
-      rootURI = rootURI.replace(/\/$/, '/packages/'); // FIXME
+      if ( window.location.protocol === 'file:' ) {
+        rootURI = rootURI.replace(/(index\.html)$/, 'packages/');
+      } else {
+        rootURI = rootURI.replace(/\/$/, '/packages/'); // FIXME
+      }
 
       function fixDirs(dirs, key) {
         dirs.forEach(function(it, idx) {

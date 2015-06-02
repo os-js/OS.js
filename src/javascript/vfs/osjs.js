@@ -41,7 +41,9 @@
   var OSjsStorage = {};
   OSjsStorage.url = function(item, callback) {
     var root = window.location.pathname || '/';
-    if ( root === '/' ) { root = ''; }
+    if ( root === '/' || window.location.protocol === 'file:' ) {
+      root = '';
+    }
 
     var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
     callback(false, url);

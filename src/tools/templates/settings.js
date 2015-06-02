@@ -9,6 +9,10 @@
 
         if ( _cache.Core ) {
           var rootURI = window.location.pathname || '/';
+          if ( window.location.protocol === 'file:' ) {
+            rootURI = '';
+          }
+
           var replace = ['RootURI', 'APIURI', 'FSURI', 'MetadataURI', 'ThemeURI', 'SoundURI', 'IconURI', 'PackageURI'];
           replace.forEach(function(val) {
             if ( _cache.Core[val] ) {
