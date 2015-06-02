@@ -2,13 +2,14 @@
   "settings" : {
     "frontend" : {
       "Core" : {
-        "APIURI":           "%ROOTURI%API",
-        "FSURI":            "%ROOTURI%FS",
-        "MetadataURI":      "%ROOTURI%packages.js",
-        "ThemeURI":         "%ROOTURI%themes/styles",
-        "SoundURI":         "%ROOTURI%themes/sounds",
-        "IconURI":          "%ROOTURI%themes/icons",
-        "PackageURI":       "%ROOTURI%packages",
+        "RootURI":          "/",
+        "APIURI":           "/API",
+        "FSURI":            "/FS",
+        "MetadataURI":      "/packages.js",
+        "ThemeURI":         "/themes/styles",
+        "SoundURI":         "/themes/sounds",
+        "IconURI":          "/themes/icons",
+        "PackageURI":       "/packages",
         "Home":             "home:///",
         "UserPackages":     "home:///.packages",
         "UserMetadata":     "home:///.packages/packages.json",

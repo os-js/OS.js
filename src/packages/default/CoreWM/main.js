@@ -180,7 +180,7 @@
   CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.init = function() {
-    var link = '/blank.css';
+    var link = (OSjs.API.getDefaultSettings().Core.RootURI || '/') + 'blank.css';
     this.setThemeLink(Utils.checkdir(link));
     this.setAnimationLink(Utils.checkdir(link));
 

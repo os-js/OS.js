@@ -743,7 +743,8 @@
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
-      return '/blank.css';
+      var blank = OSjs.API.getDefaultSettings().Core.RootURI || '/';
+      return blank + 'blank.css';
     }
     var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
     return OSjs.Utils.checkdir(root + '/' + name + '.css');
