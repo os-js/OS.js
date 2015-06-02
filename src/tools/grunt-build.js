@@ -804,7 +804,7 @@
       var dst = _path.join(ROOT, d, '.htaccess');
       var tpl = _fs.readFileSync(src).toString();
       tpl = tpl.replace(/%MIMES%/, mimes);
-      tpl = tpl.replace(/%ROOTURI%/, rootURI);
+      tpl = tpl.replace(/%ROOTURI%/g, rootURI);
 
       grunt.log.writeln('>>> ' + dst);
       _fs.writeFileSync(dst, tpl);
