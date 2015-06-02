@@ -159,8 +159,8 @@ class APIRequest
     $request = new APIRequest();
 
     $root = "/";
-    if ( ($settings = Settings::get()) && !empty($settings['path']) ) {
-      $root = $settings['path'];
+    if ( ($settings = Settings::get()) && !empty($settings['rooturi']) ) {
+      $root = $settings['rooturi'];
     }
     $root = preg_quote($root, '/');
 

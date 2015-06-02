@@ -1,6 +1,7 @@
 {
   "settings" : {
     "backend" : {
+      "rooturi": "%ROOTURI%",
       "vfs": {
         "homes":  "%ROOT%/vfs/home",
         "tmp":    "%ROOT%/vfs/tmp",
