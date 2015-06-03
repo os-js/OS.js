@@ -110,6 +110,18 @@ For example, if you have to use http://my-host.net/OS.js-v2/dist/:
 - Rebuild with `grunt config manifest apache-htaccess`
 - Transfer files to your server with FTP or similar
 
+*How do I find the correct VFS path?*
+```
+<?php
+
+// Place this PHP file the root directory of OS.js installation and open it in your browser.
+// Replace %ROOT% with the result
+
+print __DIR__;
+
+?>
+```
+
 ## Standalone
 
 You can run OS.js in `file://` (locally in browser), but this will disable any server-call and filesystem functions.
