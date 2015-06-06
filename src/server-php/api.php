@@ -169,7 +169,7 @@ class APIRequest
     } else if ( preg_match(sprintf('/^%sFS$/', $root), $request->uri) ) {
       $response = API::FilePOST($request);
     } else if ( preg_match(sprintf('/^%sFS(.*)/', $root), $request->uri) ) {
-      $response = API::FileGET($request, $root);
+      $response = API::FileGET($request);
     } else {
       $response = null;
     }
