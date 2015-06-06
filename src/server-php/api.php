@@ -169,7 +169,7 @@ class APIRequest
     } else if ( preg_match(sprintf('/^%sFS$/', $root), $request->uri) ) {
       $response = API::FilePOST($request);
     } else if ( preg_match(sprintf('/^%sFS(.*)/', $root), $request->uri) ) {
-      $response = API::FileGET($request);
+      $response = API::FileGET($request, $root);
     } else {
       $response = null;
     }
@@ -331,14 +331,22 @@ class API
     $headers  = Array();
     $code     = 0;
 
+    $root = "/";
+    if ( ($settings = Settings::get()) && !empty($settings['rooturi']) ) {
+      $root = $settings['rooturi'];
+    }
+    $root = preg_quote($root, '/');
+
+    $url = preg_replace(sprintf("/^%sFS/", $root), "", urldecode($req->data));
+
     call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 
     try {
-      if ( $arg = preg_replace("/^\/FS/", "", urldecode($req->data)) ) {
-        list($dirname, $root, $protocol, $file) = getRealPath($arg);
+      if ( $url ) {
+        list($dirname, $root, $protocol, $file) = getRealPath($url);
         if ( file_exists($file) ) {
           session_write_close();
-          if ( $data = FS::read($arg, Array("raw" => true)) ) {
+          if ( $data = FS::read($url, Array("raw" => true)) ) {
             list($mime, $etag, $length, $result) = $data;
 
             $headers[] = "Etag: {$etag}";
