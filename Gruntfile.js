@@ -184,7 +184,7 @@
         } else {
           var dest = _path.join(ROOT, 'dist', 'themes', 'fonts.css');
           grunt.log.writeln('>>> ' + dest);
-          _fs.writeFileSync(dest, dest);
+          _fs.writeFileSync(dest, result);
         }
 
         grunt.log.subhead('Building styles');
