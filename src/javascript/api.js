@@ -319,12 +319,12 @@
   /**
    * Open a file
    *
-   * @param   Object          file          File
+   * @param   OSjs.VFS.File   file          The File reference (can also be a tuple with 'path' and 'mime')
    * @param   Object          launchArgs    Arguments to send to process launch function
    * @see     doLaunchProcess
    *
    * @return  void
-   * @api     OSjs.API.launch()
+   * @api     OSjs.API.open()
    */
   function doLaunchFile(file, launchArgs) {
     launchArgs = launchArgs || {};
