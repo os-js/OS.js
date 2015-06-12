@@ -418,8 +418,18 @@
           return false;
         }
       } catch ( e ) {}
+
+      // We only want touch for mobile devices
+      try {
+        if ( navigator.userAgent.match(/iOS|Android|BlackBerry|IEMobile|iPad|iPhone|iPad/i) ) {
+          return true;
+        }
+      } catch ( e ) {}
+
+      return false;
+      // This was the old method
       //return ('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch));
-      return (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+      //return (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
     }
 
     function getDnD() {
