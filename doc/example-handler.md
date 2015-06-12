@@ -8,6 +8,7 @@ This handler is only available for PHP at the moment.
 * Copy `src/javascript/handlers/example/index.html` to `dist/example.html`
 * Copy `src/javascript/handlers/example/index.html` to `dist-dev/example.html`
 * Run `grunt config` to update configuration files
+* Run `grunt dist-dev-index` to update html index file (If using dist-dev)
 * Run `grunt core` to rebuild (If using dist)
 
 ## Configure
