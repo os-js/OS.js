@@ -3,10 +3,30 @@
   With Broadway you can run native GTK+ 3.x Linux applications in OS.js via WebSockets.
 </p>
 <p>This is not yet ready for production: <a href="https://github.com/andersevenrud/OS.js-v2/issues/29">Github issue</a></p>
+<p><b>This will be included in the OS.js core in the future, but for now you have to add it manually</b></p>
 
 <h2>Add repository</h2>
 <pre>git clone https://github.com/andersevenrud/OS.js-v2-expermiments src/packages/experimental</pre>
 <p>Then add "experimental" to <i>src/packages/repositories.json</i></p>
+
+<h2>Configure</h2>
+
+<p>Place this file as src/conf/900-broadway.json</p>
+<pre>
+{
+  "settings" : {
+    "frontend" : {
+      "Core" : {
+        "Preloads":         {
+          "broadwayBase": {"type": "javascript", "src": "/packages/experimental/broadway.js"},
+          "broadwayScript": {"type": "javascript", "src": "/packages/experimental/extension.js"},
+          "broadwayStyle": {"type": "stylesheet", "src": "/packages/experimental/extension.css"}
+        }
+      }
+    }
+  }
+}
+</pre>
 
 <h2>Build</h2>
 
@@ -21,9 +41,14 @@
 <p>
   Run these commands on the server:
 </p>
-<pre>xhost +</pre>
-<pre>./Broadway/vendor/broadway-server.sh</pre>
+<pre>
+cd Broadway/vendor/
+npm install
+xhost +
+./broadway-server.sh
+</pre>
 
+<h2>Usage</h2>
 <p>
   To use in OS.js just click the notification icon in panel and connect.
 </p>
