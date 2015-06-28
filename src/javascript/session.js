@@ -570,10 +570,17 @@
       var conf = new OSjs.Dialogs.Confirm(OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name), function(btn) {
         if ( btn === 'ok' ) {
           OSjs.Session.destroy(true, false);
-        } else if ( btn === 'cancel' ) {
+        } else if ( btn === 'no' ) {
           OSjs.Session.destroy(false, false);
         }
-      }, {title: OSjs.API._('DIALOG_LOGOUT_TITLE'), buttonClose: true, buttonCloseLabel: OSjs.API._('LBL_CANCEL'), buttonOkLabel: OSjs.API._('LBL_YES'), buttonCancelLabel: OSjs.API._('LBL_NO')});
+      }, {
+        title: OSjs.API._('DIALOG_LOGOUT_TITLE'),
+        buttons: [
+          {name: 'ok', label: OSjs.API._('LBL_YES')},
+          {name: 'no', label: OSjs.API._('LBL_NO')},
+          {name: 'cancel', label: OSjs.API._('LBL_CANCEL')}
+        ]
+      });
       wm.addWindow(conf);
     } else {
       OSjs.Session.destroy(true, false);
