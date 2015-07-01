@@ -45,25 +45,6 @@
 <pre>git clone https://github.com/andersevenrud/OS.js-v2-expermiments src/packages/experimental</pre>
 <p>Then add "experimental" to <i>src/packages/repositories.json</i></p>
 
-<h2>Configure</h2>
-
-<p>Place this file as src/conf/900-broadway.json</p>
-<pre>
-{
-  "settings" : {
-    "frontend" : {
-      "Core" : {
-        "Preloads":         {
-          "broadwayBase": {"type": "javascript", "src": "/packages/experimental/broadway.js"},
-          "broadwayScript": {"type": "javascript", "src": "/packages/experimental/extension.js"},
-          "broadwayStyle": {"type": "stylesheet", "src": "/packages/experimental/extension.css"}
-        }
-      }
-    }
-  }
-}
-</pre>
-
 <h2>Build</h2>
 
 <p><i>dist</i></p>
