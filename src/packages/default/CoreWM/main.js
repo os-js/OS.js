@@ -958,7 +958,6 @@
     }
 
     var styles = {};
-
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
         styles['.WMPanel'] = {};
@@ -981,7 +980,9 @@
       });
     }
 
-    this.createStylesheet(styles);
+    if ( Object.keys(styles).length ) {
+      this.createStylesheet(styles);
+    }
 
     this._frostWindows();
 
