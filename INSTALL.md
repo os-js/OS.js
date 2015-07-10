@@ -114,7 +114,7 @@ For example, if you have to use http://my-host.net/OS.js-v2/dist/:
 ```
 <?php
 
-// Place this PHP file the root directory of OS.js installation and open it in your browser.
+// Place this php file in the server and folder where you plan to deploy OS.js.
 // Replace %ROOT% with the result
 
 print __DIR__;
