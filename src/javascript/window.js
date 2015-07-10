@@ -501,7 +501,7 @@
     var windowDisabled            = document.createElement('div');
     windowDisabled.className      = 'WindowDisabledOverlay';
     //windowDisabled.style.display  = 'none';
-    this._addEventListener(windowDisabled, 'touchstart', function(ev) {
+    this._addEventListener(windowDisabled, 'mousedown', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       return false;
