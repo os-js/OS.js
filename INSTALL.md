@@ -128,9 +128,9 @@ You can run OS.js in `file://` (locally in browser), but this will disable any s
 
 Just open `dist/index.html` after you build.
 
-## Vargant
+## Vagrant
 
-A [Vargant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
+A [Vagrant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
 
 Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
 
