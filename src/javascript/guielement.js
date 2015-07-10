@@ -214,11 +214,7 @@
    * @method  GUIElement::_addEventListener()
    */
   GUIElement.prototype._addEventListener = function(el, ev, callback) {
-    el.addEventListener(ev, callback, false);
-
-    this._addHook('destroy', function() {
-      el.removeEventListener(ev, callback, false);
-    });
+    API._bindEvent.apply(this, arguments);
   };
 
   /**

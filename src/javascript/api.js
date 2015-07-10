@@ -1348,6 +1348,56 @@
     };
   })();
 
+
+  /**
+   * Wrapper for binding platform spesific events
+   *
+   * Must be called with `this` in call() or apply()
+   *
+   * THIS IS ONLY USED INTERNALLY
+   *
+   * @param   DOMElement    el          DOM Element to attach event to
+   * @param   String        ev          DOM Event Name
+   * @param   Function      callback    Callback on event
+   *
+   *
+   * @see     Window::_addEventListener()
+   * @see     GUIElement::_addEventListener()
+   * @return  void
+   *
+   * @method  OSjs.API._bindEvent()
+   */
+  function _bindEvent(el, ev, callback) {
+    var isTouch = OSjs.Compability.touch;
+    var touchMap = {
+      click: 'touchend',
+      mousedown: 'touchstart'
+    };
+
+    el.addEventListener(ev, function(ev) {
+      callback.call(this, ev, false);
+    }, false);
+
+    this._addHook('destroy', function() {
+      el.removeEventListener(ev, function(ev) {
+        callback.call(this, ev, false);
+      }, false);
+    });
+
+    if ( touchMap[ev] ) {
+      var tev = touchMap[ev];
+      el.addEventListener(tev, function(ev) {
+        callback.call(this, ev, true);
+      }, false);
+
+      this._addHook('destroy', function() {
+        el.removeEventListener(tev, function(ev) {
+          callback.call(this, ev, true);
+        }, false);
+      });
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -1387,5 +1437,7 @@
   OSjs.API.setClipboard               = doSetClipboard;
   OSjs.API.getClipboard               = doGetClipboard;
   OSjs.API.getServiceNotificationIcon = doGetServiceNotificationIcon;
+
+  OSjs.API._bindEvent = _bindEvent;
 
 })();

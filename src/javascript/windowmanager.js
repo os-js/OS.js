@@ -41,7 +41,6 @@
    * FIXME: Optimize
    */
   function attachWindowEvents(win, wm) {
-    var isTouch = OSjs.Compability.touch;
     var main = win._$element;
     var windowTop = win._$top;
     var windowResize = win._$resize;
@@ -58,7 +57,7 @@
     var borderSize = 0;
     var windowRects = [];
 
-    function onMouseDown(ev, a) {
+    function onMouseDown(ev, a, touchDevice) {
       cornerSnapSize = wm ? (wm.getSetting('windowCornerSnap') || 0) : 0;
       windowSnapSize = wm ? (wm.getSetting('windowSnap') || 0) : 0;
       windowRects = [];
@@ -97,9 +96,11 @@
         Utils.$addClass(main, 'WindowHintMoving');
       } else {
         if ( windowResize ) {
+          var cx = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX;
+          var cy = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY;
           var dir = Utils.$position(windowResize);
-          var dirX = ev.clientX - dir.left;
-          var dirY = ev.clientY - dir.top;
+          var dirX = cx - dir.left;
+          var dirY = cy - dir.top;
           var dirD = 20;
 
           direction = 's';
@@ -129,17 +130,24 @@
         }
       }
 
-      sx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
-      sy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
+      sx = touchDevice ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
+      sy = touchDevice ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
       action = a;
 
-      document.addEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
-      document.addEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
+      document.addEventListener('touchmove', function(ev) {
+        onMouseMove(ev, true);
+      }, false);
+      document.addEventListener('mousemove', onMouseMove, false);
+
+      document.addEventListener('touchend', function(ev) {
+        onMouseUp(ev, true);
+      }, false);
+      document.addEventListener('mouseup', onMouseUp, false);
 
       return false;
     }
 
-    function onMouseUp(ev) {
+    function onMouseUp(ev, touchDevice) {
       if ( moved ) {
         if ( wm ) {
           if ( action === 'move' ) {
@@ -155,8 +163,11 @@
       Utils.$removeClass(main, 'WindowHintMoving');
       Utils.$removeClass(main, 'WindowHintResizing');
 
-      document.removeEventListener((isTouch ? 'touchmove' : 'mousemove'), onMouseMove, false);
-      document.removeEventListener((isTouch ? 'touchend' : 'mouseup'), onMouseUp, false);
+      document.removeEventListener('touchmove', onMouseMove, false);
+      document.removeEventListener('mousemove', onMouseMove, false);
+      document.removeEventListener('touchend', onMouseUp, false);
+      document.removeEventListener('mouseup', onMouseUp, false);
+
       action = null;
       sx = 0;
       sy = 0;
@@ -164,11 +175,11 @@
       startRect = null;
     }
 
-    function onMouseMove(ev) {
+    function onMouseMove(ev, touchDevice) {
       if ( !wm || !wm.getMouseLocked() ) { return; }
       if ( action === null ) { return; }
-      var cx = isTouch ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
-      var cy = isTouch ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
+      var cx = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX;
+      var cy = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY;
       var dx = cx - sx;
       var dy = cy - sy;
       var newLeft = null;
@@ -278,13 +289,13 @@
     }
 
     if ( win._properties.allow_move ) {
-      win._addEventListener(windowTop, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
-        onMouseDown(ev, 'move');
+      win._addEventListener(windowTop, 'mousedown', function(ev, touchDevice) {
+        onMouseDown(ev, 'move', touchDevice);
       });
     }
     if ( win._properties.allow_resize ) {
-      win._addEventListener(windowResize, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
-        onMouseDown(ev, 'resize');
+      win._addEventListener(windowResize, 'mousedown', function(ev, touchDevice) {
+        onMouseDown(ev, 'resize', touchDevice);
       });
     }
   }

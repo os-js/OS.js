@@ -312,7 +312,7 @@
       buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
       buttonMinimize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_minimize ) {
-        self._addEventListener(buttonMinimize, (isTouch ? 'touchend' : 'click'), function(ev) {
+        self._addEventListener(buttonMinimize, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'minimize');
@@ -328,7 +328,7 @@
       buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
       buttonMaximize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_maximize ) {
-        self._addEventListener(buttonMaximize, (isTouch ? 'touchend' : 'click'), function(ev) {
+        self._addEventListener(buttonMaximize, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'maximize');
@@ -344,7 +344,7 @@
       buttonClose.className = 'WindowButton WindowButtonClose';
       buttonClose.innerHTML = '&nbsp;';
       if ( self._properties.allow_close ) {
-        self._addEventListener(buttonClose, (isTouch ? 'touchend' : 'click'), function(ev) {
+        self._addEventListener(buttonClose, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'close');
@@ -452,7 +452,7 @@
     windowIconImage.width       = 16;
     windowIconImage.height      = 16;
     this._addEventListener(windowIcon, 'dblclick', Utils._preventDefault);
-    this._addEventListener(windowIcon, (isTouch ? 'touchend' : 'click'), function(ev) {
+    this._addEventListener(windowIcon, 'click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       self._onWindowIconClick(ev, this);
@@ -501,7 +501,7 @@
     var windowDisabled            = document.createElement('div');
     windowDisabled.className      = 'WindowDisabledOverlay';
     //windowDisabled.style.display  = 'none';
-    this._addEventListener(windowDisabled, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
+    this._addEventListener(windowDisabled, 'touchstart', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       return false;
@@ -539,7 +539,7 @@
     main.appendChild(windowLoading);
     main.appendChild(windowDisabled);
 
-    this._addEventListener(main, (isTouch ? 'touchstart' : 'mousedown'), function(ev) {
+    this._addEventListener(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
     });
@@ -698,11 +698,7 @@
    * @method  Window::_addEventListener()
    */
   Window.prototype._addEventListener = function(el, ev, callback) {
-    el.addEventListener(ev, callback, false);
-
-    this._addHook('destroy', function() {
-      el.removeEventListener(ev, callback, false);
-    });
+    API._bindEvent.apply(this, arguments);
   };
 
 
