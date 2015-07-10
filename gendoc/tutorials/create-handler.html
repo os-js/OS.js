@@ -46,6 +46,22 @@ CREATE TABLE IF NOT EXISTS `users` (
   `settings` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+-- 
+-- Example User with admin rights
+-- 
+INSERT INTO  `osjs`.`users` (
+  `id` ,
+  `username` ,
+  `password` ,
+  `name` ,
+  `groups` ,
+  `settings`
+)
+VALUES (
+  NULL ,  'admin',  'admin',  'Administrator',  '["admin"]', NULL
+);
+
 </pre>
 
 <p>Apply your connection settings to:</p>
