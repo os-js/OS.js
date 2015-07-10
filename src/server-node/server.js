@@ -72,6 +72,11 @@
 
     response.writeHead(code, {"Content-Type": mime});
     response.write(data);
+
+    if ( HANDLER && HANDLER.onRequestEnd ) {
+      HANDLER.onRequestEnd(null, response);
+    }
+
     response.end();
   };
 
@@ -229,7 +234,7 @@
           if ( API[method] ) {
             API[method](args, function(error, result) {
               respondJSON({result: result, error: error}, response);
-            }, request, response);
+            }, request, response, POST);
           } else {
             throw "Invalid method: " + method;
           }
@@ -304,6 +309,15 @@
   }
   HANDLER.register(CONFIG, API, HANDLER);
 
+  if ( HANDLER.onServerStart ) {
+    HANDLER.onServerStart(CONFIG);
+  }
+  process.on("exit", function() {
+    if ( HANDLER.onServerEnd ) {
+      HANDLER.onServerEnd(CONFIG);
+    }
+  });
+
   /**
    * Server instance
    */
@@ -317,6 +331,10 @@
 
       if ( path === "/" ) path += "index.html";
       console.log('<<<', path);
+
+      if ( HANDLER && HANDLER.onRequestStart ) {
+        HANDLER.onRequestStart(request, response);
+      }
 
       if ( request.method == 'POST' ) 
       {
