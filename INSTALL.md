@@ -13,7 +13,6 @@ Please note networking and filesystem functions is disabled here.
   * Windows: Just download the official installer from https://nodejs.org/
 * Optional
   * **Git** for the automated installer and/or updating changes easily
-  * **java** to compress/minimize sources for production builds
 
 You can also use **PHP** with or without a CGI webserver (Like Apache or Lighttpd)
 
