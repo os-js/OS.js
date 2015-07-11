@@ -298,7 +298,6 @@
 
     // Force override of default MIME if we have a selector
     if ( this.filetypes && this.$select ) {
-      var self = this;
       Object.keys(this.filetypes).forEach(function(i) {
         self.filemime = i;
         self.defaultFilemime = i;
@@ -377,7 +376,7 @@
       VFS.exists(file, function(error, result) {
         if ( error ) {
           error = error || 'Failed to stat file';
-          self._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', dirname), err);
+          self._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', file.path), error);
           return;
         }
         if ( result ) {
