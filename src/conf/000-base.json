@@ -11,6 +11,11 @@
     }
   },
 
+  "locales": {
+    "output": "dist/locales.js",
+    "files": []
+  },
+
   "javascript": {
     "output": "dist/osjs.js",
     "files": []

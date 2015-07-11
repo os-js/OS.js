@@ -1,4 +1,17 @@
 {
+  "locales": {
+    "files": [
+      "src/javascript/locales/en_EN.js",
+      "src/javascript/locales/no_NO.js",
+      "src/javascript/locales/de_DE.js",
+      "src/javascript/locales/fr_FR.js",
+      "src/javascript/locales/ru_RU.js",
+      "src/javascript/locales/zh_CN.js",
+      "src/javascript/locales/nl_NL.js",
+      "src/javascript/locales/pl_PL.js",
+      "src/javascript/locales/vi_VN.js"
+    ]
+  },
   "javascript": {
     "files": [
       "src/javascript/init.js",
@@ -31,15 +44,6 @@
       "src/javascript/helpers/settings-manager.js",
       "src/javascript/helpers/zip-archiver.js",
       "src/javascript/helpers/firefox-marketplace.js",
-      "src/javascript/locales/en_EN.js",
-      "src/javascript/locales/no_NO.js",
-      "src/javascript/locales/de_DE.js",
-      "src/javascript/locales/fr_FR.js",
-      "src/javascript/locales/ru_RU.js",
-      "src/javascript/locales/zh_CN.js",
-      "src/javascript/locales/nl_NL.js",
-      "src/javascript/locales/pl_PL.js",
-      "src/javascript/locales/vi_VN.js",
       "src/javascript/gui/_input.js",
       "src/javascript/gui/_dataview.js",
       "src/javascript/gui/iframe.js",

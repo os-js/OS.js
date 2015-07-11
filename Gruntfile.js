@@ -24,6 +24,8 @@
       });
     }
 
+    grunt.file.defaultEncoding = 'utf-8';
+
     grunt.initConfig({
     });
 
@@ -79,11 +81,19 @@
      */
     grunt.registerTask('core', 'Build dist core files', function(arg) {
 
-      grunt.log.writeln('Building JavaScript');
+      grunt.log.writeln('Building JavaScript core');
       var hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
       var ojs = _build.buildDistCore(hjs, BUILD.javascript.files, 'js', grunt);
       grunt.log.writeln('>>> ' + BUILD.javascript.output);
       _fs.writeFileSync(_path.join(ROOT, BUILD.javascript.output), ojs);
+
+      grunt.log.writeln('');
+
+      grunt.log.writeln('Building JavaScript locales');
+      var hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
+      var ojs = _build.buildDistCore(hjs, BUILD.locales.files, 'js', grunt);
+      grunt.log.writeln('>>> ' + BUILD.locales.output);
+      _fs.writeFileSync(_path.join(ROOT, BUILD.locales.output), ojs);
 
       grunt.log.writeln('');
 

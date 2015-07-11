@@ -8,8 +8,6 @@
   var LESSC     = _path.join(ROOT, 'node_modules/less/bin/lessc');
   var REPOS     = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "packages", "repositories.json")));
   var MIMES     = JSON.parse(_fs.readFileSync(_path.join(ROOT, "src", "mime.json")));
-  var YUI       = _path.join(ROOT, 'vendor', 'yuicompressor-2.4.8.jar');
-  var CC        = _path.join(ROOT, 'vendor', 'closurecompiler.jar');
   var BUILD     = generateBuildConfig();
   var HANDLER   = BUILD.handler || 'demo';
 
@@ -27,9 +25,15 @@
     var self = this;
     function next() {
       if ( self.queue.length ) {
-        self.queue.shift()(function() {
+        try {
+          self.queue.shift()(function() {
+            next();
+          });
+        } catch ( e ) {
+          console.log('Exception in async queue: ' + e.toString());
+          console.log(e.stack);
           next();
-        });
+        }
         return;
       }
       cb();
@@ -134,8 +138,8 @@
             var tjson = JSON.parse(JSON.stringify(config));
             config = mergeObject(tjson, json);
           } catch ( e ) {
+            console.log(e.stack);
             grunt.fail.warn('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
-            grunt.fail.warn(e.stack);
           }
         });
 
@@ -834,6 +838,9 @@
     BUILD.javascript.files.forEach(function(i) {
       script_list.push(i.replace('src/javascript', 'js'));
     });
+    BUILD.locales.files.forEach(function(i) {
+      script_list.push(i.replace('src/javascript', 'js'));
+    });
     BUILD.stylesheets.files.forEach(function(i) {
       style_list.push(i.replace('src/stylesheets', 'css'));
     });
@@ -859,17 +866,30 @@
 
   function doCompress(grunt, finished) {
     var q = new Queue();
+    var ugly = require('uglify-js'),
+        ccss = require('clean-css');
 
     function compress_css(src, dest, cb) {
       dest = dest || src;
-      var cmd = ['java', '-jar', YUI, '--type css', '--charset utf-8', src, '-o', dest];
-      exec(cmd, cb);
+
+      try {
+        var source = grunt.file.read(src);
+        var minified = new ccss().minify(source).styles;
+        grunt.file.write(dest, minified);
+      } catch ( e ) {
+        console.log(e.stack);
+        grunt.fail.warn('WARNING: Failed clean-css ' + src.replace(ROOT, ''));
+      }
+
+      cb();
     }
 
     function compress_js(src, dest, cb) {
       dest = dest || src;
-      var cmd = ['java', '-jar', CC, '--charset utf-8', '--js', src, '--js_output_file', dest];
-      exec(cmd, cb);
+
+      var minified = ugly.minify(src).code;
+      grunt.file.write(dest, minified);
+      cb();
     }
 
     function compress_package(repo, app) {
@@ -918,6 +938,7 @@
     q.add(function(cb) {
       var src = out_css;
       var dst = out_css.replace(/\.css$/, '.tmp.css');
+      grunt.log.writeln('<<< ' + src);
       compress_css(src, dst, cb);
     });
       q.add(function(cb) {
@@ -932,6 +953,7 @@
     q.add(function(cb) {
       var src = out_js;
       var dst = out_js.replace(/\.js$/, '.tmp.js');
+      grunt.log.writeln('<<< ' + src);
       compress_js(src, dst, cb);
     });
       q.add(function(cb) {
@@ -1008,6 +1030,7 @@
       'index.html',
       'osjs.css',
       'osjs.js',
+      'locales.js',
       'osjs-logo.png',
       'packages.js',
       'settings.js'
@@ -1043,8 +1066,6 @@
     LESSC: LESSC,
     REPOS: REPOS,
     MIMES: MIMES,
-    YUI: YUI,
-    CC: CC,
     BUILD: BUILD,
     HANDLER: HANDLER,
     ISWIN: ISWIN,

@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "grunt": "latest",
+    "clean-css": "latest",
+    "uglify-js": "latest",
     "marked": "latest",
     "less": "latest",
     "cookies": "latest",
