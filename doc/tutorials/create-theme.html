@@ -43,6 +43,9 @@
 </p>
 <pre>
 cp -r src/themes/styles/default src/themes/styles/mytheme
+edit src/themes/styles/mytheme/metadata.json
+edit src/themes/styles/mytheme/style.less
+grunt config themes:mytheme
 </pre>
 <p>
   Then update the theme manifest and LESS manually
@@ -54,6 +57,8 @@ cp -r src/themes/styles/default src/themes/styles/mytheme
 </p>
 <pre>
 cp -r src/themes/icons/default src/themes/icons/mytheme
+edit src/themes/icons/mytheme/metadata.json
+grunt config themes:resources
 </pre>
 
 <h2>Create your own Sound theme</h2>
@@ -62,6 +67,8 @@ cp -r src/themes/icons/default src/themes/icons/mytheme
 </p>
 <pre>
 cp -r src/themes/sounds/default src/themes/sound/mytheme
+edit src/themes/sound/mytheme/metadata.json
+grunt config themes:resources
 </pre>
 
 
@@ -69,16 +76,15 @@ cp -r src/themes/sounds/default src/themes/sound/mytheme
 <p>
   Just add your fonts in a sub-folder like <b>Karla</b>. Then update the included stylesheet with correct name(s).
 </p>
+<pre>
+grunt config themes:fonts
+</pre>
 
 
 <h1>Update your changes</h1>
 <p>
-  Whenever you add or modify your themes, run this:
+  Just run the same grunt commands as when you created the themes :)
 </p>
-
-<pre>
-grunt config themes
-</pre>
 
 <div class="adddshere">
   <ins class="adsbygoogle"
