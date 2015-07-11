@@ -128,6 +128,10 @@
       var done = this.async();
       arg = arg || 'all';
 
+      if ( arg === 'all' ) {
+        clean(['dist/themes'], ['dist/themes', 'dist/themes/styles']);
+      }
+
       function finished() {
         var src, dst;
 
@@ -187,8 +191,6 @@
         }
 
         done();
-
-        clean(['dist/themes'], ['dist/themes', 'dist/themes/styles']);
       }
 
       function buildStyles() {
