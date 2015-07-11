@@ -436,12 +436,20 @@
   // THEME BUILDER
   /////////////////////////////////////////////////////////////////////////////
 
-  function buildStyles(grunt, cb) {
+  function buildStyles(arg, grunt, cb) {
+    arg = arg || 'all';
+
     var q = new Queue();
     var dir  = _path.join(ROOT, 'src', 'themes', 'styles');
 
     getDirs(dir).forEach(function(name) {
       if ( !name.match(/^\.|\_/) ) {
+        if ( arg !== 'all' ) {
+          if ( arg !== 'styles' && arg !== name ) {
+            return;
+          }
+        }
+
         q.add(function(next) {
           grunt.log.subhead('* Building theme styles for "' + name + '"');
 
@@ -600,7 +608,8 @@
   // PACKAGE BUILDER
   /////////////////////////////////////////////////////////////////////////////
 
-  function buildPackages(grunt, finished) {
+  function buildPackages(arg, grunt, finished) {
+    arg = arg || 'all';
 
     var q = new Queue();
 
@@ -714,24 +723,33 @@
       });
     }
 
-    var dirs, repo, src, dst;
+    function buildRepo(repo, dirs) {
+      var atom;
+      for ( var d = 0; d < dirs.length; d++ ) {
+        atom = repo + '/' + dirs[d];
+        if ( arg === 'all' || arg === atom ) {
+          build_package(repo, dirs[d]);
+        }
+      }
+
+      if ( arg === 'all' ) {
+        q.add(function(cb) {
+          var src = _path.join(ROOT, 'src', 'packages', repo, 'repository.json');
+          var dst = _path.join(ROOT, 'dist', 'packages', repo, 'repository.json');
+          grunt.log.writeln('\n>>> ' + dst);
+          _fs.copySync(src, dst);
+          cb();
+        });
+      }
+    }
+
+    var dirs, repo;
     for ( var i = 0; i < REPOS.length; i++ ) {
       try {
         repo = REPOS[i];
         dirs = getDirs(_path.join(ROOT, 'src', 'packages', repo));
-        for ( var d = 0; d < dirs.length; d++ ) {
-          build_package(repo, dirs[d]);
-        }
 
-        q.add(function(cb) {
-          src = _path.join(ROOT, 'src', 'packages', repo, 'repository.json');
-          dst = _path.join(ROOT, 'dist', 'packages', repo, 'repository.json');
-          grunt.log.writeln('\n>>> ' + dst);
-          _fs.copySync(src, dst);
-
-          cb();
-        });
-
+        buildRepo(repo, dirs);
       } catch ( e ) {
         grunt.fail.warn('WARNING: Failed to list directory ' + REPOS[i] + ': ' + e);
       }
@@ -864,7 +882,9 @@
   // COMPRESSION
   /////////////////////////////////////////////////////////////////////////////
 
-  function doCompress(grunt, finished) {
+  function doCompress(arg, grunt, finished) {
+    arg = arg || 'all';
+
     var q = new Queue();
     var ugly = require('uglify-js'),
         ccss = require('clean-css');
@@ -887,7 +907,7 @@
     function compress_js(src, dest, cb) {
       dest = dest || src;
 
-      var minified = ugly.minify(src).code;
+      var minified = ugly.minify(src,{comments:true}).code;
       grunt.file.write(dest, minified);
       cb();
     }
@@ -934,48 +954,52 @@
 
     grunt.log.subhead('Compressing Core');
 
-    var out_css = _path.join(ROOT, BUILD.stylesheets.output);
-    q.add(function(cb) {
-      var src = out_css;
-      var dst = out_css.replace(/\.css$/, '.tmp.css');
-      grunt.log.writeln('<<< ' + src);
-      compress_css(src, dst, cb);
-    });
+    if ( arg === 'all' || arg === 'core' ) {
+      var out_css = _path.join(ROOT, BUILD.stylesheets.output);
       q.add(function(cb) {
-        var src = out_css.replace(/\.css$/, '.tmp.css');
-        var dst = out_css;
-        grunt.log.writeln('>>> ' + dst);
-        _fs.renameSync(src, dst);
-        cb();
+        var src = out_css;
+        var dst = out_css.replace(/\.css$/, '.tmp.css');
+        grunt.log.writeln('<<< ' + src);
+        compress_css(src, dst, cb);
       });
+        q.add(function(cb) {
+          var src = out_css.replace(/\.css$/, '.tmp.css');
+          var dst = out_css;
+          grunt.log.writeln('>>> ' + dst);
+          _fs.renameSync(src, dst);
+          cb();
+        });
 
-    var out_js = _path.join(ROOT, BUILD.javascript.output);
-    q.add(function(cb) {
-      var src = out_js;
-      var dst = out_js.replace(/\.js$/, '.tmp.js');
-      grunt.log.writeln('<<< ' + src);
-      compress_js(src, dst, cb);
-    });
+      var out_js = _path.join(ROOT, BUILD.javascript.output);
       q.add(function(cb) {
-        var src = out_js.replace(/\.js$/, '.tmp.js');
-        var dst = out_js;
-        grunt.log.writeln('>>> ' + dst);
-        _fs.renameSync(src, dst);
-        cb();
+        var src = out_js;
+        var dst = out_js.replace(/\.js$/, '.tmp.js');
+        grunt.log.writeln('<<< ' + src);
+        compress_js(src, dst, cb);
       });
+        q.add(function(cb) {
+          var src = out_js.replace(/\.js$/, '.tmp.js');
+          var dst = out_js;
+          grunt.log.writeln('>>> ' + dst);
+          _fs.renameSync(src, dst);
+          cb();
+        });
+    }
 
-    q.add(function(cb) {
-      grunt.log.subhead('Compressing Packages');
-      var dirs;
-      for ( var i = 0; i < REPOS.length; i++ ) {
-        dirs = getDirs(_path.join(ROOT, 'src', 'packages', REPOS[i]));
-        for ( var d = 0; d < dirs.length; d++ ) {
-          compress_package(REPOS[i], dirs[d]);
+    if ( arg === 'all' || arg === 'packages' ) {
+      q.add(function(cb) {
+        grunt.log.subhead('Compressing Packages');
+        var dirs;
+        for ( var i = 0; i < REPOS.length; i++ ) {
+          dirs = getDirs(_path.join(ROOT, 'src', 'packages', REPOS[i]));
+          for ( var d = 0; d < dirs.length; d++ ) {
+            compress_package(REPOS[i], dirs[d]);
+          }
         }
-      }
 
-      cb();
-    });
+        cb();
+      });
+    }
 
     q.run(finished);
   }

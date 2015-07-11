@@ -109,7 +109,7 @@
     /**
      * Task: Build packages
      */
-    grunt.registerTask('packages', 'Build dist package files', function(arg) {
+    grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About)', function(arg) {
       clean(['dist/packages'], ['dist/packages']);
 
       var done = this.async();
@@ -118,87 +118,82 @@
         done();
       }
 
-      _build.buildPackages(grunt, finished);
+      _build.buildPackages(arg, grunt, finished);
     });
 
     /**
      * Task: Build themes
      */
-    grunt.registerTask('themes', 'Build theme files', function(arg) {
+    grunt.registerTask('themes', 'Build theme files (arguments: resources, fonts. Or a single theme, ex: grunt themes:MyThemename)', function(arg) {
       var done = this.async();
+      arg = arg || 'all';
+
       function finished() {
         var src, dst;
 
-        grunt.log.subhead('Copying static files');
+        if ( arg === 'all' || arg === 'resources' ) {
+          grunt.log.subhead('Copying static files');
 
-        src = _path.join(ROOT, 'src', 'themes', 'wallpapers');
-        dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
-        grunt.log.writeln('  cp '  + src + ' -> ' + dst);
-        _fs.copySync(src, dst);
+          src = _path.join(ROOT, 'src', 'themes', 'wallpapers');
+          dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
+          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          _fs.copySync(src, dst);
 
-        src = _path.join(ROOT, 'src', 'themes', 'icons');
-        dst = _path.join(ROOT, 'dist', 'themes', 'icons');
-        grunt.log.writeln('  cp '  + src + ' -> ' + dst);
-        _fs.copySync(src, dst);
+          src = _path.join(ROOT, 'src', 'themes', 'icons');
+          dst = _path.join(ROOT, 'dist', 'themes', 'icons');
+          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          _fs.copySync(src, dst);
 
-        src = _path.join(ROOT, 'src', 'themes', 'fonts');
-        dst = _path.join(ROOT, 'dist', 'themes', 'fonts');
-        grunt.log.writeln('  cp '  + src + ' -> ' + dst);
-        _fs.copySync(src, dst);
+          src = _path.join(ROOT, 'src', 'themes', 'fonts');
+          dst = _path.join(ROOT, 'dist', 'themes', 'fonts');
+          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          _fs.copySync(src, dst);
 
-        src = _path.join(ROOT, 'src', 'themes', 'sounds');
-        dst = _path.join(ROOT, 'dist', 'themes', 'sounds');
-        grunt.log.writeln('  cp '  + src + ' -> ' + dst);
-        _fs.copySync(src, dst);
+          src = _path.join(ROOT, 'src', 'themes', 'sounds');
+          dst = _path.join(ROOT, 'dist', 'themes', 'sounds');
+          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          _fs.copySync(src, dst);
+        }
 
         grunt.log.subhead('Cleaning up');
 
         src = _path.join(ROOT, 'dist', 'themes', 'styles');
         _build.getDirs(src).forEach(function(dir) {
-          (['metadata.json', 'style.less', 'base.less']).forEach(function(i) {
-            dst = _path.join(src, dir, i);
-            grunt.log.writeln('  rm '  + dst);
-            _fs.removeSync(dst);
-          });
+          if ( arg === 'all' || arg === dir ) {
+            (['metadata.json', 'style.less', 'base.less']).forEach(function(i) {
+              dst = _path.join(src, dir, i);
+              grunt.log.writeln('  rm '  + dst);
+              _fs.removeSync(dst);
+            });
+          }
         });
 
-        src = _path.join(ROOT, 'dist', 'themes', 'fonts');
-        _build.getDirs(src).forEach(function(dir) {
-          dst = _path.join(src, dir, 'style.css');
-          grunt.log.writeln('  rm '  + dst);
-          _fs.removeSync(dst);
-        });
-
-        (['sounds', 'icons']).forEach(function(i) {
-          src = _path.join(ROOT, 'dist', 'themes', i);
+        if ( arg === 'all' ) {
+          src = _path.join(ROOT, 'dist', 'themes', 'fonts');
           _build.getDirs(src).forEach(function(dir) {
-            dst = _path.join(src, dir, 'metadata.json');
+            dst = _path.join(src, dir, 'style.css');
             grunt.log.writeln('  rm '  + dst);
             _fs.removeSync(dst);
           });
-        });
 
-        done();
-      }
-
-      clean(['dist/themes'], ['dist/themes', 'dist/themes/styles']);
-
-      grunt.log.subhead('Building fonts');
-      _build.buildFonts(grunt, function(err, result) {
-        if ( err ) {
-          grunt.log.errorlns('An error occured while building fonts');
-          grunt.log.errorlns(err);
-
-          finished();
-          return;
-        } else {
-          var dest = _path.join(ROOT, 'dist', 'themes', 'fonts.css');
-          grunt.log.writeln('>>> ' + dest);
-          _fs.writeFileSync(dest, result);
+          (['sounds', 'icons']).forEach(function(i) {
+            src = _path.join(ROOT, 'dist', 'themes', i);
+            _build.getDirs(src).forEach(function(dir) {
+              dst = _path.join(src, dir, 'metadata.json');
+              grunt.log.writeln('  rm '  + dst);
+              _fs.removeSync(dst);
+            });
+          });
         }
 
+        done();
+
+        clean(['dist/themes'], ['dist/themes', 'dist/themes/styles']);
+      }
+
+      function buildStyles() {
         grunt.log.subhead('Building styles');
-        _build.buildStyles(grunt, function(err) {
+        _build.buildStyles(arg, grunt, function(err) {
           if ( err ) {
             grunt.log.errorlns('An error occured while building styles');
             grunt.log.errorlns(err);
@@ -208,7 +203,28 @@
           grunt.verbose.ok();
           finished();
         });
-      });
+      }
+
+      if ( arg === 'all' || arg === 'fonts' ) {
+        grunt.log.subhead('Building fonts');
+        _build.buildFonts(grunt, function(err, result) {
+          if ( err ) {
+            grunt.log.errorlns('An error occured while building fonts');
+            grunt.log.errorlns(err);
+
+            finished();
+            return;
+          } else {
+            var dest = _path.join(ROOT, 'dist', 'themes', 'fonts.css');
+            grunt.log.writeln('>>> ' + dest);
+            _fs.writeFileSync(dest, result);
+          }
+
+          buildStyles();
+        });
+      } else {
+        buildStyles();
+      }
     });
 
     /**
@@ -238,13 +254,13 @@
     /**
      * Task: Compress build
      */
-    grunt.registerTask('compress', 'Compress dist files', function(arg) {
+    grunt.registerTask('compress', 'Compress dist files (arguments: all, core, packages, ex: grunt compress:core)', function(arg) {
       var done = this.async();
       function finished() {
         grunt.verbose.ok();
         done();
       }
-      _build.compress(grunt, finished);
+      _build.compress(arg, grunt, finished);
     });
 
     /**
