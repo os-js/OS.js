@@ -1,3 +1,40 @@
+# 2.0.0-alpha60
+
+Bugfixes, build system updates, size reduction, new API helpers, touch event compabiltiy.
+
+Also features the new IFrame Applications which help developers EASILY create applications that not
+relies on OS.js APIs. You can convert your existing JavaScript application in no-time :)
+
+http://os.js.org/doc/tutorials/iframe-application.html
+
+* API: Added IFrameApplication helper
+* API: Added IFrameApplicationWindow helper
+* Core: Updated tuch event compability (#112)
+* Core: dist now has split locales file due to compability
+* Utils: Reworked touch detection
+* CoreWM: Now using touch menu as default on touch systems
+* CoreWM: Default Application menu now has className in DOM
+* CoreWM: Fixed pseudo element CSS reset on applySettings()
+* Session: Add yes/no/cancel button to logout dialog (Fixes #124)
+* server-node: Added nodejs exampe handler (#120 , #11)
+* server-node: Fixed scandir() on Windows
+* server-php: Added dynamic rootpath for file reading
+* Grunt: Fixed font generation
+* Grunt: Added arguments for theme building (like specify which theme to build only) (#96)
+* Grunt: Added arguments for package building (like above) (#96)
+* Grunt: Now uses uglify-js for javascript minification (#96)
+* Grunt: Now uses min-css for stylesheet minification (#96)
+* Misc: Added Windows installer source
+* Misc: Windows installer can now install to custom defined directory
+* Misc: Automated installer now installs npm dependencies
+* Misc: Better support for "webhost" deployment
+* Misc: Updated some docs
+* Misc: Removed some unused files
+* Updated README
+* Updated INSTALL
+* Updated package.json
+* Updated gitignore
+
 # 2.0.0-alpha59
 
 Thanks to the community this release contains a lot of bugfixes and useful additions.
