@@ -11,6 +11,8 @@ class Settings
 
 EOJSON;
 
+      $root = dirname(dirname(__DIR__));
+      $json = str_replace("%DROOT%", $root, $json);
       self::$cache = (array)json_decode($json, true);
     }
 

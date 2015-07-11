@@ -105,21 +105,8 @@ has to be built on another computer, then transfered over.
 For example, if you have to use http://my-host.net/OS.js-v2/dist/:
 - First make sure OS.js builds with default settings
 - Change path to */OS.js-v2/dist/* in `src/conf/000-base.json`
-- Change to correct VFS paths in `src/conf/120-backend.json`
 - Rebuild with `grunt config manifest apache-htaccess`
 - Transfer files to your server with FTP or similar
-
-*How do I find the correct VFS path?*
-```
-<?php
-
-// Place this php file in the server and folder where you plan to deploy OS.js.
-// Replace %ROOT% with the result
-
-print __DIR__;
-
-?>
-```
 
 ## Standalone
 

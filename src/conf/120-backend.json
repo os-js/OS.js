@@ -3,9 +3,9 @@
     "backend" : {
       "rooturi": "%ROOTURI%",
       "vfs": {
-        "homes":  "%ROOT%/vfs/home",
-        "tmp":    "%ROOT%/vfs/tmp",
-        "public": "%ROOT%/vfs/public",
+        "homes":  "%DROOT%/vfs/home",
+        "tmp":    "%DROOT%/vfs/tmp",
+        "public": "%DROOT%/vfs/public",
         "mounts": {
         }
       },

@@ -116,7 +116,9 @@
     if ( _fs.existsSync(path) ) {
       try {
         console.info('-->', 'Found configuration', filename);
-        return JSON.parse(_fs.readFileSync(path).toString());
+        var str = _fs.readFileSync(path).toString();
+        str = str.replace(/%DROOT%/g, ROOTDIR.replace(/\/$/, ''));
+        return JSON.parse(str);
       } catch ( e ) {
         console.warn('!!!', 'Failed to parse configuration', filename, e);
       }
