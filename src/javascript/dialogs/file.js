@@ -54,18 +54,27 @@
    * @class
    */
   var FileDialog = function(args, onClose) {
-    args = args || {};
+    args = Utils.argumentDefaults(args || {}, {
+      type: 'open',
+      select: 'file',
+      filename: '',
+      mime: '',
+      mimes: [],
+      filetypes: null,
+      mkdir: false,
+      defaultFilename: 'New File'
+    });
 
     // Arguments
-    this.type             = args.type             || 'open';
+    this.type             = args.type;
     this.path             = args.path;
-    this.select           = args.select           || 'file';
-    this.filename         = args.filename         || '';
-    this.filemime         = args.mime             || '';
-    this.filter           = args.mimes            || [];
-    this.filetypes        = args.filetypes        || null;
-    this.showMkdir        = args.mkdir            || false;
-    this.defaultFilename  = args.defaultFilename  || 'New File';
+    this.select           = args.select;
+    this.filename         = args.filename;
+    this.filemime         = args.mime;
+    this.filter           = args.mimes;
+    this.filetypes        = args.filetypes;
+    this.showMkdir        = args.mkdir;
+    this.defaultFilename  = args.defaultFilename;
     this.defaultFilemime  = args.defaultFilemime  || this.filemime || '';
 
     if ( !this.path && this.filename ) {
@@ -150,6 +159,55 @@
     };
 
     var goHomeSelected = false;
+
+    function createRootSelection() {
+      var roots = VFS.getModules(); // FIXME Does not work if Internal is disabled for some reason
+      if ( roots.length > 1 ) {
+        Utils.$addClass(self.$element, 'HasRootSelection');
+        self.$selectRoot = self._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
+          if ( goHomeSelected ) {
+            goHomeSelected = false;
+            return;
+          }
+
+          if ( self.$fileView ) {
+            var root = VFS.Modules[value].root;
+            self.$fileView.chdir(root);
+          }
+        }}), self.$element);
+
+        roots.forEach(function(m, i) {
+          var icon = API.getIcon(m.module.icon);
+          var desc = m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : '');
+          self.$selectRoot.addItem(m.name, desc, icon);
+        });
+
+        var cur = VFS.getModuleFromPath(self.path);
+        self.$selectRoot.setSelected(cur);
+      }
+    }
+
+    function createMkdir() {
+      if ( self.showMkdir && self.$buttons ) {
+        self._addGUIElement(new OSjs.GUI.Button('ButtonMkdir', {label: 'New Folder', onClick: function() {
+
+          var dir = self.$fileView.getPath();
+          var msg = API._('DIALOG_FILE_MKDIR_MSG', dir);
+          var diag = new OSjs.Dialogs.Input(msg, API._('DIALOG_FILE_MKDIR'), function(btn, val) {
+            if ( btn === 'ok' && val ) {
+              var newdir = new VFS.File(dir + '/' + val);
+              VFS.mkdir(newdir, function(error) {
+                if ( !error && self.$fileView ) {
+                  self.$fileView.refresh();
+                }
+              });
+            }
+          });
+
+          self._addChild(diag, true);
+        }}), self.$buttons);
+      }
+    }
 
     this.$statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
     this.$statusBar.setText('');
@@ -241,50 +299,8 @@
       }), this.$element);
     }
 
-    var roots = VFS.getModules(); // FIXME Does not work if Internal is disabled for some reason
-    if ( roots.length > 1 ) {
-      Utils.$addClass(this.$element, 'HasRootSelection');
-      this.$selectRoot = this._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
-        if ( goHomeSelected ) {
-          goHomeSelected = false;
-          return;
-        }
-
-        if ( self.$fileView ) {
-          var root = VFS.Modules[value].root;
-          self.$fileView.chdir(root);
-        }
-      }}), this.$element);
-
-      roots.forEach(function(m, i) {
-        var icon = API.getIcon(m.module.icon);
-        var desc = m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : '');
-        self.$selectRoot.addItem(m.name, desc, icon);
-      });
-
-      var cur = VFS.getModuleFromPath(this.path);
-      this.$selectRoot.setSelected(cur);
-    }
-
-    if ( this.showMkdir && this.$buttons ) {
-      this._addGUIElement(new OSjs.GUI.Button('ButtonMkdir', {label: 'New Folder', onClick: function() {
-
-        var dir = self.$fileView.getPath();
-        var msg = API._('DIALOG_FILE_MKDIR_MSG', dir);
-        var diag = new OSjs.Dialogs.Input(msg, API._('DIALOG_FILE_MKDIR'), function(btn, val) {
-          if ( btn === 'ok' && val ) {
-            var newdir = new VFS.File(dir + '/' + val);
-            VFS.mkdir(newdir, function(error) {
-              if ( !error && self.$fileView ) {
-                self.$fileView.refresh();
-              }
-            });
-          }
-        });
-
-        self._addChild(diag, true);
-      }}), this.$buttons);
-    }
+    createRootSelection();
+    createMkdir();
 
     return root;
   };
@@ -469,10 +485,8 @@
     var selected = null;
     var seltype  = item ? item.type : null;
 
-    if ( this.select === 'path' ) {
-      if ( item && item.type === 'dir' ) {
-        selected = item.path;
-      }
+    if ( this.select === 'path' && (item && item.type === 'dir') ) {
+      selected = item.path;
     } else {
       if ( item && item.type === 'file' ) {
         selected = item.path;
@@ -484,19 +498,12 @@
     }
 
     if ( this.$input ) {
-      var fname;
-      if ( this.select === 'dir' ) {
-        if ( selected ) {
-          fname = selected;
-        }
+      if ( this.select === 'dir' && selected ) {
+        this.$input.setValue(Utils.escapeFilename(selected));
       } else {
         if ( seltype === 'file' ) {
-          fname = selected;
+          this.$input.setValue(Utils.escapeFilename(selected));
         }
-      }
-
-      if ( fname ) {
-        this.$input.setValue(Utils.escapeFilename(fname));
       }
     }
 
