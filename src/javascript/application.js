@@ -392,6 +392,16 @@
     return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
   };
 
+  /**
+   * Get all launch/session argument
+   *
+   * @return  Array
+   *
+   * @method  Application::_getArguments()
+   */
+  Application.prototype._getArguments = function() {
+    return this.__args;
+  };
 
   /**
    * Set a launch/session argument
