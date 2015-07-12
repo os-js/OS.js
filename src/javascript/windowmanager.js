@@ -610,14 +610,60 @@
     // Implement in your WM
   };
 
+  /**
+   * Create a desktop notification.
+   *
+   * THIS IS IMPLEMENTED IN COREWM
+   *
+   * @param   Object    opts      Notification options
+   *
+   * @option  opts      String    icon        What icon to display
+   * @option  opts      String    title       What title to display
+   * @option  opts      String    message     What message to display
+   * @option  opts      int       timeout     Timeout (default = 5000)
+   * @option  opts      Function  onClick     Event callback on click => fn(ev)
+   *
+   * @return  void
+   *
+   * @method  WindowManager::notification()
+   */
   WindowManager.prototype.notification = function() {
     // Implement in your WM
   };
 
+  /**
+   * Create a panel notification icon.
+   *
+   * THIS IS IMPLEMENTED IN COREWM
+   *
+   * FOR OPTIONS SEE NotificationAreaItem IN CoreWM !
+   *
+   * @param   String    name      Internal name (unique)
+   * @param   Object    opts      Notification options
+   * @param   int       panelId   (Optional) Panel ID
+   *
+   * @return  NotificationAreaItem
+   *
+   * @see NotificationAreaItem
+   *
+   * @method  WindowManager::createNotificationIcon()
+   */
   WindowManager.prototype.createNotificationIcon = function() {
     // Implement in your WM
   };
 
+  /**
+   * Remove a panel notification icon.
+   *
+   * THIS IS IMPLEMENTED IN COREWM
+   *
+   * @param   String    name      Internal name (unique)
+   * @param   int       panelId   (Optional) Panel ID
+   *
+   * @return  boolean
+   *
+   * @method  WindowManager::destroyNotificationIcon()
+   */
   WindowManager.prototype.destroyNotificationIcon = function() {
     // Implement in your WM
   };
@@ -626,6 +672,15 @@
     // Implement in your WM
   };
 
+  /**
+   * Show Settings Window (Application)
+   *
+   * THIS IS IMPLEMENTED IN COREWM
+   *
+   * @return  void
+   *
+   * @method  WindowManager::showSettings()
+   */
   WindowManager.prototype.showSettings = function() {
     // Implement in your WM
   };
