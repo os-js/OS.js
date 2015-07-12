@@ -56,6 +56,10 @@
 <li><a href="#windowmanager-createstylesheet">createStylesheet()</a></li>
 <li><a href="#windowmanager-destroystylesheet">destroyStylesheet()</a></li>
 <li><a href="#windowmanager-onkeydown">onKeyDown()</a></li>
+<li><a href="#windowmanager-notification">notification()</a></li>
+<li><a href="#windowmanager-createnotificationicon">createNotificationIcon()</a></li>
+<li><a href="#windowmanager-destroynotificationicon">destroyNotificationIcon()</a></li>
+<li><a href="#windowmanager-showsettings">showSettings()</a></li>
 <li><a href="#windowmanager-getdefaultsettings">getDefaultSettings()</a></li>
 <li><a href="#windowmanager-getpanel">getPanel()</a></li>
 <li><a href="#windowmanager-getpanels">getPanels()</a></li>
@@ -377,6 +381,168 @@ When Key Down Event received
 </tr>
 </tbody>
 </table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-notification">
+<h3 id="windowmanager-notification-opts-">WindowManager::notification(opts)</h3>
+<pre>
+Create a desktop notification.
+
+THIS IS IMPLEMENTED IN COREWM
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Notification options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>icon</td>
+<td>String</td>
+<td>What icon to display</td>
+</tr>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>What title to display</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>What message to display</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>int</td>
+<td>Timeout (default = 5000)</td>
+</tr>
+<tr>
+<td>onClick</td>
+<td>Function</td>
+<td>Event callback on click =&gt; fn(ev)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-createnotificationicon">
+<h3 id="windowmanager-createnotificationicon-name-opts-panelid-">WindowManager::createNotificationIcon(name, opts, panelId)</h3>
+<pre>
+Create a panel notification icon.
+
+THIS IS IMPLEMENTED IN COREWM
+
+FOR OPTIONS SEE NotificationAreaItem IN CoreWM !
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>NotificationAreaItem</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Internal name (unique)</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Notification options</td>
+</tr>
+<tr>
+<td>panelId</td>
+<td>int</td>
+<td>(Optional) Panel ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>NotificationAreaItem</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-destroynotificationicon">
+<h3 id="windowmanager-destroynotificationicon-name-panelid-">WindowManager::destroyNotificationIcon(name, panelId)</h3>
+<pre>
+Remove a panel notification icon.
+
+THIS IS IMPLEMENTED IN COREWM
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Internal name (unique)</td>
+</tr>
+<tr>
+<td>panelId</td>
+<td>int</td>
+<td>(Optional) Panel ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-showsettings">
+<h3 id="windowmanager-showsettings-">WindowManager::showSettings()</h3>
+<pre>
+Show Settings Window (Application)
+
+THIS IS IMPLEMENTED IN COREWM
+</pre>
+
+
+
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
 
@@ -716,7 +882,7 @@ If the pointer is inside the browser window
 
 </div>
 </div>
-<p><i>Generated: Thu Jun 11 2015 21:58:17 GMT+0200 (CEST)</i></p>
+<p><i>Generated: Sun Jul 12 2015 21:35:00 GMT+0200 (CEST)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
