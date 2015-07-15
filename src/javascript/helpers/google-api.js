@@ -65,8 +65,9 @@
     this.clientId       = clientId;
     this.accessToken    = null;
     this.userId         = null;
-    this.loaded         = false;
+    this.preloaded      = false;
     this.authenticated  = false;
+    this.loaded         = [];
     this.preloads       = [
       {
         type: 'javascript',
@@ -85,14 +86,15 @@
    * Initializes (preloads) the API
    */
   GoogleAPI.prototype.init = function(callback) {
-    callback = callback || function() {};
     var self = this;
-    if ( this.loaded ) {
+
+    callback = callback || function() {};
+    if ( this.preloaded ) {
       callback(false, true);
     } else {
       Utils.preload(this.preloads, function(total, errors) {
         if ( !errors ) {
-          self.loaded = true;
+          self.preloaded = true;
         }
         callback(errors);
       });
@@ -103,9 +105,72 @@
    * Loads the API
    */
   GoogleAPI.prototype.load = function(load, scope, callback) {
-    load = (['auth:client']).concat(load);
-
     var self = this;
+
+    function auth(cb) {
+      self.authenticate(scope, function(error, result) {
+        if ( error ) {
+          return cb(error);
+        }
+        if ( !self.authenticated ) {
+          return cb(API._('GAPI_AUTH_FAILURE'));
+        }
+
+        cb(false, result);
+      });
+    }
+
+    function loadAll(finished) {
+      var lload   = [];
+      load.forEach(function(i) {
+        if ( self.loaded.indexOf(i) === -1 ) {
+          lload.push(i);
+        }
+      });
+
+      var current = 0;
+      var total   = lload.length;
+
+      console.debug('GoogleAPI::load()', load, '=>', lload, scope);
+
+      function _load(iter, cb) {
+        var args = [];
+        var name = null;
+
+        if ( iter instanceof Array ) {
+          if ( iter.length > 0 && iter.length < 3 ) {
+            args = args.concat(iter);
+            name = iter[0];
+          }
+        } else {
+          args.push(iter);
+          name = iter;
+        }
+
+        args.push(function() {
+          self.loaded.push(name);
+
+          cb.apply(this, arguments);
+        });
+
+        gapi.load.apply(gapi, args);
+      }
+
+      function _next() {
+        if ( current >= total ) {
+          finished();
+        } else {
+          _load(lload[current], function() {
+            _next();
+          });
+
+          current++;
+        }
+      }
+
+      _next();
+    }
+
     this.init(function(error) {
       if ( error ) {
         callback(error);
@@ -117,16 +182,14 @@
         return;
       }
 
-      gapi.load(load.join(','), function() {
-        self.authenticate(scope, function(error, result) {
-          if ( error ) {
-            return callback(error);
-          }
-          if ( !self.authenticated ) {
-            return callback(API._('GAPI_AUTH_FAILURE'));
-          }
+      auth(function(error) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
 
-          callback(false, result);
+        loadAll(function(error, result) {
+          callback(error, result, SingletonInstance);
         });
       });
 
@@ -233,6 +296,8 @@
     function createRingNotification() {
       var ring = API.getServiceNotificationIcon();
       if ( ring ) {
+        ring.remove('Google API');
+
         ring.add('Google API', [{
           title: API._('GAPI_SIGN_OUT'),
           onClick: function() {
@@ -278,7 +343,15 @@
       }
     };
 
-    login(true, handleAuthResult);
+    gapi.load('auth:client', function(result) {
+      if ( result && result.error ) {
+        var msg = API._('GAPI_AUTH_FAILURE_FMT', result.error, result.error_subtype);
+        callback(msg);
+        return;
+      }
+
+      login(true, handleAuthResult);
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -304,8 +377,12 @@
    * @param   Object    args      Arguments
    * @param   Function  callback  Callback function => fn(error, instance)
    *
-   * @option  args    Array     load      What functions to load
-   * @option  args    Array     scope     What scope to load
+   * @option  args    Array     load      What functions/apis to load
+   * @option  args    Array     scope     What scopes to load
+   *
+   * The 'load' Array can be filled with either strings, or arrays. ex:
+   * - ['drive-realtime', 'drive-share']
+   * - [['calendar', 'v1'], 'drive-share']
    *
    * @api OSjs.Helpers.GoogleAPI.createInstance()
    *
@@ -314,6 +391,7 @@
   OSjs.Helpers.GoogleAPI.createInstance = function(args, callback) {
     var load = args.load || [];
     var scope = args.scope || [];
+
     function _run() {
       SingletonInstance.load(load, scope, callback);
     }

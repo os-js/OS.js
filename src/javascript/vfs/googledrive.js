@@ -845,7 +845,11 @@
         'https://www.googleapis.com/auth/drive.file',
         'openid'
       ];
-      var iargs = {load: ['drive-realtime', 'drive-share'], scope: scopes};
+      var loads = [
+        'drive-realtime',
+        'drive-share'
+      ];
+      var iargs = {load: loads, scope: scopes};
       OSjs.Helpers.GoogleAPI.createInstance(iargs, function(error, result) {
         if ( error ) {
           return onerror(error);
