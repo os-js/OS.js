@@ -34,6 +34,7 @@
       "src/javascript/vfs/googledrive.js",
       "src/javascript/vfs/dropbox.js",
       "src/javascript/vfs/onedrive.js",
+      "src/javascript/helpers/date.js",
       "src/javascript/helpers/default-application.js",
       "src/javascript/helpers/iframe-application.js",
       "src/javascript/helpers/google-api.js",
