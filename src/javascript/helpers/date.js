@@ -115,6 +115,10 @@
     return ExtendedDate.getDaysInMonth(null, null, this.date);
   };
 
+  ExtendedDate.prototype.getWeekNumber = function() {
+    return ExtendedDate.getWeekNumber(this.date);
+  };
+
   //
   // Static Methods
   //
@@ -151,8 +155,8 @@
 
   ExtendedDate.getFirstDayInMonth = function(fmt, y, m, now) {
     now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-    y = (typeof y === 'undefined' || y === null || y < 0 ) || now.getFullYear();
-    m = (typeof m === 'undefined' || m === null || m < 0 ) || now.getMonth();
+    y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
+    m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
 
     var date = new Date();
     date.setFullYear(y, m, 1);
@@ -164,8 +168,8 @@
 
   ExtendedDate.getLastDayInMonth = function(fmt, y, m, now) {
     now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-    y = (typeof y === 'undefined' || y === null || y < 0 ) || now.getFullYear();
-    m = (typeof m === 'undefined' || m === null || m < 0 ) || (now.getMonth() + 1);
+    y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
+    m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
 
     var date = new Date();
     date.setFullYear(y, m, 0);
@@ -178,12 +182,22 @@
 
   ExtendedDate.getDaysInMonth = function(y, m, now) {
     now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-    y = (typeof y === 'undefined' || y === null || y < 0 ) || now.getFullYear();
-    m = (typeof m === 'undefined' || m === null || m < 0 ) || (now.getMonth() + 1);
+    y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
+    m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
 
     var date = new Date();
     date.setFullYear(y, m, 0);
     return parseInt(date.getDate(), 10);
+  };
+
+  ExtendedDate.getWeekNumber = function(now) {
+    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
+
+    var d = new Date(+now);
+    d.setHours(0,0,0);
+    d.setDate(d.getDate()+4-(d.getDay()||7));
+    return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+
   };
 
   /////////////////////////////////////////////////////////////////////////////
