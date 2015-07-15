@@ -932,6 +932,22 @@
   };
 
   /**
+   * Remove given element from parent
+   *
+   * @param   DOMElement    node      The DOM Element
+   *
+   * @return  null
+   *
+   * @api     OSjs.Utils.$remove()
+   */
+  OSjs.Utils.$remove = function(node) {
+    if ( node && node.parentNode ) {
+      node.parentNode.removeChild(node);
+    }
+    return null;
+  };
+
+  /**
    * Empty this element (remove children)
    *
    * @param   DOMElement    myNode      The DOM Element
