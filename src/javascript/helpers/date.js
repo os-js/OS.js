@@ -44,11 +44,10 @@
       utc = ExtendedDate.config.utc;
     }
 
+    if ( date instanceof ExtendedDate ) {
+      date = date.date;
+    }
     return dateFormat(date, fmt, utc);
-  }
-
-  function clone(date) {
-    return new ExtendedDate(date.getTime);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -65,12 +64,29 @@
    * @see Date
    * @class
    */
-  function ExtendedDate() {
-    Date.apply(this, arguments);
-  }
+  function ExtendedDate(date) {
+    if ( date ) {
+      if ( date instanceof Date ) {
+        this.date = date;
+        return;
+      } else if ( date instanceof ExtendedDate ) {
+        this.date = date.date;
+        return;
+      }
+    }
+    this.date = new Date();
+    /*
+    function construct(constructor, args) {
+      function F() {
+        return constructor.apply(this, args);
+      }
+      F.prototype = constructor.prototype;
+      return new F();
+    }
 
-  ExtendedDate.prototype = Object.create(Date.prototype);
-  ExtendedDate.prototype.constructor = Date;
+    this.date = construct(Date, arguments);
+    */
+  }
 
   //
   // Global Configuration
@@ -84,19 +100,19 @@
   //
 
   ExtendedDate.prototype.format = function(fmt) {
-    return ExtendedDate.format(this, fmt);
+    return ExtendedDate.format(this.date, fmt);
   };
 
   ExtendedDate.prototype.getFirstDayInMonth = function(fmt) {
-    return ExtendedDate.getFirstDayInMonth(fmt, null, null, this);
+    return ExtendedDate.getFirstDayInMonth(fmt, null, null, this.date);
   };
 
   ExtendedDate.prototype.getLastDayInMonth = function(fmt) {
-    return ExtendedDate.getLastDayInMonth(fmt, null, null, this);
+    return ExtendedDate.getLastDayInMonth(fmt, null, null, this.date);
   };
 
   ExtendedDate.prototype.getDaysInMonth = function() {
-    return ExtendedDate.getDaysInMonth(null, null, this);
+    return ExtendedDate.getDaysInMonth(null, null, this.date);
   };
 
   //
@@ -117,7 +133,7 @@
       current = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     }
 
-    return clone(current);
+    return new ExtendedDate(current);
   };
 
   ExtendedDate.getNextMonth = function() {
@@ -130,11 +146,11 @@
       current = new Date(now.getFullYear(), now.getMonth() + 1, 1);
     }
 
-    return clone(current);
+    return new ExtendedDate(current);
   };
 
   ExtendedDate.getFirstDayInMonth = function(fmt, y, m, now) {
-    now = now ? clone(now) : new Date();
+    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
     y = (typeof y === 'undefined' || y === null || y < 0 ) || now.getFullYear();
     m = (typeof m === 'undefined' || m === null || m < 0 ) || now.getMonth();
 
@@ -143,11 +159,11 @@
     if ( fmt === true ) {
       return date.getDate();
     }
-    return fmt ? format(fmt, date) : clone(date);
+    return fmt ? format(fmt, date) : new ExtendedDate(date);
   };
 
   ExtendedDate.getLastDayInMonth = function(fmt, y, m, now) {
-    now = now ? clone(now) : new Date();
+    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
     y = (typeof y === 'undefined' || y === null || y < 0 ) || now.getFullYear();
     m = (typeof m === 'undefined' || m === null || m < 0 ) || (now.getMonth() + 1);
 
@@ -156,12 +172,12 @@
     if ( fmt === true ) {
       return date.getDate();
     }
-    return fmt ? format(fmt, date) : clone(date);
+    return fmt ? format(fmt, date) : new ExtendedDate(date);
   };
 
 
   ExtendedDate.getDaysInMonth = function(y, m, now) {
-    now = now ? clone(now) : new Date();
+    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
     y = (typeof y === 'undefined' || y === null || y < 0 ) || now.getFullYear();
     m = (typeof m === 'undefined' || m === null || m < 0 ) || (now.getMonth() + 1);
 
