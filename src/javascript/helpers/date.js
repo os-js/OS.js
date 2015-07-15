@@ -34,6 +34,14 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
 
+  function filter(from, index, shrt, toindex) {
+    var list = [];
+    for ( var i = (shrt ? 0 : toindex); i < from.length; i++ ) {
+      list.push(from[i]);
+    }
+    return list;
+  }
+
   function format(fmt, date) {
     var utc = undefined;
 
@@ -92,7 +100,7 @@
   // Global Configuration
   //
   ExtendedDate.config = {
-    utc: true
+    //utc: true
   };
 
   //
@@ -127,8 +135,8 @@
     return format(fmt, date);
   };
 
-  ExtendedDate.getPreviousMonth = function() {
-    var now = new Date();
+  ExtendedDate.getPreviousMonth = function(now) {
+    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
     var current;
 
     if (now.getMonth() == 0) {
@@ -140,8 +148,8 @@
     return new ExtendedDate(current);
   };
 
-  ExtendedDate.getNextMonth = function() {
-    var now = new Date();
+  ExtendedDate.getNextMonth = function(now) {
+    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
     var current;
 
     if (now.getMonth() == 11) {
@@ -197,7 +205,26 @@
     d.setHours(0,0,0);
     d.setDate(d.getDate()+4-(d.getDay()||7));
     return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+  };
 
+  ExtendedDate.getDayName = function(index, shrt) {
+    if ( index < 0 || index === null || typeof index === 'undefined' ) {
+      return filter(dateFormat.i18n.dayNames, index, shrt, 7);
+    }
+
+    shrt = shrt ? 0 : 1;
+    var idx = index + (shrt + 7);
+    return dateFormat.dayNames[idx];
+  };
+
+  ExtendedDate.getMonthName = function(index, shrt) {
+    if ( index < 0 || index === null || typeof index === 'undefined' ) {
+      return filter(dateFormat.i18n.monthNames, index, shrt, 12);
+    }
+
+    shrt = shrt ? 0 : 1;
+    var idx = index + (shrt + 12);
+    return dateFormat.monthNames[idx];
   };
 
   /////////////////////////////////////////////////////////////////////////////
