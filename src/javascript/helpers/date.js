@@ -220,9 +220,9 @@
     var current;
 
     if (now.getMonth() === 0) {
-      current = new Date(now.getFullYear() - 1, 11, 1);
+      current = new Date(now.getFullYear() - 1, 11, now.getDate());
     } else {
-      current = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      current = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
     }
 
     return new ExtendedDate(current);
@@ -233,9 +233,9 @@
     var current;
 
     if (now.getMonth() === 11) {
-      current = new Date(now.getFullYear() + 1, 0, 1);
+      current = new Date(now.getFullYear() + 1, 0, now.getDate());
     } else {
-      current = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      current = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
     }
 
     return new ExtendedDate(current);
