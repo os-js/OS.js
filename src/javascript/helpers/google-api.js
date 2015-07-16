@@ -104,7 +104,7 @@
   /**
    * Loads the API
    */
-  GoogleAPI.prototype.load = function(load, scope, callback) {
+  GoogleAPI.prototype.load = function(load, scope, client, callback) {
     var self = this;
 
     function auth(cb) {
@@ -153,7 +153,11 @@
           cb.apply(this, arguments);
         });
 
-        gapi.load.apply(gapi, args);
+        if ( client ) {
+          gapi.client.load.apply(gapi, args);
+        } else {
+          gapi.load.apply(gapi, args);
+        }
       }
 
       function _next() {
@@ -314,11 +318,11 @@
       }
     }
 
-    var handleAuthResult = function(authResult) {
+    var handleAuthResult = function(authResult, immediate) {
       console.info('GoogleAPI::authenticate() => handleAuthResult()', authResult);
 
       if ( authResult.error ) {
-        if ( authResult.error_subtype === 'origin_mismatch' || authResult.error_subtype === 'access_denied' ) {
+        if ( authResult.error_subtype === 'origin_mismatch' || (authResult.error_subtype === 'access_denied' && !immediate) ) {
           var msg = API._('GAPI_AUTH_FAILURE_FMT', authResult.error, authResult.error_subtype);
           callback(msg);
           return;
@@ -339,7 +343,9 @@
           }
         });
       } else {
-        login(false, handleAuthResult);
+        login(false, function(res) {
+          handleAuthResult(res, false);
+        });
       }
     };
 
@@ -350,7 +356,9 @@
         return;
       }
 
-      login(true, handleAuthResult);
+      login(true, function(res) {
+        handleAuthResult(res, true);
+      });
     });
   };
 
@@ -379,6 +387,7 @@
    *
    * @option  args    Array     load      What functions/apis to load
    * @option  args    Array     scope     What scopes to load
+   * @option  args    boolean   client    Load using gapi.client (default=false) WILL BE REPLACED!
    *
    * The 'load' Array can be filled with either strings, or arrays. ex:
    * - ['drive-realtime', 'drive-share']
@@ -391,9 +400,10 @@
   OSjs.Helpers.GoogleAPI.createInstance = function(args, callback) {
     var load = args.load || [];
     var scope = args.scope || [];
+    var client = args.client === true;
 
     function _run() {
-      SingletonInstance.load(load, scope, callback);
+      SingletonInstance.load(load, scope, client, callback);
     }
 
     if ( SingletonInstance ) {
