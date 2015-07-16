@@ -43,13 +43,17 @@
   }
 
   function format(fmt, date) {
-    var utc = undefined;
+    var utc;
 
-    if ( typeof fmt !== 'string' ) {
-      utc = fmt.utc;
-      fmt = fmt.format;
+    if ( typeof fmt === 'undefined' || !fmt ) {
+      fmt = ExtendedDate.config.defaultFormat;
     } else {
-      utc = ExtendedDate.config.utc;
+      if ( typeof fmt !== 'string' ) {
+        utc = fmt.utc;
+        fmt = fmt.format;
+      } else {
+        utc = ExtendedDate.config.utc;
+      }
     }
 
     if ( date instanceof ExtendedDate ) {
@@ -80,6 +84,9 @@
       } else if ( date instanceof ExtendedDate ) {
         this.date = date.date;
         return;
+      } else if ( typeof date === 'string' ) {
+        this.date = new Date(date);
+        return;
       }
     }
     this.date = new Date();
@@ -100,31 +107,104 @@
   // Global Configuration
   //
   ExtendedDate.config = {
+    defaultFormat: 'isoDateTime'
     //utc: true
   };
+
+  //
+  // Date Methods
+  //
+
+  var methods = [
+    'UTC',
+    'now',
+    'parse',
+    'getDate',
+    'getDay',
+    'getFullYear',
+    'getHours',
+    'getMilliseconds',
+    'getMinutes',
+    'getMonth',
+    'getSeconds',
+    'getTime',
+    'getTimezoneOffset',
+    'getUTCDate',
+    'getUTCDay',
+    'getUTCFullYear',
+    'getUTCHours',
+    'getUTCMilliseconds',
+    'getUTCMinutes',
+    'getUTCMonth',
+    'getUTCSeconds',
+    'getYear',
+    'setDate',
+    'setFullYear',
+    'setHours',
+    'setMilliseconds',
+    'setMinutes',
+    'setMonth',
+    'setSeconds',
+    'setTime',
+    'setUTCDate',
+    'setUTCFullYear',
+    'setUTCHours',
+    'setUTCMilliseconds',
+    'setUTCMinutes',
+    'setUTCMonth',
+    'setUTCSeconds',
+    'setYear',
+    'toDateString',
+    'toGMTString',
+    'toISOString',
+    'toJSON',
+    'toLocaleDateString',
+    'toLocaleFormat',
+    'toLocaleString',
+    'toLocaleTimeString',
+    'toSource',
+    'toString',
+    'toTimeString',
+    'toUTCString',
+    'valueOf'
+  ];
+
+  methods.forEach(function(m) {
+    ExtendedDate.prototype[m] = function() {
+      return this.date[m].apply(this.date, arguments);
+    };
+  });
 
   //
   // Extended Methods
   //
 
+  ExtendedDate.prototype.get = function() {
+    return this.date;
+  };
+
   ExtendedDate.prototype.format = function(fmt) {
-    return ExtendedDate.format(this.date, fmt);
+    return ExtendedDate.format(this, fmt);
   };
 
   ExtendedDate.prototype.getFirstDayInMonth = function(fmt) {
-    return ExtendedDate.getFirstDayInMonth(fmt, null, null, this.date);
+    return ExtendedDate.getFirstDayInMonth(fmt, null, null, this);
   };
 
   ExtendedDate.prototype.getLastDayInMonth = function(fmt) {
-    return ExtendedDate.getLastDayInMonth(fmt, null, null, this.date);
+    return ExtendedDate.getLastDayInMonth(fmt, null, null, this);
   };
 
   ExtendedDate.prototype.getDaysInMonth = function() {
-    return ExtendedDate.getDaysInMonth(null, null, this.date);
+    return ExtendedDate.getDaysInMonth(null, null, this);
   };
 
   ExtendedDate.prototype.getWeekNumber = function() {
-    return ExtendedDate.getWeekNumber(this.date);
+    return ExtendedDate.getWeekNumber(this);
+  };
+
+  ExtendedDate.prototype.isWithinMonth = function(from, to) {
+    return ExtendedDate.isWithinMonth(this, from, to);
   };
 
   //
@@ -139,7 +219,7 @@
     now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
     var current;
 
-    if (now.getMonth() == 0) {
+    if (now.getMonth() === 0) {
       current = new Date(now.getFullYear() - 1, 11, 1);
     } else {
       current = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -152,7 +232,7 @@
     now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
     var current;
 
-    if (now.getMonth() == 11) {
+    if (now.getMonth() === 11) {
       current = new Date(now.getFullYear() + 1, 0, 1);
     } else {
       current = new Date(now.getFullYear(), now.getMonth() + 1, 1);
@@ -227,6 +307,15 @@
     return dateFormat.monthNames[idx];
   };
 
+  ExtendedDate.isWithinMonth = function(now, from, to) {
+    if ( now.getFullYear() >= from.getFullYear() && now.getMonth() >= from.getMonth() ) {
+      if ( now.getFullYear() <= to.getFullYear() && now.getMonth() <= to.getMonth() ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // DATE FORMATTING
   /////////////////////////////////////////////////////////////////////////////
@@ -239,7 +328,7 @@
    * Includes enhancements by Scott Trenda <scott.trenda.net>
    * and Kris Kowal <cixar.com/~kris.kowal/>
    */
-  var dateFormat = function () {
+  var dateFormat = (function() {
     var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
         timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
         timezoneClip = /[^-+\dA-Z]/g;
@@ -256,16 +345,12 @@
     return function (date, mask, utc) {
       var dF = dateFormat;
 
-      if (arguments.length == 1 && Object.prototype.toString.call(date) == '[object String]' && !/\d/.test(date)) {
-        mask = date;
-        date = undefined;
+      if (isNaN(date)) {
+        throw new SyntaxError('invalid date');
       }
 
-      date = date ? new Date(date) : new Date;
-      if (isNaN(date)) throw SyntaxError('invalid date');
-
       mask = String(dF.masks[mask] || mask || dF.masks['default']);
-      if (mask.slice(0, 4) == 'UTC:') {
+      if (mask.slice(0, 4) === 'UTC:') {
         mask = mask.slice(4);
         utc = true;
       }
@@ -307,14 +392,14 @@
           TT:   H < 12 ? 'AM' : 'PM',
           Z:    utc ? 'UTC' : (String(date).match(timezone) || ['']).pop().replace(timezoneClip, ''),
           o:    (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
-          S:    ['th', 'st', 'nd', 'rd'][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
+          S:    ['th', 'st', 'nd', 'rd'][d % 10 > 3 ? 0 : (d % 100 - d % 10 !== 10) * d % 10]
         };
 
       return mask.replace(token, function ($0) {
         return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
       });
     };
-  }();
+  })();
 
   dateFormat.masks = {
     'default':      'ddd mmm dd yyyy HH:MM:ss',
