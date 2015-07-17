@@ -445,6 +445,7 @@
     }
 
     var checkWindow = {
+      indexedDB      : 'indexedDB',
       localStorage   : 'localStorage',
       sessionStorage : 'sessionStorage',
       globalStorage  : 'globalStorage',
