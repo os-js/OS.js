@@ -37,6 +37,7 @@
    * @param Object    opts    A list of options
    *
    * @option opts String    fontName      Name of the font used
+   * @option opts boolean   editable      If you are going to edit content (default=true)
    * @option opts Function  onInited      Callback when inited
    *
    * @see OSjs.Core.GUIElement
@@ -53,6 +54,7 @@
     this.opts           = opts || {};
     this.opts.fontName  = this.opts.fontName || 'Arial';
     this.opts.onInited  = this.opts.onInited || function() {};
+    this.opts.editable  = (this.opts.editable === true || typeof this.opts.editable === 'undefined');
     this.opts.isIframe  = true;
     this.loadContent    = null;
     this.strlen         = 0;
@@ -77,12 +79,14 @@
   RichText.prototype.update = function() {
     if  ( this.inited ) { return; }
     GUIElement.prototype.update.apply(this, arguments);
-
     var wm = OSjs.Core.getWindowManager();
     var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
     var themeSrc = OSjs.API.getThemeCSS(theme);
     var self = this;
     var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /></head><body contentEditable="true"></body></html>';
+    if ( !this.opts.editable ) {
+      template = template.replace(' contentEditable="true"', '');
+    }
     var doc;
     try {
       doc = this.getDocument();
@@ -158,7 +162,7 @@
    */
   RichText.prototype.command = function(cmd, defaultUI, args) {
     var d = this.getDocument();
-    if ( d ) {
+    if ( d && this.opts.editable ) {
       var argss = [];
       if ( typeof cmd         !== 'undefined' ) { argss.push(cmd); }
       if ( typeof defaultUI   !== 'undefined' ) { argss.push(defaultUI); }
