@@ -81,7 +81,9 @@
   UserSession.prototype.loadSession = function(res, callback) {
     var list = [];
     res.forEach(function(iter, i) {
-      list.push({name: iter.name, args: iter.args, data: {windows: iter.windows || []}});
+      var args = iter.args;
+      args.__resume__ = true;
+      list.push({name: iter.name, args: args, data: {windows: iter.windows || []}});
     });
 
     API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
