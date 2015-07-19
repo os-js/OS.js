@@ -356,7 +356,9 @@
     'LBL_READONLY' : 'Read-Only',
     'LBL_CREATED' : 'Created',
     'LBL_MODIFIED' : 'Modified',
-    'LBL_SHOW_COLUMNS' : 'Show Columns'
+    'LBL_SHOW_COLUMNS' : 'Show Columns',
+    'LBL_MOVE' : 'Move',
+    'LBL_OPTIONS' : 'Options'
   };
 
 })();
