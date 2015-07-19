@@ -41,6 +41,9 @@
 .Menu li:hover > .Menu {
   display : block;
 }
+.Menu li.Disabled:hover > .Menu {
+  display : none;
+}
 
 .Menu .Arrow {
   position : absolute;
