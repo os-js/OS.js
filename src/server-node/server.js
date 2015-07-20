@@ -33,6 +33,7 @@
   /**
    * Globals and default settings etc.
    */
+  var ISWIN   = /^win/.test(process.platform);
   var HANDLER = null;
   var ROOTDIR = _path.join(_path.dirname(__filename), '/../../');
   var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
@@ -117,7 +118,14 @@
       try {
         console.info('-->', 'Found configuration', filename);
         var str = _fs.readFileSync(path).toString();
-        str = str.replace(/%DROOT%/g, ROOTDIR.replace(/\/$/, ''));
+        var droot = ROOTDIR.replace(/\/$/, '');
+
+        if ( ISWIN ) {
+          str = str.replace(/%DROOT%/g,       droot.replace(/(["\s'$`\\])/g,'\\$1'));
+        } else {
+          str = str.replace(/%DROOT%/g,       droot);
+        }
+
         return JSON.parse(str);
       } catch ( e ) {
         console.warn('!!!', 'Failed to parse configuration', filename, e);
