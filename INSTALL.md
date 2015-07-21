@@ -32,11 +32,11 @@ $ grunt
 
 ## Windows
 
-### Automatic installation
+### Automated
 
 Download and run `http://os.js.org/installer.exe`.
 
-### Manual installation
+### Manual
 
 Run `cmd` as *Administrator* (important)!
 
