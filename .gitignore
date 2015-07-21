@@ -18,6 +18,7 @@ src/server-node/settings.json
 
 src/tools/windows-installer/installer.exe
 
+dist/test*
 dist/settings.js
 dist/osjs.js
 dist/osjs.css
@@ -29,6 +30,7 @@ dist/packages
 dist/vendor/*
 
 dist-dev/test.*
+dist-dev/settings.js
 dist-dev/packages.json
 dist-dev/packages.js
 dist-dev/themes.json

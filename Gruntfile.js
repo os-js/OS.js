@@ -73,6 +73,10 @@
       grunt.log.writeln('>>> ' + dest);
       _fs.writeFileSync(dest, cfg.js);
 
+      dest = _path.join(ROOT, 'dist-dev', 'settings.js');
+      grunt.log.writeln('>>> ' + dest);
+      _fs.writeFileSync(dest, cfg.js);
+
       grunt.verbose.ok();
     });
 
