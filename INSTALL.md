@@ -18,8 +18,6 @@ To easily apply updates and other changes, I recommend using **git** to download
 
 For automated installation, run: `curl -sS http://os.js.org/installer | sh`.
 
-### Manual
-
 ```shell
 # You can also download and extarct the latest zip
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
@@ -31,8 +29,6 @@ $ grunt
 ### Windows
 
 For automated installation, download and run: `http://os.js.org/installer.exe`.
-
-### Manual
 
 Run `cmd` as *Administrator* (important)!
 
