@@ -1,3 +1,30 @@
+# 2.0.0-alpha61
+
+Bugfixes, Date library and improvments to Windows deployment.
+
+* API: Added Application::_getArguments()
+* google-api: Updated authentication failure states
+* google-api: Better library loading
+* Utils: Added Utils::$remove()
+* Utils: Added 'indexedDB' to getCompability()
+* GUI: Added 'editable' to Richtext arguments
+* GUI: Disabled menu entries no longer trigger submenu (if any)
+* user-session: Restored applications now get '__restored__' launch argument
+* Helpers: Added Helpers::Date()
+* Grunt: Small fixes to build clearing
+* Locales: Added some new en_EN strings
+* server-node: Fixed Windows paths breaking server configuration parsing
+* server-php: Dynamic path handling instead of static/configured URI
+* apache: Dynamic root path handling in htaccess
+* Misc: Linting
+* Misc: Removed most of the symlinks from `dist-dev`
+* Misc: Removed unused files
+* Misc: Updated package generation templates
+* Misc: Moved some files around (safe)
+* Misc: Updated INSTALL
+* Misc: Updated javascript code documentation headers
+* Misc: Updated bithoundrc and gitignore
+
 # 2.0.0-alpha60
 
 Bugfixes, build system updates, size reduction, new API helpers, touch event compabiltiy.
