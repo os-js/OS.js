@@ -39,6 +39,7 @@ error_reporting(E_ALL);
 
 // Bootstrapping
 $root = __DIR__;
+$rooturi = !empty($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "/";
 
 define("ROOT", $root);
 
@@ -47,6 +48,7 @@ require "{$root}/api.php";
 require "{$root}/settings.php";
 
 if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'));                   // The path to root dir
+if ( !defined("ROOTURI") )    define("ROOTURI",     $rooturi);                                        // Document root
 if ( !defined("DISTDIR") )    define("DISTDIR",     ROOTDIR . "/dist");                               // Dist dir
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend

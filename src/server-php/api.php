@@ -158,12 +158,7 @@ class APIRequest
   public static function call() {
     $request = new APIRequest();
 
-    $root = "/";
-    if ( ($settings = Settings::get()) && !empty($settings['rooturi']) ) {
-      $root = $settings['rooturi'];
-    }
-    $root = preg_quote($root, '/');
-
+    $root = preg_quote(ROOTURI, '/');
     if ( preg_match(sprintf('/^%sAPI/', $root), $request->uri) ) {
       $response = API::CoreAPI($request);
     } else if ( preg_match(sprintf('/^%sFS$/', $root), $request->uri) ) {
@@ -331,12 +326,7 @@ class API
     $headers  = Array();
     $code     = 0;
 
-    $root = "/";
-    if ( ($settings = Settings::get()) && !empty($settings['rooturi']) ) {
-      $root = $settings['rooturi'];
-    }
-    $root = preg_quote($root, '/');
-
+    $root = preg_quote(ROOTURI, '/');
     $url = preg_replace(sprintf("/^%sFS/", $root), "", urldecode($req->data));
 
     call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));

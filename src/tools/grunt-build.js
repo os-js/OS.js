@@ -153,10 +153,6 @@
 
       var handler    = json.handler    || "demo";
       var connection = json.connection || "http";
-      var rooturi    = "/";
-      try {
-        rooturi = json.path || "/";
-      } catch ( e ) {}
 
       if ( ISWIN ) {
         build = build.replace(/%ROOT%/g,       ROOT.replace(/(["\s'$`\\])/g,'\\$1'));
@@ -166,7 +162,6 @@
 
       build = build.replace(/%HANDLER%/g,    handler);
       build = build.replace(/%CONNECTION%/g, connection);
-      build = build.replace(/%ROOTURI%/g,    rooturi);
 
       _cache = JSON.parse(build);
     }
@@ -801,7 +796,6 @@
   function generateApacheHtaccess(grunt, a) {
     var mimes = [];
     var maps = MIMES.mapping;
-    var rootURI = '/';
 
     for ( var i in maps ) {
       if ( maps.hasOwnProperty(i) ) {
@@ -811,16 +805,11 @@
     }
     mimes = mimes.join('\n');
 
-    try {
-      rootURI = BUILD.path || '/';
-    } catch ( e ) {}
-
     function generate_htaccess(t, d) {
       var src = _path.join(ROOT, 'src', 'tools', 'templates', t);
       var dst = _path.join(ROOT, d, '.htaccess');
       var tpl = _fs.readFileSync(src).toString();
       tpl = tpl.replace(/%MIMES%/, mimes);
-      tpl = tpl.replace(/%ROOTURI%/g, rootURI);
 
       grunt.log.writeln('>>> ' + dst);
       _fs.writeFileSync(dst, tpl);
