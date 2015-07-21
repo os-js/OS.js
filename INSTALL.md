@@ -34,6 +34,8 @@ Just use [this configuration file](https://raw.githubusercontent.com/andersevenr
 
 This only requires a few simple steps. After you are done building, see the next section for how to set up a server.
 
+You can download and extract the latest zip instead of using *git* (but the latter is recommended).
+
 ### NIX
 
 ```shell
