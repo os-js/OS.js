@@ -14,6 +14,8 @@ You just need **node** and **npm**. Install them with your package manager or do
 
 To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file (or the automated installer and then build manually).
 
+**Windows users:** Make sure to run `bin\create-windows-symlinks` after unzipping/cloning to be able to use the *development environment* (aka dist-dev).
+
 ## Automated
 
 ### NIX
@@ -53,8 +55,6 @@ If building was successful, you can now start up a server.
 ## Setting up a server
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
-
-**Windows users:** *development environment* (aka dist-dev) does not work at the moment because it relies on symbolic links intended for POSIX type systems.
 
 ## Standalone
 
