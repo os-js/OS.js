@@ -158,12 +158,11 @@ class APIRequest
   public static function call() {
     $request = new APIRequest();
 
-    $root = preg_quote(ROOTURI, '/');
-    if ( preg_match(sprintf('/^%sAPI/', $root), $request->uri) ) {
+    if ( preg_match('/API$/', $request->uri) ) {
       $response = API::CoreAPI($request);
-    } else if ( preg_match(sprintf('/^%sFS$/', $root), $request->uri) ) {
+    } else if ( preg_match('/FS$/', $request->uri) ) {
       $response = API::FilePOST($request);
-    } else if ( preg_match(sprintf('/^%sFS(.*)/', $root), $request->uri) ) {
+    } else if ( preg_match('/\/(([^\/]+\/)+)?(FS)(.*)/', $request->uri) ) {
       $response = API::FileGET($request);
     } else {
       $response = null;
@@ -326,14 +325,13 @@ class API
     $headers  = Array();
     $code     = 0;
 
-    $root = preg_quote(ROOTURI, '/');
-    $url = preg_replace(sprintf("/^%sFS/", $root), "", urldecode($req->data));
+    $url = preg_replace('/\/(([^\/]+\/)+)?(FS)/', "", urldecode($req->data));
 
     call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 
     try {
       if ( $url ) {
-        list($dirname, $root, $protocol, $file) = getRealPath($url);
+        list($dirname, $req->uri, $protocol, $file) = getRealPath($url);
         if ( file_exists($file) ) {
           session_write_close();
           if ( $data = FS::read($url, Array("raw" => true)) ) {

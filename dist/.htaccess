@@ -2,12 +2,12 @@
 
 Options +FollowSymlinks
 RewriteEngine on
-RewriteBase /
+#RewriteBase /
 RewriteCond %{REQUEST_URI} !^index.html
 RewriteCond %{REQUEST_URI} !^http-bind-jabber
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ /api.php [QSA,L]
+RewriteRule ^ api.php [QSA,L]
 AddCharset UTF-8 .js
 AddCharset UTF-8 .html
 
