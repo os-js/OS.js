@@ -49,7 +49,7 @@ $ bin\create-windows-symlinks
 
 # Install dependency packages and build
 $ npm install
-$ grunt --force
+$ grunt
 ```
 
 [![asciicast](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx.png)](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx)
@@ -121,10 +121,10 @@ Download and extract the latest zip, or use the preferred method (git):
 $ git pull
 
 # Build all changes
-$ grunt --force
+$ grunt
 
 # Or just core and packages
-$ grunt --force core packages
+$ grunt core packages
 
 ```
 
