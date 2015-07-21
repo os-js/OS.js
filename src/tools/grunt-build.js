@@ -448,21 +448,6 @@
         q.add(function(next) {
           grunt.log.subhead('* Building theme styles for "' + name + '"');
 
-          // FIXME: THIS IS A HACK!
-          if ( ISWIN ) {
-            console.log("WARNING!!! WINDOWS IS EXPERIMENTAL! OVERWRITING SOME SYMLINKS WITH FILE COPIES");
-            var fixsrc = _path.join(ROOT, 'src', 'stylesheets', 'theme.less');
-            var fixdst = _path.join(ROOT, 'src', 'themes', 'styles', name, 'base.less');
-
-            try {
-              _fs.removeSync(fixdst);
-            } catch ( e ) {}
-
-            try {
-              _fs.copySync(fixsrc, fixdst);
-            } catch ( e ) {}
-          }
-
           var src  = _path.join(dir, name, 'style.less');
           var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name + '.css');
           var cmd = ([NODE_EXE, LESSC, src, dest]).join(' ');
