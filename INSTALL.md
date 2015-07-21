@@ -23,6 +23,8 @@ Run `curl -sS http://os.js.org/installer | sh`.
 ### Manual
 
 ```shell
+$ sudo npm install -g grunt-cli
+
 # You can also download and extarct the latest zip
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
 $ cd OS.js-v2
@@ -41,6 +43,8 @@ Download and run `http://os.js.org/installer.exe`.
 Run `cmd` as *Administrator* (important)!
 
 ```shell
+$ npm install -g grunt-cli
+
 # You can also download and extarct the latest zip
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
 $ cd OS.js-v2
