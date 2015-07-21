@@ -16,7 +16,11 @@ To easily apply updates and other changes, I recommend using **git** to download
 
 ## NIX
 
-For automated installation, run: `curl -sS http://os.js.org/installer | sh`.
+### Automated
+
+Run `curl -sS http://os.js.org/installer | sh`.
+
+### Manual
 
 ```shell
 # You can also download and extarct the latest zip
@@ -26,9 +30,13 @@ $ npm install
 $ grunt
 ```
 
-### Windows
+## Windows
 
-For automated installation, download and run: `http://os.js.org/installer.exe`.
+### Automatic installation
+
+Download and run `http://os.js.org/installer.exe`.
+
+### Manual installation
 
 Run `cmd` as *Administrator* (important)!
 
