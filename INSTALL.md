@@ -32,32 +32,31 @@ Just use [this configuration file](https://raw.githubusercontent.com/andersevenr
 
 ## Manual
 
-This only requires a few simple steps.
+This only requires a few simple steps. After you are done building, see the next section for how to set up a server.
 
-**Windows users:** Run `cmd` as *Administrator* (important)!
+### NIX
 
 ```shell
-# Install grunt (build system)
-$ sudo npm install -g grunt-cli
-
-# In this example we clone with git, you can also download the zip-file from github and extract it.
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
-
-# Enter directory
 $ cd OS.js-v2
-
-# Windows users ONLY. Fix symlinks for development environment.
-# This is optional, but if you skip this you have to build with `grunt --force`
-$ bin\create-windows-symlinks
-
-# Install dependency packages and build
 $ npm install
 $ grunt
 ```
 
-[![asciicast](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx.png)](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx)
+### Windows
 
-If building was successful, you can now start up a server.
+Run `cmd` as *Administrator* (important)!
+
+```shell
+$ git clone https://github.com/andersevenrud/OS.js-v2.git
+$ cd OS.js-v2
+$ npm install
+
+# This is required to make the Development Environment work, but is optional.
+$ bin\create-windows-symlinks
+
+$ grunt --force
+```
 
 ## Setting up a server
 
