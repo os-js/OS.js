@@ -8,17 +8,13 @@ Please note that it might be unstable, also Networking and Filesystem functions 
 
 # Dependencies
 
-* **node** and **npm**
-  * Ubuntu/Debian: make sure to install the *legacy* package
-  * Windows: Just download the official installer from https://nodejs.org/
-* Optional
-  * **Git** for the automated installer and/or updating changes easily
-  * **PHP** if you don't want to run Node server
-  * **Web server** if you want to run with Apache, Lighttpd, NGINX or similar
+You just need **node** and **npm**. Install them with your package manager or download the [official installer](https://nodejs.org).
 
 # Installation
 
 **Make sure you have dependencies installed before beginning**
+
+To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file.
 
 ## Automated
 
