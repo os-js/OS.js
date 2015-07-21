@@ -14,8 +14,6 @@ You just need **node** and **npm**. Install them with your package manager or do
 
 To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file (or the automated installer and then build manually).
 
-**Windows users:** Make sure to run `bin\create-windows-symlinks` after installation (prefferably before building, in `cmd` as **Administrator**) to be able to use the *development environment* (aka dist-dev).
-
 ## Automated
 
 ### NIX
@@ -46,6 +44,9 @@ $ git clone https://github.com/andersevenrud/OS.js-v2.git
 $ cd OS.js-v2
 $ npm install
 $ grunt --force
+
+# Windows users ONLY:
+$ bin\create-windows-symlinks
 ```
 
 [![asciicast](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx.png)](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx)
