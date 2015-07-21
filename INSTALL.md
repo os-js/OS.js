@@ -54,7 +54,7 @@ If building was successful, you can now start up a server.
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
 
-**Windows users:** dist-dev does not work at the moment because it relies on symbolic links intended for POSIX type systems.
+**Windows users:** *development environment* (aka dist-dev) does not work at the moment because it relies on symbolic links intended for POSIX type systems.
 
 ## Standalone
 
