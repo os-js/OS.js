@@ -12,33 +12,16 @@ You just need **node** and **npm**. Install them with your package manager or do
 
 # Installation
 
-To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file (or the automated installer and then build manually).
+To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file/automated installer.
 
-## Automated
+## NIX
 
-### NIX
+For automated installation, run: `curl -sS http://os.js.org/installer | sh`.
 
-Simply run `curl -sS http://os.js.org/installer | sh`
-
-### Windows
-
-Download and run `http://os.js.org/installer.exe`.
-
-### Vagrant
-
-A [Vagrant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
-
-Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
-
-## Manual
-
-This only requires a few simple steps. After you are done building, see the next section for how to set up a server.
-
-You can download and extract the latest zip instead of using *git* (but the latter is recommended).
-
-### NIX
+### Manual
 
 ```shell
+# You can also download and extarct the latest zip
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
 $ cd OS.js-v2
 $ npm install
@@ -47,9 +30,14 @@ $ grunt
 
 ### Windows
 
+For automated installation, download and run: `http://os.js.org/installer.exe`.
+
+### Manual
+
 Run `cmd` as *Administrator* (important)!
 
 ```shell
+# You can also download and extarct the latest zip
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
 $ cd OS.js-v2
 $ npm install
@@ -60,7 +48,13 @@ $ bin\create-windows-symlinks
 $ grunt --force
 ```
 
-## Setting up a server
+## Vagrant
+
+A [Vagrant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
+
+Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
+
+# Setting up a server
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
 
