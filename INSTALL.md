@@ -41,12 +41,15 @@ $ sudo npm install -g grunt-cli
 # In this example we clone with git, you can also download the zip-file from github and extract it.
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
 
+# Enter directory
 $ cd OS.js-v2
+
+# Windows users ONLY  (Run "cmd" as Administrator):
+$ bin\create-windows-symlinks
+
+# Install dependency packages and build
 $ npm install
 $ grunt --force
-
-# Windows users ONLY:
-$ bin\create-windows-symlinks
 ```
 
 [![asciicast](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx.png)](https://asciinema.org/a/8t4w7pgzsq0xdwo3bhdnm8dpx)
