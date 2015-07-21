@@ -10,7 +10,7 @@ Please note that it might be unstable, also Networking and Filesystem functions 
 
 You just need **node** and **npm**. Install them with your package manager or download the [official installer](https://nodejs.org).
 
-**Debian\Ubuntu:** Install with `sudo apt-get install nodejs-legacy`
+**Debian\Ubuntu:** Also install package `nodejs-legacy`.
 
 # Installation
 
