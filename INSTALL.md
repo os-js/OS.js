@@ -14,7 +14,7 @@ You just need **node** and **npm**. Install them with your package manager or do
 
 To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file (or the automated installer and then build manually).
 
-**Windows users:** Make sure to run `bin\create-windows-symlinks` after unzipping/cloning (in `cmd` as **Administrator**) to be able to use the *development environment* (aka dist-dev).
+**Windows users:** Make sure to run `bin\create-windows-symlinks` after installation (prefferably before building, in `cmd` as **Administrator**) to be able to use the *development environment* (aka dist-dev).
 
 ## Automated
 
