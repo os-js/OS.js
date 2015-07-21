@@ -34,8 +34,10 @@ Just use [this configuration file](https://raw.githubusercontent.com/andersevenr
 
 This only requires a few simple steps.
 
+**Windows users:** Run `cmd` as *Administrator* (important)!
+
 ```shell
-# Install grunt (Windows users: Run "cmd" as Administrator for this without sudo in front)
+# Install grunt (build system)
 $ sudo npm install -g grunt-cli
 
 # In this example we clone with git, you can also download the zip-file from github and extract it.
@@ -44,7 +46,8 @@ $ git clone https://github.com/andersevenrud/OS.js-v2.git
 # Enter directory
 $ cd OS.js-v2
 
-# Windows users ONLY  (Run "cmd" as Administrator):
+# Windows users ONLY. Fix symlinks for development environment.
+# This is optional, but if you skip this you have to build with `grunt --force`
 $ bin\create-windows-symlinks
 
 # Install dependency packages and build
