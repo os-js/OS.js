@@ -36,14 +36,14 @@
   /**
    * Main Window Constructor
    */
-  var ApplicationEXAMPLEWindow = function(app, metadata) {
+  function ApplicationEXAMPLEWindow(app, metadata) {
     Window.apply(this, ['ApplicationEXAMPLEWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 200
     }, app]);
-  };
+  }
 
   ApplicationEXAMPLEWindow.prototype = Object.create(Window.prototype);
 
