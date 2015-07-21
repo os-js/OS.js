@@ -12,7 +12,7 @@ You just need **node** and **npm**. Install them with your package manager or do
 
 # Installation
 
-To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file (and then build manually).
+To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file (or the automated installer and then build manually).
 
 ## Automated
 
