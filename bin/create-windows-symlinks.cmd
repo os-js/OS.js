@@ -10,4 +10,6 @@ mklink /D js ..\src\javascript
 mklink /D css ..\src\stylesheets
 mklink /D themes ..\dist\themes
 mklink /D vendor ..\dist\vendor
-mklink /D packages ..\packages
+mklink /D packages ..\src\packages
+
+cd ..
