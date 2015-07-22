@@ -24,7 +24,7 @@ Just run the automated installer and you will be ready to go:
 
 NIX: `curl -sS http://os.js.org/installer | sh`
 
-Windows: `http://os.js.org/installer.exe`
+Windows: http://os.js.org/installer.exe
 
 Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
 

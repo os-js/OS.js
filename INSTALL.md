@@ -38,7 +38,7 @@ $ grunt
 
 ### Automated
 
-Download and run `http://os.js.org/installer.exe`.
+Download and run http://os.js.org/installer.exe.
 
 ### Manual
 
@@ -116,6 +116,16 @@ The only downside here is that you'd have to run from /OS.js-v2/dist/ without do
 OS.js can run as a *X11* Desktop.
 
 Full documentation [here](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
+
+# Setting up features
+
+I have documentation on how to set up optional core features:
+
+* [Google API and Google Drive](http://os.js.org/doc/manuals/man-google-api.html)
+* [Windows Live API and OneDrive](http://os.js.org/doc/manuals/man-windows-live-api.html)
+* [Dropbox](http://os.js.org/doc/manuals/man-dropbox.html)
+* [Broadway](http://os.js.org/doc/manuals/man-broadway.html)
+* [ZIP support](http://os.js.org/doc/manuals/man-zip.html)
 
 # Adding additional applications
 
