@@ -111,7 +111,7 @@ See doc/example-handler.txt
       container.style.display = 'block';
     }
 
-    var uri = '/example.html';
+    var uri = OSjs.API.getDefaultSettings().Core.RootURI + 'example.html';
     OSjs.Utils.ajax({
       url: uri,
       onsuccess: function(response) {
