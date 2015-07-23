@@ -280,7 +280,7 @@
       extensions.forEach(function(e) {
         var p = _path.join(e._root, 'api.php');
         if ( _fs.existsSync(p) ) {
-          loadExtensions.push(fixWinPath(p).replace(ROOT, ''));
+          loadExtensions.push(fixWinPath(p).replace(fixWinPath(ROOT), ''));
         }
       });
       if ( loadExtensions ) {
@@ -310,7 +310,7 @@
       extensions.forEach(function(e) {
         var p = _path.join(e._root, 'api.js');
         if ( _fs.existsSync(p) ) {
-          loadExtensions.push(fixWinPath(p).replace(ROOT, ''));
+          loadExtensions.push(fixWinPath(p).replace(fixWinPath(ROOT), ''));
         }
       });
       if ( loadExtensions ) {
