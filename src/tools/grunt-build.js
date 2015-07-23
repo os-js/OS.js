@@ -610,7 +610,7 @@
           man = JSON.parse(_fs.readFileSync(manpath));
           checkManifest(man, app);
         } catch ( e ) {
-          grunt.fail.warn('WARNING: Failed to parse ' + manpath.replace(ROOT, '') + ': ' + e);
+          console.log('WARNING: Failed to parse ' + manpath.replace(ROOT, '') + ': ' + e);
           cb();
           return;
         }
