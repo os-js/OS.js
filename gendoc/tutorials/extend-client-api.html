@@ -1,0 +1,88 @@
+<h1>Tutorial: Extend Server API</h1>
+
+<p>
+  This tutorial show you how to add client (javscript) API extensions.
+</p>
+
+<p><b>You can use this in combination with Server API Extensions</b></p>
+
+<h2>Method 1 - Core Extension</h2>
+
+<ol>
+  <li>Create a new file, ex: src/javascript/helpers/my-module.js</li>
+  <li>Add the file to: src/javascript/helpers/my-module.js</li>
+  <li>Rebuild with <b>grunt core</b> (dist), or <b>grunt dist-dev-index</b> (dist-dev)</li>
+</ol>
+
+<p>
+  Example file:
+</p>
+<pre class="code">
+(function(Utils, VFS, API) {
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MODULE API
+  /////////////////////////////////////////////////////////////////////////////
+
+  // Just a basic pattern to keep methods
+  var MyModule = {
+    someMethod: function() {
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  // Available namespaces: API, VFS, Utils, Helpers, Core
+  // Helpers is what I call the generic libraries... because they "help you"
+  OSjs.Helpers.MyModule = MyModule;
+
+})(OSjs.Utils, OSjs.VFS, OSjs.API);
+</pre>
+
+<h2>Method 2 - Package Extension</h2>
+<p>
+  Just create a new package:
+</p>
+<ol>
+  <li>Create a new package with <b>grunt create-package:MyModule</b></li>
+  <li>Delete everything except package.json</li>
+  <li>Change package.json to look like example below</li>
+  <li>Add extension.js file as example below</li>
+  <li>Rebuild with <b>grunt packages config</b> (dist), or <b>grunt config</b> (dist-dev)</li>
+</ol>
+
+<h3>package.json</h3>
+<pre class="code">
+{
+  "className": "ExtensionMyModule",
+  "type": "extension",
+  "build": {
+    "copy" : [
+      "package.json",
+      "extension.js"
+    ]
+  },
+  "sources": [
+    {"type": "javascript", "src": "extension.js"}
+  ]
+}
+</pre>
+
+<h3>extension.js</h3>
+<p>
+  Use the same code as in <i>Method 1</i>.
+</p>
+
+<div class="adddshere">
+  <ins class="adsbygoogle"
+    style="display:inline-block;width:100%;height:250px"
+    data-ad-client="ca-pub-6145716264521226"
+    data-ad-slot="3789905596"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</div>
+

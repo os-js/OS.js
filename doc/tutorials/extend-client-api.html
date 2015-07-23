@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>OS.js Tutorials</title>
+    <title>Extend Client API - OS.js Tutorials</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta name="description" content="OS.js -- OS.js Tutorials" />
+    <meta name="description" content="OS.js -- Extend Client API - OS.js Tutorials" />
     <meta name="keywords" content="OS.js,Documentation,Client,Server,API,Tutorial,Tutorials,Manual,Manuals" />
     <link rel="stylesheet" type="text/css" href="/doc/main.css" />
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Source+Sans+Pro" />
@@ -13,7 +13,7 @@
     <link rel="apple-touch-icon-precomposed" href="/favicon.png" />
     <link rel="author" href="https://plus.google.com/101576798387217383063" />
     <link rel="publisher" href="https://plus.google.com/101576798387217383063" />
-    <link rel="canonical" href="http://os.js.org/doc/tutorials/index.html" />
+    <link rel="canonical" href="http://os.js.org/doc/tutorials/extend-client-api.html" />
     <script type="text/javascript">
       if ( window.location.hostname === 'andersevenrud.github.io' ) {
         window.location = '//os.js.org' + window.location.pathname.replace(/\/OS\.js-v2/, '');
@@ -22,7 +22,7 @@
   </head>
   <body>
     <header>
-      <h1>OS.js Tutorials</h1>
+      <h1>Extend Client API - OS.js Tutorials</h1>
       <ul>
         <li><a href="/doc/">Index</a></li>
         <li><a href="/doc/client/">Client API</a></li>
@@ -34,40 +34,82 @@
 
     <main>
 
-<h1>Tutorials</h1>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud">https://github.com/andersevenrud</a>
-</p>
+<h1>Tutorial: Extend Server API</h1>
 
 <p>
-  <b>Stay tuned, more to come!</b>
+  This tutorial show you how to add client (javscript) API extensions.
 </p>
 
-<h2>Applications</h2>
-<ul>
-  <li><a href="/doc/tutorials/create-application.html">Create your own application</a></li>
-  <li><a href="/doc/tutorials/create-application-continued.html">Create your own application (continued)</a></li>
-  <li><a href="/doc/tutorials/application-with-server-api.html">Create your own Application with server API</a></li>
-  <li><a href="/doc/tutorials/iframe-application.html">Create your own IFrame Application</a></li>
-</ul>
+<p><b>You can use this in combination with Server API Extensions</b></p>
 
-<h2>Window Manager</h2>
-<ul>
-  <li><a href="/doc/tutorials/create-theme.html">Create your own theme</a></li>
-  <li><a href="/doc/tutorials/create-panelitem.html">Create your own panel item</a></li>
-</ul>
+<h2>Method 1 - Core Extension</h2>
 
-<h2>Core/API</h2>
-<ul>
-  <li><a href="/doc/tutorials/create-handler.html">Create your own handler</a></li>
-<!--
-  <li><a href="/doc/tutorials/extend-server-api.html">Extend Server API</a></li>
--->
-  <li><a href="/doc/tutorials/extend-client-api.html">Extend Client API</a></li>
-</ul>
+<ol>
+  <li>Create a new file, ex: src/javascript/helpers/my-module.js</li>
+  <li>Add the file to: src/javascript/helpers/my-module.js</li>
+  <li>Rebuild with <b>grunt core</b> (dist), or <b>grunt dist-dev-index</b> (dist-dev)</li>
+</ol>
+
+<p>
+  Example file:
+</p>
+<pre class="code">
+(function(Utils, VFS, API) {
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MODULE API
+  /////////////////////////////////////////////////////////////////////////////
+
+  // Just a basic pattern to keep methods
+  var MyModule = {
+    someMethod: function() {
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  // Available namespaces: API, VFS, Utils, Helpers, Core
+  // Helpers is what I call the generic libraries... because they "help you"
+  OSjs.Helpers.MyModule = MyModule;
+
+})(OSjs.Utils, OSjs.VFS, OSjs.API);
+</pre>
+
+<h2>Method 2 - Package Extension</h2>
+<p>
+  Just create a new package:
+</p>
+<ol>
+  <li>Create a new package with <b>grunt create-package:MyModule</b></li>
+  <li>Delete everything except package.json</li>
+  <li>Change package.json to look like example below</li>
+  <li>Add extension.js file as example below</li>
+  <li>Rebuild with <b>grunt packages config</b> (dist), or <b>grunt config</b> (dist-dev)</li>
+</ol>
+
+<h3>package.json</h3>
+<pre class="code">
+{
+  "className": "ExtensionMyModule",
+  "type": "extension",
+  "build": {
+    "copy" : [
+      "package.json",
+      "extension.js"
+    ]
+  },
+  "sources": [
+    {"type": "javascript", "src": "extension.js"}
+  ]
+}
+</pre>
+
+<h3>extension.js</h3>
+<p>
+  Use the same code as in <i>Method 1</i>.
+</p>
 
 <div class="adddshere">
   <ins class="adsbygoogle"
@@ -79,6 +121,7 @@
   </script>
   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </div>
+
 
 
   </main>

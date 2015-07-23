@@ -87,8 +87,12 @@
     "title": "Create your own Theme - OS.js Tutorials"
   },
 
-  "tutorials/iframe-application.html": {
-    "title": "Create IFrame Application - OS.js Tutorials"
+  "tutorials/extend-client-api.html": {
+    "title": "Extend Client API - OS.js Tutorials"
+  },
+
+  "tutorials/extend-server-api.html": {
+    "title": "Extend Server API - OS.js Tutorials"
   },
 
   "tutorials/index.html": {
