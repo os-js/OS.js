@@ -250,7 +250,7 @@
       var iter, source, data = [];
       for ( var i = 0; i < fileList.length; i++ ) {
         iter = fileList[i];
-        grunt.log.writeln('<<< ' + iter);
+        grunt.log.writeln('<<< /' + iter);
         try {
           source = _cleanup(iter);
           data.push(source);
@@ -462,7 +462,7 @@
             var src  = _path.join(dir, name);
             var dest = _path.join(ROOT, 'dist', 'themes', 'styles', name);
 
-            grunt.log.writeln('  cp ' + src + ' -> ' + dest);
+            grunt.log.writeln('  cp ' + src.replace(ROOT, '') + ' -> ' + dest.replace(ROOT, ''));
 
             _fs.copy(src, dest, function() {
               next();
@@ -688,14 +688,14 @@
           var odst;
 
           odst = _path.join(dir, "combined.js");
-          grunt.log.writeln('  >>> ' + odst);
+          grunt.log.writeln('  >>> ' + odst.replace(ROOT, ''));
           _fs.writeFileSync(odst, combined_js.join("\n"));
 
           odst = _path.join(dir, "combined.css");
-          grunt.log.writeln('  >>> ' + odst);
+          grunt.log.writeln('  >>> ' + odst.replace(ROOT, ''));
           _fs.writeFileSync(odst, combined_css.join("\n"));
 
-          grunt.log.writeln('  >>> ' + newmanpath);
+          grunt.log.writeln('  >>> ' + newmanpath.replace(ROOT, ''));
           _fs.writeFileSync(newmanpath, JSON.stringify(man, null, 2));
         }
 
@@ -716,7 +716,7 @@
         q.add(function(cb) {
           var src = _path.join(ROOT, 'src', 'packages', repo, 'repository.json');
           var dst = _path.join(ROOT, 'dist', 'packages', repo, 'repository.json');
-          grunt.log.writeln('\n>>> ' + dst);
+          grunt.log.writeln('\n>>> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
           cb();
         });

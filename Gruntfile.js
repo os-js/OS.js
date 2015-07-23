@@ -62,19 +62,19 @@
       var dest;
 
       dest = _path.join(ROOT, 'src', 'server-php', 'settings.php');
-      grunt.log.writeln('>>> ' + dest);
+      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
       _fs.writeFileSync(dest, cfg.php);
 
       dest = _path.join(ROOT, 'src', 'server-node', 'settings.json');
-      grunt.log.writeln('>>> ' + dest);
+      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
       _fs.writeFileSync(dest, JSON.stringify(cfg.node));
 
       dest = _path.join(ROOT, 'dist', 'settings.js');
-      grunt.log.writeln('>>> ' + dest);
+      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
       _fs.writeFileSync(dest, cfg.js);
 
       dest = _path.join(ROOT, 'dist-dev', 'settings.js');
-      grunt.log.writeln('>>> ' + dest);
+      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
       _fs.writeFileSync(dest, cfg.js);
 
       grunt.verbose.ok();
@@ -144,22 +144,22 @@
 
           src = _path.join(ROOT, 'src', 'themes', 'wallpapers');
           dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
-          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
 
           src = _path.join(ROOT, 'src', 'themes', 'icons');
           dst = _path.join(ROOT, 'dist', 'themes', 'icons');
-          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
 
           src = _path.join(ROOT, 'src', 'themes', 'fonts');
           dst = _path.join(ROOT, 'dist', 'themes', 'fonts');
-          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
 
           src = _path.join(ROOT, 'src', 'themes', 'sounds');
           dst = _path.join(ROOT, 'dist', 'themes', 'sounds');
-          grunt.log.writeln('  cp '  + src + ' -> ' + dst);
+          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
         }
 
@@ -170,7 +170,7 @@
           if ( arg === 'all' || arg === dir ) {
             (['metadata.json', 'style.less', 'base.less']).forEach(function(i) {
               dst = _path.join(src, dir, i);
-              grunt.log.writeln('  rm '  + dst);
+              grunt.log.writeln('  rm '  + dst.replace(ROOT+'/|\/', ''));
               _fs.removeSync(dst);
             });
           }
@@ -180,7 +180,7 @@
           src = _path.join(ROOT, 'dist', 'themes', 'fonts');
           _build.getDirs(src).forEach(function(dir) {
             dst = _path.join(src, dir, 'style.css');
-            grunt.log.writeln('  rm '  + dst);
+            grunt.log.writeln('  rm '  + dst.replace(ROOT, ''));
             _fs.removeSync(dst);
           });
 
@@ -188,7 +188,7 @@
             src = _path.join(ROOT, 'dist', 'themes', i);
             _build.getDirs(src).forEach(function(dir) {
               dst = _path.join(src, dir, 'metadata.json');
-              grunt.log.writeln('  rm '  + dst);
+              grunt.log.writeln('  rm '  + dst.replace(ROOT, ''));
               _fs.removeSync(dst);
             });
           });
@@ -222,7 +222,7 @@
             return;
           } else {
             var dest = _path.join(ROOT, 'dist', 'themes', 'fonts.css');
-            grunt.log.writeln('>>> ' + dest);
+            grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
             _fs.writeFileSync(dest, result);
           }
 
@@ -247,7 +247,7 @@
         var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'packages.js')).toString();
         var out = tpl.replace("%PACKAGES%", JSON.stringify(packages, null, 2));
 
-        grunt.log.writeln('>>> ' + dest);
+        grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
         _fs.writeFileSync(dest, out);
       }
 
@@ -275,7 +275,7 @@
     grunt.registerTask('dist-dev-index', 'Generate dist-dev index.html', function(arg) {
       var index = _build.generateIndex(grunt);
       var dest = _path.join(ROOT, 'dist-dev', 'index.html');
-      grunt.log.writeln('>>> ' + dest);
+      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
       _fs.writeFileSync(dest, index);
     });
 
