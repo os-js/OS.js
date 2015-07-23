@@ -251,7 +251,7 @@
         _fs.writeFileSync(dest, out);
       }
 
-      (['dist', 'dist-dev']).forEach(function(d) {
+      (['dist-dev', 'dist']).forEach(function(d) {
         generate(d);
       });
       grunt.verbose.ok();

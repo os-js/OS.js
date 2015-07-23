@@ -61,7 +61,7 @@ if ( !empty($settings['handler']) ) {
 }
 if ( !empty($settings['extensions']) ) {
   foreach ( $settings['extensions'] as $l ) {
-    require $l;
+    require sprintf("%s/%s", ROOTDIR, preg_replace("/\/$/", "", $l));
   }
 }
 

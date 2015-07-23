@@ -46,6 +46,13 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function fixWinPath(str) {
+    if ( ISWIN ) {
+      return str.replace(/(["\s'$`\\])/g,'\\$1').replace(/\\+/g, '/');
+    }
+    return str;
+  }
+
   function exec(cmd, cb) {
     cb = cb || function() {};
     if ( typeof cmd === 'array' || (cmd instanceof Array) ) {
@@ -154,12 +161,7 @@
       var handler    = json.handler    || "demo";
       var connection = json.connection || "http";
 
-      if ( ISWIN ) {
-        build = build.replace(/%ROOT%/g,       ROOT.replace(/(["\s'$`\\])/g,'\\$1'));
-      } else {
-        build = build.replace(/%ROOT%/g,       ROOT);
-      }
-
+      build = build.replace(/%ROOT%/g,       fixWinPath(ROOT));
       build = build.replace(/%HANDLER%/g,    handler);
       build = build.replace(/%CONNECTION%/g, connection);
 
@@ -278,7 +280,7 @@
       extensions.forEach(function(e) {
         var p = _path.join(e._root, 'api.php');
         if ( _fs.existsSync(p) ) {
-          loadExtensions.push(p);
+          loadExtensions.push(fixWinPath(p).replace(ROOT, ''));
         }
       });
       if ( loadExtensions ) {
@@ -288,13 +290,11 @@
         settings.MaxUpload = root.frontend.Core.MaxUploadSize;
       } catch ( exc ) {}
 
-      if ( ISWIN ) {
-        Object.keys(settings.vfs).forEach(function(key) {
-          if ( typeof settings.vfs[key] === 'string' ) {
-            settings.vfs[key] = settings.vfs[key].replace(/\\/g, '/');
-          }
-        });
-      }
+      Object.keys(settings.vfs).forEach(function(key) {
+        if ( typeof settings.vfs[key] === 'string' ) {
+          settings.vfs[key] = fixWinPath(settings.vfs[key]);
+        }
+      });
 
       var tmp = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'settings.php')).toString();
       tmp = tmp.replace('%JSON%', JSON.stringify(settings, null, 4));
@@ -310,7 +310,7 @@
       extensions.forEach(function(e) {
         var p = _path.join(e._root, 'api.js');
         if ( _fs.existsSync(p) ) {
-          loadExtensions.push(p);
+          loadExtensions.push(fixWinPath(p).replace(ROOT, ''));
         }
       });
       if ( loadExtensions ) {
