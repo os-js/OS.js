@@ -1,0 +1,21 @@
+{
+  "className": "ExtensionBroadway",
+  "type": "extension",
+  "enabled": false,
+  "config": {
+  },
+  "build": {
+    "copy" : [
+      "package.json",
+      "broadway.js",
+      "extension.js",
+      "extension.css",
+      "api.php"
+    ]
+  },
+  "sources": [
+    {"type": "javascript", "src": "broadway.js"},
+    {"type": "stylesheet", "src": "extension.css"},
+    {"type": "javascript", "src": "extension.js"}
+  ]
+}
