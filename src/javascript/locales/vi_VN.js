@@ -353,7 +353,9 @@
     'LBL_READONLY' : 'Chỉ đọc',
     'LBL_CREATED' : 'Tạo lúc',
     'LBL_MODIFIED' : 'Sửa lúc',
-    'LBL_SHOW_COLUMNS' : 'Hiện các cột'
+    'LBL_SHOW_COLUMNS' : 'Hiện các cột',
+    'LBL_MOVE' : 'Di chuyển',
+    'LBL_OPTIONS' : 'Cài đặt'
   };
 
 })();
