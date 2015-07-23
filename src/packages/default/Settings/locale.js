@@ -173,7 +173,7 @@
       'Language (requires restart)' : 'Ngôn ngữ (cần khởi động lại)',
       'Enable Sounds' : 'Bật âm thanh',
       'Enable Window Switcher' : 'Bật chuyển đổi cửa sổ',
-      'Enable Hotkeys' : 'Bật phím nõng',
+      'Enable Hotkeys' : 'Bật phím nóng',
       'Enable Icon View' : 'Bật kiểu xem biểu tượng',
       'General': 'Tổng quát'
     }
