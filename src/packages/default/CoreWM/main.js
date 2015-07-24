@@ -863,7 +863,23 @@
     var _openDesktopSettings = function() {
       self.showSettings();
     };
-    OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
+    var _enableIconView = function() {
+       var settings = {enableIconView: true};
+       var wm = OSjs.Core.getWindowManager();
+       wm.applySettings(settings, false, true);
+    };
+    var _disableIconView = function() {
+       var settings = {enableIconView: false};
+       var wm = OSjs.Core.getWindowManager();
+       wm.applySettings(settings, false, true);
+    };
+    var wm = OSjs.Core.getWindowManager();
+    var enabled = wm.getSetting('enableIconView') === true;
+    if (enabled) {
+    	OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Hide Icon'), onClick: function(ev) {_disableIconView();}}, {title: OSjs.Applications.CoreWM._('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
+    } else {
+    	OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Show Icon'), onClick: function(ev) {_enableIconView();}}, {title: OSjs.Applications.CoreWM._('Open settings'), onClick: function(ev) {_openDesktopSettings();}}], {x: ev.clientX, y: ev.clientY});
+    }
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save) {
