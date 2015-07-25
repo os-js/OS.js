@@ -1483,7 +1483,7 @@
       function _next() {
         if ( newList.length ) {
           var item = newList.shift();
-          if ( _LOADED[item.src] === true ) {
+          if ( (item.force !== true) && _LOADED[item.src] === true ) {
             _loaded(true);
             return;
           }
