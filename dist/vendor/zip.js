@@ -1,1 +1,1 @@
-../../dist-dev/vendor/zip.js
+../../vendor/zip.js
