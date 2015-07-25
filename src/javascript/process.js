@@ -40,6 +40,18 @@
 
   var _PROCS = [];        // Running processes
 
+  function _kill(pid, force) {
+    if ( pid >= 0 ) {
+      if ( _PROCS[pid] ) {
+        console.warn('Killing application', pid);
+        if ( _PROCS[pid].destroy(true, force) === false ) {
+          return;
+        }
+        _PROCS[pid] = null;
+      }
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -47,13 +59,27 @@
   /**
    * Kills all processes
    *
+   * @param   RegExp    re        Optional regexp for searching what process to destroy
+   * @param   boolean   force     Force killing (optional, default=false)
+   *
    * @return  void
    * @api     OSjs.API.killAll()
    */
-  function doKillAllProcesses() {
+  function doKillAllProcesses(re, force) {
+    if ( re ) {
+      if ( re instanceof RegExp && _PROCS ) {
+        _PROCS.forEach(function(p) {
+          if ( p.__name && p.__name.match(re) ) {
+            _kill(p.__pid, force);
+          }
+        });
+      }
+      return;
+    }
+
     _PROCS.forEach(function(proc, i) {
       if ( proc ) {
-        proc.destroy();
+        proc.destroy(false, true);
       }
       _PROCS[i] = null;
     });
@@ -69,15 +95,7 @@
    * @api     OSjs.API.kill()
    */
   function doKillProcess(pid) {
-    if ( pid >= 0 ) {
-      if ( _PROCS[pid] ) {
-        console.warn('Killing application', pid);
-        if ( _PROCS[pid].destroy(true) === false ) {
-          return;
-        }
-        _PROCS[pid] = null;
-      }
-    }
+    _kill(pid, false);
   }
 
   /**
