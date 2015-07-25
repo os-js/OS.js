@@ -75,7 +75,7 @@
    * @api OSjs.Helpers.Date
    * @extends Date
    * @see Date
-   * @class
+   * @class ExtendedDate
    */
   function ExtendedDate(date) {
     if ( date ) {
