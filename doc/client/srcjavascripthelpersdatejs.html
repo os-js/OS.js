@@ -43,15 +43,23 @@
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-helpers-date">Date</a> (OSjs.Helpers.Date)
+<a href="#osjs-helpers-date">ExtendedDate</a> (OSjs.Helpers.Date)
 <ul>
+<li><a href="#extendeddate-get">get()</a></li>
+<li><a href="#extendeddate-format">format()</a></li>
+<li><a href="#extendeddate-getfirstdayinmonth">getFirstDayInMonth()</a></li>
+<li><a href="#extendeddate-getlastdayinmonth">getLastDayInMonth()</a></li>
+<li><a href="#extendeddate-getdaysinmonth">getDaysInMonth()</a></li>
+<li><a href="#extendeddate-getweeknumber">getWeekNumber()</a></li>
+<li><a href="#extendeddate-iswithinmonth">isWithinMonth()</a></li>
+<li><a href="#extendeddate-iswithinyear">isWithinYear()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
 <div class="section-class" id="osjs-helpers-date">
-<h2 id="date">Date</h2>
+<h2 id="extendeddate">ExtendedDate</h2>
 <pre>
 Extended Date Helper
 
@@ -71,8 +79,256 @@ Works just like 'Date', but has some extended methods
 <li>Date</li>
 </ul>
 
+<div class="section-method" id="extendeddate-get">
+<h3 id="extendeddate-get-">ExtendedDate::get()</h3>
+<pre>
+Get the 'Date' Object
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Date</u></p>
+
 </div>
-<p><i>Generated: Sat Jul 25 2015 02:22:47 GMT+0200 (CEST)</i></p>
+<div class="section-method" id="extendeddate-format">
+<h3 id="extendeddate-format-fmt-">ExtendedDate::format(fmt)</h3>
+<pre>
+Format date
+
+Format is (same as PHP docs):
+
+ d: Day of the month, 2 digits with leading zeros (01 to 31)
+
+ D: A textual representation of a day, three letters (Mon through Sun)
+
+ j: Day of the month without leading zeros (1 to 31)
+
+ l: A full textual representation of the day of the week (Sunday through Saturday)
+
+ w: Numeric representation of the day of the week (0 (for Sunday) through 6 (for Saturday))
+
+ z: The day of the year (starting from 0) (0 through 365)
+
+ S: English ordinal suffix for the day of the month, 2 characters (st, nd, rd or th. Works well with j)
+
+ W: ISO-8601 week number of year, weeks starting on Monday (Example: 42 (the 42nd week in the year))
+
+ F: A full textual representation of a month, such as January or March (January through December)
+
+ m: Numeric representation of a month, with leading zeros (01 through 12)
+
+ M: A short textual representation of a month, three letters (Jan through Dec)
+
+ n: Numeric representation of a month, without leading zeros (1 through 12)
+
+ t: Number of days in the given month (28 through 31)
+
+ Y: A full numeric representation of a year, 4 digits (Examples: 1999 or 2003)
+
+ y: A two digit representation of a year (Examples: 99 or 03)
+
+ a: Lowercase Ante meridiem and Post meridiem (am or pm)
+
+ A: Uppercase Ante meridiem and Post meridiem (AM or PM)
+
+ g: 12-hour format of an hour without leading zeros (1 through 12)
+
+ G: 24-hour format of an hour without leading zeros (0 through 23)
+
+ h: 12-hour format of an hour with leading zeros (01 through 12)
+
+ H: 24-hour format of an hour with leading zeros (00 through 23)
+
+ i: Minutes with leading zeros (00 to 59)
+
+ s: Seconds, with leading zeros (00 through 59)
+
+ O: Difference to Greenwich time (GMT) in hours (Example: +0200)
+
+ T: Timezone abbreviation (Examples: EST, MDT ...)
+
+ U: Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fmt</td>
+<td>String</td>
+<td>Format (ex: &quot;Y/m/d&quot;)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Formatted date</em></p>
+
+</div>
+<div class="section-method" id="extendeddate-getfirstdayinmonth">
+<h3 id="extendeddate-getfirstdayinmonth-fmt-">ExtendedDate::getFirstDayInMonth(fmt)</h3>
+<pre>
+Get First day in month
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>ExtendedDate::format()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fmt</td>
+<td>String</td>
+<td>Date format (optional)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>If no format is given it will return ExtendedDate</em></p>
+
+</div>
+<div class="section-method" id="extendeddate-getlastdayinmonth">
+<h3 id="extendeddate-getlastdayinmonth-fmt-">ExtendedDate::getLastDayInMonth(fmt)</h3>
+<pre>
+Get Last day in month
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>ExtendedDate::format()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fmt</td>
+<td>String</td>
+<td>Date format (optional)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>If no format is given it will return ExtendedDate</em></p>
+
+</div>
+<div class="section-method" id="extendeddate-getdaysinmonth">
+<h3 id="extendeddate-getdaysinmonth-">ExtendedDate::getDaysInMonth()</h3>
+<pre>
+Get numbers of day in month
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u> <em>Number of days</em></p>
+
+</div>
+<div class="section-method" id="extendeddate-getweeknumber">
+<h3 id="extendeddate-getweeknumber-">ExtendedDate::getWeekNumber()</h3>
+<pre>
+Get week number
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u> <em>Week</em></p>
+
+</div>
+<div class="section-method" id="extendeddate-iswithinmonth">
+<h3 id="extendeddate-iswithinmonth-from-to-">ExtendedDate::isWithinMonth(from, to)</h3>
+<pre>
+Check if given range is within Month
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>from</td>
+<td>ExtendedDate</td>
+<td>From date (can be Date)</td>
+</tr>
+<tr>
+<td>to</td>
+<td>ExtendedDate</td>
+<td>To date (can be Date)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>bool</u></p>
+
+</div>
+<div class="section-method" id="extendeddate-iswithinyear">
+<h3 id="extendeddate-iswithinyear-from-to-">ExtendedDate::isWithinYear(from, to)</h3>
+<pre>
+Check if given range is within Year
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>from</td>
+<td>ExtendedDate</td>
+<td>From date (can be Date)</td>
+</tr>
+<tr>
+<td>to</td>
+<td>ExtendedDate</td>
+<td>To date (can be Date)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>bool</u></p>
+
+</div>
+</div>
+<p><i>Generated: Sat Jul 25 2015 02:27:20 GMT+0200 (CEST)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
