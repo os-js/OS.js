@@ -59,17 +59,28 @@
   /**
    * Kills all processes
    *
-   * @param   RegExp    re        Optional regexp for searching what process to destroy
+   * @param   Mixed     match     String/RegExp to match with (optional)
    * @param   boolean   force     Force killing (optional, default=false)
    *
    * @return  void
    * @api     OSjs.API.killAll()
    */
-  function doKillAllProcesses(re, force) {
-    if ( re ) {
-      if ( re instanceof RegExp && _PROCS ) {
+  function doKillAllProcesses(match, force) {
+    if ( match ) {
+      var isMatching;
+      if ( match instanceof RegExp && _PROCS ) {
+        isMatching = function(p) {
+          return p.__name && p.__name.match(match);
+        };
+      } else if ( typeof match === 'string' ) {
+        isMatching = function(p) {
+          return p.__name === match;
+        };
+      }
+
+      if ( isMatching ) {
         _PROCS.forEach(function(p) {
-          if ( p.__name && p.__name.match(re) ) {
+          if ( isMatching(p) ) {
             _kill(p.__pid, force);
           }
         });
