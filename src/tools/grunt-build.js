@@ -320,7 +320,7 @@
       return cfg_node;
     }
 
-    function buildJSConfig() {
+    function buildJSConfig(distType) {
       var cfg_js = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'settings.js')).toString();
       var preloads = [];
 
@@ -407,6 +407,7 @@
       settings.EXTMIME = MIMES.mapping;
       settings.Core.Repositories = REPOS;
       settings.Core.Preloads = preloads;
+      settings.Dist = distType;
 
       extensions.forEach(function(e) {
         if ( e.sources ) {
@@ -421,7 +422,8 @@
     }
 
     return {
-      js: buildJSConfig(),
+      js_dist: buildJSConfig('dist'),
+      js_dev: buildJSConfig('dist-dev'),
       node: buildNodeConfig(),
       php: buildPHPConfig()
     };
@@ -516,7 +518,16 @@
         if ( typeof manifest.preload !== 'undefined' && (manifest.preload instanceof Array)) {
           manifest.preload.forEach(function(p, i) {
             if ( !p.src.match(/^(ftp|https?\:)?\/\//) ) {
-              manifest.preload[i].src = ([repo, file, p.src]).join("/");
+              var src = ([repo, file, p.src]).join("/");
+              manifest.preload[i].src = src;
+              if ( dist === 'dist-dev' ) {
+                var asrc = _path.join(ROOT, 'src', 'packages', src);
+                if ( _fs.existsSync(asrc) ) {
+                  var stat = _fs.statSync(asrc);
+                  var mtime = (new Date(stat.mtime)).getTime();
+                  manifest.preload[i].mtime = mtime;
+                }
+              }
             }
           });
         }
