@@ -36,157 +36,41 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/helpers/iframe-application.js</i></p>
+<p><i>src/javascript/helpers/date.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-helpers-iframeapplicationwindow">IFrameApplicationWindow</a> (OSjs.Helpers.IFrameApplicationWindow)
+<a href="#osjs-helpers-date">Date</a> (OSjs.Helpers.Date)
 <ul>
-</ul>
-</li>
-<li>
-<a href="#osjs-helpers-iframeapplication">IFrameApplication</a> (OSjs.Helpers.IFrameApplication)
-<ul>
-<li><a href="#iframeapplication-init">init()</a></li>
-<li><a href="#iframeapplication-_onmessage">_onMessage()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-helpers-iframeapplicationwindow">
-<h2 id="iframeapplicationwindow">IFrameApplicationWindow</h2>
+<div class="section-class" id="osjs-helpers-date">
+<h2 id="date">Date</h2>
 <pre>
-IFrame Application Window constructor
+Extended Date Helper
 
-This class is a basic implementation of OSjs.Core.Window
-
-that uses Iframe as window content. It's usefull for creating
-
-applications that is not using OS.js API.
-
-You can use this in combination with 'IFrameApplication'
+Works just like 'Date', but has some extended methods
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Helpers.IFrameApplicationWindow</li>
+<li>OSjs.Helpers.Date</li>
 </ul>
 <h4 id="extends">Extends</h4>
 <ul>
-<li>Window</li>
+<li>Date</li>
 </ul>
 <h4 id="see">See</h4>
 <ul>
-<li>OSjs.Core.Window</li>
-</ul>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String</td>
-<td>src</td>
-<td>The Iframe source</td>
-</tr>
-<tr>
-<td>String</td>
-<td>icon</td>
-<td>The Icon relative/absolute path (./ for app dir)</td>
-</tr>
-<tr>
-<td>String</td>
-<td>title</td>
-<td>The Window title</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-
-</div>
-<div class="section-class" id="osjs-helpers-iframeapplication">
-<h2 id="iframeapplication">IFrameApplication</h2>
-<pre>
-IFrame Application constructor
-
-Usage: Just apply the correct options and this should work
-
-automatically.
-
-This just inits an empty application with a window that uses
-
-iframe for contents. Look at the IFrameApplicationWindow
-
-constructor for more options you can apply here.
-</pre>
-
-<h4 id="namespace">Namespace</h4>
-<ul>
-<li>OSjs.Helpers.IFrameApplication</li>
-</ul>
-<h4 id="extends">Extends</h4>
-<ul>
-<li>Application</li>
-</ul>
-<h4 id="options-for-opts-">Options for <em>opts</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String</td>
-<td>icon</td>
-<td>Window Icon</td>
-</tr>
-<tr>
-<td>String</td>
-<td>title</td>
-<td>Window Title</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-
-<div class="section-method" id="iframeapplication-init">
-<h3 id="iframeapplication-init-">IFrameApplication::init()</h3>
-<pre>
-Default init() code (run this last in your Application init() method)
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>Application::init()</li>
+<li>Date</li>
 </ul>
 
-</div>
-<div class="section-method" id="iframeapplication-_onmessage">
-<h3 id="iframeapplication-_onmessage-">IFrameApplication::_onMessage()</h3>
-<pre>
-Default Messaging handler
-</pre>
-
-
-<h4 id="see">See</h4>
-<ul>
-<li>Application::_onMessage()</li>
-</ul>
-
-</div>
 </div>
 <p><i>Generated: Sat Jul 25 2015 02:22:47 GMT+0200 (CEST)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
