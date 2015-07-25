@@ -42,7 +42,7 @@
         label: 'Home',
         launch: 'ApplicationFileManager',
         index: 0,
-        args: {path: '/'}
+        args: {path: 'home:///'}
       }],
       onActivate : function(ev, el, item) {
         if ( typeof item.launch === 'undefined' ) {
