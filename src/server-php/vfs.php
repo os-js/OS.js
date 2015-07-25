@@ -187,26 +187,44 @@ class FS
     if ( !is_file($fname) ) throw new Exception("You are reading an invalid resource");
     if ( !is_readable($fname) ) throw new Exception("Read permission denied");
 
-    $etag = null;
     if ( !($mime = fileMime($fname)) ) {
       $mime = "application/octet-stream";
     }
 
-    $handle = fopen($fname, "rb");
-    $length = filesize($fname);
-    $contents = fread($handle, $length);
-    if ( isset($opts["raw"]) ) {
-      $etag = md5(serialize(fstat($handle)));
-    }
-    fclose($handle);
+    if ( $handle = fopen($fname, "rb") ) {
+      $length = filesize($fname);
 
-    if ( isset($opts["raw"]) ) {
-      return Array($mime, $etag, $length, $contents);
+      if ( !isset($opts["raw"]) ) {
+        // NOTE: This is pretty much deprecated ?!?!
+        print "data:{$mime};base64,";
+        while( !feof($handle) ) {
+          $plain = fread($handle, 57 * 143);
+          $encoded = base64_encode($plain);
+          $encoded = chunk_split($encoded, 76, "");
+          echo $encoded;
+          ob_flush();
+          flush();
+        }
+      } else {
+        $etag = md5(serialize(fstat($handle)));
+
+        header("Etag: {$etag}");
+        header("Content-type: {$mime}; charset=utf-8");
+        header("Content-length: {$length}");
+
+        while ( !feof($handle) ) {
+          echo fread($handle, 1204*1024);
+          ob_flush();
+          flush();
+        }
+      }
+
+      fclose($handle);
+
+      return true;
     }
 
-    $encoded = base64_encode($contents);
-    $dataURL = printf("data:%s;base64,%s", $mime, $encoded);
-    return $dataURL;
+    return false;
   }
 
   public static function delete($fname) {

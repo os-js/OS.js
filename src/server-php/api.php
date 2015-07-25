@@ -334,12 +334,8 @@ class API
         list($dirname, $req->uri, $protocol, $file) = getRealPath($url);
         if ( file_exists($file) ) {
           session_write_close();
-          if ( $data = FS::read($url, Array("raw" => true)) ) {
-            list($mime, $etag, $length, $result) = $data;
-
-            $headers[] = "Etag: {$etag}";
-            $headers[] = "Content-type: {$mime}; charset=utf-8";
-            $headers[] = "Content-length: {$length}";
+          if ( FS::read($url, Array("raw" => true)) ) {
+            exit;
           } else {
             $code = 500;
             $error = "File read error";

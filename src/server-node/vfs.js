@@ -82,6 +82,7 @@
       return mimeTypes[ext.toLowerCase()] || mimeTypes.default;
     },
 
+    // NOTE: This is pretty much deprecated ?!?!
     read : function(args, request, respond, config) {
       var path = args[0];
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
