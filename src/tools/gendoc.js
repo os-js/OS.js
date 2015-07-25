@@ -629,6 +629,7 @@ Array.prototype.unique = function(){
     'src/javascript/helpers/windows-live-api.js',
     'src/javascript/helpers/firefox-marketplace.js',
     'src/javascript/helpers/zip-archiver.js',
+    'src/javascript/helpers/date.js',
 
     'src/javascript/gui/_dataview.js',
     'src/javascript/gui/_input.js',
