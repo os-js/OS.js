@@ -667,9 +667,18 @@
       current++;
 
       if ( typeof s !== 'object' ) {
+        var args = {};
+        var spl = s.split('@');
+        var name = spl[0];
+        if ( typeof spl[1] !== 'undefined' ) {
+          try {
+            args = JSON.parse(spl[1]);
+          } catch ( e ) {}
+        }
+
         s = {
-          name: s,
-          args: {}
+          name: name,
+          args: args
         };
       }
 
