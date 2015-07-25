@@ -656,28 +656,37 @@
       _onNext();
     }
 
+    var current = 0;
     function _onNext() {
-      if ( list.length ) {
-        var s = list.pop();
-        if ( typeof s !== 'object' ) { return; }
-
-        var aname = s.name;
-        var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
-        var adata = s.data || {};
-
-        if ( !aname ) {
-          console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
-          return;
-        }
-
-        OSjs.API.launch(aname, aargs, function(app, metadata) {
-          _onSuccess(app, metadata, aname, aargs, adata);
-        }, function(err, name, args) {
-          _onError(err, name, args);
-        });
-      } else {
+      if ( current >= list.length ) {
         onFinished();
+        return;
       }
+
+      var s = list[current];
+      current++;
+
+      if ( typeof s !== 'object' ) {
+        s = {
+          name: s,
+          args: {}
+        };
+      }
+
+      var aname = s.name;
+      var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
+      var adata = s.data || {};
+
+      if ( !aname ) {
+        console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
+        return;
+      }
+
+      OSjs.API.launch(aname, aargs, function(app, metadata) {
+        _onSuccess(app, metadata, aname, aargs, adata);
+      }, function(err, name, args) {
+        _onError(err, name, args);
+      });
     }
 
     _onNext();
