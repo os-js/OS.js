@@ -34,6 +34,10 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
 
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
   function filter(from, index, shrt, toindex) {
     var list = [];
     for ( var i = (shrt ? 0 : toindex); i < from.length; i++ ) {
@@ -56,14 +60,11 @@
       }
     }
 
-    if ( date instanceof ExtendedDate ) {
-      date = date.date;
-    }
-    return dateFormat(date, fmt, utc);
+    return formatDate(date, fmt, utc);
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXTENDED DATE FUNCTIONS
+  // EXTENDED DATE
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -80,27 +81,16 @@
     if ( date ) {
       if ( date instanceof Date ) {
         this.date = date;
-        return;
       } else if ( date instanceof ExtendedDate ) {
         this.date = date.date;
-        return;
       } else if ( typeof date === 'string' ) {
         this.date = new Date(date);
-        return;
       }
-    }
-    this.date = new Date();
-    /*
-    function construct(constructor, args) {
-      function F() {
-        return constructor.apply(this, args);
-      }
-      F.prototype = constructor.prototype;
-      return new F();
     }
 
-    this.date = construct(Date, arguments);
-    */
+    if ( !this.date ) {
+      this.date = new Date();
+    }
   }
 
   //
@@ -111,12 +101,23 @@
     //utc: true
   };
 
+  ExtendedDate.dayNames = [
+    'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
+    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+  ];
+
+  ExtendedDate.monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
   //
   // Date Methods
   //
 
   var methods = [
     'UTC',
+    'toString',
     'now',
     'parse',
     'getDate',
@@ -179,32 +180,138 @@
   // Extended Methods
   //
 
+  /**
+   * Get the 'Date' Object
+   *
+   * @return  Date
+   *
+   * @method  ExtendedDate::get()
+   */
   ExtendedDate.prototype.get = function() {
     return this.date;
   };
+
+  /**
+   * Format date
+   *
+   * @param   String      fmt     Format (ex: "Y/m/d")
+   *
+   * @return  String              Formatted date
+   *
+   * Format is (same as PHP docs):
+   *
+   *   d: Day of the month, 2 digits with leading zeros (01 to 31)
+   *   D: A textual representation of a day, three letters (Mon through Sun)
+   *   j: Day of the month without leading zeros (1 to 31)
+   *   l: A full textual representation of the day of the week (Sunday through Saturday)
+   *   w: Numeric representation of the day of the week (0 (for Sunday) through 6 (for Saturday))
+   *   z: The day of the year (starting from 0) (0 through 365)
+   *   S: English ordinal suffix for the day of the month, 2 characters (st, nd, rd or th. Works well with j)
+   *   W: ISO-8601 week number of year, weeks starting on Monday (Example: 42 (the 42nd week in the year))
+   *   F: A full textual representation of a month, such as January or March (January through December)
+   *   m: Numeric representation of a month, with leading zeros (01 through 12)
+   *   M: A short textual representation of a month, three letters (Jan through Dec)
+   *   n: Numeric representation of a month, without leading zeros (1 through 12)
+   *   t: Number of days in the given month (28 through 31)
+   *   Y: A full numeric representation of a year, 4 digits (Examples: 1999 or 2003)
+   *   y: A two digit representation of a year (Examples: 99 or 03)
+   *   a: Lowercase Ante meridiem and Post meridiem (am or pm)
+   *   A: Uppercase Ante meridiem and Post meridiem (AM or PM)
+   *   g: 12-hour format of an hour without leading zeros (1 through 12)
+   *   G: 24-hour format of an hour without leading zeros (0 through 23)
+   *   h: 12-hour format of an hour with leading zeros (01 through 12)
+   *   H: 24-hour format of an hour with leading zeros (00 through 23)
+   *   i: Minutes with leading zeros (00 to 59)
+   *   s: Seconds, with leading zeros (00 through 59)
+   *   O: Difference to Greenwich time (GMT) in hours (Example: +0200)
+   *   T: Timezone abbreviation (Examples: EST, MDT ...)
+   *   U: Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+   *
+   * @method  ExtendedDate::format()
+   */
 
   ExtendedDate.prototype.format = function(fmt) {
     return ExtendedDate.format(this, fmt);
   };
 
+  /**
+   * Get First day in month
+   *
+   * @param   String    fmt     Date format (optional)
+   *
+   * @return  Mixed     If no format is given it will return ExtendedDate
+   *
+   * @see     ExtendedDate::format()
+   *
+   * @method  ExtendedDate::getFirstDayInMonth()
+   */
   ExtendedDate.prototype.getFirstDayInMonth = function(fmt) {
     return ExtendedDate.getFirstDayInMonth(fmt, null, null, this);
   };
 
+  /**
+   * Get Last day in month
+   *
+   * @param   String    fmt     Date format (optional)
+   *
+   * @return  Mixed     If no format is given it will return ExtendedDate
+   *
+   * @see     ExtendedDate::format()
+   *
+   * @method  ExtendedDate::getLastDayInMonth()
+   */
   ExtendedDate.prototype.getLastDayInMonth = function(fmt) {
     return ExtendedDate.getLastDayInMonth(fmt, null, null, this);
   };
 
+  /**
+   * Get numbers of day in month
+   *
+   * @return  int     Number of days
+   *
+   * @method  ExtendedDate::getDaysInMonth()
+   */
   ExtendedDate.prototype.getDaysInMonth = function() {
     return ExtendedDate.getDaysInMonth(null, null, this);
   };
 
+  /**
+   * Get week number
+   *
+   * @return  int     Week
+   *
+   * @method  ExtendedDate::getWeekNumber()
+   */
   ExtendedDate.prototype.getWeekNumber = function() {
     return ExtendedDate.getWeekNumber(this);
   };
 
+  /**
+   * Check if given range is within Month
+   *
+   * @param   ExtendedDate    from      From date (can be Date)
+   * @param   ExtendedDate    to        To date (can be Date)
+   *
+   * @return  bool
+   *
+   * @method  ExtendedDate::isWithinMonth()
+   */
   ExtendedDate.prototype.isWithinMonth = function(from, to) {
     return ExtendedDate.isWithinMonth(this, from, to);
+  };
+
+  /**
+   * Check if given range is within Year
+   *
+   * @param   ExtendedDate    from      From date (can be Date)
+   * @param   ExtendedDate    to        To date (can be Date)
+   *
+   * @return  bool
+   *
+   * @method  ExtendedDate::isWithinYear()
+   */
+  ExtendedDate.prototype.getDayOfTheYear = function() {
+    return ExtendedDate.getDayOfTheYear();
   };
 
   //
@@ -289,22 +396,22 @@
 
   ExtendedDate.getDayName = function(index, shrt) {
     if ( index < 0 || index === null || typeof index === 'undefined' ) {
-      return filter(dateFormat.i18n.dayNames, index, shrt, 7);
+      return filter(ExtendedDate.dayNames, index, shrt, 7);
     }
 
     shrt = shrt ? 0 : 1;
     var idx = index + (shrt + 7);
-    return dateFormat.dayNames[idx];
+    return ExtendedDate.dayNames[idx];
   };
 
   ExtendedDate.getMonthName = function(index, shrt) {
     if ( index < 0 || index === null || typeof index === 'undefined' ) {
-      return filter(dateFormat.i18n.monthNames, index, shrt, 12);
+      return filter(ExtendedDate.monthNames, index, shrt, 12);
     }
 
     shrt = shrt ? 0 : 1;
     var idx = index + (shrt + 12);
-    return dateFormat.monthNames[idx];
+    return ExtendedDate.monthNames[idx];
   };
 
   ExtendedDate.isWithinMonth = function(now, from, to) {
@@ -316,22 +423,23 @@
     return false;
   };
 
+  ExtendedDate.getDayOfTheYear = function() {
+    var now = new Date();
+    var start = new Date(now.getFullYear(), 0, 0);
+    var diff = now - start;
+    var oneDay = 1000 * 60 * 60 * 24;
+    return Math.floor(diff / oneDay);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // DATE FORMATTING
   /////////////////////////////////////////////////////////////////////////////
 
-  /*
-   * Date Format 1.2.3
-   * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
-   * MIT license
-   *
-   * Includes enhancements by Scott Trenda <scott.trenda.net>
-   * and Kris Kowal <cixar.com/~kris.kowal/>
+  /**
+   * Inspired by: "Date Format" by Steven Levithan
    */
-  var dateFormat = (function() {
-    var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
-        timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
-        timezoneClip = /[^-+\dA-Z]/g;
+  function formatDate(date, format, utc) {
+    utc = utc === true;
 
     function pad(val, len) {
       val = String(val);
@@ -342,90 +450,161 @@
       return val;
     }
 
-    return function (date, mask, utc) {
-      var dF = dateFormat;
-
-      if (isNaN(date)) {
-        throw new SyntaxError('invalid date');
-      }
-
-      mask = String(dF.masks[mask] || mask || dF.masks['default']);
-      if (mask.slice(0, 4) === 'UTC:') {
-        mask = mask.slice(4);
-        utc = true;
-      }
-
-      var _ = utc ? 'getUTC' : 'get',
-        d = date[_ + 'Date'](),
-        D = date[_ + 'Day'](),
-        m = date[_ + 'Month'](),
-        y = date[_ + 'FullYear'](),
-        H = date[_ + 'Hours'](),
-        M = date[_ + 'Minutes'](),
-        s = date[_ + 'Seconds'](),
-        L = date[_ + 'Milliseconds'](),
-        o = utc ? 0 : date.getTimezoneOffset(),
-        flags = {
-          d:    d,
-          dd:   pad(d),
-          ddd:  dF.i18n.dayNames[D],
-          dddd: dF.i18n.dayNames[D + 7],
-          m:    m + 1,
-          mm:   pad(m + 1),
-          mmm:  dF.i18n.monthNames[m],
-          mmmm: dF.i18n.monthNames[m + 12],
-          yy:   String(y).slice(2),
-          yyyy: y,
-          h:    H % 12 || 12,
-          hh:   pad(H % 12 || 12),
-          H:    H,
-          HH:   pad(H),
-          M:    M,
-          MM:   pad(M),
-          s:    s,
-          ss:   pad(s),
-          l:    pad(L, 3),
-          L:    pad(L > 99 ? Math.round(L / 10) : L),
-          t:    H < 12 ? 'a'  : 'p',
-          tt:   H < 12 ? 'am' : 'pm',
-          T:    H < 12 ? 'A'  : 'P',
-          TT:   H < 12 ? 'AM' : 'PM',
-          Z:    utc ? 'UTC' : (String(date).match(timezone) || ['']).pop().replace(timezoneClip, ''),
-          o:    (o > 0 ? '-' : '+') + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
-          S:    ['th', 'st', 'nd', 'rd'][d % 10 > 3 ? 0 : (d % 100 - d % 10 !== 10) * d % 10]
-        };
-
-      return mask.replace(token, function ($0) {
-        return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
-      });
+    var defaultFormats = {
+      'default':      'Y-m-d H:i:s',
+      shortDate:      'm/d/y',
+      mediumDate:     'M d, Y',
+      longDate:       'F d, Y',
+      fullDate:       'l, F d, Y',
+      shortTime:      'h:i A',
+      mediumTime:     'h:i:s A',
+      longTime:       'h:i:s A T',
+      isoDate:        'Y-m-d',
+      isoTime:        'H:i:s',
+      isoDateTime:    'Y-m-d H:i:s'
     };
-  })();
 
-  dateFormat.masks = {
-    'default':      'ddd mmm dd yyyy HH:MM:ss',
-    shortDate:      'm/d/yy',
-    mediumDate:     'mmm d, yyyy',
-    longDate:       'mmmm d, yyyy',
-    fullDate:       'dddd, mmmm d, yyyy',
-    shortTime:      'h:MM TT',
-    mediumTime:     'h:MM:ss TT',
-    longTime:       'h:MM:ss TT Z',
-    isoDate:        'yyyy-mm-dd',
-    isoTime:        'HH:MM:ss',
-    isoDateTime:    'yyyy-mm-dd\'T\'HH:MM:ss',
-    isoUtcDateTime: 'UTC:yyyy-mm-dd\'T\'HH:MM:ss\'Z\''
-  };
+    format = defaultFormats[format] || format;
 
-  dateFormat.i18n = {
-    dayNames: [
-      'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
-      'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
-    ],
-    monthNames: [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-      'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
-    ]
-  };
+    if ( !(date instanceof ExtendedDate) ) {
+      date = new ExtendedDate(date);
+    }
+
+    var map = {
+
+      //
+      // DAY
+      //
+
+      // Day of the month, 2 digits with leading zeros (01 to 31)
+      d: function(s) { return pad(map.j(s)); },
+
+      // A textual representation of a day, three letters (Mon through Sun)
+      D: function(s) { return ExtendedDate.dayNames[utc ? date.getUTCDay() : date.getDay()]; },
+
+      // Day of the month without leading zeros (1 to 31)
+      j: function(s) { return (utc ? date.getUTCDate() : date.getDate()); },
+
+      // A full textual representation of the day of the week (Sunday through Saturday)
+      l: function(s) { return ExtendedDate.dayNames[(utc ? date.getUTCDay() : date.getDay()) + 7]; },
+
+      // Numeric representation of the day of the week (0 (for Sunday) through 6 (for Saturday))
+      w: function(s) { return (utc ? date.getUTCDay() : date.getDay()); },
+
+      // The day of the year (starting from 0) (0 through 365)
+      z: function(s) { return date.getDayOfTheYear(); },
+
+      // S English ordinal suffix for the day of the month, 2 characters (st, nd, rd or th. Works well with j)
+      S: function(s) {
+        var d = utc ? date.getUTCDate() : date.getDate();
+        return ['th', 'st', 'nd', 'rd'][d % 10 > 3 ? 0 : (d % 100 - d % 10 !== 10) * d % 10];
+      },
+
+      //
+      // WEEK
+      //
+
+      // ISO-8601 week number of year, weeks starting on Monday (Example: 42 (the 42nd week in the year))
+      W: function(s) { return date.getWeekNumber(); },
+
+      //
+      // MONTH
+      //
+
+      // A full textual representation of a month, such as January or March (January through December)
+      F: function(s) { return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth()) + 12]; },
+
+      // Numeric representation of a month, with leading zeros (01 through 12)
+      m: function(s) { return pad(map.n(s)); },
+
+      // A short textual representation of a month, three letters (Jan through Dec)
+      M: function(s) { return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth())]; },
+
+      // Numeric representation of a month, without leading zeros (1 through 12)
+      n: function(s) { return (utc ? date.getUTCMonth() : date.getMonth())+1; },
+
+      // Number of days in the given month (28 through 31)
+      t: function(s) { return date.getDaysInMonth(); },
+
+      //
+      // YEAR
+      //
+
+      // A full numeric representation of a year, 4 digits (Examples: 1999 or 2003)
+      Y: function(s) { return (utc ? date.getUTCFullYear() : date.getFullYear()); },
+
+      // A two digit representation of a year (Examples: 99 or 03)
+      y: function(s) { return String(map.Y(s)).slice(2); },
+
+      //
+      // TIME
+      //
+
+      // Lowercase Ante meridiem and Post meridiem (am or pm)
+      a: function(s) { return map.G(s) < 12 ? 'am' : 'pm'; },
+
+      // Uppercase Ante meridiem and Post meridiem (AM or PM)
+      A: function(s) { return map.a(s).toUpperCase(); },
+
+      // 12-hour format of an hour without leading zeros (1 through 12)
+      g: function(s) { return map.G(s) % 12 || 12; },
+
+      // 24-hour format of an hour without leading zeros (0 through 23)
+      G: function(s) { return (utc ? date.getUTCHours() : date.getHours()); },
+
+      // 12-hour format of an hour with leading zeros (01 through 12)
+      h: function(s) { return pad(map.g(s)); },
+
+      // 24-hour format of an hour with leading zeros (00 through 23)
+      H: function(s) { return pad(map.G(s)); },
+
+      // Minutes with leading zeros (00 to 59)
+      i: function(s) { return pad(utc ? date.getUTCMinutes() : date.getMinutes()); },
+
+      // Seconds, with leading zeros (00 through 59)
+      s: function(s) { return pad(utc ? date.getUTCSeconds() : date.getSeconds()); },
+
+      //
+      // ZONE
+      //
+
+      // Difference to Greenwich time (GMT) in hours (Example: +0200)
+      O: function(s) {
+        var tzo = -date.getTimezoneOffset(),
+            dif = tzo >= 0 ? '+' : '-',
+            ppad = function(num) {
+              var norm = Math.abs(Math.floor(num));
+              return (norm < 10 ? '0' : '') + norm;
+            };
+
+        var str = dif + ppad(tzo / 60) + ':' + ppad(tzo % 60);
+        return str;
+      },
+
+      // Timezone abbreviation (Examples: EST, MDT ...)
+      T: function(s) {
+        var timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+            timezoneClip = /(\+|\-)[0-9]+$/;
+
+        if ( utc ) { return 'UTC'; }
+        var zones = String(date.date).match(timezone) || [''];
+        return zones.pop().replace(timezoneClip, '');
+      },
+
+      //
+      // MISC
+      //
+
+      // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+      U: function(s) { return date.getTime(); },
+    };
+
+    var result = [];
+    format.split('').forEach(function(s) {
+      result.push(map[s] ? map[s]() : s);
+    });
+    return result.join('');
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
