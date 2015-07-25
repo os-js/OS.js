@@ -59,7 +59,7 @@
   /**
    * HTTP Output
    */
-  var respond = function(data, mime, response, headers, code) {
+  var respond = function(data, mime, response, headers, code, pipeFile) {
     data    = data    || '';
     headers = headers || [];
     mime    = mime    || "text/html; charset=utf-8";
@@ -67,18 +67,31 @@
 
     //console.log(">>>", 'respond()', mime, data.length);
 
+    function _end() {
+      if ( HANDLER && HANDLER.onRequestEnd ) {
+        HANDLER.onRequestEnd(null, response);
+      }
+
+      response.end();
+    }
+
     for ( var i = 0; i < headers.length; i++ ) {
       response.writeHead.apply(response, headers[i]);
     }
 
     response.writeHead(code, {"Content-Type": mime});
-    response.write(data);
 
-    if ( HANDLER && HANDLER.onRequestEnd ) {
-      HANDLER.onRequestEnd(null, response);
+    if ( pipeFile ) {
+      var stream = _fs.createReadStream(pipeFile, {bufferSize: 64 * 1024});
+      stream.on('end', function() {
+        _end();
+      });
+      stream.pipe(response);
+    } else {
+      response.write(data);
+      _end();
     }
 
-    response.end();
   };
 
   var respondJSON = function(data, response, headers) {
@@ -94,6 +107,12 @@
     var fullPath = jpath ? _path.join(CONFIG.directory, path) : _vfs.getRealPath(path, CONFIG, request).root;
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
+
+        var mime = _vfs.getMime(fullPath, CONFIG);
+        respond(null, mime, response, null, null, fullPath);
+        /*
+
+
         _fs.readFile(fullPath, function(error, data) {
           if ( error ) {
             console.log(">>>", '500', fullPath);
@@ -105,6 +124,7 @@
             respond(data, mime, response);
           }
         });
+        */
       } else {
         console.log('!!!', '404', fullPath);
         respond("404 Not Found", null, response, null, 404);
