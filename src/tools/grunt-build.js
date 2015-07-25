@@ -409,6 +409,14 @@
       settings.Core.Preloads = preloads;
       settings.Dist = distType;
 
+      if ( distType === 'dist-dev' ) {
+        if ( typeof settings.System.AutoStart !== 'undefined' ) {
+          if ( settings.System.AutoStart.indexOf('DeveloperService') === -1 ) {
+            settings.System.AutoStart.push('DeveloperService');
+          }
+        }
+      }
+
       extensions.forEach(function(e) {
         if ( e.sources ) {
           e.sources.forEach(function(ee) {
