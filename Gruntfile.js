@@ -71,11 +71,11 @@
 
       dest = _path.join(ROOT, 'dist', 'settings.js');
       grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, cfg.js);
+      _fs.writeFileSync(dest, cfg.js_dist);
 
       dest = _path.join(ROOT, 'dist-dev', 'settings.js');
       grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, cfg.js);
+      _fs.writeFileSync(dest, cfg.js_dev);
 
       grunt.verbose.ok();
     });
