@@ -1167,7 +1167,7 @@
    * Create and show a GUI Menu
    *
    * @param   Array     items           Array of items
-   * @param   Object    pos             Object with x and y
+   * @param   Object    pos             Object with x and y (Or a browser Event/MouseEvent)
    * @param   Object    customInstance  (Optional) If you have a custom Menu Class
    *
    * @return  OSjs.GUI.Menu
@@ -1175,7 +1175,11 @@
    */
   function doCreateMenu(items, pos, customInstance) {
     items = items || [];
-    pos = pos || {x: 0, y: 0};
+    if ( pos instanceof Event ) {
+      pos = { x: pos.clientX, y: pos.clientY };
+    } else {
+      pos = pos || {x: 0, y: 0};
+    }
 
     OSjs.API.blurMenu();
 
