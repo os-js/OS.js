@@ -28,7 +28,6 @@ dist/packages.js
 dist/themes.json
 dist/themes
 dist/packages
-dist/vendor/*
 
 dist-dev/test.*
 dist-dev/locales.js
@@ -36,7 +35,6 @@ dist-dev/settings.js
 dist-dev/packages.json
 dist-dev/packages.js
 dist-dev/themes.json
-dist-dev/vendor/*
 
 vendor/dropbox*
 vendor/zip.js
