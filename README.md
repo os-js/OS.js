@@ -26,6 +26,8 @@ NIX: `curl -sS http://os.js.org/installer | sh`
 
 Windows: http://os.js.org/installer.exe
 
+Docker and Vagrant Support: View `INSTALL.md` for instructions.
+
 Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
 
 ## How to contribute
