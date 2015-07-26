@@ -39,7 +39,7 @@
   DeveloperService.prototype.destroy = function() {
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      wm.destroyNotificationIcon('DeveloperServiceNotificationIcon');
+      wm.removeNotificationIcon('DeveloperServiceNotificationIcon');
     }
     return Service.prototype.destroy.apply(this, arguments);
   };
@@ -112,6 +112,7 @@
         if ( o[i.src] && i.mtime != o[i.src] ) {
           if ( changed.indexOf(p) === -1 ) {
             console.warn("File", i, "has changed in", p);
+
             changed.push(p);
           }
         }
@@ -125,7 +126,20 @@
       if ( iter && niter ) {
         compare(op, iter.preload, niter.preload);
       }
+      /*
+      if ( (['DeveloperService']).indexOf(op) === -1 ) {
+      }
+      */
     });
+
+    if ( changed.length ) {
+      var list = [];
+      changed.forEach(function(c) {
+        API.killAll(c, true);
+        list.push(c);
+      });
+      API.launchList(list);
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
