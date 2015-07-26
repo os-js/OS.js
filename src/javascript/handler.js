@@ -160,7 +160,7 @@
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      wm.destroyNotificationIcon('_HandlerUserNotification');
+      wm.removeNotificationIcon('_HandlerUserNotification');
     }
 
     if ( save ) {
