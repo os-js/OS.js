@@ -80,7 +80,7 @@
 
       if ( isMatching ) {
         _PROCS.forEach(function(p) {
-          if ( isMatching(p) ) {
+          if ( p && isMatching(p) ) {
             _kill(p.__pid, force);
           }
         });
