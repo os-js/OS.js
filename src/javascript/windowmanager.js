@@ -662,9 +662,9 @@
    *
    * @return  boolean
    *
-   * @method  WindowManager::destroyNotificationIcon()
+   * @method  WindowManager::removeNotificationIcon()
    */
-  WindowManager.prototype.destroyNotificationIcon = function() {
+  WindowManager.prototype.removeNotificationIcon = function() {
     // Implement in your WM
   };
 
