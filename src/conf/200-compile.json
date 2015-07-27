@@ -85,7 +85,9 @@
       "src/javascript/dialogs/fileprogress.js",
       "src/javascript/dialogs/fileupload.js",
       "src/javascript/dialogs/font.js",
-      "src/javascript/dialogs/input.js"
+      "src/javascript/dialogs/input.js",
+
+      "src/javascript/gui-ng.js"
     ]
   },
 
@@ -134,7 +136,9 @@
       "src/stylesheets/gui/text.css",
       "src/stylesheets/gui/textarea.css",
       "src/stylesheets/gui/toolbar.css",
-      "src/stylesheets/gui/treeview.css"
+      "src/stylesheets/gui/treeview.css",
+
+      "src/stylesheets/gui-ng.css"
     ]
   }
 }
