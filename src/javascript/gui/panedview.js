@@ -173,10 +173,20 @@
 
     this.$container.appendChild(container);
     this.views[name] = opts;
+    this.views[name]._index = this.viewcount;
     this.views[name]._element = container;
     this.views[name]._separator = separator;
     this.viewcount++;
     return container;
+  };
+
+  /**
+   * Alias for createView()
+   *
+   * @method  PanedView::insert()
+   */
+  PanedView.prototype.insert = function() {
+    return this.createView.apply(this, arguments);
   };
 
   /**
