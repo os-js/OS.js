@@ -57,12 +57,32 @@ $ bin\create-windows-symlinks
 
 $ grunt --force
 ```
+## Containers and Virtual Machines
 
-## Vagrant
+### Vagrant
 
 A [Vagrant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
 
 Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
+
+### Docker
+* Make sure to have `docker.io` installed on your machine.
+* Make sure that you are in the `OS.js-v2` directory.
+* You can change the `Dockerfile` around, I have left comments to help you configure it.
+- Issuing `sudo docker ps` will list all your currently running containers so please refer to this if you forget which container is running your OS.js instance.
+- To stop the container issue `sudo docker stop [Container ID]` in seperate terminal session / window.
+
+1. Issue `sudo docker build -t [Image Name] .` (That's not a mistake, make sure to put that period after the image name or it won't build).
+
+2. If built succesfully you can view your image by issueing the command. `sudo docker images`
+
+3. To start image issue `sudo docker start [Image Name]`.
+
+4. While the image is starting up (You can use this window as a debug console), open up another terminal window and issue `sudo docker inspect -f '{{ .NetworkSettings.IPAddress }}' [Container ID]` which will output a IP address.
+
+5. Lastly, open your favorite web browser and type `[Container IP Address]:8000' into the address bar. This should then direct you to the OS.js Desktop. Enjoy!
+
+* If you don't want to build from a Dockerfile or you want to run it on a Windows machine (via. Kitematic) head on over to https://registry.hub.docker.com/u/junland/osjs-dev/ where I have built and uploaded the development version (Instructions included!).
 
 # Setting up a server
 
