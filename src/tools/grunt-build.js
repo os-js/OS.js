@@ -409,6 +409,7 @@
       settings.Core.Preloads = preloads;
       settings.Dist = distType;
 
+      /* NOTE DISABLED IN THIS BRANCH
       if ( distType === 'dist-dev' ) {
         if ( typeof settings.System.AutoStart !== 'undefined' ) {
           if ( settings.System.AutoStart.indexOf('DeveloperService') === -1 ) {
@@ -416,6 +417,7 @@
           }
         }
       }
+      */
 
       extensions.forEach(function(e) {
         if ( e.sources ) {
