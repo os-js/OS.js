@@ -27,4 +27,274 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+/**
+ * ===========================================================================
+ *                               GENERICS
+ * ===========================================================================
+ */
+
+.WindowWrapper * {
+  box-sizing : border-box;
+}
+
+.gui-element {
+  position : relative;
+}
+
+/**
+ * ===========================================================================
+ *                              CONTAINERS
+ * ===========================================================================
+ */
+
+/* Box */
+gui-hbox,
+gui-vbox {
+  width : 100%;
+  height : 100%;
+
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -moz-box;
+  display: flex;
+}
+
+gui-vbox {
+  -webkit-flex-direction: column;
+     -moz-flex-direction: column;
+      -ms-flex-direction: column;
+       -o-flex-direction: column;
+          flex-direction: column;
+}
+
+  gui-hbox-container,
+  gui-vbox-container {
+    display : block;
+    position : relative;
+
+    -webkit-flex: 0 0 auto;
+       -moz-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+         -o-flex: 0 0 auto;
+            flex: 0 0 auto;
+
+            /*
+    -webkit-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
+       -moz-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
+        -ms-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
+         -o-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
+            flex: attr(data-shrink) attr(data-grow) attr(data-basis);
+            */
+  }
+
+  gui-hbox-container[data-fill='true'],
+  gui-vbox-container[data-fill='true'] {
+    -webkit-align-items: stretch;
+       -moz-align-items: stretch;
+        -ms-align-items: stretch;
+         -o-align-items: stretch;
+            align-items: stretch;
+
+    -webkit-align-content: stretch;
+       -moz-align-content: stretch;
+        -ms-align-content: stretch;
+         -o-align-content: stretch;
+            align-content: stretch;
+  }
+
+    gui-hbox-container[data-fill='true'] > *,
+    gui-vbox-container[data-fill='true'] > * {
+      position : absolute;
+      top : 0px;
+      left : 0px;
+      bottom : 0px;
+      right : 0px;
+      width : 100%;
+      height : 100%;
+    }
+
+/* Scroll View */
+gui-scroll-view {
+}
+
+/* Paned View */
+gui-paned-view {
+}
+
+/* IFrame */
+gui-iframe {
+}
+
+/* Toolbar */
+gui-toolbar {
+}
+
+/* Tabs */
+gui-tabs {
+}
+  gui-tabs > ul {
+    display : block;
+    list-style-type : none;
+    margin : 0;
+    padding : 0;
+    height : 25px;
+  }
+    gui-tabs > ul > li {
+      display : inline-block;
+      margin : 0;
+      padding : 0;
+      height : 100%;
+
+      border : 1px solid #000;
+    }
+  gui-tabs > div {
+    height : calc(100% - 25px);
+    border : 1px solid #000;
+  }
+
+    gui-tabs > div > gui-tab-container {
+      display : none;
+    }
+
+/**
+ * ===========================================================================
+ *                                INPUTS
+ * ===========================================================================
+ */
+
+/* Label */
+gui-label {
+  display : inline-block;
+}
+
+/* Button */
+gui-button {
+  display : inline-block;
+}
+
+/* Checkbox Button */
+gui-checkbox {
+  display : inline-block;
+}
+
+/* Radio Button */
+gui-radio {
+  display : inline-block;
+}
+
+/* Select Dropdown */
+gui-select {
+  display : inline-block;
+}
+
+/* Select List */
+gui-select-list {
+  display : inline-block;
+}
+
+/* Slider */
+gui-slider {
+  display : inline-block;
+}
+
+/* Switch */
+gui-switch {
+  display : inline-block;
+}
+
+/* Text Field */
+gui-text {
+  display : inline-block;
+}
+
+/* Password Field */
+gui-password {
+  display : inline-block;
+}
+
+/* Text Area */
+gui-textarea {
+  background : #fff;
+  min-width : 16px;
+  min-height : 16px;
+  display : inline-block;
+}
+  gui-textarea > textarea {
+    width : 100%;
+    height : 100%;
+    border : 0 none;
+    margin : 0;
+    padding : 0;
+    resize : none;
+  }
+
+/* Rich Text */
+gui-richtext {
+  display : inline-block;
+}
+
+/**
+ * ===========================================================================
+ *                                 MISC
+ * ===========================================================================
+ */
+
+/* Canvas */
+gui-canvas {
+  display : inline-block;
+}
+
+/* Color Swatch */
+gui-color-swatch {
+  display : inline-block;
+}
+
+/* Menu */
+gui-menu {
+  display : inline-block;
+}
+
+/* Menu Bar */
+gui-menu-bar {
+  display : block;
+}
+
+/* Progressbar */
+gui-progress-bar {
+  display : inline-block;
+}
+
+/* Statusbar */
+gui-statusbar {
+  display : block;
+}
+
+/**
+ * ===========================================================================
+ *                                VIEWS
+ * ===========================================================================
+ */
+
+/* File View */
+gui-file-view {
+  display : inline-block;
+}
+
+/* Icon View */
+gui-icon-view {
+  display : inline-block;
+}
+
+/* List View */
+gui-list-view {
+  display : inline-block;
+}
+
+/* Tree View */
+gui-tree-view {
+  display : inline-block;
+}
+
+
 

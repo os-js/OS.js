@@ -33,6 +33,101 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUING = OSjs.GUING || {};
 
+  var CONSTRUCTORS = {
+    'gui-textarea': {
+      parameters: [],
+      events: [],
+      build: function(el) {
+        var input = document.createElement('textarea');
+        el.appendChild(input);
+      }
+    },
+    'gui-text': {
+      parameters: [],
+      events: [],
+      build: function(el) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        el.appendChild(input);
+      }
+    },
+    'gui-password': {
+      parameters: [],
+      events: [],
+      build: function(el) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        el.appendChild(input);
+      }
+    },
+    'gui-radio': {
+      parameters: [],
+      events: [],
+      build: function(el) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'radio');
+        el.appendChild(input);
+      }
+    },
+    'gui-checkbox': {
+      parameters: [],
+      events: [],
+      build: function(el) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'checkbox');
+        el.appendChild(input);
+      }
+    },
+    'gui-button': {
+      parameters: [],
+      events: [],
+      build: function(el) {
+        var input = document.createElement('button');
+        var label = el.getAttribute('data-label');
+        input.appendChild(document.createTextNode(label));
+        el.appendChild(input);
+      }
+    },
+
+    'gui-tabs': {
+      container: true,
+      parameters: [],
+      events: [],
+      build: function(el) {
+        var tabs = document.createElement('ul');
+        var contents = document.createElement('div');
+
+        el.querySelectorAll('gui-tab-container').forEach(function(el) {
+          var tab = document.createElement('li');
+          var label = el.getAttribute('data-label');
+          tab.appendChild(document.createTextNode(label));
+          tabs.appendChild(tab);
+          contents.appendChild(el);
+        });
+
+        el.appendChild(tabs);
+        el.appendChild(contents);
+      }
+    },
+
+    'gui-vbox': {
+      container: true,
+      parameters: [],
+      events: [],
+      build: function(el) {
+      }
+    },
+
+    'gui-hbox': {
+      container: true,
+      parameters: [],
+      events: [],
+      build: function(el) {
+      }
+    }
+
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // CLASS
   /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +155,18 @@
     var wrapper = document.createElement('div');
     wrapper.innerHTML = html;
     doc.appendChild(wrapper);
+
+    doc.querySelectorAll('*').forEach(function(el) {
+      var lcase = el.tagName.toLowerCase();
+      if ( lcase.match(/^gui\-/) ) {
+        el.className = 'gui-element';
+      }
+    });
+
+    Object.keys(CONSTRUCTORS).forEach(function(key) {
+      doc.querySelectorAll(key).forEach(CONSTRUCTORS[key].build);
+    });
+
     return doc;
   };
 

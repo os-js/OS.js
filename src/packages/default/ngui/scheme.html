@@ -1,55 +1,65 @@
-<application-window data-id="MyWindowID" data-property-width="640" data-property-height="480">
-  <gui-vbox>
-    <gui-vbox-container>
+<application-window data-id="MyWindowID" data-width="640" data-height="480">
+
+  <gui-hbox>
+    <gui-hbox-container data-fill="true" style="flex: 0 1 100px">
       <gui-textarea data-id="MyTextarea"></gui-textarea>
-    </gui-vbox-container>
+    </gui-hbox-container>
 
-    <gui-vbox-container>
-      <gui-tabs>
-        <gui-tab-container data-id="MyTab0" data-label="Tab 1">
+    <gui-hbox-container style="flex: 1 0 auto" data-fill="true">
+      <gui-vbox>
+        <gui-vbox-container style="flex: 0 1 20px" data-fill="true">
+          <gui-textarea data-id="MyTextarea"></gui-textarea>
+        </gui-vbox-container>
 
-          <gui-vbox>
-            <gui-vbox-container>
-              <gui-image data-src="/logo.png" />
-            </gui-vbox-container>
+        <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
+          <gui-tabs>
+            <gui-tab-container data-id="MyTab0" data-label="Tab 1">
 
-            <gui-vbox-container>
-              <gui-image data-src="/logo.png" />
-            </gui-vbox-container>
-          </gui-vobx>
+              <gui-vbox>
+                <gui-vbox-container>
+                  <gui-image data-src="/logo.png" />
+                </gui-vbox-container>
 
-        </gui-tab-container>
+                <gui-vbox-container>
+                  <gui-image data-src="/logo.png" />
+                </gui-vbox-container>
+              </gui-vobx>
 
-        <gui-tab-container data-id="MyTab1" data-label="Tab 2">
+            </gui-tab-container>
 
-          <gui-vbox>
-            <gui-vbox-container>
-              <gui-image data-src="/logo.png" />
-            </gui-vbox-container>
+            <gui-tab-container data-id="MyTab1" data-label="Tab 2">
 
-            <gui-vbox-container>
-              <gui-image data-src="/logo.png" />
-            </gui-vbox-container>
-          </gui-vobx>
+              <gui-vbox>
+                <gui-vbox-container>
+                  <gui-image data-src="/logo.png" />
+                </gui-vbox-container>
 
-        </gui-tab-container>
-      </gui-tabs>
-    </gui-vbox-container>
+                <gui-vbox-container>
+                  <gui-image data-src="/logo.png" />
+                </gui-vbox-container>
+              </gui-vobx>
 
-    <gui-vbox-container>
-      <gui-hbox>
-        <gui-hbox-container data-property-width="35%">
-          <gui-button data-id="MyButtonOne">My Label</gui-button>
-        </gui-hbox-container>
+            </gui-tab-container>
+          </gui-tabs>
+        </gui-vbox-container>
 
-        <gui-hbox-container data-property-width="35%">
-          <gui-button data-id="MyButtonTwo">My Label</gui-button>
-        </gui-hbox-container>
+        <gui-vbox-container style="flex: 0 0 auto">
+          <gui-hbox>
+            <gui-hbox-container data-width="35%">
+              <gui-button data-id="MyButtonOne" data-label="My Label"></gui-button>
+            </gui-hbox-container>
 
-        <gui-hbox-container data-property-width="35%">
-          <gui-button data-id="MyButtonThree">My Label</gui-button>
-        </gui-hbox-container>
-      </gui-hbox>
-    </gui-vbox-container>
-  </gui-vbox>
+            <gui-hbox-container data-width="35%">
+              <gui-button data-id="MyButtonTwo" data-label="My Label"></gui-button>
+            </gui-hbox-container>
+
+            <gui-hbox-container data-width="35%">
+              <gui-button data-id="MyButtonThree" data-label="My Label"></gui-button>
+            </gui-hbox-container>
+          </gui-hbox>
+        </gui-vbox-container>
+      </gui-vbox>
+    </gui-hbox-container>
+  </gui-hbox>
+
 </application-window>
