@@ -33,6 +33,9 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUING = OSjs.GUING || {};
 
+  var lastMenu;
+  var currentMenu;
+
   var CONSTRUCTORS = (function() {
     function createSelectInput(el, multiple) {
       var select = document.createElement('select');
@@ -152,29 +155,53 @@
         parameters: [],
         events: [],
         build: function(el) {
-          function createMenus(xel) {
+          function bindShowMenu(li, ul, level) {
+            li.addEventListener('click', function() {
+              Utils.$addClass(li, 'selected');
+              currentMenu = li;
+            }, false);
+          }
+
+          function createMenus(xel, level) {
             var ul = document.createElement('ul');
+            if ( level === 0 ) {
+              Utils.$addClass(ul, 'main');
+            } else {
+              Utils.$addClass(ul, 'sub');
+            }
 
             var i, sel, li, span, sul;
-            for ( i = 0; i < xel.childNodes.length; i++ ) {
+            var len = xel.childNodes.length;
+            for ( i = 0; i < len; i++ ) {
               sel = xel.childNodes[i];
               if ( sel && sel.nodeType !== 3 ) {
                 li = document.createElement('li');
+
                 span = document.createElement('span');
                 span.appendChild(document.createTextNode(sel.getAttribute('data-label')));
+
+                if ( level === 0 ) {
+                  bindShowMenu(li, ul, level);
+                }
+
                 li.appendChild(span);
 
-                if ( sul = createMenus(sel) ) {
+                if ( sul = createMenus(sel, level + 1) ) {
                   li.appendChild(sul);
                 }
+
                 ul.appendChild(li);
+
+                if ( level === 0 ) {
+                  sel.parentNode.removeChild(sel);
+                }
               }
             }
 
-            return xel.childNodes.length ? ul : null;
+            return len ? ul : null;
           }
 
-          var ul = createMenus(el);
+          var ul = createMenus(el, 0);
           el.appendChild(ul);
         }
       },
@@ -265,6 +292,13 @@
 
   function UIScheme(app) {
     this.url = API.getApplicationResource(app, './scheme.html');
+
+    window.addEventListener('click', function() {
+      if ( lastMenu != currentMenu ) {
+        Utils.$removeClass(lastMenu, 'selected');
+      }
+      lastMenu = currentMenu;
+    });
   }
 
   UIScheme.prototype.load = function(cb) {

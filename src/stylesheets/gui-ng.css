@@ -337,35 +337,46 @@ gui-menu-bar {
 
     /** ********** STYLE ********** */
     cursor : pointer;
-  }
-  gui-menu-bar > ul > li {
-    display : inline-block;
-
-    /** ********** STYLE ********** */
     padding : 2px;
   }
-    gui-menu-bar > ul > li li {
-      /** ********** STYLE ********** */
-      padding : 2px;
-    }
-    gui-menu-bar > ul > li > ul {
-      display : none;
-      position : absolute;
-      z-index : 99999;
 
-      /** ********** STYLE ********** */
-      border : 1px solid #000;
-    }
-    gui-menu-bar > ul > li:focus > ul,
-    gui-menu-bar > ul > li:active > ul {
-      display : block;
-    }
-      gui-menu-bar > ul > li > ul > li > ul {
-        display : none;
-      }
-      gui-menu-bar > ul > li > ul > li:hover > ul {
-        display : block;
-      }
+
+  gui-menu-bar .main > li {
+    display : inline-block;
+  }
+
+  gui-menu-bar .sub {
+    display : none;
+    position : absolute;
+    z-index : 99999;
+
+    /** ********** STYLE ********** */
+    border : 1px solid #000;
+    color : #000;
+    background : #fff;
+  }
+
+  gui-menu-bar li.selected > ul,
+  gui-menu-bar .sub li:hover > ul {
+    display : block;
+  }
+
+  gui-menu-bar .sub > li {
+    white-space : nowrap;
+  }
+
+  gui-menu-bar .sub > li > .sub {
+    left : 100%;
+    top : 0px;
+  }
+
+  gui-menu-bar > ul > li:hover,
+  gui-menu-bar .sub > li:hover {
+    /** ********** STYLE ********** */
+    background : blue;
+    color : #fff;
+  }
+
 
 /* Progressbar */
 gui-progress-bar {
