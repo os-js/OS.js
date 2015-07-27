@@ -72,6 +72,7 @@ gui-vbox {
   gui-vbox-container {
     display : block;
     position : relative;
+    overflow : none;
 
     -webkit-flex: 0 0 auto;
        -moz-flex: 0 0 auto;
@@ -79,13 +80,8 @@ gui-vbox {
          -o-flex: 0 0 auto;
             flex: 0 0 auto;
 
-            /*
-    -webkit-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
-       -moz-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
-        -ms-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
-         -o-flex: attr(data-shrink) attr(data-grow) attr(data-basis);
-            flex: attr(data-shrink) attr(data-grow) attr(data-basis);
-            */
+    /** ********** STYLE ********** */
+    padding : 2px;
   }
 
   gui-hbox-container[data-fill='true'],
@@ -106,21 +102,58 @@ gui-vbox {
     gui-hbox-container[data-fill='true'] > *,
     gui-vbox-container[data-fill='true'] > * {
       position : absolute;
+
+      /** ********** STYLE ********** */
+      top : 2px;
+      left : 2px;
+      bottom : 2px;
+      right : 2px;
+      width : calc(100% - 4px);
+      height : calc(100% - 4px);
+    }
+
+    gui-hbox-container[data-fill='true'] > gui-vbox,
+    gui-hbox-container[data-fill='true'] > gui-hbox,
+    gui-vbox-container[data-fill='true'] > gui-vbox,
+    gui-vbox-container[data-fill='true'] > gui-hbox {
       top : 0px;
       left : 0px;
-      bottom : 0px;
       right : 0px;
-      width : 100%;
-      height : 100%;
+      bottom : 0px;
     }
 
 /* Scroll View */
 gui-scroll-view {
+  display : block;
+  overflow : auto;
+  width : 100%;
+  height : 100%;
 }
 
 /* Paned View */
 gui-paned-view {
+  display : block;
+  overflow : hidden;
+  width : 100%;
+  height : 100%;
 }
+  gui-paned-view > * {
+    display : inline-block;
+  }
+  gui-paned-view > gui-paned-view-container {
+  }
+  gui-paned-view > gui-paned-view-handle {
+    height : 100%;
+
+    /** ********** STYLE ********** */
+    width : 8px;
+    background : #000;
+  }
+  gui-paned-view[data-orientation='vertical'] > gui-paned-view-handle {
+    /** ********** STYLE ********** */
+    width : 100%;
+    height : 16px;
+  }
 
 /* IFrame */
 gui-iframe {
@@ -138,6 +171,8 @@ gui-tabs {
     list-style-type : none;
     margin : 0;
     padding : 0;
+
+    /** ********** STYLE ********** */
     height : 25px;
   }
     gui-tabs > ul > li {
@@ -146,15 +181,29 @@ gui-tabs {
       padding : 0;
       height : 100%;
 
+      /** ********** STYLE ********** */
+      padding-left : 8px;
+      padding-right : 8px;
+      cursor : pointer;
       border : 1px solid #000;
     }
   gui-tabs > div {
+    overflow : hidden;
+
+    /** ********** STYLE ********** */
     height : calc(100% - 25px);
     border : 1px solid #000;
   }
 
     gui-tabs > div > gui-tab-container {
       display : none;
+      height : 100%;
+
+      /** ********** STYLE ********** */
+      padding : 2px;
+    }
+    gui-tabs > div > gui-tab-container.selected {
+      display : block;
     }
 
 /**
@@ -215,10 +264,12 @@ gui-password {
 
 /* Text Area */
 gui-textarea {
-  background : #fff;
   min-width : 16px;
   min-height : 16px;
   display : inline-block;
+
+  /** ********** STYLE ********** */
+  background : #fff;
 }
   gui-textarea > textarea {
     width : 100%;
@@ -240,9 +291,20 @@ gui-richtext {
  * ===========================================================================
  */
 
+/* Image */
+gui-image {
+  display : inline-block;
+}
+  gui-image > img {
+    border : 0 none;
+    outline : 0 none;
+  }
+
 /* Canvas */
 gui-canvas {
   display : inline-block;
+  min-height : 16px;
+  min-width : 16px;
 }
 
 /* Color Swatch */
@@ -258,16 +320,65 @@ gui-menu {
 /* Menu Bar */
 gui-menu-bar {
   display : block;
+  min-height : 16px;
+  min-width : 16px;
+  width : 100%;
 }
+  gui-menu-bar ul {
+    list-style-type : none;
+    margin : 0;
+    padding : 0;
+    position : relative;
+  }
+  gui-menu-bar li {
+    margin : 0;
+    padding : 0;
+    position : relative;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+  }
+  gui-menu-bar > ul > li {
+    display : inline-block;
+
+    /** ********** STYLE ********** */
+    padding : 2px;
+  }
+    gui-menu-bar > ul > li li {
+      /** ********** STYLE ********** */
+      padding : 2px;
+    }
+    gui-menu-bar > ul > li > ul {
+      display : none;
+      position : absolute;
+      z-index : 99999;
+
+      /** ********** STYLE ********** */
+      border : 1px solid #000;
+    }
+    gui-menu-bar > ul > li:focus > ul,
+    gui-menu-bar > ul > li:active > ul {
+      display : block;
+    }
+      gui-menu-bar > ul > li > ul > li > ul {
+        display : none;
+      }
+      gui-menu-bar > ul > li > ul > li:hover > ul {
+        display : block;
+      }
 
 /* Progressbar */
 gui-progress-bar {
   display : inline-block;
+  min-height : 16px;
+  min-width : 16px;
 }
 
 /* Statusbar */
 gui-statusbar {
   display : block;
+  min-height : 16px;
+  min-width : 16px;
 }
 
 /**

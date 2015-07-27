@@ -40,8 +40,8 @@
     Window.apply(this, ['ApplicationnguiWindow', {
       icon: metadata.icon,
       title: metadata.name,
-      width: 400,
-      height: 200
+      width: 700,
+      height: 600
     }, app]);
 
     this.content = content.querySelector('application-window');

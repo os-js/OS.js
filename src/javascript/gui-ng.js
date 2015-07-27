@@ -33,100 +33,231 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUING = OSjs.GUING || {};
 
-  var CONSTRUCTORS = {
-    'gui-textarea': {
-      parameters: [],
-      events: [],
-      build: function(el) {
-        var input = document.createElement('textarea');
-        el.appendChild(input);
+  var CONSTRUCTORS = (function() {
+    function createSelectInput(el, multiple) {
+      var select = document.createElement('select');
+      if ( multiple ) {
+        select.setAttribute('multiple', 'multiple');
       }
-    },
-    'gui-text': {
-      parameters: [],
-      events: [],
-      build: function(el) {
-        var input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        el.appendChild(input);
-      }
-    },
-    'gui-password': {
-      parameters: [],
-      events: [],
-      build: function(el) {
-        var input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        el.appendChild(input);
-      }
-    },
-    'gui-radio': {
-      parameters: [],
-      events: [],
-      build: function(el) {
-        var input = document.createElement('input');
-        input.setAttribute('type', 'radio');
-        el.appendChild(input);
-      }
-    },
-    'gui-checkbox': {
-      parameters: [],
-      events: [],
-      build: function(el) {
-        var input = document.createElement('input');
-        input.setAttribute('type', 'checkbox');
-        el.appendChild(input);
-      }
-    },
-    'gui-button': {
-      parameters: [],
-      events: [],
-      build: function(el) {
-        var input = document.createElement('button');
-        var label = el.getAttribute('data-label');
-        input.appendChild(document.createTextNode(label));
-        el.appendChild(input);
-      }
-    },
 
-    'gui-tabs': {
-      container: true,
-      parameters: [],
-      events: [],
-      build: function(el) {
-        var tabs = document.createElement('ul');
-        var contents = document.createElement('div');
-
-        el.querySelectorAll('gui-tab-container').forEach(function(el) {
-          var tab = document.createElement('li');
-          var label = el.getAttribute('data-label');
-          tab.appendChild(document.createTextNode(label));
-          tabs.appendChild(tab);
-          contents.appendChild(el);
-        });
-
-        el.appendChild(tabs);
-        el.appendChild(contents);
-      }
-    },
-
-    'gui-vbox': {
-      container: true,
-      parameters: [],
-      events: [],
-      build: function(el) {
-      }
-    },
-
-    'gui-hbox': {
-      container: true,
-      parameters: [],
-      events: [],
-      build: function(el) {
-      }
+      el.querySelectorAll('gui-select-option').forEach(function(sel) {
+        var option = document.createElement('option');
+        option.setAttribute('value', sel.getAttribute('data-value') || '');
+        option.appendChild(document.createTextNode(sel.nodeValue));
+        select.appendChild(option);
+        sel.parentNode.removeChild(sel);
+      });
+      el.appendChild(select);
     }
 
-  };
+    function createTextInput(el, type) {
+      var input = document.createElement('input');
+      input.setAttribute('type', type);
+      el.appendChild(input);
+    }
+
+    return {
+      //
+      // INPUTS
+      //
+
+      'gui-textarea': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var input = document.createElement('textarea');
+          el.appendChild(input);
+        }
+      },
+
+      'gui-text': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          createTextInput(el, 'text');
+        }
+      },
+
+      'gui-password': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          createTextInput(el, 'password');
+        }
+      },
+
+      'gui-radio': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var input = document.createElement('input');
+          input.setAttribute('type', 'radio');
+          el.appendChild(input);
+        }
+      },
+
+      'gui-checkbox': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var input = document.createElement('input');
+          input.setAttribute('type', 'checkbox');
+          el.appendChild(input);
+        }
+      },
+
+      'gui-button': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var input = document.createElement('button');
+          var label = el.getAttribute('data-label');
+          input.appendChild(document.createTextNode(label));
+          el.appendChild(input);
+        }
+      },
+
+      'gui-select': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          createSelectInput(el);
+        }
+      },
+
+      'gui-select-list': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          createSelectInput(el, true);
+        }
+      },
+
+      //
+      // MISC
+      //
+
+      'gui-image': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var img = document.createElement('img');
+          var src = el.getAttribute('data-src');
+          img.setAttribute('src', src);
+          el.appendChild(img);
+        }
+      },
+
+      'gui-menu-bar': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          function createMenus(xel) {
+            var ul = document.createElement('ul');
+
+            var i, sel, li, span, sul;
+            for ( i = 0; i < xel.childNodes.length; i++ ) {
+              sel = xel.childNodes[i];
+              if ( sel && sel.nodeType !== 3 ) {
+                li = document.createElement('li');
+                span = document.createElement('span');
+                span.appendChild(document.createTextNode(sel.getAttribute('data-label')));
+                li.appendChild(span);
+
+                if ( sul = createMenus(sel) ) {
+                  li.appendChild(sul);
+                }
+                ul.appendChild(li);
+              }
+            }
+
+            return xel.childNodes.length ? ul : null;
+          }
+
+          var ul = createMenus(el);
+          el.appendChild(ul);
+        }
+      },
+
+      //
+      // CONTAINERS
+      //
+
+      'gui-tabs': {
+        container: true,
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var tabs = document.createElement('ul');
+          var contents = document.createElement('div');
+
+          function selectTab(ev, idx) {
+            tabs.querySelectorAll('li').forEach(function(el, eidx) {
+              Utils.$removeClass(el, 'selected');
+              if ( eidx === idx ) {
+                Utils.$addClass(el, 'selected');
+              }
+            });
+            contents.querySelectorAll('gui-tab-container').forEach(function(el, eidx) {
+              Utils.$removeClass(el, 'selected');
+              if ( eidx === idx ) {
+                Utils.$addClass(el, 'selected');
+              }
+            });
+          }
+
+          el.querySelectorAll('gui-tab-container').forEach(function(el, idx) {
+            var tab = document.createElement('li');
+            var label = el.getAttribute('data-label');
+
+            tab.addEventListener('click', function(ev) {
+              selectTab(ev, idx);
+            }, false);
+
+            tab.appendChild(document.createTextNode(label));
+            tabs.appendChild(tab);
+            contents.appendChild(el);
+          });
+
+          el.appendChild(tabs);
+          el.appendChild(contents);
+
+          selectTab(null, 0);
+        }
+      },
+
+      'gui-paned-view': {
+        container: true,
+        parameters: [],
+        events: [],
+        build: function(el) {
+          el.querySelectorAll('gui-paned-view-container').forEach(function(cel, idx) {
+            if ( idx % 2 ) {
+              var resizer = document.createElement('gui-paned-view-handle');
+              cel.parentNode.insertBefore(resizer, cel);
+            }
+          });
+        }
+      },
+
+      'gui-vbox': {
+        container: true,
+        parameters: [],
+        events: [],
+        build: function(el) {
+        }
+      },
+
+      'gui-hbox': {
+        container: true,
+        parameters: [],
+        events: [],
+        build: function(el) {
+        }
+      }
+
+    };
+  })();
 
   /////////////////////////////////////////////////////////////////////////////
   // CLASS
@@ -168,6 +299,9 @@
     });
 
     return doc;
+  };
+
+  UIScheme.prototype.emittEvent = function(ev, el) {
   };
 
   /////////////////////////////////////////////////////////////////////////////

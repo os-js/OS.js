@@ -1,65 +1,135 @@
 <application-window data-id="MyWindowID" data-width="640" data-height="480">
 
-  <gui-hbox>
-    <gui-hbox-container data-fill="true" style="flex: 0 1 100px">
-      <gui-textarea data-id="MyTextarea"></gui-textarea>
-    </gui-hbox-container>
+  <gui-vbox>
+    <gui-vbox-container style="flex: 0 1 auto">
+      <gui-menu-bar>
+        <gui-menu-entry data-label="Top menu">
+          <gui-menu-entry data-label="Sub Menu 1"></gui-menu-entry>
+          <gui-menu-entry data-label="Sub Menu 2"></gui-menu-entry>
+          <gui-menu-entry data-label="Sub Menu 3"></gui-menu-entry>
+        </gui-menu-entry>
+      </gui-menu-bar>
+    </gui-vbox-container>
 
-    <gui-hbox-container style="flex: 1 0 auto" data-fill="true">
-      <gui-vbox>
-        <gui-vbox-container style="flex: 0 1 20px" data-fill="true">
+    <gui-vbox-container style="flex: 0 1 auto">
+      <gui-toolbar>
+        <gui-button data-label="Toolbar Button"></gui-button>
+        <gui-button data-label="Toolbar Button"></gui-button>
+        <gui-button data-label="Toolbar Button"></gui-button>
+        <gui-button data-label="Toolbar Button"></gui-button>
+        <gui-button data-label="Toolbar Button"></gui-button>
+      </gui-toolbar>
+    </gui-vbox-container>
+
+    <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
+      <gui-hbox>
+        <gui-hbox-container data-fill="true" style="flex: 0 1 100px">
           <gui-textarea data-id="MyTextarea"></gui-textarea>
-        </gui-vbox-container>
+        </gui-hbox-container>
 
-        <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
-          <gui-tabs>
-            <gui-tab-container data-id="MyTab0" data-label="Tab 1">
+        <gui-hbox-container style="flex: 1 0 auto" data-fill="true">
+          <gui-vbox>
 
-              <gui-vbox>
-                <gui-vbox-container>
-                  <gui-image data-src="/logo.png" />
-                </gui-vbox-container>
+            <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
+              <gui-tabs>
+                <gui-tab-container data-id="MyTab0" data-label="Tab 1">
 
-                <gui-vbox-container>
-                  <gui-image data-src="/logo.png" />
-                </gui-vbox-container>
-              </gui-vobx>
+                  <gui-scroll-view>
+                    Tab 1
 
-            </gui-tab-container>
+                    <gui-vbox>
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-label></gui-label>
+                      </gui-vbox-container>
 
-            <gui-tab-container data-id="MyTab1" data-label="Tab 2">
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-text></gui-text>
+                      </gui-vbox-container>
 
-              <gui-vbox>
-                <gui-vbox-container>
-                  <gui-image data-src="/logo.png" />
-                </gui-vbox-container>
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-password></gui-password>
+                      </gui-vbox-container>
 
-                <gui-vbox-container>
-                  <gui-image data-src="/logo.png" />
-                </gui-vbox-container>
-              </gui-vobx>
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-checkbox></gui-checkbox>
+                      </gui-vbox-container>
 
-            </gui-tab-container>
-          </gui-tabs>
-        </gui-vbox-container>
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-select>
+                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option>Option</gui-select-option>
+                        </gui-select>
+                      </gui-vbox-container>
 
-        <gui-vbox-container style="flex: 0 0 auto">
-          <gui-hbox>
-            <gui-hbox-container data-width="35%">
-              <gui-button data-id="MyButtonOne" data-label="My Label"></gui-button>
-            </gui-hbox-container>
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-select-list>
+                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option>Option</gui-select-option>
+                        </gui-select-list>
+                      </gui-vbox-container>
 
-            <gui-hbox-container data-width="35%">
-              <gui-button data-id="MyButtonTwo" data-label="My Label"></gui-button>
-            </gui-hbox-container>
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-radio></gui-radio>
+                        <gui-radio></gui-radio>
+                        <gui-radio></gui-radio>
+                        <gui-radio></gui-radio>
+                        <gui-radio></gui-radio>
+                      </gui-vbox-container>
 
-            <gui-hbox-container data-width="35%">
-              <gui-button data-id="MyButtonThree" data-label="My Label"></gui-button>
-            </gui-hbox-container>
-          </gui-hbox>
-        </gui-vbox-container>
-      </gui-vbox>
+                      <gui-vbox-container style="flex: 0 1 auto">
+                        <gui-image data-src="/osjs-logo.png"></gui-image>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
+                        <gui-paned-view>
+                          <gui-paned-view-container>
+                            <gui-image data-src="/osjs-logo.png"></gui-image>
+                          </gui-paned-view-container>
+
+                          <gui-paned-view-container>
+                            <gui-image data-src="/osjs-logo.png"></gui-image>
+                          </gui-paned-view-container>
+                        </gui-paned-view>
+                      </gui-vbox-container>
+                    </gui-vobx>
+                  </gui-scroll-view>
+
+                </gui-tab-container>
+
+                <gui-tab-container data-id="MyTab1" data-label="Tab 2">
+                  Tab 2
+                </gui-tab-container>
+              </gui-tabs>
+            </gui-vbox-container>
+
+            <gui-vbox-container style="flex: 0 0 auto">
+              <gui-hbox>
+                <gui-hbox-container data-width="35%">
+                  <gui-button data-id="MyButtonOne" data-label="My Label"></gui-button>
+                </gui-hbox-container>
+
+                <gui-hbox-container data-width="35%">
+                  <gui-button data-id="MyButtonTwo" data-label="My Label"></gui-button>
+                </gui-hbox-container>
+
+                <gui-hbox-container data-width="35%">
+                  <gui-button data-id="MyButtonThree" data-label="My Label"></gui-button>
+                </gui-hbox-container>
+              </gui-hbox>
+            </gui-vbox-container>
+          </gui-vbox>
+        </gui-hbox-container>
+      </gui-hbox>
+    </gui-vbox-container>
+
+
+    <gui-hbox-container style="flex: 0 1 auto">
+      <gui-statusbar></gui-statusbar>
     </gui-hbox-container>
-  </gui-hbox>
 
 </application-window>
