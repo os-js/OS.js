@@ -44,7 +44,7 @@
       height: 600
     }, app]);
 
-    this.content = content.querySelector('application-window');
+    this.content = content;
   }
 
   ApplicationnguiWindow.prototype = Object.create(Window.prototype);
@@ -52,9 +52,11 @@
   ApplicationnguiWindow.prototype.init = function(wmRef, app) {
     var root = Window.prototype.init.apply(this, arguments);
 
-    var children = this.content.children;
-    for ( var i = 0; i < children.length; i++ ) {
-      root.appendChild(children[i]);
+    if ( this.content ) {
+      var children = this.content.children;
+      for ( var i = 0; i < children.length; i++ ) {
+        root.appendChild(children[i]);
+      }
     }
 
     return root;
@@ -90,8 +92,9 @@
 
     var self = this;
     var scheme = new OSjs.GUING.Scheme(this);
-    scheme.load(function(error, content) {
-      self._addWindow(new ApplicationnguiWindow(self, metadata, content));
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme.getWindow('MyWindowID')));
+      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme.getWindow('MyWindowTest')));
     });
 
   };

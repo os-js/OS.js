@@ -1,32 +1,283 @@
-<application-window data-id="MyWindowID" data-width="640" data-height="480">
+<application-window data-id="MyWindowTest" data-width="640" data-height="480">
 
   <gui-vbox>
-    <gui-vbox-container style="flex: 0 1 auto">
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
       <gui-menu-bar>
-        <gui-menu-entry data-label="Top menu">
-          <gui-menu-entry data-label="Sub Menu 1">
-            <gui-menu-entry data-label="Sub Menu 1"></gui-menu-entry>
-            <gui-menu-entry data-label="Sub Menu 2"></gui-menu-entry>
-          </gui-menu-entry>
-          <gui-menu-entry data-label="Sub Menu 2"></gui-menu-entry>
-          <gui-menu-entry data-label="Sub Menu 3"></gui-menu-entry>
-        </gui-menu-entry>
 
-        <gui-menu-entry data-label="Top menu">
-          <gui-menu-entry data-label="Sub Menu 1">
-            <gui-menu-entry data-label="Sub Menu 1"></gui-menu-entry>
-            <gui-menu-entry data-label="Sub Menu 2"></gui-menu-entry>
-          </gui-menu-entry>
-          <gui-menu-entry data-label="Sub Menu 2">
-            <gui-menu-entry data-label="Sub Menu 1"></gui-menu-entry>
-            <gui-menu-entry data-label="Sub Menu 2"></gui-menu-entry>
-          </gui-menu-entry>
-          <gui-menu-entry data-label="Sub Menu 3"></gui-menu-entry>
-        </gui-menu-entry>
+        <gui-menu-bar-entry data-label="File">
+          <gui-menu>
+            <gui-menu-entry data-label="Create directory"></gui-menu-entry>
+            <gui-menu-entry data-label="Create file"></gui-menu-entry>
+            <gui-menu-entry data-label="Upload file"></gui-menu-entry>
+            <gui-menu-entry data-label="Close"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
       </gui-menu-bar>
     </gui-vbox-container>
 
-    <gui-vbox-container style="flex: 0 1 auto">
+    <!--
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-toolbar>
+        <gui-button data-label="Back"></gui-button>
+        <gui-button data-label="Forward"></gui-button>
+        <gui-text></gui-text>
+      </gui-toolbar>
+    </gui-vbox-container>
+    -->
+
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
+      <gui-paned-view>
+        <gui-paned-view-container data-basis="150px">
+          <gui-list-view>
+            <gui-list-view-rows>
+
+              <gui-list-view-row>
+                <gui-list-view-column data-basis="16px">
+                  <gui-image data-src="/themes/icons/default/16x16/places/folder_home.png"></gui-image>
+                </gui-list-view-column>
+                <gui-list-view-column>Some List Item</gui-list-view-column>
+              </gui-list-view-row>
+
+              <gui-list-view-row>
+                <gui-list-view-column data-basis="16px">
+                  <gui-image data-src="/themes/icons/default/16x16/places/folder_home.png"></gui-image>
+                </gui-list-view-column>
+                <gui-list-view-column>Some List Item</gui-list-view-column>
+              </gui-list-view-row>
+
+            </gui-list-view-rows>
+          </gui-list-view>
+        </gui-paned-view-container>
+
+        <gui-paned-view-container>
+          <gui-file-view>
+            <gui-list-view>
+              <gui-list-view-columns>
+                <gui-list-view-row>
+                  <gui-list-view-column data-shrink="1" data-grow="0">A</gui-list-view-column>
+                  <gui-list-view-column data-basis="100px" data-resizable="true">A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+              </gui-list-view-columns>
+
+              <gui-list-view-rows>
+
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+                <gui-list-view-row>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                  <gui-list-view-column>A</gui-list-view-column>
+                </gui-list-view-row>
+
+              </gui-list-view-rows>
+            </gui-list-view>
+          </gui-file-view>
+        </gui-paned-view-container>
+      </gui-paned-view>
+    </gui-vbox-container>
+
+
+    <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-statusbar></gui-statusbar>
+    </gui-hbox-container>
+</application-window>
+
+<application-window data-id="MyWindowID" data-width="640" data-height="480">
+
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+
+        <gui-menu-bar-entry data-label="Top Menu 1">
+          <gui-menu>
+            <gui-menu-entry data-label="Sub Menu">
+              <gui-menu>
+                <gui-menu-entry data-label="SubSub Menu"></gui-menu-entry>
+                <gui-menu-entry data-label="SubSub Menu"></gui-menu-entry>
+                <gui-menu-entry data-label="SubSub Menu"></gui-menu-entry>
+              </gui-menu>
+            </gui-menu-entry>
+            <gui-menu-entry data-label="Sub Menu"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+        <!--
+        <gui-menu-bar-entry data-label="Top Menu 2">
+          <gui-menu>
+            <gui-menu-entry data-label="Sub Menu">
+              <gui-menu>
+                <gui-menu-entry data-label="SubSub Menu"></gui-menu-entry>
+              </gui-menu>
+            </gui-menu-entry>
+            <gui-menu-entry data-label="Sub Menu"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+        -->
+
+      </gui-menu-bar>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
       <gui-toolbar>
         <gui-button data-label="Toolbar Button"></gui-button>
         <gui-button data-label="Toolbar Button"></gui-button>
@@ -36,78 +287,90 @@
       </gui-toolbar>
     </gui-vbox-container>
 
-    <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
       <gui-hbox>
-        <gui-hbox-container data-fill="true" style="flex: 0 1 100px">
-          <gui-textarea data-id="MyTextarea"></gui-textarea>
+        <gui-hbox-container data-grow="0" data-shrink="1" data-basis="100px" data-fill="true">
+          <gui-textarea></gui-textarea>
         </gui-hbox-container>
 
-        <gui-hbox-container style="flex: 1 0 auto" data-fill="true">
+        <gui-hbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
           <gui-vbox>
 
-            <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
+            <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
               <gui-tabs>
                 <gui-tab-container data-id="MyTab0" data-label="Tab 1">
 
                   <gui-scroll-view>
-                    Tab 1
 
                     <gui-vbox>
-                      <gui-vbox-container style="flex: 0 1 auto">
-                        <gui-label></gui-label>
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-label data-label="Label"></gui-label>
                       </gui-vbox-container>
 
-                      <gui-vbox-container style="flex: 0 1 auto">
-                        <gui-text></gui-text>
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+                        <gui-progress-bar></gui-progress-bar>
                       </gui-vbox-container>
 
-                      <gui-vbox-container style="flex: 0 1 auto">
-                        <gui-password></gui-password>
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-checkbox data-label="Checkbox Label"></gui-checkbox>
                       </gui-vbox-container>
 
-                      <gui-vbox-container style="flex: 0 1 auto">
-                        <gui-checkbox></gui-checkbox>
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-switch data-label="Switch Label"></gui-switch>
                       </gui-vbox-container>
 
-                      <gui-vbox-container style="flex: 0 1 auto">
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-radio data-label="Labels are optional" data-group="MyGroupName"></gui-radio>
+                        <gui-radio data-group="MyGroupName"></gui-radio>
+                        <gui-radio data-group="MyGroupName"></gui-radio>
+                        <gui-radio data-group="MyGroupName"></gui-radio>
+                        <gui-radio data-group="MyGroupName"></gui-radio>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+                        <gui-text data-placeholder="this textbox should fill up the entire space"></gui-text>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-text data-label="Text With label"></gui-text>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+                        <gui-password data-placeholder="this passwordbox should fill up the entire space"></gui-password>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-text data-label="Password With label"></gui-text>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
                         <gui-select>
-                          <gui-select-option>Option</gui-select-option>
-                          <gui-select-option>Option</gui-select-option>
-                          <gui-select-option>Option</gui-select-option>
-                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
                         </gui-select>
                       </gui-vbox-container>
 
-                      <gui-vbox-container style="flex: 0 1 auto">
+                      <gui-vbox-container data-grow="0" data-shrink="0" data-basis="100px" data-fill="true">
                         <gui-select-list>
-                          <gui-select-option>Option</gui-select-option>
-                          <gui-select-option>Option</gui-select-option>
-                          <gui-select-option>Option</gui-select-option>
-                          <gui-select-option>Option</gui-select-option>
-                          <gui-select-option>Option</gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
+                          <gui-select-option data-value="" data-label="Option"></gui-select-option>
                         </gui-select-list>
                       </gui-vbox-container>
 
-                      <gui-vbox-container style="flex: 0 1 auto">
-                        <gui-radio></gui-radio>
-                        <gui-radio></gui-radio>
-                        <gui-radio></gui-radio>
-                        <gui-radio></gui-radio>
-                        <gui-radio></gui-radio>
-                      </gui-vbox-container>
-
-                      <gui-vbox-container style="flex: 0 1 auto">
-                        <gui-image data-src="/osjs-logo.png"></gui-image>
-                      </gui-vbox-container>
-
-                      <gui-vbox-container style="flex: 1 0 auto" data-fill="true">
+                      <gui-vbox-container data-grow="0" data-shrink="0" data-basis="200px" data-fill="true">
                         <gui-paned-view>
                           <gui-paned-view-container>
-                            <gui-image data-src="/osjs-logo.png"></gui-image>
+                            <gui-textarea></gui-textarea>
                           </gui-paned-view-container>
 
                           <gui-paned-view-container>
-                            <gui-image data-src="/osjs-logo.png"></gui-image>
+                            <gui-textarea></gui-textarea>
                           </gui-paned-view-container>
                         </gui-paned-view>
                       </gui-vbox-container>
@@ -117,25 +380,21 @@
                 </gui-tab-container>
 
                 <gui-tab-container data-id="MyTab1" data-label="Tab 2">
-                  Tab 2
+                  <gui-image data-src="/osjs-logo.png"></gui-image>
+                </gui-tab-container>
+
+                <gui-tab-container data-id="MyTab2" data-label="Tab 3">
+                  <gui-image data-src="/osjs-logo.png"></gui-image>
                 </gui-tab-container>
               </gui-tabs>
             </gui-vbox-container>
 
-            <gui-vbox-container style="flex: 0 0 auto">
-              <gui-hbox>
-                <gui-hbox-container data-width="35%">
-                  <gui-button data-id="MyButtonOne" data-label="My Label"></gui-button>
-                </gui-hbox-container>
-
-                <gui-hbox-container data-width="35%">
-                  <gui-button data-id="MyButtonTwo" data-label="My Label"></gui-button>
-                </gui-hbox-container>
-
-                <gui-hbox-container data-width="35%">
-                  <gui-button data-id="MyButtonThree" data-label="My Label"></gui-button>
-                </gui-hbox-container>
-              </gui-hbox>
+            <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto">
+              <gui-button-bar>
+                <gui-button data-id="MyButtonOne" data-label="My Label"></gui-button>
+                <gui-button data-id="MyButtonTwo" data-label="My Label"></gui-button>
+                <gui-button data-id="MyButtonThree" data-label="My Label"></gui-button>
+              </gui-button-bar>
             </gui-vbox-container>
           </gui-vbox>
         </gui-hbox-container>
@@ -143,7 +402,7 @@
     </gui-vbox-container>
 
 
-    <gui-hbox-container style="flex: 0 1 auto">
+    <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
       <gui-statusbar></gui-statusbar>
     </gui-hbox-container>
 

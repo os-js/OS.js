@@ -35,10 +35,40 @@
 
 .WindowWrapper * {
   box-sizing : border-box;
+
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 .gui-element {
-  position : relative;
+  min-width : 24px;
+  min-height : 24px;
+}
+
+gui-hbox,
+gui-hbox > *,
+gui-vbox,
+gui-vbox > *,
+gui-menu,
+gui-menu > *,
+gui-label,
+gui-label > *,
+gui-menu-bar,
+gui-menu-bar > *,
+gui-toolbar,
+gui-toolbar > *,
+gui-list-view,
+gui-list-view > *,
+gui-tree-view,
+gui-tree-view > *,
+gui-icon-view,
+gui-icon-view > * {
+
+  cursor : default;
 }
 
 /**
@@ -52,6 +82,7 @@ gui-hbox,
 gui-vbox {
   width : 100%;
   height : 100%;
+  position : relative;
 
   display: -webkit-flex;
   display: -webkit-box;
@@ -79,9 +110,11 @@ gui-vbox {
         -ms-flex: 0 0 auto;
          -o-flex: 0 0 auto;
             flex: 0 0 auto;
-
+  }
+  gui-hbox-container > .gui-element,
+  gui-vbox-container > .gui-element {
     /** ********** STYLE ********** */
-    padding : 2px;
+    margin : 4px;
   }
 
   gui-hbox-container[data-fill='true'],
@@ -99,17 +132,22 @@ gui-vbox {
             align-content: stretch;
   }
 
+    gui-hbox-container[data-expand='true'] > *,
+    gui-vbox-container[data-expand='true'] > * {
+      display : block;
+    }
+
     gui-hbox-container[data-fill='true'] > *,
     gui-vbox-container[data-fill='true'] > * {
       position : absolute;
+      top : 0px;
+      left : 0px;
+      bottom : 0px;
+      right : 0px;
 
       /** ********** STYLE ********** */
-      top : 2px;
-      left : 2px;
-      bottom : 2px;
-      right : 2px;
-      width : calc(100% - 4px);
-      height : calc(100% - 4px);
+      width : calc(100% - 8px);
+      height : calc(100% - 8px);
     }
 
     gui-hbox-container[data-fill='true'] > gui-vbox,
@@ -125,6 +163,7 @@ gui-vbox {
 /* Scroll View */
 gui-scroll-view {
   display : block;
+  position : relative;
   overflow : auto;
   width : 100%;
   height : 100%;
@@ -133,38 +172,66 @@ gui-scroll-view {
 /* Paned View */
 gui-paned-view {
   display : block;
+  position : relative;
   overflow : hidden;
   width : 100%;
   height : 100%;
+
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -moz-box;
+  display: flex;
 }
   gui-paned-view > * {
     display : inline-block;
+    position : relative;
+    vertical-align : middle;
+
+    -webkit-flex: 1 1 auto;
+       -moz-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+         -o-flex: 1 1 auto;
+            flex: 1 1 auto;
   }
   gui-paned-view > gui-paned-view-container {
-  }
-  gui-paned-view > gui-paned-view-handle {
     height : 100%;
 
     /** ********** STYLE ********** */
-    width : 8px;
-    background : #000;
   }
-  gui-paned-view[data-orientation='vertical'] > gui-paned-view-handle {
+    gui-paned-view > gui-paned-view-container > * {
+      height : 100%;
+      display : block;
+    }
+  gui-paned-view > gui-paned-view-handle {
+    height : 100%;
+    -webkit-flex: 0 1 auto;
+       -moz-flex: 0 1 auto;
+        -ms-flex: 0 1 auto;
+         -o-flex: 0 1 auto;
+            flex: 0 1 auto;
+
     /** ********** STYLE ********** */
-    width : 100%;
-    height : 16px;
+    width : 8px;
+    cursor : ew-resize;
   }
 
 /* IFrame */
 gui-iframe {
+  display : inline-block;
+  position : relative;
 }
 
 /* Toolbar */
 gui-toolbar {
+  display : block;
+  position : relative;
 }
 
 /* Tabs */
 gui-tabs {
+  display : block;
+  position : relative;
 }
   gui-tabs > ul {
     display : block;
@@ -176,6 +243,7 @@ gui-tabs {
     height : 25px;
   }
     gui-tabs > ul > li {
+      position : relative;
       display : inline-block;
       margin : 0;
       padding : 0;
@@ -185,26 +253,50 @@ gui-tabs {
       padding-left : 8px;
       padding-right : 8px;
       cursor : pointer;
-      border : 1px solid #000;
+      background-color : #d9d9d9;
+      border : 1px solid transparent;
+      border-bottom : 0 none;
+      line-height : 25px;
     }
+    gui-tabs > ul > li.gui-active {
+      background-color : transparent;
+      border-color : #b2b2b2;
+    }
+      gui-tabs > ul > li.gui-active:after {
+        content : '';
+        position : absolute;
+        left : 0px;
+        right : 0px;
+        bottom : 0px;
+
+        /** ********** STYLE ********** */
+        bottom : -1px;
+        border-bottom : 1px solid #ebebeb;
+      }
   gui-tabs > div {
     overflow : hidden;
 
     /** ********** STYLE ********** */
     height : calc(100% - 25px);
-    border : 1px solid #000;
+    border : 1px solid #b2b2b2;
   }
 
-    gui-tabs > div > gui-tab-container {
+    gui-tab-container {
       display : none;
       height : 100%;
 
       /** ********** STYLE ********** */
-      padding : 2px;
+      padding : 4px;
     }
-    gui-tabs > div > gui-tab-container.selected {
+    gui-tab-container.gui-active {
       display : block;
     }
+
+/* Button Bar */
+gui-button-bar {
+  display : inline-block;
+  position : relative;
+}
 
 /**
  * ===========================================================================
@@ -215,74 +307,313 @@ gui-tabs {
 /* Label */
 gui-label {
   display : inline-block;
+  position : relative;
+
+  /** ********** STYLE ********** */
+  min-height : 16px !important;
+  height : 16px !important;
+  line-height : 16px !important;
 }
+  gui-label > label {
+    display : inline;
+    vertical-align : middle;
+  }
 
 /* Button */
 gui-button {
   display : inline-block;
+  position : relative;
 }
+  gui-button button {
+    display : block;
+    margin : 0;
+    padding : 0;
+    outline : 0 none;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+  }
+  gui-button button:active {
+    /** ********** STYLE ********** */
+    border-color : #d0d0d0;
+  }
+  gui-button button:disabled {
+    /** ********** STYLE ********** */
+    border-color : #a0a0a0;
+  }
 
 /* Checkbox Button */
+/* Radio Button */
+gui-radio,
 gui-checkbox {
   display : inline-block;
+  position : relative;
 }
+  gui-radio input,
+  gui-checkbox input {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
 
-/* Radio Button */
+    display: inline-block;
+    vertical-align : middle;
+    position: relative;
+    background: transparent;
+    border: 0 none;
+    margin : 0;
+    padding : 0;
+    overflow : hidden;
+    outline : none;
+
+    /** ********** STYLE ********** */
+    text-align : center;
+    background: #ffffff;
+    border: 1px solid #b2b2b2;
+    width : 16px;
+    height : 16px;
+    line-height: 12px;
+    color : #000;
+    font-family: Arial;
+  }
+
+  gui-radio input {
+    /** ********** STYLE ********** */
+    -webkit-border-radius: 16px;
+       -moz-border-radius: 16px;
+        -ms-border-radius: 16px;
+            border-radius: 16px;
+  }
+
+  gui-radio input:checked:after {
+    display : inline;
+    vertical-align: middle;
+
+    /** ********** STYLE ********** */
+    content: "\2022";
+    font-size: 32px;
+  }
+
+  gui-checkbox input:checked:after {
+    display : inline;
+    vertical-align: middle;
+
+    /** ********** STYLE ********** */
+    content: "\2713";
+    font-size: 12px;
+  }
+
+  gui-radio > label > span,
+  gui-checkbox > label > span {
+    vertical-align : middle;
+
+    /** ********** STYLE ********** */
+    padding-left : 4px;
+  }
+
 gui-radio {
   display : inline-block;
+  position : relative;
 }
 
 /* Select Dropdown */
 gui-select {
   display : inline-block;
+  position : relative;
+  height : 24px;
 }
+  gui-select select {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
+
+    -webkit-border-radius: 0px;
+       -moz-border-radius: 0px;
+        -ms-border-radius: 0px;
+            border-radius: 0px;
+
+    display : block;
+    padding : 0;
+    margin : 0;
+    width : 100%;
+    height : 100%;
+    outline : none;
+
+    /** ********** STYLE ********** */
+    border: 1px solid #b2b2b2;
+    padding : 4px;
+  }
+
+  gui-select:before {
+    content: '';
+    position: absolute;
+    z-index: 99;
+    pointer-events: none;
+    display: block;
+
+    /** ********** STYLE ********** */
+    right: 1px;
+    top: 1px;
+    bottom : 1px;
+    width: 22px;
+    background: #ffffff;
+  }
+  gui-select:after {
+    position: absolute;
+    z-index: 100;
+    pointer-events: none;
+
+    /** ********** STYLE ********** */
+    content: '<>';
+    font: 11px "Consolas", monospace;
+    color: #b2b2b2;
+    right: 2px;
+    top: 5px;
+    padding: 0 0 2px;
+    border-bottom: 1px solid #b2b2b2;
+
+    -webkit-transform: rotate(90deg);
+       -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+  }
 
 /* Select List */
 gui-select-list {
   display : inline-block;
+  position : relative;
+  min-height : 32px;
 }
+  gui-select-list select {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
+
+    -webkit-border-radius: 0px;
+       -moz-border-radius: 0px;
+        -ms-border-radius: 0px;
+            border-radius: 0px;
+
+    display : block;
+    padding : 0;
+    margin : 0;
+    width : 100%;
+    height : 100%;
+    outline : none;
+
+    /** ********** STYLE ********** */
+    border: 1px solid #b2b2b2;
+    padding : 4px;
+  }
 
 /* Slider */
 gui-slider {
   display : inline-block;
+  position : relative;
 }
 
 /* Switch */
 gui-switch {
   display : inline-block;
+  position : relative;
+
+  /** ********** STYLE ********** */
+  width : 32px;
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
+
+  gui-switch button {
+    display : block;
+    position : absolute;
+    left : 0px;
+    bottom : 0px;
+    top : 0px;
+    width : 50%;
+    outline : 0 none;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+  }
+  gui-switch button.gui-active {
+    right : 0px;
+    left : auto;
+  }
+
+  gui-switch input {
+    display : none;
+  }
 
 /* Text Field */
+/* Password Field */
+gui-password,
 gui-text {
   display : inline-block;
+  position : relative;
+  height : 24px;
 }
+  gui-password input,
+  gui-text input {
+    display : block;
+    padding : 0;
+    margin : 0;
+    width : 100%;
+    height : 100%;
+    background : transparent;
+    border : 0 none;
+    outline : none;
 
-/* Password Field */
-gui-password {
-  display : inline-block;
-}
+    /** ********** STYLE ********** */
+    padding : 4px;
+    background : #fff;
+    border : 1px solid #b2b2b2;
+  }
+
+  gui-password > label > input,
+  gui-text > label > input {
+    display : inline-block;
+    width : auto;
+
+    /** ********** STYLE ********** */
+    margin-left : 4px;
+  }
+
 
 /* Text Area */
 gui-textarea {
-  min-width : 16px;
-  min-height : 16px;
   display : inline-block;
-
-  /** ********** STYLE ********** */
-  background : #fff;
+  position : relative;
 }
-  gui-textarea > textarea {
+  gui-textarea textarea {
+    display : block;
+    padding : 0;
+    margin : 0;
     width : 100%;
     height : 100%;
     border : 0 none;
-    margin : 0;
-    padding : 0;
     resize : none;
+    outline : none;
+
+    /** ********** STYLE ********** */
+    padding : 4px;
+    background : #fff;
+    border : 1px solid #b2b2b2;
   }
 
 /* Rich Text */
 gui-richtext {
   display : inline-block;
+  position : relative;
 }
 
 /**
@@ -294,102 +625,141 @@ gui-richtext {
 /* Image */
 gui-image {
   display : inline-block;
+  position : relative;
 }
   gui-image > img {
     border : 0 none;
     outline : 0 none;
+    vertical-align : middle;
   }
 
 /* Canvas */
 gui-canvas {
   display : inline-block;
-  min-height : 16px;
-  min-width : 16px;
+  position : relative;
 }
 
 /* Color Swatch */
 gui-color-swatch {
   display : inline-block;
+  position : relative;
 }
 
 /* Menu */
 gui-menu {
   display : inline-block;
-}
+  position : relative;
 
-/* Menu Bar */
-gui-menu-bar {
-  display : block;
-  min-height : 16px;
-  min-width : 16px;
-  width : 100%;
+  /** ********** STYLE ********** */
+  border : 1px solid transparent;
+  background: #ebebeb;
 }
-  gui-menu-bar ul {
-    list-style-type : none;
-    margin : 0;
-    padding : 0;
+  gui-menu > gui-menu-entry {
+    display : block;
     position : relative;
-  }
-  gui-menu-bar li {
-    margin : 0;
-    padding : 0;
-    position : relative;
+    white-space : nowrap;
 
     /** ********** STYLE ********** */
     cursor : pointer;
-    padding : 2px;
+    padding : 4px;
+    color: #242424;
   }
 
+  gui-menu > gui-menu-entry.gui-menu-expand {
+    /** ********** STYLE ********** */
+    padding-right : 16px;
+  }
+  gui-menu > gui-menu-entry.gui-menu-expand:after {
+    position : absolute;
+    right : 0px;
+    top : 0px;
+    bottom : 0px;
 
-  gui-menu-bar .main > li {
-    display : inline-block;
+    /** ********** STYLE ********** */
+    content : '>';
+    padding : 4px;
   }
 
-  gui-menu-bar .sub {
+  gui-menu > gui-menu-entry:hover {
+    /** ********** STYLE ********** */
+    background: #2d73d2;
+    color: #fff
+  }
+
+  gui-menu > gui-menu-entry > gui-menu {
     display : none;
     position : absolute;
     z-index : 99999;
-
-    /** ********** STYLE ********** */
-    border : 1px solid #000;
-    color : #000;
-    background : #fff;
   }
 
-  gui-menu-bar li.selected > ul,
-  gui-menu-bar .sub li:hover > ul {
-    display : block;
-  }
-
-  gui-menu-bar .sub > li {
-    white-space : nowrap;
-  }
-
-  gui-menu-bar .sub > li > .sub {
+  gui-menu > gui-menu-entry:hover > gui-menu {
+    display : inline-block;
     left : 100%;
-    top : 0px;
+    top : 0%;
   }
 
-  gui-menu-bar > ul > li:hover,
-  gui-menu-bar .sub > li:hover {
+/* Menu Bar */
+gui-menu-bar {
+  position : relative;
+  display : block;
+
+  /** ********** STYLE ********** */
+  border-bottom : 1px solid #b2b2b2;
+  padding-top : 2px;
+  padding-bottom : 2px;
+}
+  gui-menu-bar-entry {
+    position : relative;
+    display : inline-block;
+
     /** ********** STYLE ********** */
-    background : blue;
-    color : #fff;
+    cursor : pointer;
+    padding : 4px;
+  }
+  gui-menu-bar-entry:hover {
+    /** ********** STYLE ********** */
+    background: #2d73d2;
+    color: #fff
+  }
+
+  gui-menu-bar-entry > gui-menu {
+    display : none;
+    position : absolute;
+    z-index : 99999;
+  }
+  gui-menu-bar-entry.gui-active > gui-menu {
+    display : inline-block;
+    top : 100%;
+    left : 0%;
   }
 
 
 /* Progressbar */
 gui-progress-bar {
+  position : relative;
   display : inline-block;
-  min-height : 16px;
-  min-width : 16px;
+
+  /** ********** STYLE ********** */
+  text-align : center;
+  background-color : #d9d9d9;
+  border: 1px solid #b2b2b2;
+  padding : 4px;
 }
+  gui-progress-bar > span {
+    display : inline;
+    vertical-align : middle;
+  }
 
 /* Statusbar */
 gui-statusbar {
+  position : relative;
   display : block;
-  min-height : 16px;
-  min-width : 16px;
+
+  /** ********** STYLE ********** */
+  border-top : 1px solid #b2b2b2;
+  padding : 4px;
+  padding-top : 6px;
+  padding-bottom : 6px;
 }
 
 /**
@@ -400,23 +770,138 @@ gui-statusbar {
 
 /* File View */
 gui-file-view {
+  position : relative;
   display : inline-block;
 }
+  gui-file-view > * {
+    display : block;
+    width : 100%;
+    height : 100%;
+  }
 
 /* Icon View */
 gui-icon-view {
+  position : relative;
   display : inline-block;
+
+  /** ********** STYLE ********** */
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
 
 /* List View */
 gui-list-view {
+  position : relative;
   display : inline-block;
+  overflow : auto;
+
+  /** ********** STYLE ********** */
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
+  gui-list-view-body {
+    display : block;
+    position : relative;
+  }
+    gui-list-view-body > gui-list-view-rows {
+      height : 100%;
+      width : 100%;
+    }
+
+  gui-list-view-head {
+    display : block;
+    position : relative;
+    z-index : 999999;
+
+    /** ********** STYLE ********** */
+    background-color : #d9d9d9;
+  }
+
+  gui-list-view-rows,
+  gui-list-view-columns {
+    position : relative;
+    display: block;
+
+    display: -webkit-flex;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: flex;
+
+    flex-flow : column nowrap;
+  }
+    gui-list-view-row {
+      position : relative;
+      display: block;
+
+      display: -webkit-flex;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -moz-box;
+      display: flex;
+
+      flex-flow : row nowrap;
+
+      -webkit-flex: 0 0 auto;
+         -moz-flex: 0 0 auto;
+          -ms-flex: 0 0 auto;
+           -o-flex: 0 0 auto;
+              flex: 0 0 auto;
+    }
+      gui-list-view-column {
+        position : relative;
+        display : inline-block;
+
+        -webkit-flex: 1 0 auto;
+           -moz-flex: 1 0 auto;
+            -ms-flex: 1 0 auto;
+             -o-flex: 1 0 auto;
+                flex: 1 0 auto;
+
+        flex-flow: row nowrap;
+
+        /** ********** STYLE ********** */
+        margin : 4px;
+        line-height : 16px;
+      }
+        gui-list-view-column > * {
+          display : inline;
+        }
+
+    gui-list-view-row.gui-active {
+      /** ********** STYLE ********** */
+      color: #ffffff;
+      background: #2d73d2;
+    }
+
+    gui-list-view-column-resizer {
+      width : 1px;
+      position : absolute;
+      top : 0px;
+      bottom : 0px;
+      right : -3px;
+      width : 3px;
+
+      /** ********** STYLE ********** */
+      cursor : ew-resize;
+    }
+      gui-list-view-column-resizer:after {
+        content : '';
+        background : #b2b2b2;
+        position : absolute;
+        top : 0px;
+        left : 1px;
+        width : 1px;
+        bottom : 0px;
+      }
+
 
 /* Tree View */
 gui-tree-view {
+  position : relative;
   display : inline-block;
+
+  /** ********** STYLE ********** */
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
-
-
-
