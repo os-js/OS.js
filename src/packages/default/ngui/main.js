@@ -50,7 +50,7 @@
   ApplicationnguiWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
 
-    scheme.renderWindow(this, 'MyWindowID', root);
+    scheme.render(this, 'MyWindowID', root);
 
     scheme.find(this, 'MyButtonOne').on('click', function() {
       alert("You clicked me");

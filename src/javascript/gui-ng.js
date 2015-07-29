@@ -1208,7 +1208,7 @@
     return fragments;
   };
 
-  UIScheme.prototype.renderWindow = function(win, id, root) {
+  UIScheme.prototype.render = function(win, id, root) {
     root = root || win._getRoot();
     var content = this.getWindow(id);
     if ( content ) {
