@@ -36,6 +36,27 @@
   var lastMenu;
 
   var CONSTRUCTORS = (function() {
+
+    function handleItemSelection(ev, item, idx, className, selected) {
+      if ( !ev.shiftKey ) {
+        item.parentNode.querySelectorAll(className).forEach(function(i) {
+          Utils.$removeClass(i, 'gui-active');
+        });
+        selected = [];
+      }
+
+      var findex = selected.indexOf(idx);
+      if ( findex >= 0 ) {
+        selected.splice(findex, 1);
+        Utils.$removeClass(item, 'gui-active');
+      } else {
+        selected.push(idx);
+        Utils.$addClass(item, 'gui-active');
+      }
+
+      return selected;
+    }
+
     function createSelectInput(el, multiple) {
       var select = document.createElement('select');
       if ( multiple ) {
@@ -183,7 +204,7 @@
 
       'gui-textarea': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           var input = document.createElement('textarea');
           el.appendChild(input);
@@ -192,7 +213,7 @@
 
       'gui-text': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           createInputOfType(el, 'text');
         }
@@ -200,7 +221,7 @@
 
       'gui-password': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           createInputOfType(el, 'password');
         }
@@ -216,7 +237,7 @@
 
       'gui-checkbox': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           createInputOfType(el, 'checkbox');
         }
@@ -224,7 +245,7 @@
 
       'gui-switch': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           var input = document.createElement('input');
           input.type = 'checkbox';
@@ -276,7 +297,7 @@
 
       'gui-select': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           createSelectInput(el);
         }
@@ -284,7 +305,7 @@
 
       'gui-select-list': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           createSelectInput(el, true);
         }
@@ -292,7 +313,7 @@
 
       'gui-slider': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           createInputOfType(el, 'range');
         }
@@ -300,7 +321,7 @@
 
       'gui-color-swatch': {
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           var cv        = document.createElement('canvas');
           cv.width      = 100;
@@ -375,7 +396,7 @@
 
       'gui-menu': {
         parameters: [],
-        events: [],
+        events: ['select'],
         build: function(el) {
           var children = el.childNodes;
           var child, span, label;
@@ -397,7 +418,7 @@
 
       'gui-menu-bar': {
         parameters: [],
-        events: [],
+        events: ['select'],
         build: function(el) {
           el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel) {
             var span = document.createElement('span');
@@ -426,7 +447,6 @@
       //
 
       'gui-button-bar' : {
-        container: true,
         parameters: [],
         events: [],
         build: function(el) {
@@ -434,9 +454,8 @@
       },
 
       'gui-tabs': {
-        container: true,
         parameters: [],
-        events: [],
+        events: ['change'],
         build: function(el) {
           var tabs = document.createElement('ul');
           var contents = document.createElement('div');
@@ -487,9 +506,8 @@
       },
 
       'gui-paned-view': {
-        container: true,
         parameters: [],
-        events: [],
+        events: ['resize'],
         build: function(el) {
           function bindResizer(resizer) {
             var resizeEl = resizer.previousElementSibling;
@@ -528,7 +546,6 @@
       },
 
       'gui-paned-view-container': {
-        container: true,
         parameters: [],
         events: [],
         build: function(el) {
@@ -537,7 +554,6 @@
       },
 
       'gui-vbox': {
-        container: true,
         parameters: [],
         events: [],
         build: function(el) {
@@ -545,7 +561,6 @@
       },
 
       'gui-vbox-container': {
-        container: true,
         parameters: [],
         events: [],
         build: function(el) {
@@ -554,7 +569,6 @@
       },
 
       'gui-hbox': {
-        container: true,
         parameters: [],
         events: [],
         build: function(el) {
@@ -562,7 +576,6 @@
       },
 
       'gui-hbox-container': {
-        container: true,
         parameters: [],
         events: [],
         build: function(el) {
@@ -570,10 +583,55 @@
         }
       },
 
-      'gui-list-view': {
-        container: true,
+      //
+      // VIEWS
+      //
+      'gui-icon-view': {
         parameters: [],
-        events: [],
+        events: ['activate', 'select', 'change', 'scroll'],
+        build: function(el) {
+          var selected = [];
+          function handleItemClick(ev, item, idx) {
+            selected = handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected);
+            console.warn(selected);
+          }
+
+          el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
+            var icon = cel.getAttribute('data-icon');
+            var label = cel.getAttribute('data-label');
+
+            var dicon = document.createElement('div');
+            var dimg = document.createElement('img');
+            dimg.src = icon;
+            dicon.appendChild(dimg);
+
+            var dlabel = document.createElement('div');
+            var dspan = document.createElement('span');
+            dspan.appendChild(document.createTextNode(label));
+            dlabel.appendChild(dspan);
+
+            cel.addEventListener('click', function(ev) {
+              handleItemClick(ev, cel, idx);
+            }, false);
+            cel.addEventListener('dblclick', function(ev) {
+            }, false);
+
+            cel.appendChild(dicon);
+            cel.appendChild(dlabel);
+          });
+        }
+      },
+
+      'gui-tree-view': {
+        parameters: [],
+        events: ['activate', 'select', 'change', 'scroll'],
+        build: function(el) {
+        }
+      },
+
+      'gui-list-view': {
+        parameters: [],
+        events: ['activate', 'select', 'change', 'scroll'],
         build: function(el) {
           var headContainer, bodyContainer;
 
@@ -586,21 +644,8 @@
           var body = el.querySelector('gui-list-view-rows');
 
           function handleRowClick(ev, row, idx) {
-            if ( !ev.shiftKey ) {
-              row.parentNode.querySelectorAll('gui-list-view-row').forEach(function(i) {
-                Utils.$removeClass(i, 'gui-active');
-              });
-              selected = [];
-            }
-
-            var findex = selected.indexOf(idx);
-            if ( findex >= 0 ) {
-              selected.splice(findex, 1);
-              Utils.$removeClass(row, 'gui-active');
-            } else {
-              selected.push(idx);
-              Utils.$addClass(row, 'gui-active');
-            }
+            selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', selected);
+            console.warn(selected);
           }
 
           function resize(rel, w) {
@@ -679,6 +724,8 @@
           el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(cel, idx) {
             cel.addEventListener('click', function(ev) {
               handleRowClick(ev, cel, idx);
+            }, false);
+            cel.addEventListener('dblclick', function(ev) {
             }, false);
           });
         }

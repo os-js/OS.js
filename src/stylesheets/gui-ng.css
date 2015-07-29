@@ -983,7 +983,62 @@ gui-icon-view {
   /** ********** STYLE ********** */
   background : #fff;
   border : 1px solid #b2b2b2;
+  padding : 4px;
 }
+  gui-icon-view-entry {
+    float : left;
+    width : 34px;
+    width : 54px;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+    margin : 2px;
+    padding : 2px;
+    text-align : center;
+
+    min-width : 60px !important;
+    min-height : 60px !important;
+  }
+
+    gui-icon-view-entry > div {
+      position : relative;
+    }
+
+    gui-icon-view-entry > div > img {
+      width : 32px;
+      height : 32px;
+    }
+
+    gui-icon-view-entry > div > span {
+      position : absolute;
+      display : block;
+      left : -2px;
+      right : -2px;
+      top : 0px;
+      padding : 2px;
+      z-index : 9999;
+
+      white-space : nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis;
+    }
+
+    gui-icon-view-entry.gui-active {
+      /** ********** STYLE ********** */
+      background: #2d73d2;
+      color: #ffffff;
+    }
+    gui-icon-view-entry.gui-active > div > span {
+      overflow: visible;
+      white-space : pre-wrap;
+      word-wrap : break-word;
+      text-overflow: inherit;
+      -o-text-overflow: inherit;
+
+      /** ********** STYLE ********** */
+      background: #2d73d2;
+    }
 
 /* List View */
 gui-list-view {
