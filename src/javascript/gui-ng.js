@@ -49,6 +49,46 @@
     lastMenu();
   }
 
+  function getProperty(el, param, tagName) {
+    tagName = tagName || el.tagName.toLowerCase();
+    if ( param === 'value' && (['gui-text', 'gui-password', 'gui-textarea']).indexOf(tagName) >= 0 ) {
+      var firstChild = el.querySelector('input');
+      if ( tagName === 'gui-textarea' ) {
+        firstChild = el.querySelector('textarea');
+      }
+      if ( firstChild ) {
+        return firstChild[param];
+      }
+      return null;
+    }
+    return el.getAttribute('data-' + param);
+  }
+
+  function setProperty(el, param, value, tagName) {
+    tagName = tagName || el.tagName.toLowerCase();
+
+    if ( param === 'value' && (['gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
+      var firstChild = el.querySelector('input');
+      if ( tagName === 'gui-textarea' ) {
+        firstChild = el.querySelector('textarea');
+      }
+      if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
+        if ( value ) {
+          firstChild.setAttribute('checked', 'checked');
+        } else {
+          firstChild.removeAttribute('checked');
+        }
+      } else {
+        firstChild[param] = value;
+      }
+    } else {
+      if ( typeof value === 'boolean' ) {
+        value = value ? 'true' : 'false';
+      }
+      el.setAttribute('data-' + param, value);
+    }
+  }
+
   var CONSTRUCTORS = (function() {
 
     function handleItemSelection(ev, item, idx, className, selected, root) {
@@ -271,9 +311,6 @@
       'gui-text': {
         parameters: [],
         events: ['change'],
-        get: function(el, paramName) {
-          return getProperty(el, paramName, 'gui-text');
-        },
         bind: function(el, evName, callback, params) {
           bindTextInputEvents.apply(this, arguments);
         },
@@ -1093,36 +1130,21 @@
 
   UIElement.prototype.set = function(param, value) {
     if ( this.$element ) {
-
       if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].set ) {
-        CONSTRUCTORS[this.tagName].set(this.$element);
+        CONSTRUCTORS[this.tagName].set(this.$element, param, value, this.tagName);
       } else {
-        if ( typeof value === 'boolean' ) {
-          value = value ? 'true' : 'false';
-        }
-
-        this.$element.setAttribute('data-' + param, value);
+        setProperty(this.$element, param, value);
       }
     }
     return this;
   };
 
-  UIElement.prototype.get = function(paramName) {
+  UIElement.prototype.get = function(param) {
     if ( this.$element ) {
       if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].get ) {
-        return CONSTRUCTORS[this.tagName].get(this.$element, param);
+        return CONSTRUCTORS[this.tagName].get(this.$element, param, this.tagName);
       } else {
-        if ( paramName === 'value' && (['gui-text', 'gui-password', 'gui-textarea']).indexOf(this.tagName) >= 0 ) {
-          var firstChild = this.$element.querySelector('input');
-          if ( this.tagName === 'gui-textarea' ) {
-            firstChild = this.$element.querySelector('textarea');
-          }
-          if ( firstChild ) {
-            return firstChild[paramName];
-          }
-          return null;
-        }
-        return this.$element.getAttribute('data-' + paramName);
+        return getProperty(this.$element, param);
       }
     }
     return null;

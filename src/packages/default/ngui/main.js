@@ -81,6 +81,10 @@
     });
     scheme.getElement(this, 'MyText').on('enter', function(ev) {
       console.warn('enter', ev, this.get('value'));
+      this.set('value', 'You pressed enter!');
+    });
+    scheme.getElement(this, 'MyTextArea').on('enter', function(ev) {
+      console.warn('enter', ev, this.get('value'));
     });
 
     return root;
