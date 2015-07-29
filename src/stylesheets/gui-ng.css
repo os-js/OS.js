@@ -905,16 +905,45 @@ gui-menu-bar {
 gui-progress-bar {
   position : relative;
   display : inline-block;
+  text-align : center;
 
   /** ********** STYLE ********** */
-  text-align : center;
-  background-color : #d9d9d9;
-  border: 1px solid #b2b2b2;
-  padding : 4px;
+  line-height : 24px;
 }
+  gui-progress-bar:before {
+    content : '';
+    position : absolute;
+    left : 0px;
+    bottom : 0px;
+    right : 0px;
+    top : 0px;
+    z-index : -1;
+
+    /** ********** STYLE ********** */
+    background-color : #d9d9d9;
+    border: 1px solid #b2b2b2;
+    padding : 4px;
+  }
+  gui-progress-bar > div {
+    position : absolute;
+    left : 0px;
+    bottom : 0px;
+    top : 0px;
+    z-index : -1;
+
+    /** ********** STYLE ********** */
+    background: #2d73d2 url('/themes/styles/default/gui/progressbar.png') repeat-x center;
+  }
   gui-progress-bar > span {
-    display : inline;
-    vertical-align : middle;
+    display : block;
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+    bottom : 0px;
+
+    /** ********** STYLE ********** */
+    color : #fff;
   }
 
 /* Statusbar */

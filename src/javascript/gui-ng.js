@@ -348,9 +348,16 @@
         parameters: [],
         events: [],
         build: function(el) {
-          var percentage = '0%';
+          var p = (el.getAttribute('data-progress') || 0);
+          var percentage = p.toString() + '%';
+
+          var progress = document.createElement('div');
+          progress.style.width = percentage;
+
           var span = document.createElement('span');
           span.appendChild(document.createTextNode(percentage));
+
+          el.appendChild(progress);
           el.appendChild(span);
         }
       },
