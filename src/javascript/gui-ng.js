@@ -1090,29 +1090,38 @@
   };
 
   UIElement.prototype.set = function(param, value) {
-    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].set ) {
-      CONSTRUCTORS[this.tagName].set(this.$element);
+    if ( this.$element ) {
+
+      if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].set ) {
+        CONSTRUCTORS[this.tagName].set(this.$element);
+      } else {
+        if ( typeof value === 'boolean' ) {
+          value = value ? 'true' : 'false';
+        }
+
+        this.$element.setAttribute('data-' + param, value);
+      }
     }
     return this;
   };
 
   UIElement.prototype.get = function(paramName) {
     if ( this.$element ) {
-      if ( paramName === 'value' && (['gui-text', 'gui-password', 'gui-textarea']).indexOf(this.tagName) >= 0 ) {
-        var firstChild = this.$element.querySelector('input');
-        if ( this.tagName === 'gui-textarea' ) {
-          firstChild = this.$element.querySelector('textarea');
+      if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].get ) {
+        return CONSTRUCTORS[this.tagName].get(this.$element, param);
+      } else {
+        if ( paramName === 'value' && (['gui-text', 'gui-password', 'gui-textarea']).indexOf(this.tagName) >= 0 ) {
+          var firstChild = this.$element.querySelector('input');
+          if ( this.tagName === 'gui-textarea' ) {
+            firstChild = this.$element.querySelector('textarea');
+          }
+          if ( firstChild ) {
+            return firstChild[paramName];
+          }
+          return null;
         }
-        if ( firstChild ) {
-          return firstChild[paramName];
-        }
-        return null;
+        return this.$element.getAttribute('data-' + paramName);
       }
-      return this.$elementgetAttribute('data-' + paramName);
-    }
-
-    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].get ) {
-      return CONSTRUCTORS[this.tagName].get(this.$element, param);
     }
     return null;
   };
