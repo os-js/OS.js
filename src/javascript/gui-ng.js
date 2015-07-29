@@ -940,7 +940,6 @@
           var selected = [];
           function handleItemClick(ev, item, idx) {
             selected = handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el);
-            console.warn(selected);
           }
 
           function handleItemExpand(ev, root, expanded) {
@@ -1007,7 +1006,7 @@
 
       'gui-list-view': {
         parameters: [],
-        events: ['activate', 'select', 'change', 'scroll'],
+        events: ['activate', 'select', 'scroll'],
         bind: function(el, evName, callback, params) {
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
@@ -1015,10 +1014,9 @@
           el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
-          // TODO: Custom Icon Size
-
           var headContainer, bodyContainer;
 
+          var iconSize = parseInt(el.getAttribute('data-icon-size'), 10) || 32;
           var multipleSelect = el.getAttribute('data-multiple');
           multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
@@ -1029,7 +1027,6 @@
 
           function handleRowClick(ev, row, idx) {
             selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', selected);
-            console.warn(selected);
           }
 
           function resize(rel, w) {
@@ -1107,9 +1104,21 @@
               Utils.$addClass(cel, 'gui-has-image');
               cel.style.backgroundImage = 'url(' + icon + ')';
             }
+
+
+            var text = cel.firstChild;
+            if ( text && text.nodeType === 3 ) {
+              var span = document.createElement('span');
+              span.appendChild(document.createTextNode(text.nodeValue));
+              cel.insertBefore(span, text);
+              cel.removeChild(text);
+            }
+
           });
 
           el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(cel, idx) {
+            console.warn(cel.firstChild, cel.firstChild.nodeType);
+
             cel.addEventListener('click', function(ev) {
               handleRowClick(ev, cel, idx);
               el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
