@@ -4,17 +4,20 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty32"
 
-  config.vm.provider "virtualbox" do |vb|
-    vb.cpus = 1
-    vb.memory = 512
+  config.vm.provider "virtualbox" do |v|
+    v.customize ["modifyvm", :id, "--memory", 512]
+    v.customize ["modifyvm", :id, "--cpus", 1]
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
   end
 
-  config.vm.hostname = "osjsv2"
-  config.vm.network :forwarded_port, guest: 80, host: 8080
+  config.ssh.forward_agent = true
+  config.vm.hostname = "osjs.dev"
+  config.vm.network :private_network, ip: "192.168.60.4"
 
   config.vm.provision "shell", inline: <<-SHELL
     # update system
-    aptitude -y upgrade
+    aptitude -y update
 
     # configure apache2 and php5
     aptitude -y install apache2 libapache2-mod-php5
