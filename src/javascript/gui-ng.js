@@ -794,6 +794,12 @@
             var shrink = cols ? 1 : 0;
             var headerEl = headContainer ? headContainer.querySelectorAll('gui-list-view-column')[x] : null;
             setFlexbox(cel, null, null, grow, shrink, headerEl);
+
+            var icon = cel.getAttribute('data-icon');
+            if ( icon ) {
+              Utils.$addClass(cel, 'gui-has-image');
+              cel.style.backgroundImage = 'url(' + icon + ')';
+            }
           });
 
           el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(cel, idx) {

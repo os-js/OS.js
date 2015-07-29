@@ -1108,6 +1108,8 @@ gui-list-view {
       gui-list-view-column {
         position : relative;
         display : inline-block;
+        background-repeat : no-repeat;
+        background-position : left center;
 
         -webkit-flex: 1 0 auto;
            -moz-flex: 1 0 auto;
@@ -1124,6 +1126,11 @@ gui-list-view {
         gui-list-view-column > * {
           display : inline;
         }
+
+      gui-list-view-column.gui-has-image {
+        /** ********** STYLE ********** */
+        padding-left : 20px;
+      }
 
     gui-list-view-row.gui-active {
       /** ********** STYLE ********** */
@@ -1186,12 +1193,12 @@ gui-tree-view {
       padding : 2px;
     }
     gui-tree-view-entry > div > span.gui-has-image {
+      /** ********** STYLE ********** */
       padding-left : 20px;
     }
     gui-tree-view-entry > gui-tree-view-entry {
-      margin-left : 16px;
-
       /** ********** STYLE ********** */
+      margin-left : 16px;
     }
     gui-tree-view-entry.gui-active > div {
       /** ********** STYLE ********** */
