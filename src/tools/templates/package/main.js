@@ -47,21 +47,13 @@
 
   ApplicationEXAMPLEWindow.prototype = Object.create(Window.prototype);
 
-  ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app) {
+  ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
     // Create window contents (GUI) here
 
     return root;
-  };
-
-  ApplicationEXAMPLEWindow.prototype._inited = function() {
-    Window.prototype._inited.apply(this, arguments);
-
-    // Window has been successfully created and displayed.
-    // You can start communications, handle files etc. here
-
   };
 
   ApplicationEXAMPLEWindow.prototype.destroy = function() {

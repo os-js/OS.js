@@ -137,7 +137,7 @@
     var _DEFAULT_SND_VOLUME = 1.0;
     var _NAMES              = [];
 
-    return function(name, opts, appRef) {
+    return function(name, opts, appRef, schemeRef) {
       var self = this;
 
       if ( _NAMES.indexOf(name) >= 0 ) {
@@ -160,7 +160,8 @@
 
       this._opts          = opts;                 // Construction opts
       this._rendered      = false;                // If Window has been initially rendered
-      this._appRef        = appRef || null;       // Reference to Application Window was created from
+      this._app           = appRef || null;       // Reference to Application Window was created from
+      this._scheme        = schemeRef || null;    // Reference to UIScheme
       this._destroyed     = false;                // If Window has been destroyed
       this._wid           = _WID;                 // Window ID (Internal)
       this._icon          = icon;                 // Window Icon
@@ -248,12 +249,14 @@
    * the WindowManager.
    *
    * @param   WindowManager   _wm     Window Manager reference
+   * @param   Application     _app    Application reference
+   * @param   UIScheme        _scheme UIScheme reference
    *
    * @return  DOMElement              The Window DOM element
    *
    * @method  Window::init()
    */
-  Window.prototype.init = function(_wm) {
+  Window.prototype.init = function(_wm, _app, _scheme) {
     var self = this;
     var isTouch = OSjs.Compability.touch;
     var wm = OSjs.Core.getWindowManager();
@@ -410,7 +413,7 @@
     console.group('OSjs::Core::Window::init()');
 
     this._state.focused = false;
-    this._icon = API.getIcon(this._icon, null, this._appRef);
+    this._icon = API.getIcon(this._icon, null, this._app);
 
     _initPosition();
     _initDimension();
@@ -671,11 +674,11 @@
     }
 
     // App messages
-    if ( this._appRef ) {
-      this._appRef._onMessage(this, 'destroyWindow', {});
+    if ( this._app ) {
+      this._app._onMessage(this, 'destroyWindow', {});
     }
 
-    this._appRef = null;
+    this._app = null;
     this._hooks = {};
 
     console.groupEnd();

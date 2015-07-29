@@ -221,8 +221,8 @@
    *
    * This will automatically add it to the WindowManager and show it to you
    *
-   * @param   Window    w     The Window
-   * @param   Function  cb    (Optional) Callback for when window was successfully inited
+   * @param   Window    w         The Window
+   * @param   Function  cb        (Optional) Callback for when window was successfully inited
    *
    * @return  Window
    *
@@ -238,7 +238,7 @@
     var wm = OSjs.Core.getWindowManager();
     if ( this.__inited ) {
       if ( wm ) {
-        wm.addWindow(w, null, cb);
+        wm.addWindow(w);
       }
       if ( w._properties.start_focused ) {
         setTimeout(function() {

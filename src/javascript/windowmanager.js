@@ -435,23 +435,6 @@
   };
 
   /**
-   * Internal method for initing a window
-   *
-   * You can use this method in your WindowManager implementation
-   * to cusomize how the process works. ex, custom events
-   *
-   * @param   Window      w         Window reference
-   *
-   * @return  void
-   *
-   * @method  WindowManager::_initWindow()
-   */
-  WindowManager.prototype._initWindow = function(w) {
-    w.init(this, w._appRef);
-    attachWindowEvents(w, this);
-  };
-
-  /**
    * Add a Window
    *
    * @param   Window      w         Window reference
@@ -468,11 +451,11 @@
     }
     console.log('OSjs::Core::WindowManager::addWindow()');
 
-    this._initWindow(w);
+    w.init(this, w._app, w._scheme);
+    attachWindowEvents(w, this);
     if ( focus === true || (w instanceof DialogWindow) ) {
       w._focus();
     }
-
     w._inited();
 
     this._windows.push(w);

@@ -36,34 +36,27 @@
   /**
    * Main Window Constructor
    */
-  function ApplicationnguiWindow(app, metadata, content) {
+  function ApplicationnguiWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationnguiWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 700,
       height: 600
-    }, app]);
-
-    this.content = content;
+    }, app, scheme]);
   }
 
   ApplicationnguiWindow.prototype = Object.create(Window.prototype);
 
-  ApplicationnguiWindow.prototype.init = function(wmRef, app) {
+  ApplicationnguiWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
 
-    if ( this.content ) {
-      var children = this.content.children;
-      for ( var i = 0; i < children.length; i++ ) {
-        root.appendChild(children[i]);
-      }
-    }
+    scheme.renderWindow(this, 'MyWindowID', root);
+
+    scheme.getElement(this, 'MyButtonOne').on('click', function() {
+      alert("You clicked me");
+    });
 
     return root;
-  };
-
-  ApplicationnguiWindow.prototype._inited = function() {
-    Window.prototype._inited.apply(this, arguments);
   };
 
   ApplicationnguiWindow.prototype.destroy = function() {
@@ -93,15 +86,13 @@
     var self = this;
     var scheme = new OSjs.GUING.Scheme(this);
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme.getWindow('MyWindowTest')));
-      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme.getWindow('MyWindowID')));
+      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme));
     });
 
   };
 
   Applicationngui.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
-
     if ( msg == 'destroyWindow' && obj._name === 'ApplicationnguiWindow' ) {
       this.destroy();
     }

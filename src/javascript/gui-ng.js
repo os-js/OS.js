@@ -317,6 +317,12 @@
       'gui-button': {
         parameters: [],
         events: [],
+        bind: function(el, evName, callback, params) {
+          el = el.querySelector('button');
+          if ( el ) {
+            el.addEventListener(evName, callback, params);
+          }
+        },
         build: function(el) {
           var icon = el.getAttribute('data-icon');
           var disabled = el.getAttribute('data-disabled') !== null;
@@ -554,6 +560,8 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO: Param for active tab index
+
           var tabs = document.createElement('ul');
           var contents = document.createElement('div');
 
@@ -687,6 +695,8 @@
         parameters: [],
         events: ['activate', 'select', 'change', 'scroll'],
         build: function(el) {
+          // TODO: Custom Icon Size
+
           var selected = [];
           function handleItemClick(ev, item, idx) {
             selected = handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected);
@@ -724,6 +734,8 @@
         parameters: [],
         events: ['activate', 'select', 'change', 'scroll'],
         build: function(el) {
+          // TODO: Custom Icon Size
+
           var selected = [];
           function handleItemClick(ev, item, idx) {
             selected = handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el);
@@ -795,6 +807,8 @@
         parameters: [],
         events: ['activate', 'select', 'change', 'scroll'],
         build: function(el) {
+          // TODO: Custom Icon Size
+
           var headContainer, bodyContainer;
 
           var multipleSelect = el.getAttribute('data-multiple');
@@ -904,15 +918,43 @@
   })();
 
   /////////////////////////////////////////////////////////////////////////////
-  // CLASS
+  // UIELEMENT CLASS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function UIElement(el) {
+    this.$element = el || null;
+    this.tagName = el ? el.tagName.toLowerCase() : null;
+  }
+
+  UIElement.prototype.on = function(evName, callback, args) {
+    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].bind ) {
+      CONSTRUCTORS[this.tagName].bind(this.$element, evName, callback, args);
+    }
+    return this;
+  };
+
+  UIElement.prototype.set = function(param, value) {
+    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].set ) {
+      CONSTRUCTORS[this.tagName].set(this.$element);
+    }
+    return this;
+  };
+
+  UIElement.prototype.get = function(param) {
+    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].get ) {
+      return CONSTRUCTORS[this.tagName].get(this.$element, param);
+    }
+    return null;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // UISCHEME CLASS
   /////////////////////////////////////////////////////////////////////////////
 
   function UIScheme(app) {
     this.url = API.getApplicationResource(app, './scheme.html');
-    this.scheme = null;
-
-    window.addEventListener('click', function() {
-    });
+    this.fragments = {
+    };
   }
 
   UIScheme.prototype.load = function(cb) {
@@ -920,7 +962,7 @@
     Utils.ajax({
       url: this.url,
       onsuccess: function(data) {
-        self.scheme = self.parse(data);
+        self.fragments = self.parse(data);
         cb(false, true);
       },
       onerror: function() {
@@ -930,6 +972,7 @@
   };
 
   UIScheme.prototype.parse = function(html) {
+    var fragments = {};
     var doc = document.createDocumentFragment();
     var wrapper = document.createElement('div');
     wrapper.innerHTML = html;
@@ -946,18 +989,65 @@
       doc.querySelectorAll(key).forEach(CONSTRUCTORS[key].build);
     });
 
-    return doc;
+    doc.querySelectorAll('application-window, application-fragment').forEach(function(f) {
+      var id = f.getAttribute('data-id');
+      if ( id ) {
+        fragments[id] = {
+          winref: null,
+          data: f
+        }
+      }
+    });
+
+    return fragments;
   };
 
-  UIScheme.prototype.emittEvent = function(ev, el) {
+  UIScheme.prototype.renderWindow = function(win, id, root) {
+    root = root || win._getRoot();
+    var content = this.getWindow(id);
+    if ( content ) {
+      var children = content.data.children;
+      for ( var i = 0; i < children.length; i++ ) {
+        root.appendChild(children[i]);
+      }
+    }
+  };
+
+  UIScheme.prototype.addElement = function(tagName, params, parentNode) {
+    tagName = tagName || '';
+    params = params || {};
+
+    var el = document.createElement(tagName);
+    Object.keys(params).forEach(function(k) {
+      var val = params[k];
+      if ( typeof val === 'boolean' ) {
+        val = val ? 'true' : 'false';
+      } else {
+        val = val.toString();
+      }
+
+      el.setAttribute('data-' + k, val);
+    });
+
+    parentNode.appendChild(el);
+
+    CONSTRUCTORS[tagName](el);
+
+    return new UIElement(el);
+  };
+
+  UIScheme.prototype.getElement = function(win, id, root) {
+    root = root || win._getRoot();
+    var el = root.querySelector('[data-id="' + id + '"]');
+    return new UIElement(el);
   };
 
   UIScheme.prototype.getWindow = function(id) {
-    return this.scheme.querySelector('application-window[data-id="' + id + '"]');
+    return this.fragments[id];
   };
 
   UIScheme.prototype.getFragment = function(id) {
-    return this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
+    return this.fragments[id];
   };
 
   /////////////////////////////////////////////////////////////////////////////
