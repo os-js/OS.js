@@ -80,7 +80,7 @@
       console.warn('text change', ev);
     });
     scheme.getElement(this, 'MyText').on('enter', function(ev) {
-      console.warn('enter', ev);
+      console.warn('enter', ev, this.get('value'));
     });
 
     return root;

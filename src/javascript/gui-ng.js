@@ -238,7 +238,7 @@
         evName = '_enter';
       }
       var target = el.querySelector('input');
-      target.addEventListener(evName, callback, params);
+      target.addEventListener(evName, callback.bind(new UIElement(el)), params);
     }
 
     return {
@@ -261,7 +261,7 @@
         events: ['change'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('textarea');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'textarea');
@@ -271,6 +271,9 @@
       'gui-text': {
         parameters: [],
         events: ['change'],
+        get: function(el, paramName) {
+          return getProperty(el, paramName, 'gui-text');
+        },
         bind: function(el, evName, callback, params) {
           bindTextInputEvents.apply(this, arguments);
         },
@@ -295,7 +298,7 @@
         events: ['change', 'activate'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'radio');
@@ -307,7 +310,7 @@
         events: ['change', 'activate'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'checkbox');
@@ -319,7 +322,7 @@
         events: ['change'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var input = document.createElement('input');
@@ -367,7 +370,7 @@
         events: [],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('button');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var icon = el.getAttribute('data-icon');
@@ -395,7 +398,7 @@
         events: ['change'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('select');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createSelectInput(el);
@@ -407,7 +410,7 @@
         events: ['change'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('select');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createSelectInput(el, true);
@@ -419,7 +422,7 @@
         events: ['change'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'range');
@@ -481,7 +484,7 @@
           if ( evName === 'select' || evName === 'change' ) {
             evName = '_change';
           }
-          target.addEventListener(evName, callback, params);
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var cv        = document.createElement('canvas');
@@ -574,7 +577,7 @@
             evName = '_select';
           }
           el.querySelectorAll('gui-menu-entry > span').forEach(function(target) {
-            target.addEventListener(evName, callback, params);
+            target.addEventListener(evName, callback.bind(new UIElement(el)), params);
           });
         },
         build: function(el) {
@@ -616,7 +619,7 @@
             evName = '_select';
           }
           el.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
-            target.addEventListener(evName, callback, params);
+            target.addEventListener(evName, callback.bind(new UIElement(el)), params);
           });
         },
         build: function(el) {
@@ -683,7 +686,7 @@
           if ( evName === 'change' ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback, params);
+          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var tabs = document.createElement('ul');
@@ -742,7 +745,7 @@
           if ( evName === 'resize' ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback, params);
+          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           function bindResizer(resizer, idx) {
@@ -830,7 +833,7 @@
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback, params);
+          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           // TODO: Custom Icon Size
@@ -876,7 +879,7 @@
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback, params);
+          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           // TODO: Custom Icon Size
@@ -956,7 +959,7 @@
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback, params);
+          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           // TODO: Custom Icon Size
@@ -1093,7 +1096,21 @@
     return this;
   };
 
-  UIElement.prototype.get = function(param) {
+  UIElement.prototype.get = function(paramName) {
+    if ( this.$element ) {
+      if ( paramName === 'value' && (['gui-text', 'gui-password', 'gui-textarea']).indexOf(this.tagName) >= 0 ) {
+        var firstChild = this.$element.querySelector('input');
+        if ( this.tagName === 'gui-textarea' ) {
+          firstChild = this.$element.querySelector('textarea');
+        }
+        if ( firstChild ) {
+          return firstChild[paramName];
+        }
+        return null;
+      }
+      return this.$elementgetAttribute('data-' + paramName);
+    }
+
     if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].get ) {
       return CONSTRUCTORS[this.tagName].get(this.$element, param);
     }
