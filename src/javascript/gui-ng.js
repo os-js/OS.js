@@ -1216,7 +1216,7 @@
     }
   };
 
-  UIScheme.prototype.addElement = function(win, tagName, params, parentNode) {
+  UIScheme.prototype.create = function(win, tagName, params, parentNode) {
     tagName = tagName || '';
     params = params || {};
     parentNode = parentNode || win.getRoot();
