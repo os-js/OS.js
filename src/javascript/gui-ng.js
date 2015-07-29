@@ -1079,7 +1079,9 @@
     this.$element = el || null;
     this.tagName = el ? el.tagName.toLowerCase() : null;
 
-    console.warn('UIElement() was constructed without a DOM element');
+    if ( !el ) {
+      console.warn('UIElement() was constructed without a DOM element');
+    }
   }
 
   UIElement.prototype.on = function(evName, callback, args) {
