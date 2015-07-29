@@ -1159,16 +1159,20 @@
 
   function UIScheme(app) {
     this.url = API.getApplicationResource(app, './scheme.html');
-    this.fragments = {
-    };
+    this.scheme = null;
   }
 
   UIScheme.prototype.load = function(cb) {
     var self = this;
     Utils.ajax({
       url: this.url,
-      onsuccess: function(data) {
-        self.fragments = self.parse(data);
+      onsuccess: function(html) {
+        var doc = document.createDocumentFragment();
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        doc.appendChild(wrapper);
+        self.scheme = doc;
+
         cb(false, true);
       },
       onerror: function() {
@@ -1177,42 +1181,36 @@
     });
   };
 
-  UIScheme.prototype.parse = function(html) {
-    var fragments = {};
-    var doc = document.createDocumentFragment();
-    var wrapper = document.createElement('div');
-    wrapper.innerHTML = html;
-    doc.appendChild(wrapper);
+  UIScheme.prototype.parse = function(id) {
+    var content = this.scheme.querySelector('application-window[data-id="' + id + '"]') ||
+                  this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
 
-    doc.querySelectorAll('*').forEach(function(el) {
-      var lcase = el.tagName.toLowerCase();
-      if ( lcase.match(/^gui\-/) && !lcase.match(/\-container|\-(h|v)box$|\-columns?|\-rows?/) ) {
-        el.className = 'gui-element';
-      }
-    });
+    if ( content ) {
+      var node = content.cloneNode(true);
 
-    Object.keys(CONSTRUCTORS).forEach(function(key) {
-      doc.querySelectorAll(key).forEach(CONSTRUCTORS[key].build);
-    });
-
-    doc.querySelectorAll('application-window, application-fragment').forEach(function(f) {
-      var id = f.getAttribute('data-id');
-      if ( id ) {
-        fragments[id] = {
-          winref: null,
-          data: f
+      node.querySelectorAll('*').forEach(function(el) {
+        var lcase = el.tagName.toLowerCase();
+        if ( lcase.match(/^gui\-/) && !lcase.match(/\-container|\-(h|v)box$|\-columns?|\-rows?/) ) {
+          el.className = 'gui-element';
         }
-      }
-    });
+      });
 
-    return fragments;
+      Object.keys(CONSTRUCTORS).forEach(function(key) {
+        node.querySelectorAll(key).forEach(CONSTRUCTORS[key].build);
+      });
+
+      return node;
+    }
+
+    return null;
   };
 
   UIScheme.prototype.render = function(win, id, root) {
     root = root || win._getRoot();
-    var content = this.getWindow(id);
+
+    var content = this.parse(id);
     if ( content ) {
-      var children = content.data.children;
+      var children = content.children;
       for ( var i = 0; i < children.length; i++ ) {
         root.appendChild(children[i]);
       }
