@@ -240,10 +240,10 @@
 
   <gui-vbox>
     <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-      <gui-menu-bar>
+      <gui-menu-bar data-id="MyMenuBar">
 
         <gui-menu-bar-entry data-label="Top Menu 1">
-          <gui-menu>
+          <gui-menu data-id="MySubMenu">
             <gui-menu-entry data-label="Sub Menu">
               <gui-menu>
                 <gui-menu-entry data-label="SubSub Menu"></gui-menu-entry>
@@ -283,7 +283,7 @@
     <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
       <gui-hbox>
         <gui-hbox-container data-grow="0" data-shrink="1" data-basis="150px" data-fill="true">
-          <gui-tree-view>
+          <gui-tree-view data-id="MyTreeView">
             <gui-tree-view-entry data-label="some label" data-icon="/themes/icons/default/16x16/places/folder_home.png"></gui-tree-view-entry>
             <gui-tree-view-entry data-label="some looooong ass label" data-icon="/themes/icons/default/16x16/places/folder_home.png"></gui-tree-view-entry>
 
@@ -304,7 +304,7 @@
         </gui-hbox-container>
 
         <gui-hbox-container data-grow="0" data-shrink="1" data-basis="150px" data-fill="true">
-          <gui-icon-view>
+          <gui-icon-view data-id="MyIconView">
             <gui-icon-view-entry data-label="some label" data-icon="/themes/icons/default/32x32/places/folder_home.png"></gui-icon-view-entry>
             <gui-icon-view-entry data-label="some label" data-icon="/themes/icons/default/32x32/places/folder_home.png"></gui-icon-view-entry>
             <gui-icon-view-entry data-label="some label" data-icon="/themes/icons/default/32x32/places/folder_home.png"></gui-icon-view-entry>
@@ -316,7 +316,7 @@
           <gui-vbox>
 
             <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
-              <gui-tabs>
+              <gui-tabs data-id="MyTabs" data-selected-index="0">
                 <gui-tab-container data-id="MyTab0" data-label="Tab 1">
 
                   <gui-scroll-view>
@@ -327,7 +327,7 @@
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-                        <gui-color-swatch></gui-color-swatch>
+                        <gui-color-swatch data-id="MyColor"></gui-color-swatch>
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
@@ -367,7 +367,7 @@
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-                        <gui-text data-label="Text With label">ABC123</gui-text>
+                        <gui-text data-label="Text With label" data-id="MyText">Press Enter Here!</gui-text>
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">

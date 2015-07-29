@@ -73,9 +73,14 @@
     }
 
     function createSelectInput(el, multiple) {
+      var disabled = el.getAttribute('data-disabled') !== null;
+
       var select = document.createElement('select');
       if ( multiple ) {
         select.setAttribute('multiple', 'multiple');
+      }
+      if ( disabled ) {
+        input.setAttribute('disabled', 'disabled');
       }
 
       el.querySelectorAll('gui-select-option').forEach(function(sel) {
@@ -115,10 +120,11 @@
     function createInputOfType(el, type) {
       var group = el.getAttribute('data-group');
       var placeholder = el.getAttribute('data-placeholder');
+      var disabled = el.getAttribute('data-disabled') !== null;
       var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
       Utils.$empty(el);
 
-      var input = document.createElement('input');
+      var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
       input.setAttribute('type', type);
       if ( placeholder ) {
         input.setAttribute('placeholder', placeholder);
@@ -127,8 +133,27 @@
         input.setAttribute('name', group + '[]');
       }
 
-      if ( type === 'text' || type === 'password' ) {
+      if ( type === 'text' || type === 'password' || type === 'textarea' ) {
         input.value = value;
+        input.addEventListener('keydown', function(ev) {
+          if ( ev.keyCode === Utils.Keys.ENTER ) {
+            input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
+          }
+        }, false);
+      }
+
+      if ( type === 'range' || type === 'slider' ) {
+        var min = el.getAttribute('data-min');
+        var max = el.getAttribute('data-max');
+        var ste = el.getAttribute('data-step');
+
+        if ( min ) { input.setAttribute('min', min); }
+        if ( max ) { input.setAttribute('max', max); }
+        if ( ste ) { input.setAttribute('step', ste); }
+      }
+
+      if ( disabled ) {
+        input.setAttribute('disabled', 'disabled');
       }
 
       createInputLabel(el, type, input);
@@ -208,6 +233,14 @@
       el.addEventListener('mousedown', _onMouseDown, false);
     }
 
+    function bindTextInputEvents(el, evName, callback, params) {
+      if ( evName === 'enter' ) {
+        evName = '_enter';
+      }
+      var target = el.querySelector('input');
+      target.addEventListener(evName, callback, params);
+    }
+
     return {
       //
       // INPUTS
@@ -226,21 +259,22 @@
       'gui-textarea': {
         parameters: [],
         events: ['change'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('textarea');
+          target.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO Disabled state
-          var input = document.createElement('textarea');
-          var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
-          Utils.$empty(el);
-          input.value = value;
-          el.appendChild(input);
+          createInputOfType(el, 'textarea');
         }
       },
 
       'gui-text': {
         parameters: [],
         events: ['change'],
+        bind: function(el, evName, callback, params) {
+          bindTextInputEvents.apply(this, arguments);
+        },
         build: function(el) {
-          // TODO Disabled state
           createInputOfType(el, 'text');
         }
       },
@@ -248,26 +282,34 @@
       'gui-password': {
         parameters: [],
         events: ['change'],
+        bind: function(el, evName, callback, params) {
+          bindTextInputEvents.apply(this, arguments);
+        },
         build: function(el) {
-          // TODO Disabled state
           createInputOfType(el, 'password');
         }
       },
 
       'gui-radio': {
         parameters: [],
-        events: [],
+        events: ['change', 'activate'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('input');
+          target.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO Disabled state
           createInputOfType(el, 'radio');
         }
       },
 
       'gui-checkbox': {
         parameters: [],
-        events: ['change'],
+        events: ['change', 'activate'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('input');
+          target.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO Disabled state
           createInputOfType(el, 'checkbox');
         }
       },
@@ -275,8 +317,11 @@
       'gui-switch': {
         parameters: [],
         events: ['change'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('input');
+          target.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO Disabled state
           var input = document.createElement('input');
           input.type = 'checkbox';
           el.appendChild(input);
@@ -307,7 +352,10 @@
           }
 
           el.addEventListener('click', function() {
-            toggleValue();
+            var disabled = el.getAttribute('data-disabled') !== null;
+            if ( !disabled ) {
+              toggleValue();
+            }
           }, false);
 
           toggleValue(false);
@@ -318,10 +366,8 @@
         parameters: [],
         events: [],
         bind: function(el, evName, callback, params) {
-          el = el.querySelector('button');
-          if ( el ) {
-            el.addEventListener(evName, callback, params);
-          }
+          var target = el.querySelector('button');
+          target.addEventListener(evName, callback, params);
         },
         build: function(el) {
           var icon = el.getAttribute('data-icon');
@@ -347,8 +393,11 @@
       'gui-select': {
         parameters: [],
         events: ['change'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('select');
+          target.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO Disabled state
           createSelectInput(el);
         }
       },
@@ -356,8 +405,11 @@
       'gui-select-list': {
         parameters: [],
         events: ['change'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('select');
+          target.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO Disabled state
           createSelectInput(el, true);
         }
       },
@@ -365,50 +417,19 @@
       'gui-slider': {
         parameters: [],
         events: ['change'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('input');
+          target.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO Disabled state
           createInputOfType(el, 'range');
-        }
-      },
-
-      'gui-color-swatch': {
-        parameters: [],
-        events: ['change'],
-        build: function(el) {
-          var cv        = document.createElement('canvas');
-          cv.width      = 100;
-          cv.height     = 100;
-
-          var ctx       = cv.getContext('2d');
-          var gradient  = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
-
-          gradient.addColorStop(0,    'rgb(255,   0,   0)');
-          gradient.addColorStop(0.15, 'rgb(255,   0, 255)');
-          gradient.addColorStop(0.33, 'rgb(0,     0, 255)');
-          gradient.addColorStop(0.49, 'rgb(0,   255, 255)');
-          gradient.addColorStop(0.67, 'rgb(0,   255,   0)');
-          gradient.addColorStop(0.84, 'rgb(255, 255,   0)');
-          gradient.addColorStop(1,    'rgb(255,   0,   0)');
-
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-          gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-          gradient.addColorStop(0,   'rgba(255, 255, 255, 1)');
-          gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
-          gradient.addColorStop(0.5, 'rgba(0,     0,   0, 0)');
-          gradient.addColorStop(1,   'rgba(0,     0,   0, 1)');
-
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-          el.appendChild(cv);
         }
       },
 
       'gui-richtext' : {
         parameters: [],
         events: [],
+        // TODO Events
         build: function(el) {
           var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
@@ -452,6 +473,70 @@
       // MISC
       //
 
+      'gui-color-swatch': {
+        parameters: [],
+        events: ['change'],
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('canvas');
+          if ( evName === 'select' || evName === 'change' ) {
+            evName = '_change';
+          }
+          target.addEventListener(evName, callback, params);
+        },
+        build: function(el) {
+          var cv        = document.createElement('canvas');
+          cv.width      = 100;
+          cv.height     = 100;
+
+          var ctx       = cv.getContext('2d');
+          var gradient  = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+
+          function getColor(ev) {
+            var pos = OSjs.Utils.$position(cv);
+            var cx = typeof ev.offsetX === 'undefined' ? (ev.clientX - pos.left) : ev.offsetX;
+            var cy = typeof ev.offsetY === 'undefined' ? (ev.clientY - pos.top) : ev.offsetY;
+            var data = ctx.getImageData(cx, cy, 1, 1).data;
+
+            return {
+              r: data[0],
+              g: data[1],
+              b: data[2],
+              hex: Utils.convertToHEX(data[0], data[1], data[2])
+            };
+          }
+
+          gradient.addColorStop(0,    'rgb(255,   0,   0)');
+          gradient.addColorStop(0.15, 'rgb(255,   0, 255)');
+          gradient.addColorStop(0.33, 'rgb(0,     0, 255)');
+          gradient.addColorStop(0.49, 'rgb(0,   255, 255)');
+          gradient.addColorStop(0.67, 'rgb(0,   255,   0)');
+          gradient.addColorStop(0.84, 'rgb(255, 255,   0)');
+          gradient.addColorStop(1,    'rgb(255,   0,   0)');
+
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+          gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+          gradient.addColorStop(0,   'rgba(255, 255, 255, 1)');
+          gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+          gradient.addColorStop(0.5, 'rgba(0,     0,   0, 0)');
+          gradient.addColorStop(1,   'rgba(0,     0,   0, 1)');
+
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+          cv.addEventListener('click', function(ev) {
+            cv.dispatchEvent(new CustomEvent('_change', {detail: getColor(ev)}));
+          }, false);
+
+          el.appendChild(cv);
+        }
+      },
+
+      //
+      // MISC
+      //
+
       'gui-progress-bar': {
         parameters: [],
         events: [],
@@ -484,20 +569,40 @@
       'gui-menu': {
         parameters: [],
         events: ['select'],
+        bind: function(el, evName, callback, params) {
+          if ( evName === 'select' ) {
+            evName = '_select';
+          }
+          el.querySelectorAll('gui-menu-entry > span').forEach(function(target) {
+            target.addEventListener(evName, callback, params);
+          });
+        },
         build: function(el) {
-          var children = el.childNodes;
-          var child, span, label;
+          function bindSelectionEvent(child, idx, expand) {
+            var id = child.parentNode.getAttribute('data-id');
+            child.addEventListener('mousedown', function() {
+              child.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+            }, false);
+          }
+
+          var children = el.children;
+          var child, span, label, expand;
           for ( var i = 0; i < children.length; i++ ) {
             child = children[i];
-            if ( child && child.nodeType !== 3 && child.tagName.toLowerCase() === 'gui-menu-entry') {
-              if ( child.childNodes && child.childNodes.length ) {
+            expand = false;
+
+            if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
+              if ( child.children && child.children.length ) {
                 Utils.$addClass(child, 'gui-menu-expand');
+                expand = true;
               }
 
               span = document.createElement('span');
               label = child.getAttribute('data-label');
               span.appendChild(document.createTextNode(label));
               child.appendChild(span);
+
+              bindSelectionEvent(span, i, expand);
             }
           }
         }
@@ -506,10 +611,20 @@
       'gui-menu-bar': {
         parameters: [],
         events: ['select'],
+        bind: function(el, evName, callback, params) {
+          if ( evName === 'select' ) {
+            evName = '_select';
+          }
+          el.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
+            target.addEventListener(evName, callback, params);
+          });
+        },
         build: function(el) {
-          el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel) {
-            var span = document.createElement('span');
+          el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel, idx) {
             var label = mel.getAttribute('data-label');
+            var id = mel.getAttribute('data-id');
+
+            var span = document.createElement('span');
             span.appendChild(document.createTextNode(label));
 
             mel.insertBefore(span, mel.firstChild);
@@ -525,6 +640,8 @@
                   Utils.$removeClass(mel, 'gui-active');
                 } else {
                   Utils.$addClass(mel, 'gui-active');
+
+                  mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
                 }
               }, false);
             }
@@ -558,10 +675,17 @@
 
       'gui-tabs': {
         parameters: [],
-        events: ['change'],
+        events: ['change', 'select', 'activate'],
+        bind: function(el, evName, callback, params) {
+          if ( (['select', 'activate']).indexOf(evName) !== -1 ) {
+            evName = 'change';
+          }
+          if ( evName === 'change' ) {
+            evName = '_' + evName;
+          }
+          el.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          // TODO: Param for active tab index
-
           var tabs = document.createElement('ul');
           var contents = document.createElement('div');
 
@@ -587,7 +711,7 @@
             lastTab = tab;
             Utils.$addClass(tab, 'gui-active');
 
-            // TODO: Trigger activated event
+            el.dispatchEvent(new CustomEvent('_change', {detail: {index: idx}}));
           }
 
           el.querySelectorAll('gui-tab-container').forEach(function(el, idx) {
@@ -606,15 +730,22 @@
           el.appendChild(tabs);
           el.appendChild(contents);
 
-          selectTab(null, 0);
+          var currentTab = parseInt(el.getAttribute('data-selected-index'), 10) || 0;
+          selectTab(null, currentTab);
         }
       },
 
       'gui-paned-view': {
         parameters: [],
         events: ['resize'],
+        bind: function(el, evName, callback, params) {
+          if ( evName === 'resize' ) {
+            evName = '_' + evName;
+          }
+          el.addEventListener(evName, callback, params);
+        },
         build: function(el) {
-          function bindResizer(resizer) {
+          function bindResizer(resizer, idx) {
             var resizeEl = resizer.previousElementSibling;
             if ( !resizeEl ) return;
 
@@ -635,7 +766,7 @@
                 resizeEl.style['flexBasis'] = flex;
               }
             }, function(ev) {
-              // TODO: Trigger resized event
+              el.dispatchEvent(new CustomEvent('_resize', {detail: {index: idx}}));
             });
 
           }
@@ -644,7 +775,7 @@
             if ( idx % 2 ) {
               var resizer = document.createElement('gui-paned-view-handle');
               cel.parentNode.insertBefore(resizer, cel);
-              bindResizer(resizer);
+              bindResizer(resizer, idx);
             }
           });
         }
@@ -691,9 +822,16 @@
       //
       // VIEWS
       //
+
       'gui-icon-view': {
         parameters: [],
-        events: ['activate', 'select', 'change', 'scroll'],
+        events: ['activate', 'select', 'scroll'],
+        bind: function(el, evName, callback, params) {
+          if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+            evName = '_' + evName;
+          }
+          el.addEventListener(evName, callback, params);
+        },
         build: function(el) {
           // TODO: Custom Icon Size
 
@@ -719,9 +857,10 @@
 
             cel.addEventListener('click', function(ev) {
               handleItemClick(ev, cel, idx);
+              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
             }, false);
             cel.addEventListener('dblclick', function(ev) {
-              // TODO
+              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
             }, false);
 
             cel.appendChild(dicon);
@@ -732,7 +871,13 @@
 
       'gui-tree-view': {
         parameters: [],
-        events: ['activate', 'select', 'change', 'scroll'],
+        events: ['activate', 'select', 'scroll'],
+        bind: function(el, evName, callback, params) {
+          if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+            evName = '_' + evName;
+          }
+          el.addEventListener(evName, callback, params);
+        },
         build: function(el) {
           // TODO: Custom Icon Size
 
@@ -794,9 +939,10 @@
 
             container.addEventListener('click', function(ev) {
               handleItemClick(ev, sel, idx);
+              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
             }, false);
             container.addEventListener('dblclick', function(ev) {
-              // TODO
+              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
             }, false);
 
           });
@@ -806,6 +952,12 @@
       'gui-list-view': {
         parameters: [],
         events: ['activate', 'select', 'change', 'scroll'],
+        bind: function(el, evName, callback, params) {
+          if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+            evName = '_' + evName;
+          }
+          el.addEventListener(evName, callback, params);
+        },
         build: function(el) {
           // TODO: Custom Icon Size
 
@@ -865,8 +1017,6 @@
                       resize(row.children[idx], newWidth);
                     });
                   }
-                }, function(ev) {
-                  // TODO: Trigger resized event
                 });
               }
             });
@@ -906,9 +1056,10 @@
           el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(cel, idx) {
             cel.addEventListener('click', function(ev) {
               handleRowClick(ev, cel, idx);
+              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
             }, false);
             cel.addEventListener('dblclick', function(ev) {
-              // TODO
+              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
             }, false);
           });
         }
@@ -924,6 +1075,8 @@
   function UIElement(el) {
     this.$element = el || null;
     this.tagName = el ? el.tagName.toLowerCase() : null;
+
+    console.warn('UIElement() was constructed without a DOM element');
   }
 
   UIElement.prototype.on = function(evName, callback, args) {
