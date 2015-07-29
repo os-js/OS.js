@@ -57,6 +57,7 @@ $ bin\create-windows-symlinks
 
 $ grunt --force
 ```
+
 ## Containers and Virtual Machines
 
 ### Vagrant
@@ -73,11 +74,11 @@ $ vagrant up
 ```
 
 ### Docker
-* Make sure to have `docker.io` installed on your machine.
 
-Run `./bin/build-docker-image.sh` in your root of `OS.js-v2/`, this will build and run the Dockerfile for you.
+You can also use [Docker](https://www.docker.com/) to set up an environment.
 
-* If you don't want to build from a Dockerfile or you want to run it on a Windows machine (via. Kitematic) head on over to [this repo](https://registry.hub.docker.com/u/junland/osjs-dev/) where I have built and uploaded the development version (Instructions included!).
+You can grab a configuration from the [community repo](https://registry.hub.docker.com/u/junland/osjs-dev/) 
+(you can also find detailed instructions here), or generate one yourself with `./bin/build-docker-image.sh`.
 
 # Setting up a server
 
