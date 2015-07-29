@@ -270,7 +270,7 @@ gui-tabs {
     list-style-type : none;
     margin : 0;
     padding : 0;
-    overflow : hidden;
+    white-space: nowrap;
 
     /** ********** STYLE ********** */
     height : 25px;
@@ -329,6 +329,7 @@ gui-tabs {
 gui-button-bar {
   display : inline-block;
   position : relative;
+  white-space: nowrap;
 }
 
 /**
@@ -350,6 +351,7 @@ gui-label {
   gui-label > label {
     display : inline;
     vertical-align : middle;
+    white-space: nowrap;
   }
 
 /* Button */
@@ -362,21 +364,52 @@ gui-button {
     margin : 0;
     padding : 0;
     outline : 0 none;
+    border : 0 none !important;
+    background-color : transparent !important;
+    background-repeat : no-repeat;
+    background-position : left center;
+    background-image : none;
+    background-position : 0px;
+    white-space: nowrap;
 
     /** ********** STYLE ********** */
     cursor : pointer;
     padding : 4px;
+    padding-left : 8px;
+    padding-right : 8px;
+    background-position : 8px;
+  }
+  gui-button button:before {
+    content : '';
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    bottom : 0px;
+    right : 0px;
+    z-index : -1;
+
+    /** ********** STYLE ********** */
     background: #f8f8f8;
     background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
     border: 1px solid #c1c1c1;
   }
-  gui-button button:active {
+  gui-button button:active:before {
     /** ********** STYLE ********** */
     border-color : #d0d0d0;
   }
+  gui-button button:disabled:active:before,
+  gui-button button:disabled:before {
+    /** ********** STYLE ********** */
+    border-color : #ccc;
+  }
   gui-button button:disabled {
     /** ********** STYLE ********** */
-    border-color : #a0a0a0;
+    cursor : default;
+    color : #ccc;
+  }
+  gui-button button.gui-has-image {
+    /** ********** STYLE ********** */
+    padding-left : 28px;
   }
 
 /* Checkbox Button */

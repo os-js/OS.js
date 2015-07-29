@@ -222,6 +222,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           var input = document.createElement('textarea');
           var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
           Utils.$empty(el);
@@ -234,6 +235,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           createInputOfType(el, 'text');
         }
       },
@@ -242,6 +244,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           createInputOfType(el, 'password');
         }
       },
@@ -250,6 +253,7 @@
         parameters: [],
         events: [],
         build: function(el) {
+          // TODO Disabled state
           createInputOfType(el, 'radio');
         }
       },
@@ -258,6 +262,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           createInputOfType(el, 'checkbox');
         }
       },
@@ -266,6 +271,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           var input = document.createElement('input');
           input.type = 'checkbox';
           el.appendChild(input);
@@ -307,10 +313,22 @@
         parameters: [],
         events: [],
         build: function(el) {
-          var input = document.createElement('button');
+          var icon = el.getAttribute('data-icon');
+          var disabled = el.getAttribute('data-disabled') !== null;
           var label = el.childNodes.length ? el.childNodes[0].nodeValue : '';
           Utils.$empty(el);
+
+          var input = document.createElement('button');
           input.appendChild(document.createTextNode(label));
+          if ( disabled ) {
+            input.setAttribute('disabled', 'disabled');
+          }
+
+          if ( icon ) {
+            Utils.$addClass(input, 'gui-has-image');
+            input.style.backgroundImage = 'url(' + icon + ')';
+          }
+
           el.appendChild(input);
         }
       },
@@ -319,6 +337,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           createSelectInput(el);
         }
       },
@@ -327,6 +346,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           createSelectInput(el, true);
         }
       },
@@ -335,6 +355,7 @@
         parameters: [],
         events: ['change'],
         build: function(el) {
+          // TODO Disabled state
           createInputOfType(el, 'range');
         }
       },
