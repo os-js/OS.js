@@ -27,6 +27,14 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
+/**
+ * Reading Material:
+ * - https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/flex
+ * - https://developer.mozilla.org/en-US/docs/Web/API/Node
+ */
+
 /**
  * ===========================================================================
  *                               GENERICS
@@ -44,6 +52,9 @@
             user-select: none;
 }
 
+/**
+ * TODO: These will go in individual elements
+ */
 .gui-element {
   min-width : 24px;
   min-height : 24px;
@@ -103,7 +114,6 @@ gui-vbox {
   gui-vbox-container {
     display : block;
     position : relative;
-    overflow : none;
 
     -webkit-flex: 0 0 auto;
        -moz-flex: 0 0 auto;
@@ -148,6 +158,13 @@ gui-vbox {
       /** ********** STYLE ********** */
       width : calc(100% - 8px);
       height : calc(100% - 8px);
+    }
+    gui-hbox-container[data-fill='true'] > gui-hbox,
+    gui-hbox-container[data-fill='true'] > gui-vbox,
+    gui-vbox-container[data-fill='true'] > gui-hbox,
+    gui-vbox-container[data-fill='true'] > gui-vbox {
+      width : 100%;
+      height : 100%;
     }
 
     gui-hbox-container[data-fill='true'] > gui-vbox,
@@ -516,27 +533,157 @@ gui-select-list {
 gui-slider {
   display : inline-block;
   position : relative;
+
+  /** ********** STYLE ********** */
+  height : 24px;
 }
+  gui-slider input {
+    display : inline;
+    position : relative;
+    width : 100%;
+    padding : 0;
+    margin : 0;
+    vertical-align : middle;
+    outline : 0 none;
+
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
+
+    /** ********** STYLE ********** */
+    background : transparent;
+    border : 0 none;
+    height : 24px;
+  }
+
+  /*
+   * RANGE TRACK
+   */
+
+  gui-slider input::-moz-range-track {
+    -moz-appearance: none;
+
+    background : transparent;
+    border : 0 none;
+    width : 100%;
+
+    /** ********** STYLE ********** */
+    height : 4px;
+    background-color : #d9d9d9;
+  }
+
+  gui-slider input::-webkit-slider-runnable-track {
+    width : 100%;
+    border : 0 none;
+
+    /** ********** STYLE ********** */
+    height : 4px;
+    background-color : #d9d9d9;
+  }
+
+  gui-slider input::-ms-track {
+    width: 100%;
+    border : 0 none;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+
+    /** ********** STYLE ********** */
+    height : 4px;
+    background-color : #d9d9d9;
+  }
+
+  /*
+   * RANGE THUMB
+   */
+
+  gui-slider input::-moz-range-thumb {
+    -moz-appearance: none;
+    -moz-border-radius : 0;
+    border-radius : 0;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+    height : 18px;
+    width : 10px;
+  }
+
+  gui-slider input::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    -webkit-border-radius : 0;
+    border-radius : 0;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+    height : 24px;
+    width : 16px;
+    margin-top : -10px;
+  }
+
+  gui-slider input::-ms-thumb {
+    -ms-appearance : none !important;
+    -ms-border-radius : 0;
+    border-radius : 0;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+    height : 24px;
+    width : 16px;
+  }
+
+  /**
+   * MISC
+   */
+  gui-slider input[type=range]::-ms-fill-lower {
+    border : 0 none;
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]::-ms-fill-upper {
+    border : 0 none;
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-lower {
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-upper {
+    background-color : #d9d9d9;
+  }
 
 /* Switch */
 gui-switch {
   display : inline-block;
   position : relative;
 
-  /** ********** STYLE ********** */
-  width : 32px;
-  background : #fff;
-  border : 1px solid #b2b2b2;
 }
 
+  gui-switch div {
+    display : inline-block;
+    position : relative;
+
+    /** ********** STYLE ********** */
+    width : 48px;
+    background : #fff;
+    border : 1px solid #b2b2b2;
+  }
+
   gui-switch button {
-    display : block;
-    position : absolute;
-    left : 0px;
-    bottom : 0px;
-    top : 0px;
-    width : 50%;
+    display : inline-block;
     outline : 0 none;
+    width : 50%;
 
     /** ********** STYLE ********** */
     cursor : pointer;
@@ -546,12 +693,16 @@ gui-switch {
     border: 1px solid #c1c1c1;
   }
   gui-switch button.gui-active {
-    right : 0px;
-    left : auto;
+    margin-left : 50%;
   }
 
   gui-switch input {
     display : none;
+  }
+
+  gui-switch > label > div {
+    /** ********** STYLE ********** */
+    margin-left : 4px;
   }
 
 /* Text Field */
@@ -614,6 +765,12 @@ gui-textarea {
 gui-richtext {
   display : inline-block;
   position : relative;
+  min-height : 100px !important;
+
+  /** ********** STYLE ********** */
+  padding : 4px;
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
 
 /**
@@ -643,7 +800,17 @@ gui-canvas {
 gui-color-swatch {
   display : inline-block;
   position : relative;
+  min-width : 100px !important;
+  min-height : 100px !important;
+
+  /** ********** STYLE ********** */
+  border: 1px solid #b2b2b2;
 }
+  gui-color-swatch canvas {
+    width : 100%;
+    height : 100%;
+    display : block;
+  }
 
 /* Menu */
 gui-menu {

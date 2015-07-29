@@ -307,8 +307,16 @@
                         <gui-label data-label="Label"></gui-label>
                       </gui-vbox-container>
 
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-color-swatch></gui-color-swatch>
+                      </gui-vbox-container>
+
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
                         <gui-progress-bar></gui-progress-bar>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+                        <gui-slider></gui-slider>
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
@@ -325,6 +333,10 @@
                         <gui-radio data-group="MyGroupName"></gui-radio>
                         <gui-radio data-group="MyGroupName"></gui-radio>
                         <gui-radio data-group="MyGroupName"></gui-radio>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+                        <gui-richtext></gui-richtext>
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
@@ -381,6 +393,11 @@
 
                 <gui-tab-container data-id="MyTab1" data-label="Tab 2">
                   <gui-image data-src="/osjs-logo.png"></gui-image>
+                  <gui-vbox>
+                    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+                      <gui-progress-bar></gui-progress-bar>
+                    </gui-vbox-container>
+                  </gui-vbox>
                 </gui-tab-container>
 
                 <gui-tab-container data-id="MyTab2" data-label="Tab 3">

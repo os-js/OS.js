@@ -55,19 +55,8 @@
       el.appendChild(select);
     }
 
-    function createInputOfType(el, type) {
+    function createInputLabel(el, type, input) {
       var label = el.getAttribute('data-label');
-      var group = el.getAttribute('data-group');
-      var placeholder = el.getAttribute('data-placeholder');
-
-      var input = document.createElement('input');
-      input.setAttribute('type', type);
-      if ( placeholder ) {
-        input.setAttribute('placeholder', placeholder);
-      }
-      if ( type === 'radio' && group ) {
-        input.setAttribute('name', group + '[]');
-      }
 
       if ( label ) {
         var lbl = document.createElement('label');
@@ -85,6 +74,22 @@
       } else {
         el.appendChild(input);
       }
+    }
+
+    function createInputOfType(el, type) {
+      var group = el.getAttribute('data-group');
+      var placeholder = el.getAttribute('data-placeholder');
+
+      var input = document.createElement('input');
+      input.setAttribute('type', type);
+      if ( placeholder ) {
+        input.setAttribute('placeholder', placeholder);
+      }
+      if ( type === 'radio' && group ) {
+        input.setAttribute('name', group + '[]');
+      }
+
+      createInputLabel(el, type, input);
     }
 
     function setFlexbox(el, grow, shrink, defaultGrow, defaultShrink, checkEl) {
@@ -225,8 +230,11 @@
           input.type = 'checkbox';
           el.appendChild(input);
 
+          var inner = document.createElement('div');
+
           var button = document.createElement('button');
-          el.appendChild(button);
+          inner.appendChild(button);
+          createInputLabel(el, 'switch', inner);
 
           var val = false;
           function toggleValue(v) {
@@ -279,6 +287,56 @@
         events: [],
         build: function(el) {
           createSelectInput(el, true);
+        }
+      },
+
+      'gui-slider': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          createInputOfType(el, 'range');
+        }
+      },
+
+      'gui-color-swatch': {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var cv        = document.createElement('canvas');
+          cv.width      = 100;
+          cv.height     = 100;
+
+          var ctx       = cv.getContext('2d');
+          var gradient  = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+
+          gradient.addColorStop(0,    'rgb(255,   0,   0)');
+          gradient.addColorStop(0.15, 'rgb(255,   0, 255)');
+          gradient.addColorStop(0.33, 'rgb(0,     0, 255)');
+          gradient.addColorStop(0.49, 'rgb(0,   255, 255)');
+          gradient.addColorStop(0.67, 'rgb(0,   255,   0)');
+          gradient.addColorStop(0.84, 'rgb(255, 255,   0)');
+          gradient.addColorStop(1,    'rgb(255,   0,   0)');
+
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+          gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+          gradient.addColorStop(0,   'rgba(255, 255, 255, 1)');
+          gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+          gradient.addColorStop(0.5, 'rgba(0,     0,   0, 0)');
+          gradient.addColorStop(1,   'rgba(0,     0,   0, 1)');
+
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+          el.appendChild(cv);
+        }
+      },
+
+      'gui-richtext' : {
+        parameters: [],
+        events: [],
+        build: function(el) {
         }
       },
 

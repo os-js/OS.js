@@ -93,8 +93,8 @@
     var self = this;
     var scheme = new OSjs.GUING.Scheme(this);
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme.getWindow('MyWindowID')));
       self._addWindow(new ApplicationnguiWindow(self, metadata, scheme.getWindow('MyWindowTest')));
+      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme.getWindow('MyWindowID')));
     });
 
   };
