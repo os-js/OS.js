@@ -52,38 +52,38 @@
 
     scheme.renderWindow(this, 'MyWindowID', root);
 
-    scheme.getElement(this, 'MyButtonOne').on('click', function() {
+    scheme.find(this, 'MyButtonOne').on('click', function() {
       alert("You clicked me");
     });
 
-    scheme.getElement(this, 'MyIconView').on('select', function(ev) {
+    scheme.find(this, 'MyIconView').on('select', function(ev) {
       console.warn('iconview', ev);
     });
 
-    scheme.getElement(this, 'MyTabs').on('change', function(ev) {
+    scheme.find(this, 'MyTabs').on('change', function(ev) {
       console.warn('tab', ev);
     });
 
-    scheme.getElement(this, 'MyMenuBar').on('select', function(ev) {
+    scheme.find(this, 'MyMenuBar').on('select', function(ev) {
       console.warn('menubar', ev);
     });
 
-    scheme.getElement(this, 'MySubMenu').on('select', function(ev) {
+    scheme.find(this, 'MySubMenu').on('select', function(ev) {
       console.warn('menubar submenu', ev);
     });
 
-    scheme.getElement(this, 'MyColor').on('change', function(ev) {
+    scheme.find(this, 'MyColor').on('change', function(ev) {
       console.warn('color', ev);
     });
 
-    scheme.getElement(this, 'MyText').on('change', function(ev) {
+    scheme.find(this, 'MyText').on('change', function(ev) {
       console.warn('text change', ev);
     });
-    scheme.getElement(this, 'MyText').on('enter', function(ev) {
+    scheme.find(this, 'MyText').on('enter', function(ev) {
       console.warn('enter', ev, this.get('value'));
       this.set('value', 'You pressed enter!');
     });
-    scheme.getElement(this, 'MyTextArea').on('enter', function(ev) {
+    scheme.find(this, 'MyTextArea').on('enter', function(ev) {
       console.warn('enter', ev, this.get('value'));
     });
 

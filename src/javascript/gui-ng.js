@@ -1240,7 +1240,7 @@
     return new UIElement(el);
   };
 
-  UIScheme.prototype.getElement = function(win, id, root) {
+  UIScheme.prototype.find = function(win, id, root) {
     root = root || win._getRoot();
     var el = root.querySelector('[data-id="' + id + '"]');
     return new UIElement(el);
