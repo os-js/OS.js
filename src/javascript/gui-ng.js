@@ -120,7 +120,7 @@
         select.setAttribute('multiple', 'multiple');
       }
       if ( disabled ) {
-        input.setAttribute('disabled', 'disabled');
+        select.setAttribute('disabled', 'disabled');
       }
 
       el.querySelectorAll('gui-select-option').forEach(function(sel) {

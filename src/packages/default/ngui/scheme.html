@@ -343,7 +343,11 @@
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-                        <gui-checkbox data-label="Checkbox Label"></gui-checkbox>
+                        <gui-checkbox data-label="Checkbox Label (Disabled)" data-disabled="true"></gui-checkbox>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                        <gui-switch data-label="Switch Label (Disabled)" data-disabled="true"></gui-switch>
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
@@ -351,7 +355,7 @@
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-                        <gui-radio data-label="Labels are optional" data-group="MyGroupName"></gui-radio>
+                        <gui-radio data-label="Labels are optional (Disabled)" data-group="MyGroupName" data-disabled="true"></gui-radio>
                         <gui-radio data-group="MyGroupName"></gui-radio>
                         <gui-radio data-group="MyGroupName"></gui-radio>
                         <gui-radio data-group="MyGroupName"></gui-radio>
@@ -376,6 +380,12 @@
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
                         <gui-text data-label="Password With label"></gui-text>
+                      </gui-vbox-container>
+
+                      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+                        <gui-select data-disabled="true">
+                          <gui-select-option data-value="">Disabled Option</gui-select-option>
+                        </gui-select>
                       </gui-vbox-container>
 
                       <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">

@@ -473,6 +473,19 @@ gui-checkbox {
     font-size: 12px;
   }
 
+  gui-radio[data-disabled="true"] label,
+  gui-checkbox[data-disabled="true"] label {
+    /** ********** STYLE ********** */
+    color : #ccc;
+  }
+
+  gui-radio input:disabled,
+  gui-checkbox input:disabled {
+    /** ********** STYLE ********** */
+    border-color : #ccc;
+    background-color : #ddd;
+  }
+
   gui-radio > label > span,
   gui-checkbox > label > span {
     vertical-align : middle;
@@ -513,6 +526,10 @@ gui-select {
     /** ********** STYLE ********** */
     border: 1px solid #b2b2b2;
     padding : 4px;
+  }
+  gui-select select:disabled {
+    /** ********** STYLE ********** */
+    color : #ccc;
   }
 
   gui-select:before {
@@ -576,6 +593,10 @@ gui-select-list {
     /** ********** STYLE ********** */
     border: 1px solid #b2b2b2;
     padding : 4px;
+  }
+  gui-select-list select:disabled {
+    /** ********** STYLE ********** */
+    color : #ccc;
   }
 
 /* Slider */
@@ -754,6 +775,17 @@ gui-switch {
     margin-left : 4px;
   }
 
+  gui-switch[data-disabled="true"] button {
+    /** ********** STYLE ********** */
+    border-color : #ccc;
+  }
+
+  gui-switch[data-disabled="true"] button,
+  gui-switch[data-disabled="true"] label {
+    /** ********** STYLE ********** */
+    color : #ccc;
+  }
+
 /* Text Field */
 /* Password Field */
 gui-password,
@@ -788,6 +820,19 @@ gui-text {
     margin-left : 4px;
   }
 
+  gui-password input:disabled,
+  gui-text input:disabled {
+    /** ********** STYLE ********** */
+    border-color : #ccc;
+    background-color : #ddd;
+  }
+
+  gui-password[data-disabled="true"] label,
+  gui-text[data-disabled="true"] label {
+    /** ********** STYLE ********** */
+    color : #ccc;
+  }
+
 
 /* Text Area */
 gui-textarea {
@@ -808,6 +853,16 @@ gui-textarea {
     padding : 4px;
     background : #fff;
     border : 1px solid #b2b2b2;
+  }
+  gui-textarea textarea:disabled {
+    /** ********** STYLE ********** */
+    border-color : #ccc;
+    background-color : #ddd;
+  }
+
+  gui-textarea[data-disabled="true"] label {
+    /** ********** STYLE ********** */
+    color : #ccc;
   }
 
 /* Rich Text */
