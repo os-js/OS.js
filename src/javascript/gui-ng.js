@@ -1013,9 +1013,10 @@
     }
   };
 
-  UIScheme.prototype.addElement = function(tagName, params, parentNode) {
+  UIScheme.prototype.addElement = function(win, tagName, params, parentNode) {
     tagName = tagName || '';
     params = params || {};
+    parentNode = parentNode || win.getRoot();
 
     var el = document.createElement(tagName);
     Object.keys(params).forEach(function(k) {
@@ -1031,7 +1032,7 @@
 
     parentNode.appendChild(el);
 
-    CONSTRUCTORS[tagName](el);
+    CONSTRUCTORS[tagName].build(el);
 
     return new UIElement(el);
   };
