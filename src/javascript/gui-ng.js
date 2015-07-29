@@ -30,6 +30,15 @@
 (function(API, Utils) {
   'use strict';
 
+  //////////////////////////////////////////////////////////////////////
+  //                                                                  //
+  //                         !!! WARNING !!!                          //
+  //                                                                  //
+  // THIS IS HIGHLY EXPERIMENTAL, BUT WILL BECOME THE NEXT GENERATION //
+  // GUI SYSTEM: https://github.com/andersevenrud/OS.js-v2/issues/136 //
+  //                                                                  //
+  //////////////////////////////////////////////////////////////////////
+
   window.OSjs = window.OSjs || {};
   OSjs.GUING = OSjs.GUING || {};
 
@@ -37,9 +46,10 @@
 
   var CONSTRUCTORS = (function() {
 
-    function handleItemSelection(ev, item, idx, className, selected) {
+    function handleItemSelection(ev, item, idx, className, selected, root) {
+      root = root || item.parentNode;
       if ( !ev.shiftKey ) {
-        item.parentNode.querySelectorAll(className).forEach(function(i) {
+        root.querySelectorAll(className).forEach(function(i) {
           Utils.$removeClass(i, 'gui-active');
         });
         selected = [];
@@ -614,6 +624,7 @@
               handleItemClick(ev, cel, idx);
             }, false);
             cel.addEventListener('dblclick', function(ev) {
+              // TODO
             }, false);
 
             cel.appendChild(dicon);
@@ -626,6 +637,70 @@
         parameters: [],
         events: ['activate', 'select', 'change', 'scroll'],
         build: function(el) {
+          var selected = [];
+          function handleItemClick(ev, item, idx) {
+            selected = handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el);
+            console.warn(selected);
+          }
+
+          function handleItemExpand(ev, root, expanded) {
+            if ( typeof expanded === 'undefined' ) {
+              expanded = !Utils.$hasClass(root, 'gui-expanded');
+            }
+
+            Utils.$removeClass(root, 'gui-expanded');
+            if ( expanded ) {
+              Utils.$addClass(root, 'gui-expanded');
+            }
+
+            var children = root.children;
+            for ( var i = 0; i < children.length; i++ ) {
+              if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
+                children[i].style.display = expanded ? 'block' : 'none';
+              }
+            }
+          }
+
+          el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
+
+            var icon = sel.getAttribute('data-icon');
+            var label = sel.getAttribute('data-label');
+            var expanded = sel.getAttribute('data-expanded') === 'true';
+            var next = sel.querySelector('gui-tree-view-entry');
+
+            var container = document.createElement('div');
+            var dspan = document.createElement('span');
+            if ( icon ) {
+              dspan.style.backgroundImage = 'url(' + icon + ')';
+              Utils.$addClass(dspan, 'gui-has-image');
+            }
+            dspan.appendChild(document.createTextNode(label));
+
+            container.appendChild(dspan);
+
+            if ( next ) {
+              Utils.$addClass(sel, 'gui-expandable');
+              var expander = document.createElement('gui-tree-view-expander');
+              expander.addEventListener('click', function(ev) {
+                handleItemExpand(ev, sel);
+              });
+
+              sel.insertBefore(container, next);
+              sel.insertBefore(expander, container);
+            } else {
+              sel.appendChild(container);
+            }
+
+            handleItemExpand(null, sel, expanded);
+
+            container.addEventListener('click', function(ev) {
+              handleItemClick(ev, sel, idx);
+            }, false);
+            container.addEventListener('dblclick', function(ev) {
+              // TODO
+            }, false);
+
+          });
         }
       },
 
@@ -726,6 +801,7 @@
               handleRowClick(ev, cel, idx);
             }, false);
             cel.addEventListener('dblclick', function(ev) {
+              // TODO
             }, false);
           });
         }

@@ -984,6 +984,7 @@ gui-file-view {
 gui-icon-view {
   position : relative;
   display : inline-block;
+  overflow : auto;
 
   /** ********** STYLE ********** */
   background : #fff;
@@ -1156,8 +1157,71 @@ gui-list-view {
 gui-tree-view {
   position : relative;
   display : inline-block;
+  overflow : auto;
 
   /** ********** STYLE ********** */
   background : #fff;
   border : 1px solid #b2b2b2;
 }
+  gui-tree-view-entry {
+    display : block;
+    position : relative;
+
+  }
+    gui-tree-view-entry > div {
+      /** ********** STYLE ********** */
+      padding : 4px;
+    }
+    gui-tree-view-entry > div > span {
+      background-repeat : no-repeat;
+      background-position : left center;
+      display : inline-block;
+      vertical-align : middle;
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis;
+      white-space : nowrap;
+
+      /** ********** STYLE ********** */
+      cursor : pointer;
+      padding : 2px;
+    }
+    gui-tree-view-entry > div > span.gui-has-image {
+      padding-left : 20px;
+    }
+    gui-tree-view-entry > gui-tree-view-entry {
+      margin-left : 16px;
+
+      /** ********** STYLE ********** */
+    }
+    gui-tree-view-entry.gui-active > div {
+      /** ********** STYLE ********** */
+      color: #ffffff;
+      background-color: #2d73d2;
+    }
+
+  gui-tree-view-entry.gui-expandable {
+    padding-left : 16px;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander {
+    display : block;
+    position : absolute;
+    left : 0px;
+    top : 0px;
+    width : 16px;
+    height : 16px;
+    overflow : visible;
+    padding-left : 4px;
+
+    /** ********** STYLE ********** */
+    cursor : pointer;
+    line-height : 24px;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander:before {
+    /** ********** STYLE ********** */
+    content : '\25BA';
+    font-family : Arial;
+  }
+  gui-tree-view-entry.gui-expandable.gui-expanded > gui-tree-view-expander:before {
+    /** ********** STYLE ********** */
+    content : '\25BC';
+  }
