@@ -196,6 +196,9 @@
         input.setAttribute('disabled', 'disabled');
       }
 
+      // TODO: Custom tabindex
+      input.setAttribute('tabindex', -1);
+
       createInputLabel(el, type, input);
     }
 
