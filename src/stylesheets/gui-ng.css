@@ -243,6 +243,10 @@ gui-iframe {
 gui-toolbar {
   display : block;
   position : relative;
+  overflow : hidden;
+
+  /** ********** STYLE ********** */
+  height : 24px;
 }
 
 /* Tabs */
@@ -255,6 +259,7 @@ gui-tabs {
     list-style-type : none;
     margin : 0;
     padding : 0;
+    overflow : hidden;
 
     /** ********** STYLE ********** */
     height : 25px;
