@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
     ln -s /usr/bin/nodejs /usr/bin/node
 
     # build OS.js-v2
-    sudo npm install -g grub-cli
+    sudo npm install -g grunt-cli
     git clone https://github.com/andersevenrud/OS.js-v2.git
     pushd OS.js-v2
     npm install
