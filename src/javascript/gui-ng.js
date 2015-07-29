@@ -368,6 +368,41 @@
         parameters: [],
         events: [],
         build: function(el) {
+          var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
+
+          var wm = OSjs.Core.getWindowManager();
+          var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
+          var themeSrc = OSjs.API.getThemeCSS(theme);
+
+          var editable = el.getAttribute('data-editable');
+          editable = editable === null || editable === 'true';
+
+          var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /></head><body contentEditable="true"></body></html>';
+          if ( !editable ) {
+            template = template.replace(' contentEditable="true"', '');
+          }
+
+          Utils.$empty(el);
+
+          var doc;
+          var iframe = document.createElement('iframe');
+          iframe.setAttribute('border', 0);
+          el.appendChild(iframe);
+
+          setTimeout(function() {
+            try {
+              doc = iframe.contentDocument || iframe.contentWindow.document;
+              doc.open();
+              doc.write(template);
+              doc.close();
+
+              if ( text ) {
+                doc.body.innerHTML = text;
+              }
+            } catch ( error ) {
+              console.error('gui-richtext', error);
+            }
+          }, 0);
         }
       },
 
@@ -455,6 +490,18 @@
       //
       // CONTAINERS
       //
+
+      'gui-iframe' : {
+        parameters: [],
+        events: [],
+        build: function(el) {
+          var src = el.getAttribute('data-src') || 'about:blank';
+          var iframe = document.createElement('iframe');
+          iframe.src = src;
+          iframe.setAttribute('border', 0);
+          el.appendChild(iframe);
+        }
+      },
 
       'gui-button-bar' : {
         parameters: [],

@@ -237,7 +237,18 @@ gui-paned-view {
 gui-iframe {
   display : inline-block;
   position : relative;
+
+  /** ********** STYLE ********** */
+  background-color : #fff;
 }
+  gui-iframe > iframe {
+    display : block;
+    width : 100%;
+    height : 100%;
+    margin : 0;
+    padding : 0;
+    border : 0 none;
+  }
 
 /* Toolbar */
 gui-toolbar {
@@ -777,6 +788,14 @@ gui-richtext {
   background : #fff;
   border : 1px solid #b2b2b2;
 }
+  gui-richtext > iframe {
+    display : block;
+    width : 100%;
+    height : 100%;
+    margin : 0;
+    padding : 0;
+    border : 0 none;
+  }
 
 /**
  * ===========================================================================
