@@ -75,7 +75,7 @@
 
       el.querySelectorAll('gui-select-option').forEach(function(sel) {
         var value = sel.getAttribute('data-value') || '';
-        var label = sel.getAttribute('data-label') || '';
+        var label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
 
         var option = document.createElement('option');
         option.setAttribute('value', value);
@@ -110,6 +110,8 @@
     function createInputOfType(el, type) {
       var group = el.getAttribute('data-group');
       var placeholder = el.getAttribute('data-placeholder');
+      var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
+      Utils.$empty(el);
 
       var input = document.createElement('input');
       input.setAttribute('type', type);
@@ -118,6 +120,10 @@
       }
       if ( type === 'radio' && group ) {
         input.setAttribute('name', group + '[]');
+      }
+
+      if ( type === 'text' || type === 'password' ) {
+        input.value = value;
       }
 
       createInputLabel(el, type, input);
@@ -217,6 +223,9 @@
         events: ['change'],
         build: function(el) {
           var input = document.createElement('textarea');
+          var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
+          Utils.$empty(el);
+          input.value = value;
           el.appendChild(input);
         }
       },
@@ -299,7 +308,8 @@
         events: [],
         build: function(el) {
           var input = document.createElement('button');
-          var label = el.getAttribute('data-label');
+          var label = el.childNodes.length ? el.childNodes[0].nodeValue : '';
+          Utils.$empty(el);
           input.appendChild(document.createTextNode(label));
           el.appendChild(input);
         }
