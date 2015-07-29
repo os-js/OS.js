@@ -67,21 +67,32 @@
   function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
-    if ( param === 'value' && (['gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
+    if ( (['gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
       var firstChild = el.querySelector('input');
       if ( tagName === 'gui-textarea' ) {
         firstChild = el.querySelector('textarea');
       }
-      if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
-        if ( value ) {
-          firstChild.setAttribute('checked', 'checked');
+
+      if ( param === 'value' ) {
+        if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
+          if ( value ) {
+            firstChild.setAttribute('checked', 'checked');
+          } else {
+            firstChild.removeAttribute('checked');
+          }
         } else {
-          firstChild.removeAttribute('checked');
+          firstChild[param] = value;
         }
-      } else {
-        firstChild[param] = value;
+      } else if ( param === 'disabled' ) {
+        if ( value ) {
+          firstChild.setAttribute('disabled', 'disabled');
+        } else {
+          firstChild.removeAttribute('disabled');
+        }
       }
-    } else {
+    }
+
+    if ( param !== 'value' ) {
       if ( typeof value === 'boolean' ) {
         value = value ? 'true' : 'false';
       }
@@ -441,6 +452,7 @@
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
+          // TODO Selected index/entry
           createSelectInput(el);
         }
       },
@@ -453,6 +465,7 @@
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
+          // TODO Selected index/entry
           createSelectInput(el, true);
         }
       },

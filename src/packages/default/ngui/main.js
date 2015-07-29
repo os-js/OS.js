@@ -82,6 +82,7 @@
     scheme.find(this, 'MyText').on('enter', function(ev) {
       console.warn('enter', ev, this.get('value'));
       this.set('value', 'You pressed enter!');
+      this.set('disabled', true);
     });
     scheme.find(this, 'MyTextArea').on('enter', function(ev) {
       console.warn('enter', ev, this.get('value'));

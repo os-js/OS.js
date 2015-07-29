@@ -667,6 +667,10 @@ gui-slider {
 
   /*
    * RANGE THUMB
+   *
+   * TODO
+   * TODO DISABLED STATE
+   * TODO
    */
 
   gui-slider input::-moz-range-thumb {
@@ -682,6 +686,10 @@ gui-slider {
     border: 1px solid #c1c1c1;
     height : 18px;
     width : 10px;
+  }
+  gui-slider input:disabled::-moz-range-thumb {
+    /** ********** STYLE ********** */
+    border-color : #ccc;
   }
 
   gui-slider input::-webkit-slider-thumb {
@@ -699,6 +707,11 @@ gui-slider {
     width : 16px;
     margin-top : -10px;
   }
+  gui-slider input:disabled::-webkit-range-thumb {
+    /** ********** STYLE ********** */
+    background-color : #d9d9d9;
+    border-color : #ccc;
+  }
 
   gui-slider input::-ms-thumb {
     -ms-appearance : none !important;
@@ -713,6 +726,10 @@ gui-slider {
     border: 1px solid #c1c1c1;
     height : 24px;
     width : 16px;
+  }
+  gui-slider input:disabled::-ms-thumb {
+    /** ********** STYLE ********** */
+    border-color : #ccc;
   }
 
   /**
@@ -825,6 +842,7 @@ gui-text {
     /** ********** STYLE ********** */
     border-color : #ccc;
     background-color : #ddd;
+    color : #ccc;
   }
 
   gui-password[data-disabled="true"] label,
@@ -858,6 +876,7 @@ gui-textarea {
     /** ********** STYLE ********** */
     border-color : #ccc;
     background-color : #ddd;
+    color : #ccc;
   }
 
   gui-textarea[data-disabled="true"] label {
