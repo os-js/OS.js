@@ -67,18 +67,10 @@ Just use [this configuration file](https://raw.githubusercontent.com/andersevenr
 
 ### Docker
 * Make sure to have `docker.io` installed on your machine.
-* You can change the `Dockerfile` around, I have left comments to help you configure it.
-- Issuing `sudo docker ps` will list all your currently running containers so please refer to this if you forget which container is running your OS.js instance.
 
-1. Issue `sudo docker build -t [Image Name] .` (That's not a mistake, make sure to put that period after the image name or it won't build).
+Run `./bin/build-docker-image.sh` in your root of `OS.js-v2/`, this will build and run the Dockerfile for you.
 
-2. If built succesfully you can view your image by issueing the command. `sudo docker start [Image Name]`
-
-3. While the image is starting up (You can use this window as a debug console), open up another terminal window and issue `sudo docker inspect -f '{{ .NetworkSettings.IPAddress }}' [Container ID]` which will output a IP address.
-
-4. Lastly, open your favorite web browser and type `[Container IP Address]:8000' into the address bar. This should then direct you to the OS.js Desktop. Enjoy!
-
-* If you don't want to build from a Dockerfile or you want to run it on a Windows machine (via. Kitematic) head on over to https://registry.hub.docker.com/u/junland/osjs-dev/ where I have built and uploaded the development version (Instructions included!).
+* If you don't want to build from a Dockerfile or you want to run it on a Windows machine (via. Kitematic) head on over to [this repo](https://registry.hub.docker.com/u/junland/osjs-dev/) where I have built and uploaded the development version (Instructions included!).
 
 # Setting up a server
 
