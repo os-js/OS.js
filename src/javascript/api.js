@@ -1199,6 +1199,10 @@
    * @api     OSjs.API.blurMenu()
    */
   function doBlurMenu() {
+    if ( OSjs.GUING ) {
+      OSjs.GUING.blurMenu();
+    }
+
     if ( _MENU ) {
       _MENU.destroy();
       _MENU = null;

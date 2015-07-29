@@ -44,6 +44,11 @@
 
   var lastMenu;
 
+  function blurMenu() {
+    if ( !lastMenu ) return;
+    lastMenu();
+  }
+
   var CONSTRUCTORS = (function() {
 
     function handleItemSelection(ev, item, idx, className, selected, root) {
@@ -506,6 +511,10 @@
             var submenu = mel.querySelector('gui-menu');
             if ( submenu ) {
               mel.addEventListener('click', function() {
+                lastMenu = function() {
+                  Utils.$removeClass(mel, 'gui-active');
+                };
+
                 if ( Utils.$hasClass(mel, 'gui-active') ) {
                   Utils.$removeClass(mel, 'gui-active');
                 } else {
@@ -955,6 +964,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  OSjs.GUING.blurMenu = blurMenu;
   OSjs.GUING.Scheme = UIScheme;
 
 })(OSjs.API, OSjs.Utils);
