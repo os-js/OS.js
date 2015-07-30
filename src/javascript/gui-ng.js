@@ -333,6 +333,13 @@
       'gui-label': {
         parameters: [],
         events: [],
+        set: function(el, param, value) {
+          if ( param === 'value' ) {
+            var lbl = el.querySelector('label');
+            Utils.$empty(lbl);
+            lbl.appendChild(document.createTextNode(value));
+          }
+        },
         build: function(el) {
           var label = el.getAttribute('data-lbl');
           if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {

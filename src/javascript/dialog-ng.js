@@ -53,6 +53,8 @@
     args = args || {};
     callback = callback || function() {};
 
+    opts.title = opts.title || args.title;
+
     Window.apply(this, [className + DialogIndex, opts]);
 
     this._properties.gravity          = 'center';
@@ -259,6 +261,7 @@
    * @extends DialogWindow
    */
   function ConfirmDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['ConfirmDialog', {
       title: API._('DIALOG_CONFIRM_TITLE'),
       icon: 'status/dialog-question.png',
@@ -269,6 +272,12 @@
 
   ConfirmDialog.prototype = Object.create(DialogWindow.prototype);
   ConfirmDialog.constructor = DialogWindow;
+
+  ConfirmDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    this.scheme.find(this, 'Message').set('value', this.args.message);
+    return root;
+  };
 
   /**
    * @extends DialogWindow

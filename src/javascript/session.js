@@ -570,9 +570,8 @@
       OSjs.API.createDialog('Confirm', {
         title: OSjs.API._('DIALOG_LOGOUT_TITLE'),
         message: OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name)
-      }, function() {
-        // TODO REFACTOR
-        if ( btn === 'ok' ) {
+      }, function(ev, btn) {
+        if ( btn === 'yes' ) {
           OSjs.Session.destroy(true, false);
         } else if ( btn === 'no' ) {
           OSjs.Session.destroy(false, false);
