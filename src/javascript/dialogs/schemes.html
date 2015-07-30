@@ -68,7 +68,7 @@
     <gui-vbox-container data-shrink="1" data-fill="true" data-basis="30px">
       <gui-hbox>
         <gui-hbox-container data-shrink="1" data-expand="true">
-          <gui-button id="HomeButton"></gui-button>
+          <gui-button data-id="HomeButton"></gui-button>
         </gui-hbox-container>
         <gui-hbox-container data-grow="1" data-expand="true">
           <gui-select data-id="ModuleSelect"></gui-select>
@@ -199,10 +199,10 @@
         <gui-hbox-container data-shrink="1">
           <gui-vbox>
             <gui-vbox-container shrink="1">
-              <gui-color-swatch id="ColorSelect"></gui-color-swatch>
+              <gui-color-swatch data-id="ColorSelect"></gui-color-swatch>
             </gui-vbox-container>
-            <gui-vbox-container shrink="1">
-              <gui-color-box id="ColorPreview"></gui-color-box>
+            <gui-vbox-container shrink="1" data-expand="true">
+              <gui-color-box data-id="ColorPreview"></gui-color-box>
             </gui-vbox-container>
           </gui-vbox>
         </gui-hbox-container>
@@ -213,21 +213,21 @@
               <gui-label data-id="LabelRed">Red</gui-label>
             </gui-vbox-container>
             <gui-vbox-container shrink="1" data-expand="true">
-              <gui-slider data-id="Red"></gui-slider>
+              <gui-slider data-min="0" data-max="255" data-id="Red"></gui-slider>
             </gui-vbox-container>
 
             <gui-vbox-container shrink="1" data-expand="true">
               <gui-label data-id="LabelGreen">Green</gui-label>
             </gui-vbox-container>
             <gui-vbox-container shrink="1" data-expand="true">
-              <gui-slider data-id="Green"></gui-slider>
+              <gui-slider data-min="0" data-max="255" data-id="Green"></gui-slider>
             </gui-vbox-container>
 
             <gui-vbox-container shrink="1" data-expand="true">
               <gui-label data-id="LabelBlue">Blue</gui-label>
             </gui-vbox-container>
             <gui-vbox-container shrink="1" data-expand="true">
-              <gui-slider data-id="Blue"></gui-slider>
+              <gui-slider data-min="0" data-max="255" data-id="Blue"></gui-slider>
             </gui-vbox-container>
           </gui-vbox>
         </gui-hbox-container>

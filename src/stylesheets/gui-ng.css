@@ -943,6 +943,18 @@ gui-color-swatch {
     display : block;
   }
 
+/* Color Box */
+gui-color-box {
+  display : inline-block;
+  position : relative;
+  background-color : #fff;
+
+  /** ********** STYLE ********** */
+  padding : 4px;
+  background : #fff;
+  border : 1px solid #b2b2b2;
+}
+
 /* Menu */
 gui-menu {
   display : inline-block;

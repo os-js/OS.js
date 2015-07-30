@@ -301,22 +301,81 @@
   };
 
   /**
+   * TODO: Alpha
+   *
    * @extends DialogWindow
    */
   function ColorDialog(args, callback) {
+    args = args || {};
+
     DialogWindow.apply(this, ['ColorDialog', {
       title: API._('DIALOG_COLOR_TITLE'),
       icon: 'apps/gnome-settings-theme.png',
       width: 400,
       height: 220
     }, args, callback]);
+
+    var rgb = args.color;
+    var hex = rgb;
+    if ( typeof rgb === 'string' ) {
+      hex = rgb;
+      rgb = Utils.convertToRGB(rgb);
+    } else {
+      rgb = rgb || {r: 0, g: 0, b: 0};
+      hex = Utils.convertToHEX(rgb.r, rgb.g, rgb.b);
+    }
+
+    this.color = {r: rgb.r, g: rgb.g, b: rgb.b, hex: hex};
   }
 
   ColorDialog.prototype = Object.create(DialogWindow.prototype);
   ColorDialog.constructor = DialogWindow;
 
+  ColorDialog.prototype.init = function() {
+    var self = this;
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    function updateHex(update) {
+      self.scheme.find(self, 'LabelRed').set('value', API._('DIALOG_COLOR_R', self.color.r));
+      self.scheme.find(self, 'LabelGreen').set('value', API._('DIALOG_COLOR_G', self.color.g));
+      self.scheme.find(self, 'LabelBlue').set('value', API._('DIALOG_COLOR_B', self.color.b));
+      if ( update ) {
+        self.color.hex = Utils.convertToHEX(self.color.r, self.color.g, self.color.b);
+      }
+
+      self.scheme.find(self, 'ColorPreview').set('value', self.color.hex);
+    }
+
+    this.scheme.find(this, 'ColorSelect').on('change', function(ev) {
+      self.color = ev.detail;
+      self.scheme.find(self, 'Red').set('value', self.color.r);
+      self.scheme.find(self, 'Green').set('value', self.color.g);
+      self.scheme.find(self, 'Blue').set('value', self.color.b);
+      updateHex(true);
+    });
+
+    this.scheme.find(this, 'Red').on('change', function(ev) {
+      self.color.r = parseInt(ev.detail, 10);
+      updateHex(true);
+    }).set('value', this.color.r);
+
+    this.scheme.find(this, 'Green').on('change', function(ev) {
+      self.color.g = parseInt(ev.detail, 10);
+      updateHex(true);
+    }).set('value', this.color.g);
+
+    this.scheme.find(this, 'Blue').on('change', function(ev) {
+      self.color.b = parseInt(ev.detail, 10);
+      updateHex(true);
+    }).set('value', this.color.b);
+
+    updateHex();
+
+    return root;
+  };
+
   ColorDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
+    this.closeCallback(ev, button, button === 'ok' ? this.color : null);
   };
 
   /**

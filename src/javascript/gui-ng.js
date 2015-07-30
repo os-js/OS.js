@@ -71,7 +71,7 @@
   function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
-    if ( (['gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
+    if ( (['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
       var firstChild = el.querySelector('input');
       if ( tagName === 'gui-textarea' ) {
         firstChild = el.querySelector('textarea');
@@ -227,6 +227,14 @@
       // TODO: Custom tabindex
       input.setAttribute('tabindex', -1);
 
+      input.addEventListener('change', function(ev) {
+        var value = input.value;
+        if ( type === 'radio' || type === 'checkbox' ) {
+          value = !!input.getAttribute('checked');
+        }
+        input.dispatchEvent(new CustomEvent('_change', {detail: value}));
+      }, false);
+
       createInputLabel(el, type, input);
     }
 
@@ -341,6 +349,7 @@
         parameters: [],
         events: ['change'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('textarea');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
@@ -353,6 +362,7 @@
         parameters: [],
         events: ['change'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           bindTextInputEvents.apply(this, arguments);
         },
         build: function(el) {
@@ -364,6 +374,7 @@
         parameters: [],
         events: ['change'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           bindTextInputEvents.apply(this, arguments);
         },
         build: function(el) {
@@ -375,6 +386,7 @@
         parameters: [],
         events: ['change', 'activate'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
@@ -387,6 +399,7 @@
         parameters: [],
         events: ['change', 'activate'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
@@ -399,6 +412,7 @@
         parameters: [],
         events: ['change'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
@@ -475,6 +489,7 @@
         parameters: [],
         events: ['change'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('select');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
@@ -488,6 +503,7 @@
         parameters: [],
         events: ['change'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('select');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
@@ -501,6 +517,7 @@
         parameters: [],
         events: ['change'],
         bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
@@ -555,6 +572,15 @@
       //
       // MISC
       //
+      'gui-color-box': {
+        set: function(el, param, value) {
+          if ( param === 'value' ) {
+            el.style.backgroundColor = value;
+          }
+        },
+        build: function(el) {
+        }
+      },
 
       'gui-color-swatch': {
         parameters: [],
