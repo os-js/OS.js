@@ -260,6 +260,12 @@
   AlertDialog.prototype = Object.create(DialogWindow.prototype);
   AlertDialog.constructor = DialogWindow;
 
+  AlertDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    this.scheme.find(this, 'Message').set('value', this.args.message);
+    return root;
+  };
+
 
   /**
    * @extends DialogWindow
@@ -463,10 +469,10 @@
       File: FileDialog,
       FileInfo: FileInfoDialog,
       Input: InputDialog,
-      Alert: AlertDialog,
+      //Alert: AlertDialog,
       //Confirm: ConfirmDialog,
       //Color: ColorDialog,
-      Error: ErrorDialog,
+      //Error: ErrorDialog,
       Font: FontDialog
     };
     Object.keys(ds).forEach(function(d) {
