@@ -30,10 +30,6 @@
 (function(Utils, API, Window) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core   = OSjs.Core   || {};
-  OSjs.GUI    = OSjs.GUI    || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // DIALOG
   /////////////////////////////////////////////////////////////////////////////
@@ -416,15 +412,28 @@
 
   OSjs.Core.DialogWindow      = DialogWindow;
 
-  OSjs.GUI.debugDialogs = function() {
-    Object.keys(Dialogs).forEach(function(d) {
-      OSjs.GUI.createDialog(d, null, function(ev, button, result) {
+  OSjs.API.debugDialogs = function() {
+    var ds = {
+      ApplicationChooser: ApplicationChooserDialog,
+      FileProgress: FileProgressDialog,
+      FileUpload: FileUploadDialog,
+      File: FileDialog,
+      FileInfo: FileInfoDialog,
+      Input: InputDialog,
+      Alert: AlertDialog,
+      Confirm: ConfirmDialog,
+      //Color: ColorDialog,
+      Error: ErrorDialog,
+      Font: FontDialog
+    };
+    Object.keys(ds).forEach(function(d) {
+      OSjs.API.createDialog(d, null, function(ev, button, result) {
         console.warn("DIALOG CLOSED", ev, button, result);
       });
     });
   };
 
-  OSjs.GUI.createDialog = function(className, args, callback, parentObj) {
+  OSjs.API.createDialog = function(className, args, callback, parentObj) {
     var win = new Dialogs[className](args, callback);
 
     if ( !parentObj ) {

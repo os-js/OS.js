@@ -567,7 +567,7 @@
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       var user = handler.getUserData() || {name: OSjs.API._('LBL_UNKNOWN')};
-      OSjs.GUI.createDialog('Confirm', {
+      OSjs.API.createDialog('Confirm', {
         title: OSjs.API._('DIALOG_LOGOUT_TITLE'),
         message: OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name)
       }, function() {

@@ -1072,12 +1072,12 @@
     function doRequest(f, i) {
       if ( args.app ) {
         if ( args.win ) {
-          OSjs.GUI.createDialog('FileUpload', {
+          API.createDialog('FileUpload', {
             destination: args.destination,
             file: f
           }, _dialogClose, args.win);
         } else {
-          OSjs.GUI.createDialog('FileUpload', {
+          API.createDialog('FileUpload', {
             destination: args.destination,
             file: f
           }, _dialogClose, args.app);

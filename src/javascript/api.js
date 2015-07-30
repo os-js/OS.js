@@ -358,7 +358,7 @@
           _launch(app[0]);
         } else {
           if ( wm ) {
-            OSjs.GUI.createDialog('ApplicationChooser', {
+            OSjs.API.createDialog('ApplicationChooser', {
               file: file,
               applications: app
             }, function() {
@@ -1283,7 +1283,7 @@
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       try {
-        return OSjs.GUI.createDialog('Error', {
+        return OSjs.API.createDialog('Error', {
           title: title,
           message: message,
           error: error,
