@@ -232,6 +232,7 @@
 
     function setFlexbox(el, grow, shrink, defaultGrow, defaultShrink, checkEl) {
       var basis = (checkEl || el).getAttribute('data-basis') || 'auto';
+      var align = el.getAttribute('data-align');
 
       var tmp;
       if ( typeof grow === 'undefined' || grow === null ) {
@@ -262,6 +263,10 @@
       el.style['msFflex'] = flex;
       el.style['oFlex'] = flex;
       el.style['flex'] = flex;
+
+      if ( align ) {
+        el.style.alignSelf = align.match(/start|end/) ? 'flex-' + align : align;
+      }
     }
 
     function createDrag(el, onDown, onMove, onUp) {
