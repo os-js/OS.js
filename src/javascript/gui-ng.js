@@ -100,11 +100,24 @@
     }
   }
 
+  function createElement(tagName, params) {
+    var el = document.createElement(tagName);
+    Object.keys(params).forEach(function(k) {
+      var value = params[k];
+      if ( typeof value === 'boolean' ) {
+        value = value ? 'true' : 'false';
+      }
+      el.setAttribute('data-' + k, value);
+    });
+    return el;
+  }
+
   var CONSTRUCTORS = (function() {
 
-    function handleItemSelection(ev, item, idx, className, selected, root) {
+    function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
       root = root || item.parentNode;
-      if ( !ev.shiftKey ) {
+
+      if ( !multipleSelect || !ev.shiftKey ) {
         root.querySelectorAll(className).forEach(function(i) {
           Utils.$removeClass(i, 'gui-active');
         });
@@ -890,11 +903,11 @@
         },
         build: function(el) {
           // TODO: Custom Icon Size
+          // TODO: Set value (selected items)
 
           var selected = [];
           function handleItemClick(ev, item, idx) {
             selected = handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected);
-            console.warn(selected);
           }
 
           el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
@@ -936,6 +949,7 @@
         },
         build: function(el) {
           // TODO: Custom Icon Size
+          // TODO: Set value (selected items)
 
           var selected = [];
           function handleItemClick(ev, item, idx) {
@@ -1004,95 +1018,72 @@
         }
       },
 
-      'gui-list-view': {
-        parameters: [],
-        events: ['activate', 'select', 'scroll'],
-        bind: function(el, evName, callback, params) {
-          if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
-            evName = '_' + evName;
-          }
-          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          var headContainer, bodyContainer;
+      'gui-list-view': (function() {
 
-          var iconSize = parseInt(el.getAttribute('data-icon-size'), 10) || 32;
+        function resize(rel, w) {
+          var flex = w.toString() + 'px';
+          rel.style['webkitFlexBasis'] = flex;
+          rel.style['mozFflexBasis'] = flex;
+          rel.style['msFflexBasis'] = flex;
+          rel.style['oFlexBasis'] = flex;
+          rel.style['flexBasis'] = flex;
+        }
+
+        function createEntry(v) {
+          var label = v.label || '';
+          if ( v.label ) {
+            delete v.label;
+          }
+
+          var nel = createElement('gui-list-view-column', v);
+          nel.appendChild(document.createTextNode(label));
+          setFlexbox(nel, null, null, 1, 0);
+          return nel;
+        }
+
+        function createResizers(el) {
+          var head = el.querySelector('gui-list-view-columns');
+          var body = el.querySelector('gui-list-view-rows');
+          var cols = head.querySelectorAll('gui-list-view-column');
+
+          head.querySelectorAll('gui-list-view-column-resizer').forEach(function(rel) {
+            Utils.$remove(rel);
+          });
+
+          cols.forEach(function(col, idx) {
+            var attr = col.getAttribute('data-resizable');
+            if ( attr === 'true' ) {
+              var resizer = document.createElement('gui-list-view-column-resizer');
+              col.appendChild(resizer);
+
+              var startWidth = 0;
+              var maxWidth   = 0;
+
+              createDrag(resizer, function(ev) {
+                startWidth = col.offsetWidth;
+                maxWidth = el.offsetWidth / 2; // FIXME
+              }, function(ev, dx, dy) {
+                var newWidth = startWidth + dx;
+                if ( !isNaN(newWidth) ) { //&& newWidth > 0 && newWidth < maxWidth ) {
+                  resize(col, newWidth);
+
+                  // FIXME: Super slow!
+                  body.querySelectorAll('gui-list-view-row').forEach(function(row) {
+                    resize(row.children[idx], newWidth);
+                  });
+                }
+              });
+            }
+          });
+        }
+
+        function initRow(el, row) {
+          var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column').length;
+          var headContainer = el.querySelector('gui-list-view-head');
           var multipleSelect = el.getAttribute('data-multiple');
           multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
-          var selected = [];
-
-          var head = el.querySelector('gui-list-view-columns');
-          var body = el.querySelector('gui-list-view-rows');
-
-          function handleRowClick(ev, row, idx) {
-            selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', selected);
-          }
-
-          function resize(rel, w) {
-            var flex = w.toString() + 'px';
-            rel.style['webkitFlexBasis'] = flex;
-            rel.style['mozFflexBasis'] = flex;
-            rel.style['msFflexBasis'] = flex;
-            rel.style['oFlexBasis'] = flex;
-            rel.style['flexBasis'] = flex;
-          }
-
-          if ( head ) {
-            headContainer = document.createElement('gui-list-view-head');
-            headContainer.appendChild(head);
-            if ( body ) {
-              el.insertBefore(headContainer, body);
-            } else {
-              el.appendChild(headContainer);
-            }
-
-            var cols = head.querySelectorAll('gui-list-view-column');
-            cols.forEach(function(col, idx) {
-              var attr = col.getAttribute('data-resizable');
-              if ( attr === 'true' ) {
-                var resizer = document.createElement('gui-list-view-column-resizer');
-                col.appendChild(resizer);
-
-                var startWidth = 0;
-                var maxWidth   = 0;
-
-                createDrag(resizer, function(ev) {
-                  startWidth = col.offsetWidth;
-                  maxWidth = el.offsetWidth / 2; // FIXME
-                }, function(ev, dx, dy) {
-                  var newWidth = startWidth + dx;
-                  if ( !isNaN(newWidth) ) { //&& newWidth > 0 && newWidth < maxWidth ) {
-                    resize(col, newWidth);
-
-                    // FIXME: Super slow!
-                    body.querySelectorAll('gui-list-view-row').forEach(function(row) {
-                      resize(row.children[idx], newWidth);
-                    });
-                  }
-                });
-              }
-            });
-          }
-          if ( body ) {
-            bodyContainer = document.createElement('gui-list-view-body');
-            bodyContainer.appendChild(body);
-            el.appendChild(bodyContainer);
-          }
-
-          if ( headContainer ) {
-            el.addEventListener('scroll', function() {
-              headContainer.style.top = el.scrollTop + 'px';
-            }, false);
-
-            var cols = 0;
-            el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
-              setFlexbox(cel, null, null, 1, 0);
-              cols++;
-            });
-          }
-
-          el.querySelectorAll('gui-list-view-body gui-list-view-column').forEach(function(cel, idx) {
+          row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
             var x = cols ? idx % cols : idx;
             var grow = cols ? 1 : 0;
             var shrink = cols ? 1 : 0;
@@ -1113,22 +1104,118 @@
               cel.insertBefore(span, text);
               cel.removeChild(text);
             }
-
           });
 
-          el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(cel, idx) {
-            console.warn(cel.firstChild, cel.firstChild.nodeType);
+          row.addEventListener('click', function(ev) {
+            var idx = Utils.$index(row);
+            el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
+            el.dispatchEvent(new CustomEvent('_select', {detail: {entries: el._selected}}));
+          }, false);
 
-            cel.addEventListener('click', function(ev) {
-              handleRowClick(ev, cel, idx);
-              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
-            }, false);
-            cel.addEventListener('dblclick', function(ev) {
-              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
-            }, false);
-          });
+          row.addEventListener('dblclick', function(ev) {
+            el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: el._selected}}));
+          }, false);
         }
-      }
+
+        return {
+          parameters: [],
+          events: ['activate', 'select', 'scroll'],
+          bind: function(el, evName, callback, params) {
+            if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+              evName = '_' + evName;
+            }
+            el.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          },
+          set: function(el, param, value) {
+            if ( param === 'columns' ) {
+              var head = el.querySelector('gui-list-view-columns');
+              var row = head.querySelector('gui-list-view-row');
+              if ( row ) {
+                Utils.$empty(row);
+              } else {
+                row = document.createElement('gui-list-view-row');
+              }
+
+              value.forEach(function(v) {
+                row.appendChild(createEntry(v));
+              });
+
+              head.appendChild(row);
+
+              createResizers(el);
+            }
+          },
+          call: function(el, method, args) {
+            if ( method === 'add' ) {
+              var body = el.querySelector('gui-list-view-rows');
+              var entries = args[0];
+              if ( !(entries instanceof Array) ) {
+                entries = [entries];
+              }
+
+              entries.forEach(function(e) {
+                var row = document.createElement('gui-list-view-row');
+                e.forEach(function(se) {
+                  row.appendChild(createEntry(se));
+                });
+                body.appendChild(row);
+
+                initRow(el, row);
+              });
+
+            } else if ( method === 'remove' ) {
+              var findId = args[0];
+              var findKey = args[1] || 'id';
+              var q = 'data-' + findKey + '="' + findId + '"';
+
+              el.querySelectorAll('gui-list-view-rows > gui-list-view-row[' + q + ']').forEach(function(cel) {
+                Utils.$remove(cel);
+              });
+            } else if ( method === 'clear' ) {
+              Utils.$empty(el.querySelector('gui-list-view-rows'));
+            }
+          },
+          build: function(el) {
+            // TODO: Set value (selected items)
+            var headContainer, bodyContainer;
+            var head = el.querySelector('gui-list-view-columns');
+            var body = el.querySelector('gui-list-view-rows');
+
+            el._selected = [];
+
+            if ( head ) {
+              headContainer = document.createElement('gui-list-view-head');
+              headContainer.appendChild(head);
+              if ( body ) {
+                el.insertBefore(headContainer, body);
+              } else {
+                el.appendChild(headContainer);
+              }
+              createResizers(el);
+            }
+
+            if ( body ) {
+              bodyContainer = document.createElement('gui-list-view-body');
+              bodyContainer.appendChild(body);
+              el.appendChild(bodyContainer);
+            }
+
+            if ( headContainer ) {
+              el.addEventListener('scroll', function() {
+                headContainer.style.top = el.scrollTop + 'px';
+              }, false);
+
+              el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
+                setFlexbox(cel, null, null, 1, 0);
+              });
+            }
+
+            el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(row) {
+              initRow(el, row);
+            });
+          }
+        };
+      })()
 
     };
   })();
@@ -1137,6 +1224,9 @@
   // UIELEMENT CLASS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Base UIElement Class
+   */
   function UIElement(el) {
     this.$element = el || null;
     this.tagName = el ? el.tagName.toLowerCase() : null;
@@ -1173,6 +1263,43 @@
       }
     }
     return null;
+  };
+
+  UIElement.prototype.append = function(el) {
+    if ( el instanceof UIElement ) {
+      el = el.$element;
+    }
+    this.$element.appendChild(el);
+  };
+
+  /**
+   * Extended UIElement for ListView, TreeView, IconView, Select, SelectList
+   */
+  function UIElementDataView() {
+    UIElement.apply(this, arguments);
+  }
+
+  UIElementDataView.prototype = Object.create(UIElement.prototype);
+  UIElementDataView.constructor = UIElement;
+
+  UIElementDataView.prototype._call = function(method, args) {
+    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].call ) {
+      var cargs = ([this.$element, method, args]);//.concat(args);
+      CONSTRUCTORS[this.tagName].call.apply(this, cargs);
+    }
+    return this;
+  };
+
+  UIElementDataView.prototype.clear = function() {
+    return this._call('clear', []);
+  };
+
+  UIElementDataView.prototype.add = function(props) {
+    return this._call('add', [props]);
+  };
+
+  UIElementDataView.prototype.remove = function(id, key) {
+    return this._call('remove', [id, key]);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1266,15 +1393,10 @@
   UIScheme.prototype.find = function(win, id, root) {
     root = root || win._getRoot();
     var el = root.querySelector('[data-id="' + id + '"]');
+    if ( el && (['gui-list-view', 'gui-tree-view', 'gui-icon-view', 'gui-select', 'gui-select-list']).indexOf(el.tagName.toLowerCase()) >= 0 ) {
+      return new UIElementDataView(el);
+    }
     return new UIElement(el);
-  };
-
-  UIScheme.prototype.getWindow = function(id) {
-    return this.fragments[id];
-  };
-
-  UIScheme.prototype.getFragment = function(id) {
-    return this.fragments[id];
   };
 
   /////////////////////////////////////////////////////////////////////////////
