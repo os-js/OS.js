@@ -23,54 +23,57 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
 
 <application-dialog data-id="File">
   <gui-vbox>
-    <gui-vbox-container data-shrink="1">
+    <gui-vbox-container data-shrink="1" data-fill="true" data-basis="30px">
       <gui-hbox>
-        <gui-hbox-container data-shrink="1">
+        <gui-hbox-container data-shrink="1" data-expand="true">
           <gui-button></gui-button>
         </gui-hbox-container>
-        <gui-hbox-container data-fill="1">
+        <gui-hbox-container data-grow="1" data-expand="true">
           <gui-select></gui-select>
         </gui-hbox-container>
       </gui-hbox>
     </gui-vbox-container>
 
     <gui-vbox-container data-grow="1" data-fill="true">
-      <gui-file-view></gui-file-view>
+      <gui-file-view>
+        <gui-list-view>
+        </gui-list-view>
+      </gui-file-view>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
 
 <application-dialog data-id="FileProgress">
   <gui-vbox>
-    <gui-vbox-container data-shrink="1">
+    <gui-vbox-container data-grow="1">
       <gui-label>LBL_LOADING</gui-label>
     </gui-vbox-container>
 
-    <gui-vbox-container data-shrink="1">
+    <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-progress-bar></gui-progress-bar>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonCancel" data-disabled="true">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
@@ -81,29 +84,29 @@
       <gui-label>DIALOG_UPLOAD_DESC</gui-label>
     </gui-vbox-container>
 
-    <gui-vbox-container data-shrink="1">
+    <gui-vbox-container data-grow="1">
       <gui-file-upload></gui-file-upload>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
 
 <application-dialog data-id="FileInfo">
   <gui-vbox>
-    <gui-vbox-container data-grow="1" fill="true">
+    <gui-vbox-container data-grow="1" data-fill="true">
       <gui-textarea></gui-textarea>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
@@ -114,15 +117,15 @@
       <gui-label>DIALOG_INPUT_TITLE</gui-label>
     </gui-vbox-container>
 
-    <gui-vbox-container data-shrink="1">
+    <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-text></gui-text>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
@@ -134,9 +137,9 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
@@ -148,11 +151,11 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonYes">LBL_YES</gui-button>
         <gui-button data-id="ButtonNo">LBL_NO</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
@@ -172,26 +175,26 @@
           </gui-vbox>
         </gui-hbox-container>
 
-        <gui-hbox-container>
+        <gui-hbox-container data-grow="1">
           <gui-vbox>
-            <gui-vbox-container shrink="1">
+            <gui-vbox-container shrink="1" data-expand="true">
               <gui-label>Red</gui-label>
             </gui-vbox-container>
-            <gui-vbox-container shrink="1">
+            <gui-vbox-container shrink="1" data-expand="true">
               <gui-slider></gui-slider>
             </gui-vbox-container>
 
-            <gui-vbox-container shrink="1">
+            <gui-vbox-container shrink="1" data-expand="true">
               <gui-label>Green</gui-label>
             </gui-vbox-container>
-            <gui-vbox-container shrink="1">
+            <gui-vbox-container shrink="1" data-expand="true">
               <gui-slider></gui-slider>
             </gui-vbox-container>
 
-            <gui-vbox-container shrink="1">
+            <gui-vbox-container shrink="1" data-expand="true">
               <gui-label>Blue</gui-label>
             </gui-vbox-container>
-            <gui-vbox-container shrink="1">
+            <gui-vbox-container shrink="1" data-expand="true">
               <gui-slider></gui-slider>
             </gui-vbox-container>
           </gui-vbox>
@@ -200,22 +203,22 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>
 
 <application-dialog data-id="Font">
   <gui-vbox>
-    <gui-vbox-container data-grow="1">
+    <gui-vbox-container data-grow="1" data-fill="true">
       <gui-hbox>
-        <gui-hbox-container data-fill="1" data-fill="true">
+        <gui-hbox-container data-grow="1" data-shrink="1" data-basis="50%" data-fill="true">
           <gui-select-list></gui-select-list>
         </gui-hbox-container>
-        <gui-hbox-container data-shrink="1" data-fill="true">
+        <gui-hbox-container data-grow="1" data-shrink="1" data-basis="50%" data-fill="true">
           <gui-select-list></gui-select-list>
         </gui-hbox-container>
       </gui-hbox>
@@ -226,10 +229,10 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-button-container>
+      <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
-      </gui-button-container>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-dialog>

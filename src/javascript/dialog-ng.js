@@ -103,7 +103,7 @@
   function FileProgressDialog(args, callback) {
     DialogWindow.apply(this, ['FileProgressDialog', {
       width: 400,
-      height: 400
+      height: 100
     }, args, callback]);
   }
 
@@ -121,7 +121,7 @@
   function FileUploadDialog(args, callback) {
     DialogWindow.apply(this, ['FileUploadDialog', {
       width: 400,
-      height: 400
+      height: 100
     }, args, callback]);
   }
 
@@ -175,7 +175,7 @@
   function InputDialog(args, callback) {
     DialogWindow.apply(this, ['InputDialog', {
       width: 400,
-      height: 400
+      height: 120
     }, args, callback]);
   }
 
@@ -193,7 +193,7 @@
   function AlertDialog(args, callback) {
     DialogWindow.apply(this, ['AlertDialog', {
       width: 400,
-      height: 400
+      height: 100
     }, args, callback]);
   }
 
@@ -211,7 +211,7 @@
   function ConfirmDialog(args, callback) {
     DialogWindow.apply(this, ['ConfirmDialog', {
       width: 400,
-      height: 400
+      height: 100
     }, args, callback]);
   }
 
@@ -229,7 +229,7 @@
   function ColorDialog(args, callback) {
     DialogWindow.apply(this, ['ColorDialog', {
       width: 400,
-      height: 400
+      height: 220
     }, args, callback]);
   }
 
@@ -247,7 +247,7 @@
   function FontDialog(args, callback) {
     DialogWindow.apply(this, ['FontDialog', {
       width: 400,
-      height: 400
+      height: 300
     }, args, callback]);
   }
 
@@ -277,6 +277,12 @@
   };
 
   OSjs.Core.DialogWindow      = DialogWindow;
+
+  OSjs.GUI.debugDialogs = function() {
+    Object.keys(Dialogs).forEach(function(d) {
+      OSjs.GUI.createDialog(d);
+    });
+  };
 
   OSjs.GUI.createDialog = function(className, args, callback, parentObj) {
     var win = new Dialogs[className](args, callback);
