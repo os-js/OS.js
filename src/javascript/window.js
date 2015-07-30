@@ -159,7 +159,6 @@
       this._$warning      = null;                 // DOMElement: Warning message
 
       this._opts          = opts;                 // Construction opts
-      this._rendered      = false;                // If Window has been initially rendered
       this._app           = appRef || null;       // Reference to Application Window was created from
       this._scheme        = schemeRef || null;    // Reference to UIScheme
       this._destroyed     = false;                // If Window has been destroyed
@@ -175,8 +174,6 @@
       this._tmpPosition   = null;
       this._children      = [];                   // Child Windows
       this._parent        = null;                 // Parent Window reference
-      this._guiElements   = [];                   // Added GUI Elements
-      this._guiElement    = null;                 // Currently selected GUI Element
       this._disabled      = true;                 // If Window is currently disabled
       this._sound         = null;                 // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
@@ -574,12 +571,6 @@
 
   Window.prototype._inited = function() {
     console.info('OSjs::Core::Window::_inited()', this._name);
-    if ( !this._rendered ) {
-      this._updateGUIElements();
-    }
-    this._rendered = true;
-
-    this._updateIframeFix();
   };
 
   /**
@@ -623,17 +614,6 @@
         self._parent._removeChild(self);
       }
       self._parent = null;
-
-      if ( self._guiElements && self._guiElements.length ) {
-        self._guiElements.forEach(function(el, i) {
-          if ( el ) {
-            el.destroy();
-          }
-          self._guiElements[i] = null;
-        });
-      }
-      self._guiElements = [];
-
       self._removeChildren();
     }
 
@@ -747,212 +727,6 @@
         }
       });
     }
-  };
-
-  /**
-   * Remove a GUIElement
-   *
-   * @param   OSjs.Core.GUIElement     gel       GUI Element reference
-   *
-   * @return  boolean                           On success
-   *
-   * @method  Window::_removeGUIElement()
-   */
-  Window.prototype._removeGUIElement = function(gel) {
-    var self = this;
-    this._guiElements.forEach(function(iter, i) {
-      var destroy = false;
-
-      if ( iter ) {
-        if ( gel instanceof OSjs.Core.GUIElement ) {
-          if ( iter.id === gel.id ) {
-            destroy = i;
-          }
-        } else {
-          if ( iter.id === gel || iter.name === gel ) {
-            destroy = i;
-          }
-        }
-      }
-
-      if ( destroy !== false ) {
-        if ( self._guiElements[destroy] ) {
-          self._guiElements[destroy].destroy();
-          self._guiElements[destroy] = null;
-        }
-        return false;
-      }
-
-      return true;
-    });
-  };
-
-  /**
-   * Sends an update command to all GUI Elements
-   *
-   * @return  void
-   *
-   * @method  Window::_updateGUIElements()
-   */
-  Window.prototype._updateGUIElements = function(force) {
-    force = (force === true);
-    this._guiElements.forEach(function(el, i) {
-      if ( el ) {
-        el.update(force);
-      }
-    });
-  };
-
-  /**
-   * Update IFrame GUIElement "fix"
-   *
-   * @return  void
-   *
-   * @method  Window::_updateIframeFix()
-   */
-  Window.prototype._updateIframeFix = function() {
-    if ( this._$iframefix && this._iframeFixEl ) {
-      var fel = this._iframeFixEl.$element;
-      if ( fel ) {
-        this._$iframefix.style.left   = fel.offsetLeft.toString()   + 'px';
-        this._$iframefix.style.top    = fel.offsetTop.toString()    + 'px';
-        this._$iframefix.style.width  = fel.offsetWidth.toString()  + 'px';
-        this._$iframefix.style.height = fel.offsetHeight.toString() + 'px';
-      }
-    }
-  };
-
-  /**
-   * Adds a GUIElement
-   *
-   * @param   GUIElement      gel           GUIElement reference
-   * @param   DOMElement      parentNode    DOM Node to add to
-   * @param   GUIElement      parentGel     (Optional) The parent GUIElement
-   *
-   * @return  GUIElement                    On success or 'false'
-   *
-   * @method  Window::_addGUIElement()
-   */
-  Window.prototype._addGUIElement = function(gel, parentNode, parentGel) {
-    var self = this;
-
-    // Fixes problems with iframes blocking certain events
-    function _fixIframe() {
-      self._$iframefix = document.createElement('div');
-      self._$iframefix.className = 'WindowIframeFix';
-      self._$iframefix.onmousemove = Utils._preventDefault;
-      self._$iframefix.onclick = function() {
-        self._focus();
-      };
-      self._$element.appendChild(self._$iframefix);
-      self._iframeFixEl = gel;
-
-      self._addHook('move', function() {
-        if ( self._$iframefix && self._state.focused ) {
-          self._$iframefix.style.display = 'block';
-        }
-      });
-      self._addHook('moved', function() {
-        if ( self._$iframefix && self._state.focused ) {
-          self._$iframefix.style.display = 'none';
-        }
-      });
-
-      self._addHook('resized', function() {
-        self._updateIframeFix();
-      });
-      self._addHook('blur', function() {
-        self._updateIframeFix();
-      });
-      self._updateIframeFix();
-    }
-
-    // Make sure all events are properly set up for various GUI elements
-    function _addHooks() {
-      if ( gel.opts ) {
-        if ( gel.opts.focusable ) {
-          gel._addHook('focus', function() {
-            self._guiElement = this;
-          });
-          self._addHook('blur', function() {
-            gel.blur();
-          });
-        }
-
-        // NOTE: self is a fix for iframes blocking mousemove events (ex. moving windows)
-        //if ( gel.opts.isIframe ) {
-        if ( (gel instanceof OSjs.GUI.RichText) || gel.opts.isIframe ) {
-          _fixIframe();
-        }
-
-        // NOTE: Fixes for Iframe "bugs"
-        gel._addHook('focus', function() {
-          OSjs.API.blurMenu();
-          self._focus();
-        });
-
-        var overlay = null, elpos;
-        self._addHook('resize', function() {
-          if ( !overlay ) {
-            elpos = Utils.$position(gel.$element);
-
-            overlay                   = document.createElement('div');
-            overlay.className         = 'IFrameResizeFixer';
-            overlay.style.position    = 'absolute';
-            overlay.style.zIndex      = 9999999999;
-            document.body.appendChild(overlay);
-          }
-          overlay.style.top      = elpos.top + 'px';
-          overlay.style.left     = elpos.left + 'px';
-          overlay.style.width    = (gel.$element.offsetWidth||0) + 'px';
-          overlay.style.height   = (gel.$element.offsetHeight||0) + 'px';
-        });
-
-        self._addHook('resized', function() {
-          if ( overlay && overlay.parentNode ) {
-            overlay.parentNode.removeChild(overlay);
-            overlay = null;
-          }
-        });
-      }
-
-      // NOTE: Fixes problems with GUIElements values not setting properly
-      if ( (gel instanceof OSjs.GUI.Tabs) ) {
-        gel._addHook('select', function() {
-          self._updateGUIElements(true);
-        });
-      }
-    }
-
-    if ( !parentNode && (parentNode instanceof OSjs.Core.GUIElement) ) {
-      parentNode = parentGel.$element;
-    }
-
-    if ( !parentNode ) {
-      throw new Error('Adding a GUI Element requires a parentNode');
-    }
-
-    if ( gel instanceof OSjs.Core.GUIElement ) {
-      if ( parentGel ) {
-        parentGel._addChild(gel.name);
-        gel._setParent(parentGel.name);
-      }
-      gel._setWindow(this);
-      gel._setTabIndex(this._guiElements.length + 1);
-
-      _addHooks();
-
-      this._guiElements.push(gel);
-      parentNode.appendChild(gel.getRoot());
-
-      if ( this._rendered ) {
-        gel.update();
-      }
-
-      return gel;
-    }
-
-    return false;
   };
 
   //
@@ -1621,29 +1395,7 @@
    * @method  Window::_nextTabIndex()
    */
   Window.prototype._nextTabIndex = function() {
-    if ( this._guiElement ) {
-      if ( this._guiElement.tagName === 'textarea' ) {
-        return;
-      }
-    }
-
-    var found = null;
-    var next  = (this._guiElement ? (this._guiElement.tabIndex || -1) : -1) + 1;
-
-    console.debug('Window::_nextTabIndex()', next);
-    if ( next <= 0 ) { return; }
-    if ( next > this._guiElements.length ) { next = 1; }
-
-    this._guiElements.forEach(function(iter) {
-      if ( iter && iter.opts.focusable && iter.tabIndex === next ) {
-        found = iter;
-        return false;
-      }
-    });
-    console.debug('Window::_nextTabIndex()', found);
-    if ( found ) {
-      found.focus();
-    }
+    // TODO
   };
 
   //
@@ -1682,9 +1434,7 @@
     }
 
     if ( type === 'keydown' ) {
-      if ( this._guiElement ) {
-        this._guiElement.onGlobalKeyPress(ev);
-      }
+      // TODO
     }
   };
 
@@ -1881,25 +1631,6 @@
    */
   Window.prototype._getRoot = function() {
     return this._$root;
-  };
-
-  /**
-   * Get a GUIElement by name
-   *
-   * @param   String      n     GUIElement name
-   *
-   * @return  GUIElement        Element if found or 'null'
-   */
-  Window.prototype._getGUIElement = function(n) {
-    var result = null;
-    this._guiElements.forEach(function(iter, i) {
-      if (iter && (iter.id === n || iter.name === n) ) {
-        result = iter;
-        return false;
-      }
-      return true;
-    });
-    return result;
   };
 
   /**

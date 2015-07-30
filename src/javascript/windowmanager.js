@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Process, Window, DialogWindow) {
+(function(Utils, API, Process, Window) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -453,7 +453,7 @@
 
     w.init(this, w._app, w._scheme);
     attachWindowEvents(w, this);
-    if ( focus === true || (w instanceof DialogWindow) ) {
+    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
       w._focus();
     }
     w._inited();
@@ -975,4 +975,4 @@
 
   OSjs.Core.getWindowManager  = getWMInstance;
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Process, OSjs.Core.Window, OSjs.Core.DialogWindow);
+})(OSjs.Utils, OSjs.API, OSjs.Core.Process, OSjs.Core.Window);

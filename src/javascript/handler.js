@@ -62,6 +62,7 @@
     this.connection = new OSjs.Helpers.ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
     this.packages   = new OSjs.Helpers.PackageManager(Utils.checkdir(this.config.Core.MetadataURI));
     this.user       = new OSjs.Helpers.UserSession(this.config.Core.DefaultUser);
+    this.dialogs    = null;
 
     _handlerInstance = this;
   };
@@ -116,9 +117,17 @@
    * @method  _Handler::boot()
    */
   _Handler.prototype.boot = function(callback) {
+    var self = this;
     console.info('OSjs::_Handler::boot()');
-    this.packages.load(function(presult, perror) {
-      callback(presult, perror);
+
+    // TODO
+    var url = '/js/dialogs/schemes.html';
+    var scheme = new OSjs.GUI.Scheme(url);
+    scheme.load(function(error, doc) {
+      self.dialogs = scheme;
+      self.packages.load(function(presult, perror) {
+        callback(presult, perror);
+      });
     });
   };
 

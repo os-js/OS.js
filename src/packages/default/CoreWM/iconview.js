@@ -34,6 +34,8 @@
   // ICON VIEW
   /////////////////////////////////////////////////////////////////////////////
 
+  return; // TODO
+
   var DesktopIconView = function(wm) {
     var self = this;
     var opts = {

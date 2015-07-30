@@ -476,6 +476,7 @@
   };
 
   CoreWM.prototype.initIconView = function() {
+    return; // TODO
     var self = this;
 
     function _setForegroundColor() {

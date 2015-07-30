@@ -50,6 +50,29 @@
   ApplicationnguiWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
 
+    /*
+    scheme.render(this, 'MyWindowTest', root);
+
+    var icon = '/themes/icons/default/16x16/places/folder_home.png';
+    scheme.find(this, 'MyListView').add([
+      [{icon: icon, label: 'Foo'}],
+      [{icon: icon, label: 'Foo'}],
+      [{icon: icon, label: 'Foo'}],
+      [{icon: icon, label: 'Foo'}]
+    ]);
+
+    scheme.find(this, 'MyListView2').set('columns', [
+      {label: 'Filename', resizable: true, basis: '100px'},
+      {label: 'Type', resizable: true},
+      {label: 'Size', basis: '50px'}
+    ]).add([
+      [{label: 'Foo'}, {label: 'Bar'}, {label: 'Baz'}],
+      [{label: 'Foo'}, {label: 'Bar'}, {label: 'Baz'}],
+      [{label: 'Foo'}, {label: 'Bar'}, {label: 'Baz'}],
+      [{label: 'Foo'}, {label: 'Bar'}, {label: 'Baz'}]
+    ]);
+    */
+
     scheme.render(this, 'MyWindowID', root);
 
     scheme.find(this, 'MyButtonOne').on('click', function() {
@@ -116,7 +139,8 @@
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
-    var scheme = new OSjs.GUING.Scheme(this);
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = new OSjs.GUI.Scheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationnguiWindow(self, metadata, scheme));
     });

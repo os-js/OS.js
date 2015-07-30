@@ -16,213 +16,25 @@
       </gui-menu-bar>
     </gui-vbox-container>
 
-    <!--
-    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-      <gui-toolbar>
-        <gui-button data-label="Back"></gui-button>
-        <gui-button data-label="Forward"></gui-button>
-        <gui-text></gui-text>
-      </gui-toolbar>
-    </gui-vbox-container>
-    -->
-
     <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
       <gui-paned-view>
         <gui-paned-view-container data-basis="150px">
-          <gui-list-view>
+          <gui-list-view data-id="MyListView">
+            <gui-list-view-columns>
+            </gui-list-view-columns>
+
             <gui-list-view-rows>
-
-              <gui-list-view-row>
-                <gui-list-view-column data-icon="/themes/icons/default/16x16/places/folder_home.png">Some List Item</gui-list-view-column>
-              </gui-list-view-row>
-
-              <gui-list-view-row>
-                <gui-list-view-column data-icon="/themes/icons/default/16x16/places/folder_home.png">Some List Item</gui-list-view-column>
-              </gui-list-view-row>
-
             </gui-list-view-rows>
           </gui-list-view>
         </gui-paned-view-container>
 
         <gui-paned-view-container>
           <gui-file-view>
-            <gui-list-view>
+            <gui-list-view data-id="MyListView2">
               <gui-list-view-columns>
-                <gui-list-view-row>
-                  <gui-list-view-column data-shrink="1" data-grow="0">A</gui-list-view-column>
-                  <gui-list-view-column data-basis="100px" data-resizable="true">A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
               </gui-list-view-columns>
 
               <gui-list-view-rows>
-
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column data-icon="/themes/icons/default/16x16/places/folder_home.png">A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column data-icon="/themes/icons/default/16x16/places/folder_home.png">A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-                <gui-list-view-row>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                  <gui-list-view-column>A</gui-list-view-column>
-                </gui-list-view-row>
-
               </gui-list-view-rows>
             </gui-list-view>
           </gui-file-view>
@@ -231,9 +43,10 @@
     </gui-vbox-container>
 
 
-    <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
       <gui-statusbar></gui-statusbar>
-    </gui-hbox-container>
+    </gui-vbox-container>
+  </gui-vbox>
 </application-window>
 
 <application-window data-id="MyWindowID">

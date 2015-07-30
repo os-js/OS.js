@@ -187,36 +187,6 @@
   };
 
   /**
-   * Wrapper for creating dialogs
-   *
-   * Using this function will add them as children, making sure they will
-   * be destroyed on close.
-   *
-   * @param   String    className     ClassName in OSjs.Dialogs namespace
-   * @param   Array     args          Array of arguments for constructor
-   * @param   Window    parentClass   The parent window
-   *
-   * @return  Window                  Or false on error
-   *
-   * @method  Application::_createDialog()
-   */
-  Application.prototype._createDialog = function(className, args, parentClass) {
-    if ( OSjs.Dialogs[className] ) {
-
-      var w = Object.create(OSjs.Dialogs[className].prototype);
-      OSjs.Dialogs[className].apply(w, args);
-
-      if ( parentClass && (parentClass instanceof OSjs.Core.Window) ) {
-        parentClass._addChild(w);
-      }
-
-      this._addWindow(w);
-      return w;
-    }
-    return false;
-  };
-
-  /**
    * Add a window to the application
    *
    * This will automatically add it to the WindowManager and show it to you

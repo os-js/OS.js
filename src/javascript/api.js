@@ -1279,11 +1279,13 @@
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       try {
-        var w = new OSjs.Dialogs.ErrorMessage();
-        w.setError(title, message, error, exception, bugreport);
-        wm.addWindow(w);
-
-        return w;
+        return OSjs.Dialogs.createDialog('Alert', {
+          title: title,
+          message: message,
+          error: error,
+          exception: exception,
+          bugreport: bugreport
+        });
       } catch ( e ) {
         console.warn('An error occured while creating Dialogs.ErrorMessage', e);
         console.warn('stack', e.stack);
