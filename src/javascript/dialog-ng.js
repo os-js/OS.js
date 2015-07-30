@@ -53,8 +53,6 @@
     args = args || {};
     callback = callback || function() {};
 
-    opts.title = opts.title || args.title;
-
     Window.apply(this, [className + DialogIndex, opts]);
 
     this._properties.gravity          = 'center';
@@ -123,8 +121,9 @@
    * @extends DialogWindow
    */
   function ApplicationChooserDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['ApplicationChooserDialog', {
-      title: API._('DIALOG_APPCHOOSER_TITLE'),
+      title: args.title || API._('DIALOG_APPCHOOSER_TITLE'),
       width: 400,
       height: 400
     }, args, callback]);
@@ -145,8 +144,9 @@
    * @extends DialogWindow
    */
   function FileProgressDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['FileProgressDialog', {
-      title: API._('DIALOG_FILEPROGRESS_TITLE'),
+      title: args.title || API._('DIALOG_FILEPROGRESS_TITLE'),
       icon: 'actions/document-send.png',
       width: 400,
       height: 100
@@ -164,8 +164,9 @@
    * @extends DialogWindow
    */
   function FileUploadDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['FileUploadDialog', {
-      title: API._('DIALOG_UPLOAD_TITLE'),
+      title: args.title || API._('DIALOG_UPLOAD_TITLE'),
       icon: 'actions/filenew.png',
       width: 400,
       height: 100
@@ -208,8 +209,9 @@
    * @extends DialogWindow
    */
   function FileInfoDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['FileInfoDialog', {
-      title: API._('DIALOG_FILEINFO_TITLE'),
+      title: args.title || API._('DIALOG_FILEINFO_TITLE'),
       width: 400,
       height: 400
     }, args, callback]);
@@ -226,8 +228,9 @@
    * @extends DialogWindow
    */
   function InputDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['InputDialog', {
-      title: API._('DIALOG_INPUT_TITLE'),
+      title: args.title || API._('DIALOG_INPUT_TITLE'),
       icon: 'status/dialog-information.png',
       width: 400,
       height: 120
@@ -245,8 +248,9 @@
    * @extends DialogWindow
    */
   function AlertDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['AlertDialog', {
-      title: API._('DIALOG_ALERT_TITLE'),
+      title: args.title || API._('DIALOG_ALERT_TITLE'),
       icon: 'status/dialog-warning.png',
       width: 400,
       height: 100
@@ -263,7 +267,7 @@
   function ConfirmDialog(args, callback) {
     args = args || {};
     DialogWindow.apply(this, ['ConfirmDialog', {
-      title: API._('DIALOG_CONFIRM_TITLE'),
+      title: args.title || API._('DIALOG_CONFIRM_TITLE'),
       icon: 'status/dialog-question.png',
       width: 400,
       height: 100
@@ -283,8 +287,9 @@
    * @extends DialogWindow
    */
   function ErrorDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['ErrorDialog', {
-      title: API._('DIALOG_CONFIRM_TITLE'),
+      title: args.title || API._('DIALOG_CONFIRM_TITLE'),
       icon: 'status/dialog-error.png',
       width: 400,
       height: 400
@@ -300,7 +305,35 @@
   ErrorDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    this.scheme.find(this, 'Message').set('value', this.args.title);
+    var exception = this.args.exception || {};
+    var error = '';
+    if ( exception.stack ) {
+      error = exception.stack;
+    } else {
+      if ( !Object.keys(exception).length ) {
+        error = '<unknown error>';
+      } else {
+        error = exception.name;
+        error += '\nFilename: ' + exception.fileName || '<unknown>';
+        error += '\nLine: ' + exception.lineNumber;
+        error += '\nMessage: ' + exception.message;
+        if ( exception.extMessage ) {
+          error += '\n' + exception.extMessage;
+        }
+      }
+    }
+
+    this.scheme.find(this, 'Message').set('value', this.args.message);
+    this.scheme.find(this, 'Summary').set('value', this.args.error);
+    this.scheme.find(this, 'Trace').set('value', error);
+
+    if ( this.args.bugreport ) {
+      this.scheme.find(this, 'ButtonBugReport').on('click', function() {
+        window.open('//github.com/andersevenrud/OS.js-v2/issues/new');
+      });
+    } else {
+      this.scheme.find(this, 'ButtonBugReport').hide();
+    }
 
     return root;
   };
@@ -314,7 +347,7 @@
     args = args || {};
 
     DialogWindow.apply(this, ['ColorDialog', {
-      title: API._('DIALOG_COLOR_TITLE'),
+      title: args.title || API._('DIALOG_COLOR_TITLE'),
       icon: 'apps/gnome-settings-theme.png',
       width: 400,
       height: 220
@@ -387,8 +420,9 @@
    * @extends DialogWindow
    */
   function FontDialog(args, callback) {
+    args = args || {};
     DialogWindow.apply(this, ['FontDialog', {
-      title: API._('DIALOG_FONT_TITLE'),
+      title: args.title || API._('DIALOG_FONT_TITLE'),
       width: 400,
       height: 300
     }, args, callback]);
@@ -430,7 +464,7 @@
       FileInfo: FileInfoDialog,
       Input: InputDialog,
       Alert: AlertDialog,
-      Confirm: ConfirmDialog,
+      //Confirm: ConfirmDialog,
       //Color: ColorDialog,
       Error: ErrorDialog,
       Font: FontDialog

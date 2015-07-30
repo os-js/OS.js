@@ -1280,11 +1280,29 @@
   function UIElement(el) {
     this.$element = el || null;
     this.tagName = el ? el.tagName.toLowerCase() : null;
+    this.oldDisplay = null;
 
     if ( !el ) {
       console.warn('UIElement() was constructed without a DOM element');
     }
   }
+
+  UIElement.prototype.show = function() {
+    if ( this.$element ) {
+      this.$element.style.display = this.oldDisplay || '';
+    }
+    return this;
+  };
+
+  UIElement.prototype.hide = function() {
+    if ( this.$element ) {
+      if ( !this.oldDisplay ) {
+        this.oldDisplay = this.$element.style.display;
+      }
+      this.$element.style.display = 'none';
+    }
+    return this;
+  };
 
   UIElement.prototype.on = function(evName, callback, args) {
     if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].bind ) {
