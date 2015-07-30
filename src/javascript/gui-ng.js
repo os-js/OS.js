@@ -40,7 +40,7 @@
   //////////////////////////////////////////////////////////////////////
 
   window.OSjs = window.OSjs || {};
-  OSjs.GUING = OSjs.GUING || {};
+  OSjs.GUI = OSjs.GUI || {};
 
   var lastMenu;
 
@@ -1078,16 +1078,18 @@
         }
 
         function initRow(el, row) {
-          var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column').length;
+          var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
           var headContainer = el.querySelector('gui-list-view-head');
           var multipleSelect = el.getAttribute('data-multiple');
           multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
           row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
-            var x = cols ? idx % cols : idx;
-            var grow = cols ? 1 : 0;
-            var shrink = cols ? 1 : 0;
+            var cl = cols.length;
+            var x = cl ? idx % cl : idx;
+            var grow = cl ? 1 : 0;
+            var shrink = cl ? 1 : 0;
             var headerEl = headContainer ? headContainer.querySelectorAll('gui-list-view-column')[x] : null;
+
             setFlexbox(cel, null, null, grow, shrink, headerEl);
 
             var icon = cel.getAttribute('data-icon');
@@ -1147,6 +1149,7 @@
           },
           call: function(el, method, args) {
             if ( method === 'add' ) {
+              var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
               var body = el.querySelector('gui-list-view-rows');
               var entries = args[0];
               if ( !(entries instanceof Array) ) {
@@ -1306,8 +1309,8 @@
   // UISCHEME CLASS
   /////////////////////////////////////////////////////////////////////////////
 
-  function UIScheme(app) {
-    this.url = API.getApplicationResource(app, './scheme.html');
+  function UIScheme(url) {
+    this.url = url;
     this.scheme = null;
   }
 
@@ -1322,7 +1325,7 @@
         doc.appendChild(wrapper);
         self.scheme = doc;
 
-        cb(false, true);
+        cb(false, doc);
       },
       onerror: function() {
         cb('Failed to fetch scheme');
@@ -1330,9 +1333,14 @@
     });
   };
 
-  UIScheme.prototype.parse = function(id) {
-    var content = this.scheme.querySelector('application-window[data-id="' + id + '"]') ||
-                  this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
+  UIScheme.prototype.parse = function(id, type) {
+    var content;
+    if ( type ) {
+      content = this.scheme.querySelector(type + '[data-id="' + id + '"]');
+    } else {
+      content = this.scheme.querySelector('application-window[data-id="' + id + '"]') ||
+                this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
+    }
 
     if ( content ) {
       var node = content.cloneNode(true);
@@ -1354,10 +1362,10 @@
     return null;
   };
 
-  UIScheme.prototype.render = function(win, id, root) {
+  UIScheme.prototype.render = function(win, id, root, type) {
     root = root || win._getRoot();
 
-    var content = this.parse(id);
+    var content = this.parse(id, type);
     if ( content ) {
       var children = content.children;
       for ( var i = 0; i < children.length; i++ ) {
@@ -1403,7 +1411,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUING.blurMenu = blurMenu;
-  OSjs.GUING.Scheme = UIScheme;
+  OSjs.GUI.blurMenu = blurMenu;
+  OSjs.GUI.Scheme = UIScheme;
 
 })(OSjs.API, OSjs.Utils);
