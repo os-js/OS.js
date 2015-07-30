@@ -240,8 +240,19 @@
   InputDialog.prototype = Object.create(DialogWindow.prototype);
   InputDialog.constructor = DialogWindow;
 
+  InputDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    if ( this.args.message ) {
+      this.scheme.find(this, 'Message').set('value', this.args.message);
+    }
+    this.scheme.find(this, 'Input').set('placeholder', this.args.placeholder || '');
+    this.scheme.find(this, 'Input').set('value', this.args.value || '');
+    return root;
+  };
+
   InputDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
+    var result = this.scheme.find(this, 'Input').get('value');
+    this.closeCallback(ev, button, button === 'ok' ? result : null);
   };
 
   /**
@@ -468,7 +479,7 @@
       FileUpload: FileUploadDialog,
       File: FileDialog,
       FileInfo: FileInfoDialog,
-      Input: InputDialog,
+      //Input: InputDialog,
       //Alert: AlertDialog,
       //Confirm: ConfirmDialog,
       //Color: ColorDialog,

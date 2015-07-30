@@ -87,6 +87,8 @@
         } else {
           firstChild[param] = value;
         }
+      } else if ( param === 'placeholder' ) {
+        firstChild.setAttribute('placeholder', value || '');
       } else if ( param === 'disabled' ) {
         if ( value ) {
           firstChild.setAttribute('disabled', 'disabled');
