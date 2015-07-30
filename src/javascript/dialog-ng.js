@@ -32,6 +32,7 @@
 
   window.OSjs = window.OSjs || {};
   OSjs.Core   = OSjs.Core   || {};
+  OSjs.GUI    = OSjs.GUI    || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // DIALOG
@@ -262,9 +263,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.DialogWindow      = DialogWindow;
-
-  OSjs.Dialogs = {
+  var Dialogs = {
     ApplicationChooser: ApplicationChooserDialog,
     FileProgress: FileProgressDialog,
     FileUpload: FileUploadDialog,
@@ -277,8 +276,10 @@
     Font: FontDialog
   };
 
-  OSjs.Dialogs.createDialog = function(className, args, callback, parentObj) {
-    var win = new OSjs.Dialogs[className](args, callback);
+  OSjs.Core.DialogWindow      = DialogWindow;
+
+  OSjs.GUI.createDialog = function(className, args, callback, parentObj) {
+    var win = new Dialogs[className](args, callback);
 
     if ( !parentObj ) {
       var wm = OSjs.Core.getWindowManager();

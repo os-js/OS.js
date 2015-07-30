@@ -33,7 +33,7 @@
   window.OSjs = window.OSjs || {};
 
   // Make sure these namespaces exist
-  (['API', 'Core', 'Compability', 'Helpers', 'Applications', 'Dialogs', 'GUI', 'Locales', 'VFS', 'Session']).forEach(function(ns) {
+  (['API', 'Core', 'Compability', 'Helpers', 'Applications', 'GUI', 'Locales', 'VFS', 'Session']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 

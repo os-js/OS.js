@@ -358,12 +358,16 @@
           _launch(app[0]);
         } else {
           if ( wm ) {
-            wm.addWindow(new OSjs.Dialogs.ApplicationChooser(file, app, function(btn, appname, setDefault) {
+            OSjs.GUI.createDialog('ApplicationChooser', {
+              file: file,
+              applications: app
+            }, function() {
+              // TODO REFACTOR
               if ( btn !== 'ok' ) { return; }
               _launch(appname);
 
               handler.setDefaultApplication(file.mime, setDefault ? appname : null);
-            }));
+            });
           } else {
             OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
                            OSjs.API._('ERR_FILE_OPEN_FMT', file.path),
@@ -1279,7 +1283,7 @@
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       try {
-        return OSjs.Dialogs.createDialog('Alert', {
+        return OSjs.GUI.createDialog('Alert', {
           title: title,
           message: message,
           error: error,
