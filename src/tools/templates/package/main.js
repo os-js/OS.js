@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+(function(Application, Window, Dialogs, Utils, API, VFS) {
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -57,8 +57,6 @@
   };
 
   ApplicationEXAMPLEWindow.prototype.destroy = function() {
-    // Destroy custom objects etc. here
-
     Window.prototype.destroy.apply(this, arguments);
   };
 
