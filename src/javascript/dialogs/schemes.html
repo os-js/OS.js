@@ -1,11 +1,43 @@
-<application-dialog data-id="ApplicationChooser">
+<application-dialog data-id="Error">
   <gui-vbox>
     <gui-vbox-container data-shrink="1">
-      <gui-label>DIALOG_APPCHOOSER_MSG</gui-label>
+      <gui-label data-id="Message">DIALOG_ERROR_MESSAGE</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-label>filename (mime)</gui-label>
+      <gui-label data-id="SummaryLabel">DIALOG_ERROR_SUMMARY</gui-label>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-fill="true">
+      <gui-textarea data-id="Summary"></gui-textarea>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1">
+      <gui-label data-id="TraceLabel">DIALOG_ERROR_TRACE</gui-label>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-fill="true">
+      <gui-textarea data-id="Trace"></gui-textarea>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar>
+        <gui-button data-id="ButtonOK">LBL_CLOSE</gui-button>
+        <gui-button data-id="ButtonBugReport">LBL_BUGREPORT</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-dialog>
+
+<application-dialog data-id="ApplicationChooser">
+  <gui-vbox>
+    <gui-vbox-container data-shrink="1">
+      <gui-label data-id="Message">DIALOG_APPCHOOSER_MSG</gui-label>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1">
+      <gui-label data-id="FileName">filename (mime)</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-grow="1" data-fill="true">
@@ -19,7 +51,7 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1">
-      <gui-checkbox data-label="DIALOG_APPCHOOSER_SET_DEFAULT"></gui-checkbox>
+      <gui-checkbox data-id="SetDefault" data-label="DIALOG_APPCHOOSER_SET_DEFAULT"></gui-checkbox>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">
@@ -36,16 +68,16 @@
     <gui-vbox-container data-shrink="1" data-fill="true" data-basis="30px">
       <gui-hbox>
         <gui-hbox-container data-shrink="1" data-expand="true">
-          <gui-button></gui-button>
+          <gui-button id="HomeButton"></gui-button>
         </gui-hbox-container>
         <gui-hbox-container data-grow="1" data-expand="true">
-          <gui-select></gui-select>
+          <gui-select data-id="ModuleSelect"></gui-select>
         </gui-hbox-container>
       </gui-hbox>
     </gui-vbox-container>
 
     <gui-vbox-container data-grow="1" data-fill="true">
-      <gui-file-view>
+      <gui-file-view data-id="FileView">
         <gui-list-view>
         </gui-list-view>
       </gui-file-view>
@@ -63,11 +95,11 @@
 <application-dialog data-id="FileProgress">
   <gui-vbox>
     <gui-vbox-container data-grow="1">
-      <gui-label>LBL_LOADING</gui-label>
+      <gui-label data-id="Message">LBL_LOADING</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-progress-bar></gui-progress-bar>
+      <gui-progress-bar data-id="Progress"></gui-progress-bar>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">
@@ -81,11 +113,11 @@
 <application-dialog data-id="FileUpload">
   <gui-vbox>
     <gui-vbox-container data-shrink="1">
-      <gui-label>DIALOG_UPLOAD_DESC</gui-label>
+      <gui-label data-id="Message">DIALOG_UPLOAD_DESC</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-grow="1">
-      <gui-file-upload></gui-file-upload>
+      <gui-file-upload data-id="File"></gui-file-upload>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">
@@ -100,7 +132,7 @@
 <application-dialog data-id="FileInfo">
   <gui-vbox>
     <gui-vbox-container data-grow="1" data-fill="true">
-      <gui-textarea></gui-textarea>
+      <gui-textarea data-id="Info"></gui-textarea>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">
@@ -114,11 +146,11 @@
 <application-dialog data-id="Input">
   <gui-vbox>
     <gui-vbox-container data-grow="1">
-      <gui-label>DIALOG_INPUT_TITLE</gui-label>
+      <gui-label data-id="Message">DIALOG_INPUT_TITLE</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-text></gui-text>
+      <gui-text data-id="Input"></gui-text>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">
@@ -133,7 +165,7 @@
 <application-dialog data-id="Alert">
   <gui-vbox>
     <gui-vbox-container data-grow="1">
-      <gui-label>DIALOG_ALERT_TITLE</gui-label>
+      <gui-label data-id="Message">DIALOG_ALERT_TITLE</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">
@@ -147,7 +179,7 @@
 <application-dialog data-id="Confirm">
   <gui-vbox>
     <gui-vbox-container data-grow="1">
-      <gui-label>DIALOG_CONFIRM_TITLE</gui-label>
+      <gui-label data-id="Message">DIALOG_CONFIRM_TITLE</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">
@@ -167,10 +199,10 @@
         <gui-hbox-container data-shrink="1">
           <gui-vbox>
             <gui-vbox-container shrink="1">
-              <gui-color-swatch></gui-color-swatch>
+              <gui-color-swatch id="ColorSelect"></gui-color-swatch>
             </gui-vbox-container>
             <gui-vbox-container shrink="1">
-              <gui-color-box></gui-color-box>
+              <gui-color-box id="ColorPreview"></gui-color-box>
             </gui-vbox-container>
           </gui-vbox>
         </gui-hbox-container>
@@ -178,24 +210,24 @@
         <gui-hbox-container data-grow="1">
           <gui-vbox>
             <gui-vbox-container shrink="1" data-expand="true">
-              <gui-label>Red</gui-label>
+              <gui-label data-id="LabelRed">Red</gui-label>
             </gui-vbox-container>
             <gui-vbox-container shrink="1" data-expand="true">
-              <gui-slider></gui-slider>
-            </gui-vbox-container>
-
-            <gui-vbox-container shrink="1" data-expand="true">
-              <gui-label>Green</gui-label>
-            </gui-vbox-container>
-            <gui-vbox-container shrink="1" data-expand="true">
-              <gui-slider></gui-slider>
+              <gui-slider data-id="Red"></gui-slider>
             </gui-vbox-container>
 
             <gui-vbox-container shrink="1" data-expand="true">
-              <gui-label>Blue</gui-label>
+              <gui-label data-id="LabelGreen">Green</gui-label>
             </gui-vbox-container>
             <gui-vbox-container shrink="1" data-expand="true">
-              <gui-slider></gui-slider>
+              <gui-slider data-id="Green"></gui-slider>
+            </gui-vbox-container>
+
+            <gui-vbox-container shrink="1" data-expand="true">
+              <gui-label data-id="LabelBlue">Blue</gui-label>
+            </gui-vbox-container>
+            <gui-vbox-container shrink="1" data-expand="true">
+              <gui-slider data-id="Blue"></gui-slider>
             </gui-vbox-container>
           </gui-vbox>
         </gui-hbox-container>
@@ -216,16 +248,16 @@
     <gui-vbox-container data-grow="1" data-fill="true">
       <gui-hbox>
         <gui-hbox-container data-grow="1" data-shrink="1" data-basis="50%" data-fill="true">
-          <gui-select-list></gui-select-list>
+          <gui-select-list data-id="FontName"></gui-select-list>
         </gui-hbox-container>
         <gui-hbox-container data-grow="1" data-shrink="1" data-basis="50%" data-fill="true">
-          <gui-select-list></gui-select-list>
+          <gui-select-list data-id="FontSize"></gui-select-list>
         </gui-hbox-container>
       </gui-hbox>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-basis="50px" data-fill="true">
-      <gui-textarea></gui-textarea>
+      <gui-textarea data-id="FontPreview"></gui-textarea>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end">

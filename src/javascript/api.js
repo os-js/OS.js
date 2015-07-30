@@ -1283,7 +1283,7 @@
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       try {
-        return OSjs.GUI.createDialog('Alert', {
+        return OSjs.GUI.createDialog('Error', {
           title: title,
           message: message,
           error: error,

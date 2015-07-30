@@ -326,9 +326,14 @@
         parameters: [],
         events: [],
         build: function(el) {
-          var label = document.createElement('label');
-          label.appendChild(document.createTextNode(el.getAttribute('data-label')));
-          el.appendChild(label);
+          var label = el.getAttribute('data-lbl');
+          if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
+            label = el.childNodes[0].nodeValue;
+            Utils.$empty(el);
+          }
+          var lbl = document.createElement('label');
+          lbl.appendChild(document.createTextNode(label));
+          el.appendChild(lbl);
         }
       },
 
