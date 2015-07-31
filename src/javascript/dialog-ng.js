@@ -519,19 +519,77 @@
    * @extends DialogWindow
    */
   function FontDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {
+      fontName: OSjs.Core.getHandler().getConfig('Fonts')['default'],
+      fontSize: 12,
+      fontColor: '#000000',
+      backgroundColor: '#ffffff',
+      fonts: OSjs.Core.getHandler().getConfig('Fonts').list,
+      minSize: 6,
+      maxSize: 30,
+      text: 'The quick brown fox jumps over the lazy dog',
+      unit: 'px'
+    });
+
     DialogWindow.apply(this, ['FontDialog', {
       title: args.title || API._('DIALOG_FONT_TITLE'),
       width: 400,
       height: 300
     }, args, callback]);
+
+    this.selection = {
+      fontName: args.fontName,
+      fontSize: args.fontSize + args.unit
+    };
   }
 
   FontDialog.prototype = Object.create(DialogWindow.prototype);
   FontDialog.constructor = DialogWindow;
 
+  FontDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    var self = this;
+    var preview = this.scheme.find(this, 'FontPreview');
+    var sizes = [];
+    var fonts = [];
+
+    for ( var i = this.args.minSize; i < this.args.maxSize; i++ ) {
+      sizes.push({value: i, label: i});
+    }
+    for ( var j = 0; j < this.args.fonts.length; j++ ) {
+      fonts.push({value: this.args.fonts[j], label: this.args.fonts[j]});
+    }
+
+    function updatePreview() {
+      preview.$element.style.fontFamily = self.selection.fontName;
+      preview.$element.style.fontSize = self.selection.fontSize;
+    }
+
+    var listFonts = this.scheme.find(this, 'FontName');
+    listFonts.add(fonts).set('value', this.args.fontName);
+    listFonts.on('change', function(ev) {
+      self.selection.fontName = ev.detail;
+      updatePreview();
+    });
+
+    var listSizes = this.scheme.find(this, 'FontSize');
+    listSizes.add(sizes).set('value', this.args.fontSize);
+    listSizes.on('change', function(ev) {
+      self.selection.fontSize = ev.detail + self.args.unit;
+      updatePreview();
+    });
+
+    preview.$element.style.color = this.args.fontColor;
+    preview.$element.style.backgroundColor = this.args.backgroundColor;
+    preview.set('value', this.args.text);
+
+    return root;
+  };
+
   FontDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
+    var result = button === 'ok' ? this.selection : null;
+    this.closeCallback(ev, button, result);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -557,16 +615,16 @@
   OSjs.API.debugDialogs = function() {
     var ds = {
       //ApplicationChooser: ApplicationChooserDialog,
-      FileProgress: FileProgressDialog,
-      FileUpload: FileUploadDialog,
-      File: FileDialog,
       //FileInfo: FileInfoDialog,
       //Input: InputDialog,
       //Alert: AlertDialog,
       //Confirm: ConfirmDialog,
       //Color: ColorDialog,
       //Error: ErrorDialog,
-      Font: FontDialog
+      //Font: FontDialog
+      FileProgress: FileProgressDialog,
+      FileUpload: FileUploadDialog,
+      File: FileDialog
     };
     Object.keys(ds).forEach(function(d) {
       OSjs.API.createDialog(d, null, function(ev, button, result) {

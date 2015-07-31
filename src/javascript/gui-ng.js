@@ -83,10 +83,13 @@
   function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
-    if ( (['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
+    var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list'];
+    if ( accept.indexOf(tagName) >= 0 ) {
       var firstChild = el.querySelector('input');
       if ( tagName === 'gui-textarea' ) {
         firstChild = el.querySelector('textarea');
+      } else if ( tagName.match(/^gui\-select/) ) {
+        firstChild = el.querySelector('select');
       }
 
       if ( param === 'value' ) {
@@ -156,8 +159,12 @@
 
     function createSelectInput(el, multiple) {
       var disabled = el.getAttribute('data-disabled') !== null;
-
       var select = document.createElement('select');
+      if ( multiple ) {
+        select.setAttribute('size', el.getAttribute('data-size') || 2);
+        multiple = el.getAttribute('data-multiple') === 'true';
+      }
+
       if ( multiple ) {
         select.setAttribute('multiple', 'multiple');
       }
@@ -175,6 +182,11 @@
         select.appendChild(option);
         sel.parentNode.removeChild(sel);
       });
+
+      select.addEventListener('change', function(ev) {
+        select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
+      }, false);
+
       el.appendChild(select);
     }
 
@@ -338,6 +350,31 @@
       }
       var target = el.querySelector('input');
       target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+    }
+
+    function addToSelectBox(el, entries) {
+      var target = el.querySelector('select');
+      if ( !(entries instanceof Array) ) {
+        entries = [entries];
+      }
+
+      entries.forEach(function(e) {
+        var opt = document.createElement('option');
+        opt.setAttribute('value', e.value);
+        opt.appendChild(document.createTextNode(e.label));
+
+        target.appendChild(opt);
+      });
+    }
+
+    function removeFromSelectBox(el, what) {
+      var target = el.querySelector('select');
+      // TODO
+    }
+
+    function clearSelectBox(el) {
+      var target = el.querySelector('select');
+      Utils.$empty(target);
     }
 
     return {
@@ -518,6 +555,15 @@
         build: function(el) {
           // TODO Selected index/entry
           createSelectInput(el);
+        },
+        call: function(el, method, args) {
+          if ( method === 'add' ) {
+            addToSelectBox(el, args[0]);
+          } else if ( method === 'remove' ) {
+            removeFromSelectBox(el, args[0]);
+          } else if ( method === 'clear' ) {
+            clearSelectBox(el);
+          }
         }
       },
 
@@ -532,6 +578,15 @@
         build: function(el) {
           // TODO Selected index/entry
           createSelectInput(el, true);
+        },
+        call: function(el, method, args) {
+          if ( method === 'add' ) {
+            addToSelectBox(el, args[0]);
+          } else if ( method === 'remove' ) {
+            removeFromSelectBox(el, args[0]);
+          } else if ( method === 'clear' ) {
+            clearSelectBox(el);
+          }
         }
       },
 
@@ -1516,8 +1571,11 @@
   UIScheme.prototype.find = function(win, id, root) {
     root = root || win._getRoot();
     var el = root.querySelector('[data-id="' + id + '"]');
-    if ( el && (['gui-list-view', 'gui-tree-view', 'gui-icon-view', 'gui-select', 'gui-select-list']).indexOf(el.tagName.toLowerCase()) >= 0 ) {
-      return new UIElementDataView(el);
+    if ( el ) {
+      var tagName = el.tagName.toLowerCase();
+      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
+        return new UIElementDataView(el);
+      }
     }
     return new UIElement(el);
   };
