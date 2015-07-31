@@ -56,6 +56,10 @@
       alert("You clicked me");
     });
 
+    scheme.find(this, 'MyListView').on('select', function(ev) {
+      console.warn('listview', ev);
+    });
+
     scheme.find(this, 'MyTreeView').on('select', function(ev) {
       console.warn('treeview', ev);
     });

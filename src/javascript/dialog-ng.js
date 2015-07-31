@@ -146,9 +146,12 @@
         if ( refs[a].description ) {
           label.push(refs[a].description);
         }
-        rows.push([
-          {key: 'name', value: a, label: label.join(' - '), icon: API.getIcon(refs[a].icon, null, a)}
-        ]);
+        rows.push({
+          value: refs[a],
+          columns: [
+            {label: label.join(' - '), icon: API.getIcon(refs[a].icon, null, a), value: JSON.stringify(refs[a])}
+          ]
+        });
       }
     });
 

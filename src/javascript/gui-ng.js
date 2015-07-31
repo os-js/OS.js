@@ -393,6 +393,16 @@
       Utils.$empty(target);
     }
 
+    function getViewNodeValue(found) {
+      var value = found.getAttribute('data-value');
+      try {
+        value = JSON.parse(value);
+      } catch ( e ) {
+        value = null;
+      }
+      return value;
+    }
+
     return {
       //
       // INPUTS
@@ -1047,11 +1057,9 @@
           active.forEach(function(iter) {
             var found = el.querySelectorAll('gui-icon-view-entry')[iter];
             if ( found ) {
-              var key = found.getAttribute('data-key');
               selected.push({
                 index: iter,
-                key: key,
-                value: found.getAttribute('data-value')
+                data: getViewNodeValue(found)
               });
             }
           });
@@ -1117,11 +1125,9 @@
           active.forEach(function(iter) {
             var found = el.querySelectorAll('gui-tree-view-entry')[iter];
             if ( found ) {
-              var key = found.getAttribute('data-key');
               selected.push({
                 index: iter,
-                key: key,
-                value: found.getAttribute('data-value')
+                data: getViewNodeValue(found)
               });
             }
           });
@@ -1329,14 +1335,7 @@
             active.forEach(function(iter) {
               var found = body.querySelectorAll('gui-list-view-row')[iter];
               if ( found ) {
-                var pselect = {index: iter, data: {}};
-                found.querySelectorAll('gui-list-view-column').forEach(function(cell) {
-                  var key = cell.getAttribute('data-key');
-                  if ( key ) {
-                    pselect.data[key] = cell.getAttribute('data-value');
-                  }
-                });
-                selected.push(pselect);
+                selected.push({index: iter, data: getViewNodeValue(found)});
               }
             });
             return selected || active;
@@ -1383,10 +1382,17 @@
 
               entries.forEach(function(e) {
                 var row = document.createElement('gui-list-view-row');
-                if ( e ) {
-                  e.forEach(function(se) {
+                if ( e && e.columns ) {
+                  e.columns.forEach(function(se) {
                     row.appendChild(createEntry(se));
                   });
+
+                  var value = null;
+                  try {
+                    value = JSON.stringify(e.value);
+                  } catch ( e ) {}
+                  row.setAttribute('data-value', value);
+
                   body.appendChild(row);
                 }
 
@@ -1509,13 +1515,16 @@
             var list = [];
             var summary = {size: 0, directories: 0, files: 0, hidden: 0};
             (result || []).forEach(function(iter) {
-              list.push([
-                {key: 'filename', value: iter.filename, label: iter.filename},
-                {key: 'path', value: iter.path, label: iter.path},
-                {key: 'type', value: iter.type, label: iter.type},
-                {key: 'mime', value: iter.mime, label: iter.mime},
-                {key: 'size', value: iter.size, label: iter.size}
-              ]);
+              list.push({
+                value: iter,
+                columns: [
+                  {label: iter.filename},
+                  {label: iter.path},
+                  {label: iter.type},
+                  {label: iter.mime},
+                  {label: iter.size}
+                ]
+              });
 
               summary.size += iter.size || 0;
               summary.directories += iter.type === 'dir' ? 1 : 0;
