@@ -47,7 +47,6 @@
    * @class DialogWindow
    * @extends Window
    */
-  var DialogIndex = 0;
   function DialogWindow(className, opts, args, callback) {
     var self = this;
 
@@ -55,7 +54,7 @@
     args = args || {};
     callback = callback || function() {};
 
-    Window.apply(this, ['DialogWindow ' + className + DialogIndex, opts]);
+    Window.apply(this, [className, opts]);
 
     this._properties.gravity          = 'center';
     this._properties.allow_resize     = false;
@@ -75,8 +74,6 @@
       callback.apply(self, arguments);
       self._close();
     };
-
-    DialogIndex++;
   }
 
   DialogWindow.prototype = Object.create(Window.prototype);

@@ -66,6 +66,8 @@
     //
     // Menus
     //
+
+    // TODO: Disabled menu items
     function getSelected() {
       var selected = [];
       (view.get('value') || []).forEach(function(sub) {
@@ -75,36 +77,15 @@
     }
 
     var menuMap = {
-      MenuClose: function() {
-        self._close();
-      },
-      MenuCreate: function() {
-        app.mkdir(self.currentPath, self);
-      },
-      MenuUpload: function() {
-        API.createDialog('FileUpload', {
-          dest: self.currentPath
-        }, function(ev, button, result) {
-          if ( result ) {
-            self.changePath(null, result.filename);
-          }
-        });
-      },
-      // TODO: These must be async
-      MenuRename: function() {
-      },
-      MenuDelete: function() {
-      },
-      MenuInfo: function() {
-      },
-      MenuOpen: function() {
-      },
-      MenuDownload: function() {
-        app.download(getSelected());
-      },
-      MenuRefresh: function() {
-        self.changePath();
-      }
+      MenuClose:    function() { self._close(); },
+      MenuCreate:   function() { app.mkdir(self.currentPath, self); },
+      MenuUpload:   function() { app.upload(self.currentPath, self); },
+      MenuRename:   function() { app.rename(getSelected(), self); },
+      MenuDelete:   function() { app.rm(getSelected(), self); },
+      MenuInfo:     function() { app.info(getSelected()); },
+      MenuOpen:     function() { app.open(getSelected()); },
+      MenuDownload: function() { app.download(getSelected()); },
+      MenuRefresh:  function() { self.changePath(); }
     };
 
     function menuEvent(ev) {
@@ -116,10 +97,6 @@
     scheme.find(this, 'SubmenuFile').on('select', menuEvent);
     scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
     scheme.find(this, 'SubmenuView').on('select', menuEvent);
-
-    scheme.find(this, 'MySubMenu').on('select', function(ev) {
-      console.warn('menubar submenu', ev);
-    });
 
     //
     // Side View
@@ -321,6 +298,16 @@
     }
   };
 
+  ApplicationFileManager.prototype.upload = function(dest, win) {
+    API.createDialog('FileUpload', {
+      dest: dest,
+    }, function(ev, button, result) {
+      if ( result ) {
+        win.changePath(null, result.filename);
+      }
+    });
+  };
+
   ApplicationFileManager.prototype.download = function(items) {
     items.forEach(function(item) {
       VFS.url(new VFS.File(item), function(error, result) {
@@ -328,6 +315,68 @@
           window.open(result);
         }
       });
+    });
+  };
+
+  ApplicationFileManager.prototype.rm = function(items, win) {
+    var self = this;
+
+    // TODO: These must be async
+    // TODO: Confirmation dialog
+    items.forEach(function(item) {
+      item = new VFS.File(item);
+      self._action('delete', [item], function() {
+        win.changePath(null);
+      });
+    });
+  };
+
+  ApplicationFileManager.prototype.info = function(items) {
+    items.forEach(function(item) {
+      if ( item.type === 'file' ) {
+        API.createDialog('FileInfo', {
+          file: new VFS.File(item)
+        });
+      }
+    });
+  };
+
+  ApplicationFileManager.prototype.open = function(items) {
+    items.forEach(function(item) {
+      if ( item.type === 'file' ) {
+        API.open(new VFS.File(item), {forceList: true});
+      }
+    });
+  };
+
+  ApplicationFileManager.prototype.rename = function(items, win) {
+    // TODO: These must be async
+    var self = this;
+
+    function rename(item, newName) {
+      item = new VFS.File(item);
+
+      var newitem = new VFS.File(item);
+      newitem.filename = newName;
+      newitem.path = Utils.replaceFilename(item.path, newName);
+
+      self._action('move', [item, newitem], function(error) {
+        if ( !error ) {
+          win.changePath(null, newitem);
+        }
+      });
+    }
+
+    items.forEach(function(item) {
+      var dialog = API.createDialog('Input', {
+        message: OSjs.Applications.ApplicationFileManager._("Rename <span>{0}</span>", item.filename),
+        value: item.filename
+      }, function(ev, button, result) {
+        if ( button === 'ok' && result ) {
+          rename(item, result);
+        }
+      });
+      dialog.setRange(Utils.getFilenameRange(item.filename));
     });
   };
 
@@ -376,7 +425,7 @@
         _onError(error);
         return;
       }
-      callback(result);
+      callback(error, result);
     }, null, this));
   };
 

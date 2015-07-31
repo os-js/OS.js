@@ -76,6 +76,13 @@
     this.closeCallback(ev, button, button === 'ok' ? result : null);
   };
 
+  InputDialog.prototype.setRange = function(range) {
+    var input = this.scheme.find(this, 'Input');
+    if ( input.$element ) {
+      input.$element.querySelector('input').select(range);
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

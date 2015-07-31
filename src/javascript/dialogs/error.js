@@ -71,7 +71,7 @@
   ErrorDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    this.scheme.find(this, 'Message').set('value', this.args.message);
+    this.scheme.find(this, 'Message').set('value', this.args.message, true);
     this.scheme.find(this, 'Summary').set('value', this.args.error);
     this.scheme.find(this, 'Trace').set('value', this.traceMessage);
     if ( !this.traceMessage ) {

@@ -207,6 +207,8 @@
   overflow : hidden;
 }
 
-.DialogWindow gui-label label {
+.Window_InputDialog gui-label label,
+.Window_ConfirmDialog gui-label label,
+.Window_ErrorDialog gui-label label {
   white-space : inherit;
 }

@@ -814,14 +814,16 @@
             evName = '_select';
           }
           el.querySelectorAll('gui-menu-entry > span').forEach(function(target) {
-            target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+            target.parentNode.addEventListener(evName, callback.bind(new UIElement(el)), params);
           });
         },
         build: function(el, customMenu) {
           function bindSelectionEvent(child, idx, expand) {
-            var id = child.parentNode.getAttribute('data-id');
-            child.addEventListener('mousedown', function() {
+            var id = child.getAttribute('data-id');
+            child.addEventListener('mousedown', function(ev) {
+              ev.stopPropagation();
               child.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+              blurMenu();
             }, false);
           }
 
@@ -843,7 +845,7 @@
                 span.appendChild(document.createTextNode(label));
                 child.appendChild(span);
 
-                bindSelectionEvent(span, i, expand);
+                bindSelectionEvent(child, i, expand);
 
                 if ( customMenu ) {
                   var sub = child.querySelector('gui-menu');
@@ -880,7 +882,7 @@
 
             var submenu = mel.querySelector('gui-menu');
             if ( submenu ) {
-              mel.addEventListener('click', function() {
+              mel.addEventListener('click', function(ev) {
                 lastMenu = function() {
                   Utils.$removeClass(mel, 'gui-active');
                 };
@@ -1901,7 +1903,8 @@
           entry.appendChild(nroot);
         }
         if ( iter.onClick ) {
-          entry.addEventListener('click', function() {
+          entry.addEventListener('mousedown', function(ev) {
+            ev.stopPropagation();
             iter.onClick.apply(this, arguments);
 
             blurMenu();
