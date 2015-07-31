@@ -782,6 +782,16 @@
       'gui-progress-bar': {
         parameters: [],
         events: [],
+        set: function(el, param, value) {
+          el.setAttribute('data-' + param, value);
+          if ( param === 'progress' ) {
+            value = parseInt(value, 10);
+            value = value % 100;
+
+            el.querySelector('div').style.width = value + '%';
+            el.querySelector('span').innerHTML = value + '%';
+          }
+        },
         build: function(el) {
           var p = (el.getAttribute('data-progress') || 0);
           var percentage = p.toString() + '%';

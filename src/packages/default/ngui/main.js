@@ -52,9 +52,16 @@
 
     scheme.render(this, 'MyWindowID', root);
 
-    scheme.find(this, 'MyButtonOne').on('click', function() {
-      alert("You clicked me");
-    });
+    var bar = scheme.find(this, 'MyProgressBar');
+    var val = 0;
+
+    setInterval(function() {
+      if ( bar ) {
+        bar.set('progress', val);
+        val+=Math.random()*10;
+      }
+      val = val % 100;
+    }, 1000);
 
     scheme.find(this, 'MyListView').on('select', function(ev) {
       console.warn('listview', ev);

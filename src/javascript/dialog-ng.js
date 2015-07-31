@@ -252,7 +252,7 @@
     DialogWindow.apply(this, ['FileDialog', {
       title: title,
       icon: icon,
-      width: 400,
+      width: 600,
       height: 400
     }, args, callback]);
 
