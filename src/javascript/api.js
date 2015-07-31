@@ -998,6 +998,33 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Create a new dialog
+   *
+   * @param   String        className       Dialog Namespace Class Name
+   * @param   Object        args            Arguments you want to send to dialog
+   * @param   Function      callback        Callback on dialog action (close/ok etc)
+   * @param   Mixed         parentObj       (Optional) A window or app (to make it a child window)
+   *
+   * @return  Window
+   *
+   * @api     OSjs.API.createDialog()
+   */
+  function doCreateDialog(className, args, callback, parentObj) {
+    var win = new OSjs.Dialogs[className](args, callback);
+
+    if ( !parentObj ) {
+      var wm = OSjs.Core.getWindowManager();
+      wm.addWindow(win, true);
+    } else if ( parentObj instanceof Window ) {
+      parentObj._addChild(win, true);
+    } else if ( parentObj instanceof OSjs.Core.Application ) {
+      parentObj._addWidow(win);
+    }
+
+    return win;
+  };
+
+  /**
    * Create a draggable DOM element
    *
    * @param   DOMElement    el      DOMElement
@@ -1245,7 +1272,7 @@
           bugreport: bugreport
         });
       } catch ( e ) {
-        console.warn('An error occured while creating Dialogs.ErrorMessage', e);
+        console.warn('An error occured while creating Dialogs.Error', e);
         console.warn('stack', e.stack);
       }
     }
@@ -1417,6 +1444,7 @@
   OSjs.API.blurMenu               = function() {}; // gui.js
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
+  OSjs.API.createDialog           = doCreateDialog;
 
   OSjs.API.error                      = doErrorDialog;
   OSjs.API.playSound                  = doPlaySound;

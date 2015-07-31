@@ -33,48 +33,68 @@
   /**
    * @extends DialogWindow
    */
-  function FileProgressDialog(args, callback) {
+  function ErrorDialog(args, callback) {
     args = args || {};
-    DialogWindow.apply(this, ['FileProgressDialog', {
-      title: args.title || API._('DIALOG_FILEPROGRESS_TITLE'),
-      icon: 'actions/document-send.png',
+
+    var exception = args.exception || {};
+    var error = '';
+    if ( exception.stack ) {
+      error = exception.stack;
+    } else {
+      if ( Object.keys(exception).length ) {
+        error = exception.name;
+        error += '\nFilename: ' + exception.fileName || '<unknown>';
+        error += '\nLine: ' + exception.lineNumber;
+        error += '\nMessage: ' + exception.message;
+        if ( exception.extMessage ) {
+          error += '\n' + exception.extMessage;
+        }
+      }
+    }
+
+    DialogWindow.apply(this, ['ErrorDialog', {
+      title: args.title || API._('DIALOG_CONFIRM_TITLE'),
+      icon: 'status/dialog-error.png',
       width: 400,
-      height: 100
+      height: error ? 400 : 200,
     }, args, callback]);
 
-    this.busy = !!args.filename;
+    this._sound = 'dialog-warning';
+    this._soundVolume = 1.0;
+
+    this.traceMessage = error;
   }
 
-  FileProgressDialog.prototype = Object.create(DialogWindow.prototype);
-  FileProgressDialog.constructor = DialogWindow;
+  ErrorDialog.prototype = Object.create(DialogWindow.prototype);
+  ErrorDialog.constructor = DialogWindow;
 
-  FileProgressDialog.prototype.init = function() {
+  ErrorDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
-    if ( this.args.message ) {
-      this.scheme.find(this, 'Message').set('value', this.args.message, true);
+
+    this.scheme.find(this, 'Message').set('value', this.args.message);
+    this.scheme.find(this, 'Summary').set('value', this.args.error);
+    this.scheme.find(this, 'Trace').set('value', this.traceMessage);
+    if ( !this.traceMessage ) {
+      this.scheme.find(this, 'Trace').hide();
+      this.scheme.find(this, 'TraceLabel').hide();
     }
+
+    if ( this.args.bugreport ) {
+      this.scheme.find(this, 'ButtonBugReport').on('click', function() {
+        window.open('//github.com/andersevenrud/OS.js-v2/issues/new');
+      });
+    } else {
+      this.scheme.find(this, 'ButtonBugReport').hide();
+    }
+
     return root;
-  };
-
-  FileProgressDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
-  };
-
-  FileProgressDialog.prototype.setProgress = function(p) {
-    this.scheme.find(this, 'Progress').set('progress', p);
-  };
-
-  FileProgressDialog.prototype._close = function(force) {
-    if ( !force && this.busy  ) {
-      return false;
-    }
-    return DialogWindow.prototype._close.call(this);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.FileProgress       = FileProgressDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.Error = ErrorDialog;
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

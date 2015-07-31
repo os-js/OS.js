@@ -27,166 +27,91 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, _StandardDialog) {
+(function(API, Utils, DialogWindow) {
   'use strict';
 
   /**
-   * Font Dialog
-   *
-   * @param   Object          args    Options
-   * @param   Function        onClose Callback on close => fn(button, fontName, fontSize)
-   *
-   * @option  args    String    name            Default font name (optional)
-   * @option  args    int       size            Default font size (optional)
-   * @option  args    String    background      Background color (default=#ffffff)
-   * @option  args    String    color           Foreground color (default=#000000)
-   * @option  args    Array     list            List of fonts (optional)
-   * @option  args    String    sizeType        Font size type (default=px)
-   * @option  args    String    text            Text to display on preview (optional)
-   * @option  args    int       minSize         Minimum font size (optional)
-   * @option  args    int       maxSize         Maximum font size (optional)
-   *
-   * @api OSjs.Dialogs.Font
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
+   * @extends DialogWindow
    */
-  var FontDialog = function(args, onClose) {
-    args = args || {};
-    this.fontName   = args.name       || OSjs.Core.getHandler().getConfig('Fonts')['default'];
-    this.fontSize   = args.size       || 12;
-    this.background = args.background || '#ffffff';
-    this.color      = args.color      || '#000000';
-    this.fonts      = args.list       || OSjs.Core.getHandler().getConfig('Fonts').list;
-    this.sizeType   = args.sizeType   || 'px';
-    this.text       = args.text       || 'The quick brown fox jumps over the lazy dog';
+  function FontDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {
+      fontName: OSjs.Core.getHandler().getConfig('Fonts')['default'],
+      fontSize: 12,
+      fontColor: '#000000',
+      backgroundColor: '#ffffff',
+      fonts: OSjs.Core.getHandler().getConfig('Fonts').list,
+      minSize: 6,
+      maxSize: 30,
+      text: 'The quick brown fox jumps over the lazy dog',
+      unit: 'px'
+    });
 
-    this.minSize    = typeof args.minSize === 'undefined' ? 6  : args.minSize;
-    this.maxSize    = typeof args.maxSize === 'undefined' ? 30 : args.maxSize;
+    DialogWindow.apply(this, ['FontDialog', {
+      title: args.title || API._('DIALOG_FONT_TITLE'),
+      width: 400,
+      height: 300
+    }, args, callback]);
 
-    this.$selectFonts = null;
-    this.$selectSize  = null;
+    this.selection = {
+      fontName: args.fontName,
+      fontSize: args.fontSize + args.unit
+    };
+  }
 
-    _StandardDialog.apply(this, ['FontDialog', {
-      title: API._('DIALOG_FONT_TITLE'),
-      buttons: ['cancel', 'ok']
-    }, {width:450, height:250}, onClose]);
-  };
-
-  FontDialog.prototype = Object.create(_StandardDialog.prototype);
-
-  FontDialog.prototype.updateFont = function(name, size) {
-    var rt = this._getGUIElement('GUIRichText');
-
-    if ( name !== null && name ) {
-      this.fontName = name;
-    }
-    if ( size !== null && size ) {
-      this.fontSize = parseInt(size, 10);
-    }
-
-    var styles = [];
-    if ( this.sizeType === 'internal' ) {
-      styles = [
-        'font-family: ' + this.fontName,
-        'background: '  + this.background,
-        'color: '       + this.color
-      ];
-      rt.setContent('<font size="' + this.fontSize + '" style="' + styles.join(';') + '">' + this.text + '</font>');
-    } else {
-      styles = [
-        'font-family: ' + this.fontName,
-        'font-size: '   + this.fontSize + 'px',
-        'background: '  + this.background,
-        'color: '       + this.color
-      ];
-      rt.setContent('<div style="' + styles.join(';') + '">' + this.text + '</div>');
-    }
-  };
+  FontDialog.prototype = Object.create(DialogWindow.prototype);
+  FontDialog.constructor = DialogWindow;
 
   FontDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
     var self = this;
-    var root = _StandardDialog.prototype.init.apply(this, arguments);
-    var option;
+    var preview = this.scheme.find(this, 'FontPreview');
+    var sizes = [];
+    var fonts = [];
 
-    var rt = this._addGUIElement(new OSjs.GUI.RichText('GUIRichText'), this.$element);
-
-    this.$selectFont = document.createElement('select');
-    this.$selectFont.className = 'SelectFont';
-    this.$selectFont.setAttribute('size', '7');
-
-    this.fonts.forEach(function(font, f) {
-      var option        = document.createElement('option');
-      option.value      = f;
-      option.appendChild(document.createTextNode(font));
-      self.$selectFont.appendChild(option);
-      if ( self.fontName.toLowerCase() === font.toLowerCase() ) {
-        self.$selectFont.selectedIndex = f;
-      }
-    });
-
-    this._addEventListener(this.$selectFont, 'change', function(ev) {
-      var i = this.selectedIndex;
-      if ( self.fonts[i] ) {
-        self.updateFont(self.fonts[i], null);
-      }
-    });
-
-    this.$element.appendChild(this.$selectFont);
-
-    if ( this.maxSize > 0 ) {
-      this.$selectSize = document.createElement('select');
-      this.$selectSize.className = 'SelectSize';
-      this.$selectSize.setAttribute('size', '7');
-
-      var i = 0;
-      for ( var s = this.minSize; s <= this.maxSize; s++ ) {
-        option            = document.createElement('option');
-        option.value      = s;
-        option.innerHTML  = s;
-        this.$selectSize.appendChild(option);
-        if ( this.fontSize === s ) {
-          this.$selectSize.selectedIndex = i;
-        }
-        i++;
-      }
-
-      this._addEventListener(this.$selectSize, 'change', function(ev) {
-        var i = this.selectedIndex;
-        var o = this.options[i];
-        if ( o ) {
-          self.updateFont(null, o.value);
-        }
-      });
-
-      this.$element.appendChild(this.$selectSize);
-    } else {
-      this.$element.className += ' NoFontSizes';
+    for ( var i = this.args.minSize; i < this.args.maxSize; i++ ) {
+      sizes.push({value: i, label: i});
     }
+    for ( var j = 0; j < this.args.fonts.length; j++ ) {
+      fonts.push({value: this.args.fonts[j], label: this.args.fonts[j]});
+    }
+
+    function updatePreview() {
+      preview.$element.style.fontFamily = self.selection.fontName;
+      preview.$element.style.fontSize = self.selection.fontSize;
+    }
+
+    var listFonts = this.scheme.find(this, 'FontName');
+    listFonts.add(fonts).set('value', this.args.fontName);
+    listFonts.on('change', function(ev) {
+      self.selection.fontName = ev.detail;
+      updatePreview();
+    });
+
+    var listSizes = this.scheme.find(this, 'FontSize');
+    listSizes.add(sizes).set('value', this.args.fontSize);
+    listSizes.on('change', function(ev) {
+      self.selection.fontSize = ev.detail + self.args.unit;
+      updatePreview();
+    });
+
+    preview.$element.style.color = this.args.fontColor;
+    preview.$element.style.backgroundColor = this.args.backgroundColor;
+    preview.set('value', this.args.text);
 
     return root;
   };
 
-  FontDialog.prototype._inited = function() {
-    _StandardDialog.prototype._inited.apply(this, arguments);
-    this.updateFont();
-  };
-
-  FontDialog.prototype.onButtonClick = function(btn, ev) {
-    if ( btn === 'ok' ) {
-      if ( this.buttons[btn] ) {
-        this.end('ok', this.fontName, this.fontSize);
-      }
-      return;
-    }
-    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
+  FontDialog.prototype.onClose = function(ev, button) {
+    var result = button === 'ok' ? this.selection : null;
+    this.closeCallback(ev, button, result);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.Font               = FontDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.Font = FontDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

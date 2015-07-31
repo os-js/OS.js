@@ -27,38 +27,36 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, _StandardDialog) {
+(function(API, Utils, DialogWindow) {
   'use strict';
 
   /**
-   * Alert/Message Dialog
-   *
-   * @param   String    msg     Message
-   * @param   Function  onClose Callback on close => fn(button)
-   * @param   Object    args    List of arguments (Will be passed on to _StandardDialog)
-   *
-   * @api OSjs.Dialogs.Alert
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
+   * @extends DialogWindow
    */
-  var AlertDialog = function(msg, onClose, args) {
-    args = Utils.mergeObject({
-      title: API._('DIALOG_ALERT_TITLE'),
-      message: msg,
+  function AlertDialog(args, callback) {
+    args = args || {};
+    DialogWindow.apply(this, ['AlertDialog', {
+      title: args.title || API._('DIALOG_ALERT_TITLE'),
       icon: 'status/dialog-warning.png',
-      buttons: [{name: 'ok', label: API._('DIALOG_CLOSE')}]
-    }, (args || {}));
+      width: 400,
+      height: 100
+    }, args, callback]);
+  }
 
-    _StandardDialog.apply(this, ['AlertDialog', args, {width:250, height:100}, onClose]);
+  AlertDialog.prototype = Object.create(DialogWindow.prototype);
+  AlertDialog.constructor = DialogWindow;
+
+  AlertDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    this.scheme.find(this, 'Message').set('value', this.args.message);
+    return root;
   };
-  AlertDialog.prototype = Object.create(_StandardDialog.prototype);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.Alert              = AlertDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.Alert = AlertDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);
