@@ -9,46 +9,13 @@
 @theme_base_bg_color          : #ebebeb;
 @theme_base_fg_color          : #242424;
 @theme_base_border_color      : #d4d4d4;
-
 @theme_secondary_bg_color     : #d9d9d9;
 @theme_secondary_fg_color     : #bbbbbb;
 @theme_secondary_border_color : #b2b2b2;
-
-@theme_selected_bg_color      : #2d73d2;
-@theme_selected_fg_color      : #ffffff;
-@theme_even_row               : #ffffff;
-@theme_odd_row                : #ffffff;
-
-@theme_input_bg_color         : #ffffff;
-
-@theme_gui_button_bg_color    : #f8f8f8;
-@theme_gui_button_fg_color    : #242424;
-@theme_gui_button_bg_from     : #f8f8f8;
-@theme_gui_button_gb_to       : #f4f4f4;
-@theme_gui_button_border_color: #c1c1c1;
-
-@theme_gui_hbutton_bg_color    : @theme_gui_button_bg_color;
-@theme_gui_hbutton_fg_color    : @theme_gui_button_fg_color;
-@theme_gui_hbutton_bg_from     : @theme_gui_button_bg_from;
-@theme_gui_hbutton_gb_to       : @theme_gui_button_gb_to;
-@theme_gui_hbutton_border_color: #909090;
-
-@theme_gui_abutton_bg_color    : @theme_gui_button_bg_color;
-@theme_gui_abutton_fg_color    : @theme_gui_button_fg_color;
-@theme_gui_abutton_bg_from     : #c8c8c8;
-@theme_gui_abutton_gb_to       : #a8a8a8;
-@theme_gui_abutton_border_color: #717171;
-
-@theme_gui_dbutton_bg_color    : @theme_gui_button_border_color;
-@theme_gui_dbutton_fg_color    : #333333;
-@theme_gui_dbutton_bg_from     : #ededed;
-@theme_gui_dbutton_gb_to       : #e6e6e6;
-@theme_gui_dbutton_border_color: @theme_gui_hbutton_border_color;
-
 @theme_base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 @theme_base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
-@theme_input_shadow           : 0px 0px 1px rgba(255, 255, 255, .5);
-@theme_text_shadow            : 0px 0px 1px rgba(255, 255, 255, .5);
+@theme_selected_bg_color      : #2d73d2;
+@theme_selected_fg_color      : #ffffff;
 
 /**
  * WM
@@ -170,21 +137,3 @@ body > .WMPanel > ul {
                url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
 }
 
-.GUIToolbar .Container {
-  background : transparent;
-}
-body .GUIToolbar button {
-  border : 0 none;
-  background : transparent;
-}
-body .GUIToolbar button:hover,
-body .GUIToolbar button:active,
-body .GUIToolbar button.Active {
-  border : 0 none;
-  background : @theme_selected_bg_color;
-  color : @theme_selected_fg_color;
-}
-
-.GUIProgressBar .Container {
-  background : @theme_secondary_bg_color;
-}

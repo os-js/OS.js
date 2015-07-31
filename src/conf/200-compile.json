@@ -64,7 +64,7 @@
       "src/stylesheets/api.css",
       "src/stylesheets/session.css",
       "src/stylesheets/window.css",
-      "src/stylesheets/gui-ng.css"
+      "src/stylesheets/gui.css"
     ]
   }
 }

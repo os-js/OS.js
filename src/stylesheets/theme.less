@@ -29,32 +29,6 @@
  * @licence Simplified BSD License
  */
 
-.theme_gui_button {
-  cursor : pointer;
-  background : @theme_gui_button_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_button_bg_from 0%, @theme_gui_button_gb_to 100%);
-  border : 1px solid @theme_gui_button_border_color;
-  color : @theme_gui_button_fg_color;
-}
-.theme_gui_button_hover {
-  background : @theme_gui_hbutton_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_hbutton_bg_from 0%, @theme_gui_hbutton_gb_to 100%);
-  border : 1px solid @theme_gui_hbutton_border_color;
-  color : @theme_gui_hbutton_fg_color;
-}
-.theme_gui_button_active {
-  background : @theme_gui_abutton_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_abutton_bg_from 0%, @theme_gui_abutton_gb_to 100%);
-  border : 1px solid @theme_gui_abutton_border_color;
-  color : @theme_gui_abutton_fg_color;
-}
-.theme_gui_button_disabled {
-  background : @theme_gui_dbutton_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_dbutton_bg_from 0%, @theme_gui_dbutton_gb_to 100%);
-  border : 1px solid @theme_gui_dbutton_border_color;
-  color : @theme_gui_dbutton_fg_color;
-}
-
 .theme_border(@radius) {
   -webkit-border-radius: @radius;
      -moz-border-radius: @radius;
@@ -79,6 +53,7 @@
           border-bottom-right-radius: @radius;
 }
 
+
 /**
  * Base
  */
@@ -96,7 +71,7 @@ body, input, button, textarea, label, select {
 }
 ::-webkit-scrollbar-button {
   background : @theme_secondary_border_color;
-  color : @theme_gui_button_fg_color;
+  color : @theme_secondary_bg_color;
   width : 12px;
   height : 12px;
   display : none;
@@ -134,11 +109,9 @@ body, input, button, textarea, label, select {
     margin-top : -1px;
     cursor : pointer;
     background : transparent !important;
-    text-shadow: @theme_text_shadow;
   }
 
 .WMPanel .PanelItemClock {
-  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
   font-weight : bold;
   text-align : right;
   line-height : 26px;
@@ -219,7 +192,6 @@ body, input, button, textarea, label, select {
   cursor : pointer;
 }
 .Window > .WindowTop > .WindowTitle {
-  text-shadow: @theme_text_shadow;
   color : @theme_secondary_fg_color;
   font-weight : bold;
 }
@@ -290,526 +262,561 @@ body, input, button, textarea, label, select {
 }
 
 /**
- * GUIMenu
+ * ===========================================================================
+ *                              CONTAINERS
+ * ===========================================================================
  */
-.Menu {
-  box-shadow : @theme_base_shadow_unfocused;
-  background : @theme_base_bg_color;
-}
-.Menu li {
-  cursor : pointer;
-  color: @theme_base_fg_color;
-}
-.Menu li:hover {
-  background : @theme_selected_bg_color;
-  color : @theme_selected_fg_color;
-}
-.Menu li.Disabled,
-.Menu li[disabled] {
-  color : @theme_secondary_fg_color;
-}
-.Menu .Arrow {
-  width: 0;
-  height: 0;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  border-left: 8px solid @theme_base_fg_color;
-  opacity : .9;
-}
-.Menu li:hover .Arrow {
-  border-left: 8px solid @theme_selected_bg_color;
-}
-.Menu .Pointer {
-  background : @theme_base_bg_color;
+
+/* Box */
+  gui-hbox-container > .gui-element,
+  gui-vbox-container > .gui-element {
+    margin : 4px;
+  }
+
+    gui-hbox-container[data-fill='true'] > *,
+    gui-vbox-container[data-fill='true'] > * {
+      width : ~"calc(100% - 8px)";
+      height : ~"calc(100% - 8px)";
+    }
+
+/* Paned View */
+  gui-paned-view > gui-paned-view-handle {
+    width : 8px;
+    cursor : ew-resize;
+  }
+
+/* IFrame */
+gui-iframe {
+  background-color : #fff;
 }
 
-/**
- * GUIMenuBar
- */
-.GUIMenuBar {
-  border-bottom : 1px solid @theme_secondary_border_color;
-  padding : 2px;
-}
-.GUIMenuBar > ul > li {
-  cursor : pointer;
-}
-.GUIMenuBar > ul > li:hover {
-  background : @theme_selected_bg_color;
-  color : @theme_selected_fg_color;
-}
-.GUIMenuBar > ul > li.Disabled,
-.GUIMenuBar > ul > li[disabled] {
-  color : @theme_secondary_fg_color;
-}
-
-/**
- * GUIStatusBar
- */
-.GUIStatusBar {
-  background : @theme_base_bg_color;
-  border-top : 1px solid @theme_secondary_border_color;
-}
-
-/**
- * GUITabs
- */
-.GUITabs .TabContents {
-  border : 1px solid @theme_secondary_border_color;
-}
-.GUITabs .Tabs .Tab.Active {
-  background : @theme_base_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  border-bottom : 1px solid @theme_base_bg_color;
-}
-.GUITabs .Tabs .Tab {
-  cursor : pointer;
-  background : @theme_secondary_bg_color;
-  border : 1px solid @theme_base_border_color;
-}
-.GUITabs .Tabs .Tab .Close {
-  border : 1px solid transparent;
-  font-size : 10px;
-}
-.GUITabs .Tabs .Tab .Close:hover {
-  background : @theme_selected_bg_color;
-}
-.GUITabs .Tabs .Tab .Close:active {
-  background : @theme_selected_bg_color;
-  border-color : @theme_selected_fg_color;
-}
-
-/**
- * GUIToolBar
- */
-.GUIToolbar > .Container {
-  background : @theme_base_border_color;
-}
-.GUIToolbar.horizontal li.Separator {
-  border-left : 1px solid @theme_secondary_border_color;
-}
-
-/**
- * GUIListView
- */
-.GUIListView {
-  background : @theme_secondary_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUIListView tbody tr:nth-child(2n+2) {
-  background : @theme_odd_row;
-}
-.GUIListView tbody tr:nth-child(2n+1) {
-  background : @theme_even_row;
-}
-.GUIListView tr.Active td {
-  color : @theme_selected_fg_color;
-  background : @theme_selected_bg_color;
-}
-.GUIListView thead tr {
-  background : @theme_secondary_bg_color;
-}
-.GUIListView .Resizer {
-  border-color : @theme_secondary_border_color;
-  cursor : ew-resize;
-}
-.GUIListView .Scroll {
-  background : @theme_input_bg_color;
-}
-
-/**
- * GUITreeView
- */
-.GUITreeView {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUITreeView .Active {
-  color : @theme_selected_fg_color;
-  background : @theme_selected_bg_color;
-}
-.GUITreeView .Expander:after {
-  border-left-color: @theme_base_border_color;
-}
-.GUITreeView .Expanded > div > .Expander:after {
-  border-top-color: @theme_base_border_color;
-}
-.GUITreeView li.Active > ul {
-  background : @theme_input_bg_color;
-}
-.GUITreeView li.Active > ul > li {
-  color: @theme_base_fg_color;
-}
-
-/**
- * GUIColorSwatch
- */
-.GUIColorSwatch {
-  border : 1px solid @theme_secondary_border_color;
-}
-
-/**
- * GUIIconView
- */
-.GUIIconView {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUIIconView .Active {
-  background : @theme_selected_bg_color;
-  color : @theme_selected_fg_color;
-}
-.GUIIconView li.Active div span {
-  background : @theme_selected_bg_color;
-}
-.GUIIconView li {
-  cursor : pointer;
-}
-
-/**
- * GUISlider
- */
-.GUISlider {
-  margin-top : 2px;
-  margin-bottom : 2px;
-}
-.GUISlider .Root {
-  background : @theme_secondary_bg_color;
-  border : 1px solid @theme_base_border_color;
-}
-.GUISlider.horizontal .Root {
-  height : 6px;
-  top : 50%;
-  margin-top : -4px;
-}
-.GUISlider.vertical .Root {
-  width : 6px;
-  top : 0px;
-  left : 50%;
-  margin-left : -4px;
-}
-.GUISlider .Button {
-  width : 18px;
-  height : 18px;
-
-  &:extend(.theme_gui_button);
-}
-.GUISlider .Button:hover {
-  border : 1px solid @theme_gui_hbutton_border_color;
-}
-
-/**
- * GUIProgressBar
- */
-.GUIProgressBar .Container {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUIProgressBar .Bar {
-  text-align : center;
-  background : @theme_selected_bg_color url('default/gui/progressbar.png') repeat-x center;
-}
-.GUIProgressBar .Label {
-  color : @theme_selected_fg_color;
-  text-shadow: @theme_base_shadow_focused;
-}
-
-/**
- * GUIRichtText
- */
-.GUIRichText {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-
-/**
- * GUIFileView
- */
-.GUIFileView .GUIListView .Arrow {
-  width: 0;
-  height: 0;
-  opacity : .9;
-}
-.GUIFileView .GUIListView .Arrow.Ascending {
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 8px solid @theme_base_fg_color;
-}
-.GUIFileView .GUIListView .Arrow.Descending {
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 8px solid @theme_base_fg_color;
-}
-
-/**
- * GUIText GUITextArea
- */
-.GUITextarea textarea,
-.GUIText input,
-.GUISelectList select,
-.GUISelect select {
-  margin : 0;
-  padding : 2px;
-  outline : none;
-  min-height : 24px;
-
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-
-  resize : none;
-  outline : none;
-}
-
-.GUITextarea textarea[disabled],
-.GUIText input[disabled] {
-  color : @theme_secondary_fg_color;
-}
-
-/*
- * GUISelect
- */
-.GUISelect select {
-  margin : 0;
-  padding : 2px;
-  padding : 2px 0 2px 2px;
-  min-height : 24px;
-
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-
-  outline:none;
-  resize : none;
-  display: inline-block;
-
-  -webkit-border-radius: 0px;
-     -moz-border-radius: 0px;
-      -ms-border-radius: 0px;
-          border-radius: 0px;
-
-  -webkit-appearance:none;
-     -moz-appearance:none;
-      -ms-appearance:none;
-          appearance:none;
-}
-.GUISelect:before {
-  content : '';
-  right : 1px;
-  top : 1px;
-  width : 22px;
-  height : 22px;
-  background : @theme_input_bg_color;
-  position : absolute;
-  z-index : 99;
-  pointer-events : none;
-  display : block;
-}
-.GUISelect:after {
-  content : '<>';
-  font : 11px "Consolas", monospace;
-  color : @theme_secondary_border_color;
-  -webkit-transform : rotate(90deg);
-  -moz-transform : rotate(90deg);
-  -ms-transform : rotate(90deg);
-  transform : rotate(90deg);
-  right : 2px;
-  top : 4px;
-  padding : 0 0 2px;
-  border-bottom : 1px solid @theme_secondary_border_color;
-  position : absolute;
-  z-index : 100;
-  pointer-events : none;
-}
-
-/**
- * GUISwitch
- */
-.GUISwitch .Overlay {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-  cursor : pointer;
-}
-.GUISwitch .Overlay:after {
-  &:extend(.theme_gui_button);
-  line-height : 20px;
-  content : '0';
-  padding : 0;
-  margin : 0;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-}
-.GUISwitch.Checked .Overlay:after {
-  content : '1';
-}
-
-/**
- * GUIButton
- */
-.GUIButton button,
-.GUIToolbar button {
-  margin : 0;
-  padding : 0;
-  padding-left : 5px;
-  padding-right : 5px;
-  height : 24px;
-  min-width : 30px;
-  vertical-align : middle;
-  outline : none;
-
-  outline : none;
-
-  &:extend(.theme_gui_button);
-  box-shadow: @theme_input_shadow;
-}
-
-.GUIButton button[disabled],
-.GUIButton button[disabled]:active,
-.GUIButton button[disabled].Active,
-.GUIToolbar button[disabled],
-.GUIToolbar button.Disabled,
-.GUIToolbar button.Disabled:active,
-.GUIToolbar button[disabled]:active,
-.GUIToolbar button[disabled].Active {
-  &:extend(.theme_gui_button_disabled);
-}
-
-.GUIButton button[disabled] img,
-.GUIButton button[disabled]:active img,
-.GUIButton button[disabled].Active img,
-.GUIToolbar button[disabled] img,
-.GUIToolbar button.Disabled img,
-.GUIToolbar button.Disabled:active img,
-.GUIToolbar button[disabled]:active img,
-.GUIToolbar button[disabled].Active img {
-  opacity : .5;
-}
-
-.GUIButton button:focus,
-.GUIToolbar button:focus {
-  &:extend(.theme_gui_button_hover);
-}
-
-.GUIButton button:active,
-.GUIButton button.Active,
-.GUIToolbar button:active,
-.GUIToolbar button.Active {
-  &:extend(.theme_gui_button_active);
-}
-
-.GUIToolbar.horizontal button span {
-  padding-left : 5px;
-}
-
-/**
- * GUICheckbox GUIRadio
- */
-.GUICheckbox,
-.GUIRadio {
+/* Toolbar */
+gui-toolbar {
   height : 24px;
 }
 
-.GUICheckbox label,
-.GUIRadio label {
-  display : block;
-  height : 16px;
+/* Tabs */
+  gui-tabs > ul {
+    height : 25px;
+  }
+    gui-tabs > ul > li {
+      padding-left : 8px;
+      padding-right : 8px;
+      cursor : pointer;
+      background-color : #d9d9d9;
+      border : 1px solid transparent;
+      border-bottom : 0 none;
+      line-height : 25px;
+    }
+    gui-tabs > ul > li.gui-active {
+      background-color : transparent;
+      border-color : #b2b2b2;
+    }
+      gui-tabs > ul > li.gui-active:after {
+        bottom : -1px;
+        border-bottom : 1px solid #ebebeb;
+      }
+  gui-tabs > div {
+    height : ~"calc(100% - 25px)";
+    border : 1px solid #b2b2b2;
+  }
+
+    gui-tab-container {
+      padding : 4px;
+    }
+
+/* Button Bar */
+
+/**
+ * ===========================================================================
+ *                                INPUTS
+ * ===========================================================================
+ */
+
+/* Label */
+gui-label {
+  min-height : 16px !important;
+  height : 16px !important;
+  line-height : 16px !important;
+}
+
+/* Button */
+  gui-button button {
+    cursor : pointer;
+    padding : 4px;
+    padding-left : 8px;
+    padding-right : 8px;
+    background-position : 8px;
+    min-height : 24px;
+  }
+  gui-button button:before {
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+  }
+  gui-button button:active:before {
+    border-color : #d0d0d0;
+  }
+  gui-button button:disabled:active:before,
+  gui-button button:disabled:before {
+    border-color : #ccc;
+  }
+  gui-button button:disabled {
+    cursor : default;
+    color : #ccc;
+  }
+  gui-button button.gui-has-image {
+    padding-left : 28px;
+  }
+
+/* Checkbox Button */
+/* Radio Button */
+  gui-radio input,
+  gui-checkbox input {
+    text-align : center;
+    background: #ffffff;
+    border: 1px solid #b2b2b2;
+    width : 16px;
+    height : 16px;
+    line-height: 12px;
+    color : #000;
+    font-family: Arial;
+  }
+
+  gui-radio input {
+    -webkit-border-radius: 16px;
+       -moz-border-radius: 16px;
+        -ms-border-radius: 16px;
+            border-radius: 16px;
+  }
+
+  gui-radio input:checked:after {
+    content: "\2022";
+    font-size: 32px;
+  }
+
+  gui-checkbox input:checked:after {
+    content: "\2713";
+    font-size: 12px;
+  }
+
+  gui-radio[data-disabled="true"] label,
+  gui-checkbox[data-disabled="true"] label {
+    color : #ccc;
+  }
+
+  gui-radio input:disabled,
+  gui-checkbox input:disabled {
+    border-color : #ccc;
+    background-color : #ddd;
+  }
+
+  gui-radio > label > span,
+  gui-checkbox > label > span {
+    padding-left : 4px;
+  }
+
+/* Select Dropdown */
+gui-select {
+  height : 24px;
+}
+  gui-select select {
+    border: 1px solid #b2b2b2;
+    padding : 4px;
+  }
+  gui-select select:disabled {
+    color : #ccc;
+  }
+
+  gui-select:before {
+    right: 1px;
+    top: 1px;
+    bottom : 1px;
+    width: 22px;
+    background: #ffffff;
+  }
+  gui-select:after {
+    content: '<>';
+    font: 11px "Consolas", monospace;
+    color: #b2b2b2;
+    right: 2px;
+    top: 5px;
+    padding: 0 0 2px;
+    border-bottom: 1px solid #b2b2b2;
+
+    -webkit-transform: rotate(90deg);
+       -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+  }
+
+/* Select List */
+  gui-select-list select {
+    border: 1px solid #b2b2b2;
+    padding : 4px;
+  }
+  gui-select-list select:disabled {
+    color : #ccc;
+  }
+
+/* Slider */
+gui-slider {
+  height : 24px;
+}
+  gui-slider input {
+    background : transparent;
+    border : 0 none;
+    height : 24px;
+  }
+
+  /*
+   * RANGE TRACK
+   */
+
+  gui-slider input::-moz-range-track {
+    height : 4px;
+    background-color : #d9d9d9;
+  }
+
+  gui-slider input::-webkit-slider-runnable-track {
+    height : 4px;
+    background-color : #d9d9d9;
+  }
+
+  gui-slider input::-ms-track {
+    height : 4px;
+    background-color : #d9d9d9;
+  }
+
+  /*
+   * RANGE THUMB
+   *
+   * TODO
+   * TODO DISABLED STATE
+   * TODO
+   */
+
+  gui-slider input::-moz-range-thumb {
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+    height : 18px;
+    width : 10px;
+  }
+  gui-slider input:disabled::-moz-range-thumb {
+    border-color : #ccc;
+  }
+
+  gui-slider input::-webkit-slider-thumb {
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+    height : 24px;
+    width : 16px;
+    margin-top : -10px;
+  }
+  gui-slider input:disabled::-webkit-range-thumb {
+    background-color : #d9d9d9;
+    border-color : #ccc;
+  }
+
+  gui-slider input::-ms-thumb {
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+    height : 24px;
+    width : 16px;
+  }
+  gui-slider input:disabled::-ms-thumb {
+    border-color : #ccc;
+  }
+
+  /**
+   * MISC
+   */
+  gui-slider input[type=range]::-ms-fill-lower {
+    border : 0 none;
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]::-ms-fill-upper {
+    border : 0 none;
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-lower {
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-upper {
+    background-color : #d9d9d9;
+  }
+
+/* Switch */
+  gui-switch div {
+    width : 48px;
+    background : #fff;
+    border : 1px solid #b2b2b2;
+  }
+
+  gui-switch button {
+    cursor : pointer;
+    padding : 4px;
+    background: #f8f8f8;
+    background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+    border: 1px solid #c1c1c1;
+  }
+
+  gui-switch > label > div {
+    margin-left : 4px;
+  }
+
+  gui-switch[data-disabled="true"] button {
+    border-color : #ccc;
+  }
+
+  gui-switch[data-disabled="true"] button,
+  gui-switch[data-disabled="true"] label {
+    color : #ccc;
+  }
+
+/* Text Field */
+/* Password Field */
+gui-password,
+gui-text {
+  height : 24px;
+}
+  gui-password input,
+  gui-text input {
+    padding : 4px;
+    background : #fff;
+    border : 1px solid #b2b2b2;
+  }
+
+  gui-password > label > input,
+  gui-text > label > input {
+    margin-left : 4px;
+  }
+
+  gui-password input:disabled,
+  gui-text input:disabled {
+    border-color : #ccc;
+    background-color : #ddd;
+    color : #ccc;
+  }
+
+  gui-password[data-disabled="true"] label,
+  gui-text[data-disabled="true"] label {
+    color : #ccc;
+  }
+
+
+/* Text Area */
+  gui-textarea textarea {
+    padding : 4px;
+    background : #fff;
+    border : 1px solid #b2b2b2;
+  }
+  gui-textarea textarea:disabled {
+    border-color : #ccc;
+    background-color : #ddd;
+    color : #ccc;
+  }
+
+  gui-textarea[data-disabled="true"] label {
+    color : #ccc;
+  }
+
+/* Rich Text */
+gui-richtext {
   padding : 4px;
-  padding-left : 24px;
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
 
-.GUICheckbox input,
-.GUIRadio input {
-  width : 16px;
-  height : 16px;
-  margin : 0;
-  padding : 0;
-  outline : none;
-  resize : none;
-  display: block;
-  vertical-align : middle;
-  position : absolute;
-  top : 3px;
-  left : 2px;
-  z-index : 100;
-  visibility : hidden;
+/**
+ * ===========================================================================
+ *                                 MISC
+ * ===========================================================================
+ */
 
-  background : transparent;
-  border : 0 none;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-
-  -webkit-border-radius: 0px;
-     -moz-border-radius: 0px;
-      -ms-border-radius: 0px;
-          border-radius: 0px;
-
-  -webkit-appearance:none;
-     -moz-appearance:none;
-      -ms-appearance:none;
-          appearance:none;
+/* Color Swatch */
+gui-color-swatch {
+  border: 1px solid #b2b2b2;
 }
 
-.GUICheckbox label:before,
-.GUIRadio label:before {
-  content : '';
-  position : absolute;
-  left : 0px;
-  top : 2px;
-  width : 16px;
-  height : 16px;
-  line-height : 16px;
-  text-align : center;
-  cursor : pointer;
-  z-index : 1;
-  pointer-events : none;
-
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-  font-family : Arial;
-  color : @theme_gui_button_fg_color;
+/* Color Box */
+gui-color-box {
+  padding : 4px;
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
 
-.GUIRadio label:before {
-  border-radius : 16px;
+/* Menu */
+gui-menu {
+  border : 1px solid transparent;
+  background: #ebebeb;
+}
+  gui-menu > gui-menu-entry {
+    cursor : pointer;
+    padding : 4px;
+    color: #242424;
+  }
+
+  gui-menu > gui-menu-entry.gui-menu-expand {
+    padding-right : 16px;
+  }
+  gui-menu > gui-menu-entry.gui-menu-expand:after {
+    content : '>';
+    padding : 4px;
+  }
+
+  gui-menu > gui-menu-entry:hover {
+    background: #2d73d2;
+    color: #fff
+  }
+
+/* Menu Bar */
+gui-menu-bar {
+  border-bottom : 1px solid #b2b2b2;
+  padding-top : 2px;
+  padding-bottom : 2px;
+}
+  gui-menu-bar-entry {
+    cursor : pointer;
+    padding : 4px;
+  }
+  gui-menu-bar-entry:hover {
+    background: #2d73d2;
+    color: #fff
+  }
+
+
+/* Progressbar */
+gui-progress-bar {
+  line-height : 24px;
+}
+  gui-progress-bar:before {
+    background-color : #d9d9d9;
+    border: 1px solid #b2b2b2;
+    padding : 4px;
+  }
+  gui-progress-bar > div {
+    background: #2d73d2 url('/themes/styles/default/gui/progressbar.png') repeat-x center;
+  }
+  gui-progress-bar > span {
+    color : #fff;
+  }
+
+/* Statusbar */
+gui-statusbar {
+  border-top : 1px solid #b2b2b2;
+  padding : 4px;
+  padding-top : 6px;
+  padding-bottom : 6px;
 }
 
-.GUICheckbox input:checked + label:before {
-  content: "\2713";
-  font-size : 16px;
-}
+/**
+ * ===========================================================================
+ *                                VIEWS
+ * ===========================================================================
+ */
 
-.GUIRadio input:checked + label:before {
-  content: "\2022";
-  font-size : 32px;
+/* Icon View */
+gui-icon-view {
+  background : #fff;
+  border : 1px solid #b2b2b2;
+  padding : 4px;
 }
+  gui-icon-view-entry {
+    cursor : pointer;
+    margin : 2px;
+    padding : 2px;
+    text-align : center;
+    min-width : 60px !important;
+    min-height : 60px !important;
+  }
 
-.GUICheckbox.Disabled label:before,
-.GUIRadio.Disabled label:before {
-  color: @theme_secondary_border_color;
+    gui-icon-view-entry.gui-active {
+      background: #2d73d2;
+      color: #ffffff;
+    }
+    gui-icon-view-entry.gui-active > div > span {
+      background: #2d73d2;
+    }
+
+/* List View */
+gui-list-view {
+  background : #fff;
+  border : 1px solid #b2b2b2;
 }
+  gui-list-view-head {
+    background-color : #d9d9d9;
+  }
+      gui-list-view-column {
+        margin : 4px;
+        padding : 4px;
+      }
+      gui-list-view-column.gui-has-image {
+        padding-left : 20px;
+      }
+      gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
+        padding-left : 36px;
+      }
+
+    gui-list-view-row.gui-active {
+      color: #ffffff;
+      background: #2d73d2;
+    }
+
+    gui-list-view-column-resizer {
+      cursor : ew-resize;
+      width : 3px;
+      right : 1px;
+    }
+      gui-list-view-column-resizer:after {
+        background : #b2b2b2;
+      }
+
+
+/* Tree View */
+gui-tree-view {
+  background : #fff;
+  border : 1px solid #b2b2b2;
+}
+    gui-tree-view-entry > div {
+      padding : 4px;
+    }
+    gui-tree-view-entry > div > span {
+      cursor : pointer;
+      padding : 2px;
+    }
+    gui-tree-view-entry > div > span.gui-has-image {
+      padding-left : 20px;
+    }
+    gui-tree-view-entry > gui-tree-view-entry {
+      margin-left : 16px;
+    }
+    gui-tree-view-entry.gui-active > div {
+      color: #ffffff;
+      background-color: #2d73d2;
+    }
+
+  gui-tree-view-entry.gui-expandable {
+    padding-left : 16px;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander {
+    padding-left : 4px;
+    cursor : pointer;
+    line-height : 24px;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander:before {
+    content : '\25BA';
+    font-family : Arial;
+  }
+  gui-tree-view-entry.gui-expandable.gui-expanded > gui-tree-view-expander:before {
+    content : '\25BC';
+  }
