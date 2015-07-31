@@ -64,6 +64,29 @@
     return label || '';
   }
 
+  function getIcon(el) {
+    var image = el.getAttribute('data-icon');
+
+    if ( image && image.match(/^stock:\/\//) ) {
+      image = image.replace('stock://', '');
+
+      var size  = '16x16';
+      try {
+        var spl = image.split('/');
+        var tmp = spl.shift();
+        var siz = tmp.match(/^\d+x\d+/);
+        if ( siz ) {
+          size = siz[0];
+          image = spl.join('/');
+        }
+
+        image = API.getIcon(image, size);
+      } catch ( e ) {}
+    }
+
+    return image;
+  }
+
   function parseDynamic(node, win) {
     // TODO: Support application locales! :)
     node.querySelectorAll('*[data-label]').forEach(function(el) {
@@ -81,20 +104,7 @@
     // TODO: Support application resources
     //var url = API.getApplicationResource(win._app, ref);
     node.querySelectorAll('*[data-icon^="stock:"]').forEach(function(el) {
-      var image = el.getAttribute('data-icon').replace('stock://', '');
-      var size  = '16x16';
-      try {
-        var spl = image.split('/');
-        var tmp = spl.shift();
-        var siz = tmp.match(/^\d+x\d+/);
-        if ( siz ) {
-          size = siz[0];
-          image = spl.join('/');
-        }
-
-        image = API.getIcon(image, size);
-      } catch ( e ) {}
-
+      image = getIcon(el);
       el.setAttribute('data-icon', image);
     });
   }
@@ -184,259 +194,263 @@
     return el;
   }
 
+  function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
+    root = root || item.parentNode;
+
+    if ( !multipleSelect || !ev.shiftKey ) {
+      root.querySelectorAll(className).forEach(function(i) {
+        Utils.$removeClass(i, 'gui-active');
+      });
+      selected = [];
+    }
+
+    var findex = selected.indexOf(idx);
+    if ( findex >= 0 ) {
+      selected.splice(findex, 1);
+      Utils.$removeClass(item, 'gui-active');
+    } else {
+      selected.push(idx);
+      Utils.$addClass(item, 'gui-active');
+    }
+
+    return selected;
+  }
+
+  function createSelectInput(el, multiple) {
+    var disabled = el.getAttribute('data-disabled') !== null;
+    var select = document.createElement('select');
+    if ( multiple ) {
+      select.setAttribute('size', el.getAttribute('data-size') || 2);
+      multiple = el.getAttribute('data-multiple') === 'true';
+    }
+
+    if ( multiple ) {
+      select.setAttribute('multiple', 'multiple');
+    }
+    if ( disabled ) {
+      select.setAttribute('disabled', 'disabled');
+    }
+
+    el.querySelectorAll('gui-select-option').forEach(function(sel) {
+      var value = sel.getAttribute('data-value') || '';
+      var label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
+
+      var option = document.createElement('option');
+      option.setAttribute('value', value);
+      option.appendChild(document.createTextNode(label));
+      select.appendChild(option);
+      sel.parentNode.removeChild(sel);
+    });
+
+    select.addEventListener('change', function(ev) {
+      select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
+    }, false);
+
+    el.appendChild(select);
+  }
+
+  function createInputLabel(el, type, input) {
+    var label = getLabel(el);
+
+    if ( label ) {
+      var lbl = document.createElement('label');
+      var span = document.createElement('span');
+      span.appendChild(document.createTextNode(label));
+
+      if ( type === 'checkbox' || type === 'radio' ) {
+        lbl.appendChild(input);
+        lbl.appendChild(span);
+      } else {
+        lbl.appendChild(span);
+        lbl.appendChild(input);
+      }
+      el.appendChild(lbl);
+    } else {
+      el.appendChild(input);
+    }
+  }
+
+  function createInputOfType(el, type) {
+    var group = el.getAttribute('data-group');
+    var placeholder = el.getAttribute('data-placeholder');
+    var disabled = el.getAttribute('data-disabled') !== null;
+    var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
+    Utils.$empty(el);
+
+    var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+    input.setAttribute('type', type);
+    if ( placeholder ) {
+      input.setAttribute('placeholder', placeholder);
+    }
+    if ( type === 'radio' && group ) {
+      input.setAttribute('name', group + '[]');
+    }
+
+    if ( type === 'text' || type === 'password' || type === 'textarea' ) {
+      input.value = value;
+      input.addEventListener('keydown', function(ev) {
+        if ( ev.keyCode === Utils.Keys.ENTER ) {
+          input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
+        }
+      }, false);
+    }
+
+    if ( type === 'range' || type === 'slider' ) {
+      var min = el.getAttribute('data-min');
+      var max = el.getAttribute('data-max');
+      var ste = el.getAttribute('data-step');
+
+      if ( min ) { input.setAttribute('min', min); }
+      if ( max ) { input.setAttribute('max', max); }
+      if ( ste ) { input.setAttribute('step', ste); }
+    }
+
+    if ( disabled ) {
+      input.setAttribute('disabled', 'disabled');
+    }
+
+    // TODO: Custom tabindex
+    input.setAttribute('tabindex', -1);
+
+    input.addEventListener('change', function(ev) {
+      var value = input.value;
+      if ( type === 'radio' || type === 'checkbox' ) {
+        //value = input.getAttribute('checked') === 'checked';
+        value = input.value === 'on';
+      }
+      input.dispatchEvent(new CustomEvent('_change', {detail: value}));
+    }, false);
+
+    createInputLabel(el, type, input);
+  }
+
+  function setFlexbox(el, grow, shrink, defaultGrow, defaultShrink, checkEl) {
+    var basis = (checkEl || el).getAttribute('data-basis') || 'auto';
+    var align = el.getAttribute('data-align');
+
+    var tmp;
+    if ( typeof grow === 'undefined' || grow === null ) {
+      tmp = (checkEl || el).getAttribute('data-grow');
+      if ( tmp === null ) {
+        grow = typeof defaultGrow === 'undefined' ? 0 : defaultGrow;
+      } else {
+        grow = parseInt(tmp, 10) || 0;
+      }
+    } else {
+      grow = basis === 'auto' ? 1 : grow;
+    }
+
+    if ( typeof shrink === 'undefined' || shrink === null ) {
+      tmp = (checkEl || el).getAttribute('data-shrink');
+      if ( tmp === null ) {
+        shrink = typeof defaultShrink === 'undefined' ? 0 : defaultShrink;
+      } else {
+        shrink = parseInt(tmp, 10) || 0;
+      }
+    } else {
+      shrink = basis === 'auto' ? 1 : shrink;
+    }
+
+    var flex = Utils.format('{0} {1} {2}', grow.toString(), shrink.toString(), basis);
+    el.style['webkitFlex'] = flex;
+    el.style['mozFflex'] = flex;
+    el.style['msFflex'] = flex;
+    el.style['oFlex'] = flex;
+    el.style['flex'] = flex;
+
+    if ( align ) {
+      el.style.alignSelf = align.match(/start|end/) ? 'flex-' + align : align;
+    }
+  }
+
+  function createDrag(el, onDown, onMove, onUp) {
+    onDown = onDown || function() {};
+    onMove = onMove || function() {};
+    onUp = onUp || function() {};
+
+    var startX, startY;
+    var dragging = false;
+
+    function _onMouseDown(ev) {
+      ev.preventDefault();
+
+      startX = ev.clientX;
+      startY = ev.clientY;
+
+      onDown(ev);
+      dragging = true;
+
+      window.addEventListener('mouseup', _onMouseUp, false);
+      window.addEventListener('mousemove', _onMouseMove, false);
+    }
+    function _onMouseMove(ev) {
+      ev.preventDefault();
+
+      if ( dragging ) {
+        var diffX = ev.clientX - startX;
+        var diffY = ev.clientY - startY;
+        onMove(ev, diffX, diffX);
+      }
+    }
+    function _onMouseUp(ev) {
+      onUp(ev);
+      dragging = false;
+
+      window.removeEventListener('mouseup', _onMouseUp, false);
+      window.removeEventListener('mousemove', _onMouseMove, false);
+    }
+
+    el.addEventListener('mousedown', _onMouseDown, false);
+  }
+
+  function bindTextInputEvents(el, evName, callback, params) {
+    if ( evName === 'enter' ) {
+      evName = '_enter';
+    }
+    var target = el.querySelector('input');
+    target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+  }
+
+  function addToSelectBox(el, entries) {
+    var target = el.querySelector('select');
+    if ( !(entries instanceof Array) ) {
+      entries = [entries];
+    }
+
+    entries.forEach(function(e) {
+      var opt = document.createElement('option');
+      opt.setAttribute('value', e.value);
+      opt.appendChild(document.createTextNode(e.label));
+
+      target.appendChild(opt);
+    });
+  }
+
+  function removeFromSelectBox(el, what) {
+    var target = el.querySelector('select');
+    // TODO
+  }
+
+  function clearSelectBox(el) {
+    var target = el.querySelector('select');
+    Utils.$empty(target);
+  }
+
+  function getViewNodeValue(found) {
+    var value = found.getAttribute('data-value');
+    try {
+      value = JSON.parse(value);
+    } catch ( e ) {
+      value = null;
+    }
+    return value;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // ELEMENTS
+  /////////////////////////////////////////////////////////////////////////////
+
   var CONSTRUCTORS = (function() {
-
-    function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
-      root = root || item.parentNode;
-
-      if ( !multipleSelect || !ev.shiftKey ) {
-        root.querySelectorAll(className).forEach(function(i) {
-          Utils.$removeClass(i, 'gui-active');
-        });
-        selected = [];
-      }
-
-      var findex = selected.indexOf(idx);
-      if ( findex >= 0 ) {
-        selected.splice(findex, 1);
-        Utils.$removeClass(item, 'gui-active');
-      } else {
-        selected.push(idx);
-        Utils.$addClass(item, 'gui-active');
-      }
-
-      return selected;
-    }
-
-    function createSelectInput(el, multiple) {
-      var disabled = el.getAttribute('data-disabled') !== null;
-      var select = document.createElement('select');
-      if ( multiple ) {
-        select.setAttribute('size', el.getAttribute('data-size') || 2);
-        multiple = el.getAttribute('data-multiple') === 'true';
-      }
-
-      if ( multiple ) {
-        select.setAttribute('multiple', 'multiple');
-      }
-      if ( disabled ) {
-        select.setAttribute('disabled', 'disabled');
-      }
-
-      el.querySelectorAll('gui-select-option').forEach(function(sel) {
-        var value = sel.getAttribute('data-value') || '';
-        var label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
-
-        var option = document.createElement('option');
-        option.setAttribute('value', value);
-        option.appendChild(document.createTextNode(label));
-        select.appendChild(option);
-        sel.parentNode.removeChild(sel);
-      });
-
-      select.addEventListener('change', function(ev) {
-        select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
-      }, false);
-
-      el.appendChild(select);
-    }
-
-    function createInputLabel(el, type, input) {
-      var label = getLabel(el);
-
-      if ( label ) {
-        var lbl = document.createElement('label');
-        var span = document.createElement('span');
-        span.appendChild(document.createTextNode(label));
-
-        if ( type === 'checkbox' || type === 'radio' ) {
-          lbl.appendChild(input);
-          lbl.appendChild(span);
-        } else {
-          lbl.appendChild(span);
-          lbl.appendChild(input);
-        }
-        el.appendChild(lbl);
-      } else {
-        el.appendChild(input);
-      }
-    }
-
-    function createInputOfType(el, type) {
-      var group = el.getAttribute('data-group');
-      var placeholder = el.getAttribute('data-placeholder');
-      var disabled = el.getAttribute('data-disabled') !== null;
-      var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
-      Utils.$empty(el);
-
-      var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
-      input.setAttribute('type', type);
-      if ( placeholder ) {
-        input.setAttribute('placeholder', placeholder);
-      }
-      if ( type === 'radio' && group ) {
-        input.setAttribute('name', group + '[]');
-      }
-
-      if ( type === 'text' || type === 'password' || type === 'textarea' ) {
-        input.value = value;
-        input.addEventListener('keydown', function(ev) {
-          if ( ev.keyCode === Utils.Keys.ENTER ) {
-            input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
-          }
-        }, false);
-      }
-
-      if ( type === 'range' || type === 'slider' ) {
-        var min = el.getAttribute('data-min');
-        var max = el.getAttribute('data-max');
-        var ste = el.getAttribute('data-step');
-
-        if ( min ) { input.setAttribute('min', min); }
-        if ( max ) { input.setAttribute('max', max); }
-        if ( ste ) { input.setAttribute('step', ste); }
-      }
-
-      if ( disabled ) {
-        input.setAttribute('disabled', 'disabled');
-      }
-
-      // TODO: Custom tabindex
-      input.setAttribute('tabindex', -1);
-
-      input.addEventListener('change', function(ev) {
-        var value = input.value;
-        if ( type === 'radio' || type === 'checkbox' ) {
-          //value = input.getAttribute('checked') === 'checked';
-          value = input.value === 'on';
-        }
-        input.dispatchEvent(new CustomEvent('_change', {detail: value}));
-      }, false);
-
-      createInputLabel(el, type, input);
-    }
-
-    function setFlexbox(el, grow, shrink, defaultGrow, defaultShrink, checkEl) {
-      var basis = (checkEl || el).getAttribute('data-basis') || 'auto';
-      var align = el.getAttribute('data-align');
-
-      var tmp;
-      if ( typeof grow === 'undefined' || grow === null ) {
-        tmp = (checkEl || el).getAttribute('data-grow');
-        if ( tmp === null ) {
-          grow = typeof defaultGrow === 'undefined' ? 0 : defaultGrow;
-        } else {
-          grow = parseInt(tmp, 10) || 0;
-        }
-      } else {
-        grow = basis === 'auto' ? 1 : grow;
-      }
-
-      if ( typeof shrink === 'undefined' || shrink === null ) {
-        tmp = (checkEl || el).getAttribute('data-shrink');
-        if ( tmp === null ) {
-          shrink = typeof defaultShrink === 'undefined' ? 0 : defaultShrink;
-        } else {
-          shrink = parseInt(tmp, 10) || 0;
-        }
-      } else {
-        shrink = basis === 'auto' ? 1 : shrink;
-      }
-
-      var flex = Utils.format('{0} {1} {2}', grow.toString(), shrink.toString(), basis);
-      el.style['webkitFlex'] = flex;
-      el.style['mozFflex'] = flex;
-      el.style['msFflex'] = flex;
-      el.style['oFlex'] = flex;
-      el.style['flex'] = flex;
-
-      if ( align ) {
-        el.style.alignSelf = align.match(/start|end/) ? 'flex-' + align : align;
-      }
-    }
-
-    function createDrag(el, onDown, onMove, onUp) {
-      onDown = onDown || function() {};
-      onMove = onMove || function() {};
-      onUp = onUp || function() {};
-
-      var startX, startY;
-      var dragging = false;
-
-      function _onMouseDown(ev) {
-        ev.preventDefault();
-
-        startX = ev.clientX;
-        startY = ev.clientY;
-
-        onDown(ev);
-        dragging = true;
-
-        window.addEventListener('mouseup', _onMouseUp, false);
-        window.addEventListener('mousemove', _onMouseMove, false);
-      }
-      function _onMouseMove(ev) {
-        ev.preventDefault();
-
-        if ( dragging ) {
-          var diffX = ev.clientX - startX;
-          var diffY = ev.clientY - startY;
-          onMove(ev, diffX, diffX);
-        }
-      }
-      function _onMouseUp(ev) {
-        onUp(ev);
-        dragging = false;
-
-        window.removeEventListener('mouseup', _onMouseUp, false);
-        window.removeEventListener('mousemove', _onMouseMove, false);
-      }
-
-      el.addEventListener('mousedown', _onMouseDown, false);
-    }
-
-    function bindTextInputEvents(el, evName, callback, params) {
-      if ( evName === 'enter' ) {
-        evName = '_enter';
-      }
-      var target = el.querySelector('input');
-      target.addEventListener(evName, callback.bind(new UIElement(el)), params);
-    }
-
-    function addToSelectBox(el, entries) {
-      var target = el.querySelector('select');
-      if ( !(entries instanceof Array) ) {
-        entries = [entries];
-      }
-
-      entries.forEach(function(e) {
-        var opt = document.createElement('option');
-        opt.setAttribute('value', e.value);
-        opt.appendChild(document.createTextNode(e.label));
-
-        target.appendChild(opt);
-      });
-    }
-
-    function removeFromSelectBox(el, what) {
-      var target = el.querySelector('select');
-      // TODO
-    }
-
-    function clearSelectBox(el) {
-      var target = el.querySelector('select');
-      Utils.$empty(target);
-    }
-
-    function getViewNodeValue(found) {
-      var value = found.getAttribute('data-value');
-      try {
-        value = JSON.parse(value);
-      } catch ( e ) {
-        value = null;
-      }
-      return value;
-    }
 
     return {
       //
@@ -829,7 +843,8 @@
 
           function runChildren(pel, level) {
             var children = pel.children;
-            var child, span, label, expand;
+            var child, span, label, expand, icon;
+
             for ( var i = 0; i < children.length; i++ ) {
               child = children[i];
               expand = false;
@@ -839,10 +854,15 @@
                   Utils.$addClass(child, 'gui-menu-expand');
                   expand = true;
                 }
+                label = getLabel(child);
+                icon = getIcon(child);
 
                 span = document.createElement('span');
-                label = getLabel(child);
                 span.appendChild(document.createTextNode(label));
+                if ( icon ) {
+                  child.style.backgroundImage = 'url(' + icon + ')';
+                  Utils.$addClass(span, 'gui-has-image');
+                }
                 child.appendChild(span);
 
                 bindSelectionEvent(child, i, expand);

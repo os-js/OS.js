@@ -742,6 +742,12 @@ gui-menu.gui-root-menu {
 
   gui-menu > gui-menu-entry:hover {
   }
+    gui-menu > gui-menu-entry {
+      background-repeat : no-repeat;
+      background-position : left center;
+    }
+    gui-menu > gui-menu-entry > span.gui-has-image {
+    }
 
   gui-menu > gui-menu-entry > gui-menu {
     display : none;
