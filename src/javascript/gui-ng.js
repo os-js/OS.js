@@ -446,11 +446,15 @@
       'gui-label': {
         parameters: [],
         events: [],
-        set: function(el, param, value) {
+        set: function(el, param, value, isHTML) {
           if ( param === 'value' ) {
             var lbl = el.querySelector('label');
             Utils.$empty(lbl);
-            lbl.appendChild(document.createTextNode(value));
+            if ( isHTML ) {
+              lbl.innerHTML = value;
+            } else {
+              lbl.appendChild(document.createTextNode(value));
+            }
           }
         },
         build: function(el) {
@@ -495,6 +499,24 @@
         },
         build: function(el) {
           createInputOfType(el, 'password');
+        }
+      },
+
+      'gui-file-upload': {
+        parameters: [],
+        events: ['change'],
+        bind: function(el, evName, callback, params) {
+          if ( evName === 'change' ) { evName = '_change'; }
+          var target = el.querySelector('input');
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+        },
+        build: function(el) {
+          var input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.onchange = function(ev) {
+            input.dispatchEvent(new CustomEvent('_change', {detail: input.files[0]}));
+          };
+          el.appendChild(input);
         }
       },
 
@@ -1686,12 +1708,12 @@
     return this;
   };
 
-  UIElement.prototype.set = function(param, value) {
+  UIElement.prototype.set = function(param, value, arg) {
     if ( this.$element ) {
       if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].set ) {
         CONSTRUCTORS[this.tagName].set(this.$element, param, value, this.tagName);
       } else {
-        setProperty(this.$element, param, value);
+        setProperty(this.$element, param, value, arg);
       }
     }
     return this;

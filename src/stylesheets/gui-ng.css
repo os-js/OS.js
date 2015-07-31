@@ -905,6 +905,12 @@ gui-richtext {
     border : 0 none;
   }
 
+/* File Upload */
+gui-file-upload {
+  display : inline-block;
+  position : relative;
+}
+
 /**
  * ===========================================================================
  *                                 MISC

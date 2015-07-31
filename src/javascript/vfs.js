@@ -1071,17 +1071,10 @@
 
     function doRequest(f, i) {
       if ( args.app ) {
-        if ( args.win ) {
-          API.createDialog('FileUpload', {
-            destination: args.destination,
-            file: f
-          }, _dialogClose, args.win);
-        } else {
-          API.createDialog('FileUpload', {
-            destination: args.destination,
-            file: f
-          }, _dialogClose, args.app);
-        }
+        API.createDialog('FileUpload', {
+          dest: args.destination,
+          file: f
+        }, _dialogClose, args.win || args.app);
       } else {
         OSjs.VFS.internalUpload(f, args.destination, function(type, arg) {
           if ( type === 'complete' || type === 'success' ) {

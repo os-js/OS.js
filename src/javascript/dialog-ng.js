@@ -211,6 +211,8 @@
       width: 400,
       height: 100
     }, args, callback]);
+
+    this.busy = !!args.filename;
   }
 
   FileProgressDialog.prototype = Object.create(DialogWindow.prototype);
@@ -224,11 +226,22 @@
     this.scheme.find(this, 'Progress').set('progress', p);
   };
 
+  FileProgressDialog.prototype._close = function(force) {
+    if ( !force && this.busy  ) {
+      return false;
+    }
+    return DialogWindow.prototype._close.call(this);
+  };
+
   /**
    * @extends DialogWindow
    */
   function FileUploadDialog(args, callback) {
     args = args || {};
+    args.dest = args.dest || API.getDefaultPath('/');
+    args.progress = args.progress || {};
+    args.file = args.file || null;
+
     DialogWindow.apply(this, ['FileUploadDialog', {
       title: args.title || API._('DIALOG_UPLOAD_TITLE'),
       icon: 'actions/filenew.png',
@@ -240,12 +253,97 @@
   FileUploadDialog.prototype = Object.create(DialogWindow.prototype);
   FileUploadDialog.constructor = DialogWindow;
 
-  FileUploadDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
+  FileUploadDialog.prototype.init = function() {
+    var self = this;
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    var message = this.scheme.find(this, 'Message');
+    var maxSize = OSjs.Core.getHandler().getConfig('Core').MaxUploadSize;
+
+    message.set('value', API._('DIALOG_UPLOAD_DESC', this.args.dest, maxSize), true);
+
+    var input = this.scheme.find(this, 'File');
+    if ( this.args.file ) {
+      this.setFile(this.args.file, input);
+    } else {
+      input.on('change', function(ev) {
+        self.setFile(ev.detail, input);
+      });
+    }
+
+    return root;
   };
 
-  FileUploadDialog.prototype.setProgress = function(p) {
-    p = parseInt(p, 10);
+  FileUploadDialog.prototype.setFile = function(file, input) {
+    var self = this;
+
+    if ( file ) {
+      var fileSize = 0;
+      if ( file.size > 1024 * 1024 ) {
+        fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+      } else {
+        fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+      }
+
+      if ( input ) {
+        input.set('disabled', true);
+      }
+
+      this.scheme.find(this, 'ButtonCancel').set('disabled', true);
+
+      var progressDialog = API.createDialog('FileProgress', {
+        dest: this.args.dest,
+        filename: file.name,
+        mime: file.type,
+        size: fileSize
+      }, function(ev, button) {
+        // Dialog closed
+      }, this);
+
+
+      if ( this._wmref ) {
+        var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, size, this.dest);
+        this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc});
+      }
+
+      function error(msg) {
+        API.error(
+          OSjs.API._('DIALOG_UPLOAD_FAILED'),
+          OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'),
+          msg || OSjs.API._('DIALOG_UPLOAD_FAILED_UNKNOWN')
+        );
+
+        progressDialog._close(true);
+        self.onClose(ev, 'cancel');
+      }
+
+      OSjs.VFS.internalUpload(file, this.args.dest, function(type, ev) {
+        if ( type === 'success' ) {
+          progressDialog._close();
+          self.onClose(ev, 'ok');
+        } else if ( type === 'failed' ) {
+          error(ev);
+        } else if ( type === 'canceled' ) {
+          error(OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'));
+        } else if ( type === 'progress' ) {
+          if ( ev.lengthComputable ) {
+            var p = Math.round(ev.loaded * 100 / ev.total);
+            progressDialog.setProgress(p);
+          }
+        } else {
+          error(ev);
+        }
+      });
+
+      setTimeout(function() {
+        if ( progressDialog ) { progressDialog._focus(); }
+      }, 100);
+    }
+  };
+
+
+  FileUploadDialog.prototype.onClose = function(ev, button) {
+    this.closeCallback(ev, button, null);
   };
 
   /**
@@ -774,6 +872,7 @@
 
   OSjs.Core.DialogWindow      = DialogWindow;
 
+  // TODO: REMOVE
   OSjs.API.debugDialogs = function() {
     var ds = {
       //ApplicationChooser: ApplicationChooserDialog,
@@ -785,8 +884,8 @@
       //Error: ErrorDialog,
       //Font: FontDialog
       //File: FileDialog
-      FileProgress: FileProgressDialog,
-      FileUpload: FileUploadDialog
+      //FileProgress: FileProgressDialog,
+      //FileUpload: FileUploadDialog
     };
     Object.keys(ds).forEach(function(d) {
       OSjs.API.createDialog(d, null, function(ev, button, result) {
