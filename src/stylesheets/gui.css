@@ -88,6 +88,13 @@ gui-icon-view > * {
  * ===========================================================================
  */
 
+/* Container */
+gui-container {
+  display : block;
+  position : relative;
+  overflow : auto;
+}
+
 /* Box */
 gui-hbox,
 gui-vbox {
@@ -677,6 +684,18 @@ gui-file-upload {
  *                                 MISC
  * ===========================================================================
  */
+
+/* Audio */
+gui-audio {
+  display : inline-block;
+  position : relative;
+}
+
+/* Video */
+gui-video {
+  display : inline-block;
+  position : relative;
+}
 
 /* Image */
 gui-image {

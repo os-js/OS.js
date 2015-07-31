@@ -216,6 +216,20 @@
     return selected;
   }
 
+  function createVisualElement(el, nodeType, applyArgs) {
+    applyArgs = applyArgs || {};
+
+    var img = document.createElement(nodeType);
+    var src = el.getAttribute('data-src');
+
+    Object.keys(applyArgs).forEach(function(k) {
+      img[k] = applyArgs[k];
+    });
+
+    img.setAttribute('src', src);
+    el.appendChild(img);
+  }
+
   function createSelectInput(el, multiple) {
     var disabled = el.getAttribute('data-disabled') !== null;
     var select = document.createElement('select');
@@ -813,12 +827,33 @@
         }
       },
 
-      'gui-image': {
+      'gui-audio': {
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('audio');
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+        },
         build: function(el) {
-          var img = document.createElement('img');
-          var src = el.getAttribute('data-src');
-          img.setAttribute('src', src);
-          el.appendChild(img);
+          createVisualElement(el, 'audio', applyArgs);
+        }
+      },
+
+      'gui-video': {
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('video');
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+        },
+        build: function(el, applyArgs) {
+          createVisualElement(el, 'video', applyArgs);
+        }
+      },
+
+      'gui-image': {
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('img');
+          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+        },
+        build: function(el, applyArgs) {
+          createVisualElement(el, 'img', applyArgs);
         }
       },
 
@@ -1866,7 +1901,7 @@
     }
   };
 
-  UIScheme.prototype.create = function(win, tagName, params, parentNode) {
+  UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
     tagName = tagName || '';
     params = params || {};
     parentNode = parentNode || win.getRoot();
@@ -1885,7 +1920,7 @@
 
     parentNode.appendChild(el);
 
-    CONSTRUCTORS[tagName].build(el);
+    CONSTRUCTORS[tagName].build(el, applyArgs);
 
     return new UIElement(el);
   };
