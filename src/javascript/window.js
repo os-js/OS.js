@@ -234,6 +234,21 @@
 
       console.info('OSjs::Core::Window::__construct()', this._wid, this._name);
 
+      if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
+        appRef.__args.__windows__.forEach(function(restore) {
+          if ( restore.name && restore.name === self._name ) {
+            self._position.x = restore.position.x;
+            self._position.y = restore.position.y;
+            if ( self._properties.allow_resize ) {
+              self._dimension.w = restore.dimension.w;
+              self._dimension.h = restore.dimension.h;
+            }
+
+            console.info('OSjs::Core::Window::__construct()', 'RESTORED FROM SESSION', restore);
+          }
+        });
+      }
+
       _WID++;
     };
   })();
