@@ -84,7 +84,15 @@
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
 
-    this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog');
+    this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
+      node.querySelectorAll('gui-label').forEach(function(el) {
+        if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
+          var label = el.childNodes[0].nodeValue;
+          Utils.$empty(el);
+          el.appendChild(document.createTextNode(API._(label)));
+        }
+      });
+    });
 
     this.scheme.find(this, 'ButtonOK').on('click', function(ev) {
       self.onClose(ev, 'ok');
@@ -210,6 +218,10 @@
 
   FileProgressDialog.prototype.onClose = function(ev, button) {
     this.closeCallback(ev, button, null);
+  };
+
+  FileProgressDialog.prototype.setProgress = function(p) {
+    this.scheme.find(this, 'Progress').set('progress', p);
   };
 
   /**
@@ -772,9 +784,9 @@
       //Color: ColorDialog,
       //Error: ErrorDialog,
       //Font: FontDialog
+      //File: FileDialog
       FileProgress: FileProgressDialog,
-      FileUpload: FileUploadDialog,
-      File: FileDialog
+      FileUpload: FileUploadDialog
     };
     Object.keys(ds).forEach(function(d) {
       OSjs.API.createDialog(d, null, function(ev, button, result) {

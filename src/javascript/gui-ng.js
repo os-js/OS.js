@@ -1773,7 +1773,9 @@
     });
   };
 
-  UIScheme.prototype.parse = function(id, type, win) {
+  UIScheme.prototype.parse = function(id, type, win, onparse) {
+    onparse = onparse || function() {};
+
     var content;
     if ( type ) {
       content = this.scheme.querySelector(type + '[data-id="' + id + '"]');
@@ -1794,6 +1796,8 @@
 
       parseDynamic(node, win);
 
+      onparse(node);
+
       Object.keys(CONSTRUCTORS).forEach(function(key) {
         node.querySelectorAll(key).forEach(CONSTRUCTORS[key].build);
       });
@@ -1804,10 +1808,10 @@
     return null;
   };
 
-  UIScheme.prototype.render = function(win, id, root, type) {
+  UIScheme.prototype.render = function(win, id, root, type, onparse) {
     root = root || win._getRoot();
 
-    var content = this.parse(id, type, win);
+    var content = this.parse(id, type, win, onparse);
     if ( content ) {
       var children = content.children;
       for ( var i = 0; i < children.length; i++ ) {
