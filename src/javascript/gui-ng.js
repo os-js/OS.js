@@ -61,7 +61,7 @@
       Utils.$empty(el);
     }
 
-    return API._(label);
+    return label ? API._(label) : '';
   }
 
   function blurMenu() {
@@ -1496,8 +1496,6 @@
           if ( type === 'gui-list-view' ) {
             nel.set('columns', [
               {label: 'Filename', resizable: true, basis: '100px'},
-              {label: 'Path', visible: false},
-              {label: 'Type', visible: false},
               {label: 'MIME', resizable: true},
               {label: 'Size', basis: '50px'}
             ]);
@@ -1509,6 +1507,12 @@
         function scandir(tagName, dir, cb) {
           var file = new VFS.File(dir);
           file.type  = 'dir';
+
+          function _getIcon(iter) {
+            var icon = 'status/gtk-dialog-question.png';
+            return API.getFileIcon(iter, null, icon);
+          }
+
           VFS.scandir(file, function(error, result) {
             if ( error ) { cb(error); return; }
 
@@ -1518,9 +1522,7 @@
               list.push({
                 value: iter,
                 columns: [
-                  {label: iter.filename},
-                  {label: iter.path},
-                  {label: iter.type},
+                  {label: iter.filename, icon: _getIcon(iter)},
                   {label: iter.mime},
                   {label: iter.size}
                 ]
