@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Window) {
+(function(Utils, API, VFS, Window) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -264,13 +264,46 @@
       width: 400,
       height: 400
     }, args, callback]);
+
+    if ( !this.args.file ) {
+      throw new Error('You have to select a file for FileInfo');
+    }
   }
 
   FileInfoDialog.prototype = Object.create(DialogWindow.prototype);
   FileInfoDialog.constructor = DialogWindow;
 
-  FileInfoDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
+  FileInfoDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    var txt = this.scheme.find(this, 'Info').set('value', API._('LBL_LOADING'));
+    var file = this.args.file;
+
+    function _onError(error) {
+      txt.set('value', API._('DIALOG_FILEINFO_ERROR_LOOKUP_FMT', file.path));
+    }
+
+    function _onSuccess(data) {
+      var info = [];
+      Object.keys(data).forEach(function(i) {
+        if ( i === 'exif' ) {
+          info.push(i + ':\n\n' + data[i]);
+        } else {
+          info.push(i + ':\n\t' + data[i]);
+        }
+      });
+      txt.set('value', info.join('\n\n'));
+    }
+
+    VFS.fileinfo(file, function(error, result) {
+      if ( error ) {
+        _onError(error);
+        return;
+      }
+      _onSuccess(result || {});
+    });
+
+    return root;
   };
 
   /**
@@ -527,7 +560,7 @@
       FileProgress: FileProgressDialog,
       FileUpload: FileUploadDialog,
       File: FileDialog,
-      FileInfo: FileInfoDialog,
+      //FileInfo: FileInfoDialog,
       //Input: InputDialog,
       //Alert: AlertDialog,
       //Confirm: ConfirmDialog,
@@ -557,4 +590,4 @@
     return win;
   };
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Window);
+})(OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.Core.Window);
