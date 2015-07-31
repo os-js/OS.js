@@ -250,6 +250,12 @@
   FileDialog.prototype = Object.create(DialogWindow.prototype);
   FileDialog.constructor = DialogWindow;
 
+  FileDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    this.scheme.find(this, 'FileView')._call('chdir', {});
+    return root;
+  };
+
   FileDialog.prototype.onClose = function(ev, button) {
     this.closeCallback(ev, button, null);
   };

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils) {
+(function(API, Utils, VFS) {
   'use strict';
 
   //////////////////////////////////////////////////////////////////////
@@ -1370,6 +1370,101 @@
             });
           }
         };
+      })(),
+
+      'gui-file-view': (function() {
+        function getChildView(el) {
+          return el.children[0];
+        }
+
+        function buildChildView(el) {
+          var type = el.getAttribute('data-type') || 'list-view';
+          if ( !type.match(/^gui\-/) ) {
+            type = 'gui-' + type;
+          }
+
+          var nel = new UIElementDataView(document.createElement(type));
+          CONSTRUCTORS[type].build(nel.$element);
+
+          if ( type === 'gui-list-view' ) {
+            nel.set('columns', [
+              {label: 'Filename', resizable: true, basis: '100px'},
+              {label: 'Type', basis: '50px', resizable: true},
+              {label: 'MIME', resizable: true},
+              {label: 'Size', basis: '50px'}
+            ]);
+          }
+
+          el.appendChild(nel.$element);
+        }
+
+        function scandir(tagName, dir, cb) {
+          var file = new VFS.File(dir);
+          file.type  = 'dir';
+          VFS.scandir(file, function(error, result) {
+            if ( error ) { cb(error); return; }
+
+            var list = [];
+            var summary = {size: 0, directories: 0, files: 0, hidden: 0};
+            (result || []).forEach(function(iter) {
+              list.push([
+                {key: 'filename', value: iter.filename, label: iter.filename},
+                {key: 'type', value: iter.type, label: iter.type},
+                {key: 'mime', value: iter.mime, label: iter.mime},
+                {key: 'size', value: iter.size, label: iter.size}
+              ]);
+
+              summary.size += iter.size || 0;
+              summary.directories += iter.type === 'dir' ? 1 : 0;
+              summary.files += iter.type !== 'dir' ? 1 : 0;
+              summary.hidden += iter.filename.substr(0) === '.' ? 1 : 0;
+            });
+
+            cb(false, list, summary);
+          }, {/* TODO */});
+        }
+
+        // TODO - Custom unified get:value() function
+        return {
+          parameters: [],
+          events: ['change'],
+          bind: function(el, evName, callback, params) {
+            if ( evName === 'change' ) { evName = '_change'; }
+            var target = getChildView(el);
+            if ( target ) {
+              target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+            }
+          },
+          set: function(el, param, value) {
+            if ( param === 'type' ) {
+              Utils.$empty(el);
+              el.setAttribute('data-type', value);
+              buildChildView(el);
+            }
+          },
+          build: function(el) {
+            buildChildView(el);
+          },
+          call: function(el, method, args) {
+            var target = getChildView(el);
+            if ( target ) {
+              var tagName = target.tagName.toLowerCase();
+
+              if ( method === 'chdir' ) {
+                var t = new UIElementDataView(target);
+
+                scandir(tagName, 'home:///', function(error, result) {
+                  t.clear();
+                  t.add(result);
+                });
+
+                return;
+              }
+
+              CONSTRUCTORS[tagName].call(target, method, args);
+            }
+          }
+        };
       })()
 
     };
@@ -1589,4 +1684,4 @@
     return new UIScheme(url);
   };
 
-})(OSjs.API, OSjs.Utils);
+})(OSjs.API, OSjs.Utils, OSjs.VFS);
