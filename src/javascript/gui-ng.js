@@ -50,7 +50,7 @@
 
   function getLabel(el) {
     var label = el.getAttribute('data-label');
-    return API._(label);
+    return label || '';
   }
 
   function getValueLabel(el, attr) {
@@ -61,7 +61,42 @@
       Utils.$empty(el);
     }
 
-    return label ? API._(label) : '';
+    return label || '';
+  }
+
+  function parseDynamic(node, win) {
+    // TODO: Support application locales! :)
+    node.querySelectorAll('*[data-label]').forEach(function(el) {
+      var label = API._(el.getAttribute('data-label'));
+      el.setAttribute('data-label', label);
+    });
+
+    node.querySelectorAll('gui-button').forEach(function(el) {
+      var label = getValueLabel(el);
+      if ( label ) {
+        el.appendChild(document.createTextNode(API._(label)));
+      }
+    });
+
+    // TODO: Support application resources
+    //var url = API.getApplicationResource(win._app, ref);
+    node.querySelectorAll('*[data-icon^="stock:"]').forEach(function(el) {
+      var image = el.getAttribute('data-icon').replace('stock://', '');
+      var size  = '16x16';
+      try {
+        var spl = image.split('/');
+        var tmp = spl.shift();
+        var siz = tmp.match(/^\d+x\d+/);
+        if ( siz ) {
+          size = siz[0];
+          image = spl.join('/');
+        }
+
+        image = API.getIcon(image, size);
+      } catch ( e ) {}
+
+      el.setAttribute('data-icon', image);
+    });
   }
 
   function blurMenu() {
@@ -1728,7 +1763,7 @@
     });
   };
 
-  UIScheme.prototype.parse = function(id, type) {
+  UIScheme.prototype.parse = function(id, type, win) {
     var content;
     if ( type ) {
       content = this.scheme.querySelector(type + '[data-id="' + id + '"]');
@@ -1747,6 +1782,8 @@
         }
       });
 
+      parseDynamic(node, win);
+
       Object.keys(CONSTRUCTORS).forEach(function(key) {
         node.querySelectorAll(key).forEach(CONSTRUCTORS[key].build);
       });
@@ -1760,7 +1797,7 @@
   UIScheme.prototype.render = function(win, id, root, type) {
     root = root || win._getRoot();
 
-    var content = this.parse(id, type);
+    var content = this.parse(id, type, win);
     if ( content ) {
       var children = content.children;
       for ( var i = 0; i < children.length; i++ ) {

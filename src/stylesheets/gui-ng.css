@@ -378,6 +378,7 @@ gui-button {
     padding-left : 8px;
     padding-right : 8px;
     background-position : 8px;
+    min-height : 24px;
   }
   gui-button button:before {
     content : '';
