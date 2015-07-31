@@ -120,6 +120,15 @@
     return Window.prototype._close.apply(this, arguments);
   };
 
+  DialogWindow.prototype._onKeyEvent = function(ev) {
+    Window.prototype._onKeyEvent.apply(this, arguments);
+
+    if ( ev.keyCode === Utils.Keys.ESC ) {
+      this.onClose(ev, 'cancel');
+    }
+  };
+
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

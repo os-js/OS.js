@@ -71,6 +71,12 @@
     return DialogWindow.prototype._close.call(this);
   };
 
+  FileProgressDialog.prototype._onKeyEvent = function(ev) {
+    if ( !this.busy ) {
+      DialogWindow.prototype._onKeyEvent.apply(this, arguments);
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
