@@ -234,6 +234,7 @@
 
       console.info('OSjs::Core::Window::__construct()', this._wid, this._name);
 
+      // Internals for restoring previous state (session)
       if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
         appRef.__args.__windows__.forEach(function(restore) {
           if ( restore.name && restore.name === self._name ) {
@@ -245,7 +246,10 @@
             }
 
             console.info('OSjs::Core::Window::__construct()', 'RESTORED FROM SESSION', restore);
+            return false;
           }
+
+          return true;
         });
       }
 

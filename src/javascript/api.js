@@ -633,9 +633,9 @@
    * Launch Processes from a List
    *
    * @param   Array         list        List of launch application arguments
-   * @param   Function      onSuccess   Callback on success
-   * @param   Function      onError     Callback on error
-   * @param   Function      onFinished  Callback on finished running
+   * @param   Function      onSuccess   Callback on success => fn(app, metadata, appName, appArgs)
+   * @param   Function      onError     Callback on error => fn(error, appName, appArgs)
+   * @param   Function      onFinished  Callback on finished running => fn()
    * @see     doLaunchProcess
    * @return  void
    * @api     OSjs.API.launchList()
@@ -646,8 +646,8 @@
     onError     = onError     || function() {};
     onFinished  = onFinished  || function() {};
 
-    function _onSuccess(app, metadata, appName, appArgs, queueData) {
-      onSuccess(app, metadata, appName, appArgs, queueData);
+    function _onSuccess(app, metadata, appName, appArgs) {
+      onSuccess(app, metadata, appName, appArgs);
       _onNext();
     }
 
@@ -688,7 +688,6 @@
 
       var aname = s.name;
       var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
-      var adata = s.data || {};
 
       if ( !aname ) {
         console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
@@ -696,7 +695,7 @@
       }
 
       OSjs.API.launch(aname, aargs, function(app, metadata) {
-        _onSuccess(app, metadata, aname, aargs, adata);
+        _onSuccess(app, metadata, aname, aargs);
       }, function(err, name, args) {
         _onError(err, name, args);
       });
