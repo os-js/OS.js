@@ -125,14 +125,6 @@
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationnguiWindow(self, metadata, scheme));
     });
-
-  };
-
-  Applicationngui.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationnguiWindow' ) {
-      this.destroy();
-    }
   };
 
   /////////////////////////////////////////////////////////////////////////////

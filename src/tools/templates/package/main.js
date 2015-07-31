@@ -33,16 +33,13 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window Constructor
-   */
-  function ApplicationEXAMPLEWindow(app, metadata) {
+  function ApplicationEXAMPLEWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationEXAMPLEWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 200
-    }, app]);
+    }, app, scheme]);
   }
 
   ApplicationEXAMPLEWindow.prototype = Object.create(Window.prototype);
@@ -51,7 +48,8 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    // Create window contents (GUI) here
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'ApplicationEXAMPLEWindow', root);
 
     return root;
   };
@@ -64,12 +62,8 @@
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application constructor
-   */
   var ApplicationEXAMPLE = function(args, metadata) {
     Application.apply(this, ['ApplicationEXAMPLE', args, metadata]);
-
     // You can set application variables here
   };
 
@@ -77,28 +71,14 @@
 
   ApplicationEXAMPLE.prototype.destroy = function() {
     // Destroy communication, timers, objects etc. here
-
     return Application.prototype.destroy.apply(this, arguments);
   };
 
   ApplicationEXAMPLE.prototype.init = function(settings, metadata) {
-    var self = this;
-
     Application.prototype.init.apply(this, arguments);
 
-    // Create your main window
+    // TODO
     var mainWindow = this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
-
-    // Do other stuff here
-  };
-
-  ApplicationEXAMPLE.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    // Make sure we kill our application if main window was closed
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationEXAMPLEWindow' ) {
-      this.destroy();
-    }
   };
 
   /////////////////////////////////////////////////////////////////////////////

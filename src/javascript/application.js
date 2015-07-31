@@ -66,6 +66,7 @@
     this.__args       = args || {};
     this.__settings   = settings || {};
     this.__metadata   = metadata;
+    this.__mainwindow = null;
 
     Process.apply(this, [name]);
 
@@ -151,6 +152,11 @@
 
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
+
+      if ( obj && obj._name === this.__mainwindow ) {
+        this.destroy();
+      }
+
     } else if ( msg === 'attention' ) {
       if ( this.__windows.length ) {
         if ( this.__windows[0] ) {
@@ -193,12 +199,13 @@
    *
    * @param   Window    w         The Window
    * @param   Function  cb        (Optional) Callback for when window was successfully inited
+   * @param   boolean   setmain   (Optional) Set if this is the main window (First window always will be)
    *
    * @return  Window
    *
    * @method  Application::_addWindow()
    */
-  Application.prototype._addWindow = function(w, cb) {
+  Application.prototype._addWindow = function(w, cb, setmain) {
     cb = cb || function() {};
 
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
@@ -215,6 +222,10 @@
           w._focus();
         }, 5);
       }
+    }
+
+    if ( setmain || this.__windows.length === 1 ) {
+      this.__mainwindow = w._name;
     }
 
     cb(w, wm);
