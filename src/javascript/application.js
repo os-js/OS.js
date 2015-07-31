@@ -76,6 +76,7 @@
   };
 
   Application.prototype = Object.create(Process.prototype);
+  Application.constructor = Process;
 
   /**
    * Initialize the Application
