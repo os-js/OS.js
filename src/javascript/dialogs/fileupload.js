@@ -119,7 +119,7 @@
       OSjs.VFS.internalUpload(file, this.args.dest, function(type, ev) {
         if ( type === 'success' ) {
           progressDialog._close();
-          self.onClose(ev, 'ok');
+          self.onClose(ev, 'ok', file);
         } else if ( type === 'failed' ) {
           error(ev);
         } else if ( type === 'canceled' ) {
@@ -141,8 +141,9 @@
   };
 
 
-  FileUploadDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
+  FileUploadDialog.prototype.onClose = function(ev, button, result) {
+    result = result || null;
+    this.closeCallback(ev, button, result);
   };
 
   /////////////////////////////////////////////////////////////////////////////

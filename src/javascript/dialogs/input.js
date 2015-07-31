@@ -47,13 +47,28 @@
   InputDialog.constructor = DialogWindow;
 
   InputDialog.prototype.init = function() {
+    var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
     if ( this.args.message ) {
-      this.scheme.find(this, 'Message').set('value', this.args.message);
+      this.scheme.find(this, 'Message').set('value', this.args.message, true);
     }
-    this.scheme.find(this, 'Input').set('placeholder', this.args.placeholder || '');
-    this.scheme.find(this, 'Input').set('value', this.args.value || '');
+
+    var input = this.scheme.find(this, 'Input');
+    input.set('placeholder', this.args.placeholder || '');
+    input.set('value', this.args.value || '');
+    input.on('enter', function(ev) {
+      self.onClose(ev, 'ok');
+    });
+
     return root;
+  };
+
+  InputDialog.prototype._focus = function() {
+    if ( DialogWindow.prototype._focus.apply(this, arguments) ) {
+      this.scheme.find(this, 'Input').focus();
+      return true;
+    }
+    return false;
   };
 
   InputDialog.prototype.onClose = function(ev, button) {

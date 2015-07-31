@@ -55,7 +55,7 @@
     args = args || {};
     callback = callback || function() {};
 
-    Window.apply(this, [className + DialogIndex, opts]);
+    Window.apply(this, ['DialogWindow ' + className + DialogIndex, opts]);
 
     this._properties.gravity          = 'center';
     this._properties.allow_resize     = false;

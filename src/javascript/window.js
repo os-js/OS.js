@@ -1292,25 +1292,6 @@
   };
 
   /**
-   * Creates an error dialog
-   *
-   * @param   String      title             Dialog title
-   * @param   String      description       Error description
-   * @param   String      message           Error message
-   * @param   Error       exception         (Optional) Exception
-   * @param   boolean     bugreport         Set if this bug can be reported
-   *
-   * @return  void
-   *
-   * @method  Window::_error()
-   */
-  Window.prototype._error = function(title, description, message, exception, bugreport) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_error()');
-    var w = API.error(title, description, message, exception, bugreport);
-    this._addChild(w);
-  };
-
-  /**
    * Toggle disabled overlay
    *
    * @param     boolean     t       Toggle

@@ -1015,11 +1015,15 @@
     if ( !parentObj ) {
       var wm = OSjs.Core.getWindowManager();
       wm.addWindow(win, true);
-    } else if ( parentObj instanceof Window ) {
+    } else if ( parentObj instanceof OSjs.Core.Window ) {
       parentObj._addChild(win, true);
     } else if ( parentObj instanceof OSjs.Core.Application ) {
       parentObj._addWidow(win);
     }
+
+    setTimeout(function() {
+      win._focus();
+    }, 10);
 
     return win;
   };

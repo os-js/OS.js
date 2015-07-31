@@ -122,7 +122,7 @@
           return firstChild.value === 'on';
           //return firstChild.getAttribute('checked') === 'checked';
         }
-      } else if ( tagName.match(/^gui\-(tree|icon|list)\-view$/) ) {
+      } else if ( tagName.match(/^gui\-(tree|icon|list|file)\-view$/) ) {
         return CONSTRUCTORS[tagName].values(el);
       }
 
@@ -444,8 +444,6 @@
       //
 
       'gui-label': {
-        parameters: [],
-        events: [],
         set: function(el, param, value, isHTML) {
           if ( param === 'value' ) {
             var lbl = el.querySelector('label');
@@ -466,8 +464,6 @@
       },
 
       'gui-textarea': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('textarea');
@@ -479,8 +475,6 @@
       },
 
       'gui-text': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           bindTextInputEvents.apply(this, arguments);
@@ -491,8 +485,6 @@
       },
 
       'gui-password': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           bindTextInputEvents.apply(this, arguments);
@@ -503,8 +495,6 @@
       },
 
       'gui-file-upload': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
@@ -521,8 +511,6 @@
       },
 
       'gui-radio': {
-        parameters: [],
-        events: ['change', 'activate'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
@@ -534,8 +522,6 @@
       },
 
       'gui-checkbox': {
-        parameters: [],
-        events: ['change', 'activate'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
@@ -547,8 +533,6 @@
       },
 
       'gui-switch': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
@@ -596,8 +580,6 @@
       },
 
       'gui-button': {
-        parameters: [],
-        events: [],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('button');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
@@ -623,8 +605,6 @@
       },
 
       'gui-select': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('select');
@@ -646,8 +626,6 @@
       },
 
       'gui-select-list': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('select');
@@ -669,8 +647,6 @@
       },
 
       'gui-slider': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
@@ -682,8 +658,6 @@
       },
 
       'gui-richtext' : {
-        parameters: [],
-        events: [],
         // TODO Events
         build: function(el) {
           var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
@@ -738,8 +712,6 @@
       },
 
       'gui-color-swatch': {
-        parameters: [],
-        events: ['change'],
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('canvas');
           if ( evName === 'select' || evName === 'change' ) {
@@ -802,8 +774,6 @@
       //
 
       'gui-progress-bar': {
-        parameters: [],
-        events: [],
         set: function(el, param, value) {
           el.setAttribute('data-' + param, value);
           if ( param === 'progress' ) {
@@ -830,8 +800,6 @@
       },
 
       'gui-image': {
-        parameters: [],
-        events: [],
         build: function(el) {
           var img = document.createElement('img');
           var src = el.getAttribute('data-src');
@@ -841,8 +809,6 @@
       },
 
       'gui-menu': {
-        parameters: [],
-        events: ['select'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'select' ) {
             evName = '_select';
@@ -894,8 +860,6 @@
       },
 
       'gui-menu-bar': {
-        parameters: [],
-        events: ['select'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'select' ) {
             evName = '_select';
@@ -940,8 +904,6 @@
       //
 
       'gui-iframe' : {
-        parameters: [],
-        events: [],
         build: function(el) {
           var src = el.getAttribute('data-src') || 'about:blank';
           var iframe = document.createElement('iframe');
@@ -952,15 +914,11 @@
       },
 
       'gui-button-bar' : {
-        parameters: [],
-        events: [],
         build: function(el) {
         }
       },
 
       'gui-tabs': {
-        parameters: [],
-        events: ['change', 'select', 'activate'],
         bind: function(el, evName, callback, params) {
           if ( (['select', 'activate']).indexOf(evName) !== -1 ) {
             evName = 'change';
@@ -1021,8 +979,6 @@
       },
 
       'gui-paned-view': {
-        parameters: [],
-        events: ['resize'],
         bind: function(el, evName, callback, params) {
           if ( evName === 'resize' ) {
             evName = '_' + evName;
@@ -1067,38 +1023,28 @@
       },
 
       'gui-paned-view-container': {
-        parameters: [],
-        events: [],
         build: function(el) {
           setFlexbox(el, 0, 0);
         }
       },
 
       'gui-vbox': {
-        parameters: [],
-        events: [],
         build: function(el) {
         }
       },
 
       'gui-vbox-container': {
-        parameters: [],
-        events: [],
         build: function(el) {
           setFlexbox(el);
         }
       },
 
       'gui-hbox': {
-        parameters: [],
-        events: [],
         build: function(el) {
         }
       },
 
       'gui-hbox-container': {
-        parameters: [],
-        events: [],
         build: function(el) {
           setFlexbox(el);
         }
@@ -1109,8 +1055,6 @@
       //
 
       'gui-icon-view': {
-        parameters: [],
-        events: ['activate', 'select', 'scroll'],
         bind: function(el, evName, callback, params) {
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
@@ -1177,8 +1121,6 @@
       },
 
       'gui-tree-view': {
-        parameters: [],
-        events: ['activate', 'select', 'scroll'],
         bind: function(el, evName, callback, params) {
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
@@ -1339,6 +1281,7 @@
         function initRow(el, row) {
           var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
           var headContainer = el.querySelector('gui-list-view-head');
+          var singleClick = el.getAttribute('data-single-click') === 'true';
 
           function getSelected() {
             return CONSTRUCTORS['gui-list-view'].values(el);
@@ -1372,23 +1315,34 @@
             }
           });
 
-          row.addEventListener('click', function(ev) {
-            var multipleSelect = el.getAttribute('data-multiple');
-            multipleSelect = multipleSelect === null || multipleSelect === 'true';
+          if ( singleClick ) {
+            row.addEventListener('click', function(ev) {
+              var multipleSelect = el.getAttribute('data-multiple');
+              multipleSelect = multipleSelect === null || multipleSelect === 'true';
+              var idx = Utils.$index(row);
+              el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
 
-            var idx = Utils.$index(row);
-            el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
-            el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
-          }, false);
+              var selected = getSelected();
+              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
+              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
+            });
+          } else {
+            row.addEventListener('click', function(ev) {
+              var multipleSelect = el.getAttribute('data-multiple');
+              multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
-          row.addEventListener('dblclick', function(ev) {
-            el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
-          }, false);
+              var idx = Utils.$index(row);
+              el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
+              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
+            }, false);
+
+            row.addEventListener('dblclick', function(ev) {
+              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
+            }, false);
+          }
         }
 
         return {
-          parameters: [],
-          events: ['activate', 'select', 'scroll'],
           bind: function(el, evName, callback, params) {
             if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
               evName = '_' + evName;
@@ -1407,7 +1361,7 @@
             });
             return selected || active;
           },
-          set: function(el, param, value) {
+          set: function(el, param, value, arg) {
             if ( param === 'columns' ) {
               var head = el.querySelector('gui-list-view-columns');
               var row = head.querySelector('gui-list-view-row');
@@ -1433,6 +1387,26 @@
               head.appendChild(row);
 
               createResizers(el);
+              return;
+            } else if ( param === 'selected' ) {
+              var body = el.querySelector('gui-list-view-rows');
+              var select = [];
+
+              body.querySelectorAll('gui-list-view-row').forEach(function(r, idx) {
+                Utils.$removeClass(r, 'gui-active');
+
+                try {
+                  var json = JSON.parse(r.getAttribute('data-value'));
+                  if ( json[arg] == value ) {
+                    select.push(idx);
+                    Utils.$addClass(r, 'gui-active');
+                    // TODO: Scroll to position
+                  }
+                } catch ( e ) {}
+              });
+
+              el._selected = select;
+
               return;
             }
 
@@ -1479,10 +1453,8 @@
             }
           },
           build: function(el) {
-            // TODO: Set value (selected items)
             var headContainer, bodyContainer;
             var head = el.querySelector('gui-list-view-columns');
-
 
             if ( !head ) {
               head = document.createElement('gui-list-view-columns');
@@ -1606,8 +1578,6 @@
         }
 
         return {
-          parameters: [],
-          events: ['change'],
           bind: function(el, evName, callback, params) {
             if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
               evName = '_' + evName;
@@ -1618,7 +1588,7 @@
               target.addEventListener(evName, callback.bind(new UIElement(el)), params);
             }
           },
-          set: function(el, param, value) {
+          set: function(el, param, value, arg) {
             if ( param === 'type' ) {
               Utils.$empty(el);
               el.setAttribute('data-type', value);
@@ -1629,12 +1599,20 @@
             var target = getChildView(el);
             if ( target ) {
               var tagName = target.tagName.toLowerCase();
-              CONSTRUCTORS[tagName].set(target, param, value);
+              CONSTRUCTORS[tagName].set(target, param, value, arg);
             }
 
           },
           build: function(el) {
             buildChildView(el);
+          },
+          values: function(el) {
+            var target = getChildView(el);
+            if ( target ) {
+              var tagName = target.tagName.toLowerCase();
+              return CONSTRUCTORS[tagName].values(target);
+            }
+            return null;
           },
           call: function(el, method, args) {
             args = args || {};
@@ -1648,11 +1626,13 @@
                 var t = new UIElementDataView(target);
                 var dir = args.path || OSjs.API.getDefaultPath('/');
 
-                scandir(tagName, dir, function(error, result) {
-                  t.clear();
-                  t.add(result);
+                scandir(tagName, dir, function(error, result, summary) {
+                  if ( !error ) {
+                    t.clear();
+                    t.add(result);
+                  }
 
-                  args.done();
+                  args.done(error, summary);
                 });
 
                 return;
@@ -1684,6 +1664,28 @@
     }
   }
 
+  UIElement.prototype.blur = function() {
+    // TODO: For more elements
+    if ( this.$element ) {
+      var firstChild = this.$element.querySelector('input');
+      if ( firstChild ) {
+        firstChild.blur();
+      }
+    }
+    return this;
+  };
+
+  UIElement.prototype.focus = function() {
+    // TODO: For more elements
+    if ( this.$element ) {
+      var firstChild = this.$element.querySelector('input');
+      if ( firstChild ) {
+        firstChild.focus();
+      }
+    }
+    return this;
+  };
+
   UIElement.prototype.show = function() {
     if ( this.$element ) {
       this.$element.style.display = this.oldDisplay || '';
@@ -1711,7 +1713,7 @@
   UIElement.prototype.set = function(param, value, arg) {
     if ( this.$element ) {
       if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].set ) {
-        CONSTRUCTORS[this.tagName].set(this.$element, param, value, this.tagName);
+        CONSTRUCTORS[this.tagName].set(this.$element, param, value, arg);
       } else {
         setProperty(this.$element, param, value, arg);
       }
@@ -1722,7 +1724,7 @@
   UIElement.prototype.get = function(param) {
     if ( this.$element ) {
       if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].get ) {
-        return CONSTRUCTORS[this.tagName].get(this.$element, param, this.tagName);
+        return CONSTRUCTORS[this.tagName].get(this.$element, param);
       } else {
         return getProperty(this.$element, param);
       }
@@ -1909,7 +1911,7 @@
       });
     }
 
-    resolveItems(items, root);
+    resolveItems(items || [], root);
     CONSTRUCTORS['gui-menu'].build(root, true);
 
     var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;

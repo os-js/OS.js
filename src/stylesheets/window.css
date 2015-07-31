@@ -206,3 +206,7 @@
   padding : 5px;
   overflow : hidden;
 }
+
+.DialogWindow gui-label label {
+  white-space : inherit;
+}
