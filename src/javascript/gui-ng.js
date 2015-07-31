@@ -1077,7 +1077,7 @@
             }
           });
 
-          return selected || active;
+          return selected;
         },
         build: function(el) {
           // TODO: Custom Icon Size
@@ -1142,7 +1142,7 @@
               });
             }
           });
-          return selected || active;
+          return selected;
         },
         build: function(el) {
           // TODO: Custom Icon Size
@@ -1361,7 +1361,7 @@
                 selected.push({index: iter, data: getViewNodeValue(found)});
               }
             });
-            return selected || active;
+            return selected;
           },
           set: function(el, param, value, arg) {
             if ( param === 'columns' ) {
