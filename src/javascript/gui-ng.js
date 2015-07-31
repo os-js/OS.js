@@ -1018,13 +1018,34 @@
           }
           el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
+        values: function(el) {
+          var selected = [];
+          var active = (el._selected || [])
+
+          active.forEach(function(iter) {
+            var found = el.querySelectorAll('gui-icon-view-entry')[iter];
+            if ( found ) {
+              var key = found.getAttribute('data-key');
+              selected.push({
+                index: iter,
+                key: key,
+                value: found.getAttribute('data-value')
+              });
+            }
+          });
+
+          return selected || active;
+        },
         build: function(el) {
           // TODO: Custom Icon Size
           // TODO: Set value (selected items)
 
-          var selected = [];
-          function handleItemClick(ev, item, idx) {
-            selected = handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected);
+          function handleItemClick(ev, item, idx, selected) {
+            return handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected);
+          }
+
+          function getSelected() {
+            return CONSTRUCTORS['gui-icon-view'].values(el);
           }
 
           el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
@@ -1042,11 +1063,11 @@
             dlabel.appendChild(dspan);
 
             cel.addEventListener('click', function(ev) {
-              handleItemClick(ev, cel, idx);
-              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
+              el._selected = handleItemClick(ev, cel, idx, el._selected);
+              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
             }, false);
             cel.addEventListener('dblclick', function(ev) {
-              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
+              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
             }, false);
 
             cel.appendChild(dicon);
@@ -1064,13 +1085,33 @@
           }
           el.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
+        values: function(el) {
+          var selected = [];
+          var active = (el._selected || [])
+
+          active.forEach(function(iter) {
+            var found = el.querySelectorAll('gui-tree-view-entry')[iter];
+            if ( found ) {
+              var key = found.getAttribute('data-key');
+              selected.push({
+                index: iter,
+                key: key,
+                value: found.getAttribute('data-value')
+              });
+            }
+          });
+          return selected || active;
+        },
         build: function(el) {
           // TODO: Custom Icon Size
           // TODO: Set value (selected items)
 
-          var selected = [];
-          function handleItemClick(ev, item, idx) {
-            selected = handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el);
+          function getSelected() {
+            return CONSTRUCTORS['gui-tree-view'].values(el);
+          }
+
+          function handleItemClick(ev, item, idx, selected) {
+            return handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el);
           }
 
           function handleItemExpand(ev, root, expanded) {
@@ -1124,11 +1165,11 @@
             handleItemExpand(null, sel, expanded);
 
             container.addEventListener('click', function(ev) {
-              handleItemClick(ev, sel, idx);
-              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
+              el._selected = handleItemClick(ev, sel, idx, el._selected);
+              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
             }, false);
             container.addEventListener('dblclick', function(ev) {
-              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
+              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
             }, false);
 
           });
@@ -1200,6 +1241,10 @@
           var multipleSelect = el.getAttribute('data-multiple');
           multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
+          function getSelected() {
+            return CONSTRUCTORS['gui-list-view'].values(el);
+          }
+
           row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
             var cl = cols.length;
             var x = cl ? idx % cl : idx;
@@ -1228,11 +1273,11 @@
           row.addEventListener('click', function(ev) {
             var idx = Utils.$index(row);
             el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
-            el.dispatchEvent(new CustomEvent('_select', {detail: {entries: el._selected}}));
+            el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
           }, false);
 
           row.addEventListener('dblclick', function(ev) {
-            el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: el._selected}}));
+            el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
           }, false);
         }
 
@@ -1252,16 +1297,14 @@
             active.forEach(function(iter) {
               var found = body.querySelectorAll('gui-list-view-row')[iter];
               if ( found ) {
+                var pselect = {index: iter, data: {}};
                 found.querySelectorAll('gui-list-view-column').forEach(function(cell) {
                   var key = cell.getAttribute('data-key');
                   if ( key ) {
-                    selected.push({
-                      index: iter,
-                      key: key,
-                      value: cell.getAttribute('data-value')
-                    });
+                    pselect.data[key] = cell.getAttribute('data-value');
                   }
                 });
+                selected.push(pselect);
               }
             });
             return selected || active;
@@ -1322,6 +1365,8 @@
             // TODO: Set value (selected items)
             var headContainer, bodyContainer;
             var head = el.querySelector('gui-list-view-columns');
+
+
             if ( !head ) {
               head = document.createElement('gui-list-view-columns');
               if ( el.children.length )  {
@@ -1429,7 +1474,10 @@
           parameters: [],
           events: ['change'],
           bind: function(el, evName, callback, params) {
-            if ( evName === 'change' ) { evName = '_change'; }
+            if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+              evName = '_' + evName;
+            }
+
             var target = getChildView(el);
             if ( target ) {
               target.addEventListener(evName, callback.bind(new UIElement(el)), params);

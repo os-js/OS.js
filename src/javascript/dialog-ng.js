@@ -252,6 +252,9 @@
 
   FileDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
+    this.scheme.find(this, 'FileView').on('select', function(ev) {
+      console.warn("YYYY", ev);
+    });
     this.scheme.find(this, 'FileView')._call('chdir', {});
     return root;
   };

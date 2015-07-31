@@ -79,6 +79,10 @@
       alert("You clicked me");
     });
 
+    scheme.find(this, 'MyTreeView').on('select', function(ev) {
+      console.warn('treeview', ev);
+    });
+
     scheme.find(this, 'MyIconView').on('select', function(ev) {
       console.warn('iconview', ev);
     });
