@@ -104,7 +104,7 @@
     // TODO: Support application resources
     //var url = API.getApplicationResource(win._app, ref);
     node.querySelectorAll('*[data-icon^="stock:"]').forEach(function(el) {
-      image = getIcon(el);
+      var image = getIcon(el);
       el.setAttribute('data-icon', image);
     });
   }

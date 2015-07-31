@@ -677,8 +677,10 @@
       this._app._onMessage(this, 'destroyWindow', {});
     }
 
+    this._scheme = null;
     this._app = null;
     this._hooks = {};
+    this._args = {};
 
     console.groupEnd();
   };
