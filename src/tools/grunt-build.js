@@ -1030,6 +1030,7 @@
     rep(_path.join(dst, 'main.js'));
     rep(_path.join(dst, 'main.css'));
     rep(_path.join(dst, 'package.json'));
+    rep(_path.join(dst, 'scheme.html'));
 
     finished();
   }

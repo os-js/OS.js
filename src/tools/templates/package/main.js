@@ -43,13 +43,14 @@
   }
 
   ApplicationEXAMPLEWindow.prototype = Object.create(Window.prototype);
+  ApplicationEXAMPLEWindow.constructor = Window.prototype;
 
   ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'ApplicationEXAMPLEWindow', root);
+    scheme.render(this, 'EXAMPLEWindow', root);
 
     return root;
   };
@@ -64,21 +65,24 @@
 
   var ApplicationEXAMPLE = function(args, metadata) {
     Application.apply(this, ['ApplicationEXAMPLE', args, metadata]);
-    // You can set application variables here
   };
 
   ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
+  ApplicationEXAMPLE.constructor = Application;
 
   ApplicationEXAMPLE.prototype.destroy = function() {
-    // Destroy communication, timers, objects etc. here
     return Application.prototype.destroy.apply(this, arguments);
   };
 
   ApplicationEXAMPLE.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
-    // TODO
-    var mainWindow = this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
+    var self = this;
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = OSjs.API.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme));
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
