@@ -1041,7 +1041,10 @@
           // TODO: Set value (selected items)
 
           function handleItemClick(ev, item, idx, selected) {
-            return handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected);
+            var multipleSelect = el.getAttribute('data-multiple');
+            multipleSelect = multipleSelect === null || multipleSelect === 'true';
+
+            return handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected, null, multipleSelect);
           }
 
           function getSelected() {
@@ -1111,7 +1114,10 @@
           }
 
           function handleItemClick(ev, item, idx, selected) {
-            return handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el);
+            var multipleSelect = el.getAttribute('data-multiple');
+            multipleSelect = multipleSelect === null || multipleSelect === 'true';
+
+            return handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el, multipleSelect);
           }
 
           function handleItemExpand(ev, root, expanded) {
@@ -1238,8 +1244,6 @@
         function initRow(el, row) {
           var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
           var headContainer = el.querySelector('gui-list-view-head');
-          var multipleSelect = el.getAttribute('data-multiple');
-          multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
           function getSelected() {
             return CONSTRUCTORS['gui-list-view'].values(el);
@@ -1260,7 +1264,6 @@
               cel.style.backgroundImage = 'url(' + icon + ')';
             }
 
-
             var text = cel.firstChild;
             if ( text && text.nodeType === 3 ) {
               var span = document.createElement('span');
@@ -1268,9 +1271,16 @@
               cel.insertBefore(span, text);
               cel.removeChild(text);
             }
+
+            if ( el._columns[idx] && !el._columns[idx].visible ) {
+              cel.style.display = 'none';
+            }
           });
 
           row.addEventListener('click', function(ev) {
+            var multipleSelect = el.getAttribute('data-multiple');
+            multipleSelect = multipleSelect === null || multipleSelect === 'true';
+
             var idx = Utils.$index(row);
             el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
             el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
@@ -1319,14 +1329,26 @@
                 row = document.createElement('gui-list-view-row');
               }
 
+              el._columns = [];
               value.forEach(function(v) {
-                row.appendChild(createEntry(v));
+                var iter = {
+                  visible: (typeof v.visible === 'undefined') || v.visible === true
+                };
+                el._columns.push(iter);
+                var nel = createEntry(v);
+                if ( !iter.visible ) {
+                  nel.style.display = 'none';
+                }
+                row.appendChild(nel);
               });
 
               head.appendChild(row);
 
               createResizers(el);
+              return;
             }
+
+            setProperty(el, param, value);
           },
           call: function(el, method, args) {
             if ( method === 'add' ) {
@@ -1382,6 +1404,7 @@
             }
 
             el._selected = [];
+            el._columns = [];
 
             if ( head ) {
               headContainer = document.createElement('gui-list-view-head');
@@ -1407,6 +1430,17 @@
 
               el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
                 setFlexbox(cel, null, null, 1, 0);
+
+                var vis = cel.getAttribute('data-visible');
+                var iter = {
+                  visible: vis === null || vis === 'true'
+                };
+
+                el._columns.push(iter);
+
+                if ( !iter.visible ) {
+                  cel.style.display = 'none';
+                }
               });
             }
 
@@ -1434,7 +1468,8 @@
           if ( type === 'gui-list-view' ) {
             nel.set('columns', [
               {label: 'Filename', resizable: true, basis: '100px'},
-              {label: 'Type', basis: '50px', resizable: true},
+              {label: 'Path', visible: false},
+              {label: 'Type', visible: false},
               {label: 'MIME', resizable: true},
               {label: 'Size', basis: '50px'}
             ]);
@@ -1454,6 +1489,7 @@
             (result || []).forEach(function(iter) {
               list.push([
                 {key: 'filename', value: iter.filename, label: iter.filename},
+                {key: 'path', value: iter.path, label: iter.path},
                 {key: 'type', value: iter.type, label: iter.type},
                 {key: 'mime', value: iter.mime, label: iter.mime},
                 {key: 'size', value: iter.size, label: iter.size}
@@ -1469,7 +1505,6 @@
           }, {/* TODO */});
         }
 
-        // TODO - Custom unified get:value() function
         return {
           parameters: [],
           events: ['change'],
@@ -1488,22 +1523,36 @@
               Utils.$empty(el);
               el.setAttribute('data-type', value);
               buildChildView(el);
+              return;
             }
+
+            var target = getChildView(el);
+            if ( target ) {
+              var tagName = target.tagName.toLowerCase();
+              CONSTRUCTORS[tagName].set(target, param, value);
+            }
+
           },
           build: function(el) {
             buildChildView(el);
           },
           call: function(el, method, args) {
+            args = args || {};
+            args.done = args.done || function() {};
+
             var target = getChildView(el);
             if ( target ) {
               var tagName = target.tagName.toLowerCase();
 
               if ( method === 'chdir' ) {
                 var t = new UIElementDataView(target);
+                var dir = args.path || OSjs.API.getDefaultPath('/');
 
-                scandir(tagName, 'home:///', function(error, result) {
+                scandir(tagName, dir, function(error, result) {
                   t.clear();
                   t.add(result);
+
+                  args.done();
                 });
 
                 return;

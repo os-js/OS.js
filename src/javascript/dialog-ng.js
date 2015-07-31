@@ -229,12 +229,19 @@
     this.closeCallback(ev, button, null);
   };
 
+  FileUploadDialog.prototype.setProgress = function(p) {
+    p = parseInt(p, 10);
+  };
+
   /**
    * @extends DialogWindow
    */
   function FileDialog(args, callback) {
     args = args || {};
     args.type = args.type || 'open';
+    args.path = args.path || OSjs.API.getDefaultPath('/');
+    args.multiple = args.type === 'save' ? false : args.multiple === true;
+    args.multiple = false;
 
     var title     = API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
     var icon      = args.type === 'open' ? 'actions/gtk-open.png' : 'actions/gtk-save-as.png';
@@ -245,22 +252,148 @@
       width: 400,
       height: 400
     }, args, callback]);
+
+    this.selected = null;
+    this.path = args.path;
   }
 
   FileDialog.prototype = Object.create(DialogWindow.prototype);
   FileDialog.constructor = DialogWindow;
 
   FileDialog.prototype.init = function() {
+    var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
-    this.scheme.find(this, 'FileView').on('select', function(ev) {
-      console.warn("YYYY", ev);
+    var view = this.scheme.find(this, 'FileView');
+    var filename = this.scheme.find(this, 'Filename');
+    var home = this.scheme.find(this, 'HomeButton');
+    var mlist = this.scheme.find(this, 'ModuleSelect');
+
+    this._toggleLoading(true);
+    view.set('multiple', this.args.multiple);
+
+    home.on('click', function() {
+      var dpath = API.getDefaultPath('/');
+      self.changePath(dpath);
     });
-    this.scheme.find(this, 'FileView')._call('chdir', {});
+
+    view.on('activate', function(ev) {
+      self.selected = null;
+      filename.set('value', '');
+
+      if ( ev && ev.detail && ev.detail.entries ) {
+        var activated = ev.detail.entries[0];
+        if ( activated ) {
+          self.selected = activated.data;
+          if ( self.selected.type !== 'dir' ) {
+            filename.set('value', self.selected.filename);
+          }
+          self.checkSelection(ev);
+        }
+      }
+    });
+
+    view.on('select', function(ev) {
+      self.selected = null;
+      //filename.set('value', '');
+
+      if ( ev && ev.detail && ev.detail.entries ) {
+        var activated = ev.detail.entries[0];
+        if ( activated ) {
+          self.selected = activated.data;
+
+          if ( self.selected.type !== 'dir' ) {
+            filename.set('value', self.selected.filename);
+          }
+        }
+      }
+    });
+
+    if ( this.args.type === 'save' ) {
+      filename.on('enter', function(ev) {
+        self.selected = null;
+        self.checkSelection(ev);
+      });
+    } else {
+      this.scheme.find(this, 'Filename').hide();
+    }
+
+    var root = '/';
+    var tmp = root.split(/(.*):\/\/\//);
+    if ( !tmp[0] && tmp.length > 1 ) {
+      root = tmp[1] + ':///';
+    }
+
+    var modules = [];
+    VFS.getModules().forEach(function(m) {
+      modules.push({label: m.name, value: m.module.root});
+    });
+    mlist.clear().add(modules).set('value', root);
+    mlist.on('change', function(ev) {
+      self.changePath(ev.detail);
+    });
+
+    this.changePath();
+
     return root;
   };
 
+  FileDialog.prototype.changePath = function(dir) {
+    var self = this;
+    var view = this.scheme.find(this, 'FileView');
+    this._toggleLoading(true);
+
+    view._call('chdir', {
+      path: dir || this.path,
+      done: function() {
+        if ( dir ) {
+          self.path = dir;
+        }
+
+        self.selected = null;
+        self._toggleLoading(false);
+      }
+    });
+  };
+
+  FileDialog.prototype.checkSelection = function(ev) {
+    var self = this;
+
+    if ( this.selected && this.selected.type === 'dir' ) {
+      this.changePath(this.selected.path);
+      return false;
+    }
+
+    if ( this.args.type === 'save' ) {
+      if ( !this.path || !this.selected ) {
+        // TODO: Error message ?
+        return;
+      }
+
+      var filename = this.scheme.find(this, 'Filename');
+      var dest = this.path.replace(/^\//, '') + '/' + filename.get('value');
+
+      // TODO: Check if already exists
+      this.selected = dest;
+
+      this.closeCallback(ev, 'ok', this.selected);
+    } else {
+      if ( !this.selected ) {
+        // TODO: Error message
+        return;
+      }
+
+      this.closeCallback(ev, 'ok', this.selected);
+    }
+
+    return true;
+  };
+
   FileDialog.prototype.onClose = function(ev, button) {
-    this.closeCallback(ev, button, null);
+    if ( button === 'ok' && !this.checkSelection(ev) ) {
+      return;
+    }
+
+    this.closeCallback(ev, button, this.selected);
   };
 
   /**
