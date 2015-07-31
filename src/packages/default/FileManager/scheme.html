@@ -1,0 +1,74 @@
+<application-window data-id="FileManagerWindow">
+
+  <gui-vbox>
+    <!-- MENU BAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+
+        <gui-menu-bar-entry data-label="File">
+          <gui-menu data-id="SubmenuFile">
+            <gui-menu-entry data-id="MenuCreate" data-label="Create directory"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuUpload" data-label="Upload file"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuClose" data-label="Close"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+        <gui-menu-bar-entry data-label="Edit">
+          <gui-menu data-id="SubmenuEdit">
+            <gui-menu-entry data-id="MenuRename" data-label="Rename"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuDelete" data-label="Delete"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuInfo" data-label="Information"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuOpen" data-label="Open with..."></gui-menu-entry>
+            <gui-menu-entry data-id="MenuDownload" data-label="Download to computer"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+        <gui-menu-bar-entry data-label="View">
+          <gui-menu data-id="SubmenuView">
+            <gui-menu-entry data-id="MenuRefresh" data-label="Refresh"></gui-menu-entry>
+            <!--
+            <gui-menu-entry data-id="MenuShowSidebar" data-label="Show sidebar"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuShowHidden" data-label="Show hidden files"></gui-menu-entry>
+            <gui-menu-entry data-id="" data-label="View type">
+              <gui-menu-entry data-id="MenuViewList" data-label=">List View"</gui-menu-entry>
+              <gui-menu-entry data-id="MenuViewIcon" data-label="Icon View"></gui-menu-entry>
+              <gui-menu-entry data-id="MenuViewTree" data-label="Tree View"></gui-menu-entry>
+            </gui-menu-entry>
+            <gui-menu-entry data-id="" data-label="Show columns">
+              <gui-menu-entry data-id="MenuColumnMIME" data-label="MIME"></gui-menu-entry>
+              <gui-menu-entry data-id="MenuColumnCreated" data-label="Created"></gui-menu-entry>
+              <gui-menu-entry data-id="MenuColumnModified" data-label="Modified"></gui-menu-entry>
+              <gui-menu-entry data-id="MenuColumnSize" data-label="Size"></gui-menu-entry>
+            </gui-menu-entry>
+            -->
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+      </gui-menu-bar>
+    </gui-vbox-container>
+
+    <!-- CONTENT -->
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
+      <gui-paned-view>
+        <!-- SIDE PANEL -->
+        <gui-paned-view-container data-basis="150px" data-multiple="false">
+          <gui-list-view data-id="SideView" data-single-click="true">
+          </gui-list-view>
+        </gui-paned-view-container>
+
+        <!-- FILE VIEW -->
+        <gui-paned-view-container>
+          <gui-file-view data-id="FileView">
+          </gui-file-view>
+        </gui-paned-view-container>
+      </gui-paned-view>
+    </gui-vbox-container>
+
+
+    <!-- STATUSBAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-statusbar data-id="Statusbar"></gui-statusbar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>
