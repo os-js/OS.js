@@ -218,6 +218,14 @@
   FileProgressDialog.prototype = Object.create(DialogWindow.prototype);
   FileProgressDialog.constructor = DialogWindow;
 
+  FileProgressDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    if ( this.args.message ) {
+      this.scheme.find(this, 'Message').set('value', this.args.message, true);
+    }
+    return root;
+  };
+
   FileProgressDialog.prototype.onClose = function(ev, button) {
     this.closeCallback(ev, button, null);
   };
@@ -291,7 +299,10 @@
 
       this.scheme.find(this, 'ButtonCancel').set('disabled', true);
 
+      var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, fileSize, this.dest);
+
       var progressDialog = API.createDialog('FileProgress', {
+        message: desc,
         dest: this.args.dest,
         filename: file.name,
         mime: file.type,
@@ -302,7 +313,6 @@
 
 
       if ( this._wmref ) {
-        var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, size, this.dest);
         this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc});
       }
 
