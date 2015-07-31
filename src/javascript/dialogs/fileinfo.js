@@ -87,6 +87,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.FileInfo = FileInformationDialog;
+  OSjs.Dialogs.FileInfo = FileInfoDialog;
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.Core.DialogWindow);

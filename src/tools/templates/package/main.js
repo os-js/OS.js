@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Dialogs, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS) {
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -81,7 +81,7 @@
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = OSjs.API.createScheme(url);
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationnguiWindow(self, metadata, scheme));
+      self._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
     });
   };
 
@@ -93,4 +93,4 @@
   OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
   OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS);
