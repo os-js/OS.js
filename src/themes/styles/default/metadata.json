@@ -1,6 +1,6 @@
 {
-  "name": "uncomplicated",
-  "title": "Uncomplicated (Gnome Theme)",
+  "name": "default",
+  "title": "OS.js Default",
   "style": {
     "window": {
       "margin": 29,

@@ -5,7 +5,7 @@
         "exec": "CoreWM",
         "args": {
           "defaults": {
-            "theme": "uncomplicated"
+            "theme": "default"
           }
         }
       }
