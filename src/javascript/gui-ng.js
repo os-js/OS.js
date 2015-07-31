@@ -48,6 +48,22 @@
 
   var lastMenu;
 
+  function getLabel(el) {
+    var label = el.getAttribute('data-label');
+    return API._(label);
+  }
+
+  function getValueLabel(el, attr) {
+    var label = attr ? el.getAttribute('data-label') : null;
+
+    if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
+      label = el.childNodes[0].nodeValue;
+      Utils.$empty(el);
+    }
+
+    return API._(label);
+  }
+
   function blurMenu() {
     if ( !lastMenu ) return;
     lastMenu();
@@ -191,7 +207,7 @@
     }
 
     function createInputLabel(el, type, input) {
-      var label = el.getAttribute('data-label');
+      var label = getLabel(el);
 
       if ( label ) {
         var lbl = document.createElement('label');
@@ -393,11 +409,7 @@
           }
         },
         build: function(el) {
-          var label = el.getAttribute('data-lbl');
-          if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
-            label = el.childNodes[0].nodeValue;
-            Utils.$empty(el);
-          }
+          var label = getValueLabel(el, true);
           var lbl = document.createElement('label');
           lbl.appendChild(document.createTextNode(label));
           el.appendChild(lbl);
@@ -526,8 +538,7 @@
         build: function(el) {
           var icon = el.getAttribute('data-icon');
           var disabled = el.getAttribute('data-disabled') !== null;
-          var label = el.childNodes.length ? el.childNodes[0].nodeValue : '';
-          Utils.$empty(el);
+          var label = getValueLabel(el);
 
           var input = document.createElement('button');
           input.appendChild(document.createTextNode(label));
@@ -763,7 +774,7 @@
             target.addEventListener(evName, callback.bind(new UIElement(el)), params);
           });
         },
-        build: function(el) {
+        build: function(el, customMenu) {
           function bindSelectionEvent(child, idx, expand) {
             var id = child.parentNode.getAttribute('data-id');
             child.addEventListener('mousedown', function() {
@@ -771,26 +782,37 @@
             }, false);
           }
 
-          var children = el.children;
-          var child, span, label, expand;
-          for ( var i = 0; i < children.length; i++ ) {
-            child = children[i];
-            expand = false;
+          function runChildren(pel, level) {
+            var children = pel.children;
+            var child, span, label, expand;
+            for ( var i = 0; i < children.length; i++ ) {
+              child = children[i];
+              expand = false;
 
-            if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
-              if ( child.children && child.children.length ) {
-                Utils.$addClass(child, 'gui-menu-expand');
-                expand = true;
+              if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
+                if ( child.children && child.children.length ) {
+                  Utils.$addClass(child, 'gui-menu-expand');
+                  expand = true;
+                }
+
+                span = document.createElement('span');
+                label = getLabel(child);
+                span.appendChild(document.createTextNode(label));
+                child.appendChild(span);
+
+                bindSelectionEvent(span, i, expand);
+
+                if ( customMenu ) {
+                  var sub = child.querySelector('gui-menu');
+                  if ( sub ) {
+                    runChildren(sub, level + 1);
+                  }
+                }
               }
-
-              span = document.createElement('span');
-              label = child.getAttribute('data-label');
-              span.appendChild(document.createTextNode(label));
-              child.appendChild(span);
-
-              bindSelectionEvent(span, i, expand);
             }
           }
+
+          runChildren(el, 0);
         }
       },
 
@@ -807,7 +829,7 @@
         },
         build: function(el) {
           el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel, idx) {
-            var label = mel.getAttribute('data-label');
+            var label = getLabel(mel);
             var id = mel.getAttribute('data-id');
 
             var span = document.createElement('span');
@@ -902,7 +924,7 @@
 
           el.querySelectorAll('gui-tab-container').forEach(function(el, idx) {
             var tab = document.createElement('li');
-            var label = el.getAttribute('data-label');
+            var label = getLabel(el);
 
             tab.addEventListener('click', function(ev) {
               selectTab(ev, idx, tab);
@@ -1053,7 +1075,7 @@
 
           el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
             var icon = cel.getAttribute('data-icon');
-            var label = cel.getAttribute('data-label');
+            var label = getLabel(cel);
 
             var dicon = document.createElement('div');
             var dimg = document.createElement('img');
@@ -1141,7 +1163,7 @@
           el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
 
             var icon = sel.getAttribute('data-icon');
-            var label = sel.getAttribute('data-label');
+            var label = getLabel(sel);
             var expanded = sel.getAttribute('data-expanded') === 'true';
             var next = sel.querySelector('gui-tree-view-entry');
 
@@ -1777,6 +1799,49 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.API.blurMenu = blurMenu;
+
+  OSjs.API.createMenu = function(items, ev, customInstance) {
+    items = items || [];
+
+    blurMenu();
+
+    var root = createElement('gui-menu', {});
+    function resolveItems(arr, par) {
+      arr.forEach(function(iter) {
+        var entry = createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
+        if ( iter.menu ) {
+          var nroot = createElement('gui-menu', {});
+          resolveItems(iter.menu, nroot);
+          entry.appendChild(nroot);
+        }
+        if ( iter.onClick ) {
+          entry.addEventListener('click', function() {
+            iter.onClick.apply(this, arguments);
+
+            blurMenu();
+          }, false);
+        }
+        par.appendChild(entry);
+      });
+    }
+
+    resolveItems(items, root);
+    CONSTRUCTORS['gui-menu'].build(root, true);
+
+    var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
+    var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
+
+    Utils.$addClass(root, 'gui-root-menu');
+    root.style.left = x + 'px';
+    root.style.top  = y + 'px';
+
+    document.body.appendChild(root);
+
+    lastMenu = function() {
+      Utils.$remove(root);
+    };
+  };
+
   OSjs.API.createScheme = function(url) {
     return new UIScheme(url);
   };

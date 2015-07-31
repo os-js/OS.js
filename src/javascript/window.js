@@ -1535,7 +1535,7 @@
       });
     }
 
-    OSjs.API.createMenu(list, {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu(list, ev);
   };
 
   /**

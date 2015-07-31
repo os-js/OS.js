@@ -280,13 +280,12 @@
     var user = this.user.getUserData();
 
     function displayMenu(ev) {
-      var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.API.createMenu([{
         title: API._('TITLE_SIGN_OUT'),
         onClick: function() {
           OSjs.Session.signOut();
         }
-      }], pos);
+      }], ev);
 
       return false;
     }

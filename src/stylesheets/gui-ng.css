@@ -964,6 +964,11 @@ gui-menu {
   border : 1px solid transparent;
   background: #ebebeb;
 }
+gui-menu.gui-root-menu {
+  display : block;
+  position : absolute;
+  z-index : 99999999;
+}
   gui-menu > gui-menu-entry {
     display : block;
     position : relative;
@@ -1006,6 +1011,9 @@ gui-menu {
     display : inline-block;
     left : 100%;
     top : 0%;
+  }
+  gui-menu.gui-root-menu > gui-menu-entry:hover > gui-menu {
+    display : block;
   }
 
 /* Menu Bar */

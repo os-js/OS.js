@@ -141,7 +141,7 @@
       });
     });
 
-    OSjs.API.createMenu(menu, {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu(menu, ev);
   };
 
   /**
@@ -1168,52 +1168,6 @@
   }
 
   /**
-   * Create and show a GUI Menu
-   *
-   * @param   Array     items           Array of items
-   * @param   Object    pos             Object with x and y (Or a browser Event/MouseEvent)
-   * @param   Object    customInstance  (Optional) If you have a custom Menu Class
-   *
-   * @return  OSjs.GUI.Menu
-   * @api     OSjs.API.createMenu()
-   */
-  function doCreateMenu(items, pos, customInstance) {
-    items = items || [];
-    if ( pos instanceof Event ) {
-      pos = { x: pos.clientX, y: pos.clientY };
-    } else {
-      pos = pos || {x: 0, y: 0};
-    }
-
-    OSjs.API.blurMenu();
-
-    if ( customInstance ) {
-      _MENU = customInstance;
-    } else {
-      _MENU = new OSjs.GUI.Menu(items);
-    }
-    _MENU.show(pos);
-    return _MENU;
-  }
-
-  /**
-   * Blur (Hide) current Menu
-   *
-   * @return  void
-   * @api     OSjs.API.blurMenu()
-   */
-  function doBlurMenu() {
-    if ( OSjs.GUING ) {
-      OSjs.GUING.blurMenu();
-    }
-
-    if ( _MENU ) {
-      _MENU.destroy();
-      _MENU = null;
-    }
-  }
-
-  /**
    * Create (or show) loading indicator
    *
    * @param   String    name        Name of notification (unique)
@@ -1459,8 +1413,8 @@
 
   OSjs.API.createDraggable        = doCreateDraggable;
   OSjs.API.createDroppable        = doCreateDroppable;
-  OSjs.API.createMenu             = doCreateMenu;
-  OSjs.API.blurMenu               = doBlurMenu;
+  OSjs.API.createMenu             = function() {}; // gui.js
+  OSjs.API.blurMenu               = function() {}; // gui.js
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
 
