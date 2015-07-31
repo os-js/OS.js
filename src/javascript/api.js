@@ -360,7 +360,7 @@
           if ( wm ) {
             OSjs.API.createDialog('ApplicationChooser', {
               file: file,
-              applications: app
+              list: app
             }, function() {
               // TODO REFACTOR
               if ( btn !== 'ok' ) { return; }

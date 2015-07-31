@@ -1255,6 +1255,7 @@ gui-list-view {
         display : inline-block;
         background-repeat : no-repeat;
         background-position : left center;
+        overflow : hidden;
 
         -webkit-flex: 1 0 auto;
            -moz-flex: 1 0 auto;

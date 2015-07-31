@@ -55,14 +55,26 @@
 
   function getProperty(el, param, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
-    if ( param === 'value' && (['gui-text', 'gui-password', 'gui-textarea']).indexOf(tagName) >= 0 ) {
-      var firstChild = el.querySelector('input');
-      if ( tagName === 'gui-textarea' ) {
-        firstChild = el.querySelector('textarea');
+    if ( param === 'value' ) {
+      var firstChild;
+      if ( tagName.match(/^gui\-(text|password|textarea)$/) ) {
+        firstChild = el.querySelector('input');
+        if ( tagName === 'gui-textarea' ) {
+          firstChild = el.querySelector('textarea');
+        }
+        if ( firstChild ) {
+          return firstChild[param];
+        }
+      } else if ( tagName.match(/^gui\-(checkbox|radio)$/) ) {
+        firstChild = el.querySelector('input');
+        if ( firstChild ) {
+          return firstChild.value === 'on';
+          //return firstChild.getAttribute('checked') === 'checked';
+        }
+      } else if ( tagName.match(/^gui\-(tree|icon|list)\-view$/) ) {
+        return CONSTRUCTORS[tagName].values(el);
       }
-      if ( firstChild ) {
-        return firstChild[param];
-      }
+
       return null;
     }
     return el.getAttribute('data-' + param);
@@ -232,7 +244,8 @@
       input.addEventListener('change', function(ev) {
         var value = input.value;
         if ( type === 'radio' || type === 'checkbox' ) {
-          value = !!input.getAttribute('checked');
+          //value = input.getAttribute('checked') === 'checked';
+          value = input.value === 'on';
         }
         input.dispatchEvent(new CustomEvent('_change', {detail: value}));
       }, false);
@@ -1177,6 +1190,27 @@
             }
             el.addEventListener(evName, callback.bind(new UIElement(el)), params);
           },
+          values: function(el) {
+            var selected = [];
+            var body = el.querySelector('gui-list-view-rows');
+            var active = (el._selected || [])
+            active.forEach(function(iter) {
+              var found = body.querySelectorAll('gui-list-view-row')[iter];
+              if ( found ) {
+                found.querySelectorAll('gui-list-view-column').forEach(function(cell) {
+                  var key = cell.getAttribute('data-key');
+                  if ( key ) {
+                    selected.push({
+                      index: iter,
+                      key: key,
+                      value: cell.getAttribute('data-value')
+                    });
+                  }
+                });
+              }
+            });
+            return selected || active;
+          },
           set: function(el, param, value) {
             if ( param === 'columns' ) {
               var head = el.querySelector('gui-list-view-columns');
@@ -1207,10 +1241,12 @@
 
               entries.forEach(function(e) {
                 var row = document.createElement('gui-list-view-row');
-                e.forEach(function(se) {
-                  row.appendChild(createEntry(se));
-                });
-                body.appendChild(row);
+                if ( e ) {
+                  e.forEach(function(se) {
+                    row.appendChild(createEntry(se));
+                  });
+                  body.appendChild(row);
+                }
 
                 initRow(el, row);
               });
@@ -1231,7 +1267,19 @@
             // TODO: Set value (selected items)
             var headContainer, bodyContainer;
             var head = el.querySelector('gui-list-view-columns');
+            if ( !head ) {
+              head = document.createElement('gui-list-view-columns');
+              if ( el.children.length )  {
+                el.insertBefore(head, el.firstChild);
+              } else {
+                el.appendChild(head);
+              }
+            }
             var body = el.querySelector('gui-list-view-rows');
+            if ( !body ) {
+              body = document.createElement('gui-list-view-rows');
+              el.appendChild(body);
+            }
 
             el._selected = [];
 

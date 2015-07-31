@@ -132,11 +132,60 @@
   ApplicationChooserDialog.prototype = Object.create(DialogWindow.prototype);
   ApplicationChooserDialog.constructor = DialogWindow;
 
+  ApplicationChooserDialog.prototype.init = function() {
+    var self = this;
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    var refs = this.args.list || OSjs.Core.getHandler().getApplicationsMetadata();
+    var cols = [{label: API._('LBL_NAME')}];
+    var rows = [];
+
+    Object.keys(refs).forEach(function(a) {
+      if ( refs[a].type === 'application' ) {
+        var label = [refs[a].name];
+        if ( refs[a].description ) {
+          label.push(refs[a].description);
+        }
+        rows.push([
+          {key: 'name', value: a, label: label.join(' - '), icon: API.getIcon(refs[a].icon, null, a)}
+        ]);
+      }
+    });
+
+    this.scheme.find(this, 'ApplicationList').set('columns', cols).add(rows);
+    var file = '<unknown file>';
+    if ( this.args.file ) {
+      file = Utils.format('{0} ({1}', this.args.file.filename, this.args.file.mime);
+    }
+    this.scheme.find(this, 'FileName').set('value', file);
+
+    return root;
+  };
+
   ApplicationChooserDialog.prototype.onClose = function(ev, button) {
     var result = null;
+
     if ( button === 'ok' ) {
-      var app = this.scheme.find(this, 'ApplicationList').get('value');
+      var useDefault = this.scheme.find(this, 'SetDefault').get('value');
+      var selected = this.scheme.find(this, 'ApplicationList').get('value');
+      if ( selected && selected.length ) {
+        result = selected[0].value;
+      }
+
+      if ( !result ) {
+        OSjs.API.createDialog('Alert', {
+          message: API._('DIALOG_APPCHOOSER_NO_SELECTION')
+        }, null, this);
+
+        return;
+      }
+
+      result = {
+        name: result,
+        useDefault: useDefault
+      };
     }
+
     this.closeCallback(ev, button, result);
   };
 
@@ -474,7 +523,7 @@
 
   OSjs.API.debugDialogs = function() {
     var ds = {
-      ApplicationChooser: ApplicationChooserDialog,
+      //ApplicationChooser: ApplicationChooserDialog,
       FileProgress: FileProgressDialog,
       FileUpload: FileUploadDialog,
       File: FileDialog,
