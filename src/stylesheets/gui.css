@@ -696,6 +696,13 @@ gui-video {
   display : inline-block;
   position : relative;
 }
+  gui-video > video {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+    bottom : 0px;
+  }
 
 /* Image */
 gui-image {

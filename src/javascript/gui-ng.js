@@ -221,9 +221,29 @@
 
     var img = document.createElement(nodeType);
     var src = el.getAttribute('data-src');
+    var controls = el.getAttribute('data-controls');
+    if ( controls ) {
+      img.setAttribute('controls', 'controls');
+    }
+    var autoplay = el.getAttribute('data-autoplay');
+    if ( autoplay ) {
+      img.setAttribute('autoplay', 'autoplay');
+    }
 
     Object.keys(applyArgs).forEach(function(k) {
-      img[k] = applyArgs[k];
+      var val = applyArgs[k];
+      if ( typeof val === 'function' ) {
+        k = k.replace(/^on/, '');
+        if ( (nodeType === 'video' || nodeType === 'audio') && k === 'load' ) {
+          k = 'loadedmetadata';
+        }
+        img.addEventListener(k, val, false);
+      } else {
+        if ( typeof applyArgs[k] === 'boolean' ) {
+          val = val ? 'true' : 'false';
+        }
+        img.setAttribute(k, val);
+      }
     });
 
     img.setAttribute('src', src);

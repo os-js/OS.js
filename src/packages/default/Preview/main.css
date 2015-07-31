@@ -31,3 +31,15 @@
 .Window_ApplicationPreviewWindow .WindowWrapper {
 }
 
+
+.Window_ApplicationPreviewWindow .WindowWrapper gui-container {
+  overflow : hidden;
+}
+.Window_ApplicationPreviewWindow .WindowWrapper gui-video {
+  position : absolute;
+  left : 0px;
+  right : 0px;
+  top : 0px;
+  bottom : 0px;
+}
+

@@ -80,7 +80,6 @@
     var self = this;
     var scheme = this._scheme;
     var root = scheme.find(this, 'Content').$element;
-    var statusbar = scheme.find(this, 'Statusbar').$element;
 
     Utils.$empty(root);
 
@@ -91,12 +90,10 @@
             self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
           }});
         } else if ( file.mime.match(/^video/) ) {
-          scheme.create(self, 'gui-video', {src: result}, root, {onload: function() {
-            console.warn("YYY", arguments);
+          scheme.create(self, 'gui-video', {src: result, controls: true, autoplay: true}, root, {onload: function() {
+            self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
           }});
         }
-
-        statusbar.appendChild(document.createTextNode(file.path));
       }
     });
   };
