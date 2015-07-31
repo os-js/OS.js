@@ -1090,6 +1090,11 @@
     this._onChange('blur');
     this._fireHook('blur');
 
+    // Force all standard HTML input elements to loose focus
+    this._$root.querySelectorAll('input, textarea, select, iframe').forEach(function(el) {
+      el.blur();
+    });
+
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
