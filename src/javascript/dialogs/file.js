@@ -44,6 +44,8 @@
     args.filename   = args.filename || '';
     args.extension  = args.extension || '';
     args.mime       = args.mime || 'application/octet-stream';
+    args.filter     = args.filter || [];
+    args.select     = args.select || null;
     args.multiple   = args.type === 'save' ? false : args.multiple === true;
     args.multiple   = false;
 
@@ -77,6 +79,9 @@
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
     var view = this.scheme.find(this, 'FileView');
+    view.set('filter', this.args.filter);
+    view.set('filetype', this.args.select || '');
+
     var filename = this.scheme.find(this, 'Filename');
     var home = this.scheme.find(this, 'HomeButton');
     var mlist = this.scheme.find(this, 'ModuleSelect');

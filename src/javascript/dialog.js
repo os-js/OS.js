@@ -54,6 +54,8 @@
     args = args || {};
     callback = callback || function() {};
 
+    console.info('DialogWindow::construct()', className, opts, args);
+
     Window.apply(this, [className, opts]);
 
     this._properties.gravity          = 'center';

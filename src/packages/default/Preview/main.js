@@ -158,6 +158,7 @@
 
     win._toggleDisabled(true);
     API.createDialog('File', {
+      filter: this.__metadata.mime,
       path: path
     }, function(ev, button, result) {
       win._toggleDisabled(false);

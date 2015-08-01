@@ -177,6 +177,10 @@
     if ( param !== 'value' ) {
       if ( typeof value === 'boolean' ) {
         value = value ? 'true' : 'false';
+      } else if ( typeof value === 'object' ) {
+        try {
+          value = JSON.stringify(value);
+        } catch ( e ) {}
       }
       el.setAttribute('data-' + param, value);
     }
@@ -1620,7 +1624,7 @@
           el.appendChild(nel.$element);
         }
 
-        function scandir(tagName, dir, cb) {
+        function scandir(tagName, dir, opts, cb) {
           var file = new VFS.File(dir);
           file.type  = 'dir';
 
@@ -1628,6 +1632,12 @@
             var icon = 'status/gtk-dialog-question.png';
             return API.getFileIcon(iter, null, icon);
           }
+
+          var scanopts = {
+            showDotFiles: opts.dotfiles === true,
+            mimeFilter:   opts.filter || [],
+            typeFilter:   opts.filetype || null
+          };
 
           VFS.scandir(file, function(error, result) {
             if ( error ) { cb(error); return; }
@@ -1651,7 +1661,7 @@
             });
 
             cb(false, list, summary);
-          }, {/* TODO */});
+          }, scanopts);
         }
 
         return {
@@ -1670,6 +1680,9 @@
               Utils.$empty(el);
               el.setAttribute('data-type', value);
               buildChildView(el);
+              return;
+            } else if ( (['filter', 'dotfiles', 'filetype']).indexOf(param) >= 0 ) {
+              setProperty(el, param, value);
               return;
             }
 
@@ -1703,7 +1716,18 @@
                 var t = new UIElementDataView(target);
                 var dir = args.path || OSjs.API.getDefaultPath('/');
 
-                scandir(tagName, dir, function(error, result, summary) {
+                var opts = {
+                  filter: null,
+                  dotfiles: el.getAttribute('data-dotfiles') === 'true',
+                  filetype: el.getAttribute('data-filetype')
+                };
+
+                try {
+                  opts.filter = JSON.parse(el.getAttribute('data-filter'));
+                } catch ( e ) {
+                }
+
+                scandir(tagName, dir, opts, function(error, result, summary) {
                   if ( !error ) {
                     t.clear();
                     t.add(result);

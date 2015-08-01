@@ -207,6 +207,7 @@
     API.createDialog('File', {
       file: file,
       filename: file ? file.filename : 'New text file.txt',
+      filter: this.__metadata.mime,
       extension: 'txt',
       mime: 'text/plain',
       type: 'save'
@@ -223,7 +224,8 @@
 
     win._toggleDisabled(true);
     API.createDialog('File', {
-      file: file
+      file: file,
+      filter: this.__metadata.mime
     }, function(ev, button, result) {
       win._toggleDisabled(false);
       if ( result ) {
