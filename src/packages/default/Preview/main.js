@@ -87,6 +87,7 @@
     VFS.url(file, function(error, result) {
       if ( !error && result ) {
         self._setTitle(file.filename, true);
+        self._currentFile = file;
 
         if ( file.mime.match(/^image/) ) {
           scheme.create(self, 'gui-image', {src: result}, root, {onload: function() {

@@ -31,14 +31,30 @@
   'use strict';
 
   /**
+   * TODO: Autodetect MIME on extension (also option to provide)
+   * TODO: Disable button if no selection is made (or empty text on save)
+   *
    * @extends DialogWindow
    */
   function FileDialog(args, callback) {
-    args = args || {};
-    args.type = args.type || 'open';
-    args.path = args.path || OSjs.API.getDefaultPath('/');
-    args.multiple = args.type === 'save' ? false : args.multiple === true;
-    args.multiple = false;
+    args            = args || {};
+    args.file       = args.file || null;
+    args.type       = args.type || 'open';
+    args.path       = args.path || OSjs.API.getDefaultPath('/');
+    args.filename   = args.filename || '';
+    args.extension  = args.extension || '';
+    args.mime       = args.mime || 'application/octet-stream';
+    args.multiple   = args.type === 'save' ? false : args.multiple === true;
+    args.multiple   = false;
+
+    if ( args.path && args.path instanceof VFS.File ) {
+      args.path = args.path.path;
+    }
+
+    if ( args.file && args.file.path ) {
+      args.path = Utils.dirname(args.file.path);
+      args.filename = args.file.filename;
+    }
 
     var title     = API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
     var icon      = args.type === 'open' ? 'actions/gtk-open.png' : 'actions/gtk-save-as.png';
@@ -65,8 +81,10 @@
     var home = this.scheme.find(this, 'HomeButton');
     var mlist = this.scheme.find(this, 'ModuleSelect');
 
+
     this._toggleLoading(true);
     view.set('multiple', this.args.multiple);
+    filename.set('value', this.args.filename || '');
 
     home.on('click', function() {
       var dpath = API.getDefaultPath('/');
@@ -80,7 +98,7 @@
       if ( ev && ev.detail && ev.detail.entries ) {
         var activated = ev.detail.entries[0];
         if ( activated ) {
-          self.selected = activated.data;
+          self.selected = new VFS.File(activated.data);
           if ( self.selected.type !== 'dir' ) {
             filename.set('value', self.selected.filename);
           }
@@ -96,7 +114,7 @@
       if ( ev && ev.detail && ev.detail.entries ) {
         var activated = ev.detail.entries[0];
         if ( activated ) {
-          self.selected = activated.data;
+          self.selected = new VFS.File(activated.data);
 
           if ( self.selected.type !== 'dir' ) {
             filename.set('value', self.selected.filename);
@@ -161,21 +179,43 @@
     }
 
     if ( this.args.type === 'save' ) {
-      if ( !this.path || !this.selected ) {
-        // TODO: Error message ?
+      var filename = this.scheme.find(this, 'Filename');
+      var input = filename.get('value');
+      if ( !this.path || !input ) {
+        API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
         return;
       }
 
-      var filename = this.scheme.find(this, 'Filename');
-      var dest = this.path.replace(/^\//, '') + '/' + filename.get('value');
+      this.selected = new VFS.File(this.path.replace(/^\//, '') + '/' + input, this.args.mime);
+      this._toggleDisabled(true);
 
-      // TODO: Check if already exists
-      this.selected = dest;
+      VFS.exists(this.selected, function(error, result) {
+        self._toggleDisabled(false);
 
-      this.closeCallback(ev, 'ok', this.selected);
+        if ( error ) {
+          API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
+          return;
+        }
+
+        if ( result ) {
+          self._toggleDisabled(true);
+          API.createDialog('Confirm', {
+            message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
+          }, function(ev, button) {
+            self._toggleDisabled(false);
+
+            if ( button === 'yes' || button === 'ok' ) {
+              self.closeCallback(ev, 'ok', self.selected);
+            }
+          }, self);
+        } else {
+          self.closeCallback(ev, 'ok', self.selected);
+        }
+
+      });
     } else {
       if ( !this.selected ) {
-        // TODO: Error message
+        API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_SELECTION'));
         return;
       }
 

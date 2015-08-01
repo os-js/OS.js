@@ -751,6 +751,9 @@ gui-menu.gui-root-menu {
     position : relative;
     white-space : nowrap;
   }
+  gui-menu > gui-menu-entry[data-disabled="true"] {
+    pointer-events: none;
+  }
 
   gui-menu > gui-menu-entry.gui-menu-expand {
   }
@@ -783,6 +786,9 @@ gui-menu.gui-root-menu {
   }
   gui-menu.gui-root-menu > gui-menu-entry:hover > gui-menu {
     display : block;
+  }
+  gui-menu.gui-root-menu > gui-menu-entry[data-disabled="true"]:hover > gui-menu {
+    display : none;
   }
 
 /* Menu Bar */
