@@ -166,6 +166,7 @@
       this._icon          = icon;                 // Window Icon
       this._name          = name;                 // Window Name (Unique identifier)
       this._title         = opts.title || name;   // Window Title
+      this._origtitle     = this._title;          // Backup window title
       this._tag           = opts.tag || name;     // Window Tag (ex. Use this when you have a group of windows)
       this._position      = position;             // Window Position
       this._dimension     = dimension;            // Window Dimension
@@ -1657,20 +1658,33 @@
   /**
    * Set Window title
    *
-   * @param   String      t     Title
+   * @param   String      t         Title
+   * @param   boolean     append    (Optional) Append this to original title
+   * @param   String      delimiter (Optional) The delimiter (default is -)
    *
    * @return  void
    *
    * @method  Window::_setTitle()
    */
-  Window.prototype._setTitle = function(t) {
+  Window.prototype._setTitle = function(t, append, delimiter) {
     if ( !this._$element ) { return; }
+    delimiter = delimiter || '-';
+
     var tel = this._$element.getElementsByClassName('WindowTitle')[0];
-    if ( tel ) {
-      tel.innerHTML = '';
-      tel.appendChild(document.createTextNode(t));
+    var text = [];
+    if ( append ) {
+      text = [this._origtitle, delimiter, t];
+    } else {
+      text = [t || this._origtitle];
     }
-    this._title = t;
+
+    this._title = text.join(' ') || this._origtitle;
+
+    if ( tel ) {
+      Utils.$empty(tel);
+      tel.appendChild(document.createTextNode(this._title));
+    }
+
     this._onChange('title');
   };
 
