@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationMusicPlayerWindow .WindowWrapper {
+.Window_ApplicationMusicPlayerWindow {
 }
 
 .Window_ApplicationMusicPlayerWindow gui-slider {

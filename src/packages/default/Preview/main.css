@@ -28,14 +28,14 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationPreviewWindow .WindowWrapper {
+.ApplicationPreviewWindow {
 }
 
 
-.Window_ApplicationPreviewWindow .WindowWrapper gui-container {
+.ApplicationPreviewWindow gui-container {
   overflow : hidden;
 }
-.Window_ApplicationPreviewWindow .WindowWrapper gui-video {
+.ApplicationPreviewWindow gui-video {
   text-align : center;
   vertical-align : middle;
   display : block;
@@ -43,6 +43,6 @@
   height : 100%;
 }
 
-.Window_ApplicationPreviewWindow .WindowWrapper gui-video > video {
+.ApplicationPreviewWindow gui-video > video {
   height : 100%;
 }

@@ -171,51 +171,51 @@ body, input, button, textarea, label, select {
 /**
  * Window
  */
-.Window {
+application-window {
   opacity : 0.8;
 }
-.Window:before {
+application-window:before {
   box-shadow : @theme_base_shadow_unfocused;
   background : @theme_base_bg_color;
 }
-.Window.WindowHintFocused {
+application-window[data-focused="true"] {
   opacity : 1.0;
 }
-.Window.WindowHintFocused:before {
+application-window[data-focused="true"]:before {
   box-shadow : @theme_base_shadow_focused;
 }
-.Window > .WindowWrapper {
+application-window-content {
   overflow : hidden;
 }
-.Window > .WindowTop:active {
+application-window > application-window-top:active {
   cursor : move;
   cursor : pointer;
 }
-.Window > .WindowTop > .WindowTitle {
+application-window > application-window-top > application-window-title {
   color : @theme_secondary_fg_color;
   font-weight : bold;
 }
-.Window > .WindowTop > .WindowTitle:active {
+application-window > application-window-top > application-window-title:active {
   cursor : move;
   cursor : pointer;
 }
-.Window.WindowHintFocused .WindowTitle {
+application-window[data-focused="true"] application-window-title {
   color : @theme_base_fg_color;
 }
-.WindowButton {
+application-window-buttons > .application-window-button-entry {
   cursor : pointer;
 }
-.WindowResize {
+application-window-resize {
   cursor : move;
 }
-.WindowTop, .WindowTop > * {
+application-window-top, application-window-top > * {
   cursor : default;
 }
-.WindowLoading {
+application-window-loading {
   background : #000;
   opacity : 0.8;
 }
-.WindowLoadingIndicator {
+application-window-loading-indicator {
   position : absolute;
   width: 48px;
   height: 48px;
@@ -224,7 +224,7 @@ body, input, button, textarea, label, select {
   margin-left : -24px;
   margin-top : -24px;
 }
-.WindowLoadingIndicator:before {
+application-window-loading-indicator:before {
   display: block;
   content: '';
   width: 44px;
@@ -239,23 +239,23 @@ body, input, button, textarea, label, select {
       -ms-animation: windowloadinganim 0.75s linear infinite;
           animation: windowloadinganim 0.75s linear infinite;
 }
-.Window.WindowHintDnD:after {
+application-window[data-dnd-state="true"]:after {
   border : 2px solid #000;
   margin : -2px;
 }
-.WindowDisabledOverlay {
+application-window-disabled {
   background : #000;
   opacity : 0.5;
   cursor : not-allowed;
 }
-.Window > .WindowWrapper > .WindowWarning {
+application-window-warning {
   background : #FFB800;
   color : #fff;
   border-color : #DF9F15;
 }
-.Window > .WindowWrapper > .WindowWarning > .Close {
+application-window-warning > div:nth-child(1) {
 }
-.Window > .WindowWrapper > .WindowWarning > .Close:hover {
+application-window-warning > div:nth-child(1):hover {
   color : #111;
   cursor : pointer;
   opacity : .9;

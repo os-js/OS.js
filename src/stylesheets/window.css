@@ -28,22 +28,27 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+.application-window-button-entry,
+application-window,
+application-window-top,
+application-application-window-content,
+application-window-icon,
+application-window-title,
+application-window-loading,
+application-window-disabled,
+application-window-loading-indicator,
+application-window-buttons {
+  display : block;
+}
 
-.Window {
+application-window {
   position : absolute;
   top : 0px;
   left : 0px;
   overflow : visible;
   margin-top : 26px;
-  /*
-  -webkit-transform: translate3d(0, 0, 0);
-     -moz-transform: translate3d(0, 0, 0);
-      -ms-transform: translate3d(0, 0, 0);
-       -o-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
-          */
 }
-.Window:before {
+application-window:before {
   content : '';
   position : absolute;
   top : -26px;
@@ -52,35 +57,37 @@
   bottom : 0px;
 }
 
-.Window > .WindowTop {
-  position : absolute;
-  top : -26px;
-  left : 0px;
-  right : 0px;
-  height : 26px;
-  z-index : 5;
-}
-.Window > .WindowTop,
-.Window > .WindowTop > * {
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-.Window > .WindowTop > .WindowIcon {
+  application-window-top {
+    position : absolute;
+    top : -26px;
+    left : 0px;
+    right : 0px;
+    height : 26px;
+    z-index : 5;
+  }
+    application-window-top,
+    application-window-top > * {
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+application-window-icon {
   position : absolute;
   top : 0px;
   left : 0px;
   z-index : 2;
 }
-.Window > .WindowTop > .WindowIcon > img {
-  margin : 5px;
-  padding : 0px;
-  border : 0 none;
-  pointer-events: none;
-}
-.Window > .WindowTop > .WindowTitle {
+  application-window-icon > img {
+    margin : 5px;
+    padding : 0px;
+    border : 0 none;
+    pointer-events: none;
+  }
+
+application-window-title {
   position : absolute;
   top : 0px;
   left : 26px;
@@ -96,7 +103,7 @@
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
 }
-.Window > .WindowTop > .WindowButtons {
+application-window-buttons {
   position : absolute;
   top : 0px;
   right : 2px;
@@ -104,7 +111,7 @@
   height : 20px;
   margin : 1px;
 }
-.WindowButtons > .WindowButton {
+application-window-buttons > .application-window-button-entry {
   padding : 0;
   margin : 2px;
   width : 18px;
@@ -115,7 +122,7 @@
   position : relative;
 }
 
-.Window > .WindowWrapper {
+application-window-content {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -125,7 +132,7 @@
   z-index : 1;
 }
 
-.Window > .WindowResize {
+application-window-resize {
   position : absolute;
   top : -34px;
   left : -8px;
@@ -138,8 +145,11 @@
   -ms-user-select: none;
   user-select: none;
 }
+application-window-outer[data-allow-resize="false"] window-resize {
+  display : none;
+}
 
-.Window > .WindowLoading {
+application-window-loading {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -148,13 +158,13 @@
   z-index : 999999;
 }
 
-.WindowLoading > .WindowLoadingIndicator {
+application-window-loading-indicator {
   position : absolute;
   left : 50%;
   top : 50%;
 }
 
-.Window > .WindowDisabledOverlay {
+application-window-disabled {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -162,7 +172,7 @@
   bottom : 0px;
   z-index : 999998;
 }
-.Window.WindowHintDnD:after {
+application-window[data-dnd-state="true"]:after {
   content : '';
   position : absolute;
   top : -26px;
@@ -171,7 +181,7 @@
   right : 0px;
   /*z-index : 10;*/
 }
-.Window > .WindowWrapper > .WindowWarning {
+application-window-warning  {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -182,14 +192,14 @@
   border : 1px solid transparent;
   z-index : 99999;
 }
-.Window > .WindowWrapper > .WindowWarning > .Close {
+application-window-warning > div:nth-child(1) {
   position : absolute;
   top : 0px;
   right : 0px;
   bottom : 0px;
   padding : 5px;
 }
-.Window > .WindowWrapper > .WindowWarning > .Message {
+application-window-warning > div:nth-child(2) {
   position : absolute;
   top : 0px;
   left : 0px;

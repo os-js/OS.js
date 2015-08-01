@@ -351,8 +351,8 @@
     }
 
     function _initMinButton() {
-      buttonMinimize            = document.createElement('div');
-      buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
+      buttonMinimize            = document.createElement('application-window-button-minimize');
+      buttonMinimize.className  = 'application-window-button-entry';
       buttonMinimize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_minimize ) {
         self._addEventListener(buttonMinimize, 'click', function(ev) {
@@ -367,8 +367,8 @@
     }
 
     function _initMaxButton() {
-      buttonMaximize            = document.createElement('div');
-      buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
+      buttonMaximize            = document.createElement('application-window-button-maximize');
+      buttonMaximize.className  = 'application-window-button-entry';
       buttonMaximize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_maximize ) {
         self._addEventListener(buttonMaximize, 'click', function(ev) {
@@ -383,8 +383,8 @@
     }
 
     function _initCloseButton() {
-      buttonClose           = document.createElement('div');
-      buttonClose.className = 'WindowButton WindowButtonClose';
+      buttonClose           = document.createElement('application-window-button-close');
+      buttonClose.className = 'application-window-button-entry';
       buttonClose.innerHTML = '&nbsp;';
       if ( self._properties.allow_close ) {
         self._addEventListener(buttonClose, 'click', function(ev) {
@@ -405,35 +405,33 @@
 
         OSjs.API.createDroppable(main, {
           onOver: function(ev, el, args) {
-            _showBorder();
+            main.setAttribute('data-dnd-state', 'true');
           },
 
           onLeave : function() {
-            _hideBorder();
+            main.setAttribute('data-dnd-state', 'false');
           },
 
           onDrop : function() {
-            _hideBorder();
+            main.setAttribute('data-dnd-state', 'false');
           },
 
           onItemDropped: function(ev, el, item, args) {
-            _hideBorder();
+            main.setAttribute('data-dnd-state', 'false');
             return self._onDndEvent(ev, 'itemDrop', item, args);
           },
           onFilesDropped: function(ev, el, files, args) {
-            _hideBorder();
+            main.setAttribute('data-dnd-state', 'false');
             return self._onDndEvent(ev, 'filesDrop', files, args);
           }
         });
       }
     }
 
-    function _showBorder() {
-      Utils.$addClass(main, 'WindowHintDnD');
-    }
-
-    function _hideBorder() {
-      Utils.$removeClass(main, 'WindowHintDnD');
+    function _noEvent(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      return false;
     }
 
     console.group('OSjs::Core::Window::init()');
@@ -449,9 +447,39 @@
     console.log('Position', this._position);
     console.log('Dimension', this._dimension);
 
-    // Main outer container
-    main = document.createElement('div');
+    main = document.createElement('application-window');
     main.setAttribute('data-window-id', this._wid);
+    main.setAttribute('data-allow-resize', this._properties.allow_resize ? 'true' : 'false');
+
+    var windowWrapper       = document.createElement('application-window-content');
+    var windowResize        = document.createElement('application-window-resize');
+    var windowLoading       = document.createElement('application-window-loading');
+    var windowLoadingImage  = document.createElement('application-window-loading-indicator');
+    var windowDisabled      = document.createElement('application-window-disabled');
+    var windowTop           = document.createElement('application-window-top');
+    var windowIcon          = document.createElement('application-window-icon');
+    var windowTitle         = document.createElement('application-window-title');
+    var windowButtons       = document.createElement('application-window-buttons');
+
+    var windowIconImage         = document.createElement('img');
+    windowIconImage.alt         = this._title;
+    windowIconImage.src         = this._icon;
+    windowIconImage.width       = 16;
+    windowIconImage.height      = 16;
+
+    windowTitle.appendChild(document.createTextNode(this._title));
+
+
+    // Append stuff
+    var classNames = ['Window'];
+    classNames.push(Utils.$safeName(this._name));
+    if ( this._tag && (this._name !== this._tag) ) {
+      classNames.push(Utils.$safeName(this._tag));
+    }
+
+    //
+    // Event binding
+    //
 
     this._addEventListener(main, 'contextmenu', function(ev) {
       var r = Utils.$isInput(ev);
@@ -465,22 +493,6 @@
       return r;
     });
 
-    _initDnD();
-
-
-    // Window -> Top
-    var windowTop           = document.createElement('div');
-    windowTop.className     = 'WindowTop';
-
-    // Window -> Top -> Icon
-    var windowIcon          = document.createElement('div');
-    windowIcon.className    = 'WindowIcon';
-
-    var windowIconImage         = document.createElement('img');
-    windowIconImage.alt         = this._title;
-    windowIconImage.src         = this._icon;
-    windowIconImage.width       = 16;
-    windowIconImage.height      = 16;
     this._addEventListener(windowIcon, 'dblclick', Utils._preventDefault);
     this._addEventListener(windowIcon, 'click', function(ev) {
       ev.preventDefault();
@@ -488,14 +500,9 @@
       self._onWindowIconClick(ev, this);
     });
 
-    // Window -> Top -> Title
-    var windowTitle       = document.createElement('div');
-    windowTitle.className = 'WindowTitle';
-    windowTitle.appendChild(document.createTextNode(this._title));
+    this._addEventListener(windowLoading, 'mousedown', _noEvent);
+    this._addEventListener(windowDisabled, 'mousedown', _noEvent);
 
-    // Window -> Top -> Buttons
-    var windowButtons       = document.createElement('div');
-    windowButtons.className = 'WindowButtons';
     if ( !isTouch ) {
       this._addEventListener(windowButtons, 'mousedown', function(ev) {
         ev.preventDefault();
@@ -503,46 +510,28 @@
       });
     }
 
+    this._addEventListener(main, 'mousedown', function(ev) {
+      self._focus();
+      return stopPropagation(ev);
+    });
+
+    this._addHook('preop', function() {
+      createIframeFixes(windowWrapper);
+    });
+
+    this._addHook('postop', function() {
+      destroyIframeFixes(windowWrapper);
+    });
+
+    //
+    // Finish
+    //
+
     _initMinButton();
     _initMaxButton();
     _initCloseButton();
 
-
-    // Window -> Top -> Content Container (Wrapper)
-    var windowWrapper       = document.createElement('div');
-    windowWrapper.className = 'WindowWrapper';
-
-    // Window -> Resize handle
-    var windowResize        = document.createElement('div');
-    windowResize.className  = 'WindowResize';
-    if ( !this._properties.allow_resize ) {
-      windowResize.style.display = 'none';
-    }
-
-    // Window -> Loading Indication
-    var windowLoading       = document.createElement('div');
-    windowLoading.className = 'WindowLoading';
-    this._addEventListener(windowLoading, 'click', Utils._preventDefault);
-
-    var windowLoadingImage        = document.createElement('div');
-    windowLoadingImage.className  = 'WindowLoadingIndicator';
-
-    // Window -> Disabled Overlay
-    var windowDisabled            = document.createElement('div');
-    windowDisabled.className      = 'WindowDisabledOverlay';
-    //windowDisabled.style.display  = 'none';
-    this._addEventListener(windowDisabled, 'mousedown', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      return false;
-    });
-
-    // Append stuff
-    var classNames = ['Window'];
-    classNames.push('Window_' + Utils.$safeName(this._name));
-    if ( this._tag && (this._name !== this._tag) ) {
-      classNames.push(Utils.$safeName(this._tag));
-    }
+    _initDnD();
 
     main.className    = classNames.join(' ');
     main.style.width  = this._dimension.w + 'px';
@@ -569,11 +558,6 @@
     main.appendChild(windowLoading);
     main.appendChild(windowDisabled);
 
-    this._addEventListener(main, 'mousedown', function(ev) {
-      self._focus();
-      return stopPropagation(ev);
-    });
-
     this._$element  = main;
     this._$root     = windowWrapper;
     this._$top      = windowTop;
@@ -593,13 +577,6 @@
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
-
-    this._addHook('preop', function() {
-      createIframeFixes(windowWrapper);
-    });
-    this._addHook('postop', function() {
-      destroyIframeFixes(windowWrapper);
-    });
 
     console.groupEnd();
 
@@ -678,7 +655,7 @@
     if ( this._$element ) {
       var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
-        Utils.$addClass(this._$element, 'WindowHintClosing');
+        this._$element.setAttribute('data-closing', 'true');
         setTimeout(function() {
           _removeDOM();
         }, getAnimDuration());
@@ -910,7 +887,7 @@
     console.info('OSjs::Core::Window::_close()');
     if ( this._disabled ) { return false; }
 
-    Utils.$addClass(this._$element, 'WindowHintClosing');
+    this._$element.setAttribute('data-closing', 'false');
 
     this._blur();
     this.destroy();
@@ -938,7 +915,7 @@
     this._blur();
 
     this._state.minimized = true;
-    Utils.$addClass(this._$element, 'WindowHintMinimized');
+    this._$element.setAttribute('data-minimized', 'true');
 
     function _hideDOM() {
       self._$element.style.display = 'none';
@@ -991,7 +968,7 @@
     this._$element.style.left   = (s.left) + 'px';
     this._$element.style.width  = (s.width) + 'px';
     this._$element.style.height = (s.height) + 'px';
-    Utils.$addClass(this._$element, 'WindowHintMaximized');
+    this._$element.setAttribute('data-maximized', 'true');
 
     //this._resize();
     this._dimension.w = s.width;
@@ -1038,13 +1015,13 @@
       this._move(this._lastPosition.x, this._lastPosition.y);
       this._resize(this._lastDimension.w, this._lastDimension.h);
       this._state.maximized = false;
-      Utils.$removeClass(this._$element, 'WindowHintMaximized');
+      this._$element.setAttribute('data-maximized', 'false');
     }
 
     if ( min && this._state.minimized ) {
       this._$element.style.display = 'block';
+      this._$element.setAttribute('data-minimized', 'false');
       this._state.minimized = false;
-      Utils.$removeClass(this._$element, 'WindowHintMinimized');
     }
 
     this._onChange('restore');
@@ -1081,7 +1058,7 @@
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    Utils.$addClass(this._$element, 'WindowHintFocused');
+    this._$element.setAttribute('data-focused', 'true');
 
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
@@ -1121,7 +1098,7 @@
     if ( !this._$element ) { return false; }
     if ( !force && !this._state.focused ) { return false; }
     //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
-    Utils.$removeClass(this._$element, 'WindowHintFocused');
+    this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
 
     this._onChange('blur');
@@ -1736,18 +1713,15 @@
     if ( message === null ) { return; }
     message = message || '';
 
-    var container = document.createElement('div');
-    container.className = 'WindowWarning';
+    var container = document.createElement('application-window-warning');
 
     var close = document.createElement('div');
-    close.className = 'Close';
     close.innerHTML = 'X';
     close.addEventListener('click', function() {
       self._setWarning(null);
     });
 
     var msg = document.createElement('div');
-    msg.className = 'Message';
     msg.appendChild(document.createTextNode(message));
 
     container.appendChild(close);

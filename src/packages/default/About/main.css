@@ -28,18 +28,18 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationAboutWindow .WindowWrapper {
+.ApplicationAboutWindow application-window-content {
   background-color : #fff;
   text-align : center;
 }
-.Window_ApplicationAboutWindow .WindowWrapper > div > div {
+.ApplicationAboutWindow application-window-content > div > div {
   padding : 10px;
 }
-.Window_ApplicationAboutWindow .WindowWrapper h1 {
+.ApplicationAboutWindow h1 {
   margin : 0;
   padding : 10px;
 }
-.Window_ApplicationAboutWindow .WindowWrapper h2 {
+.ApplicationAboutWindow h2 {
   margin : 0;
   padding : 10px;
   font-weight : normal;
