@@ -1113,7 +1113,7 @@
     this._fireHook('blur');
 
     // Force all standard HTML input elements to loose focus
-    this._$root.querySelectorAll('input, textarea, select, iframe').forEach(function(el) {
+    this._$root.querySelectorAll('input, textarea, select, iframe, button').forEach(function(el) {
       el.blur();
     });
 

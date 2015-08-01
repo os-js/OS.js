@@ -144,13 +144,15 @@
   function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
-    var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list'];
+    var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
     if ( accept.indexOf(tagName) >= 0 ) {
       var firstChild = el.querySelector('input');
       if ( tagName === 'gui-textarea' ) {
         firstChild = el.querySelector('textarea');
       } else if ( tagName.match(/^gui\-select/) ) {
         firstChild = el.querySelector('select');
+      } else if ( tagName.match(/^gui\-button/) ) {
+        firstChild = el.querySelector('button');
       }
 
       if ( param === 'value' ) {
@@ -648,8 +650,14 @@
           }
 
           if ( icon ) {
+            var img = document.createElement('img');
+            img.src = icon;
+            if ( input.firstChild ) {
+              input.insertBefore(img, input.firstChild);
+            } else {
+              input.appendChild(img);
+            }
             Utils.$addClass(input, 'gui-has-image');
-            input.style.backgroundImage = 'url(' + icon + ')';
           }
 
           el.appendChild(input);
@@ -1915,7 +1923,7 @@
       node.querySelectorAll('*').forEach(function(el) {
         var lcase = el.tagName.toLowerCase();
         if ( lcase.match(/^gui\-/) && !lcase.match(/\-container|\-(h|v)box$|\-columns?|\-rows?/) ) {
-          el.className = 'gui-element';
+          Utils.$addClass(el, 'gui-element');
         }
       });
 

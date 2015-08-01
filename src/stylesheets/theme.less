@@ -298,7 +298,7 @@ gui-iframe {
 
 /* Toolbar */
 gui-toolbar {
-  height : 24px;
+  height : 26px;
 }
 
 /* Tabs */
@@ -347,32 +347,35 @@ gui-label {
 }
 
 /* Button */
+gui-button {
+  height : 26px;
+}
   gui-button button {
     cursor : pointer;
     padding : 4px;
     padding-left : 8px;
     padding-right : 8px;
-    background-position : 8px;
-    min-height : 24px;
-  }
-  gui-button button:before {
-    background: #f8f8f8;
+    background-color: #f8f8f8;
     background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
     border: 1px solid #c1c1c1;
+    height : 26px;
   }
-  gui-button button:active:before {
+  gui-button button:active {
     border-color : #d0d0d0;
   }
-  gui-button button:disabled:active:before,
-  gui-button button:disabled:before {
+  gui-button button:disabled:active,
+  gui-button button:disabled {
     border-color : #ccc;
+  }
+  gui-button button:disabled img {
+    opacity : .5;
   }
   gui-button button:disabled {
     cursor : default;
     color : #ccc;
   }
-  gui-button button.gui-has-image {
-    padding-left : 28px;
+  gui-button button.gui-has-image img {
+    padding-right : 4px;
   }
 
 /* Checkbox Button */
@@ -424,7 +427,7 @@ gui-label {
 
 /* Select Dropdown */
 gui-select {
-  height : 24px;
+  height : 26px;
 }
   gui-select select {
     border: 1px solid #b2b2b2;
@@ -467,12 +470,12 @@ gui-select {
 
 /* Slider */
 gui-slider {
-  height : 24px;
+  height : 26px;
 }
   gui-slider input {
     background : transparent;
     border : 0 none;
-    height : 24px;
+    height : 26px;
   }
 
   /*
@@ -562,6 +565,9 @@ gui-slider {
   }
 
 /* Switch */
+gui-switch {
+  height : 26px;
+}
   gui-switch div {
     width : 48px;
     background : #fff;
@@ -593,7 +599,7 @@ gui-slider {
 /* Password Field */
 gui-password,
 gui-text {
-  height : 24px;
+  height : 26px;
 }
   gui-password input,
   gui-text input {

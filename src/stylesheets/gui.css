@@ -60,6 +60,19 @@
   min-height : 24px;
 }
 
+.gui-bold > label,
+.gui-bold {
+  font-weight : bold;
+}
+.gui-italic > label,
+.gui-italic {
+  font-style : italic;
+}
+.gui-underline > label,
+.gui-underline {
+  text-decoration : underline;
+}
+
 gui-hbox,
 gui-hbox > *,
 gui-vbox,
@@ -323,31 +336,13 @@ gui-button {
     margin : 0;
     padding : 0;
     outline : 0 none;
-    border : 0 none !important;
-    background-color : transparent !important;
-    background-repeat : no-repeat;
-    background-position : left center;
-    background-image : none;
-    background-position : 0px;
     white-space: nowrap;
-  }
-  gui-button button:before {
-    content : '';
-    position : absolute;
-    top : 0px;
-    left : 0px;
-    bottom : 0px;
-    right : 0px;
-    z-index : -1;
-  }
-  gui-button button:active:before {
-  }
-  gui-button button:disabled:active:before,
-  gui-button button:disabled:before {
-  }
-  gui-button button:disabled {
+    min-height : 24px;
   }
   gui-button button.gui-has-image {
+  }
+  gui-button button.gui-has-image img {
+    float : left;
   }
 
 /* Checkbox Button */
