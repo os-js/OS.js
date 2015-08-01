@@ -137,7 +137,7 @@
       this.scheme.find(this, 'Filename').hide();
     }
 
-    var root = '/';
+    var root = this.path;
     var tmp = root.split(/(.*):\/\/\//);
     if ( !tmp[0] && tmp.length > 1 ) {
       root = tmp[1] + ':///';
@@ -148,7 +148,6 @@
       modules.push({label: m.name, value: m.module.root});
     });
     mlist.clear().add(modules).set('value', root);
-    console.warn("XXXXXXXXXXXXXXXXXXXXX", root);
     mlist.on('change', function(ev) {
       self.changePath(ev.detail);
     });
