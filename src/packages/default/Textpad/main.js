@@ -99,11 +99,6 @@
     this.update(file);
   };
 
-  ApplicationTextpadWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
-    this.currentFile = null;
-  };
-
   ApplicationTextpadWindow.prototype._focus = function() {
     if ( Window.prototype._focus.apply(this, arguments) ) {
       var input = this._scheme.find(this, 'Text').$element;
@@ -113,6 +108,22 @@
       return true;
     }
     return false;
+  };
+
+  ApplicationTextpadWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
+
+    if ( type === 'itemDrop' && item ) {
+      var data = item.data;
+      if ( data && data.type === 'file' && data.mime ) {
+        this._app.openFile(new VFS.File(data));
+      }
+    }
+  };
+
+  ApplicationTextpadWindow.prototype.destroy = function() {
+    Window.prototype.destroy.apply(this, arguments);
+    this.currentFile = null;
   };
 
   /////////////////////////////////////////////////////////////////////////////

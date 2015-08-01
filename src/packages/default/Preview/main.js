@@ -36,6 +36,7 @@
 
   function ApplicationPreviewWindow(app, metadata, scheme, file) {
     Window.apply(this, ['ApplicationPreviewWindow', {
+      allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
@@ -105,6 +106,17 @@
   ApplicationPreviewWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
     this.currentFile = null;
+  };
+
+  ApplicationPreviewWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
+
+    if ( type === 'itemDrop' && item ) {
+      var data = item.data;
+      if ( data && data.type === 'file' && data.mime ) {
+        this._app.openFile(new VFS.File(data));
+      }
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
