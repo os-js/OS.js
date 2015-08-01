@@ -114,7 +114,7 @@
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
-        this._app.openFile(new VFS.File(data));
+        this._app.openFile(new VFS.File(data), this);
       }
     }
   };

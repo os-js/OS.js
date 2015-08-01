@@ -54,6 +54,7 @@
     Window.apply(this, ['ApplicationMusicPlayerWindow', {
       icon: metadata.icon,
       title: metadata.name,
+      allow_drop: true,
       allow_resize: false,
       allow_maximize: false,
       width: 370,
@@ -243,7 +244,7 @@
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
-        this._app.openFile(new VFS.File(data));
+        this._app.openFile(new VFS.File(data), this);
       }
     }
   };

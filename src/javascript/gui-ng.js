@@ -48,6 +48,17 @@
 
   var lastMenu;
 
+  function getWindowId(el) {
+    while ( el.parentNode ) {
+      var attr = el.getAttribute('data-window-id');
+      if ( attr !== null ) {
+        return parseInt(attr, 10);
+      }
+      el = el.parentNode;
+    }
+    return null;
+  }
+
   function getLabel(el) {
     var label = el.getAttribute('data-label');
     return label || '';
@@ -1431,6 +1442,29 @@
               el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
             }, false);
           }
+
+          if ( el.getAttribute('data-draggable') === 'true' ) {
+            var value = row.getAttribute('data-value');
+            if ( value !== null ) {
+              try {
+                value = JSON.parse(value);
+              } catch ( e ) {}
+            }
+
+            var source = row.getAttribute('data-draggable-source');
+            if ( source === null ) {
+              source = getWindowId(el);
+              if ( source !== null ) {
+                source = {wid: source};
+              }
+            }
+
+            API.createDraggable(row, {
+              type   : row.getAttribute('data-draggable-type'),
+              source : source,
+              data   : value
+            });
+          }
         }
 
         return {
@@ -1543,7 +1577,7 @@
               Utils.$empty(el.querySelector('gui-list-view-rows'));
             }
           },
-          build: function(el) {
+          build: function(el, applyArgs) {
             var headContainer, bodyContainer;
             var head = el.querySelector('gui-list-view-columns');
 
@@ -1620,7 +1654,7 @@
             type = 'gui-' + type;
           }
 
-          var nel = new UIElementDataView(document.createElement(type));
+          var nel = new UIElementDataView(createElement(type, {'draggable': true, 'draggable-type': 'file'}));
           CONSTRUCTORS[type].build(nel.$element);
 
           if ( type === 'gui-list-view' ) {
@@ -1979,7 +2013,7 @@
 
     parentNode.appendChild(el);
 
-    CONSTRUCTORS[tagName].build(el, applyArgs);
+    CONSTRUCTORS[tagName].build(el, applyArgs, win);
 
     return new UIElement(el);
   };

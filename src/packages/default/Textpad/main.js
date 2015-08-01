@@ -35,6 +35,7 @@
 
   function ApplicationTextpadWindow(app, metadata, scheme, file) {
     Window.apply(this, ['ApplicationTextpadWindow', {
+      allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
       width: 450,
@@ -116,7 +117,7 @@
     if ( type === 'itemDrop' && item ) {
       var data = item.data;
       if ( data && data.type === 'file' && data.mime ) {
-        this._app.openFile(new VFS.File(data));
+        this._app.openFile(new VFS.File(data), this);
       }
     }
   };
@@ -258,7 +259,7 @@
     var self = this;
     var current = this._getArgument('file');
     var win = this._getWindow('ApplicationTextpadWindow');
-    console.warn(obj, msg, args, this.__pid);
+
     if ( msg === 'vfs' && args.source !== null && args.source !== this.__pid && args.file ) {
       if ( win && current && current.path === args.file.path ) {
         win._toggleDisabled(true);

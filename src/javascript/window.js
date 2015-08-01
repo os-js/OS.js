@@ -442,6 +442,7 @@
 
     // Main outer container
     main = document.createElement('div');
+    main.setAttribute('data-window-id', this._wid);
 
     this._addEventListener(main, 'contextmenu', function(ev) {
       var r = Utils.$isInput(ev);
