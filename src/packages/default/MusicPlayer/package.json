@@ -1,0 +1,25 @@
+{
+  "className":  "ApplicationMusicPlayer",
+  "name":       "Music Player",
+  "names":      {
+    "no_NO":      "Musikkspiller",
+    "pl_PL":      "Odtwarzacz muzyki",
+    "de_DE":      "Musikspieler",
+    "ru_RU":      "Аудиоплеер",
+    "nl_NL":      "Audio speler",
+    "vi_VN":      "Nghe nhạc"
+  },
+  "mime":       ["^audio", "osjs\\/playlist"],
+  "category":   "multimedia",
+  "icon":       "status/audio-volume-high.png",
+  "singular":   true,
+  "compability":["audio"],
+  "preload":    [
+    {"src": "locales.js", "type": "javascript"},
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+
