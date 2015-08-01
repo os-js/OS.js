@@ -378,6 +378,7 @@ gui-button {
     white-space: nowrap;
     min-height : 24px;
     width : 100%;
+    height : 100%;
   }
   gui-button button.gui-has-image {
   }

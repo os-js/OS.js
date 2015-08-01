@@ -58,7 +58,7 @@
       allow_resize: false,
       allow_maximize: false,
       width: 370,
-      height: 250
+      height: 260
     }, app, scheme]);
 
     this.currentFile = file ? new VFS.File(file) : null;

@@ -40,10 +40,12 @@
 .Window_ApplicationMusicPlayerWindow gui-button-bar {
   margin-bottom : 5px;
 }
+.Window_ApplicationMusicPlayerWindow gui-button-bar[data-id="Controls"] gui-button {
+  height : 44px;
+  width : 50px;
+}
 .Window_ApplicationMusicPlayerWindow gui-button-bar[data-id="Controls"] button {
   text-align : center;
-  width : 50px;
-  height : 44px;
   margin : 2px;
 }
 
