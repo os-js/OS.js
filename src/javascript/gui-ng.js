@@ -647,6 +647,17 @@
       },
 
       'gui-button': {
+        set: function(el, param, value, isHTML) {
+          if ( param === 'value' ) {
+            var lbl = el.querySelector('button');
+            Utils.$empty(lbl);
+            if ( isHTML ) {
+              lbl.innerHTML = value;
+            } else {
+              lbl.appendChild(document.createTextNode(value));
+            }
+          }
+        },
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('button');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
@@ -1823,7 +1834,7 @@
   UIElement.prototype.focus = function() {
     // TODO: For more elements
     if ( this.$element ) {
-      var firstChild = this.$element.querySelector('input');
+      var firstChild = this.$element.firstChild || this.$element; //this.$element.querySelector('input');
       if ( firstChild ) {
         firstChild.focus();
       }
@@ -2020,7 +2031,10 @@
 
   UIScheme.prototype.find = function(win, id, root) {
     root = root || win._getRoot();
-    var el = root.querySelector('[data-id="' + id + '"]');
+    return this.get(root.querySelector('[data-id="' + id + '"]'));
+  };
+
+  UIScheme.prototype.get = function(el) {
     if ( el ) {
       var tagName = el.tagName.toLowerCase();
       if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {

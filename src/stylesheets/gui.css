@@ -309,6 +309,45 @@ gui-button-bar {
   white-space: nowrap;
 }
 
+/* Grid */
+gui-grid {
+  position : relative;
+  display : block;
+}
+  gui-grid > gui-grid-row { /* ul */
+    display: flex;
+    -webkit-flex-flow: row;
+    justify-content: space-around;
+  }
+
+    gui-grid > gui-grid-row > gui-grid-entry { /* li */
+      margin: 5px;
+      flex: 1 0 auto;
+      height: auto;
+      position: relative;
+    }
+      gui-grid > gui-grid-row > gui-grid-entry > * {
+        position : absolute;
+        top : 0px;
+        left : 0px;
+        right : 0px;
+        bottom : 0px;
+        width : 100%;
+        height : 100%;
+        margin : 0;
+        box-sizing : border-box;
+        overflow : hidden;
+      }
+        gui-grid > gui-grid-row > gui-grid-entry > * > * {
+          height : 100%;
+        }
+
+  gui-grid > gui-grid-row > gui-grid-entry:before {
+    content:'';
+    float:left;
+    padding-top:100%;
+  }
+
 /**
  * ===========================================================================
  *                                INPUTS
@@ -338,6 +377,7 @@ gui-button {
     outline : 0 none;
     white-space: nowrap;
     min-height : 24px;
+    width : 100%;
   }
   gui-button button.gui-has-image {
   }
