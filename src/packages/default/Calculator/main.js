@@ -260,7 +260,7 @@
 
   ApplicationCalculatorWindow.prototype._focus = function() {
     if ( Window.prototype._focus.apply(this, arguments) ) {
-      var input = this._scheme.find(this, 'Output').$element;
+      var input = this._scheme.find(this, 'Output');
       if ( input ) {
         input.focus();
       }
