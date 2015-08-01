@@ -432,11 +432,13 @@
       title.appendChild(titleText);
       title.appendChild(document.createTextNode('...'));
 
-      splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
+      //FIXME
+      //splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
 
       splash.appendChild(icon);
       splash.appendChild(title);
-      splash.appendChild(splashBar.getRoot());
+      //FIXME
+      //splash.appendChild(splashBar.getRoot());
 
       document.body.appendChild(splash);
 
