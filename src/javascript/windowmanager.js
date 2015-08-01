@@ -130,6 +130,8 @@
         }
       }
 
+      win._fireHook('preop');
+
       sx = touchDevice ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
       sy = touchDevice ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
       action = a;
@@ -173,6 +175,8 @@
       sy = 0;
       moved = false;
       startRect = null;
+
+      win._fireHook('postop');
     }
 
     function onMouseMove(ev, touchDevice) {

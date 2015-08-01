@@ -73,6 +73,10 @@
   text-decoration : underline;
 }
 
+.gui-disable-events {
+  pointer-events : none;
+}
+
 gui-hbox,
 gui-hbox > *,
 gui-vbox,

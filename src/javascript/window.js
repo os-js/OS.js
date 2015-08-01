@@ -88,6 +88,29 @@
     return 301;
   }
 
+  function destroyIframeFixes(root) {
+    root.querySelectorAll('.application-window-iframe-fix').forEach(function(el) {
+      Utils.$remove(el);
+    });
+  }
+
+  function createIframeFixes(root) {
+    root.querySelectorAll('gui-richtext, gui-ifram').forEach(function(el) {
+      var pos = Utils.$position(el, el.parentNode);
+      var overlay = document.createElement('div');
+      overlay.style.position = 'absolute';
+      overlay.style.top = pos.top + el.parentNode.scrollTop + 'px';
+      overlay.style.left = pos.left + 'px';
+      overlay.style.width = pos.width + 'px';
+      overlay.style.height = pos.height + 'px';
+      overlay.style.zIndex = Number.MAX_VALUE;
+      overlay.className = 'application-window-iframe-fix';
+
+      el.parentNode.appendChild(overlay);
+    });
+
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -154,7 +177,6 @@
       this._$winicon      = null;                 // DOMElement: Window Icon
       this._$loading      = null;                 // DOMElement: Window Loading overlay
       this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
-      this._$iframefix    = null;                 // DOMElement: Window IFrame Fix Overlay
       this._$resize       = null;                 // DOMElement: Window Resizer
       this._$warning      = null;                 // DOMElement: Warning message
 
@@ -179,7 +201,6 @@
       this._sound         = null;                 // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
       this._blinkTimer    = null;
-      this._iframeFixEl   = null;
 
       this._properties    = {                     // Window Properties
         gravity           : null,
@@ -218,6 +239,8 @@
         maximize  : [],
         minimize  : [],
         restore   : [],
+        preop     : [], // Called on "mousedown" for resize and move
+        postop    : [], // Called on "mouseup" for resize and move
         move      : [], // Called inside the mosuemove event
         moved     : [], // Called inside the mouseup event
         resize    : [], // Called inside the mousemove event
@@ -383,24 +406,10 @@
         OSjs.API.createDroppable(main, {
           onOver: function(ev, el, args) {
             _showBorder();
-
-            /*
-            if ( self._$iframefix ) {
-              self._$iframefix.style.display = 'none';
-            }
-            */
           },
 
           onLeave : function() {
             _hideBorder();
-
-            /*
-            if ( !self._state.focused ) {
-              if ( self._$iframefix ) {
-                self._$iframefix.style.display = 'block';
-              }
-            }
-            */
           },
 
           onDrop : function() {
@@ -585,6 +594,13 @@
       API.playSound(this._sound, this._soundVolume);
     }
 
+    this._addHook('preop', function() {
+      createIframeFixes(windowWrapper);
+    });
+    this._addHook('postop', function() {
+      destroyIframeFixes(windowWrapper);
+    });
+
     console.groupEnd();
 
     return this._$root;
@@ -624,8 +640,6 @@
       self._$winicon    = null;
       self._$loading    = null;
       self._$disabled   = null;
-      self._$iframefix  = null;
-      self._iframeFixEl = null;
       self._$resize     = null;
     }
 
@@ -1085,11 +1099,11 @@
       this._fireHook('focus');
     }
 
+    if ( !this._state.focused ) {
+      destroyIframeFixes(this._$root);
+    }
     this._state.focused = true;
 
-    if ( this._$iframefix ) {
-      this._$iframefix.style.display = 'none';
-    }
 
     return true;
   };
@@ -1118,14 +1132,13 @@
       el.blur();
     });
 
+
+    createIframeFixes(this._$root);
+
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
-    }
-
-    if ( this._$iframefix ) {
-      this._$iframefix.style.display = 'block';
     }
 
     return true;
