@@ -50,7 +50,7 @@
     args.multiple   = false;
 
     if ( args.path && args.path instanceof VFS.File ) {
-      args.path = args.path.path;
+      args.path = Utils.dirname(args.path.path);
     }
 
     if ( args.file && args.file.path ) {
@@ -148,6 +148,7 @@
       modules.push({label: m.name, value: m.module.root});
     });
     mlist.clear().add(modules).set('value', root);
+    console.warn("XXXXXXXXXXXXXXXXXXXXX", root);
     mlist.on('change', function(ev) {
       self.changePath(ev.detail);
     });

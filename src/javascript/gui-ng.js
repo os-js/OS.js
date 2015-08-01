@@ -252,7 +252,9 @@
       }
     });
 
-    img.setAttribute('src', src);
+    if ( src ) {
+      img.setAttribute('src', src);
+    }
     el.appendChild(img);
   }
 
@@ -864,7 +866,7 @@
           var target = el.querySelector('audio');
           target.addEventListener(evName, callback.bind(new UIElement(el)), params);
         },
-        build: function(el) {
+        build: function(el, applyArgs) {
           createVisualElement(el, 'audio', applyArgs);
         }
       },
@@ -1946,9 +1948,14 @@
 
     var content = this.parse(id, type, win, onparse);
     if ( content ) {
+      // NOTE: This for some reasons fail when there is more than one child. WHY ?!?!?
       var children = content.children;
       for ( var i = 0; i < children.length; i++ ) {
-        root.appendChild(children[i]);
+        try {
+          root.appendChild(children[i]);
+        } catch ( e ) {
+          console.warn('UIScheme::parse()', 'exception', e);
+        }
       }
     }
   };

@@ -50,6 +50,9 @@
 
   // Compability
   (function() {
+    if ( window.HTMLCollection ) {
+      window.HTMLCollection.prototype.forEach = Array.prototype.forEach;
+    }
     if ( window.NodeList ) {
       window.NodeList.prototype.forEach = Array.prototype.forEach;
     }

@@ -343,6 +343,7 @@ gui-button {
   }
   gui-button button.gui-has-image img {
     float : left;
+    vertical-align : middle;
   }
 
 /* Checkbox Button */
