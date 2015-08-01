@@ -36,10 +36,13 @@
   overflow : hidden;
 }
 .Window_ApplicationPreviewWindow .WindowWrapper gui-video {
-  position : absolute;
-  left : 0px;
-  right : 0px;
-  top : 0px;
-  bottom : 0px;
+  text-align : center;
+  vertical-align : middle;
+  display : block;
+  background : #000;
+  height : 100%;
 }
 
+.Window_ApplicationPreviewWindow .WindowWrapper gui-video > video {
+  height : 100%;
+}

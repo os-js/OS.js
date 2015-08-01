@@ -82,9 +82,12 @@
     var root = scheme.find(this, 'Content').$element;
 
     Utils.$empty(root);
+    this._setTitle();
 
     VFS.url(file, function(error, result) {
       if ( !error && result ) {
+        self._setTitle(file.filename, true);
+
         if ( file.mime.match(/^image/) ) {
           scheme.create(self, 'gui-image', {src: result}, root, {onload: function() {
             self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
@@ -143,6 +146,8 @@
       );
       return;
     }
+
+    this._setArgument('file', file);
 
     win.preview(file);
   };
