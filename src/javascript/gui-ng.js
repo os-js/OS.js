@@ -2231,8 +2231,20 @@
     Utils.$addClass(root, 'gui-root-menu');
     root.style.left = x + 'px';
     root.style.top  = y + 'px';
-
     document.body.appendChild(root);
+
+    // Make sure it stays within viewport
+    setTimeout(function() {
+      var pos = Utils.$position(root);
+      if ( pos.right > window.innerWidth ) {
+        var newLeft = Math.round(window.innerWidth - pos.width - 10)
+        root.style.left = newLeft + 'px';
+      }
+      if ( pos.bottom > window.innerHeigth ) {
+        var newTop = Math.round(window.innerHeight - pos.height - 10);
+        root.style.top = newTop + 'px';
+      }
+    }, 1);
 
     lastMenu = function() {
       Utils.$remove(root);
