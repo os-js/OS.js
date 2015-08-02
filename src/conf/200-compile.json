@@ -30,6 +30,7 @@
       "src/javascript/gui/tabs.js",
       "src/javascript/gui/inputs.js",
       "src/javascript/gui/visual.js",
+      "src/javascript/gui/fileview.js",
       "src/javascript/gui/richtext.js",
       "src/javascript/gui/containers.js",
       "src/javascript/gui/progressbar.js",
