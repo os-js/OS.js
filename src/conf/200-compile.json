@@ -60,10 +60,7 @@
 
   "stylesheets": {
     "files": [
-      "src/stylesheets/init.css",
-      "src/stylesheets/api.css",
-      "src/stylesheets/session.css",
-      "src/stylesheets/window.css",
+      "src/stylesheets/core.css",
       "src/stylesheets/gui.css"
     ]
   }
