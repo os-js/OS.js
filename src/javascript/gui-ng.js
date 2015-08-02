@@ -254,7 +254,7 @@
         if ( (nodeType === 'video' || nodeType === 'audio') && k === 'load' ) {
           k = 'loadedmetadata';
         }
-        img.addEventListener(k, val, false);
+        Utils.$bind(img, k, val, false);
       } else {
         if ( typeof applyArgs[k] === 'boolean' ) {
           val = val ? 'true' : 'false';
@@ -295,7 +295,7 @@
       sel.parentNode.removeChild(sel);
     });
 
-    select.addEventListener('change', function(ev) {
+    Utils.$bind(select, 'change', function(ev) {
       select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
     }, false);
 
@@ -341,7 +341,7 @@
 
     if ( type === 'text' || type === 'password' || type === 'textarea' ) {
       input.value = value;
-      input.addEventListener('keydown', function(ev) {
+      Utils.$bind(input, 'keydown', function(ev) {
         if ( ev.keyCode === Utils.Keys.ENTER ) {
           input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
         }
@@ -365,7 +365,7 @@
     // TODO: Custom tabindex
     input.setAttribute('tabindex', -1);
 
-    input.addEventListener('change', function(ev) {
+    Utils.$bind(input, 'change', function(ev) {
       var value = input.value;
       if ( type === 'radio' || type === 'checkbox' ) {
         //value = input.getAttribute('checked') === 'checked';
@@ -433,8 +433,8 @@
       onDown(ev);
       dragging = true;
 
-      window.addEventListener('mouseup', _onMouseUp, false);
-      window.addEventListener('mousemove', _onMouseMove, false);
+      Utils.$bind(window, 'mouseup', _onMouseUp, false);
+      Utils.$bind(window, 'mousemove', _onMouseMove, false);
     }
     function _onMouseMove(ev) {
       ev.preventDefault();
@@ -449,11 +449,11 @@
       onUp(ev);
       dragging = false;
 
-      window.removeEventListener('mouseup', _onMouseUp, false);
-      window.removeEventListener('mousemove', _onMouseMove, false);
+      Utils.$unbind(window, 'mouseup', _onMouseUp, false);
+      Utils.$unbind(window, 'mousemove', _onMouseMove, false);
     }
 
-    el.addEventListener('mousedown', _onMouseDown, false);
+    Utils.$bind(el, 'mousedown', _onMouseDown, false);
   }
 
   function bindTextInputEvents(el, evName, callback, params) {
@@ -461,7 +461,7 @@
       evName = '_enter';
     }
     var target = el.querySelector('input');
-    target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+    Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
   }
 
   function addToSelectBox(el, entries) {
@@ -534,7 +534,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('textarea');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'textarea');
@@ -565,7 +565,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var input = document.createElement('input');
@@ -581,7 +581,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'radio');
@@ -592,7 +592,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'checkbox');
@@ -603,7 +603,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var input = document.createElement('input');
@@ -635,7 +635,7 @@
             }
           }
 
-          el.addEventListener('click', function() {
+          Utils.$bind(el, 'click', function() {
             var disabled = el.getAttribute('data-disabled') !== null;
             if ( !disabled ) {
               toggleValue();
@@ -660,7 +660,7 @@
         },
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('button');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var icon = el.getAttribute('data-icon');
@@ -692,7 +692,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('select');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           // TODO Selected index/entry
@@ -713,7 +713,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('select');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           // TODO Selected index/entry
@@ -734,7 +734,7 @@
         bind: function(el, evName, callback, params) {
           if ( evName === 'change' ) { evName = '_change'; }
           var target = el.querySelector('input');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           createInputOfType(el, 'range');
@@ -801,7 +801,7 @@
           if ( evName === 'select' || evName === 'change' ) {
             evName = '_change';
           }
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var cv        = document.createElement('canvas');
@@ -845,7 +845,7 @@
           ctx.fillStyle = gradient;
           ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-          cv.addEventListener('click', function(ev) {
+          Utils.$bind(cv, 'click', function(ev) {
             cv.dispatchEvent(new CustomEvent('_change', {detail: getColor(ev)}));
           }, false);
 
@@ -886,7 +886,7 @@
       'gui-audio': {
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('audio');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el, applyArgs) {
           createVisualElement(el, 'audio', applyArgs);
@@ -896,7 +896,7 @@
       'gui-video': {
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('video');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el, applyArgs) {
           createVisualElement(el, 'video', applyArgs);
@@ -906,7 +906,7 @@
       'gui-image': {
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('img');
-          target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el, applyArgs) {
           createVisualElement(el, 'img', applyArgs);
@@ -919,13 +919,13 @@
             evName = '_select';
           }
           el.querySelectorAll('gui-menu-entry > span').forEach(function(target) {
-            target.parentNode.addEventListener(evName, callback.bind(new UIElement(el)), params);
+            Utils.$bind(target.parentNode, evName, callback.bind(new UIElement(el)), params);
           });
         },
         build: function(el, customMenu) {
           function bindSelectionEvent(child, idx, expand) {
             var id = child.getAttribute('data-id');
-            child.addEventListener('mousedown', function(ev) {
+            Utils.$bind(child, 'mousedown', function(ev) {
               ev.stopPropagation();
               child.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
               blurMenu();
@@ -978,7 +978,7 @@
             evName = '_select';
           }
           el.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
-            target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+            Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
           });
         },
         build: function(el) {
@@ -993,7 +993,7 @@
 
             var submenu = mel.querySelector('gui-menu');
             if ( submenu ) {
-              mel.addEventListener('click', function(ev) {
+              Utils.$bind(mel, 'click', function(ev) {
                 lastMenu = function() {
                   Utils.$removeClass(mel, 'gui-active');
                 };
@@ -1039,7 +1039,7 @@
           if ( evName === 'change' ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           var tabs = document.createElement('ul');
@@ -1074,7 +1074,7 @@
             var tab = document.createElement('li');
             var label = getLabel(el);
 
-            tab.addEventListener('click', function(ev) {
+            Utils.$bind(tab, 'click', function(ev) {
               selectTab(ev, idx, tab);
             }, false);
 
@@ -1096,7 +1096,7 @@
           if ( evName === 'resize' ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
         },
         build: function(el) {
           function bindResizer(resizer, idx) {
@@ -1172,7 +1172,7 @@
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
         },
         values: function(el) {
           var selected = [];
@@ -1219,11 +1219,11 @@
             dspan.appendChild(document.createTextNode(label));
             dlabel.appendChild(dspan);
 
-            cel.addEventListener('click', function(ev) {
+            Utils.$bind(cel, 'click', function(ev) {
               el._selected = handleItemClick(ev, cel, idx, el._selected);
               el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
             }, false);
-            cel.addEventListener('dblclick', function(ev) {
+            Utils.$bind(cel, 'dblclick', function(ev) {
               el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
             }, false);
 
@@ -1238,7 +1238,7 @@
           if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
             evName = '_' + evName;
           }
-          el.addEventListener(evName, callback.bind(new UIElement(el)), params);
+          Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
         },
         values: function(el) {
           var selected = [];
@@ -1308,7 +1308,7 @@
             if ( next ) {
               Utils.$addClass(sel, 'gui-expandable');
               var expander = document.createElement('gui-tree-view-expander');
-              expander.addEventListener('click', function(ev) {
+              Utils.$bind(expander, 'click', function(ev) {
                 handleItemExpand(ev, sel);
               });
 
@@ -1320,11 +1320,11 @@
 
             handleItemExpand(null, sel, expanded);
 
-            container.addEventListener('click', function(ev) {
+            Utils.$bind(container, 'click', function(ev) {
               el._selected = handleItemClick(ev, sel, idx, el._selected);
               el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
             }, false);
-            container.addEventListener('dblclick', function(ev) {
+            Utils.$bind(container, 'dblclick', function(ev) {
               el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
             }, false);
 
@@ -1429,7 +1429,7 @@
           });
 
           if ( singleClick ) {
-            row.addEventListener('click', function(ev) {
+            Utils.$bind(row, 'click', function(ev) {
               var multipleSelect = el.getAttribute('data-multiple');
               multipleSelect = multipleSelect === null || multipleSelect === 'true';
               var idx = Utils.$index(row);
@@ -1440,7 +1440,7 @@
               el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
             });
           } else {
-            row.addEventListener('click', function(ev) {
+            Utils.$bind(row, 'click', function(ev) {
               var multipleSelect = el.getAttribute('data-multiple');
               multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
@@ -1449,7 +1449,7 @@
               el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
             }, false);
 
-            row.addEventListener('dblclick', function(ev) {
+            Utils.$bind(row, 'dblclick', function(ev) {
               el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
             }, false);
           }
@@ -1483,7 +1483,7 @@
             if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
               evName = '_' + evName;
             }
-            el.addEventListener(evName, callback.bind(new UIElement(el)), params);
+            Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
           },
           values: function(el) {
             var selected = [];
@@ -1585,6 +1585,7 @@
                 Utils.$remove(cel);
               });
             } else if ( method === 'clear' ) {
+              // TODO: Reset scrolltop
               Utils.$empty(el.querySelector('gui-list-view-rows'));
             }
           },
@@ -1627,7 +1628,7 @@
             }
 
             if ( headContainer ) {
-              el.addEventListener('scroll', function() {
+              Utils.$bind(el, 'scroll', function() {
                 headContainer.style.top = el.scrollTop + 'px';
               }, false);
 
@@ -1727,7 +1728,7 @@
 
             var target = getChildView(el);
             if ( target ) {
-              target.addEventListener(evName, callback.bind(new UIElement(el)), params);
+              Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
             }
           },
           set: function(el, param, value, arg) {
@@ -2065,7 +2066,7 @@
           entry.appendChild(nroot);
         }
         if ( iter.onClick ) {
-          entry.addEventListener('mousedown', function(ev) {
+          Utils.$bind(entry, 'mousedown', function(ev) {
             ev.stopPropagation();
             iter.onClick.apply(this, arguments);
 

@@ -1200,6 +1200,52 @@
     return this.$isFormElement(ev); //, ['TEXTAREA', 'INPUT']);
   };
 
+  /**
+   * Wrapper for event-binding
+   *
+   * @param   DOMElement    el          DOM Element to attach event to
+   * @param   String        ev          DOM Event Name
+   * @param   Function      callback    Callback on event
+   *
+   * @api OSjs.Utils.$bind()
+   */
+  OSjs.Utils.$bind = function(el, ev, callback, param) {
+    this._$binder(el, ev, callback, param, 'addEventListener');
+  };
+
+  /**
+   * Wrapper for event un-binding
+   *
+   * @see OSjs.Utils.$bind()
+   * @api OSjs.Utils.$unbind()
+   */
+  OSjs.Utils.$unbind = function(el, ev, callback, param) {
+    this._$binder(el, ev, callback, param, 'removeEventListener');
+  };
+
+  /**
+   * Inner wrapper for event binding/unbinding
+   */
+  OSjs.Utils._$binder = function(el, ev, callback, param, method) {
+    param = param || false;
+
+    var isTouch = OSjs.Compability.touch;
+    var touchMap = {
+      click: 'touchend',
+      mousedown: 'touchstart'
+    };
+
+    el[method](ev, function(ev) {
+      callback.call(this, ev, false);
+    }, param === true);
+
+    if ( touchMap[ev] ) {
+      el[method](touchMap[ev], function(ev) {
+        callback.call(this, ev, true);
+      }, param === true);
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // XHR
   /////////////////////////////////////////////////////////////////////////////

@@ -355,7 +355,7 @@
       buttonMinimize.className  = 'application-window-button-entry';
       buttonMinimize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_minimize ) {
-        self._addEventListener(buttonMinimize, 'click', function(ev) {
+        Utils.$bind(buttonMinimize, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'minimize');
@@ -371,7 +371,7 @@
       buttonMaximize.className  = 'application-window-button-entry';
       buttonMaximize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_maximize ) {
-        self._addEventListener(buttonMaximize, 'click', function(ev) {
+        Utils.$bind(buttonMaximize, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'maximize');
@@ -387,7 +387,7 @@
       buttonClose.className = 'application-window-button-entry';
       buttonClose.innerHTML = '&nbsp;';
       if ( self._properties.allow_close ) {
-        self._addEventListener(buttonClose, 'click', function(ev) {
+        Utils.$bind(buttonClose, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'close');
@@ -481,7 +481,7 @@
     // Event binding
     //
 
-    this._addEventListener(main, 'contextmenu', function(ev) {
+    Utils.$bind(main, 'contextmenu', function(ev) {
       var r = Utils.$isInput(ev);
 
       if ( !r ) {
@@ -493,24 +493,24 @@
       return r;
     });
 
-    this._addEventListener(windowIcon, 'dblclick', Utils._preventDefault);
-    this._addEventListener(windowIcon, 'click', function(ev) {
+    Utils.$bind(windowIcon, 'dblclick', Utils._preventDefault);
+    Utils.$bind(windowIcon, 'click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       self._onWindowIconClick(ev, this);
     });
 
-    this._addEventListener(windowLoading, 'mousedown', _noEvent);
-    this._addEventListener(windowDisabled, 'mousedown', _noEvent);
+    Utils.$bind(windowLoading, 'mousedown', _noEvent);
+    Utils.$bind(windowDisabled, 'mousedown', _noEvent);
 
     if ( !isTouch ) {
-      this._addEventListener(windowButtons, 'mousedown', function(ev) {
+      Utils.$bind(windowButtons, 'mousedown', function(ev) {
         ev.preventDefault();
         return stopPropagation(ev);
       });
     }
 
-    this._addEventListener(main, 'mousedown', function(ev) {
+    Utils.$bind(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
     });
@@ -681,22 +681,6 @@
   //
   // GUI And Event Hooks
   //
-
-
-  /**
-   * Adds a listener for an event
-   *
-   * @param   DOMElement    el          DOM Element to attach event to
-   * @param   String        ev          DOM Event Name
-   * @param   Function      callback    Callback on event
-   *
-   * @return  void
-   *
-   * @method  Window::_addEventListener()
-   */
-  Window.prototype._addEventListener = function(el, ev, callback) {
-    API._bindEvent.apply(this, arguments);
-  };
 
 
   /**
@@ -1715,7 +1699,7 @@
 
     var close = document.createElement('div');
     close.innerHTML = 'X';
-    close.addEventListener('click', function() {
+    Utils.$bind(close, 'click', function() {
       self._setWarning(null);
     });
 

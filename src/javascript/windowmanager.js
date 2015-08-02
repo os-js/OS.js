@@ -292,12 +292,12 @@
     }
 
     if ( win._properties.allow_move ) {
-      win._addEventListener(windowTop, 'mousedown', function(ev, touchDevice) {
+      Utils.$bind(windowTop, 'mousedown', function(ev, touchDevice) {
         onMouseDown(ev, 'move', touchDevice);
       });
     }
     if ( win._properties.allow_resize ) {
-      win._addEventListener(windowResize, 'mousedown', function(ev, touchDevice) {
+      Utils.$bind(windowResize, 'mousedown', function(ev, touchDevice) {
         onMouseDown(ev, 'resize', touchDevice);
       });
     }
