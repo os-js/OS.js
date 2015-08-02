@@ -361,8 +361,7 @@
             OSjs.API.createDialog('ApplicationChooser', {
               file: file,
               list: app
-            }, function() {
-              // TODO REFACTOR
+            }, function(ev, btn) {
               if ( btn !== 'ok' ) { return; }
               _launch(appname);
 

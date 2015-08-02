@@ -85,7 +85,10 @@
       MenuInfo:     function() { app.info(getSelected()); },
       MenuOpen:     function() { app.open(getSelected()); },
       MenuDownload: function() { app.download(getSelected()); },
-      MenuRefresh:  function() { self.changePath(); }
+      MenuRefresh:  function() { self.changePath(); },
+      MenuViewList: function() { self.changeView('gui-list-view'); },
+      MenuViewTree: function() { self.changeView('gui-tree-view'); },
+      MenuViewIcon: function() { self.changeView('gui-icon-view'); }
     };
 
     function menuEvent(ev) {
@@ -184,7 +187,7 @@
         return false;
       }
 
-      API.open(new VFS.File(f.data));
+      API.open(new VFS.File(f.data.path, f.data.mime));
 
       return true;
     });
@@ -233,6 +236,11 @@
     });
 
     this._focus();
+  };
+
+  ApplicationFileManagerWindow.prototype.changeView = function(viewType) {
+    var view = this._scheme.find(this, 'FileView');
+    view.set('type', viewType);
   };
 
   ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, el, files) {

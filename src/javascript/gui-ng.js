@@ -205,6 +205,10 @@
       var value = params[k];
       if ( typeof value === 'boolean' ) {
         value = value ? 'true' : 'false';
+      } else if ( typeof value === 'object' ) {
+        try {
+          value = JSON.stringify(value);
+        } catch ( e ) {}
       }
       el.setAttribute('data-' + k, value);
     });
@@ -1197,71 +1201,152 @@
       // VIEWS
       //
 
-      'gui-icon-view': {
-        bind: function(el, evName, callback, params) {
-          if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
-            evName = '_' + evName;
-          }
-          Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
-        },
-        values: function(el) {
-          var selected = [];
-          var active = (el._selected || []);
+      'gui-icon-view': (function() {
+        function handleItemClick(ev, item, idx, selected) {
+        }
 
-          active.forEach(function(iter) {
-            var found = el.querySelectorAll('gui-icon-view-entry')[iter];
-            if ( found ) {
-              selected.push({
-                index: iter,
-                data: getViewNodeValue(found)
-              });
-            }
-          });
-
-          return selected;
-        },
-        build: function(el) {
-          // TODO: Custom Icon Size
-          // TODO: Set value (selected items)
-
-          function handleItemClick(ev, item, idx, selected) {
-            var multipleSelect = el.getAttribute('data-multiple');
-            multipleSelect = multipleSelect === null || multipleSelect === 'true';
-
-            return handleItemSelection(ev, item, idx, 'gui-icon-view-entry', selected, null, multipleSelect);
-          }
-
+        function initEntry(el, cel) {
           function getSelected() {
             return CONSTRUCTORS['gui-icon-view'].values(el);
           }
 
-          el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
-            var icon = cel.getAttribute('data-icon');
-            var label = getLabel(cel);
+          var icon = cel.getAttribute('data-icon');
+          var label = getLabel(cel);
 
-            var dicon = document.createElement('div');
-            var dimg = document.createElement('img');
-            dimg.src = icon;
-            dicon.appendChild(dimg);
+          var dicon = document.createElement('div');
+          var dimg = document.createElement('img');
+          dimg.src = icon;
+          dicon.appendChild(dimg);
 
-            var dlabel = document.createElement('div');
-            var dspan = document.createElement('span');
-            dspan.appendChild(document.createTextNode(label));
-            dlabel.appendChild(dspan);
+          var dlabel = document.createElement('div');
+          var dspan = document.createElement('span');
+          dspan.appendChild(document.createTextNode(label));
+          dlabel.appendChild(dspan);
 
-            Utils.$bind(cel, 'click', function(ev) {
-              el._selected = handleItemClick(ev, cel, idx, el._selected);
-              el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
-            }, false);
-            Utils.$bind(cel, 'dblclick', function(ev) {
-              el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
-            }, false);
+          Utils.$bind(cel, 'click', function(ev) {
+            var idx = Utils.$index(cel);
+            var multipleSelect = el.getAttribute('data-multiple');
+            multipleSelect = multipleSelect === null || multipleSelect === 'true';
+            el._selected = handleItemSelection(ev, cel, idx, 'gui-icon-view-entry', el._selected, null, multipleSelect);
+            el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
+          }, false);
+          Utils.$bind(cel, 'dblclick', function(ev) {
+            var idx = Utils.$index(cel);
+            el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
+          }, false);
 
-            cel.appendChild(dicon);
-            cel.appendChild(dlabel);
+          cel.appendChild(dicon);
+          cel.appendChild(dlabel);
+        }
+
+        function addToView(el, args) {
+          var entries = args[0];
+          if ( !(entries instanceof Array) ) {
+            entries = [entries];
+          }
+
+          entries.forEach(function(e) {
+            var entry = createElement('gui-icon-view-entry', e);
+            el.appendChild(entry);
+            initEntry(el, entry);
           });
         }
-      },
+
+        function updateActiveSelection(el) {
+          var active = [];
+          el.querySelectorAll('gui-icon-view-entry.gui-active').forEach(function(cel) {
+            active.push(Utils.$index(cel));
+          });
+          el._active = active;
+        }
+
+        function removeFromView(el, args, target) {
+          function remove(cel) {
+            Utils.$remove(cel);
+          }
+
+          if ( target ) {
+            remove(target);
+            return;
+          }
+
+          var findId = args[0];
+          var findKey = args[1] || 'id';
+          var q = 'data-' + findKey + '="' + findId + '"';
+          el.querySelectorAll('gui-icon-view-entry[' + q + ']').forEach(remove);
+          updateActiveSelection(el);
+        }
+
+        function patchIntoView(el, args) {
+          // TODO
+        }
+
+        function clearView(el) {
+          Utils.$empty(el);
+          el.scrollTop = 0;
+          el._selected = [];
+        }
+        return {
+          bind: function(el, evName, callback, params) {
+            if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+              evName = '_' + evName;
+            }
+            Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
+          },
+          values: function(el) {
+            var selected = [];
+            var active = (el._selected || []);
+
+            active.forEach(function(iter) {
+              var found = el.querySelectorAll('gui-icon-view-entry')[iter];
+              if ( found ) {
+                selected.push({
+                  index: iter,
+                  data: getViewNodeValue(found)
+                });
+              }
+            });
+
+            return selected;
+          },
+          build: function(el) {
+            // TODO: Custom Icon Size
+            // TODO: Set value (selected items)
+
+            function getSelected() {
+              return CONSTRUCTORS['gui-icon-view'].values(el);
+            }
+
+            el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
+              initEntry(el, cel);
+            });
+          },
+
+          call: function(el, method, args) {
+            if ( method === 'add' ) {
+              addToView(el, args);
+            } else if ( method === 'remove' ) {
+              removeFromView(el, args);
+            } else if ( method === 'clear' ) {
+              clearView(el);
+            } else if ( method === 'patch' ) {
+              patchIntoView(el, args);
+            }
+          },
+
+          values: function(el) {
+            var selected = [];
+            var active = (el._selected || []);
+            active.forEach(function(iter) {
+              var found = el.querySelectorAll('gui-icon-view-entry')[iter];
+              if ( found ) {
+                selected.push({index: iter, data: getViewNodeValue(found)});
+              }
+            });
+            return selected;
+          },
+        };
+      })(),
 
       'gui-tree-view': {
         bind: function(el, evName, callback, params) {
@@ -1628,6 +1713,7 @@
         function clearView(el) {
           Utils.$empty(el.querySelector('gui-list-view-rows'));
           el.scrollTop = 0;
+          el._selected = [];
         }
 
         return {
@@ -1793,6 +1879,13 @@
           var nel = new UIElementDataView(createElement(type, {'draggable': true, 'draggable-type': 'file'}));
           CONSTRUCTORS[type].build(nel.$element);
 
+          nel.on('select', function(ev) {
+            el.dispatchEvent(new CustomEvent('_select', {detail: ev.detail}));
+          });
+          nel.on('activate', function(ev) {
+            el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
+          });
+
           if ( type === 'gui-list-view' ) {
             nel.set('columns', [
               {label: 'Filename', resizable: true, basis: '100px'},
@@ -1804,14 +1897,9 @@
           el.appendChild(nel.$element);
         }
 
-        function scandir(tagName, dir, opts, cb) {
+        function scandir(tagName, dir, opts, cb, oncreate) {
           var file = new VFS.File(dir);
           file.type  = 'dir';
-
-          function _getIcon(iter) {
-            var icon = 'status/gtk-dialog-question.png';
-            return API.getFileIcon(iter, null, icon);
-          }
 
           var scanopts = {
             showDotFiles: opts.dotfiles === true,
@@ -1825,14 +1913,7 @@
             var list = [];
             var summary = {size: 0, directories: 0, files: 0, hidden: 0};
             (result || []).forEach(function(iter) {
-              list.push({
-                value: iter,
-                columns: [
-                  {label: iter.filename, icon: _getIcon(iter)},
-                  {label: iter.mime},
-                  {label: iter.size}
-                ]
-              });
+              list.push(oncreate(iter));
 
               summary.size += iter.size || 0;
               summary.directories += iter.type === 'dir' ? 1 : 0;
@@ -1849,17 +1930,17 @@
             if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
               evName = '_' + evName;
             }
-
-            var target = getChildView(el);
-            if ( target ) {
-              Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-            }
+            Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
           },
           set: function(el, param, value, arg) {
             if ( param === 'type' ) {
               Utils.$empty(el);
               el.setAttribute('data-type', value);
               buildChildView(el);
+
+              CONSTRUCTORS['gui-file-view'].call(el, 'chdir', {
+                path: el.getAttribute('data-path')
+              });
               return;
             } else if ( (['filter', 'dotfiles', 'filetype']).indexOf(param) >= 0 ) {
               setProperty(el, param, value);
@@ -1895,6 +1976,7 @@
               if ( method === 'chdir' ) {
                 var t = new UIElementDataView(target);
                 var dir = args.path || OSjs.API.getDefaultPath('/');
+                el.setAttribute('data-path', dir);
 
                 var opts = {
                   filter: null,
@@ -1914,6 +1996,30 @@
                   }
 
                   args.done(error, summary);
+                }, function(iter) {
+                  function _getIcon(iter) {
+                    var icon = 'status/gtk-dialog-question.png';
+                    return API.getFileIcon(iter, null, icon);
+                  }
+
+                  if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
+                    return {
+                      value: iter,
+                      id: iter.id || iter.filename,
+                      label: iter.filename,
+                      icon: _getIcon(iter)
+                    };
+                  }
+
+                  return {
+                    value: iter,
+                    id: iter.id || iter.filename,
+                    columns: [
+                      {label: iter.filename, icon: _getIcon(iter)},
+                      {label: iter.mime},
+                      {label: iter.size}
+                    ]
+                  };
                 });
 
                 return;
