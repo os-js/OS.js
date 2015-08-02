@@ -197,7 +197,12 @@ application-window[data-minimized="true"] {
 
 
 /* Desktop */
-body-background.Blinking {
+body[data-attention="true"]:after {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
   opacity : 0;
 
   -webkit-animation: pulseback 2s linear infinite;

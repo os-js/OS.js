@@ -35,10 +35,6 @@ body[data-background-style="strech"] {
   background-size : 100% auto;
 }
 
-body-background {
-  display : block;
-}
-
 /**
  * Desktop Notification
  */

@@ -29,7 +29,9 @@
  * @licence Simplified BSD License
  */
 
-body-background {
+body[data-attention="true"]:after {
+  content : '';
+  display : block;
   position : fixed;
   top : 0px;
   left : 0px;

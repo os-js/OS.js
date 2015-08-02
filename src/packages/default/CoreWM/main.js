@@ -357,30 +357,27 @@
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
-    var back = document.getElementsByTagName('body-background')[0];
-    if ( back ) {
-      OSjs.API.createDroppable(back, {
-        onOver: function(ev, el, args) {
-          self.onDropOver(ev, el, args);
-        },
+    OSjs.API.createDroppable(document.body, {
+      onOver: function(ev, el, args) {
+        self.onDropOver(ev, el, args);
+      },
 
-        onLeave : function() {
-          self.onDropLeave();
-        },
+      onLeave : function() {
+        self.onDropLeave();
+      },
 
-        onDrop : function() {
-          self.onDrop();
-        },
+      onDrop : function() {
+        self.onDrop();
+      },
 
-        onItemDropped: function(ev, el, item, args) {
-          self.onDropItem(ev, el, item, args);
-        },
+      onItemDropped: function(ev, el, item, args) {
+        self.onDropItem(ev, el, item, args);
+      },
 
-        onFilesDropped: function(ev, el, files, args) {
-          self.onDropFile(ev, el, files, args);
-        }
-      });
-    }
+      onFilesDropped: function(ev, el, files, args) {
+        self.onDropFile(ev, el, files, args);
+      }
+    });
 
     OSjs.Core.getHandler().getUserSettings(SETTING_STORAGE_NAME, function(s) {
       if ( s ) {
@@ -394,15 +391,11 @@
   };
 
   CoreWM.prototype.initDesktop = function() {
-
-    var background = document.getElementsByTagName('body-background')[0];
     var self = this;
-    if ( background ) {
-      background.oncontextmenu = function(ev) {
-        ev.preventDefault();
-        self.openDesktopMenu(ev);
-        return false;
-      };
+    document.body.oncontextmenu = function(ev) {
+      ev.preventDefault();
+      self.openDesktopMenu(ev);
+      return false;
     };
   };
 
@@ -562,23 +555,19 @@
   };
 
   CoreWM.prototype.onDropLeave = function() {
-    var back = document.getElementsByTagName('body-background')[0];
-    Utils.$removeClass(back, 'Blinking');
+    document.body.setAttribute('data-attention', 'false');
   };
 
   CoreWM.prototype.onDropOver = function() {
-    var back = document.getElementsByTagName('body-background')[0];
-    Utils.$addClass(back, 'Blinking');
+    document.body.setAttribute('data-attention', 'true');
   };
 
   CoreWM.prototype.onDrop = function() {
-    var back = document.getElementsByTagName('body-background')[0];
-    Utils.$removeClass(back, 'Blinking');
+    document.body.setAttribute('data-attention', 'false');
   };
 
   CoreWM.prototype.onDropItem = function(ev, el, item, args) {
-    var back = document.getElementsByTagName('body-background')[0];
-    Utils.$removeClass(back, 'Blinking');
+    document.body.setAttribute('data-attention', 'false');
 
     console.warn("XXXXXXXX", arguments);
 

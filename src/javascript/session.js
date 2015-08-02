@@ -222,7 +222,7 @@
    * @return  boolean
    */
   function globalOnScroll(ev) {
-    if ( ev.target === document || ev.target === document.body || ev.target.tagName === 'BODY-BACKGROUND' ) {
+    if ( ev.target === document || ev.target === document.body ) {
       ev.preventDefault();
       ev.stopPropagation();
       return false;
@@ -432,12 +432,8 @@
         return false;
       };
 
-      _$ROOT = document.createElement('body-background');
-      _$ROOT.addEventListener('contextmenu', onContextMenu, false);
-      _$ROOT.addEventListener('mousedown', onMouseDown, false);
-
-      document.body.appendChild(_$ROOT);
-
+      document.body.addEventListener('contextmenu', onContextMenu, false);
+      document.body.addEventListener('mousedown', onMouseDown, false);
       document.addEventListener('keydown', globalOnKeyDown, false);
       document.addEventListener('keypress', globalOnKeyPress, false);
       document.addEventListener('keyup', globalOnKeyUp, false);
@@ -512,11 +508,8 @@
       window.removeEventListener('scroll', globalOnScroll, false);
       window.onbeforeunload = null;
       //window.removeEventListener('beforeunload', globalOnBeforeUnload, false);
-
-      if ( _$ROOT ) {
-        _$ROOT.removeEventListener('contextmenu', onContextMenu, false);
-        _$ROOT.removeEventListener('mousedown', onMouseDown, false);
-      }
+      document.body.removeEventListener('contextmenu', onContextMenu, false);
+      document.body.removeEventListener('mousedown', onMouseDown, false);
 
 
       OSjs.API.killAll();
