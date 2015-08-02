@@ -269,6 +269,7 @@ gui-button-bar {
   display : block;
   position : relative;
   overflow : hidden;
+  font-size : 0; /* NOTE: Fixes spacing errors in FF */
 }
 gui-button-bar {
   white-space: nowrap;
