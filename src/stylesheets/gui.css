@@ -394,6 +394,10 @@ gui-button {
     width : 100%;
     height : 100%;
   }
+  gui-button button::-moz-focus-inner {
+    border : 0;
+    padding : 0;
+  }
   gui-button[data-icon-size="32"] {
     min-width : 32px;
     min-height : 32px;
