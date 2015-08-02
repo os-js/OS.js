@@ -886,17 +886,17 @@
     var name = this.getSetting('wallpaper');
     var type = this.getSetting('background');
 
-    var className = 'Color';
+    var className = 'color';
     var back      = 'none';
 
     if ( name && type.match(/^image/) ) {
       back = name;
       switch ( type ) {
-        case     'image' :        className = 'Normal';   break;
-        case     'image-center':  className = 'Center';   break;
-        case     'image-fill' :   className = 'Fill';     break;
-        case     'image-strech':  className = 'Strech';   break;
-        default:                  className = 'Default';  break;
+        case     'image' :        className = 'normal';   break;
+        case     'image-center':  className = 'center';   break;
+        case     'image-fill' :   className = 'fill';     break;
+        case     'image-strech':  className = 'strech';   break;
+        default:                  className = 'default';  break;
       }
     }
 
@@ -904,9 +904,7 @@
     console.log('Wallpaper type', type);
     console.log('Wallpaper className', className);
 
-    var cn = document.body.className;
-    var nc = 'Wallpaper' + className + ' ';
-    document.body.className = cn.replace(/(Wallpaper(.*)\s?)?/, nc);
+    document.body.setAttribute('data-background-style', className);
 
     if ( back !== 'none' ) {
       VFS.url(back, function(error, result) {

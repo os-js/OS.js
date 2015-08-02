@@ -1,4 +1,4 @@
-application-window-top > .WindowFrost {
+application-window-top .WindowFrost {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -11,26 +11,26 @@ application-window-top > .WindowFrost {
 /**
  * Default Wallpaper stuff
  */
-body.WallpaperColor {
+body[data-background-style="color"] {
   background-image : none;
 }
-body.WallpaperDefault {
+body[data-background-style="default"] {
   background-repeat : repeat;
 }
-body.WallpaperNormal {
+body[data-background-style="normal"] {
   background-repeat : no-repeat;
 }
-body.WallpaperCenter {
+body[data-background-style="center"] {
   background-repeat : no-repeat;
   background-position : center center;
 }
-body.WallpaperFill {
+body[data-background-style="fill"] {
   background-repeat : no-repeat;
   background-size : cover;
   background-position : center center;
   background-attachment : fixed;
 }
-body.WallpaperStrech {
+body[data-background-style="strech"] {
   background-repeat : no-repeat;
   background-size : 100% auto;
 }
@@ -95,10 +95,8 @@ corewm-panel {
   top : 0px;
   left : 0px;
   right : 0px;
-  height : 26px;
   overflow : visible;
   z-index : 2;
-  padding : 5px;
   margin : 0;
 
   -webkit-user-select: none;
