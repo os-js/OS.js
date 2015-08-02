@@ -340,8 +340,19 @@ gui-iframe {
   background-color : @gui_input_background_color;
 }
 
+/* Button Bar */
 /* Toolbar */
-gui-toolbar {
+gui-toolbar,
+gui-button-bar {
+  margin : 4px;
+}
+gui-toolbar > *,
+gui-button-bar > * {
+  margin-right : 4px;
+}
+gui-toolbar > *:last-child,
+gui-button-bar > *:last-child {
+  margin-right : 0;
 }
 
 /* Tabs */

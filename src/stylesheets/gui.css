@@ -269,7 +269,6 @@ gui-button-bar {
   display : block;
   position : relative;
   overflow : hidden;
-  margin : 4px;
 }
 gui-button-bar {
   white-space: nowrap;
@@ -278,18 +277,6 @@ gui-toolbar[data-orientation="vertical"],
 gui-button-bar[data-orientation="vertical"] {
   width : 100%;
   height : 100%;
-}
-
-gui-toolbar,
-gui-button-bar {
-}
-gui-toolbar > *,
-gui-button-bar > * {
-  margin-right : 4px;
-}
-gui-toolbar > *:last-child,
-gui-button-bar > *:last-child {
-  margin-right : 0;
 }
 
 /* Tabs */
