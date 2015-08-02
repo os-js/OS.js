@@ -62,10 +62,8 @@
   Panel.prototype.init = function(root) {
     var self = this;
 
-    this._$container = document.createElement('ul');
-
-    this._$element = document.createElement('div');
-    this._$element.className = 'WMPanel';
+    this._$container = document.createElement('corewm-panel-container');
+    this._$element = document.createElement('corewm-panel');
 
     this._$element.onmousedown = function(ev) {
       ev.preventDefault();
@@ -94,8 +92,7 @@
       self.onMouseLeave(ev);
     }, false);
 
-    this._$background = document.createElement('div');
-    this._$background.className = 'WMPanelBackground';
+    this._$background = document.createElement('corewm-panel-background');
 
     this._$element.appendChild(this._$background);
     this._$element.appendChild(this._$container);
@@ -135,19 +132,19 @@
     options = options || this._options;
 
     // CSS IS SET IN THE WINDOW MANAGER!
+    var self = this;
+    var attrs = {
+      ontop: !!options.ontop,
+      position: options.position || 'bottom'
+    };
 
-    var cn = ['WMPanel'];
-    if ( options.ontop ) {
-      cn.push('Ontop');
-    }
-    if ( options.position ) {
-      cn.push(options.position == 'top' ? 'Top' : 'Bottom');
-    }
     if ( options.autohide ) {
       this.onMouseOut();
     }
     if ( this._$element ) {
-      this._$element.className = cn.join(' ');
+      Object.keys(attrs).forEach(function(k) {
+        self._$element.setAttribute('data-' + k, typeof attrs[k] === 'boolean' ? (attrs[k] ? 'true' : 'false') : attrs[k]);
+      });
     }
     this._options = options;
   };
@@ -158,15 +155,9 @@
     }
 
     if ( hide ) {
-      this._$element.className = this._$element.className.replace(/\s?Visible/, '');
-      if ( !this._$element.className.match(/Autohide/) ) {
-        this._$element.className += ' Autohide';
-      }
+      this._$element.setAttribute('data-hint', 'autohide');
     } else {
-      this._$element.className = this._$element.className.replace(/\s?Autohide/, '');
-      if ( !this._$element.className.match(/Visible/) ) {
-        this._$element.className += ' Visible';
-      }
+      this._$element.setAttribute('data-hint', 'visible');
     }
   };
 
@@ -270,8 +261,8 @@
   PanelItem.Icon = 'actions/stock_about.png'; // Static icon
 
   PanelItem.prototype.init = function() {
-    this._$root = document.createElement('li');
-    this._$root.className = 'PanelItem ' + this._className;
+    this._$root = document.createElement('corewm-panel-item');
+    this._$root.className = this._className;
 
     return this._$root;
   };

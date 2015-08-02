@@ -209,8 +209,6 @@ application-window-warning > div:nth-child(2) {
   overflow : hidden;
 }
 
-.Window_InputDialog gui-label label,
-.Window_ConfirmDialog gui-label label,
-.Window_ErrorDialog gui-label label {
+application-window.DialogWindow gui-label label {
   white-space : inherit;
 }

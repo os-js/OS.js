@@ -655,7 +655,7 @@
     if ( this._$element ) {
       var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
-        this._$element.setAttribute('data-closing', 'true');
+        this._$element.setAttribute('data-hint', 'closing');
         setTimeout(function() {
           _removeDOM();
         }, getAnimDuration());
@@ -886,8 +886,6 @@
   Window.prototype._close = function() {
     console.info('OSjs::Core::Window::_close()');
     if ( this._disabled ) { return false; }
-
-    this._$element.setAttribute('data-closing', 'false');
 
     this._blur();
     this.destroy();

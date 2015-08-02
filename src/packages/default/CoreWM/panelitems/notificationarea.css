@@ -2,11 +2,11 @@
 /**
  * PanelItemNotificationArea
  */
-.WMPanel .PanelItemNotificationArea {
+corewm-panel .PanelItemNotificationArea {
   overflow : hidden;
   position : relative;
 }
-.WMPanel .PanelItemNotificationArea > div {
+corewm-panel .PanelItemNotificationArea > div {
   min-width : 26px;
   min-height : 26px;
   display : inline-block;
@@ -15,7 +15,7 @@
   position : relative;
   cursor : pointer;
 }
-.WMPanel .PanelItemNotificationArea > div > div {
+corewm-panel .PanelItemNotificationArea > div > div {
   position : absolute;
   top : 50%;
   left : 50%;
@@ -24,25 +24,25 @@
   margin-left : -8px;
   margin-top : -8px;
 }
-.WMPanel .PanelItemNotificationArea > div img {
+corewm-panel .PanelItemNotificationArea > div img {
   vertical-align : middle;
 }
 
 
 
-.WMPanel .PanelItemNotificationArea > div.BusyNotification,
-.WMPanel .PanelItemNotificationArea > div.StartupNotification {
+corewm-panel .PanelItemNotificationArea > div.BusyNotification,
+corewm-panel .PanelItemNotificationArea > div.StartupNotification {
   cursor : help;
 }
 
-.WMPanel .PanelItemNotificationArea > div.BusyNotification > div,
-.WMPanel .PanelItemNotificationArea > div.StartupNotification > div {
+corewm-panel .PanelItemNotificationArea > div.BusyNotification > div,
+corewm-panel .PanelItemNotificationArea > div.StartupNotification > div {
   border: 2px solid #fff;
   border-radius: 100%;
   margin-left : -10px;
   margin-top : -10px;
 }
-.WMPanel .PanelItemNotificationArea > div.StartupNotification > div:before {
+corewm-panel .PanelItemNotificationArea > div.StartupNotification > div:before {
   display: block;
   position: absolute;
   left: 7px; /*( 16px / 2 ) - 1px;*/
@@ -62,7 +62,7 @@
       -ms-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
           transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
 }
-.WMPanel .PanelItemNotificationArea > div.StartupNotification > div:after {
+corewm-panel .PanelItemNotificationArea > div.StartupNotification > div:after {
     display: block;
     position: absolute;
     left: 7px; /*( 16px / 2 ) - 1px;*/
@@ -83,8 +83,8 @@
             transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
 }
 
-.WMPanel .PanelItemNotificationArea > div.BusyNotification > div:after,
-.WMPanel .PanelItemNotificationArea > div.BusyNotification > div:before {
+corewm-panel .PanelItemNotificationArea > div.BusyNotification > div:after,
+corewm-panel .PanelItemNotificationArea > div.BusyNotification > div:before {
   display: block;
   position: absolute;
   left: 7px;
@@ -104,7 +104,7 @@
       -ms-animation: NotificationSpinAnim 3s linear infinite;
           animation: NotificationSpinAnim 3s linear infinite;
 }
-.WMPanel .PanelItemNotificationArea > div.BusyNotification > div:after {
+corewm-panel .PanelItemNotificationArea > div.BusyNotification > div:after {
   -webkit-animation: NotificationSpinAnim 3s linear -0.75s infinite;
      -moz-animation: NotificationSpinAnim 3s linear -0.75s infinite;
       -ms-animation: NotificationSpinAnim 3s linear -0.75s infinite;

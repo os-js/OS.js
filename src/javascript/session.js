@@ -222,7 +222,7 @@
    * @return  boolean
    */
   function globalOnScroll(ev) {
-    if ( ev.target === document || ev.target === document.body || ev.target.id === 'Background' ) {
+    if ( ev.target === document || ev.target === document.body || ev.target.tagName === 'BODY-BACKGROUND' ) {
       ev.preventDefault();
       ev.stopPropagation();
       return false;
@@ -432,8 +432,7 @@
         return false;
       };
 
-      _$ROOT = document.createElement('div');
-      _$ROOT.id = 'Background';
+      _$ROOT = document.createElement('body-background');
       _$ROOT.addEventListener('contextmenu', onContextMenu, false);
       _$ROOT.addEventListener('mousedown', onMouseDown, false);
 

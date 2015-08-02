@@ -2,7 +2,7 @@
 /**
  * PanelItemClock
  */
-.WMPanel .PanelItemClock {
+corewm-panel .PanelItemClock {
   flex : 0 0 55px;
   cursor : default;
   overflow : hidden;
@@ -10,7 +10,7 @@
   -o-text-overflow: ellipsis;
   text-align : center;
 }
-.WMPanel .PanelItemClock > div {
+corewm-panel .PanelItemClock > div {
   display : inline-block;
   vertical-align : middle;
 }

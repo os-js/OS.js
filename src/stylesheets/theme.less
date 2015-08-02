@@ -97,30 +97,30 @@ body, input, button, textarea, label, select {
  * WM
  */
 
-.WMPanel {
+corewm-panel {
   color : #ffffff; /* Window Manager manages this */
 }
-.WMPanel:before {
+corewm-panel:before {
   background : #101010; /* Window Manager manages this */
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
 }
-  .WMPanel li.Button {
+  corewm-panel li.Button {
     margin-top : -1px;
     cursor : pointer;
     background : transparent !important;
   }
 
-.WMPanel .PanelItemClock {
+corewm-panel .PanelItemClock {
   font-weight : bold;
   text-align : right;
   line-height : 26px;
 }
 
-.WMPanel .PanelItemWindowList li.Button {
+corewm-panel .PanelItemWindowList li.Button {
   opacity : .50;
 }
-.WMPanel .PanelItemWindowList li.Button.Focused {
+corewm-panel .PanelItemWindowList li.Button.Focused {
   opacity : 1;
 }
 
@@ -132,21 +132,21 @@ body, input, button, textarea, label, select {
   opacity : .85;
   cursor : pointer;
 }
-.WMNotification {
+corewm-notification {
   color : #fff; /* Window Manager manages this */
   cursor : pointer;
 }
-.WMNotification:before {
+corewm-notification:before {
   background : #101010; /* Window Manager manages this */
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
 }
-.WMNotification .Title {
+corewm-notification .Title {
   font-weight : bold;
 }
 
-.WMNotification .Title,
-.WMNotification .Message {
+corewm-notification .Title,
+corewm-notification .Message {
   line-height : 16px;
 }
 
@@ -156,15 +156,15 @@ body, input, button, textarea, label, select {
 }
 
 /* Window Switcher */
-#WindowSwitcher {
+corewm-window-switcher {
   opacity : 0.8;
   box-shadow : @theme_base_shadow_unfocused;
   background : @theme_base_bg_color;
 }
-#WindowSwitcher > div.Active {
+corewm-window-switcher > div.Active {
   background : @theme_selected_bg_color;
 }
-#WindowSwitcher > div.Active > span {
+corewm-window-switcher > div.Active > span {
   color : @theme_selected_fg_color;
 }
 

@@ -93,7 +93,7 @@
       win._focus();
 
       if ( a === 'move' ) {
-        Utils.$addClass(main, 'WindowHintMoving');
+        main.setAttribute('data-hint', 'moving');
       } else {
         if ( windowResize ) {
           var cx = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX;
@@ -126,7 +126,7 @@
             direction = 'sw';
           }
 
-          Utils.$addClass(main, 'WindowHintResizing');
+          main.setAttribute('data-hint', 'resizing');
         }
       }
 
@@ -162,8 +162,7 @@
         }
       }
 
-      Utils.$removeClass(main, 'WindowHintMoving');
-      Utils.$removeClass(main, 'WindowHintResizing');
+      main.setAttribute('data-hint', '');
 
       document.removeEventListener('touchmove', onMouseMove, false);
       document.removeEventListener('mousemove', onMouseMove, false);

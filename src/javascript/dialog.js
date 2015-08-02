@@ -65,6 +65,7 @@
     this._properties.allow_windowlist = false;
     this._properties.allow_session    = false;
     this._state.ontop                 = true;
+    this._tag                         = 'DialogWindow';
 
     this.args = args;
     this.scheme = OSjs.Core.getHandler().dialogs;
@@ -107,6 +108,8 @@
     this.scheme.find(this, 'ButtonNo').on('click', function(ev) {
       self.onClose(ev, 'no');
     });
+
+    Utils.$addClass(root, 'DialogWindow');
 
     return root;
   };

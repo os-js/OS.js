@@ -172,8 +172,7 @@
     this.$themeLink     = null;
     this.$animationLink = null;
 
-    this._$notifications    = document.createElement('div');
-    this._$notifications.id = 'WMNotifications';
+    this._$notifications    = document.createElement('corewm-notifications');
     document.body.appendChild(this._$notifications);
   };
 
@@ -358,7 +357,7 @@
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
-    var back = document.getElementById('Background');
+    var back = document.getElementsByTagName('body-background')[0];
     if ( back ) {
       OSjs.API.createDroppable(back, {
         onOver: function(ev, el, args) {
@@ -396,7 +395,7 @@
 
   CoreWM.prototype.initDesktop = function() {
 
-    var background = document.getElementById('Background');
+    var background = document.getElementsByTagName('body-background')[0];
     var self = this;
     if ( background ) {
       background.oncontextmenu = function(ev) {
@@ -563,22 +562,22 @@
   };
 
   CoreWM.prototype.onDropLeave = function() {
-    var back = document.getElementById('Background');
+    var back = document.getElementsByTagName('body-background')[0];
     Utils.$removeClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDropOver = function() {
-    var back = document.getElementById('Background');
+    var back = document.getElementsByTagName('body-background')[0];
     Utils.$addClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDrop = function() {
-    var back = document.getElementById('Background');
+    var back = document.getElementsByTagName('body-background')[0];
     Utils.$removeClass(back, 'Blinking');
   };
 
   CoreWM.prototype.onDropItem = function(ev, el, item, args) {
-    var back = document.getElementById('Background');
+    var back = document.getElementsByTagName('body-background')[0];
     Utils.$removeClass(back, 'Blinking');
 
 
@@ -741,8 +740,8 @@
 
       console.log('OSjs::Core::WindowManager::notification()', opts);
 
-      var container  = document.createElement('div');
-      var classNames = ['WMNotification'];
+      var container  = document.createElement('corewm-notification-entry');
+      var classNames = [''];
       var self       = this;
       var timeout    = null;
       var wm         = OSjs.Core.getWindowManager();
@@ -766,7 +765,7 @@
 
         var anim = wm ? wm.getSetting('animations') : false;
         if ( anim ) {
-          Utils.$addClass(container, 'Closing');
+          container.setAttribute('data-hint', 'closing');
           setTimeout(function() {
             _removeDOM();
           }, wm.getAnimDuration());
@@ -961,21 +960,21 @@
     var styles = {};
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
-        styles['.WMPanel'] = {};
-        styles['.WMNotification'] = {}
-        styles['.WMNotification:before'] = {
+        styles['corewm-panel'] = {};
+        styles['corewm-notification-entry'] = {}
+        styles['corewm-notification-entry:before'] = {
           'opacity': p.options.opacity / 100
         }
-        styles['.WMPanel .WMPanelBackground'] = {
+        styles['corewm-panel-background'] = {
           'opacity': p.options.opacity / 100
         };
         if ( p.options.background ) {
-          styles['.WMPanel .WMPanelBackground']['background-color'] = p.options.background;
-          styles['.WMNotification:before']['background-color'] = p.options.background;
+          styles['corewm-panel-background']['background-color'] = p.options.background;
+          styles['corewm-notification-entry:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {
-          styles['.WMPanel']['color'] = p.options.foreground;
-          styles['.WMNotification']['color'] = p.options.foreground;
+          styles['corewm-panel']['color'] = p.options.foreground;
+          styles['corewm-notification-entry']['color'] = p.options.foreground;
         }
 
       });
