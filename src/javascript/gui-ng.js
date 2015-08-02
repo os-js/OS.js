@@ -667,7 +667,9 @@
             } else {
               lbl.appendChild(document.createTextNode(value));
             }
+            return;
           }
+          setProperty(el, param, value);
         },
         bind: function(el, evName, callback, params) {
           var target = el.querySelector('button');
@@ -1933,13 +1935,13 @@
   /**
    * Base UIElement Class
    */
-  function UIElement(el) {
+  function UIElement(el, q) {
     this.$element = el || null;
     this.tagName = el ? el.tagName.toLowerCase() : null;
     this.oldDisplay = null;
 
     if ( !el ) {
-      console.error('UIElement() was constructed without a DOM element');
+      console.error('UIElement() was constructed without a DOM element', q);
     }
   }
 
@@ -2174,17 +2176,18 @@
 
   UIScheme.prototype.find = function(win, id, root) {
     root = root || win._getRoot();
-    return this.get(root.querySelector('[data-id="' + id + '"]'));
+    var q = '[data-id="' + id + '"]';
+    return this.get(root.querySelector(q), q);
   };
 
-  UIScheme.prototype.get = function(el) {
+  UIScheme.prototype.get = function(el, q) {
     if ( el ) {
       var tagName = el.tagName.toLowerCase();
       if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
-        return new UIElementDataView(el);
+        return new UIElementDataView(el, q);
       }
     }
-    return new UIElement(el);
+    return new UIElement(el, q);
   };
 
   /////////////////////////////////////////////////////////////////////////////
