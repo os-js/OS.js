@@ -137,17 +137,17 @@
       this.scheme.find(this, 'Filename').hide();
     }
 
-    var root = this.path;
-    var tmp = root.split(/(.*):\/\/\//);
+    var rootPath = this.path;
+    var tmp = rootPath.split(/(.*):\/\/\//);
     if ( !tmp[0] && tmp.length > 1 ) {
-      root = tmp[1] + ':///';
+      rootPath = tmp[1] + ':///';
     }
 
     var modules = [];
     VFS.getModules().forEach(function(m) {
       modules.push({label: m.name, value: m.module.root});
     });
-    mlist.clear().add(modules).set('value', root);
+    mlist.clear().add(modules).set('value', rootPath);
     mlist.on('change', function(ev) {
       self.changePath(ev.detail);
     });

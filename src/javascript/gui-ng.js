@@ -123,7 +123,7 @@
   }
 
   function blurMenu() {
-    if ( !lastMenu ) return;
+    if ( !lastMenu ) { return; }
     lastMenu();
   }
 
@@ -1124,7 +1124,7 @@
         build: function(el) {
           function bindResizer(resizer, idx) {
             var resizeEl = resizer.previousElementSibling;
-            if ( !resizeEl ) return;
+            if ( !resizeEl ) { return; }
 
             var startWidth = resizeEl.offsetWidth;
             var maxWidth = el.offsetWidth;
@@ -1199,7 +1199,7 @@
         },
         values: function(el) {
           var selected = [];
-          var active = (el._selected || [])
+          var active = (el._selected || []);
 
           active.forEach(function(iter) {
             var found = el.querySelectorAll('gui-icon-view-entry')[iter];
@@ -1265,7 +1265,7 @@
         },
         values: function(el) {
           var selected = [];
-          var active = (el._selected || [])
+          var active = (el._selected || []);
 
           active.forEach(function(iter) {
             var found = el.querySelectorAll('gui-tree-view-entry')[iter];
@@ -1511,7 +1511,8 @@
           values: function(el) {
             var selected = [];
             var body = el.querySelector('gui-list-view-rows');
-            var active = (el._selected || [])
+            var active = (el._selected || []);
+
             active.forEach(function(iter) {
               var found = body.querySelectorAll('gui-list-view-row')[iter];
               if ( found ) {
@@ -1965,8 +1966,8 @@
       onsuccess: function(html) {
         // Fixes weird whitespaces with inline-block elements
         html = html.replace(/\n/g, '')
-                   .replace(/[\t ]+\</g, '<')
-                   .replace(/\>[\t ]+\</g, '><')
+                   .replace(/[\t ]+</g, '<')
+                   .replace(/\>[\t ]+</g, '><')
                    .replace(/\>[\t ]+$/g, '>');
 
         var doc = document.createDocumentFragment();
