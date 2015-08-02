@@ -1,0 +1,35 @@
+<application-window data-id="ConnectionWindow">
+
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto" data-expand="true">
+      <gui-label>Start new process</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto" data-expand="true">
+      <gui-text data-id="GtkConnection">ws://10.0.0.113:8085/socket-bin</gui-text>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto" data-expand="true">
+      <gui-text data-id="ProcConnection">ws://10.0.0.113:9000</gui-text>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto" data-expand="true">
+      <gui-button data-id="ConnectButton">Connect</gui-button>
+    </gui-vbox-container>
+
+
+    <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto" data-expand="true">
+      <gui-label>Start new process</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto" data-expand="true">
+      <gui-text data-id="StartProc">/usr/bin/gtk3-demo</gui-text>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto" data-expand="true">
+      <gui-button data-id="StartButton">Launch</gui-button>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-expand="true">
+      <gui-statusbar data-id="Statusbar">
+        <gui-label data-id="StatusText">Checking broadway support...</gui-label>
+      </gui-statusbar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>

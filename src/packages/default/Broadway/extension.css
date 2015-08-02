@@ -1,0 +1,19 @@
+
+.Window_BroadwayConnectionWindow .WindowWrapper {
+}
+
+.Window_BroadwayConnectionWindow .WindowWrapper {
+}
+
+.Window_BroadwayConnectionWindow .WindowWrapper .supported {
+  color : #33dd33;
+}
+
+.Window_BroadwayConnectionWindow .WindowWrapper .unsupported {
+  color : #dd3333;
+}
+
+.Window_BroadwayConnectionWindow .WindowWrapper > * {
+  margin : 10px;
+}
+
