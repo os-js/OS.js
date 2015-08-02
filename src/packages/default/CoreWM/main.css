@@ -101,7 +101,8 @@ corewm-panel {
       -ms-user-select: none;
           user-select: none;
 }
-corewm-panel-background {
+corewm-panel:before {
+  content : '';
   display : block;
   position : absolute;
   top : 0px;

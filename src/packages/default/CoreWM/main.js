@@ -953,11 +953,11 @@
         styles['corewm-notification-entry:before'] = {
           'opacity': p.options.opacity / 100
         }
-        styles['corewm-panel-background'] = {
+        styles['corewm-panel:before'] = {
           'opacity': p.options.opacity / 100
         };
         if ( p.options.background ) {
-          styles['corewm-panel-background']['background-color'] = p.options.background;
+          styles['corewm-panel:before']['background-color'] = p.options.background;
           styles['corewm-notification-entry:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {

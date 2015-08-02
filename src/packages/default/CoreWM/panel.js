@@ -43,7 +43,6 @@
     this._name = name;
     this._$element = null;
     this._$container = null;
-    this._$background = null;
     this._items = [];
     this._outtimeout = null;
     this._intimeout = null;
@@ -92,9 +91,6 @@
       self.onMouseLeave(ev);
     }, false);
 
-    this._$background = document.createElement('corewm-panel-background');
-
-    this._$element.appendChild(this._$background);
     this._$element.appendChild(this._$container);
     root.appendChild(this._$element);
 
@@ -125,7 +121,6 @@
     }
 
     this._$container = null;
-    this._$background = null;
   };
 
   Panel.prototype.update = function(options) {
