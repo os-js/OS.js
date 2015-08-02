@@ -129,7 +129,9 @@
 
   function getProperty(el, param, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
-    if ( param === 'value' ) {
+    var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
+
+    if ( param === 'value' || (isDataView && param === 'selected') ) {
       var firstChild;
       if ( tagName.match(/^gui\-(text|password|textarea)$/) ) {
         firstChild = el.querySelector('input');
@@ -145,7 +147,7 @@
           return firstChild.value === 'on';
           //return firstChild.getAttribute('checked') === 'checked';
         }
-      } else if ( tagName.match(/^gui\-(tree|icon|list|file)\-view$/) ) {
+      } else if ( isDataView ) {
         return CONSTRUCTORS[tagName].values(el);
       }
 
@@ -211,6 +213,15 @@
       el.setAttribute('data-' + k, value);
     });
     return el;
+  }
+
+  function scrollIntoView(el, element) {
+    var pos = Utils.$position(element, el);
+    if ( pos !== null && 
+         (pos.top > (el.scrollTop + el.offsetHeight) || 
+         (pos.top < el.scrollTop)) ) {
+      el.scrollTop = pos.top;
+    }
   }
 
   function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
@@ -1501,6 +1512,128 @@
           }
         }
 
+        function createRow(e) {
+          var row = document.createElement('gui-list-view-row');
+          if ( e && e.columns ) {
+            e.columns.forEach(function(se) {
+              row.appendChild(createEntry(se));
+            });
+
+            var value = null;
+            try {
+              value = JSON.stringify(e.value);
+            } catch ( e ) {}
+            row.setAttribute('data-value', value);
+            if ( typeof e.id !== 'undefined' && e.id !== null ) {
+              row.setAttribute('data-id', e.id);
+            }
+
+            return row;
+          }
+
+          return null;
+        }
+
+        function addToView(el, args) {
+          var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
+          var body = el.querySelector('gui-list-view-rows');
+          var entries = args[0];
+          if ( !(entries instanceof Array) ) {
+            entries = [entries];
+          }
+
+          entries.forEach(function(e) {
+            var row = createRow(e);
+            if ( row ) {
+              body.appendChild(row);
+              initRow(el, row);
+            }
+          });
+        }
+
+        function updateActiveSelection(el) {
+          var active = [];
+          el.querySelectorAll('gui-list-view-row.gui-active').forEach(function(cel) {
+            active.push(Utils.$index(cel));
+          });
+          el._active = active;
+        }
+
+        function removeFromView(el, args, target) {
+          function remove(cel) {
+            Utils.$remove(cel);
+          }
+
+          if ( target ) {
+            remove(target);
+            return;
+          }
+
+          var findId = args[0];
+          var findKey = args[1] || 'id';
+          var q = 'data-' + findKey + '="' + findId + '"';
+          el.querySelectorAll('gui-list-view-rows > gui-list-view-row[' + q + ']').forEach(remove);
+          updateActiveSelection(el);
+        }
+
+        function patchIntoView(el, args) {
+          var entries = args[0];
+          var single = false;
+          var body = el.querySelector('gui-list-view-rows');
+
+          if ( !(entries instanceof Array) ) {
+            entries = [entries];
+            single = true;
+          }
+
+          var inView = {};
+          el.querySelectorAll('gui-list-view-rows > gui-list-view-row').forEach(function(row) {
+            var id = row.getAttribute('data-id');
+            if ( id !== null ) {
+              inView[id] = row;
+            }
+          });
+
+          entries.forEach(function(entry) {
+            var insertBefore;
+            if ( typeof entry.id !== 'undefined' && entry.id !== null ) {
+              if ( inView[entry.id] ) {
+                insertBefore = inView[entry.id];
+                delete inView[entry.id];
+              }
+
+              var row = createRow(entry);
+              if ( row ) {
+                if ( insertBefore ) {
+                  if ( Utils.$hasClass(insertBefore, 'gui-active') ) {
+                    Utils.$addClass(row, 'gui-active');
+                  }
+
+                  body.insertBefore(row, insertBefore);
+                  removeFromView(el, null, insertBefore);
+                } else {
+                  body.appendChild(row);
+                }
+                initRow(el, row);
+              }
+            }
+          });
+
+          if ( !single ) {
+            Object.keys(inView).forEach(function(k) {
+              removeFromView(el, null, inView[k]);
+            });
+          }
+
+          inView = {};
+          updateActiveSelection(el);
+        }
+
+        function clearView(el) {
+          Utils.$empty(el.querySelector('gui-list-view-rows'));
+          el.scrollTop = 0;
+        }
+
         return {
           bind: function(el, evName, callback, params) {
             if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
@@ -1521,6 +1654,7 @@
             });
             return selected;
           },
+
           set: function(el, param, value, arg) {
             if ( param === 'columns' ) {
               var head = el.querySelector('gui-list-view-columns');
@@ -1560,7 +1694,7 @@
                   if ( json[arg] == value ) {
                     select.push(idx);
                     Utils.$addClass(r, 'gui-active');
-                    // TODO: Scroll to position
+                    scrollIntoView(el, r);
                   }
                 } catch ( e ) {}
               });
@@ -1574,43 +1708,13 @@
           },
           call: function(el, method, args) {
             if ( method === 'add' ) {
-              var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
-              var body = el.querySelector('gui-list-view-rows');
-              var entries = args[0];
-              if ( !(entries instanceof Array) ) {
-                entries = [entries];
-              }
-
-              entries.forEach(function(e) {
-                var row = document.createElement('gui-list-view-row');
-                if ( e && e.columns ) {
-                  e.columns.forEach(function(se) {
-                    row.appendChild(createEntry(se));
-                  });
-
-                  var value = null;
-                  try {
-                    value = JSON.stringify(e.value);
-                  } catch ( e ) {}
-                  row.setAttribute('data-value', value);
-
-                  body.appendChild(row);
-                }
-
-                initRow(el, row);
-              });
-
+              addToView(el, args);
             } else if ( method === 'remove' ) {
-              var findId = args[0];
-              var findKey = args[1] || 'id';
-              var q = 'data-' + findKey + '="' + findId + '"';
-
-              el.querySelectorAll('gui-list-view-rows > gui-list-view-row[' + q + ']').forEach(function(cel) {
-                Utils.$remove(cel);
-              });
+              removeFromView(el, args);
             } else if ( method === 'clear' ) {
-              // TODO: Reset scrolltop
-              Utils.$empty(el.querySelector('gui-list-view-rows'));
+              clearView(el);
+            } else if ( method === 'patch' ) {
+              patchIntoView(el, args);
             }
           },
           build: function(el, applyArgs) {
@@ -1944,6 +2048,10 @@
 
   UIElementDataView.prototype.add = function(props) {
     return this._call('add', [props]);
+  };
+
+  UIElementDataView.prototype.patch = function(props) {
+    return this._call('patch', [props]);
   };
 
   UIElementDataView.prototype.remove = function(id, key) {
