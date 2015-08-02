@@ -417,8 +417,7 @@
 
       if ( !data.splash ) { return; }
 
-      splash = document.createElement('div');
-      splash.className = 'ProcessSplash';
+      splash = document.createElement('application-splash');
 
       var icon = document.createElement('img');
       icon.alt = n;
