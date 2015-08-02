@@ -6,33 +6,6 @@
  * http://gnome-look.org/content/show.php/?content=157986
  */
 
-@theme_base_bg_color          : #ebebeb;
-@theme_base_fg_color          : #242424;
-@theme_base_border_color      : #d4d4d4;
-@theme_secondary_bg_color     : #d9d9d9;
-@theme_secondary_fg_color     : #bbbbbb;
-@theme_secondary_border_color : #b2b2b2;
-@theme_base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
-@theme_base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
-@theme_selected_bg_color      : #2d73d2;
-@theme_selected_fg_color      : #ffffff;
-
-/**
- * WM
- */
-corewm-panel,
-corewm-panel-container {
-  padding : 4px;
-}
-
-body[data-attention="true"]:after {
-  background : #242424;
-}
-
-
-/**
- * Window
- */
 application-window:before {
   .theme_border_top(3px);
   left : -3px;
@@ -46,12 +19,7 @@ application-window-top {
 application-window-title {
   text-align : center;
 }
-application-window[data-dnd-state="true"]:after {
-  border : 4px solid rgba(0, 0, 0, .7);
-  border-radius : 1px;
-  .theme_border_top(3px);
-  margin : -4px;
-}
+
 
 /* Max */
 application-window-button-maximize {
