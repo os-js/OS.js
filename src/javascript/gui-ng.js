@@ -237,6 +237,10 @@
 
   function createVisualElement(el, nodeType, applyArgs) {
     applyArgs = applyArgs || {};
+    if ( typeof applyArgs !== 'object' ) {
+      console.error('Derp', 'applyArgs was not an object ?!');
+      applyArgs = {};
+    }
 
     var img = document.createElement(nodeType);
     var src = el.getAttribute('data-src');
@@ -794,10 +798,12 @@
       'gui-color-box': {
         set: function(el, param, value) {
           if ( param === 'value' ) {
-            el.style.backgroundColor = value;
+            el.firstChild.style.backgroundColor = value;
           }
         },
         build: function(el) {
+          var inner = document.createElement('div');
+          el.appendChild(inner);
         }
       },
 
@@ -856,6 +862,17 @@
           }, false);
 
           el.appendChild(cv);
+        }
+      },
+
+      'gui-canvas': {
+        bind: function(el, evName, callback, params) {
+          var target = el.querySelector('canvas');
+          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
+        },
+        build: function(el) {
+          var canvas = document.createElement('canvas');
+          el.appendChild(canvas);
         }
       },
 
@@ -1946,12 +1963,12 @@
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
+        // Fixes weird whitespaces with inline-block elements
         html = html.replace(/\n/g, '')
                    .replace(/[\t ]+\</g, '<')
                    .replace(/\>[\t ]+\</g, '><')
                    .replace(/\>[\t ]+$/g, '>');
 
-        console.warn(html);
         var doc = document.createDocumentFragment();
         var wrapper = document.createElement('div');
         wrapper.innerHTML = html;
@@ -1992,7 +2009,9 @@
       onparse(node);
 
       Object.keys(CONSTRUCTORS).forEach(function(key) {
-        node.querySelectorAll(key).forEach(CONSTRUCTORS[key].build);
+        node.querySelectorAll(key).forEach(function(pel) {
+          CONSTRUCTORS[key].build(pel);
+        });
       });
 
       return node;

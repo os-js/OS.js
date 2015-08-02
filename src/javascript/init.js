@@ -56,10 +56,21 @@
     if ( window.NodeList ) {
       window.NodeList.prototype.forEach = Array.prototype.forEach;
     }
-
     if ( window.FileList ) {
       window.FileList.prototype.forEach = Array.prototype.forEach;
     }
+
+    (function () {
+      function CustomEvent ( event, params ) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent( 'CustomEvent' );
+        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+        return evt;
+      };
+
+      CustomEvent.prototype = window.Event.prototype;
+      window.CustomEvent = CustomEvent;
+    })();
   })();
 
   // Initialize

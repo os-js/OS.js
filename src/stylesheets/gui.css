@@ -801,6 +801,13 @@ gui-color-box {
   position : relative;
   background-color : #fff;
 }
+gui-color-box[data-disabled="true"] {
+  cursor : default !important;
+}
+  gui-color-box > div {
+    min-width : 16px;
+    min-height : 16px;
+  }
 
 /* Menu */
 gui-menu {

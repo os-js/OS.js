@@ -714,10 +714,11 @@ gui-color-swatch {
 
 /* Color Box */
 gui-color-box {
-  padding : 4px;
-  background : #fff;
-  border : 1px solid @gui_border_color;
+  .theme_button();
 }
+  gui-color-box > div {
+    background : #fff;
+  }
 
 /* Menu */
 gui-menu {
