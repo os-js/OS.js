@@ -39,9 +39,9 @@
       icon: metadata.icon,
       title: metadata.name,
       min_width: 400,
-      width: 400,
-      min_height: 300,
-      height: 300
+      width: 500,
+      min_height: 400,
+      height: 400
     }, app, scheme]);
   }
 

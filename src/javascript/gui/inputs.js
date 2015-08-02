@@ -37,26 +37,8 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  // FIXME: Duplicate in gui-ng.js
-  function getValueLabel(el, attr) {
-    var label = attr ? el.getAttribute('data-label') : null;
-
-    if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
-      label = el.childNodes[0].nodeValue;
-      Utils.$empty(el);
-    }
-
-    return label || '';
-  }
-
-  // FIXME: Duplicate in gui-ng.js
-  function getLabel(el) {
-    var label = el.getAttribute('data-label');
-    return label || '';
-  }
-
   function createInputLabel(el, type, input) {
-    var label = getLabel(el);
+    var label = OSjs.GUI.Helpers.getLabel(el);
 
     if ( label ) {
       var lbl = document.createElement('label');
@@ -213,7 +195,7 @@
       }
     },
     build: function(el) {
-      var label = getValueLabel(el, true);
+      var label = OSjs.GUI.Helpers.getValueLabel(el, true);
       var lbl = document.createElement('label');
       lbl.appendChild(document.createTextNode(label));
       el.appendChild(lbl);
@@ -348,7 +330,7 @@
         }
         return;
       }
-      setProperty(el, param, value);
+      OSjs.GUI.Helpers.setProperty(el, param, value);
     },
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('button');
@@ -357,7 +339,7 @@
     build: function(el) {
       var icon = el.getAttribute('data-icon');
       var disabled = el.getAttribute('data-disabled') !== null;
-      var label = getValueLabel(el);
+      var label = OSjs.GUI.Helpers.getValueLabel(el);
 
       var input = document.createElement('button');
       if ( label ) {
