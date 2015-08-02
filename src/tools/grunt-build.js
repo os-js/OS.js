@@ -422,8 +422,10 @@
       extensions.forEach(function(e) {
         if ( e.sources ) {
           e.sources.forEach(function(ee) {
-            ee.src = _path.join('/', e._dist, ee.src);
-            settings.Core.Preloads.push(ee);
+            settings.Core.Preloads.push({
+              type: ee.type,
+              src: _path.join('/', e._dist, ee.src)
+            });
           });
         }
       });
