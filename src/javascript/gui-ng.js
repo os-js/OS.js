@@ -75,24 +75,28 @@
     return label || '';
   }
 
-  function getIcon(el) {
+  function getIcon(el, win) {
     var image = el.getAttribute('data-icon');
 
-    if ( image && image.match(/^stock:\/\//) ) {
-      image = image.replace('stock://', '');
+    if ( image ) {
+      if ( image.match(/^stock:\/\//) ) {
+        image = image.replace('stock://', '');
 
-      var size  = '16x16';
-      try {
-        var spl = image.split('/');
-        var tmp = spl.shift();
-        var siz = tmp.match(/^\d+x\d+/);
-        if ( siz ) {
-          size = siz[0];
-          image = spl.join('/');
-        }
+        var size  = '16x16';
+        try {
+          var spl = image.split('/');
+          var tmp = spl.shift();
+          var siz = tmp.match(/^\d+x\d+/);
+          if ( siz ) {
+            size = siz[0];
+            image = spl.join('/');
+          }
 
-        image = API.getIcon(image, size);
-      } catch ( e ) {}
+          image = API.getIcon(image, size);
+        } catch ( e ) {}
+      } else if ( image.match(/^app:\/\//) ) {
+        image = API.getApplicationResource(win._app, image.replace('app://', ''));
+      }
     }
 
     return image;
@@ -112,10 +116,8 @@
       }
     });
 
-    // TODO: Support application resources
-    //var url = API.getApplicationResource(win._app, ref);
-    node.querySelectorAll('*[data-icon^="stock:"]').forEach(function(el) {
-      var image = getIcon(el);
+    node.querySelectorAll('*[data-icon]').forEach(function(el) {
+      var image = getIcon(el, win);
       el.setAttribute('data-icon', image);
     });
   }
@@ -668,6 +670,10 @@
           var label = getValueLabel(el);
 
           var input = document.createElement('button');
+          if ( label ) {
+            Utils.$addClass(el, 'gui-has-label');
+          }
+
           input.appendChild(document.createTextNode(label));
           if ( disabled ) {
             input.setAttribute('disabled', 'disabled');
@@ -681,7 +687,7 @@
             } else {
               input.appendChild(img);
             }
-            Utils.$addClass(input, 'gui-has-image');
+            Utils.$addClass(el, 'gui-has-image');
           }
 
           el.appendChild(input);
@@ -922,7 +928,7 @@
             Utils.$bind(target.parentNode, evName, callback.bind(new UIElement(el)), params);
           });
         },
-        build: function(el, customMenu) {
+        build: function(el, customMenu, winRef) {
           function bindSelectionEvent(child, idx, expand) {
             var id = child.getAttribute('data-id');
             Utils.$bind(child, 'mousedown', function(ev) {
@@ -946,7 +952,7 @@
                   expand = true;
                 }
                 label = getLabel(child);
-                icon = getIcon(child);
+                icon = getIcon(child, winRef);
 
                 span = document.createElement('span');
                 span.appendChild(document.createTextNode(label));
@@ -1940,6 +1946,12 @@
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
+        html = html.replace(/\n/g, '')
+                   .replace(/[\t ]+\</g, '<')
+                   .replace(/\>[\t ]+\</g, '><')
+                   .replace(/\>[\t ]+$/g, '>');
+
+        console.warn(html);
         var doc = document.createDocumentFragment();
         var wrapper = document.createElement('div');
         wrapper.innerHTML = html;
@@ -1970,7 +1982,7 @@
 
       node.querySelectorAll('*').forEach(function(el) {
         var lcase = el.tagName.toLowerCase();
-        if ( lcase.match(/^gui\-/) && !lcase.match(/\-container|\-(h|v)box$|\-columns?|\-rows?/) ) {
+        if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|toolbar|button\-bar)$/) ) {
           Utils.$addClass(el, 'gui-element');
         }
       });

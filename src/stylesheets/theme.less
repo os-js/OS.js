@@ -342,7 +342,6 @@ gui-iframe {
 
 /* Toolbar */
 gui-toolbar {
-  height : 26px;
 }
 
 /* Tabs */
@@ -394,6 +393,9 @@ gui-label {
 gui-button {
   height : 26px;
 }
+gui-button[data-icon-size="32"] {
+  height : 42px;
+}
   gui-button button {
     .theme_button();
   }
@@ -414,9 +416,19 @@ gui-button {
   gui-button button.gui-has-image img {
     padding-right : 4px;
   }
+  gui-button.gui-has-image.gui-has-label button {
+    padding-left : 28px;
+  }
+  gui-button[data-icon-size="32"].gui-has-image.gui-has-label button {
+    padding-left : 44px;
+  }
 
 /* Checkbox Button */
 /* Radio Button */
+gui-radio,
+gui-checkbox {
+  height : 26px;
+}
   gui-radio input,
   gui-checkbox input {
     text-align : center;
@@ -740,6 +752,7 @@ gui-menu-bar {
   border-bottom : 1px solid @gui_border_color;
   padding-top : 2px;
   padding-bottom : 2px;
+  margin : 4px;
 }
   gui-menu-bar-entry {
     cursor : pointer;
@@ -753,7 +766,9 @@ gui-menu-bar {
 
 /* Progressbar */
 gui-progress-bar {
-  line-height : 24px;
+  display : block;
+  line-height : 26px;
+  height : 26px;
 }
   gui-progress-bar:before {
     background-color : @gui_background_color;

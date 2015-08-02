@@ -134,6 +134,9 @@ gui-vbox {
           flex-direction: column;
 }
 
+  gui-hbox-container {
+    height : 100%;
+  }
   gui-hbox-container,
   gui-vbox-container {
     display : block;
@@ -259,11 +262,34 @@ gui-iframe {
     border : 0 none;
   }
 
+/* Button Bar */
 /* Toolbar */
-gui-toolbar {
+gui-toolbar,
+gui-button-bar {
   display : block;
   position : relative;
   overflow : hidden;
+  margin : 4px;
+}
+gui-button-bar {
+  white-space: nowrap;
+}
+gui-toolbar[data-orientation="vertical"],
+gui-button-bar[data-orientation="vertical"] {
+  width : 100%;
+  height : 100%;
+}
+
+gui-toolbar,
+gui-button-bar {
+}
+gui-toolbar > *,
+gui-button-bar > * {
+  margin-right : 4px;
+}
+gui-toolbar > *:last-child,
+gui-button-bar > *:last-child {
+  margin-right : 0;
 }
 
 /* Tabs */
@@ -305,13 +331,6 @@ gui-tabs {
     gui-tab-container.gui-active {
       display : block;
     }
-
-/* Button Bar */
-gui-button-bar {
-  display : inline-block;
-  position : relative;
-  white-space: nowrap;
-}
 
 /* Grid */
 gui-grid {
@@ -371,8 +390,9 @@ gui-label {
 
 /* Button */
 gui-button {
-  display : inline-block;
   position : relative;
+  display : inline-block;
+  box-sizing : content-box;
 }
   gui-button button {
     display : block;
@@ -381,14 +401,27 @@ gui-button {
     outline : 0 none;
     white-space: nowrap;
     min-height : 24px;
+    min-width : 16px;
+    min-height : 16px;
     width : 100%;
     height : 100%;
   }
-  gui-button button.gui-has-image {
+  gui-button[data-icon-size="32"] {
+    min-width : 32px;
+    min-height : 32px;
   }
-  gui-button button.gui-has-image img {
-    float : left;
+
+  gui-button.gui-has-image img {
     vertical-align : middle;
+  }
+  gui-button.gui-has-image.gui-has-label img {
+    position : absolute;
+    top : 50%;
+    margin-top : -8px;
+    left : 8px;
+  }
+  gui-button[data-icon-size="32"].gui-has-image.gui-has-label img {
+    margin-top : -16px;
   }
 
 /* Checkbox Button */

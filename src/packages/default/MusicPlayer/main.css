@@ -28,31 +28,17 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationMusicPlayerWindow {
+.ApplicationMusicPlayerWindow {
 }
 
-.Window_ApplicationMusicPlayerWindow gui-slider {
+.ApplicationMusicPlayerWindow gui-slider {
   margin : 4px;
   margin-top : 10px;
   margin-bottom : 10px;
 }
-
-.Window_ApplicationMusicPlayerWindow gui-button-bar {
-  margin-bottom : 5px;
-}
-.Window_ApplicationMusicPlayerWindow gui-button-bar[data-id="Controls"] gui-button {
-  height : 44px;
-  width : 50px;
-}
-.Window_ApplicationMusicPlayerWindow gui-button-bar[data-id="Controls"] button {
-  text-align : center;
-  margin : 2px;
-}
-
-.Window_ApplicationMusicPlayerWindow gui-vbox[data-id="Metadata"] {
+.ApplicationMusicPlayerWindow gui-vbox[data-id="Metadata"] {
   margin : 4px;
 }
-
-.Window_ApplicationMusicPlayerWindow gui-audio {
+.ApplicationMusicPlayerWindow gui-audio {
   display : none;
 }

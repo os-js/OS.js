@@ -203,12 +203,13 @@
               </gui-tabs>
             </gui-vbox-container>
 
-            <gui-vbox-container data-grow="0" data-shrink="0" data-basis="auto">
+            <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
               <gui-button-bar>
                 <gui-button data-id="MyButtonOne">My Label</gui-button>
                 <gui-button data-id="MyButtonTwo">My Label</gui-button>
                 <gui-button data-id="MyButtonThree">My Label</gui-button>
                 <gui-button data-id="MyButtonFour" data-icon="/themes/icons/default/16x16/places/folder_home.png">My Label and Icon</gui-button>
+                <gui-button data-id="MyButtonFive">My Label</gui-button>
               </gui-button-bar>
             </gui-vbox-container>
           </gui-vbox>
@@ -217,8 +218,10 @@
     </gui-vbox-container>
 
 
-    <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
       <gui-statusbar></gui-statusbar>
-    </gui-hbox-container>
+    </gui-vbox-container>
+
+  </gui-vbox>
 
 </application-window>
