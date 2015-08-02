@@ -160,16 +160,8 @@
     tagName = tagName || el.tagName.toLowerCase();
 
     var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
+    var firstChild = el.children[0];
     if ( accept.indexOf(tagName) >= 0 ) {
-      var firstChild = el.querySelector('input');
-      if ( tagName === 'gui-textarea' ) {
-        firstChild = el.querySelector('textarea');
-      } else if ( tagName.match(/^gui\-select/) ) {
-        firstChild = el.querySelector('select');
-      } else if ( tagName.match(/^gui\-button/) ) {
-        firstChild = el.querySelector('button');
-      }
-
       if ( param === 'value' ) {
         if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
           if ( value ) {
@@ -200,6 +192,10 @@
         } catch ( e ) {}
       }
       el.setAttribute('data-' + param, value);
+    }
+
+    if ( param === 'src' && tagName === 'gui-image' ) {
+      firstChild.setAttribute('src', value);
     }
   }
 
@@ -280,9 +276,7 @@
       }
     });
 
-    if ( src ) {
-      img.setAttribute('src', src);
-    }
+    img.setAttribute('src', src || 'about:blank');
     el.appendChild(img);
   }
 
@@ -1945,7 +1939,7 @@
     this.oldDisplay = null;
 
     if ( !el ) {
-      console.warn('UIElement() was constructed without a DOM element');
+      console.error('UIElement() was constructed without a DOM element');
     }
   }
 
@@ -2103,6 +2097,7 @@
                 this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
     }
 
+    type = type || content.tagName.toLowerCase();
     if ( content ) {
       var node = content.cloneNode(true);
 
@@ -2131,17 +2126,24 @@
 
   UIScheme.prototype.render = function(win, id, root, type, onparse) {
     root = root || win._getRoot();
+    if ( root instanceof UIElement ) {
+      root = root.$element;
+    }
 
     var content = this.parse(id, type, win, onparse);
     if ( content ) {
-      // NOTE: This for some reasons fail when there is more than one child. WHY ?!?!?
       var children = content.children;
+      /*
       for ( var i = 0; i < children.length; i++ ) {
-        try {
-          root.appendChild(children[i]);
-        } catch ( e ) {
-          console.warn('UIScheme::parse()', 'exception', e);
-        }
+        root.appendChild(children[i].cloneNode(true));
+      }
+      */
+
+      // Appending nodes from somewere moves it!
+      var i = 0;
+      while ( children.length && i < 10000 ) {
+        root.appendChild(children[0]);
+        i++;
       }
     }
   };

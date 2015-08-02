@@ -68,7 +68,7 @@
       allow_maximize: false
     });
 
-    Window.apply(this, ['IFrameApplicationWindow_' + name, opts, app]);
+    Window.apply(this, ['IFrameApplicationWindow', opts, app]);
   };
 
   IFrameApplicationWindow.prototype = Object.create(Window.prototype);
@@ -77,9 +77,11 @@
     var root = Window.prototype.init.apply(this, arguments);
     root.style.overflow = 'visible';
 
-    this._addGUIElement(new GUI.IFrame('IFrameApplicationWindowFrame', {
-      src: this._opts.src
-    }), root);
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('border', 0);
+    iframe.className = 'IframeApplicationFrame';
+    iframe.src = this._opts.src;
+    root.appendChild(iframe);
 
     return root;
   };
@@ -118,13 +120,6 @@
   IFrameApplication.prototype = Object.create(Application.prototype);
 
   /**
-   * Default Destruction code
-   */
-  IFrameApplication.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
-  };
-
-  /**
    * Default init() code (run this last in your Application init() method)
    *
    * @see Application::init()
@@ -132,26 +127,8 @@
    */
   IFrameApplication.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
-
     var name = this.__name + 'Window';
-    this.mainWindow = this._addWindow(new IFrameApplicationWindow(name, this.options, this));
-  };
-
-  /**
-   * Default Messaging handler
-   *
-   * @see Application::_onMessage()
-   * @method IFrameApplication::_onMessage()
-   */
-  IFrameApplication.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    // Make sure we kill our application if main window was closed
-    if ( this.mainWindow ) {
-      if ( msg === 'destroyWindow' && obj._name === this.mainWindow._name ) {
-        this.destroy();
-      }
-    }
+    this._addWindow(new IFrameApplicationWindow(name, this.options, this), null, true);
   };
 
   /////////////////////////////////////////////////////////////////////////////

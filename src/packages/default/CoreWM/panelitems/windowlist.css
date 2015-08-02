@@ -2,10 +2,10 @@
 /**
  * PanelItemWindowList
  */
-.WMPanel .PanelItemWindowList {
+corewm-panel .PanelItemWindowList {
   overflow : hidden;
   min-width : 100px;
 }
-.WMPanel .PanelItemWindowList img {
+corewm-panel .PanelItemWindowList img {
   width : 16px;
 }

@@ -842,6 +842,7 @@ gui-menu.gui-root-menu {
     gui-menu > gui-menu-entry {
       background-repeat : no-repeat;
       background-position : left center;
+      background-size : 16px;
     }
     gui-menu > gui-menu-entry > span.gui-has-image {
     }
