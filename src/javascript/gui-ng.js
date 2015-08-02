@@ -1471,7 +1471,7 @@
             }
 
             API.createDraggable(row, {
-              type   : row.getAttribute('data-draggable-type'),
+              type   : el.getAttribute('data-draggable-type') || row.getAttribute('data-draggable-type'),
               source : source,
               data   : value
             });

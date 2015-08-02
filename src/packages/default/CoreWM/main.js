@@ -580,6 +580,7 @@
     var back = document.getElementsByTagName('body-background')[0];
     Utils.$removeClass(back, 'Blinking');
 
+    console.warn("XXXXXXXX", arguments);
 
     var _applyWallpaper = function(data) {
       this.applySettings({wallpaper: data.path}, false, true);
