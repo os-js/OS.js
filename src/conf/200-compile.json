@@ -25,6 +25,7 @@
       "src/javascript/dialog.js",
       "src/javascript/windowmanager.js",
       "src/javascript/gui-ng.js",
+      "src/javascript/gui/inputs.js",
       "src/javascript/dialogs/alert.js",
       "src/javascript/dialogs/applicationchooser.js",
       "src/javascript/dialogs/color.js",

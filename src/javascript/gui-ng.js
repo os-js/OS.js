@@ -42,6 +42,9 @@
   window.OSjs = window.OSjs || {};
   OSjs.API = OSjs.API || {};
 
+  OSjs.GUI = OSjs.GUI || {};
+  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -148,7 +151,7 @@
           //return firstChild.getAttribute('checked') === 'checked';
         }
       } else if ( isDataView ) {
-        return CONSTRUCTORS[tagName].values(el);
+        return OSjs.GUI.Elements[tagName].values(el);
       }
 
       return null;
@@ -284,114 +287,6 @@
     el.appendChild(img);
   }
 
-  function createSelectInput(el, multiple) {
-    var disabled = el.getAttribute('data-disabled') !== null;
-    var select = document.createElement('select');
-    if ( multiple ) {
-      select.setAttribute('size', el.getAttribute('data-size') || 2);
-      multiple = el.getAttribute('data-multiple') === 'true';
-    }
-
-    if ( multiple ) {
-      select.setAttribute('multiple', 'multiple');
-    }
-    if ( disabled ) {
-      select.setAttribute('disabled', 'disabled');
-    }
-
-    el.querySelectorAll('gui-select-option').forEach(function(sel) {
-      var value = sel.getAttribute('data-value') || '';
-      var label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
-
-      var option = document.createElement('option');
-      option.setAttribute('value', value);
-      option.appendChild(document.createTextNode(label));
-      select.appendChild(option);
-      sel.parentNode.removeChild(sel);
-    });
-
-    Utils.$bind(select, 'change', function(ev) {
-      select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
-    }, false);
-
-    el.appendChild(select);
-  }
-
-  function createInputLabel(el, type, input) {
-    var label = getLabel(el);
-
-    if ( label ) {
-      var lbl = document.createElement('label');
-      var span = document.createElement('span');
-      span.appendChild(document.createTextNode(label));
-
-      if ( type === 'checkbox' || type === 'radio' ) {
-        lbl.appendChild(input);
-        lbl.appendChild(span);
-      } else {
-        lbl.appendChild(span);
-        lbl.appendChild(input);
-      }
-      el.appendChild(lbl);
-    } else {
-      el.appendChild(input);
-    }
-  }
-
-  function createInputOfType(el, type) {
-    var group = el.getAttribute('data-group');
-    var placeholder = el.getAttribute('data-placeholder');
-    var disabled = el.getAttribute('data-disabled') !== null;
-    var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
-    Utils.$empty(el);
-
-    var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
-    input.setAttribute('type', type);
-    if ( placeholder ) {
-      input.setAttribute('placeholder', placeholder);
-    }
-    if ( type === 'radio' && group ) {
-      input.setAttribute('name', group + '[]');
-    }
-
-    if ( type === 'text' || type === 'password' || type === 'textarea' ) {
-      input.value = value;
-      Utils.$bind(input, 'keydown', function(ev) {
-        if ( ev.keyCode === Utils.Keys.ENTER ) {
-          input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
-        }
-      }, false);
-    }
-
-    if ( type === 'range' || type === 'slider' ) {
-      var min = el.getAttribute('data-min');
-      var max = el.getAttribute('data-max');
-      var ste = el.getAttribute('data-step');
-
-      if ( min ) { input.setAttribute('min', min); }
-      if ( max ) { input.setAttribute('max', max); }
-      if ( ste ) { input.setAttribute('step', ste); }
-    }
-
-    if ( disabled ) {
-      input.setAttribute('disabled', 'disabled');
-    }
-
-    // TODO: Custom tabindex
-    input.setAttribute('tabindex', -1);
-
-    Utils.$bind(input, 'change', function(ev) {
-      var value = input.value;
-      if ( type === 'radio' || type === 'checkbox' ) {
-        //value = input.getAttribute('checked') === 'checked';
-        value = input.value === 'on';
-      }
-      input.dispatchEvent(new CustomEvent('_change', {detail: value}));
-    }, false);
-
-    createInputLabel(el, type, input);
-  }
-
   function setFlexbox(el, grow, shrink, defaultGrow, defaultShrink, checkEl) {
     var basis = (checkEl || el).getAttribute('data-basis') || 'auto';
     var align = el.getAttribute('data-align');
@@ -471,39 +366,6 @@
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
   }
 
-  function bindTextInputEvents(el, evName, callback, params) {
-    if ( evName === 'enter' ) {
-      evName = '_enter';
-    }
-    var target = el.querySelector('input');
-    Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-  }
-
-  function addToSelectBox(el, entries) {
-    var target = el.querySelector('select');
-    if ( !(entries instanceof Array) ) {
-      entries = [entries];
-    }
-
-    entries.forEach(function(e) {
-      var opt = document.createElement('option');
-      opt.setAttribute('value', e.value);
-      opt.appendChild(document.createTextNode(e.label));
-
-      target.appendChild(opt);
-    });
-  }
-
-  function removeFromSelectBox(el, what) {
-    var target = el.querySelector('select');
-    // TODO
-  }
-
-  function clearSelectBox(el) {
-    var target = el.querySelector('select');
-    Utils.$empty(target);
-  }
-
   function getViewNodeValue(found) {
     var value = found.getAttribute('data-value');
     try {
@@ -518,249 +380,12 @@
   // ELEMENTS
   /////////////////////////////////////////////////////////////////////////////
 
-  var CONSTRUCTORS = (function() {
+  OSjs.GUI.Elements = (function() {
 
     return {
       //
       // INPUTS
       //
-
-      'gui-label': {
-        set: function(el, param, value, isHTML) {
-          if ( param === 'value' ) {
-            var lbl = el.querySelector('label');
-            Utils.$empty(lbl);
-            if ( isHTML ) {
-              lbl.innerHTML = value;
-            } else {
-              lbl.appendChild(document.createTextNode(value));
-            }
-          }
-        },
-        build: function(el) {
-          var label = getValueLabel(el, true);
-          var lbl = document.createElement('label');
-          lbl.appendChild(document.createTextNode(label));
-          el.appendChild(lbl);
-        }
-      },
-
-      'gui-textarea': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('textarea');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          createInputOfType(el, 'textarea');
-        }
-      },
-
-      'gui-text': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          bindTextInputEvents.apply(this, arguments);
-        },
-        build: function(el) {
-          createInputOfType(el, 'text');
-        }
-      },
-
-      'gui-password': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          bindTextInputEvents.apply(this, arguments);
-        },
-        build: function(el) {
-          createInputOfType(el, 'password');
-        }
-      },
-
-      'gui-file-upload': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('input');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          var input = document.createElement('input');
-          input.setAttribute('type', 'file');
-          input.onchange = function(ev) {
-            input.dispatchEvent(new CustomEvent('_change', {detail: input.files[0]}));
-          };
-          el.appendChild(input);
-        }
-      },
-
-      'gui-radio': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('input');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          createInputOfType(el, 'radio');
-        }
-      },
-
-      'gui-checkbox': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('input');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          createInputOfType(el, 'checkbox');
-        }
-      },
-
-      'gui-switch': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('input');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          var input = document.createElement('input');
-          input.type = 'checkbox';
-          el.appendChild(input);
-
-          var inner = document.createElement('div');
-
-          var button = document.createElement('button');
-          inner.appendChild(button);
-          createInputLabel(el, 'switch', inner);
-
-          var val = false;
-          function toggleValue(v) {
-            if ( typeof v === 'undefined' ) {
-              val = !val;
-            } else {
-              val = v;
-            }
-
-            if ( val !== true ) {
-              input.removeAttribute('checked', 'checked');
-              Utils.$removeClass(button, 'gui-active');
-              button.innerHTML = '0';
-            } else {
-              input.setAttribute('checked', 'checked');
-              Utils.$addClass(button, 'gui-active');
-              button.innerHTML = '1';
-            }
-          }
-
-          Utils.$bind(el, 'click', function() {
-            var disabled = el.getAttribute('data-disabled') !== null;
-            if ( !disabled ) {
-              toggleValue();
-            }
-          }, false);
-
-          toggleValue(false);
-        }
-      },
-
-      'gui-button': {
-        set: function(el, param, value, isHTML) {
-          if ( param === 'value' ) {
-            var lbl = el.querySelector('button');
-            Utils.$empty(lbl);
-            if ( isHTML ) {
-              lbl.innerHTML = value;
-            } else {
-              lbl.appendChild(document.createTextNode(value));
-            }
-            return;
-          }
-          setProperty(el, param, value);
-        },
-        bind: function(el, evName, callback, params) {
-          var target = el.querySelector('button');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          var icon = el.getAttribute('data-icon');
-          var disabled = el.getAttribute('data-disabled') !== null;
-          var label = getValueLabel(el);
-
-          var input = document.createElement('button');
-          if ( label ) {
-            Utils.$addClass(el, 'gui-has-label');
-          }
-
-          input.appendChild(document.createTextNode(label));
-          if ( disabled ) {
-            input.setAttribute('disabled', 'disabled');
-          }
-
-          if ( icon ) {
-            var img = document.createElement('img');
-            img.src = icon;
-            if ( input.firstChild ) {
-              input.insertBefore(img, input.firstChild);
-            } else {
-              input.appendChild(img);
-            }
-            Utils.$addClass(el, 'gui-has-image');
-          }
-
-          el.appendChild(input);
-        }
-      },
-
-      'gui-select': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('select');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          // TODO Selected index/entry
-          createSelectInput(el);
-        },
-        call: function(el, method, args) {
-          if ( method === 'add' ) {
-            addToSelectBox(el, args[0]);
-          } else if ( method === 'remove' ) {
-            removeFromSelectBox(el, args[0]);
-          } else if ( method === 'clear' ) {
-            clearSelectBox(el);
-          }
-        }
-      },
-
-      'gui-select-list': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('select');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          // TODO Selected index/entry
-          createSelectInput(el, true);
-        },
-        call: function(el, method, args) {
-          if ( method === 'add' ) {
-            addToSelectBox(el, args[0]);
-          } else if ( method === 'remove' ) {
-            removeFromSelectBox(el, args[0]);
-          } else if ( method === 'clear' ) {
-            clearSelectBox(el);
-          }
-        }
-      },
-
-      'gui-slider': {
-        bind: function(el, evName, callback, params) {
-          if ( evName === 'change' ) { evName = '_change'; }
-          var target = el.querySelector('input');
-          Utils.$bind(target, evName, callback.bind(new UIElement(el)), params);
-        },
-        build: function(el) {
-          createInputOfType(el, 'range');
-        }
-      },
 
       'gui-richtext' : {
         // TODO Events
@@ -1207,7 +832,7 @@
 
         function initEntry(el, cel) {
           function getSelected() {
-            return CONSTRUCTORS['gui-icon-view'].values(el);
+            return OSjs.GUI.Elements['gui-icon-view'].values(el);
           }
 
           var icon = cel.getAttribute('data-icon');
@@ -1314,7 +939,7 @@
             // TODO: Set value (selected items)
 
             function getSelected() {
-              return CONSTRUCTORS['gui-icon-view'].values(el);
+              return OSjs.GUI.Elements['gui-icon-view'].values(el);
             }
 
             el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
@@ -1375,7 +1000,7 @@
           // TODO: Set value (selected items)
 
           function getSelected() {
-            return CONSTRUCTORS['gui-tree-view'].values(el);
+            return OSjs.GUI.Elements['gui-tree-view'].values(el);
           }
 
           function handleItemClick(ev, item, idx, selected) {
@@ -1512,7 +1137,7 @@
           var singleClick = el.getAttribute('data-single-click') === 'true';
 
           function getSelected() {
-            return CONSTRUCTORS['gui-list-view'].values(el);
+            return OSjs.GUI.Elements['gui-list-view'].values(el);
           }
 
           row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
@@ -1877,7 +1502,7 @@
           }
 
           var nel = new UIElementDataView(createElement(type, {'draggable': true, 'draggable-type': 'file'}));
-          CONSTRUCTORS[type].build(nel.$element);
+          OSjs.GUI.Elements[type].build(nel.$element);
 
           nel.on('select', function(ev) {
             el.dispatchEvent(new CustomEvent('_select', {detail: ev.detail}));
@@ -1938,7 +1563,7 @@
               el.setAttribute('data-type', value);
               buildChildView(el);
 
-              CONSTRUCTORS['gui-file-view'].call(el, 'chdir', {
+              OSjs.GUI.Elements['gui-file-view'].call(el, 'chdir', {
                 path: el.getAttribute('data-path')
               });
               return;
@@ -1950,7 +1575,7 @@
             var target = getChildView(el);
             if ( target ) {
               var tagName = target.tagName.toLowerCase();
-              CONSTRUCTORS[tagName].set(target, param, value, arg);
+              OSjs.GUI.Elements[tagName].set(target, param, value, arg);
             }
 
           },
@@ -1961,7 +1586,7 @@
             var target = getChildView(el);
             if ( target ) {
               var tagName = target.tagName.toLowerCase();
-              return CONSTRUCTORS[tagName].values(target);
+              return OSjs.GUI.Elements[tagName].values(target);
             }
             return null;
           },
@@ -2025,7 +1650,7 @@
                 return;
               }
 
-              CONSTRUCTORS[tagName].call(target, method, args);
+              OSjs.GUI.Elements[tagName].call(target, method, args);
             }
           }
         };
@@ -2091,16 +1716,16 @@
   };
 
   UIElement.prototype.on = function(evName, callback, args) {
-    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].bind ) {
-      CONSTRUCTORS[this.tagName].bind(this.$element, evName, callback, args);
+    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].bind ) {
+      OSjs.GUI.Elements[this.tagName].bind(this.$element, evName, callback, args);
     }
     return this;
   };
 
   UIElement.prototype.set = function(param, value, arg) {
     if ( this.$element ) {
-      if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].set ) {
-        CONSTRUCTORS[this.tagName].set(this.$element, param, value, arg);
+      if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].set ) {
+        OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg);
       } else {
         setProperty(this.$element, param, value, arg);
       }
@@ -2110,8 +1735,8 @@
 
   UIElement.prototype.get = function(param) {
     if ( this.$element ) {
-      if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].get ) {
-        return CONSTRUCTORS[this.tagName].get(this.$element, param);
+      if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].get ) {
+        return OSjs.GUI.Elements[this.tagName].get(this.$element, param);
       } else {
         return getProperty(this.$element, param);
       }
@@ -2137,9 +1762,9 @@
   UIElementDataView.constructor = UIElement;
 
   UIElementDataView.prototype._call = function(method, args) {
-    if ( CONSTRUCTORS[this.tagName] && CONSTRUCTORS[this.tagName].call ) {
+    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].call ) {
       var cargs = ([this.$element, method, args]);//.concat(args);
-      CONSTRUCTORS[this.tagName].call.apply(this, cargs);
+      OSjs.GUI.Elements[this.tagName].call.apply(this, cargs);
     }
     return this;
   };
@@ -2220,9 +1845,9 @@
 
       onparse(node);
 
-      Object.keys(CONSTRUCTORS).forEach(function(key) {
+      Object.keys(OSjs.GUI.Elements).forEach(function(key) {
         node.querySelectorAll(key).forEach(function(pel) {
-          CONSTRUCTORS[key].build(pel);
+          OSjs.GUI.Elements[key].build(pel);
         });
       });
 
@@ -2275,7 +1900,7 @@
 
     parentNode.appendChild(el);
 
-    CONSTRUCTORS[tagName].build(el, applyArgs, win);
+    OSjs.GUI.Elements[tagName].build(el, applyArgs, win);
 
     return new UIElement(el);
   };
@@ -2301,6 +1926,10 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.API.blurMenu = blurMenu;
+
+  OSjs.GUI.Element = UIElement;
+  OSjs.GUI.ElementDataView = UIElementDataView;
+  OSjs.GUI.Scheme = UIScheme;
 
   OSjs.API.createMenu = function(items, ev, customInstance) {
     items = items || [];
@@ -2329,7 +1958,7 @@
     }
 
     resolveItems(items || [], root);
-    CONSTRUCTORS['gui-menu'].build(root, true);
+    OSjs.GUI.Elements['gui-menu'].build(root, true);
 
     var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
     var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
