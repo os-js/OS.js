@@ -47,7 +47,9 @@
 
     Utils.$bind(span, 'mousedown', function(ev) {
       dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
-      if ( !ev.target.querySelector('input') ) {
+      if ( ev.target.querySelector('input') ) {
+        ev.stopPropagation();
+      } else {
         blurMenu();
       }
     }, false);
