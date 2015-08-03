@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -42,7 +39,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-color-box'] = {
+  GUI.Elements['gui-color-box'] = {
     set: function(el, param, value) {
       if ( param === 'value' ) {
         el.firstChild.style.backgroundColor = value;
@@ -54,13 +51,13 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-color-swatch'] = {
+  GUI.Elements['gui-color-swatch'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('canvas');
       if ( evName === 'select' || evName === 'change' ) {
         evName = '_change';
       }
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       var cv        = document.createElement('canvas');
@@ -112,7 +109,7 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-iframe'] = {
+  GUI.Elements['gui-iframe'] = {
     build: function(el) {
       var src = el.getAttribute('data-src') || 'about:blank';
       var iframe = document.createElement('iframe');
@@ -122,4 +119,4 @@
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -139,7 +139,7 @@
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = OSjs.API.createScheme(url);
+    var scheme = GUI.createScheme(url);
     var file = this._getArgument('file');
 
     scheme.load(function(error, result) {
@@ -188,4 +188,4 @@
   OSjs.Applications.ApplicationPreview = OSjs.Applications.ApplicationPreview || {};
   OSjs.Applications.ApplicationPreview.Class = ApplicationPreview;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

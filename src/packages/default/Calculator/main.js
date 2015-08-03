@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   var ops = {
@@ -286,7 +286,7 @@
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = OSjs.API.createScheme(url);
+    var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationCalculatorWindow(self, metadata, scheme));
     });
@@ -300,4 +300,4 @@
   OSjs.Applications.ApplicationCalculator = OSjs.Applications.ApplicationCalculator || {};
   OSjs.Applications.ApplicationCalculator.Class = ApplicationCalculator;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

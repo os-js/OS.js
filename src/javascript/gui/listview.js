@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -53,9 +50,9 @@
       delete v.label;
     }
 
-    var nel = OSjs.GUI.Helpers.createElement('gui-list-view-column', v);
+    var nel = GUI.Helpers.createElement('gui-list-view-column', v);
     nel.appendChild(document.createTextNode(label));
-    OSjs.GUI.Helpers.setFlexbox(nel, null, null, 1, 0);
+    GUI.Helpers.setFlexbox(nel, null, null, 1, 0);
     return nel;
   }
 
@@ -77,7 +74,7 @@
         var startWidth = 0;
         var maxWidth   = 0;
 
-        OSjs.GUI.Helpers.createDrag(resizer, function(ev) {
+        GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = col.offsetWidth;
           maxWidth = el.offsetWidth / 2; // FIXME
         }, function(ev, dx, dy) {
@@ -101,7 +98,7 @@
     var singleClick = el.getAttribute('data-single-click') === 'true';
 
     function getSelected() {
-      return OSjs.GUI.Elements['gui-list-view'].values(el);
+      return GUI.Elements['gui-list-view'].values(el);
     }
 
     row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
@@ -111,7 +108,7 @@
       var shrink = cl ? 1 : 0;
       var headerEl = headContainer ? headContainer.querySelectorAll('gui-list-view-column')[x] : null;
 
-      OSjs.GUI.Helpers.setFlexbox(cel, null, null, grow, shrink, headerEl);
+      GUI.Helpers.setFlexbox(cel, null, null, grow, shrink, headerEl);
 
       var icon = cel.getAttribute('data-icon');
       if ( icon ) {
@@ -168,7 +165,7 @@
 
       var source = row.getAttribute('data-draggable-source');
       if ( source === null ) {
-        source = OSjs.GUI.Helpers.getWindowId(el);
+        source = GUI.Helpers.getWindowId(el);
         if ( source !== null ) {
           source = {wid: source};
         }
@@ -309,12 +306,12 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-list-view'] = {
+  GUI.Elements['gui-list-view'] = {
     bind: function(el, evName, callback, params) {
       if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     values: function(el) {
       var selected = [];
@@ -436,7 +433,7 @@
         }, false);
 
         el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
-          OSjs.GUI.Helpers.setFlexbox(cel, null, null, 1, 0);
+          GUI.Helpers.setFlexbox(cel, null, null, 1, 0);
 
           var vis = cel.getAttribute('data-visible');
           var iter = {
@@ -457,4 +454,4 @@
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

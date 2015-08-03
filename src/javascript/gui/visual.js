@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -80,40 +77,40 @@
   /////////////////////////////////////////////////////////////////////////////
 
 
-  OSjs.GUI.Elements['gui-audio'] = {
+  GUI.Elements['gui-audio'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('audio');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el, applyArgs) {
       createVisualElement(el, 'audio', applyArgs);
     }
   };
 
-  OSjs.GUI.Elements['gui-video'] = {
+  GUI.Elements['gui-video'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('video');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el, applyArgs) {
       createVisualElement(el, 'video', applyArgs);
     }
   };
 
-  OSjs.GUI.Elements['gui-image'] = {
+  GUI.Elements['gui-image'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('img');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el, applyArgs) {
       createVisualElement(el, 'img', applyArgs);
     }
   };
 
-  OSjs.GUI.Elements['gui-canvas'] = {
+  GUI.Elements['gui-canvas'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('canvas');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       var canvas = document.createElement('canvas');
@@ -121,4 +118,4 @@
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

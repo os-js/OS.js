@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
 
   var notificationWasDisplayed = {};
 
@@ -288,7 +288,7 @@
     var path = this._getArgument('path') || API.getDefaultPath('/');
 
     var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = OSjs.API.createScheme(url);
+    var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path));
     });
@@ -445,4 +445,4 @@
   OSjs.Applications.ApplicationFileManager = OSjs.Applications.ApplicationFileManager || {};
   OSjs.Applications.ApplicationFileManager.Class = ApplicationFileManager;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

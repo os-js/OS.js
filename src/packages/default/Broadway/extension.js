@@ -51,7 +51,7 @@
     }
 
     var url = API.getApplicationResource('ExtensionBroadway', 'scheme.html');
-    var scheme = API.createScheme(url);
+    var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       if ( result ) {
         _scheme = scheme;

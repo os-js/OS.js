@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -47,8 +44,8 @@
       type = 'gui-' + type;
     }
 
-    var nel = new OSjs.GUI.ElementDataView(OSjs.GUI.Helpers.createElement(type, {'draggable': true, 'draggable-type': 'file'}));
-    OSjs.GUI.Elements[type].build(nel.$element);
+    var nel = new GUI.ElementDataView(GUI.Helpers.createElement(type, {'draggable': true, 'draggable-type': 'file'}));
+    GUI.Elements[type].build(nel.$element);
 
     nel.on('select', function(ev) {
       el.dispatchEvent(new CustomEvent('_select', {detail: ev.detail}));
@@ -100,12 +97,12 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-file-view'] = {
+  GUI.Elements['gui-file-view'] = {
     bind: function(el, evName, callback, params) {
       if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     set: function(el, param, value, arg) {
       if ( param === 'type' ) {
@@ -113,7 +110,7 @@
         el.setAttribute('data-type', value);
         buildChildView(el);
 
-        OSjs.GUI.Elements['gui-file-view'].call(el, 'chdir', {
+        GUI.Elements['gui-file-view'].call(el, 'chdir', {
           path: el.getAttribute('data-path')
         });
         return;
@@ -125,7 +122,7 @@
       var target = getChildView(el);
       if ( target ) {
         var tagName = target.tagName.toLowerCase();
-        OSjs.GUI.Elements[tagName].set(target, param, value, arg);
+        GUI.Elements[tagName].set(target, param, value, arg);
       }
 
     },
@@ -136,7 +133,7 @@
       var target = getChildView(el);
       if ( target ) {
         var tagName = target.tagName.toLowerCase();
-        return OSjs.GUI.Elements[tagName].values(target);
+        return GUI.Elements[tagName].values(target);
       }
       return null;
     },
@@ -149,7 +146,7 @@
         var tagName = target.tagName.toLowerCase();
 
         if ( method === 'chdir' ) {
-          var t = new OSjs.GUI.ElementDataView(target);
+          var t = new GUI.ElementDataView(target);
           var dir = args.path || OSjs.API.getDefaultPath('/');
           el.setAttribute('data-path', dir);
 
@@ -200,9 +197,9 @@
           return;
         }
 
-        OSjs.GUI.Elements[tagName].call(target, method, args);
+        GUI.Elements[tagName].call(target, method, args);
       }
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

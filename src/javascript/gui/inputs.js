@@ -27,18 +27,15 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
   function createInputLabel(el, type, input) {
-    var label = OSjs.GUI.Helpers.getLabel(el);
+    var label = GUI.Helpers.getLabel(el);
 
     if ( label ) {
       var lbl = document.createElement('label');
@@ -117,7 +114,7 @@
       evName = '_enter';
     }
     var target = el.querySelector('input');
-    Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
   }
 
   function addToSelectBox(el, entries) {
@@ -182,7 +179,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-label'] = {
+  GUI.Elements['gui-label'] = {
     set: function(el, param, value, isHTML) {
       if ( param === 'value' ) {
         var lbl = el.querySelector('label');
@@ -195,25 +192,25 @@
       }
     },
     build: function(el) {
-      var label = OSjs.GUI.Helpers.getValueLabel(el, true);
+      var label = GUI.Helpers.getValueLabel(el, true);
       var lbl = document.createElement('label');
       lbl.appendChild(document.createTextNode(label));
       el.appendChild(lbl);
     }
   };
 
-  OSjs.GUI.Elements['gui-textarea'] = {
+  GUI.Elements['gui-textarea'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('textarea');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       createInputOfType(el, 'textarea');
     }
   };
 
-  OSjs.GUI.Elements['gui-text'] = {
+  GUI.Elements['gui-text'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       bindTextInputEvents.apply(this, arguments);
@@ -223,7 +220,7 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-password'] = {
+  GUI.Elements['gui-password'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       bindTextInputEvents.apply(this, arguments);
@@ -233,11 +230,11 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-file-upload'] = {
+  GUI.Elements['gui-file-upload'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       var input = document.createElement('input');
@@ -249,33 +246,33 @@
     }
   },
 
-  OSjs.GUI.Elements['gui-radio'] = {
+  GUI.Elements['gui-radio'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       createInputOfType(el, 'radio');
     }
   };
 
-  OSjs.GUI.Elements['gui-checkbox'] = {
+  GUI.Elements['gui-checkbox'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       createInputOfType(el, 'checkbox');
     }
   };
 
-  OSjs.GUI.Elements['gui-switch'] = {
+  GUI.Elements['gui-switch'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       var input = document.createElement('input');
@@ -318,7 +315,7 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-button'] = {
+  GUI.Elements['gui-button'] = {
     set: function(el, param, value, isHTML) {
       if ( param === 'value' ) {
         var lbl = el.querySelector('button');
@@ -330,16 +327,16 @@
         }
         return;
       }
-      OSjs.GUI.Helpers.setProperty(el, param, value);
+      GUI.Helpers.setProperty(el, param, value);
     },
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('button');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       var icon = el.getAttribute('data-icon');
       var disabled = el.getAttribute('data-disabled') !== null;
-      var label = OSjs.GUI.Helpers.getValueLabel(el);
+      var label = GUI.Helpers.getValueLabel(el);
 
       var input = document.createElement('button');
       if ( label ) {
@@ -366,11 +363,11 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-select'] = {
+  GUI.Elements['gui-select'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('select');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       // TODO Selected index/entry
@@ -387,11 +384,11 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-select-list'] = {
+  GUI.Elements['gui-select-list'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('select');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       // TODO Selected index/entry
@@ -408,11 +405,11 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-slider'] = {
+  GUI.Elements['gui-slider'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'change' ) { evName = '_change'; }
       var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       createInputOfType(el, 'range');
@@ -420,4 +417,4 @@
   };
 
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

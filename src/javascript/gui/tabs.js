@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -41,7 +38,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-tabs'] = {
+  GUI.Elements['gui-tabs'] = {
     bind: function(el, evName, callback, params) {
       if ( (['select', 'activate']).indexOf(evName) !== -1 ) {
         evName = 'change';
@@ -49,7 +46,7 @@
       if ( evName === 'change' ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       var tabs = document.createElement('ul');
@@ -82,7 +79,7 @@
 
       el.querySelectorAll('gui-tab-container').forEach(function(el, idx) {
         var tab = document.createElement('li');
-        var label = OSjs.GUI.Helpers.getLabel(el);
+        var label = GUI.Helpers.getLabel(el);
 
         Utils.$bind(tab, 'click', function(ev) {
           selectTab(ev, idx, tab);
@@ -101,4 +98,4 @@
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

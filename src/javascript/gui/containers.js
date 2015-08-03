@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -42,7 +39,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-paned-view'] = {
+  GUI.Elements['gui-paned-view'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'resize' ) {
         evName = '_' + evName;
@@ -57,7 +54,7 @@
         var startWidth = resizeEl.offsetWidth;
         var maxWidth = el.offsetWidth;
 
-        OSjs.GUI.Helpers.createDrag(resizer, function(ev) {
+        GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = resizeEl.offsetWidth;
           maxWidth = el.offsetWidth / 2;
         }, function(ev, dx, dy) {
@@ -86,32 +83,32 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-paned-view-container'] = {
+  GUI.Elements['gui-paned-view-container'] = {
     build: function(el) {
-      OSjs.GUI.Helpers.setFlexbox(el, 0, 0);
+      GUI.Helpers.setFlexbox(el, 0, 0);
     }
   };
 
-  OSjs.GUI.Elements['gui-vbox'] = {
-    build: function(el) {
-    }
-  };
-
-  OSjs.GUI.Elements['gui-vbox-container'] = {
-    build: function(el) {
-      OSjs.GUI.Helpers.setFlexbox(el);
-    }
-  };
-
-  OSjs.GUI.Elements['gui-hbox'] = {
+  GUI.Elements['gui-vbox'] = {
     build: function(el) {
     }
   };
 
-  OSjs.GUI.Elements['gui-hbox-container'] = {
+  GUI.Elements['gui-vbox-container'] = {
     build: function(el) {
-      OSjs.GUI.Helpers.setFlexbox(el);
+      GUI.Helpers.setFlexbox(el);
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+  GUI.Elements['gui-hbox'] = {
+    build: function(el) {
+    }
+  };
+
+  GUI.Elements['gui-hbox-container'] = {
+    build: function(el) {
+      GUI.Helpers.setFlexbox(el);
+    }
+  };
+
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

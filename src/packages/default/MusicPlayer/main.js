@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
   // TODO: Playlist
   // TODO: Server seek support: https://gist.github.com/codler/3906826
 
@@ -274,7 +274,7 @@
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = OSjs.API.createScheme(url);
+    var scheme = GUI.createScheme(url);
     var file = this._getArgument('file');
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationMusicPlayerWindow(self, metadata, scheme, file));
@@ -322,4 +322,4 @@
   OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
   OSjs.Applications.ApplicationMusicPlayer.Class = ApplicationMusicPlayer;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   var lastMenu;
 
@@ -48,13 +45,13 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-menu'] = {
+  GUI.Elements['gui-menu'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'select' ) {
         evName = '_select';
       }
       el.querySelectorAll('gui-menu-entry > span').forEach(function(target) {
-        Utils.$bind(target.parentNode, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+        Utils.$bind(target.parentNode, evName, callback.bind(new GUI.Element(el)), params);
       });
     },
     build: function(el, customMenu, winRef) {
@@ -80,8 +77,8 @@
               Utils.$addClass(child, 'gui-menu-expand');
               expand = true;
             }
-            label = OSjs.GUI.Helpers.getLabel(child);
-            icon = OSjs.GUI.Helpers.getIcon(child, winRef);
+            label = GUI.Helpers.getLabel(child);
+            icon = GUI.Helpers.getIcon(child, winRef);
 
             span = document.createElement('span');
             span.appendChild(document.createTextNode(label));
@@ -107,18 +104,18 @@
     }
   };
 
-  OSjs.GUI.Elements['gui-menu-bar'] = {
+  GUI.Elements['gui-menu-bar'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'select' ) {
         evName = '_select';
       }
       el.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
-        Utils.$bind(target, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+        Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
       });
     },
     build: function(el) {
       el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel, idx) {
-        var label = OSjs.GUI.Helpers.getLabel(mel);
+        var label = GUI.Helpers.getLabel(mel);
         var id = mel.getAttribute('data-id');
 
         var span = document.createElement('span');
@@ -153,12 +150,12 @@
 
     blurMenu();
 
-    var root = OSjs.GUI.Helpers.createElement('gui-menu', {});
+    var root = GUI.Helpers.createElement('gui-menu', {});
     function resolveItems(arr, par) {
       arr.forEach(function(iter) {
-        var entry = OSjs.GUI.Helpers.createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
+        var entry = GUI.Helpers.createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
         if ( iter.menu ) {
-          var nroot = OSjs.GUI.Helpers.createElement('gui-menu', {});
+          var nroot = GUI.Helpers.createElement('gui-menu', {});
           resolveItems(iter.menu, nroot);
           entry.appendChild(nroot);
         }
@@ -175,7 +172,7 @@
     }
 
     resolveItems(items || [], root);
-    OSjs.GUI.Elements['gui-menu'].build(root, true);
+    GUI.Elements['gui-menu'].build(root, true);
 
     var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
     var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
@@ -203,4 +200,4 @@
     };
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

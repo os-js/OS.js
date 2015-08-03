@@ -122,7 +122,7 @@
 
     // TODO
     var url = '/js/dialogs/schemes.html';
-    var scheme = OSjs.API.createScheme(url);
+    var scheme = OSjs.GUI.createScheme(url);
     scheme.load(function(error, doc) {
       self.dialogs = scheme;
       self.packages.load(function(presult, perror) {

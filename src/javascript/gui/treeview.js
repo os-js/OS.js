@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -42,12 +39,12 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-tree-view'] = {
+  GUI.Elements['gui-tree-view'] = {
     bind: function(el, evName, callback, params) {
       if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     values: function(el) {
       var selected = [];
@@ -69,7 +66,7 @@
       // TODO: Set value (selected items)
 
       function getSelected() {
-        return OSjs.GUI.Elements['gui-tree-view'].values(el);
+        return GUI.Elements['gui-tree-view'].values(el);
       }
 
       function handleItemClick(ev, item, idx, selected) {
@@ -100,7 +97,7 @@
       el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
 
         var icon = sel.getAttribute('data-icon');
-        var label = OSjs.GUI.Helpers.getLabel(sel);
+        var label = GUI.Helpers.getLabel(sel);
         var expanded = sel.getAttribute('data-expanded') === 'true';
         var next = sel.querySelector('gui-tree-view-entry');
 
@@ -141,4 +138,4 @@
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

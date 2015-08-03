@@ -608,7 +608,7 @@
     setFlexbox: setFlexbox
   };
 
-  OSjs.API.createScheme = function(url) {
+  OSjs.GUI.createScheme = function(url) {
     return new UIScheme(url);
   };
 

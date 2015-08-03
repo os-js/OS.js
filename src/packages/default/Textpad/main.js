@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -147,7 +147,7 @@
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = OSjs.API.createScheme(url);
+    var scheme = GUI.createScheme(url);
     var file = this._getArgument('file');
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationTextpadWindow(self, metadata, scheme, file));
@@ -283,4 +283,4 @@
   OSjs.Applications.ApplicationTextpad = OSjs.Applications.ApplicationTextpad || {};
   OSjs.Applications.ApplicationTextpad.Class = ApplicationTextpad;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

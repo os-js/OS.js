@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -43,7 +40,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   // TODO Events
-  OSjs.GUI.Elements['gui-richtext'] = {
+  GUI.Elements['gui-richtext'] = {
     build: function(el) {
       var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
@@ -83,4 +80,4 @@
     }
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

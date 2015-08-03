@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -52,11 +49,11 @@
 
   function initEntry(el, cel) {
     function getSelected() {
-      return OSjs.GUI.Elements['gui-icon-view'].values(el);
+      return GUI.Elements['gui-icon-view'].values(el);
     }
 
     var icon = cel.getAttribute('data-icon');
-    var label = OSjs.GUI.Helpers.getLabel(cel);
+    var label = GUI.Helpers.getLabel(cel);
 
     var dicon = document.createElement('div');
     var dimg = document.createElement('img');
@@ -91,7 +88,7 @@
     }
 
     entries.forEach(function(e) {
-      var entry = OSjs.GUI.Helpers.createElement('gui-icon-view-entry', e);
+      var entry = GUI.Helpers.createElement('gui-icon-view-entry', e);
       el.appendChild(entry);
       initEntry(el, entry);
     });
@@ -136,12 +133,12 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Elements['gui-icon-view'] = {
+  GUI.Elements['gui-icon-view'] = {
     bind: function(el, evName, callback, params) {
       if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new OSjs.GUI.Element(el)), params);
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     values: function(el) {
       var selected = [];
@@ -164,7 +161,7 @@
       // TODO: Set value (selected items)
 
       function getSelected() {
-        return OSjs.GUI.Elements['gui-icon-view'].values(el);
+        return GUI.Elements['gui-icon-view'].values(el);
       }
 
       el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
@@ -197,4 +194,4 @@
     },
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);
