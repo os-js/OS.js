@@ -76,7 +76,6 @@
         var id = child.getAttribute('data-id');
 
         Utils.$bind(span, 'mousedown', function(ev) {
-          ev.stopPropagation();
           span.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
           if ( !ev.target.querySelector('input') ) {
             blurMenu();
@@ -199,7 +198,11 @@
             ev.stopPropagation();
             iter.onClick.apply(this, arguments);
 
-            blurMenu();
+            /*
+            if ( !entry.querySelector('input') ) {
+              blurMenu();
+            }
+            */
           }, false);
         }
         par.appendChild(entry);
