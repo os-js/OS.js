@@ -32,6 +32,7 @@
       "src/javascript/gui/visual.js",
       "src/javascript/gui/fileview.js",
       "src/javascript/gui/treeview.js",
+      "src/javascript/gui/listview.js",
       "src/javascript/gui/richtext.js",
       "src/javascript/gui/containers.js",
       "src/javascript/gui/progressbar.js",
