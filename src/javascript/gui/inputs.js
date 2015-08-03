@@ -100,7 +100,13 @@
 
   function removeFromSelectBox(el, what) {
     var target = el.querySelector('select');
-    // TODO
+    target.querySelectorAll('option').forEach(function(opt) {
+      if ( opt == what ) {
+        Utils.$remove(opt);
+        return false;
+      }
+      return true;
+    });
   }
 
   function clearSelectBox(el) {
@@ -110,6 +116,8 @@
 
   function createSelectInput(el, multiple) {
     var disabled = el.getAttribute('data-disabled') !== null;
+    var selected = el.getAttribute('data-selected');
+
     var select = document.createElement('select');
     if ( multiple ) {
       select.setAttribute('size', el.getAttribute('data-size') || 2);
@@ -122,6 +130,9 @@
     if ( disabled ) {
       select.setAttribute('disabled', 'disabled');
     }
+    if ( selected !== null ) {
+      select.selectedIndex = selected;
+    }
 
     el.querySelectorAll('gui-select-option').forEach(function(sel) {
       var value = sel.getAttribute('data-value') || '';
@@ -130,6 +141,9 @@
       var option = document.createElement('option');
       option.setAttribute('value', value);
       option.appendChild(document.createTextNode(label));
+      if ( sel.getAttribute('selected') ) {
+        option.setAttribute('selected', 'selected');
+      }
       select.appendChild(option);
       sel.parentNode.removeChild(sel);
     });
@@ -323,7 +337,6 @@
   GUI.Elements['gui-select'] = {
     bind: bindInputEvents,
     build: function(el) {
-      // TODO Selected index/entry
       createSelectInput(el);
     },
     call: function(el, method, args) {
@@ -340,7 +353,6 @@
   GUI.Elements['gui-select-list'] = {
     bind: bindInputEvents,
     build: function(el) {
-      // TODO Selected index/entry
       createSelectInput(el, true);
     },
     call: function(el, method, args) {
