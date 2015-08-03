@@ -25,6 +25,7 @@
       "src/javascript/dialog.js",
       "src/javascript/windowmanager.js",
       "src/javascript/gui-ng.js",
+      "src/javascript/gui/_dataview.js",
       "src/javascript/gui/misc.js",
       "src/javascript/gui/menus.js",
       "src/javascript/gui/tabs.js",

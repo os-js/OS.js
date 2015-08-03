@@ -34,11 +34,12 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function initEntry(el, cel) {
-    function getSelected() {
-      return GUI.Elements['gui-icon-view'].values(el);
-    }
+  function createEntry(e) {
+    var entry = GUI.Helpers.createElement('gui-icon-view-entry', e);
+    return entry;
+  }
 
+  function initEntry(el, cel) {
     var icon = cel.getAttribute('data-icon');
     var label = GUI.Helpers.getLabel(cel);
 
@@ -52,68 +53,10 @@
     dspan.appendChild(document.createTextNode(label));
     dlabel.appendChild(dspan);
 
-    Utils.$bind(cel, 'click', function(ev) {
-      var idx = Utils.$index(cel);
-      var multipleSelect = el.getAttribute('data-multiple');
-      multipleSelect = multipleSelect === null || multipleSelect === 'true';
-      el._selected = GUI.Helpers.handleItemSelection(ev, cel, idx, 'gui-icon-view-entry', el._selected, null, multipleSelect);
-      el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
-    }, false);
-    Utils.$bind(cel, 'dblclick', function(ev) {
-      var idx = Utils.$index(cel);
-      el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
-    }, false);
+    GUI.Elements._dataview.bindEntryEvents(el, cel, 'gui-icon-view-entry');
 
     cel.appendChild(dicon);
     cel.appendChild(dlabel);
-  }
-
-  function addToView(el, args) {
-    var entries = args[0];
-    if ( !(entries instanceof Array) ) {
-      entries = [entries];
-    }
-
-    entries.forEach(function(e) {
-      var entry = GUI.Helpers.createElement('gui-icon-view-entry', e);
-      el.appendChild(entry);
-      initEntry(el, entry);
-    });
-  }
-
-  function updateActiveSelection(el) {
-    var active = [];
-    el.querySelectorAll('gui-icon-view-entry.gui-active').forEach(function(cel) {
-      active.push(Utils.$index(cel));
-    });
-    el._active = active;
-  }
-
-  function removeFromView(el, args, target) {
-    function remove(cel) {
-      Utils.$remove(cel);
-    }
-
-    if ( target ) {
-      remove(target);
-      return;
-    }
-
-    var findId = args[0];
-    var findKey = args[1] || 'id';
-    var q = 'data-' + findKey + '="' + findId + '"';
-    el.querySelectorAll('gui-icon-view-entry[' + q + ']').forEach(remove);
-    updateActiveSelection(el);
-  }
-
-  function patchIntoView(el, args) {
-    // TODO
-  }
-
-  function clearView(el) {
-    Utils.$empty(el);
-    el.scrollTop = 0;
-    el._selected = [];
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -121,36 +64,14 @@
   /////////////////////////////////////////////////////////////////////////////
 
   GUI.Elements['gui-icon-view'] = {
-    bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
-        evName = '_' + evName;
-      }
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: GUI.Elements._dataview.bind,
+
     values: function(el) {
-      var selected = [];
-      var active = (el._selected || []);
-
-      active.forEach(function(iter) {
-        var found = el.querySelectorAll('gui-icon-view-entry')[iter];
-        if ( found ) {
-          selected.push({
-            index: iter,
-            data: GUI.Helpers.getViewNodeValue(found)
-          });
-        }
-      });
-
-      return selected;
+      return GUI.Elements._dataview.getSelected(el, el.querySelectorAll('gui-icon-view-entry'));
     },
+
     build: function(el) {
       // TODO: Custom Icon Size
-      // TODO: Set value (selected items)
-
-      function getSelected() {
-        return GUI.Elements['gui-icon-view'].values(el);
-      }
-
       el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
         initEntry(el, cel);
       });
@@ -158,27 +79,20 @@
 
     call: function(el, method, args) {
       if ( method === 'add' ) {
-        addToView(el, args);
+        GUI.Elements._dataview.add(el, args, function(e) {
+          var entry = createEntry(e);
+          el.appendChild(entry);
+          initEntry(el, entry);
+        });
       } else if ( method === 'remove' ) {
-        removeFromView(el, args);
+        GUI.Elements._dataview.remove(el, args, 'gui-icon-view-entry');
       } else if ( method === 'clear' ) {
-        clearView(el);
+        GUI.Elements._dataview.clear(el);
       } else if ( method === 'patch' ) {
-        patchIntoView(el, args);
+        GUI.Elements._dataview.patch(el, args, 'gui-icon-view-entry', el, createEntry, initEntry);
       }
-    },
+    }
 
-    values: function(el) {
-      var selected = [];
-      var active = (el._selected || []);
-      active.forEach(function(iter) {
-        var found = el.querySelectorAll('gui-icon-view-entry')[iter];
-        if ( found ) {
-          selected.push({index: iter, data: GUI.Helpers.getViewNodeValue(found)});
-        }
-      });
-      return selected;
-    },
   };
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

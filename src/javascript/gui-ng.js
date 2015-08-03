@@ -135,8 +135,9 @@
 
   function getProperty(el, param, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
+    var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
 
-    if ( param === 'value' ) {
+    if ( param === 'value' && !isDataView) {
       if ( (['gui-text', 'gui-password', 'gui-textarea']).indexOf(tagName) >= 0 ) {
         return el.querySelector('input, textarea').value;
       }
@@ -146,7 +147,6 @@
       return null;
     }
 
-    var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
     if ( (param === 'value' || param === 'selected') && isDataView ) {
       return OSjs.GUI.Elements[tagName].values(el);
     }

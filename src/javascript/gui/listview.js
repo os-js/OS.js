@@ -54,15 +54,6 @@
       basis );
   }
 
-  function scrollIntoView(el, element) {
-    var pos = Utils.$position(element, el);
-    if ( pos !== null && 
-         (pos.top > (el.scrollTop + el.offsetHeight) || 
-         (pos.top < el.scrollTop)) ) {
-      el.scrollTop = pos.top;
-    }
-  }
-
   function resize(rel, w) {
     var flex = w.toString() + 'px';
     rel.style['webkitFlexBasis'] = flex;
@@ -132,11 +123,6 @@
   function initRow(el, row) {
     var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
     var headContainer = el.querySelector('gui-list-view-head');
-    var singleClick = el.getAttribute('data-single-click') === 'true';
-
-    function getSelected() {
-      return GUI.Elements['gui-list-view'].values(el);
-    }
 
     row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
       var cl = cols.length;
@@ -163,54 +149,7 @@
       }
     });
 
-    if ( singleClick ) {
-      Utils.$bind(row, 'click', function(ev) {
-        var multipleSelect = el.getAttribute('data-multiple');
-        multipleSelect = multipleSelect === null || multipleSelect === 'true';
-        var idx = Utils.$index(row);
-        el._selected = GUI.Helpers.handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
-
-        var selected = getSelected();
-        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
-        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
-      });
-    } else {
-      Utils.$bind(row, 'click', function(ev) {
-        var multipleSelect = el.getAttribute('data-multiple');
-        multipleSelect = multipleSelect === null || multipleSelect === 'true';
-
-        var idx = Utils.$index(row);
-        el._selected = GUI.Helpers.handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
-        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
-      }, false);
-
-      Utils.$bind(row, 'dblclick', function(ev) {
-        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
-      }, false);
-    }
-
-    if ( el.getAttribute('data-draggable') === 'true' ) {
-      var value = row.getAttribute('data-value');
-      if ( value !== null ) {
-        try {
-          value = JSON.parse(value);
-        } catch ( e ) {}
-      }
-
-      var source = row.getAttribute('data-draggable-source');
-      if ( source === null ) {
-        source = GUI.Helpers.getWindowId(el);
-        if ( source !== null ) {
-          source = {wid: source};
-        }
-      }
-
-      API.createDraggable(row, {
-        type   : el.getAttribute('data-draggable-type') || row.getAttribute('data-draggable-type'),
-        source : source,
-        data   : value
-      });
-    }
+    GUI.Elements._dataview.bindEntryEvents(el, row, 'gui-list-view-row');
   }
 
   function createRow(e) {
@@ -235,130 +174,16 @@
     return null;
   }
 
-  function addToView(el, args) {
-    var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
-    var body = el.querySelector('gui-list-view-body');
-    var entries = args[0];
-    if ( !(entries instanceof Array) ) {
-      entries = [entries];
-    }
-
-    entries.forEach(function(e) {
-      var row = createRow(e);
-      if ( row ) {
-        body.appendChild(row);
-        initRow(el, row);
-      }
-    });
-  }
-
-  function updateActiveSelection(el) {
-    var active = [];
-    el.querySelectorAll('gui-list-view-row.gui-active').forEach(function(cel) {
-      active.push(Utils.$index(cel));
-    });
-    el._active = active;
-  }
-
-  function removeFromView(el, args, target) {
-    function remove(cel) {
-      Utils.$remove(cel);
-    }
-
-    if ( target ) {
-      remove(target);
-      return;
-    }
-
-    var findId = args[0];
-    var findKey = args[1] || 'id';
-    var q = 'data-' + findKey + '="' + findId + '"';
-    el.querySelectorAll('gui-list-view-body > gui-list-view-row[' + q + ']').forEach(remove);
-    updateActiveSelection(el);
-  }
-
-  function patchIntoView(el, args) {
-    var entries = args[0];
-    var single = false;
-    var body = el.querySelector('gui-list-view-body');
-
-    if ( !(entries instanceof Array) ) {
-      entries = [entries];
-      single = true;
-    }
-
-    var inView = {};
-    el.querySelectorAll('gui-list-view-body > gui-list-view-row').forEach(function(row) {
-      var id = row.getAttribute('data-id');
-      if ( id !== null ) {
-        inView[id] = row;
-      }
-    });
-
-    entries.forEach(function(entry) {
-      var insertBefore;
-      if ( typeof entry.id !== 'undefined' && entry.id !== null ) {
-        if ( inView[entry.id] ) {
-          insertBefore = inView[entry.id];
-          delete inView[entry.id];
-        }
-
-        var row = createRow(entry);
-        if ( row ) {
-          if ( insertBefore ) {
-            if ( Utils.$hasClass(insertBefore, 'gui-active') ) {
-              Utils.$addClass(row, 'gui-active');
-            }
-
-            body.insertBefore(row, insertBefore);
-            removeFromView(el, null, insertBefore);
-          } else {
-            body.appendChild(row);
-          }
-          initRow(el, row);
-        }
-      }
-    });
-
-    if ( !single ) {
-      Object.keys(inView).forEach(function(k) {
-        removeFromView(el, null, inView[k]);
-      });
-    }
-
-    inView = {};
-    updateActiveSelection(el);
-  }
-
-  function clearView(el) {
-    Utils.$empty(el.querySelector('gui-list-view-body'));
-    el.scrollTop = 0;
-    el._selected = [];
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   GUI.Elements['gui-list-view'] = {
-    bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
-        evName = '_' + evName;
-      }
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
-    },
-    values: function(el) {
-      var selected = [];
-      var body = el.querySelector('gui-list-view-body');
-      var active = (el._selected || []);
+    bind: GUI.Elements._dataview.bind,
 
-      active.forEach(function(iter) {
-        var found = body.querySelectorAll('gui-list-view-row')[iter];
-        if ( found ) {
-          selected.push({index: iter, data: GUI.Helpers.getViewNodeValue(found)});
-        }
-      });
-      return selected;
+    values: function(el) {
+      var body = el.querySelector('gui-list-view-body');
+      return GUI.Elements._dataview.getSelected(el, body.querySelectorAll('gui-list-view-row'));
     },
 
     set: function(el, param, value, arg) {
@@ -390,41 +215,33 @@
         return;
       } else if ( param === 'selected' ) {
         var body = el.querySelector('gui-list-view-body');
-        var select = [];
-
-        body.querySelectorAll('gui-list-view-row').forEach(function(r, idx) {
-          Utils.$removeClass(r, 'gui-active');
-
-          try {
-            var json = JSON.parse(r.getAttribute('data-value'));
-            if ( json[arg] == value ) {
-              select.push(idx);
-              Utils.$addClass(r, 'gui-active');
-              scrollIntoView(el, r);
-            }
-          } catch ( e ) {}
-        });
-
-        el._selected = select;
-
+        GUI.Elements._dataview.setSelected(el, body.querySelectorAll('gui-list-view-row'));
         return;
       }
 
       setProperty(el, param, value);
     },
+
     call: function(el, method, args) {
+      var body = el.querySelector('gui-list-view-body');
       if ( method === 'add' ) {
-        addToView(el, args);
+        GUI.Elements._dataview.add(el, args, function(e) {
+          var row = createRow(e);
+          if ( row ) {
+            body.appendChild(row);
+            initRow(el, row);
+          }
+        });
       } else if ( method === 'remove' ) {
-        removeFromView(el, args);
+        GUI.Elements._dataview.remove(el, args, 'gui-list-view-row');
       } else if ( method === 'clear' ) {
-        clearView(el);
+        GUI.Elements._dataview.clear(el, el.querySelector('gui-list-view-body'));
       } else if ( method === 'patch' ) {
-        patchIntoView(el, args);
+        GUI.Elements._dataview.patch(el, args, 'gui-list-view-row', body, createRow, initRow);
       }
     },
+
     build: function(el, applyArgs) {
-      el._selected = [];
       el._columns  = [];
 
       var head = el.querySelector('gui-list-view-head');
@@ -441,6 +258,7 @@
         el.insertBefore(head, body);
       }
 
+      // Misc UI
       createResizers(el);
 
       Utils.$bind(el, 'scroll', function() {
@@ -471,6 +289,8 @@
       el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(row) {
         initRow(el, row);
       });
+
+      GUI.Elements._dataview.build(el, applyArgs);
     }
   };
 
