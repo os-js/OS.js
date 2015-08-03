@@ -200,7 +200,7 @@
         return;
       }
 
-      setProperty(el, param, value);
+      GUI.Helpers.setProperty(el, param, value);
     },
 
     call: function(el, method, args) {

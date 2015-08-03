@@ -34,7 +34,8 @@
    * @extends DialogWindow
    */
   function ConfirmDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
+
     DialogWindow.apply(this, ['ConfirmDialog', {
       title: args.title || API._('DIALOG_CONFIRM_TITLE'),
       icon: 'status/dialog-question.png',

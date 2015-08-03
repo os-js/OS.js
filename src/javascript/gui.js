@@ -297,22 +297,25 @@
       }
     };
 
-    Object.keys(params).forEach(function(k) {
-      var value = params[k];
-      if ( classMap[k] ) {
-        classMap[k](value);
-        return;
-      }
+    if ( typeof params === 'object' ) {
+      Object.keys(params).forEach(function(k) {
+        var value = params[k];
+        if ( classMap[k] ) {
+          classMap[k](value);
+          return;
+        }
 
-      if ( typeof value === 'boolean' ) {
-        value = value ? 'true' : 'false';
-      } else if ( typeof value === 'object' ) {
-        try {
-          value = JSON.stringify(value);
-        } catch ( e ) {}
-      }
-      el.setAttribute('data-' + k, value);
-    });
+        if ( typeof value === 'boolean' ) {
+          value = value ? 'true' : 'false';
+        } else if ( typeof value === 'object' ) {
+          try {
+            value = JSON.stringify(value);
+          } catch ( e ) {}
+        }
+        el.setAttribute('data-' + k, value);
+      });
+    }
+
     return el;
   }
 

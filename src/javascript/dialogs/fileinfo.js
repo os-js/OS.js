@@ -34,7 +34,7 @@
    * @extends DialogWindow
    */
   function FileInfoDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
     DialogWindow.apply(this, ['FileInfoDialog', {
       title: args.title || API._('DIALOG_FILEINFO_TITLE'),
       width: 400,

@@ -115,7 +115,7 @@
         });
         return;
       } else if ( (['filter', 'dotfiles', 'filetype']).indexOf(param) >= 0 ) {
-        setProperty(el, param, value);
+        GUI.Helpers.setProperty(el, param, value);
         return;
       }
 

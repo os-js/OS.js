@@ -34,7 +34,7 @@
    * @extends DialogWindow
    */
   function FileProgressDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
     DialogWindow.apply(this, ['FileProgressDialog', {
       title: args.title || API._('DIALOG_FILEPROGRESS_TITLE'),
       icon: 'actions/document-send.png',

@@ -34,7 +34,8 @@
    * @extends DialogWindow
    */
   function ApplicationChooserDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
+
     DialogWindow.apply(this, ['ApplicationChooserDialog', {
       title: args.title || API._('DIALOG_APPCHOOSER_TITLE'),
       width: 400,

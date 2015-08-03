@@ -34,7 +34,7 @@
    * @extends DialogWindow
    */
   function ErrorDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
 
     var exception = args.exception || {};
     var error = '';

@@ -36,7 +36,7 @@
    * @extends DialogWindow
    */
   function ColorDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
 
     DialogWindow.apply(this, ['ColorDialog', {
       title: args.title || API._('DIALOG_COLOR_TITLE'),

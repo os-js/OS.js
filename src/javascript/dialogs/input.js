@@ -34,7 +34,8 @@
    * @extends DialogWindow
    */
   function InputDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
+
     DialogWindow.apply(this, ['InputDialog', {
       title: args.title || API._('DIALOG_INPUT_TITLE'),
       icon: 'status/dialog-information.png',

@@ -34,10 +34,11 @@
    * @extends DialogWindow
    */
   function FileUploadDialog(args, callback) {
-    args = args || {};
-    args.dest = args.dest || API.getDefaultPath('/');
-    args.progress = args.progress || {};
-    args.file = args.file || null;
+    args = Utils.argumentDefaults(args, {
+      dest:     API.getDefaultPath('/'),
+      progress: {},
+      file:     null
+    });
 
     DialogWindow.apply(this, ['FileUploadDialog', {
       title: args.title || API._('DIALOG_UPLOAD_TITLE'),

@@ -34,7 +34,7 @@
    * @extends DialogWindow
    */
   function AlertDialog(args, callback) {
-    args = args || {};
+    args = Utils.argumentDefaults(args, {});
     DialogWindow.apply(this, ['AlertDialog', {
       title: args.title || API._('DIALOG_ALERT_TITLE'),
       icon: 'status/dialog-warning.png',

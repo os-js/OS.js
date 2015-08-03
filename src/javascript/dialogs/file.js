@@ -37,17 +37,19 @@
    * @extends DialogWindow
    */
   function FileDialog(args, callback) {
-    args            = args || {};
-    args.file       = args.file || null;
-    args.type       = args.type || 'open';
-    args.path       = args.path || OSjs.API.getDefaultPath('/');
-    args.filename   = args.filename || '';
-    args.extension  = args.extension || '';
-    args.mime       = args.mime || 'application/octet-stream';
-    args.filter     = args.filter || [];
-    args.select     = args.select || null;
-    args.multiple   = args.type === 'save' ? false : args.multiple === true;
-    args.multiple   = false;
+    args = Utils.argumentDefaults(args, {
+      file:       null,
+      type:       'open',
+      path:       OSjs.API.getDefaultPath('/'),
+      filename:   '',
+      extension:  '',
+      mime:       'application/octet-stream',
+      filter:     [],
+      select:     null,
+      multiple:   false
+    });
+
+    args.multiple = (args.type === 'save' ? false : args.multiple === true);
 
     if ( args.path && args.path instanceof VFS.File ) {
       args.path = Utils.dirname(args.path.path);
