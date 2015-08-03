@@ -361,11 +361,11 @@
             OSjs.API.createDialog('ApplicationChooser', {
               file: file,
               list: app
-            }, function(ev, btn) {
+            }, function(ev, btn, result) {
               if ( btn !== 'ok' ) { return; }
-              _launch(appname);
+              _launch(result.name);
 
-              handler.setDefaultApplication(file.mime, setDefault ? appname : null);
+              handler.setDefaultApplication(file.mime, result.useDefault ? result.name : null);
             });
           } else {
             OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),

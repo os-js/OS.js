@@ -43,7 +43,9 @@
     set: function(el, param, value) {
       if ( param === 'value' ) {
         el.firstChild.style.backgroundColor = value;
+        return true;
       }
+      return false;
     },
     build: function(el) {
       var inner = document.createElement('div');

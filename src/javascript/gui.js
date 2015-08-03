@@ -257,11 +257,21 @@
       el.setAttribute('data-' + param, value);
     }
 
+    function _createInputLabel() {
+      if ( param === 'label' ) {
+        var firstChild = el.querySelector('textarea, input, select');
+        el.appendChild(firstChild);
+        Utils.$remove(el.querySelector('label'));
+        createInputLabel(el, tagName.replace(/^gui\-/, ''), firstChild, value);
+      }
+    }
+
     // Generics for input elements
     var firstChild = el.children[0];
     var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
     if ( accept.indexOf(tagName) >= 0 ) {
       _setInputProperty();
+      _createInputLabel();
     }
 
     // Other types of elements
@@ -279,6 +289,39 @@
     // Set the actual root element property value
     if ( param !== 'value' ) {
       _setElementProperty();
+    }
+  }
+
+  /**
+   * Creates a label for given input element
+   *
+   * @param   DOMEelement     el        Element root
+   * @param   String          type      Input element type
+   * @param   DOMElement      input     The input element
+   * @param   String          label     (Optional) Used when updating
+   *
+   * @return  void
+   *
+   * @api OSjs.GUI.Helpers.createInputLabel()
+   */
+  function createInputLabel(el, type, input, label) {
+    label = label || getLabel(el);
+
+    if ( label ) {
+      var lbl = document.createElement('label');
+      var span = document.createElement('span');
+      span.appendChild(document.createTextNode(label));
+
+      if ( type === 'checkbox' || type === 'radio' ) {
+        lbl.appendChild(input);
+        lbl.appendChild(span);
+      } else {
+        lbl.appendChild(span);
+        lbl.appendChild(input);
+      }
+      el.appendChild(lbl);
+    } else {
+      el.appendChild(input);
     }
   }
 
@@ -483,10 +526,12 @@
   UIElement.prototype.set = function(param, value, arg) {
     if ( this.$element ) {
       if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].set ) {
-        OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg);
-      } else {
-        setProperty(this.$element, param, value, arg);
+        if ( OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg) === true ) {
+          return this;
+        }
       }
+
+      setProperty(this.$element, param, value, arg);
     }
     return this;
   };
@@ -682,6 +727,7 @@
     getLabel: getLabel,
     getIcon: getIcon,
     getWindowId: getWindowId,
+    createInputLabel: createInputLabel,
     createElement: createElement,
     createDrag: createDrag,
     setProperty: setProperty,

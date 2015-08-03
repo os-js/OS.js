@@ -34,27 +34,6 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function createInputLabel(el, type, input) {
-    var label = GUI.Helpers.getLabel(el);
-
-    if ( label ) {
-      var lbl = document.createElement('label');
-      var span = document.createElement('span');
-      span.appendChild(document.createTextNode(label));
-
-      if ( type === 'checkbox' || type === 'radio' ) {
-        lbl.appendChild(input);
-        lbl.appendChild(span);
-      } else {
-        lbl.appendChild(span);
-        lbl.appendChild(input);
-      }
-      el.appendChild(lbl);
-    } else {
-      el.appendChild(input);
-    }
-  }
-
   function createInputOfType(el, type) {
     var group = el.getAttribute('data-group');
     var placeholder = el.getAttribute('data-placeholder');
@@ -92,7 +71,7 @@
       }
     });
 
-    createInputLabel(el, type, input);
+    GUI.Helpers.createInputLabel(el, type, input);
 
     Utils.$bind(input, 'change', function(ev) {
       var value = input.value;
@@ -191,7 +170,9 @@
         } else {
           lbl.appendChild(document.createTextNode(value));
         }
+        return true;
       }
+      return false;
     },
     build: function(el) {
       var label = GUI.Helpers.getValueLabel(el, true);
@@ -259,7 +240,7 @@
 
       var button = document.createElement('button');
       inner.appendChild(button);
-      createInputLabel(el, 'switch', inner);
+      GUI.Helpers.createInputLabel(el, 'switch', inner);
 
       var val = false;
       function toggleValue(v) {
@@ -301,9 +282,9 @@
         } else {
           lbl.appendChild(document.createTextNode(value));
         }
-        return;
+        return true;
       }
-      GUI.Helpers.setProperty(el, param, value);
+      return false;
     },
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('button');

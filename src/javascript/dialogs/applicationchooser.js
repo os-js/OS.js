@@ -50,31 +50,40 @@
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    var refs = this.args.list || OSjs.Core.getHandler().getApplicationsMetadata();
     var cols = [{label: API._('LBL_NAME')}];
     var rows = [];
+    var metadata = OSjs.Core.getHandler().getApplicationsMetadata();
 
-    Object.keys(refs).forEach(function(a) {
-      if ( refs[a].type === 'application' ) {
-        var label = [refs[a].name];
-        if ( refs[a].description ) {
-          label.push(refs[a].description);
+    (this.args.list || []).forEach(function(name) {
+      var iter = metadata[name];
+
+      if ( iter.type === 'application' ) {
+        var label = [iter.name];
+        if ( iter.description ) {
+          label.push(iter.description);
         }
         rows.push({
-          value: refs[a],
+          value: iter,
           columns: [
-            {label: label.join(' - '), icon: API.getIcon(refs[a].icon, null, a), value: JSON.stringify(refs[a])}
+            {label: label.join(' - '), icon: API.getIcon(iter.icon, null, name), value: JSON.stringify(iter)}
           ]
         });
       }
     });
 
-    this.scheme.find(this, 'ApplicationList').set('columns', cols).add(rows);
+    this.scheme.find(this, 'ApplicationList').set('columns', cols).add(rows).on('activate', function(ev) {
+      self.onClose(ev, 'ok');
+    });;
+
     var file = '<unknown file>';
+    var label = '<unknown mime>';
     if ( this.args.file ) {
       file = Utils.format('{0} ({1}', this.args.file.filename, this.args.file.mime);
+      label = API._('DIALOG_APPCHOOSER_SET_DEFAULT', this.args.file.mime);
     }
+
     this.scheme.find(this, 'FileName').set('value', file);
+    this.scheme.find(this, 'SetDefault').set('label', label);
 
     return root;
   };
@@ -86,7 +95,7 @@
       var useDefault = this.scheme.find(this, 'SetDefault').get('value');
       var selected = this.scheme.find(this, 'ApplicationList').get('value');
       if ( selected && selected.length ) {
-        result = selected[0].value;
+        result = selected[0].data.className;
       }
 
       if ( !result ) {
@@ -96,7 +105,6 @@
 
         return;
       }
-
       result = {
         name: result,
         useDefault: useDefault

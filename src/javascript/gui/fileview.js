@@ -113,18 +113,20 @@
         GUI.Elements['gui-file-view'].call(el, 'chdir', {
           path: el.getAttribute('data-path')
         });
-        return;
+        return true;
       } else if ( (['filter', 'dotfiles', 'filetype']).indexOf(param) >= 0 ) {
         GUI.Helpers.setProperty(el, param, value);
-        return;
+        return true;
       }
 
       var target = getChildView(el);
       if ( target ) {
         var tagName = target.tagName.toLowerCase();
         GUI.Elements[tagName].set(target, param, value, arg);
+        return true;
       }
 
+      return false;
     },
     build: function(el) {
       buildChildView(el);

@@ -193,14 +193,14 @@
         head.appendChild(row);
 
         createResizers(el);
-        return;
+        return true;
       } else if ( param === 'selected' ) {
         var body = el.querySelector('gui-list-view-body');
         GUI.Elements._dataview.setSelected(el, body.querySelectorAll('gui-list-view-row'));
-        return;
+        return true;
       }
 
-      GUI.Helpers.setProperty(el, param, value);
+      return false;
     },
 
     call: function(el, method, args) {
