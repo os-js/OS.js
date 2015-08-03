@@ -169,9 +169,9 @@
 
             args.done(error, summary);
           }, function(iter) {
-            function _getIcon(iter) {
+            function _getIcon(iter, size) {
               var icon = 'status/gtk-dialog-question.png';
-              return API.getFileIcon(iter, null, icon);
+              return API.getFileIcon(iter, size, icon);
             }
 
             var filesize = Utils.humanFileSize(iter.size);
@@ -180,7 +180,7 @@
                 value: iter,
                 id: iter.id || iter.filename,
                 label: iter.filename,
-                icon: _getIcon(iter)
+                icon: _getIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
               };
             }
 
