@@ -34,6 +34,14 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function scrollIntoView(el, element) {
+    var pos = Utils.$position(element, el);
+    if ( pos !== null && 
+         (pos.top > (el.scrollTop + el.offsetHeight) || 
+         (pos.top < el.scrollTop)) ) {
+      el.scrollTop = pos.top;
+    }
+  }
 
   function resize(rel, w) {
     var flex = w.toString() + 'px';

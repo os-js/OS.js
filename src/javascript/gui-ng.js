@@ -221,15 +221,6 @@
     return el;
   }
 
-  function scrollIntoView(el, element) {
-    var pos = Utils.$position(element, el);
-    if ( pos !== null && 
-         (pos.top > (el.scrollTop + el.offsetHeight) || 
-         (pos.top < el.scrollTop)) ) {
-      el.scrollTop = pos.top;
-    }
-  }
-
   function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
     root = root || item.parentNode;
 
