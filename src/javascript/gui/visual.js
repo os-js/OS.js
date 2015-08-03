@@ -68,7 +68,7 @@
       }
     });
 
-    img.setAttribute('src', src || 'about:blank');
+    img.src = src || 'about:blank';
     el.appendChild(img);
   }
 

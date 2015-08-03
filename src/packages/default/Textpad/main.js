@@ -96,7 +96,7 @@
   };
 
   ApplicationTextpadWindow.prototype.display = function(file, content) {
-    this._scheme.find(this, 'Text').set('value', content || '');
+    var temp = this._scheme.find(this, 'Text').set('value', content || '');
     this.update(file);
   };
 

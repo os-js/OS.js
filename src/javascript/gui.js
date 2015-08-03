@@ -230,8 +230,10 @@
           } else {
             firstChild.removeAttribute('checked');
           }
-          return;
         }
+
+        firstChild.value = value;
+        return;
       } else if ( param === 'disabled' ) {
         if ( value ) {
           firstChild.setAttribute('disabled', 'disabled');
@@ -265,7 +267,7 @@
     // Other types of elements
     accept = ['gui-image', 'gui-audio', 'gui-video'];
     if ( (['src', 'controls', 'autoplay', 'alt']).indexOf(param) >= 0 && accept.indexOf(tagName) >= 0 ) {
-      firstChild.setAttribute(param, value);
+      firstChild[param] = value;
     }
 
     // Normal DOM attributes
@@ -644,7 +646,7 @@
     params = params || {};
     parentNode = parentNode || win.getRoot();
 
-    var el = createElement(tagName);
+    var el = createElement(tagName, params);
     parentNode.appendChild(el);
     OSjs.GUI.Elements[tagName].build(el, applyArgs, win);
 
