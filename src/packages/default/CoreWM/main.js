@@ -268,6 +268,7 @@
     var ret = WindowManager.prototype.addWindow.apply(this, arguments);
 
     // Add the frosty effect (if available)
+    /*
     if ( this._currentWin && (this._currentWin._wid !== w._wid) && this._sessionLoaded ) {
       generateFrost(this._currentWin);
     }
@@ -295,6 +296,7 @@
         generateFrost(this);
       }
     });
+    */
 
     return ret;
   };
@@ -303,6 +305,7 @@
     var self = this;
     var result = WindowManager.prototype.removeWindow.apply(this, arguments);
 
+    /*
     if ( result ) {
       setTimeout(function() {
         if ( self._currentWin ) {
@@ -310,6 +313,7 @@
         }
       }, this.getAnimDuration()+100);
     }
+    */
 
     return result;
   };
@@ -317,11 +321,13 @@
   CoreWM.prototype.onSessionLoaded = function() {
     var result = WindowManager.prototype.onSessionLoaded.apply(this, arguments);
     var self = this;
+    /*
     if ( result ) {
       setTimeout(function() {
         self._frostWindows();
       }, 500);
     }
+    */
     return result;
   };
 
@@ -978,7 +984,7 @@
       this.createStylesheet(styles);
     }
 
-    this._frostWindows();
+    //this._frostWindows();
 
     return true;
   };
