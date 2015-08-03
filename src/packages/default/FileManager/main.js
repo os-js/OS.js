@@ -35,7 +35,7 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationFileManagerWindow(app, metadata, scheme, path) {
+  function ApplicationFileManagerWindow(app, metadata, scheme, path, settings) {
     Window.apply(this, ['ApplicationFileManagerWindow', {
       icon: metadata.icon,
       title: metadata.name,
@@ -46,6 +46,7 @@
 
     this.currentPath = path;
     this.currentSummary = {};
+    this.viewOptions = settings || {};
   }
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -55,6 +56,9 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
     var view;
+    var viewType   = this.viewOptions.ViewType || 'gui-list-view';
+    var viewSide   = typeof this.viewOptions.ViewSide === 'undefined' || this.viewOptions.ViewSide === true;
+    var viewHidden = this.viewOptions.ViewHidden === true;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'FileManagerWindow', root);
@@ -77,18 +81,20 @@
     }
 
     var menuMap = {
-      MenuClose:    function() { self._close(); },
-      MenuCreate:   function() { app.mkdir(self.currentPath, self); },
-      MenuUpload:   function() { app.upload(self.currentPath, self); },
-      MenuRename:   function() { app.rename(getSelected(), self); },
-      MenuDelete:   function() { app.rm(getSelected(), self); },
-      MenuInfo:     function() { app.info(getSelected()); },
-      MenuOpen:     function() { app.open(getSelected()); },
-      MenuDownload: function() { app.download(getSelected()); },
-      MenuRefresh:  function() { self.changePath(); },
-      MenuViewList: function() { self.changeView('gui-list-view'); },
-      MenuViewTree: function() { self.changeView('gui-tree-view'); },
-      MenuViewIcon: function() { self.changeView('gui-icon-view'); }
+      MenuClose:        function() { self._close(); },
+      MenuCreate:       function() { app.mkdir(self.currentPath, self); },
+      MenuUpload:       function() { app.upload(self.currentPath, self); },
+      MenuRename:       function() { app.rename(getSelected(), self); },
+      MenuDelete:       function() { app.rm(getSelected(), self); },
+      MenuInfo:         function() { app.info(getSelected()); },
+      MenuOpen:         function() { app.open(getSelected()); },
+      MenuDownload:     function() { app.download(getSelected()); },
+      MenuRefresh:      function() { self.changePath(); },
+      MenuViewList:     function() { self.changeView('gui-list-view', true); },
+      MenuViewTree:     function() { self.changeView('gui-tree-view', true); },
+      MenuViewIcon:     function() { self.changeView('gui-icon-view', true); },
+      MenuShowSidebar:  function() { viewSide = self.toggleSidebar(!viewSide, true); },
+      MenuShowHidden:   function() { viewHidden = self.toggleHidden(!viewHidden, true); }
     };
 
     function menuEvent(ev) {
@@ -99,7 +105,13 @@
 
     scheme.find(this, 'SubmenuFile').on('select', menuEvent);
     scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
-    scheme.find(this, 'SubmenuView').on('select', menuEvent);
+    var viewMenu = scheme.find(this, 'SubmenuView').on('select', menuEvent);
+
+    viewMenu.set('checked', 'MenuViewList', viewType === 'gui-list-view');
+    viewMenu.set('checked', 'MenuViewTree', viewType === 'gui-tree-view');
+    viewMenu.set('checked', 'MenuViewIcon', viewType === 'gui-icon-view');
+    viewMenu.set('checked', 'MenuShowSidebar', viewSide);
+    viewMenu.set('checked', 'MenuShowHidden', viewHidden);
 
     //
     // Side View
@@ -144,6 +156,11 @@
     //
     // Init
     //
+
+    this.changeView(viewType, false);
+    this.toggleHidden(viewHidden, false);
+    this.toggleSidebar(viewSide, false);
+
     this.changePath(this.currentPath);
 
     return root;
@@ -238,9 +255,42 @@
     this._focus();
   };
 
-  ApplicationFileManagerWindow.prototype.changeView = function(viewType) {
+  ApplicationFileManagerWindow.prototype.changeView = function(viewType, set) {
     var view = this._scheme.find(this, 'FileView');
-    view.set('type', viewType);
+    view.set('type', viewType, !!set);
+
+    if ( set ) {
+      this._app._setSetting('ViewType', viewType, true);
+    }
+  };
+
+  ApplicationFileManagerWindow.prototype.toggleSidebar = function(toggle, set) {
+    this.viewOptions.ViewSide = toggle;
+
+    var container = this._scheme.find(this, 'SideContainer');
+    if ( toggle ) {
+      container.show();
+    } else {
+      container.hide();
+    }
+    if ( set ) {
+      this._app._setSetting('ViewSide', toggle, true);
+    }
+    return toggle;
+  };
+
+  ApplicationFileManagerWindow.prototype.toggleHidden = function(toggle, set) {
+    this.viewOptions.ViewHidden = toggle;
+    this.changePath(null);
+
+    var view = this._scheme.find(this, 'FileView');
+    view.set('dotfiles', toggle);
+    this.changePath(null);
+
+    if ( set ) {
+      this._app._setSetting('ViewHidden', toggle, true);
+    }
+    return toggle;
   };
 
   ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, el, files) {
@@ -290,7 +340,7 @@
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path));
+      self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
     });
   };
 

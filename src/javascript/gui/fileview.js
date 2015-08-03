@@ -110,9 +110,11 @@
         el.setAttribute('data-type', value);
         buildChildView(el);
 
-        GUI.Elements['gui-file-view'].call(el, 'chdir', {
-          path: el.getAttribute('data-path')
-        });
+        if ( typeof arg === 'undefined' || arg === true ) {
+          GUI.Elements['gui-file-view'].call(el, 'chdir', {
+            path: el.getAttribute('data-path')
+          });
+        }
         return true;
       } else if ( (['filter', 'dotfiles', 'filetype']).indexOf(param) >= 0 ) {
         GUI.Helpers.setProperty(el, param, value);

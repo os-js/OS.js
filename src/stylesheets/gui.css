@@ -854,7 +854,18 @@ gui-menu.gui-root-menu {
       background-position : left center;
       background-size : 16px;
     }
-    gui-menu > gui-menu-entry > span.gui-has-image {
+    gui-menu > gui-menu-entry > label {
+      vertical-align : middle;
+      display : block;
+    }
+    gui-menu > gui-menu-entry > label > input {
+      margin : 0;
+      padding : 0;
+      vertical-align : middle;
+      margin-top : -2px;
+      padding-right : 2px;
+    }
+    gui-menu > gui-menu-entry > label.gui-has-image {
     }
 
   gui-menu > gui-menu-entry > gui-menu {

@@ -50,18 +50,50 @@
       if ( evName === 'select' ) {
         evName = '_select';
       }
-      el.querySelectorAll('gui-menu-entry > span').forEach(function(target) {
-        Utils.$bind(target.parentNode, evName, callback.bind(new GUI.Element(el)), params);
+      el.querySelectorAll('gui-menu-entry > label').forEach(function(target) {
+        Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
       });
     },
+    set: function(el, param, value, arg) {
+      if ( param === 'checked' ) {
+        var found = el.querySelector('gui-menu-entry[data-id="' + value + '"]');
+        if ( found ) {
+          var input = found.querySelector('input');
+          if ( input ) {
+            if ( arg ) {
+              input.setAttribute('checked', 'checked');
+            } else {
+              input.removeAttribute('checked');
+            }
+          }
+        }
+        return true;
+      }
+      return false;
+    },
     build: function(el, customMenu, winRef) {
-      function bindSelectionEvent(child, idx, expand) {
+      function bindSelectionEvent(child, span, idx, expand) {
         var id = child.getAttribute('data-id');
-        Utils.$bind(child, 'mousedown', function(ev) {
+
+        Utils.$bind(span, 'mousedown', function(ev) {
           ev.stopPropagation();
-          child.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
-          blurMenu();
+          span.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+          if ( !ev.target.querySelector('input') ) {
+            blurMenu();
+          }
         }, false);
+      }
+
+      function createTyped(child, par) {
+        var type = child.getAttribute('data-type');
+        var input = null;
+        if ( type ) {
+          var group = child.getAttribute('data-group');
+          var input = document.createElement('input');
+          input.type = type;
+          input.name = group ? group + '[]' : '';
+          par.appendChild(input);
+        }
       }
 
       function runChildren(pel, level) {
@@ -80,15 +112,18 @@
             label = GUI.Helpers.getLabel(child);
             icon = GUI.Helpers.getIcon(child, winRef);
 
-            span = document.createElement('span');
-            span.appendChild(document.createTextNode(label));
+            span = document.createElement('label');
             if ( icon ) {
               child.style.backgroundImage = 'url(' + icon + ')';
               Utils.$addClass(span, 'gui-has-image');
             }
             child.appendChild(span);
 
-            bindSelectionEvent(child, i, expand);
+            createTyped(child, span);
+
+            span.appendChild(document.createTextNode(label));
+
+            bindSelectionEvent(child, span, i, expand);
 
             if ( customMenu ) {
               var sub = child.querySelector('gui-menu');

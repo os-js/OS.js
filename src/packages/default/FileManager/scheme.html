@@ -26,15 +26,13 @@
         <gui-menu-bar-entry data-label="View">
           <gui-menu data-id="SubmenuView">
             <gui-menu-entry data-id="MenuRefresh" data-label="Refresh"></gui-menu-entry>
-            <!--
-            <gui-menu-entry data-id="MenuShowSidebar" data-label="Show sidebar"></gui-menu-entry>
-            <gui-menu-entry data-id="MenuShowHidden" data-label="Show hidden files"></gui-menu-entry>
-            -->
+            <gui-menu-entry data-id="MenuShowSidebar" data-label="Show sidebar" data-type="checkbox"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuShowHidden" data-label="Show hidden files" data-type="checkbox"></gui-menu-entry>
             <gui-menu-entry data-id="" data-label="View type">
               <gui-menu>
-                <gui-menu-entry data-id="MenuViewList" data-label="List View"></gui-menu-entry>
-                <gui-menu-entry data-id="MenuViewIcon" data-label="Icon View"></gui-menu-entry>
-                <gui-menu-entry data-id="MenuViewTree" data-label="Tree View"></gui-menu-entry>
+                <gui-menu-entry data-id="MenuViewList" data-label="List View" data-type="radio" data-group="ViewType"></gui-menu-entry>
+                <gui-menu-entry data-id="MenuViewIcon" data-label="Icon View" data-type="radio" data-group="ViewType"></gui-menu-entry>
+                <gui-menu-entry data-id="MenuViewTree" data-label="Tree View" data-type="radio" data-group="ViewType"></gui-menu-entry>
               </gui-menu>
             </gui-menu-entry>
             <!--
@@ -55,7 +53,7 @@
     <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
       <gui-paned-view>
         <!-- SIDE PANEL -->
-        <gui-paned-view-container data-basis="150px" data-grow="0" data-shrink="0" data-multiple="false">
+        <gui-paned-view-container data-basis="150px" data-grow="0" data-shrink="0" data-multiple="false" data-id="SideContainer">
           <gui-list-view data-id="SideView" data-single-click="true">
           </gui-list-view>
         </gui-paned-view-container>

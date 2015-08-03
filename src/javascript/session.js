@@ -128,6 +128,7 @@
 
   function onMouseDown(ev) {
     ev.preventDefault();
+
     OSjs.API.blurMenu();
   }
 

@@ -726,11 +726,12 @@ gui-menu {
   box-shadow : @window_shadow_focused;
 }
   gui-menu > gui-menu-entry {
-    cursor : pointer;
-    padding : 4px;
-    height : 18px;
-    line-height : 18px;
     color: @window_foreground_color;
+  }
+  gui-menu > gui-menu-entry > label {
+    cursor : pointer;
+    line-height : 18px;
+    padding : 4px;
   }
 
   gui-menu > gui-menu-entry.gui-menu-expand {
@@ -743,12 +744,14 @@ gui-menu {
 
   gui-menu > gui-menu-entry:hover {
     background-color: @gui_selected_background_color;
+  }
+  gui-menu > gui-menu-entry:hover > label {
     color: @gui_selected_foreground_color;
   }
     gui-menu > gui-menu-entry {
       background-position : 4px center;
     }
-    gui-menu > gui-menu-entry > span.gui-has-image {
+    gui-menu > gui-menu-entry > label.gui-has-image {
       padding-left : 22px;
     }
     gui-menu > gui-menu-entry[data-disabled="true"] {
