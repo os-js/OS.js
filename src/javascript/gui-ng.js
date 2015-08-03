@@ -301,6 +301,7 @@
       Utils.$bind(window, 'mouseup', _onMouseUp, false);
       Utils.$bind(window, 'mousemove', _onMouseMove, false);
     }
+
     function _onMouseMove(ev) {
       ev.preventDefault();
 
@@ -310,6 +311,7 @@
         onMove(ev, diffX, diffX);
       }
     }
+
     function _onMouseUp(ev) {
       onUp(ev);
       dragging = false;
@@ -320,177 +322,6 @@
 
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
   }
-
-  function getViewNodeValue(found) {
-    var value = found.getAttribute('data-value');
-    try {
-      value = JSON.parse(value);
-    } catch ( e ) {
-      value = null;
-    }
-    return value;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // ELEMENTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.GUI.Elements = (function() {
-
-    return {
-      //
-      // VIEWS
-      //
-
-      'gui-icon-view': (function() {
-        function handleItemClick(ev, item, idx, selected) {
-        }
-
-        function initEntry(el, cel) {
-          function getSelected() {
-            return OSjs.GUI.Elements['gui-icon-view'].values(el);
-          }
-
-          var icon = cel.getAttribute('data-icon');
-          var label = getLabel(cel);
-
-          var dicon = document.createElement('div');
-          var dimg = document.createElement('img');
-          dimg.src = icon;
-          dicon.appendChild(dimg);
-
-          var dlabel = document.createElement('div');
-          var dspan = document.createElement('span');
-          dspan.appendChild(document.createTextNode(label));
-          dlabel.appendChild(dspan);
-
-          Utils.$bind(cel, 'click', function(ev) {
-            var idx = Utils.$index(cel);
-            var multipleSelect = el.getAttribute('data-multiple');
-            multipleSelect = multipleSelect === null || multipleSelect === 'true';
-            el._selected = handleItemSelection(ev, cel, idx, 'gui-icon-view-entry', el._selected, null, multipleSelect);
-            el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
-          }, false);
-          Utils.$bind(cel, 'dblclick', function(ev) {
-            var idx = Utils.$index(cel);
-            el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
-          }, false);
-
-          cel.appendChild(dicon);
-          cel.appendChild(dlabel);
-        }
-
-        function addToView(el, args) {
-          var entries = args[0];
-          if ( !(entries instanceof Array) ) {
-            entries = [entries];
-          }
-
-          entries.forEach(function(e) {
-            var entry = createElement('gui-icon-view-entry', e);
-            el.appendChild(entry);
-            initEntry(el, entry);
-          });
-        }
-
-        function updateActiveSelection(el) {
-          var active = [];
-          el.querySelectorAll('gui-icon-view-entry.gui-active').forEach(function(cel) {
-            active.push(Utils.$index(cel));
-          });
-          el._active = active;
-        }
-
-        function removeFromView(el, args, target) {
-          function remove(cel) {
-            Utils.$remove(cel);
-          }
-
-          if ( target ) {
-            remove(target);
-            return;
-          }
-
-          var findId = args[0];
-          var findKey = args[1] || 'id';
-          var q = 'data-' + findKey + '="' + findId + '"';
-          el.querySelectorAll('gui-icon-view-entry[' + q + ']').forEach(remove);
-          updateActiveSelection(el);
-        }
-
-        function patchIntoView(el, args) {
-          // TODO
-        }
-
-        function clearView(el) {
-          Utils.$empty(el);
-          el.scrollTop = 0;
-          el._selected = [];
-        }
-        return {
-          bind: function(el, evName, callback, params) {
-            if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
-              evName = '_' + evName;
-            }
-            Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
-          },
-          values: function(el) {
-            var selected = [];
-            var active = (el._selected || []);
-
-            active.forEach(function(iter) {
-              var found = el.querySelectorAll('gui-icon-view-entry')[iter];
-              if ( found ) {
-                selected.push({
-                  index: iter,
-                  data: getViewNodeValue(found)
-                });
-              }
-            });
-
-            return selected;
-          },
-          build: function(el) {
-            // TODO: Custom Icon Size
-            // TODO: Set value (selected items)
-
-            function getSelected() {
-              return OSjs.GUI.Elements['gui-icon-view'].values(el);
-            }
-
-            el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
-              initEntry(el, cel);
-            });
-          },
-
-          call: function(el, method, args) {
-            if ( method === 'add' ) {
-              addToView(el, args);
-            } else if ( method === 'remove' ) {
-              removeFromView(el, args);
-            } else if ( method === 'clear' ) {
-              clearView(el);
-            } else if ( method === 'patch' ) {
-              patchIntoView(el, args);
-            }
-          },
-
-          values: function(el) {
-            var selected = [];
-            var active = (el._selected || []);
-            active.forEach(function(iter) {
-              var found = el.querySelectorAll('gui-icon-view-entry')[iter];
-              if ( found ) {
-                selected.push({index: iter, data: getViewNodeValue(found)});
-              }
-            });
-            return selected;
-          },
-        };
-      })()
-
-    };
-  })();
 
   /////////////////////////////////////////////////////////////////////////////
   // UIELEMENT CLASS
