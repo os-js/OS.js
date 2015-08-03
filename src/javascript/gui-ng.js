@@ -273,19 +273,21 @@
    * @param   DOMElement      el              The container
    * @param   int             grow            Grow factor
    * @param   int             shrink          Shrink factor
-   * @param   String          basis           (Optional basis, default=auto)
+   * @param   String          basis           (Optional: basis, default=auto)
+   * @param   DOMElement      checkel         (Optional: take defaults from this node)
    *
    * @api OSjs.GUI.Helpers.setFlexbox()
    */
-  function setFlexbox(el, grow, shrink, basis) {
+  function setFlexbox(el, grow, shrink, basis, checkel) {
+    checkel = checkel || el;
     if ( typeof basis === 'undefined' || basis === null ) {
-      basis = el.getAttribute('data-basis') || 'auto';
+      basis = checkel.getAttribute('data-basis') || 'auto';
     }
     if ( typeof grow === 'undefined' || grow === null ) {
-      grow = el.getAttribute('data-grow') || 0;
+      grow = checkel.getAttribute('data-grow') || 0;
     }
     if ( typeof shrink === 'undefined' || shrink === null ) {
-      shrink = el.getAttribute('data-shrink') || 0;
+      shrink = checkel.getAttribute('data-shrink') || 0;
     }
 
     var flex = [grow, shrink];

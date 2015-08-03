@@ -84,7 +84,7 @@
 
   GUI.Elements['gui-paned-view-container'] = {
     build: function(el) {
-      GUI.Helpers.setFlexbox(el, 1, 1);
+      GUI.Helpers.setFlexbox(el);
     }
   };
 

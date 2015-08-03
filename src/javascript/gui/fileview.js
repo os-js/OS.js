@@ -56,9 +56,9 @@
 
     if ( type === 'gui-list-view' ) {
       nel.set('columns', [
-        {label: 'Filename', resizable: true},
-        {label: 'MIME', basis: '100px', grow: 1, textalign: 'right', resizable: true},
-        {label: 'Size', basis: '120px', textalign: 'right'}
+        {label: 'Filename', grow: 1, shrink: 1},
+        {label: 'MIME', basis: '100px', grow: 0, shrink: 0, textalign: 'right'},
+        {label: 'Size', basis: '120px', grow: 0, shrink: 0, textalign: 'right'}
       ]);
     }
 

@@ -55,13 +55,13 @@
     <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
       <gui-paned-view>
         <!-- SIDE PANEL -->
-        <gui-paned-view-container data-basis="150px" data-multiple="false">
+        <gui-paned-view-container data-basis="150px" data-grow="0" data-shrink="0" data-multiple="false">
           <gui-list-view data-id="SideView" data-single-click="true">
           </gui-list-view>
         </gui-paned-view-container>
 
         <!-- FILE VIEW -->
-        <gui-paned-view-container>
+        <gui-paned-view-container data-grow="1" data-shrink="1">
           <gui-file-view data-id="FileView">
           </gui-file-view>
         </gui-paned-view-container>

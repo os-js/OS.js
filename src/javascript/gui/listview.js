@@ -34,26 +34,6 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function setHeadFlex(el, cell) {
-    var basis = cell.getAttribute('data-basis') || '';
-    var grow  = basis ? 0 : 1;
-    GUI.Helpers.setFlexbox(cell, grow, null, basis);
-  }
-
-  function setBodyFlex(el, cell, idx, cols) {
-    var col = cols[idx];
-    var basis = col ? col.getAttribute('data-basis') : null;
-    var grow = col ? col.getAttribute('data-grow') : null;
-    if ( basis ) {
-      grow = 0;
-    }
-
-    GUI.Helpers.setFlexbox(cell,
-      grow,
-      col ? col.getAttribute('data-shrink') : null,
-      basis );
-  }
-
   function resize(rel, w) {
     var flex = w.toString() + 'px';
     rel.style['webkitFlexBasis'] = flex;
@@ -85,6 +65,7 @@
   }
 
   function createResizers(el) {
+    // TODO: These do not work properly :/
     var head = el.querySelector('gui-list-view-head');
     var body = el.querySelector('gui-list-view-body');
     var cols = head.querySelectorAll('gui-list-view-column');
@@ -128,7 +109,7 @@
       var cl = cols.length;
       var x = cl ? idx % cl : idx;
 
-      setBodyFlex(el, cel, x, cols);
+      GUI.Helpers.setFlexbox(cel, null, null, null, cols[x]);
 
       var icon = cel.getAttribute('data-icon');
       if ( icon ) {
@@ -206,7 +187,7 @@
           }
           row.appendChild(nel);
 
-          setHeadFlex(el, nel);
+          GUI.Helpers.setFlexbox(nel);
         });
 
         head.appendChild(row);
@@ -268,7 +249,7 @@
 
       // Create scheme defined header
       el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
-        setHeadFlex(el, cel);
+        GUI.Helpers.setFlexbox(cel);
 
         var vis = cel.getAttribute('data-visible');
         var iter = {
