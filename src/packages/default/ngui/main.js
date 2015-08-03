@@ -69,6 +69,9 @@
     scheme.find(this, 'MyListView').on('activate', function(ev) {
       console.warn('listview activate', ev);
     });
+    scheme.find(this, 'MyListView').on('expand', function(ev) {
+      console.warn('listview expand', ev);
+    });
 
     scheme.find(this, 'MyTreeView').on('select', function(ev) {
       console.warn('treeview', ev);

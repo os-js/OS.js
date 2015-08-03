@@ -34,107 +34,108 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function createEntry(e) {
+    // TODO: Recursive
+    var entry = GUI.Helpers.createElement('gui-tree-view-entry', e);
+    return entry;
+  }
+
+  function initEntry(el, sel) {
+    // TODO: Custom Icon Size
+
+    var icon = sel.getAttribute('data-icon');
+    var label = GUI.Helpers.getLabel(sel);
+    var expanded = sel.getAttribute('data-expanded') === 'true';
+    var next = sel.querySelector('gui-tree-view-entry');
+    var container = document.createElement('div');
+    var dspan = document.createElement('span');
+
+    function handleItemExpand(ev, root, expanded) {
+      if ( typeof expanded === 'undefined' ) {
+        expanded = !Utils.$hasClass(root, 'gui-expanded');
+      }
+
+      Utils.$removeClass(root, 'gui-expanded');
+      if ( expanded ) {
+        Utils.$addClass(root, 'gui-expanded');
+      }
+
+      var children = root.children;
+      for ( var i = 0; i < children.length; i++ ) {
+        if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
+          children[i].style.display = expanded ? 'block' : 'none';
+        }
+      }
+
+      var idx = Utils.$index(root);
+      var entries = el.querySelectorAll('gui-tree-view-entry')[idx];
+      var selected = null;
+      if ( entries[idx] ) {
+        selected = {
+          index: idx,
+          data: GUI.Helpers.getViewNodeValue(entries[idx])
+        };
+      }
+      el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: selected}}));
+    }
+
+    if ( icon ) {
+      dspan.style.backgroundImage = 'url(' + icon + ')';
+      Utils.$addClass(dspan, 'gui-has-image');
+    }
+    dspan.appendChild(document.createTextNode(label));
+
+    container.appendChild(dspan);
+
+    if ( next ) {
+      Utils.$addClass(sel, 'gui-expandable');
+      var expander = document.createElement('gui-tree-view-expander');
+      Utils.$bind(expander, 'click', function(ev) {
+        handleItemExpand(ev, sel);
+      });
+
+      sel.insertBefore(container, next);
+      sel.insertBefore(expander, container);
+    } else {
+      sel.appendChild(container);
+    }
+
+    handleItemExpand(null, sel, expanded);
+
+    GUI.Elements._dataview.bindEntryEvents(el, sel, 'gui-tree-view-entry');
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   GUI.Elements['gui-tree-view'] = {
-    bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
-        evName = '_' + evName;
-      }
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: GUI.Elements._dataview.bind,
+
     values: function(el) {
-      var selected = [];
-      var active = (el._selected || []);
-
-      active.forEach(function(iter) {
-        var found = el.querySelectorAll('gui-tree-view-entry')[iter];
-        if ( found ) {
-          selected.push({
-            index: iter,
-            data: GUI.Helpers.getViewNodeValue(found)
-          });
-        }
-      });
-      return selected;
+      return GUI.Elements._dataview.getSelected(el, el.querySelectorAll('gui-tree-view-entry'));
     },
+
     build: function(el) {
-      // TODO: Custom Icon Size
-      // TODO: Set value (selected items)
-
-      function getSelected() {
-        return GUI.Elements['gui-tree-view'].values(el);
-      }
-
-      function handleItemClick(ev, item, idx, selected) {
-        var multipleSelect = el.getAttribute('data-multiple');
-        multipleSelect = multipleSelect === null || multipleSelect === 'true';
-
-        return GUI.Helpers.handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el, multipleSelect);
-      }
-
-      function handleItemExpand(ev, root, expanded) {
-        if ( typeof expanded === 'undefined' ) {
-          expanded = !Utils.$hasClass(root, 'gui-expanded');
-        }
-
-        Utils.$removeClass(root, 'gui-expanded');
-        if ( expanded ) {
-          Utils.$addClass(root, 'gui-expanded');
-        }
-
-        var children = root.children;
-        for ( var i = 0; i < children.length; i++ ) {
-          if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
-            children[i].style.display = expanded ? 'block' : 'none';
-          }
-        }
-      }
-
       el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
-
-        var icon = sel.getAttribute('data-icon');
-        var label = GUI.Helpers.getLabel(sel);
-        var expanded = sel.getAttribute('data-expanded') === 'true';
-        var next = sel.querySelector('gui-tree-view-entry');
-
-        var container = document.createElement('div');
-        var dspan = document.createElement('span');
-        if ( icon ) {
-          dspan.style.backgroundImage = 'url(' + icon + ')';
-          Utils.$addClass(dspan, 'gui-has-image');
-        }
-        dspan.appendChild(document.createTextNode(label));
-
-        container.appendChild(dspan);
-
-        if ( next ) {
-          Utils.$addClass(sel, 'gui-expandable');
-          var expander = document.createElement('gui-tree-view-expander');
-          Utils.$bind(expander, 'click', function(ev) {
-            handleItemExpand(ev, sel);
-          });
-
-          sel.insertBefore(container, next);
-          sel.insertBefore(expander, container);
-        } else {
-          sel.appendChild(container);
-        }
-
-        handleItemExpand(null, sel, expanded);
-
-        Utils.$bind(container, 'click', function(ev) {
-          el._selected = handleItemClick(ev, sel, idx, el._selected);
-          el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
-        }, false);
-        Utils.$bind(container, 'dblclick', function(ev) {
-          el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
-        }, false);
-
+        initEntry(el, sel);
       });
+    },
+
+    call: function(el, method, args) {
+      if ( method === 'add' ) {
+        GUI.Elements._dataview.add(el, args, function(e) {
+          var entry = createEntry(e);
+          el.appendChild(entry);
+          initEntry(el, entry);
+        });
+      } else if ( method === 'remove' ) {
+        GUI.Elements._dataview.remove(el, args, 'gui-icon-tree-entry');
+      } else if ( method === 'clear' ) {
+        GUI.Elements._dataview.clear(el);
+      } else if ( method === 'patch' ) {
+        GUI.Elements._dataview.patch(el, args, 'gui-icon-tree-entry', el, createEntry, initEntry);
+      }
     }
   };
 

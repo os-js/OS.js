@@ -238,7 +238,7 @@
     },
 
     bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+      if ( (['activate', 'select', 'expand']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);

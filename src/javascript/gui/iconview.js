@@ -40,6 +40,7 @@
   }
 
   function initEntry(el, cel) {
+    // TODO: Custom Icon Size
     var icon = cel.getAttribute('data-icon');
     var label = GUI.Helpers.getLabel(cel);
 
@@ -71,7 +72,6 @@
     },
 
     build: function(el) {
-      // TODO: Custom Icon Size
       el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
         initEntry(el, cel);
       });
