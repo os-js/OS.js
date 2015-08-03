@@ -449,10 +449,10 @@
 
     API.createDialog('Input', {
       message: OSjs.Applications.ApplicationFileManager._("Create a new directory in <span>{0}</span>", dir)
-    }, function(ev, button) {
-      if ( !ev.detail ) { return; }
+    }, function(ev, button, result) {
+      if ( !result ) { return; }
 
-      var item = new VFS.File(dir + '/' + ev.detail);
+      var item = new VFS.File(dir + '/' + result);
       self._action('mkdir', [item], function() {
         win.changePath(null, item);
       });
