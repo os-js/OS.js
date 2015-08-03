@@ -56,9 +56,9 @@
 
     if ( type === 'gui-list-view' ) {
       nel.set('columns', [
-        {label: 'Filename', resizable: true, basis: '100px'},
-        {label: 'MIME', resizable: true},
-        {label: 'Size', basis: '50px'}
+        {label: 'Filename', resizable: true},
+        {label: 'MIME', basis: '100px', grow: 1, textalign: 'right', resizable: true},
+        {label: 'Size', basis: '120px', textalign: 'right'}
       ]);
     }
 
@@ -188,8 +188,8 @@
               id: iter.id || iter.filename,
               columns: [
                 {label: iter.filename, icon: _getIcon(iter)},
-                {label: iter.mime},
-                {label: iter.size}
+                {label: iter.mime, textalign: 'right'},
+                {label: iter.size, textalign: 'right'}
               ]
             };
           });

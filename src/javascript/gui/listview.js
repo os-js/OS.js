@@ -34,6 +34,26 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function setHeadFlex(el, cell) {
+    var basis = cell.getAttribute('data-basis') || '';
+    var grow  = basis ? 0 : 1;
+    GUI.Helpers.setFlexbox(cell, grow, null, basis);
+  }
+
+  function setBodyFlex(el, cell, idx, cols) {
+    var col = cols[idx];
+    var basis = col ? col.getAttribute('data-basis') : null;
+    var grow = col ? col.getAttribute('data-grow') : null;
+    if ( basis ) {
+      grow = 0;
+    }
+
+    GUI.Helpers.setFlexbox(cell,
+      grow,
+      col ? col.getAttribute('data-shrink') : null,
+      basis );
+  }
+
   function scrollIntoView(el, element) {
     var pos = Utils.$position(element, el);
     if ( pos !== null && 
@@ -52,21 +72,30 @@
     rel.style['flexBasis'] = flex;
   }
 
-  function createEntry(v) {
+  function createEntry(v, head) {
     var label = v.label || '';
     if ( v.label ) {
       delete v.label;
     }
+    if ( typeof v.grow === 'undefined' ) {
+      v.grow = 1;
+    }
+    if ( typeof v.shrink === 'undefined' ) {
+      v.shrink = 1;
+    }
+    if ( typeof v.basis === 'undefined' ) {
+      v.basis = '';
+    }
 
     var nel = GUI.Helpers.createElement('gui-list-view-column', v);
     nel.appendChild(document.createTextNode(label));
-    GUI.Helpers.setFlexbox(nel, null, null, 1, 0);
+
     return nel;
   }
 
   function createResizers(el) {
-    var head = el.querySelector('gui-list-view-columns');
-    var body = el.querySelector('gui-list-view-rows');
+    var head = el.querySelector('gui-list-view-head');
+    var body = el.querySelector('gui-list-view-body');
     var cols = head.querySelectorAll('gui-list-view-column');
 
     head.querySelectorAll('gui-list-view-column-resizer').forEach(function(rel) {
@@ -84,7 +113,7 @@
 
         GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = col.offsetWidth;
-          maxWidth = el.offsetWidth / 2; // FIXME
+          maxWidth = el.offsetWidth * 0.85; // FIXME
         }, function(ev, dx, dy) {
           var newWidth = startWidth + dx;
           if ( !isNaN(newWidth) ) { //&& newWidth > 0 && newWidth < maxWidth ) {
@@ -112,11 +141,8 @@
     row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
       var cl = cols.length;
       var x = cl ? idx % cl : idx;
-      var grow = cl ? 1 : 0;
-      var shrink = cl ? 1 : 0;
-      var headerEl = headContainer ? headContainer.querySelectorAll('gui-list-view-column')[x] : null;
 
-      GUI.Helpers.setFlexbox(cel, null, null, grow, shrink, headerEl);
+      setBodyFlex(el, cel, x, cols);
 
       var icon = cel.getAttribute('data-icon');
       if ( icon ) {
@@ -211,7 +237,7 @@
 
   function addToView(el, args) {
     var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
-    var body = el.querySelector('gui-list-view-rows');
+    var body = el.querySelector('gui-list-view-body');
     var entries = args[0];
     if ( !(entries instanceof Array) ) {
       entries = [entries];
@@ -247,14 +273,14 @@
     var findId = args[0];
     var findKey = args[1] || 'id';
     var q = 'data-' + findKey + '="' + findId + '"';
-    el.querySelectorAll('gui-list-view-rows > gui-list-view-row[' + q + ']').forEach(remove);
+    el.querySelectorAll('gui-list-view-body > gui-list-view-row[' + q + ']').forEach(remove);
     updateActiveSelection(el);
   }
 
   function patchIntoView(el, args) {
     var entries = args[0];
     var single = false;
-    var body = el.querySelector('gui-list-view-rows');
+    var body = el.querySelector('gui-list-view-body');
 
     if ( !(entries instanceof Array) ) {
       entries = [entries];
@@ -262,7 +288,7 @@
     }
 
     var inView = {};
-    el.querySelectorAll('gui-list-view-rows > gui-list-view-row').forEach(function(row) {
+    el.querySelectorAll('gui-list-view-body > gui-list-view-row').forEach(function(row) {
       var id = row.getAttribute('data-id');
       if ( id !== null ) {
         inView[id] = row;
@@ -305,7 +331,7 @@
   }
 
   function clearView(el) {
-    Utils.$empty(el.querySelector('gui-list-view-rows'));
+    Utils.$empty(el.querySelector('gui-list-view-body'));
     el.scrollTop = 0;
     el._selected = [];
   }
@@ -323,7 +349,7 @@
     },
     values: function(el) {
       var selected = [];
-      var body = el.querySelector('gui-list-view-rows');
+      var body = el.querySelector('gui-list-view-body');
       var active = (el._selected || []);
 
       active.forEach(function(iter) {
@@ -337,25 +363,25 @@
 
     set: function(el, param, value, arg) {
       if ( param === 'columns' ) {
-        var head = el.querySelector('gui-list-view-columns');
-        var row = head.querySelector('gui-list-view-row');
-        if ( row ) {
-          Utils.$empty(row);
-        } else {
-          row = document.createElement('gui-list-view-row');
-        }
+        var head = el.querySelector('gui-list-view-head');
+        var row = document.createElement('gui-list-view-row');
+        Utils.$empty(head);
 
         el._columns = [];
+
         value.forEach(function(v) {
-          var iter = {
-            visible: (typeof v.visible === 'undefined') || v.visible === true
-          };
-          el._columns.push(iter);
-          var nel = createEntry(v);
-          if ( !iter.visible ) {
+          v.visible = (typeof v.visible === 'undefined') || v.visible === true;
+
+          var nel = createEntry(v, true)
+
+          el._columns.push(v);
+
+          if ( !v.visible ) {
             nel.style.display = 'none';
           }
           row.appendChild(nel);
+
+          setHeadFlex(el, nel);
         });
 
         head.appendChild(row);
@@ -363,7 +389,7 @@
         createResizers(el);
         return;
       } else if ( param === 'selected' ) {
-        var body = el.querySelector('gui-list-view-rows');
+        var body = el.querySelector('gui-list-view-body');
         var select = [];
 
         body.querySelectorAll('gui-list-view-row').forEach(function(r, idx) {
@@ -398,64 +424,50 @@
       }
     },
     build: function(el, applyArgs) {
-      var headContainer, bodyContainer;
-      var head = el.querySelector('gui-list-view-columns');
+      el._selected = [];
+      el._columns  = [];
 
-      if ( !head ) {
-        head = document.createElement('gui-list-view-columns');
-        if ( el.children.length )  {
-          el.insertBefore(head, el.firstChild);
-        } else {
-          el.appendChild(head);
-        }
-      }
-      var body = el.querySelector('gui-list-view-rows');
+      var head = el.querySelector('gui-list-view-head');
+      var body = el.querySelector('gui-list-view-body');
+
+      // Make sure base elements are in the dom
       if ( !body ) {
-        body = document.createElement('gui-list-view-rows');
+        body = document.createElement('gui-list-view-body');
         el.appendChild(body);
       }
 
-      el._selected = [];
-      el._columns = [];
-
-      if ( head ) {
-        headContainer = document.createElement('gui-list-view-head');
-        headContainer.appendChild(head);
-
-        /*if ( body ) {
-          el.insertBefore(headContainer, body);
-        }*/
-        el.appendChild(headContainer);
-        createResizers(el);
+      if ( !head ) {
+        head = document.createElement('gui-list-view-head');
+        el.insertBefore(head, body);
       }
 
-      if ( body ) {
-        bodyContainer = document.createElement('gui-list-view-body');
-        bodyContainer.appendChild(body);
-        el.appendChild(bodyContainer);
-      }
+      createResizers(el);
 
-      if ( headContainer ) {
-        Utils.$bind(el, 'scroll', function() {
-          headContainer.style.top = el.scrollTop + 'px';
-        }, false);
+      Utils.$bind(el, 'scroll', function() {
+        head.style.top = el.scrollTop + 'px';
+      }, false);
 
-        el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
-          GUI.Helpers.setFlexbox(cel, null, null, 1, 0);
 
-          var vis = cel.getAttribute('data-visible');
-          var iter = {
-            visible: vis === null || vis === 'true'
-          };
+      // Create scheme defined header
+      el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
+        setHeadFlex(el, cel);
 
-          el._columns.push(iter);
+        var vis = cel.getAttribute('data-visible');
+        var iter = {
+          visible: vis === null || vis === 'true',
+          grow: cel.getAttribute('data-grow'),
+          shrink: cel.getAttribute('data-shrink'),
+          basis: cel.getAttribute('data-basis')
+        };
 
-          if ( !iter.visible ) {
-            cel.style.display = 'none';
-          }
-        });
-      }
+        el._columns.push(iter);
 
+        if ( !iter.visible ) {
+          cel.style.display = 'none';
+        }
+      });
+
+      // Create scheme defined rows
       el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(row) {
         initRow(el, row);
       });

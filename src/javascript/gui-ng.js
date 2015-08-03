@@ -219,8 +219,20 @@
 
   function createElement(tagName, params) {
     var el = document.createElement(tagName);
+
+    var classMap = {
+      textalign: function(v) {
+        Utils.$addClass(el, 'gui-align-' + v);
+      }
+    };
+
     Object.keys(params).forEach(function(k) {
       var value = params[k];
+      if ( classMap[k] ) {
+        classMap[k](value);
+        return;
+      }
+
       if ( typeof value === 'boolean' ) {
         value = value ? 'true' : 'false';
       } else if ( typeof value === 'object' ) {
@@ -255,45 +267,55 @@
     return selected;
   }
 
-  function setFlexbox(el, grow, shrink, defaultGrow, defaultShrink, checkEl) {
-    var basis = (checkEl || el).getAttribute('data-basis') || 'auto';
-    var align = el.getAttribute('data-align');
-
-    var tmp;
+  /**
+   * Sets the flexbox CSS style properties for given container
+   *
+   * @param   DOMElement      el              The container
+   * @param   int             grow            Grow factor
+   * @param   int             shrink          Shrink factor
+   * @param   String          basis           (Optional basis, default=auto)
+   *
+   * @api OSjs.GUI.Helpers.setFlexbox()
+   */
+  function setFlexbox(el, grow, shrink, basis) {
+    if ( typeof basis === 'undefined' || basis === null ) {
+      basis = el.getAttribute('data-basis') || 'auto';
+    }
     if ( typeof grow === 'undefined' || grow === null ) {
-      tmp = (checkEl || el).getAttribute('data-grow');
-      if ( tmp === null ) {
-        grow = typeof defaultGrow === 'undefined' ? 0 : defaultGrow;
-      } else {
-        grow = parseInt(tmp, 10) || 0;
-      }
-    } else {
-      grow = basis === 'auto' ? 1 : grow;
+      grow = el.getAttribute('data-grow') || 0;
     }
-
     if ( typeof shrink === 'undefined' || shrink === null ) {
-      tmp = (checkEl || el).getAttribute('data-shrink');
-      if ( tmp === null ) {
-        shrink = typeof defaultShrink === 'undefined' ? 0 : defaultShrink;
-      } else {
-        shrink = parseInt(tmp, 10) || 0;
-      }
-    } else {
-      shrink = basis === 'auto' ? 1 : shrink;
+      shrink = el.getAttribute('data-shrink') || 0;
     }
 
-    var flex = Utils.format('{0} {1} {2}', grow.toString(), shrink.toString(), basis);
-    el.style['webkitFlex'] = flex;
-    el.style['mozFflex'] = flex;
-    el.style['msFflex'] = flex;
-    el.style['oFlex'] = flex;
-    el.style['flex'] = flex;
+    var flex = [grow, shrink];
+    if ( basis.length ) {
+      flex.push(basis);
+    }
 
+    var style = flex.join(' ');
+    el.style['webkitFlex'] = style;
+    el.style['mozFflex'] = style;
+    el.style['msFflex'] = style;
+    el.style['oFlex'] = style;
+    el.style['flex'] = style;
+
+    var align = el.getAttribute('data-align');
     if ( align ) {
       el.style.alignSelf = align.match(/start|end/) ? 'flex-' + align : align;
     }
   }
 
+  /**
+   * Wrapper for creating a draggable container
+   *
+   * @param   DOMElement        el          The container
+   * @param   Function          onDown      On down action callback
+   * @param   Function          onMove      On move action callback
+   * @param   Function          onUp        On up action callback
+   *
+   * @api OSjs.GUI.Helpers.createDrag()
+   */
   function createDrag(el, onDown, onMove, onUp) {
     onDown = onDown || function() {};
     onMove = onMove || function() {};
