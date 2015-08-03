@@ -37,7 +37,7 @@
   // SETTINGS
   /////////////////////////////////////////////////////////////////////////////
 
-  function DefaultSettings(defaults) {
+  function _DefaultSettings(defaults) {
     var cfg = {
       animations          : OSjs.Compability.css.animation,
       fullscreen          : false,
@@ -165,7 +165,7 @@
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
 
     this._defaults      = (args.defaults || {});
-    this._settings      = DefaultSettings(this._defaults);
+    this._settings      = _DefaultSettings(this._defaults);
     this.panels         = [];
     this.switcher       = null;
     this.iconView       = null;
@@ -195,7 +195,7 @@
   };
 
   CoreWM.prototype.destroy = function(kill, force) {
-    if ( !force && kill && !confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
+    if ( !force && kill && !window.confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
       return false;
     }
 
@@ -212,7 +212,7 @@
     this.destroyPanels();
 
     // Reset styles
-    this.applySettings(DefaultSettings(this._defaults), true);
+    this.applySettings(_DefaultSettings(this._defaults), true);
 
     if ( this.$themeLink ) {
       this.$themeLink.parentNode.removeChild(this.$themeLink);
@@ -253,7 +253,7 @@
       var w = Object.create(OSjs.Dialogs[className].prototype);
       OSjs.Dialogs[className].apply(w, args);
 
-      if ( parentClass && (parentClass instanceof Window) ) {
+      if ( parentClass && (parentClass instanceof OSjs.Core.Window) ) {
         parentClass._addChild(w);
       }
 
@@ -300,6 +300,7 @@
   };
 
   CoreWM.prototype.removeWindow = function(w) {
+    var self = this;
     var result = WindowManager.prototype.removeWindow.apply(this, arguments);
 
     if ( result ) {
@@ -383,7 +384,7 @@
       if ( s ) {
         self.applySettings(s);
       } else {
-        self.applySettings(DefaultSettings(self._defaults), true);
+        self.applySettings(_DefaultSettings(self._defaults), true);
       }
 
       callback.call(self);
@@ -407,13 +408,15 @@
   CoreWM.prototype.initPanels = function(applySettings) {
     var ps = this.getSetting('panels');
     var added = false;
+    var p, i;
+
     if ( ps === false ) {
       added = true;
     } else {
       this.destroyPanels();
       if ( ps && ps.length ) {
-        var p, j, n;
-        for ( var i = 0; i < ps.length; i++ ) {
+        var j, n;
+        for ( i = 0; i < ps.length; i++ ) {
           p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options, this);
           p.init(document.body);
 
@@ -452,11 +455,11 @@
 
     if ( applySettings ) {
       // Workaround for windows appearing behind panel
-      var p = this.panels[0];
+      p = this.panels[0];
       if ( p && p.getOntop() && p.getPosition('top') ) {
         var iter;
         var space = this.getWindowSpace();
-        for ( var i = 0; i < this._windows.length; i++ ) {
+        for ( i = 0; i < this._windows.length; i++ ) {
           iter = this._windows[i];
           if ( !iter ) { continue; }
           if ( iter._position.y < space.top ) {
@@ -574,8 +577,6 @@
   CoreWM.prototype.onDropItem = function(ev, el, item, args) {
     document.body.setAttribute('data-attention', 'false');
 
-    console.warn("XXXXXXXX", arguments);
-
     var _applyWallpaper = function(data) {
       this.applySettings({wallpaper: data.path}, false, true);
     };
@@ -598,7 +599,7 @@
         onClick: function() {
           _applyWallpaper.call(self, data);
         }
-      }], pos)
+      }], pos);
     };
 
     if ( item ) {
@@ -954,10 +955,10 @@
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
         styles['corewm-panel'] = {};
-        styles['corewm-notification-entry'] = {}
+        styles['corewm-notification-entry'] = {};
         styles['corewm-notification-entry:before'] = {
           'opacity': p.options.opacity / 100
-        }
+        };
         styles['corewm-panel:before'] = {
           'opacity': p.options.opacity / 100
         };
@@ -1069,13 +1070,13 @@
   CoreWM.prototype.getSetting = function(k) {
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
     if ( typeof val === 'undefined' || val === null ) {
-      return DefaultSettings(this._defaults)[k];
+      return _DefaultSettings(this._defaults)[k];
     }
     return val;
   };
 
   CoreWM.prototype.getDefaultSetting = function(k) {
-    var settings = DefaultSettings(this._defaults);
+    var settings = _DefaultSettings(this._defaults);
     if ( typeof k !== 'undefined' ) {
       return settings[k];
     }

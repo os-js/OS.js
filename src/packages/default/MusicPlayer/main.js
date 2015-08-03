@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, Utils, API, VFS, GUI) {
+  'use strict';
   // TODO: Playlist
   // TODO: Server seek support: https://gist.github.com/codler/3906826
 
@@ -36,11 +37,11 @@
     var min = Math.floor((secs - (hr * 3600))/60);
     var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
 
-    if (min < 10){
-      min = "0" + min;
+    if (min < 10) {
+      min = '0' + min;
     }
     if (sec < 10){
-      sec  = "0" + sec;
+      sec  = '0' + sec;
     }
 
     return min + ':' + sec;
@@ -126,6 +127,9 @@
       self.updateTime(label, seeker);
     });
     player.on('error', function(ev) {
+      if ( !player.$element.src ) {
+        return;
+      }
       var msg = null;
       try {
         switch ( ev.target.error.code ) {
@@ -201,7 +205,7 @@
         self._setTitle(file.filename, true);
         self._currentFile = file;
 
-        audio.src = result || 'about:blank';
+        audio.src = result || '';
         audio.play();
 
         getInfo();
@@ -210,7 +214,7 @@
   };
 
   ApplicationMusicPlayerWindow.prototype.updateTime = function(label, seeker) {
-    if ( this._destroyed ) return; // Important because async
+    if ( this._destroyed ) { return; } // Important because async
 
     var player = this._scheme.find(this, 'Player');
     var audio = player.$element.firstChild;
@@ -219,7 +223,10 @@
     var current = audio.currentTime;
     var unknown = false;
 
-    if ( isNaN(current) || !isFinite(current) ) current = 0.0;
+    if ( isNaN(current) || !isFinite(current) ) {
+      current = 0.0;
+    }
+
     if ( isNaN(total) || !isFinite(total) ) {
       total = current;
       unknown = true;
@@ -232,7 +239,7 @@
       seeker.set('max', total);
     }
 
-    label.set('value', time)
+    label.set('value', time);
     seeker.set('value', current);
 
     this.updated = true;

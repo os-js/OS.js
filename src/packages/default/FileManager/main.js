@@ -13,7 +13,7 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution. 
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, Utils, API, VFS, GUI) {
+  'use strict';
 
   var notificationWasDisplayed = {};
 
@@ -309,7 +310,7 @@
       app: this._appRef,
     }, function(error, file) {
       if ( error ) {
-        API.error(API._("ERR_GENERIC_APP_FMT", self.__label), API._("ERR_GENERIC_APP_REQUEST"), error);
+        API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
         return;
       }
       self.changePath(null, file);
@@ -354,12 +355,14 @@
     Application.prototype._onMessage.apply(this, arguments);
 
     // If any outside VFS actions were performed, refresh!
+    // TODO
+    /*
     if ( msg == 'vfs' && args.source !== this.__pid ) {
       var win = this._getWindow('ApplicationFileManagerWindow');
       if ( win ) {
-        // TODO
       }
     }
+    */
   };
 
   ApplicationFileManager.prototype.upload = function(dest, win) {
@@ -433,7 +436,7 @@
 
     items.forEach(function(item) {
       var dialog = API.createDialog('Input', {
-        message: OSjs.Applications.ApplicationFileManager._("Rename <span>{0}</span>", item.filename),
+        message: OSjs.Applications.ApplicationFileManager._('Rename <span>{0}</span>', item.filename),
         value: item.filename
       }, function(ev, button, result) {
         if ( button === 'ok' && result ) {
@@ -448,7 +451,7 @@
     var self = this;
 
     API.createDialog('Input', {
-      message: OSjs.Applications.ApplicationFileManager._("Create a new directory in <span>{0}</span>", dir)
+      message: OSjs.Applications.ApplicationFileManager._('Create a new directory in <span>{0}</span>', dir)
     }, function(ev, button, result) {
       if ( !result ) { return; }
 
@@ -478,9 +481,9 @@
 
   ApplicationFileManager.prototype._action = function(name, args, callback) {
     callback = callback || function() {};
-
+    var self = this;
     var _onError = function(error) {
-      API.error(API._("ERR_GENERIC_APP_FMT", self.__label), API._("ERR_GENERIC_APP_REQUEST"), error);
+      API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
       callback(false);
     };
 

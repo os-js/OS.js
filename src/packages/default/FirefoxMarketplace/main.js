@@ -186,7 +186,7 @@
         if ( err ) {
           callback('Failed listing marketplace: ' + err);
           return;
-        };
+        }
 
         var rows = [];
         list.forEach(function(i) {

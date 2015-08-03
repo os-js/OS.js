@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, Dialogs, Utils, API, VFS, GUI) {
+  'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
