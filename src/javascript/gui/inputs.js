@@ -63,16 +63,22 @@
     Utils.$empty(el);
 
     var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
-    input.setAttribute('type', type);
-    if ( placeholder ) {
-      input.setAttribute('placeholder', placeholder);
-    }
-    if ( type === 'radio' && group ) {
-      input.setAttribute('name', group + '[]');
-    }
+    var attribs = {
+      value: null,
+      type: type,
+      tabindex: -1, // TODO
+      placeholder: placeholder,
+      disabled: disabled ? 'disabled' : null,
+      name: group ? group + '[]' : null
+    };
 
-    if ( type === 'text' || type === 'password' || type === 'textarea' ) {
-      input.value = value;
+    if ( type === 'range' || type === 'slider' ) {
+      attribs.min = el.getAttribute('data-min');
+      attribs.max = el.getAttribute('data-max');
+      attribs.step = el.getAttribute('data-step');
+    } else if ( type === 'text' || type === 'password' || type === 'textarea' ) {
+      attribs.value = value || '';
+
       Utils.$bind(input, 'keydown', function(ev) {
         if ( ev.keyCode === Utils.Keys.ENTER ) {
           input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
@@ -80,22 +86,13 @@
       }, false);
     }
 
-    if ( type === 'range' || type === 'slider' ) {
-      var min = el.getAttribute('data-min');
-      var max = el.getAttribute('data-max');
-      var ste = el.getAttribute('data-step');
+    Object.keys(attribs).forEach(function(a) {
+      if ( attribs[a] !== null ) {
+        input.setAttribute(a, attribs[a]);
+      }
+    });
 
-      if ( min ) { input.setAttribute('min', min); }
-      if ( max ) { input.setAttribute('max', max); }
-      if ( ste ) { input.setAttribute('step', ste); }
-    }
-
-    if ( disabled ) {
-      input.setAttribute('disabled', 'disabled');
-    }
-
-    // TODO: Custom tabindex
-    input.setAttribute('tabindex', -1);
+    createInputLabel(el, type, input);
 
     Utils.$bind(input, 'change', function(ev) {
       var value = input.value;
@@ -105,16 +102,6 @@
       }
       input.dispatchEvent(new CustomEvent('_change', {detail: value}));
     }, false);
-
-    createInputLabel(el, type, input);
-  }
-
-  function bindTextInputEvents(el, evName, callback, params) {
-    if ( evName === 'enter' ) {
-      evName = '_enter';
-    }
-    var target = el.querySelector('input');
-    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
   }
 
   function addToSelectBox(el, entries) {
@@ -175,6 +162,21 @@
     el.appendChild(select);
   }
 
+  function bindInputEvents(el, evName, callback, params) {
+    if ( evName === 'change' ) { evName = '_change'; }
+
+    var target = el.querySelector('textarea, input, select');
+    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  }
+
+  function bindTextInputEvents(el, evName, callback, params) {
+    if ( evName === 'enter' ) { evName = '_enter'; }
+    else if ( evName === 'change' ) { evName = '_change'; }
+
+    var target = el.querySelector('input');
+    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -200,42 +202,28 @@
   };
 
   GUI.Elements['gui-textarea'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('textarea');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       createInputOfType(el, 'textarea');
     }
   };
 
   GUI.Elements['gui-text'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      bindTextInputEvents.apply(this, arguments);
-    },
+    bind: bindTextInputEvents,
     build: function(el) {
       createInputOfType(el, 'text');
     }
   };
 
   GUI.Elements['gui-password'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      bindTextInputEvents.apply(this, arguments);
-    },
+    bind: bindTextInputEvents,
     build: function(el) {
       createInputOfType(el, 'password');
     }
   };
 
   GUI.Elements['gui-file-upload'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       var input = document.createElement('input');
       input.setAttribute('type', 'file');
@@ -247,33 +235,21 @@
   },
 
   GUI.Elements['gui-radio'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       createInputOfType(el, 'radio');
     }
   };
 
   GUI.Elements['gui-checkbox'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       createInputOfType(el, 'checkbox');
     }
   };
 
   GUI.Elements['gui-switch'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       var input = document.createElement('input');
       input.type = 'checkbox';
@@ -364,11 +340,7 @@
   };
 
   GUI.Elements['gui-select'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('select');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       // TODO Selected index/entry
       createSelectInput(el);
@@ -385,11 +357,7 @@
   };
 
   GUI.Elements['gui-select-list'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('select');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       // TODO Selected index/entry
       createSelectInput(el, true);
@@ -406,11 +374,7 @@
   };
 
   GUI.Elements['gui-slider'] = {
-    bind: function(el, evName, callback, params) {
-      if ( evName === 'change' ) { evName = '_change'; }
-      var target = el.querySelector('input');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-    },
+    bind: bindInputEvents,
     build: function(el) {
       createInputOfType(el, 'range');
     }

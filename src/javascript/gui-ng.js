@@ -167,7 +167,11 @@
 
     var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
     var firstChild = el.children[0];
+
+    // Generics for input elements
     if ( accept.indexOf(tagName) >= 0 ) {
+      firstChild = el.querySelector('textarea, input, select, button');
+
       if ( param === 'value' ) {
         if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
           if ( value ) {
@@ -189,6 +193,19 @@
       }
     }
 
+    // Other types of elements
+    accept = ['gui-image', 'gui-audio', 'gui-video'];
+    if ( (['src', 'controls', 'autoplay', 'alt']).indexOf(param) >= 0 && accept.indexOf(tagName) >= 0 ) {
+      firstChild.setAttribute(param, value);
+    }
+
+    // Normal DOM attributes
+    if ( (['_id', '_class', '_style']).indexOf(param) >= 0 ) {
+      firstChild.setAttribute(param.replace(/^_/, ''), value);
+      return;
+    }
+
+    // Set the actual root element property value
     if ( param !== 'value' ) {
       if ( typeof value === 'boolean' ) {
         value = value ? 'true' : 'false';
@@ -198,10 +215,6 @@
         } catch ( e ) {}
       }
       el.setAttribute('data-' + param, value);
-    }
-
-    if ( param === 'src' && tagName === 'gui-image' ) {
-      firstChild.setAttribute('src', value);
     }
   }
 
@@ -464,15 +477,9 @@
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
-        // Fixes weird whitespaces with inline-block elements
-        html = html.replace(/\n/g, '')
-                   .replace(/[\t ]+</g, '<')
-                   .replace(/\>[\t ]+</g, '><')
-                   .replace(/\>[\t ]+$/g, '>');
-
         var doc = document.createDocumentFragment();
         var wrapper = document.createElement('div');
-        wrapper.innerHTML = html;
+        wrapper.innerHTML = Utils.cleanHTML(html);
         doc.appendChild(wrapper);
         self.scheme = doc;
 
@@ -536,13 +543,6 @@
     var content = this.parse(id, type, win, onparse);
     if ( content ) {
       var children = content.children;
-      /*
-      for ( var i = 0; i < children.length; i++ ) {
-        root.appendChild(children[i].cloneNode(true));
-      }
-      */
-
-      // Appending nodes from somewere moves it!
       var i = 0;
       while ( children.length && i < 10000 ) {
         root.appendChild(children[0]);
@@ -556,20 +556,8 @@
     params = params || {};
     parentNode = parentNode || win.getRoot();
 
-    var el = document.createElement(tagName);
-    Object.keys(params).forEach(function(k) {
-      var val = params[k];
-      if ( typeof val === 'boolean' ) {
-        val = val ? 'true' : 'false';
-      } else {
-        val = val.toString();
-      }
-
-      el.setAttribute('data-' + k, val);
-    });
-
+    var el = createElement(tagName);
     parentNode.appendChild(el);
-
     OSjs.GUI.Elements[tagName].build(el, applyArgs, win);
 
     return new UIElement(el);

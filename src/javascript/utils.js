@@ -636,6 +636,23 @@
     return response;
   };
 
+
+  /**
+   * Remove whitespaces and newlines from HTML document
+   *
+   * @param   String    html          HTML string input
+   *
+   * @return  String
+   *
+   * @api     OSjs.Utils.cleanHTML()
+   */
+  OSjs.Utils.cleanHTML = function(html) {
+    return html.replace(/\n/g, '')
+               .replace(/[\t ]+</g, '<')
+               .replace(/\>[\t ]+</g, '><')
+               .replace(/\>[\t ]+$/g, '>');
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
