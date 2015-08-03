@@ -30,15 +30,6 @@
 (function(API, Utils, VFS) {
   'use strict';
 
-  //////////////////////////////////////////////////////////////////////
-  //                                                                  //
-  //                         !!! WARNING !!!                          //
-  //                                                                  //
-  // THIS IS HIGHLY EXPERIMENTAL, BUT WILL BECOME THE NEXT GENERATION //
-  // GUI SYSTEM: https://github.com/andersevenrud/OS.js-v2/issues/136 //
-  //                                                                  //
-  //////////////////////////////////////////////////////////////////////
-
   window.OSjs = window.OSjs || {};
   OSjs.API = OSjs.API || {};
 
@@ -49,6 +40,15 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Gets window id from upper parent element
+   *
+   * @param   DOMElement      el      Child element (can be anything)
+   *
+   * @return  int
+   *
+   * @api OSjs.GUI.Helpers.getWindowId()
+   */
   function getWindowId(el) {
     while ( el.parentNode ) {
       var attr = el.getAttribute('data-window-id');
@@ -60,11 +60,29 @@
     return null;
   }
 
+  /**
+   * Gets "label" from a node
+   *
+   * @param   DOMElement      el      The element
+   *
+   * @return  String
+   *
+   * @api OSjs.GUI.Helpers.getLabel()
+   */
   function getLabel(el) {
     var label = el.getAttribute('data-label');
     return label || '';
   }
 
+  /**
+   * Gets "label" from a node (Where it can be innerHTML and parameter)
+   *
+   * @param   DOMElement      el      The element
+   *
+   * @return  String
+   *
+   * @api OSjs.GUI.Helpers.getValueLabel()
+   */
   function getValueLabel(el, attr) {
     var label = attr ? el.getAttribute('data-label') : null;
 
@@ -76,8 +94,17 @@
     return label || '';
   }
 
-  function getViewNodeValue(found) {
-    var value = found.getAttribute('data-value');
+  /**
+   * Gets "value" from a node
+   *
+   * @param   DOMElement      el       The element
+   *
+   * @return  String
+   *
+   * @api OSjs.GUI.Helpers.getViewNodeValue()
+   */
+  function getViewNodeValue(el) {
+    var value = el.getAttribute('data-value');
     try {
       value = JSON.parse(value);
     } catch ( e ) {
@@ -86,6 +113,16 @@
     return value;
   }
 
+  /**
+   * Internal for getting
+   *
+   * @param   DOMElement          el      Element
+   * @param   OSjs.Core.Window    win     (optional) Window Reference
+   *
+   * @return  String
+   *
+   * @api OSjs.GUI.Helpers.getIcon()
+   */
   function getIcon(el, win) {
     var image = el.getAttribute('data-icon');
 
@@ -113,6 +150,9 @@
     return image;
   }
 
+  /**
+   * Internal for parsing GUI elements
+   */
   function parseDynamic(node, win) {
     // TODO: Support application locales! :)
     node.querySelectorAll('*[data-label]').forEach(function(el) {
@@ -133,6 +173,17 @@
     });
   }
 
+  /**
+   * Wrapper for getting custom dom element property value
+   *
+   * @param   DOMElement      el      Element
+   * @param   String          param   Parameter name
+   * @param   String          tagName (Optional) What tagname is in use? Automatic
+   *
+   * @api OSjs.GUI.Helpers.getProperty()
+   *
+   * @return  Mixed
+   */
   function getProperty(el, param, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
     var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
@@ -154,6 +205,18 @@
     return el.getAttribute('data-' + param);
   }
 
+  /**
+   * Wrapper for setting custom dom element property value
+   *
+   * @param   DOMElement      el      Element
+   * @param   String          param   Parameter name
+   * @param   Mixed           value   Parameter value
+   * @param   String          tagName (Optional) What tagname is in use? Automatic
+   *
+   * @api OSjs.GUI.Helpers.setProperty()
+   *
+   * @return  void
+   */
   function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
@@ -217,6 +280,14 @@
     }
   }
 
+  /**
+   * Create a new custom DOM element
+   *
+   * @param   String      tagName     Tag Name
+   * @param   Object      params      Dict with data-* properties
+   *
+   * @return  DOMElement
+   */
   function createElement(tagName, params) {
     var el = document.createElement(tagName);
 
@@ -243,28 +314,6 @@
       el.setAttribute('data-' + k, value);
     });
     return el;
-  }
-
-  function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
-    root = root || item.parentNode;
-
-    if ( !multipleSelect || !ev.shiftKey ) {
-      root.querySelectorAll(className).forEach(function(i) {
-        Utils.$removeClass(i, 'gui-active');
-      });
-      selected = [];
-    }
-
-    var findex = selected.indexOf(idx);
-    if ( findex >= 0 ) {
-      selected.splice(findex, 1);
-      Utils.$removeClass(item, 'gui-active');
-    } else {
-      selected.push(idx);
-      Utils.$addClass(item, 'gui-active');
-    }
-
-    return selected;
   }
 
   /**
@@ -366,6 +415,9 @@
 
   /**
    * Base UIElement Class
+   *
+   * @api OSjs.GUI.UIElement()
+   * @class
    */
   function UIElement(el, q) {
     this.$element = el || null;
@@ -454,6 +506,9 @@
 
   /**
    * Extended UIElement for ListView, TreeView, IconView, Select, SelectList
+   * @extends UIElement
+   * @api OSjs.GUI.UIElementDataView()
+   * @class
    */
   function UIElementDataView() {
     UIElement.apply(this, arguments);
@@ -490,6 +545,13 @@
   // UISCHEME CLASS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * The class for loading and parsing UI Schemes
+   *
+   * @api   OSjs.GUI.UIScheme
+   *
+   * @class
+   */
   function UIScheme(url) {
     this.url = url;
     this.scheme = null;
@@ -617,11 +679,17 @@
     getWindowId: getWindowId,
     createElement: createElement,
     createDrag: createDrag,
-    handleItemSelection: handleItemSelection,
     setProperty: setProperty,
     setFlexbox: setFlexbox
   };
 
+  /**
+   * Shortcut for creating a new UIScheme class
+   *
+   * @param String    url     URL to scheme file
+   * @return UIScheme
+   * @api OSjs.GUI.createScheme()
+   */
   OSjs.GUI.createScheme = function(url) {
     return new UIScheme(url);
   };

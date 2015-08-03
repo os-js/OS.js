@@ -37,6 +37,31 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
+    root = root || item.parentNode;
+
+    if ( !multipleSelect || !ev.shiftKey ) {
+      root.querySelectorAll(className).forEach(function(i) {
+        Utils.$removeClass(i, 'gui-active');
+      });
+      selected = [];
+    }
+
+    var findex = selected.indexOf(idx);
+    if ( findex >= 0 ) {
+      selected.splice(findex, 1);
+      Utils.$removeClass(item, 'gui-active');
+    } else {
+      selected.push(idx);
+      Utils.$addClass(item, 'gui-active');
+    }
+
+    return selected;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
 
   GUI.Elements._dataview = {
     clear: function(el, body) {
@@ -153,7 +178,7 @@
           var multipleSelect = el.getAttribute('data-multiple');
           multipleSelect = multipleSelect === null || multipleSelect === 'true';
           var idx = Utils.$index(row);
-          el._selected = GUI.Helpers.handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
+          el._selected = handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
 
           var selected = getSelected();
           el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
@@ -165,7 +190,7 @@
           multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
           var idx = Utils.$index(row);
-          el._selected = GUI.Helpers.handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
+          el._selected = handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
           el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
         }, false);
 
