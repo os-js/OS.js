@@ -55,7 +55,7 @@
         if ( found ) {
           selected.push({
             index: iter,
-            data: getViewNodeValue(found)
+            data: GUI.Helpers.getViewNodeValue(found)
           });
         }
       });
@@ -73,7 +73,7 @@
         var multipleSelect = el.getAttribute('data-multiple');
         multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
-        return handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el, multipleSelect);
+        return GUI.Helpers.handleItemSelection(ev, item, idx, 'gui-tree-view-entry', selected, el, multipleSelect);
       }
 
       function handleItemExpand(ev, root, expanded) {

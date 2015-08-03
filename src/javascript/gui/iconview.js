@@ -34,19 +34,6 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function getViewNodeValue(found) {
-    var value = found.getAttribute('data-value');
-    try {
-      value = JSON.parse(value);
-    } catch ( e ) {
-      value = null;
-    }
-    return value;
-  }
-
-  function handleItemClick(ev, item, idx, selected) {
-  }
-
   function initEntry(el, cel) {
     function getSelected() {
       return GUI.Elements['gui-icon-view'].values(el);
@@ -69,7 +56,7 @@
       var idx = Utils.$index(cel);
       var multipleSelect = el.getAttribute('data-multiple');
       multipleSelect = multipleSelect === null || multipleSelect === 'true';
-      el._selected = handleItemSelection(ev, cel, idx, 'gui-icon-view-entry', el._selected, null, multipleSelect);
+      el._selected = GUI.Helpers.handleItemSelection(ev, cel, idx, 'gui-icon-view-entry', el._selected, null, multipleSelect);
       el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
     }, false);
     Utils.$bind(cel, 'dblclick', function(ev) {
@@ -149,7 +136,7 @@
         if ( found ) {
           selected.push({
             index: iter,
-            data: getViewNodeValue(found)
+            data: GUI.Helpers.getViewNodeValue(found)
           });
         }
       });
@@ -187,7 +174,7 @@
       active.forEach(function(iter) {
         var found = el.querySelectorAll('gui-icon-view-entry')[iter];
         if ( found ) {
-          selected.push({index: iter, data: getViewNodeValue(found)});
+          selected.push({index: iter, data: GUI.Helpers.getViewNodeValue(found)});
         }
       });
       return selected;

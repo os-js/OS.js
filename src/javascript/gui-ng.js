@@ -76,6 +76,16 @@
     return label || '';
   }
 
+  function getViewNodeValue(found) {
+    var value = found.getAttribute('data-value');
+    try {
+      value = JSON.parse(value);
+    } catch ( e ) {
+      value = null;
+    }
+    return value;
+  }
+
   function getIcon(el, win) {
     var image = el.getAttribute('data-icon');
 
@@ -599,11 +609,13 @@
   OSjs.GUI.Scheme = UIScheme;
   OSjs.GUI.Helpers = {
     getValueLabel: getValueLabel,
+    getViewNodeValue: getViewNodeValue,
     getLabel: getLabel,
     getIcon: getIcon,
     getWindowId: getWindowId,
     createElement: createElement,
     createDrag: createDrag,
+    handleItemSelection: handleItemSelection,
     setProperty: setProperty,
     setFlexbox: setFlexbox
   };

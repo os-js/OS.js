@@ -134,7 +134,7 @@
         var multipleSelect = el.getAttribute('data-multiple');
         multipleSelect = multipleSelect === null || multipleSelect === 'true';
         var idx = Utils.$index(row);
-        el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
+        el._selected = GUI.Helpers.handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
 
         var selected = getSelected();
         el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
@@ -146,7 +146,7 @@
         multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
         var idx = Utils.$index(row);
-        el._selected = handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
+        el._selected = GUI.Helpers.handleItemSelection(ev, row, idx, 'gui-list-view-row', el._selected, null, multipleSelect);
         el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
       }, false);
 
@@ -321,7 +321,7 @@
       active.forEach(function(iter) {
         var found = body.querySelectorAll('gui-list-view-row')[iter];
         if ( found ) {
-          selected.push({index: iter, data: getViewNodeValue(found)});
+          selected.push({index: iter, data: GUI.Helpers.getViewNodeValue(found)});
         }
       });
       return selected;
