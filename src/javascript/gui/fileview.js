@@ -174,6 +174,7 @@
               return API.getFileIcon(iter, null, icon);
             }
 
+            var filesize = Utils.humanFileSize(iter.size);
             if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
               return {
                 value: iter,
@@ -189,7 +190,7 @@
               columns: [
                 {label: iter.filename, icon: _getIcon(iter)},
                 {label: iter.mime, textalign: 'right'},
-                {label: iter.size, textalign: 'right'}
+                {label: filesize, textalign: 'right'}
               ]
             };
           });
