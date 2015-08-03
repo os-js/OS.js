@@ -392,11 +392,16 @@
 
   CoreWM.prototype.initDesktop = function() {
     var self = this;
-    document.body.oncontextmenu = function(ev) {
-      ev.preventDefault();
-      self.openDesktopMenu(ev);
-      return false;
-    };
+
+    document.addEventListener('contextmenu', function(ev) {
+      if ( ev.target === document.body ) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self.openDesktopMenu(ev);
+        return false;
+      }
+      return true;
+    }, true);
   };
 
   CoreWM.prototype.initPanels = function(applySettings) {

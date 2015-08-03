@@ -119,6 +119,7 @@
   var _INITED = false;
 
   function onContextMenu(ev) {
+    ev.stopPropagation();
     if ( !OSjs.Utils.$isInput(ev) ) {
       ev.preventDefault();
       return false;

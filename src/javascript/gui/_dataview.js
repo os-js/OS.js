@@ -207,7 +207,9 @@
       }
 
       Utils.$bind(row, 'contextmenu', function(ev) {
+        ev.preventDefault();
         context(ev);
+        return false;
       }, false);
 
       if ( el.getAttribute('data-draggable') === 'true' ) {
