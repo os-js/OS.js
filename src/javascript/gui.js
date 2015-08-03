@@ -500,8 +500,12 @@
   };
 
   UIElement.prototype.show = function() {
-    if ( this.$element ) {
-      this.$element.style.display = this.oldDisplay || '';
+    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
+      OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
+    } else {
+      if ( this.$element ) {
+        this.$element.style.display = this.oldDisplay || '';
+      }
     }
     return this;
   };

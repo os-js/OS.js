@@ -41,6 +41,18 @@
     lastMenu();
   }
 
+  function bindSelectionEvent(child, span, idx, expand, dispatcher) {
+    var id = child.getAttribute('data-id');
+    dispatcher = dispatcher || span;
+
+    Utils.$bind(span, 'mousedown', function(ev) {
+      dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+      if ( !ev.target.querySelector('input') ) {
+        blurMenu();
+      }
+    }, false);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -53,6 +65,20 @@
       el.querySelectorAll('gui-menu-entry > label').forEach(function(target) {
         Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
       });
+    },
+    show: function(ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      // This is to use a menu-bar > menu as a contextmenu
+      var newNode = this.$element.cloneNode(true);
+      var el = this.$element;
+      newNode.querySelectorAll('gui-menu-entry > label').forEach(function(label) {
+        var expand = label.children.length > 0;
+        var i = Utils.$index(label.parentNode);
+        bindSelectionEvent(label.parentNode, label, i, expand, el.querySelector('label'));
+      });
+      OSjs.API.createMenu(null, ev, newNode);
     },
     set: function(el, param, value, arg) {
       if ( param === 'checked' ) {
@@ -72,16 +98,6 @@
       return false;
     },
     build: function(el, customMenu, winRef) {
-      function bindSelectionEvent(child, span, idx, expand) {
-        var id = child.getAttribute('data-id');
-
-        Utils.$bind(span, 'mousedown', function(ev) {
-          span.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
-          if ( !ev.target.querySelector('input') ) {
-            blurMenu();
-          }
-        }, false);
-      }
 
       function createTyped(child, par) {
         var type = child.getAttribute('data-type');
@@ -181,36 +197,38 @@
   OSjs.API.blurMenu = blurMenu;
   OSjs.API.createMenu = function(items, ev, customInstance) {
     items = items || [];
-
     blurMenu();
 
-    var root = GUI.Helpers.createElement('gui-menu', {});
-    function resolveItems(arr, par) {
-      arr.forEach(function(iter) {
-        var entry = GUI.Helpers.createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
-        if ( iter.menu ) {
-          var nroot = GUI.Helpers.createElement('gui-menu', {});
-          resolveItems(iter.menu, nroot);
-          entry.appendChild(nroot);
-        }
-        if ( iter.onClick ) {
-          Utils.$bind(entry, 'mousedown', function(ev) {
-            ev.stopPropagation();
-            iter.onClick.apply(this, arguments);
+    var root = customInstance;
+    if ( !root ) {
+      root = GUI.Helpers.createElement('gui-menu', {});
+      function resolveItems(arr, par) {
+        arr.forEach(function(iter) {
+          var entry = GUI.Helpers.createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
+          if ( iter.menu ) {
+            var nroot = GUI.Helpers.createElement('gui-menu', {});
+            resolveItems(iter.menu, nroot);
+            entry.appendChild(nroot);
+          }
+          if ( iter.onClick ) {
+            Utils.$bind(entry, 'mousedown', function(ev) {
+              ev.stopPropagation();
+              iter.onClick.apply(this, arguments);
 
-            /*
-            if ( !entry.querySelector('input') ) {
-              blurMenu();
-            }
-            */
-          }, false);
-        }
-        par.appendChild(entry);
-      });
+              /*
+              if ( !entry.querySelector('input') ) {
+                blurMenu();
+              }
+              */
+            }, false);
+          }
+          par.appendChild(entry);
+        });
+      }
+
+      resolveItems(items || [], root);
+      GUI.Elements['gui-menu'].build(root, true);
     }
-
-    resolveItems(items || [], root);
-    GUI.Elements['gui-menu'].build(root, true);
 
     var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
     var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;

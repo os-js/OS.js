@@ -104,7 +104,7 @@
     }
 
     scheme.find(this, 'SubmenuFile').on('select', menuEvent);
-    scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
+    var editMenu = scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
     var viewMenu = scheme.find(this, 'SubmenuView').on('select', menuEvent);
 
     viewMenu.set('checked', 'MenuViewList', viewType === 'gui-list-view');
@@ -151,6 +151,12 @@
       if ( ev && ev.detail && ev.detail.entries ) {
         self.checkSelection(ev.detail.entries);
       }
+    });
+    view.on('contextmenu', function(ev) {
+      if ( ev && ev.detail && ev.detail.entries ) {
+        self.checkSelection(ev.detail.entries);
+      }
+      editMenu.show(ev);
     });
 
     //

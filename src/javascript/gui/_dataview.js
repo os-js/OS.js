@@ -173,31 +173,42 @@
       }
 
       var singleClick = el.getAttribute('data-single-click') === 'true';
+
+      function select(ev) {
+        var multipleSelect = el.getAttribute('data-multiple');
+        multipleSelect = multipleSelect === null || multipleSelect === 'true';
+        var idx = Utils.$index(row);
+        el._selected = handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
+
+        var selected = getSelected();
+        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
+      }
+
+      function activate(ev) {
+        var selected = getSelected();
+        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
+      }
+
+      function context(ev) {
+        select(ev);
+
+        var selected = getSelected();
+        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: selected}}));
+      }
+
       if ( singleClick ) {
         Utils.$bind(row, 'click', function(ev) {
-          var multipleSelect = el.getAttribute('data-multiple');
-          multipleSelect = multipleSelect === null || multipleSelect === 'true';
-          var idx = Utils.$index(row);
-          el._selected = handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
-
-          var selected = getSelected();
-          el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
-          el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
+          select(ev);
+          activate(ev);
         });
       } else {
-        Utils.$bind(row, 'click', function(ev) {
-          var multipleSelect = el.getAttribute('data-multiple');
-          multipleSelect = multipleSelect === null || multipleSelect === 'true';
-
-          var idx = Utils.$index(row);
-          el._selected = handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
-          el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected()}}));
-        }, false);
-
-        Utils.$bind(row, 'dblclick', function(ev) {
-          el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected()}}));
-        }, false);
+        Utils.$bind(row, 'click', select, false);
+        Utils.$bind(row, 'dblclick', activate, false);
       }
+
+      Utils.$bind(row, 'contextmenu', function(ev) {
+        context(ev);
+      }, false);
 
       if ( el.getAttribute('data-draggable') === 'true' ) {
         var value = row.getAttribute('data-value');
@@ -263,7 +274,7 @@
     },
 
     bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select', 'expand']).indexOf(evName) !== -1 ) {
+      if ( (['activate', 'select', 'expand', 'contextmenu']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);

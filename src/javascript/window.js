@@ -486,11 +486,12 @@
 
       if ( !r ) {
         ev.preventDefault();
+        ev.stopPropagation();
       }
 
       OSjs.API.blurMenu();
 
-      return r;
+      return !!r;
     });
 
     Utils.$bind(windowIcon, 'dblclick', Utils._preventDefault);
