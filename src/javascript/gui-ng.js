@@ -135,42 +135,30 @@
 
   function getProperty(el, param, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
-    var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
 
-    if ( param === 'value' || (isDataView && param === 'selected') ) {
-      var firstChild;
-      if ( tagName.match(/^gui\-(text|password|textarea)$/) ) {
-        firstChild = el.querySelector('input');
-        if ( tagName === 'gui-textarea' ) {
-          firstChild = el.querySelector('textarea');
-        }
-        if ( firstChild ) {
-          return firstChild[param];
-        }
-      } else if ( tagName.match(/^gui\-(checkbox|radio)$/) ) {
-        firstChild = el.querySelector('input');
-        if ( firstChild ) {
-          return firstChild.value === 'on';
-          //return firstChild.getAttribute('checked') === 'checked';
-        }
-      } else if ( isDataView ) {
-        return OSjs.GUI.Elements[tagName].values(el);
+    if ( param === 'value' ) {
+      if ( (['gui-text', 'gui-password', 'gui-textarea']).indexOf(tagName) >= 0 ) {
+        return el.querySelector('input, textarea').value;
       }
-
+      if ( (['gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
+        return el.querySelector('input').value === 'on';
+      }
       return null;
     }
+
+    var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
+    if ( (param === 'value' || param === 'selected') && isDataView ) {
+      return OSjs.GUI.Elements[tagName].values(el);
+    }
+
     return el.getAttribute('data-' + param);
   }
 
   function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
-    var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
-    var firstChild = el.children[0];
-
-    // Generics for input elements
-    if ( accept.indexOf(tagName) >= 0 ) {
-      firstChild = el.querySelector('textarea, input, select, button');
+    function _setInputProperty() {
+      var firstChild = el.querySelector('textarea, input, select, button');
 
       if ( param === 'value' ) {
         if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
@@ -179,18 +167,36 @@
           } else {
             firstChild.removeAttribute('checked');
           }
-        } else {
-          firstChild[param] = value;
+          return;
         }
-      } else if ( param === 'placeholder' ) {
-        firstChild.setAttribute('placeholder', value || '');
       } else if ( param === 'disabled' ) {
         if ( value ) {
           firstChild.setAttribute('disabled', 'disabled');
         } else {
           firstChild.removeAttribute('disabled');
         }
+        return;
       }
+
+      firstChild.setAttribute(param, value || '');
+    }
+
+    function _setElementProperty() {
+      if ( typeof value === 'boolean' ) {
+        value = value ? 'true' : 'false';
+      } else if ( typeof value === 'object' ) {
+        try {
+          value = JSON.stringify(value);
+        } catch ( e ) {}
+      }
+      el.setAttribute('data-' + param, value);
+    }
+
+    // Generics for input elements
+    var firstChild = el.children[0];
+    var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
+    if ( accept.indexOf(tagName) >= 0 ) {
+      _setInputProperty();
     }
 
     // Other types of elements
@@ -207,14 +213,7 @@
 
     // Set the actual root element property value
     if ( param !== 'value' ) {
-      if ( typeof value === 'boolean' ) {
-        value = value ? 'true' : 'false';
-      } else if ( typeof value === 'object' ) {
-        try {
-          value = JSON.stringify(value);
-        } catch ( e ) {}
-      }
-      el.setAttribute('data-' + param, value);
+      _setElementProperty();
     }
   }
 
