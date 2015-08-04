@@ -1057,61 +1057,46 @@ gui-list-view {
       display: flex;
 
       flex-flow : row nowrap;
-
-      -webkit-flex: 0 0 auto;
-         -moz-flex: 0 0 auto;
-          -ms-flex: 0 0 auto;
-           -o-flex: 0 0 auto;
-              flex: 0 0 auto;
-    }
-    gui-list-view[data-icon-size="32"] gui-list-view-row {
-      -webkit-flex: 0 0 32px;
-         -moz-flex: 0 0 32px;
-          -ms-flex: 0 0 32px;
-           -o-flex: 0 0 32px;
-              flex: 0 0 32px;
     }
     gui-list-view-head gui-list-view-column {
       overflow : visible;
     }
-      gui-list-view-column {
-        position : relative;
-        display : inline-block;
-        background-repeat : no-repeat;
-        background-position : left center;
-        overflow : hidden;
+    gui-list-view-column {
+      position : relative;
+      display : inline-block;
+      background-repeat : no-repeat;
+      background-position : left center;
+      overflow : hidden;
+      line-height : 16px;
 
-        -webkit-flex: 1 0 auto;
-           -moz-flex: 1 0 auto;
-            -ms-flex: 1 0 auto;
-             -o-flex: 1 0 auto;
-                flex: 1 0 auto;
+      -webkit-flex: 1 0 auto;
+         -moz-flex: 1 0 auto;
+          -ms-flex: 1 0 auto;
+           -o-flex: 1 0 auto;
+              flex: 1 0 auto;
 
-        flex-flow: row nowrap;
+      flex-flow: row nowrap;
 
-        -webkit-text-overflow: ellipsis;
-           -moz-text-overflow: ellipsis;
-            -ms-text-overflow: ellipsis;
-             -o-text-overflow: ellipsis;
-                text-overflow: ellipsis;
+      -webkit-text-overflow: ellipsis;
+         -moz-text-overflow: ellipsis;
+          -ms-text-overflow: ellipsis;
+           -o-text-overflow: ellipsis;
+              text-overflow: ellipsis;
+    }
+    gui-list-view[data-icon-size="32"] gui-list-view-column {
+      line-height : 32px;
+    }
+      gui-list-view-column > * {
+        display : inline;
       }
-        gui-list-view-column > * {
-          display : inline;
-        }
-        gui-list-view-column > span {
-          vertical-align : middle;
-          white-space: nowrap;
-        }
-        gui-list-view[data-icon-size="32"] gui-list-view-column > span {
-          vertical-align : -webkit-baseline-middle;
-          vertical-align : -moz-baseline-middle;
-          vertical-align : -ms-baseline-middle;
-        }
+      gui-list-view-column > span {
+        white-space: nowrap;
+      }
 
-      gui-list-view-column.gui-has-image {
-      }
-      gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
-      }
+    gui-list-view-column.gui-has-image {
+    }
+    gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
+    }
 
     gui-list-view-row.gui-active {
     }
