@@ -252,21 +252,30 @@
       return selected;
     },
 
-    setSelected: function(el, entries) {
+    setSelected: function(el, entries, val, key) {
       var self = this;
       var select = [];
+
+      function sel(r, idx) {
+        select.push(idx);
+        Utils.$addClass(r, 'gui-active');
+        self.scrollIntoView(el, r);
+      }
 
       entries.forEach(function(r, idx) {
         Utils.$removeClass(r, 'gui-active');
 
-        try {
-          var json = JSON.parse(r.getAttribute('data-value'));
-          if ( json[arg] == value ) {
-            select.push(idx);
-            Utils.$addClass(r, 'gui-active');
-            self.scrollIntoView(el, r);
-          }
-        } catch ( e ) {}
+        var value = r.getAttribute('data-value');
+        if ( !key && val === idx ) {
+          sel(r, idx);
+        } else {
+          try {
+            var json = JSON.parse(value);
+            if ( json[key] == val ) {
+              sel(r, idx);
+            }
+          } catch ( e ) {}
+        }
       });
       el._selected = select;
     },

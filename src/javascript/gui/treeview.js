@@ -122,6 +122,15 @@
       });
     },
 
+    set: function(el, param, value, arg) {
+      if ( param === 'selected' || param === 'value' ) {
+        GUI.Elements._dataview.setSelected(el, el.querySelectorAll('gui-icon-view-entry'), value, arg);
+        return true;
+      }
+
+      return false;
+    },
+
     call: function(el, method, args) {
       if ( method === 'add' ) {
         GUI.Elements._dataview.add(el, args, function(e) {

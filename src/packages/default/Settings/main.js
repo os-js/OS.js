@@ -63,6 +63,7 @@
     var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
     var container = scheme.find(this, 'TabsContainer');
     var header = scheme.find(this, 'Header');
+    var view = scheme.find(this, 'IconMenu');
 
     function setContainer(idx) {
       var found;
@@ -75,9 +76,11 @@
 
       header.set('value', indexes[idx].replace(/^Tabs/, ''));
       Utils.$addClass(found, 'active');
+
+      view.set('value', 0);
     }
 
-    scheme.find(this, 'IconMenu').on('select', function(ev) {
+    view.on('select', function(ev) {
       if ( ev.detail && ev.detail.entries && ev.detail.entries.length ) {
         var sel = ev.detail.entries[0].index;
         setContainer(sel);
@@ -90,7 +93,7 @@
     this.initUserTab(wm, scheme);
     this.initPackagesTab(wm, scheme);
 
-    setContainer(3);
+    setContainer(0);
 
     return root;
   };
