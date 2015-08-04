@@ -152,7 +152,7 @@
 
   BroadwayConnectionWindow.prototype = Object.create(Window.prototype);
 
-  BroadwayConnectionWindow.prototype.init = function(wmRef, app, scheme) {
+  BroadwayConnectionWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 

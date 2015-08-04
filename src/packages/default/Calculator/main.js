@@ -94,7 +94,7 @@
   ApplicationCalculatorWindow.prototype = Object.create(Window.prototype);
   ApplicationCalculatorWindow.constructor = Window.prototype;
 
-  ApplicationCalculatorWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationCalculatorWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 

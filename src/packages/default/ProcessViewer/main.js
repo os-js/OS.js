@@ -48,7 +48,7 @@
   ApplicationProcessViewerWindow.prototype = Object.create(Window.prototype);
   ApplicationProcessViewerWindow.constructor = Window.prototype;
 
-  ApplicationProcessViewerWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationProcessViewerWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 

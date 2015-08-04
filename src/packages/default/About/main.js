@@ -50,7 +50,7 @@
   ApplicationAboutWindow.prototype = Object.create(Window.prototype);
   ApplicationAboutWindow.constructor = Window.prototype;
 
-  ApplicationAboutWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationAboutWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     scheme.render(this, 'AboutWindow', root);
     return root;

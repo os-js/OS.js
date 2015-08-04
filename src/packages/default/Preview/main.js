@@ -49,7 +49,7 @@
   ApplicationPreviewWindow.prototype = Object.create(Window.prototype);
   ApplicationPreviewWindow.constructor = Window.prototype;
 
-  ApplicationPreviewWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationPreviewWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 

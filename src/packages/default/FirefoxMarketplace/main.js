@@ -48,7 +48,7 @@
   ApplicationFirefoxMarketplaceWindow.prototype = Object.create(Window.prototype);
   ApplicationFirefoxMarketplaceWindow.constructor = Window.prototype;
 
-  ApplicationFirefoxMarketplaceWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationFirefoxMarketplaceWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 

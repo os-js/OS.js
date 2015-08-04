@@ -53,7 +53,7 @@
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
   ApplicationFileManagerWindow.constructor = Window.prototype;
 
-  ApplicationFileManagerWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationFileManagerWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
     var view;

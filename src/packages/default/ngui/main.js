@@ -48,7 +48,7 @@
 
   ApplicationnguiWindow.prototype = Object.create(Window.prototype);
 
-  ApplicationnguiWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationnguiWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
 
     scheme.render(this, 'MyWindowID', root);

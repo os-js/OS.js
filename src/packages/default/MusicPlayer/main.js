@@ -69,7 +69,7 @@
   ApplicationMusicPlayerWindow.prototype = Object.create(Window.prototype);
   ApplicationMusicPlayerWindow.constructor = Window.prototype;
 
-  ApplicationMusicPlayerWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationMusicPlayerWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 

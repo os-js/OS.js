@@ -41,14 +41,21 @@
       width: 500,
       height: 500
     }, app, scheme]);
+
+    this.settings = {};
   }
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
   ApplicationSettingsWindow.constructor = Window.prototype;
 
-  ApplicationSettingsWindow.prototype.init = function(wmRef, app, scheme) {
+  ApplicationSettingsWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
+
+    Utils.cloneObject(wm.getSettings());
+    delete this.settings.desktopIcons;
+    delete this.settings.fullscreen;
+    delete this.settings.moveOnResize;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'SettingsWindow', root);
@@ -77,6 +84,12 @@
       }
     });
 
+    this.initThemeTab(scheme);
+    this.initDesktopTab(scheme);
+    this.initPanelTab(scheme);
+    this.initUserTab(scheme);
+    this.initPackagesTab(scheme);
+
     setContainer(0);
 
     return root;
@@ -84,6 +97,21 @@
 
   ApplicationSettingsWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationSettingsWindow.prototype.initThemeTab = function(scheme) {
+  };
+
+  ApplicationSettingsWindow.prototype.initDesktopTab = function(scheme) {
+  };
+
+  ApplicationSettingsWindow.prototype.initPanelTab = function(scheme) {
+  };
+
+  ApplicationSettingsWindow.prototype.initUserTab = function(scheme) {
+  };
+
+  ApplicationSettingsWindow.prototype.initPackagesTab = function(scheme) {
   };
 
   /////////////////////////////////////////////////////////////////////////////
