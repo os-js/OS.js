@@ -151,29 +151,6 @@
   }
 
   /**
-   * Internal for parsing GUI elements
-   */
-  function parseDynamic(scheme, node, win) {
-    // TODO: Support application locales! :)
-    node.querySelectorAll('*[data-label]').forEach(function(el) {
-      var label = API._(el.getAttribute('data-label'));
-      el.setAttribute('data-label', label);
-    });
-
-    node.querySelectorAll('gui-button').forEach(function(el) {
-      var label = getValueLabel(el);
-      if ( label ) {
-        el.appendChild(document.createTextNode(API._(label)));
-      }
-    });
-
-    node.querySelectorAll('*[data-icon]').forEach(function(el) {
-      var image = getIcon(el, win);
-      el.setAttribute('data-icon', image);
-    });
-  }
-
-  /**
    * Wrapper for getting custom dom element property value
    *
    * @param   DOMElement      el      Element
@@ -457,6 +434,36 @@
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // INTERNAL HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Internal for parsing GUI elements
+   */
+  function parseDynamic(scheme, node, win) {
+    // TODO: Support application locales! :)
+    node.querySelectorAll('*[data-label]').forEach(function(el) {
+      var label = API._(el.getAttribute('data-label'));
+      el.setAttribute('data-label', label);
+    });
+
+    node.querySelectorAll('gui-button').forEach(function(el) {
+      var label = getValueLabel(el);
+      if ( label ) {
+        el.appendChild(document.createTextNode(API._(label)));
+      }
+    });
+
+    node.querySelectorAll('*[data-icon]').forEach(function(el) {
+      var image = getIcon(el, win);
+      el.setAttribute('data-icon', image);
+    });
+  }
+
+  /**
+   * Method for adding children (moving)
+   */
   function addChildren(frag, root) {
     if ( frag ) {
       var children = frag.children;
@@ -464,6 +471,28 @@
       while ( children.length && i < 10000 ) {
         root.appendChild(children[0]);
         i++;
+      }
+    }
+  }
+
+  /**
+   * Makes sure "include" fragments are rendered correctly
+   */
+  function resolveFragments(scheme, node, el) {
+    var resolving = true;
+    var nodes;
+    while ( resolving ) {
+      nodes = node.querySelectorAll('gui-fragment');
+      if ( nodes.length ) {
+        nodes.forEach(function(el) {
+          var id = el.getAttribute('data-fragment-id');
+          var frag = scheme.getFragment(id, 'application-fragment');
+
+          addChildren(frag, el.parentNode);
+          Utils.$remove(el);
+        });
+      } else {
+        resolving = false;
       }
     }
   }
@@ -673,28 +702,14 @@
       });
 
       // Resolve fragment includes before dynamic rendering
-      var resolving = true;
-      var nodes;
-      while ( resolving ) {
-        nodes = node.querySelectorAll('gui-fragment');
-        if ( nodes.length ) {
-          nodes.forEach(function(el) {
-            var id = el.getAttribute('data-fragment-id');
-            var frag = self.getFragment(id, 'application-fragment');
-            addChildren(frag, el.parentNode);
-            Utils.$remove(el);
-          });
-        } else {
-          resolving = false;
-        }
-      }
+      resolveFragments(this, node);
 
       // Go ahead and parse dynamic elements (like labels)
       parseDynamic(this, node, win);
 
+      // Lastly render elements
       onparse(node);
 
-      // Lastly render elements
       Object.keys(OSjs.GUI.Elements).forEach(function(key) {
         node.querySelectorAll(key).forEach(function(pel) {
           try {
