@@ -388,5 +388,45 @@
     }
   };
 
+  GUI.Elements['gui-input-modal'] = {
+    bind: function(el, evName, callback, params) {
+      if ( evName === 'open' ) { evName = '_open'; }
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+    },
+    get: function(el, param) {
+      if ( param === 'value' ) {
+        var input = el.querySelector('input');
+        return input.value;
+      }
+      return false;
+    },
+    set: function(el, param, value) {
+      if ( param === 'value' ) {
+        var input = el.querySelector('input');
+        input.value = value;
+        return true;
+      }
+      return false;
+    },
+    build: function(el) {
+      var container = document.createElement('div');
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.setAttribute('disabled', 'disabled');
+
+      var button = document.createElement('button');
+      button.innerHTML = '...';
+
+      Utils.$bind(button, 'click', function(ev) {
+        el.dispatchEvent(new CustomEvent('_open', {detail: select.value}));
+      }, false);
+
+      container.appendChild(input);
+      container.appendChild(button);
+      el.appendChild(container);
+    }
+  };
+
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

@@ -755,6 +755,42 @@ gui-file-upload {
   position : relative;
 }
 
+/* Modal Input */
+gui-input-modal {
+  position : relative;
+  display : inline-block;
+
+}
+  gui-input-modal > div {
+    display: -webkit-flex;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: flex;
+  }
+    gui-input-modal input {
+      display : inline-block;
+      padding : 0;
+      margin : 0;
+      border : 0 none;
+      outline : none;
+
+      -webkit-flex: 1 0 auto;
+         -moz-flex: 1 0 auto;
+          -ms-flex: 1 0 auto;
+           -o-flex: 1 0 auto;
+              flex: 1 0 auto;
+    }
+    gui-input-modal button {
+      display : inline-block;
+
+      -webkit-flex: 0 1 auto;
+         -moz-flex: 0 1 auto;
+          -ms-flex: 0 1 auto;
+           -o-flex: 0 1 auto;
+              flex: 0 1 auto;
+    }
+
 /**
  * ===========================================================================
  *                                 MISC

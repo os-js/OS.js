@@ -72,11 +72,29 @@
 .theme_button() {
   cursor : pointer;
   padding : 4px;
-  padding-left : 8px;
-  padding-right : 8px;
   background-color: #f8f8f8;
   background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
   border: 1px solid @gui_input_border_color;
+}
+.theme_button_disabled() {
+  border-color : @gui_disabled_border_color;
+}
+.theme_button_active() {
+  border-color : #d0d0d0;
+}
+
+.theme_label_disabled() {
+  color : @gui_disabled_foreground_color;
+}
+.theme_text_input() {
+  padding : 4px;
+  background-color : @gui_input_background_color;
+  border : 1px solid @gui_border_color;
+}
+.theme_text_input_disabled() {
+  border-color : @gui_disabled_border_color;
+  background-color : @gui_disabled_background_color;
+  color : @gui_disabled_foreground_color;
 }
 
 
@@ -407,11 +425,11 @@ gui-button[data-icon-size="32"] {
     .theme_button();
   }
   gui-button button:active {
-    border-color : #d0d0d0;
+    .theme_button_active();
   }
   gui-button button:disabled:active,
   gui-button button:disabled {
-    border-color : @gui_disabled_border_color;
+    .theme_button_disabled();
   }
   gui-button button:disabled img {
     opacity : .5;
@@ -486,11 +504,10 @@ gui-select {
   height : 26px;
 }
   gui-select select {
-    border: 1px solid @gui_border_color;
-    padding : 4px;
+    .theme_text_input();
   }
   gui-select select:disabled {
-    color : @gui_disabled_foreground_color;
+    .theme_text_input_disabled();
   }
 
   gui-select:before {
@@ -514,15 +531,17 @@ gui-select {
         -ms-transform: rotate(90deg);
             transform: rotate(90deg);
   }
+  gui-select[data-disabled="true"]:before {
+    background-color : @gui_disabled_background_color;
+  }
 
 /* Select List */
-  gui-select-list select {
-    border: 1px solid @gui_border_color;
-    padding : 4px;
-  }
-  gui-select-list select:disabled {
-    color : @gui_disabled_foreground_color;
-  }
+gui-select-list select {
+  .theme_text_input();
+}
+gui-select-list select:disabled {
+  .theme_text_input_disabled();
+}
 
 /* Slider */
 gui-slider {
@@ -614,8 +633,9 @@ gui-switch {
 }
   gui-switch div {
     width : 48px;
-    background : #fff;
-    border : 1px solid @gui_border_color;
+
+    .theme_text_input();
+    padding : 0;
   }
 
   gui-switch button {
@@ -627,12 +647,16 @@ gui-switch {
   }
 
   gui-switch[data-disabled="true"] button {
-    border-color : @gui_disabled_border_color;
+    .theme_button_disabled();
+  }
+  gui-switch[data-disabled="true"] div {
+    .theme_text_input_disabled();
+    padding : 0;
   }
 
   gui-switch[data-disabled="true"] button,
   gui-switch[data-disabled="true"] label {
-    color : @gui_disabled_foreground_color;
+    .theme_label_disabled();
   }
 
 /* Text Field */
@@ -643,9 +667,9 @@ gui-text {
 }
   gui-password input,
   gui-text input {
-    padding : 4px;
-    background-color : @gui_input_background_color;
-    border : 1px solid @gui_border_color;
+    .theme_text_input();
+    padding-left : 8px;
+    padding-right : 8px;
   }
 
   gui-password > label > input,
@@ -655,31 +679,25 @@ gui-text {
 
   gui-password input:disabled,
   gui-text input:disabled {
-    border-color : @gui_disabled_border_color;
-    background-color : @gui_disabled_background_color;
-    color : @gui_disabled_foreground_color;
+    .theme_text_input_disabled();
   }
 
   gui-password[data-disabled="true"] label,
   gui-text[data-disabled="true"] label {
-    color : @gui_disabled_foreground_color;
+    .theme_label_disabled();
   }
 
 
 /* Text Area */
   gui-textarea textarea {
-    padding : 4px;
-    background : @gui_input_background_color;
-    border : 1px solid @gui_border_color;
+    .theme_text_input();
   }
   gui-textarea textarea:disabled {
-    border-color : @gui_disabled_border_color;
-    background-color : @gui_disabled_background_color;
-    color : @gui_disabled_foreground_color;
+    .theme_text_input_disabled();
   }
 
   gui-textarea[data-disabled="true"] label {
-    color : @gui_disabled_foreground_color;
+    .theme_label_disabled();
   }
 
 /* Rich Text */
@@ -692,6 +710,18 @@ gui-richtext {
 /* Grid */
 gui-grid > gui-grid-row > gui-grid-entry { /* li */
   margin: 4px;
+}
+
+/* Modal Input */
+gui-input-modal input {
+  .theme_text_input();
+  .theme_text_input_disabled();
+}
+gui-input-modal button {
+  margin-left : 4px;
+  .theme_button();
+  padding-left : 8px;
+  padding-right : 8px;
 }
 
 /**
