@@ -153,7 +153,7 @@
   /**
    * Internal for parsing GUI elements
    */
-  function parseDynamic(node, win) {
+  function parseDynamic(scheme, node, win) {
     // TODO: Support application locales! :)
     node.querySelectorAll('*[data-label]').forEach(function(el) {
       var label = API._(el.getAttribute('data-label'));
@@ -630,21 +630,30 @@
     });
   };
 
-  UIScheme.prototype.parse = function(id, type, win, onparse) {
-    onparse = onparse || function() {};
-
-    var content;
-    if ( type ) {
-      content = this.scheme.querySelector(type + '[data-id="' + id + '"]');
-    } else {
-      content = this.scheme.querySelector('application-window[data-id="' + id + '"]') ||
-                this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
+  UIScheme.prototype.getFragment = function(id, type) {
+    var content = null;
+    if ( id ) {
+      if ( type ) {
+        content = this.scheme.querySelector(type + '[data-id="' + id + '"]');
+      } else {
+        content = this.scheme.querySelector('application-window[data-id="' + id + '"]') ||
+                  this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
+      }
     }
+    return content;
+  };
+
+  UIScheme.prototype.parse = function(id, type, win, onparse) {
+    var self = this;
+    var content = this.getFragment(id, type);
 
     type = type || content.tagName.toLowerCase();
+    onparse = onparse || function() {};
+
     if ( content ) {
       var node = content.cloneNode(true);
 
+      // Apply a default className to non-containers
       node.querySelectorAll('*').forEach(function(el) {
         var lcase = el.tagName.toLowerCase();
         if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|toolbar|button\-bar)$/) ) {
@@ -652,10 +661,30 @@
         }
       });
 
-      parseDynamic(node, win);
+      // Resolve fragment includes before dynamic rendering
+      node.querySelectorAll('gui-fragment').forEach(function(el) {
+        var id = el.getAttribute('data-fragment-id');
+        var frag = self.getFragment(id, 'application-fragment');
+        if ( frag ) {
+
+          var children = frag.children;
+          var i = 0;
+          while ( children.length && i < 10000 ) {
+            el.parentNode.appendChild(children[0]);
+            i++;
+          }
+
+          //el.parentNode.insertBefore(frag, el);
+          Utils.$remove(el);
+        }
+      });
+
+      // Go ahead and parse dynamic elements (like labels)
+      parseDynamic(this, node, win);
 
       onparse(node);
 
+      // Lastly render elements
       Object.keys(OSjs.GUI.Elements).forEach(function(key) {
         node.querySelectorAll(key).forEach(function(pel) {
           try {
