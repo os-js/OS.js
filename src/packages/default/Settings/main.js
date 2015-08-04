@@ -85,12 +85,12 @@
     });
 
     this.initThemeTab(wm, scheme);
-    this.initDesktopTab(scheme);
-    this.initPanelTab(scheme);
-    this.initUserTab(scheme);
-    this.initPackagesTab(scheme);
+    this.initDesktopTab(wm, scheme);
+    this.initPanelTab(wm, scheme);
+    this.initUserTab(wm, scheme);
+    this.initPackagesTab(wm, scheme);
 
-    setContainer(0);
+    setContainer(3);
 
     return root;
   };
@@ -145,16 +145,58 @@
     scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
   };
 
-  ApplicationSettingsWindow.prototype.initDesktopTab = function(scheme) {
+  ApplicationSettingsWindow.prototype.initDesktopTab = function(wm, scheme) {
+    scheme.find(this, 'EnableHotkeys').set('value', this.settings.enableHotkeys);
+    scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
+
+    scheme.find(this, 'DesktopMargin').set('value', this.settings.desktopMargin);
+    scheme.find(this, 'CornerSnapping').set('value', this.settings.windowCornerSnap);
+    scheme.find(this, 'WindowSnapping').set('value', this.settings.windowSnap);
+
+    scheme.find(this, 'EnableIconView').set('value', this.settings.enableIconView);
+    scheme.find(this, 'EnableIconViewInvert').set('value', this.settings.invertIconViewColor);
   };
 
-  ApplicationSettingsWindow.prototype.initPanelTab = function(scheme) {
+  ApplicationSettingsWindow.prototype.initPanelTab = function(wm, scheme) {
+    var panel = this.settings.panels[0];
+
+    var panelPositions = [
+      {value: 'top',    label: API._('LBL_TOP')},
+      {value: 'bottom', label: API._('LBL_BOTTOM')}
+    ];
+
+    var opacity = 85;
+    if ( typeof panel.options.opacity === 'number' ) {
+      opacity = panel.options.opacity;
+    }
+
+    scheme.find(this, 'PanelPosition').add(panelPositions).set('value', panel.options.position);
+    scheme.find(this, 'PanelAutoHide').set('value', panel.options.autohide);
+    scheme.find(this, 'PanelOntop').set('value', panel.options.ontop);
+    scheme.find(this, 'PanelBackgroundColor').set('value', panel.options.background || '#101010');
+    scheme.find(this, 'PanelForegroundColor').set('value', panel.options.foreground || '#ffffff');
+    scheme.find(this, 'PanelOpacity').set('value', opacity);
   };
 
-  ApplicationSettingsWindow.prototype.initUserTab = function(scheme) {
+  ApplicationSettingsWindow.prototype.initUserTab = function(wm, scheme) {
+    var user = OSjs.Core.getHandler().getUserData();
+    var locales = OSjs.Core.getHandler().getConfig('Core').Languages;
+    var langs = [];
+
+    Object.keys(locales).forEach(function(l) {
+      langs.push({label: locales[l], value: l});
+    });
+
+    var data = OSjs.Core.getHandler().getUserData();
+    scheme.find(this, 'UserID').set('value', user.id);
+    scheme.find(this, 'UserName').set('value', user.name);
+    scheme.find(this, 'UserUsername').set('value', user.username);
+    scheme.find(this, 'UserGroups').set('value', user.groups);
+
+    scheme.find(this, 'UserLocale').add(langs).set('value', API.getLocale());
   };
 
-  ApplicationSettingsWindow.prototype.initPackagesTab = function(scheme) {
+  ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme) {
   };
 
   /////////////////////////////////////////////////////////////////////////////
