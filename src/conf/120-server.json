@@ -1,0 +1,13 @@
+{
+  "server" : {
+    "vfs": {
+      "homes":  "%DROOT%/vfs/home",
+      "tmp":    "%DROOT%/vfs/tmp",
+      "public": "%DROOT%/vfs/public",
+      "mounts": {
+      }
+    },
+    "handler" : "%HANDLER%",
+    "port" : 8000
+  }
+}

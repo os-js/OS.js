@@ -146,7 +146,7 @@
             config = mergeObject(tjson, json);
           } catch ( e ) {
             console.log(e.stack);
-            grunt.fail.warn('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
+            console.warn('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
           }
         });
 
@@ -273,10 +273,10 @@
     var extensions = getCoreExtensions();
 
     function buildPHPConfig() {
-      var root = JSON.parse(JSON.stringify(BUILD.settings));
+      var root = JSON.parse(JSON.stringify(BUILD.server));
       var loadExtensions = [];
 
-      var settings = root.backend;
+      var settings = root;
       extensions.forEach(function(e) {
         var p = _path.join(e._root, 'api.php');
         if ( _fs.existsSync(p) ) {
@@ -287,7 +287,7 @@
         settings.extensions = loadExtensions;
       }
       try {
-        settings.MaxUpload = root.frontend.Core.MaxUploadSize;
+        settings.MaxUpload = root.client.Core.MaxUploadSize;
       } catch ( exc ) {}
 
       Object.keys(settings.vfs).forEach(function(key) {
@@ -304,7 +304,7 @@
 
 
     function buildNodeConfig() {
-      var cfg_node = JSON.parse(JSON.stringify(BUILD.settings.backend));
+      var cfg_node = JSON.parse(JSON.stringify(BUILD.server));
 
       loadExtensions = [];
       extensions.forEach(function(e) {
@@ -324,7 +324,7 @@
       var cfg_js = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'settings.js')).toString();
       var preloads = [];
 
-      settings = JSON.parse(JSON.stringify(BUILD.settings.frontend));
+      settings = JSON.parse(JSON.stringify(BUILD.client));
       if ( settings.Core.Preloads ) {
         Object.keys(settings.Core.Preloads).forEach(function(k) {
           preloads.push(settings.Core.Preloads[k]);
@@ -409,7 +409,6 @@
       settings.Core.Preloads = preloads;
       settings.Dist = distType;
 
-      /* NOTE DISABLED IN THIS BRANCH
       if ( distType === 'dist-dev' ) {
         if ( typeof settings.System.AutoStart !== 'undefined' ) {
           if ( settings.System.AutoStart.indexOf('DeveloperService') === -1 ) {
@@ -417,7 +416,6 @@
           }
         }
       }
-      */
 
       extensions.forEach(function(e) {
         if ( e.sources ) {
@@ -433,12 +431,16 @@
       return cfg_js.replace("%CONFIG%", JSON.stringify(settings, null, 2));
     }
 
-    return {
-      js_dist: buildJSConfig('dist'),
-      js_dev: buildJSConfig('dist-dev'),
-      node: buildNodeConfig(),
-      php: buildPHPConfig()
-    };
+    try {
+      return {
+        js_dist: buildJSConfig('dist'),
+        js_dev: buildJSConfig('dist-dev'),
+        node: buildNodeConfig(),
+        php: buildPHPConfig()
+      };
+    } catch ( e ) {
+      console.log(e.stack);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////

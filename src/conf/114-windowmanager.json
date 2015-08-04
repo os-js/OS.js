@@ -1,12 +1,10 @@
 {
-  "settings" : {
-    "frontend" : {
-      "WM" : {
-        "exec": "CoreWM",
-        "args": {
-          "defaults": {
-            "theme": "default"
-          }
+  "client" : {
+    "WM" : {
+      "exec": "CoreWM",
+      "args": {
+        "defaults": {
+          "theme": "default"
         }
       }
     }

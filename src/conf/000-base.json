@@ -2,12 +2,11 @@
   "handler": "demo",
   "connection": "http",
 
-  "settings" : {
-    "frontend" : {
-      "Version" : "2.0-alpha61"
-    },
-    "backend" : {
-    }
+  "client" : {
+    "Version" : "2.0-alpha61"
+  },
+
+  "server" : {
   },
 
   "locales": {
