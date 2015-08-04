@@ -52,7 +52,7 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    Utils.cloneObject(wm.getSettings());
+    this.settings = Utils.cloneObject(wm.getSettings());
     delete this.settings.desktopIcons;
     delete this.settings.fullscreen;
     delete this.settings.moveOnResize;
@@ -84,7 +84,7 @@
       }
     });
 
-    this.initThemeTab(scheme);
+    this.initThemeTab(wm, scheme);
     this.initDesktopTab(scheme);
     this.initPanelTab(scheme);
     this.initUserTab(scheme);
@@ -99,7 +99,50 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationSettingsWindow.prototype.initThemeTab = function(scheme) {
+  ApplicationSettingsWindow.prototype.initThemeTab = function(wm, scheme) {
+    var _ = OSjs.Applications.ApplicationSettings._;
+
+    var styleThemes = [];
+    var soundThemes = [];
+    var iconThemes = [];
+    var backgroundTypes = [
+      {value: 'image',        label: API._('LBL_IMAGE')},
+      {value: 'image-repeat', label: _('Image (Repeat)')},
+      {value: 'image-center', label: _('Image (Centered)')},
+      {value: 'image-fill',   label: _('Image (Fill)')},
+      {value: 'image-strech', label: _('Image (Streched)')},
+      {value: 'color',        label: API._('LBL_COLOR')}
+    ];
+
+    var tmp;
+
+    wm.getStyleThemes().forEach(function(t) {
+      styleThemes.push({label: t.title, value: t.name});
+    });
+
+    tmp = wm.getSoundThemes();
+    Object.keys(tmp).forEach(function(t) {
+      soundThemes.push({label: tmp[t], value: t});
+    });
+
+    tmp = wm.getIconThemes();
+    Object.keys(tmp).forEach(function(t) {
+      iconThemes.push({label: tmp[t], value: t});
+    });
+
+    scheme.find(this, 'StyleThemeName').add(styleThemes).set('value', this.settings.theme);
+    scheme.find(this, 'SoundThemeName').add(soundThemes).set('value', this.settings.sounds);
+    scheme.find(this, 'IconThemeName').add(iconThemes).set('value', this.settings.icons);
+
+    scheme.find(this, 'EnableAnimations').set('value', this.settings.animations);
+    scheme.find(this, 'EnableSounds').set('value', this.settings.enableSounds);
+    scheme.find(this, 'EnableTouchMenu').set('value', this.settings.useTouchMenu);
+
+    scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper);
+    scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor);
+    scheme.find(this, 'BackgroundStyle').add(backgroundTypes).set('value', this.settings.background);
+
+    scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
   };
 
   ApplicationSettingsWindow.prototype.initDesktopTab = function(scheme) {
