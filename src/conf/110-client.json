@@ -38,7 +38,7 @@
     },
 
     "System" : {
-      "AutoStart": ["ngui"]
+      "AutoStart": []
     },
 
     "GoogleAPI": {

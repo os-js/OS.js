@@ -80,7 +80,7 @@
 
   UserSession.prototype.loadSession = function(res, callback) {
     var list = [];
-    res.forEach(function(iter, i) {
+    (res || []).forEach(function(iter, i) {
       var args = iter.args;
       args.__resume__ = true;
       args.__windows__ = iter.windows || [];

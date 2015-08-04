@@ -198,9 +198,7 @@
 
     var self = this;
     this.getUserSession(function(res) {
-      if ( res ) {
-        self.user.loadSession(res, callback);
-      }
+      self.user.loadSession(res, callback);
     });
   };
 
