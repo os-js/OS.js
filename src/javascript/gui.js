@@ -693,6 +693,9 @@
     if ( content ) {
       var node = content.cloneNode(true);
 
+      // Resolve fragment includes before dynamic rendering
+      resolveFragments(this, node);
+
       // Apply a default className to non-containers
       node.querySelectorAll('*').forEach(function(el) {
         var lcase = el.tagName.toLowerCase();
@@ -700,9 +703,6 @@
           Utils.$addClass(el, 'gui-element');
         }
       });
-
-      // Resolve fragment includes before dynamic rendering
-      resolveFragments(this, node);
 
       // Go ahead and parse dynamic elements (like labels)
       parseDynamic(this, node, win);
