@@ -170,6 +170,18 @@
     Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
   }
 
+  function setSwitchValue(val, input, button) {
+    if ( val !== true ) {
+      input.removeAttribute('checked', 'checked');
+      Utils.$removeClass(button, 'gui-active');
+      button.innerHTML = '0';
+    } else {
+      input.setAttribute('checked', 'checked');
+      Utils.$addClass(button, 'gui-active');
+      button.innerHTML = '1';
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -245,6 +257,17 @@
 
   GUI.Elements['gui-switch'] = {
     bind: bindInputEvents,
+    set: function(el, param, value) {
+      if ( param === 'value' ) {
+        var input = el.querySelector('input');
+        var button = el.querySelector('button');
+
+        setSwitchValue(value, input, button);
+        return true;
+      }
+      return false;
+    },
+
     build: function(el) {
       var input = document.createElement('input');
       input.type = 'checkbox';
@@ -264,15 +287,7 @@
           val = v;
         }
 
-        if ( val !== true ) {
-          input.removeAttribute('checked', 'checked');
-          Utils.$removeClass(button, 'gui-active');
-          button.innerHTML = '0';
-        } else {
-          input.setAttribute('checked', 'checked');
-          Utils.$addClass(button, 'gui-active');
-          button.innerHTML = '1';
-        }
+        setSwitchValue(val, input, button);
       }
 
       Utils.$bind(el, 'click', function() {

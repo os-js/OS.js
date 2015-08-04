@@ -207,7 +207,6 @@
           } else {
             firstChild.removeAttribute('checked');
           }
-        }
 
         firstChild.value = value;
         return;
