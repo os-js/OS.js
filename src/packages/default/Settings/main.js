@@ -77,7 +77,7 @@
       header.set('value', indexes[idx].replace(/^Tabs/, ''));
       Utils.$addClass(found, 'active');
 
-      view.set('value', 0);
+      view.set('value', idx);
     }
 
     view.on('select', function(ev) {
