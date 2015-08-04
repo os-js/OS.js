@@ -457,6 +457,17 @@
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
   }
 
+  function addChildren(frag, root) {
+    if ( frag ) {
+      var children = frag.children;
+      var i = 0;
+      while ( children.length && i < 10000 ) {
+        root.appendChild(children[0]);
+        i++;
+      }
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // UIELEMENT CLASS
   /////////////////////////////////////////////////////////////////////////////
@@ -662,22 +673,21 @@
       });
 
       // Resolve fragment includes before dynamic rendering
-      node.querySelectorAll('gui-fragment').forEach(function(el) {
-        var id = el.getAttribute('data-fragment-id');
-        var frag = self.getFragment(id, 'application-fragment');
-        if ( frag ) {
-
-          var children = frag.children;
-          var i = 0;
-          while ( children.length && i < 10000 ) {
-            el.parentNode.appendChild(children[0]);
-            i++;
-          }
-
-          //el.parentNode.insertBefore(frag, el);
-          Utils.$remove(el);
+      var resolving = true;
+      var nodes;
+      while ( resolving ) {
+        nodes = node.querySelectorAll('gui-fragment');
+        if ( nodes.length ) {
+          nodes.forEach(function(el) {
+            var id = el.getAttribute('data-fragment-id');
+            var frag = self.getFragment(id, 'application-fragment');
+            addChildren(frag, el.parentNode);
+            Utils.$remove(el);
+          });
+        } else {
+          resolving = false;
         }
-      });
+      }
 
       // Go ahead and parse dynamic elements (like labels)
       parseDynamic(this, node, win);
@@ -709,14 +719,7 @@
     }
 
     var content = this.parse(id, type, win, onparse);
-    if ( content ) {
-      var children = content.children;
-      var i = 0;
-      while ( children.length && i < 10000 ) {
-        root.appendChild(children[0]);
-        i++;
-      }
-    }
+    addChildren(content, root);
   };
 
   UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
