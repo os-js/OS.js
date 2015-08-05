@@ -663,12 +663,24 @@
 
   UIScheme.prototype.load = function(cb) {
     var self = this;
+
+    function removeSelfClosingTags(html) {
+      var split = html.split('/>');
+      var newhtml = '';
+      for (var i = 0; i < split.length - 1;i++) {
+        var edsplit = split[i].split('<');
+        newhtml += split[i] + '></' + edsplit[edsplit.length - 1].split(' ')[0] + '>';
+      }
+      return newhtml + split[split.length-1];
+    }
+
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
         var doc = document.createDocumentFragment();
         var wrapper = document.createElement('div');
-        wrapper.innerHTML = Utils.cleanHTML(html);
+
+        wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
         doc.appendChild(wrapper);
         self.scheme = doc;
 
