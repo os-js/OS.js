@@ -59,6 +59,22 @@
 
 </application-window>
 
+<application-window data-id="PanelSettingWindow">
+  <gui-vbox>
+    <gui-vbox-container data-grow="1" data-fill="true">
+      <gui-list-view data-id="List" data-multiple="false">
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar>
+        <gui-button data-id="ButtonOK">LBL_OK</gui-button>
+        <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-dialog>
+
 <!-- ****************************************************************** -->
 <!--                             PACKAGES                               -->
 <!-- ****************************************************************** -->
@@ -209,16 +225,16 @@
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
       <gui-label>Panel Position</gui-label>
-      <gui-list-view data-id="PanelItems"></gui-list-view>
+      <gui-list-view data-id="PanelItems" data-multiple="false"></gui-list-view>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-button-bar>
-        <gui-button></gui-button>
-        <gui-button></gui-button>
-        <gui-button></gui-button>
-        <gui-button></gui-button>
-        <gui-button></gui-button>
+        <gui-button data-id="PanelButtonAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="PanelButtonRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+        <gui-button data-id="PanelButtonUp" data-icon="stock://16x16/actions/up.png"></gui-button>
+        <gui-button data-id="PanelButtonDown" data-icon="stock://16x16/actions/down.png"></gui-button>
+        <gui-button data-id="PanelButtonReset" data-icon="stock://16x16/actions/revert.png"></gui-button>
       </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>

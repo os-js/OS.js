@@ -34,6 +34,68 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
+  function PanelItemDialog(app, metadata, scheme, callback) {
+    Window.apply(this, ['ApplicationSettingsPanelItemsWindow', {
+      icon: metadata.icon,
+      title: metadata.name + ' - Panel Items',
+      width: 400,
+      height: 300
+    }, app, scheme]);
+
+    this.callback = callback;
+    this.closed = false;
+  }
+
+  PanelItemDialog.prototype = Object.create(Window.prototype);
+  PanelItemDialog.constructor = Window;
+
+  PanelItemDialog.prototype.init = function(wm, app, scheme) {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'PanelSettingWindow', root);
+
+    var view = scheme.find(this, 'List');
+
+    var items = OSjs.Applications.CoreWM.PanelItems;
+    var list = [];
+    Object.keys(items).forEach(function(i, idx) {
+      list.push({
+        value: i,
+        columns: [{
+          icon: API.getIcon(items[i].Icon),
+          label: Utils.format("{0} ({1})", items[i].Name, items[i].Description)
+        }]
+      });
+    });
+    view.clear();
+    view.add(list);
+
+    scheme.find(this, 'ButtonOK').on('click', function() {
+      this.closed = true;
+      var selected = view.get('selected');
+      self.callback('ok', selected.length ? selected[0] : null);
+      self._close();
+    });
+
+    scheme.find(this, 'ButtonCancel').on('click', function() {
+      self._close();
+    });
+
+    return root;
+  };
+  PanelItemDialog.prototype._close = function() {
+    if ( !this.closed ) {
+      this.callback('cancel');
+    }
+    return Window.prototype._close.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
+
   function ApplicationSettingsWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationSettingsWindow', {
       icon: metadata.icon,
@@ -43,11 +105,15 @@
     }, app, scheme]);
 
     this.settings = {};
+    this.panelItems = [];
   }
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
   ApplicationSettingsWindow.constructor = Window.prototype;
 
+  /**
+   * Init
+   */
   ApplicationSettingsWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
@@ -102,10 +168,16 @@
     return root;
   };
 
+  /**
+   * Destroy
+   */
   ApplicationSettingsWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
   };
 
+  /**
+   * Theme
+   */
   ApplicationSettingsWindow.prototype.initThemeTab = function(wm, scheme) {
     var self = this;
     var _ = OSjs.Applications.ApplicationSettings._;
@@ -171,11 +243,15 @@
         }
       });
     });
+
     scheme.find(this, 'BackgroundStyle').add(backgroundTypes).set('value', this.settings.background);
 
     scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
   };
 
+  /**
+   * Desktop
+   */
   ApplicationSettingsWindow.prototype.initDesktopTab = function(wm, scheme) {
     scheme.find(this, 'EnableHotkeys').set('value', this.settings.enableHotkeys);
     scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
@@ -188,6 +264,9 @@
     scheme.find(this, 'EnableIconViewInvert').set('value', this.settings.invertIconViewColor);
   };
 
+  /**
+   * Panel
+   */
   ApplicationSettingsWindow.prototype.initPanelTab = function(wm, scheme) {
     var self = this;
     var panel = this.settings.panels[0];
@@ -202,6 +281,7 @@
       opacity = panel.options.opacity;
     }
 
+    // Style
     scheme.find(this, 'PanelPosition').add(panelPositions).set('value', panel.options.position);
     scheme.find(this, 'PanelAutoHide').set('value', panel.options.autohide);
     scheme.find(this, 'PanelOntop').set('value', panel.options.ontop);
@@ -230,8 +310,110 @@
       });
     });
     scheme.find(this, 'PanelOpacity').set('value', opacity);
+
+    // Items
+    var view = scheme.find(this, 'PanelItems');
+    var buttonAdd = scheme.find(this, 'PanelButtonAdd');
+    var buttonRemove = scheme.find(this, 'PanelButtonRemove');
+    var buttonUp = scheme.find(this, 'PanelButtonUp');
+    var buttonDown = scheme.find(this, 'PanelButtonDown');
+    var buttonReset = scheme.find(this, 'PanelButtonReset');
+
+    var max = 0;
+    var items = OSjs.Applications.CoreWM.PanelItems;
+
+    this.panelItems = panel.items || [];
+
+    function checkSelection(idx) {
+      buttonRemove.set('disabled', idx < 0);
+      buttonUp.set('disabled', idx <= 0);
+      buttonDown.set('disabled', idx < 0 || idx >= max);
+    }
+
+    function renderItems(setSelected) {
+      var list = [];
+      self.panelItems.forEach(function(i, idx) {
+        var name = i.name;
+        list.push({
+          value: idx,
+          columns: [{
+            icon: API.getIcon(items[name].Icon),
+            label: Utils.format("{0} ({1})", items[name].Name, items[name].Description)
+          }]
+        });
+      });
+      max = self.panelItems.length - 1;
+
+      view.clear();
+      view.add(list);
+
+      if ( typeof setSelected !== 'undefined' ) {
+        view.set('selected', setSelected);
+        checkSelection(setSelected);
+      } else {
+        checkSelection(-1);
+      }
+    }
+
+    function movePanelItem(index, pos) {
+      var value = self.panelItems[index];
+      var newIndex = index + pos;
+      self.panelItems.splice(index, 1);
+      self.panelItems.splice(newIndex, 0, value);
+      renderItems(newIndex);
+    }
+
+    view.on('select', function(ev) {
+      if ( ev && ev.detail && ev.detail.entries ) {
+        checkSelection(ev.detail.entries[0].index);
+      }
+    });
+
+    buttonAdd.on('click', function() {
+      self._toggleDisabled(true);
+      self._app.panelItemsDialog(function(ev, result) {
+        self._toggleDisabled(false);
+
+        if ( result ) {
+          self.panelItems.push({name: result.data});
+          renderItems();
+        }
+      });
+    });
+
+    buttonRemove.on('click', function() {
+      var selected = view.get('selected');
+      if ( selected.length ) {
+        self.panelItems.splice(selected[0].index, 1);
+        renderItems();
+      }
+    });
+
+    buttonUp.on('click', function() {
+      var selected = view.get('selected');
+      if ( selected.length ) {
+        movePanelItem(selected[0].index, -1);
+      }
+    });
+    buttonDown.on('click', function() {
+      var selected = view.get('selected');
+      if ( selected.length ) {
+        movePanelItem(selected[0].index, 1);
+      }
+    });
+
+    buttonReset.on('click', function() {
+      var defaults = wm.getDefaultSetting('panels');
+      self.panelItems = defaults[0].items;
+      renderItems();
+    });
+
+    renderItems();
   };
 
+  /**
+   * User
+   */
   ApplicationSettingsWindow.prototype.initUserTab = function(wm, scheme) {
     var user = OSjs.Core.getHandler().getUserData();
     var locales = OSjs.Core.getHandler().getConfig('Core').Languages;
@@ -250,9 +432,15 @@
     scheme.find(this, 'UserLocale').add(langs).set('value', API.getLocale());
   };
 
+  /**
+   * Packages
+   */
   ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme) {
   };
 
+  /**
+   * Apply
+   */
   ApplicationSettingsWindow.prototype.applySettings = function(wm, scheme) {
     // Theme
     this.settings.theme = scheme.find(this, 'StyleThemeName').get('value');
@@ -281,6 +469,7 @@
     this.settings.panels[0].options.background = scheme.find(this, 'PanelBackgroundColor').get('value') || '#101010';
     this.settings.panels[0].options.foreground = scheme.find(this, 'PanelForegroundColor').get('value') || '#ffffff';
     this.settings.panels[0].options.opacity = scheme.find(this, 'PanelOpacity').get('value');
+    this.settings.panels[0].items = this.panelItems;
 
     // User
     this.settings.language = scheme.find(this, 'UserLocale').get('value');
@@ -294,12 +483,14 @@
 
   var ApplicationSettings = function(args, metadata) {
     Application.apply(this, ['ApplicationSettings', args, metadata]);
+    this.scheme = null;
   };
 
   ApplicationSettings.prototype = Object.create(Application.prototype);
   ApplicationSettings.constructor = Application;
 
   ApplicationSettings.prototype.destroy = function() {
+    this.scheme = null;
     return Application.prototype.destroy.apply(this, arguments);
   };
 
@@ -312,6 +503,14 @@
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme));
     });
+
+    this.scheme = scheme;
+  };
+
+  ApplicationSettings.prototype.panelItemsDialog = function(callback) {
+    if ( this.scheme ) {
+      this._addWindow(new PanelItemDialog(this, this.__metadata, this.scheme, callback));
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
