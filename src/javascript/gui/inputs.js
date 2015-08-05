@@ -31,7 +31,7 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
+  // INPUT HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
   function createInputOfType(el, type) {
@@ -83,6 +83,25 @@
     }, false);
   }
 
+  function bindInputEvents(el, evName, callback, params) {
+    if ( evName === 'change' ) { evName = '_change'; }
+
+    var target = el.querySelector('textarea, input, select');
+    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  }
+
+  function bindTextInputEvents(el, evName, callback, params) {
+    if ( evName === 'enter' ) { evName = '_enter'; }
+    else if ( evName === 'change' ) { evName = '_change'; }
+
+    var target = el.querySelector('input');
+    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // SELECT HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
   function addToSelectBox(el, entries) {
     var target = el.querySelector('select');
     if ( !(entries instanceof Array) ) {
@@ -101,7 +120,7 @@
   function removeFromSelectBox(el, what) {
     var target = el.querySelector('select');
     target.querySelectorAll('option').forEach(function(opt) {
-      if ( opt == what ) {
+      if ( String(opt.value) === String(what) ) {
         Utils.$remove(opt);
         return false;
       }
@@ -109,9 +128,15 @@
     });
   }
 
-  function clearSelectBox(el) {
-    var target = el.querySelector('select');
-    Utils.$empty(target);
+  function callSelectBox(el, method, args) {
+    if ( method === 'add' ) {
+      addToSelectBox(el, args[0]);
+    } else if ( method === 'remove' ) {
+      removeFromSelectBox(el, args[0]);
+    } else if ( method === 'clear' ) {
+      var target = el.querySelector('select');
+      Utils.$empty(target);
+    }
   }
 
   function createSelectInput(el, multiple) {
@@ -155,20 +180,9 @@
     el.appendChild(select);
   }
 
-  function bindInputEvents(el, evName, callback, params) {
-    if ( evName === 'change' ) { evName = '_change'; }
-
-    var target = el.querySelector('textarea, input, select');
-    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-  }
-
-  function bindTextInputEvents(el, evName, callback, params) {
-    if ( evName === 'enter' ) { evName = '_enter'; }
-    else if ( evName === 'change' ) { evName = '_change'; }
-
-    var target = el.querySelector('input');
-    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-  }
+  /////////////////////////////////////////////////////////////////////////////
+  // OTHER HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
   function setSwitchValue(val, input, button) {
     if ( val !== true ) {
@@ -351,33 +365,17 @@
 
   GUI.Elements['gui-select'] = {
     bind: bindInputEvents,
+    call: callSelectBox,
     build: function(el) {
       createSelectInput(el);
-    },
-    call: function(el, method, args) {
-      if ( method === 'add' ) {
-        addToSelectBox(el, args[0]);
-      } else if ( method === 'remove' ) {
-        removeFromSelectBox(el, args[0]);
-      } else if ( method === 'clear' ) {
-        clearSelectBox(el);
-      }
     }
   };
 
   GUI.Elements['gui-select-list'] = {
     bind: bindInputEvents,
+    call: callSelectBox,
     build: function(el) {
       createSelectInput(el, true);
-    },
-    call: function(el, method, args) {
-      if ( method === 'add' ) {
-        addToSelectBox(el, args[0]);
-      } else if ( method === 'remove' ) {
-        removeFromSelectBox(el, args[0]);
-      } else if ( method === 'clear' ) {
-        clearSelectBox(el);
-      }
     }
   };
 
