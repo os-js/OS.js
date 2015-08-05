@@ -279,7 +279,8 @@ gui-button-bar {
   display : block;
   position : relative;
   overflow : hidden;
-  font-size : 0; /* NOTE: Fixes spacing errors in FF */
+  /* NOTE: Fixes spacing errors in FF */
+  font-size : 0;
 }
 gui-button-bar {
   white-space: nowrap;
@@ -382,7 +383,6 @@ gui-label {
 }
   gui-label > label {
     display : inline;
-    vertical-align : middle;
     white-space: nowrap;
   }
 
@@ -1201,3 +1201,8 @@ gui-tree-view {
   }
   gui-tree-view-entry.gui-expandable.gui-expanded > gui-tree-view-expander:before {
   }
+
+
+gui-toolbar > .gui-element {
+  vertical-align : middle;
+}

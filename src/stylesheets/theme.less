@@ -360,14 +360,22 @@ gui-iframe {
 
 /* Button Bar */
 /* Toolbar */
-gui-toolbar,
-gui-button-bar {
-  margin : 4px;
-  margin : 0;
-}
 gui-toolbar > *,
 gui-button-bar > * {
   margin : 4px;
+}
+
+gui-toolbar {
+  margin-left : 4px;
+  margin-right : 4px;
+  padding-top : 4px;
+}
+
+gui-toolbar[data-orientation="vertical"] {
+  margin-left : 0;
+  margin-right : 0;
+  margin-top : 4px;
+  margin-bottom : 4px;
 }
 
 /* Tabs */
@@ -410,8 +418,8 @@ gui-button-bar > * {
 
 /* Label */
 gui-label {
-  min-height : 16px !important;
-  line-height : 16px !important;
+  height : 26px;
+  line-height : 26px;
 }
 
 /* Button */
@@ -494,6 +502,10 @@ gui-checkbox {
     background-color : @gui_disabled_background_color;
   }
 
+  gui-radio > label,
+  gui-checkbox > label {
+    line-height : 26px;
+  }
   gui-radio > label > span,
   gui-checkbox > label > span {
     padding-left : 4px;
@@ -505,6 +517,7 @@ gui-select {
 }
   gui-select select {
     .theme_text_input();
+    padding-right : 20px;
   }
   gui-select select:disabled {
     .theme_text_input_disabled();
@@ -791,9 +804,10 @@ gui-menu {
 /* Menu Bar */
 gui-menu-bar {
   border-bottom : 1px solid @gui_border_color;
+  margin-left : 4px;
+  margin-right : 4px;
   padding-top : 2px;
   padding-bottom : 2px;
-  margin : 4px;
 }
   gui-menu-bar-entry {
     cursor : pointer;
