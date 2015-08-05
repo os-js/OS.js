@@ -216,12 +216,6 @@
             Utils.$bind(entry, 'mousedown', function(ev) {
               ev.stopPropagation();
               iter.onClick.apply(this, arguments);
-
-              /*
-              if ( !entry.querySelector('input') ) {
-                blurMenu();
-              }
-              */
             }, false);
           }
           par.appendChild(entry);
@@ -230,6 +224,10 @@
 
       resolveItems(items || [], root);
       GUI.Elements['gui-menu'].build(root, true);
+    }
+    //if ( root instanceof GUI.Element ) {
+    if ( root.$element ) {
+      root = root.$element;
     }
 
     var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;

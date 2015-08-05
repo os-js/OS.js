@@ -30,6 +30,85 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  function installPackage(file, cb) {
+    var root = 'home:///.packages';
+    var dest = root + '/' + file.filename.replace(/\.zip$/i, '');
+
+    VFS.mkdir(new VFS.File(root), function() {
+      VFS.exists(new VFS.File(dest), function(error, exists) {
+        if ( error ) {
+          cb(error);
+          return;
+        }
+
+        if ( exists ) {
+          cb('Target directory already exists. Is this package already installed?'); // FIXME: Translation
+          return;
+        }
+
+        OSjs.Helpers.ZipArchiver.createInstance({}, function(error, instance) {
+          if ( instance ) {
+            instance.extract(file, dest, {
+              onprogress: function() {
+              },
+              oncomplete: function() {
+                cb();
+              }
+            });
+          }
+        });
+
+      });
+    });
+
+  }
+
+  function fetchJSON(cb) {
+    var url = 'http://andersevenrud.github.io/OS.js-v2/store/packages.json';
+    API.curl({
+      body: {
+        url: url,
+        method: 'GET'
+      }
+    }, cb);
+  }
+
+  function installSelected(download, cb) {
+    var handler = OSjs.Core.getHandler();
+    var pacman = handler.getPackageManager();
+
+    VFS.remoteRead(download, 'application/zip', function(error, ab) {
+      if ( error ) {
+        cb(error);
+        return;
+      }
+
+      var dest = new VFS.File({
+        filename: Utils.filename(download),
+        type: 'file',
+        path: 'home:///' + Utils.filename(download),
+        mime: 'application/zip'
+      });
+
+      VFS.write(dest, ab, function(error, success) {
+        if ( error ) {
+          cb('Failed to write package: ' + error); // FIXME
+          return;
+        }
+
+        installPackage(dest, function(error) {
+          if ( error ) {
+            cb('Failed to install package: ' + error); // FIXME
+            return;
+          }
+          pacman.generateUserMetadata(function() {
+            cb(false, true);
+          });
+        });
+      });
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -436,6 +515,122 @@
    * Packages
    */
   ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme) {
+    var self = this;
+    var handler = OSjs.Core.getHandler();
+    var pacman = handler.getPackageManager();
+
+    //
+    // Installed
+    //
+    var view = scheme.find(this, 'InstalledPackages');
+
+    function renderInstalled() {
+      var rows = [];
+      var list = pacman.getPackages();
+      Object.keys(list).forEach(function(k, idx) {
+        rows.push({
+          index: idx,
+          value: k,
+          columns: [
+            {label: k},
+            {label: list[k].scope},
+            {label: list[k].name}
+          ]
+        });
+      });
+
+      view.clear();
+      view.add(rows);
+    }
+
+    scheme.find(this, 'ButtonRegen').on('click', function() {
+      self._toggleLoading(true);
+      pacman.generateUserMetadata(function() {
+        self._toggleLoading(false);
+
+        renderInstalled();
+      });
+    });
+
+    scheme.find(this, 'ButtonZipInstall').on('click', function() {
+      self._toggleDisabled(true);
+
+      API.createDialog('File', {
+        mime: ['application/zip']
+      }, function(ev, button, result) {
+        if ( button !== 'ok' || !result ) {
+          self._toggleDisabled(false);
+        } else {
+          installPackage(result, function() {
+            self._toggleDisabled(false);
+            renderInstalled();
+          });
+        }
+      })
+    });
+
+    //
+    // Store
+    //
+    var storeView = scheme.find(this, 'AppStorePackages');
+
+    function renderStore() {
+      self._toggleLoading(true);
+      fetchJSON(function(error, result) {
+        self._toggleLoading(false);
+
+        if ( error ) {
+          alert('Failed getting packages: ' + error); // FIXME
+          return;
+        }
+
+        var jsn = Utils.fixJSON(result.body);
+        var rows = [];
+        if ( jsn instanceof Array ) {
+          jsn.forEach(function(i, idx) {
+            rows.push({
+              index: idx,
+              value: i.download,
+              columns: [
+                {label: i.name},
+                {label: i.version},
+                {label: i.author}
+              ]
+            });
+          });
+        }
+
+        storeView.clear();
+        storeView.add(rows);
+      });
+    }
+
+    scheme.find(this, 'ButtonStoreRefresh').on('click', function() {
+      renderStore();
+    });
+
+    scheme.find(this, 'ButtonStoreInstall').on('click', function() {
+      var selected = storeView.get('selected');
+      if ( selected.length && selected[0].data ) {
+        self._toggleLoading(true);
+        installSelected(selected[0].data, function(error, result) {
+          self._toggleLoading(false);
+          if ( error ) {
+            alert(error); // FIXME
+            return;
+          }
+        });
+      }
+    });
+
+    //
+    // Init
+    //
+    renderInstalled();
+
+    scheme.find(this, 'TabsPackages').on('change', function(ev) {
+      renderStore();
+    });
   };
 
   /**

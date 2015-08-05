@@ -235,7 +235,7 @@
       API.createMenu(null, pos, inst);
     } else {
       var list = doBuildCategoryMenu(ev);
-      var m = API.createMenu(list, {x: ev.clientX, y: ev.clientY});
+      var m = API.createMenu(list, ev);
       if ( m && m.$element ) {
         Utils.$addClass(m.$element, 'CoreWMDefaultApplicationMenu');
       }

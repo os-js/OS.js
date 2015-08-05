@@ -80,7 +80,7 @@
 <!-- ****************************************************************** -->
 
 <application-fragment data-id="TabsPackages">
-  <gui-tabs data-id="OptionsEntry">
+  <gui-tabs data-id="TabsPackages">
     <gui-tab-container data-id="TabPackagesLocal" data-label="Installed Packages">
       <gui-fragment data-fragment-id="TabLocalPackages"></gui-fragment>
     </gui-tab-container>
@@ -94,13 +94,21 @@
 <application-fragment data-id="TabLocalPackages">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-list-view data-id="InstalledPackages"></gui-list-view>
+      <gui-list-view data-id="InstalledPackages" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Application</gui-list-view-column>
+            <gui-list-view-column data-basis="50px" data-grow="0" data-shrink="1">Scope</gui-list-view-column>
+            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Name</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-button-bar>
-        <gui-button>Regenerate metadata</gui-button>
-        <gui-button>Install from zip</gui-button>
+        <gui-button data-id="ButtonRegen">Regenerate metadata</gui-button>
+        <gui-button data-id="ButtonZipInstall">Install from zip</gui-button>
       </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
@@ -109,13 +117,21 @@
 <application-fragment data-id="TabAppStore">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-list-view data-id="AppStorePackages"></gui-list-view>
+      <gui-list-view data-id="AppStorePackages" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-grow="1" data-shrink="1">Name</gui-list-view-column>
+            <gui-list-view-column data-basis="50px" data-grow="0" data-shrink="1">Version</gui-list-view-column>
+            <gui-list-view-column data-grow="1" data-shrink="1">Author</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-button-bar>
-        <gui-button>Refresh</gui-button>
-        <gui-button>Install selected</gui-button>
+        <gui-button data-id="ButtonStoreRefresh">Refresh</gui-button>
+        <gui-button data-id="ButtonStoreInstall">Install selected</gui-button>
       </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
@@ -126,7 +142,7 @@
 <!-- ****************************************************************** -->
 
 <application-fragment data-id="TabsUser">
-  <gui-tabs data-id="OptionsEntry">
+  <gui-tabs>
     <gui-tab-container data-id="TabUserInfo" data-label="Information">
       <gui-fragment data-fragment-id="TabUserInformation"></gui-fragment>
     </gui-tab-container>
@@ -176,7 +192,7 @@
 <!-- ****************************************************************** -->
 
 <application-fragment data-id="TabsPanel">
-  <gui-tabs data-id="OptionsEntry">
+  <gui-tabs>
     <gui-tab-container data-id="TabPanelAppearance" data-label="Appearance">
       <gui-fragment data-fragment-id="TabPanelAppearance"></gui-fragment>
     </gui-tab-container>
@@ -245,7 +261,7 @@
 <!-- ****************************************************************** -->
 
 <application-fragment data-id="TabsDesktop">
-  <gui-tabs data-id="OptionsEntry">
+  <gui-tabs>
     <gui-tab-container data-id="TabDesktop" data-label="Theme">
       <gui-fragment data-fragment-id="TabDesktopGeneral"></gui-fragment>
     </gui-tab-container>
@@ -304,7 +320,7 @@
 <!-- ****************************************************************** -->
 
 <application-fragment data-id="TabsTheme">
-  <gui-tabs data-id="OptionsEntry">
+  <gui-tabs>
     <gui-tab-container data-id="TabTheme" data-label="Theme">
       <gui-fragment data-fragment-id="TabThemeFragment"></gui-fragment>
     </gui-tab-container>
