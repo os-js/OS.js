@@ -410,7 +410,9 @@
     set: function(el, param, value) {
       if ( param === 'value' ) {
         var input = el.querySelector('input');
+        input.removeAttribute('disabled');
         input.value = value;
+        input.setAttribute('disabled', 'disabled');
         return true;
       }
       return false;
@@ -426,7 +428,7 @@
       button.innerHTML = '...';
 
       Utils.$bind(button, 'click', function(ev) {
-        el.dispatchEvent(new CustomEvent('_open', {detail: select.value}));
+        el.dispatchEvent(new CustomEvent('_open', {detail: input.value}));
       }, false);
 
       container.appendChild(input);
