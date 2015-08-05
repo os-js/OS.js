@@ -77,6 +77,20 @@
   /////////////////////////////////////////////////////////////////////////////
 
 
+  /**
+   * Element: 'gui-audio'
+   *
+   * HTML5 Audio Element.
+   *
+   * Parameters:
+   *  src       String        The source
+   *
+   * Setters:
+   *  src                     Sets the source
+   *
+   * @api OSjs.GUI.Elements.gui-audio
+   * @class
+   */
   GUI.Elements['gui-audio'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('audio');
@@ -87,6 +101,20 @@
     }
   };
 
+  /**
+   * Element: 'gui-video'
+   *
+   * HTML5 Video Element.
+   *
+   * Parameters:
+   *  src       String        The source
+   *
+   * Setters:
+   *  src                     Sets the source
+   *
+   * @api OSjs.GUI.Elements.gui-video
+   * @class
+   */
   GUI.Elements['gui-video'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('video');
@@ -97,6 +125,20 @@
     }
   };
 
+  /**
+   * Element: 'gui-image'
+   *
+   * Normal Image Element.
+   *
+   * Parameters:
+   *  src       String        The source
+   *
+   * Setters:
+   *  src                     Sets the source
+   *
+   * @api OSjs.GUI.Elements.gui-image
+   * @class
+   */
   GUI.Elements['gui-image'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('img');
@@ -107,6 +149,20 @@
     }
   };
 
+  /**
+   * Element: 'gui-canvas'
+   *
+   * Canvas Element.
+   *
+   * Parameters:
+   *  src       String        The source
+   *
+   * Setters:
+   *  src                     Sets the source
+   *
+   * @api OSjs.GUI.Elements.gui-canvas
+   * @class
+   */
   GUI.Elements['gui-canvas'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('canvas');

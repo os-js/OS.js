@@ -39,6 +39,20 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-color-box'
+   *
+   * A box that displays a color.
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-color-box
+   * @class
+   */
   GUI.Elements['gui-color-box'] = {
     set: function(el, param, value) {
       if ( param === 'value' ) {
@@ -53,6 +67,17 @@
     }
   };
 
+  /**
+   * Element: 'gui-color-swatch'
+   *
+   * A box for selecting color(s) in the rainbow.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * @api OSjs.GUI.Elements.gui-color-swatch
+   * @class
+   */
   GUI.Elements['gui-color-swatch'] = {
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('canvas');
@@ -111,6 +136,17 @@
     }
   };
 
+  /**
+   * Element: 'gui-iframe'
+   *
+   * IFrame container.
+   *
+   * Parameters:
+   *  src       String        The URL/location
+   *
+   * @api OSjs.GUI.Elements.gui-iframe
+   * @class
+   */
   GUI.Elements['gui-iframe'] = {
     build: function(el) {
       var src = el.getAttribute('data-src') || 'about:blank';
@@ -118,6 +154,48 @@
       iframe.src = src;
       iframe.setAttribute('border', 0);
       el.appendChild(iframe);
+    }
+  };
+
+  /**
+   * Element: 'gui-progress-bar'
+   *
+   * Progress bar element.
+   *
+   * Parameters:
+   *  progress  int           Progress
+   *
+   * Setters:
+   *  progress                Progress
+   *
+   * @api OSjs.GUI.Elements.gui-progress-bar
+   * @class
+   */
+  GUI.Elements['gui-progress-bar'] = {
+    set: function(el, param, value) {
+      el.setAttribute('data-' + param, value);
+      if ( param === 'progress' || param === 'value' ) {
+        value = parseInt(value, 10);
+        value = value % 100;
+
+        el.querySelector('div').style.width = value + '%';
+        el.querySelector('span').innerHTML = value + '%';
+        return true;
+      }
+      return false;
+    },
+    build: function(el) {
+      var p = (el.getAttribute('data-progress') || 0);
+      var percentage = p.toString() + '%';
+
+      var progress = document.createElement('div');
+      progress.style.width = percentage;
+
+      var span = document.createElement('span');
+      span.appendChild(document.createTextNode(percentage));
+
+      el.appendChild(progress);
+      el.appendChild(span);
     }
   };
 

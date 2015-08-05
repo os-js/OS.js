@@ -64,6 +64,26 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-icon-view'
+   *
+   * A container for displaying icons with labels
+   *
+   * Parameters:
+   *  icon-size     int         Icon size (default=16)
+   *
+   * Format for add():
+   *
+   * {
+   *    label: "Label",
+   *    icon: "Optional icon path",
+   *    value: "something or JSON or whatever"
+   * }
+   *
+   * @api OSjs.GUI.Elements.gui-icon-view
+   * @see OSjs.GUI.Elements._dataview
+   * @class
+   */
   GUI.Elements['gui-icon-view'] = {
     bind: GUI.Elements._dataview.bind,
 

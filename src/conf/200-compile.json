@@ -37,7 +37,6 @@
       "src/javascript/gui/iconview.js",
       "src/javascript/gui/richtext.js",
       "src/javascript/gui/containers.js",
-      "src/javascript/gui/progressbar.js",
       "src/javascript/dialogs/alert.js",
       "src/javascript/dialogs/applicationchooser.js",
       "src/javascript/dialogs/color.js",

@@ -63,6 +63,35 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: '_dataview'
+   *
+   * This is an abstraction layer for Icon, Tree and List views.
+   *
+   * Events:
+   *  select        When an entry was selected (click) => fn(ev)
+   *  activate      When an entry was activated (doubleclick) => fn(ev)
+   *
+   * Parameters:
+   *  multiple  boolean     Multiple selection (default=true)
+   *
+   * Setters:
+   *  value         Sets the selected entry(es)
+   *  selected      Alias for 'value'
+   *
+   * Getters:
+   *  value         Gets the selected entry(es)
+   *  selected      Alias for 'value'
+   *
+   * Actions:
+   *  add(arg)      Adds en entry (or from array)
+   *  remove(arg)   Removes an entry
+   *  patch(arg)    Patch/Update entries from array
+   *  clear()
+   *
+   * @api OSjs.GUI.Elements._dataview
+   * @class
+   */
   GUI.Elements._dataview = {
     clear: function(el, body) {
       body = body || el;

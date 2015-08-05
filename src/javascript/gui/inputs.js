@@ -200,9 +200,21 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-label'
+   *
+   * Just a normal label.
+   *
+   * Setters:
+   *  value         Sets the label
+   *  label         Alias for 'value'
+   *
+   * @api OSjs.GUI.Elements.gui-label
+   * @class
+   */
   GUI.Elements['gui-label'] = {
     set: function(el, param, value, isHTML) {
-      if ( param === 'value' ) {
+      if ( param === 'value' || param === 'label' ) {
         var lbl = el.querySelector('label');
         Utils.$empty(lbl);
         if ( isHTML ) {
@@ -222,6 +234,26 @@
     }
   };
 
+  /**
+   * Element: 'gui-textarea'
+   *
+   * Text area input (multi-line)
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-textarea
+   * @class
+   */
   GUI.Elements['gui-textarea'] = {
     bind: bindInputEvents,
     build: function(el) {
@@ -229,6 +261,27 @@
     }
   };
 
+  /**
+   * Element: 'gui-text'
+   *
+   * Text input.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *  enter         On enter press => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-text
+   * @class
+   */
   GUI.Elements['gui-text'] = {
     bind: bindTextInputEvents,
     build: function(el) {
@@ -236,6 +289,27 @@
     }
   };
 
+  /**
+   * Element: 'gui-password'
+   *
+   * Password input.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *  enter         On enter press => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-password
+   * @class
+   */
   GUI.Elements['gui-password'] = {
     bind: bindTextInputEvents,
     build: function(el) {
@@ -243,6 +317,23 @@
     }
   };
 
+  /**
+   * Element: 'gui-file-upload'
+   *
+   * File upload selector.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-file-upload
+   * @class
+   */
   GUI.Elements['gui-file-upload'] = {
     bind: bindInputEvents,
     build: function(el) {
@@ -255,6 +346,26 @@
     }
   },
 
+  /**
+   * Element: 'gui-radio'
+   *
+   * Radio selection input.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-radio
+   * @class
+   */
   GUI.Elements['gui-radio'] = {
     bind: bindInputEvents,
     build: function(el) {
@@ -262,6 +373,26 @@
     }
   };
 
+  /**
+   * Element: 'gui-checbox'
+   *
+   * Checkbox selection input.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-checbox
+   * @class
+   */
   GUI.Elements['gui-checkbox'] = {
     bind: bindInputEvents,
     build: function(el) {
@@ -269,6 +400,26 @@
     }
   };
 
+  /**
+   * Element: 'gui-switch'
+   *
+   * A switch (on/off) input.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-switch
+   * @class
+   */
   GUI.Elements['gui-switch'] = {
     bind: bindInputEvents,
     set: function(el, param, value) {
@@ -315,6 +466,22 @@
     }
   };
 
+  /**
+   * Element: 'gui-button'
+   *
+   * A normal button
+   *
+   * Events:
+   *  click         When button was clicked => fn(ev)
+   *
+   * Parameters:
+   *  disabled    boolean     Disabled state
+   *  label       String      The label
+   *  icon        String      The icon (optional)
+   *
+   * @api OSjs.GUI.Elements.gui-button
+   * @class
+   */
   GUI.Elements['gui-button'] = {
     set: function(el, param, value, isHTML) {
       if ( param === 'value' ) {
@@ -363,6 +530,31 @@
     }
   };
 
+  /**
+   * Element: 'gui-select'
+   *
+   * A selection dropdown.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Actions:
+   *  add(arg)      Adds en entry (or from array)
+   *  remove(arg)   Removes an entry
+   *  clear()
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-select
+   * @class
+   */
   GUI.Elements['gui-select'] = {
     bind: bindInputEvents,
     call: callSelectBox,
@@ -371,6 +563,31 @@
     }
   };
 
+  /**
+   * Element: 'gui-select-list'
+   *
+   * A selection list (same as dropdown except multiple)
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Parameters:
+   *  disabled  boolean     Disabled state
+   *
+   * Actions:
+   *  add(arg)      Adds en entry (or from array)
+   *  remove(arg)   Removes an entry
+   *  clear()
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-select-list
+   * @class
+   */
   GUI.Elements['gui-select-list'] = {
     bind: bindInputEvents,
     call: callSelectBox,
@@ -379,6 +596,28 @@
     }
   };
 
+  /**
+   * Element: 'gui-slider'
+   *
+   * A slider input.
+   *
+   * Events:
+   *  change        When input has changed => fn(ev)
+   *
+   * Parameters:
+   *  min       int         Minimum value
+   *  max       int         Maximum value
+   *  disabled  boolean     Disabled state
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-slider
+   * @class
+   */
   GUI.Elements['gui-slider'] = {
     bind: bindInputEvents,
     get: function(el, param) {
@@ -393,6 +632,23 @@
     }
   };
 
+  /**
+   * Element: 'gui-input-modal'
+   *
+   * A text area displaying current value with a button to open a modal/dialog etc.
+   *
+   * Events:
+   *  open          When the open button was pressed => fn(ev)
+   *
+   * Getters:
+   *  value         Gets the input value
+   *
+   * Setters:
+   *  value         Sets the input value
+   *
+   * @api OSjs.GUI.Elements.gui-input-modal
+   * @class
+   */
   GUI.Elements['gui-input-modal'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'open' ) { evName = '_open'; }

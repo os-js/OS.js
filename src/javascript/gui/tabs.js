@@ -38,6 +38,18 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-tabs'
+   *
+   * A container with tabs for displaying content.
+   *
+   * Events:
+   *  select        When tab has changed => fn(ev)
+   *  activat       Alias of 'select'
+   *
+   * @api OSjs.GUI.Elements.gui-tabs
+   * @class
+   */
   GUI.Elements['gui-tabs'] = {
     bind: function(el, evName, callback, params) {
       if ( (['select', 'activate']).indexOf(evName) !== -1 ) {

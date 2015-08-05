@@ -159,6 +159,35 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-list-view'
+   *
+   * A list view with columns.
+   *
+   * Format for add():
+   *
+   * {
+   *    value: "something or JSON or whatever",
+   *    columns: [
+   *      {label: "Value for column 1", icon: "Optional icon"},
+   *      {label: "Value for column 2", icon: "Optional icon"}
+   *    ]
+   * }
+   *
+   * Format for columns (flexbox parameters are also usable):
+   * [
+   *    {label: "Column 1"},
+   *    {label: "Column 2"}
+   *
+   * ]
+   *
+   * Setters:
+   *  columns(arr)  Sets the columns
+   *
+   * @api OSjs.GUI.Elements.gui-list-view
+   * @see OSjs.GUI.Elements._dataview
+   * @class
+   */
   GUI.Elements['gui-list-view'] = {
     bind: GUI.Elements._dataview.bind,
 

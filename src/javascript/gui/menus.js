@@ -59,6 +59,20 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-menu'
+   *
+   * A normal menu (also contextmenu)
+   *
+   * Events:
+   *  select        When an entry was selected (click) => fn(ev)
+   *
+   * Setters:
+   *  checked       Set checkbox/optionn checked value
+   *
+   * @api OSjs.GUI.Elements.gui-menu
+   * @class
+   */
   GUI.Elements['gui-menu'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'select' ) {
@@ -156,6 +170,17 @@
     }
   };
 
+  /**
+   * Element: 'gui-menu-bar'
+   *
+   * A menubar with sub-menus
+   *
+   * Events:
+   *  select        When an entry was selected (click) => fn(ev)
+   *
+   * @api OSjs.GUI.Elements.gui-menu-bar
+   * @class
+   */
   GUI.Elements['gui-menu-bar'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'select' ) {
@@ -196,7 +221,35 @@
     }
   };
 
+  /**
+   * Blur the currently open menu (aka hiding)
+   *
+   * @return void
+   * @api OSjs.API.blurMenu()
+   */
   OSjs.API.blurMenu = blurMenu;
+
+  /**
+   * Create and show a new menu
+   *
+   * Format:
+   * [
+   *  {
+   *    title: "Title",
+   *    icon: "Icon",
+   *    onClick: function() {}, // Callback
+   *    items: [] // Recurse :)
+   *  }
+   *  ...
+   * ]
+   *
+   * @param   Array       items             Array of items
+   * @param   Event       ev                DOM Event or dict with x/y
+   * @param   Mixed       customInstance    Show a custom created menu
+   *
+   * @return void
+   * @api OSjs.API.createMenu()
+   */
   OSjs.API.createMenu = function(items, ev, customInstance) {
     items = items || [];
     blurMenu();

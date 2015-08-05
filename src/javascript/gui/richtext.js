@@ -40,6 +40,14 @@
   /////////////////////////////////////////////////////////////////////////////
 
   // TODO Events
+  /**
+   * Element: 'gui-richtext'
+   *
+   * "Richt text" input area.
+   *
+   * @api OSjs.GUI.Elements.gui-richtext
+   * @class
+   */
   GUI.Elements['gui-richtext'] = {
     build: function(el) {
       var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';

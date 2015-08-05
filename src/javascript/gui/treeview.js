@@ -109,6 +109,24 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-tree-view'
+   *
+   * A tree view for nested content
+   *
+   * Format for add():
+   *
+   * {
+   *    label: "Label",
+   *    icon: "Optional icon path",
+   *    value: "something or JSON or whatever",
+   *    entries: [] // Recurse :)
+   * }
+   *
+   * @api OSjs.GUI.Elements.gui-tree-view
+   * @see OSjs.GUI.Elements._dataview
+   * @class
+   */
   GUI.Elements['gui-tree-view'] = {
     bind: GUI.Elements._dataview.bind,
 

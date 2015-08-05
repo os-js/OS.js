@@ -97,6 +97,29 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-file-view'
+   *
+   * Abstraction layer for displaying files within Icon-, Tree- or List Views
+   *
+   * Events:
+   *  select        When an entry was selected (click) => fn(ev)
+   *  activate      When an entry was activated (doubleclick) => fn(ev)
+   *
+   * Parameters:
+   *  type      String      Child type
+   *  filter    Array       MIME Filters
+   *  dotfiles  boolean     Show dotfiles
+   *
+   * Actions:
+   *  chdir(args)   Change directory (args = {path: '', done: function() })
+   *
+   * @api OSjs.GUI.Elements.gui-file-view
+   * @see OSjs.GUI.Elements.gui-list-view
+   * @see OSjs.GUI.Elements.gui-tree-view
+   * @see OSjs.GUI.Elements.gui-icon-view
+   * @class
+   */
   GUI.Elements['gui-file-view'] = {
     bind: function(el, evName, callback, params) {
       if ( (['activate', 'select']).indexOf(evName) !== -1 ) {

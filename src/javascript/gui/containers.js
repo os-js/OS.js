@@ -38,6 +38,14 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Element: 'gui-paned-view'
+   *
+   * A view with resizable content boxes
+   *
+   * @api OSjs.GUI.Elements.gui-paned-view
+   * @class
+   */
   GUI.Elements['gui-paned-view'] = {
     bind: function(el, evName, callback, params) {
       if ( evName === 'resize' ) {
@@ -88,6 +96,14 @@
     }
   };
 
+  /**
+   * Element: 'gui-vbox'
+   *
+   * Vertical boxed layout
+   *
+   * @api OSjs.GUI.Elements.gui-vbox
+   * @class
+   */
   GUI.Elements['gui-vbox'] = {
     build: function(el) {
     }
@@ -99,6 +115,14 @@
     }
   };
 
+  /**
+   * Element: 'gui-hbox'
+   *
+   * Horizontal boxed layout
+   *
+   * @api OSjs.GUI.Elements.gui-hbox
+   * @class
+   */
   GUI.Elements['gui-hbox'] = {
     build: function(el) {
     }
