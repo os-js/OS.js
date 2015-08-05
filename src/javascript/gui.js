@@ -166,11 +166,12 @@
     var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
 
     if ( param === 'value' && !isDataView) {
-      if ( (['gui-text', 'gui-password', 'gui-textarea']).indexOf(tagName) >= 0 ) {
-        return el.querySelector('input, textarea').value;
+      if ( (['gui-text', 'gui-password', 'gui-textarea', 'gui-slider', 'gui-select', 'gui-select-list']).indexOf(tagName) >= 0 ) {
+        return el.querySelector('input, textarea, select').value;
       }
-      if ( (['gui-checkbox', 'gui-radio']).indexOf(tagName) >= 0 ) {
-        return el.querySelector('input').value === 'on';
+      if ( (['gui-checkbox', 'gui-radio', 'gui-switch']).indexOf(tagName) >= 0 ) {
+        return !!el.querySelector('input').checked;
+        //return el.querySelector('input').value === 'on';
       }
       return null;
     }
@@ -773,6 +774,7 @@
   OSjs.GUI.ElementDataView = UIElementDataView;
   OSjs.GUI.Scheme = UIScheme;
   OSjs.GUI.Helpers = {
+    getProperty: getProperty,
     getValueLabel: getValueLabel,
     getViewNodeValue: getViewNodeValue,
     getLabel: getLabel,

@@ -172,7 +172,7 @@
 
   function setSwitchValue(val, input, button) {
     if ( val !== true ) {
-      input.removeAttribute('checked', 'checked');
+      input.removeAttribute('checked');
       Utils.$removeClass(button, 'gui-active');
       button.innerHTML = '0';
     } else {
@@ -383,6 +383,13 @@
 
   GUI.Elements['gui-slider'] = {
     bind: bindInputEvents,
+    get: function(el, param) {
+      var val = GUI.Helpers.getProperty(el, param);
+      if ( param === 'value' ) {
+        return parseInt(val, 10);
+      }
+      return val;
+    },
     build: function(el) {
       createInputOfType(el, 'range');
     }
