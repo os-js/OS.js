@@ -403,11 +403,11 @@
     var startX, startY;
     var dragging = false;
 
-    function _onMouseDown(ev) {
+    function _onMouseDown(ev, pos, touchDevice) {
       ev.preventDefault();
 
-      startX = ev.clientX;
-      startY = ev.clientY;
+      startX = pos.x;
+      startY = pos.y;
 
       onDown(ev);
       dragging = true;
@@ -416,17 +416,20 @@
       Utils.$bind(window, 'mousemove', _onMouseMove, false);
     }
 
-    function _onMouseMove(ev) {
+    function _onMouseMove(ev, pos, touchDevice) {
       ev.preventDefault();
 
       if ( dragging ) {
-        var diffX = ev.clientX - startX;
-        var diffY = ev.clientY - startY;
+        var currentX = pos.x;
+        var currentY = pos.y;
+        var diffX = currentX - startX;
+        var diffY = currentY - startY;
+
         onMove(ev, diffX, diffX);
       }
     }
 
-    function _onMouseUp(ev) {
+    function _onMouseUp(ev, pos, touchDevice) {
       onUp(ev);
       dragging = false;
 

@@ -57,7 +57,7 @@
     var borderSize = 0;
     var windowRects = [];
 
-    function onMouseDown(ev, a, touchDevice) {
+    function onMouseDown(ev, a, pos) {
       cornerSnapSize = wm ? (wm.getSetting('windowCornerSnap') || 0) : 0;
       windowSnapSize = wm ? (wm.getSetting('windowSnap') || 0) : 0;
       windowRects = [];
@@ -96,8 +96,8 @@
         main.setAttribute('data-hint', 'moving');
       } else {
         if ( windowResize ) {
-          var cx = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX;
-          var cy = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY;
+          var cx = pos.x;
+          var cy = pos.y;
           var dir = Utils.$position(windowResize);
           var dirX = cx - dir.left;
           var dirY = cy - dir.top;
@@ -132,24 +132,17 @@
 
       win._fireHook('preop');
 
-      sx = touchDevice ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
-      sy = touchDevice ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
+      sx = pos.x;
+      sy = pos.y;
       action = a;
 
-      document.addEventListener('touchmove', function(ev) {
-        onMouseMove(ev, true);
-      }, false);
-      document.addEventListener('mousemove', onMouseMove, false);
-
-      document.addEventListener('touchend', function(ev) {
-        onMouseUp(ev, true);
-      }, false);
-      document.addEventListener('mouseup', onMouseUp, false);
+      Utils.$bind(document, 'mousemove', onMouseMove);
+      Utils.$bind(document, 'mouseup', onMouseUp);
 
       return false;
     }
 
-    function onMouseUp(ev, touchDevice) {
+    function onMouseUp(ev, pos) {
       if ( moved ) {
         if ( wm ) {
           if ( action === 'move' ) {
@@ -164,10 +157,8 @@
 
       main.setAttribute('data-hint', '');
 
-      document.removeEventListener('touchmove', onMouseMove, false);
-      document.removeEventListener('mousemove', onMouseMove, false);
-      document.removeEventListener('touchend', onMouseUp, false);
-      document.removeEventListener('mouseup', onMouseUp, false);
+      Utils.$unbind(document, 'mousemove', onMouseMove, false);
+      Utils.$unbind(document, 'mouseup', onMouseUp, false);
 
       action = null;
       sx = 0;
@@ -178,11 +169,11 @@
       win._fireHook('postop');
     }
 
-    function onMouseMove(ev, touchDevice) {
+    function onMouseMove(ev, pos) {
       if ( !wm || !wm.getMouseLocked() ) { return; }
       if ( action === null ) { return; }
-      var cx = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX;
-      var cy = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY;
+      var cx = pos.x;
+      var cy = pos.y;
       var dx = cx - sx;
       var dy = cy - sy;
       var newLeft = null;
@@ -292,13 +283,13 @@
     }
 
     if ( win._properties.allow_move ) {
-      Utils.$bind(windowTop, 'mousedown', function(ev, touchDevice) {
-        onMouseDown(ev, 'move', touchDevice);
+      Utils.$bind(windowTop, 'mousedown', function(ev, pos) {
+        onMouseDown(ev, 'move', pos);
       });
     }
     if ( win._properties.allow_resize ) {
-      Utils.$bind(windowResize, 'mousedown', function(ev, touchDevice) {
-        onMouseDown(ev, 'resize', touchDevice);
+      Utils.$bind(windowResize, 'mousedown', function(ev, pos) {
+        onMouseDown(ev, 'resize', pos);
       });
     }
   }

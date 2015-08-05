@@ -1249,16 +1249,25 @@
     var isTouch = OSjs.Compability.touch;
     var touchMap = {
       click: 'touchend',
+      mouseup: 'touchend',
+      mousemove: 'touchmove',
       mousedown: 'touchstart'
     };
 
+    function pos(ev, touchDevice) {
+      return {
+        x: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX,
+        y: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY
+      };
+    }
+
     el[method](ev, function(ev) {
-      callback.call(this, ev, false);
+      callback.call(this, ev, pos(ev), false);
     }, param === true);
 
     if ( touchMap[ev] ) {
       el[method](touchMap[ev], function(ev) {
-        callback.call(this, ev, true);
+        callback.call(this, ev, pos(ev, true), true);
       }, param === true);
     }
   };
