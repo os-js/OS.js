@@ -87,6 +87,10 @@
       }
     });
 
+    scheme.find(this, 'ButtonApply').on('click', function() {
+      self.applySettings(wm, scheme);
+    });
+
     this.initThemeTab(wm, scheme);
     this.initDesktopTab(wm, scheme);
     this.initPanelTab(wm, scheme);
@@ -103,6 +107,7 @@
   };
 
   ApplicationSettingsWindow.prototype.initThemeTab = function(wm, scheme) {
+    var self = this;
     var _ = OSjs.Applications.ApplicationSettings._;
 
     var styleThemes = [];
@@ -141,8 +146,31 @@
     scheme.find(this, 'EnableSounds').set('value', this.settings.enableSounds);
     scheme.find(this, 'EnableTouchMenu').set('value', this.settings.useTouchMenu);
 
-    scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper);
-    scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor);
+    var backImage = scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper).on('open', function(ev) {
+      self._toggleDisabled(true);
+
+      API.createDialog('File', {
+        mime: ['^image'],
+        file: new VFS.File(ev.detail)
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          backImage.set('value', result.path);
+        }
+      });
+    });
+    var backColor = scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor).on('open', function(ev) {
+      self._toggleDisabled(true);
+
+      API.createDialog('Color', {
+        color: ev.detail
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          backColor.set('value', result.hex);
+        }
+      });
+    });
     scheme.find(this, 'BackgroundStyle').add(backgroundTypes).set('value', this.settings.background);
 
     scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
@@ -161,6 +189,7 @@
   };
 
   ApplicationSettingsWindow.prototype.initPanelTab = function(wm, scheme) {
+    var self = this;
     var panel = this.settings.panels[0];
 
     var panelPositions = [
@@ -176,8 +205,30 @@
     scheme.find(this, 'PanelPosition').add(panelPositions).set('value', panel.options.position);
     scheme.find(this, 'PanelAutoHide').set('value', panel.options.autohide);
     scheme.find(this, 'PanelOntop').set('value', panel.options.ontop);
-    scheme.find(this, 'PanelBackgroundColor').set('value', panel.options.background || '#101010');
-    scheme.find(this, 'PanelForegroundColor').set('value', panel.options.foreground || '#ffffff');
+    var panelFg = scheme.find(this, 'PanelBackgroundColor').set('value', panel.options.background || '#101010').on('open', function(ev) {
+      self._toggleDisabled(true);
+
+      API.createDialog('Color', {
+        color: ev.detail
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          panelFg.set('value', result.hex);
+        }
+      });
+    });
+    var panelBg = scheme.find(this, 'PanelForegroundColor').set('value', panel.options.foreground || '#ffffff').on('open', function(ev) {
+      self._toggleDisabled(true);
+
+      API.createDialog('Color', {
+        color: ev.detail
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          panelBg.set('value', result.hex);
+        }
+      });
+    });
     scheme.find(this, 'PanelOpacity').set('value', opacity);
   };
 
@@ -200,6 +251,41 @@
   };
 
   ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme) {
+  };
+
+  ApplicationSettingsWindow.prototype.applySettings = function(wm, scheme) {
+    // Theme
+    this.settings.theme = scheme.find(this, 'StyleThemeName').get('value');
+    this.settings.sounds = scheme.find(this, 'SoundThemeName').get('value');
+    this.settings.icons = scheme.find(this, 'IconThemeName').get('value');
+    this.settings.animations = scheme.find(this, 'EnableAnimations').get('value');
+    this.settings.enableSounds = scheme.find(this, 'EnableSounds').get('value');
+    this.settings.useTouchMenu = scheme.find(this, 'EnableTouchMenu').get('value');
+    this.settings.wallpaper = scheme.find(this, 'BackgroundImage').get('value');
+    this.settings.backgroundColor = scheme.find(this, 'BackgroundColor').get('value');
+    this.settings.background = scheme.find(this, 'BackgroundStyle').get('value');
+
+    // Desktop
+    this.settings.enableHotkeys = scheme.find(this, 'EnableHotkeys').get('value');
+    this.settings.enableSwitcher = scheme.find(this, 'EnableWindowSwitcher').get('value');
+    this.settings.desktopMargin = scheme.find(this, 'DesktopMargin').get('value');
+    this.settings.windowCornerSnap = scheme.find(this, 'CornerSnapping').get('value');
+    this.settings.windowSnap = scheme.find(this, 'WindowSnapping').get('value');
+    this.settings.enableIconView = scheme.find(this, 'EnableIconView').get('value');
+    this.settings.invertIconViewColor = scheme.find(this, 'EnableIconViewInvert').get('value');
+
+    // Panel
+    this.settings.panels[0].options.position = scheme.find(this, 'PanelPosition').get('value');
+    this.settings.panels[0].options.autohide = scheme.find(this, 'PanelAutoHide').get('value');
+    this.settings.panels[0].options.ontop = scheme.find(this, 'PanelOntop').get('value');
+    this.settings.panels[0].options.background = scheme.find(this, 'PanelBackgroundColor').get('value') || '#101010';
+    this.settings.panels[0].options.foreground = scheme.find(this, 'PanelForegroundColor').get('value') || '#ffffff';
+    this.settings.panels[0].options.opacity = scheme.find(this, 'PanelOpacity').get('value');
+
+    // User
+    this.settings.language = scheme.find(this, 'UserLocale').get('value');
+
+    wm.applySettings(this.settings, false, true);
   };
 
   /////////////////////////////////////////////////////////////////////////////
