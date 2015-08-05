@@ -721,7 +721,7 @@
       // Apply a default className to non-containers
       node.querySelectorAll('*').forEach(function(el) {
         var lcase = el.tagName.toLowerCase();
-        if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|bar|bar\-entry)$/) ) {
+        if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|(status|tool)bar|(button|menu)\-bar|bar\-entry)$/) ) {
           Utils.$addClass(el, 'gui-element');
         }
       });

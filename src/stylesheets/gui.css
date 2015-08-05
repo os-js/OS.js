@@ -951,6 +951,7 @@ gui-progress-bar {
   position : relative;
   display : inline-block;
   text-align : center;
+  overflow : hidden;
 }
   gui-progress-bar:before {
     content : '';
@@ -963,9 +964,9 @@ gui-progress-bar {
   }
   gui-progress-bar > div {
     position : absolute;
-    left : 0px;
-    bottom : 0px;
-    top : 0px;
+    left : 1px;
+    bottom : 1px;
+    top : 1px;
     z-index : -1;
   }
   gui-progress-bar > span {
@@ -981,6 +982,7 @@ gui-progress-bar {
 gui-statusbar {
   position : relative;
   display : block;
+  min-height : 16px;
 }
 
 /**

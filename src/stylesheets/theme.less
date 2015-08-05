@@ -29,20 +29,39 @@
  * @licence Simplified BSD License
  */
 
-@window_background_color  : #ebebeb;
-@window_foreground_color  : #242424;
-@window_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
-@window_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+@base_background_color  : #ebebeb;
+@base_foreground_color  : #242424;
+@base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+@base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
 
 @gui_selected_background_color       : #2d73d2;
 @gui_selected_foreground_color       : #ffffff;
+
 @gui_border_color                    : #b2b2b2;
-@gui_disabled_border_color           : #cccccc;
-@gui_disabled_background_color       : #dddddd;
-@gui_disabled_foreground_color       : #cccccc;
 @gui_background_color                : #d9d9d9;
+
 @gui_input_border_color              : #c1c1c1;
 @gui_input_background_color          : #ffffff;
+@gui_input_foreground_color          : @base_foreground_color;
+
+@gui_input_disabled_border_color     : #cccccc;
+@gui_input_disabled_background_color : #dddddd;
+@gui_input_disabled_foreground_color : #C7C7C7;
+
+@gui_button_border_color             : @gui_input_border_color;
+@gui_button_background_color         : #f8f8f8;
+@gui_button_foreground_color         : @base_foreground_color;
+@gui_button_background               : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+
+@gui_button_active_border_color      : #d0d0d0;
+@gui_button_active_background_color  : @gui_button_background_color;
+@gui_button_active_foreground_color  : @base_foreground_color;
+@gui_button_active_background        : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+
+@gui_button_disabled_border_color    : @gui_input_disabled_border_color;
+@gui_button_disabled_background_color: @gui_input_disabled_background_color;
+@gui_button_disabled_foreground_color: @base_foreground_color;
+@gui_button_disabled_background      : @gui_input_disabled_background_color;
 
 
 .theme_border(@radius) {
@@ -72,19 +91,26 @@
 .theme_button() {
   cursor : pointer;
   padding : 4px;
-  background-color: #f8f8f8;
-  background: linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
-  border: 1px solid @gui_input_border_color;
+  background-color: @gui_button_background_color;
+  background: @gui_button_background;
+  border: 1px solid @gui_button_border_color;
+  color: @gui_button_foreground_color;
 }
 .theme_button_disabled() {
-  border-color : @gui_disabled_border_color;
+  border-color : @gui_button_disabled_border_color;
+  color : @gui_button_disabled_foreground_color;
+  background-color: @gui_button_disabled_background_color;
+  background: @gui_button_disabled_background;
 }
 .theme_button_active() {
-  border-color : #d0d0d0;
+  border-color : @gui_button_active_border_color;
+  color : @gui_button_active_foreground_color;
+  background-color: @gui_button_active_background_color;
+  background: @gui_button_active_background;
 }
 
 .theme_label_disabled() {
-  color : @gui_disabled_foreground_color;
+  color : @gui_input_disabled_foreground_color;
 }
 .theme_text_input() {
   padding : 4px;
@@ -92,9 +118,9 @@
   border : 1px solid @gui_border_color;
 }
 .theme_text_input_disabled() {
-  border-color : @gui_disabled_border_color;
-  background-color : @gui_disabled_background_color;
-  color : @gui_disabled_foreground_color;
+  border-color : @gui_input_disabled_border_color;
+  background-color : @gui_input_disabled_background_color;
+  color : @gui_input_disabled_foreground_color;
 }
 
 
@@ -106,7 +132,7 @@ body, input, button, textarea, label, select {
   font-family:Karla, Sans-serif;
   font-weight:normal;
   font-style:normal;
-  color: @window_foreground_color;
+  color: @base_foreground_color;
 }
 
 ::-webkit-scrollbar {
@@ -121,19 +147,19 @@ body, input, button, textarea, label, select {
   display : none;
 }
 ::-webkit-scrollbar-track {
-  background : @window_background_color;
+  background : @base_background_color;
 }
 ::-webkit-scrollbar-track-piece {
-  background : @window_background_color;
+  background : @base_background_color;
 }
 ::-webkit-scrollbar-thumb {
   background : @gui_border_color;
 }
 ::-webkit-scrollbar-corner {
-  background : @window_background_color;
+  background : @base_background_color;
 }
 ::-webkit-resizer {
-  background : @window_background_color;
+  background : @base_background_color;
 }
 
 
@@ -144,7 +170,7 @@ body, input, button, textarea, label, select {
  */
 
 body[data-attention="true"]:after {
-  background-color : @window_foreground_color;
+  background-color : @base_foreground_color;
 }
 
 corewm-panel {
@@ -181,8 +207,8 @@ corewm-panel-container {
 
 /* Notifications */
 application-splash {
-  box-shadow : @window_shadow_focused;
-  background : @window_background_color;
+  box-shadow : @base_shadow_focused;
+  background : @base_background_color;
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
   cursor : pointer;
@@ -213,8 +239,8 @@ corewm-notification .Message {
 /* Window Switcher */
 corewm-window-switcher {
   opacity : 0.8;
-  box-shadow : @window_shadow_focused;
-  background : @window_background_color;
+  box-shadow : @base_shadow_focused;
+  background : @base_background_color;
 }
 corewm-window-switcher > div.Active {
   background : @gui_selected_background_color;
@@ -232,14 +258,14 @@ application-window {
   opacity : 0.8;
 }
 application-window:before {
-  box-shadow : @window_shadow_unfocused;
-  background : @window_background_color;
+  box-shadow : @base_shadow_unfocused;
+  background : @base_background_color;
 }
 application-window[data-focused="true"] {
   opacity : 1.0;
 }
 application-window[data-focused="true"]:before {
-  box-shadow : @window_shadow_focused;
+  box-shadow : @base_shadow_focused;
 }
 application-window-top {
 }
@@ -252,7 +278,7 @@ application-window-top:active {
 }
 application-window-title {
   font-weight : bold;
-  color : @window_foreground_color;
+  color : @base_foreground_color;
   opacity : .5;
 }
 application-window-title:active {
@@ -357,6 +383,9 @@ gui-container {
 gui-iframe {
   background-color : @gui_input_background_color;
 }
+  gui-iframe > iframe {
+    background-color : @gui_input_background_color;
+  }
 
 /* Button Bar */
 /* Toolbar */
@@ -394,7 +423,7 @@ gui-toolbar[data-orientation="vertical"] {
     }
       gui-tabs > ul > li.gui-active:after {
         bottom : -1px;
-        border-bottom : 1px solid @window_background_color;
+        border-bottom : 1px solid @base_background_color;
       }
   gui-tabs > div {
     height : ~"calc(100% - 25px)";
@@ -441,7 +470,7 @@ gui-button[data-icon-size="32"] {
   }
   gui-button button:disabled {
     cursor : default;
-    color : @gui_disabled_foreground_color;
+    color : @gui_input_disabled_foreground_color;
   }
   gui-button button.gui-has-image img {
     padding-right : 4px;
@@ -462,12 +491,12 @@ gui-checkbox {
   gui-radio input,
   gui-checkbox input {
     text-align : center;
-    background: #ffffff;
+    background: @gui_input_background_color;
     border: 1px solid @gui_border_color;
     width : 16px;
     height : 16px;
     line-height: 12px;
-    color : #000;
+    color : @gui_input_foreground_color;
     font-family: Arial;
   }
 
@@ -490,13 +519,13 @@ gui-checkbox {
 
   gui-radio[data-disabled="true"] label,
   gui-checkbox[data-disabled="true"] label {
-    color : @gui_disabled_foreground_color;
+    color : @gui_input_disabled_foreground_color;
   }
 
   gui-radio input:disabled,
   gui-checkbox input:disabled {
-    border-color : @gui_disabled_foreground_color;
-    background-color : @gui_disabled_background_color;
+    border-color : @gui_input_disabled_border_color;
+    background-color : @gui_input_disabled_background_color;
   }
 
   gui-radio > label,
@@ -525,7 +554,7 @@ gui-select {
     top: 1px;
     bottom : 1px;
     width: 22px;
-    background: #ffffff;
+    background: @gui_input_background_color;
   }
   gui-select:after {
     content: '<>';
@@ -542,7 +571,7 @@ gui-select {
             transform: rotate(90deg);
   }
   gui-select[data-disabled="true"]:before {
-    background-color : @gui_disabled_background_color;
+    background-color : @gui_input_disabled_background_color;
   }
 
 /* Select List */
@@ -596,7 +625,7 @@ gui-slider {
     width : 10px;
   }
   gui-slider input:disabled::-moz-range-thumb {
-    border-color : @gui_disabled_border_color;
+    border-color : @gui_input_disabled_border_color;
   }
 
   gui-slider input::-webkit-slider-thumb {
@@ -607,7 +636,7 @@ gui-slider {
   }
   gui-slider input:disabled::-webkit-range-thumb {
     background-color : @gui_background_color;
-    border-color : @gui_disabled_border_color;
+    border-color : @gui_input_disabled_border_color;
   }
 
   gui-slider input::-ms-thumb {
@@ -616,7 +645,7 @@ gui-slider {
     width : 16px;
   }
   gui-slider input:disabled::-ms-thumb {
-    border-color : @gui_disabled_border_color;
+    border-color : @gui_input_disabled_border_color;
   }
 
   /**
@@ -713,9 +742,12 @@ gui-text {
 /* Rich Text */
 gui-richtext {
   padding : 4px;
-  background : #fff;
+  background-color : @gui_input_background_color;
   border : 1px solid @gui_border_color;
 }
+  gui-richtext > iframe {
+    background-color : @gui_input_background_color;
+  }
 
 /* Grid */
 gui-grid > gui-grid-row > gui-grid-entry { /* li */
@@ -762,11 +794,12 @@ gui-color-box {
 /* Menu */
 gui-menu {
   border : 1px solid transparent;
-  background: #ebebeb;
-  box-shadow : @window_shadow_focused;
+  background: @base_background_color;
+  box-shadow : @base_shadow_focused;
+  color : @base_foreground_color;
 }
   gui-menu > gui-menu-entry {
-    color: @window_foreground_color;
+    color: @base_foreground_color;
   }
   gui-menu > gui-menu-entry > label {
     cursor : pointer;
@@ -795,7 +828,7 @@ gui-menu {
       padding-left : 22px;
     }
     gui-menu > gui-menu-entry[data-disabled="true"] {
-      color : @gui_disabled_foreground_color;
+      color : @gui_input_disabled_foreground_color;
     }
 
 /* Menu Bar */
@@ -833,7 +866,8 @@ gui-progress-bar {
 
 /* Statusbar */
 gui-statusbar {
-  padding : 4px;
+  margin : 4px;
+  padding-bottom : 4px;
 }
 
 /**
@@ -844,7 +878,7 @@ gui-statusbar {
 
 /* Icon View */
 gui-icon-view {
-  background : #fff;
+  background-color : @gui_input_background_color;
   border : 1px solid @gui_border_color;
   padding : 4px;
 }
@@ -867,7 +901,7 @@ gui-icon-view {
 
 /* List View */
 gui-list-view {
-  background : #fff;
+  background-color : @gui_input_background_color;
   border : 1px solid @gui_border_color;
 }
   gui-list-view-head {
@@ -902,7 +936,7 @@ gui-list-view {
 
 /* Tree View */
 gui-tree-view {
-  background : #fff;
+  background-color : @gui_input_background_color;
   border : 1px solid @gui_border_color;
 }
     gui-tree-view-entry > div {
