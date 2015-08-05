@@ -31,7 +31,19 @@
   'use strict';
 
   /**
+   * An 'Error' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    message     String      Dialog message
+   * @option    args    error       String      Error message
+   * @option    args    exception   Object      (Optional) Exception object
+   *
    * @extends DialogWindow
+   * @class ErrorDialog
+   * @api OSjs.Dialogs.Error
    */
   function ErrorDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

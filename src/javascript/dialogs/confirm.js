@@ -31,7 +31,17 @@
   'use strict';
 
   /**
+   * An 'Confirm' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    message     String      Dialog message
+   *
    * @extends DialogWindow
+   * @class ConfirmDialog
+   * @api OSjs.Dialogs.Confirm
    */
   function ConfirmDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

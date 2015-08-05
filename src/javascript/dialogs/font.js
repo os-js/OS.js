@@ -31,7 +31,25 @@
   'use strict';
 
   /**
+   * An 'Font Selection' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title               String      Dialog title
+   * @option    args    fontName            String      Current font name (default=internal)
+   * @option    args    fontSize            int         Current font size (default=12)
+   * @option    args    fontColor           String      (Optional) Font color (default=#00000)
+   * @option    args    backgroundColor     String      (Optional) Background color (default=#ffffff)
+   * @option    args    fonts               Array       (Optional) Default font list
+   * @option    args    minSize             int         (Optional) Minimun size (default=6)
+   * @option    args    maxSize             int         (Optional) Maximum size (default=30
+   * @option    args    text                String      (Optional) Preview text
+   * @option    args    unit                String      (Optional) Size unit (default="px")
+   *
    * @extends DialogWindow
+   * @class FontDialog
+   * @api OSjs.Dialogs.Font
    */
   function FontDialog(args, callback) {
     args = Utils.argumentDefaults(args, {

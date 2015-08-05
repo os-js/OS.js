@@ -31,7 +31,17 @@
   'use strict';
 
   /**
+   * An 'File Information' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @optioin   args    file        VFS.File    File to use
+   *
    * @extends DialogWindow
+   * @class FileInfoDialog
+   * @api OSjs.Dialogs.FileInfo
    */
   function FileInfoDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

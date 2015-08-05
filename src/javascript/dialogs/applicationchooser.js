@@ -31,7 +31,18 @@
   'use strict';
 
   /**
+   * An 'Application Chooser' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    list        Array       The list of applications
+   * @option    args    file        VFS.File    The file to open
+   *
    * @extends DialogWindow
+   * @class ApplicationChooserDialog
+   * @api OSjs.Dialogs.ApplicationChooser
    */
   function ApplicationChooserDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

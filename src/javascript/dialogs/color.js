@@ -31,9 +31,17 @@
   'use strict';
 
   /**
-   * TODO: Alpha
+   * An 'Color Chooser' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    color       Mixed       Either hex string or rbg object
    *
    * @extends DialogWindow
+   * @class ColorDialog
+   * @api OSjs.Dialogs.Color
    */
   function ColorDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});
@@ -64,6 +72,8 @@
   ColorDialog.prototype.init = function() {
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    // TODO: Alpha channel
 
     function updateHex(update) {
       self.scheme.find(self, 'LabelRed').set('value', API._('DIALOG_COLOR_R', self.color.r));

@@ -31,7 +31,17 @@
   'use strict';
 
   /**
+   * An 'Alert' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    message     String      Dialog message
+   *
    * @extends DialogWindow
+   * @class AlertDialog
+   * @api OSjs.Dialogs.Alert
    */
   function AlertDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

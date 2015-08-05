@@ -31,10 +31,28 @@
   'use strict';
 
   /**
+   * An 'File' dialog
+   *
    * TODO: Autodetect MIME on extension (also option to provide)
    * TODO: Disable button if no selection is made (or empty text on save)
    *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    type        String      Dialog type (default=open, alternative=save)
+   * @option    args    multiple    boolean     Multiple file selection (default=false)
+   * @option    args    file        VFS.File    (Optional) Current file
+   * @option    args    path        String      (Optional) Default path
+   * @option    args    filename    String      (Optional) Default filename
+   * @option    args    extension   String      (Optional) Default file extension
+   * @option    args    mime        String      (Optional) Default file MIME
+   * @option    args    filter      Array       (Optional) Array of MIMIE filters
+   * @option    args    select      String      (Optional) Selection type (file/dir)
+   *
    * @extends DialogWindow
+   * @class FileDialog
+   * @api OSjs.Dialogs.File
    */
   function FileDialog(args, callback) {
     args = Utils.argumentDefaults(args, {

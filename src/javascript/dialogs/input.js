@@ -31,7 +31,19 @@
   'use strict';
 
   /**
+   * An 'Input' dialog
+   *
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    message     String      Dialog message
+   * @option    args    value       String      (Optional) Input value
+   * @option    args    placeholder String      (Optional) Input placeholder
+   *
    * @extends DialogWindow
+   * @class InputDialog
+   * @api OSjs.Dialogs.Input
    */
   function InputDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});
