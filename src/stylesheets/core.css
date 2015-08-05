@@ -44,8 +44,11 @@ body, input, button, textarea, label, select {
 }
 
 /**
- * Loading Screen
+ * ===========================================================================
+ *                             LOADING SCREEN
+ * ===========================================================================
  */
+
 #LoadingScreen {
   position : absolute;
   width : 120px;
@@ -63,14 +66,20 @@ body, input, button, textarea, label, select {
   -o-border-radius : 10px;
   border-radius : 10px;
 }
-#LoadingScreen span {
-  font-size : 22px;
-  padding : 0;
-  margin : 20px;
-  display : block;
-  color : #000;
-  text-align : center;
-}
+  #LoadingScreen span {
+    font-size : 22px;
+    padding : 0;
+    margin : 20px;
+    display : block;
+    color : #000;
+    text-align : center;
+  }
+
+/**
+ * ===========================================================================
+ *                           APPLICATION SPLASH
+ * ===========================================================================
+ */
 
 application-splash {
   display : block;
@@ -83,28 +92,34 @@ application-splash {
   margin-top : -28px;
   z-index : 99999999;
 }
-application-splash > img {
-  display : block;
-  position : absolute;
-  top : 5px;
-  left : 5px;
-  width : 16px;
-  height : 16px;
-}
-application-splash > span {
-  display : block;
-  position : absolute;
-  top : 5px;
-  left : 26px;
-  height : 16px;
-  line-height : 16px;
-}
-application-splash > gui-progress-bar {
-  position : absolute;
-  bottom : 5px;
-  left : 5px;
-  right : 5px;
-}
+  application-splash > img {
+    display : block;
+    position : absolute;
+    top : 5px;
+    left : 5px;
+    width : 16px;
+    height : 16px;
+  }
+  application-splash > span {
+    display : block;
+    position : absolute;
+    top : 5px;
+    left : 26px;
+    height : 16px;
+    line-height : 16px;
+  }
+  application-splash > gui-progress-bar {
+    position : absolute;
+    bottom : 5px;
+    left : 5px;
+    right : 5px;
+  }
+
+/**
+ * ===========================================================================
+ *                                 MISC
+ * ===========================================================================
+ */
 
 body[data-attention="true"]:after {
   content : '';
@@ -116,6 +131,12 @@ body[data-attention="true"]:after {
   bottom : 0px;
   z-index : 1;
 }
+
+/**
+ * ===========================================================================
+ *                              DEBUG NOTICE
+ * ===========================================================================
+ */
 
 #DebugNotice {
   position : absolute;
@@ -136,6 +157,12 @@ body[data-attention="true"]:after {
     font-weight : normal;
   }
 
+/**
+ * ===========================================================================
+ *                                WINDOW
+ * ===========================================================================
+ */
+
 .application-window-button-entry,
 application-window,
 application-window-top,
@@ -149,6 +176,9 @@ application-window-buttons {
   display : block;
 }
 
+/**
+ * Widow root
+ */
 application-window {
   position : absolute;
   top : 0px;
@@ -165,22 +195,25 @@ application-window:before {
   bottom : 0px;
 }
 
-  application-window-top {
-    position : absolute;
-    top : -26px;
-    left : 0px;
-    right : 0px;
-    height : 26px;
-    z-index : 5;
+/**
+ * Window top
+ */
+application-window-top {
+  position : absolute;
+  top : -26px;
+  left : 0px;
+  right : 0px;
+  height : 26px;
+  z-index : 5;
+}
+  application-window-top,
+  application-window-top > * {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
-    application-window-top,
-    application-window-top > * {
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
 
 application-window-icon {
   position : absolute;
@@ -219,17 +252,20 @@ application-window-buttons {
   height : 20px;
   margin : 1px;
 }
-application-window-buttons > .application-window-button-entry {
-  padding : 0;
-  margin : 2px;
-  width : 18px;
-  height : 18px;
-  line-height : 18px;
-  text-align : center;
-  display : inline-block;
-  position : relative;
-}
+  application-window-buttons > .application-window-button-entry {
+    padding : 0;
+    margin : 2px;
+    width : 18px;
+    height : 18px;
+    line-height : 18px;
+    text-align : center;
+    display : inline-block;
+    position : relative;
+  }
 
+/**
+ * Window contents
+ */
 application-window-content {
   position : absolute;
   top : 0px;
@@ -240,6 +276,9 @@ application-window-content {
   z-index : 1;
 }
 
+/**
+ * Window resizer underlay
+ */
 application-window-resize {
   position : absolute;
   top : -34px;
@@ -257,6 +296,10 @@ application-window-outer[data-allow-resize="false"] window-resize {
   display : none;
 }
 
+/**
+ * Window loading overlay
+ */
+
 application-window-loading {
   position : absolute;
   top : 0px;
@@ -266,12 +309,15 @@ application-window-loading {
   z-index : 999999;
 }
 
-application-window-loading-indicator {
-  position : absolute;
-  left : 50%;
-  top : 50%;
-}
+  application-window-loading-indicator {
+    position : absolute;
+    left : 50%;
+    top : 50%;
+  }
 
+/**
+ * Window disabled overlay
+ */
 application-window-disabled {
   position : absolute;
   top : 0px;
@@ -280,6 +326,10 @@ application-window-disabled {
   bottom : 0px;
   z-index : 999998;
 }
+
+/**
+ * Window DnD overlay
+ */
 application-window[data-dnd-state="true"]:after {
   content : '';
   position : absolute;
@@ -289,6 +339,10 @@ application-window[data-dnd-state="true"]:after {
   right : 0px;
   /*z-index : 10;*/
 }
+
+/**
+ * Window Warning
+ */
 application-window-warning  {
   position : absolute;
   top : 0px;
@@ -300,29 +354,38 @@ application-window-warning  {
   border : 1px solid transparent;
   z-index : 99999;
 }
-application-window-warning > div:nth-child(1) {
-  position : absolute;
-  top : 0px;
-  right : 0px;
-  bottom : 0px;
-  padding : 5px;
-}
-application-window-warning > div:nth-child(2) {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 20px;
-  bottom : 0px;
-  padding : 5px;
-  overflow : hidden;
-}
+  application-window-warning > div:nth-child(1) {
+    position : absolute;
+    top : 0px;
+    right : 0px;
+    bottom : 0px;
+    padding : 5px;
+  }
+  application-window-warning > div:nth-child(2) {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 20px;
+    bottom : 0px;
+    padding : 5px;
+    overflow : hidden;
+  }
 
+/**
+ * Dialog window defaults
+ */
 application-window.DialogWindow gui-label label {
   white-space : inherit;
 }
 application-window.DialogWindow gui-button-bar gui-button {
   min-width : 80px;
 }
+
+/**
+ * ===========================================================================
+ *                          IFRAME APPLICATIONS
+ * ===========================================================================
+ */
 
 .IFrameApplicationWindow application-window-content {
   background : #000;
