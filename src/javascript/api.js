@@ -1295,7 +1295,6 @@
    * @api     OSjs.API.playSound()
    */
   function doPlaySound(name, volume) {
-    return; // FIXME DEBUG!
     if ( !OSjs.Compability.audio ) {
       console.debug('doPlaySound()', 'Browser has no support for sounds!');
       return false;
