@@ -629,7 +629,9 @@
     renderInstalled();
 
     scheme.find(this, 'TabsPackages').on('change', function(ev) {
-      renderStore();
+      if ( ev.detail && ev.detail.index === 1 ) {
+        renderStore();
+      }
     });
   };
 
