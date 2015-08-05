@@ -355,15 +355,17 @@
    */
   function setFlexbox(el, grow, shrink, basis, checkel) {
     checkel = checkel || el;
-    if ( typeof basis === 'undefined' || basis === null ) {
-      basis = checkel.getAttribute('data-basis') || 'auto';
-    }
-    if ( typeof grow === 'undefined' || grow === null ) {
-      grow = checkel.getAttribute('data-grow') || 0;
-    }
-    if ( typeof shrink === 'undefined' || shrink === null ) {
-      shrink = checkel.getAttribute('data-shrink') || 0;
-    }
+    (function() {
+      if ( typeof basis === 'undefined' || basis === null ) {
+        basis = checkel.getAttribute('data-basis') || 'auto';
+      }
+      if ( typeof grow === 'undefined' || grow === null ) {
+        grow = checkel.getAttribute('data-grow') || 0;
+      }
+      if ( typeof shrink === 'undefined' || shrink === null ) {
+        shrink = checkel.getAttribute('data-shrink') || 0;
+      }
+    })();
 
     var flex = [grow, shrink];
     if ( basis.length ) {
@@ -480,10 +482,8 @@
    * Makes sure "include" fragments are rendered correctly
    */
   function resolveFragments(scheme, node, el) {
-    var resolving = true;
-    var nodes;
-    while ( resolving ) {
-      nodes = node.querySelectorAll('gui-fragment');
+    function _resolve() {
+      var nodes = node.querySelectorAll('gui-fragment');
       if ( nodes.length ) {
         nodes.forEach(function(el) {
           var id = el.getAttribute('data-fragment-id');
@@ -492,9 +492,15 @@
           addChildren(frag, el.parentNode);
           Utils.$remove(el);
         });
-      } else {
-        resolving = false;
+        return true;
       }
+
+      return false;
+    }
+
+    var resolving = true;
+    while ( resolving ) {
+      resolving = _resolve();
     }
   }
 
