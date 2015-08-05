@@ -115,7 +115,7 @@
 .theme_text_input() {
   padding : 4px;
   background-color : @gui_input_background_color;
-  border : 1px solid @gui_border_color;
+  border : 1px solid @gui_input_border_color;
 }
 .theme_text_input_disabled() {
   border-color : @gui_input_disabled_border_color;
@@ -492,7 +492,7 @@ gui-checkbox {
   gui-checkbox input {
     text-align : center;
     background: @gui_input_background_color;
-    border: 1px solid @gui_border_color;
+    border: 1px solid @gui_input_border_color;
     width : 16px;
     height : 16px;
     line-height: 12px;
@@ -559,11 +559,11 @@ gui-select {
   gui-select:after {
     content: '<>';
     font: 11px "Consolas", monospace;
-    color: @gui_border_color;
+    color: @gui_input_border_color;
     right: 2px;
     top: 5px;
     padding: 0 0 2px;
-    border-bottom: 1px solid @gui_border_color;
+    border-bottom: 1px solid @gui_input_border_color;
 
     -webkit-transform: rotate(90deg);
        -moz-transform: rotate(90deg);
@@ -743,7 +743,7 @@ gui-text {
 gui-richtext {
   padding : 4px;
   background-color : @gui_input_background_color;
-  border : 1px solid @gui_border_color;
+  border : 1px solid @gui_input_border_color;
 }
   gui-richtext > iframe {
     background-color : @gui_input_background_color;
@@ -780,7 +780,7 @@ gui-video {
 
 /* Color Swatch */
 gui-color-swatch {
-  border: 1px solid @gui_border_color;
+  border: 1px solid @gui_input_border_color;
 }
 
 /* Color Box */
@@ -854,7 +854,7 @@ gui-progress-bar {
 }
   gui-progress-bar:before {
     background-color : @gui_background_color;
-    border: 1px solid @gui_border_color;
+    border: 1px solid @gui_input_border_color;
     padding : 4px;
   }
   gui-progress-bar > div {
@@ -879,7 +879,7 @@ gui-statusbar {
 /* Icon View */
 gui-icon-view {
   background-color : @gui_input_background_color;
-  border : 1px solid @gui_border_color;
+  border : 1px solid @gui_input_border_color;
   padding : 4px;
 }
   gui-icon-view-entry {
@@ -902,7 +902,7 @@ gui-icon-view {
 /* List View */
 gui-list-view {
   background-color : @gui_input_background_color;
-  border : 1px solid @gui_border_color;
+  border : 1px solid @gui_input_border_color;
 }
   gui-list-view-head {
     background-color : @gui_background_color;
@@ -930,14 +930,14 @@ gui-list-view {
       right : -3px;
     }
       gui-list-view-column-resizer:after {
-        background : @gui_border_color;
+        background : @gui_input_border_color;
       }
 
 
 /* Tree View */
 gui-tree-view {
   background-color : @gui_input_background_color;
-  border : 1px solid @gui_border_color;
+  border : 1px solid @gui_input_border_color;
 }
     gui-tree-view-entry > div {
       padding : 4px;
