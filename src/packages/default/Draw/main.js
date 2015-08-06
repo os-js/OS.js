@@ -427,6 +427,10 @@
   };
 
   ApplicationDrawWindow.prototype.getFileData = function() {
+    var canvas = this._scheme.find(this, 'Canvas').querySelector('canvas');
+    if ( canvas ) {
+      return new VFS.FileDataURL(canvas.toDataURL('image/png'));
+    }
     return null;
   };
 
