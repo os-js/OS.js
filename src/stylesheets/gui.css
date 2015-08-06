@@ -1097,10 +1097,11 @@ gui-list-view {
   gui-list-view-body {
     display : block;
     position : relative;
+    z-index : 2;
   }
 
   gui-list-view-head {
-    z-index : 2;
+    z-index : 20;
     position : absolute;
     top : 0px;
     left : 0px;
@@ -1111,7 +1112,6 @@ gui-list-view {
   gui-list-view-body {
     position : relative;
     display: block;
-    z-index : 2;
 
     display: -webkit-flex;
     display: -webkit-box;
