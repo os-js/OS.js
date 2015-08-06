@@ -30,6 +30,8 @@
 (function(API, Utils, VFS, GUI) {
   'use strict';
 
+  var _buttonCount = 0;
+
   /////////////////////////////////////////////////////////////////////////////
   // INPUT HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -503,9 +505,35 @@
     build: function(el) {
       var icon = el.getAttribute('data-icon');
       var disabled = el.getAttribute('data-disabled') !== null;
+      var group = el.getAttribute('data-group');
       var label = GUI.Helpers.getValueLabel(el);
 
       var input = document.createElement('button');
+
+      function setGroup(g) {
+        if ( g ) {
+          input.setAttribute('name', g + '[' + _buttonCount + ']');
+
+          Utils.$bind(input, 'click', function() {
+            var root = el;
+            while ( root.parentNode ) {
+              if ( root.tagName.toLowerCase() === 'application-window-content' ) {
+                break;
+              }
+              root = root.parentNode;
+            }
+
+            Utils.$addClass(input, 'gui-active');
+            root.querySelectorAll('gui-button[data-group="' + g + '"] > button').forEach(function(b) {
+              if ( b.name === input.name ) {
+                return;
+              }
+              Utils.$removeClass(b, 'gui-active');
+            });
+          });
+        }
+      }
+
       if ( label ) {
         Utils.$addClass(el, 'gui-has-label');
       }
@@ -525,6 +553,9 @@
         }
         Utils.$addClass(el, 'gui-has-image');
       }
+
+      setGroup(group);
+      _buttonCount++;
 
       el.appendChild(input);
     }

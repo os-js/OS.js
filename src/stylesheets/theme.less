@@ -458,9 +458,11 @@ gui-button[data-icon-size="32"] {
   gui-button button {
     .theme_button();
   }
+  gui-button button.gui-active,
   gui-button button:active {
     .theme_button_active();
   }
+  gui-button button.gui-active:disabled,
   gui-button button:disabled:active,
   gui-button button:disabled {
     .theme_button_disabled();
