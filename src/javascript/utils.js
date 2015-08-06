@@ -50,7 +50,13 @@
   OSjs.Utils.argumentDefaults = function(args, defaults, undef) {
     args = args || {};
     Object.keys(defaults).forEach(function(key) {
-      args[key] = args[key] || defaults[key];
+      if ( typeof defaults[key] === 'boolean' || typeof defaults[key] === 'number' ) {
+        if ( typeof args[key] === 'undefined' || args[key] === null ) {
+          args[key] = defaults[key];
+        }
+      } else {
+        args[key] = args[key] || defaults[key];
+      }
     });
     return args;
   };

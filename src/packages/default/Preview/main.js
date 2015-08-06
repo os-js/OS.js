@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS, GUI) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -35,88 +35,45 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationPreviewWindow(app, metadata, scheme, file) {
-    Window.apply(this, ['ApplicationPreviewWindow', {
+    DefaultApplicationWindow.apply(this, ['ApplicationPreviewWindow', {
       allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 200
-    }, app, scheme]);
-
-    this.currentFile = file ? new VFS.File(file) : null;
+    }, app, scheme, file]);
   }
 
-  ApplicationPreviewWindow.prototype = Object.create(Window.prototype);
-  ApplicationPreviewWindow.constructor = Window.prototype;
+  ApplicationPreviewWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationPreviewWindow.constructor = DefaultApplicationWindow.prototype;
 
   ApplicationPreviewWindow.prototype.init = function(wm, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
-    var self = this;
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'PreviewWindow', root);
 
-    var menuMap = {
-      MenuOpen: function() { app.openDialog(null, self); },
-      MenuClose: function() { self._close(); }
-    };
-
-    scheme.find(this, 'SubmenuFile').on('select', function(ev) {
-      if ( menuMap[ev.detail.id] ) {
-        menuMap[ev.detail.id]();
-      }
-    });
-
-    // Load given file
-    if ( this.currentFile ) {
-      app.openFile(this.currentFile, this);
-    }
-
     return root;
   };
 
-  ApplicationPreviewWindow.prototype.preview = function(file) {
-    if ( !file ) { return; }
-
+  ApplicationPreviewWindow.prototype.showFile = function(file, result) {
     var self = this;
-    var scheme = this._scheme;
-    var root = scheme.find(this, 'Content').$element;
-
+    var root = this._scheme.find(this, 'Content').$element;
     Utils.$empty(root);
-    this._setTitle();
 
-    VFS.url(file, function(error, result) {
-      if ( !error && result ) {
-        self._setTitle(file.filename, true);
-        self._currentFile = file;
-
-        if ( file.mime.match(/^image/) ) {
-          scheme.create(self, 'gui-image', {src: result}, root, {onload: function() {
-            self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
-          }});
-        } else if ( file.mime.match(/^video/) ) {
-          scheme.create(self, 'gui-video', {src: result, controls: true, autoplay: true}, root, {onload: function() {
-            self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
-          }});
-        }
-      }
-    });
-  };
-
-  ApplicationPreviewWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
-    this.currentFile = null;
-  };
-
-  ApplicationPreviewWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
-
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        this._app.openFile(new VFS.File(data), this);
+    if ( result ) {
+      if ( file.mime.match(/^image/) ) {
+        this._scheme.create(self, 'gui-image', {src: result}, root, {onload: function() {
+          self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
+        }});
+      } else if ( file.mime.match(/^video/) ) {
+        this._scheme.create(self, 'gui-video', {src: result, controls: true, autoplay: true}, root, {onload: function() {
+          self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
+        }});
       }
     }
+
+    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -124,18 +81,16 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var ApplicationPreview = function(args, metadata) {
-    Application.apply(this, ['ApplicationPreview', args, metadata]);
+    DefaultApplication.apply(this, ['ApplicationPreview', args, metadata, {
+      readData: false
+    }]);
   };
 
-  ApplicationPreview.prototype = Object.create(Application.prototype);
-  ApplicationPreview.constructor = Application;
-
-  ApplicationPreview.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
-  };
+  ApplicationPreview.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationPreview.constructor = DefaultApplication;
 
   ApplicationPreview.prototype.init = function(settings, metadata) {
-    Application.prototype.init.apply(this, arguments);
+    DefaultApplication.prototype.init.apply(this, arguments);
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
@@ -147,39 +102,6 @@
     });
   };
 
-  ApplicationPreview.prototype.openFile = function(file, win) {
-    if ( !file ) { return; }
-
-    var check = this.__metadata.mime || [];
-    if ( !Utils.checkAcceptMime(file.mime, check) ) {
-      API.error(this.__label,
-                API._('ERR_FILE_APP_OPEN'),
-                API._('ERR_FILE_APP_OPEN_FMT',
-                file.path, file.mime)
-      );
-      return;
-    }
-
-    this._setArgument('file', file);
-
-    win.preview(file);
-  };
-
-  ApplicationPreview.prototype.openDialog = function(path, win) {
-    var self = this;
-
-    win._toggleDisabled(true);
-    API.createDialog('File', {
-      filter: this.__metadata.mime,
-      path: path
-    }, function(ev, button, result) {
-      win._toggleDisabled(false);
-      if ( result ) {
-        self.openFile(result, win);
-      }
-    }, win);
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -188,4 +110,4 @@
   OSjs.Applications.ApplicationPreview = OSjs.Applications.ApplicationPreview || {};
   OSjs.Applications.ApplicationPreview.Class = ApplicationPreview;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

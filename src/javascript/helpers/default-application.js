@@ -133,6 +133,8 @@
 
   function DefaultApplication(name, args, metadata, opts) {
     this.defaultOptions = Utils.argumentDefaults(opts, {
+      readData: true,
+      rawData: false,
       extension: '',
       mime: 'application/octet-stream',
       filename: 'New file'
@@ -170,6 +172,22 @@
     var self = this;
     if ( !file ) { return; }
 
+    function onError(error) {
+      if ( error ) {
+        API.error(self.__label,
+                  API._('ERR_FILE_APP_OPEN'),
+                  API._('ERR_FILE_APP_OPEN_ALT_FMT',
+                  file.path));
+        return true;
+      }
+      return false;
+    }
+
+    function onDone(result) {
+      self._setArgument('file', result);
+      win.showFile(file, result);
+    }
+
     var check = this.__metadata.mime || [];
     if ( !Utils.checkAcceptMime(file.mime, check) ) {
       API.error(this.__label,
@@ -181,20 +199,24 @@
     }
 
     win._toggleLoading(true);
-    VFS.read(file, function(error, result) {
-      win._toggleLoading(false);
 
-      if ( error ) {
-        API.error(this.__label,
-                  API._('ERR_FILE_APP_OPEN'),
-                  API._('ERR_FILE_APP_OPEN_ALT_FMT',
-                  file.path));
-        return;
-      }
-
-      self._setArgument('file', file);
-      win.showFile(file, result);
-    }, {type: 'text'});
+    if ( this.defaultOptions.readData ) {
+      VFS.read(file, function(error, result) {
+        win._toggleLoading(false);
+        if ( onError(error) ) {
+          return;
+        }
+        onDone(result);
+      }, {type: this.defaultOptions.rawData ? 'binary' : 'text'});
+    } else {
+      VFS.url(file, function(error, result) {
+        win._toggleLoading(false);
+        if ( onError(error) ) {
+          return;
+        }
+        onDone(result);
+      });
+    }
 
     return true;
   };
