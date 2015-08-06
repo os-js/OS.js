@@ -79,7 +79,7 @@
       var value = input.value;
       if ( type === 'radio' || type === 'checkbox' ) {
         //value = input.getAttribute('checked') === 'checked';
-        value = input.value === 'on';
+        value = input.checked; //input.value === 'on';
       }
       input.dispatchEvent(new CustomEvent('_change', {detail: value}));
     }, false);
