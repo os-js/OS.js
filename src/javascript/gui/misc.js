@@ -54,6 +54,10 @@
    * @class
    */
   GUI.Elements['gui-color-box'] = {
+    bind: function(el, evName, callback, params) {
+      var target = el.querySelector('div');
+      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+    },
     set: function(el, param, value) {
       if ( param === 'value' ) {
         el.firstChild.style.backgroundColor = value;

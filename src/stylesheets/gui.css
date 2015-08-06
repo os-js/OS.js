@@ -52,12 +52,11 @@ application-window-content * {
             user-select: none;
 }
 
-/**
- * TODO: These will go in individual elements
- */
 .gui-element {
+/**
   min-width : 24px;
   min-height : 24px;
+ */
 }
 
 .gui-bold > label,

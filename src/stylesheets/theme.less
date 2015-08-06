@@ -53,7 +53,7 @@
 @gui_button_foreground_color         : @base_foreground_color;
 @gui_button_background               : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
 
-@gui_button_active_border_color      : #d0d0d0;
+@gui_button_active_border_color      : #242424;
 @gui_button_active_background_color  : @gui_button_background_color;
 @gui_button_active_foreground_color  : @base_foreground_color;
 @gui_button_active_background        : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
@@ -62,6 +62,12 @@
 @gui_button_disabled_background_color: @gui_input_disabled_background_color;
 @gui_button_disabled_foreground_color: @base_foreground_color;
 @gui_button_disabled_background      : @gui_input_disabled_background_color;
+
+/**
+ * ===========================================================================
+ *                                 CLASSES
+ * ===========================================================================
+ */
 
 
 .theme_border(@radius) {
@@ -125,7 +131,9 @@
 
 
 /**
- * Base
+ * ===========================================================================
+ *                                 OVERRIDES
+ * ===========================================================================
  */
 
 body, input, button, textarea, label, select {
@@ -446,6 +454,12 @@ gui-toolbar[data-orientation="vertical"] {
 gui-label {
   height : 26px;
   line-height : 26px;
+}
+gui-hbox-container > gui-label,
+gui-vbox-container > gui-label {
+  height : 16px;
+  line-height : 16px;
+  min-height : 16px;
 }
 
 /* Button */

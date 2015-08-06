@@ -515,6 +515,7 @@
           input.setAttribute('name', g + '[' + _buttonCount + ']');
 
           Utils.$bind(input, 'click', function() {
+            // FIXME: This is probably a bit slow
             var root = el;
             while ( root.parentNode ) {
               if ( root.tagName.toLowerCase() === 'application-window-content' ) {
