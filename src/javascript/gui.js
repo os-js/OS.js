@@ -400,7 +400,7 @@
     onMove = onMove || function() {};
     onUp = onUp || function() {};
 
-    var startX, startY;
+    var startX, startY, currentX, currentY;
     var dragging = false;
 
     function _onMouseDown(ev, pos, touchDevice) {
@@ -409,7 +409,7 @@
       startX = pos.x;
       startY = pos.y;
 
-      onDown(ev);
+      onDown(ev, {x: startX, y: startY});
       dragging = true;
 
       Utils.$bind(window, 'mouseup', _onMouseUp, false);
@@ -420,17 +420,18 @@
       ev.preventDefault();
 
       if ( dragging ) {
-        var currentX = pos.x;
-        var currentY = pos.y;
+        currentX = pos.x;
+        currentY = pos.y;
+
         var diffX = currentX - startX;
         var diffY = currentY - startY;
 
-        onMove(ev, diffX, diffX);
+        onMove(ev, {x: diffX, y: diffY}, {x: currentX, y: currentY});
       }
     }
 
     function _onMouseUp(ev, pos, touchDevice) {
-      onUp(ev);
+      onUp(ev, {x: currentX, y: currentY});
       dragging = false;
 
       Utils.$unbind(window, 'mouseup', _onMouseUp, false);
@@ -606,6 +607,14 @@
       el = el.$element;
     }
     this.$element.appendChild(el);
+  };
+
+  UIElement.prototype.querySelector = function(q) {
+    return this.$element.querySelector(q);
+  };
+
+  UIElement.prototype.querySelectorAll = function(q) {
+    return this.$element.querySelectorAll(q);
   };
 
   /**

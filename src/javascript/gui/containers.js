@@ -64,8 +64,8 @@
         GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = resizeEl.offsetWidth;
           maxWidth = el.offsetWidth / 2;
-        }, function(ev, dx, dy) {
-          var newWidth = startWidth + dx;
+        }, function(ev, diff) {
+          var newWidth = startWidth + diff.x;
           if ( !isNaN(newWidth) && newWidth > 0 && newWidth < maxWidth ) {
             var flex = newWidth.toString() + 'px';
             resizeEl.style['webkitFlexBasis'] = flex;

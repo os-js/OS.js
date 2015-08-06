@@ -86,8 +86,8 @@
         GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = col.offsetWidth;
           maxWidth = el.offsetWidth * 0.85; // FIXME
-        }, function(ev, dx, dy) {
-          var newWidth = startWidth + dx;
+        }, function(ev, diff) {
+          var newWidth = startWidth + diff.x;
           if ( !isNaN(newWidth) ) { //&& newWidth > 0 && newWidth < maxWidth ) {
             resize(col, newWidth);
 
