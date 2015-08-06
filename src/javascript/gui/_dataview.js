@@ -311,6 +311,28 @@
 
     build: function(el, applyArgs) {
       el._selected = [];
+
+      //Utils.$addClass(el, 'gui-disable-events');
+      var underlay = document.createElement('textarea');
+      underlay.className = 'gui-focus-element';
+      Utils.$bind(underlay, 'focus', function() {
+        Utils.$addClass(el, 'gui-element-focused');
+      });
+      Utils.$bind(underlay, 'blur', function() {
+        Utils.$removeClass(el, 'gui-element-focused');
+      });
+      Utils.$bind(underlay, 'keydown', function(ev) {
+        ev.preventDefault();
+      });
+      Utils.$bind(underlay, 'keypress', function(ev) {
+        ev.preventDefault();
+      });
+
+      this.bind(el, 'select', function() {
+        underlay.focus();
+      });
+
+      el.appendChild(underlay);
     },
 
     bind: function(el, evName, callback, params) {

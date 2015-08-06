@@ -91,10 +91,23 @@
       return GUI.Elements._dataview.getSelected(el, el.querySelectorAll('gui-icon-view-entry'));
     },
 
-    build: function(el) {
+    build: function(el, applyArgs) {
+      var body = el.querySelector('gui-icon-view-body');
+      var found = !!body;
+
+      if ( !body ) {
+        body = document.createElement('gui-icon-view-body');
+        el.appendChild(body);
+      }
+
       el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
+        if ( !found ) {
+          body.appendChild(cel);
+        }
         initEntry(el, cel);
       });
+
+      GUI.Elements._dataview.build(el, applyArgs);
     },
 
     set: function(el, param, value, arg) {
@@ -107,18 +120,19 @@
     },
 
     call: function(el, method, args) {
+      var body = el.querySelector('gui-icon-view-body');
       if ( method === 'add' ) {
         GUI.Elements._dataview.add(el, args, function(e) {
           var entry = createEntry(e);
-          el.appendChild(entry);
+          body.appendChild(entry);
           initEntry(el, entry);
         });
       } else if ( method === 'remove' ) {
         GUI.Elements._dataview.remove(el, args, 'gui-icon-view-entry');
       } else if ( method === 'clear' ) {
-        GUI.Elements._dataview.clear(el);
+        GUI.Elements._dataview.clear(el, body);
       } else if ( method === 'patch' ) {
-        GUI.Elements._dataview.patch(el, args, 'gui-icon-view-entry', el, createEntry, initEntry);
+        GUI.Elements._dataview.patch(el, args, 'gui-icon-view-entry', body, createEntry, initEntry);
       }
     }
 

@@ -90,6 +90,31 @@ application-window-content * {
   overflow : hidden;
 }
 
+.gui-focus-element {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+      -ms-appearance: none;
+       -o-appearance: none;
+          appearance: none;
+
+  display : block;
+  outline : 0 none;
+  resize : none;
+  border : 0 none;
+  background : transparent;
+  color : transparent;
+  position : absolute;
+  margin : 0;
+  padding : 0;
+  left : 0px;
+  bottom : 0px;
+  top : 0px;
+  right : 0px;
+  width : 100%;
+  height : 100%;
+  z-index : 1;
+}
+
 gui-hbox,
 gui-hbox > *,
 gui-vbox,
@@ -1011,6 +1036,14 @@ gui-icon-view {
   display : inline-block;
   overflow : auto;
 }
+  gui-icon-view-body {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+    bottom : 0px;
+    z-index : 2;
+  }
   gui-icon-view-entry {
     float : left;
     width : 34px;
@@ -1078,6 +1111,7 @@ gui-list-view {
   gui-list-view-body {
     position : relative;
     display: block;
+    z-index : 2;
 
     display: -webkit-flex;
     display: -webkit-box;
@@ -1167,6 +1201,14 @@ gui-tree-view {
   display : inline-block;
   overflow : auto;
 }
+  gui-tree-view-body {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+    bottom : 0px;
+    z-index : 2;
+  }
   gui-tree-view-entry {
     display : block;
     position : relative;
