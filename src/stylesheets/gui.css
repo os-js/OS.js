@@ -86,6 +86,10 @@ application-window-content * {
   pointer-events : none;
 }
 
+.gui-no-overflow {
+  overflow : hidden;
+}
+
 gui-hbox,
 gui-hbox > *,
 gui-vbox,

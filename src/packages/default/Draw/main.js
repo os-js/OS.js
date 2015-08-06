@@ -33,6 +33,29 @@
   var DEFAULT_WIDTH = 1024;
   var DEFAULT_HEIGHT = 768;
 
+  var tools = {
+    pointer: {
+      statusText: ''
+    },
+    picker: {
+      statusText: 'LMB: Pick foreground-, RMB: Pick background color'
+    },
+    bucket: {
+      statusText: 'LBM: Fill with foreground-, RMB: Fill with background color'
+    },
+    pencil: {
+      statusText: 'LBM: Use foreground-, RMB: Use background color'
+    },
+    path: {
+      statusText: 'LBM: Use foreground-, RMB: Use background color'
+    },
+    rectangle: {
+     statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
+    },
+    circle: {
+     statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
+    }
+  };
   var toolEvents = {
     pointer: {
     },
@@ -191,7 +214,7 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationDrawWindow(app, metadata, scheme) {
+  function ApplicationDrawWindow(app, metadata, scheme, file) {
     DefaultApplicationWindow.apply(this, ['ApplicationDrawWindow', {
       icon: metadata.icon,
       title: metadata.name,
@@ -200,7 +223,7 @@
       min_height: 450,
       width: 800,
       height: 450
-    }, app, scheme]);
+    }, app, scheme, file]);
 
     this.tool = {
       name: 'pointer',
@@ -222,9 +245,7 @@
     // Load and set up scheme (GUI) here
     scheme.render(this, 'DrawWindow', root);
 
-    //
-    // Menu
-    //
+    var statusbar = scheme.find(this, 'Statusbar');
 
     //
     // Canvas
@@ -327,9 +348,12 @@
       self.openColorDialog('background');
     });
 
-    var tools = ['pointer', 'picker', 'bucket', 'pencil', 'path', 'rectangle', 'circle'];
-    tools.forEach(function(t) {
+    var ts = Object.keys(tools);
+    ts.forEach(function(t) {
       scheme.find(self, 'tool-' + t).on('click', function() {
+        var stats = tools[t].statusText || '';
+        statusbar.$element.innerHTML = stats;
+
         self.setToolProperty('name', t);
       });
     });
@@ -456,8 +480,9 @@
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
+    var file = this._getArgument('file');
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationDrawWindow(self, metadata, scheme));
+      self._addWindow(new ApplicationDrawWindow(self, metadata, scheme, file));
     });
   };
 

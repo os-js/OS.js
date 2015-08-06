@@ -34,6 +34,7 @@
    * An 'File' dialog
    *
    * TODO: Autodetect MIME on extension (also option to provide)
+   * TODO: With above, force rewriting of extension (case of Draw which cannot write jpeg)
    * TODO: Disable button if no selection is made (or empty text on save)
    *
    * @param   args      Object        An object with arguments

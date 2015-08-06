@@ -355,14 +355,14 @@
     Application.prototype._onMessage.apply(this, arguments);
 
     // If any outside VFS actions were performed, refresh!
-    // TODO
-    /*
     if ( msg == 'vfs' && args.source !== this.__pid ) {
       var win = this._getWindow('ApplicationFileManagerWindow');
-      if ( win ) {
+      if ( win && args.file ) {
+        if ( win.currentPath === Utils.dirname(args.file.path) ) {
+          win.changePath(null);
+        }
       }
     }
-    */
   };
 
   ApplicationFileManager.prototype.upload = function(dest, win) {
