@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS, GUI) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
   // TODO: Playlist
   // TODO: Server seek support: https://gist.github.com/codler/3906826
@@ -52,7 +52,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationMusicPlayerWindow(app, metadata, scheme, file) {
-    Window.apply(this, ['ApplicationMusicPlayerWindow', {
+    DefaultApplicationWindow.apply(this, ['ApplicationMusicPlayerWindow', {
       icon: metadata.icon,
       title: metadata.name,
       allow_drop: true,
@@ -60,17 +60,16 @@
       allow_maximize: false,
       width: 370,
       height: 260
-    }, app, scheme]);
+    }, app, scheme, file]);
 
-    this.currentFile = file ? new VFS.File(file) : null;
     this.updated = false;
   }
 
-  ApplicationMusicPlayerWindow.prototype = Object.create(Window.prototype);
-  ApplicationMusicPlayerWindow.constructor = Window.prototype;
+  ApplicationMusicPlayerWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationMusicPlayerWindow.constructor = DefaultApplicationWindow.prototype;
 
   ApplicationMusicPlayerWindow.prototype.init = function(wm, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
     var self = this;
 
     // Load and set up scheme (GUI) here
@@ -81,17 +80,6 @@
 
     var player = scheme.find(this, 'Player');
     var audio = player.$element.firstChild;
-
-    var menuMap = {
-      MenuOpen: function() { app.openDialog(self.currentFile, self); },
-      MenuClose: function() { self._close(); }
-    };
-
-    scheme.find(this, 'SubmenuFile').on('select', function(ev) {
-      if ( menuMap[ev.detail.id] ) {
-        menuMap[ev.detail.id]();
-      }
-    });
 
     var buttonStart = scheme.find(this, 'ButtonStart').set('disabled', true);
     var buttonRew = scheme.find(this, 'ButtonRew').set('disabled', true);
@@ -158,16 +146,11 @@
       }
     });
 
-    // Load given file
-    if ( this.currentFile ) {
-      app.openFile(this.currentFile, this);
-    }
-
     return root;
   };
 
-  ApplicationMusicPlayerWindow.prototype.play = function(file) {
-    if ( !file ) { return; }
+  ApplicationMusicPlayerWindow.prototype.showFile = function(file, content) {
+    if ( !file || !content ) { return; }
 
     var self = this;
     var scheme = this._scheme;
@@ -187,7 +170,6 @@
     seeker.set('value', 0);
 
     this.updated = false;
-    this._setTitle();
 
     function getInfo() {
       self._app._call('info', {filename: file.path}, function(res) {
@@ -200,17 +182,9 @@
       });
     }
 
-    VFS.url(file, function(error, result) {
-      if ( !error && result ) {
-        self._setTitle(file.filename, true);
-        self._currentFile = file;
-
-        audio.src = result || '';
-        audio.play();
-
-        getInfo();
-      }
-    });
+    audio.src = content || '';
+    audio.play();
+    getInfo();
   };
 
   ApplicationMusicPlayerWindow.prototype.updateTime = function(label, seeker) {
@@ -245,39 +219,25 @@
     this.updated = true;
   };
 
-  ApplicationMusicPlayerWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
-
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        this._app.openFile(new VFS.File(data), this);
-      }
-    }
-  };
-
-  ApplicationMusicPlayerWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
-    this.currentFile = null;
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
   var ApplicationMusicPlayer = function(args, metadata) {
-    Application.apply(this, ['ApplicationMusicPlayer', args, metadata]);
+    DefaultApplication.apply(this, ['ApplicationMusicPlayer', args, metadata, {
+      readData: false
+    }]);
   };
 
-  ApplicationMusicPlayer.prototype = Object.create(Application.prototype);
-  ApplicationMusicPlayer.constructor = Application;
+  ApplicationMusicPlayer.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationMusicPlayer.constructor = DefaultApplication;
 
   ApplicationMusicPlayer.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
+    return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
   ApplicationMusicPlayer.prototype.init = function(settings, metadata) {
-    Application.prototype.init.apply(this, arguments);
+    DefaultApplication.prototype.init.apply(this, arguments);
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
@@ -288,39 +248,6 @@
     });
   };
 
-  ApplicationMusicPlayer.prototype.openFile = function(file, win) {
-    if ( !file ) { return; }
-
-    var check = this.__metadata.mime || [];
-    if ( !Utils.checkAcceptMime(file.mime, check) ) {
-      API.error(this.__label,
-                API._('ERR_FILE_APP_OPEN'),
-                API._('ERR_FILE_APP_OPEN_FMT',
-                file.path, file.mime)
-      );
-      return;
-    }
-
-    this._setArgument('file', file);
-
-    win.play(file);
-  };
-
-  ApplicationMusicPlayer.prototype.openDialog = function(path, win) {
-    var self = this;
-
-    win._toggleDisabled(true);
-    API.createDialog('File', {
-      filter: this.__metadata.mime,
-      path: path
-    }, function(ev, button, result) {
-      win._toggleDisabled(false);
-      if ( result ) {
-        self.openFile(result, win);
-      }
-    }, win);
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -329,4 +256,4 @@
   OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
   OSjs.Applications.ApplicationMusicPlayer.Class = ApplicationMusicPlayer;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

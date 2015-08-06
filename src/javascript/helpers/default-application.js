@@ -116,6 +116,7 @@
 
     this._scheme.find(this, 'MenuSave').set('disabled', !file);
 
+    console.warn("XXXXXXXXXXXXX", file);
     if ( file ) {
       this._setTitle(file.filename, true);
     } else {
@@ -184,7 +185,7 @@
     }
 
     function onDone(result) {
-      self._setArgument('file', result);
+      self._setArgument('file', file);
       win.showFile(file, result);
     }
 
