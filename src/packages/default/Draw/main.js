@@ -27,8 +27,11 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS, GUI) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
+
+  var DEFAULT_WIDTH = 1024;
+  var DEFAULT_HEIGHT = 768;
 
   var toolEvents = {
     pointer: {
@@ -189,7 +192,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationDrawWindow(app, metadata, scheme) {
-    Window.apply(this, ['ApplicationDrawWindow', {
+    DefaultApplicationWindow.apply(this, ['ApplicationDrawWindow', {
       icon: metadata.icon,
       title: metadata.name,
       allow_drop: true,
@@ -209,11 +212,11 @@
     };
   }
 
-  ApplicationDrawWindow.prototype = Object.create(Window.prototype);
-  ApplicationDrawWindow.constructor = Window.prototype;
+  ApplicationDrawWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationDrawWindow.constructor = DefaultApplicationWindow.prototype;
 
   ApplicationDrawWindow.prototype.init = function(wm, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
     var self = this;
 
     // Load and set up scheme (GUI) here
@@ -227,6 +230,9 @@
     // Canvas
     //
     var canvas = scheme.find(this, 'Canvas').querySelector('canvas');
+    canvas.width = DEFAULT_WIDTH;
+    canvas.height = DEFAULT_HEIGHT;
+
     var ctx = canvas.getContext('2d');
 
     var startPos = {x: 0, y: 0};
@@ -355,10 +361,6 @@
     return root;
   };
 
-  ApplicationDrawWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
-  };
-
   ApplicationDrawWindow.prototype.openColorDialog = function(param) {
     var self = this;
 
@@ -387,23 +389,33 @@
     this._scheme.find(this, 'LineStroke').set('value', this.tool.lineStroke);
   };
 
+  ApplicationDrawWindow.prototype.showFile = function(file, result) {
+    var self = this;
+    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
+  };
+
+  ApplicationDrawWindow.prototype.getFileData = function() {
+    return null;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
   var ApplicationDraw = function(args, metadata) {
-    Application.apply(this, ['ApplicationDraw', args, metadata]);
+    DefaultApplication.apply(this, ['ApplicationDraw', args, metadata, {
+      readData: false,
+      extension: 'png',
+      mime: 'image/png',
+      filename: 'New image.png'
+    }]);
   };
 
-  ApplicationDraw.prototype = Object.create(Application.prototype);
-  ApplicationDraw.constructor = Application;
-
-  ApplicationDraw.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
-  };
+  ApplicationDraw.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationDraw.constructor = DefaultApplication;
 
   ApplicationDraw.prototype.init = function(settings, metadata) {
-    Application.prototype.init.apply(this, arguments);
+    DefaultApplication.prototype.init.apply(this, arguments);
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
@@ -421,4 +433,4 @@
   OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
   OSjs.Applications.ApplicationDraw.Class = ApplicationDraw;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
