@@ -1,0 +1,34 @@
+{
+  "className":  "ApplicationDraw",
+  "name":       "Draw",
+  "description":"Simple drawing application",
+  "names":      {
+    "no_NO":      "Tegne",
+    "pl_PL":      "Rysowanie",
+    "de_DE":      "Zeichnen",
+    "ru_RU":      "Графический редактор",
+    "nl_NL":      "Tekenen",
+    "vi_VN":      "Vẽ"
+  },
+  "descriptions":      {
+    "no_NO":      "Simpelt tegne-program",
+    "pl_PL":      "Prosta aplikacja do rysowania",
+    "de_DE":      "Einfaches Zeichen-Programm",
+    "ru_RU":      "Простой графический редактор",
+    "nl_NL":      "Eenvoudig tekenprogramma",
+    "vi_VN":      "Phần mềm vẽ đơn giản"
+  },
+  "mime":       ["^image", "osjs\\/draw"],
+  "category":   "graphics",
+  "icon":       "categories/gnome-graphics.png",
+  "splash":     true,
+  "compability":["canvas"],
+  "preload":    [
+    {"src": "locales.js", "type": "javascript"},
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+

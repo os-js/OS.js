@@ -1,0 +1,83 @@
+<application-window data-id="DrawWindow">
+
+  <gui-vbox>
+    <!-- MENU BAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+
+        <gui-menu-bar-entry data-label="File">
+          <gui-menu data-id="SubmenuFile">
+            <gui-menu-entry data-id="MenuNew" data-label="LBL_NEW"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuOpen" data-label="LBL_OPEN"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuSave" data-label="LBL_SAVE"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuSaveAs" data-label="LBL_SAVEAS"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+      </gui-menu-bar>
+    </gui-vbox-container>
+
+    <!-- CONTENT -->
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
+
+      <gui-hbox>
+        <gui-hbox-container data-shrink="1" data-grow="0" data-basis="74px">
+          <gui-toolbar data-orientation="vertical" style="text-align:center">
+            <gui-color-box data-id="Foreground"></gui-color-box>
+            <gui-color-box data-id="Background"></gui-color-box>
+            <gui-button data-id="tool-pointer" data-group="tool" data-tool-name="pointer" data-icon="app://icons/stock-cursor-16.png"></gui-button>
+            <gui-button data-id="tool-picker" data-group="tool" data-tool-name="picker" data-icon="app://icons/stock-color-pick-from-screen-16.png"></gui-button>
+            <gui-button data-id="tool-bucket" data-group="tool" data-tool-name="bucket" data-icon="app://icons/stock-tool-bucket-fill-16.png"></gui-button>
+            <gui-button data-id="tool-pencil" data-group="tool" data-tool-name="pencil" data-icon="app://icons/stock-tool-pencil-16.png"></gui-button>
+            <gui-button data-id="tool-path" data-group="tool" data-tool-name="path" data-icon="app://icons/stock-tool-path-16.png"></gui-button>
+            <gui-button data-id="tool-rectangle" data-group="tool" data-tool-name="rectangle" data-icon="app://icons/stock-shape-square-16.png"></gui-button>
+            <gui-button data-id="tool-circle" data-group="tool" data-tool-name="circle" data-icon="app://icons/stock-shape-circle-16.png"></gui-button>
+
+            <gui-button data-group="tool" data-tool-name="cursor" data-icon="app://icons/stock-cursor-16.png" style="visibility:hidden;pointer-events:none"></gui-button>
+          </gui-toolbar>
+        </gui-hbox-container>
+
+        <gui-hbox-container data-shrink="0" data-grow="1" data-fill="true">
+
+          <gui-vbox>
+            <!-- TOOL BAR -->
+            <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+              <gui-toolbar data-id="TopToolbar">
+
+                <gui-label>Line join</gui-label>
+                <gui-select data-id="LineJoin">
+                  <gui-select-option data-value="round">Round</gui-select-option>
+                  <gui-select-option data-value="miter">Miter</gui-select-option>
+                  <gui-select-option data-value="bevel">Bevel</gui-select-option>
+                </gui-select>
+
+                <gui-label>Line width</gui-label>
+                <gui-select data-id="LineWidth">
+                </gui-select>
+
+                <gui-checkbox data-id="LineStroke" data-label="Enable stroke"></gui-checkbox>
+
+              </gui-toolbar>
+            </gui-vbox-container>
+            <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true" data-id="ScrollContainer">
+                <gui-scroll-container data-id="ScrollView">
+                  <gui-canvas data-id="Canvas">
+                  </gui-canvas>
+                </gui-scroll-container>
+              </gui-hbox-container>
+            </gui-vbox-container>
+          </gui-vbox>
+      </gui-hbox>
+
+    </gui-vbox-container>
+
+    <!-- STATUSBAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-statusbar data-id="Statusbar"></gui-statusbar>
+    </gui-vbox-container>
+
+  </gui-vbox>
+
+
+</application-window>
