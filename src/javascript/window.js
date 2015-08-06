@@ -1644,7 +1644,7 @@
     if ( !this._$element ) { return; }
     delimiter = delimiter || '-';
 
-    var tel = this._$element.getElementsByClassName('WindowTitle')[0];
+    var tel = this._$element.getElementsByTagName('application-window-title')[0];
     var text = [];
     if ( append ) {
       text = [this._origtitle, delimiter, t];
