@@ -116,7 +116,6 @@
 
     this._scheme.find(this, 'MenuSave').set('disabled', !file);
 
-    console.warn("XXXXXXXXXXXXX", file);
     if ( file ) {
       this._setTitle(file.filename, true);
     } else {
