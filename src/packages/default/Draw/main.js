@@ -392,6 +392,38 @@
   ApplicationDrawWindow.prototype.showFile = function(file, result) {
     var self = this;
     DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
+
+    var canvas = this._scheme.find(this, 'Canvas').querySelector('canvas');
+    var ctx = canvas.getContext('2d');
+
+    function open(img) {
+      if ( (window.Uint8Array && (img instanceof Uint8Array)) ) {
+        var image = ctx.createImageData(canvas.width, ctx.height);
+        for (var i=0; i<img.length; i++) {
+          image.data[i] = img[i];
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0);
+      } else if ( (img instanceof Image) || (img instanceof HTMLImageElement) ) {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.clearRect(0, 0, img.width, img.height);
+        ctx.drawImage(img, 0, 0);
+      }
+    }
+
+    this._toggleLoading(true);
+
+    var tmp = new Image();
+    tmp.onerror = function() {
+      self._toggleLoading(false);
+      alert("Failed to open image");
+    };
+    tmp.onload = function() {
+      self._toggleLoading(false);
+      open(this);
+    };
+    tmp.src = result;
   };
 
   ApplicationDrawWindow.prototype.getFileData = function() {
