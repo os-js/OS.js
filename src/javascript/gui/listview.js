@@ -253,6 +253,7 @@
       } else if ( method === 'patch' ) {
         GUI.Elements._dataview.patch(el, args, 'gui-list-view-row', body, createRow, initRow);
       }
+      return this;
     },
 
     build: function(el, applyArgs) {

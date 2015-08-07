@@ -300,23 +300,31 @@
     return toggle;
   };
 
-  ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, el, files) {
-    var self = this;
 
-    VFS.upload({
-      files: files,
-      destination: this.currentPath,
-      win: this,
-      app: this._appRef,
-    }, function(error, file) {
-      if ( error ) {
-        API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
-        return;
-      }
-      self.changePath(null, file);
-    });
+  ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
 
-    return false;
+    if ( type === 'filesDrop' && item ) {
+      return this.onDropUpload(ev, item);
+    } else if ( type === 'itemDrop' && item && item.type === 'file' && item.data ) {
+      return this.onDropItem(ev, item);
+    }
+    return true;
+  };
+
+  ApplicationFileManagerWindow.prototype.onDropItem = function(ev, item) {
+    if ( Utils.dirname(item.data.path) == this.currentPath ) {
+      return;
+    }
+
+    var src = new VFS.File(item.data);
+    var dst = new VFS.File((this.currentPath + '/' + src.filename));
+    this._app.copy(src, dst, this);
+  };
+
+  ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, files) {
+    this._app.upload(this.currentPath, files, this);
+    return true;
   };
 
   ApplicationFileManagerWindow.prototype.destroy = function() {
@@ -460,6 +468,49 @@
         win.changePath(null, item);
       });
     }, win);
+  };
+
+  ApplicationFileManager.prototype.copy = function(src, dest, win) {
+    var dialog = API.createDialog('FileProgress', {
+      dest: Utils.dirname(dest.path),
+      file: src
+    }, function() {
+    });
+
+    win._toggleLoading(true);
+
+    VFS.copy(src, dest, function(error, result) {
+      win._toggleLoading(false);
+
+      try {
+        dialog._close();
+      } catch ( e ) {}
+
+      if ( error ) {
+        API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
+        return;
+      }
+    });
+  };
+
+  ApplicationFileManager.prototype.upload = function(dest, files, win) {
+    var self = this;
+
+    win._toggleLoading(true);
+
+    VFS.upload({
+      files: files,
+      destination: dest,
+      win: win,
+      app: this
+    }, function(error, file) {
+      win._toggleLoading(false);
+      if ( error ) {
+        API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
+        return;
+      }
+      win.changePath(null, file);
+    });
   };
 
   ApplicationFileManager.prototype.showStorageNotification = function(type) {

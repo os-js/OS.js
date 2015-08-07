@@ -135,6 +135,7 @@
       } else if ( method === 'patch' ) {
         GUI.Elements._dataview.patch(el, args, 'gui-icon-view-entry', body, createEntry, initEntry);
       }
+      return this;
     }
 
   };

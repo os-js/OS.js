@@ -287,8 +287,9 @@
         settings.extensions = loadExtensions;
       }
       try {
-        settings.MaxUpload = root.client.Core.MaxUploadSize;
-      } catch ( exc ) {}
+        settings.MaxUpload = BUILD.client.Core.MaxUploadSize;
+      } catch ( exc ) {
+      }
 
       Object.keys(settings.vfs).forEach(function(key) {
         if ( typeof settings.vfs[key] === 'string' ) {
