@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-(function(Application, Window, Utils, VFS, API) {
+(function(Application, Window, Utils, VFS, API, GUI) {
   'use strict';
 
   window.OSjs       = window.OSjs       || {};
@@ -145,6 +145,17 @@
 
   DefaultApplication.prototype = Object.create(Application.prototype);
   DefaultApplication.constructor = Application;
+
+  DefaultApplication.prototype.init = function(settings, metadata, onLoaded) {
+    Application.prototype.init.call(this, settings, metadata);
+
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = GUI.createScheme(url);
+    var file = this._getArgument('file');
+    scheme.load(function(error, result) {
+      onLoaded(scheme, file);
+    });
+  };
 
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
@@ -296,5 +307,5 @@
   OSjs.Helpers.DefaultApplication       = DefaultApplication;
   OSjs.Helpers.DefaultApplicationWindow = DefaultApplicationWindow;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.VFS, OSjs.API);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.VFS, OSjs.API, OSjs.GUI);
 

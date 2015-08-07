@@ -64,9 +64,9 @@
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  var ApplicationEXAMPLE = function(args, metadata) {
+  function ApplicationEXAMPLE(args, metadata) {
     Application.apply(this, ['ApplicationEXAMPLE', args, metadata]);
-  };
+  }
 
   ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
   ApplicationEXAMPLE.constructor = Application;

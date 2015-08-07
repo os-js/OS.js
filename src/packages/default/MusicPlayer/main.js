@@ -237,13 +237,8 @@
   };
 
   ApplicationMusicPlayer.prototype.init = function(settings, metadata) {
-    DefaultApplication.prototype.init.apply(this, arguments);
-
     var self = this;
-    var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = GUI.createScheme(url);
-    var file = this._getArgument('file');
-    scheme.load(function(error, result) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationMusicPlayerWindow(self, metadata, scheme, file));
     });
   };
