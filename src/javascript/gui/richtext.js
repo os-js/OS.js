@@ -36,11 +36,20 @@
 
   function getDocument(el, iframe) {
     iframe = iframe || el.querySelector('iframe');
-    var doc = iframe.contentDocument || iframe.contentWindow.document;
+    return iframe.contentDocument || iframe.contentWindow.document;
+  }
+
+  function getDocumentData(el) {
+    try {
+      var doc = getDocument(el);
+      return doc.body.innerHTML;
+    } catch ( error ) {
+      console.error('gui-richtext', 'getDocumentData()', error.stack, error);
+    }
+    return '';
   }
 
   function setDocumentData(el, text) {
-    return;
     text = text || '';
 
     var wm = OSjs.Core.getWindowManager();
@@ -73,7 +82,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  // TODO Events
   /**
    * Element: 'gui-richtext'
    *
@@ -95,6 +103,12 @@
       setTimeout(function() {
         setDocumentData(el, text);
       }, 0);
+    },
+    get: function(el, param, value) {
+      if ( param === 'value' ) {
+        return getDocumentData(el);
+      }
+      return GUI.Helpers.getProperty(el, param);
     },
     set: function(el, param, value) {
       if ( param === 'value' ) {
