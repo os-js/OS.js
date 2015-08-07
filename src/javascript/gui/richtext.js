@@ -104,6 +104,14 @@
         setDocumentData(el, text);
       }, 0);
     },
+    call: function(el, method, args) {
+      var doc = getDocument(el);
+      if ( method === 'command' ) {
+        doc.execCommand.apply(doc, args);
+      } else if ( method === 'query' ) {
+        doc.queryCommandValue.apply(doc, args);
+      }
+    },
     get: function(el, param, value) {
       if ( param === 'value' ) {
         return getDocumentData(el);

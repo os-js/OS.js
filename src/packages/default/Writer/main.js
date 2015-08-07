@@ -29,6 +29,26 @@
  */
 (function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
+  /*
+   fontName: rt.commandValue('fontName').replace(/^\'/, '').replace(/\'$/, ''),
+   fontSize: rt.commandValue('fontSize'),
+   foreColor: rt.commandValue('foreColor'),
+   hiliteColor: rt.commandValue('hiliteColor'),
+   justifyLeft: rt.commandValue('justifyLeft'),
+   justifyCenter: rt.commandValue('justifyCenter'),
+   justifyRight: rt.commandValue('justifyRight'),
+   bold: rt.commandValue('bold'),
+   italic: rt.commandValue('italic'),
+   underline: rt.commandValue('underline'),
+   strikeThrough: rt.commandValue('strikeThrough')
+
+   rt.getWindow().addEventListener('selectstart', function() {
+   _updateToolbar();
+   });
+   rt.getWindow().addEventListener('mouseup', function() {
+   _updateToolbar();
+   });
+   */
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -78,7 +98,7 @@
   function ApplicationWriter(args, metadata) {
     DefaultApplication.apply(this, ['ApplicationWriter', args, metadata, {
       extension: 'odoc',
-      mime: 'text/plain',
+      mime: 'osjs/document',
       filename: 'New text file.odoc'
     }]);
   }
