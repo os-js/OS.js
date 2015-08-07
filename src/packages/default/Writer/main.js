@@ -48,7 +48,7 @@
       foreground : '#000000'
     };
     this.font = {
-      name: 'Arial',
+      name: OSjs.Core.getHandler().getConfig('Fonts')['default'],
       size: 14
     };
   }
@@ -159,8 +159,8 @@
 
     var font = scheme.find(this, 'Font').on('click', function() {
       createFontDialog(null, function(font) {
-        text._call('command', ['fontName', font.fontName]);
-        text._call('command', ['fontSize', font.fontSize]);
+        text._call('command', ['fontName', false, font.fontName]);
+        text._call('command', ['fontSize', false, font.fontSize]);
         self.font.name = font.fontName;
         self.font.size = font.fontSize;
       });
@@ -176,14 +176,25 @@
       }
     });
 
+    function updateToolbar(style) {
+      back.set('value', style.hiliteColor);
+      front.set('value', style.foreColor);
+      if ( font.fontName ) {
+        font.set('label', Utils.format('{0} ({1})', style.fontName, style.fontSize.toString()));
+      }
+    }
+
+    function updateSelection() {
+      var style = getSelectionStyle();
+      updateToolbar(style);
+    }
+
     back.set('value', this.color.background);
     front.set('value', this.color.foreground);
     font.set('label', Utils.format('{0} ({1})', this.font.name, this.font.size.toString()));
 
     text.on('selection', function() {
-      var style = getSelectionStyle();
-      console.warn("TODO UPDATE TOOLBAR", style); // TODO
-
+      updateSelection();
     });
 
     return root;
