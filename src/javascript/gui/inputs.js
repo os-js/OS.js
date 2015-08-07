@@ -139,6 +139,8 @@
       var target = el.querySelector('select');
       Utils.$empty(target);
     }
+
+    return this;
   }
 
   function createSelectInput(el, multiple) {

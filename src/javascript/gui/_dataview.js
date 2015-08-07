@@ -186,6 +186,8 @@
         entries = [entries];
       }
       entries.forEach(oncreate);
+
+      return this;
     },
 
     patch: function(el, args, className, body, oncreate, oninit) {
@@ -239,6 +241,8 @@
 
       inView = {};
       this.updateActiveSelection(el, className);
+
+      return this;
     },
 
     remove: function(el, args, className, target) {
@@ -256,6 +260,8 @@
       var q = 'data-' + findKey + '="' + findId + '"';
       el.querySelectorAll(className + '[' + q + ']').forEach(remove);
       this.updateActiveSelection(el, className);
+
+      return this;
     },
 
     updateActiveSelection: function(el, className) {

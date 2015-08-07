@@ -117,6 +117,8 @@
     preview.$element.style.backgroundColor = this.args.backgroundColor;
     preview.set('value', this.args.text);
 
+    updatePreview();
+
     return root;
   };
 
