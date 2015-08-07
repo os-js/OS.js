@@ -95,8 +95,8 @@
     }
 
     function updatePreview() {
-      preview.$element.style.fontFamily = self.selection.fontName;
-      preview.$element.style.fontSize = self.selection.fontSize;
+      preview.querySelector('textarea').style.fontFamily = self.selection.fontName;
+      preview.querySelector('textarea').style.fontSize = self.selection.fontSize;
     }
 
     var listFonts = this.scheme.find(this, 'FontName');
