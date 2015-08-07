@@ -420,7 +420,7 @@
 
       var icon = document.createElement('img');
       icon.alt = n;
-      icon.src = OSjs.API.getIcon(data.icon, data);
+      icon.src = OSjs.API.getIcon(data.icon);
 
       var titleText = document.createElement('b');
       titleText.appendChild(document.createTextNode(data.name));
@@ -430,29 +430,20 @@
       title.appendChild(titleText);
       title.appendChild(document.createTextNode('...'));
 
-      //FIXME
-      //splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
+      splashBar = document.createElement('gui-progress-bar');
+      OSjs.GUI.Elements['gui-progress-bar'].build(splashBar);
 
       splash.appendChild(icon);
       splash.appendChild(title);
-      //FIXME
-      //splash.appendChild(splashBar.getRoot());
+      splash.appendChild(splashBar);
 
       document.body.appendChild(splash);
 
       return {
         destroy: function() {
-          if ( splashBar ) {
-            splashBar.destroy();
-            splashBar = null;
-          }
-
-          if ( splash ) {
-            if ( splash.parentNode ) {
-              splash.parentNode.removeChild(splash);
-            }
-            splash = null;
-          }
+          OSjs.Utils.$remove(splash);
+          splash = null;
+          splashBar = null;
         },
         update: function(p, c) {
           if ( !splash || !splashBar ) { return; }
@@ -460,7 +451,7 @@
           if ( c ) {
             per = (p / c) * 100;
           }
-          splashBar.setProgress(per);
+          (new OSjs.GUI.Element(splashBar)).set('value', per);
         }
       };
     }

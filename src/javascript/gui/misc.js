@@ -180,9 +180,9 @@
       el.setAttribute('data-' + param, value);
       if ( param === 'progress' || param === 'value' ) {
         value = parseInt(value, 10);
-        value = value % 100;
+        value = Math.max(0, Math.min(100, value));
 
-        el.querySelector('div').style.width = value + '%';
+        el.querySelector('div').style.width = value.toString() + '%';
         el.querySelector('span').innerHTML = value + '%';
         return true;
       }
@@ -190,6 +190,8 @@
     },
     build: function(el) {
       var p = (el.getAttribute('data-progress') || 0);
+      p = Math.max(0, Math.min(100, p));
+
       var percentage = p.toString() + '%';
 
       var progress = document.createElement('div');
