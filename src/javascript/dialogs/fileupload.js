@@ -86,6 +86,17 @@
   FileUploadDialog.prototype.setFile = function(file, input) {
     var self = this;
 
+    function error(msg) {
+      API.error(
+        OSjs.API._('DIALOG_UPLOAD_FAILED'),
+        OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'),
+        msg || OSjs.API._('DIALOG_UPLOAD_FAILED_UNKNOWN')
+      );
+
+      progressDialog._close(true);
+      self.onClose(ev, 'cancel');
+    }
+
     if ( file ) {
       var fileSize = 0;
       if ( file.size > 1024 * 1024 ) {
@@ -115,17 +126,6 @@
 
       if ( this._wmref ) {
         this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc});
-      }
-
-      function error(msg) {
-        API.error(
-          OSjs.API._('DIALOG_UPLOAD_FAILED'),
-          OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'),
-          msg || OSjs.API._('DIALOG_UPLOAD_FAILED_UNKNOWN')
-        );
-
-        progressDialog._close(true);
-        self.onClose(ev, 'cancel');
       }
 
       OSjs.VFS.internalUpload(file, this.args.dest, function(type, ev) {

@@ -255,26 +255,27 @@
     blurMenu();
 
     var root = customInstance;
+
+    function resolveItems(arr, par) {
+      arr.forEach(function(iter) {
+        var entry = GUI.Helpers.createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
+        if ( iter.menu ) {
+          var nroot = GUI.Helpers.createElement('gui-menu', {});
+          resolveItems(iter.menu, nroot);
+          entry.appendChild(nroot);
+        }
+        if ( iter.onClick ) {
+          Utils.$bind(entry, 'mousedown', function(ev) {
+            ev.stopPropagation();
+            iter.onClick.apply(this, arguments);
+          }, false);
+        }
+        par.appendChild(entry);
+      });
+    }
+
     if ( !root ) {
       root = GUI.Helpers.createElement('gui-menu', {});
-      function resolveItems(arr, par) {
-        arr.forEach(function(iter) {
-          var entry = GUI.Helpers.createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
-          if ( iter.menu ) {
-            var nroot = GUI.Helpers.createElement('gui-menu', {});
-            resolveItems(iter.menu, nroot);
-            entry.appendChild(nroot);
-          }
-          if ( iter.onClick ) {
-            Utils.$bind(entry, 'mousedown', function(ev) {
-              ev.stopPropagation();
-              iter.onClick.apply(this, arguments);
-            }, false);
-          }
-          par.appendChild(entry);
-        });
-      }
-
       resolveItems(items || [], root);
       GUI.Elements['gui-menu'].build(root, true);
     }
