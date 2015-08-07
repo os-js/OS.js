@@ -406,7 +406,8 @@
       var underlay = document.createElement('textarea');
       underlay.setAttribute('readonly', 'true');
       underlay.className = 'gui-focus-element';
-      Utils.$bind(underlay, 'focus', function() {
+      Utils.$bind(underlay, 'focus', function(ev) {
+        ev.preventDefault();
         Utils.$addClass(el, 'gui-element-focused');
       });
       Utils.$bind(underlay, 'blur', function() {
