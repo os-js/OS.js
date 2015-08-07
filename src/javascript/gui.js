@@ -743,12 +743,17 @@
 
       Object.keys(OSjs.GUI.Elements).forEach(function(key) {
         node.querySelectorAll(key).forEach(function(pel) {
+          if ( pel._wasParsed ) {
+            return;
+          }
+
           try {
             OSjs.GUI.Elements[key].build(pel);
           } catch ( e ) {
             console.warn('UIScheme::parse()', id, type, win, 'exception');
             console.warn(e, e.stack);
           }
+          pel._wasParsed = true;
         });
       });
 

@@ -378,7 +378,7 @@
       function sel(r, idx) {
         select.push(idx);
         Utils.$addClass(r, 'gui-active');
-        self.scrollIntoView(el, r);
+        //self.scrollIntoView(el, r);
       }
 
       entries.forEach(function(r, idx) {
@@ -402,30 +402,37 @@
     build: function(el, applyArgs) {
       el._selected = [];
 
-      //Utils.$addClass(el, 'gui-disable-events');
-      var underlay = document.createElement('textarea');
-      underlay.setAttribute('readonly', 'true');
-      underlay.className = 'gui-focus-element';
-      Utils.$bind(underlay, 'focus', function(ev) {
-        ev.preventDefault();
-        Utils.$addClass(el, 'gui-element-focused');
-      });
-      Utils.$bind(underlay, 'blur', function() {
-        Utils.$removeClass(el, 'gui-element-focused');
-      });
-      Utils.$bind(underlay, 'keydown', function(ev) {
-        ev.preventDefault();
-        handleKeyPress(el, ev);
-      });
-      Utils.$bind(underlay, 'keypress', function(ev) {
-        ev.preventDefault();
-      });
+      if ( !el.querySelector('textarea.gui-focus-element') ) {
+        var underlay = document.createElement('textarea');
+        underlay.setAttribute('readonly', 'true');
+        underlay.className = 'gui-focus-element';
+        Utils.$bind(underlay, 'focus', function(ev) {
+          ev.preventDefault();
+          Utils.$addClass(el, 'gui-element-focused');
+        });
+        Utils.$bind(underlay, 'blur', function(ev) {
+          ev.preventDefault();
+          Utils.$removeClass(el, 'gui-element-focused');
+        });
+        Utils.$bind(underlay, 'keydown', function(ev) {
+          ev.preventDefault();
+          handleKeyPress(el, ev);
+        });
+        Utils.$bind(underlay, 'keypress', function(ev) {
+          ev.preventDefault();
+        });
 
-      this.bind(el, 'select', function() {
-        underlay.focus();
-      });
+        this.bind(el, 'select', function(ev) {
+          if ( Utils.$hasClass(el, 'gui-element-focused') ) {
+            return;
+          }
+          var oldTop = el.scrollTop;
+          underlay.focus();
+          el.scrollTop = oldTop;
+        }, true);
 
-      el.appendChild(underlay);
+        el.appendChild(underlay);
+      }
     },
 
     bind: function(el, evName, callback, params) {

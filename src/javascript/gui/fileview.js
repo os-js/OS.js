@@ -129,6 +129,11 @@
     },
     set: function(el, param, value, arg) {
       if ( param === 'type' ) {
+        var firstChild = el.children[0];
+        if ( firstChild && firstChild.tagName.toLowerCase() === value ) {
+          return true;
+        }
+
         Utils.$empty(el);
         el.setAttribute('data-type', value);
         buildChildView(el);

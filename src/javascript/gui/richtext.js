@@ -34,6 +34,40 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function getDocument(el, iframe) {
+    iframe = iframe || el.querySelector('iframe');
+    var doc = iframe.contentDocument || iframe.contentWindow.document;
+  }
+
+  function setDocumentData(el, text) {
+    return;
+    text = text || '';
+
+    var wm = OSjs.Core.getWindowManager();
+    var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
+    var themeSrc = OSjs.API.getThemeCSS(theme);
+
+    var editable = el.getAttribute('data-editable');
+    editable = editable === null || editable === 'true';
+
+    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /></head><body contentEditable="true"></body></html>';
+    if ( !editable ) {
+      template = template.replace(' contentEditable="true"', '');
+    }
+
+    try {
+      var doc = getDocument(el);
+      doc.open();
+      doc.write(template);
+      doc.close();
+
+      if ( text ) {
+        doc.body.innerHTML = text;
+      }
+    } catch ( error ) {
+      console.error('gui-richtext', 'setDocumentData()', error.stack, error);
+    }
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
@@ -52,39 +86,22 @@
     build: function(el) {
       var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
-      var wm = OSjs.Core.getWindowManager();
-      var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var themeSrc = OSjs.API.getThemeCSS(theme);
-
-      var editable = el.getAttribute('data-editable');
-      editable = editable === null || editable === 'true';
-
-      var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /></head><body contentEditable="true"></body></html>';
-      if ( !editable ) {
-        template = template.replace(' contentEditable="true"', '');
-      }
-
       Utils.$empty(el);
 
-      var doc;
       var iframe = document.createElement('iframe');
       iframe.setAttribute('border', 0);
       el.appendChild(iframe);
 
       setTimeout(function() {
-        try {
-          doc = iframe.contentDocument || iframe.contentWindow.document;
-          doc.open();
-          doc.write(template);
-          doc.close();
-
-          if ( text ) {
-            doc.body.innerHTML = text;
-          }
-        } catch ( error ) {
-          console.error('gui-richtext', error);
-        }
+        setDocumentData(el, text);
       }, 0);
+    },
+    set: function(el, param, value) {
+      if ( param === 'value' ) {
+        setDocumentData(el, value);
+        return true;
+      }
+      return false;
     }
   };
 

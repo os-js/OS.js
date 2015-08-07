@@ -275,10 +275,9 @@
       // Misc UI
       createResizers(el);
 
-      Utils.$bind(el, 'scroll', function() {
+      Utils.$bind(el, 'scroll', function(ev) {
         head.style.top = el.scrollTop + 'px';
       }, false);
-
 
       // Create scheme defined header
       el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
