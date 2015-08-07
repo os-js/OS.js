@@ -486,7 +486,7 @@
    */
   GUI.Elements['gui-button'] = {
     set: function(el, param, value, isHTML) {
-      if ( param === 'value' ) {
+      if ( param === 'value' || param === 'label' ) {
         var lbl = el.querySelector('button');
         Utils.$empty(lbl);
         if ( isHTML ) {

@@ -29,26 +29,6 @@
  */
 (function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
-  /*
-   fontName: rt.commandValue('fontName').replace(/^\'/, '').replace(/\'$/, ''),
-   fontSize: rt.commandValue('fontSize'),
-   foreColor: rt.commandValue('foreColor'),
-   hiliteColor: rt.commandValue('hiliteColor'),
-   justifyLeft: rt.commandValue('justifyLeft'),
-   justifyCenter: rt.commandValue('justifyCenter'),
-   justifyRight: rt.commandValue('justifyRight'),
-   bold: rt.commandValue('bold'),
-   italic: rt.commandValue('italic'),
-   underline: rt.commandValue('underline'),
-   strikeThrough: rt.commandValue('strikeThrough')
-
-   rt.getWindow().addEventListener('selectstart', function() {
-   _updateToolbar();
-   });
-   rt.getWindow().addEventListener('mouseup', function() {
-   _updateToolbar();
-   });
-   */
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -62,6 +42,15 @@
       width: 550,
       height: 400
     }, app, scheme, file]);
+
+    this.color = {
+      background : '#ffffff',
+      foreground : '#000000'
+    };
+    this.font = {
+      name: 'Arial',
+      size: 14
+    };
   }
 
   ApplicationWriterWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
@@ -73,6 +62,129 @@
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'WriterWindow', root);
+    var text = scheme.find(this, 'Text');
+    var frame = text.querySelector('iframe');
+
+    var buttons = {
+      'text-bold': {
+        command: 'bold'
+      },
+      'text-italic': {
+        command: 'italic'
+      },
+      'text-underline': {
+        command: 'underline'
+      },
+      'text-strikethorugh': {
+        command: 'strikeThrough'
+      },
+
+      'justify-left': {
+        command: 'justifyLeft'
+      },
+      'justify-center': {
+        command: 'justifyCenter'
+      },
+      'justify-right': {
+        command: 'justifyRight'
+      },
+
+      'indent': {
+        command: 'indent'
+      },
+      'unindent': {
+        command: 'outdent'
+      }
+    };
+
+    function getSelectionStyle() {
+      function _call(cmd) {
+        return text._call('query', [cmd]);
+      }
+
+      var style = {
+        fontName: (_call('fontName') || '').split(',')[0],
+        fontSize: parseInt(_call('fontSize'), 10),
+        foreColor: _call('foreColor'),
+        hiliteColor: _call('hiliteColor')
+      };
+
+      Object.keys(buttons).forEach(function(b) {
+        var button = buttons[b];
+        style[button.command] = {
+          button: b,
+          value:_call(button.command)
+        };
+      });
+      return style;
+    }
+
+    function createColorDialog(current, cb) {
+      self._toggleDisabled(true);
+      API.createDialog('Color', {
+        color: current
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          cb(result.hex);
+        }
+      });
+    }
+
+    function createFontDialog(current, cb) {
+      self._toggleDisabled(true);
+      API.createDialog('Font', {
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          cb(result);
+        }
+      });
+    }
+
+    var back = scheme.find(this, 'Background').on('click', function() {
+      createColorDialog(self.color.background, function(hex) {
+        text._call('command', ['hiliteColor', false, hex]);
+        self.color.background = hex;
+        back.set('value', hex);
+      });
+    });
+    var front = scheme.find(this, 'Foreground').on('click', function() {
+      createColorDialog(self.color.foreground, function(hex) {
+        text._call('command', ['foreColor', false, hex]);
+        self.color.foreground = hex;
+        front.set('value', hex);
+      });
+    });
+
+    var font = scheme.find(this, 'Font').on('click', function() {
+      createFontDialog(null, function(font) {
+        text._call('command', ['fontName', font.fontName]);
+        text._call('command', ['fontSize', font.fontSize]);
+        self.font.name = font.fontName;
+        self.font.size = font.fontSize;
+      });
+    });
+
+    root.querySelectorAll('gui-toolbar > gui-button').forEach(function(b) {
+      var id = b.getAttribute('data-id');
+      var button = buttons[id];
+      if ( button ) {
+        (new GUI.Element(b)).on('click', function() {
+          text._call('command', [button.command]);
+        });
+      }
+    });
+
+    back.set('value', this.color.background);
+    front.set('value', this.color.foreground);
+    font.set('label', Utils.format('{0} ({1})', this.font.name, this.font.size.toString()));
+
+    text.on('selection', function() {
+      var style = getSelectionStyle();
+      console.warn("TODO UPDATE TOOLBAR", style); // TODO
+
+    });
 
     return root;
   };

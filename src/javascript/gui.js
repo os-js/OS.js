@@ -617,6 +617,14 @@
     return this.$element.querySelectorAll(q);
   };
 
+  UIElement.prototype._call = function(method, args) {
+    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].call ) {
+      var cargs = ([this.$element, method, args]);//.concat(args);
+      return OSjs.GUI.Elements[this.tagName].call.apply(this, cargs);
+    }
+    return null;//this;
+  };
+
   /**
    * Extended UIElement for ListView, TreeView, IconView, Select, SelectList
    * @extends UIElement
@@ -629,14 +637,6 @@
 
   UIElementDataView.prototype = Object.create(UIElement.prototype);
   UIElementDataView.constructor = UIElement;
-
-  UIElementDataView.prototype._call = function(method, args) {
-    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].call ) {
-      var cargs = ([this.$element, method, args]);//.concat(args);
-      OSjs.GUI.Elements[this.tagName].call.apply(this, cargs);
-    }
-    return this;
-  };
 
   UIElementDataView.prototype.clear = function() {
     return this._call('clear', []);

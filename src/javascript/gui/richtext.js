@@ -91,6 +91,12 @@
    * @class
    */
   GUI.Elements['gui-richtext'] = {
+    bind: function(el, evName, callback, params) {
+      if ( (['selection']).indexOf(evName) !== -1 ) {
+        evName = '_' + evName;
+      }
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+    },
     build: function(el) {
       var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
@@ -98,6 +104,14 @@
 
       var iframe = document.createElement('iframe');
       iframe.setAttribute('border', 0);
+      iframe.onload = function() {
+        iframe.contentWindow.addEventListener('selectstart', function() {
+          el.dispatchEvent(new CustomEvent('_selection', {detail: {}}));
+        });
+        iframe.contentWindow.addEventListener('mouseup', function() {
+          el.dispatchEvent(new CustomEvent('_selection', {detail: {}}));
+        });
+      };
       el.appendChild(iframe);
 
       setTimeout(function() {
@@ -107,10 +121,11 @@
     call: function(el, method, args) {
       var doc = getDocument(el);
       if ( method === 'command' ) {
-        doc.execCommand.apply(doc, args);
+        return doc.execCommand.apply(doc, args);
       } else if ( method === 'query' ) {
-        doc.queryCommandValue.apply(doc, args);
+        return doc.queryCommandValue.apply(doc, args);
       }
+      return null;
     },
     get: function(el, param, value) {
       if ( param === 'value' ) {
