@@ -264,15 +264,13 @@ corewm-window-switcher > div.Active {
   position : absolute;
   min-width : 100px;
   min-height : 100px;
-}
-
-#CoreWMApplicationMenu ul {
   width : 480px;
   overflow : hidden;
+  padding : 0;
   margin : 10px;
 }
 
-#CoreWMApplicationMenu li {
+#CoreWMApplicationMenu gui-menu-entry {
   width : 72px;
   height : 72px;
   padding : 4px;
@@ -283,30 +281,12 @@ corewm-window-switcher > div.Active {
   position : relative;
 }
 
-#CoreWMApplicationMenu li img {
+#CoreWMApplicationMenu gui-menu-entry img {
   padding-top : 4px;
   width : 32px;
 }
-#CoreWMApplicationMenu li div {
+#CoreWMApplicationMenu gui-menu-entry div {
   white-space : normal;
   max-height : 30px;
   padding : 4px;
-}
-#CoreWMApplicationMenu .Pointer {
-  position : absolute;
-  width : 20px;
-  height : 20px;
-  -webkit-transform : rotate(45deg);
-  -moz-transform : rotate(45deg);
-  -ms-transform : rotate(45deg);
-  -o-transform : rotate(45deg);
-  transform : rotate(45deg);
-}
-#CoreWMApplicationMenu.AtTop .Pointer {
-  left : 10px;
-  top : -10px;
-}
-#CoreWMApplicationMenu.AtBottom .Pointer {
-  left : 10px;
-  bottom : -10px;
 }

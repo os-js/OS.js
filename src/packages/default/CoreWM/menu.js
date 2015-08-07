@@ -117,44 +117,37 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationMenu() {
-    this.$element = document.createElement('div');
+    var root = this.$element = document.createElement('gui-menu');
     this.$element.id = 'CoreWMApplicationMenu';
-    this.$element.className = 'Menu';
 
     var apps = OSjs.Core.getHandler().getApplicationsMetadata();
-    var ul = document.createElement('ul');
+
+    function createEntry(a, iter) {
+      var entry = document.createElement('gui-menu-entry');
+
+      var img = document.createElement('img');
+      img.src = _createIcon(iter, a, '32x32');
+
+      var txt = document.createElement('div');
+      txt.appendChild(document.createTextNode(iter.name.replace(/([^\s-]{6})([^\s-]{6})/, '$1-$2')));
+
+      Utils.$bind(entry, 'mousedown', function(ev) {
+        ev.stopPropagation();
+        API.launch(a);
+        API.blurMenu();
+      });
+
+      entry.appendChild(img);
+      entry.appendChild(txt);
+      root.appendChild(entry);
+    }
+
     Object.keys(apps).forEach(function(a) {
       var iter = apps[a];
       if ( iter.type === 'application' ) {
-        var li = document.createElement('li');
-        li.title = iter.description;
-        li.onclick = function(ev) {
-          API.launch(a);
-          OSjs.API.blurMenu(ev);
-        };
-        li.touchstart = function(ev) {
-          API.launch(a);
-          OSjs.API.blurMenu(ev);
-        };
-
-        var img = document.createElement('img');
-        img.src = _createIcon(iter, a, '32x32');
-
-        var txt = document.createElement('div');
-        txt.appendChild(document.createTextNode(iter.name.replace(/([^\s-]{6})([^\s-]{6})/, '$1-$2')));
-
-        li.appendChild(img);
-        li.appendChild(txt);
-        ul.appendChild(li);
+        createEntry(a, iter);
       }
     });
-
-    /*
-    var ac = document.createElement('div');
-    ac.className = 'Pointer';
-    this.$element.appendChild(ac);
-    */
-    this.$element.appendChild(ul);
   }
 
   ApplicationMenu.prototype.destroy = function() {
