@@ -81,7 +81,7 @@
     if ( !count ) { return; }
 
     var map = {}
-    var key = ev.key || ev.which;
+    var key = ev.keyCode || ev.which;
 
     if ( key === Utils.Keys.ENTER ) {
       el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
