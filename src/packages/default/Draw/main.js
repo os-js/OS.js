@@ -352,7 +352,7 @@
     ts.forEach(function(t) {
       scheme.find(self, 'tool-' + t).on('click', function() {
         var stats = tools[t].statusText || '';
-        statusbar.$element.innerHTML = stats;
+        statusbar.set('value', stats);
 
         self.setToolProperty('name', t);
       });

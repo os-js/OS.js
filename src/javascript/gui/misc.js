@@ -203,4 +203,29 @@
     }
   };
 
+  /**
+   * Element: 'gui-statusbar'
+   *
+   * Status bar element.
+   *
+   * Setters:
+   *  value                   Sets the text value
+   *  label                   Alias for 'value'
+   *
+   * @api OSjs.GUI.Elements.gui-statusbar
+   * @class
+   */
+  GUI.Elements['gui-statusbar'] = {
+    set: function(el, param, value) {
+      if ( param === 'label' || param === 'value' ) {
+        Utils.$empty(el);
+        el.innerHTML = value;
+        return true;
+      }
+      return false;
+    },
+    build: function(el) {
+    }
+  };
+
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

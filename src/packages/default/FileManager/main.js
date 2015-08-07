@@ -175,7 +175,7 @@
 
   ApplicationFileManagerWindow.prototype.checkSelection = function(files) {
     // FIXME: Locales
-    var view = this._scheme.find(this, 'Statusbar');
+    var statusbar = this._scheme.find(this, 'Statusbar');
     var content = '';
     var sum, label;
 
@@ -200,7 +200,7 @@
       }
     }
 
-    view.$element.innerHTML = content;
+    statusbar.set('value', content);
   };
 
   ApplicationFileManagerWindow.prototype.checkActivation = function(files) {
