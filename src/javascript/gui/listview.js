@@ -225,7 +225,7 @@
         return true;
       } else if ( param === 'selected' || param === 'value' ) {
         var body = el.querySelector('gui-list-view-body');
-        GUI.Elements._dataview.setSelected(el, body.querySelectorAll('gui-list-view-row'), value, arg);
+        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-list-view-row'), value, arg);
         return true;
       }
 

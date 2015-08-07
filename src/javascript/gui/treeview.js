@@ -154,8 +154,9 @@
     },
 
     set: function(el, param, value, arg) {
+      var body = el.querySelector('gui-tree-view-body');
       if ( param === 'selected' || param === 'value' ) {
-        GUI.Elements._dataview.setSelected(el, el.querySelectorAll('gui-icon-view-entry'), value, arg);
+        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-tree-view-entry'), value, arg);
         return true;
       }
 
@@ -171,11 +172,11 @@
           initEntry(el, entry);
         });
       } else if ( method === 'remove' ) {
-        GUI.Elements._dataview.remove(el, args, 'gui-icon-tree-entry');
+        GUI.Elements._dataview.remove(el, args, 'gui-tree-view-entry');
       } else if ( method === 'clear' ) {
         GUI.Elements._dataview.clear(el, body);
       } else if ( method === 'patch' ) {
-        GUI.Elements._dataview.patch(el, args, 'gui-icon-tree-entry', body, createEntry, initEntry);
+        GUI.Elements._dataview.patch(el, args, 'gui-tree-view-entry', body, createEntry, initEntry);
       }
     }
   };

@@ -56,7 +56,86 @@
       Utils.$addClass(item, 'gui-active');
     }
 
+    selected.sort(function(a, b) {
+      return a - b;
+    });
+
     return selected;
+  }
+
+  function getSelected(el) {
+    return GUI.Elements[el.tagName.toLowerCase()].values(el);
+  }
+
+  function handleKeyPress(el, ev) {
+    var type = el.tagName.toLowerCase();
+    var className = 'gui-list-view-row';
+    if ( type === 'gui-tree-view' || type === 'gui-icon-view' ) {
+      className = type + '-entry';
+    }
+
+    var root = el.querySelector(type + '-body');
+    var entries = root.querySelectorAll(className);
+    var count = entries.length;
+
+    if ( !count ) { return; }
+
+    var map = {}
+    var key = ev.key || ev.which;
+
+    if ( key === Utils.Keys.ENTER ) {
+      el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
+      return;
+    }
+
+    var selected = el._selected.concat() || [];
+    var first = selected.length ? selected[0] : 0;
+    var last = selected.length > 1 ? selected[selected.length - 1] : first;
+    var current = 0;
+
+    function select() {
+      var item = entries[current];
+      if ( item ) {
+        el._selected = handleItemSelection(ev, item, current, className, selected, root, ev.shiftKey);
+        GUI.Elements._dataview.scrollIntoView(el, item);
+      }
+    }
+
+    function getRowSize() {
+      var ew = entries[0].offsetWidth;
+      var tw = root.offsetWidth;
+      var d = Math.floor(tw/ew);
+      return d;
+    }
+
+    function next() {
+      current = Math.min(last + 1, count);
+      select();
+    }
+    function prev() {
+      current = Math.max(0, first - 1);
+      select();
+    }
+    function jumpUp() {
+      current = Math.max(0, first - getRowSize());
+      select();
+    }
+    function jumpDown() {
+      current = Math.max(last, last + getRowSize());
+      select();
+    }
+
+    if ( type === 'gui-tree-view' || type === 'gui-list-view' ) {
+      map[Utils.Keys.UP] = prev;
+      map[Utils.Keys.DOWN] = next;
+    } else {
+      map[Utils.Keys.UP] = jumpUp;
+      map[Utils.Keys.DOWN] = jumpDown;
+      map[Utils.Keys.LEFT] = prev;
+      map[Utils.Keys.RIGHT] = next;
+    }
+
+    if ( map[key] ) { map[key](ev); }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -189,17 +268,27 @@
 
     scrollIntoView: function(el, element) {
       var pos = Utils.$position(element, el);
-      if ( pos !== null && 
-           (pos.top > (el.scrollTop + el.offsetHeight) || 
-           (pos.top < el.scrollTop)) ) {
-        el.scrollTop = pos.top;
+      var marginTop = 0;
+      if ( el.tagName.toLowerCase() === 'gui-list-view' ) {
+        var header = el.querySelector('gui-list-view-head');
+        if ( header ) {
+          marginTop = header.offsetHeight;
+        }
       }
+
+      var scrollSpace = (el.scrollTop + el.offsetHeight) - marginTop;
+      var scrollTop = el.scrollTop + marginTop;
+      var elTop = pos.top - marginTop;
+
+      if ( pos !== null && (elTop > scrollSpace || elTop < scrollTop) ) {
+        el.scrollTop = elTop;
+        return true;
+      }
+
+      return false;
     },
 
     bindEntryEvents: function(el, row, className) {
-      function getSelected() {
-        return GUI.Elements[el.tagName.toLowerCase()].values(el);
-      }
 
       var singleClick = el.getAttribute('data-single-click') === 'true';
 
@@ -208,21 +297,16 @@
         multipleSelect = multipleSelect === null || multipleSelect === 'true';
         var idx = Utils.$index(row);
         el._selected = handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
-
-        var selected = getSelected();
-        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: selected}}));
+        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected(el)}}));
       }
 
       function activate(ev) {
-        var selected = getSelected();
-        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: selected}}));
+        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
       }
 
       function context(ev) {
         select(ev);
-
-        var selected = getSelected();
-        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: selected}}));
+        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el)}}));
       }
 
       if ( singleClick ) {
@@ -281,7 +365,7 @@
       return selected;
     },
 
-    setSelected: function(el, entries, val, key) {
+    setSelected: function(el, body, entries, val, key) {
       var self = this;
       var select = [];
 
@@ -314,6 +398,7 @@
 
       //Utils.$addClass(el, 'gui-disable-events');
       var underlay = document.createElement('textarea');
+      underlay.setAttribute('readonly', 'true');
       underlay.className = 'gui-focus-element';
       Utils.$bind(underlay, 'focus', function() {
         Utils.$addClass(el, 'gui-element-focused');
@@ -323,6 +408,7 @@
       });
       Utils.$bind(underlay, 'keydown', function(ev) {
         ev.preventDefault();
+        handleKeyPress(el, ev);
       });
       Utils.$bind(underlay, 'keypress', function(ev) {
         ev.preventDefault();
