@@ -144,9 +144,13 @@
       try {
         value = JSON.stringify(e.value);
       } catch ( e ) {}
+
       row.setAttribute('data-value', value);
       if ( typeof e.id !== 'undefined' && e.id !== null ) {
         row.setAttribute('data-id', e.id);
+      }
+      if ( e.tooltip ) {
+        row.setAttribute('data-tooltip', e.tooltip);
       }
 
       return row;

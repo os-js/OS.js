@@ -346,6 +346,12 @@
           source : source,
           data   : value
         });
+
+        var tooltip = row.getAttribute('data-tooltip');
+        if ( tooltip && !row.getAttribute('title') ) {
+          row.setAttribute('title', tooltip);
+        }
+
       }
     },
 

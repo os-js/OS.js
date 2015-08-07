@@ -202,11 +202,13 @@
             }
 
             var filesize = Utils.humanFileSize(iter.size);
+            var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, filesize, iter.mime || '');
             if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
               return {
                 value: iter,
                 id: iter.id || iter.filename,
                 label: iter.filename,
+                tooltip: tooltip,
                 icon: _getIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
               };
             }
@@ -214,6 +216,7 @@
             return {
               value: iter,
               id: iter.id || iter.filename,
+              tooltip: tooltip,
               columns: [
                 {label: iter.filename, icon: _getIcon(iter)},
                 {label: iter.mime, textalign: 'right'},
