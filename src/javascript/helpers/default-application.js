@@ -287,7 +287,7 @@
       filter: this.__metadata.mime
     }, function(ev, button, result) {
       win._toggleDisabled(false);
-      if ( result ) {
+      if ( button === 'ok' && result ) {
         self.openFile(new VFS.File(result), win);
       }
     }, win);
