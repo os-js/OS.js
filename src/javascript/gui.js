@@ -359,9 +359,15 @@
       if ( typeof basis === 'undefined' || basis === null ) {
         basis = checkel.getAttribute('data-basis') || 'auto';
       }
+    })();
+
+    (function() {
       if ( typeof grow === 'undefined' || grow === null ) {
         grow = checkel.getAttribute('data-grow') || 0;
       }
+    })();
+
+    (function() {
       if ( typeof shrink === 'undefined' || shrink === null ) {
         shrink = checkel.getAttribute('data-shrink') || 0;
       }

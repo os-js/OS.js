@@ -1414,10 +1414,6 @@
     if ( ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex();
     }
-
-    if ( type === 'keydown' ) {
-      // TODO
-    }
   };
 
   /**

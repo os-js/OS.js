@@ -139,8 +139,6 @@
       var target = el.querySelector('select');
       Utils.$empty(target);
     }
-
-    return this;
   }
 
   function createSelectInput(el, multiple) {
@@ -591,7 +589,10 @@
    */
   GUI.Elements['gui-select'] = {
     bind: bindInputEvents,
-    call: callSelectBox,
+    call: function() {
+      callSelectBox.apply(this, arguments);
+      return this;
+    },
     build: function(el) {
       createSelectInput(el);
     }
@@ -624,7 +625,10 @@
    */
   GUI.Elements['gui-select-list'] = {
     bind: bindInputEvents,
-    call: callSelectBox,
+    call: function() {
+      callSelectBox.apply(this, arguments);
+      return this;
+    },
     build: function(el) {
       createSelectInput(el, true);
     }

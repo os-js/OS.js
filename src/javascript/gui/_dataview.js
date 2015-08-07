@@ -80,7 +80,7 @@
 
     if ( !count ) { return; }
 
-    var map = {}
+    var map = {};
     var key = ev.keyCode || ev.which;
 
     if ( key === Utils.Keys.ENTER ) {
@@ -315,23 +315,7 @@
         el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el)}}));
       }
 
-      if ( singleClick ) {
-        Utils.$bind(row, 'click', function(ev) {
-          select(ev);
-          activate(ev);
-        });
-      } else {
-        Utils.$bind(row, 'click', select, false);
-        Utils.$bind(row, 'dblclick', activate, false);
-      }
-
-      Utils.$bind(row, 'contextmenu', function(ev) {
-        ev.preventDefault();
-        context(ev);
-        return false;
-      }, false);
-
-      if ( el.getAttribute('data-draggable') === 'true' ) {
+      function createDraggable() {
         var value = row.getAttribute('data-value');
         if ( value !== null ) {
           try {
@@ -357,7 +341,26 @@
         if ( tooltip && !row.getAttribute('title') ) {
           row.setAttribute('title', tooltip);
         }
+      }
 
+      if ( singleClick ) {
+        Utils.$bind(row, 'click', function(ev) {
+          select(ev);
+          activate(ev);
+        });
+      } else {
+        Utils.$bind(row, 'click', select, false);
+        Utils.$bind(row, 'dblclick', activate, false);
+      }
+
+      Utils.$bind(row, 'contextmenu', function(ev) {
+        ev.preventDefault();
+        context(ev);
+        return false;
+      }, false);
+
+      if ( el.getAttribute('data-draggable') === 'true' ) {
+        createDraggable();
       }
     },
 
