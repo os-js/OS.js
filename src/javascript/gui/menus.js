@@ -299,7 +299,7 @@
         var newLeft = Math.round(window.innerWidth - pos.width - 10)
         root.style.left = newLeft + 'px';
       }
-      if ( pos.bottom > window.innerHeigth ) {
+      if ( pos.bottom > window.innerHeight ) {
         var newTop = Math.round(window.innerHeight - pos.height - 10);
         root.style.top = newTop + 'px';
       }
