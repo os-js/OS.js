@@ -371,16 +371,6 @@
     }
   };
 
-  ApplicationFileManager.prototype.upload = function(dest, win) {
-    API.createDialog('FileUpload', {
-      dest: dest,
-    }, function(ev, button, result) {
-      if ( result ) {
-        win.changePath(null, result.filename);
-      }
-    });
-  };
-
   ApplicationFileManager.prototype.download = function(items) {
     items.forEach(function(item) {
       VFS.url(new VFS.File(item), function(error, result) {
@@ -494,21 +484,35 @@
   ApplicationFileManager.prototype.upload = function(dest, files, win) {
     var self = this;
 
-    win._toggleLoading(true);
+    function upload() {
+      win._toggleLoading(true);
 
-    VFS.upload({
-      files: files,
-      destination: dest,
-      win: win,
-      app: this
-    }, function(error, file) {
-      win._toggleLoading(false);
-      if ( error ) {
-        API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
-        return;
-      }
-      win.changePath(null, file);
-    });
+      VFS.upload({
+        files: files,
+        destination: dest,
+        win: win,
+        app: this
+      }, function(error, file) {
+        win._toggleLoading(false);
+        if ( error ) {
+          API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
+          return;
+        }
+        win.changePath(null, file);
+      });
+    }
+
+    if ( files ) {
+      upload();
+    } else {
+      API.createDialog('FileUpload', {
+        dest: dest,
+      }, function(ev, button, result) {
+        if ( result ) {
+          win.changePath(null, result.filename);
+        }
+      });
+    }
   };
 
   ApplicationFileManager.prototype.showStorageNotification = function(type) {
