@@ -117,6 +117,10 @@
     preview.$element.style.backgroundColor = this.args.backgroundColor;
     preview.set('value', this.args.text);
 
+    if ( this.args.fontSize < 0 ) {
+      this.scheme.find(this, 'FontSizeContainer').hide();
+    }
+
     updatePreview();
 
     return root;

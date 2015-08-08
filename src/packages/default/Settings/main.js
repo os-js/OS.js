@@ -329,7 +329,20 @@
 
     scheme.find(this, 'BackgroundStyle').add(backgroundTypes).set('value', this.settings.background);
 
-    scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
+    var fontName = scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
+
+    fontName.on('click', function() {
+      self._toggleDisabled(true);
+      API.createDialog('Font', {
+        fontName: self.settings.fontFamily,
+        fontSize: -1
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          fontName.set('value', result.fontName);
+        }
+      });
+    });
   };
 
   /**
@@ -653,6 +666,7 @@
     this.settings.wallpaper = scheme.find(this, 'BackgroundImage').get('value');
     this.settings.backgroundColor = scheme.find(this, 'BackgroundColor').get('value');
     this.settings.background = scheme.find(this, 'BackgroundStyle').get('value');
+    this.settings.fontFamily = scheme.find(this, 'FontName').get('value');
 
     // Desktop
     this.settings.enableHotkeys = scheme.find(this, 'EnableHotkeys').get('value');
