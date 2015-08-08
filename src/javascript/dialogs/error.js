@@ -48,6 +48,8 @@
   function ErrorDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});
 
+    console.error('ErrorDialog::constructor()', args);
+
     var exception = args.exception || {};
     var error = '';
     if ( exception.stack ) {

@@ -1084,7 +1084,7 @@
             callback(msg, null, arg);
           } else if ( type === 'canceled' ) {
             callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, arg);
-          } else {
+          } else if ( type !== 'progress' ) {
             callback(arg);
           }
         });
