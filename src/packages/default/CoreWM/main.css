@@ -251,6 +251,10 @@ corewm-window-switcher > div.Active {
   z-index : 1;
   border : 0 none !important;
   box-shadow : none !important;
+  pointer-events : none;
+}
+#CoreWMDesktopIconView > gui-icon-view-body > * {
+  pointer-events : all;
 }
 /*
 .CoreWMDesktopIconView span {

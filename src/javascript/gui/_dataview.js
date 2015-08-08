@@ -254,11 +254,15 @@
         remove(target);
         return;
       }
+      if ( typeof args[1] === 'undefined' && typeof args[0] === 'number' ) {
+        remove(el.querySelectorAll(className)[args[0]]);
+      } else {
+        var findId = args[0];
+        var findKey = args[1] || 'id';
+        var q = 'data-' + findKey + '="' + findId + '"';
+        el.querySelectorAll(className + '[' + q + ']').forEach(remove);
+      }
 
-      var findId = args[0];
-      var findKey = args[1] || 'id';
-      var q = 'data-' + findKey + '="' + findId + '"';
-      el.querySelectorAll(className + '[' + q + ']').forEach(remove);
       this.updateActiveSelection(el, className);
 
       return this;
@@ -312,7 +316,7 @@
 
       function context(ev) {
         select(ev);
-        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el)}}));
+        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el), x: ev.clientX, y: ev.clientY}}));
       }
 
       function createDraggable() {
@@ -411,7 +415,7 @@
     build: function(el, applyArgs) {
       el._selected = [];
 
-      if ( !el.querySelector('textarea.gui-focus-element') ) {
+      if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
         var underlay = document.createElement('textarea');
         underlay.setAttribute('readonly', 'true');
         underlay.className = 'gui-focus-element';

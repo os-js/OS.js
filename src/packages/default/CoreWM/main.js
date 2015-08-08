@@ -568,7 +568,7 @@
 
     var _createShortcut = function(data) {
       if ( this.iconView ) {
-        this.iconView.addShortcut(data, this);
+        this.iconView.addShortcut(data, this, true);
       }
     };
 
