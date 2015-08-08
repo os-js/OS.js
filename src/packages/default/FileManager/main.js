@@ -259,7 +259,6 @@
       }
     });
 
-    this._focus();
   };
 
   ApplicationFileManagerWindow.prototype.changeView = function(viewType, set) {

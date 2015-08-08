@@ -162,7 +162,7 @@
 
     var self = this;
     var current = this._getArgument('file');
-    var win = this._getWindow('DefaultApplicationWindow');
+    var win = this._getWindow(this.__mainwindow);
 
     if ( msg === 'vfs' && args.source !== null && args.source !== this.__pid && args.file ) {
       if ( win && current && current.path === args.file.path ) {
