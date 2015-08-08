@@ -79,7 +79,7 @@
    * @method  _Handler::init()
    */
   _Handler.prototype.init = function(callback) {
-    console.info('OSjs::_Handler::init()');
+    console.info('Handler::init()');
 
     API.setLocale(this.config.Core.Locale);
 
@@ -118,7 +118,7 @@
    */
   _Handler.prototype.boot = function(callback) {
     var self = this;
-    console.info('OSjs::_Handler::boot()');
+    console.info('Handler::boot()');
 
     // TODO
     var url = '/js/dialogs/schemes.html';
@@ -145,7 +145,7 @@
    * @method  _Handler::login()
    */
   _Handler.prototype.login = function(username, password, callback) {
-    console.info('OSjs::_Handler::login()', username);
+    console.info('Handler::login()', username);
     this.onLogin({}, function() {
       callback(true);
     });
@@ -165,7 +165,7 @@
    * @method  _Handler::logout()
    */
   _Handler.prototype.logout = function(save, callback) {
-    console.info('OSjs::_Handler::logout()');
+    console.info('Handler::logout()');
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
@@ -194,7 +194,7 @@
   _Handler.prototype.loadSession = function(callback) {
     callback = callback || function() {};
 
-    console.info('OSjs::_Handler::loadSession()');
+    console.info('Handler::loadSession()');
 
     var self = this;
     this.getUserSession(function(res) {
@@ -363,7 +363,7 @@
 
     var pacman = this.packages;
     this.getSetting('defaultApplication', file.mime, function(val) {
-      console.debug('OSjs::_Handler::getApplicationNameByFile()', 'default application', val);
+      console.debug('Handler::getApplicationNameByFile()', 'default application', val);
       if ( !forceList && val ) {
         if ( pacman.getPackage(val) ) {
           callback([val]);
@@ -391,7 +391,7 @@
    */
   _Handler.prototype.setDefaultApplication = function(mime, app, callback) {
     callback = callback || function() {};
-    console.debug('OSjs::_Handler::setDefaultApplication()', mime, app);
+    console.debug('Handler::setDefaultApplication()', mime, app);
     this.setSetting('defaultApplication', mime, app, callback);
   };
 
@@ -407,7 +407,7 @@
    * @method  _Handler::saveSettings()
    */
   _Handler.prototype.saveSettings = function(callback) {
-    console.debug('OSjs::_Handler::saveSettings()');
+    console.debug('Handler::saveSettings()');
     callback.call(this, true);
   };
 

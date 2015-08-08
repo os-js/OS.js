@@ -194,7 +194,7 @@
       this.__started  = new Date();
       this.__index    = _PROCS.push(this) - 1;
 
-      console.group('OSjs::Core::Process::__construct()');
+      console.group('Process::constructor()');
       console.log('pid',    this.__pid);
       console.log('pname',  this.__pname);
       console.log('started',this.__started);

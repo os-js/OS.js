@@ -325,7 +325,7 @@
    * @class
    */
   var WindowManager = function(name, ref, args, metadata) {
-    console.group('OSjs::Core::WindowManager::__construct()');
+    console.group('WindowManager::constructor()');
     console.log('Name', name);
     console.log('Arguments', args);
 
@@ -361,7 +361,7 @@
    */
   WindowManager.prototype.destroy = function() {
     var self = this;
-    console.log('OSjs::Core::WindowManager::destroy()');
+    console.debug('WindowManager::destroy()');
 
     this.destroyStylesheet();
 
@@ -397,7 +397,7 @@
    * @method  WindowManager::init()
    */
   WindowManager.prototype.init = function() {
-    console.log('OSjs::Core::WindowManager::init()');
+    console.debug('WindowManager::init()');
 
     var self = this;
     document.addEventListener('mouseout', function(ev) {
@@ -440,10 +440,10 @@
    */
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
-      console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
+      console.warn('WindowManager::addWindow()', 'Got', w);
       throw new Error('addWindow() expects a "Window" class');
     }
-    console.log('OSjs::Core::WindowManager::addWindow()');
+    console.debug('WindowManager::addWindow()');
 
     w.init(this, w._app, w._scheme);
     attachWindowEvents(w, this);
@@ -469,10 +469,10 @@
   WindowManager.prototype.removeWindow = function(w) {
     var self = this;
     if ( !(w instanceof Window) ) {
-      console.warn('OSjs::Core::WindowManager::removeWindow()', 'Got', w);
+      console.warn('WindowManager::removeWindow()', 'Got', w);
       throw new Error('removeWindow() expects a "Window" class');
     }
-    console.log('OSjs::Core::WindowManager::removeWindow()', w._wid);
+    console.debug('WindowManager::removeWindow()', w._wid);
 
     var result = false;
     this._windows.forEach(function(win, i) {
@@ -498,7 +498,7 @@
    */
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
-    console.log('OSjs::Core::WindowManager::applySettings', 'forced?', force);
+    console.debug('WindowManager::applySettings()', 'forced?', force);
 
     if ( force ) {
       this._settings = settings;

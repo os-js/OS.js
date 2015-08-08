@@ -53,7 +53,7 @@
    * @class
    */
   var Application = function(name, args, metadata, settings) {
-    console.group('OSjs::Core::Application::__construct()');
+    console.group('Application::constructor()');
     this.__name       = name;
     this.__label      = metadata.name;
     this.__path       = metadata.path;
@@ -89,7 +89,7 @@
    * @method  Application::init()
    */
   Application.prototype.init = function(settings, metadata) {
-    console.log('OSjs::Core::Application::init()', this.__name);
+    console.debug('Application::init()', this.__name);
 
     if ( settings ) {
       this.__settings = OSjs.Utils.mergeObject(this.__settings, settings);
@@ -124,7 +124,7 @@
   Application.prototype.destroy = function(kill) {
     if ( this.__destroyed ) { return true; }
     this.__destroyed = true;
-    console.log('OSjs::Core::Application::destroy()', this.__name);
+    console.debug('Application::destroy()', this.__name);
 
     var i;
     while ( this.__windows.length ) {
@@ -210,7 +210,7 @@
     cb = cb || function() {};
 
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
-    console.info('OSjs::Core::Application::_addWindow()');
+    console.debug('Application::_addWindow()');
     this.__windows.push(w);
 
     var wm = OSjs.Core.getWindowManager();
@@ -250,7 +250,7 @@
     this.__windows.forEach(function(win, i) {
       if ( win ) {
         if ( win._wid === w._wid ) {
-          console.info('OSjs::Core::Application::_removeWindow()', w._wid);
+          console.debug('Application::_removeWindow()', w._wid);
           win.destroy();
           //this.__windows[i] = null;
           self.__windows.splice(i, 1);

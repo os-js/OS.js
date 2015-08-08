@@ -167,6 +167,9 @@
         throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
       }
 
+      console.group('Window::constructor()', _WID);
+      console.log(name, opts);
+
       var icon      = opts.icon || API.getThemeResource('wm.png', 'wm');
       var position  = {x:(opts.x), y:(opts.y)};
       var dimension = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
@@ -256,8 +259,6 @@
         }
       });
 
-      console.info('OSjs::Core::Window::__construct()', this._wid, this._name);
-
       // Internals for restoring previous state (session)
       if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
         appRef.__args.__windows__.forEach(function(restore) {
@@ -269,13 +270,15 @@
               self._dimension.h = restore.dimension.h;
             }
 
-            console.info('OSjs::Core::Window::__construct()', 'RESTORED FROM SESSION', restore);
+            console.info('RESTORED FROM SESSION', restore);
             return false;
           }
 
           return true;
         });
       }
+
+      console.groupEnd();
 
       _WID++;
     };
@@ -434,7 +437,7 @@
       return false;
     }
 
-    console.group('OSjs::Core::Window::init()');
+    console.group('Window::init()');
 
     this._state.focused = false;
     this._icon = API.getIcon(this._icon, null, this._app);
@@ -585,7 +588,7 @@
   };
 
   Window.prototype._inited = function() {
-    console.info('OSjs::Core::Window::_inited()', this._name);
+    console.debug('OSjs::Core::Window::_inited()', this._name);
   };
 
   /**
@@ -733,7 +736,7 @@
   //
 
   Window.prototype._addChild = function(w, wmAdd) {
-    console.info('OSjs::Core::Window::_addChild()');
+    console.debug('OSjs::Core::Window::_addChild()');
     w._parent = this;
 
     var wm = OSjs.Core.getWindowManager();
@@ -756,7 +759,7 @@
     var self = this;
     this._children.forEach(function(child, i) {
       if ( child && child._wid === w._wid ) {
-        console.info('OSjs::Core::Window::_removeChild()');
+        console.debug('OSjs::Core::Window::_removeChild()');
 
         child.destroy();
         self._children[i] = null;
@@ -869,7 +872,7 @@
    * @method  Window::_close()
    */
   Window.prototype._close = function() {
-    console.info('OSjs::Core::Window::_close()');
+    console.debug('OSjs::Core::Window::_close()');
     if ( this._disabled ) { return false; }
 
     this._blur();
@@ -1395,7 +1398,7 @@
    * @method  Window::_onDndEvent()
    */
   Window.prototype._onDndEvent = function(ev, type) {
-    console.info('OSjs::Core::Window::_onDndEvent()', type);
+    console.debug('OSjs::Core::Window::_onDndEvent()', type);
     if ( this._disabled ) { return false; }
     return true;
   };
