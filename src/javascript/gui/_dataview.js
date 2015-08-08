@@ -176,7 +176,7 @@
       body = body || el;
 
       Utils.$empty(body);
-      el.scrollTop = 0;
+      body.scrollTop = 0;
       el._selected = [];
     },
 
@@ -414,6 +414,7 @@
 
     build: function(el, applyArgs) {
       el._selected = [];
+      el.scrollTop = 0;
 
       if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
         var underlay = document.createElement('textarea');
@@ -439,9 +440,14 @@
           if ( Utils.$hasClass(el, 'gui-element-focused') ) {
             return;
           }
+          // NOTE: This is a fix for Firefox stupid behaviour when focusing/blurring textboxes
+          // (which is used to have a focusable area in this case, called underlay)
           var oldTop = el.scrollTop;
           underlay.focus();
           el.scrollTop = oldTop;
+          setTimeout(function() {
+            el.scrollTop = oldTop;
+          }, 2);
         }, true);
 
         el.appendChild(underlay);
