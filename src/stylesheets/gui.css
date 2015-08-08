@@ -687,6 +687,7 @@ gui-switch {
   gui-switch button {
     display : inline-block;
     outline : 0 none;
+    margin : 0;
     width : 50%;
   }
   gui-switch button.gui-active {
