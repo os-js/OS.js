@@ -59,7 +59,9 @@
     var editable = el.getAttribute('data-editable');
     editable = editable === null || editable === 'true';
 
-    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /></head><body contentEditable="true"></body></html>';
+    var script = 'window.addEventListener("keydown", function(ev) { if ( ev.keyCode === 9 ) { ev.preventDefault(); }})';
+
+    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /><script>' + script + '</script></head><body contentEditable="true"></body></html>';
     if ( !editable ) {
       template = template.replace(' contentEditable="true"', '');
     }
