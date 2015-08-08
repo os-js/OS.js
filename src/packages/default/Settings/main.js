@@ -235,6 +235,10 @@
     scheme.find(this, 'ButtonApply').on('click', function() {
       self.applySettings(wm, scheme);
     });
+    scheme.find(this, 'ButtonCancel').on('click', function() {
+      self._close();
+    });
+
 
     this.initThemeTab(wm, scheme);
     this.initDesktopTab(wm, scheme);
