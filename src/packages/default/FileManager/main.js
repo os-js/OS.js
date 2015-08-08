@@ -84,7 +84,7 @@
     var menuMap = {
       MenuClose:        function() { self._close(); },
       MenuCreate:       function() { app.mkdir(self.currentPath, self); },
-      MenuUpload:       function() { app.upload(self.currentPath, self); },
+      MenuUpload:       function() { app.upload(self.currentPath, null, self); },
       MenuRename:       function() { app.rename(getSelected(), self); },
       MenuDelete:       function() { app.rm(getSelected(), self); },
       MenuInfo:         function() { app.info(getSelected()); },
