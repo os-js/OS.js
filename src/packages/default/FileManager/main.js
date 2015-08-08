@@ -247,6 +247,7 @@
         if ( dir && !error ) {
           self.currentPath = dir;
           self.currentSummary = summary;
+          self._app._setArgument('path', dir);
         }
         self._toggleLoading(false);
 
