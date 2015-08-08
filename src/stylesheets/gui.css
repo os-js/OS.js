@@ -272,6 +272,7 @@ gui-paned-view {
   }
   gui-paned-view > gui-paned-view-container {
     height : 100%;
+    overflow : hidden; /* Fixes overflow */
   }
     gui-paned-view > gui-paned-view-container > * {
       height : 100%;
