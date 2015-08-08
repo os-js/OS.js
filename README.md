@@ -1,6 +1,6 @@
 ![Logo](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo-horizontal.png)
 
-OS.js is a desktop implementation for your browser with a fully-fletched window manager, Application APIs, GUI toolkits and filesystem abstraction.
+OS.js is a desktop implementation for your browser with a fully-fledged window manager, Application APIs, GUI toolkits and filesystem abstraction.
 
 Works in any modern browser and can be deployed on any platform using Node or PHP.
 
