@@ -482,39 +482,15 @@
   };
 
   CoreWM.prototype.initIconView = function() {
-    return; // TODO
     var self = this;
 
-    function _setForegroundColor() {
-      if ( !self.iconView ) { return; }
-      if ( !self.getSetting('invertIconViewColor') ) {
-        self.iconView.setForegroundColor(null);
-        return;
-      }
-
-      var backColor = self.getSetting('backgroundColor');
-      if ( backColor ) {
-        var invertedColor = Utils.invertHEX(backColor);
-        self.iconView.setForegroundColor(invertedColor || null);
-      }
-    }
-
     if ( !this.getSetting('enableIconView') ) { return; }
-    if ( this.iconView ) {
-      _setForegroundColor();
-      return;
-    }
 
+    return;
     this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
-    this.iconView.init();
-    this.iconView.update(this);
     document.body.appendChild(this.iconView.getRoot());
 
-    this.iconView.resize(this);
     setTimeout(function() {
-      self.iconView.resize(self);
-
-      _setForegroundColor();
     }, this.getAnimDuration());
   };
 
@@ -978,6 +954,11 @@
         }
 
       });
+    }
+
+    styles['#CoreWMDesktopIconView'] = {};
+    if ( settings.invertIconViewColor && settings.backgroundColor ) {
+      styles['#CoreWMDesktopIconView']['color'] = Utils.invertHEX(settings.backgroundColor);
     }
 
     if ( Object.keys(styles).length ) {

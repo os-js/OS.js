@@ -241,7 +241,7 @@ corewm-window-switcher > div > span {
 corewm-window-switcher > div.Active {
 }
 
-.CoreWMDesktopIconView {
+#CoreWMDesktopIconView {
   background : transparent !important;
   position : absolute;
   top : 10px;
