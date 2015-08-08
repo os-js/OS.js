@@ -36,11 +36,36 @@
 
   // TODO Fix contextmenu on root
   // TODO Fix blurring correctly
-  function DesktopIconView() {
+  function DesktopIconView(wm) {
+    var self = this;
+
     this.$element = document.createElement('gui-icon-view');
+    this.$element.setAttribute('data-multiple', 'false');
     this.$element.id = 'CoreWMDesktopIconView';
 
     GUI.Elements['gui-icon-view'].build(this.$element);
+
+    API.createDroppable(this.$element, {
+      onOver: function(ev, el, args) {
+        wm.onDropOver(ev, el, args);
+      },
+
+      onLeave : function() {
+        wm.onDropLeave();
+      },
+
+      onDrop : function() {
+        wm.onDrop();
+      },
+
+      onItemDropped: function(ev, el, item, args) {
+        wm.onDropItem(ev, el, item, args);
+      },
+
+      onFilesDropped: function(ev, el, files, args) {
+        wm.onDropFile(ev, el, files, args);
+      }
+    });
 
     var cel = new GUI.ElementDataView(this.$element);
     cel.on('activate', function(ev) {
@@ -66,24 +91,98 @@
       }
     }];
 
+    cel.on('contextmenu', function(ev) {
+      if ( ev && ev.detail && ev.detail.entries ) {
+        API.createMenu([], ev);
+      }
+    });
+
     cel.add(defaults);
+
+
+    var icons = wm.getSetting('desktopIcons') || [];
+    icons.forEach(function(icon) {
+      self.addShortcut(icon, wm);
+    });
+
+    this.resize(wm);
   }
 
   DesktopIconView.prototype.destroy = function() {
     Utils.$remove(this.$element);
+    this.$element = null;
   };
 
   DesktopIconView.prototype.getRoot = function() {
     return this.$element;
   };
 
-  DesktopIconView.prototype.addShortcut = function(data, wm) {
+  DesktopIconView.prototype.resize = function(wm) {
+    var el = this.getRoot();
+    var s  = wm.getWindowSpace();
+
+    if ( el ) {
+      el.style.top    = (s.top) + 'px';
+      el.style.left   = (s.left) + 'px';
+      el.style.width  = (s.width) + 'px';
+      el.style.height = (s.height) + 'px';
+    }
+  };
+
+  DesktopIconView.prototype._save = function() {
+    /* TODO
+    var icons = [];
+    for ( var i = 1; i < this.data.length; i++ ) {
+      icons.push(this.data[i].args);
+    }
+    wm.setSetting('desktopIcons', icons);
+    wm.saveSettings();
+    */
+  };
+
+  DesktopIconView.prototype.addShortcut = function(data, wm, save) {
+    var cel = new GUI.ElementDataView(this.$element);
+    var iter = {};
+
+    // TODO: Check for duplicates
+
+    if ( data.launch ) {
+      var apps = OSjs.Core.getHandler().getApplicationsMetadata();
+      var meta = apps[data.launch];
+
+      iter = {
+        icon: API.getIcon(meta.icon, '32x32', data.launch),
+        id: data.launch,
+        label: meta.name,
+        value: {
+          launch: data.launch
+        }
+      };
+    } else {
+      iter = {
+        icon: API.getFileIcon(data, '32x32'),
+        id: data.filename,
+        label: data.filename
+      };
+    }
+    console.warn("XXXX", data, iter);
+
+    cel.add(iter);
+
+    if ( save ) {
+      this._save();
+    }
   };
 
   DesktopIconView.prototype.removeShortcut = function(data, wm) {
+    var cel = new GUI.ElementDataView(this.$element);
+    cel.remove(data.index);
+    this._save();
   };
 
   DesktopIconView.prototype.removeShortcutByPath = function(path) {
+    // TODO
+    this._save();
   };
 
   /*
@@ -134,27 +233,6 @@
       });
 
       // Make DnD work just like a desktop without iconview
-      OSjs.API.createDroppable(el, {
-        onOver: function(ev, el, args) {
-          wm.onDropOver(ev, el, args);
-        },
-
-        onLeave : function() {
-          wm.onDropLeave();
-        },
-
-        onDrop : function() {
-          wm.onDrop();
-        },
-
-        onItemDropped: function(ev, el, item, args) {
-          wm.onDropItem(ev, el, item, args);
-        },
-
-        onFilesDropped: function(ev, el, files, args) {
-          wm.onDropFile(ev, el, files, args);
-        }
-      });
 
       // Restore settings
       var icons = wm.getSetting('desktopIcons') || [];
@@ -165,86 +243,6 @@
         this.refresh();
       }
     };
-  };
-
-  DesktopIconView.prototype.resize = function(wm) {
-    var el = this.getRoot();
-    var s  = wm.getWindowSpace();
-
-    if ( el ) {
-      el.style.top    = (s.top) + 'px';
-      el.style.left   = (s.left) + 'px';
-      el.style.width  = (s.width) + 'px';
-      el.style.height = (s.height) + 'px';
-    }
-  };
-
-  DesktopIconView.prototype._save = function(wm) {
-    var icons = [];
-    for ( var i = 1; i < this.data.length; i++ ) {
-      icons.push(this.data[i].args);
-    }
-    wm.setSetting('desktopIcons', icons);
-    wm.saveSettings();
-  };
-
-  DesktopIconView.prototype._addShortcut = function(data) {
-    if ( !Object.keys(data).length ) {
-      return;
-    }
-
-    var iter = {};
-    if ( data.launch ) {
-      var apps = OSjs.Core.getHandler().getApplicationsMetadata();
-      var meta = apps[data.launch];
-
-      if ( !meta ) {
-        return;
-      }
-
-      iter = {
-        icon: API.getIcon(meta.icon, '32x32', data.launch),
-        label: meta.name,
-        launch: data.launch
-      };
-    } else {
-      iter = {
-        icon: API.getFileIcon(data, '32x32'),
-        label: data.filename
-      };
-    }
-
-    iter.index = this.data.length;
-    iter.args = data;
-
-    this.data.push(iter);
-  };
-
-  DesktopIconView.prototype.addShortcut = function(data, wm) {
-    this._addShortcut(data);
-
-    if ( wm ) {
-      this._save(wm);
-    }
-
-    this.refresh();
-  };
-
-  DesktopIconView.prototype.removeShortcut = function(data, wm) {
-    var iter;
-    for ( var i = 1; i < this.data.length; i++ ) {
-      iter = this.data[i];
-      if ( iter.index == data.index ) {
-        this.data.splice(i, 1);
-        break;
-      }
-    }
-
-    if ( wm ) {
-      this._save(wm);
-    }
-
-    this.refresh();
   };
 
   DesktopIconView.prototype.removeShortcutByPath = function(path) {

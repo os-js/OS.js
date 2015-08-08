@@ -484,12 +484,20 @@
   CoreWM.prototype.initIconView = function() {
     var self = this;
 
+    if ( this.iconView ) {
+      this.iconView.destroy();
+      this.iconView = null;
+    }
+
     if ( !this.getSetting('enableIconView') ) { return; }
 
     this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
     document.body.appendChild(this.iconView.getRoot());
 
     setTimeout(function() {
+      if ( self.iconView ) {
+        self.iconView.resize(self);
+      }
     }, this.getAnimDuration());
   };
 
