@@ -288,14 +288,13 @@
 
   ApplicationFileManagerWindow.prototype.toggleHidden = function(toggle, set) {
     this.viewOptions.ViewHidden = toggle;
-    this.changePath(null);
 
     var view = this._scheme.find(this, 'FileView');
     view.set('dotfiles', toggle);
-    this.changePath(null);
 
     if ( set ) {
       this._app._setSetting('ViewHidden', toggle, true);
+      this.changePath(null);
     }
     return toggle;
   };
