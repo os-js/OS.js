@@ -921,6 +921,7 @@ gui-menu.gui-root-menu {
     gui-menu > gui-menu-entry > label {
       vertical-align : middle;
       display : block;
+      pointer-events : none;
     }
     gui-menu > gui-menu-entry > label > input {
       margin : 0;
@@ -928,6 +929,7 @@ gui-menu.gui-root-menu {
       vertical-align : middle;
       margin-top : -2px;
       padding-right : 2px;
+      pointer-events : none;
     }
     gui-menu > gui-menu-entry > label.gui-has-image {
     }

@@ -45,7 +45,13 @@
     var id = child.getAttribute('data-id');
     dispatcher = dispatcher || span;
 
-    Utils.$bind(span, 'mousedown', function(ev) {
+    var hasInput = child.querySelector('input');
+
+    Utils.$bind(child, 'mousedown', function(ev) {
+      if ( hasInput ) {
+        hasInput.dispatchEvent(new MouseEvent('click'));
+      }
+
       dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
       if ( ev.target.querySelector('input') ) {
         ev.stopPropagation();
