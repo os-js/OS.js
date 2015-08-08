@@ -59,6 +59,8 @@
   var IFrameApplicationWindow = function(name, opts, app) {
     opts = Utils.argumentDefaults(opts, {
       src: 'about:blank',
+      focus: function() {},
+      blur: function() {},
       icon: null,
       title: 'IframeApplicationWindow',
       width: 320,
@@ -69,6 +71,9 @@
     });
 
     Window.apply(this, ['IFrameApplicationWindow', opts, app]);
+
+    this._iwin = null;
+    this._frame = null;
   };
 
   IFrameApplicationWindow.prototype = Object.create(Window.prototype);
@@ -83,7 +88,43 @@
     iframe.src = this._opts.src;
     root.appendChild(iframe);
 
+    this._frame = iframe;
+    this._iwin = iframe.contentWindow;
+
+    this._iwin.focus();
+    this._frame.focus();
+    this._opts.focus(this._frame, this._iwin);
+
     return root;
+  };
+
+  IFrameApplicationWindow.prototype._blur = function() {
+    if ( Window.prototype._blur.apply(this, arguments) ) {
+      if ( this._iwin ) {
+        this._iwin.blur();
+      }
+      if ( this._frame ) {
+        this._frame.blur();
+      }
+
+      this._opts.blur(this._frame, this._iwin);
+      return true;
+    }
+    return false;
+  };
+
+  IFrameApplicationWindow.prototype._focus = function() {
+    if ( Window.prototype._focus.apply(this, arguments) ) {
+      if ( this._iwin ) {
+        this._iwin.focus();
+      }
+      if ( this._frame ) {
+        this._frame.focus();
+      }
+      this._opts.focus(this._frame, this._iwin);
+      return true;
+    }
+    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
