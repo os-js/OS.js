@@ -472,6 +472,10 @@
 
     windowTitle.appendChild(document.createTextNode(this._title));
 
+    Utils.$bind(windowTitle, 'dblclick', function() {
+      self._maximize();
+    });
+
 
     // Append stuff
     var classNames = ['Window'];
