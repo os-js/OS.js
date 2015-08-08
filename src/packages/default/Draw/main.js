@@ -467,7 +467,12 @@
       readData: false,
       extension: 'png',
       mime: 'image/png',
-      filename: 'New image.png'
+      filename: 'New image.png',
+      filetypes: [{
+        label: 'PNG Image',
+        mime: 'image/png',
+        extension: 'png'
+      }]
     }]);
   };
 

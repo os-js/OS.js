@@ -33,8 +33,6 @@
   /**
    * An 'File' dialog
    *
-   * TODO: Autodetect MIME on extension (also option to provide)
-   * TODO: With above, force rewriting of extension (case of Draw which cannot write jpeg)
    * TODO: Disable button if no selection is made (or empty text on save)
    *
    * @param   args      Object        An object with arguments
@@ -61,6 +59,7 @@
       type:       'open',
       path:       OSjs.API.getDefaultPath('/'),
       filename:   '',
+      filetypes:  [],
       extension:  '',
       mime:       'application/octet-stream',
       filter:     [],
@@ -77,6 +76,13 @@
     if ( args.file && args.file.path ) {
       args.path = Utils.dirname(args.file.path);
       args.filename = args.file.filename;
+      args.mime = args.file.mime;
+
+      if ( args.filetypes.length ) {
+        var setTo = args.filetypes[0];
+        args.filename = Utils.replaceFileExtension(args.filename, setTo.extension);
+        args.mime = setTo.mime;
+      }
     }
 
     var title     = API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
@@ -107,7 +113,6 @@
     var home = this.scheme.find(this, 'HomeButton');
     var mlist = this.scheme.find(this, 'ModuleSelect');
 
-
     this._toggleLoading(true);
     view.set('multiple', this.args.multiple);
     filename.set('value', this.args.filename || '');
@@ -119,7 +124,9 @@
 
     view.on('activate', function(ev) {
       self.selected = null;
-      filename.set('value', '');
+      if ( self.args.type !== 'save' ) {
+        filename.set('value', '');
+      }
 
       if ( ev && ev.detail && ev.detail.entries ) {
         var activated = ev.detail.entries[0];
@@ -150,12 +157,29 @@
     });
 
     if ( this.args.type === 'save' ) {
+      var filetypes = [];
+      this.args.filetypes.forEach(function(f) {
+        filetypes.push({
+          label: Utils.format('{0} (.{1} {2})', f.label, f.extension, f.mime),
+          value: f.extension
+        });
+      });
+
+      var ft = this.scheme.find(this, 'Filetype').add(filetypes).on('change', function(ev) {
+        var newinput = Utils.replaceFileExtension(filename.get('value'), ev.detail);
+        filename.set('value', newinput);
+      });
+
+      if ( filetypes.length <= 1 ) {
+        new OSjs.GUI.Element(ft.$element.parentNode).hide();
+      }
+
       filename.on('enter', function(ev) {
         self.selected = null;
         self.checkSelection(ev);
       });
     } else {
-      this.scheme.find(this, 'Filename').hide();
+      this.scheme.find(this, 'FileInput').hide();
     }
 
     var rootPath = this.path;
@@ -196,6 +220,42 @@
     });
   };
 
+  FileDialog.prototype.checkFileExtension = function() {
+    var filename = this.scheme.find(this, 'Filename');
+    var filetypes = this.scheme.find(this, 'Filetypes');
+
+    var mime = this.args.mime;
+    var input = filename.get('value');
+
+    if ( this.args.filetypes.length ) {
+      if ( !input && this.args.filename ) {
+        input = this.args.filename;
+      }
+
+      if ( input.length ) {
+        var extension = input.split('.').pop();
+        var current = filetypes.get('value');
+        var found = false;
+
+        this.args.filetypes.forEach(function(f) {
+          if ( f.extension === extension ) {
+            found = f;
+          }
+          return !!found;
+        });
+
+        found = found || this.args.filetypes[0];
+        input = Utils.replaceFileExtension(input, found.extension);
+        mime  = found.mime;
+      }
+    }
+
+    return {
+      filename: input,
+      mime: mime
+    };
+  };
+
   FileDialog.prototype.checkSelection = function(ev) {
     var self = this;
 
@@ -205,14 +265,14 @@
     }
 
     if ( this.args.type === 'save' ) {
-      var filename = this.scheme.find(this, 'Filename');
-      var input = filename.get('value');
-      if ( !this.path || !input ) {
+      var check = this.checkFileExtension();
+
+      if ( !this.path || !check.filename ) {
         API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
         return;
       }
 
-      this.selected = new VFS.File(this.path.replace(/^\//, '') + '/' + input, this.args.mime);
+      this.selected = new VFS.File(this.path.replace(/^\//, '') + '/' + check.filename, check.mime);
       this._toggleDisabled(true);
 
       VFS.exists(this.selected, function(error, result) {
@@ -242,7 +302,7 @@
     } else {
       if ( !this.selected ) {
         API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_SELECTION'));
-        return;
+        return false;
       }
 
       this.closeCallback(ev, 'ok', this.selected);

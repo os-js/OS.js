@@ -137,6 +137,7 @@
       rawData: false,
       extension: '',
       mime: 'application/octet-stream',
+      filetypes: [],
       filename: 'New file'
     });
 
@@ -266,6 +267,7 @@
     API.createDialog('File', {
       file: file,
       filename: file ? file.filename : this.defaultOptions.filename,
+      filetypes: this.defaultOptions.filetypes,
       filter: this.__metadata.mime,
       extension: this.defaultOptions.extension,
       mime: this.defaultOptions.mime,
