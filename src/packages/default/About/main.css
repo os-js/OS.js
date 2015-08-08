@@ -30,6 +30,7 @@
 
 .ApplicationAboutWindow application-window-content {
   background-color : #fff;
+  color : #000;
   text-align : center;
 }
 .ApplicationAboutWindow application-window-content > div > div {
