@@ -486,7 +486,6 @@
 
     if ( !this.getSetting('enableIconView') ) { return; }
 
-    return;
     this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
     document.body.appendChild(this.iconView.getRoot());
 
@@ -537,10 +536,6 @@
       if ( iter._state.maximized ) {
         iter._restore(true, false);
       }
-    }
-
-    if ( this.iconView ) {
-      this.iconView.resize(this);
     }
   };
 
@@ -697,7 +692,8 @@
     // Unfocus IconView if we focus a window
     if ( ev === 'focus' ) {
       if ( this.iconView ) {
-        this.iconView._fireHook('blur');
+        //TODO
+        //this.iconView._fireHook('blur');
       }
     }
   };

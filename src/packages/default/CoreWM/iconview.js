@@ -34,26 +34,62 @@
   // ICON VIEW
   /////////////////////////////////////////////////////////////////////////////
 
-  return; // TODO
+  // TODO Fix contextmenu on root
+  // TODO Fix blurring correctly
+  function DesktopIconView() {
+    this.$element = document.createElement('gui-icon-view');
+    this.$element.id = 'CoreWMDesktopIconView';
 
+    GUI.Elements['gui-icon-view'].build(this.$element);
+
+    var cel = new GUI.ElementDataView(this.$element);
+    cel.on('activate', function(ev) {
+      if ( ev && ev.detail ) {
+        ev.detail.entries.forEach(function(entry) {
+          var item = entry.data;
+          if ( item.launch ) {
+            API.launch(item.launch, item.args);
+          } else {
+            var file = new VFS.File(item.args);
+            API.open(file);
+          }
+        });
+      }
+    });
+
+    var defaults = [{
+      icon: API.getIcon('places/folder_home.png', '32x32'),
+      label: 'Home',
+      value: {
+        launch: 'ApplicationFileManager',
+        args: {path: 'home:///'}
+      }
+    }];
+
+    cel.add(defaults);
+  }
+
+  DesktopIconView.prototype.destroy = function() {
+    Utils.$remove(this.$element);
+  };
+
+  DesktopIconView.prototype.getRoot = function() {
+    return this.$element;
+  };
+
+  DesktopIconView.prototype.addShortcut = function(data, wm) {
+  };
+
+  DesktopIconView.prototype.removeShortcut = function(data, wm) {
+  };
+
+  DesktopIconView.prototype.removeShortcutByPath = function(path) {
+  };
+
+  /*
   var DesktopIconView = function(wm) {
     var self = this;
     var opts = {
-      data : [{
-        icon: API.getIcon('places/folder_home.png', '32x32'),
-        label: 'Home',
-        launch: 'ApplicationFileManager',
-        index: 0,
-        args: {path: 'home:///'}
-      }],
-      onActivate : function(ev, el, item) {
-        if ( typeof item.launch === 'undefined' ) {
-          var file = new VFS.File(item.args);
-          API.open(file);
-        } else {
-          API.launch(item.launch, item.args);
-        }
-      },
       onViewContextMenu : function(ev) {
         if ( wm ) {
           wm.openDesktopMenu(ev);
@@ -66,7 +102,7 @@
           disabled: item.index === 0,
           onClick: (function(i, l){
             return function() {
-              if ( /*l &&*/ i === 0 ) { return; }
+              if ( i === 0 ) { return; }
 
               self.removeShortcut(item, wm);
             };
@@ -75,14 +111,7 @@
       }
     };
     GUI.IconView.apply(this, ['CoreWMDesktopIconView', opts]);
-
-    // IMPORTANT
-    this._addHook('blur', function() {
-      self.setSelected(null, null);
-    });
   };
-
-  DesktopIconView.prototype = Object.create(GUI.IconView.prototype);
 
   DesktopIconView.prototype.update = function(wm) {
     GUI.IconView.prototype.update.apply(this, arguments);
@@ -101,13 +130,6 @@
           console.warn('DesktopIconView::update()', 'mousedown trigger error', exx);
         }
 
-        return false;
-      });
-      this._addEventListener(el, 'contextmenu', function(ev) {
-        ev.preventDefault();
-        if ( wm ) {
-          wm.openDesktopMenu(ev);
-        }
         return false;
       });
 
@@ -236,12 +258,7 @@
     });
   };
 
-  DesktopIconView.prototype.setForegroundColor = function(hex) {
-    hex = hex || 'inherit';
-    if ( this.$element ) {
-      this.$element.style.color = hex;
-    }
-  };
+  */
 
 
   /////////////////////////////////////////////////////////////////////////////
