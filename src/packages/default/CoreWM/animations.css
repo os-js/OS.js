@@ -212,8 +212,7 @@ body[data-attention="true"]:after {
 }
 
 /* Panel */
-corewm-panel[data-hint="autohide"],
-corewm-panel[data-hint="visible"] {
+corewm-panel {
   -webkit-transition: all .3s ease-in-out;
      -moz-transition: all .3s ease-in-out;
       -ms-transition: all .3s ease-in-out;

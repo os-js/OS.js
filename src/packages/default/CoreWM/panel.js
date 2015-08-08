@@ -150,9 +150,9 @@
     }
 
     if ( hide ) {
-      this._$element.setAttribute('data-hint', 'autohide');
+      this._$element.setAttribute('data-autohide', 'true');
     } else {
-      this._$element.setAttribute('data-hint', 'visible');
+      this._$element.setAttribute('data-autohide', 'false');
     }
   };
 
