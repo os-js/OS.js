@@ -94,7 +94,7 @@
     });
   }
 
-  function createIframeFixes(root) {
+  function createIframeFixes(root, win) {
     root.querySelectorAll('gui-richtext, gui-ifram').forEach(function(el) {
       var pos = Utils.$position(el, el.parentNode);
       var overlay = document.createElement('div');
@@ -105,6 +105,12 @@
       overlay.style.height = pos.height + 'px';
       overlay.style.zIndex = Number.MAX_VALUE;
       overlay.className = 'application-window-iframe-fix';
+
+      Utils.$bind(overlay, 'mousedown', function() {
+        if ( win ) {
+          win._focus();
+        }
+      });
 
       el.parentNode.appendChild(overlay);
     });
@@ -1100,7 +1106,7 @@
     });
 
 
-    createIframeFixes(this._$root);
+    createIframeFixes(this._$root, this);
 
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
