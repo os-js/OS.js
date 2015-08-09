@@ -243,7 +243,9 @@
     var self = this;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'DrawWindow', root);
+    scheme.render(this, 'DrawWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationDraw._
+    });
 
     var statusbar = scheme.find(this, 'Statusbar');
 

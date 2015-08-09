@@ -466,7 +466,7 @@
       el.setAttribute('data-label', label);
     });
 
-    node.querySelectorAll('gui-label, gui-button, gui-list-view-column').forEach(function(el) {
+    node.querySelectorAll('gui-label, gui-button, gui-list-view-column, gui-select-option, gui-select-list-option').forEach(function(el) {
       if ( !el.children.length && !el.getAttribute('data-no-translate') ) {
         var lbl = getValueLabel(el);
         el.appendChild(document.createTextNode(translator(lbl)));
