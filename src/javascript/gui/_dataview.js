@@ -393,10 +393,10 @@
         //self.scrollIntoView(el, r);
       }
 
-      if ( val || val === 0 ) {
-        entries.forEach(function(r, idx) {
-          Utils.$removeClass(r, 'gui-active');
+      entries.forEach(function(r, idx) {
+        Utils.$removeClass(r, 'gui-active');
 
+        if ( val || val === 0 ) {
           var value = r.getAttribute('data-value');
           if ( !key && (val === idx || val === value) ) {
             sel(r, idx);
@@ -408,9 +408,9 @@
               }
             } catch ( e ) {}
           }
-        });
-        el._selected = select;
-      }
+        }
+      });
+      el._selected = select;
     },
 
     build: function(el, applyArgs) {

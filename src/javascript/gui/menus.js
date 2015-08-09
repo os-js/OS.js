@@ -310,7 +310,7 @@
     setTimeout(function() {
       var pos = Utils.$position(root);
       if ( pos.right > space.width ) {
-        var newLeft = Math.round(space.width - pos.width - 10)
+        var newLeft = Math.round(space.width - pos.width)
         root.style.left = newLeft + 'px';
       }
       if ( pos.bottom > space.height ) {
