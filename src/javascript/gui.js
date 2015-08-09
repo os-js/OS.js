@@ -456,11 +456,21 @@
   /**
    * Internal for parsing GUI elements
    */
-  function parseDynamic(scheme, node, win) {
-    // TODO: Support application locales! :)
+  function parseDynamic(scheme, node, win, args) {
+    args = args || {};
+
+    var translator = args._ || API._;
+
     node.querySelectorAll('*[data-label]').forEach(function(el) {
-      var label = API._(el.getAttribute('data-label'));
+      var label = translator(el.getAttribute('data-label'));
       el.setAttribute('data-label', label);
+    });
+
+    node.querySelectorAll('gui-label, gui-button, gui-list-view-column').forEach(function(el) {
+      if ( !el.children.length && !el.getAttribute('data-no-translate') ) {
+        var lbl = getValueLabel(el);
+        el.appendChild(document.createTextNode(translator(lbl)));
+      }
     });
 
     node.querySelectorAll('gui-button').forEach(function(el) {
@@ -722,12 +732,13 @@
     return content;
   };
 
-  UIScheme.prototype.parse = function(id, type, win, onparse) {
+  UIScheme.prototype.parse = function(id, type, win, onparse, args) {
     var self = this;
     var content = this.getFragment(id, type);
 
     type = type || content.tagName.toLowerCase();
     onparse = onparse || function() {};
+    args = args || {};
 
     if ( content ) {
       var node = content.cloneNode(true);
@@ -744,7 +755,7 @@
       });
 
       // Go ahead and parse dynamic elements (like labels)
-      parseDynamic(this, node, win);
+      parseDynamic(this, node, win, args);
 
       // Lastly render elements
       onparse(node);
@@ -771,13 +782,13 @@
     return null;
   };
 
-  UIScheme.prototype.render = function(win, id, root, type, onparse) {
+  UIScheme.prototype.render = function(win, id, root, type, onparse, args) {
     root = root || win._getRoot();
     if ( root instanceof UIElement ) {
       root = root.$element;
     }
 
-    var content = this.parse(id, type, win, onparse);
+    var content = this.parse(id, type, win, onparse, args);
     addChildren(content, root);
   };
 

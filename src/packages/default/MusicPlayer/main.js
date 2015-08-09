@@ -73,7 +73,9 @@
     var self = this;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'MusicPlayerWindow', root);
+    scheme.render(this, 'MusicPlayerWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationMusicPlayer._
+    });
 
     var label = this._scheme.find(this, 'LabelTime');
     var seeker = this._scheme.find(this, 'Seek');

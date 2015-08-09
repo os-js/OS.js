@@ -203,7 +203,9 @@
     delete this.settings.moveOnResize;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'SettingsWindow', root);
+    scheme.render(this, 'SettingsWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationSettings._
+    });
 
     var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
     var container = scheme.find(this, 'TabsContainer');

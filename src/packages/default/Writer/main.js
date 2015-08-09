@@ -61,7 +61,10 @@
     var self = this;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'WriterWindow', root);
+    scheme.render(this, 'WriterWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationWriter._
+    });
+
     var text = scheme.find(this, 'Text');
     var frame = text.querySelector('iframe');
 

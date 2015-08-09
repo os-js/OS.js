@@ -62,7 +62,10 @@
     var viewHidden = this.viewOptions.ViewHidden === true;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'FileManagerWindow', root);
+    scheme.render(this, '', root);
+    scheme.render(this, 'FileManagerWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationFileManager._
+    });
 
     if ( window.location.protocol.match(/^file/) ) { // FIXME: Translation
       this._setWarning('VFS does not work when in standalone mode');

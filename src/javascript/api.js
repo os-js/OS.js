@@ -218,6 +218,9 @@
       a[0] = l[CurrentLocale][s];
     } else {
       a[0] = l[DefaultLocale] ? (l[DefaultLocale][s] || s) : s;
+      if ( a[0] && a[0] === s ) {
+        a[0] = doTranslate.apply(null, a);
+      }
     }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
