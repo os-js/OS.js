@@ -207,21 +207,25 @@
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
-        if ( submenu ) {
-          Utils.$bind(mel, 'click', function(ev) {
+        Utils.$bind(mel, 'click', function(ev) {
+          if ( submenu ) {
             lastMenu = function() {
               Utils.$removeClass(mel, 'gui-active');
             };
+          }
 
-            if ( Utils.$hasClass(mel, 'gui-active') ) {
+          if ( Utils.$hasClass(mel, 'gui-active') ) {
+            if ( submenu ) {
               Utils.$removeClass(mel, 'gui-active');
-            } else {
-              Utils.$addClass(mel, 'gui-active');
-
-              mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
             }
-          }, false);
-        }
+          } else {
+            if ( submenu ) {
+              Utils.$addClass(mel, 'gui-active');
+            }
+
+            mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+          }
+        }, false);
 
       });
     }
