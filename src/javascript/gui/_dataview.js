@@ -68,20 +68,21 @@
   }
 
   function handleKeyPress(el, ev) {
-    var type = el.tagName.toLowerCase();
-    var className = 'gui-list-view-row';
-    if ( type === 'gui-tree-view' || type === 'gui-icon-view' ) {
-      className = type + '-entry';
-    }
+    var classMap = {
+      'gui-list-view': 'gui-list-view-row',
+      'gui-tree-view': 'gui-tree-view-entry',
+      'gui-icon-view': 'gui-icon-view-entry'
+    };
 
+    var map = {};
+    var key = ev.keyCode;
+    var type = el.tagName.toLowerCase();
+    var className = classMap[type];
     var root = el.querySelector(type + '-body');
     var entries = root.querySelectorAll(className);
     var count = entries.length;
 
     if ( !count ) { return; }
-
-    var map = {};
-    var key = ev.keyCode || ev.which;
 
     if ( key === Utils.Keys.ENTER ) {
       el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
@@ -108,34 +109,36 @@
       return d;
     }
 
-    function next() {
-      current = Math.min(last + 1, count);
-      select();
-    }
-    function prev() {
-      current = Math.max(0, first - 1);
-      select();
-    }
-    function jumpUp() {
-      current = Math.max(0, first - getRowSize());
-      select();
-    }
-    function jumpDown() {
-      current = Math.max(last, last + getRowSize());
-      select();
+    function handleKey() {
+      function next() {
+        current = Math.min(last + 1, count);
+        select();
+      }
+      function prev() {
+        current = Math.max(0, first - 1);
+        select();
+      }
+
+      if ( type === 'gui-tree-view' || type === 'gui-list-view' ) {
+        map[Utils.Keys.UP] = prev;
+        map[Utils.Keys.DOWN] = next;
+      } else {
+        map[Utils.Keys.UP] = function() {
+          current = Math.max(0, first - getRowSize());
+          select();
+        };
+        map[Utils.Keys.DOWN] = function() {
+          current = Math.max(last, last + getRowSize());
+          select();
+        };
+        map[Utils.Keys.LEFT] = prev;
+        map[Utils.Keys.RIGHT] = next;
+      }
+
+      if ( map[key] ) { map[key](ev); }
     }
 
-    if ( type === 'gui-tree-view' || type === 'gui-list-view' ) {
-      map[Utils.Keys.UP] = prev;
-      map[Utils.Keys.DOWN] = next;
-    } else {
-      map[Utils.Keys.UP] = jumpUp;
-      map[Utils.Keys.DOWN] = jumpDown;
-      map[Utils.Keys.LEFT] = prev;
-      map[Utils.Keys.RIGHT] = next;
-    }
-
-    if ( map[key] ) { map[key](ev); }
+    handleKey();
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -403,7 +406,7 @@
           } else {
             try {
               var json = JSON.parse(value);
-              if ( json[key] == val ) {
+              if ( typeof json[key] === 'object' ? json[key] === val : String(json[key]) === String(val) ) {
                 sel(r, idx);
               }
             } catch ( e ) {}

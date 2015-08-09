@@ -173,45 +173,49 @@
         throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
       }
 
+      opts = Utils.argumentDefaults(opts, {
+        icon: API.getThemeResource('wm.png', 'wm'),
+        width: _DEFAULT_WIDTH,
+        height: _DEFAULT_HEIGHT,
+        title: name,
+        tag: name
+      });
+
       console.group('Window::constructor()', _WID);
       console.log(name, opts);
 
-      var icon      = opts.icon || API.getThemeResource('wm.png', 'wm');
-      var position  = {x:(opts.x), y:(opts.y)};
-      var dimension = {w:(opts.width || _DEFAULT_WIDTH), h:(opts.height || _DEFAULT_HEIGHT)};
+      this._$element      = null;                           // DOMElement: Window Outer container
+      this._$root         = null;                           // DOMElement: Window Inner container (for content)
+      this._$top          = null;                           // DOMElement: Window Top
+      this._$winicon      = null;                           // DOMElement: Window Icon
+      this._$loading      = null;                           // DOMElement: Window Loading overlay
+      this._$disabled     = null;                           // DOMElement: Window Disabled Overlay
+      this._$resize       = null;                           // DOMElement: Window Resizer
+      this._$warning      = null;                           // DOMElement: Warning message
 
-      this._$element      = null;                 // DOMElement: Window Outer container
-      this._$root         = null;                 // DOMElement: Window Inner container (for content)
-      this._$top          = null;                 // DOMElement: Window Top
-      this._$winicon      = null;                 // DOMElement: Window Icon
-      this._$loading      = null;                 // DOMElement: Window Loading overlay
-      this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
-      this._$resize       = null;                 // DOMElement: Window Resizer
-      this._$warning      = null;                 // DOMElement: Warning message
-
-      this._opts          = opts;                 // Construction opts
-      this._app           = appRef || null;       // Reference to Application Window was created from
-      this._scheme        = schemeRef || null;    // Reference to UIScheme
-      this._destroyed     = false;                // If Window has been destroyed
-      this._wid           = _WID;                 // Window ID (Internal)
-      this._icon          = icon;                 // Window Icon
-      this._name          = name;                 // Window Name (Unique identifier)
-      this._title         = opts.title || name;   // Window Title
-      this._origtitle     = this._title;          // Backup window title
-      this._tag           = opts.tag || name;     // Window Tag (ex. Use this when you have a group of windows)
-      this._position      = position;             // Window Position
-      this._dimension     = dimension;            // Window Dimension
-      this._lastDimension = this._dimension;      // Last Window Dimension
-      this._lastPosition  = this._position;       // Last Window Position
+      this._opts          = opts;                           // Construction opts
+      this._app           = appRef || null;                 // Reference to Application Window was created from
+      this._scheme        = schemeRef || null;              // Reference to UIScheme
+      this._destroyed     = false;                          // If Window has been destroyed
+      this._wid           = _WID;                           // Window ID (Internal)
+      this._icon          = opts.icon;                      // Window Icon
+      this._name          = name;                           // Window Name (Unique identifier)
+      this._title         = opts.title;                     // Window Title
+      this._origtitle     = this._title;                    // Backup window title
+      this._tag           = opts.tag;                       // Window Tag (ex. Use this when you have a group of windows)
+      this._position      = {x:opts.x, y:opts.y};           // Window Position
+      this._dimension     = {w:opts.width, h:opts.height};  // Window Dimension
+      this._lastDimension = this._dimension;                // Last Window Dimension
+      this._lastPosition  = this._position;                 // Last Window Position
       this._tmpPosition   = null;
-      this._children      = [];                   // Child Windows
-      this._parent        = null;                 // Parent Window reference
-      this._disabled      = true;                 // If Window is currently disabled
-      this._sound         = null;                 // Play this sound when window opens
-      this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
+      this._children      = [];                             // Child Windows
+      this._parent        = null;                           // Parent Window reference
+      this._disabled      = true;                           // If Window is currently disabled
+      this._sound         = null;                           // Play this sound when window opens
+      this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
 
-      this._properties    = {                     // Window Properties
+      this._properties    = {                               // Window Properties
         gravity           : null,
         allow_move        : true,
         allow_resize      : true,

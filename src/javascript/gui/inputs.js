@@ -53,40 +53,52 @@
       name: group ? group + '[]' : null
     };
 
-    if ( type === 'range' || type === 'slider' ) {
-      attribs.min = el.getAttribute('data-min');
-      attribs.max = el.getAttribute('data-max');
-      attribs.step = el.getAttribute('data-step');
-    } else if ( type === 'text' || type === 'password' || type === 'textarea' ) {
-      attribs.value = value || '';
+    function _bindDefaults() {
+      if ( type === 'range' || type === 'slider' ) {
+        attribs.min = el.getAttribute('data-min');
+        attribs.max = el.getAttribute('data-max');
+        attribs.step = el.getAttribute('data-step');
+      } else if ( type === 'text' || type === 'password' || type === 'textarea' ) {
+        attribs.value = value || '';
+      }
 
-      Utils.$bind(input, 'keydown', function(ev) {
-        if ( ev.keyCode === Utils.Keys.ENTER ) {
-          input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
+      Object.keys(attribs).forEach(function(a) {
+        if ( attribs[a] !== null ) {
+          input.setAttribute(a, attribs[a]);
         }
-        if ( type === 'textarea' && ev.keyCode === Utils.Keys.TAB ) {
-          ev.preventDefault();
-          this.value += '\t';
+      });
+    }
+    function _bindEvents() {
+      if ( type === 'text' || type === 'password' || type === 'textarea' ) {
+        Utils.$bind(input, 'keydown', function(ev) {
+          if ( ev.keyCode === Utils.Keys.ENTER ) {
+            input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
+          }
+          if ( type === 'textarea' && ev.keyCode === Utils.Keys.TAB ) {
+            ev.preventDefault();
+            this.value += '\t';
+          }
+        }, false);
+      }
+    }
+
+    function _create() {
+      _bindDefaults();
+      _bindEvents();
+
+      GUI.Helpers.createInputLabel(el, type, input);
+
+      Utils.$bind(input, 'change', function(ev) {
+        var value = input.value;
+        if ( type === 'radio' || type === 'checkbox' ) {
+          //value = input.getAttribute('checked') === 'checked';
+          value = input.checked; //input.value === 'on';
         }
+        input.dispatchEvent(new CustomEvent('_change', {detail: value}));
       }, false);
     }
 
-    Object.keys(attribs).forEach(function(a) {
-      if ( attribs[a] !== null ) {
-        input.setAttribute(a, attribs[a]);
-      }
-    });
-
-    GUI.Helpers.createInputLabel(el, type, input);
-
-    Utils.$bind(input, 'change', function(ev) {
-      var value = input.value;
-      if ( type === 'radio' || type === 'checkbox' ) {
-        //value = input.getAttribute('checked') === 'checked';
-        value = input.checked; //input.value === 'on';
-      }
-      input.dispatchEvent(new CustomEvent('_change', {detail: value}));
-    }, false);
+    _create();
   }
 
   function bindInputEvents(el, evName, callback, params) {
@@ -143,6 +155,7 @@
       var target = el.querySelector('select');
       Utils.$empty(target);
     }
+    return this;
   }
 
   function createSelectInput(el, multiple) {
@@ -593,10 +606,7 @@
    */
   GUI.Elements['gui-select'] = {
     bind: bindInputEvents,
-    call: function() {
-      callSelectBox.apply(this, arguments);
-      return this;
-    },
+    call: callSelectBox,
     build: function(el) {
       createSelectInput(el);
     }
@@ -629,10 +639,7 @@
    */
   GUI.Elements['gui-select-list'] = {
     bind: bindInputEvents,
-    call: function() {
-      callSelectBox.apply(this, arguments);
-      return this;
-    },
+    call: callSelectBox,
     build: function(el) {
       createSelectInput(el, true);
     }

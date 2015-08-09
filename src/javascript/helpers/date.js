@@ -349,9 +349,11 @@
   };
 
   ExtendedDate.getFirstDayInMonth = function(fmt, y, m, now) {
-    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-    y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
-    m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
+    (function() {
+      now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
+      y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
+      m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
+    })();
 
     var date = new Date();
     date.setFullYear(y, m, 1);
@@ -362,9 +364,11 @@
   };
 
   ExtendedDate.getLastDayInMonth = function(fmt, y, m, now) {
-    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-    y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
-    m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
+    (function() {
+      now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
+      y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
+      m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
+    })();
 
     var date = new Date();
     date.setFullYear(y, m, 0);
@@ -376,9 +380,11 @@
 
 
   ExtendedDate.getDaysInMonth = function(y, m, now) {
-    now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-    y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
-    m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
+    (function() {
+      now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
+      y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
+      m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
+    })();
 
     var date = new Date();
     date.setFullYear(y, m, 0);
