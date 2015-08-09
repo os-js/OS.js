@@ -49,7 +49,7 @@
     };
     this.font = {
       name: OSjs.Core.getHandler().getConfig('Fonts')['default'],
-      size: 14
+      size: 3
     };
   }
 
@@ -103,7 +103,7 @@
       }
 
       var style = {
-        fontName: (_call('fontName') || '').split(',')[0],
+        fontName: ((_call('fontName') || '').split(',')[0]).replace(/^'/, '').replace(/'$/, ''),
         fontSize: parseInt(_call('fontSize'), 10),
         foreColor: _call('foreColor'),
         hiliteColor: _call('hiliteColor')
@@ -134,6 +134,11 @@
     function createFontDialog(current, cb) {
       self._toggleDisabled(true);
       API.createDialog('Font', {
+        fontSize: self.font.size,
+        fontName: self.font.name,
+        minSize: 1,
+        maxSize: 8,
+        unit: 'null'
       }, function(ev, button, result) {
         self._toggleDisabled(false);
         if ( button === 'ok' && result ) {
@@ -179,7 +184,7 @@
     function updateToolbar(style) {
       back.set('value', style.hiliteColor);
       front.set('value', style.foreColor);
-      if ( font.fontName ) {
+      if ( style.fontName ) {
         font.set('label', Utils.format('{0} ({1})', style.fontName, style.fontSize.toString()));
       }
     }

@@ -64,6 +64,10 @@
       unit: 'px'
     });
 
+    if ( args.unit === 'null' || args.unit === 'unit' ) {
+      args.unit = '';
+    }
+
     DialogWindow.apply(this, ['FontDialog', {
       title: args.title || API._('DIALOG_FONT_TITLE'),
       width: 400,

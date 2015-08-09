@@ -105,10 +105,12 @@
    */
   function getViewNodeValue(el) {
     var value = el.getAttribute('data-value');
-    try {
-      value = JSON.parse(value);
-    } catch ( e ) {
-      value = null;
+    if ( typeof value === 'string' && value.match(/^\[|\{/) ) {
+      try {
+        value = JSON.parse(value);
+      } catch ( e ) {
+          value = null;
+      }
     }
     return value;
   }
