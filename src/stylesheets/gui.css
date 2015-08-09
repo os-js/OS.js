@@ -726,6 +726,13 @@ gui-text {
     background : transparent;
     border : 0 none;
     outline : none;
+
+    -webkit-touch-callout: text;
+      -webkit-user-select: text;
+       -khtml-user-select: text;
+         -moz-user-select: text;
+          -ms-user-select: text;
+              user-select: text;
   }
 
   gui-password > label > input,
@@ -757,6 +764,13 @@ gui-textarea {
     border : 0 none;
     resize : none;
     outline : none;
+
+    -webkit-touch-callout: text;
+      -webkit-user-select: text;
+       -khtml-user-select: text;
+         -moz-user-select: text;
+          -ms-user-select: text;
+              user-select: text;
   }
   gui-textarea textarea:disabled {
   }
