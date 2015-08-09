@@ -50,6 +50,7 @@
   }
 
   function setDocumentData(el, text) {
+    el._fixTimeout = clearTimeout(el._fixTimeout);
 
     text = text || '';
 
@@ -67,23 +68,25 @@
       template = template.replace(' contentEditable="true"', '');
     }
 
-    try {
-      var doc = getDocument(el);
+    el._fixTimeout = setTimeout(function() {
+      try {
+        var doc = getDocument(el);
 
-      if ( !el._frameInited ) {
-        doc.open();
-        doc.write(template);
-        doc.close();
+        if ( !el._frameInited ) {
+          doc.open();
+          doc.write(template);
+          doc.close();
 
-        el._frameInited = true;
+          el._frameInited = true;
+        }
+
+        if ( text ) {
+          doc.body.innerHTML = text;
+        }
+      } catch ( error ) {
+        console.error('gui-richtext', 'setDocumentData()', error.stack, error);
       }
-
-      if ( text ) {
-        doc.body.innerHTML = text;
-      }
-    } catch ( error ) {
-      console.error('gui-richtext', 'setDocumentData()', error.stack, error);
-    }
+    }, 10);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -106,8 +109,9 @@
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
-      var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
       el._frameInited = false;
+
+      var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
       Utils.$empty(el);
 
@@ -124,10 +128,6 @@
       el.appendChild(iframe);
 
       setTimeout(function() {
-        if ( el._frameInited ) {
-          return;
-        }
-
         setDocumentData(el, text);
       }, 0);
     },
