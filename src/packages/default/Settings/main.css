@@ -35,10 +35,12 @@
 .ApplicationSettingsWindow gui-label[data-id="Header"] {
   padding-top : 10px;
   padding-bottom : 10px;
+  height : auto !important;
 }
 .ApplicationSettingsWindow gui-label[data-id="Header"] label {
-  font-size : 20px;
-  line-height : 30px;
+  font-size : 20px !important;
+  line-height : 30px !important;
+  height : auto !important;
   font-weight : bold;
 }
 

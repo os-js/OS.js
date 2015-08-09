@@ -393,12 +393,12 @@
         //self.scrollIntoView(el, r);
       }
 
-      if ( val ) {
+      if ( val || val === 0 ) {
         entries.forEach(function(r, idx) {
           Utils.$removeClass(r, 'gui-active');
 
           var value = r.getAttribute('data-value');
-          if ( !key && val === idx || val === value ) {
+          if ( !key && (val === idx || val === value) ) {
             sel(r, idx);
           } else {
             try {

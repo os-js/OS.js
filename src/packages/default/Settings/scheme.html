@@ -15,10 +15,10 @@
                 <gui-list-view-column data-icon="stock://32x32/devices/display.png">Desktop</gui-list-view-column>
               </gui-list-view-row>
               <gui-list-view-row data-value="panel">
-                <gui-list-view-column data-icon="stock://32x32/categories/applications-utilities.png">Panel</gui-list-view-column>
+                <gui-list-view-column data-icon="stock://32x32/categories/applications-utilities.png">LBL_PANELS</gui-list-view-column>
               </gui-list-view-row>
               <gui-list-view-row data-value="user">
-                <gui-list-view-column data-icon="stock://32x32/categories/preferences-desktop-personal.png">User</gui-list-view-column>
+                <gui-list-view-column data-icon="stock://32x32/categories/preferences-desktop-personal.png">LBL_USER</gui-list-view-column>
               </gui-list-view-row>
               <gui-list-view-row data-value="packages">
                 <gui-list-view-column data-icon="stock://32x32/apps/system-software-install.png">Packages</gui-list-view-column>
@@ -206,7 +206,7 @@
 <application-fragment data-id="TabPanelAppearance">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-label>Panel Position</gui-label>
+      <gui-label>Position</gui-label>
       <gui-select data-id="PanelPosition"></gui-select>
     </gui-vbox-container>
 
@@ -221,12 +221,12 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-label>Background Color</gui-label>
+      <gui-label>LBL_BACKGROUND_COLOR</gui-label>
       <gui-input-modal data-id="PanelBackgroundColor"></gui-input-modal>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-label>Text Color</gui-label>
+      <gui-label>LBL_TEXT_COLOR</gui-label>
       <gui-input-modal data-id="PanelForegroundColor"></gui-input-modal>
     </gui-vbox-container>
 
@@ -240,7 +240,7 @@
 <application-fragment data-id="TabPanelItems">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-label>Panel Position</gui-label>
+      <gui-label>Position</gui-label>
       <gui-list-view data-id="PanelItems" data-multiple="false"></gui-list-view>
     </gui-vbox-container>
 
@@ -329,7 +329,7 @@
       <gui-fragment data-fragment-id="TabBackgroundFragment"></gui-fragment>
     </gui-tab-container>
 
-    <gui-tab-container data-id="TabFont" data-label="Font">
+    <gui-tab-container data-id="TabFont" data-label="LBL_FONT">
       <gui-fragment data-fragment-id="TabFontFragment"></gui-fragment>
     </gui-tab-container>
   </gui-tabs>
@@ -372,17 +372,17 @@
 <application-fragment data-id="TabBackgroundFragment">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-label>Background Image</gui-label>
+      <gui-label>LBL_BACKGROUND_IMAGE</gui-label>
       <gui-input-modal data-id="BackgroundImage"></gui-input-modal>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-label>Background Color</gui-label>
+      <gui-label>LBL_BACKGROUND_COLOR</gui-label>
       <gui-input-modal data-id="BackgroundColor"></gui-input-modal>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-label>Background Style</gui-label>
+      <gui-label>Background Type</gui-label>
       <gui-select data-id="BackgroundStyle"></gui-select>
     </gui-vbox-container>
   </gui-vbox>
@@ -391,7 +391,7 @@
 <application-fragment data-id="TabFontFragment">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-label>Font</gui-label>
+      <gui-label>LBL_FONT</gui-label>
       <gui-input-modal data-id="FontName"></gui-input-modal>
     </gui-vbox-container>
   </gui-vbox>
