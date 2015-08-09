@@ -89,24 +89,18 @@ ApplicationMyName.prototype.myServerMethod = function(callback) {
           For example, when you click a button in your window:
         </p>
         <pre class="code">
-ApplicationMyNameWindow.prototype.init = function() {
-  var self = this;
-  var root = Window.prototype.init.apply(this, arguments);
 
-  win._addGUIElement(new GUI.Button('MyTestButton', {label: 'Test Server Call', onClick: function() {
-    self._appRef.myServerMethod(function(error, result) {
-      if ( error ) {
-        alert('An error occured: ' + error);
-        return;
-      }
-      // Or else do something with 'result'
-      // In this example it should return {foo: bar}
-      alert(result.foo);
-    });
-  }}), root);
-
-  return root;
-};
+scheme.find(this, 'Button').on('click', function() {
+  self._appRef.myServerMethod(function(error, result) {
+    if ( error ) {
+      alert('An error occured: ' + error);
+      return;
+    }
+    // Or else do something with 'result'
+    // In this example it should return {foo: bar}
+    alert(result.foo);
+  });
+});
         </pre>
       </div>
 
