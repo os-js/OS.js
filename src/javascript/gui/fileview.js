@@ -56,9 +56,9 @@
 
     if ( type === 'gui-list-view' ) {
       nel.set('columns', [
-        {label: 'Filename', grow: 1, shrink: 1},
-        {label: 'MIME', basis: '100px', grow: 0, shrink: 0, textalign: 'right'},
-        {label: 'Size', basis: '120px', grow: 0, shrink: 0, textalign: 'right'}
+        {label: API._('LBL_FILENAME'), grow: 1, shrink: 1},
+        {label: API._('LBL_MIME'), basis: '100px', grow: 0, shrink: 0, textalign: 'right'},
+        {label: API._('LBL_SIZE'), basis: '120px', grow: 0, shrink: 0, textalign: 'right'}
       ]);
     }
 
