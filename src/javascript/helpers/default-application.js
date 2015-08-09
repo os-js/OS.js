@@ -183,14 +183,16 @@
   DefaultApplication.prototype = Object.create(Application.prototype);
   DefaultApplication.constructor = Application;
 
-  DefaultApplication.prototype.init = function(settings, metadata, onLoaded) {
-    Application.prototype.init.call(this, settings, metadata);
+  DefaultApplication.prototype.init = function(settings, metadata, onInited, onLoaded) {
+    Application.prototype.init.call(this, settings, metadata, onInited);
 
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
     var file = this._getArgument('file');
     scheme.load(function(error, result) {
       onLoaded(scheme, file);
+
+      onInited();
     });
   };
 

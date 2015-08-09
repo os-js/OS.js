@@ -538,8 +538,6 @@
     }
 
     function _callback(result) {
-      _done();
-
       if ( typeof OSjs.Applications[n] === 'undefined' ) {
         _error(OSjs.API._('ERR_APP_RESOURCES_MISSING_FMT', n));
         return;
@@ -547,6 +545,7 @@
 
       // Only allow one instance if specified
       if ( _checkSingular(result) ) {
+        _done();
         return;
       }
 
@@ -555,7 +554,11 @@
 
       try {
         handler.getApplicationSettings(a.__name, function(settings) {
-          a.init(settings, result);
+          a.init(settings, result, function() {
+            setTimeout(function() {
+              _done();
+            }, 100);
+          });
           onFinished(a, result);
 
           OSjs.Session.triggerHook('onApplicationLaunched', [{
@@ -572,6 +575,11 @@
         console.warn('Error on init() application', ex, ex.stack);
         _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
       }
+
+      // Just in case something goes wrong
+      setTimeout(function() {
+        _done();
+      }, 30 * 1000);
     }
 
     function launch() {

@@ -269,9 +269,9 @@
     return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationWriter.prototype.init = function(settings, metadata) {
+  ApplicationWriter.prototype.init = function(settings, metadata, onInited) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
       self._addWindow(new ApplicationWriterWindow(self, metadata, scheme, file));
     });
   };

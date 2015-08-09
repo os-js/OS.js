@@ -281,7 +281,7 @@
   ApplicationCalculator.prototype = Object.create(Application.prototype);
   ApplicationCalculator.constructor = Application;
 
-  ApplicationCalculator.prototype.init = function(settings, metadata) {
+  ApplicationCalculator.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -289,6 +289,8 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationCalculatorWindow(self, metadata, scheme));
+
+      onInited();
     });
   };
 

@@ -67,7 +67,7 @@
   ApplicationAbout.prototype = Object.create(Application.prototype);
   ApplicationAbout.constructor = Application;
 
-  ApplicationAbout.prototype.init = function(settings, metadata) {
+  ApplicationAbout.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -75,6 +75,8 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationAboutWindow(self, metadata, scheme));
+
+      onInited();
     });
   };
 
