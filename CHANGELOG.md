@@ -1,17 +1,26 @@
 # 2.0.0-alpha62
 
-This update features a totally rewritten UI engine. It breaks compability with previous versions!
+**BIG CHANGES TO THE API. THIS WILL BREAK YOUR APPS**
 
-Significantly reduced code size and API methods. Ease of development/design of apps.
+**A HUGE THANKS TO THE COMMUNITY FOR TESTING AND HELPING OUT**
 
-* Completely rewritten GUI elements (with new elements and features)
-* Completely rewritten Theme engine
-* Completely rewritten Dialogs
-* Completely rewritten Applications
-* Config: Collapsed some config namespaces
-* Core: Fixed autostart
-* Misc: New UI documentation
+- All UI interfaces now uses CSS flexbox to dynamically (and correctly) fill content
+- Updated touch support abstraction to pave the way for multitouch etc
+- Collapsed some settings in `scr/conf` for simplification
+- Completely new DefaultApplication abstraction
+- Completely new GUI (with new elements)
+- Completely new Dialogs
+- Rewritten Application
+- Rewritten Core CSS
+- Rewritten Theming
+- Removal of code
+- Optimizations
+- Cleanups
+- Bugfixes
 
+*Removed almost 8K lines of code in total*
+
+*300+ commits, 5 issues closed and 10 user requests also in this update*
 
 # 2.0.0-alpha61
 
