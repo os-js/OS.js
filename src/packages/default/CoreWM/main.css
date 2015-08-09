@@ -271,7 +271,6 @@ corewm-window-switcher > div.Active {
   width : 480px;
   overflow : hidden;
   padding : 0;
-  margin : 10px;
 }
 
 #CoreWMApplicationMenu gui-menu-entry {

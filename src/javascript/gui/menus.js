@@ -289,6 +289,7 @@
       resolveItems(items || [], root);
       GUI.Elements['gui-menu'].build(root, true);
     }
+
     //if ( root instanceof GUI.Element ) {
     if ( root.$element ) {
       root = root.$element;
@@ -296,6 +297,9 @@
 
     var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
     var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
+
+    var wm = OSjs.Core.getWindowManager();
+    var space = wm.getWindowSpace();
 
     Utils.$addClass(root, 'gui-root-menu');
     root.style.left = x + 'px';
@@ -305,12 +309,12 @@
     // Make sure it stays within viewport
     setTimeout(function() {
       var pos = Utils.$position(root);
-      if ( pos.right > window.innerWidth ) {
-        var newLeft = Math.round(window.innerWidth - pos.width - 10)
+      if ( pos.right > space.width ) {
+        var newLeft = Math.round(space.width - pos.width - 10)
         root.style.left = newLeft + 'px';
       }
-      if ( pos.bottom > window.innerHeight ) {
-        var newTop = Math.round(window.innerHeight - pos.height - 10);
+      if ( pos.bottom > space.height ) {
+        var newTop = Math.round(space.height - pos.height);
         root.style.top = newTop + 'px';
       }
     }, 1);
