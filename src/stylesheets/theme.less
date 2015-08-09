@@ -913,10 +913,16 @@ gui-icon-view {
   }
 
     gui-icon-view-entry.gui-active {
-      background: @gui_selected_background_color;
+      background: @gui_selected_blur_background_color;
       color: @gui_selected_foreground_color;
     }
     gui-icon-view-entry.gui-active > div > span {
+      background: @gui_selected_blur_background_color;
+    }
+    gui-icon-view.gui-element-focused gui-icon-view-entry.gui-active {
+      background: @gui_selected_background_color;
+    }
+    gui-icon-view.gui-element-focused gui-icon-view-entry.gui-active > div > span {
       background: @gui_selected_background_color;
     }
 
@@ -946,7 +952,6 @@ gui-list-view {
     }
     gui-list-view.gui-element-focused gui-list-view-row.gui-active {
       background-color: @gui_selected_background_color;
-      color: @gui_selected_foreground_color;
     }
 
     gui-list-view-column-resizer {
@@ -978,8 +983,11 @@ gui-tree-view {
       margin-left : 16px;
     }
     gui-tree-view-entry.gui-active > div {
-      background-color: @gui_selected_background_color;
+      background-color: @gui_selected_blur_background_color;
       color: @gui_selected_foreground_color;
+    }
+    gui-tree-view.gui-element-focused gui-tree-view-entry.gui-active > div {
+      background-color: @gui_selected_background_color;
     }
 
   gui-tree-view-entry.gui-expandable {
