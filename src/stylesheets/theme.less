@@ -34,7 +34,8 @@
 @base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 @base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
 
-@gui_selected_background_color       : #2d73d2;
+@gui_selected_background_color       : rgb(45, 115, 210);
+@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
 @gui_selected_foreground_color       : #ffffff;
 
 @gui_border_color                    : #b2b2b2;
@@ -940,7 +941,11 @@ gui-list-view {
       }
 
     gui-list-view-row.gui-active {
-      background: @gui_selected_background_color;
+      background-color: @gui_selected_blur_background_color;
+      color: @gui_selected_foreground_color;
+    }
+    gui-list-view.gui-element-focused gui-list-view-row.gui-active {
+      background-color: @gui_selected_background_color;
       color: @gui_selected_foreground_color;
     }
 
