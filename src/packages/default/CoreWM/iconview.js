@@ -113,6 +113,11 @@
     this.$element = null;
   };
 
+  DesktopIconView.prototype.blur = function() {
+    var cel = new GUI.ElementDataView(this.$element);
+    cel.set('value', null);
+  };
+
   DesktopIconView.prototype.getRoot = function() {
     return this.$element;
   };

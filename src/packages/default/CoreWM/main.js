@@ -700,8 +700,7 @@
     // Unfocus IconView if we focus a window
     if ( ev === 'focus' ) {
       if ( this.iconView ) {
-        //TODO
-        //this.iconView._fireHook('blur');
+        this.iconView.blur();
       }
     }
   };
