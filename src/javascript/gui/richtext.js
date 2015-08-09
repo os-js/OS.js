@@ -62,7 +62,36 @@
     editable = editable === null || editable === 'true';
 
     // FIXME: http://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
-    var script = 'window.addEventListener("keydown", function(ev) { if ( ev.keyCode === 9 ) { ev.preventDefault(); var t = ev.shiftKey ? "outdent" : "indent"; document.execCommand("styleWithCSS",true,null); document.execCommand(t, false, null) }})';
+
+
+
+    function onMouseDown(ev) {
+      function insertTextAtCursor(text) {
+        var sel, range, html;
+        if (window.getSelection) {
+          sel = window.getSelection();
+          if (sel.getRangeAt && sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode( document.createTextNode(text) );
+          }
+        } else if (document.selection && document.selection.createRange) {
+          document.selection.createRange().text = text;
+        }
+      }
+
+      if ( ev.keyCode === 9 ) {
+        /*
+        var t = ev.shiftKey ? "outdent" : "indent";
+        document.execCommand("styleWithCSS",true,null);
+        document.execCommand(t, false, null)
+        */
+        insertTextAtCursor('\u00A0');
+        ev.preventDefault();
+      }
+    }
+
+    var script = onMouseDown.toString() + ';window.addEventListener("keydown", onMouseDown)';
 
     var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /><script>' + script + '</script></head><body contentEditable="true"></body></html>';
     if ( !editable ) {
