@@ -861,6 +861,9 @@ gui-menu-bar {
     background: @gui_selected_background_color;
     color: @gui_selected_foreground_color;
   }
+  gui-menu-bar-entry[data-disabled="true"] > span {
+    color : @gui_input_disabled_foreground_color;
+  }
 
 
 /* Progressbar */
