@@ -140,12 +140,14 @@
         row.appendChild(createEntry(se));
       });
 
-      var value = null;
+      var value = e.value;
       try {
-        value = JSON.stringify(e.value);
+        if ( typeof value === 'object' || value instanceof Array ) {
+          value = JSON.stringify(e.value);
+        }
       } catch ( e ) {}
 
-      row.setAttribute('data-value', value);
+      row.setAttribute('data-value', value.toString());
       if ( typeof e.id !== 'undefined' && e.id !== null ) {
         row.setAttribute('data-id', e.id);
       }

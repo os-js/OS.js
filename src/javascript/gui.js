@@ -109,7 +109,7 @@
       try {
         value = JSON.parse(value);
       } catch ( e ) {
-          value = null;
+        value = null;
       }
     }
     return value;
