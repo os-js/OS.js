@@ -1101,9 +1101,7 @@
     this._fireHook('blur');
 
     // Force all standard HTML input elements to loose focus
-    this._$root.querySelectorAll('input, textarea, select, iframe, button').forEach(function(el) {
-      el.blur();
-    });
+    this._blurGUI();
 
 
     createIframeFixes(this._$root, this);
@@ -1115,6 +1113,17 @@
     }
 
     return true;
+  };
+
+  /**
+   * Blurs the GUI
+   *
+   * @method Window::_blurGUI()
+   */
+  Window.prototype._blurGUI = function() {
+    this._$root.querySelectorAll('input, textarea, select, iframe, button').forEach(function(el) {
+      el.blur();
+    });
   };
 
   /**
@@ -1537,6 +1546,8 @@
    */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowButtonClick()', btn);
+
+    this._blurGUI();
 
     if ( btn === 'close' ) {
       this._close();

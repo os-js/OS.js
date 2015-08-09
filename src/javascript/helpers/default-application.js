@@ -41,6 +41,7 @@
   function DefaultApplicationWindow(name, app, args, scheme, file) {
     Window.apply(this, arguments);
     this.currentFile = file ? new VFS.File(file) : null;
+    this.hasChanged = false;
   }
 
   DefaultApplicationWindow.prototype = Object.create(Window.prototype);
@@ -96,6 +97,22 @@
     this.currentFile = null;
   };
 
+  DefaultApplicationWindow.prototype._close = function() {
+    var self = this;
+
+    if ( this.hasChanged ) {
+      this.checkHasChanged(function(discard) {
+        if ( discard ) {
+          self.hasChanged = false; // IMPORTANT
+          self._close();
+        }
+      });
+      return;
+    }
+
+    Window.prototype._close.apply(this, arguments);
+  };
+
   DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
     if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
 
@@ -107,12 +124,31 @@
     }
   };
 
+  DefaultApplicationWindow.prototype.checkHasChanged = function(cb) {
+    var self = this;
+
+    if ( this.hasChanged ) {
+      this._toggleDisabled(true);
+
+      API.createDialog('Confirm', {
+        message: API._('MSG_GENERIC_APP_DISCARD')
+      }, function(ev, button) {
+        self._toggleDisabled(false);
+        cb(button === 'ok' || button === 'yes');
+      });
+      return;
+    }
+
+    cb(true);
+  };
+
   DefaultApplicationWindow.prototype.showFile = function(file, content) {
     this.updateFile(file);
   };
 
   DefaultApplicationWindow.prototype.updateFile = function(file) {
     this.currentFile = file || null;
+    this.hasChanged = false;
 
     this._scheme.find(this, 'MenuSave').set('disabled', !file);
 
@@ -283,23 +319,34 @@
   DefaultApplication.prototype.openDialog = function(file, win) {
     var self = this;
 
-    win._toggleDisabled(true);
-    API.createDialog('File', {
-      file: file,
-      filter: this.__metadata.mime
-    }, function(ev, button, result) {
-      win._toggleDisabled(false);
-      if ( button === 'ok' && result ) {
-        self.openFile(new VFS.File(result), win);
+    function openDialog() {
+      win._toggleDisabled(true);
+      API.createDialog('File', {
+        file: file,
+        filter: self.__metadata.mime
+      }, function(ev, button, result) {
+        win._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          self.openFile(new VFS.File(result), win);
+        }
+      }, win);
+    }
+
+    win.checkHasChanged(function(discard) {
+      if ( discard ) {
+        openDialog();
       }
-    }, win);
+    });
   };
 
   DefaultApplication.prototype.newDialog = function(path, win) {
     var self = this;
-
-    this._setArgument('file', null);
-    win.showFile(null, null);
+    win.checkHasChanged(function(discard) {
+      if ( discard ) {
+        self._setArgument('file', null);
+        win.showFile(null, null);
+      }
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
