@@ -609,12 +609,13 @@
     return this;
   };
 
-  UIElement.prototype.get = function(param) {
+  UIElement.prototype.get = function() {
     if ( this.$element ) {
       if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].get ) {
-        return OSjs.GUI.Elements[this.tagName].get(this.$element, param);
+        var args = ([this.$element]).concat(Array.prototype.slice.call(arguments));
+        return OSjs.GUI.Elements[this.tagName].get.apply(this, args);
       } else {
-        return getProperty(this.$element, param);
+        return getProperty(this.$element, arguments[0]);
       }
     }
     return null;

@@ -141,6 +141,23 @@
     handleKey();
   }
 
+  function matchValueByKey(r, val, key, idx) {
+    if ( val || val === 0 ) {
+      var value = r.getAttribute('data-value');
+      if ( !key && (val === idx || val === value) ) {
+        return r;
+      } else {
+        try {
+          var json = JSON.parse(value);
+          if ( typeof json[key] === 'object' ? json[key] === val : String(json[key]) === String(val) ) {
+            return r;
+          }
+        } catch ( e ) {}
+      }
+    }
+    return false;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -162,6 +179,7 @@
    *  selected      Alias for 'value'
    *
    * Getters:
+   *  entry         Gets an entry by value, key
    *  value         Gets the selected entry(es)
    *  selected      Alias for 'value'
    *
@@ -368,6 +386,11 @@
         return false;
       }, false);
 
+      el.dispatchEvent(new CustomEvent('_render', {detail: {
+        element: row,
+        data: GUI.Helpers.getViewNodeValue(row)
+      }}));
+
       if ( el.getAttribute('data-draggable') === 'true' ) {
         createDraggable();
       }
@@ -386,6 +409,17 @@
       return selected;
     },
 
+    getEntry: function(el, entries, val, key) {
+      var result = null;
+      entries.forEach(function(r, idx) {
+        if ( matchValueByKey(r, val, key, idx) ) {
+          result = r;
+        }
+        return !!result;
+      });
+      return result;
+    },
+
     setSelected: function(el, body, entries, val, key) {
       var self = this;
       var select = [];
@@ -398,19 +432,8 @@
 
       entries.forEach(function(r, idx) {
         Utils.$removeClass(r, 'gui-active');
-
-        if ( val || val === 0 ) {
-          var value = r.getAttribute('data-value');
-          if ( !key && (val === idx || val === value) ) {
-            sel(r, idx);
-          } else {
-            try {
-              var json = JSON.parse(value);
-              if ( typeof json[key] === 'object' ? json[key] === val : String(json[key]) === String(val) ) {
-                sel(r, idx);
-              }
-            } catch ( e ) {}
-          }
+        if ( matchValueByKey(r, val, key, idx) ) {
+          sel(r, idx);
         }
       });
       el._selected = select;
@@ -459,7 +482,7 @@
     },
 
     bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select', 'expand', 'contextmenu']).indexOf(evName) !== -1 ) {
+      if ( (['activate', 'select', 'expand', 'contextmenu', 'render']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);

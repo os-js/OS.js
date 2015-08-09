@@ -110,6 +110,14 @@
       GUI.Elements._dataview.build(el, applyArgs);
     },
 
+    get: function(el, param, value, arg) {
+      if ( param === 'entry' ) {
+        var body = el.querySelector('gui-icon-view-body');
+        return GUI.Elements._dataview.getEntry(el, body.querySelectorAll('gui-icon-view-entry'), value, arg);
+      }
+      return GUI.Helpers.getProperty(el, param);
+    },
+
     set: function(el, param, value, arg) {
       var body = el.querySelector('gui-icon-view-body');
       if ( param === 'selected' || param === 'value' ) {

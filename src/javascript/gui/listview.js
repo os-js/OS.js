@@ -202,6 +202,14 @@
       return GUI.Elements._dataview.getSelected(el, body.querySelectorAll('gui-list-view-row'));
     },
 
+    get: function(el, param, value, arg) {
+      if ( param === 'entry' ) {
+        var body = el.querySelector('gui-list-view-body');
+        return GUI.Elements._dataview.getEntry(el, body.querySelectorAll('gui-list-view-row'), value, arg);
+      }
+      return GUI.Helpers.getProperty(el, param);
+    },
+
     set: function(el, param, value, arg) {
       if ( param === 'columns' ) {
         var head = el.querySelector('gui-list-view-head');
