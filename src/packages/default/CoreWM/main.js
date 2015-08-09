@@ -498,7 +498,7 @@
       if ( self.iconView ) {
         self.iconView.resize(self);
       }
-    }, this.getAnimDuration());
+    }, this.getAnimDuration() + 500);
   };
 
   //
