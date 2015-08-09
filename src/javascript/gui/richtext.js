@@ -50,6 +50,7 @@
   }
 
   function setDocumentData(el, text) {
+
     text = text || '';
 
     var wm = OSjs.Core.getWindowManager();
@@ -68,9 +69,14 @@
 
     try {
       var doc = getDocument(el);
-      doc.open();
-      doc.write(template);
-      doc.close();
+
+      if ( !el._frameInited ) {
+        doc.open();
+        doc.write(template);
+        doc.close();
+
+        el._frameInited = true;
+      }
 
       if ( text ) {
         doc.body.innerHTML = text;
@@ -101,6 +107,7 @@
     },
     build: function(el) {
       var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
+      el._frameInited = false;
 
       Utils.$empty(el);
 
@@ -117,6 +124,10 @@
       el.appendChild(iframe);
 
       setTimeout(function() {
+        if ( el._frameInited ) {
+          return;
+        }
+
         setDocumentData(el, text);
       }, 0);
     },
