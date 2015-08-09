@@ -43,6 +43,8 @@
       height: 400
     }, app, scheme, file]);
 
+    this.checkChangeLength = -1;
+    this.checkChangeInterval = null;
     this.color = {
       background : '#ffffff',
       foreground : '#000000'
@@ -55,6 +57,11 @@
 
   ApplicationWriterWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
   ApplicationWriterWindow.constructor = DefaultApplicationWindow.prototype;
+
+  ApplicationWriterWindow.prototype.destroy = function() {
+    this.checkChangeInterval = clearInterval(this.checkChangeInterval);
+    return DefaultApplicationWindow.prototype.destroy.apply(this, arguments);
+  };
 
   ApplicationWriterWindow.prototype.init = function(wmRef, app, scheme) {
     var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
@@ -205,12 +212,33 @@
       updateSelection();
     });
 
+    this.checkChangeInterval = setInterval(function() {
+      if ( self.hasChanged ) {
+        return;
+      }
+
+      if ( self.checkChangeLength < 0 ) {
+        self.checkChangeLength = text.get('value').length;
+      }
+
+      var len = text.get('value').length;
+      if ( len != self.checkChangeLength ) {
+        self.hasChanged = true;
+      }
+      self.checkChangeLength = len;
+    }, 500);
+
     return root;
   };
 
   ApplicationWriterWindow.prototype.updateFile = function(file) {
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
-    this._scheme.find(this, 'Text').$element.focus();
+
+    var self = this;
+    var el = this._scheme.find(this, 'Text');
+    el.$element.focus();
+
+    this.checkChangeLength = -1;
   };
 
   ApplicationWriterWindow.prototype.showFile = function(file, content) {
