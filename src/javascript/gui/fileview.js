@@ -53,6 +53,9 @@
     nel.on('activate', function(ev) {
       el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
     });
+    nel.on('contextmenu', function(ev) {
+      el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
+    });
 
     if ( type === 'gui-list-view' ) {
       nel.set('columns', [
@@ -122,7 +125,7 @@
    */
   GUI.Elements['gui-file-view'] = {
     bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select']).indexOf(evName) !== -1 ) {
+      if ( (['activate', 'select', 'contextmenu']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);

@@ -297,6 +297,16 @@
 
     var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
     var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
+    if ( typeof x === 'undefined' && typeof y === 'undefined' ) {
+      if ( ev.detail && typeof ev.detail.x !== 'undefined' ) {
+        x = ev.detail.x;
+        y = ev.detail.y;
+      } else {
+        var tpos = Utils.$position(ev.target);
+        x = tpos.left;
+        y = tpos.top;
+      }
+    }
 
     var wm = OSjs.Core.getWindowManager();
     var space = wm.getWindowSpace();
