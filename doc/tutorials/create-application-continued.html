@@ -34,114 +34,92 @@
 
     <main>
 
-      <h1>Tutorial: Create your own application (continued)</h1>
+<h1>Tutorial: Create your own application (continued)</h1>
 
-      <p>
-        <b>THIS ARTICLE IS NOT FINISHED</b>
-      </p>
+<p>
+  More tutorials to come!
+</p>
 
-      <h2>Add a GUI Element</h2>
-      <div class="indent">
+<h2>Designing UI</h2>
+<div class="indent">
+  <pre class="code">
 
-        <p>Example:</p>
-        <pre class="code">
-ApplicationMyNameWindow.prototype.init = function() {
+<application-window data-id="MyNameWindow">
+
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+
+        <gui-menu-bar-entry data-label="LBL_FILE">
+          <gui-menu data-id="SubmenuFile">
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+      </gui-menu-bar>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+       <gui-button-bar>
+          <gui-button data-id="MyButtonOne">My Label</gui-button>
+          <gui-button data-id="MyButtonTwo" data-icon="stock://16x16/places/folder_home.png">My Label and Icon</gui-button>
+        </gui-button-bar>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
+      <gui-textarea data-id="Text"></gui-textarea>
+    </gui-vbox-container>
+
+  </gui-vbox>
+
+
+</application-window>
+
+  </pre>
+</div>
+
+
+<h2>Events and manipulation</h2>
+<div class="indent">
+  <pre class="code">
+ApplicationMyNameWindow.prototype.init = function(wm, app, scheme) {
   var self = this;
   var root = Window.prototype.init.apply(this, arguments);
 
-  var listView = this._addGUIElement(new GUI.ListView('MyListView'), root);
-  listView.setColumns([
-    {key: 'col1',  title: 'Foo', domProperties: {width: "50"}},
-    {key: 'col2',  title: 'Bar'},
-    {key: 'col3',  title: 'Baz', domProperties: {width: "100"}}
-  ]);
-  listView.setRows([
-    {
-      col1: 'Item 1 Col 1',
-      col2: 'Item 1 Col 2',
-      col3: 'Item 1 Col 3,
-    },
-    {
-      col1: 'Item 2 Col 1',
-      col2: 'Item 2 Col 2',
-      col3: 'Item 2 Col 3,
-    }
-  ]);
-  listView.render();
+  // Render the scheme file above into window
+  scheme.render(this, 'MyNameWindow', root);
+
+  // Normal binding
+  scheme.find(this, 'MenuClose').on('click', function() {
+    self._close();
+  });
+
+  // Get a property
+  scheme.find(this, 'MyButtonOne').on('click', function() {
+    alert(scheme.find(this, 'Text').get('value'));
+  });
+
+  // Change a property
+  scheme.find(this, 'MyButtonOne').on('click', function() {
+    scheme.find(this, 'Text').set('value', 'CLICKED!');
+  });
+
+  // Create UI element programatically (chainable)
+  scheme.create(this, 'gui-button', {disabled: true}, root).on('click', function() {
+
+     // `this` is UIElement() class
+     // Any values etc is in `ev.detail`
+
+  });
 
   return root;
 };
-        </pre>
-
-        <p>To retrieve this element later, just use:</p>
-        <pre class="code">
-var gel = this._getGUIElement('MyListView');
-        </pre>
-      </div>
-
-      <h2>Handling launch/restore arguments</h2>
-      <div class="indent">
-
-        <p>Let's say you open your application with:</p>
-        <pre>OSjs.API.launch('ApplicationMyName', {path: '/some/file.png', mime: 'image/png'});</pre>
-
-        <p>Use this to handle it correctly:</p>
-        <pre class="code">
-ApplicationMyName.prototype.init = function(settings, metadata) {
-  Application.prototype.init.apply(this, arguments);
-
-  // Get an argument, ex. the filename and mime
-  var file = this._getArgument('file');
-  if ( file && file.path ) {
-    this.openFile(file);
-  }
-};
-
-ApplicationMyName.prototype.openFile = function(file) {
-  if ( !file ) { return; }
-
-  if ( !file.mime.match(/^image/) ) {
-    throw "Unsupported MIME";
-  }
-  this.currentFile = fname;
-
-  // Setting values
-  this._setArgument('file', file);
-};
-        </pre>
-      </div>
-
-      <h2>Adding Drag-and-Drop support</h2>
-      <div class="indent">
-        <p>Example:</p>
-        <pre class="code">
-var ApplicationMyNameWindow = function(app, metadata) {
-  Window.apply(this, ['ApplicationMyNameWindow', {
-    icon: "apps/accessories-text-editor.png",
-    title: "DnD Support",
-    allow_drop: true // This is what makes dropping work automagically
-  }, app]);
-};
-
-
-ApplicationMyNameWindow.prototype._onDndEvent = function(ev, type, item, args) {
-  Window.prototype._onDndEvent.apply(this, arguments);
-  if ( type === 'itemDrop' && item ) {
-    var data = item.data;
-    if ( data && data.type === 'file' && data.mime ) {
-      var file = new VFS.File(data);
-      this._appRef.openFile(file); // If using above example. _appRef is the Application
-    }
-  }
-};
-        </pre>
-      </div>
-
-
-      <h2>More advanced examples</h2>
-      <div class="indent">
-        <p>You can extend the classes <b>DefaultApplication</b> and <b>DefaultApplicationWindow</b> for super-simple handling of opening/saving and creating files. It will also handle dnd and launch/restore arguments for you. Almost all internal OS.js applications use these.</p>
-      </div>
+  </pre>
+</div>
+<h2>More advanced examples</h2>
+<div class="indent">
+  <p>You can extend the classes <b>DefaultApplication</b> and <b>DefaultApplicationWindow</b> for super-simple handling of opening/saving and creating files. It will also handle dnd and launch/restore arguments for you. Almost all internal OS.js applications use these.</p>
+</div>
 
 <div class="adddshere">
   <ins class="adsbygoogle"
