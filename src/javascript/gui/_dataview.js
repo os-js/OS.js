@@ -303,6 +303,8 @@
       var singleClick = el.getAttribute('data-single-click') === 'true';
 
       function select(ev) {
+        ev.stopPropagation();
+
         var multipleSelect = el.getAttribute('data-multiple');
         multipleSelect = multipleSelect === null || multipleSelect === 'true';
         var idx = Utils.$index(row);
