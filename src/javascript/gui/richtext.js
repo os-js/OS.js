@@ -49,8 +49,32 @@
     return '';
   }
 
+  function destroyFixInterval(el) {
+    el._fixTry = 0;
+    el._fixInterval = clearInterval(el._fixInterval);
+  }
+
+  function createFixInterval(el, doc, text) {
+    if ( el._fixTry > 10 ) {
+      el._fixTry = 0;
+      return;
+    }
+
+    el._fixInterval = setInterval(function() {
+      try {
+        if ( text ) {
+          doc.body.innerHTML = text;
+        }
+        destroyFixInterval(el);
+      } catch ( error ) {
+        console.warn('gui-richtext', 'setDocumentData()', error.stack, error, '... trying again');
+      }
+      el._fixTry++;
+    }, 100);
+  }
+
   function setDocumentData(el, text) {
-    el._fixTimeout = clearTimeout(el._fixTimeout);
+    destroyFixInterval(el);
 
     text = text || '';
 
@@ -60,10 +84,6 @@
 
     var editable = el.getAttribute('data-editable');
     editable = editable === null || editable === 'true';
-
-    // FIXME: http://stackoverflow.com/questions/2920150/insert-text-at-cursor-in-a-content-editable-div
-
-
 
     function onMouseDown(ev) {
       function insertTextAtCursor(text) {
@@ -98,25 +118,11 @@
       template = template.replace(' contentEditable="true"', '');
     }
 
-    el._fixTimeout = setTimeout(function() {
-      try {
-        var doc = getDocument(el);
-
-        if ( !el._frameInited ) {
-          doc.open();
-          doc.write(template);
-          doc.close();
-
-          el._frameInited = true;
-        }
-
-        if ( text ) {
-          doc.body.innerHTML = text;
-        }
-      } catch ( error ) {
-        console.error('gui-richtext', 'setDocumentData()', error.stack, error);
-      }
-    }, 10);
+    var doc = getDocument(el);
+    doc.open();
+    doc.write(template);
+    doc.close();
+    createFixInterval(el, doc, text);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -139,8 +145,6 @@
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
-      el._frameInited = false;
-
       var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
       Utils.$empty(el);
