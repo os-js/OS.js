@@ -107,6 +107,23 @@
       grunt.log.writeln('>>> ' + BUILD.stylesheets.output);
       _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), ocss);
 
+      grunt.log.writeln('');
+
+      grunt.log.writeln('Copying static files');
+
+      var stats = BUILD.statics;
+      Object.keys(stats).forEach(function(f) {
+        var src = _path.join(ROOT, f);
+        var dst = _path.join(ROOT, stats[f]);
+        grunt.log.writeln('>>> ' + dst);
+        _fs.copySync(src, dst);
+      });
+
+      var hcss = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css');
+      var ocss = _build.buildDistCore(hcss, BUILD.stylesheets.files, 'css', grunt);
+      grunt.log.writeln('>>> ' + BUILD.stylesheets.output);
+      _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), ocss);
+
       grunt.verbose.ok();
     });
 

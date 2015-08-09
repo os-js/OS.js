@@ -120,8 +120,10 @@
     var self = this;
     console.info('Handler::boot()');
 
-    // TODO
     var url = '/js/dialogs/schemes.html';
+    if ( OSjs.API.getDefaultSettings().Dist === 'dist' ) {
+      url = '/dialogs.html';
+    }
     var scheme = OSjs.GUI.createScheme(url);
     scheme.load(function(error, doc) {
       self.dialogs = scheme;

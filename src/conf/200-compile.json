@@ -12,6 +12,9 @@
       "src/javascript/locales/vi_VN.js"
     ]
   },
+  "statics": {
+    "src/javascript/dialogs/schemes.html": "dist/dialogs.html"
+  },
   "javascript": {
     "files": [
       "src/javascript/init.js",
