@@ -351,12 +351,36 @@
    * Desktop
    */
   ApplicationSettingsWindow.prototype.initDesktopTab = function(wm, scheme) {
+    var self = this;
+    var _ = OSjs.Applications.ApplicationSettings._;
+
+    function updateLabel(lbl, value) {
+      var map = {
+        DesktopMargin: 'Desktop Margin ({0}px)',
+        CornerSnapping: 'Desktop Corner Snapping ({0}px)',
+        WindowSnapping: 'Window Snapping ({0}px)'
+      };
+
+      var label = Utils.format(_(map[lbl]), value);
+      scheme.find(self, lbl + 'Label').set('value', label);
+    }
+
     scheme.find(this, 'EnableHotkeys').set('value', this.settings.enableHotkeys);
     scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
 
-    scheme.find(this, 'DesktopMargin').set('value', this.settings.desktopMargin);
-    scheme.find(this, 'CornerSnapping').set('value', this.settings.windowCornerSnap);
-    scheme.find(this, 'WindowSnapping').set('value', this.settings.windowSnap);
+    scheme.find(this, 'DesktopMargin').set('value', this.settings.desktopMargin).on('change', function(ev) {
+      updateLabel('DesktopMargin', ev.detail);
+    });
+    scheme.find(this, 'CornerSnapping').set('value', this.settings.windowCornerSnap).on('change', function(ev) {
+      updateLabel('CornerSnapping', ev.detail);
+    });
+    scheme.find(this, 'WindowSnapping').set('value', this.settings.windowSnap).on('change', function(ev) {
+      updateLabel('WindowSnapping', ev.detail);
+    });
+
+    updateLabel('DesktopMargin', this.settings.desktopMargin);
+    updateLabel('CornerSnapping', this.settings.windowCornerSnap);
+    updateLabel('WindowSnapping', this.settings.windowSnap);
 
     scheme.find(this, 'EnableIconView').set('value', this.settings.enableIconView);
     scheme.find(this, 'EnableIconViewInvert').set('value', this.settings.invertIconViewColor);
