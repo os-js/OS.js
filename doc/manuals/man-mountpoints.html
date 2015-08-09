@@ -43,14 +43,12 @@
 <p><b>110-frontend.json</b></p>
 <pre class="code">
 {
-  "settings" : {
-    "frontend" : {
-      "Core" : {
-        "VFS": {
-          "Mountpoints": {
-            "example": {
-              "description": "Example"
-            }
+  "client" : {
+    "Core" : {
+      "VFS": {
+        "Mountpoints": {
+          "example": {
+            "description": "Example"
           }
         }
       }
@@ -62,12 +60,10 @@
 <p><b>120-backend.json</b></p>
 <pre class="code">
 {
-  "settings" : {
-    "backend" : {
-      "vfs": {
-        "mounts": {
-          "example": "/opt/example/directory"
-        }
+  "server" : {
+    "vfs": {
+      "mounts": {
+        "example": "/opt/example/directory"
       }
     }
   }
