@@ -36,77 +36,138 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/dialogs/fileinfo.js</i></p>
+<p><i>src/javascript/gui/misc.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-dialogs-fileinfo">FileInfoDialog</a> (OSjs.Dialogs.FileInfo)
+<a href="#osjs-gui-elements-gui-color-box">gui-color-box</a> (OSjs.GUI.Elements.gui-color-box)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-color-swatch">gui-color-swatch</a> (OSjs.GUI.Elements.gui-color-swatch)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-iframe">gui-iframe</a> (OSjs.GUI.Elements.gui-iframe)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-progress-bar">gui-progress-bar</a> (OSjs.GUI.Elements.gui-progress-bar)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-statusbar">gui-statusbar</a> (OSjs.GUI.Elements.gui-statusbar)
 <ul>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-dialogs-fileinfo">
-<h2 id="fileinfodialog">FileInfoDialog</h2>
+<div class="section-class" id="osjs-gui-elements-gui-color-box">
+<h2 id="gui-color-box">gui-color-box</h2>
 <pre>
-An 'File Information' dialog
+Element: 'gui-color-box'
 
-@optioin args file VFS.File File to use
+A box that displays a color.
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Dialogs.FileInfo</li>
+<li>OSjs.GUI.Elements.gui-color-box</li>
 </ul>
-<h4 id="extends">Extends</h4>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-color-swatch">
+<h2 id="gui-color-swatch">gui-color-swatch</h2>
+<pre>
+Element: 'gui-color-swatch'
+
+A box for selecting color(s) in the rainbow.
+
+Events:
+
+ change When input has changed => fn(ev)
+</pre>
+
+<h4 id="namespace">Namespace</h4>
 <ul>
-<li>DialogWindow</li>
+<li>OSjs.GUI.Elements.gui-color-swatch</li>
 </ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Object</td>
-<td>args</td>
-<td>An object with arguments</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>callback</td>
-<td>Callback when done =&gt; fn(ev, button, result)</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String</td>
-<td>title</td>
-<td>Dialog title</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-iframe">
+<h2 id="gui-iframe">gui-iframe</h2>
+<pre>
+Element: 'gui-iframe'
+
+IFrame container.
+
+Parameters:
+
+ src String The URL/location
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-iframe</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-progress-bar">
+<h2 id="gui-progress-bar">gui-progress-bar</h2>
+<pre>
+Element: 'gui-progress-bar'
+
+Progress bar element.
+
+Parameters:
+
+ progress int Progress
+
+Setters:
+
+ progress Progress
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-progress-bar</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-statusbar">
+<h2 id="gui-statusbar">gui-statusbar</h2>
+<pre>
+Element: 'gui-statusbar'
+
+Status bar element.
+
+Setters:
+
+ value Sets the text value
+
+ label Alias for 'value'
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-statusbar</li>
+</ul>
 
 </div>
 <p><i>Generated: Sun Aug 09 2015 22:32:18 GMT+0200 (CEST)</i></p>

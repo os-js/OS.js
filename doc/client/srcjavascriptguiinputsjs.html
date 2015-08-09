@@ -36,77 +36,470 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/dialogs/fileinfo.js</i></p>
+<p><i>src/javascript/gui/inputs.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-dialogs-fileinfo">FileInfoDialog</a> (OSjs.Dialogs.FileInfo)
+<a href="#osjs-gui-elements-gui-label">gui-label</a> (OSjs.GUI.Elements.gui-label)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-textarea">gui-textarea</a> (OSjs.GUI.Elements.gui-textarea)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-text">gui-text</a> (OSjs.GUI.Elements.gui-text)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-password">gui-password</a> (OSjs.GUI.Elements.gui-password)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-file-upload">gui-file-upload</a> (OSjs.GUI.Elements.gui-file-upload)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-radio">gui-radio</a> (OSjs.GUI.Elements.gui-radio)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-checbox">gui-checbox</a> (OSjs.GUI.Elements.gui-checbox)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-switch">gui-switch</a> (OSjs.GUI.Elements.gui-switch)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-button">gui-button</a> (OSjs.GUI.Elements.gui-button)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-select">gui-select</a> (OSjs.GUI.Elements.gui-select)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-select-list">gui-select-list</a> (OSjs.GUI.Elements.gui-select-list)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-slider">gui-slider</a> (OSjs.GUI.Elements.gui-slider)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-input-modal">gui-input-modal</a> (OSjs.GUI.Elements.gui-input-modal)
 <ul>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-dialogs-fileinfo">
-<h2 id="fileinfodialog">FileInfoDialog</h2>
+<div class="section-class" id="osjs-gui-elements-gui-label">
+<h2 id="gui-label">gui-label</h2>
 <pre>
-An 'File Information' dialog
+Element: 'gui-label'
 
-@optioin args file VFS.File File to use
+Just a normal label.
+
+Setters:
+
+ value Sets the label
+
+ label Alias for 'value'
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Dialogs.FileInfo</li>
+<li>OSjs.GUI.Elements.gui-label</li>
 </ul>
-<h4 id="extends">Extends</h4>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-textarea">
+<h2 id="gui-textarea">gui-textarea</h2>
+<pre>
+Element: 'gui-textarea'
+
+Text area input (multi-line)
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
 <ul>
-<li>DialogWindow</li>
+<li>OSjs.GUI.Elements.gui-textarea</li>
 </ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Object</td>
-<td>args</td>
-<td>An object with arguments</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>callback</td>
-<td>Callback when done =&gt; fn(ev, button, result)</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String</td>
-<td>title</td>
-<td>Dialog title</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-text">
+<h2 id="gui-text">gui-text</h2>
+<pre>
+Element: 'gui-text'
+
+Text input.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+ enter On enter press => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-text</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-password">
+<h2 id="gui-password">gui-password</h2>
+<pre>
+Element: 'gui-password'
+
+Password input.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+ enter On enter press => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-password</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-file-upload">
+<h2 id="gui-file-upload">gui-file-upload</h2>
+<pre>
+Element: 'gui-file-upload'
+
+File upload selector.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-file-upload</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-radio">
+<h2 id="gui-radio">gui-radio</h2>
+<pre>
+Element: 'gui-radio'
+
+Radio selection input.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-radio</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-checbox">
+<h2 id="gui-checbox">gui-checbox</h2>
+<pre>
+Element: 'gui-checbox'
+
+Checkbox selection input.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-checbox</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-switch">
+<h2 id="gui-switch">gui-switch</h2>
+<pre>
+Element: 'gui-switch'
+
+A switch (on/off) input.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-switch</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-button">
+<h2 id="gui-button">gui-button</h2>
+<pre>
+Element: 'gui-button'
+
+A normal button
+
+Events:
+
+ click When button was clicked => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+ label String The label
+
+ icon String The icon (optional)
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-button</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-select">
+<h2 id="gui-select">gui-select</h2>
+<pre>
+Element: 'gui-select'
+
+A selection dropdown.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Actions:
+
+ add(arg) Adds en entry (or from array)
+
+ remove(arg) Removes an entry
+
+ clear()
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-select</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-select-list">
+<h2 id="gui-select-list">gui-select-list</h2>
+<pre>
+Element: 'gui-select-list'
+
+A selection list (same as dropdown except multiple)
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Parameters:
+
+ disabled boolean Disabled state
+
+Actions:
+
+ add(arg) Adds en entry (or from array)
+
+ remove(arg) Removes an entry
+
+ clear()
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-select-list</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-slider">
+<h2 id="gui-slider">gui-slider</h2>
+<pre>
+Element: 'gui-slider'
+
+A slider input.
+
+Events:
+
+ change When input has changed => fn(ev)
+
+Parameters:
+
+ min int Minimum value
+
+ max int Maximum value
+
+ disabled boolean Disabled state
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-slider</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-input-modal">
+<h2 id="gui-input-modal">gui-input-modal</h2>
+<pre>
+Element: 'gui-input-modal'
+
+A text area displaying current value with a button to open a modal/dialog etc.
+
+Events:
+
+ open When the open button was pressed => fn(ev)
+
+Getters:
+
+ value Gets the input value
+
+Setters:
+
+ value Sets the input value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-input-modal</li>
+</ul>
 
 </div>
 <p><i>Generated: Sun Aug 09 2015 22:32:18 GMT+0200 (CEST)</i></p>

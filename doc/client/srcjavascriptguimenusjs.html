@@ -36,77 +36,135 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/javascript/dialogs/fileinfo.js</i></p>
+<p><i>src/javascript/gui/menus.js</i></p>
 <h2>Functions</h2>
 <ul>
+<li>OSjs.API.<a href="#osjs-api-blurmenu">blurMenu()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createmenu">createMenu()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-dialogs-fileinfo">FileInfoDialog</a> (OSjs.Dialogs.FileInfo)
+<a href="#osjs-gui-elements-gui-menu">gui-menu</a> (OSjs.GUI.Elements.gui-menu)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-menu-bar">gui-menu-bar</a> (OSjs.GUI.Elements.gui-menu-bar)
 <ul>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<h1>Classes</h1>
-<div class="section-class" id="osjs-dialogs-fileinfo">
-<h2 id="fileinfodialog">FileInfoDialog</h2>
+<div class="section-function" id="osjs-api-blurmenu">
+<h2 id="osjs-api-blurmenu-">OSjs.API.blurMenu()</h2>
 <pre>
-An 'File Information' dialog
+Blur the currently open menu (aka hiding)
+</pre>
 
-@optioin args file VFS.File File to use
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-createmenu">
+<h2 id="osjs-api-createmenu-items-ev-custominstance-">OSjs.API.createMenu(items, ev, customInstance)</h2>
+<pre>
+Create and show a new menu
+
+Format:
+
+[
+
+ {
+
+ title: "Title",
+
+ icon: "Icon",
+
+ onClick: function() {}, // Callback
+
+ items: [] // Recurse :)
+
+ }
+
+ ...
+
+]
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>items</td>
+<td>Array</td>
+<td>Array of items</td>
+</tr>
+<tr>
+<td>ev</td>
+<td>Event</td>
+<td>DOM Event or dict with x/y</td>
+</tr>
+<tr>
+<td>customInstance</td>
+<td>Mixed</td>
+<td>Show a custom created menu</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-gui-elements-gui-menu">
+<h2 id="gui-menu">gui-menu</h2>
+<pre>
+Element: 'gui-menu'
+
+A normal menu (also contextmenu)
+
+Events:
+
+ select When an entry was selected (click) => fn(ev)
+
+Setters:
+
+ checked Set checkbox/optionn checked value
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Dialogs.FileInfo</li>
+<li>OSjs.GUI.Elements.gui-menu</li>
 </ul>
-<h4 id="extends">Extends</h4>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-menu-bar">
+<h2 id="gui-menu-bar">gui-menu-bar</h2>
+<pre>
+Element: 'gui-menu-bar'
+
+A menubar with sub-menus
+
+Events:
+
+ select When an entry was selected (click) => fn(ev)
+</pre>
+
+<h4 id="namespace">Namespace</h4>
 <ul>
-<li>DialogWindow</li>
+<li>OSjs.GUI.Elements.gui-menu-bar</li>
 </ul>
-<h4 id="constructor">Constructor</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Object</td>
-<td>args</td>
-<td>An object with arguments</td>
-</tr>
-<tr>
-<td>Function</td>
-<td>callback</td>
-<td>Callback when done =&gt; fn(ev, button, result)</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>String</td>
-<td>title</td>
-<td>Dialog title</td>
-</tr>
-</tbody>
-</table>
-<p>&nbsp;</p>
 
 </div>
 <p><i>Generated: Sun Aug 09 2015 22:32:18 GMT+0200 (CEST)</i></p>
