@@ -372,14 +372,11 @@
 
     getSelected: function(el, entries) {
       var selected = [];
-      var active = (el._selected || []);
-
-      active.forEach(function(iter) {
-        var found = entries[iter];
-        if ( found ) {
+      entries.forEach(function(iter, idx) {
+        if ( Utils.$hasClass(iter, 'gui-active') ) {
           selected.push({
-            index: iter,
-            data: GUI.Helpers.getViewNodeValue(found)
+            index: idx,
+            data: GUI.Helpers.getViewNodeValue(iter)
           });
         }
       });
@@ -396,22 +393,24 @@
         //self.scrollIntoView(el, r);
       }
 
-      entries.forEach(function(r, idx) {
-        Utils.$removeClass(r, 'gui-active');
+      if ( val ) {
+        entries.forEach(function(r, idx) {
+          Utils.$removeClass(r, 'gui-active');
 
-        var value = r.getAttribute('data-value');
-        if ( !key && val === idx ) {
-          sel(r, idx);
-        } else {
-          try {
-            var json = JSON.parse(value);
-            if ( json[key] == val ) {
-              sel(r, idx);
-            }
-          } catch ( e ) {}
-        }
-      });
-      el._selected = select;
+          var value = r.getAttribute('data-value');
+          if ( !key && val === idx || val === value ) {
+            sel(r, idx);
+          } else {
+            try {
+              var json = JSON.parse(value);
+              if ( json[key] == val ) {
+                sel(r, idx);
+              }
+            } catch ( e ) {}
+          }
+        });
+        el._selected = select;
+      }
     },
 
     build: function(el, applyArgs) {
