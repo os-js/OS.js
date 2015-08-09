@@ -35,7 +35,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function createEntry(e) {
-    // TODO: Recursive
     var entry = GUI.Helpers.createElement('gui-tree-view-entry', e);
     return entry;
   }
@@ -45,7 +44,7 @@
 
     var icon = sel.getAttribute('data-icon');
     var label = GUI.Helpers.getLabel(sel);
-    var expanded = sel.getAttribute('data-expanded') === 'true';
+    var expanded = el.getAttribute('data-expanded') === 'true';
     var next = sel.querySelector('gui-tree-view-entry');
     var container = document.createElement('div');
     var dspan = document.createElement('span');
@@ -165,12 +164,22 @@
 
     call: function(el, method, args) {
       var body = el.querySelector('gui-tree-view-body');
-      if ( method === 'add' ) {
-        GUI.Elements._dataview.add(el, args, function(e) {
+
+      function recurse(a, root, level) {
+        GUI.Elements._dataview.add(el, a, function(e) {
           var entry = createEntry(e);
-          body.appendChild(entry);
+          root.appendChild(entry);
+
+          if ( e.entries ) {
+            recurse([e.entries], entry, level + 1);
+          }
+
           initEntry(el, entry);
         });
+      }
+
+      if ( method === 'add' ) {
+        recurse(args, body, 0);
       } else if ( method === 'remove' ) {
         GUI.Elements._dataview.remove(el, args, 'gui-tree-view-entry');
       } else if ( method === 'clear' ) {
