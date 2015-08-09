@@ -28,72 +28,45 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper {
+.ApplicationFirefoxMarketplaceWindow application-window-content {
 }
 
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnLeft {
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  bottom : 32px;
-  width : 400px;
-}
-
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight {
-  position : absolute;
-  top : 0px;
-  left : 405px;
-  right : 0px;
-  bottom : 32px;
+.ApplicationFirefoxMarketplaceWindow .MarketplaceAppInfo {
   background : #fff;
+  margin : 4px;
+  padding : 4px;
+  box-sizing : border-box;
   overflow : auto;
 }
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div {
-  position : absolute;
-  top : 10px;
-  left : 10px;
-  right : 10px;
-  bottom : 10px;
-  overflow : visible;
+.MarketplaceAppInfo gui-label {
+  display : block;
+  margin-bottom : 10px;
+}
+.MarketplaceAppInfo gui-label > label {
   word-break: break-all;
+  white-space : normal;
+  display : block;
 }
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > h1 {
-  margin : 0;
-  padding : 0;
-  font-size : 180%;
+.MarketplaceAppInfo gui-label[data-id="LabelName"] > label {
+  font-size : 22px;
+  font-weight : bold;
+  padding : 4px;
+  text-align : center;
 }
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > h2 {
-  margin : 0;
-  padding : 0;
-  font-size : 140%;
-  font-style : italic;
+.MarketplaceAppInfo gui-label[data-id="LabelAuthor"] > label {
+  font-size : 16px;
+  font-weight : bold;
+  padding : 4px;
+  text-align : center;
 }
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > h3 {
-  margin : 0;
-  padding : 0;
-  font-size : 100%;
-  font-weight : normal;
-  margin-top : 10px;
+.MarketplaceAppInfo gui-label[data-id="LabelDescription"] > label {
+  padding : 4px;
 }
-
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ColumnRight > div > img {
-  margin-top : 10px;
-  width : 100%;
+.MarketplaceAppInfo gui-image {
+  padding : 4px;
+  display : block;
+  text-align : center;
 }
-
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ApplicationList {
-  margin-top : 5px;
-  height : 340px;
-}
-
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ButtonContainer {
-  position : absolute;
-  bottom : 0px;
-  left : 0px;
-  right : 0px;
-  text-align : right;
-}
-.Window_ApplicationFirefoxMarketplaceWindow .WindowWrapper .ButtonContainer .GUIButton {
-  display : inline-block;
-  margin-left : 5px;
+.MarketplaceAppInfo gui-image img {
+  max-width : 100%;
 }

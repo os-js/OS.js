@@ -27,272 +27,168 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement, _DataView) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
 
-  /**
-   * Tree View
-   *
-   * reserved item (data) keys:
-   *  title = What to show as title
-   *  icon = Path to icon
-   *
-   * @param String    name    Name of GUIElement (unique)
-   * @param Object    opts    A list of options
-   *
-   * @option opts Array     data          Data (Items)
-   * @option opts boolean   singleClick   Single click to Activate (dblclick) forced on touch devices
-   * @option opts Function  onExpand      Callback when item is expended
-   * @option opts Function  onCollapse    Callback when item is collapsed
-   * @option opts Mixed     expanded      What level to expand on render (Default = false (none), true = (1), int for level)
-   *
-   * @see OSjs.Core.GUIElement
-   * @api OSjs.GUI.TreeView
-   *
-   * @extends _DataView
-   * @class
-   */
-  var TreeView = function(name, opts) {
-    opts = opts || {};
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
-    var expand = false;
-    if ( opts.expanded === true ) {
-      expand = true;
-    } else if ( opts.expanded >= 0 ) {
-      expand = opts.expand;
-    }
+  function createEntry(e) {
+    var entry = GUI.Helpers.createElement('gui-tree-view-entry', e);
+    return entry;
+  }
 
-    this.total          = 0;
-    this.expandLevel    = expand;
-    this.onExpand       = opts.onExpand       || function(ev, el, item) {};
-    this.onCollapse     = opts.onCollapse     || function(ev, el, item) {};
-    this.onRenderItem   = opts.onRenderItem   || function(el, iter) {};
+  function initEntry(el, sel) {
+    // TODO: Custom Icon Size
 
-    this.singleClick    = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
-    if ( OSjs.Compability.touch ) {
-      this.singleClick = true;
-    }
+    var icon = sel.getAttribute('data-icon');
+    var label = GUI.Helpers.getLabel(sel);
+    var expanded = el.getAttribute('data-expanded') === 'true';
+    var next = sel.querySelector('gui-tree-view-entry');
+    var container = document.createElement('div');
+    var dspan = document.createElement('span');
 
-    _DataView.apply(this, ['TreeView', name, opts]);
-  };
-
-  TreeView.prototype = Object.create(_DataView.prototype);
-
-  TreeView.prototype.init = function() {
-    var root = _DataView.prototype.init.call(this, 'GUITreeView');
-    return root;
-  };
-
-  TreeView.prototype._render = function(list, root, expandLevel, ul) {
-    var self = this;
-
-    function _bindEvents(inner, c, e, singleClick) {
-      self._addEventListener(inner, 'contextmenu', function(ev) {
-        ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-        ev.preventDefault();
-
-        if ( e ) {
-          ev.stopPropagation();
-        }
-        self._onContextMenu(ev, c);
-
-        return false;
-      });
-
-      if ( singleClick ) {
-        self._addEventListener(inner, 'click', function(ev) {
-          if ( e ) {
-            ev.stopPropagation();
-          }
-          self._onSelect(ev, c);
-
-          self._onActivate(ev, c);
-        });
-      } else {
-        self._addEventListener(inner, 'click', function(ev) {
-          if ( e ) {
-            ev.stopPropagation();
-          }
-          self._onSelect(ev, c);
-        });
-        self._addEventListener(inner, 'dblclick', function(ev) {
-          if ( e ) {
-            ev.stopPropagation();
-          }
-          self._onActivate(ev, c);
-        });
-      }
-    }
-
-    function _bindSubEvents(exp, c, el, it) {
-      exp.onclick = function(ev) {
-        var s = c.style.display;
-        if ( s === 'none' || s === '' ) {
-          c.style.display = 'block';
-          OSjs.Utils.$addClass(el, 'Expanded');
-
-          self._onExpand.call(self, ev, it);
-        } else {
-          c.style.display = 'none';
-          OSjs.Utils.$removeClass(el, 'Expanded');
-
-          self._onCollapse.call(self, ev, it);
-        }
-      };
-    }
-
-    function _render(list, root, ul, level) {
-      if ( typeof level === 'undefined' ) {
-        level = false;
+    function handleItemExpand(ev, root, expanded) {
+      if ( typeof expanded === 'undefined' ) {
+        expanded = !Utils.$hasClass(root, 'gui-expanded');
       }
 
-      if ( !ul ) {
-        ul = document.createElement('ul');
-        ul.className = 'Level_' + (level || 0);
+      Utils.$removeClass(root, 'gui-expanded');
+      if ( expanded ) {
+        Utils.$addClass(root, 'gui-expanded');
       }
 
-      list.forEach(function(iter, i) {
-        var exp, ico, title, child;
-
-        var li = document.createElement('li');
-        var inner = document.createElement('div');
-
-        iter.name      = iter.name  || 'treeviewitem_' + self.total;
-        iter.title     = iter.title || iter.name;
-
-        li.className = 'Item Level_' + (level || 0);
-        li.setAttribute('data-index', i);
-
-        Object.keys(iter).forEach(function(j) {
-          if ( (['items', 'title', 'icon']).indexOf(j) === -1 ) {
-            li.setAttribute('data-' + j, iter[j]);
-          }
-        });
-        iter._element  = li;
-
-        if ( iter.items && iter.items.length ) {
-          li.className += ' Expandable';
-          exp = document.createElement('div');
-          exp.className = 'Expander';
-          exp.innerHTML = '';
-          inner.appendChild(exp);
-        } else {
-          exp = null;
+      var children = root.children;
+      for ( var i = 0; i < children.length; i++ ) {
+        if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
+          children[i].style.display = expanded ? 'block' : 'none';
         }
+      }
 
-        if ( iter.icon ) {
-          ico = document.createElement('img');
-          ico.src = iter.icon;
-          ico.alt = '';
-          inner.appendChild(ico);
-        }
+      var idx = Utils.$index(root);
+      var entries = el.querySelectorAll('gui-tree-view-entry')[idx];
+      var selected = null;
+      if ( entries[idx] ) {
+        selected = {
+          index: idx,
+          data: GUI.Helpers.getViewNodeValue(entries[idx])
+        };
+      }
+      el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: selected}}));
+    }
 
-        title = document.createElement('span');
-        title.appendChild(document.createTextNode(iter.title));
-        inner.appendChild(title);
+    if ( icon ) {
+      dspan.style.backgroundImage = 'url(' + icon + ')';
+      Utils.$addClass(dspan, 'gui-has-image');
+    }
+    dspan.appendChild(document.createTextNode(label));
 
-        _bindEvents(inner, iter, !exp, self.singleClick);
+    container.appendChild(dspan);
 
-        li.appendChild(inner);
-
-        if ( exp ) {
-          child = _render.call(self, iter.items, li, null, level + 1);
-          if ( self.expandLevel === true || (level !== false && self.expandLevel >= level) ) {
-            child.style.display = 'block';
-          }
-          _bindSubEvents(exp, child, li, iter);
-        }
-
-        self.total++;
-        ul.appendChild(li);
-
-        if ( self.onCreateItem ) {
-          self.onCreateItem(li, iter);
-        }
-        if ( self.onRenderItem ) {
-          self.onRenderItem(li, iter);
-        }
+    if ( next ) {
+      Utils.$addClass(sel, 'gui-expandable');
+      var expander = document.createElement('gui-tree-view-expander');
+      Utils.$bind(expander, 'click', function(ev) {
+        handleItemExpand(ev, sel);
       });
 
-      root.appendChild(ul);
-
-      return ul;
+      sel.insertBefore(container, next);
+      sel.insertBefore(expander, container);
+    } else {
+      sel.appendChild(container);
     }
 
-    return _render.call(this, list, root, ul, expandLevel);
-  };
+    handleItemExpand(null, sel, expanded);
 
-  /**
-   * Render the tree inside the view
-   *
-   * @return void
-   * @see _DataView::render()
-   * @method TreeView::render()
-   */
-  TreeView.prototype.render = function(data, reset) {
-    if ( !_DataView.prototype.render.call(this, data, reset) ) {
-      return;
-    }
-  };
-
-  TreeView.prototype._onRender = function() {
-    OSjs.Utils.$empty(this.$view);
-
-    this._render(this.data, this.$view);
-  };
-
-  TreeView.prototype._onExpand = function(ev, item) {
-    this.onExpand.apply(this, [ev, (item ? item._element : null), item]);
-  };
-
-  TreeView.prototype._onCollapse = function(ev, item) {
-    this.onCollapse.apply(this, [ev, (item ? item._element : null), item]);
-  };
-
-  TreeView.prototype.onGlobalKeyPress = function(ev) {
-  };
-
-  TreeView.prototype.setData = function(data, render) {
-    this.total = 0;
-    _DataView.prototype.setData.apply(this, arguments);
-  };
-
-  /**
-   * Gets an item in the tree by key/value pair
-   *
-   * @return Object
-   * @see _DataView::getItemByKey()
-   * @method TreeView::getItemByKey()
-   */
-  TreeView.prototype.getItemByKey = function(key, val) {
-    function _search(list) {
-      var ret = null;
-
-      Object.keys(list).forEach(function(i) {
-        if ( list[i][key] === val ) {
-          ret = list[i];
-        }
-
-        if ( !ret && list[i].items ) {
-          var tst = _search(list[i].items);
-          if ( tst ) {
-            ret = tst;
-          }
-        }
-
-        return ret ? false : true;
-      });
-
-      return ret;
-    }
-
-    return _search.call(this, this.data);
-  };
+    GUI.Elements._dataview.bindEntryEvents(el, sel, 'gui-tree-view-entry');
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.TreeView     = TreeView;
+  /**
+   * Element: 'gui-tree-view'
+   *
+   * A tree view for nested content
+   *
+   * Format for add():
+   *
+   * {
+   *    label: "Label",
+   *    icon: "Optional icon path",
+   *    value: "something or JSON or whatever",
+   *    entries: [] // Recurse :)
+   * }
+   *
+   * @api OSjs.GUI.Elements.gui-tree-view
+   * @see OSjs.GUI.Elements._dataview
+   * @class
+   */
+  GUI.Elements['gui-tree-view'] = {
+    bind: GUI.Elements._dataview.bind,
 
-})(OSjs.Core.GUIElement, OSjs.GUI._DataView);
+    values: function(el) {
+      return GUI.Elements._dataview.getSelected(el, el.querySelectorAll('gui-tree-view-entry'));
+    },
+
+    build: function(el, applyArgs) {
+      var body = el.querySelector('gui-tree-view-body');
+      var found = !!body;
+      if ( !body ) {
+        body = document.createElement('gui-tree-view-body');
+        el.appendChild(body);
+      }
+
+      el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
+        if ( !found ) {
+          body.appendChild(sel);
+        }
+
+        initEntry(el, sel);
+      });
+
+      GUI.Elements._dataview.build(el, applyArgs);
+    },
+
+    set: function(el, param, value, arg) {
+      var body = el.querySelector('gui-tree-view-body');
+      if ( param === 'selected' || param === 'value' ) {
+        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-tree-view-entry'), value, arg);
+        return true;
+      }
+
+      return false;
+    },
+
+    call: function(el, method, args) {
+      var body = el.querySelector('gui-tree-view-body');
+
+      function recurse(a, root, level) {
+        GUI.Elements._dataview.add(el, a, function(e) {
+          var entry = createEntry(e);
+          root.appendChild(entry);
+
+          if ( e.entries ) {
+            recurse([e.entries], entry, level + 1);
+          }
+
+          initEntry(el, entry);
+        });
+      }
+
+      if ( method === 'add' ) {
+        recurse(args, body, 0);
+      } else if ( method === 'remove' ) {
+        GUI.Elements._dataview.remove(el, args, 'gui-tree-view-entry');
+      } else if ( method === 'clear' ) {
+        GUI.Elements._dataview.clear(el, body);
+      } else if ( method === 'patch' ) {
+        GUI.Elements._dataview.patch(el, args, 'gui-tree-view-entry', body, createEntry, initEntry);
+      }
+      return this;
+    }
+  };
+
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

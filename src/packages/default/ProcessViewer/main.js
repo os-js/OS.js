@@ -27,134 +27,113 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window
-   */
-  var ApplicationProcessViewerWindow = function(app, metadata) {
+  function ApplicationProcessViewerWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationProcessViewerWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
-      height: 400
-    }, app]);
-  };
+      height: 300
+    }, app, scheme]);
+
+    this.interval = null;
+  }
 
   ApplicationProcessViewerWindow.prototype = Object.create(Window.prototype);
+  ApplicationProcessViewerWindow.constructor = Window.prototype;
 
-  ApplicationProcessViewerWindow.prototype.init = function() {
+  ApplicationProcessViewerWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
+    var self = this;
 
-    var listView = this._addGUIElement(new GUI.ListView('ProcessViewListView', {indexKey: 'pid'}), root);
-    listView.setColumns([
-      {key: 'pid',    title: API._('LBL_PID'), width: 50},
-      {key: 'name',   title: API._('LBL_NAME')},
-      {key: 'alive',  title: API._('LBL_ALIVE'), width: 100},
-      {key: 'kill',   title: '', type: 'button', width: 45}
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'ProcessViewerWindow', root);
+
+    var view = scheme.find(this, 'View');
+
+    function update() {
+      var now = new Date();
+      var rows = [];
+      API.getProcesses().forEach(function(p) {
+        if ( p ) {
+          var alive = now - p.__started;
+          var iter = {
+            value: p.__pid,
+            id: p.__pid,
+            columns: [
+              {label: p.__pname},
+              {label: p.__pid.toString()},
+              {label: alive.toString()}
+            ]
+          };
+
+          rows.push(iter);
+        }
+      });
+
+      view.patch(rows);
+    }
+
+    view.set('columns', [
+      {label: 'Name', basis: '100px'},
+      {label: 'PID', basis: '30px'},
+      {label: 'Alive'}
     ]);
 
+    scheme.find(this, 'ButtonKill').on('click', function() {
+      var selected = view.get('selected');
+      if ( selected && selected[0] && typeof selected[0].data !== 'undefined' ) {
+        API.kill(selected[0].data);
+      }
+    });
+
+
+    this.interval = setInterval(function() {
+      update();
+    }, 1000);
+
+    update();
 
     return root;
   };
 
   ApplicationProcessViewerWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationProcessViewerWindow.prototype.refresh = function(rows) {
-    var listView = this._getGUIElement('ProcessViewListView');
-    if ( listView ) {
-      listView.setRows(rows);
-      listView.render();
-    }
+    this.interval = clearInterval(this.interval);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application
-   */
   var ApplicationProcessViewer = function(args, metadata) {
     Application.apply(this, ['ApplicationProcessViewer', args, metadata]);
   };
 
   ApplicationProcessViewer.prototype = Object.create(Application.prototype);
+  ApplicationProcessViewer.constructor = Application;
 
-  ApplicationProcessViewer.prototype.destroy = function(kill) {
-    if ( this.timer ) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
+  ApplicationProcessViewer.prototype.destroy = function() {
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationProcessViewer.prototype.init = function(settings, metadata) {
+  ApplicationProcessViewer.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
 
-    this._addWindow(new ApplicationProcessViewerWindow(this, metadata));
-
     var self = this;
-    this.timer = setInterval(function() {
-      self.refreshList();
-    }, 2500);
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationProcessViewerWindow(self, metadata, scheme));
 
-    this.refreshList();
-  };
-
-  ApplicationProcessViewer.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationProcessViewerWindow' ) {
-      this.destroy();
-    }
-  };
-
-  ApplicationProcessViewer.prototype.refreshList = function() {
-    var w = this._getWindow('ApplicationProcessViewerWindow');
-    var r = w ? w._getRoot() : null;
-
-    if ( r ) {
-      var rows = [];
-      var procs = API.getProcesses();
-      var now = new Date();
-
-      var i = 0, l = procs.length;
-      var cev;
-      for ( i; i < l; i++ ) {
-        if ( !procs[i] ) { continue; }
-
-        try {
-          cev = (function(pid) {
-            return function(ev) {
-              ev.preventDefault();
-              ev.stopPropagation();
-              OSjs.API.kill(pid);
-              return false;
-            };
-          })(procs[i].__pid);
-
-          rows.push({
-            pid: procs[i].__pid.toString(),
-            name: procs[i].__pname,
-            alive: now-procs[i].__started,
-            kill: API._('Kill'),
-            customEvent: cev
-          });
-        } catch ( e ) {
-          console.warn('err', e, e.stack);
-        }
-      }
-
-      w.refresh(rows);
-    }
+      onInited();
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -162,6 +141,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationProcessViewer = ApplicationProcessViewer;
+  OSjs.Applications.ApplicationProcessViewer = OSjs.Applications.ApplicationProcessViewer || {};
+  OSjs.Applications.ApplicationProcessViewer.Class = ApplicationProcessViewer;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

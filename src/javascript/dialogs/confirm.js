@@ -27,37 +27,47 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, _StandardDialog) {
+(function(API, Utils, DialogWindow) {
   'use strict';
 
   /**
-   * Confirmation Dialog
+   * An 'Confirm' dialog
    *
-   * @param   String          msg     Confirm message
-   * @param   Function        onClose Callback on close => fn(button)
-   * @param   Object          args    List of arguments (Will be passed on to _StandardDialog)
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
+   * @option    args    title       String      Dialog title
+   * @option    args    message     String      Dialog message
+   *
+   * @extends DialogWindow
+   * @class ConfirmDialog
    * @api OSjs.Dialogs.Confirm
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
    */
-  var ConfirmDialog = function(msg, onClose, args) {
-    args = Utils.mergeObject({
-      title: API._('DIALOG_CONFIRM_TITLE'),
+  function ConfirmDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {});
+
+    DialogWindow.apply(this, ['ConfirmDialog', {
+      title: args.title || API._('DIALOG_CONFIRM_TITLE'),
       icon: 'status/dialog-question.png',
-      message: msg,
-      buttons: ['cancel', 'ok']
-    }, (args || {}));
-    _StandardDialog.apply(this, ['ConfirmDialog', args, {width:350, height:120}, onClose]);
+      width: 400,
+      height: 100
+    }, args, callback]);
+  }
+
+  ConfirmDialog.prototype = Object.create(DialogWindow.prototype);
+  ConfirmDialog.constructor = DialogWindow;
+
+  ConfirmDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    this.scheme.find(this, 'Message').set('value', this.args.message);
+    return root;
   };
-  ConfirmDialog.prototype = Object.create(_StandardDialog.prototype);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.Confirm            = ConfirmDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.Confirm = ConfirmDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

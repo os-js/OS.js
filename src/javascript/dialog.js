@@ -37,7 +37,6 @@
   // DIALOG
   /////////////////////////////////////////////////////////////////////////////
 
-
   /**
    * Dialog Window
    *
@@ -48,8 +47,16 @@
    * @class DialogWindow
    * @extends Window
    */
-  var DialogWindow = function(/* See Window */) {
-    Window.apply(this, arguments);
+  function DialogWindow(className, opts, args, callback) {
+    var self = this;
+
+    opts = opts || {};
+    args = args || {};
+    callback = callback || function() {};
+
+    console.info('DialogWindow::construct()', className, opts, args);
+
+    Window.apply(this, [className, opts]);
 
     this._properties.gravity          = 'center';
     this._properties.allow_resize     = false;
@@ -58,9 +65,74 @@
     this._properties.allow_windowlist = false;
     this._properties.allow_session    = false;
     this._state.ontop                 = true;
-  };
+    this._tag                         = 'DialogWindow';
+
+    this.args = args;
+    this.scheme = OSjs.Core.getHandler().dialogs;
+    this.className = className;
+    this.buttonClicked = false;
+
+    this.closeCallback = function(ev, button, result) {
+      self.buttonClicked = true;
+      callback.apply(self, arguments);
+      self._close();
+    };
+  }
 
   DialogWindow.prototype = Object.create(Window.prototype);
+  DialogWindow.constructor = Window;
+
+  DialogWindow.prototype.init = function() {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+
+    this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
+      node.querySelectorAll('gui-label').forEach(function(el) {
+        if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
+          var label = el.childNodes[0].nodeValue;
+          Utils.$empty(el);
+          el.appendChild(document.createTextNode(API._(label)));
+        }
+      });
+    });
+
+    this.scheme.find(this, 'ButtonOK').on('click', function(ev) {
+      self.onClose(ev, 'ok');
+    });
+    this.scheme.find(this, 'ButtonCancel').on('click', function(ev) {
+      self.onClose(ev, 'cancel');
+    });
+    this.scheme.find(this, 'ButtonYes').on('click', function(ev) {
+      self.onClose(ev, 'yes');
+    });
+    this.scheme.find(this, 'ButtonNo').on('click', function(ev) {
+      self.onClose(ev, 'no');
+    });
+
+    Utils.$addClass(root, 'DialogWindow');
+
+    return root;
+  };
+
+  DialogWindow.prototype.onClose = function(ev, button) {
+    this.closeCallback(ev, button, null);
+  };
+
+  DialogWindow.prototype._close = function() {
+    if ( !this.buttonClicked ) {
+      this.onClose(null, 'cancel', null);
+    }
+    return Window.prototype._close.apply(this, arguments);
+  };
+
+  DialogWindow.prototype._onKeyEvent = function(ev) {
+    Window.prototype._onKeyEvent.apply(this, arguments);
+
+    if ( ev.keyCode === Utils.Keys.ESC ) {
+      this.onClose(ev, 'cancel');
+    }
+  };
+
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

@@ -80,27 +80,15 @@
 
   UserSession.prototype.loadSession = function(res, callback) {
     var list = [];
-    res.forEach(function(iter, i) {
+    (res || []).forEach(function(iter, i) {
       var args = iter.args;
       args.__resume__ = true;
-      list.push({name: iter.name, args: args, data: {windows: iter.windows || []}});
+      args.__windows__ = iter.windows || [];
+
+      list.push({name: iter.name, args: args});
     });
 
-    API.launchList(list, function(app, metadata, appName, appArgs, queueData) {
-      var data = ((queueData || {}).windows) || [];
-      data.forEach(function(r, i) {
-        var w = app._getWindow(r.name);
-        if ( w ) {
-          w._move(r.position.x, r.position.y, true);
-
-          if ( w._properties.allow_resize ) {
-            w._resize(r.dimension.w, r.dimension.h, true);
-          }
-
-          console.info('UserSession::loadSession()->onSuccess()', 'Restored window \'' + r.name + '\' from session');
-        }
-      });
-    }, null, callback);
+    API.launchList(list, null, null, callback);
   };
 
   UserSession.prototype.setUserData = function(d) {

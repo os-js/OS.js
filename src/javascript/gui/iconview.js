@@ -27,169 +27,117 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement, _DataView) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
 
-  /**
-   * Icon View Element
-   *
-   * reserved item (data) keys:
-   *  label = What to show as title
-   *  icon = Path to icon
-   *
-   * @param String    name    Name of GUIElement (unique)
-   * @param Object    opts    A list of options
-   *
-   * @option opts String    iconSize      Icon Size (default=32x32)
-   * @option opts boolean   singleClick   Single click to Activate (dblclick) forced on touch devices
-   * @option opts Function  onRenderItem  Callback on item rendered
-   *
-   * @see OSjs.Core.GUIElement
-   * @api OSjs.GUI.IconView
-   *
-   * @extends _DataView
-   * @class
-   */
-  var IconView = function(name, opts) {
-    opts = opts || {};
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
-    this.$ul          = null;
-    this.iconSize     = opts.size || '32x32';
-    this.singleClick  = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
-    this.onRenderItem = opts.onRenderItem   || function(el, iter) {};
+  function createEntry(e) {
+    var entry = GUI.Helpers.createElement('gui-icon-view-entry', e);
+    return entry;
+  }
 
-    if ( OSjs.Compability.touch ) {
-      this.singleClick = true;
-    }
+  function initEntry(el, cel) {
+    // TODO: Custom Icon Size
+    var icon = cel.getAttribute('data-icon');
+    var label = GUI.Helpers.getLabel(cel);
 
-    _DataView.apply(this, ['IconView', name, opts]);
-  };
+    var dicon = document.createElement('div');
+    var dimg = document.createElement('img');
+    dimg.src = icon;
+    dicon.appendChild(dimg);
 
-  IconView.prototype = Object.create(_DataView.prototype);
+    var dlabel = document.createElement('div');
+    var dspan = document.createElement('span');
+    dspan.appendChild(document.createTextNode(label));
+    dlabel.appendChild(dspan);
 
-  IconView.prototype.init = function() {
-    var self      = this;
-    var el        = _DataView.prototype.init.apply(this, ['GUIIconView']);
-    var view      = this.$view;
-    el.className += ' IconSize' + this.iconSize;
+    GUI.Elements._dataview.bindEntryEvents(el, cel, 'gui-icon-view-entry');
 
-    this.$ul    = document.createElement('ul');
-    this._addEventListener(view, 'click', function(ev) {
-      var t = ev.target || ev.srcElement;
-      if ( t && t === view ) {
-        self.setSelected(null, null);
-      }
-    });
-
-    view.appendChild(this.$ul);
-
-    el.appendChild(view);
-
-    return el;
-  };
-
-  IconView.prototype.destroy = function() {
-    _DataView.prototype.destroy.apply(this, arguments);
-    this.$ul = null;
-  };
-
-  IconView.prototype._onRender = function() {
-    OSjs.Utils.$empty(this.$ul);
-  };
-
-  IconView.prototype._render = function() {
-    var self = this;
-
-    function _createImage(i) {
-      return OSjs.API.getIcon(i);
-    }
-
-    function _bindEvents(li, iter, singleClick) {
-      self._addEventListener(li, 'contextmenu', function(ev) {
-        ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-        ev.preventDefault();
-
-        self._onContextMenu(ev, iter);
-      });
-
-      if ( singleClick ) {
-        self._addEventListener(li, 'click', function(ev) {
-          self._onSelect(ev, iter);
-          self._onActivate(ev, iter);
-        });
-      } else {
-        self._addEventListener(li, 'click', function(ev) {
-          self._onSelect(ev, iter);
-        });
-        self._addEventListener(li, 'dblclick', function(ev) {
-          self._onActivate(ev, iter);
-        });
-      }
-    }
-
-    this.data.forEach(function(iter, i) {
-      var imgContainer = null;
-      var img;
-
-      var li = document.createElement('li');
-      li.setAttribute('data-index', i);
-
-      Object.keys(iter).forEach(function(k) {
-        if ( (['title', 'icon']).indexOf(k) === -1 ) {
-          li.setAttribute('data-' + k, iter[k]);
-        }
-      });
-
-      if ( iter.icon ) {
-        imgContainer = document.createElement('div');
-        img = document.createElement('img');
-        img.alt = ''; //iter.label || '';
-        img.title = ''; //iter.label || '';
-        img.src = _createImage(iter.icon);
-        imgContainer.appendChild(img);
-      }
-
-      var lblContainer = document.createElement('div');
-      var lbl = document.createElement('span');
-      lbl.appendChild(document.createTextNode(iter.label));
-      lblContainer.appendChild(lbl);
-
-      _bindEvents(li, iter, self.singleClick);
-
-      if ( imgContainer ) {
-        li.appendChild(imgContainer);
-      }
-      li.appendChild(lblContainer);
-
-      self.$ul.appendChild(li);
-
-      self.onCreateItem(li, iter);
-      self.onRenderItem(li, iter);
-
-      self.data[i]._element = li;
-      self.data[i]._index   = i;
-    });
-
-  };
-
-  /**
-   * Render the icons inside the view
-   *
-   * @return void
-   * @see _DataView::render()
-   * @method IconView::render()
-   */
-  IconView.prototype.render = function(data, reset) {
-    if ( !_DataView.prototype.render.call(this, data, reset) ) {
-      return;
-    }
-    this._render();
-  };
+    cel.appendChild(dicon);
+    cel.appendChild(dlabel);
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.IconView     = IconView;
+  /**
+   * Element: 'gui-icon-view'
+   *
+   * A container for displaying icons with labels
+   *
+   * Parameters:
+   *  icon-size     int         Icon size (default=16)
+   *
+   * Format for add():
+   *
+   * {
+   *    label: "Label",
+   *    icon: "Optional icon path",
+   *    value: "something or JSON or whatever"
+   * }
+   *
+   * @api OSjs.GUI.Elements.gui-icon-view
+   * @see OSjs.GUI.Elements._dataview
+   * @class
+   */
+  GUI.Elements['gui-icon-view'] = {
+    bind: GUI.Elements._dataview.bind,
 
-})(OSjs.Core.GUIElement, OSjs.GUI._DataView);
+    values: function(el) {
+      return GUI.Elements._dataview.getSelected(el, el.querySelectorAll('gui-icon-view-entry'));
+    },
+
+    build: function(el, applyArgs) {
+      var body = el.querySelector('gui-icon-view-body');
+      var found = !!body;
+
+      if ( !body ) {
+        body = document.createElement('gui-icon-view-body');
+        el.appendChild(body);
+      }
+
+      el.querySelectorAll('gui-icon-view-entry').forEach(function(cel, idx) {
+        if ( !found ) {
+          body.appendChild(cel);
+        }
+        initEntry(el, cel);
+      });
+
+      GUI.Elements._dataview.build(el, applyArgs);
+    },
+
+    set: function(el, param, value, arg) {
+      var body = el.querySelector('gui-icon-view-body');
+      if ( param === 'selected' || param === 'value' ) {
+        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-icon-view-entry'), value, arg);
+        return true;
+      }
+
+      return false;
+    },
+
+    call: function(el, method, args) {
+      var body = el.querySelector('gui-icon-view-body');
+      if ( method === 'add' ) {
+        GUI.Elements._dataview.add(el, args, function(e) {
+          var entry = createEntry(e);
+          body.appendChild(entry);
+          initEntry(el, entry);
+        });
+      } else if ( method === 'remove' ) {
+        GUI.Elements._dataview.remove(el, args, 'gui-icon-view-entry');
+      } else if ( method === 'clear' ) {
+        GUI.Elements._dataview.clear(el, body);
+      } else if ( method === 'patch' ) {
+        GUI.Elements._dataview.patch(el, args, 'gui-icon-view-entry', body, createEntry, initEntry);
+      }
+      return this;
+    }
+
+  };
+
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

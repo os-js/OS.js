@@ -13,7 +13,7 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution. 
  * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   var ops = {
@@ -77,143 +77,80 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window Constructor
-   */
-  var ApplicationCalculatorWindow = function(app, metadata) {
+  function ApplicationCalculatorWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationCalculatorWindow', {
-      title: metadata.name,
       icon: metadata.icon,
+      title: metadata.name,
       allow_resize: false,
       allow_maximize: false,
       width: 220,
-      height: 310
-    }, app]);
+      height: 340
+    }, app, scheme]);
 
     this.calc_array = ['=', 1, '0', '0', 0];
     this.pas_ch = 0;
-  };
+  }
 
   ApplicationCalculatorWindow.prototype = Object.create(Window.prototype);
+  ApplicationCalculatorWindow.constructor = Window.prototype;
 
-  ApplicationCalculatorWindow.prototype.init = function(wmRef, app) {
+  ApplicationCalculatorWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    // Create window contents (GUI) here
-    var row, col, lbl, key, container;
+    // Load and gel.set up scheme (GUI) here
+    scheme.render(this, 'CalculatorWindow', root);
 
-    container = document.createElement("div");
-    container.className = "Output";
-    this._addGUIElement(new GUI.Text('TextOutput', {value: "0", onKeyPress: function(ev) {
+    this._scheme.find(this, 'Output').on('keypress', function(ev) {
+      ev.stopPropagation();
       ev.preventDefault();
-      self.key(ev);
-      return false;
-    }}), container);
-    root.appendChild(container);
 
-    for ( row = 0; row < buttons.length; row++ ) {
-      container = document.createElement("div");
-      container.className = "Buttons";
-
-      for ( col = 0; col < buttons[row].length; col++ ) {
-        key = buttons[row][col];
-        lbl = labels[key];
-
-        this._addGUIElement(new GUI.Button('Button_'+key, {label: lbl, onClick: (function(c) {
-          return function() {
-            self.operation(c);
-          };
-        })(key), onMouseUp: function() {
-          self.setFocus();
-        }}), container);
+      var keyCode = ev.which || ev.keyCode;
+      if ( (keyCode>95) && (keyCode<106) ) {
+        self.operation(keyCode-96);
+      } else if ( (keyCode>47) && (keyCode<58) ) {
+        self.operation(keyCode-48);
+      } else {
+        if ( typeof keys[keyCode] !== 'undefined' ) {
+          self.operation(keys[keyCode]);
+        }
       }
+    }).focus();
 
-      root.appendChild(container);
-    }
+    root.querySelectorAll('gui-button').forEach(function(el, idx) {
+      var r = parseInt(idx / 4, 10);
+      var c = idx % 4;
+      var op = buttons[r][c];
+
+      el = scheme.get(el);
+      el.set('value', labels[op]);
+      el.on('click', function() {
+        self.operation(op);
+      });
+    });
 
     return root;
   };
 
-  ApplicationCalculatorWindow.prototype._inited = function() {
-    Window.prototype._inited.apply(this, arguments);
-
-    this.setFocus();
-  };
-
-  ApplicationCalculatorWindow.prototype._focus = function() {
-    this.setFocus();
-    return Window.prototype._focus.apply(this, arguments);
-  };
-
-  ApplicationCalculatorWindow.prototype._blur = function() {
-    var gel = this._getGUIElement("TextOutput");
-    if ( gel ) {
-      gel.blur();
-    }
-    return Window.prototype._blur.apply(this, arguments);
-  };
-
-  ApplicationCalculatorWindow.prototype.destroy = function() {
-    // Destroy custom objects etc. here
-
-    Window.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationCalculatorWindow.prototype.setFocus = function() {
-    var gel = this._getGUIElement("TextOutput");
-    if ( gel ) {
-      gel.focus();
-    }
-  };
-
-  ApplicationCalculatorWindow.prototype.key = function(ev) {
-    var keyCode = ev.which || ev.keyCode;
-    if ( (keyCode>95) && (keyCode<106) ) {
-      this.operation(keyCode-96);
-    } else if ( (keyCode>47) && (keyCode<58) ) {
-      this.operation(keyCode-48);
-    } else {
-      if ( typeof keys[keyCode] !== "undefined" ) {
-        this.operation(keys[keyCode]);
-      }
-    }
-  };
-
-  ApplicationCalculatorWindow.prototype._onKeyEvent = function(ev) {
-    Window.prototype._onKeyEvent.apply(this, arguments);
-
-    return;
-    /*
-    if ( ev.type == "keydown" || ev == "keypress" ) {
-      this.key(ev);
-    }
-    */
-  };
-
   ApplicationCalculatorWindow.prototype.operation = function(o) {
     var calcul;
-    var gel = this._getGUIElement("TextOutput");
-    if ( !gel ) return;
-    gel.blur();
-
+    var gel = this._scheme.find(this, 'Output');
     var addition = false;
     var getval = function() {
-      return gel.getValue().toString();
+      return gel.get('value').toString();
     };
 
     switch ( o ) {
       case 'CE' :
         this.calc_array = ['=', 1, '0', '0', 0];
-        gel.setValue("0");
+        gel.set('value', '0');
       break;
 
       case 'nbs' :
         if ( getval()<10 && getval()>-10 ) {
-          gel.setValue(0);
+          gel.set('value', 0);
         } else {
-          gel.setValue(getval().slice(0, getval().length-1));
-          
+          gel.set('value', getval().slice(0, getval().length-1));
           this.pas_ch = 1;
         }
         if ( this.calc_array[0] == '=' ) {
@@ -223,7 +160,7 @@
           this.calc_array[3] = getval();
         }
       break;
-      
+
       case 'plus' :
       case 'minus' :
       case 'multiply' :
@@ -231,21 +168,21 @@
         if ( this.calc_array[0] != '=' && this.calc_array[1] != 1 ) {
           eval('calcul='+this.calc_array[2]+this.calc_array[0]+this.calc_array[3]+';');
 
-          gel.setValue(calcul);
+          gel.set('value', calcul);
           this.calc_array[2]=calcul;
           this.calc_array[3]=0;
         }
         this.calc_array[0] = ops[o];
       break;
-        
+
       case 'dec' :
         if ( getval().indexOf(ops.dec) === -1 ) {
           if ( this.calc_array[1] == 1 && getval().indexOf(ops.dec) === -1 ) {
-            gel.setValue('0.');
+            gel.set('value', '0.');
 
             this.calc_array[1] = 0;
           } else {
-            gel.setValue(getval() + '.');
+            gel.set('value', getval() + '.');
           }
 
           if ( this.calc_array[0] == '=' ) {
@@ -255,12 +192,11 @@
             this.calc_array[3] = getval();
           }
         }
-        
         addition = true;
       break;
-        
+
       case 'perc' :
-        gel.setValue(getval()/100);
+        gel.set('value', getval()/100);
         if ( this.calc_array[0] == '=' ) {
           this.calc_array[2] = getval();
           this.calc_array[3] = 0;
@@ -271,7 +207,7 @@
       break;
 
       case 'swap' :
-        gel.setValue(getval()*-1);
+        gel.set('value', getval()*-1);
         if ( this.calc_array[0] == '=' ) {
           this.calc_array[2] = getval();
           this.calc_array[3] = 0;
@@ -285,7 +221,7 @@
         if ( this.calc_array[0] != '=' && this.calc_array[1] != 1 ) {
           eval('calcul='+this.calc_array[2]+this.calc_array[0]+this.calc_array[3]+';');
           this.calc_array[0] = '=';
-          gel.setValue(calcul);
+          gel.set('value', calcul);
           this.calc_array[2]=calcul;
           this.calc_array[3]=0;
         }
@@ -294,9 +230,9 @@
       default:
         var n = (o << 0);
         if ( this.calc_array[1] == 1 ) {
-          gel.setValue(n);
+          gel.set('value', n);
         } else {
-          gel.setValue(getval() + n);
+          gel.set('value', getval() + n);
         }
 
         if ( this.calc_array[0] == '=' ) {
@@ -322,51 +258,48 @@
     gel.focus();
   };
 
+  ApplicationCalculatorWindow.prototype._focus = function() {
+    if ( Window.prototype._focus.apply(this, arguments) ) {
+      var input = this._scheme.find(this, 'Output');
+      if ( input ) {
+        input.focus();
+      }
+      return true;
+    }
+    return false;
+  };
+
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application constructor
-   */
   var ApplicationCalculator = function(args, metadata) {
     Application.apply(this, ['ApplicationCalculator', args, metadata]);
-
-    // You can set application variables here
   };
 
   ApplicationCalculator.prototype = Object.create(Application.prototype);
+  ApplicationCalculator.constructor = Application;
 
-  ApplicationCalculator.prototype.destroy = function() {
-    // Destroy communication, timers, objects etc. here
-
-    return Application.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationCalculator.prototype.init = function(settings, metadata) {
-    var self = this;
-
+  ApplicationCalculator.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
 
-    // Create your main window
-    var mainWindow = this._addWindow(new ApplicationCalculatorWindow(this, metadata));
+    var self = this;
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationCalculatorWindow(self, metadata, scheme));
 
-    // Do other stuff here
+      onInited();
+    });
   };
 
-  ApplicationCalculator.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    // Make sure we kill our application if main window was closed
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationCalculatorWindow' ) {
-      this.destroy();
-    }
-  };
-
-  //
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
-  //
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationCalculator = ApplicationCalculator;
+  /////////////////////////////////////////////////////////////////////////////
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationCalculator = OSjs.Applications.ApplicationCalculator || {};
+  OSjs.Applications.ApplicationCalculator.Class = ApplicationCalculator;
+
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

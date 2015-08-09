@@ -29,31 +29,47 @@
  * @licence Simplified BSD License
  */
 
-.theme_gui_button {
-  cursor : pointer;
-  background : @theme_gui_button_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_button_bg_from 0%, @theme_gui_button_gb_to 100%);
-  border : 1px solid @theme_gui_button_border_color;
-  color : @theme_gui_button_fg_color;
-}
-.theme_gui_button_hover {
-  background : @theme_gui_hbutton_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_hbutton_bg_from 0%, @theme_gui_hbutton_gb_to 100%);
-  border : 1px solid @theme_gui_hbutton_border_color;
-  color : @theme_gui_hbutton_fg_color;
-}
-.theme_gui_button_active {
-  background : @theme_gui_abutton_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_abutton_bg_from 0%, @theme_gui_abutton_gb_to 100%);
-  border : 1px solid @theme_gui_abutton_border_color;
-  color : @theme_gui_abutton_fg_color;
-}
-.theme_gui_button_disabled {
-  background : @theme_gui_dbutton_bg_color;
-  background: linear-gradient(to bottom, @theme_gui_dbutton_bg_from 0%, @theme_gui_dbutton_gb_to 100%);
-  border : 1px solid @theme_gui_dbutton_border_color;
-  color : @theme_gui_dbutton_fg_color;
-}
+@base_background_color  : #ebebeb;
+@base_foreground_color  : #242424;
+@base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+@base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+
+@gui_selected_background_color       : rgb(45, 115, 210);
+@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
+@gui_selected_foreground_color       : #ffffff;
+
+@gui_border_color                    : #b2b2b2;
+@gui_background_color                : #d9d9d9;
+
+@gui_input_border_color              : #c1c1c1;
+@gui_input_background_color          : #ffffff;
+@gui_input_foreground_color          : @base_foreground_color;
+
+@gui_input_disabled_border_color     : #cccccc;
+@gui_input_disabled_background_color : #dddddd;
+@gui_input_disabled_foreground_color : #C7C7C7;
+
+@gui_button_border_color             : @gui_input_border_color;
+@gui_button_background_color         : #f8f8f8;
+@gui_button_foreground_color         : @base_foreground_color;
+@gui_button_background               : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+
+@gui_button_active_border_color      : #242424;
+@gui_button_active_background_color  : @gui_button_background_color;
+@gui_button_active_foreground_color  : @base_foreground_color;
+@gui_button_active_background        : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+
+@gui_button_disabled_border_color    : @gui_input_disabled_border_color;
+@gui_button_disabled_background_color: @gui_input_disabled_background_color;
+@gui_button_disabled_foreground_color: @base_foreground_color;
+@gui_button_disabled_background      : @gui_input_disabled_background_color;
+
+/**
+ * ===========================================================================
+ *                                 CLASSES
+ * ===========================================================================
+ */
+
 
 .theme_border(@radius) {
   -webkit-border-radius: @radius;
@@ -79,15 +95,53 @@
           border-bottom-right-radius: @radius;
 }
 
+.theme_button() {
+  cursor : pointer;
+  padding : 4px;
+  background-color: @gui_button_background_color;
+  background: @gui_button_background;
+  border: 1px solid @gui_button_border_color;
+  color: @gui_button_foreground_color;
+}
+.theme_button_disabled() {
+  border-color : @gui_button_disabled_border_color;
+  color : @gui_button_disabled_foreground_color;
+  background-color: @gui_button_disabled_background_color;
+  background: @gui_button_disabled_background;
+}
+.theme_button_active() {
+  border-color : @gui_button_active_border_color;
+  color : @gui_button_active_foreground_color;
+  background-color: @gui_button_active_background_color;
+  background: @gui_button_active_background;
+}
+
+.theme_label_disabled() {
+  color : @gui_input_disabled_foreground_color;
+}
+.theme_text_input() {
+  padding : 4px;
+  background-color : @gui_input_background_color;
+  border : 1px solid @gui_input_border_color;
+}
+.theme_text_input_disabled() {
+  border-color : @gui_input_disabled_border_color;
+  background-color : @gui_input_disabled_background_color;
+  color : @gui_input_disabled_foreground_color;
+}
+
+
 /**
- * Base
+ * ===========================================================================
+ *                                 OVERRIDES
+ * ===========================================================================
  */
 
 body, input, button, textarea, label, select {
   font-family:Karla, Sans-serif;
   font-weight:normal;
   font-style:normal;
-  color: @theme_base_fg_color;
+  color: @base_foreground_color;
 }
 
 ::-webkit-scrollbar {
@@ -95,85 +149,94 @@ body, input, button, textarea, label, select {
   height: 12px;
 }
 ::-webkit-scrollbar-button {
-  background : @theme_secondary_border_color;
-  color : @theme_gui_button_fg_color;
+  background : @gui_border_color;
+  color : @gui_background_color;
   width : 12px;
   height : 12px;
   display : none;
 }
 ::-webkit-scrollbar-track {
-  background : @theme_base_bg_color;
+  background : @base_background_color;
 }
 ::-webkit-scrollbar-track-piece {
-  background : @theme_base_bg_color;
+  background : @base_background_color;
 }
 ::-webkit-scrollbar-thumb {
-  background : @theme_secondary_border_color;
+  background : @gui_border_color;
 }
 ::-webkit-scrollbar-corner {
-  background : @theme_base_bg_color;
+  background : @base_background_color;
 }
 ::-webkit-resizer {
-  background : @theme_base_bg_color;
+  background : @base_background_color;
 }
 
 
 /**
- * WM
+ * ===========================================================================
+ *                                  WM
+ * ===========================================================================
  */
 
-.WMPanel {
-  color : #ffffff; /* Window Manager manages this */
+body[data-attention="true"]:after {
+  background-color : @base_foreground_color;
 }
-.WMPanel:before {
+
+corewm-panel {
+  color : #ffffff; /* Window Manager manages this */
+  padding : 4px;
+}
+corewm-panel:before {
   background : #101010; /* Window Manager manages this */
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
 }
-  .WMPanel li.Button {
+  corewm-panel li.Button {
     margin-top : -1px;
     cursor : pointer;
     background : transparent !important;
-    text-shadow: @theme_text_shadow;
   }
 
-.WMPanel .PanelItemClock {
-  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+corewm-panel .PanelItemClock {
   font-weight : bold;
   text-align : right;
   line-height : 26px;
 }
 
-.WMPanel .PanelItemWindowList li.Button {
+corewm-panel .PanelItemWindowList li.Button {
   opacity : .50;
 }
-.WMPanel .PanelItemWindowList li.Button.Focused {
+corewm-panel .PanelItemWindowList li.Button.Focused {
   opacity : 1;
 }
 
+corewm-panel-container {
+  padding : 4px;
+}
+
 /* Notifications */
-.ProcessSplash {
-  box-shadow : @theme_base_shadow_unfocused;
-  background : @theme_base_bg_color;
+application-splash {
+  box-shadow : @base_shadow_focused;
+  background : @base_background_color;
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
   cursor : pointer;
 }
-.WMNotification {
+corewm-notification {
   color : #fff; /* Window Manager manages this */
   cursor : pointer;
 }
-.WMNotification:before {
+corewm-notification:before {
   background : #101010; /* Window Manager manages this */
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
 }
-.WMNotification .Title {
+corewm-notification .Title {
   font-weight : bold;
 }
 
-.WMNotification .Title,
-.WMNotification .Message {
+corewm-notification .Title,
+corewm-notification .Message {
   line-height : 16px;
 }
 
@@ -183,67 +246,71 @@ body, input, button, textarea, label, select {
 }
 
 /* Window Switcher */
-#WindowSwitcher {
+corewm-window-switcher {
   opacity : 0.8;
-  box-shadow : @theme_base_shadow_unfocused;
-  background : @theme_base_bg_color;
+  box-shadow : @base_shadow_focused;
+  background : @base_background_color;
 }
-#WindowSwitcher > div.Active {
-  background : @theme_selected_bg_color;
+corewm-window-switcher > div.Active {
+  background : @gui_selected_background_color;
 }
-#WindowSwitcher > div.Active > span {
-  color : @theme_selected_fg_color;
+corewm-window-switcher > div.Active > span {
+  color : @gui_selected_foreground_color;
 }
 
 /**
- * Window
+ * ===========================================================================
+ *                                WINDOW
+ * ===========================================================================
  */
-.Window {
+application-window {
   opacity : 0.8;
 }
-.Window:before {
-  box-shadow : @theme_base_shadow_unfocused;
-  background : @theme_base_bg_color;
+application-window:before {
+  box-shadow : @base_shadow_unfocused;
+  background : @base_background_color;
 }
-.Window.WindowHintFocused {
+application-window[data-focused="true"] {
   opacity : 1.0;
 }
-.Window.WindowHintFocused:before {
-  box-shadow : @theme_base_shadow_focused;
+application-window[data-focused="true"]:before {
+  box-shadow : @base_shadow_focused;
 }
-.Window > .WindowWrapper {
+application-window-top {
+}
+application-window-content {
   overflow : hidden;
 }
-.Window > .WindowTop:active {
+application-window-top:active {
   cursor : move;
   cursor : pointer;
 }
-.Window > .WindowTop > .WindowTitle {
-  text-shadow: @theme_text_shadow;
-  color : @theme_secondary_fg_color;
+application-window-title {
   font-weight : bold;
+  color : @base_foreground_color;
+  opacity : .5;
 }
-.Window > .WindowTop > .WindowTitle:active {
+application-window-title:active {
   cursor : move;
   cursor : pointer;
 }
-.Window.WindowHintFocused .WindowTitle {
-  color : @theme_base_fg_color;
+application-window[data-focused="true"] application-window-title {
+  opacity : 1;
 }
-.WindowButton {
+application-window-buttons > .application-window-button-entry {
   cursor : pointer;
 }
-.WindowResize {
+application-window-resize {
   cursor : move;
 }
-.WindowTop, .WindowTop > * {
+application-window-top, application-window-top > * {
   cursor : default;
 }
-.WindowLoading {
+application-window-loading {
   background : #000;
   opacity : 0.8;
 }
-.WindowLoadingIndicator {
+application-window-loading-indicator {
   position : absolute;
   width: 48px;
   height: 48px;
@@ -252,7 +319,7 @@ body, input, button, textarea, label, select {
   margin-left : -24px;
   margin-top : -24px;
 }
-.WindowLoadingIndicator:before {
+application-window-loading-indicator:before {
   display: block;
   content: '';
   width: 44px;
@@ -267,549 +334,674 @@ body, input, button, textarea, label, select {
       -ms-animation: windowloadinganim 0.75s linear infinite;
           animation: windowloadinganim 0.75s linear infinite;
 }
-.Window.WindowHintDnD:after {
-  border : 2px solid #000;
-  margin : -2px;
+application-window[data-dnd-state="true"]:after {
+  border : 4px solid rgba(0, 0, 0, .7);
+  border-radius : 1px;
+  .theme_border_top(3px);
+  margin : -4px;
 }
-.WindowDisabledOverlay {
+application-window-disabled {
   background : #000;
   opacity : 0.5;
   cursor : not-allowed;
 }
-.Window > .WindowWrapper > .WindowWarning {
+application-window-warning {
   background : #FFB800;
   color : #fff;
   border-color : #DF9F15;
 }
-.Window > .WindowWrapper > .WindowWarning > .Close {
+application-window-warning > div:nth-child(1) {
 }
-.Window > .WindowWrapper > .WindowWarning > .Close:hover {
+application-window-warning > div:nth-child(1):hover {
   color : #111;
   cursor : pointer;
   opacity : .9;
 }
 
 /**
- * GUIMenu
+ * ===========================================================================
+ *                              CONTAINERS
+ * ===========================================================================
  */
-.Menu {
-  box-shadow : @theme_base_shadow_unfocused;
-  background : @theme_base_bg_color;
+
+/* Container */
+gui-container {
+  margin : 4px;
 }
-.Menu li {
-  cursor : pointer;
-  color: @theme_base_fg_color;
+
+/* Box */
+  gui-hbox-container > .gui-element,
+  gui-vbox-container > .gui-element {
+    margin : 4px;
+  }
+
+    gui-hbox-container[data-fill='true'] > *,
+    gui-vbox-container[data-fill='true'] > * {
+      width : ~"calc(100% - 8px)";
+      height : ~"calc(100% - 8px)";
+    }
+
+/* Paned View */
+  gui-paned-view > gui-paned-view-handle {
+    min-width : 8px;
+    width : 8px;
+    cursor : ew-resize;
+  }
+
+/* IFrame */
+gui-iframe {
+  background-color : @gui_input_background_color;
 }
-.Menu li:hover {
-  background : @theme_selected_bg_color;
-  color : @theme_selected_fg_color;
+  gui-iframe > iframe {
+    background-color : @gui_input_background_color;
+  }
+
+/* Button Bar */
+/* Toolbar */
+gui-toolbar > *,
+gui-button-bar > * {
+  margin : 4px;
 }
-.Menu li.Disabled,
-.Menu li[disabled] {
-  color : @theme_secondary_fg_color;
+
+gui-toolbar {
 }
-.Menu .Arrow {
-  width: 0;
-  height: 0;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  border-left: 8px solid @theme_base_fg_color;
-  opacity : .9;
+
+gui-toolbar[data-orientation="vertical"] {
+  margin-left : 0;
+  margin-right : 0;
+  margin-top : 4px;
+  margin-bottom : 4px;
 }
-.Menu li:hover .Arrow {
-  border-left: 8px solid @theme_selected_bg_color;
-}
-.Menu .Pointer {
-  background : @theme_base_bg_color;
-}
+
+/* Tabs */
+  gui-tabs > ul {
+    height : 25px;
+  }
+    gui-tabs > ul > li {
+      padding-left : 8px;
+      padding-right : 8px;
+      cursor : pointer;
+      background-color : @gui_background_color;
+      border : 1px solid transparent;
+      border-bottom : 0 none;
+      line-height : 25px;
+    }
+    gui-tabs > ul > li.gui-active {
+      background-color : transparent;
+      border-color : @gui_border_color;
+    }
+      gui-tabs > ul > li.gui-active:after {
+        bottom : -1px;
+        border-bottom : 1px solid @base_background_color;
+      }
+  gui-tabs > div {
+    height : ~"calc(100% - 25px)";
+    border : 1px solid @gui_border_color;
+  }
+
+    gui-tab-container {
+      padding : 4px;
+    }
+
+/* Button Bar */
 
 /**
- * GUIMenuBar
+ * ===========================================================================
+ *                                INPUTS
+ * ===========================================================================
  */
-.GUIMenuBar {
-  border-bottom : 1px solid @theme_secondary_border_color;
-  padding : 2px;
-}
-.GUIMenuBar > ul > li {
-  cursor : pointer;
-}
-.GUIMenuBar > ul > li:hover {
-  background : @theme_selected_bg_color;
-  color : @theme_selected_fg_color;
-}
-.GUIMenuBar > ul > li.Disabled,
-.GUIMenuBar > ul > li[disabled] {
-  color : @theme_secondary_fg_color;
-}
 
-/**
- * GUIStatusBar
- */
-.GUIStatusBar {
-  background : @theme_base_bg_color;
-  border-top : 1px solid @theme_secondary_border_color;
+/* Label */
+gui-label {
+  height : 26px;
+  line-height : 26px;
 }
-
-/**
- * GUITabs
- */
-.GUITabs .TabContents {
-  border : 1px solid @theme_secondary_border_color;
-}
-.GUITabs .Tabs .Tab.Active {
-  background : @theme_base_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  border-bottom : 1px solid @theme_base_bg_color;
-}
-.GUITabs .Tabs .Tab {
-  cursor : pointer;
-  background : @theme_secondary_bg_color;
-  border : 1px solid @theme_base_border_color;
-}
-.GUITabs .Tabs .Tab .Close {
-  border : 1px solid transparent;
-  font-size : 10px;
-}
-.GUITabs .Tabs .Tab .Close:hover {
-  background : @theme_selected_bg_color;
-}
-.GUITabs .Tabs .Tab .Close:active {
-  background : @theme_selected_bg_color;
-  border-color : @theme_selected_fg_color;
-}
-
-/**
- * GUIToolBar
- */
-.GUIToolbar > .Container {
-  background : @theme_base_border_color;
-}
-.GUIToolbar.horizontal li.Separator {
-  border-left : 1px solid @theme_secondary_border_color;
-}
-
-/**
- * GUIListView
- */
-.GUIListView {
-  background : @theme_secondary_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUIListView tbody tr:nth-child(2n+2) {
-  background : @theme_odd_row;
-}
-.GUIListView tbody tr:nth-child(2n+1) {
-  background : @theme_even_row;
-}
-.GUIListView tr.Active td {
-  color : @theme_selected_fg_color;
-  background : @theme_selected_bg_color;
-}
-.GUIListView thead tr {
-  background : @theme_secondary_bg_color;
-}
-.GUIListView .Resizer {
-  border-color : @theme_secondary_border_color;
-  cursor : ew-resize;
-}
-.GUIListView .Scroll {
-  background : @theme_input_bg_color;
-}
-
-/**
- * GUITreeView
- */
-.GUITreeView {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUITreeView .Active {
-  color : @theme_selected_fg_color;
-  background : @theme_selected_bg_color;
-}
-.GUITreeView .Expander:after {
-  border-left-color: @theme_base_border_color;
-}
-.GUITreeView .Expanded > div > .Expander:after {
-  border-top-color: @theme_base_border_color;
-}
-.GUITreeView li.Active > ul {
-  background : @theme_input_bg_color;
-}
-.GUITreeView li.Active > ul > li {
-  color: @theme_base_fg_color;
-}
-
-/**
- * GUIColorSwatch
- */
-.GUIColorSwatch {
-  border : 1px solid @theme_secondary_border_color;
-}
-
-/**
- * GUIIconView
- */
-.GUIIconView {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUIIconView .Active {
-  background : @theme_selected_bg_color;
-  color : @theme_selected_fg_color;
-}
-.GUIIconView li.Active div span {
-  background : @theme_selected_bg_color;
-}
-.GUIIconView li {
-  cursor : pointer;
-}
-
-/**
- * GUISlider
- */
-.GUISlider {
-  margin-top : 2px;
-  margin-bottom : 2px;
-}
-.GUISlider .Root {
-  background : @theme_secondary_bg_color;
-  border : 1px solid @theme_base_border_color;
-}
-.GUISlider.horizontal .Root {
-  height : 6px;
-  top : 50%;
-  margin-top : -4px;
-}
-.GUISlider.vertical .Root {
-  width : 6px;
-  top : 0px;
-  left : 50%;
-  margin-left : -4px;
-}
-.GUISlider .Button {
-  width : 18px;
-  height : 18px;
-
-  &:extend(.theme_gui_button);
-}
-.GUISlider .Button:hover {
-  border : 1px solid @theme_gui_hbutton_border_color;
-}
-
-/**
- * GUIProgressBar
- */
-.GUIProgressBar .Container {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-.GUIProgressBar .Bar {
-  text-align : center;
-  background : @theme_selected_bg_color url('default/gui/progressbar.png') repeat-x center;
-}
-.GUIProgressBar .Label {
-  color : @theme_selected_fg_color;
-  text-shadow: @theme_base_shadow_focused;
-}
-
-/**
- * GUIRichtText
- */
-.GUIRichText {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-}
-
-/**
- * GUIFileView
- */
-.GUIFileView .GUIListView .Arrow {
-  width: 0;
-  height: 0;
-  opacity : .9;
-}
-.GUIFileView .GUIListView .Arrow.Ascending {
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 8px solid @theme_base_fg_color;
-}
-.GUIFileView .GUIListView .Arrow.Descending {
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-bottom: 8px solid @theme_base_fg_color;
-}
-
-/**
- * GUIText GUITextArea
- */
-.GUITextarea textarea,
-.GUIText input,
-.GUISelectList select,
-.GUISelect select {
-  margin : 0;
-  padding : 2px;
-  outline : none;
-  min-height : 24px;
-
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-
-  resize : none;
-  outline : none;
-}
-
-.GUITextarea textarea[disabled],
-.GUIText input[disabled] {
-  color : @theme_secondary_fg_color;
-}
-
-/*
- * GUISelect
- */
-.GUISelect select {
-  margin : 0;
-  padding : 2px;
-  padding : 2px 0 2px 2px;
-  min-height : 24px;
-
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-
-  outline:none;
-  resize : none;
-  display: inline-block;
-
-  -webkit-border-radius: 0px;
-     -moz-border-radius: 0px;
-      -ms-border-radius: 0px;
-          border-radius: 0px;
-
-  -webkit-appearance:none;
-     -moz-appearance:none;
-      -ms-appearance:none;
-          appearance:none;
-}
-.GUISelect:before {
-  content : '';
-  right : 1px;
-  top : 1px;
-  width : 22px;
-  height : 22px;
-  background : @theme_input_bg_color;
-  position : absolute;
-  z-index : 99;
-  pointer-events : none;
-  display : block;
-}
-.GUISelect:after {
-  content : '<>';
-  font : 11px "Consolas", monospace;
-  color : @theme_secondary_border_color;
-  -webkit-transform : rotate(90deg);
-  -moz-transform : rotate(90deg);
-  -ms-transform : rotate(90deg);
-  transform : rotate(90deg);
-  right : 2px;
-  top : 4px;
-  padding : 0 0 2px;
-  border-bottom : 1px solid @theme_secondary_border_color;
-  position : absolute;
-  z-index : 100;
-  pointer-events : none;
-}
-
-/**
- * GUISwitch
- */
-.GUISwitch .Overlay {
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-  cursor : pointer;
-}
-.GUISwitch .Overlay:after {
-  &:extend(.theme_gui_button);
-  line-height : 20px;
-  content : '0';
-  padding : 0;
-  margin : 0;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-}
-.GUISwitch.Checked .Overlay:after {
-  content : '1';
-}
-
-/**
- * GUIButton
- */
-.GUIButton button,
-.GUIToolbar button {
-  margin : 0;
-  padding : 0;
-  padding-left : 5px;
-  padding-right : 5px;
-  height : 24px;
-  min-width : 30px;
-  vertical-align : middle;
-  outline : none;
-
-  outline : none;
-
-  &:extend(.theme_gui_button);
-  box-shadow: @theme_input_shadow;
-}
-
-.GUIButton button[disabled],
-.GUIButton button[disabled]:active,
-.GUIButton button[disabled].Active,
-.GUIToolbar button[disabled],
-.GUIToolbar button.Disabled,
-.GUIToolbar button.Disabled:active,
-.GUIToolbar button[disabled]:active,
-.GUIToolbar button[disabled].Active {
-  &:extend(.theme_gui_button_disabled);
-}
-
-.GUIButton button[disabled] img,
-.GUIButton button[disabled]:active img,
-.GUIButton button[disabled].Active img,
-.GUIToolbar button[disabled] img,
-.GUIToolbar button.Disabled img,
-.GUIToolbar button.Disabled:active img,
-.GUIToolbar button[disabled]:active img,
-.GUIToolbar button[disabled].Active img {
-  opacity : .5;
-}
-
-.GUIButton button:focus,
-.GUIToolbar button:focus {
-  &:extend(.theme_gui_button_hover);
-}
-
-.GUIButton button:active,
-.GUIButton button.Active,
-.GUIToolbar button:active,
-.GUIToolbar button.Active {
-  &:extend(.theme_gui_button_active);
-}
-
-.GUIToolbar.horizontal button span {
-  padding-left : 5px;
-}
-
-/**
- * GUICheckbox GUIRadio
- */
-.GUICheckbox,
-.GUIRadio {
-  height : 24px;
-}
-
-.GUICheckbox label,
-.GUIRadio label {
-  display : block;
-  height : 16px;
-  padding : 4px;
-  padding-left : 24px;
-}
-
-.GUICheckbox input,
-.GUIRadio input {
-  width : 16px;
-  height : 16px;
-  margin : 0;
-  padding : 0;
-  outline : none;
-  resize : none;
-  display: block;
-  vertical-align : middle;
-  position : absolute;
-  top : 3px;
-  left : 2px;
-  z-index : 100;
-  visibility : hidden;
-
-  background : transparent;
-  border : 0 none;
-
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-       -o-box-sizing: border-box;
-          box-sizing: border-box;
-
-  -webkit-border-radius: 0px;
-     -moz-border-radius: 0px;
-      -ms-border-radius: 0px;
-          border-radius: 0px;
-
-  -webkit-appearance:none;
-     -moz-appearance:none;
-      -ms-appearance:none;
-          appearance:none;
-}
-
-.GUICheckbox label:before,
-.GUIRadio label:before {
-  content : '';
-  position : absolute;
-  left : 0px;
-  top : 2px;
-  width : 16px;
+gui-hbox-container > gui-label,
+gui-vbox-container > gui-label {
   height : 16px;
   line-height : 16px;
-  text-align : center;
-  cursor : pointer;
-  z-index : 1;
-  pointer-events : none;
-
-  background : @theme_input_bg_color;
-  border : 1px solid @theme_secondary_border_color;
-  box-shadow: @theme_input_shadow;
-  font-family : Arial;
-  color : @theme_gui_button_fg_color;
+  min-height : 16px;
 }
 
-.GUIRadio label:before {
-  border-radius : 16px;
+/* Button */
+gui-button {
+  height : 26px;
+}
+gui-button[data-icon-size="32"] {
+  height : 42px;
+}
+  gui-button button {
+    .theme_button();
+  }
+  gui-button button.gui-active,
+  gui-button button:active {
+    .theme_button_active();
+  }
+  gui-button button.gui-active:disabled,
+  gui-button button:disabled:active,
+  gui-button button:disabled {
+    .theme_button_disabled();
+  }
+  gui-button button:disabled img {
+    opacity : .5;
+  }
+  gui-button button:disabled {
+    cursor : default;
+    color : @gui_input_disabled_foreground_color;
+  }
+  gui-button button.gui-has-image img {
+    padding-right : 4px;
+  }
+  gui-button.gui-has-image.gui-has-label button {
+    padding-left : 28px;
+  }
+  gui-button[data-icon-size="32"].gui-has-image.gui-has-label button {
+    padding-left : 44px;
+  }
+
+/* Checkbox Button */
+/* Radio Button */
+gui-radio,
+gui-checkbox {
+  height : 26px;
+}
+  gui-radio input,
+  gui-checkbox input {
+    text-align : center;
+    background: @gui_input_background_color;
+    border: 1px solid @gui_input_border_color;
+    width : 16px;
+    height : 16px;
+    line-height: 12px;
+    color : @gui_input_foreground_color;
+    font-family: Arial;
+  }
+
+  gui-radio input {
+    -webkit-border-radius: 16px;
+       -moz-border-radius: 16px;
+        -ms-border-radius: 16px;
+            border-radius: 16px;
+  }
+
+  gui-radio input:checked:after {
+    content: "\2022";
+    font-size: 32px;
+  }
+
+  gui-checkbox input:checked:after {
+    content: "\2713";
+    font-size: 12px;
+  }
+
+  gui-radio[data-disabled="true"] label,
+  gui-checkbox[data-disabled="true"] label {
+    color : @gui_input_disabled_foreground_color;
+  }
+
+  gui-radio input:disabled,
+  gui-checkbox input:disabled {
+    border-color : @gui_input_disabled_border_color;
+    background-color : @gui_input_disabled_background_color;
+  }
+
+  gui-radio > label,
+  gui-checkbox > label {
+    line-height : 26px;
+  }
+  gui-radio > label > span,
+  gui-checkbox > label > span {
+    padding-left : 4px;
+  }
+
+/* Select Dropdown */
+gui-select {
+  height : 26px;
+}
+  gui-select select {
+    .theme_text_input();
+    padding-right : 20px;
+  }
+  gui-select select:disabled {
+    .theme_text_input_disabled();
+  }
+
+  gui-select:before {
+    right: 1px;
+    top: 1px;
+    bottom : 1px;
+    width: 22px;
+    background: @gui_input_background_color;
+  }
+  gui-select:after {
+    content: '<>';
+    font: 11px "Consolas", monospace;
+    color: @gui_input_border_color;
+    right: 2px;
+    top: 5px;
+    padding: 0 0 2px;
+    border-bottom: 1px solid @gui_input_border_color;
+
+    -webkit-transform: rotate(90deg);
+       -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+  }
+  gui-select[data-disabled="true"]:before {
+    background-color : @gui_input_disabled_background_color;
+  }
+
+/* Select List */
+gui-select-list select {
+  .theme_text_input();
+}
+gui-select-list select:disabled {
+  .theme_text_input_disabled();
 }
 
-.GUICheckbox input:checked + label:before {
-  content: "\2713";
-  font-size : 16px;
+/* Slider */
+gui-slider {
+  height : 26px;
+}
+  gui-slider input {
+    background : transparent;
+    border : 0 none;
+    height : 26px;
+  }
+
+  /*
+   * RANGE TRACK
+   */
+
+  gui-slider input::-moz-range-track {
+    height : 4px;
+    background-color : @gui_background_color;
+  }
+
+  gui-slider input::-webkit-slider-runnable-track {
+    height : 4px;
+    background-color : @gui_background_color;
+  }
+
+  gui-slider input::-ms-track {
+    height : 4px;
+    background-color : @gui_background_color;
+  }
+
+  /*
+   * RANGE THUMB
+   *
+   * TODO
+   * TODO DISABLED STATE
+   * TODO
+   */
+
+  gui-slider input::-moz-range-thumb {
+    .theme_button();
+    height : 18px;
+    width : 10px;
+  }
+  gui-slider input:disabled::-moz-range-thumb {
+    border-color : @gui_input_disabled_border_color;
+  }
+
+  gui-slider input::-webkit-slider-thumb {
+    .theme_button();
+    height : 24px;
+    width : 16px;
+    margin-top : -10px;
+  }
+  gui-slider input:disabled::-webkit-range-thumb {
+    background-color : @gui_background_color;
+    border-color : @gui_input_disabled_border_color;
+  }
+
+  gui-slider input::-ms-thumb {
+    .theme_button();
+    height : 24px;
+    width : 16px;
+  }
+  gui-slider input:disabled::-ms-thumb {
+    border-color : @gui_input_disabled_border_color;
+  }
+
+  /**
+   * MISC
+   */
+  gui-slider input[type=range]::-ms-fill-lower {
+    border : 0 none;
+    background-color : @gui_background_color;
+  }
+  gui-slider input[type=range]::-ms-fill-upper {
+    border : 0 none;
+    background-color : @gui_background_color;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-lower {
+    background-color : @gui_background_color;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-upper {
+    background-color : @gui_background_color;
+  }
+
+/* Switch */
+gui-switch {
+  height : 26px;
+}
+  gui-switch div {
+    width : 48px;
+
+    .theme_text_input();
+    padding : 0;
+  }
+
+  gui-switch button {
+    .theme_button();
+  }
+
+  gui-switch > label > div {
+    margin-left : 4px;
+  }
+
+  gui-switch[data-disabled="true"] button {
+    .theme_button_disabled();
+  }
+  gui-switch[data-disabled="true"] div {
+    .theme_text_input_disabled();
+    padding : 0;
+  }
+
+  gui-switch[data-disabled="true"] button,
+  gui-switch[data-disabled="true"] label {
+    .theme_label_disabled();
+  }
+
+/* Text Field */
+/* Password Field */
+gui-password,
+gui-text {
+  height : 26px;
+}
+  gui-password input,
+  gui-text input {
+    .theme_text_input();
+    padding-left : 8px;
+    padding-right : 8px;
+  }
+
+  gui-password > label > input,
+  gui-text > label > input {
+    margin-left : 4px;
+  }
+
+  gui-password input:disabled,
+  gui-text input:disabled {
+    .theme_text_input_disabled();
+  }
+
+  gui-password[data-disabled="true"] label,
+  gui-text[data-disabled="true"] label {
+    .theme_label_disabled();
+  }
+
+
+/* Text Area */
+  gui-textarea textarea {
+    .theme_text_input();
+  }
+  gui-textarea textarea:disabled {
+    .theme_text_input_disabled();
+  }
+
+  gui-textarea[data-disabled="true"] label {
+    .theme_label_disabled();
+  }
+
+/* Rich Text */
+gui-richtext {
+  padding : 4px;
+  background-color : @gui_input_background_color;
+  border : 1px solid @gui_input_border_color;
+}
+  gui-richtext > iframe {
+    background-color : @gui_input_background_color;
+  }
+
+/* Grid */
+gui-grid > gui-grid-row > gui-grid-entry { /* li */
+  margin: 4px;
 }
 
-.GUIRadio input:checked + label:before {
-  content: "\2022";
-  font-size : 32px;
+/* Modal Input */
+gui-input-modal input {
+  .theme_text_input();
+  .theme_text_input_disabled();
+}
+gui-input-modal button {
+  margin-left : 4px;
+  .theme_button();
+  padding-left : 8px;
+  padding-right : 8px;
 }
 
-.GUICheckbox.Disabled label:before,
-.GUIRadio.Disabled label:before {
-  color: @theme_secondary_border_color;
+/**
+ * ===========================================================================
+ *                                 MISC
+ * ===========================================================================
+ */
+
+/* Video */
+gui-video {
 }
+  gui-video > video {
+  }
+
+/* Color Swatch */
+gui-color-swatch {
+  border: 1px solid @gui_input_border_color;
+}
+
+/* Color Box */
+gui-color-box {
+  .theme_button();
+}
+  gui-color-box > div {
+    background : #fff;
+  }
+
+/* Menu */
+gui-menu {
+  border : 1px solid transparent;
+  background: @base_background_color;
+  box-shadow : @base_shadow_focused;
+  color : @base_foreground_color;
+}
+  gui-menu > gui-menu-entry {
+    color: @base_foreground_color;
+  }
+  gui-menu > gui-menu-entry > label {
+    cursor : pointer;
+    line-height : 18px;
+    padding : 4px;
+  }
+
+  gui-menu > gui-menu-entry.gui-menu-expand {
+    padding-right : 16px;
+  }
+  gui-menu > gui-menu-entry.gui-menu-expand:after {
+    content : '>';
+    padding : 4px;
+  }
+
+  gui-menu > gui-menu-entry:hover {
+    background-color: @gui_selected_background_color;
+  }
+  gui-menu > gui-menu-entry:hover > label {
+    color: @gui_selected_foreground_color;
+  }
+    gui-menu > gui-menu-entry {
+      background-position : 4px center;
+    }
+    gui-menu > gui-menu-entry > label.gui-has-image {
+      padding-left : 22px;
+    }
+    gui-menu > gui-menu-entry[data-disabled="true"],
+    gui-menu > gui-menu-entry[data-disabled="true"] > label {
+      color : @gui_input_disabled_foreground_color;
+    }
+
+/* Menu Bar */
+gui-menu-bar {
+  padding-left : 4px;
+  padding-right : 4px;
+}
+  gui-menu-bar-entry {
+    cursor : pointer;
+    padding : 4px;
+  }
+  gui-menu-bar-entry:hover {
+    background: @gui_selected_background_color;
+    color: @gui_selected_foreground_color;
+  }
+  gui-menu-bar-entry[data-disabled="true"] > span {
+    color : @gui_input_disabled_foreground_color;
+  }
+
+
+/* Progressbar */
+gui-progress-bar {
+  display : block;
+  line-height : 26px;
+  height : 26px;
+}
+  gui-progress-bar:before {
+    background-color : @gui_background_color;
+    border: 1px solid @gui_input_border_color;
+    padding : 4px;
+  }
+  gui-progress-bar > div {
+    background: @gui_selected_background_color url('/themes/styles/default/gui/progressbar.png') repeat-x center;
+  }
+  gui-progress-bar > span {
+    color : #fff;
+  }
+
+/* Statusbar */
+gui-statusbar {
+  margin : 4px;
+  padding-bottom : 4px;
+}
+
+/**
+ * ===========================================================================
+ *                                VIEWS
+ * ===========================================================================
+ */
+
+/* Icon View */
+gui-icon-view {
+  background-color : @gui_input_background_color;
+  border : 1px solid @gui_input_border_color;
+  padding : 4px;
+}
+  gui-icon-view-entry {
+    cursor : pointer;
+    margin : 2px;
+    padding : 2px;
+    text-align : center;
+    min-width : 60px !important;
+    min-height : 60px !important;
+  }
+
+    gui-icon-view-entry.gui-active {
+      background: @gui_selected_blur_background_color;
+      color: @gui_selected_foreground_color;
+    }
+    gui-icon-view-entry.gui-active > div > span {
+      background: @gui_selected_blur_background_color;
+    }
+    gui-icon-view.gui-element-focused gui-icon-view-entry.gui-active {
+      background: @gui_selected_background_color;
+    }
+    gui-icon-view.gui-element-focused gui-icon-view-entry.gui-active > div > span {
+      background: @gui_selected_background_color;
+    }
+
+/* List View */
+gui-list-view {
+  background-color : @gui_input_background_color;
+  border : 1px solid @gui_input_border_color;
+}
+  gui-list-view-head {
+    background-color : @gui_background_color;
+  }
+      gui-list-view-row {
+        padding : 4px;
+      }
+      gui-list-view-column {
+      }
+      gui-list-view-column.gui-has-image {
+        padding-left : 24px;
+      }
+      gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
+        padding-left : 40px;
+      }
+
+    gui-list-view-row.gui-active {
+      background-color: @gui_selected_blur_background_color;
+      color: @gui_selected_foreground_color;
+    }
+    gui-list-view.gui-element-focused gui-list-view-row.gui-active {
+      background-color: @gui_selected_background_color;
+    }
+
+    gui-list-view-column-resizer {
+      cursor : ew-resize;
+      width : 3px;
+      right : -3px;
+    }
+      gui-list-view-column-resizer:after {
+        background : @gui_input_border_color;
+      }
+
+
+/* Tree View */
+gui-tree-view {
+  background-color : @gui_input_background_color;
+  border : 1px solid @gui_input_border_color;
+}
+    gui-tree-view-entry > div {
+      padding : 4px;
+    }
+    gui-tree-view-entry > div > span {
+      cursor : pointer;
+      padding : 2px;
+    }
+    gui-tree-view-entry > div > span.gui-has-image {
+      padding-left : 20px;
+    }
+    gui-tree-view-entry > gui-tree-view-entry {
+      margin-left : 16px;
+    }
+    gui-tree-view-entry.gui-active > div {
+      background-color: @gui_selected_blur_background_color;
+      color: @gui_selected_foreground_color;
+    }
+    gui-tree-view.gui-element-focused gui-tree-view-entry.gui-active > div {
+      background-color: @gui_selected_background_color;
+    }
+
+  gui-tree-view-entry.gui-expandable {
+    padding-left : 16px;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander {
+    padding-left : 4px;
+    cursor : pointer;
+    line-height : 24px;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander:before {
+    content : '\25BA';
+    font-family : Arial;
+  }
+  gui-tree-view-entry.gui-expandable.gui-expanded > gui-tree-view-expander:before {
+    content : '\25BC';
+  }

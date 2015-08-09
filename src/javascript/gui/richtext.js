@@ -27,269 +27,166 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
 
-  /**
-   * Richt Text Element
-   *
-   * @param String    name    Name of GUIElement (unique)
-   * @param Object    opts    A list of options
-   *
-   * @option opts String    fontName      Name of the font used
-   * @option opts boolean   editable      If you are going to edit content (default=true)
-   * @option opts Function  onInited      Callback when inited
-   *
-   * @see OSjs.Core.GUIElement
-   * @api OSjs.GUI.RichText
-   *
-   * @extends GUIElement
-   * @class
-   */
-  var RichText = function(name, opts) {
-    opts = opts || {};
-    if ( !OSjs.Compability.richtext ) { throw new Error('Your platform does not support RichText editing'); }
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
-    this.$view          = null;
-    this.opts           = opts || {};
-    this.opts.fontName  = this.opts.fontName || 'Arial';
-    this.opts.onInited  = this.opts.onInited || function() {};
-    this.opts.editable  = (this.opts.editable === true || typeof this.opts.editable === 'undefined');
-    this.opts.isIframe  = true;
-    this.loadContent    = null;
-    this.strlen         = 0;
+  function getDocument(el, iframe) {
+    iframe = iframe || el.querySelector('iframe');
+    return iframe.contentDocument || iframe.contentWindow.document;
+  }
 
-    GUIElement.apply(this, [name, opts]);
-  };
+  function getDocumentData(el) {
+    try {
+      var doc = getDocument(el);
+      return doc.body.innerHTML;
+    } catch ( error ) {
+      console.error('gui-richtext', 'getDocumentData()', error.stack, error);
+    }
+    return '';
+  }
 
-  RichText.prototype = Object.create(GUIElement.prototype);
+  function destroyFixInterval(el) {
+    el._fixTry = 0;
+    el._fixInterval = clearInterval(el._fixInterval);
+  }
 
-  RichText.prototype.init = function() {
-    var el = GUIElement.prototype.init.apply(this, ['GUIRichText']);
-    var self = this;
+  function createFixInterval(el, doc, text) {
+    if ( el._fixTry > 10 ) {
+      el._fixTry = 0;
+      return;
+    }
 
-    this.$view = document.createElement('iframe');
-    this.$view.setAttribute('border', '0');
+    el._fixInterval = setInterval(function() {
+      try {
+        if ( text ) {
+          doc.body.innerHTML = text;
+        }
+        destroyFixInterval(el);
+      } catch ( error ) {
+        console.warn('gui-richtext', 'setDocumentData()', error.stack, error, '... trying again');
+      }
+      el._fixTry++;
+    }, 100);
+  }
 
-    el.appendChild(this.$view);
+  function setDocumentData(el, text) {
+    destroyFixInterval(el);
 
-    return el;
-  };
+    text = text || '';
 
-  RichText.prototype.update = function() {
-    if  ( this.inited ) { return; }
-    GUIElement.prototype.update.apply(this, arguments);
     var wm = OSjs.Core.getWindowManager();
     var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
     var themeSrc = OSjs.API.getThemeCSS(theme);
-    var self = this;
-    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /></head><body contentEditable="true"></body></html>';
-    if ( !this.opts.editable ) {
-      template = template.replace(' contentEditable="true"', '');
-    }
-    var doc;
-    try {
-      doc = this.getDocument();
-      doc.open();
-      doc.write(template);
-      doc.close();
-    } catch (error) {
-      console.error('Failed to write RichText template', error);
-    }
 
-    if ( doc ) {
-      doc.body.style.fontFamily = this.opts.fontName;
+    var editable = el.getAttribute('data-editable');
+    editable = editable === null || editable === 'true';
 
-      try {
-        this.$view.execCommand('styleWithCSS', false, false);
-      } catch(e) {
-        try {
-          this.$view.execCommand('useCSS', false, null);
-        } catch(ex) {
-          try {
-            this.$view.execCommand('styleWithCSS', false, false);
-          } catch(exx) {
+    function onMouseDown(ev) {
+      function insertTextAtCursor(text) {
+        var sel, range, html;
+        if (window.getSelection) {
+          sel = window.getSelection();
+          if (sel.getRangeAt && sel.rangeCount) {
+            range = sel.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode( document.createTextNode(text) );
           }
+        } else if (document.selection && document.selection.createRange) {
+          document.selection.createRange().text = text;
         }
       }
 
-      try {
-        this.$view.contentWindow.onfocus = function() {
-          self.focus();
-        };
-        this.$view.contentWindow.onblur = function() {
-          self.blur();
-        };
-        var _timeout;
-        this._addEventListener(this.$view.contentWindow, 'keypress', function(ev) {
-          if ( _timeout ) {
-            clearTimeout(_timeout);
-            _timeout = null;
-          }
-          _timeout = setTimeout(function() {
-            var strlen = self.getContent().length;
-            if ( self.strlen !== strlen ) {
-              self.hasChanged = true;
-            }
-            self.strlen = strlen;
-          }, 100);
-        });
-      } catch ( e ) {
-        console.warn('Failed to bind focus/blur on richtext', e);
-      }
-
-      if ( this.opts.onInited ) {
-        this.opts.onInited.apply(this, []);
-      }
-
-      if ( this.loadContent ) {
-        this.loadContent();
-        this.loadContent = null;
+      if ( ev.keyCode === 9 ) {
+        /*
+        var t = ev.shiftKey ? "outdent" : "indent";
+        document.execCommand("styleWithCSS",true,null);
+        document.execCommand(t, false, null)
+        */
+        insertTextAtCursor('\u00A0');
+        ev.preventDefault();
       }
     }
-  };
 
-  /**
-   * Send a command
-   *
-   * @param   String      cmd       Command name
-   * @parm    boolean     defaultUI ???
-   * @param   Array       args      Command argument list
-   *
-   * @return  Mixed                 Result or 'false'
-   *
-   * @method  RichText::command()
-   */
-  RichText.prototype.command = function(cmd, defaultUI, args) {
-    var d = this.getDocument();
-    if ( d && this.opts.editable ) {
-      var argss = [];
-      if ( typeof cmd         !== 'undefined' ) { argss.push(cmd); }
-      if ( typeof defaultUI   !== 'undefined' ) { argss.push(defaultUI); }
-      if ( typeof args        !== 'undefined' ) { argss.push(args); }
+    var script = onMouseDown.toString() + ';window.addEventListener("keydown", onMouseDown)';
 
-      try {
-        var result = d.execCommand.apply(d, argss);
-        this.hasChanged = true;
-        return result;
-      } catch ( e ) {
-        console.warn('OSjs.GUI.RichText::command() failed', cmd, defaultUI, args, e);
-      }
-    }
-    return false;
-  };
-
-  /**
-   * Gets the current command value
-   *
-   * @param   String      q     The query
-   *
-   * @return  Mixed
-   *
-   * @method  RichText::commandValue()
-   */
-  RichText.prototype.commandValue = function(q) {
-    try {
-      return this.getDocument().queryCommandValue(q);
-    } catch ( e ) {
-      console.warn('RichText::commandValue()', q, 'error', e, e.stack);
-    }
-    return null;
-  };
-
-  /**
-   * Set the content
-   *
-   * @param   String      c       Content (innerHTML)
-   *
-   * @return  boolean
-   *
-   * @method  RichText::setContent()
-   */
-  RichText.prototype.setContent = function(c) {
-    this.hasChanged = false;
-    this.strlen = c.length;
-
-    var d = this.getDocument();
-    if ( d && d.body ) {
-      d.body.innerHTML = c;
-      return true;
-    }
-    return false;
-  };
-
-  /**
-   * Get the content
-   *
-   * @return  String      Content (innerHTML)
-   *
-   * @method  RichText::getContent()
-   */
-  RichText.prototype.getContent = function() {
-    var self = this;
-    function _getContent() {
-      var d = self.getDocument();
-      if ( d && d.body ) {
-        return d.body.innerHTML;
-      }
-      return null;
+    var template = '<!DOCTYPE html><html><head><link rel="stylesheet" type="text/css" href="' + themeSrc + '" /><script>' + script + '</script></head><body contentEditable="true"></body></html>';
+    if ( !editable ) {
+      template = template.replace(' contentEditable="true"', '');
     }
 
-    if ( !this.inited ) {
-      this.loadContent = _getContent;
-      return null;
-    }
-    return _getContent();
-  };
-
-  /**
-   * Get the document
-   *
-   * @return  DOMDocument
-   *
-   * @method  RichText::getDocument()
-   */
-  RichText.prototype.getDocument = function() {
-    if ( this.$view ) {
-      return this.$view.contentDocument || this.$view.contentWindow.document;
-    }
-    return null;
-  };
-
-  /**
-   * Get the window
-   *
-   * @return  DOMWindow
-   *
-   * @method  RichText::getWindow()
-   */
-  RichText.prototype.getWindow = function() {
-    if ( this.$view ) {
-      return this.$view.contentWindow;
-    }
-    return null;
-  };
-
-  RichText.prototype.blur = function() {
-    if ( !GUIElement.prototype.blur.apply(this, arguments) ) { return false; }
-    if ( this.$view && this.$view.contentWindow ) {
-      this.$view.contentWindow.blur();
-    }
-    return true;
-  };
-
-  RichText.prototype.focus = function() {
-    if ( !GUIElement.prototype.focus.apply(this, arguments) ) { return false; }
-    if ( this.$view && this.$view.contentWindow ) {
-      this.$view.contentWindow.focus();
-    }
-    return true;
-  };
+    var doc = getDocument(el);
+    doc.open();
+    doc.write(template);
+    doc.close();
+    createFixInterval(el, doc, text);
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.RichText     = RichText;
+  /**
+   * Element: 'gui-richtext'
+   *
+   * "Richt text" input area.
+   *
+   * @api OSjs.GUI.Elements.gui-richtext
+   * @class
+   */
+  GUI.Elements['gui-richtext'] = {
+    bind: function(el, evName, callback, params) {
+      if ( (['selection']).indexOf(evName) !== -1 ) {
+        evName = '_' + evName;
+      }
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+    },
+    build: function(el) {
+      var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
-})(OSjs.Core.GUIElement);
+      Utils.$empty(el);
+
+      var iframe = document.createElement('iframe');
+      iframe.setAttribute('border', 0);
+      iframe.onload = function() {
+        iframe.contentWindow.addEventListener('selectstart', function() {
+          el.dispatchEvent(new CustomEvent('_selection', {detail: {}}));
+        });
+        iframe.contentWindow.addEventListener('mouseup', function() {
+          el.dispatchEvent(new CustomEvent('_selection', {detail: {}}));
+        });
+      };
+      el.appendChild(iframe);
+
+      setTimeout(function() {
+        setDocumentData(el, text);
+      }, 0);
+    },
+    call: function(el, method, args) {
+      var doc = getDocument(el);
+      if ( method === 'command' ) {
+        return doc.execCommand.apply(doc, args);
+      } else if ( method === 'query' ) {
+        return doc.queryCommandValue.apply(doc, args);
+      }
+      return null;
+    },
+    get: function(el, param, value) {
+      if ( param === 'value' ) {
+        return getDocumentData(el);
+      }
+      return GUI.Helpers.getProperty(el, param);
+    },
+    set: function(el, param, value) {
+      if ( param === 'value' ) {
+        setDocumentData(el, value);
+        return true;
+      }
+      return false;
+    }
+  };
+
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

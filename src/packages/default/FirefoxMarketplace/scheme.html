@@ -1,0 +1,42 @@
+<application-window data-id="FirefoxMarketplaceWindow">
+
+  <gui-vbox>
+    <gui-vbox-container data-grow="1" data-fill="true">
+
+      <gui-hbox>
+        <gui-hbox-container data-grow="3">
+
+          <gui-vbox>
+            <gui-vbox-container data-shrink="1" data-expand="true">
+              <gui-text data-id="Search" data-placeholder="Search..."></gui-text>
+            </gui-vbox-container>
+            <gui-vbox-container data-grow="1" data-fill="true">
+              <gui-list-view data-id="View" data-multiple="false"></gui-list-view>
+            </gui-vbox-container>
+          </gui-vbox>
+
+        </gui-hbox-container>
+
+        <gui-hbox-container data-grow="2" data-shrink="1" data-fill="true">
+          <div data-id="Preview" class="MarketplaceAppInfo"></div>
+        </gui-hbox-container>
+      </gui-hbox>
+
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar>
+        <gui-button data-id="ButtonRefresh">LBL_REFRESH</gui-button>
+        <gui-button data-id="ButtonLaunch">LBL_LAUNCH</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>
+
+<application-fragment data-id="FirefoxMarketplacePreview">
+  <gui-label data-id="LabelName">Name</gui-label>
+  <gui-label data-id="LabelAuthor">Author</gui-label>
+  <gui-image data-id="PreviewImage"></gui-image>
+  <gui-label data-id="LabelDescription">Description</gui-label>
+</application-fragment>

@@ -27,188 +27,172 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
+  'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window Constructor
-   */
-  var ApplicationFirefoxMarketplaceWindow = function(app, metadata) {
+  function ApplicationFirefoxMarketplaceWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationFirefoxMarketplaceWindow', {
       icon: metadata.icon,
       title: metadata.name,
-      width: 640,
-      height: 400,
-      allow_resize: false,
-      allow_maximize: false
-    }, app]);
-
-    this.previewContainer = null;
-  };
+      min_width: 400,
+      width: 500,
+      min_height: 400,
+      height: 400
+    }, app, scheme]);
+  }
 
   ApplicationFirefoxMarketplaceWindow.prototype = Object.create(Window.prototype);
+  ApplicationFirefoxMarketplaceWindow.constructor = Window.prototype;
 
-  ApplicationFirefoxMarketplaceWindow.prototype.init = function(wmRef, app) {
+  ApplicationFirefoxMarketplaceWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    // Create window contents (GUI) here
-    var left = document.createElement('div');
-    left.className = 'ColumnLeft';
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'FirefoxMarketplaceWindow', root);
 
-    var right = document.createElement('div');
-    right.className = 'ColumnRight';
+    var view = scheme.find(this, 'View');
+    var preview = scheme.find(this, 'Preview');
 
-    var buttonContainer = document.createElement('div');
-    buttonContainer.className = 'ButtonContainer';
-
-    this.previewContainer = document.createElement('div');
-    right.appendChild(this.previewContainer);
-
-    var search = this._addGUIElement(new OSjs.GUI.Text('ApplicationSearch', {placeholder: 'Search marketplace...', onKeyPress: function(ev) {
-      if ( ev.keyCode === Utils.Keys.ENTER ) {
-        self.renderList(search.getValue());
-      }
-    }}), left);
-
-    var packageList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationList', {onSelect: function(ev, dom, obj) {
-      self.showPreview(obj);
-    }}), left);
-    packageList.setColumns([
-      {key: 'name', title: 'Name'},
-      {key: 'description', title: 'Description', visible: false},
-      {key: 'version', title: 'Version', width: 50},
-      {key: 'author', title: 'Author', visible: false},
-      {key: 'preview', title: 'Preview', visible: false},
-      {key: 'homepage', title: 'Homepage', visible: false},
-      {key: 'id', title: 'id', visible: false}
-    ]);
-    packageList.render();
-
-    var buttonRefresh = this._addGUIElement(new OSjs.GUI.Button('ButtonMarketplaceRefresh', {label: 'Refresh', onClick: function() { // FIXME: Translation
-      search.setValue('');
-      self.renderList();
-    }}), buttonContainer);
-
-    var buttonRun = this._addGUIElement(new OSjs.GUI.Button('ButtonMarketplaceRun', {label: 'Launch Selected', onClick: function() { // FIXME: Translation
-      self.launchSelected(packageList.getSelected());
-    }}), buttonContainer);
-
-    root.appendChild(left);
-    root.appendChild(right);
-    root.appendChild(buttonContainer);
-
-    if ( window.location.protocol.match(/^https/) ) {
-      this._setWarning('Most hosted applications does not support https');
+    function showPreview(item) {
+      Utils.$empty(preview.$element);
+      if ( !item ) { return; }
+      scheme.render(self, 'FirefoxMarketplacePreview', preview);
+      scheme.find(self, 'LabelName').set('value', item.name);
+      scheme.find(self, 'LabelAuthor').set('value', item.author);
+      scheme.find(self, 'LabelDescription').set('value', item.description, true);
+      scheme.find(self, 'PreviewImage').set('src', item.preview);
     }
+
+    function launch(p) {
+      self._toggleLoading(true);
+      OSjs.Helpers.FirefoxMarketplace.getInstance().launch(p.id, function() {
+        self._toggleLoading(false);
+      });
+    }
+
+    function renderList(q) {
+      showPreview();
+
+      self._toggleLoading(true);
+
+      app.getList(q, function(error, result) {
+        self._toggleLoading(false);
+
+        if ( error ) {
+          API.createDialog('Alert', {
+            message: error
+          }, null, self);
+          return;
+        }
+
+        var add = [];
+        result.forEach(function(iter) {
+          add.push({
+            value: iter,
+            id: iter.id,
+            columns: [
+              {label: iter.name},
+              {label: iter.version}
+            ]
+          });
+        });
+
+        view.clear();
+        view.add(add);
+      });
+    }
+
+    scheme.find(this, 'Search').on('enter', function(ev) {
+      renderList(ev.detail || null);
+    });
+
+    view.set('columns', [
+      {label: 'Name', grow: 1, shrink: 1},
+      {label: 'Version', basis: '60px', grow: 0, shrink: 0}
+    ]);
+
+    scheme.find(this, 'ButtonRefresh').on('click', function() {
+      renderList();
+    });
+
+    scheme.find(this, 'ButtonLaunch').on('click', function() {
+      var selected = view.get('selected');
+      if ( selected && selected[0] && typeof selected[0].data !== 'undefined' ) {
+        launch(selected[0].data);
+      }
+    });
+
+    view.on('select', function(ev) {
+      if ( ev && ev.detail && ev.detail.entries[0] ) {
+        showPreview(ev.detail.entries[0].data);
+      }
+    });
+
+    view.on('activate', function(ev) {
+      if ( ev && ev.detail && ev.detail.entries[0] ) {
+        launch(ev.detail.entries[0].data);
+      }
+    });
+
+    renderList();
 
     return root;
   };
 
-  ApplicationFirefoxMarketplaceWindow.prototype._inited = function() {
-    Window.prototype._inited.apply(this, arguments);
-
-    // Window has been successfully created and displayed.
-    // You can start communications, handle files etc. here
-    this.renderList();
-  };
-
   ApplicationFirefoxMarketplaceWindow.prototype.destroy = function() {
-    // Destroy custom objects etc. here
-    if ( this.previewContainer && this.previewContainer.parentNode ) {
-      this.previewContainer.parentNode.removeChild(this.previewContainer);
-    }
-    this.previewContainer = null;
-
     Window.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationFirefoxMarketplaceWindow.prototype.launchSelected = function(sel) {
-    var self = this;
-    if ( !sel || !sel.id ) {
-      return;
-    }
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATION
+  /////////////////////////////////////////////////////////////////////////////
 
-    this._toggleLoading(true);
-    OSjs.Helpers.FirefoxMarketplace.getInstance().launch(sel.id, function() {
-      self._toggleLoading(false);
+  var ApplicationFirefoxMarketplace = function(args, metadata) {
+    Application.apply(this, ['ApplicationFirefoxMarketplace', args, metadata]);
+  };
+
+  ApplicationFirefoxMarketplace.prototype = Object.create(Application.prototype);
+  ApplicationFirefoxMarketplace.constructor = Application;
+
+  ApplicationFirefoxMarketplace.prototype.destroy = function() {
+    return Application.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationFirefoxMarketplace.prototype.init = function(settings, metadata, onInited) {
+    Application.prototype.init.apply(this, arguments);
+
+    var self = this;
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationFirefoxMarketplaceWindow(self, metadata, scheme));
+
+      onInited();
     });
   };
 
-  ApplicationFirefoxMarketplaceWindow.prototype.showPreview = function(item) {
-    if ( !this.previewContainer ) { return; }
-    Utils.$empty(this.previewContainer);
+  ApplicationFirefoxMarketplace.prototype.getList = function(filter, callback) {
 
-    if ( item ) {
-      var h1 = document.createElement('h1');
-      h1.appendChild(document.createTextNode(item.name));
-      this.previewContainer.appendChild(h1);
-
-      var h2 = document.createElement('h2');
-      h2.appendChild(document.createTextNode(item.author));
-      this.previewContainer.appendChild(h2);
-
-      var h3 = document.createElement('h3');
-      h3.appendChild(document.createTextNode(item.description));
-      this.previewContainer.appendChild(h3);
-
-      if ( item.homepage ) {
-        var a = document.createElement('a');
-        a.href = item.homepage;
-        a.target = '_blank';
-        a.appendChild(document.createTextNode('Homepage'));
-        this.previewContainer.appendChild(a);
-      }
-
-      if ( item.preview ) {
-        var img = document.createElement('img');
-        img.alt = item.name;
-        img.src = item.preview;
-        this.previewContainer.appendChild(img);
-      }
-      return;
-    }
-
-    var text = document.createTextNode('No preview available');
-    this.previewContainer.appendChild(text);
-  };
-
-  ApplicationFirefoxMarketplaceWindow.prototype.renderList = function(q) {
-    var self = this;
-    var search = this._getGUIElement('ApplicationSearch');
-    var packageList = this._getGUIElement('ApplicationList');
-
-    if ( !search || !packageList ) { return; }
-
-    this._toggleLoading(true);
-
-    this.showPreview();
-
-    OSjs.Helpers.FirefoxMarketplace.createInstance({}, function(err, instance) {
-      self._toggleLoading(false);
-      if ( !err && !instance ) {
-        err = 'No instance';
-      }
-      if ( err ) {
-        alert('Failed initializing marketplace: ' + err);
+    OSjs.Helpers.FirefoxMarketplace.createInstance({}, function(error, instance) {
+      if ( error || !instance ) {
+        callback('Failed to init marketplace: ' + (error || 'No instance'));
         return;
       }
 
-      self._toggleLoading(true);
-      instance.search(q, function(err, list) {
-        self._toggleLoading(false);
+      instance.search(filter, function(err, list) {
         if ( err ) {
-          alert('Failed listing marketplace: ' + err);
+          callback('Failed listing marketplace: ' + err);
           return;
         }
 
         var rows = [];
         list.forEach(function(i) {
           var preview;
-
           if ( i.previews ) {
             i.previews.forEach(function(p) {
               if ( preview ) { return; }
@@ -230,58 +214,17 @@
           });
         });
 
-        packageList.setRows(rows);
-        packageList.render();
+        callback(false, rows);
       });
     });
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
+  // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application constructor
-   */
-  var ApplicationFirefoxMarketplace = function(args, metadata) {
-    Application.apply(this, ['ApplicationFirefoxMarketplace', args, metadata]);
-
-    // You can set application variables here
-  };
-
-  ApplicationFirefoxMarketplace.prototype = Object.create(Application.prototype);
-
-  ApplicationFirefoxMarketplace.prototype.destroy = function() {
-    // Destroy communication, timers, objects etc. here
-
-    return Application.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationFirefoxMarketplace.prototype.init = function(settings, metadata) {
-    var self = this;
-
-    Application.prototype.init.apply(this, arguments);
-
-    // Create your main window
-    var mainWindow = this._addWindow(new ApplicationFirefoxMarketplaceWindow(this, metadata));
-
-    // Do other stuff here
-  };
-
-  ApplicationFirefoxMarketplace.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    // Make sure we kill our application if main window was closed
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationFirefoxMarketplaceWindow' ) {
-      this.destroy();
-    }
-  };
-
-  //
-  // EXPORTS
-  //
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationFirefoxMarketplace = OSjs.Applications.ApplicationFirefoxMarketplace || {};
   OSjs.Applications.ApplicationFirefoxMarketplace.Class = ApplicationFirefoxMarketplace;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

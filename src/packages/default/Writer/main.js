@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
+ * modification, are permitted provided that the following conditions are met: 
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer. 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
+ *    and/or other materials provided with the distribution. 
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,396 +27,253 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, VFS, Utils) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
-
-  var DEFAULT_FILENAME = "New text document.odoc";
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window
-   */
-  var ApplicationWriterWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationWriterWindow', {
+  function ApplicationWriterWindow(app, metadata, scheme, file) {
+    DefaultApplicationWindow.apply(this, ['ApplicationWriterWindow', {
+      allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
-      allow_drop: true,
-      width: 800,
-      height: 450
-    }, app]);
+      width: 550,
+      height: 400
+    }, app, scheme, file]);
 
-    this.font       = 'Arial';
-    this.fontSize   = 3;
-    this.textColor  = '#000000';
-    this.backColor  = '#ffffff';
-    this.title      = metadata.name;
+    this.checkChangeLength = -1;
+    this.checkChangeInterval = null;
+    this.color = {
+      background : '#ffffff',
+      foreground : '#000000'
+    };
+    this.font = {
+      name: OSjs.Core.getHandler().getConfig('Fonts')['default'],
+      size: 3
+    };
+  }
+
+  ApplicationWriterWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationWriterWindow.constructor = DefaultApplicationWindow.prototype;
+
+  ApplicationWriterWindow.prototype.destroy = function() {
+    this.checkChangeInterval = clearInterval(this.checkChangeInterval);
+    return DefaultApplicationWindow.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationWriterWindow.prototype = Object.create(Window.prototype);
-
-  ApplicationWriterWindow.prototype.init = function(wmRef, app) {
-    var root = Window.prototype.init.apply(this, arguments);
+  ApplicationWriterWindow.prototype.init = function(wmRef, app, scheme) {
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
     var self = this;
 
-    // Create window contents here
-    var mb = this._addGUIElement(new GUI.MenuBar('WriterMenuBar'), root);
-    var tb = this._addGUIElement(new GUI.ToolBar('WriterToolBar'), root);
-    var rt;
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'WriterWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationWriter._
+    });
 
-    var _createIcon = function(i) {
-      return OSjs.API.getIcon(i);
-    };
+    var text = scheme.find(this, 'Text');
+    var frame = text.querySelector('iframe');
 
-    var _createColorDialog = function(callback, current) {
-      app._createDialog('Color', [{color: current}, function(btn, rgb, hex) {
-        if ( btn !== 'ok' ) return;
-        callback(hex);
-      }], self);
-    };
+    var buttons = {
+      'text-bold': {
+        command: 'bold'
+      },
+      'text-italic': {
+        command: 'italic'
+      },
+      'text-underline': {
+        command: 'underline'
+      },
+      'text-strikethorugh': {
+        command: 'strikeThrough'
+      },
 
-    var _createFontDialog = function(callback, currentName, currentSize) {
-      app._createDialog('Font', [{name: self.font, size: self.fontSize, color: self.textColor, background: self.backColor, minSize: 1, maxSize: 7, sizeType: 'internal'}, function(btn, fname, fsize) {
-        if ( btn !== 'ok' ) return;
-        callback(fname, fsize);
-      }], self);
-    };
+      'justify-left': {
+        command: 'justifyLeft'
+      },
+      'justify-center': {
+        command: 'justifyCenter'
+      },
+      'justify-right': {
+        command: 'justifyRight'
+      },
 
-    var _setFont = function(name, size, nocommand) {
-      if ( !nocommand ) {
-        self.command('fontName', name);
-        self.command('fontSize', size);
-      }
-      self.font = name || self.font;
-      self.fontSize = size || self.fontSize;
-      tb.getItem('font')._element.getElementsByTagName('span')[0].style.fontFamily = self.font;
-      tb.getItem('font')._element.getElementsByTagName('span')[0].innerHTML = self.font + ' (' + self.fontSize.toString() + ')';
-    };
-    var _setTextColor = function(hex, nocommand) {
-      if ( !nocommand ) {
-        self.command('foreColor', hex);
-      }
-      self.textColor = hex;
-      tb.getItem('textColor')._element.getElementsByTagName('span')[0].style.color = hex;
-    };
-    var _setBackColor = function(hex, nocommand) {
-      if ( !nocommand ) {
-        self.command('hiliteColor', hex);
-      }
-      self.backColor = hex;
-      tb.getItem('backColor')._element.getElementsByTagName('span')[0].style.backgroundColor = hex;
-    };
-
-    var _action = function(ev, el, name, item) {
-      switch ( name ) {
-        case 'textColor' :
-          _createColorDialog(function(hex) {
-            _setTextColor(hex);
-          }, self.textColor);
-        break;
-
-        case 'backColor':
-          _createColorDialog(function(hex) {
-            _setBackColor(hex);
-          }, self.backColor);
-        break;
-
-        case 'font' :
-          _createFontDialog(function(font, size) {
-            _setFont(font, size);
-          }, self.font, self.fontSize);
-        break;
-
-        default:
-          self.command(name);
-        break;
+      'indent': {
+        command: 'indent'
+      },
+      'unindent': {
+        command: 'outdent'
       }
     };
 
-    function _updateToolbar() {
-      if ( rt ) {
-        var styles = {
-          fontName: rt.commandValue('fontName').replace(/^\'/, '').replace(/\'$/, ''),
-          fontSize: rt.commandValue('fontSize'),
-          foreColor: rt.commandValue('foreColor'),
-          hiliteColor: rt.commandValue('hiliteColor'),
-          justifyLeft: rt.commandValue('justifyLeft'),
-          justifyCenter: rt.commandValue('justifyCenter'),
-          justifyRight: rt.commandValue('justifyRight'),
-          bold: rt.commandValue('bold'),
-          italic: rt.commandValue('italic'),
-          underline: rt.commandValue('underline'),
-          strikeThrough: rt.commandValue('strikeThrough')
+    function getSelectionStyle() {
+      function _call(cmd) {
+        return text._call('query', [cmd]);
+      }
+
+      var style = {
+        fontName: ((_call('fontName') || '').split(',')[0]).replace(/^'/, '').replace(/'$/, ''),
+        fontSize: parseInt(_call('fontSize'), 10),
+        foreColor: _call('foreColor'),
+        hiliteColor: _call('hiliteColor')
+      };
+
+      Object.keys(buttons).forEach(function(b) {
+        var button = buttons[b];
+        style[button.command] = {
+          button: b,
+          value:_call(button.command)
         };
+      });
+      return style;
+    }
 
-        if ( !styles.foreColor.match(/^\#/) ) {
-          var tmp = styles.foreColor.replace(/\s/g, '').replace(/^rgb\(/, '').replace(/\)$/, '').split(',');
-          if ( tmp.length > 2 ) {
-            styles.foreColor = Utils.convertToHEX.apply(Utils, tmp);
-          } else {
-            styles.foreColor = self.textColor;
-          }
+    function createColorDialog(current, cb) {
+      self._toggleDisabled(true);
+      API.createDialog('Color', {
+        color: current
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          cb(result.hex);
         }
+      });
+    }
 
-        if ( !styles.hiliteColor.match(/^\#/) ) {
-          var tmp = styles.hiliteColor.replace(/\s/g, '').replace(/^rgb\(/, '').replace(/\)$/, '').split(',');
-          if ( tmp.length > 2 ) {
-            styles.hiliteColor = Utils.convertToHEX.apply(Utils, tmp);
-          } else {
-            styles.hiliteColor = self.backColor;
-          }
+    function createFontDialog(current, cb) {
+      self._toggleDisabled(true);
+      API.createDialog('Font', {
+        fontSize: self.font.size,
+        fontName: self.font.name,
+        minSize: 1,
+        maxSize: 8,
+        unit: 'null'
+      }, function(ev, button, result) {
+        self._toggleDisabled(false);
+        if ( button === 'ok' && result ) {
+          cb(result);
         }
+      });
+    }
 
-        _setBackColor(styles.hiliteColor, true);
-        _setTextColor(styles.foreColor, true);
-        _setFont(styles.fontName, styles.fontSize, true);
+    var back = scheme.find(this, 'Background').on('click', function() {
+      createColorDialog(self.color.background, function(hex) {
+        text._call('command', ['hiliteColor', false, hex]);
+        self.color.background = hex;
+        back.set('value', hex);
+      });
+    });
+    var front = scheme.find(this, 'Foreground').on('click', function() {
+      createColorDialog(self.color.foreground, function(hex) {
+        text._call('command', ['foreColor', false, hex]);
+        self.color.foreground = hex;
+        front.set('value', hex);
+      });
+    });
 
-        /*
-        if ( tb ) {
-          Utils.$removeClass(tb.getItem('justifyLeft')._element, 'Active');
-          Utils.$removeClass(tb.getItem('justifyCenter')._element, 'Active');
-          Utils.$removeClass(tb.getItem('justifyRight')._element, 'Active');
+    var font = scheme.find(this, 'Font').on('click', function() {
+      createFontDialog(null, function(font) {
+        text._call('command', ['fontName', false, font.fontName]);
+        text._call('command', ['fontSize', false, font.fontSize]);
+        self.font.name = font.fontName;
+        self.font.size = font.fontSize;
+      });
+    });
 
-          if ( styles.justifyLeft ) {
-            Utils.$addClass(tb.getItem('justifyLeft')._element, 'Active');
-          }
-          if ( styles.justifyCenter ) {
-            Utils.$addClass(tb.getItem('justifyCenter')._element, 'Active');
-          }
-          if ( styles.justifyRight ) {
-            Utils.$addClass(tb.getItem('justifyRight')._element, 'Active');
-          }
-        }
-        */
+    root.querySelectorAll('gui-toolbar > gui-button').forEach(function(b) {
+      var id = b.getAttribute('data-id');
+      var button = buttons[id];
+      if ( button ) {
+        (new GUI.Element(b)).on('click', function() {
+          text._call('command', [button.command]);
+        });
+      }
+    });
+
+    function updateToolbar(style) {
+      back.set('value', style.hiliteColor);
+      front.set('value', style.foreColor);
+      if ( style.fontName ) {
+        font.set('label', Utils.format('{0} ({1})', style.fontName, style.fontSize.toString()));
       }
     }
 
-    tb.addItem('bold',          {toggleable: true, title: OSjs.API._('LBL_BOLD'),       onClick: _action, icon: _createIcon('actions/format-text-bold.png')});
-    tb.addItem('italic',        {toggleable: true, title: OSjs.API._('LBL_ITALIC'),     onClick: _action, icon: _createIcon('actions/format-text-italic.png')});
-    tb.addItem('underline',     {toggleable: true, title: OSjs.API._('LBL_UNDERLINE'),  onClick: _action, icon: _createIcon('actions/format-text-underline.png')});
-    tb.addItem('strikeThrough', {toggleable: true, title: OSjs.API._('LBL_STRIKE'),     onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
-    //tb.addItem('subscript',     {toggleable: true, title: 'Sub',        onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
-    //tb.addItem('superscript',   {toggleable: true, title: 'Super',      onClick: _action, icon: _createIcon('actions/format-text-strikethrough.png')});
-    tb.addSeparator();
-    tb.addItem('justifyLeft',   {toggleable: true, title: OSjs.API._('LBL_LEFT'),       onClick: _action, icon: _createIcon('actions/format-justify-left.png')});
-    tb.addItem('justifyCenter', {toggleable: true, title: OSjs.API._('LBL_CENTER'),     onClick: _action, icon: _createIcon('actions/format-justify-center.png')});
-    tb.addItem('justifyRight',  {toggleable: true, title: OSjs.API._('LBL_RIGHT'),      onClick: _action, icon: _createIcon('actions/format-justify-right.png')});
-    tb.addSeparator();
-    tb.addItem('indent',        {title: OSjs.API._('LBL_INDENT'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
-    tb.addItem('outdent',       {title: OSjs.API._('LBL_OUTDENT'),                      onClick: _action, icon: _createIcon('actions/gtk-unindent-ltr.png')});
-    tb.addSeparator();
-    tb.addItem('textColor',     {title: OSjs.API._('LBL_TEXT_COLOR'),                   onClick: _action});
-    tb.addItem('backColor',     {title: OSjs.API._('LBL_BACK_COLOR'),                   onClick: _action});
-    tb.addItem('font',          {title: OSjs.API._('LBL_FONT'),                         onClick: _action});
-    tb.render();
-    tb.addItem('indent',        {title: OSjs.API._('LBL_INDENT'),                       onClick: _action, icon: _createIcon('actions/gtk-indent-ltr.png')});
+    function updateSelection() {
+      var style = getSelectionStyle();
+      updateToolbar(style);
+    }
 
-    rt = this._addGUIElement(new GUI.RichText('WriterRichText', {onInited: function() {
-      rt.getWindow().addEventListener('selectstart', function() {
-        _updateToolbar();
-      });
-      rt.getWindow().addEventListener('mouseup', function() {
-        _updateToolbar();
-      });
-    }}), root);
+    back.set('value', this.color.background);
+    front.set('value', this.color.foreground);
+    font.set('label', Utils.format('{0} ({1})', this.font.name, this.font.size.toString()));
 
-    /*
-    var sb = this._addGUIElement(new GUI.StatusBar('WriterStatusBar'), root);
-    sb.setText("THIS IS A WORK IN PROGRESS");
-    */
+    text.on('selection', function() {
+      updateSelection();
+    });
 
-    mb.addItem(OSjs.API._("LBL_FILE"), [
-      {title: OSjs.API._('LBL_NEW'), name: 'New', onClick: function() {
-        app.action('new');
-      }},
-      {title: OSjs.API._('LBL_OPEN'), name: 'Open', onClick: function() {
-        app.action('open');
-      }},
-      {title: OSjs.API._('LBL_SAVE'), name: 'Save', onClick: function() {
-        app.action('save');
-      }},
-      {title: OSjs.API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
-        app.action('saveas');
-      }},
-      {title: OSjs.API._('LBL_CLOSE'), name: 'Close', onClick: function() {
-        self._close();
-      }}
-    ]);
+    this.checkChangeInterval = setInterval(function() {
+      if ( self.hasChanged ) {
+        return;
+      }
 
-    mb.addItem(OSjs.API._("LBL_EDIT"), [
-      {title: OSjs.API._('LBL_UNDO'), name: 'undo', onClick: function() {
-        self.command('undo');
-      }},
-      {title: OSjs.API._('LBL_REDO'), name: 'redo', onClick: function() {
-        self.command('redo');
-      }},
-      {title: OSjs.API._('LBL_COPY'), name: 'copy', onClick: function() {
-        self.command('copy');
-      }},
-      {title: OSjs.API._('LBL_CUT'), name: 'cut', onClick: function() {
-        self.command('cut');
-      }},
-      {title: OSjs.API._('LBL_DELETE'), name: 'delete', onClick: function() {
-        self.command('delete');
-      }},
-      {title: OSjs.API._('LBL_PASTE'), name: 'paste', onClick: function() {
-        self.command('paste');
-      }},
-      {title: OSjs.API._('LBL_UNLINK'), name: 'unlink', onClick: function() {
-        self.command('unlink');
-      }}
-    ]);
+      if ( self.checkChangeLength < 0 ) {
+        self.checkChangeLength = text.get('value').length;
+      }
 
-    mb.addItem(OSjs.API._("LBL_INSERT"), [
-      {title: OSjs.API._('LBL_ORDERED_LIST'), name: 'OL', onClick: function() {
-        self.command('insertOrderedList');
-      }},
-      {title: OSjs.API._('LBL_UNORDERED_LIST'), name: 'UL', onClick: function() {
-        self.command('insertUnorderedList');
-      }},
-      {title: OSjs.API._('LBL_IMAGE'), name: 'IMG', onClick: function() {
-        self._appRef._createDialog('File', [{type: 'open', mimes: ['^image']}, function(btn, file) {
-          if ( btn !== 'ok' || !file || !file.mime.match(/^image/) ) return;
-          VFS.url(file, function(error, result) {
-            if ( !error ) {
-              self.command('insertImage', result);
-            }
-          });
-        }]);
-      }},
-      {title: OSjs.API._('LBL_LINK'), name: 'A', onClick: function() {
-        self._appRef._createDialog('Input', [OSjs.Applications.ApplicationWriter._('Insert URL'), 'http://', function(btn, val) {
-          if ( btn !== 'ok' || ! val ) return;
-          self.command('createLink', val);
-        }]);
-      }}
-    ]);
-
-    mb.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFile ? false : true);
-    };
-
-    _setFont(self.font, self.fontSize);
-    _setTextColor(self.textColor);
-    _setBackColor(self.backColor);
-
-    rt.hasChanged = false;
+      var len = text.get('value').length;
+      if ( len != self.checkChangeLength ) {
+        self.hasChanged = true;
+      }
+      self.checkChangeLength = len;
+    }, 500);
 
     return root;
   };
 
-  ApplicationWriterWindow.prototype.update = function(file, contents) {
-    if ( typeof contents !== 'undefined' ) {
-      var rt = this._getGUIElement('WriterRichText');
-      if ( rt ) {
-        rt.setContent(contents || '');
-      }
-    }
+  ApplicationWriterWindow.prototype.updateFile = function(file) {
+    DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
 
-    var t = DEFAULT_FILENAME;
-    if ( file ) {
-      t = Utils.filename(file);
-    }
+    var self = this;
+    var el = this._scheme.find(this, 'Text');
+    el.$element.focus();
 
-    this._setTitle(this.title + " - " + t);
+    this.checkChangeLength = -1;
   };
 
-  ApplicationWriterWindow.prototype.command = function(name, value) {
-    var rt = this._getGUIElement('WriterRichText');
-    if ( rt ) {
-      rt.command(name, false, value);
-      this._focus();
-      var rt = this._getGUIElement('WriterRichText');
-      if ( rt ) {
-        rt.focus();
-      }
-      return true;
-    }
-    return false;
+  ApplicationWriterWindow.prototype.showFile = function(file, content) {
+    this._scheme.find(this, 'Text').set('value', content || '');
+    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
   };
 
-  ApplicationWriterWindow.prototype.getRichTextData = function() {
-    var rt = this._getGUIElement('WriterRichText');
-    return rt ? rt.getContent() : '';
-  };
-
-  ApplicationWriterWindow.prototype.onCheckChanged = function(callback, msg) {
-    var gel = this._getGUIElement('WriterRichText');
-    if ( gel && gel.hasChanged ) {
-      return this._appRef.onConfirmDialog(this, msg, function(discard) {
-        if ( discard ) {
-          gel.hasChanged = false;
-        }
-        callback(discard);
-      });
-    }
-    return false;
-  };
-
-  ApplicationWriterWindow.prototype.setChanged = function(c) {
-    var gel  = this._getGUIElement('WriterRichText');
-    if ( gel ) {
-      gel.hasChanged = c;
-    }
+  ApplicationWriterWindow.prototype.getFileData = function() {
+    return this._scheme.find(this, 'Text').get('value');
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application
-   */
-  var ApplicationWriter = function(args, metadata) {
-    if ( !OSjs.Compability.richtext ) throw "Your platform does not support RichText editing";
+  function ApplicationWriter(args, metadata) {
+    DefaultApplication.apply(this, ['ApplicationWriter', args, metadata, {
+      extension: 'odoc',
+      mime: 'osjs/document',
+      filename: 'New text file.odoc'
+    }]);
+  }
 
-    Application.apply(this, ['ApplicationWriter', args, metadata]);
+  ApplicationWriter.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationWriter.constructor = DefaultApplication;
 
-    this.defaultCheckChange  = true;
-    this.dialogOptions.mimes = metadata.mime;
-    this.dialogOptions.defaultFilename = DEFAULT_FILENAME;
-    this.dialogOptions.defaultMime = "osjs/document";
+  ApplicationWriter.prototype.destroy = function() {
+    return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationWriter.prototype = Object.create(Application.prototype);
-
-  ApplicationWriter.prototype.init = function(settings, metadata) {
-    this.mainWindow = this._addWindow(new ApplicationWriterWindow(this, metadata));
-    Application.prototype.init.apply(this, arguments);
-  };
-
-  ApplicationWriter.prototype.onNew = function() {
-    if ( this.mainWindow ) {
-      this.mainWindow.update(null, "");
-      this.mainWindow.setChanged(false);
-      this.mainWindow._focus();
-    }
-  };
-
-  ApplicationWriter.prototype.onOpen = function(file, data) {
-    if ( this.mainWindow ) {
-      this.mainWindow.update(file.path, data);
-      this.mainWindow.setChanged(false);
-      this.mainWindow._focus();
-    }
-  };
-
-  ApplicationWriter.prototype.onSave = function(file, data) {
-    if ( this.mainWindow ) {
-      this.mainWindow.update(file.path);
-      this.mainWindow.setChanged(false);
-      this.mainWindow._focus();
-    }
-  };
-
-  ApplicationWriter.prototype.onGetSaveData = function(callback) {
-    var data = null;
-    if ( this.mainWindow ) {
-      data = this.mainWindow.getRichTextData();
-    }
-    callback(data);
+  ApplicationWriter.prototype.init = function(settings, metadata, onInited) {
+    var self = this;
+    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+      self._addWindow(new ApplicationWriterWindow(self, metadata, scheme, file));
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -427,4 +284,4 @@
   OSjs.Applications.ApplicationWriter = OSjs.Applications.ApplicationWriter || {};
   OSjs.Applications.ApplicationWriter.Class = ApplicationWriter;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs, OSjs.VFS, OSjs.Utils);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

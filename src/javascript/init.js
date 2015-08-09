@@ -33,7 +33,7 @@
   window.OSjs = window.OSjs || {};
 
   // Make sure these namespaces exist
-  (['API', 'Core', 'Compability', 'Helpers', 'Applications', 'Dialogs', 'GUI', 'Locales', 'VFS', 'Session']).forEach(function(ns) {
+  (['API', 'GUI', 'Core', 'Dialogs', 'Compability', 'Helpers', 'Applications', 'Locales', 'VFS', 'Session']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -50,13 +50,27 @@
 
   // Compability
   (function() {
+    if ( window.HTMLCollection ) {
+      window.HTMLCollection.prototype.forEach = Array.prototype.forEach;
+    }
     if ( window.NodeList ) {
       window.NodeList.prototype.forEach = Array.prototype.forEach;
     }
-
     if ( window.FileList ) {
       window.FileList.prototype.forEach = Array.prototype.forEach;
     }
+
+    (function () {
+      function CustomEvent ( event, params ) {
+        params = params || { bubbles: false, cancelable: false, detail: undefined };
+        var evt = document.createEvent( 'CustomEvent' );
+        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+        return evt;
+      };
+
+      CustomEvent.prototype = window.Event.prototype;
+      window.CustomEvent = CustomEvent;
+    })();
   })();
 
   // Initialize

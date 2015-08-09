@@ -27,142 +27,76 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_StandardDialog) {
+(function(API, VFS, Utils, DialogWindow) {
   'use strict';
 
-  var _ID = 0;
-
   /**
-   * File Upload Dialog
+   * An 'FileUpload' dialog
    *
-   * @param   String          dest    Destination path
-   * @param   [File]          file    File to upload (If null, you will be asked)
-   * @param   Function        onClose Callback on close => fn(button)
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
+   * @option    args    title       String      Dialog title
+   * @option    args    dest        String      Upload destination path
+   * @option    args    file        Mixed       (Optional) Upload this file
+   *
+   * @extends DialogWindow
+   * @class FileUploadDialog
    * @api OSjs.Dialogs.FileUpload
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
    */
-  var FileUploadDialog = function(dest, file, onClose) {
-    this.dest             = dest;
-    this.file             = file || null;
-    this.$file            = null;
-    this.dialog           = null;
-    this._wmref           = null;
-    this.notificationId   = 'FileUploadDialog_' + _ID;
-
-    this.uploadName = null;
-    this.uploadSize = null;
-    this.uploadMime = null;
-
-    var maxSize = OSjs.Core.getHandler().getConfig('Core').MaxUploadSize;
-    var msg = OSjs.API._('DIALOG_UPLOAD_DESC', this.dest, maxSize);
-    _StandardDialog.apply(this, ['FileUploadDialog', {
-      title: OSjs.API._('DIALOG_UPLOAD_TITLE'),
-      icon: 'actions/filenew.png',
-      message: msg,
-      buttons: ['cancel']
-    }, {width:400, height:140}, onClose]);
-
-    _ID++;
-  };
-
-  FileUploadDialog.prototype = Object.create(_StandardDialog.prototype);
-
-  FileUploadDialog.prototype.init = function(wm) {
-    var self = this;
-    var root = _StandardDialog.prototype.init.apply(this, arguments);
-    this._wmref = wm;
-
-    var file = document.createElement('input');
-    file.type = 'file';
-    file.name = 'upload';
-    file.onchange = function(ev) {
-      self.onFileSelected(ev, file.files[0]);
-    };
-
-    this.$file = file;
-    this.$element.appendChild(file);
-    if ( this.file ) {
-      this.onFileSelected(null, this.file);
-    }
-  };
-
-  FileUploadDialog.prototype.destroy = function() {
-    this._wmref = null;
-    if ( this.dialog ) {
-      this.dialog._close();
-      this.dialog = null;
-    }
-
-    _StandardDialog.prototype.destroy.apply(this, arguments);
-  };
-
-  FileUploadDialog.prototype._close = function() {
-    if ( this.buttons['cancel'] && (this.buttons['cancel'].isDisabled()) ) {
-      return;
-    }
-    _StandardDialog.prototype._close.apply(this, arguments);
-  };
-
-  FileUploadDialog.prototype.end = function() {
-    if ( this._wmref ) {
-      this._wmref.removeNotificationIcon(this.notificationId);
-    }
-
-    if ( this.dialog ) {
-      this.dialog._close();
-      this.dialog = null;
-    }
-
-    this.onClose.apply(this, arguments);
-    this._close();
-  };
-
-  FileUploadDialog.prototype.upload = function(file, size) {
-    this.$file.disabled = 'disabled';
-    this.buttons['cancel'].setDisabled(true);
-
-    var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, size, this.dest);
-    this.dialog = this._wmref.addWindow(new OSjs.Dialogs.FileProgress(OSjs.API._('DIALOG_UPLOAD_MSG')));
-    this.dialog.setDescription(desc);
-    this.dialog.setProgress(0);
-    this._addChild(this.dialog); // Importante!
-
-    this.uploadName = file.name;
-    this.uploadSize = size;
-    this.uploadMime = file.type;
-
-    if ( this._wmref ) {
-      this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc});
-    }
-
-    var self = this;
-    OSjs.VFS.internalUpload(file, this.dest, function(type, arg) {
-      if ( type === 'success' ) {
-        self.onUploadComplete(self, arg);
-      } else if ( type === 'failed' ) {
-        self.onUploadFailed.call(self, arg);
-      } else if ( type === 'canceled' ) {
-        self.onUploadCanceled.call(self, arg);
-      } else if ( type === 'progress' ) {
-        self.onUploadProgress.call(self, arg);
-      } else {
-        self.onUploadFailed.call(self, null, arg);
-      }
+  function FileUploadDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {
+      dest:     API.getDefaultPath('/'),
+      progress: {},
+      file:     null
     });
 
-    setTimeout(function() {
-      if ( self.dialog ) {
-        self.dialog._focus();
-      }
-    }, 100);
+    DialogWindow.apply(this, ['FileUploadDialog', {
+      title: args.title || API._('DIALOG_UPLOAD_TITLE'),
+      icon: 'actions/filenew.png',
+      width: 400,
+      height: 100
+    }, args, callback]);
+  }
+
+  FileUploadDialog.prototype = Object.create(DialogWindow.prototype);
+  FileUploadDialog.constructor = DialogWindow;
+
+  FileUploadDialog.prototype.init = function() {
+    var self = this;
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    var message = this.scheme.find(this, 'Message');
+    var maxSize = OSjs.Core.getHandler().getConfig('Core').MaxUploadSize;
+
+    message.set('value', API._('DIALOG_UPLOAD_DESC', this.args.dest, maxSize), true);
+
+    var input = this.scheme.find(this, 'File');
+    if ( this.args.file ) {
+      this.setFile(this.args.file, input);
+    } else {
+      input.on('change', function(ev) {
+        self.setFile(ev.detail, input);
+      });
+    }
+
+    return root;
   };
 
-  FileUploadDialog.prototype.onFileSelected = function(evt, file) {
-    console.info('FileUploadDialog::onFileSelected()', evt, file);
+  FileUploadDialog.prototype.setFile = function(file, input) {
+    var self = this;
+
+    function error(msg) {
+      API.error(
+        OSjs.API._('DIALOG_UPLOAD_FAILED'),
+        OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'),
+        msg || OSjs.API._('DIALOG_UPLOAD_FAILED_UNKNOWN')
+      );
+
+      progressDialog._close(true);
+      self.onClose(ev, 'cancel');
+    }
+
     if ( file ) {
       var fileSize = 0;
       if ( file.size > 1024 * 1024 ) {
@@ -171,59 +105,64 @@
         fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
       }
 
-      this.upload(file, fileSize);
-    }
-  };
-
-  FileUploadDialog.prototype.onUploadProgress = function(evt) {
-    if ( evt.lengthComputable ) {
-      var p = Math.round(evt.loaded * 100 / evt.total);
-      if ( this.dialog ) {
-        this.dialog.setProgress(p);
+      if ( input ) {
+        input.set('disabled', true);
       }
+
+      this.scheme.find(this, 'ButtonCancel').set('disabled', true);
+
+      var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, fileSize, this.dest);
+
+      var progressDialog = API.createDialog('FileProgress', {
+        message: desc,
+        dest: this.args.dest,
+        filename: file.name,
+        mime: file.type,
+        size: fileSize
+      }, function(ev, button) {
+        // Dialog closed
+      }, this);
+
+
+      if ( this._wmref ) {
+        this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc});
+      }
+
+      OSjs.VFS.internalUpload(file, this.args.dest, function(type, ev) {
+        if ( type === 'success' ) {
+          progressDialog._close();
+          self.onClose(ev, 'ok', file);
+        } else if ( type === 'failed' ) {
+          error(ev);
+        } else if ( type === 'canceled' ) {
+          error(OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'));
+        } else if ( type === 'progress' ) {
+          if ( ev.lengthComputable ) {
+            var p = Math.round(ev.loaded * 100 / ev.total);
+            progressDialog.setProgress(p);
+          }
+        } else {
+          error(ev);
+        }
+      });
+
+      setTimeout(function() {
+        if ( progressDialog ) { progressDialog._focus(); }
+      }, 100);
     }
   };
 
-  FileUploadDialog.prototype.onUploadComplete = function(evt) {
-    console.info('FileUploadDialog::onUploadComplete()');
 
-    if ( this.buttons['cancel'] ) {
-      this.buttons['cancel'].setDisabled(false);
-    }
-
-    this.end('complete', this.uploadName, this.uploadMime, this.uploadSize);
-  };
-
-  FileUploadDialog.prototype.onUploadFailed = function(evt, error) {
-    console.info('FileUploadDialog::onUploadFailed()');
-    if ( error ) {
-      this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), error);
-    } else {
-      this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), OSjs.API._('DIALOG_UPLOAD_FAILED_UNKNOWN'));
-    }
-    if ( this.buttons['cancel'] ) {
-      this.buttons['cancel'].setDisabled(false);
-    }
-    this.end('fail', error);
-  };
-
-  FileUploadDialog.prototype.onUploadCanceled = function(evt) {
-    console.info('FileUploadDialog::onUploadCanceled()');
-    this._error(OSjs.API._('DIALOG_UPLOAD_FAILED'), OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'), OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'));
-    if ( this.buttons['cancel'] ) {
-      this.buttons['cancel'].setDisabled(false);
-    }
-    this.end('cancelled', evt);
-  };
-
-  FileUploadDialog.prototype._error = function() {
-    OSjs.API.error.apply(this, arguments); // Because this window may close automatically, and that will remove errors
+  FileUploadDialog.prototype.onClose = function(ev, button, result) {
+    result = result || null;
+    this.closeCallback(ev, button, result);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.FileUpload         = FileUploadDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.FileUpload = FileUploadDialog;
 
-})(OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.VFS, OSjs.Utils, OSjs.Core.DialogWindow);

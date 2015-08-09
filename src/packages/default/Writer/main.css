@@ -28,25 +28,6 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationWriterWindow .WindowWrapper {
+.ApplicationWriterWindow application-window-content {
 }
 
-.Window_ApplicationWriterWindow .WriterMenuBar {
-  position : relative;
-}
-.Window_ApplicationWriterWindow .WriterToolBar {
-  position : relative;
-}
-
-.Window_ApplicationWriterWindow .WriterRichText {
-  position : absolute;
-  top : 67px;
-  left : 5px;
-  right : 5px;
-  /* bottom : 30px; */
-  bottom : 5px;
-}
-
-.Window_ApplicationWriterWindow li.HasIcon span {
-  display : none;
-}

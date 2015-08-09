@@ -28,64 +28,17 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationMusicPlayerWindow .WindowWrapper {
+.ApplicationMusicPlayerWindow {
 }
 
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Container {
-  margin : 10px;
-}
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons {
-  margin : -5px;
-  text-align : center;
-}
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info {
-  height : 70px;
-}
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info span {
-  float : left;
-  margin-bottom : 5px;
-}
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info .Label {
-  font-weight : bold;
-  width : 50px;
-  clear : left;
-}
-
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Info span:last-child {
-  width : auto; /*250px;*/
-  white-space : nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-}
-
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton {
-  display : inline-block;
-  margin : 2px;
-  width : 42px;
-  height : 42px;
-}
-
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton > button {
-  width : 42px;
-  height : 42px;
-  text-align : center;
-}
-
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .Buttons .GUIButton img {
-  vertical-align : middle;
-}
-
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .GUISlider {
-  margin-bottom : 10px;
+.ApplicationMusicPlayerWindow gui-slider {
+  margin : 4px;
   margin-top : 10px;
+  margin-bottom : 10px;
 }
-
-.Window_ApplicationMusicPlayerWindow .WindowWrapper .MusicPlayerPlaylist {
-  position : absolute;
-  left : 5px;
-  right : 5px;
-  bottom : 5px;
-  top : 200px;
+.ApplicationMusicPlayerWindow gui-vbox[data-id="Metadata"] {
+  margin : 4px;
 }
-
+.ApplicationMusicPlayerWindow gui-audio {
+  display : none;
+}

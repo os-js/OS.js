@@ -1,0 +1,88 @@
+<application-window data-id="MusicPlayerWindow">
+
+  <gui-vbox>
+    <!-- MENU BAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+
+        <gui-menu-bar-entry data-label="LBL_FILE">
+          <gui-menu data-id="SubmenuFile">
+            <gui-menu-entry data-id="MenuOpen" data-label="LBL_OPEN"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+      </gui-menu-bar>
+    </gui-vbox-container>
+
+    <!-- CONTENT -->
+    <gui-vbox-container data-shrink="1" data-basis="auto">
+
+      <gui-vbox data-id="Metadata">
+        <gui-vbox-container data-shrink="1">
+          <gui-hbox>
+            <gui-hbox-container data-basis="80">
+              <gui-label class="gui-bold">Artist</gui-label>
+            </gui-hbox-container>
+            <gui-hbox-container>
+              <gui-label data-id="LabelArtist"></gui-label>
+            </gui-hbox-container>
+          </gui-hbox>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1">
+          <gui-hbox>
+            <gui-hbox-container data-basis="80">
+              <gui-label class="gui-bold">Album</gui-label>
+            </gui-hbox-container>
+            <gui-hbox-container>
+              <gui-label data-id="LabelAlbum"></gui-label>
+            </gui-hbox-container>
+          </gui-hbox>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1">
+          <gui-hbox>
+            <gui-hbox-container data-basis="80">
+              <gui-label class="gui-bold">Title</gui-label>
+            </gui-hbox-container>
+            <gui-hbox-container>
+              <gui-label data-id="LabelTitle"></gui-label>
+            </gui-hbox-container>
+          </gui-hbox>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1">
+          <gui-hbox>
+            <gui-hbox-container data-basis="80">
+              <gui-label class="gui-bold">Time</gui-label>
+            </gui-hbox-container>
+            <gui-hbox-container>
+              <gui-label data-id="LabelTime"></gui-label>
+            </gui-hbox-container>
+          </gui-hbox>
+        </gui-vbox-container>
+      </gui-vbox>
+
+
+    </gui-vbox-container>
+
+    <gui-vbox-container data-expand="true" data-grow="1">
+      <gui-slider data-id="Seek"></gui-slider>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="center">
+      <gui-button-bar data-id="Controls">
+        <gui-button data-id="ButtonStart" data-icon="stock://32x32/actions/player_start.png" data-icon-size="32"></gui-button>
+        <gui-button data-id="ButtonRew" data-icon="stock://32x32/actions/player_rew.png" data-icon-size="32"></gui-button>
+        <gui-button data-id="ButtonPlay" data-icon="stock://32x32/actions/player_play.png" data-icon-size="32"></gui-button>
+        <gui-button data-id="ButtonPause" data-icon="stock://32x32/actions/player_pause.png" data-icon-size="32"></gui-button>
+        <gui-button data-id="ButtonFwd" data-icon="stock://32x32/actions/player_fwd.png" data-icon-size="32"></gui-button>
+        <gui-button data-id="ButtonEnd" data-icon="stock://32x32/actions/player_end.png" data-icon-size="32"></gui-button>
+      </gui-button-bar>
+
+      <gui-audio data-id="Player"></gui-audio>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>

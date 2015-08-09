@@ -31,79 +31,61 @@
   'use strict';
 
   /**
-   * File Progress dialog
+   * An 'File Progress Indicator' dialog
    *
-   * @param   String          title   Dialog title/message
+   * This is only used internally automatically.
    *
-   * @api OSjs.Dialogs.FileProgress
-   * @see OSjs.Core.DialogWindow
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   *
+   * @option    args    title       String      Dialog title
+   * @option    args    message     String      Dialog message
    *
    * @extends DialogWindow
-   * @class
+   * @class FileProgressDialog
+   * @api OSjs.Dialogs.FileProgress
    */
-  var FileProgressDialog = function(title) {
-    DialogWindow.apply(this, ['FileProgressDialog', {width:400, height:120}]);
+  function FileProgressDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {});
+    DialogWindow.apply(this, ['FileProgressDialog', {
+      title: args.title || API._('DIALOG_FILEPROGRESS_TITLE'),
+      icon: 'actions/document-send.png',
+      width: 400,
+      height: 100
+    }, args, callback]);
 
-    this.$desc                    = null;
-    this._title                   = title || API._('DIALOG_FILEPROGRESS_TITLE');
-    this._properties.allow_close  = false;
-    this._icon                    = 'actions/document-send.png';
-  };
+    this.busy = !!args.filename;
+  }
 
   FileProgressDialog.prototype = Object.create(DialogWindow.prototype);
-
-  FileProgressDialog.prototype.destroy = function() {
-    DialogWindow.prototype.destroy.apply(this, arguments);
-  };
+  FileProgressDialog.constructor = DialogWindow;
 
   FileProgressDialog.prototype.init = function() {
-    DialogWindow.prototype.init.apply(this, arguments);
-
-    var self = this;
-    var root = this._$root;
-
-    var el          = document.createElement('div');
-    el.className    = 'FileProgressDialog';
-
-    var desc        = document.createElement('div');
-    desc.className  = 'Description';
-    desc.innerHTML  = API._('DIALOG_FILEPROGRESS_LOADING');
-
-
-    el.appendChild(desc);
-    this._addGUIElement(new OSjs.GUI.ProgressBar('FileProgressBar', 0), el);
-    root.appendChild(el);
-
-    this.$desc = desc;
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    if ( this.args.message ) {
+      this.scheme.find(this, 'Message').set('value', this.args.message, true);
+    }
+    return root;
   };
 
-  /**
-   * Set the description
-   *
-   * @param   String    d     Description
-   *
-   * @return  void
-   *
-   * @method  FileProgress::setDescription()
-   */
-  FileProgressDialog.prototype.setDescription = function(d) {
-    if ( !this.$desc ) { return; }
-    this.$desc.innerHTML = d;
+  FileProgressDialog.prototype.onClose = function(ev, button) {
+    this.closeCallback(ev, button, null);
   };
 
-  /**
-   * Set the progress
-   *
-   * @param   int     p       Percentage
-   *
-   * @return  void
-   *
-   * @method  FileProgress::setProgress()
-   */
   FileProgressDialog.prototype.setProgress = function(p) {
-    var el = this._getGUIElement('FileProgressBar');
-    if ( el ) {
-      el.setPercentage(p);
+    this.scheme.find(this, 'Progress').set('progress', p);
+  };
+
+  FileProgressDialog.prototype._close = function(force) {
+    if ( !force && this.busy  ) {
+      return false;
+    }
+    return DialogWindow.prototype._close.call(this);
+  };
+
+  FileProgressDialog.prototype._onKeyEvent = function(ev) {
+    if ( !this.busy ) {
+      DialogWindow.prototype._onKeyEvent.apply(this, arguments);
     }
   };
 

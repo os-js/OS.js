@@ -1,10 +1,10 @@
 {
   "name": "default",
-  "title": "Basic OS.js Theme",
+  "title": "Default",
   "style": {
     "window": {
-      "margin": 26,
-      "border": 0
+      "margin": 29,
+      "border": 3
     }
   }
 }

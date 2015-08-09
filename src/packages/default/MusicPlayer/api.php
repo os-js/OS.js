@@ -7,8 +7,7 @@ class ApplicationMusicPlayer
 
   public static function call($method, $args) {
     if ( $method === 'info' ) {
-      $fname = $args['filename'];
-      if ( !$fname || strstr($fname, VFSDIR) === false ) throw new Exception("Invalid file!");
+      list($dirname, $fname, $protocol) = getRealPath($args['filename']);
 
       if ( !class_exists('SimpleXMLElement') ) {
         throw new Exception("Cannot get media information -- No XML parser found");
@@ -24,9 +23,9 @@ class ApplicationMusicPlayer
       }
 
       try {
-        $xml = new SimpleXMLElement(implode("\n", $content));
+        $xml = new SimpleXMLElement(implode("\n", preg_replace("/_+/", "", $content)));
       } catch ( Exception $e ) {
-        $xml = null;
+        $xml = $e;
       }
 
       if ( $xml !== null ) {

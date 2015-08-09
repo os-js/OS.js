@@ -1071,15 +1071,10 @@
 
     function doRequest(f, i) {
       if ( args.app ) {
-        if ( args.win ) {
-          args.app._createDialog('FileUpload', [args.destination, f, _dialogClose], args.win);
-        } else {
-          if ( args.app._addWindow ) {
-            args.app._addWindow(new OSjs.Dialogs.FileUpload(args.destination, f, _dialogClose), false);
-          } else {
-            args.app._createDialog('FileUpload', [args.destination, f, _dialogClose]);
-          }
-        }
+        API.createDialog('FileUpload', {
+          dest: args.destination,
+          file: f
+        }, _dialogClose, args.win || args.app);
       } else {
         OSjs.VFS.internalUpload(f, args.destination, function(type, arg) {
           if ( type === 'complete' || type === 'success' ) {
@@ -1089,7 +1084,7 @@
             callback(msg, null, arg);
           } else if ( type === 'canceled' ) {
             callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, arg);
-          } else {
+          } else if ( type !== 'progress' ) {
             callback(arg);
           }
         });

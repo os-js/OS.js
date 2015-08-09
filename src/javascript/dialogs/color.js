@@ -27,150 +27,102 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, _StandardDialog) {
+(function(API, Utils, DialogWindow) {
   'use strict';
 
   /**
-   * Color Dialog
+   * An 'Color Chooser' dialog
    *
-   * @param   Object          opts    Options
-   * @param   Function        onClose Callback on close => fn(button, rgb, hex, alpha)
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
+   * @option    args    title       String      Dialog title
+   * @option    args    color       Mixed       Either hex string or rbg object
+   *
+   * @extends DialogWindow
+   * @class ColorDialog
    * @api OSjs.Dialogs.Color
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
    */
-  var ColorDialog = function(opts, onClose) {
-    opts = opts || {};
-    if ( typeof opts.alpha === 'undefined' ) {
-      opts.alpha = 1.0;
-    }
+  function ColorDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {});
 
-    _StandardDialog.apply(this, ['ColorDialog', {
-      title: API._('DIALOG_COLOR_TITLE'),
+    DialogWindow.apply(this, ['ColorDialog', {
+      title: args.title || API._('DIALOG_COLOR_TITLE'),
       icon: 'apps/gnome-settings-theme.png',
-      buttons: ['cancel', 'ok']
-    }, {width:450, height:250}, onClose]);
+      width: 400,
+      height: 220
+    }, args, callback]);
 
-    if ( typeof opts.color === 'object' ) {
-      this.currentRGB = opts.color;
+    var rgb = args.color;
+    var hex = rgb;
+    if ( typeof rgb === 'string' ) {
+      hex = rgb;
+      rgb = Utils.convertToRGB(rgb);
     } else {
-      this.currentRGB = Utils.convertToRGB(opts.color || '#ffffff');
+      rgb = rgb || {r: 0, g: 0, b: 0};
+      hex = Utils.convertToHEX(rgb.r, rgb.g, rgb.b);
     }
-    this.showAlpha    = opts.showAlpha ? true : false;
-    this.currentAlpha = opts.alpha * 100;
-    this.$color       = null;
-  };
 
-  ColorDialog.prototype = Object.create(_StandardDialog.prototype);
+    this.color = {r: rgb.r, g: rgb.g, b: rgb.b, hex: hex};
+  }
+
+  ColorDialog.prototype = Object.create(DialogWindow.prototype);
+  ColorDialog.constructor = DialogWindow;
 
   ColorDialog.prototype.init = function() {
-    var self  = this;
-    var root  = _StandardDialog.prototype.init.apply(this, arguments);
-    var color = this.currentRGB;
+    var self = this;
+    var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    var el        = document.createElement('div');
-    el.className  = 'ColorDialog';
+    // TODO: Alpha channel
 
-    var sliders       = document.createElement('div');
-    sliders.className = 'ColorSliders';
-
-    var label       = document.createElement('div');
-    label.className = 'Label LabelR';
-    label.innerHTML = API._('DIALOG_COLOR_R', 0);
-    sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderR', {min: 0, max: 255, val: color.r, onUpdate: function(value, percentage) {
-      self.setColor(value, self.currentRGB.g, self.currentRGB.b, null, true);
-    }}), sliders);
-
-    label           = document.createElement('div');
-    label.className = 'Label LabelG';
-    label.innerHTML = API._('DIALOG_COLOR_G', 0);
-    sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderG', {min: 0, max: 255, val: color.g, onUpdate: function(value, percentage) {
-      self.setColor(self.currentRGB.r, value, self.currentRGB.b, null, true);
-    }}), sliders);
-
-    label           = document.createElement('div');
-    label.className = 'Label LabelB';
-    label.innerHTML = API._('DIALOG_COLOR_B', 0);
-    sliders.appendChild(label);
-    this._addGUIElement(new OSjs.GUI.Slider('SliderB', {min: 0, max: 255, val: color.b, onUpdate: function(value, percentage) {
-      self.setColor(self.currentRGB.r, self.currentRGB.g, value, null, true);
-    }}), sliders);
-
-    if ( this.showAlpha ) {
-      label           = document.createElement('div');
-      label.className = 'Label LabelA';
-      label.innerHTML = API._('DIALOG_COLOR_A', 0);
-      sliders.appendChild(label);
-      this._addGUIElement(new OSjs.GUI.Slider('SliderA', {min: 0, max: 100, val: this.currentAlpha, onUpdate: function(value, percentage) {
-        self.setColor(self.currentRGB.r, self.currentRGB.g, self.currentRGB.b, value, true);
-      }}), sliders);
-    }
-
-    this.$color           = document.createElement('div');
-    this.$color.className = 'ColorSelected';
-
-    this._addGUIElement(new OSjs.GUI.ColorSwatch('ColorDialogColorSwatch', {width: 200, height: 200, onSelect: function(r, g, b) {
-      self.setColor(r, g, b);
-    }}), this.$element);
-
-    this.$element.appendChild(sliders);
-    this.$element.appendChild(this.$color);
-
-  };
-  ColorDialog.prototype._inited = function() {
-    if ( !this._rendered ) {
-      var rgb = this.currentRGB;
-      this.setColor(rgb.r, rgb.g, rgb.b, this.currentAlpha, false);
-    }
-
-    _StandardDialog.prototype._inited.apply(this, arguments);
-  };
-
-  ColorDialog.prototype.setColor = function(r, g, b, a, fromElement) {
-    this.currentAlpha = (typeof a === 'undefined' ? this.currentAlpha : a);
-    this.currentRGB   = {r:r, g:g, b:b};
-
-    this.$color.style.background = 'rgb(' + ([r, g, b]).join(',') + ')';
-
-    if ( !fromElement ) {
-      this._getGUIElement('SliderR').setValue(r);
-      this._getGUIElement('SliderG').setValue(g);
-      this._getGUIElement('SliderB').setValue(b);
-    }
-
-    this.$element.getElementsByClassName('LabelR')[0].innerHTML = API._('DIALOG_COLOR_R', r);
-    this.$element.getElementsByClassName('LabelG')[0].innerHTML = API._('DIALOG_COLOR_G', g);
-    this.$element.getElementsByClassName('LabelB')[0].innerHTML = API._('DIALOG_COLOR_B', b);
-
-    if ( this.showAlpha ) {
-      var ca = (this.currentAlpha/100);
-      if ( !fromElement ) {
-        this._getGUIElement('SliderA').setValue(this.currentAlpha);
+    function updateHex(update) {
+      self.scheme.find(self, 'LabelRed').set('value', API._('DIALOG_COLOR_R', self.color.r));
+      self.scheme.find(self, 'LabelGreen').set('value', API._('DIALOG_COLOR_G', self.color.g));
+      self.scheme.find(self, 'LabelBlue').set('value', API._('DIALOG_COLOR_B', self.color.b));
+      if ( update ) {
+        self.color.hex = Utils.convertToHEX(self.color.r, self.color.g, self.color.b);
       }
-      this.$element.getElementsByClassName('LabelA')[0].innerHTML = API._('DIALOG_COLOR_A', ca);
+
+      self.scheme.find(self, 'ColorPreview').set('value', self.color.hex);
     }
 
+    this.scheme.find(this, 'ColorSelect').on('change', function(ev) {
+      self.color = ev.detail;
+      self.scheme.find(self, 'Red').set('value', self.color.r);
+      self.scheme.find(self, 'Green').set('value', self.color.g);
+      self.scheme.find(self, 'Blue').set('value', self.color.b);
+      updateHex(true);
+    });
+
+    this.scheme.find(this, 'Red').on('change', function(ev) {
+      self.color.r = parseInt(ev.detail, 10);
+      updateHex(true);
+    }).set('value', this.color.r);
+
+    this.scheme.find(this, 'Green').on('change', function(ev) {
+      self.color.g = parseInt(ev.detail, 10);
+      updateHex(true);
+    }).set('value', this.color.g);
+
+    this.scheme.find(this, 'Blue').on('change', function(ev) {
+      self.color.b = parseInt(ev.detail, 10);
+      updateHex(true);
+    }).set('value', this.color.b);
+
+    updateHex();
+
+    return root;
   };
 
-  ColorDialog.prototype.onButtonClick = function(btn, ev) {
-    if ( this.buttons[btn] ) {
-      if ( btn === 'cancel' ) {
-        this.end('cancel', null, null);
-      } else if ( btn === 'ok' ) {
-        this.end('ok', this.currentRGB, Utils.convertToHEX(this.currentRGB), (this.currentAlpha/100));
-      }
-    }
+  ColorDialog.prototype.onClose = function(ev, button) {
+    this.closeCallback(ev, button, button === 'ok' ? this.color : null);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.Color              = ColorDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.Color = ColorDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

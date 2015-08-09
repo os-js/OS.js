@@ -27,46 +27,36 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
+  'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window Constructor
-   */
-  function ApplicationEXAMPLEWindow(app, metadata) {
+  function ApplicationEXAMPLEWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationEXAMPLEWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 200
-    }, app]);
+    }, app, scheme]);
   }
 
   ApplicationEXAMPLEWindow.prototype = Object.create(Window.prototype);
+  ApplicationEXAMPLEWindow.constructor = Window.prototype;
 
-  ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app) {
+  ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    // Create window contents (GUI) here
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'EXAMPLEWindow', root);
 
     return root;
   };
 
-  ApplicationEXAMPLEWindow.prototype._inited = function() {
-    Window.prototype._inited.apply(this, arguments);
-
-    // Window has been successfully created and displayed.
-    // You can start communications, handle files etc. here
-
-  };
-
   ApplicationEXAMPLEWindow.prototype.destroy = function() {
-    // Destroy custom objects etc. here
-
     Window.prototype.destroy.apply(this, arguments);
   };
 
@@ -74,41 +64,28 @@
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application constructor
-   */
-  var ApplicationEXAMPLE = function(args, metadata) {
+  function ApplicationEXAMPLE(args, metadata) {
     Application.apply(this, ['ApplicationEXAMPLE', args, metadata]);
-
-    // You can set application variables here
-  };
+  }
 
   ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
+  ApplicationEXAMPLE.constructor = Application;
 
   ApplicationEXAMPLE.prototype.destroy = function() {
-    // Destroy communication, timers, objects etc. here
-
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationEXAMPLE.prototype.init = function(settings, metadata) {
-    var self = this;
-
+  ApplicationEXAMPLE.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
 
-    // Create your main window
-    var mainWindow = this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
+    var self = this;
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
 
-    // Do other stuff here
-  };
-
-  ApplicationEXAMPLE.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    // Make sure we kill our application if main window was closed
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationEXAMPLEWindow' ) {
-      this.destroy();
-    }
+      onInited();
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -119,4 +96,4 @@
   OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
   OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

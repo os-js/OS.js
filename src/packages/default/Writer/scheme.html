@@ -1,0 +1,61 @@
+<application-window data-id="WriterWindow">
+
+  <gui-vbox>
+    <!-- MENU BAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+
+        <gui-menu-bar-entry data-label="LBL_FILE">
+          <gui-menu data-id="SubmenuFile">
+            <gui-menu-entry data-id="MenuNew" data-label="LBL_NEW"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuOpen" data-label="LBL_OPEN"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuSave" data-label="LBL_SAVE"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuSaveAs" data-label="LBL_SAVEAS"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+      </gui-menu-bar>
+    </gui-vbox-container>
+
+    <!-- TOOLS -->
+    <gui-vbox-container data-shrink="1" data-basis="auto" data-expand="true">
+
+      <gui-toolbar>
+        <gui-button data-id="text-bold" data-icon="stock://actions/format-text-bold.png"></gui-button>
+        <gui-button data-id="text-italic" data-icon="stock://actions/format-text-italic.png"></gui-button>
+        <gui-button data-id="text-underline" data-icon="stock://actions/format-text-underline.png"></gui-button>
+        <gui-button data-id="text-strikethrough" data-icon="stock://actions/format-text-strikethrough.png"></gui-button>
+
+        <gui-button data-id="justify-left" data-icon="stock://actions/format-justify-left.png"></gui-button>
+        <gui-button data-id="justify-center" data-icon="stock://actions/format-justify-center.png"></gui-button>
+        <gui-button data-id="justify-right" data-icon="stock://actions/format-justify-right.png"></gui-button>
+
+        <gui-button data-id="indent" data-icon="stock://actions/gtk-indent-ltr.png"></gui-button>
+        <gui-button data-id="unindent" data-icon="stock://actions/gtk-unindent-ltr.png"></gui-button>
+
+        <gui-color-box data-id="Foreground"></gui-color-box>
+        <gui-color-box data-id="Background"></gui-color-box>
+
+        <gui-button data-id="Font" data-group="tool" data-tool-name="">FONT (SIZE)</gui-button>
+      </gui-toolbar>
+
+    </gui-vbox-container>
+
+    <!-- CONTENT -->
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
+      <gui-richtext data-id="Text"></gui-richtext>
+    </gui-vbox-container>
+
+    <!-- STATUSBAR -->
+    <!--
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-statusbar data-id="Statusbar"></gui-statusbar>
+    </gui-vbox-container>
+    -->
+
+  </gui-vbox>
+
+
+
+</application-window>

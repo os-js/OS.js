@@ -66,8 +66,7 @@
 
     // Render
     if ( !this.$switcher ) {
-      this.$switcher = document.createElement('div');
-      this.$switcher.id = 'WindowSwitcher';
+      this.$switcher = document.createElement('corewm-window-switcher');
     } else {
       Utils.$empty(this.$switcher);
     }

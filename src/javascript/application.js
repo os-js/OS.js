@@ -53,7 +53,7 @@
    * @class
    */
   var Application = function(name, args, metadata, settings) {
-    console.group('OSjs::Core::Application::__construct()');
+    console.group('Application::constructor()');
     this.__name       = name;
     this.__label      = metadata.name;
     this.__path       = metadata.path;
@@ -66,6 +66,7 @@
     this.__args       = args || {};
     this.__settings   = settings || {};
     this.__metadata   = metadata;
+    this.__mainwindow = null;
 
     Process.apply(this, [name]);
 
@@ -75,6 +76,7 @@
   };
 
   Application.prototype = Object.create(Process.prototype);
+  Application.constructor = Process;
 
   /**
    * Initialize the Application
@@ -87,7 +89,7 @@
    * @method  Application::init()
    */
   Application.prototype.init = function(settings, metadata) {
-    console.log('OSjs::Core::Application::init()', this.__name);
+    console.debug('Application::init()', this.__name);
 
     if ( settings ) {
       this.__settings = OSjs.Utils.mergeObject(this.__settings, settings);
@@ -122,7 +124,7 @@
   Application.prototype.destroy = function(kill) {
     if ( this.__destroyed ) { return true; }
     this.__destroyed = true;
-    console.log('OSjs::Core::Application::destroy()', this.__name);
+    console.debug('Application::destroy()', this.__name);
 
     var i;
     while ( this.__windows.length ) {
@@ -151,6 +153,11 @@
 
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
+
+      if ( obj && obj._name === this.__mainwindow ) {
+        this.destroy();
+      }
+
     } else if ( msg === 'attention' ) {
       if ( this.__windows.length ) {
         if ( this.__windows[0] ) {
@@ -187,64 +194,39 @@
   };
 
   /**
-   * Wrapper for creating dialogs
-   *
-   * Using this function will add them as children, making sure they will
-   * be destroyed on close.
-   *
-   * @param   String    className     ClassName in OSjs.Dialogs namespace
-   * @param   Array     args          Array of arguments for constructor
-   * @param   Window    parentClass   The parent window
-   *
-   * @return  Window                  Or false on error
-   *
-   * @method  Application::_createDialog()
-   */
-  Application.prototype._createDialog = function(className, args, parentClass) {
-    if ( OSjs.Dialogs[className] ) {
-
-      var w = Object.create(OSjs.Dialogs[className].prototype);
-      OSjs.Dialogs[className].apply(w, args);
-
-      if ( parentClass && (parentClass instanceof OSjs.Core.Window) ) {
-        parentClass._addChild(w);
-      }
-
-      this._addWindow(w);
-      return w;
-    }
-    return false;
-  };
-
-  /**
    * Add a window to the application
    *
    * This will automatically add it to the WindowManager and show it to you
    *
-   * @param   Window    w     The Window
-   * @param   Function  cb    (Optional) Callback for when window was successfully inited
+   * @param   Window    w         The Window
+   * @param   Function  cb        (Optional) Callback for when window was successfully inited
+   * @param   boolean   setmain   (Optional) Set if this is the main window (First window always will be)
    *
    * @return  Window
    *
    * @method  Application::_addWindow()
    */
-  Application.prototype._addWindow = function(w, cb) {
+  Application.prototype._addWindow = function(w, cb, setmain) {
     cb = cb || function() {};
 
     if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
-    console.info('OSjs::Core::Application::_addWindow()');
+    console.debug('Application::_addWindow()');
     this.__windows.push(w);
 
     var wm = OSjs.Core.getWindowManager();
     if ( this.__inited ) {
       if ( wm ) {
-        wm.addWindow(w, null, cb);
+        wm.addWindow(w);
       }
       if ( w._properties.start_focused ) {
         setTimeout(function() {
           w._focus();
         }, 5);
       }
+    }
+
+    if ( setmain || this.__windows.length === 1 ) {
+      this.__mainwindow = w._name;
     }
 
     cb(w, wm);
@@ -268,7 +250,7 @@
     this.__windows.forEach(function(win, i) {
       if ( win ) {
         if ( win._wid === w._wid ) {
-          console.info('OSjs::Core::Application::_removeWindow()', w._wid);
+          console.debug('Application::_removeWindow()', w._wid);
           win.destroy();
           //this.__windows[i] = null;
           self.__windows.splice(i, 1);

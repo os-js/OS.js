@@ -1,3 +1,18 @@
+# 2.0.0-alpha62
+
+This update features a totally rewritten UI engine. It breaks compability with previous versions!
+
+Significantly reduced code size and API methods. Ease of development/design of apps.
+
+* Completely rewritten GUI elements (with new elements and features)
+* Completely rewritten Theme engine
+* Completely rewritten Dialogs
+* Completely rewritten Applications
+* Config: Collapsed some config namespaces
+* Core: Fixed autostart
+* Misc: New UI documentation
+
+
 # 2.0.0-alpha61
 
 Bugfixes, Date library and improvments to Windows deployment.

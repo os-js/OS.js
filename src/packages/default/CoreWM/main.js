@@ -37,7 +37,7 @@
   // SETTINGS
   /////////////////////////////////////////////////////////////////////////////
 
-  function DefaultSettings(defaults) {
+  function _DefaultSettings(defaults) {
     var cfg = {
       animations          : OSjs.Compability.css.animation,
       fullscreen          : false,
@@ -165,15 +165,14 @@
     WindowManager.apply(this, ['CoreWM', this, args, metadata]);
 
     this._defaults      = (args.defaults || {});
-    this._settings      = DefaultSettings(this._defaults);
+    this._settings      = _DefaultSettings(this._defaults);
     this.panels         = [];
     this.switcher       = null;
     this.iconView       = null;
     this.$themeLink     = null;
     this.$animationLink = null;
 
-    this._$notifications    = document.createElement('div');
-    this._$notifications.id = 'WMNotifications';
+    this._$notifications    = document.createElement('corewm-notifications');
     document.body.appendChild(this._$notifications);
   };
 
@@ -196,7 +195,7 @@
   };
 
   CoreWM.prototype.destroy = function(kill, force) {
-    if ( !force && kill && !confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
+    if ( !force && kill && !window.confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
       return false;
     }
 
@@ -213,7 +212,7 @@
     this.destroyPanels();
 
     // Reset styles
-    this.applySettings(DefaultSettings(this._defaults), true);
+    this.applySettings(_DefaultSettings(this._defaults), true);
 
     if ( this.$themeLink ) {
       this.$themeLink.parentNode.removeChild(this.$themeLink);
@@ -254,7 +253,7 @@
       var w = Object.create(OSjs.Dialogs[className].prototype);
       OSjs.Dialogs[className].apply(w, args);
 
-      if ( parentClass && (parentClass instanceof Window) ) {
+      if ( parentClass && (parentClass instanceof OSjs.Core.Window) ) {
         parentClass._addChild(w);
       }
 
@@ -269,6 +268,7 @@
     var ret = WindowManager.prototype.addWindow.apply(this, arguments);
 
     // Add the frosty effect (if available)
+    /*
     if ( this._currentWin && (this._currentWin._wid !== w._wid) && this._sessionLoaded ) {
       generateFrost(this._currentWin);
     }
@@ -296,13 +296,16 @@
         generateFrost(this);
       }
     });
+    */
 
     return ret;
   };
 
   CoreWM.prototype.removeWindow = function(w) {
+    var self = this;
     var result = WindowManager.prototype.removeWindow.apply(this, arguments);
 
+    /*
     if ( result ) {
       setTimeout(function() {
         if ( self._currentWin ) {
@@ -310,6 +313,7 @@
         }
       }, this.getAnimDuration()+100);
     }
+    */
 
     return result;
   };
@@ -317,11 +321,13 @@
   CoreWM.prototype.onSessionLoaded = function() {
     var result = WindowManager.prototype.onSessionLoaded.apply(this, arguments);
     var self = this;
+    /*
     if ( result ) {
       setTimeout(function() {
         self._frostWindows();
       }, 500);
     }
+    */
     return result;
   };
 
@@ -358,36 +364,33 @@
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
-    var back = document.getElementById('Background');
-    if ( back ) {
-      OSjs.API.createDroppable(back, {
-        onOver: function(ev, el, args) {
-          self.onDropOver(ev, el, args);
-        },
+    OSjs.API.createDroppable(document.body, {
+      onOver: function(ev, el, args) {
+        self.onDropOver(ev, el, args);
+      },
 
-        onLeave : function() {
-          self.onDropLeave();
-        },
+      onLeave : function() {
+        self.onDropLeave();
+      },
 
-        onDrop : function() {
-          self.onDrop();
-        },
+      onDrop : function() {
+        self.onDrop();
+      },
 
-        onItemDropped: function(ev, el, item, args) {
-          self.onDropItem(ev, el, item, args);
-        },
+      onItemDropped: function(ev, el, item, args) {
+        self.onDropItem(ev, el, item, args);
+      },
 
-        onFilesDropped: function(ev, el, files, args) {
-          self.onDropFile(ev, el, files, args);
-        }
-      });
-    }
+      onFilesDropped: function(ev, el, files, args) {
+        self.onDropFile(ev, el, files, args);
+      }
+    });
 
     OSjs.Core.getHandler().getUserSettings(SETTING_STORAGE_NAME, function(s) {
       if ( s ) {
         self.applySettings(s);
       } else {
-        self.applySettings(DefaultSettings(self._defaults), true);
+        self.applySettings(_DefaultSettings(self._defaults), true);
       }
 
       callback.call(self);
@@ -395,28 +398,31 @@
   };
 
   CoreWM.prototype.initDesktop = function() {
-
-    var background = document.getElementById('Background');
     var self = this;
-    if ( background ) {
-      background.oncontextmenu = function(ev) {
+
+    document.addEventListener('contextmenu', function(ev) {
+      if ( ev.target === document.body ) {
         ev.preventDefault();
+        ev.stopPropagation();
         self.openDesktopMenu(ev);
         return false;
-      };
-    };
+      }
+      return true;
+    }, true);
   };
 
   CoreWM.prototype.initPanels = function(applySettings) {
     var ps = this.getSetting('panels');
     var added = false;
+    var p, i;
+
     if ( ps === false ) {
       added = true;
     } else {
       this.destroyPanels();
       if ( ps && ps.length ) {
-        var p, j, n;
-        for ( var i = 0; i < ps.length; i++ ) {
+        var j, n;
+        for ( i = 0; i < ps.length; i++ ) {
           p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options, this);
           p.init(document.body);
 
@@ -455,11 +461,11 @@
 
     if ( applySettings ) {
       // Workaround for windows appearing behind panel
-      var p = this.panels[0];
+      p = this.panels[0];
       if ( p && p.getOntop() && p.getPosition('top') ) {
         var iter;
         var space = this.getWindowSpace();
-        for ( var i = 0; i < this._windows.length; i++ ) {
+        for ( i = 0; i < this._windows.length; i++ ) {
           iter = this._windows[i];
           if ( !iter ) { continue; }
           if ( iter._position.y < space.top ) {
@@ -478,37 +484,21 @@
   CoreWM.prototype.initIconView = function() {
     var self = this;
 
-    function _setForegroundColor() {
-      if ( !self.iconView ) { return; }
-      if ( !self.getSetting('invertIconViewColor') ) {
-        self.iconView.setForegroundColor(null);
-        return;
-      }
-
-      var backColor = self.getSetting('backgroundColor');
-      if ( backColor ) {
-        var invertedColor = Utils.invertHEX(backColor);
-        self.iconView.setForegroundColor(invertedColor || null);
-      }
+    if ( this.iconView ) {
+      this.iconView.destroy();
+      this.iconView = null;
     }
 
     if ( !this.getSetting('enableIconView') ) { return; }
-    if ( this.iconView ) {
-      _setForegroundColor();
-      return;
-    }
 
     this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
-    this.iconView.init();
-    this.iconView.update(this);
     document.body.appendChild(this.iconView.getRoot());
 
-    this.iconView.resize(this);
     setTimeout(function() {
-      self.iconView.resize(self);
-
-      _setForegroundColor();
-    }, this.getAnimDuration());
+      if ( self.iconView ) {
+        self.iconView.resize(self);
+      }
+    }, this.getAnimDuration() + 500);
   };
 
   //
@@ -555,31 +545,22 @@
         iter._restore(true, false);
       }
     }
-
-    if ( this.iconView ) {
-      this.iconView.resize(this);
-    }
   };
 
   CoreWM.prototype.onDropLeave = function() {
-    var back = document.getElementById('Background');
-    Utils.$removeClass(back, 'Blinking');
+    document.body.setAttribute('data-attention', 'false');
   };
 
   CoreWM.prototype.onDropOver = function() {
-    var back = document.getElementById('Background');
-    Utils.$addClass(back, 'Blinking');
+    document.body.setAttribute('data-attention', 'true');
   };
 
   CoreWM.prototype.onDrop = function() {
-    var back = document.getElementById('Background');
-    Utils.$removeClass(back, 'Blinking');
+    document.body.setAttribute('data-attention', 'false');
   };
 
   CoreWM.prototype.onDropItem = function(ev, el, item, args) {
-    var back = document.getElementById('Background');
-    Utils.$removeClass(back, 'Blinking');
-
+    document.body.setAttribute('data-attention', 'false');
 
     var _applyWallpaper = function(data) {
       this.applySettings({wallpaper: data.path}, false, true);
@@ -587,7 +568,7 @@
 
     var _createShortcut = function(data) {
       if ( this.iconView ) {
-        this.iconView.addShortcut(data, this);
+        this.iconView.addShortcut(data, this, true);
       }
     };
 
@@ -603,7 +584,7 @@
         onClick: function() {
           _applyWallpaper.call(self, data);
         }
-      }], pos)
+      }], pos);
     };
 
     if ( item ) {
@@ -719,7 +700,7 @@
     // Unfocus IconView if we focus a window
     if ( ev === 'focus' ) {
       if ( this.iconView ) {
-        this.iconView._fireHook('blur');
+        this.iconView.blur();
       }
     }
   };
@@ -740,8 +721,8 @@
 
       console.log('OSjs::Core::WindowManager::notification()', opts);
 
-      var container  = document.createElement('div');
-      var classNames = ['WMNotification'];
+      var container  = document.createElement('corewm-notification-entry');
+      var classNames = [''];
       var self       = this;
       var timeout    = null;
       var wm         = OSjs.Core.getWindowManager();
@@ -765,7 +746,7 @@
 
         var anim = wm ? wm.getSetting('animations') : false;
         if ( anim ) {
-          Utils.$addClass(container, 'Closing');
+          container.setAttribute('data-hint', 'closing');
           setTimeout(function() {
             _removeDOM();
           }, wm.getAnimDuration());
@@ -886,17 +867,17 @@
     var name = this.getSetting('wallpaper');
     var type = this.getSetting('background');
 
-    var className = 'Color';
+    var className = 'color';
     var back      = 'none';
 
     if ( name && type.match(/^image/) ) {
       back = name;
       switch ( type ) {
-        case     'image' :        className = 'Normal';   break;
-        case     'image-center':  className = 'Center';   break;
-        case     'image-fill' :   className = 'Fill';     break;
-        case     'image-strech':  className = 'Strech';   break;
-        default:                  className = 'Default';  break;
+        case     'image' :        className = 'normal';   break;
+        case     'image-center':  className = 'center';   break;
+        case     'image-fill' :   className = 'fill';     break;
+        case     'image-strech':  className = 'strech';   break;
+        default:                  className = 'default';  break;
       }
     }
 
@@ -904,9 +885,7 @@
     console.log('Wallpaper type', type);
     console.log('Wallpaper className', className);
 
-    var cn = document.body.className;
-    var nc = 'Wallpaper' + className + ' ';
-    document.body.className = cn.replace(/(Wallpaper(.*)\s?)?/, nc);
+    document.body.setAttribute('data-background-style', className);
 
     if ( back !== 'none' ) {
       VFS.url(back, function(error, result) {
@@ -960,31 +939,36 @@
     var styles = {};
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
-        styles['.WMPanel'] = {};
-        styles['.WMNotification'] = {}
-        styles['.WMNotification:before'] = {
+        styles['corewm-panel'] = {};
+        styles['corewm-notification-entry'] = {};
+        styles['corewm-notification-entry:before'] = {
           'opacity': p.options.opacity / 100
-        }
-        styles['.WMPanel .WMPanelBackground'] = {
+        };
+        styles['corewm-panel:before'] = {
           'opacity': p.options.opacity / 100
         };
         if ( p.options.background ) {
-          styles['.WMPanel .WMPanelBackground']['background-color'] = p.options.background;
-          styles['.WMNotification:before']['background-color'] = p.options.background;
+          styles['corewm-panel:before']['background-color'] = p.options.background;
+          styles['corewm-notification-entry:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {
-          styles['.WMPanel']['color'] = p.options.foreground;
-          styles['.WMNotification']['color'] = p.options.foreground;
+          styles['corewm-panel']['color'] = p.options.foreground;
+          styles['corewm-notification-entry']['color'] = p.options.foreground;
         }
 
       });
+    }
+
+    styles['#CoreWMDesktopIconView'] = {};
+    if ( settings.invertIconViewColor && settings.backgroundColor ) {
+      styles['#CoreWMDesktopIconView']['color'] = Utils.invertHEX(settings.backgroundColor);
     }
 
     if ( Object.keys(styles).length ) {
       this.createStylesheet(styles);
     }
 
-    this._frostWindows();
+    //this._frostWindows();
 
     return true;
   };
@@ -1076,13 +1060,13 @@
   CoreWM.prototype.getSetting = function(k) {
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
     if ( typeof val === 'undefined' || val === null ) {
-      return DefaultSettings(this._defaults)[k];
+      return _DefaultSettings(this._defaults)[k];
     }
     return val;
   };
 
   CoreWM.prototype.getDefaultSetting = function(k) {
-    var settings = DefaultSettings(this._defaults);
+    var settings = _DefaultSettings(this._defaults);
     if ( typeof k !== 'undefined' ) {
       return settings[k];
     }

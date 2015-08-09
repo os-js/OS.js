@@ -1,260 +1,117 @@
-@import "base.less";
+@import "../../../stylesheets/theme.less";
 
-/**
- * Based on the ACID theme
- * http://gnome-look.org/content/show.php/ACID?content=153237
- */
+@base_background_color  : #353535;
+@base_foreground_color  : #ffffff;
+@base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+@base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
 
-@theme_base_bg_color          : #353535;
-@theme_base_fg_color          : #ffffff;
-@theme_base_border_color      : #232323;
+@gui_selected_background_color       : #2d73d2;
+@gui_selected_foreground_color       : #ffffff;
 
-@theme_secondary_bg_color     : #343434;
-@theme_secondary_fg_color     : #878882;
-@theme_secondary_border_color : #232323;
+@gui_border_color                    : #232323;
+@gui_background_color                : #444444;
 
-@theme_selected_bg_color      : #2d73d2;
-@theme_selected_fg_color      : #ffffff;
-@theme_even_row               : #515151;
-@theme_odd_row                : #808080;
+@gui_input_border_color              : #232323;
+@gui_input_background_color          : #777777;
+@gui_input_foreground_color          : @base_foreground_color;
+@gui_input_disabled_border_color     : #000000;
+@gui_input_disabled_background_color : #333232;
+@gui_input_disabled_foreground_color : #565656;
 
-@theme_input_bg_color         : #777777;
-@theme_input_fg_color         : #000000;
-
-@theme_gui_button_bg_color    : #404040;
-@theme_gui_button_fg_color    : #eeeeee;
-@theme_gui_button_bg_from     : #404040;
-@theme_gui_button_gb_to       : #404040;
-@theme_gui_button_border_color: #232323;
-
-@theme_gui_hbutton_bg_color    : @theme_gui_button_bg_color;
-@theme_gui_hbutton_fg_color    : @theme_gui_button_fg_color;
-@theme_gui_hbutton_bg_from     : @theme_gui_button_bg_from;
-@theme_gui_hbutton_gb_to       : @theme_gui_button_gb_to;
-@theme_gui_hbutton_border_color: @theme_gui_button_border_color;
-
-@theme_gui_abutton_bg_color    : @theme_gui_button_bg_color;
-@theme_gui_abutton_fg_color    : #ffffff;
-@theme_gui_abutton_bg_from     : @theme_gui_button_bg_from;
-@theme_gui_abutton_gb_to       : @theme_gui_button_gb_to;
-@theme_gui_abutton_border_color: @theme_gui_button_border_color;
-
-@theme_gui_dbutton_bg_color    : @theme_gui_button_bg_color;
-@theme_gui_dbutton_fg_color    : #333333;
-@theme_gui_dbutton_bg_from     : @theme_gui_button_bg_from;
-@theme_gui_dbutton_gb_to       : @theme_gui_button_gb_to;
-@theme_gui_dbutton_border_color: @theme_gui_hbutton_border_color;
-
-@theme_base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
-@theme_base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
-@theme_input_shadow           : none;
-@theme_text_shadow            : 0px 0px 1px rgba(255, 255, 255, .5);
-
-/**
- * WM
- */
-body > .WMPanel {
-  height : 32px;
-  border : 0 none;
-}
-body > .WMPanel > ul {
-  margin : 3px;
-}
-
-#Background.Blinking {
-  background : #242424;
-}
+@gui_button_border_color             : @gui_input_border_color;
+@gui_button_background_color         : @base_background_color;
+@gui_button_foreground_color         : @base_foreground_color;
+@gui_button_background               : @base_background_color;
+@gui_button_active_border_color      : #333333;
+@gui_button_active_foreground_color  : @gui_button_foreground_color;
 
 
-/**
- * Window
- */
-.Window:before {
-  left : -3px;
-  top : -29px;
-  right : -3px;
-  bottom : -3px;
-}
-.Window:after {
-  content : '';
-  position : absolute;
-  left : -3px;
-  top : -29px;
-  right : -3px;
-  bottom : -3px;
-  border : 1px solid #404040;
-}
-.Window > .WindowTop {
+application-window-top {
   top : -27px;
 }
-.Window > .WindowTop > .WindowTitle {
+application-window-title {
   text-align : center;
-}
-.Window > .WindowTop > .WindowButtons > .WindowButton {
-  width : 12px;
-  height : 12px;
-  border : 1px solid @theme_base_border_color;
-  background : #333333;
-  background-image : none !important;
-  padding : 2px;
-  margin : 2px;
-}
-.Window > .WindowTop > .WindowButtons > .WindowButton:hover {
-  background : #404040;
-  background-image : none !important;
-}
-.Window > .WindowTop > .WindowButtons > .WindowButton:hover:after {
-  color : #fff;
-}
-.Window > .WindowTop > .WindowButtons > .WindowButton:after {
-  content : '';
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  line-height : 14px;
-  text-align : center;
-  font-family : Monospace;
-  font-size : 16px;
-  color : #ddd;
-}
-.Window > .WindowTop > .WindowButtons > .WindowButton:before {
-  content : '';
-  position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
-  border : 1px solid #4b4b4b;
-}
-.Window > .WindowTop > .WindowButtons > .WindowButtonClose:after {
-  content : 'x';
-}
-.Window > .WindowTop > .WindowButtons > .WindowButtonMinimize:after {
-  content : '\25BD';
-}
-.Window > .WindowTop > .WindowButtons > .WindowButtonMaximize:after {
-  content : '\25A1';
 }
 
-.Window.WindowHintDnD:after {
-  border : 4px solid rgba(0, 0, 0, .7);
-  border-radius : 1px;
-  .theme_border_top(3px);
-  margin : -4px;
-}
 
 /* Max */
-.WindowButtonMaximize {
-  background : url('uncomplicated/wm/maximize_unfocused.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+application-window-button-maximize {
+  background : url('default/wm/maximize_unfocused.png') no-repeat 0px 0px,
+               url('default/wm/maximize.png') no-repeat 0px 0px !important;
 }
-.WindowButtonMaximize:hover {
-  background : url('uncomplicated/wm/maximize_unfocused_prelight.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+application-window-button-maximize:hover {
+  background : url('default/wm/maximize_unfocused_prelight.png') no-repeat 0px 0px,
+               url('default/wm/maximize.png') no-repeat 0px 0px !important;
 }
-.WindowButtonMaximize:active {
-  background : url('uncomplicated/wm/maximize_unfocused_pressed.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+application-window-button-maximize:active {
+  background : url('default/wm/maximize_unfocused_pressed.png') no-repeat 0px 0px,
+               url('default/wm/maximize.png') no-repeat 0px 0px !important;
 }
 
-.Window.WindowHintFocused .WindowButtonMaximize {
-  background : url('uncomplicated/wm/maximize_focused_normal.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+application-window[data-focused="true"] application-window-button-maximize {
+  background : url('default/wm/maximize_focused_normal.png') no-repeat 0px 0px,
+               url('default/wm/maximize.png') no-repeat 0px 0px !important;
 }
-.Window.WindowHintFocused .WindowButtonMaximize:hover {
-  background : url('uncomplicated/wm/maximize_focused_prelight.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+application-window[data-focused="true"] application-window-button-maximize:hover {
+  background : url('default/wm/maximize_focused_prelight.png') no-repeat 0px 0px,
+               url('default/wm/maximize.png') no-repeat 0px 0px !important;
 }
-.Window.WindowHintFocused .WindowButtonMaximize:active {
-  background : url('uncomplicated/wm/maximize_focused_pressed.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/maximize.png') no-repeat 0px 0px !important;
+application-window[data-focused="true"] application-window-button-maximize:active {
+  background : url('default/wm/maximize_focused_pressed.png') no-repeat 0px 0px,
+               url('default/wm/maximize.png') no-repeat 0px 0px !important;
 }
 
 /* Min */
-.WindowButtonMinimize {
-  background : url('uncomplicated/wm/minimize_unfocused.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+application-window-button-minimize {
+  background : url('default/wm/minimize_unfocused.png') no-repeat 0px 0px,
+               url('default/wm/minimize.png') no-repeat 0px 0px !important;
 }
-.WindowButtonMinimize:hover {
-  background : url('uncomplicated/wm/minimize_unfocused_prelight.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+application-window-button-minimize:hover {
+  background : url('default/wm/minimize_unfocused_prelight.png') no-repeat 0px 0px,
+               url('default/wm/minimize.png') no-repeat 0px 0px !important;
 }
-.WindowButtonMinimize:active {
-  background : url('uncomplicated/wm/minimize_unfocused_pressed.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+application-window-button-minimize:active {
+  background : url('default/wm/minimize_unfocused_pressed.png') no-repeat 0px 0px,
+               url('default/wm/minimize.png') no-repeat 0px 0px !important;
 }
 
-.Window.WindowHintFocused .WindowButtonMinimize {
-  background : url('uncomplicated/wm/minimize_focused_normal.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+application-window[data-focused="true"] application-window-button-minimize {
+  background : url('default/wm/minimize_focused_normal.png') no-repeat 0px 0px,
+               url('default/wm/minimize.png') no-repeat 0px 0px !important;
 }
-.Window.WindowHintFocused .WindowButtonMinimize:hover {
-  background : url('uncomplicated/wm/minimize_focused_prelight.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+application-window[data-focused="true"] application-window-button-minimize:hover {
+  background : url('default/wm/minimize_focused_prelight.png') no-repeat 0px 0px,
+               url('default/wm/minimize.png') no-repeat 0px 0px !important;
 }
-.Window.WindowHintFocused .WindowButtonMinimize:active {
-  background : url('uncomplicated/wm/minimize_focused_pressed.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/minimize.png') no-repeat 0px 0px !important;
+application-window[data-focused="true"] application-window-button-minimize:active {
+  background : url('default/wm/minimize_focused_pressed.png') no-repeat 0px 0px,
+               url('default/wm/minimize.png') no-repeat 0px 0px !important;
 }
 
 /* Close */
-.WindowButtonClose {
-  background : url('uncomplicated/wm/close_unfocused.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+application-window-button-close {
+  background : url('default/wm/close_unfocused.png') no-repeat 0px 0px,
+               url('default/wm/close.png') no-repeat 0px 0px !important;
 }
-.WindowButtonClose:hover {
-  background : url('uncomplicated/wm/close_unfocused_prelight.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+application-window-button-close:hover {
+  background : url('default/wm/close_unfocused_prelight.png') no-repeat 0px 0px,
+               url('default/wm/close.png') no-repeat 0px 0px !important;
 }
-.WindowButtonClose:active {
-  background : url('uncomplicated/wm/close_unfocused_pressed.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
-}
-
-.Window.WindowHintFocused .WindowButtonClose {
-  background : url('uncomplicated/wm/close_focused_normal.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
-}
-.Window.WindowHintFocused .WindowButtonClose:hover {
-  background : url('uncomplicated/wm/close_focused_prelight.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
-}
-.Window.WindowHintFocused .WindowButtonClose:active {
-  background : url('uncomplicated/wm/close_focused_pressed.png') no-repeat 0px 0px,
-               url('uncomplicated/wm/close.png') no-repeat 0px 0px !important;
+application-window-button-close:active {
+  background : url('default/wm/close_unfocused_pressed.png') no-repeat 0px 0px,
+               url('default/wm/close.png') no-repeat 0px 0px !important;
 }
 
-.GUIToolbar .Container {
-  background : transparent;
+application-window[data-focused="true"] application-window-button-close {
+  background : url('default/wm/close_focused_normal.png') no-repeat 0px 0px,
+               url('default/wm/close.png') no-repeat 0px 0px !important;
 }
-.GUIListView tbody tr:nth-child(2n+2) {
-  background : @theme_odd_row;
+application-window[data-focused="true"] application-window-button-close:hover {
+  background : url('default/wm/close_focused_prelight.png') no-repeat 0px 0px,
+               url('default/wm/close.png') no-repeat 0px 0px !important;
 }
-.GUIListView tbody tr:nth-child(2n+1) {
-  background : @theme_even_row;
-}
-.GUIRichText {
-  background : #fff;
-}
-.GUIMenuBar {
-  border-color : transparent;
-}
-.GUIStatusBar {
-  border-color : transparent;
+application-window[data-focused="true"] application-window-button-close:active {
+  background : url('default/wm/close_focused_pressed.png') no-repeat 0px 0px,
+               url('default/wm/close.png') no-repeat 0px 0px !important;
 }
 
-.GUIToolbar button:before,
-.GUIButton button:before {
-  content : '';
-  position : absolute;
-  top : 1px;
-  left : 1px;
-  right : 1px;
-  bottom : 1px;
-  border : 1px solid #4b4b4b;
-}
-.GUIToolbar button:before {
-  margin : -1px;
-}

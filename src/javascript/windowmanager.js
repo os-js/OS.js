@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Process, Window, DialogWindow) {
+(function(Utils, API, Process, Window) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -57,7 +57,7 @@
     var borderSize = 0;
     var windowRects = [];
 
-    function onMouseDown(ev, a, touchDevice) {
+    function onMouseDown(ev, a, pos) {
       cornerSnapSize = wm ? (wm.getSetting('windowCornerSnap') || 0) : 0;
       windowSnapSize = wm ? (wm.getSetting('windowSnap') || 0) : 0;
       windowRects = [];
@@ -93,11 +93,11 @@
       win._focus();
 
       if ( a === 'move' ) {
-        Utils.$addClass(main, 'WindowHintMoving');
+        main.setAttribute('data-hint', 'moving');
       } else {
         if ( windowResize ) {
-          var cx = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX;
-          var cy = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY;
+          var cx = pos.x;
+          var cy = pos.y;
           var dir = Utils.$position(windowResize);
           var dirX = cx - dir.left;
           var dirY = cy - dir.top;
@@ -126,28 +126,23 @@
             direction = 'sw';
           }
 
-          Utils.$addClass(main, 'WindowHintResizing');
+          main.setAttribute('data-hint', 'resizing');
         }
       }
 
-      sx = touchDevice ? (ev.changedTouches[0] || {}).clientX : ev.clientX;
-      sy = touchDevice ? (ev.changedTouches[0] || {}).clientY : ev.clientY;
+      win._fireHook('preop');
+
+      sx = pos.x;
+      sy = pos.y;
       action = a;
 
-      document.addEventListener('touchmove', function(ev) {
-        onMouseMove(ev, true);
-      }, false);
-      document.addEventListener('mousemove', onMouseMove, false);
-
-      document.addEventListener('touchend', function(ev) {
-        onMouseUp(ev, true);
-      }, false);
-      document.addEventListener('mouseup', onMouseUp, false);
+      Utils.$bind(document, 'mousemove', onMouseMove);
+      Utils.$bind(document, 'mouseup', onMouseUp);
 
       return false;
     }
 
-    function onMouseUp(ev, touchDevice) {
+    function onMouseUp(ev, pos) {
       if ( moved ) {
         if ( wm ) {
           if ( action === 'move' ) {
@@ -160,26 +155,25 @@
         }
       }
 
-      Utils.$removeClass(main, 'WindowHintMoving');
-      Utils.$removeClass(main, 'WindowHintResizing');
+      main.setAttribute('data-hint', '');
 
-      document.removeEventListener('touchmove', onMouseMove, false);
-      document.removeEventListener('mousemove', onMouseMove, false);
-      document.removeEventListener('touchend', onMouseUp, false);
-      document.removeEventListener('mouseup', onMouseUp, false);
+      Utils.$unbind(document, 'mousemove', onMouseMove, false);
+      Utils.$unbind(document, 'mouseup', onMouseUp, false);
 
       action = null;
       sx = 0;
       sy = 0;
       moved = false;
       startRect = null;
+
+      win._fireHook('postop');
     }
 
-    function onMouseMove(ev, touchDevice) {
+    function onMouseMove(ev, pos) {
       if ( !wm || !wm.getMouseLocked() ) { return; }
       if ( action === null ) { return; }
-      var cx = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX;
-      var cy = (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY;
+      var cx = pos.x;
+      var cy = pos.y;
       var dx = cx - sx;
       var dy = cy - sy;
       var newLeft = null;
@@ -289,13 +283,13 @@
     }
 
     if ( win._properties.allow_move ) {
-      win._addEventListener(windowTop, 'mousedown', function(ev, touchDevice) {
-        onMouseDown(ev, 'move', touchDevice);
+      Utils.$bind(windowTop, 'mousedown', function(ev, pos) {
+        onMouseDown(ev, 'move', pos);
       });
     }
     if ( win._properties.allow_resize ) {
-      win._addEventListener(windowResize, 'mousedown', function(ev, touchDevice) {
-        onMouseDown(ev, 'resize', touchDevice);
+      Utils.$bind(windowResize, 'mousedown', function(ev, pos) {
+        onMouseDown(ev, 'resize', pos);
       });
     }
   }
@@ -331,7 +325,7 @@
    * @class
    */
   var WindowManager = function(name, ref, args, metadata) {
-    console.group('OSjs::Core::WindowManager::__construct()');
+    console.group('WindowManager::constructor()');
     console.log('Name', name);
     console.log('Arguments', args);
 
@@ -367,7 +361,7 @@
    */
   WindowManager.prototype.destroy = function() {
     var self = this;
-    console.log('OSjs::Core::WindowManager::destroy()');
+    console.debug('WindowManager::destroy()');
 
     this.destroyStylesheet();
 
@@ -403,7 +397,7 @@
    * @method  WindowManager::init()
    */
   WindowManager.prototype.init = function() {
-    console.log('OSjs::Core::WindowManager::init()');
+    console.debug('WindowManager::init()');
 
     var self = this;
     document.addEventListener('mouseout', function(ev) {
@@ -435,23 +429,6 @@
   };
 
   /**
-   * Internal method for initing a window
-   *
-   * You can use this method in your WindowManager implementation
-   * to cusomize how the process works. ex, custom events
-   *
-   * @param   Window      w         Window reference
-   *
-   * @return  void
-   *
-   * @method  WindowManager::_initWindow()
-   */
-  WindowManager.prototype._initWindow = function(w) {
-    w.init(this, w._appRef);
-    attachWindowEvents(w, this);
-  };
-
-  /**
    * Add a Window
    *
    * @param   Window      w         Window reference
@@ -463,16 +440,16 @@
    */
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
-      console.warn('OSjs::Core::WindowManager::addWindow()', 'Got', w);
+      console.warn('WindowManager::addWindow()', 'Got', w);
       throw new Error('addWindow() expects a "Window" class');
     }
-    console.log('OSjs::Core::WindowManager::addWindow()');
+    console.debug('WindowManager::addWindow()');
 
-    this._initWindow(w);
-    if ( focus === true || (w instanceof DialogWindow) ) {
+    w.init(this, w._app, w._scheme);
+    attachWindowEvents(w, this);
+    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
       w._focus();
     }
-
     w._inited();
 
     this._windows.push(w);
@@ -492,10 +469,10 @@
   WindowManager.prototype.removeWindow = function(w) {
     var self = this;
     if ( !(w instanceof Window) ) {
-      console.warn('OSjs::Core::WindowManager::removeWindow()', 'Got', w);
+      console.warn('WindowManager::removeWindow()', 'Got', w);
       throw new Error('removeWindow() expects a "Window" class');
     }
-    console.log('OSjs::Core::WindowManager::removeWindow()', w._wid);
+    console.debug('WindowManager::removeWindow()', w._wid);
 
     var result = false;
     this._windows.forEach(function(win, i) {
@@ -521,7 +498,7 @@
    */
   WindowManager.prototype.applySettings = function(settings, force) {
     settings = settings || {};
-    console.log('OSjs::Core::WindowManager::applySettings', 'forced?', force);
+    console.debug('WindowManager::applySettings()', 'forced?', force);
 
     if ( force ) {
       this._settings = settings;
@@ -992,4 +969,4 @@
 
   OSjs.Core.getWindowManager  = getWMInstance;
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Process, OSjs.Core.Window, OSjs.Core.DialogWindow);
+})(OSjs.Utils, OSjs.API, OSjs.Core.Process, OSjs.Core.Window);

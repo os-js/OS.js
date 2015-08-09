@@ -2,10 +2,6 @@
 
 Server runs on Linux, OS X, BSD and Windows.
 
-
-If you just want to check out OS.js without building or running a server, I provide a minimalistic [nightly build](http://osjsv2.0o.no/OS.js-v2-minimal-nightly.zip).
-Please note that it might be unstable, also Networking and Filesystem functions is disabled.
-
 # Dependencies
 
 You just need **node** and **npm**. Install them with your package manager or download the [official installer](https://nodejs.org).
@@ -83,12 +79,6 @@ You can grab a configuration from the [community repo](https://registry.hub.dock
 # Setting up a server
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
-
-## Standalone
-
-You can run OS.js in `file://` (locally in browser), but this will disable any server-call and filesystem functions.
-
-Just open `dist/index.html` after you build.
 
 ## Node
 

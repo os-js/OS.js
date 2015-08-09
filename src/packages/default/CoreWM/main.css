@@ -1,4 +1,4 @@
-.Window > .WindowTop > .WindowFrost {
+application-window-top .WindowFrost {
   position : absolute;
   top : 0px;
   left : 0px;
@@ -11,26 +11,26 @@
 /**
  * Default Wallpaper stuff
  */
-body.WallpaperColor {
+body[data-background-style="color"] {
   background-image : none;
 }
-body.WallpaperDefault {
+body[data-background-style="default"] {
   background-repeat : repeat;
 }
-body.WallpaperNormal {
+body[data-background-style="normal"] {
   background-repeat : no-repeat;
 }
-body.WallpaperCenter {
+body[data-background-style="center"] {
   background-repeat : no-repeat;
   background-position : center center;
 }
-body.WallpaperFill {
+body[data-background-style="fill"] {
   background-repeat : no-repeat;
   background-size : cover;
   background-position : center center;
   background-attachment : fixed;
 }
-body.WallpaperStrech {
+body[data-background-style="strech"] {
   background-repeat : no-repeat;
   background-size : 100% auto;
 }
@@ -38,7 +38,8 @@ body.WallpaperStrech {
 /**
  * Desktop Notification
  */
-#WMNotifications {
+corewm-notifications {
+  position : block;
   position : absolute;
   top : 0px;
   right : 0px;
@@ -46,7 +47,8 @@ body.WallpaperStrech {
   width : 400px;
 }
 
-#WMNotifications .WMNotification {
+corewm-notification-entry {
+  display : block;
   position : relative;
   min-height : 10px;
   padding : 10px;
@@ -54,14 +56,14 @@ body.WallpaperStrech {
   overflow : hidden;
   white-space : nowrap;
 }
-#WMNotifications .WMNotification.HasIcon {
+corewm-notification-entry.HasIcon {
   min-height : 32px;
 }
-#WMNotifications .WMNotification.HasIcon img {
+corewm-notification-entry.HasIcon img {
   position : absolute;
 }
-#WMNotifications .WMNotification.HasIcon .Title,
-#WMNotifications .WMNotification.HasIcon .Message {
+corewm-notification-entry.HasIcon .Title,
+corewm-notification-entry.HasIcon .Message {
   margin-left : 32px;
   padding-left : 5px;
   white-space: -moz-pre-wrap;
@@ -70,7 +72,7 @@ body.WallpaperStrech {
   white-space:      pre-wrap;
   word-wrap: break-word;
 }
-#WMNotifications .WMNotification:before {
+corewm-notification-entry:before {
   content : '';
   position : absolute;
   top : 0px;
@@ -83,15 +85,14 @@ body.WallpaperStrech {
 /**
  * WindowManager Panels
  */
-.WMPanel {
+corewm-panel {
+  display : block;
   position : absolute;
   top : 0px;
   left : 0px;
   right : 0px;
-  height : 26px;
   overflow : visible;
   z-index : 2;
-  padding : 5px;
   margin : 0;
 
   -webkit-user-select: none;
@@ -100,7 +101,9 @@ body.WallpaperStrech {
       -ms-user-select: none;
           user-select: none;
 }
-.WMPanel .WMPanelBackground {
+corewm-panel:before {
+  content : '';
+  display : block;
   position : absolute;
   top : 0px;
   left : 0px;
@@ -108,31 +111,34 @@ body.WallpaperStrech {
   bottom : 0px;
   z-index : 1;
 }
-.WMPanel.Ontop {
+corewm-panel-item {
+  display : block;
+}
+corewm-panel[data-ontop="true"] {
   z-index : 9999998;
 }
-.WMPanel.Bottom {
+corewm-panel[data-position="bottom"] {
   top : auto;
   bottom : 0px;
 }
-.WMPanel.Autohide {
+corewm-panel[data-autohide="true"] {
   height : 0px;
 }
-.WMPanel.Autohide > * {
+corewm-panel[data-autohide="true"] > * {
   visibility : hidden;
 }
-.WMPanel ul {
+corewm-panel ul {
   margin : 0;
   padding : 0;
   list-style-type : none;
   position : relative;
   z-index : 10;
 }
-.WMPanel > ul {
-  margin : 0;
-  padding : 0;
-  list-style-type : none;
+corewm-panel-container {
+  display : block;
   height : 26px;
+  position : relative;
+  z-index : 10;
 
   display: -webkit-box;
   display: -moz-box;
@@ -146,7 +152,7 @@ body.WallpaperStrech {
        -o-flex-wrap: nowrap;
           flex-wrap: nowrap;
 }
-.WMPanel ul > li.Button {
+corewm-panel-item .Button {
   margin : 0;
   padding : 0;
   padding-left : 5px;
@@ -162,34 +168,34 @@ body.WallpaperStrech {
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
 }
-.WMPanel ul > li.Button:last-child {
+corewm-panel-item .Button:last-child {
   margin-right : 0;
 }
-.WMPanel ul > li.Button span {
+corewm-panel-item .Button span {
   padding-left : 5px;
 }
-.WMPanel ul > li.Button img {
+corewm-panel-item .Button img {
   vertical-align : middle;
 }
-.WMPanel > ul > li ul {
+corewm-panel-container > li ul {
   display : inline-block;
 }
 
-.WMPanel .PanelItem {
+corewm-panel-item {
   min-width : 26px;
   min-height : 26px;
   display : block;
 }
-.WMPanel .PanelItemStatic {
+corewm-panel .PanelItemStatic {
 }
-.WMPanel .PanelItemFill {
+corewm-panel .PanelItemFill {
   -webkit-flex: 0 0 auto;
      -moz-flex: 0 0 auto;
       -ms-flex: 0 0 auto;
        -o-flex: 0 0 auto;
           flex: 0 0 auto;
 }
-.WMPanel .PanelItemWide {
+corewm-panel .PanelItemWide {
   -webkit-flex: 1 1 auto;
      -moz-flex: 1 1 auto;
       -ms-flex: 1 1 auto;
@@ -197,7 +203,7 @@ body.WallpaperStrech {
           flex: 1 1 auto;
 }
 
-.WMPanel .PanelItemRight {
+corewm-panel .PanelItemRight {
   -webkit-align-self : flex-end;
      -moz-align-self : flex-end;
       -ms-align-self : flex-end;
@@ -209,7 +215,8 @@ body.WallpaperStrech {
 /**
  * Window Switcher
  */
-#WindowSwitcher {
+corewm-window-switcher {
+  display : block;
   position : absolute;
   top : 50%;
   left : 50%;
@@ -218,23 +225,23 @@ body.WallpaperStrech {
   overflow : hidden;
   margin-left : -128px;
 }
-#WindowSwitcher > div {
+corewm-window-switcher > div {
   width : 256px;
   height : 32px;
   line-height : 32px;
   overflow : hidden;
 }
-#WindowSwitcher > div > img {
+corewm-window-switcher > div > img {
   vertical-align : middle;
   margin-right : 5px;
   margin-left : 5px;
 }
-#WindowSwitcher > div > span {
+corewm-window-switcher > div > span {
 }
-#WindowSwitcher > div.Active {
+corewm-window-switcher > div.Active {
 }
 
-.CoreWMDesktopIconView {
+#CoreWMDesktopIconView {
   background : transparent !important;
   position : absolute;
   top : 10px;
@@ -244,6 +251,10 @@ body.WallpaperStrech {
   z-index : 1;
   border : 0 none !important;
   box-shadow : none !important;
+  pointer-events : none;
+}
+#CoreWMDesktopIconView > gui-icon-view-body > * {
+  pointer-events : all;
 }
 /*
 .CoreWMDesktopIconView span {
@@ -257,15 +268,12 @@ body.WallpaperStrech {
   position : absolute;
   min-width : 100px;
   min-height : 100px;
-}
-
-#CoreWMApplicationMenu ul {
   width : 480px;
   overflow : hidden;
-  margin : 10px;
+  padding : 0;
 }
 
-#CoreWMApplicationMenu li {
+#CoreWMApplicationMenu gui-menu-entry {
   width : 72px;
   height : 72px;
   padding : 4px;
@@ -276,30 +284,12 @@ body.WallpaperStrech {
   position : relative;
 }
 
-#CoreWMApplicationMenu li img {
+#CoreWMApplicationMenu gui-menu-entry img {
   padding-top : 4px;
   width : 32px;
 }
-#CoreWMApplicationMenu li div {
+#CoreWMApplicationMenu gui-menu-entry div {
   white-space : normal;
   max-height : 30px;
   padding : 4px;
-}
-#CoreWMApplicationMenu .Pointer {
-  position : absolute;
-  width : 20px;
-  height : 20px;
-  -webkit-transform : rotate(45deg);
-  -moz-transform : rotate(45deg);
-  -ms-transform : rotate(45deg);
-  -o-transform : rotate(45deg);
-  transform : rotate(45deg);
-}
-#CoreWMApplicationMenu.AtTop .Pointer {
-  left : 10px;
-  top : -10px;
-}
-#CoreWMApplicationMenu.AtBottom .Pointer {
-  left : 10px;
-  bottom : -10px;
 }

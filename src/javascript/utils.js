@@ -50,7 +50,13 @@
   OSjs.Utils.argumentDefaults = function(args, defaults, undef) {
     args = args || {};
     Object.keys(defaults).forEach(function(key) {
-      args[key] = args[key] || defaults[key];
+      if ( typeof defaults[key] === 'boolean' || typeof defaults[key] === 'number' ) {
+        if ( typeof args[key] === 'undefined' || args[key] === null ) {
+          args[key] = defaults[key];
+        }
+      } else {
+        args[key] = args[key] || defaults[key];
+      }
     });
     return args;
   };
@@ -636,6 +642,23 @@
     return response;
   };
 
+
+  /**
+   * Remove whitespaces and newlines from HTML document
+   *
+   * @param   String    html          HTML string input
+   *
+   * @return  String
+   *
+   * @api     OSjs.Utils.cleanHTML()
+   */
+  OSjs.Utils.cleanHTML = function(html) {
+    return html.replace(/\n/g, '')
+               .replace(/[\t ]+</g, '<')
+               .replace(/\>[\t ]+</g, '><')
+               .replace(/\>[\t ]+$/g, '>');
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
@@ -1198,6 +1221,61 @@
    */
   OSjs.Utils.$isInput = function(ev) {
     return this.$isFormElement(ev); //, ['TEXTAREA', 'INPUT']);
+  };
+
+  /**
+   * Wrapper for event-binding
+   *
+   * @param   DOMElement    el          DOM Element to attach event to
+   * @param   String        ev          DOM Event Name
+   * @param   Function      callback    Callback on event
+   *
+   * @api OSjs.Utils.$bind()
+   */
+  OSjs.Utils.$bind = function(el, ev, callback, param) {
+    this._$binder(el, ev, callback, param, 'addEventListener');
+  };
+
+  /**
+   * Wrapper for event un-binding
+   *
+   * @see OSjs.Utils.$bind()
+   * @api OSjs.Utils.$unbind()
+   */
+  OSjs.Utils.$unbind = function(el, ev, callback, param) {
+    this._$binder(el, ev, callback, param, 'removeEventListener');
+  };
+
+  /**
+   * Inner wrapper for event binding/unbinding
+   */
+  OSjs.Utils._$binder = function(el, ev, callback, param, method) {
+    param = param || false;
+
+    var isTouch = OSjs.Compability.touch;
+    var touchMap = {
+      click: 'touchend',
+      mouseup: 'touchend',
+      mousemove: 'touchmove',
+      mousedown: 'touchstart'
+    };
+
+    function pos(ev, touchDevice) {
+      return {
+        x: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX,
+        y: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY
+      };
+    }
+
+    el[method](ev, function(ev) {
+      callback.call(this, ev, pos(ev), false);
+    }, param === true);
+
+    if ( touchMap[ev] ) {
+      el[method](touchMap[ev], function(ev) {
+        callback.call(this, ev, pos(ev, true), true);
+      }, param === true);
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////

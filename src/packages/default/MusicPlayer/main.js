@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
+ * modification, are permitted provided that the following conditions are met: 
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer. 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
+ *    and/or other materials provided with the distribution. 
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,770 +27,222 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, VFS) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
-
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+  // TODO: Playlist
+  // TODO: Server seek support: https://gist.github.com/codler/3906826
 
   function formatTime(secs) {
     var hr  = Math.floor(secs / 3600);
     var min = Math.floor((secs - (hr * 3600))/60);
     var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
 
-    if (min < 10){
-      min = "0" + min;
+    if (min < 10) {
+      min = '0' + min;
     }
     if (sec < 10){
-      sec  = "0" + sec;
+      sec  = '0' + sec;
     }
 
     return min + ':' + sec;
   }
 
-  /**
-   * Playlist Class
-   */
-  var Playlist = function() {
-    this.list   = [];
-    this.index  = -1;
-    this.length = 0;
-    this.loop   = true;
-  };
-
-  Playlist.prototype.add = function(item) {
-    this.list.push(item);
-    this.length = this.list.length;
-    return this.length - 1;
-  };
-
-  Playlist.prototype.set = function(i) {
-    this.index = i;
-  };
-
-  Playlist.prototype.remove = function(i) {
-    if ( this.list[i] ) {
-      this.list.splice(i, 1);
-    }
-    if ( this.index === i ) {
-      this.index = -1;
-    }
-
-    this.length = this.list.length;
-  };
-
-  Playlist.prototype.first = function() {
-    if ( this.list.length ) {
-      this.index = 0;
-      return this.list[this.index];
-    }
-    return null;
-  };
-
-  Playlist.prototype.last = function() {
-    if ( this.list.length ) {
-      this.index = this.list.length-1;
-      return this.list[this.index];
-    }
-    return null;
-  };
-
-  Playlist.prototype.next = function() {
-    var item = null;
-    if ( this.list.length ) {
-      this.index++;
-      if ( this.index >= this.list.length ) {
-        if ( this.loop ) {
-          this.index = 0;
-        } else {
-          this.index = this.list.length - 1;
-        }
-      }
-      item = this.list[this.index];
-    }
-
-    return item;
-  };
-
-  Playlist.prototype.prev = function() {
-    var item = null;
-    if ( this.list.length ) {
-      this.index--;
-      if ( this.index < 0 ) {
-        if ( this.loop ) {
-          this.index = this.list.length - 1;
-        } else {
-          this.index = 0;
-        }
-      }
-      item = this.list[this.index];
-    }
-
-    return item;
-  };
-
-  Playlist.prototype.clear = function() {
-    this.index = -1;
-    this.list  = [];
-  };
-
-  Playlist.prototype.load = function(list) {
-    this.clear();
-    this.list = list;
-  };
-
-  Playlist.prototype.isFirst = function() {
-    return this.index === 0;
-  };
-
-  Playlist.prototype.isLast = function() {
-    return this.index === (this.length-1);
-  };
-
-  Playlist.prototype.isEmpty = function() {
-    return this.length === 0;
-  };
-
-  /**
-   * AudioPlayer Class
-   */
-  var AudioPlayer = function() {
-    this.destroyed = false;
-
-    this.$audio                 = document.createElement('audio');
-    //this.$audio.preload         = 'none';
-    this.$audio.style.display   = 'none';
-    this.$audio.style.position  = 'absolute';
-    this.$audio.style.top       = '-10000px';
-    this.$audio.style.left      = '-10000px';
-
-    this.currentFilename        = null;
-    this.paused                 = true;
-
-    this.onLoadedData           = function() {};
-    this.onTimeUpdate           = function() {};
-    this.onTrackEnded           = function() {};
-    this.onTrackStarted         = function() {};
-    this.onTrackPaused          = function() {};
-    this.onError                = function() {};
-
-    var self = this;
-    this.$audio.addEventListener("play", function(ev) {
-      self._event('play', ev);
-    });
-    this.$audio.addEventListener("ended", function(ev) {
-      self._event('ended', ev);
-    });
-    this.$audio.addEventListener("pause", function(ev) {
-      self._event('pause', ev);
-    });
-    this.$audio.addEventListener("loadeddata", function(ev) {
-      self._event('loadeddata', ev);
-    });
-    this.$audio.addEventListener("timeupdate", function(ev) {
-      self._event('timeupdate', ev);
-    });
-    this.$audio.addEventListener("error", function(ev) {
-      self._event('error', ev);
-    }, true);
-  };
-
-  AudioPlayer.prototype.destroy = function() {
-    var self = this;
-
-    this.destroyed = true;
-
-    if ( this.$audio ) {
-      if ( this.$audio.parentNode ) {
-        this.$audio.pause();
-        this.$audio.src = 'about:blank';
-
-        this.$audio.removeEventListener("play", function(ev) {
-          self._event('play', ev);
-        });
-        this.$audio.removeEventListener("ended", function(ev) {
-          self._event('ended', ev);
-        });
-        this.$audio.removeEventListener("pause", function(ev) {
-          self._event('pause', ev);
-        });
-        this.$audio.removeEventListener("loadeddata", function(ev) {
-          self._event('loadeddata', ev);
-        });
-        this.$audio.removeEventListener("timeupdate", function(ev) {
-          self._event('timeupdate', ev);
-        });
-        this.$audio.removeEventListener("error", function(ev) {
-          self._event('error', ev);
-        }, true);
-
-        this.$audio.parentNode.removeChild(this.$audio);
-      }
-      this.$audio = null;
-    }
-  };
-
-  AudioPlayer.prototype.open = function(filename) {
-    if ( !this.$audio ) return false;
-    var self = this;
-
-    this.currentFilename = filename;
-    VFS.url(filename, function(error, result) {
-      if ( !error && self.$audio ) {
-        self.$audio.src      = result;
-        //self.$audio.volume   = .0;
-        self.$audio.play();
-      }
-    });
-
-
-    return true;
-  };
-
-  AudioPlayer.prototype._event = function(name, ev) {
-    if ( this.destroyed ) { return; }
-
-    switch ( name ) {
-
-      case 'play' :
-        this.paused = false;
-        this.onTrackStarted(ev, this);
-        break;
-
-      case 'ended' :
-        this.onTrackEnded(ev, this);
-        break;
-
-      case 'pause' :
-        this.paused = true;
-        this.onTrackPaused(ev, this);
-        break;
-
-      case 'loadeddata' :
-        this.onLoadedData(ev, this);
-        break;
-
-      case 'timeupdate' :
-        this.onTimeUpdate(ev, this);
-        break;
-
-      case 'error' :
-        var msg;
-        try {
-          switch ( ev.target.error.code ) {
-            case ev.target.error.MEDIA_ERR_ABORTED:
-              msg = OSjs.Applications.ApplicationMusicPlayer._('Playback aborted');
-              break;
-            case ev.target.error.MEDIA_ERR_NETWORK:
-              msg = OSjs.Applications.ApplicationMusicPlayer._('Network or communication error');
-              break;
-            case ev.target.error.MEDIA_ERR_DECODE:
-              msg = OSjs.Applications.ApplicationMusicPlayer._('Decoding failed. Corruption or unsupported media');
-              break;
-            case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-              msg = OSjs.Applications.ApplicationMusicPlayer._('Media source not supported');
-              break;
-            default:
-              msg = OSjs.API._('ERR_APP_UNKNOWN_ERROR');
-              break;
-          }
-        } catch ( e ) {
-          msg = OSjs.API._('ERR_GENERIC_APP_FATAL_FMT', e);
-        }
-
-        this.onError(ev, this, msg);
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  AudioPlayer.prototype.seek = function(to) {
-    if ( to < 0 ) return;
-    try {
-      this.$audio.currentTime = to;
-    } catch ( e ) {
-      console.warn("Failed to seek", e, to);
-    }
-  };
-
-  AudioPlayer.prototype.play = function() {
-    this.$audio.play();
-  };
-
-  AudioPlayer.prototype.pause = function() {
-    this.$audio.pause();
-  };
-
-  AudioPlayer.prototype.getTimes = function(error) {
-    var total   = error ? 0 : this.$audio.duration;
-    var current = error ? 0 : this.$audio.currentTime;
-    var unknown = false;
-
-    if ( isNaN(current) || !isFinite(current) ) current = 0.0;
-    if ( isNaN(total) || !isFinite(total) ) {
-      total = current;
-      unknown = true;
-    }
-
-    var ftotal   = formatTime(total);
-    var fcurrent = formatTime(current);
-    return {total: total, totalStamp: ftotal, current: current, currentStamp: fcurrent, unknown: unknown};
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window
-   */
-  var ApplicationMusicPlayerWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationMusicPlayerWindow', {
+  function ApplicationMusicPlayerWindow(app, metadata, scheme, file) {
+    DefaultApplicationWindow.apply(this, ['ApplicationMusicPlayerWindow', {
       icon: metadata.icon,
       title: metadata.name,
       allow_drop: true,
       allow_resize: false,
       allow_maximize: false,
-      width: 322,
-      height: 200
-    }, app]);
+      width: 370,
+      height: 260
+    }, app, scheme, file]);
 
-    this.title            = metadata.name;
-    this.$buttons         = {};
-    this.$labels          = {};
-    this.seeking          = false;
-    this.showPlaylist     = false;
+    this.updated = false;
+  }
 
-    this.playlist         = new Playlist();
-    this.player           = new AudioPlayer();
-  };
+  ApplicationMusicPlayerWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationMusicPlayerWindow.constructor = DefaultApplicationWindow.prototype;
 
-  ApplicationMusicPlayerWindow.prototype = Object.create(Window.prototype);
-
-  ApplicationMusicPlayerWindow.prototype.init = function(wmRef, app) {
-    var root = Window.prototype.init.apply(this, arguments);
+  ApplicationMusicPlayerWindow.prototype.init = function(wm, app, scheme) {
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
     var self = this;
 
-    var _createButton = function(container, img, onclick) {
-      var i = document.createElement('img');
-      i.alt = '';
-      i.src = OSjs.API.getIcon('actions/' + img + '.png', '32x32');
-
-      var b = self._addGUIElement(new GUI.Button('ControllerButton', {label: '', onClick: onclick}), container);
-      b.$input.appendChild(i);
-
-      self.$buttons[img.split('_')[1]] = b;
-
-      return b;
-    };
-
-    var _buttonAction = function(i) {
-      if ( i ) {
-        self.play(i.filename, i.mime);
-      }
-      self.updateButtons();
-    };
-
-    var _openFile = function(append) {
-      app._createDialog('File', [{type: 'open', mimes: ['^audio']}, function(btn, file) {
-        if ( btn !== 'ok' ) return;
-        app.play(file.path, file.mime, append);
-      }], self);
-    };
-
-    var menuBar = this._addGUIElement(new GUI.MenuBar('MusicPlayerMenuBar'), root);
-    menuBar.addItem(OSjs.API._("LBL_FILE"), [
-      {title: OSjs.API._('LBL_OPEN'), name: 'Open', onClick: function() {
-        _openFile(false);
-      }},
-      {title: OSjs.API._('LBL_ADD'), name: 'Add', onClick: function() {
-        _openFile(true);
-      }},
-      {title: OSjs.API._('LBL_CLOSE'), name: 'Close', onClick: function() {
-        self._close();
-      }}
-    ]);
-    menuBar.addItem(OSjs.Applications.ApplicationMusicPlayer._("Playlist"), []);
-
-    menuBar.onMenuOpen = function(menu, pos, title) {
-      if ( title == OSjs.Applications.ApplicationMusicPlayer._("Playlist") ) {
-        self.togglePlaylist();
-      }
-    };
-
-    var container = document.createElement('div');
-    container.className = 'Container';
-
-    // Info
-    var info = document.createElement('div');
-    info.className = 'Info';
-
-    var lblArtist = document.createElement('div');
-    var spanArtist = document.createElement('span');
-    var infoArtist = document.createElement('span');
-    spanArtist.className = 'Label';
-    spanArtist.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Artist');
-    infoArtist.innerHTML = '-';
-    lblArtist.appendChild(spanArtist);
-    lblArtist.appendChild(infoArtist);
-    info.appendChild(lblArtist);
-    this.$labels.Artist = infoArtist;
-
-    var lblAlbum = document.createElement('div');
-    var spanAlbum = document.createElement('span');
-    var infoAlbum = document.createElement('span');
-    spanAlbum.className = 'Label';
-    spanAlbum.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Album');
-    infoAlbum.innerHTML = '-';
-    lblAlbum.appendChild(spanAlbum);
-    lblAlbum.appendChild(infoAlbum);
-    info.appendChild(lblAlbum);
-    this.$labels.Album = infoAlbum;
-
-    var lblTrack = document.createElement('div');
-    var spanTrack = document.createElement('span');
-    var infoTrack = document.createElement('span');
-    spanTrack.className = 'Label';
-    spanTrack.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Track');
-    infoTrack.innerHTML = '-';
-    lblTrack.appendChild(spanTrack);
-    lblTrack.appendChild(infoTrack);
-    info.appendChild(lblTrack);
-    this.$labels.Track = infoTrack;
-
-    var lblTime = document.createElement('div');
-    var spanTime = document.createElement('span');
-    var infoTime = document.createElement('span');
-    spanTime.className = 'Label';
-    spanTime.innerHTML = OSjs.Applications.ApplicationMusicPlayer._('Time');
-    infoTime.innerHTML = '00:00 / 00:00';
-    lblTime.appendChild(spanTime);
-    lblTime.appendChild(infoTime);
-    info.appendChild(lblTime);
-    this.$labels.Time = infoTime;
-
-    // Buttons
-    var buttons = document.createElement('div');
-    buttons.className = 'Buttons';
-
-    _createButton(buttons, 'player_start', function(ev) {
-      _buttonAction(self.playlist.first());
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'MusicPlayerWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationMusicPlayer._
     });
-    _createButton(buttons, 'player_rew', function(ev) {
-      _buttonAction(self.playlist.prev());
+
+    var label = this._scheme.find(this, 'LabelTime');
+    var seeker = this._scheme.find(this, 'Seek');
+
+    var player = scheme.find(this, 'Player');
+    var audio = player.$element.firstChild;
+
+    var buttonStart = scheme.find(this, 'ButtonStart').set('disabled', true);
+    var buttonRew = scheme.find(this, 'ButtonRew').set('disabled', true);
+    var buttonPlay = scheme.find(this, 'ButtonPlay').set('disabled', true).on('click', function() {
+      audio.play();
     });
-    _createButton(buttons, 'player_play', function(ev) {
-      if ( self.playlist.length ) {
-        if ( self.playlist.index == -1 ) {
-          _buttonAction(self.playlist.first());
-          return;
+    var buttonPause = scheme.find(this, 'ButtonPause').set('disabled', true).on('click', function() {
+      audio.pause();
+    });
+    var buttonFwd = scheme.find(this, 'ButtonFwd').set('disabled', true);
+    var buttonEnd = scheme.find(this, 'ButtonEnd').set('disabled', true);
+
+    seeker.on('change', function(ev) {
+      audio.pause();
+      audio.currentTime = ev.detail;
+      audio.play();
+    });
+
+    player.on('play', function(ev) {
+      buttonPause.set('disabled', false);
+      buttonPlay.set('disabled', true);
+    });
+    player.on('ended', function(ev) {
+      buttonPause.set('disabled', true);
+    });
+    player.on('pause', function(ev) {
+      buttonPause.set('disabled', false);
+      buttonPlay.set('disabled', false);
+    });
+    player.on('loadeddata', function(ev) {
+    });
+    player.on('timeupdate', function(ev) {
+      self.updateTime(label, seeker);
+    });
+    player.on('error', function(ev) {
+      if ( !player.$element.src ) {
+        return;
+      }
+      var msg = null;
+      try {
+        switch ( ev.target.error.code ) {
+          case ev.target.error.MEDIA_ERR_ABORTED:
+            msg = OSjs.Applications.ApplicationMusicPlayer._('Playback aborted');
+            break;
+          case ev.target.error.MEDIA_ERR_NETWORK:
+            msg = OSjs.Applications.ApplicationMusicPlayer._('Network or communication error');
+            break;
+          case ev.target.error.MEDIA_ERR_DECODE:
+            msg = OSjs.Applications.ApplicationMusicPlayer._('Decoding failed. Corruption or unsupported media');
+            break;
+          case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            msg = OSjs.Applications.ApplicationMusicPlayer._('Media source not supported');
+            break;
+          default:
+            msg = OSjs.API._('ERR_APP_UNKNOWN_ERROR');
+            break;
         }
-        self.player.play();
+      } catch ( e ) {
+        msg = OSjs.API._('ERR_GENERIC_APP_FATAL_FMT', e);
+      }
+
+      if ( msg ) {
+        API.createDialog('Alert', {title: self._title, message: msg}, null, self);
       }
     });
-    _createButton(buttons, 'player_pause', function(ev) {
-      if ( self.playlist.length ) {
-        self.player.pause();
-      }
-    });
-    _createButton(buttons, 'player_fwd', function(ev) {
-      _buttonAction(self.playlist.next());
-    });
-    _createButton(buttons, 'player_end', function(ev) {
-      _buttonAction(self.playlist.last());
-    });
-
-    // Containers
-    container.appendChild(info);
-    var slider = this._addGUIElement(new GUI.Slider('MusicPlayerSlider', {min:0, max:100, val:0}, function(val) {
-      self.player.seek(val);
-    }), container);
-    container.appendChild(buttons);
-
-    this.player.onLoadedData = function(ev, player) {
-      self.updateInfo(ev, null, slider);
-    };
-    this.player.onTimeUpdate = function(ev, player) {
-      self.updateTime(ev, slider);
-    };
-    this.player.onError = function(ev, player, msg) {
-      self.updateInfo(ev, null, slider);
-      self._error(OSjs.API._('ERR_GENERIC_APP_FMT', self.title), OSjs.Applications.ApplicationMusicPlayer._('Failed to play file'), msg);
-    };
-    this.player.onTrackEnded = function(ev, player) {
-      if ( self.playlist.isLast() ) return;
-      _buttonAction(self.playlist.next());
-      self.updateInfo(ev, null, slider);
-      self.updateButtons();
-    };
-    this.player.onTrackStarted = function(ev, player) {
-      app.info(player.currentFilename);
-      self.updateButtons();
-    };
-    this.player.onTrackPaused = function(ev, player) {
-      self.updateButtons();
-    };
-
-    root.appendChild(container);
-    root.appendChild(this.player.$audio);
-
-    var pl = this._addGUIElement(new GUI.ListView('MusicPlayerPlaylist'), root);
-    pl.setColumns([
-      {key: 'name',     title: OSjs.API._('LBL_NAME')},
-      {key: 'filename', title: OSjs.API._('LBL_FILENAME'),  visible: false},
-      {key: 'mime',     title: OSjs.API._('LBL_MIME'),      visible: false},
-      {key: 'index',    title: OSjs.API._('LBL_INDEX'),     visible: false}
-     ]);
-
-    pl.onActivate = function(ev, el, item) {
-      if ( item && item.filename ) {
-        self.playlist.set(item.index);
-        self.play(item.filename, item.mime);
-      }
-    };
-
-    this.updateButtons();
 
     return root;
   };
 
-  ApplicationMusicPlayerWindow.prototype.destroy = function() {
-    // Destroy custom objects etc. here
-    if ( this.player ) {
-      this.player.destroy();
-      this.player = null;
-    }
+  ApplicationMusicPlayerWindow.prototype.showFile = function(file, content) {
+    if ( !file || !content ) { return; }
 
-    Window.prototype.destroy.apply(this, arguments);
-  };
+    var self = this;
+    var scheme = this._scheme;
+    var player = scheme.find(this, 'Player');
+    var seeker = this._scheme.find(this, 'Seek');
+    var audio = player.$element.firstChild;
 
-  ApplicationMusicPlayerWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+    var artist = file ? file.filename : '';
+    var album = file ? Utils.dirname(file.path) : '';
 
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        this._appRef.play(data.path, data.mime, true);
-      }
-    }
-  };
+    var labelArtist = this._scheme.find(this, 'LabelArtist').set('value', '');
+    var labelTitle  = this._scheme.find(this, 'LabelTitle').set('value', artist);
+    var labelAlbum  = this._scheme.find(this, 'LabelAlbum').set('value', album);
+    this._scheme.find(this, 'LabelTime').set('value', '');
+    seeker.set('min', 0);
+    seeker.set('max', 0);
+    seeker.set('value', 0);
 
-  ApplicationMusicPlayerWindow.prototype.open = function(filename, mime, append) {
+    this.updated = false;
 
-    if ( !append ) {
-      this.playlist.clear();
-    }
-    var row = {
-      index:      this.playlist.length,
-      name:       filename,
-      filename:   filename,
-      mime:       mime
-    };
-    var idx = this.playlist.add(row);
-
-    var pl = this._getGUIElement('MusicPlayerPlaylist');
-    if ( pl ) {
-      pl.setRows(this.playlist.list);
-      pl.render();
-    }
-
-    if ( !append ) {
-      this.play(filename, mime);
-      if ( idx >= 0 ) {
-        this.playlist.set(idx);
-      }
-    }
-
-    this.updateButtons();
-  };
-
-  ApplicationMusicPlayerWindow.prototype.play = function(filename, mime) {
-    try {
-      this.$labels.Artist.innerHTML = filename;
-      this.$labels.Album.innerHTML = mime;
-    } catch ( e ) {
-      console.warn("Failed to set labels", e);
-    }
-
-    this.player.open(filename);
-
-    this._setTitle(this.title + ' - ' + OSjs.Utils.filename(filename));
-
-    this.updateButtons();
-
-    return true;
-  };
-
-  ApplicationMusicPlayerWindow.prototype.updateButtons = function() {
-    try {
-      this.$buttons.play.setDisabled(true);
-      this.$buttons.pause.setDisabled(true);
-
-      this.$buttons.start.setDisabled(true);
-      this.$buttons.end.setDisabled(true);
-
-      this.$buttons.rew.setDisabled(true);
-      this.$buttons.fwd.setDisabled(true);
-
-      if ( !this.playlist.isEmpty() ) {
-        if ( this.playlist.length > 1 ) {
-          if ( !this.playlist.isFirst() ) {
-            this.$buttons.rew.setDisabled(false);
-            this.$buttons.start.setDisabled(false);
-          }
-          if ( !this.playlist.isLast() ) {
-            this.$buttons.fwd.setDisabled(false);
-            this.$buttons.end.setDisabled(false);
-          }
+    function getInfo() {
+      self._app._call('info', {filename: file.path}, function(res) {
+        var info = (res && res.result) ? res.result : null;
+        if ( info ) {
+          if ( info.Artist ) { labelArtist.set('value', info.Artist); }
+          if ( info.Album ) { labelAlbum.set('value', info.Album); }
+          if ( info.Title ) { labelTitle.set('value', info.Track); }
         }
-
-        if ( this.player.paused ) {
-          this.$buttons.play.setDisabled(false);
-        } else {
-          this.$buttons.pause.setDisabled(false);
-        }
-      }
-    } catch ( e ) {
-      console.warn("Failed toggle buttons", e);
+      });
     }
+
+    audio.src = content || '';
+    audio.play();
+    getInfo();
   };
 
-  ApplicationMusicPlayerWindow.prototype.updateInfo = function(ev, info, slider) {
-    if ( this.seeking ) return;
-    if ( !this.player ) return;
-    info = info || {};
-    var msg = '-';
-    if ( !info.Artist && !info.Album && !info.Track ) {
-      msg = "<i>" + OSjs.Applications.ApplicationMusicPlayer._("Media information query failed") + "</i>";
-    }
-    this.$labels.Artist.innerHTML = info.Artist || msg;
-    this.$labels.Album.innerHTML  = info.Album  || OSjs.Utils.dirname(this.player.currentFilename);
-    this.$labels.Track.innerHTML  = info.Track  || OSjs.Utils.filename(this.player.currentFilename);
-    this.updateTime(ev, slider);
+  ApplicationMusicPlayerWindow.prototype.updateTime = function(label, seeker) {
+    if ( this._destroyed ) { return; } // Important because async
 
-    if ( slider ) {
-      slider.min = 0;
-      slider.max = 0;
-      slider.setValue(0);
+    var player = this._scheme.find(this, 'Player');
+    var audio = player.$element.firstChild;
+
+    var total   = audio.duration;
+    var current = audio.currentTime;
+    var unknown = false;
+
+    if ( isNaN(current) || !isFinite(current) ) {
+      current = 0.0;
     }
+
+    if ( isNaN(total) || !isFinite(total) ) {
+      total = current;
+      unknown = true;
+    }
+
+    var time = Utils.format('{0} / {1}', formatTime(current), unknown ? '<unknown>' : formatTime(total));
+
+    if ( !this.updated ) {
+      seeker.set('min', 0);
+      seeker.set('max', total);
+    }
+
+    label.set('value', time);
+    seeker.set('value', current);
+
+    this.updated = true;
   };
-
-  ApplicationMusicPlayerWindow.prototype.updateTime = function(ev, slider, error) {
-    if ( this.seeking ) return;
-    if ( !this.player ) return;
-    ev = ev || window.event;
-
-
-    var times = this.player.getTimes(error);
-    if ( times.unknown ) {
-      this.$labels.Time.innerHTML = times.currentStamp  + " / -" + times.totalStamp + ' <i>(' + OSjs.Applications.ApplicationMusicPlayer._('seek unavailable in format') + ')</i>';
-    } else {
-      this.$labels.Time.innerHTML = times.currentStamp  + " / " + times.totalStamp;
-    }
-
-    if ( slider ) {
-      slider.max = Math.round(times.total);
-      slider.setValue(Math.round(times.current));
-    }
-  };
-
-  ApplicationMusicPlayerWindow.prototype.seek = function(val) {
-    this.seeking = true;
-    this.player.seek(val);
-    this.seeking = false;
-  };
-
-  ApplicationMusicPlayerWindow.prototype.togglePlaylist = (function() {
-    var _lastDimension = null;
-
-    return function() {
-      if ( _lastDimension === null ) {
-        _lastDimension = {w: this._dimension.w, h: this._dimension.h};
-      }
-
-      this.showPlaylist = !this.showPlaylist;
-      console.info("MusicPlayer::togglePlaylist()", this.showPlaylist);
-
-      if ( this.showPlaylist ) {
-        this._resize(_lastDimension.w, _lastDimension.h + 200, true);
-      } else {
-        this._resize(_lastDimension.w, _lastDimension.h, true);
-      }
-    };
-  })();
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application
-   */
   var ApplicationMusicPlayer = function(args, metadata) {
-    Application.apply(this, ['ApplicationMusicPlayer', args, metadata]);
+    DefaultApplication.apply(this, ['ApplicationMusicPlayer', args, metadata, {
+      readData: false
+    }]);
   };
 
-  ApplicationMusicPlayer.prototype = Object.create(Application.prototype);
+  ApplicationMusicPlayer.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationMusicPlayer.constructor = DefaultApplication;
 
   ApplicationMusicPlayer.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, []);
+    return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationMusicPlayer.prototype.init = function(settings, metadata) {
-    Application.prototype.init.apply(this, arguments);
+  ApplicationMusicPlayer.prototype.init = function(settings, metadata, onInited) {
     var self = this;
-
-    this._addWindow(new ApplicationMusicPlayerWindow(this, metadata));
-
-    var file = this._getArgument('file');
-    if ( file && (typeof file === 'object') ) {
-      this.play(file.path, file.mime, false);
-    }
-  };
-
-  ApplicationMusicPlayer.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationMusicPlayerWindow' ) {
-      this.destroy();
-    } else if ( msg == 'attention' && args && args.file ) {
-      this.play(args.file.path, args.file.mime, true);
-    }
-  };
-
-  ApplicationMusicPlayer.prototype.play = function(filename, mime, append) {
-    mime = mime || '';
-    if ( !mime.match(/^audio/) ) {
-      var msg = OSjs.Applications.ApplicationMusicPlayer._('The audio type is not supported: {0}', mime);
-      var win = this._getWindow('ApplicationMusicPlayerWindow');
-      win._error(OSjs.API._("ERR_GENERIC_APP_FMT", win.title), OSjs.Applications.ApplicationMusicPlayer._("Failed to play file"), msg);
-      return;
-    }
-
-    var win = this._getWindow('ApplicationMusicPlayerWindow');
-    if ( win ) {
-      if ( win.open(filename, mime, append) ) {
-        (function() {})();
-      }
-    }
-
-    if ( !append ) {
-      this._setArgument('file', filename);
-      this._setArgument('mime', mime);
-    }
-  };
-
-  ApplicationMusicPlayer.prototype.info = function(filename) {
-    var win = this._getWindow('ApplicationMusicPlayerWindow');
-    if ( win ) {
-      this._call('info', {filename: filename}, function(res) {
-        var info = (res && res.result) ? res.result : null;
-        win.updateInfo(null, info);
-      });
-    }
+    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+      self._addWindow(new ApplicationMusicPlayerWindow(self, metadata, scheme, file));
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -801,4 +253,4 @@
   OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
   OSjs.Applications.ApplicationMusicPlayer.Class = ApplicationMusicPlayer;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.VFS);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -27,160 +27,86 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Utils, API, VFS) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window
-   */
-  var ApplicationTextpadWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationTextpadWindow', {
+  function ApplicationTextpadWindow(app, metadata, scheme, file) {
+    DefaultApplicationWindow.apply(this, ['ApplicationTextpadWindow', {
+      allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
       width: 450,
       height: 300
-    }, app]);
-    this.title = metadata.name;
-  };
+    }, app, scheme, file]);
+  }
 
-  ApplicationTextpadWindow.prototype = Object.create(Window.prototype);
+  ApplicationTextpadWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationTextpadWindow.constructor = DefaultApplicationWindow.prototype;
 
-  ApplicationTextpadWindow.prototype.init = function(wmref, app) {
+  ApplicationTextpadWindow.prototype.init = function(wmRef, app, scheme) {
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
     var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
 
-    var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationTextpadMenuBar'), root);
-    menuBar.addItem(API._("LBL_FILE"), [
-      {title: API._('LBL_NEW'), name: 'New', onClick: function() {
-        app.action('new');
-      }},
-      {title: API._('LBL_OPEN'), name: 'Open', onClick: function() {
-        app.action('open');
-      }},
-      {title: API._('LBL_SAVE'), name: 'Save', onClick: function() {
-        app.action('save');
-      }},
-      {title: API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
-        app.action('saveas');
-      }},
-      {title: API._('LBL_CLOSE'), name: 'Close', onClick: function() {
-        self._close();
-      }}
-    ]);
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'TextpadWindow', root);
+    scheme.find(this, 'Text').on('change', function() {
+      self.hasChanged = true;
+    });
 
-    menuBar.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFile ? false : true);
-    };
-
-    this._addGUIElement(new GUI.Textarea('TextpadTextarea'), root);
-
-    this.setText(null);
+    return root;
   };
 
-  ApplicationTextpadWindow.prototype.setText = function(t, name) {
-    var txt = this._getGUIElement('TextpadTextarea');
-    if ( !txt ) return;
-    txt.hasChanged = false;
-    txt.setText(t);
-    this.setTitle(name);
+  ApplicationTextpadWindow.prototype.updateFile = function(file) {
+    DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
+    this._scheme.find(this, 'Text').$element.focus();
   };
 
-  ApplicationTextpadWindow.prototype.getText = function() {
-    var txt = this._getGUIElement('TextpadTextarea');
-    return txt ? txt.getText() : '';
+  ApplicationTextpadWindow.prototype.showFile = function(file, content) {
+    this._scheme.find(this, 'Text').set('value', content || '');
+    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
   };
 
-  ApplicationTextpadWindow.prototype.setTitle = function(name) {
-    name = name || "New file";
-    this._setTitle(this.title + " - " + Utils.filename(name));
+  ApplicationTextpadWindow.prototype.getFileData = function() {
+    return this._scheme.find(this, 'Text').get('value');
   };
 
   ApplicationTextpadWindow.prototype._focus = function() {
-    Window.prototype._focus.apply(this, arguments);
-    var txt = this._getGUIElement('TextpadTextarea');
-    if ( txt ) {
-      txt.focus();
-    }
-  };
-
-  ApplicationTextpadWindow.prototype.onCheckChanged = function(callback, msg) {
-    var gel = this._getGUIElement('TextpadTextarea');
-    if ( gel && gel.hasChanged ) {
-      return this._appRef.onConfirmDialog(this, msg, function(discard) {
-        if ( discard ) {
-          gel.hasChanged = false;
+    if ( DefaultApplicationWindow.prototype._focus.apply(this, arguments) ) {
+      if ( this._scheme ) {
+        var input = this._scheme.find(this, 'Text').$element;
+        if ( input ) {
+          input.focus();
         }
-        callback(discard);
-      });
+      }
+      return true;
     }
     return false;
-  };
-
-  ApplicationTextpadWindow.prototype.setChanged = function(c) {
-    var gel  = this._getGUIElement('TextpadTextarea');
-    if ( gel ) {
-      gel.hasChanged = c;
-    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application
-   */
   var ApplicationTextpad = function(args, metadata) {
-    Application.apply(this, ['ApplicationTextpad', args, metadata]);
-
-    this.defaultCheckChange  = true;
-    this.dialogOptions.mimes = metadata.mime;
-    this.dialogOptions.defaultFilename = "New text file.txt";
-    this.dialogOptions.defaultMime = "text/plain";
+    DefaultApplication.apply(this, ['ApplicationTextpad', args, metadata, {
+      extension: 'txt',
+      mime: 'text/plain',
+      filename: 'New text file.txt'
+    }]);
   };
 
-  ApplicationTextpad.prototype = Object.create(Application.prototype);
+  ApplicationTextpad.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationTextpad.constructor = DefaultApplication;
 
-  ApplicationTextpad.prototype.init = function(settings, metadata) {
-    this.mainWindow = this._addWindow(new ApplicationTextpadWindow(this, metadata));
-
-    Application.prototype.init.apply(this, arguments);
-  };
-
-  ApplicationTextpad.prototype.onNew = function() {
-    if ( this.mainWindow ) {
-      this.mainWindow.setChanged(false);
-      this.mainWindow.setText('', null);
-      this.mainWindow._focus();
-    }
-  };
-
-  ApplicationTextpad.prototype.onOpen = function(file, data) {
-    if ( this.mainWindow ) {
-      this.mainWindow.setChanged(false);
-      this.mainWindow.setText(data, file.path);
-      this.mainWindow._focus();
-    }
-  };
-
-  ApplicationTextpad.prototype.onSave = function(file, data) {
-    if ( this.mainWindow ) {
-      this.mainWindow.setChanged(false);
-      this.mainWindow.setTitle(file.path);
-      this.mainWindow._focus();
-    }
-  };
-
-  ApplicationTextpad.prototype.onGetSaveData = function(callback) {
-    var data = null;
-    if ( this.mainWindow ) {
-      data = this.mainWindow.getText();
-    }
-    callback(data);
+  ApplicationTextpad.prototype.init = function(settings, metadata, onInited) {
+    var self = this;
+    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+      self._addWindow(new ApplicationTextpadWindow(self, metadata, scheme, file));
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -188,6 +114,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationTextpad = ApplicationTextpad;
+  OSjs.Applications.ApplicationTextpad = OSjs.Applications.ApplicationTextpad || {};
+  OSjs.Applications.ApplicationTextpad.Class = ApplicationTextpad;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

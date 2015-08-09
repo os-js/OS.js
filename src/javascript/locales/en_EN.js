@@ -358,7 +358,8 @@
     'LBL_MODIFIED' : 'Modified',
     'LBL_SHOW_COLUMNS' : 'Show Columns',
     'LBL_MOVE' : 'Move',
-    'LBL_OPTIONS' : 'Options'
+    'LBL_OPTIONS' : 'Options',
+    'LBL_OK' : 'OK'
   };
 
 })();

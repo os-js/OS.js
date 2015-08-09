@@ -119,6 +119,7 @@
   var _INITED = false;
 
   function onContextMenu(ev) {
+    ev.stopPropagation();
     if ( !OSjs.Utils.$isInput(ev) ) {
       ev.preventDefault();
       return false;
@@ -128,6 +129,7 @@
 
   function onMouseDown(ev) {
     ev.preventDefault();
+
     OSjs.API.blurMenu();
   }
 
@@ -222,7 +224,7 @@
    * @return  boolean
    */
   function globalOnScroll(ev) {
-    if ( ev.target === document || ev.target === document.body || ev.target.id === 'Background' ) {
+    if ( ev.target === document || ev.target === document.body ) {
       ev.preventDefault();
       ev.stopPropagation();
       return false;
@@ -432,13 +434,8 @@
         return false;
       };
 
-      _$ROOT = document.createElement('div');
-      _$ROOT.id = 'Background';
-      _$ROOT.addEventListener('contextmenu', onContextMenu, false);
-      _$ROOT.addEventListener('mousedown', onMouseDown, false);
-
-      document.body.appendChild(_$ROOT);
-
+      document.body.addEventListener('contextmenu', onContextMenu, false);
+      document.body.addEventListener('mousedown', onMouseDown, false);
       document.addEventListener('keydown', globalOnKeyDown, false);
       document.addEventListener('keypress', globalOnKeyPress, false);
       document.addEventListener('keyup', globalOnKeyUp, false);
@@ -513,11 +510,8 @@
       window.removeEventListener('scroll', globalOnScroll, false);
       window.onbeforeunload = null;
       //window.removeEventListener('beforeunload', globalOnBeforeUnload, false);
-
-      if ( _$ROOT ) {
-        _$ROOT.removeEventListener('contextmenu', onContextMenu, false);
-        _$ROOT.removeEventListener('mousedown', onMouseDown, false);
-      }
+      document.body.removeEventListener('contextmenu', onContextMenu, false);
+      document.body.removeEventListener('mousedown', onMouseDown, false);
 
 
       OSjs.API.killAll();
@@ -567,21 +561,16 @@
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       var user = handler.getUserData() || {name: OSjs.API._('LBL_UNKNOWN')};
-      var conf = new OSjs.Dialogs.Confirm(OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name), function(btn) {
-        if ( btn === 'ok' ) {
+      OSjs.API.createDialog('Confirm', {
+        title: OSjs.API._('DIALOG_LOGOUT_TITLE'),
+        message: OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name)
+      }, function(ev, btn) {
+        if ( btn === 'yes' ) {
           OSjs.Session.destroy(true, false);
         } else if ( btn === 'no' ) {
           OSjs.Session.destroy(false, false);
         }
-      }, {
-        title: OSjs.API._('DIALOG_LOGOUT_TITLE'),
-        buttons: [
-          {name: 'ok', label: OSjs.API._('LBL_YES')},
-          {name: 'no', label: OSjs.API._('LBL_NO')},
-          {name: 'cancel', label: OSjs.API._('LBL_CANCEL')}
-        ]
       });
-      wm.addWindow(conf);
     } else {
       OSjs.Session.destroy(true, false);
     }

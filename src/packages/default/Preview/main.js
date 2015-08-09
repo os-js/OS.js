@@ -27,189 +27,73 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Utils, API, VFS) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window
-   */
-  var ApplicationPreviewWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationPreviewWindow', {
+  function ApplicationPreviewWindow(app, metadata, scheme, file) {
+    DefaultApplicationWindow.apply(this, ['ApplicationPreviewWindow', {
+      allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
-      allow_drop: true,
       width: 400,
       height: 200
-    }, app]);
+    }, app, scheme, file]);
+  }
 
-    this.previewElement = null;
-    this.title          = metadata.name;
-    this.frame          = null;
-    this.loaded         = false;
+  ApplicationPreviewWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationPreviewWindow.constructor = DefaultApplicationWindow.prototype;
+
+  ApplicationPreviewWindow.prototype.init = function(wm, app, scheme) {
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
+
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'PreviewWindow', root);
+
+    return root;
   };
 
-  ApplicationPreviewWindow.prototype = Object.create(Window.prototype);
-
-  ApplicationPreviewWindow.prototype.init = function(wmref, app) {
+  ApplicationPreviewWindow.prototype.showFile = function(file, result) {
     var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
+    var root = this._scheme.find(this, 'Content').$element;
+    Utils.$empty(root);
 
-    var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationPreviewMenuBar'), root);
-    menuBar.addItem(API._("LBL_FILE"), [
-      {title: API._('LBL_OPEN'), onClick: function() {
-        app.action('open');
-      }},
-      {title: API._('LBL_CLOSE'), onClick: function() {
-        self._close();
-      }}
-    ]);
-
-    this.frame = this._addGUIElement(new GUI.ScrollView('Frame'), root);
-
-    this._addHook("resized", function() {
-      if ( self.frame.$element ) {
-        if ( self.previewElement ) {
-          if ( (self.previewElement.offsetHeight <= self.frame.$element.offsetHeight) && (self.previewElement.offsetWidth <= self.frame.$element.offsetWidth) ) {
-            self.frame.$element.style.overflow = "hidden";
-          } else {
-            self.frame.$element.style.overflow = "auto";
-          }
-        }
-      }
-    });
-  };
-
-  ApplicationPreviewWindow.prototype.destroy = function() {
-    if ( this.previewElement && this.previewElement.parentNode ) {
-      this.previewElement.parentNode.removeChild(this.previewElement);
-      this.previewElement = null;
-    }
-    Window.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationPreviewWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
-
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        var file = new VFS.File(data);
-        this._appRef.action('open', file);
-      }
-    }
-  };
-
-  ApplicationPreviewWindow.prototype.setPreview = function(file) {
-    console.log("ApplicationPreviewWindow::setPreview()", file);
-
-    this.loaded = false;
-
-    var self = this;
-    var el;
-
-    if ( this.previewElement && this.previewElement.parentNode ) {
-      this.previewElement.parentNode.removeChild(this.previewElement);
-      this.previewElement = null;
-    }
-
-    if ( file.path ) {
-      this.frame.setScroll(false, false);
-      try {
-        if ( file.mime.match(/^image/) ) {
-          el = document.createElement('img');
-          el.alt = file.filename;
-          el.onload = function() {
-            if ( self.frame ) {
-              self._resizeTo(this.width, this.height, true, false, self.previewElement);
-            }
-          };
-
-          this.frame.setScroll(true, true);
-        } else if ( file.mime.match(/^audio/) ) {
-          el = document.createElement('audio');
-          el.controls = "controls";
-          el.autoplay = "autoplay";
-          this._resize(640, 480);
-          this.loaded = true;
-        } else if ( file.mime.match(/^video/) ) {
-          el = document.createElement('video');
-          el.controls = "controls";
-          el.autoplay = "autoplay";
-
-          el.addEventListener("loadedmetadata", function(ev) {
-            if ( self.frame ) {
-              self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, self.previewElement);
-            }
-            self.loaded = true;
-          });
-        }
-
-        if ( el ) {
-          VFS.url(file, function(error, result) {
-            if ( !error && el ) {
-              el.src = result;
-            }
-          });
-        }
-      } catch ( e ) {
-        console.warn("Preview error: " + e);
+    if ( result ) {
+      if ( file.mime.match(/^image/) ) {
+        this._scheme.create(self, 'gui-image', {src: result}, root, {onload: function() {
+          self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
+        }});
+      } else if ( file.mime.match(/^video/) ) {
+        this._scheme.create(self, 'gui-video', {src: result, controls: true, autoplay: true}, root, {onload: function() {
+          self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
+        }});
       }
     }
 
-    if ( el ) {
-      this.previewElement = el;
-      this.frame.addElement(this.previewElement, true);
-    }
-
-    this._setTitle(file && file.path ? (this.title + " - " + Utils.filename(file.path)) : this.title);
-  };
-
-  ApplicationPreviewWindow.prototype._resize = function(w, h) {
-    if ( !Window.prototype._resize.apply(this, arguments) ) return false;
-
-    if ( this.loaded ) {
-      if ( this.previewElement && this.previewElement.tagName !== 'IMG' ) {
-        if ( this.previewElement.parentNode ) {
-          this.previewElement.width  = this.previewElement.parentNode.offsetWidth;
-          this.previewElement.height = this.previewElement.parentNode.offsetHeight;
-        }
-      }
-    }
-
-    return true;
+    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application
-   */
   var ApplicationPreview = function(args, metadata) {
-    Application.apply(this, ['ApplicationPreview', args, metadata]);
-
-    this.dialogOptions.read  = false;
-    this.dialogOptions.mimes = metadata.mime;
+    DefaultApplication.apply(this, ['ApplicationPreview', args, metadata, {
+      readData: false
+    }]);
   };
 
-  ApplicationPreview.prototype = Object.create(Application.prototype);
+  ApplicationPreview.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationPreview.constructor = DefaultApplication;
 
-  ApplicationPreview.prototype.init = function(settings, metadata) {
-    this.mainWindow = this._addWindow(new ApplicationPreviewWindow(this, metadata));
-
-    Application.prototype.init.apply(this, arguments);
-  };
-
-  ApplicationPreview.prototype.onOpen = function(file, data) {
-    if ( this.mainWindow ) {
-      this.mainWindow.setPreview(file);
-      this.mainWindow._focus();
-    }
+  ApplicationPreview.prototype.init = function(settings, metadata, onInited) {
+    var self = this;
+    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+      self._addWindow(new ApplicationPreviewWindow(self, metadata, scheme, file));
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -217,6 +101,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationPreview = ApplicationPreview;
+  OSjs.Applications.ApplicationPreview = OSjs.Applications.ApplicationPreview || {};
+  OSjs.Applications.ApplicationPreview.Class = ApplicationPreview;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -62,6 +62,7 @@
     this.connection = new OSjs.Helpers.ConnectionManager(this.config.Core.Connection, this.config.Core.APIURI);
     this.packages   = new OSjs.Helpers.PackageManager(Utils.checkdir(this.config.Core.MetadataURI));
     this.user       = new OSjs.Helpers.UserSession(this.config.Core.DefaultUser);
+    this.dialogs    = null;
 
     _handlerInstance = this;
   };
@@ -78,7 +79,7 @@
    * @method  _Handler::init()
    */
   _Handler.prototype.init = function(callback) {
-    console.info('OSjs::_Handler::init()');
+    console.info('Handler::init()');
 
     API.setLocale(this.config.Core.Locale);
 
@@ -116,9 +117,19 @@
    * @method  _Handler::boot()
    */
   _Handler.prototype.boot = function(callback) {
-    console.info('OSjs::_Handler::boot()');
-    this.packages.load(function(presult, perror) {
-      callback(presult, perror);
+    var self = this;
+    console.info('Handler::boot()');
+
+    var url = '/js/dialogs/schemes.html';
+    if ( OSjs.API.getDefaultSettings().Dist === 'dist' ) {
+      url = '/dialogs.html';
+    }
+    var scheme = OSjs.GUI.createScheme(url);
+    scheme.load(function(error, doc) {
+      self.dialogs = scheme;
+      self.packages.load(function(presult, perror) {
+        callback(presult, perror);
+      });
     });
   };
 
@@ -136,7 +147,7 @@
    * @method  _Handler::login()
    */
   _Handler.prototype.login = function(username, password, callback) {
-    console.info('OSjs::_Handler::login()', username);
+    console.info('Handler::login()', username);
     this.onLogin({}, function() {
       callback(true);
     });
@@ -156,7 +167,7 @@
    * @method  _Handler::logout()
    */
   _Handler.prototype.logout = function(save, callback) {
-    console.info('OSjs::_Handler::logout()');
+    console.info('Handler::logout()');
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
@@ -185,13 +196,11 @@
   _Handler.prototype.loadSession = function(callback) {
     callback = callback || function() {};
 
-    console.info('OSjs::_Handler::loadSession()');
+    console.info('Handler::loadSession()');
 
     var self = this;
     this.getUserSession(function(res) {
-      if ( res ) {
-        self.user.loadSession(res, callback);
-      }
+      self.user.loadSession(res, callback);
     });
   };
 
@@ -271,13 +280,12 @@
     var user = this.user.getUserData();
 
     function displayMenu(ev) {
-      var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.API.createMenu([{
         title: API._('TITLE_SIGN_OUT'),
         onClick: function() {
           OSjs.Session.signOut();
         }
-      }], pos);
+      }], ev);
 
       return false;
     }
@@ -357,7 +365,7 @@
 
     var pacman = this.packages;
     this.getSetting('defaultApplication', file.mime, function(val) {
-      console.debug('OSjs::_Handler::getApplicationNameByFile()', 'default application', val);
+      console.debug('Handler::getApplicationNameByFile()', 'default application', val);
       if ( !forceList && val ) {
         if ( pacman.getPackage(val) ) {
           callback([val]);
@@ -385,7 +393,7 @@
    */
   _Handler.prototype.setDefaultApplication = function(mime, app, callback) {
     callback = callback || function() {};
-    console.debug('OSjs::_Handler::setDefaultApplication()', mime, app);
+    console.debug('Handler::setDefaultApplication()', mime, app);
     this.setSetting('defaultApplication', mime, app, callback);
   };
 
@@ -401,7 +409,7 @@
    * @method  _Handler::saveSettings()
    */
   _Handler.prototype.saveSettings = function(callback) {
-    console.debug('OSjs::_Handler::saveSettings()');
+    console.debug('Handler::saveSettings()');
     callback.call(this, true);
   };
 

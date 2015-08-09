@@ -59,6 +59,8 @@
   var IFrameApplicationWindow = function(name, opts, app) {
     opts = Utils.argumentDefaults(opts, {
       src: 'about:blank',
+      focus: function() {},
+      blur: function() {},
       icon: null,
       title: 'IframeApplicationWindow',
       width: 320,
@@ -68,7 +70,10 @@
       allow_maximize: false
     });
 
-    Window.apply(this, ['IFrameApplicationWindow_' + name, opts, app]);
+    Window.apply(this, ['IFrameApplicationWindow', opts, app]);
+
+    this._iwin = null;
+    this._frame = null;
   };
 
   IFrameApplicationWindow.prototype = Object.create(Window.prototype);
@@ -77,11 +82,49 @@
     var root = Window.prototype.init.apply(this, arguments);
     root.style.overflow = 'visible';
 
-    this._addGUIElement(new GUI.IFrame('IFrameApplicationWindowFrame', {
-      src: this._opts.src
-    }), root);
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('border', 0);
+    iframe.className = 'IframeApplicationFrame';
+    iframe.src = this._opts.src;
+    root.appendChild(iframe);
+
+    this._frame = iframe;
+    this._iwin = iframe.contentWindow;
+
+    this._iwin.focus();
+    this._frame.focus();
+    this._opts.focus(this._frame, this._iwin);
 
     return root;
+  };
+
+  IFrameApplicationWindow.prototype._blur = function() {
+    if ( Window.prototype._blur.apply(this, arguments) ) {
+      if ( this._iwin ) {
+        this._iwin.blur();
+      }
+      if ( this._frame ) {
+        this._frame.blur();
+      }
+
+      this._opts.blur(this._frame, this._iwin);
+      return true;
+    }
+    return false;
+  };
+
+  IFrameApplicationWindow.prototype._focus = function() {
+    if ( Window.prototype._focus.apply(this, arguments) ) {
+      if ( this._iwin ) {
+        this._iwin.focus();
+      }
+      if ( this._frame ) {
+        this._frame.focus();
+      }
+      this._opts.focus(this._frame, this._iwin);
+      return true;
+    }
+    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -118,13 +161,6 @@
   IFrameApplication.prototype = Object.create(Application.prototype);
 
   /**
-   * Default Destruction code
-   */
-  IFrameApplication.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
-  };
-
-  /**
    * Default init() code (run this last in your Application init() method)
    *
    * @see Application::init()
@@ -132,26 +168,8 @@
    */
   IFrameApplication.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
-
     var name = this.__name + 'Window';
-    this.mainWindow = this._addWindow(new IFrameApplicationWindow(name, this.options, this));
-  };
-
-  /**
-   * Default Messaging handler
-   *
-   * @see Application::_onMessage()
-   * @method IFrameApplication::_onMessage()
-   */
-  IFrameApplication.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    // Make sure we kill our application if main window was closed
-    if ( this.mainWindow ) {
-      if ( msg === 'destroyWindow' && obj._name === this.mainWindow._name ) {
-        this.destroy();
-      }
-    }
+    this._addWindow(new IFrameApplicationWindow(name, this.options, this), null, true);
   };
 
   /////////////////////////////////////////////////////////////////////////////

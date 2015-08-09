@@ -88,6 +88,35 @@
     return 301;
   }
 
+  function destroyIframeFixes(root) {
+    root.querySelectorAll('.application-window-iframe-fix').forEach(function(el) {
+      Utils.$remove(el);
+    });
+  }
+
+  function createIframeFixes(root, win) {
+    root.querySelectorAll('gui-richtext, gui-ifram').forEach(function(el) {
+      var pos = Utils.$position(el, el.parentNode);
+      var overlay = document.createElement('div');
+      overlay.style.position = 'absolute';
+      overlay.style.top = pos.top + el.parentNode.scrollTop + 'px';
+      overlay.style.left = pos.left + 'px';
+      overlay.style.width = pos.width + 'px';
+      overlay.style.height = pos.height + 'px';
+      overlay.style.zIndex = Number.MAX_VALUE;
+      overlay.className = 'application-window-iframe-fix';
+
+      Utils.$bind(overlay, 'mousedown', function() {
+        if ( win ) {
+          win._focus();
+        }
+      });
+
+      el.parentNode.appendChild(overlay);
+    });
+
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -137,12 +166,15 @@
     var _DEFAULT_SND_VOLUME = 1.0;
     var _NAMES              = [];
 
-    return function(name, opts, appRef) {
+    return function(name, opts, appRef, schemeRef) {
       var self = this;
 
       if ( _NAMES.indexOf(name) >= 0 ) {
         throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
       }
+
+      console.group('Window::constructor()', _WID);
+      console.log(name, opts);
 
       var icon      = opts.icon || API.getThemeResource('wm.png', 'wm');
       var position  = {x:(opts.x), y:(opts.y)};
@@ -154,18 +186,18 @@
       this._$winicon      = null;                 // DOMElement: Window Icon
       this._$loading      = null;                 // DOMElement: Window Loading overlay
       this._$disabled     = null;                 // DOMElement: Window Disabled Overlay
-      this._$iframefix    = null;                 // DOMElement: Window IFrame Fix Overlay
       this._$resize       = null;                 // DOMElement: Window Resizer
       this._$warning      = null;                 // DOMElement: Warning message
 
       this._opts          = opts;                 // Construction opts
-      this._rendered      = false;                // If Window has been initially rendered
-      this._appRef        = appRef || null;       // Reference to Application Window was created from
+      this._app           = appRef || null;       // Reference to Application Window was created from
+      this._scheme        = schemeRef || null;    // Reference to UIScheme
       this._destroyed     = false;                // If Window has been destroyed
       this._wid           = _WID;                 // Window ID (Internal)
       this._icon          = icon;                 // Window Icon
       this._name          = name;                 // Window Name (Unique identifier)
       this._title         = opts.title || name;   // Window Title
+      this._origtitle     = this._title;          // Backup window title
       this._tag           = opts.tag || name;     // Window Tag (ex. Use this when you have a group of windows)
       this._position      = position;             // Window Position
       this._dimension     = dimension;            // Window Dimension
@@ -174,13 +206,10 @@
       this._tmpPosition   = null;
       this._children      = [];                   // Child Windows
       this._parent        = null;                 // Parent Window reference
-      this._guiElements   = [];                   // Added GUI Elements
-      this._guiElement    = null;                 // Currently selected GUI Element
       this._disabled      = true;                 // If Window is currently disabled
       this._sound         = null;                 // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;  // ... using this volume
       this._blinkTimer    = null;
-      this._iframeFixEl   = null;
 
       this._properties    = {                     // Window Properties
         gravity           : null,
@@ -219,6 +248,8 @@
         maximize  : [],
         minimize  : [],
         restore   : [],
+        preop     : [], // Called on "mousedown" for resize and move
+        postop    : [], // Called on "mouseup" for resize and move
         move      : [], // Called inside the mosuemove event
         moved     : [], // Called inside the mouseup event
         resize    : [], // Called inside the mousemove event
@@ -234,7 +265,26 @@
         }
       });
 
-      console.info('OSjs::Core::Window::__construct()', this._wid, this._name);
+      // Internals for restoring previous state (session)
+      if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
+        appRef.__args.__windows__.forEach(function(restore) {
+          if ( restore.name && restore.name === self._name ) {
+            self._position.x = restore.position.x;
+            self._position.y = restore.position.y;
+            if ( self._properties.allow_resize ) {
+              self._dimension.w = restore.dimension.w;
+              self._dimension.h = restore.dimension.h;
+            }
+
+            console.info('RESTORED FROM SESSION', restore);
+            return false;
+          }
+
+          return true;
+        });
+      }
+
+      console.groupEnd();
 
       _WID++;
     };
@@ -248,12 +298,14 @@
    * the WindowManager.
    *
    * @param   WindowManager   _wm     Window Manager reference
+   * @param   Application     _app    Application reference
+   * @param   UIScheme        _scheme UIScheme reference
    *
    * @return  DOMElement              The Window DOM element
    *
    * @method  Window::init()
    */
-  Window.prototype.init = function(_wm) {
+  Window.prototype.init = function(_wm, _app, _scheme) {
     var self = this;
     var isTouch = OSjs.Compability.touch;
     var wm = OSjs.Core.getWindowManager();
@@ -308,11 +360,11 @@
     }
 
     function _initMinButton() {
-      buttonMinimize            = document.createElement('div');
-      buttonMinimize.className  = 'WindowButton WindowButtonMinimize';
+      buttonMinimize            = document.createElement('application-window-button-minimize');
+      buttonMinimize.className  = 'application-window-button-entry';
       buttonMinimize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_minimize ) {
-        self._addEventListener(buttonMinimize, 'click', function(ev) {
+        Utils.$bind(buttonMinimize, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'minimize');
@@ -324,11 +376,11 @@
     }
 
     function _initMaxButton() {
-      buttonMaximize            = document.createElement('div');
-      buttonMaximize.className  = 'WindowButton WindowButtonMaximize';
+      buttonMaximize            = document.createElement('application-window-button-maximize');
+      buttonMaximize.className  = 'application-window-button-entry';
       buttonMaximize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_maximize ) {
-        self._addEventListener(buttonMaximize, 'click', function(ev) {
+        Utils.$bind(buttonMaximize, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'maximize');
@@ -340,11 +392,11 @@
     }
 
     function _initCloseButton() {
-      buttonClose           = document.createElement('div');
-      buttonClose.className = 'WindowButton WindowButtonClose';
+      buttonClose           = document.createElement('application-window-button-close');
+      buttonClose.className = 'application-window-button-entry';
       buttonClose.innerHTML = '&nbsp;';
       if ( self._properties.allow_close ) {
-        self._addEventListener(buttonClose, 'click', function(ev) {
+        Utils.$bind(buttonClose, 'click', function(ev) {
           ev.preventDefault();
           ev.stopPropagation();
           self._onWindowButtonClick(ev, this, 'close');
@@ -362,55 +414,39 @@
 
         OSjs.API.createDroppable(main, {
           onOver: function(ev, el, args) {
-            _showBorder();
-
-            /*
-            if ( self._$iframefix ) {
-              self._$iframefix.style.display = 'none';
-            }
-            */
+            main.setAttribute('data-dnd-state', 'true');
           },
 
           onLeave : function() {
-            _hideBorder();
-
-            /*
-            if ( !self._state.focused ) {
-              if ( self._$iframefix ) {
-                self._$iframefix.style.display = 'block';
-              }
-            }
-            */
+            main.setAttribute('data-dnd-state', 'false');
           },
 
           onDrop : function() {
-            _hideBorder();
+            main.setAttribute('data-dnd-state', 'false');
           },
 
           onItemDropped: function(ev, el, item, args) {
-            _hideBorder();
+            main.setAttribute('data-dnd-state', 'false');
             return self._onDndEvent(ev, 'itemDrop', item, args);
           },
           onFilesDropped: function(ev, el, files, args) {
-            _hideBorder();
+            main.setAttribute('data-dnd-state', 'false');
             return self._onDndEvent(ev, 'filesDrop', files, args);
           }
         });
       }
     }
 
-    function _showBorder() {
-      Utils.$addClass(main, 'WindowHintDnD');
+    function _noEvent(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      return false;
     }
 
-    function _hideBorder() {
-      Utils.$removeClass(main, 'WindowHintDnD');
-    }
-
-    console.group('OSjs::Core::Window::init()');
+    console.group('Window::init()');
 
     this._state.focused = false;
-    this._icon = API.getIcon(this._icon, null, this._appRef);
+    this._icon = API.getIcon(this._icon, null, this._app);
 
     _initPosition();
     _initDimension();
@@ -420,99 +456,96 @@
     console.log('Position', this._position);
     console.log('Dimension', this._dimension);
 
-    // Main outer container
-    main = document.createElement('div');
+    main = document.createElement('application-window');
+    main.setAttribute('data-window-id', this._wid);
+    main.setAttribute('data-allow-resize', this._properties.allow_resize ? 'true' : 'false');
 
-    this._addEventListener(main, 'contextmenu', function(ev) {
-      var r = Utils.$isInput(ev);
-
-      if ( !r ) {
-        ev.preventDefault();
-      }
-
-      OSjs.API.blurMenu();
-
-      return r;
-    });
-
-    _initDnD();
-
-
-    // Window -> Top
-    var windowTop           = document.createElement('div');
-    windowTop.className     = 'WindowTop';
-
-    // Window -> Top -> Icon
-    var windowIcon          = document.createElement('div');
-    windowIcon.className    = 'WindowIcon';
+    var windowWrapper       = document.createElement('application-window-content');
+    var windowResize        = document.createElement('application-window-resize');
+    var windowLoading       = document.createElement('application-window-loading');
+    var windowLoadingImage  = document.createElement('application-window-loading-indicator');
+    var windowDisabled      = document.createElement('application-window-disabled');
+    var windowTop           = document.createElement('application-window-top');
+    var windowIcon          = document.createElement('application-window-icon');
+    var windowTitle         = document.createElement('application-window-title');
+    var windowButtons       = document.createElement('application-window-buttons');
 
     var windowIconImage         = document.createElement('img');
     windowIconImage.alt         = this._title;
     windowIconImage.src         = this._icon;
     windowIconImage.width       = 16;
     windowIconImage.height      = 16;
-    this._addEventListener(windowIcon, 'dblclick', Utils._preventDefault);
-    this._addEventListener(windowIcon, 'click', function(ev) {
+
+    windowTitle.appendChild(document.createTextNode(this._title));
+
+    Utils.$bind(windowTitle, 'dblclick', function() {
+      self._maximize();
+    });
+
+
+    // Append stuff
+    var classNames = ['Window'];
+    classNames.push(Utils.$safeName(this._name));
+    if ( this._tag && (this._name !== this._tag) ) {
+      classNames.push(Utils.$safeName(this._tag));
+    }
+
+    //
+    // Event binding
+    //
+
+    Utils.$bind(main, 'contextmenu', function(ev) {
+      var r = Utils.$isInput(ev);
+
+      if ( !r ) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+
+      OSjs.API.blurMenu();
+
+      return !!r;
+    });
+
+    Utils.$bind(windowIcon, 'dblclick', Utils._preventDefault);
+    Utils.$bind(windowIcon, 'click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       self._onWindowIconClick(ev, this);
     });
 
-    // Window -> Top -> Title
-    var windowTitle       = document.createElement('div');
-    windowTitle.className = 'WindowTitle';
-    windowTitle.appendChild(document.createTextNode(this._title));
+    Utils.$bind(windowLoading, 'mousedown', _noEvent);
+    Utils.$bind(windowDisabled, 'mousedown', _noEvent);
 
-    // Window -> Top -> Buttons
-    var windowButtons       = document.createElement('div');
-    windowButtons.className = 'WindowButtons';
     if ( !isTouch ) {
-      this._addEventListener(windowButtons, 'mousedown', function(ev) {
+      Utils.$bind(windowButtons, 'mousedown', function(ev) {
         ev.preventDefault();
         return stopPropagation(ev);
       });
     }
 
+    Utils.$bind(main, 'mousedown', function(ev) {
+      self._focus();
+      return stopPropagation(ev);
+    });
+
+    this._addHook('preop', function() {
+      createIframeFixes(windowWrapper);
+    });
+
+    this._addHook('postop', function() {
+      destroyIframeFixes(windowWrapper);
+    });
+
+    //
+    // Finish
+    //
+
     _initMinButton();
     _initMaxButton();
     _initCloseButton();
 
-
-    // Window -> Top -> Content Container (Wrapper)
-    var windowWrapper       = document.createElement('div');
-    windowWrapper.className = 'WindowWrapper';
-
-    // Window -> Resize handle
-    var windowResize        = document.createElement('div');
-    windowResize.className  = 'WindowResize';
-    if ( !this._properties.allow_resize ) {
-      windowResize.style.display = 'none';
-    }
-
-    // Window -> Loading Indication
-    var windowLoading       = document.createElement('div');
-    windowLoading.className = 'WindowLoading';
-    this._addEventListener(windowLoading, 'click', Utils._preventDefault);
-
-    var windowLoadingImage        = document.createElement('div');
-    windowLoadingImage.className  = 'WindowLoadingIndicator';
-
-    // Window -> Disabled Overlay
-    var windowDisabled            = document.createElement('div');
-    windowDisabled.className      = 'WindowDisabledOverlay';
-    //windowDisabled.style.display  = 'none';
-    this._addEventListener(windowDisabled, 'mousedown', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      return false;
-    });
-
-    // Append stuff
-    var classNames = ['Window'];
-    classNames.push('Window_' + Utils.$safeName(this._name));
-    if ( this._tag && (this._name !== this._tag) ) {
-      classNames.push(Utils.$safeName(this._tag));
-    }
+    _initDnD();
 
     main.className    = classNames.join(' ');
     main.style.width  = this._dimension.w + 'px';
@@ -538,11 +571,6 @@
     main.appendChild(windowResize);
     main.appendChild(windowLoading);
     main.appendChild(windowDisabled);
-
-    this._addEventListener(main, 'mousedown', function(ev) {
-      self._focus();
-      return stopPropagation(ev);
-    });
 
     this._$element  = main;
     this._$root     = windowWrapper;
@@ -570,13 +598,7 @@
   };
 
   Window.prototype._inited = function() {
-    console.info('OSjs::Core::Window::_inited()', this._name);
-    if ( !this._rendered ) {
-      this._updateGUIElements();
-    }
-    this._rendered = true;
-
-    this._updateIframeFix();
+    console.debug('OSjs::Core::Window::_inited()', this._name);
   };
 
   /**
@@ -609,8 +631,6 @@
       self._$winicon    = null;
       self._$loading    = null;
       self._$disabled   = null;
-      self._$iframefix  = null;
-      self._iframeFixEl = null;
       self._$resize     = null;
     }
 
@@ -620,17 +640,6 @@
         self._parent._removeChild(self);
       }
       self._parent = null;
-
-      if ( self._guiElements && self._guiElements.length ) {
-        self._guiElements.forEach(function(el, i) {
-          if ( el ) {
-            el.destroy();
-          }
-          self._guiElements[i] = null;
-        });
-      }
-      self._guiElements = [];
-
       self._removeChildren();
     }
 
@@ -660,7 +669,7 @@
     if ( this._$element ) {
       var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
-        Utils.$addClass(this._$element, 'WindowHintClosing');
+        this._$element.setAttribute('data-hint', 'closing');
         setTimeout(function() {
           _removeDOM();
         }, getAnimDuration());
@@ -671,12 +680,14 @@
     }
 
     // App messages
-    if ( this._appRef ) {
-      this._appRef._onMessage(this, 'destroyWindow', {});
+    if ( this._app ) {
+      this._app._onMessage(this, 'destroyWindow', {});
     }
 
-    this._appRef = null;
+    this._scheme = null;
+    this._app = null;
     this._hooks = {};
+    this._args = {};
 
     console.groupEnd();
   };
@@ -684,22 +695,6 @@
   //
   // GUI And Event Hooks
   //
-
-
-  /**
-   * Adds a listener for an event
-   *
-   * @param   DOMElement    el          DOM Element to attach event to
-   * @param   String        ev          DOM Event Name
-   * @param   Function      callback    Callback on event
-   *
-   * @return  void
-   *
-   * @method  Window::_addEventListener()
-   */
-  Window.prototype._addEventListener = function(el, ev, callback) {
-    API._bindEvent.apply(this, arguments);
-  };
 
 
   /**
@@ -746,218 +741,12 @@
     }
   };
 
-  /**
-   * Remove a GUIElement
-   *
-   * @param   OSjs.Core.GUIElement     gel       GUI Element reference
-   *
-   * @return  boolean                           On success
-   *
-   * @method  Window::_removeGUIElement()
-   */
-  Window.prototype._removeGUIElement = function(gel) {
-    var self = this;
-    this._guiElements.forEach(function(iter, i) {
-      var destroy = false;
-
-      if ( iter ) {
-        if ( gel instanceof OSjs.Core.GUIElement ) {
-          if ( iter.id === gel.id ) {
-            destroy = i;
-          }
-        } else {
-          if ( iter.id === gel || iter.name === gel ) {
-            destroy = i;
-          }
-        }
-      }
-
-      if ( destroy !== false ) {
-        if ( self._guiElements[destroy] ) {
-          self._guiElements[destroy].destroy();
-          self._guiElements[destroy] = null;
-        }
-        return false;
-      }
-
-      return true;
-    });
-  };
-
-  /**
-   * Sends an update command to all GUI Elements
-   *
-   * @return  void
-   *
-   * @method  Window::_updateGUIElements()
-   */
-  Window.prototype._updateGUIElements = function(force) {
-    force = (force === true);
-    this._guiElements.forEach(function(el, i) {
-      if ( el ) {
-        el.update(force);
-      }
-    });
-  };
-
-  /**
-   * Update IFrame GUIElement "fix"
-   *
-   * @return  void
-   *
-   * @method  Window::_updateIframeFix()
-   */
-  Window.prototype._updateIframeFix = function() {
-    if ( this._$iframefix && this._iframeFixEl ) {
-      var fel = this._iframeFixEl.$element;
-      if ( fel ) {
-        this._$iframefix.style.left   = fel.offsetLeft.toString()   + 'px';
-        this._$iframefix.style.top    = fel.offsetTop.toString()    + 'px';
-        this._$iframefix.style.width  = fel.offsetWidth.toString()  + 'px';
-        this._$iframefix.style.height = fel.offsetHeight.toString() + 'px';
-      }
-    }
-  };
-
-  /**
-   * Adds a GUIElement
-   *
-   * @param   GUIElement      gel           GUIElement reference
-   * @param   DOMElement      parentNode    DOM Node to add to
-   * @param   GUIElement      parentGel     (Optional) The parent GUIElement
-   *
-   * @return  GUIElement                    On success or 'false'
-   *
-   * @method  Window::_addGUIElement()
-   */
-  Window.prototype._addGUIElement = function(gel, parentNode, parentGel) {
-    var self = this;
-
-    // Fixes problems with iframes blocking certain events
-    function _fixIframe() {
-      self._$iframefix = document.createElement('div');
-      self._$iframefix.className = 'WindowIframeFix';
-      self._$iframefix.onmousemove = Utils._preventDefault;
-      self._$iframefix.onclick = function() {
-        self._focus();
-      };
-      self._$element.appendChild(self._$iframefix);
-      self._iframeFixEl = gel;
-
-      self._addHook('move', function() {
-        if ( self._$iframefix && self._state.focused ) {
-          self._$iframefix.style.display = 'block';
-        }
-      });
-      self._addHook('moved', function() {
-        if ( self._$iframefix && self._state.focused ) {
-          self._$iframefix.style.display = 'none';
-        }
-      });
-
-      self._addHook('resized', function() {
-        self._updateIframeFix();
-      });
-      self._addHook('blur', function() {
-        self._updateIframeFix();
-      });
-      self._updateIframeFix();
-    }
-
-    // Make sure all events are properly set up for various GUI elements
-    function _addHooks() {
-      if ( gel.opts ) {
-        if ( gel.opts.focusable ) {
-          gel._addHook('focus', function() {
-            self._guiElement = this;
-          });
-          self._addHook('blur', function() {
-            gel.blur();
-          });
-        }
-
-        // NOTE: self is a fix for iframes blocking mousemove events (ex. moving windows)
-        //if ( gel.opts.isIframe ) {
-        if ( (gel instanceof OSjs.GUI.RichText) || gel.opts.isIframe ) {
-          _fixIframe();
-        }
-
-        // NOTE: Fixes for Iframe "bugs"
-        gel._addHook('focus', function() {
-          OSjs.API.blurMenu();
-          self._focus();
-        });
-
-        var overlay = null, elpos;
-        self._addHook('resize', function() {
-          if ( !overlay ) {
-            elpos = Utils.$position(gel.$element);
-
-            overlay                   = document.createElement('div');
-            overlay.className         = 'IFrameResizeFixer';
-            overlay.style.position    = 'absolute';
-            overlay.style.zIndex      = 9999999999;
-            document.body.appendChild(overlay);
-          }
-          overlay.style.top      = elpos.top + 'px';
-          overlay.style.left     = elpos.left + 'px';
-          overlay.style.width    = (gel.$element.offsetWidth||0) + 'px';
-          overlay.style.height   = (gel.$element.offsetHeight||0) + 'px';
-        });
-
-        self._addHook('resized', function() {
-          if ( overlay && overlay.parentNode ) {
-            overlay.parentNode.removeChild(overlay);
-            overlay = null;
-          }
-        });
-      }
-
-      // NOTE: Fixes problems with GUIElements values not setting properly
-      if ( (gel instanceof OSjs.GUI.Tabs) ) {
-        gel._addHook('select', function() {
-          self._updateGUIElements(true);
-        });
-      }
-    }
-
-    if ( !parentNode && (parentNode instanceof OSjs.Core.GUIElement) ) {
-      parentNode = parentGel.$element;
-    }
-
-    if ( !parentNode ) {
-      throw new Error('Adding a GUI Element requires a parentNode');
-    }
-
-    if ( gel instanceof OSjs.Core.GUIElement ) {
-      if ( parentGel ) {
-        parentGel._addChild(gel.name);
-        gel._setParent(parentGel.name);
-      }
-      gel._setWindow(this);
-      gel._setTabIndex(this._guiElements.length + 1);
-
-      _addHooks();
-
-      this._guiElements.push(gel);
-      parentNode.appendChild(gel.getRoot());
-
-      if ( this._rendered ) {
-        gel.update();
-      }
-
-      return gel;
-    }
-
-    return false;
-  };
-
   //
   // Children (Windows)
   //
 
   Window.prototype._addChild = function(w, wmAdd) {
-    console.info('OSjs::Core::Window::_addChild()');
+    console.debug('OSjs::Core::Window::_addChild()');
     w._parent = this;
 
     var wm = OSjs.Core.getWindowManager();
@@ -980,7 +769,7 @@
     var self = this;
     this._children.forEach(function(child, i) {
       if ( child && child._wid === w._wid ) {
-        console.info('OSjs::Core::Window::_removeChild()');
+        console.debug('OSjs::Core::Window::_removeChild()');
 
         child.destroy();
         self._children[i] = null;
@@ -1093,10 +882,8 @@
    * @method  Window::_close()
    */
   Window.prototype._close = function() {
-    console.info('OSjs::Core::Window::_close()');
+    console.debug('OSjs::Core::Window::_close()');
     if ( this._disabled ) { return false; }
-
-    Utils.$addClass(this._$element, 'WindowHintClosing');
 
     this._blur();
     this.destroy();
@@ -1124,7 +911,7 @@
     this._blur();
 
     this._state.minimized = true;
-    Utils.$addClass(this._$element, 'WindowHintMinimized');
+    this._$element.setAttribute('data-minimized', 'true');
 
     function _hideDOM() {
       self._$element.style.display = 'none';
@@ -1177,7 +964,7 @@
     this._$element.style.left   = (s.left) + 'px';
     this._$element.style.width  = (s.width) + 'px';
     this._$element.style.height = (s.height) + 'px';
-    Utils.$addClass(this._$element, 'WindowHintMaximized');
+    this._$element.setAttribute('data-maximized', 'true');
 
     //this._resize();
     this._dimension.w = s.width;
@@ -1224,13 +1011,13 @@
       this._move(this._lastPosition.x, this._lastPosition.y);
       this._resize(this._lastDimension.w, this._lastDimension.h);
       this._state.maximized = false;
-      Utils.$removeClass(this._$element, 'WindowHintMaximized');
+      this._$element.setAttribute('data-maximized', 'false');
     }
 
     if ( min && this._state.minimized ) {
       this._$element.style.display = 'block';
+      this._$element.setAttribute('data-minimized', 'false');
       this._state.minimized = false;
-      Utils.$removeClass(this._$element, 'WindowHintMinimized');
     }
 
     this._onChange('restore');
@@ -1267,7 +1054,7 @@
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    Utils.$addClass(this._$element, 'WindowHintFocused');
+    this._$element.setAttribute('data-focused', 'true');
 
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
@@ -1285,11 +1072,11 @@
       this._fireHook('focus');
     }
 
+    if ( !this._state.focused ) {
+      destroyIframeFixes(this._$root);
+    }
     this._state.focused = true;
 
-    if ( this._$iframefix ) {
-      this._$iframefix.style.display = 'none';
-    }
 
     return true;
   };
@@ -1307,11 +1094,17 @@
     if ( !this._$element ) { return false; }
     if ( !force && !this._state.focused ) { return false; }
     //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
-    Utils.$removeClass(this._$element, 'WindowHintFocused');
+    this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
 
     this._onChange('blur');
     this._fireHook('blur');
+
+    // Force all standard HTML input elements to loose focus
+    this._blurGUI();
+
+
+    createIframeFixes(this._$root, this);
 
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
@@ -1319,11 +1112,18 @@
       wm.setCurrentWindow(null);
     }
 
-    if ( this._$iframefix ) {
-      this._$iframefix.style.display = 'block';
-    }
-
     return true;
+  };
+
+  /**
+   * Blurs the GUI
+   *
+   * @method Window::_blurGUI()
+   */
+  Window.prototype._blurGUI = function() {
+    this._$root.querySelectorAll('input, textarea, select, iframe, button').forEach(function(el) {
+      el.blur();
+    });
   };
 
   /**
@@ -1510,25 +1310,6 @@
   };
 
   /**
-   * Creates an error dialog
-   *
-   * @param   String      title             Dialog title
-   * @param   String      description       Error description
-   * @param   String      message           Error message
-   * @param   Error       exception         (Optional) Exception
-   * @param   boolean     bugreport         Set if this bug can be reported
-   *
-   * @return  void
-   *
-   * @method  Window::_error()
-   */
-  Window.prototype._error = function(title, description, message, exception, bugreport) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_error()');
-    var w = API.error(title, description, message, exception, bugreport);
-    this._addChild(w);
-  };
-
-  /**
    * Toggle disabled overlay
    *
    * @param     boolean     t       Toggle
@@ -1618,29 +1399,7 @@
    * @method  Window::_nextTabIndex()
    */
   Window.prototype._nextTabIndex = function() {
-    if ( this._guiElement ) {
-      if ( this._guiElement.tagName === 'textarea' ) {
-        return;
-      }
-    }
-
-    var found = null;
-    var next  = (this._guiElement ? (this._guiElement.tabIndex || -1) : -1) + 1;
-
-    console.debug('Window::_nextTabIndex()', next);
-    if ( next <= 0 ) { return; }
-    if ( next > this._guiElements.length ) { next = 1; }
-
-    this._guiElements.forEach(function(iter) {
-      if ( iter && iter.opts.focusable && iter.tabIndex === next ) {
-        found = iter;
-        return false;
-      }
-    });
-    console.debug('Window::_nextTabIndex()', found);
-    if ( found ) {
-      found.focus();
-    }
+    // TODO
   };
 
   //
@@ -1658,7 +1417,7 @@
    * @method  Window::_onDndEvent()
    */
   Window.prototype._onDndEvent = function(ev, type) {
-    console.info('OSjs::Core::Window::_onDndEvent()', type);
+    console.debug('OSjs::Core::Window::_onDndEvent()', type);
     if ( this._disabled ) { return false; }
     return true;
   };
@@ -1676,12 +1435,6 @@
   Window.prototype._onKeyEvent = function(ev, type) {
     if ( ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex();
-    }
-
-    if ( type === 'keydown' ) {
-      if ( this._guiElement ) {
-        this._guiElement.onGlobalKeyPress(ev);
-      }
     }
   };
 
@@ -1777,7 +1530,7 @@
       });
     }
 
-    OSjs.API.createMenu(list, {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu(list, ev);
   };
 
   /**
@@ -1793,6 +1546,8 @@
    */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowButtonClick()', btn);
+
+    this._blurGUI();
 
     if ( btn === 'close' ) {
       this._close();
@@ -1881,25 +1636,6 @@
   };
 
   /**
-   * Get a GUIElement by name
-   *
-   * @param   String      n     GUIElement name
-   *
-   * @return  GUIElement        Element if found or 'null'
-   */
-  Window.prototype._getGUIElement = function(n) {
-    var result = null;
-    this._guiElements.forEach(function(iter, i) {
-      if (iter && (iter.id === n || iter.name === n) ) {
-        result = iter;
-        return false;
-      }
-      return true;
-    });
-    return result;
-  };
-
-  /**
    * Get Window z-index
    *
    * @return    int
@@ -1916,20 +1652,33 @@
   /**
    * Set Window title
    *
-   * @param   String      t     Title
+   * @param   String      t         Title
+   * @param   boolean     append    (Optional) Append this to original title
+   * @param   String      delimiter (Optional) The delimiter (default is -)
    *
    * @return  void
    *
    * @method  Window::_setTitle()
    */
-  Window.prototype._setTitle = function(t) {
+  Window.prototype._setTitle = function(t, append, delimiter) {
     if ( !this._$element ) { return; }
-    var tel = this._$element.getElementsByClassName('WindowTitle')[0];
-    if ( tel ) {
-      tel.innerHTML = '';
-      tel.appendChild(document.createTextNode(t));
+    delimiter = delimiter || '-';
+
+    var tel = this._$element.getElementsByTagName('application-window-title')[0];
+    var text = [];
+    if ( append ) {
+      text = [this._origtitle, delimiter, t];
+    } else {
+      text = [t || this._origtitle];
     }
-    this._title = t;
+
+    this._title = text.join(' ') || this._origtitle;
+
+    if ( tel ) {
+      Utils.$empty(tel);
+      tel.appendChild(document.createTextNode(this._title));
+    }
+
     this._onChange('title');
   };
 
@@ -1967,18 +1716,15 @@
     if ( message === null ) { return; }
     message = message || '';
 
-    var container = document.createElement('div');
-    container.className = 'WindowWarning';
+    var container = document.createElement('application-window-warning');
 
     var close = document.createElement('div');
-    close.className = 'Close';
     close.innerHTML = 'X';
-    close.addEventListener('click', function() {
+    Utils.$bind(close, 'click', function() {
       self._setWarning(null);
     });
 
     var msg = document.createElement('div');
-    msg.className = 'Message';
     msg.appendChild(document.createTextNode(message));
 
     container.appendChild(close);

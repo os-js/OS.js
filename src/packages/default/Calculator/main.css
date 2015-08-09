@@ -28,45 +28,18 @@
  * @licence Simplified BSD License
  */
 
-.Window_ApplicationCalculatorWindow .WindowWrapper {
+.ApplicationCalculatorWindow {
 }
 
-.Window_ApplicationCalculatorWindow .WindowWrapper .Buttons,
-.Window_ApplicationCalculatorWindow .WindowWrapper .Output {
-  width : 210px;
-  margin : 0 auto;
-}
-.Window_ApplicationCalculatorWindow .WindowWrapper .Output {
-  margin-bottom : 10px;
-}
-.Window_ApplicationCalculatorWindow .WindowWrapper .Buttons {
-  text-align : center;
+.ApplicationCalculatorWindow gui-text {
+  display : block;
+  margin : 8px;
   height : 50px;
 }
-.Window_ApplicationCalculatorWindow .WindowWrapper .Output:first-child {
-  margin-top : 10px;
-}
 
-.Window_ApplicationCalculatorWindow .WindowWrapper .Output > .GUIText {
-  width : 190px;
-  display : block;
-  margin : 0 auto;
-  height : 40px;
-  font-size : 20px;
-}
-.Window_ApplicationCalculatorWindow .WindowWrapper .Output > .GUIText > input {
-  height : 100%;
-  font-size : 20px;
+.ApplicationCalculatorWindow gui-text > input {
+  font-size : 30px;
+  font-family : Monospace;
+  line-height : 50px;
   text-align : right;
-}
-
-.Window_ApplicationCalculatorWindow .WindowWrapper .Buttons > .GUIButton {
-  display : inline-block;
-  width : 40px;
-  height : 40px;
-  margin : 5px;
-  font-size : 20px;
-}
-.Window_ApplicationCalculatorWindow .WindowWrapper .Buttons > .GUIButton > button {
-  height : 100%;
 }

@@ -27,137 +27,109 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, _StandardDialog) {
+(function(API, Utils, DialogWindow) {
   'use strict';
 
   /**
-   * Application Chooser Dialog
+   * An 'Application Chooser' dialog
    *
-   * @param   OSjs.VFS.File   file    The requested File
-   * @param   Array           list    The list of applications
-   * @param   Function        onClose Callback on close => fn(button)
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
+   * @option    args    title       String      Dialog title
+   * @option    args    list        Array       The list of applications
+   * @option    args    file        VFS.File    The file to open
+   *
+   * @extends DialogWindow
+   * @class ApplicationChooserDialog
    * @api OSjs.Dialogs.ApplicationChooser
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
    */
-  var ApplicationChooserDialog = function(file, list, onClose) {
-    this.filename     = Utils.filename(file.path);
-    this.mime         = file.mime;
-    this.list         = list || [];
-    this.selectedApp  = null;
-    this.useDefault   = false;
+  function ApplicationChooserDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {});
 
-    var msg = ([API._('DIALOG_APPCHOOSER_MSG'), '<br />' ,Utils.format('<span>{0}</span>', this.filename), Utils.format('({0})', this.mime)]).join(' ');
-    _StandardDialog.apply(this, ['ApplicationChooserDialog', {
-      title: API._('DIALOG_APPCHOOSER_TITLE'),
-      message: msg,
-      buttons: ['cancel', 'ok']
-    }, {width:400, height:360}, onClose]);
-  };
+    DialogWindow.apply(this, ['ApplicationChooserDialog', {
+      title: args.title || API._('DIALOG_APPCHOOSER_TITLE'),
+      width: 400,
+      height: 400
+    }, args, callback]);
+  }
 
-  ApplicationChooserDialog.prototype = Object.create(_StandardDialog.prototype);
+  ApplicationChooserDialog.prototype = Object.create(DialogWindow.prototype);
+  ApplicationChooserDialog.constructor = DialogWindow;
 
-  ApplicationChooserDialog.prototype.destroy = function(wm) {
-    _StandardDialog.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationChooserDialog.prototype.onButtonClick = function(btn, ev) {
-    if ( btn === 'ok' ) {
-      if ( this.buttons[btn] ) {
-        var val = this.selectedApp;
-        if ( !val ) {
-          var wm = OSjs.Core.getWindowManager();
-          if ( wm ) {
-            var d = new OSjs.Dialogs.Alert(API._('DIALOG_APPCHOOSER_NO_SELECTION'));
-            wm.addWindow(d);
-            this._addChild(d);
-          }
-          return;
-        }
-
-        this.end('ok', val, this.useDefault);
-      }
-      return;
-    }
-
-    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
-  };
-
-  ApplicationChooserDialog.prototype.init = function(wm) {
+  ApplicationChooserDialog.prototype.init = function() {
     var self = this;
-    var root = _StandardDialog.prototype.init.apply(this, arguments);
-    var container = this.$element;
-    var list = [];
-    var refs = OSjs.Core.getHandler().getApplicationsMetadata();
+    var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    function _createIcon(icon, appname) {
-      return API.getIcon(icon, null, appname);
-    }
+    var cols = [{label: API._('LBL_NAME')}];
+    var rows = [];
+    var metadata = OSjs.Core.getHandler().getApplicationsMetadata();
 
-    this.list.forEach(function(key, i) {
-      var icon = null;
-      var name = key;
-      var iter;
+    (this.args.list || []).forEach(function(name) {
+      var iter = metadata[name];
 
-      if ( refs[key] ) {
-        iter = refs[key];
-        if ( iter ) {
-          name = Utils.format('{0} - {1}', (iter.name || name), (iter.description || name));
-          icon = _createIcon(iter.icon, iter.path);
-
-          if ( iter.type !== 'application' ) {
-            return;
-          }
+      if ( iter.type === 'application' ) {
+        var label = [iter.name];
+        if ( iter.description ) {
+          label.push(iter.description);
         }
+        rows.push({
+          value: iter,
+          columns: [
+            {label: label.join(' - '), icon: API.getIcon(iter.icon, null, name), value: JSON.stringify(iter)}
+          ]
+        });
       }
-
-
-      list.push({
-        key:   key,
-        image: icon,
-        name:  name
-      });
     });
 
-    var listView = this._addGUIElement(new OSjs.GUI.ListView('ApplicationChooserDialogListView'), container);
-    listView.setColumns([
-      {key: 'image', title: '', type: 'image', width: 16},
-      {key: 'name',  title: API._('Name')},
-      {key: 'key',   title: 'Key', visible: false}
-     ]);
-    listView.onActivate = function(ev, el, item) {
-      if ( item && item.key ) {
-        self.selectedApp = item.key;
-        self.buttons['ok'].setDisabled(false);
-        self.end('ok', item.key, self.useDefault);
-      }
-    };
-    listView.onSelect = function(ev, el, item) {
-      if ( item && item.key ) {
-        self.selectedApp = item.key;
-        self.buttons['ok'].setDisabled(false);
-      }
-    };
+    this.scheme.find(this, 'ApplicationList').set('columns', cols).add(rows).on('activate', function(ev) {
+      self.onClose(ev, 'ok');
+    });;
 
-    this.buttons['ok'].setDisabled(true);
+    var file = '<unknown file>';
+    var label = '<unknown mime>';
+    if ( this.args.file ) {
+      file = Utils.format('{0} ({1}', this.args.file.filename, this.args.file.mime);
+      label = API._('DIALOG_APPCHOOSER_SET_DEFAULT', this.args.file.mime);
+    }
 
-    listView.setRows(list);
-    listView.render();
-
-    this._addGUIElement(new OSjs.GUI.Checkbox('ApplicationChooserDefault', {label: API._('DIALOG_APPCHOOSER_SET_DEFAULT', this.mime), value: this.useDefault, onChange: function(el, ev, value) {
-      self.useDefault = value ? true : false;
-    }}), container);
+    this.scheme.find(this, 'FileName').set('value', file);
+    this.scheme.find(this, 'SetDefault').set('label', label);
 
     return root;
+  };
+
+  ApplicationChooserDialog.prototype.onClose = function(ev, button) {
+    var result = null;
+
+    if ( button === 'ok' ) {
+      var useDefault = this.scheme.find(this, 'SetDefault').get('value');
+      var selected = this.scheme.find(this, 'ApplicationList').get('value');
+      if ( selected && selected.length ) {
+        result = selected[0].data.className;
+      }
+
+      if ( !result ) {
+        OSjs.API.createDialog('Alert', {
+          message: API._('DIALOG_APPCHOOSER_NO_SELECTION')
+        }, null, this);
+
+        return;
+      }
+      result = {
+        name: result,
+        useDefault: useDefault
+      };
+    }
+
+    this.closeCallback(ev, button, result);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  OSjs.Dialogs = OSjs.Dialogs || {};
   OSjs.Dialogs.ApplicationChooser = ApplicationChooserDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

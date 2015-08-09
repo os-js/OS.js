@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
+ * modification, are permitted provided that the following conditions are met: 
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer. 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
+ *    and/or other materials provided with the distribution. 
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,990 +27,465 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  // TODO: Copy/Cut/Paste
-  // TODO: Resize
-  // TODO: DefaultApplicationWindow
-  // TODO: Check for changes
+  var DEFAULT_WIDTH = 1024;
+  var DEFAULT_HEIGHT = 768;
 
-  function MoveLayer(arr, old_index, new_index) {
-    if (new_index >= arr.length) {
-      var k = new_index - arr.length;
-      while ((k--) + 1) {
-        arr.push(undefined);
+  var tools = {
+    pointer: {
+      statusText: ''
+    },
+    picker: {
+      statusText: 'LMB: Pick foreground-, RMB: Pick background color'
+    },
+    bucket: {
+      statusText: 'LBM: Fill with foreground-, RMB: Fill with background color'
+    },
+    pencil: {
+      statusText: 'LBM: Use foreground-, RMB: Use background color'
+    },
+    path: {
+      statusText: 'LBM: Use foreground-, RMB: Use background color'
+    },
+    rectangle: {
+     statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
+    },
+    circle: {
+     statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
+    }
+  };
+  var toolEvents = {
+    pointer: {
+    },
+
+    picker: (function() {
+      var imageData;
+
+      function pick(ev, args) {
+        var value = "#000000";
+        var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
+
+        if ( !imageData ) {
+          imageData = args.ctx.getImageData(0, 0, args.canvas.width, args.canvas.height).data;
+        }
+
+        var index = ((args.pos.x + args.pos.y * args.canvas.width) * 4);
+        try {
+          value = Utils.convertToHEX({
+            r:imageData[index + 0],
+            g:imageData[index + 1],
+            b:imageData[index + 2],
+            a:imageData[index + 3]
+          });
+        } catch ( e ) {
+        }
+
+        args.win.setToolProperty(t, value);
+      }
+
+      return {
+        mousedown: pick,
+        mousemove: pick,
+        mouseup: function(ev, pos, canvas, ctx, win) {
+          imageData = null;
+        }
+      };
+    })(),
+
+    bucket: {
+      mousedown: function(ev, args) {
+        var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
+        args.ctx.fillStyle = args.win.tool[t];
+        args.ctx.fillRect(0, 0, args.canvas.width, args.canvas.height);
+      }
+    },
+
+    pencil: {
+      mousedown: function(ev, args) {
+        var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
+        args.ctx.strokeStyle = args.win.tool[t];
+      },
+      mousemove: function(ev, args) {
+        args.ctx.beginPath();
+        args.ctx.moveTo(args.pos.x-1, args.pos.y);
+        args.ctx.lineTo(args.pos.x, args.pos.y);
+        args.ctx.closePath();
+        args.ctx.stroke();
+      }
+    },
+
+    path: {
+      mousemove: function(ev, args) {
+        if ( args.tmpContext ) {
+          args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
+          args.tmpContext.beginPath();
+          args.tmpContext.moveTo(args.start.x, args.start.y);
+          args.tmpContext.lineTo(args.pos.x, args.pos.y);
+          args.tmpContext.closePath();
+          args.tmpContext.stroke();
+        }
+      }
+    },
+
+    rectangle: {
+      mousedown: function(ev, args) {
+        args.tmpContext.fillStyle = (ev.button > 0) ? args.win.tool.background : args.win.tool.foreground;
+        args.tmpContext.strokeStyle = (ev.button <= 0) ? args.win.tool.background : args.win.tool.foreground;
+      },
+      mousemove: function(ev, args) {
+        var x, y, w, h;
+
+        if ( ev.shiftKey ) {
+          x = Math.min(args.pos.x, args.start.x);
+          y = Math.min(args.pos.y, args.start.y);
+          w = Math.abs(args.pos.x - args.start.x);
+          h = Math.abs(args.pos.y - args.start.y);
+        } else {
+          x = args.start.x; //Math.min(args.pos.x, args.start.x);
+          y = args.start.y; //Math.min(args.pos.y, args.start.y);
+          w = Math.abs(args.pos.x - args.start.x) * (args.pos.x < args.start.x ? -1 : 1);
+          h = Math.abs(w) * (args.pos.y < args.start.y ? -1 : 1);
+        }
+
+        args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
+        if ( w && h ) {
+          if ( args.win.tool.lineStroke ) {
+            args.tmpContext.strokeRect(x, y, w, h);
+          }
+          args.tmpContext.fillRect(x, y, w, h);
+        }
+      }
+    },
+
+    circle: {
+      mousedown: function(ev, args) {
+        args.tmpContext.fillStyle = (ev.button > 0) ? args.win.tool.background : args.win.tool.foreground;
+        args.tmpContext.strokeStyle = (ev.button <= 0) ? args.win.tool.background : args.win.tool.foreground;
+      },
+      mousemove: function(ev, args) {
+        if ( ev.shiftKey ) {
+          var width = Math.abs(args.start.x - args.pos.x);
+          var height = Math.abs(args.start.y - args.pos.y);
+
+          args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
+          if ( width > 0 && height > 0 ) {
+            args.tmpContext.beginPath();
+            args.tmpContext.moveTo(args.start.x, args.start.y - height*2); // A1
+            args.tmpContext.bezierCurveTo(
+              args.start.x + width*2, args.start.y - height*2, // C1
+              args.start.x + width*2, args.start.y + height*2, // C2
+              args.start.x, args.start.y + height*2); // A2
+
+            args.tmpContext.bezierCurveTo(
+              args.start.x - width*2, args.start.y + height*2, // C3
+              args.start.x - width*2, args.start.y - height*2, // C4
+              args.start.x, args.start.y - height*2); // A1
+
+            args.tmpContext.closePath();
+            if ( args.win.tool.lineStroke ) {
+              args.tmpContext.stroke();
+            }
+            args.tmpContext.fill();
+          }
+        } else {
+          var x = Math.abs(args.start.x - args.pos.x);
+          var y = Math.abs(args.start.y - args.pos.y);
+          var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+
+          args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
+          if ( r > 0 ) {
+            args.tmpContext.beginPath();
+            args.tmpContext.arc(args.start.x, args.start.y, r, 0, Math.PI*2, true);
+            args.tmpContext.closePath();
+
+            if ( args.win.tool.lineStroke ) {
+              args.tmpContext.stroke();
+            }
+            args.tmpContext.fill();
+          }
+        }
       }
     }
-    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-
-  /**
-   * Main Window
-   */
-  var ApplicationDrawWindow = function(app, metadata) {
-    Window.apply(this, ['ApplicationDrawWindow', {
+  function ApplicationDrawWindow(app, metadata, scheme, file) {
+    DefaultApplicationWindow.apply(this, ['ApplicationDrawWindow', {
       icon: metadata.icon,
       title: metadata.name,
       allow_drop: true,
+      min_width: 400,
+      min_height: 450,
       width: 800,
       height: 450
-    }, app]);
+    }, app, scheme, file]);
 
-    this.title            = metadata.name;
-    this.image            = null;
-    this.toggleTools      = true;
-    this.toggleLayers     = false;
-    this.currentTool      = null;
-    this.currentStyle     = {
-      stroke    : false,
-      bg        : "#ffffff",
-      fg        : "#000000",
-      lineJoin  : "round",
-      lineWidth : 3
+    this.tool = {
+      name: 'pointer',
+      background: '#ffffff',
+      foreground: '#000000',
+      lineJoin: 'round',
+      lineWidth: 1,
+      lineStroke: false
     };
-    this.activeLayer      = 0;
-    this.mouseStartX      = 0;
-    this.mouseStartY      = 0;
-    this.offsetX          = 0;
-    this.offsetY          = 0;
-    this.isPainting       = false;
-    this.$imageContainer  = null;
-  };
+  }
 
-  ApplicationDrawWindow.prototype = Object.create(Window.prototype);
+  ApplicationDrawWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
+  ApplicationDrawWindow.constructor = DefaultApplicationWindow.prototype;
 
-  /**
-   * Create window contents
-   */
-  ApplicationDrawWindow.prototype.init = function(wmRef, app) {
+  ApplicationDrawWindow.prototype.init = function(wm, app, scheme) {
+    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
     var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
 
-    var toggleTools = app._getArgument("ShowTools");
-    if ( typeof toggleTools !== "undefined" && toggleTools !== null ) {
-      this.toggleTools = toggleTools;
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'DrawWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationDraw._
+    });
+
+    var statusbar = scheme.find(this, 'Statusbar');
+
+    //
+    // Canvas
+    //
+    var canvas = scheme.find(this, 'Canvas').querySelector('canvas');
+    canvas.width = DEFAULT_WIDTH;
+    canvas.height = DEFAULT_HEIGHT;
+
+    var ctx = canvas.getContext('2d');
+
+    var startPos = {x: 0, y: 0};
+    var cpos = {x: 0, y: 0};
+    var tmpTools = ['path', 'rectangle', 'circle'];
+    var tmpCanvas, tmpContext;
+    var startPos;
+
+    function createTempCanvas(ev) {
+      tmpCanvas = document.createElement('canvas');
+      tmpCanvas.width = canvas.width;
+      tmpCanvas.height = canvas.height;
+      tmpCanvas.style.position = 'absolute';
+      tmpCanvas.style.top = '0px';
+      tmpCanvas.style.left = '0px';
+      tmpCanvas.style.zIndex = 9999999999;
+      canvas.parentNode.appendChild(tmpCanvas);
+
+      var t = (ev.shiftKey || ev.button > 0);
+
+      tmpContext = tmpCanvas.getContext('2d');
+      tmpContext.strokeStyle = t ? ctx.fillStyle : ctx.strokeStyle;
+      tmpContext.fillStyle = t ? ctx.strokeSyle : ctx.fillStyle;
+      tmpContext.lineWidth = ctx.lineWidth;
+      tmpContext.lineJoin = ctx.lineJoin;
     }
 
-    var toggleLayers = app._getArgument("ShowLayers");
-    if ( typeof toggleLayers !== "undefined" && toggleLayers !== null ) {
-      this.toggleLayers = toggleLayers;
+    function removeTempCanvas() {
+      Utils.$remove(tmpCanvas);
+      tmpContext = null;
+      tmpCanvas = null;
     }
 
-    // Layer bar container
-    var layerBar = document.createElement("div");
-    layerBar.className = "GUIToolbar ApplicationDrawLayersBar";
+    function toolAction(action, ev, pos, diff) {
+      if ( action === 'down' ) {
+        startPos = {x: pos.x, y: pos.y};
 
-    var layerBarContainer = document.createElement("div");
-    layerBarContainer.className = "Container";
+        removeTempCanvas();
 
-    // Menubar
-    var menuBar = this._addGUIElement(new GUI.MenuBar('ApplicationDrawMenuBar'), root);
+        var elpos = Utils.$position(canvas);
+        startPos.x = pos.x - elpos.left;
+        startPos.y = pos.y - elpos.top;
+        cpos = {x: startPos.x, y: startPos.y};
 
-    var _toggleToolsToolbar = function(t) {
-      if ( typeof t !== "undefined" && t !== null ) {
-        self.toggleTools = t ? true : false;
-      } else {
-        self.toggleTools = !self.toggleTools;
-      }
+        ctx.strokeStyle = self.tool.foreground;
+        ctx.fillStyle   = self.tool.background;
+        ctx.lineWidth   = self.tool.lineWidth;
+        ctx.lineJoin    = self.tool.lineJoin;
 
-      Utils.$removeClass(root, "ShowToolToolbar");
-      if ( self.toggleTools ) {
-        Utils.$addClass(root, "ShowToolToolbar");
-      }
-
-      app._setArgument("ShowTools", self.toggleTools);
-
-      self._focus();
-    };
-
-    var _toggleLayersToolbar = function(t) {
-      if ( typeof t !== "undefined" && t !== null ) {
-        self.toggleLayers = t ? true : false;
-      } else {
-        self.toggleLayers = !self.toggleLayers;
-      }
-
-      Utils.$removeClass(root, "ShowLayerToolbar");
-      if ( self.toggleLayers ) {
-        Utils.$addClass(root, "ShowLayerToolbar");
-      }
-
-      app._setArgument("ShowLayers", self.toggleLayers);
-
-      self._focus();
-    };
-
-    menuBar.addItem(API._("LBL_FILE"), [
-      {title: API._('LBL_NEW'), name: 'New', onClick: function() {
-        app.action('new');
-      }},
-      {title: API._('LBL_OPEN'), name: 'Open', onClick: function() {
-        app.action('open');
-      }},
-      {title: API._('LBL_SAVE'), name: 'Save', onClick: function() {
-        app.action('save');
-      }},
-      {title: API._('LBL_SAVEAS'), name: 'SaveAs', onClick: function() {
-        app.action('saveas');
-      }},
-      {title: API._('LBL_CLOSE'), name: 'Close', onClick: function() {
-        app.action('close');
-      }}
-    ]);
-    menuBar.addItem(API._("LBL_VIEW"), [
-      {title:OSjs.Applications.ApplicationDraw._('Toggle tools toolbar'), name: 'ToggleToolsToolbar', onClick: function() {
-        _toggleToolsToolbar();
-      }},
-      {title:OSjs.Applications.ApplicationDraw._('Toggle layers toolbar'), name: 'ToggleLayersToolbar', onClick: function() {
-        _toggleLayersToolbar();
-      }}
-    ]);
-    /*
-    menuBar.addItem(API._("Image"), [
-      {title: API._('Resize'), name: 'Resize', onClick: function() {
-      }}
-    ]);
-    */
-
-    var effects = OSjs.Applications.ApplicationDraw.EffectList;
-    var items = [];
-    for ( var f = 0; f < effects.length; f++ ) {
-      items.push({
-        title:OSjs.Applications.ApplicationDraw._(effects[f].title),
-        name: effects[f].name,
-        onClick: (function(instance) {
-          return function() {
-            self.applyEffect(instance);
-          };
-        })(effects[f])
-      });
-    }
-
-    menuBar.addItem(OSjs.Applications.ApplicationDraw._("Layer"), [
-      {title:OSjs.Applications.ApplicationDraw._('Effect'), name: 'Effect', menu: items},
-      {title:OSjs.Applications.ApplicationDraw._('Flip Horizontally'), name: 'FlipX', onClick : function() {
-        self.applyModifier("flip", "x");
-      }},
-      {title:OSjs.Applications.ApplicationDraw._('Flip Vertically'), name: 'FlipY', onClick : function() {
-        self.applyModifier("flip", "y");
-      }}
-    ]);
-
-    menuBar.onMenuOpen = function(menu) {
-      menu.setItemDisabled("Save", app.currentFile ? false : true);
-    };
-
-    // Tools Toolbar
-    var toolBar = this._addGUIElement(new GUI.ToolBar('ApplicationDrawToolBar', {orientation: 'vertical'}), root);
-
-    var _createColorButton = function(name, item, container, button) {
-      var color = document.createElement('div');
-      color.className = 'Color';
-      color.style.backgroundColor = name === 'foregroundColor' ? self.currentStyle.fg : self.currentStyle.bg;
-      button.title =OSjs.Applications.ApplicationDraw._(name === 'foregroundColor' ? 'Foreground (Fill) Color' : 'Background (Stroke) Color');
-      button.appendChild(color);
-    };
-
-    var _createLineJoin = function(name, item, container, button) {
-      var join = document.createElement('div');
-      join.className = 'LineJoin';
-
-      button.title =OSjs.Applications.ApplicationDraw._("Line Join");
-      button.appendChild(join);
-    };
-
-    var _createLineWidth = function(name, item, container, button) {
-      var width = document.createElement('div');
-      width.className = 'LineWidth';
-
-      button.title =OSjs.Applications.ApplicationDraw._("Line Width");
-      button.appendChild(width);
-    };
-
-    var _createEnableStroke = function(name, item, container, button) {
-      var en = document.createElement('div');
-      en.className = 'EnableStroke';
-
-      button.title =OSjs.Applications.ApplicationDraw._("Toggle Stroke");
-      button.appendChild(en);
-    };
-
-    var _selectColor = function(type, hex) {
-      self.currentStyle[type] = hex;
-      if ( toolBar ) {
-        var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
-        toolBar.getItem(className)._element.getElementsByClassName('Color')[0].style.backgroundColor = hex;
-      }
-    };
-
-    var _selectLineJoin = function(type) {
-      var txt = {round: "Round", miter: "Miter", bevel: "Bevel"};
-      self.currentStyle.lineJoin = type;
-      if ( toolBar ) {
-        toolBar.getItem('lineJoin')._element.getElementsByClassName('LineJoin')[0].innerHTML =OSjs.Applications.ApplicationDraw._(txt[type]);
-      }
-    };
-
-    var _selectLineWidth = function(width) {
-      self.currentStyle.lineWidth = width;
-      if ( toolBar ) {
-        toolBar.getItem('lineWidth')._element.getElementsByClassName('LineWidth')[0].innerHTML = width;
-      }
-    };
-
-    var _toggleStroke = function(t) {
-      if ( typeof t !== "undefined" && t !== null ) {
-        self.currentStyle.stroke = t ? true : false;
-      } else {
-        self.currentStyle.stroke = !self.currentStyle.stroke;
-      }
-      if ( toolBar ) {
-        toolBar.getItem('enableStroke')._element.getElementsByClassName('EnableStroke')[0].innerHTML =OSjs.Applications.ApplicationDraw._(self.currentStyle.stroke ? "Stroked" : "No stroke");
-      }
-    };
-
-    toolBar.addItem('foregroundColor', {title:OSjs.Applications.ApplicationDraw._('Foreground'), onClick: function() {
-      app._createDialog('Color', [{color: self.currentStyle.fg}, function(btn, rgb, hex) {
-        self._focus();
-        if ( btn !== 'ok' ) return;
-        _selectColor("fg", hex);
-      }], self);
-    }, onCreate: _createColorButton});
-
-    toolBar.addItem('backgroundColor', {title:OSjs.Applications.ApplicationDraw._('Background'), onClick: function() {
-      app._createDialog('Color', [{color: self.currentStyle.bg}, function(btn, rgb, hex) {
-        self._focus();
-        if ( btn !== 'ok' ) return;
-        _selectColor("bg", hex);
-      }], self);
-    }, onCreate: _createColorButton});
-
-    toolBar.addItem('lineJoin', {title:OSjs.Applications.ApplicationDraw._('Line Join'), onClick: function(ev) {
-      API.createMenu([
-        {
-          title:OSjs.Applications.ApplicationDraw._("Round"),
-          onClick: function(ev) {
-            _selectLineJoin("round");
-          }
-        },
-        {
-          title:OSjs.Applications.ApplicationDraw._("Miter"),
-          onClick: function(ev) {
-            _selectLineJoin("miter");
-          }
-        },
-        {
-          title:OSjs.Applications.ApplicationDraw._("Bevel"),
-          onClick: function(ev) {
-            _selectLineJoin("bevel");
-          }
+        if ( tmpTools.indexOf(self.tool.name) >= 0 ) {
+          createTempCanvas(ev);
         }
-      ], {x: ev.clientX, y: ev.clientY});
-
-    }, onCreate: _createLineJoin});
-
-    toolBar.addItem('lineWidth', {title:OSjs.Applications.ApplicationDraw._('Line Width'), onClick: function(ev) {
-      var items = [];
-      for ( var i = 1; i < 20; i++ ) {
-        items.push({
-          title: i,
-          onClick: (function(idx) {
-            return function() {
-              _selectLineWidth(idx);
-            };
-          })(i)
-        });
+      } else if ( action === 'move' ) {
+        cpos.x = startPos.x + diff.x;
+        cpos.y = startPos.y + diff.y;
+      } else if ( action === 'up' ) {
+        if ( tmpCanvas && ctx ) {
+          ctx.drawImage(tmpCanvas, 0, 0);
+        }
+        removeTempCanvas();
+        startPos = null;
       }
 
-      API.createMenu(items, {x: ev.clientX, y: ev.clientY});
-    }, onCreate: _createLineWidth});
-
-    toolBar.addItem('enableStroke', {title:OSjs.Applications.ApplicationDraw._('Enable stroke'), onClick: function(ev) {
-      _toggleStroke();
-    }, onCreate: _createEnableStroke});
-
-    toolBar.addSeparator();
-
-    var tools = OSjs.Applications.ApplicationDraw.ToolList;
-    var t;
-    for ( var i = 0; i < tools.length; i++ ) {
-      t = tools[i];
-      if ( t ) {
-        toolBar.addItem(t.name, {
-          grouped: true,
-          title: t.title,
-
-          icon:(function(tool) {
-            return API.getApplicationResource(app, 'icons/' + tool.icon + '-16.png');
-          })(t),
-
-          onClick : (function(tool) {
-            return function() {
-              self.setTool(tool);
-            };
-          })(t)
+      if ( toolEvents[self.tool.name] && toolEvents[self.tool.name]['mouse' + action] ) {
+        toolEvents[self.tool.name]['mouse' + action](ev, {
+          pos: cpos,
+          start: startPos,
+          canvas: canvas,
+          ctx: ctx,
+          tmpContext: tmpContext,
+          tmpCanvas: tmpCanvas,
+          win: self
         });
       }
     }
 
-    toolBar.render();
+    GUI.Helpers.createDrag(canvas, function(ev, pos) {
+      toolAction('down', ev, pos);
+    }, function(ev, diff, pos) {
+      toolAction('move', ev, pos, diff);
+    }, function(ev, pos) {
+      toolAction('up', ev, pos);
+    });
 
-    // Image/Canvas container
-    this.$imageContainer = document.createElement("div");
-    this.$imageContainer.className = "ImageContainer";
+    //
+    // Toolbars
+    //
+    scheme.find(this, 'Foreground').on('click', function() {
+      self.openColorDialog('foreground');
+    });
+    scheme.find(this, 'Background').on('click', function() {
+      self.openColorDialog('background');
+    });
 
-    var isTouch = OSjs.Compability.touch;
-    var hasMoved = false;
+    var ts = Object.keys(tools);
+    ts.forEach(function(t) {
+      scheme.find(self, 'tool-' + t).on('click', function() {
+        var stats = tools[t].statusText || '';
+        statusbar.set('value', stats);
 
-    var _onMove = function(ev) {
-      ev.preventDefault();
-
-      hasMoved = true;
-      self.onMouseMove(ev);
-    };
-
-    this._addEventListener(this.$imageContainer, (isTouch ? "touchstart" : "mousedown"), function(ev) {
-      ev.preventDefault();
-      hasMoved = false;
-
-      self.onMouseDown(ev);
-      document.addEventListener((isTouch ? "touchmove" : "mousemove"), function(ev) {
-        _onMove(ev);
+        self.setToolProperty('name', t);
       });
     });
 
-    this._addEventListener(this.$imageContainer, (isTouch ? "tocuhend" : "mouseup"), function(ev) {
-      ev.preventDefault();
+    var lineWidths = [];
+    for ( var i = 1; i < 22; i++ ) {
+      lineWidths.push({label: i.toString(), value: i});
+    }
 
-      self.onMouseUp(ev);
-      document.removeEventListener((isTouch ? "touchmove" : "mousemove"), function(ev) {
-        _onMove(ev);
-      });
-    }, false);
+    scheme.find(this, 'LineWidth').add(lineWidths).on('change', function(ev) {
+      self.setToolProperty('lineWidth', parseInt(ev.detail, 10));
+    });
+    scheme.find(this, 'LineJoin').on('change', function(ev) {
+      self.setToolProperty('lineJoin', ev.detail);
+    });
+    scheme.find(this, 'LineStroke').on('change', function(ev) {
+      self.setToolProperty('lineStroke', ev.detail);
+    });
 
-    this._addEventListener(this.$imageContainer, (isTouch ? "touchend" : "click"), function(ev) {
-      ev.preventDefault();
-      if ( isTouch && hasMoved ) { return; }
+    //
+    // Init
+    //
+    this.setToolProperty('background', null);
+    this.setToolProperty('foreground', null);
+    this.setToolProperty('lineJoin', null);
+    this.setToolProperty('lineWidth', null);
+    this.setToolProperty('lineStroke', null);
 
-      self.onMouseClick(ev);
-
-      hasMoved = false;
-    }, false);
-
-
-    root.appendChild(this.$imageContainer);
-    layerBar.appendChild(layerBarContainer);
-    root.appendChild(layerBar);
-
-    // Statusbar
-    var statusBar  = this._addGUIElement(new GUI.StatusBar('ApplicationDrawStatusBar'), root);
-
-    // Layer listview
-    var layerList = this._addGUIElement(new OSjs.GUI.ListView('ApplicationDrawLayerListView'), layerBarContainer);
-
-    layerList.setColumns([
-      {key: 'name',  title: API._('LBL_NAME')}
-     ]);
-    layerList.onActivate = function(ev, el, item) {
-      if ( item ) {
-        self.setActiveLayer(item._index);
-      }
-    };
-    layerList.onSelect = function(ev, el, item) {
-      if ( item ) {
-        self.setActiveLayer(item._index);
-      }
-    };
-
-    // Layer buttons
-    var layerButtons = document.createElement("div");
-    layerButtons.className = "Buttons";
-
-    var layerButtonAdd = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonAdd', {disabled: false, icon: API.getIcon('actions/add.png'), onClick: function(el, ev) {
-      self.createLayer();
-    }}), layerButtons);
-
-    var layerButtonRemove = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonRemove', {disabled: false, icon: API.getIcon('actions/remove.png'), onClick: function(el, ev) {
-      if ( layerList ) {
-        self.removeLayer(self.activeLayer);
-      }
-    }}), layerButtons);
-
-    var layerButtonUp = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonUp', {disabled: false, icon: API.getIcon('actions/up.png'), onClick: function(el, ev) {
-      if ( layerList ) {
-        self.moveLayer(self.activeLayer, "up");
-      }
-    }}), layerButtons);
-
-    var layerButtonDown = this._addGUIElement(new OSjs.GUI.Button('ApplicationDrawLayerButtonDown', {disabled: false, icon: API.getIcon('actions/down.png'), onClick: function(el, ev) {
-      if ( layerList ) {
-        self.moveLayer(self.activeLayer, "down");
-      }
-    }}), layerButtons);
-
-    layerBar.appendChild(layerButtons);
-
-    // Reset/Initialize tools etc.
-    _selectLineJoin(this.currentStyle.lineJoin);
-    _selectLineWidth(this.currentStyle.lineWidth);
-    _selectColor("fg", this.currentStyle.fg);
-    _selectColor("bg", this.currentStyle.bg);
-    _toggleStroke(this.currentStyle.stroke);
-    _toggleToolsToolbar(this.toggleTools);
-    _toggleLayersToolbar(this.toggleLayers);
-
-    this.setImage(null, null);
+    return root;
   };
 
-  /**
-   * Destroy window
-   */
-  ApplicationDrawWindow.prototype.destroy = function() {
+  ApplicationDrawWindow.prototype.openColorDialog = function(param) {
     var self = this;
 
-    // Destroy custom objects etc. here
-    if ( this.image ) {
-      this.image.destroy();
-    }
-    this.image = null;
-
-    Window.prototype.destroy.apply(this, arguments);
-
-    if ( this.$imageContainer ) {
-      if ( this.$imageContainer.parentNode ) {
-        this.$imageContainer.parentNode.removeChild(this.$imageContainer);
-      }
-      this.$imageContainer = null;
-    }
+    API.createDialog('Color', {
+      title: 'Set ' + param + ' color', // FIXME: Locale
+      color: self.tool[param]
+    }, function(ev, button, result) {
+      if ( button !== 'ok' ) { return; }
+      self.setToolProperty(param, result.hex);
+    });
   };
 
-  /**
-   * Drag'n'Drop event
-   */
-  ApplicationDrawWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    Window.prototype._onDndEvent.apply(this, arguments);
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        var file = new VFS.File(data);
-        this._appRef.action('open', file);
+  ApplicationDrawWindow.prototype.setToolProperty = function(param, value) {
+    console.warn('setToolProperty', param, value);
+
+    if ( typeof this.tool[param] !== 'undefined' ) {
+      if ( value !== null ) {
+        this.tool[param] = value;
       }
     }
+
+    this._scheme.find(this, 'Foreground').set('value', this.tool.foreground);
+    this._scheme.find(this, 'Background').set('value', this.tool.background);
+    this._scheme.find(this, 'LineJoin').set('value', this.tool.lineJoin);
+    this._scheme.find(this, 'LineWidth').set('value', this.tool.lineWidth);
+    this._scheme.find(this, 'LineStroke').set('value', this.tool.lineStroke);
   };
 
-  /**
-   * Update Layer Listview
-   */
-  ApplicationDrawWindow.prototype.updateLayers = function() {
-    if ( !this.image ) { return; }
+  ApplicationDrawWindow.prototype.showFile = function(file, result) {
+    var self = this;
+    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
 
-    var layerList = this._getGUIElement('ApplicationDrawLayerListView');
-    if ( layerList ) {
-      var layers = [];
-      var ilayers = this.image.layers;
+    var canvas = this._scheme.find(this, 'Canvas').querySelector('canvas');
+    var ctx = canvas.getContext('2d');
 
-      for ( var i = 0; i < ilayers.length; i++ ) {
-        layers.push({
-          name: ilayers[i].name
-        });
-      }
-
-      layerList.setRows(layers);
-      layerList.render();
-
-      var tbody = layerList.$element.getElementsByTagName("tbody");
-      if ( tbody.length ) {
-        var rows = tbody[0].getElementsByTagName("tr");
-        if ( rows[this.activeLayer] ) {
-          Utils.$addClass(rows[this.activeLayer], "ActiveLayer");
+    function open(img) {
+      if ( (window.Uint8Array && (img instanceof Uint8Array)) ) {
+        var image = ctx.createImageData(canvas.width, ctx.height);
+        for (var i=0; i<img.length; i++) {
+          image.data[i] = img[i];
         }
-      }
-    }
-  };
-
-  /**
-   * Remove a layer by index
-   */
-  ApplicationDrawWindow.prototype.removeLayer = function(l) {
-    if ( !this.image ) { return; }
-    if ( this.image.layers.length <= 1 ) { return; }
-
-    this.image.removeLayer(l);
-
-    if ( this.activeLayer > 0 ) {
-      this.activeLayer = l - 1;
-      if ( this.activeLayer < 0 ) {
-        this.activeLayer = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0);
+      } else if ( (img instanceof Image) || (img instanceof HTMLImageElement) ) {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.clearRect(0, 0, img.width, img.height);
+        ctx.drawImage(img, 0, 0);
       }
     }
 
-    this.updateLayers();
-  };
+    this._toggleLoading(true);
 
-  /**
-   * Move a layer by index and direction
-   */
-  ApplicationDrawWindow.prototype.moveLayer = function(l, dir) {
-    if ( !this.image ) { return; }
-    if ( this.image.layers.length <= 1 ) { return; }
-
-    var updated = false;
-    var nindex = l;
-    if ( dir == "up" ) {
-      nindex--;
-    } else {
-      nindex++;
-    }
-
-    if ( nindex >= 0 && nindex <= (this.image.layers.length-1) ) {
-      MoveLayer(this.image.layers, l, nindex);
-      updated = true;
-    }
-
-    if ( updated ) {
-      this.image.refreshZindex();
-
-      var layerList = this._getGUIElement('ApplicationDrawLayerListView');
-      if ( layerList ) {
-        layerList.setSelectedIndex(nindex, true);
-      }
-
-      this.activeLayer = nindex;
-
-      this.updateLayers();
-    }
-  };
-
-  /**
-   * Create a new layer
-   */
-  ApplicationDrawWindow.prototype.createLayer = function() {
-    if ( !this.image ) { return; }
-
-    this.image.createLayer("Layer " + this.image.layers.length, 0, 0, true);
-    this.activeLayer = this.image.layers.length - 1;
-
-    this.updateLayers();
-  };
-
-  /**
-   * Apply user-defined styles for tool
-   */
-  ApplicationDrawWindow.prototype.applyStyle = function(ev, context) {
-    var style   = {
-      enableStroke:  this.currentStyle.stroke,
-      strokeStyle:   this.currentStyle.bg,
-      fillStyle:     this.currentStyle.fg,
-      lineJoin:      this.currentStyle.lineJoin,
-      lineWidth:     this.currentStyle.lineWidth
+    var tmp = new Image();
+    tmp.onerror = function() {
+      self._toggleLoading(false);
+      alert("Failed to open image");
     };
+    tmp.onload = function() {
+      self._toggleLoading(false);
+      open(this);
+    };
+    tmp.src = result;
+  };
 
-    if ( Utils.mouseButton(ev) != "left" ) {
-      style.strokeStyle = this.currentStyle.fg;
-      style.fillStyle   = this.currentStyle.bg;
+  ApplicationDrawWindow.prototype.getFileData = function() {
+    var canvas = this._scheme.find(this, 'Canvas').querySelector('canvas');
+    if ( canvas ) {
+      return new VFS.FileDataURL(canvas.toDataURL('image/png'));
     }
-
-    this.currentTool.applyStyle(style, context);
-  };
-
-  /**
-   * Apply given Modifier or Transformation
-   */
-  ApplicationDrawWindow.prototype.applyModifier = function(mod, arg) {
-    if ( !this.image ) { return; }
-    var layer = this.image.getActiveLayer();
-    if ( !layer ) { return; }
-
-    if ( mod == "flip" ) {
-      if ( arg == "x" ) {
-        layer.flipX();
-      } else {
-        layer.flipY();
-      }
-    }
-  };
-
-  /**
-   * Apply given Effect to active layer in Image
-   */
-  ApplicationDrawWindow.prototype.applyEffect = function(effect) {
-    if ( !this.image ) { return false; }
-    var layer   = this.image.getActiveLayer();
-    var context = layer.context;
-    var win     = this;
-
-    this._toggleDisabled(true);
-    setTimeout(function() {
-      effect.run(win, context, context.canvas, function() {
-        win._toggleLoading(false);
-        win._toggleDisabled(false);
-        win._focus();
-      });
-    }, 10);
-
-    win._focus();
-  };
-
-  /**
-   * Image mousedown event
-   */
-  ApplicationDrawWindow.prototype.onMouseDown = function(ev) {
-    if ( !this.image || !this.currentTool ) { return false; }
-    var layer   = this.image.getActiveLayer();
-    var context = layer.context;
-
-    if ( !context ) { return false; }
-
-    var pos = Utils.$position(this.$imageContainer);
-
-    this.offsetX     = pos.left - this.$imageContainer.scrollLeft;
-    this.offsetY     = pos.top - this.$imageContainer.scrollTop;
-    this.mouseStartX = ev.pageX - this.offsetX;
-    this.mouseStartY = ev.pageY - this.offsetY;
-
-    this.applyStyle(ev, context);
-    this.currentTool.onmousedown(ev, this, this.image, layer, [this.mouseStartX, this.mouseStartY], [this.mouseStartX, this.mouseStartY]);
-
-    this.isPainting = true;
-
-    return true;
-  };
-
-  /**
-   * Image mouseup event
-   */
-  ApplicationDrawWindow.prototype.onMouseUp = function(ev) {
-    if ( !this.image || !this.currentTool ) { return false; }
-
-    var curX        = ev.pageX - this.offsetX;
-    var curY        = ev.pageY - this.offsetY;
-
-    this.currentTool.onmouseup(ev, this, this.image, this.image.getActiveLayer(), [curX, curY], [this.mouseStartX, this.mouseStartY]);
-
-    this.isPainting = false;
-
-    return true;
-  };
-
-  /**
-   * Image mousemove event
-   */
-  ApplicationDrawWindow.prototype.onMouseMove = function(ev) {
-    if ( !this.image || !this.currentTool ) { return false; }
-    if ( !this.isPainting ) { return false; }
-
-    var curX = ev.pageX - this.offsetX;
-    var curY = ev.pageY - this.offsetY;
-
-    this.isPainting  = true;
-
-    this.currentTool.ondraw(ev, this, this.image, this.image.getActiveLayer(), [curX, curY], [this.mouseStartX, this.mouseStartY]);
-
-    return true;
-  };
-
-  /**
-   * Image mouseclick event
-   */
-  ApplicationDrawWindow.prototype.onMouseClick = function(ev) {
-    if ( !this.image || !this.currentTool ) { return false; }
-    var pos = Utils.$position(this.$imageContainer);
-    var layer   = this.image.getActiveLayer();
-    var context = layer.context;
-
-    if ( !context ) { return false; }
-
-    this.mouseStartX = ev.pageX - (pos.left - this.$imageContainer.scrollLeft);
-    this.mouseStartY = ev.pageY - (pos.top - this.$imageContainer.scrollTop);
-    this.isPainting  = false;
-
-    this.applyStyle(ev, context);
-
-    this.currentTool.onclick(ev, this, this.image, this.image.getActiveLayer(), [this.mouseStartX, this.mouseStartY], [this.mouseStartX, this.mouseStartY]);
-
-    return true;
-  };
-
-  /**
-   * Set the current image
-   */
-  ApplicationDrawWindow.prototype.setImage = function(name, data, width, height) {
-    if ( this.image ) {
-      this.image.destroy();
-      this.image = null;
-    }
-
-    name = name ? Utils.filename(name) : "New Image";
-    data = data || null;
-
-    var sx = data ? (typeof data.width  == "undefined" ? width : data.width)  : (width  || 640);
-    var sy = data ? (typeof data.height == "undefined" ? height : data.height) : (height || 480);
-
-    this.image = new OSjs.Applications.ApplicationDraw.Image(name, sx, sy);
-    if ( data ) {
-      this.image.setData(data);
-    }
-    var container = this.image.getContainer();
-    container.style.width = sx + "px";
-    container.style.height = sy + "px";
-    this.$imageContainer.appendChild(container);
-
-    this.activeLayer = 0;
-
-    this.setImageName(name);
-
-    this.updateLayers();
-
-    this._focus();
-  };
-
-  /**
-   * Set current image (file)name
-   */
-  ApplicationDrawWindow.prototype.setImageName = function(name) {
-    if ( this.image ) {
-      this.image.setName(name);
-    }
-
-    this.setTitle(name);
-    this._toggleLoading(false);
-    this._focus();
-  };
-
-  /**
-   * Set current tool (Internal function)
-   */
-  ApplicationDrawWindow.prototype.setTool = function(tool) {
-    this.currentTool = tool;
-
-    var statusBar = this._getGUIElement('ApplicationDrawStatusBar');
-    if ( statusBar ) {
-      statusBar.setText(OSjs.Applications.ApplicationDraw._(tool.statusText));
-    }
-  };
-
-  /**
-   * Set the window title (helper)
-   */
-  ApplicationDrawWindow.prototype.setTitle = function(t) {
-    var title = this.title + (t ? (' - ' + Utils.filename(t)) : ' - New File');
-    return this._setTitle(title);
-  };
-
-  /**
-   * Set current color (Internal function)
-   */
-  ApplicationDrawWindow.prototype.setColor = function(type, val) {
-    this.currentStyle[type] = val;
-
-    var toolBar = this._getGUIElement('ApplicationDrawToolBar');
-    if ( toolBar ) {
-      var className = (type == "fg") ? "foregroundColor" : "backgroundColor";
-      toolBar.getItem(className)._element.getElementsByClassName('Color')[0].style.backgroundColor = val;
-    }
-
-    this._focus();
-  };
-
-  /**
-   * Set the currently active Image Layer by index
-   */
-  ApplicationDrawWindow.prototype.setActiveLayer = function(l) {
-    if ( !this.image ) return;
-    this.activeLayer = l;
-    this.image.setActiveLayer(l);
-    this.updateLayers();
-  };
-
-  /**
-   * Gets the current Image
-   */
-  ApplicationDrawWindow.prototype.getImage = function() {
-    return this.image;
+    return null;
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application
-   */
   var ApplicationDraw = function(args, metadata) {
-    Application.apply(this, ['ApplicationDraw', args, metadata]);
-
-    this.dialogOptions.mimes = metadata.mime;
-    this.dialogOptions.defaultFilename = "New image.odraw";
-    this.dialogOptions.defaultMime = "osjs/draw";
-    this.dialogOptions.filetypes = {
-      "png": "image/png",
-      //"jpg": "image/jpeg",
-      "odraw": "osjs/draw"
-    };
+    DefaultApplication.apply(this, ['ApplicationDraw', args, metadata, {
+      readData: false,
+      extension: 'png',
+      mime: 'image/png',
+      filename: 'New image.png',
+      filetypes: [{
+        label: 'PNG Image',
+        mime: 'image/png',
+        extension: 'png'
+      }]
+    }]);
   };
 
-  ApplicationDraw.prototype = Object.create(Application.prototype);
+  ApplicationDraw.prototype = Object.create(DefaultApplication.prototype);
+  ApplicationDraw.constructor = DefaultApplication;
 
-
-  /**
-   * Initialize Application
-   */
-  ApplicationDraw.prototype.init = function(settings, metadata) {
-    this.mainWindow = this._addWindow(new ApplicationDrawWindow(this, metadata));
-
-    Application.prototype.init.apply(this, arguments);
-  };
-
-  ApplicationDraw.prototype.onNew = function() {
-    var win = this.mainWindow;
-    if ( win ) {
-      win._toggleDisabled(true);
-
-      this._createDialog("Input", ["New image dimension", "640x480", function(btn, val) {
-        if ( win ) {
-          win._toggleDisabled(false);
-        }
-        if ( btn !== "ok" ) { return; }
-
-        var split  = val.toLowerCase().split("x");
-        var width  = split.shift() || 0;
-        var height = split.shift() || 0;
-
-        if ( win ) {
-          win.setImage(null, null, width, height);
-        }
-      }], win);
-    }
-  };
-
-  ApplicationDraw.prototype.onOpen = function(file, data) {
+  ApplicationDraw.prototype.init = function(settings, metadata, onInited) {
     var self = this;
-    var win = this.mainWindow;
-    var ext = Utils.filext(file.path).toLowerCase();
-
-    var _openRaw = function() {
-      var imageData = JSON.parse(data);
-      var width  = imageData.size[0] << 0;
-      var height = imageData.size[1] << 0;
-      var layers = imageData.layers;
-
-      self._setCurrentFile(file);
-      if ( win ) {
-        win.setImage(file.path, layers, width, height); // FIXME
-      }
-    };
-
-    var _openConvertedCb = function(result, width, height) {
-      self._setCurrentFile(file);
-
-      if ( win ) {
-        win.setImage(file.path, result, width, height);
-      }
-    };
-
-    /*
-    var _openConvertedNew = function(url, img) {
-      var bytes = new Uint8Array(data.length);
-      for (var i=0; i<data.length; i++) {
-        bytes[i] = data.charCodeAt(i);
-      }
-
-      _openConvertedCb(data, img.width, img.height);
-    };
-    */
-
-    var _openConverted = function() {
-      if ( !data.match(/^data\:/) ) {
-        VFS.url(file, function(error, url) {
-          if ( error ) {
-            self.onError("Failed to load image", error, "doOpen");
-            return;
-          }
-
-          var tmp = new Image();
-          tmp.onerror = function() {
-            self.onError("Failed to load image data (raw)", "doOpen");
-          };
-          tmp.onload = function() {
-            //_openConvertedNew(url, this);
-            _openConvertedCb(this);
-          };
-          tmp.src = url;
-        });
-
-      } else {
-        var img = new Image();
-        img.onerror = function() {
-          self.onError("Failed to load image data", "doOpen");
-        };
-        img.onload = function() {
-          _openConvertedCb(this);
-        };
-        img.src = data;
-      }
-    };
-
-    if ( ext === "odraw" ) {
-      try {
-        _openRaw();
-      } catch ( e ) {
-        this.onError("Failed to load raw image", e, "doOpen");
-        console.warn(e.stack);
-      }
-    } else {
-      _openConverted();
-    }
-  };
-
-  ApplicationDraw.prototype.onSave = function(file, data) {
-    if ( this.mainWindow ) {
-      this.mainWindow.setImageName(file.path);
-      this.mainWindow._focus();
-    }
-  };
-
-  ApplicationDraw.prototype.onError = function() {
-    if ( this.mainWindow ) {
-      this.mainWindow.setImageName("");
-    }
-    return Application.prototype.onError.apply(this, arguments);
-  };
-
-  ApplicationDraw.prototype.onCheckDataType = function(file) {
-    var ext = Utils.filext(file.path).toLowerCase();
-    if ( ext === 'odraw' ) {
-      return 'text';
-    }
-    return Application.prototype.onCheckDataType.apply(this, arguments);
-  };
-
-  ApplicationDraw.prototype.onGetSaveData = function(callback, file) {
-    if ( !this.mainWindow ) {
-      callback(null);
-      return;
-    }
-
-    var image = this.mainWindow.getImage();
-    if ( !image ) {
-      callback(null);
-      return;
-    }
-
-    var ext = Utils.filext(file.path).toLowerCase();
-    var data;
-    if ( ext === 'odraw' ) {
-      data = image.getSaveData();
-    } else {
-      data = new VFS.FileDataURL(image.getData(file.mime));
-    }
-
-    callback(data);
+    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+      self._addWindow(new ApplicationDrawWindow(self, metadata, scheme, file));
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1021,4 +496,4 @@
   OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
   OSjs.Applications.ApplicationDraw.Class = ApplicationDraw;
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

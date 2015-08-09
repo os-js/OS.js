@@ -27,45 +27,46 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, _StandardDialog) {
+(function(API, Utils, VFS, DialogWindow) {
   'use strict';
 
   /**
-   * File Information Dialog
+   * An 'File Information' dialog
    *
-   * @param   OSjs.VFS.File   file    The requested File
-   * @param   Function        onClose Callback on close => fn(button)
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
-   * @api OSjs.Dialogs.FileInformation
-   * @see OSjs.Dialogs._StandardDialog
+   * @option    args    title       String      Dialog title
+   * @optioin   args    file        VFS.File    File to use
    *
-   * @extends _StandardDialog
-   * @class
+   * @extends DialogWindow
+   * @class FileInfoDialog
+   * @api OSjs.Dialogs.FileInfo
    */
-  var FileInformationDialog = function(file, onClose) {
-    this.path = file ? file.path : null;
-    this.file = file;
-    onClose = onClose || function() {};
-    _StandardDialog.apply(this, ['FileInformationDialog', {
-      title: API._('DIALOG_FILEINFO_TITLE'),
-      buttons: [
-        {name: 'ok', label: API._('DIALOG_CLOSE')}
-      ]
-    }, {width:300, height:370}, onClose]);
-  };
-  FileInformationDialog.prototype = Object.create(_StandardDialog.prototype);
+  function FileInfoDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {});
+    DialogWindow.apply(this, ['FileInfoDialog', {
+      title: args.title || API._('DIALOG_FILEINFO_TITLE'),
+      width: 400,
+      height: 400
+    }, args, callback]);
 
-  FileInformationDialog.prototype.init = function() {
-    var self = this;
-    var root = _StandardDialog.prototype.init.apply(this, arguments);
+    if ( !this.args.file ) {
+      throw new Error('You have to select a file for FileInfo');
+    }
+  }
 
-    var desc = API._('DIALOG_FILEINFO_LOADING', this.path);
-    var txt = this._addGUIElement(new OSjs.GUI.Textarea('FileInformationTextarea', {disabled: true, value: desc}), this.$element);
+  FileInfoDialog.prototype = Object.create(DialogWindow.prototype);
+  FileInfoDialog.constructor = DialogWindow;
 
-    function _onError(err) {
-      var fname = Utils.filename(self.path);
-      self._error(API._('DIALOG_FILEINFO_ERROR'), API._('DIALOG_FILEINFO_ERROR_LOOKUP', fname), err);
-      txt.setValue(API._('DIALOG_FILEINFO_ERROR_LOOKUP_FMT', self.path));
+  FileInfoDialog.prototype.init = function() {
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+
+    var txt = this.scheme.find(this, 'Info').set('value', API._('LBL_LOADING'));
+    var file = this.args.file;
+
+    function _onError(error) {
+      txt.set('value', API._('DIALOG_FILEINFO_ERROR_LOOKUP_FMT', file.path));
     }
 
     function _onSuccess(data) {
@@ -77,10 +78,10 @@
           info.push(i + ':\n\t' + data[i]);
         }
       });
-      txt.setValue(info.join('\n\n'));
+      txt.set('value', info.join('\n\n'));
     }
 
-    VFS.fileinfo(this.file, function(error, result) {
+    VFS.fileinfo(file, function(error, result) {
       if ( error ) {
         _onError(error);
         return;
@@ -95,6 +96,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.FileInfo           = FileInformationDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.FileInfo = FileInfoDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.Core.DialogWindow);

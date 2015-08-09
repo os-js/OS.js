@@ -24,12 +24,6 @@
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "locale.js", "type": "javascript"},
-    {"src": "settings-theme.js", "type": "javascript"},
-    {"src": "settings-desktop.js", "type": "javascript"},
-    {"src": "settings-panel.js", "type": "javascript"},
-    {"src": "settings-user.js", "type": "javascript"},
-    {"src": "settings-packages.js", "type": "javascript"},
-    {"src": "settings-debug.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
   ]
 }

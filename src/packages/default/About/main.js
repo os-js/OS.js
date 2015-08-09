@@ -27,91 +27,57 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+(function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Main Window
-   */
-  var ApplicationAboutWindow = function(app, metadata) {
+  function ApplicationAboutWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationAboutWindow', {
-      title: metadata.name,
       icon: metadata.icon,
+      title: metadata.name,
       gravity: 'center',
       allow_resize: false,
       allow_maximize: false,
       width: 350,
-      height: 250,
-      min_height: 250
-    }, app]);
-  };
+      height: 270,
+      min_height: 270
+    }, app, scheme]);
+  }
 
   ApplicationAboutWindow.prototype = Object.create(Window.prototype);
+  ApplicationAboutWindow.constructor = Window.prototype;
 
-  ApplicationAboutWindow.prototype.init = function(wmRef, app) {
+  ApplicationAboutWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
-    var self = this;
-    // Create window contents here
-
-    var header = document.createElement('h1');
-    header.innerHTML = 'About OS.js';
-
-    var textarea = document.createElement('div');
-    textarea.innerHTML = '<span>Created by Anders Evenrud</span><br />';
-    textarea.innerHTML += '<a href="mailto:andersevenrud@gmail.com">Send e-mail</a> | ';
-    textarea.innerHTML += '<a href="http://andersevenrud.github.io/">Author homepage</a>';
-    textarea.innerHTML += '<br />';
-    textarea.innerHTML += '<br />';
-    textarea.innerHTML += 'Icon Theme is from <b>Gnome</b><br />';
-    textarea.innerHTML += 'Sound Themes is from <b>Freedesktop</b><br />';
-    textarea.innerHTML += 'OSS Font <i>Karla</i> by <b>Jonathan Pinhorn</b><br />';
-    textarea.innerHTML += '<br />';
-    textarea.innerHTML += '<a href="http://andersevenrud.github.io/OS.js-v2/" target="_blank">Visit GitHub project page</a>';
-
-    root.appendChild(header);
-    root.appendChild(textarea);
-
+    scheme.render(this, 'AboutWindow', root);
     return root;
-  };
-
-  ApplicationAboutWindow.prototype.destroy = function() {
-    // Destroy custom objects etc. here
-
-    Window.prototype.destroy.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Application
-   */
   var ApplicationAbout = function(args, metadata) {
     Application.apply(this, ['ApplicationAbout', args, metadata]);
   };
 
   ApplicationAbout.prototype = Object.create(Application.prototype);
+  ApplicationAbout.constructor = Application;
 
-  ApplicationAbout.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, []);
-  };
-
-  ApplicationAbout.prototype.init = function(settings, metadata) {
+  ApplicationAbout.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
-    this._addWindow(new ApplicationAboutWindow(this, metadata));
-  };
 
-  ApplicationAbout.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
+    var self = this;
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationAboutWindow(self, metadata, scheme));
 
-    if ( msg == 'destroyWindow' && obj._name === 'ApplicationAboutWindow' ) {
-      this.destroy();
-    }
+      onInited();
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -119,6 +85,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationAbout = ApplicationAbout;
+  OSjs.Applications.ApplicationAbout = OSjs.Applications.ApplicationAbout || {};
+  OSjs.Applications.ApplicationAbout.Class = ApplicationAbout;
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

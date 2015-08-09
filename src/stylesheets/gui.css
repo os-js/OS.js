@@ -1,0 +1,1273 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+
+/**
+ * Reading Material:
+ * - https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/flex
+ * - https://developer.mozilla.org/en-US/docs/Web/API/Node
+ */
+
+/**
+ * ===========================================================================
+ *                               GENERICS
+ * ===========================================================================
+ */
+
+application-window-content * {
+  box-sizing : border-box;
+
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.gui-element {
+/**
+  min-width : 24px;
+  min-height : 24px;
+ */
+}
+
+.gui-bold > label,
+.gui-bold {
+  font-weight : bold;
+}
+.gui-italic > label,
+.gui-italic {
+  font-style : italic;
+}
+.gui-underline > label,
+.gui-underline {
+  text-decoration : underline;
+}
+
+.gui-align-left {
+  text-align : left;
+}
+.gui-align-center {
+  text-align : center;
+}
+.gui-align-right {
+  text-align : right;
+}
+
+.gui-disable-events {
+  pointer-events : none;
+}
+
+.gui-no-overflow {
+  overflow : hidden;
+}
+
+.gui-focus-element {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+      -ms-appearance: none;
+       -o-appearance: none;
+          appearance: none;
+
+  display : block;
+  outline : 0 none;
+  resize : none;
+  border : 0 none;
+  background : transparent;
+  color : transparent;
+  position : absolute;
+  margin : 0;
+  padding : 0;
+  left : 0px;
+  bottom : 0px;
+  top : 0px;
+  right : 0px;
+  width : 100%;
+  height : 100%;
+  z-index : 1;
+}
+
+gui-hbox,
+gui-hbox > *,
+gui-vbox,
+gui-vbox > *,
+gui-menu,
+gui-menu > *,
+gui-label,
+gui-label > *,
+gui-menu-bar,
+gui-menu-bar > *,
+gui-toolbar,
+gui-toolbar > *,
+gui-list-view,
+gui-list-view > *,
+gui-tree-view,
+gui-tree-view > *,
+gui-icon-view,
+gui-icon-view > * {
+
+  cursor : default;
+}
+
+/**
+ * ===========================================================================
+ *                              CONTAINERS
+ * ===========================================================================
+ */
+
+/* Container */
+gui-container {
+  display : block;
+  position : relative;
+  overflow : auto;
+}
+
+/* Box */
+gui-hbox,
+gui-vbox {
+  width : 100%;
+  height : 100%;
+  position : relative;
+
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -moz-box;
+  display: flex;
+}
+
+gui-vbox {
+  -webkit-flex-direction: column;
+     -moz-flex-direction: column;
+      -ms-flex-direction: column;
+       -o-flex-direction: column;
+          flex-direction: column;
+}
+
+  gui-hbox-container {
+    height : 100%;
+  }
+  gui-hbox-container,
+  gui-vbox-container {
+    display : block;
+    position : relative;
+
+    -webkit-flex: 0 0 auto;
+       -moz-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+         -o-flex: 0 0 auto;
+            flex: 0 0 auto;
+  }
+  gui-hbox-container > .gui-element,
+  gui-vbox-container > .gui-element {
+  }
+
+  gui-hbox-container[data-fill='true'],
+  gui-vbox-container[data-fill='true'] {
+    -webkit-align-items: stretch;
+       -moz-align-items: stretch;
+        -ms-align-items: stretch;
+         -o-align-items: stretch;
+            align-items: stretch;
+
+    -webkit-align-content: stretch;
+       -moz-align-content: stretch;
+        -ms-align-content: stretch;
+         -o-align-content: stretch;
+            align-content: stretch;
+  }
+
+    gui-hbox-container[data-expand='true'] > *,
+    gui-vbox-container[data-expand='true'] > * {
+      display : block;
+    }
+
+    gui-hbox-container[data-fill='true'] > *,
+    gui-vbox-container[data-fill='true'] > * {
+      position : absolute;
+      top : 0px;
+      left : 0px;
+      bottom : 0px;
+      right : 0px;
+    }
+    gui-hbox-container[data-fill='true'] > gui-hbox,
+    gui-hbox-container[data-fill='true'] > gui-vbox,
+    gui-vbox-container[data-fill='true'] > gui-hbox,
+    gui-vbox-container[data-fill='true'] > gui-vbox {
+      width : 100%;
+      height : 100%;
+    }
+
+    gui-hbox-container[data-fill='true'] > gui-vbox,
+    gui-hbox-container[data-fill='true'] > gui-hbox,
+    gui-vbox-container[data-fill='true'] > gui-vbox,
+    gui-vbox-container[data-fill='true'] > gui-hbox {
+      top : 0px;
+      left : 0px;
+      right : 0px;
+      bottom : 0px;
+    }
+
+/* Scroll View */
+gui-scroll-view {
+  display : block;
+  position : relative;
+  overflow : auto;
+  width : 100%;
+  height : 100%;
+}
+
+/* Paned View */
+gui-paned-view {
+  display : block;
+  position : relative;
+  overflow : hidden;
+  width : 100%;
+  height : 100%;
+
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -moz-box;
+  display: flex;
+}
+  gui-paned-view > * {
+    display : inline-block;
+    position : relative;
+    vertical-align : middle;
+
+    -webkit-flex: 1 1 auto;
+       -moz-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+         -o-flex: 1 1 auto;
+            flex: 1 1 auto;
+  }
+  gui-paned-view > gui-paned-view-container {
+    height : 100%;
+    overflow : hidden; /* Fixes overflow */
+  }
+    gui-paned-view > gui-paned-view-container > * {
+      height : 100%;
+      display : block;
+    }
+  gui-paned-view > gui-paned-view-handle {
+    height : 100%;
+    -webkit-flex: 0 1 auto;
+       -moz-flex: 0 1 auto;
+        -ms-flex: 0 1 auto;
+         -o-flex: 0 1 auto;
+            flex: 0 1 auto;
+  }
+
+/* IFrame */
+gui-iframe {
+  display : inline-block;
+  position : relative;
+}
+  gui-iframe > iframe {
+    display : block;
+    width : 100%;
+    height : 100%;
+    margin : 0;
+    padding : 0;
+    border : 0 none;
+  }
+
+/* Button Bar */
+/* Toolbar */
+gui-toolbar,
+gui-button-bar {
+  display : block;
+  position : relative;
+  overflow : hidden;
+  /* NOTE: Fixes spacing errors in FF */
+  font-size : 0;
+}
+gui-button-bar {
+  white-space: nowrap;
+}
+gui-toolbar[data-orientation="vertical"],
+gui-button-bar[data-orientation="vertical"] {
+  width : 100%;
+  height : 100%;
+}
+
+/* Tabs */
+gui-tabs {
+  display : block;
+  position : relative;
+}
+  gui-tabs > ul {
+    display : block;
+    list-style-type : none;
+    margin : 0;
+    padding : 0;
+    white-space: nowrap;
+  }
+    gui-tabs > ul > li {
+      position : relative;
+      display : inline-block;
+      margin : 0;
+      padding : 0;
+      height : 100%;
+    }
+    gui-tabs > ul > li.gui-active {
+    }
+      gui-tabs > ul > li.gui-active:after {
+        content : '';
+        position : absolute;
+        left : 0px;
+        right : 0px;
+        bottom : 0px;
+      }
+  gui-tabs > div {
+    overflow : hidden;
+  }
+
+    gui-tab-container {
+      display : none;
+      height : 100%;
+    }
+    gui-tab-container.gui-active {
+      display : block;
+    }
+
+/* Grid */
+gui-grid {
+  position : relative;
+  display : block;
+}
+  gui-grid > gui-grid-row { /* ul */
+    display: flex;
+    -webkit-flex-flow: row;
+    justify-content: space-around;
+  }
+
+    gui-grid > gui-grid-row > gui-grid-entry { /* li */
+      margin: 5px;
+      flex: 1 0 auto;
+      height: auto;
+      position: relative;
+    }
+      gui-grid > gui-grid-row > gui-grid-entry > * {
+        position : absolute;
+        top : 0px;
+        left : 0px;
+        right : 0px;
+        bottom : 0px;
+        width : 100%;
+        height : 100%;
+        margin : 0;
+        box-sizing : border-box;
+        overflow : hidden;
+      }
+        gui-grid > gui-grid-row > gui-grid-entry > * > * {
+          height : 100%;
+        }
+
+  gui-grid > gui-grid-row > gui-grid-entry:before {
+    content:'';
+    float:left;
+    padding-top:100%;
+  }
+
+/**
+ * ===========================================================================
+ *                                INPUTS
+ * ===========================================================================
+ */
+
+/* Label */
+gui-label {
+  display : inline-block;
+  position : relative;
+}
+  gui-label > label {
+    display : inline;
+    white-space: nowrap;
+  }
+
+/* Button */
+gui-button {
+  position : relative;
+  display : inline-block;
+  box-sizing : content-box;
+}
+  gui-button button {
+    display : block;
+    margin : 0;
+    padding : 0;
+    outline : 0 none;
+    white-space: nowrap;
+    min-height : 24px;
+    min-width : 16px;
+    min-height : 16px;
+    width : 100%;
+    height : 100%;
+  }
+  gui-button button::-moz-focus-inner {
+    border : 0;
+    padding : 0;
+  }
+  gui-button[data-icon-size="32"] {
+    min-width : 32px;
+    min-height : 32px;
+  }
+
+  gui-button.gui-has-image img {
+    vertical-align : middle;
+  }
+  gui-button.gui-has-image.gui-has-label img {
+    position : absolute;
+    top : 50%;
+    margin-top : -8px;
+    left : 8px;
+  }
+  gui-button[data-icon-size="32"].gui-has-image.gui-has-label img {
+    margin-top : -16px;
+  }
+
+/* Checkbox Button */
+/* Radio Button */
+gui-radio,
+gui-checkbox {
+  display : inline-block;
+  position : relative;
+}
+  gui-radio input,
+  gui-checkbox input {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
+
+    display: inline-block;
+    vertical-align : middle;
+    position: relative;
+    background: transparent;
+    border: 0 none;
+    margin : 0;
+    padding : 0;
+    overflow : hidden;
+    outline : none;
+  }
+
+  gui-radio input {
+  }
+
+  gui-radio input:checked:after {
+    display : inline;
+    vertical-align: middle;
+  }
+
+  gui-checkbox input:checked:after {
+    display : inline;
+    vertical-align: middle;
+  }
+
+  gui-radio[data-disabled="true"] label,
+  gui-checkbox[data-disabled="true"] label {
+  }
+
+  gui-radio input:disabled,
+  gui-checkbox input:disabled {
+  }
+
+  gui-radio > label > span,
+  gui-checkbox > label > span {
+    vertical-align : middle;
+  }
+
+gui-radio {
+  display : inline-block;
+  position : relative;
+}
+
+/* Select Dropdown */
+gui-select {
+  display : inline-block;
+  position : relative;
+}
+  gui-select select {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
+
+    -webkit-border-radius: 0px;
+       -moz-border-radius: 0px;
+        -ms-border-radius: 0px;
+            border-radius: 0px;
+
+    display : block;
+    padding : 0;
+    margin : 0;
+    width : 100%;
+    height : 100%;
+    outline : none;
+  }
+  gui-select select:disabled {
+  }
+
+  gui-select:before {
+    content: '';
+    position: absolute;
+    z-index: 99;
+    pointer-events: none;
+    display: block;
+  }
+  gui-select:after {
+    position: absolute;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+/* Select List */
+gui-select-list {
+  display : inline-block;
+  position : relative;
+  min-height : 32px;
+}
+  gui-select-list select {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
+
+    -webkit-border-radius: 0px;
+       -moz-border-radius: 0px;
+        -ms-border-radius: 0px;
+            border-radius: 0px;
+
+    display : block;
+    padding : 0;
+    margin : 0;
+    width : 100%;
+    height : 100%;
+    outline : none;
+  }
+  gui-select-list select:disabled {
+  }
+
+/* Slider */
+gui-slider {
+  display : inline-block;
+  position : relative;
+}
+  gui-slider input {
+    display : inline;
+    position : relative;
+    width : 100%;
+    padding : 0;
+    margin : 0;
+    vertical-align : middle;
+    outline : 0 none;
+
+    -webkit-appearance: none;
+       -moz-appearance: none;
+        -ms-appearance: none;
+            appearance: none;
+  }
+
+  /*
+   * RANGE TRACK
+   */
+
+  gui-slider input::-moz-range-track {
+    -moz-appearance: none;
+
+    background : transparent;
+    border : 0 none;
+    width : 100%;
+  }
+
+  gui-slider input::-webkit-slider-runnable-track {
+    width : 100%;
+    border : 0 none;
+  }
+
+  gui-slider input::-ms-track {
+    width: 100%;
+    border : 0 none;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+
+  /*
+   * RANGE THUMB
+   *
+   * TODO
+   * TODO DISABLED STATE
+   * TODO
+   */
+
+  gui-slider input::-moz-range-thumb {
+    -moz-appearance: none;
+    -moz-border-radius : 0;
+    border-radius : 0;
+  }
+  gui-slider input:disabled::-moz-range-thumb {
+  }
+
+  gui-slider input::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    -webkit-border-radius : 0;
+    border-radius : 0;
+  }
+  gui-slider input:disabled::-webkit-range-thumb {
+  }
+
+  gui-slider input::-ms-thumb {
+    -ms-appearance : none !important;
+    -ms-border-radius : 0;
+    border-radius : 0;
+  }
+  gui-slider input:disabled::-ms-thumb {
+  }
+
+  /**
+   * MISC
+   */
+  gui-slider input[type=range]::-ms-fill-lower {
+    border : 0 none;
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]::-ms-fill-upper {
+    border : 0 none;
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-lower {
+    background-color : #d9d9d9;
+  }
+  gui-slider input[type=range]:focus::-ms-fill-upper {
+    background-color : #d9d9d9;
+  }
+
+/* Switch */
+gui-switch {
+  display : inline-block;
+  position : relative;
+
+}
+
+  gui-switch div {
+    display : inline-block;
+    position : relative;
+  }
+
+  gui-switch button {
+    display : inline-block;
+    outline : 0 none;
+    margin : 0;
+    width : 50%;
+  }
+  gui-switch button.gui-active {
+    margin-left : 50%;
+  }
+
+  gui-switch input {
+    display : none;
+  }
+
+  gui-switch > label > div {
+  }
+
+  gui-switch[data-disabled="true"] button {
+  }
+
+  gui-switch[data-disabled="true"] button,
+  gui-switch[data-disabled="true"] label {
+  }
+
+/* Text Field */
+/* Password Field */
+gui-password,
+gui-text {
+  display : inline-block;
+  position : relative;
+}
+  gui-password input,
+  gui-text input {
+    display : block;
+    padding : 0;
+    margin : 0;
+    width : 100%;
+    height : 100%;
+    background : transparent;
+    border : 0 none;
+    outline : none;
+
+    -webkit-touch-callout: text;
+      -webkit-user-select: text;
+       -khtml-user-select: text;
+         -moz-user-select: text;
+          -ms-user-select: text;
+              user-select: text;
+  }
+
+  gui-password > label > input,
+  gui-text > label > input {
+    display : inline-block;
+    width : auto;
+  }
+
+  gui-password input:disabled,
+  gui-text input:disabled {
+  }
+
+  gui-password[data-disabled="true"] label,
+  gui-text[data-disabled="true"] label {
+  }
+
+
+/* Text Area */
+gui-textarea {
+  display : inline-block;
+  position : relative;
+}
+  gui-textarea textarea {
+    display : block;
+    padding : 0;
+    margin : 0;
+    width : 100%;
+    height : 100%;
+    border : 0 none;
+    resize : none;
+    outline : none;
+
+    -webkit-touch-callout: text;
+      -webkit-user-select: text;
+       -khtml-user-select: text;
+         -moz-user-select: text;
+          -ms-user-select: text;
+              user-select: text;
+  }
+  gui-textarea textarea:disabled {
+  }
+
+  gui-textarea[data-disabled="true"] label {
+  }
+
+/* Rich Text */
+gui-richtext {
+  display : inline-block;
+  position : relative;
+  min-height : 100px !important;
+}
+  gui-richtext > iframe {
+    display : block;
+    width : 100%;
+    height : 100%;
+    margin : 0;
+    padding : 0;
+    border : 0 none;
+  }
+
+/* File Upload */
+gui-file-upload {
+  display : inline-block;
+  position : relative;
+}
+
+/* Modal Input */
+gui-input-modal {
+  position : relative;
+  display : inline-block;
+
+}
+  gui-input-modal > div {
+    display: -webkit-flex;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: flex;
+  }
+    gui-input-modal input {
+      display : inline-block;
+      padding : 0;
+      margin : 0;
+      border : 0 none;
+      outline : none;
+
+      -webkit-flex: 1 0 auto;
+         -moz-flex: 1 0 auto;
+          -ms-flex: 1 0 auto;
+           -o-flex: 1 0 auto;
+              flex: 1 0 auto;
+    }
+    gui-input-modal button {
+      display : inline-block;
+
+      -webkit-flex: 0 1 auto;
+         -moz-flex: 0 1 auto;
+          -ms-flex: 0 1 auto;
+           -o-flex: 0 1 auto;
+              flex: 0 1 auto;
+    }
+
+/**
+ * ===========================================================================
+ *                                 MISC
+ * ===========================================================================
+ */
+
+/* Audio */
+gui-audio {
+  display : inline-block;
+  position : relative;
+}
+
+/* Video */
+gui-video {
+  display : inline-block;
+  position : relative;
+}
+  gui-video > video {
+  }
+
+/* Image */
+gui-image {
+  display : inline-block;
+  position : relative;
+}
+  gui-image > img {
+    border : 0 none;
+    outline : 0 none;
+    vertical-align : middle;
+  }
+
+/* Canvas */
+gui-canvas {
+  display : inline-block;
+  position : relative;
+}
+
+/* Color Swatch */
+gui-color-swatch {
+  display : inline-block;
+  position : relative;
+  min-width : 100px !important;
+  min-height : 100px !important;
+}
+  gui-color-swatch canvas {
+    width : 100%;
+    height : 100%;
+    display : block;
+  }
+
+/* Color Box */
+gui-color-box {
+  display : inline-block;
+  position : relative;
+  background-color : #fff;
+}
+gui-color-box[data-disabled="true"] {
+  cursor : default !important;
+}
+  gui-color-box > div {
+    min-width : 16px;
+    min-height : 16px;
+  }
+
+/* Menu */
+gui-menu {
+  display : inline-block;
+  position : relative;
+}
+gui-menu.gui-root-menu {
+  display : block;
+  position : absolute;
+  z-index : 99999999;
+}
+  gui-menu > gui-menu-entry {
+    display : block;
+    position : relative;
+    white-space : nowrap;
+  }
+  gui-menu > gui-menu-entry[data-disabled="true"] {
+    pointer-events: none;
+  }
+
+  gui-menu > gui-menu-entry.gui-menu-expand {
+  }
+  gui-menu > gui-menu-entry.gui-menu-expand:after {
+    position : absolute;
+    right : 0px;
+    top : 0px;
+    bottom : 0px;
+  }
+
+  gui-menu > gui-menu-entry:hover {
+  }
+    gui-menu > gui-menu-entry {
+      background-repeat : no-repeat;
+      background-position : left center;
+      background-size : 16px;
+    }
+    gui-menu > gui-menu-entry > label {
+      vertical-align : middle;
+      display : block;
+      pointer-events : none;
+    }
+    gui-menu > gui-menu-entry > label > input {
+      margin : 0;
+      padding : 0;
+      vertical-align : middle;
+      margin-top : -2px;
+      padding-right : 2px;
+      pointer-events : none;
+    }
+    gui-menu > gui-menu-entry > label.gui-has-image {
+    }
+
+  gui-menu > gui-menu-entry > gui-menu {
+    display : none;
+    position : absolute;
+    z-index : 99999;
+  }
+
+  gui-menu > gui-menu-entry:hover > gui-menu {
+    display : inline-block;
+    left : 100%;
+    top : 0%;
+  }
+  gui-menu.gui-root-menu > gui-menu-entry:hover > gui-menu {
+    display : block;
+  }
+  gui-menu.gui-root-menu > gui-menu-entry[data-disabled="true"]:hover > gui-menu {
+    display : none;
+  }
+
+/* Menu Bar */
+gui-menu-bar {
+  position : relative;
+  display : block;
+}
+  gui-menu-bar-entry {
+    position : relative;
+    display : inline-block;
+  }
+  gui-menu-bar-entry:hover {
+  }
+
+  gui-menu-bar-entry > gui-menu {
+    display : none;
+    position : absolute;
+    z-index : 99999;
+  }
+  gui-menu-bar-entry.gui-active > gui-menu {
+    display : inline-block;
+    top : 100%;
+    left : 0%;
+  }
+
+
+/* Progressbar */
+gui-progress-bar {
+  position : relative;
+  display : inline-block;
+  text-align : center;
+  overflow : hidden;
+}
+  gui-progress-bar:before {
+    content : '';
+    position : absolute;
+    left : 0px;
+    bottom : 0px;
+    right : 0px;
+    top : 0px;
+    z-index : -1;
+  }
+  gui-progress-bar > div {
+    position : absolute;
+    left : 1px;
+    bottom : 1px;
+    top : 1px;
+    z-index : -1;
+  }
+  gui-progress-bar > span {
+    display : block;
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+    bottom : 0px;
+  }
+
+/* Statusbar */
+gui-statusbar {
+  position : relative;
+  display : block;
+  min-height : 16px;
+}
+
+/**
+ * ===========================================================================
+ *                                VIEWS
+ * ===========================================================================
+ */
+
+/* File View */
+gui-file-view {
+  position : relative;
+  display : inline-block;
+}
+  gui-file-view > * {
+    display : block;
+    width : 100%;
+    height : 100%;
+  }
+
+/* Icon View */
+gui-icon-view {
+  position : relative;
+  display : inline-block;
+  overflow : auto;
+}
+  gui-icon-view-body {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+    bottom : 0px;
+    z-index : 2;
+  }
+  gui-icon-view-entry {
+    float : left;
+    width : 34px;
+    width : 54px;
+  }
+
+    gui-icon-view-entry > div {
+      position : relative;
+    }
+
+    gui-icon-view-entry > div > img {
+      width : 32px;
+      height : 32px;
+    }
+
+    gui-icon-view-entry > div > span {
+      position : absolute;
+      display : block;
+      left : -2px;
+      right : -2px;
+      top : 0px;
+      padding : 2px;
+      z-index : 9999;
+
+      white-space : nowrap;
+      overflow: hidden;
+
+      -webkit-text-overflow: ellipsis;
+         -moz-text-overflow: ellipsis;
+          -ms-text-overflow: ellipsis;
+           -o-text-overflow: ellipsis;
+              text-overflow: ellipsis;
+    }
+
+    gui-icon-view-entry.gui-active {
+    }
+    gui-icon-view-entry.gui-active > div > span {
+      overflow: visible;
+      white-space : pre-wrap;
+      word-wrap : break-word;
+      text-overflow: inherit;
+      -o-text-overflow: inherit;
+    }
+
+/* List View */
+gui-list-view {
+  position : relative;
+  display : inline-block;
+  overflow : auto;
+}
+  gui-list-view-body {
+    display : block;
+    position : relative;
+    z-index : 2;
+  }
+
+  gui-list-view-head {
+    z-index : 20;
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+  }
+
+  gui-list-view-head,
+  gui-list-view-body {
+    position : relative;
+    display: block;
+
+    display: -webkit-flex;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: flex;
+
+    flex-flow : column nowrap;
+  }
+    gui-list-view-row {
+      position : relative;
+      display: block;
+
+      display: -webkit-flex;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -moz-box;
+      display: flex;
+
+      flex-flow : row nowrap;
+    }
+    gui-list-view-head gui-list-view-column {
+      overflow : visible;
+    }
+    gui-list-view-column {
+      position : relative;
+      display : inline-block;
+      background-repeat : no-repeat;
+      background-position : left center;
+      overflow : hidden;
+      line-height : 16px;
+
+      -webkit-flex: 1 0 auto;
+         -moz-flex: 1 0 auto;
+          -ms-flex: 1 0 auto;
+           -o-flex: 1 0 auto;
+              flex: 1 0 auto;
+
+      flex-flow: row nowrap;
+
+      -webkit-text-overflow: ellipsis;
+         -moz-text-overflow: ellipsis;
+          -ms-text-overflow: ellipsis;
+           -o-text-overflow: ellipsis;
+              text-overflow: ellipsis;
+    }
+    gui-list-view[data-icon-size="32"] gui-list-view-column {
+      line-height : 32px;
+    }
+      gui-list-view-column > * {
+        display : inline;
+      }
+      gui-list-view-column > span {
+        white-space: nowrap;
+      }
+
+    gui-list-view-column.gui-has-image {
+    }
+    gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
+    }
+
+    gui-list-view-row.gui-active {
+    }
+
+    gui-list-view-column-resizer {
+      width : 1px;
+      position : absolute;
+      top : 0px;
+      bottom : 0px;
+      right : 0px;
+      z-index : 999999999;
+    }
+      gui-list-view-column-resizer:after {
+        content : '';
+        background : #b2b2b2;
+        position : absolute;
+        top : 0px;
+        left : 1px;
+        width : 1px;
+        bottom : 0px;
+      }
+
+
+/* Tree View */
+gui-tree-view {
+  position : relative;
+  display : inline-block;
+  overflow : auto;
+}
+  gui-tree-view-body {
+    position : absolute;
+    top : 0px;
+    left : 0px;
+    right : 0px;
+    bottom : 0px;
+    z-index : 2;
+  }
+  gui-tree-view-entry {
+    display : block;
+    position : relative;
+
+  }
+    gui-tree-view-entry > div {
+    }
+    gui-tree-view-entry > div > span {
+      background-repeat : no-repeat;
+      background-position : left center;
+      display : inline-block;
+      vertical-align : middle;
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis;
+      white-space : nowrap;
+    }
+    gui-tree-view-entry > div > span.gui-has-image {
+    }
+    gui-tree-view-entry > gui-tree-view-entry {
+    }
+    gui-tree-view-entry.gui-active > div {
+    }
+
+  gui-tree-view-entry.gui-expandable {
+    padding-left : 16px;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander {
+    display : block;
+    position : absolute;
+    left : 0px;
+    top : 0px;
+    width : 16px;
+    height : 16px;
+    overflow : visible;
+  }
+  gui-tree-view-entry.gui-expandable gui-tree-view-expander:before {
+  }
+  gui-tree-view-entry.gui-expandable.gui-expanded > gui-tree-view-expander:before {
+  }
+
+
+gui-toolbar > .gui-element {
+  vertical-align : middle;
+}

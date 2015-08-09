@@ -27,86 +27,80 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, _StandardDialog) {
+(function(API, Utils, DialogWindow) {
   'use strict';
 
   /**
-   * Input Dialog
+   * An 'Input' dialog
    *
-   * @param   String          msg         Message to display
-   * @param   String          val         Default input value (optional)
-   * @param   Function        onClose     Callback on close => fn(button, input)
-   * @param   Function        onCreated   Callback on input init/create
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
+   * @option    args    title       String      Dialog title
+   * @option    args    message     String      Dialog message
+   * @option    args    value       String      (Optional) Input value
+   * @option    args    placeholder String      (Optional) Input placeholder
+   *
+   * @extends DialogWindow
+   * @class InputDialog
    * @api OSjs.Dialogs.Input
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
    */
-  var InputDialog = function(msg, val, onClose, onCreated) {
-    _StandardDialog.apply(this, ['InputDialog', {
-      title: API._('DIALOG_INPUT_TITLE'),
+  function InputDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {});
+
+    DialogWindow.apply(this, ['InputDialog', {
+      title: args.title || API._('DIALOG_INPUT_TITLE'),
       icon: 'status/dialog-information.png',
-      message: msg,
-      buttons: ['cancel', 'ok']
-    }, {width:300, height:150}, onClose]);
+      width: 400,
+      height: 120
+    }, args, callback]);
+  }
 
-    this.value = val || '';
-    this.input = null;
-    this.onInputCreated = onCreated || function _noop() {};
-  };
-
-  InputDialog.prototype = Object.create(_StandardDialog.prototype);
+  InputDialog.prototype = Object.create(DialogWindow.prototype);
+  InputDialog.constructor = DialogWindow;
 
   InputDialog.prototype.init = function() {
     var self = this;
-    var root = _StandardDialog.prototype.init.apply(this, arguments);
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    if ( this.args.message ) {
+      this.scheme.find(this, 'Message').set('value', this.args.message, true);
+    }
 
-    var inputd = document.createElement('div');
-
-    this.input = this._addGUIElement(new OSjs.GUI.Text('TextInput', {value: this.value, onKeyPress: function(ev) {
-      if ( ev.keyCode === Utils.Keys.ENTER ) {
-        self.buttons['ok'].onClick(ev);
-        return;
-      }
-    }}), inputd);
-    this.$element.appendChild(inputd);
+    var input = this.scheme.find(this, 'Input');
+    input.set('placeholder', this.args.placeholder || '');
+    input.set('value', this.args.value || '');
+    input.on('enter', function(ev) {
+      self.onClose(ev, 'ok');
+    });
 
     return root;
   };
 
-  InputDialog.prototype._inited = function() {
-    _StandardDialog.prototype._inited.apply(this, arguments);
-
-    var self = this;
-    setTimeout(function() {
-      self.onInputCreated(self.input);
-    }, 10);
-  };
-
   InputDialog.prototype._focus = function() {
-    _StandardDialog.prototype._focus.apply(this, arguments);
-    if ( this.input ) {
-      this.input.focus();
-      this.input.select();
+    if ( DialogWindow.prototype._focus.apply(this, arguments) ) {
+      this.scheme.find(this, 'Input').focus();
+      return true;
     }
+    return false;
   };
 
-  InputDialog.prototype.onButtonClick = function(btn, ev) {
-    if ( btn === 'ok' ) {
-      if ( this.buttons[btn] ) {
-        this.end('ok', this.input.getValue());
-      }
-      return;
+  InputDialog.prototype.onClose = function(ev, button) {
+    var result = this.scheme.find(this, 'Input').get('value');
+    this.closeCallback(ev, button, button === 'ok' ? result : null);
+  };
+
+  InputDialog.prototype.setRange = function(range) {
+    var input = this.scheme.find(this, 'Input');
+    if ( input.$element ) {
+      input.$element.querySelector('input').select(range);
     }
-    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.Input              = InputDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.Input = InputDialog;
 
-})(OSjs.API, OSjs.Utils, OSjs.Dialogs._StandardDialog);
+})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

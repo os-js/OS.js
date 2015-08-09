@@ -18,15 +18,13 @@
     "nl_NL":      "Eenvoudig tekenprogramma",
     "vi_VN":      "Phần mềm vẽ đơn giản"
   },
-  "mime":       ["^image", "osjs\\/draw"],
+  "mime":       ["^image"],
   "category":   "graphics",
   "icon":       "categories/gnome-graphics.png",
   "splash":     true,
   "compability":["canvas"],
   "preload":    [
     {"src": "locales.js", "type": "javascript"},
-    {"src": "effect-blur.js", "type": "javascript"},
-    {"src": "libs.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
   ]

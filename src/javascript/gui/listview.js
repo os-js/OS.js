@@ -27,399 +27,287 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(GUIElement, _DataView) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
 
-  /**
-   * List View Class
-   *
-   * column data example:
-   * [
-   *   {key: 'mykey', title: 'Title'},
-   *   {key: 'id', visible: false}
-   * ]
-   * row data example:
-   * [
-   *  {mykey: 'Some title', id: 1},
-   *  {mykey: 'Some title', id: 2}
-   * ]
-   *
-   * @param String    name    Name of GUIElement (unique)
-   * @param Object    opts    A list of options
-   *
-   * @option opts boolean   singleClick   Single click to Activate (dblclick) forced on touch devices
-   * @option opts Object    columns       Column data
-   * @option opts Array     rows          Rows of data
-   *
-   * @see OSjs.Core.GUIElement
-   * @api OSjs.GUI.ListView
-   *
-   * @extends _DataView
-   * @class
-   */
-  var ListView = function(name, opts) {
-    opts = opts || {};
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
-    if ( opts.rows ) {
-      opts.data = opts.rows;
-      delete opts.rows;
+  function resize(rel, w) {
+    var flex = w.toString() + 'px';
+    rel.style['webkitFlexBasis'] = flex;
+    rel.style['mozFflexBasis'] = flex;
+    rel.style['msFflexBasis'] = flex;
+    rel.style['oFlexBasis'] = flex;
+    rel.style['flexBasis'] = flex;
+  }
+
+  function createEntry(v, head) {
+    var label = v.label || '';
+    if ( v.label ) {
+      delete v.label;
+    }
+    if ( typeof v.grow === 'undefined' ) {
+      v.grow = 1;
+    }
+    if ( typeof v.shrink === 'undefined' ) {
+      v.shrink = 1;
+    }
+    if ( typeof v.basis === 'undefined' ) {
+      v.basis = '';
     }
 
+    var nel = GUI.Helpers.createElement('gui-list-view-column', v);
+    nel.appendChild(document.createTextNode(label));
 
-    this.columns          = opts.columns || [];
-    this.$head            = null;
-    this.$headTop         = null;
-    this.$body            = null;
-    this.$table           = null;
-    this.$tableTop        = null;
-    this.$scroll          = null;
-    this.lastSelectedDOM  = null;
-    this.onCreateItem     = opts.onCreateItem   || function(el, iter, col) {};
-    this.onRenderItem     = opts.onRenderItem   || function(el, iter) {};
+    return nel;
+  }
 
-    this.singleClick      = typeof opts.singleClick === 'undefined' ? false : (opts.singleClick === true);
-    if ( OSjs.Compability.touch ) {
-      this.singleClick = true;
-    }
+  function createResizers(el) {
+    // TODO: These do not work properly :/
+    var head = el.querySelector('gui-list-view-head');
+    var body = el.querySelector('gui-list-view-body');
+    var cols = head.querySelectorAll('gui-list-view-column');
 
-    _DataView.apply(this, ['ListView', name, opts]);
-  };
+    head.querySelectorAll('gui-list-view-column-resizer').forEach(function(rel) {
+      Utils.$remove(rel);
+    });
 
-  ListView.prototype = Object.create(_DataView.prototype);
+    cols.forEach(function(col, idx) {
+      var attr = col.getAttribute('data-resizable');
+      if ( attr === 'true' ) {
+        var resizer = document.createElement('gui-list-view-column-resizer');
+        col.appendChild(resizer);
 
-  ListView.prototype.destroy = function() {
-    _DataView.prototype.destroy.apply(this, arguments);
+        var startWidth = 0;
+        var maxWidth   = 0;
 
-    this.$head            = null;
-    this.$headTop         = null;
-    this.$body            = null;
-    this.$table           = null;
-    this.$tableTop        = null;
-    this.$scroll          = null;
-    this.lastSelectedDOM  = null;
-  };
+        GUI.Helpers.createDrag(resizer, function(ev) {
+          startWidth = col.offsetWidth;
+          maxWidth = el.offsetWidth * 0.85; // FIXME
+        }, function(ev, diff) {
+          var newWidth = startWidth + diff.x;
+          if ( !isNaN(newWidth) ) { //&& newWidth > 0 && newWidth < maxWidth ) {
+            resize(col, newWidth);
 
-  ListView.prototype.init = function() {
-    var el = _DataView.prototype.init.apply(this, ['GUIListView', false]);
-
-    var startW = 0;
-    var startX = 0;
-    var column = null;
-    var self = this;
-    var resized = false;
-
-    function onResizeMove(ev) {
-      if ( !self.$headTop || !self.$body ) { return; }
-
-      var newW = startW + (ev.clientX - startX);
-      if ( column >= 0 && newW >= 16 ) {
-        if ( self.$headTop.rows[0] ) {
-          self.$headTop.rows[0].childNodes[column].width = newW;
-        }
-        if ( self.$body.rows[0] ) {
-          self.$body.rows[0].childNodes[column].width = newW;
-        }
-        resized = true;
-      }
-    }
-
-    function onResizeEnd(ev) {
-      document.removeEventListener('mouseup',   onResizeEnd,  false);
-      document.removeEventListener('mousemove', onResizeMove, false);
-    }
-
-    function onResizeStart(ev, col) {
-      startX = ev.clientX;
-      startW = col.offsetWidth;
-      column = col.parentNode.getAttribute('data-index');
-      resized = false;
-
-      document.addEventListener('mouseup',    onResizeEnd,  false);
-      document.addEventListener('mousemove',  onResizeMove, false);
-    }
-
-    function onHeaderAction(ev, type) {
-      ev.preventDefault();
-      var t = ev.target;
-      if ( t.tagName === 'DIV' ) {
-        if ( type === 'mousedown' && t.className === 'Resizer' ) {
-          onResizeStart(ev, t.parentNode);
-        } else if ( type === 'click' && t.className === 'Label' ) {
-          if ( !resized ) {
-            var col = t.parentNode.className.replace('Column_', '');
-            self._onColumnClick(ev, col);
+            // FIXME: Super slow!
+            body.querySelectorAll('gui-list-view-row').forEach(function(row) {
+              resize(row.children[idx], newWidth);
+            });
           }
-        }
-        return false;
+        });
       }
-      return true;
-    }
-
-    var table = document.createElement('table');
-    table.className = 'Body';
-
-    var head = document.createElement('thead');
-    var body = document.createElement('tbody');
-
-    var tableTop        = document.createElement('table');
-    var headTop         = document.createElement('thead');
-    tableTop.className  = 'Header';
-
-    this.$scroll            = document.createElement('div');
-    this.$scroll.className  = 'Scroll';
-    this.$scroll.appendChild(table);
-
-    this._addEventListener(tableTop, 'mousedown', function(ev) {
-      return onHeaderAction(ev, 'mousedown');
     });
-    this._addEventListener(tableTop, 'click', function(ev) {
-      return onHeaderAction(ev, 'click');
-    });
-    this._addEventListener(this.$scroll, 'scroll', function(ev) {
-      tableTop.style.left = -this.scrollLeft + 'px';
-    });
-    this._addEventListener(this.$scroll, 'contextmenu', function(ev) {
-      ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-      ev.preventDefault();
+  }
 
-      self.onViewContextMenu.call(self, ev);
+  function initRow(el, row) {
+    var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
+    var headContainer = el.querySelector('gui-list-view-head');
 
-      return false;
+    row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
+      var cl = cols.length;
+      var x = cl ? idx % cl : idx;
+
+      GUI.Helpers.setFlexbox(cel, null, null, null, cols[x]);
+
+      var icon = cel.getAttribute('data-icon');
+      if ( icon ) {
+        Utils.$addClass(cel, 'gui-has-image');
+        cel.style.backgroundImage = 'url(' + icon + ')';
+      }
+
+      var text = cel.firstChild;
+      if ( text && text.nodeType === 3 ) {
+        var span = document.createElement('span');
+        span.appendChild(document.createTextNode(text.nodeValue));
+        cel.insertBefore(span, text);
+        cel.removeChild(text);
+      }
+
+      if ( el._columns[idx] && !el._columns[idx].visible ) {
+        cel.style.display = 'none';
+      }
     });
 
-    this._addEventListener(el, 'scroll', function(ev) {
-      self.fixScrollbar();
-    });
+    GUI.Elements._dataview.bindEntryEvents(el, row, 'gui-list-view-row');
+  }
 
-    table.appendChild(head);
-    table.appendChild(body);
-    tableTop.appendChild(headTop);
-    el.appendChild(tableTop);
-    el.appendChild(this.$scroll);
-
-    this.$head      = head;
-    this.$headTop   = headTop;
-    this.$body      = body;
-    this.$table     = table;
-    this.$tableTop  = tableTop;
-    this.$view      = this.$scroll; // NOTE: Shorthand
-  };
-
-  ListView.prototype._render = function(list, columns) {
-    var self = this;
-    var i, l, ii, ll, row, col, colref, iter, val, type, tmp, d, span, label, resizer;
-
-    function _bindEvents(row, iter, singleClick) {
-      self._addEventListener(row, 'contextmenu', function(ev) {
-        ev.stopPropagation(); // Or else eventual ContextMenu is blurred
-        ev.preventDefault();
-
-        self._onContextMenu(ev, iter);
+  function createRow(e) {
+    var row = document.createElement('gui-list-view-row');
+    if ( e && e.columns ) {
+      e.columns.forEach(function(se) {
+        row.appendChild(createEntry(se));
       });
 
-      if ( singleClick ) {
-        self._addEventListener(row, 'click', function(ev) {
-          self._onSelect(ev, iter);
-          self._onActivate(ev, iter);
-        });
-      } else {
-        self._addEventListener(row, 'click', function(ev) {
-          self._onSelect(ev, iter);
-        });
-        self._addEventListener(row, 'dblclick', function(ev) {
-          self._onActivate(ev, iter);
-        });
+      var value = e.value;
+      try {
+        if ( typeof value === 'object' || value instanceof Array ) {
+          value = JSON.stringify(e.value);
+        }
+      } catch ( e ) {}
+
+      row.setAttribute('data-value', value.toString());
+      if ( typeof e.id !== 'undefined' && e.id !== null ) {
+        row.setAttribute('data-id', e.id);
       }
+      if ( e.tooltip ) {
+        row.setAttribute('data-tooltip', e.tooltip);
+      }
+
+      return row;
     }
 
-    // Columns (header)
-    row = document.createElement('tr');
-    var x = 0;
-    var total = 0;
-    columns.forEach(function(iter) {
-      if ( iter && (typeof iter.visible === 'undefined' || iter.visible === true) ) {
-        total++;
-      }
-    });
-
-    for ( i = 0, l = columns.length; i < l; i++ ) {
-      colref = columns[i];
-      if ( typeof colref.visible !== 'undefined' && colref.visible === false ) { continue; }
-
-      col           = document.createElement('td');
-      col.className = 'Column_' + colref.key;
-      col.setAttribute('data-index', i);
-      if ( typeof colref.width !== 'undefined' ) {
-        col.setAttribute('width', colref.width);
-      }
-
-      label           = document.createElement('div');
-      label.className = 'Label';
-      label.appendChild(document.createTextNode(colref.title));
-
-      if ( typeof colref.resizable === 'undefined' || colref.resizable === true ) {
-        if ( x < (total-1) ) {
-          resizer           = document.createElement('div');
-          resizer.className = 'Resizer';
-          label.appendChild(resizer);
-        }
-      }
-      col.appendChild(label);
-      row.appendChild(col);
-
-      x++;
-    }
-    this.$head.appendChild(row);
-    this.$headTop.appendChild(row);
-
-    // Rows (data)
-    for ( i = 0, l = list.length; i < l; i++ ) {
-      row = document.createElement('tr');
-      iter = list[i];
-
-      for ( ii = 0, ll = columns.length; ii < ll; ii++ ) {
-        span = null;
-
-        colref = columns[ii];
-        row.setAttribute('data-' + colref.key, iter[colref.key]);
-
-        if ( (typeof colref.visible !== 'undefined' && colref.visible === false) ) { continue; }
-        type = (typeof colref.type === 'undefined') ? 'text' : colref.type;
-        col = document.createElement('td');
-        col.className = 'Column_' + colref.key;
-        if ( typeof colref.width !== 'undefined' ) {
-          col.setAttribute('width', colref.width);
-        }
-
-        if ( colref.callback ) {
-          val = colref.callback(iter);
-        } else {
-          val = iter[colref.key];
-        }
-
-        if ( type === 'image' ) {
-          tmp = document.createElement('img');
-          //tmp.ondragstart = function() { return false; };
-          tmp.alt = '';
-          tmp.src = val;
-          col.appendChild(tmp);
-          row.removeAttribute('data-' + colref.key);
-        } else if ( type === 'button' ) {
-          tmp = document.createElement('button');
-          tmp.appendChild(document.createTextNode(val || ''));
-          tmp.onclick = iter.customEvent;
-          col.appendChild(tmp);
-          row.removeAttribute('data-' + colref.key);
-        } else {
-          span = document.createElement('span');
-          span.appendChild(document.createTextNode(val || ''));
-          col.appendChild(span);
-        }
-
-        row.appendChild(col);
-      }
-
-      _bindEvents(row, this.data[i], this.singleClick);
-
-      this.$body.appendChild(row);
-
-      this.onCreateItem(row, iter, colref);
-      this.onRenderItem(row, iter, colref);
-
-      this.data[i]._index   = i;
-      this.data[i]._element = row;
-    }
-
-    this.fixScrollbar();
-  };
-
-  /**
-   * Render the list inside the view
-   *
-   * @return void
-   * @see _DataView::render()
-   * @method ListView::render()
-   */
-  ListView.prototype.render = function(data, reset) {
-    if ( !_DataView.prototype.render.apply(this, arguments) ) {
-      return;
-    }
-
-    this._render(this.data, this.columns);
-  };
-
-  ListView.prototype._onRender = function() {
-    OSjs.Utils.$empty(this.$head);
-    OSjs.Utils.$empty(this.$body);
-    OSjs.Utils.$empty(this.$headTop);
-  };
-
-  ListView.prototype._onColumnClick = function(ev, col) {
-  };
-
-  ListView.prototype.fixScrollbar = function() {
-    if ( !this.$element ) { return; }
-    this.$tableTop.style.top = this.$element.scrollTop + 'px';
-  };
-
-  /**
-   * Add a column
-   *
-   * @param   Object      c       The object (see constructor for info)
-   *
-   * @return  void
-   *
-   * @method  ListView::addColumn()
-   */
-  ListView.prototype.addColumn = function(c) {
-    this.columns.push(c);
-  };
-
-  /**
-   * Add a row
-   *
-   * @param   Object    r       The object (see constructor for info)
-   *
-   * @return  void
-   *
-   * @method  ListVIew::addRow()
-   */
-  ListView.prototype.addRow = function(r) {
-    this.rows.push(r);
-  };
-
-  /**
-   * Set the column list
-   *
-   * @param   Array   cols    Column Array
-   * @return  void
-   *
-   * @see     ListView::addColumn()
-   * @method  ListView::setColumns()
-   */
-  ListView.prototype.setColumns = function(cols) {
-    this.columns = cols || [];
-  };
-
-  /**
-   * Set the row list
-   *
-   * @param   Array   rows    Row Array
-   * @param   boolean render  Render right away ?
-   *
-   * @return  void
-   *
-   * @see     ListView::addRow()
-   * @method  ListView::setRows()
-   */
-  ListView.prototype.setRows = function(rows, render) {
-    this.setData.apply(this, arguments);
-  };
+    return null;
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.ListView     = ListView;
+  /**
+   * Element: 'gui-list-view'
+   *
+   * A list view with columns.
+   *
+   * Format for add():
+   *
+   * {
+   *    value: "something or JSON or whatever",
+   *    columns: [
+   *      {label: "Value for column 1", icon: "Optional icon"},
+   *      {label: "Value for column 2", icon: "Optional icon"}
+   *    ]
+   * }
+   *
+   * Format for columns (flexbox parameters are also usable):
+   * [
+   *    {label: "Column 1"},
+   *    {label: "Column 2"}
+   *
+   * ]
+   *
+   * Setters:
+   *  columns(arr)  Sets the columns
+   *
+   * @api OSjs.GUI.Elements.gui-list-view
+   * @see OSjs.GUI.Elements._dataview
+   * @class
+   */
+  GUI.Elements['gui-list-view'] = {
+    bind: GUI.Elements._dataview.bind,
 
-})(OSjs.Core.GUIElement, OSjs.GUI._DataView);
+    values: function(el) {
+      var body = el.querySelector('gui-list-view-body');
+      return GUI.Elements._dataview.getSelected(el, body.querySelectorAll('gui-list-view-row'));
+    },
+
+    set: function(el, param, value, arg) {
+      if ( param === 'columns' ) {
+        var head = el.querySelector('gui-list-view-head');
+        var row = document.createElement('gui-list-view-row');
+        Utils.$empty(head);
+
+        el._columns = [];
+
+        value.forEach(function(v) {
+          v.visible = (typeof v.visible === 'undefined') || v.visible === true;
+
+          var nel = createEntry(v, true)
+
+          el._columns.push(v);
+
+          if ( !v.visible ) {
+            nel.style.display = 'none';
+          }
+          row.appendChild(nel);
+
+          GUI.Helpers.setFlexbox(nel);
+        });
+
+        head.appendChild(row);
+
+        createResizers(el);
+        return true;
+      } else if ( param === 'selected' || param === 'value' ) {
+        var body = el.querySelector('gui-list-view-body');
+        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-list-view-row'), value, arg);
+        return true;
+      }
+
+      return false;
+    },
+
+    call: function(el, method, args) {
+      var body = el.querySelector('gui-list-view-body');
+      if ( method === 'add' ) {
+        GUI.Elements._dataview.add(el, args, function(e) {
+          var row = createRow(e);
+          if ( row ) {
+            body.appendChild(row);
+            initRow(el, row);
+          }
+        });
+      } else if ( method === 'remove' ) {
+        GUI.Elements._dataview.remove(el, args, 'gui-list-view-row');
+      } else if ( method === 'clear' ) {
+        GUI.Elements._dataview.clear(el, el.querySelector('gui-list-view-body'));
+      } else if ( method === 'patch' ) {
+        GUI.Elements._dataview.patch(el, args, 'gui-list-view-row', body, createRow, initRow);
+      }
+      return this;
+    },
+
+    build: function(el, applyArgs) {
+      el._columns  = [];
+
+      var head = el.querySelector('gui-list-view-head');
+      var body = el.querySelector('gui-list-view-body');
+
+      // Make sure base elements are in the dom
+      if ( !body ) {
+        body = document.createElement('gui-list-view-body');
+        el.appendChild(body);
+      }
+
+      if ( !head ) {
+        head = document.createElement('gui-list-view-head');
+        el.insertBefore(head, body);
+      }
+
+      // Misc UI
+      createResizers(el);
+
+      Utils.$bind(el, 'scroll', function(ev) {
+        head.style.top = el.scrollTop + 'px';
+      }, false);
+
+      // Create scheme defined header
+      el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
+        GUI.Helpers.setFlexbox(cel);
+
+        var vis = cel.getAttribute('data-visible');
+        var iter = {
+          visible: vis === null || vis === 'true',
+          grow: cel.getAttribute('data-grow'),
+          shrink: cel.getAttribute('data-shrink'),
+          basis: cel.getAttribute('data-basis')
+        };
+
+        el._columns.push(iter);
+
+        if ( !iter.visible ) {
+          cel.style.display = 'none';
+        }
+      });
+
+      // Create scheme defined rows
+      el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(row) {
+        initRow(el, row);
+      });
+
+      GUI.Elements._dataview.build(el, applyArgs);
+    }
+  };
+
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

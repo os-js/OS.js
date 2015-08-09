@@ -1,0 +1,398 @@
+<application-window data-id="SettingsWindow">
+
+  <gui-vbox>
+    <gui-vbox-container data-grow="1" data-fill="true">
+
+      <gui-hbox>
+        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="150px">
+          <gui-list-view data-icon-size="32" data-id="IconMenu" data-multiple="false">
+            <gui-list-view-body>
+
+              <gui-list-view-row data-value="theme">
+                <gui-list-view-column data-icon="stock://32x32/apps/background.png">Theme</gui-list-view-column>
+              </gui-list-view-row>
+              <gui-list-view-row data-value="desktop">
+                <gui-list-view-column data-icon="stock://32x32/devices/display.png">Desktop</gui-list-view-column>
+              </gui-list-view-row>
+              <gui-list-view-row data-value="panel">
+                <gui-list-view-column data-icon="stock://32x32/categories/applications-utilities.png">LBL_PANELS</gui-list-view-column>
+              </gui-list-view-row>
+              <gui-list-view-row data-value="user">
+                <gui-list-view-column data-icon="stock://32x32/categories/preferences-desktop-personal.png">LBL_USER</gui-list-view-column>
+              </gui-list-view-row>
+              <gui-list-view-row data-value="packages">
+                <gui-list-view-column data-icon="stock://32x32/apps/system-software-install.png">Packages</gui-list-view-column>
+              </gui-list-view-row>
+
+            </gui-list-view-body>
+          </gui-list-view>
+        </gui-hbox-container>
+
+        <gui-hbox-container data-grow="1" data-fill="true">
+
+          <gui-vbox>
+            <gui-vbox-container data-shrink="1">
+              <gui-label data-id="Header">My Header</gui-label>
+            </gui-vbox-container>
+
+            <gui-vbox-container data-grow="1" data-fill="true" data-id="TabsContainer">
+              <gui-fragment data-fragment-id="TabsTheme"></gui-fragment>
+              <gui-fragment data-fragment-id="TabsDesktop"></gui-fragment>
+              <gui-fragment data-fragment-id="TabsPanel"></gui-fragment>
+              <gui-fragment data-fragment-id="TabsUser"></gui-fragment>
+              <gui-fragment data-fragment-id="TabsPackages"></gui-fragment>
+            </gui-vbox-container>
+          </gui-vbox>
+
+        </gui-hbox-container>
+      </gui-hbox>
+
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar>
+        <gui-button data-id="ButtonApply">LBL_APPLY</gui-button>
+        <gui-button data-id="ButtonCancel">LBL_CLOSE</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>
+
+<application-window data-id="PanelSettingWindow">
+  <gui-vbox>
+    <gui-vbox-container data-grow="1" data-fill="true">
+      <gui-list-view data-id="List" data-multiple="false">
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar>
+        <gui-button data-id="ButtonOK">LBL_OK</gui-button>
+        <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-dialog>
+
+<!-- ****************************************************************** -->
+<!--                             PACKAGES                               -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsPackages">
+  <gui-tabs data-id="TabsPackages">
+    <gui-tab-container data-id="TabPackagesLocal" data-label="Installed Packages">
+      <gui-fragment data-fragment-id="TabLocalPackages"></gui-fragment>
+    </gui-tab-container>
+
+    <gui-tab-container data-id="TabPackagesStore" data-label="App Store">
+      <gui-fragment data-fragment-id="TabAppStore"></gui-fragment>
+    </gui-tab-container>
+  </gui-tabs>
+</application-fragment>
+
+<application-fragment data-id="TabLocalPackages">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-list-view data-id="InstalledPackages" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Application</gui-list-view-column>
+            <gui-list-view-column data-basis="50px" data-grow="0" data-shrink="1">Scope</gui-list-view-column>
+            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Name</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="ButtonRegen">Regenerate metadata</gui-button>
+        <gui-button data-id="ButtonZipInstall">Install from zip</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabAppStore">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-list-view data-id="AppStorePackages" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Name</gui-list-view-column>
+            <gui-list-view-column data-basis="50px" data-grow="0" data-shrink="1">Version</gui-list-view-column>
+            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Author</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="ButtonStoreRefresh">Refresh</gui-button>
+        <gui-button data-id="ButtonStoreInstall">Install selected</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<!-- ****************************************************************** -->
+<!--                             USER                                   -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsUser">
+  <gui-tabs>
+    <gui-tab-container data-id="TabUserInfo" data-label="Information">
+      <gui-fragment data-fragment-id="TabUserInformation"></gui-fragment>
+    </gui-tab-container>
+
+    <gui-tab-container data-id="TabUserLang" data-label="Locales">
+      <gui-fragment data-fragment-id="TabUserLocale"></gui-fragment>
+    </gui-tab-container>
+  </gui-tabs>
+</application-fragment>
+
+<application-fragment data-id="TabUserInformation">
+  <gui-vbox class="block-label">
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>ID</gui-label>
+      <gui-text data-id="UserID" data-disabled="true"></gui-text>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Name</gui-label>
+      <gui-text data-id="UserName" data-disabled="true"></gui-text>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Username</gui-label>
+      <gui-text data-id="UserUsername" data-disabled="true"></gui-text>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Groups</gui-label>
+      <gui-text data-id="UserGroups" data-disabled="true"></gui-text>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabUserLocale">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Language (requires restart)</gui-label>
+      <gui-select data-id="UserLocale"></gui-select>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<!-- ****************************************************************** -->
+<!--                            PANEL                                   -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsPanel">
+  <gui-tabs>
+    <gui-tab-container data-id="TabPanelAppearance" data-label="Appearance">
+      <gui-fragment data-fragment-id="TabPanelAppearance"></gui-fragment>
+    </gui-tab-container>
+
+    <gui-tab-container data-id="TabPanelItems" data-label="Items">
+      <gui-fragment data-fragment-id="TabPanelItems"></gui-fragment>
+    </gui-tab-container>
+  </gui-tabs>
+</application-fragment>
+
+<application-fragment data-id="TabPanelAppearance">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Position</gui-label>
+      <gui-select data-id="PanelPosition"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Autohide</gui-label>
+      <gui-switch data-id="PanelAutoHide"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Ontop</gui-label>
+      <gui-switch data-id="PanelOntop"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_BACKGROUND_COLOR</gui-label>
+      <gui-input-modal data-id="PanelBackgroundColor"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_TEXT_COLOR</gui-label>
+      <gui-input-modal data-id="PanelForegroundColor"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Opacity</gui-label>
+      <gui-slider data-id="PanelOpacity" data-min="0" data-max="100"></gui-slider>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabPanelItems">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-label>Position</gui-label>
+      <gui-list-view data-id="PanelItems" data-multiple="false"></gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="PanelButtonAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="PanelButtonRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+        <gui-button data-id="PanelButtonUp" data-icon="stock://16x16/actions/up.png"></gui-button>
+        <gui-button data-id="PanelButtonDown" data-icon="stock://16x16/actions/down.png"></gui-button>
+        <gui-button data-id="PanelButtonReset" data-icon="stock://16x16/actions/revert.png"></gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<!-- ****************************************************************** -->
+<!--                           DESKTOP                                  -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsDesktop">
+  <gui-tabs>
+    <gui-tab-container data-id="TabDesktop" data-label="Theme">
+      <gui-fragment data-fragment-id="TabDesktopGeneral"></gui-fragment>
+    </gui-tab-container>
+
+    <gui-tab-container data-id="TabIconView" data-label="Icon View">
+      <gui-fragment data-fragment-id="TabDesktopIconView"></gui-fragment>
+    </gui-tab-container>
+  </gui-tabs>
+</application-fragment>
+
+<application-fragment data-id="TabDesktopGeneral">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Hotkeys</gui-label>
+      <gui-switch data-id="EnableHotkeys"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Window Switcher</gui-label>
+      <gui-switch data-id="EnableWindowSwitcher"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label data-id="DesktopMarginLabel">Desktop Margin</gui-label>
+      <gui-slider data-id="DesktopMargin" data-min="0" data-max="50"></gui-slider>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label data-id="CornerSnappingLabel">Desktop Corner Snapping</gui-label>
+      <gui-slider data-id="CornerSnapping" data-min="0" data-max="50"></gui-slider>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label data-id="WindowSnappingLabel">Window Snapping</gui-label>
+      <gui-slider data-id="WindowSnapping" data-min="0" data-max="50"></gui-slider>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabDesktopIconView">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Icon View</gui-label>
+      <gui-switch data-id="EnableIconView"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Invert Text Color</gui-label>
+      <gui-switch data-id="EnableIconViewInvert"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<!-- ****************************************************************** -->
+<!--                             THEME                                  -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsTheme">
+  <gui-tabs>
+    <gui-tab-container data-id="TabTheme" data-label="Theme">
+      <gui-fragment data-fragment-id="TabThemeFragment"></gui-fragment>
+    </gui-tab-container>
+
+    <gui-tab-container data-id="TabBackground" data-label="Background">
+      <gui-fragment data-fragment-id="TabBackgroundFragment"></gui-fragment>
+    </gui-tab-container>
+
+    <gui-tab-container data-id="TabFont" data-label="LBL_FONT">
+      <gui-fragment data-fragment-id="TabFontFragment"></gui-fragment>
+    </gui-tab-container>
+  </gui-tabs>
+</application-fragment>
+
+<application-fragment data-id="TabThemeFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Theme</gui-label>
+      <gui-select data-id="StyleThemeName"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Sounds</gui-label>
+      <gui-select data-id="SoundThemeName"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Icons</gui-label>
+      <gui-select data-id="IconThemeName"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Animations</gui-label>
+      <gui-switch data-id="EnableAnimations"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Sounds</gui-label>
+      <gui-switch data-id="EnableSounds"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable TouchMenu</gui-label>
+      <gui-switch data-id="EnableTouchMenu"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabBackgroundFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_BACKGROUND_IMAGE</gui-label>
+      <gui-input-modal data-id="BackgroundImage"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_BACKGROUND_COLOR</gui-label>
+      <gui-input-modal data-id="BackgroundColor"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Background Type</gui-label>
+      <gui-select data-id="BackgroundStyle"></gui-select>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabFontFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_FONT</gui-label>
+      <gui-input-modal data-id="FontName"></gui-input-modal>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>

@@ -150,7 +150,7 @@
 }
 
 /* Windows */
-.Window {
+application-window {
  -webkit-animation: show .3s;
     -moz-animation: show .3s;
      -ms-animation: show .3s;
@@ -162,8 +162,8 @@
       -o-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
          transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
 }
-.WindowHintResizing,
-.WindowHintMoving {
+application-window[data-hint="resizing"],
+application-window[data-hint="moving"] {
  -webkit-transition: none;
     -moz-transition: none;
      -ms-transition: none;
@@ -171,8 +171,8 @@
          transition: none;
 }
 
-.WindowHintClosing,
-.WindowHintMinimized {
+application-window[data-hint="closing"],
+application-window[data-minimized="true"] {
  -webkit-animation: hide .3s;
     -moz-animation: hide .3s;
      -ms-animation: hide .3s;
@@ -197,7 +197,12 @@
 
 
 /* Desktop */
-#Background.Blinking {
+body[data-attention="true"]:after {
+  position : absolute;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
   opacity : 0;
 
   -webkit-animation: pulseback 2s linear infinite;
@@ -207,8 +212,7 @@
 }
 
 /* Panel */
-.WMPanel.Autohide,
-.WMPanel.Visible {
+corewm-panel {
   -webkit-transition: all .3s ease-in-out;
      -moz-transition: all .3s ease-in-out;
       -ms-transition: all .3s ease-in-out;
@@ -216,7 +220,7 @@
           transition: all .3s ease-in-out;
 }
 
-.WMPanel ul > li.Button.Attention {
+corewm-panel .Button.Attention {
   -webkit-animation: attention 2s linear infinite;
      -moz-animation: attention 2s linear infinite;
       -ms-animation: attention 2s linear infinite;
@@ -224,15 +228,15 @@
 }
 
 /* Menus */
-.Menu,
-#Notifications .Notification {
+gui-menu,
+corewm-notification-entry {
  -webkit-animation: fadeIn .3s;
     -moz-animation: fadeIn .3s;
      -ms-animation: fadeIn .3s;
          animation: fadeIn .3s;
 }
-.Menu.Closing,
-#Notifications .Notification.Closing {
+gui-menu[data-hint="closing"],
+corewm-notification-entry[data-hint="closing"] {
  -webkit-animation: fadeOut .3s;
     -moz-animation: fadeOut .3s;
      -ms-animation: fadeOut .3s;

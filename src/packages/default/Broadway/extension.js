@@ -32,15 +32,32 @@
 
   var _isConnected = false;
   var _connWindow = null;
+  var _scheme = null;
 
   function createConnectionWindow() {
     if ( _connWindow ) { return; }
 
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      _connWindow = new BroadwayConnectionWindow();
-      wm.addWindow(_connWindow, true);
+    function addWindow() {
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm ) {
+        _connWindow = new BroadwayConnectionWindow(_scheme);
+        wm.addWindow(_connWindow, true);
+      }
     }
+
+    if ( _scheme ) {
+      addWindow();
+      return;
+    }
+
+    var url = API.getApplicationResource('ExtensionBroadway', 'scheme.html');
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      if ( result ) {
+        _scheme = scheme;
+        addWindow();
+      }
+    });
   }
 
   function destroyConnectionWindow() {
@@ -122,35 +139,39 @@
   /**
    * Main Window Constructor
    */
-  var BroadwayConnectionWindow = function() {
-    Window.apply(this, ['BroadwayConnectionWindow', {width: 400, height: 250}]);
-
-    // Set window properties and other stuff here
-    this._title = 'Broadway Client';
-    //this._icon  = metadata.icon;
-
-    this._properties.allow_maximize = false;
-    this._properties.allow_resize   = false;
-    this._properties.gravity        = 'center';
+  var BroadwayConnectionWindow = function(scheme) {
+    Window.apply(this, ['BroadwayConnectionWindow', {
+      title: 'Broadway Client',
+      allow_maximize: false,
+      allow_reszie: false,
+      gravity: 'center',
+      width: 400,
+      height: 250
+    }, null, scheme]);
   };
 
   BroadwayConnectionWindow.prototype = Object.create(Window.prototype);
 
-  BroadwayConnectionWindow.prototype.init = function(wmRef, app) {
+  BroadwayConnectionWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
+
     var supported = OSjs.Core.Broadway ? true : false;
-
-    var sproc, proc, stat, ws, start;
-
-    // Create window contents (GUI) here
     var lbl = 'Broadway support is ' + (supported ? 'loaded' : 'not loaded');
-    var stat = this._addGUIElement(new GUI.Label('LabelStatus', {label: lbl}), root);
-    Utils.$addClass(stat.$element, supported ? 'supported' : 'unsupported');
+    var ws;
 
-    var host = this._addGUIElement(new GUI.Text('TextHost', {value: 'ws://10.0.0.113:8085/socket-bin'}), root);
-    var spawner = this._addGUIElement(new GUI.Text('TextSpawn', {value: 'ws://10.0.0.113:9000'}), root);
-    var init = this._addGUIElement(new GUI.Button('ButtonConnect', {label: 'Connect', onClick: function() {
+    scheme.render(this, 'ConnectionWindow', root);
+
+    var connectInput = scheme.find(this, 'GtkConnection').set('disabled', !supported);
+    var procConnection = scheme.find(this, 'ProcConnection').set('disabled', !supported);
+    var connectButton = scheme.find(this, 'ConnectButton').set('disabled', !supported);
+
+    var procInput = scheme.find(this, 'StartProc').set('disabled', true);
+    var procButton = scheme.find(this, 'StartButton').set('disabled', true);
+
+    var statusText = scheme.find(this, 'StatusText').set('value', lbl);
+
+    connectButton.on('click', function() {
       if ( self._destroyed ) { return; }
 
       if ( ws ) {
@@ -158,63 +179,57 @@
         ws = null;
       }
 
-      ws = new WebSocket(spawner.getValue(), 'broadway-spawner');
+      ws = new WebSocket(procConnection.get('value'), 'broadway-spawner');
       ws.onerror = function() {
         alert('Failed to connect to spawner');
       };
       ws.onopen = function() {
         if ( self._destroyed ) { return; }
-        sproc.setDisabled(false);
+        procButton.set('disabled', false);
       };
       ws.onclose = function() {
         if ( self._destroyed ) { return; }
-        sproc.setDisabled(true);
+        procButton.set('disabled', true);
       };
 
-      init.setDisabled(true);
-      if ( stat ) {
-        stat.setLabel('Connecting...');
-      }
+      connectButton.set('disabled', true);
+      statusText.set('value', 'Connecting...');
 
-      OSjs.Core.Broadway.init(host.getValue(), function(error) {
+      OSjs.Core.Broadway.init(connectInput.get('value'), function(error) {
         if ( self._destroyed ) { return; }
 
         if ( error ) {
           console.warn('BroadwayClient', error);
-          stat.setLabel(error);
-          init.setDisabled(false);
+          statusText.set('value', error);
+          connectButton.set('disabled', false);
         } else {
-          proc.setDisabled(false);
-          init.setDisabled(true);
-          stat.setLabel('Connected...');
+          procInput.set('disabled', false);
+          connectButton.set('disabled', true);
+          statusText.set('value', 'Connected!');
         }
       }, function() {
         if ( self._destroyed ) { return; }
 
-        stat.setLabel('Disconnected...');
-        init.setDisabled(false);
-        proc.setDisabled(true);
+        statusText.set('value', 'Disconnecting...');
+        connectButton.set('disabled', false);
+        procInput.set('disabled', true);
 
         if ( ws ) {
           ws.close();
           ws = null;
         }
       });
-    }}), root);
-    init.setDisabled(!supported);
+    });
 
-    start = this._addGUIElement(new GUI.Label('LabelStartProcess', {label: 'Start new process:'}), root);
-    proc = this._addGUIElement(new GUI.Text('TextStartProcess', {value: '/usr/bin/gtk3-demo', disabled: true}), root);
-    sproc = this._addGUIElement(new GUI.Button('ButtonStartProcess', {label: 'Launch', disabled: true, onClick: function() {
+    procButton.on('click', function() {
       if ( self._destroyed ) { return; }
       if ( ws ) {
         ws.send(JSON.stringify({
           method: 'launch',
-          argument: proc.getValue()
+          argument: procInput.get('value')
         }));
       }
-    }}), root);
-    stat = this._addGUIElement(new GUI.Label('LabelError', {label: ''}), root);
+    });
 
     return root;
   };
@@ -232,19 +247,18 @@
    * Dialog Window
    */
   var BroadwayWindow = function(id, x, y, w, h) {
-    Window.apply(this, ['BroadwayWindow' + id, {}]);
-
-    this._dimension.w = w;
-    this._dimension.h = h;
-    //this._position.x  = Math.max(0, x);
-    //this._position.y  = Math.max(0, y);
-    this._title       = 'Broadway Window ' + id.toString();
-
-    this._properties.allow_resize     = false;
-    this._properties.allow_minimize   = false;
-    this._properties.allow_maximize   = false;
-    this._properties.allow_session    = false;
-    this._properties.key_capture      = true; // IMPORTANT
+    Window.apply(this, ['BroadwayWindow' + id, {
+      w: w,
+      h: h,
+      title: 'Broadway Window ' + id.toString(),
+      min_width: 100,
+      min_height: 100,
+      allow_resize: false,
+      allow_minimize: false,
+      allow_maximize: false,
+      allow_session: false,
+      key_capture: true // IMPORTANT
+    }]);
 
     this._broadwayId = id;
     this._canvas = document.createElement('canvas');
@@ -276,25 +290,25 @@
       });
     }
 
-    this._addEventListener(root, 'mouseover', function(ev) {
+    Utils.$bind(root, 'mouseover', function(ev) {
       return inject('mouseover', ev);
     });
-    this._addEventListener(root, 'mouseout', function(ev) {
+    Utils.$bind(root, 'mouseout', function(ev) {
       return inject('mouseout', ev);
     });
-    this._addEventListener(root, 'mousemove', function(ev) {
+    Utils.$bind(root, 'mousemove', function(ev) {
       return inject('mousemove', ev);
     });
-    this._addEventListener(root, 'mousedown', function(ev) {
+    Utils.$bind(root, 'mousedown', function(ev) {
       return inject('mousedown', ev);
     });
-    this._addEventListener(root, 'mouseup', function(ev) {
+    Utils.$bind(root, 'mouseup', function(ev) {
       return inject('mouseup', ev);
     });
-    this._addEventListener(root, 'DOMMouseScroll', function(ev) {
+    Utils.$bind(root, 'DOMMouseScroll', function(ev) {
       return inject('mousewheel', ev);
     });
-    this._addEventListener(root, 'mousewheel', function(ev) {
+    Utils.$bind(root, 'mousewheel', function(ev) {
       return inject('mousewheel', ev);
     });
 

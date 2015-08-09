@@ -141,7 +141,7 @@
       });
     });
 
-    OSjs.API.createMenu(menu, {x: ev.clientX, y: ev.clientY});
+    OSjs.API.createMenu(menu, ev);
   };
 
   /**
@@ -218,6 +218,9 @@
       a[0] = l[CurrentLocale][s];
     } else {
       a[0] = l[DefaultLocale] ? (l[DefaultLocale][s] || s) : s;
+      if ( a[0] && a[0] === s ) {
+        a[0] = doTranslate.apply(null, a);
+      }
     }
 
     return a.length > 1 ? OSjs.Utils.format.apply(null, a) : a[0];
@@ -358,12 +361,15 @@
           _launch(app[0]);
         } else {
           if ( wm ) {
-            wm.addWindow(new OSjs.Dialogs.ApplicationChooser(file, app, function(btn, appname, setDefault) {
+            OSjs.API.createDialog('ApplicationChooser', {
+              file: file,
+              list: app
+            }, function(ev, btn, result) {
               if ( btn !== 'ok' ) { return; }
-              _launch(appname);
+              _launch(result.name);
 
-              handler.setDefaultApplication(file.mime, setDefault ? appname : null);
-            }));
+              handler.setDefaultApplication(file.mime, result.useDefault ? result.name : null);
+            });
           } else {
             OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
                            OSjs.API._('ERR_FILE_OPEN_FMT', file.path),
@@ -413,12 +419,11 @@
 
       if ( !data.splash ) { return; }
 
-      splash = document.createElement('div');
-      splash.className = 'ProcessSplash';
+      splash = document.createElement('application-splash');
 
       var icon = document.createElement('img');
       icon.alt = n;
-      icon.src = OSjs.API.getIcon(data.icon, data);
+      icon.src = OSjs.API.getIcon(data.icon);
 
       var titleText = document.createElement('b');
       titleText.appendChild(document.createTextNode(data.name));
@@ -428,27 +433,20 @@
       title.appendChild(titleText);
       title.appendChild(document.createTextNode('...'));
 
-      splashBar = new OSjs.GUI.ProgressBar('ApplicationSplash' + n);
+      splashBar = document.createElement('gui-progress-bar');
+      OSjs.GUI.Elements['gui-progress-bar'].build(splashBar);
 
       splash.appendChild(icon);
       splash.appendChild(title);
-      splash.appendChild(splashBar.getRoot());
+      splash.appendChild(splashBar);
 
       document.body.appendChild(splash);
 
       return {
         destroy: function() {
-          if ( splashBar ) {
-            splashBar.destroy();
-            splashBar = null;
-          }
-
-          if ( splash ) {
-            if ( splash.parentNode ) {
-              splash.parentNode.removeChild(splash);
-            }
-            splash = null;
-          }
+          OSjs.Utils.$remove(splash);
+          splash = null;
+          splashBar = null;
         },
         update: function(p, c) {
           if ( !splash || !splashBar ) { return; }
@@ -456,7 +454,7 @@
           if ( c ) {
             per = (p / c) * 100;
           }
-          splashBar.setProgress(per);
+          (new OSjs.GUI.Element(splashBar)).set('value', per);
         }
       };
     }
@@ -540,8 +538,6 @@
     }
 
     function _callback(result) {
-      _done();
-
       if ( typeof OSjs.Applications[n] === 'undefined' ) {
         _error(OSjs.API._('ERR_APP_RESOURCES_MISSING_FMT', n));
         return;
@@ -549,6 +545,7 @@
 
       // Only allow one instance if specified
       if ( _checkSingular(result) ) {
+        _done();
         return;
       }
 
@@ -557,7 +554,11 @@
 
       try {
         handler.getApplicationSettings(a.__name, function(settings) {
-          a.init(settings, result);
+          a.init(settings, result, function() {
+            setTimeout(function() {
+              _done();
+            }, 100);
+          });
           onFinished(a, result);
 
           OSjs.Session.triggerHook('onApplicationLaunched', [{
@@ -574,6 +575,11 @@
         console.warn('Error on init() application', ex, ex.stack);
         _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
       }
+
+      // Just in case something goes wrong
+      setTimeout(function() {
+        _done();
+      }, 30 * 1000);
     }
 
     function launch() {
@@ -629,9 +635,9 @@
    * Launch Processes from a List
    *
    * @param   Array         list        List of launch application arguments
-   * @param   Function      onSuccess   Callback on success
-   * @param   Function      onError     Callback on error
-   * @param   Function      onFinished  Callback on finished running
+   * @param   Function      onSuccess   Callback on success => fn(app, metadata, appName, appArgs)
+   * @param   Function      onError     Callback on error => fn(error, appName, appArgs)
+   * @param   Function      onFinished  Callback on finished running => fn()
    * @see     doLaunchProcess
    * @return  void
    * @api     OSjs.API.launchList()
@@ -642,8 +648,8 @@
     onError     = onError     || function() {};
     onFinished  = onFinished  || function() {};
 
-    function _onSuccess(app, metadata, appName, appArgs, queueData) {
-      onSuccess(app, metadata, appName, appArgs, queueData);
+    function _onSuccess(app, metadata, appName, appArgs) {
+      onSuccess(app, metadata, appName, appArgs);
       _onNext();
     }
 
@@ -684,7 +690,6 @@
 
       var aname = s.name;
       var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
-      var adata = s.data || {};
 
       if ( !aname ) {
         console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
@@ -692,7 +697,7 @@
       }
 
       OSjs.API.launch(aname, aargs, function(app, metadata) {
-        _onSuccess(app, metadata, aname, aargs, adata);
+        _onSuccess(app, metadata, aname, aargs);
       }, function(err, name, args) {
         _onError(err, name, args);
       });
@@ -994,6 +999,37 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Create a new dialog
+   *
+   * @param   String        className       Dialog Namespace Class Name
+   * @param   Object        args            Arguments you want to send to dialog
+   * @param   Function      callback        Callback on dialog action (close/ok etc)
+   * @param   Mixed         parentObj       (Optional) A window or app (to make it a child window)
+   *
+   * @return  Window
+   *
+   * @api     OSjs.API.createDialog()
+   */
+  function doCreateDialog(className, args, callback, parentObj) {
+    var win = new OSjs.Dialogs[className](args, callback);
+
+    if ( !parentObj ) {
+      var wm = OSjs.Core.getWindowManager();
+      wm.addWindow(win, true);
+    } else if ( parentObj instanceof OSjs.Core.Window ) {
+      parentObj._addChild(win, true);
+    } else if ( parentObj instanceof OSjs.Core.Application ) {
+      parentObj._addWidow(win);
+    }
+
+    setTimeout(function() {
+      win._focus();
+    }, 10);
+
+    return win;
+  };
+
+  /**
    * Create a draggable DOM element
    *
    * @param   DOMElement    el      DOMElement
@@ -1164,48 +1200,6 @@
   }
 
   /**
-   * Create and show a GUI Menu
-   *
-   * @param   Array     items           Array of items
-   * @param   Object    pos             Object with x and y (Or a browser Event/MouseEvent)
-   * @param   Object    customInstance  (Optional) If you have a custom Menu Class
-   *
-   * @return  OSjs.GUI.Menu
-   * @api     OSjs.API.createMenu()
-   */
-  function doCreateMenu(items, pos, customInstance) {
-    items = items || [];
-    if ( pos instanceof Event ) {
-      pos = { x: pos.clientX, y: pos.clientY };
-    } else {
-      pos = pos || {x: 0, y: 0};
-    }
-
-    OSjs.API.blurMenu();
-
-    if ( customInstance ) {
-      _MENU = customInstance;
-    } else {
-      _MENU = new OSjs.GUI.Menu(items);
-    }
-    _MENU.show(pos);
-    return _MENU;
-  }
-
-  /**
-   * Blur (Hide) current Menu
-   *
-   * @return  void
-   * @api     OSjs.API.blurMenu()
-   */
-  function doBlurMenu() {
-    if ( _MENU ) {
-      _MENU.destroy();
-      _MENU = null;
-    }
-  }
-
-  /**
    * Create (or show) loading indicator
    *
    * @param   String    name        Name of notification (unique)
@@ -1275,13 +1269,15 @@
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       try {
-        var w = new OSjs.Dialogs.ErrorMessage();
-        w.setError(title, message, error, exception, bugreport);
-        wm.addWindow(w);
-
-        return w;
+        return OSjs.API.createDialog('Error', {
+          title: title,
+          message: message,
+          error: error,
+          exception: exception,
+          bugreport: bugreport
+        });
       } catch ( e ) {
-        console.warn('An error occured while creating Dialogs.ErrorMessage', e);
+        console.warn('An error occured while creating Dialogs.Error', e);
         console.warn('stack', e.stack);
       }
     }
@@ -1370,56 +1366,6 @@
     };
   })();
 
-
-  /**
-   * Wrapper for binding platform spesific events
-   *
-   * Must be called with `this` in call() or apply()
-   *
-   * THIS IS ONLY USED INTERNALLY
-   *
-   * @param   DOMElement    el          DOM Element to attach event to
-   * @param   String        ev          DOM Event Name
-   * @param   Function      callback    Callback on event
-   *
-   *
-   * @see     Window::_addEventListener()
-   * @see     GUIElement::_addEventListener()
-   * @return  void
-   *
-   * @method  OSjs.API._bindEvent()
-   */
-  function _bindEvent(el, ev, callback) {
-    var isTouch = OSjs.Compability.touch;
-    var touchMap = {
-      click: 'touchend',
-      mousedown: 'touchstart'
-    };
-
-    el.addEventListener(ev, function(ev) {
-      callback.call(this, ev, false);
-    }, false);
-
-    this._addHook('destroy', function() {
-      el.removeEventListener(ev, function(ev) {
-        callback.call(this, ev, false);
-      }, false);
-    });
-
-    if ( touchMap[ev] ) {
-      var tev = touchMap[ev];
-      el.addEventListener(tev, function(ev) {
-        callback.call(this, ev, true);
-      }, false);
-
-      this._addHook('destroy', function() {
-        el.removeEventListener(tev, function(ev) {
-          callback.call(this, ev, true);
-        }, false);
-      });
-    }
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -1449,17 +1395,16 @@
 
   OSjs.API.createDraggable        = doCreateDraggable;
   OSjs.API.createDroppable        = doCreateDroppable;
-  OSjs.API.createMenu             = doCreateMenu;
-  OSjs.API.blurMenu               = doBlurMenu;
+  OSjs.API.createMenu             = function() {}; // gui.js
+  OSjs.API.blurMenu               = function() {}; // gui.js
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
+  OSjs.API.createDialog           = doCreateDialog;
 
   OSjs.API.error                      = doErrorDialog;
   OSjs.API.playSound                  = doPlaySound;
   OSjs.API.setClipboard               = doSetClipboard;
   OSjs.API.getClipboard               = doGetClipboard;
   OSjs.API.getServiceNotificationIcon = doGetServiceNotificationIcon;
-
-  OSjs.API._bindEvent = _bindEvent;
 
 })();

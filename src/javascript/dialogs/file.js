@@ -27,608 +27,303 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_StandardDialog, Utils, API, VFS) {
+(function(API, VFS, Utils, DialogWindow) {
   'use strict';
 
   /**
-   * File Chooser Dialog
+   * An 'File' dialog
    *
+   * TODO: Disable button if no selection is made (or empty text on save)
    *
-   * @param   Object          args    Options
-   * @param   Function        onClose Callback on close => fn(button, file)
+   * @param   args      Object        An object with arguments
+   * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
-   * @option args String  type                  Dialog type: "open" or "save"
-   * @option args String  select                Selection type: "file" or "dir"
-   * @option args String  path                  Current path
-   * @option args String  filename              Current filename
-   * @option args String  mime                  Current file MIME
-   * @option args String  mimes                 Browse filetype filter (defaults to [none] all files)
-   * @option args String  filetypes             Save filetypes dict (ext => mime)
-   * @option args String  defaultFilename       Default filename
-   * @option args String  defaultFilemime       Default filemime (defaults to given MIME)
+   * @option    args    title       String      Dialog title
+   * @option    args    type        String      Dialog type (default=open, alternative=save)
+   * @option    args    multiple    boolean     Multiple file selection (default=false)
+   * @option    args    file        VFS.File    (Optional) Current file
+   * @option    args    path        String      (Optional) Default path
+   * @option    args    filename    String      (Optional) Default filename
+   * @option    args    extension   String      (Optional) Default file extension
+   * @option    args    mime        String      (Optional) Default file MIME
+   * @option    args    filter      Array       (Optional) Array of MIMIE filters
+   * @option    args    select      String      (Optional) Selection type (file/dir)
    *
+   * @extends DialogWindow
+   * @class FileDialog
    * @api OSjs.Dialogs.File
-   * @see OSjs.Dialogs._StandardDialog
-   *
-   * @extends _StandardDialog
-   * @class
    */
-  var FileDialog = function(args, onClose) {
-    args = Utils.argumentDefaults(args || {}, {
-      type: 'open',
-      select: 'file',
-      filename: '',
-      mime: '',
-      mimes: [],
-      filetypes: null,
-      mkdir: false,
-      defaultFilename: 'New File'
+  function FileDialog(args, callback) {
+    args = Utils.argumentDefaults(args, {
+      file:       null,
+      type:       'open',
+      path:       OSjs.API.getDefaultPath('/'),
+      filename:   '',
+      filetypes:  [],
+      extension:  '',
+      mime:       'application/octet-stream',
+      filter:     [],
+      select:     null,
+      multiple:   false
     });
 
-    // Arguments
-    this.type             = args.type;
-    this.path             = args.path;
-    this.select           = args.select;
-    this.filename         = args.filename;
-    this.filemime         = args.mime;
-    this.filter           = args.mimes;
-    this.filetypes        = args.filetypes;
-    this.showMkdir        = args.mkdir;
-    this.defaultFilename  = args.defaultFilename;
-    this.defaultFilemime  = args.defaultFilemime  || this.filemime || '';
+    args.multiple = (args.type === 'save' ? false : args.multiple === true);
 
-    if ( !this.path && this.filename ) {
-      if ( this.filename.match(/\//) ) {
-        this.path     = Utils.dirname(this.filename);
-        this.filename = Utils.filename(this.filename);
+    if ( args.path && args.path instanceof VFS.File ) {
+      args.path = Utils.dirname(args.path.path);
+    }
+
+    if ( args.file && args.file.path ) {
+      args.path = Utils.dirname(args.file.path);
+      args.filename = args.file.filename;
+      args.mime = args.file.mime;
+
+      if ( args.filetypes.length ) {
+        var setTo = args.filetypes[0];
+        args.filename = Utils.replaceFileExtension(args.filename, setTo.extension);
+        args.mime = setTo.mime;
       }
     }
 
-    if ( !this.path ) {
-      this.path = API.getDefaultPath('/');
-    }
+    var title     = API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
+    var icon      = args.type === 'open' ? 'actions/gtk-open.png' : 'actions/gtk-save-as.png';
 
-    // Stored elements etc.
-    this.selectedFile = null;
-    this.$input       = null;
-    this.$fileView    = null;
-    this.$statusBar   = null;
-    this.$select      = null;
-    this.$selectRoot  = null;
-    this.$goRoot      = null;
-
-    // Window
-    var title     = API._(this.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
-    var className = this.type === 'save' ? 'FileSaveDialog' : 'FileOpenDialog';
-
-    _StandardDialog.apply(this, [className, {
+    DialogWindow.apply(this, ['FileDialog', {
       title: title,
-      icon: (this.type === 'open' ? 'actions/gtk-open.png' : 'actions/gtk-save-as.png'),
-      buttons: ['cancel', 'ok']
-    }, {width:600, height:380}, onClose]);
-  };
+      icon: icon,
+      width: 600,
+      height: 400
+    }, args, callback]);
 
-  FileDialog.prototype = Object.create(_StandardDialog.prototype);
+    this.selected = null;
+    this.path = args.path;
+  }
 
-  /**
-   * Destroy
-   */
-  FileDialog.prototype.destroy = function() {
-    this.$input       = null;
-    this.$fileView    = null;
-    this.$statusBar   = null;
-    this.$select      = null;
-    this.$selectRoot  = null;
-    this.$goRoot      = null;
+  FileDialog.prototype = Object.create(DialogWindow.prototype);
+  FileDialog.constructor = DialogWindow;
 
-    _StandardDialog.prototype.destroy.apply(this, arguments);
-  };
-
-  /**
-   * Create
-   */
   FileDialog.prototype.init = function() {
     var self = this;
-    var root = _StandardDialog.prototype.init.apply(this, arguments);
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    var view = this.scheme.find(this, 'FileView');
+    view.set('filter', this.args.filter);
+    view.set('filetype', this.args.select || '');
 
-    this.$fileView = this._addGUIElement(new OSjs.GUI.FileView('FileDialogFileView', {
-      mimeFilter: this.filter,
-      typeFilter: (this.select === 'path' ? 'dir' : null)
-    }), this.$element);
+    var filename = this.scheme.find(this, 'Filename');
+    var home = this.scheme.find(this, 'HomeButton');
+    var mlist = this.scheme.find(this, 'ModuleSelect');
 
-    this.$fileView.onError = function() {
-      self.onError.apply(self, arguments);
-    };
-    this.$fileView.onContextMenu = function(ev) {
-      self.createContextMenu(ev);
-    };
-    this.$fileView.onViewContextMenu = function(ev) {
-      self.createContextMenu(ev);
-    };
-    this.$fileView.onSelected = function(item) {
-      self.onFileSelected(item);
-    };
-    this.$fileView.onFinished = function() {
-      self.onFileFinished();
-    };
-    this.$fileView.onRefresh = function() {
-      self.onFileRefresh();
-    };
-    this.$fileView.onActivated = function(item) {
-      self.onFileActivated(item);
-    };
+    this._toggleLoading(true);
+    view.set('multiple', this.args.multiple);
+    filename.set('value', this.args.filename || '');
 
-    var goHomeSelected = false;
+    home.on('click', function() {
+      var dpath = API.getDefaultPath('/');
+      self.changePath(dpath);
+    });
 
-    function createRootSelection() {
-      var roots = VFS.getModules(); // FIXME Does not work if Internal is disabled for some reason
-      if ( roots.length > 1 ) {
-        Utils.$addClass(self.$element, 'HasRootSelection');
-        self.$selectRoot = self._addGUIElement(new OSjs.GUI.Select('SelectRoot', {onChange: function(el, ev, value) {
-          if ( goHomeSelected ) {
-            goHomeSelected = false;
-            return;
+    view.on('activate', function(ev) {
+      self.selected = null;
+      if ( self.args.type !== 'save' ) {
+        filename.set('value', '');
+      }
+
+      if ( ev && ev.detail && ev.detail.entries ) {
+        var activated = ev.detail.entries[0];
+        if ( activated ) {
+          self.selected = new VFS.File(activated.data);
+          if ( self.selected.type !== 'dir' ) {
+            filename.set('value', self.selected.filename);
           }
+          self.checkSelection(ev);
+        }
+      }
+    });
 
-          if ( self.$fileView ) {
-            var root = VFS.Modules[value].root;
-            self.$fileView.chdir(root);
+    view.on('select', function(ev) {
+      self.selected = null;
+      //filename.set('value', '');
+
+      if ( ev && ev.detail && ev.detail.entries ) {
+        var activated = ev.detail.entries[0];
+        if ( activated ) {
+          self.selected = new VFS.File(activated.data);
+
+          if ( self.selected.type !== 'dir' ) {
+            filename.set('value', self.selected.filename);
           }
-        }}), self.$element);
+        }
+      }
+    });
 
-        roots.forEach(function(m, i) {
-          var icon = API.getIcon(m.module.icon);
-          var desc = m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : '');
-          self.$selectRoot.addItem(m.name, desc, icon);
+    if ( this.args.type === 'save' ) {
+      var filetypes = [];
+      this.args.filetypes.forEach(function(f) {
+        filetypes.push({
+          label: Utils.format('{0} (.{1} {2})', f.label, f.extension, f.mime),
+          value: f.extension
         });
+      });
 
-        var cur = VFS.getModuleFromPath(self.path);
-        self.$selectRoot.setSelected(cur);
-      }
-    }
+      var ft = this.scheme.find(this, 'Filetype').add(filetypes).on('change', function(ev) {
+        var newinput = Utils.replaceFileExtension(filename.get('value'), ev.detail);
+        filename.set('value', newinput);
+      });
 
-    function createMkdir() {
-      if ( self.showMkdir && self.$buttons ) {
-        self._addGUIElement(new OSjs.GUI.Button('ButtonMkdir', {label: 'New Folder', onClick: function() {
-
-          var dir = self.$fileView.getPath();
-          var msg = API._('DIALOG_FILE_MKDIR_MSG', dir);
-          var diag = new OSjs.Dialogs.Input(msg, API._('DIALOG_FILE_MKDIR'), function(btn, val) {
-            if ( btn === 'ok' && val ) {
-              var newdir = new VFS.File(dir + '/' + val);
-              VFS.mkdir(newdir, function(error) {
-                if ( !error && self.$fileView ) {
-                  self.$fileView.refresh();
-                }
-              });
-            }
-          });
-
-          self._addChild(diag, true);
-        }}), self.$buttons);
-      }
-    }
-
-    this.$statusBar = this._addGUIElement(new OSjs.GUI.StatusBar('FileDialogStatusBar'), this.$element);
-    this.$statusBar.setText('');
-
-    this.$goRoot = this._addGUIElement(new OSjs.GUI.Button('FileDialogGoRoot', {
-      icon: OSjs.API.getIcon('places/folder_home.png'),
-      onClick: function() {
-        var path = API.getDefaultPath('/');
-
-        if ( self.$selectRoot ) {
-          goHomeSelected = true;
-          var m = OSjs.VFS.getModuleFromPath(path);
-          self.$selectRoot.setValue(m);
-        }
-
-        if ( self.$fileView ) {
-          self.$fileView.chdir(path, function() {
-            goHomeSelected = false;
-          }, function() {
-            goHomeSelected = false;
-          });
-        }
-       }
-    }), this.$element);
-
-    function setSelectedType(val) {
-      if ( val && self.$select ) {
-        var spl = val.split('.');
-        if ( spl.length ) {
-          self.$select.setValue(spl.pop());
-        }
-      }
-    }
-
-    function _change(ev) {
-      if ( self.$input ) {
-        setSelectedType(self.$input.getValue());
-      }
-      self.onInputKey(ev);
-    }
-
-
-    if ( this.type === 'save' ) {
-      var curval = Utils.escapeFilename(this.filename ? this.filename : this.defaultFilename);
-
-      if ( this.filetypes ) {
-        var firstExt = '';
-        var types = {};
-        var MIMEDescriptions = API.getDefaultSettings().MIME || {};
-
-        Object.keys(this.filetypes).forEach(function(i) {
-          var val = self.filetypes[i];
-          if ( !firstExt ) {
-            firstExt = i;
-          }
-
-          types[i] = '';
-          if ( MIMEDescriptions[val] ) {
-            types[i] += MIMEDescriptions[val] + ' ';
-          }
-          types[i] += val + ' (.' + i + ')';
-        });
-
-        var ext = (curval.split('.')).pop();
-        if ( ext && !this.filetypes[ext] && firstExt ) {
-          curval = Utils.replaceFileExtension(curval, firstExt);
-        }
-
-        this.$select = this._addGUIElement(new OSjs.GUI.Select('FileDialogFiletypeSelect', {onChange: function(sobj, sdom, val) {
-          self.onSelectChange(val);
-        }}), this.$element);
-        this.$select.addItems(types);
-
-        setSelectedType(curval);
-        Utils.$addClass(root.firstChild, 'HasFileTypes');
+      if ( filetypes.length <= 1 ) {
+        new OSjs.GUI.Element(ft.$element.parentNode).hide();
       }
 
-      this.$input = this._addGUIElement(new OSjs.GUI.Text('FileName', {
-        value: curval,
-        onKeyPress: function(ev) {
-          self.onInputKey(ev);
-          if ( ev.keyCode === Utils.Keys.ENTER ) {
-            self.onInputEnter(ev);
-            return;
-          }
-        },
-        onChange: _change,
-        onKeyUp: _change
-      }), this.$element);
+      filename.on('enter', function(ev) {
+        self.selected = null;
+        self.checkSelection(ev);
+      });
+    } else {
+      this.scheme.find(this, 'FileInput').hide();
     }
 
-    createRootSelection();
-    createMkdir();
+    var rootPath = this.path;
+    var tmp = rootPath.split(/(.*):\/\/\//);
+    if ( !tmp[0] && tmp.length > 1 ) {
+      rootPath = tmp[1] + ':///';
+    }
+
+    var modules = [];
+    VFS.getModules().forEach(function(m) {
+      modules.push({label: m.name, value: m.module.root});
+    });
+    mlist.clear().add(modules).set('value', rootPath);
+    mlist.on('change', function(ev) {
+      self.changePath(ev.detail);
+    });
+
+    this.changePath();
 
     return root;
   };
 
-  /**
-   * Window has been displayed
-   */
-  FileDialog.prototype._inited = function() {
+  FileDialog.prototype.changePath = function(dir) {
     var self = this;
-    _StandardDialog.prototype._inited.apply(this, arguments);
-
-    // Force override of default MIME if we have a selector
-    if ( this.filetypes && this.$select ) {
-      Object.keys(this.filetypes).forEach(function(i) {
-        self.filemime = i;
-        self.defaultFilemime = i;
-        return false;
-      });
-    }
-
-    if ( this.$fileView ) {
-      this.$fileView.chdir(this.path);
-    }
-
-    if ( this.buttons['ok'] ) {
-      if ( this.type === 'save' && this.$input && this.$input.getValue() ) {
-        this.buttons['ok'].setDisabled(false);
-      }
-    }
-
-    this.highlightFilename();
-  };
-
-  /**
-   * Window has been focused
-   */
-  FileDialog.prototype._focus = function() {
-    _StandardDialog.prototype._focus.apply(this, arguments);
-
-    this.highlightFilename();
-  };
-
-  /**
-   * File has been chosen
-   */
-  FileDialog.prototype.finishDialog = function(file) {
-    var self = this;
-
-    file = file || new VFS.File(_getSelected());
-    file.mime = file.mime || this.defaultMime;
-
-    function _getSelected() {
-      var result = '';
-
-      if ( self.select === 'path' ) {
-        result = self.selectedFile;
-      } else {
-        if ( self.$fileView ) {
-          var root = self.$fileView.getPath();
-          if ( self.$input ) {
-            result = root + (root.match(/\/$/) ? '' : '/') + self.$input.getValue();
-          } else {
-            result = self.selectedFile;
-          }
-        }
-      }
-
-      return result;
-    }
-
-    function _confirm() {
-      var wm = OSjs.Core.getWindowManager();
-      if ( wm ) {
-        self._toggleDisabled(true);
-        var conf = new OSjs.Dialogs.Confirm(API._('DIALOG_FILE_OVERWRITE', Utils.filename(file.path)), function(btn) {
-          self._toggleDisabled(false);
-          if ( btn === 'ok' ) {
-            self.end('ok', file);
-          }
-        });
-        wm.addWindow(conf);
-        self._addChild(conf);
-      }
-    }
-
-    if ( this.type === 'open' ) {
-      this.end('ok', file);
-    } else {
-      VFS.exists(file, function(error, result) {
-        if ( error ) {
-          error = error || 'Failed to stat file';
-          self._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', file.path), error);
-          return;
-        }
-        if ( result ) {
-          _confirm();
-          return;
-        }
-
-        self.end('ok', file);
-      });
-    }
-  };
-
-  /**
-   * Highlights the filename in input
-   */
-  FileDialog.prototype.highlightFilename = function() {
-    if ( this.$input ) {
-      this.$input.focus();
-      var range = Utils.getFilenameRange(this.$input.getValue());
-      this.$input.select(range);
-    }
-  };
-
-  FileDialog.prototype.checkInput = function() {
-    if ( this.type !== 'save' ) { return; }
-    if ( !this.buttons['ok'] ) { return; }
-
-    if ( this.$input.getValue().length ) {
-      this.buttons['ok'].setDisabled(false);
-    } else {
-      this.buttons['ok'].setDisabled(true);
-    }
-  };
-
-  /**
-   * Create Context Menu
-   */
-  FileDialog.prototype.createContextMenu = function(ev) {
-    var self = this;
-    var fileList = this.$fileView;
-    if ( !fileList ) { return; }
-    var viewType = fileList.viewType || '';
-
-    OSjs.API.createMenu([
-      {name: 'ListView', title: API._('DIALOG_FILE_MNU_VIEWTYPE'), menu: [
-        {name: 'ListView', title: API._('DIALOG_FILE_MNU_LISTVIEW'), disabled: (viewType.toLowerCase() === 'listview'), onClick: function() {
-          self.onMenuSelect('ListView');
-        }},
-        {name: 'IconView', title: API._('DIALOG_FILE_MNU_ICONVIEW'), disabled: (viewType.toLowerCase() === 'iconview'), onClick: function() {
-          self.onMenuSelect('IconView');
-        }},
-        {name: 'TreeView', title: API._('DIALOG_FILE_MNU_TREEVIEW'), disabled: (viewType.toLowerCase() === 'treeview'), onClick: function() {
-          self.onMenuSelect('TreeView');
-        }}
-      ]}
-    ], {x: ev.clientX, y: ev.clientY});
-  };
-
-  /**
-   * Error wrapper
-   */
-  FileDialog.prototype.onError = function(err, dirname) {
-    var self = this;
-
-    this._toggleLoading(false);
-    if ( !err ) {
-      return;
-    }
-
-    this._error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_ERROR_SCANDIR', dirname), err);
-    if ( this.$fileView && this.$fileView.viewRef ) {
-      this.$fileView.viewRef.clear();
-    }
-  };
-
-  /**
-   * Menu: Item selected
-   */
-  FileDialog.prototype.onMenuSelect = function(type) {
-    if ( this.$fileView ) {
-      this.$fileView.setViewType(type);
-    }
-    this._focus();
-  };
-
-  /**
-   * FileView: Selection
-   */
-  FileDialog.prototype.onFileSelected = function(item) {
-    var selected = null;
-    var seltype  = item ? item.type : null;
-
-    if ( this.select === 'path' && (item && item.type === 'dir') ) {
-      selected = item.path;
-    } else {
-      if ( item && item.type === 'file' ) {
-        selected = item.path;
-      }
-    }
-
-    if ( this.buttons['ok'] ) {
-      this.buttons['ok'].setDisabled(selected === null);
-    }
-
-    if ( this.$input ) {
-      if ( this.select === 'dir' && selected ) {
-        this.$input.setValue(Utils.escapeFilename(selected));
-      } else {
-        if ( seltype === 'file' ) {
-          this.$input.setValue(Utils.escapeFilename(selected));
-        }
-      }
-    }
-
-    this.selectedFile = selected;
-  };
-
-  /**
-   * FileView: Refresh Finished
-   */
-  FileDialog.prototype.onFileFinished = function() {
-    if ( this.$statusBar && this.$fileView ) {
-      this.path = this.$fileView.getPath();
-      this.$statusBar.setText(this.path);
-    }
-    this._toggleLoading(false);
-
-    if ( this.select === 'path' ) {
-      this.selectedFile = this.path; // Dir selection dialog needs to start on default
-      this.buttons['ok'].setDisabled(false);
-    }
-
-    this.checkInput();
-  };
-
-  /**
-   * FileView: Refresh
-   */
-  FileDialog.prototype.onFileRefresh = function() {
-    this.selectedFile = null;
-
-    if ( this.$statusBar && this.$fileView ) {
-      this.$statusBar.setText(this.$fileView.getPath());
-    }
+    var view = this.scheme.find(this, 'FileView');
     this._toggleLoading(true);
 
-    if ( this.buttons['ok'] ) {
-      this.buttons['ok'].setDisabled(true);
-    }
+    view._call('chdir', {
+      path: dir || this.path,
+      done: function() {
+        if ( dir ) {
+          self.path = dir;
+        }
+
+        self.selected = null;
+        self._toggleLoading(false);
+      }
+    });
   };
 
-  /**
-   * FileView: Activated
-   */
-  FileDialog.prototype.onFileActivated = function(item) {
-    var self = this;
-    this.selectedFile = null;
+  FileDialog.prototype.checkFileExtension = function() {
+    var filename = this.scheme.find(this, 'Filename');
+    var filetypes = this.scheme.find(this, 'Filetypes');
 
-    function _activated() {
-      self.buttons['ok'].setDisabled(false);
-      self.finishDialog.call(self, item);
-    }
+    var mime = this.args.mime;
+    var input = filename.get('value');
 
-    if ( this.select === 'file' && item.type === 'file' ) {
-      _activated();
-    } else if ( this.select === 'path' && item.type === 'dir' && Utils.filename(item.path) !== '..' ) {
-      _activated();
-    }
-  };
+    if ( this.args.filetypes.length ) {
+      if ( !input && this.args.filename ) {
+        input = this.args.filename;
+      }
 
-  /**
-   * Select: Item changed
-   */
-  FileDialog.prototype.onSelectChange = function(type) {
-    this.filemime = this.filetypes[type];
+      if ( input.length ) {
+        var extension = input.split('.').pop();
+        var current = filetypes.get('value');
+        var found = false;
 
-    if ( this.$input ) {
-      var newval = Utils.replaceFileExtension(this.$input.getValue(), type);
-      this.$input.setValue(newval);
-    }
-
-    this.highlightFilename();
-  };
-
-  /**
-   * Input: key pressed
-   */
-  FileDialog.prototype.onInputKey = function() {
-    this.checkInput();
-  };
-
-  /**
-   * Input: enter pressed
-   */
-  FileDialog.prototype.onInputEnter = function(ev) {
-    if ( this.buttons['ok'] && this.buttons['ok'].getDisabled() ) {
-      return;
-    }
-
-    this.onButtonClick('ok', ev);
-  };
-
-  /**
-   * Button: pressed
-   */
-  FileDialog.prototype.onButtonClick = function(btn, ev) {
-    if ( btn === 'ok' ) {
-      if ( this.buttons[btn] ) {
-        var sel = this.$input ? this.$input.getValue() : this.selectedFile;
-        if ( !sel ) {
-          var wm = OSjs.Core.getWindowManager();
-          if ( wm ) {
-            var dwin;
-            if ( this.type === 'save' ) {
-              dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_FILENAME'));
-            } else {
-              dwin = new OSjs.Dialogs.Alert(API._('DIALOG_FILE_MISSING_SELECTION'));
-            }
-            wm.addWindow(dwin);
-            this._addChild(dwin);
+        this.args.filetypes.forEach(function(f) {
+          if ( f.extension === extension ) {
+            found = f;
           }
+          return !!found;
+        });
+
+        found = found || this.args.filetypes[0];
+        input = Utils.replaceFileExtension(input, found.extension);
+        mime  = found.mime;
+      }
+    }
+
+    return {
+      filename: input,
+      mime: mime
+    };
+  };
+
+  FileDialog.prototype.checkSelection = function(ev) {
+    var self = this;
+
+    if ( this.selected && this.selected.type === 'dir' ) {
+      this.changePath(this.selected.path);
+      return false;
+    }
+
+    if ( this.args.type === 'save' ) {
+      var check = this.checkFileExtension();
+
+      if ( !this.path || !check.filename ) {
+        API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
+        return;
+      }
+
+      this.selected = new VFS.File(this.path.replace(/^\//, '') + '/' + check.filename, check.mime);
+      this._toggleDisabled(true);
+
+      VFS.exists(this.selected, function(error, result) {
+        self._toggleDisabled(false);
+
+        if ( error ) {
+          API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
           return;
         }
 
-        this.finishDialog();
+        if ( result ) {
+          self._toggleDisabled(true);
+          API.createDialog('Confirm', {
+            message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
+          }, function(ev, button) {
+            self._toggleDisabled(false);
+
+            if ( button === 'yes' || button === 'ok' ) {
+              self.closeCallback(ev, 'ok', self.selected);
+            }
+          }, self);
+        } else {
+          self.closeCallback(ev, 'ok', self.selected);
+        }
+
+      });
+    } else {
+      if ( !this.selected ) {
+        API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_SELECTION'));
+        return false;
       }
+
+      this.closeCallback(ev, 'ok', this.selected);
+    }
+
+    return true;
+  };
+
+  FileDialog.prototype.onClose = function(ev, button) {
+    if ( button === 'ok' && !this.checkSelection(ev) ) {
       return;
     }
 
-    _StandardDialog.prototype.onButtonClick.apply(this, arguments);
+    this.closeCallback(ev, button, this.selected);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.File               = FileDialog;
+  OSjs.Dialogs = OSjs.Dialogs || {};
+  OSjs.Dialogs.File = FileDialog;
 
-})(OSjs.Dialogs._StandardDialog, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.API, OSjs.VFS, OSjs.Utils, OSjs.Core.DialogWindow);
