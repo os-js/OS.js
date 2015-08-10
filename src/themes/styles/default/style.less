@@ -6,99 +6,100 @@
  * http://gnome-look.org/content/show.php/?content=157986
  */
 
-application-window:before {
-  .theme_border_top(3px);
-  left : -3px;
-  top : -29px;
-  right : -3px;
-  bottom : -3px;
-}
-application-window-top {
-  top : -27px;
-}
-application-window-title {
+application-window-buttons > .application-window-button-entry {
+  margin : 2px;
+  width : 10px;
+  height : 18px;
+  padding : 4px;
   text-align : center;
 }
 
+application-window:before {
+  .theme_border_top(3px);
+  left : -3px;
+  top : -calc(@window_top_height + 3px);
+  right : -3px;
+  bottom : -3px;
+}
 
 /* Max */
 application-window-button-maximize {
-  background : url('default/wm/maximize_unfocused.png') no-repeat 0px 0px,
-               url('default/wm/maximize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/maximize_unfocused.png') no-repeat center center,
+               url('default/wm/maximize.png') no-repeat center center !important;
 }
 application-window-button-maximize:hover {
-  background : url('default/wm/maximize_unfocused_prelight.png') no-repeat 0px 0px,
-               url('default/wm/maximize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/maximize_unfocused_prelight.png') no-repeat center center,
+               url('default/wm/maximize.png') no-repeat center center !important;
 }
 application-window-button-maximize:active {
-  background : url('default/wm/maximize_unfocused_pressed.png') no-repeat 0px 0px,
-               url('default/wm/maximize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/maximize_unfocused_pressed.png') no-repeat center center,
+               url('default/wm/maximize.png') no-repeat center center !important;
 }
 
 application-window[data-focused="true"] application-window-button-maximize {
-  background : url('default/wm/maximize_focused_normal.png') no-repeat 0px 0px,
-               url('default/wm/maximize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/maximize_focused_normal.png') no-repeat center center,
+               url('default/wm/maximize.png') no-repeat center center !important;
 }
 application-window[data-focused="true"] application-window-button-maximize:hover {
-  background : url('default/wm/maximize_focused_prelight.png') no-repeat 0px 0px,
-               url('default/wm/maximize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/maximize_focused_prelight.png') no-repeat center center,
+               url('default/wm/maximize.png') no-repeat center center !important;
 }
 application-window[data-focused="true"] application-window-button-maximize:active {
-  background : url('default/wm/maximize_focused_pressed.png') no-repeat 0px 0px,
-               url('default/wm/maximize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/maximize_focused_pressed.png') no-repeat center center,
+               url('default/wm/maximize.png') no-repeat center center !important;
 }
 
 /* Min */
 application-window-button-minimize {
-  background : url('default/wm/minimize_unfocused.png') no-repeat 0px 0px,
-               url('default/wm/minimize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/minimize_unfocused.png') no-repeat center center,
+               url('default/wm/minimize.png') no-repeat center center !important;
 }
 application-window-button-minimize:hover {
-  background : url('default/wm/minimize_unfocused_prelight.png') no-repeat 0px 0px,
-               url('default/wm/minimize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/minimize_unfocused_prelight.png') no-repeat center center,
+               url('default/wm/minimize.png') no-repeat center center !important;
 }
 application-window-button-minimize:active {
-  background : url('default/wm/minimize_unfocused_pressed.png') no-repeat 0px 0px,
-               url('default/wm/minimize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/minimize_unfocused_pressed.png') no-repeat center center,
+               url('default/wm/minimize.png') no-repeat center center !important;
 }
 
 application-window[data-focused="true"] application-window-button-minimize {
-  background : url('default/wm/minimize_focused_normal.png') no-repeat 0px 0px,
-               url('default/wm/minimize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/minimize_focused_normal.png') no-repeat center center,
+               url('default/wm/minimize.png') no-repeat center center !important;
 }
 application-window[data-focused="true"] application-window-button-minimize:hover {
-  background : url('default/wm/minimize_focused_prelight.png') no-repeat 0px 0px,
-               url('default/wm/minimize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/minimize_focused_prelight.png') no-repeat center center,
+               url('default/wm/minimize.png') no-repeat center center !important;
 }
 application-window[data-focused="true"] application-window-button-minimize:active {
-  background : url('default/wm/minimize_focused_pressed.png') no-repeat 0px 0px,
-               url('default/wm/minimize.png') no-repeat 0px 0px !important;
+  background : url('default/wm/minimize_focused_pressed.png') no-repeat center center,
+               url('default/wm/minimize.png') no-repeat center center !important;
 }
 
 /* Close */
 application-window-button-close {
-  background : url('default/wm/close_unfocused.png') no-repeat 0px 0px,
-               url('default/wm/close.png') no-repeat 0px 0px !important;
+  background : url('default/wm/close_unfocused.png') no-repeat center center,
+               url('default/wm/close.png') no-repeat center center !important;
 }
 application-window-button-close:hover {
-  background : url('default/wm/close_unfocused_prelight.png') no-repeat 0px 0px,
-               url('default/wm/close.png') no-repeat 0px 0px !important;
+  background : url('default/wm/close_unfocused_prelight.png') no-repeat center center,
+               url('default/wm/close.png') no-repeat center center !important;
 }
 application-window-button-close:active {
-  background : url('default/wm/close_unfocused_pressed.png') no-repeat 0px 0px,
-               url('default/wm/close.png') no-repeat 0px 0px !important;
+  background : url('default/wm/close_unfocused_pressed.png') no-repeat center center,
+               url('default/wm/close.png') no-repeat center center !important;
 }
 
 application-window[data-focused="true"] application-window-button-close {
-  background : url('default/wm/close_focused_normal.png') no-repeat 0px 0px,
-               url('default/wm/close.png') no-repeat 0px 0px !important;
+  background : url('default/wm/close_focused_normal.png') no-repeat center center,
+               url('default/wm/close.png') no-repeat center center !important;
 }
 application-window[data-focused="true"] application-window-button-close:hover {
-  background : url('default/wm/close_focused_prelight.png') no-repeat 0px 0px,
-               url('default/wm/close.png') no-repeat 0px 0px !important;
+  background : url('default/wm/close_focused_prelight.png') no-repeat center center,
+               url('default/wm/close.png') no-repeat center center !important;
 }
 application-window[data-focused="true"] application-window-button-close:active {
-  background : url('default/wm/close_focused_pressed.png') no-repeat 0px 0px,
-               url('default/wm/close.png') no-repeat 0px 0px !important;
+  background : url('default/wm/close_focused_pressed.png') no-repeat center center,
+               url('default/wm/close.png') no-repeat center center !important;
 }
 

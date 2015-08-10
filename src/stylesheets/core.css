@@ -176,34 +176,27 @@ application-window-buttons {
   display : block;
 }
 
-/**
- * Widow root
- */
 application-window {
   position : absolute;
   top : 0px;
   left : 0px;
   overflow : visible;
-  margin-top : 26px;
 }
 application-window:before {
   content : '';
   position : absolute;
-  top : -26px;
+  top : 0px;
   left : 0px;
   right : 0px;
   bottom : 0px;
 }
 
-/**
- * Window top
- */
 application-window-top {
   position : absolute;
-  top : -26px;
+  top : 0px;
   left : 0px;
   right : 0px;
-  height : 26px;
+  height : 20px;
   z-index : 5;
 }
   application-window-top,
@@ -217,55 +210,56 @@ application-window-top {
 
 application-window-icon {
   position : absolute;
-  top : 0px;
-  left : 0px;
+  top : 50%;
+  left : 4px;
+  width : 16px;
+  height : 16px;
   z-index : 2;
+  margin-top : -8px;
+  text-align : center;
 }
   application-window-icon > img {
-    margin : 5px;
+    margin : 0;
+    padding : 0;
     padding : 0px;
     border : 0 none;
     pointer-events: none;
+    vertical-align : middle;
   }
 
 application-window-title {
   position : absolute;
   top : 0px;
-  left : 26px;
+  left : 20px;
   right : 0px; /* Calculated in script */
-  height : 26px;
+  height : 100%;
   z-index : 1;
   overflow : hidden;
   white-space : nowrap;
-  line-height : 26px;
+  line-height : 20px;
 
   display : block;
   overflow: hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
 }
+
 application-window-buttons {
   position : absolute;
   top : 0px;
-  right : 2px;
+  right : 0px;
   z-index : 3;
-  height : 20px;
-  margin : 1px;
+  height : 100%;
 }
   application-window-buttons > .application-window-button-entry {
     padding : 0;
-    margin : 2px;
-    width : 18px;
-    height : 18px;
-    line-height : 18px;
+    margin : 0;
+    height : 100%;
     text-align : center;
     display : inline-block;
     position : relative;
   }
 
-/**
- * Window contents
- */
 application-window-content {
   position : absolute;
   top : 0px;
@@ -276,15 +270,12 @@ application-window-content {
   z-index : 1;
 }
 
-/**
- * Window resizer underlay
- */
 application-window-resize {
   position : absolute;
-  top : -34px;
-  left : -8px;
-  right : -8px;
-  bottom : -8px;
+  top : 0px;
+  left : 0px;
+  right : 0px;
+  bottom : 0px;
   z-index : -1;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -295,10 +286,6 @@ application-window-resize {
 application-window-outer[data-allow-resize="false"] window-resize {
   display : none;
 }
-
-/**
- * Window loading overlay
- */
 
 application-window-loading {
   position : absolute;
@@ -315,9 +302,6 @@ application-window-loading {
     top : 50%;
   }
 
-/**
- * Window disabled overlay
- */
 application-window-disabled {
   position : absolute;
   top : 0px;
@@ -327,22 +311,16 @@ application-window-disabled {
   z-index : 999998;
 }
 
-/**
- * Window DnD overlay
- */
 application-window[data-dnd-state="true"]:after {
   content : '';
   position : absolute;
-  top : -26px;
+  top : 0px;
   left : 0px;
   bottom : 0px;
   right : 0px;
   /*z-index : 10;*/
 }
 
-/**
- * Window Warning
- */
 application-window-warning  {
   position : absolute;
   top : 0px;
@@ -359,7 +337,7 @@ application-window-warning  {
     top : 0px;
     right : 0px;
     bottom : 0px;
-    padding : 5px;
+    padding : 4px;
   }
   application-window-warning > div:nth-child(2) {
     position : absolute;
@@ -367,7 +345,7 @@ application-window-warning  {
     left : 0px;
     right : 20px;
     bottom : 0px;
-    padding : 5px;
+    padding : 4px;
     overflow : hidden;
   }
 

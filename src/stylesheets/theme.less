@@ -34,6 +34,16 @@
 @base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 @base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
 
+@menu_background_color : @base_background_color;
+@menu_foreground_color : @base_foreground_color;
+@menu_shadow           : @base_shadow_focused;
+
+@window_top_height : 30px;
+
+@scrollbar_button_background : @gui_border_color;
+@scrollbar_button_foreground : @gui_background_color;
+@scrollbar_track_background  : @base_background_color;
+
 @gui_selected_background_color       : rgb(45, 115, 210);
 @gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
 @gui_selected_foreground_color       : #ffffff;
@@ -63,6 +73,8 @@
 @gui_button_disabled_background_color: @gui_input_disabled_background_color;
 @gui_button_disabled_foreground_color: @base_foreground_color;
 @gui_button_disabled_background      : @gui_input_disabled_background_color;
+
+@gui_progress_bar_background : @gui_selected_background_color url('/themes/styles/default/gui/progressbar.png') repeat-x center;
 
 /**
  * ===========================================================================
@@ -149,28 +161,84 @@ body, input, button, textarea, label, select {
   height: 12px;
 }
 ::-webkit-scrollbar-button {
-  background : @gui_border_color;
-  color : @gui_background_color;
+  background : @scrollbar_button_background;
+  color : @scrollbar_button_foreground;
   width : 12px;
   height : 12px;
   display : none;
 }
 ::-webkit-scrollbar-track {
-  background : @base_background_color;
+  background : @scrollbar_track_background;
 }
 ::-webkit-scrollbar-track-piece {
-  background : @base_background_color;
+  background : @scrollbar_track_background;
 }
 ::-webkit-scrollbar-thumb {
-  background : @gui_border_color;
+  background : @scrollbar_button_background;
 }
 ::-webkit-scrollbar-corner {
-  background : @base_background_color;
+  background : @scrollbar_track_background;
 }
 ::-webkit-resizer {
-  background : @base_background_color;
+  background : @scrollbar_track_background;
 }
 
+/**
+ * ===========================================================================
+ *                                WINDOWS
+ * ===========================================================================
+ */
+
+application-window {
+  margin-top : @window_top_height;
+}
+application-window:before {
+  top : -@window_top_height;
+}
+
+application-window-top {
+  top : -@window_top_height;
+  height : @window_top_height;
+}
+
+application-window-icon {
+}
+
+application-window-title {
+  left : calc(20px + 4px);
+  line-height : @window_top_height;
+}
+
+application-window-buttons {
+}
+
+application-window-content {
+}
+
+application-window-resize {
+  top : -calc(@window_top_height - 8px);
+  left : -8px;
+  right : -8px;
+  bottom : -8px;
+}
+
+application-window[data-dnd-state="true"]:after {
+  top : -@window_top_height;
+}
+
+application-window-warning  {
+  height : 30px;
+  line-height : 20px;
+  margin : 4px;
+  border : 1px solid transparent;
+}
+  application-window-warning > div:nth-child(1) {
+    padding : 4px;
+  }
+  application-window-warning > div:nth-child(2) {
+    right : 20px;
+    padding : 4px;
+  }
 
 /**
  * ===========================================================================
@@ -811,9 +879,9 @@ gui-color-box {
 /* Menu */
 gui-menu {
   border : 1px solid transparent;
-  background: @base_background_color;
-  box-shadow : @base_shadow_focused;
-  color : @base_foreground_color;
+  background: @menu_background_color;
+  box-shadow : @menu_shadow;
+  color : @menu_foreground_color;
 }
   gui-menu > gui-menu-entry {
     color: @base_foreground_color;
@@ -879,7 +947,7 @@ gui-progress-bar {
     padding : 4px;
   }
   gui-progress-bar > div {
-    background: @gui_selected_background_color url('/themes/styles/default/gui/progressbar.png') repeat-x center;
+    background: @gui_progress_bar_background;
   }
   gui-progress-bar > span {
     color : #fff;

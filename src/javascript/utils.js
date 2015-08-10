@@ -313,7 +313,11 @@
       };
 
       return _checkSupport(getVideoSupported(), check, function(codec) {
-        return !!enabled.canPlayType(codec);
+        try {
+          return !!enabled.canPlayType(codec);
+        } catch ( e ) {
+        }
+        return false;
       });
     }
 
@@ -330,7 +334,10 @@
       };
 
       return _checkSupport(getVideoSupported(), check, function(codec) {
-        return !!enabled.canPlayType(codec);
+        try {
+          return !!enabled.canPlayType(codec);
+        } catch ( e ) {}
+        return false;
       });
     }
 

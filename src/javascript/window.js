@@ -366,7 +366,6 @@
     function _initMinButton() {
       buttonMinimize            = document.createElement('application-window-button-minimize');
       buttonMinimize.className  = 'application-window-button-entry';
-      buttonMinimize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_minimize ) {
         Utils.$bind(buttonMinimize, 'click', function(ev) {
           ev.preventDefault();
@@ -382,7 +381,6 @@
     function _initMaxButton() {
       buttonMaximize            = document.createElement('application-window-button-maximize');
       buttonMaximize.className  = 'application-window-button-entry';
-      buttonMaximize.innerHTML  = '&nbsp;';
       if ( self._properties.allow_maximize ) {
         Utils.$bind(buttonMaximize, 'click', function(ev) {
           ev.preventDefault();
@@ -398,7 +396,6 @@
     function _initCloseButton() {
       buttonClose           = document.createElement('application-window-button-close');
       buttonClose.className = 'application-window-button-entry';
-      buttonClose.innerHTML = '&nbsp;';
       if ( self._properties.allow_close ) {
         Utils.$bind(buttonClose, 'click', function(ev) {
           ev.preventDefault();
