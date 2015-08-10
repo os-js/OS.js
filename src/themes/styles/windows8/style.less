@@ -1,0 +1,114 @@
+@import "../../../stylesheets/theme.less";
+
+@base_background_color  : #6dabf4;
+@base_foreground_color  : #242424;
+@base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+@base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+
+@scrollbar_button_background : #cdcdcd;
+@scrollbar_button_foreground : #f0f0f0;
+@scrollbar_track_background  : #f0f0f0;
+
+@window_top_height : 30px;
+
+@menu_background_color : #fff;
+
+@gui_selected_background_color       : rgb(45, 115, 210);
+@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
+@gui_selected_foreground_color       : #ffffff;
+
+@gui_border_color                    : #dbdbdb;
+@gui_background_color                : #f5f6f8;
+
+@gui_input_border_color              : #dbdbdb;
+@gui_input_background_color          : #ffffff;
+@gui_input_foreground_color          : @base_foreground_color;
+
+@gui_input_disabled_border_color     : #d9d9d9;
+@gui_input_disabled_background_color : #e6e6e6;
+@gui_input_disabled_foreground_color : #727272;
+
+@gui_button_border_color             : #ababab;
+@gui_button_background_color         : #f8f8f8;
+@gui_button_foreground_color         : @base_foreground_color;
+@gui_button_background               : linear-gradient(to bottom, #f1f1f1 0%, #e5e5e5 100%);
+
+@gui_button_active_border_color      : #242424;
+@gui_button_active_background_color  : @gui_button_background_color;
+@gui_button_active_foreground_color  : @base_foreground_color;
+@gui_button_active_background        : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+
+@gui_button_disabled_border_color    : @gui_input_disabled_border_color;
+@gui_button_disabled_background_color: @gui_input_disabled_background_color;
+@gui_button_disabled_foreground_color: @base_foreground_color;
+@gui_button_disabled_background      : @gui_input_disabled_background_color;
+
+/**
+ * Windows 8 Theme
+ */
+
+gui-tabs > ul > li.gui-active:after {
+  border-bottom: 1px solid #fff;
+}
+gui-progress-bar > div {
+  background: #6dabf4;
+}
+
+application-window:before {
+  top : -30px;
+  left : -5px;
+  right : -5px;
+  bottom : -5px;
+}
+application-window[data-focused="false"]:before {
+  background : #ebebeb;
+  border : 1px solid #d3d3d3;
+}
+application-window[data-focused="true"]:before {
+  background : @base_background_color;
+  border : 1px solid #5185be;
+}
+application-window-content {
+  background : #ffffff;
+  padding-top : 2px;
+}
+application-window-content[data-focused="false"] {
+  border : 1px solid #5d93d1;
+}
+application-window-content[data-focused="true"] {
+  border : 1px solid #dadada;
+}
+
+application-window-buttons {
+  height : 20px;
+  right : 2px;
+}
+
+  application-window-buttons > .application-window-button-entry {
+    height : 20px;
+    width : 26px;
+    line-height : 20px;
+    text-align :  center;
+    font-family : Arial;
+    font-size : 10px;
+  }
+application-window-button-maximize {
+  background : url('windows8/wm/maximize.png') no-repeat center center;
+}
+application-window-button-minimize {
+  background : url('windows8/wm/minimize.png') no-repeat center center;
+}
+application-window-button-close {
+  background : #c74f51 url('windows8/wm/close.png') no-repeat 49% center;
+}
+application-window-button-maximize:hover,
+application-window-button-minimize:hover {
+  background-color : #5185be;
+}
+application-window-button-close:hover {
+  background-color : #de1e19;
+}
+application-window-button-close {
+  width : 45px !important;
+}
+

@@ -1,0 +1,10 @@
+{
+  "name": "windows8",
+  "title": "Windows 8",
+  "style": {
+    "window": {
+      "margin": 29,
+      "border": 3
+    }
+  }
+}
