@@ -78,12 +78,28 @@
       OSjs.API.blurMenu();
     };
     this._$element.oncontextmenu = function(ev) {
-      OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
-        var wm = OSjs.Core.getWindowManager();
-        if ( wm ) {
-          wm.showSettings('panel');
-        }
-      }}], {x: ev.clientX, y: ev.clientY});
+      var wm = OSjs.Core.getWindowManager();
+      var enabled = wm.getSetting('useTouchMenu') === true;
+      if (enabled) {
+        OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
+          var wm = OSjs.Core.getWindowManager();
+          if ( wm ) {
+            wm.showSettings('panel');
+          }}},{title: OSjs.Applications.CoreWM._('Turn off TouchMenu'), onClick: function(ev) {
+            var settings = {useTouchMenu: false};
+            var wm = OSjs.Core.getWindowManager();
+            wm.applySettings(settings, false, true);
+          }}], {x: ev.clientX, y: ev.clientY});
+      } else {
+        OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
+          var wm = OSjs.Core.getWindowManager();
+          if ( wm ) {
+            wm.showSettings('panel');
+          }}},{title: OSjs.Applications.CoreWM._('Turn on TouchMenu'), onClick: function(ev) {
+            var settings = {useTouchMenu: true};
+            var wm = OSjs.Core.getWindowManager();
+            wm.applySettings(settings, false, true);
+          }}], {x: ev.clientX, y: ev.clientY});}
       return false;
     };
 

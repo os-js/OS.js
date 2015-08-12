@@ -112,7 +112,7 @@
       'Utilities' : 'Утилиты',
       'Other' : 'Другое'
     },
-	nl_NL : {
+    nl_NL : {
       'Killing this process will stop things from working!' : 'Het stoppen van dit proces zal er voor zorgen dat dingen niet meer werken!',
       'Open settings' : 'Instellingen openen',
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Het paneel bevat geen items. Ga naar instellingen om te hertsellen naar de standaard of om handmatig te wijzigen (Deze fout kan het gevolg zijn van een update)',
@@ -130,6 +130,25 @@
       'System' : 'Systeem',
       'Utilities' : 'Toebehoor',
       'Other' : 'Overig'
+    },
+    vi_VN : {
+      'Killing this process will stop things from working!' : 'Đóng quá trình này sẽ làm mọi thứ dừng làm việc!',
+      'Open settings' : 'Mở cài đặt',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Bảng điều khiển của bạn không có mục nào. Vào cài đặt để thiết lập lại mặc định hoặc sửa đổi bằng tay\n(Lỗi này có thể xảy ra sau khi nâng cấp OS.js)',
+      'Create shortcut' : 'Tạo lối tắt',
+      'Set as wallpaper' : 'Đặt làm hình nền',
+      'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo ra PanelItem: {0}',
+
+      'Development' : 'Phát triển',
+      'Education' : 'Giáo dục',
+      'Games' : 'Trò chơi',
+      'Graphics' : 'Đồ họa',
+      'Network' : 'Mạng',
+      'Multimedia' : 'Đa phương tiện',
+      'Office' : 'Văn phòng',
+      'System' : 'Hệ thống',
+      'Utilities' : 'Tiện ích',
+      'Other' : 'Khác'
     }
 
   };
