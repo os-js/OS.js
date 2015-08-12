@@ -737,6 +737,11 @@
     var self = this;
     var content = this.getFragment(id, type);
 
+    if ( !content ) {
+      console.error('UIScheme::parse()', 'No fragment found', id, type);
+      return null;
+    }
+
     type = type || content.tagName.toLowerCase();
     onparse = onparse || function() {};
     args = args || {};
