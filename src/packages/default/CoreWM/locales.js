@@ -42,6 +42,8 @@
       'Create shortcut' : 'Lag snarvei',
       'Set as wallpaper' : 'Sett som bakgrunn',
       'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}',
+      'Show Icons' : 'Vis Ikoner',
+      'Hide Icons' : 'Skjul Ikoner',
 
       'Development' : 'Utvikling',
       'Education' : 'Utdanning',

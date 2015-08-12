@@ -175,7 +175,7 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationSettingsWindow(app, metadata, scheme) {
+  function ApplicationSettingsWindow(app, metadata, scheme, category) {
     Window.apply(this, ['ApplicationSettingsWindow', {
       icon: metadata.icon,
       title: metadata.name,
@@ -183,6 +183,7 @@
       height: 500
     }, app, scheme]);
 
+    this.category = category;
     this.settings = {};
     this.panelItems = [];
   }
@@ -248,7 +249,8 @@
     this.initUserTab(wm, scheme);
     this.initPackagesTab(wm, scheme);
 
-    setContainer(0);
+    var cat = this.category === 'panel' ? 2 : 0;
+    setContainer(cat);
 
     return root;
   };
@@ -741,8 +743,9 @@
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
+    var category = this._getArgument('category');
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme));
+      self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme, category));
 
       onInited();
     });

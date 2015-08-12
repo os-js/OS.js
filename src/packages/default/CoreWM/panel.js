@@ -60,6 +60,27 @@
 
   Panel.prototype.init = function(root) {
     var self = this;
+    var wm = OSjs.Core.getWindowManager();
+
+    function createMenu(ev) {
+      var menu = [
+        {title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
+          wm.showSettings('panel');
+        }}
+      ];
+
+      if ( wm.getSetting('useTouchMenu') === true ) {
+        menu.push({title: OSjs.Applications.CoreWM._('Turn off TouchMenu'), onClick: function(ev) {
+          wm.applySettings({useTouchMenu: false}, false, true);
+        }});
+      } else {
+        menu.push({title: OSjs.Applications.CoreWM._('Turn on TouchMenu'), onClick: function(ev) {
+          wm.applySettings({useTouchMenu: true}, false, true);
+        }});
+      }
+
+      API.createMenu(menu, ev);
+    }
 
     this._$container = document.createElement('corewm-panel-container');
     this._$element = document.createElement('corewm-panel');
@@ -78,28 +99,7 @@
       OSjs.API.blurMenu();
     };
     this._$element.oncontextmenu = function(ev) {
-      var wm = OSjs.Core.getWindowManager();
-      var enabled = wm.getSetting('useTouchMenu') === true;
-      if (enabled) {
-        OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
-          var wm = OSjs.Core.getWindowManager();
-          if ( wm ) {
-            wm.showSettings('panel');
-          }}},{title: OSjs.Applications.CoreWM._('Turn off TouchMenu'), onClick: function(ev) {
-            var settings = {useTouchMenu: false};
-            var wm = OSjs.Core.getWindowManager();
-            wm.applySettings(settings, false, true);
-          }}], {x: ev.clientX, y: ev.clientY});
-      } else {
-        OSjs.API.createMenu([{title: OSjs.Applications.CoreWM._('Open Panel Settings'), onClick: function(ev) {
-          var wm = OSjs.Core.getWindowManager();
-          if ( wm ) {
-            wm.showSettings('panel');
-          }}},{title: OSjs.Applications.CoreWM._('Turn on TouchMenu'), onClick: function(ev) {
-            var settings = {useTouchMenu: true};
-            var wm = OSjs.Core.getWindowManager();
-            wm.applySettings(settings, false, true);
-          }}], {x: ev.clientX, y: ev.clientY});}
+      createMenu(ev);
       return false;
     };
 
