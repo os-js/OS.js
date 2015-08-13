@@ -174,6 +174,53 @@
       'Radius' : 'Radius',
       'Iterations' : 'Iterationen'
     },
+    es_ES : {
+      'Toggle tools toolbar' : 'Mostrar/ocultar la barra de herramientas de utilidades',
+      'Toggle layers toolbar' : 'Mostrar/ocultar la barra de herramientas de capas',
+      'Layer' : 'Capa',
+      'Effect' : 'Efecto',
+      'Flip Horizontally' : 'Girar horizontalmente',
+      'Flip Vertically' : 'Girar verticalmente',
+      'Foreground' : 'Primer plano',
+      'Bakgrunn' : 'Fondo',
+      'Foreground (Fill) Color' : 'Color de primer plano (relleno)',
+      'Background (Stroke) Color' : 'Color de de fondo (contorno)',
+      'Line join' : 'Terminación de línea',
+      'Line width' : 'Ancho de línea',
+      'Toggle Stroke' : 'Activar/Desactivar trazado',
+      'Enable stroke' : 'Activar trazado',
+      'Round' : 'Curvo',
+      'Miter' : 'En ángulo',
+      'Bevel' : 'Biselado',
+      'Stroked' : 'Trazado',
+      'No stroke' : 'Sin trazado',
+
+      'Pointer' : 'Puntero',
+      'Move active layer' : 'Mover la capa activa',
+
+      'Picker' : 'Selector',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: Establecer el color de primer plano, RMB: Establecer el color de fondo',
+
+      'Pencil' : 'Lápiz',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Dibujar con el color de fondo/de primer plano',
+      'Path' : 'Ruta',
+
+      'Square/Rectangle' : 'Cuadrado/Rectángulo',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Zeichnen mit fb/bg Farbe, SHIFT: Rechteck zeichnen',
+
+      'Circle/Ellipse' : 'Kreis/Ellipse',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Dibujar con el color de fondo/de primer plano, SHIFT: Dibujar una elipse',
+
+      'Blur' : 'Desenfoque',
+      'Noise' : 'Ruido',
+      'Invert colors' : 'Invertir colores',
+      'Grayscale' : 'Escala de grises',
+      'Sharpen' : 'Afilar',
+      'Simple Blur' : 'Desenfoque simple',
+
+      'Radius' : 'Radio',
+      'Iterations' : 'Iteraciones'
+    },
     fr_FR : {
     },
     ru_RU : {
