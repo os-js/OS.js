@@ -102,17 +102,10 @@
   }
 
   function bindInputEvents(el, evName, callback, params) {
+    if ( evName === 'enter' ) { evName = '_enter'; }
     if ( evName === 'change' ) { evName = '_change'; }
 
     var target = el.querySelector('textarea, input, select');
-    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-  }
-
-  function bindTextInputEvents(el, evName, callback, params) {
-    if ( evName === 'enter' ) { evName = '_enter'; }
-    else if ( evName === 'change' ) { evName = '_change'; }
-
-    var target = el.querySelector('input');
     Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
   }
 
@@ -302,7 +295,7 @@
    * @class
    */
   GUI.Elements['gui-text'] = {
-    bind: bindTextInputEvents,
+    bind: bindInputEvents,
     build: function(el) {
       createInputOfType(el, 'text');
     }
@@ -330,7 +323,7 @@
    * @class
    */
   GUI.Elements['gui-password'] = {
-    bind: bindTextInputEvents,
+    bind: bindInputEvents,
     build: function(el) {
       createInputOfType(el, 'password');
     }
