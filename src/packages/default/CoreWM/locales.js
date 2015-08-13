@@ -92,6 +92,25 @@
       'Utilities' : 'Zubehör',
       'Other' : 'Andere'
     },
+    es_ES : {
+      'Killing this process will stop things from working!' : '¡Forzar la terminación de este proceso hará que las cosas dejen de funcionar!',
+      'Open settings': 'Abrir preferencias',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Tu panel no tiene elementos. Restablece los valores por defecto en las preferencias, o modifícalo manualmente\n(Este error puede aparecer tras una actualización de OS.js)',
+      'Create shortcut': 'Crear acceso directo',
+      'Set as wallpaper' : 'Seleccionar como fondo de pantalla',
+      'An error occured while creating PanelItem: {0}' : 'Se produjo un error al crear el PanelItem: {0}',
+
+      'Development' : 'Desarrollo',
+      'Education' : 'Educación',
+      'Games' : 'Juegos',
+      'Graphics' : 'Gráficos',
+      'Network' : 'Red',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Ofimática',
+      'System' : 'Sistema',
+      'Utilities' : 'Herramientas',
+      'Other' : 'Otros'
+    },
     fr_FR : {
       // TODO
     },
