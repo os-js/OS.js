@@ -999,6 +999,17 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Create a new Desktop Notification
+   *
+   * @see  WindowManager::notification()
+   * @api OSjs.API.createNotification()
+   */
+  function doCreateNotification(opts) {
+    var wm = OSjs.Core.getWindowManager();
+    return wm.notification(opts);
+  }
+
+  /**
    * Create a new dialog
    *
    * @param   String        className       Dialog Namespace Class Name
@@ -1019,7 +1030,7 @@
     } else if ( parentObj instanceof OSjs.Core.Window ) {
       parentObj._addChild(win, true);
     } else if ( parentObj instanceof OSjs.Core.Application ) {
-      parentObj._addWidow(win);
+      parentObj._addWindow(win);
     }
 
     setTimeout(function() {
@@ -1400,6 +1411,7 @@
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
   OSjs.API.createDialog           = doCreateDialog;
+  OSjs.API.createNotification     = doCreateNotification;
 
   OSjs.API.error                      = doErrorDialog;
   OSjs.API.playSound                  = doPlaySound;
