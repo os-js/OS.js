@@ -83,9 +83,6 @@
             tooltip : iter.data.description,
             onCreated: (function(name, iter) {
               return function(el) {
-                console.warn("XXXX", el);
-                Utils.$bind(el, 'contextmenu', function(ev) {
-                });
                 OSjs.API.createDraggable(el, {
                   type   : 'application',
                   data   : {
