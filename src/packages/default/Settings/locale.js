@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -101,6 +101,28 @@
       'Enable Window Switcher' : 'Aktiviere Fensterwechsler',
       'Enable Hotkeys' : 'Aktiviere Hotkeys',
       'Enable Icon View' : 'Aktiviere Icon-Ansicht',
+      'General': 'General'
+    },
+    es_ES : {
+      'Theme' : 'Tema',
+      'Background' : 'Fondo',
+      'Desktop' : 'Escritorio',
+      'Background Type' : 'Tipo de fondo',
+      'Image (Repeat)' : 'Imagen (Repetir)',
+      'Image (Centered)' : 'Imagen (Centrada)',
+      'Image (Fill)' : 'Imagen (Estirar)',
+      'Image (Streched)' : 'Imagen (Ajustar)',
+      'Desktop Margin ({0}px)' : 'Margen del escritorio ({0}px)',
+      'Panel' : 'Panel',
+      'Position' : 'Posición',
+      'Ontop' : 'Primer plano',
+      'Items' : 'Elementos',
+      'Enable Animations' : 'Habilitar animaciones',
+      'Language (requires restart)' : 'Idioma (requiere reiniciar)',
+      'Enable Sounds' : 'Activar sonidos',
+      'Enable Window Switcher' : 'Activar el alternador de ventanas',
+      'Enable Hotkeys' : 'Activar Hotkeys',
+      'Enable Icon View' : 'Activar la vista de icono',
       'General': 'General'
     },
     fr_FR : {

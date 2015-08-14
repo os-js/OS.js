@@ -44,6 +44,9 @@
     de_DE : {
       'Insert URL' : 'URL einfügen'
     },
+    es_ES : {
+      'Insert URL' : 'Insertar URL'
+    },
     fr_FR : {
     },
     ru_RU : {
