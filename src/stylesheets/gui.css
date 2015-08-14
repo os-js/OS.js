@@ -1159,6 +1159,7 @@ gui-list-view {
       display : inline-block;
       background-repeat : no-repeat;
       background-position : left center;
+      background-size : 16px;
       overflow : hidden;
       line-height : 16px;
 
@@ -1178,6 +1179,7 @@ gui-list-view {
     }
     gui-list-view[data-icon-size="32"] gui-list-view-column {
       line-height : 32px;
+      background-size : 32px;
     }
       gui-list-view-column > * {
         display : inline;
