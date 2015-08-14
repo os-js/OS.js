@@ -22,6 +22,7 @@
     {"src": "panelitems/clock.js", "type": "javascript"},
     {"src": "panelitems/notificationarea.js", "type": "javascript"},
     {"src": "panelitems/windowlist.js", "type": "javascript"},
+    {"src": "panelitems/weather.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
     {"src": "locales.js", "type": "javascript"},
     {"src": "panelitems/clock.css", "type": "stylesheet"},
