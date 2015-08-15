@@ -440,6 +440,7 @@
 
     win._toggleDisabled(true);
     API.createDialog('Confirm', {
+      buttons: ['yes', 'no'],
       message: Utils.format(OSjs.Applications.ApplicationFileManager._('Delete <span>{0}</span> ?'), files)
     }, function(ev, button) {
       win._toggleDisabled(false);

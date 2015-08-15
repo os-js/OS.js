@@ -38,13 +38,16 @@
    *
    * @option    args    title       String      Dialog title
    * @option    args    message     String      Dialog message
+   * @option    args    buttons     Array       Dialog buttons (default=yes,no,cancel)
    *
    * @extends DialogWindow
    * @class ConfirmDialog
    * @api OSjs.Dialogs.Confirm
    */
   function ConfirmDialog(args, callback) {
-    args = Utils.argumentDefaults(args, {});
+    args = Utils.argumentDefaults(args, {
+      buttons: ['yes', 'no', 'cancel']
+    });
 
     DialogWindow.apply(this, ['ConfirmDialog', {
       title: args.title || API._('DIALOG_CONFIRM_TITLE'),
@@ -58,8 +61,28 @@
   ConfirmDialog.constructor = DialogWindow;
 
   ConfirmDialog.prototype.init = function() {
+    var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
+
     this.scheme.find(this, 'Message').set('value', this.args.message, true);
+
+    var buttonMap = {
+      yes: 'ButtonYes',
+      no: 'ButtonNo',
+      cancel: 'ButtonCancel'
+    };
+
+    var hide = [];
+    (['yes', 'no', 'cancel']).forEach(function(b) {
+      if ( self.args.buttons.indexOf(b) < 0 ) {
+        hide.push(b);
+      }
+    });
+
+    hide.forEach(function(b) {
+      self.scheme.find(self, buttonMap[b]).hide();
+    });
+
     return root;
   };
 

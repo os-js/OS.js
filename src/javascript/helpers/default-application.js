@@ -131,6 +131,7 @@
       this._toggleDisabled(true);
 
       API.createDialog('Confirm', {
+        buttons: ['yes', 'no'],
         message: API._('MSG_GENERIC_APP_DISCARD')
       }, function(ev, button) {
         self._toggleDisabled(false);
@@ -207,6 +208,7 @@
       if ( win && current && current.path === args.file.path ) {
         win._toggleDisabled(true);
         API.createDialog('Confirm', {
+          buttons: ['yes', 'no'],
           message: API._('MSG_FILE_CHANGED'),
         }, function(ev, button) {
           win._toggleDisabled(false);
