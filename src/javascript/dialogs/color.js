@@ -44,14 +44,8 @@
    * @api OSjs.Dialogs.Color
    */
   function ColorDialog(args, callback) {
-    args = Utils.argumentDefaults(args, {});
-
-    DialogWindow.apply(this, ['ColorDialog', {
-      title: args.title || API._('DIALOG_COLOR_TITLE'),
-      icon: 'apps/gnome-settings-theme.png',
-      width: 400,
-      height: 220
-    }, args, callback]);
+    args = Utils.argumentDefaults(args, {
+    });
 
     var rgb = args.color;
     var hex = rgb;
@@ -59,11 +53,26 @@
       hex = rgb;
       rgb = Utils.convertToRGB(rgb);
     } else {
-      rgb = rgb || {r: 0, g: 0, b: 0};
+      if ( typeof rgb.a === 'undefined' ) {
+        rgb.a = null;
+      } else {
+        if ( rgb.a > 1.0 ) {
+          rgb.a /= 100;
+        }
+      }
+
+      rgb = rgb || {r: 0, g: 0, b: 0, a: 100};
       hex = Utils.convertToHEX(rgb.r, rgb.g, rgb.b);
     }
 
-    this.color = {r: rgb.r, g: rgb.g, b: rgb.b, hex: hex};
+    DialogWindow.apply(this, ['ColorDialog', {
+      title: args.title || API._('DIALOG_COLOR_TITLE'),
+      icon: 'apps/gnome-settings-theme.png',
+      width: 400,
+      height: rgb.a !== null ? 300  : 220
+    }, args, callback]);
+
+    this.color = {r: rgb.r, g: rgb.g, b: rgb.b, a: rgb.a, hex: hex};
   }
 
   ColorDialog.prototype = Object.create(DialogWindow.prototype);
@@ -73,17 +82,21 @@
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    // TODO: Alpha channel
-
     function updateHex(update) {
       self.scheme.find(self, 'LabelRed').set('value', API._('DIALOG_COLOR_R', self.color.r));
       self.scheme.find(self, 'LabelGreen').set('value', API._('DIALOG_COLOR_G', self.color.g));
       self.scheme.find(self, 'LabelBlue').set('value', API._('DIALOG_COLOR_B', self.color.b));
+      self.scheme.find(self, 'LabelAlpha').set('value', API._('DIALOG_COLOR_A', self.color.a));
+
       if ( update ) {
         self.color.hex = Utils.convertToHEX(self.color.r, self.color.g, self.color.b);
       }
 
-      self.scheme.find(self, 'ColorPreview').set('value', self.color.hex);
+      var value = self.color.hex;
+      if ( self.color.a !== null ) {
+        value = Utils.format('rgba({0}, {1}, {2}, {3})', self.color.r, self.color.g, self.color.b, self.color.a);
+      }
+      self.scheme.find(self, 'ColorPreview').set('value', value);
     }
 
     this.scheme.find(this, 'ColorSelect').on('change', function(ev) {
@@ -109,7 +122,17 @@
       updateHex(true);
     }).set('value', this.color.b);
 
-    updateHex();
+    this.scheme.find(this, 'Alpha').on('change', function(ev) {
+      self.color.a = parseInt(ev.detail, 10) / 100;
+      updateHex(true);
+    }).set('value', this.color.a * 100);
+
+    if ( this.color.a === null ) {
+      this.scheme.find(this, 'AlphaContainer').hide();
+      this.scheme.find(this, 'AlphaLabelContainer').hide();
+    }
+
+    updateHex(false, this.color.a !== null);
 
     return root;
   };
