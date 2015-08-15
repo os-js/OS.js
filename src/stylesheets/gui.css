@@ -319,10 +319,10 @@ gui-paned-view {
   width : 100%;
   height : 100%;
 
-  display: -webkit-flex;
   display: -webkit-box;
-  display: -ms-flexbox;
   display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
 
   -webkit-box-orient: horizontal;
@@ -338,7 +338,7 @@ gui-paned-view {
           flex-direction: row;
 }
   gui-paned-view > * {
-    display : inline-block;
+    display : block;
     position : relative;
     vertical-align : middle;
 

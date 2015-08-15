@@ -397,13 +397,13 @@
     }
 
     var style = flex.join(' ');
-    el.style['webkitBoxFlex'] = style;
-    el.style['mozBoxFlex'] = style;
+    el.style['WebkitBoxFlex'] = style;
+    el.style['MozBoxFlex'] = style;
 
-    el.style['webkitFlex'] = style;
-    el.style['mozFlex'] = style;
-    el.style['msFlex'] = style;
-    el.style['oFlex'] = style;
+    el.style['WebkitFlex'] = style;
+    el.style['MozFlex'] = style;
+    el.style['MSFlex'] = style;
+    el.style['OFlex'] = style;
     el.style['flex'] = style;
 
     var align = el.getAttribute('data-align');
