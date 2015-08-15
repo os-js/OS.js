@@ -116,6 +116,46 @@ application-window-content * {
   overflow : hidden;
 }
 
+.gui-flex-align-start {
+    -webkit-box-align: start;
+       -moz-box-align: start;
+        -ms-box-align: start;
+         -o-box-align: start;
+            box-align: start;
+
+    -webkit-align-self: flex-start;
+       -moz-align-self: flex-start;
+        -ms-align-self: flex-start;
+         -o-align-self: flex-start;
+            align-self: flex-start;
+}
+.gui-flex-align-end {
+    -webkit-box-align: end;
+       -moz-box-align: end;
+        -ms-box-align: end;
+         -o-box-align: end;
+            box-align: end;
+
+    -webkit-align-self: flex-end;
+       -moz-align-self: flex-end;
+        -ms-align-self: flex-end;
+         -o-align-self: flex-end;
+            align-self: flex-end;
+}
+.gui-flex-align-center {
+    -webkit-box-align: center;
+       -moz-box-align: center;
+        -ms-box-align: center;
+         -o-box-align: center;
+            box-align: center;
+
+    -webkit-align-self: flex-center;
+       -moz-align-self: flex-center;
+        -ms-align-self: flex-center;
+         -o-align-self: flex-center;
+            align-self: flex-center;
+}
+
 gui-hbox,
 gui-hbox > *,
 gui-vbox,
@@ -399,8 +439,24 @@ gui-grid {
   display : block;
 }
   gui-grid > gui-grid-row { /* ul */
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
-    -webkit-flex-flow: row;
+
+    -webkit-box-orient: horizontal;
+       -moz-box-orient: horizontal;
+        -ms-box-orient: horizontal;
+         -o-box-orient: horizontal;
+            box-orient: horizontal;
+
+    -webkit-flex-direction: row;
+       -moz-flex-direction: row;
+        -ms-flex-direction: row;
+         -o-flex-direction: row;
+            flex-direction: row;
+
     justify-content: space-around;
   }
 
@@ -1197,7 +1253,23 @@ gui-list-view {
       display: -moz-box;
       display: flex;
 
-      flex-flow : row nowrap;
+      -webkit-flex-wrap: nowrap;
+         -moz-flex-wrap: nowrap;
+          -ms-flex-wrap: nowrap;
+           -o-flex-wrap: nowrap;
+              flex-wrap: nowrap;
+
+      -webkit-box-orient: horizontal;
+         -moz-box-orient: horizontal;
+          -ms-box-orient: horizontal;
+           -o-box-orient: horizontal;
+              box-orient: horizontal;
+
+      -webkit-flex-direction: row;
+         -moz-flex-direction: row;
+          -ms-flex-direction: row;
+           -o-flex-direction: row;
+              flex-direction: row;
     }
     gui-list-view-head gui-list-view-column {
       overflow : visible;
