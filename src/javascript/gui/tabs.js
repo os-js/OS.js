@@ -34,6 +34,13 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function toggleActive(ev, eidx, idx) {
+    Utils.$removeClass(el, 'gui-active');
+    if ( eidx === idx ) {
+      Utils.$addClass(el, 'gui-active');
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -71,16 +78,10 @@
         }
 
         tabs.querySelectorAll('li').forEach(function(el, eidx) {
-          Utils.$removeClass(el, 'gui-active');
-          if ( eidx === idx ) {
-            Utils.$addClass(el, 'gui-active');
-          }
+          toggleActive(el, eidx, idx);
         });
         contents.querySelectorAll('gui-tab-container').forEach(function(el, eidx) {
-          Utils.$removeClass(el, 'gui-active');
-          if ( eidx === idx ) {
-            Utils.$addClass(el, 'gui-active');
-          }
+          toggleActive(el, eidx, idx);
         });
 
         lastTab = tab;

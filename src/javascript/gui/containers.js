@@ -51,7 +51,7 @@
       if ( evName === 'resize' ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new UIElement(el)), params);
+      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
       function bindResizer(resizer, idx) {

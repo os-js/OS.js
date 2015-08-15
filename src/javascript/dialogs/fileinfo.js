@@ -66,7 +66,9 @@
     var file = this.args.file;
 
     function _onError(error) {
-      txt.set('value', API._('DIALOG_FILEINFO_ERROR_LOOKUP_FMT', file.path));
+      if ( error ) {
+        txt.set('value', API._('DIALOG_FILEINFO_ERROR_LOOKUP_FMT', file.path));
+      }
     }
 
     function _onSuccess(data) {

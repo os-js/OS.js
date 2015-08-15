@@ -68,7 +68,7 @@
     }
 
     if ( name === 'scandir' ) {
-      var files = getFiles();;
+      var files = getFiles();
       callback(false, files);
     }
 

@@ -84,7 +84,7 @@
 
     this.scheme.find(this, 'ApplicationList').set('columns', cols).add(rows).on('activate', function(ev) {
       self.onClose(ev, 'ok');
-    });;
+    });
 
     var file = '<unknown file>';
     var label = '<unknown mime>';
