@@ -1,6 +1,6 @@
 'use strict';
 
-(function(_fs, _path, _build) {
+(function(_fs, _path, _build, _grunt, _less) {
   var ROOT  = _build.ROOT;
   var BUILD = _build.BUILD;
 
@@ -84,26 +84,28 @@
      * Task: Build core
      */
     grunt.registerTask('core', 'Build dist core files', function(arg) {
+      var hjs, ojs;
+      var hcss, ocss;
 
       grunt.log.writeln('Building JavaScript core');
-      var hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
-      var ojs = _build.buildDistCore(hjs, BUILD.javascript.files, 'js', grunt);
+      hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
+      ojs = _build.buildDistCore(hjs, BUILD.javascript.files, 'js', grunt);
       grunt.log.writeln('>>> ' + BUILD.javascript.output);
       _fs.writeFileSync(_path.join(ROOT, BUILD.javascript.output), ojs);
 
       grunt.log.writeln('');
 
       grunt.log.writeln('Building JavaScript locales');
-      var hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
-      var ojs = _build.buildDistCore(hjs, BUILD.locales.files, 'js', grunt);
+      hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
+      ojs = _build.buildDistCore(hjs, BUILD.locales.files, 'js', grunt);
       grunt.log.writeln('>>> ' + BUILD.locales.output);
       _fs.writeFileSync(_path.join(ROOT, BUILD.locales.output), ojs);
 
       grunt.log.writeln('');
 
       grunt.log.writeln('Building Stylesheets');
-      var hcss = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css');
-      var ocss = _build.buildDistCore(hcss, BUILD.stylesheets.files, 'css', grunt);
+      hcss = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css');
+      ocss = _build.buildDistCore(hcss, BUILD.stylesheets.files, 'css', grunt);
       grunt.log.writeln('>>> ' + BUILD.stylesheets.output);
       _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), ocss);
 
@@ -119,8 +121,8 @@
         _fs.copySync(src, dst);
       });
 
-      var hcss = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css');
-      var ocss = _build.buildDistCore(hcss, BUILD.stylesheets.files, 'css', grunt);
+      hcss = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css');
+      ocss = _build.buildDistCore(hcss, BUILD.stylesheets.files, 'css', grunt);
       grunt.log.writeln('>>> ' + BUILD.stylesheets.output);
       _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), ocss);
 
@@ -262,7 +264,7 @@
         var packages = _build.buildManifest(grunt, dist);
         var dest = _path.join(ROOT, dist, 'packages.js');
         var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'packages.js')).toString();
-        var out = tpl.replace("%PACKAGES%", JSON.stringify(packages, null, 2));
+        var out = tpl.replace('%PACKAGES%', JSON.stringify(packages, null, 2));
 
         grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
         _fs.writeFileSync(dest, out);
@@ -369,7 +371,7 @@
         var packages = _build.buildManifest(grunt, 'nightly');
         var dest = _path.join(ROOT, '.nightly', 'packages.js');
         var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'packages.js')).toString();
-        var out = tpl.replace("%PACKAGES%", JSON.stringify(packages, null, 2));
+        var out = tpl.replace('%PACKAGES%', JSON.stringify(packages, null, 2));
 
         grunt.log.writeln('>>> ' + dest);
         _fs.writeFileSync(dest, out);
@@ -394,4 +396,4 @@
     grunt.registerTask('all', ['clean', 'config', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
   };
-})(require('node-fs-extra'), require('path'), require('./src/tools/grunt-build.js'));
+})(require('node-fs-extra'), require('path'), require('./src/tools/grunt-build.js'), require('grunt'), require('less'));
