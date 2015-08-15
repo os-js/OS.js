@@ -164,6 +164,14 @@ gui-vbox {
   display: flex;
 }
 
+gui-hbox {
+  -webkit-flex-direction: row;
+     -moz-flex-direction: row;
+      -ms-flex-direction: row;
+       -o-flex-direction: row;
+          flex-direction: row;
+}
+
 gui-vbox {
   -webkit-flex-direction: column;
      -moz-flex-direction: column;
