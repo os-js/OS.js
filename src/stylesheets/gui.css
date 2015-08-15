@@ -916,10 +916,10 @@ gui-input-modal {
 
 }
   gui-input-modal > div {
-    display: -webkit-flex;
     display: -webkit-box;
-    display: -ms-flexbox;
     display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
   }
     gui-input-modal input {
