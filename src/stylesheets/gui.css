@@ -1241,7 +1241,23 @@ gui-list-view {
     display: -moz-box;
     display: flex;
 
-    flex-flow : column nowrap;
+    -webkit-flex-wrap: nowrap;
+       -moz-flex-wrap: nowrap;
+        -ms-flex-wrap: nowrap;
+         -o-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+
+    -webkit-box-orient: vertical;
+       -moz-box-orient: vertical;
+        -ms-box-orient: vertical;
+         -o-box-orient: vertical;
+            box-orient: vertical;
+
+    -webkit-flex-direction: column;
+       -moz-flex-direction: column;
+        -ms-flex-direction: column;
+         -o-flex-direction: column;
+            flex-direction: column;
   }
     gui-list-view-row {
       position : relative;
@@ -1252,6 +1268,27 @@ gui-list-view {
       display: -ms-flexbox;
       display: -moz-box;
       display: flex;
+    }
+    gui-list-view-head gui-list-view-column {
+      overflow : visible;
+    }
+    gui-list-view-column {
+      position : relative;
+      display : inline-block;
+      background-repeat : no-repeat;
+      background-position : left center;
+      background-size : 16px;
+      overflow : hidden;
+      line-height : 16px;
+
+      -webkit-box-flex: 1 0 auto;
+         -moz-box-flex: 1 0 auto;
+
+      -webkit-flex: 1 0 auto;
+         -moz-flex: 1 0 auto;
+          -ms-flex: 1 0 auto;
+           -o-flex: 1 0 auto;
+              flex: 1 0 auto;
 
       -webkit-flex-wrap: nowrap;
          -moz-flex-wrap: nowrap;
@@ -1270,30 +1307,6 @@ gui-list-view {
           -ms-flex-direction: row;
            -o-flex-direction: row;
               flex-direction: row;
-    }
-    gui-list-view-head gui-list-view-column {
-      overflow : visible;
-    }
-    gui-list-view-column {
-      position : relative;
-      display : inline-block;
-      background-repeat : no-repeat;
-      background-position : left center;
-      background-size : 16px;
-      overflow : hidden;
-      line-height : 16px;
-
-      -webkit-box-flex: 1 0 auto;
-         -moz-box-flex: 1 0 auto;
-
-
-      -webkit-flex: 1 0 auto;
-         -moz-flex: 1 0 auto;
-          -ms-flex: 1 0 auto;
-           -o-flex: 1 0 auto;
-              flex: 1 0 auto;
-
-      flex-flow: row nowrap;
 
       -webkit-text-overflow: ellipsis;
          -moz-text-overflow: ellipsis;
