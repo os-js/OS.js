@@ -10,6 +10,10 @@ You can read more on [the official homepage](http://os.js.org/)
 
 Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
 
+
+[![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2/master)
+
+
 ## Demo
 
 I have a demo running on my server: http://osjsv2.0o.no
