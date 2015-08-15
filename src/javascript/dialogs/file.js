@@ -33,8 +33,6 @@
   /**
    * An 'File' dialog
    *
-   * TODO: Disable button if no selection is made (or empty text on save)
-   *
    * @param   args      Object        An object with arguments
    * @param   callback  Function      Callback when done => fn(ev, button, result)
    *
@@ -113,6 +111,11 @@
     var home = this.scheme.find(this, 'HomeButton');
     var mlist = this.scheme.find(this, 'ModuleSelect');
 
+    function checkEmptyInput() {
+      var disable = !filename.get('value').length;
+      self.scheme.find(self, 'ButtonOK').set('disabled', disable);
+    }
+
     this._toggleLoading(true);
     view.set('multiple', this.args.multiple);
     filename.set('value', this.args.filename || '');
@@ -154,6 +157,8 @@
           }
         }
       }
+
+      checkEmptyInput();
     });
 
     if ( this.args.type === 'save' ) {
@@ -178,6 +183,12 @@
         self.selected = null;
         self.checkSelection(ev);
       });
+      filename.on('change', function(ev) {
+        checkEmptyInput();
+      });
+      filename.on('keyup', function(ev) {
+        checkEmptyInput();
+      });
     } else {
       this.scheme.find(this, 'FileInput').hide();
     }
@@ -198,6 +209,8 @@
     });
 
     this.changePath();
+
+    checkEmptyInput();
 
     return root;
   };
