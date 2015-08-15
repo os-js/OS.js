@@ -74,7 +74,6 @@
     // Menus
     //
 
-    // TODO: Disabled menu items
     function getSelected() {
       var selected = [];
       (view.get('value') || []).forEach(function(sub) {
@@ -119,19 +118,6 @@
     //
     // Side View
     //
-    var sideViewItems = [];
-    VFS.getModules({special: true}).forEach(function(m, i) {
-      sideViewItems.push({
-        value: m.module,
-        columns: [
-          {
-            label: m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
-            icon: API.getIcon(m.module.icon),
-          }
-        ]
-      });
-    });
-
     var side = scheme.find(this, 'SideView');
     side.on('activate', function(ev) {
       if ( ev && ev.detail && ev.detail.entries ) {
@@ -139,7 +125,6 @@
         self.changePath(entry.data.root);
       }
     });
-    side.add(sideViewItems);
 
     //
     // File View
@@ -166,6 +151,8 @@
     // Init
     //
 
+    this.renderSideView();
+
     this.changeView(viewType, false);
     this.toggleHidden(viewHidden, false);
     this.toggleSidebar(viewSide, false);
@@ -179,7 +166,16 @@
     // FIXME: Locales
     var statusbar = this._scheme.find(this, 'Statusbar');
     var content = '';
+    var scheme = this._scheme;
+    var self = this;
+
     var sum, label;
+
+    function toggleMenuItems(isFile) {
+      scheme.find(self, 'MenuInfo').set('disabled', !isFile);
+      scheme.find(self, 'MenuDownload').set('disabled', !isFile);
+      scheme.find(self, 'MenuOpen').set('disabled', !isFile);
+    }
 
     if ( files && files.length ) {
       sum = {files: 0, directories: 0, size: 0};
@@ -194,12 +190,16 @@
 
       label = 'Selected {0} files, {1} dirs, {2}';
       content = Utils.format(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
+
+      toggleMenuItems(sum.files && !sum.directories);
     } else {
       sum = this.currentSummary;
       if ( sum ) {
         label = 'Showing {0} files ({1} hidden), {2} dirs, {3}';
         content = Utils.format(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
       }
+
+      toggleMenuItems(false);
     }
 
     statusbar.set('value', content);
@@ -219,10 +219,13 @@
     });
   };
 
-  ApplicationFileManagerWindow.prototype.updateSideView = function() {
-    // TODO: Show greyed modules
+  ApplicationFileManagerWindow.prototype.updateSideView = function(updateModule) {
     var found = null;
     var path = this.currentPath || '/';
+
+    if ( updateModule ) {
+      this.renderSideView();
+    }
 
     VFS.getModules({special: true}).forEach(function(m, i) {
       if ( path.match(m.module.match) ) {
@@ -232,6 +235,48 @@
 
     var view = this._scheme.find(this, 'SideView');
     view.set('selected', found, 'root');
+  };
+
+  ApplicationFileManagerWindow.prototype.renderSideView = function() {
+    var sideViewItems = [];
+    VFS.getModules({special: true}).forEach(function(m, i) {
+      sideViewItems.push({
+        value: m.module,
+        className: m.module.mounted() ? 'mounted' : 'unmounted',
+        columns: [
+          {
+            label: m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
+            icon: API.getIcon(m.module.icon),
+          }
+        ]
+      });
+    });
+
+    var side = this._scheme.find(this, 'SideView');
+    side.clear();
+    side.add(sideViewItems);
+  };
+
+  ApplicationFileManagerWindow.prototype.vfsEvent = function(args) {
+    if ( args.type === 'mount' || args.type === 'unmount' ) {
+      if ( args.module ) {
+        var m = OSjs.VFS.Modules[args.module];
+        if ( m ) {
+          if ( args.type === 'unmount' ) {
+            if ( this.currentPath.match(m.match) ) {
+              var path = API.getDefaultPath('/');
+              this.changePath(path);
+            }
+          }
+
+          this.updateSideView(m);
+        }
+      }
+    } else {
+      if ( args.file && this.currentPath === Utils.dirname(args.file.path) ) {
+        this.changePath(null);
+      }
+    }
   };
 
   ApplicationFileManagerWindow.prototype.changePath = function(dir, selectFile) {
@@ -366,13 +411,10 @@
     Application.prototype._onMessage.apply(this, arguments);
 
     // If any outside VFS actions were performed, refresh!
-    if ( msg == 'vfs' && args.source !== this.__pid ) {
-      var win = this._getWindow('ApplicationFileManagerWindow');
-      if ( win && args.file ) {
-        if ( win.currentPath === Utils.dirname(args.file.path) ) {
-          win.changePath(null);
-        }
-      }
+
+    var win = this._getWindow('ApplicationFileManagerWindow');
+    if ( win && msg == 'vfs' && args.source !== this.__pid ) {
+      win.vfsEvent(args);
     }
   };
 
@@ -390,13 +432,27 @@
     var self = this;
 
     // TODO: These must be async
-    // TODO: Confirmation dialog
-    items.forEach(function(item) {
-      item = new VFS.File(item);
-      self._action('delete', [item], function() {
-        win.changePath(null);
+    var files = [];
+    items.forEach(function(i) {
+      files.push(i.filename);
+    });
+    files = files.join(', ');
+
+    win._toggleDisabled(true);
+    API.createDialog('Confirm', {
+      message: Utils.format(OSjs.Applications.ApplicationFileManager._('Delete <span>{0}</span> ?'), files)
+    }, function(ev, button) {
+      win._toggleDisabled(false);
+      if ( button !== 'ok' && button !== 'yes' ) return;
+
+      items.forEach(function(item) {
+        item = new VFS.File(item);
+        self._action('delete', [item], function() {
+          win.changePath(null);
+        });
       });
     });
+
   };
 
   ApplicationFileManager.prototype.info = function(items) {

@@ -31,3 +31,6 @@
 .ApplicationFileManagerWindow {
 }
 
+.ApplicationFileManagerWindow .unmounted {
+  opacity : .6;
+}
