@@ -397,15 +397,20 @@
     }
 
     var style = flex.join(' ');
+    el.style['webkitBoxFlex'] = style;
+    el.style['mozBoxFlex'] = style;
+
     el.style['webkitFlex'] = style;
-    el.style['mozFflex'] = style;
-    el.style['msFflex'] = style;
+    el.style['mozFlex'] = style;
+    el.style['msFlex'] = style;
     el.style['oFlex'] = style;
     el.style['flex'] = style;
 
     var align = el.getAttribute('data-align');
+    Utils.$removeClass(el, 'gui-flex-align-start');
+    Utils.$removeClass(el, 'gui-flex-align-end');
     if ( align ) {
-      el.style.alignSelf = align.match(/start|end/) ? 'flex-' + align : align;
+      Utils.$addClass(el, 'gui-flex-align-' + align);
     }
   }
 
