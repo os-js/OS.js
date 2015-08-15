@@ -120,7 +120,7 @@
     // Side View
     //
     var sideViewItems = [];
-    VFS.getModules().forEach(function(m, i) {
+    VFS.getModules({special: true}).forEach(function(m, i) {
       sideViewItems.push({
         value: m.module,
         columns: [
@@ -224,7 +224,7 @@
     var found = null;
     var path = this.currentPath || '/';
 
-    VFS.getModules().forEach(function(m, i) {
+    VFS.getModules({special: true}).forEach(function(m, i) {
       if ( path.match(m.module.match) ) {
         found = m.module.root;
       }

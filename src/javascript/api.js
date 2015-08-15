@@ -383,6 +383,11 @@
       }
     }
 
+    if ( file.mime === 'osjs/application' ) {
+      doLaunchProcess(OSjs.Utils.filename(file.path));
+      return;
+    }
+
     handler.getApplicationNameByFile(file, launchArgs.forceList, _onDone);
   }
 

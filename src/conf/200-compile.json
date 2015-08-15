@@ -55,6 +55,7 @@
       "src/javascript/handler.js",
       "src/javascript/handlers/%HANDLER%/handler.js",
       "src/javascript/vfs.js",
+      "src/javascript/vfs/apps.js",
       "src/javascript/vfs/osjs.js",
       "src/javascript/vfs/public.js",
       "src/javascript/vfs/user.js",

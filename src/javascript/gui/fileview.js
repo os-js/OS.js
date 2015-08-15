@@ -205,6 +205,10 @@
             args.done(error, summary);
           }, function(iter) {
             function _getIcon(iter, size) {
+              if ( iter.icon && typeof iter.icon === 'object' ) {
+                return API.getIcon(iter.icon.filename, size, iter.icon.application);
+              }
+
               var icon = 'status/gtk-dialog-question.png';
               return API.getFileIcon(iter, size, icon);
             }

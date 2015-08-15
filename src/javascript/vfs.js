@@ -525,23 +525,32 @@
   /**
    * Returns a list of all enabled VFS modules
    *
-   * @param   boolean   visible       All visible modules only (default=true)
+   * @param   Object    opts          Options
+   *
+   * @option  opts      boolean       visible       All visible modules only (default=true)
    *
    * @return  Array                   List of all Modules found
    * @api     OSjs.VFS.getModules()
    */
-  OSjs.VFS.getModules = function(visible) {
-    visible = (typeof visible === 'undefined') ? true : visible === true;
+  OSjs.VFS.getModules = function(opts) {
+    opts = Utils.argumentDefaults(opts, {
+      visible: true,
+      special: false
+    });
+
     var m = OSjs.VFS.Modules;
     var a = [];
     Object.keys(m).forEach(function(name) {
-      if ( m[name].enabled() ) {
-        if ( visible && m[name].visible === visible ) {
-          a.push({
-            name: name,
-            module: m[name]
-          });
-        }
+      var iter = m[name];
+      if ( !iter.enabled() || (!opts.special && iter.special) ) {
+        return;
+      }
+
+      if ( opts.visible && iter.visible === opts.visible ) {
+        a.push({
+          name: name,
+          module: iter
+        });
       }
     });
     return a;
