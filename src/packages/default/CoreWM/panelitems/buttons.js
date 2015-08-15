@@ -54,7 +54,7 @@
     this.$container = document.createElement('ul');
     root.appendChild(this.$container);
 
-    this.addButton(API._('LBL_APPLICATIONS'), 'osjs.png', function(ev) {
+    this.addButton(API._('LBL_APPLICATIONS'), 'osjs-white.png', function(ev) {
       ev.stopPropagation();
 
       OSjs.Applications.CoreWM.showMenu(ev);
