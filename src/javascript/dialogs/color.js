@@ -52,6 +52,7 @@
     if ( typeof rgb === 'string' ) {
       hex = rgb;
       rgb = Utils.convertToRGB(rgb);
+      rgb.a = null;
     } else {
       if ( typeof rgb.a === 'undefined' ) {
         rgb.a = null;
