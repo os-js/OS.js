@@ -1033,6 +1033,11 @@
       var wm = OSjs.Core.getWindowManager();
       wm.addWindow(win, true);
     } else if ( parentObj instanceof OSjs.Core.Window ) {
+      win._addHook('destroy', function() {
+        if ( parentObj ) {
+          parentObj._focus();
+        }
+      });
       parentObj._addChild(win, true);
     } else if ( parentObj instanceof OSjs.Core.Application ) {
       parentObj._addWindow(win);
