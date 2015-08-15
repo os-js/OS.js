@@ -156,6 +156,73 @@ application-window-content * {
             align-self: flex-center;
 }
 
+.gui-flex {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-box-orient: horizontal;
+     -moz-box-orient: horizontal;
+      -ms-box-orient: horizontal;
+       -o-box-orient: horizontal;
+          box-orient: horizontal;
+
+  -webkit-flex-direction: row;
+     -moz-flex-direction: row;
+      -ms-flex-direction: row;
+       -o-flex-direction: row;
+          flex-direction: row;
+}
+  .gui-flex > * {
+    display : block;
+  }
+
+.gui-flex-normal {
+  -webkit-box-flex: 0 0 auto;
+     -moz-box-flex: 0 0 auto;
+
+  -webkit-flex: 0 0 auto;
+     -moz-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+       -o-flex: 0 0 auto;
+          flex: 0 0 auto;
+}
+
+.gui-flex-grow-shrink {
+  -webkit-box-flex: 1 1 auto;
+     -moz-box-flex: 1 1 auto;
+
+  -webkit-flex: 1 1 auto;
+     -moz-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+       -o-flex: 1 1 auto;
+          flex: 1 1 auto;
+}
+
+.gui-flex-grow {
+  -webkit-box-flex: 1 0 auto;
+     -moz-box-flex: 1 0 auto;
+
+  -webkit-flex: 1 0 auto;
+     -moz-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+       -o-flex: 1 0 auto;
+          flex: 1 0 auto;
+}
+
+.gui-flex-shrink {
+  -webkit-box-flex: 0 1 auto;
+     -moz-box-flex: 0 1 auto;
+
+  -webkit-flex: 0 1 auto;
+     -moz-flex: 0 1 auto;
+      -ms-flex: 0 1 auto;
+       -o-flex: 0 1 auto;
+          flex: 0 1 auto;
+}
+
 gui-hbox,
 gui-hbox > *,
 gui-vbox,
