@@ -134,30 +134,16 @@
   }
 
   function createRow(e) {
-    var row = document.createElement('gui-list-view-row');
-    if ( e && e.columns ) {
+    e = e || {};
+    if ( e.columns ) {
+      var row = GUI.Helpers.createElement('gui-list-view-row', e, ['columns']);
+
       e.columns.forEach(function(se) {
         row.appendChild(createEntry(se));
       });
 
-      var value = e.value;
-      try {
-        if ( typeof value === 'object' || value instanceof Array ) {
-          value = JSON.stringify(e.value);
-        }
-      } catch ( e ) {}
-
-      row.setAttribute('data-value', value.toString());
-      if ( typeof e.id !== 'undefined' && e.id !== null ) {
-        row.setAttribute('data-id', e.id);
-      }
-      if ( e.tooltip ) {
-        row.setAttribute('data-tooltip', e.tooltip);
-      }
-
       return row;
     }
-
     return null;
   }
 
