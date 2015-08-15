@@ -232,8 +232,8 @@
     'ERR_VFSMODULE_URL_FMT'        : 'No se pudo obtener la URL del archivo: {0}',
     'ERR_VFSMODULE_TRASH'          : 'No se pudo enviar el archivo a la papelera',
     'ERR_VFSMODULE_TRASH_FMT'      : 'No se pudo enviar el archivo a la papelera: {0}',
-    'ERR_VFSMODULE_UNTRASH'        : 'No se pudo recuperar el archivo de la la papelera',
-    'ERR_VFSMODULE_UNTRASH_FMT'    : 'No se pudo recuperar el archivo de la la papelera: {0}',
+    'ERR_VFSMODULE_UNTRASH'        : 'No se pudo recuperar el archivo de la papelera',
+    'ERR_VFSMODULE_UNTRASH_FMT'    : 'No se pudo recuperar el archivo de la papelera: {0}',
     'ERR_VFSMODULE_EMPTYTRASH'     : 'No se pudo vaciar la papelera',
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'No se pudo vaciar la papelera: {0}',
 

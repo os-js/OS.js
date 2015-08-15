@@ -80,6 +80,21 @@
       'seek unavailable in format' : 'Spulen im Format nicht verfügbar',
       'The audio type is not supported: {0}' : 'Der Audio-Typ {0} ist nicht unterstützt',
     },
+    es_ES : {
+      'Playlist' : 'Lista de reproducción',
+      'Playback aborted' : 'Playback anulado',
+      'Network or communication error' : 'Error de red o de comunicación',
+      'Decoding failed. Corruption or unsupported media' : 'Fallo en el desentrelazado. Medio corrupto o no soportado',
+      'Media source not supported' : 'Medio no soportado',
+      'Failed to play file' : 'Error reproduciendo archivo',
+      'Artist' : 'Artista',
+      'Album' : 'Album',
+      'Track' : 'Pista',
+      'Time' : 'Tiempo',
+      'Media information query failed' : 'Error recupersqndo información del medio',
+      'seek unavailable in format' : 'búsqueda no disponible en este formato',
+      'The audio type is not supported: {0}' : 'El tipo de audio no está soportado: {0}',
+    },
     fr_FR : {
     },
     ru_RU : {
