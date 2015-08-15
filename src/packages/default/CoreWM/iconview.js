@@ -166,37 +166,41 @@
 
     // TODO: Check for duplicates
 
-    if ( data.mime === 'osjs/application' ) {
-      var appname = Utils.filename(data.path);
-      var apps = OSjs.Core.getHandler().getApplicationsMetadata();
-      var meta = apps[appname];
+    try {
+      if ( data.mime === 'osjs/application' ) {
+        var appname = Utils.filename(data.path);
+        var apps = OSjs.Core.getHandler().getApplicationsMetadata();
+        var meta = apps[appname];
 
-      iter = {
-        icon: API.getIcon(meta.icon, '32x32', data.launch),
-        id: appname,
-        label: meta.name,
-        value: {
-          launch: appname
-        }
-      };
-    } else {
-      iter = {
-        icon: API.getFileIcon(data, '32x32'),
-        id: data.filename,
-        label: data.filename,
-        value: {
-          filename: data.filename,
-          path: data.path,
-          type: data.type,
-          mime: data.mime
-        }
-      };
-    }
+        iter = {
+          icon: API.getIcon(meta.icon, '32x32', data.launch),
+          id: appname,
+          label: meta.name,
+          value: {
+            launch: appname
+          }
+        };
+      } else {
+        iter = {
+          icon: API.getFileIcon(data, '32x32'),
+          id: data.filename,
+          label: data.filename,
+          value: {
+            filename: data.filename,
+            path: data.path,
+            type: data.type,
+            mime: data.mime
+          }
+        };
+      }
 
-    cel.add(iter);
+      cel.add(iter);
 
-    if ( save ) {
-      this._save();
+      if ( save ) {
+        this._save();
+      }
+    } catch ( e ) {
+      console.warn(e, e.stack);
     }
   };
 
