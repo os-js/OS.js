@@ -451,7 +451,7 @@ Array.prototype.unique = function(){
   /////////////////////////////////////////////////////////////////////////////
 
   function createHref(n) {
-    n.replace(ROOT + '/', '');
+    n = n.replace(ROOT + '/', '');
     return n.replace(/(\.)|(\:\:)/g, '-').replace(/[^A-z0-9_\-]/g, '').toLowerCase();
   }
 
@@ -467,6 +467,7 @@ Array.prototype.unique = function(){
       }
     });
 
+    filename = filename.replace(ROOT + '/', '');
     blocks.forEach(function(b) {
       if ( b.api ) {
         if ( !NAMESPACES[b.api] ) {
@@ -511,6 +512,8 @@ Array.prototype.unique = function(){
       }
     });
 
+
+    filename = filename.replace(ROOT + '/', '');
 
     // Finally output
     var output = [];
