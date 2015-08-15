@@ -324,7 +324,12 @@
     } else {
       if ( file ) {
         if ( data instanceof window.ArrayBuffer ) {
-          data = new Blob([data], {type: file.mime});
+          try {
+            data = new Blob([data], {type: file.mime});
+          } catch ( e ) {
+            data = null;
+            console.warn(e, e.stack);
+          }
         }
         fd.append(key, data, file.filename);
       } else {
@@ -373,11 +378,16 @@
   function textToAb(data, mime, callback) {
     mime = mime || 'application/octet-stream';
 
-    var blob    = new Blob([data], {type: mime});
-    var r       = new FileReader();
-    r.onerror   = function(e) { callback(e);               };
-    r.onloadend = function()  { callback(false, r.result); };
-    r.readAsArrayBuffer(blob);
+    try {
+      var blob    = new Blob([data], {type: mime});
+      var r       = new FileReader();
+      r.onerror   = function(e) { callback(e);               };
+      r.onloadend = function()  { callback(false, r.result); };
+      r.readAsArrayBuffer(blob);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+      callback(e);
+    }
   }
 
   /**
@@ -394,11 +404,16 @@
   function abToDataSource(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
 
-    var blob    = new Blob([arrayBuffer], {type: mime});
-    var r       = new FileReader();
-    r.onerror   = function(e) { callback(e);               };
-    r.onloadend = function()  { callback(false, r.result); };
-    r.readAsDataURL(blob);
+    try {
+      var blob    = new Blob([arrayBuffer], {type: mime});
+      var r       = new FileReader();
+      r.onerror   = function(e) { callback(e);               };
+      r.onloadend = function()  { callback(false, r.result); };
+      r.readAsDataURL(blob);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+      callback(e);
+    }
   }
 
   /**
@@ -415,11 +430,16 @@
   function abToText(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
 
-    var blob    = new Blob([arrayBuffer], {type: mime});
-    var r       = new FileReader();
-    r.onerror   = function(e) { callback(e);               };
-    r.onloadend = function()  { callback(false, r.result); };
-    r.readAsText(blob);
+    try {
+      var blob    = new Blob([arrayBuffer], {type: mime});
+      var r       = new FileReader();
+      r.onerror   = function(e) { callback(e);               };
+      r.onloadend = function()  { callback(false, r.result); };
+      r.readAsText(blob);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+      callback(e);
+    }
   }
 
   /**
@@ -436,11 +456,16 @@
   function abToBinaryString(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
 
-    var blob    = new Blob([arrayBuffer], {type: mime});
-    var r       = new FileReader();
-    r.onerror   = function(e) { callback(e);               };
-    r.onloadend = function()  { callback(false, r.result); };
-    r.readAsBinaryString(blob);
+    try {
+      var blob    = new Blob([arrayBuffer], {type: mime});
+      var r       = new FileReader();
+      r.onerror   = function(e) { callback(e);               };
+      r.onloadend = function()  { callback(false, r.result); };
+      r.readAsBinaryString(blob);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+      callback(e);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
