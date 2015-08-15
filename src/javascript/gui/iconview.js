@@ -40,7 +40,6 @@
   }
 
   function initEntry(el, cel) {
-    // TODO: Custom Icon Size
     var icon = cel.getAttribute('data-icon');
     var label = GUI.Helpers.getLabel(cel);
 

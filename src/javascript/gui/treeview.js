@@ -40,8 +40,6 @@
   }
 
   function initEntry(el, sel) {
-    // TODO: Custom Icon Size
-
     var icon = sel.getAttribute('data-icon');
     var label = GUI.Helpers.getLabel(sel);
     var expanded = el.getAttribute('data-expanded') === 'true';
