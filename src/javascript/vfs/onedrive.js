@@ -231,8 +231,9 @@
           getFilesInFolder(currentParentId, function(error, list) {
             list = list || [];
 
+            var lfound;
+
             if ( !error ) {
-              var lfound;
               list.forEach(function(iter) { // FIXME: Not very precise
                 if ( iter ) {
                   if ( iter.name === current ) {

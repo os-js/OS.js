@@ -207,7 +207,7 @@
         value.forEach(function(v) {
           v.visible = (typeof v.visible === 'undefined') || v.visible === true;
 
-          var nel = createEntry(v, true)
+          var nel = createEntry(v, true);
 
           el._columns.push(v);
 

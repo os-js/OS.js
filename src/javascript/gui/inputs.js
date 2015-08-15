@@ -140,6 +140,8 @@
   }
 
   function callSelectBox(el, method, args) {
+    var self = this;
+
     if ( method === 'add' ) {
       addToSelectBox(el, args[0]);
     } else if ( method === 'remove' ) {
@@ -148,7 +150,7 @@
       var target = el.querySelector('select');
       Utils.$empty(target);
     }
-    return this;
+    return self;
   }
 
   function createSelectInput(el, multiple) {

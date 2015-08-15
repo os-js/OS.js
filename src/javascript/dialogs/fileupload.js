@@ -86,7 +86,7 @@
   FileUploadDialog.prototype.setFile = function(file, input) {
     var self = this;
 
-    function error(msg) {
+    function error(msg, ev) {
       API.error(
         OSjs.API._('DIALOG_UPLOAD_FAILED'),
         OSjs.API._('DIALOG_UPLOAD_FAILED_MSG'),
@@ -133,16 +133,16 @@
           progressDialog._close();
           self.onClose(ev, 'ok', file);
         } else if ( type === 'failed' ) {
-          error(ev);
+          error(ev.toString(), ev);
         } else if ( type === 'canceled' ) {
-          error(OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'));
+          error(OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'), ev);
         } else if ( type === 'progress' ) {
           if ( ev.lengthComputable ) {
             var p = Math.round(ev.loaded * 100 / ev.total);
             progressDialog.setProgress(p);
           }
         } else {
-          error(ev);
+          error(ev.toString(), ev);
         }
       });
 

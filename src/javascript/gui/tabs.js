@@ -34,7 +34,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function toggleActive(ev, eidx, idx) {
+  function toggleActive(el, eidx, idx) {
     Utils.$removeClass(el, 'gui-active');
     if ( eidx === idx ) {
       Utils.$addClass(el, 'gui-active');

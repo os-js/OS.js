@@ -1043,7 +1043,7 @@
     }, 10);
 
     return win;
-  };
+  }
 
   /**
    * Create a draggable DOM element

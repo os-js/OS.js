@@ -126,7 +126,7 @@
         var input = null;
         if ( type ) {
           var group = child.getAttribute('data-group');
-          var input = document.createElement('input');
+          input = document.createElement('input');
           input.type = type;
           input.name = group ? group + '[]' : '';
           par.appendChild(input);
@@ -284,6 +284,22 @@
       });
     }
 
+    function getPosition() {
+      var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
+      var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
+      if ( typeof x === 'undefined' && typeof y === 'undefined' ) {
+        if ( ev.detail && typeof ev.detail.x !== 'undefined' ) {
+          x = ev.detail.x;
+          y = ev.detail.y;
+        } else {
+          var tpos = Utils.$position(ev.target);
+          x = tpos.left;
+          y = tpos.top;
+        }
+      }
+      return {x: x, y: y};
+    }
+
     if ( !root ) {
       root = GUI.Helpers.createElement('gui-menu', {});
       resolveItems(items || [], root);
@@ -295,32 +311,20 @@
       root = root.$element;
     }
 
-    var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
-    var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
-    if ( typeof x === 'undefined' && typeof y === 'undefined' ) {
-      if ( ev.detail && typeof ev.detail.x !== 'undefined' ) {
-        x = ev.detail.x;
-        y = ev.detail.y;
-      } else {
-        var tpos = Utils.$position(ev.target);
-        x = tpos.left;
-        y = tpos.top;
-      }
-    }
-
     var wm = OSjs.Core.getWindowManager();
     var space = wm.getWindowSpace();
+    var pos = getPosition();
 
     Utils.$addClass(root, 'gui-root-menu');
-    root.style.left = x + 'px';
-    root.style.top  = y + 'px';
+    root.style.left = pos.x + 'px';
+    root.style.top  = pos.y + 'px';
     document.body.appendChild(root);
 
     // Make sure it stays within viewport
     setTimeout(function() {
       var pos = Utils.$position(root);
       if ( pos.right > space.width ) {
-        var newLeft = Math.round(space.width - pos.width)
+        var newLeft = Math.round(space.width - pos.width);
         root.style.left = newLeft + 'px';
       }
       if ( pos.bottom > space.height ) {
