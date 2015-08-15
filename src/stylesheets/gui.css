@@ -324,6 +324,18 @@ gui-paned-view {
   display: -ms-flexbox;
   display: -moz-box;
   display: flex;
+
+  -webkit-box-orient: horizontal;
+     -moz-box-orient: horizontal;
+      -ms-box-orient: horizontal;
+       -o-box-orient: horizontal;
+          box-orient: horizontal;
+
+  -webkit-flex-direction: row;
+     -moz-flex-direction: row;
+      -ms-flex-direction: row;
+       -o-flex-direction: row;
+          flex-direction: row;
 }
   gui-paned-view > * {
     display : inline-block;
