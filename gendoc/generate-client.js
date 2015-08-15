@@ -451,6 +451,7 @@ Array.prototype.unique = function(){
   /////////////////////////////////////////////////////////////////////////////
 
   function createHref(n) {
+    n.replace(ROOT + '/', '');
     return n.replace(/(\.)|(\:\:)/g, '-').replace(/[^A-z0-9_\-]/g, '').toLowerCase();
   }
 
