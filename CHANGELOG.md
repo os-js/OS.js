@@ -1,3 +1,34 @@
+# 2.0.0-alpha63
+
+New features, bugfixes and other improvments.
+
+* CoreWM: Updated context menu for desktop
+* CoreWM: Updated context menu for panel
+* CoreWM: Added 'Weather' panel item
+* CoreWM: Adding launchers by DnD is supported again
+* CoreWM: Now using white icon on launcher button
+* Locale: Added Spanish es_ES
+* Locale: Misc updates
+* API: Added API::createNotification() shortcut
+* GUI: DataView improvments
+* VFS: Added 'Apps' module
+* FileManager: Added support for 'Apps' VFS module
+* FileManager: Menus now toggle based on context
+* FileManager: Added confirmation dialogs
+* FileManager: Added vfsEvent
+* Themes: Added 'Windows 8' Theme
+* Themes: Added 'Glass' Theme
+* Dialogs: Confirm now supports HTML messages
+* Dialogs: Confirm now has 'buttons' argument
+* UI: Updated theming support
+* UI: Fixed font ordering (IE was having trouble)
+* UI: iOS rendering now working (old flex model)
+* Misc: Cleanups
+* Misc: Linting
+* Misc: Documentation updates
+* Misc: Moved 'gendoc' to the gh-pages branch
+* Misc: Removed a npm dependency
+
 # 2.0.0-alpha62
 
 **BIG CHANGES TO THE API. THIS WILL BREAK YOUR APPS**
