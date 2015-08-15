@@ -63,6 +63,18 @@
     return formatDate(date, fmt, utc);
   }
 
+  function _now(now) {
+    return now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
+  }
+
+  function _y(y, now) {
+    return (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
+  }
+
+  function _m(m, now) {
+    return (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXTENDED DATE
   /////////////////////////////////////////////////////////////////////////////
@@ -349,11 +361,9 @@
   };
 
   ExtendedDate.getFirstDayInMonth = function(fmt, y, m, now) {
-    (function() {
-      now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-      y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
-      m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
-    })();
+    now = _now(now);
+    y = _y(y, now);
+    m = _m(m, now);
 
     var date = new Date();
     date.setFullYear(y, m, 1);
@@ -364,11 +374,9 @@
   };
 
   ExtendedDate.getLastDayInMonth = function(fmt, y, m, now) {
-    (function() {
-      now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-      y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
-      m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
-    })();
+    now = _now(now);
+    y = _y(y, now);
+    m = _m(m, now);
 
     var date = new Date();
     date.setFullYear(y, m, 0);
@@ -380,11 +388,9 @@
 
 
   ExtendedDate.getDaysInMonth = function(y, m, now) {
-    (function() {
-      now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
-      y = (typeof y === 'undefined' || y === null || y < 0 ) ? now.getFullYear() : y;
-      m = (typeof m === 'undefined' || m === null || m < 0 ) ? now.getMonth() : m;
-    })();
+    now = _now(now);
+    y = _y(y, now);
+    m = _m(m, now);
 
     var date = new Date();
     date.setFullYear(y, m, 0);
