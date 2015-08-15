@@ -299,9 +299,18 @@
       return document.createElement('video').canPlayType ? document.createElement('video') : null;
     }
 
+    function canPlayCodec(support, check) {
+      return _checkSupport(support, check, function(codec) {
+        try {
+          return !!support.canPlayType(codec);
+        } catch ( e ) {
+        }
+        return false;
+      });
+    }
+
     function getVideoTypesSupported() {
-      var enabled = getVideoSupported();
-      var check = {
+      return canPlayCodec(getVideoSupported(), {
         webm     : 'video/webm; codecs="vp8.0, vorbis"',
         ogg      : 'video/ogg; codecs="theora"',
         h264     : [
@@ -310,14 +319,6 @@
         ],
         mpeg     : 'video/mp4; codecs="mp4v.20.8"',
         mkv      : 'video/x-matroska; codecs="theora, vorbis"'
-      };
-
-      return _checkSupport(getVideoSupported(), check, function(codec) {
-        try {
-          return !!enabled.canPlayType(codec);
-        } catch ( e ) {
-        }
-        return false;
       });
     }
 
@@ -326,18 +327,10 @@
     }
 
     function getAudioTypesSupported() {
-      var enabled = getAudioSupported();
-      var check = {
+      return canPlayCodec(getAudioSupported(), {
         ogg   : 'audio/ogg; codecs="vorbis',
         mp3   : 'audio/mpeg',
         wav   : 'audio/wav; codecs="1"'
-      };
-
-      return _checkSupport(getVideoSupported(), check, function(codec) {
-        try {
-          return !!enabled.canPlayType(codec);
-        } catch ( e ) {}
-        return false;
       });
     }
 

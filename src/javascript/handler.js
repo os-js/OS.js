@@ -126,6 +126,10 @@
     }
     var scheme = OSjs.GUI.createScheme(url);
     scheme.load(function(error, doc) {
+      if ( error ) {
+        console.warn('Handler::boot()', 'error loading dialog schemes', error);
+      }
+
       self.dialogs = scheme;
       self.packages.load(function(presult, perror) {
         callback(presult, perror);
