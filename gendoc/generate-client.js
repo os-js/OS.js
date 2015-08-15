@@ -18,7 +18,7 @@ Array.prototype.unique = function(){
 (function(_fs, _path, _markdown) {
   var ROOT = _path.join(__dirname, 'OS.js');
   var TPLDIR = _path.join(ROOT, 'src', 'tools', 'templates');
-  var OUTDIR = _path.join(ROOT, 'doc', 'client');
+  var OUTDIR = _path.join(__dirname, 'output', 'client');
 
   var NAMESPACES = [];
 

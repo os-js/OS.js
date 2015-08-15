@@ -1,3 +1,3 @@
 node generate.js
-rm doc/client/*
+rm output/client/*
 node generate-client.js
