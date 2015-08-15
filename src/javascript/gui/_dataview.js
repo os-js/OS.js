@@ -103,9 +103,29 @@
     }
 
     function getRowSize() {
+      /* NOT ACCURATE!
       var ew = entries[0].offsetWidth;
       var tw = root.offsetWidth;
       var d = Math.floor(tw/ew);
+      */
+      var d = 0;
+
+      var lastTop = -1;
+      entries.forEach(function(e) {
+        if ( lastTop === -1 ) {
+          lastTop = e.offsetTop;
+        }
+
+        if ( lastTop !== e.offsetTop ) {
+          return false;
+        }
+
+        lastTop = e.offsetTop;
+        d++;
+
+        return true;
+      });
+
       return d;
     }
 
