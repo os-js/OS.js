@@ -735,7 +735,11 @@
     }
 
     if ( window.location.protocol.match(/^file/) ) {
-      finished(OSjs.API.getDefaultSchemes(this.url));
+      var url = this.url;
+      if ( !url.match(/^\//) ) {
+        url = '/' + url;
+      }
+      finished(OSjs.API.getDefaultSchemes(url));
       return;
     }
 
