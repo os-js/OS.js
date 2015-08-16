@@ -35,7 +35,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function createEntry(e) {
-    var entry = GUI.Helpers.createElement('gui-tree-view-entry', e);
+    var entry = GUI.Helpers.createElement('gui-tree-view-entry', e, 'entries');
     return entry;
   }
 
