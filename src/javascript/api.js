@@ -730,6 +730,8 @@
     var path = '';
     var appname = null;
 
+    name = name.replace(/^\.\//, '');
+
     if ( app instanceof OSjs.Core.Process ) {
       if ( app.__path ) {
         appname = app.__path;
