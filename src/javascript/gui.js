@@ -836,8 +836,18 @@
     tagName = tagName || '';
     params = params || {};
     parentNode = parentNode || win.getRoot();
+    if ( parentNode instanceof UIElement ) {
+      parentNode = parentNode.$element;
+    }
 
-    var el = createElement(tagName, params);
+
+    var el;
+    if ( OSjs.GUI.Elements[tagName] && OSjs.GUI.Elements[tagName].create ) {
+      el = OSjs.GUI.Elements[tagName].create(params);
+    } else {
+      el = createElement(tagName, params);
+    }
+
     parentNode.appendChild(el);
     OSjs.GUI.Elements[tagName].build(el, applyArgs, win);
 
