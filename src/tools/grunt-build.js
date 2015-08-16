@@ -840,28 +840,37 @@
   // INDEX.HTML GENERATOR
   /////////////////////////////////////////////////////////////////////////////
 
-  function generateIndex(grunt) {
+  function generateIndex(grunt, dist, arg) {
     var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'index.html')).toString();
 
     var script_list = [];
     var style_list = [];
-    BUILD.javascript.files.forEach(function(i) {
-      script_list.push(i.replace('src/javascript', 'js'));
-    });
-    BUILD.locales.files.forEach(function(i) {
-      script_list.push(i.replace('src/javascript', 'js'));
-    });
-    BUILD.stylesheets.files.forEach(function(i) {
-      style_list.push(i.replace('src/stylesheets', 'css'));
-    });
+    if ( dist ) {
+      style_list.push('osjs.css');
+      script_list.push('osjs.js');
+      script_list.push('locales.js');
+      if ( arg === 'standalone' ) {
+        script_list.push('schemes.js');
+      }
+    } else {
+      BUILD.javascript.files.forEach(function(i) {
+        script_list.push(i.replace('src/javascript', 'js'));
+      });
+      BUILD.locales.files.forEach(function(i) {
+        script_list.push(i.replace('src/javascript', 'js'));
+      });
+      BUILD.stylesheets.files.forEach(function(i) {
+        style_list.push(i.replace('src/stylesheets', 'css'));
+      });
+    }
 
     var styles = [];
     var scripts = [];
     script_list.forEach(function(i) {
-      scripts.push('    <script type="text/javascript" charset="utf-8" src="/' + i + '"></script>');
+      scripts.push('    <script type="text/javascript" charset="utf-8" src="' + i + '"></script>');
     });
     style_list.forEach(function(i) {
-      styles.push('    <link type="text/css" rel="stylesheet" href="/' + i + '" />');
+      styles.push('    <link type="text/css" rel="stylesheet" href="' + i + '" />');
     });
 
     tpl = replaceAll(tpl, "%STYLES%", styles.join('\n'));
@@ -1033,8 +1042,36 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // NIGHTLY BUILD
+  // NIGHTLY / STANDALONE BUILD
   /////////////////////////////////////////////////////////////////////////////
+
+  function buildStandalone(grunt, callback) {
+    var tree = {};
+    var pkgdir = _path.join(ROOT, 'src', 'packages');
+
+    var schemeFile = _path.join(ROOT, 'src', 'javascript', 'dialogs', 'schemes.html');
+    if ( _fs.existsSync(schemeFile) ) {
+      tree['/dialogs.html'] = _fs.readFileSync(schemeFile).toString();
+    }
+
+    REPOS.forEach(function(r) {
+      _fs.readdirSync(_path.join(pkgdir, r)).forEach(function(d) {
+        var schemeFile = _path.join(pkgdir, r, d, 'scheme.html');
+        if ( _fs.existsSync(schemeFile) ) {
+          var iterName = '/packages/' + r + '/' + d + '/scheme.html';
+          tree[iterName] =  _fs.readFileSync(schemeFile).toString();
+        }
+      });
+    });
+
+    var out = _path.join(ROOT, 'dist', 'schemes.js');
+    var tin = _path.join(ROOT, 'src', 'tools', 'templates', 'schemes.js');
+    var template = _fs.readFileSync(tin).toString();
+    template = template.replace('%JSON%', JSON.stringify(tree, null, 4));
+    _fs.writeFileSync(out, template);
+
+    callback();
+  }
 
   function createNightly(grunt, callback) {
     var list = [
@@ -1048,6 +1085,7 @@
       'osjs.css',
       'osjs.js',
       'locales.js',
+      'schemes.js',
       'osjs-logo.png',
       'packages.js',
       'settings.js'
@@ -1097,6 +1135,7 @@
     buildFonts: buildFonts,
     buildPackages: buildPackages,
     buildManifest: buildManifest,
+    buildStandalone: buildStandalone,
     compress: doCompress,
     createNightly: createNightly,
 

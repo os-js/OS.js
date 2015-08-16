@@ -29,6 +29,7 @@ dist/themes.json
 dist/themes
 dist/packages
 dist/dialogs.html
+dist/schemes.js
 
 dist-dev/test.*
 dist-dev/locales.js

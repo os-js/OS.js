@@ -723,17 +723,26 @@
       return newhtml + split[split.length-1];
     }
 
+    function finished(html) {
+      var doc = document.createDocumentFragment();
+      var wrapper = document.createElement('div');
+
+      wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
+      doc.appendChild(wrapper);
+      self.scheme = doc;
+
+      cb(false, doc);
+    }
+
+    if ( window.location.protocol.match(/^file/) ) {
+      finished(OSjs.API.getDefaultSchemes(this.url));
+      return;
+    }
+
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
-        var doc = document.createDocumentFragment();
-        var wrapper = document.createElement('div');
-
-        wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
-        doc.appendChild(wrapper);
-        self.scheme = doc;
-
-        cb(false, doc);
+        finished(html);
       },
       onerror: function() {
         cb('Failed to fetch scheme');

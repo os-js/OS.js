@@ -130,6 +130,22 @@
     });
 
     /**
+     * Task: Build Standalone
+     */
+    grunt.registerTask('standalone', 'Build dist standalone files', function(arg) {
+      var done = this.async();
+      try {
+        _build.buildStandalone(grunt, function() {
+          grunt.verbose.ok();
+          done();
+        });
+      } catch ( e ) {
+        console.warn(e, e.stack);
+        done();
+      }
+    });
+
+    /**
      * Task: Build packages
      */
     grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About)', function(arg) {
@@ -286,6 +302,16 @@
         done();
       }
       _build.compress(arg, grunt, finished);
+    });
+
+    /**
+     * Task: Generate index.html
+     */
+    grunt.registerTask('dist-index', 'Generate dist index.html', function(arg) {
+      var index = _build.generateIndex(grunt, true, arg);
+      var dest = _path.join(ROOT, 'dist', 'index.html');
+      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
+      _fs.writeFileSync(dest, index);
     });
 
     /**

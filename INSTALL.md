@@ -80,6 +80,14 @@ You can grab a configuration from the [community repo](https://registry.hub.dock
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
 
+## Standalone
+
+You can run OS.js in `file:///`, but this will disable VFS and HTTP APIs. Just build and run `dist/index.html` with
+
+```
+grunt standalone dist-index:standalone
+```
+
 ## Node
 
 * Production: `./bin/start-node-dist.sh` or `bin\win-start-node-dist`
