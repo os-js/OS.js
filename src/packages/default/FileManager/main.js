@@ -47,7 +47,11 @@
 
     this.currentPath = path;
     this.currentSummary = {};
-    this.viewOptions = settings || {};
+    this.viewOptions = Utils.argumentDefaults(settings || {}, {
+      ViewHidden: true,
+      ViewNavigation: true,
+      ViewSide: true
+    }, true);
     this.history = [];
     this.historyIndex = -1;
   }
@@ -60,8 +64,9 @@
     var self = this;
     var view;
     var viewType   = this.viewOptions.ViewType || 'gui-list-view';
-    var viewSide   = typeof this.viewOptions.ViewSide === 'undefined' || this.viewOptions.ViewSide === true;
+    var viewSide   = this.viewOptions.ViewSide === true;
     var viewHidden = this.viewOptions.ViewHidden === true;
+    var viewNav    = this.viewOptions.ViewNavigation === true;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'FileManagerWindow', root, null, null, {
@@ -85,20 +90,21 @@
     }
 
     var menuMap = {
-      MenuClose:        function() { self._close(); },
-      MenuCreate:       function() { app.mkdir(self.currentPath, self); },
-      MenuUpload:       function() { app.upload(self.currentPath, null, self); },
-      MenuRename:       function() { app.rename(getSelected(), self); },
-      MenuDelete:       function() { app.rm(getSelected(), self); },
-      MenuInfo:         function() { app.info(getSelected()); },
-      MenuOpen:         function() { app.open(getSelected()); },
-      MenuDownload:     function() { app.download(getSelected()); },
-      MenuRefresh:      function() { self.changePath(); },
-      MenuViewList:     function() { self.changeView('gui-list-view', true); },
-      MenuViewTree:     function() { self.changeView('gui-tree-view', true); },
-      MenuViewIcon:     function() { self.changeView('gui-icon-view', true); },
-      MenuShowSidebar:  function() { viewSide = self.toggleSidebar(!viewSide, true); },
-      MenuShowHidden:   function() { viewHidden = self.toggleHidden(!viewHidden, true); }
+      MenuClose:          function() { self._close(); },
+      MenuCreate:         function() { app.mkdir(self.currentPath, self); },
+      MenuUpload:         function() { app.upload(self.currentPath, null, self); },
+      MenuRename:         function() { app.rename(getSelected(), self); },
+      MenuDelete:         function() { app.rm(getSelected(), self); },
+      MenuInfo:           function() { app.info(getSelected()); },
+      MenuOpen:           function() { app.open(getSelected()); },
+      MenuDownload:       function() { app.download(getSelected()); },
+      MenuRefresh:        function() { self.changePath(); },
+      MenuViewList:       function() { self.changeView('gui-list-view', true); },
+      MenuViewTree:       function() { self.changeView('gui-tree-view', true); },
+      MenuViewIcon:       function() { self.changeView('gui-icon-view', true); },
+      MenuShowSidebar:    function() { viewSide = self.toggleSidebar(!viewSide, true); },
+      MenuShowNavigation: function() { viewNav = self.toggleNavbar(!viewNav, true); },
+      MenuShowHidden:     function() { viewHidden = self.toggleHidden(!viewHidden, true); }
     };
 
     function menuEvent(ev) {
@@ -115,6 +121,7 @@
     viewMenu.set('checked', 'MenuViewTree', viewType === 'gui-tree-view');
     viewMenu.set('checked', 'MenuViewIcon', viewType === 'gui-icon-view');
     viewMenu.set('checked', 'MenuShowSidebar', viewSide);
+    viewMenu.set('checked', 'MenuShowNavigation', viewNav);
     viewMenu.set('checked', 'MenuShowHidden', viewHidden);
 
     //
@@ -171,6 +178,7 @@
     this.changeView(viewType, false);
     this.toggleHidden(viewHidden, false);
     this.toggleSidebar(viewSide, false);
+    this.toggleNavbar(viewNav, false);
 
     this.changePath(this.currentPath);
 
@@ -410,6 +418,22 @@
     return toggle;
   };
 
+  ApplicationFileManagerWindow.prototype.toggleNavbar = function(toggle, set) {
+    this.viewOptions.ViewNavigation = toggle;
+
+    var viewNav  = this._scheme.find(this, 'ToolbarContainer');
+    if ( toggle ) {
+      viewNav.show();
+    } else {
+      viewNav.hide();
+    }
+
+    if ( set ) {
+      this._app._setSetting('ViewNavigation', toggle, true);
+    }
+
+    return toggle;
+  }
 
   ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {
     if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;

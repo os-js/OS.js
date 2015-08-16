@@ -27,6 +27,7 @@
           <gui-menu data-id="SubmenuView">
             <gui-menu-entry data-id="MenuRefresh" data-label="Refresh"></gui-menu-entry>
             <gui-menu-entry data-id="MenuShowSidebar" data-label="Show sidebar" data-type="checkbox"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuShowNavigation" data-label="Show navigation" data-type="checkbox"></gui-menu-entry>
             <gui-menu-entry data-id="MenuShowHidden" data-label="Show hidden files" data-type="checkbox"></gui-menu-entry>
             <gui-menu-entry data-id="" data-label="View type">
               <gui-menu>
@@ -50,7 +51,7 @@
     </gui-vbox-container>
 
     <!-- TOOLBAR -->
-    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-id="ToolbarContainer">
       <gui-toolbar data-id="TopToolbar" class="gui-flex">
 
         <gui-button data-icon="stock://16x16/actions/back.png" data-id="GoBack"></gui-button>
