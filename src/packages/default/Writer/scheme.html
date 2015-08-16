@@ -15,6 +15,27 @@
           </gui-menu>
         </gui-menu-bar-entry>
 
+        <gui-menu-bar-entry data-label="LBL_EDIT">
+          <gui-menu data-id="SubmenuEdit">
+            <gui-menu-entry data-id="MenuUndo" data-label="LBL_UNDO"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuRedo" data-label="LBL_REDO"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuCut" data-label="LBL_CUT"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuCopy" data-label="LBL_COPY"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuPaste" data-label="LBL_PASTE"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuDelete" data-label="LBL_DELETE"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuUnlink" data-label="LBL_UNLINK"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+        <gui-menu-bar-entry data-label="LBL_INSERT">
+          <gui-menu data-id="SubmenuInsert">
+            <gui-menu-entry data-id="MenuInsertOL" data-label="LBL_ORDERED_LIST"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuInsertUL" data-label="LBL_UNORDERED_LIST"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuInsertLink" data-label="LBL_LINK"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuInsertImage" data-label="LBL_IMAGE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
       </gui-menu-bar>
     </gui-vbox-container>
 
@@ -27,15 +48,23 @@
         <gui-button data-id="text-underline" data-icon="stock://actions/format-text-underline.png"></gui-button>
         <gui-button data-id="text-strikethrough" data-icon="stock://actions/format-text-strikethrough.png"></gui-button>
 
+        <gui-toolbar-separator />
+
         <gui-button data-id="justify-left" data-icon="stock://actions/format-justify-left.png"></gui-button>
         <gui-button data-id="justify-center" data-icon="stock://actions/format-justify-center.png"></gui-button>
         <gui-button data-id="justify-right" data-icon="stock://actions/format-justify-right.png"></gui-button>
 
+        <gui-toolbar-separator />
+
         <gui-button data-id="indent" data-icon="stock://actions/gtk-indent-ltr.png"></gui-button>
         <gui-button data-id="unindent" data-icon="stock://actions/gtk-unindent-ltr.png"></gui-button>
 
+        <gui-toolbar-separator />
+
         <gui-color-box data-id="Foreground"></gui-color-box>
         <gui-color-box data-id="Background"></gui-color-box>
+
+        <gui-toolbar-separator />
 
         <gui-button data-id="Font" data-group="tool" data-tool-name="">FONT (SIZE)</gui-button>
       </gui-toolbar>

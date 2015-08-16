@@ -66,10 +66,11 @@
   ApplicationWriterWindow.prototype.init = function(wmRef, app, scheme) {
     var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
     var self = this;
+    var _ = OSjs.Applications.ApplicationWriter._;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'WriterWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationWriter._
+      _: _
     });
 
     var text = scheme.find(this, 'Text');
@@ -106,6 +107,65 @@
         command: 'outdent'
       }
     };
+
+    var menuEntries = {
+      'MenuUndo': function() {
+        text._call('command', ['undo', false]);
+      },
+      'MenuRedo': function() {
+        text._call('command', ['redo', false]);
+      },
+      'MenuCopy': function() {
+        text._call('command', ['copy', false]);
+      },
+      'MenuCut': function() {
+        text._call('command', ['cut', false]);
+      },
+      'MenuDelete': function() {
+        text._call('command', ['delete', false]);
+      },
+      'MenuPaste': function() {
+        text._call('command', ['paste', false]);
+      },
+      'MenuUnlink': function() {
+        text._call('command', ['unlink', false]);
+      },
+      'MenuInsertOL': function() {
+        text._call('command', ['insertOrderedList', false]);
+      },
+      'MenuInsertUL': function() {
+        text._call('command', ['insertUnorderedList', false]);
+      },
+      'MenuInsertImage': function() {
+        API.createDialog('File', {
+          filter: ['^image']
+        }, function(ev, button, result) {
+          if ( button !== 'ok' || !result ) return;
+
+          VFS.url(result, function(error, url) {
+            text._call('command', ['insertImage', false, url]);
+          });
+        });
+      },
+      'MenuInsertLink': function() {
+        API.createDialog('Input', {
+          message: _('Insert URL'),
+          placeholder: 'http://os.js.org'
+        }, function(ev, button, result) {
+          if ( button !== 'ok' || !result ) return;
+          text._call('command', ['createLink', false, result]);
+        });
+      }
+    };
+
+    function menuEvent(ev) {
+      if ( menuEntries[ev.detail.id] ) {
+        menuEntries[ev.detail.id]();
+      }
+    }
+
+    scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
+    scheme.find(this, 'SubmenuInsert').on('select', menuEvent);
 
     function getSelectionStyle() {
       function _call(cmd) {

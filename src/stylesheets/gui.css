@@ -472,6 +472,10 @@ gui-button-bar[data-orientation="vertical"] {
   height : 100%;
 }
 
+gui-toolbar-separator {
+  display : inline-block;
+}
+
 /* Tabs */
 gui-tabs {
   display : block;
