@@ -48,6 +48,8 @@
     this.currentPath = path;
     this.currentSummary = {};
     this.viewOptions = settings || {};
+    this.history = [];
+    this.historyIndex = -1;
   }
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -114,6 +116,19 @@
     viewMenu.set('checked', 'MenuViewIcon', viewType === 'gui-icon-view');
     viewMenu.set('checked', 'MenuShowSidebar', viewSide);
     viewMenu.set('checked', 'MenuShowHidden', viewHidden);
+
+    //
+    // Toolbar
+    //
+    scheme.find(this, 'GoLocation').on('enter', function(ev) {
+      self.changePath(ev.detail, null, false, true);
+    });
+    scheme.find(this, 'GoBack').on('click', function(ev) {
+      self.changeHistory(-1);
+    });
+    scheme.find(this, 'GoNext').on('click', function(ev) {
+      self.changeHistory(1);
+    });
 
     //
     // Side View
@@ -279,12 +294,55 @@
     }
   };
 
-  ApplicationFileManagerWindow.prototype.changePath = function(dir, selectFile) {
+  ApplicationFileManagerWindow.prototype.changeHistory = function(dir) {
+    if ( this.historyIndex !== -1 ) {
+      if ( dir < 0 ) {
+        if ( this.historyIndex > 0 ) {
+          this.historyIndex--;
+        }
+      } else if ( dir > 0 ) {
+        if ( this.historyIndex < this.history.length - 1 ) {
+          this.historyIndex++;
+        }
+      }
+
+      this.changePath(this.history[this.historyIndex], null, true);
+    }
+  };
+
+  ApplicationFileManagerWindow.prototype.changePath = function(dir, selectFile, isNav, isInput) {
     //if ( dir === this.currentPath ) { return; }
     dir = dir || this.currentPath;
 
     var self = this;
     var view = this._scheme.find(this, 'FileView');
+
+    function updateNavigation() {
+      self._scheme.find(self, 'GoLocation').set('value', dir);
+      self._scheme.find(self, 'GoBack').set('disabled', self.historyIndex <= 0);
+      self._scheme.find(self, 'GoNext').set('disabled', self.historyIndex < 0 || self.historyIndex >= (self.history.length - 1));
+    }
+
+    function updateHistory(dir) {
+      if ( !isNav ) {
+        if ( self.historyIndex >= 0 && self.historyIndex < self.history.length - 1 ) {
+          self.history = [];
+        }
+
+        self.history.push(dir);
+        if ( self.history.length > 1 ) {
+          self.historyIndex = self.history.length - 1;
+        } else {
+          self.historyIndex = -1;
+        }
+      }
+      if ( isInput ) {
+        self.history = [dir];
+        self.historyIndex = 0;
+      }
+
+      self._setTitle(dir, true);
+    }
 
     this._toggleLoading(true);
 
@@ -295,6 +353,7 @@
           self.currentPath = dir;
           self.currentSummary = summary;
           self._app._setArgument('path', dir);
+          updateHistory(dir);
         }
         self._toggleLoading(false);
 
@@ -304,6 +363,8 @@
         if ( selectFile ) {
           view.set('selected', selectFile.filename, 'filename');
         }
+
+        updateNavigation();
       }
     });
 
