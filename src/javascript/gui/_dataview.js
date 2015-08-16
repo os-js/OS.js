@@ -349,7 +349,7 @@
         var multipleSelect = el.getAttribute('data-multiple');
         multipleSelect = multipleSelect === null || multipleSelect === 'true';
         var idx = Utils.$index(row);
-        el._selected = handleItemSelection(ev, row, idx, className, el._selected, null, multipleSelect);
+        el._selected = handleItemSelection(ev, row, idx, className, el._selected, el, multipleSelect);
         el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected(el)}}));
       }
 
