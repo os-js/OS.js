@@ -45,6 +45,14 @@
       throw new Error('Your browser does not support localStorage :(');
     }
     this.prefix = 'OS.js-v2/DemoHandler/';
+
+    var curr = API.getDefaultSettings().Version;
+    var version = localStorage.getItem('__version__');
+    if ( curr !== version ) {
+      console.warn('DefaultStorage()', 'You are running', version, 'version is', curr, 'flushing for compability!');
+      localStorage.clear();
+    }
+    localStorage.setItem('__version__', String(curr));
   };
 
   DefaultStorage.prototype.set = function(o) {
