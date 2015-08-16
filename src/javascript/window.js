@@ -1395,12 +1395,90 @@
   /**
    * Check next Tab (cycle GUIElement)
    *
+   * @param   Event     ev            DOM Event
    * @return  void
    *
    * @method  Window::_nextTabIndex()
    */
-  Window.prototype._nextTabIndex = function() {
-    // TODO
+  Window.prototype._nextTabIndex = function(ev) {
+
+    var prev = ev.shiftKey;
+    var accept = ['input', 'select', 'textarea', 'gui-list-view', 'gui-tree-view', 'gui-icon-view']; // Textarea/Iframe accepts TAB
+    var current = document.activeElement;
+    var currentTag = current ? current.tagName.toLowerCase() : null;
+    var root = this._$root;
+
+    function clamp(idx, size) {
+      if ( prev ) {
+        idx--;
+        if ( idx <= 0 ) {
+          idx = size - 1;
+        }
+      } else {
+        idx++;
+        if ( idx >= size ) {
+          idx = 0;
+        }
+      }
+
+      return idx;
+    }
+
+    function go(idx, elements) {
+      var idx = clamp(idx, elements.length);
+
+      var el = getNextElement(idx, elements);
+      console.debug('Window::_nextTabIndex()', '=>', idx, el.tagName, el);
+
+      if ( Utils.$hasClass(el, 'gui-data-view') ) {
+        new OSjs.GUI.ElementDataView(el)._call('focus');
+      } else {
+        try {
+          el.focus();
+          //elements[idx].focus();
+        } catch ( e ) {}
+      }
+    }
+
+    function getNextElement(idx, elements) {
+      var found = null;
+      var list = elements.slice(idx, elements.length);
+
+      list.forEach(function(el, idx) {
+        // offsetParent makes sure the element is 'visible'
+        if ( !found && el.offsetParent && !el.getAttribute('disabled') && el.getAttribute('data-disabled') !== 'true' ) {
+          console.debug('Window::_nextTabIndex()', 'next', idx);
+          found = el;
+        }
+        return !!found;
+      });
+
+      return found;
+    }
+
+    if ( currentTag && accept.indexOf(currentTag) >= 0 ) {
+      var elements = root.querySelectorAll('input, select, textarea, .gui-data-view');
+      var found = -1;
+
+      elements.forEach(function(el, idx) {
+        if ( el === current ) {
+          found = idx;
+        }
+        return found < 0;
+      });
+
+      if ( found >= 0 ) {
+        var fel = elements[found];
+        if ( fel.tagName.toLowerCase() === 'textarea' && !Utils.$hasClass(fel, 'gui-focus-element') ) {
+          return;
+        }
+
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        go(found, Array.prototype.slice.call(elements));
+      }
+    }
   };
 
   //
@@ -1434,8 +1512,8 @@
    * @method  Window::_onKeyEvent()
    */
   Window.prototype._onKeyEvent = function(ev, type) {
-    if ( ev.keyCode === Utils.Keys.TAB ) {
-      this._nextTabIndex();
+    if ( type === 'keydown' && ev.keyCode === Utils.Keys.TAB ) {
+      this._nextTabIndex(ev);
     }
   };
 

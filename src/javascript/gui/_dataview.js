@@ -463,6 +463,8 @@
       el._selected = [];
       el.scrollTop = 0;
 
+      Utils.$addClass(el, 'gui-data-view');
+
       if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
         var underlay = document.createElement('textarea');
         underlay.setAttribute('readonly', 'true');
@@ -498,6 +500,24 @@
         }, true);
 
         el.appendChild(underlay);
+      }
+    },
+
+    focus: function(el) {
+      try {
+        var underlay = el.querySelector('.gui-focus-element');
+        underlay.focus();
+      } catch ( e ) {
+        console.warn(e, e.stack);
+      }
+    },
+
+    blur: function(el) {
+      try {
+        var underlay = el.querySelector('.gui-focus-element');
+        underlay.blur();
+      } catch ( e ) {
+        console.warn(e, e.stack);
       }
     },
 

@@ -141,6 +141,8 @@
         GUI.Elements._dataview.clear(el, body);
       } else if ( method === 'patch' ) {
         GUI.Elements._dataview.patch(el, args, 'gui-icon-view-entry', body, createEntry, initEntry);
+      } else if ( method === 'focus' ) {
+        GUI.Elements._dataview.focus(el);
       }
       return this;
     }

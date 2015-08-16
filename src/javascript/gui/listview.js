@@ -248,6 +248,8 @@
         GUI.Elements._dataview.clear(el, el.querySelector('gui-list-view-body'));
       } else if ( method === 'patch' ) {
         GUI.Elements._dataview.patch(el, args, 'gui-list-view-row', body, createRow, initRow);
+      } else if ( method === 'focus' ) {
+        GUI.Elements._dataview.focus(el);
       }
       return this;
     },
