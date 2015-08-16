@@ -88,6 +88,8 @@ You can run OS.js in `file:///`, but this will disable VFS and HTTP APIs. Just b
 grunt standalone dist-index:standalone
 ```
 
+Or you can download a nightly (unstable) build [here](osjsv2.0o.no/OS.js-v2-minimal-nightly.zip).
+
 ## Node
 
 * Production: `./bin/start-node-dist.sh` or `bin\win-start-node-dist`
