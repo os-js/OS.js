@@ -383,10 +383,13 @@
     this.viewOptions.ViewSide = toggle;
 
     var container = this._scheme.find(this, 'SideContainer');
+    var handle = new GUI.Element(container.$element.parentNode.querySelector('gui-paned-view-handle'));
     if ( toggle ) {
       container.show();
+      handle.show();
     } else {
       container.hide();
+      handle.hide();
     }
     if ( set ) {
       this._app._setSetting('ViewSide', toggle, true);
