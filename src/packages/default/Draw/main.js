@@ -338,6 +338,7 @@
       toolAction('move', ev, pos, diff);
     }, function(ev, pos) {
       toolAction('up', ev, pos);
+      self.hasChanged = true;
     });
 
     //
