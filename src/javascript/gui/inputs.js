@@ -510,6 +510,18 @@
       }
       return false;
     },
+    create: function(params) {
+      var label = params.label;
+      if ( params.label ) {
+        delete params.label;
+      }
+
+      var el = GUI.Helpers.createElement('gui-button', params);
+      if ( label ) {
+        el.appendChild(document.createTextNode(label));
+      }
+      return el;
+    },
     bind: function(el, evName, callback, params) {
       var target = el.querySelector('button');
       Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
