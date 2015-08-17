@@ -708,7 +708,21 @@
   function UIScheme(url) {
     this.url = url;
     this.scheme = null;
+    this.triggers = {render: []};
   }
+
+  UIScheme.prototype.on = function(f, fn) {
+    this.triggers[f].push(fn);
+  };
+
+  UIScheme.prototype._trigger = function(f, args) {
+    args = args || [];
+
+    var self = this;
+    this.triggers[f].forEach(function(fn) {
+      fn.apply(self, args);
+    });
+  };
 
   UIScheme.prototype.load = function(cb) {
     var self = this;
@@ -830,6 +844,8 @@
 
     var content = this.parse(id, type, win, onparse, args);
     addChildren(content, root);
+
+    this._trigger('render', [root]);
   };
 
   UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
