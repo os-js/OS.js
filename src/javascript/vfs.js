@@ -700,9 +700,13 @@
     }
 
     if ( typeof data === 'string' ) {
-      textToAb(data, item.mime, function(error, response) {
-        _converted(error, response);
-      });
+      if ( data.length ) {
+        textToAb(data, item.mime, function(error, response) {
+          _converted(error, response);
+        });
+      } else {
+        _converted(null, data);
+      }
     } else {
       if ( data instanceof OSjs.VFS.FileDataURL ) {
         OSjs.VFS.dataSourceToAb(data.toString(), item.mime, function(error, response) {

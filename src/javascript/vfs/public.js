@@ -55,14 +55,22 @@
   PublicStorage.write = function(item, data, callback, options) {
     options = options || {};
 
+    function _write(dataSource) {
+      var wopts = [item.path, dataSource, options];
+      OSjs.VFS.internalCall('write', wopts, callback);
+    }
+
+    if ( typeof data === 'string' && !data.length ) {
+      _write(data);
+      return;
+    }
+
     OSjs.VFS.abToDataSource(data, item.mime, function(error, dataSource) {
       if ( error ) {
         callback(error);
         return;
       }
-
-      var wopts = [item.path, dataSource, options];
-      OSjs.VFS.internalCall('write', wopts, callback);
+      _write(dataSource);
     });
   };
 
