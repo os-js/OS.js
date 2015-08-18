@@ -31,12 +31,12 @@
 
 html, body {
   height : 100%;
+  overflow : hidden;
 }
 body {
   margin : 0;
   padding : 0;
   background-color : #fff;
-  overflow : hidden;
 }
 body, input, button, textarea, label, select {
   font-size : 12px;
