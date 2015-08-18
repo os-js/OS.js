@@ -41,6 +41,7 @@
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopierer <span>{0}</span> to <span>{1}</span>",
       "Refreshing..." : "Gjenoppfrisker...",
       "Loading..." : "Laster...",
+      "Create a new file in <span>{0}</span>" : "Opprett ny fil i <span>{0}</span>",
       "Create a new directory in <span>{0}</span>" : "Opprett ny mappe i <span>{0}</span>",
       "Rename <span>{0}</span>" : "Navngi <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"

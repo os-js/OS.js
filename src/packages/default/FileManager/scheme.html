@@ -7,7 +7,6 @@
 
         <gui-menu-bar-entry data-label="File">
           <gui-menu data-id="SubmenuFile">
-            <gui-menu-entry data-id="MenuCreate" data-label="Create directory"></gui-menu-entry>
             <gui-menu-entry data-id="MenuUpload" data-label="Upload file"></gui-menu-entry>
             <gui-menu-entry data-id="MenuClose" data-label="Close"></gui-menu-entry>
           </gui-menu>
@@ -15,6 +14,13 @@
 
         <gui-menu-bar-entry data-label="Edit">
           <gui-menu data-id="SubmenuEdit">
+            <gui-menu-entry data-id="MenuCreate" data-label="LBL_CREATE">
+              <gui-menu data-id="SubmenuCreate">
+                <gui-menu-entry data-id="MenuCreateDirectory" data-label="LBL_DIRECTORY"></gui-menu-entry>
+                <gui-menu-entry data-id="MenuCreateFile" data-label="LBL_FILE"></gui-menu-entry>
+              </gui-menu>
+            </gui-menu-entry>
+
             <gui-menu-entry data-id="MenuRename" data-label="Rename"></gui-menu-entry>
             <gui-menu-entry data-id="MenuDelete" data-label="Delete"></gui-menu-entry>
             <gui-menu-entry data-id="MenuInfo" data-label="Information"></gui-menu-entry>

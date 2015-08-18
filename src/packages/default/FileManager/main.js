@@ -91,7 +91,8 @@
 
     var menuMap = {
       MenuClose:          function() { self._close(); },
-      MenuCreate:         function() { app.mkdir(self.currentPath, self); },
+      MenuCreateFile:     function() { app.mkfile(self.currentPath, self); },
+      MenuCreateDirectory:function() { app.mkdir(self.currentPath, self); },
       MenuUpload:         function() { app.upload(self.currentPath, null, self); },
       MenuRename:         function() { app.rename(getSelected(), self); },
       MenuDelete:         function() { app.rm(getSelected(), self); },
@@ -337,7 +338,11 @@
           self.history = [];
         }
 
-        self.history.push(dir);
+        var current = self.history[self.history.length - 1];
+        if ( current !== dir ) {
+          self.history.push(dir);
+        }
+
         if ( self.history.length > 1 ) {
           self.historyIndex = self.history.length - 1;
         } else {
@@ -590,6 +595,44 @@
         }
       });
       dialog.setRange(Utils.getFilenameRange(item.filename));
+    });
+  };
+
+  ApplicationFileManager.prototype.mkfile = function(dir, win) {
+    var self = this;
+
+    win._toggleDisabled(true);
+    function finished(write, item) {
+      win._toggleDisabled(false);
+
+      if ( item ) {
+        VFS.write(item, '', function() {
+          win.changePath(null, item);
+        }, {}, self);
+      }
+    }
+
+    API.createDialog('Input', {
+      value: 'My new File',
+      message: OSjs.Applications.ApplicationFileManager._('Create a new file in <span>{0}</span>', dir)
+    }, function(ev, button, result) {
+      if ( !result ) return;
+
+      var item = new VFS.File(dir + '/' + result);
+      VFS.exists(item, function(error, result) {
+        if ( result ) {
+          win._toggleDisabled(true);
+
+          API.createDialog('Confirm', {
+            buttons: ['yes', 'no'],
+            message: API._('DIALOG_FILE_OVERWRITE', item.filename)
+          }, function(ev, button) {
+            finished(button === 'yes' || button === 'ok', item);
+          }, self);
+        } else {
+          finished(true, item);
+        }
+      });
     });
   };
 
