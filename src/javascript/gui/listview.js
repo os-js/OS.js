@@ -173,6 +173,9 @@
    *
    * ]
    *
+   * Parameters:
+   *  zebra     boolean       Enable zebra stripes
+   *
    * Setters:
    *  columns(arr)  Sets the columns
    *
