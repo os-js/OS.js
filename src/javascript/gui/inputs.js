@@ -458,9 +458,10 @@
       inner.appendChild(button);
       GUI.Helpers.createInputLabel(el, 'switch', inner);
 
-      var val = false;
       function toggleValue(v) {
+        var val = false;
         if ( typeof v === 'undefined' ) {
+          val = !!input.checked;
           val = !val;
         } else {
           val = v;
@@ -469,7 +470,7 @@
         setSwitchValue(val, input, button);
       }
 
-      Utils.$bind(el, 'click', function() {
+      Utils.$bind(inner, 'click', function() {
         var disabled = el.getAttribute('data-disabled') !== null;
         if ( !disabled ) {
           toggleValue();

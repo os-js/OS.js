@@ -878,6 +878,7 @@ gui-switch {
 
   gui-switch input {
     display : none;
+    pointer-events : none;
   }
 
   gui-switch > label > div {
