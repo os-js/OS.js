@@ -1249,16 +1249,7 @@
   /**
    * Inner wrapper for event binding/unbinding
    */
-  OSjs.Utils._$binder = function(el, ev, callback, param, method) {
-    param = param || false;
-
-    var isTouch = OSjs.Compability.touch;
-    var touchMap = {
-      click: 'touchend',
-      mouseup: 'touchend',
-      mousemove: 'touchmove',
-      mousedown: 'touchstart'
-    };
+  OSjs.Utils._$binder = (function() {
 
     function pos(ev, touchDevice) {
       return {
@@ -1267,16 +1258,60 @@
       };
     }
 
-    el[method](ev, function(ev) {
-      callback.call(this, ev, pos(ev), false);
-    }, param === true);
+    function bindTouchClick(ev, el, param, callback, method) {
 
-    if ( touchMap[ev] ) {
-      el[method](touchMap[ev], function(ev) {
-        callback.call(this, ev, pos(ev, true), true);
-      }, param === true);
+      var wasMoved = false;
+      var startPos = {x: -1, y: -1};
+
+      function touchStart(ev) {
+        startPos = pos(ev, true);
+      }
+
+      function touchMove(ev) {
+        var curPos = pos(ev, true);
+        if ( curPos.x !== startPos.x || curPos.y !== startPos.y ) {
+          wasMoved = true;
+        }
+      }
+
+      function touchEnd(ev) {
+        if ( !wasMoved ) {
+          ev.stopPropagation();
+          callback(ev, pos(ev, true));
+        }
+      }
+
+      el[method]('touchstart', touchStart, param === true);
+      el[method]('touchmove', touchMove, param === true);
+      el[method]('touchend', touchEnd, param === true);
     }
-  };
+
+    return function(el, ev, callback, param, method) {
+      param = param || false;
+
+      var isTouch = OSjs.Compability.touch;
+      var touchMap = {
+        click: bindTouchClick,
+        mouseup: 'touchend',
+        mousemove: 'touchmove',
+        mousedown: 'touchstart'
+      };
+
+      el[method](ev, function(ev) {
+        callback.call(this, ev, pos(ev), false);
+      }, param === true);
+
+      if ( touchMap[ev] ) {
+        if ( typeof touchMap[ev] === 'function' ) {
+          touchMap[ev](ev, el, param, callback, method);
+        } else {
+          el[method](touchMap[ev], function(ev) {
+            callback.call(this, ev, pos(ev, true), true);
+          }, param === true);
+        }
+      }
+    };
+  })();
 
   /////////////////////////////////////////////////////////////////////////////
   // XHR
