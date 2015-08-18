@@ -470,7 +470,8 @@
         setSwitchValue(val, input, button);
       }
 
-      Utils.$bind(inner, 'click', function() {
+      Utils.$bind(inner, 'click', function(ev) {
+        ev.preventDefault();
         var disabled = el.getAttribute('data-disabled') !== null;
         if ( !disabled ) {
           toggleValue();
