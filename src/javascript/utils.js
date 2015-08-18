@@ -1251,6 +1251,9 @@
    */
   OSjs.Utils._$binder = (function() {
 
+    var DBLCLICK_THRESHOLD = 200;
+    var CONTEXTMENU_THRESHOLD = 600;
+
     function pos(ev, touchDevice) {
       return {
         x: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX,
@@ -1258,13 +1261,16 @@
       };
     }
 
-    function bindTouchClick(ev, el, param, callback, method) {
-
+    function _bindTouch(el, param, onStart, onMove, onEnd, method) {
       var wasMoved = false;
       var startPos = {x: -1, y: -1};
+      onStart = onStart || function() {};
+      onMove = onMove || function() {};
+      onEnd = onEnd || function() {};
 
       function touchStart(ev) {
         startPos = pos(ev, true);
+        onStart(ev, startPos, false);
       }
 
       function touchMove(ev) {
@@ -1272,13 +1278,11 @@
         if ( curPos.x !== startPos.x || curPos.y !== startPos.y ) {
           wasMoved = true;
         }
+        onMove(ev, curPos, wasMoved);
       }
 
       function touchEnd(ev) {
-        if ( !wasMoved ) {
-          ev.stopPropagation();
-          callback(ev, pos(ev, true));
-        }
+        onEnd(ev, pos(ev, true), wasMoved);
       }
 
       el[method]('touchstart', touchStart, param === true);
@@ -1286,12 +1290,66 @@
       el[method]('touchend', touchEnd, param === true);
     }
 
+    function bindTouchDblclick(ev, el, param, callback, method) {
+
+      var clickCount = 0;
+      var timeout;
+
+      function ct() {
+        timeout = clearTimeout(timeout);
+      }
+
+      _bindTouch(el, param, function(ev, pos) {
+        ct();
+        clickCount++;
+      }, null, function(ev, pos, wasMoved) {
+        ct();
+
+        if ( !wasMoved ) {
+          if ( clickCount >= 2 ) {
+            clickCount = 0;
+            callback(ev, pos);
+            return;
+          }
+        }
+
+        timeout = setTimeout(function() {
+          clickCount = 0;
+          ct();
+        }, DBLCLICK_THRESHOLD);
+      }, method);
+    }
+
+    function bindTouchClick(ev, el, param, callback, method) {
+      _bindTouch(el, param, null, null, function(ev, pos, wasMoved) {
+        if ( !wasMoved ) {
+          ev.stopPropagation();
+          callback(ev, pos, wasMoved);
+        }
+      }, method);
+    }
+
+    function bindTouchContextMenu(ev, el, param, callback, method) {
+      var timeout;
+
+      _bindTouch(el, param, function(ev, pos) {
+        timeout = setTimeout(function() {
+          ev.preventDefault();
+          callback(ev, pos, false);
+        }, CONTEXTMENU_THRESHOLD);
+      }, null, function(ev, pos, wasMoved) {
+        timeout = clearTimeout(timeout);
+      }, method);
+    };
+
     return function(el, ev, callback, param, method) {
       param = param || false;
 
       var isTouch = OSjs.Compability.touch;
       var touchMap = {
         click: bindTouchClick,
+        dblclick: bindTouchDblclick,
+        contextmenu: bindTouchContextMenu,
         mouseup: 'touchend',
         mousemove: 'touchmove',
         mousedown: 'touchstart'
