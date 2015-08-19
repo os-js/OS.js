@@ -16,6 +16,8 @@ Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-
 
 ## Demo
 
+[![Join the chat at https://gitter.im/andersevenrud/OS.js-v2](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 I have a demo running on my server: http://osjsv2.0o.no
 
 Please note that it may be unavailable at times and slightly out-of-date.
