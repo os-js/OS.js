@@ -1340,7 +1340,7 @@
       }, null, function(ev, pos, wasMoved) {
         timeout = clearTimeout(timeout);
       }, method);
-    };
+    }
 
     return function(el, ev, callback, param, method) {
       param = param || false;

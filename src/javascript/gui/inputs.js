@@ -47,7 +47,7 @@
     var attribs = {
       value: null,
       type: type,
-      tabindex: -1, // TODO
+      tabindex: -1,
       placeholder: placeholder,
       disabled: disabled ? 'disabled' : null,
       name: group ? group + '[]' : null

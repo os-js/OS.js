@@ -113,17 +113,6 @@
     Window.prototype._close.apply(this, arguments);
   };
 
-  DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
-
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        this._app.openFile(new VFS.File(data), this);
-      }
-    }
-  };
-
   DefaultApplicationWindow.prototype.checkHasChanged = function(cb) {
     var self = this;
 

@@ -161,10 +161,10 @@
         'method'    : method,
         'arguments' : args
       },
-      onsuccess: function(response, request, url) {
+      onsuccess: function(/*response, request, url*/) {
         cbSuccess.apply(this, arguments);
       },
-      onerror: function(error, response, request, url) {
+      onerror: function(/*error, response, request, url*/) {
         cbError.apply(this, arguments);
       }
     };

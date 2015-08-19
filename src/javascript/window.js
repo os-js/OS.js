@@ -1425,7 +1425,7 @@
     }
 
     function go(idx, elements) {
-      var idx = clamp(idx, elements.length);
+      idx = clamp(idx, elements.length);
 
       var el = getNextElement(idx, elements);
       console.debug('Window::_nextTabIndex()', '=>', idx, el.tagName, el);
