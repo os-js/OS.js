@@ -854,13 +854,13 @@
       }
     } else {
       BUILD.javascript.files.forEach(function(i) {
-        script_list.push(i.replace('src/javascript', 'client/javascript'));
+        script_list.push(i.replace('src/client/javascript', 'client/javascript'));
       });
       BUILD.locales.files.forEach(function(i) {
-        script_list.push(i.replace('src/javascript', 'client/javascript'));
+        script_list.push(i.replace('src/client/javascript', 'client/javascript'));
       });
       BUILD.stylesheets.files.forEach(function(i) {
-        style_list.push(i.replace('src/stylesheets', 'client/stylesheets'));
+        style_list.push(i.replace('src/client/stylesheets', 'client/stylesheets'));
       });
     }
 
