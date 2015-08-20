@@ -528,6 +528,19 @@
         icons[t.name] = t.title;
       });
 
+      Object.keys(extensions).forEach(function(p) {
+        var e = extensions[p];
+        if ( e.sources ) {
+          e.sources.forEach(function(ee) {
+            preloads.push({
+              type: ee.type,
+              src: _path.join('/', 'packages', p, ee.src)
+            });
+          });
+        }
+      });
+
+
       settings.Styles = styles;
       settings.Icons = icons;
       settings.Sounds = sounds;
