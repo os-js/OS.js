@@ -1166,7 +1166,7 @@
           }
 
           if ( basename && newname && minified ) {
-            writeFile(_path.join(PATHS.out_client_packages, p, newname));
+            writeFile(_path.join(PATHS.out_client_packages, p, newname), minified);
             iter.preload[idx].src = _path.join(p, pl.src.replace(_path.basename(pl.src), newname));
             writeFile(_path.join(PATHS.out_client_packages, p, 'package.json'), JSON.stringify(iter, null, 2));
           }
