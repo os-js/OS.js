@@ -374,23 +374,23 @@
 
 
       var styles = (function() {
-        var src = _path.join(ROOT, 'src', 'themes', 'styles');
+        var src = _path.join(ROOT, 'src', 'client', 'themes', 'styles');
         return scan_themes(src, 'style');
       })();
 
       var sounds = (function() {
-        var src = _path.join(ROOT, 'src', 'themes', 'sounds');
+        var src = _path.join(ROOT, 'src', 'client', 'themes', 'sounds');
         return scan_themes(src, 'sound', true);
       })();
 
       var icons = (function() {
-        var src = _path.join(ROOT, 'src', 'themes', 'icons');
+        var src = _path.join(ROOT, 'src', 'client', 'themes', 'icons');
         return scan_themes(src, 'icon', true);
       })();
 
       var fonts = (function() {
         var list = [];
-        var src = _path.join(ROOT, 'src', 'themes', 'fonts');
+        var src = _path.join(ROOT, 'src', 'client', 'themes', 'fonts');
         getDirs(src).forEach(function(name) {
           if ( !name.match(/^\.|\_/) ) {
             list.push(name);
@@ -444,7 +444,7 @@
     arg = arg || 'all';
 
     var q = new Queue();
-    var dir  = _path.join(ROOT, 'src', 'themes', 'styles');
+    var dir  = _path.join(ROOT, 'src', 'client', 'themes', 'styles');
 
     getDirs(dir).forEach(function(name) {
       if ( !name.match(/^\.|\_/) ) {
@@ -487,7 +487,7 @@
   }
 
   function buildFonts(grunt, cb) {
-    var dir = _path.join(ROOT, 'src', 'themes', 'fonts');
+    var dir = _path.join(ROOT, 'src', 'client', 'themes', 'fonts');
     var fontStyles = [];
     getDirs(dir).forEach(function(name) {
       if ( !name.match(/^\.|\_/) ) {
@@ -854,13 +854,13 @@
       }
     } else {
       BUILD.javascript.files.forEach(function(i) {
-        script_list.push(i.replace('src/javascript', 'js'));
+        script_list.push(i.replace('src/javascript', 'client/javascript'));
       });
       BUILD.locales.files.forEach(function(i) {
-        script_list.push(i.replace('src/javascript', 'js'));
+        script_list.push(i.replace('src/javascript', 'client/javascript'));
       });
       BUILD.stylesheets.files.forEach(function(i) {
-        style_list.push(i.replace('src/stylesheets', 'css'));
+        style_list.push(i.replace('src/stylesheets', 'client/stylesheets'));
       });
     }
 
@@ -1049,7 +1049,7 @@
     var tree = {};
     var pkgdir = _path.join(ROOT, 'src', 'packages');
 
-    var schemeFile = _path.join(ROOT, 'src', 'javascript', 'dialogs', 'schemes.html');
+    var schemeFile = _path.join(ROOT, 'src', 'client', 'dialogs.html');
     if ( _fs.existsSync(schemeFile) ) {
       tree['/dialogs.html'] = _fs.readFileSync(schemeFile).toString();
     }

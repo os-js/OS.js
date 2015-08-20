@@ -120,9 +120,10 @@
     var self = this;
     console.info('Handler::boot()');
 
-    var url = '/js/dialogs/schemes.html';
+    var root = API.getDefaultSettings().Core.RootURI;
+    var url = root + 'client/dialogs.html';
     if ( OSjs.API.getDefaultSettings().Dist === 'dist' ) {
-      url = '/dialogs.html';
+      url = root + 'dialogs.html';
     }
     var scheme = OSjs.GUI.createScheme(url);
     scheme.load(function(error, doc) {

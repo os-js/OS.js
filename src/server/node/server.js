@@ -35,7 +35,7 @@
    */
   var ISWIN   = /^win/.test(process.platform);
   var HANDLER = null;
-  var ROOTDIR = _path.join(_path.dirname(__filename), '/../../');
+  var ROOTDIR = _path.join(_path.dirname(__filename), '/../../../');
   var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
   var API     = {};
   var CONFIG  = {
@@ -293,7 +293,7 @@
    */
   (function() {
 
-    var settConfig = readConfig("src/server-node/settings.json");
+    var settConfig = readConfig("src/server/node/settings.json");
     if ( settConfig !== false ) {
       for ( var i in settConfig ) {
         if ( settConfig.hasOwnProperty(i) && CONFIG.hasOwnProperty(i) ) {
@@ -316,7 +316,7 @@
       CONFIG.directory = _fs.realpathSync('.');
     }
 
-    HANDLER = require(_path.join(ROOTDIR, 'src', 'server-node', 'handlers', settConfig.handler , 'handler.js'));
+    HANDLER = require(_path.join(ROOTDIR, 'src', 'server', 'node', 'handlers', settConfig.handler , 'handler.js'));
     if ( !HANDLER.checkPrivilege ) {
       HANDLER.checkPrivilege = checkPrivilege;
     }

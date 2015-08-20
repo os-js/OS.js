@@ -12,9 +12,9 @@ doc/generated
 vfs/*/*
 
 src/conf/999-*
-src/server-node/node_modules/
-src/server-php/settings.php
-src/server-node/settings.json
+src/server/node/node_modules/
+src/server/node/settings.json
+src/server/php/settings.php
 
 src/tools/windows-installer/installer.exe
 

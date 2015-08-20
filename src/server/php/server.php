@@ -32,7 +32,7 @@
 /**
  * Works using CGI or any other method
  * To use with PHP Internal Webserver:
- *  To use with `php -S localhost:8000 src/server-php/server.php'
+ *  To use with `php -S localhost:8000 src/server/php/server.php'
  *  in the directory dist/
  */
 error_reporting(E_ALL);
@@ -46,7 +46,7 @@ require "{$root}/vfs.php";
 require "{$root}/api.php";
 require "{$root}/settings.php";
 
-if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../'));                   // The path to root dir
+if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../../'));                // The path to root dir
 if ( !defined("DISTDIR") )    define("DISTDIR",     ROOTDIR . "/dist");                               // Dist dir
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
@@ -57,7 +57,7 @@ if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.jso
 $settings = Settings::get();
 
 if ( !empty($settings['handler']) ) {
-  require sprintf("%s/src/server-php/handlers/%s/handler.php", ROOTDIR, $settings['handler']);
+  require sprintf("%s/src/server/php/handlers/%s/handler.php", ROOTDIR, $settings['handler']);
 }
 if ( !empty($settings['extensions']) ) {
   foreach ( $settings['extensions'] as $l ) {

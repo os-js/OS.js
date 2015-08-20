@@ -61,11 +61,11 @@
       var cfg = _build.buildConfig(grunt);
       var dest;
 
-      dest = _path.join(ROOT, 'src', 'server-php', 'settings.php');
+      dest = _path.join(ROOT, 'src', 'server', 'php', 'settings.php');
       grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
       _fs.writeFileSync(dest, cfg.php);
 
-      dest = _path.join(ROOT, 'src', 'server-node', 'settings.json');
+      dest = _path.join(ROOT, 'src', 'server', 'node', 'settings.json');
       grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
       _fs.writeFileSync(dest, JSON.stringify(cfg.node));
 
@@ -177,22 +177,22 @@
         if ( arg === 'all' || arg === 'resources' ) {
           grunt.log.subhead('Copying static files');
 
-          src = _path.join(ROOT, 'src', 'themes', 'wallpapers');
+          src = _path.join(ROOT, 'src', 'client', 'themes', 'wallpapers');
           dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
           grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
 
-          src = _path.join(ROOT, 'src', 'themes', 'icons');
+          src = _path.join(ROOT, 'src', 'client', 'themes', 'icons');
           dst = _path.join(ROOT, 'dist', 'themes', 'icons');
           grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
 
-          src = _path.join(ROOT, 'src', 'themes', 'fonts');
+          src = _path.join(ROOT, 'src', 'client', 'themes', 'fonts');
           dst = _path.join(ROOT, 'dist', 'themes', 'fonts');
           grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);
 
-          src = _path.join(ROOT, 'src', 'themes', 'sounds');
+          src = _path.join(ROOT, 'src', 'client', 'themes', 'sounds');
           dst = _path.join(ROOT, 'dist', 'themes', 'sounds');
           grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
           _fs.copySync(src, dst);

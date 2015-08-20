@@ -1,2 +1,2 @@
 #!/bin/sh
-node src/server-node/server.js
+node src/server/node/server.js

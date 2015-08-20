@@ -1,2 +1,2 @@
 #!/bin/sh
-node src/server-node/server.js dist-dev
+node src/server/node/server.js dist-dev

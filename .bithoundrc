@@ -1,19 +1,19 @@
 {
   "ignore": [
-    "vendor/*",
-    "src/conf/**",
-    "src/stylesheets/**",
-    "src/themes/**",
-    "src/tools/**",
-    "src/locales/**",
-    "src/server-php/**",
-    "src/server-node/**",
-    "src/x11-*/**",
-    "src/javascript/handlers/**",
+    "src/client/javascript/handlers/**",
+    "src/client/stylesheets/**",
+    "src/client/themes/**",
     "src/packages/**",
+    "src/locales/**",
+    "src/server/**",
+    "src/tools/**",
+    "src/conf/**",
+    "src/x11/**",
+    "vendor/*",
     "dist/**",
     "vfs/**",
     "doc/**",
+
     "dist-dev/**"
   ]
 }
