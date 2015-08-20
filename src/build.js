@@ -1,9 +1,9 @@
-(function(_path, _fs, _less, _ugly, _cleancss) {
+(function(_path, _fs, _less, _ugly, Cleancss) {
   'use strict';
 
   var ISWIN = /^win/.test(process.platform);
 
-  var ROOT = _path.dirname(_path.join(__dirname, '../'));
+  var ROOT = _path.dirname(_path.join(__dirname));
 
   var PATHS = {
     /**
@@ -17,7 +17,7 @@
      */
     src:          _path.join(ROOT, 'src'),
     conf:         _path.join(ROOT, 'src', 'conf'),
-    templates:    _path.join(ROOT, 'src', 'tools', 'templates'),
+    templates:    _path.join(ROOT, 'src', 'templates'),
     javascript:   _path.join(ROOT, 'src', 'client', 'javascript'),
     stylesheets:  _path.join(ROOT, 'src', 'client', 'stylesheets'),
     themes:       _path.join(ROOT, 'src', 'client', 'themes'),
@@ -144,7 +144,7 @@
 
   function replaceAll(temp, stringToFind,stringToReplace) {
     var index = temp.indexOf(stringToFind);
-    while(index != -1){
+    while(index !== -1){
       temp = temp.replace(stringToFind,stringToReplace);
       index = temp.indexOf(stringToFind);
     }
@@ -205,8 +205,8 @@
         var json = getBuildConfig();
         var build = JSON.stringify(json, null, 2).toString();
 
-        var handler    = json.handler    || "demo";
-        var connection = json.connection || "http";
+        var handler    = json.handler    || 'demo';
+        var connection = json.connection || 'http';
 
         // TODO: Fix VFS paths for windows
         build = build.replace(/%ROOT%/g,       fixWinPath(ROOT));
@@ -322,7 +322,7 @@
       var list = {};
       var repos = readPackageRepositories();
       repos.forEach(function(r) {
-        var dir = _path.join(srcDir || PATHS.packages, r)
+        var dir = _path.join(srcDir || PATHS.packages, r);
         getDirectories(dir).forEach(function(p) {
           var pdir = _path.join(dir, p);
           var mpath = _path.join(pdir, 'package.json');
@@ -602,8 +602,8 @@
       addScript('schemes.js');
     }
 
-    tpl = replaceAll(tpl, "%STYLES%", styles.join('\n'));
-    tpl = replaceAll(tpl, "%SCRIPTS%", scripts.join('\n'));
+    tpl = replaceAll(tpl, '%STYLES%', styles.join('\n'));
+    tpl = replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
 
     readFile(out, tpl);
   }
@@ -625,6 +625,8 @@
    * Create Apache htaccess
    */
   function createApacheHtaccess(grunt, arg) {
+    arg = arg || 'dist';
+
     var mimes = [];
     var mime = readMIME();
 
@@ -644,7 +646,7 @@
 
     var out = [];
     if ( arg ) {
-      out.push(generate_htaccess('apache-prod-htaccess.conf', a));
+      out.push(generate_htaccess('apache-prod-htaccess.conf', arg));
     } else {
       out.push(generate_htaccess('apache-prod-htaccess.conf', 'dist'));
       out.push(generate_htaccess('apache-dev-htaccess.conf', 'dist-dev'));
@@ -725,11 +727,11 @@
 
     function _cleanup(path, type) {
       var src = readFile(path);
-      src = src.toString().replace(/\/\*\![\s\S]*?\*\//, "");
+      src = src.toString().replace(/\/\*\![\s\S]*?\*\//, '');
       if ( type === 'css' ) {
-        src = src.toString().replace('@charset "UTF-8";', "");
+        src = src.toString().replace('@charset "UTF-8";', '');
       } else {
-        src = src.toString().replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, "");
+        src = src.toString().replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '');
       }
 
       src = src.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '');
@@ -806,7 +808,7 @@
 
     var tpl = readFile(_path.join(PATHS.templates, 'schemes.js')).toString();
     tpl = tpl.replace('%JSON%', JSON.stringify(tree, null, 4));
-    writeFile(FILES.out_client_schemes, tpl);
+    writeFile(PATHS.out_client_schemes, tpl);
   }
 
   /**
@@ -1161,7 +1163,7 @@
               basename = pl.src.replace(/\.css$/, '');
               newname = basename + '.min.css';
               console.log('---', 'clean', newname);
-              minified = new _cleancss().minify(readFile(src)).styles;
+              minified = new Cleancss().minify(readFile(src)).styles;
             }
           }
 

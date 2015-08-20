@@ -16,7 +16,7 @@ src/server/node/node_modules/
 src/server/node/settings.json
 src/server/php/settings.php
 
-src/tools/windows-installer/installer.exe
+src/installer/installer.exe
 
 dist/test*
 dist/settings.js

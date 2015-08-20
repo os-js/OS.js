@@ -144,4 +144,4 @@
     grunt.registerTask('all', ['clean', 'config', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
   };
-})(require('node-fs-extra'), require('path'), require('./src/tools/grunt-build.js'), require('grunt'), require('less'));
+})(require('node-fs-extra'), require('path'), require('./src/build.js'), require('grunt'), require('less'));
