@@ -10,8 +10,7 @@ You can read more on [the official homepage](http://os.js.org/)
 
 Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
 
-
-[![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2/master)
+[![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2)
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
