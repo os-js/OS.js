@@ -35,21 +35,846 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/handler.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Core.<a href="#osjs-core-gethandler">getHandler()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-core-_handler">_Handler</a> (OSjs.Core._Handler)
+<ul>
+<li><a href="#_handler-init">init()</a></li>
+<li><a href="#_handler-destroy">destroy()</a></li>
+<li><a href="#_handler-boot">boot()</a></li>
+<li><a href="#_handler-login">login()</a></li>
+<li><a href="#_handler-logout">logout()</a></li>
+<li><a href="#_handler-loadsession">loadSession()</a></li>
+<li><a href="#_handler-callapi">callAPI()</a></li>
+<li><a href="#_handler-onlogin">onLogin()</a></li>
+<li><a href="#_handler-onvfsrequest">onVFSRequest()</a></li>
+<li><a href="#_handler-getpackagemanager">getPackageManager()</a></li>
+<li><a href="#_handler-getapplicationmetadata">getApplicationMetadata()</a></li>
+<li><a href="#_handler-getapplicationsmetadata">getApplicationsMetadata()</a></li>
+<li><a href="#_handler-getapplicationnamebyfile">getApplicationNameByFile()</a></li>
+<li><a href="#_handler-setdefaultapplication">setDefaultApplication()</a></li>
+<li><a href="#_handler-savesettings">saveSettings()</a></li>
+<li><a href="#_handler-setsetting">setSetting()</a></li>
+<li><a href="#_handler-getsetting">getSetting()</a></li>
+<li><a href="#_handler-setusersettings">setUserSettings()</a></li>
+<li><a href="#_handler-getusersettings">getUserSettings()</a></li>
+<li><a href="#_handler-setusersession">setUserSession()</a></li>
+<li><a href="#_handler-getusersession">getUserSession()</a></li>
+<li><a href="#_handler-setapplicationsettings">setApplicationSettings()</a></li>
+<li><a href="#_handler-getapplicationsettings">getApplicationSettings()</a></li>
+<li><a href="#_handler-getconfig">getConfig()</a></li>
+<li><a href="#_handler-getuserdata">getUserData()</a></li>
+<li><a href="#_handler-getsettings">getSettings()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-core-gethandler">
+<h2 id="osjs-core-gethandler-">OSjs.Core.getHandler()</h2>
+<pre>
+Get running 'Handler' instance
+</pre>
 
 
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Handler</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-_handler">
+<h2 id="_handler">_Handler</h2>
+<pre>
+Default Handler Implementation
+
+Used for communication, resources, settings and session handling
+
+You can implement your own, see documentation on Wiki.
+
+NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
+
+OSjs.Core.getHandler();
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Core._Handler</li>
+</ul>
+
+<div class="section-method" id="_handler-init">
+<h3 id="_handler-init-callback-">_Handler::init(callback)</h3>
+<pre>
+Called upon window loaded from 'main.js'
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.API.initialize()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-destroy">
+<h3 id="_handler-destroy-">_Handler::destroy()</h3>
+<pre>
+Destroy the handler
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-boot">
+<h3 id="_handler-boot-callback-">_Handler::boot(callback)</h3>
+<pre>
+Called after successfull login in 'session.js'
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-login">
+<h3 id="_handler-login-username-password-callback-">_Handler::login(username, password, callback)</h3>
+<pre>
+Default login method
+
+NOTE: This is just a placeholder.
+
+ To implement your own login handler, see the Wiki :)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>String</td>
+<td>Login username</td>
+</tr>
+<tr>
+<td>password</td>
+<td>String</td>
+<td>Login password</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-logout">
+<h3 id="_handler-logout-callback-">_Handler::logout(callback)</h3>
+<pre>
+Default logout method
+
+NOTE: You should call this in your implemented handler
+
+ or else your data will not be stored
+
+@parm boolean save Save session?
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-loadsession">
+<h3 id="_handler-loadsession-callback-">_Handler::loadSession(callback)</h3>
+<pre>
+Default method to restore last running session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-callapi">
+<h3 id="_handler-callapi-">_Handler::callAPI()</h3>
+<pre>
+Default method to perform a call to the backend (API)
+
+Use this shorthand method: API.call() instead :)
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.API.call()</li>
+</ul>
+
+</div>
+<div class="section-method" id="_handler-onlogin">
+<h3 id="_handler-onlogin-userdata-callback-">_Handler::onLogin(userData, callback)</h3>
+<pre>
+Called when login() is finished
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userData</td>
+<td>Object</td>
+<td>JSON User Data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-onvfsrequest">
+<h3 id="_handler-onvfsrequest-vfsmodule-vfsmethod-vfsarguments-callback-">_Handler::onVFSRequest(vfsModule, vfsMethod, vfsArguments, callback)</h3>
+<pre>
+Called upon a VFS request
+
+You can use this to interrupt operations
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vfsModule</td>
+<td>String</td>
+<td>VFS Module Name</td>
+</tr>
+<tr>
+<td>vfsMethod</td>
+<td>String</td>
+<td>VFS Method Name</td>
+</tr>
+<tr>
+<td>vfsArguments</td>
+<td>Object</td>
+<td>VFS Method Arguments</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-getpackagemanager">
+<h3 id="_handler-getpackagemanager-">_Handler::getPackageManager()</h3>
+<pre>
+Get the package manager
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>PackageManager</u> <em>Package Manager instance</em></p>
+
+</div>
+<div class="section-method" id="_handler-getapplicationmetadata">
+<h3 id="_handler-getapplicationmetadata-">_Handler::getApplicationMetadata()</h3>
+<pre>
+Get metadata for application by class-name
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON data</em></p>
+
+</div>
+<div class="section-method" id="_handler-getapplicationsmetadata">
+<h3 id="_handler-getapplicationsmetadata-">_Handler::getApplicationsMetadata()</h3>
+<pre>
+Get all package metadata
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Array of JSON data</em></p>
+
+</div>
+<div class="section-method" id="_handler-getapplicationnamebyfile">
+<h3 id="_handler-getapplicationnamebyfile-file-forcelist-callback-">_Handler::getApplicationNameByFile(file, forceList, callback)</h3>
+<pre>
+Get a list of application supporting mime type
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>VFS.File</td>
+<td>File</td>
+</tr>
+<tr>
+<td>forceList</td>
+<td>boolean</td>
+<td>Force entry to show up</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-setdefaultapplication">
+<h3 id="_handler-setdefaultapplication-mime-app-callback-">_Handler::setDefaultApplication(mime, app, callback)</h3>
+<pre>
+Set the default application for given mime type
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>MIME Type</td>
+</tr>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-savesettings">
+<h3 id="_handler-savesettings-callback-">_Handler::saveSettings(callback)</h3>
+<pre>
+Internal method for saving settings (wrapper)
+
+NOTE: This is should be called from the implemented handler
+
+ See 'demo' handler for example
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-setsetting">
+<h3 id="_handler-setsetting-category-name-value-callback-save-merge-">_Handler::setSetting(category, name, value, callback, save, merge)</h3>
+<pre>
+Sets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category</td>
+<td>String</td>
+<td>The group/category of setting</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>The setting value</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+<tr>
+<td>save</td>
+<td>boolean</td>
+<td>Also save settings? (default=true)</td>
+</tr>
+<tr>
+<td>merge</td>
+<td>boolean</td>
+<td>Merge instead of set?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-getsetting">
+<h3 id="_handler-getsetting-category-name-callback-defaultvalue-">_Handler::getSetting(category, name, callback, defaultValue)</h3>
+<pre>
+Gets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>category</td>
+<td>String</td>
+<td>The group/category of setting</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+<tr>
+<td>defaultValue</td>
+<td>Mixed</td>
+<td>Use as default if none found</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-setusersettings">
+<h3 id="_handler-setusersettings-name-values-callback-">_Handler::setUserSettings(name, values, callback)</h3>
+<pre>
+Wrapper for setting user settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>values</td>
+<td>Object</td>
+<td>JSON of settings</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-getusersettings">
+<h3 id="_handler-getusersettings-name-callback-">_Handler::getUserSettings(name, callback)</h3>
+<pre>
+Wrapper for getting user settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The setting key</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-setusersession">
+<h3 id="_handler-setusersession-session-callback-">_Handler::setUserSession(session, callback)</h3>
+<pre>
+Wrapper for setting user session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>session</td>
+<td>Array</td>
+<td>Array of session JSON data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-getusersession">
+<h3 id="_handler-getusersession-callback-">_Handler::getUserSession(callback)</h3>
+<pre>
+Wrapper for getting user session
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-setapplicationsettings">
+<h3 id="_handler-setapplicationsettings-app-settings-callback-">_Handler::setApplicationSettings(app, settings, callback)</h3>
+<pre>
+Wrapper for setting application settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>settings</td>
+<td>Array</td>
+<td>Array of setting JSON data</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-getapplicationsettings">
+<h3 id="_handler-getapplicationsettings-app-callback-">_Handler::getApplicationSettings(app, callback)</h3>
+<pre>
+Wrapper for getting application settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>String</td>
+<td>Application name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="_handler-getconfig">
+<h3 id="_handler-getconfig-key-">_Handler::getConfig(key)</h3>
+<pre>
+Get entire configuration
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>Optionally get just this value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>All settings or just value by key</em></p>
+
+</div>
+<div class="section-method" id="_handler-getuserdata">
+<h3 id="_handler-getuserdata-">_Handler::getUserData()</h3>
+<pre>
+Get data for logged in user
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON With user data</em></p>
+
+</div>
+<div class="section-method" id="_handler-getsettings">
+<h3 id="_handler-getsettings-">_Handler::getSettings()</h3>
+<pre>
+Get the settings manager
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>All settings in JSON</em></p>
+
+</div>
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

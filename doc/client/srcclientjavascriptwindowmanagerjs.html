@@ -35,21 +35,822 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/windowmanager.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Core.<a href="#osjs-core-getwindowmanager">getWindowManager()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-core-windowmanager">WindowManager</a> (OSjs.Core.WindowManager)
+<ul>
+<li><a href="#windowmanager-destroy">destroy()</a></li>
+<li><a href="#windowmanager-init">init()</a></li>
+<li><a href="#windowmanager-getwindow">getWindow()</a></li>
+<li><a href="#windowmanager-addwindow">addWindow()</a></li>
+<li><a href="#windowmanager-removewindow">removeWindow()</a></li>
+<li><a href="#windowmanager-applysettings">applySettings()</a></li>
+<li><a href="#windowmanager-createstylesheet">createStylesheet()</a></li>
+<li><a href="#windowmanager-destroystylesheet">destroyStylesheet()</a></li>
+<li><a href="#windowmanager-onkeydown">onKeyDown()</a></li>
+<li><a href="#windowmanager-notification">notification()</a></li>
+<li><a href="#windowmanager-createnotificationicon">createNotificationIcon()</a></li>
+<li><a href="#windowmanager-removenotificationicon">removeNotificationIcon()</a></li>
+<li><a href="#windowmanager-showsettings">showSettings()</a></li>
+<li><a href="#windowmanager-getdefaultsettings">getDefaultSettings()</a></li>
+<li><a href="#windowmanager-getpanel">getPanel()</a></li>
+<li><a href="#windowmanager-getpanels">getPanels()</a></li>
+<li><a href="#windowmanager-getstyletheme">getStyleTheme()</a></li>
+<li><a href="#windowmanager-getsoundtheme">getSoundTheme()</a></li>
+<li><a href="#windowmanager-geticontheme">getIconTheme()</a></li>
+<li><a href="#windowmanager-getstylethemes">getStyleThemes()</a></li>
+<li><a href="#windowmanager-getsoundthemes">getSoundThemes()</a></li>
+<li><a href="#windowmanager-geticonthemes">getIconThemes()</a></li>
+<li><a href="#windowmanager-setsetting">setSetting()</a></li>
+<li><a href="#windowmanager-getwindowspace">getWindowSpace()</a></li>
+<li><a href="#windowmanager-getwindowposition">getWindowPosition()</a></li>
+<li><a href="#windowmanager-getsetting">getSetting()</a></li>
+<li><a href="#windowmanager-getsettings">getSettings()</a></li>
+<li><a href="#windowmanager-getwindows">getWindows()</a></li>
+<li><a href="#windowmanager-getcurrentwindow">getCurrentWindow()</a></li>
+<li><a href="#windowmanager-setcurrentwindow">setCurrentWindow()</a></li>
+<li><a href="#windowmanager-getlastwindow">getLastWindow()</a></li>
+<li><a href="#windowmanager-setlastwindow">setLastWindow()</a></li>
+<li><a href="#windowmanager-getanimduration">getAnimDuration()</a></li>
+<li><a href="#windowmanager-getmouselocked">getMouseLocked()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-core-getwindowmanager">
+<h2 id="osjs-core-getwindowmanager-">OSjs.Core.getWindowManager()</h2>
+<pre>
+Get the current WindowManager instance
+</pre>
 
 
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>WindowManager</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-windowmanager">
+<h2 id="windowmanager">WindowManager</h2>
+<pre>
+WindowManager Process Class
+
+The default implementation of this is in apps/CoreWM/main.js
+
+NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
+
+OSjs.Core.getWindowManager();
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Core.WindowManager</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>Process</li>
+</ul>
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.Process</li>
+</ul>
+
+<div class="section-method" id="windowmanager-destroy">
+<h3 id="windowmanager-destroy-">WindowManager::destroy()</h3>
+<pre>
+Destroy the WindowManager
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Process::destroy()</li>
+</ul>
+
+</div>
+<div class="section-method" id="windowmanager-init">
+<h3 id="windowmanager-init-">WindowManager::init()</h3>
+<pre>
+Initialize the WindowManager
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindow">
+<h3 id="windowmanager-getwindow-name-">WindowManager::getWindow(name)</h3>
+<pre>
+Get a Window by name
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Window name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-addwindow">
+<h3 id="windowmanager-addwindow-w-focus-">WindowManager::addWindow(w, focus)</h3>
+<pre>
+Add a Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window reference</td>
+</tr>
+<tr>
+<td>focus</td>
+<td>boolean</td>
+<td>Focus the window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>The added window</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-removewindow">
+<h3 id="windowmanager-removewindow-w-">WindowManager::removeWindow(w)</h3>
+<pre>
+Remove a Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-applysettings">
+<h3 id="windowmanager-applysettings-settings-force-">WindowManager::applySettings(settings, force)</h3>
+<pre>
+Set WindowManager settings
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>settings</td>
+<td>Object</td>
+<td>JSON Settings</td>
+</tr>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>If forced, no merging will take place</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-createstylesheet">
+<h3 id="windowmanager-createstylesheet-styles-">WindowManager::createStylesheet(styles)</h3>
+<pre>
+Create Window Manager self-contained CSS from this object
+
+{
+
+ '.classname': {
+
+ 'background-image': 'url()'
+
+ }
+
+}
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>styles</td>
+<td>Object</td>
+<td>Style object</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-destroystylesheet">
+<h3 id="windowmanager-destroystylesheet-">WindowManager::destroyStylesheet()</h3>
+<pre>
+Destroy Window Manager self-contained CSS
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-onkeydown">
+<h3 id="windowmanager-onkeydown-ev-win-">WindowManager::onKeyDown(ev, win)</h3>
+<pre>
+When Key Down Event received
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>Active window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-notification">
+<h3 id="windowmanager-notification-opts-">WindowManager::notification(opts)</h3>
+<pre>
+Create a desktop notification.
+
+THIS IS IMPLEMENTED IN COREWM
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Notification options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>icon</td>
+<td>String</td>
+<td>What icon to display</td>
+</tr>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>What title to display</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>What message to display</td>
+</tr>
+<tr>
+<td>timeout</td>
+<td>int</td>
+<td>Timeout (default = 5000)</td>
+</tr>
+<tr>
+<td>onClick</td>
+<td>Function</td>
+<td>Event callback on click =&gt; fn(ev)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-createnotificationicon">
+<h3 id="windowmanager-createnotificationicon-name-opts-panelid-">WindowManager::createNotificationIcon(name, opts, panelId)</h3>
+<pre>
+Create a panel notification icon.
+
+THIS IS IMPLEMENTED IN COREWM
+
+FOR OPTIONS SEE NotificationAreaItem IN CoreWM !
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>NotificationAreaItem</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Internal name (unique)</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Notification options</td>
+</tr>
+<tr>
+<td>panelId</td>
+<td>int</td>
+<td>(Optional) Panel ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>NotificationAreaItem</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-removenotificationicon">
+<h3 id="windowmanager-removenotificationicon-name-panelid-">WindowManager::removeNotificationIcon(name, panelId)</h3>
+<pre>
+Remove a panel notification icon.
+
+THIS IS IMPLEMENTED IN COREWM
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Internal name (unique)</td>
+</tr>
+<tr>
+<td>panelId</td>
+<td>int</td>
+<td>(Optional) Panel ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-showsettings">
+<h3 id="windowmanager-showsettings-">WindowManager::showSettings()</h3>
+<pre>
+Show Settings Window (Application)
+
+THIS IS IMPLEMENTED IN COREWM
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getdefaultsettings">
+<h3 id="windowmanager-getdefaultsettings-">WindowManager::getDefaultSettings()</h3>
+<pre>
+Get default Settings
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON Data</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getpanel">
+<h3 id="windowmanager-getpanel-">WindowManager::getPanel()</h3>
+<pre>
+Get panel
+</pre>
+
+
+
+</div>
+<div class="section-method" id="windowmanager-getpanels">
+<h3 id="windowmanager-getpanels-">WindowManager::getPanels()</h3>
+<pre>
+Gets all panels
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>Panel List</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getstyletheme">
+<h3 id="windowmanager-getstyletheme-returnmetadata-">WindowManager::getStyleTheme(returnMetadata)</h3>
+<pre>
+Gets current Style theme
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returnMetadata</td>
+<td>bool</td>
+<td>Return theme metadata instead of name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Or JSON</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getsoundtheme">
+<h3 id="windowmanager-getsoundtheme-">WindowManager::getSoundTheme()</h3>
+<pre>
+Gets current Sound theme
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-geticontheme">
+<h3 id="windowmanager-geticontheme-">WindowManager::getIconTheme()</h3>
+<pre>
+Gets current Icon theme
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getstylethemes">
+<h3 id="windowmanager-getstylethemes-">WindowManager::getStyleThemes()</h3>
+<pre>
+Gets a list of Style themes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>The list of themes</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getsoundthemes">
+<h3 id="windowmanager-getsoundthemes-">WindowManager::getSoundThemes()</h3>
+<pre>
+Gets a list of Sound themes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>The list of themes</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-geticonthemes">
+<h3 id="windowmanager-geticonthemes-">WindowManager::getIconThemes()</h3>
+<pre>
+Gets a list of Icon themes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>The list of themes</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-setsetting">
+<h3 id="windowmanager-setsetting-k-v-">WindowManager::setSetting(k, v)</h3>
+<pre>
+Sets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Key</td>
+</tr>
+<tr>
+<td>v</td>
+<td>Mixed</td>
+<td>Value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindowspace">
+<h3 id="windowmanager-getwindowspace-">WindowManager::getWindowSpace()</h3>
+<pre>
+Gets the rectangle for window space
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>{top:, left:, width:, height:}</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindowposition">
+<h3 id="windowmanager-getwindowposition-">WindowManager::getWindowPosition()</h3>
+<pre>
+Get next window position
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>{x:, y:}</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getsetting">
+<h3 id="windowmanager-getsetting-k-">WindowManager::getSetting(k)</h3>
+<pre>
+Gets a setting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Key</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>Setting value or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getsettings">
+<h3 id="windowmanager-getsettings-">WindowManager::getSettings()</h3>
+<pre>
+Gets all settings
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON With all settings</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getwindows">
+<h3 id="windowmanager-getwindows-">WindowManager::getWindows()</h3>
+<pre>
+Gets all Windows
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>List of all Windows</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getcurrentwindow">
+<h3 id="windowmanager-getcurrentwindow-">WindowManager::getCurrentWindow()</h3>
+<pre>
+Gets current Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Current Window or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-setcurrentwindow">
+<h3 id="windowmanager-setcurrentwindow-w-">WindowManager::setCurrentWindow(w)</h3>
+<pre>
+Sets the current Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getlastwindow">
+<h3 id="windowmanager-getlastwindow-">WindowManager::getLastWindow()</h3>
+<pre>
+Gets previous Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Current Window or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-setlastwindow">
+<h3 id="windowmanager-setlastwindow-w-">WindowManager::setLastWindow(w)</h3>
+<pre>
+Sets the last Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Window</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="windowmanager-getanimduration">
+<h3 id="windowmanager-getanimduration-">WindowManager::getAnimDuration()</h3>
+<pre>
+Get CSS animation duration
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u> <em>Duration length in ms</em></p>
+
+</div>
+<div class="section-method" id="windowmanager-getmouselocked">
+<h3 id="windowmanager-getmouselocked-">WindowManager::getMouseLocked()</h3>
+<pre>
+If the pointer is inside the browser window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

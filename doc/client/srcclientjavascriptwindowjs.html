@@ -35,21 +35,1150 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/window.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.API.<a href="#osjs-api-getwindowspace">getWindowSpace()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-core-window">Window</a> (OSjs.Core.Window)
+<ul>
+<li><a href="#window-init">init()</a></li>
+<li><a href="#window-destroy">destroy()</a></li>
+<li><a href="#window-_addhook">_addHook()</a></li>
+<li><a href="#window-_firehook">_fireHook()</a></li>
+<li><a href="#window-_removechild">_removeChild()</a></li>
+<li><a href="#window-_getchild">_getChild()</a></li>
+<li><a href="#window-_getchildbyid">_getChildById()</a></li>
+<li><a href="#window-_getchildbyname">_getChildByName()</a></li>
+<li><a href="#window-_getchildrenbytag">_getChildrenByTag()</a></li>
+<li><a href="#window-_getchildren">_getChildren()</a></li>
+<li><a href="#window-_removechildren">_removeChildren()</a></li>
+<li><a href="#window-_close">_close()</a></li>
+<li><a href="#window-_minimize">_minimize()</a></li>
+<li><a href="#window-_maximize">_maximize()</a></li>
+<li><a href="#window-_restore">_restore()</a></li>
+<li><a href="#window-_focus">_focus()</a></li>
+<li><a href="#window-_blur">_blur()</a></li>
+<li><a href="#window-_blurgui">_blurGUI()</a></li>
+<li><a href="#window-_resizeto">_resizeTo()</a></li>
+<li><a href="#window-_moveto">_moveTo()</a></li>
+<li><a href="#window-_move">_move()</a></li>
+<li><a href="#window-_toggledisabled">_toggleDisabled()</a></li>
+<li><a href="#window-_toggleloading">_toggleLoading()</a></li>
+<li><a href="#window-_toggleattentionblink">_toggleAttentionBlink()</a></li>
+<li><a href="#window-_nexttabindex">_nextTabIndex()</a></li>
+<li><a href="#window-_ondndevent">_onDndEvent()</a></li>
+<li><a href="#window-_onkeyevent">_onKeyEvent()</a></li>
+<li><a href="#window-_onresize">_onResize()</a></li>
+<li><a href="#window-_onwindowiconclick">_onWindowIconClick()</a></li>
+<li><a href="#window-_onwindowbuttonclick">_onWindowButtonClick()</a></li>
+<li><a href="#window-_onchange">_onChange()</a></li>
+<li><a href="#window-_getmaximizedsize">_getMaximizedSize()</a></li>
+<li><a href="#window-_getviewrect">_getViewRect()</a></li>
+<li><a href="#window-_getroot">_getRoot()</a></li>
+<li><a href="#window-_getzindex">_getZindex()</a></li>
+<li><a href="#window-_settitle">_setTitle()</a></li>
+<li><a href="#window-_seticon">_setIcon()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-api-getwindowspace">
+<h2 id="osjs-api-getwindowspace-">OSjs.API.getWindowSpace()</h2>
+<pre>
+Get viewport (Wrapper)
+</pre>
 
 
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>{top, left, width, height}</em></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-window">
+<h2 id="window">Window</h2>
+<pre>
+Window Class
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Core.Window</li>
+</ul>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Window name (unique)</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>List of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>OSjs.Core.Application</td>
+<td>Application Reference</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>Window Title</td>
+</tr>
+<tr>
+<td>icon</td>
+<td>String</td>
+<td>Window Icon</td>
+</tr>
+<tr>
+<td>x</td>
+<td>int</td>
+<td>(Optional) X Position</td>
+</tr>
+<tr>
+<td>y</td>
+<td>int</td>
+<td>(Optional) Y Position</td>
+</tr>
+<tr>
+<td>w</td>
+<td>int</td>
+<td>(Optional) Width</td>
+</tr>
+<tr>
+<td>h</td>
+<td>int</td>
+<td>(Optional) Height</td>
+</tr>
+<tr>
+<td>tag</td>
+<td>String</td>
+<td>(Optional) Window Tag</td>
+</tr>
+<tr>
+<td>gravity</td>
+<td>String</td>
+<td>(Optional) Window Gravity</td>
+</tr>
+<tr>
+<td>allow_move</td>
+<td>boolean</td>
+<td>(Optional) Allow movment</td>
+</tr>
+<tr>
+<td>allow_resize</td>
+<td>boolean</td>
+<td>(Optional) Allow resize</td>
+</tr>
+<tr>
+<td>allow_minimize</td>
+<td>boolean</td>
+<td>(Optional) Allow minimize</td>
+</tr>
+<tr>
+<td>allow_maximize</td>
+<td>boolean</td>
+<td>(Optional) Allow maximize</td>
+</tr>
+<tr>
+<td>allow_close</td>
+<td>boolean</td>
+<td>(Optional) Allow closing</td>
+</tr>
+<tr>
+<td>allow_windowlist</td>
+<td>boolean</td>
+<td>(Optional) Allow appear in WindowList (Panel)</td>
+</tr>
+<tr>
+<td>allow_drop</td>
+<td>boolean</td>
+<td>(Optional) Allow DnD</td>
+</tr>
+<tr>
+<td>allow_iconmenu</td>
+<td>boolean</td>
+<td>(Optional) Allow Menu when click on Window Icon</td>
+</tr>
+<tr>
+<td>allow_ontop</td>
+<td>boolean</td>
+<td>(Optional) Allow ontop</td>
+</tr>
+<tr>
+<td>allow_hotkeys</td>
+<td>boolean</td>
+<td>(Optional) Allow usage of hotkeys</td>
+</tr>
+<tr>
+<td>allow_session</td>
+<td>boolean</td>
+<td>(Optional) Allow to store for session</td>
+</tr>
+<tr>
+<td>key_capture</td>
+<td>boolean</td>
+<td>(Optional) Allow key capture (UNSUSED ?!)</td>
+</tr>
+<tr>
+<td>min_width</td>
+<td>boolean</td>
+<td>(Optional) Minimum allowed width</td>
+</tr>
+<tr>
+<td>min_height</td>
+<td>boolean</td>
+<td>(Optional) Minimum allowed height</td>
+</tr>
+<tr>
+<td>max_width</td>
+<td>boolean</td>
+<td>(Optional) Maximum allowed width</td>
+</tr>
+<tr>
+<td>max_height</td>
+<td>boolean</td>
+<td>(Optional) Maximum allowed height</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+<div class="section-method" id="window-init">
+<h3 id="window-init-_wm-_app-_scheme-">Window::init(_wm, _app, _scheme)</h3>
+<pre>
+Initialize the Window
+
+This creates all elements and attaches basic events to them.
+
+If you are looking for move/resize events, they are located in
+
+the WindowManager.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_wm</td>
+<td>WindowManager</td>
+<td>Window Manager reference</td>
+</tr>
+<tr>
+<td>_app</td>
+<td>Application</td>
+<td>Application reference</td>
+</tr>
+<tr>
+<td>_scheme</td>
+<td>UIScheme</td>
+<td>UIScheme reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The Window DOM element</em></p>
+
+</div>
+<div class="section-method" id="window-destroy">
+<h3 id="window-destroy-">Window::destroy()</h3>
+<pre>
+Destroy the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_addhook">
+<h3 id="window-_addhook-k-func-">Window::_addHook(k, func)</h3>
+<pre>
+Adds a hook (internal events)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Hook name: focus, blur, destroy</td>
+</tr>
+<tr>
+<td>func</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_firehook">
+<h3 id="window-_firehook-k-">Window::_fireHook(k)</h3>
+<pre>
+Fire a hook (internal event)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>k</td>
+<td>String</td>
+<td>Hook name: focus, blur, destroy, maximize, minimize, restore, resize, resized</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_removechild">
+<h3 id="window-_removechild-w-">Window::_removeChild(w)</h3>
+<pre>
+Removes a child Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w</td>
+<td>Window</td>
+<td>Widow reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_getchild">
+<h3 id="window-_getchild-id-key-">Window::_getChild(id, key)</h3>
+<pre>
+Get a Window child by X
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>Value to look for</td>
+</tr>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>Key to look for</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u> <em>Resulted Window or &#39;null&#39;</em></p>
+
+</div>
+<div class="section-method" id="window-_getchildbyid">
+<h3 id="window-_getchildbyid-">Window::_getChildById()</h3>
+<pre>
+Get a Window child by ID
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Window::_getChild()</li>
+</ul>
+
+</div>
+<div class="section-method" id="window-_getchildbyname">
+<h3 id="window-_getchildbyname-">Window::_getChildByName()</h3>
+<pre>
+Get a Window child by Name
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Window::_getChild()</li>
+</ul>
+
+</div>
+<div class="section-method" id="window-_getchildrenbytag">
+<h3 id="window-_getchildrenbytag-">Window::_getChildrenByTag()</h3>
+<pre>
+Get Window(s) child by Tag
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Window::_getChild()</li>
+</ul>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<div class="section-method" id="window-_getchildren">
+<h3 id="window-_getchildren-">Window::_getChildren()</h3>
+<pre>
+Gets all children Windows
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<div class="section-method" id="window-_removechildren">
+<h3 id="window-_removechildren-">Window::_removeChildren()</h3>
+<pre>
+Removes all children Windows
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_close">
+<h3 id="window-_close-">Window::_close()</h3>
+<pre>
+Close the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On succes</em></p>
+
+</div>
+<div class="section-method" id="window-_minimize">
+<h3 id="window-_minimize-">Window::_minimize()</h3>
+<pre>
+Minimize the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_maximize">
+<h3 id="window-_maximize-">Window::_maximize()</h3>
+<pre>
+Maximize the Window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_restore">
+<h3 id="window-_restore-max-min-">Window::_restore(max, min)</h3>
+<pre>
+Restore the Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>max</td>
+<td>boolean</td>
+<td>Revert maximize state</td>
+</tr>
+<tr>
+<td>min</td>
+<td>boolean</td>
+<td>Revert minimize state</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_focus">
+<h3 id="window-_focus-force-">Window::_focus(force)</h3>
+<pre>
+Focus the window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>Forces focus</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_blur">
+<h3 id="window-_blur-force-">Window::_blur(force)</h3>
+<pre>
+Blur the window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>Forces blur</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_blurgui">
+<h3 id="window-_blurgui-">Window::_blurGUI()</h3>
+<pre>
+Blurs the GUI
+</pre>
+
+
+
+</div>
+<div class="section-method" id="window-_resizeto">
+<h3 id="window-_resizeto-dw-dh-limit-move-container-force-">Window::_resizeTo(dw, dh, limit, move, container, force)</h3>
+<pre>
+Resize Window to given size
+
+Use this method if you want the window to fit into the viewport and not
+
+just set a specific size
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dw</td>
+<td>int</td>
+<td>Width</td>
+</tr>
+<tr>
+<td>dh</td>
+<td>int</td>
+<td>Height</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>boolean</td>
+<td>Limit to this size (default=true)</td>
+</tr>
+<tr>
+<td>move</td>
+<td>boolean</td>
+<td>Move window if too big (default=false)</td>
+</tr>
+<tr>
+<td>container</td>
+<td>DOMElement</td>
+<td>Relative to this container (default=null)</td>
+</tr>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>Force movment (default=false)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_moveto">
+<h3 id="window-_moveto-pos-">Window::_moveTo(pos)</h3>
+<pre>
+Move window to position
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pos</td>
+<td>Object</td>
+<td>Object with {x:, y:}</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_move">
+<h3 id="window-_move-x-y-">Window::_move(x, y)</h3>
+<pre>
+Move window to position
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>int</td>
+<td>X Position</td>
+</tr>
+<tr>
+<td>y</td>
+<td>int</td>
+<td>Y Position</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_toggledisabled">
+<h3 id="window-_toggledisabled-t-">Window::_toggleDisabled(t)</h3>
+<pre>
+Toggle disabled overlay
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>boolean</td>
+<td>Toggle</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_toggleloading">
+<h3 id="window-_toggleloading-t-">Window::_toggleLoading(t)</h3>
+<pre>
+Toggle loading overlay
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>boolean</td>
+<td>Toggle</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_toggleattentionblink">
+<h3 id="window-_toggleattentionblink-t-">Window::_toggleAttentionBlink(t)</h3>
+<pre>
+Toggle attention
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>boolean</td>
+<td>Toggle</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_nexttabindex">
+<h3 id="window-_nexttabindex-ev-">Window::_nextTabIndex(ev)</h3>
+<pre>
+Check next Tab (cycle GUIElement)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>Event</td>
+<td>DOM Event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_ondndevent">
+<h3 id="window-_ondndevent-ev-type-">Window::_onDndEvent(ev, type)</h3>
+<pre>
+On Drag-and-drop event
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEevent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>DnD type</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>On success</em></p>
+
+</div>
+<div class="section-method" id="window-_onkeyevent">
+<h3 id="window-_onkeyevent-ev-type-">Window::_onKeyEvent(ev, type)</h3>
+<pre>
+On Key event
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>Key type</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_onresize">
+<h3 id="window-_onresize-">Window::_onResize()</h3>
+<pre>
+On Window resized
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_onwindowiconclick">
+<h3 id="window-_onwindowiconclick-ev-el-">Window::_onWindowIconClick(ev, el)</h3>
+<pre>
+On Window Icon Click
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOM Element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_onwindowbuttonclick">
+<h3 id="window-_onwindowbuttonclick-ev-el-btn-">Window::_onWindowButtonClick(ev, el, btn)</h3>
+<pre>
+On Window Button Click
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOM Element</td>
+</tr>
+<tr>
+<td>btn</td>
+<td>String</td>
+<td>Button name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_onchange">
+<h3 id="window-_onchange-ev-byuser-">Window::_onChange(ev, byUser)</h3>
+<pre>
+On Window has changed
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>byUser</td>
+<td>boolean</td>
+<td>Performed by user?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_getmaximizedsize">
+<h3 id="window-_getmaximizedsize-">Window::_getMaximizedSize()</h3>
+<pre>
+Get Window maximized size
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Size of {left:, top:, right:, bottom: }</em></p>
+
+</div>
+<div class="section-method" id="window-_getviewrect">
+<h3 id="window-_getviewrect-">Window::_getViewRect()</h3>
+<pre>
+Get Window position in DOM
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Utils.$position()</li>
+</ul>
+
+</div>
+<div class="section-method" id="window-_getroot">
+<h3 id="window-_getroot-">Window::_getRoot()</h3>
+<pre>
+Get Window main DOM element
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="window-_getzindex">
+<h3 id="window-_getzindex-">Window::_getZindex()</h3>
+<pre>
+Get Window z-index
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u></p>
+
+</div>
+<div class="section-method" id="window-_settitle">
+<h3 id="window-_settitle-t-append-delimiter-">Window::_setTitle(t, append, delimiter)</h3>
+<pre>
+Set Window title
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>String</td>
+<td>Title</td>
+</tr>
+<tr>
+<td>append</td>
+<td>boolean</td>
+<td>(Optional) Append this to original title</td>
+</tr>
+<tr>
+<td>delimiter</td>
+<td>String</td>
+<td>(Optional) The delimiter (default is -)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="window-_seticon">
+<h3 id="window-_seticon-i-">Window::_setIcon(i)</h3>
+<pre>
+Set Windoc icon
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i</td>
+<td>String</td>
+<td>Icon path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

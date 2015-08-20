@@ -35,21 +35,945 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/api.js</i></p>
+<pre>
+ Please note that there are some more methods defined in `process.js`
+</pre>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.API.<a href="#osjs-api-_">_()</a></li>
+<li>OSjs.API.<a href="#osjs-api-__">__()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getlocale">getLocale()</a></li>
+<li>OSjs.API.<a href="#osjs-api-setlocale">setLocale()</a></li>
+<li>OSjs.API.<a href="#osjs-api-curl">curl()</a></li>
+<li>OSjs.API.<a href="#osjs-api-call">call()</a></li>
+<li>OSjs.API.<a href="#osjs-api-open">open()</a></li>
+<li>OSjs.API.<a href="#osjs-api-launch">launch()</a></li>
+<li>OSjs.API.<a href="#osjs-api-launchlist">launchList()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getapplicationresource">getApplicationResource()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getthemecss">getThemeCSS()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getfileicon">getFileIcon()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getthemeresource">getThemeResource()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getsound">getSound()</a></li>
+<li>OSjs.API.<a href="#osjs-api-geticon">getIcon()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getdefaultpackages">getDefaultPackages()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getdefaultsettings">getDefaultSettings()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getdefaultpath">getDefaultPath()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createnotification">createNotification()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createdialog">createDialog()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createdraggable">createDraggable()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createdroppable">createDroppable()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createloading">createLoading()</a></li>
+<li>OSjs.API.<a href="#osjs-api-destroyloading">destroyLoading()</a></li>
+<li>OSjs.API.<a href="#osjs-api-error">error()</a></li>
+<li>OSjs.API.<a href="#osjs-api-playsound">playSound()</a></li>
+<li>OSjs.API.<a href="#osjs-api-setclipboard">setClipboard()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getclipboard">getClipboard()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getservicenotificationicon">getServiceNotificationIcon()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#">null</a> ()
+<ul>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-api-_">
+<h2 id="osjs-api-_-s-">OSjs.API._(s, ...)</h2>
+<pre>
+Translate given string
+</pre>
 
 
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s</td>
+<td>String</td>
+<td>Translation key/string</td>
+</tr>
+<tr>
+<td>...</td>
+<td>Mixed</td>
+<td>Format values</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-__">
+<h2 id="osjs-api-__-">OSjs.API.__()</h2>
+<pre>
+Same as _ only you can supply the list as first argument
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.API._()</li>
+</ul>
+
+</div>
+<div class="section-function" id="osjs-api-getlocale">
+<h2 id="osjs-api-getlocale-">OSjs.API.getLocale()</h2>
+<pre>
+Get current locale
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-setlocale">
+<h2 id="osjs-api-setlocale-s-">OSjs.API.setLocale(s)</h2>
+<pre>
+Set locale
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s</td>
+<td>String</td>
+<td>Locale name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-curl">
+<h2 id="osjs-api-curl-args-callback-">OSjs.API.curl(args, callback)</h2>
+<pre>
+Perform cURL call
+
+ fn(error, result)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>cURL Arguments (see backend)</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-call">
+<h2 id="osjs-api-call-m-a-cok-cerror-">OSjs.API.call(m, a, cok, cerror)</h2>
+<pre>
+Global function for calling API (backend)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>m</td>
+<td>String</td>
+<td>Method name</td>
+</tr>
+<tr>
+<td>a</td>
+<td>Object</td>
+<td>Method arguments</td>
+</tr>
+<tr>
+<td>cok</td>
+<td>Function</td>
+<td>Callback on success</td>
+</tr>
+<tr>
+<td>cerror</td>
+<td>Function</td>
+<td>Callback on error</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-open">
+<h2 id="osjs-api-open-file-launchargs-">OSjs.API.open(file, launchArgs)</h2>
+<pre>
+Open a file
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>doLaunchProcess</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>The File reference (can also be a tuple with &#39;path&#39; and &#39;mime&#39;)</td>
+</tr>
+<tr>
+<td>launchArgs</td>
+<td>Object</td>
+<td>Arguments to send to process launch function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-launch">
+<h2 id="osjs-api-launch-n-arg-onfinished-onerror-onconstructed-">OSjs.API.launch(n, arg, onFinished, onError, onConstructed)</h2>
+<pre>
+Launch a Process
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>String</td>
+<td>Application Name</td>
+</tr>
+<tr>
+<td>arg</td>
+<td>Object</td>
+<td>Launch arguments</td>
+</tr>
+<tr>
+<td>onFinished</td>
+<td>Function</td>
+<td>Callback on success</td>
+</tr>
+<tr>
+<td>onError</td>
+<td>Function</td>
+<td>Callback on error</td>
+</tr>
+<tr>
+<td>onConstructed</td>
+<td>Function</td>
+<td>Callback on application init</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>bool</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-launchlist">
+<h2 id="osjs-api-launchlist-list-onsuccess-onerror-onfinished-">OSjs.API.launchList(list, onSuccess, onError, onFinished)</h2>
+<pre>
+Launch Processes from a List
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>doLaunchProcess</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list</td>
+<td>Array</td>
+<td>List of launch application arguments</td>
+</tr>
+<tr>
+<td>onSuccess</td>
+<td>Function</td>
+<td>Callback on success =&gt; fn(app, metadata, appName, appArgs)</td>
+</tr>
+<tr>
+<td>onError</td>
+<td>Function</td>
+<td>Callback on error =&gt; fn(error, appName, appArgs)</td>
+</tr>
+<tr>
+<td>onFinished</td>
+<td>Function</td>
+<td>Callback on finished running =&gt; fn()</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-getapplicationresource">
+<h2 id="osjs-api-getapplicationresource-app-name-">OSjs.API.getApplicationResource(app, name)</h2>
+<pre>
+Get a resource from application
+
+ You can also specify a name by String
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>Process</td>
+<td>Application instance reference</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Resource Name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The absolute URL of resource</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getthemecss">
+<h2 id="osjs-api-getthemecss-name-">OSjs.API.getThemeCSS(name)</h2>
+<pre>
+Get path to css theme
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>CSS Stylesheet name (without extension)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The absolute URL of css file</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getfileicon">
+<h2 id="osjs-api-getfileicon-file-size-icon-">OSjs.API.getFileIcon(file, size, icon)</h2>
+<pre>
+Get a icon based in file and mime
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>vfs.js</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>[File]</td>
+<td>File Data (see supported types)</td>
+</tr>
+<tr>
+<td>size</td>
+<td>String</td>
+<td>(Optional) Icon size (default=&quot;16x16&quot;)</td>
+</tr>
+<tr>
+<td>icon</td>
+<td>String</td>
+<td>(Optional) Default icon</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The absolute URL to the icon</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getthemeresource">
+<h2 id="osjs-api-getthemeresource-name-type-">OSjs.API.getThemeResource(name, type)</h2>
+<pre>
+Default method for getting a resource from current theme
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Resource filename</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>Type (&#39;base&#39; or a sub-folder)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The absolute URL to the resource</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getsound">
+<h2 id="osjs-api-getsound-name-">OSjs.API.getSound(name)</h2>
+<pre>
+Default method for getting a sound from theme
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Resource filename</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The absolute URL to the resource</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-geticon">
+<h2 id="osjs-api-geticon-name-size-app-">OSjs.API.getIcon(name, size, app)</h2>
+<pre>
+Default method for getting a icon from theme
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Resource filename</td>
+</tr>
+<tr>
+<td>size</td>
+<td>String</td>
+<td>(Optional) Icon size (default=16x16)</td>
+</tr>
+<tr>
+<td>app</td>
+<td>Process</td>
+<td>(Optional) Application instance reference. Can also be String. For <code>name</code> starting with &#39;./&#39;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The absolute URL to the resource</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getdefaultpackages">
+<h2 id="osjs-api-getdefaultpackages-">OSjs.API.getDefaultPackages()</h2>
+<pre>
+Get default configured packages
+
+THIS IS JUST A PLACEHOLDER. 'packages.js' SHOULD HAVE THIS!
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-getdefaultsettings">
+<h2 id="osjs-api-getdefaultsettings-">OSjs.API.getDefaultSettings()</h2>
+<pre>
+Get default configured settings
+
+THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-getdefaultpath">
+<h2 id="osjs-api-getdefaultpath-fallback-">OSjs.API.getDefaultPath(fallback)</h2>
+<pre>
+Get default configured path
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fallback</td>
+<td>String</td>
+<td>Fallback path on error (default= &quot;/&quot;)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-createnotification">
+<h2 id="osjs-api-createnotification-">OSjs.API.createNotification()</h2>
+<pre>
+Create a new Desktop Notification
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>WindowManager::notification()</li>
+</ul>
+
+</div>
+<div class="section-function" id="osjs-api-createdialog">
+<h2 id="osjs-api-createdialog-classname-args-callback-parentobj-">OSjs.API.createDialog(className, args, callback, parentObj)</h2>
+<pre>
+Create a new dialog
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>className</td>
+<td>String</td>
+<td>Dialog Namespace Class Name</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Arguments you want to send to dialog</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback on dialog action (close/ok etc)</td>
+</tr>
+<tr>
+<td>parentObj</td>
+<td>Mixed</td>
+<td>(Optional) A window or app (to make it a child window)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Window</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-createdraggable">
+<h2 id="osjs-api-createdraggable-el-args-">OSjs.API.createDraggable(el, args)</h2>
+<pre>
+Create a draggable DOM element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOMElement</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>JSON of draggable params</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-createdroppable">
+<h2 id="osjs-api-createdroppable-el-args-">OSjs.API.createDroppable(el, args)</h2>
+<pre>
+Create a droppable DOM element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOMElement</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>JSON of droppable params</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-createloading">
+<h2 id="osjs-api-createloading-name-opts-panelid-">OSjs.API.createLoading(name, opts, panelId)</h2>
+<pre>
+Create (or show) loading indicator
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Name of notification (unique)</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Options</td>
+</tr>
+<tr>
+<td>panelId</td>
+<td>int</td>
+<td>Panel ID (optional)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Or false on error</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-destroyloading">
+<h2 id="osjs-api-destroyloading-name-panelid-">OSjs.API.destroyLoading(name, panelId)</h2>
+<pre>
+Destroy (or hide) loading indicator
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Name of notification (unique)</td>
+</tr>
+<tr>
+<td>panelId</td>
+<td>int</td>
+<td>Panel ID (optional)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-error">
+<h2 id="osjs-api-error-title-message-error-exception-bugreport-">OSjs.API.error(title, message, error, exception, bugreport)</h2>
+<pre>
+Global function for showing an error dialog
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>String</td>
+<td>Dialog title</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>Dialog message</td>
+</tr>
+<tr>
+<td>error</td>
+<td>String</td>
+<td>Error message</td>
+</tr>
+<tr>
+<td>exception</td>
+<td>Object</td>
+<td>Exception reference (optional)</td>
+</tr>
+<tr>
+<td>bugreport</td>
+<td>boolean</td>
+<td>Enable bugreporting for this error (default=fale)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>null</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-playsound">
+<h2 id="osjs-api-playsound-name-volume-">OSjs.API.playSound(name, volume)</h2>
+<pre>
+Global function for playing a sound
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Sound name</td>
+</tr>
+<tr>
+<td>volume</td>
+<td>float</td>
+<td>Sound volume (0.0 - 1.0)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMAudio</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-setclipboard">
+<h2 id="osjs-api-setclipboard-data-">OSjs.API.setClipboard(data)</h2>
+<pre>
+Set the "clipboard" data
+
+NOTE: This does not set the operating system clipboard (yet...)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>Mixed</td>
+<td>What data to set</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-getclipboard">
+<h2 id="osjs-api-getclipboard-">OSjs.API.getClipboard()</h2>
+<pre>
+Get the "clipboard" data
+
+NOTE: This does not the operating system clipboard (yet...)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-getservicenotificationicon">
+<h2 id="osjs-api-getservicenotificationicon-">OSjs.API.getServiceNotificationIcon()</h2>
+<pre>
+Returns an instance of ServiceNotificationIcon
+
+This is the icon in the panel where external connections
+
+etc gets a menu entry.
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>ServiceNotificationIcon</u></p>
+
+</div>
+<h1>Classes</h1>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

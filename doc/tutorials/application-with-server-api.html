@@ -91,7 +91,7 @@ ApplicationMyName.prototype.myServerMethod = function(callback) {
         <pre class="code">
 
 scheme.find(this, 'Button').on('click', function() {
-  self._appRef.myServerMethod(function(error, result) {
+  self._app.myServerMethod(function(error, result) {
     if ( error ) {
       alert('An error occured: ' + error);
       return;

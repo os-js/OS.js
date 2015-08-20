@@ -35,21 +35,245 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/process.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.API.<a href="#osjs-api-killall">killAll()</a></li>
+<li>OSjs.API.<a href="#osjs-api-kill">kill()</a></li>
+<li>OSjs.API.<a href="#osjs-api-message">message()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getprocess">getProcess()</a></li>
+<li>OSjs.API.<a href="#osjs-api-getprocesses">getProcesses()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-core-process">Process</a> (OSjs.Core.Process)
+<ul>
+<li><a href="#process-destroy">destroy()</a></li>
+<li><a href="#process-_onmessage">_onMessage()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-api-killall">
+<h2 id="osjs-api-killall-match-force-">OSjs.API.killAll(match, force)</h2>
+<pre>
+Kills all processes
+</pre>
 
 
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>match</td>
+<td>Mixed</td>
+<td>String/RegExp to match with (optional)</td>
+</tr>
+<tr>
+<td>force</td>
+<td>boolean</td>
+<td>Force killing (optional, default=false)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-kill">
+<h2 id="osjs-api-kill-pid-">OSjs.API.kill(pid)</h2>
+<pre>
+Kills a process
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pid</td>
+<td>int</td>
+<td>Process ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-message">
+<h2 id="osjs-api-message-msg-opts-">OSjs.API.message(msg, opts)</h2>
+<pre>
+Sends a message to all processes
+
+Example: VFS uses this to signal file changes etc.
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>Process::_onMessage()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>msg</td>
+<td>String</td>
+<td>Message name</td>
+</tr>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-getprocess">
+<h2 id="osjs-api-getprocess-name-first-">OSjs.API.getProcess(name, first)</h2>
+<pre>
+Get a process by name
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Process Name</td>
+</tr>
+<tr>
+<td>first</td>
+<td>boolean</td>
+<td>Return the first found</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Process</u> <em>Or an Array of Processes</em></p>
+
+</div>
+<div class="section-function" id="osjs-api-getprocesses">
+<h2 id="osjs-api-getprocesses-">OSjs.API.getProcesses()</h2>
+<pre>
+Get all processes
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-core-process">
+<h2 id="process">Process</h2>
+<pre>
+Process Template Class
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Core.Process</li>
+</ul>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Process Name</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+
+<div class="section-method" id="process-destroy">
+<h3 id="process-destroy-kill-">Process::destroy(kill)</h3>
+<pre>
+Destroys the process
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kill</td>
+<td>boolean</td>
+<td>Force kill ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="process-_onmessage">
+<h3 id="process-_onmessage-">Process::_onMessage()</h3>
+<pre>
+Placeholder for messages sendt via API
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

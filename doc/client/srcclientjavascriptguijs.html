@@ -35,21 +35,468 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/gui.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-getwindowid">getWindowId()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-getlabel">getLabel()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-getvaluelabel">getValueLabel()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-getviewnodevalue">getViewNodeValue()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-geticon">getIcon()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-getproperty">getProperty()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-setproperty">setProperty()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-createinputlabel">createInputLabel()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-setflexbox">setFlexbox()</a></li>
+<li>OSjs.GUI.Helpers.<a href="#osjs-gui-helpers-createdrag">createDrag()</a></li>
+<li>OSjs.GUI.<a href="#osjs-gui-createscheme">createScheme()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-gui-uielement">UIElement()</a> (OSjs.GUI.UIElement())
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-uielementdataview">UIElementDataView()</a> (OSjs.GUI.UIElementDataView())
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-uischeme">UIScheme</a> (OSjs.GUI.UIScheme)
+<ul>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-gui-helpers-getwindowid">
+<h2 id="osjs-gui-helpers-getwindowid-el-">OSjs.GUI.Helpers.getWindowId(el)</h2>
+<pre>
+Gets window id from upper parent element
+</pre>
 
 
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>Child element (can be anything)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-getlabel">
+<h2 id="osjs-gui-helpers-getlabel-el-">OSjs.GUI.Helpers.getLabel(el)</h2>
+<pre>
+Gets "label" from a node
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-getvaluelabel">
+<h2 id="osjs-gui-helpers-getvaluelabel-el-">OSjs.GUI.Helpers.getValueLabel(el)</h2>
+<pre>
+Gets "label" from a node (Where it can be innerHTML and parameter)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-getviewnodevalue">
+<h2 id="osjs-gui-helpers-getviewnodevalue-el-">OSjs.GUI.Helpers.getViewNodeValue(el)</h2>
+<pre>
+Gets "value" from a node
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-geticon">
+<h2 id="osjs-gui-helpers-geticon-el-win-">OSjs.GUI.Helpers.getIcon(el, win)</h2>
+<pre>
+Internal for getting
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>Element</td>
+</tr>
+<tr>
+<td>win</td>
+<td>OSjs.Core.Window</td>
+<td>(optional) Window Reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-getproperty">
+<h2 id="osjs-gui-helpers-getproperty-el-param-tagname-">OSjs.GUI.Helpers.getProperty(el, param, tagName)</h2>
+<pre>
+Wrapper for getting custom dom element property value
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>Element</td>
+</tr>
+<tr>
+<td>param</td>
+<td>String</td>
+<td>Parameter name</td>
+</tr>
+<tr>
+<td>tagName</td>
+<td>String</td>
+<td>(Optional) What tagname is in use? Automatic</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-setproperty">
+<h2 id="osjs-gui-helpers-setproperty-el-param-value-tagname-">OSjs.GUI.Helpers.setProperty(el, param, value, tagName)</h2>
+<pre>
+Wrapper for setting custom dom element property value
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>Element</td>
+</tr>
+<tr>
+<td>param</td>
+<td>String</td>
+<td>Parameter name</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>Parameter value</td>
+</tr>
+<tr>
+<td>tagName</td>
+<td>String</td>
+<td>(Optional) What tagname is in use? Automatic</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-createinputlabel">
+<h2 id="osjs-gui-helpers-createinputlabel-el-type-input-label-">OSjs.GUI.Helpers.createInputLabel(el, type, input, label)</h2>
+<pre>
+Creates a label for given input element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMEelement</td>
+<td>Element root</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>Input element type</td>
+</tr>
+<tr>
+<td>input</td>
+<td>DOMElement</td>
+<td>The input element</td>
+</tr>
+<tr>
+<td>label</td>
+<td>String</td>
+<td>(Optional) Used when updating</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-setflexbox">
+<h2 id="osjs-gui-helpers-setflexbox-el-grow-shrink-basis-checkel-">OSjs.GUI.Helpers.setFlexbox(el, grow, shrink, basis, checkel)</h2>
+<pre>
+Sets the flexbox CSS style properties for given container
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The container</td>
+</tr>
+<tr>
+<td>grow</td>
+<td>int</td>
+<td>Grow factor</td>
+</tr>
+<tr>
+<td>shrink</td>
+<td>int</td>
+<td>Shrink factor</td>
+</tr>
+<tr>
+<td>basis</td>
+<td>String</td>
+<td>(Optional: basis, default=auto)</td>
+</tr>
+<tr>
+<td>checkel</td>
+<td>DOMElement</td>
+<td>(Optional: take defaults from this node)</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<div class="section-function" id="osjs-gui-helpers-createdrag">
+<h2 id="osjs-gui-helpers-createdrag-el-ondown-onmove-onup-">OSjs.GUI.Helpers.createDrag(el, onDown, onMove, onUp)</h2>
+<pre>
+Wrapper for creating a draggable container
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The container</td>
+</tr>
+<tr>
+<td>onDown</td>
+<td>Function</td>
+<td>On down action callback</td>
+</tr>
+<tr>
+<td>onMove</td>
+<td>Function</td>
+<td>On move action callback</td>
+</tr>
+<tr>
+<td>onUp</td>
+<td>Function</td>
+<td>On up action callback</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<div class="section-function" id="osjs-gui-createscheme">
+<h2 id="osjs-gui-createscheme-url-">OSjs.GUI.createScheme(url)</h2>
+<pre>
+Shortcut for creating a new UIScheme class
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>String</td>
+<td>URL to scheme file</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>UIScheme</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-gui-uielement">
+<h2 id="uielement-">UIElement()</h2>
+<pre>
+Base UIElement Class
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.UIElement()</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-uielementdataview">
+<h2 id="uielementdataview-">UIElementDataView()</h2>
+<pre>
+Extended UIElement for ListView, TreeView, IconView, Select, SelectList
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.UIElementDataView()</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>UIElement</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-uischeme">
+<h2 id="uischeme">UIScheme</h2>
+<pre>
+The class for loading and parsing UI Schemes
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.UIScheme</li>
+</ul>
+
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

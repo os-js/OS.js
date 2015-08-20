@@ -35,21 +35,1197 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/vfs.js</i></p>
+<pre>
+  This is a wrapper for handling all VFS functions
+  read() write() scandir() and so on.
 
 
+  See 'src/javascript/vfs/' for the specific modules.
+
+
+  You should read the information below!
+
+
+  ---------------------------------------------------------------------------
+
+
+  Functions that take 'metadata' (File Metadata) as an argument (like all of them)
+  it expects you to use an instance of OSjs.VFS.File()
+
+
+     VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
+
+
+  ---------------------------------------------------------------------------
+
+
+  By default all functions that read data will return ArrayBuffer, but you can also return:
+     String
+     dataSource
+     TODO: Blob ?
+
+
+  ---------------------------------------------------------------------------
+
+
+  Functions that take 'data' (File Data) as an argument supports these types:
+
+
+     File                      Browser internal
+     Blob                      Browser internal
+     ArrayBuffer               Browser internal
+     String                    Just a normal string
+     OSjs.VFS.FileDataURL      Wrapper for dataSource URL strings
+     JSON                      JSON Data defined as: {filename: foo, data: bar}
+
+
+  ---------------------------------------------------------------------------
+
+
+  This a list of modules and their paths
+
+
+     Public       /                   OS.js Public Storage
+     User         home:///            OS.js User Storage
+     OS.js        osjs:///            OS.js Dist (Read-only)
+     GoogleDrive  google-drive:///    Google Drive Storage
+     OneDrive     onedrive:///        Microsoft OneDrive (SkyDrive)
+     Dropbox      dropbox:///         Dropbox Storage
+</pre>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.VFS.<a href="#osjs-vfs-addformfile">addFormFile()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-datasourcetoab">dataSourceToAb()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-texttoab">textToAb()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-abtodatasource">abToDataSource()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-abtotext">abToText()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-abtobinarystring">abToBinaryString()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-getmodules">getModules()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-registermounts">registerMounts()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-scandir">scandir()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-write">write()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-read">read()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-copy">copy()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-move">move()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-unlink">unlink()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-mkdir">mkdir()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-exists">exists()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-fileinfo">fileinfo()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-url">url()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-upload">upload()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-download">download()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-trash">trash()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-untrash">untrash()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-emptytrash">emptyTrash()</a></li>
+<li>OSjs.VFS.<a href="#osjs-vfs-remoteread">remoteRead()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-vfs-filedataurl">FileDataURL</a> (OSjs.VFS.FileDataURL)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-vfs-file">File</a> (OSjs.VFS.File)
+<ul>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-vfs-addformfile">
+<h2 id="osjs-vfs-addformfile-fd-key-data-file-">OSjs.VFS.addFormFile(fd, key, data, file)</h2>
+<pre>
+This is a helper to add a File to FormData
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>fd</td>
+<td>FormData</td>
+<td>FormData instance</td>
+</tr>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>FormData entry name</td>
+</tr>
+<tr>
+<td>data</td>
+<td>[File]</td>
+<td>File Data (see supported types)</td>
+</tr>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-datasourcetoab">
+<h2 id="osjs-vfs-datasourcetoab-data-mime-callback-">OSjs.VFS.dataSourceToAb(data, mime, callback)</h2>
+<pre>
+Convert DataSourceURL to ArrayBuffer
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>String</td>
+<td>The datasource string</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The mime type</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-texttoab">
+<h2 id="osjs-vfs-texttoab-data-mime-callback-">OSjs.VFS.textToAb(data, mime, callback)</h2>
+<pre>
+Convert PlainText to ArrayBuffer
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>String</td>
+<td>The plaintext string</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The mime type</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-abtodatasource">
+<h2 id="osjs-vfs-abtodatasource-arraybuffer-mime-callback-">OSjs.VFS.abToDataSource(arrayBuffer, mime, callback)</h2>
+<pre>
+Convert ArrayBuffer to DataSourceURL
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arrayBuffer</td>
+<td>ArrayBuffer</td>
+<td>The ArrayBuffer</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The mime type</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-abtotext">
+<h2 id="osjs-vfs-abtotext-arraybuffer-mime-callback-">OSjs.VFS.abToText(arrayBuffer, mime, callback)</h2>
+<pre>
+Convert ArrayBuffer to PlainText
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arrayBuffer</td>
+<td>ArrayBuffer</td>
+<td>The ArrayBuffer</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The mime type</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-abtobinarystring">
+<h2 id="osjs-vfs-abtobinarystring-arraybuffer-mime-callback-">OSjs.VFS.abToBinaryString(arrayBuffer, mime, callback)</h2>
+<pre>
+Convert ArrayBuffer to BinaryString
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arrayBuffer</td>
+<td>ArrayBuffer</td>
+<td>The ArrayBuffer</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The mime type</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-getmodules">
+<h2 id="osjs-vfs-getmodules-opts-">OSjs.VFS.getModules(opts)</h2>
+<pre>
+Returns a list of all enabled VFS modules
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>opts</td>
+<td>Object</td>
+<td>Options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>visible</td>
+<td>boolean</td>
+<td>All visible modules only (default=true)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u> <em>List of all Modules found</em></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-registermounts">
+<h2 id="osjs-vfs-registermounts-">OSjs.VFS.registerMounts()</h2>
+<pre>
+Registeres all configured mount points
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-scandir">
+<h2 id="osjs-vfs-scandir-item-callback-options-">OSjs.VFS.scandir(item, callback, options)</h2>
+<pre>
+Scandir
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-write">
+<h2 id="osjs-vfs-write-item-data-callback-options-appref-">OSjs.VFS.write(item, data, callback, options, appRef)</h2>
+<pre>
+Write File
+
+This function currently have no options.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>data</td>
+<td>[File]</td>
+<td>File Data (see supported types)</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>Application</td>
+<td>Optional reference to an Application</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-read">
+<h2 id="osjs-vfs-read-item-callback-options-">OSjs.VFS.read(item, callback, options)</h2>
+<pre>
+Read File
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-options-">Options for <em>options</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>What to return, default: binary. Can also be: text, datasource</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-copy">
+<h2 id="osjs-vfs-copy-src-dest-callback-options-appref-">OSjs.VFS.copy(src, dest, callback, options, appRef)</h2>
+<pre>
+Copy File
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>OSjs.VFS.File</td>
+<td>Source File Metadata</td>
+</tr>
+<tr>
+<td>dest</td>
+<td>OSjs.VFS.File</td>
+<td>Destination File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>Application</td>
+<td>Optional reference to an Application</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-options-">Options for <em>options</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>overwrite</td>
+<td>boolean</td>
+<td>If set to true it will not check if the destination exists</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-move">
+<h2 id="osjs-vfs-move-src-dest-callback-options-appref-">OSjs.VFS.move(src, dest, callback, options, appRef)</h2>
+<pre>
+Move File
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>OSjs.VFS.File</td>
+<td>Source File Metadata</td>
+</tr>
+<tr>
+<td>dest</td>
+<td>OSjs.VFS.File</td>
+<td>Destination File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>Application</td>
+<td>Optional reference to an Application</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-options-">Options for <em>options</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>overwrite</td>
+<td>boolean</td>
+<td>If set to true it will not check if the destination exists</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-unlink">
+<h2 id="osjs-vfs-unlink-item-callback-options-appref-">OSjs.VFS.unlink(item, callback, options, appRef)</h2>
+<pre>
+Delete File
+
+This function currently have no options.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>Application</td>
+<td>Optional reference to an Application</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-mkdir">
+<h2 id="osjs-vfs-mkdir-item-callback-options-appref-">OSjs.VFS.mkdir(item, callback, options, appRef)</h2>
+<pre>
+Create Directory
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>Application</td>
+<td>Optional reference to an Application</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-options-">Options for <em>options</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>overwrite</td>
+<td>boolean</td>
+<td>If set to true it will not check if the destination exists</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-exists">
+<h2 id="osjs-vfs-exists-item-callback-">OSjs.VFS.exists(item, callback)</h2>
+<pre>
+Check if file exists
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-fileinfo">
+<h2 id="osjs-vfs-fileinfo-item-callback-">OSjs.VFS.fileinfo(item, callback)</h2>
+<pre>
+Get file info
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-url">
+<h2 id="osjs-vfs-url-item-callback-">OSjs.VFS.url(item, callback)</h2>
+<pre>
+Get file URL
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-upload">
+<h2 id="osjs-vfs-upload-args-callback-options-appref-">OSjs.VFS.upload(args, callback, options, appRef)</h2>
+<pre>
+Upload file(s)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Function arguments (see below)</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Optional set of options</td>
+</tr>
+<tr>
+<td>appRef</td>
+<td>Application</td>
+<td>Optional reference to an Application</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-options-">Options for <em>options</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>overwrite</td>
+<td>boolean</td>
+<td>If set to true it will not check if the destination exists</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app</td>
+<td>Application</td>
+<td>(optional) If specified (Application ref) it will create a Dialog window</td>
+</tr>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>(optional) Save as above only will add as child to this window</td>
+</tr>
+<tr>
+<td>destination</td>
+<td>String</td>
+<td>Full path to destination</td>
+</tr>
+<tr>
+<td>files</td>
+<td>Array</td>
+<td>Array of &#39;File&#39;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-download">
+<h2 id="osjs-vfs-download-args-callback-">OSjs.VFS.download(args, callback)</h2>
+<pre>
+Download a file
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-trash">
+<h2 id="osjs-vfs-trash-item-callback-">OSjs.VFS.trash(item, callback)</h2>
+<pre>
+Move file to trash (Not used in internal storage)
+
+THIS IS NOT USED FOR INTERNAL MODULES
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-untrash">
+<h2 id="osjs-vfs-untrash-item-callback-">OSjs.VFS.untrash(item, callback)</h2>
+<pre>
+Restore file from trash
+
+THIS IS NOT USED FOR INTERNAL MODULES
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>item</td>
+<td>OSjs.VFS.File</td>
+<td>File Metadata</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-emptytrash">
+<h2 id="osjs-vfs-emptytrash-callback-">OSjs.VFS.emptyTrash(callback)</h2>
+<pre>
+Permanently empty trash
+
+THIS IS NOT USED FOR INTERNAL MODULES
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-vfs-remoteread">
+<h2 id="osjs-vfs-remoteread-url-mime-callback-options-">OSjs.VFS.remoteRead(url, mime, callback, options)</h2>
+<pre>
+Read a remote file with URL (CORS)
+
+This function basically does a cURL call and downloads
+
+the data.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>String</td>
+<td>URL</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>MIME Type</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, result)</td>
+</tr>
+<tr>
+<td>options</td>
+<td>Object</td>
+<td>Options</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-options-">Options for <em>options</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>What to return, default: binary. Can also be: text, datasource</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-vfs-filedataurl">
+<h2 id="filedataurl">FileDataURL</h2>
+<pre>
+This is a object you can pass around in VFS when
+
+handling DataURL()s (strings). Normally you would
+
+use a File, Blob or ArrayBuffer, but this is an alternative.
+
+Useful for canvas data etc.
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.VFS.FileDataURL</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-vfs-file">
+<h2 id="file">File</h2>
+<pre>
+This is the Metadata object you have to use when passing files around
+
+in the VFS API.
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.VFS.File</li>
+</ul>
+
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

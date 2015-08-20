@@ -35,21 +35,163 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/session.js</i></p>
+<pre>
+ List of Hooks:
+     onInitialize             When OS.js is starting
+     onInited                 When all resources has been loaded
+     onWMInited               When Window Manager has started
+     onSessionLoaded          After session has been loaded or restored
+     onLogout                 When logout is requested
+     onShutdown               When shutting down after successfull logout
+     onApplicationLaunch      On application launch request
+     onApplicationLaunched    When application has been launched
+</pre>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Session.<a href="#osjs-session-triggerhook">triggerHook()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-addhook">addHook()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-init">init()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-destroy">destroy()</a></li>
+<li>OSjs.Session.<a href="#osjs-session-signout">signOut()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-session-triggerhook">
+<h2 id="osjs-session-triggerhook-name-args-thisarg-">OSjs.Session.triggerHook(name, args, thisarg)</h2>
+<pre>
+Method for triggering a hook
+</pre>
 
 
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Hook name</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Array</td>
+<td>List of arguments</td>
+</tr>
+<tr>
+<td>thisarg</td>
+<td>Object</td>
+<td>&#39;this&#39; ref</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-session-addhook">
+<h2 id="osjs-session-addhook-name-fn-">OSjs.Session.addHook(name, fn)</h2>
+<pre>
+Method for adding a hook
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>session.js</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Hook name</td>
+</tr>
+<tr>
+<td>fn</td>
+<td>Function</td>
+<td>Callback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-session-init">
+<h2 id="osjs-session-init-">OSjs.Session.init()</h2>
+<pre>
+This is the main initialization function
+
+the first thing that is called after page has loaded
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-session-destroy">
+<h2 id="osjs-session-destroy-save-">OSjs.Session.destroy(save)</h2>
+<pre>
+Shut down OS.js
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>save</td>
+<td>boolean</td>
+<td>Save the current session ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-session-signout">
+<h2 id="osjs-session-signout-">OSjs.Session.signOut()</h2>
+<pre>
+Sign Out of OS.js
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<h1>Classes</h1>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

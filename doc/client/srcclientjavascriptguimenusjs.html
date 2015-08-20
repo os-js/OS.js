@@ -35,21 +35,140 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/gui/menus.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.API.<a href="#osjs-api-blurmenu">blurMenu()</a></li>
+<li>OSjs.API.<a href="#osjs-api-createmenu">createMenu()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-gui-elements-gui-menu">gui-menu</a> (OSjs.GUI.Elements.gui-menu)
+<ul>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-elements-gui-menu-bar">gui-menu-bar</a> (OSjs.GUI.Elements.gui-menu-bar)
+<ul>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-api-blurmenu">
+<h2 id="osjs-api-blurmenu-">OSjs.API.blurMenu()</h2>
+<pre>
+Blur the currently open menu (aka hiding)
+</pre>
 
 
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-api-createmenu">
+<h2 id="osjs-api-createmenu-items-ev-custominstance-">OSjs.API.createMenu(items, ev, customInstance)</h2>
+<pre>
+Create and show a new menu
+
+Format:
+
+[
+
+ {
+
+ title: "Title",
+
+ icon: "Icon",
+
+ onClick: function() {}, // Callback
+
+ items: [] // Recurse :)
+
+ }
+
+ ...
+
+]
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>items</td>
+<td>Array</td>
+<td>Array of items</td>
+</tr>
+<tr>
+<td>ev</td>
+<td>Event</td>
+<td>DOM Event or dict with x/y</td>
+</tr>
+<tr>
+<td>customInstance</td>
+<td>Mixed</td>
+<td>Show a custom created menu</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-gui-elements-gui-menu">
+<h2 id="gui-menu">gui-menu</h2>
+<pre>
+Element: 'gui-menu'
+
+A normal menu (also contextmenu)
+
+Events:
+
+ select When an entry was selected (click) => fn(ev)
+
+Setters:
+
+ checked Set checkbox/optionn checked value
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-menu</li>
+</ul>
+
+</div>
+<div class="section-class" id="osjs-gui-elements-gui-menu-bar">
+<h2 id="gui-menu-bar">gui-menu-bar</h2>
+<pre>
+Element: 'gui-menu-bar'
+
+A menubar with sub-menus
+
+Events:
+
+ select When an entry was selected (click) => fn(ev)
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.Elements.gui-menu-bar</li>
+</ul>
+
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

@@ -35,21 +35,152 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/helpers/windows-live-api.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Helpers.WindowsLiveAPI.<a href="#osjs-helpers-windowsliveapi-getinstance">getInstance()</a></li>
+<li>OSjs.Helpers.WindowsLiveAPI.<a href="#osjs-helpers-windowsliveapi-createinstance">createInstance()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+<li>
+<a href="#osjs-helpers-windowsliveapi-windowsliveapi">WindowsLiveAPI</a> (OSjs.Helpers.WindowsLiveAPI.WindowsLiveAPI)
+<ul>
+<li><a href="#windowsliveapi-logout">logout()</a></li>
+</ul>
+</li>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-helpers-windowsliveapi-getinstance">
+<h2 id="osjs-helpers-windowsliveapi-getinstance-">OSjs.Helpers.WindowsLiveAPI.getInstance()</h2>
+<pre>
+Gets the currently running instance
+</pre>
 
 
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>WindowsLiveAPI</u> <em>Can also be null</em></p>
+
+</div>
+<div class="section-function" id="osjs-helpers-windowsliveapi-createinstance">
+<h2 id="osjs-helpers-windowsliveapi-createinstance-args-callback-">OSjs.Helpers.WindowsLiveAPI.createInstance(args, callback)</h2>
+<pre>
+Create an instance of WindowsLiveAPI
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Arguments</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function =&gt; fn(error, instance)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scope</td>
+<td>Array</td>
+<td>What scope to load</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<h1>Classes</h1>
+<div class="section-class" id="osjs-helpers-windowsliveapi-windowsliveapi">
+<h2 id="windowsliveapi">WindowsLiveAPI</h2>
+<pre>
+The WindowsLiveAPI wrapper class
+
+This is a private class and can only be aquired through
+
+OSjs.Helpers.WindowsLiveAPI.createInsatance()
+
+Generally you want to create an instance of this helper
+
+and when successfully created use `window.WL`.
+
+@private
+</pre>
+
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.Helpers.WindowsLiveAPI.WindowsLiveAPI</li>
+</ul>
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Helpers.WindowsLiveAPI.createInsatance()</li>
+</ul>
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/hh826547.aspx">http://msdn.microsoft.com/en-us/library/hh826547.aspx</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/hh826538.aspx">http://msdn.microsoft.com/en-us/library/hh826538.aspx</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/hh550837.aspx">http://msdn.microsoft.com/en-us/library/hh550837.aspx</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/dn631844.aspx">http://msdn.microsoft.com/en-us/library/dn631844.aspx</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/dn631839.aspx">http://msdn.microsoft.com/en-us/library/dn631839.aspx</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/hh243643.aspx">http://msdn.microsoft.com/en-us/library/hh243643.aspx</a></li>
+<li><a href="https://account.live.com/developers/applications/index">https://account.live.com/developers/applications/index</a></li>
+</ul>
+
+<div class="section-method" id="windowsliveapi-logout">
+<h3 id="windowsliveapi-logout-cb-">WindowsLiveAPI::logout(cb)</h3>
+<pre>
+Sign out of WindowsLiveAPI
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cb</td>
+<td>Function</td>
+<td>Callback =&gt; fn(error, result)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+</div>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

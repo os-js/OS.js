@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OS.js Client Documentation</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <header>
+      <h1>OS.js Client API</h1>
+      <ul>
+        <li><a href="/doc/">Index</a></li>
+        <li><a href="/doc/client/">Client API</a></li>
+        <li><a href="/doc/server/">Server API</a></li>
+        <li><a href="/doc/manuals/">Manuals</a></li>
+        <li><a href="/doc/tutorials/">Tutorials</a></li>
+      </ul>
+    </header>
+
+    <nav>
+      <h1>Namespace</h1>
+      <ul>
+
+<li>OSjs<ul><li>API<ul><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-_">_()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-__">__()</a></li><li><a class="" href="srcclientjavascriptguimenusjs.html#osjs-api-blurmenu">blurMenu()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-call">call()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-createdialog">createDialog()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-createdraggable">createDraggable()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-createdroppable">createDroppable()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-createloading">createLoading()</a></li><li><a class="" href="srcclientjavascriptguimenusjs.html#osjs-api-createmenu">createMenu()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-createnotification">createNotification()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-curl">curl()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-destroyloading">destroyLoading()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-error">error()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getapplicationresource">getApplicationResource()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getclipboard">getClipboard()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getdefaultpackages">getDefaultPackages()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getdefaultpath">getDefaultPath()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getdefaultsettings">getDefaultSettings()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getfileicon">getFileIcon()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-geticon">getIcon()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getlocale">getLocale()</a></li><li><a class="" href="srcclientjavascriptprocessjs.html#osjs-api-getprocess">getProcess()</a></li><li><a class="" href="srcclientjavascriptprocessjs.html#osjs-api-getprocesses">getProcesses()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getservicenotificationicon">getServiceNotificationIcon()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getsound">getSound()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getthemecss">getThemeCSS()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-getthemeresource">getThemeResource()</a></li><li><a class="" href="srcclientjavascriptwindowjs.html#osjs-api-getwindowspace">getWindowSpace()</a></li><li><a class="" href="srcclientjavascriptprocessjs.html#osjs-api-kill">kill()</a></li><li><a class="" href="srcclientjavascriptprocessjs.html#osjs-api-killall">killAll()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-launch">launch()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-launchlist">launchList()</a></li><li><a class="" href="srcclientjavascriptprocessjs.html#osjs-api-message">message()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-open">open()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-playsound">playSound()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-setclipboard">setClipboard()</a></li><li><a class="" href="srcclientjavascriptapijs.html#osjs-api-setlocale">setLocale()</a></li></ul></li><li>Core<ul><li><a class="Class" href="srcclientjavascriptapplicationjs.html#osjs-core-application">Application</a></li><li><a class="Class" href="srcclientjavascriptdialogjs.html#osjs-core-dialogwindow">DialogWindow</a></li><li><a class="Class" href="srcclientjavascriptprocessjs.html#osjs-core-process">Process</a></li><li><a class="Class" href="srcclientjavascriptservicejs.html#osjs-core-service">Service</a></li><li><a class="Class" href="srcclientjavascriptwindowjs.html#osjs-core-window">Window</a></li><li><a class="Class" href="srcclientjavascriptwindowmanagerjs.html#osjs-core-windowmanager">WindowManager</a></li><li><a class="Class" href="srcclientjavascripthandlerjs.html#osjs-core-_handler">_Handler</a></li><li><a class="" href="srcclientjavascripthandlerjs.html#osjs-core-gethandler">getHandler()</a></li><li><a class="" href="srcclientjavascriptwindowmanagerjs.html#osjs-core-getwindowmanager">getWindowManager()</a></li></ul></li><li>Dialogs<ul><li><a class="Class" href="srcclientjavascriptdialogsalertjs.html#osjs-dialogs-alert">Alert</a></li><li><a class="Class" href="srcclientjavascriptdialogsapplicationchooserjs.html#osjs-dialogs-applicationchooser">ApplicationChooser</a></li><li><a class="Class" href="srcclientjavascriptdialogscolorjs.html#osjs-dialogs-color">Color</a></li><li><a class="Class" href="srcclientjavascriptdialogsconfirmjs.html#osjs-dialogs-confirm">Confirm</a></li><li><a class="Class" href="srcclientjavascriptdialogserrorjs.html#osjs-dialogs-error">Error</a></li><li><a class="Class" href="srcclientjavascriptdialogsfilejs.html#osjs-dialogs-file">File</a></li><li><a class="Class" href="srcclientjavascriptdialogsfileinfojs.html#osjs-dialogs-fileinfo">FileInfo</a></li><li><a class="Class" href="srcclientjavascriptdialogsfileprogressjs.html#osjs-dialogs-fileprogress">FileProgress</a></li><li><a class="Class" href="srcclientjavascriptdialogsfileuploadjs.html#osjs-dialogs-fileupload">FileUpload</a></li><li><a class="Class" href="srcclientjavascriptdialogsfontjs.html#osjs-dialogs-font">Font</a></li><li><a class="Class" href="srcclientjavascriptdialogsinputjs.html#osjs-dialogs-input">Input</a></li></ul></li><li>GUI<ul><li>Elements<ul><li><a class="Class" href="srcclientjavascriptgui_dataviewjs.html#osjs-gui-elements-_dataview">_dataview</a></li><li><a class="Class" href="srcclientjavascriptguivisualjs.html#osjs-gui-elements-gui-audio">gui-audio</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-button">gui-button</a></li><li><a class="Class" href="srcclientjavascriptguivisualjs.html#osjs-gui-elements-gui-canvas">gui-canvas</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-checbox">gui-checbox</a></li><li><a class="Class" href="srcclientjavascriptguimiscjs.html#osjs-gui-elements-gui-color-box">gui-color-box</a></li><li><a class="Class" href="srcclientjavascriptguimiscjs.html#osjs-gui-elements-gui-color-swatch">gui-color-swatch</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-file-upload">gui-file-upload</a></li><li><a class="Class" href="srcclientjavascriptguifileviewjs.html#osjs-gui-elements-gui-file-view">gui-file-view</a></li><li><a class="Class" href="srcclientjavascriptguicontainersjs.html#osjs-gui-elements-gui-hbox">gui-hbox</a></li><li><a class="Class" href="srcclientjavascriptguiiconviewjs.html#osjs-gui-elements-gui-icon-view">gui-icon-view</a></li><li><a class="Class" href="srcclientjavascriptguimiscjs.html#osjs-gui-elements-gui-iframe">gui-iframe</a></li><li><a class="Class" href="srcclientjavascriptguivisualjs.html#osjs-gui-elements-gui-image">gui-image</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-input-modal">gui-input-modal</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-label">gui-label</a></li><li><a class="Class" href="srcclientjavascriptguilistviewjs.html#osjs-gui-elements-gui-list-view">gui-list-view</a></li><li><a class="Class" href="srcclientjavascriptguimenusjs.html#osjs-gui-elements-gui-menu">gui-menu</a></li><li><a class="Class" href="srcclientjavascriptguimenusjs.html#osjs-gui-elements-gui-menu-bar">gui-menu-bar</a></li><li><a class="Class" href="srcclientjavascriptguicontainersjs.html#osjs-gui-elements-gui-paned-view">gui-paned-view</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-password">gui-password</a></li><li><a class="Class" href="srcclientjavascriptguimiscjs.html#osjs-gui-elements-gui-progress-bar">gui-progress-bar</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-radio">gui-radio</a></li><li><a class="Class" href="srcclientjavascriptguirichtextjs.html#osjs-gui-elements-gui-richtext">gui-richtext</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-select">gui-select</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-select-list">gui-select-list</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-slider">gui-slider</a></li><li><a class="Class" href="srcclientjavascriptguimiscjs.html#osjs-gui-elements-gui-statusbar">gui-statusbar</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-switch">gui-switch</a></li><li><a class="Class" href="srcclientjavascriptguitabsjs.html#osjs-gui-elements-gui-tabs">gui-tabs</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-text">gui-text</a></li><li><a class="Class" href="srcclientjavascriptguiinputsjs.html#osjs-gui-elements-gui-textarea">gui-textarea</a></li><li><a class="Class" href="srcclientjavascriptguitreeviewjs.html#osjs-gui-elements-gui-tree-view">gui-tree-view</a></li><li><a class="Class" href="srcclientjavascriptguicontainersjs.html#osjs-gui-elements-gui-vbox">gui-vbox</a></li><li><a class="Class" href="srcclientjavascriptguivisualjs.html#osjs-gui-elements-gui-video">gui-video</a></li></ul></li><li>Helpers<ul><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-createdrag">createDrag()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-createinputlabel">createInputLabel()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-geticon">getIcon()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-getlabel">getLabel()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-getproperty">getProperty()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-getvaluelabel">getValueLabel()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-getviewnodevalue">getViewNodeValue()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-getwindowid">getWindowId()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-setflexbox">setFlexbox()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-helpers-setproperty">setProperty()</a></li></ul></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-uielement">UIElement()</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-uielementdataview">UIElementDataView()</a></li><li><a class="Class" href="srcclientjavascriptguijs.html#osjs-gui-uischeme">UIScheme</a></li><li><a class="" href="srcclientjavascriptguijs.html#osjs-gui-createscheme">createScheme()</a></li></ul></li><li>Helpers<ul><li><a class="Class" href="srcclientjavascripthelpersdatejs.html#osjs-helpers-date">Date</a></li><li>FirefoxMarketplace<ul><li><a class="Class" href="srcclientjavascripthelpersfirefox-marketplacejs.html#osjs-helpers-firefoxmarketplace-firefoxmarketplace">FirefoxMarketplace</a></li><li><a class="" href="srcclientjavascripthelpersfirefox-marketplacejs.html#osjs-helpers-firefoxmarketplace-createinstance">createInstance()</a></li><li><a class="" href="srcclientjavascripthelpersfirefox-marketplacejs.html#osjs-helpers-firefoxmarketplace-getinstance">getInstance()</a></li></ul></li><li>GoogleAPI<ul><li><a class="Class" href="srcclientjavascripthelpersgoogle-apijs.html#osjs-helpers-googleapi-googleapi">GoogleAPI</a></li><li><a class="" href="srcclientjavascripthelpersgoogle-apijs.html#osjs-helpers-googleapi-createinstance">createInstance()</a></li><li><a class="" href="srcclientjavascripthelpersgoogle-apijs.html#osjs-helpers-googleapi-getinstance">getInstance()</a></li></ul></li><li><a class="Class" href="srcclientjavascripthelpersiframe-applicationjs.html#osjs-helpers-iframeapplication">IFrameApplication</a></li><li><a class="Class" href="srcclientjavascripthelpersiframe-applicationjs.html#osjs-helpers-iframeapplicationwindow">IFrameApplicationWindow</a></li><li>WindowsLiveAPI<ul><li><a class="Class" href="srcclientjavascripthelperswindows-live-apijs.html#osjs-helpers-windowsliveapi-windowsliveapi">WindowsLiveAPI</a></li><li><a class="" href="srcclientjavascripthelperswindows-live-apijs.html#osjs-helpers-windowsliveapi-createinstance">createInstance()</a></li><li><a class="" href="srcclientjavascripthelperswindows-live-apijs.html#osjs-helpers-windowsliveapi-getinstance">getInstance()</a></li></ul></li><li>ZipArchiver<ul><li><a class="Class" href="srcclientjavascripthelperszip-archiverjs.html#osjs-helpers-ziparchiver-ziparchiver">ZipArchiver</a></li><li><a class="" href="srcclientjavascripthelperszip-archiverjs.html#osjs-helpers-ziparchiver-createinstance">createInstance()</a></li><li><a class="" href="srcclientjavascripthelperszip-archiverjs.html#osjs-helpers-ziparchiver-getinstance">getInstance()</a></li></ul></li></ul></li><li>Session<ul><li><a class="" href="srcclientjavascriptsessionjs.html#osjs-session-addhook">addHook()</a></li><li><a class="" href="srcclientjavascriptsessionjs.html#osjs-session-destroy">destroy()</a></li><li><a class="" href="srcclientjavascriptsessionjs.html#osjs-session-init">init()</a></li><li><a class="" href="srcclientjavascriptsessionjs.html#osjs-session-signout">signOut()</a></li><li><a class="" href="srcclientjavascriptsessionjs.html#osjs-session-triggerhook">triggerHook()</a></li></ul></li><li>Utils<ul><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-">$()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-addclass">$addClass()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-bind">$bind()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-createcss">$createCSS()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-createjs">$createJS()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-empty">$empty()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-getstyle">$getStyle()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-hasclass">$hasClass()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-index">$index()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-isformelement">$isFormElement()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-isinput">$isInput()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-position">$position()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-remove">$remove()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-removeclass">$removeClass()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-safename">$safeName()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-selectrange">$selectRange()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-unbind">$unbind()</a></li><li><a class="Class" href="srcclientjavascriptutilsjs.html#osjs-utils-keys">Keys</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-_preventdefault">_preventDefault()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-ajax">ajax()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-argumentdefaults">argumentDefaults()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-atoburlsafe">atobUrlsafe()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-atobutf">atobUtf()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-btoaurlsafe">btoaUrlsafe()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-btoautf">btoaUtf()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-checkacceptmime">checkAcceptMime()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-cleanhtml">cleanHTML()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-cloneobject">cloneObject()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-converttohex">convertToHEX()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-converttorgb">convertToRGB()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-dirname">dirname()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-escapefilename">escapeFilename()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-filename">filename()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-filext">filext()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-fixjson">fixJSON()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-format">format()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-getcompability">getCompability()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-getfilenamerange">getFilenameRange()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-getrect">getRect()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-getuserlocale">getUserLocale()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-humanfilesize">humanFileSize()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-inverthex">invertHEX()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-isie">isIE()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-mergeobject">mergeObject()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-mousebutton">mouseButton()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-preload">preload()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-replacefileextension">replaceFileExtension()</a></li><li><a class="" href="srcclientjavascriptutilsjs.html#osjs-utils-replacefilename">replaceFilename()</a></li></ul></li><li>VFS<ul><li><a class="Class" href="srcclientjavascriptvfsjs.html#osjs-vfs-file">File</a></li><li><a class="Class" href="srcclientjavascriptvfsjs.html#osjs-vfs-filedataurl">FileDataURL</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-abtobinarystring">abToBinaryString()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-abtodatasource">abToDataSource()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-abtotext">abToText()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-addformfile">addFormFile()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-copy">copy()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-datasourcetoab">dataSourceToAb()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-download">download()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-emptytrash">emptyTrash()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-exists">exists()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-fileinfo">fileinfo()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-getmodules">getModules()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-mkdir">mkdir()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-move">move()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-read">read()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-registermounts">registerMounts()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-remoteread">remoteRead()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-scandir">scandir()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-texttoab">textToAb()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-trash">trash()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-unlink">unlink()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-untrash">untrash()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-upload">upload()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-url">url()</a></li><li><a class="" href="srcclientjavascriptvfsjs.html#osjs-vfs-write">write()</a></li></ul></li></ul></li>
+
+      </ul>
+
+      <h1>Files</h1>
+      <ul>
+
+<li>src<ul><li>client<ul><li>javascript<ul><li><a href="srcclientjavascriptsessionjs.html">session.js</a></li><li><a href="srcclientjavascriptapijs.html">api.js</a></li><li><a href="srcclientjavascriptprocessjs.html">process.js</a></li><li><a href="srcclientjavascriptapplicationjs.html">application.js</a></li><li><a href="srcclientjavascriptservicejs.html">service.js</a></li><li><a href="srcclientjavascriptwindowjs.html">window.js</a></li><li><a href="srcclientjavascriptdialogjs.html">dialog.js</a></li><li><a href="srcclientjavascriptwindowmanagerjs.html">windowmanager.js</a></li><li><a href="srcclientjavascripthandlerjs.html">handler.js</a></li><li><a href="srcclientjavascriptvfsjs.html">vfs.js</a></li><li><a href="srcclientjavascriptguijs.html">gui.js</a></li><li><a href="srcclientjavascriptutilsjs.html">utils.js</a></li><li>helpers<ul><li><a href="srcclientjavascripthelpersdefault-applicationjs.html">default-application.js</a></li><li><a href="srcclientjavascripthelpersiframe-applicationjs.html">iframe-application.js</a></li><li><a href="srcclientjavascripthelpersgoogle-apijs.html">google-api.js</a></li><li><a href="srcclientjavascripthelperswindows-live-apijs.html">windows-live-api.js</a></li><li><a href="srcclientjavascripthelpersfirefox-marketplacejs.html">firefox-marketplace.js</a></li><li><a href="srcclientjavascripthelperszip-archiverjs.html">zip-archiver.js</a></li><li><a href="srcclientjavascripthelpersdatejs.html">date.js</a></li></ul></li><li>gui<ul><li><a href="srcclientjavascriptgui_dataviewjs.html">_dataview.js</a></li><li><a href="srcclientjavascriptguicontainersjs.html">containers.js</a></li><li><a href="srcclientjavascriptguifileviewjs.html">fileview.js</a></li><li><a href="srcclientjavascriptguiiconviewjs.html">iconview.js</a></li><li><a href="srcclientjavascriptguiinputsjs.html">inputs.js</a></li><li><a href="srcclientjavascriptguilistviewjs.html">listview.js</a></li><li><a href="srcclientjavascriptguimenusjs.html">menus.js</a></li><li><a href="srcclientjavascriptguimiscjs.html">misc.js</a></li><li><a href="srcclientjavascriptguirichtextjs.html">richtext.js</a></li><li><a href="srcclientjavascriptguitabsjs.html">tabs.js</a></li><li><a href="srcclientjavascriptguitreeviewjs.html">treeview.js</a></li><li><a href="srcclientjavascriptguivisualjs.html">visual.js</a></li></ul></li><li>dialogs<ul><li><a href="srcclientjavascriptdialogsalertjs.html">alert.js</a></li><li><a href="srcclientjavascriptdialogsapplicationchooserjs.html">applicationchooser.js</a></li><li><a href="srcclientjavascriptdialogscolorjs.html">color.js</a></li><li><a href="srcclientjavascriptdialogsconfirmjs.html">confirm.js</a></li><li><a href="srcclientjavascriptdialogserrorjs.html">error.js</a></li><li><a href="srcclientjavascriptdialogsfilejs.html">file.js</a></li><li><a href="srcclientjavascriptdialogsfileinfojs.html">fileinfo.js</a></li><li><a href="srcclientjavascriptdialogsfileprogressjs.html">fileprogress.js</a></li><li><a href="srcclientjavascriptdialogsfileuploadjs.html">fileupload.js</a></li><li><a href="srcclientjavascriptdialogsfontjs.html">font.js</a></li><li><a href="srcclientjavascriptdialogsinputjs.html">input.js</a></li></ul></li></ul></li></ul></li></ul></li>
+
+      </ul>
+    </nav>
+
+    <content>
+
+<h1>Overview</h1>
+<p><i>src/client/javascript/utils.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Utils.<a href="#osjs-utils-argumentdefaults">argumentDefaults()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getrect">getRect()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-_preventdefault">_preventDefault()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-keys">Keys</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-mousebutton">mouseButton()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-format">format()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-mergeobject">mergeObject()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-cloneobject">cloneObject()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-checkacceptmime">checkAcceptMime()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getcompability">getCompability()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isie">isIE()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-btoaurlsafe">btoaUrlsafe()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-atoburlsafe">atobUrlsafe()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-btoautf">btoaUtf()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-atobutf">atobUtf()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getuserlocale">getUserLocale()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-fixjson">fixJSON()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-cleanhtml">cleanHTML()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-filext">filext()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-dirname">dirname()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-filename">filename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-humanfilesize">humanFileSize()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-escapefilename">escapeFilename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-replacefileextension">replaceFileExtension()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-replacefilename">replaceFilename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getfilenamerange">getFilenameRange()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-converttorgb">convertToRGB()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-converttohex">convertToHEX()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-inverthex">invertHEX()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-">$()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-safename">$safeName()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-remove">$remove()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-empty">$empty()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getstyle">$getStyle()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-position">$position()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-index">$index()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-selectrange">$selectRange()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-addclass">$addClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-removeclass">$removeClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-hasclass">$hasClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-createcss">$createCSS()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-createjs">$createJS()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isformelement">$isFormElement()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isinput">$isInput()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-bind">$bind()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-unbind">$unbind()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-ajax">ajax()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-preload">preload()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-utils-argumentdefaults">
+<h2 id="osjs-utils-argumentdefaults-args-defaults-undef-">OSjs.Utils.argumentDefaults(args, defaults, undef)</h2>
+<pre>
+Wrapper for merging function argument dictionaries
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Given function Dictionary</td>
+</tr>
+<tr>
+<td>defaults</td>
+<td>Object</td>
+<td>Defaults Dictionary</td>
+</tr>
+<tr>
+<td>undef</td>
+<td>boolean</td>
+<td>Check with &#39;undefined&#39;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getrect">
+<h2 id="osjs-utils-getrect-">OSjs.Utils.getRect()</h2>
+<pre>
+Gets the browser window rect (x, y, width, height)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-_preventdefault">
+<h2 id="osjs-utils-_preventdefault-">OSjs.Utils._preventDefault()</h2>
+<pre>
+Prevents default Event (shortcut)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>bool</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-keys">
+<h2 id="osjs-utils-keys">OSjs.Utils.Keys</h2>
+<pre>
+A collection of keycode mappings
+
+@var
+</pre>
+
+
+
+</div>
+<div class="section-function" id="osjs-utils-mousebutton">
+<h2 id="osjs-utils-mousebutton-ev-">OSjs.Utils.mouseButton(ev)</h2>
+<pre>
+Get the mouse button pressed
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>The DOM Event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The mouse button (left/middle/right)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-format">
+<h2 id="osjs-utils-format-format-">OSjs.Utils.format(format, ...)</h2>
+<pre>
+Format a string (almost like sprintf)
+</pre>
+
+
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://stackoverflow.com/a/4673436">http://stackoverflow.com/a/4673436</a></li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>format</td>
+<td>String</td>
+<td>String format</td>
+</tr>
+<tr>
+<td>...</td>
+<td>String</td>
+<td>Insert into format</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The formatted string</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-mergeobject">
+<h2 id="osjs-utils-mergeobject-obj1-obj2-">OSjs.Utils.mergeObject(obj1, obj2)</h2>
+<pre>
+Deep-merge to objects
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>obj1</td>
+<td>Object</td>
+<td>Object to merge to</td>
+</tr>
+<tr>
+<td>obj2</td>
+<td>Object</td>
+<td>Object to merge with</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The merged object</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-cloneobject">
+<h2 id="osjs-utils-cloneobject-o-">OSjs.Utils.cloneObject(o)</h2>
+<pre>
+Clone a object
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>o</td>
+<td>Object</td>
+<td>The object to clone</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>An identical object</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-checkacceptmime">
+<h2 id="osjs-utils-checkacceptmime-mime-list-">OSjs.Utils.checkAcceptMime(mime, list)</h2>
+<pre>
+Check if this MIME type is inside list
+
+This matches by regex
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The mime string</td>
+</tr>
+<tr>
+<td>list</td>
+<td>Array</td>
+<td>Array of regex matches</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>If found</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getcompability">
+<h2 id="osjs-utils-getcompability-">OSjs.Utils.getCompability()</h2>
+<pre>
+Gets browser compability flags
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>List of compability</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isie">
+<h2 id="osjs-utils-isie-">OSjs.Utils.isIE()</h2>
+<pre>
+Check if browser is IE
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>If IE</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-btoaurlsafe">
+<h2 id="osjs-utils-btoaurlsafe-str-">OSjs.Utils.btoaUrlsafe(str)</h2>
+<pre>
+(Encode) Convert URL-safe String to Base64
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Base64 String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-atoburlsafe">
+<h2 id="osjs-utils-atoburlsafe-str-">OSjs.Utils.atobUrlsafe(str)</h2>
+<pre>
+(Decode) Convert Base64 to URL-safe String
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>Base64 String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-btoautf">
+<h2 id="osjs-utils-btoautf-str-">OSjs.Utils.btoaUtf(str)</h2>
+<pre>
+(Encode) Convert String to Base64 with UTF-8
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Base64 String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-atobutf">
+<h2 id="osjs-utils-atobutf-str-">OSjs.Utils.atobUtf(str)</h2>
+<pre>
+(Decode) Convert Base64 with UTF-8 to String
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>Base64 String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getuserlocale">
+<h2 id="osjs-utils-getuserlocale-">OSjs.Utils.getUserLocale()</h2>
+<pre>
+Gets the browser Locale
+
+For example 'en_EN'
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Locale string</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-fixjson">
+<h2 id="osjs-utils-fixjson-response-">OSjs.Utils.fixJSON(response)</h2>
+<pre>
+Fixes JSON for HTTP requests (in case they were returned as string)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>response</td>
+<td>Mixed</td>
+<td>The data</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-cleanhtml">
+<h2 id="osjs-utils-cleanhtml-html-">OSjs.Utils.cleanHTML(html)</h2>
+<pre>
+Remove whitespaces and newlines from HTML document
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>html</td>
+<td>String</td>
+<td>HTML string input</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-filext">
+<h2 id="osjs-utils-filext-d-">OSjs.Utils.filext(d)</h2>
+<pre>
+Get file extension of filename/path
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d</td>
+<td>String</td>
+<td>filename/path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The file extension</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-dirname">
+<h2 id="osjs-utils-dirname-f-">OSjs.Utils.dirname(f)</h2>
+<pre>
+Get directory from path
+
+If you use this on a directory path, you will
+
+get the parent
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f</td>
+<td>String</td>
+<td>filename/path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The resulted path</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-filename">
+<h2 id="osjs-utils-filename-p-">OSjs.Utils.filename(p)</h2>
+<pre>
+Get filename from path
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p</td>
+<td>String</td>
+<td>Path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-humanfilesize">
+<h2 id="osjs-utils-humanfilesize-bytes-si-">OSjs.Utils.humanFileSize(bytes, si)</h2>
+<pre>
+Get human-readable size from integer
+
+Example return: '128 MB'
+</pre>
+
+
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://stackoverflow.com/users/65387/mark">http://stackoverflow.com/users/65387/mark</a></li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bytes</td>
+<td>int</td>
+<td>Size in bytes</td>
+</tr>
+<tr>
+<td>si</td>
+<td>String</td>
+<td>Use SI units ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Size</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-escapefilename">
+<h2 id="osjs-utils-escapefilename-n-">OSjs.Utils.escapeFilename(n)</h2>
+<pre>
+Escape filename (removes invalid characters)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>String</td>
+<td>Filename</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Escaped filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-replacefileextension">
+<h2 id="osjs-utils-replacefileextension-filename-rep-">OSjs.Utils.replaceFileExtension(filename, rep)</h2>
+<pre>
+Replace file extension of filename
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filename</td>
+<td>String</td>
+<td>The filename</td>
+</tr>
+<tr>
+<td>rep</td>
+<td>String</td>
+<td>New file extension (without dot)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>New filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-replacefilename">
+<h2 id="osjs-utils-replacefilename-orig-newname-">OSjs.Utils.replaceFilename(orig, newname)</h2>
+<pre>
+Replace the filename of a path
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>orig</td>
+<td>String</td>
+<td>The full path to file</td>
+</tr>
+<tr>
+<td>newname</td>
+<td>String</td>
+<td>Replace with this filename</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The new path</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getfilenamerange">
+<h2 id="osjs-utils-getfilenamerange-val-">OSjs.Utils.getFilenameRange(val)</h2>
+<pre>
+Gets the range of filename in a path (without extension)
+
+This is used for example in text boxes to highlight the filename
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>val</td>
+<td>String</td>
+<td>The path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Range in form of {min: 0, max: 1}</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-converttorgb">
+<h2 id="osjs-utils-converttorgb-hex-">OSjs.Utils.convertToRGB(hex)</h2>
+<pre>
+Convert HEX to RGB
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hex</td>
+<td>String</td>
+<td>The hex string (with #)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>RGB in form of {r:0, g:0, b:0}</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-converttohex">
+<h2 id="osjs-utils-converttohex-rgb-r-g-b-">OSjs.Utils.convertToHEX(rgb, r, g, b)</h2>
+<pre>
+Convert RGB to HEX
+
+OR
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rgb</td>
+<td>Object</td>
+<td>The RGB object in form of {r:0, g:0, b:0}</td>
+</tr>
+<tr>
+<td>r</td>
+<td>int</td>
+<td>Red value</td>
+</tr>
+<tr>
+<td>g</td>
+<td>int</td>
+<td>Green value</td>
+</tr>
+<tr>
+<td>b</td>
+<td>int</td>
+<td>Blue value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Hex string (with #)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-inverthex">
+<h2 id="osjs-utils-inverthex-hex-">OSjs.Utils.invertHEX(hex)</h2>
+<pre>
+Ivert HEX color
+</pre>
+
+
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://stackoverflow.com/a/9601429/1236086">http://stackoverflow.com/a/9601429/1236086</a></li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hex</td>
+<td>String</td>
+<td>Hex string (With #)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Inverted hex (With #)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-">
+<h2 id="osjs-utils-id-">OSjs.Utils.$(id)</h2>
+<pre>
+Get element by ID
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>DOM Element ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>Found element or null</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-safename">
+<h2 id="osjs-utils-safename-str-">OSjs.Utils.$safeName(str)</h2>
+<pre>
+Remove unwanted characters from ID or className
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>The name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The new name</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-remove">
+<h2 id="osjs-utils-remove-node-">OSjs.Utils.$remove(node)</h2>
+<pre>
+Remove given element from parent
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>null</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-empty">
+<h2 id="osjs-utils-empty-mynode-">OSjs.Utils.$empty(myNode)</h2>
+<pre>
+Empty this element (remove children)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>myNode</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getstyle">
+<h2 id="osjs-utils-getstyle-oelm-strcssrule-">OSjs.Utils.$getStyle(oElm, strCssRule)</h2>
+<pre>
+Get CSS style attribute
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>oElm</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+<tr>
+<td>strCssRule</td>
+<td>String</td>
+<td>The CSS rule to get</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Style attribute</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-position">
+<h2 id="osjs-utils-position-el-parentel-">OSjs.Utils.$position(el, parentEl)</h2>
+<pre>
+Get element absolute position
+
+Modern browsers will return getBoundingClientRect()
+
+See DOM documentation
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The Element to find position of</td>
+</tr>
+<tr>
+<td>parentEl</td>
+<td>DOMElement</td>
+<td>Optional parent to end loop in</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The bounding box</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-index">
+<h2 id="osjs-utils-index-el-parentel-">OSjs.Utils.$index(el, parentEl)</h2>
+<pre>
+Get the index of an element within a node
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>Element to check</td>
+</tr>
+<tr>
+<td>parentEl</td>
+<td>DOMElement</td>
+<td>Optional parent (automatically checked)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u> <em>The index</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-selectrange">
+<h2 id="osjs-utils-selectrange-field-start-end-">OSjs.Utils.$selectRange(field, start, end)</h2>
+<pre>
+Selects range in a text field
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>field</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+<tr>
+<td>start</td>
+<td>int</td>
+<td>Start position</td>
+</tr>
+<tr>
+<td>end</td>
+<td>int</td>
+<td>End position</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-addclass">
+<h2 id="osjs-utils-addclass-el-name-">OSjs.Utils.$addClass(el, name)</h2>
+<pre>
+Add a className to a DOM Element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-removeclass">
+<h2 id="osjs-utils-removeclass-el-name-">OSjs.Utils.$removeClass(el, name)</h2>
+<pre>
+Remove a className from a DOM Element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-hasclass">
+<h2 id="osjs-utils-hasclass-el-name-">OSjs.Utils.$hasClass(el, name)</h2>
+<pre>
+Check if a DOM Element has given className
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-createcss">
+<h2 id="osjs-utils-createcss-src-">OSjs.Utils.$createCSS(src)</h2>
+<pre>
+Create a link stylesheet tag
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>String</td>
+<td>The URL of resource</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The tag</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-createjs">
+<h2 id="osjs-utils-createjs-src-onreadystatechange-onload-onerror-">OSjs.Utils.$createJS(src, onreadystatechange, onload, onerror)</h2>
+<pre>
+Create a script tag
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>String</td>
+<td>The URL of resource</td>
+</tr>
+<tr>
+<td>onreadystatechange</td>
+<td>Function</td>
+<td>readystatechange callback</td>
+</tr>
+<tr>
+<td>onload</td>
+<td>Function</td>
+<td>onload callback</td>
+</tr>
+<tr>
+<td>onerror</td>
+<td>Function</td>
+<td>onerror callback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The tag</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isformelement">
+<h2 id="osjs-utils-isformelement-ev-types-">OSjs.Utils.$isFormElement(ev, types)</h2>
+<pre>
+Check if event happened on a form element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>types</td>
+<td>Array</td>
+<td>Array of types</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>If is a form element</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isinput">
+<h2 id="osjs-utils-isinput-">OSjs.Utils.$isInput()</h2>
+<pre>
+Alias
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Utils.$isFormElement()</li>
+</ul>
+
+</div>
+<div class="section-function" id="osjs-utils-bind">
+<h2 id="osjs-utils-bind-el-ev-callback-">OSjs.Utils.$bind(el, ev, callback)</h2>
+<pre>
+Wrapper for event-binding
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOM Element to attach event to</td>
+</tr>
+<tr>
+<td>ev</td>
+<td>String</td>
+<td>DOM Event Name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback on event</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<div class="section-function" id="osjs-utils-unbind">
+<h2 id="osjs-utils-unbind-">OSjs.Utils.$unbind()</h2>
+<pre>
+Wrapper for event un-binding
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Utils.$bind()</li>
+</ul>
+
+</div>
+<div class="section-function" id="osjs-utils-ajax">
+<h2 id="osjs-utils-ajax-args-">OSjs.Utils.ajax(args)</h2>
+<pre>
+Common function for handling all types of XHR calls
+
+including download/upload and JSONP
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Aguments (see below)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>String</td>
+<td>The URL</td>
+</tr>
+<tr>
+<td>method</td>
+<td>String</td>
+<td>HTTP Call method: (POST/GET, default = GET)</td>
+</tr>
+<tr>
+<td>body</td>
+<td>Mixed</td>
+<td>Optional body to send (for POST)</td>
+</tr>
+<tr>
+<td>responseType</td>
+<td>String</td>
+<td>HTTP Response type (default = null)</td>
+</tr>
+<tr>
+<td>requestHeaders</td>
+<td>Object</td>
+<td>Tuple with headers (default = null)</td>
+</tr>
+<tr>
+<td>json</td>
+<td>boolean</td>
+<td>Handle as a JSON request/response (default = false)</td>
+</tr>
+<tr>
+<td>jsonp</td>
+<td>boolean</td>
+<td>Handle as a JSONP request (default = false)</td>
+</tr>
+<tr>
+<td>onerror</td>
+<td>Function</td>
+<td>onerror callback</td>
+</tr>
+<tr>
+<td>onsuccess</td>
+<td>Function</td>
+<td>onsuccess callback</td>
+</tr>
+<tr>
+<td>oncreated</td>
+<td>Function</td>
+<td>oncreated callback</td>
+</tr>
+<tr>
+<td>onfailed</td>
+<td>Function</td>
+<td>onfailed callback</td>
+</tr>
+<tr>
+<td>oncanceled</td>
+<td>Function</td>
+<td>oncanceled callback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-preload">
+<h2 id="osjs-utils-preload-list-callback-callbackprogress-">OSjs.Utils.preload(list, callback, callbackProgress)</h2>
+<pre>
+Preload a list of resources
+
+Format of list is:
+
+[
+
+ {
+
+ "type": "javascript" // or "stylesheet",
+
+ "src": "url/uri"
+
+ }
+
+]
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list</td>
+<td>Array</td>
+<td>The list of resources</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback when done</td>
+</tr>
+<tr>
+<td>callbackProgress</td>
+<td>Function</td>
+<td>Callback on progress</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<h1>Classes</h1>
+<p><i>Generated: Thu Aug 20 2015 18:56:35 GMT+0200 (CEST)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
+
+    </content>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-46087265-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; 
+        ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</body>
