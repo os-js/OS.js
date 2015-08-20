@@ -1,4 +1,4 @@
-(function(_path, _fs, _less) {
+(function(_path, _fs, _less, _ugly, _cleancss) {
   'use strict';
 
   var ISWIN = /^win/.test(process.platform);
@@ -278,6 +278,9 @@
     };
   })();
 
+  /**
+   * Gets a list of core extensions
+   */
   function getCoreExtensions() {
     var packages = readPackageMetadata();
     var list = {};
@@ -315,11 +318,11 @@
       return true;
     }
 
-    function read() {
+    function read(srcDir) {
       var list = {};
       var repos = readPackageRepositories();
       repos.forEach(function(r) {
-        var dir = _path.join(PATHS.packages, r)
+        var dir = _path.join(srcDir || PATHS.packages, r)
         getDirectories(dir).forEach(function(p) {
           var pdir = _path.join(dir, p);
           var mpath = _path.join(pdir, 'package.json');
@@ -353,7 +356,10 @@
     }
 
     var _cache = null;
-    return function() {
+    return function(dir) {
+      if ( dir ) {
+        return read(dir);
+      }
       if ( _cache === null ) {
         _cache = read();
       }
@@ -433,6 +439,14 @@
       return _cache;
     };
   })();
+
+  function normalizeManifest(obj) {
+    var result = {};
+    Object.keys(obj).forEach(function(i) {
+      result[obj[i].className] = obj[i];
+    });
+    return result;
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // CONFIGS
@@ -549,6 +563,9 @@
   // INDEX FILES
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Create "index.html" file
+   */
   function createIndex(grunt, arg, dist) {
     var cfg = generateBuildConfig();
     var tpl = readFile(_path.join(PATHS.templates, 'index.html')).toString();
@@ -595,12 +612,18 @@
   // WEB SERVER CONFIGS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Create Apache vhost
+   */
   function createApacheVhost(grunt, arg) {
     var src = _path.join(PATHS.templates, 'apache-vhost.conf');
     var tpl = createWebserverConfig(grunt, arg, src);
     console.log(tpl);
   }
 
+  /**
+   * Create Apache htaccess
+   */
   function createApacheHtaccess(grunt, arg) {
     var mimes = [];
     var mime = readMIME();
@@ -630,12 +653,18 @@
     console.log(out.join('\n'));
   }
 
+  /**
+   * Create Lighttpd config
+   */
   function createLighttpdConfig(grunt, arg) {
     var src = _path.join(PATHS.templates, 'lighttpd.conf');
     var tpl = createWebserverConfig(grunt, arg, src);
     console.log(tpl);
   }
 
+  /**
+   * Create Nginx config
+   */
   function createNginxConfig(grunt, arg) {
     var src = _path.join(PATHS.templates, 'nginx.conf');
     var tpl = createWebserverConfig(grunt, arg, src);
@@ -646,6 +675,9 @@
   // PACKAGES
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Creates a package
+   */
   function createPackage(grunt, arg) {
     var tmp  = (arg || '').split('/');
     var repo = tmp.length > 1 ? tmp[0] : 'default';
@@ -994,8 +1026,7 @@
 
       Object.keys(packages).forEach(function(p) {
         var manifest = packages[p];
-        var repo = p.split('/')[0];
-        var name = p.split('/')[1];
+        var name = p;
         var preload = [];
 
         if ( manifest.preload && manifest.preload.length ) {
@@ -1053,11 +1084,11 @@
           }
         });
 
-        list[manifest.className] = manifest;
+        list[p] = manifest;
       });
 
       var tpl = readFile(_path.join(PATHS.templates, 'packages.js')).toString();
-      var content = tpl.replace('%PACKAGES%', JSON.stringify(list, null, 4));
+      var content = tpl.replace('%PACKAGES%', JSON.stringify(normalizeManifest(list), null, 4));
       writeFile(out, content);
     }
 
@@ -1065,6 +1096,9 @@
     generate(PATHS.out_client_dev_manifest, 'dist-dev');
   }
 
+  /**
+   * Creates a nightly build
+   */
   function buildNightly(grunt, arg) {
     var list = [
       'packages/default',
@@ -1098,36 +1132,81 @@
     });
   }
 
+  /**
+   * Creates a compressed build
+   */
   function buildCompressed(grunt, arg) {
-    // TODO
-    throw new Error('TODO. I have to redo this after latest commit(s)');
+    var packages = readPackageMetadata(PATHS.out_client_packages);
+
+    Object.keys(packages).forEach(function(p) {
+      var iter = packages[p];
+      if ( iter.preload ) {
+        grunt.log.subhead(p);
+
+        iter.preload.forEach(function(pl, idx) {
+          var basename;
+          var newname;
+          var minified;
+          var src = _path.join(PATHS.out_client_packages, p, pl.src);
+
+          if ( pl.type === 'javascript' ) {
+            if ( !pl.src.match(/\.min\.js$/) ) {
+              basename = pl.src.replace(/\.js$/, '');
+              newname = basename + '.min.js';
+              console.log('---', 'uglify', newname);
+              minified = _ugly.minify(src, {comments: true}).code;
+            }
+          } else if ( pl.type === 'stylesheet' ) {
+            if ( !pl.src.match(/\.min\.css$/) ) {
+              basename = pl.src.replace(/\.css$/, '');
+              newname = basename + '.min.css';
+              console.log('---', 'clean', newname);
+              minified = new _cleancss().minify(src).styles;
+            }
+          }
+
+          if ( basename && newname && minified ) {
+            writeFile(_path.join(PATHS.out_client_packages, p, newname));
+            iter.preload[idx].src = _path.join(p, pl.src.replace(_path.basename(pl.src), newname));
+            writeFile(_path.join(PATHS.out_client_packages, p, 'package.json'), JSON.stringify(iter, null, 2));
+          }
+        });
+      }
+    });
+
+
+    grunt.log.subhead('Writing metadata...');
+    var tpl = readFile(_path.join(PATHS.templates, 'packages.js')).toString();
+    var content = tpl.replace('%PACKAGES%', JSON.stringify(normalizeManifest(packages), null, 2));
+    writeFile(PATHS.out_client_manifest, content);
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-
   module.exports = {
     createConfigurationFiles: createConfigurationFiles,
-    createIndex: createIndex,
-    createApacheVhost: createApacheVhost,
-    createApacheHtaccess: createApacheHtaccess,
-    createLighttpdConfig: createLighttpdConfig,
-    createNginxConfig: createNginxConfig,
-    createPackage: createPackage,
+    createIndex:              createIndex,
+    createApacheVhost:        createApacheVhost,
+    createApacheHtaccess:     createApacheHtaccess,
+    createLighttpdConfig:     createLighttpdConfig,
+    createNginxConfig:        createNginxConfig,
+    createPackage:            createPackage,
 
-    buildCore: buildCore,
-    buildStandalone: buildStandalone,
-    buildPackages: buildPackages,
-    buildThemes: buildThemes,
-    buildManifest: buildManifest,
-    buildNightly: buildNightly,
-    buildCompressed: buildCompressed
+    buildCore:        buildCore,
+    buildStandalone:  buildStandalone,
+    buildPackages:    buildPackages,
+    buildThemes:      buildThemes,
+    buildManifest:    buildManifest,
+    buildNightly:     buildNightly,
+    buildCompressed:  buildCompressed
   };
 
 })(
   require('path'),
   require('node-fs-extra'),
-  require('less')
+  require('less'),
+  require('uglify-js'),
+  require('clean-css')
 );
