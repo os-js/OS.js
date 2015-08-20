@@ -323,7 +323,7 @@
 
     _api.register(CONFIG, API, HANDLER);
     if ( settConfig.extensions ) {
-      var exts = JSON.parse(settConfig.extensions);
+      var exts = settConfig.extensions;
       exts.forEach(function(f) {
         console.info('-->', 'Registering external API methods', f);
         require(ROOTDIR + f).register(settConfig, API, HANDLER);

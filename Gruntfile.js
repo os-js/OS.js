@@ -10,19 +10,7 @@
 
   module.exports = function(grunt) {
 
-    function clean(remove, mkdir) {
-      remove = remove || [];
-      mkdir = mkdir || [];
 
-      remove.forEach(function(i) {
-        grunt.verbose.writeln('rm ' + i);
-        _fs.removeSync(i);
-      });
-      mkdir.forEach(function(i) {
-        grunt.verbose.writeln('mkdir ' + i);
-        _fs.mkdirSync(i);
-      });
-    }
 
     grunt.file.defaultEncoding = 'utf-8';
 
@@ -33,389 +21,123 @@
      * Task: Clean
      */
     grunt.registerTask('clean', 'Clean up all build files', function(arg) {
-      var remove = [
-        BUILD.javascript.output,
-        BUILD.stylesheets.output,
-        'dist/packages.json',
-        'dist/packages.js',
-        'dist-dev/packages.json',
-        'dist-dev/packages.js',
-        'dist/packages',
-        'dist/themes'
-      ];
-
-      var mkdir = [
-        'dist/packages',
-        'dist/themes'
-      ];
-
-      clean(remove, mkdir);
-
-      grunt.verbose.ok();
     });
 
     /**
      * Task: Build config
      */
     grunt.registerTask('config', 'Build config files', function(arg) {
-      var cfg = _build.buildConfig(grunt);
-      var dest;
-
-      dest = _path.join(ROOT, 'src', 'server', 'php', 'settings.php');
-      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, cfg.php);
-
-      dest = _path.join(ROOT, 'src', 'server', 'node', 'settings.json');
-      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, JSON.stringify(cfg.node));
-
-      dest = _path.join(ROOT, 'dist', 'settings.js');
-      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, cfg.js_dist);
-
-      dest = _path.join(ROOT, 'dist-dev', 'settings.js');
-      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, cfg.js_dev);
-
-      grunt.verbose.ok();
+      grunt.log.writeln('Writing configuration files...');
+      _build.createConfigurationFiles(grunt, arg);
     });
 
     /**
      * Task: Build core
      */
     grunt.registerTask('core', 'Build dist core files', function(arg) {
-      var hjs, ojs;
-      var hcss, ocss;
-
-      grunt.log.writeln('Building JavaScript core');
-      hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
-      ojs = _build.buildDistCore(hjs, BUILD.javascript.files, 'js', grunt);
-      grunt.log.writeln('>>> ' + BUILD.javascript.output);
-      _fs.writeFileSync(_path.join(ROOT, BUILD.javascript.output), ojs);
-
-      grunt.log.writeln('');
-
-      grunt.log.writeln('Building JavaScript locales');
-      hjs = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.js');
-      ojs = _build.buildDistCore(hjs, BUILD.locales.files, 'js', grunt);
-      grunt.log.writeln('>>> ' + BUILD.locales.output);
-      _fs.writeFileSync(_path.join(ROOT, BUILD.locales.output), ojs);
-
-      grunt.log.writeln('');
-
-      grunt.log.writeln('Building Stylesheets');
-      hcss = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css');
-      ocss = _build.buildDistCore(hcss, BUILD.stylesheets.files, 'css', grunt);
-      grunt.log.writeln('>>> ' + BUILD.stylesheets.output);
-      _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), ocss);
-
-      grunt.log.writeln('');
-
-      grunt.log.writeln('Copying static files');
-
-      var stats = BUILD.statics;
-      Object.keys(stats).forEach(function(f) {
-        var src = _path.join(ROOT, f);
-        var dst = _path.join(ROOT, stats[f]);
-        grunt.log.writeln('>>> ' + dst);
-        _fs.copySync(src, dst);
-      });
-
-      hcss = _path.join(ROOT, 'src', 'tools', 'templates', 'dist-header.css');
-      ocss = _build.buildDistCore(hcss, BUILD.stylesheets.files, 'css', grunt);
-      grunt.log.writeln('>>> ' + BUILD.stylesheets.output);
-      _fs.writeFileSync(_path.join(ROOT, BUILD.stylesheets.output), ocss);
-
-      grunt.verbose.ok();
+      grunt.log.writeln('Building dist...');
+      _build.buildCore(grunt, arg);
     });
 
     /**
      * Task: Build Standalone
      */
     grunt.registerTask('standalone', 'Build dist standalone files', function(arg) {
-      var done = this.async();
-      try {
-        _build.buildStandalone(grunt, function() {
-          grunt.verbose.ok();
-          done();
-        });
-      } catch ( e ) {
-        console.warn(e, e.stack);
-        done();
-      }
+      grunt.log.writeln('Building standalone dist...');
+      _build.buildStandalone(grunt, arg);
     });
 
     /**
      * Task: Build packages
      */
     grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About)', function(arg) {
-      clean(['dist/packages'], ['dist/packages']);
-
-      var done = this.async();
-      function finished() {
-        grunt.verbose.ok();
-        done();
-      }
-
-      _build.buildPackages(arg, grunt, finished);
+      grunt.log.writeln('Building packages...');
+      _build.buildPackages(grunt, arg);
     });
 
     /**
      * Task: Build themes
      */
     grunt.registerTask('themes', 'Build theme files (arguments: resources, fonts. Or a single theme, ex: grunt themes:MyThemename)', function(arg) {
+      grunt.log.writeln('Building themes...');
       var done = this.async();
-      arg = arg || 'all';
-
-      if ( arg === 'all' ) {
-        clean(['dist/themes'], ['dist/themes', 'dist/themes/styles']);
-      }
-
-      function finished() {
-        var src, dst;
-
-        if ( arg === 'all' || arg === 'resources' ) {
-          grunt.log.subhead('Copying static files');
-
-          src = _path.join(ROOT, 'src', 'client', 'themes', 'wallpapers');
-          dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
-          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
-          _fs.copySync(src, dst);
-
-          src = _path.join(ROOT, 'src', 'client', 'themes', 'icons');
-          dst = _path.join(ROOT, 'dist', 'themes', 'icons');
-          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
-          _fs.copySync(src, dst);
-
-          src = _path.join(ROOT, 'src', 'client', 'themes', 'fonts');
-          dst = _path.join(ROOT, 'dist', 'themes', 'fonts');
-          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
-          _fs.copySync(src, dst);
-
-          src = _path.join(ROOT, 'src', 'client', 'themes', 'sounds');
-          dst = _path.join(ROOT, 'dist', 'themes', 'sounds');
-          grunt.log.writeln('  cp '  + src.replace(ROOT, '') + ' -> ' + dst.replace(ROOT, ''));
-          _fs.copySync(src, dst);
-        }
-
-        grunt.log.subhead('Cleaning up');
-
-        src = _path.join(ROOT, 'dist', 'themes', 'styles');
-        _build.getDirs(src).forEach(function(dir) {
-          if ( arg === 'all' || arg === dir ) {
-            (['metadata.json', 'style.less', 'base.less']).forEach(function(i) {
-              dst = _path.join(src, dir, i);
-              grunt.log.writeln('  rm '  + dst.replace(ROOT+'/|\/', ''));
-              _fs.removeSync(dst);
-            });
-          }
-        });
-
-        if ( arg === 'all' ) {
-          src = _path.join(ROOT, 'dist', 'themes', 'fonts');
-          _build.getDirs(src).forEach(function(dir) {
-            dst = _path.join(src, dir, 'style.css');
-            grunt.log.writeln('  rm '  + dst.replace(ROOT, ''));
-            _fs.removeSync(dst);
-          });
-
-          (['sounds', 'icons']).forEach(function(i) {
-            src = _path.join(ROOT, 'dist', 'themes', i);
-            _build.getDirs(src).forEach(function(dir) {
-              dst = _path.join(src, dir, 'metadata.json');
-              grunt.log.writeln('  rm '  + dst.replace(ROOT, ''));
-              _fs.removeSync(dst);
-            });
-          });
-        }
-
-        done();
-      }
-
-      function buildStyles() {
-        grunt.log.subhead('Building styles');
-        _build.buildStyles(arg, grunt, function(err) {
-          if ( err ) {
-            grunt.log.errorlns('An error occured while building styles');
-            grunt.log.errorlns(err);
-            finished();
-            return;
-          }
-          grunt.verbose.ok();
-          finished();
-        });
-      }
-
-      if ( arg === 'all' || arg === 'fonts' ) {
-        grunt.log.subhead('Building fonts');
-        _build.buildFonts(grunt, function(err, result) {
-          if ( err ) {
-            grunt.log.errorlns('An error occured while building fonts');
-            grunt.log.errorlns(err);
-
-            finished();
-            return;
-          } else {
-            var dest = _path.join(ROOT, 'dist', 'themes', 'fonts.css');
-            grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-            _fs.writeFileSync(dest, result);
-          }
-
-          buildStyles();
-        });
-      } else {
-        buildStyles();
-      }
+      _build.buildThemes(grunt, arg, done);
     });
 
     /**
      * Task: Build manifests
      */
     grunt.registerTask('manifest', 'Generate package manifest file', function(arg) {
-      clean(['dist/packages.json', 'dist-dev/packages.json']);
-
-      function generate(dist) {
-        grunt.log.subhead('Generating package manifest for "' + dist + '"');
-
-        var packages = _build.buildManifest(grunt, dist);
-        var dest = _path.join(ROOT, dist, 'packages.js');
-        var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'packages.js')).toString();
-        var out = tpl.replace('%PACKAGES%', JSON.stringify(packages, null, 2));
-
-        grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-        _fs.writeFileSync(dest, out);
-      }
-
-      (['dist-dev', 'dist']).forEach(function(d) {
-        generate(d);
-      });
-      grunt.verbose.ok();
+      grunt.log.writeln('Building package manifest...');
+      _build.buildManifest(grunt, arg);
     });
 
     /**
      * Task: Compress build
      */
     grunt.registerTask('compress', 'Compress dist files (arguments: all, core, packages, ex: grunt compress:core)', function(arg) {
-      var done = this.async();
-      function finished() {
-        grunt.verbose.ok();
-        done();
-      }
-      _build.compress(arg, grunt, finished);
+      grunt.log.writeln('Compressing dist...');
+      _build.buildCompressed(grunt, arg);
     });
 
     /**
      * Task: Generate index.html
      */
     grunt.registerTask('dist-index', 'Generate dist index.html', function(arg) {
-      var index = _build.generateIndex(grunt, true, arg);
-      var dest = _path.join(ROOT, 'dist', 'index.html');
-      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, index);
+      grunt.log.writeln('Generating dist/index.html...');
+      _build.createIndex(grunt, arg, 'dist');
     });
 
     /**
      * Task: Generate index.html
      */
     grunt.registerTask('dist-dev-index', 'Generate dist-dev index.html', function(arg) {
-      var index = _build.generateIndex(grunt);
-      var dest = _path.join(ROOT, 'dist-dev', 'index.html');
-      grunt.log.writeln('>>> ' + dest.replace(ROOT, ''));
-      _fs.writeFileSync(dest, index);
+      grunt.log.writeln('Generating dist-dev/index.html...');
+      _build.createIndex(grunt, arg, 'dev');
     });
 
     /**
      * Task: Generate Apache vhost
      */
     grunt.registerTask('apache-vhost', 'Generate Apache vhost configuration file', function(arg) {
-      var dist = arg || 'dist';
-      var config = _build.generateApacheVhost(grunt, dist);
-      console.log('\n' + config + '\n');
-      grunt.verbose.ok();
+      _build.createApacheVhost(grunt, arg);
     });
 
     /**
      * Task: Generate Apache htaccess
      */
     grunt.registerTask('apache-htaccess', 'Generate Apache htaccess file', function(arg) {
-      var config = _build.generateApacheHtaccess(grunt, arg);
-      console.log('\n' + config + '\n');
-      grunt.verbose.ok();
+      _build.createApacheHtaccess(grunt, arg);
     });
 
     /**
      * Task: Generate Lighttpd config
      */
     grunt.registerTask('lighttpd-config', 'Generate Lighttpd configuration file', function(arg) {
-      var dist = arg || 'dist';
-      var config = _build.generateLighttpdConfig(dist);
-      console.log('\n' + config + '\n');
-      grunt.verbose.ok();
+      _build.createLighttpdConfig(grunt, arg);
     });
 
     /**
      * Task: Generate Nginx config
      */
     grunt.registerTask('nginx-config', 'Generate Nginx configuration file', function(arg) {
-      var dist = arg || 'dist';
-      var config = _build.generateNginxConfig(dist);
-      console.log('\n' + config + '\n');
-      grunt.verbose.ok();
+      _build.createNginxConfig(grunt, arg);
     });
 
     /**
      * Task: Create a new package
      */
     grunt.registerTask('create-package', 'Create a new package/application', function(arg) {
-      var done = this.async();
-      if ( !arg ) {
-        grunt.log.error('Expects an argument. Example: MyPackageName');
-        done();
-        return;
-      }
-
-      _build.createPackage(grunt, arg, function(err) {
-        if ( err ) {
-          grunt.log.error('Failed to create package: ' + err);
-          done();
-          return;
-        }
-
-        done();
-        grunt.verbose.ok();
-      });
-
+      grunt.log.writeln('Creating package...');
+      _build.createPackage(grunt, arg);
     });
 
     /**
      * Task: Create a nightly build
      */
     grunt.registerTask('create-nightly-build', 'Creates a new OS.js nightly zip distribution', function(arg) {
-      clean(['.nightly'], ['.nightly']);
-
-      function generate(dist) {
-        var packages = _build.buildManifest(grunt, 'nightly');
-        var dest = _path.join(ROOT, '.nightly', 'packages.js');
-        var tpl = _fs.readFileSync(_path.join(ROOT, 'src', 'tools', 'templates', 'packages.js')).toString();
-        var out = tpl.replace('%PACKAGES%', JSON.stringify(packages, null, 2));
-
-        grunt.log.writeln('>>> ' + dest);
-        _fs.writeFileSync(dest, out);
-      }
-
-
-      var done = this.async();
-      _build.createNightly(grunt, function(err) {
-        if ( err ) {
-          grunt.log.error('Failed to create nightly: ' + err);
-          done();
-          return;
-        }
-
-        generate();
-        done();
-        grunt.verbose.ok();
-      });
+      grunt.log.writeln('Building nightly...');
+      _build.buildNightly(grunt, arg);
     });
 
 
