@@ -1161,7 +1161,7 @@
               basename = pl.src.replace(/\.css$/, '');
               newname = basename + '.min.css';
               console.log('---', 'clean', newname);
-              minified = new _cleancss().minify(src).styles;
+              minified = new _cleancss().minify(readFile(src)).styles;
             }
           }
 
