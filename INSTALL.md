@@ -5,11 +5,13 @@ Server runs on Linux, OS X, BSD and Windows.
 **Table of Contents**
 
 * [Dependencies](#dependencies)
-* [Installation methods](#installation)
-  1. [Automated](#automated-1)
+* Installation methods
+  1. Automated
+    * [NIX](#automated)
+    * [Windows](#automated-1)
   2. Manual
-    * [NIX](#nix)
-    * [Windows](#windows)
+    * [NIX](#manual)
+    * [Windows](#manual-1)
   3. Containers and Virtual Machines
     * [Vagrant](#vagrant)
     * [Docker](#docker)
