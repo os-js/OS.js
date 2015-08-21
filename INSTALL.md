@@ -7,7 +7,9 @@ Server runs on Linux, OS X, BSD and Windows.
 * [Dependencies](#dependencies)
 * [Installation methods](#installation)
   1. [Automated](#automated-1)
-  2. [Manual](#manual-1)
+  2. Manual
+    * [NIX](#nix)
+    * [Windows](#windows)
   3. Containers and Virtual Machines
     * [Vagrant](#vagrant)
     * [Docker](#docker)
