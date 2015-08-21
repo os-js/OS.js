@@ -4,7 +4,7 @@ OS.js is a desktop implementation for your browser with a fully-fledged window m
 
 Works in any modern browser and can be deployed on any platform using Node or PHP.
 
-Is available under the [BSD Clause 2 License](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
+Is available under the [BSD-2-Clause](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
 
 You can read more on [the official homepage](http://os.js.org/)
 
