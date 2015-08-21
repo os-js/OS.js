@@ -2,6 +2,30 @@
 
 Server runs on Linux, OS X, BSD and Windows.
 
+**Table of Contents**
+
+* [Dependencies](#dependencies)
+* [Installation methods](#installation)
+  1. [Automated](#automated-1)
+  2. [Manual](#manual-1)
+  3. Containers and Virtual Machines
+    * [Vagrant](#vagrant)
+    * [Docker](#docker)
+* [Setting up a Server](#setting-up-a-server)
+  1. [Standalone](#standalone)
+  2. [Node](#node)
+  3. PHP
+    * [Internal Server](#internal-web-server-for-php-54)
+    * [Apache](#apache)
+    * [Lighttpd](#lighttpd)
+    * [Nginx](#nginx)
+    * [WAMP](#wamp)
+    * [Webhost](#webhost)
+    * [X11](#x11)
+* [Setting up features](#setting-up-features)
+* [Update instructions](#update-instructions)
+* [Links](#links)
+
 # Dependencies
 
 You just need **node** and **npm**. Install them with your package manager or download the [official installer](https://nodejs.org).
