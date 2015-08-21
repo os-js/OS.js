@@ -1,3 +1,42 @@
+# 2.0.0-alpha64
+
+A bunch of updates, new building system and bufixes.
+
+* CoreWM: Fixed background bug for iOS
+* Writer: Updated with more features
+* Draw: Now has onChanged (alert when closing changed work)
+* FileManager: Added navigation buttons and text input
+* FileManager: Better side view toggling
+* FileManager: Updated menus
+* Dialogs: Added Alpha channel to Color dialog
+* Dialogs: File dialog now toggles OK button
+* GUI: IconView now has accurate up/down keys
+* GUI: Added more LESS variables for theming
+* GUI: Added .create() abstraction
+* GUI: TreeView styles updated
+* GUI: TreeView fixed selection bug
+* GUI: ListView now supports zebra stripes
+* GUI: Switch now has better click detection
+* UI: Added Tabindex (supports all elements)
+* UI: Schemes can now be cached (adds file:/// support again)
+* UI: Window resizer has been fixed
+* Utils: Better touch compability
+* VFS: Fixed write() bug where empty content caused "data:" to be the content
+* Build: Re-added standalone build mode
+* Build: Completely rewritten Grunt build system
+* Build: Compress build now checks if already compressed
+* Build: Reduced complexity of some `conf/` files
+* Handler: Demo handler now resets settings every version bump
+* Misc: Automatically refocus last window when dialog closes (within reason)
+* Misc: Some TODO fixed
+* Misc: Some FIXME fixed
+* Misc: Linting
+* Misc: Cleanups
+* Misc: Docs updated
+* Misc: Installation instruction cleanups and updates
+* Misc: Better splitting of codebase in `src/`
+* Misc: Removed some unused files
+
 # 2.0.0-alpha63
 
 New features, bugfixes and other improvments.

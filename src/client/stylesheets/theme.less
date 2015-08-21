@@ -38,11 +38,14 @@
 @menu_foreground_color : @base_foreground_color;
 @menu_shadow           : @base_shadow_focused;
 
-@window_top_height : 30px;
+@window_top_height    : 30px;
+@window_resize_offset : 8px;
 
 @scrollbar_button_background : @gui_border_color;
 @scrollbar_button_foreground : @gui_background_color;
 @scrollbar_track_background  : @base_background_color;
+
+@gui_base_padding : 4px;
 
 @gui_selected_background_color       : rgb(45, 115, 210);
 @gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
@@ -112,7 +115,7 @@
 
 .theme_button() {
   cursor : pointer;
-  padding : 4px;
+  padding : @gui_base_padding;
   background-color: @gui_button_background_color;
   background: @gui_button_background;
   border: 1px solid @gui_button_border_color;
@@ -135,7 +138,7 @@
   color : @gui_input_disabled_foreground_color;
 }
 .theme_text_input() {
-  padding : 4px;
+  padding : @gui_base_padding;
   background-color : @gui_input_background_color;
   border : 1px solid @gui_input_border_color;
 }
@@ -188,64 +191,6 @@ body, input, button, textarea, label, select {
 
 /**
  * ===========================================================================
- *                                WINDOWS
- * ===========================================================================
- */
-
-application-window {
-  margin-top : @window_top_height;
-}
-application-window:before {
-  top : -@window_top_height;
-}
-
-application-window-top {
-  top : -@window_top_height;
-  height : @window_top_height;
-}
-
-application-window-icon {
-}
-
-application-window-title {
-  left : calc(20px + 4px);
-  line-height : @window_top_height;
-  text-align : center;
-}
-
-application-window-buttons {
-}
-
-application-window-content {
-}
-
-application-window-resize {
-  top : -calc(@window_top_height - 8px);
-  left : -8px;
-  right : -8px;
-  bottom : -8px;
-}
-
-application-window[data-dnd-state="true"]:after {
-  top : -@window_top_height;
-}
-
-application-window-warning  {
-  height : 30px;
-  line-height : 20px;
-  margin : 4px;
-  border : 1px solid transparent;
-}
-  application-window-warning > div:nth-child(1) {
-    padding : 4px;
-  }
-  application-window-warning > div:nth-child(2) {
-    right : 20px;
-    padding : 4px;
-  }
-
-/**
- * ===========================================================================
  *                                  WM
  * ===========================================================================
  */
@@ -256,7 +201,7 @@ body[data-attention="true"]:after {
 
 corewm-panel {
   color : #ffffff; /* Window Manager manages this */
-  padding : 4px;
+  padding : @gui_base_padding;
 }
 corewm-panel:before {
   background : #101010; /* Window Manager manages this */
@@ -283,7 +228,7 @@ corewm-panel .PanelItemWindowList li.Button.Focused {
 }
 
 corewm-panel-container {
-  padding : 4px;
+  padding : @gui_base_padding;
 }
 
 /* Notifications */
@@ -337,10 +282,12 @@ corewm-window-switcher > div.Active > span {
  */
 application-window {
   opacity : 0.8;
+  margin-top : @window_top_height;
 }
 application-window:before {
   box-shadow : @base_shadow_unfocused;
   background : @base_background_color;
+  top : -@window_top_height;
 }
 application-window[data-focused="true"] {
   opacity : 1.0;
@@ -348,7 +295,12 @@ application-window[data-focused="true"] {
 application-window[data-focused="true"]:before {
   box-shadow : @base_shadow_focused;
 }
+application-window[data-dnd-state="true"]:after {
+  top : -@window_top_height;
+}
 application-window-top {
+  top : -@window_top_height;
+  height : @window_top_height;
 }
 application-window-content {
   overflow : hidden;
@@ -361,6 +313,9 @@ application-window-title {
   font-weight : bold;
   color : @base_foreground_color;
   opacity : .5;
+  left : calc(20px + @gui_base_padding);
+  line-height : @window_top_height;
+  text-align : center;
 }
 application-window-title:active {
   cursor : move;
@@ -421,13 +376,29 @@ application-window-warning {
   background : #FFB800;
   color : #fff;
   border-color : #DF9F15;
+
+  height : 30px;
+  line-height : 20px;
+  margin : @gui_base_padding;
+  border : 1px solid transparent;
 }
-application-window-warning > div:nth-child(1) {
-}
-application-window-warning > div:nth-child(1):hover {
-  color : #111;
-  cursor : pointer;
-  opacity : .9;
+  application-window-warning > div:nth-child(1) {
+    padding : @gui_base_padding;
+  }
+  application-window-warning > div:nth-child(2) {
+    right : 20px;
+    padding : @gui_base_padding;
+  }
+  application-window-warning > div:nth-child(1):hover {
+    color : #111;
+    cursor : pointer;
+    opacity : .9;
+  }
+application-window-resize {
+  top : calc(-@window_top_height - @window_resize_offset);
+  left : -@window_resize_offset;
+  right : -@window_resize_offset;
+  bottom : -@window_resize_offset;
 }
 
 /**
@@ -438,7 +409,7 @@ application-window-warning > div:nth-child(1):hover {
 
 /* Container */
 gui-container {
-  margin : 4px;
+  margin : @gui_base_padding;
 }
 gui-container[data-borders="true"] {
   .theme_text_input();
@@ -447,7 +418,7 @@ gui-container[data-borders="true"] {
 /* Box */
   gui-hbox-container > .gui-element,
   gui-vbox-container > .gui-element {
-    margin : 4px;
+    margin : @gui_base_padding;
   }
 
     gui-hbox-container[data-fill='true'] > *,
@@ -475,7 +446,7 @@ gui-iframe {
 /* Toolbar */
 gui-toolbar > *,
 gui-button-bar > * {
-  margin : 4px;
+  margin : @gui_base_padding;
 }
 
 gui-toolbar {
@@ -484,8 +455,8 @@ gui-toolbar {
 gui-toolbar[data-orientation="vertical"] {
   margin-left : 0;
   margin-right : 0;
-  margin-top : 4px;
-  margin-bottom : 4px;
+  margin-top : @gui_base_padding;
+  margin-bottom : @gui_base_padding;
 }
 
 /* Tabs */
@@ -515,7 +486,7 @@ gui-toolbar[data-orientation="vertical"] {
   }
 
     gui-tab-container {
-      padding : 4px;
+      padding : @gui_base_padding;
     }
 
 /* Button Bar */
@@ -565,7 +536,7 @@ gui-button[data-icon-size="32"] {
     color : @gui_input_disabled_foreground_color;
   }
   gui-button button.gui-has-image img {
-    padding-right : 4px;
+    padding-right : @gui_base_padding;
   }
   gui-button.gui-has-image.gui-has-label button {
     padding-left : 28px;
@@ -626,7 +597,7 @@ gui-checkbox {
   }
   gui-radio > label > span,
   gui-checkbox > label > span {
-    padding-left : 4px;
+    padding-left : @gui_base_padding;
   }
 
 /* Select Dropdown */
@@ -775,7 +746,7 @@ gui-switch {
   }
 
   gui-switch > label > div {
-    margin-left : 4px;
+    margin-left : @gui_base_padding;
   }
 
   gui-switch[data-disabled="true"] button {
@@ -806,7 +777,7 @@ gui-text {
 
   gui-password > label > input,
   gui-text > label > input {
-    margin-left : 4px;
+    margin-left : @gui_base_padding;
   }
 
   gui-password input:disabled,
@@ -834,7 +805,7 @@ gui-text {
 
 /* Rich Text */
 gui-richtext {
-  padding : 4px;
+  padding : @gui_base_padding;
   background-color : @gui_input_background_color;
   border : 1px solid @gui_input_border_color;
 }
@@ -844,7 +815,7 @@ gui-richtext {
 
 /* Grid */
 gui-grid > gui-grid-row > gui-grid-entry { /* li */
-  margin: 4px;
+  margin: @gui_base_padding;
 }
 
 /* Modal Input */
@@ -853,7 +824,7 @@ gui-input-modal input {
   .theme_text_input_disabled();
 }
 gui-input-modal button {
-  margin-left : 4px;
+  margin-left : @gui_base_padding;
   .theme_button();
   padding-left : 8px;
   padding-right : 8px;
@@ -897,7 +868,7 @@ gui-menu {
   gui-menu > gui-menu-entry > label {
     cursor : pointer;
     line-height : 18px;
-    padding : 4px;
+    padding : @gui_base_padding;
   }
 
   gui-menu > gui-menu-entry.gui-menu-expand {
@@ -905,7 +876,7 @@ gui-menu {
   }
   gui-menu > gui-menu-entry.gui-menu-expand:after {
     content : '>';
-    padding : 4px;
+    padding : @gui_base_padding;
   }
 
   gui-menu > gui-menu-entry:hover {
@@ -915,7 +886,7 @@ gui-menu {
     color: @gui_selected_foreground_color;
   }
     gui-menu > gui-menu-entry {
-      background-position : 4px center;
+      background-position : @gui_base_padding center;
     }
     gui-menu > gui-menu-entry > label.gui-has-image {
       padding-left : 22px;
@@ -927,12 +898,12 @@ gui-menu {
 
 /* Menu Bar */
 gui-menu-bar {
-  padding-left : 4px;
-  padding-right : 4px;
+  padding-left : @gui_base_padding;
+  padding-right : @gui_base_padding;
 }
   gui-menu-bar-entry {
     cursor : pointer;
-    padding : 4px;
+    padding : @gui_base_padding;
   }
   gui-menu-bar-entry:hover {
     background: @gui_selected_background_color;
@@ -952,7 +923,7 @@ gui-progress-bar {
   gui-progress-bar:before {
     background-color : @gui_background_color;
     border: 1px solid @gui_input_border_color;
-    padding : 4px;
+    padding : @gui_base_padding;
   }
   gui-progress-bar > div {
     background: @gui_progress_bar_background;
@@ -963,8 +934,8 @@ gui-progress-bar {
 
 /* Statusbar */
 gui-statusbar {
-  margin : 4px;
-  padding-bottom : 4px;
+  margin : @gui_base_padding;
+  padding-bottom : @gui_base_padding;
 }
 
 /**
@@ -977,7 +948,7 @@ gui-statusbar {
 gui-icon-view {
   background-color : @gui_input_background_color;
   border : 1px solid @gui_input_border_color;
-  padding : 4px;
+  padding : @gui_base_padding;
 }
   gui-icon-view-entry {
     cursor : pointer;
@@ -1011,7 +982,7 @@ gui-list-view {
     background-color : @gui_background_color;
   }
       gui-list-view-row {
-        padding : 4px;
+        padding : @gui_base_padding;
       }
       gui-list-view[data-zebra="true"] gui-list-view-body gui-list-view-row:nth-child(2n) {
         background-color : @gui_zebra_background_color;
@@ -1050,7 +1021,7 @@ gui-tree-view {
   border : 1px solid @gui_input_border_color;
 }
     gui-tree-view-entry > div {
-      padding : 4px;
+      padding : @gui_base_padding;
     }
     gui-tree-view-entry > div > span {
       cursor : pointer;
@@ -1077,7 +1048,7 @@ gui-tree-view {
     padding-left : 16px;
   }
   gui-tree-view-entry.gui-expandable gui-tree-view-expander {
-    padding-left : 4px;
+    padding-left : @gui_base_padding;
     cursor : pointer;
     line-height : 24px;
   }
