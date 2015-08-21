@@ -220,16 +220,10 @@
     };
   })();
 
-  function createWebserverConfig(grunt, arg, src) {
+  function createWebserverConfig(grunt, arg, src, mimecb) {
     var dist = arg === 'dist-dev' ? 'dist-dev' : 'dist';
     var mime = readMIME();
-    var mimes = [];
-    Object.keys(mime.mapping).forEach(function(i) {
-      if ( !i.match(/^\./) ) { return; }
-      mimes.push('  "' + i + '" => "' + mime.mapping[i] + '"');
-    });
-    mimes = mimes.join(',\n');
-
+    var mimes = mimecb(mime);
     var tpl = _fs.readFileSync(src).toString();
     tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, dist));
     tpl = tpl.replace(/%MIMES%/, mimes);
@@ -630,7 +624,9 @@
    */
   function createApacheVhost(grunt, arg) {
     var src = _path.join(PATHS.templates, 'apache-vhost.conf');
-    var tpl = createWebserverConfig(grunt, arg, src);
+    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+      return '';
+    });
     console.log(tpl);
   }
 
@@ -638,8 +634,6 @@
    * Create Apache htaccess
    */
   function createApacheHtaccess(grunt, arg) {
-    arg = arg || 'dist';
-
     var mimes = [];
     var mime = readMIME();
 
@@ -657,15 +651,12 @@
       writeFile(dst, tpl);
     }
 
-    var out = [];
     if ( arg ) {
-      out.push(generate_htaccess('apache-prod-htaccess.conf', arg));
+      generate_htaccess('apache-prod-htaccess.conf', arg);
     } else {
-      out.push(generate_htaccess('apache-prod-htaccess.conf', 'dist'));
-      out.push(generate_htaccess('apache-dev-htaccess.conf', 'dist-dev'));
+      generate_htaccess('apache-prod-htaccess.conf', 'dist');
+      generate_htaccess('apache-dev-htaccess.conf', 'dist-dev');
     }
-
-    console.log(out.join('\n'));
   }
 
   /**
@@ -673,7 +664,14 @@
    */
   function createLighttpdConfig(grunt, arg) {
     var src = _path.join(PATHS.templates, 'lighttpd.conf');
-    var tpl = createWebserverConfig(grunt, arg, src);
+    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+      var mimes = [];
+      Object.keys(mime.mapping).forEach(function(i) {
+        if ( !i.match(/^\./) ) { return; }
+        mimes.push('  "' + i + '" => "' + mime.mapping[i] + '"');
+      });
+      return mimes.join(',\n');
+    });
     console.log(tpl);
   }
 
@@ -682,7 +680,15 @@
    */
   function createNginxConfig(grunt, arg) {
     var src = _path.join(PATHS.templates, 'nginx.conf');
-    var tpl = createWebserverConfig(grunt, arg, src);
+    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+      var mimes = [];
+      Object.keys(mime.mapping).forEach(function(i) {
+        if ( i.match(/^\./) ) {
+          mimes.push('        ' + mime.mapping[i] + ' ' + i.replace(/^\./, '') + ';');
+        }
+      });
+      return mimes.join('\n');
+    });
     console.log(tpl);
   }
 
