@@ -9,18 +9,12 @@
   "server" : {
   },
 
-  "locales": {
-    "output": "dist/locales.js",
-    "files": []
-  },
+  "locales": [
+  ],
 
-  "javascript": {
-    "output": "dist/osjs.js",
-    "files": []
-  },
+  "javascript": [
+  ],
 
-  "stylesheets": {
-    "output": "dist/osjs.css",
-    "files": []
-  }
+  "stylesheets": [
+  ]
 }
