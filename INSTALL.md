@@ -2,7 +2,9 @@
 
 Server runs on Linux, OS X, BSD and Windows.
 
-**Table of Contents**
+Installation is done in a few simple steps and only takes a minute to get running.
+
+#### Table of Contents
 
 * [Dependencies](#dependencies)
 * Installation methods
