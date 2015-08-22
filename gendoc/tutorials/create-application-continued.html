@@ -8,36 +8,36 @@
 <div class="indent">
   <pre class="code">
 
-<&lt&gt;;application&gt;-&lt&gt;;window&gt; &lt&gt;;data&gt;-&lt&gt;;id&gt;="&lt&gt;;MyNameWindow&gt;">
+&lt;application-window data-id="MyNameWindow"&gt;
 
-  <&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;>
-    <&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;-&lt&gt;;container&gt; &lt&gt;;data&gt;-&lt&gt;;grow&gt;="&lt&gt;;0&gt;" &lt&gt;;data&gt;-&lt&gt;;shrink&gt;="&lt&gt;;1&gt;" &lt&gt;;data&gt;-&lt&gt;;basis&gt;="&lt&gt;;auto&gt;">
-      <&lt&gt;;gui&gt;-&lt&gt;;menu&gt;-&lt&gt;;bar&gt;>
+  &lt;gui-vbox&gt;
+    &lt;gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto"&gt;
+      &lt;gui-menu-bar&gt;
 
-        <&lt&gt;;gui&gt;-&lt&gt;;menu&gt;-&lt&gt;;bar&gt;-&lt&gt;;entry&gt; &lt&gt;;data&gt;-&lt&gt;;label&gt;="&lt&gt;;LBL_FILE&gt;">
-          <&lt&gt;;gui&gt;-&lt&gt;;menu&gt; &lt&gt;;data&gt;-&lt&gt;;id&gt;="&lt&gt;;SubmenuFile&gt;">
-            <&lt&gt;;gui&gt;-&lt&gt;;menu&gt;-&lt&gt;;entry&gt; &lt&gt;;data&gt;-&lt&gt;;id&gt;="&lt&gt;;MenuClose&gt;" &lt&gt;;data&gt;-&lt&gt;;label&gt;="&lt&gt;;LBL_CLOSE&gt;"></&lt&gt;;gui&gt;-&lt&gt;;menu&gt;-&lt&gt;;entry&gt;>
-          </&lt&gt;;gui&gt;-&lt&gt;;menu&gt;>
-        </&lt&gt;;gui&gt;-&lt&gt;;menu&gt;-&lt&gt;;bar&gt;-&lt&gt;;entry&gt;>
+        &lt;gui-menu-bar-entry data-label="LBL_FILE"&gt;
+          &lt;gui-menu data-id="SubmenuFile"&gt;
+            &lt;gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"&gt;&lt;/gui-menu-entry&gt;
+          &lt;/gui-menu&gt;
+        &lt;/gui-menu-bar-entry&gt;
 
-      </&lt&gt;;gui&gt;-&lt&gt;;menu&gt;-&lt&gt;;bar&gt;>
-    </&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;-&lt&gt;;container&gt;>
+      &lt;/gui-menu-bar&gt;
+    &lt;/gui-vbox-container&gt;
 
-    <&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;-&lt&gt;;container&gt; &lt&gt;;data&gt;-&lt&gt;;grow&gt;="&lt&gt;;0&gt;" &lt&gt;;data&gt;-&lt&gt;;shrink&gt;="&lt&gt;;1&gt;" &lt&gt;;data&gt;-&lt&gt;;basis&gt;="&lt&gt;;auto&gt;">
-       <&lt&gt;;gui&gt;-&lt&gt;;button&gt;-&lt&gt;;bar&gt;>
-          <&lt&gt;;gui&gt;-&lt&gt;;button&gt; &lt&gt;;data&gt;-&lt&gt;;id&gt;="&lt&gt;;MyButtonOne&gt;">&lt&gt;;My&gt; &lt&gt;;Label&gt;</&lt&gt;;gui&gt;-&lt&gt;;button&gt;>
-          <&lt&gt;;gui&gt;-&lt&gt;;button&gt; &lt&gt;;data&gt;-&lt&gt;;id&gt;="&lt&gt;;MyButtonTwo&gt;" &lt&gt;;data&gt;-&lt&gt;;icon&gt;="&lt&gt;;stock&gt;://&lt&gt;;16x16&gt;/&lt&gt;;places&gt;/&lt&gt;;folder_home&gt;.&lt&gt;;png&gt;">&lt&gt;;My&gt; &lt&gt;;Label&gt; &lt&gt;;and&gt; &lt&gt;;Icon&gt;</&lt&gt;;gui&gt;-&lt&gt;;button&gt;>
-        </&lt&gt;;gui&gt;-&lt&gt;;button&gt;-&lt&gt;;bar&gt;>
-    </&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;-&lt&gt;;container&gt;>
+    &lt;gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto"&gt;
+       &lt;gui-button-bar&gt;
+          &lt;gui-button data-id="MyButtonOne"&gt;My Label&lt;/gui-button&gt;
+          &lt;gui-button data-id="MyButtonTwo" data-icon="stock://16x16/places/folder_home.png"&gt;My Label and Icon&lt;/gui-button&gt;
+        &lt;/gui-button-bar&gt;
+    &lt;/gui-vbox-container&gt;
 
-    <&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;-&lt&gt;;container&gt; &lt&gt;;data&gt;-&lt&gt;;grow&gt;="&lt&gt;;1&gt;" &lt&gt;;data&gt;-&lt&gt;;shrink&gt;="&lt&gt;;0&gt;" &lt&gt;;data&gt;-&lt&gt;;basis&gt;="&lt&gt;;auto&gt;" &lt&gt;;data&gt;-&lt&gt;;fill&gt;="&lt&gt;;true&gt;">
-      <&lt&gt;;gui&gt;-&lt&gt;;textarea&gt; &lt&gt;;data&gt;-&lt&gt;;id&gt;="&lt&gt;;Text&gt;"></&lt&gt;;gui&gt;-&lt&gt;;textarea&gt;>
-    </&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;-&lt&gt;;container&gt;>
+    &lt;gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true"&gt;
+      &lt;gui-textarea data-id="Text"&gt;&lt;/gui-textarea&gt;
+    &lt;/gui-vbox-container&gt;
 
-  </&lt&gt;;gui&gt;-&lt&gt;;vbox&gt;>
+  &lt;/gui-vbox&gt;
 
 
-</&lt&gt;;application&gt;-&lt&gt;;window&gt;>
+&lt;/application-window&gt;
 
   </pre>
 </div>
