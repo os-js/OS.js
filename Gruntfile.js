@@ -10,9 +10,9 @@
 
   module.exports = function(grunt) {
 
-
-
     grunt.file.defaultEncoding = 'utf-8';
+
+    require('time-grunt')(grunt);
 
     grunt.initConfig({
     });

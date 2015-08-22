@@ -79,7 +79,7 @@
   }
 
   function copyFile(src, dst) {
-    console.log('---', src.replace(ROOT, ''), '=>', dst.replace(ROOT, ''));
+    console.log('CPY', src.replace(ROOT, ''), '=>', dst.replace(ROOT, ''));
     _fs.copySync(src, dst);
   }
 
