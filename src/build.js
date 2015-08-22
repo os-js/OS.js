@@ -1,3 +1,32 @@
+/*!
+ * OS.js - JavaScript Operating System
+ *
+ * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer. 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
 (function(_path, _fs, _less, _ugly, Cleancss) {
   'use strict';
 
@@ -59,6 +88,9 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Compiles a LESS file
+   */
   function lessFile(src, dest, cb) {
     console.log('CSS', src.replace(ROOT, ''));
 
@@ -78,21 +110,33 @@
     }
   }
 
+  /**
+   * Wrapper to copy file
+   */
   function copyFile(src, dst) {
     console.log('CPY', src.replace(ROOT, ''), '=>', dst.replace(ROOT, ''));
     _fs.copySync(src, dst);
   }
 
+  /**
+   * Wrapper to write file
+   */
   function writeFile(dest, content) {
     console.log('>>>', dest.replace(ROOT, ''));
     return _fs.writeFileSync(dest, content);
   }
 
+  /**
+   * Wrapper to read file
+   */
   function readFile(src) {
     console.log('<<<', src.replace(ROOT, ''));
     return _fs.readFileSync(src);
   }
 
+  /**
+   * Wrapper to delete file
+   */
   function deleteFile(src) {
     console.log('DEL', src.replace(ROOT, ''));
     try {
@@ -102,11 +146,17 @@
     return false;
   }
 
+  /**
+   * Wrapper to create directory
+   */
   function mkdir(src) {
     console.log('MKD', src.replace(ROOT, ''));
     return _fs.mkdirSync(src);
   }
 
+  /**
+   * Wrapper for error message
+   */
   function error(e) {
     console.log('!!!', e);
   }
@@ -115,6 +165,9 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Gets a list of directories from path
+   */
   function getDirectories(dir) {
     var list = [];
     _fs.readdirSync(dir).forEach(function(iter) {
@@ -127,6 +180,9 @@
     return list;
   }
 
+  /**
+   * Fixes Windows paths (for JSON)
+   */
   function fixWinPath(str) {
     if ( ISWIN ) {
       return str.replace(/(["\s'$`\\])/g,'\\$1').replace(/\\+/g, '/');
@@ -134,14 +190,23 @@
     return str;
   }
 
+  /**
+   * Reads a template file
+   */
   function getTemplate(filename) {
     return readFile(_path.join(PATHS.templates, filename)).toString();
   }
 
+  /**
+   * Clones an object
+   */
   function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
 
+  /**
+   * Replaces all instances of a string
+   */
   function replaceAll(temp, stringToFind,stringToReplace) {
     var index = temp.indexOf(stringToFind);
     while(index !== -1){
@@ -151,6 +216,9 @@
     return temp;
   }
 
+  /**
+   * Compile `src/conf` into an object
+   */
   var generateBuildConfig = (function generateBuildConfig() {
     var _cache;
 
@@ -220,6 +288,9 @@
     };
   })();
 
+  /**
+   * Wrapper for creating web server configuration
+   */
   function createWebserverConfig(grunt, arg, src, mimecb) {
     var dist = arg === 'dist-dev' ? 'dist-dev' : 'dist';
     var mime = readMIME();
@@ -434,6 +505,9 @@
     };
   })();
 
+  /**
+   * Returns an object that client understand
+   */
   function normalizeManifest(obj) {
     var result = {};
     Object.keys(obj).forEach(function(i) {
