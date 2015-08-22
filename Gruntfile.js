@@ -38,7 +38,9 @@
 
   module.exports = function(grunt) {
 
-    require('time-grunt')(grunt);
+    try {
+      require('time-grunt')(grunt);
+    } catch ( e ) { }
 
     grunt.file.defaultEncoding = 'utf-8';
 
