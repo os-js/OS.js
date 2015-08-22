@@ -28,7 +28,7 @@ Installation is done in a few simple steps and only takes a minute to get runnin
     * [WAMP](#wamp)
     * [Webhost](#webhost)
     * [X11](#x11)
-* [Setting up features](#setting-up-features)
+* [Setting up optional features](#setting-up-optional-features)
 * [Update instructions](#update-instructions)
 * [Links](#links)
 
@@ -163,7 +163,7 @@ OS.js can run as a *X11* Desktop.
 
 Full documentation [here](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
 
-# Setting up features
+# Setting up optional features
 
 I have documentation on how to set up optional core features:
 
@@ -182,7 +182,11 @@ You can find instructions [in this manual](http://os.js.org/doc/manuals/man-pack
 Download and extract the latest zip, or use the preferred method (git):
 
 ```
+# Get latest sources
 $ git pull
+
+# Update dependencies
+$ npm install
 
 # Build all changes
 $ grunt
