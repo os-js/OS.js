@@ -29,6 +29,7 @@ Installation is done in a few simple steps and only takes a minute to get runnin
     * [Webhost](#webhost)
     * [X11](#x11)
 * [Setting up optional features](#setting-up-optional-features)
+* [Adding additional applications](#adding-additional-applications)
 * [Update instructions](#update-instructions)
 * [Links](#links)
 
