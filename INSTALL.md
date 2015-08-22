@@ -165,8 +165,6 @@ Full documentation [here](https://github.com/andersevenrud/OS.js-v2/blob/master/
 
 # Setting up optional features
 
-I have documentation on how to set up optional core features:
-
 * [Google API and Google Drive](http://os.js.org/doc/manuals/man-google-api.html)
 * [Windows Live API and OneDrive](http://os.js.org/doc/manuals/man-windows-live-api.html)
 * [Dropbox](http://os.js.org/doc/manuals/man-dropbox.html)
@@ -188,11 +186,8 @@ $ git pull
 # Update dependencies
 $ npm install
 
-# Build all changes
+# Rebuild
 $ grunt
-
-# Or just core and packages
-$ grunt core packages
 
 ```
 
