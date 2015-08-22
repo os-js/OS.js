@@ -133,9 +133,7 @@
         return API.getFileIcon(iter, size, icon);
       }
 
-      var filesize = Utils.humanFileSize(iter.size);
-      var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, filesize, iter.mime || '');
-      if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
+      function _createEntry() {
         var row = {
           value: iter,
           id: iter.id || iter.filename,
@@ -155,6 +153,12 @@
         return row;
       }
 
+      var filesize = Utils.humanFileSize(iter.size);
+      var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, filesize, iter.mime || '');
+      if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
+        return _createEntry();
+      }
+
       return {
         value: iter,
         id: iter.id || iter.filename,
@@ -166,8 +170,6 @@
         ]
       };
     });
-
-    return;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -224,14 +226,16 @@
             var entry = ev.detail.entries[0].data;
             target.setAttribute('data-was-rendered', String(true));
             readdir(el, entry.path, function(error, result, summary) {
-              target.querySelectorAll('gui-tree-view-entry').forEach(function(e) {
-                Utils.$remove(e);
+              if ( !error ) {
+                target.querySelectorAll('gui-tree-view-entry').forEach(function(e) {
+                  Utils.$remove(e);
 
-                view.add({
-                  entries: result,
-                  parentNode: target
+                  view.add({
+                    entries: result,
+                    parentNode: target
+                  });
                 });
-              });
+              }
             }, {backlink: false});
           }
         });
@@ -273,7 +277,10 @@
       args.done = args.done || function() {};
 
       var target = getChildView(el);
+
       if ( target ) {
+        var tagName = target.tagName.toLowerCase();
+
         if ( method === 'chdir' ) {
           var t = new GUI.ElementDataView(target);
           var dir = args.path || OSjs.API.getDefaultPath('/');

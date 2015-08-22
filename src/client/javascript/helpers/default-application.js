@@ -241,22 +241,18 @@
 
     win._toggleLoading(true);
 
+    function vfsCallback(error, result) {
+      win._toggleLoading(false);
+      if ( onError(error) ) {
+        return;
+      }
+      onDone(result);
+    }
+
     if ( this.defaultOptions.readData ) {
-      VFS.read(file, function(error, result) {
-        win._toggleLoading(false);
-        if ( onError(error) ) {
-          return;
-        }
-        onDone(result);
-      }, {type: this.defaultOptions.rawData ? 'binary' : 'text'});
+      VFS.read(file, vfsCallback, {type: this.defaultOptions.rawData ? 'binary' : 'text'});
     } else {
-      VFS.url(file, function(error, result) {
-        win._toggleLoading(false);
-        if ( onError(error) ) {
-          return;
-        }
-        onDone(result);
-      });
+      VFS.url(file, vfsCallback);
     }
 
     return true;

@@ -174,7 +174,7 @@
       if ( iter.mime === 'application/vnd.google-apps.folder' ) {
         iter.type = 'dir';
       }
-      if ( iter.filename == '..' && options.backlink === false ) {
+      if ( iter.filename === '..' && options.backlink === false ) {
         return;
       }
 
