@@ -64,6 +64,10 @@
         {label: API._('LBL_MIME'), basis: '100px', grow: 0, shrink: 0, textalign: 'right'},
         {label: API._('LBL_SIZE'), basis: '120px', grow: 0, shrink: 0, textalign: 'right'}
       ]);
+    } else if ( type === 'gui-tree-view' ) {
+      nel.on('expand', function(ev) {
+        el.dispatchEvent(new CustomEvent('_expand', {detail: ev.detail}));
+      });
     }
 
     el.appendChild(nel.$element);
@@ -74,6 +78,7 @@
     file.type  = 'dir';
 
     var scanopts = {
+      backlink:     opts.backlink,
       showDotFiles: opts.dotfiles === true,
       mimeFilter:   opts.filter || [],
       typeFilter:   opts.filetype || null
@@ -95,6 +100,74 @@
 
       cb(false, list, summary);
     }, scanopts);
+  }
+
+  function readdir(el, dir, done, sopts) {
+    sopts = sopts || {};
+
+    var target = getChildView(el);
+    var tagName = target.tagName.toLowerCase();
+    el.setAttribute('data-path', dir);
+
+    var opts = {
+      filter: null,
+      backlink: sopts.backlink,
+      dotfiles: el.getAttribute('data-dotfiles') === 'true',
+      filetype: el.getAttribute('data-filetype')
+    };
+
+    try {
+      opts.filter = JSON.parse(el.getAttribute('data-filter'));
+    } catch ( e ) {
+    }
+
+    scandir(tagName, dir, opts, function(error, result, summary) {
+      done(error, result, summary);
+    }, function(iter) {
+      function _getIcon(iter, size) {
+        if ( iter.icon && typeof iter.icon === 'object' ) {
+          return API.getIcon(iter.icon.filename, size, iter.icon.application);
+        }
+
+        var icon = 'status/gtk-dialog-question.png';
+        return API.getFileIcon(iter, size, icon);
+      }
+
+      var filesize = Utils.humanFileSize(iter.size);
+      var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, filesize, iter.mime || '');
+      if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
+        var row = {
+          value: iter,
+          id: iter.id || iter.filename,
+          label: iter.filename,
+          tooltip: tooltip,
+          icon: _getIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
+        };
+
+        if ( tagName === 'gui-tree-view' && iter.type === 'dir' ) {
+          if ( iter.filename !== '..' ) {
+            row.entries = [{
+              label: 'Loading...'
+            }];
+          }
+        }
+
+        return row;
+      }
+
+      return {
+        value: iter,
+        id: iter.id || iter.filename,
+        tooltip: tooltip,
+        columns: [
+          {label: iter.filename, icon: _getIcon(iter)},
+          {label: iter.mime, textalign: 'right'},
+          {label: filesize, textalign: 'right'}
+        ]
+      };
+    });
+
+    return;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -140,6 +213,28 @@
 
         Utils.$empty(el);
         el.setAttribute('data-type', value);
+        Utils.$bind(el, '_expand', function(ev) {
+          var target = ev.detail.element;
+          if ( target.getAttribute('data-was-rendered') ) {
+            return;
+          }
+
+          if ( ev.detail.expanded ) {
+            var view = new GUI.ElementDataView(getChildView(el));
+            var entry = ev.detail.entries[0].data;
+            target.setAttribute('data-was-rendered', String(true));
+            readdir(el, entry.path, function(error, result, summary) {
+              target.querySelectorAll('gui-tree-view-entry').forEach(function(e) {
+                Utils.$remove(e);
+
+                view.add({
+                  entries: result,
+                  parentNode: target
+                });
+              });
+            }, {backlink: false});
+          }
+        });
         buildChildView(el);
 
         if ( typeof arg === 'undefined' || arg === true ) {
@@ -179,65 +274,17 @@
 
       var target = getChildView(el);
       if ( target ) {
-        var tagName = target.tagName.toLowerCase();
-
         if ( method === 'chdir' ) {
           var t = new GUI.ElementDataView(target);
           var dir = args.path || OSjs.API.getDefaultPath('/');
-          el.setAttribute('data-path', dir);
 
-          var opts = {
-            filter: null,
-            dotfiles: el.getAttribute('data-dotfiles') === 'true',
-            filetype: el.getAttribute('data-filetype')
-          };
-
-          try {
-            opts.filter = JSON.parse(el.getAttribute('data-filter'));
-          } catch ( e ) {
-          }
-
-          scandir(tagName, dir, opts, function(error, result, summary) {
+          readdir(el, dir, function(error, result, summary) {
             if ( !error ) {
               t.clear();
               t.add(result);
             }
-
             args.done(error, summary);
-          }, function(iter) {
-            function _getIcon(iter, size) {
-              if ( iter.icon && typeof iter.icon === 'object' ) {
-                return API.getIcon(iter.icon.filename, size, iter.icon.application);
-              }
-
-              var icon = 'status/gtk-dialog-question.png';
-              return API.getFileIcon(iter, size, icon);
-            }
-
-            var filesize = Utils.humanFileSize(iter.size);
-            var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, filesize, iter.mime || '');
-            if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
-              return {
-                value: iter,
-                id: iter.id || iter.filename,
-                label: iter.filename,
-                tooltip: tooltip,
-                icon: _getIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
-              };
-            }
-
-            return {
-              value: iter,
-              id: iter.id || iter.filename,
-              tooltip: tooltip,
-              columns: [
-                {label: iter.filename, icon: _getIcon(iter)},
-                {label: iter.mime, textalign: 'right'},
-                {label: filesize, textalign: 'right'}
-              ]
-            };
           });
-
           return;
         }
 

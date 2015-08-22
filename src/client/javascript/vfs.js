@@ -174,25 +174,27 @@
       if ( iter.mime === 'application/vnd.google-apps.folder' ) {
         iter.type = 'dir';
       }
+      if ( iter.filename == '..' && options.backlink === false ) {
+        return;
+      }
 
       if ( !filterFile(iter) ) {
         return;
       }
 
-      if ( iter.type === 'file' ) {
-        if ( mimeFilter && mimeFilter.length && iter.mime ) {
-          var valid = false;
-          mimeFilter.forEach(function(miter) {
-            if ( iter.mime.match(miter) ) {
-              valid = true;
-              return false;
-            }
-            return true;
-          });
+      if ( iter.type === 'file' && mimeFilter && mimeFilter.length && iter.mime ) {
+        var valid = false;
 
-          if ( !valid ) {
-            return;
+        mimeFilter.forEach(function(miter) {
+          if ( iter.mime.match(miter) ) {
+            valid = true;
+            return false;
           }
+          return true;
+        });
+
+        if ( !valid ) {
+          return;
         }
       }
 

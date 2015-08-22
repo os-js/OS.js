@@ -354,6 +354,7 @@
       }
 
       function activate(ev) {
+        ev.stopPropagation();
         el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
       }
 

@@ -40,6 +40,11 @@
   }
 
   function initEntry(el, sel) {
+    if ( sel._rendered ) {
+      return;
+    }
+    sel._rendered = true;
+
     var icon = sel.getAttribute('data-icon');
     var label = GUI.Helpers.getLabel(sel);
     var expanded = el.getAttribute('data-expanded') === 'true';
@@ -64,17 +69,13 @@
         }
       }
 
-      var idx = Utils.$index(root);
-      var entries = el.querySelectorAll('gui-tree-view-entry')[idx];
-      var selected = null;
-      if ( entries[idx] ) {
-        selected = {
-          index: idx,
-          data: GUI.Helpers.getViewNodeValue(entries[idx])
-        };
-      }
-      el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: selected}}));
-    }
+      var selected = {
+        index: Utils.$index(root),
+        data: GUI.Helpers.getViewNodeValue(root)
+      };
+
+      el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
+    } // handleItemExpand()
 
     if ( icon ) {
       dspan.style.backgroundImage = 'url(' + icon + ')';
@@ -87,6 +88,11 @@
     if ( next ) {
       Utils.$addClass(sel, 'gui-expandable');
       var expander = document.createElement('gui-tree-view-expander');
+      Utils.$bind(expander, 'dblclick', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      });
+
       Utils.$bind(expander, 'click', function(ev) {
         handleItemExpand(ev, sel);
       });
@@ -173,19 +179,38 @@
 
       function recurse(a, root, level) {
         GUI.Elements._dataview.add(el, a, function(e) {
-          var entry = createEntry(e);
-          root.appendChild(entry);
+          if ( e ) {
+            if ( e.parentNode ) {
+              delete e.parentNode;
+            }
 
-          if ( e.entries ) {
-            recurse([e.entries], entry, level + 1);
+            var entry = createEntry(e);
+            root.appendChild(entry);
+
+            if ( e.entries ) {
+              recurse([e.entries], entry, level + 1);
+            }
+
+            initEntry(el, entry);
           }
-
-          initEntry(el, entry);
         });
       }
 
+      function add() {
+        var parentNode = body;
+        var entries = args;
+
+        if ( typeof args[0] === 'object' && !(args[0] instanceof Array) && Object.keys(args[0]).length ) {
+          entries = [args[0].entries || []];
+          parentNode = args[0].parentNode || body;
+        }
+
+
+        recurse(entries, parentNode, 0);
+      }
+
       if ( method === 'add' ) {
-        recurse(args, body, 0);
+        add();
       } else if ( method === 'remove' ) {
         GUI.Elements._dataview.remove(el, args, 'gui-tree-view-entry');
       } else if ( method === 'clear' ) {
