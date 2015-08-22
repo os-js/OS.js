@@ -123,7 +123,7 @@
      */
     grunt.registerTask('dist-dev-index', 'Generate dist-dev index.html', function(arg) {
       grunt.log.writeln('Generating dist-dev/index.html...');
-      _build.createIndex(grunt, arg, 'dev');
+      _build.createIndex(grunt, arg, 'dist-dev');
     });
 
     /**
