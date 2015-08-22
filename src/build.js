@@ -686,7 +686,7 @@
     tpl = replaceAll(tpl, '%STYLES%', styles.join('\n'));
     tpl = replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
 
-    readFile(out, tpl);
+    writeFile(out, tpl);
   }
 
   /////////////////////////////////////////////////////////////////////////////
