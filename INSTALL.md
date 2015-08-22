@@ -4,6 +4,8 @@ Server runs on Linux, OS X, BSD and Windows.
 
 Installation is done in a few simple steps and only takes a minute to get running.
 
+For more general information look at the [README](README.md) file or in the [official documentation](http://os.js.org/doc/).
+
 #### Table of Contents
 
 * [Dependencies](#dependencies)
@@ -31,7 +33,6 @@ Installation is done in a few simple steps and only takes a minute to get runnin
 * [Setting up optional features](#setting-up-optional-features)
 * [Adding additional applications](#adding-additional-applications)
 * [Update instructions](#update-instructions)
-* [Links](#links)
 
 # Dependencies
 
@@ -191,7 +192,3 @@ $ npm install
 $ grunt
 
 ```
-
-# Links
-
-* [Manuals](http://osjs-homepage.local/OS.js-v2/doc/manuals/)
