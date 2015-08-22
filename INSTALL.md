@@ -29,7 +29,7 @@ For more general information look at the [README](README.md) file or in the [off
     * [Nginx](#nginx)
     * [WAMP](#wamp)
     * [Webhost](#webhost)
-    * [X11](#x11)
+  4. [X11](#x11)
 * [Setting up optional features](#setting-up-optional-features)
 * [Adding additional applications](#adding-additional-applications)
 * [Update instructions](#update-instructions)
