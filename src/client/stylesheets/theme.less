@@ -423,8 +423,8 @@ gui-container[data-borders="true"] {
 
     gui-hbox-container[data-fill='true'] > *,
     gui-vbox-container[data-fill='true'] > * {
-      width : ~"calc(100% - 8px)";
-      height : ~"calc(100% - 8px)";
+      width : calc(~"100% - "@gui_base_padding * 2);
+      height : calc(~"100% - "@gui_base_padding * 2);
     }
 
 /* Paned View */
