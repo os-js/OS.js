@@ -1,6 +1,7 @@
 {
   "globals": {
-    "OSjs": true
+    "OSjs": true,
+    "zip": true
   },
   "browser": true,
   "curly": true,
