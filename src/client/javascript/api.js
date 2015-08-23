@@ -1301,7 +1301,7 @@
    * @api     OSjs.API.error()
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
-    var config = API.getDefaultSettings();
+    var config = OSjs.API.getDefaultSettings();
     if ( config.Core.BugReporting ) {
       bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {

@@ -329,7 +329,7 @@
     if ( signingOut ) { return; }
 
     try {
-      var config = API.getDefaultSettings();
+      var config = OSjs.API.getDefaultSettings();
       if ( config.Core.ShowQuitWarning ) {
         return OSjs.API._('MSG_SESSION_WARNING');
       }
