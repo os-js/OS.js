@@ -33,6 +33,24 @@
   window.OSjs = window.OSjs || {};
   OSjs.Core   = OSjs.Core   || {};
 
+  function getSettings() {
+    var result = {};
+
+    var key;
+    for ( var i = 0; i < localStorage.length; i++ ) {
+      key = localStorage.key(i);
+      if ( key.match(/^OSjs\//) ) {
+        try {
+          result[key.replace(/^OSjs\//, '')] = JSON.parse(localStorage.getItem(key));
+        } catch ( e ) {
+          console.warn('DemoHandler::getSetting()', 'exception', e, e.stack);
+        }
+      }
+    }
+
+    return result;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // DEMO HANDLER
   /////////////////////////////////////////////////////////////////////////////
@@ -63,7 +81,7 @@
     // Use the 'demo' user
     var self = this;
     this.login('demo', 'demo', function(userData) {
-      self.onLogin(userData, function() {
+      self.onLogin(userData, getSettings(), function() {
         callback();
       });
     });
@@ -73,7 +91,7 @@
    * Demo login. Just an example
    */
   DemoHandler.prototype.login = function(username, password, callback) {
-    console.info('OSjs::DemoHandler::login()', username);
+    console.info('DemoHandler::login()', username);
     var opts = {username: username, password: password};
     this.callAPI('login', opts, function(response) {
       if ( response.result ) { // This contains an object with user data
@@ -86,6 +104,23 @@
       callback(false, 'Login error: ' + error);
     });
   };
+
+  DemoHandler.prototype.saveSettings = function(pool, storage, callback) {
+    Object.keys(storage).forEach(function(key) {
+      if ( pool && key !== pool ) {
+        return;
+      }
+
+      try {
+        localStorage.setItem('OSjs/' + key, JSON.stringify(storage[key]));
+      } catch ( e ) {
+        console.warn('DemoHandler::_save()', 'exception', e, e.stack);
+      }
+    });
+
+    callback();
+  };
+
 
   //
   // Exports

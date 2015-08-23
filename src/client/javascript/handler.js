@@ -325,13 +325,14 @@
    * Called when login() is finished
    *
    * @param   Object    userData      JSON User Data
+   * @param   Object    userSettings  JSON User Settings
    * @param   Function  callback      Callback function
    *
    * @return  void
    *
    * @method  _Handler::onLogin()
    */
-  _Handler.prototype.onLogin = function(userData, callback) {
+  _Handler.prototype.onLogin = function(userData, userSettings, callback) {
     callback = callback || function() {};
 
     var config = API.getDefaultSettings();
@@ -346,9 +347,9 @@
 
     API.setLocale(locale);
 
-    OSjs.Helpers.SettingsManager.init(function() {
-      callback();
-    });
+    OSjs.Helpers.SettingsManager.init(userSettings);
+
+    callback();
   };
 
   /**
@@ -370,6 +371,11 @@
     callback();
   };
 
+  /**
+   * When WM has been launched
+   *
+   * @method _Handler::onWMLaunched();
+   */
   _Handler.prototype.onWMLaunched = function(wm, callback) {
     var user = this.userData;
 
@@ -404,16 +410,10 @@
   };
 
   /**
-   * Get data for logged in user
+   * When browser goes online
    *
-   * @return  Object      JSON With user data
-   *
-   * @method  _Handler::getUserData()
+   * @method _Handler::onOnline();
    */
-  _Handler.prototype.getUserData = function() {
-    return this.userData;
-  };
-
   _Handler.prototype.onOnline = function() {
     console.warn('Handler::onOnline()', 'Going online...');
     this.offline = false;
@@ -424,6 +424,11 @@
     }
   };
 
+  /**
+   * When browser goes offline
+   *
+   * @method _Handler::onOffline();
+   */
   _Handler.prototype.onOffline = function() {
     console.warn('Handler::onOffline()', 'Going offline...');
     this.offline = true;
@@ -433,6 +438,31 @@
       wm.notification({title: 'Warning!', message: 'You are Off-line!'});
     }
   };
+
+  /**
+   * Method for saving your settings
+   *
+   * @param   String      pool        (Optional) Which pool to store
+   * @param   Object      storage     Storage tree
+   * @param   Function    callback    Callback function
+   *
+   * @method _Handler::saveSettings();
+   */
+  _Handler.prototype.saveSettings = function(pool, storage, callback) {
+    callback();
+  };
+
+  /**
+   * Get data for logged in user
+   *
+   * @return  Object      JSON With user data
+   *
+   * @method  _Handler::getUserData()
+   */
+  _Handler.prototype.getUserData = function() {
+    return this.userData;
+  };
+
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

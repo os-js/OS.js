@@ -37,56 +37,11 @@
   };
 
   /**
-   * Overridable Wrapper for loading
-   */
-  SettingsManager._load = function(callback) {
-    var result = {};
-
-    var key;
-    for ( var i = 0; i < localStorage.length; i++ ) {
-      key = localStorage.key(i);
-      if ( key.match(/^OSjs\//) ) {
-        try {
-          result[key.replace(/^OSjs\//, '')] = JSON.parse(localStorage.getItem(key));
-        } catch ( e ) {
-          console.warn('SettingsManager::_load()', 'exception', e, e.stack);
-        }
-      }
-    }
-
-    callback(result);
-  };
-
-  /**
-   * Overridable Wrapper for saving
-   */
-  SettingsManager._save = function(pool, callback) {
-    var storage = this.storage;
-    Object.keys(storage).forEach(function(key) {
-      if ( pool && key !== pool ) {
-        return;
-      }
-
-      try {
-        localStorage.setItem('OSjs/' + key, JSON.stringify(storage[key]));
-      } catch ( e ) {
-        console.warn('SettingsManager::_save()', 'exception', e, e.stack);
-      }
-    });
-
-    callback();
-  };
-
-  /**
    * Initialize SettingsManager.
    * This is run when a user logs in. It will give saved data here
    */
-  SettingsManager.init = function(callback) {
-    var self = this;
-    this._load(function(storage) {
-      self.storage = storage || {};
-      callback();
-    });
+  SettingsManager.init = function(settings) {
+    this.storage = settings || {};
   };
 
   /**
@@ -137,7 +92,8 @@
       callback = function() {};
     }
 
-    this._save(pool, callback);
+    var handler = OSjs.Core.getHandler();
+    handler.saveSettings(pool, this.storage, callback);
   };
 
   /**

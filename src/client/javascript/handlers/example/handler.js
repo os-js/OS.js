@@ -95,8 +95,7 @@ See doc/example-handler.txt
           console.debug('OSjs::Handlers::ExampleHandler::init()', 'login response', result);
           container.parentNode.removeChild(container);
 
-          self.settings.load(result.userSettings); // IMPORTANT
-          self.onLogin(result.userData, function() {
+          self.onLogin(result.userData, result.userSettings, function() {
             callback();
           });
         });
@@ -177,12 +176,11 @@ See doc/example-handler.txt
   /**
    * Override default settings saving
    */
-  ExampleHandler.prototype.saveSettings = function(callback) {
+  ExampleHandler.prototype.saveSettings = function(pool, storage, callback) {
     console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
 
     var self = this;
-    var settings = this.settings.get();
-    var opts = {settings: settings};
+    var opts = {settings: storage};
 
     function _save() {
       self.callAPI('settings', opts, function(response) {
