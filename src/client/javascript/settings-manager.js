@@ -106,7 +106,9 @@
       } else {
         this.storage[pool] = value;
       }
-    } catch ( e ) {} // TODO: Add behaviour
+    } catch ( e ) {
+      console.warn('SettingsManager::set()', 'exception', e, e.stack);
+    }
 
     if ( save ) {
       this.save(pool, save);
