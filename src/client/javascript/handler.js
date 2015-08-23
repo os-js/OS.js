@@ -84,6 +84,7 @@
   _Handler.prototype.init = function(callback) {
     console.info('Handler::init()');
 
+    var self = this;
     var config = API.getDefaultSettings();
     API.setLocale(config.Core.Locale);
 
@@ -220,7 +221,7 @@
         return data;
       }
 
-      OSjs.Core.getSettingsManager().set('UserSession', null, getSession(), cb)
+      OSjs.Core.getSettingsManager().set('UserSession', null, getSession(), cb);
     }
 
     var wm = OSjs.Core.getWindowManager();
