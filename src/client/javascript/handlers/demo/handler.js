@@ -60,6 +60,15 @@
    */
   var DemoHandler = function() {
     OSjs.Core._Handler.apply(this, arguments);
+
+    var curr = API.getDefaultSettings().Version;
+    var version = localStorage.getItem('__version__');
+    if ( curr !== version ) {
+      console.warn('DemoHandler()', 'You are running', version, 'version is', curr, 'flushing for compability!');
+      localStorage.clear();
+    }
+    localStorage.setItem('__version__', String(curr));
+
   };
   DemoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
