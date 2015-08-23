@@ -31,6 +31,16 @@
 (function(Utils, VFS, API) {
   'use strict';
 
+  /**
+   * Settings Manager Class
+   *
+   * For maintaining settings
+   *
+   * You can only get an instance with `Core.getSettingsManager()`
+   *
+   * @api     OSjs.Core.SettingsManager
+   * @class
+   */
   var SettingsManager = {
     storage: {},
     defaults: {}
@@ -39,6 +49,12 @@
   /**
    * Initialize SettingsManager.
    * This is run when a user logs in. It will give saved data here
+   *
+   * @param Object    settings      Entire settings tree
+   *
+   * @return  void
+   *
+   * @method  SettingsManager::init()
    */
   SettingsManager.init = function(settings) {
     this.storage = settings || {};
@@ -46,6 +62,13 @@
 
   /**
    * Gets either the full tree or tree entry by key
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  String     key       (Optional) Key entry of tree
+   *
+   * @return  Mixed
+   *
+   * @method  SettingsManager::get()
    */
   SettingsManager.get = function(pool, key) {
     try {
@@ -63,6 +86,15 @@
 
   /**
    * Sets either full tree or a tree entry by key
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  String     key       (Optional) Key entry of tree
+   * @param  Mixed      value     The value (or entire tree if no key given)
+   * @param  Mixed      save      (Optional) boolean or callback function for saving
+   *
+   * @return  boolean
+   *
+   * @method  SettingsManager::set()
    */
   SettingsManager.set = function(pool, key, value, save) {
     try {
@@ -85,6 +117,13 @@
 
   /**
    * Saves the storage to a location
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  Function   callback  Callback
+   *
+   * @return  void
+   *
+   * @method  SettingsManager::save()
    */
   SettingsManager.save = function(pool, callback) {
     callback = callback || function() {};
@@ -98,6 +137,13 @@
 
   /**
    * Sets the defaults for a spesific pool
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  Object     default   (Optional) Default settings tree
+   *
+   * @return  void
+   *
+   * @method SettingsManager::defaults()
    */
   SettingsManager.defaults = function(pool, defaults) {
     this.defaults[pool] = defaults;
@@ -105,6 +151,13 @@
 
   /**
    * Creates a new proxy instance
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  Object     default   (Optional) Default settings tree
+   *
+   * @return Object
+   *
+   * @method SettingsManager::instance()
    */
   SettingsManager.instance = function(pool, defaults) {
     if ( arguments.length > 1 ) {
@@ -118,7 +171,19 @@
     };
   };
 
-  OSjs.Helpers.SettingsManager = SettingsManager;
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Get the current SettingsManager  instance
+   *
+   * @return SettingsManager
+   * @api OSjs.Core.getSettingsManager()
+   */
+  OSjs.Core.getSettingsManager = function() {
+    return SettingsManager;
+  };
 
 })(OSjs.Utils, OSjs.VFS, OSjs.API);
 

@@ -340,7 +340,7 @@
       }
 
       var pacman = OSjs.Core.getPackageManager();
-      var val = OSjs.Helpers.SettingsManager.get('DefaultApplication', file.mime);
+      var val = OSjs.Core.getSettingsManager().get('DefaultApplication', file.mime);
 
       console.debug('getApplicationNameByFile()', 'default application', val);
       if ( !forceList && val ) {
@@ -367,8 +367,8 @@
     function setDefaultApplication(mime, app, callback) {
       callback = callback || function() {};
       console.debug('setDefaultApplication()', mime, app);
-      OSjs.Helpers.SettingsManager.set('DefaultApplication', mime, app);
-      OSjs.Helpers.SettingsManager.save('DefaultApplication', callback);
+      OSjs.Core.getSettingsManager().set('DefaultApplication', mime, app);
+      OSjs.Core.getSettingsManager().save('DefaultApplication', callback);
     }
 
     function _launch(name) {
@@ -584,7 +584,7 @@
       var a = _createInstance(result);
 
       try {
-        var settings = OSjs.Helpers.SettingsManager.get(a.__name);
+        var settings = OSjs.Core.getSettingsManager().get(a.__name);
         a.init(settings, result, function() {
           setTimeout(function() {
             _done();

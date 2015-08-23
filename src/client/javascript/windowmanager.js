@@ -317,7 +317,7 @@
 
     this._$notifications = null;
     this._windows        = [];
-    this._settings       = OSjs.Helpers.SettingsManager.instance(name, settings);
+    this._settings       = OSjs.Core.getSettingsManager().instance(name, settings);
     this._currentWin     = null;
     this._lastWin        = null;
     this._mouselock      = true;

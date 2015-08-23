@@ -40,16 +40,32 @@
   // DEFAULT PACKAGE MANAGER
   /////////////////////////////////////////////////////////////////////////////
 
-  var PackageManager = function() {
+  /**
+   * Package Manager Class
+   *
+   * For maintaining packages
+   *
+   * You can only get an instance with `Core.getPackageManager()`
+   *
+   * @api     OSjs.Core.PackageManager
+   * @class
+   */
+  function PackageManager() {
     var config = API.getDefaultSettings();
     var uri = Utils.checkdir(config.Core.MetadataURI);
 
     this.packages = {};
     this.uri = uri; // TODO: Split up into user and system
-  };
+  }
 
   /**
    * Load Metadata from server and set packages
+   *
+   * @param  Function callback      callback
+   *
+   * @return void
+   *
+   * @method PackageManager::load()
    */
   PackageManager.prototype.load = function(callback) {
     var self = this;
@@ -74,6 +90,12 @@
 
   /**
    * Internal method for loading all package metadata
+   *
+   * @param  Function callback      callback
+   *
+   * @return void
+   *
+   * @method PackageManager::_loadMetadata()
    */
   PackageManager.prototype._loadMetadata = function(callback) {
     var self = this;
@@ -141,6 +163,12 @@
 
   /**
    * Generates user-installed package metadata (on runtime)
+   *
+   * @param  Function callback      callback
+   *
+   * @return void
+   *
+   * @method PackageManager::generateUserMetadata()
    */
   PackageManager.prototype.generateUserMetadata = function(callback) {
     var dir = new OSjs.VFS.File(OSjs.API.getDefaultSettings().Core.UserPackages);
@@ -248,6 +276,10 @@
 
   /**
    * Add a list of packages
+   *
+   * @return void
+   *
+   * @method PackageManager::_addPackages()
    */
   PackageManager.prototype._addPackages = function(result, scope) {
     console.debug('PackageManager::_addPackages()', result);
@@ -284,6 +316,12 @@
 
   /**
    * Get package by name
+   *
+   * @param String    name      Package name
+   *
+   * @return Object
+   *
+   * @method PackageManager::getPackage()
    */
   PackageManager.prototype.getPackage = function(name) {
     if ( typeof this.packages[name] !== 'undefined' ) {
@@ -294,6 +332,10 @@
 
   /**
    * Get all packages
+   *
+   * @return Array
+   *
+   * @method PackageManager::getPackages()
    */
   PackageManager.prototype.getPackages = function() {
     return this.packages;
@@ -301,6 +343,10 @@
 
   /**
    * Get packages by Mime support type
+   *
+   * @param String    mime      MIME string
+   *
+   * @return  Array
    */
   PackageManager.prototype.getPackagesByMime = function(mime) {
     var list = [];

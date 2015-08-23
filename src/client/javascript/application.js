@@ -64,7 +64,7 @@
     this.__inited     = false;
     this.__windows    = [];
     this.__args       = args || {};
-    this.__settings   = OSjs.Helpers.SettingsManager.instance(name, settings || {});
+    this.__settings   = OSjs.Core.getSettingsManager().instance(name, settings || {});
     this.__metadata   = metadata;
     this.__mainwindow = null;
 

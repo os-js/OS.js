@@ -26,6 +26,7 @@
     "src/client/javascript/dialog.js",
     "src/client/javascript/windowmanager.js",
     "src/client/javascript/package-manager.js",
+    "src/client/javascript/settings-manager.js",
     "src/client/javascript/gui.js",
     "src/client/javascript/gui/_dataview.js",
     "src/client/javascript/gui/misc.js",
@@ -67,8 +68,7 @@
     "src/client/javascript/helpers/google-api.js",
     "src/client/javascript/helpers/windows-live-api.js",
     "src/client/javascript/helpers/zip-archiver.js",
-    "src/client/javascript/helpers/firefox-marketplace.js",
-    "src/client/javascript/helpers/settings-manager.js"
+    "src/client/javascript/helpers/firefox-marketplace.js"
   ],
 
   "stylesheets": [

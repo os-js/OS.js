@@ -220,7 +220,7 @@
         return data;
       }
 
-      OSjs.Helpers.SettingsManager.set('UserSession', null, getSession(), cb)
+      OSjs.Core.getSettingsManager().set('UserSession', null, getSession(), cb)
     }
 
     var wm = OSjs.Core.getWindowManager();
@@ -251,7 +251,7 @@
 
     console.info('Handler::loadSession()');
 
-    var res = OSjs.Helpers.SettingsManager.get('UserSession');
+    var res = OSjs.Core.getSettingsManager().get('UserSession');
     var list = [];
     (res || []).forEach(function(iter, i) {
       var args = iter.args;
@@ -342,12 +342,12 @@
     this.userData = userData;
 
     // Ensure we get the user-selected locale configured from WM
-    var result = OSjs.Helpers.SettingsManager.get('UserSettings');
+    var result = OSjs.Core.getSettingsManager().get('UserSettings');
     var locale = result ? result.Locale || curLocale : curLocale;
 
     API.setLocale(locale);
 
-    OSjs.Helpers.SettingsManager.init(userSettings);
+    OSjs.Core.getSettingsManager().init(userSettings);
 
     callback();
   };
