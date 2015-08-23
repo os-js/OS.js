@@ -320,17 +320,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  function get() {
+  OSjs.Core.getPackageManager = function() {
     if ( !_instance ) {
       _instance = new PackageManager();
     }
     return _instance;
-  }
-  OSjs.Helpers.PackageManager = {
-    get: get,
-    load: function(callback) {
-      get().load(callback);
-    }
   };
 
 })(OSjs.Utils, OSjs.VFS, OSjs.API);

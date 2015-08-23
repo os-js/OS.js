@@ -133,7 +133,7 @@
 
       self.dialogs = scheme;
 
-      OSjs.Helpers.PackageManager.load(function(presult, perror) {
+      OSjs.Core.getPackageManager().load(function(presult, perror) {
         callback(presult, perror);
       });
     });

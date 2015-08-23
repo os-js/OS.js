@@ -339,7 +339,7 @@
         throw new Error('This function excepts a OSjs.VFS.File object');
       }
 
-      var pacman = OSjs.Helpers.PackageManager.get();
+      var pacman = OSjs.Core.getPackageManager();
       var val = OSjs.Helpers.SettingsManager.get('DefaultApplication', file.mime);
 
       console.debug('getApplicationNameByFile()', 'default application', val);
@@ -440,7 +440,7 @@
 
     var splash = null;
     var handler = OSjs.Core.getHandler();
-    var packman = OSjs.Helpers.PackageManager.get();
+    var packman = OSjs.Core.getPackageManager();
 
     function createLaunchSplash(data, n) {
       var splash = null;
@@ -765,7 +765,7 @@
     } else if ( typeof app === 'string' ) {
       appname = app;
 
-      var pacman = OSjs.Helpers.PackageManager.get();
+      var pacman = OSjs.Core.getPackageManager();
       var packs = pacman ? pacman.getPackages() : {};
       if ( packs[appname] ) {
         appname = packs[appname].path;

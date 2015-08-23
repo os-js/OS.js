@@ -75,7 +75,7 @@
 
   function installSelected(download, cb) {
     var handler = OSjs.Core.getHandler();
-    var pacman = OSjs.Helpers.PackageManager.get();
+    var pacman = OSjs.Core.getPackageManager();
 
     VFS.remoteRead(download, 'application/zip', function(error, ab) {
       if ( error ) {
@@ -563,7 +563,7 @@
   ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme) {
     var self = this;
     var handler = OSjs.Core.getHandler();
-    var pacman = OSjs.Helpers.PackageManager.get();
+    var pacman = OSjs.Core.getPackageManager();
 
     //
     // Installed

@@ -47,7 +47,7 @@
     callback = callback || {};
 
     function getFiles() {
-      var metadata = OSjs.Helpers.PackageManager.get().getPackages();
+      var metadata = OSjs.Core.getPackageManager().getPackages();
       var files = [];
 
       Object.keys(metadata).forEach(function(m) {
