@@ -320,6 +320,12 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Get the current PackageManager instance
+   *
+   * @return PackageManager
+   * @api OSjs.Core.getPackageManager()
+   */
   OSjs.Core.getPackageManager = function() {
     if ( !_instance ) {
       _instance = new PackageManager();

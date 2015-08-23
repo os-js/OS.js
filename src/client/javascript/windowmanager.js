@@ -295,20 +295,6 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // API METHODS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Get the current WindowManager instance
-   *
-   * @return WindowManager
-   * @api OSjs.Core.getWindowManager()
-   */
-  function getWMInstance() {
-    return _WM;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // WINDOW MANAGER
   /////////////////////////////////////////////////////////////////////////////
 
@@ -931,6 +917,15 @@
 
   OSjs.Core.WindowManager     = WindowManager;
 
-  OSjs.Core.getWindowManager  = getWMInstance;
+  /**
+   * Get the current WindowManager instance
+   *
+   * @return WindowManager
+   * @api OSjs.Core.getWindowManager()
+   */
+  OSjs.Core.getWindowManager  = function() {
+    return _WM;
+  };
+
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process, OSjs.Core.Window);
