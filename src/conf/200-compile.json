@@ -66,7 +66,6 @@
     "src/client/javascript/helpers/default-application-window.js",
     "src/client/javascript/helpers/google-api.js",
     "src/client/javascript/helpers/windows-live-api.js",
-    "src/client/javascript/helpers/connection-manager.js",
     "src/client/javascript/helpers/zip-archiver.js",
     "src/client/javascript/helpers/firefox-marketplace.js",
     "src/client/javascript/helpers/settings-manager.js"

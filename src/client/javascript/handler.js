@@ -57,10 +57,9 @@
     if ( _handlerInstance ) {
       throw Error('Cannot create another Handler Instance');
     }
-    var config = API.getDefaultSettings();
 
-    this.connection = new OSjs.Helpers.ConnectionManager(config.Core.Connection, config.Core.APIURI);
     this.dialogs    = null;
+    this.offline    = false;
     this.userData   = {
       id      : 0,
       username: 'root',
@@ -88,6 +87,15 @@
     var config = API.getDefaultSettings();
     API.setLocale(config.Core.Locale);
 
+    if ( typeof navigator.onLine !== 'undefined' ) {
+      window.addEventListener('offline', function(ev) {
+        self.onOffline();
+      });
+      window.addEventListener('online', function(ev) {
+        self.onOnline();
+      });
+    }
+
     callback();
   };
 
@@ -99,9 +107,14 @@
    * @method  _Handler::destroy()
    */
   _Handler.prototype.destroy = function() {
-    if ( this.connection ) {
-      this.connection.destroy();
-      this.connection = null;
+    var self = this;
+    if ( typeof navigator.onLine !== 'undefined' ) {
+      window.removeEventListener('offline', function(ev) {
+        self.onOffline();
+      });
+      window.removeEventListener('online', function(ev) {
+        self.onOnline();
+      });
     }
 
     _handlerInstance = null;
@@ -259,8 +272,49 @@
    *
    * @method  _Handler::callAPI()
    */
-  _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError) {
-    return this.connection.callAPI(method, args, cbSuccess, cbError);
+  _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
+    if ( this.offline ) {
+      cbError('You are currently off-line and cannot perform this operation!');
+      return false;
+    }
+    if ( window.location.href.match(/^file\:\/\//) ) {
+      cbError('You are currently running locally and cannot perform this operation!');
+      return false;
+    }
+
+    args      = args      || {};
+    cbSuccess = cbSuccess || function() {};
+    cbError   = cbError   || function() {};
+
+    console.group('Handler::callAPI()');
+    console.log('Method', method);
+    console.log('Arguments', args);
+    console.groupEnd();
+
+    var config = API.getDefaultSettings();
+    var data = {
+      url: config.Core.APIURI,
+      method: 'POST',
+      json: true,
+      body: {
+        'method'    : method,
+        'arguments' : args
+      },
+      onsuccess: function(/*response, request, url*/) {
+        cbSuccess.apply(this, arguments);
+      },
+      onerror: function(/*error, response, request, url*/) {
+        cbError.apply(this, arguments);
+      }
+    };
+
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        data[key] = options[key];
+      });
+    }
+
+    return Utils.ajax(data);
   };
 
   //
@@ -358,6 +412,26 @@
    */
   _Handler.prototype.getUserData = function() {
     return this.userData;
+  };
+
+  _Handler.prototype.onOnline = function() {
+    console.warn('Handler::onOnline()', 'Going online...');
+    this.offline = false;
+
+    var wm = OSjs.Core.getWindowManager();
+    if ( wm ) {
+      wm.notification({title: 'Warning!', message: 'You are On-line!'});
+    }
+  };
+
+  _Handler.prototype.onOffline = function() {
+    console.warn('Handler::onOffline()', 'Going offline...');
+    this.offline = true;
+
+    var wm = OSjs.Core.getWindowManager();
+    if ( wm ) {
+      wm.notification({title: 'Warning!', message: 'You are Off-line!'});
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
