@@ -30,38 +30,6 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  function installPackage(file, cb) {
-    var root = 'home:///.packages';
-    var dest = root + '/' + file.filename.replace(/\.zip$/i, '');
-
-    VFS.mkdir(new VFS.File(root), function() {
-      VFS.exists(new VFS.File(dest), function(error, exists) {
-        if ( error ) {
-          cb(error);
-          return;
-        }
-
-        if ( exists ) {
-          cb('Target directory already exists. Is this package already installed?'); // FIXME: Translation
-          return;
-        }
-
-        OSjs.Helpers.ZipArchiver.createInstance({}, function(error, instance) {
-          if ( instance ) {
-            instance.extract(file, dest, {
-              onprogress: function() {
-              },
-              oncomplete: function() {
-                cb();
-              }
-            });
-          }
-        });
-
-      });
-    });
-
-  }
 
   function fetchJSON(cb) {
     var url = 'http://andersevenrud.github.io/OS.js-v2/store/packages.json';
@@ -96,7 +64,7 @@
           return;
         }
 
-        installPackage(dest, function(error) {
+        OSjs.Core.getPackageManager().install(dest, function(error) {
           if ( error ) {
             cb('Failed to install package: ' + error); // FIXME
             return;
@@ -607,7 +575,7 @@
         if ( button !== 'ok' || !result ) {
           self._toggleDisabled(false);
         } else {
-          installPackage(result, function() {
+          OSjs.Core.getPackageManager().install(result, function() {
             self._toggleDisabled(false);
             renderInstalled();
           });

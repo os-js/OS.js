@@ -315,6 +315,48 @@
   };
 
   /**
+   * Installs a package by ZIP
+   *
+   * @param OSjs.VFS.File   file        The ZIP file
+   * @param Function        cb          Callback function
+   *
+   * @return void
+   *
+   * @method PackageManager::install()
+   */
+  PackageManager.prototype.install = function(file, cb) {
+    var root = 'home:///.packages';
+    var dest = root + '/' + file.filename.replace(/\.zip$/i, '');
+
+    VFS.mkdir(new VFS.File(root), function() {
+      VFS.exists(new VFS.File(dest), function(error, exists) {
+        if ( error ) {
+          cb(error);
+          return;
+        }
+
+        if ( exists ) {
+          cb('Target directory already exists. Is this package already installed?'); // FIXME: Translation
+          return;
+        }
+
+        OSjs.Helpers.ZipArchiver.createInstance({}, function(error, instance) {
+          if ( instance ) {
+            instance.extract(file, dest, {
+              onprogress: function() {
+              },
+              oncomplete: function() {
+                cb();
+              }
+            });
+          }
+        });
+
+      });
+    });
+  };
+
+  /**
    * Get package by name
    *
    * @param String    name      Package name
