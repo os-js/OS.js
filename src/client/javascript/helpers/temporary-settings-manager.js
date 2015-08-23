@@ -100,8 +100,8 @@
     SettingsManager.set(pool, defaults);
 
     return {
-      get: function() { return null; },
-      set: function() { return null; },
+      get: function(key) { return SettingsManager.get(pool, key); },
+      set: function(key, value, save) { return SettingsManager.set(pool, key, value, save); },
       load: function(defaults, callback) { return SettingsManager.load(pool, defaults, callback); },
       save: function(callback) { return SettingsManager.save(pool, callback); }
     };

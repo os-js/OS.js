@@ -44,35 +44,6 @@
   var _CLIPBOARD;         // Current 'clipboard' data
 
   /////////////////////////////////////////////////////////////////////////////
-  // SOME HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function getApplicationNameByFile(file, forceList, callback) {
-    if ( !(file instanceof OSjs.VFS.File) ) {
-      throw new Error('This function excepts a OSjs.VFS.File object');
-    }
-
-    var pacman = OSjs.Core.getHandler().packages;
-    var val = OSjs.Helpers.SettingsManager.get('DefaultApplication', file.mime);
-
-    console.debug('Handler::getApplicationNameByFile()', 'default application', val);
-    if ( !forceList && val ) {
-      if ( pacman.getPackage(val) ) {
-        callback([val]);
-        return;
-      }
-    }
-    callback(pacman.getPackagesByMime(file.mime));
-  }
-
-  function setDefaultApplication(mime, app, callback) {
-    callback = callback || function() {};
-    console.debug('Handler::setDefaultApplication()', mime, app);
-    OSjs.Helpers.SettingsManager.set('DefaultApplication', mime, app);
-    OSjs.Helpers.SettingsManager.save('DefaultApplication', callback);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // SERVICERING
   /////////////////////////////////////////////////////////////////////////////
 
@@ -363,6 +334,24 @@
     if ( !file.path ) { throw new Error('Cannot doLaunchFile() without a path'); }
     if ( !file.mime )  { throw new Error('Cannot doLaunchFile() without a mime type'); }
 
+    function getApplicationNameByFile(file, forceList, callback) {
+      if ( !(file instanceof OSjs.VFS.File) ) {
+        throw new Error('This function excepts a OSjs.VFS.File object');
+      }
+
+      var pacman = OSjs.Core.getHandler().packages;
+      var val = OSjs.Helpers.SettingsManager.get('DefaultApplication', file.mime);
+
+      console.debug('getApplicationNameByFile()', 'default application', val);
+      if ( !forceList && val ) {
+        if ( pacman.getPackage(val) ) {
+          callback([val]);
+          return;
+        }
+      }
+      callback(pacman.getPackagesByMime(file.mime));
+    }
+
     var wm = OSjs.Core.getWindowManager();
     var handler = OSjs.Core.getHandler();
     var args = {file: file};
@@ -374,6 +363,13 @@
     }
 
     console.group('doLaunchFile()', file);
+
+    function setDefaultApplication(mime, app, callback) {
+      callback = callback || function() {};
+      console.debug('setDefaultApplication()', mime, app);
+      OSjs.Helpers.SettingsManager.set('DefaultApplication', mime, app);
+      OSjs.Helpers.SettingsManager.save('DefaultApplication', callback);
+    }
 
     function _launch(name) {
       if ( name ) {
