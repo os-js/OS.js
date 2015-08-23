@@ -126,8 +126,8 @@
 
   PublicStorage.url = function(item, callback) {
     var path    = typeof item === 'string' ? item : item.path;
-    var handler = OSjs.Core.getHandler();
-    var fsuri   = handler.getConfig('Core').FSURI;
+    var config  = API.getDefaultSettings();
+    var fsuri   = config.Core.FSURI;
     callback(false, path ? (fsuri + path) : fsuri);
   };
 

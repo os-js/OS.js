@@ -225,7 +225,7 @@
       }
     });
 
-    OSjs.Core.getHandler().getUserSettings(SETTING_STORAGE_NAME, function(s) {
+    OSjs.Helpers.SettingsManager.load(SETTING_STORAGE_NAME, function(s) {
       if ( s ) {
         self.applySettings(s);
       } else {
@@ -502,9 +502,9 @@
       if ( settings.language ) {
         store.Core = { Locale: settings.language };
       }
-      OSjs.Core.getHandler().setUserSettings(store);
+      OSjs.Helpers.SettingsManager.set('CoreWM', store);
     } else {
-      OSjs.Core.getHandler().setUserSettings(SETTING_STORAGE_NAME, this.getSettings());
+      OSjs.Helpers.SettingsManager.set('CoreWM', this.getSettings());
     }
   };
 

@@ -43,11 +43,9 @@
   var _isMounted = false;
 
   function _getConfig(cfg) {
+    var config = API.getDefaultSettings();
     try {
-      var handler = OSjs.Core.getHandler();
-      if ( handler ) {
-        return handler.getConfig('Core').VFS.Dropbox[cfg];
-      }
+      return config.Core.VFS.Dropbox[cfg];
     } catch ( e ) {
       console.warn('OSjs.VFS.Modules.Dropbox::enabled()', e, e.stack);
     }

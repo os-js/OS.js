@@ -411,13 +411,11 @@
     }
 
     var clientId = null;
-    var handler = OSjs.Core.getHandler();
-    if ( handler ) {
-      try {
-        clientId = handler.getConfig('GoogleAPI').ClientId;
-      } catch ( e ) {
-        console.warn('getGoogleAPI()', e, e.stack);
-      }
+    var config = API.getDefaultSettings();
+    try {
+      clientId = config.GoogleAPI.ClientId;
+    } catch ( e ) {
+      console.warn('getGoogleAPI()', e, e.stack);
     }
 
     if ( !clientId ) {

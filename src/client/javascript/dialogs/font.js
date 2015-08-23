@@ -52,12 +52,13 @@
    * @api OSjs.Dialogs.Font
    */
   function FontDialog(args, callback) {
+    var config = API.getDefaultSettings();
     args = Utils.argumentDefaults(args, {
-      fontName: OSjs.Core.getHandler().getConfig('Fonts')['default'],
+      fontName: config.Fonts['default'],
       fontSize: 12,
       fontColor: '#000000',
       backgroundColor: '#ffffff',
-      fonts: OSjs.Core.getHandler().getConfig('Fonts').list,
+      fonts: config.Fonts.list,
       minSize: 6,
       maxSize: 30,
       text: 'The quick brown fox jumps over the lazy dog',

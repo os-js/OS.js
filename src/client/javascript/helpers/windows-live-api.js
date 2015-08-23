@@ -351,13 +351,11 @@
     }
 
     var clientId = null;
-    var handler = OSjs.Core.getHandler();
-    if ( handler ) {
-      try {
-        clientId = handler.getConfig('WindowsLiveAPI').ClientId;
-      } catch ( e ) {
-        console.warn('getWindowsLiveAPI()', e, e.stack);
-      }
+    var config = API.getDefaultSettings();
+    try {
+      clientId = config.WindowsLiveAPI.ClientId;
+    } catch ( e ) {
+      console.warn('getWindowsLiveAPI()', e, e.stack);
     }
 
     if ( !clientId ) {

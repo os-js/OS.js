@@ -64,7 +64,7 @@
     this.__inited     = false;
     this.__windows    = [];
     this.__args       = args || {};
-    this.__settings   = settings || {};
+    this.__settings   = OSjs.Helpers.SettingsManager.instance(name, settings || {});
     this.__metadata   = metadata;
     this.__mainwindow = null;
 
@@ -91,9 +91,8 @@
   Application.prototype.init = function(settings, metadata) {
     console.debug('Application::init()', this.__name);
 
-    if ( settings ) {
-      this.__settings = OSjs.Utils.mergeObject(this.__settings, settings);
-    }
+
+    this.__settings.set(settings);
 
     if ( this.__windows.length ) {
       var wm = OSjs.Core.getWindowManager();
@@ -124,6 +123,8 @@
   Application.prototype.destroy = function(kill) {
     if ( this.__destroyed ) { return true; }
     this.__destroyed = true;
+    this.__settings = null;
+
     console.debug('Application::destroy()', this.__name);
 
     var i;
@@ -338,7 +339,7 @@
    * @method  Application::_getSettings()
    */
   Application.prototype._getSetting = function(k) {
-    return this.__settings[k];
+    return this.__settings.get(k);
   };
 
   /**
@@ -355,11 +356,10 @@
    */
   Application.prototype._setSetting = function(k, v, save, saveCallback) {
     save = (typeof save === 'undefined' || save === true);
-    this.__settings[k] = v;
 
-    var handler = OSjs.Core.getHandler();
-    if ( save && handler ) {
-      handler.setApplicationSettings(this.__name, this.__settings, saveCallback);
+    this.__settings.set(k, v);
+    if ( save ) {
+      this.__settings.save(saveCallback);
     }
   };
 

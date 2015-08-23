@@ -44,6 +44,35 @@
   var _CLIPBOARD;         // Current 'clipboard' data
 
   /////////////////////////////////////////////////////////////////////////////
+  // SOME HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function getApplicationNameByFile(file, forceList, callback) {
+    if ( !(file instanceof OSjs.VFS.File) ) {
+      throw new Error('This function excepts a OSjs.VFS.File object');
+    }
+
+    var pacman = OSjs.Core.getHandler().packages;
+    var val = OSjs.Helpers.SettingsManager.get('DefaultApplication', file.mime);
+
+    console.debug('Handler::getApplicationNameByFile()', 'default application', val);
+    if ( !forceList && val ) {
+      if ( pacman.getPackage(val) ) {
+        callback([val]);
+        return;
+      }
+    }
+    callback(pacman.getPackagesByMime(file.mime));
+  }
+
+  function setDefaultApplication(mime, app, callback) {
+    callback = callback || function() {};
+    console.debug('Handler::setDefaultApplication()', mime, app);
+    OSjs.Helpers.SettingsManager.set('DefaultApplication', mime, app);
+    OSjs.Helpers.SettingsManager.save('DefaultApplication', callback);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // SERVICERING
   /////////////////////////////////////////////////////////////////////////////
 
@@ -368,7 +397,7 @@
               if ( btn !== 'ok' ) { return; }
               _launch(result.name);
 
-              handler.setDefaultApplication(file.mime, result.useDefault ? result.name : null);
+              setDefaultApplication(file.mime, result.useDefault ? result.name : null);
             });
           } else {
             OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
@@ -388,7 +417,7 @@
       return;
     }
 
-    handler.getApplicationNameByFile(file, launchArgs.forceList, _onDone);
+    getApplicationNameByFile(file, launchArgs.forceList, _onDone);
   }
 
   /**
@@ -558,7 +587,7 @@
       var a = _createInstance(result);
 
       try {
-        handler.getApplicationSettings(a.__name, function(settings) {
+        OSjs.Helpers.SettingsManager.load(a.__name, function(settings) {
           a.init(settings, result, function() {
             setTimeout(function() {
               _done();
@@ -729,6 +758,7 @@
   function doGetApplicationResource(app, name) {
     var path = '';
     var appname = null;
+    var config = OSjs.API.getDefaultSettings();
 
     name = name.replace(/^\.\//, '');
 
@@ -754,7 +784,7 @@
         path = root + '/' + appname + '/' + name;
       } else {
         // TODO: Add support for external VFS modules ?
-        root = OSjs.Core.getHandler().getConfig('Core').FSURI;
+        root = config.Core.FSURI;
         path = root + 'home:///Packages/' + appname + '/' + name; // FIXME
       }
     }
@@ -993,12 +1023,8 @@
    * @api     OSjs.API.getDefaultPath()
    */
   function doGetDefaultPath(fallback) {
-    var handler = OSjs.Core.getHandler();
-    var result;
-    if ( handler ) {
-      result = handler.getConfig('Core').Home;
-    }
-    return result || fallback || '/';
+    var config = OSjs.API.getDefaultSettings();
+    return config.Core.Home || fallback || '/';
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1280,8 +1306,8 @@
    * @api     OSjs.API.error()
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
-    var handler = OSjs.Core.getHandler();
-    if ( handler.getConfig('Core').BugReporting ) {
+    var config = API.getDefaultSettings();
+    if ( config.Core.BugReporting ) {
       bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {
       bugreport = false;

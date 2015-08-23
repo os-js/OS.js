@@ -711,6 +711,11 @@
     this.triggers = {render: []};
   }
 
+  UIScheme.prototype.destroy = function() {
+    this.scheme = null;
+    this.triggers = {};
+  };
+
   UIScheme.prototype.on = function(f, fn) {
     this.triggers[f].push(fn);
   };
@@ -744,6 +749,7 @@
       wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
       doc.appendChild(wrapper);
       self.scheme = doc;
+      wrapper = null;
 
       cb(false, doc);
     }

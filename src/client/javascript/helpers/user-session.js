@@ -78,7 +78,14 @@
     return data;
   };
 
-  UserSession.prototype.loadSession = function(res, callback) {
+  UserSession.prototype.saveSession = function(callback) {
+    var session = this.getSession();
+    OSjs.Helpers.SettingsManager.set('UserSession', session)
+    OSjs.Helpers.SettingsManager.save('UserSession', callback);
+  };
+
+  UserSession.prototype.loadSession = function(callback) {
+    var res = OSjs.Helpers.SettingsManager.get('UserSession');
     var list = [];
     (res || []).forEach(function(iter, i) {
       var args = iter.args;

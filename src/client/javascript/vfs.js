@@ -262,14 +262,11 @@
    * Wrapper for internal file uploads
    */
   function internalUpload(file, dest, callback) {
-    var handler = OSjs.Core.getHandler();
-    var fsuri   = '/';
-    if ( handler ) {
-      fsuri = handler.getConfig('Core').FSURI;
-    }
+    var config = API.getDefaultSettings();
+    var fsuri  = config.Core.FSURI || '/';
 
     if ( typeof file.size !== 'undefined' ) {
-      var maxSize = OSjs.Core.getHandler().getConfig('Core').MaxUploadSize;
+      var maxSize = config.Core.MaxUploadSize;
       if ( maxSize > 0 ) {
         var bytes = file.size;
         if ( bytes > maxSize ) {

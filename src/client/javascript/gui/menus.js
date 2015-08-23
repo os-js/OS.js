@@ -39,6 +39,7 @@
   function blurMenu() {
     if ( !lastMenu ) { return; }
     lastMenu();
+    lastMenu = null;
   }
 
   function bindSelectionEvent(child, span, idx, expand, dispatcher) {

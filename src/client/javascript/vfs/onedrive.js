@@ -648,15 +648,13 @@
       return _isMounted;
     },
     enabled: function() {
-      var handler = OSjs.Core.getHandler();
-      if ( handler ) {
-        try {
-          if ( handler.getConfig('Core').VFS.OneDrive.Enabled ) {
-            return true;
-          }
-        } catch ( e ) {
-          console.warn('OSjs.VFS.Modules.OneDrive::enabled()', e, e.stack);
+      var config = API.getDefaultSettings();
+      try {
+        if ( config.Core.VFS.OneDrive.Enabled ) {
+          return true;
         }
+      } catch ( e ) {
+        console.warn('OSjs.VFS.Modules.OneDrive::enabled()', e, e.stack);
       }
       return false;
     },

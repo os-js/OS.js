@@ -752,12 +752,8 @@
    * @method  WindowManager::getStyleThemes()
    */
   WindowManager.prototype.getStyleThemes = function() {
-    var handler = OSjs.Core.getHandler();
-    var list = [];
-    if ( handler ) {
-      list = handler.getConfig('Styles') || [];
-    }
-    return list;
+    var config = API.getDefaultSettings();
+    return config.Styles || [];
   };
 
   /**
@@ -768,12 +764,8 @@
    * @method  WindowManager::getSoundThemes()
    */
   WindowManager.prototype.getSoundThemes = function() {
-    var handler = OSjs.Core.getHandler();
-    var list = [];
-    if ( handler ) {
-      list = handler.getConfig('Sounds') || [];
-    }
-    return list;
+    var config = API.getDefaultSettings();
+    return config.Sounds || [];
   };
 
   /**
@@ -784,12 +776,8 @@
    * @method  WindowManager::getIconThemes()
    */
   WindowManager.prototype.getIconThemes = function() {
-    var handler = OSjs.Core.getHandler();
-    var list = [];
-    if ( handler ) {
-      list = handler.getConfig('Icons') || [];
-    }
-    return list;
+    var config = API.getDefaultSettings();
+    return config.Icons || [];
   };
 
   /**

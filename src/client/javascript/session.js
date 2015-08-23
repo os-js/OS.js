@@ -143,10 +143,10 @@
    * @return  void
    */
   function createVersionStamp() {
-    var handler = OSjs.Core.getHandler();
-    var append = handler.getConfig('Core').VersionAppend;
+    var config = OSjs.API.getDefaultSettings();
+    var append = config.Core.VersionAppend;
 
-    var ver = OSjs.API.getDefaultSettings().Version || 'unknown verion';
+    var ver = config.Version || 'unknown verion';
     var cop = 'Copyright © 2011-2014 ';
     var lnk = document.createElement('a');
     lnk.href = 'mailto:andersevenrud@gmail.com';
@@ -329,8 +329,8 @@
     if ( signingOut ) { return; }
 
     try {
-      var handler = OSjs.Core.getHandler();
-      if ( handler.getConfig('Core').ShowQuitWarning ) {
+      var config = API.getDefaultSettings();
+      if ( config.Core.ShowQuitWarning ) {
         return OSjs.API._('MSG_SESSION_WARNING');
       }
     } catch ( e ) {}
@@ -351,13 +351,14 @@
     if ( _INITED ) { return; }
 
     var handler;
+    var config = OSjs.API.getDefaultSettings();
 
     function _error(msg) {
       OSjs.API.error(OSjs.API._('ERR_CORE_INIT_FAILED'), OSjs.API._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
     }
 
     function _LaunchWM(callback) {
-      var wm = handler.getConfig('WM');
+      var wm = config.WM;
       if ( !wm || !wm.exec ) {
         _error(OSjs.API._('ERR_CORE_INIT_NO_WM'));
         return;
@@ -452,7 +453,7 @@
           return;
         }
 
-        var preloads = handler.getConfig('Core').Preloads;
+        var preloads = config.Core.Preloads;
         preloads.forEach(function(val, index) {
           val.src = OSjs.Utils.checkdir(val.src);
         });
@@ -580,20 +581,18 @@
    * Autostart applications from config
    */
   function doAutostart() {
-    var handler = OSjs.Core.getHandler();
-    if ( handler ) {
-      var autostart;
+    var config = OSjs.API.getDefaultSettings();
+    var autostart;
 
-      try {
-        autostart = handler.getConfig('System').AutoStart;
-      } catch ( e ) {
-        console.warn('doAutostart() exception', e, e.stack);
-      }
+    try {
+      autostart = config.System.AutoStart;
+    } catch ( e ) {
+      console.warn('doAutostart() exception', e, e.stack);
+    }
 
-      console.info('doAutostart()', autostart);
-      if ( autostart ) {
-        OSjs.API.launchList(autostart);
-      }
+    console.info('doAutostart()', autostart);
+    if ( autostart ) {
+      OSjs.API.launchList(autostart);
     }
   }
 

@@ -35,6 +35,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationWriterWindow(app, metadata, scheme, file) {
+    var config = API.getDefaultSettings();
+
     DefaultApplicationWindow.apply(this, ['ApplicationWriterWindow', {
       allow_drop: true,
       icon: metadata.icon,
@@ -50,7 +52,7 @@
       foreground : '#000000'
     };
     this.font = {
-      name: OSjs.Core.getHandler().getConfig('Fonts')['default'],
+      name: config.Fonts['default'],
       size: 3
     };
   }

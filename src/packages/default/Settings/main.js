@@ -540,7 +540,8 @@
    */
   ApplicationSettingsWindow.prototype.initUserTab = function(wm, scheme) {
     var user = OSjs.Core.getHandler().getUserData();
-    var locales = OSjs.Core.getHandler().getConfig('Core').Languages;
+    var config = API.getDefaultSettings();
+    var locales = config.Core.Languages;
     var langs = [];
 
     Object.keys(locales).forEach(function(l) {

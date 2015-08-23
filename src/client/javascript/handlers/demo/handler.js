@@ -34,49 +34,6 @@
   OSjs.Core   = OSjs.Core   || {};
 
   /////////////////////////////////////////////////////////////////////////////
-  // DEMO STORAGE
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Storage
-   */
-  var DefaultStorage = function() {
-    if ( !OSjs.Compability.localStorage ) {
-      throw new Error('Your browser does not support localStorage :(');
-    }
-    this.prefix = 'OS.js-v2/DemoHandler/';
-
-    var curr = API.getDefaultSettings().Version;
-    var version = localStorage.getItem('__version__');
-    if ( curr !== version ) {
-      console.warn('DefaultStorage()', 'You are running', version, 'version is', curr, 'flushing for compability!');
-      localStorage.clear();
-    }
-    localStorage.setItem('__version__', String(curr));
-  };
-
-  DefaultStorage.prototype.set = function(o) {
-    console.debug('DefaultStorage::set()', o);
-    for ( var i in o ) {
-      if ( o.hasOwnProperty(i) ) {
-        localStorage.setItem(this.prefix + i, JSON.stringify(o[i]));
-      }
-    }
-  };
-
-  DefaultStorage.prototype.get = function() {
-    var ret = {};
-    for ( var i in localStorage ) {
-      if ( localStorage.hasOwnProperty(i) ) {
-        if ( i.indexOf(this.prefix) === 0 ) {
-          ret[i.replace(this.prefix, '')] = JSON.parse(localStorage[i]) || null;
-        }
-      }
-    }
-    return ret;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // DEMO HANDLER
   /////////////////////////////////////////////////////////////////////////////
 
@@ -85,8 +42,6 @@
    */
   var DemoHandler = function() {
     OSjs.Core._Handler.apply(this, arguments);
-
-    this.storage = new DefaultStorage();
   };
   DemoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
@@ -108,7 +63,6 @@
     // Use the 'demo' user
     var self = this;
     this.login('demo', 'demo', function(userData) {
-      self.settings.load(self.storage.get()); // IMPORTANT
       self.onLogin(userData, function() {
         callback();
       });
@@ -132,14 +86,6 @@
       callback(false, 'Login error: ' + error);
     });
   };
-
-  DemoHandler.prototype.saveSettings = function(callback) {
-    var settings = this.settings.get();
-    console.debug('OSjs::Handlers::DemoHandler::saveSettings()', settings);
-    this.storage.set(settings);
-    callback.call(this, true);
-  };
-
 
   //
   // Exports
