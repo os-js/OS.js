@@ -587,7 +587,7 @@
       var a = _createInstance(result);
 
       try {
-        OSjs.Helpers.SettingsManager.load(a.__name, function(settings) {
+        OSjs.Helpers.SettingsManager.load(a.__name, {}, function(settings) {
           a.init(settings, result, function() {
             setTimeout(function() {
               _done();

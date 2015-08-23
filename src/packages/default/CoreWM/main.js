@@ -225,7 +225,7 @@
       }
     });
 
-    OSjs.Helpers.SettingsManager.load(SETTING_STORAGE_NAME, function(s) {
+    OSjs.Helpers.SettingsManager.load(SETTING_STORAGE_NAME, this._settings, function(s) {
       if ( s ) {
         self.applySettings(s);
       } else {

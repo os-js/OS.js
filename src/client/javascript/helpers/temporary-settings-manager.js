@@ -31,36 +31,78 @@
 (function(Utils, VFS, API) {
   'use strict';
 
-  var SettingsManager = {};
+  var SettingsManager = {
+    storage: {}
+  };
 
+  /**
+   * Initialize SettingsManager.
+   * This is run when a user logs in. It will give saved data here
+   */
   SettingsManager.init = function(storage, callback) {
+    this.storage = storage || {};
+
     callback();
   };
 
+  /**
+   * Gets either the full tree or tree entry by key
+   */
   SettingsManager.get = function(pool, key) {
+    try {
+      return key ? this.storage[pool][key] : this.storage[pool];
+    } catch ( e ) {} // TODO: Add behaviour
     return null;
   };
 
-  SettingsManager.set = function(pool, key, value) {
-    return null;
+  /**
+   * Sets either full tree or a tree entry by key
+   */
+  SettingsManager.set = function(pool, key, value, save) {
+    try {
+      this.storage[key] = value;
+    } catch ( e ) {} // TODO: Add behaviour
+
+    if ( save ) {
+      this.save(pool, typeof save === 'function' ? save : function() {});
+    }
+
+    return true;
   };
 
+  /**
+   * Saves the storage to a location
+   */
   SettingsManager.save = function(pool, callback) {
     callback = callback || function() {};
 
     callback();
   };
 
-  SettingsManager.load = function(pool, callback) {
+  /**
+   * Loads actual data from store location
+   * Uses defaults as fallback
+   */
+  SettingsManager.load = function(pool, defaults, callback) {
     callback = callback || function() {};
 
-    callback({});
+    this.storage[pool] = defaults;
+
+    // TODO: Actual loading
+
+    callback(this.storage[pool]);
   };
 
-  SettingsManager.instance = function(pool) {
+  /**
+   * Creates a new proxy instance
+   */
+  SettingsManager.instance = function(pool, defaults) {
+    SettingsManager.set(pool, defaults);
+
     return {
       get: function() { return null; },
       set: function() { return null; },
+      load: function(defaults, callback) { return SettingsManager.load(pool, defaults, callback); },
       save: function(callback) { return SettingsManager.save(pool, callback); }
     };
   };
