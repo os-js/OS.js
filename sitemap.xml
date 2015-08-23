@@ -317,6 +317,16 @@
   <changefreq>weekly</changefreq>
 </url>
 <url>
+  <loc>http://os.js.org/doc/client/srcclientjavascriptpackage-managerjs.html</loc>
+  <lastmod>2015-07-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://os.js.org/doc/client/srcclientjavascriptsettings-managerjs.html</loc>
+  <lastmod>2015-07-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
   <loc>http://os.js.org/doc/manuals/overview.html</loc>
   <lastmod>2015-02-23T23:10:33+00:00</lastmod>
   <changefreq>weekly</changefreq>
