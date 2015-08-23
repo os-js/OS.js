@@ -224,7 +224,8 @@
     });
 
 
-    this.applySettings(this._settings.get());
+    var settings = this._settings.get();
+    this.applySettings(settings);
     callback.call(this);
   };
 

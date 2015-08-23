@@ -37,27 +37,69 @@
   };
 
   /**
+   * Overridable Wrapper for loading
+   */
+  SettingsManager._load = function(callback) {
+    var result = {};
+
+    var key;
+    for ( var i = 0; i < localStorage.length; i++ ) {
+      key = localStorage.key(i);
+      if ( key.match(/^OSjs\//) ) {
+        try {
+          result[key.replace(/^OSjs\//, '')] = JSON.parse(localStorage.getItem(key));
+        } catch ( e ) {
+          console.warn('SettingsManager::_load()', 'exception', e, e.stack);
+        }
+      }
+    }
+
+    callback(result);
+  };
+
+  /**
+   * Overridable Wrapper for saving
+   */
+  SettingsManager._save = function(pool, callback) {
+    var storage = this.storage;
+    Object.keys(storage).forEach(function(key) {
+      if ( pool && key !== pool ) {
+        return;
+      }
+
+      try {
+        localStorage.setItem('OSjs/' + key, JSON.stringify(storage[key]));
+      } catch ( e ) {
+        console.warn('SettingsManager::_save()', 'exception', e, e.stack);
+      }
+    });
+
+    callback();
+  };
+
+  /**
    * Initialize SettingsManager.
    * This is run when a user logs in. It will give saved data here
    */
-  SettingsManager.init = function(storage, callback) {
-    this.storage = storage || {};
-
-    callback();
+  SettingsManager.init = function(callback) {
+    var self = this;
+    this._load(function(storage) {
+      self.storage = storage || {};
+      callback();
+    });
   };
 
   /**
    * Gets either the full tree or tree entry by key
    */
   SettingsManager.get = function(pool, key) {
-    /*
     try {
-      return key ? this.storage[pool][key] : this.storage[pool];
+      if ( this.storage[pool] && Object.keys(this.storage[pool]).length ) {
+        return key ? this.storage[pool][key] : this.storage[pool];
+      }
     } catch ( e ) {
-      return key ? this.defaults[pool][key] : this.defaults[pool];
+      console.warn('SettingsManager::get()', 'exception', e, e.stack);
     }
-    return null;
-    */
     return key ? this.defaults[pool][key] : this.defaults[pool];
   };
 
@@ -66,11 +108,15 @@
    */
   SettingsManager.set = function(pool, key, value, save) {
     try {
-      this.storage[key] = value;
+      if ( key ) {
+        this.storage[pool][key] = value;
+      } else {
+        this.storage[pool] = value;
+      }
     } catch ( e ) {} // TODO: Add behaviour
 
     if ( save ) {
-      this.save(pool, typeof save === 'function' ? save : function() {});
+      this.save(pool, save);
     }
 
     return true;
@@ -81,8 +127,11 @@
    */
   SettingsManager.save = function(pool, callback) {
     callback = callback || function() {};
+    if ( typeof callback !== 'function' ) {
+      callback = function() {};
+    }
 
-    callback();
+    this._save(pool, callback);
   };
 
   /**

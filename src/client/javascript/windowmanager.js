@@ -491,17 +491,18 @@
    *
    * @param   Object      settings        JSON Settings
    * @param   boolean     force           If forced, no merging will take place
+   * @param   boolean     save            Saves settings
    *
    * @return  boolean                     On success
    *
    * @method  WindowManager::applySettings()
    */
-  WindowManager.prototype.applySettings = function(settings, force) {
+  WindowManager.prototype.applySettings = function(settings, force, save) {
     settings = settings || {};
     console.debug('WindowManager::applySettings()', 'forced?', force);
 
     var result = force ? settings : Utils.mergeObject(this._settings.get(), settings);
-    this._settings.set(result);
+    this._settings.set(null, result, save);
 
     return true;
   };

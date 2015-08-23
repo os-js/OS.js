@@ -209,8 +209,7 @@
         return data;
       }
 
-      OSjs.Helpers.SettingsManager.set('UserSession', getSession())
-      OSjs.Helpers.SettingsManager.save('UserSession', cb);
+      OSjs.Helpers.SettingsManager.set('UserSession', null, getSession(), cb)
     }
 
     var wm = OSjs.Core.getWindowManager();
@@ -295,7 +294,7 @@
 
     API.setLocale(locale);
 
-    OSjs.Helpers.SettingsManager.init(userData.settings, function() {
+    OSjs.Helpers.SettingsManager.init(function() {
       callback();
     });
   };
