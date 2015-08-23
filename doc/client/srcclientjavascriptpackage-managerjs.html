@@ -36,114 +36,58 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/client/javascript/helpers/zip-archiver.js</i></p>
+<p><i>src/client/javascript/package-manager.js</i></p>
 <h2>Functions</h2>
 <ul>
-<li>OSjs.Helpers.ZipArchiver.<a href="#osjs-helpers-ziparchiver-getinstance">getInstance()</a></li>
-<li>OSjs.Helpers.ZipArchiver.<a href="#osjs-helpers-ziparchiver-createinstance">createInstance()</a></li>
+<li>OSjs.Core.<a href="#osjs-core-getpackagemanager">getPackageManager()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-helpers-ziparchiver-ziparchiver">ZipArchiver</a> (OSjs.Helpers.ZipArchiver.ZipArchiver)
+<a href="#osjs-core-packagemanager">PackageManager</a> (OSjs.Core.PackageManager)
 <ul>
-<li><a href="#ziparchiver-extract">extract()</a></li>
+<li><a href="#packagemanager-load">load()</a></li>
+<li><a href="#packagemanager-_loadmetadata">_loadMetadata()</a></li>
+<li><a href="#packagemanager-generateusermetadata">generateUserMetadata()</a></li>
+<li><a href="#packagemanager-_addpackages">_addPackages()</a></li>
+<li><a href="#packagemanager-getpackage">getPackage()</a></li>
+<li><a href="#packagemanager-getpackages">getPackages()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<div class="section-function" id="osjs-helpers-ziparchiver-getinstance">
-<h2 id="osjs-helpers-ziparchiver-getinstance-">OSjs.Helpers.ZipArchiver.getInstance()</h2>
+<div class="section-function" id="osjs-core-getpackagemanager">
+<h2 id="osjs-core-getpackagemanager-">OSjs.Core.getPackageManager()</h2>
 <pre>
-Gets the currently running instance
+Get the current PackageManager instance
 </pre>
 
 
 
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>ZipArchiver</u> <em>Can also be null</em></p>
-
-</div>
-<div class="section-function" id="osjs-helpers-ziparchiver-createinstance">
-<h2 id="osjs-helpers-ziparchiver-createinstance-args-callback-">OSjs.Helpers.ZipArchiver.createInstance(args, callback)</h2>
-<pre>
-Create an instance of ZipArchiver
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>args</td>
-<td>Object</td>
-<td>Arguments</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, instance)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>scope</td>
-<td>Array</td>
-<td>What scope to load</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>PackageManager</u></p>
 
 </div>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-helpers-ziparchiver-ziparchiver">
-<h2 id="ziparchiver">ZipArchiver</h2>
+<div class="section-class" id="osjs-core-packagemanager">
+<h2 id="packagemanager">PackageManager</h2>
 <pre>
-The GoogleAPI wrapper class
+Package Manager Class
 
-This is a private class and can only be aquired through
+For maintaining packages
 
-OSjs.Helpers.ZipArchiver.createInsatance()
-
-Generally you want to create an instance of this helper
-
-and when successfully created use `window.zip` use the instance helpers.
-
-@private
+You can only get an instance with `Core.getPackageManager()`
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Helpers.ZipArchiver.ZipArchiver</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Helpers.ZipArchiver.createInsatance()</li>
+<li>OSjs.Core.PackageManager</li>
 </ul>
 
-<div class="section-method" id="ziparchiver-extract">
-<h3 id="ziparchiver-extract-file-destination-args-">ZipArchiver::extract(file, destination, args)</h3>
+<div class="section-method" id="packagemanager-load">
+<h3 id="packagemanager-load-callback-">PackageManager::load(callback)</h3>
 <pre>
-Extract a File to destination
+Load Metadata from server and set packages
 </pre>
 
 
@@ -158,23 +102,24 @@ Extract a File to destination
 </thead>
 <tbody>
 <tr>
-<td>file</td>
-<td>OSjs.VFS.File</td>
-<td>File to extract</td>
-</tr>
-<tr>
-<td>destination</td>
-<td>String</td>
-<td>Destination path</td>
-</tr>
-<tr>
-<td>args</td>
-<td>Object</td>
-<td>Arguments</td>
+<td>callback</td>
+<td>Function</td>
+<td>callback</td>
 </tr>
 </tbody>
 </table>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="packagemanager-_loadmetadata">
+<h3 id="packagemanager-_loadmetadata-callback-">PackageManager::_loadMetadata(callback)</h3>
+<pre>
+Internal method for loading all package metadata
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
@@ -185,19 +130,94 @@ Extract a File to destination
 </thead>
 <tbody>
 <tr>
-<td>onprogress</td>
+<td>callback</td>
 <td>Function</td>
-<td>Callback on progress =&gt; fn(filename, currentIndex, totalIndex)</td>
-</tr>
-<tr>
-<td>oncomplete</td>
-<td>Function</td>
-<td>Callback on complete =&gt; fn(error, warnings, result)</td>
+<td>callback</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="packagemanager-generateusermetadata">
+<h3 id="packagemanager-generateusermetadata-callback-">PackageManager::generateUserMetadata(callback)</h3>
+<pre>
+Generates user-installed package metadata (on runtime)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>callback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="packagemanager-_addpackages">
+<h3 id="packagemanager-_addpackages-">PackageManager::_addPackages()</h3>
+<pre>
+Add a list of packages
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="packagemanager-getpackage">
+<h3 id="packagemanager-getpackage-name-">PackageManager::getPackage(name)</h3>
+<pre>
+Get package by name
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>Package name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
+
+</div>
+<div class="section-method" id="packagemanager-getpackages">
+<h3 id="packagemanager-getpackages-">PackageManager::getPackages()</h3>
+<pre>
+Get all packages
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Array</u></p>
 
 </div>
 </div>

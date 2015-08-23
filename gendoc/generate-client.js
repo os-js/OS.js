@@ -17,7 +17,7 @@ Array.prototype.unique = function(){
 
 (function(_fs, _path, _markdown) {
   var ROOT = _path.join(__dirname, 'OS.js');
-  var TPLDIR = _path.join(ROOT, 'src', 'tools', 'templates');
+  var TPLDIR = _path.join(ROOT, 'src', 'templates');
   var OUTDIR = _path.join(__dirname, 'output', 'client');
 
   var NAMESPACES = [];
@@ -627,6 +627,8 @@ Array.prototype.unique = function(){
     'src/client/javascript/vfs.js',
     'src/client/javascript/gui.js',
     'src/client/javascript/utils.js',
+    'src/client/javascript/settings-manager.js',
+    'src/client/javascript/package-manager.js',
 
     'src/client/javascript/helpers/default-application.js',
     'src/client/javascript/helpers/iframe-application.js',

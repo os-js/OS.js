@@ -36,114 +36,60 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/client/javascript/helpers/zip-archiver.js</i></p>
+<p><i>src/client/javascript/settings-manager.js</i></p>
 <h2>Functions</h2>
 <ul>
-<li>OSjs.Helpers.ZipArchiver.<a href="#osjs-helpers-ziparchiver-getinstance">getInstance()</a></li>
-<li>OSjs.Helpers.ZipArchiver.<a href="#osjs-helpers-ziparchiver-createinstance">createInstance()</a></li>
+<li>OSjs.Core.<a href="#osjs-core-getsettingsmanager">getSettingsManager()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-helpers-ziparchiver-ziparchiver">ZipArchiver</a> (OSjs.Helpers.ZipArchiver.ZipArchiver)
+<a href="#osjs-core-settingsmanager">SettingsManager</a> (OSjs.Core.SettingsManager)
 <ul>
-<li><a href="#ziparchiver-extract">extract()</a></li>
+<li><a href="#settingsmanager-init">init()</a></li>
+<li><a href="#settingsmanager-get">get()</a></li>
+<li><a href="#settingsmanager-set">set()</a></li>
+<li><a href="#settingsmanager-save">save()</a></li>
+<li><a href="#settingsmanager-defaults">defaults()</a></li>
+<li><a href="#settingsmanager-instance">instance()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<div class="section-function" id="osjs-helpers-ziparchiver-getinstance">
-<h2 id="osjs-helpers-ziparchiver-getinstance-">OSjs.Helpers.ZipArchiver.getInstance()</h2>
+<div class="section-function" id="osjs-core-getsettingsmanager">
+<h2 id="osjs-core-getsettingsmanager-">OSjs.Core.getSettingsManager()</h2>
 <pre>
-Gets the currently running instance
+Get the current SettingsManager instance
 </pre>
 
 
 
 <h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>ZipArchiver</u> <em>Can also be null</em></p>
-
-</div>
-<div class="section-function" id="osjs-helpers-ziparchiver-createinstance">
-<h2 id="osjs-helpers-ziparchiver-createinstance-args-callback-">OSjs.Helpers.ZipArchiver.createInstance(args, callback)</h2>
-<pre>
-Create an instance of ZipArchiver
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>args</td>
-<td>Object</td>
-<td>Arguments</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(error, instance)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>scope</td>
-<td>Array</td>
-<td>What scope to load</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>SettingsManager</u></p>
 
 </div>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-helpers-ziparchiver-ziparchiver">
-<h2 id="ziparchiver">ZipArchiver</h2>
+<div class="section-class" id="osjs-core-settingsmanager">
+<h2 id="settingsmanager">SettingsManager</h2>
 <pre>
-The GoogleAPI wrapper class
+Settings Manager Class
 
-This is a private class and can only be aquired through
+For maintaining settings
 
-OSjs.Helpers.ZipArchiver.createInsatance()
-
-Generally you want to create an instance of this helper
-
-and when successfully created use `window.zip` use the instance helpers.
-
-@private
+You can only get an instance with `Core.getSettingsManager()`
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Helpers.ZipArchiver.ZipArchiver</li>
-</ul>
-<h4 id="see">See</h4>
-<ul>
-<li>OSjs.Helpers.ZipArchiver.createInsatance()</li>
+<li>OSjs.Core.SettingsManager</li>
 </ul>
 
-<div class="section-method" id="ziparchiver-extract">
-<h3 id="ziparchiver-extract-file-destination-args-">ZipArchiver::extract(file, destination, args)</h3>
+<div class="section-method" id="settingsmanager-init">
+<h3 id="settingsmanager-init-settings-">SettingsManager::init(settings)</h3>
 <pre>
-Extract a File to destination
+Initialize SettingsManager.
+
+This is run when a user logs in. It will give saved data here
 </pre>
 
 
@@ -158,23 +104,24 @@ Extract a File to destination
 </thead>
 <tbody>
 <tr>
-<td>file</td>
-<td>OSjs.VFS.File</td>
-<td>File to extract</td>
-</tr>
-<tr>
-<td>destination</td>
-<td>String</td>
-<td>Destination path</td>
-</tr>
-<tr>
-<td>args</td>
+<td>settings</td>
 <td>Object</td>
-<td>Arguments</td>
+<td>Entire settings tree</td>
 </tr>
 </tbody>
 </table>
-<h4 id="options-for-args-">Options for <em>args</em></h4>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="settingsmanager-get">
+<h3 id="settingsmanager-get-pool-key-">SettingsManager::get(pool, key)</h3>
+<pre>
+Gets either the full tree or tree entry by key
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
@@ -185,19 +132,161 @@ Extract a File to destination
 </thead>
 <tbody>
 <tr>
-<td>onprogress</td>
-<td>Function</td>
-<td>Callback on progress =&gt; fn(filename, currentIndex, totalIndex)</td>
+<td>pool</td>
+<td>String</td>
+<td>Name of settings pool</td>
 </tr>
 <tr>
-<td>oncomplete</td>
+<td>key</td>
+<td>String</td>
+<td>(Optional) Key entry of tree</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u></p>
+
+</div>
+<div class="section-method" id="settingsmanager-set">
+<h3 id="settingsmanager-set-pool-key-value-save-">SettingsManager::set(pool, key, value, save)</h3>
+<pre>
+Sets either full tree or a tree entry by key
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pool</td>
+<td>String</td>
+<td>Name of settings pool</td>
+</tr>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>(Optional) Key entry of tree</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>The value (or entire tree if no key given)</td>
+</tr>
+<tr>
+<td>save</td>
+<td>Mixed</td>
+<td>(Optional) boolean or callback function for saving</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="settingsmanager-save">
+<h3 id="settingsmanager-save-pool-callback-">SettingsManager::save(pool, callback)</h3>
+<pre>
+Saves the storage to a location
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pool</td>
+<td>String</td>
+<td>Name of settings pool</td>
+</tr>
+<tr>
+<td>callback</td>
 <td>Function</td>
-<td>Callback on complete =&gt; fn(error, warnings, result)</td>
+<td>Callback</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returns">Returns</h4>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="settingsmanager-defaults">
+<h3 id="settingsmanager-defaults-pool-default-">SettingsManager::defaults(pool, default)</h3>
+<pre>
+Sets the defaults for a spesific pool
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pool</td>
+<td>String</td>
+<td>Name of settings pool</td>
+</tr>
+<tr>
+<td>default</td>
+<td>Object</td>
+<td>(Optional) Default settings tree</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="settingsmanager-instance">
+<h3 id="settingsmanager-instance-pool-default-">SettingsManager::instance(pool, default)</h3>
+<pre>
+Creates a new proxy instance
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pool</td>
+<td>String</td>
+<td>Name of settings pool</td>
+</tr>
+<tr>
+<td>default</td>
+<td>Object</td>
+<td>(Optional) Default settings tree</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
 
 </div>
 </div>
