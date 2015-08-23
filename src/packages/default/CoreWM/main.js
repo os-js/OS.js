@@ -94,10 +94,8 @@
    * Application
    */
   var CoreWM = function(args, metadata) {
-    WindowManager.apply(this, ['CoreWM', this, args, metadata]);
+    WindowManager.apply(this, ['CoreWM', this, args, metadata, _DefaultSettings(args.defaults || {})]);
 
-    this._defaults      = (args.defaults || {});
-    this._settings      = _DefaultSettings(this._defaults);
     this.panels         = [];
     this.switcher       = null;
     this.iconView       = null;
@@ -225,15 +223,9 @@
       }
     });
 
-    OSjs.Helpers.SettingsManager.load(SETTING_STORAGE_NAME, this._settings, function(s) {
-      if ( s ) {
-        self.applySettings(s);
-      } else {
-        self.applySettings(_DefaultSettings(self._defaults), true);
-      }
 
-      callback.call(self);
-    });
+    this.applySettings(this._settings.get());
+    callback.call(this);
   };
 
   CoreWM.prototype.initDesktop = function() {

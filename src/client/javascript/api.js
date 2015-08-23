@@ -583,24 +583,23 @@
       var a = _createInstance(result);
 
       try {
-        OSjs.Helpers.SettingsManager.load(a.__name, {}, function(settings) {
-          a.init(settings, result, function() {
-            setTimeout(function() {
-              _done();
-            }, 100);
-          });
-          onFinished(a, result);
-
-          OSjs.Session.triggerHook('onApplicationLaunched', [{
-            application: a,
-            name: n,
-            args: arg,
-            settings: settings,
-            metadata: result
-          }]);
-
-          console.groupEnd();
+        var settings = OSjs.Helpers.SettingsManager.get(a.__name);
+        a.init(settings, result, function() {
+          setTimeout(function() {
+            _done();
+          }, 100);
         });
+        onFinished(a, result);
+
+        OSjs.Session.triggerHook('onApplicationLaunched', [{
+          application: a,
+          name: n,
+          args: arg,
+          settings: settings,
+          metadata: result
+        }]);
+
+        console.groupEnd();
       } catch ( ex ) {
         console.warn('Error on init() application', ex, ex.stack);
         _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);

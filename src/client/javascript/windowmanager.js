@@ -324,14 +324,14 @@
    * @extends Process
    * @class
    */
-  var WindowManager = function(name, ref, args, metadata) {
+  var WindowManager = function(name, ref, args, metadata, settings) {
     console.group('WindowManager::constructor()');
     console.log('Name', name);
     console.log('Arguments', args);
 
     this._$notifications = null;
     this._windows        = [];
-    this._settings       = {};
+    this._settings       = OSjs.Helpers.SettingsManager.instance(name, settings);
     this._currentWin     = null;
     this._lastWin        = null;
     this._mouselock      = true;
@@ -500,11 +500,8 @@
     settings = settings || {};
     console.debug('WindowManager::applySettings()', 'forced?', force);
 
-    if ( force ) {
-      this._settings = settings;
-    } else {
-      this._settings = Utils.mergeObject(this._settings, settings);
-    }
+    var result = force ? settings : Utils.mergeObject(this._settings.get(), settings);
+    this._settings.set(result);
 
     return true;
   };
@@ -791,26 +788,7 @@
    * @method  WindowManager::setSetting()
    */
   WindowManager.prototype.setSetting = function(k, v) {
-    if ( v !== null ) {
-      if ( typeof this._settings[k] !== 'undefined' ) {
-        if ( (typeof this._settings[k] === 'object') && !(this._settings[k] instanceof Array) ) {
-          if ( typeof v === 'object' ) {
-            Object.keys(v).forEach(function(i) {
-              if ( this._settings[k].hasOwnProperty(i) ) {
-                if ( v[i] !== null ) {
-                  this._settings[k][i] = v[i];
-                }
-              }
-            });
-            return true;
-          }
-        } else {
-          this._settings[k] = v;
-          return true;
-        }
-      }
-    }
-    return false;
+    return this._settings.set(k, v);
   };
 
   /**
@@ -852,10 +830,7 @@
    * @method  WindowManager::getSetting()
    */
   WindowManager.prototype.getSetting = function(k) {
-    if ( typeof this._settings[k] !== 'undefined' ) {
-      return this._settings[k];
-    }
-    return null;
+    return this._settings.get(k);
   };
 
   /**
@@ -866,7 +841,7 @@
    * @method    WindowManager::getSettings()
    */
   WindowManager.prototype.getSettings = function() {
-    return this._settings;
+    return this._settings.get();
   };
 
   /**

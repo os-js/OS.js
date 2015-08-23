@@ -32,7 +32,8 @@
   'use strict';
 
   var SettingsManager = {
-    storage: {}
+    storage: {},
+    defaults: {}
   };
 
   /**
@@ -49,10 +50,15 @@
    * Gets either the full tree or tree entry by key
    */
   SettingsManager.get = function(pool, key) {
+    /*
     try {
       return key ? this.storage[pool][key] : this.storage[pool];
-    } catch ( e ) {} // TODO: Add behaviour
+    } catch ( e ) {
+      return key ? this.defaults[pool][key] : this.defaults[pool];
+    }
     return null;
+    */
+    return key ? this.defaults[pool][key] : this.defaults[pool];
   };
 
   /**
@@ -80,29 +86,23 @@
   };
 
   /**
-   * Loads actual data from store location
-   * Uses defaults as fallback
+   * Sets the defaults for a spesific pool
    */
-  SettingsManager.load = function(pool, defaults, callback) {
-    callback = callback || function() {};
-
-    this.storage[pool] = defaults;
-
-    // TODO: Actual loading
-
-    callback(this.storage[pool]);
+  SettingsManager.defaults = function(pool, defaults) {
+    this.defaults[pool] = defaults;
   };
 
   /**
    * Creates a new proxy instance
    */
   SettingsManager.instance = function(pool, defaults) {
-    SettingsManager.set(pool, defaults);
+    if ( arguments.length > 1 ) {
+      SettingsManager.defaults(pool, defaults);
+    }
 
     return {
       get: function(key) { return SettingsManager.get(pool, key); },
       set: function(key, value, save) { return SettingsManager.set(pool, key, value, save); },
-      load: function(defaults, callback) { return SettingsManager.load(pool, defaults, callback); },
       save: function(callback) { return SettingsManager.save(pool, callback); }
     };
   };
