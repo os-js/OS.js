@@ -35,125 +35,6 @@
   OSjs.Helpers      = OSjs.Helpers      || {};
 
   /////////////////////////////////////////////////////////////////////////////
-  // Default Application Window Helper
-  /////////////////////////////////////////////////////////////////////////////
-
-  function DefaultApplicationWindow(name, app, args, scheme, file) {
-    Window.apply(this, arguments);
-    this.currentFile = file ? new VFS.File(file) : null;
-    this.hasChanged = false;
-  }
-
-  DefaultApplicationWindow.prototype = Object.create(Window.prototype);
-  DefaultApplicationWindow.constructor = Window;
-
-  DefaultApplicationWindow.prototype.init = function(wm, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
-    return root;
-  };
-
-  DefaultApplicationWindow.prototype._inited = function() {
-    var result = Window.prototype._inited.apply(this, arguments);
-    var self = this;
-    var app = this._app;
-
-    var menuMap = {
-      MenuNew:    function() { app.newDialog(self.currentFile, self); },
-      MenuSave:   function() { app.saveDialog(self.currentFile, self); },
-      MenuSaveAs: function() { app.saveDialog(self.currentFile, self, true); },
-      MenuOpen:   function() { app.openDialog(self.currentFile, self); },
-      MenuClose:  function() { self._close(); }
-    };
-
-    this._scheme.find(this, 'SubmenuFile').on('select', function(ev) {
-      if ( menuMap[ev.detail.id] ) { menuMap[ev.detail.id](); }
-    });
-
-    this._scheme.find(this, 'MenuSave').set('disabled', true);
-
-    // Load given file
-    if ( this.currentFile ) {
-      if ( !this._app.openFile(this.currentFile, this) ) {
-        this.currentFile = null;
-      }
-    }
-
-    return result;
-  };
-
-  DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
-
-    if ( type === 'itemDrop' && item ) {
-      var data = item.data;
-      if ( data && data.type === 'file' && data.mime ) {
-        this._app.openFile(new VFS.File(data), this);
-      }
-    }
-  };
-
-  DefaultApplicationWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
-    this.currentFile = null;
-  };
-
-  DefaultApplicationWindow.prototype._close = function() {
-    var self = this;
-
-    if ( this.hasChanged ) {
-      this.checkHasChanged(function(discard) {
-        if ( discard ) {
-          self.hasChanged = false; // IMPORTANT
-          self._close();
-        }
-      });
-      return;
-    }
-
-    Window.prototype._close.apply(this, arguments);
-  };
-
-  DefaultApplicationWindow.prototype.checkHasChanged = function(cb) {
-    var self = this;
-
-    if ( this.hasChanged ) {
-      this._toggleDisabled(true);
-
-      API.createDialog('Confirm', {
-        buttons: ['yes', 'no'],
-        message: API._('MSG_GENERIC_APP_DISCARD')
-      }, function(ev, button) {
-        self._toggleDisabled(false);
-        cb(button === 'ok' || button === 'yes');
-      });
-      return;
-    }
-
-    cb(true);
-  };
-
-  DefaultApplicationWindow.prototype.showFile = function(file, content) {
-    this.updateFile(file);
-  };
-
-  DefaultApplicationWindow.prototype.updateFile = function(file) {
-    this.currentFile = file || null;
-    this.hasChanged = false;
-
-    this._scheme.find(this, 'MenuSave').set('disabled', !file);
-
-    if ( file ) {
-      this._setTitle(file.filename, true);
-    } else {
-      this._setTitle();
-    }
-  };
-
-  DefaultApplicationWindow.prototype.getFileData = function() {
-    return null;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // Default Application Helper
   /////////////////////////////////////////////////////////////////////////////
 
@@ -176,11 +57,17 @@
   DefaultApplication.prototype.init = function(settings, metadata, onInited, onLoaded) {
     Application.prototype.init.call(this, settings, metadata, onInited);
 
+    var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
     var file = this._getArgument('file');
+
     scheme.load(function(error, result) {
-      onLoaded(scheme, file);
+      if ( error ) {
+        console.error('DefaultApplication::init()', 'Scheme::load()', error, self);
+      } else {
+        onLoaded(scheme, file);
+      }
 
       onInited();
     });
@@ -343,7 +230,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Helpers.DefaultApplication       = DefaultApplication;
-  OSjs.Helpers.DefaultApplicationWindow = DefaultApplicationWindow;
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.VFS, OSjs.API, OSjs.GUI);
 
