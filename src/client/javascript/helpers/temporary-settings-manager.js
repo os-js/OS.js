@@ -97,10 +97,13 @@
       if ( this.storage[pool] && Object.keys(this.storage[pool]).length ) {
         return key ? this.storage[pool][key] : this.storage[pool];
       }
+
+      return key ? this.defaults[pool][key] : this.defaults[pool];
     } catch ( e ) {
       console.warn('SettingsManager::get()', 'exception', e, e.stack);
     }
-    return key ? this.defaults[pool][key] : this.defaults[pool];
+
+    return false;
   };
 
   /**
@@ -109,6 +112,9 @@
   SettingsManager.set = function(pool, key, value, save) {
     try {
       if ( key ) {
+        if ( typeof this.storage[pool] === 'undefined' ) {
+          this.storage[pool] = {};
+        }
         this.storage[pool][key] = value;
       } else {
         this.storage[pool] = value;
