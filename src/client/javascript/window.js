@@ -173,6 +173,14 @@
         throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
       }
 
+      if ( appRef && !(appRef instanceof OSjs.Core.Application) ) {
+        throw new Error('appRef given was not instance of Application');
+      }
+
+      if ( schemeRef && !(schemeRef instanceof OSjs.GUI.Scheme) ) {
+        throw new Error('schemeRef given was not instance of Scheme');
+      }
+
       opts = Utils.argumentDefaults(opts, {
         icon: API.getThemeResource('wm.png', 'wm'),
         width: _DEFAULT_WIDTH,
