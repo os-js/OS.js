@@ -87,74 +87,6 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // MISC
-  /////////////////////////////////////////////////////////////////////////////
-
-  function generateFrost(twin, cb) {
-    cb = cb || function() {};
-
-    if ( !window.html2canvas ) {
-      cb();
-      return;
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    var theme = wm ? wm.getStyleTheme(true) : null;
-    var enabled = theme && theme.style && (theme.style.frost === true);
-    twin._$element.removeAttribute('data-html2canvas-ignore');
-
-    if ( !enabled && twin._$frost ) {
-      destroyFrost(twin);
-    }
-
-    if ( twin._state.minimized || !enabled ) {
-      cb();
-      return;
-    }
-
-
-    if ( !twin._$frost ) {
-      twin._$frost = document.createElement('canvas');
-      twin._$frost.className = 'WindowFrost';
-    }
-
-    if ( !twin._$frost.parentNode ) {
-      twin._$top.appendChild(twin._$frost);
-    }
-
-    twin._$element.setAttribute('data-html2canvas-ignore', 'true');
-    window.html2canvas(document.body).then(function(c) {
-      twin._$element.removeAttribute('data-html2canvas-ignore');
-      twin._$frostc = c;
-      updateFrost.call(twin);
-      cb();
-    });
-  }
-
-  function updateFrost(twin) {
-    if ( !twin._$frost || !twin._$frostc ) { return; }
-
-    var rect = {
-      x: twin._position.x,
-      y: twin._position.y,
-      h: 32,
-      w: twin._dimension.w
-    };
-
-    twin._$frost.width = rect.w;
-    twin._$frost.height = rect.h;
-    twin._$frost.getContext('2d').drawImage(twin._$frostc, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
-  }
-
-  function destroyFrost(twin) {
-    if ( twin._$frost && twin._$frost.parentNode ) {
-      twin._$frost.parentNode.removeChild(twin._$frost);
-    }
-    twin._$frost = null;
-    twin._$frostc = null;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
@@ -227,12 +159,10 @@
   };
 
   CoreWM.prototype.destroyPanels = function() {
-    if ( this.panels.length ) {
-      for ( var i = 0; i < this.panels.length; i++ ) {
-        this.panels[i].destroy();
-      }
-      this.panels = [];
-    }
+    this.panels.forEach(function(p) {
+      p.destroy();
+    });
+    this.panels = [];
   };
 
   // Copy from Application
@@ -261,97 +191,6 @@
       return w;
     }
     return false;
-  };
-
-  CoreWM.prototype.addWindow = function(w, focus) {
-    var self = this;
-    var ret = WindowManager.prototype.addWindow.apply(this, arguments);
-
-    // Add the frosty effect (if available)
-    /*
-    if ( this._currentWin && (this._currentWin._wid !== w._wid) && this._sessionLoaded ) {
-      generateFrost(this._currentWin);
-    }
-
-    w._addHook('destroy', function() {
-      destroyFrost(this);
-    });
-    w._addHook('maximize', function() {
-      generateFrost(this);
-    });
-    w._addHook('restore', function() {
-      generateFrost(this);
-    });
-    w._addHook('resized', function() {
-      generateFrost(this);
-    });
-    w._addHook('resize', function() {
-      updateFrost(this);
-    });
-    w._addHook('move', function() {
-      updateFrost(this);
-    });
-    w._addHook('focus', function() {
-      if ( self._sessionLoaded ) {
-        generateFrost(this);
-      }
-    });
-    */
-
-    return ret;
-  };
-
-  CoreWM.prototype.removeWindow = function(w) {
-    var self = this;
-    var result = WindowManager.prototype.removeWindow.apply(this, arguments);
-
-    /*
-    if ( result ) {
-      setTimeout(function() {
-        if ( self._currentWin ) {
-          self._currentWin._generateFrost();
-        }
-      }, this.getAnimDuration()+100);
-    }
-    */
-
-    return result;
-  };
-
-  CoreWM.prototype.onSessionLoaded = function() {
-    var result = WindowManager.prototype.onSessionLoaded.apply(this, arguments);
-    var self = this;
-    /*
-    if ( result ) {
-      setTimeout(function() {
-        self._frostWindows();
-      }, 500);
-    }
-    */
-    return result;
-  };
-
-  CoreWM.prototype._frostWindows = function() {
-    var idx = 0;
-    var total = this._windows.length;
-    var self = this;
-
-    function _next() {
-      if ( idx >= total ) {
-        return;
-      }
-      var win = self._windows[idx];
-      idx++;
-
-      if ( win ) {
-        generateFrost(win, function() {
-          _next();
-        });
-      } else {
-        _next();
-      }
-    }
-    _next();
   };
 
   //
@@ -414,40 +253,35 @@
   CoreWM.prototype.initPanels = function(applySettings) {
     var ps = this.getSetting('panels');
     var added = false;
-    var p, i;
+    var self = this;
 
     if ( ps === false ) {
       added = true;
     } else {
       this.destroyPanels();
-      if ( ps && ps.length ) {
-        var j, n;
-        for ( i = 0; i < ps.length; i++ ) {
-          p = new OSjs.Applications.CoreWM.Panel('Default', ps[i].options, this);
-          p.init(document.body);
 
-          if ( ps[i].items && ps[i].items.length ) {
-            for ( j = 0; j < ps[i].items.length; j++ ) {
-              try {
-                n = ps[i].items[j];
-                p.addItem(new OSjs.Applications.CoreWM.PanelItems[n.name]());
-                added = true;
-              } catch ( e ) {
-                console.warn('An error occured while creating PanelItem', e);
-                console.warn('stack', e.stack);
+      (ps || []).forEach(function(storedItem) {
+        var p = new OSjs.Applications.CoreWM.Panel('Default', storedItem.options, self);
+        p.init(document.body);
 
-                this.notification({
-                  icon: 'status/important.png',
-                  title: 'CoreWM',
-                  message: OSjs.Applications.CoreWM._('An error occured while creating PanelItem: {0}', e)
-                });
-              }
-            }
+        (storedItem.items || []).forEach(function(iter) {
+          try {
+            p.addItem(new OSjs.Applications.CoreWM.PanelItems[iter.name]());
+            added = true;
+          } catch ( e ) {
+            console.warn('An error occured while creating PanelItem', e);
+            console.warn('stack', e.stack);
+
+            self.notification({
+              icon: 'status/important.png',
+              title: 'CoreWM',
+              message: OSjs.Applications.CoreWM._('An error occured while creating PanelItem: {0}', e)
+            });
           }
+        });
 
-          this.panels.push(p);
-        }
-      }
+        self.panels.push(p);
+      });
     }
 
     if ( !added ) {
@@ -461,18 +295,15 @@
 
     if ( applySettings ) {
       // Workaround for windows appearing behind panel
-      p = this.panels[0];
+      var p = this.panels[0];
       if ( p && p.getOntop() && p.getPosition('top') ) {
-        var iter;
         var space = this.getWindowSpace();
-        for ( i = 0; i < this._windows.length; i++ ) {
-          iter = this._windows[i];
-          if ( !iter ) { continue; }
-          if ( iter._position.y < space.top ) {
+        this._windows.forEach(function(iter) {
+          if ( iter && iter._position.y < space.top ) {
             console.warn('CoreWM::initPanels()', 'I moved this window because it overlapped with a panel!', iter);
             iter._move(iter._position.x, space.top);
           }
-        }
+        });
       }
 
       if ( this.iconView ) {
@@ -686,16 +517,15 @@
   CoreWM.prototype.eventWindow = function(ev, win) {
     // Make sure panel items are updated correctly
     // FIXME: This is not compatible with other PanelItems
-    var panel, panelItem;
-    for ( var i = 0; i < this.panels.length; i++ ) {
-      panel = this.panels[i];
+
+    this.panels.forEach(function(panel) {
       if ( panel ) {
-        panelItem = panel.getItem(OSjs.Applications.CoreWM.PanelItems.WindowList);
+        var panelItem = panel.getItem(OSjs.Applications.CoreWM.PanelItems.WindowList);
         if ( panelItem ) {
           panelItem.update(ev, win);
         }
       }
-    }
+    });
 
     // Unfocus IconView if we focus a window
     if ( ev === 'focus' ) {
@@ -987,8 +817,6 @@
       this.createStylesheet(styles);
     }
 
-    //this._frostWindows();
-
     return true;
   };
 
@@ -1021,11 +849,9 @@
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
     var d = this.getSetting('desktopMargin');
 
-    var p, ph;
-    for ( var i = 0; i < this.panels.length; i++ ) {
-      p = this.panels[i];
+    this.panels.forEach(function(p) {
       if ( p && p.getOntop() ) {
-        ph = p.getHeight();
+        var ph = p.getHeight();
         if ( p.getAutohide() ) {
           s.top    += PADDING_PANEL_AUTOHIDE;
           s.height -= PADDING_PANEL_AUTOHIDE;
@@ -1036,7 +862,7 @@
           s.height -= ph;
         }
       }
-    }
+    });
 
     if ( !noMargin ) {
       if ( d > 0 ) {
@@ -1058,20 +884,15 @@
     pos.x += m || 0;
     pos.y += m || 0;
 
-    var p;
-    for ( var i = 0; i < this.panels.length; i++ ) {
-      p = this.panels[i];
-      if ( p && p.getOntop() ) {
-        if ( p.getPosition('top') ) {
-          if ( p.getAutohide() ) {
-            pos.y += PADDING_PANEL_AUTOHIDE;
-          } else {
-            pos.y += p.getHeight();
-          }
-
+    this.panels.forEach(function(p) {
+      if ( p && p.getOntop() && p.getPosition('top') ) {
+        if ( p.getAutohide() ) {
+          pos.y += PADDING_PANEL_AUTOHIDE;
+        } else {
+          pos.y += p.getHeight();
         }
       }
-    }
+    });
 
     return pos;
   };

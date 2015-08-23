@@ -85,25 +85,22 @@
     this._$container = document.createElement('corewm-panel-container');
     this._$element = document.createElement('corewm-panel');
 
-    this._$element.onmousedown = function(ev) {
+    Utils.$bind(this._$element, 'mousedown', function(ev) {
       ev.preventDefault();
-      return false;
-    };
-    this._$element.onmouseover = function(ev) {
+    });
+    Utils.$bind(this._$element, 'mouseover', function(ev) {
       self.onMouseOver(ev);
-    };
-    this._$element.onmouseout = function(ev) {
+    });
+    Utils.$bind(this._$element, 'mouseout', function(ev) {
       self.onMouseOut(ev);
-    };
-    this._$element.onclick = function(ev) {
+    });
+    Utils.$bind(this._$element, 'click', function(ev) {
       OSjs.API.blurMenu();
-    };
-    this._$element.oncontextmenu = function(ev) {
+    });
+    Utils.$bind(this._$element, 'contextmenu', function(ev) {
       createMenu(ev);
-      return false;
-    };
-
-    document.addEventListener('mouseout', function(ev) {
+    });
+    Utils.$bind(document, 'mouseout', function(ev) {
       self.onMouseLeave(ev);
     }, false);
 
@@ -119,23 +116,15 @@
     this._clearTimeouts();
 
     var self = this;
-    document.removeEventListener('mouseout', function(ev) {
+    Utils.$unbind(document, 'mouseout', function(ev) {
       self.onMouseLeave(ev);
     }, false);
 
-    for ( var i = 0; i < this._items.length; i++ ) {
-      this._items[i].destroy();
-    }
+    this._items.forEach(function(item) {
+      item.destroy();
+    });
     this._items = [];
-
-    if ( this._$element && this._$element.parentNode ) {
-      this._$element.onmousedown = null;
-      this._$element.onclick = null;
-      this._$element.oncontextmenu = null;
-      this._$element.parentNode.removeChild(this._$element);
-      this._$element = null;
-    }
-
+    this._$element = Utils.$remove(this._$element);
     this._$container = null;
   };
 
@@ -225,16 +214,19 @@
 
   Panel.prototype.getItem = function(type, multiple) {
     var result = multiple ? [] : null;
-    for ( var i = 0; i < this._items.length; i++ ) {
-      if ( this._items[i] instanceof type ) {
+
+    this._items.forEach(function(item, idx) {
+      if ( item instanceof type ) {
         if ( multiple ) {
-          result.push(this._items[i]);
+          result.push(item);
         } else {
-          result = this._items[i];
-          break;
+          result = item;
+          return false;
         }
       }
-    }
+      return true;
+    });
+
     return result;
   };
 
@@ -279,12 +271,7 @@
   };
 
   PanelItem.prototype.destroy = function() {
-    if ( this._$root ) {
-      if ( this._$root.parentNode ) {
-        this._$root.parentNode.removeChild(this._$root);
-      }
-      this._$root = null;
-    }
+    this._$root = Utils.$remove(this._$root);
   };
 
   PanelItem.prototype.getRoot = function() {
