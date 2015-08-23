@@ -51,7 +51,7 @@
    * Create default application menu with categories (sub-menus)
    */
   function doBuildCategoryMenu(ev) {
-    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
+    var apps = OSjs.Helpers.PackageManager.get().getPackages();
     var list = [];
     var cats = {};
 

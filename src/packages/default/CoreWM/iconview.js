@@ -169,7 +169,7 @@
     try {
       if ( data.mime === 'osjs/application' ) {
         var appname = Utils.filename(data.path);
-        var apps = OSjs.Core.getHandler().getApplicationsMetadata();
+        var apps = OSjs.Helpers.PackageManager.get().getPackages();
         var meta = apps[appname];
 
         iter = {

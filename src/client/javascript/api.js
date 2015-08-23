@@ -339,7 +339,7 @@
         throw new Error('This function excepts a OSjs.VFS.File object');
       }
 
-      var pacman = OSjs.Core.getHandler().packages;
+      var pacman = OSjs.Helpers.PackageManager.get();
       var val = OSjs.Helpers.SettingsManager.get('DefaultApplication', file.mime);
 
       console.debug('getApplicationNameByFile()', 'default application', val);
@@ -440,6 +440,7 @@
 
     var splash = null;
     var handler = OSjs.Core.getHandler();
+    var packman = OSjs.Helpers.PackageManager.get();
 
     function createLaunchSplash(data, n) {
       var splash = null;
@@ -615,7 +616,7 @@
       OSjs.Session.triggerHook('onApplicationLaunch', [n, arg]);
 
       // Get metadata and check compability
-      var data = handler.getApplicationMetadata(n);
+      var data = packman.getPackage(n);
       if ( !data ) {
         _error(OSjs.API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
         return false;
@@ -764,8 +765,7 @@
     } else if ( typeof app === 'string' ) {
       appname = app;
 
-      var handler = OSjs.Core.getHandler();
-      var pacman = handler.getPackageManager();
+      var pacman = OSjs.Helpers.PackageManager.get();
       var packs = pacman ? pacman.getPackages() : {};
       if ( packs[appname] ) {
         appname = packs[appname].path;

@@ -63,7 +63,7 @@
 
     var cols = [{label: API._('LBL_NAME')}];
     var rows = [];
-    var metadata = OSjs.Core.getHandler().getApplicationsMetadata();
+    var metadata = OSjs.Helpers.PackageManager.get().getPackages();
 
     (this.args.list || []).forEach(function(name) {
       var iter = metadata[name];

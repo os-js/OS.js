@@ -60,7 +60,6 @@
     var config = API.getDefaultSettings();
 
     this.connection = new OSjs.Helpers.ConnectionManager(config.Core.Connection, config.Core.APIURI);
-    this.packages   = new OSjs.Helpers.PackageManager(Utils.checkdir(config.Core.MetadataURI));
     this.dialogs    = null;
     this.userData   = {
       id      : 0,
@@ -105,8 +104,6 @@
       this.connection = null;
     }
 
-    this.packages = null;
-
     _handlerInstance = null;
   };
 
@@ -135,7 +132,8 @@
       }
 
       self.dialogs = scheme;
-      self.packages.load(function(presult, perror) {
+
+      OSjs.Helpers.PackageManager.load(function(presult, perror) {
         callback(presult, perror);
       });
     });
@@ -349,43 +347,6 @@
     }
 
     callback();
-  };
-
-  //
-  // Packages
-  //
-
-  /**
-   * Get the package manager
-   *
-   * @return    PackageManager        Package Manager instance
-   *
-   * @method    _Handler::getPackageManager()
-   */
-  _Handler.prototype.getPackageManager = function() {
-    return this.packages;
-  };
-
-  /**
-   * Get metadata for application by class-name
-   *
-   * @return  Object        JSON data
-   *
-   * @method  _Handler::getApplicationMetadata()
-   */
-  _Handler.prototype.getApplicationMetadata = function(name) {
-    return this.packages.getPackage(name);
-  };
-
-  /**
-   * Get all package metadata
-   *
-   * @return  Array       Array of JSON data
-   *
-   * @method  _Handler::getApplicationsMetadata()
-   */
-  _Handler.prototype.getApplicationsMetadata = function() {
-    return this.packages.getPackages();
   };
 
   /**

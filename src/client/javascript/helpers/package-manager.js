@@ -34,11 +34,16 @@
   window.OSjs       = window.OSjs       || {};
   OSjs.Helpers      = OSjs.Helpers      || {};
 
+  var _instance;
+
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT PACKAGE MANAGER
   /////////////////////////////////////////////////////////////////////////////
 
-  var PackageManager = function(uri) {
+  var PackageManager = function() {
+    var config = API.getDefaultSettings();
+    var uri = Utils.checkdir(config.Core.MetadataURI);
+
     this.packages = {};
     this.uri = uri; // TODO: Split up into user and system
   };
@@ -315,7 +320,18 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Helpers.PackageManager = PackageManager;
+  function get() {
+    if ( !_instance ) {
+      _instance = new PackageManager();
+    }
+    return _instance;
+  }
+  OSjs.Helpers.PackageManager = {
+    get: get,
+    load: function(callback) {
+      get().load(callback);
+    }
+  };
 
 })(OSjs.Utils, OSjs.VFS, OSjs.API);
 
