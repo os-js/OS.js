@@ -61,8 +61,13 @@
 
     this.connection = new OSjs.Helpers.ConnectionManager(config.Core.Connection, config.Core.APIURI);
     this.packages   = new OSjs.Helpers.PackageManager(Utils.checkdir(config.Core.MetadataURI));
-    this.user       = new OSjs.Helpers.UserSession(config.Core.DefaultUser);
     this.dialogs    = null;
+    this.userData   = {
+      id      : 0,
+      username: 'root',
+      name    : 'root user',
+      groups  : ['root']
+    };
 
     _handlerInstance = this;
   };
@@ -100,7 +105,6 @@
       this.connection = null;
     }
 
-    this.user     = null;
     this.packages = null;
 
     _handlerInstance = null;
@@ -173,13 +177,49 @@
   _Handler.prototype.logout = function(save, callback) {
     console.info('Handler::logout()');
 
+    function saveSession(cb) {
+      function getSession() {
+        var procs = API.getProcesses();
+
+        function getSessionSaveData(app) {
+          var args = app.__args;
+          var wins = app.__windows;
+          var data = {name: app.__name, args: args, windows: []};
+
+          wins.forEach(function(win, i) {
+            if ( win && win._properties.allow_session ) {
+              data.windows.push({
+                name      : win._name,
+                dimension : win._dimension,
+                position  : win._position,
+                state     : win._state
+              });
+            }
+          });
+
+          return data;
+        }
+
+        var data = [];
+        procs.forEach(function(proc, i) {
+          if ( proc && (proc instanceof OSjs.Core.Application) ) {
+            data.push(getSessionSaveData(proc));
+          }
+        });
+        return data;
+      }
+
+      OSjs.Helpers.SettingsManager.set('UserSession', getSession())
+      OSjs.Helpers.SettingsManager.save('UserSession', cb);
+    }
+
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       wm.removeNotificationIcon('_HandlerUserNotification');
     }
 
     if ( save ) {
-      this.user.saveSession(function() {
+      saveSession(function() {
         callback(true);
       });
       return;
@@ -201,7 +241,17 @@
 
     console.info('Handler::loadSession()');
 
-    this.user.loadSession(callback);
+    var res = OSjs.Helpers.SettingsManager.get('UserSession');
+    var list = [];
+    (res || []).forEach(function(iter, i) {
+      var args = iter.args;
+      args.__resume__ = true;
+      args.__windows__ = iter.windows || [];
+
+      list.push({name: iter.name, args: args});
+    });
+
+    API.launchList(list, null, null, callback);
   };
 
   /**
@@ -237,7 +287,7 @@
     var found = Utils.getUserLocale();
     var curLocale = found || config.Core.Locale;
 
-    this.user.setUserData(userData);
+    this.userData = userData;
 
     // Ensure we get the user-selected locale configured from WM
     var result = OSjs.Helpers.SettingsManager.get('UserSettings');
@@ -270,7 +320,7 @@
   };
 
   _Handler.prototype.onWMLaunched = function(wm, callback) {
-    var user = this.user.getUserData();
+    var user = this.userData;
 
     function displayMenu(ev) {
       OSjs.API.createMenu([{
@@ -347,7 +397,7 @@
    * @method  _Handler::getUserData()
    */
   _Handler.prototype.getUserData = function() {
-    return this.user.getUserData();
+    return this.userData;
   };
 
   /////////////////////////////////////////////////////////////////////////////
