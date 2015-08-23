@@ -69,7 +69,7 @@
     "src/client/javascript/helpers/connection-manager.js",
     "src/client/javascript/helpers/zip-archiver.js",
     "src/client/javascript/helpers/firefox-marketplace.js",
-    "src/client/javascript/helpers/temporary-settings-manager.js"
+    "src/client/javascript/helpers/settings-manager.js"
   ],
 
   "stylesheets": [
