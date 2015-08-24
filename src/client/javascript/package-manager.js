@@ -102,25 +102,6 @@
     this.packages = {};
 
     function _loadSystemMetadata(cb) {
-      /*
-      Utils.ajax({
-        url: self.uri,
-        json: true,
-        onsuccess: function(response, request, url) {
-          response = Utils.fixJSON(response);
-          if ( response ) {
-            self._addPackages(response, 'system');
-          }
-          cb();
-        },
-        onerror: function(error, response, request, url) {
-          if ( request && request.status !== 200 ) {
-            error = 'Failed to load package manifest from ' + self.uri + ' - HTTP Error: ' + request.status;
-          }
-          callback(false, error);
-        }
-      });
-      */
       var preload = [{type: 'javascript', src: self.uri}];
       Utils.preload(preload, function(total, errors, failed) {
         if ( errors ) {
@@ -375,11 +356,28 @@
   /**
    * Get all packages
    *
+   * @param boolean     filtered      Returns filtered list (default=true)
+   *
    * @return Array
    *
    * @method PackageManager::getPackages()
    */
-  PackageManager.prototype.getPackages = function() {
+  PackageManager.prototype.getPackages = function(filtered) {
+    if ( typeof filtered === 'undefined' || filtered === true ) {
+      var pkgs = this.packages;
+      var result = {};
+      Object.keys(pkgs).filter(function(name) {
+        var iter = pkgs[name];
+        if ( iter && (iter.groups instanceof Array) ) {
+          if ( !API.checkPermission(iter.groups) ) {
+            return;
+          }
+        }
+        result[name] = iter;
+      });
+      return result;
+    }
+
     return this.packages;
   };
 

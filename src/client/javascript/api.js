@@ -1284,6 +1284,31 @@
     return false;
   }
 
+  /**
+   * Checks the given permission (groups) against logged in user
+   *
+   * @param   Mixed     group         Either a string or array of groups
+   *
+   * @api     OSjs.API.checkPermission()
+   */
+  function doCheckPermission(group) {
+    var user = OSjs.Core.getHandler().getUserData();
+    var userGroups = user.groups || [];
+
+    if ( !(group instanceof Array) ) {
+      group = [group];
+    }
+
+    var result = true;
+    group.forEach(function(g) {
+      if ( userGroups.indexOf(g) < 0 ) {
+        result = false;
+      }
+      return result;
+    });
+    return result;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MISC API METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -1445,6 +1470,7 @@
   OSjs.API.destroyLoading         = destroyLoading;
   OSjs.API.createDialog           = doCreateDialog;
   OSjs.API.createNotification     = doCreateNotification;
+  OSjs.API.checkPermission        = doCheckPermission;
 
   OSjs.API.error                      = doErrorDialog;
   OSjs.API.playSound                  = doPlaySound;
