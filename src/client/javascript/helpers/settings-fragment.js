@@ -40,12 +40,7 @@
 
   function SettingsFragment(obj, poolName) {
     this._pool = poolName;
-
-    if ( Array.isArray(obj) ) {
-      throw new Error('SettingsFragment can\'t be built with an array.');
-    }
-
-    if ( obj === undefined ) {
+    if ( obj.constructor !== {}.constructor ) {
       throw new Error('SettingsFragment will not work unless you give it a object to manage.');
     }
 
@@ -76,6 +71,10 @@
     return this;
   };
 
+  SettingsFragment.prototype.save = function(callback) {
+    return OSjs.Core.getSettingsManager().save(this._pool, callback);
+  };
+
   SettingsFragment.prototype.getChained = function () {
     var nestedSetting = this._settings;
     arguments.every(function(key) {
@@ -91,7 +90,7 @@
   };
 
   SettingsFragment.prototype.mergeDefaults = function(defaults) {
-    Utils.mergeObject(this._settings, defaults);
+    Utils.mergeObject(this._settings, defaults, {overwrite: false});
     return this;
   };
 

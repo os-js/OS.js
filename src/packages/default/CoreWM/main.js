@@ -254,12 +254,20 @@
       this.destroyPanels();
 
       (ps || []).forEach(function(storedItem) {
+        if ( !storedItem.options ) {
+          storedItem.options = {};
+        }
+        
         var panelSettings = new OSjs.Helpers.SettingsFragment(storedItem.options, 'CoreWM');
         var p = new OSjs.Applications.CoreWM.Panel('Default', panelSettings, self);
         p.init(document.body);
 
         (storedItem.items || []).forEach(function(iter) {
           try {
+            if ( !iter.settings ) {
+              iter.settings = {};
+            }
+
             var itemSettings = new OSjs.Helpers.SettingsFragment(iter.settings, 'CoreWM');
             p.addItem(new OSjs.Applications.CoreWM.PanelItems[iter.name](itemSettings));
             added = true;
