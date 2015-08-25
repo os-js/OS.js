@@ -162,11 +162,17 @@
    * @method SettingsManager::instance()
    */
   SettingsManager.instance = function(pool, defaults) {
-    if ( arguments.length > 1 ) {
-      SettingsManager.defaults(pool, defaults);
+    if ( !this.storage[pool] ) {
+      this.storage[pool] = {};
     }
 
-    return new OSjs.Helpers.SettingsFragment(this.storage[pool]).mergeDefaults(defaults);
+    var instance = new OSjs.Helpers.SettingsFragment(this.storage[pool]);
+    if ( arguments.length > 1 ) {
+      SettingsManager.defaults(pool, defaults);
+      instance.mergeDefaults(defaults);
+    }
+
+    return instance;
   };
 
   /////////////////////////////////////////////////////////////////////////////

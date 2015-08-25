@@ -165,7 +165,7 @@
   ApplicationSettingsWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
-    console.log(wm.getSettings());
+    
     this.settings = Utils.cloneObject(wm.getSettings());
     delete this.settings.desktopIcons;
     delete this.settings.fullscreen;

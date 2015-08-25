@@ -38,12 +38,18 @@
   // Settings Fragment.
   /////////////////////////////////////////////////////////////////////////////
 
-  function SettingsFragment(obj) {
+  function SettingsFragment(obj, poolName) {
+    this._pool = poolName;
+
     if ( Array.isArray(obj) ) {
       throw new Error('SettingsFragment can\'t be built with an array.');
     }
 
-    this._settings = obj || {};
+    if ( obj === undefined ) {
+      throw new Error('SettingsFragment will not work unless you give it a object to manage.');
+    }
+
+    this._settings = obj;
   }
 
   SettingsFragment.prototype.get = function(key) {
@@ -54,13 +60,17 @@
     return this._settings[key];
   };
 
-  SettingsFragment.prototype.set = function(key, value) {
+  SettingsFragment.prototype.set = function(key, value, save) {
     // Key here is actually the value
     // So you can update the whole object if you want.
-    if ( arguments.length === 1 ) {
-      this._settings = key;
+    if ( key === null ) {
+      this._settings = value;
     } else {
       this._settings[key] = value;
+    }
+
+    if (save) {
+      OSjs.Core.getSettingsManager().save(this._pool);
     }
 
     return this;
@@ -83,6 +93,14 @@
   SettingsFragment.prototype.mergeDefaults = function(defaults) {
     Utils.mergeObject(this._settings, defaults);
     return this;
+  };
+
+  SettingsFragment.prototype.instance = function(key) {
+    if (this._settings[key] === undefined) {
+      throw new Error('The object doesn\'t contain that key. SettingsFragment will not work.');
+    }
+
+    return new OSjs.Helpers.SettingsFragment(this._settings[key], this._pool);
   };
 
   /////////////////////////////////////////////////////////////////////////////

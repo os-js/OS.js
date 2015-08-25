@@ -141,7 +141,7 @@
         self._$element.setAttribute('data-' + k, typeof attrs[k] === 'boolean' ? (attrs[k] ? 'true' : 'false') : attrs[k]);
       });
     }
-    this._options.set(options);
+    this._options.set(null, options);
   };
 
   Panel.prototype.autohide = function(hide) {
