@@ -40,6 +40,8 @@
 
   function DefaultApplicationWindow(name, app, args, scheme, file) {
     Window.apply(this, arguments);
+
+    this.hasClosingDialog = false;
     this.currentFile = file ? new VFS.File(file) : null;
     this.hasChanged = false;
   }
@@ -94,14 +96,20 @@
 
   DefaultApplicationWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
+
     this.currentFile = null;
   };
 
   DefaultApplicationWindow.prototype._close = function() {
     var self = this;
+    if ( this.hasClosingDialog ) {
+      return;
+    }
 
     if ( this.hasChanged ) {
+      this.hasClosingDialog = true;
       this.checkHasChanged(function(discard) {
+        self.hasClosingDialog = false;
         if ( discard ) {
           self.hasChanged = false; // IMPORTANT
           self._close();
