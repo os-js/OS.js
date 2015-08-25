@@ -70,10 +70,10 @@
             opacity: 85
           },
           items:    [
-            {name: 'Buttons'},
-            {name: 'WindowList'},
-            {name: 'NotificationArea'},
-            {name: 'Clock'}
+            {name: 'Buttons', settings: {}},
+            {name: 'WindowList', settings: {}},
+            {name: 'NotificationArea', settings: {}},
+            {name: 'Clock', settings: {}}
           ]
         }
       ]
@@ -254,12 +254,14 @@
       this.destroyPanels();
 
       (ps || []).forEach(function(storedItem) {
-        var p = new OSjs.Applications.CoreWM.Panel('Default', storedItem.options, self);
+        var panelSettings = new OSjs.Helpers.SettingsFragment(storedItem.options);
+        var p = new OSjs.Applications.CoreWM.Panel('Default', panelSettings, self);
         p.init(document.body);
 
         (storedItem.items || []).forEach(function(iter) {
           try {
-            p.addItem(new OSjs.Applications.CoreWM.PanelItems[iter.name]());
+            var itemSettings = new OSjs.Helpers.SettingsFragment(iter.settings);
+            p.addItem(new OSjs.Applications.CoreWM.PanelItems[iter.name](itemSettings));
             added = true;
           } catch ( e ) {
             console.warn('An error occured while creating PanelItem', e);
