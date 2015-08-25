@@ -1,6 +1,19 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Install Plugins...
+unless Vagrant.has_plugin?("vagrant-omnibus") and Vagrant.has_plugin?("vagrant-hostsupdater") and Vagrant.has_plugin?("vagrant-vbguest")
+  unless Vagrant.has_plugin?("vagrant-omnibus")
+    system('vagrant plugin install vagrant-omnibus')
+  end
+  unless Vagrant.has_plugin?("vagrant-hostsupdater")
+    system('vagrant plugin install vagrant-hostsupdater')
+  end
+  unless Vagrant.has_plugin?("vagrant-vbguest")
+    system('vagrant plugin install vagrant-vbguest')
+  end
+end
+
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty32"
 
