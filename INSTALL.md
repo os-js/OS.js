@@ -65,9 +65,6 @@ A [Vagrant](https://www.vagrantup.com/) file is also included so you can easily 
 Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
 
 ```shell
-$ vagrant plugin install vagrant-omnibus
-$ vagrant plugin install vagrant-hostsupdater
-$ vagrant plugin install vagrant-vbguest
 $ vagrant up
 ```
 
