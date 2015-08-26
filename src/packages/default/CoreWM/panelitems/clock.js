@@ -46,16 +46,16 @@
   ClockSettingsDialog.prototype = Object.create(PanelItemDialog.prototype);
   ClockSettingsDialog.constructor = PanelItemDialog;
 
-  ClockSettingsDialog.prototype.init = function(wm, app, scheme) {
+  ClockSettingsDialog.prototype.init = function(wm, app) {
     var root = PanelItemDialog.prototype.init.apply(this, arguments);
-    scheme.find(this, 'InputUseUTC').set('value', this._settings.get('utc'));
-    scheme.find(this, 'InputFormatString').set('value', this._settings.get('format'));
+    this.scheme.find(this, 'InputUseUTC').set('value', this._settings.get('utc'));
+    this.scheme.find(this, 'InputFormatString').set('value', this._settings.get('format'));
     return root;
   };
 
   ClockSettingsDialog.prototype.applySettings = function() {
-    this._settings.set('utc', this._scheme.find(this, 'InputUseUTC').get('value'));
-    this._settings.set('format', this._scheme.find(this, 'InputFormatString').get('value'), true);
+    this._settings.set('utc', this.scheme.find(this, 'InputUseUTC').get('value'));
+    this._settings.set('format', this.scheme.find(this, 'InputFormatString').get('value'), true);
   };
 
   /////////////////////////////////////////////////////////////////////////////

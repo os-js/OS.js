@@ -37,23 +37,25 @@
   function PanelItemDialog(name, args, settings, scheme, closeCallback) {
     this._closeCallback = closeCallback || function() {};
     this._settings = settings;
-    Window.apply(this, [name, args, null, scheme]);
+    this.scheme = scheme;
+
+    Window.apply(this, [name, args]);
   }
 
   PanelItemDialog.prototype = Object.create(Window.prototype);
   PanelItemDialog.constructor = Window;
 
-  PanelItemDialog.prototype.init = function(wm, app, scheme) {
+  PanelItemDialog.prototype.init = function(wm, app) {
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
-    scheme.render(this, this._name);
+    this.scheme.render(this, this._name);
 
-    scheme.find(this, 'ButtonApply').on('click', function() {
+    this.scheme.find(this, 'ButtonApply').on('click', function() {
       self.applySettings();
       self._close();
     });
 
-    scheme.find(this, 'ButtonCancel').on('click', function() {
+    this.scheme.find(this, 'ButtonCancel').on('click', function() {
       self._close();
     });
 
@@ -66,6 +68,13 @@
   PanelItemDialog.prototype._close = function() {
     this._closeCallback();
     return Window.prototype._close.apply(this, arguments);
+  };
+
+  PanelItemDialog.prototype._destroy = function() {
+    this.scheme = null;
+    this._settings = null;
+
+    return Window.prototype._destroy.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -343,7 +352,10 @@
     }
 
     var wm = OSjs.Core.getWindowManager();
-    this._settingsDialog = new _DialogRef(this, wm.scheme);
+    var self = this;
+    this._settingsDialog = new _DialogRef(this, wm.scheme, function() {
+      self._settingsDialog = null;
+    });
     OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);
   };
 
