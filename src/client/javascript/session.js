@@ -390,18 +390,15 @@
         OSjs.API.playSound('service-login');
 
         var wm = OSjs.Core.getWindowManager();
-        handler.onWMLaunched(wm, function() {
+        handler.loadSession(function() {
+          setTimeout(function() {
+            globalOnResize();
+          }, 500);
 
-          handler.loadSession(function() {
-            setTimeout(function() {
-              globalOnResize();
-            }, 500);
+          OSjs.Session.triggerHook('onSessionLoaded');
 
-            OSjs.Session.triggerHook('onSessionLoaded');
-
-            wm.onSessionLoaded();
-            doAutostart();
-          });
+          wm.onSessionLoaded();
+          doAutostart();
         });
       });
     }

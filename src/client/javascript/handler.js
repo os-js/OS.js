@@ -373,44 +373,6 @@
   };
 
   /**
-   * When WM has been launched
-   *
-   * @method _Handler::onWMLaunched();
-   */
-  _Handler.prototype.onWMLaunched = function(wm, callback) {
-    var user = this.userData;
-
-    function displayMenu(ev) {
-      OSjs.API.createMenu([{
-        title: API._('TITLE_SIGN_OUT'),
-        onClick: function() {
-          OSjs.Session.signOut();
-        }
-      }], ev);
-
-      return false;
-    }
-
-    if ( wm ) {
-      wm.createNotificationIcon('_HandlerUserNotification', {
-        onContextMenu: displayMenu,
-        onClick: displayMenu,
-        onInited: function(el) {
-          if ( el.firstChild ) {
-            var img = document.createElement('img');
-            img.title = API._('TITLE_SIGNED_IN_AS_FMT', user.username);
-            img.alt = img.title;
-            img.src = API.getIcon('status/avatar-default.png', '16x16');
-            el.firstChild.appendChild(img);
-          }
-        }
-      });
-    }
-
-    callback();
-  };
-
-  /**
    * When browser goes online
    *
    * @method _Handler::onOnline();
