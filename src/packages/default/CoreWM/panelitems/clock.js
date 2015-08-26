@@ -77,6 +77,7 @@
   PanelItemClock.Name = 'Clock'; // Static name
   PanelItemClock.Description = 'View the time'; // Static description
   PanelItemClock.Icon = 'status/appointment-soon.png'; // Static icon
+  PanelItemClock.HasOptions = true;
 
   PanelItemClock.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
@@ -99,7 +100,8 @@
     return root;
   };
 
-  PanelItemClock.prototype.openSettings = function(scheme) {
+  PanelItemClock.prototype.openSettings = function() {
+    var scheme = PanelItem.prototype.openSettings.apply(this, arguments);
     var dialog = new ClockSettingsDialog(this, scheme);
     OSjs.Core.getWindowManager().addWindow(dialog, true);
   };

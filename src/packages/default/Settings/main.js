@@ -447,13 +447,29 @@
     var buttonUp = scheme.find(this, 'PanelButtonUp');
     var buttonDown = scheme.find(this, 'PanelButtonDown');
     var buttonReset = scheme.find(this, 'PanelButtonReset');
+    var buttonOptions = scheme.find(this, 'PanelButtonOptions');
 
     var max = 0;
     var items = OSjs.Applications.CoreWM.PanelItems;
 
     this.panelItems = panel.items || [];
 
+    function openOptions(idx) {
+      // FIXME
+      try {
+        wm.panels[0]._items[idx].openSettings();
+      } catch ( e ) {}
+    }
+
     function checkSelection(idx) {
+      var hasOptions = true;
+
+      try {
+        var it = items[panel.items[idx].name];
+        hasOptions = it.HasOptions === true;
+      } catch ( e ) {}
+
+      buttonOptions.set('disabled', idx < 0 || !hasOptions);
       buttonRemove.set('disabled', idx < 0);
       buttonUp.set('disabled', idx <= 0);
       buttonDown.set('disabled', idx < 0 || idx >= max);
@@ -535,6 +551,13 @@
       var defaults = wm.getDefaultSetting('panels');
       self.panelItems = defaults[0].items;
       renderItems();
+    });
+
+    buttonOptions.on('click', function() {
+      var selected = view.get('selected');
+      if ( selected.length ) {
+        openOptions(selected[0].index);
+      }
     });
 
     renderItems();

@@ -301,10 +301,10 @@
   PanelItem.Name = 'PanelItem'; // Static name
   PanelItem.Description = 'PanelItem Description'; // Static description
   PanelItem.Icon = 'actions/stock_about.png'; // Static icon
+  PanelItem.HasOptions = false;
 
   PanelItem.prototype.init = function() {
     var self = this;
-    var wm = OSjs.Core.getWindowManager();
 
     this._$root = document.createElement('corewm-panel-item');
     this._$root.className = this._className;
@@ -318,7 +318,7 @@
         API.createMenu([{
           title: title,
           onClick: function() {
-            self.openSettings(wm.scheme);
+            self.openSettings();
           }
         }], ev);
       });
@@ -332,6 +332,8 @@
   };
 
   PanelItem.prototype.openSettings = function() {
+    var wm = OSjs.Core.getWindowManager();
+    return wm.scheme;
   };
 
   PanelItem.prototype.getRoot = function() {
