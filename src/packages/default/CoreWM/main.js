@@ -302,7 +302,7 @@
 
         (storedItem.items || []).forEach(function(iter) {
           try {
-            if ( !iter.settings ) {
+            if ( typeof iter.settings === 'undefined' || iter.settings === null ) {
               iter.settings = {};
             }
 
