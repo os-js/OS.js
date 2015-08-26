@@ -59,7 +59,7 @@
     // Key here is actually the value
     // So you can update the whole object if you want.
     if ( key === null ) {
-      this._settings = value;
+      Utils.mergeObject(this._settings, value);
     } else {
       this._settings[key] = value;
     }
