@@ -97,7 +97,7 @@
   };
 
   SettingsFragment.prototype.instance = function(key) {
-    if (this._settings[key] === undefined) {
+    if (typeof this._settings[key] === 'undefined') {
       throw new Error('The object doesn\'t contain that key. SettingsFragment will not work.');
     }
 
