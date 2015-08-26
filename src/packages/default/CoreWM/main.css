@@ -179,6 +179,10 @@ corewm-panel-item .Button span {
 corewm-panel-item .Button img {
   vertical-align : middle;
 }
+corewm-panel-item .Button.Ghost {
+  background-color : red !important;
+  min-width : 16px;
+}
 corewm-panel-container > li ul {
   display : inline-block;
 }

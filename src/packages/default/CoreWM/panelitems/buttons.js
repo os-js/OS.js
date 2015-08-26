@@ -75,14 +75,71 @@
 
     this.renderButtons();
 
+    var ghost;
+    var lastTarget;
+    var removeTimeout;
+    var lastPadding = null;
+
+    function clearGhost() {
+      removeTimeout = clearTimeout(removeTimeout);
+      ghost = Utils.$remove(ghost);
+      lastTarget = null;
+      if ( lastPadding !== null ) {
+        self.$container.style.paddingRight = lastPadding;
+      }
+    }
+
+    function createGhost(target) {
+      if ( !target || !target.parentNode ) {
+        return;
+      }
+      if ( target.tagName !== 'LI' && target.tagName !== 'UL' ) {
+        return;
+      }
+
+      if ( lastPadding === null ) {
+        lastPadding = self.$container.style.paddingRight;
+      }
+
+      if ( target !== lastTarget ) {
+        clearGhost();
+
+        ghost = document.createElement('li');
+        ghost.className = 'Button Ghost';
+
+        if ( target.tagName === 'LI' ) {
+          try {
+            target.parentNode.insertBefore(ghost, target);
+          } catch ( e ) {}
+        } else {
+          target.appendChild(ghost);
+        }
+      }
+      lastTarget = target;
+
+      self.$container.style.paddingRight = '16px';
+    }
+
     API.createDroppable(this.$container, {
       onOver: function(ev, el, args) {
+        if ( ev.target && !Utils.$hasClass(ev.target, 'Ghost') ) {
+          createGhost(ev.target);
+        }
       },
 
       onLeave : function() {
+        clearTimeout(removeTimeout);
+        removeTimeout = setTimeout(function() {
+          clearGhost();
+        }, 1000);
+
+
+
+//        clearGhost();
       },
 
       onDrop : function() {
+        clearGhost();
       },
 
       onItemDropped: function(ev, el, item, args) {
@@ -90,9 +147,11 @@
           var appName = item.data.path.split('applications:///')[1];
           self.createButton(appName);
         }
+        clearGhost();
       },
 
       onFilesDropped: function(ev, el, files, args) {
+        clearGhost();
       }
     });
 
