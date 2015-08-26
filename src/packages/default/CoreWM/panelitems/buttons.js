@@ -67,6 +67,7 @@
   PanelItemButtons.Icon = 'actions/stock_about.png'; // Static icon
 
   PanelItemButtons.prototype.init = function() {
+    var self = this;
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$container = document.createElement('ul');
@@ -74,26 +75,26 @@
 
     this.renderButtons();
 
-    /*
-    this.addButton(API._('LBL_APPLICATIONS'), 'osjs-white.png', function(ev) {
-      ev.stopPropagation();
+    API.createDroppable(this.$container, {
+      onOver: function(ev, el, args) {
+      },
 
-      OSjs.Applications.CoreWM.showMenu(ev);
-      return false;
-    });
+      onLeave : function() {
+      },
 
-    this.addButton(API._('LBL_SETTINGS'), 'categories/applications-system.png', function(ev) {
-      var wm = OSjs.Core.getWindowManager();
-      if ( wm ) {
-        wm.showSettings();
+      onDrop : function() {
+      },
+
+      onItemDropped: function(ev, el, item, args) {
+        if ( item && item.data && item.data.mime === 'osjs/application' ) {
+          var appName = item.data.path.split('applications:///')[1];
+          self.createButton(appName);
+        }
+      },
+
+      onFilesDropped: function(ev, el, files, args) {
       }
-      return false;
     });
-
-    this.addButton(API._('DIALOG_LOGOUT_TITLE'), 'actions/exit.png', function(ev) {
-      OSjs.Session.signOut();
-    });
-    */
 
     return root;
   };
@@ -124,18 +125,15 @@
       }
     };
 
-    var systemMenu = [{
-      title: 'Remove button', // FIXME: Locale
-      disabled: true
-    }];
-    var normalMenu = [{
-      title: 'Remove button',
-      onClick: function() {
-      }
-    }];
+    this.clearButtons();
 
-    (this._settings.get('buttons') || []).forEach(function(btn) {
-      var menu = normalMenu;
+    (this._settings.get('buttons') || []).forEach(function(btn, idx) {
+      var menu = [{
+        title: 'Remove button',
+        onClick: function() {
+          self.removeButton(idx);
+        }
+      }];
       var callback = function() {
         API.launch(btn.launch);
       };
@@ -144,12 +142,34 @@
         menu = null; //systemMenu;
         callback = function(ev) {
           ev.stopPropagation();
-
           systemButtons[btn.system](ev);
         };
       }
+
       self.addButton(btn.title, btn.icon, menu, callback);
     });
+  };
+
+  PanelItemButtons.prototype.removeButton = function(index) {
+    var buttons = this._settings.get('buttons');
+    buttons.splice(index, 1);
+    this.renderButtons();
+
+    this._settings.save();
+  };
+
+  PanelItemButtons.prototype.createButton = function(appName) {
+    var pkg = OSjs.Core.getPackageManager().getPackage(appName);
+    var buttons = this._settings.get('buttons');
+    buttons.push({
+      title: appName,
+      icon: pkg.icon,
+      launch: appName
+    });
+
+    this.renderButtons();
+
+    this._settings.save();
   };
 
   PanelItemButtons.prototype.addButton = function(title, icon, menu, callback) {
