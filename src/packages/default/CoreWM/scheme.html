@@ -2,15 +2,31 @@
   <gui-vbox>
     <gui-vbox-container data-grow="1" data-shrink="0">
       <gui-label>Format String:</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="1" data-shrink="0" data-expand="true">
       <gui-text data-id="InputFormatString">H:i:s</gui-text>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-shrink="0">
+      <gui-label>Interval:</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="1" data-shrink="0" data-expand="true">
+      <gui-select data-id="InputInterval">
+        <gui-select-option data-value="1000">1 second</gui-select-option>
+        <gui-select-option data-value="60000">1 minute</gui-select-option>
+        <gui-select-option data-value="3600000">1 hour</gui-select-option>
+      </gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-shrink="0">
       <gui-label>UTC Time:</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="1" data-shrink="0">
       <gui-checkbox data-id="InputUseUTC"></gui-checkbox>
     </gui-vbox-container>
-    <gui-vbox-container data-grow="0" data-shrink="1">
-      <gui-hbox>
-        <gui-hbox-container data-grow="1" data-shrink="0">
 
-        </gui-hbox-container>
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-hbox>
         <gui-hbox-container data-grow="0" data-shrink="1">
           <gui-button data-id="ButtonApply">Apply</gui-button>
           <gui-button data-id="ButtonCancel">Cancel</gui-button>

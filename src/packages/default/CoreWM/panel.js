@@ -52,7 +52,7 @@
 
     this.scheme.find(this, 'ButtonApply').on('click', function() {
       self.applySettings();
-      self._close();
+      self._close('ok');
     });
 
     this.scheme.find(this, 'ButtonCancel').on('click', function() {
@@ -65,8 +65,8 @@
   PanelItemDialog.prototype.applySettings = function() {
   };
 
-  PanelItemDialog.prototype._close = function() {
-    this._closeCallback();
+  PanelItemDialog.prototype._close = function(button) {
+    this._closeCallback(button);
     return Window.prototype._close.apply(this, arguments);
   };
 
@@ -345,6 +345,9 @@
     this._$root = Utils.$remove(this._$root);
   };
 
+  PanelItem.prototype.applySettings = function() {
+  };
+
   PanelItem.prototype.openSettings = function(_DialogRef, args) {
     if ( this._settingsDialog ) {
       this._settingsDialog._restore();
@@ -353,7 +356,10 @@
 
     var wm = OSjs.Core.getWindowManager();
     var self = this;
-    this._settingsDialog = new _DialogRef(this, wm.scheme, function() {
+    this._settingsDialog = new _DialogRef(this, wm.scheme, function(button) {
+      if ( button === 'ok' ) {
+        self.applySettings();
+      }
       self._settingsDialog = null;
     });
     OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);

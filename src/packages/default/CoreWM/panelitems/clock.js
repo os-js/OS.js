@@ -38,8 +38,8 @@
     PanelItemDialog.apply(this, ['ClockSettingsDialog', {
       title: 'Clock Settings',
       icon: 'status/appointment-soon.png',
-      width: 300,
-      height: 150
+      width: 400,
+      height: 250
     }, panelItem._settings, scheme, closeCallback]);
   }
 
@@ -49,12 +49,14 @@
   ClockSettingsDialog.prototype.init = function(wm, app) {
     var root = PanelItemDialog.prototype.init.apply(this, arguments);
     this.scheme.find(this, 'InputUseUTC').set('value', this._settings.get('utc'));
+    this.scheme.find(this, 'InputInterval').set('value', String(this._settings.get('interval')));
     this.scheme.find(this, 'InputFormatString').set('value', this._settings.get('format'));
     return root;
   };
 
   ClockSettingsDialog.prototype.applySettings = function() {
     this._settings.set('utc', this.scheme.find(this, 'InputUseUTC').get('value'));
+    this._settings.set('interval', parseInt(this.scheme.find(this, 'InputInterval').get('value'), 10));
     this._settings.set('format', this.scheme.find(this, 'InputFormatString').get('value'), true);
   };
 
@@ -68,9 +70,11 @@
   var PanelItemClock = function(settings) {
     PanelItem.apply(this, ['PanelItemClock PanelItemFill PanelItemRight', 'Clock', settings, {
       utc: false,
+      interval: 1000,
       format: 'H:i:s'
     }]);
     this.clockInterval  = null;
+    this.$clock = null;
   };
 
   PanelItemClock.prototype = Object.create(PanelItem.prototype);
@@ -79,25 +83,44 @@
   PanelItemClock.Icon = 'status/appointment-soon.png'; // Static icon
   PanelItemClock.HasOptions = true;
 
+  PanelItemClock.prototype.createInterval = function() {
+    var self = this;
+    var clock = this.$clock;
+
+    function update() {
+      if ( clock ) {
+        var t = OSjs.Helpers.Date.format(new Date(), self._settings.get());
+        Utils.$empty(clock);
+        clock.appendChild(document.createTextNode(t));
+        clock.title = t;
+      }
+    }
+
+    function create(interval) {
+      clearInterval(self.clockInterval);
+      self.clockInterval = setInterval(function() {
+        update();
+      }, interval);
+    }
+
+    create(this._settings.get('interval'));
+    update();
+  };
+
   PanelItemClock.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
-    var self = this;
 
-    var clock = document.createElement('div');
-    clock.innerHTML = '00:00:00';
-    var _updateClock = function() {
-      var t = OSjs.Helpers.Date.format(new Date(), self._settings.get());
+    this.$clock = document.createElement('div');
+    this.$clock.innerHTML = '00:00:00';
+    root.appendChild(this.$clock);
 
-      Utils.$empty(clock);
-      clock.appendChild(document.createTextNode(t));
-      clock.title = t;
-    };
-    this.clockInterval = setInterval(_updateClock, 1000);
-    _updateClock();
-
-    root.appendChild(clock);
+    this.createInterval();
 
     return root;
+  };
+
+  PanelItemClock.prototype.applySettings = function() {
+    this.createInterval();
   };
 
   PanelItemClock.prototype.openSettings = function() {
