@@ -43,7 +43,8 @@
    */
   var SettingsManager = {
     storage: {},
-    defaults: {}
+    defaults: {},
+    watches: []
   };
 
   /**
@@ -114,6 +115,8 @@
       this.save(pool, save);
     }
 
+    this.changed(pool);
+
     return true;
   };
 
@@ -138,7 +141,7 @@
   };
 
   /**
-   * Sets the defaults for a spesific pool
+   * Sets the defaults for a specific pool
    *
    * @param  String     pool      Name of settings pool
    * @param  Object     default   (Optional) Default settings tree
@@ -173,6 +176,48 @@
     }
 
     return instance;
+  };
+
+  /**
+   * Receive events when a pool changes.
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  Function   callback  Callback
+   *
+   * @return Boolean              Whether or not the watch was registered.
+   *
+   * @method SettingsManager::watch
+   */
+  SettingsManager.watch = function(pool, callback) {
+    if ( !this.storage[pool] ) {
+      return false;
+    }
+
+    this.watches.push({
+      pool: pool,
+      callback: callback
+    });
+
+    return true;
+  };
+
+  /**
+   * Notify the SettingsManager that somewhere in a pool's tree it has changed.
+   *
+   * @param  String     pool      Name of settings pool that changed
+   *
+   * @return SettingsManager      this
+   *
+   * @method SettingsManager::changed
+   */
+  SettingsManager.changed = function(pool) {
+    this.watches.forEach(function(watch) {
+      if (watch.pool === pool) {
+        watch.callback(this.storage[pool]);
+      }
+    });
+
+    return this;
   };
 
   /////////////////////////////////////////////////////////////////////////////

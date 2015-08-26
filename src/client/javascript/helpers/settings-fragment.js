@@ -68,6 +68,8 @@
       OSjs.Core.getSettingsManager().save(this._pool);
     }
 
+    OSjs.Core.getSettingsManager().changed(this._pool);
+
     return this;
   };
 
