@@ -179,26 +179,41 @@
   };
 
   /**
+   * Destroy a watcher
+   *
+   * @param  integer    index     The index from watch()
+   *
+   * @return  void
+   *
+   * @method SettingsManager::unwatch()
+   */
+  SettingsManager.unwatch = function(index) {
+    if ( typeof this.watches[index] !== 'undefined' ) {
+      delete this.watches[index];
+    }
+  };
+
+  /**
    * Receive events when a pool changes.
    *
    * @param  String     pool      Name of settings pool
    * @param  Function   callback  Callback
    *
-   * @return Boolean              Whether or not the watch was registered.
+   * @return Mixed                false on error, index for unwatch() otherwise
    *
-   * @method SettingsManager::watch
+   * @method SettingsManager::watch()
    */
   SettingsManager.watch = function(pool, callback) {
     if ( !this.storage[pool] ) {
       return false;
     }
 
-    this.watches.push({
+    var index = this.watches.push({
       pool: pool,
       callback: callback
     });
 
-    return true;
+    return index - 1;
   };
 
   /**
@@ -208,12 +223,13 @@
    *
    * @return SettingsManager      this
    *
-   * @method SettingsManager::changed
+   * @method SettingsManager::changed()
    */
   SettingsManager.changed = function(pool) {
+    var self = this;
     this.watches.forEach(function(watch) {
-      if (watch.pool === pool) {
-        watch.callback(this.storage[pool]);
+      if ( watch && watch.pool === pool ) {
+        watch.callback(self.storage[pool]);
       }
     });
 

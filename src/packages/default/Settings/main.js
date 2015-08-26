@@ -154,6 +154,11 @@
     this.category = category;
     this.settings = {};
     this.panelItems = [];
+
+    var self = this;
+    this.watchID = OSjs.Core.getSettingsManager().watch('CoreWM', function() {
+      self.updateSettings();
+    });
   }
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
@@ -165,11 +170,6 @@
   ApplicationSettingsWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
-    
-    this.settings = Utils.cloneObject(wm.getSettings());
-    delete this.settings.desktopIcons;
-    delete this.settings.fullscreen;
-    delete this.settings.moveOnResize;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'SettingsWindow', root, null, null, {
@@ -211,11 +211,7 @@
     });
 
 
-    this.initThemeTab(wm, scheme);
-    this.initDesktopTab(wm, scheme);
-    this.initPanelTab(wm, scheme);
-    this.initUserTab(wm, scheme);
-    this.initPackagesTab(wm, scheme);
+    this.updateSettings(true);
 
     var cat = this.category === 'panel' ? 2 : 0;
     setContainer(cat);
@@ -223,104 +219,133 @@
     return root;
   };
 
+  ApplicationSettingsWindow.prototype.updateSettings = function(init) {
+    var scheme = this._scheme;
+    var wm = OSjs.Core.getWindowManager();
+
+    this.settings = Utils.cloneObject(wm.getSettings());
+    delete this.settings.desktopIcons;
+    delete this.settings.fullscreen;
+    delete this.settings.moveOnResize;
+
+    this.initThemeTab(wm, scheme, init);
+    this.initDesktopTab(wm, scheme, init);
+    this.initPanelTab(wm, scheme, init);
+    this.initUserTab(wm, scheme, init);
+    this.initPackagesTab(wm, scheme, init);
+  };
+
   /**
    * Destroy
    */
   ApplicationSettingsWindow.prototype.destroy = function() {
+    try {
+      OSjs.Core.getWindowManager().unwatch(this.watchID);
+    } catch ( e ) {}
     Window.prototype.destroy.apply(this, arguments);
   };
 
   /**
    * Theme
    */
-  ApplicationSettingsWindow.prototype.initThemeTab = function(wm, scheme) {
+  ApplicationSettingsWindow.prototype.initThemeTab = function(wm, scheme, init) {
     var self = this;
     var _ = OSjs.Applications.ApplicationSettings._;
 
-    var styleThemes = [];
-    var soundThemes = [];
-    var iconThemes = [];
-    var backgroundTypes = [
-      {value: 'image',        label: API._('LBL_IMAGE')},
-      {value: 'image-repeat', label: _('Image (Repeat)')},
-      {value: 'image-center', label: _('Image (Centered)')},
-      {value: 'image-fill',   label: _('Image (Fill)')},
-      {value: 'image-strech', label: _('Image (Streched)')},
-      {value: 'color',        label: API._('LBL_COLOR')}
-    ];
+    if ( init ) {
+      var styleThemes = [];
+      var soundThemes = [];
+      var iconThemes = [];
+      var backgroundTypes = [
+        {value: 'image',        label: API._('LBL_IMAGE')},
+        {value: 'image-repeat', label: _('Image (Repeat)')},
+        {value: 'image-center', label: _('Image (Centered)')},
+        {value: 'image-fill',   label: _('Image (Fill)')},
+        {value: 'image-strech', label: _('Image (Streched)')},
+        {value: 'color',        label: API._('LBL_COLOR')}
+      ];
 
-    var tmp;
+      var tmp;
 
-    wm.getStyleThemes().forEach(function(t) {
-      styleThemes.push({label: t.title, value: t.name});
-    });
+      wm.getStyleThemes().forEach(function(t) {
+        styleThemes.push({label: t.title, value: t.name});
+      });
 
-    tmp = wm.getSoundThemes();
-    Object.keys(tmp).forEach(function(t) {
-      soundThemes.push({label: tmp[t], value: t});
-    });
+      tmp = wm.getSoundThemes();
+      Object.keys(tmp).forEach(function(t) {
+        soundThemes.push({label: tmp[t], value: t});
+      });
 
-    tmp = wm.getIconThemes();
-    Object.keys(tmp).forEach(function(t) {
-      iconThemes.push({label: tmp[t], value: t});
-    });
+      tmp = wm.getIconThemes();
+      Object.keys(tmp).forEach(function(t) {
+        iconThemes.push({label: tmp[t], value: t});
+      });
 
-    scheme.find(this, 'StyleThemeName').add(styleThemes).set('value', this.settings.theme);
-    scheme.find(this, 'SoundThemeName').add(soundThemes).set('value', this.settings.sounds);
-    scheme.find(this, 'IconThemeName').add(iconThemes).set('value', this.settings.icons);
+      scheme.find(this, 'StyleThemeName').add(styleThemes);
+      scheme.find(this, 'SoundThemeName').add(soundThemes);
+      scheme.find(this, 'IconThemeName').add(iconThemes);
+
+      var backImage = scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper).on('open', function(ev) {
+        self._toggleDisabled(true);
+
+        API.createDialog('File', {
+          mime: ['^image'],
+          file: new VFS.File(ev.detail)
+        }, function(ev, button, result) {
+          self._toggleDisabled(false);
+          if ( button === 'ok' && result ) {
+            backImage.set('value', result.path);
+          }
+        });
+      });
+      var backColor = scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor).on('open', function(ev) {
+        self._toggleDisabled(true);
+
+        API.createDialog('Color', {
+          color: ev.detail
+        }, function(ev, button, result) {
+          self._toggleDisabled(false);
+          if ( button === 'ok' && result ) {
+            backColor.set('value', result.hex);
+          }
+        });
+      });
+
+      var fontName = scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
+
+      fontName.on('click', function() {
+        self._toggleDisabled(true);
+        API.createDialog('Font', {
+          fontName: self.settings.fontFamily,
+          fontSize: -1
+        }, function(ev, button, result) {
+          self._toggleDisabled(false);
+          if ( button === 'ok' && result ) {
+            fontName.set('value', result.fontName);
+          }
+        });
+      });
+
+      scheme.find(this, 'BackgroundStyle').add(backgroundTypes);
+    }
+
+    scheme.find(this, 'StyleThemeName').set('value', this.settings.theme);
+    scheme.find(this, 'SoundThemeName').set('value', this.settings.sounds);
+    scheme.find(this, 'IconThemeName').set('value', this.settings.icons);
 
     scheme.find(this, 'EnableAnimations').set('value', this.settings.animations);
     scheme.find(this, 'EnableSounds').set('value', this.settings.enableSounds);
     scheme.find(this, 'EnableTouchMenu').set('value', this.settings.useTouchMenu);
 
-    var backImage = scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper).on('open', function(ev) {
-      self._toggleDisabled(true);
-
-      API.createDialog('File', {
-        mime: ['^image'],
-        file: new VFS.File(ev.detail)
-      }, function(ev, button, result) {
-        self._toggleDisabled(false);
-        if ( button === 'ok' && result ) {
-          backImage.set('value', result.path);
-        }
-      });
-    });
-    var backColor = scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor).on('open', function(ev) {
-      self._toggleDisabled(true);
-
-      API.createDialog('Color', {
-        color: ev.detail
-      }, function(ev, button, result) {
-        self._toggleDisabled(false);
-        if ( button === 'ok' && result ) {
-          backColor.set('value', result.hex);
-        }
-      });
-    });
-
-    scheme.find(this, 'BackgroundStyle').add(backgroundTypes).set('value', this.settings.background);
-
-    var fontName = scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
-
-    fontName.on('click', function() {
-      self._toggleDisabled(true);
-      API.createDialog('Font', {
-        fontName: self.settings.fontFamily,
-        fontSize: -1
-      }, function(ev, button, result) {
-        self._toggleDisabled(false);
-        if ( button === 'ok' && result ) {
-          fontName.set('value', result.fontName);
-        }
-      });
-    });
+    scheme.find(this, 'BackgroundStyle').set('value', this.settings.background);
+    scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper);
+    scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor);
   };
 
   /**
    * Desktop
    */
-  ApplicationSettingsWindow.prototype.initDesktopTab = function(wm, scheme) {
+  ApplicationSettingsWindow.prototype.initDesktopTab = function(wm, scheme, init) {
     var self = this;
     var _ = OSjs.Applications.ApplicationSettings._;
 
@@ -335,18 +360,28 @@
       scheme.find(self, lbl + 'Label').set('value', label);
     }
 
+    var inputSnap = scheme.find(this, 'WindowSnapping');
+    var inputCorner = scheme.find(this, 'CornerSnapping');
+    var inputDesktop = scheme.find(this, 'DesktopMargin');
+
+    if ( init ) {
+      inputDesktop.on('change', function(ev) {
+        updateLabel('DesktopMargin', ev.detail);
+      });
+      inputCorner.on('change', function(ev) {
+        updateLabel('CornerSnapping', ev.detail);
+      });
+      inputSnap.on('change', function(ev) {
+        updateLabel('WindowSnapping', ev.detail);
+      });
+    }
+
     scheme.find(this, 'EnableHotkeys').set('value', this.settings.enableHotkeys);
     scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
 
-    scheme.find(this, 'DesktopMargin').set('value', this.settings.desktopMargin).on('change', function(ev) {
-      updateLabel('DesktopMargin', ev.detail);
-    });
-    scheme.find(this, 'CornerSnapping').set('value', this.settings.windowCornerSnap).on('change', function(ev) {
-      updateLabel('CornerSnapping', ev.detail);
-    });
-    scheme.find(this, 'WindowSnapping').set('value', this.settings.windowSnap).on('change', function(ev) {
-      updateLabel('WindowSnapping', ev.detail);
-    });
+    inputDesktop.set('value', this.settings.desktopMargin)
+    inputCorner.set('value', this.settings.windowCornerSnap)
+    inputSnap.set('value', this.settings.windowSnap);
 
     updateLabel('DesktopMargin', this.settings.desktopMargin);
     updateLabel('CornerSnapping', this.settings.windowCornerSnap);
@@ -359,9 +394,11 @@
   /**
    * Panel
    */
-  ApplicationSettingsWindow.prototype.initPanelTab = function(wm, scheme) {
+  ApplicationSettingsWindow.prototype.initPanelTab = function(wm, scheme, init) {
     var self = this;
     var panel = this.settings.panels[0];
+
+    if ( !init ) return; // TODO
 
     var panelPositions = [
       {value: 'top',    label: API._('LBL_TOP')},
@@ -506,32 +543,36 @@
   /**
    * User
    */
-  ApplicationSettingsWindow.prototype.initUserTab = function(wm, scheme) {
+  ApplicationSettingsWindow.prototype.initUserTab = function(wm, scheme, init) {
     var user = OSjs.Core.getHandler().getUserData();
     var config = API.getDefaultSettings();
     var locales = config.Core.Languages;
-    var langs = [];
 
-    Object.keys(locales).forEach(function(l) {
-      langs.push({label: locales[l], value: l});
-    });
+    if ( init ) {
+      var langs = [];
+      Object.keys(locales).forEach(function(l) {
+        langs.push({label: locales[l], value: l});
+      });
+      scheme.find(this, 'UserLocale').add(langs);
+    }
 
     var data = OSjs.Core.getHandler().getUserData();
     scheme.find(this, 'UserID').set('value', user.id);
     scheme.find(this, 'UserName').set('value', user.name);
     scheme.find(this, 'UserUsername').set('value', user.username);
     scheme.find(this, 'UserGroups').set('value', user.groups);
-
-    scheme.find(this, 'UserLocale').add(langs).set('value', API.getLocale());
+    scheme.find(this, 'UserLocale').set('value', API.getLocale());
   };
 
   /**
    * Packages
    */
-  ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme) {
+  ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme, init) {
     var self = this;
     var handler = OSjs.Core.getHandler();
     var pacman = OSjs.Core.getPackageManager();
+
+    if ( !init ) return; // TODO
 
     //
     // Installed
