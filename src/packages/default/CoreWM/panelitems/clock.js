@@ -85,7 +85,6 @@
   var PanelItemClock = function(settings) {
     PanelItem.apply(this, ['PanelItemClock PanelItemFill PanelItemRight']);
     this.clockInterval  = null;
-    this._dialogScheme = null;
     this._settings = settings.mergeDefaults({
       utc: false,
       format: 'H:i:s'
@@ -99,6 +98,7 @@
 
   PanelItemClock.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
+    var wm = OSjs.Core.getWindowManager();
     var self = this;
 
     var clock = document.createElement('div');
@@ -118,18 +118,12 @@
 
     root.appendChild(clock);
 
-    var schemeUrl = API.getApplicationResource('CoreWM', 'panelitems/clockdialog.html');
-
     Utils.$bind(clock, 'contextmenu', function(ev) {
       API.createMenu([{
         title: 'Clock Settings',
         onClick: function() {
-          self._dialogScheme = GUI.createScheme(schemeUrl);
-          self._dialogScheme.load(function(err, result) {
-            var dialog = new ClockSettingsDialog({settings: self._settings}, self._dialogScheme);
-
-            OSjs.Core.getWindowManager().addWindow(dialog, true);
-          });
+          var dialog = new ClockSettingsDialog({settings: self._settings}, wm.scheme);
+          OSjs.Core.getWindowManager().addWindow(dialog, true);
         }
       }], ev);
     });

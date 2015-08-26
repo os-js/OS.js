@@ -96,6 +96,7 @@
   var CoreWM = function(args, metadata) {
     WindowManager.apply(this, ['CoreWM', this, args, metadata, _DefaultSettings(args.defaults || {})]);
 
+    this.scheme         = null;
     this.panels         = [];
     this.switcher       = null;
     this.iconView       = null;
@@ -138,6 +139,8 @@
       this.switcher.destroy();
       this.switcher = null;
     }
+
+    this.scheme = null;
 
     this.destroyPanels();
 
@@ -224,9 +227,13 @@
     });
 
 
-    var settings = this._settings.get();
-    this.applySettings(settings);
-    callback.call(this);
+    this.applySettings(this._settings.get());
+
+    var schemeUrl = API.getApplicationResource('CoreWM', 'scheme.html');
+    this.scheme = GUI.createScheme(schemeUrl);
+    this.scheme.load(function(err, result) {
+      callback.call(self);
+    });
   };
 
   CoreWM.prototype.initDesktop = function() {
@@ -257,7 +264,7 @@
         if ( !storedItem.options ) {
           storedItem.options = {};
         }
-        
+
         var panelSettings = new OSjs.Helpers.SettingsFragment(storedItem.options, 'CoreWM');
         var p = new OSjs.Applications.CoreWM.Panel('Default', panelSettings, self);
         p.init(document.body);
