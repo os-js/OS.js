@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -43,7 +43,8 @@
    */
   var SettingsManager = {
     storage: {},
-    defaults: {}
+    defaults: {},
+    watches: []
   };
 
   /**
@@ -114,6 +115,8 @@
       this.save(pool, save);
     }
 
+    this.changed(pool);
+
     return true;
   };
 
@@ -138,7 +141,7 @@
   };
 
   /**
-   * Sets the defaults for a spesific pool
+   * Sets the defaults for a specific pool
    *
    * @param  String     pool      Name of settings pool
    * @param  Object     default   (Optional) Default settings tree
@@ -162,15 +165,59 @@
    * @method SettingsManager::instance()
    */
   SettingsManager.instance = function(pool, defaults) {
-    if ( arguments.length > 1 ) {
-      SettingsManager.defaults(pool, defaults);
+    if ( !this.storage[pool] ) {
+      this.storage[pool] = {};
     }
 
-    return {
-      get: function(key) { return SettingsManager.get(pool, key); },
-      set: function(key, value, save) { return SettingsManager.set(pool, key, value, save); },
-      save: function(callback) { return SettingsManager.save(pool, callback); }
-    };
+    var instance = new OSjs.Helpers.SettingsFragment(this.storage[pool]);
+    if ( arguments.length > 1 ) {
+      SettingsManager.defaults(pool, defaults);
+      instance.mergeDefaults(defaults);
+    }
+
+    return instance;
+  };
+
+  /**
+   * Receive events when a pool changes.
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  Function   callback  Callback
+   *
+   * @return Boolean              Whether or not the watch was registered.
+   *
+   * @method SettingsManager::watch
+   */
+  SettingsManager.watch = function(pool, callback) {
+    if ( !this.storage[pool] ) {
+      return false;
+    }
+
+    this.watches.push({
+      pool: pool,
+      callback: callback
+    });
+
+    return true;
+  };
+
+  /**
+   * Notify the SettingsManager that somewhere in a pool's tree it has changed.
+   *
+   * @param  String     pool      Name of settings pool that changed
+   *
+   * @return SettingsManager      this
+   *
+   * @method SettingsManager::changed
+   */
+  SettingsManager.changed = function(pool) {
+    this.watches.forEach(function(watch) {
+      if (watch.pool === pool) {
+        watch.callback(this.storage[pool]);
+      }
+    });
+
+    return this;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -188,4 +235,3 @@
   };
 
 })(OSjs.Utils, OSjs.VFS, OSjs.API);
-

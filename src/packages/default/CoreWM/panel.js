@@ -46,16 +46,11 @@
     this._items = [];
     this._outtimeout = null;
     this._intimeout = null;
-    this._options = {
-      position:   options.position || 'top',
-      ontop:      options.ontop === true,
-      autohide:   options.autohide === true,
-      background: options.background,
-      foreground: options.foreground,
-      opacity:    options.opacity
-    };
+    this._options = options.mergeDefaults({
+      position: 'top'
+    });
 
-    console.debug('Panel::construct()', this._name, this._options);
+    console.debug('Panel::construct()', this._name, this._options.get());
   };
 
   Panel.prototype.init = function(root) {
@@ -129,7 +124,7 @@
   };
 
   Panel.prototype.update = function(options) {
-    options = options || this._options;
+    options = options || this._options.get();
 
     // CSS IS SET IN THE WINDOW MANAGER!
     var self = this;
@@ -146,11 +141,11 @@
         self._$element.setAttribute('data-' + k, typeof attrs[k] === 'boolean' ? (attrs[k] ? 'true' : 'false') : attrs[k]);
       });
     }
-    this._options = options;
+    this._options.set(null, options);
   };
 
   Panel.prototype.autohide = function(hide) {
-    if ( !this._options.autohide || !this._$element ) {
+    if ( !this._options.get('autohide') || !this._$element ) {
       return;
     }
 
@@ -231,15 +226,15 @@
   };
 
   Panel.prototype.getOntop = function() {
-    return this._options.ontop;
+    return this._options.get('ontop');
   };
 
   Panel.prototype.getPosition = function(pos) {
-    return pos ? (this._options.position == pos) : this._options.position;
+    return pos ? (this._options.get('position') == pos) : this._options.get('position');
   };
 
   Panel.prototype.getAutohide = function() {
-    return this._options.autohide;
+    return this._options.get('autohide');
   };
 
   Panel.prototype.getRoot = function() {

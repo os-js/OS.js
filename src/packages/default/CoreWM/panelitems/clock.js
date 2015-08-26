@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,8 +27,53 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
+(function(CoreWM, Panel, PanelItem, Utils, API, VFS, GUI, Window) {
   'use strict';
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Clock Settings Dialog
+  /////////////////////////////////////////////////////////////////////////////
+  function ClockSettingsDialog(args, scheme, closeCallback) {
+    this._closeCallback = closeCallback || function() {};
+    this._settings = args.settings;
+    this._scheme = null;
+
+    Window.apply(this, ['ClockSettingsDialog', {
+      title: 'Clock Settings',
+      icon: 'status/appointment-soon.png',
+      width: 300,
+      height: 150
+    }, null, scheme]);
+  }
+
+  ClockSettingsDialog.prototype = Object.create(Window.prototype);
+  ClockSettingsDialog.constructor = Window;
+
+  ClockSettingsDialog.prototype.init = function(wm, app, scheme) {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+    scheme.render(this, 'ClockSettingsDialog');
+
+    scheme.find(this, 'InputUseUTC').set('value', self._settings.get('utc'));
+    scheme.find(this, 'InputFormatString').set('value', self._settings.get('format'));
+
+    scheme.find(this, 'ButtonApply').on('click', function() {
+      self._settings.set('utc', scheme.find(self, 'InputUseUTC').get('value'));
+      self._settings.set('format', scheme.find(self, 'InputFormatString').get('value'), true);
+      self._close();
+    });
+
+    scheme.find(this, 'ButtonCancel').on('click', function() {
+      self._close();
+    });
+
+    return root;
+  };
+
+  ClockSettingsDialog.prototype._close = function() {
+    this._closeCallback();
+    return Window.prototype._close.apply(this, arguments);
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // ITEM
@@ -37,9 +82,14 @@
   /**
    * PanelItem: Clock
    */
-  var PanelItemClock = function() {
+  var PanelItemClock = function(settings) {
     PanelItem.apply(this, ['PanelItemClock PanelItemFill PanelItemRight']);
     this.clockInterval  = null;
+    this._dialogScheme = null;
+    this._settings = settings.mergeDefaults({
+      utc: false,
+      format: 'H:i:s'
+    });
   };
 
   PanelItemClock.prototype = Object.create(PanelItem.prototype);
@@ -49,6 +99,7 @@
 
   PanelItemClock.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
+    var self = this;
 
     var clock = document.createElement('div');
     clock.innerHTML = '00:00:00';
@@ -57,12 +108,7 @@
       return false;
     };
     var _updateClock = function() {
-      var d = new Date();
-      var t = ([
-        (d.getHours() < 10 ? ("0" + d.getHours()) : d.getHours()),
-        (d.getMinutes() < 10 ? ("0" + d.getMinutes()) : d.getMinutes()),
-        (d.getSeconds() < 10 ? ("0" + d.getSeconds()) : d.getSeconds())
-      ]).join(":");
+      var t = OSjs.Helpers.Date.format(new Date(), self._settings.get());
 
       clock.innerHTML = t;
       clock.title     = t;
@@ -71,6 +117,22 @@
     _updateClock();
 
     root.appendChild(clock);
+
+    var schemeUrl = API.getApplicationResource('CoreWM', 'panelitems/clockdialog.html');
+
+    Utils.$bind(clock, 'contextmenu', function(ev) {
+      API.createMenu([{
+        title: 'Clock Settings',
+        onClick: function() {
+          self._dialogScheme = GUI.createScheme(schemeUrl);
+          self._dialogScheme.load(function(err, result) {
+            var dialog = new ClockSettingsDialog({settings: self._settings}, self._dialogScheme);
+
+            OSjs.Core.getWindowManager().addWindow(dialog, true);
+          });
+        }
+      }], ev);
+    });
 
     return root;
   };
@@ -93,4 +155,4 @@
   OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.PanelItems.Clock            = PanelItemClock;
 
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI, OSjs.Core.Window);
