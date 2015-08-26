@@ -31,6 +31,44 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
+  // PANEL ITEM DIALOG
+  /////////////////////////////////////////////////////////////////////////////
+
+  function PanelItemDialog(name, args, settings, scheme, closeCallback) {
+    this._closeCallback = closeCallback || function() {};
+    this._settings = settings;
+    Window.apply(this, [name, args, null, scheme]);
+  }
+
+  PanelItemDialog.prototype = Object.create(Window.prototype);
+  PanelItemDialog.constructor = Window;
+
+  PanelItemDialog.prototype.init = function(wm, app, scheme) {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+    scheme.render(this, this._name);
+
+    scheme.find(this, 'ButtonApply').on('click', function() {
+      self.applySettings();
+      self._close();
+    });
+
+    scheme.find(this, 'ButtonCancel').on('click', function() {
+      self._close();
+    });
+
+    return root;
+  };
+
+  PanelItemDialog.prototype.applySettings = function() {
+  };
+
+  PanelItemDialog.prototype._close = function() {
+    this._closeCallback();
+    return Window.prototype._close.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // PANELS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -249,9 +287,15 @@
   // PANEL ITEM
   /////////////////////////////////////////////////////////////////////////////
 
-  var PanelItem = function(className) {
+  var PanelItem = function(className, itemName, settings, defaults) {
     this._$root = null;
     this._className = className || 'Unknown';
+    this._itemName = itemName || className.split(' ')[0];
+    this._settings = null;
+
+    if ( settings && defaults ) {
+      this._settings = settings.mergeDefaults(defaults);
+    }
   };
 
   PanelItem.Name = 'PanelItem'; // Static name
@@ -259,14 +303,35 @@
   PanelItem.Icon = 'actions/stock_about.png'; // Static icon
 
   PanelItem.prototype.init = function() {
+    var self = this;
+    var wm = OSjs.Core.getWindowManager();
+
     this._$root = document.createElement('corewm-panel-item');
     this._$root.className = this._className;
+
+    if ( this._settings ) {
+      var title = 'Open ' + this._itemName + ' settings'; // FIXME: Locale
+      Utils.$bind(this._$root, 'contextmenu', function(ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        API.createMenu([{
+          title: title,
+          onClick: function() {
+            self.openSettings(wm.scheme);
+          }
+        }], ev);
+      });
+    }
 
     return this._$root;
   };
 
   PanelItem.prototype.destroy = function() {
     this._$root = Utils.$remove(this._$root);
+  };
+
+  PanelItem.prototype.openSettings = function() {
   };
 
   PanelItem.prototype.getRoot = function() {
@@ -281,5 +346,6 @@
   OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Panel             = Panel;
   OSjs.Applications.CoreWM.PanelItem         = PanelItem;
+  OSjs.Applications.CoreWM.PanelItemDialog   = PanelItemDialog;
 
 })(OSjs.Core.WindowManager, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
