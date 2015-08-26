@@ -240,7 +240,7 @@
    */
   ApplicationSettingsWindow.prototype.destroy = function() {
     try {
-      OSjs.Core.getWindowManager().unwatch(this.watchID);
+      OSjs.Core.getSettingsManager().unwatch(this.watchID);
     } catch ( e ) {}
     Window.prototype.destroy.apply(this, arguments);
   };
