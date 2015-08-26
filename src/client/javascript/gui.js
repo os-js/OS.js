@@ -128,7 +128,7 @@
   function getIcon(el, win) {
     var image = el.getAttribute('data-icon');
 
-    if ( image ) {
+    if ( image && image !== 'undefined') {
       if ( image.match(/^stock:\/\//) ) {
         image = image.replace('stock://', '');
 
@@ -147,9 +147,11 @@
       } else if ( image.match(/^app:\/\//) ) {
         image = API.getApplicationResource(win._app, image.replace('app://', ''));
       }
+
+      return image;
     }
 
-    return image;
+    return null;
   }
 
   /**
