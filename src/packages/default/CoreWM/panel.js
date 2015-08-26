@@ -292,6 +292,7 @@
     this._className = className || 'Unknown';
     this._itemName = itemName || className.split(' ')[0];
     this._settings = null;
+    this._settingsDialog = null;
 
     if ( settings && defaults ) {
       this._settings = settings.mergeDefaults(defaults);
@@ -328,12 +329,22 @@
   };
 
   PanelItem.prototype.destroy = function() {
+    if ( this._settingsDialog ) {
+      this._settingsDialog.destroy();
+    }
+    this._settingsDialog = null;
     this._$root = Utils.$remove(this._$root);
   };
 
-  PanelItem.prototype.openSettings = function() {
+  PanelItem.prototype.openSettings = function(_DialogRef, args) {
+    if ( this._settingsDialog ) {
+      this._settingsDialog._restore();
+      return false;
+    }
+
     var wm = OSjs.Core.getWindowManager();
-    return wm.scheme;
+    this._settingsDialog = new _DialogRef(this, wm.scheme);
+    OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);
   };
 
   PanelItem.prototype.getRoot = function() {

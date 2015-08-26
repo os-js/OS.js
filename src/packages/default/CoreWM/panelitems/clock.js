@@ -101,9 +101,7 @@
   };
 
   PanelItemClock.prototype.openSettings = function() {
-    var scheme = PanelItem.prototype.openSettings.apply(this, arguments);
-    var dialog = new ClockSettingsDialog(this, scheme);
-    OSjs.Core.getWindowManager().addWindow(dialog, true);
+    PanelItem.prototype.openSettings.call(this, ClockSettingsDialog, {});
   };
 
   PanelItemClock.prototype.destroy = function() {
