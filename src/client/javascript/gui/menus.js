@@ -269,7 +269,8 @@
 
     function resolveItems(arr, par) {
       arr.forEach(function(iter) {
-        var entry = GUI.Helpers.createElement('gui-menu-entry', {label: iter.title, icon: iter.icon});
+        var props = {label: iter.title, icon: iter.icon, disabled: iter.disabled};
+        var entry = GUI.Helpers.createElement('gui-menu-entry', props);
         if ( iter.menu ) {
           var nroot = GUI.Helpers.createElement('gui-menu', {});
           resolveItems(iter.menu, nroot);
