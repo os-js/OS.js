@@ -630,6 +630,7 @@ Array.prototype.unique = function(){
     'src/client/javascript/settings-manager.js',
     'src/client/javascript/package-manager.js',
 
+    'src/client/javascript/helpers/settings-fragment.js',
     'src/client/javascript/helpers/default-application.js',
     'src/client/javascript/helpers/iframe-application.js',
     'src/client/javascript/helpers/google-api.js',

@@ -36,33 +36,192 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/client/javascript/gui/richtext.js</i></p>
+<p><i>src/client/javascript/helpers/settings-fragment.js</i></p>
 <h2>Functions</h2>
 <ul>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-gui-elements-gui-richtext">gui-richtext</a> (OSjs.GUI.Elements.gui-richtext)
+<a href="#osjs-helpers-settingsfragment">SettingsFragment</a> (OSjs.Helpers.SettingsFragment)
 <ul>
+<li><a href="#settingsfragment-get">get()</a></li>
+<li><a href="#settingsfragment-set">set()</a></li>
+<li><a href="#settingsfragment-save">save()</a></li>
+<li><a href="#settingsfragment-instance">instance()</a></li>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-gui-elements-gui-richtext">
-<h2 id="gui-richtext">gui-richtext</h2>
+<div class="section-class" id="osjs-helpers-settingsfragment">
+<h2 id="settingsfragment">SettingsFragment</h2>
 <pre>
-Element: 'gui-richtext'
+Settings Fragment Class
 
-"Richt text" input area.
+This is the object returned when manipulating with SettingsManager.
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.GUI.Elements.gui-richtext</li>
+<li>OSjs.Helpers.SettingsFragment</li>
 </ul>
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Core.SettingsManager</li>
+</ul>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>obj</td>
+<td>Object</td>
+<td>Settings tree</td>
+</tr>
+<tr>
+<td>poolName</td>
+<td>String</td>
+<td>Name of the pool</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
 
+<div class="section-method" id="settingsfragment-get">
+<h3 id="settingsfragment-get-key-">SettingsFragment::get(key)</h3>
+<pre>
+Gets setting(s) by key
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>(Optional) name of key</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>Either an entry or entire tree</em></p>
+
+</div>
+<div class="section-method" id="settingsfragment-set">
+<h3 id="settingsfragment-set-key-value-save-">SettingsFragment::set(key, value, save)</h3>
+<pre>
+Sets setting(s) by key/value
+
+If you set `key` to `null` you will write to the tree root.
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>Mixed</td>
+<td>The key</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>The value</td>
+</tr>
+<tr>
+<td>save</td>
+<td>Mixed</td>
+<td>Saves the pool (either boolean or callback function)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>SettingsFragment</u> <em><code>this</code></em></p>
+
+</div>
+<div class="section-method" id="settingsfragment-save">
+<h3 id="settingsfragment-save-callback-">SettingsFragment::save(callback)</h3>
+<pre>
+Saves the pool
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>SettingsManager::save()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>(optional) Callback function</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-method" id="settingsfragment-instance">
+<h3 id="settingsfragment-instance-key-">SettingsFragment::instance(key)</h3>
+<pre>
+Creates a new SettingsFragment instance from given key
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>String</td>
+<td>Key name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>SettingsFragment</u> <em>New instance</em></p>
+
+</div>
 </div>
 <p><i>Generated: Wed Aug 26 2015 17:16:33 GMT+0200 (CEST)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
