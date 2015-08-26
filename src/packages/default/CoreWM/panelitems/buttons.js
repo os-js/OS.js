@@ -37,8 +37,26 @@
   /**
    * PanelItem: Buttons
    */
-  var PanelItemButtons = function() {
-    PanelItem.apply(this, ['PanelItemButtons PanelItemFill']);
+  var PanelItemButtons = function(settings) {
+    PanelItem.apply(this, ['PanelItemButtons PanelItemFill', 'Buttons', settings, {
+      buttons: [
+        {
+          title: API._('LBL_APPLICATIONS'),
+          icon: 'osjs-white.png',
+          system: 'applications'
+        },
+        {
+          title: API._('LBL_SETTINGS'),
+          icon: 'categories/applications-system.png',
+          system: 'settings'
+        },
+        {
+          title: API._('DIALOG_LOGOUT_TITLE'),
+          icon: 'actions/exit.png',
+          system: 'exit'
+        }
+      ]
+    }]);
 
     this.$container = null;
   };
@@ -54,6 +72,9 @@
     this.$container = document.createElement('ul');
     root.appendChild(this.$container);
 
+    this.renderButtons();
+
+    /*
     this.addButton(API._('LBL_APPLICATIONS'), 'osjs-white.png', function(ev) {
       ev.stopPropagation();
 
@@ -72,26 +93,79 @@
     this.addButton(API._('DIALOG_LOGOUT_TITLE'), 'actions/exit.png', function(ev) {
       OSjs.Session.signOut();
     });
+    */
 
     return root;
   };
 
   PanelItemButtons.prototype.destroy = function() {
+    this.$container = null;
     PanelItem.prototype.destroy.apply(this, arguments);
   };
 
-  PanelItemButtons.prototype.addButton = function(title, icon, callback) {
-    icon = API.getIcon(icon);
+  PanelItemButtons.prototype.clearButtons = function() {
+    Utils.$empty(this.$container);
+  };
 
+  PanelItemButtons.prototype.renderButtons = function() {
+    var self = this;
+    var systemButtons = {
+      applications: function(ev) {
+        OSjs.Applications.CoreWM.showMenu(ev);
+      },
+      settings: function(ev) {
+        var wm = OSjs.Core.getWindowManager();
+        if ( wm ) {
+          wm.showSettings();
+        }
+      },
+      exit: function(ev) {
+        OSjs.Session.signOut();
+      }
+    };
+
+    var systemMenu = [{
+      title: 'Remove button', // FIXME: Locale
+      disabled: true
+    }];
+    var normalMenu = [{
+      title: 'Remove button',
+      onClick: function() {
+      }
+    }];
+
+    (this._settings.get('buttons') || []).forEach(function(btn) {
+      var menu = normalMenu;
+      var callback = function() {
+        API.launch(btn.launch);
+      };
+
+      if ( btn.system ) {
+        menu = null; //systemMenu;
+        callback = function(ev) {
+          ev.stopPropagation();
+
+          systemButtons[btn.system](ev);
+        };
+      }
+      self.addButton(btn.title, btn.icon, menu, callback);
+    });
+  };
+
+  PanelItemButtons.prototype.addButton = function(title, icon, menu, callback) {
     var sel = document.createElement('li');
     sel.className = 'Button';
     sel.title = title;
-    sel.innerHTML = '<img alt="" src="' + icon + '" />';
-    sel.onclick = callback;
-    sel.oncontextmenu = function(ev) {
+    sel.innerHTML = '<img alt="" src="' + API.getIcon(icon) + '" />';
+
+    Utils.$bind(sel, 'click', callback);
+    Utils.$bind(sel, 'contextmenu', function(ev) {
+      ev.preventDefault();
       ev.stopPropagation();
-      return false;
-    };
+      if ( menu ) {
+        API.createMenu(menu, ev);
+      }
+    });
 
     this.$container.appendChild(sel);
   };
