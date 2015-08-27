@@ -428,7 +428,9 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * OSjs.API.shutdown()
+   * Shuts down OS.js
+   *
+   * @api OSjs.API.shutdown()
    */
   OSjs.API.shutdown = function() {
     if ( !inited || !loaded ) {
