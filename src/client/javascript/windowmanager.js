@@ -72,15 +72,15 @@
       }
 
       startRect = wm.getWindowSpace(true);
-      wm.getWindows().forEach(function(win) {
-        if ( win && win._wid !== win._wid ) {
+      wm.getWindows().forEach(function(w) {
+        if ( w && w._wid !== win._wid ) {
           windowRects.push({
-            left: win._position.x,
-            top: win._position.y,
-            right: win._position.x + win._dimension.w,
-            bottom: win._position.y + win._dimension.h + topMargin,
-            width: win._dimension.w,
-            height: win._dimension.h
+            left: w._position.x,
+            top: w._position.y,
+            right: w._position.x + w._dimension.w,
+            bottom: w._position.y + w._dimension.h + topMargin,
+            width: w._dimension.w,
+            height: w._dimension.h
           });
         }
       });
