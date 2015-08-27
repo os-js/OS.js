@@ -482,7 +482,7 @@
     }
 
     function onUnload() {
-      shutdown();
+      OSjs.API.shutdown();
     }
 
     document.addEventListener('DOMContentLoaded', onLoad);
