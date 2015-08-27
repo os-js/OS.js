@@ -615,6 +615,7 @@ Array.prototype.unique = function(){
   );
 
   var files = [
+    'src/client/javascript/init.js',
     'src/client/javascript/api.js',
     'src/client/javascript/process.js',
     'src/client/javascript/application.js',
