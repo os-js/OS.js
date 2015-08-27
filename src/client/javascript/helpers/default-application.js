@@ -54,19 +54,29 @@
   DefaultApplication.prototype = Object.create(Application.prototype);
   DefaultApplication.constructor = Application;
 
+  DefaultApplication.prototype.destroy = function() {
+    if ( this.scheme ) {
+      this.scheme.destroy();
+    }
+    this.scheme = null;
+
+    Application.prototype.destroy.apply(this, arguments);
+  };
+
+
   DefaultApplication.prototype.init = function(settings, metadata, onInited, onLoaded) {
     Application.prototype.init.call(this, settings, metadata, onInited);
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = GUI.createScheme(url);
     var file = this._getArgument('file');
 
-    scheme.load(function(error, result) {
+    this.scheme = GUI.createScheme(url);
+    this.scheme.load(function(error, result) {
       if ( error ) {
         console.error('DefaultApplication::init()', 'Scheme::load()', error, self);
       } else {
-        onLoaded(scheme, file);
+        onLoaded(self.scheme, file);
       }
 
       onInited();

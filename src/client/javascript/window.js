@@ -693,10 +693,6 @@
       this._app._onMessage(this, 'destroyWindow', {});
     }
 
-    if ( this._scheme ) {
-      this._scheme.destroy();
-    }
-
     this._scheme = null;
     this._app = null;
     this._hooks = {};

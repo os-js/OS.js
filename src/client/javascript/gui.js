@@ -708,6 +708,10 @@
    * @class
    */
   function UIScheme(url) {
+    console.group('UIScheme::construct()');
+    console.log(url);
+    console.groupEnd();
+
     this.url = url;
     this.scheme = null;
     this.triggers = {render: []};
@@ -765,6 +769,8 @@
       return;
     }
 
+    console.debug('UIScheme::load()', this.url);
+
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
@@ -792,6 +798,8 @@
   UIScheme.prototype.parse = function(id, type, win, onparse, args) {
     var self = this;
     var content = this.getFragment(id, type);
+
+    console.debug('UIScheme::parse()', id);
 
     if ( !content ) {
       console.error('UIScheme::parse()', 'No fragment found', id, type);
@@ -849,6 +857,8 @@
     if ( root instanceof UIElement ) {
       root = root.$element;
     }
+
+    console.debug('UIScheme::render()', id);
 
     var content = this.parse(id, type, win, onparse, args);
     addChildren(content, root);
