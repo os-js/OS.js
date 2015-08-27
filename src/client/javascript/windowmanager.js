@@ -323,6 +323,7 @@
     this._mouselock      = true;
     this._stylesheet     = null;
     this._sessionLoaded  = false;
+    this._fullyLoaded    = false;
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');

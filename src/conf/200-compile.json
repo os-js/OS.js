@@ -17,7 +17,6 @@
   "javascript": [
     "src/client/javascript/init.js",
     "src/client/javascript/utils.js",
-    "src/client/javascript/session.js",
     "src/client/javascript/api.js",
     "src/client/javascript/process.js",
     "src/client/javascript/application.js",

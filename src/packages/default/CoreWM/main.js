@@ -124,7 +124,7 @@
         OSjs.API.createMenu([{
           title: API._('TITLE_SIGN_OUT'),
           onClick: function() {
-            OSjs.Session.signOut();
+            OSjs.API.signOut();
           }
         }], ev);
 

@@ -180,7 +180,7 @@
         }
       },
       exit: function(ev) {
-        OSjs.Session.signOut();
+        OSjs.API.signOut();
       }
     };
 

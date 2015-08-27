@@ -32,8 +32,17 @@
 
   window.OSjs = window.OSjs || {};
 
+  var handler    = null;
+  var loaded     = false;
+  var inited     = false;
+  var signingOut = false;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // COMPABILITY
+  /////////////////////////////////////////////////////////////////////////////
+
   // Make sure these namespaces exist
-  (['API', 'GUI', 'Core', 'Dialogs', 'Compability', 'Helpers', 'Applications', 'Locales', 'VFS', 'Session']).forEach(function(ns) {
+  (['API', 'GUI', 'Core', 'Dialogs', 'Compability', 'Helpers', 'Applications', 'Locales', 'VFS']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -73,25 +82,409 @@
     })();
   })();
 
-  // Initialize
-  (function() {
-    var onLoaded = (function() {
-      var loaded = false;
+  /////////////////////////////////////////////////////////////////////////////
+  // GLOBAL EVENTS
+  /////////////////////////////////////////////////////////////////////////////
 
-      return function() {
-        if ( !loaded ) {
-          loaded = true;
-          OSjs.Session.init();
+  var events = {
+    body_contextmenu: function(ev) {
+      ev.stopPropagation();
+      if ( !OSjs.Utils.$isInput(ev) ) {
+        ev.preventDefault();
+        return false;
+      }
+      return true;
+    },
+    body_mousedown: function(ev) {
+      ev.preventDefault();
+      OSjs.API.blurMenu();
+    },
+
+    mousedown: function(ev) {
+      var wm = OSjs.Core.getWindowManager();
+      var win = wm ? wm.getCurrentWindow() : null;
+      if ( win ) {
+        win._blur();
+      }
+    },
+
+    keydown: function(ev) {
+      var wm  = OSjs.Core.getWindowManager();
+      var win = wm ? wm.getCurrentWindow() : null;
+
+      function checkPrevent() {
+        var d = ev.srcElement || ev.target;
+        var doPrevent = d.tagName === 'BODY' ? true : false;
+
+        // We don't want backspace and tab triggering default browser events
+        if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isInput(ev) ) {
+          doPrevent = true;
+        } else if ( (ev.keyCode === OSjs.Utils.Keys.TAB) && OSjs.Utils.$isFormElement(ev) ) {
+          doPrevent = true;
         }
-      };
-    })();
 
-    function onUnload() {
-      OSjs.Session.destroy(false, true);
+        // Only prevent default event if current window is not set up to capture them by force
+        if ( doPrevent && (!win || !win._properties.key_capture) ) {
+          return true;
+        }
+
+        return false;
+      }
+
+      if ( checkPrevent() ) {
+        ev.preventDefault();
+      }
+
+      // WindowManager and Window must always recieve events
+      if ( wm ) {
+        if ( win ) {
+          win._onKeyEvent(ev, 'keydown');
+        }
+        wm.onKeyDown(ev, win);
+      }
+
+      return true;
+    },
+    keypress: function(ev) {
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm ) {
+        var win = wm.getCurrentWindow();
+        if ( win ) {
+          return win._onKeyEvent(ev, 'keypress');
+        }
+      }
+      return true;
+    },
+    keyup: function(ev) {
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm ) {
+        wm.onKeyUp(ev, wm.getCurrentWindow());
+
+        var win = wm.getCurrentWindow();
+        if ( win ) {
+          return win._onKeyEvent(ev, 'keyup');
+        }
+      }
+      return true;
+    },
+
+    beforeunload: function(ev) {
+      if ( signingOut ) { return; }
+
+      try {
+        var config = OSjs.API.getDefaultSettings();
+        if ( config.Core.ShowQuitWarning ) {
+          return OSjs.API._('MSG_SESSION_WARNING');
+        }
+      } catch ( e ) {}
+    },
+
+    resize: (function() {
+      var _timeout;
+
+      function _resize(ev) {
+        var wm = OSjs.Core.getWindowManager();
+        if ( !wm ) { return; }
+        wm.resize(ev, wm.getWindowSpace());
+      }
+
+      return function(ev) {
+        if ( _timeout ) {
+          clearTimeout(_timeout);
+          _timeout = null;
+        }
+
+
+        var self = this;
+        _timeout = setTimeout(function() {
+          _resize.call(self, ev);
+        }, 100);
+      };
+    })(),
+
+    scroll: function(ev) {
+      if ( ev.target === document || ev.target === document.body ) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        return false;
+      }
+
+      document.body.scrollTop = 0;
+      document.body.scrollLeft = 0;
+      return true;
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // INITIALIZERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * When an error occurs
+   */
+  function onError(msg) {
+    OSjs.API.error(OSjs.API._('ERR_CORE_INIT_FAILED'), OSjs.API._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
+  }
+
+  /**
+   * Initialized some layout stuff
+   */
+  function initLayout() {
+    var config = OSjs.API.getDefaultSettings();
+    var append = config.Core.VersionAppend;
+
+    var ver = config.Version || 'unknown verion';
+    var cop = 'Copyright © 2011-2014 ';
+    var lnk = document.createElement('a');
+    lnk.href = 'mailto:andersevenrud@gmail.com';
+    lnk.appendChild(document.createTextNode('Anders Evenrud'));
+
+    var el = document.createElement('div');
+    el.id = 'DebugNotice';
+    el.appendChild(document.createTextNode(OSjs.Utils.format('OS.js {0}', ver)));
+    el.appendChild(document.createElement('br'));
+    el.appendChild(document.createTextNode(cop));
+    el.appendChild(lnk);
+    if ( append ) {
+      el.appendChild(document.createElement('br'));
+      el.innerHTML += append;
     }
 
-    document.addEventListener('DOMContentLoaded', onLoaded);
-    document.addEventListener('load', onLoaded);
+    document.body.appendChild(el);
+  }
+
+  /**
+   * Initializes handler
+   */
+  function initHandler(config, callback) {
+    handler = new OSjs.Core.Handler();
+    handler.init(function() {
+      if ( inited ) {
+        return;
+      }
+      inited = true;
+
+      handler.boot(function(result, error) {
+        if ( error ) {
+          onError(error);
+          return;
+        }
+
+        callback();
+      });
+    });
+  }
+
+  /**
+   * Initializes events
+   */
+  function initEvents() {
+    document.body.addEventListener('contextmenu', events.body_contextmenu, false);
+    document.body.addEventListener('mousedown', events.body_mousedown, false);
+    document.addEventListener('keydown', events.keydown, false);
+    document.addEventListener('keypress', events.keypress, false);
+    document.addEventListener('keyup', events.keyup, false);
+    document.addEventListener('mousedown', events.mousedown, false);
+    window.addEventListener('resize', events.resize, false);
+    window.addEventListener('scroll', events.scroll, false);
+    window.onbeforeunload = events.beforeunload;
+
+    window.onerror = function(message, url, linenumber, column, exception) {
+      if ( typeof exception === 'string' ) {
+        exception = null;
+      }
+      console.warn('window::onerror()', arguments);
+      OSjs.API.error(OSjs.API._('ERR_JAVASCRIPT_EXCEPTION'),
+                    OSjs.API._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
+                    OSjs.API._('BUGREPORT_MSG'),
+                    exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber+':'+column, message: message},
+                    true );
+
+      return false;
+    };
+  }
+
+  /**
+   * Preloads configured files
+   */
+  function initPreload(config, callback) {
+    var preloads = config.Core.Preloads;
+    preloads.forEach(function(val, index) {
+      val.src = OSjs.Utils.checkdir(val.src);
+    });
+
+    OSjs.Utils.preload(preloads, function(total, errors, failed) {
+      if ( errors ) {
+        console.warn('doInitialize()', errors, 'preloads failed to load:', failed);
+      }
+
+      setTimeout(function() {
+        callback();
+      }, 0);
+    });
+  }
+
+  /**
+   * Initalizes the VFS
+   */
+  function initVFS(config, callback) {
+    if ( OSjs.VFS.registerMounts ) {
+      OSjs.VFS.registerMounts();
+    }
+    callback();
+  }
+
+  /**
+   * Initializes the Window Manager
+   */
+  function initWindowManager(config, callback) {
+    if ( !config.WM || !config.WM.exec ) {
+      onError(OSjs.API._('ERR_CORE_INIT_NO_WM'));
+      return;
+    }
+
+    OSjs.API.launch(config.WM.exec, (config.WM.args || {}), function(app) {
+      callback();
+    }, function(error, name, args, exception) {
+      onError(OSjs.API._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
+    });
+  }
+
+  /**
+   * Initializes the Session
+   */
+  function initSession(config, callback) {
+    OSjs.API.playSound('service-login');
+
+    var wm = OSjs.Core.getWindowManager();
+
+    function autostart() {
+      var config = OSjs.API.getDefaultSettings();
+      var start;
+
+      try {
+        start = config.System.AutoStart;
+      } catch ( e ) {
+        console.warn('doAutostart() exception', e, e.stack);
+      }
+
+      console.info('doAutostart()', start);
+      if ( start ) {
+        OSjs.API.launchList(autostart);
+      }
+    }
+
+    handler.loadSession(function() {
+      setTimeout(function() {
+        events.resize();
+      }, 500);
+
+
+      callback();
+
+      wm.onSessionLoaded();
+
+      autostart();
+    });
+  }
+
+  /**
+   * Wrapper for initializing OS.js
+   */
+  function init() {
+    var config = OSjs.API.getDefaultSettings();
+
+    OSjs.Compability = OSjs.Utils.getCompability();
+
+    initLayout();
+
+    initHandler(config, function() {
+      OSjs.API.triggerHook('onInitialize');
+
+      initPreload(config, function() {
+        OSjs.API.triggerHook('onInited');
+
+        initVFS(config, function() {
+          initWindowManager(config, function() {
+            OSjs.API.triggerHook('onWMInited');
+
+            OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+
+            initEvents();
+            var wm = OSjs.Core.getWindowManager();
+            wm._fullyLoaded = true;
+
+            initSession(config, function() {
+              OSjs.API.triggerHook('onSessionLoaded');
+            });
+          });
+        });
+      });
+    });
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * OSjs.API.shutdown()
+   */
+  OSjs.API.shutdown = function() {
+    if ( !inited || !loaded ) {
+      return;
+    }
+
+    signingOut = true;
+
+    document.body.removeEventListener('contextmenu', events.body_contextmenu, false);
+    document.body.removeEventListener('mousedown', events.body_mousedown, false);
+    document.removeEventListener('keydown', events.keydown, false);
+    document.removeEventListener('keypress', events.keypress, false);
+    document.removeEventListener('keyup', events.keyup, false);
+    document.removeEventListener('mousedown', events.mousedown, false);
+    window.removeEventListener('resize', events.resize, false);
+    window.removeEventListener('scroll', events.scroll, false);
+
+    window.onerror = null;
+    window.onbeforeunload = null;
+
+    OSjs.API.blurMenu();
+    OSjs.API.killAll();
+
+    var ring = OSjs.API.getServiceNotificationIcon();
+    if ( ring ) {
+      ring.destroy();
+    }
+
+    var handler = OSjs.Core.getHandler();
+    if ( handler ) {
+      handler.destroy();
+      handler = null;
+    }
+
+    console.warn('OS.js was shut down!');
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MAIN
+  /////////////////////////////////////////////////////////////////////////////
+
+  (function() {
+    function onLoad() {
+      if ( loaded ) {
+        return;
+      }
+      loaded = true;
+      init();
+    }
+
+    function onUnload() {
+      shutdown();
+    }
+
+    document.addEventListener('DOMContentLoaded', onLoad);
+    document.addEventListener('load', onLoad);
     document.addEventListener('unload', onUnload);
   })();
 

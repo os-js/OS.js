@@ -122,7 +122,7 @@
   };
 
   /**
-   * Called after successfull login in 'session.js'
+   * Called when booting in `init.js`
    *
    * @param   Function      callback        Callback function
    *

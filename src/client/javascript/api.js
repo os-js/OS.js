@@ -43,6 +43,17 @@
   var _MENU;              // Current open 'OSjs.GUI.Menu'
   var _CLIPBOARD;         // Current 'clipboard' data
 
+  var _hooks = {
+    'onInitialize':          [],
+    'onInited':              [],
+    'onWMInited':            [],
+    'onSessionLoaded':       [],
+    'onLogout':              [],
+    'onShutdown':            [],
+    'onApplicationLaunch':   [],
+    'onApplicationLaunched': [] 
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // SERVICERING
   /////////////////////////////////////////////////////////////////////////////
@@ -592,7 +603,7 @@
         });
         onFinished(a, result);
 
-        OSjs.Session.triggerHook('onApplicationLaunched', [{
+        doTriggerHook('onApplicationLaunched', [{
           application: a,
           name: n,
           args: arg,
@@ -613,7 +624,7 @@
     }
 
     function launch() {
-      OSjs.Session.triggerHook('onApplicationLaunch', [n, arg]);
+      doTriggerHook('onApplicationLaunch', [n, arg]);
 
       // Get metadata and check compability
       var data = packman.getPackage(n);
@@ -1336,7 +1347,7 @@
     OSjs.API.blurMenu();
 
     var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
+    if ( wm && wm._fullyLoaded ) {
       try {
         return OSjs.API.createDialog('Error', {
           title: title,
@@ -1436,6 +1447,89 @@
   })();
 
   /////////////////////////////////////////////////////////////////////////////
+  // MISC
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Signs the user out and shuts down OS.js
+   *
+   * @return  void
+   * @method  OSjs.API.signOut()
+   */
+  function doSignOut() {
+    var handler = OSjs.Core.getHandler();
+    var wm = OSjs.Core.getWindowManager();
+
+    function signOut(save) {
+      OSjs.API.playSound('service-logout');
+
+      handler.logout(save, function() {
+        OSjs.API.shutdown();
+      });
+    }
+
+    if ( wm ) {
+      var user = handler.getUserData() || {name: OSjs.API._('LBL_UNKNOWN')};
+      OSjs.API.createDialog('Confirm', {
+        title: OSjs.API._('DIALOG_LOGOUT_TITLE'),
+        message: OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name)
+      }, function(ev, btn) {
+        if ( btn === 'yes' ) {
+          signOut(true);
+        } else if ( btn === 'no' ) {
+          signOut(false);
+        }
+      });
+    } else {
+      signOut(true);
+    }
+  }
+
+  /**
+   * Method for triggering a hook
+   *
+   * @param   String    name      Hook name
+   * @param   Array     args      List of arguments
+   * @param   Object    thisarg   'this' ref
+   *
+   * @return  void
+   * @api     OSjs.API.triggerHook()
+   */
+  function doTriggerHook(name, args, thisarg) {
+    thisarg = thisarg || OSjs;
+    args = args || [];
+
+    if ( _hooks[name] ) {
+      _hooks[name].forEach(function(hook) {
+        if ( typeof hook === 'function' ) {
+          try {
+            hook.apply(thisarg, args);
+          } catch ( e ) {
+            console.warn('Error on Hook', e, e.stack);
+          }
+        } else {
+          console.warn('No such Hook', name);
+        }
+      });
+    }
+  }
+
+  /**
+   * Method for adding a hook
+   *
+   * @param   String    name    Hook name
+   * @param   Function  fn      Callback
+   *
+   * @return  void
+   * @api     OSjs.API.addHook()
+   */
+  function doAddHook(name, fn) {
+    if ( typeof _hooks[name] !== 'undefined' ) {
+      _hooks[name].push(fn);
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -1473,6 +1567,10 @@
   OSjs.API.checkPermission        = doCheckPermission;
 
   OSjs.API.error                      = doErrorDialog;
+  OSjs.API.shutdown                   = OSjs.API.shutdown || function() {}; // init.js
+  OSjs.API.triggerHook                = doTriggerHook;
+  OSjs.API.addHook                    = doAddHook;
+  OSjs.API.signOut                    = doSignOut;
   OSjs.API.playSound                  = doPlaySound;
   OSjs.API.setClipboard               = doSetClipboard;
   OSjs.API.getClipboard               = doGetClipboard;

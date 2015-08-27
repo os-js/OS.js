@@ -384,10 +384,10 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Session.addHook('onSessionLoaded', function() {
+  OSjs.API.addHook('onSessionLoaded', function() {
     createNotification();
   });
-  OSjs.Session.addHook('onLogout', function() {
+  OSjs.API.addHook('onLogout', function() {
     removeNotification();
     destroyConnectionWindow();
   });
