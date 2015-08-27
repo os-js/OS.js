@@ -55,11 +55,6 @@
   DefaultApplication.constructor = Application;
 
   DefaultApplication.prototype.destroy = function() {
-    if ( this.scheme ) {
-      this.scheme.destroy();
-    }
-    this.scheme = null;
-
     Application.prototype.destroy.apply(this, arguments);
   };
 
@@ -71,16 +66,18 @@
     var url = API.getApplicationResource(this, './scheme.html');
     var file = this._getArgument('file');
 
-    this.scheme = GUI.createScheme(url);
-    this.scheme.load(function(error, result) {
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
       if ( error ) {
         console.error('DefaultApplication::init()', 'Scheme::load()', error, self);
       } else {
-        onLoaded(self.scheme, file);
+        onLoaded(scheme, file);
       }
 
       onInited();
     });
+
+    this._setScheme(scheme);
   };
 
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {

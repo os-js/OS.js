@@ -174,6 +174,7 @@
 
       onInited();
     });
+    this._setScheme(scheme);
   };
 
   ApplicationFirefoxMarketplace.prototype.getList = function(filter, callback) {

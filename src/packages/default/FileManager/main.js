@@ -498,6 +498,8 @@
 
       onInited();
     });
+
+    this._setScheme(scheme);
   };
 
   ApplicationFileManager.prototype._onMessage = function(obj, msg, args) {

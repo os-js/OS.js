@@ -67,6 +67,7 @@
     this.__settings   = OSjs.Core.getSettingsManager().instance(name, settings || {});
     this.__metadata   = metadata;
     this.__mainwindow = null;
+    this.__scheme     = null;
 
     Process.apply(this, [name]);
 
@@ -126,6 +127,11 @@
     this.__settings = null;
 
     console.debug('Application::destroy()', this.__name);
+
+    if ( this.__scheme ) {
+      this.__scheme.destroy();
+    }
+    this.__scheme = null;
 
     var i;
     while ( this.__windows.length ) {
@@ -361,6 +367,18 @@
     if ( save ) {
       this.__settings.save(saveCallback);
     }
+  };
+
+  /**
+   * Sets the scheme instance
+   *
+   * @param   UIScheme      s       Scheme Ref
+   *
+   * @see UIScheme
+   * @method Application::_setScheme()
+   */
+  Application.prototype._setScheme = function(s) {
+    this.__scheme = s;
   };
 
   /**

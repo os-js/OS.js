@@ -759,14 +759,12 @@
 
   var ApplicationSettings = function(args, metadata) {
     Application.apply(this, ['ApplicationSettings', args, metadata]);
-    this.scheme = null;
   };
 
   ApplicationSettings.prototype = Object.create(Application.prototype);
   ApplicationSettings.constructor = Application;
 
   ApplicationSettings.prototype.destroy = function() {
-    this.scheme = null;
     return Application.prototype.destroy.apply(this, arguments);
   };
 
@@ -783,12 +781,12 @@
       onInited();
     });
 
-    this.scheme = scheme;
+    this._setScheme(scheme);
   };
 
   ApplicationSettings.prototype.panelItemsDialog = function(callback) {
-    if ( this.scheme ) {
-      this._addWindow(new PanelItemDialog(this, this.__metadata, this.scheme, callback));
+    if ( this.__scheme ) {
+      this._addWindow(new PanelItemDialog(this, this.__metadata, this.__scheme, callback));
     }
   };
 

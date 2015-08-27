@@ -66,18 +66,12 @@
 
   function ApplicationEXAMPLE(args, metadata) {
     Application.apply(this, ['ApplicationEXAMPLE', args, metadata]);
-    this.scheme = null;
   }
 
   ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
   ApplicationEXAMPLE.constructor = Application;
 
   ApplicationEXAMPLE.prototype.destroy = function() {
-    if ( this.scheme ) {
-      this.scheme.destroy();
-    }
-    this.scheme = null;
-
     return Application.prototype.destroy.apply(this, arguments);
   };
 
@@ -86,13 +80,13 @@
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
-
-    this.scheme = GUI.createScheme(url);
-    this.scheme.load(function(error, result) {
-      self._addWindow(new ApplicationEXAMPLEWindow(self, metadata, self.scheme));
-
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
       onInited();
     });
+
+    this._setScheme(scheme);
   };
 
   /////////////////////////////////////////////////////////////////////////////
