@@ -1481,6 +1481,7 @@
 
       if ( found >= 0 ) {
         var fel = elements[found];
+
         if ( fel.tagName.toLowerCase() === 'textarea' && !Utils.$hasClass(fel, 'gui-focus-element') ) {
           return;
         }

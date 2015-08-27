@@ -507,7 +507,7 @@
     if ( !ev ) { return; }
 
     var keys = Utils.Keys;
-    if ( ev.shiftKey && ev.keyCode === keys.TAB ) { // Toggle Window switcher
+    if ( ev.shiftKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
       if ( !this.getSetting('enableSwitcher') ) { return; }
 
       if ( this.switcher ) {

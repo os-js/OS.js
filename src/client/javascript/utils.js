@@ -106,6 +106,8 @@
     F11: 123,
     F12: 124,
 
+    TILDE:      220,
+
     CMD:        17,
     LSUPER:     91,
     RSUPER:     92,
