@@ -36,351 +36,52 @@
     <content>
 
 <h1>Overview</h1>
-<p><i>src/client/javascript/settings-manager.js</i></p>
+<p><i>src/client/javascript/gui/_elements.js</i></p>
 <h2>Functions</h2>
 <ul>
-<li>OSjs.Core.<a href="#osjs-core-getsettingsmanager">getSettingsManager()</a></li>
 </ul>
 <h2>Classes</h2>
 <ul>
 <li>
-<a href="#osjs-core-settingsmanager">SettingsManager</a> (OSjs.Core.SettingsManager)
+<a href="#osjs-gui-uielement">UIElement()</a> (OSjs.GUI.UIElement())
 <ul>
-<li><a href="#settingsmanager-init">init()</a></li>
-<li><a href="#settingsmanager-get">get()</a></li>
-<li><a href="#settingsmanager-set">set()</a></li>
-<li><a href="#settingsmanager-save">save()</a></li>
-<li><a href="#settingsmanager-defaults">defaults()</a></li>
-<li><a href="#settingsmanager-instance">instance()</a></li>
-<li><a href="#settingsmanager-unwatch">unwatch()</a></li>
-<li><a href="#settingsmanager-watch">watch()</a></li>
-<li><a href="#settingsmanager-changed">changed()</a></li>
+</ul>
+</li>
+<li>
+<a href="#osjs-gui-uielementdataview">UIElementDataView()</a> (OSjs.GUI.UIElementDataView())
+<ul>
 </ul>
 </li>
 </ul>
 <h1>Functions</h1>
-<div class="section-function" id="osjs-core-getsettingsmanager">
-<h2 id="osjs-core-getsettingsmanager-">OSjs.Core.getSettingsManager()</h2>
-<pre>
-Get the current SettingsManager instance
-</pre>
-
-
-
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>SettingsManager</u></p>
-
-</div>
 <h1>Classes</h1>
-<div class="section-class" id="osjs-core-settingsmanager">
-<h2 id="settingsmanager">SettingsManager</h2>
+<div class="section-class" id="osjs-gui-uielement">
+<h2 id="uielement-">UIElement()</h2>
 <pre>
-Settings Manager Class
-
-For maintaining settings
-
-You can only get an instance with `Core.getSettingsManager()`
+Base UIElement Class
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
-<li>OSjs.Core.SettingsManager</li>
+<li>OSjs.GUI.UIElement()</li>
 </ul>
 
-<div class="section-method" id="settingsmanager-init">
-<h3 id="settingsmanager-init-settings-">SettingsManager::init(settings)</h3>
+</div>
+<div class="section-class" id="osjs-gui-uielementdataview">
+<h2 id="uielementdataview-">UIElementDataView()</h2>
 <pre>
-Initialize SettingsManager.
-
-This is run when a user logs in. It will give saved data here
+Extended UIElement for ListView, TreeView, IconView, Select, SelectList
 </pre>
 
+<h4 id="namespace">Namespace</h4>
+<ul>
+<li>OSjs.GUI.UIElementDataView()</li>
+</ul>
+<h4 id="extends">Extends</h4>
+<ul>
+<li>UIElement</li>
+</ul>
 
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>settings</td>
-<td>Object</td>
-<td>Entire settings tree</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="settingsmanager-get">
-<h3 id="settingsmanager-get-pool-key-">SettingsManager::get(pool, key)</h3>
-<pre>
-Gets either the full tree or tree entry by key
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pool</td>
-<td>String</td>
-<td>Name of settings pool</td>
-</tr>
-<tr>
-<td>key</td>
-<td>String</td>
-<td>(Optional) Key entry of tree</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u></p>
-
-</div>
-<div class="section-method" id="settingsmanager-set">
-<h3 id="settingsmanager-set-pool-key-value-save-">SettingsManager::set(pool, key, value, save)</h3>
-<pre>
-Sets either full tree or a tree entry by key
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pool</td>
-<td>String</td>
-<td>Name of settings pool</td>
-</tr>
-<tr>
-<td>key</td>
-<td>String</td>
-<td>(Optional) Key entry of tree</td>
-</tr>
-<tr>
-<td>value</td>
-<td>Mixed</td>
-<td>The value (or entire tree if no key given)</td>
-</tr>
-<tr>
-<td>save</td>
-<td>Mixed</td>
-<td>(Optional) boolean or callback function for saving</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
-
-</div>
-<div class="section-method" id="settingsmanager-save">
-<h3 id="settingsmanager-save-pool-callback-">SettingsManager::save(pool, callback)</h3>
-<pre>
-Saves the storage to a location
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pool</td>
-<td>String</td>
-<td>Name of settings pool</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="settingsmanager-defaults">
-<h3 id="settingsmanager-defaults-pool-default-">SettingsManager::defaults(pool, default)</h3>
-<pre>
-Sets the defaults for a specific pool
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pool</td>
-<td>String</td>
-<td>Name of settings pool</td>
-</tr>
-<tr>
-<td>default</td>
-<td>Object</td>
-<td>(Optional) Default settings tree</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="settingsmanager-instance">
-<h3 id="settingsmanager-instance-pool-default-">SettingsManager::instance(pool, default)</h3>
-<pre>
-Creates a new proxy instance
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pool</td>
-<td>String</td>
-<td>Name of settings pool</td>
-</tr>
-<tr>
-<td>default</td>
-<td>Object</td>
-<td>(Optional) Default settings tree</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
-
-</div>
-<div class="section-method" id="settingsmanager-unwatch">
-<h3 id="settingsmanager-unwatch-index-">SettingsManager::unwatch(index)</h3>
-<pre>
-Destroy a watcher
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>index</td>
-<td>integer</td>
-<td>The index from watch()</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="settingsmanager-watch">
-<h3 id="settingsmanager-watch-pool-callback-">SettingsManager::watch(pool, callback)</h3>
-<pre>
-Receive events when a pool changes.
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pool</td>
-<td>String</td>
-<td>Name of settings pool</td>
-</tr>
-<tr>
-<td>callback</td>
-<td>Function</td>
-<td>Callback</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Mixed</u> <em>false on error, index for unwatch() otherwise</em></p>
-
-</div>
-<div class="section-method" id="settingsmanager-changed">
-<h3 id="settingsmanager-changed-pool-">SettingsManager::changed(pool)</h3>
-<pre>
-Notify the SettingsManager that somewhere in a pool's tree it has changed.
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>pool</td>
-<td>String</td>
-<td>Name of settings pool that changed</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>SettingsManager</u> <em>this</em></p>
-
-</div>
 </div>
 <p><i>Generated: Fri Aug 28 2015 21:57:00 GMT+0200 (CEST)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>

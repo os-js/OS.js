@@ -641,6 +641,8 @@ Array.prototype.unique = function(){
     'src/client/javascript/helpers/date.js',
 
     'src/client/javascript/gui/_dataview.js',
+    'src/client/javascript/gui/_elements.js',
+    'src/client/javascript/gui/_scheme.js',
     'src/client/javascript/gui/containers.js',
     'src/client/javascript/gui/fileview.js',
     'src/client/javascript/gui/iconview.js',
