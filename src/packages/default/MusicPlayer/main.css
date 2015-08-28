@@ -42,3 +42,6 @@
 .ApplicationMusicPlayerWindow gui-audio {
   display : none;
 }
+.ApplicationMusicPlayerWindow gui-button-bar {
+  text-align : center;
+}
