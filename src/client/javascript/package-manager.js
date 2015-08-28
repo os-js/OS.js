@@ -317,7 +317,7 @@
         }
 
         if ( exists ) {
-          cb('Target directory already exists. Is this package already installed?'); // FIXME: Translation
+          cb(API._('ERR_PACKAGE_EXISTS'));
           return;
         }
 
