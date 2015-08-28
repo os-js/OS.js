@@ -55,7 +55,7 @@
     var uri = Utils.checkdir(config.Core.MetadataURI);
 
     this.packages = {};
-    this.uri = uri; // TODO: Split up into user and system
+    this.uri = uri;
   }
 
   /**
@@ -226,7 +226,7 @@
         if ( resp && (resp instanceof Array) ) {
           resp.forEach(function(iter) {
             if ( !iter.filename.match(/^\./) && iter.type === 'dir' ) {
-              queue.push(dir.path + '/' + iter.filename + '/package.json');
+              queue.push(Utils.pathJoin(dir.path, iter.filename, 'package.json'));
             }
           });
         }
@@ -306,8 +306,8 @@
    * @method PackageManager::install()
    */
   PackageManager.prototype.install = function(file, cb) {
-    var root = 'home:///.packages';
-    var dest = root + '/' + file.filename.replace(/\.zip$/i, '');
+    var config = API.getDefaultSettings();
+    var dest = Utils.pathJoin(config.Core.UserPackages, file.filename.replace(/\.zip$/i, ''));
 
     VFS.mkdir(new VFS.File(root), function() {
       VFS.exists(new VFS.File(dest), function(error, exists) {

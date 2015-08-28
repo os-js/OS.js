@@ -783,15 +783,15 @@
       }
     }
 
+    var dir = new OSjs.VFS.File(OSjs.API.getDefaultSettings());
     if ( appname ) {
       var root;
       if ( appname.match(/^(.*)\/(.*)$/) ) {
         root = OSjs.API.getDefaultSettings().Core.PackageURI;
         path = root + '/' + appname + '/' + name;
       } else {
-        // TODO: Add support for external VFS modules ?
         root = config.Core.FSURI;
-        path = root + 'home:///Packages/' + appname + '/' + name; // FIXME
+        path = root + Utils.pathJoin(config.Core.UserPackages, appname, name);
       }
     }
 
