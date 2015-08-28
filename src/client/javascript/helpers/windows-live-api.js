@@ -351,7 +351,7 @@
     }
 
     var clientId = null;
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     try {
       clientId = config.WindowsLiveAPI.ClientId;
     } catch ( e ) {

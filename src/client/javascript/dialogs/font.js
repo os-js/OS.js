@@ -52,7 +52,7 @@
    * @api OSjs.Dialogs.Font
    */
   function FontDialog(args, callback) {
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     args = Utils.argumentDefaults(args, {
       fontName: config.Fonts['default'],
       fontSize: 12,

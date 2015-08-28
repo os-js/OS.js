@@ -65,7 +65,7 @@
   FileUploadDialog.prototype.init = function() {
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
 
     var message = this.scheme.find(this, 'Message');
     var maxSize = config.MaxUploadSize;

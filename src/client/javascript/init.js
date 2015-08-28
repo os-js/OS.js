@@ -172,7 +172,7 @@
       if ( signingOut ) { return; }
 
       try {
-        var config = OSjs.API.getDefaultSettings();
+        var config = OSjs.Core.getConfig();
         if ( config.ShowQuitWarning ) {
           return OSjs.API._('MSG_SESSION_WARNING');
         }
@@ -230,7 +230,7 @@
    * Initialized some layout stuff
    */
   function initLayout() {
-    var config = OSjs.API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     var append = config.VersionAppend;
 
     var ver = config.Version || 'unknown verion';
@@ -359,7 +359,7 @@
     var wm = OSjs.Core.getWindowManager();
 
     function autostart() {
-      var config = OSjs.API.getDefaultSettings();
+      var config = OSjs.Core.getConfig();
       var start;
 
       try {
@@ -392,7 +392,7 @@
    * Wrapper for initializing OS.js
    */
   function init() {
-    var config = OSjs.API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
 
     OSjs.Compability = OSjs.Utils.getCompability();
 
@@ -466,6 +466,23 @@
     }
 
     console.warn('OS.js was shut down!');
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // FILLERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Get default configured settings
+   *
+   * THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
+   *
+   * @return  Object
+   *
+   * @api     OSjs.Core.getConfig()
+   */
+  OSjs.Core.getConfig = OSjs.Core.getConfig || function() {
+    return {};
   };
 
   /////////////////////////////////////////////////////////////////////////////

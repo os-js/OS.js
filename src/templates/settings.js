@@ -1,7 +1,7 @@
 (function() {
   window.OSjs = window.OSjs || {}
-  OSjs.API = OSjs.API || {}
-  OSjs.API.getDefaultSettings = (function() {
+  OSjs.Core = OSjs.Core || {}
+  OSjs.Core.getConfig = (function() {
     var _cache;
     return function() {
       if ( !_cache ) {

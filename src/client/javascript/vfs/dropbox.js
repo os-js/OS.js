@@ -43,7 +43,7 @@
   var _isMounted = false;
 
   function _getConfig(cfg) {
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     try {
       return config.VFS.Dropbox[cfg];
     } catch ( e ) {

@@ -907,7 +907,7 @@
       return _isMounted;
     },
     enabled: function() {
-      var config = API.getDefaultSettings();
+      var config = OSjs.Core.getConfig();
       try {
         if ( config.VFS.GoogleDrive.Enabled ) {
           return true;

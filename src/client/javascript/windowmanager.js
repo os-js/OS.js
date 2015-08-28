@@ -737,7 +737,7 @@
    * @method  WindowManager::getStyleThemes()
    */
   WindowManager.prototype.getStyleThemes = function() {
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     return config.Styles || [];
   };
 
@@ -749,7 +749,7 @@
    * @method  WindowManager::getSoundThemes()
    */
   WindowManager.prototype.getSoundThemes = function() {
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     return config.Sounds || [];
   };
 
@@ -761,7 +761,7 @@
    * @method  WindowManager::getIconThemes()
    */
   WindowManager.prototype.getIconThemes = function() {
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     return config.Icons || [];
   };
 

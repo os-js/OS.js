@@ -85,7 +85,7 @@
     console.info('Handler::init()');
 
     var self = this;
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     API.setLocale(config.Locale);
 
     if ( typeof navigator.onLine !== 'undefined' ) {
@@ -134,9 +134,9 @@
     var self = this;
     console.info('Handler::boot()');
 
-    var root = API.getDefaultSettings().RootURI;
+    var root = OSjs.Core.getConfig().RootURI;
     var url = root + 'client/dialogs.html';
-    if ( OSjs.API.getDefaultSettings().Dist === 'dist' ) {
+    if ( OSjs.Core.getConfig().Dist === 'dist' ) {
       url = root + 'dialogs.html';
     }
     var scheme = OSjs.GUI.createScheme(url);
@@ -292,7 +292,7 @@
     console.log('Arguments', args);
     console.groupEnd();
 
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     var data = {
       url: config.APIURI,
       method: 'POST',
@@ -336,7 +336,7 @@
   _Handler.prototype.onLogin = function(userData, userSettings, callback) {
     callback = callback || function() {};
 
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     var found = Utils.getUserLocale();
     var curLocale = found || config.Locale;
 

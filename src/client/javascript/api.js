@@ -765,7 +765,7 @@
   function doGetApplicationResource(app, name) {
     var path = '';
     var appname = null;
-    var config = OSjs.API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
 
     name = name.replace(/^\.\//, '');
 
@@ -783,11 +783,11 @@
       }
     }
 
-    var dir = new OSjs.VFS.File(OSjs.API.getDefaultSettings());
+    var dir = new OSjs.VFS.File(OSjs.Core.getConfig());
     if ( appname ) {
       var root;
       if ( appname.match(/^(.*)\/(.*)$/) ) {
-        root = OSjs.API.getDefaultSettings().PackageURI;
+        root = OSjs.Core.getConfig().PackageURI;
         path = root + '/' + appname + '/' + name;
       } else {
         root = config.FSURI;
@@ -809,10 +809,10 @@
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
-      var blank = OSjs.API.getDefaultSettings().RootURI || '/';
+      var blank = OSjs.Core.getConfig().RootURI || '/';
       return blank + 'blank.css';
     }
-    var root = OSjs.API.getDefaultSettings().ThemeURI;
+    var root = OSjs.Core.getConfig().ThemeURI;
     return OSjs.Utils.checkdir(root + '/' + name + '.css');
   }
 
@@ -910,7 +910,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.API.getDefaultSettings().ThemeURI;
+      var root = OSjs.Core.getConfig().ThemeURI;
       name = getName(name, theme);
     }
 
@@ -931,7 +931,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getSoundTheme() : 'default';
-      var root = OSjs.API.getDefaultSettings().SoundURI;
+      var root = OSjs.Core.getConfig().SoundURI;
       if ( !name.match(/^\//) ) {
         var ext = 'oga';
         if ( !OSjs.Compability.audioTypes.ogg ) {
@@ -980,7 +980,7 @@
     if ( name && !name.match(/^(http|\/\/)/) ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getIconTheme() : 'default';
-      var root = OSjs.API.getDefaultSettings().IconURI;
+      var root = OSjs.Core.getConfig().IconURI;
       var chk = checkIcon();
       if ( chk !== null ) {
         return chk;
@@ -1008,19 +1008,6 @@
   }
 
   /**
-   * Get default configured settings
-   *
-   * THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
-   *
-   * @return  Object
-   *
-   * @api     OSjs.API.getDefaultSettings()
-   */
-  function doGetDefaultSettings() {
-    return {};
-  }
-
-  /**
    * Get default configured path
    *
    * @param   String    fallback      Fallback path on error (default= "/")
@@ -1029,7 +1016,7 @@
    * @api     OSjs.API.getDefaultPath()
    */
   function doGetDefaultPath(fallback) {
-    var config = OSjs.API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     return config.Home || fallback || '/';
   }
 
@@ -1337,7 +1324,7 @@
    * @api     OSjs.API.error()
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
-    var config = OSjs.API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     if ( config.BugReporting ) {
       bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {
@@ -1553,7 +1540,6 @@
   OSjs.API.getSound               = doGetSound;
 
   OSjs.API.getDefaultPackages     = OSjs.API.getDefaultPackages || doGetDefaultPackages;
-  OSjs.API.getDefaultSettings     = OSjs.API.getDefaultSettings || doGetDefaultSettings;
   OSjs.API.getDefaultPath         = doGetDefaultPath;
 
   OSjs.API.createDraggable        = doCreateDraggable;

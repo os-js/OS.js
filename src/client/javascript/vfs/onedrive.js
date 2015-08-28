@@ -102,7 +102,7 @@
 
     return function(iter) {
       if ( !EXTs ) {
-        EXTs = API.getDefaultSettings().EXTMIME || {};
+        EXTs = OSjs.Core.getConfig().EXTMIME || {};
       }
       var mime = null;
       if ( getItemType(iter) !== 'dir' ) {
@@ -648,7 +648,7 @@
       return _isMounted;
     },
     enabled: function() {
-      var config = API.getDefaultSettings();
+      var config = OSjs.Core.getConfig();
       try {
         if ( config.VFS.OneDrive.Enabled ) {
           return true;

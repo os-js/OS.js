@@ -111,7 +111,7 @@
 
   CoreWM.prototype.init = function() {
     var self = this;
-    var link = (OSjs.API.getDefaultSettings().RootURI || '/') + 'blank.css';
+    var link = (OSjs.Core.getConfig().RootURI || '/') + 'blank.css';
     this.setThemeLink(Utils.checkdir(link));
     this.setAnimationLink(Utils.checkdir(link));
 

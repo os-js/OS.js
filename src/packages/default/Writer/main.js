@@ -35,7 +35,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationWriterWindow(app, metadata, scheme, file) {
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
 
     DefaultApplicationWindow.apply(this, ['ApplicationWriterWindow', {
       allow_drop: true,

@@ -262,7 +262,7 @@
    * Wrapper for internal file uploads
    */
   function internalUpload(file, dest, callback) {
-    var config = API.getDefaultSettings();
+    var config = OSjs.Core.getConfig();
     var fsuri  = config.FSURI || '/';
 
     if ( typeof file.size !== 'undefined' ) {
@@ -591,7 +591,7 @@
     if ( MountsRegistered ) { return; }
     MountsRegistered = true;
 
-    var settings = OSjs.API.getDefaultSettings();
+    var settings = OSjs.Core.getConfig();
     var config = null;
 
     try {
