@@ -42,10 +42,210 @@
 </ul>
 <h2>Classes</h2>
 <ul>
+<li>
+<a href="#">DefaultApplication</a> ()
+<ul>
+<li><a href="#defaultapplication-openfile">openFile()</a></li>
+<li><a href="#defaultapplication-savefile">saveFile()</a></li>
+<li><a href="#defaultapplication-savedialog">saveDialog()</a></li>
+<li><a href="#defaultapplication-opendialog">openDialog()</a></li>
+<li><a href="#defaultapplication-newdialog">newDialog()</a></li>
+</ul>
+</li>
 </ul>
 <h1>Functions</h1>
 <h1>Classes</h1>
-<p><i>Generated: Fri Aug 28 2015 20:29:41 GMT+0200 (CEST)</i></p>
+<div class="section-class" id="">
+<h2 id="defaultapplication">DefaultApplication</h2>
+<pre>
+This is a helper to more easily create an application.
+
+Handles opening, saving and creation of files.
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Helpers.DefaultApplicationWindow</li>
+</ul>
+
+<div class="section-method" id="defaultapplication-openfile">
+<h3 id="defaultapplication-openfile-file-win-">DefaultApplication::openFile(file, win)</h3>
+<pre>
+Open given File
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File</td>
+</tr>
+<tr>
+<td>win</td>
+<td>OSjs.Core.Window</td>
+<td>Window reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-savefile">
+<h3 id="defaultapplication-savefile-file-value-win-">DefaultApplication::saveFile(file, value, win)</h3>
+<pre>
+Save given File
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>File contents</td>
+</tr>
+<tr>
+<td>win</td>
+<td>OSjs.Core.Window</td>
+<td>Window reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-savedialog">
+<h3 id="defaultapplication-savedialog-file-win-saveas-">DefaultApplication::saveDialog(file, win, saveAs)</h3>
+<pre>
+Open Save dialog
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>File</td>
+</tr>
+<tr>
+<td>win</td>
+<td>OSjs.Core.Window</td>
+<td>Window reference</td>
+</tr>
+<tr>
+<td>saveAs</td>
+<td>boolean</td>
+<td>SaveAs ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-opendialog">
+<h3 id="defaultapplication-opendialog-file-win-">DefaultApplication::openDialog(file, win)</h3>
+<pre>
+Open Open dialog
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td>OSjs.VFS.File</td>
+<td>(Optional) Current File</td>
+</tr>
+<tr>
+<td>win</td>
+<td>OSjs.Core.Window</td>
+<td>Window reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="defaultapplication-newdialog">
+<h3 id="defaultapplication-newdialog-path-win-">DefaultApplication::newDialog(path, win)</h3>
+<pre>
+Create a new file
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td>String</td>
+<td>(Optional) Current path</td>
+</tr>
+<tr>
+<td>win</td>
+<td>OSjs.Core.Window</td>
+<td>Window reference</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+</div>
+<p><i>Generated: Fri Aug 28 2015 20:48:00 GMT+0200 (CEST)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
