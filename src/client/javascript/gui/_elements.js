@@ -122,7 +122,7 @@
         var args = ([this.$element]).concat(Array.prototype.slice.call(arguments));
         return OSjs.GUI.Elements[this.tagName].get.apply(this, args);
       } else {
-        return getProperty(this.$element, arguments[0]);
+        return OSjs.GUI.Helpers.getProperty(this.$element, arguments[0]);
       }
     }
     return null;

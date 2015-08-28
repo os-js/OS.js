@@ -293,7 +293,7 @@
     if ( OSjs.GUI.Elements[tagName] && OSjs.GUI.Elements[tagName].create ) {
       el = OSjs.GUI.Elements[tagName].create(params);
     } else {
-      el = createElement(tagName, params);
+      el = OSjs.GUI.Helpers.createElement(tagName, params);
     }
 
     parentNode.appendChild(el);
