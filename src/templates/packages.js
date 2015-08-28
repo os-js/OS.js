@@ -1,7 +1,7 @@
 (function() {
   window.OSjs = window.OSjs || {}
-  OSjs.API = OSjs.API || {}
-  OSjs.API.getDefaultPackages = (function() {
+  OSjs.Core = OSjs.Core || {}
+  OSjs.Core.getMetadata = (function() {
     var _cache;
 
     return function() {

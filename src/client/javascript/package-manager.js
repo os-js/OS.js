@@ -108,7 +108,7 @@
           callback('Failed to load package manifest');
           return;
         }
-        var packages = OSjs.API.getDefaultPackages();
+        var packages = OSjs.Core.getMetadata();
         self._addPackages(packages, 'system');
         cb();
       });

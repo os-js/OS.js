@@ -995,19 +995,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Get default configured packages
-   *
-   * THIS IS JUST A PLACEHOLDER. 'packages.js' SHOULD HAVE THIS!
-   *
-   * @return  Object
-   *
-   * @api     OSjs.API.getDefaultPackages()
-   */
-  function doGetDefaultPackages() {
-    return {};
-  }
-
-  /**
    * Get default configured path
    *
    * @param   String    fallback      Fallback path on error (default= "/")
@@ -1539,7 +1526,6 @@
   OSjs.API.getThemeResource       = doGetThemeResource;
   OSjs.API.getSound               = doGetSound;
 
-  OSjs.API.getDefaultPackages     = OSjs.API.getDefaultPackages || doGetDefaultPackages;
   OSjs.API.getDefaultPath         = doGetDefaultPath;
 
   OSjs.API.createDraggable        = doCreateDraggable;

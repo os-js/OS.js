@@ -485,6 +485,19 @@
     return {};
   };
 
+  /**
+   * Get default configured packages
+   *
+   * THIS IS JUST A PLACEHOLDER. 'packages.js' SHOULD HAVE THIS!
+   *
+   * @return  Object
+   *
+   * @api     OSjs.Core.getMetadata()
+   */
+  OSjs.Core.getMetadata = OSjs.Core.getMetadata || function() {
+    return {};
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // MAIN
   /////////////////////////////////////////////////////////////////////////////
