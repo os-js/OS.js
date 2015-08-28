@@ -1,3 +1,51 @@
+# 2.0.0-alpha65
+
+Massive cleanups and refactors. This brings us a lot closer to a Beta release!
+
+A special shout-out to @RyanRiffle for helping out with the development and making improvements to OS.js.
+
+* Window: Now checks if given arguments is of correct instance
+* API: Removed OSjs.Compabilty tree (been deprecated for a while)
+* API: Renamed API.getDefaultPackages() to Core.getManifest()
+* API: Renamed API.getDefaultSettings() to Core.getConfig()
+* Core: Taken care of some long-stang TODOs/FIXMEs
+* Core: Entirely new Settings subsystem
+* Settings: Changed title of application
+* Installer: Updated Windows installer
+* Utils: Added Utils::pathJoin()
+* Build: Removed "Core" client config namespace (collapsed)
+* Build: Fixed a bug in index.html creation
+* Build: Added 'grunt-time'
+* CoreWM: Buttons can now be added/removed from panel (dnd and contextmenu)
+* CoreWM: PanelItem now has full settings abstraction finished
+* CoreWM: Changed windowswitcher shortcut
+* CoreWM: Clock settings
+* CoreWM: Cleanups
+* Themes: Moved window border size to a custom variable
+* Themes: Changed default arrow color in TreeView
+* Themes: Fixed some miscalcualted values
+* Themes: Lighter default zebra stripe
+* Themes: Fixed hilite on zebra bug
+* GUI: FileView TreeView now actually branches
+* GUI: Disabled state for createMenu() entries
+* GUI: Fixes to UIScheme implementation
+* Misc: Handler now merged with most of the old helper classes
+* Misc: Renamed some labels from "OS.js-v2" to "OS.js"
+* Misc: Split up 'gui.js' into individual files
+* Misc: Rewritten the "boot" process
+* Misc: Updated some metadata files
+* Misc: Removed 'session' namespace
+* Misc: Split up some source files
+* Misc: Updated documentation
+* Misc: Complexity reduction
+* Misc: Removed four classes
+* Misc: Removed 20+ methods
+* Misc: Updated jshintrc
+* Misc: Updated INSTALL
+* Misc: Updated Vagrant
+* Misc: Updated README
+* Misc: Linting
+
 # 2.0.0-alpha64
 
 A bunch of updates, new building system and bufixes.
