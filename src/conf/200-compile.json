@@ -27,6 +27,8 @@
     "src/client/javascript/package-manager.js",
     "src/client/javascript/settings-manager.js",
     "src/client/javascript/gui.js",
+    "src/client/javascript/gui/_scheme.js",
+    "src/client/javascript/gui/_elements.js",
     "src/client/javascript/gui/_dataview.js",
     "src/client/javascript/gui/misc.js",
     "src/client/javascript/gui/menus.js",
