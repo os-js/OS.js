@@ -40,7 +40,7 @@
   /**
    * Base UIElement Class
    *
-   * @api OSjs.GUI.UIElement()
+   * @api OSjs.GUI.Element
    * @class Element
    */
   function UIElement(el, q) {
@@ -154,7 +154,7 @@
   /**
    * Extended UIElement for ListView, TreeView, IconView, Select, SelectList
    * @extends UIElement
-   * @api OSjs.GUI.UIElementDataView()
+   * @api OSjs.GUI.ElementDataView
    * @class ElementDataView
    */
   function UIElementDataView() {

@@ -117,7 +117,7 @@
   /**
    * The class for loading and parsing UI Schemes
    *
-   * @api   OSjs.GUI.UIScheme
+   * @api   OSjs.GUI.Scheme
    *
    * @class Scheme
    */
