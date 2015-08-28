@@ -42,7 +42,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   // Make sure these namespaces exist
-  (['API', 'GUI', 'Core', 'Dialogs', 'Compability', 'Helpers', 'Applications', 'Locales', 'VFS']).forEach(function(ns) {
+  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -393,8 +393,6 @@
    */
   function init() {
     var config = OSjs.Core.getConfig();
-
-    OSjs.Compability = OSjs.Utils.getCompability();
 
     initLayout();
 

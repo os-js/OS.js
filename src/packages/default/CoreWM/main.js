@@ -38,8 +38,10 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function _DefaultSettings(defaults) {
+    var compability = Utils.getCompability();
+
     var cfg = {
-      animations          : OSjs.Compability.css.animation,
+      animations          : compability.css.animation,
       fullscreen          : false,
       desktopMargin       : 5,
       wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
@@ -51,7 +53,7 @@
       background          : 'image-fill',
       windowCornerSnap    : 0,
       windowSnap          : 0,
-      useTouchMenu        : OSjs.Compability.touch,
+      useTouchMenu        : compability.touch,
       enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,

@@ -1378,7 +1378,8 @@
     return function(el, ev, callback, param, method) {
       param = param || false;
 
-      var isTouch = OSjs.Compability.touch;
+      var compability = OSjs.Utils.getCompability();
+      var isTouch = compability.touch;
       var touchMap = {
         click: bindTouchClick,
         dblclick: bindTouchDblclick,

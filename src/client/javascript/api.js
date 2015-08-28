@@ -452,6 +452,7 @@
     var splash = null;
     var handler = OSjs.Core.getHandler();
     var packman = OSjs.Core.getPackageManager();
+    var compability = OSjs.Core.getCompability();
 
     function createLaunchSplash(data, n) {
       var splash = null;
@@ -505,8 +506,8 @@
       var result = [];
       if ( typeof comp !== 'undefined' && (comp instanceof Array) ) {
         comp.forEach(function(c, i) {
-          if ( typeof OSjs.Compability[c] !== 'undefined' ) {
-            if ( !OSjs.Compability[c] ) {
+          if ( typeof compability[c] !== 'undefined' ) {
+            if ( !compability[c] ) {
               result.push(c);
             }
           }
@@ -932,9 +933,10 @@
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getSoundTheme() : 'default';
       var root = OSjs.Core.getConfig().SoundURI;
+      var compability = OSjs.Utils.getCompability();
       if ( !name.match(/^\//) ) {
         var ext = 'oga';
-        if ( !OSjs.Compability.audioTypes.ogg ) {
+        if ( !compability.audioTypes.ogg ) {
           ext = 'mp3';
         }
         name = root + '/' + theme + '/' + name + '.' + ext;
@@ -1351,7 +1353,8 @@
    * @api     OSjs.API.playSound()
    */
   function doPlaySound(name, volume) {
-    if ( !OSjs.Compability.audio ) {
+    var compability = OSjs.Utils.getCompability();
+    if ( !compability.audio ) {
       console.debug('doPlaySound()', 'Browser has no support for sounds!');
       return false;
     }

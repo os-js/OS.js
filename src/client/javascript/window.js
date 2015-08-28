@@ -319,7 +319,8 @@
    */
   Window.prototype.init = function(_wm, _app, _scheme) {
     var self = this;
-    var isTouch = OSjs.Compability.touch;
+    var compability = OSjs.Utils.getCompability();
+    var isTouch = compability.touch;
     var wm = OSjs.Core.getWindowManager();
 
     var main, buttonMaximize, buttonMinimize, buttonClose;
@@ -417,7 +418,7 @@
     }
 
     function _initDnD() {
-      if ( self._properties.allow_drop && OSjs.Compability.dnd ) {
+      if ( self._properties.allow_drop && compability.dnd ) {
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
