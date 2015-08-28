@@ -119,7 +119,7 @@
    *
    * @api   OSjs.GUI.UIScheme
    *
-   * @class
+   * @class Scheme
    */
   function UIScheme(url) {
     console.group('UIScheme::construct()');
