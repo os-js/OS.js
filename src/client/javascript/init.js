@@ -173,7 +173,7 @@
 
       try {
         var config = OSjs.API.getDefaultSettings();
-        if ( config.Core.ShowQuitWarning ) {
+        if ( config.ShowQuitWarning ) {
           return OSjs.API._('MSG_SESSION_WARNING');
         }
       } catch ( e ) {}
@@ -231,7 +231,7 @@
    */
   function initLayout() {
     var config = OSjs.API.getDefaultSettings();
-    var append = config.Core.VersionAppend;
+    var append = config.VersionAppend;
 
     var ver = config.Version || 'unknown verion';
     var cop = 'Copyright © 2011-2014 ';
@@ -308,7 +308,7 @@
    * Preloads configured files
    */
   function initPreload(config, callback) {
-    var preloads = config.Core.Preloads;
+    var preloads = config.Preloads;
     preloads.forEach(function(val, index) {
       val.src = OSjs.Utils.checkdir(val.src);
     });

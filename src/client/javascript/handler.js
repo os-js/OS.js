@@ -86,7 +86,7 @@
 
     var self = this;
     var config = API.getDefaultSettings();
-    API.setLocale(config.Core.Locale);
+    API.setLocale(config.Locale);
 
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.addEventListener('offline', function(ev) {
@@ -134,7 +134,7 @@
     var self = this;
     console.info('Handler::boot()');
 
-    var root = API.getDefaultSettings().Core.RootURI;
+    var root = API.getDefaultSettings().RootURI;
     var url = root + 'client/dialogs.html';
     if ( OSjs.API.getDefaultSettings().Dist === 'dist' ) {
       url = root + 'dialogs.html';
@@ -294,7 +294,7 @@
 
     var config = API.getDefaultSettings();
     var data = {
-      url: config.Core.APIURI,
+      url: config.APIURI,
       method: 'POST',
       json: true,
       body: {
@@ -338,7 +338,7 @@
 
     var config = API.getDefaultSettings();
     var found = Utils.getUserLocale();
-    var curLocale = found || config.Core.Locale;
+    var curLocale = found || config.Locale;
 
     this.userData = userData;
 

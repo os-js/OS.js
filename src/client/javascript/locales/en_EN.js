@@ -245,6 +245,12 @@
     'ONEDRIVE_ERR_RESOLVE'      : 'Failed to resolve path: item not found',
 
     //
+    // PackageManager
+    //
+
+    'ERR_PACKAGE_EXISTS': 'Package installation directroy already exists. Cannot continue!',
+
+    //
     // DefaultApplication
     //
     'ERR_FILE_APP_OPEN'         : 'Cannot open file',

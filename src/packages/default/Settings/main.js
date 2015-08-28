@@ -569,7 +569,7 @@
   ApplicationSettingsWindow.prototype.initUserTab = function(wm, scheme, init) {
     var user = OSjs.Core.getHandler().getUserData();
     var config = API.getDefaultSettings();
-    var locales = config.Core.Languages;
+    var locales = config.Languages;
 
     if ( init ) {
       var langs = [];

@@ -45,7 +45,7 @@
   function _getConfig(cfg) {
     var config = API.getDefaultSettings();
     try {
-      return config.Core.VFS.Dropbox[cfg];
+      return config.VFS.Dropbox[cfg];
     } catch ( e ) {
       console.warn('OSjs.VFS.Modules.Dropbox::enabled()', e, e.stack);
     }

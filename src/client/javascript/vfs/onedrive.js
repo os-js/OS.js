@@ -650,7 +650,7 @@
     enabled: function() {
       var config = API.getDefaultSettings();
       try {
-        if ( config.Core.VFS.OneDrive.Enabled ) {
+        if ( config.VFS.OneDrive.Enabled ) {
           return true;
         }
       } catch ( e ) {

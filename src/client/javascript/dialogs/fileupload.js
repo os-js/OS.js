@@ -68,7 +68,7 @@
     var config = API.getDefaultSettings();
 
     var message = this.scheme.find(this, 'Message');
-    var maxSize = config.Core.MaxUploadSize;
+    var maxSize = config.MaxUploadSize;
 
     message.set('value', API._('DIALOG_UPLOAD_DESC', this.args.dest, maxSize), true);
 

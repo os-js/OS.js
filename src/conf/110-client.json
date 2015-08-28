@@ -1,41 +1,40 @@
 {
   "client" : {
-    "Core" : {
-      "RootURI":          "/",
-      "APIURI":           "/API",
-      "FSURI":            "/FS",
-      "MetadataURI":      "/packages.js",
-      "ThemeURI":         "/themes/styles",
-      "SoundURI":         "/themes/sounds",
-      "IconURI":          "/themes/icons",
-      "PackageURI":       "/packages",
-      "Home":             "home:///",
-      "UserPackages":     "home:///.packages",
-      "UserMetadata":     "home:///.packages/packages.json",
-      "Handler":          "%HANDLER%",
-      "Connection":       "%CONNECTION%",
-      "MaxUploadSize":    2097152,
-      "BugReporting":     true,
-      "Preloads":         {},
-      "Locale":           "en_EN",
-      "VersionAppend":    "",
-      "ShowQuitWarning":  false,
-      "VFS": {
-        "GoogleDrive": {
-          "Enabled": false
-        },
-        "OneDrive": {
-          "Enabled": false
-        },
-        "Dropbox": {
-          "Enabled": false,
-          "ClientKey": ""
-        },
-        "Mountpoints": {
-        }
+    "RootURI":          "/",
+    "APIURI":           "/API",
+    "FSURI":            "/FS",
+    "MetadataURI":      "/packages.js",
+    "ThemeURI":         "/themes/styles",
+    "SoundURI":         "/themes/sounds",
+    "IconURI":          "/themes/icons",
+    "PackageURI":       "/packages",
+    "Home":             "home:///",
+    "UserPackages":     "home:///.packages",
+    "UserMetadata":     "home:///.packages/packages.json",
+    "Handler":          "%HANDLER%",
+    "Connection":       "%CONNECTION%",
+    "MaxUploadSize":    2097152,
+    "BugReporting":     true,
+    "Preloads":         {},
+    "Locale":           "en_EN",
+    "VersionAppend":    "",
+    "ShowQuitWarning":  false,
+    "VFS": {
+      "GoogleDrive": {
+        "Enabled": false
       },
-      "Languages": {}
+      "OneDrive": {
+        "Enabled": false
+      },
+      "Dropbox": {
+        "Enabled": false,
+        "ClientKey": ""
+      },
+      "Mountpoints": {
+      }
     },
+
+    "Languages": {},
 
     "System" : {
       "AutoStart": []

@@ -1,18 +1,16 @@
 {
   "client" : {
-    "Core" : {
-      "Languages": {
-        "en_EN": "English",
-        "no_NO": "Norsk (Norwegian)",
-        "de_DE": "Deutsch (German)",
-        "es_ES": "Spanish (Spain)",
-        "fr_FR": "French (France)",
-        "ru_RU": "Russian (Russia)",
-        "zh_CN": "Chinese (China)",
-        "nl_NL": "Dutch (Nederlands)",
-        "pl_PL": "Polski (Poland)",
-        "vi_VN": "Vietnamese (Tiếng Việt)"
-      }
+    "Languages": {
+      "en_EN": "English",
+      "no_NO": "Norsk (Norwegian)",
+      "de_DE": "Deutsch (German)",
+      "es_ES": "Spanish (Spain)",
+      "fr_FR": "French (France)",
+      "ru_RU": "Russian (Russia)",
+      "zh_CN": "Chinese (China)",
+      "nl_NL": "Dutch (Nederlands)",
+      "pl_PL": "Polski (Poland)",
+      "vi_VN": "Vietnamese (Tiếng Việt)"
     }
   }
 }

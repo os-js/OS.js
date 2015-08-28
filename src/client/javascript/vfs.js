@@ -263,10 +263,10 @@
    */
   function internalUpload(file, dest, callback) {
     var config = API.getDefaultSettings();
-    var fsuri  = config.Core.FSURI || '/';
+    var fsuri  = config.FSURI || '/';
 
     if ( typeof file.size !== 'undefined' ) {
-      var maxSize = config.Core.MaxUploadSize;
+      var maxSize = config.MaxUploadSize;
       if ( maxSize > 0 ) {
         var bytes = file.size;
         if ( bytes > maxSize ) {
@@ -595,7 +595,7 @@
     var config = null;
 
     try {
-      config = settings.Core.VFS.Mountpoints;
+      config = settings.VFS.Mountpoints;
     } catch ( e ) {
       console.warn('mountpoints.js initialization error', e, e.stack);
     }

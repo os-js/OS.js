@@ -52,7 +52,7 @@
    */
   function PackageManager() {
     var config = API.getDefaultSettings();
-    var uri = Utils.checkdir(config.Core.MetadataURI);
+    var uri = Utils.checkdir(config.MetadataURI);
 
     this.packages = {};
     this.uri = uri;
@@ -115,7 +115,7 @@
     }
 
     function _loadUserMetadata(cb) {
-      var path = OSjs.API.getDefaultSettings().Core.UserMetadata;
+      var path = OSjs.API.getDefaultSettings().UserMetadata;
       var file = new OSjs.VFS.File(path, 'application/json');
       OSjs.VFS.read(file, function(err, resp) {
         resp = OSjs.Utils.fixJSON(resp || '');
@@ -152,7 +152,7 @@
    * @method PackageManager::generateUserMetadata()
    */
   PackageManager.prototype.generateUserMetadata = function(callback) {
-    var dir = new OSjs.VFS.File(OSjs.API.getDefaultSettings().Core.UserPackages);
+    var dir = new OSjs.VFS.File(OSjs.API.getDefaultSettings().UserPackages);
     var found = {};
     var queue = [];
     var self = this;
@@ -307,7 +307,7 @@
    */
   PackageManager.prototype.install = function(file, cb) {
     var config = API.getDefaultSettings();
-    var dest = Utils.pathJoin(config.Core.UserPackages, file.filename.replace(/\.zip$/i, ''));
+    var dest = Utils.pathJoin(config.UserPackages, file.filename.replace(/\.zip$/i, ''));
 
     VFS.mkdir(new VFS.File(root), function() {
       VFS.exists(new VFS.File(dest), function(error, exists) {

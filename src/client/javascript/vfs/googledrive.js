@@ -909,7 +909,7 @@
     enabled: function() {
       var config = API.getDefaultSettings();
       try {
-        if ( config.Core.VFS.GoogleDrive.Enabled ) {
+        if ( config.VFS.GoogleDrive.Enabled ) {
           return true;
         }
       } catch ( e ) {

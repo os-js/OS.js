@@ -787,11 +787,11 @@
     if ( appname ) {
       var root;
       if ( appname.match(/^(.*)\/(.*)$/) ) {
-        root = OSjs.API.getDefaultSettings().Core.PackageURI;
+        root = OSjs.API.getDefaultSettings().PackageURI;
         path = root + '/' + appname + '/' + name;
       } else {
-        root = config.Core.FSURI;
-        path = root + Utils.pathJoin(config.Core.UserPackages, appname, name);
+        root = config.FSURI;
+        path = root + Utils.pathJoin(config.UserPackages, appname, name);
       }
     }
 
@@ -809,10 +809,10 @@
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
-      var blank = OSjs.API.getDefaultSettings().Core.RootURI || '/';
+      var blank = OSjs.API.getDefaultSettings().RootURI || '/';
       return blank + 'blank.css';
     }
-    var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
+    var root = OSjs.API.getDefaultSettings().ThemeURI;
     return OSjs.Utils.checkdir(root + '/' + name + '.css');
   }
 
@@ -910,7 +910,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.API.getDefaultSettings().Core.ThemeURI;
+      var root = OSjs.API.getDefaultSettings().ThemeURI;
       name = getName(name, theme);
     }
 
@@ -931,7 +931,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getSoundTheme() : 'default';
-      var root = OSjs.API.getDefaultSettings().Core.SoundURI;
+      var root = OSjs.API.getDefaultSettings().SoundURI;
       if ( !name.match(/^\//) ) {
         var ext = 'oga';
         if ( !OSjs.Compability.audioTypes.ogg ) {
@@ -980,7 +980,7 @@
     if ( name && !name.match(/^(http|\/\/)/) ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getIconTheme() : 'default';
-      var root = OSjs.API.getDefaultSettings().Core.IconURI;
+      var root = OSjs.API.getDefaultSettings().IconURI;
       var chk = checkIcon();
       if ( chk !== null ) {
         return chk;
@@ -1030,7 +1030,7 @@
    */
   function doGetDefaultPath(fallback) {
     var config = OSjs.API.getDefaultSettings();
-    return config.Core.Home || fallback || '/';
+    return config.Home || fallback || '/';
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1338,7 +1338,7 @@
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
     var config = OSjs.API.getDefaultSettings();
-    if ( config.Core.BugReporting ) {
+    if ( config.BugReporting ) {
       bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {
       bugreport = false;

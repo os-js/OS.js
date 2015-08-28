@@ -547,7 +547,7 @@
       var phpSettings = clone(cfg.server);
 
       try {
-        phpSettings.MaxUpload = cfg.client.Core.MaxUploadSize;
+        phpSettings.MaxUpload = cfg.client.MaxUploadSize;
       } catch ( e ) {}
 
       Object.keys(phpSettings.vfs).forEach(function(key) {
@@ -582,9 +582,9 @@
       var icons = {};
       var fonts = themes.fonts;
 
-      if ( settings.Core.Preloads ) {
-        Object.keys(settings.Core.Preloads).forEach(function(k) {
-          preloads.push(settings.Core.Preloads[k]);
+      if ( settings.Preloads ) {
+        Object.keys(settings.Preloads).forEach(function(k) {
+          preloads.push(settings.Preloads[k]);
         });
       }
 
@@ -615,8 +615,8 @@
       settings.Fonts.list = fonts.concat(settings.Fonts.list);
       settings.MIME = mime.descriptions;
       settings.EXTMIME = mime.mapping;
-      settings.Core.Repositories = repos;
-      settings.Core.Preloads = preloads;
+      settings.Repositories = repos;
+      settings.Preloads = preloads;
       settings.Dist = dist;
 
       // Write
