@@ -30,6 +30,8 @@
 (function(_path, _fs, _less, _ugly, Cleancss) {
   'use strict';
 
+  // TODO: Find a better way to handle windows paths
+
   var ISWIN = /^win/.test(process.platform);
 
   var ROOT = _path.dirname(_path.join(__dirname));
@@ -276,7 +278,6 @@
         var handler    = json.handler    || 'demo';
         var connection = json.connection || 'http';
 
-        // TODO: Fix VFS paths for windows
         build = build.replace(/%ROOT%/g,       fixWinPath(ROOT));
         build = build.replace(/%HANDLER%/g,    handler);
         build = build.replace(/%CONNECTION%/g, connection);
@@ -533,13 +534,13 @@
     var loadExtensions = [];
 
     Object.keys(extensions).forEach(function(e) {
-      // FIXME Node support
-      var dir = _path.join(PATHS.packages, e, 'api.php');
-      if ( _fs.existsSync(dir) ) {
-        // FIXME: Remove after global win path fix
-        var path = fixWinPath(dir).replace(fixWinPath(ROOT), '');
-        loadExtensions.push(path);
-      }
+      (['api.php', 'api.js']).forEach(function(c) {
+        var dir = _path.join(PATHS.packages, e, c);
+        if ( _fs.existsSync(dir) ) {
+          var path = fixWinPath(dir).replace(fixWinPath(ROOT), '');
+          loadExtensions.push(path);
+        }
+      });
     });
 
     function buildPHP() {
@@ -549,7 +550,6 @@
         phpSettings.MaxUpload = cfg.client.Core.MaxUploadSize;
       } catch ( e ) {}
 
-      // FIXME: Remove after global win path fix
       Object.keys(phpSettings.vfs).forEach(function(key) {
         if ( typeof phpSettings.vfs[key] === 'string' ) {
           phpSettings.vfs[key] = fixWinPath(phpSettings.vfs[key]);
@@ -911,7 +911,7 @@
     function copyFiles(src, dst, p, list) {
       list = list || [];
 
-      deleteFile(dst); // FIXME: Need to check for update(s)
+      deleteFile(dst);
 
       if ( list.length ) {
         mkdir(dst);
