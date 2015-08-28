@@ -38,6 +38,15 @@
   // Default Application Helper
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is a helper to more easily create an application.
+   *
+   * Handles opening, saving and creation of files.
+   *
+   * @see OSjs.Helpers.DefaultApplicationWindow
+   *
+   * @class DefaultApplication
+   */
   function DefaultApplication(name, args, metadata, opts) {
     this.defaultOptions = Utils.argumentDefaults(opts, {
       readData: true,
@@ -54,11 +63,16 @@
   DefaultApplication.prototype = Object.create(Application.prototype);
   DefaultApplication.constructor = Application;
 
+  /**
+   * Destroy
+   */
   DefaultApplication.prototype.destroy = function() {
     Application.prototype.destroy.apply(this, arguments);
   };
 
-
+  /**
+   * Initialize
+   */
   DefaultApplication.prototype.init = function(settings, metadata, onInited, onLoaded) {
     Application.prototype.init.call(this, settings, metadata, onInited);
 
@@ -80,6 +94,9 @@
     this._setScheme(scheme);
   };
 
+  /**
+   * On Message
+   */
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {
     Application.prototype._onMessage.apply(this, arguments);
 
@@ -103,6 +120,16 @@
     }
   };
 
+  /**
+   * Open given File
+   *
+   * @param   OSjs.VFS.File       file        File
+   * @param   OSjs.Core.Window    win         Window reference
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::openFile()
+   */
   DefaultApplication.prototype.openFile = function(file, win) {
     var self = this;
     if ( !file ) { return; }
@@ -152,6 +179,17 @@
     return true;
   };
 
+  /**
+   * Save given File
+   *
+   * @param   OSjs.VFS.File       file        File
+   * @param   Mixed               value       File contents
+   * @param   OSjs.Core.Window    win         Window reference
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::saveFile()
+   */
   DefaultApplication.prototype.saveFile = function(file, value, win) {
     var self = this;
     if ( !file ) { return; }
@@ -173,6 +211,17 @@
     }, {}, this);
   };
 
+  /**
+   * Open Save dialog
+   *
+   * @param   OSjs.VFS.File       file        File
+   * @param   OSjs.Core.Window    win         Window reference
+   * @param   boolean             saveAs      SaveAs ?
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::saveDialog()
+   */
   DefaultApplication.prototype.saveDialog = function(file, win, saveAs) {
     var self = this;
     var value = win.getFileData();
@@ -199,6 +248,16 @@
     }, win);
   };
 
+  /**
+   * Open Open dialog
+   *
+   * @param   OSjs.VFS.File       file        (Optional) Current File
+   * @param   OSjs.Core.Window    win         Window reference
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::openDialog()
+   */
   DefaultApplication.prototype.openDialog = function(file, win) {
     var self = this;
 
@@ -222,6 +281,16 @@
     });
   };
 
+  /**
+   * Create a new file
+   *
+   * @param   String              path        (Optional) Current path
+   * @param   OSjs.Core.Window    win         Window reference
+   *
+   * @return  void
+   *
+   * @method  DefaultApplication::newDialog()
+   */
   DefaultApplication.prototype.newDialog = function(path, win) {
     var self = this;
     win.checkHasChanged(function(discard) {

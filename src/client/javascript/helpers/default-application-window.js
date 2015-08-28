@@ -38,6 +38,15 @@
   // Default Application Window Helper
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is a helper to more easily create an application.
+   *
+   * Use in combination with 'DefaultApplication'
+   *
+   * @see OSjs.Helpers.DefaultApplication
+   *
+   * @class DefaultApplicationWindow
+   */
   function DefaultApplicationWindow(name, app, args, scheme, file) {
     Window.apply(this, arguments);
 
@@ -49,11 +58,26 @@
   DefaultApplicationWindow.prototype = Object.create(Window.prototype);
   DefaultApplicationWindow.constructor = Window;
 
+  /**
+   * Destroy
+   */
+  DefaultApplicationWindow.prototype.destroy = function() {
+    Window.prototype.destroy.apply(this, arguments);
+
+    this.currentFile = null;
+  };
+
+  /**
+   * Initialize
+   */
   DefaultApplicationWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     return root;
   };
 
+  /**
+   * Applies default Window GUI stuff
+   */
   DefaultApplicationWindow.prototype._inited = function() {
     var result = Window.prototype._inited.apply(this, arguments);
     var self = this;
@@ -83,6 +107,9 @@
     return result;
   };
 
+  /**
+   * On Drag-And-Drop Event
+   */
   DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
     if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
 
@@ -94,12 +121,9 @@
     }
   };
 
-  DefaultApplicationWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
-
-    this.currentFile = null;
-  };
-
+  /**
+   * On Close
+   */
   DefaultApplicationWindow.prototype._close = function() {
     var self = this;
     if ( this.hasClosingDialog ) {
@@ -121,6 +145,15 @@
     Window.prototype._close.apply(this, arguments);
   };
 
+  /**
+   * Checks if current file has changed
+   *
+   * @param   Function      cb        Callback => fn(discard_changes)
+   *
+   * @return  void
+   *
+   * @method  DefaultApplicationWindow::checkHasChanged()
+   */
   DefaultApplicationWindow.prototype.checkHasChanged = function(cb) {
     var self = this;
 
@@ -140,10 +173,31 @@
     cb(true);
   };
 
+  /**
+   * Show opened/created file
+   *
+   * @param   OSjs.VFS.File       file        File
+   * @param   Mixed               content     File contents
+   *
+   * YOU SHOULD EXTEND THIS METHOD IN YOUR WINDOW TO ACTUALLY DISPLAY CONTENT
+   *
+   * @return  void
+   *
+   * @method  DefaultApplicationWindow::showFile()
+   */
   DefaultApplicationWindow.prototype.showFile = function(file, content) {
     this.updateFile(file);
   };
 
+  /**
+   * Updates current view for given File
+   *
+   * @param   OSjs.VFS.File       file        File
+   *
+   * @return  void
+   *
+   * @method  DefaultApplicationWindow::updateFile()
+   */
   DefaultApplicationWindow.prototype.updateFile = function(file) {
     this.currentFile = file || null;
     this.hasChanged = false;
@@ -157,6 +211,15 @@
     }
   };
 
+  /**
+   * Gets file data
+   *
+   * YOU SHOULD IMPLEMENT THIS METHOD IN YOUR WINDOW TO RETURN FILE CONTENTS
+   *
+   * @return  Mixed File contents
+   *
+   * @method  DefaultApplicationWindow::getFileData()
+   */
   DefaultApplicationWindow.prototype.getFileData = function() {
     return null;
   };
