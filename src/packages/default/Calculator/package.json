@@ -2,6 +2,7 @@
   "className":  "ApplicationCalculator",
   "name":       "Calculator",
   "names":      {
+    "no_NO": "Kalkulator",
     "ru_RU": "Калькулятор",
     "pl_PL": "Kalkulator",
     "nl_NL": "Rekenmachine",

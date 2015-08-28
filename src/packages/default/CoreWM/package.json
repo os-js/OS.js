@@ -12,7 +12,7 @@
   "singular":   true,
   "type":       "windowmanager",
   "mime":       null,
-  "icon":       null,
+  "icon":       "apps/gnome-window-manager.png",
   "preload":    [
     {"src": "menu.js", "type": "javascript"},
     {"src": "iconview.js", "type": "javascript"},
