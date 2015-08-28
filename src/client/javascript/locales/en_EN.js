@@ -367,7 +367,8 @@
     'LBL_OPTIONS' : 'Options',
     'LBL_OK' : 'OK',
     'LBL_DIRECTORY' : 'Directory',
-    'LBL_CREATE' : 'Create'
+    'LBL_CREATE' : 'Create',
+    'LBL_BUGREPORT' : 'Bugreport'
   };
 
 })();
