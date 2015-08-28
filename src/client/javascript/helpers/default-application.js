@@ -44,8 +44,9 @@
    * Handles opening, saving and creation of files.
    *
    * @see OSjs.Helpers.DefaultApplicationWindow
+   * @api OSjs.Helpers.DefaultApplication
    *
-   * @class DefaultApplication
+   * @class
    */
   function DefaultApplication(name, args, metadata, opts) {
     this.defaultOptions = Utils.argumentDefaults(opts, {

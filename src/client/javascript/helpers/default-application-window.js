@@ -44,8 +44,9 @@
    * Use in combination with 'DefaultApplication'
    *
    * @see OSjs.Helpers.DefaultApplication
+   * @api OSjs.Helpers.DefaultApplicationWindow
    *
-   * @class DefaultApplicationWindow
+   * @class
    */
   function DefaultApplicationWindow(name, app, args, scheme, file) {
     Window.apply(this, arguments);
