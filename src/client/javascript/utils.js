@@ -820,6 +820,31 @@
   };
 
   /**
+   * Joins arguments to a path (path.join)
+   *
+   * @return  String
+   *
+   * @api OSjs.Utils.pathJoin()
+   */
+  OSjs.Utils.pathJoin = function() {
+    var parts = [];
+    var prefix = '';
+    var i, s;
+    for ( i = 0; i < arguments.length; i++ ) {
+      s = String(arguments[i]);
+      if ( s.match(/^([A-z0-9\-_]+)\:\//) ) {
+        prefix = s.replace(/\/+$/, '//');
+        continue;
+      }
+
+      s = s.replace(/^\/+/, '').replace(/\/+$/, '');
+      parts.push(s);
+    }
+
+    return prefix + '/' + parts.join('/');
+  };
+
+  /**
    * Gets the range of filename in a path (without extension)
    *
    * This is used for example in text boxes to highlight the filename
