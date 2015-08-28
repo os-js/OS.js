@@ -452,7 +452,7 @@
     var splash = null;
     var handler = OSjs.Core.getHandler();
     var packman = OSjs.Core.getPackageManager();
-    var compability = OSjs.Core.getCompability();
+    var compability = OSjs.Utils.getCompability();
 
     function createLaunchSplash(data, n) {
       var splash = null;
