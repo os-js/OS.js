@@ -223,6 +223,10 @@
       console.debug('PackageManager::generateUserMetadata()', '_enumPackages()');
 
       OSjs.VFS.scandir(dir, function(err, resp) {
+        if ( err ) {
+          console.error('_enumPackages()', err);
+        }
+
         if ( resp && (resp instanceof Array) ) {
           resp.forEach(function(iter) {
             if ( !iter.filename.match(/^\./) && iter.type === 'dir' ) {
@@ -307,6 +311,7 @@
    */
   PackageManager.prototype.install = function(file, cb) {
     var config = OSjs.Core.getConfig();
+    var root = config.UserPackage;
     var dest = Utils.pathJoin(config.UserPackages, file.filename.replace(/\.zip$/i, ''));
 
     VFS.mkdir(new VFS.File(root), function() {
@@ -322,6 +327,11 @@
         }
 
         OSjs.Helpers.ZipArchiver.createInstance({}, function(error, instance) {
+          if ( error ) {
+            cb(error);
+            return;
+          }
+
           if ( instance ) {
             instance.extract(file, dest, {
               onprogress: function() {

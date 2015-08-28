@@ -791,7 +791,7 @@
         path = root + '/' + appname + '/' + name;
       } else {
         root = config.FSURI;
-        path = root + Utils.pathJoin(config.UserPackages, appname, name);
+        path = root + OSjs.Utils.pathJoin(config.UserPackages, appname, name);
       }
     }
 

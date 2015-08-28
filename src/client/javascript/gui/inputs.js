@@ -140,8 +140,6 @@
   }
 
   function callSelectBox(el, method, args) {
-    var self = this;
-
     if ( method === 'add' ) {
       addToSelectBox(el, args[0]);
     } else if ( method === 'remove' ) {
@@ -150,7 +148,6 @@
       var target = el.querySelector('select');
       Utils.$empty(target);
     }
-    return self;
   }
 
   function createSelectInput(el, multiple) {
@@ -209,6 +206,18 @@
       button.innerHTML = '1';
     }
   }
+
+  var guiSelect = {
+    bind: bindInputEvents,
+    call: function() {
+      callSelectBox.apply(this, arguments);
+      return this;
+    },
+    build: function(el) {
+      var multiple = (el.tagName.toLowerCase() === 'gui-select-list');
+      createSelectInput(el, multiple);
+    }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
@@ -613,13 +622,7 @@
    * @api OSjs.GUI.Elements.gui-select
    * @class
    */
-  GUI.Elements['gui-select'] = {
-    bind: bindInputEvents,
-    call: callSelectBox,
-    build: function(el) {
-      createSelectInput(el);
-    }
-  };
+  GUI.Elements['gui-select'] = guiSelect;
 
   /**
    * Element: 'gui-select-list'
@@ -646,13 +649,7 @@
    * @api OSjs.GUI.Elements.gui-select-list
    * @class
    */
-  GUI.Elements['gui-select-list'] = {
-    bind: bindInputEvents,
-    call: callSelectBox,
-    build: function(el) {
-      createSelectInput(el, true);
-    }
-  };
+  GUI.Elements['gui-select-list'] = guiSelect;
 
   /**
    * Element: 'gui-slider'
