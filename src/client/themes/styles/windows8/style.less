@@ -9,7 +9,8 @@
 @scrollbar_button_foreground : #f0f0f0;
 @scrollbar_track_background  : #f0f0f0;
 
-@window_top_height : 30px;
+@window_top_height  : 30px;
+@window_border_size : 5px;
 
 @menu_background_color : #fff;
 
@@ -54,12 +55,6 @@ gui-progress-bar > div {
   background: #6dabf4;
 }
 
-application-window:before {
-  top : -30px;
-  left : -5px;
-  right : -5px;
-  bottom : -5px;
-}
 application-window[data-focused="false"]:before {
   background : #ebebeb;
   border : 1px solid #d3d3d3;

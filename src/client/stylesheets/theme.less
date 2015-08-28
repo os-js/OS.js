@@ -40,6 +40,7 @@
 
 @window_top_height    : 30px;
 @window_resize_offset : 8px;
+@window_border_size   : 3px;
 
 @scrollbar_button_background : @gui_border_color;
 @scrollbar_button_foreground : @gui_background_color;
@@ -286,7 +287,10 @@ application-window {
 application-window:before {
   box-shadow : @base_shadow_unfocused;
   background : @base_background_color;
-  top : -@window_top_height;
+  top : calc(-@window_top_height - @window_border_size);
+  left : -@window_border_size;
+  right : -@window_border_size;
+  bottom : -@window_border_size;
 }
 application-window[data-focused="true"] {
   opacity : 1.0;
