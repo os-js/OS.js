@@ -51,7 +51,7 @@ See doc/example-handler.txt
    */
   var ExampleHandler = function() {
     OSjs.Core._Handler.apply(this, arguments);
-    this._saveTimeout;
+    this._saveTimeout = null;
   };
 
   ExampleHandler.prototype = Object.create(OSjs.Core._Handler.prototype);

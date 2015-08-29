@@ -68,11 +68,11 @@
           var newWidth = startWidth + diff.x;
           if ( !isNaN(newWidth) && newWidth > 0 && newWidth < maxWidth ) {
             var flex = newWidth.toString() + 'px';
-            resizeEl.style['webkitFlexBasis'] = flex;
-            resizeEl.style['mozFflexBasis'] = flex;
-            resizeEl.style['msFflexBasis'] = flex;
-            resizeEl.style['oFlexBasis'] = flex;
-            resizeEl.style['flexBasis'] = flex;
+            resizeEl.style.webkitFlexBasis = flex;
+            resizeEl.style.mozFflexBasis = flex;
+            resizeEl.style.msFflexBasis = flex;
+            resizeEl.style.oFlexBasis = flex;
+            resizeEl.style.flexBasis = flex;
           }
         }, function(ev) {
           el.dispatchEvent(new CustomEvent('_resize', {detail: {index: idx}}));

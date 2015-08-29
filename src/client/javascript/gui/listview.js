@@ -36,11 +36,11 @@
 
   function resize(rel, w) {
     var flex = w.toString() + 'px';
-    rel.style['webkitFlexBasis'] = flex;
-    rel.style['mozFflexBasis'] = flex;
-    rel.style['msFflexBasis'] = flex;
-    rel.style['oFlexBasis'] = flex;
-    rel.style['flexBasis'] = flex;
+    rel.style.webkitFlexBasis = flex;
+    rel.style.mozFflexBasis = flex;
+    rel.style.msFflexBasis = flex;
+    rel.style.oFlexBasis = flex;
+    rel.style.flexBasis = flex;
   }
 
   function createEntry(v, head) {

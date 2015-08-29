@@ -570,9 +570,9 @@
           try {
             a.destroy();
             a = null;
-          } catch ( e ) {
-            console.warn('Something awful happened when trying to clean up failed launch Oo', e);
-            console.warn(e.stack);
+          } catch ( ee ) {
+            console.warn('Something awful happened when trying to clean up failed launch Oo', ee);
+            console.warn(ee.stack);
           }
         }
       }

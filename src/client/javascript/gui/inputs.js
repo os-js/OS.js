@@ -367,7 +367,7 @@
       };
       el.appendChild(input);
     }
-  },
+  };
 
   /**
    * Element: 'gui-radio'

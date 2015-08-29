@@ -397,14 +397,14 @@
     }
 
     var style = flex.join(' ');
-    el.style['WebkitBoxFlex'] = style;
-    el.style['MozBoxFlex'] = style;
+    el.style.WebkitBoxFlex = style;
+    el.style.MozBoxFlex = style;
 
-    el.style['WebkitFlex'] = style;
-    el.style['MozFlex'] = style;
-    el.style['MSFlex'] = style;
-    el.style['OFlex'] = style;
-    el.style['flex'] = style;
+    el.style.WebkitFlex = style;
+    el.style.MozFlex = style;
+    el.style.MSFlex = style;
+    el.style.OFlex = style;
+    el.style.flex = style;
 
     var align = el.getAttribute('data-align');
     Utils.$removeClass(el, 'gui-flex-align-start');
