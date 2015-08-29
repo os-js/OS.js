@@ -690,7 +690,7 @@
         files: files,
         destination: dest,
         win: win,
-        app: this
+        app: self
       }, function(error, file) {
         win._toggleLoading(false);
         if ( error ) {
