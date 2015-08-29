@@ -59,7 +59,9 @@
    */
   function stopPropagation(ev) {
     OSjs.API.blurMenu();
-    ev.stopPropagation();
+    if ( ev ) {
+      ev.stopPropagation();
+    }
     return false;
   }
 

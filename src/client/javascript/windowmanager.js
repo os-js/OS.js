@@ -35,261 +35,336 @@
 
   var _WM;             // Running Window Manager process
 
-  /**
-   * Create Window move/resize events
-   *
-   * FIXME: Optimize
-   */
-  function attachWindowEvents(win, wm) {
-    var main = win._$element;
-    var windowTop = win._$top;
-    var windowResize = win._$resize;
-    var sx = 0;
-    var sy = 0;
-    var action = null;
-    var moved = false;
-    var startRect = null;
-    var direction = null;
-    var startDimension = {x: 0, y: 0, w: 0, h: 0};
-    var cornerSnapSize = 0;
-    var windowSnapSize = 0;
-    var topMargin = 23;
-    var borderSize = 0;
-    var windowRects = [];
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOW MOVEMENT BEHAVIOUR
+  /////////////////////////////////////////////////////////////////////////////
 
-    function onMouseDown(ev, a, pos) {
-      cornerSnapSize = wm ? (wm.getSetting('windowCornerSnap') || 0) : 0;
-      windowSnapSize = wm ? (wm.getSetting('windowSnap') || 0) : 0;
-      windowRects = [];
+  /**
+   * Holds information about current behaviour
+   */
+  function BehaviourState(win, action, mousePosition) {
+    var self = this;
+
+    this.$element = win._$element;
+    this.$top     = win._$top;
+    this.$handle  = win._$resize;
+
+    this.rectWorkspace  = _WM.getWindowSpace(true);
+    this.rectWindow     = {
+      x: win._position.x,
+      y: win._position.y,
+      w: win._dimension.w,
+      h: win._dimension.h
+    };
+
+    var theme = _WM.getStyleTheme(true);
+    this.theme = {
+      topMargin : theme.style.window.margin || 0,
+      borderSize: theme.style.window.border || 0
+    };
+
+    this.snapping   = {
+      cornerSize : _WM.getSetting('windowCornerSnap') || 0,
+      windowSize : _WM.getSetting('windowSnap') || 0
+    };
+
+    this.action     = action;
+    this.moved      = false;
+    this.direction  = null;
+    this.startX     = mousePosition.x;
+    this.startY     = mousePosition.y;
+
+    var windowRects = [];
+    _WM.getWindows().forEach(function(w) {
+      if ( w && w._wid !== win._wid ) {
+        var pos = w._position;
+        var dim = w._dimension;
+        var rect = {
+          left : pos.x - self.theme.borderSize,
+          top : pos.y - self.theme.borderSize,
+          width: dim.w + (self.theme.borderSize*2),
+          height: dim.h + (self.theme.borderSize*2) + self.theme.topMargin
+        };
+
+        rect.right = rect.left + rect.width;
+        rect.bottom = (pos.y + dim.h) + self.theme.topMargin + self.theme.borderSize;//rect.top + rect.height;
+
+        windowRects.push(rect);
+      }
+    });
+
+    this.snapRects = windowRects;
+  }
+
+  BehaviourState.prototype.calculateDirection = function() {
+    var dir = Utils.$position(this.$handle);
+    var dirX = this.startX - dir.left;
+    var dirY = this.startY - dir.top;
+    var dirD = 20;
+
+    var direction = 's';
+    var checks = {
+      nw: (dirX <= dirD) && (dirY <= dirD),
+      n:  (dirX > dirD) && (dirY <= dirD),
+      w:  (dirX <= dirD) && (dirY >= dirD),
+      ne: (dirX >= (dir.width-dirD)) && (dirY <= dirD),
+      e:  (dirX >= (dir.width-dirD)) && (dirY > dirD),
+      se: (dirX >= (dir.width-dirD)) && (dirY >= (dir.height-dirD)),
+      sw: (dirX <= dirD) && (dirY >= (dir.height-dirD)),
+    };
+
+    Object.keys(checks).forEach(function(k) {
+      if ( checks[k] ) {
+        direction = k;
+      }
+    });
+
+    this.direction = direction;
+  };
+
+  /**
+   * Window Behavour Abstraction
+   */
+  function createWindowBehaviour(win, wm) {
+
+    var current = null;
+
+    /**
+     * When mouse button is pressed
+     */
+    function onMouseDown(ev, action, win, mousePosition) {
       ev.preventDefault();
 
-      if ( win._state.maximized ) { return false; }
-
-      var theme = wm.getStyleTheme(true);
-      if ( theme && theme.style && theme.style.window ) {
-        topMargin = theme.style.window.margin;
-        borderSize = theme.style.window.border;
+      if ( win._state.maximized ) {
+        return;
       }
 
-      startRect = wm.getWindowSpace(true);
-      wm.getWindows().forEach(function(w) {
-        if ( w && w._wid !== win._wid ) {
-          windowRects.push({
-            left: w._position.x,
-            top: w._position.y,
-            right: w._position.x + w._dimension.w,
-            bottom: w._position.y + w._dimension.h + topMargin,
-            width: w._dimension.w,
-            height: w._dimension.h
-          });
-        }
-      });
-
-      startDimension.x = win._position.x;
-      startDimension.y = win._position.y;
-      startDimension.w = win._dimension.w;
-      startDimension.h = win._dimension.h;
-
+      current = new BehaviourState(win, action, mousePosition);
       win._focus();
 
-      if ( a === 'move' ) {
-        main.setAttribute('data-hint', 'moving');
+      if ( action === 'move' ) {
+        current.$element.setAttribute('data-hint', 'moving');
       } else {
-        if ( windowResize ) {
-          var cx = pos.x;
-          var cy = pos.y;
-          var dir = Utils.$position(windowResize);
-          var dirX = cx - dir.left;
-          var dirY = cy - dir.top;
-          var dirD = 20;
-
-          direction = 's';
-          if ( (dirX <= dirD) && (dirY <= dirD) ) {
-            direction = 'nw';
-          }
-          if ( (dirX > dirD) && (dirY <= dirD) ) {
-            direction = 'n';
-          }
-          if ( (dirX <= dirD) && (dirY >= dirD) ) {
-            direction = 'w';
-          }
-          if ( (dirX >= (dir.width-dirD)) && (dirY <= dirD) ) {
-            direction = 'ne';
-          }
-          if ( (dirX >= (dir.width-dirD)) && (dirY > dirD) ) {
-            direction = 'e';
-          }
-          if ( (dirX >= (dir.width-dirD)) && (dirY >= (dir.height-dirD)) ) {
-            direction = 'se';
-          }
-          if ( (dirX <= dirD) && (dirY >= (dir.height-dirD)) ) {
-            direction = 'sw';
-          }
-
-          main.setAttribute('data-hint', 'resizing');
-        }
+        current.calculateDirection();
+        current.$element.setAttribute('data-hint', 'resizing');
       }
 
       win._fireHook('preop');
 
-      sx = pos.x;
-      sy = pos.y;
-      action = a;
+      function _onMouseMove(ev, pos) {
+        onMouseMove(ev, action, win, pos);
+      }
+      function _onMouseUp(ev, pos) {
+        onMouseUp(ev, action, win, pos);
+        Utils.$unbind(document, 'mousemove', _onMouseMove, false);
+        Utils.$unbind(document, 'mouseup', _onMouseUp, false);
+      }
 
-      Utils.$bind(document, 'mousemove', onMouseMove);
-      Utils.$bind(document, 'mouseup', onMouseUp);
-
-      return false;
+      Utils.$bind(document, 'mousemove', _onMouseMove, false);
+      Utils.$bind(document, 'mouseup', _onMouseUp, false);
     }
 
-    function onMouseUp(ev, pos) {
-      if ( moved ) {
-        if ( wm ) {
-          if ( action === 'move' ) {
-            win._onChange('move', true);
-            win._fireHook('moved');
-          } else if ( action === 'resize' ) {
-            win._onChange('resize', true);
-            win._fireHook('resized');
-          }
+    /**
+     * When mouse button is released
+     */
+    function onMouseUp(ev, action, win, mousePosition) {
+      if ( !current ) {
+        return;
+      }
+
+      if ( current.moved ) {
+        if ( action === 'move' ) {
+          win._onChange('move', true);
+          win._fireHook('moved');
+        } else if ( action === 'resize' ) {
+          win._onChange('resize', true);
+          win._fireHook('resized');
         }
       }
 
-      main.setAttribute('data-hint', '');
-
-      Utils.$unbind(document, 'mousemove', onMouseMove, false);
-      Utils.$unbind(document, 'mouseup', onMouseUp, false);
-
-      action = null;
-      sx = 0;
-      sy = 0;
-      moved = false;
-      startRect = null;
+      current.$element.setAttribute('data-hint', '');
 
       win._fireHook('postop');
+
+      current = null;
     }
 
-    function onMouseMove(ev, pos) {
-      if ( !wm || !wm.getMouseLocked() ) { return; }
-      if ( action === null ) { return; }
-      var cx = pos.x;
-      var cy = pos.y;
-      var dx = cx - sx;
-      var dy = cy - sy;
+    /**
+     * When mouse is moved
+     */
+    function onMouseMove(ev, action, win, mousePosition) {
+      if ( !_WM.getMouseLocked() || !action || !current ) {
+        return;
+      }
+
+      var result;
+      var dx = mousePosition.x - current.startX;
+      var dy = mousePosition.y - current.startY;
+
+      if ( action === 'move' ) {
+        result = onWindowMove(ev, mousePosition, dx, dy);
+      } else {
+        result = onWindowResize(ev, mousePosition, dx, dy);
+      }
+
+      if ( result ) {
+        if ( result.left !== null && result.top !== null ) {
+          win._move(result.left, result.top);
+          win._fireHook('move');
+        }
+        if ( result.width !== null && result.height !== null ) {
+          win._resize(result.width, result.height);
+          win._fireHook('resize');
+        }
+      }
+
+      current.moved = true;
+    }
+
+    /**
+     * Resizing action
+     */
+    function onWindowResize(ev, mousePosition, dx, dy) {
+      if ( !current || !current.direction ) { return; }
+
       var newLeft = null;
       var newTop = null;
       var newWidth = null;
       var newHeight = null;
 
-      if ( action === 'move' ) {
-        newLeft = startDimension.x + dx;
-        newTop = startDimension.y + dy;
-        if ( newTop < startRect.top ) { newTop = startRect.top; }
-        var newRight = newLeft + startDimension.w + (borderSize*2);
-        var newBottom = newTop + startDimension.h + topMargin + (borderSize);
-
-        // 8-directional corner window snapping
-        if ( cornerSnapSize > 0 ) {
-          if ( ((newLeft-borderSize) <= cornerSnapSize) && ((newLeft-borderSize) >= -cornerSnapSize) ) { // Left
-            newLeft = borderSize;
-          } else if ( (newRight >= (startRect.width - cornerSnapSize)) && (newRight <= (startRect.width + cornerSnapSize)) ) { // Right
-            newLeft = startRect.width - startDimension.w - borderSize;
-          }
-          if ( (newTop <= (startRect.top + cornerSnapSize)) && (newTop >= (startRect.top - cornerSnapSize)) ) { // Top
-            newTop = startRect.top + (borderSize);
-          } else if ( 
-                      (newBottom >= ((startRect.height + startRect.top) - cornerSnapSize)) &&
-                      (newBottom <= ((startRect.height + startRect.top) + cornerSnapSize))
-                    ) { // Bottom
-            newTop = (startRect.height + startRect.top) - startDimension.h - topMargin + borderSize;
-          }
+      var resizeMap = {
+        s: function() {
+          newWidth = current.rectWindow.w;
+          newHeight = current.rectWindow.h + dy;
+        },
+        se: function() {
+          newWidth = current.rectWindow.w + dx;
+          newHeight = current.rectWindow.h + dy;
+        },
+        e: function() {
+          newWidth = current.rectWindow.w + dx;
+          newHeight = current.rectWindow.h;
+        },
+        sw: function() {
+          newWidth = current.rectWindow.w - dx;
+          newHeight = current.rectWindow.h + dy;
+          newLeft = current.rectWindow.x + dx;
+          newTop = current.rectWindow.y;
+        },
+        w: function() {
+          newWidth = current.rectWindow.w - dx;
+          newHeight = current.rectWindow.h;
+          newLeft = current.rectWindow.x + dx;
+          newTop = current.rectWindow.y;
+        },
+        n: function() {
+          newTop = current.rectWindow.y + dy;
+          newLeft = current.rectWindow.x;
+          newHeight = current.rectWindow.h - dy;
+          newWidth = current.rectWindow.w;
+        },
+        nw: function() {
+          newTop = current.rectWindow.y + dy;
+          newLeft = current.rectWindow.x + dx;
+          newHeight = current.rectWindow.h - dy;
+          newWidth = current.rectWindow.w - dx;
+        },
+        ne: function() {
+          newTop = current.rectWindow.y + dy;
+          newLeft = current.rectWindow.x;
+          newHeight = current.rectWindow.h - dy;
+          newWidth = current.rectWindow.w + dx;
         }
+      };
 
-        // Snapping to other windows
-        if ( windowSnapSize > 0 ) {
-          windowRects.forEach(function(rect) {
-            if ( newRight >= (rect.left - windowSnapSize) && newRight <= (rect.left + windowSnapSize) ) { // Left
-              newLeft = rect.left - (startDimension.w + (borderSize*2));
-              return false;
-            }
-
-            if ( (newLeft-borderSize) <= (rect.right + windowSnapSize) && (newLeft-borderSize) >= (rect.right - windowSnapSize) ) { // Right
-              newLeft = rect.right + (borderSize*2);
-              return false;
-            }
-
-            if ( newBottom >= (rect.top - windowSnapSize) && newBottom <= (rect.top + windowSnapSize) ) { // Top
-              newTop = rect.top - (startDimension.h + borderSize + topMargin);
-              return false;
-            }
-
-            if ( newTop <= (rect.bottom + windowSnapSize) && newTop >= (rect.bottom - windowSnapSize) ) { // Bottom
-              newTop = rect.bottom + borderSize;
-              return false;
-            }
-
-            return true;
-          });
-
-        }
-      } else {
-        if ( direction === 's' ) {
-          newWidth = startDimension.w;
-          newHeight = startDimension.h + dy;
-        } else if ( direction === 'se' ) {
-          newWidth = startDimension.w + dx;
-          newHeight = startDimension.h + dy;
-        } else if ( direction === 'e' ) {
-          newWidth = startDimension.w + dx;
-          newHeight = startDimension.h;
-        } else if ( direction === 'sw' ) {
-          newWidth = startDimension.w - dx;
-          newHeight = startDimension.h + dy;
-          newLeft = startDimension.x + dx;
-          newTop = startDimension.y;
-        } else if ( direction === 'w' ) {
-          newWidth = startDimension.w - dx;
-          newHeight = startDimension.h;
-          newLeft = startDimension.x + dx;
-          newTop = startDimension.y;
-        } else if ( direction === 'n' ) {
-          newTop = startDimension.y + dy;
-          newLeft = startDimension.x;
-          newHeight = startDimension.h - dy;
-          newWidth = startDimension.w;
-        } else if ( direction === 'nw' ) {
-          newTop = startDimension.y + dy;
-          newLeft = startDimension.x + dx;
-          newHeight = startDimension.h - dy;
-          newWidth = startDimension.w - dx;
-        } else if ( direction === 'ne' ) {
-          newTop = startDimension.y + dy;
-          newLeft = startDimension.x;
-          newHeight = startDimension.h - dy;
-          newWidth = startDimension.w + dx;
-        }
+      if ( resizeMap[current.direction] ) {
+        resizeMap[current.direction]();
       }
 
-      if ( newLeft !== null && newTop !== null ) {
-        win._move(newLeft, newTop);
-        win._fireHook('move');
-      }
-      if ( newWidth !== null && newHeight !== null ) {
-        win._resize(newWidth, newHeight);
-        win._fireHook('resize');
-      }
-
-      moved = true;
+      return {left: newLeft, top: newTop, width: newWidth, height: newHeight};
     }
 
+    /**
+     * Movement action
+     */
+    function onWindowMove(ev, mousePosition, dx, dy) {
+      var newWidth = null;
+      var newHeight = null;
+      var newLeft = current.rectWindow.x + dx;
+      var newTop = current.rectWindow.y + dy;
+      var borderSize = current.theme.borderSize;
+      var topMargin = current.theme.topMargin;
+      var cornerSnapSize = current.snapping.cornerSize;
+      var windowSnapSize = current.snapping.windowSize;
+
+      if ( newTop < current.rectWorkspace.top ) { newTop = current.rectWorkspace.top; }
+
+      var newRight = newLeft + current.rectWindow.w + (borderSize*2);
+      var newBottom = newTop + current.rectWindow.h + topMargin + (borderSize);
+
+      // 8-directional corner window snapping
+      if ( cornerSnapSize > 0 ) {
+        if ( ((newLeft-borderSize) <= cornerSnapSize) && ((newLeft-borderSize) >= -cornerSnapSize) ) { // Left
+          newLeft = borderSize;
+        } else if ( (newRight >= (current.rectWorkspace.width - cornerSnapSize)) && (newRight <= (current.rectWorkspace.width + cornerSnapSize)) ) { // Right
+          newLeft = current.rectWorkspace.width - current.rectWindow.w - borderSize;
+        }
+        if ( (newTop <= (current.rectWorkspace.top + cornerSnapSize)) && (newTop >= (current.rectWorkspace.top - cornerSnapSize)) ) { // Top
+          newTop = current.rectWorkspace.top + (borderSize);
+        } else if ( 
+                    (newBottom >= ((current.rectWorkspace.height + current.rectWorkspace.top) - cornerSnapSize)) &&
+                    (newBottom <= ((current.rectWorkspace.height + current.rectWorkspace.top) + cornerSnapSize))
+                  ) { // Bottom
+          newTop = (current.rectWorkspace.height + current.rectWorkspace.top) - current.rectWindow.h - topMargin - borderSize;
+        }
+      }
+
+      // Snapping to other windows
+      if ( windowSnapSize > 0 ) {
+        current.snapRects.forEach(function(rect) {
+          // >
+          if ( newRight >= (rect.left - windowSnapSize) && newRight <= (rect.left + windowSnapSize) ) { // Left
+            newLeft = rect.left - (current.rectWindow.w + (borderSize*2));
+            return false;
+          }
+
+          // <
+          if ( (newLeft-borderSize) <= (rect.right + windowSnapSize) && (newLeft-borderSize) >= (rect.right - windowSnapSize) ) { // Right
+            newLeft = rect.right + (borderSize*2);
+            return false;
+          }
+
+          // \/
+          if ( newBottom >= (rect.top - windowSnapSize) && newBottom <= (rect.top + windowSnapSize) ) { // Top
+            newTop = rect.top - (current.rectWindow.h + (borderSize*2) + topMargin);
+            return false;
+          }
+
+          // /\
+          if ( newTop <= (rect.bottom + windowSnapSize) && newTop >= (rect.bottom - windowSnapSize) ) { // Bottom
+            newTop = rect.bottom + borderSize*2;
+            return false;
+          }
+
+          return true;
+        });
+
+      }
+
+      return {left: newLeft, top: newTop, width: newWidth, height: newHeight};
+    }
+
+    /**
+     * Register a window
+     */
     if ( win._properties.allow_move ) {
-      Utils.$bind(windowTop, 'mousedown', function(ev, pos) {
-        onMouseDown(ev, 'move', pos);
+      Utils.$bind(win._$top, 'mousedown', function(ev, pos) {
+        onMouseDown(ev, 'move', win, pos);
       });
     }
     if ( win._properties.allow_resize ) {
-      Utils.$bind(windowResize, 'mousedown', function(ev, pos) {
-        onMouseDown(ev, 'resize', pos);
+      Utils.$bind(win._$resize, 'mousedown', function(ev, pos) {
+        onMouseDown(ev, 'resize', win, pos);
       });
     }
   }
@@ -433,7 +508,9 @@
     console.debug('WindowManager::addWindow()');
 
     w.init(this, w._app, w._scheme);
-    attachWindowEvents(w, this);
+    //attachWindowEvents(w, this);
+    createWindowBehaviour(w, this);
+
     if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
       w._focus();
     }
