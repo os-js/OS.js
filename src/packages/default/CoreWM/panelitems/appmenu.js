@@ -46,6 +46,7 @@
   PanelItemAppMenu.Name = 'AppMenu'; // Static name
   PanelItemAppMenu.Description = 'Application Menu'; // Static description
   PanelItemAppMenu.Icon = 'actions/stock_about.png'; // Static icon
+  PanelItemAppMenu.HasOptions = false;
 
   PanelItemAppMenu.prototype.init = function() {
     var self = this;
@@ -63,6 +64,10 @@
       ev.preventDefault();
       ev.stopPropagation();
       OSjs.Applications.CoreWM.showMenu(ev);
+    });
+    Utils.$bind(sel, 'contextmenu', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
     });
 
     this.$container.appendChild(sel);
