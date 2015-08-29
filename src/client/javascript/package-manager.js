@@ -152,7 +152,7 @@
    * @method PackageManager::generateUserMetadata()
    */
   PackageManager.prototype.generateUserMetadata = function(callback) {
-    var dir = new OSjs.VFS.File(OSjs.OSjs.Core.getConfig().UserPackages);
+    var dir = new OSjs.VFS.File(OSjs.Core.getConfig().UserPackages);
     var found = {};
     var queue = [];
     var self = this;
