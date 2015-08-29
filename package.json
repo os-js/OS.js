@@ -23,6 +23,7 @@
     "time-grunt": "latest",
     "clean-css": "latest",
     "uglify-js": "latest",
+    "grunt-contrib-jshint": "latest",
     "less": "latest",
     "cookies": "latest",
     "node-fs-extra": "latest",

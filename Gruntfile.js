@@ -45,6 +45,40 @@
     grunt.file.defaultEncoding = 'utf-8';
 
     grunt.initConfig({
+      jshint: {
+        options: {
+          globals: {
+            OSjs: true,
+            zip: true,
+            alert: true
+          },
+          browser: true,
+          curly: true,
+          bitwise: false,
+          eqeqeq: true,
+          newcap: true,
+          noarg: true,
+          noempty: true,
+          nonew: true,
+          sub: true,
+          undef: true,
+          unused: false,
+          nonbsp: true,
+          trailing: true,
+          boss: true,
+          eqnull: true,
+          strict: true,
+          immed: true,
+          expr: true,
+          latedef: 'nofunc',
+          quotmark: 'single',
+          indent: 2,
+          node: true,
+          maxerr: 9999
+        },
+        all: ['Gruntfile.js', 'src/*.js', 'src/client/javascript/*.js', 'src/client/javascript/**/*.js']
+        //all: ['Gruntfile.js', 'src/*.js', 'src/client/javascript/*.js', 'src/client/javascript/**/*.js', 'src/packages/default/**/*.js']
+      }
     });
 
     /**
@@ -170,6 +204,7 @@
       _build.buildNightly(grunt, arg);
     });
 
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.registerTask('all', ['clean', 'config', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
   };
