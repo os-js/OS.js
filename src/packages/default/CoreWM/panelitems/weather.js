@@ -78,7 +78,9 @@
     var self = this;
     root = root || this._$element;
 
-    if ( !root ) return;
+    if ( !root ) {
+      return;
+    }
 
     root.title = 'Not allowed or unavailable';
 

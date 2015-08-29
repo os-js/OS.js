@@ -66,10 +66,27 @@
     for ( a in apps ) {
       if ( apps.hasOwnProperty(a) ) {
         iter = apps[a];
-        if ( iter.type !== "application" ) { continue; }
+        if ( iter.type !== 'application' ) { continue; }
         cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
         cats[cat].push({name: a, data: iter});
       }
+    }
+
+    function createEvent(iter) {
+      return function(el) {
+        OSjs.API.createDraggable(el, {
+          type   : 'application',
+          data   : {
+            launch: iter.name
+          }
+        });
+      };
+    }
+
+    function clickEvent(iter) {
+      return function() {
+        API.launch(iter.name);
+      };
     }
 
     for ( c in cats ) {
@@ -81,21 +98,8 @@
             title: iter.data.name,
             icon: _createIcon(iter.data, iter.name),
             tooltip : iter.data.description,
-            onCreated: (function(name, iter) {
-              return function(el) {
-                OSjs.API.createDraggable(el, {
-                  type   : 'application',
-                  data   : {
-                    launch: name
-                  }
-                });
-              };
-            })(iter.name, iter.data),
-            onClick: (function(name, iter) {
-              return function() {
-                API.launch(name);
-              };
-            })(iter.name, iter.data)
+            onCreated: createEvent(iter),
+            onClick: clickEvent(iter)
           });
         }
 
@@ -195,18 +199,18 @@
     var wm = OSjs.Core.getWindowManager();
 
     function isTouchDevice() {
-      if ( "ontouchstart" in document.documentElement ) {
+      if ( 'ontouchstart' in document.documentElement ) {
         return true;
       }
       try {
-        if ( document.createEvent("TouchEvent") ) {
+        if ( document.createEvent('TouchEvent') ) {
           return true;
         }
       } catch ( e ) {}
 
       var el = document.createElement('div');
-      el.setAttribute('ongesturestart', 'return;'); // or try "ontouchstart"
-      return typeof el.ongesturestart === "function";
+      el.setAttribute('ongesturestart', 'return;'); // or try 'ontouchstart'
+      return typeof el.ongesturestart === 'function';
     }
 
     //if ( isTouchDevice() || (wm && wm.getSetting('useTouchMenu') === true) ) {

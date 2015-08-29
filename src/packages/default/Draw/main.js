@@ -64,7 +64,7 @@
       var imageData;
 
       function pick(ev, args) {
-        var value = "#000000";
+        var value = '#000000';
         var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
 
         if ( !imageData ) {
@@ -443,7 +443,7 @@
     var tmp = new Image();
     tmp.onerror = function() {
       self._toggleLoading(false);
-      alert("Failed to open image");
+      alert('Failed to open image');
     };
     tmp.onload = function() {
       self._toggleLoading(false);

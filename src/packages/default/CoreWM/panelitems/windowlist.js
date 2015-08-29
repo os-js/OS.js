@@ -89,7 +89,7 @@
       }
     };
 
-    if ( ev == 'create' ) {
+    if ( ev === 'create' ) {
       var className = 'Button WindowList_Window_' + win._wid;
       if ( this.$element.getElementsByClassName(className).length ) { return; }
 
@@ -143,36 +143,36 @@
         el.className += ' Focused';
       }
       this.$element.appendChild(el);
-    } else if ( ev == 'close' ) {
+    } else if ( ev === 'close' ) {
       _change(cn, function(el) {
         el.onclick = null;
         el.oncontextmenu = null;
         el.parentNode.removeChild(el);
       });
-    } else if ( ev == 'focus' ) {
+    } else if ( ev === 'focus' ) {
       _change(cn, function(el) {
         el.className += ' Focused';
       });
-    } else if ( ev == 'blur' ) {
+    } else if ( ev === 'blur' ) {
       _change(cn, function(el) {
         el.className = el.className.replace(/\s?Focused/, '');
       });
-    } else if ( ev == 'title' ) {
+    } else if ( ev === 'title' ) {
       _change(cn, function(el) {
         el.getElementsByTagName('span')[0].innerHTML = win._title;
         el.title = win._title;
       });
-    } else if ( ev == 'icon' ) {
+    } else if ( ev === 'icon' ) {
       _change(cn, function(el) {
         el.getElementsByTagName('img')[0].src = win._icon;
       });
-    } else if ( ev == 'attention_on' ) {
+    } else if ( ev === 'attention_on' ) {
       _change(cn, function(el) {
         if ( !el.className.match(/Attention/) ) {
           el.className += ' Attention';
         }
       });
-    } else if ( ev == 'attention_off' ) {
+    } else if ( ev === 'attention_off' ) {
       _change(cn, function(el) {
         if ( !el.className.match(/Attention/) ) {
           el.className = el.className.replace(/\s?Attention/, '');

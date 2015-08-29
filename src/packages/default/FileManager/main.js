@@ -438,21 +438,24 @@
     }
 
     return toggle;
-  }
+  };
 
   ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) return;
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) {
+      return false;
+    }
 
     if ( type === 'filesDrop' && item ) {
       return this.onDropUpload(ev, item);
     } else if ( type === 'itemDrop' && item && item.type === 'file' && item.data ) {
       return this.onDropItem(ev, item);
     }
+
     return true;
   };
 
   ApplicationFileManagerWindow.prototype.onDropItem = function(ev, item) {
-    if ( Utils.dirname(item.data.path) == this.currentPath ) {
+    if ( Utils.dirname(item.data.path) === this.currentPath ) {
       return;
     }
 
@@ -508,7 +511,7 @@
     // If any outside VFS actions were performed, refresh!
 
     var win = this._getWindow('ApplicationFileManagerWindow');
-    if ( win && msg == 'vfs' && args.source !== this.__pid ) {
+    if ( win && msg === 'vfs' && args.source !== this.__pid ) {
       win.vfsEvent(args);
     }
   };
@@ -539,7 +542,7 @@
       message: Utils.format(OSjs.Applications.ApplicationFileManager._('Delete <span>{0}</span> ?'), files)
     }, function(ev, button) {
       win._toggleDisabled(false);
-      if ( button !== 'ok' && button !== 'yes' ) return;
+      if ( button !== 'ok' && button !== 'yes' ) { return; }
 
       items.forEach(function(item) {
         item = new VFS.File(item);
@@ -618,7 +621,7 @@
       value: 'My new File',
       message: OSjs.Applications.ApplicationFileManager._('Create a new file in <span>{0}</span>', dir)
     }, function(ev, button, result) {
-      if ( !result ) return;
+      if ( !result ) { return; }
 
       var item = new VFS.File(dir + '/' + result);
       VFS.exists(item, function(error, result) {
@@ -654,6 +657,7 @@
   };
 
   ApplicationFileManager.prototype.copy = function(src, dest, win) {
+    var self = this;
     var dialog = API.createDialog('FileProgress', {
       dest: Utils.dirname(dest.path),
       file: src

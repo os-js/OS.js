@@ -214,7 +214,7 @@
 
   Panel.prototype.onMouseLeave = function(ev) {
     var from = ev.relatedTarget || ev.toElement;
-    if ( !from || from.nodeName == "HTML" ) {
+    if ( !from || from.nodeName === 'HTML' ) {
       this.onMouseOut(ev);
     }
   };
@@ -237,7 +237,7 @@
 
   Panel.prototype.addItem = function(item) {
     if ( !(item instanceof OSjs.Applications.CoreWM.PanelItem) ) {
-      throw "Expected a PanelItem in Panel::addItem()";
+      throw 'Expected a PanelItem in Panel::addItem()';
     }
 
     this._items.push(item);
@@ -275,7 +275,7 @@
   };
 
   Panel.prototype.getPosition = function(pos) {
-    return pos ? (this._options.get('position') == pos) : this._options.get('position');
+    return pos ? (this._options.get('position') === pos) : this._options.get('position');
   };
 
   Panel.prototype.getAutohide = function() {
@@ -346,7 +346,7 @@
   PanelItem.prototype.applySettings = function() {
   };
 
-  PanelItem.prototype.openSettings = function(_DialogRef, args) {
+  PanelItem.prototype.openSettings = function(DialogRef, args) {
     if ( this._settingsDialog ) {
       this._settingsDialog._restore();
       return false;
@@ -354,7 +354,7 @@
 
     var wm = OSjs.Core.getWindowManager();
     var self = this;
-    this._settingsDialog = new _DialogRef(this, wm.scheme, function(button) {
+    this._settingsDialog = new DialogRef(this, wm.scheme, function(button) {
       if ( button === 'ok' ) {
         self.applySettings();
       }

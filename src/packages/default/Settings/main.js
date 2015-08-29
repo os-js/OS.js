@@ -112,7 +112,7 @@
         value: i,
         columns: [{
           icon: API.getIcon(items[i].Icon),
-          label: Utils.format("{0} ({1})", items[i].Name, items[i].Description)
+          label: Utils.format('{0} ({1})', items[i].Name, items[i].Description)
         }]
       });
     });
@@ -398,7 +398,9 @@
     var self = this;
     var panel = this.settings.panels[0];
 
-    if ( !init ) return; // TODO
+    if ( !init ) {
+      return; // TODO
+    }
 
     var panelPositions = [
       {value: 'top',    label: API._('LBL_TOP')},
@@ -483,7 +485,7 @@
           value: idx,
           columns: [{
             icon: API.getIcon(items[name].Icon),
-            label: Utils.format("{0} ({1})", items[name].Name, items[name].Description)
+            label: Utils.format('{0} ({1})', items[name].Name, items[name].Description)
           }]
         });
       });
@@ -595,7 +597,9 @@
     var handler = OSjs.Core.getHandler();
     var pacman = OSjs.Core.getPackageManager();
 
-    if ( !init ) return; // TODO
+    if ( !init ) {
+      return; // TODO
+    }
 
     //
     // Installed

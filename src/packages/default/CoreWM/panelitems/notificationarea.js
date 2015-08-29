@@ -39,33 +39,33 @@
 
     this.name           = name;
     this.opts           = opts;
-    this.$container     = document.createElement("div");
-    this.$inner         = document.createElement("div");
+    this.$container     = document.createElement('div');
+    this.$inner         = document.createElement('div');
     this.onCreated      = opts.onCreated     || function() {};
     this.onInited       = opts.onInited      || function() {};
     this.onDestroy      = opts.onDestroy     || function() {};
     this.onClick        = opts.onClick       || function() {};
     this.onContextMenu  = opts.onContextMenu || function() {};
 
-    var classNames = ["NotificationArea", "NotificationArea_" + name];
+    var classNames = ['NotificationArea', 'NotificationArea_' + name];
     if ( opts.className ) {
       classNames.push(opts.className);
     }
 
-    this.$container.className = classNames.join(" ");
+    this.$container.className = classNames.join(' ');
     if ( this.opts.tooltip ) {
       this.$container.title = this.opts.tooltip;
     }
 
     var self = this;
-    this.$inner.addEventListener("click", function(ev) {
+    this.$inner.addEventListener('click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
       self.onClick.apply(self, arguments);
       return false;
     });
-    this.$inner.addEventListener("contextmenu", function(ev) {
+    this.$inner.addEventListener('contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();

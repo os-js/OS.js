@@ -142,7 +142,9 @@
         API.createDialog('File', {
           filter: ['^image']
         }, function(ev, button, result) {
-          if ( button !== 'ok' || !result ) return;
+          if ( button !== 'ok' || !result ) {
+            return;
+          }
 
           VFS.url(result, function(error, url) {
             text._call('command', ['insertImage', false, url]);
@@ -154,7 +156,9 @@
           message: _('Insert URL'),
           placeholder: 'http://os.js.org'
         }, function(ev, button, result) {
-          if ( button !== 'ok' || !result ) return;
+          if ( button !== 'ok' || !result ) {
+            return;
+          }
           text._call('command', ['createLink', false, result]);
         });
       }
@@ -284,7 +288,7 @@
       }
 
       var len = text.get('value').length;
-      if ( len != self.checkChangeLength ) {
+      if ( len !== self.checkChangeLength ) {
         self.hasChanged = true;
       }
       self.checkChangeLength = len;
