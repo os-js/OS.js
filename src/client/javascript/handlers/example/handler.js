@@ -103,7 +103,9 @@ See doc/example-handler.txt
 
       login.onsubmit = function(ev) {
         _lock();
-        if ( ev ) ev.preventDefault();
+        if ( ev ) {
+          ev.preventDefault();
+        }
         _login(u.value, p.value);
       };
 

@@ -214,7 +214,7 @@
           self.removeShortcut(item);
         }
       }
-    }], ev)
+    }], ev);
   };
 
   DesktopIconView.prototype.removeShortcut = function(data, wm) {
@@ -229,7 +229,7 @@
     try {
       var entries = cel.querySelectorAll('gui-icon-view-entry');
       entries.forEach(function(e, idx) {
-        var value = value = JSON.parse(e.getAttribute('data-value'));
+        var value = JSON.parse(e.getAttribute('data-value'));
         if ( value.path === path ) {
           self.removeShortcut({index: idx});
         }

@@ -379,8 +379,8 @@
     scheme.find(this, 'EnableHotkeys').set('value', this.settings.enableHotkeys);
     scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
 
-    inputDesktop.set('value', this.settings.desktopMargin)
-    inputCorner.set('value', this.settings.windowCornerSnap)
+    inputDesktop.set('value', this.settings.desktopMargin);
+    inputCorner.set('value', this.settings.windowCornerSnap);
     inputSnap.set('value', this.settings.windowSnap);
 
     updateLabel('DesktopMargin', this.settings.desktopMargin);
@@ -644,7 +644,7 @@
             renderInstalled();
           });
         }
-      })
+      });
     });
 
     //

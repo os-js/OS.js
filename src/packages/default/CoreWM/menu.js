@@ -68,7 +68,7 @@
         iter = apps[a];
         if ( iter.type !== "application" ) { continue; }
         cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
-        cats[cat].push({name: a, data: iter})
+        cats[cat].push({name: a, data: iter});
       }
     }
 

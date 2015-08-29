@@ -262,7 +262,6 @@
     var cpos = {x: 0, y: 0};
     var tmpTools = ['path', 'rectangle', 'circle'];
     var tmpCanvas, tmpContext;
-    var startPos;
 
     function createTempCanvas(ev) {
       tmpCanvas = document.createElement('canvas');

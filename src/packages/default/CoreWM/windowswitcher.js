@@ -52,7 +52,7 @@
       }
       this.$switcher = null;
     }
-  }
+  };
 
   WindowSwitcher.prototype.show = function(ev, win, wm) {
     win = win || wm.getLastWindow();

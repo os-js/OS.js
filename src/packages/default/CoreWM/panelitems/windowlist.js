@@ -90,7 +90,7 @@
     };
 
     if ( ev == 'create' ) {
-      var className = className = 'Button WindowList_Window_' + win._wid;
+      var className = 'Button WindowList_Window_' + win._wid;
       if ( this.$element.getElementsByClassName(className).length ) { return; }
 
       var el = document.createElement('li');
