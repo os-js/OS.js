@@ -76,8 +76,17 @@
           node: true,
           maxerr: 9999
         },
-        all: ['Gruntfile.js', 'src/*.js', 'src/client/javascript/*.js', 'src/client/javascript/**/*.js']
-        //all: ['Gruntfile.js', 'src/*.js', 'src/client/javascript/*.js', 'src/client/javascript/**/*.js', 'src/packages/default/**/*.js']
+        all: [
+          'Gruntfile.js',
+          'src/*.js',
+          'src/client/javascript/*.js',
+          'src/client/javascript/**/*.js',
+          'src/packages/default/**/*.js',
+          '!src/packages/default/Broadway/**',
+          '!src/packages/default/**/locales.js',
+          '!src/packages/default/**/locale.js',
+          '!src/packages/default/Calculator/main.js'
+        ]
       }
     });
 
