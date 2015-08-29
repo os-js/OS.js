@@ -377,7 +377,7 @@
     }
 
     scheme.find(this, 'EnableHotkeys').set('value', this.settings.enableHotkeys);
-    scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
+    //scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
 
     inputDesktop.set('value', this.settings.desktopMargin);
     inputCorner.set('value', this.settings.windowCornerSnap);
@@ -735,7 +735,7 @@
 
     // Desktop
     this.settings.enableHotkeys = scheme.find(this, 'EnableHotkeys').get('value');
-    this.settings.enableSwitcher = scheme.find(this, 'EnableWindowSwitcher').get('value');
+    //this.settings.enableSwitcher = scheme.find(this, 'EnableWindowSwitcher').get('value');
     this.settings.desktopMargin = scheme.find(this, 'DesktopMargin').get('value');
     this.settings.windowCornerSnap = scheme.find(this, 'CornerSnapping').get('value');
     this.settings.windowSnap = scheme.find(this, 'WindowSnapping').get('value');
