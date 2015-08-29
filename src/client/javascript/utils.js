@@ -1380,7 +1380,6 @@
     return function(el, ev, callback, param) {
       param = param || false;
 
-      var self = this;
       var compability = OSjs.Utils.getCompability();
       var isTouch = compability.touch;
       var touchMap = {
@@ -1394,11 +1393,11 @@
 
 
       var cbNormal = function(ev) {
-        callback.call(self, ev, pos(ev), false);
+        callback.call(el, ev, pos(ev), false);
       };
 
       var cbTouch = function(ev) {
-        callback.call(self, ev, pos(ev, true), true);
+        callback.call(el, ev, pos(ev, true), true);
       };
 
       var collection = new EventCollection();
