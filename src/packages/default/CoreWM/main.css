@@ -114,7 +114,13 @@ corewm-panel:before {
   z-index : 1;
 }
 corewm-panel-item {
-  display : block;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  min-width : 26px;
+  min-height : 26px;
 }
 corewm-panel[data-ontop="true"] {
   z-index : 9999998;
@@ -187,11 +193,6 @@ corewm-panel-container > li ul {
   display : inline-block;
 }
 
-corewm-panel-item {
-  min-width : 26px;
-  min-height : 26px;
-  display : block;
-}
 corewm-panel .PanelItemStatic {
 }
 corewm-panel .PanelItemFill {

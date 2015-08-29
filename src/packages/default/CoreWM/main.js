@@ -72,6 +72,7 @@
             opacity: 85
           },
           items:    [
+            {name: 'AppMenu', settings: {}},
             {name: 'Buttons', settings: {}},
             {name: 'WindowList', settings: {}},
             {name: 'NotificationArea', settings: {}},

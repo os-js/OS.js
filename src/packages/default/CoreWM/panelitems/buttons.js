@@ -41,19 +41,9 @@
     PanelItem.apply(this, ['PanelItemButtons PanelItemFill', 'Buttons', settings, {
       buttons: [
         {
-          title: API._('LBL_APPLICATIONS'),
-          icon: 'osjs-white.png',
-          system: 'applications'
-        },
-        {
           title: API._('LBL_SETTINGS'),
           icon: 'categories/applications-system.png',
-          system: 'settings'
-        },
-        {
-          title: API._('DIALOG_LOGOUT_TITLE'),
-          icon: 'actions/exit.png',
-          system: 'exit'
+          launch: 'ApplicationSettings'
         }
       ]
     }]);

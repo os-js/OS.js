@@ -1,0 +1,6 @@
+
+corewm-panel .PanelItemButtons {
+}
+corewm-panel .PanelItemButtons > ul {
+  min-width : 16px;
+}
