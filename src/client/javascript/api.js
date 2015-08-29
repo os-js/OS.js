@@ -458,9 +458,7 @@
       var splash = null;
       var splashBar = null;
 
-      createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
-
-      if ( !data.splash ) { return; }
+      if ( data.splash === false ) { return; }
 
       splash = document.createElement('application-splash');
 
@@ -640,7 +638,10 @@
       }
 
       // Preload
-      splash = createLaunchSplash(data, n);
+      if ( !OSjs.Applications[n] ) {
+        splash = createLaunchSplash(data, n);
+      }
+      createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
       if ( window.location.href.match(/^file\:\/\//) ) {
         data.preload.forEach(function(file, idx) {

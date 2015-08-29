@@ -21,7 +21,6 @@
   "mime":       ["^image"],
   "category":   "graphics",
   "icon":       "categories/gnome-graphics.png",
-  "splash":     true,
   "compability":["canvas"],
   "preload":    [
     {"src": "locales.js", "type": "javascript"},

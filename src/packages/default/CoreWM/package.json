@@ -13,6 +13,7 @@
   "type":       "windowmanager",
   "mime":       null,
   "icon":       "apps/gnome-window-manager.png",
+  "splash":     false,
   "preload":    [
     {"src": "menu.js", "type": "javascript"},
     {"src": "iconview.js", "type": "javascript"},
