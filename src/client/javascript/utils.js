@@ -1428,7 +1428,7 @@
    */
   OSjs.Utils.$unbind = function(collection) {
     if ( collection && collection instanceof EventCollection ) {
-      collection.destroy()
+      collection.destroy();
     }
     return null;
   };
