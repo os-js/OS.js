@@ -93,6 +93,7 @@
     this._items = [];
     this._outtimeout = null;
     this._intimeout = null;
+    this._outEvent = null;
     this._options = options.mergeDefaults({
       position: 'top'
     });
@@ -142,7 +143,8 @@
     Utils.$bind(this._$element, 'contextmenu', function(ev) {
       createMenu(ev);
     });
-    Utils.$bind(document, 'mouseout', function(ev) {
+
+    this._outEvent = Utils.$bind(document, 'mouseout', function(ev) {
       self.onMouseLeave(ev);
     }, false);
 
@@ -156,11 +158,7 @@
 
   Panel.prototype.destroy = function() {
     this._clearTimeouts();
-
-    var self = this;
-    Utils.$unbind(document, 'mouseout', function(ev) {
-      self.onMouseLeave(ev);
-    }, false);
+    this._outEvent = Utils.$unbind(this._outEvent);
 
     this._items.forEach(function(item) {
       item.destroy();

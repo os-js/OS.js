@@ -151,17 +151,17 @@
 
       win._fireHook('preop');
 
+      var boundMove = Utils.$bind(document, 'mousemove', _onMouseMove, false);
+      var boundUp = Utils.$bind(document, 'mouseup', _onMouseUp, false);
+
       function _onMouseMove(ev, pos) {
         onMouseMove(ev, action, win, pos);
       }
       function _onMouseUp(ev, pos) {
         onMouseUp(ev, action, win, pos);
-        Utils.$unbind(document, 'mousemove', _onMouseMove, false);
-        Utils.$unbind(document, 'mouseup', _onMouseUp, false);
+        boundMove = Utils.$unbind(boundMove);
+        boundUp = Utils.$unbind(boundUp);
       }
-
-      Utils.$bind(document, 'mousemove', _onMouseMove, false);
-      Utils.$bind(document, 'mouseup', _onMouseUp, false);
     }
 
     /**

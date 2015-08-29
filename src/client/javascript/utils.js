@@ -33,6 +33,23 @@
   window.OSjs = window.OSjs || {};
   OSjs.Utils  = OSjs.Utils  || {};
 
+  function EventCollection() {
+    this.collection = [];
+  }
+
+  EventCollection.prototype.add = function(el, iter) {
+    el.addEventListener.apply(el, iter);
+    this.collection.push([el, iter]);
+  };
+
+  EventCollection.prototype.destroy = function(el, iter) {
+    this.collection.forEach(function(iter) {
+      if ( iter[0] && iter[1] ) {
+        iter[0].removeEventListener.apply(iter[0], iter[1]);
+      }
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // MISC
   /////////////////////////////////////////////////////////////////////////////
@@ -1263,26 +1280,11 @@
    * @param   String        ev          DOM Event Name
    * @param   Function      callback    Callback on event
    *
+   * @return  EventCollection           Use this object to unbind generated events
+   *
    * @api OSjs.Utils.$bind()
    */
-  OSjs.Utils.$bind = function(el, ev, callback, param) {
-    this._$binder(el, ev, callback, param, 'addEventListener');
-  };
-
-  /**
-   * Wrapper for event un-binding
-   *
-   * @see OSjs.Utils.$bind()
-   * @api OSjs.Utils.$unbind()
-   */
-  OSjs.Utils.$unbind = function(el, ev, callback, param) {
-    this._$binder(el, ev, callback, param, 'removeEventListener');
-  };
-
-  /**
-   * Inner wrapper for event binding/unbinding
-   */
-  OSjs.Utils._$binder = (function() {
+  OSjs.Utils.$bind = (function() {
 
     var DBLCLICK_THRESHOLD = 200;
     var CONTEXTMENU_THRESHOLD = 600;
@@ -1294,7 +1296,7 @@
       };
     }
 
-    function _bindTouch(el, param, onStart, onMove, onEnd, method) {
+    function _bindTouch(el, param, onStart, onMove, onEnd, collection) {
       var wasMoved = false;
       var startPos = {x: -1, y: -1};
       onStart = onStart || function() {};
@@ -1318,12 +1320,12 @@
         onEnd(ev, pos(ev, true), wasMoved);
       }
 
-      el[method]('touchstart', touchStart, param === true);
-      el[method]('touchmove', touchMove, param === true);
-      el[method]('touchend', touchEnd, param === true);
+      collection.add(el, ['touchstart', touchStart, param === true]);
+      collection.add(el, ['touchmove', touchMove, param === true]);
+      collection.add(el, ['touchend', touchEnd, param === true]);
     }
 
-    function bindTouchDblclick(ev, el, param, callback, method) {
+    function bindTouchDblclick(ev, el, param, callback, collection) {
 
       var clickCount = 0;
       var timeout;
@@ -1341,7 +1343,7 @@
         if ( !wasMoved ) {
           if ( clickCount >= 2 ) {
             clickCount = 0;
-            callback(ev, pos);
+            callback(ev, pos, true);
             return;
           }
         }
@@ -1350,34 +1352,35 @@
           clickCount = 0;
           ct();
         }, DBLCLICK_THRESHOLD);
-      }, method);
+      }, collection);
     }
 
-    function bindTouchClick(ev, el, param, callback, method) {
+    function bindTouchClick(ev, el, param, callback, collection) {
       _bindTouch(el, param, null, null, function(ev, pos, wasMoved) {
         if ( !wasMoved ) {
           ev.stopPropagation();
-          callback(ev, pos, wasMoved);
+          callback(ev, pos, true);
         }
-      }, method);
+      }, collection);
     }
 
-    function bindTouchContextMenu(ev, el, param, callback, method) {
+    function bindTouchContextMenu(ev, el, param, callback, collection) {
       var timeout;
 
       _bindTouch(el, param, function(ev, pos) {
         timeout = setTimeout(function() {
           ev.preventDefault();
-          callback(ev, pos, false);
+          callback(ev, pos, true);
         }, CONTEXTMENU_THRESHOLD);
       }, null, function(ev, pos, wasMoved) {
         timeout = clearTimeout(timeout);
-      }, method);
+      }, collection);
     }
 
-    return function(el, ev, callback, param, method) {
+    return function(el, ev, callback, param) {
       param = param || false;
 
+      var self = this;
       var compability = OSjs.Utils.getCompability();
       var isTouch = compability.touch;
       var touchMap = {
@@ -1389,21 +1392,46 @@
         mousedown: 'touchstart'
       };
 
-      el[method](ev, function(ev) {
-        callback.call(this, ev, pos(ev), false);
-      }, param === true);
+
+      var cbNormal = function(ev) {
+        callback.call(self, ev, pos(ev), false);
+      };
+
+      var cbTouch = function(ev) {
+        callback.call(self, ev, pos(ev, true), true);
+      };
+
+      var collection = new EventCollection();
+      collection.add(el, [ev, cbNormal, param === true]);
 
       if ( touchMap[ev] ) {
         if ( typeof touchMap[ev] === 'function' ) {
-          touchMap[ev](ev, el, param, callback, method);
+          touchMap[ev](ev, el, param, callback, collection);
         } else {
-          el[method](touchMap[ev], function(ev) {
-            callback.call(this, ev, pos(ev, true), true);
-          }, param === true);
+          collection.add(el, [touchMap[ev], cbTouch, param === true]);
         }
       }
+
+      return collection;
     };
   })();
+
+  /**
+   * Unbinds the given EventCollection
+   *
+   * @param   EventCollection     collection      The object returned by $bind()
+   *
+   * @return  null
+   *
+   * @see OSjs.Utils.$bind()
+   * @api OSjs.Utils.$unbind()
+   */
+  OSjs.Utils.$unbind = function(collection) {
+    if ( collection && collection instanceof EventCollection ) {
+      collection.destroy()
+    }
+    return null;
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // XHR
