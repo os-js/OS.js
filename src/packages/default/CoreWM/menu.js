@@ -124,7 +124,7 @@
     var root = this.$element = document.createElement('gui-menu');
     this.$element.id = 'CoreWMApplicationMenu';
 
-    var apps = OSjs.Core.getHandler().getApplicationsMetadata();
+    var apps = OSjs.Core.getPackageManager().getPackages();
 
     function createEntry(a, iter) {
       var entry = document.createElement('gui-menu-entry');
