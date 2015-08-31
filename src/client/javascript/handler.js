@@ -118,6 +118,11 @@
       });
     }
 
+    if ( this.dialogs ) {
+      this.dialogs.destroy();
+    }
+    this.dialogs = null;
+
     _handlerInstance = null;
   };
 
@@ -139,13 +144,12 @@
     if ( OSjs.Core.getConfig().Dist === 'dist' ) {
       url = root + 'dialogs.html';
     }
-    var scheme = OSjs.GUI.createScheme(url);
-    scheme.load(function(error, doc) {
+
+    this.dialogs = OSjs.GUI.createScheme(url);
+    this.dialogs.load(function(error) {
       if ( error ) {
         console.warn('Handler::boot()', 'error loading dialog schemes', error);
       }
-
-      self.dialogs = scheme;
 
       OSjs.Core.getPackageManager().load(function(presult, perror) {
         callback(presult, perror);

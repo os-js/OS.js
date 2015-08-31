@@ -132,6 +132,8 @@
   }
 
   UIScheme.prototype.destroy = function() {
+    Utils.$empty(this.scheme);
+
     this.scheme = null;
     this.triggers = {};
   };
@@ -165,13 +167,15 @@
     function finished(html) {
       var doc = document.createDocumentFragment();
       var wrapper = document.createElement('div');
-
       wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
       doc.appendChild(wrapper);
-      self.scheme = doc;
-      wrapper = null;
 
-      cb(false, doc);
+      self.scheme = doc.cloneNode(true);
+
+      wrapper = null;
+      doc = null;
+
+      cb(false, self.scheme);
     }
 
     if ( window.location.protocol.match(/^file/) ) {

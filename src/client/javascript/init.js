@@ -77,8 +77,10 @@
         return evt;
       }
 
-      CustomEvent.prototype = window.Event.prototype;
-      window.CustomEvent = CustomEvent;
+      if ( window.navigator.userAgent.match(/MSIE|Edge/) ) {
+        CustomEvent.prototype = window.Event.prototype;
+        window.CustomEvent = CustomEvent;
+      }
     })();
   })();
 

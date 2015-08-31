@@ -634,16 +634,14 @@
     function _removeDOM() {
       self._setWarning(null);
 
-      if ( self._$element.parentNode ) {
-        self._$element.parentNode.removeChild(self._$element);
-      }
-      self._$element    = null;
       self._$root       = null;
       self._$top        = null;
       self._$winicon    = null;
       self._$loading    = null;
       self._$disabled   = null;
       self._$resize     = null;
+      self._$warning    = null;
+      self._$element    = Utils.$remove(self._$element);
     }
 
     // Removed DOM elements and their referring objects (GUI Elements etc)

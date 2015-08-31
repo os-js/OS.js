@@ -1522,6 +1522,18 @@
       });
     }
 
+    function cleanup() {
+      if ( request.upload ) {
+        request.upload.removeEventListener('progress', args.onprogress, false);
+      }
+      request.removeEventListener('error', args.onfailed, false);
+      request.removeEventListener('abort', args.oncanceled, false);
+      request.onerror = null;
+      request.onload = null;
+      request.onreadystatechange = null;
+      request = null;
+    }
+
     function requestJSON() {
       request = new XMLHttpRequest();
       request.open(args.method, args.url, true);
@@ -1532,13 +1544,15 @@
       });
 
       if ( request.upload ) {
-        request.upload.addEventListener('progress', function(evt) { args.onprogress(evt); }, false);
+        request.upload.addEventListener('progress', args.onprogress, false);
       }
 
       if ( args.responseType === 'arraybuffer' ) { // Binary
         request.onerror = function(evt) {
           var error = request.response || OSjs.API._('ERR_UTILS_XHR_FATAL');
           args.onerror(error, evt, request, args.url);
+
+          cleanup();
         };
         request.onload = function(evt) {
           if ( request.status === 200 || request.status === 201 || request.status === 304 ) {
@@ -1549,10 +1563,12 @@
               args.onerror(error, evt, request, args.url);
             });
           }
+
+          cleanup();
         };
       } else {
-        request.addEventListener('error', function(evt) { args.onfailed(evt); }, false);
-        request.addEventListener('abort', function(evt) { args.oncanceled(evt); }, false);
+        request.addEventListener('error', args.onfailed, false);
+        request.addEventListener('abort', args.oncanceled, false);
         request.onreadystatechange = onReadyStateChange;
       }
 

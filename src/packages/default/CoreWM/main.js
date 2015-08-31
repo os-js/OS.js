@@ -166,29 +166,25 @@
 
     if ( this.iconView ) {
       this.iconView.destroy();
-      this.iconView = null;
     }
-
     if ( this.switcher ) {
       this.switcher.destroy();
-      this.switcher = null;
+    }
+    if ( this.scheme ) {
+      this.scheme.destroy();
     }
 
-    this.scheme = null;
-
+    // Reset
     this.destroyPanels();
-
-    // Reset styles
     this.applySettings(_DefaultSettings(this._defaults), true);
 
-    if ( this.$themeLink ) {
-      this.$themeLink.parentNode.removeChild(this.$themeLink);
-      this.$themeLink = null;
-    }
-    if ( this.$animationLink ) {
-      this.$animationLink.parentNode.removeChild(this.$animationLink);
-      this.$animationLink = null;
-    }
+    // Clear DOM
+    this._$notifications = Utils.$remove(this._$notifications);
+    this.$themeLink = Utils.$remove(this.$themeLink);
+    this.$animationLink = Utils.$remove(this.$animationLink);
+    this.switcher = null;
+    this.iconView = null;
+    this.scheme = null;
 
     return WindowManager.prototype.destroy.apply(this, []);
   };
@@ -265,7 +261,7 @@
 
     var schemeUrl = API.getApplicationResource('CoreWM', 'scheme.html');
     this.scheme = GUI.createScheme(schemeUrl);
-    this.scheme.load(function(err, result) {
+    this.scheme.load(function(err) {
       callback.call(self);
     });
   };
