@@ -55,6 +55,7 @@ My contact information is located on my [Github profile](https://github.com/ande
 * [Issue Tracker](https://github.com/andersevenrud/OS.js-v2/issues)
 * [Demo Site](http://osjsv2.0o.no/)
 * [Wiki](https://github.com/andersevenrud/OS.js-v2/wiki)
+* [OS.js on OpenHub](https://www.openhub.net/p/OS_js)
 
 ## Social Media
 
@@ -69,4 +70,5 @@ My contact information is located on my [Github profile](https://github.com/ande
 * [Blog](http://anderse.wordpress.com)
 * [Twitter](https://twitter.com/andersevenrud)
 * [LinkedIn](http://linkedin.com/in/andersevenrud)
+* [OpenHub](https://www.openhub.net/accounts/andersevenrud)
 * [Mail](andersevenrud@gmail.com)
