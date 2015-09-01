@@ -1031,8 +1031,10 @@
    * @api     OSjs.Utils.$empty()
    */
   OSjs.Utils.$empty = function(myNode) {
-    while (myNode.firstChild) {
-      myNode.removeChild(myNode.firstChild);
+    if ( myNode ) {
+      while (myNode.firstChild) {
+        myNode.removeChild(myNode.firstChild);
+      }
     }
   };
 
