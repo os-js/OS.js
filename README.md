@@ -56,6 +56,7 @@ My contact information is located on my [Github profile](https://github.com/ande
 * [Demo Site](http://osjsv2.0o.no/)
 * [Wiki](https://github.com/andersevenrud/OS.js-v2/wiki)
 * [OS.js on OpenHub](https://www.openhub.net/p/OS_js)
+* [Google Groups](https://groups.google.com/forum/#!forum/osjsplatform)
 
 ## Social Media
 
