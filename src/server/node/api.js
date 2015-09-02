@@ -45,11 +45,7 @@
       var fpath = _path.join(aroot, "api.js");
 
       try {
-        require(fpath)[ameth](aargs, function(result, error) {
-          error = error || null;
-          if ( error !== null ) {
-            result = null;
-          }
+        require(fpath)[ameth](aargs, function(error, result) {
           callback(error, result);
         });
       } catch ( e ) {
