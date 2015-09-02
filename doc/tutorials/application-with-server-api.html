@@ -47,8 +47,8 @@
 
 (function() {
 
-  exports.register = function(CONFIG, API) {
-    API.MyServerMethod = function(args, callback, request, response) {
+  module.exports = {
+    MyServerMethod: function(args, callback, request, response) {
       // Here you get args.Argument from call in application example below
 
       callback(
@@ -57,7 +57,7 @@
           foo: "bar"
         }
       );
-    };
+    }
   };
 
 })();
