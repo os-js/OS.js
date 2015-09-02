@@ -38,7 +38,6 @@
       }
 
       var apath = args.path || null;
-      var aname = args.application || null;
       var ameth = args.method || null;
       var aargs = args['arguments'] || [];
 
@@ -46,8 +45,7 @@
       var fpath = _path.join(aroot, "api.js");
 
       try {
-        var api = require(fpath);
-        api[aname].call(ameth, aargs, function(result, error) {
+        require(fpath)[ameth](aargs, function(result, error) {
           error = error || null;
           if ( error !== null ) {
             result = null;
