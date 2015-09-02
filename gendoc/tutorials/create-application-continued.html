@@ -60,19 +60,16 @@ ApplicationMyNameWindow.prototype.init = function(wm, app, scheme) {
 
   // Get a property
   scheme.find(this, 'MyButtonOne').on('click', function() {
-    alert(scheme.find(this, 'Text').get('value'));
+    alert(scheme.find(self, 'Text').get('value'));
   });
 
   // Change a property
   scheme.find(this, 'MyButtonOne').on('click', function() {
-    scheme.find(this, 'Text').set('value', 'CLICKED!');
+    scheme.find(self, 'Text').set('value', 'CLICKED!');
   });
 
   // Create UI element programatically (chainable)
   scheme.create(this, 'gui-button', {disabled: true}, root).on('click', function() {
-
-     // `this` is UIElement() class
-     // Any values etc is in `ev.detail`
 
   });
 
