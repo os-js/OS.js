@@ -38,6 +38,8 @@
       <h1>Tutorial: Create your own Application with server API</h1>
 
       <h2>Set up server method</h2>
+
+      <h3>Node</h3>
       <div class="indent">
 
         <p>
@@ -62,6 +64,36 @@
 
 })();
 
+        </pre>
+      </div>
+
+      <h3>PHP</h3>
+      <div class="indent">
+
+        <p>
+          Create the file "api.php" inside the package directory and use this as a template:
+        </p>
+        <pre class="code">
+<?php
+
+class MyPackageClassName // As you defined in package.json
+{
+
+  public static function call($method, $args) {
+    if ( $method === 'MyServerMethod' ) {
+      return Array(
+        "foo": "bar"
+      );
+    } else {
+      throw new Exception("This is how you send an error");
+    }
+
+    return false;
+  }
+
+}
+
+?>
         </pre>
       </div>
 
