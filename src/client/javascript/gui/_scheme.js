@@ -155,7 +155,7 @@
     var self = this;
 
     function removeSelfClosingTags(html) {
-      var split = html.split('/>');
+      var split = (html || '').split('/>');
       var newhtml = '';
       for (var i = 0; i < split.length - 1;i++) {
         var edsplit = split[i].split('<');
