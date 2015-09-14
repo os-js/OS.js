@@ -1,0 +1,18 @@
+javascript:
+  config_file: .jshintrc
+  ignore_file: .jshintignore
+
+scss:
+  enabled: false
+
+haml:
+  enabled: false
+
+go:
+  enabled: false
+
+coffeescript:
+  enabled: false
+
+ruby:
+  enabled: false

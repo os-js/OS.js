@@ -1,0 +1,16 @@
+src/client/javascript/handlers/**
+src/client/stylesheets/**
+src/client/themes/**
+src/templates/**
+src/installer/**
+src/packages/**
+src/locales/**
+src/server/**
+src/conf/**
+src/x11/**
+vendor/*
+dist/**
+vfs/**
+doc/**
+
+dist-dev/**
