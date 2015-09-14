@@ -33,6 +33,24 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  /**
+   * Wrapper for getting which element to focus/blur
+   */
+  function getFocusElement(inst) {
+    var tagMap = {
+      'gui-switch': 'button',
+      'gui-list-view': 'textarea',
+      'gui-tree-view': 'textarea',
+      'gui-icon-view': 'textarea',
+      'gui-input-modal': 'button'
+    };
+
+    if ( tagMap[inst.tagName] ) {
+      return inst.$element.querySelector(tagMap[inst.tagName]);
+    }
+    return inst.$element.firstChild || inst.$element;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -54,9 +72,8 @@
   }
 
   UIElement.prototype.blur = function() {
-    // TODO: For more elements
     if ( this.$element ) {
-      var firstChild = this.$element.querySelector('input');
+      var firstChild = getFocusElement(this);
       if ( firstChild ) {
         firstChild.blur();
       }
@@ -65,9 +82,8 @@
   };
 
   UIElement.prototype.focus = function() {
-    // TODO: For more elements
     if ( this.$element ) {
-      var firstChild = this.$element.firstChild || this.$element; //this.$element.querySelector('input');
+      var firstChild = getFocusElement(inst);
       if ( firstChild ) {
         firstChild.focus();
       }
