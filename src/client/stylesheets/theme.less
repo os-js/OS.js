@@ -679,10 +679,6 @@ gui-slider {
 
   /*
    * RANGE THUMB
-   *
-   * TODO
-   * TODO DISABLED STATE
-   * TODO
    */
 
   gui-slider input::-moz-range-thumb {
@@ -691,7 +687,7 @@ gui-slider {
     width : 10px;
   }
   gui-slider input:disabled::-moz-range-thumb {
-    border-color : @gui_input_disabled_border_color;
+    .theme_button_disabled();
   }
 
   gui-slider input::-webkit-slider-thumb {
@@ -701,8 +697,7 @@ gui-slider {
     margin-top : -10px;
   }
   gui-slider input:disabled::-webkit-range-thumb {
-    background-color : @gui_background_color;
-    border-color : @gui_input_disabled_border_color;
+    .theme_button_disabled();
   }
 
   gui-slider input::-ms-thumb {
@@ -711,7 +706,7 @@ gui-slider {
     width : 16px;
   }
   gui-slider input:disabled::-ms-thumb {
-    border-color : @gui_input_disabled_border_color;
+    .theme_button_disabled();
   }
 
   /**

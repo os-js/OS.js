@@ -806,10 +806,6 @@ gui-slider {
 
   /*
    * RANGE THUMB
-   *
-   * TODO
-   * TODO DISABLED STATE
-   * TODO
    */
 
   gui-slider input::-moz-range-thumb {
