@@ -35,7 +35,7 @@
 // See doc/pam-handler.txt
 //
 
-(function(qs, pam, fs, path) {
+(function(qs, pam, userid, fs, path) {
 
   function getRootPath(username) {
     return path.join('/home', username, '.osjs');
@@ -45,23 +45,49 @@
     return path.join(getRootPath(username), 'settings.json');
   }
 
+  function getGroupsPath() {
+    return path.join('/etc', 'osjs', 'groups.json');
+  }
+
   function authenticate(login, callback) {
+
+    function getUserGroups(cb) {
+      fs.readFileSync(getGroupsPath(), function(err, gdata) {
+        var list = {};
+        if ( !err ) {
+          try {
+            list = JSON.parse(gdata.toString());
+          } catch ( e ) {}
+        }
+
+        cb(list[login.username] || []);
+      });
+    }
+
+    function getUserSettings(cb) {
+      fs.readFile(getSettingsPath(login.username), function(err, sdata) {
+        var settings = {};
+        if ( !err && sdata ) {
+          try {
+            settings = JSON.parse(sdata.toString());
+          } catch ( e ) {}
+        }
+        cb(settings);
+      });
+    }
+
     pam.authenticate(login.username, login.password, function(err) {
       if ( err ) {
         callback(err);
       } else {
-        fs.readFile(getSettingsPath(login.username), function(err, settings) {
-          if ( err ) {
-            settings = {};
-          } else {
-            settings = settings ? JSON.parse(settings) : {};
-          }
-
-          callback(false, {
-            id: 0,
-            groups: ['admin'],
-            name: login.username
-          }, settings);
+        getUserSettings(function(settings) {
+          getUserGroups(function(groups) {
+            callback(false, {
+              id: userid.uid(login.username),
+              groups: groups,
+              name: login.username
+            }, settings);
+          });
         });
       }
     });
@@ -140,4 +166,4 @@
 
   };
 
-})(require('querystring'), require('authenticate-pam'), require('fs'), require('path'));
+})(require('querystring'), require('authenticate-pam'), require('userid'), require('fs'), require('path'));
