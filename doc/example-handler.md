@@ -2,17 +2,30 @@ With the *example* handler you can enable a login prompt for OS.js.
 
 ## Setup
 
-* Edit `src/conf/000-base.json` and set handler to `example`
-* Run `grunt config` to update configuration files
-* Run `grunt dist-dev-index` to update html index file (If using dist-dev)
-* Run `grunt core` to rebuild (If using dist)
+```
+# Change `handler` to `pam`
+$ edit src/conf/000-base.json
 
-## Configure
+# Update configuration and template files
+$ grunt config dist-index dist-dev-index
 
-The you'll need to set-up the mysql database and edit `src/server/php/handlers/example/handler.php`, or the node one.
+# Rebuild (only required if you use `dist`)
+# grunt core
 
+```
+
+### Configure
+
+Then set up the configuration in these files (you only need to edit the one you use):
+
+- `src/server/php/handlers/example/handler.php`
+- `src/server/node/handlers/example/handler.php`
+
+
+### Mysql Database table
 
 Create this table:
+
 ```
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
