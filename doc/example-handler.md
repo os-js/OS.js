@@ -3,7 +3,7 @@ With the *example* handler you can enable a login prompt for OS.js.
 ## Setup
 
 ```
-# Change `handler` to `pam`
+# Change `handler` to `example`
 $ edit src/conf/000-base.json
 
 # Update configuration and template files
