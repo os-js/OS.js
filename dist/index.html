@@ -50,10 +50,27 @@
     <script type="text/javascript" charset="utf-8" src="locales.js"></script>
 
   </head>
-  <body>
+  <body data-handler="demo">
     <div id="LoadingScreen">
       <img alt="" src="osjs-logo.png" />
       <span>Loading</span>
     </div>
+
+    <div id="Login">
+      <form method="post" id="LoginForm">
+        <div>
+          <label for="LoginUsername">Username</label>
+          <input type="text" name="LoginUsername" id="LoginUsername" value="" placeholder="Username" />
+        </div>
+        <div>
+          <label for="LoginPassword">Password</label>
+          <input type="password" name="LoginPassword" id="LoginPassword" value="" placeholder="Password" />
+        </div>
+        <div class="Submit">
+          <input type="submit" name="LoginSubmit" id="LoginSubmit" value="Login" />
+        </div>
+      </form>
+    </div>
+
   </body>
 </html>

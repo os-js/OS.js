@@ -685,6 +685,7 @@
 
     tpl = replaceAll(tpl, '%STYLES%', styles.join('\n'));
     tpl = replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
+    tpl = replaceAll(tpl, '%HANDLER%', cfg.handler);
 
     writeFile(out, tpl);
   }

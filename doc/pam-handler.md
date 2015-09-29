@@ -15,10 +15,6 @@ $ edit /etc/osjs/groups.json
 # Change `handler` to `pam`
 $ edit src/conf/000-base.json
 
-# Copy login template
-$ cp src/client/javascript/handlers/pam/login.html dist/login.html
-$ cp src/client/javascript/handlers/pam/login.html dist-dev/login.html
-
 # Update configuration and template files
 $ grunt config
 $ grunt dist-dev-index

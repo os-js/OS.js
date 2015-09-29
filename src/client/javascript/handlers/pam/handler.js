@@ -60,76 +60,10 @@
    * Override default init() method
    */
   PAMHandler.prototype.init = function(callback) {
+    // Located in src/client/javasript/hander.js
     var self = this;
-
-    function _onLoaded() {
-      var container = document.getElementById('Login');
-      var login     = document.getElementById('LoginForm');
-      var u         = document.getElementById('LoginUsername');
-      var p         = document.getElementById('LoginPassword');
-      var s         = document.getElementById('LoginSubmit');
-
-      if ( !container ) {
-        throw new Error('Could not find Login Form Container');
-      }
-
-      function _restore() {
-        s.removeAttribute('disabled');
-        u.removeAttribute('disabled');
-        p.removeAttribute('disabled');
-      }
-
-      function _lock() {
-        s.setAttribute('disabled', 'disabled');
-        u.setAttribute('disabled', 'disabled');
-        p.setAttribute('disabled', 'disabled');
-      }
-
-      function _login(username, password) {
-        self.login(username, password, function(result, error) {
-          if ( error ) {
-            alert(error);
-            _restore();
-            return;
-          }
-          console.debug('OSjs::Handlers::PAMHandler::init()', 'login response', result);
-          container.parentNode.removeChild(container);
-
-          self.onLogin(result.userData, result.userSettings, function() {
-            callback();
-          });
-        });
-      }
-
-      login.onsubmit = function(ev) {
-        _lock();
-        if ( ev ) {
-          ev.preventDefault();
-        }
-        _login(u.value, p.value);
-      };
-
-      container.style.display = 'block';
-    }
-
-    var uri = OSjs.Core.getConfig().RootURI + 'login.html';
-    OSjs.Utils.ajax({
-      url: uri,
-      onsuccess: function(response) {
-        if ( !response ) {
-          alert('No content was found for login handler login HTML');
-          return;
-        }
-
-        document.body.innerHTML += response;
-
-        setTimeout(function() {
-          _onLoaded();
-        }, 0);
-      },
-      onerror: function(error) {
-        alert('Failed to fetch login handler login HTML');
-      }
+    this.initLoginScreen(function() {
+      OSjs.Core._Handler.prototype.init.call(self, callback);
     });
   };
 
