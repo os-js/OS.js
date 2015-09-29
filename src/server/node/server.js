@@ -170,7 +170,7 @@
         groups = [];
       }
 
-      if ( !('admin' in groups) ) {
+      if ( groups.indexOf('admin') < 0 ) {
         var allowed = true;
         privilege.forEach(function(p) {
           if ( groups.indexOf(p) < 0 ) {
