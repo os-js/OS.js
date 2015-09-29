@@ -16,8 +16,7 @@ $ edit /etc/osjs/groups.json
 $ edit src/conf/000-base.json
 
 # Update configuration and template files
-$ grunt config
-$ grunt dist-dev-index
+$ grunt config dist-index dist-dev-index
 
 # Rebuild (only required if you use `dist`)
 # grunt core
