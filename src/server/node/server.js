@@ -181,7 +181,7 @@
         return allowed;
       }
 
-      return false;
+      return true;
     }
 
     var uname = request.cookies.get('username');
