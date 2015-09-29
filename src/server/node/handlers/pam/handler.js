@@ -52,7 +52,7 @@
   function authenticate(login, callback) {
 
     function getUserGroups(cb) {
-      fs.readFileSync(getGroupsPath(), function(err, gdata) {
+      fs.readFile(getGroupsPath(), function(err, gdata) {
         var list = {};
         if ( !err ) {
           try {
