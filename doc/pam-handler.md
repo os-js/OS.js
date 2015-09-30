@@ -24,6 +24,11 @@ $ grunt config dist-index dist-dev-index
 ```
 
 
+**NOTE:** On some systems you might have to install `authenticate-pam` with `npm install -g` or else you might get a *Error in service module* upon request.
+
+**NOTE:** Also, on some systems you might have to run OS.js server as an administrator (`sudo`) depending on the PAM setup.
+
+
 ### groups.json
 
 This is an example file for `groups.json`
