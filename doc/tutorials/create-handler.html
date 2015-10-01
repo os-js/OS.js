@@ -39,74 +39,13 @@
   The handler is the basis for communication, resource handling, settings and sessions.
 </p>
 <p>
-  <i>This tutorial only shows you how to use the included example handler.</i>
-</p>
-<p>
-  <b>This handler does basic login and server sessions. It will display a login window when you boot OS.js</b>
-</p>
-<p>
-  You can find full documentation of the Handler methods in the Client API reference.
+  Use the included <a href="https://github.com/andersevenrud/OS.js-v2/blob/master/doc/example-handler.md">example handler</a> as a template. It uses the login capabilities for OS.js so you can have multiple users.
 </p>
 
-<h2>Add login HTML template</h2>
-<p>
-  Copy these files:
-</p>
-<pre>cp src/javascript/handlers/example/index.html dist/example.html</pre>
-
-<pre>cp src/javascript/handlers/example/index.html dist-dev/example.html</pre>
-<h2>Changing handler</h2>
-<p>
-  You just have to edit <b>src/conf/000-base.json</b> and swap out the configured handler name.
-</p>
-<p>
-  Then run:
-</p>
-<pre>
-grunt core config dist-dev-index
-</pre>
-
-<h2>Setting up database</h2>
-
-<p>
-  Create a new mysql user and database, then insert this table:
-</p>
-
-<pre class="code">
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `groups` text,
-  `settings` text,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
--- 
--- Example User with admin rights
--- 
-INSERT INTO  `osjs`.`users` (
-  `id` ,
-  `username` ,
-  `password` ,
-  `name` ,
-  `groups` ,
-  `settings`
-)
-VALUES (
-  NULL ,  'admin',  'admin',  'Administrator',  '["admin"]', NULL
-);
-
-</pre>
-
-<p>Apply your connection settings to:</p>
-<pre>src/server-php/handlers/example/handler.php</pre>
-or
-<pre>src/server-node/handlers/example/handler.js</pre>
-<!--
-<p><b>IT IS HIGHLY RECOMENDED TO PUT YOUR CONNECTION SETTINGS IN THE ROOT DIRECTORY AND INCLUDE THEM INSTEAD OF HAVING THEM IN THE HANDLER SCRIPT. IT CAN BE READ BY USERS</b></p>
--->
+<h2>Other handlers</h2>
+<ul>
+  <li><a href="https://github.com/andersevenrud/OS.js-v2/blob/master/doc/pam-handler.md">PAM</a></li>
+</ul>
 
 <div class="adddshere">
   <ins class="adsbygoogle"
