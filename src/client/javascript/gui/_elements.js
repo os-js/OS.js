@@ -83,7 +83,7 @@
 
   UIElement.prototype.focus = function() {
     if ( this.$element ) {
-      var firstChild = getFocusElement(inst);
+      var firstChild = getFocusElement(this);
       if ( firstChild ) {
         firstChild.focus();
       }
