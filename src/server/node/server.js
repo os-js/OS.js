@@ -42,6 +42,7 @@
     port:       8000,
     directory:  null, // Automatic
     appdirs:    null, // Automatic, but overrideable
+    tmpdir:     '/tmp',
     vfs:        {
       'homes':   _path.join(ROOTDIR, 'vfs/home'),
       'tmp':     _path.join(ROOTDIR, 'vfs/tmp'),
@@ -370,7 +371,9 @@
       {
         // File Uploads
         if ( path.match(/^\/FS$/) ) {
-          var form = new _multipart.IncomingForm();
+          var form = new _multipart.IncomingForm({
+            uploadDir: CONFIG.tmpdir
+          });
           form.parse(request, function(err, fields, files) {
             api.FilePOST(fields, files, request, response);
           });

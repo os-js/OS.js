@@ -1,5 +1,6 @@
 {
   "server" : {
+    "tmpdir": "/tmp",
     "vfs": {
       "homes":  "%DROOT%/vfs/home",
       "tmp":    "%DROOT%/vfs/tmp",
