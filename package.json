@@ -19,16 +19,16 @@
     "url": "https://github.com/andersevenrud/OS.js-v2.git"
   },
   "dependencies": {
-    "grunt": "latest",
-    "time-grunt": "latest",
-    "clean-css": "latest",
-    "uglify-js": "latest",
-    "grunt-contrib-jshint": "latest",
-    "less": "latest",
-    "cookies": "latest",
-    "node-fs-extra": "latest",
-    "formidable": "latest",
-    "request": "latest"
+    "grunt":                ">=0.4.5",
+    "time-grunt":           ">=1.2.1",
+    "clean-css":            ">=3.4.5",
+    "uglify-js":            ">=2.4.24",
+    "grunt-contrib-jshint": ">=0.11.3",
+    "less":                 ">=2.5.3",
+    "cookies":              ">=0.5.1",
+    "node-fs-extra":        ">=0.8.1",
+    "formidable":           ">=1.0.17",
+    "request":              ">=2.64.0"
   }
 
 }
