@@ -15,6 +15,37 @@ if [ -d "$DEST" ]; then
   exit 1
 fi
 
+if [ -e /etc/debian_version ]; then
+  if ! which npm | grep -s -q "/npm"
+  then
+    apt-get install -y npm
+  fi
+  if ! which git | grep -s -q "/git"
+  then
+    apt-get install -y git
+  fi
+  if ! which node | grep -s -q "/node"
+  then
+    apt-get install -y nodejs-legacy
+  fi
+else
+  if ! which npm | grep -s -q "/npm"
+  then
+    echo "please install npm"
+    exit 1
+  fi
+  if ! which git | grep -s -q "/git"
+  then
+    echo "please install git"
+    exit 1
+  fi
+  if ! which node | grep -s -q "/node"
+  then
+    echo "please install nodejs-legacy"
+    exit 1
+  fi
+fi
+
 echo "Installing 'grunt' (requires sudo)"
 sudo npm install -g grunt-cli
 
