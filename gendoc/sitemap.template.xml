@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" 
+  xmlns:video="http://www.google.com/schemas/sitemap-video/1.1"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+<url>
+  <loc>http://os.js.org/</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>http://os.js.org/doc/</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://os.js.org/doc/client/</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://os.js.org/doc/server/</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://os.js.org/doc/manuals/</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>http://os.js.org/doc/tutorials/</loc>
+  <lastmod>2015-01-23T23:10:33+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+</url>
+
+%URLS%
+
+</urlset>
