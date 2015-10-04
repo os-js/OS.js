@@ -1527,6 +1527,8 @@
     function cleanup() {
       if ( request.upload ) {
         request.upload.removeEventListener('progress', args.onprogress, false);
+      } else {
+        request.removeEventListener('progress', args.onprogress, false);
       }
       request.removeEventListener('error', args.onfailed, false);
       request.removeEventListener('abort', args.oncanceled, false);
@@ -1538,7 +1540,6 @@
 
     function requestJSON() {
       request = new XMLHttpRequest();
-      request.open(args.method, args.url, true);
       request.responseType = args.responseType || '';
 
       Object.keys(args.requestHeaders).forEach(function(h) {
@@ -1547,6 +1548,8 @@
 
       if ( request.upload ) {
         request.upload.addEventListener('progress', args.onprogress, false);
+      } else {
+        request.addEventListener('progress', args.onprogress, false);
       }
 
       if ( args.responseType === 'arraybuffer' ) { // Binary
@@ -1573,6 +1576,8 @@
         request.addEventListener('abort', args.oncanceled, false);
         request.onreadystatechange = onReadyStateChange;
       }
+
+      request.open(args.method, args.url, true);
 
       args.oncreated(request);
       request.send(args.body);

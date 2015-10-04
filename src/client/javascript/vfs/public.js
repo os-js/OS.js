@@ -54,6 +54,7 @@
 
   PublicStorage.write = function(item, data, callback, options) {
     options = options || {};
+    options.onprogress = options.onprogress || function() {};
 
     function _write(dataSource) {
       var wopts = [item.path, dataSource, options];
@@ -76,6 +77,7 @@
 
   PublicStorage.read = function(item, callback, options) {
     options = options || {};
+    options.onprogress = options.onprogress || function() {};
 
     this.url(item, function(error, url) {
       if ( error ) {
@@ -86,6 +88,13 @@
         url: url,
         method: 'GET',
         responseType: 'arraybuffer',
+        onprogress: function(ev) {
+          if ( ev.lengthComputable ) {
+            options.onprogress(ev, ev.loaded / ev.total);
+          } else {
+            options.onprogress(ev, -1);
+          }
+        },
         onsuccess: function(response, xhr) {
           if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
             callback(xhr.statusText || response);
