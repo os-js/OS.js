@@ -109,7 +109,7 @@
   PanelItemNotificationArea.prototype = Object.create(PanelItem.prototype);
   PanelItemNotificationArea.Name = 'NotificationArea'; // Static name
   PanelItemNotificationArea.Description = 'View notifications'; // Static description
-  PanelItemNotificationArea.Icon = 'status/important.png'; // Static icon
+  PanelItemNotificationArea.Icon = 'apps/gnome-panel-notification-area.png'; // Static icon
 
   PanelItemNotificationArea.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
