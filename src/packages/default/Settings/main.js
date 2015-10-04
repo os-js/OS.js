@@ -177,11 +177,12 @@
     });
 
     var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
+    var categories = ['theme', 'desktop', 'panel', 'user', 'packages'];
     var container = scheme.find(this, 'TabsContainer');
     var header = scheme.find(this, 'Header');
     var view = scheme.find(this, 'IconMenu');
 
-    function setContainer(idx) {
+    function setContainer(idx, save) {
       var found;
       container.$element.querySelectorAll('gui-tabs').forEach(function(el, i) {
         Utils.$removeClass(el, 'active');
@@ -189,6 +190,10 @@
           found = el;
         }
       });
+
+      if ( found && save ) {
+        app._setArgument('category', categories[idx]);
+      }
 
       header.set('value', indexes[idx].replace(/^Tabs/, ''));
       Utils.$addClass(found, 'active');
@@ -199,7 +204,7 @@
     view.on('select', function(ev) {
       if ( ev.detail && ev.detail.entries && ev.detail.entries.length ) {
         var sel = ev.detail.entries[0].index;
-        setContainer(sel);
+        setContainer(sel, true);
       }
     });
 
@@ -213,7 +218,10 @@
 
     this.updateSettings(true);
 
-    var cat = this.category === 'panel' ? 2 : 0;
+    var cat = categories.indexOf(this.category);
+    if ( cat < 0 ) {
+      cat = 0;
+    }
     setContainer(cat);
 
     return root;
@@ -778,7 +786,7 @@
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
-    var category = this._getArgument('category');
+    var category = this._getArgument('category') || settings.category;
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme, category));
 
