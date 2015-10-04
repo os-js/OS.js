@@ -275,6 +275,8 @@
    * If you specify 'tag' the result will end with an Array because
    * these are not unique.
    *
+   * If you specify 'null' it will try to return the 'main' window.
+   *
    * @param   String    checkfor      The argument to check for
    * @param   Mixed     key           What to match against
    *
@@ -284,6 +286,9 @@
    */
   Application.prototype._getWindow = function(checkfor, key) {
     key = key || 'name';
+    if ( checkfor === null ) {
+      checkfor = this.__mainwindow;
+    }
 
     var result = key === 'tag' ? [] : null;
     this.__windows.forEach(function(win, i) {
