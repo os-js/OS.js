@@ -30,6 +30,7 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  var categories = ['theme', 'desktop', 'panel', 'user', 'packages'];
 
   function fetchJSON(cb) {
     var url = 'http://andersevenrud.github.io/OS.js-v2/store/packages.json';
@@ -176,38 +177,13 @@
       _: OSjs.Applications.ApplicationSettings._
     });
 
-    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
-    var categories = ['theme', 'desktop', 'panel', 'user', 'packages'];
-    var container = scheme.find(this, 'TabsContainer');
-    var header = scheme.find(this, 'Header');
     var view = scheme.find(this, 'IconMenu');
-
-    function setContainer(idx, save) {
-      var found;
-      container.$element.querySelectorAll('gui-tabs').forEach(function(el, i) {
-        Utils.$removeClass(el, 'active');
-        if ( i === idx ) {
-          found = el;
-        }
-      });
-
-      if ( found && save ) {
-        app._setArgument('category', categories[idx]);
-      }
-
-      header.set('value', indexes[idx].replace(/^Tabs/, ''));
-      Utils.$addClass(found, 'active');
-
-      view.set('value', idx);
-    }
-
     view.on('select', function(ev) {
       if ( ev.detail && ev.detail.entries && ev.detail.entries.length ) {
         var sel = ev.detail.entries[0].index;
-        setContainer(sel, true);
+        self.setContainer(sel, true);
       }
     });
-
     scheme.find(this, 'ButtonApply').on('click', function() {
       self.applySettings(wm, scheme);
     });
@@ -215,16 +191,39 @@
       self._close();
     });
 
-
+    var cat = Math.max(0, categories.indexOf(this.category));
     this.updateSettings(true);
-
-    var cat = categories.indexOf(this.category);
-    if ( cat < 0 ) {
-      cat = 0;
-    }
-    setContainer(cat);
+    this.setContainer(cat);
 
     return root;
+  };
+
+  ApplicationSettingsWindow.prototype.setContainer = function(idx, save) {
+    var found;
+    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
+    if ( typeof idx === 'string' ) {
+      idx = Math.max(0, categories.indexOf(idx));
+    }
+
+    var view = this._scheme.find(this, 'IconMenu');
+    var header = this._scheme.find(this, 'Header');
+    var container = this._scheme.find(this, 'TabsContainer');
+
+    container.$element.querySelectorAll('gui-tabs').forEach(function(el, i) {
+      Utils.$removeClass(el, 'active');
+      if ( i === idx ) {
+        found = el;
+      }
+    });
+
+    if ( found && save ) {
+      this._app._setArgument('category', categories[idx]);
+    }
+
+    header.set('value', indexes[idx].replace(/^Tabs/, ''));
+    Utils.$addClass(found, 'active');
+
+    view.set('value', idx);
   };
 
   ApplicationSettingsWindow.prototype.updateSettings = function(init) {
@@ -838,6 +837,18 @@
   ApplicationSettings.prototype.panelItemsDialog = function(callback) {
     if ( this.__scheme ) {
       this._addWindow(new PanelItemDialog(this, this.__metadata, this.__scheme, callback));
+    }
+  };
+
+  ApplicationSettings.prototype._onMessage = function(obj, msg, args) {
+    Application.prototype._onMessage.apply(this, arguments);
+
+    if ( this.__mainwindow ) {
+      var win = this._getWindow(null);
+      if ( msg === 'attention' && args.category ) {
+        win.setContainer(args.category, true);
+        win._focus();
+      }
     }
   };
 
