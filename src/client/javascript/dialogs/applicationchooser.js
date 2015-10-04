@@ -68,7 +68,7 @@
     (this.args.list || []).forEach(function(name) {
       var iter = metadata[name];
 
-      if ( iter.type === 'application' ) {
+      if ( iter && iter.type === 'application' ) {
         var label = [iter.name];
         if ( iter.description ) {
           label.push(iter.description);
