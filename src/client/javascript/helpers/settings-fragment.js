@@ -99,7 +99,7 @@
     }
 
     if (save) {
-      OSjs.Core.getSettingsManager().save(this._pool);
+      OSjs.Core.getSettingsManager().save(this._pool, save);
     }
 
     OSjs.Core.getSettingsManager().changed(this._pool);
