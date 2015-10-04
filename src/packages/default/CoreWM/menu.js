@@ -52,25 +52,6 @@
    */
   function doBuildCategoryMenu(ev) {
     var apps = OSjs.Core.getPackageManager().getPackages();
-    var list = [];
-    var cats = {};
-
-    var c, a, iter, cat, submenu;
-
-    for ( c in DefaultCategories ) {
-      if ( DefaultCategories.hasOwnProperty(c) ) {
-        cats[c] = [];
-      }
-    }
-
-    for ( a in apps ) {
-      if ( apps.hasOwnProperty(a) ) {
-        iter = apps[a];
-        if ( iter.type !== 'application' ) { continue; }
-        cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
-        cats[cat].push({name: a, data: iter});
-      }
-    }
 
     function createEvent(iter) {
       return function(el) {
@@ -89,29 +70,42 @@
       };
     }
 
-    for ( c in cats ) {
-      if ( cats.hasOwnProperty(c) ) {
-        submenu = [];
-        for ( a = 0; a < cats[c].length; a++ ) {
-          iter = cats[c][a];
-          submenu.push({
-            title: iter.data.name,
-            icon: _createIcon(iter.data, iter.name),
-            tooltip : iter.data.description,
-            onCreated: createEvent(iter),
-            onClick: clickEvent(iter)
-          });
-        }
+    var cats = {};
 
-        if ( submenu.length ) {
-          list.push({
-            title: OSjs.Applications.CoreWM._(DefaultCategories[c].title),
-            icon:  API.getIcon(DefaultCategories[c].icon, '16x16'),
-            menu:  submenu
-          });
-        }
+    Object.keys(DefaultCategories).forEach(function(c) {
+      cats[c] = [];
+    });
+
+    Object.keys(apps).forEach(function(a) {
+      var iter = apps[a];
+      if ( iter.type === 'application' ) {
+        var cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
+        cats[cat].push({name: a, data: iter});
       }
-    }
+    });
+
+    var list = [];
+    Object.keys(cats).forEach(function(c) {
+      var submenu = [];
+      for ( var a = 0; a < cats[c].length; a++ ) {
+        var iter = cats[c][a];
+        submenu.push({
+          title: iter.data.name,
+          icon: _createIcon(iter.data, iter.name),
+          tooltip : iter.data.description,
+          onCreated: createEvent(iter),
+          onClick: clickEvent(iter)
+        });
+      }
+
+      if ( submenu.length ) {
+        list.push({
+          title: OSjs.Applications.CoreWM._(DefaultCategories[c].title),
+          icon:  API.getIcon(DefaultCategories[c].icon, '16x16'),
+          menu:  submenu
+        });
+      }
+    });
 
     return list;
   }
