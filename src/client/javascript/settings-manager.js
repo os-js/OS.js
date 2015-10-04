@@ -236,6 +236,21 @@
     return this;
   };
 
+  /**
+   * Clears a pool
+   *
+   * @param  String     pool      Name of settings pool
+   * @param  Mixed      save      (Optional) boolean or callback function for saving (default = true)
+   *
+   * @return SettingsManager      this
+   *
+   * @method SettingsManager::clear()
+   */
+  SettingsManager.clear = function(pool, save) {
+    save = (typeof save === 'undefined') || (save === true);
+    this.set(pool, null, {}, save);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
