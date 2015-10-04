@@ -58,6 +58,10 @@
         attribs.min = el.getAttribute('data-min');
         attribs.max = el.getAttribute('data-max');
         attribs.step = el.getAttribute('data-step');
+      } else if ( type === 'radio' || type === 'checkbox' ) {
+        if ( el.getAttribute('data-value') === 'true' ) {
+          attribs.checked = 'checked';
+        }
       } else if ( type === 'text' || type === 'password' || type === 'textarea' ) {
         attribs.value = value || '';
       }
