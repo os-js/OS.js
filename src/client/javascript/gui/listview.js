@@ -48,15 +48,13 @@
     if ( v.label ) {
       delete v.label;
     }
-    if ( typeof v.grow === 'undefined' ) {
-      v.grow = 1;
-    }
-    if ( typeof v.shrink === 'undefined' ) {
-      v.shrink = 1;
-    }
-    if ( typeof v.basis === 'undefined' ) {
-      v.basis = '';
-    }
+
+    var checks = {grow: 1, shrink: 1, basis: ''};
+    Object.keys(checks).forEach(function(k) {
+      if ( typeof v[k] === 'undefined' ) {
+        v[k] = checks[k];
+      }
+    });
 
     var nel = GUI.Helpers.createElement('gui-list-view-column', v);
     nel.appendChild(document.createTextNode(label));
