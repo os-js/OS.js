@@ -131,7 +131,6 @@
    * @method  SettingsManager::save()
    */
   SettingsManager.save = function(pool, callback) {
-    callback = callback || function() {};
     if ( typeof callback !== 'function' ) {
       callback = function() {};
     }
