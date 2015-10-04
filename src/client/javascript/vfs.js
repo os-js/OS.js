@@ -790,10 +790,18 @@
     if ( !(src instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_SRC_FILE')); }
     if ( !(dest instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_DST_FILE')); }
 
-    options = options || {};
-    options.type = options.type || 'binary';
+    options = Utils.argumentDefaults(options, {
+      type: 'binary',
+      dialog: null
+    });
+
     options.arrayBuffer = true;
 
+    function dialogProgress(prog) {
+      if ( options.dialog ) {
+        options.dialog.setProgress(prog);
+      }
+    }
 
     function doRequest() {
       function _finished(error, result) {
@@ -811,6 +819,7 @@
       if ( (srcInternal && dstInternal) ) {
         var tmp = (msrc === mdst) ? src.path : null;
         request(tmp, 'copy', [src, dest], function(error, response) {
+          dialogProgress(100);
           if ( error ) {
             error = API._('ERR_VFSMODULE_COPY_FMT', error);
           }
@@ -818,6 +827,8 @@
         }, options);
       } else {
         OSjs.VFS.Modules[msrc].request('read', [src], function(error, data) {
+          dialogProgress(50);
+
           if ( error ) {
             _finished(API._('ERR_VFS_TRANSFER_FMT', error));
             return;
@@ -825,6 +836,8 @@
 
           dest.mime = src.mime;
           OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
+            dialogProgress(100);
+
             if ( error ) {
               error = API._('ERR_VFSMODULE_COPY_FMT', error);
             }
