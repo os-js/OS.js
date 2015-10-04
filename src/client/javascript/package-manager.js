@@ -373,18 +373,24 @@
    * @method PackageManager::getPackages()
    */
   PackageManager.prototype.getPackages = function(filtered) {
+    var hidden = OSjs.Core.getSettingsManager().instance('Packages', {hidden: []}).get('hidden');
+
     if ( typeof filtered === 'undefined' || filtered === true ) {
       var pkgs = this.packages;
       var result = {};
-      Object.keys(pkgs).filter(function(name) {
+      Object.keys(pkgs).forEach(function(name) {
         var iter = pkgs[name];
         if ( iter && (iter.groups instanceof Array) ) {
           if ( !API.checkPermission(iter.groups) ) {
             return;
           }
         }
-        result[name] = iter;
+
+        if ( iter && hidden.indexOf(name) < 0 ) {
+          result[name] = iter;
+        }
       });
+
       return result;
     }
 
