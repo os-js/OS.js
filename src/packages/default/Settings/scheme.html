@@ -97,6 +97,7 @@
       <gui-list-view data-id="InstalledPackages" data-multiple="false">
         <gui-list-view-head>
           <gui-list-view-row>
+            <gui-list-view-column data-basis="40px" data-grow="0" data-shrink="1">Hide</gui-list-view-column>
             <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Application</gui-list-view-column>
             <gui-list-view-column data-basis="50px" data-grow="0" data-shrink="1">Scope</gui-list-view-column>
             <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Name</gui-list-view-column>
@@ -107,6 +108,7 @@
 
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-button-bar>
+        <gui-button data-id="ButtonSaveHidden">Save</gui-button>
         <gui-button data-id="ButtonRegen">Regenerate metadata</gui-button>
         <gui-button data-id="ButtonZipInstall">Install from zip</gui-button>
       </gui-button-bar>

@@ -614,14 +614,26 @@
     //
     var view = scheme.find(this, 'InstalledPackages');
 
+    var sm = OSjs.Core.getSettingsManager();
+    var pool = sm.instance('Packages', {hidden: []});
+    var list, hidden;
+
+    function updateEnabledStates() {
+      list = pacman.getPackages(false);
+      hidden = pool.get('hidden');
+    }
+
+
     function renderInstalled() {
+      updateEnabledStates();
+
       var rows = [];
-      var list = pacman.getPackages();
       Object.keys(list).forEach(function(k, idx) {
         rows.push({
           index: idx,
           value: k,
           columns: [
+            {label: ''},
             {label: k},
             {label: list[k].scope},
             {label: list[k].name}
@@ -631,7 +643,34 @@
 
       view.clear();
       view.add(rows);
+
+      view.$element.querySelectorAll('gui-list-view-body > gui-list-view-row').forEach(function(row) {
+        var col = row.children[0];
+        var name = row.getAttribute('data-value');
+        var enabled = hidden.indexOf(name) >= 0;
+
+        scheme.create(self, 'gui-checkbox', {value: enabled}, col).on('change', function(ev) {
+          var idx = hidden.indexOf(name);
+
+          if ( ev.detail ) {
+            if ( idx < 0 ) {
+              hidden.push(name);
+            }
+          } else {
+            if ( idx >= 0 ) {
+              hidden.splice(idx, 1);
+            }
+          }
+        });
+      });
     }
+
+    scheme.find(this, 'ButtonSaveHidden').on('click', function() {
+      self._toggleLoading(true);
+      pool.set('hidden', hidden, function() {
+        self._toggleLoading(false);
+      });
+    });
 
     scheme.find(this, 'ButtonRegen').on('click', function() {
       self._toggleLoading(true);
