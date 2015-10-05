@@ -54,15 +54,15 @@
     };
 
     function _bindDefaults() {
-      if ( type === 'range' || type === 'slider' ) {
+      if ( ['range', 'slider'].indexOf(type) >= 0 ) {
         attribs.min = el.getAttribute('data-min');
         attribs.max = el.getAttribute('data-max');
         attribs.step = el.getAttribute('data-step');
-      } else if ( type === 'radio' || type === 'checkbox' ) {
+      } else if ( ['radio', 'checkbox'].indexOf(type) >= 0 ) {
         if ( el.getAttribute('data-value') === 'true' ) {
           attribs.checked = 'checked';
         }
-      } else if ( type === 'text' || type === 'password' || type === 'textarea' ) {
+      } else if ( ['text', 'password', 'textarea'].indexOf(type) >= 0 ) {
         attribs.value = value || '';
       }
 
