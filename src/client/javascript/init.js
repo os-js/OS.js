@@ -77,13 +77,11 @@
         return evt;
       }
 
-      CustomEvent.prototype = window.Event.prototype;
-      window.CustomEvent = CustomEvent;
 
-        /*
-      if ( window.navigator.userAgent.match(/MSIE|Edge/) ) {
+      if ( window.navigator.userAgent.match(/MSIE|Edge|Trident/) ) {
+        CustomEvent.prototype = window.Event.prototype;
+        window.CustomEvent = CustomEvent;
       }
-      */
     })();
   })();
 
