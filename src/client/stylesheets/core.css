@@ -36,12 +36,13 @@ html, body {
 body {
   margin : 0;
   padding : 0;
-  background-color : #fff;
+  background-color : #572a79;
 }
 body, input, button, textarea, label, select {
   font-size : 12px;
   font-family : Sans-serif, Arial;
 }
+
 /**
  * ===========================================================================
  *                              LOGIN SCREEN
@@ -105,28 +106,19 @@ body, input, button, textarea, label, select {
 
 #LoadingScreen {
   position : absolute;
-  width : 120px;
-  height : 180px;
-  padding : 40px;
+  width : 320px;
+  height : 434px;
   top : 50%;
   left : 50%;
-  margin-top : -130px;
-  margin-left : -100px;
-  background : #fff;
+  margin-top : -217px;
+  margin-left : -160px;
   z-index : 999;
-  -webkit-border-radius : 10px;
-  -moz-border-radius : 10px;
-  -ms-border-radius : 10px;
-  -o-border-radius : 10px;
-  border-radius : 10px;
 }
   #LoadingScreen span {
-    font-size : 22px;
-    padding : 0;
-    margin : 20px;
+    color : #fff;
+    font-family : sans-serif, Arial;
+    font-size : 30px;
     display : block;
-    color : #000;
-    text-align : center;
   }
 
 /**

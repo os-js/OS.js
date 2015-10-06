@@ -340,6 +340,8 @@
   _Handler.prototype.onLogin = function(userData, userSettings, callback) {
     callback = callback || function() {};
 
+    document.getElementById('LoadingScreen').style.display = 'block';
+
     var config = OSjs.Core.getConfig();
     var found = Utils.getUserLocale();
     var curLocale = found || config.Locale;

@@ -252,6 +252,8 @@
       el.innerHTML += append;
     }
 
+    document.getElementById('LoadingScreen').style.display = 'none';
+
     document.body.appendChild(el);
   }
 
