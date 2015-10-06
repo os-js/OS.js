@@ -3,7 +3,7 @@
   "connection": "http",
 
   "client" : {
-    "Version" : "2.0-alpha65"
+    "Version" : "2.0-alpha66"
   },
 
   "server" : {

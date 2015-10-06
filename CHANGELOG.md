@@ -1,3 +1,42 @@
+# 2.0.0-alpha66
+
+* Core: Now showing application splash screens by default
+* Core: Better Event unbinding
+* Core: Login screen now implemented by default and handlers toggles it
+* GUI: Updated range inputs
+* GUI: Updated login screen
+* GUI: Radio/Checkbox updates
+* GUI: Bugfix for UIElement::blur()
+* GUI: Updated icons
+* CoreWM: Default background is now osjs purple
+* CoreWM: Split up PanelItemButtons into separate => PanelItemAppMenu
+* CoreWM: Some bugfixes and improvments in UI
+* CoreWM: Cleanups
+* VFS: Added progress dialog support to write() (#49)
+* VFS: Added onprogress() for write() read() options
+* SettingsManager: Added method for clearing a pool (#49)
+* SettingsManager: Fixes and cleanups
+* Settings: You can now hide packages (#49)
+* WindowManager: Cleanup
+* MusicPlayer: Correctly align buttons
+* Settings: Now restores last view, bugfixes
+* Build: grunt-jshint now also checks packages
+* Build: Added 'tmpdir' setting
+* server-node: Bugfixes
+* server-node: Added PAM handler module
+* server-node: Now supports custom tmpdir
+* Misc: Updated installer (#158)
+* Misc: package.json update
+* Misc: Updated splash image/logo
+* Misc: Added NW.js session support
+* Misc: Added houndci configs
+* Misc: Relative paths in index.html for dist's
+* Misc: Fixed some memory leaks (Detached DOM elements)
+* Misc: Improved some documentation
+* Misc: linting and general improvements
+* Misc: Updated README
+* Misc: Update homepage
+
 # 2.0.0-alpha65
 
 Massive cleanups and refactors. This brings us a lot closer to a Beta release!
