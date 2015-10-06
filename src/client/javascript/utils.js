@@ -1540,7 +1540,6 @@
 
     function requestJSON() {
       request = new XMLHttpRequest();
-      request.responseType = args.responseType || '';
 
       Object.keys(args.requestHeaders).forEach(function(h) {
         request.setRequestHeader(h, args.requestHeaders[h]);
@@ -1578,6 +1577,7 @@
       }
 
       request.open(args.method, args.url, true);
+      request.responseType = args.responseType || '';
 
       args.oncreated(request);
       request.send(args.body);
