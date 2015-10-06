@@ -1437,15 +1437,17 @@
       idx = clamp(idx, elements.length);
 
       var el = getNextElement(idx, elements);
-      console.debug('Window::_nextTabIndex()', '=>', idx, el.tagName, el);
+      if ( el ) {
+        console.debug('Window::_nextTabIndex()', '=>', idx, el.tagName, el);
 
-      if ( Utils.$hasClass(el, 'gui-data-view') ) {
-        new OSjs.GUI.ElementDataView(el)._call('focus');
-      } else {
-        try {
-          el.focus();
-          //elements[idx].focus();
-        } catch ( e ) {}
+        if ( Utils.$hasClass(el, 'gui-data-view') ) {
+          new OSjs.GUI.ElementDataView(el)._call('focus');
+        } else {
+          try {
+            el.focus();
+            //elements[idx].focus();
+          } catch ( e ) {}
+        }
       }
     }
 

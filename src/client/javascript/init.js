@@ -285,9 +285,9 @@
   function initEvents() {
     document.body.addEventListener('contextmenu', events.body_contextmenu, false);
     document.body.addEventListener('mousedown', events.body_mousedown, false);
-    document.addEventListener('keydown', events.keydown, false);
-    document.addEventListener('keypress', events.keypress, false);
-    document.addEventListener('keyup', events.keyup, false);
+    document.addEventListener('keydown', events.keydown, true);
+    document.addEventListener('keypress', events.keypress, true);
+    document.addEventListener('keyup', events.keyup, true);
     document.addEventListener('mousedown', events.mousedown, false);
     window.addEventListener('resize', events.resize, false);
     window.addEventListener('scroll', events.scroll, false);
@@ -443,9 +443,9 @@
 
     document.body.removeEventListener('contextmenu', events.body_contextmenu, false);
     document.body.removeEventListener('mousedown', events.body_mousedown, false);
-    document.removeEventListener('keydown', events.keydown, false);
-    document.removeEventListener('keypress', events.keypress, false);
-    document.removeEventListener('keyup', events.keyup, false);
+    document.removeEventListener('keydown', events.keydown, true);
+    document.removeEventListener('keypress', events.keypress, true);
+    document.removeEventListener('keyup', events.keyup, true);
     document.removeEventListener('mousedown', events.mousedown, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);
