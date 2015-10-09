@@ -1,6 +1,8 @@
 # How to contribute
 
-Want to help in the development in OS.js, this document will explain how to submit changes.
+Want to help in the development in OS.js?
+
+This document will explain how to submit changes.
 
 If you have questions or suggestions you can also open an [issue](https://github.com/andersevenrud/OS.js-v2/issues/new).
 
