@@ -33,9 +33,7 @@ Make sure to read the [installation documentation](https://github.com/anderseven
 
 ## How to contribute
 
-Just send me a [pull-request](https://github.com/andersevenrud/OS.js-v2/pulls) on Github if you have any changes you would like to see integrated.
-
-You can also use the Github [bug-tracker](https://github.com/andersevenrud/OS.js-v2/issues) to report bugs or add feature requests.
+Read the official [contribution docs](https://github.com/andersevenrud/OS.js-v2/blob/master/CONTRIBUTE.md) for more information.
 
 My contact information is located on my [Github profile](https://github.com/andersevenrud)
 
@@ -44,7 +42,6 @@ My contact information is located on my [Github profile](https://github.com/ande
 [Want to join the translation team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-translation-team)
 
 [Got questions or suggestions?](https://github.com/andersevenrud/OS.js-v2/issues/49)
-
 
 
 # Links
