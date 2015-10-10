@@ -1743,10 +1743,15 @@
             return;
           }
 
+          var src = item.src;
+          if ( window.location.protocol.match(/^file/) ) {
+            src = 'file://' + window.location.pathname.replace(/index\.html$/, '') + src;
+          }
+
           if ( item.type.match(/^style/) ) {
-            createStyle(item.src, _loaded);
+            createStyle(src, _loaded);
           } else if ( item.type.match(/script$/) ) {
-            createScript(item.src, _loaded);
+            createScript(src, _loaded);
           }
           return;
         }
