@@ -1738,7 +1738,7 @@
       function _getSrc(item) {
         var src = item.src;
         if ( window.location.protocol.match(/^file/) ) {
-          if ( src.match(/^\/[A-Z]\:\//) ) {
+          if ( src.match(/^\/?[A-Z]\:\//) ) {
             src = 'file://' + src;
           }
         }
