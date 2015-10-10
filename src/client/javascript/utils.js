@@ -1735,6 +1735,17 @@
         _next();
       }
 
+      function _getSrc(item) {
+        var src = item.src;
+        if ( window.location.protocol.match(/^file/) ) {
+          if ( src.match(/^\/[A-Z]\:\//) ) {
+            src = 'file://' + src;
+          }
+        }
+
+        return src;
+      }
+
       function _next() {
         if ( newList.length ) {
           var item = newList.shift();
@@ -1742,12 +1753,7 @@
             _loaded(true);
             return;
           }
-
-          var src = item.src;
-          if ( window.location.protocol.match(/^file/) ) {
-            src = 'file://' + window.location.pathname.replace(/index\.html$/, '') + src;
-          }
-
+          var src = _getSrc(item);
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
           } else if ( item.type.match(/script$/) ) {
