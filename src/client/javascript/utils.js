@@ -1735,17 +1735,6 @@
         _next();
       }
 
-      function _getSrc(item) {
-        var src = item.src;
-        if ( window.location.protocol.match(/^file/) ) {
-          if ( src.match(/^\/?[A-Z]\:\//) ) {
-            src = 'file://' + src;
-          }
-        }
-
-        return src;
-      }
-
       function _next() {
         if ( newList.length ) {
           var item = newList.shift();
@@ -1753,7 +1742,7 @@
             _loaded(true);
             return;
           }
-          var src = _getSrc(item);
+          var src = item.src;
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
           } else if ( item.type.match(/script$/) ) {

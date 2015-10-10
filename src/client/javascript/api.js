@@ -643,6 +643,7 @@
       }
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
+      /*
       if ( window.location.href.match(/^file\:\/\//) ) {
         data.preload.forEach(function(file, idx) {
           if ( file.src && file.src.match(/^\//) ) {
@@ -650,6 +651,7 @@
           }
         });
       }
+      */
 
       OSjs.Utils.preload(data.preload, function(total, errors, failed) {
         destroyLoading(n);
