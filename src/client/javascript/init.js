@@ -140,10 +140,11 @@
 
       // WindowManager and Window must always recieve events
       if ( wm ) {
-        if ( win ) {
-          win._onKeyEvent(ev, 'keydown');
-        }
         wm.onKeyDown(ev, win);
+
+        if ( win ) {
+          return win._onKeyEvent(ev, 'keydown');
+        }
       }
 
       return true;

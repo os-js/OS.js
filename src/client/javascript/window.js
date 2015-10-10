@@ -1527,6 +1527,8 @@
     if ( type === 'keydown' && ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex(ev);
     }
+
+    return true;
   };
 
   /**
