@@ -183,7 +183,7 @@
       if ( !url.match(/^\//) ) {
         url = '/' + url;
       }
-      finished(OSjs.API.getDefaultSchemes(url));
+      finished(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
       return;
     }
 
