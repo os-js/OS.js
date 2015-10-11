@@ -616,14 +616,14 @@
   /**
    * Destroy the Window
    *
-   * @return  void
+   * @return  boolean
    *
    * @method  Window::destroy()
    */
   Window.prototype.destroy = function() {
     var self = this;
 
-    if ( this._destroyed ) { return; }
+    if ( this._destroyed ) { return false; }
     this._destroyed = true;
 
     var wm = OSjs.Core.getWindowManager();
@@ -700,6 +700,8 @@
     this._args = {};
 
     console.groupEnd();
+
+    return true;
   };
 
   //
