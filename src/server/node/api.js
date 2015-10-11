@@ -47,7 +47,7 @@
       try {
         require(fpath)[ameth](aargs, function(error, result) {
           callback(error, result);
-        });
+        }, request, response);
       } catch ( e ) {
         callback("Application API error or missing: " + e.toString(), null);
       }
