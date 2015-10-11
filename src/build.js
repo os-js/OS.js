@@ -1158,7 +1158,7 @@
         if ( manifest.sources && manifest.sources.length ) {
           manifest.sources.forEach(function(s, i) {
             if ( !s.src.match(/^(ftp|https?\:)?\/\//) ) {
-              manifest.sources[i].src = ([s, s.src]).join('/');
+              manifest.sources[i].src = _path.join('packages', p, s.src);
             }
           });
         }
