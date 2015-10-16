@@ -349,6 +349,8 @@
     }
   });
 
+  console.log('SERVER IS RUNNING ON \'localhost:' + CONFIG.port + '\'');
+
   /**
    * Server instance
    */
