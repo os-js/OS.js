@@ -89,13 +89,18 @@
 
       var list = [];
       var summary = {size: 0, directories: 0, files: 0, hidden: 0};
+
+      function isHidden(iter) {
+        return (iter.filename || '').substr(0) === '.';
+      }
+
       (result || []).forEach(function(iter) {
         list.push(oncreate(iter));
 
         summary.size += iter.size || 0;
         summary.directories += iter.type === 'dir' ? 1 : 0;
         summary.files += iter.type !== 'dir' ? 1 : 0;
-        summary.hidden += iter.filename.substr(0) === '.' ? 1 : 0;
+        summary.hidden += isHidden(iter) ? 1 : 0;
       });
 
       cb(false, list, summary);
