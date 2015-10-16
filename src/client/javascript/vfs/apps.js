@@ -52,16 +52,18 @@
 
       Object.keys(metadata).forEach(function(m) {
         var iter = metadata[m];
-        files.push(new OSjs.VFS.File({
-          filename: iter.name,
-          icon: {
-            filename: iter.icon,
-            application: m
-          },
-          type: 'application',
-          path: 'applications:///' + m,
-          mime: 'osjs/application'
-        }));
+        if ( iter.type !== 'extension' ) {
+          files.push(new OSjs.VFS.File({
+            filename: iter.name,
+            icon: {
+              filename: iter.icon,
+              application: m
+            },
+            type: 'application',
+            path: 'applications:///' + m,
+            mime: 'osjs/application'
+          }));
+        }
       });
 
       return files;
