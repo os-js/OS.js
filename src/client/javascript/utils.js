@@ -1541,10 +1541,6 @@
     function requestJSON() {
       request = new XMLHttpRequest();
 
-      Object.keys(args.requestHeaders).forEach(function(h) {
-        request.setRequestHeader(h, args.requestHeaders[h]);
-      });
-
       if ( request.upload ) {
         request.upload.addEventListener('progress', args.onprogress, false);
       } else {
@@ -1577,6 +1573,11 @@
       }
 
       request.open(args.method, args.url, true);
+
+      Object.keys(args.requestHeaders).forEach(function(h) {
+        request.setRequestHeader(h, args.requestHeaders[h]);
+      });
+
       request.responseType = args.responseType || '';
 
       args.oncreated(request);
@@ -1590,6 +1591,9 @@
 
     if ( args.json && (typeof args.body !== 'string') && !(args.body instanceof FormData) ) {
       args.body = JSON.stringify(args.body);
+      if ( typeof args.requestHeaders['Content-Type'] === 'undefined' ) {
+        args.requestHeaders['Content-Type'] = 'application/json';
+      }
     }
 
     console.debug('Utils::ajax()', args);
