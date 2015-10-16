@@ -200,7 +200,7 @@
       win._toggleLoading(false);
 
       if ( error ) {
-        API.error(this.__label,
+        API.error(self.__label,
                   API._('ERR_FILE_APP_SAVE'),
                   API._('ERR_FILE_APP_SAVE_ALT_FMT',
                   file.path));
