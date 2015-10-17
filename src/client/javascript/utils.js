@@ -1357,25 +1357,45 @@
       }, collection);
     }
 
+    var timeout;
+    var wasClicked;
+    var wasContextMenu;
+
     function bindTouchClick(ev, el, param, callback, collection) {
-      _bindTouch(el, param, null, null, function(ev, pos, wasMoved) {
-        if ( !wasMoved ) {
-          ev.stopPropagation();
-          callback(ev, pos, true);
+      _bindTouch(el, param, function(ev) {
+        ev.stopPropagation();
+
+        wasClicked = false;
+        wasContextMenu = false;
+      }, null, function(ev, pos, wasMoved) {
+        timeout = clearTimeout(timeout);
+
+        if ( !wasContextMenu ) {
+          if ( wasClicked = !wasMoved ) {
+            ev.stopPropagation();
+            callback(ev, pos, true);
+          }
+
         }
       }, collection);
     }
 
     function bindTouchContextMenu(ev, el, param, callback, collection) {
-      var timeout;
-
       _bindTouch(el, param, function(ev, pos) {
+        wasClicked = false;
+        wasContextMenu = false;
+
         timeout = setTimeout(function() {
-          ev.preventDefault();
-          callback(ev, pos, true);
+          if ( !wasClicked ) {
+            wasContextMenu = true;
+
+            ev.preventDefault();
+            callback(ev, pos, true);
+          }
         }, CONTEXTMENU_THRESHOLD);
       }, null, function(ev, pos, wasMoved) {
         timeout = clearTimeout(timeout);
+        wasClicked = false;
       }, collection);
     }
 
