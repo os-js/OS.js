@@ -1014,6 +1014,9 @@
     function buildFonts() {
       grunt.log.subhead('Fonts');
 
+      copyFile(_path.join(PATHS.themes, 'fonts'),
+               _path.join(PATHS.dist, 'themes', 'fonts'));
+
       var styles = [];
       themes.fonts.forEach(function(name) {
         var path = _path.join(PATHS.fonts, name, 'style.css');
@@ -1063,9 +1066,6 @@
 
       copyFile(_path.join(PATHS.themes, 'icons'),
                _path.join(PATHS.dist, 'themes', 'icons'));
-
-      copyFile(_path.join(PATHS.themes, 'fonts'),
-               _path.join(PATHS.dist, 'themes', 'fonts'));
 
       copyFile(_path.join(PATHS.themes, 'sounds'),
                _path.join(PATHS.dist, 'themes', 'sounds'));
