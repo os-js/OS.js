@@ -104,7 +104,7 @@
         cb();
       }, function(error) {
         console.warn(error);
-        cb();
+        cb(error);
       });
     } catch ( e ) {
       console.warn(e, e.stack);
@@ -1049,7 +1049,12 @@
         var src  = _path.join(PATHS.styles, s.name, 'style.less');
         var dest = _path.join(PATHS.out_client_styles, s.name + '.css');
 
-        lessFile(src, dest, function() {
+        lessFile(src, dest, function(error) {
+          if ( error ) {
+            grunt.fail.warn(error);
+            return;
+          }
+
           current++;
           _next();
         });
