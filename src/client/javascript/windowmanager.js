@@ -471,6 +471,21 @@
   };
 
   /**
+   * Setup features
+   *
+   * THIS IS IMPLEMENTED IN COREWM
+   *
+   * @param   Function  cb        Callback
+   *
+   * @return  void
+   *
+   * @method  WindowManager::setup()
+   */
+  WindowManager.prototype.setup = function(cb) {
+    // Implement in your WM
+  };
+
+  /**
    * Get a Window by name
    *
    * @param   String      name        Window name

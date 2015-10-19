@@ -104,6 +104,7 @@
     this.switcher       = null;
     this.iconView       = null;
     this.$themeLink     = null;
+    this.$themeScript   = null;
     this.$animationLink = null;
 
     this._$notifications    = document.createElement('corewm-notifications');
@@ -113,14 +114,17 @@
   CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.init = function() {
-    var self = this;
     var link = (OSjs.Core.getConfig().RootURI || '/') + 'blank.css';
     this.setThemeLink(Utils.checkdir(link));
     this.setAnimationLink(Utils.checkdir(link));
 
     WindowManager.prototype.init.apply(this, arguments);
+  };
 
-    function inited() {
+  CoreWM.prototype.setup = function(cb) {
+    var self = this;
+
+    function initNotifications() {
       var user = OSjs.Core.getHandler().getUserData();
 
       function displayMenu(ev) {
@@ -148,15 +152,27 @@
       });
     }
 
-    this.initDesktop();
-    this.initWM(function() {
-      this.initPanels();
-      this.initIconView();
+    function initScheme(icb) {
+      var schemeUrl = API.getApplicationResource('CoreWM', 'scheme.html');
+      self.scheme = GUI.createScheme(schemeUrl);
+      self.scheme.load(function(err) {
+        icb();
+      });
+    }
 
-      inited();
+    this.applySettings(this._settings.get());
+
+    initScheme(function() {
+      self.initSwitcher();
+      self.initDesktop();
+      self.initPanels();
+      self.initIconView();
+
+      initNotifications();
+
+      cb();
     });
 
-    this.switcher = new OSjs.Applications.CoreWM.WindowSwitcher();
   };
 
   CoreWM.prototype.destroy = function(kill, force) {
@@ -181,6 +197,7 @@
     // Clear DOM
     this._$notifications = Utils.$remove(this._$notifications);
     this.$themeLink = Utils.$remove(this.$themeLink);
+    this.$themeScript = Utils.$remove(this.$themeScript);
     this.$animationLink = Utils.$remove(this.$animationLink);
     this.switcher = null;
     this.iconView = null;
@@ -228,9 +245,11 @@
   // Initialization
   //
 
-  CoreWM.prototype.initWM = function(callback) {
-    callback = callback || function() {};
+  CoreWM.prototype.initSwitcher = function() {
+    this.switcher = new OSjs.Applications.CoreWM.WindowSwitcher();
+  };
 
+  CoreWM.prototype.initDesktop = function() {
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
@@ -256,27 +275,12 @@
       }
     });
 
-
-    this.applySettings(this._settings.get());
-
-    var schemeUrl = API.getApplicationResource('CoreWM', 'scheme.html');
-    this.scheme = GUI.createScheme(schemeUrl);
-    this.scheme.load(function(err) {
-      callback.call(self);
-    });
-  };
-
-  CoreWM.prototype.initDesktop = function() {
-    var self = this;
-
     document.addEventListener('contextmenu', function(ev) {
-      if ( ev.target === document.body ) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        self.openDesktopMenu(ev);
-        return false;
-      }
-      return true;
+      return self.onContextMenu(ev);
+    }, true);
+
+    document.addEventListener('click', function(ev) {
+      return self.onGlobalClick(ev);
     }, true);
   };
 
@@ -490,6 +494,21 @@
         self.iconView.addShortcut(file, self);
       }
     });
+  };
+
+  CoreWM.prototype.onGlobalClick = function(ev) {
+    this.themeAction('event', [ev]);
+    return true;
+  };
+
+  CoreWM.prototype.onContextMenu = function(ev) {
+    if ( ev.target === document.body ) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      this.openDesktopMenu(ev);
+      return false;
+    }
+    return true;
   };
 
   CoreWM.prototype.onKeyUp = function(ev, win) {
@@ -740,21 +759,50 @@
     if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
       return false;
     }
+
     console.group('OSjs::Applications::CoreWM::applySettings');
 
-    // Styles
-    var bg = this.getSetting('backgroundColor');
-    if ( bg ) {
-      document.body.style.backgroundColor = bg;
-    }
-    var ff = this.getSetting('fontFamily');
-    if ( ff ) {
-      document.body.style.fontFamily = ff;
+    this.setBackground(settings);
+    this.setTheme(settings);
+    this.setIconView(settings);
+    this.setStyles(settings);
+
+    if ( save ) {
+      this.initPanels(true);
+      this.saveSettings(settings);
     }
 
-    // Wallpaper and Background
-    var name = this.getSetting('wallpaper');
-    var type = this.getSetting('background');
+    console.groupEnd();
+
+    return true;
+  };
+
+  CoreWM.prototype.themeAction = function(action, args) {
+    args = args || [];
+    if ( OSjs.Applications.CoreWM.CurrentTheme ) {
+      try {
+        OSjs.Applications.CoreWM.CurrentTheme[action].apply(null, args);
+      } catch ( e ) {
+        console.warn('CoreWM::themeAction()', 'exception', e);
+        console.warn(e.stack);
+      }
+    }
+  };
+
+  //
+  // Theme Setters
+  //
+
+  CoreWM.prototype.setBackground = function(settings) {
+    if ( settings.backgroundColor ) {
+      document.body.style.backgroundColor = settings.backgroundColor;
+    }
+    if ( settings.fontFamily ) {
+      document.body.style.fontFamily = settings.fontFamily;
+    }
+
+    var name = settings.wallpaper;
+    var type = settings.background;
 
     var className = 'color';
     var back      = 'none';
@@ -786,32 +834,36 @@
     } else {
       document.body.style.backgroundImage = back;
     }
+  };
 
-    // Theme
-    var theme = this.getSetting('theme');
-    console.log('theme', theme);
+  CoreWM.prototype.setTheme = function(settings) {
+    console.log('theme', settings.theme);
     if ( this.$themeLink ) {
-      if ( theme ) {
-        this.setThemeLink(API.getThemeCSS(theme));
+      if ( settings.theme ) {
+        this.setThemeLink(API.getThemeCSS(settings.theme));
       } else {
         console.warn('NO THEME WAS SELECTED!');
       }
     }
 
-    // Animations
-    var anim  = this.getSetting('animations');
-    console.log('animations', anim);
+    if ( this.$themeLink ) {
+      this.themeAction('destroy');
+    }
+
+    this.setThemeScript(API.getThemeResource('theme.js'));
+
+    console.log('animations', settings.animations);
     if ( this.$animationLink ) {
-      if ( anim ) {
+      if ( settings.animations ) {
         this.setAnimationLink(API.getApplicationResource(this, 'animations.css'));
       } else {
         this.setAnimationLink(API.getThemeCSS(null));
       }
     }
+  };
 
-    console.groupEnd();
-
-    if ( this.getSetting('enableIconView') ) {
+  CoreWM.prototype.setIconView = function(settings) {
+    if ( settings.enableIconView ) {
       this.initIconView();
     } else {
       if ( this.iconView ) {
@@ -819,12 +871,9 @@
         this.iconView = null;
       }
     }
+  };
 
-    if ( save ) {
-      this.initPanels(true);
-      this.saveSettings(settings);
-    }
-
+  CoreWM.prototype.setStyles = function(settings) {
     var styles = {};
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
@@ -856,30 +905,34 @@
     if ( Object.keys(styles).length ) {
       this.createStylesheet(styles);
     }
-
-    return true;
   };
 
   CoreWM.prototype.setAnimationLink = function(src) {
     if ( this.$animationLink ) {
-      if ( this.$animationLink.parentNode ) {
-        this.$animationLink.parentNode.removeChild(this.$animationLink);
-      }
-      this.$animationLink = null;
+      this.$animationLink = Utils.$remove(this.$animationLink);
     }
     this.$animationLink = Utils.$createCSS(src);
   };
 
   CoreWM.prototype.setThemeLink = function(src) {
     if ( this.$themeLink ) {
-      if ( this.$themeLink.parentNode ) {
-        this.$themeLink.parentNode.removeChild(this.$themeLink);
-      }
-      this.$themeLink = null;
+      this.$themeLink = Utils.$remove(this.$themeLink);
     }
     this.$themeLink = Utils.$createCSS(src);
   };
 
+  CoreWM.prototype.setThemeScript = function(src) {
+    if ( this.$themeScript ) {
+      this.$themeScript = Utils.$remove(this.$themeScript);
+    }
+
+    var self = this;
+    if ( src ) {
+      this.$themeScript = Utils.$createJS(src, null, function() {
+        self.themeAction('init');
+      });
+    }
+  };
 
   //
   // Getters / Setters
@@ -994,5 +1047,6 @@
   OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Class             = CoreWM;
   OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.CurrentTheme      = OSjs.Applications.CoreWM.CurrentTheme || null;
 
 })(OSjs.Core.WindowManager, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

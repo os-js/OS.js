@@ -350,7 +350,7 @@
     }
 
     OSjs.API.launch(config.WM.exec, (config.WM.args || {}), function(app) {
-      callback();
+      app.setup(callback);
     }, function(error, name, args, exception) {
       onError(OSjs.API._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
     });
