@@ -16,6 +16,7 @@
   "splash":     false,
   "preload":    [
     {"src": "menu.js", "type": "javascript"},
+    {"src": "settings.js", "type": "javascript"},
     {"src": "iconview.js", "type": "javascript"},
     {"src": "windowswitcher.js", "type": "javascript"},
     {"src": "panel.js", "type": "javascript"},

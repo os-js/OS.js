@@ -34,62 +34,6 @@
   var PADDING_PANEL_AUTOHIDE = 10; // FIXME: Replace with a constant ?!
 
   /////////////////////////////////////////////////////////////////////////////
-  // SETTINGS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function _DefaultSettings(defaults) {
-    var compability = Utils.getCompability();
-
-    var cfg = {
-      animations          : compability.css.animation,
-      fullscreen          : false,
-      desktopMargin       : 5,
-      wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
-      backgroundColor     : '#572a79',
-      fontFamily          : 'Karla',
-      theme               : 'default',
-      icons               : 'default',
-      sounds              : 'default',
-      background          : 'image-fill',
-      windowCornerSnap    : 0,
-      windowSnap          : 0,
-      useTouchMenu        : compability.touch,
-      enableIconView      : false,
-      enableSwitcher      : true,
-      enableHotkeys       : true,
-      enableSounds        : true,
-      invertIconViewColor : false,
-      moveOnResize        : true,       // Move windows into viewport on resize
-      desktopIcons        : [],
-      panels              : [
-        {
-          options: {
-            position: 'top',
-            ontop:    true,
-            autohide: false,
-            background: '#101010',
-            foreground: '#ffffff',
-            opacity: 85
-          },
-          items:    [
-            {name: 'AppMenu', settings: {}},
-            {name: 'Buttons', settings: {}},
-            {name: 'WindowList', settings: {}},
-            {name: 'NotificationArea', settings: {}},
-            {name: 'Clock', settings: {}}
-          ]
-        }
-      ]
-    };
-
-    if ( defaults ) {
-      cfg = Utils.mergeObject(cfg, defaults);
-    }
-
-    return cfg;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
@@ -97,7 +41,9 @@
    * Application
    */
   var CoreWM = function(args, metadata) {
-    WindowManager.apply(this, ['CoreWM', this, args, metadata, _DefaultSettings(args.defaults || {})]);
+    var ds = OSjs.Applications.CoreWM.DefaultSettings;
+
+    WindowManager.apply(this, ['CoreWM', this, args, metadata, ds(args.defaults || {})]);
 
     this.scheme         = null;
     this.panels         = [];
@@ -191,8 +137,9 @@
     }
 
     // Reset
+    var ds = OSjs.Applications.CoreWM.DefaultSettings;
     this.destroyPanels();
-    this.applySettings(_DefaultSettings(this._defaults), true);
+    this.applySettings(ds(this._defaults), true);
 
     // Clear DOM
     this._$notifications = Utils.$remove(this._$notifications);
@@ -993,13 +940,15 @@
   CoreWM.prototype.getSetting = function(k) {
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
     if ( typeof val === 'undefined' || val === null ) {
-      return _DefaultSettings(this._defaults)[k];
+      var ds = OSjs.Applications.CoreWM.DefaultSettings;
+      return ds(this._defaults)[k];
     }
     return val;
   };
 
   CoreWM.prototype.getDefaultSetting = function(k) {
-    var settings = _DefaultSettings(this._defaults);
+    var ds = OSjs.Applications.CoreWM.DefaultSettings;
+    var settings = ds(this._defaults);
     if ( typeof k !== 'undefined' ) {
       return settings[k];
     }
