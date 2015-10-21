@@ -55,7 +55,7 @@
     args = Utils.argumentDefaults(args, {
       file:       null,
       type:       'open',
-      path:       OSjs.API.getDefaultPath('/'),
+      path:       OSjs.API.getDefaultPath(),
       filename:   '',
       filetypes:  [],
       extension:  '',
@@ -121,7 +121,7 @@
     filename.set('value', this.args.filename || '');
 
     home.on('click', function() {
-      var dpath = API.getDefaultPath('/');
+      var dpath = API.getDefaultPath();
       self.changePath(dpath);
     });
 

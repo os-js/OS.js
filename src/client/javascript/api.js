@@ -1002,14 +1002,17 @@
   /**
    * Get default configured path
    *
-   * @param   String    fallback      Fallback path on error (default= "/")
+   * @param   String    fallback      Fallback path on error (default= "osjs:///")
    * @return  String
    *
    * @api     OSjs.API.getDefaultPath()
    */
   function doGetDefaultPath(fallback) {
     var config = OSjs.Core.getConfig();
-    return config.Home || fallback || '/';
+    if ( fallback && fallback.match(/^\//) ) {
+      fallback = null;
+    }
+    return config.Home || fallback || 'osjs:///';
   }
 
   /////////////////////////////////////////////////////////////////////////////

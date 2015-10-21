@@ -288,7 +288,7 @@
 
         if ( method === 'chdir' ) {
           var t = new GUI.ElementDataView(target);
-          var dir = args.path || OSjs.API.getDefaultPath('/');
+          var dir = args.path || OSjs.API.getDefaultPath();
 
           readdir(el, dir, function(error, result, summary) {
             if ( !error ) {

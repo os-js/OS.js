@@ -288,7 +288,7 @@
         if ( m ) {
           if ( args.type === 'unmount' ) {
             if ( this.currentPath.match(m.match) ) {
-              var path = API.getDefaultPath('/');
+              var path = API.getDefaultPath();
               this.changePath(path);
             }
           }
@@ -492,7 +492,7 @@
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
-    var path = this._getArgument('path') || API.getDefaultPath('/');
+    var path = this._getArgument('path') || API.getDefaultPath();
 
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
