@@ -86,6 +86,8 @@ $ bin\create-windows-symlinks
 $ grunt --force
 ```
 
+[Official video instruction on YouTube](https://www.youtube.com/watch?v=Cj3OdxTdGGc)
+
 ## Containers and Virtual Machines
 
 ### Vagrant
