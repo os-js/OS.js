@@ -43,8 +43,9 @@
   }
 
   function getRealPath(path, config, request) {
-    var fullPath = _path.join(config.vfs.public, path);
+    var fullPath = null;
     var protocol = '';
+
     if ( path.match(/^osjs\:\/\//) ) {
       path = path.replace(/^osjs\:\/\//, '');
       fullPath = _path.join(config.distdir, path);
@@ -67,6 +68,10 @@
           fullPath = _path.join(config.vfs.mounts[tmp], path);
         }
       }
+    }
+
+    if ( !fullPath ) {
+      throw new Error('Invalid mountpoint');
     }
 
     return {root: fullPath, path: path, protocol: protocol};

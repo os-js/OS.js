@@ -31,6 +31,10 @@
         "ClientKey": ""
       },
       "Mountpoints": {
+        "shared": {
+          "description": "Shared",
+          "icon": "places/folder-publicshare.png"
+        }
       }
     },
 

@@ -38,8 +38,9 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var PublicStorage = {};
-  PublicStorage.scandir = function(item, callback, options) {
+  var _NullModule = {};
+
+  _NullModule.scandir = function(item, callback, options) {
     OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
       var list = [];
       if ( result ) {
@@ -52,7 +53,7 @@
     });
   };
 
-  PublicStorage.write = function(item, data, callback, options) {
+  _NullModule.write = function(item, data, callback, options) {
     options = options || {};
     options.onprogress = options.onprogress || function() {};
 
@@ -75,7 +76,7 @@
     });
   };
 
-  PublicStorage.read = function(item, callback, options) {
+  _NullModule.read = function(item, callback, options) {
     options = options || {};
     options.onprogress = options.onprogress || function() {};
 
@@ -109,46 +110,46 @@
     });
   };
 
-  PublicStorage.copy = function(src, dest, callback) {
+  _NullModule.copy = function(src, dest, callback) {
     OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
   };
 
-  PublicStorage.move = function(src, dest, callback) {
+  _NullModule.move = function(src, dest, callback) {
     OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
   };
 
-  PublicStorage.unlink = function(item, callback) {
+  _NullModule.unlink = function(item, callback) {
     OSjs.VFS.internalCall('delete', [item.path], callback);
   };
 
-  PublicStorage.mkdir = function(item, callback) {
+  _NullModule.mkdir = function(item, callback) {
     OSjs.VFS.internalCall('mkdir', [item.path], callback);
   };
 
-  PublicStorage.exists = function(item, callback) {
+  _NullModule.exists = function(item, callback) {
     OSjs.VFS.internalCall('exists', [item.path], callback);
   };
 
-  PublicStorage.fileinfo = function(item, callback) {
+  _NullModule.fileinfo = function(item, callback) {
     OSjs.VFS.internalCall('fileinfo', [item.path], callback);
   };
 
-  PublicStorage.url = function(item, callback) {
+  _NullModule.url = function(item, callback) {
     var path    = typeof item === 'string' ? item : item.path;
     var config  = OSjs.Core.getConfig();
     var fsuri   = config.FSURI;
     callback(false, path ? (fsuri + path) : fsuri);
   };
 
-  PublicStorage.trash = function(item, callback) {
+  _NullModule.trash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  PublicStorage.untrash = function(item, callback) {
+  _NullModule.untrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  PublicStorage.emptyTrash = function(item, callback) {
+  _NullModule.emptyTrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
@@ -160,30 +161,24 @@
     args = args || [];
     callback = callback || {};
 
-    if ( !PublicStorage[name] ) {
-      throw new Error('Invalid PublicStorage API call name');
+    if ( !_NullModule[name] ) {
+      throw new Error('Invalid _NullModule API call name');
     }
 
     var fargs = args;
     fargs.push(callback);
     fargs.push(options);
-    PublicStorage[name].apply(PublicStorage, fargs);
+    _NullModule[name].apply(_NullModule, fargs);
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Modules.Public = OSjs.VFS.Modules.Public || {
-    readOnly: false,
-    description: 'Shared',
-    root: '/',
-    icon: 'places/folder-publicshare.png',
-    visible: true,
-    internal: true,
-    match: /^\//,
+  OSjs.VFS._NullModule = {
     unmount: function(cb) {
-      OSjs.VFS._NullModule.unmount(cb);
+      cb = cb || function() {};
+      cb(API._('ERR_VFS_UNAVAILABLE'), false);
     },
     mounted: function() {
       return true;

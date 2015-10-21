@@ -66,7 +66,7 @@
     } else if ( restricted.indexOf(name) !== -1 ) {
       return callback(API._('ERR_VFS_UNAVAILABLE'));
     }
-    OSjs.VFS.Modules.Public.request.apply(null, arguments);
+    OSjs.VFS._NullModule.request.apply(null, arguments);
   }
 
   /////////////////////////////////////////////////////////////////////////////

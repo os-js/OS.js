@@ -3,9 +3,8 @@
     "tmpdir": "/tmp",
     "vfs": {
       "homes":  "%DROOT%/vfs/home",
-      "tmp":    "%DROOT%/vfs/tmp",
-      "public": "%DROOT%/vfs/public",
       "mounts": {
+        "shared": "%DROOT%/vfs/public"
       }
     },
     "handler" : "%HANDLER%",

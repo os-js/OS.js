@@ -386,8 +386,7 @@ function getRealPath(&$scandir) {
         throw new Exception("No such mountpoint");
       }
     } else {
-      $root = sprintf("%s/%s", $settings['vfs']['public'], preg_replace("/^\//", "", $dirname));
-      if ( strstr($root, $settings['vfs']['public']) === false ) throw new Exception("Access denied in directory '{$root}'");
+      throw new Exception('Invalid mountpoint');
     }
   }
 

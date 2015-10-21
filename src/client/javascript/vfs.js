@@ -68,7 +68,6 @@
    *
    *  This a list of modules and their paths
    *
-   *     Public       /                   OS.js Public Storage
    *     User         home:///            OS.js User Storage
    *     OS.js        osjs:///            OS.js Dist (Read-only)
    *     GoogleDrive  google-drive:///    Google Drive Storage
@@ -80,7 +79,7 @@
   OSjs.VFS          = OSjs.VFS          || {};
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
-  var DefaultModule = 'Public';
+  var DefaultModule = 'User';
   var MountsRegistered = false;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -628,7 +627,7 @@
           },
           request: function() {
             // This module uses the same API as public
-            OSjs.VFS.Modules.Public.request.apply(null, arguments);
+            OSjs.VFS._NullModule.request.apply(null, arguments);
           }
         };
       });
@@ -1363,13 +1362,6 @@
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.VFS._NullModule = {
-    unmount: function(cb) {
-      cb = cb || function() {};
-      cb(API._('ERR_VFS_UNAVAILABLE'), false);
-    }
-  };
 
   OSjs.VFS.internalCall          = internalCall;
   OSjs.VFS.internalUpload        = internalUpload;

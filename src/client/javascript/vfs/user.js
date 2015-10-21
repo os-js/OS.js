@@ -52,7 +52,7 @@
     },
     request: function() {
       // This module uses the same API as public
-      OSjs.VFS.Modules.Public.request.apply(null, arguments);
+      OSjs.VFS._NullModule.request.apply(null, arguments);
     }
   };
 
