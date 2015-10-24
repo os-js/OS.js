@@ -501,7 +501,7 @@
     }
   };
 
-  CoreWM.prototype.saveSettings = function(settings) {
+  CoreWM.prototype.saveSettings = function(settings, save) {
     save = save || true;
 
     if ( settings ) {
