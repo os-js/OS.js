@@ -508,9 +508,9 @@
       if ( settings.language ) {
         store.Core = { Locale: settings.language };
       }
-      OSjs.Core.getSettingsManager().set('CoreWM', store);
+      OSjs.Core.getSettingsManager().set('CoreWM', null, store);
     } else {
-      OSjs.Core.getSettingsManager().set('CoreWM', this.getSettings());
+      OSjs.Core.getSettingsManager().set('CoreWM', null, this.getSettings());
     }
   };
 
