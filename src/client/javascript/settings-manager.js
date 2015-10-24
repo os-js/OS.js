@@ -98,14 +98,13 @@
    * @method  SettingsManager::set()
    */
   SettingsManager.set = function(pool, key, value, save) {
-    if ( key && typeof key !== 'string' ) {
-      throw new Error('SettingsManager::set() expects key as string');
-    }
-
     try {
       if ( key ) {
         if ( typeof this.storage[pool] === 'undefined' ) {
           this.storage[pool] = {};
+        }
+        if ( (['string', 'number']).indexOf(typeof key) < 0 ) {
+          throw new Error('SettingsManager::set() expects key as string');
         }
         this.storage[pool][key] = value;
       } else {

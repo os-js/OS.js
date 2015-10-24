@@ -90,15 +90,15 @@
    * @method  SettingsFragment::set()
    */
   SettingsFragment.prototype.set = function(key, value, save) {
-    if ( key && typeof key !== 'string' ) {
-      console.warn('SettingsFragment::set() expects key as string', key);
-      return this;
-    }
     // Key here is actually the value
     // So you can update the whole object if you want.
     if ( key === null ) {
       Utils.mergeObject(this._settings, value);
     } else {
+      if ( (['string', 'number']).indexOf(typeof key) < 0 ) {
+        console.warn('SettingsFragment::set() expects key as string', key);
+        return this;
+      }
       this._settings[key] = value;
     }
 
