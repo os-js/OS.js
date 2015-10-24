@@ -502,15 +502,17 @@
   };
 
   CoreWM.prototype.saveSettings = function(settings) {
+    save = save || true;
+
     if ( settings ) {
       var store = { };
       store[SETTING_STORAGE_NAME] = this.getSettings();
       if ( settings.language ) {
         store.Core = { Locale: settings.language };
       }
-      OSjs.Core.getSettingsManager().set('CoreWM', null, store);
+      OSjs.Core.getSettingsManager().set('CoreWM', null, store, save);
     } else {
-      OSjs.Core.getSettingsManager().set('CoreWM', null, this.getSettings());
+      OSjs.Core.getSettingsManager().set('CoreWM', null, this.getSettings(), save);
     }
   };
 
@@ -716,7 +718,7 @@
 
     if ( save ) {
       this.initPanels(true);
-      this.saveSettings(settings);
+      this.saveSettings(settings, save);
     }
 
     console.groupEnd();
