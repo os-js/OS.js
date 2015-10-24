@@ -568,6 +568,8 @@
   /**
    * Set WindowManager settings
    *
+   * OVERRIDE THIS IN YOUR WM IMPLEMENTATION
+   *
    * @param   Object      settings        JSON Settings
    * @param   boolean     force           If forced, no merging will take place
    * @param   boolean     save            Saves settings

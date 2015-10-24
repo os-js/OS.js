@@ -705,9 +705,8 @@
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save) {
-    if ( !WindowManager.prototype.applySettings.apply(this, arguments) ) {
-      return false;
-    }
+    var result = force ? settings : Utils.mergeObject(this._settings.get(), settings);
+    this._settings.set(null, result);
 
     console.group('OSjs::Applications::CoreWM::applySettings');
 
@@ -718,7 +717,7 @@
 
     if ( save ) {
       this.initPanels(true);
-      this.saveSettings(settings, save);
+      this.saveSettings(result, save);
     }
 
     console.groupEnd();
