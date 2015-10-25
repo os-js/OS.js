@@ -301,7 +301,7 @@
     this._settings = null;
     this._settingsDialog = null;
 
-    if ( settings && defaults ) {
+    if ( settings && (settings instanceof OSjs.Helpers.SettingsFragment) && defaults ) {
       this._settings = settings.mergeDefaults(defaults);
     }
   };
