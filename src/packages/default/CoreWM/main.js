@@ -256,7 +256,14 @@
               iter.settings = {};
             }
 
-            var itemSettings = new OSjs.Helpers.SettingsFragment(iter.settings, 'CoreWM');
+            var itemSettings = {};
+            try {
+              itemSettings = new OSjs.Helpers.SettingsFragment(iter.settings, 'CoreWM');
+            } catch ( ex ) {
+              console.warn('An error occured while loading PanelItem settings', e);
+              console.warn('stack', e.stack);
+            }
+
             p.addItem(new OSjs.Applications.CoreWM.PanelItems[iter.name](itemSettings));
             added = true;
           } catch ( e ) {
