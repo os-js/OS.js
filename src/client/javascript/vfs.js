@@ -623,7 +623,7 @@
             return true;
           },
           enabled: function() {
-            return iter.enabled === true;
+            return (typeof iter.enabled === 'undefined') || iter.enabled === true;
           },
           request: function() {
             // This module uses the same API as public
