@@ -340,6 +340,10 @@
   _Handler.prototype.onLogin = function(userData, userSettings, callback) {
     callback = callback || function() {};
 
+    if ( !userSettings || userSettings instanceof Array ) {
+      userSettings = {};
+    }
+
     document.getElementById('LoadingScreen').style.display = 'block';
 
     var config = OSjs.Core.getConfig();
