@@ -349,8 +349,13 @@
     this.userData = userData;
 
     // Ensure we get the user-selected locale configured from WM
-    var result = OSjs.Core.getSettingsManager().get('UserSettings');
-    var locale = result ? result.Locale || curLocale : curLocale;
+    var result = OSjs.Core.getSettingsManager().get('Core');
+    if ( !result ) {
+      try {
+        result = userSettings.Core;
+      } catch ( e )  {}
+    }
+    var locale = result ? (result.Locale || curLocale) : curLocale;
 
     API.setLocale(locale);
 

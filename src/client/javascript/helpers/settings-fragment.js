@@ -95,10 +95,6 @@
     if ( key === null ) {
       Utils.mergeObject(this._settings, value);
     } else {
-      if ( (['string', 'number']).indexOf(typeof key) < 0 ) {
-        console.warn('SettingsFragment::set() expects key as string', key);
-        return this;
-      }
       this._settings[key] = value;
     }
 

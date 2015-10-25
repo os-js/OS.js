@@ -103,9 +103,6 @@
         if ( typeof this.storage[pool] === 'undefined' ) {
           this.storage[pool] = {};
         }
-        if ( (['string', 'number']).indexOf(typeof key) < 0 ) {
-          throw new Error('SettingsManager::set() expects key as string');
-        }
         this.storage[pool][key] = value;
       } else {
         this.storage[pool] = value;
