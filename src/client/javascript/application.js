@@ -367,11 +367,7 @@
    */
   Application.prototype._setSetting = function(k, v, save, saveCallback) {
     save = (typeof save === 'undefined' || save === true);
-
-    this.__settings.set(k, v);
-    if ( save ) {
-      this.__settings.save(saveCallback);
-    }
+    this.__settings.set(k, v, save ? saveCallback : false);
   };
 
   /**

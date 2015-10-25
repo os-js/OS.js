@@ -95,7 +95,11 @@
     if ( key === null ) {
       Utils.mergeObject(this._settings, value);
     } else {
-      this._settings[key] = value;
+      if ( (['number', 'string']).indexOf(typeof key) >= 0 ) {
+        this._settings[key] = value;
+      } else {
+        console.warn('SettingsFragment::set()', 'expects key to be a valid iter, not', key);
+      }
     }
 
     if (save) {

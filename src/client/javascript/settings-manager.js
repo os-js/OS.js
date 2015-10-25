@@ -103,7 +103,11 @@
         if ( typeof this.storage[pool] === 'undefined' ) {
           this.storage[pool] = {};
         }
-        this.storage[pool][key] = value;
+        if ( (['number', 'string']).indexOf(typeof key) >= 0 ) {
+          this.storage[pool][key] = value;
+        } else {
+          console.warn('SettingsManager::set()', 'expects key to be a valid iter, not', key);
+        }
       } else {
         this.storage[pool] = value;
       }
