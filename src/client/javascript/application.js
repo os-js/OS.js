@@ -100,7 +100,7 @@
     console.debug('Application::init()', this.__name);
 
 
-    this.__settings.set(settings);
+    this.__settings.set(null, settings);
 
     if ( this.__windows.length ) {
       var wm = OSjs.Core.getWindowManager();
@@ -374,7 +374,7 @@
    */
   Application.prototype._setSetting = function(k, v, save, saveCallback) {
     save = (typeof save === 'undefined' || save === true);
-    this.__settings.set(k, v, save ? saveCallback : false);
+    this.__settings.set(k, v, save ? (saveCallback || function() {}) : false);
   };
 
   /**
