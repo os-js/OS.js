@@ -168,7 +168,7 @@
    * @method SettingsManager::instance()
    */
   SettingsManager.instance = function(pool, defaults) {
-    if ( !this.storage[pool] ) {
+    if ( !this.storage[pool] || (this.storage[pool] instanceof Array) ) {
       this.storage[pool] = {};
     }
 
