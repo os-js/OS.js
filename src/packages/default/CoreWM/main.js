@@ -699,6 +699,8 @@
   CoreWM.prototype.applySettings = function(settings, force, save) {
     console.group('OSjs::Applications::CoreWM::applySettings');
 
+    settings = force ? settings : Utils.mergeObject(this._settings.get(), settings);
+
     this.setBackground(settings);
     this.setTheme(settings);
     this.setIconView(settings);
