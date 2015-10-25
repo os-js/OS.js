@@ -260,8 +260,8 @@
             try {
               itemSettings = new OSjs.Helpers.SettingsFragment(iter.settings, 'CoreWM');
             } catch ( ex ) {
-              console.warn('An error occured while loading PanelItem settings', e);
-              console.warn('stack', e.stack);
+              console.warn('An error occured while loading PanelItem settings', ex);
+              console.warn('stack', ex.stack);
             }
 
             p.addItem(new OSjs.Applications.CoreWM.PanelItems[iter.name](itemSettings));
