@@ -64,10 +64,17 @@
     this.__inited     = false;
     this.__windows    = [];
     this.__args       = args || {};
-    this.__settings   = OSjs.Core.getSettingsManager().instance(name, settings || {});
     this.__metadata   = metadata;
     this.__mainwindow = null;
     this.__scheme     = null;
+
+    try {
+      this.__settings = OSjs.Core.getSettingsManager().instance(name, settings || {});
+    } catch ( e ) {
+      console.warn('Application::construct()', 'An error occured while loading application settings', e);
+      console.warn(e.stack);
+      this.__settings = OSjs.Core.getSettingsManager().instance(name, {});
+    }
 
     Process.apply(this, [name]);
 
