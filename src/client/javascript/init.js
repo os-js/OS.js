@@ -238,7 +238,7 @@
     var append = config.VersionAppend;
 
     var ver = config.Version || 'unknown verion';
-    var cop = 'Copyright © 2011-2014 ';
+    var cop = 'Copyright © 2011-2015 ';
     var lnk = document.createElement('a');
     lnk.href = 'mailto:andersevenrud@gmail.com';
     lnk.appendChild(document.createTextNode('Anders Evenrud'));

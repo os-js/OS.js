@@ -1,3 +1,36 @@
+# 2.0.0-alpha67
+
+* Utils: ajax() fixes for IE
+* Utils: ajax() now assumes json content-type on object data
+* Utils: Some updates to touch event handling (#112)
+* CoreWM: Themes now include support for custom javascript. Small cleanups
+* CoreMW: Split settings to its own file
+* CoreWM: Improved settings handling
+* GUI: FileView prevent error on missing filename
+* VFS: Apps module no longer returns extensions on scandir()
+* VFS: Removed / public directory. Replaced with mountpoint
+* VFS: Added 'enabled' attribute to mountpoint configs
+* API: Made sure getDefaultPath() returns osjs:/// by default
+* SettingsManager: Stricter checking on set() methods
+* SettingsManager: Warning on set() errors
+* Window: onKeyEvent() now returns boolean
+* Window: destroy() now returns boolean
+* build: Fixes for Firefox Standalone
+* build: Fixes for Standalone Scheme loading
+* build: Fixes for Package Extensions
+* build: fonts task now also copies the resources
+* build: less errors now triggers grunt fail (Fixes #163)
+* server-node: Added some parameters to Application API callback
+* server-node: Now notifies when it is running with a message
+* Locale: Updated nl_NL
+* Misc: Added "Roboto" Font
+* Misc: Added CONTRIBUTING.md file
+* Misc: Updated README
+* Misc: Updated INSTALL
+* Misc: Optimize PNG files
+* Misc: Updated some stamps
+* Misc: Started on an official Arduino build
+
 # 2.0.0-alpha66
 
 * Core: Now showing application splash screens by default
