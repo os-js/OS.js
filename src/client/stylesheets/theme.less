@@ -304,6 +304,21 @@ application-window[data-dnd-state="true"]:after {
 application-window-top {
   top : -@window_top_height;
   height : @window_top_height;
+
+  application-window-icon {
+    width: @window_top_height;
+    height: @window_top_height;
+    top: 0;
+    left: 0;
+    margin: 0;
+
+    img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -8px 0 0 -8px;
+    }
+  }
 }
 application-window-content {
   overflow : hidden;
