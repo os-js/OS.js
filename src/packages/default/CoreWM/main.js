@@ -72,6 +72,10 @@
 
     function initNotifications() {
       var user = OSjs.Core.getHandler().getUserData();
+      var icons = {
+        enter: OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'),
+        exit: OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16')
+      };
 
       function displayMenu(ev) {
         OSjs.API.createMenu([{
@@ -83,16 +87,53 @@
 
         return false;
       }
+      function toggleFullscreen() {
+        var target = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0];
+        if( target.getAttribute('src') === icons['enter'] ){
+          var docElm = document.documentElement;
+          if (docElm.requestFullscreen){
+            docElm.requestFullscreen();
+          }
+          else if (docElm.mozRequestFullScreen){
+            docElm.mozRequestFullScreen();
+          }
+          else if (docElm.webkitRequestFullScreen){
+            docElm.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+          }
+        }
+        else{
+          if (document.webkitCancelFullScreen){
+            document.webkitCancelFullScreen();
+          }
+          else if (document.mozCancelFullScreen){
+            document.mozCancelFullScreen();
+          }
+          else if (document.exitFullscreen){
+            document.exitFullscreen();
+          }
+        }
+      }
+      self.createNotificationIcon('_FullscreenNotification', {
+        onClick: toggleFullscreen,
+        onInited: function(el) {
+          if ( el ) {
+            var img = document.createElement('img');
+            img.title = img.alt = 'Enter Fullscreen';
+            img.src = icons['enter'];
+            el.appendChild(img);
+          }
+        }
+      });
       self.createNotificationIcon('_HandlerUserNotification', {
         onContextMenu: displayMenu,
         onClick: displayMenu,
         onInited: function(el) {
-          if ( el.firstChild ) {
+          if ( el ) {
             var img = document.createElement('img');
             img.title = API._('TITLE_SIGNED_IN_AS_FMT', user.username);
             img.alt = img.title;
             img.src = API.getIcon('status/avatar-default.png', '16x16');
-            el.firstChild.appendChild(img);
+            el.appendChild(img);
           }
         }
       });
