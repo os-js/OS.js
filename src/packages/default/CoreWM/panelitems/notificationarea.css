@@ -15,17 +15,12 @@ corewm-panel .PanelItemNotificationArea > div {
   position : relative;
   cursor : pointer;
 }
-corewm-panel .PanelItemNotificationArea > div > div {
-  position : absolute;
-  top : 50%;
-  left : 50%;
-  width : 16px;
-  height : 16px;
-  margin-left : -8px;
-  margin-top : -8px;
-}
 corewm-panel .PanelItemNotificationArea > div img {
-  vertical-align : middle;
+  vertical-align: middle;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 

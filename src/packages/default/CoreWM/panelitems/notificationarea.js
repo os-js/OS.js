@@ -40,7 +40,6 @@
     this.name           = name;
     this.opts           = opts;
     this.$container     = document.createElement('div');
-    this.$inner         = document.createElement('div');
     this.onCreated      = opts.onCreated     || function() {};
     this.onInited       = opts.onInited      || function() {};
     this.onDestroy      = opts.onDestroy     || function() {};
@@ -58,22 +57,20 @@
     }
 
     var self = this;
-    this.$inner.addEventListener('click', function(ev) {
+    this.$container.addEventListener('click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
       self.onClick.apply(self, arguments);
       return false;
     });
-    this.$inner.addEventListener('contextmenu', function(ev) {
+    this.$container.addEventListener('contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
       self.onContextMenu.apply(self, arguments);
       return false;
     });
-
-    this.$container.appendChild(this.$inner);
 
     this.onCreated.call(this);
   };
@@ -93,7 +90,6 @@
       }
       this.$container = null;
     }
-    this.$inner = null;
   };
 
   /**
