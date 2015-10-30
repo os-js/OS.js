@@ -1,0 +1,10 @@
+{
+  "name": "material",
+  "title": "Material Design",
+  "style": {
+    "window": {
+      "margin": 30,
+      "border": 3
+    }
+  }
+}
