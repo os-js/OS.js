@@ -63,7 +63,6 @@ gui-progress-bar{
 application-window{
   &:before {
     background: @clr-blue-700;
-    border: 1px solid @clr-blue-500;
   }
   application-window-content {
     background: #fff;
@@ -78,7 +77,10 @@ application-window{
     gui-menu-bar {
       background: @clr-blue-600;
       color: #fff;
-
+      
+      gui-menu-bar-entry{
+        padding: 6px;
+      }
       gui-menu-bar-entry:hover,
       .gui-active {
         background: @clr-blue-700;
