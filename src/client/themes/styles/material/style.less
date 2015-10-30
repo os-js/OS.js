@@ -79,13 +79,14 @@ application-window{
       color: #fff;
 
       gui-menu-bar-entry{
-        padding: 6px;
+        padding: 6px 10px;
       }
       gui-menu-bar-entry:hover,
       .gui-active {
         background: @clr-blue-700;
       }
       gui-menu {
+        min-width: 100px;
         background: @clr-blue-600;
 
         gui-menu-entry{
@@ -94,6 +95,9 @@ application-window{
           }
           > * {
             color: #fff;
+          }
+          label{
+            padding: 6px;
           }
           &[data-disabled="true"] > * {
             color: rgba(255, 255, 255, 0.5) !important;
