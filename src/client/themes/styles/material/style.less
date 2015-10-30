@@ -77,7 +77,7 @@ application-window{
     gui-menu-bar {
       background: @clr-blue-600;
       color: #fff;
-      
+
       gui-menu-bar-entry{
         padding: 6px;
       }
@@ -118,7 +118,7 @@ application-window{
       }
     }
     application-window-title {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 300;
       color: rgba(255, 255, 255, 0.9);
     }
@@ -222,6 +222,9 @@ gui-menu {
   background: @clr-blue-500;
 
   gui-menu-entry {
+    &:after{
+      color: #fff;
+    }
     > div,
     > label {
       color: #fff;
