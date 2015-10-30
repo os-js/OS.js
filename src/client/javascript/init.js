@@ -103,6 +103,26 @@
       OSjs.API.blurMenu();
     },
 
+    fullscreen: (function(){
+      var icons = {};
+      
+      return function(e){
+        if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
+          if( !icons['enter'] ){
+            icons['enter'] = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');
+          }
+          document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0].src = icons['enter'];
+          
+        }
+        else{
+          if( !icons['exit'] ){
+            icons['exit'] = OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16');
+          }
+          document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0].src = icons['exit'];
+        }
+      };
+    })(),
+
     mousedown: function(ev) {
       var wm = OSjs.Core.getWindowManager();
       var win = wm ? wm.getCurrentWindow() : null;
@@ -293,6 +313,10 @@
     document.addEventListener('mousedown', events.mousedown, false);
     window.addEventListener('resize', events.resize, false);
     window.addEventListener('scroll', events.scroll, false);
+    window.addEventListener('fullscreenchange', events.fullscreen, false);
+    window.addEventListener('mozfullscreenchange', events.fullscreen, false);
+    window.addEventListener('webkitfullscreenchange', events.fullscreen, false);
+    window.addEventListener('msfullscreenchange', events.fullscreen, false);
     window.onbeforeunload = events.beforeunload;
 
     window.onerror = function(message, url, linenumber, column, exception) {
