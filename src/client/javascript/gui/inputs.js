@@ -39,7 +39,7 @@
   function createInputOfType(el, type) {
     var group = el.getAttribute('data-group');
     var placeholder = el.getAttribute('data-placeholder');
-    var disabled = el.getAttribute('data-disabled') !== null;
+    var disabled = String(el.getAttribute('data-disabled')) === 'true';
     var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
     Utils.$empty(el);
 
