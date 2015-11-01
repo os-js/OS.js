@@ -1,0 +1,70 @@
+#!/usr/bin/lua
+
+--
+-- Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+-- All rights reserved.
+-- 
+-- Redistribution and use in source and binary forms, with or without
+-- modification, are permitted provided that the following conditions are met: 
+-- 
+-- 1. Redistributions of source code must retain the above copyright notice, this
+--    list of conditions and the following disclaimer. 
+-- 2. Redistributions in binary form must reproduce the above copyright notice,
+--    this list of conditions and the following disclaimer in the documentation
+--    and/or other materials provided with the distribution. 
+-- 
+-- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+-- ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+-- WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+-- DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+-- ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+-- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+-- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+-- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+-- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+-- SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+-- @author  Anders Evenrud <andersevenrud@gmail.com>
+-- @licence Simplified BSD License
+--
+
+local fs = require "nixio.fs"
+local osjs = require "osjs"
+local wsapi = require "wsapi"
+local cgi = require "wsapi.cgi"
+local wrequest = require "wsapi.request"
+local wresponse = require "wsapi.response"
+
+-- ----------------------------------------------------------------------------
+--                                     MAIN
+-- ----------------------------------------------------------------------------
+
+function run(wsapi_env)
+
+  local request  = wrequest.new(wsapi_env)
+  local response = wresponse.new()
+
+  if request.cookies["osjsuser"] == nil then
+    response.status = 403
+    response:write("Not Allowed")
+    return response:finish()
+  end
+
+  local path = request.GET["path"]
+  local realpath = osjs.get_real_path(request, response, path)
+
+  if realpath ~= nil then
+    if fs.stat(realpath) then
+      response:content_type(osjs.get_file_mime(realpath))
+      response:write(tostring(fs.readfile(realpath)))
+    else
+      response.status = 404
+    end
+  else
+    response.status = 500
+  end
+
+  return response:finish()
+end
+
+cgi.run(run)

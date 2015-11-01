@@ -1,0 +1,28 @@
+{
+  "handler": "arduino",
+
+  "client" : {
+    "Version" : "2.0-alpha67-arduino-yun",
+    "APIURI": "/cgi-bin/osjs-api",
+    "FSURI":  "/cgi-bin/osjs-fs?path=",
+    "VFS": {
+      "Mountpoints": {
+        "shared": {
+          "enabled": false
+        },
+        "root": {
+          "description": "Arduino Storage"
+        }
+      }
+    }
+  },
+
+  "server" : {
+    "tmpdir": "/tmp",
+    "vfs": {
+      "mounts": {
+        "root": "/"
+      }
+    }
+  }
+}

@@ -1,0 +1,148 @@
+<application-window data-id="ArduinoWindow">
+
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+
+        <gui-menu-bar-entry data-label="LBL_FILE">
+          <gui-menu data-id="SubmenuFile">
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+      </gui-menu-bar>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-basis="auto" data-fill="true">
+      <gui-tabs data-id="Tabs">
+        <gui-tab-container data-id="TabSystemLocal" data-label="System">
+          <gui-fragment data-fragment-id="TabSystem"></gui-fragment>
+        </gui-tab-container>
+
+        <gui-tab-container data-id="TabNetworkLocal" data-label="Network">
+          <gui-fragment data-fragment-id="TabNetwork"></gui-fragment>
+        </gui-tab-container>
+
+        <gui-tab-container data-id="TabWirelessLocal" data-label="Wireless">
+          <gui-fragment data-fragment-id="TabWireless"></gui-fragment>
+        </gui-tab-container>
+      </gui-tabs>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>
+
+<application-fragment data-id="TabSystem">
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>Platform</gui-label>
+      <gui-text data-id="SystemPlatform" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>Model</gui-label>
+      <gui-text data-id="SystemModel" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>Bogomips</gui-label>
+      <gui-text data-id="SystemBogomips" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>Memory</gui-label>
+      <gui-text data-id="SystemMemory" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>Uptime</gui-label>
+      <gui-text data-id="SystemUptime" data-disabled="false" />
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabNetwork">
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+
+      <gui-hbox>
+        <gui-hbox-container data-grow="1" data-expand="true" data-basis="auto">
+          <gui-select data-id="NetworkDevice" />
+        </gui-hbox-container>
+        <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+          <gui-button data-id="NetworkRefresh" data-label="..." />
+        </gui-hbox-container>
+      </gui-hbox>
+
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>RXBytes</gui-label>
+      <gui-text data-id="NetworkDeviceRXBytes" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>RXPackets</gui-label>
+      <gui-text data-id="NetworkDeviceRXPackets" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>RXErrors</gui-label>
+      <gui-text data-id="NetworkDeviceRXErrors" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>RXDropped</gui-label>
+      <gui-text data-id="NetworkDeviceRXDropped" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>Multicast</gui-label>
+      <gui-text data-id="NetworkDeviceMulticast" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>TXBytes</gui-label>
+      <gui-text data-id="NetworkDeviceTXBytes" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>TXPackets</gui-label>
+      <gui-text data-id="NetworkDeviceTXPackets" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>TXErrors</gui-label>
+      <gui-text data-id="NetworkDeviceTXErrors" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>TXDropped</gui-label>
+      <gui-text data-id="NetworkDeviceTXDropped" data-disabled="false" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-label>Collisions</gui-label>
+      <gui-text data-id="NetworkDeviceCollisions" data-disabled="false" />
+    </gui-vbox-container>
+
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabWireless">
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+
+      <gui-hbox>
+        <gui-hbox-container data-grow="1" data-expand="true" data-basis="auto">
+          <gui-select data-id="WirelessDevice" />
+        </gui-hbox-container>
+        <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+          <gui-button data-id="WirelessRefresh" data-label="..." />
+        </gui-hbox-container>
+      </gui-hbox>
+
+    </gui-vbox-container>
+
+  </gui-vbox>
+</application-fragment>

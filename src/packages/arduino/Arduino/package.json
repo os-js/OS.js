@@ -1,0 +1,13 @@
+{
+  "className":  "ApplicationArduino",
+  "name":       "Arduino",
+  "mime":       null,
+  "icon":       "categories/applications-system.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+
