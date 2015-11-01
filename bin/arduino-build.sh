@@ -53,7 +53,7 @@ mkdir -p $TMPDIR
 rm -rf dist/themes/*
 rm -rf dist/packages/*
 
-mkdir -p $OUTDIR/vfs/home/demo
+mkdir -p $OUTDIR/vfs/home
 mkdir -p $OUTDIR/vfs/public
 mkdir -p $OUTDIR/vfs/tmp
 mkdir -p $OUTDIR/dist/cgi-bin
@@ -99,7 +99,7 @@ for AD in $APPS; do
   AD=$(basename $AD)
   AN=$(echo $AD | awk '{print tolower($0)}')
   if [[ "$AD" != "." ]]; then
-    cp src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua
+    mv src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua
   fi
 done
 
@@ -168,6 +168,10 @@ rm -rf $OUTDIR/dist/packages/arduino
 rm -rf $TMPDIR
 rm $OUTDIR/dist/.htaccess
 rm $OUTDIR/dist/.gitignore
+rm $OUTDIR/dist/vendor/.gitignore
+rm $OUTDIR/dist/themes/.gitignore
+rm $OUTDIR/dist/packages/.gitignore
 rm $OUTDIR/dist/api.php
+rm $OUTDIR/dist/packages/*/*/package.json
 
 echo "\n\nDONE :-)"
