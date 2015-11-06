@@ -98,7 +98,7 @@ for AD in $APPS; do
   AD=$(basename $AD)
   AN=$(echo $AD | awk '{print tolower($0)}')
   if [[ "$AD" != "." ]]; then
-    mv src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua
+    mv src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua 2>/dev/null
   fi
 done
 
@@ -140,8 +140,8 @@ done
 
 GREPPED=$(grep -RHIi "\.png" $OUTDIR/dist/ | egrep -o '\w+\/[_A-Za-z0-9\-]+\.png')
 for g in $GREPPED; do
-  cp -L $OUTDIR/dist/themes/icons/default/16x16/$g $TMPDIR/16x16/$g
-  cp -L $OUTDIR/dist/themes/icons/default/32x32/$g $TMPDIR/32x32/$g
+  cp -L $OUTDIR/dist/themes/icons/default/16x16/$g $TMPDIR/16x16/$g 2>/dev/null
+  cp -L $OUTDIR/dist/themes/icons/default/32x32/$g $TMPDIR/32x32/$g 2>/dev/null
 done
 
 cp $OUTDIR/dist/themes/icons/default/16x16/*.png $TMPDIR/16x16/
