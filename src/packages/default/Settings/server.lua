@@ -1,8 +1,26 @@
 #!/usr/bin/lua
 
 local sys = require "luci.sys"
+local osjs = require "osjs"
 
-local function request(m, a)
+
+function setpasswd(username, password)
+  if password then
+    password = password:gsub("'", [['"'"']])
+  end
+
+  if username then
+    username = username:gsub("'", [['"'"']])
+  end
+
+  return os.execute(
+  "(echo '" .. password .. "'; sleep 1; echo '" .. password .. "') | " ..
+  "passwd '" .. username .. "' >/dev/null 2>&1"
+  )
+end
+
+
+local function request(m, a, request, response)
 
   local result = false
 
@@ -27,6 +45,9 @@ local function request(m, a)
     result = sys.wifi.getiwinfo(device)
   elseif m == "ps" then
     result = sys.process.list()
+  elseif m == "setpasswd" then
+    username = osjs.get_username(request, response)
+    result = setpasswd(username, a["password"]) == 0
   end
 
   return false, result

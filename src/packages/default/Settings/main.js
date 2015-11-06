@@ -874,9 +874,25 @@
     scheme.find(this, 'ButtonArduinoInfoRefresh').on('click', function() {
       renderDeviceInfo();
     });
-    scheme.find(this, 'ButtonArduinoAddUser').on('click', function() {
-    });
-    scheme.find(this, 'ButtonArduinoPasswordUser').on('click', function() {
+
+    var pass = scheme.find(this, 'InputArduinoPassword');
+    var passc = scheme.find(this, 'InputArduinoPasswordConfirm');
+    scheme.find(this, 'ButtonArduinoPassword').on('click', function() {
+      var pass1 = pass.get('value');
+      var pass2 = passc.get('value');
+
+      if ( !pass1 || !pass2 || (pass1 !== pass2) ) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      callAPI('setpasswd', {password: pass1}, function(err, result) {
+        err = result ? 'Password changed successfully' : (err || 'Failed to set password');
+        alert(err);
+        if ( !err ) {
+          pass.set('value', '');
+        }
+      });
     });
 
     scheme.find(this, 'ArduinoNetworkDeviceSelect').on('change', function(ev) {
