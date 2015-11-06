@@ -800,13 +800,15 @@
         }
 
         var rows = [];
-        Object.keys(result).forEach(function(key, idx) {
+        var keys = ['system', 'model', 'memtotal', 'memcached', 'membuffers', 'memfree', 'bogomips', 'uptime'];
+        result.forEach(function(val, idx) {
+          var key = keys[idx];
           rows.push({
             index: idx,
             value: key,
             columns: [
-              {label: key},
-              {label: result[key]}
+              {label: key.toString()},
+              {label: val.toString()}
             ]
           });
         });
@@ -859,8 +861,8 @@
             if ( keys[idx] !== 'unknown' ) {
               rows.push({
                 columns: [
-                  {label: keys[idx]},
-                  {label: value}
+                  {label: keys[idx].toString()},
+                  {label: value.toString()}
                 ]
               });
             }
