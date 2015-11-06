@@ -328,7 +328,7 @@ function app_request(request, response, args)
   if app then
     local method = args["method"] or nil
     local arguments = args["arguments"] or {}
-    return app.request(method, arguments)
+    return app.request(method, arguments, request, response)
   end
 
   return "No such application or missing API", false
