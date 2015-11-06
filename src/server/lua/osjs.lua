@@ -46,6 +46,7 @@ require "base64"
 --                                    CONFIG
 -- ----------------------------------------------------------------------------
 
+local DEBUGMODE = false
 local ROOTDIR = "/opt/osjs"
 local DISTDIR = "/opt/osjs/dist"
 local SETTINGS_FILE = "/opt/osjs/settings.json"
@@ -73,6 +74,10 @@ _mimes = nil
 -- ----------------------------------------------------------------------------
 
 function get_username(request, response)
+  if DEBUGMODE then
+    return "root"
+  end
+
   if request.cookies["osjsuser"] then
     return request.cookies["osjsuser"]
   end
@@ -448,6 +453,7 @@ end
 -- ----------------------------------------------------------------------------
 
 return {
+  DEBUGMODE = DEBUGMODE,
   ROOTDIR = ROOTDIR,
   DISTDIR = DISTDIR,
   SETTINGS = SETTINGS,

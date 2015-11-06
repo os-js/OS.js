@@ -51,11 +51,13 @@ function run(wsapi_env)
 
   response:content_type("application/json")
 
-  if idata["method"] ~= "login" and idata["method"] ~= "logout" then
-    if request.cookies["osjsuser"] == nil then
-      response.status = 403
-      response:write("Not Allowed")
-      return response:finish()
+  if not osjs.DEBUGMODE then
+    if idata["method"] ~= "login" and idata["method"] ~= "logout" then
+      if request.cookies["osjsuser"] == nil then
+        response.status = 403
+        response:write("Not Allowed")
+        return response:finish()
+      end
     end
   end
 
