@@ -200,7 +200,7 @@
 
   ApplicationSettingsWindow.prototype.setContainer = function(idx, save) {
     var found;
-    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
+    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages', 'TabsArduino'];
     if ( typeof idx === 'string' ) {
       idx = Math.max(0, categories.indexOf(idx));
     }
@@ -240,6 +240,7 @@
     this.initPanelTab(wm, scheme, init);
     this.initUserTab(wm, scheme, init);
     this.initPackagesTab(wm, scheme, init);
+    this.initArduinoTab(wm, scheme, init);
   };
 
   /**
@@ -761,6 +762,133 @@
         renderStore();
       }
     });
+  };
+
+  /**
+   * Arduino
+   */
+  ApplicationSettingsWindow.prototype.initArduinoTab = function(wm, scheme, init) {
+    var self = this;
+    var handler = OSjs.Core.getHandler();
+    var pacman = OSjs.Core.getPackageManager();
+
+    function callAPI(fn, args, cb) {
+      self._toggleLoading(true);
+
+      self._app._call(fn, args, function(response) {
+        self._toggleLoading(false);
+
+        response = response || {};
+        if ( response.result ) {
+          cb(false, response.result);
+        } else {
+          cb(response.error || 'No response from device');
+        }
+      }, function(err) {
+        cb('Failed to get response from device: ' + err);
+      });
+    }
+
+    function renderDeviceInfo(cb) {
+      cb = cb || function() {};
+
+      var view = scheme.find(self, 'ArduinoInfo');
+      callAPI('sysinfo', {}, function(err, result) {
+        if ( err ) {
+          alert(err);
+          return;
+        }
+
+        var rows = [];
+        Object.keys(result).forEach(function(key, idx) {
+          rows.push({
+            index: idx,
+            value: key,
+            columns: [
+              {label: key},
+              {label: result[key]}
+            ]
+          });
+        });
+
+        view.clear();
+        view.add(rows);
+
+        cb();
+      });
+    }
+
+    function renderNetworkDevices() {
+      callAPI('netdevices', {}, function(err, result) {
+        var rows = [{label: '--- SELECT NETWORK DEVICE ---', value: null}];
+
+        if ( err ) {
+          alert(err);
+        } else {
+          result.forEach(function(iter) {
+            rows.push({label: iter, value: iter});
+          });
+        }
+
+        var list = scheme.find(self, 'ArduinoNetworkDeviceSelect');
+        list.clear();
+        list.add(rows);
+      });
+    }
+
+
+    if ( !init ) {
+      renderDeviceInfo();
+      return;
+    }
+
+    function renderNetworkInfo(device) {
+      callAPI('netinfo', {}, function(err, response) {
+        var view = scheme.find(self, 'ArduinoNetworkDeviceInfo');
+        view.clear();
+
+        if ( err ) {
+          alert(err);
+          return;
+        }
+
+        if ( response[device] ) {
+          var rows = [];
+          var keys = ['rx_bytes', 'rx_packets', 'rx_errors', 'rx_dropped', 'unknown', 'unknown', 'unknown', 'multicast', 'tx_bytes', 'tx_packets', 'tx_errors', 'tx_dropped', 'unknown', 'collisions', 'unknown', 'unknown'];
+          response[device].forEach(function(value, idx) {
+            if ( keys[idx] !== 'unknown' ) {
+              rows.push({
+                columns: [
+                  {label: keys[idx]},
+                  {label: value}
+                ]
+              });
+            }
+          });
+
+          view.add(rows);
+        }
+      });
+    }
+
+    scheme.find(this, 'ButtonArduinoInfoRefresh').on('click', function() {
+      renderDeviceInfo();
+    });
+    scheme.find(this, 'ButtonArduinoAddUser').on('click', function() {
+    });
+    scheme.find(this, 'ButtonArduinoPasswordUser').on('click', function() {
+    });
+
+    scheme.find(this, 'ArduinoNetworkDeviceSelect').on('change', function(ev) {
+      if ( ev.detail ) {
+        renderNetworkInfo(ev.detail);
+      }
+    });
+
+    renderDeviceInfo(function() {
+      renderNetworkDevices();
+    });
+
   };
 
   /**

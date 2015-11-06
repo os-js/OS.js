@@ -24,6 +24,10 @@
                 <gui-list-view-column data-icon="stock://32x32/apps/system-software-install.png">Packages</gui-list-view-column>
               </gui-list-view-row>
 
+              <gui-list-view-row data-value="arduino">
+                <gui-list-view-column data-icon="stock://32x32/arduino.png">Arduino</gui-list-view-column>
+              </gui-list-view-row>
+
             </gui-list-view-body>
           </gui-list-view>
         </gui-hbox-container>
@@ -41,6 +45,7 @@
               <gui-fragment data-fragment-id="TabsPanel"></gui-fragment>
               <gui-fragment data-fragment-id="TabsUser"></gui-fragment>
               <gui-fragment data-fragment-id="TabsPackages"></gui-fragment>
+              <gui-fragment data-fragment-id="TabsArduino"></gui-fragment>
             </gui-vbox-container>
           </gui-vbox>
 
@@ -400,4 +405,82 @@
       <gui-input-modal data-id="FontName"></gui-input-modal>
     </gui-vbox-container>
   </gui-vbox>
+</application-fragment>
+
+<!-- ****************************************************************** -->
+<!--                              ARDUINO                               -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsArduino">
+  <gui-tabs data-id="TabsArduinoDevice">
+    <gui-tab-container data-id="TabArduinoInfo" data-label="Information">
+      <gui-fragment data-fragment-id="TabArduinoInfoFragment"></gui-fragment>
+    </gui-tab-container>
+    <gui-tab-container data-id="TabArduinoUsers" data-label="Users">
+      <gui-fragment data-fragment-id="TabArduinoUsersFragment"></gui-fragment>
+    </gui-tab-container>
+    <gui-tab-container data-id="TabArduinoWIFI" data-label="WIFI">
+      <gui-fragment data-fragment-id="TabArduinoWIFIFragment"></gui-fragment>
+    </gui-tab-container>
+  </gui-tabs>
+</application-fragment>
+
+<application-fragment data-id="TabArduinoInfoFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-list-view data-id="ArduinoInfo" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-basis="100px" data-grow="0" data-shrink="1">Key</gui-list-view-column>
+            <gui-list-view-column data-grow="1" data-shrink="0">Value</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-select data-id="ArduinoNetworkDeviceSelect"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-list-view data-id="ArduinoNetworkDeviceInfo" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-basis="100px" data-grow="0" data-shrink="1">Key</gui-list-view-column>
+            <gui-list-view-column data-grow="1" data-shrink="0">Value</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="ButtonArduinoInfoRefresh">Refresh</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabArduinoUsersFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-list-view data-id="ArduinoUsers" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-basis="100%" data-grow="1" data-shrink="0">Name</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="ButtonArduinoAddUser">Add User</gui-button>
+        <gui-button data-id="ButtonArduinoPasswordUser">Change Password</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabArduinoWIFIFragment">
 </application-fragment>
