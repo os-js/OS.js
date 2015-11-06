@@ -65,60 +65,60 @@ mkdir -p $OUTDIR/lib/osjs/app
 
 rm -rf src/packages/target
 mkdir -p src/packages/target
-cp -r src/packages/default/CoreWM src/packages/target/
-cp -r src/packages/default/Textpad src/packages/target/
-cp -r src/packages/default/FileManager src/packages/target/
-cp -r src/packages/default/CoreWM src/packages/target/
-cp -r src/packages/default/Preview src/packages/target/
-cp -r src/packages/default/Settings src/packages/target/
-cp -r src/packages/default/Settings src/packages/target/
+cp -v -r src/packages/default/CoreWM src/packages/target/
+cp -v -r src/packages/default/Textpad src/packages/target/
+cp -v -r src/packages/default/FileManager src/packages/target/
+cp -v -r src/packages/default/CoreWM src/packages/target/
+cp -v -r src/packages/default/Preview src/packages/target/
+cp -v -r src/packages/default/Settings src/packages/target/
+cp -v -r src/packages/default/Settings src/packages/target/
 
-cp src/packages/repositories.json src/packages/repositories.json.old
+cp -v src/packages/repositories.json src/packages/repositories.json.old
 echo "[\"target\"]" > src/packages/repositories.json
 
 rm -rf src/client/themes/styles.old
-mv src/client/themes/styles src/client/themes/styles.old
+mv -v src/client/themes/styles src/client/themes/styles.old
 mkdir src/client/themes/styles
-cp -r src/client/themes/styles.old/default src/client/themes/styles/default
+cp -v -r src/client/themes/styles.old/default src/client/themes/styles/default
 
 rm -rf src/client/themes/fonts.old
-mv src/client/themes/fonts src/client/themes/fonts.old
+mv -v src/client/themes/fonts src/client/themes/fonts.old
 mkdir src/client/themes/fonts
-cp -r src/client/themes/fonts.old/Karla src/client/themes/fonts/Karla
+cp -v -r src/client/themes/fonts.old/Karla src/client/themes/fonts/Karla
 
 grunt
 
 rm -rf src/client/themes/styles
-mv src/client/themes/styles.old src/client/themes/styles
+mv -v src/client/themes/styles.old src/client/themes/styles
 rm -rf src/client/themes/fonts
-mv src/client/themes/fonts.old src/client/themes/fonts
+mv -v src/client/themes/fonts.old src/client/themes/fonts
 
 APPS=`(cd src/packages/target; find . -maxdepth 1 -type d)`
 for AD in $APPS; do
   AD=$(basename $AD)
   AN=$(echo $AD | awk '{print tolower($0)}')
   if [[ "$AD" != "." ]]; then
-    mv src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua 2>/dev/null
+    mv -v src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua 2>/dev/null
   fi
 done
 
 rm -rf src/packages/target
-mv src/packages/repositories.json.old src/packages/repositories.json
+mv -v src/packages/repositories.json.old src/packages/repositories.json
 
 #
 # Template
 #
 
 # Copy needed files
-cp README.md $OUTDIR/
-cp AUTHORS $OUTDIR/
-cp CHANGELOG.md $OUTDIR/
-cp -r dist $OUTDIR/
-cp src/server/lua/osjs.lua $OUTDIR/lib/
-cp src/server/lua/osjs-fs $OUTDIR/dist/cgi-bin/
-cp src/server/lua/osjs-api $OUTDIR/dist/cgi-bin/
-cp src/server/node/settings.json $OUTDIR/settings.json
-cp src/mime.json $OUTDIR/mime.json
+cp -v README.md $OUTDIR/
+cp -v AUTHORS $OUTDIR/
+cp -v CHANGELOG.md $OUTDIR/
+cp -v -r dist $OUTDIR/
+cp -v src/server/lua/osjs.lua $OUTDIR/lib/
+cp -v src/server/lua/osjs-fs $OUTDIR/dist/cgi-bin/
+cp -v src/server/lua/osjs-api $OUTDIR/dist/cgi-bin/
+cp -v src/server/node/settings.json $OUTDIR/settings.json
+cp -v src/mime.json $OUTDIR/mime.json
 
 #
 # Themes
@@ -140,20 +140,20 @@ done
 
 GREPPED=$(grep -RHIi "\.png" $OUTDIR/dist/ | egrep -o '\w+\/[_A-Za-z0-9\-]+\.png')
 for g in $GREPPED; do
-  cp -L $OUTDIR/dist/themes/icons/default/16x16/$g $TMPDIR/16x16/$g 2>/dev/null
-  cp -L $OUTDIR/dist/themes/icons/default/32x32/$g $TMPDIR/32x32/$g 2>/dev/null
+  cp -v -L $OUTDIR/dist/themes/icons/default/16x16/$g $TMPDIR/16x16/$g 2>/dev/null
+  cp -v -L $OUTDIR/dist/themes/icons/default/32x32/$g $TMPDIR/32x32/$g 2>/dev/null
 done
 
-cp $OUTDIR/dist/themes/icons/default/16x16/*.png $TMPDIR/16x16/
-cp $OUTDIR/dist/themes/icons/default/32x32/*.png $TMPDIR/32x32/
+cp -v $OUTDIR/dist/themes/icons/default/16x16/*.png $TMPDIR/16x16/
+cp -v $OUTDIR/dist/themes/icons/default/32x32/*.png $TMPDIR/32x32/
 
 # Copy standing icons
 rm -rf $OUTDIR/dist/themes/icons/default/*
-mv $TMPDIR/* $OUTDIR/dist/themes/icons/default/
+mv -v $TMPDIR/* $OUTDIR/dist/themes/icons/default/
 
 rm -rf $OUTDIR/dist/themes/sounds/*
 rm -rf $OUTDIR/dist/themes/wallpapers/*
-cp src/client/themes/wallpapers/arduino.png $OUTDIR/dist/themes/wallpapers/
+cp -v src/client/themes/wallpapers/arduino.png $OUTDIR/dist/themes/wallpapers/
 
 #
 # Cleanup
