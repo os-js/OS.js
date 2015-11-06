@@ -376,8 +376,10 @@ function curl_request(request, response, args)
 end
 
 function login_request(request, response, username, password)
-  if sys_login(username, password) == false then
-    return "Invalid Login", false
+  if not osjs.DEBUGMODE then
+    if sys_login(username, password) == false then
+      return "Invalid Login", false
+    end
   end
 
   response:set_cookie("osjsuser", {
