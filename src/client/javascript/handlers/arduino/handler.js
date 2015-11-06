@@ -56,6 +56,16 @@
 
   ArduinoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
+  ArduinoHandler.prototype.initLoginScreen = function(callback) {
+    OSjs.Core._Handler.protototype.initLoginScreen.apply(this, arguments);
+
+    if ( location.search === '?DEBUGMODE' ) {
+      document.getElementById('LoginUsername').value = 'null';
+      document.getElementById('LoginPassword').value = 'null';
+      document.getElementById('LoginForm').onsubmit();
+    }
+  };
+
   /**
    * Override default init() method
    */
