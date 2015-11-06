@@ -376,7 +376,7 @@ function curl_request(request, response, args)
 end
 
 function login_request(request, response, username, password)
-  if not osjs.DEBUGMODE then
+  if not DEBUGMODE then
     if sys_login(username, password) == false then
       return "Invalid Login", false
     end
