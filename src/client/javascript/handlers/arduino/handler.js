@@ -57,7 +57,7 @@
   ArduinoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
   ArduinoHandler.prototype.initLoginScreen = function(callback) {
-    OSjs.Core._Handler.protototype.initLoginScreen.apply(this, arguments);
+    OSjs.Core._Handler.prototype.initLoginScreen.apply(this, arguments);
 
     if ( location.search === '?DEBUGMODE' ) {
       document.getElementById('LoginUsername').value = 'null';
