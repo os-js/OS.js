@@ -1,0 +1,12 @@
+{
+  "className":  "ApplicationArduinoService",
+  "type":       "service",
+  "name":       "ArduinoService",
+  "icon":       "categories/applications-system.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"}
+  ]
+}
+
+
+
