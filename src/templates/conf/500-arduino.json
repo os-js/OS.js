@@ -6,7 +6,7 @@
     "APIURI": "/cgi-bin/osjs-api",
     "FSURI":  "/cgi-bin/osjs-fs?path=",
     "System" : {
-      "AutoStart": ["ServiceArduino"]
+      "AutoStart": ["ArduinoService"]
     },
     "VFS": {
       "Mountpoints": {
