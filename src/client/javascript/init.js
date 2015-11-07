@@ -399,7 +399,7 @@
       }
 
       console.info('doAutostart()', start);
-      OSjs.API.launchList(start);
+      OSjs.API.launchList(start, null, null, cb);
     }
 
     function session() {
@@ -415,7 +415,8 @@
       });
     }
 
-    autostart(null, null, function() {
+    autostart(function() {
+      console.error("XXX");
       session();
     });
   }
