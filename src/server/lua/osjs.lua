@@ -47,13 +47,8 @@ require "base64"
 -- ----------------------------------------------------------------------------
 
 local ROOTDIR = "/opt/osjs"
-local DISTDIR = "/opt/osjs/dist"
-local SETTINGS_FILE = "/opt/osjs/settings.json"
-local MIMES_FILE = "/opt/osjs/mime.json"
-local TMPDIR = "/tmp"
 local SETTINGS = {}
 local MIMES = {}
-local DEBUGMODE = false
 
 local _settings = fs.readfile(SETTINGS_FILE)
 if _settings ~= nil then
@@ -68,6 +63,12 @@ if _mimes ~= nil then
   MIMES = _mimes["mapping"]
 end
 _mimes = nil
+
+local DEBUGMODE = SETTINGS.debugmode
+local DISTDIR = SETTINGS.distdir or ROOTDIR.."/dist"
+local TMPDIR = SETTINGS.tmpdir or "/tmp"
+local SETTINGS_FILE = ROOTDIR .. "/settings.json"
+local MIMES_FILE = ROOTDIR .. "/mime.json"
 
 -- ----------------------------------------------------------------------------
 --                                    HELPERS

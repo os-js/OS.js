@@ -68,6 +68,7 @@
     out_dev_index:            _path.join(ROOT, 'dist-dev', 'index.html'),
     out_php_config:           _path.join(ROOT, 'src', 'server', 'php', 'settings.php'),
     out_node_config:          _path.join(ROOT, 'src', 'server', 'node', 'settings.json'),
+    out_lua_config:           _path.join(ROOT, 'src', 'server', 'lua', 'settings.json'),
     out_client_js:            _path.join(ROOT, 'dist', 'osjs.js'),
     out_client_css:           _path.join(ROOT, 'dist', 'osjs.css'),
     out_client_dialogs:       _path.join(ROOT, 'dist', 'dialogs.html'),
@@ -573,6 +574,15 @@
       writeFile(PATHS.out_node_config, tpl);
     }
 
+    function buildLua() {
+      var luaSettings = clone(cfg.server);
+      luaSettings.extensions = loadExtensions;
+
+      // Write
+      var tpl = JSON.stringify(luaSettings, null, 4);
+      writeFile(PATHS.out_lua_config, tpl);
+    }
+
     function buildClient(dist) {
       var settings = clone(cfg.client);
 
@@ -632,6 +642,7 @@
     try {
       buildPHP();
       buildNode();
+      buildLua();
       buildClient('dist');
       buildClient('dist-dev');
     } catch ( e ) {
