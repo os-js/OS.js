@@ -390,7 +390,7 @@
 
     function autostart() {
       var config = OSjs.Core.getConfig();
-      var start;
+      var start = [];
 
       try {
         start = config.System.AutoStart;
@@ -399,9 +399,7 @@
       }
 
       console.info('doAutostart()', start);
-      if ( start ) {
-        OSjs.API.launchList(autostart);
-      }
+      OSjs.API.launchList(autostart);
     }
 
     handler.loadSession(function() {
