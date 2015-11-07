@@ -464,20 +464,11 @@
 <application-fragment data-id="TabArduinoSystemFragment">
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>Password</gui-label>
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-password data-id="InputArduinoPassword" data-placeholder="System password" />
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-password data-id="InputArduinoPasswordConfirm" data-placeholder="System password (repeat)" />
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-button data-id="ButtonArduinoPassword">Change Password</gui-button>
+      <gui-label>Board name</gui-label>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>&nbsp;</gui-label>
+      <gui-password data-id="InputArduinoBoardName" />
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
@@ -490,6 +481,23 @@
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
       <gui-button data-id="ButtonArduinoConfigureTimezone">Configure &amp; Restart</gui-button>
     </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-label>&nbsp;</gui-label>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-label>Password</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-password data-id="InputArduinoPassword" data-placeholder="System password" />
+    </gui-vbox-container>
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-password data-id="InputArduinoPasswordConfirm" data-placeholder="System password (repeat)" />
+    </gui-vbox-container>
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-button data-id="ButtonArduinoPassword">Change Password</gui-button>
+    </gui-vbox-container>
   </gui-vbox>
 </application-fragment>
 
@@ -498,6 +506,19 @@
   <gui-vbox class="block-label">
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
       <gui-label>Wireless Name (SSID)</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+
+      <gui-hbox>
+        <gui-hbox-container data-grow="1" data-expand="true" data-basis="auto">
+          <gui-select data-id="SelectNetworkWIFISSID">
+          </gui-select>
+        </gui-hbox-container>
+        <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+          <gui-button data-id="ButtonArduinoRefreshWIFI">Refresh</gui-button>
+        </gui-hbox-container>
+      </gui-hbox>
+
     </gui-vbox-container>
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
       <gui-password data-id="InputArduinoWIFISSID" />

@@ -13,7 +13,10 @@ local function request(m, a, request, response)
   elseif m == "netdevices" then
     result = sys.net.devices()
   elseif m == "netinfo" then
-    result = sys.net.deviceinfo()
+    result = {
+      deviceinfo = sys.net.deviceinfo(),
+      arptable = sys.net.arptable()
+    }
   elseif m == "iwinfo" then
     local device = a["device"] or "wlan0"
     result = sys.wifi.getiwinfo(device)

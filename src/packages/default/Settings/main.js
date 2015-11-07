@@ -854,10 +854,13 @@
           return;
         }
 
-        if ( response[device] ) {
-          var rows = [];
+        var rows = [];
+        var netinfo = response.deviceinfo[device];
+        var arptable = response.arptable;
+
+        if ( netinfo ) {
           var keys = ['rx_bytes', 'rx_packets', 'rx_errors', 'rx_dropped', 'unknown', 'unknown', 'unknown', 'multicast', 'tx_bytes', 'tx_packets', 'tx_errors', 'tx_dropped', 'unknown', 'collisions', 'unknown', 'unknown'];
-          response[device].forEach(function(value, idx) {
+          netinfo.forEach(function(value, idx) {
             if ( keys[idx] !== 'unknown' ) {
               rows.push({
                 columns: [
@@ -867,9 +870,22 @@
               });
             }
           });
-
-          view.add(rows);
         }
+
+        arptable.forEach(function(arp) {
+          if ( arp.Device === device ) {
+            Object.keys(arp).forEach(function(v) {
+              rows.push({
+                columns: [
+                  {label: v.toString()},
+                  {label: arp[v].toString()}
+                ]
+              });
+            });
+          }
+        });
+
+        view.add(rows);
       });
     }
 
@@ -901,6 +917,11 @@
       if ( ev.detail ) {
         renderNetworkInfo(ev.detail);
       }
+    });
+
+    scheme.find(this, 'ButtonArduinoRefreshWIFI').on('click', function(ev) {
+    });
+    scheme.find(this, 'SelectNetworkWIFISSID').on('change', function(ev) {
     });
 
     renderDeviceInfo(function() {
