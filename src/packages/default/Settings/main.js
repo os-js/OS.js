@@ -30,7 +30,7 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  var categories = ['theme', 'desktop', 'panel', 'user', 'packages'];
+  var categories = ['theme', 'desktop', 'panel', 'user', 'packages', 'arduino'];
 
   function fetchJSON(cb) {
     var url = 'http://andersevenrud.github.io/OS.js-v2/store/packages.json';

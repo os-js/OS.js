@@ -42,12 +42,49 @@
   ArduinoService.constructor = Service;
 
   ArduinoService.prototype.destroy = function() {
+    var wm = OSjs.Core.getWindowManager();
+    if ( wm ) {
+      wm.destroyNotificationIcon('_ArduinoServiceNotification');
+    }
     return Service.prototype.destroy.apply(this, arguments);
   };
 
   ArduinoService.prototype.init = function(settings, metadata, onInited) {
     Service.prototype.init.apply(this, arguments);
 
+    var wm = OSjs.Core.getWindowManager();
+
+    function showContextMenu(ev) {
+      OSjs.API.createMenu([{
+        title: 'Open Settings',
+        onClick: function() {
+          API.launch('ApplicationSettings', {
+            category: 'arduino'
+          });
+        }
+      }], ev);
+    }
+
+    wm.createNotificationIcon('_ArduinoServiceNotification', {
+      onContextMenu: showContextMenu,
+      onClick: showContextMenu,
+      onInited: function(el) {
+        if ( el ) {
+          var img = document.createElement('img');
+          img.title = img.alt = 'Open Settings';
+          img.src = API.getIcon('arduino.png');
+          el.appendChild(img);
+        }
+      }
+    });
+
+    onInited();
+  };
+
+  ArduinoService.prototype._onMessage = function(obj, msg, args) {
+    if ( msg === 'attention' ) {
+      // args.foo
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
