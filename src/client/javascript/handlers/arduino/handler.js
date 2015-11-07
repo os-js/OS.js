@@ -59,9 +59,10 @@
   ArduinoHandler.prototype.initLoginScreen = function(callback) {
     OSjs.Core._Handler.prototype.initLoginScreen.apply(this, arguments);
 
+    document.getElementById('LoginUsername').value = 'root';
+
     if ( location.search === '?DEBUGMODE' ) {
-      document.getElementById('LoginUsername').value = 'null';
-      document.getElementById('LoginPassword').value = 'null';
+      document.getElementById('LoginPassword').value = 'doghunter';
       document.getElementById('LoginForm').onsubmit();
     }
   };
