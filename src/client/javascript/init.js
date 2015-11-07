@@ -388,7 +388,7 @@
 
     var wm = OSjs.Core.getWindowManager();
 
-    function autostart() {
+    function autostart(cb) {
       var config = OSjs.Core.getConfig();
       var start = [];
 
@@ -402,17 +402,21 @@
       OSjs.API.launchList(start);
     }
 
-    handler.loadSession(function() {
-      setTimeout(function() {
-        events.resize();
-      }, 500);
+    function session() {
+      handler.loadSession(function() {
+        setTimeout(function() {
+          events.resize();
+        }, 500);
 
 
-      callback();
+        callback();
 
-      wm.onSessionLoaded();
+        wm.onSessionLoaded();
+      });
+    }
 
-      autostart();
+    autostart(null, null, function() {
+      session();
     });
   }
 
