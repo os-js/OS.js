@@ -1,5 +1,5 @@
 {
-  "className":  "ApplicationArduinoService",
+  "className":  "ArduinoService",
   "type":       "service",
   "name":       "ArduinoService",
   "icon":       "categories/applications-system.png",
