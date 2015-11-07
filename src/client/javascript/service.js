@@ -47,11 +47,8 @@
    * @extends Process
    * @class
    */
-  var Service = function(name, args) {
-    this.__name = name;
-    this.__args = args;
-
-    Process.apply(this, [name]);
+  var Service = function(name, args, metadata) {
+    Process.apply(this, arguments);
   };
 
   Service.prototype = Object.create(Process.prototype);
@@ -64,19 +61,6 @@
    * @method Service::init()
    */
   Service.prototype.init = function() {
-  };
-
-  /**
-   * Call the ApplicationAPI
-   *
-   * @return  boolean
-   *
-   * @method  Service::_call()
-   */
-  Service.prototype._call = function(method, args, onSuccess, onError) {
-    onSuccess = onSuccess || function() {};
-    onError = onError || function() {};
-    return OSjs.API.call('application', {'application': this.__name, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
   /////////////////////////////////////////////////////////////////////////////
