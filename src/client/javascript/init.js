@@ -399,7 +399,7 @@
       }
 
       console.info('doAutostart()', start);
-      OSjs.API.launchList(autostart);
+      OSjs.API.launchList(start);
     }
 
     handler.loadSession(function() {
