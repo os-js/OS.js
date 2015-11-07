@@ -47,6 +47,8 @@ require "base64"
 -- ----------------------------------------------------------------------------
 
 local ROOTDIR = "/opt/osjs"
+local SETTINGS_FILE = ROOTDIR.."/settings.json"
+local MIMES_FILE = ROOTDIR.."/mime.json"
 local SETTINGS = {}
 local MIMES = {}
 
@@ -67,8 +69,6 @@ _mimes = nil
 local DEBUGMODE = SETTINGS.debugmode
 local DISTDIR = SETTINGS.distdir or ROOTDIR.."/dist"
 local TMPDIR = SETTINGS.tmpdir or "/tmp"
-local SETTINGS_FILE = ROOTDIR .. "/settings.json"
-local MIMES_FILE = ROOTDIR .. "/mime.json"
 
 -- ----------------------------------------------------------------------------
 --                                    HELPERS
