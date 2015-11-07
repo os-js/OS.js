@@ -594,7 +594,7 @@
       var a = _createInstance(result);
 
       try {
-        var settings = OSjs.Core.getSettingsManager().get(a.__name);
+        var settings = OSjs.Core.getSettingsManager().get(a.__name) || {};
         a.init(settings, result, function() {
           setTimeout(function() {
             _done();

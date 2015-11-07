@@ -70,11 +70,11 @@
       var isMatching;
       if ( match instanceof RegExp && _PROCS ) {
         isMatching = function(p) {
-          return p.__name && p.__name.match(match);
+          return p.__pname && p.__pname.match(match);
         };
       } else if ( typeof match === 'string' ) {
         isMatching = function(p) {
-          return p.__name === match;
+          return p.__pname === match;
         };
       }
 
@@ -186,20 +186,30 @@
   var Process = (function() {
     var _PID = 0;
 
-    return function(name) {
+    return function(name, args, metadata) {
+      metadata = metadata || {};
+      args = args || {};
+
       this.__pid      = _PID;
       this.__pname    = name;
       this.__sname    = name; // Used internall only
+      this.__args     = args;
+      this.__metadata = metadata;
       this.__state    = 0;
       this.__started  = new Date();
       this.__index    = _PROCS.push(this) - 1;
+
+      this.__label    = metadata.name;
+      this.__path     = metadata.path;
+      this.__scope    = metadata.scope || 'system';
+      this.__iter     = metadata.className;
 
       console.group('Process::constructor()');
       console.log('pid',    this.__pid);
       console.log('pname',  this.__pname);
       console.log('started',this.__started);
+      console.log('args',   this.__args);
       console.groupEnd();
-
 
       _PID++;
     };
@@ -234,6 +244,34 @@
    * @method  Process::_onMessage()
    */
   Process.prototype._onMessage = function(obj, msg, args) {
+  };
+
+  /**
+   * Call the ApplicationAPI
+   *
+   * This is used for calling 'api.php' or 'api.js' in your Application.
+   *
+   * On Lua or Arduino it is called 'server.lua'
+   *
+   * @param   String      method      Name of method
+   * @param   Object      args        Arguments in JSON
+   * @param   Function    onSuccess   When request is done callback fn(result)
+   * @param   Function    onError     When an error occured fn(error)
+   *
+   * @return  boolean
+   *
+   * @method  Process::_call()
+   */
+  Process.prototype._call = function(method, args, onSuccess, onError) {
+    var self = this;
+    onSuccess = onSuccess || function() {};
+    onError = onError || function(err) {
+      err = err || 'Unknown error';
+      OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
+                     OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
+                     err);
+    };
+    return OSjs.API.call('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
   /////////////////////////////////////////////////////////////////////////////

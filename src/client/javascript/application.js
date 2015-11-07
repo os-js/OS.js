@@ -54,19 +54,13 @@
    */
   var Application = function(name, args, metadata, settings) {
     console.group('Application::constructor()');
-    this.__name       = name;
-    this.__label      = metadata.name;
-    this.__path       = metadata.path;
-    this.__scope      = metadata.scope || 'system';
-    this.__iter       = metadata.className;
     this.__destroyed  = false;
     this.__running    = true;
     this.__inited     = false;
-    this.__windows    = [];
-    this.__args       = args || {};
-    this.__metadata   = metadata;
     this.__mainwindow = null;
     this.__scheme     = null;
+    this.__windows    = [];
+    this.__settings   = {};
 
     try {
       this.__settings = OSjs.Core.getSettingsManager().instance(name, settings || {});
@@ -76,10 +70,8 @@
       this.__settings = OSjs.Core.getSettingsManager().instance(name, {});
     }
 
-    Process.apply(this, [name]);
+    Process.apply(this, arguments);
 
-    console.log('Name', this.__name);
-    console.log('Args', this.__args);
     console.groupEnd();
   };
 
@@ -97,7 +89,7 @@
    * @method  Application::init()
    */
   Application.prototype.init = function(settings, metadata) {
-    console.debug('Application::init()', this.__name);
+    console.debug('Application::init()', this.__pname);
 
 
     this.__settings.set(null, settings);
@@ -133,7 +125,7 @@
     this.__destroyed = true;
     this.__settings = null;
 
-    console.debug('Application::destroy()', this.__name);
+    console.debug('Application::destroy()', this.__pname);
 
     if ( this.__scheme ) {
       this.__scheme.destroy();
@@ -179,32 +171,6 @@
         }
       }
     }
-  };
-
-  /**
-   * Call the ApplicationAPI
-   *
-   * This is used for calling 'api.php' or 'api.js' in your Application.
-   *
-   * @param   String      method      Name of method
-   * @param   Object      args        Arguments in JSON
-   * @param   Function    onSuccess   When request is done callback fn(result)
-   * @param   Function    onError     When an error occured fn(error)
-   *
-   * @return  boolean
-   *
-   * @method  Application::_call()
-   */
-  Application.prototype._call = function(method, args, onSuccess, onError) {
-    var self = this;
-    onSuccess = onSuccess || function() {};
-    onError = onError || function(err) {
-      err = err || 'Unknown error';
-      OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
-                     OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__name, method),
-                     err);
-    };
-    return OSjs.API.call('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
   };
 
   /**
