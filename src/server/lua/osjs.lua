@@ -53,6 +53,7 @@ local MIMES_FILE = "/opt/osjs/mime.json"
 local TMPDIR = "/tmp"
 local SETTINGS = {}
 local MIMES = {}
+local DEBUGMODE = false
 
 local _settings = fs.readfile(SETTINGS_FILE)
 if _settings ~= nil then
@@ -73,7 +74,7 @@ _mimes = nil
 -- ----------------------------------------------------------------------------
 
 function get_username(request, response)
-  if request.GET["DEBUGMODE"] ~= nil then
+  if DEBUGMODE then
     return "root"
   end
 
@@ -375,7 +376,7 @@ function curl_request(request, response, args)
 end
 
 function login_request(request, response, username, password)
-  if request.GET["DEBUGMODE"] == nil then
+  if not DEBUGMODE then
     if sys_login(username, password) == false then
       return "Invalid Login", false
     end

@@ -1,4 +1,4 @@
-#!/usr/bin/env lua
+#!/usr/bin/lua
 
 --
 -- Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
@@ -51,7 +51,7 @@ function run(wsapi_env)
 
   response:content_type("application/json")
 
-  if request.GET["DEBUGMODE"] == nil then
+  if not osjs.DEBUGMODE then
     if idata["method"] ~= "login" and idata["method"] ~= "logout" then
       if request.cookies["osjsuser"] == nil then
         response.status = 403
