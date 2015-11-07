@@ -257,12 +257,13 @@
    * @param   Object      args        Arguments in JSON
    * @param   Function    onSuccess   When request is done callback fn(result)
    * @param   Function    onError     When an error occured fn(error)
+   * @param   boolean     showLoading Show loading indication (default=true)
    *
    * @return  boolean
    *
    * @method  Process::_call()
    */
-  Process.prototype._call = function(method, args, onSuccess, onError) {
+  Process.prototype._call = function(method, args, onSuccess, onError, showLoading) {
     var self = this;
     onSuccess = onSuccess || function() {};
     onError = onError || function(err) {
@@ -271,7 +272,7 @@
                      OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
                      err);
     };
-    return OSjs.API.call('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args}, onSuccess, onError);
+    return OSjs.API.call('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args, __loading: showLoading}, onSuccess, onError);
   };
 
   /////////////////////////////////////////////////////////////////////////////

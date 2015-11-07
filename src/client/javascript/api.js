@@ -311,7 +311,10 @@
 
     return function(m, a, cok, cerror) {
       var lname = 'APICall_' + _cidx;
-      createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
+
+      if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
+        createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
+      }
 
       _cidx++;
 
