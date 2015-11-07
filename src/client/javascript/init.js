@@ -416,7 +416,6 @@
     }
 
     autostart(function() {
-      console.error("XXX");
       session();
     });
   }
