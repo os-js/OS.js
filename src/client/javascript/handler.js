@@ -200,7 +200,7 @@
         function getSessionSaveData(app) {
           var args = app.__args;
           var wins = app.__windows;
-          var data = {name: app.__name, args: args, windows: []};
+          var data = {name: app.__pname, args: args, windows: []};
 
           wins.forEach(function(win, i) {
             if ( win && win._properties.allow_session ) {
