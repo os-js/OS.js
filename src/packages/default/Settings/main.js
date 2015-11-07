@@ -773,20 +773,14 @@
     var pacman = OSjs.Core.getPackageManager();
 
     function callAPI(fn, args, cb) {
-      self._toggleLoading(true);
-
-      self._app._call(fn, args, function(response) {
-        self._toggleLoading(false);
-
-        response = response || {};
-        if ( response.result ) {
-          cb(false, response.result);
-        } else {
-          cb(response.error || 'No response from device');
-        }
-      }, function(err) {
-        cb('Failed to get response from device: ' + err);
-      });
+      var proc = API.getProcess('ArduinoService', true);
+      if ( proc ) {
+        self._toggleLoading(true);
+        proc.externalCall(fn, args, function(err, response) {
+          self._toggleLoading(false);
+          return cb(err, response);
+        });
+      }
     }
 
     function renderDeviceInfo(cb) {

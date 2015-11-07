@@ -87,6 +87,19 @@
     }
   };
 
+  ArduinoService.prototype.externalCall = function(fn, args, cb) {
+    this._call(fn, args, function(response) {
+      response = response || {};
+      if ( response.result ) {
+        cb(false, response.result);
+      } else {
+        cb(response.error || 'No response from device');
+      }
+    }, function(err) {
+      cb('Failed to get response from device: ' + err);
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
