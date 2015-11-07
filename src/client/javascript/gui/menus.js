@@ -159,7 +159,11 @@
 
             createTyped(child, span);
 
-            span.appendChild(document.createTextNode(label));
+            if ( child.getAttribute('data-labelhtml') === 'true' ) {
+              span.innerHTML = label;
+            } else {
+              span.appendChild(document.createTextNode(label));
+            }
 
             bindSelectionEvent(child, span, i, expand);
 
@@ -269,7 +273,7 @@
 
     function resolveItems(arr, par) {
       arr.forEach(function(iter) {
-        var props = {label: iter.title, icon: iter.icon, disabled: iter.disabled};
+        var props = {label: iter.title, icon: iter.icon, disabled: iter.disabled, labelHTML: iter.titleHTML};
         var entry = GUI.Helpers.createElement('gui-menu-entry', props);
         if ( iter.menu ) {
           var nroot = GUI.Helpers.createElement('gui-menu', {});
