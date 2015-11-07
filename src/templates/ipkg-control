@@ -1,0 +1,10 @@
+Package: osjs
+Architecture: ARCH
+Priority: optional
+Section: base
+Version: VER
+Maintainer: Anders Evenrud <andersevenrud@gmail.com>
+Description: OS.js Cloud/Web Desktop http://os.js.org
+Depends: lua wsapi luci luci-lib-nixio luci-lib-sys
+Suggests:
+Conflicts:
