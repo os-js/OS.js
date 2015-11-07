@@ -72,6 +72,7 @@ cp -v -r src/packages/default/CoreWM src/packages/target/
 cp -v -r src/packages/default/Preview src/packages/target/
 cp -v -r src/packages/default/Settings src/packages/target/
 cp -v -r src/packages/default/Settings src/packages/target/
+cp -v -r src/packages/arduino/ArduinoService src/packages/target/
 
 cp -v src/packages/repositories.json src/packages/repositories.json.old
 echo "[\"target\"]" > src/packages/repositories.json

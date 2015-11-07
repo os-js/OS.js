@@ -5,6 +5,9 @@
     "Version" : "2.0-alpha67-arduino-yun",
     "APIURI": "/cgi-bin/osjs-api",
     "FSURI":  "/cgi-bin/osjs-fs?path=",
+    "System" : {
+      "AutoStart": ["ServiceArduino"]
+    },
     "VFS": {
       "Mountpoints": {
         "shared": {
