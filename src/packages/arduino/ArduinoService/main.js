@@ -151,26 +151,26 @@
     this.cache.devices = {};
 
     function getArpTable(table, dev) {
-      return table.reduce(function(iter) {
+      var result = null;
+      table.forEach(function(iter) {
         if ( iter.Device === dev ) {
-          return iter;
+          result = iter;
         }
-        return false;
+        return !!result;
       });
+      return result;
     };
 
     this.externalCall('netinfo', {}, function(err, result) {
       var devs = Object.keys(result.deviceinfo);
 
       devs.forEach(function(dev) {
-        var details = {};
-        var arp =  getArpTable(result.arptable, dev);
-        if ( arp ) {
-          details = {
-            'IP Address': arp['IP address'],
-            'HW Address': arp['HW address']
-          };
-        }
+        var arp =  getArpTable(result.arptable, dev) || {};
+        var details = {
+          'IP': arp['IP address'] || '',
+          'Mask': arp['Mask'] || '',
+          'MAC': arp['HW address'] || ''
+        };
         self.cache.devices[dev] = details;
       });
     });
@@ -186,7 +186,7 @@
       }
     }, function(err) {
       cb('Failed to get response from device: ' + err);
-    });
+    }, false);
   };
 
   /////////////////////////////////////////////////////////////////////////////
