@@ -117,6 +117,7 @@ cp -v -r dist $OUTDIR/
 cp -v src/server/lua/osjs.lua $OUTDIR/lib/
 cp -v src/server/lua/osjs-fs $OUTDIR/dist/cgi-bin/
 cp -v src/server/lua/osjs-api $OUTDIR/dist/cgi-bin/
+cp -v src/server/lua/settings.json $OUTDIR/settings.json
 cp -v src/mime.json $OUTDIR/mime.json
 
 #
