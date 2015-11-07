@@ -51,7 +51,7 @@ function run(wsapi_env)
 
   response:content_type("application/json")
 
-  if not request.GET["DEBUGMODE"] then
+  if request.GET["DEBUGMODE"] == nil then
     if idata["method"] ~= "login" and idata["method"] ~= "logout" then
       if request.cookies["osjsuser"] == nil then
         response.status = 403

@@ -73,7 +73,7 @@ _mimes = nil
 -- ----------------------------------------------------------------------------
 
 function get_username(request, response)
-  if request.GET["DEBUGMODE"] then
+  if request.GET["DEBUGMODE"] ~= nil then
     return "root"
   end
 
@@ -375,7 +375,7 @@ function curl_request(request, response, args)
 end
 
 function login_request(request, response, username, password)
-  if not request.GET["DEBUGMODE"] then
+  if request.GET["DEBUGMODE"] == nil then
     if sys_login(username, password) == false then
       return "Invalid Login", false
     end

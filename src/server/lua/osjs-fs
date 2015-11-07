@@ -44,7 +44,7 @@ function run(wsapi_env)
   local request  = wrequest.new(wsapi_env)
   local response = wresponse.new()
 
-  if not request.GET["DEBUGMODE"] then
+  if request.GET["DEBUGMODE"] == nil then
     if request.cookies["osjsuser"] == nil then
       response.status = 403
       response:write("Not Allowed")
