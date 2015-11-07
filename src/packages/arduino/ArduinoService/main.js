@@ -50,7 +50,8 @@
   ArduinoService.prototype.destroy = function() {
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      wm.destroyNotificationIcon('_ArduinoServiceNotification');
+      wm.destroyNotificationIcon('_ArduinoNetworkNotification');
+      wm.destroyNotificationIcon('_ArduinoWIFINotification');
     }
 
     this.cache = {};
@@ -65,44 +66,63 @@
     var self = this;
     var wm = OSjs.Core.getWindowManager();
 
-    function showContextMenu(ev) {
-      var mnu = [{
-        title: 'Open Settings',
-        onClick: function() {
-          API.launch('ApplicationSettings', {
-            category: 'arduino'
-          });
-        }
-      }];
-
+    function showNetworkContextMenu(ev) {
+      var mnu = [];
       var devs = self.cache.devices;
-      Object.keys(devs).forEach(function(d) {
-        mnu.push({title: '<hr />', titleHTML: true});
+
+      function createSubItem(d, idx) {
+        if ( idx > 0 ) {
+          mnu.push({title: '<hr />', titleHTML: true});
+        }
+
         mnu.push({
           title: '<b>' + d + '</b>',
           titleHTML: true
         });
-
 
         Object.keys(devs[d]).forEach(function(i) {
           mnu.push({
             title: i + ': ' + devs[d][i]
           });
         });
-      });
+      }
 
+      Object.keys(devs).forEach(function(d, idx) {
+        createSubItem(d, idx);
+      });
 
       OSjs.API.createMenu(mnu, ev);
     }
 
-    wm.createNotificationIcon('_ArduinoServiceNotification', {
-      onContextMenu: showContextMenu,
-      onClick: showContextMenu,
+    function showWIFIContextMenu(ev) {
+      var mnu = [
+        {titleHTML: true, title: '<b>Status:</b> null'},
+        {titleHTML: true, title: '<b>SSID:</b> null'},
+        {titleHTML: true, title: '<b>Security:</b> null'}
+      ];
+      OSjs.API.createMenu(mnu, ev);
+    }
+
+    wm.createNotificationIcon('_ArduinoNetworkNotification', {
+      onContextMenu: showNetworkContextMenu,
+      onClick: showNetworkContextMenu,
+      onInited: function(el) {
+        if ( el ) {
+          var img = document.createElement('img');
+          img.title = img.alt = 'Arduino Network Devices';
+          img.src = API.getIcon('devices/network-wired.png');
+          el.appendChild(img);
+        }
+      }
+    });
+    wm.createNotificationIcon('_ArduinoWIFINotification', {
+      onContextMenu: showWIFIContextMenu,
+      onClick: showWIFIContextMenu,
       onInited: function(el) {
         if ( el ) {
           var img = document.createElement('img');
           img.title = img.alt = 'Open Settings';
-          img.src = API.getIcon('arduino.png');
+          img.src = API.getIcon('devices/network-wireless.png');
           el.appendChild(img);
         }
       }
