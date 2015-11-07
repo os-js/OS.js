@@ -34,18 +34,18 @@
   // SERVICE
   /////////////////////////////////////////////////////////////////////////////
 
-  function ServiceArduinoService(args, metadata) {
-    Service.apply(this, ['ServiceArduinoService', args, metadata]);
+  function ArduinoService(args, metadata) {
+    Service.apply(this, ['ArduinoService', args, metadata]);
   }
 
-  ServiceArduinoService.prototype = Object.create(Service.prototype);
-  ServiceArduinoService.constructor = Service;
+  ArduinoService.prototype = Object.create(Service.prototype);
+  ArduinoService.constructor = Service;
 
-  ServiceArduinoService.prototype.destroy = function() {
+  ArduinoService.prototype.destroy = function() {
     return Service.prototype.destroy.apply(this, arguments);
   };
 
-  ServiceArduinoService.prototype.init = function(settings, metadata, onInited) {
+  ArduinoService.prototype.init = function(settings, metadata, onInited) {
     Service.prototype.init.apply(this, arguments);
 
   };
@@ -55,7 +55,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ServiceArduinoService = OSjs.Applications.ServiceArduinoService || {};
-  OSjs.Applications.ServiceArduinoService.Class = ServiceArduinoService;
+  OSjs.Applications.ArduinoService = OSjs.Applications.ArduinoService || {};
+  OSjs.Applications.ArduinoService.Class = ArduinoService;
 
 })(OSjs.Core.Service, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
