@@ -717,7 +717,7 @@
       var s = list[current];
       current++;
 
-      if ( typeof s !== 'object' ) {
+      if ( typeof s === 'string' ) {
         var args = {};
         var spl = s.split('@');
         var name = spl[0];
