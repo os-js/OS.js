@@ -36,6 +36,12 @@
 
   function ArduinoService(args, metadata) {
     Service.apply(this, ['ArduinoService', args, metadata]);
+
+    this.pollingNetwork = false;
+    this.pollingInterval = null;
+    this.cache = {
+      devices: {}
+    };
   }
 
   ArduinoService.prototype = Object.create(Service.prototype);
@@ -46,23 +52,47 @@
     if ( wm ) {
       wm.destroyNotificationIcon('_ArduinoServiceNotification');
     }
+
+    this.cache = {};
+    this.pollingInterval = clearInterval(this._pollingInteval);
+
     return Service.prototype.destroy.apply(this, arguments);
   };
 
   ArduinoService.prototype.init = function(settings, metadata, onInited) {
     Service.prototype.init.apply(this, arguments);
 
+    var self = this;
     var wm = OSjs.Core.getWindowManager();
 
     function showContextMenu(ev) {
-      OSjs.API.createMenu([{
+      var mnu = [{
         title: 'Open Settings',
         onClick: function() {
           API.launch('ApplicationSettings', {
             category: 'arduino'
           });
         }
-      }], ev);
+      }];
+
+      var devs = self.cache.devices;
+      Object.keys(devs).forEach(function(d) {
+        mnu.push({title: '<hr />', titleHTML: true});
+        mnu.push({
+          title: '<b>' + d + '</b>',
+          titleHTML: true
+        });
+
+
+        Object.keys(devs[d]).forEach(function(i) {
+          mnu.push({
+            title: i + ': ' + devs[d][i]
+          });
+        });
+      });
+
+
+      OSjs.API.createMenu(mnu, ev);
     }
 
     wm.createNotificationIcon('_ArduinoServiceNotification', {
@@ -78,6 +108,12 @@
       }
     });
 
+    this.pollingInterval = setInterval(function() {
+      self.pollNetwork();
+    }, 5000);
+
+    this.pollNetwork();
+
     onInited();
   };
 
@@ -85,6 +121,39 @@
     if ( msg === 'attention' ) {
       // args.foo
     }
+  };
+
+  ArduinoService.prototype.pollNetwork = function() {
+    var self = this;
+
+    this.pollingNetwork = true;
+
+    this.cache.devices = {};
+
+    function getArpTable(table, dev) {
+      return table.reduce(function(iter) {
+        if ( iter.Device === dev ) {
+          return iter;
+        }
+        return false;
+      });
+    };
+
+    this.externalCall('netinfo', {}, function(err, result) {
+      var devs = Object.keys(result.deviceinfo);
+
+      devs.forEach(function(dev) {
+        var details = {};
+        var arp =  getArpTable(result.arptable, dev);
+        if ( arp ) {
+          details = {
+            'IP Address': arp['IP address'],
+            'HW Address': arp['HW address']
+          };
+        }
+        self.cache.devices[dev] = details;
+      });
+    });
   };
 
   ArduinoService.prototype.externalCall = function(fn, args, cb) {
