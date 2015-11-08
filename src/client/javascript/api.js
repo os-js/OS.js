@@ -770,6 +770,10 @@
    * @api     OSjs.API.getApplicationResource()
    */
   function doGetApplicationResource(app, name) {
+    if ( name.match(/^\//) ) {
+      return name;
+    }
+
     var path = '';
     var appname = null;
     var config = OSjs.Core.getConfig();
