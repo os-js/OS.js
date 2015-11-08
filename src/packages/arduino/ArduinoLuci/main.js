@@ -50,4 +50,4 @@
   OSjs.Applications.ApplicationArduinoLuci.Class = ApplicationArduinoLuci;
 
 
-})(OSjs.Core.IFrameApplication, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+})(OSjs.Helpers.IFrameApplication, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
