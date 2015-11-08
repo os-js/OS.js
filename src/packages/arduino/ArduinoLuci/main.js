@@ -45,6 +45,12 @@
 
   ApplicationArduinoLuci.prototype = Object.create(Application.prototype);
 
+  ApplicationArduinoLuci.prototype.init = function(settings, metadata, onInited) {
+    Applicatio.prototype.init.apply(this, arguments);
+
+    onInited();
+  };
+
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationArduinoLuci = OSjs.Applications.ApplicationArduinoLuci || {};
   OSjs.Applications.ApplicationArduinoLuci.Class = ApplicationArduinoLuci;
