@@ -1,0 +1,13 @@
+{
+  "className":  "ApplicationArduinoLuci",
+  "name":       "ArduinoLuci",
+  "mime":       null,
+  "icon":       "categories/applications-system.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+
