@@ -42,7 +42,7 @@
       buttons: [
         {
           title: API._('LBL_SETTINGS'),
-          icon: 'osjs-settings.png',
+          icon: 'arduino-settings.png',
           launch: 'ApplicationSettings'
         }
       ]

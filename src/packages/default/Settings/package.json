@@ -18,7 +18,7 @@
     "vi_VN":      "Cài đặt"
   },
   "mime":       null,
-  "icon":       "osjs-settings.png",
+  "icon":       "arduino-settings.png",
   "category":   "system",
   "singular":   true,
   "preload":    [
