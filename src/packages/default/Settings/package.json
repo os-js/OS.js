@@ -18,7 +18,7 @@
     "vi_VN":      "Cài đặt"
   },
   "mime":       null,
-  "icon":       "categories/applications-system.png",
+  "icon":       "osjs-settings.png",
   "category":   "system",
   "singular":   true,
   "preload":    [

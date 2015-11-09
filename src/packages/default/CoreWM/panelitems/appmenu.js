@@ -58,7 +58,7 @@
     var sel = document.createElement('li');
     sel.className = 'Button';
     sel.title = API._('LBL_APPLICATIONS');
-    sel.innerHTML = '<img alt="" src="' + API.getIcon('osjs-white.png') + '" />';
+    sel.innerHTML = '<img alt="" src="' + API.getIcon('arduino-osjs.png') + '" />';
 
     Utils.$bind(sel, 'click', function(ev) {
       ev.preventDefault();

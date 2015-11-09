@@ -42,7 +42,7 @@
       buttons: [
         {
           title: API._('LBL_SETTINGS'),
-          icon: 'categories/applications-system.png',
+          icon: 'osjs-settings.png',
           launch: 'ApplicationSettings'
         }
       ]
