@@ -162,7 +162,12 @@
     };
 
     this.externalCall('netinfo', {}, function(err, result) {
-      var devs = Object.keys(result.deviceinfo);
+      var devs = [];
+      try {
+        devs = Object.keys(result.deviceinfo);
+      } catch ( e ) {
+        console.warn('Error parsing devices', e);
+      }
 
       devs.forEach(function(dev) {
         var arp =  getArpTable(result.arptable, dev) || {};
