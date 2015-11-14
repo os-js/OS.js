@@ -925,7 +925,7 @@
 
           (result || []).forEach(function(iter) {
             list.push({
-              label: Utils.format('{0} - {1} ({3})', iter.ssid, iter.bssid, iter.encryption),
+              label: Utils.format('{0} - {1} ({2}% signal)', iter.ssid, iter.bssid, iter.encryption),
               value: iter.bssid
             });
           });
