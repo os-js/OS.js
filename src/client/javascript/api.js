@@ -856,6 +856,7 @@
       {match: 'osjs/draw', icon: 'mimetypes/image.png'},
       {match: 'application/zip', icon: 'mimetypes/folder_tar.png'},
       {match: 'application/x-python', icon: 'mimetypes/stock_script.png'},
+      {match: 'application/x-lua', icon: 'mimetypes/stock_script.png'},
       {match: 'application/javascript', icon: 'mimetypes/stock_script.png'},
       {match: 'text/html', icon: 'mimetypes/stock_script.png'},
       {match: 'text/xml', icon: 'mimetypes/stock_script.png'},
