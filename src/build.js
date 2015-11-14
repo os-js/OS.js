@@ -1179,6 +1179,10 @@
           });
         }
 
+        if ( manifest.type === 'service' ) {
+          manifest.singular = true;
+        }
+
         manifest.preload = preload;
         manifest.preload.forEach(function(l, i) {
           if ( !l.src.match(/^(ftp|https?\:)?\/\//) ) {
