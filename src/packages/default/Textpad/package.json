@@ -18,7 +18,7 @@
     "nl_NL":      "Eenvoudige Tekstverwerker",
     "vi_VN":      "Trình sửa văn bản đơn giản"
   },
-  "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
+  "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-lua", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
   "category":   "utilities",
   "icon":       "apps/accessories-text-editor.png",
   "preload":    [
