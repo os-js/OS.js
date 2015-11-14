@@ -521,7 +521,7 @@
 
     </gui-vbox-container>
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-password data-id="InputArduinoWIFISSID" />
+      <gui-text data-id="InputArduinoWIFISSID" />
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
@@ -529,9 +529,10 @@
     </gui-vbox-container>
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
       <gui-select data-id="SelectNetworkWIFISecurity">
-        <gui-select-option data-value="none">None</gui-select-option>
+        <gui-select-option data-value="open">None</gui-select-option>
         <gui-select-option data-value="wep">WEP</gui-select-option>
         <gui-select-option data-value="wpa">WPA</gui-select-option>
+        <gui-select-option data-value="wpawpa2">WPA</gui-select-option>
         <gui-select-option data-value="wpa2">WPA2</gui-select-option>
       </gui-select>
     </gui-vbox-container>

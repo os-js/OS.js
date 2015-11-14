@@ -913,7 +913,28 @@
       }
     });
 
+    var wifiInput = scheme.find(this, 'InputArduinoWIFISSID');
+    var wifiSelectEncrypt = scheme.find(this, 'SelectNetworkWIFISecurity');
+    var wifiPassword = scheme.find(this, 'InputArduinoWIFIPassword');
+
     var wifiSelect = scheme.find(this, 'SelectNetworkWIFISSID').on('change', function(ev) {
+      if ( ev.detail ) {
+        var data = null;
+        try {
+          data = JSON.parse(ev.detail);
+        } catch ( e ) {}
+
+        console.warn(data);
+
+        if ( data ) {
+          var enc = data.encryption.toLowerCase().replace(/[^A-z0-9]/, '');
+          if ( enc == 'unknown' ) { enc = 'open'; }
+
+          wifiPassword.set('value', '');
+          wifiInput.set('value', data.bssid);
+          wifiSelectEncrypt.set('value', enc);
+        }
+      }
     });
 
     scheme.find(this, 'ButtonArduinoRefreshWIFI').on('click', function(ev) {
@@ -921,12 +942,15 @@
         wifiSelect.clear();
 
         if ( !err && result ) {
-          var list = [];
+          var list = [{
+            label: '--- SELECT FROM LIST ---',
+            value: null
+          }];
 
           (result || []).forEach(function(iter) {
             list.push({
-              label: Utils.format('{0} - {1} ({2}% signal)', iter.ssid, iter.bssid, iter.encryption),
-              value: iter.bssid
+              label: Utils.format('{0} ({1}, {2}% signal)', iter.ssid, iter.encryption, iter.signal),
+              value: JSON.stringify(iter)
             });
           });
 
