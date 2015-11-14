@@ -913,9 +913,27 @@
       }
     });
 
-    scheme.find(this, 'ButtonArduinoRefreshWIFI').on('click', function(ev) {
+    var wifiSelect = scheme.find(this, 'SelectNetworkWIFISSID').on('change', function(ev) {
     });
-    scheme.find(this, 'SelectNetworkWIFISSID').on('change', function(ev) {
+
+    scheme.find(this, 'ButtonArduinoRefreshWIFI').on('click', function(ev) {
+      callAPI('iwscan', {device: 'radio0'}, function(err, result) {
+        wifiSelect.clear();
+
+        if ( !err && result ) {
+          var list = [];
+
+          (result || []).forEach(function(iter) {
+            list.push({
+              label: Utils.format('{0} - {1} ({3})', iter.ssid, iter.bssid, iter.encryption),
+              value: iter.bssid
+            });
+          });
+
+          wifiSelect.add(list);
+        }
+      });
+
     });
 
     renderDeviceInfo(function() {

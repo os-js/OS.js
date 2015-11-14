@@ -130,7 +130,7 @@
 
     this.pollingInterval = setInterval(function() {
       self.pollNetwork();
-    }, 5000);
+    }, 15000);
 
     this.pollNetwork();
 
