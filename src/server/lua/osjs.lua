@@ -261,6 +261,10 @@ function fs_scandir(request, response, path)
           ctime = stat.ctime or nil
           mtime = stat.mtime or nil
           filemime = get_file_mime(iter)
+
+          if filesize == 0 and filemime ~= "application/octet-stream" then
+            filemime = "inode/x-empty"
+          end
         end
       end
 
