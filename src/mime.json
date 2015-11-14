@@ -13,6 +13,7 @@
     "application/javascript"  : "JavaScript Document",
     "application/json"        : "JSON Document",
     "application/x-python"    : "Python Document",
+    "application/x-lua"       : "Lua Document",
 
     "application/zip"         : "ZIP Archive",
 
@@ -30,6 +31,8 @@
     "video/x-flv"             : "FLV Video",
     "video/x-matroska"        : "MKV Video",
 
+    "application/x-ipkg"      : "Itsy Package",
+
     "osjs/document"           : "OS.js Document",
     "osjs/draw"               : "OS.js Image"
   },
@@ -43,6 +46,7 @@
     ".jpeg"   : "image/jpeg",
     ".js"     : "application/javascript",
     ".json"   : "application/json",
+    ".lua"    : "application/x-lua",
     ".otf"    : "font/opentype",
     ".ttf"    : "font/opentype",
     ".png"    : "image/png",
@@ -79,6 +83,8 @@
     ".txt"    : "text/plain",
     ".log"    : "text/plain",
     ".doc"    : "text/plain",
+
+    ".ipk"    : "application/x-ipkg",
 
     ".odbeat" : "osjs/dbeat",
     ".oplist" : "osjs/playlist",
