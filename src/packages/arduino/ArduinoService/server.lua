@@ -2,6 +2,7 @@
 
 local sys = require "luci.sys"
 local osjs = require "osjs"
+local fs = require "nixio.fs"
 
 local function get_wlans(device)
 
@@ -74,8 +75,27 @@ local function request(m, a, request, response)
   local result = false
 
   if m == "sysinfo" then
-    result = {sys.sysinfo()}
-    result[8] = sys.uptime()
+    local metrics = {sys.sysinfo()}
+    metrics[8] = sys.uptime()
+    result = {
+      metrics = metrics,
+      hostname = sys.hostname(),
+      timezone = fs.readFile("/etc/TZ") or "UTC"
+    }
+  elseif m == "setsysinfo" then
+    local hostname = a.hostname or sys.hostname()
+    local timezone = a.timezone or false
+
+    sys.hostname(hostname)
+
+    if timezone then
+      fs.writefile("/etc/TZ", timezone)
+    end
+
+    result = true
+  elseif m == "reboot" then
+    sys.reboot()
+    result = true
   elseif m == "netdevices" then
     result = sys.net.devices()
   elseif m == "netinfo" then

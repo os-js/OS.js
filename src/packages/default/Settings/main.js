@@ -772,6 +772,14 @@
     var handler = OSjs.Core.getHandler();
     var pacman = OSjs.Core.getPackageManager();
 
+    var inputHostname = scheme.find(this, 'InputArduinoBoardName');
+    var selectTimezone = scheme.find(this, 'SelectArduinoTimezone');
+    var wifiInput = scheme.find(this, 'InputArduinoWIFISSID');
+    var wifiSelectEncrypt = scheme.find(this, 'SelectNetworkWIFISecurity');
+    var wifiPassword = scheme.find(this, 'InputArduinoWIFIPassword');
+    var pass = scheme.find(this, 'InputArduinoPassword');
+    var passc = scheme.find(this, 'InputArduinoPasswordConfirm');
+
     function callAPI(fn, args, cb) {
       var proc = API.getProcess('ArduinoService', true);
       if ( proc ) {
@@ -787,6 +795,7 @@
       cb = cb || function() {};
 
       var view = scheme.find(self, 'ArduinoInfo');
+
       callAPI('sysinfo', {}, function(err, result) {
         if ( err ) {
           alert(err);
@@ -795,7 +804,7 @@
 
         var rows = [];
         var keys = ['system', 'model', 'memtotal', 'memcached', 'membuffers', 'memfree', 'bogomips', 'uptime'];
-        result.forEach(function(val, idx) {
+        result.metrics.forEach(function(val, idx) {
           var key = keys[idx];
           rows.push({
             index: idx,
@@ -809,6 +818,8 @@
 
         view.clear();
         view.add(rows);
+        selectTimezone.set('value', result.timezone);
+        inputHostname.set('value', result.hostname);
 
         cb();
       });
@@ -887,8 +898,6 @@
       renderDeviceInfo();
     });
 
-    var pass = scheme.find(this, 'InputArduinoPassword');
-    var passc = scheme.find(this, 'InputArduinoPasswordConfirm');
     scheme.find(this, 'ButtonArduinoPassword').on('click', function() {
       var pass1 = pass.get('value');
       var pass2 = passc.get('value');
@@ -912,10 +921,6 @@
         renderNetworkInfo(ev.detail);
       }
     });
-
-    var wifiInput = scheme.find(this, 'InputArduinoWIFISSID');
-    var wifiSelectEncrypt = scheme.find(this, 'SelectNetworkWIFISecurity');
-    var wifiPassword = scheme.find(this, 'InputArduinoWIFIPassword');
 
     var wifiSelect = scheme.find(this, 'SelectNetworkWIFISSID').on('change', function(ev) {
       if ( ev.detail ) {
@@ -958,6 +963,15 @@
         }
       });
 
+    });
+
+    scheme.find(this, 'ButtonArduinoConfigureSettings').on('click', function() {
+      callAPI('setsysinfo', {hostname: inputHostname.get('value'), timezone: selectTimezone.get('value')}, function() {
+      });
+    });
+    scheme.find(this, 'ButtonArduinoRestart').on('click', function() {
+      callAPI('reboot', {}, function() {
+      });
     });
 
     renderDeviceInfo(function() {

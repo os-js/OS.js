@@ -476,18 +476,24 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-password data-id="InputArduinoBoardName" />
+      <gui-text data-id="InputArduinoBoardName" />
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
       <gui-label>Timezone</gui-label>
     </gui-vbox-container>
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-select data-id="SelectArduinoTimezone"></gui-select>
+      <gui-select data-id="SelectArduinoTimezone">
+        <gui-select-option data-value="UTC">UTC</gui-select-option>
+      </gui-select>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-button data-id="ButtonArduinoConfigureTimezone">Configure &amp; Restart</gui-button>
+      <gui-button data-id="ButtonArduinoConfigureSettings">Set Configuration</gui-button>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-button data-id="ButtonArduinoRestart">Restart</gui-button>
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
