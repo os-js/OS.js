@@ -442,9 +442,7 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-button-bar>
-        <gui-button data-id="ButtonArduinoInfoRefresh">Refresh</gui-button>
-      </gui-button-bar>
+      <gui-button data-id="ButtonArduinoInfoRefresh">Refresh</gui-button>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>
@@ -459,7 +457,7 @@
           <gui-select data-id="ArduinoNetworkDeviceSelect"></gui-select>
         </gui-hbox-container>
         <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
-          <gui-button data-id="ArduinoNetworkDeviceRefresh">Refresh</gui-button>
+          <gui-button data-id="ArduinoNetworkDevicePoll">Poll</gui-button>
         </gui-hbox-container>
       </gui-hbox>
 
@@ -474,6 +472,10 @@
           </gui-list-view-row>
         </gui-list-view-head>
       </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button data-id="ButtonNetworkDeviceRefresh">Refresh</gui-button>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>

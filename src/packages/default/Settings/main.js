@@ -850,6 +850,10 @@
     }
 
     function renderNetworkInfo(device) {
+      if ( !device ) {
+        return;
+      }
+
       callAPI('netinfo', {}, function(err, response) {
         var view = scheme.find(self, 'ArduinoNetworkDeviceInfo');
         view.clear();
@@ -916,7 +920,7 @@
       });
     });
 
-    scheme.find(this, 'ArduinoNetworkDeviceSelect').on('change', function(ev) {
+    var selectNetworkDevice = scheme.find(this, 'ArduinoNetworkDeviceSelect').on('change', function(ev) {
       if ( ev.detail ) {
         renderNetworkInfo(ev.detail);
       }
@@ -973,9 +977,13 @@
       callAPI('reboot', {}, function() {
       });
     });
-    scheme.find(this, 'ArduinoNetworkDeviceRefresh').on('click', function() {
+    scheme.find(this, 'ArduinoNetworkDevicePoll').on('click', function() {
       renderNetworkDevices();
     });
+    scheme.find(this, 'ButtonNetworkDeviceRefresh').on('click', function() {
+      renderNetworkInfo(selectNetworkDevice.get('value'));
+    });
+
 
     renderDeviceInfo(function() {
       renderNetworkDevices();
