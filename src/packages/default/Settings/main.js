@@ -855,20 +855,24 @@
       }
 
       callAPI('netinfo', {}, function(err, response) {
-        var view = scheme.find(self, 'ArduinoNetworkDeviceInfo');
-        view.clear();
+        var viewi = scheme.find(self, 'ArduinoNetworkDeviceInfo');
+        var viewa = scheme.find(self, 'ArduinoNetworkDeviceArptable');
+
+        viewi.clear();
+        viewa.clear();
 
         if ( err ) {
           alert(err);
           return;
         }
 
-        var rows = [];
+        var keys, rows;
         var netinfo = response.deviceinfo[device];
         var arptable = response.arptable;
 
         if ( netinfo ) {
-          var keys = ['rx_bytes', 'rx_packets', 'rx_errors', 'rx_dropped', 'unknown', 'unknown', 'unknown', 'multicast', 'tx_bytes', 'tx_packets', 'tx_errors', 'tx_dropped', 'unknown', 'collisions', 'unknown', 'unknown'];
+          rows = [];
+          keys = ['rx_bytes', 'rx_packets', 'rx_errors', 'rx_dropped', 'unknown', 'unknown', 'unknown', 'multicast', 'tx_bytes', 'tx_packets', 'tx_errors', 'tx_dropped', 'unknown', 'collisions', 'unknown', 'unknown'];
           netinfo.forEach(function(value, idx) {
             if ( keys[idx] !== 'unknown' ) {
               rows.push({
@@ -879,22 +883,26 @@
               });
             }
           });
+          viewi.add(rows);
         }
 
-        arptable.forEach(function(arp) {
-          if ( arp.Device === device ) {
-            Object.keys(arp).forEach(function(v) {
-              rows.push({
-                columns: [
-                  {label: v.toString()},
-                  {label: arp[v].toString()}
-                ]
+        if ( arptable ) {
+          rows = [];
+          arptable.forEach(function(arp) {
+            if ( arp.Device === device ) {
+              Object.keys(arp).forEach(function(v) {
+                rows.push({
+                  columns: [
+                    {label: v.toString()},
+                    {label: arp[v].toString()}
+                  ]
+                });
               });
-            });
-          }
-        });
+            }
+          });
+          viewa.add(rows);
+        }
 
-        view.add(rows);
       });
     }
 
