@@ -76,6 +76,7 @@ cp -v -r src/packages/arduino/ArduinoService src/packages/target/
 cp -v -r src/packages/arduino/ArduinoLuci src/packages/target/
 cp -v -r src/packages/arduino/ArduinoKernelLog src/packages/target/
 cp -v -r src/packages/arduino/ArduinoSysLog src/packages/target/
+cp -v -r src/packages/arduino/ArduinoProcessViewer src/packages/target/
 
 cp -v src/packages/repositories.json src/packages/repositories.json.old
 echo "[\"target\"]" > src/packages/repositories.json

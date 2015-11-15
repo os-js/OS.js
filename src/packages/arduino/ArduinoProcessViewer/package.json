@@ -1,0 +1,13 @@
+{
+  "className":  "ApplicationArduinoProcessViewer",
+  "name":       "Arduino Process Viewer",
+  "mime":       null,
+  "icon":       "apps/gnome-monitor.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+

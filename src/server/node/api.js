@@ -50,6 +50,7 @@
         }, request, response);
       } catch ( e ) {
         callback("Application API error or missing: " + e.toString(), null);
+        console.warn(e.stack, e.trace);
       }
     };
 

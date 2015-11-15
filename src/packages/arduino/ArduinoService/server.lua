@@ -2,6 +2,7 @@
 
 local sys = require "luci.sys"
 local osjs = require "osjs"
+local nixio = require "nixio"
 local fs = require "nixio.fs"
 
 local function get_wlans(device)
@@ -114,6 +115,8 @@ local function request(m, a, request, response)
     result = get_wlans(device)
   elseif m == "ps" then
     result = sys.process.list()
+  elseif m == "kill" then
+    result = nixio.kill(a.pid, a.signal)
   elseif m == "dmesg" then
     result = sys.dmesg()
   elseif m == "syslog" then
