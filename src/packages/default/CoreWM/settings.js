@@ -57,7 +57,7 @@
       enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,
-      enableSounds        : true,
+      enableSounds        : false,
       invertIconViewColor : false,
       moveOnResize        : true,       // Move windows into viewport on resize
       desktopIcons        : [],
