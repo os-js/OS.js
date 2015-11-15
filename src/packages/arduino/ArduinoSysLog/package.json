@@ -1,8 +1,8 @@
 {
-  "className":  "ApplicationArduinoLuci",
-  "name":       "Arduino Luci",
+  "className":  "ApplicationArduinoSysLog",
+  "name":       "Arduino System Log",
   "mime":       null,
-  "icon":       "categories/applications-system.png",
+  "icon":       "apps/terminal.png",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}

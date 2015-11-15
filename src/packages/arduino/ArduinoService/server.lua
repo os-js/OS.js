@@ -114,6 +114,10 @@ local function request(m, a, request, response)
     result = get_wlans(device)
   elseif m == "ps" then
     result = sys.process.list()
+  elseif m == "dmesg" then
+    result = sys.dmesg()
+  elseif m == "syslog" then
+    result = sys.syslog()
   elseif m == "setpasswd" then
     username = osjs.get_username(request, response)
     result = sys.user.setpasswd(username, a["password"]) == 0
