@@ -416,6 +416,9 @@
     <gui-tab-container data-id="TabArduinoInfo" data-label="Information">
       <gui-fragment data-fragment-id="TabArduinoInfoFragment"></gui-fragment>
     </gui-tab-container>
+    <gui-tab-container data-id="TabArduinoNetworkDevices" data-label="Network Devices">
+      <gui-fragment data-fragment-id="TabArduinoNetworkDevicesFragment"></gui-fragment>
+    </gui-tab-container>
     <gui-tab-container data-id="TabArduinoSystem" data-label="System">
       <gui-fragment data-fragment-id="TabArduinoSystemFragment"></gui-fragment>
     </gui-tab-container>
@@ -439,6 +442,17 @@
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="ButtonArduinoInfoRefresh">Refresh</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabArduinoNetworkDevicesFragment">
+  <gui-vbox class="block-label">
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-select data-id="ArduinoNetworkDeviceSelect"></gui-select>
     </gui-vbox-container>
 
@@ -451,12 +465,6 @@
           </gui-list-view-row>
         </gui-list-view-head>
       </gui-list-view>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-button-bar>
-        <gui-button data-id="ButtonArduinoInfoRefresh">Refresh</gui-button>
-      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>
