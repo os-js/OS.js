@@ -75,7 +75,8 @@ local function request(m, a, request, response)
   local result = false
 
   if m == "sysinfo" then
-    local timzone = fs.readFile("/etc/TZ") or "UTC"
+    local timezone = fs.readfile("/etc/TZ") or "UTC"
+    timezone = timezone:gsub('%W', '')
     local metrics = {sys.sysinfo()}
     metrics[8] = sys.uptime()
 

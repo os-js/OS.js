@@ -452,8 +452,17 @@
 <application-fragment data-id="TabArduinoNetworkDevicesFragment">
   <gui-vbox class="block-label">
 
-    <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-select data-id="ArduinoNetworkDeviceSelect"></gui-select>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+
+      <gui-hbox>
+        <gui-hbox-container data-grow="1" data-expand="true" data-basis="auto">
+          <gui-select data-id="ArduinoNetworkDeviceSelect"></gui-select>
+        </gui-hbox-container>
+        <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+          <gui-button data-id="ArduinoNetworkDeviceRefresh">Refresh</gui-button>
+        </gui-hbox-container>
+      </gui-hbox>
+
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">

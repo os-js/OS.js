@@ -973,6 +973,9 @@
       callAPI('reboot', {}, function() {
       });
     });
+    scheme.find(this, 'ArduinoNetworkDeviceRefresh').on('click', function() {
+      renderNetworkDevices();
+    });
 
     renderDeviceInfo(function() {
       renderNetworkDevices();
