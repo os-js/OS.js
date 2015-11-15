@@ -75,12 +75,14 @@ local function request(m, a, request, response)
   local result = false
 
   if m == "sysinfo" then
+    local timzone = fs.readFile("/etc/TZ") or "UTC"
     local metrics = {sys.sysinfo()}
     metrics[8] = sys.uptime()
+
     result = {
       metrics = metrics,
       hostname = sys.hostname(),
-      timezone = fs.readFile("/etc/TZ") or "UTC"
+      timezone = timezone
     }
   elseif m == "setsysinfo" then
     local hostname = a.hostname or sys.hostname()
