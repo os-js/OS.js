@@ -40,8 +40,7 @@ local wresponse = require "wsapi.response"
 -- ----------------------------------------------------------------------------
 
 function run(wsapi_env)
-
-  local request  = wrequest.new(wsapi_env)
+  local request  = wrequest.new(wsapi_env, {overwrite = true})
   local response = wresponse.new()
 
   if not osjs.DEBUGMODE then
@@ -52,18 +51,40 @@ function run(wsapi_env)
     end
   end
 
-  local path = request.GET["path"]
-  local realpath = osjs.get_real_path(request, response, path)
+  if request.method == "GET" then
+    local path = request.GET["path"]
+    local realpath = osjs.get_real_path(request, response, path)
 
-  if realpath ~= nil then
-    if fs.stat(realpath) then
-      response:content_type(osjs.get_file_mime(realpath))
-      response:write(tostring(fs.readfile(realpath)))
+    if realpath ~= nil then
+      if fs.stat(realpath) then
+        response:content_type(osjs.get_file_mime(realpath))
+        response:write(tostring(fs.readfile(realpath)))
+      else
+        response.status = 404
+      end
     else
-      response.status = 404
+      response.status = 500
     end
   else
-    response.status = 500
+    local path = request.POST["path"]
+    local contents = request.POST.upload.contents
+    local filename = request.POST.upload.name
+    local realpath = osjs.get_real_path(request, response, path)
+
+    response:write(filename)
+
+    if realpath and filename then
+      realpath = realpath .. filename
+
+      if not fs.writefile(realpath, contents) then
+        response.status = 500
+        response:write("Failed to upload file")
+      end
+    else
+      response.status = 500
+      response:write("No filename or path given to upload")
+    end
+
   end
 
   return response:finish()
