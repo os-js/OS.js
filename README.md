@@ -33,7 +33,7 @@ Make sure to read the [installation documentation](https://github.com/anderseven
 
 ## How to contribute
 
-Read the official [contribution docs](https://github.com/andersevenrud/OS.js-v2/blob/master/CONTRIBUTE.md) for more information.
+Read the official [contribution docs](https://github.com/andersevenrud/OS.js-v2/blob/master/CONTRIBUTING.md) for more information.
 
 My contact information is located on my [Github profile](https://github.com/andersevenrud)
 
