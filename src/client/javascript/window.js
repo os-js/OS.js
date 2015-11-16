@@ -90,35 +90,6 @@
     return 301;
   }
 
-  function destroyIframeFixes(root) {
-    root.querySelectorAll('.application-window-iframe-fix').forEach(function(el) {
-      Utils.$remove(el);
-    });
-  }
-
-  function createIframeFixes(root, win) {
-    root.querySelectorAll('gui-richtext, gui-ifram').forEach(function(el) {
-      var pos = Utils.$position(el, el.parentNode);
-      var overlay = document.createElement('div');
-      overlay.style.position = 'absolute';
-      overlay.style.top = pos.top + el.parentNode.scrollTop + 'px';
-      overlay.style.left = pos.left + 'px';
-      overlay.style.width = pos.width + 'px';
-      overlay.style.height = pos.height + 'px';
-      overlay.style.zIndex = Number.MAX_VALUE;
-      overlay.className = 'application-window-iframe-fix';
-
-      Utils.$bind(overlay, 'mousedown', function() {
-        if ( win ) {
-          win._focus();
-        }
-      });
-
-      el.parentNode.appendChild(overlay);
-    });
-
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -539,14 +510,6 @@
     Utils.$bind(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
-    });
-
-    this._addHook('preop', function() {
-      createIframeFixes(windowWrapper);
-    });
-
-    this._addHook('postop', function() {
-      destroyIframeFixes(windowWrapper);
     });
 
     //
@@ -1084,11 +1047,7 @@
       this._fireHook('focus');
     }
 
-    if ( !this._state.focused ) {
-      destroyIframeFixes(this._$root);
-    }
     this._state.focused = true;
-
 
     return true;
   };
@@ -1115,8 +1074,6 @@
     // Force all standard HTML input elements to loose focus
     this._blurGUI();
 
-
-    createIframeFixes(this._$root, this);
 
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;

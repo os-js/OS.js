@@ -367,6 +367,11 @@ application-window[data-dnd-state="true"]:after {
   /*z-index : 10;*/
 }
 
+application-window[data-hint="resizing"] iframe,
+application-window[data-hint="moving"] iframe {
+  pointer-events: none;
+}
+
 application-window-warning  {
   position : absolute;
   top : 0px;
