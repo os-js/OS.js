@@ -311,7 +311,7 @@
    */
   PackageManager.prototype.install = function(file, cb) {
     var config = OSjs.Core.getConfig();
-    var root = config.UserPackage;
+    var root = config.UserPackages;
     var dest = Utils.pathJoin(config.UserPackages, file.filename.replace(/\.zip$/i, ''));
 
     VFS.mkdir(new VFS.File(root), function() {
