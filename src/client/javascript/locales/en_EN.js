@@ -115,7 +115,7 @@
     'DIALOG_ERROR_MESSAGE'   : 'Message',
     'DIALOG_ERROR_SUMMARY'   : 'Summary',
     'DIALOG_ERROR_TRACE'     : 'Trace',
-    'DIALOG_ERROR_BUGREPORT' : 'Bugreport',
+    'DIALOG_ERROR_BUGREPORT' : 'Report Bug',
 
     'DIALOG_FILE_SAVE'      : 'Save',
     'DIALOG_FILE_OPEN'      : 'Open',

@@ -84,6 +84,7 @@
 
   ErrorDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
+    var self = this;
 
     this.scheme.find(this, 'Message').set('value', this.args.message, true);
     this.scheme.find(this, 'Summary').set('value', this.args.error);
@@ -95,7 +96,15 @@
 
     if ( this.args.bugreport ) {
       this.scheme.find(this, 'ButtonBugReport').on('click', function() {
-        window.open('//github.com/andersevenrud/OS.js-v2/issues/new');
+        var title = encodeURIComponent('');
+        var body = [self.args.message];
+        if ( self.args.error ) {
+          body.push('\n> ' + self.args.error.replace('\n', ' '));
+        }
+        if ( self.traceMessage ) {
+          body.push('\n```\n' + self.traceMessage + '\n```');
+        }
+        window.open('//github.com/andersevenrud/OS.js-v2/issues/new?title=' + title + '&body=' + encodeURIComponent(body.join('\n')));
       });
     } else {
       this.scheme.find(this, 'ButtonBugReport').hide();
