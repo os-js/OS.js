@@ -773,40 +773,47 @@
     if ( name.match(/^\//) ) {
       return name;
     }
-
-    var path = '';
-    var appname = null;
-    var config = OSjs.Core.getConfig();
-
     name = name.replace(/^\.\//, '');
 
-    if ( app instanceof OSjs.Core.Process ) {
-      if ( app.__path ) {
-        appname = app.__path;
-      }
-    } else if ( typeof app === 'string' ) {
-      appname = app;
+    function getName() {
+      var appname = null;
+      if ( app instanceof OSjs.Core.Process ) {
+        if ( app.__path ) {
+          appname = app.__path;
+        }
+      } else if ( typeof app === 'string' ) {
+        appname = app;
 
-      var pacman = OSjs.Core.getPackageManager();
-      var packs = pacman ? pacman.getPackages() : {};
-      if ( packs[appname] ) {
-        appname = packs[appname].path;
+        var pacman = OSjs.Core.getPackageManager();
+        var packs = pacman ? pacman.getPackages() : {};
+        if ( packs[appname] ) {
+          appname = packs[appname].path;
+        }
       }
+      return appname;
     }
 
-    var dir = new OSjs.VFS.File(OSjs.Core.getConfig());
-    if ( appname ) {
-      var root;
-      if ( appname.match(/^(.*)\/(.*)$/) ) {
-        root = OSjs.Core.getConfig().PackageURI;
-        path = root + '/' + appname + '/' + name;
-      } else {
-        root = config.FSURI;
-        path = root + OSjs.Utils.pathJoin(config.UserPackages, appname, name);
+    function getResourcePath() {
+      var dir = new OSjs.VFS.File(OSjs.Core.getConfig());
+      var appname = getName();
+      var path = '';
+
+      if ( appname ) {
+        var root;
+        if ( appname.match(/^(.*)\/(.*)$/) ) {
+          root = OSjs.Core.getConfig().PackageURI;
+          path = root + '/' + appname + '/' + name;
+        } else {
+          var config = OSjs.Core.getConfig();
+          root = config.FSURI;
+          path = root + OSjs.Utils.pathJoin(config.UserPackages, appname, name);
+        }
       }
+
+      return OSjs.Utils.checkdir(path);
     }
 
-    return OSjs.Utils.checkdir(path);
+    return getResourcePath();
   }
 
   /**
