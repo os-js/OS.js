@@ -42,7 +42,7 @@
 
     var cfg = {
       animations          : compability.css.animation,
-      fullscreen          : false,
+      fullscreen          : true,
       desktopMargin       : 5,
       wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
       backgroundColor     : '#572a79',
