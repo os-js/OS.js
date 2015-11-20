@@ -45,6 +45,7 @@
       fullscreen          : true,
       desktopMargin       : 5,
       wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
+      icon                : 'osjs-white.png',
       backgroundColor     : '#572a79',
       fontFamily          : 'Karla',
       theme               : 'default',
