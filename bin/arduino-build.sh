@@ -91,7 +91,7 @@ mv -v src/client/themes/fonts src/client/themes/fonts.old
 mkdir src/client/themes/fonts
 cp -v -r src/client/themes/fonts.old/Karla src/client/themes/fonts/Karla
 
-grunt
+grunt all dist-index
 
 rm -rf src/client/themes/styles
 mv -v src/client/themes/styles.old src/client/themes/styles

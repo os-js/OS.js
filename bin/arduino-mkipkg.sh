@@ -52,7 +52,7 @@ cp -r $SRCDIR/mime.json $OUTDIR/data/opt/osjs/
 cp -r $SRCDIR/settings.json $OUTDIR/data/opt/osjs/
 
 # Create control file
-cp src/templates/ipkg-control $OUTDIR/ipkg/control_tmpl
+cp src/templates/arduino/ipkg-control $OUTDIR/ipkg/control_tmpl
 awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/control_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/ipkg/control
 
 # Create control file
