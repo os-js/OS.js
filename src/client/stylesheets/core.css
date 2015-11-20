@@ -80,8 +80,9 @@ body, input, button, textarea, label, select {
   #Login input[type=password] {
     display : block;
     width : 100%;
-    height : 20px;
-    padding : 10px;
+    height : 24px;
+    padding : 4px;
+    line-height : 12px;
     box-sizing : border-box;
   }
   #Login input[type=submit] {
