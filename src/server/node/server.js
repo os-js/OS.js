@@ -43,6 +43,7 @@
     directory:  null, // Automatic
     appdirs:    null, // Automatic, but overrideable
     tmpdir:     '/tmp',
+    handler:    'demo',
     vfs:        {
       'homes':   _path.join(ROOTDIR, 'vfs/home'),
       'tmp':     _path.join(ROOTDIR, 'vfs/tmp'),
@@ -317,6 +318,7 @@
       CONFIG.directory = _fs.realpathSync('.');
     }
 
+    console.info('-->', 'Loading handler', settConfig.handler);
     HANDLER = require(_path.join(ROOTDIR, 'src', 'server', 'node', 'handlers', settConfig.handler , 'handler.js'));
     if ( !HANDLER.checkPrivilege ) {
       HANDLER.checkPrivilege = checkPrivilege;
