@@ -42,10 +42,10 @@
 
     var cfg = {
       animations          : compability.css.animation,
-      fullscreen          : false,
+      fullscreen          : true,
       desktopMargin       : 5,
-      wallpaper           : 'osjs:///themes/wallpapers/arduino.png',
-      backgroundColor     : '#d4e5e1',
+      wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
+      backgroundColor     : '#572a79',
       fontFamily          : 'Karla',
       theme               : 'default',
       icons               : 'default',
@@ -57,7 +57,7 @@
       enableIconView      : false,
       enableSwitcher      : true,
       enableHotkeys       : true,
-      enableSounds        : false,
+      enableSounds        : true,
       invertIconViewColor : false,
       moveOnResize        : true,       // Move windows into viewport on resize
       desktopIcons        : [],
