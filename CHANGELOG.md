@@ -1,3 +1,25 @@
+# 2.0.0-alpha68
+
+* VFS: Small fixes to mounting
+* CoreWM: Force merging of default settings to prevent errors when loading old user settings
+* CoreWM: Added 'Fullscreen' toggle (Thanks @rontav)
+* CoreWM: Added 'icon' setting for the main application button
+* API: Moved Application::_call() to Process::_call()
+* API: You can now specify if you want to show loading indicator on _call()
+* GUI: Menu now supports HTML type entries
+* Utils: Prevent error on content-type in ajax()
+* UX: Improve clickable areas for certain areas (Thanks @rontav)
+* UX: Improve IFrame Application mouse handling
+* UX: Login screen improvments
+* node: Added debugging
+* config: AutoStart defined processes loaded before session
+* config: Updated MIME database
+* build: moved settings.json to src/server/
+* build: 'Service' type package is now always singular
+* build: You can now specify template for dist/ and dist-dev/ files
+* Misc: Github bugreport improvments
+* Misc: Fixed typo in readme
+
 # 2.0.0-alpha67
 
 * Utils: ajax() fixes for IE
