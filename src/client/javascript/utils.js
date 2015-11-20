@@ -1514,7 +1514,7 @@
 
     function onReadyStateChange() {
       if ( request.readyState === 4 ) {
-        var ctype = request.getResponseHeader('content-type');
+        var ctype = request.getResponseHeader('content-type') || '';
         var result = getResponse(ctype);
 
         if ( request.status === 200 || request.status === 201 ) {
