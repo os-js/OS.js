@@ -103,25 +103,14 @@
       OSjs.API.blurMenu();
     },
 
-    fullscreen: (function(){
-      var icons = {};
-      
-      return function(e){
-        if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
-          if( !icons['enter'] ){
-            icons['enter'] = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');
-          }
-          document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0].src = icons['enter'];
-          
-        }
-        else{
-          if( !icons['exit'] ){
-            icons['exit'] = OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16');
-          }
-          document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0].src = icons['exit'];
-        }
-      };
-    })(),
+    fullscreen: function(ev) {
+      var el = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0];
+      if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
+        el.getElementsByTagName('img')[0].src = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');
+      } else {
+        el.getElementsByTagName('img')[0].src = OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16');
+      }
+    },
 
     mousedown: function(ev) {
       var wm = OSjs.Core.getWindowManager();
