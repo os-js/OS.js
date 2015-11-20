@@ -64,8 +64,6 @@
     /**
      * Output
      */
-    out_index:                _path.join(ROOT, 'dist', 'index.html'),
-    out_dev_index:            _path.join(ROOT, 'dist-dev', 'index.html'),
     out_php_config:           _path.join(ROOT, 'src', 'server', 'php', 'settings.php'),
     out_node_config:          _path.join(ROOT, 'src', 'server', 'node', 'settings.json'),
     out_lua_config:           _path.join(ROOT, 'src', 'server', 'lua', 'settings.json'),
@@ -660,8 +658,9 @@
    */
   function createIndex(grunt, arg, dist) {
     var cfg = generateBuildConfig();
-    var tpl = readFile(_path.join(PATHS.templates, 'index.html')).toString();
-    var out = PATHS.out_index;
+    var tpldir = _path.join(PATHS.templates, 'dist', cfg.dist.template);
+    var outdir = _path.join(ROOT, dist || 'dist-dev');
+
     var scripts = [];
     var styles = [];
 
@@ -677,8 +676,6 @@
       addScript('osjs.js');
       addScript('locales.js');
     } else {
-      out = PATHS.out_dev_index;
-
       cfg.javascript.forEach(function(i) {
         addScript(i.replace('src/client/javascript', 'client/javascript'));
       });
@@ -694,11 +691,14 @@
       addScript('schemes.js');
     }
 
-    tpl = replaceAll(tpl, '%STYLES%', styles.join('\n'));
-    tpl = replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
-    tpl = replaceAll(tpl, '%HANDLER%', cfg.handler);
+    var tpl = readFile(_path.join(tpldir, 'index.html')).toString();
+        tpl = replaceAll(tpl, '%STYLES%', styles.join('\n'));
+        tpl = replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
+        tpl = replaceAll(tpl, '%HANDLER%', cfg.handler);
 
-    writeFile(out, tpl);
+    writeFile(_path.join(outdir, 'index.html'), tpl);
+    copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
+    copyFile(_path.join(tpldir, 'favicon.ico'), _path.join(outdir, 'favicon.ico'));
   }
 
   /////////////////////////////////////////////////////////////////////////////

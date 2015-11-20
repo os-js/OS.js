@@ -1,4 +1,7 @@
 {
+  "dist": {
+    "template": "default"
+  },
   "locales": [
     "src/client/javascript/locales/en_EN.js",
     "src/client/javascript/locales/no_NO.js",
