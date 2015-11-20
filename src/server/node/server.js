@@ -294,7 +294,7 @@
    */
   (function() {
 
-    var settConfig = readConfig("src/server/node/settings.json");
+    var settConfig = readConfig("src/server/settings.json");
     if ( settConfig !== false ) {
       for ( var i in settConfig ) {
         if ( settConfig.hasOwnProperty(i) && CONFIG.hasOwnProperty(i) ) {

@@ -65,7 +65,7 @@
      * Output
      */
     out_php_config:           _path.join(ROOT, 'src', 'server', 'php', 'settings.php'),
-    out_node_config:          _path.join(ROOT, 'src', 'server', 'node', 'settings.json'),
+    out_server_config:        _path.join(ROOT, 'src', 'server', 'settings.json'),
     out_client_js:            _path.join(ROOT, 'dist', 'osjs.js'),
     out_client_css:           _path.join(ROOT, 'dist', 'osjs.css'),
     out_client_dialogs:       _path.join(ROOT, 'dist', 'dialogs.html'),
@@ -562,13 +562,13 @@
       writeFile(PATHS.out_php_config, tpl);
     }
 
-    function buildNode() {
+    function buildServer() {
       var nodeSettings = clone(cfg.server);
       nodeSettings.extensions = loadExtensions;
 
       // Write
       var tpl = JSON.stringify(nodeSettings, null, 4);
-      writeFile(PATHS.out_node_config, tpl);
+      writeFile(PATHS.out_server_config, tpl);
     }
 
     function buildClient(dist) {
@@ -629,7 +629,7 @@
 
     try {
       buildPHP();
-      buildNode();
+      buildServer();
       buildClient('dist');
       buildClient('dist-dev');
     } catch ( e ) {
