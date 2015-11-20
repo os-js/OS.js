@@ -50,6 +50,7 @@
   ArduinoService.prototype.destroy = function() {
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
+      wm.destroyNotificationIcon('_ArduinoNotification');
       wm.destroyNotificationIcon('_ArduinoNetworkNotification');
       wm.destroyNotificationIcon('_ArduinoWIFINotification');
     }
@@ -102,6 +103,28 @@
       ];
       OSjs.API.createMenu(mnu, ev);
     }
+
+    function showContextMenu(ev) {
+      var mnu = [
+        {title: 'Open Settings', onClick: function(ev) {
+          API.launch('ApplicationArduinoSettings');
+        }}
+      ];
+      OSjs.API.createMenu(mnu, ev);
+    }
+
+    wm.createNotificationIcon('_ArduinoNotification', {
+      onContextMenu: showContextMenu,
+      onClick: showContextMenu,
+      onInited: function(el) {
+        if ( el ) {
+          var img = document.createElement('img');
+          img.title = img.alt = 'Arduino Device';
+          img.src = API.getIcon('devices/audio-card.png');
+          el.appendChild(img);
+        }
+      }
+    });
 
     wm.createNotificationIcon('_ArduinoNetworkNotification', {
       onContextMenu: showNetworkContextMenu,
