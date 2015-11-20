@@ -51,6 +51,7 @@
   PanelItemAppMenu.prototype.init = function() {
     var self = this;
     var root = PanelItem.prototype.init.apply(this, arguments);
+    var wm = OSjs.Core.getWindowManager();
 
     this.$container = document.createElement('ul');
     root.appendChild(this.$container);
@@ -58,7 +59,7 @@
     var sel = document.createElement('li');
     sel.className = 'Button';
     sel.title = API._('LBL_APPLICATIONS');
-    sel.innerHTML = '<img alt="" src="' + API.getIcon('arduino-osjs.png') + '" />';
+    sel.innerHTML = '<img alt="" src="' + API.getIcon(wm.getSetting('icon') || 'osjs-white.png') + '" />';
 
     Utils.$bind(sel, 'click', function(ev) {
       ev.preventDefault();
