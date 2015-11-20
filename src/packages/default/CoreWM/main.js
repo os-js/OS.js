@@ -87,43 +87,45 @@
 
         return false;
       }
+
       function toggleFullscreen() {
         var target = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0];
-        if( target.getAttribute('src') === icons['enter'] ){
+        if ( target.getAttribute('src') === icons['enter']  ) {
           var docElm = document.documentElement;
-          if (docElm.requestFullscreen){
+          if ( docElm.requestFullscreen ) {
             docElm.requestFullscreen();
-          }
-          else if (docElm.mozRequestFullScreen){
+          } else if ( docElm.mozRequestFullScreen ) {
             docElm.mozRequestFullScreen();
-          }
-          else if (docElm.webkitRequestFullScreen){
+          } else if ( docElm.webkitRequestFullScreen ) {
             docElm.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
           }
-        }
-        else{
-          if (document.webkitCancelFullScreen){
+        } else {
+          if ( document.webkitCancelFullScreen ) {
             document.webkitCancelFullScreen();
           }
-          else if (document.mozCancelFullScreen){
+          else if ( document.mozCancelFullScreen ) {
             document.mozCancelFullScreen();
           }
-          else if (document.exitFullscreen){
+          else if ( document.exitFullscreen ) {
             document.exitFullscreen();
           }
         }
       }
-      self.createNotificationIcon('_FullscreenNotification', {
-        onClick: toggleFullscreen,
-        onInited: function(el) {
-          if ( el ) {
-            var img = document.createElement('img');
-            img.title = img.alt = 'Enter Fullscreen';
-            img.src = icons['enter'];
-            el.appendChild(img);
+
+      if ( self.getSetting('fullscreen') ) {
+        self.createNotificationIcon('_FullscreenNotification', {
+          onClick: toggleFullscreen,
+          onInited: function(el) {
+            if ( el ) {
+              var img = document.createElement('img');
+              img.title = img.alt = 'Enter Fullscreen';
+              img.src = icons['enter'];
+              el.appendChild(img);
+            }
           }
-        }
-      });
+        });
+      }
+
       self.createNotificationIcon('_HandlerUserNotification', {
         onContextMenu: displayMenu,
         onClick: displayMenu,
