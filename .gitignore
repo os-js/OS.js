@@ -14,8 +14,8 @@ vfs/*/*
 
 src/conf/999-*
 src/server/node/node_modules/
-src/server/node/settings.json
 src/server/php/settings.php
+src/server/settings.json
 
 src/installer/installer.exe
 
