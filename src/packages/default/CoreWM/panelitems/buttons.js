@@ -42,8 +42,13 @@
       buttons: [
         {
           title: API._('LBL_SETTINGS'),
-          icon: 'arduino-settings.png',
+          icon: 'categories/applications-system.png',
           launch: 'ApplicationSettings'
+        },
+        {
+          title: 'Arduino Settings',
+          icon: 'arduino-settings.png',
+          launch: 'ApplicationArduinoSettings'
         }
       ]
     }]);

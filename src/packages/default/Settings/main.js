@@ -30,7 +30,7 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  var categories = ['theme', 'desktop', 'panel', 'user', 'packages', 'arduino'];
+  var categories = ['theme', 'desktop', 'panel', 'user', 'packages'];
 
   function fetchJSON(cb) {
     var url = 'http://andersevenrud.github.io/OS.js-v2/store/packages.json';
@@ -200,7 +200,7 @@
 
   ApplicationSettingsWindow.prototype.setContainer = function(idx, save) {
     var found;
-    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages', 'TabsArduino'];
+    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
     if ( typeof idx === 'string' ) {
       idx = Math.max(0, categories.indexOf(idx));
     }
@@ -240,7 +240,6 @@
     this.initPanelTab(wm, scheme, init);
     this.initUserTab(wm, scheme, init);
     this.initPackagesTab(wm, scheme, init);
-    this.initArduinoTab(wm, scheme, init);
   };
 
   /**
@@ -762,241 +761,6 @@
         renderStore();
       }
     });
-  };
-
-  /**
-   * Arduino
-   */
-  ApplicationSettingsWindow.prototype.initArduinoTab = function(wm, scheme, init) {
-    var self = this;
-    var handler = OSjs.Core.getHandler();
-    var pacman = OSjs.Core.getPackageManager();
-
-    var inputHostname = scheme.find(this, 'InputArduinoBoardName');
-    var selectTimezone = scheme.find(this, 'SelectArduinoTimezone');
-    var wifiInput = scheme.find(this, 'InputArduinoWIFISSID');
-    var wifiSelectEncrypt = scheme.find(this, 'SelectNetworkWIFISecurity');
-    var wifiPassword = scheme.find(this, 'InputArduinoWIFIPassword');
-    var pass = scheme.find(this, 'InputArduinoPassword');
-    var passc = scheme.find(this, 'InputArduinoPasswordConfirm');
-
-    function callAPI(fn, args, cb) {
-      var proc = API.getProcess('ArduinoService', true);
-      if ( proc ) {
-        self._toggleLoading(true);
-        proc.externalCall(fn, args, function(err, response) {
-          self._toggleLoading(false);
-          return cb(err, response);
-        });
-      }
-    }
-
-    function renderDeviceInfo(cb) {
-      cb = cb || function() {};
-
-      var view = scheme.find(self, 'ArduinoInfo');
-
-      callAPI('sysinfo', {}, function(err, result) {
-        if ( err ) {
-          alert(err);
-          return;
-        }
-
-        var rows = [];
-        var keys = ['system', 'model', 'memtotal', 'memcached', 'membuffers', 'memfree', 'bogomips', 'uptime'];
-        result.metrics.forEach(function(val, idx) {
-          var key = keys[idx];
-          rows.push({
-            index: idx,
-            value: key,
-            columns: [
-              {label: key.toString()},
-              {label: val.toString()}
-            ]
-          });
-        });
-
-        view.clear();
-        view.add(rows);
-        selectTimezone.set('value', result.timezone);
-        inputHostname.set('value', result.hostname);
-
-        cb();
-      });
-    }
-
-    function renderNetworkDevices() {
-      callAPI('netdevices', {}, function(err, result) {
-        var rows = [{label: '--- SELECT NETWORK DEVICE ---', value: null}];
-
-        if ( err ) {
-          alert(err);
-        } else {
-          result.forEach(function(iter) {
-            rows.push({label: iter, value: iter});
-          });
-        }
-
-        var list = scheme.find(self, 'ArduinoNetworkDeviceSelect');
-        list.clear();
-        list.add(rows);
-      });
-    }
-
-
-    if ( !init ) {
-      renderDeviceInfo();
-      return;
-    }
-
-    function renderNetworkInfo(device) {
-      if ( !device ) {
-        return;
-      }
-
-      callAPI('netinfo', {}, function(err, response) {
-        var viewi = scheme.find(self, 'ArduinoNetworkDeviceInfo');
-        var viewa = scheme.find(self, 'ArduinoNetworkDeviceArptable');
-
-        viewi.clear();
-        viewa.clear();
-
-        if ( err ) {
-          alert(err);
-          return;
-        }
-
-        var keys, rows;
-        var netinfo = response.deviceinfo[device];
-        var arptable = response.arptable;
-
-        if ( netinfo ) {
-          rows = [];
-          keys = ['rx_bytes', 'rx_packets', 'rx_errors', 'rx_dropped', 'unknown', 'unknown', 'unknown', 'multicast', 'tx_bytes', 'tx_packets', 'tx_errors', 'tx_dropped', 'unknown', 'collisions', 'unknown', 'unknown'];
-          netinfo.forEach(function(value, idx) {
-            if ( keys[idx] !== 'unknown' ) {
-              rows.push({
-                columns: [
-                  {label: keys[idx].toString()},
-                  {label: value.toString()}
-                ]
-              });
-            }
-          });
-          viewi.add(rows);
-        }
-
-        if ( arptable ) {
-          rows = [];
-          arptable.forEach(function(arp) {
-            if ( arp.Device === device ) {
-              Object.keys(arp).forEach(function(v) {
-                rows.push({
-                  columns: [
-                    {label: v.toString()},
-                    {label: arp[v].toString()}
-                  ]
-                });
-              });
-            }
-          });
-          viewa.add(rows);
-        }
-
-      });
-    }
-
-    scheme.find(this, 'ButtonArduinoInfoRefresh').on('click', function() {
-      renderDeviceInfo();
-    });
-
-    scheme.find(this, 'ButtonArduinoPassword').on('click', function() {
-      var pass1 = pass.get('value');
-      var pass2 = passc.get('value');
-
-      if ( !pass1 || !pass2 || (pass1 !== pass2) ) {
-        alert('Passwords do not match');
-        return;
-      }
-
-      callAPI('setpasswd', {password: pass1}, function(err, result) {
-        err = result ? 'Password changed successfully' : (err || 'Failed to set password');
-        alert(err);
-        if ( !err ) {
-          pass.set('value', '');
-        }
-      });
-    });
-
-    var selectNetworkDevice = scheme.find(this, 'ArduinoNetworkDeviceSelect').on('change', function(ev) {
-      if ( ev.detail ) {
-        renderNetworkInfo(ev.detail);
-      }
-    });
-
-    var wifiSelect = scheme.find(this, 'SelectNetworkWIFISSID').on('change', function(ev) {
-      if ( ev.detail ) {
-        var data = null;
-        try {
-          data = JSON.parse(ev.detail);
-        } catch ( e ) {}
-
-        console.warn(data);
-
-        if ( data ) {
-          var enc = data.encryption.toLowerCase().replace(/[^A-z0-9]/, '');
-          if ( enc == 'unknown' ) { enc = 'open'; }
-
-          wifiPassword.set('value', '');
-          wifiInput.set('value', data.bssid);
-          wifiSelectEncrypt.set('value', enc);
-        }
-      }
-    });
-
-    scheme.find(this, 'ButtonArduinoRefreshWIFI').on('click', function(ev) {
-      callAPI('iwscan', {device: 'radio0'}, function(err, result) {
-        wifiSelect.clear();
-
-        if ( !err && result ) {
-          var list = [{
-            label: '--- SELECT FROM LIST ---',
-            value: null
-          }];
-
-          (result || []).forEach(function(iter) {
-            list.push({
-              label: Utils.format('{0} ({1}, {2}% signal)', iter.ssid, iter.encryption, iter.signal),
-              value: JSON.stringify(iter)
-            });
-          });
-
-          wifiSelect.add(list);
-        }
-      });
-
-    });
-
-    scheme.find(this, 'ButtonArduinoConfigureSettings').on('click', function() {
-      callAPI('setsysinfo', {hostname: inputHostname.get('value'), timezone: selectTimezone.get('value')}, function() {
-      });
-    });
-    scheme.find(this, 'ButtonArduinoRestart').on('click', function() {
-      callAPI('reboot', {}, function() {
-      });
-    });
-    scheme.find(this, 'ArduinoNetworkDevicePoll').on('click', function() {
-      renderNetworkDevices();
-    });
-    scheme.find(this, 'ButtonNetworkDeviceRefresh').on('click', function() {
-      renderNetworkInfo(selectNetworkDevice.get('value'));
-    });
-
-
-    renderDeviceInfo(function() {
-      renderNetworkDevices();
-    });
-
   };
 
   /**

@@ -71,7 +71,7 @@ cp -v -r src/packages/default/FileManager src/packages/target/
 cp -v -r src/packages/default/CoreWM src/packages/target/
 cp -v -r src/packages/default/Preview src/packages/target/
 cp -v -r src/packages/default/Settings src/packages/target/
-cp -v -r src/packages/default/Settings src/packages/target/
+cp -v -r src/packages/arduino/ArduinoSettings src/packages/target/
 cp -v -r src/packages/arduino/ArduinoService src/packages/target/
 cp -v -r src/packages/arduino/ArduinoLuci src/packages/target/
 cp -v -r src/packages/arduino/ArduinoKernelLog src/packages/target/

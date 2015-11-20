@@ -1,0 +1,13 @@
+{
+  "className":  "ApplicationArduinoSettings",
+  "name":       "Arduino Settings",
+  "mime":       null,
+  "icon":       "arduino-settings.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+

@@ -24,10 +24,6 @@
                 <gui-list-view-column data-icon="stock://32x32/apps/system-software-install.png">Packages</gui-list-view-column>
               </gui-list-view-row>
 
-              <gui-list-view-row data-value="arduino">
-                <gui-list-view-column data-icon="stock://32x32/arduino.png">Arduino</gui-list-view-column>
-              </gui-list-view-row>
-
             </gui-list-view-body>
           </gui-list-view>
         </gui-hbox-container>
@@ -45,7 +41,6 @@
               <gui-fragment data-fragment-id="TabsPanel"></gui-fragment>
               <gui-fragment data-fragment-id="TabsUser"></gui-fragment>
               <gui-fragment data-fragment-id="TabsPackages"></gui-fragment>
-              <gui-fragment data-fragment-id="TabsArduino"></gui-fragment>
             </gui-vbox-container>
           </gui-vbox>
 
@@ -403,189 +398,6 @@
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-label>LBL_FONT</gui-label>
       <gui-input-modal data-id="FontName"></gui-input-modal>
-    </gui-vbox-container>
-  </gui-vbox>
-</application-fragment>
-
-<!-- ****************************************************************** -->
-<!--                              ARDUINO                               -->
-<!-- ****************************************************************** -->
-
-<application-fragment data-id="TabsArduino">
-  <gui-tabs data-id="TabsArduinoDevice">
-    <gui-tab-container data-id="TabArduinoInfo" data-label="Information">
-      <gui-fragment data-fragment-id="TabArduinoInfoFragment"></gui-fragment>
-    </gui-tab-container>
-    <gui-tab-container data-id="TabArduinoNetworkDevices" data-label="Network Devices">
-      <gui-fragment data-fragment-id="TabArduinoNetworkDevicesFragment"></gui-fragment>
-    </gui-tab-container>
-    <gui-tab-container data-id="TabArduinoSystem" data-label="System">
-      <gui-fragment data-fragment-id="TabArduinoSystemFragment"></gui-fragment>
-    </gui-tab-container>
-    <gui-tab-container data-id="TabArduinoWIFI" data-label="WIFI">
-      <gui-fragment data-fragment-id="TabArduinoWIFIFragment"></gui-fragment>
-    </gui-tab-container>
-  </gui-tabs>
-</application-fragment>
-
-<application-fragment data-id="TabArduinoInfoFragment">
-  <gui-vbox class="block-label">
-    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-list-view data-id="ArduinoInfo" data-multiple="false">
-        <gui-list-view-head>
-          <gui-list-view-row>
-            <gui-list-view-column data-basis="100px" data-grow="0" data-shrink="1">Key</gui-list-view-column>
-            <gui-list-view-column data-grow="1" data-shrink="0">Value</gui-list-view-column>
-          </gui-list-view-row>
-        </gui-list-view-head>
-      </gui-list-view>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-button data-id="ButtonArduinoInfoRefresh">Refresh</gui-button>
-    </gui-vbox-container>
-  </gui-vbox>
-</application-fragment>
-
-<application-fragment data-id="TabArduinoNetworkDevicesFragment">
-  <gui-vbox class="block-label">
-
-    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-
-      <gui-hbox>
-        <gui-hbox-container data-grow="1" data-expand="true" data-basis="auto">
-          <gui-select data-id="ArduinoNetworkDeviceSelect"></gui-select>
-        </gui-hbox-container>
-        <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
-          <gui-button data-id="ArduinoNetworkDevicePoll">Poll</gui-button>
-        </gui-hbox-container>
-      </gui-hbox>
-
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-list-view data-id="ArduinoNetworkDeviceInfo" data-multiple="false">
-        <gui-list-view-head>
-          <gui-list-view-row>
-            <gui-list-view-column data-basis="100px" data-grow="0" data-shrink="1">Key</gui-list-view-column>
-            <gui-list-view-column data-grow="1" data-shrink="0">Value</gui-list-view-column>
-          </gui-list-view-row>
-        </gui-list-view-head>
-      </gui-list-view>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-list-view data-id="ArduinoNetworkDeviceArptable" data-multiple="false">
-        <gui-list-view-head>
-          <gui-list-view-row>
-            <gui-list-view-column data-basis="100px" data-grow="0" data-shrink="1">Key</gui-list-view-column>
-            <gui-list-view-column data-grow="1" data-shrink="0">Value</gui-list-view-column>
-          </gui-list-view-row>
-        </gui-list-view-head>
-      </gui-list-view>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-button data-id="ButtonNetworkDeviceRefresh">Refresh</gui-button>
-    </gui-vbox-container>
-  </gui-vbox>
-</application-fragment>
-
-<application-fragment data-id="TabArduinoSystemFragment">
-  <gui-vbox class="block-label">
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>Board name</gui-label>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-text data-id="InputArduinoBoardName" />
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>Timezone</gui-label>
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-select data-id="SelectArduinoTimezone">
-        <gui-select-option data-value="UTC">UTC</gui-select-option>
-      </gui-select>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-button data-id="ButtonArduinoConfigureSettings">Set Configuration</gui-button>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-button data-id="ButtonArduinoRestart">Restart</gui-button>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>&nbsp;</gui-label>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>Password</gui-label>
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-password data-id="InputArduinoPassword" data-placeholder="System password" />
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-password data-id="InputArduinoPasswordConfirm" data-placeholder="System password (repeat)" />
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-button data-id="ButtonArduinoPassword">Change Password</gui-button>
-    </gui-vbox-container>
-  </gui-vbox>
-</application-fragment>
-
-<application-fragment data-id="TabArduinoWIFIFragment">
-
-  <gui-vbox class="block-label">
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>Wireless Name (SSID)</gui-label>
-    </gui-vbox-container>
-    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-
-      <gui-hbox>
-        <gui-hbox-container data-grow="1" data-expand="true" data-basis="auto">
-          <gui-select data-id="SelectNetworkWIFISSID">
-          </gui-select>
-        </gui-hbox-container>
-        <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
-          <gui-button data-id="ButtonArduinoRefreshWIFI">Scan</gui-button>
-        </gui-hbox-container>
-      </gui-hbox>
-
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-text data-id="InputArduinoWIFISSID" />
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>Security</gui-label>
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-select data-id="SelectNetworkWIFISecurity">
-        <gui-select-option data-value="open">None</gui-select-option>
-        <gui-select-option data-value="wep">WEP</gui-select-option>
-        <gui-select-option data-value="wpa">WPA</gui-select-option>
-        <gui-select-option data-value="wpawpa2">WPA/WPA2</gui-select-option>
-        <gui-select-option data-value="wpa2">WPA2</gui-select-option>
-      </gui-select>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>Password</gui-label>
-    </gui-vbox-container>
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-password data-id="InputArduinoWIFIPassword" />
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-label>&nbsp;</gui-label>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-      <gui-button data-id="ButtonArduinoConfigureWIFI">Configure &amp; Restart</gui-button>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>
