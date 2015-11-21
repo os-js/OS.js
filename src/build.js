@@ -576,7 +576,7 @@
       settings.Dist = dist;
 
       // Write
-      var tpl = getTemplate('settings.js');
+      var tpl = getTemplate('dist/settings.js');
       tpl = tpl.replace('%CONFIG%', JSON.stringify(settings, null, 4));
       if ( dist === 'dist-dev' ) {
         writeFile(PATHS.out_client_dev_config, tpl);
@@ -874,7 +874,7 @@
       }
     });
 
-    var tpl = readFile(_path.join(PATHS.templates, 'schemes.js')).toString();
+    var tpl = readFile(_path.join(PATHS.templates, 'dist', 'schemes.js')).toString();
     tpl = tpl.replace('%JSON%', JSON.stringify(tree, null, 4));
     writeFile(PATHS.out_client_schemes, tpl);
   }
@@ -1166,7 +1166,7 @@
         list[p] = manifest;
       });
 
-      var tpl = readFile(_path.join(PATHS.templates, 'packages.js')).toString();
+      var tpl = readFile(_path.join(PATHS.templates, 'dist', 'packages.js')).toString();
       var content = tpl.replace('%PACKAGES%', JSON.stringify(normalizeManifest(list), null, 4));
       writeFile(out, content);
     }
