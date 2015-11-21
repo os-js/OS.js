@@ -1,0 +1,27 @@
+{
+  "repositories": ["default", "extras"],
+
+  "client" : {
+    "Version" : "2.0-custom-build",
+
+    "AutoStart": ["ApplicationFileManager"],
+
+    "Mountpoints": {
+      "root": {
+        "enabled":     true,
+        "description": "Root",
+        "icon":        "places/folder-publicshare.png"
+      }
+    }
+  },
+
+  "server" : {
+    "tmpdir": "/mnt/tmp",
+    "vfs": {
+      "mounts": {
+        "root": "/"
+      }
+    }
+  }
+
+}
