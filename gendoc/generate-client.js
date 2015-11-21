@@ -352,7 +352,7 @@ Array.prototype.unique = function(){
   }
 
   function generateIndex(menu, fileList) {
-    var pageContent = _fs.readFileSync(_path.join(TPLDIR, 'doc-index.html'));
+    var pageContent = _fs.readFileSync(_path.join(TPLDIR, 'doc/index.html'));
     generatePage([pageContent], 'index.html', fileList, menu);
   }
 
@@ -362,7 +362,7 @@ Array.prototype.unique = function(){
     }
 
     var tpl = runReplace(
-      _fs.readFileSync(_path.join(TPLDIR, 'doc-tpl.html')),
+      _fs.readFileSync(_path.join(TPLDIR, 'doc/tpl.html')),
       menu,
       buffer
     );
@@ -605,12 +605,12 @@ Array.prototype.unique = function(){
   _fs.mkdirpSync(OUTDIR);
 
   _fs.copy(
-    _path.join(TPLDIR, 'doc-style.css'),
+    _path.join(TPLDIR, 'doc/style.css'),
     _path.join(OUTDIR, 'main.css')
   );
 
   _fs.copy(
-    _path.join(TPLDIR, 'doc-logo.png'),
+    _path.join(TPLDIR, 'doc/logo.png'),
     _path.join(OUTDIR, 'logo.png')
   );
 
