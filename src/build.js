@@ -761,15 +761,15 @@
 
     var typemap = {
       application: {
-        src: 'package',
+        src: 'application',
         cpy: ['main.js', 'main.css', 'package.json', 'scheme.html']
       },
       service: {
-        src: 'package-service',
+        src: 'service',
         cpy: ['main.js', 'package.json']
       },
       extension: {
-        src: 'package-extension',
+        src: 'extension',
         cpy: ['extension.js', 'package.json']
       }
     };
@@ -778,7 +778,7 @@
       throw new Error('You have to specify a name');
     }
 
-    var src = _path.join(PATHS.templates, typemap[type].src);
+    var src = _path.join(PATHS.templates, 'package', typemap[type].src);
     var dst = _path.join(PATHS.packages, repo, name);
 
     if ( !_fs.existsSync(src) ) {
