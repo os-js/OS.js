@@ -78,9 +78,6 @@ cp -v -r src/packages/arduino/ArduinoKernelLog src/packages/target/
 cp -v -r src/packages/arduino/ArduinoSysLog src/packages/target/
 cp -v -r src/packages/arduino/ArduinoProcessViewer src/packages/target/
 
-cp -v src/repositories.json src/repositories.json.old
-echo "[\"target\"]" > src/repositories.json
-
 rm -rf src/client/themes/styles.old
 mv -v src/client/themes/styles src/client/themes/styles.old
 mkdir src/client/themes/styles
@@ -108,7 +105,6 @@ for AD in $APPS; do
 done
 
 rm -rf src/packages/target
-mv -v src/repositories.json.old src/repositories.json
 
 #
 # Template

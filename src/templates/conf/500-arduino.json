@@ -1,6 +1,8 @@
 {
   "handler": "arduino",
 
+  "repositories": ["target"],
+
   "dist": {
     "template": "arduino"
   },
