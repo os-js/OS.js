@@ -698,7 +698,7 @@
    * Create Apache vhost
    */
   function createApacheVhost(grunt, arg) {
-    var src = _path.join(PATHS.templates, 'apache-vhost.conf');
+    var src = _path.join(PATHS.templates, 'apache/vhost.conf');
     var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
       return '';
     });
@@ -727,10 +727,10 @@
     }
 
     if ( arg ) {
-      generate_htaccess('apache-prod-htaccess.conf', arg);
+      generate_htaccess('apache/prod-htaccess.conf', arg);
     } else {
-      generate_htaccess('apache-prod-htaccess.conf', 'dist');
-      generate_htaccess('apache-dev-htaccess.conf', 'dist-dev');
+      generate_htaccess('apache/prod-htaccess.conf', 'dist');
+      generate_htaccess('apache/dev-htaccess.conf', 'dist-dev');
     }
   }
 
