@@ -57,7 +57,7 @@
     icons:        _path.join(ROOT, 'src', 'client', 'themes', 'icons'),
     styles:       _path.join(ROOT, 'src', 'client', 'themes', 'styles'),
     dialogs:      _path.join(ROOT, 'src', 'client', 'dialogs.html'),
-    repos:        _path.join(ROOT, 'src', 'packages', 'repositories.json'),
+    repos:        _path.join(ROOT, 'src', 'repositories.json'),
     packages:     _path.join(ROOT, 'src', 'packages'),
     mime:         _path.join(ROOT, 'src', 'mime.json'),
 
