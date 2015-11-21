@@ -1,0 +1,12 @@
+{
+  "className": "EXAMPLEService",
+  "type": "service",
+  "name": "EXAMPLEService",
+  "icon": "categories/applications-system.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    }
+  ]
+}

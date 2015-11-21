@@ -774,16 +774,33 @@
   /**
    * Creates a package
    */
-  function createPackage(grunt, arg) {
+  function createPackage(grunt, arg, type) {
     var tmp  = (arg || '').split('/');
     var repo = tmp.length > 1 ? tmp[0] : 'default';
     var name = tmp.length > 1 ? tmp[1] : arg;
+    type = type || 'application';
+
+
+    var typemap = {
+      application: {
+        src: 'package',
+        cpy: ['main.js', 'main.css', 'package.json', 'scheme.html']
+      },
+      service: {
+        src: 'package-service',
+        cpy: ['main.js', 'package.json']
+      },
+      extension: {
+        src: 'package-extension',
+        cpy: ['extension.js', 'package.json']
+      }
+    };
 
     if ( !name ) {
       throw new Error('You have to specify a name');
     }
 
-    var src = _path.join(PATHS.templates, 'package');
+    var src = _path.join(PATHS.templates, typemap[type].src);
     var dst = _path.join(PATHS.packages, repo, name);
 
     if ( !_fs.existsSync(src) ) {
@@ -802,10 +819,9 @@
 
     copyFile(src, dst);
 
-    rep(_path.join(dst, 'main.js'));
-    rep(_path.join(dst, 'main.css'));
-    rep(_path.join(dst, 'package.json'));
-    rep(_path.join(dst, 'scheme.html'));
+    typemap[type].cpy.forEach(function(c) {
+      rep(_path.join(dst, c));
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
