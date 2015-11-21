@@ -95,6 +95,7 @@
       removeNotification();
 
       wm.createNotificationIcon('BroadwayService', {
+        image: API.getIcon('status/network-transmit-receive.png'),
         onContextMenu: function(ev) {
           displayMenu(ev);
           return false;
@@ -102,13 +103,6 @@
         onClick: function(ev) {
           displayMenu(ev);
           return false;
-        },
-        onInited: function(el) {
-          if ( el.firstChild ) {
-            var img = document.createElement('img');
-            img.src = API.getIcon('status/network-transmit-receive.png');
-            el.firstChild.appendChild(img);
-          }
         }
       });
     }

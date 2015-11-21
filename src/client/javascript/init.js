@@ -104,6 +104,7 @@
     },
 
     fullscreen: function(ev) {
+      // FIXME: Get actual cached object and not DOM element using setImage() etc
       var el = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0];
       if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
         el.getElementsByTagName('img')[0].src = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');

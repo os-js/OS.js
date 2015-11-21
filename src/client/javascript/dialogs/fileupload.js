@@ -126,7 +126,7 @@
 
 
       if ( this._wmref ) {
-        this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc});
+        this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc, image: false});
       }
 
       OSjs.VFS.internalUpload(file, this.args.dest, function(type, ev) {

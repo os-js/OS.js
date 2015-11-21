@@ -40,15 +40,22 @@
     this.name           = name;
     this.opts           = opts;
     this.$container     = document.createElement('div');
+    this.$image         = opts.image ? document.createElement('img') : null;
     this.onCreated      = opts.onCreated     || function() {};
     this.onInited       = opts.onInited      || function() {};
     this.onDestroy      = opts.onDestroy     || function() {};
     this.onClick        = opts.onClick       || function() {};
     this.onContextMenu  = opts.onContextMenu || function() {};
 
+    this._build(name);
+    this.onCreated.call(this);
+  };
+
+  NotificationAreaItem.prototype._build = function(name) {
+    var self = this;
     var classNames = ['NotificationArea', 'NotificationArea_' + name];
-    if ( opts.className ) {
-      classNames.push(opts.className);
+    if ( this.opts.className ) {
+      classNames.push(this.opts.className);
     }
 
     this.$container.className = classNames.join(' ');
@@ -56,7 +63,6 @@
       this.$container.title = this.opts.tooltip;
     }
 
-    var self = this;
     this.$container.addEventListener('click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
@@ -72,24 +78,38 @@
       return false;
     });
 
-    this.onCreated.call(this);
+    if ( this.$image ) {
+      this.$image.title = this.opts.title || '';
+      this.$image.src   = this.opts.image || 'about:blank';
+      this.$container.appendChild(this.$image);
+    }
   };
 
   NotificationAreaItem.prototype.init = function(root) {
     root.appendChild(this.$container);
 
-    this.onInited.call(this, this.$container);
+    this.onInited.call(this, this.$container, this.$image);
+  };
+
+  NotificationAreaItem.prototype.setImage = function(src) {
+    if ( this.$image ) {
+      this.$image.src = src;
+    }
+    this.opts.image = src;
+  };
+
+  NotificationAreaItem.prototype.setTitle = function(title) {
+    if ( this.$image ) {
+      this.$image.title = title;
+    }
+    this.opts.title = title;
   };
 
   NotificationAreaItem.prototype.destroy = function() {
     this.onDestroy.call(this);
 
-    if ( this.$container ) {
-      if ( this.$container.parentNode ) {
-        this.$container.parentNode.removeChild(this.$container);
-      }
-      this.$container = null;
-    }
+    this.$image     = Utils.$remove(this.$image);
+    this.$container = Utils.$remove(this.$container);
   };
 
   /**
