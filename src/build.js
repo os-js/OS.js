@@ -57,7 +57,6 @@
     icons:        _path.join(ROOT, 'src', 'client', 'themes', 'icons'),
     styles:       _path.join(ROOT, 'src', 'client', 'themes', 'styles'),
     dialogs:      _path.join(ROOT, 'src', 'client', 'dialogs.html'),
-    repos:        _path.join(ROOT, 'src', 'repositories.json'),
     packages:     _path.join(ROOT, 'src', 'packages'),
     mime:         _path.join(ROOT, 'src', 'mime.json'),
 
@@ -307,28 +306,9 @@
   /**
    * Reads MIME
    */
-  var readMIME = (function readPackageRepositories() {
+  var readMIME = (function readMIME() {
     function read() {
       var raw = _fs.readFileSync(PATHS.mime);
-      var json = JSON.parse(raw);
-      return json;
-    }
-
-    var _cache = null;
-    return function() {
-      if ( _cache === null ) {
-        _cache = read();
-      }
-      return _cache;
-    };
-  })();
-
-  /**
-   * Reads package repositories
-   */
-  var readPackageRepositories = (function readPackageRepositories() {
-    function read() {
-      var raw = _fs.readFileSync(PATHS.repos);
       var json = JSON.parse(raw);
       return json;
     }
@@ -384,8 +364,8 @@
 
     function read(srcDir) {
       var list = {};
-      var repos = readPackageRepositories();
-      repos.forEach(function(r) {
+      var cfg = generateBuildConfig();
+      (cfg.repositories || []).forEach(function(r) {
         var dir = _path.join(srcDir || PATHS.packages, r);
         getDirectories(dir).forEach(function(p) {
           var pdir = _path.join(dir, p);
@@ -525,7 +505,6 @@
   function createConfigurationFiles(grunt, arg) {
     var cfg = generateBuildConfig();
     var themes = readThemeMetadata();
-    var repos = readPackageRepositories();
     var mime = readMIME();
     var extensions = getCoreExtensions();
 
@@ -613,7 +592,6 @@
       settings.Fonts.list = fonts.concat(settings.Fonts.list);
       settings.MIME = mime.descriptions;
       settings.EXTMIME = mime.mapping;
-      settings.Repositories = repos;
       settings.Preloads = preloads;
       settings.Dist = dist;
 
@@ -783,15 +761,15 @@
 
     var typemap = {
       application: {
-        src: 'package',
+        src: 'application',
         cpy: ['main.js', 'main.css', 'package.json', 'scheme.html']
       },
       service: {
-        src: 'package-service',
+        src: 'service',
         cpy: ['main.js', 'package.json']
       },
       extension: {
-        src: 'package-extension',
+        src: 'extension',
         cpy: ['extension.js', 'package.json']
       }
     };
@@ -800,7 +778,7 @@
       throw new Error('You have to specify a name');
     }
 
-    var src = _path.join(PATHS.templates, typemap[type].src);
+    var src = _path.join(PATHS.templates, 'package', typemap[type].src);
     var dst = _path.join(PATHS.packages, repo, name);
 
     if ( !_fs.existsSync(src) ) {

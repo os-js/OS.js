@@ -2,6 +2,8 @@
   "handler": "demo",
   "connection": "http",
 
+  "repositories": ["default"],
+
   "client" : {
     "Version" : "2.0-alpha68"
   },
