@@ -36,6 +36,7 @@ AddCharset UTF-8 .html
   AddType image/jpeg .jpeg
   AddType application/javascript .js
   AddType application/json .json
+  AddType application/x-lua .lua
   AddType font/opentype .otf
   AddType font/opentype .ttf
   AddType image/png .png
@@ -62,6 +63,7 @@ AddCharset UTF-8 .html
   AddType text/plain .txt
   AddType text/plain .log
   AddType text/plain .doc
+  AddType application/x-ipkg .ipk
   AddType osjs/dbeat .odbeat
   AddType osjs/playlist .oplist
   AddType osjs/document .odoc

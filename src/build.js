@@ -58,7 +58,6 @@
     styles:       _path.join(ROOT, 'src', 'client', 'themes', 'styles'),
     dialogs:      _path.join(ROOT, 'src', 'client', 'dialogs.html'),
     packages:     _path.join(ROOT, 'src', 'packages'),
-    mime:         _path.join(ROOT, 'src', 'mime.json'),
 
     /**
      * Output
@@ -291,7 +290,7 @@
    */
   function createWebserverConfig(grunt, arg, src, mimecb) {
     var dist = arg === 'dist-dev' ? 'dist-dev' : 'dist';
-    var mime = readMIME();
+    var mime = generateBuildConfig().mime;
     var mimes = mimecb(mime);
     var tpl = _fs.readFileSync(src).toString();
     tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, dist));
@@ -302,25 +301,6 @@
   /////////////////////////////////////////////////////////////////////////////
   // MANIFESTS
   /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Reads MIME
-   */
-  var readMIME = (function readMIME() {
-    function read() {
-      var raw = _fs.readFileSync(PATHS.mime);
-      var json = JSON.parse(raw);
-      return json;
-    }
-
-    var _cache = null;
-    return function() {
-      if ( _cache === null ) {
-        _cache = read();
-      }
-      return _cache;
-    };
-  })();
 
   /**
    * Gets a list of core extensions
@@ -505,7 +485,7 @@
   function createConfigurationFiles(grunt, arg) {
     var cfg = generateBuildConfig();
     var themes = readThemeMetadata();
-    var mime = readMIME();
+    var mime = cfg.mime;
     var extensions = getCoreExtensions();
 
     var loadExtensions = [];
@@ -688,7 +668,7 @@
    */
   function createApacheHtaccess(grunt, arg) {
     var mimes = [];
-    var mime = readMIME();
+    var mime = generateBuildConfig().mime;
 
     Object.keys(mime.mapping).forEach(function(i) {
       if ( i.match(/^\./) ) {
