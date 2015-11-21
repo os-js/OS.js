@@ -40,7 +40,7 @@
     this.name           = name;
     this.opts           = opts;
     this.$container     = document.createElement('div');
-    this.$image         = opts.image ? document.createElement('img') : null;
+    this.$image         = (opts.image || opts.icon) ? document.createElement('img') : null;
     this.onCreated      = opts.onCreated     || function() {};
     this.onInited       = opts.onInited      || function() {};
     this.onDestroy      = opts.onDestroy     || function() {};
@@ -80,7 +80,7 @@
 
     if ( this.$image ) {
       this.$image.title = this.opts.title || '';
-      this.$image.src   = this.opts.image || 'about:blank';
+      this.$image.src   = (this.opts.image || this.opts.icon || 'about:blank');
       this.$container.appendChild(this.$image);
     }
   };
@@ -89,6 +89,10 @@
     root.appendChild(this.$container);
 
     this.onInited.call(this, this.$container, this.$image);
+  };
+
+  NotificationAreaItem.prototype.setIcon = function(src) {
+    return this.setImage(src);
   };
 
   NotificationAreaItem.prototype.setImage = function(src) {
