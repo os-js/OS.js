@@ -200,9 +200,9 @@
     /**
      * Task: Create a new package
      */
-    grunt.registerTask('create-package', 'Create a new package/application', function(arg) {
+    grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type]', function(arg1, arg2) {
       grunt.log.writeln('Creating package...');
-      _build.createPackage(grunt, arg);
+      _build.createPackage(grunt, arg1, arg2);
     });
 
     /**
