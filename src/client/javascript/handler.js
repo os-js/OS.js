@@ -344,27 +344,24 @@
       userSettings = {};
     }
 
-    document.getElementById('LoadingScreen').style.display = 'block';
-
-    var config = OSjs.Core.getConfig();
-    var found = Utils.getUserLocale();
-    var curLocale = found || config.Locale;
-
     this.userData = userData;
 
     // Ensure we get the user-selected locale configured from WM
-    var result = OSjs.Core.getSettingsManager().get('Core');
-    if ( !result ) {
-      try {
-        result = userSettings.Core;
-      } catch ( e )  {}
+    function getUserLocale() {
+      var curLocale = Utils.getUserLocale() || OSjs.Core.getConfig().Locale;
+      var result = OSjs.Core.getSettingsManager().get('Core');
+      if ( !result ) {
+        try {
+          result = userSettings.Core;
+        } catch ( e )  {}
+      }
+      return result ? (result.Locale || curLocale) : curLocale;
     }
-    var locale = result ? (result.Locale || curLocale) : curLocale;
 
-    API.setLocale(locale);
+    document.getElementById('LoadingScreen').style.display = 'block';
 
+    API.setLocale(getUserLocale());
     OSjs.Core.getSettingsManager().init(userSettings);
-
     callback();
   };
 

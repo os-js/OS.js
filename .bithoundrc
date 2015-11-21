@@ -1,5 +1,7 @@
 {
   "ignore": [
+    "src/build.js",
+
     "src/client/javascript/handlers/**",
     "src/client/stylesheets/**",
     "src/client/themes/**",

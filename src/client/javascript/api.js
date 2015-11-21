@@ -64,6 +64,8 @@
    * This is a private class and can only be retrieved through
    * OSjs.API.getServiceNotificationIcon()
    *
+   * TODO: Make use of actual object instead of DOM references
+   *
    * @see OSjs.API.getServiceNotificationIcon()
    * @class
    */
@@ -86,20 +88,14 @@
     }
 
     if ( wm ) {
-
       wm.createNotificationIcon('ServiceNotificationIcon', {
+        image: OSjs.API.getIcon('status/gtk-dialog-authentication.png'),
         onContextMenu: show,
         onClick: show,
-        onInited: function(el) {
+        onInited: function(el, img) {
           self.element = el;
-
-          if ( el.firstChild ) {
-            var img = document.createElement('img');
-            img.src = OSjs.API.getIcon('status/gtk-dialog-authentication.png');
-            el.firstChild.appendChild(img);
-            self.icon = img;
-            self._updateIcon();
-          }
+          self.icon = img;
+          self._updateIcon();
         }
       });
     }

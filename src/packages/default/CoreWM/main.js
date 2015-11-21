@@ -72,10 +72,6 @@
 
     function initNotifications() {
       var user = OSjs.Core.getHandler().getUserData();
-      var icons = {
-        enter: OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'),
-        exit: OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16')
-      };
 
       function displayMenu(ev) {
         OSjs.API.createMenu([{
@@ -89,8 +85,10 @@
       }
 
       function toggleFullscreen() {
+        // FIXME: In init.js there is a note about this
         var target = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0];
-        if ( target.getAttribute('src') === icons['enter']  ) {
+        var check = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');
+        if ( target.getAttribute('src') === check  ) {
           var docElm = document.documentElement;
           if ( docElm.requestFullscreen ) {
             docElm.requestFullscreen();
@@ -114,30 +112,17 @@
 
       if ( self.getSetting('fullscreen') ) {
         self.createNotificationIcon('_FullscreenNotification', {
-          onClick: toggleFullscreen,
-          onInited: function(el) {
-            if ( el ) {
-              var img = document.createElement('img');
-              img.title = img.alt = 'Enter Fullscreen';
-              img.src = icons['enter'];
-              el.appendChild(img);
-            }
-          }
+          image: OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'),
+          title: 'Enter fullscreen',
+          onClick: toggleFullscreen
         });
       }
 
       self.createNotificationIcon('_HandlerUserNotification', {
+        image: API.getIcon('status/avatar-default.png', '16x16'),
+        title: API._('TITLE_SIGNED_IN_AS_FMT', user.username),
         onContextMenu: displayMenu,
-        onClick: displayMenu,
-        onInited: function(el) {
-          if ( el ) {
-            var img = document.createElement('img');
-            img.title = API._('TITLE_SIGNED_IN_AS_FMT', user.username);
-            img.alt = img.title;
-            img.src = API.getIcon('status/avatar-default.png', '16x16');
-            el.appendChild(img);
-          }
-        }
+        onClick: displayMenu
       });
     }
 

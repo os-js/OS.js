@@ -127,8 +127,8 @@
   ZipArchiver.prototype.extract = function(file, destination, args) {
     args = args || {};
 
-    args.onprogress = args.onprogress || function(filename, current, total) {};
-    args.oncomplete = args.oncomplete || function(error, warnings, result) {};
+    args.onprogress = args.onprogress || function(/*filename, current, total*/) {};
+    args.oncomplete = args.oncomplete || function(/*error, warnings, result*/) {};
 
     var extracted = [];
     var warnings = [];
