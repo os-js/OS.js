@@ -864,17 +864,17 @@
     }
 
     function buildJS() {
-      var header = readFile(_path.join(PATHS.templates, 'dist-header.js'));
+      var header = readFile(_path.join(PATHS.templates, 'dist/header.js'));
       return header + _concat(cfg.javascript, 'js');
     }
 
     function buildLocales() {
-      var header = readFile(_path.join(PATHS.templates, 'dist-header.js'));
+      var header = readFile(_path.join(PATHS.templates, 'dist/header.js'));
       return header + _concat(cfg.locales, 'js');
     }
 
     function buildCSS() {
-      var header = readFile(_path.join(PATHS.templates, 'dist-header.css'));
+      var header = readFile(_path.join(PATHS.templates, 'dist/header.css'));
       return header + _concat(cfg.stylesheets, 'css');
     }
 
