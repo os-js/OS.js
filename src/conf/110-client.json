@@ -1,48 +1,56 @@
 {
   "client" : {
-    "RootURI":          "/",
-    "APIURI":           "/API",
-    "FSURI":            "/FS",
-    "MetadataURI":      "/packages.js",
-    "ThemeURI":         "/themes/styles",
-    "SoundURI":         "/themes/sounds",
-    "IconURI":          "/themes/icons",
-    "PackageURI":       "/packages",
-    "Home":             "home:///",
-    "UserPackages":     "home:///.packages",
-    "UserMetadata":     "home:///.packages/packages.json",
+    "RootURI":      "/",
+    "APIURI":       "/API",
+    "FSURI":        "/FS",
+    "MetadataURI":  "/packages.js",
+    "ThemeURI":     "/themes/styles",
+    "SoundURI":     "/themes/sounds",
+    "IconURI":      "/themes/icons",
+    "PackageURI":   "/packages",
+
+    "Home":          "home:///",
+    "UserPackages":  "home:///.packages",
+    "UserMetadata":  "home:///.packages/packages.json",
+
     "Handler":          "%HANDLER%",
     "Connection":       "%CONNECTION%",
-    "MaxUploadSize":    2097152,
-    "BugReporting":     true,
-    "Preloads":         {},
     "Locale":           "en_EN",
+    "BugReporting":     true,
+    "MaxUploadSize":    2097152,
     "VersionAppend":    "",
     "ShowQuitWarning":  false,
+
+    "Preloads":  {},
+    "AutoStart": [],
+    "Languages": {},
+    "Styles":    [],
+    "Sounds":    {},
+    "Icons":     {},
+    "MIME":      {},
+    "WM":        {},
+
     "VFS": {
       "GoogleDrive": {
         "Enabled": false
       },
+
       "OneDrive": {
         "Enabled": false
       },
+
       "Dropbox": {
         "Enabled": false,
         "ClientKey": ""
       },
+
       "Mountpoints": {
         "shared": {
-          "enabled": true,
+          "enabled":     true,
           "description": "Shared",
-          "icon": "places/folder-publicshare.png"
+          "icon":        "places/folder-publicshare.png"
         }
       }
-    },
-
-    "Languages": {},
-
-    "System" : {
-      "AutoStart": []
     },
 
     "GoogleAPI": {
@@ -53,12 +61,9 @@
       "ClientId": ""
     },
 
-    "Styles"  : [],
-    "Sounds"  : {},
-    "Icons"   : {},
-    "Fonts"   : {
-      "default" : "Karla",
-      "list"    : [
+    "Fonts": {
+      "default": "Karla",
+      "list": [
         "Arial",
         "Arial Black",
         "Sans-serif",
@@ -72,8 +77,6 @@
         "Symbol",
         "Webdings"
       ]
-    },
-    "MIME"    : {},
-    "WM"      : {}
+    }
   }
 }

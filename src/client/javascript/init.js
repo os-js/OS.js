@@ -383,7 +383,7 @@
       var start = [];
 
       try {
-        start = config.System.AutoStart;
+        start = config.AutoStart;
       } catch ( e ) {
         console.warn('doAutostart() exception', e, e.stack);
       }
