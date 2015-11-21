@@ -114,41 +114,23 @@
     }
 
     wm.createNotificationIcon('_ArduinoNotification', {
+      image: API.getIcon('devices/audio-card.png'),
+      title: 'Arduino Device',
       onContextMenu: showContextMenu,
-      onClick: showContextMenu,
-      onInited: function(el) {
-        if ( el ) {
-          var img = document.createElement('img');
-          img.title = img.alt = 'Arduino Device';
-          img.src = API.getIcon('devices/audio-card.png');
-          el.appendChild(img);
-        }
-      }
+      onClick: showContextMenu
     });
 
     wm.createNotificationIcon('_ArduinoNetworkNotification', {
+      image: API.getIcon('devices/network-wired.png'),
+      title: 'Arduino Network Devices',
       onContextMenu: showNetworkContextMenu,
-      onClick: showNetworkContextMenu,
-      onInited: function(el) {
-        if ( el ) {
-          var img = document.createElement('img');
-          img.title = img.alt = 'Arduino Network Devices';
-          img.src = API.getIcon('devices/network-wired.png');
-          el.appendChild(img);
-        }
-      }
+      onClick: showNetworkContextMenu
     });
     wm.createNotificationIcon('_ArduinoWIFINotification', {
+      image: API.getIcon('devices/network-wireless.png'),
+      title: 'Open Settings',
       onContextMenu: showWIFIContextMenu,
-      onClick: showWIFIContextMenu,
-      onInited: function(el) {
-        if ( el ) {
-          var img = document.createElement('img');
-          img.title = img.alt = 'Open Settings';
-          img.src = API.getIcon('devices/network-wireless.png');
-          el.appendChild(img);
-        }
-      }
+      onClick: showWIFIContextMenu
     });
 
     this.pollingInterval = setInterval(function() {
