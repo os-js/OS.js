@@ -35,21 +35,324 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/utils/misc.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Utils.<a href="#osjs-utils-format">format()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-cleanhtml">cleanHTML()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-argumentdefaults">argumentDefaults()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-mergeobject">mergeObject()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-cloneobject">cloneObject()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-fixjson">fixJSON()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-converttorgb">convertToRGB()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-converttohex">convertToHEX()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-inverthex">invertHEX()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-utils-format">
+<h2 id="osjs-utils-format-format-">OSjs.Utils.format(format, ...)</h2>
+<pre>
+Format a string (almost like sprintf)
+</pre>
 
 
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://stackoverflow.com/a/4673436">http://stackoverflow.com/a/4673436</a></li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>format</td>
+<td>String</td>
+<td>String format</td>
+</tr>
+<tr>
+<td>...</td>
+<td>String</td>
+<td>Insert into format</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The formatted string</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-cleanhtml">
+<h2 id="osjs-utils-cleanhtml-html-">OSjs.Utils.cleanHTML(html)</h2>
+<pre>
+Remove whitespaces and newlines from HTML document
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>html</td>
+<td>String</td>
+<td>HTML string input</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-argumentdefaults">
+<h2 id="osjs-utils-argumentdefaults-args-defaults-undef-">OSjs.Utils.argumentDefaults(args, defaults, undef)</h2>
+<pre>
+Wrapper for merging function argument dictionaries
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Given function Dictionary</td>
+</tr>
+<tr>
+<td>defaults</td>
+<td>Object</td>
+<td>Defaults Dictionary</td>
+</tr>
+<tr>
+<td>undef</td>
+<td>boolean</td>
+<td>Check with &#39;undefined&#39;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-mergeobject">
+<h2 id="osjs-utils-mergeobject-obj1-obj2-">OSjs.Utils.mergeObject(obj1, obj2)</h2>
+<pre>
+Deep-merge to objects
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>obj1</td>
+<td>Object</td>
+<td>Object to merge to</td>
+</tr>
+<tr>
+<td>obj2</td>
+<td>Object</td>
+<td>Object to merge with</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The merged object</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-cloneobject">
+<h2 id="osjs-utils-cloneobject-o-">OSjs.Utils.cloneObject(o)</h2>
+<pre>
+Clone a object
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>o</td>
+<td>Object</td>
+<td>The object to clone</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>An identical object</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-fixjson">
+<h2 id="osjs-utils-fixjson-response-">OSjs.Utils.fixJSON(response)</h2>
+<pre>
+Fixes JSON for HTTP requests (in case they were returned as string)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>response</td>
+<td>Mixed</td>
+<td>The data</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>JSON</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-converttorgb">
+<h2 id="osjs-utils-converttorgb-hex-">OSjs.Utils.convertToRGB(hex)</h2>
+<pre>
+Convert HEX to RGB
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hex</td>
+<td>String</td>
+<td>The hex string (with #)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>RGB in form of {r:0, g:0, b:0}</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-converttohex">
+<h2 id="osjs-utils-converttohex-rgb-r-g-b-">OSjs.Utils.convertToHEX(rgb, r, g, b)</h2>
+<pre>
+Convert RGB to HEX
+
+OR
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rgb</td>
+<td>Object</td>
+<td>The RGB object in form of {r:0, g:0, b:0}</td>
+</tr>
+<tr>
+<td>r</td>
+<td>int</td>
+<td>Red value</td>
+</tr>
+<tr>
+<td>g</td>
+<td>int</td>
+<td>Green value</td>
+</tr>
+<tr>
+<td>b</td>
+<td>int</td>
+<td>Blue value</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Hex string (with #)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-inverthex">
+<h2 id="osjs-utils-inverthex-hex-">OSjs.Utils.invertHEX(hex)</h2>
+<pre>
+Ivert HEX color
+</pre>
+
+
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://stackoverflow.com/a/9601429/1236086">http://stackoverflow.com/a/9601429/1236086</a></li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hex</td>
+<td>String</td>
+<td>Hex string (With #)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Inverted hex (With #)</em></p>
+
+</div>
+<h1>Classes</h1>
+<p><i>Generated: Sat Nov 21 2015 23:05:29 GMT+0100 (CET)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

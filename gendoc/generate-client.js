@@ -626,7 +626,11 @@ Array.prototype.unique = function(){
     'src/client/javascript/handler.js',
     'src/client/javascript/vfs.js',
     'src/client/javascript/gui.js',
-    'src/client/javascript/utils.js',
+    'src/client/javascript/utils/compability.js',
+    'src/client/javascript/utils/dom.js',
+    'src/client/javascript/utils/fs.js',
+    'src/client/javascript/utils/misc.js',
+    'src/client/javascript/utils/xhr.js',
     'src/client/javascript/settings-manager.js',
     'src/client/javascript/package-manager.js',
 

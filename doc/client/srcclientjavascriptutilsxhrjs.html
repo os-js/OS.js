@@ -35,21 +35,174 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/utils/xhr.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Utils.<a href="#osjs-utils-ajax">ajax()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-preload">preload()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-utils-ajax">
+<h2 id="osjs-utils-ajax-args-">OSjs.Utils.ajax(args)</h2>
+<pre>
+Common function for handling all types of XHR calls
+
+including download/upload and JSONP
+</pre>
 
 
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>Aguments (see below)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="options-for-args-">Options for <em>args</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>String</td>
+<td>The URL</td>
+</tr>
+<tr>
+<td>method</td>
+<td>String</td>
+<td>HTTP Call method: (POST/GET, default = GET)</td>
+</tr>
+<tr>
+<td>body</td>
+<td>Mixed</td>
+<td>Optional body to send (for POST)</td>
+</tr>
+<tr>
+<td>responseType</td>
+<td>String</td>
+<td>HTTP Response type (default = null)</td>
+</tr>
+<tr>
+<td>requestHeaders</td>
+<td>Object</td>
+<td>Tuple with headers (default = null)</td>
+</tr>
+<tr>
+<td>json</td>
+<td>boolean</td>
+<td>Handle as a JSON request/response (default = false)</td>
+</tr>
+<tr>
+<td>jsonp</td>
+<td>boolean</td>
+<td>Handle as a JSONP request (default = false)</td>
+</tr>
+<tr>
+<td>onerror</td>
+<td>Function</td>
+<td>onerror callback</td>
+</tr>
+<tr>
+<td>onsuccess</td>
+<td>Function</td>
+<td>onsuccess callback</td>
+</tr>
+<tr>
+<td>oncreated</td>
+<td>Function</td>
+<td>oncreated callback</td>
+</tr>
+<tr>
+<td>onfailed</td>
+<td>Function</td>
+<td>onfailed callback</td>
+</tr>
+<tr>
+<td>oncanceled</td>
+<td>Function</td>
+<td>oncanceled callback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-preload">
+<h2 id="osjs-utils-preload-list-callback-callbackprogress-">OSjs.Utils.preload(list, callback, callbackProgress)</h2>
+<pre>
+Preload a list of resources
+
+Format of list is:
+
+[
+
+ {
+
+ "type": "javascript" // or "stylesheet",
+
+ "src": "url/uri"
+
+ }
+
+]
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list</td>
+<td>Array</td>
+<td>The list of resources</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback when done</td>
+</tr>
+<tr>
+<td>callbackProgress</td>
+<td>Function</td>
+<td>Callback on progress</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<h1>Classes</h1>
+<p><i>Generated: Sat Nov 21 2015 23:05:29 GMT+0100 (CET)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

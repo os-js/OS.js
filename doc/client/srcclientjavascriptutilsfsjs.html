@@ -35,21 +35,442 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/utils/fs.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Utils.<a href="#osjs-utils-filext">filext()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-dirname">dirname()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-filename">filename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-humanfilesize">humanFileSize()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-escapefilename">escapeFilename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-replacefileextension">replaceFileExtension()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-replacefilename">replaceFilename()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-pathjoin">pathJoin()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getfilenamerange">getFilenameRange()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-btoaurlsafe">btoaUrlsafe()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-atoburlsafe">atobUrlsafe()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-btoautf">btoaUtf()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-atobutf">atobUtf()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-checkacceptmime">checkAcceptMime()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-utils-filext">
+<h2 id="osjs-utils-filext-d-">OSjs.Utils.filext(d)</h2>
+<pre>
+Get file extension of filename/path
+</pre>
 
 
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d</td>
+<td>String</td>
+<td>filename/path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The file extension</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-dirname">
+<h2 id="osjs-utils-dirname-f-">OSjs.Utils.dirname(f)</h2>
+<pre>
+Get directory from path
+
+If you use this on a directory path, you will
+
+get the parent
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f</td>
+<td>String</td>
+<td>filename/path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The resulted path</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-filename">
+<h2 id="osjs-utils-filename-p-">OSjs.Utils.filename(p)</h2>
+<pre>
+Get filename from path
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p</td>
+<td>String</td>
+<td>Path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-humanfilesize">
+<h2 id="osjs-utils-humanfilesize-bytes-si-">OSjs.Utils.humanFileSize(bytes, si)</h2>
+<pre>
+Get human-readable size from integer
+
+Example return: '128 MB'
+</pre>
+
+
+<h4 id="links">Links</h4>
+<ul>
+<li><a href="http://stackoverflow.com/users/65387/mark">http://stackoverflow.com/users/65387/mark</a></li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bytes</td>
+<td>int</td>
+<td>Size in bytes</td>
+</tr>
+<tr>
+<td>si</td>
+<td>String</td>
+<td>Use SI units ?</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Size</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-escapefilename">
+<h2 id="osjs-utils-escapefilename-n-">OSjs.Utils.escapeFilename(n)</h2>
+<pre>
+Escape filename (removes invalid characters)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>String</td>
+<td>Filename</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Escaped filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-replacefileextension">
+<h2 id="osjs-utils-replacefileextension-filename-rep-">OSjs.Utils.replaceFileExtension(filename, rep)</h2>
+<pre>
+Replace file extension of filename
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filename</td>
+<td>String</td>
+<td>The filename</td>
+</tr>
+<tr>
+<td>rep</td>
+<td>String</td>
+<td>New file extension (without dot)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>New filename</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-replacefilename">
+<h2 id="osjs-utils-replacefilename-orig-newname-">OSjs.Utils.replaceFilename(orig, newname)</h2>
+<pre>
+Replace the filename of a path
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>orig</td>
+<td>String</td>
+<td>The full path to file</td>
+</tr>
+<tr>
+<td>newname</td>
+<td>String</td>
+<td>Replace with this filename</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The new path</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-pathjoin">
+<h2 id="osjs-utils-pathjoin-">OSjs.Utils.pathJoin()</h2>
+<pre>
+Joins arguments to a path (path.join)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getfilenamerange">
+<h2 id="osjs-utils-getfilenamerange-val-">OSjs.Utils.getFilenameRange(val)</h2>
+<pre>
+Gets the range of filename in a path (without extension)
+
+This is used for example in text boxes to highlight the filename
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>val</td>
+<td>String</td>
+<td>The path</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>Range in form of {min: 0, max: 1}</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-btoaurlsafe">
+<h2 id="osjs-utils-btoaurlsafe-str-">OSjs.Utils.btoaUrlsafe(str)</h2>
+<pre>
+(Encode) Convert URL-safe String to Base64
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Base64 String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-atoburlsafe">
+<h2 id="osjs-utils-atoburlsafe-str-">OSjs.Utils.atobUrlsafe(str)</h2>
+<pre>
+(Decode) Convert Base64 to URL-safe String
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>Base64 String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-btoautf">
+<h2 id="osjs-utils-btoautf-str-">OSjs.Utils.btoaUtf(str)</h2>
+<pre>
+(Encode) Convert String to Base64 with UTF-8
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Base64 String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-atobutf">
+<h2 id="osjs-utils-atobutf-str-">OSjs.Utils.atobUtf(str)</h2>
+<pre>
+(Decode) Convert Base64 with UTF-8 to String
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>Base64 String</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>String</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-checkacceptmime">
+<h2 id="osjs-utils-checkacceptmime-mime-list-">OSjs.Utils.checkAcceptMime(mime, list)</h2>
+<pre>
+Check if this MIME type is inside list
+
+This matches by regex
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>The mime string</td>
+</tr>
+<tr>
+<td>list</td>
+<td>Array</td>
+<td>Array of regex matches</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>If found</em></p>
+
+</div>
+<h1>Classes</h1>
+<p><i>Generated: Sat Nov 21 2015 23:05:29 GMT+0100 (CET)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 

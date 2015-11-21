@@ -35,21 +35,628 @@
 
     <content>
 
-<h1>Client API Documentation</h1>
-<p>
-  This is the client JavaScript documentation for OS.js
-</p>
-<p>
-  <b>Please note that this is not finalized and some modules are missing and/or not correctly formatted</b>
-</p>
-<p>
-  Official home page: <a href="http://os.js.org/">http://os.js.org/</a>
-</p>
-<p>
-  Github project page: <a href="https://github.com/andersevenrud/OS.js-v2">https://github.com/andersevenrud/OS.js-v2</a>
-</p>
+<h1>Overview</h1>
+<p><i>src/client/javascript/utils/dom.js</i></p>
+<h2>Functions</h2>
+<ul>
+<li>OSjs.Utils.<a href="#osjs-utils-_preventdefault">_preventDefault()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-keys">Keys</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-mousebutton">mouseButton()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-">$()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-safename">$safeName()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-remove">$remove()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-empty">$empty()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-getstyle">$getStyle()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-position">$position()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-index">$index()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-selectrange">$selectRange()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-addclass">$addClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-removeclass">$removeClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-hasclass">$hasClass()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-createcss">$createCSS()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-createjs">$createJS()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isformelement">$isFormElement()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-isinput">$isInput()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-bind">$bind()</a></li>
+<li>OSjs.Utils.<a href="#osjs-utils-unbind">$unbind()</a></li>
+</ul>
+<h2>Classes</h2>
+<ul>
+</ul>
+<h1>Functions</h1>
+<div class="section-function" id="osjs-utils-_preventdefault">
+<h2 id="osjs-utils-_preventdefault-">OSjs.Utils._preventDefault()</h2>
+<pre>
+Prevents default Event (shortcut)
+</pre>
 
 
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>bool</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-keys">
+<h2 id="osjs-utils-keys">OSjs.Utils.Keys</h2>
+<pre>
+A collection of keycode mappings
+
+@var
+</pre>
+
+
+
+</div>
+<div class="section-function" id="osjs-utils-mousebutton">
+<h2 id="osjs-utils-mousebutton-ev-">OSjs.Utils.mouseButton(ev)</h2>
+<pre>
+Get the mouse button pressed
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>The DOM Event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The mouse button (left/middle/right)</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-">
+<h2 id="osjs-utils-id-">OSjs.Utils.$(id)</h2>
+<pre>
+Get element by ID
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>DOM Element ID</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>Found element or null</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-safename">
+<h2 id="osjs-utils-safename-str-">OSjs.Utils.$safeName(str)</h2>
+<pre>
+Remove unwanted characters from ID or className
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>str</td>
+<td>String</td>
+<td>The name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>The new name</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-remove">
+<h2 id="osjs-utils-remove-node-">OSjs.Utils.$remove(node)</h2>
+<pre>
+Remove given element from parent
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>null</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-empty">
+<h2 id="osjs-utils-empty-mynode-">OSjs.Utils.$empty(myNode)</h2>
+<pre>
+Empty this element (remove children)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>myNode</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-getstyle">
+<h2 id="osjs-utils-getstyle-oelm-strcssrule-">OSjs.Utils.$getStyle(oElm, strCssRule)</h2>
+<pre>
+Get CSS style attribute
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>oElm</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+<tr>
+<td>strCssRule</td>
+<td>String</td>
+<td>The CSS rule to get</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u> <em>Style attribute</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-position">
+<h2 id="osjs-utils-position-el-parentel-">OSjs.Utils.$position(el, parentEl)</h2>
+<pre>
+Get element absolute position
+
+Modern browsers will return getBoundingClientRect()
+
+See DOM documentation
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The Element to find position of</td>
+</tr>
+<tr>
+<td>parentEl</td>
+<td>DOMElement</td>
+<td>Optional parent to end loop in</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Object</u> <em>The bounding box</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-index">
+<h2 id="osjs-utils-index-el-parentel-">OSjs.Utils.$index(el, parentEl)</h2>
+<pre>
+Get the index of an element within a node
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>Element to check</td>
+</tr>
+<tr>
+<td>parentEl</td>
+<td>DOMElement</td>
+<td>Optional parent (automatically checked)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>int</u> <em>The index</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-selectrange">
+<h2 id="osjs-utils-selectrange-field-start-end-">OSjs.Utils.$selectRange(field, start, end)</h2>
+<pre>
+Selects range in a text field
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>field</td>
+<td>DOMElement</td>
+<td>The DOM Element</td>
+</tr>
+<tr>
+<td>start</td>
+<td>int</td>
+<td>Start position</td>
+</tr>
+<tr>
+<td>end</td>
+<td>int</td>
+<td>End position</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-addclass">
+<h2 id="osjs-utils-addclass-el-name-">OSjs.Utils.$addClass(el, name)</h2>
+<pre>
+Add a className to a DOM Element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-removeclass">
+<h2 id="osjs-utils-removeclass-el-name-">OSjs.Utils.$removeClass(el, name)</h2>
+<pre>
+Remove a className from a DOM Element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-hasclass">
+<h2 id="osjs-utils-hasclass-el-name-">OSjs.Utils.$hasClass(el, name)</h2>
+<pre>
+Check if a DOM Element has given className
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>The dom Element</td>
+</tr>
+<tr>
+<td>name</td>
+<td>String</td>
+<td>The class name</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u></p>
+
+</div>
+<div class="section-function" id="osjs-utils-createcss">
+<h2 id="osjs-utils-createcss-src-">OSjs.Utils.$createCSS(src)</h2>
+<pre>
+Create a link stylesheet tag
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>String</td>
+<td>The URL of resource</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The tag</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-createjs">
+<h2 id="osjs-utils-createjs-src-onreadystatechange-onload-onerror-">OSjs.Utils.$createJS(src, onreadystatechange, onload, onerror)</h2>
+<pre>
+Create a script tag
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>src</td>
+<td>String</td>
+<td>The URL of resource</td>
+</tr>
+<tr>
+<td>onreadystatechange</td>
+<td>Function</td>
+<td>readystatechange callback</td>
+</tr>
+<tr>
+<td>onload</td>
+<td>Function</td>
+<td>onload callback</td>
+</tr>
+<tr>
+<td>onerror</td>
+<td>Function</td>
+<td>onerror callback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u> <em>The tag</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isformelement">
+<h2 id="osjs-utils-isformelement-ev-types-">OSjs.Utils.$isFormElement(ev, types)</h2>
+<pre>
+Check if event happened on a form element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev</td>
+<td>DOMEvent</td>
+<td>DOM Event</td>
+</tr>
+<tr>
+<td>types</td>
+<td>Array</td>
+<td>Array of types</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>boolean</u> <em>If is a form element</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-isinput">
+<h2 id="osjs-utils-isinput-">OSjs.Utils.$isInput()</h2>
+<pre>
+Alias
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Utils.$isFormElement()</li>
+</ul>
+
+</div>
+<div class="section-function" id="osjs-utils-bind">
+<h2 id="osjs-utils-bind-el-ev-callback-">OSjs.Utils.$bind(el, ev, callback)</h2>
+<pre>
+Wrapper for event-binding
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOM Element to attach event to</td>
+</tr>
+<tr>
+<td>ev</td>
+<td>String</td>
+<td>DOM Event Name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback on event</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>EventCollection</u> <em>Use this object to unbind generated events</em></p>
+
+</div>
+<div class="section-function" id="osjs-utils-unbind">
+<h2 id="osjs-utils-unbind-collection-">OSjs.Utils.$unbind(collection)</h2>
+<pre>
+Unbinds the given EventCollection
+</pre>
+
+
+<h4 id="see">See</h4>
+<ul>
+<li>OSjs.Utils.$bind()</li>
+</ul>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>collection</td>
+<td>EventCollection</td>
+<td>The object returned by $bind()</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>null</u></p>
+
+</div>
+<h1>Classes</h1>
+<p><i>Generated: Sat Nov 21 2015 23:05:29 GMT+0100 (CET)</i></p>
+<p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
 
