@@ -33,19 +33,7 @@ BUILDIR=".arduino"
 OUTDIR=".arduino/build"
 TMPDIR=".arduino/tmp"
 
-
-#
 # Init
-#
-
-#(cd src/conf; ln -sf ../templates/conf/500-arduino.json 500-arduino.json)
-
-#echo "UPDATING..."
-#git pull
-#npm install
-
-echo "BUILDING..."
-
 rm -rf $OUTDIR/*
 rm -rf $BUILDIR
 mkdir -p $OUTDIR
@@ -59,25 +47,7 @@ mkdir -p $OUTDIR/vfs/tmp
 mkdir -p $OUTDIR/dist/cgi-bin
 mkdir -p $OUTDIR/lib/osjs/app
 
-#
-# Packages and Styles
-#
-
-rm -rf src/packages/target
-mkdir -p src/packages/target
-cp -v -r src/packages/default/CoreWM src/packages/target/
-cp -v -r src/packages/default/Textpad src/packages/target/
-cp -v -r src/packages/default/FileManager src/packages/target/
-cp -v -r src/packages/default/CoreWM src/packages/target/
-cp -v -r src/packages/default/Preview src/packages/target/
-cp -v -r src/packages/default/Settings src/packages/target/
-cp -v -r src/packages/arduino/ArduinoSettings src/packages/target/
-cp -v -r src/packages/arduino/ArduinoService src/packages/target/
-cp -v -r src/packages/arduino/ArduinoLuci src/packages/target/
-cp -v -r src/packages/arduino/ArduinoKernelLog src/packages/target/
-cp -v -r src/packages/arduino/ArduinoSysLog src/packages/target/
-cp -v -r src/packages/arduino/ArduinoProcessViewer src/packages/target/
-
+# Packages
 grunt all dist-index
 
 APPS=`(cd src/packages/target; find . -maxdepth 1 -type d)`
@@ -85,33 +55,24 @@ for AD in $APPS; do
   AD=$(basename $AD)
   AN=$(echo $AD | awk '{print tolower($0)}')
   if [[ "$AD" != "." ]]; then
-    mv -v src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua 2>/dev/null
+    cp -v src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua 2>/dev/null
   fi
 done
 
-rm -rf src/packages/target
-
-#
-# Template
-#
-
-# Copy needed files
+# Misc files
 cp -v README.md $OUTDIR/
 cp -v AUTHORS $OUTDIR/
 cp -v CHANGELOG.md $OUTDIR/
 cp -v -r dist $OUTDIR/
+
+# Server files
 cp -v src/server/lua/osjs.lua $OUTDIR/lib/
 cp -v src/server/lua/osjs-fs $OUTDIR/dist/cgi-bin/
 cp -v src/server/lua/osjs-api $OUTDIR/dist/cgi-bin/
 cp -v src/server/settings.json $OUTDIR/settings.json
 cp -v src/conf/130-mime.json $OUTDIR/mime.json
 
-#
-# Themes
-#
-
-echo "CLEANING UP THEMES..."
-
+# Make a minimal copy of icons (only the ones used)
 rm -rf $TMPDIR
 mkdir -p $TMPDIR
 mkdir -p $TMPDIR/16x16
@@ -133,7 +94,6 @@ done
 cp -v $OUTDIR/dist/themes/icons/default/16x16/*.png $TMPDIR/16x16/
 cp -v $OUTDIR/dist/themes/icons/default/32x32/*.png $TMPDIR/32x32/
 
-# Copy standing icons
 rm -rf $OUTDIR/dist/themes/icons/default/*
 mv -v $TMPDIR/* $OUTDIR/dist/themes/icons/default/
 
@@ -141,22 +101,20 @@ rm -rf $OUTDIR/dist/themes/sounds/*
 rm -rf $OUTDIR/dist/themes/wallpapers/*
 cp -v src/client/themes/wallpapers/arduino.png $OUTDIR/dist/themes/wallpapers/
 
-#
 # Cleanup
-#
+rm $OUTDIR/dist/.htaccess 2>/dev/null
+rm $OUTDIR/dist/.gitignore 2>/dev/null
+rm $OUTDIR/dist/vendor/.gitignore 2>/dev/null
+rm $OUTDIR/dist/themes/.gitignore 2>/dev/null
+rm $OUTDIR/dist/packages/.gitignore 2>/dev/null
+rm $OUTDIR/dist/api.php 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
 
-echo "CLEANING UP..."
+rm -rf $OUTDIR/dist/packages/default 2>/dev/null
+rm -rf $OUTDIR/dist/packages/arduino 2>/dev/null
+rm -rf $OUTDIR/dist/vendor/* 2>/dev/null
 
-rm -rf $OUTDIR/dist/vendor/*
-rm -rf $OUTDIR/dist/packages/default
-rm -rf $OUTDIR/dist/packages/arduino
 rm -rf $TMPDIR
-rm $OUTDIR/dist/.htaccess
-rm $OUTDIR/dist/.gitignore
-rm $OUTDIR/dist/vendor/.gitignore
-rm $OUTDIR/dist/themes/.gitignore
-rm $OUTDIR/dist/packages/.gitignore
-rm $OUTDIR/dist/api.php
-rm $OUTDIR/dist/packages/*/*/package.json
-
-echo "\n\nDONE :-)"
