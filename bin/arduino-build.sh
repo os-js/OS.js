@@ -50,7 +50,8 @@ mkdir -p $OUTDIR/lib/osjs/app
 # Packages
 grunt all dist-index
 
-APPS=`(cd src/packages/target; find . -maxdepth 1 -type d)`
+#APPS=`(cd src/packages/target; find . -maxdepth 1 -type d)`
+APPS=`(cd src/packages/target; find . -maxdepth 1)`
 for AD in $APPS; do
   AD=$(basename $AD)
   AN=$(echo $AD | awk '{print tolower($0)}')
