@@ -12,10 +12,6 @@
   },
 
   "themes": {
-    "icons": ["default"],
-    "styles": ["default", "dark", "glass", "windows8"],
-    "sounds": ["default"],
-    "fonts": ["Karla", "Roboto"]
   },
 
   "server" : {
