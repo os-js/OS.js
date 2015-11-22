@@ -1284,6 +1284,8 @@
     createNginxConfig:        createNginxConfig,
     createPackage:            createPackage,
 
+    viewConfig: generateBuildConfig,
+
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,
     buildPackages:    buildPackages,
