@@ -41,7 +41,6 @@
   var CONFIG  = {
     port:       8000,
     directory:  null, // Automatic
-    appdirs:    null, // Automatic, but overrideable
     tmpdir:     '/tmp',
     handler:    'demo',
     vfs:        {
@@ -304,14 +303,9 @@
       }
     }
 
-    var mimeConfig = readConfig("src/mime.json");
-    if ( mimeConfig !== false ) {
-      CONFIG.mimes = mimeConfig.mapping;
-    }
-
-    var repoConfig = readConfig("src/packages/repositories.json");
-    if ( repoConfig !== false ) {
-      CONFIG.appdirs = repoConfig;
+    var tmpConfig = readConfig("src/conf/130-mime.json");
+    if ( tmpConfig ) {
+      CONFIG.mimes = tmpConfig.mime.mapping;
     }
 
     if ( !CONFIG.directory ) {
