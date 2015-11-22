@@ -112,7 +112,7 @@
    */
   function copyFile(src, dst) {
     console.log('CPY', src.replace(ROOT, ''), '=>', dst.replace(ROOT, ''));
-    _fs.copySync(src, dst);
+    _fs.copySync(_fs.realpathSync(src), dst);
   }
 
   /**
@@ -907,6 +907,7 @@
           }
         });
       } else {
+        mkdir(_path.dirname(dst));
         copyFile(src, dst);
       }
     }
