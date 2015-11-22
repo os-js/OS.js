@@ -177,7 +177,8 @@
     var list = [];
     _fs.readdirSync(dir).forEach(function(iter) {
       if ( !iter.match(/^\./) ) {
-        if ( _fs.lstatSync(_path.join(dir, iter)).isDirectory() ) {
+        var s = _fs.lstatSync(_path.join(dir, iter));
+        if ( s.isDirectory() || s.isSymbolicLink() ) {
           list.push(iter);
         }
       }
