@@ -632,6 +632,8 @@
       scripts.push('    <script type="text/javascript" charset="utf-8" src="' + i + '"></script>');
     }
 
+    console.log(cfg);
+
     if ( dist === 'dist' ) {
       addStyle('osjs.css');
       addScript('osjs.js');
