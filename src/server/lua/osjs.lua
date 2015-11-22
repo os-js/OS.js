@@ -49,6 +49,7 @@ require "base64"
 local ROOTDIR = "/opt/osjs"
 local SETTINGS_FILE = ROOTDIR.."/settings.json"
 local SETTINGS = {}
+local MIMES = {}
 
 local _settings = fs.readfile(SETTINGS_FILE)
 if _settings ~= nil then
@@ -56,6 +57,14 @@ if _settings ~= nil then
   SETTINGS = json.decode(_settings)
 end
 _settings = nil
+
+local _tmp = fs.readfile(ROOTDIR ..  "/mime.json")
+if _tmp ~= nil then
+  _tmp = json.decode(_tmp);
+  MIMES = _tmp.mime.mapping
+
+end
+_tmp = nil
 
 local DEBUGMODE = SETTINGS.debugmode
 local DISTDIR = SETTINGS.distdir or ROOTDIR.."/dist"
@@ -95,14 +104,13 @@ function get_user_settings_path(request, response, username)
 end
 
 function get_file_mime(path)
-  local mimes = SETTINGS.mime.mapping
-  if mimes ~= nil then
+  if MIMES ~= nil then
     local filename = fs.basename(path)
     local filext = string.match(filename, "^.+(%..+)$")
 
     if filext ~= nil then
-      if type(mimes[filext]) ~= nil then
-        return mimes[filext]
+      if type(MIMES[filext]) ~= nil then
+        return MIMES[filext]
       end
     end
   end
