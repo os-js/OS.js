@@ -18,6 +18,9 @@
     "type": "git",
     "url": "https://github.com/andersevenrud/OS.js-v2.git"
   },
+  "scripts": {
+    "test": "grunt test"
+  },
   "dependencies": {
     "grunt":                ">=0.4.5",
     "time-grunt":           ">=1.2.1",

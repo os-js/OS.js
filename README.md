@@ -10,7 +10,7 @@ You can read more on [the official homepage](http://os.js.org/)
 
 Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
 
-[![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2) [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Travis CI Build Status](https://img.shields.io/travis/andersevenrud/OS.js-v2.svg)](https://travis-ci.org/andersevenrud/OS.js-v2)
 
 
 ## Demo
