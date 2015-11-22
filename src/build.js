@@ -147,8 +147,16 @@
   /**
    * Wrapper to create directory
    */
-  function mkdir(src) {
+  function mkdir(src, skipError) {
+    skipError = (typeof skipError === 'undefined' ? true : (skipError === true));
+
     console.log('MKD', src.replace(ROOT, ''));
+    if ( skipError ) {
+      try {
+        return _fs.mkdirSync(src);
+      } catch (e) {}
+      return false;
+    }
     return _fs.mkdirSync(src);
   }
 
@@ -395,14 +403,20 @@
    * Reads all theme metadata
    */
   var readThemeMetadata = (function readThemeMetadata() {
-    function _readMetadata(dir) {
+    var cfg = generateBuildConfig();
+
+    function _readMetadata(dir, whitelist) {
+      whitelist = whitelist || [];
+
       var list = [];
       getDirectories(dir).forEach(function(d) {
-        var check = _path.join(dir, d, 'metadata.json');
-        if ( _fs.existsSync(check) ) {
-          var raw = _fs.readFileSync(check);
-          var json = JSON.parse(raw);
-          list.push(json);
+        if ( whitelist.indexOf(d) >= 0 ) {
+          var check = _path.join(dir, d, 'metadata.json');
+          if ( _fs.existsSync(check) ) {
+            var raw = _fs.readFileSync(check);
+            var json = JSON.parse(raw);
+            list.push(json);
+          }
         }
       });
       return list;
@@ -410,7 +424,7 @@
 
     function readFonts() {
       var list = [];
-      getDirectories(PATHS.fonts).forEach(function(d) {
+      getDirectories(PATHS.fonts, cfg.themes.fonts).forEach(function(d) {
         var check = _path.join(PATHS.fonts, d, 'style.css');
         if ( _fs.existsSync(check) ) {
           list.push(d);
@@ -421,7 +435,7 @@
 
     function readIcons() {
       try {
-        return _readMetadata(PATHS.icons);
+        return _readMetadata(PATHS.icons, cfg.themes.icons);
       } catch ( e ) {
         console.warn(e, e.stack);
       }
@@ -430,7 +444,7 @@
 
     function readStyles() {
       try {
-        return _readMetadata(PATHS.styles);
+        return _readMetadata(PATHS.styles, cfg.themes.styles);
       } catch ( e ) {
         console.warn(e, e.stack);
       }
@@ -439,7 +453,7 @@
 
     function readSounds() {
       try {
-        return _readMetadata(PATHS.sounds);
+        return _readMetadata(PATHS.sounds, cfg.themes.sounds);
       } catch ( e ) {
         console.warn(e, e.stack);
       }
@@ -984,16 +998,18 @@
    */
   function buildThemes(grunt, arg, finished) {
     var themes = readThemeMetadata();
+    var cfg = generateBuildConfig();
 
     function buildFonts() {
       grunt.log.subhead('Fonts');
 
-      copyFile(_path.join(PATHS.themes, 'fonts'),
-               _path.join(PATHS.dist, 'themes', 'fonts'));
-
       var styles = [];
-      themes.fonts.forEach(function(name) {
-        var path = _path.join(PATHS.fonts, name, 'style.css');
+      mkdir(_path.join(PATHS.dist, 'themes', 'fonts'));
+      cfg.themes.fonts.forEach(function(i) {
+        copyFile(_path.join(PATHS.themes, 'fonts', i),
+                 _path.join(PATHS.dist, 'themes', 'fonts', i));
+
+        var path = _path.join(PATHS.fonts, i, 'style.css');
         styles.push(readFile(path).toString());
       });
       writeFile(PATHS.out_client_fontcss, styles.join('\n'));
@@ -1043,11 +1059,17 @@
       copyFile(_path.join(PATHS.themes, 'wallpapers'),
                _path.join(PATHS.dist, 'themes', 'wallpapers'));
 
-      copyFile(_path.join(PATHS.themes, 'icons'),
-               _path.join(PATHS.dist, 'themes', 'icons'));
+      mkdir(_path.join(PATHS.dist, 'themes', 'icons'));
+      cfg.themes.icons.forEach(function(i) {
+        copyFile(_path.join(PATHS.themes, 'icons', i),
+                 _path.join(PATHS.dist, 'themes', 'icons', i));
+      });
 
-      copyFile(_path.join(PATHS.themes, 'sounds'),
-               _path.join(PATHS.dist, 'themes', 'sounds'));
+      mkdir(_path.join(PATHS.dist, 'themes', 'sounds'));
+      cfg.themes.sounds.forEach(function(i) {
+        copyFile(_path.join(PATHS.themes, 'sounds', i),
+                 _path.join(PATHS.dist, 'themes', 'sounds', i));
+      });
     }
 
     function cleanup() {
