@@ -10,7 +10,7 @@ You can read more on [the official homepage](http://os.js.org/)
 
 Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
 
-[![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2) [![Travis CI Build Status](https://img.shields.io/travis/andersevenrud/OS.js-v2.svg)](https://travis-ci.org/andersevenrud/OS.js-v2) [![Donate](https://img.shields.io/badge/%3C3-donate-red.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted) [![Gitter](https://img.shields.io/badge/GITTER-Join%20chat-green.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2) [![Travis CI Build Status](https://img.shields.io/travis/andersevenrud/OS.js-v2.svg)](https://travis-ci.org/andersevenrud/OS.js-v2) [![Donate](https://img.shields.io/badge/%3C3-donate-red.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted) [![Gitter](https://img.shields.io/badge/GITTER-Join%20chat-blue.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 
 ## Demo
