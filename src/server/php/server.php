@@ -51,8 +51,6 @@ if ( !defined("DISTDIR") )    define("DISTDIR",     ROOTDIR . "/dist");         
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
 if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
-if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");                       // Packages
-if ( !defined("REPOFILE") )   define("REPOFILE",    REPODIR . "/repositories.json");                  // Package repositories
 
 $settings = Settings::get();
 
@@ -61,7 +59,9 @@ if ( !empty($settings['handler']) ) {
 }
 if ( !empty($settings['extensions']) ) {
   foreach ( $settings['extensions'] as $l ) {
-    require sprintf("%s/%s", ROOTDIR, preg_replace("/\/$/", "", $l));
+    if ( preg_match("/\.php$/", $l) === false ) {
+      require sprintf("%s/%s", ROOTDIR, preg_replace("/\/$/", "", $l));
+    }
   }
 }
 

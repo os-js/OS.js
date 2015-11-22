@@ -62,7 +62,6 @@
     /**
      * Output
      */
-    out_php_config:           _path.join(ROOT, 'src', 'server', 'php', 'settings.php'),
     out_server_config:        _path.join(ROOT, 'src', 'server', 'settings.json'),
     out_client_js:            _path.join(ROOT, 'dist', 'osjs.js'),
     out_client_css:           _path.join(ROOT, 'dist', 'osjs.css'),
@@ -514,33 +513,22 @@
       });
     });
 
-    function buildPHP() {
-      var phpSettings = clone(cfg.server);
+    function buildServer() {
+      var jsonSettings = clone(cfg.server);
+      jsonSettings.extensions = loadExtensions;
 
       try {
-        phpSettings.MaxUpload = cfg.client.MaxUploadSize;
+        jsonSettings.MaxUpload = cfg.client.MaxUploadSize;
       } catch ( e ) {}
 
-      Object.keys(phpSettings.vfs).forEach(function(key) {
-        if ( typeof phpSettings.vfs[key] === 'string' ) {
-          phpSettings.vfs[key] = fixWinPath(phpSettings.vfs[key]);
+      Object.keys(jsonSettings.vfs).forEach(function(key) {
+        if ( typeof jsonSettings.vfs[key] === 'string' ) {
+          jsonSettings.vfs[key] = fixWinPath(jsonSettings.vfs[key]);
         }
       });
 
-      phpSettings.extensions = loadExtensions;
-
       // Write
-      var tpl = getTemplate('settings.php');
-      tpl = tpl.replace('%JSON%', JSON.stringify(phpSettings, null, 4));
-      writeFile(PATHS.out_php_config, tpl);
-    }
-
-    function buildServer() {
-      var nodeSettings = clone(cfg.server);
-      nodeSettings.extensions = loadExtensions;
-
-      // Write
-      var tpl = JSON.stringify(nodeSettings, null, 4);
+      var tpl = JSON.stringify(jsonSettings, null, 4);
       writeFile(PATHS.out_server_config, tpl);
     }
 
@@ -600,7 +588,6 @@
     }
 
     try {
-      buildPHP();
       buildServer();
       buildClient('dist');
       buildClient('dist-dev');
