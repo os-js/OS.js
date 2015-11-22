@@ -78,22 +78,7 @@ cp -v -r src/packages/arduino/ArduinoKernelLog src/packages/target/
 cp -v -r src/packages/arduino/ArduinoSysLog src/packages/target/
 cp -v -r src/packages/arduino/ArduinoProcessViewer src/packages/target/
 
-rm -rf src/client/themes/styles.old
-mv -v src/client/themes/styles src/client/themes/styles.old
-mkdir src/client/themes/styles
-cp -v -r src/client/themes/styles.old/default src/client/themes/styles/default
-
-rm -rf src/client/themes/fonts.old
-mv -v src/client/themes/fonts src/client/themes/fonts.old
-mkdir src/client/themes/fonts
-cp -v -r src/client/themes/fonts.old/Karla src/client/themes/fonts/Karla
-
 grunt all dist-index
-
-rm -rf src/client/themes/styles
-mv -v src/client/themes/styles.old src/client/themes/styles
-rm -rf src/client/themes/fonts
-mv -v src/client/themes/fonts.old src/client/themes/fonts
 
 APPS=`(cd src/packages/target; find . -maxdepth 1 -type d)`
 for AD in $APPS; do

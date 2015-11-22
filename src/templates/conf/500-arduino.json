@@ -7,6 +7,13 @@
     "template": "arduino"
   },
 
+  "themes": {
+    "icons": ["default"],
+    "styles": ["default"],
+    "sounds": [],
+    "fonts": ["Karla"]
+  },
+
   "client" : {
     "Version" : "2.0-alpha68-arduino-yun",
     "APIURI": "/cgi-bin/osjs-api",
