@@ -103,6 +103,15 @@
       OSjs.API.blurMenu();
     },
 
+    message: function(ev) {
+      if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
+        console.debug('window::message()', ev.data);
+        var proc = OSjs.API.getProcess(ev.data.pid);
+        var win  = proc._getWindow(ev.data.wid, 'wid');
+        win.onPostMessage(ev.data.message, ev);
+      }
+    },
+
     fullscreen: function(ev) {
       // FIXME: Get actual cached object and not DOM element using setImage() etc
       var el = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0];
@@ -307,6 +316,7 @@
     window.addEventListener('mozfullscreenchange', events.fullscreen, false);
     window.addEventListener('webkitfullscreenchange', events.fullscreen, false);
     window.addEventListener('msfullscreenchange', events.fullscreen, false);
+    window.addEventListener('message', events.message, false);
     window.onbeforeunload = events.beforeunload;
 
     window.onerror = function(message, url, linenumber, column, exception) {
@@ -467,6 +477,7 @@
     document.removeEventListener('mousedown', events.mousedown, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);
+    window.removeEventListener('message', events.message, false);
 
     window.onerror = null;
     window.onbeforeunload = null;
