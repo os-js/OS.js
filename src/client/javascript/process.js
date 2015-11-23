@@ -133,7 +133,7 @@
   /**
    * Get a process by name
    *
-   * @param   String    name    Process Name
+   * @param   String    name    Process Name (or by number)
    * @param   boolean   first   Return the first found
    *
    * @return  Process           Or an Array of Processes
@@ -142,6 +142,10 @@
   function doGetProcess(name, first) {
     var p;
     var result = first ? null : [];
+
+    if ( typeof name === 'number' ) {
+      return _PROCS[name];
+    }
 
     _PROCS.forEach(function(p, i) {
       if ( p ) {
