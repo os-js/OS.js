@@ -274,6 +274,7 @@
    *                              fn(error, result)
    *
    * @return  void
+   * @link    http://os.js.org/doc/tutorials/using-curl.html
    * @api     OSjs.API.curl()
    */
   function doCurl(args, callback) {

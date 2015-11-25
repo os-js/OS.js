@@ -53,6 +53,7 @@
    *
    * @api OSjs.Helpers.IFrameApplicationWindow
    * @see OSjs.Core.Window
+   * @link http://os.js.org/doc/tutorials/iframe-application.html
    * @extends Window
    * @class
    */
