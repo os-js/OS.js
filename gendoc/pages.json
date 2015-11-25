@@ -91,6 +91,10 @@
     "title": "Extend Server API - OS.js Tutorials"
   },
 
+  "tutorials/using-curl.html": {
+    "title": "Tutorial: Using cURL API"
+  },
+
   "tutorials/index.html": {
     "title": "OS.js Tutorials"
   }
