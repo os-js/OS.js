@@ -151,11 +151,9 @@
     });
   };
 
-  UIScheme.prototype.load = function(cb) {
-    var self = this;
-
-    function removeSelfClosingTags(html) {
-      var split = (html || '').split('/>');
+  UIScheme.prototype._load = function(html) {
+    function removeSelfClosingTags(str) {
+      var split = (str || '').split('/>');
       var newhtml = '';
       for (var i = 0; i < split.length - 1;i++) {
         var edsplit = split[i].split('<');
@@ -164,35 +162,43 @@
       return newhtml + split[split.length-1];
     }
 
-    function finished(html) {
-      var doc = document.createDocumentFragment();
-      var wrapper = document.createElement('div');
-      wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
-      doc.appendChild(wrapper);
+    var doc = document.createDocumentFragment();
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
+    doc.appendChild(wrapper);
 
-      self.scheme = doc.cloneNode(true);
+    this.scheme = doc.cloneNode(true);
 
-      wrapper = null;
-      doc = null;
+    wrapper = null;
+    doc = null;
+  };
 
-      cb(false, self.scheme);
-    }
+  UIScheme.prototype.loadString = function(html, cb) {
+    console.debug('UIScheme::loadString()');
+    this._load(html);
+    cb(false, this.scheme);
+  };
+
+  UIScheme.prototype.load = function(cb) {
+    var self = this;
+
+    console.debug('UIScheme::load()', this.url);
 
     if ( window.location.protocol.match(/^file/) ) {
       var url = this.url;
       if ( !url.match(/^\//) ) {
         url = '/' + url;
       }
-      finished(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
+      self._load(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
+      cb(false, self.scheme);
       return;
     }
-
-    console.debug('UIScheme::load()', this.url);
 
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
-        finished(html);
+        self._load(html);
+        cb(false, self.scheme);
       },
       onerror: function() {
         cb('Failed to fetch scheme');
