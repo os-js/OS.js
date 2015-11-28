@@ -113,12 +113,15 @@
     },
 
     fullscreen: function(ev) {
-      // FIXME: Get actual cached object and not DOM element using setImage() etc
-      var el = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0];
-      if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
-        el.getElementsByTagName('img')[0].src = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');
-      } else {
-        el.getElementsByTagName('img')[0].src = OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16');
+      var notif = OSjs.Core.getWindowManager().getNotificationIcon('_FullscreenNotification');
+      if ( notif ) {
+        if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
+          notif.opts._isFullscreen = false;
+          notif.setImage(OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'));
+        } else {
+          notif.opts._isFullscreen = true;
+          notif.setImage(OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16'));
+        }
       }
     },
 

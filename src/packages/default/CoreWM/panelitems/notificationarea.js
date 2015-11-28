@@ -175,6 +175,14 @@
     return false;
   };
 
+  PanelItemNotificationArea.prototype.getNotification = function(name) {
+    if ( this._$root ) {
+      if ( this.notifications[name] ) {
+        return this.notifications[name];
+      }
+    }
+    return false;
+  };
 
   PanelItemNotificationArea.prototype.destroy = function() {
     for ( var i in this.notifications ) {
