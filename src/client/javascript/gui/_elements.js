@@ -119,15 +119,15 @@
     return this;
   };
 
-  UIElement.prototype.set = function(param, value, arg) {
+  UIElement.prototype.set = function(param, value, arg, arg2) {
     if ( this.$element ) {
       if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].set ) {
-        if ( OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg) === true ) {
+        if ( OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg, arg2) === true ) {
           return this;
         }
       }
 
-      OSjs.GUI.Helpers.setProperty(this.$element, param, value, arg);
+      OSjs.GUI.Helpers.setProperty(this.$element, param, value, arg, arg2);
     }
     return this;
   };

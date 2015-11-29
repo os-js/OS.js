@@ -164,10 +164,10 @@
       return GUI.Helpers.getProperty(el, param);
     },
 
-    set: function(el, param, value, arg) {
+    set: function(el, param, value, arg, arg2) {
       var body = el.querySelector('gui-tree-view-body');
       if ( param === 'selected' || param === 'value' ) {
-        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-tree-view-entry'), value, arg);
+        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-tree-view-entry'), value, arg, arg2);
         return true;
       }
 

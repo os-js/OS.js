@@ -441,14 +441,20 @@
       return result;
     },
 
-    setSelected: function(el, body, entries, val, key) {
+    setSelected: function(el, body, entries, val, key, opts) {
       var self = this;
       var select = [];
+      var scrollIntoView = false;
+      if ( typeof opts === 'object' ) {
+        scrollIntoView = opts.scroll === true;
+      }
 
       function sel(r, idx) {
         select.push(idx);
         Utils.$addClass(r, 'gui-active');
-        //self.scrollIntoView(el, r);
+        if ( scrollIntoView ) {
+          self.scrollIntoView(el, r);
+        }
       }
 
       entries.forEach(function(r, idx) {
