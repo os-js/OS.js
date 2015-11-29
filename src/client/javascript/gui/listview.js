@@ -57,7 +57,11 @@
     });
 
     var nel = GUI.Helpers.createElement('gui-list-view-column', v);
-    nel.appendChild(document.createTextNode(label));
+    if ( typeof label === 'function' ) {
+      nel.appendChild(label.call(nel, nel, v));
+    } else {
+      nel.appendChild(document.createTextNode(label));
+    }
 
     return nel;
   }
