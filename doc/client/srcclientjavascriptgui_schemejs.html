@@ -46,6 +46,16 @@
 <li>
 <a href="#osjs-gui-scheme">Scheme</a> (OSjs.GUI.Scheme)
 <ul>
+<li><a href="#scheme-on">on()</a></li>
+<li><a href="#scheme-load">load()</a></li>
+<li><a href="#scheme-load">load()</a></li>
+<li><a href="#scheme-getfragment">getFragment()</a></li>
+<li><a href="#scheme-parse">parse()</a></li>
+<li><a href="#scheme-render">render()</a></li>
+<li><a href="#scheme-create">create()</a></li>
+<li><a href="#scheme-find">find()</a></li>
+<li><a href="#scheme-get">get()</a></li>
+<li><a href="#scheme-gethtml">getHTML()</a></li>
 </ul>
 </li>
 </ul>
@@ -90,8 +100,363 @@ The class for loading and parsing UI Schemes
 <li>OSjs.GUI.Scheme</li>
 </ul>
 
+<div class="section-method" id="scheme-on">
+<h3 id="scheme-on-f-fn-">Scheme::on(f, fn)</h3>
+<pre>
+Register event
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f</td>
+<td>String</td>
+<td>Event name</td>
+</tr>
+<tr>
+<td>fn</td>
+<td>Function</td>
+<td>Function/callback</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
 </div>
-<p><i>Generated: Fri Nov 27 2015 18:35:44 GMT+0100 (CET)</i></p>
+<div class="section-method" id="scheme-load">
+<h3 id="scheme-load-html-cb-">Scheme::load(html, cb)</h3>
+<pre>
+Load Scheme from given String
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>html</td>
+<td>String</td>
+<td>HTML data</td>
+</tr>
+<tr>
+<td>cb</td>
+<td>Function</td>
+<td>callback =&gt; fn(error, scheme)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="scheme-load">
+<h3 id="scheme-load-cb-">Scheme::load(cb)</h3>
+<pre>
+Load Scheme from URL
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cb</td>
+<td>Function</td>
+<td>callback =&gt; fn(error, scheme)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="scheme-getfragment">
+<h3 id="scheme-getfragment-id-type-">Scheme::getFragment(id, type)</h3>
+<pre>
+Get fragment from ID (and/or type)
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>ID</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>(Optional) type (application-window</td>
+<td>application-fragment)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="scheme-parse">
+<h3 id="scheme-parse-id-type-win-onparse-args-">Scheme::parse(id, type, win, onparse, args)</h3>
+<pre>
+Parses the given fragment
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>Fragment ID</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>(Optional) Fragment Type</td>
+</tr>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>OS.js Window</td>
+</tr>
+<tr>
+<td>onparse</td>
+<td>Function</td>
+<td>(Optional) Callback on parsed</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>(Optional) Parameters</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="scheme-render">
+<h3 id="scheme-render-win-id-root-type-onparse-args-">Scheme::render(win, id, root, type, onparse, args)</h3>
+<pre>
+Renders the given fragment into Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>OS.js Window</td>
+</tr>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>Fragment ID</td>
+</tr>
+<tr>
+<td>root</td>
+<td>DOMElement</td>
+<td>(Optional) Root HTML Node</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>(Optional) Fragment Type</td>
+</tr>
+<tr>
+<td>onparse</td>
+<td>Function</td>
+<td>(Optional) Callback on parsed</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>(Optional) Parameters</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="scheme-create">
+<h3 id="scheme-create-win-tagname-params-parentnode-applyargs-">Scheme::create(win, tagName, params, parentNode, applyArgs)</h3>
+<pre>
+Renders the given fragment into Window
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>OS.js Window</td>
+</tr>
+<tr>
+<td>tagName</td>
+<td>String</td>
+<td>OS.js GUI Element name</td>
+</tr>
+<tr>
+<td>params</td>
+<td>Object</td>
+<td>Parameters</td>
+</tr>
+<tr>
+<td>parentNode</td>
+<td>DOMElement</td>
+<td>Parent Node</td>
+</tr>
+<tr>
+<td>applyArgs</td>
+<td>Object</td>
+<td>New element parameters</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>UIElement</u></p>
+
+</div>
+<div class="section-method" id="scheme-find">
+<h3 id="scheme-find-win-id-root-">Scheme::find(win, id, root)</h3>
+<pre>
+Finds a given UIElement by ID
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>win</td>
+<td>Window</td>
+<td>OS.js Window</td>
+</tr>
+<tr>
+<td>id</td>
+<td>String</td>
+<td>Element ID (data-id)</td>
+</tr>
+<tr>
+<td>root</td>
+<td>DOMElement</td>
+<td>(Optional) Root Node</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>UIElement</u></p>
+
+</div>
+<div class="section-method" id="scheme-get">
+<h3 id="scheme-get-el-">Scheme::get(el)</h3>
+<pre>
+Gets UIElement by DOMElement
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>DOMElement</td>
+<td>DOME Element</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>UIElement</u></p>
+
+</div>
+<div class="section-method" id="scheme-gethtml">
+<h3 id="scheme-gethtml-">Scheme::getHTML()</h3>
+<pre>
+Get HTML from Scheme
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>String</u></p>
+
+</div>
+</div>
+<p><i>Generated: Mon Nov 30 2015 22:23:07 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>

@@ -45,6 +45,16 @@
 <li>
 <a href="#osjs-gui-element">Element</a> (OSjs.GUI.Element)
 <ul>
+<li><a href="#element-blur">blur()</a></li>
+<li><a href="#element-focus">focus()</a></li>
+<li><a href="#element-show">show()</a></li>
+<li><a href="#element-hide">hide()</a></li>
+<li><a href="#element-on">on()</a></li>
+<li><a href="#element-set">set()</a></li>
+<li><a href="#element-get">get()</a></li>
+<li><a href="#element-append">append()</a></li>
+<li><a href="#element-queryselector">querySelector()</a></li>
+<li><a href="#element-queryselectorall">querySelectorAll()</a></li>
 </ul>
 </li>
 <li>
@@ -66,6 +76,252 @@ Base UIElement Class
 <li>OSjs.GUI.Element</li>
 </ul>
 
+<div class="section-method" id="element-blur">
+<h3 id="element-blur-">Element::blur()</h3>
+<pre>
+Blur (unfocus)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Element</u> <em>this</em></p>
+
+</div>
+<div class="section-method" id="element-focus">
+<h3 id="element-focus-">Element::focus()</h3>
+<pre>
+Focus (focus)
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Element</u> <em>this</em></p>
+
+</div>
+<div class="section-method" id="element-show">
+<h3 id="element-show-">Element::show()</h3>
+<pre>
+Show
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Element</u> <em>this</em></p>
+
+</div>
+<div class="section-method" id="element-hide">
+<h3 id="element-hide-">Element::hide()</h3>
+<pre>
+Hide
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Element</u> <em>this</em></p>
+
+</div>
+<div class="section-method" id="element-on">
+<h3 id="element-on-evname-callback-args-">Element::on(evName, callback, args)</h3>
+<pre>
+Register Event
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>evName</td>
+<td>String</td>
+<td>Event Name</td>
+</tr>
+<tr>
+<td>callback</td>
+<td>Function</td>
+<td>Callback function</td>
+</tr>
+<tr>
+<td>args</td>
+<td>Object</td>
+<td>(Optional) binding arguments</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Element</u> <em>this</em></p>
+
+</div>
+<div class="section-method" id="element-set">
+<h3 id="element-set-param-value-arg-arg2-">Element::set(param, value, arg, arg2)</h3>
+<pre>
+Sets a parameter/property by name
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>param</td>
+<td>String</td>
+<td>Parameter name</td>
+</tr>
+<tr>
+<td>value</td>
+<td>Mixed</td>
+<td>Parameter value</td>
+</tr>
+<tr>
+<td>arg</td>
+<td>Mixed</td>
+<td>(Optional) Extra argument ...</td>
+</tr>
+<tr>
+<td>arg2</td>
+<td>Mixed</td>
+<td>(Optional) Extra argument ...</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Element</u> <em>this</em></p>
+
+</div>
+<div class="section-method" id="element-get">
+<h3 id="element-get-param-arg-">Element::get(param, arg)</h3>
+<pre>
+Get a parameter/property by name
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>param</td>
+<td>String</td>
+<td>Parameter name</td>
+</tr>
+<tr>
+<td>arg</td>
+<td>Mixed</td>
+<td>(Optional) Extra argument ...</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>Element</u> <em>this</em></p>
+
+</div>
+<div class="section-method" id="element-append">
+<h3 id="element-append-el-">Element::append(el)</h3>
+<pre>
+Appends a childNode to this element
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>el</td>
+<td>Mixed</td>
+<td>DOMEelement or UIElement</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
+
+</div>
+<div class="section-method" id="element-queryselector">
+<h3 id="element-queryselector-q-">Element::querySelector(q)</h3>
+<pre>
+Perform `querySelector`
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q</td>
+<td>String</td>
+<td>Query</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElement</u></p>
+
+</div>
+<div class="section-method" id="element-queryselectorall">
+<h3 id="element-queryselectorall-q-">Element::querySelectorAll(q)</h3>
+<pre>
+Perform `querySelectorAll`
+</pre>
+
+
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q</td>
+<td>String</td>
+<td>Query</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>DOMElementCollection</u></p>
+
+</div>
 </div>
 <div class="section-class" id="osjs-gui-elementdataview">
 <h2 id="elementdataview">ElementDataView</h2>
@@ -83,7 +339,7 @@ Extended UIElement for ListView, TreeView, IconView, Select, SelectList
 </ul>
 
 </div>
-<p><i>Generated: Fri Nov 27 2015 18:35:44 GMT+0100 (CET)</i></p>
+<p><i>Generated: Mon Nov 30 2015 22:23:07 GMT+0100 (CET)</i></p>
 <p><i>Copyright &copy; 2011-2015 Anders Evenrud</i></p>
 
     </content>
