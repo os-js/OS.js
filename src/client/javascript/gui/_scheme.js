@@ -441,8 +441,7 @@
    * @method  Scheme::getHTML()
    */
   UIScheme.prototype.getHTML = function() {
-    var str = '';
-    return str;
+    return this.scheme.firstChild.innerHTML;
   };
 
   /////////////////////////////////////////////////////////////////////////////
