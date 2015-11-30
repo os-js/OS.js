@@ -43,6 +43,8 @@
    *
    * A view with resizable content boxes
    *
+   * TODO: Minimum size of resize containers
+   *
    * @api OSjs.GUI.Elements.gui-paned-view
    * @class
    */
@@ -54,25 +56,44 @@
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
+      var orient = el.getAttribute('data-orientation') || 'horizontal';
+
       function bindResizer(resizer, idx) {
         var resizeEl = resizer.previousElementSibling;
         if ( !resizeEl ) { return; }
 
         var startWidth = resizeEl.offsetWidth;
+        var startHeight = resizeEl.offsetHeight;
         var maxWidth = el.offsetWidth;
+        var maxHeight = el.offsetHeight;
 
         GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = resizeEl.offsetWidth;
+          startHeight = resizeEl.offsetHeight;
           maxWidth = el.offsetWidth / 2;
+          maxHeight = el.offsetHeight / 2;
         }, function(ev, diff) {
           var newWidth = startWidth + diff.x;
-          if ( !isNaN(newWidth) && newWidth > 0 && newWidth < maxWidth ) {
-            var flex = newWidth.toString() + 'px';
-            resizeEl.style.webkitFlexBasis = flex;
-            resizeEl.style.mozFflexBasis = flex;
-            resizeEl.style.msFflexBasis = flex;
-            resizeEl.style.oFlexBasis = flex;
-            resizeEl.style.flexBasis = flex;
+          var newHeight = startHeight + diff.y;
+
+          if ( orient === 'horizontal' ) {
+            if ( !isNaN(newWidth) && newWidth > 0 && newWidth < maxWidth ) {
+              var flex = newWidth.toString() + 'px';
+              resizeEl.style.webkitFlexBasis = flex;
+              resizeEl.style.mozFflexBasis = flex;
+              resizeEl.style.msFflexBasis = flex;
+              resizeEl.style.oFlexBasis = flex;
+              resizeEl.style.flexBasis = flex;
+            }
+          } else {
+            if ( !isNaN(newHeight) && newHeight > 0 && newHeight < maxHeight ) {
+              var flex = newHeight.toString() + 'px';
+              resizeEl.style.webkitFlexBasis = flex;
+              resizeEl.style.mozFflexBasis = flex;
+              resizeEl.style.msFflexBasis = flex;
+              resizeEl.style.oFlexBasis = flex;
+              resizeEl.style.flexBasis = flex;
+            }
           }
         }, function(ev) {
           el.dispatchEvent(new CustomEvent('_resize', {detail: {index: idx}}));

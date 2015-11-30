@@ -446,11 +446,18 @@ gui-container[data-borders="true"] {
     }
 
 /* Paned View */
-  gui-paned-view > gui-paned-view-handle {
-    min-width : 8px;
-    width : 8px;
-    cursor : ew-resize;
-  }
+gui-paned-view > gui-paned-view-handle {
+  min-width : 8px;
+  width : 8px;
+  cursor : ew-resize;
+}
+gui-paned-view[data-orientation='vertical'] > gui-paned-view-handle {
+  min-width : auto;
+  width : auto;
+  min-height : 8px;
+  height : 8px;
+  cursor : ns-resize;
+}
 
 /* IFrame */
 gui-iframe {

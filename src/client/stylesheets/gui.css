@@ -404,6 +404,20 @@ gui-paned-view {
        -o-flex-direction: row;
           flex-direction: row;
 }
+gui-paned-view[data-orientation='vertical'] {
+
+  -webkit-box-orient: vertical;
+     -moz-box-orient: vertical;
+      -ms-box-orient: vertical;
+       -o-box-orient: vertical;
+          box-orient: vertical;
+
+  -webkit-flex-direction: column;
+     -moz-flex-direction: column;
+      -ms-flex-direction: column;
+       -o-flex-direction: column;
+          flex-direction: column;
+}
   gui-paned-view > * {
     display : block;
     position : relative;
@@ -425,6 +439,13 @@ gui-paned-view {
     gui-paned-view > gui-paned-view-container > * {
       height : 100%;
       display : block;
+    }
+    gui-paned-view > gui-paned-view-container[data-fill='true'] > * {
+      position : absolute;
+      top : 0px;
+      left : 0px;
+      bottom : 0px;
+      right : 0px;
     }
   gui-paned-view > gui-paned-view-handle {
     height : 100%;
