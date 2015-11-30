@@ -76,24 +76,23 @@
           var newWidth = startWidth + diff.x;
           var newHeight = startHeight + diff.y;
 
+          var flex;
           if ( orient === 'horizontal' ) {
-            if ( !isNaN(newWidth) && newWidth > 0 && newWidth < maxWidth ) {
-              var flex = newWidth.toString() + 'px';
-              resizeEl.style.webkitFlexBasis = flex;
-              resizeEl.style.mozFflexBasis = flex;
-              resizeEl.style.msFflexBasis = flex;
-              resizeEl.style.oFlexBasis = flex;
-              resizeEl.style.flexBasis = flex;
+            if ( !isNaN(newWidth) && newWidth > 0 && newWidth <= maxWidth ) {
+              flex = newWidth.toString() + 'px';
             }
           } else {
-            if ( !isNaN(newHeight) && newHeight > 0 && newHeight < maxHeight ) {
-              var flex = newHeight.toString() + 'px';
-              resizeEl.style.webkitFlexBasis = flex;
-              resizeEl.style.mozFflexBasis = flex;
-              resizeEl.style.msFflexBasis = flex;
-              resizeEl.style.oFlexBasis = flex;
-              resizeEl.style.flexBasis = flex;
+            if ( !isNaN(newHeight) && newHeight > 0 && newHeight <= maxHeight ) {
+             flex = newHeight.toString() + 'px';
             }
+          }
+
+          if ( flex ) {
+            resizeEl.style.webkitFlexBasis = flex;
+            resizeEl.style.mozFflexBasis = flex;
+            resizeEl.style.msFflexBasis = flex;
+            resizeEl.style.oFlexBasis = flex;
+            resizeEl.style.flexBasis = flex;
           }
         }, function(ev) {
           el.dispatchEvent(new CustomEvent('_resize', {detail: {index: idx}}));
