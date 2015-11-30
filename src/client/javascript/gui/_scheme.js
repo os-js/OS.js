@@ -282,10 +282,25 @@
       root = root.$element;
     }
 
+    function setWindowProperties(frag) {
+      if ( frag ) {
+        var width = parseInt(frag.getAttribute('data-width'), 10) || 0;
+        var height = parseInt(frag.getAttribute('data-height'), 10) || 0;
+
+        if ( (!isNaN(width) && width > 0) || (!isNaN(height) && height > 0) ) {
+          win._resize(width, height);
+        }
+      }
+    }
+
     console.debug('UIScheme::render()', id);
 
     var content = this.parse(id, type, win, onparse, args);
     addChildren(content, root);
+
+    if ( !win._restored ) {
+      setWindowProperties(this.getFragment(id));
+    }
 
     this._trigger('render', [root]);
   };
