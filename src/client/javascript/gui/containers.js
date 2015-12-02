@@ -169,7 +169,8 @@
   GUI.Elements['gui-expander'] = (function() {
     function toggleState(el, expanded) {
       if ( typeof expanded === 'undefined' ) {
-        expanded = !(el.getAttribute('data-expanded') !== 'false');
+        expanded = el.getAttribute('data-expanded') !== 'false';
+        expanded = !expanded;
       }
 
       el.setAttribute('data-expanded', String(expanded));
