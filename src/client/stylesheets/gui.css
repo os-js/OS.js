@@ -241,7 +241,6 @@ gui-tree-view,
 gui-tree-view > *,
 gui-icon-view,
 gui-icon-view > * {
-
   cursor : default;
 }
 
@@ -496,6 +495,19 @@ gui-button-bar[data-orientation="vertical"] {
 gui-toolbar-separator {
   display : inline-block;
 }
+
+/* Expander */
+gui-expander {
+  display : block;
+  position : relative;
+}
+  gui-expander-label {
+    display : block !important;
+    position : relative;
+  }
+  gui-expander[data-expanded="false"] > * {
+    display : none;
+  }
 
 /* Tabs */
 gui-tabs {

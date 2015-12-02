@@ -154,4 +154,53 @@
     }
   };
 
+  /**
+   * Element: 'gui-expander'
+   *
+   * A expandable/collapsable container with label and indicator
+   *
+   * Parameters:
+   *  String      label     The label
+   *  boolean     expanded  Expanded state (default=true)
+   *
+   * @api OSjs.GUI.Elements.gui-expander
+   * @class
+   */
+  GUI.Elements['gui-expander'] = (function() {
+    function toggleState(el, expanded) {
+      if ( typeof expanded === 'undefined' ) {
+        expanded = !(el.getAttribute('data-expanded') !== 'false');
+      }
+
+      el.setAttribute('data-expanded', String(expanded));
+      return expanded;
+    }
+
+    return {
+      set: function(el, param, value) {
+        if ( param === 'expanded' ) {
+          return toggleState(el, value === true);
+        }
+        return null;
+      },
+      bind: function(el, evName, callback, params) {
+        if ( (['change']).indexOf(evName) !== -1 ) {
+          evName = '_' + evName;
+        }
+        Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+      },
+      build: function(el) {
+        var lbltxt = el.getAttribute('data-label') || '';
+        var label = document.createElement('gui-expander-label');
+
+        Utils.$bind(label, 'click', function(ev) {
+          el.dispatchEvent(new CustomEvent('_change', {detail: {expanded: toggleState(el)}}));
+        }, false);
+
+        label.appendChild(document.createTextNode(lbltxt));
+        el.appendChild(label);
+      }
+    };
+  })();
+
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

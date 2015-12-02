@@ -484,6 +484,24 @@ gui-toolbar[data-orientation="vertical"] {
   margin-bottom : @gui_base_padding;
 }
 
+/* Expander */
+gui-expander {
+  font-size : 12px;
+  padding : @gui_base_padding;
+  background-color : @gui_background_color;
+}
+  gui-expander-label {
+    cursor : pointer;
+  }
+  gui-expander-label:before {
+    content : '▼';
+    font-family : sans-serif;
+    padding-right : 6px;
+  }
+  gui-expander[data-expanded="false"] > gui-expander-label:before {
+    content : '►';
+  }
+
 /* Tabs */
   gui-tabs > ul {
     height : 25px;
@@ -895,7 +913,9 @@ gui-menu {
     padding-right : 16px;
   }
   gui-menu > gui-menu-entry.gui-menu-expand:after {
-    content : '>';
+    content : '►';
+    font-family : sans-serif;
+    line-height : 18px;
     padding : @gui_base_padding;
   }
 
