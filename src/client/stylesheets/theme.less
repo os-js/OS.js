@@ -470,8 +470,14 @@ gui-iframe {
 /* Button Bar */
 /* Toolbar */
 gui-toolbar > *,
-gui-button-bar > * {
+gui-button-bar > *,
+gui-toolbar > gui-expander > *,
+gui-button-bar > gui-expander > * {
   margin : @gui_base_padding;
+}
+gui-toolbar > gui-expander,
+gui-button-bar > gui-expander {
+  margin : 0;
 }
 
 gui-toolbar {
@@ -487,16 +493,17 @@ gui-toolbar[data-orientation="vertical"] {
 /* Expander */
 gui-expander {
   font-size : 12px;
-  padding : @gui_base_padding;
-  background-color : @gui_background_color;
 }
   gui-expander-label {
     cursor : pointer;
+    padding : @gui_base_padding;
+    background-color : @gui_background_color;
+    margin-bottom : @gui_base_padding;
   }
   gui-expander-label:before {
     content : '▼';
     font-family : sans-serif;
-    padding-right : 6px;
+    padding-right : @gui_base_padding;
   }
   gui-expander[data-expanded="false"] > gui-expander-label:before {
     content : '►';
