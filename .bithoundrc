@@ -1,7 +1,7 @@
 {
   "critics": {
     "wc": {
-      "limit": 2000
+      "limit": 20000
     }
   },
   "ignore": [
