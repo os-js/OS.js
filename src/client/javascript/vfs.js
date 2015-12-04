@@ -156,23 +156,10 @@
     options = Utils.argumentDefaults(options, {
       typeFilter: null,
       mimeFilter: [],
-      showDotFiles: true,
-      showFileExtensions: true
+      showDotFiles: true
     }, true);
 
     var result = [];
-    var mimeConfig = OSjs.Core.getConfig().EXTMIME;
-
-    function removeExtension(str) {
-      var ext = Utils.filext(str);
-      if ( ext ) {
-        ext = '.' + ext;
-        if ( mimeConfig[ext] ) {
-          str = str.substr(0, str.length - ext.length);
-        }
-      }
-      return str;
-    }
 
     function filterFile(iter) {
       if ( iter.filename !== '..' ) {
@@ -210,10 +197,6 @@
       if ( iter.type === 'file' ) {
         if ( !validMime(iter) ) {
           return;
-        }
-
-        if ( options.showFileExtensions === false ) {
-          iter.filename = removeExtension(iter.filename);
         }
       }
 

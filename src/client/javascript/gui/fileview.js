@@ -80,7 +80,6 @@
     var scanopts = {
       backlink:           opts.backlink,
       showDotFiles:       opts.dotfiles === true,
-      showFileExtensions: opts.extensions === true,
       mimeFilter:         opts.filter || [],
       typeFilter:         opts.filetype || null
     };
@@ -131,6 +130,21 @@
     scandir(tagName, dir, opts, function(error, result, summary) {
       done(error, result, summary);
     }, function(iter) {
+      var mimeConfig = OSjs.Core.getConfig().EXTMIME;
+
+      function removeExtension(str) {
+        if ( opts.extensions === false ) {
+          var ext = Utils.filext(str);
+          if ( ext ) {
+            ext = '.' + ext;
+            if ( mimeConfig[ext] ) {
+              str = str.substr(0, str.length - ext.length);
+            }
+          }
+        }
+        return str;
+      }
+
       function _getIcon(iter, size) {
         if ( iter.icon && typeof iter.icon === 'object' ) {
           return API.getIcon(iter.icon.filename, size, iter.icon.application);
@@ -143,7 +157,7 @@
       function _createEntry() {
         var row = {
           value: iter,
-          id: iter.id || iter.filename,
+          id: iter.id || removeExtension(iter.filename),
           label: iter.filename,
           tooltip: tooltip,
           icon: _getIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
@@ -171,7 +185,7 @@
         id: iter.id || iter.filename,
         tooltip: tooltip,
         columns: [
-          {label: iter.filename, icon: _getIcon(iter)},
+          {label: removeExtension(iter.filename), icon: _getIcon(iter)},
           {label: iter.mime, textalign: 'right'},
           {label: filesize, textalign: 'right'}
         ]
