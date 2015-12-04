@@ -49,6 +49,7 @@
     this.currentSummary = {};
     this.viewOptions = Utils.argumentDefaults(settings || {}, {
       ViewHidden: true,
+      ViewExtension: true,
       ViewNavigation: true,
       ViewSide: true
     }, true);
@@ -63,10 +64,11 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
     var view;
-    var viewType   = this.viewOptions.ViewType || 'gui-list-view';
-    var viewSide   = this.viewOptions.ViewSide === true;
-    var viewHidden = this.viewOptions.ViewHidden === true;
-    var viewNav    = this.viewOptions.ViewNavigation === true;
+    var viewType      = this.viewOptions.ViewType || 'gui-list-view';
+    var viewSide      = this.viewOptions.ViewSide === true;
+    var viewHidden    = this.viewOptions.ViewHidden === true;
+    var viewExtension = this.viewOptions.ViewExtension === true;
+    var viewNav       = this.viewOptions.ViewNavigation === true;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'FileManagerWindow', root, null, null, {
@@ -105,7 +107,8 @@
       MenuViewIcon:       function() { self.changeView('gui-icon-view', true); },
       MenuShowSidebar:    function() { viewSide = self.toggleSidebar(!viewSide, true); },
       MenuShowNavigation: function() { viewNav = self.toggleNavbar(!viewNav, true); },
-      MenuShowHidden:     function() { viewHidden = self.toggleHidden(!viewHidden, true); }
+      MenuShowHidden:     function() { viewHidden = self.toggleHidden(!viewHidden, true); },
+      MenuShowExtension:  function() { viewExtension = self.toggleExtension(!viewExtension, true); }
     };
 
     function menuEvent(ev) {
@@ -124,6 +127,7 @@
     viewMenu.set('checked', 'MenuShowSidebar', viewSide);
     viewMenu.set('checked', 'MenuShowNavigation', viewNav);
     viewMenu.set('checked', 'MenuShowHidden', viewHidden);
+    viewMenu.set('checked', 'MenuShowExtension', viewExtension);
 
     //
     // Toolbar
@@ -178,6 +182,7 @@
 
     this.changeView(viewType, false);
     this.toggleHidden(viewHidden, false);
+    this.toggleExtension(viewExtension, false);
     this.toggleSidebar(viewSide, false);
     this.toggleNavbar(viewNav, false);
 
@@ -418,6 +423,19 @@
 
     if ( set ) {
       this._app._setSetting('ViewHidden', toggle, true);
+      this.changePath(null);
+    }
+    return toggle;
+  };
+
+  ApplicationFileManagerWindow.prototype.toggleExtension = function(toggle, set) {
+    this.viewOptions.ViewExtension = toggle;
+
+    var view = this._scheme.find(this, 'FileView');
+    view.set('extensions', toggle);
+
+    if ( set ) {
+      this._app._setSetting('ViewExtension', toggle, true);
       this.changePath(null);
     }
     return toggle;
