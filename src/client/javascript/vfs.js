@@ -183,7 +183,7 @@
       return true;
     }
 
-    function validMime() {
+    function validMime(iter) {
       if ( options.mimeFilter && options.mimeFilter.length && iter.mime ) {
         var valid = false;
         options.mimeFilter.forEach(function(miter) {
@@ -208,7 +208,7 @@
       }
 
       if ( iter.type === 'file' ) {
-        if ( !validMime() ) {
+        if ( !validMime(iter) ) {
           return;
         }
 
