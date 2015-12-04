@@ -153,18 +153,47 @@
    * Filters a scandir() request
    */
   function filterScandir(list, options) {
-    options = options || {};
-    var result = [];
+    options = Utils.argumentDefaults(options, {
+      typeFilter: null,
+      mimeFilter: [],
+      showDotFiles: true,
+      showFileExtensions: true
+    }, true);
 
-    var typeFilter     = options.typeFilter || null;
-    var mimeFilter     = options.mimeFilter || [];
-    var showDotFiles   = options.showDotFiles === true;
+    var result = [];
+    var mimeConfig = OSjs.Core.getConfig().EXTMIME;
+
+    function removeExtension(str) {
+      var ext = Utils.filext(str);
+      if ( ext ) {
+        ext = '.' + ext;
+        if ( mimeConfig[ext] ) {
+          str = str.substr(0, str.length - ext.length);
+        }
+      }
+      return str;
+    }
 
     function filterFile(iter) {
       if ( iter.filename !== '..' ) {
-        if ( (typeFilter && iter.type !== typeFilter) || (!showDotFiles && iter.filename.match(/^\./)) ) {
+        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showDotFiles && iter.filename.match(/^\./)) ) {
           return false;
         }
+      }
+      return true;
+    }
+
+    function validMime() {
+      if ( options.mimeFilter && options.mimeFilter.length && iter.mime ) {
+        var valid = false;
+        options.mimeFilter.forEach(function(miter) {
+          if ( iter.mime.match(miter) ) {
+            valid = true;
+            return false;
+          }
+          return true;
+        });
+        return valid;
       }
       return true;
     }
@@ -173,27 +202,18 @@
       if ( iter.mime === 'application/vnd.google-apps.folder' ) {
         iter.type = 'dir';
       }
-      if ( iter.filename === '..' && options.backlink === false ) {
+
+      if ( (iter.filename === '..' && options.backlink === false) || !filterFile(iter) ) {
         return;
       }
 
-      if ( !filterFile(iter) ) {
-        return;
-      }
-
-      if ( iter.type === 'file' && mimeFilter && mimeFilter.length && iter.mime ) {
-        var valid = false;
-
-        mimeFilter.forEach(function(miter) {
-          if ( iter.mime.match(miter) ) {
-            valid = true;
-            return false;
-          }
-          return true;
-        });
-
-        if ( !valid ) {
+      if ( iter.type === 'file' ) {
+        if ( !validMime() ) {
           return;
+        }
+
+        if ( options.showFileExtensions === false ) {
+          iter.filename = removeExtension(iter.filename);
         }
       }
 

@@ -78,10 +78,11 @@
     file.type  = 'dir';
 
     var scanopts = {
-      backlink:     opts.backlink,
-      showDotFiles: opts.dotfiles === true,
-      mimeFilter:   opts.filter || [],
-      typeFilter:   opts.filetype || null
+      backlink:           opts.backlink,
+      showDotFiles:       opts.dotfiles === true,
+      showFileExtensions: opts.extensions === true,
+      mimeFilter:         opts.filter || [],
+      typeFilter:         opts.filetype || null
     };
 
     VFS.scandir(file, function(error, result) {
@@ -115,10 +116,11 @@
     el.setAttribute('data-path', dir);
 
     var opts = {
-      filter: null,
-      backlink: sopts.backlink,
-      dotfiles: el.getAttribute('data-dotfiles') === 'true',
-      filetype: el.getAttribute('data-filetype')
+      filter:     null,
+      backlink:   sopts.backlink,
+      dotfiles:   el.getAttribute('data-dotfiles') === 'true',
+      extensions: el.getAttribute('data-extensions') === 'true',
+      filetype:   el.getAttribute('data-filetype')
     };
 
     try {
@@ -191,9 +193,10 @@
    *  activate      When an entry was activated (doubleclick) => fn(ev)
    *
    * Parameters:
-   *  type      String      Child type
-   *  filter    Array       MIME Filters
-   *  dotfiles  boolean     Show dotfiles
+   *  type          String      Child type
+   *  filter        Array       MIME Filters
+   *  dotfiles      boolean     Show dotfiles (default=true)
+   *  extensions    boolean     Show file extensions (default=true)
    *
    * Actions:
    *  chdir(args)   Change directory (args = {path: '', done: function() })
@@ -252,7 +255,7 @@
           });
         }
         return true;
-      } else if ( (['filter', 'dotfiles', 'filetype']).indexOf(param) >= 0 ) {
+      } else if ( (['filter', 'dotfiles', 'filetype', 'extensions']).indexOf(param) >= 0 ) {
         GUI.Helpers.setProperty(el, param, value);
         return true;
       }
