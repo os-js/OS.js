@@ -228,7 +228,7 @@
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.registerTask('all', ['clean', 'config', 'core', 'themes', 'packages', 'manifest']);
+    grunt.registerTask('all', ['clean', 'config', 'dist-dev-index', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
   };
 
