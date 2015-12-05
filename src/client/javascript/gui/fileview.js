@@ -54,6 +54,9 @@
       el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
     });
     nel.on('contextmenu', function(ev) {
+      if ( !el.hasAttribute('data-has-contextmenu') || el.hasAttribute('data-has-contextmenu') === 'false' ) {
+        new GUI.Element(el).fn('contextmenu', [ev]);
+      }
       el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
     });
 
@@ -244,6 +247,11 @@
       if ( (['activate', 'select', 'contextmenu']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
+
+      if ( evName === '_contextmenu' ) {
+        el.setAttribute('data-has-contextmenu', 'true');
+      }
+
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     set: function(el, param, value, arg) {
@@ -312,6 +320,39 @@
       }
       return null;
     },
+
+    contextmenu: function(ev) {
+      var vfsOptions = OSjs.Core.getSettingsManager().instance('VFS');
+      var scandirOptions = (vfsOptions.get('scandir') || {});
+
+      function setOption(opt, toggle) {
+        var opts = {scandir: {}};
+        opts.scandir[opt] = toggle;
+        vfsOptions.set(null, opts, true);
+      }
+
+      API.createMenu([
+        {
+          title: 'Show Hidden Files', // FIXME: Locale
+          type: 'checkbox',
+          checked: scandirOptions.showHiddenFiles === true,
+          onClick: function() {
+            setOption('showHiddenFiles', !scandirOptions.showHiddenFiles);
+            API.blurMenu(); // FIXME: This should not be needed!
+          }
+        },
+        {
+          title: 'Show File Extensions', // FIXME: Locale
+          type: 'checkbox',
+          checked: scandirOptions.showFileExtensions === true,
+          onClick: function() {
+            setOption('showFileExtensions', !scandirOptions.showFileExtensions);
+            API.blurMenu(); // FIXME: This should not be needed!
+          }
+        }
+      ], ev);
+    },
+
     call: function(el, method, args) {
       args = args || {};
       args.done = args.done || function() {};
