@@ -688,6 +688,24 @@
   };
 
   /**
+   * Get a panel notification icon.
+   *
+   * THIS IS IMPLEMENTED IN COREWM
+   *
+   * @param   String    name      Internal name (unique)
+   * @param   int       panelId   (Optional) Panel ID
+   *
+   * @return  NotificationAreaItem
+   *
+   * @see NotificationAreaItem
+   *
+   * @method  WindowManager::createNotificationIcon()
+   */
+  WindowManager.prototype.createNotificationIcon = function() {
+    // Implement in your WM
+  };
+
+  /**
    * Create a panel notification icon.
    *
    * THIS IS IMPLEMENTED IN COREWM

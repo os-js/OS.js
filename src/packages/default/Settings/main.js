@@ -30,7 +30,7 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  var categories = ['theme', 'desktop', 'panel', 'user', 'packages'];
+  var categories = ['theme', 'desktop', 'panel', 'user', 'fileview', 'packages'];
 
   function fetchJSON(cb) {
     var url = 'http://andersevenrud.github.io/OS.js-v2/store/packages.json';
@@ -155,9 +155,14 @@
     this.category = category;
     this.settings = {};
     this.panelItems = [];
+    this.watches = {};
 
     var self = this;
-    this.watchID = OSjs.Core.getSettingsManager().watch('CoreWM', function() {
+
+    this.watches.corewm = OSjs.Core.getSettingsManager().watch('CoreWM', function() {
+      self.updateSettings();
+    });
+    this.watches.vfs = OSjs.Core.getSettingsManager().watch('VFS', function() {
       self.updateSettings();
     });
   }
@@ -200,7 +205,7 @@
 
   ApplicationSettingsWindow.prototype.setContainer = function(idx, save) {
     var found;
-    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
+    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsFileView', 'TabsPackages'];
     if ( typeof idx === 'string' ) {
       idx = Math.max(0, categories.indexOf(idx));
     }
@@ -240,6 +245,7 @@
     this.initPanelTab(wm, scheme, init);
     this.initUserTab(wm, scheme, init);
     this.initPackagesTab(wm, scheme, init);
+    this.initFileViewTab(wm, scheme, init);
   };
 
   /**
@@ -247,8 +253,14 @@
    */
   ApplicationSettingsWindow.prototype.destroy = function() {
     try {
-      OSjs.Core.getSettingsManager().unwatch(this.watchID);
+      OSjs.Core.getSettingsManager().unwatch(this.watches.corewm);
     } catch ( e ) {}
+    try {
+      OSjs.Core.getSettingsManager().unwatch(this.watches.vfs);
+    } catch ( e ) {}
+
+    this.watches = {};
+
     Window.prototype.destroy.apply(this, arguments);
   };
 
@@ -764,6 +776,22 @@
   };
 
   /**
+   * File View
+   */
+  ApplicationSettingsWindow.prototype.initFileViewTab = function(wm, scheme, init) {
+    var self = this;
+    var handler = OSjs.Core.getHandler();
+    var pacman = OSjs.Core.getPackageManager();
+
+    var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+    var scandirOptions = vfsOptions.scandir || {};
+
+    scheme.find(this, 'ShowFileExtensions').set('value', scandirOptions.showFileExtensions === true);
+    scheme.find(this, 'ShowHiddenFiles').set('value', scandirOptions.showHiddenFiles === true);
+  };
+
+
+  /**
    * Apply
    */
   ApplicationSettingsWindow.prototype.applySettings = function(wm, scheme) {
@@ -799,6 +827,15 @@
 
     // User
     this.settings.language = scheme.find(this, 'UserLocale').get('value');
+
+    var showHiddenFiles = scheme.find(this, 'ShowHiddenFiles').get('value');
+    var showFileExtensions = scheme.find(this, 'ShowFileExtensions').get('value');
+    OSjs.Core.getSettingsManager().instance('VFS').set(null, {
+      scandir: {
+        showHiddenFiles: showHiddenFiles,
+        showFileExtensions: showFileExtensions
+      }
+    }, true);
 
     wm.applySettings(this.settings, false, true);
   };

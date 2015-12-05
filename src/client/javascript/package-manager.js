@@ -276,7 +276,7 @@
     var currLocale = API.getLocale();
 
     keys.forEach(function(i) {
-      var newIter = result[i];
+      var newIter = Utils.cloneObject(result[i]);
       if ( typeof newIter.names !== 'undefined' ) {
         if ( newIter.names[currLocale] ) {
           newIter.name = newIter.names[currLocale];

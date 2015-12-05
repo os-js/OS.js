@@ -1,4 +1,9 @@
 {
+  "critics": {
+    "wc": {
+      "limit": 20000
+    }
+  },
   "ignore": [
     "src/build.js",
 

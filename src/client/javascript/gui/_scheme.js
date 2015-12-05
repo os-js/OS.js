@@ -138,6 +138,15 @@
     this.triggers = {};
   };
 
+  /**
+   * Register event
+   *
+   * @param   String      f       Event name
+   * @param   Function    fn      Function/callback
+   *
+   * @return  void
+   * @method  Scheme::on()
+   */
   UIScheme.prototype.on = function(f, fn) {
     this.triggers[f].push(fn);
   };
@@ -151,11 +160,9 @@
     });
   };
 
-  UIScheme.prototype.load = function(cb) {
-    var self = this;
-
-    function removeSelfClosingTags(html) {
-      var split = (html || '').split('/>');
+  UIScheme.prototype._load = function(html) {
+    function removeSelfClosingTags(str) {
+      var split = (str || '').split('/>');
       var newhtml = '';
       for (var i = 0; i < split.length - 1;i++) {
         var edsplit = split[i].split('<');
@@ -164,35 +171,60 @@
       return newhtml + split[split.length-1];
     }
 
-    function finished(html) {
-      var doc = document.createDocumentFragment();
-      var wrapper = document.createElement('div');
-      wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
-      doc.appendChild(wrapper);
+    var doc = document.createDocumentFragment();
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
+    doc.appendChild(wrapper);
 
-      self.scheme = doc.cloneNode(true);
+    this.scheme = doc.cloneNode(true);
 
-      wrapper = null;
-      doc = null;
+    wrapper = null;
+    doc = null;
+  };
 
-      cb(false, self.scheme);
-    }
+  /**
+   * Load Scheme from given String
+   *
+   * @param   String      html    HTML data
+   * @param   Function    cb      callback => fn(error, scheme)
+   *
+   * @return  void
+   * @method  Scheme::load()
+   */
+  UIScheme.prototype.loadString = function(html, cb) {
+    console.debug('UIScheme::loadString()');
+    this._load(html);
+    cb(false, this.scheme);
+  };
+
+  /**
+   * Load Scheme from URL
+   *
+   * @param   Function    cb      callback => fn(error, scheme)
+   *
+   * @return  void
+   * @method  Scheme::load()
+   */
+  UIScheme.prototype.load = function(cb) {
+    var self = this;
+
+    console.debug('UIScheme::load()', this.url);
 
     if ( window.location.protocol.match(/^file/) ) {
       var url = this.url;
       if ( !url.match(/^\//) ) {
         url = '/' + url;
       }
-      finished(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
+      self._load(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
+      cb(false, self.scheme);
       return;
     }
-
-    console.debug('UIScheme::load()', this.url);
 
     Utils.ajax({
       url: this.url,
       onsuccess: function(html) {
-        finished(html);
+        self._load(html);
+        cb(false, self.scheme);
       },
       onerror: function() {
         cb('Failed to fetch scheme');
@@ -200,6 +232,15 @@
     });
   };
 
+  /**
+   * Get fragment from ID (and/or type)
+   *
+   * @param   String      id      ID
+   * @param   String      type    (Optional) type (application-window | application-fragment)
+   *
+   * @return  DOMElement
+   * @method  Scheme::getFragment()
+   */
   UIScheme.prototype.getFragment = function(id, type) {
     var content = null;
     if ( id ) {
@@ -213,6 +254,18 @@
     return content;
   };
 
+  /**
+   * Parses the given fragment
+   *
+   * @param   String      id      Fragment ID
+   * @param   String      type    (Optional) Fragment Type
+   * @param   Window      win     OS.js Window
+   * @param   Function    onparse (Optional) Callback on parsed
+   * @param   Object      args    (Optional) Parameters
+   *
+   * @return  DOMElement
+   * @method  Scheme::parse()
+   */
   UIScheme.prototype.parse = function(id, type, win, onparse, args) {
     var self = this;
     var content = this.getFragment(id, type);
@@ -270,10 +323,34 @@
     return null;
   };
 
+  /**
+   * Renders the given fragment into Window
+   *
+   * @param   Window      win     OS.js Window
+   * @param   String      id      Fragment ID
+   * @param   DOMElement  root    (Optional) Root HTML Node
+   * @param   String      type    (Optional) Fragment Type
+   * @param   Function    onparse (Optional) Callback on parsed
+   * @param   Object      args    (Optional) Parameters
+   *
+   * @return  DOMElement
+   * @method  Scheme::render()
+   */
   UIScheme.prototype.render = function(win, id, root, type, onparse, args) {
     root = root || win._getRoot();
     if ( root instanceof OSjs.GUI.Element ) {
       root = root.$element;
+    }
+
+    function setWindowProperties(frag) {
+      if ( frag ) {
+        var width = parseInt(frag.getAttribute('data-width'), 10) || 0;
+        var height = parseInt(frag.getAttribute('data-height'), 10) || 0;
+
+        if ( (!isNaN(width) && width > 0) || (!isNaN(height) && height > 0) ) {
+          win._resize(width, height);
+        }
+      }
     }
 
     console.debug('UIScheme::render()', id);
@@ -281,9 +358,25 @@
     var content = this.parse(id, type, win, onparse, args);
     addChildren(content, root);
 
+    if ( !win._restored ) {
+      setWindowProperties(this.getFragment(id));
+    }
+
     this._trigger('render', [root]);
   };
 
+  /**
+   * Renders the given fragment into Window
+   *
+   * @param   Window      win           OS.js Window
+   * @param   String      tagName       OS.js GUI Element name
+   * @param   Object      params        Parameters
+   * @param   DOMElement  parentNode    Parent Node
+   * @param   Object      applyArgs     New element parameters
+   *
+   * @return  UIElement
+   * @method  Scheme::create()
+   */
   UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
     tagName = tagName || '';
     params = params || {};
@@ -306,12 +399,30 @@
     return new OSjs.GUI.Element(el);
   };
 
+  /**
+   * Finds a given UIElement by ID
+   *
+   * @param   Window      win       OS.js Window
+   * @param   String      id        Element ID (data-id)
+   * @param   DOMElement  root      (Optional) Root Node
+   *
+   * @return  UIElement
+   * @method  Scheme::find()
+   */
   UIScheme.prototype.find = function(win, id, root) {
     root = root || win._getRoot();
     var q = '[data-id="' + id + '"]';
     return this.get(root.querySelector(q), q);
   };
 
+  /**
+   * Gets UIElement by DOMElement
+   *
+   * @param   DOMElement    el      DOME Element
+   *
+   * @return  UIElement
+   * @method  Scheme::get()
+   */
   UIScheme.prototype.get = function(el, q) {
     if ( el ) {
       var tagName = el.tagName.toLowerCase();
@@ -320,6 +431,17 @@
       }
     }
     return new OSjs.GUI.Element(el, q);
+  };
+
+
+  /**
+   * Get HTML from Scheme
+   *
+   * @return  String
+   * @method  Scheme::getHTML()
+   */
+  UIScheme.prototype.getHTML = function() {
+    return this.scheme.firstChild.innerHTML;
   };
 
   /////////////////////////////////////////////////////////////////////////////

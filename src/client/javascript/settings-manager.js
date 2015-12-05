@@ -172,7 +172,7 @@
       this.storage[pool] = {};
     }
 
-    var instance = new OSjs.Helpers.SettingsFragment(this.storage[pool]);
+    var instance = new OSjs.Helpers.SettingsFragment(this.storage[pool], pool);
     if ( arguments.length > 1 ) {
       SettingsManager.defaults(pool, defaults);
       instance.mergeDefaults(defaults);

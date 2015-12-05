@@ -53,6 +53,7 @@
    *
    * @api OSjs.Helpers.IFrameApplicationWindow
    * @see OSjs.Core.Window
+   * @link http://os.js.org/doc/tutorials/iframe-application.html
    * @extends Window
    * @class
    */
@@ -78,13 +79,22 @@
 
   IFrameApplicationWindow.prototype = Object.create(Window.prototype);
 
+  IFrameApplicationWindow.prototype.destroy = function() {
+    this.postMessage('Window::destroy');
+    return Window.prototype.destroy.apply(this, arguments);
+  };
+
   IFrameApplicationWindow.prototype.init = function(wmRef, app) {
+    var self = this;
     var root = Window.prototype.init.apply(this, arguments);
     root.style.overflow = 'visible';
 
     var iframe = document.createElement('iframe');
     iframe.setAttribute('border', 0);
     iframe.className = 'IframeApplicationFrame';
+    iframe.addEventListener('load', function() {
+      self.postMessage('Window::init');
+    });
     iframe.src = this._opts.src;
     root.appendChild(iframe);
 
@@ -125,6 +135,38 @@
       return true;
     }
     return false;
+  };
+
+  /**
+   * Post a message to IFrame Application
+   *
+   * @param   Mixed       message     The message
+   * @return  void
+   *
+   * @method IFrameApplicationWindow::postMessage()
+   */
+  IFrameApplicationWindow.prototype.postMessage = function(message) {
+    if ( this._iwin ) {
+      console.debug('IFrameApplicationWindow::postMessage()', message);
+      this._iwin.postMessage({
+        message: message,
+        pid: this._app.__pid,
+        wid: this._wid
+      }, window.location.href);
+    }
+  };
+
+  /**
+   * When Window receives a message from IFrame Application
+   *
+   * @param   Mixed       message     The message
+   * @param   DOMEvent    ev          DOM Event
+   * @return  void
+   *
+   * @method IFrameApplicationWindow::onPostMessage()
+   */
+  IFrameApplicationWindow.prototype.onPostMessage = function(message, ev) {
+    console.debug('IFrameApplicationWindow::onPostMessage()', message);
   };
 
   /////////////////////////////////////////////////////////////////////////////

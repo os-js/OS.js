@@ -446,11 +446,18 @@ gui-container[data-borders="true"] {
     }
 
 /* Paned View */
-  gui-paned-view > gui-paned-view-handle {
-    min-width : 8px;
-    width : 8px;
-    cursor : ew-resize;
-  }
+gui-paned-view > gui-paned-view-handle {
+  min-width : 8px;
+  width : 8px;
+  cursor : ew-resize;
+}
+gui-paned-view[data-orientation='vertical'] > gui-paned-view-handle {
+  min-width : auto;
+  width : auto;
+  min-height : 8px;
+  height : 8px;
+  cursor : ns-resize;
+}
 
 /* IFrame */
 gui-iframe {
@@ -463,8 +470,14 @@ gui-iframe {
 /* Button Bar */
 /* Toolbar */
 gui-toolbar > *,
-gui-button-bar > * {
+gui-button-bar > *,
+gui-toolbar > gui-expander > *,
+gui-button-bar > gui-expander > * {
   margin : @gui_base_padding;
+}
+gui-toolbar > gui-expander,
+gui-button-bar > gui-expander {
+  margin : 0;
 }
 
 gui-toolbar {
@@ -476,6 +489,25 @@ gui-toolbar[data-orientation="vertical"] {
   margin-top : @gui_base_padding;
   margin-bottom : @gui_base_padding;
 }
+
+/* Expander */
+gui-expander {
+  font-size : 12px;
+}
+  gui-expander-label {
+    cursor : pointer;
+    padding : @gui_base_padding;
+    background-color : @gui_background_color;
+    margin-bottom : @gui_base_padding;
+  }
+  gui-expander-label:before {
+    content : '▼';
+    font-family : sans-serif;
+    padding-right : @gui_base_padding;
+  }
+  gui-expander[data-expanded="false"] > gui-expander-label:before {
+    content : '►';
+  }
 
 /* Tabs */
   gui-tabs > ul {
@@ -888,7 +920,9 @@ gui-menu {
     padding-right : 16px;
   }
   gui-menu > gui-menu-entry.gui-menu-expand:after {
-    content : '>';
+    content : '►';
+    font-family : sans-serif;
+    line-height : 18px;
     padding : @gui_base_padding;
   }
 

@@ -546,7 +546,6 @@
       var disabled = el.getAttribute('data-disabled') !== null;
       var group = el.getAttribute('data-group');
       var label = GUI.Helpers.getValueLabel(el);
-
       var input = document.createElement('button');
 
       function setGroup(g) {
@@ -574,26 +573,35 @@
         }
       }
 
-      if ( label ) {
-        Utils.$addClass(el, 'gui-has-label');
+      function setImage() {
+        if ( icon ) {
+          var img = document.createElement('img');
+          img.src = icon;
+          img.alt = el.getAttribute('data-tooltip') || '';
+          img.title = el.getAttribute('data-tooltip') || '';
+
+          if ( input.firstChild ) {
+            input.insertBefore(img, input.firstChild);
+          } else {
+            input.appendChild(img);
+          }
+          Utils.$addClass(el, 'gui-has-image');
+        }
       }
 
-      input.appendChild(document.createTextNode(label));
+      function setLabel() {
+        if ( label ) {
+          Utils.$addClass(el, 'gui-has-label');
+        }
+        input.appendChild(document.createTextNode(label));
+      }
+
       if ( disabled ) {
         input.setAttribute('disabled', 'disabled');
       }
 
-      if ( icon ) {
-        var img = document.createElement('img');
-        img.src = icon;
-        if ( input.firstChild ) {
-          input.insertBefore(img, input.firstChild);
-        } else {
-          input.appendChild(img);
-        }
-        Utils.$addClass(el, 'gui-has-image');
-      }
-
+      setLabel();
+      setImage();
       setGroup(group);
       _buttonCount++;
 

@@ -347,13 +347,15 @@
         }
 
         var value = params[k];
-        if ( classMap[k] ) {
-          classMap[k](value);
-          return;
-        }
+        if ( typeof value !== 'undefined' ) {
+          if ( classMap[k] ) {
+            classMap[k](value);
+            return;
+          }
 
-        var fvalue = getValue(k, value);
-        el.setAttribute('data-' + k, fvalue);
+          var fvalue = getValue(k, value);
+          el.setAttribute('data-' + k, fvalue);
+        }
       });
     }
 

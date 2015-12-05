@@ -38,10 +38,11 @@ class MIME
   protected static $instance;
 
   protected function __construct() {
-    $file = sprintf("%s/src/%s", ROOTDIR, "mime.json");
+    $file = sprintf("%s/src/conf/%s", ROOTDIR, "130-mime.json");
+
     if ( file_exists($file) ) {
-      $arr = (array)json_decode(file_get_contents($file));
-      $this->data = (array)$arr["mapping"];
+      $arr = (array)json_decode(file_get_contents($file), true);
+      $this->data = (array)$arr["mime"]["mapping"];
     }
   }
 

@@ -54,6 +54,9 @@
       el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
     });
     nel.on('contextmenu', function(ev) {
+      if ( !el.hasAttribute('data-has-contextmenu') || el.hasAttribute('data-has-contextmenu') === 'false' ) {
+        new GUI.Element(el).fn('contextmenu', [ev]);
+      }
       el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
     });
 
@@ -78,10 +81,11 @@
     file.type  = 'dir';
 
     var scanopts = {
-      backlink:     opts.backlink,
-      showDotFiles: opts.dotfiles === true,
-      mimeFilter:   opts.filter || [],
-      typeFilter:   opts.filetype || null
+      backlink:           opts.backlink,
+      showDotFiles:       opts.dotfiles === true,
+      showFileExtensions: opts.extensions === true,
+      mimeFilter:         opts.filter || [],
+      typeFilter:         opts.filetype || null
     };
 
     VFS.scandir(file, function(error, result) {
@@ -110,16 +114,34 @@
   function readdir(el, dir, done, sopts) {
     sopts = sopts || {};
 
+    var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+    var scandirOptions = vfsOptions.scandir || {};
+
     var target = getChildView(el);
     var tagName = target.tagName.toLowerCase();
     el.setAttribute('data-path', dir);
 
-    var opts = {
-      filter: null,
-      backlink: sopts.backlink,
-      dotfiles: el.getAttribute('data-dotfiles') === 'true',
-      filetype: el.getAttribute('data-filetype')
-    };
+    var opts = {filter: null, backlink: sopts.backlink};
+    function setOption(s, d, c, cc) {
+      if ( el.hasAttribute(s) ) {
+        opts[d] = c(el.getAttribute(s));
+      } else {
+        opts[d] = (cc || function() {})();
+      }
+    }
+    setOption('data-dotfiles', 'dotfiles', function(val) {
+      return val === 'true';
+    }, function() {
+      return scandirOptions.showHiddenFiles === true;
+    });
+    setOption('data-extensions', 'extensions', function(val) {
+      return val === 'true';
+    }, function() {
+      return scandirOptions.showFileExtensions === true;
+    });
+    setOption('data-filetype', 'filetype', function(val) {
+      return val;
+    });
 
     try {
       opts.filter = JSON.parse(el.getAttribute('data-filter'));
@@ -129,6 +151,21 @@
     scandir(tagName, dir, opts, function(error, result, summary) {
       done(error, result, summary);
     }, function(iter) {
+      var mimeConfig = OSjs.Core.getConfig().EXTMIME;
+
+      function removeExtension(str) {
+        if ( opts.extensions === false ) {
+          var ext = Utils.filext(str);
+          if ( ext ) {
+            ext = '.' + ext;
+            if ( mimeConfig[ext] ) {
+              str = str.substr(0, str.length - ext.length);
+            }
+          }
+        }
+        return str;
+      }
+
       function _getIcon(iter, size) {
         if ( iter.icon && typeof iter.icon === 'object' ) {
           return API.getIcon(iter.icon.filename, size, iter.icon.application);
@@ -141,7 +178,7 @@
       function _createEntry() {
         var row = {
           value: iter,
-          id: iter.id || iter.filename,
+          id: iter.id || removeExtension(iter.filename),
           label: iter.filename,
           tooltip: tooltip,
           icon: _getIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
@@ -169,7 +206,7 @@
         id: iter.id || iter.filename,
         tooltip: tooltip,
         columns: [
-          {label: iter.filename, icon: _getIcon(iter)},
+          {label: removeExtension(iter.filename), icon: _getIcon(iter)},
           {label: iter.mime, textalign: 'right'},
           {label: filesize, textalign: 'right'}
         ]
@@ -191,9 +228,10 @@
    *  activate      When an entry was activated (doubleclick) => fn(ev)
    *
    * Parameters:
-   *  type      String      Child type
-   *  filter    Array       MIME Filters
-   *  dotfiles  boolean     Show dotfiles
+   *  type          String      Child type
+   *  filter        Array       MIME Filters
+   *  dotfiles      boolean     Show dotfiles (default=true)
+   *  extensions    boolean     Show file extensions (default=true)
    *
    * Actions:
    *  chdir(args)   Change directory (args = {path: '', done: function() })
@@ -209,6 +247,11 @@
       if ( (['activate', 'select', 'contextmenu']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
+
+      if ( evName === '_contextmenu' ) {
+        el.setAttribute('data-has-contextmenu', 'true');
+      }
+
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     set: function(el, param, value, arg) {
@@ -252,7 +295,7 @@
           });
         }
         return true;
-      } else if ( (['filter', 'dotfiles', 'filetype']).indexOf(param) >= 0 ) {
+      } else if ( (['filter', 'dotfiles', 'filetype', 'extensions']).indexOf(param) >= 0 ) {
         GUI.Helpers.setProperty(el, param, value);
         return true;
       }
@@ -277,6 +320,39 @@
       }
       return null;
     },
+
+    contextmenu: function(ev) {
+      var vfsOptions = OSjs.Core.getSettingsManager().instance('VFS');
+      var scandirOptions = (vfsOptions.get('scandir') || {});
+
+      function setOption(opt, toggle) {
+        var opts = {scandir: {}};
+        opts.scandir[opt] = toggle;
+        vfsOptions.set(null, opts, true);
+      }
+
+      API.createMenu([
+        {
+          title: 'Show Hidden Files', // FIXME: Locale
+          type: 'checkbox',
+          checked: scandirOptions.showHiddenFiles === true,
+          onClick: function() {
+            setOption('showHiddenFiles', !scandirOptions.showHiddenFiles);
+            API.blurMenu(); // FIXME: This should not be needed!
+          }
+        },
+        {
+          title: 'Show File Extensions', // FIXME: Locale
+          type: 'checkbox',
+          checked: scandirOptions.showFileExtensions === true,
+          onClick: function() {
+            setOption('showFileExtensions', !scandirOptions.showFileExtensions);
+            API.blurMenu(); // FIXME: This should not be needed!
+          }
+        }
+      ], ev);
+    },
+
     call: function(el, method, args) {
       args = args || {};
       args.done = args.done || function() {};

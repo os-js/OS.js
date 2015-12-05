@@ -95,10 +95,22 @@
 
     this.selected = null;
     this.path = args.path;
+
+    var self = this;
+    this.settingsWatch = OSjs.Core.getSettingsManager().watch('VFS', function() {
+      self.changePath();
+    });
   }
 
   FileDialog.prototype = Object.create(DialogWindow.prototype);
   FileDialog.constructor = DialogWindow;
+
+  FileDialog.prototype.destroy = function() {
+    try {
+      OSjs.Core.getSettingsManager().unwatch(this.settingsWatch);
+    } catch ( e ) {}
+    return DialogWindow.prototype.destroy.apply(this, arguments);
+  };
 
   FileDialog.prototype.init = function() {
     var self = this;

@@ -103,13 +103,25 @@
       OSjs.API.blurMenu();
     },
 
+    message: function(ev) {
+      if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
+        console.debug('window::message()', ev.data);
+        var proc = OSjs.API.getProcess(ev.data.pid);
+        var win  = proc._getWindow(ev.data.wid, 'wid');
+        win.onPostMessage(ev.data.message, ev);
+      }
+    },
+
     fullscreen: function(ev) {
-      // FIXME: Get actual cached object and not DOM element using setImage() etc
-      var el = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0];
-      if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
-        el.getElementsByTagName('img')[0].src = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');
-      } else {
-        el.getElementsByTagName('img')[0].src = OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16');
+      var notif = OSjs.Core.getWindowManager().getNotificationIcon('_FullscreenNotification');
+      if ( notif ) {
+        if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
+          notif.opts._isFullscreen = false;
+          notif.setImage(OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'));
+        } else {
+          notif.opts._isFullscreen = true;
+          notif.setImage(OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16'));
+        }
       }
     },
 
@@ -307,6 +319,7 @@
     window.addEventListener('mozfullscreenchange', events.fullscreen, false);
     window.addEventListener('webkitfullscreenchange', events.fullscreen, false);
     window.addEventListener('msfullscreenchange', events.fullscreen, false);
+    window.addEventListener('message', events.message, false);
     window.onbeforeunload = events.beforeunload;
 
     window.onerror = function(message, url, linenumber, column, exception) {
@@ -351,6 +364,15 @@
     if ( OSjs.VFS.registerMounts ) {
       OSjs.VFS.registerMounts();
     }
+
+    var settings = {};
+    try {
+      var cfg = OSjs.Core.getConfig();
+      settings = cfg.VFS.Globals || {};
+    } catch ( e  ) {}
+
+    OSjs.Core.getSettingsManager().instance('VFS', settings);
+
     callback();
   }
 
@@ -467,6 +489,7 @@
     document.removeEventListener('mousedown', events.mousedown, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);
+    window.removeEventListener('message', events.message, false);
 
     window.onerror = null;
     window.onbeforeunload = null;

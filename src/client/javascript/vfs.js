@@ -153,18 +153,38 @@
    * Filters a scandir() request
    */
   function filterScandir(list, options) {
-    options = options || {};
-    var result = [];
 
-    var typeFilter     = options.typeFilter || null;
-    var mimeFilter     = options.mimeFilter || [];
-    var showDotFiles   = options.showDotFiles === true;
+    var defaultOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+
+    options = Utils.argumentDefaults(options, defaultOptions.scandir || {});
+    options = Utils.argumentDefaults(options, {
+      typeFilter: null,
+      mimeFilter: [],
+      showHiddenFiles: true
+    }, true);
+
+    var result = [];
 
     function filterFile(iter) {
       if ( iter.filename !== '..' ) {
-        if ( (typeFilter && iter.type !== typeFilter) || (!showDotFiles && iter.filename.match(/^\./)) ) {
+        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\./)) ) {
           return false;
         }
+      }
+      return true;
+    }
+
+    function validMime(iter) {
+      if ( options.mimeFilter && options.mimeFilter.length && iter.mime ) {
+        var valid = false;
+        options.mimeFilter.forEach(function(miter) {
+          if ( iter.mime.match(miter) ) {
+            valid = true;
+            return false;
+          }
+          return true;
+        });
+        return valid;
       }
       return true;
     }
@@ -173,26 +193,13 @@
       if ( iter.mime === 'application/vnd.google-apps.folder' ) {
         iter.type = 'dir';
       }
-      if ( iter.filename === '..' && options.backlink === false ) {
+
+      if ( (iter.filename === '..' && options.backlink === false) || !filterFile(iter) ) {
         return;
       }
 
-      if ( !filterFile(iter) ) {
-        return;
-      }
-
-      if ( iter.type === 'file' && mimeFilter && mimeFilter.length && iter.mime ) {
-        var valid = false;
-
-        mimeFilter.forEach(function(miter) {
-          if ( iter.mime.match(miter) ) {
-            valid = true;
-            return false;
-          }
-          return true;
-        });
-
-        if ( !valid ) {
+      if ( iter.type === 'file' ) {
+        if ( !validMime(iter) ) {
           return;
         }
       }

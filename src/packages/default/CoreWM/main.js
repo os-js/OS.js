@@ -85,27 +85,25 @@
       }
 
       function toggleFullscreen() {
-        // FIXME: In init.js there is a note about this
-        var target = document.getElementsByClassName('NotificationArea__FullscreenNotification')[0].childNodes[0];
-        var check = OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16');
-        if ( target.getAttribute('src') === check  ) {
-          var docElm = document.documentElement;
-          if ( docElm.requestFullscreen ) {
-            docElm.requestFullscreen();
-          } else if ( docElm.mozRequestFullScreen ) {
-            docElm.mozRequestFullScreen();
-          } else if ( docElm.webkitRequestFullScreen ) {
-            docElm.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-          }
-        } else {
-          if ( document.webkitCancelFullScreen ) {
-            document.webkitCancelFullScreen();
-          }
-          else if ( document.mozCancelFullScreen ) {
-            document.mozCancelFullScreen();
-          }
-          else if ( document.exitFullscreen ) {
-            document.exitFullscreen();
+        var notif = self.getNotificationIcon('_FullscreenNotification');
+        if ( notif ) {
+          if ( notif.opts._isFullscreen ) {
+            if ( document.webkitCancelFullScreen ) {
+              document.webkitCancelFullScreen();
+            } else if ( document.mozCancelFullScreen ) {
+              document.mozCancelFullScreen();
+            } else if ( document.exitFullscreen ) {
+              document.exitFullscreen();
+            }
+          } else {
+            var docElm = document.documentElement;
+            if ( docElm.requestFullscreen ) {
+              docElm.requestFullscreen();
+            } else if ( docElm.mozRequestFullScreen ) {
+              docElm.mozRequestFullScreen();
+            } else if ( docElm.webkitRequestFullScreen ) {
+              docElm.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
           }
         }
       }
@@ -114,7 +112,8 @@
         self.createNotificationIcon('_FullscreenNotification', {
           image: OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'),
           title: 'Enter fullscreen',
-          onClick: toggleFullscreen
+          onClick: toggleFullscreen,
+          _isFullscreen: false
         });
       }
 
@@ -663,36 +662,44 @@
     };
   })();
 
-  CoreWM.prototype.createNotificationIcon = function(name, opts, panelId) {
-    opts = opts || {};
+  CoreWM.prototype._getNotificationArea = function(panelId) {
     panelId = panelId || 0;
-    if ( !name ) { return false; }
-
     var panel  = this.panels[panelId];
     var result = null;
     if ( panel ) {
-      var pitem = panel.getItem(OSjs.Applications.CoreWM.PanelItems.NotificationArea, false);
-      if ( pitem ) {
-        result = pitem.createNotification(name, opts);
-      }
-
+      return panel.getItem(OSjs.Applications.CoreWM.PanelItems.NotificationArea, false);
     }
-    return result;
+
+    return false;
+  };
+
+  CoreWM.prototype.createNotificationIcon = function(name, opts, panelId) {
+    opts = opts || {};
+    if ( !name ) { return false; }
+
+    var pitem = this._getNotificationArea(panelId);
+    if ( pitem ) {
+      return pitem.createNotification(name, opts);
+    }
+    return null;
   };
 
   CoreWM.prototype.removeNotificationIcon = function(name, panelId) {
-    panelId = panelId || 0;
     if ( !name ) { return false; }
 
-    var panel  = this.panels[panelId];
-    var result = null;
-    if ( panel ) {
-      var pitem = panel.getItem(OSjs.Applications.CoreWM.PanelItems.NotificationArea, false);
-      if ( pitem ) {
-        pitem.removeNotification(name);
-        return true;
-      }
+    var pitem = this._getNotificationArea(panelId);
+    if ( pitem ) {
+      pitem.removeNotification(name);
+      return true;
+    }
+    return false;
+  };
 
+  CoreWM.prototype.getNotificationIcon = function(name, panelId) {
+    if ( !name ) { return false; }
+    var pitem = this._getNotificationArea(panelId);
+    if ( pitem ) {
+      return pitem.getNotification(name);
     }
     return false;
   };

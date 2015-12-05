@@ -51,6 +51,7 @@
    * OSjs.Core.getHandler();
    *
    * @api   OSjs.Core._Handler
+   * @link http://os.js.org/doc/tutorials/create-handler.html
    * @class _Handler
    */
   var _Handler = function() {

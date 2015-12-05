@@ -43,6 +43,8 @@
    *
    * A view with resizable content boxes
    *
+   * TODO: Minimum size of resize containers
+   *
    * @api OSjs.GUI.Elements.gui-paned-view
    * @class
    */
@@ -54,20 +56,38 @@
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     build: function(el) {
+      var orient = el.getAttribute('data-orientation') || 'horizontal';
+
       function bindResizer(resizer, idx) {
         var resizeEl = resizer.previousElementSibling;
         if ( !resizeEl ) { return; }
 
         var startWidth = resizeEl.offsetWidth;
+        var startHeight = resizeEl.offsetHeight;
         var maxWidth = el.offsetWidth;
+        var maxHeight = el.offsetHeight;
 
         GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = resizeEl.offsetWidth;
+          startHeight = resizeEl.offsetHeight;
           maxWidth = el.offsetWidth / 2;
+          maxHeight = el.offsetHeight / 2;
         }, function(ev, diff) {
           var newWidth = startWidth + diff.x;
-          if ( !isNaN(newWidth) && newWidth > 0 && newWidth < maxWidth ) {
-            var flex = newWidth.toString() + 'px';
+          var newHeight = startHeight + diff.y;
+
+          var flex;
+          if ( orient === 'horizontal' ) {
+            if ( !isNaN(newWidth) && newWidth > 0 && newWidth <= maxWidth ) {
+              flex = newWidth.toString() + 'px';
+            }
+          } else {
+            if ( !isNaN(newHeight) && newHeight > 0 && newHeight <= maxHeight ) {
+             flex = newHeight.toString() + 'px';
+            }
+          }
+
+          if ( flex ) {
             resizeEl.style.webkitFlexBasis = flex;
             resizeEl.style.mozFflexBasis = flex;
             resizeEl.style.msFflexBasis = flex;
@@ -133,5 +153,55 @@
       GUI.Helpers.setFlexbox(el);
     }
   };
+
+  /**
+   * Element: 'gui-expander'
+   *
+   * A expandable/collapsable container with label and indicator
+   *
+   * Parameters:
+   *  String      label     The label
+   *  boolean     expanded  Expanded state (default=true)
+   *
+   * @api OSjs.GUI.Elements.gui-expander
+   * @class
+   */
+  GUI.Elements['gui-expander'] = (function() {
+    function toggleState(el, expanded) {
+      if ( typeof expanded === 'undefined' ) {
+        expanded = el.getAttribute('data-expanded') !== 'false';
+        expanded = !expanded;
+      }
+
+      el.setAttribute('data-expanded', String(expanded));
+      return expanded;
+    }
+
+    return {
+      set: function(el, param, value) {
+        if ( param === 'expanded' ) {
+          return toggleState(el, value === true);
+        }
+        return null;
+      },
+      bind: function(el, evName, callback, params) {
+        if ( (['change']).indexOf(evName) !== -1 ) {
+          evName = '_' + evName;
+        }
+        Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+      },
+      build: function(el) {
+        var lbltxt = el.getAttribute('data-label') || '';
+        var label = document.createElement('gui-expander-label');
+
+        Utils.$bind(label, 'click', function(ev) {
+          el.dispatchEvent(new CustomEvent('_change', {detail: {expanded: toggleState(el)}}));
+        }, false);
+
+        label.appendChild(document.createTextNode(lbltxt));
+        el.appendChild(label);
+      }
+    };
+  })();
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

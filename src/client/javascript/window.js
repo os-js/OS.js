@@ -178,6 +178,7 @@
       this._app           = appRef || null;                 // Reference to Application Window was created from
       this._scheme        = schemeRef || null;              // Reference to UIScheme
       this._destroyed     = false;                          // If Window has been destroyed
+      this._restored      = false;                          // If Window was restored
       this._wid           = _WID;                           // Window ID (Internal)
       this._icon          = opts.icon;                      // Window Icon
       this._name          = name;                           // Window Name (Unique identifier)
@@ -262,6 +263,7 @@
             }
 
             console.info('RESTORED FROM SESSION', restore);
+            self._restored = true;
             return false;
           }
 
@@ -1195,29 +1197,33 @@
     if ( !this._$element ) { return false; }
     var p = this._properties;
 
-    function _resize() {
-      if ( w < p.min_width ) { w = p.min_width; }
-      if ( p.max_width !== null ) {
-        if ( w > p.max_width ) { w = p.max_width; }
-      }
-
-      if ( h < p.min_height ) { h = p.min_height; }
-      if ( p.max_height !== null ) {
-        if ( h > p.max_height ) { h = p.max_height; }
-      }
-    }
-
     if ( !force ) {
       if ( !p.allow_resize ) { return false; }
-      _resize();
+      (function() {
+        if ( !isNaN(w) && w ) {
+          if ( w < p.min_width ) { w = p.min_width; }
+          if ( p.max_width !== null ) {
+            if ( w > p.max_width ) { w = p.max_width; }
+          }
+        }
+      })();
+
+      (function() {
+        if ( !isNaN(h) && h ) {
+          if ( h < p.min_height ) { h = p.min_height; }
+          if ( p.max_height !== null ) {
+            if ( h > p.max_height ) { h = p.max_height; }
+          }
+        }
+      })();
     }
 
-    if ( w ) {
+    if ( !isNaN(w) && w ) {
       this._$element.style.width = w + 'px';
       this._dimension.w = w;
     }
 
-    if ( h ) {
+    if ( !isNaN(h) && h ) {
       this._$element.style.height = h + 'px';
       this._dimension.h = h;
     }

@@ -21,6 +21,9 @@
                 <gui-list-view-column data-icon="stock://32x32/categories/preferences-desktop-personal.png">LBL_USER</gui-list-view-column>
               </gui-list-view-row>
               <gui-list-view-row data-value="packages">
+                <gui-list-view-column data-icon="stock://32x32/places/folder.png">File View</gui-list-view-column>
+              </gui-list-view-row>
+              <gui-list-view-row data-value="packages">
                 <gui-list-view-column data-icon="stock://32x32/apps/system-software-install.png">Packages</gui-list-view-column>
               </gui-list-view-row>
 
@@ -40,6 +43,7 @@
               <gui-fragment data-fragment-id="TabsDesktop"></gui-fragment>
               <gui-fragment data-fragment-id="TabsPanel"></gui-fragment>
               <gui-fragment data-fragment-id="TabsUser"></gui-fragment>
+              <gui-fragment data-fragment-id="TabsFileView"></gui-fragment>
               <gui-fragment data-fragment-id="TabsPackages"></gui-fragment>
             </gui-vbox-container>
           </gui-vbox>
@@ -398,6 +402,30 @@
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-label>LBL_FONT</gui-label>
       <gui-input-modal data-id="FontName"></gui-input-modal>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<!-- ****************************************************************** -->
+<!--                             FILEVIEW                               -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsFileView">
+  <gui-tabs data-id="TabsFileView">
+    <gui-tab-container data-id="TabFileViewLocal" data-label="File View Options">
+      <gui-fragment data-fragment-id="TabFileViewOptions"></gui-fragment>
+    </gui-tab-container>
+</application-fragment>
+
+<application-fragment data-id="TabFileViewOptions">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Show Hidden Files</gui-label>
+      <gui-switch data-id="ShowHiddenFiles"></gui-switch>
+    </gui-vbox-container>
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Show File Extensions</gui-label>
+      <gui-switch data-id="ShowFileExtensions"></gui-switch>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>

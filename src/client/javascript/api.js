@@ -64,16 +64,13 @@
    * This is a private class and can only be retrieved through
    * OSjs.API.getServiceNotificationIcon()
    *
-   * TODO: Make use of actual object instead of DOM references
-   *
    * @see OSjs.API.getServiceNotificationIcon()
    * @class
    */
   function ServiceNotificationIcon() {
     this.entries = {};
     this.size = 0;
-    this.icon = null;
-    this.element = null;
+    this.notif = null;
 
     this.init();
   }
@@ -88,16 +85,16 @@
     }
 
     if ( wm ) {
-      wm.createNotificationIcon('ServiceNotificationIcon', {
+      this.notif = wm.createNotificationIcon('ServiceNotificationIcon', {
         image: OSjs.API.getIcon('status/gtk-dialog-authentication.png'),
         onContextMenu: show,
         onClick: show,
         onInited: function(el, img) {
-          self.element = el;
-          self.icon = img;
           self._updateIcon();
         }
       });
+
+      this._updateIcon();
     }
   };
 
@@ -115,17 +112,13 @@
 
     this.size = 0;
     this.entries = {};
-    this.element = null;
-    this.icon = null;
+    this.notif = null;
   };
 
   ServiceNotificationIcon.prototype._updateIcon = function() {
-    if ( this.element ) {
-      this.element.style.display = this.size ? 'inline-block' : 'none';
-    }
-    if ( this.icon ) {
-      this.icon.title = OSjs.API._('SERVICENOTIFICATION_TOOLTIP', this.size.toString());
-      this.icon.alt   = this.icon.title;
+    if ( this.notif ) {
+      this.notif.$container.style.display = this.size ? 'inline-block' : 'none';
+      this.notif.setTitle(OSjs.API._('SERVICENOTIFICATION_TOOLTIP', this.size.toString()));
     }
   };
 
@@ -274,6 +267,7 @@
    *                              fn(error, result)
    *
    * @return  void
+   * @link    http://os.js.org/doc/tutorials/using-curl.html
    * @api     OSjs.API.curl()
    */
   function doCurl(args, callback) {

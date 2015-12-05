@@ -71,6 +71,12 @@
     }
   }
 
+  /**
+   * Blur (unfocus)
+   *
+   * @method Element::blur()
+   * @return Element this
+   */
   UIElement.prototype.blur = function() {
     if ( this.$element ) {
       var firstChild = getFocusElement(this);
@@ -81,6 +87,12 @@
     return this;
   };
 
+  /**
+   * Focus (focus)
+   *
+   * @method Element::focus()
+   * @return Element this
+   */
   UIElement.prototype.focus = function() {
     if ( this.$element ) {
       var firstChild = getFocusElement(this);
@@ -91,6 +103,12 @@
     return this;
   };
 
+  /**
+   * Show
+   *
+   * @method Element::show()
+   * @return Element this
+   */
   UIElement.prototype.show = function() {
     if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
       OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
@@ -102,6 +120,12 @@
     return this;
   };
 
+  /**
+   * Hide
+   *
+   * @method Element::hide()
+   * @return Element this
+   */
   UIElement.prototype.hide = function() {
     if ( this.$element ) {
       if ( !this.oldDisplay ) {
@@ -112,6 +136,17 @@
     return this;
   };
 
+
+  /**
+   * Register Event
+   *
+   * @param   String      evName      Event Name
+   * @param   Function    callback    Callback function
+   * @param   Object      args        (Optional) binding arguments
+   *
+   * @method Element::on()
+   * @return Element this
+   */
   UIElement.prototype.on = function(evName, callback, args) {
     if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].bind ) {
       OSjs.GUI.Elements[this.tagName].bind(this.$element, evName, callback, args);
@@ -119,19 +154,39 @@
     return this;
   };
 
-  UIElement.prototype.set = function(param, value, arg) {
+  /**
+   * Sets a parameter/property by name
+   *
+   * @param   String    param     Parameter name
+   * @param   Mixed     value     Parameter value
+   * @param   Mixed     arg       (Optional) Extra argument ...
+   * @param   Mixed     arg2      (Optional) Extra argument ...
+   *
+   * @method Element::set()
+   * @return Element this
+   */
+  UIElement.prototype.set = function(param, value, arg, arg2) {
     if ( this.$element ) {
       if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].set ) {
-        if ( OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg) === true ) {
+        if ( OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg, arg2) === true ) {
           return this;
         }
       }
 
-      OSjs.GUI.Helpers.setProperty(this.$element, param, value, arg);
+      OSjs.GUI.Helpers.setProperty(this.$element, param, value, arg, arg2);
     }
     return this;
   };
 
+  /**
+   * Get a parameter/property by name
+   *
+   * @param   String    param     Parameter name
+   * @param   Mixed     arg       (Optional) Extra argument ...
+   *
+   * @method Element::get()
+   * @return Element this
+   */
   UIElement.prototype.get = function() {
     if ( this.$element ) {
       if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].get ) {
@@ -144,6 +199,34 @@
     return null;
   };
 
+  /**
+   * Triggers a custom function by name and arguments
+   *
+   * @param   String    name      Name of function
+   * @param   Array     args      (Optional) Argument array (passed to apply())
+   * @param   Mixed     thisArg   (Optional) `this` argument (default=UIElement/this)
+   *
+   * @method Element::fn()
+   * @return Mixed
+   */
+  UIElement.prototype.fn = function(name, args, thisArg) {
+    args = args || [];
+    thisArg = thisArg || this;
+
+    if ( this.$element ) {
+      return OSjs.GUI.Elements[this.tagName][name].apply(thisArg, args);
+    }
+    return null;
+  };
+
+  /**
+   * Appends a childNode to this element
+   *
+   * @param   Mixed     el        DOMEelement or UIElement
+   *
+   * @method Element::append()
+   * @return void
+   */
   UIElement.prototype.append = function(el) {
     if ( el instanceof UIElement ) {
       el = el.$element;
@@ -151,10 +234,24 @@
     this.$element.appendChild(el);
   };
 
+  /**
+   * Perform `querySelector`
+   *
+   * @param     String      q     Query
+   * @return    DOMElement
+   * @method    Element::querySelector()
+   */
   UIElement.prototype.querySelector = function(q) {
     return this.$element.querySelector(q);
   };
 
+  /**
+   * Perform `querySelectorAll`
+   *
+   * @param     String      q     Query
+   * @return    DOMElementCollection
+   * @method    Element::querySelectorAll()
+   */
   UIElement.prototype.querySelectorAll = function(q) {
     return this.$element.querySelectorAll(q);
   };
