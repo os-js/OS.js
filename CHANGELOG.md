@@ -1,3 +1,47 @@
+# 2.0.0-alpha69
+
+* CoreWM: Notification Icon improvments
+* GUI: Button now supports `tooltip` property
+* GUI: `Scheme` can now be loaded from String
+* GUI: Added `scrollIntoView` for 'TreeView'
+* GUI: 'ListView' now supports label via function
+* GUI: 'PanedView' vertical support
+* GUI: Added 'Expander'
+* GUI: Window dimension can now be set via `Scheme` file
+* GUI: Added `Scheme::getHTML()`
+* GUI: 'FileView' now hides File Extension if requested
+* GUI: 'FileView' now has default context menu
+* GUI: You can now call `Element::fn(name, args)` for custom functions
+* GUI: Improvments to DOM Element argument setting
+* Dialogs: 'File' now handles VFS options
+* Dialogs: 'File' now watches for VFS options changes
+* FileManager: Now handles VFS options
+* Settings: Now supports settings VFS options
+* Settings: Now watches for VFS settings changes
+* API: getProcess() now supports getting py `pid`
+* VFS: Added `showFileExtensionis` option
+* VFS: Added `showHiddenFiles` option
+* VFS: Settings now reachable via SettingsManager
+* PackageManger: General improvments
+* Utils: Split up namespace into individual files
+* Core: Support for Iframe messaging
+* server-php: Fixed fallback MIME support
+* build: Cleanup in client config
+* build: Improvments to template files
+* build: 'create-package' now supports Extensions and Service type
+* build: Moved 'repositores.json' to `src/conf/000-base.json`
+* build: Moved 'mime.json' to `src/conf/130-mime.json`
+* build: Themes are now set in `src/conf/112-temes.json`
+* build: You can now dump config with `grunt config-view`
+* build: Support for symlinks in build scripts
+* build: Grunt 'all' task now compiles index.html
+* Misc: jshint
+* Misc: removed deprecated files
+* Misc: Added Travis build status
+* Misc: Updated README
+* Misc: Updated documentation
+* Misc: Updated .bithoundrc
+
 # 2.0.0-alpha68
 
 * VFS: Small fixes to mounting
