@@ -367,11 +367,11 @@
 
     var settings = {};
     try {
-      var config = OSjs.Core.getConfig();
-      settings = config.VFS.Globals || {};
+      var cfg = OSjs.Core.getConfig();
+      settings = cfg.VFS.Globals || {};
     } catch ( e  ) {}
 
-    OSjs.Core.getSettingsManager().instance('VFS', settings)
+    OSjs.Core.getSettingsManager().instance('VFS', settings);
 
     callback();
   }
