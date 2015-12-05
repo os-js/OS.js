@@ -364,6 +364,15 @@
     if ( OSjs.VFS.registerMounts ) {
       OSjs.VFS.registerMounts();
     }
+
+    var settings = {};
+    try {
+      var config = OSjs.Core.getConfig();
+      settings = config.VFS.Globals || {};
+    } catch ( e  ) {}
+
+    OSjs.Core.getSettingsManager().instance('VFS', settings)
+
     callback();
   }
 
