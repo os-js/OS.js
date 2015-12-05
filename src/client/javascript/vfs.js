@@ -153,17 +153,21 @@
    * Filters a scandir() request
    */
   function filterScandir(list, options) {
+
+    var defaultOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+
+    options = Utils.argumentDefaults(options, defaultOptions.scandir || {});
     options = Utils.argumentDefaults(options, {
       typeFilter: null,
       mimeFilter: [],
-      showDotFiles: true
+      showHiddenFiles: true
     }, true);
 
     var result = [];
 
     function filterFile(iter) {
       if ( iter.filename !== '..' ) {
-        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showDotFiles && iter.filename.match(/^\./)) ) {
+        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\./)) ) {
           return false;
         }
       }
