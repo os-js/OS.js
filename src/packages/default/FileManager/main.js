@@ -48,8 +48,6 @@
     this.currentPath = path;
     this.currentSummary = {};
     this.viewOptions = Utils.argumentDefaults(settings || {}, {
-      ViewHidden: true,
-      ViewExtension: true,
       ViewNavigation: true,
       ViewSide: true
     }, true);
@@ -64,11 +62,16 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
     var view;
+
     var viewType      = this.viewOptions.ViewType || 'gui-list-view';
     var viewSide      = this.viewOptions.ViewSide === true;
-    var viewHidden    = this.viewOptions.ViewHidden === true;
-    var viewExtension = this.viewOptions.ViewExtension === true;
     var viewNav       = this.viewOptions.ViewNavigation === true;
+
+    var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+    var scandirOptions = vfsOptions.scandir || {};
+
+    var viewHidden    = scandirOptions.showHiddenFiles === true;
+    var viewExtension = scandirOptions.showFileExtensions === true;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'FileManagerWindow', root, null, null, {
@@ -415,30 +418,31 @@
     return toggle;
   };
 
-  ApplicationFileManagerWindow.prototype.toggleHidden = function(toggle, set) {
-    this.viewOptions.ViewHidden = toggle;
-
+  ApplicationFileManagerWindow.prototype.toggleVFSOption = function(opt, key, toggle, set) {
+    var self = this;
     var view = this._scheme.find(this, 'FileView');
-    view.set('dotfiles', toggle);
+    var vfsOptions = OSjs.Core.getSettingsManager().instance('VFS');
+
+    var opts = {scandir: {}};
+    opts.scandir[opt] = toggle;
+
+    vfsOptions.set(null, opts);
+    view.set(key, toggle);
 
     if ( set ) {
-      this._app._setSetting('ViewHidden', toggle, true);
-      this.changePath(null);
+      vfsOptions.save(function() {
+        self.changePath(null);
+      });
     }
     return toggle;
   };
 
+  ApplicationFileManagerWindow.prototype.toggleHidden = function(toggle, set) {
+    return this.toggleVFSOption('showHiddenFiles', 'dotfiles', toggle, set);
+  };
+
   ApplicationFileManagerWindow.prototype.toggleExtension = function(toggle, set) {
-    this.viewOptions.ViewExtension = toggle;
-
-    var view = this._scheme.find(this, 'FileView');
-    view.set('extensions', toggle);
-
-    if ( set ) {
-      this._app._setSetting('ViewExtension', toggle, true);
-      this.changePath(null);
-    }
-    return toggle;
+    return this.toggleVFSOption('showFileExtensions', 'extensions', toggle, set);
   };
 
   ApplicationFileManagerWindow.prototype.toggleNavbar = function(toggle, set) {
