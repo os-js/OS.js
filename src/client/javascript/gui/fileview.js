@@ -80,6 +80,7 @@
     var scanopts = {
       backlink:           opts.backlink,
       showDotFiles:       opts.dotfiles === true,
+      showFileExtensions: opts.extensions === true,
       mimeFilter:         opts.filter || [],
       typeFilter:         opts.filetype || null
     };
@@ -110,17 +111,34 @@
   function readdir(el, dir, done, sopts) {
     sopts = sopts || {};
 
+    var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+    var scandirOptions = vfsOptions.scandir || {};
+
     var target = getChildView(el);
     var tagName = target.tagName.toLowerCase();
     el.setAttribute('data-path', dir);
 
-    var opts = {
-      filter:     null,
-      backlink:   sopts.backlink,
-      dotfiles:   el.getAttribute('data-dotfiles') === 'true',
-      extensions: el.getAttribute('data-extensions') === 'true',
-      filetype:   el.getAttribute('data-filetype')
-    };
+    var opts = {filter: null, backlink: sopts.backlink};
+    function setOption(s, d, c, cc) {
+      if ( el.hasAttribute(s) ) {
+        opts[d] = c(el.getAttribute(s));
+      } else {
+        opts[d] = (cc || function() {})();
+      }
+    }
+    setOption('data-dotfiles', 'dotfiles', function(val) {
+      return val === 'true';
+    }, function() {
+      return scandirOptions.showHiddenFiles === true;
+    });
+    setOption('data-extensions', 'extensions', function(val) {
+      return val === 'true';
+    }, function() {
+      return scandirOptions.showFileExtensions === true;
+    });
+    setOption('data-filetype', 'filetype', function(val) {
+      return val;
+    });
 
     try {
       opts.filter = JSON.parse(el.getAttribute('data-filter'));
