@@ -53,6 +53,11 @@
     }, true);
     this.history = [];
     this.historyIndex = -1;
+
+    var self = this;
+    this.settingsWatch = OSjs.Core.getSettingsManager().watch('VFS', function() {
+      self.changePath();
+    });
   }
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -492,6 +497,9 @@
   };
 
   ApplicationFileManagerWindow.prototype.destroy = function() {
+    try {
+      OSjs.Core.getSettingsManager().unwatch(this.settingsWatch);
+    } catch ( e ) {}
     Window.prototype.destroy.apply(this, arguments);
   };
 
