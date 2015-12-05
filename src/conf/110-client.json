@@ -44,6 +44,13 @@
         "ClientKey": ""
       },
 
+      "Globals": {
+        "scandir": {
+          "showHiddenFiles": true,
+          "showFileExtensions": true
+        }
+      },
+
       "Mountpoints": {
         "shared": {
           "enabled":     true,
