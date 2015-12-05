@@ -205,7 +205,7 @@
 
   ApplicationSettingsWindow.prototype.setContainer = function(idx, save) {
     var found;
-    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsPackages'];
+    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsFileView', 'TabsPackages'];
     if ( typeof idx === 'string' ) {
       idx = Math.max(0, categories.indexOf(idx));
     }
