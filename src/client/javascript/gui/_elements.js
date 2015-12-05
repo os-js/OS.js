@@ -199,6 +199,25 @@
     return null;
   };
 
+  /**
+   * Triggers a custom function by name and arguments
+   *
+   * @param   String    name      Name of function
+   * @param   Array     args      (Optional) Argument array (passed to apply())
+   * @param   Mixed     thisArg   (Optional) `this` argument (default=UIElement/this)
+   *
+   * @method Element::fn()
+   * @return Mixed
+   */
+  UIElement.prototype.fn = function(name, args, thisArg) {
+    args = args || [];
+    thisArg = thisArg || this;
+
+    if ( this.$element ) {
+      return OSjs.GUI.Elements[this.tagName][name].apply(thisArg, args);
+    }
+    return null;
+  };
 
   /**
    * Appends a childNode to this element
