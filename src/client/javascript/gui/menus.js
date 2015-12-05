@@ -75,7 +75,7 @@
    *  select        When an entry was selected (click) => fn(ev)
    *
    * Setters:
-   *  checked       Set checkbox/optionn checked value
+   *  checked       Set checkbox/option checked value
    *
    * @api OSjs.GUI.Elements.gui-menu
    * @class
@@ -124,12 +124,16 @@
 
       function createTyped(child, par) {
         var type = child.getAttribute('data-type');
+        var value = child.getAttribute('data-checked') === 'true';
         var input = null;
         if ( type ) {
           var group = child.getAttribute('data-group');
           input = document.createElement('input');
           input.type = type;
           input.name = group ? group + '[]' : '';
+          if ( value ) {
+            input.setAttribute('checked', 'checked');
+          }
           par.appendChild(input);
         }
       }
@@ -273,7 +277,7 @@
 
     function resolveItems(arr, par) {
       arr.forEach(function(iter) {
-        var props = {label: iter.title, icon: iter.icon, disabled: iter.disabled, labelHTML: iter.titleHTML};
+        var props = {label: iter.title, icon: iter.icon, disabled: iter.disabled, labelHTML: iter.titleHTML, type: iter.type, checked: iter.checked};
         var entry = GUI.Helpers.createElement('gui-menu-entry', props);
         if ( iter.menu ) {
           var nroot = GUI.Helpers.createElement('gui-menu', {});
