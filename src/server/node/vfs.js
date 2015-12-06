@@ -239,7 +239,6 @@
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
       var realPath = getRealPath(path, config, request);
-      path = realPath.path;
       _fs.exists(realPath.root, function(exists) {
         respond({result: exists, error: null});
       });
