@@ -28,30 +28,17 @@
  * @licence Simplified BSD License
  */
 
-(function(_http, _path, _url, _fs, _qs, _multipart, _cookies, _api, _vfs)
+(function(OSJS, _http, _path, _url, _fs, _qs, _multipart, _cookies, _api, _vfs)
 {
   /**
    * Globals and default settings etc.
    */
-  var ISWIN   = /^win/.test(process.platform);
-  var HANDLER = null;
-  var ROOTDIR = _path.join(_path.dirname(__filename), '/../../../');
-  var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
-  var API     = {};
-  var CONFIG  = {
-    port:       8000,
-    directory:  null, // Automatic
-    tmpdir:     '/tmp',
-    handler:    'demo',
-    vfs:        {
-      'homes':   _path.join(ROOTDIR, 'vfs/home'),
-      'tmp':     _path.join(ROOTDIR, 'vfs/tmp'),
-      'public':  _path.join(ROOTDIR, 'vfs/public')
-    },
-    repodir:    _path.join(ROOTDIR, 'src/packages'),
-    distdir:    _path.join(ROOTDIR, DISTDIR),
-    mimes:      {}
-  };
+  var CONFIG = OSJS.CONFIG;
+  var API = OSJS.API;
+  var HANDLER = OSJS.HANDLER;
+  var ISWIN = OSJS.ISWIN;
+  var ROOTDIR = OSJS.ROOTDIR;
+  var DISTDIR = OSJS.DISTDIR;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -131,30 +118,6 @@
         respond("404 Not Found", null, response, null, 404);
       }
     });
-  };
-
-  var readConfig = function(filename) {
-    var path = _path.join(ROOTDIR, filename);
-    if ( _fs.existsSync(path) ) {
-      try {
-        console.info('-->', 'Found configuration', filename);
-        var str = _fs.readFileSync(path).toString();
-        var droot = ROOTDIR.replace(/\/$/, '');
-
-        if ( ISWIN ) {
-          str = str.replace(/%DROOT%/g,       droot.replace(/(["\s'$`\\])/g,'\\$1'));
-        } else {
-          str = str.replace(/%DROOT%/g,       droot);
-        }
-
-        return JSON.parse(str);
-      } catch ( e ) {
-        console.warn('!!!', 'Failed to parse configuration', filename, e);
-      }
-    } else {
-      console.warn('!!!', 'Did not find configuration', path);
-    }
-    return false;
   };
 
   var checkPrivilege = function(request, response, privilege) {
@@ -262,8 +225,8 @@
           var args   = data['arguments'] || {}
 
           console.log('---', 'CoreAPI', method, args);
-          if ( API[method] ) {
-            API[method](args, function(error, result) {
+          if ( OSJS.API[method] ) {
+            OSJS.API[method](args, function(error, result) {
               respondJSON({result: result, error: error}, response);
             }, request, response, POST);
           } else {
@@ -288,59 +251,16 @@
   console.log('***');
   console.log('***', 'THIS IS A WORK IN PROGRESS!!!');
   console.log('***');
+  console.log(JSON.stringify(CONFIG, null, 2));
 
   /**
    * Initialize config
    */
-  (function() {
-
-    var settConfig = readConfig("src/server/settings.json");
-    if ( settConfig !== false ) {
-      for ( var i in settConfig ) {
-        if ( settConfig.hasOwnProperty(i) && CONFIG.hasOwnProperty(i) ) {
-          CONFIG[i] = settConfig[i];
-        }
-      }
-    }
-
-    var tmpConfig = readConfig("src/conf/130-mime.json");
-    if ( tmpConfig ) {
-      CONFIG.mimes = tmpConfig.mime.mapping;
-    }
-
-    if ( !CONFIG.directory ) {
-      CONFIG.directory = _fs.realpathSync('.');
-    }
-
-    console.info('-->', 'Loading handler', settConfig.handler);
-    HANDLER = require(_path.join(ROOTDIR, 'src', 'server', 'node', 'handlers', settConfig.handler , 'handler.js'));
-    if ( !HANDLER.checkPrivilege ) {
-      HANDLER.checkPrivilege = checkPrivilege;
-    }
-
-    _api.register(CONFIG, API, HANDLER);
-    if ( settConfig.extensions ) {
-      var exts = settConfig.extensions;
-      exts.forEach(function(f) {
-        if ( f.match(/\.js$/) ) {
-          console.info('-->', 'Registering external API methods', f);
-          require(ROOTDIR + f).register(settConfig, API, HANDLER);
-        }
-      });
-    }
-
-  })();
-
-  console.log(JSON.stringify(CONFIG, null, 2));
-  if ( !HANDLER ) {
-    console.log("Invalid handler %s defined", CONFIG.handler);
-    return;
-  }
-  HANDLER.register(CONFIG, API, HANDLER);
 
   if ( HANDLER.onServerStart ) {
     HANDLER.onServerStart(CONFIG);
   }
+
   process.on("exit", function() {
     if ( HANDLER.onServerEnd ) {
       HANDLER.onServerEnd(CONFIG);
@@ -406,6 +326,7 @@
   }).listen(CONFIG.port);
 
 })(
+  require("./osjs.js"),
   require("http"),
   require("path"),
   require("url"),
