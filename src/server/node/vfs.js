@@ -260,7 +260,7 @@
             } else {
 
               var data = {
-                path:         _path.dirname(realPath.root),
+                path:         realPath.protocol + realPath.path,
                 filename:     _path.basename(realPath.root),
                 size:         stat.size,
                 mime:         vfs.getMime(realPath.root, config),
