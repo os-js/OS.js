@@ -108,6 +108,11 @@
   var HANDLER = null;
   var ROOTDIR = _path.join(_path.dirname(__filename), '/../../../');
   var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
+
+  if ( (process.argv[1] || '').match(/(mocha|grunt)$/) ) {
+    DISTDIR = 'dist-dev';
+  }
+
   var API     = {};
   var CONFIG  = {
     port:       8000,
