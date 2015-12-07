@@ -28,7 +28,11 @@
  * @licence Simplified BSD License
  */
 
-(function(_path, _fs, _api) {
+(function(_path, _fs) {
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
 
   function readConfig(filename) {
     var path = _path.join(ROOTDIR, filename);
@@ -54,6 +58,52 @@
     return false;
   }
 
+  function checkPrivilege(request, response, privilege) {
+    if ( typeof privilege !== 'boolean' ) {
+      if ( !privilege ) privilege = [];
+      if ( !(privilege instanceof Array) && privilege ) privilege = [privilege];
+    }
+
+    function check() {
+      var groups = [];
+      try {
+        groups = JSON.parse(request.cookies.get('groups'));
+      } catch ( e ) {
+        groups = [];
+      }
+
+      if ( groups.indexOf('admin') < 0 ) {
+        var allowed = true;
+        privilege.forEach(function(p) {
+          if ( groups.indexOf(p) < 0 ) {
+            allowed = false;
+          }
+          return allowed;
+        });
+        return allowed;
+      }
+
+      return true;
+    }
+
+    var uname = request.cookies.get('username');
+    if ( !uname ) {
+      respond('You have no OS.js Session, please log in!', "text/plain", response, null, 500);
+      return false;
+    }
+
+    if ( privilege.length && !check() ) {
+      respond('You are not allowed to use this API function!', "text/plain", response, null, 403);
+      return false;
+    }
+
+    return true;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // GLOBALS
+  /////////////////////////////////////////////////////////////////////////////
+
   var ISWIN   = /^win/.test(process.platform);
   var HANDLER = null;
   var ROOTDIR = _path.join(_path.dirname(__filename), '/../../../');
@@ -74,6 +124,10 @@
     mimes:      {}
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // CONFIG PARSING
+  /////////////////////////////////////////////////////////////////////////////
+
   var settConfig = readConfig("src/server/settings.json");
   if ( settConfig !== false ) {
     for ( var i in settConfig ) {
@@ -92,13 +146,16 @@
     CONFIG.directory = _fs.realpathSync('.');
   }
 
+  /////////////////////////////////////////////////////////////////////////////
+  // HANDLER INIT
+  /////////////////////////////////////////////////////////////////////////////
+
   console.info('-->', 'Loading handler', CONFIG.handler);
   HANDLER = require(_path.join(ROOTDIR, 'src', 'server', 'node', 'handlers', CONFIG.handler , 'handler.js'));
   if ( !HANDLER.checkPrivilege ) {
     HANDLER.checkPrivilege = checkPrivilege;
   }
 
-  _api.register(CONFIG, API, HANDLER);
   if ( CONFIG.extensions ) {
     var exts = CONFIG.extensions;
     exts.forEach(function(f) {
@@ -115,6 +172,10 @@
   }
   HANDLER.register(CONFIG, API, HANDLER);
 
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
   module.exports = {
     ISWIN: ISWIN,
     HANDLER: HANDLER,
@@ -125,6 +186,5 @@
   };
 })(
   require("path"),
-  require("node-fs-extra"),
-  require("./api.js")
+  require("node-fs-extra")
 );
