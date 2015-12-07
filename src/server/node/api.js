@@ -29,8 +29,10 @@
  */
 (function(_path, _url, _request, _vfs) {
 
-  exports.register = function(CONFIG, API, HANDLER) {
-    console.info('-->', 'Registering default API methods');
+  exports.register = function(CONFIG, API, HANDLER, _NOLOG) {
+    if ( !_NOLOG ) {
+      console.info('-->', 'Registering default API methods');
+    }
 
     API.application = function(args, callback, request, response) {
       if ( !HANDLER.checkPrivilege(request, response, 'application') ) {
@@ -50,7 +52,10 @@
         }, request, response);
       } catch ( e ) {
         callback("Application API error or missing: " + e.toString(), null);
-        console.warn(e.stack, e.trace);
+
+        if ( !_NOLOG ) {
+          console.warn(e.stack, e.trace);
+        }
       }
     };
 
