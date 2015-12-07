@@ -58,7 +58,7 @@
     return false;
   }
 
-  function checkPrivilege(request, response, privilege) {
+  function checkPrivilege(request, response, privilege, respond) {
     if ( typeof privilege !== 'boolean' ) {
       if ( !privilege ) privilege = [];
       if ( !(privilege instanceof Array) && privilege ) privilege = [privilege];

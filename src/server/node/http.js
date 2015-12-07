@@ -140,7 +140,7 @@
   HTTP.FileGET = function(path, request, response, arg) {
     if ( !arg ) {
       log('---', 'FileGET', path);
-      if ( !HANDLER.checkPrivilege(request, response, 'vfs') ) {
+      if ( !HANDLER.checkPrivilege(request, response, 'vfs', respond) ) {
         return;
       }
     }
@@ -149,7 +149,7 @@
   };
 
   HTTP.FilePOST = function(fields, files, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'upload') ) {
+    if ( !HANDLER.checkPrivilege(request, response, 'upload', respond) ) {
       return;
     }
 
@@ -180,7 +180,7 @@
 
   HTTP.CoreAPI = function(url, path, POST, request, response) {
               /*
-    if ( !HANDLER.checkPrivilege(request, response, 'upload') ) {
+    if ( !HANDLER.checkPrivilege(request, response, 'upload', respond) ) {
       return;
     }
     */
@@ -215,7 +215,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   API.application = function(args, callback, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'application') ) {
+    if ( !HANDLER.checkPrivilege(request, response, 'application', respond) ) {
       return;
     }
 
@@ -238,7 +238,7 @@
   };
 
   API.fs = function(args, callback, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'vfs') ) {
+    if ( !HANDLER.checkPrivilege(request, response, 'vfs', respond) ) {
       return;
     }
 
@@ -256,7 +256,7 @@
   };
 
   API.curl = function(args, callback, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'curl') ) {
+    if ( !HANDLER.checkPrivilege(request, response, 'curl', respond) ) {
       return;
     }
 

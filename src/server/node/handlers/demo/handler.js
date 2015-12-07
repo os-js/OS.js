@@ -48,7 +48,7 @@
   };
 
   // This simply adds full privileges to all users (remove this to enable default check)
-  exports.checkPrivilege = function(request, response, privilege) {
+  exports.checkPrivilege = function(request, response, privilege, respond) {
     var uname = request.cookies.get('username');
     if ( !uname ) {
       respond('You have no OS.js Session, please log in!', "text/plain", response, null, 500);
