@@ -37,3 +37,17 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 ```
+
+```
+
+-- Create administration user
+
+INSERT INTO `users` (`username`, `password`, `name`, `groups`)
+VALUES ('admin', 'admin', 'Administrator', '["admin"]');
+
+-- Create normal user with all groups
+
+INSERT INTO `users` (`username`, `password`, `name`, `groups`)
+VALUES ('user', 'user', 'Normal User', '["api","application","vfs","upload","curl"]');
+
+```
