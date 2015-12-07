@@ -41,6 +41,18 @@
   var ROOTDIR = OSJS.ROOTDIR;
   var DISTDIR = OSJS.DISTDIR;
 
+  function log() {
+    if ( !_NOLOG ) {
+      console.log.apply(console, arguments);
+    }
+  }
+
+  function warn() {
+    if ( !_NOLOG ) {
+      console.worn.apply(console, arguments);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -54,7 +66,7 @@
     mime    = mime    || "text/html; charset=utf-8";
     code    = code    || 200;
 
-    //console.log(">>>", 'respond()', mime, data.length);
+    //log(">>>", 'respond()', mime, data.length);
 
     function _end() {
       if ( HANDLER && HANDLER.onRequestEnd ) {
@@ -85,7 +97,7 @@
 
   var respondJSON = function(data, response, headers) {
     data = JSON.stringify(data);
-    console.log(">>>", 'application/json', data.length || 0);
+    log(">>>", 'application/json', data.length || 0);
     respond(data, 'application/json', response, headers);
   };
 
@@ -104,18 +116,18 @@
 
         _fs.readFile(fullPath, function(error, data) {
           if ( error ) {
-            console.log(">>>", '500', fullPath);
-            console.warn(error);
+            log(">>>", '500', fullPath);
+            warn(error);
             respond("500 Internal Server Error", null, response, null, 500);
           } else {
             var mime = _vfs.getMime(fullPath, CONFIG);
-            console.log(">>>", '200', mime, fullPath, data.length);
+            log(">>>", '200', mime, fullPath, data.length);
             respond(data, mime, response);
           }
         });
         */
       } else {
-        console.log('!!!', '404', fullPath);
+        log('!!!', '404', fullPath);
         respond("404 Not Found", null, response, null, 404);
       }
     });
@@ -127,7 +139,7 @@
 
   HTTP.FileGET = function(path, request, response, arg) {
     if ( !arg ) {
-      console.log('---', 'FileGET', path);
+      log('---', 'FileGET', path);
       if ( !HANDLER.checkPrivilege(request, response, 'vfs') ) {
         return;
       }
@@ -179,7 +191,7 @@
         var method = data.method;
         var args   = data['arguments'] || {}
 
-        console.log('---', 'CoreAPI', method, args);
+        log('---', 'CoreAPI', method, args);
         if ( API[method] ) {
           API[method](args, function(error, result) {
             respondJSON({result: result, error: error}, response);
@@ -189,7 +201,7 @@
         }
       } catch ( e ) {
         console.error("!!! Caught exception", e);
-        console.warn(e.stack);
+        warn(e.stack);
 
         respondJSON({result: null, error: "500 Internal Server Error: " + e}, response);
       }
@@ -221,9 +233,7 @@
     } catch ( e ) {
       callback("Application API error or missing: " + e.toString(), null);
 
-      if ( !_NOLOG ) {
-        console.warn(e.stack, e.trace);
-      }
+      warn(e.stack, e.trace);
     }
   };
 
@@ -309,7 +319,7 @@
       request.cookies = cookies;
 
       if ( path === "/" ) path += "index.html";
-      console.log('<<<', path);
+      log('<<<', path);
 
       if ( HANDLER && HANDLER.onRequestStart ) {
         HANDLER.onRequestStart(request, response);
@@ -336,7 +346,7 @@
 
           request.on('end', function () {
             if ( !HTTP.CoreAPI(url, path, body, request, response) ) {
-              console.log(">>>", '404', path);
+              log(">>>", '404', path);
               respond("404 Not Found", null, response, [[404, {}]]);
             }
           });
@@ -362,8 +372,8 @@
       _NOLOG = !l;
     },
 
-    listen: function() {
-      return server.listen(CONFIG.port);
+    listen: function(port) {
+      return server.listen(port || CONFIG.port);
     },
 
     close: function(cb) {
