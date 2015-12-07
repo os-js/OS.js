@@ -49,7 +49,7 @@
 
   function warn() {
     if ( !_NOLOG ) {
-      console.worn.apply(console, arguments);
+      console.warn.apply(console, arguments);
     }
   }
 
