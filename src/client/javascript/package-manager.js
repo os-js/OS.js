@@ -117,17 +117,24 @@
     function _loadUserMetadata(cb) {
       var path = OSjs.Core.getConfig().UserMetadata;
       var file = new OSjs.VFS.File(path, 'application/json');
-      OSjs.VFS.read(file, function(err, resp) {
-        resp = OSjs.Utils.fixJSON(resp || '');
-        if ( err ) {
-          console.warn('Failed to read user package metadata', err);
-        } else {
-          if ( resp ) {
-            self._addPackages(resp, 'user');
-          }
+      OSjs.VFS.exists(file, function(err, exists) {
+        if ( err || !exists ) {
+          cb();
+          return;
         }
-        cb();
-      }, {type: 'text'});
+
+        OSjs.VFS.read(file, function(err, resp) {
+          resp = OSjs.Utils.fixJSON(resp || '');
+          if ( err ) {
+            console.warn('Failed to read user package metadata', err);
+          } else {
+            if ( resp ) {
+              self._addPackages(resp, 'user');
+            }
+          }
+          cb();
+        }, {type: 'text'});
+      });
     }
 
     _loadSystemMetadata(function(err) {
