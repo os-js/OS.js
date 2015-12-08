@@ -405,7 +405,7 @@
     this.__path    = metadata.path;
     this.__iter    = metadata.iter;
 
-    Process.apply(this, [this.__name]);
+    Process.apply(this, [this.__name, args, metadata]);
 
     _WM = (ref || this);
 

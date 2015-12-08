@@ -830,14 +830,16 @@
 
     var showHiddenFiles = scheme.find(this, 'ShowHiddenFiles').get('value');
     var showFileExtensions = scheme.find(this, 'ShowFileExtensions').get('value');
-    OSjs.Core.getSettingsManager().instance('VFS').set(null, {
-      scandir: {
-        showHiddenFiles: showHiddenFiles,
-        showFileExtensions: showFileExtensions
-      }
-    }, true);
 
-    wm.applySettings(this.settings, false, true);
+
+    wm.applySettings(this.settings, false, function() {
+      OSjs.Core.getSettingsManager().instance('VFS').set(null, {
+        scandir: {
+          showHiddenFiles: showHiddenFiles,
+          showFileExtensions: showFileExtensions
+        }
+      }, true);
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
