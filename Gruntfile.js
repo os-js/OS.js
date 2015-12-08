@@ -47,6 +47,7 @@
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha-test');
     //grunt.loadNpmTasks('grunt-mocha');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.initConfig({
       jshint: {
@@ -96,6 +97,44 @@
         test: {
           src: ['test/server/*.js']
         },
+      },
+      watch: {
+        core: {
+          files: [
+            'src/client/stylesheets/*.css',
+            'src/client/javascript/*.js',
+            'src/client/javascript/*/*.js'
+          ],
+          tasks: ['core']
+        },
+        themes: {
+          files: [
+            'src/client/stylesheets/*.less',
+            'src/client/themes/styles/*/*.less'
+          ],
+          tasks: ['themes:styles']
+        },
+        fonts: {
+          files: ['src/client/themes/fonts/*/*.css'],
+          tasks: ['themes:fonts']
+        },
+        configs: {
+          files: ['src/conf/*.json'],
+          tasks: ['config', 'dist-dev-index']
+        },
+        //packages: { // SHOULD BE RUN MANUALLY. CAN BE WAY TO TIME CONSUMING
+        //  files: ['src/packages/*/*.js'],
+        //  tasks: ['packages']
+        //},
+        metadata: {
+          files: [
+            'src/client/themes/styles/*/metadata.json',
+            'src/client/themes/sounds/*/metadata.json',
+            'src/client/themes/icons/*/metadata.json',
+            'src/packages/*/*/package.json'
+          ],
+          tasks: ['config', 'manifest']
+        }
       }
     });
 
