@@ -258,7 +258,7 @@
       return mergeJSON(into, from);
     }
 
-    function getBuildConfig() {
+    function getBuildConfig(grunt) {
       var config = {};
       var files = getConfigFiles(PATHS.conf);
       files.forEach(function(iter) {
@@ -268,15 +268,15 @@
           config = mergeObject(tjson, json);
         } catch ( e ) {
           console.log(e.stack);
-          console.warn('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
+          grunt.fail.fatal('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
         }
       });
       return JSON.parse(JSON.stringify(config));
     }
 
-    return function() {
+    return function(grunt) {
       if ( !_cache ) {
-        var json = getBuildConfig();
+        var json = getBuildConfig(grunt);
         var build = JSON.stringify(json, null, 2).toString();
 
         var handler    = json.handler    || 'demo';
@@ -298,7 +298,7 @@
    */
   function createWebserverConfig(grunt, arg, src, mimecb) {
     var dist = arg === 'dist-dev' ? 'dist-dev' : 'dist';
-    var mime = generateBuildConfig().mime;
+    var mime = generateBuildConfig(grunt).mime;
     var mimes = mimecb(mime);
     var tpl = _fs.readFileSync(src).toString();
     tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, dist));
@@ -313,8 +313,8 @@
   /**
    * Gets a list of core extensions
    */
-  function getCoreExtensions() {
-    var packages = readPackageMetadata();
+  function getCoreExtensions(grunt) {
+    var packages = readPackageMetadata(grunt);
     var list = {};
     Object.keys(packages).forEach(function(p) {
       var pkg = packages[p];
@@ -350,9 +350,9 @@
       return true;
     }
 
-    function read(srcDir) {
+    function read(grunt, srcDir) {
       var list = {};
-      var cfg = generateBuildConfig();
+      var cfg = generateBuildConfig(grunt);
       (cfg.repositories || []).forEach(function(r) {
         var dir = _path.join(srcDir || PATHS.packages, r);
         getDirectories(dir).forEach(function(p) {
@@ -388,12 +388,12 @@
     }
 
     var _cache = null;
-    return function(dir) {
+    return function(grunt, dir) {
       if ( dir ) {
-        return read(dir);
+        return read(grunt, dir);
       }
       if ( _cache === null ) {
-        _cache = read();
+        _cache = read(grunt);
       }
       return clone(_cache);
     };
@@ -403,7 +403,7 @@
    * Reads all theme metadata
    */
   var readThemeMetadata = (function readThemeMetadata() {
-    var cfg = generateBuildConfig();
+    var cfg;
 
     function _readMetadata(dir, whitelist) {
       whitelist = whitelist || [];
@@ -470,7 +470,8 @@
     }
 
     var _cache = null;
-    return function() {
+    return function(grunt) {
+      cfg = generateBuildConfig(grunt);
       if ( _cache === null ) {
         _cache = read();
       }
@@ -497,10 +498,10 @@
    * Generates all configuration files
    */
   function createConfigurationFiles(grunt, arg) {
-    var cfg = generateBuildConfig();
-    var themes = readThemeMetadata();
+    var cfg = generateBuildConfig(grunt);
+    var themes = readThemeMetadata(grunt);
     var mime = cfg.mime;
-    var extensions = getCoreExtensions();
+    var extensions = getCoreExtensions(grunt);
 
     var loadExtensions = [];
 
@@ -606,7 +607,7 @@
    * Create "index.html" file
    */
   function createIndex(grunt, arg, dist) {
-    var cfg = generateBuildConfig();
+    var cfg = generateBuildConfig(grunt);
     var tpldir = _path.join(PATHS.templates, 'dist', cfg.dist.template);
     var outdir = _path.join(ROOT, dist || 'dist-dev');
 
@@ -670,7 +671,7 @@
    */
   function createApacheHtaccess(grunt, arg) {
     var mimes = [];
-    var mime = generateBuildConfig().mime;
+    var mime = generateBuildConfig(grunt).mime;
 
     Object.keys(mime.mapping).forEach(function(i) {
       if ( i.match(/^\./) ) {
@@ -792,7 +793,7 @@
    * Builds 'dist' core files (concatenation)
    */
   function buildCore(grunt, arg) {
-    var cfg = generateBuildConfig();
+    var cfg = generateBuildConfig(grunt);
     var header;
 
     function _cleanup(path, type) {
@@ -863,7 +864,7 @@
    * Builds standalone files
    */
   function buildStandalone(grunt, arg) {
-    var packages = readPackageMetadata();
+    var packages = readPackageMetadata(grunt);
     var tree = {
       '/dialogs.html': readFile(PATHS.dialogs).toString()
     };
@@ -961,7 +962,7 @@
       });
     }
 
-    var packages = readPackageMetadata();
+    var packages = readPackageMetadata(grunt);
     Object.keys(packages).forEach(function(p) {
       if ( arg && arg !== p ) {
         return;
@@ -986,8 +987,8 @@
    * Builds Theme Files
    */
   function buildThemes(grunt, arg, finished) {
-    var themes = readThemeMetadata();
-    var cfg = generateBuildConfig();
+    var themes = readThemeMetadata(grunt);
+    var cfg = generateBuildConfig(grunt);
 
     function buildFonts() {
       grunt.log.subhead('Fonts');
@@ -1107,7 +1108,7 @@
   function buildManifest(grunt, arg) {
 
     function generate(out, dist) {
-      var packages = readPackageMetadata();
+      var packages = readPackageMetadata(grunt);
       var list = {};
 
       Object.keys(packages).forEach(function(p) {
@@ -1226,7 +1227,7 @@
    * Creates a compressed build
    */
   function buildCompressed(grunt, arg) {
-    var packages = readPackageMetadata(PATHS.out_client_packages);
+    var packages = readPackageMetadata(grunt, PATHS.out_client_packages);
 
     Object.keys(packages).forEach(function(p) {
       var iter = packages[p];

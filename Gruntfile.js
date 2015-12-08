@@ -156,7 +156,7 @@
      * Task: View config
      */
     grunt.registerTask('view-config', '(Pre)view the generated config file', function(arg) {
-      console.log(JSON.stringify(_build.viewConfig(), null, 4));
+      console.log(JSON.stringify(_build.viewConfig(grunt), null, 4));
     });
 
     /**
