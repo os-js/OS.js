@@ -56,7 +56,9 @@
 
     var self = this;
     this.settingsWatch = OSjs.Core.getSettingsManager().watch('VFS', function() {
-      self.changePath();
+      if ( self._loaded ) {
+        self.changePath();
+      }
     });
   }
 

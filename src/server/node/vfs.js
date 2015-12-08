@@ -239,7 +239,6 @@
       var opts = typeof args[1] === 'undefined' ? {} : (args[1] || {});
 
       var realPath = getRealPath(path, config, request);
-      path = realPath.path;
       _fs.exists(realPath.root, function(exists) {
         respond({result: exists, error: null});
       });
@@ -261,7 +260,7 @@
             } else {
 
               var data = {
-                path:         _path.dirname(realPath.root),
+                path:         realPath.protocol + realPath.path,
                 filename:     _path.basename(realPath.root),
                 size:         stat.size,
                 mime:         vfs.getMime(realPath.root, config),

@@ -19,7 +19,7 @@ $ grunt config dist-index dist-dev-index
 Then set up the configuration in these files (you only need to edit the one you use):
 
 - `src/server/php/handlers/example/handler.php`
-- `src/server/node/handlers/example/handler.php`
+- `src/server/node/handlers/example/handler.js`
 
 
 ### Mysql Database table
@@ -36,4 +36,27 @@ CREATE TABLE IF NOT EXISTS `users` (
   `settings` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+```
+
+### Create users in database
+
+```
+
+-- Create administration user
+
+INSERT INTO `users` (`username`, `password`, `name`, `groups`)
+VALUES ('admin', 'admin', 'Administrator', '["admin"]');
+
+-- Create normal user with all groups
+
+INSERT INTO `users` (`username`, `password`, `name`, `groups`)
+VALUES ('user', 'user', 'Normal User', '["api","application","vfs","upload","curl"]');
+
+```
+
+### Create users in VFS area
+
+```
+mkdir vfs/home/admin
+mkdir vfs/home/user
 ```

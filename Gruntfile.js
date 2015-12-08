@@ -44,6 +44,11 @@
 
     grunt.file.defaultEncoding = 'utf-8';
 
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-mocha-test');
+    //grunt.loadNpmTasks('grunt-mocha');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+
     grunt.initConfig({
       jshint: {
         options: {
@@ -87,6 +92,49 @@
           '!src/packages/default/**/locale.js',
           '!src/packages/default/Calculator/main.js'
         ]
+      },
+      mochaTest: {
+        test: {
+          src: ['test/server/*.js']
+        },
+      },
+      watch: {
+        core: {
+          files: [
+            'src/client/stylesheets/*.css',
+            'src/client/javascript/*.js',
+            'src/client/javascript/*/*.js'
+          ],
+          tasks: ['core']
+        },
+        themes: {
+          files: [
+            'src/client/stylesheets/*.less',
+            'src/client/themes/styles/*/*.less'
+          ],
+          tasks: ['themes:styles']
+        },
+        fonts: {
+          files: ['src/client/themes/fonts/*/*.css'],
+          tasks: ['themes:fonts']
+        },
+        configs: {
+          files: ['src/conf/*.json'],
+          tasks: ['config', 'dist-dev-index']
+        },
+        //packages: { // SHOULD BE RUN MANUALLY. CAN BE WAY TO TIME CONSUMING
+        //  files: ['src/packages/*/*.js'],
+        //  tasks: ['packages']
+        //},
+        metadata: {
+          files: [
+            'src/client/themes/styles/*/metadata.json',
+            'src/client/themes/sounds/*/metadata.json',
+            'src/client/themes/icons/*/metadata.json',
+            'src/packages/*/*/package.json'
+          ],
+          tasks: ['config', 'manifest']
+        }
       }
     });
 
@@ -108,7 +156,7 @@
      * Task: View config
      */
     grunt.registerTask('view-config', '(Pre)view the generated config file', function(arg) {
-      console.log(JSON.stringify(_build.viewConfig(), null, 4));
+      console.log(JSON.stringify(_build.viewConfig(grunt), null, 4));
     });
 
     /**
@@ -220,16 +268,11 @@
       _build.buildNightly(grunt, arg);
     });
 
-    /**
-     * Task: Run tests
-     */
-    grunt.registerTask('test', 'Run build tests', function(arg) {
-      grunt.task.run('jshint');
-    });
-
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.registerTask('all', ['clean', 'config', 'dist-dev-index', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
+    grunt.registerTask('dist', ['config', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
+    grunt.registerTask('dist-dev', ['config', 'dist-dev-index', 'themes:fonts', 'themes:styles', 'manifest']);
+    grunt.registerTask('test', ['jshint', 'mochaTest'/*, 'mocha'*/]);
   };
 
 })(require('node-fs-extra'), require('path'), require('./src/build.js'), require('grunt'), require('less'));

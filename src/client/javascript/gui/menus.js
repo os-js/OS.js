@@ -43,20 +43,27 @@
   }
 
   function bindSelectionEvent(child, span, idx, expand, dispatcher) {
-    var id = child.getAttribute('data-id');
     dispatcher = dispatcher || span;
 
+    var id = child.getAttribute('data-id');
     var hasInput = child.querySelector('input');
 
     Utils.$bind(child, 'mousedown', function(ev) {
+      var target = ev.target || ev.srcElement;
+      var isExpander = (target.tagName.toLowerCase() === 'gui-menu-entry' && Utils.$hasClass(target, 'gui-menu-expand'));
+      var stopProp = hasInput || isExpander;
+
       if ( hasInput ) {
+        ev.preventDefault();
         hasInput.dispatchEvent(new MouseEvent('click'));
       }
-
       dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
-      if ( ev.target.querySelector('input') ) {
+
+      if ( stopProp ) {
         ev.stopPropagation();
-      } else {
+      }
+
+      if ( !isExpander ) {
         blurMenu();
       }
     }, false);
@@ -134,6 +141,9 @@
           if ( value ) {
             input.setAttribute('checked', 'checked');
           }
+          input.addEventListener('click', function(ev) {
+            blurMenu();
+          }, true);
           par.appendChild(input);
         }
       }
@@ -217,6 +227,8 @@
 
         var submenu = mel.querySelector('gui-menu');
         Utils.$bind(mel, 'click', function(ev) {
+          blurMenu();
+
           if ( submenu ) {
             lastMenu = function() {
               Utils.$removeClass(mel, 'gui-active');

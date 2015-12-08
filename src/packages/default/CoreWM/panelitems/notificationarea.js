@@ -88,7 +88,12 @@
   NotificationAreaItem.prototype.init = function(root) {
     root.appendChild(this.$container);
 
-    this.onInited.call(this, this.$container, this.$image);
+    try {
+      this.onInited.call(this, this.$container, this.$image);
+    } catch ( e ) {
+      console.warn('NotificationAreaItem', 'onInited error');
+      console.warn(e, e.stack);
+    }
   };
 
   NotificationAreaItem.prototype.setIcon = function(src) {

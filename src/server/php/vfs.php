@@ -292,7 +292,7 @@ class FS
 
     $mime = fileMime($fname);
     $data = Array(
-      'path'          => dirname($fname),
+      'path'          => $protocol . $dirname, //dirname($fname),
       'filename'      => basename($fname),
       'size'          => filesize($fname),
       'mime'          => $mime,

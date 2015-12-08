@@ -34,21 +34,21 @@
 
   var APIUser = function() {};
   APIUser.login = function(data, request, response) {
-    console.log('APIUser::login()');
+    //console.log('APIUser::login()');
     request.cookies.set('username', data.username, {httpOnly:true});
     request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
     return data;
   };
 
   APIUser.logout = function(request, response) {
-    console.log('APIUser::logout()');
+    //console.log('APIUser::logout()');
     request.cookies.set('username', null, {httpOnly:true});
     request.cookies.set('groups', null, {httpOnly:true});
     return true;
   };
 
   // This simply adds full privileges to all users (remove this to enable default check)
-  exports.checkPrivilege = function(request, response, privilege) {
+  exports.checkPrivilege = function(request, response, privilege, respond) {
     var uname = request.cookies.get('username');
     if ( !uname ) {
       respond('You have no OS.js Session, please log in!', "text/plain", response, null, 500);
@@ -58,7 +58,7 @@
   };
 
   exports.register = function(CONFIG, API, HANDLER) {
-    console.info('-->', 'Registering handler API methods');
+    //console.info('-->', 'Registering handler API methods');
 
     API.login = function(args, callback, request, response) {
       var result = APIUser.login({

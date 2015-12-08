@@ -18,6 +18,7 @@
     "src/conf/**",
     "src/x11/**",
     "vendor/*",
+    "test/**",
     "dist/**",
     "vfs/**",
     "doc/**",

@@ -179,6 +179,7 @@
       this._scheme        = schemeRef || null;              // Reference to UIScheme
       this._destroyed     = false;                          // If Window has been destroyed
       this._restored      = false;                          // If Window was restored
+      this._loaded        = false;                          // If Window is finished loading
       this._wid           = _WID;                           // Window ID (Internal)
       this._icon          = opts.icon;                      // Window Icon
       this._name          = name;                           // Window Name (Unique identifier)
@@ -575,6 +576,7 @@
   };
 
   Window.prototype._inited = function() {
+    this._loaded = true;
     console.debug('OSjs::Core::Window::_inited()', this._name);
   };
 

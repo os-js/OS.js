@@ -8,7 +8,6 @@ If you have questions or suggestions you can also open an [issue](https://github
 
 You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using Github is preferred.
 
-
 # Getting started
 
 To get started you need a [Github](https://github.com/) account.
@@ -31,7 +30,7 @@ Start the server and test if everything is working:
 
 ## Making and submitting changes
 
-Commit the changes to your repository and push changes like normal.
+Commit the changes to your repository and push changes like normal. You can use `grunt watch` to automatically run tasks when you change files.
 
 When you're done with the changes and want to submit your work, head over to the [pull request page](https://github.com/andersevenrud/OS.js-v2/pulls) and click "New pull request".
 
