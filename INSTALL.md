@@ -126,6 +126,8 @@ Or you can download a nightly (unstable) build [here](http://osjsv2.0o.no/OS.js-
 * Production: `./bin/start-node-dist.sh` or `bin\win-start-node-dist`
 * Developement: `./bin/start-node-dev.sh` or `bin\win-start-node-dev`
 
+You can install [node supervisor](https://github.com/petruisfan/node-supervisor) and the development (dist-dev) server will automatically reload on change.
+
 ## PHP5
 
 ### Internal Web-server for PHP 5.4+
