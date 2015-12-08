@@ -227,6 +227,14 @@
   }
 
   /**
+   * Get root from path (ex: foo:///)
+   */
+  function getRootFromPath(path) {
+    var module = getModuleFromPath(path);
+    return OSjs.VFS.Modules[module].root;
+  }
+
+  /**
    * Perform default VFS call via backend
    */
   function internalCall(name, args, callback) {
@@ -1376,6 +1384,7 @@
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.isInternalModule      = isInternalModule;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
+  OSjs.VFS.getRootFromPath       = getRootFromPath;
   OSjs.VFS.addFormFile           = addFormFile;
   OSjs.VFS.abToBinaryString      = abToBinaryString;
   OSjs.VFS.abToDataSource        = abToDataSource;
