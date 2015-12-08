@@ -340,8 +340,8 @@
 
     function _run() {
       var scope = args.scope;
-      SingletonInstance.load(scope, function() {
-        callback(false, SingletonInstance);
+      SingletonInstance.load(scope, function(error) {
+        callback(error ? error : false, SingletonInstance);
       });
     }
 
