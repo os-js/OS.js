@@ -8,9 +8,9 @@ corewm-panel .PanelItemClock {
   overflow : hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
-  text-align : center;
 }
 corewm-panel .PanelItemClock > div {
   display : inline-block;
   vertical-align : middle;
+  text-align : center;
 }
