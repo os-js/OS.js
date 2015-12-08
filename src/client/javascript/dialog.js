@@ -96,17 +96,19 @@
       });
     });
 
-    this.scheme.find(this, 'ButtonOK').on('click', function(ev) {
-      self.onClose(ev, 'ok');
-    });
-    this.scheme.find(this, 'ButtonCancel').on('click', function(ev) {
-      self.onClose(ev, 'cancel');
-    });
-    this.scheme.find(this, 'ButtonYes').on('click', function(ev) {
-      self.onClose(ev, 'yes');
-    });
-    this.scheme.find(this, 'ButtonNo').on('click', function(ev) {
-      self.onClose(ev, 'no');
+    var buttonMap = {
+      ButtonOK:     'ok',
+      ButtonCancel: 'cancel',
+      ButtonYes:    'yes',
+      ButtonNo:     'no'
+    };
+
+    Object.keys(buttonMap).forEach(function(id) {
+      if ( self.scheme.findDOM(self, id) ) {
+        self.scheme.find(self, id).on('click', function(ev) {
+          self.onClose(ev, buttonMap[id]);
+        });
+      }
     });
 
     Utils.$addClass(root, 'DialogWindow');
