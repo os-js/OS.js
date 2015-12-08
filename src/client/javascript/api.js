@@ -646,10 +646,10 @@
       }
       */
 
-      OSjs.Utils.preload(data.preload, function(total, errors, failed) {
+      OSjs.Utils.preload(data.preload, function(total, failed) {
         destroyLoading(n);
 
-        if ( errors ) {
+        if ( failed.length ) {
           _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
           return;
         }

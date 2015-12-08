@@ -92,11 +92,11 @@
     if ( this.preloaded ) {
       callback(false, true);
     } else {
-      Utils.preload(this.preloads, function(total, errors) {
-        if ( !errors ) {
+      Utils.preload(this.preloads, function(total, failed) {
+        if ( !failed.length ) {
           self.preloaded = true;
         }
-        callback(errors);
+        callback(failed.join('\n'));
       });
     }
   };

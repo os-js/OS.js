@@ -103,9 +103,9 @@
 
     function _loadSystemMetadata(cb) {
       var preload = [{type: 'javascript', src: self.uri}];
-      Utils.preload(preload, function(total, errors, failed) {
-        if ( errors ) {
-          callback('Failed to load package manifest');
+      Utils.preload(preload, function(total, failed) {
+        if ( failed.length ) {
+          callback('Failed to load package manifest', failed);
           return;
         }
         var packages = OSjs.Core.getMetadata();

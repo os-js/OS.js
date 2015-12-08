@@ -346,9 +346,9 @@
       val.src = OSjs.Utils.checkdir(val.src);
     });
 
-    OSjs.Utils.preload(preloads, function(total, errors, failed) {
-      if ( errors ) {
-        console.warn('doInitialize()', errors, 'preloads failed to load:', failed);
+    OSjs.Utils.preload(preloads, function(total, failed) {
+      if ( failed.length ) {
+        console.warn('doInitialize()', 'some preloads failed to load:', failed);
       }
 
       setTimeout(function() {

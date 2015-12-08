@@ -96,11 +96,11 @@
     if ( this.loaded ) {
       callback(false, true);
     } else {
-      Utils.preload(this.preloads, function(total, errors) {
-        if ( !errors ) {
+      Utils.preload(this.preloads, function(total, failed) {
+        if ( !failed.length ) {
           self.loaded = true;
         }
-        callback(errors);
+        callback(failed.join('\n'));
       });
     }
   };
@@ -137,7 +137,7 @@
 
     this.init(function(error) {
       if ( error ) {
-        callback(error.join('\n'));
+        callback(error);
         return;
       }
 

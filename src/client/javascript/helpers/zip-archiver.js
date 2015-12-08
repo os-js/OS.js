@@ -95,9 +95,9 @@
     }
 
     var self = this;
-    Utils.preload(this.preloads, function(total, errors) {
-      if ( errors ) {
-        cb('Failed to load zip.js'); // FIXME: Translation
+    Utils.preload(this.preloads, function(total, failed) {
+      if ( failed.length ) {
+        cb('Failed to load zip.js', failed); // FIXME: Translation
         return;
       }
 
