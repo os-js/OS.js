@@ -400,7 +400,7 @@
   };
 
   /**
-   * Finds a given UIElement by ID
+   * Returns given UIElement by ID
    *
    * @param   Window      win       OS.js Window
    * @param   String      id        Element ID (data-id)
@@ -410,15 +410,45 @@
    * @method  Scheme::find()
    */
   UIScheme.prototype.find = function(win, id, root) {
-    root = root || win._getRoot();
+    root = this._findRoot(win, root);
+    var res = this._findDOM(win, id, root);
+    return this.get(res.el, res.q);
+  };
+
+  /**
+   * Returns given DOMElement by ID
+   *
+   * @param   Window      win       OS.js Window
+   * @param   String      id        Element ID (data-id)
+   * @param   DOMElement  root      (Optional) Root Node
+   *
+   * @return  DOMNode
+   * @method  Scheme::has()
+   */
+  UIScheme.prototype.findDOM = function(win, id, root) {
+    root = this._findRoot(win, root);
+    return this._findDOM(win, id, root).el;
+  };
+
+  UIScheme.prototype._findRoot = function(win, root) {
+    if ( !(win instanceof OSjs.Core.Window) ) {
+      throw new Error('UIScheme::_findDOM() expects a instance of Window');
+    }
+    return root || win._getRoot();
+  };
+
+  UIScheme.prototype._findDOM = function(win, id, root) {
     var q = '[data-id="' + id + '"]';
-    return this.get(root.querySelector(q), q);
+    return {
+      q: q,
+      el: root.querySelector(q)
+    };
   };
 
   /**
    * Gets UIElement by DOMElement
    *
-   * @param   DOMElement    el      DOME Element
+   * @param   DOMElement    el      DOM Element
    *
    * @return  UIElement
    * @method  Scheme::get()
