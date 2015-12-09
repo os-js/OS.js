@@ -28,6 +28,8 @@ $ grunt config
 
 **NOTE:** Also, on some systems you might have to run OS.js server as an administrator (`sudo`) depending on the PAM setup.
 
+**NOTE:** Instead of editing the provided config file, you should [create your own](http://os.js.org/doc/manuals/man-configuration.html)
+
 
 ### groups.json
 

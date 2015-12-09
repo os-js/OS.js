@@ -3,7 +3,7 @@ With the *example* handler you can enable a login prompt for OS.js.
 ## Setup
 
 ```
-# Change `handler` to `example`
+# Change `handler` to `example`.
 $ edit src/conf/000-base.json
 
 # Update configurations
@@ -13,6 +13,8 @@ $ grunt config
 # grunt core
 
 ```
+
+**NOTE:** Instead of editing the provided config file, you should [create your own](http://os.js.org/doc/manuals/man-configuration.html)
 
 ### Configure
 
