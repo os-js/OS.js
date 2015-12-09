@@ -249,7 +249,7 @@
 
       function _finished(result) {
         _LOADED[src] = result;
-        console.info('Preloader->createStyle()', result ? 'success' : 'error', src);
+        console.info('Stylesheet', src, result);
         callback(result, src);
       }
 
@@ -269,7 +269,7 @@
 
       var tries = opts.maxTries;
       var ival = setInterval(function() {
-        console.debug('Preloader->createStyle()', 'check', src);
+        console.debug('Stylesheet', 'check', src);
         if ( isCSSLoaded(src) || (tries <= 0) ) {
           ival = clearInterval(ival);
           _finished(tries > 0);
@@ -282,7 +282,7 @@
      function createScript(src, callback) {
       var _finished = function(result) {
         _LOADED[src] = result;
-        console.info('Preloader->createScript()', result ? 'success' : 'error', src);
+        console.info('JavaScript', src, result);
         callback(result, src);
       };
 
@@ -304,26 +304,30 @@
     }
 
     return function(list, callback, callbackProgress) {
-      list              = (list || []).slice();
-      callback          = callback          || function() {};
-      callbackProgress  = callbackProgress  || function() {};
-
-      console.log('Utils::preload()', list.length, 'files...', list);
+      list = (list || []).slice();
 
       var successes  = [];
       var failed     = [];
       var index      = 0;
 
+      console.group('Utils::preload()', list);
+
+      function finished() {
+        console.groupEnd();
+
+        (callback || function() {})(list.length, failed, successes);
+      }
+
       (function _next() {
         if ( index >= list.length ) {
-          callback(list.length, failed, successes);
+          finished();
           return;
         }
 
         function _loaded(success, src) {
           index++;
 
-          callbackProgress(index, list.length);
+          (callbackProgress || function() {})(index, list.length);
           (success ? successes : failed).push(src);
           _next();
         }

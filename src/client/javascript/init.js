@@ -456,7 +456,7 @@
    * Wrapper for initializing OS.js
    */
   function init() {
-    console.debug('init()');
+    console.group('init()');
 
     var config = OSjs.Core.getConfig();
 
@@ -480,6 +480,8 @@
               initEvents();
               var wm = OSjs.Core.getWindowManager();
               wm._fullyLoaded = true;
+
+              console.groupEnd();
 
               initSession(config, function() {
                 OSjs.API.triggerHook('onSessionLoaded');
