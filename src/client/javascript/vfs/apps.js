@@ -72,6 +72,7 @@
     if ( name === 'scandir' ) {
       var files = getFiles();
       callback(false, files);
+      return;
     }
 
     return callback(API._('ERR_VFS_UNAVAILABLE'));
