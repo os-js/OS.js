@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Create IFrame Application - OS.js Tutorials</title>
+    <title>Tutorial: Create IFrame Application</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta name="description" content="OS.js -- Create IFrame Application - OS.js Tutorials" />
+    <meta name="description" content="OS.js -- Tutorial: Create IFrame Application" />
     <meta name="keywords" content="OS.js,Documentation,Client,Server,API,Tutorial,Tutorials,Manual,Manuals" />
     <link rel="stylesheet" type="text/css" href="/doc/main.css" />
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Source+Sans+Pro" />
@@ -22,7 +22,7 @@
   </head>
   <body>
     <header>
-      <h1>Create IFrame Application - OS.js Tutorials</h1>
+      <h1>Tutorial: Create IFrame Application</h1>
       <ul>
         <li><a href="/doc/">Index</a></li>
         <li><a href="/doc/client/">Client API</a></li>
@@ -39,33 +39,28 @@
   <p>
     Very useful if you want to convert something you already made or don't want to use the OS.js API.
   </p>
+  <pre class="code">
+grunt create-package:default/MyPackageName:iframe
+  </pre>
+
+  <h2>Example code</h2>
   <p>
     In this example we have a simple directory called "data" inside the application with the file "index.html" where
     your code will be
   </p>
   <pre class="code">
-(function(Application, GUI, Dialogs, Utils, API, VFS) {
-
-  var ApplicationExample = function(args, metadata) {
-    Application.apply(this, ['ApplicationExample', args, metadata, {
-      src: 'data/index.html',
-      title: metadata.name,
-      icon: metadata.icon,
-      width: 640,
-      height: 480,
-      allow_resize: false,
-      allow_restore: false,
-      allow_maximize: false
-    }]);
-  };
-
-  ApplicationExample.prototype = Object.create(Application.prototype);
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationExample = OSjs.Applications.ApplicationExample || {};
-  OSjs.Applications.ApplicationExample.Class = ApplicationExample;
-
-})(OSjs.Helpers.IFrameApplication, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
+function ApplicationExample(args, metadata) {
+  Application.apply(this, ['ApplicationExample', args, metadata, {
+    src: 'data/index.html',
+    title: metadata.name,
+    icon: metadata.icon,
+    width: 640,
+    height: 480,
+    allow_resize: false,
+    allow_restore: false,
+    allow_maximize: false
+  }]);
+}
   </pre>
 </div>
 
@@ -76,7 +71,7 @@
     <div class="wrapper">
       <img alt="" src="/logo-footer.png" />
       <p>
-        OS.js &copy; Anders Evenrud 2011-2014
+        OS.js &copy; Anders Evenrud 2011-2015
         <br />
         Hosting by Github
       </p>
@@ -93,4 +88,11 @@
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
   </script>
+
+  <script>
+    ((window.gitter = {}).chat = {}).options = {
+      room: 'andersevenrud/OS.js-v2'
+    };
+  </script>
+  <script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
 </body>

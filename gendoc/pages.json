@@ -95,6 +95,10 @@
     "title": "Tutorial: Using cURL API"
   },
 
+  "tutorials/iframe-application.html": {
+    "title": "Tutorial: Create IFrame Application"
+  },
+
   "tutorials/index.html": {
     "title": "OS.js Tutorials"
   }
