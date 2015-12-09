@@ -68,7 +68,7 @@
     var config = OSjs.Core.getConfig();
 
     var message = this.scheme.find(this, 'Message');
-    var maxSize = config.MaxUploadSize;
+    var maxSize = config.VFS.MaxUploadSize;
 
     message.set('value', API._('DIALOG_UPLOAD_DESC', this.args.dest, maxSize), true);
 

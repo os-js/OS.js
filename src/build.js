@@ -519,10 +519,6 @@
       var jsonSettings = clone(cfg.server);
       jsonSettings.extensions = loadExtensions;
 
-      try {
-        jsonSettings.MaxUpload = cfg.client.MaxUploadSize;
-      } catch ( e ) {}
-
       Object.keys(jsonSettings.vfs).forEach(function(key) {
         if ( typeof jsonSettings.vfs[key] === 'string' ) {
           jsonSettings.vfs[key] = fixWinPath(jsonSettings.vfs[key]);

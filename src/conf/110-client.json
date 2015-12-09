@@ -13,7 +13,6 @@
     "Connection":       "%CONNECTION%",
     "Locale":           "en_EN",
     "BugReporting":     true,
-    "MaxUploadSize":    2097152,
     "VersionAppend":    "",
     "ShowQuitWarning":  false,
 
@@ -41,6 +40,7 @@
     },
 
     "VFS": {
+      "MaxUploadSize": 2097152,
       "Home": "home:///",
 
       "GoogleDrive": {

@@ -134,7 +134,7 @@ class FS
     }
      */
     $settings = Settings::get();
-    if ( $file['size'] <= 0 || $file['size'] > $settings["MaxUpload"] ) {
+    if ( $file['size'] <= 0 || $file['size'] > $settings["VFS"]["MaxUploadSize"] ) {
       throw new Exception("The upload request is either empty or too large!");
     }
 

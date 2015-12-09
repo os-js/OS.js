@@ -280,7 +280,7 @@
     var fsuri  = config.FSURI || '/';
 
     if ( typeof file.size !== 'undefined' ) {
-      var maxSize = config.MaxUploadSize;
+      var maxSize = config.VFS.MaxUploadSize;
       if ( maxSize > 0 ) {
         var bytes = file.size;
         if ( bytes > maxSize ) {
