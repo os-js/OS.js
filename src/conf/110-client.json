@@ -9,9 +9,6 @@
     "IconURI":      "/themes/icons",
     "PackageURI":   "/packages",
 
-    "UserPackages":  "home:///.packages",
-    "UserMetadata":  "home:///.packages/packages.json",
-
     "Handler":          "%HANDLER%",
     "Connection":       "%CONNECTION%",
     "Locale":           "en_EN",
@@ -28,6 +25,11 @@
     "Icons":     {},
     "MIME":      {},
     "WM":        {},
+
+    "PackageManager": {
+      "UserPackages":  "home:///.packages",
+      "UserMetadata":  "home:///.packages/packages.json"
+    },
 
     "SettingsManager": {
       "VFS": {

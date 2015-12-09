@@ -796,7 +796,7 @@
         } else {
           var config = OSjs.Core.getConfig();
           root = config.FSURI;
-          path = root + OSjs.Utils.pathJoin(config.UserPackages, appname, name);
+          path = root + OSjs.Utils.pathJoin(config.PackageManager.UserPackages, appname, name);
         }
       }
 
