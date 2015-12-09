@@ -30,6 +30,15 @@
     "MIME":      {},
     "WM":        {},
 
+    "SettingsManager": {
+      "VFS": {
+        "scandir": {
+          "showHiddenFiles": true,
+          "showFileExtensions": true
+        }
+      }
+    },
+
     "VFS": {
       "GoogleDrive": {
         "Enabled": false
@@ -42,13 +51,6 @@
       "Dropbox": {
         "Enabled": false,
         "ClientKey": ""
-      },
-
-      "Globals": {
-        "scandir": {
-          "showHiddenFiles": true,
-          "showFileExtensions": true
-        }
       },
 
       "Mountpoints": {
