@@ -60,7 +60,7 @@
   CoreWM.prototype = Object.create(WindowManager.prototype);
 
   CoreWM.prototype.init = function() {
-    var link = (OSjs.Core.getConfig().RootURI || '/') + 'blank.css';
+    var link = (OSjs.Core.getConfig().Connection.RootURI || '/') + 'blank.css';
     this.setThemeLink(Utils.checkdir(link));
     this.setAnimationLink(Utils.checkdir(link));
 

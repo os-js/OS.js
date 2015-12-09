@@ -1,16 +1,19 @@
 {
   "client" : {
-    "RootURI":      "/",
-    "APIURI":       "/API",
-    "FSURI":        "/FS",
-    "MetadataURI":  "/packages.js",
-    "ThemeURI":     "/themes/styles",
-    "SoundURI":     "/themes/sounds",
-    "IconURI":      "/themes/icons",
-    "PackageURI":   "/packages",
+    "Connection": {
+      "Type": "%CONNECTION%",
+      "Handler": "%HANDLER%",
 
-    "Handler":          "%HANDLER%",
-    "Connection":       "%CONNECTION%",
+      "RootURI":      "/",
+      "APIURI":       "/API",
+      "FSURI":        "/FS",
+      "MetadataURI":  "/packages.js",
+      "ThemeURI":     "/themes/styles",
+      "SoundURI":     "/themes/sounds",
+      "IconURI":      "/themes/icons",
+      "PackageURI":   "/packages"
+    },
+
     "Locale":           "en_EN",
     "BugReporting":     true,
     "VersionAppend":    "",

@@ -52,7 +52,7 @@
    */
   function PackageManager() {
     var config = OSjs.Core.getConfig();
-    var uri = Utils.checkdir(config.MetadataURI);
+    var uri = Utils.checkdir(config.Connection.MetadataURI);
 
     this.packages = {};
     this.uri = uri;

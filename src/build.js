@@ -577,7 +577,7 @@
       settings.MIME = mime.descriptions;
       settings.EXTMIME = mime.mapping;
       settings.Preloads = preloads;
-      settings.Dist = dist;
+      settings.Connection.Dist = dist;
 
       // Write
       var tpl = getTemplate('dist/settings.js');

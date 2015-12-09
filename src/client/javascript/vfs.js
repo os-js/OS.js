@@ -277,7 +277,7 @@
    */
   function internalUpload(file, dest, callback) {
     var config = OSjs.Core.getConfig();
-    var fsuri  = config.FSURI || '/';
+    var fsuri  = config.Connection.FSURI || '/';
 
     if ( typeof file.size !== 'undefined' ) {
       var maxSize = config.VFS.MaxUploadSize;

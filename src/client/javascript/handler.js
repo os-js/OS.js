@@ -140,9 +140,9 @@
     var self = this;
     console.info('Handler::boot()');
 
-    var root = OSjs.Core.getConfig().RootURI;
+    var root = OSjs.Core.getConfig().Connection.RootURI;
     var url = root + 'client/dialogs.html';
-    if ( OSjs.Core.getConfig().Dist === 'dist' ) {
+    if ( OSjs.Core.getConfig().Connection.Dist === 'dist' ) {
       url = root + 'dialogs.html';
     }
 
@@ -299,7 +299,7 @@
 
     var config = OSjs.Core.getConfig();
     var data = {
-      url: config.APIURI,
+      url: config.Connection.APIURI,
       method: 'POST',
       json: true,
       body: {
