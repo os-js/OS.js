@@ -34,7 +34,7 @@
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  var ApplicationEXAMPLE = function(args, metadata) {
+  function ApplicationEXAMPLE(args, metadata) {
     Application.apply(this, ['ApplicationEXAMPLE', args, metadata, {
       src: 'data/index.html',
       title: metadata.name,
@@ -45,7 +45,7 @@
       allow_restore: false,
       allow_maximize: false
     }]);
-  };
+  }
 
   ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
 
