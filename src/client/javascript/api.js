@@ -1017,7 +1017,7 @@
     if ( fallback && fallback.match(/^\//) ) {
       fallback = null;
     }
-    return config.Home || fallback || 'osjs:///';
+    return config.VFS.Home || fallback || 'osjs:///';
   }
 
   /////////////////////////////////////////////////////////////////////////////

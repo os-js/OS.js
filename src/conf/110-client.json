@@ -9,7 +9,6 @@
     "IconURI":      "/themes/icons",
     "PackageURI":   "/packages",
 
-    "Home":          "home:///",
     "UserPackages":  "home:///.packages",
     "UserMetadata":  "home:///.packages/packages.json",
 
@@ -40,6 +39,8 @@
     },
 
     "VFS": {
+      "Home": "home:///",
+
       "GoogleDrive": {
         "Enabled": false
       },
