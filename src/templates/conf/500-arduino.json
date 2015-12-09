@@ -15,13 +15,17 @@
   },
 
   "client" : {
-    "Version" : "2.0-alpha68-arduino-yun",
-    "APIURI": "/cgi-bin/osjs-api",
-    "FSURI":  "/cgi-bin/osjs-fs?path=",
+    "Version" : "2.0-alpha69-arduino-yun",
+
+    "Connection": {
+      "APIURI": "/cgi-bin/osjs-api",
+      "FSURI":  "/cgi-bin/osjs-fs?path="
+    },
 
     "AutoStart": ["ArduinoService"],
 
     "VFS": {
+      "MaxUploadSize": 1073741824,
       "Mountpoints": {
         "shared": {
           "enabled": false
