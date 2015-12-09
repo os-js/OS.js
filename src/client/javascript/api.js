@@ -646,10 +646,10 @@
       }
       */
 
-      OSjs.Utils.preload(data.preload, function(total, errors, failed) {
+      OSjs.Utils.preload(data.preload, function(total, failed) {
         destroyLoading(n);
 
-        if ( errors ) {
+        if ( failed.length ) {
           _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
           return;
         }
@@ -791,12 +791,12 @@
       if ( appname ) {
         var root;
         if ( appname.match(/^(.*)\/(.*)$/) ) {
-          root = OSjs.Core.getConfig().PackageURI;
+          root = OSjs.Core.getConfig().Connection.PackageURI;
           path = root + '/' + appname + '/' + name;
         } else {
           var config = OSjs.Core.getConfig();
-          root = config.FSURI;
-          path = root + OSjs.Utils.pathJoin(config.UserPackages, appname, name);
+          root = config.Connection.FSURI;
+          path = root + OSjs.Utils.pathJoin(config.PackageManager.UserPackages, appname, name);
         }
       }
 
@@ -817,10 +817,10 @@
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
-      var blank = OSjs.Core.getConfig().RootURI || '/';
+      var blank = OSjs.Core.getConfig().Connection.RootURI || '/';
       return blank + 'blank.css';
     }
-    var root = OSjs.Core.getConfig().ThemeURI;
+    var root = OSjs.Core.getConfig().Connection.ThemeURI;
     return OSjs.Utils.checkdir(root + '/' + name + '.css');
   }
 
@@ -919,7 +919,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.Core.getConfig().ThemeURI;
+      var root = OSjs.Core.getConfig().Connection.ThemeURI;
       name = getName(name, theme);
     }
 
@@ -940,7 +940,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getSoundTheme() : 'default';
-      var root = OSjs.Core.getConfig().SoundURI;
+      var root = OSjs.Core.getConfig().Connection.SoundURI;
       var compability = OSjs.Utils.getCompability();
       if ( !name.match(/^\//) ) {
         var ext = 'oga';
@@ -990,7 +990,7 @@
     if ( name && !name.match(/^(http|\/\/)/) ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getIconTheme() : 'default';
-      var root = OSjs.Core.getConfig().IconURI;
+      var root = OSjs.Core.getConfig().Connection.IconURI;
       var chk = checkIcon();
       if ( chk !== null ) {
         return chk;
@@ -1017,7 +1017,7 @@
     if ( fallback && fallback.match(/^\//) ) {
       fallback = null;
     }
-    return config.Home || fallback || 'osjs:///';
+    return config.VFS.Home || fallback || 'osjs:///';
   }
 
   /////////////////////////////////////////////////////////////////////////////

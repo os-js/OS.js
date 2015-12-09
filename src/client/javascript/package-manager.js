@@ -52,7 +52,7 @@
    */
   function PackageManager() {
     var config = OSjs.Core.getConfig();
-    var uri = Utils.checkdir(config.MetadataURI);
+    var uri = Utils.checkdir(config.Connection.MetadataURI);
 
     this.packages = {};
     this.uri = uri;
@@ -103,9 +103,9 @@
 
     function _loadSystemMetadata(cb) {
       var preload = [{type: 'javascript', src: self.uri}];
-      Utils.preload(preload, function(total, errors, failed) {
-        if ( errors ) {
-          callback('Failed to load package manifest');
+      Utils.preload(preload, function(total, failed) {
+        if ( failed.length ) {
+          callback('Failed to load package manifest', failed);
           return;
         }
         var packages = OSjs.Core.getMetadata();
@@ -115,19 +115,26 @@
     }
 
     function _loadUserMetadata(cb) {
-      var path = OSjs.Core.getConfig().UserMetadata;
+      var path = OSjs.Core.getConfig().PackageManager.UserMetadata;
       var file = new OSjs.VFS.File(path, 'application/json');
-      OSjs.VFS.read(file, function(err, resp) {
-        resp = OSjs.Utils.fixJSON(resp || '');
-        if ( err ) {
-          console.warn('Failed to read user package metadata', err);
-        } else {
-          if ( resp ) {
-            self._addPackages(resp, 'user');
-          }
+      OSjs.VFS.exists(file, function(err, exists) {
+        if ( err || !exists ) {
+          cb();
+          return;
         }
-        cb();
-      }, {type: 'text'});
+
+        OSjs.VFS.read(file, function(err, resp) {
+          resp = OSjs.Utils.fixJSON(resp || '');
+          if ( err ) {
+            console.warn('Failed to read user package metadata', err);
+          } else {
+            if ( resp ) {
+              self._addPackages(resp, 'user');
+            }
+          }
+          cb();
+        }, {type: 'text'});
+      });
     }
 
     _loadSystemMetadata(function(err) {
@@ -152,7 +159,7 @@
    * @method PackageManager::generateUserMetadata()
    */
   PackageManager.prototype.generateUserMetadata = function(callback) {
-    var dir = new OSjs.VFS.File(OSjs.Core.getConfig().UserPackages);
+    var dir = new OSjs.VFS.File(OSjs.Core.getConfig().PackageManager.UserPackages);
     var found = {};
     var queue = [];
     var self = this;
@@ -241,7 +248,8 @@
     function _writeMetadata(cb) {
       console.debug('PackageManager::generateUserMetadata()', '_writeMetadata()');
 
-      var file = new OSjs.VFS.File(dir.path + '/packages.json', 'application/json');
+      var path = OSjs.Core.getConfig().PackageManager.UserMetadata;
+      var file = new OSjs.VFS.File(path, 'application/json');
       var meta = JSON.stringify(found, null, 4);
       OSjs.VFS.write(file, meta, function() {
         cb();
@@ -311,8 +319,8 @@
    */
   PackageManager.prototype.install = function(file, cb) {
     var config = OSjs.Core.getConfig();
-    var root = config.UserPackages;
-    var dest = Utils.pathJoin(config.UserPackages, file.filename.replace(/\.zip$/i, ''));
+    var root = config.PackageManager.UserPackages;
+    var dest = Utils.pathJoin(root, file.filename.replace(/\.zip$/i, ''));
 
     VFS.mkdir(new VFS.File(root), function() {
       VFS.exists(new VFS.File(dest), function(error, exists) {

@@ -205,19 +205,14 @@
       this.scheme.find(this, 'FileInput').hide();
     }
 
-    var rootPath = this.path;
-    var tmp = rootPath.split(/(.*):\/\/\//);
-    if ( !tmp[0] && tmp.length > 1 ) {
-      rootPath = tmp[1] + ':///';
-    }
-
+    var rootPath = VFS.getRootFromPath(this.path);
     var modules = [];
     VFS.getModules().forEach(function(m) {
       modules.push({label: m.name, value: m.module.root});
     });
     mlist.clear().add(modules).set('value', rootPath);
     mlist.on('change', function(ev) {
-      self.changePath(ev.detail);
+      self.changePath(ev.detail, true);
     });
 
     this.changePath();
@@ -227,16 +222,30 @@
     return root;
   };
 
-  FileDialog.prototype.changePath = function(dir) {
+  FileDialog.prototype.changePath = function(dir, fromDropdown) {
     var self = this;
     var view = this.scheme.find(this, 'FileView');
+    var lastDir = this.path;
+
+    function resetLastSelected() {
+      var rootPath = VFS.getRootFromPath(lastDir);
+      self.scheme.find(self, 'ModuleSelect').set('value', rootPath);
+    }
+
     this._toggleLoading(true);
+
 
     view._call('chdir', {
       path: dir || this.path,
-      done: function() {
-        if ( dir ) {
-          self.path = dir;
+      done: function(error) {
+        if ( error ) {
+          if ( fromDropdown ) {
+            resetLastSelected();
+          }
+        } else {
+          if ( dir ) {
+            self.path = dir;
+          }
         }
 
         self.selected = null;

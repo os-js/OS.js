@@ -227,6 +227,14 @@
   }
 
   /**
+   * Get root from path (ex: foo:///)
+   */
+  function getRootFromPath(path) {
+    var module = getModuleFromPath(path);
+    return OSjs.VFS.Modules[module].root;
+  }
+
+  /**
    * Perform default VFS call via backend
    */
   function internalCall(name, args, callback) {
@@ -269,10 +277,10 @@
    */
   function internalUpload(file, dest, callback) {
     var config = OSjs.Core.getConfig();
-    var fsuri  = config.FSURI || '/';
+    var fsuri  = config.Connection.FSURI || '/';
 
     if ( typeof file.size !== 'undefined' ) {
-      var maxSize = config.MaxUploadSize;
+      var maxSize = config.VFS.MaxUploadSize;
       if ( maxSize > 0 ) {
         var bytes = file.size;
         if ( bytes > maxSize ) {
@@ -1376,6 +1384,7 @@
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.isInternalModule      = isInternalModule;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
+  OSjs.VFS.getRootFromPath       = getRootFromPath;
   OSjs.VFS.addFormFile           = addFormFile;
   OSjs.VFS.abToBinaryString      = abToBinaryString;
   OSjs.VFS.abToDataSource        = abToDataSource;

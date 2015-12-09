@@ -256,6 +256,8 @@
    * Initialized some layout stuff
    */
   function initLayout() {
+    console.debug('initLayout()');
+
     var config = OSjs.Core.getConfig();
     var append = config.VersionAppend;
 
@@ -285,6 +287,8 @@
    * Initializes handler
    */
   function initHandler(config, callback) {
+    console.debug('initHandler()');
+
     handler = new OSjs.Core.Handler();
     handler.init(function() {
       if ( inited ) {
@@ -307,6 +311,8 @@
    * Initializes events
    */
   function initEvents() {
+    console.debug('initEvents()');
+
     document.body.addEventListener('contextmenu', events.body_contextmenu, false);
     document.body.addEventListener('mousedown', events.body_mousedown, false);
     document.addEventListener('keydown', events.keydown, true);
@@ -341,14 +347,16 @@
    * Preloads configured files
    */
   function initPreload(config, callback) {
+    console.debug('initPreload()');
+
     var preloads = config.Preloads;
     preloads.forEach(function(val, index) {
       val.src = OSjs.Utils.checkdir(val.src);
     });
 
-    OSjs.Utils.preload(preloads, function(total, errors, failed) {
-      if ( errors ) {
-        console.warn('doInitialize()', errors, 'preloads failed to load:', failed);
+    OSjs.Utils.preload(preloads, function(total, failed) {
+      if ( failed.length ) {
+        console.warn('doInitialize()', 'some preloads failed to load:', failed);
       }
 
       setTimeout(function() {
@@ -358,20 +366,30 @@
   }
 
   /**
+   * Initializes the SettingsManager pools
+   * from configuration file(s)
+   */
+  function initSettingsManager(cfg, callback) {
+    console.debug('initSettingsManager()');
+    var pools = cfg.SettingsManager || {};
+    var manager = OSjs.Core.getSettingsManager();
+
+    Object.keys(pools).forEach(function(poolName) {
+      console.debug('initSettingsManager()', 'initializes pool', poolName, pools[poolName]);
+      manager.instance(poolName, pools[poolName] || {});
+    });
+
+    callback();
+  }
+
+  /**
    * Initalizes the VFS
    */
   function initVFS(config, callback) {
+    console.debug('initVFS()');
     if ( OSjs.VFS.registerMounts ) {
       OSjs.VFS.registerMounts();
     }
-
-    var settings = {};
-    try {
-      var cfg = OSjs.Core.getConfig();
-      settings = cfg.VFS.Globals || {};
-    } catch ( e  ) {}
-
-    OSjs.Core.getSettingsManager().instance('VFS', settings);
 
     callback();
   }
@@ -380,6 +398,7 @@
    * Initializes the Window Manager
    */
   function initWindowManager(config, callback) {
+    console.debug('initWindowManager()');
     if ( !config.WM || !config.WM.exec ) {
       onError(OSjs.API._('ERR_CORE_INIT_NO_WM'));
       return;
@@ -396,6 +415,7 @@
    * Initializes the Session
    */
   function initSession(config, callback) {
+    console.debug('initSession()');
     OSjs.API.playSound('service-login');
 
     var wm = OSjs.Core.getWindowManager();
@@ -407,10 +427,10 @@
       try {
         start = config.AutoStart;
       } catch ( e ) {
-        console.warn('doAutostart() exception', e, e.stack);
+        console.warn('initSession()->autostart()', 'exception', e, e.stack);
       }
 
-      console.info('doAutostart()', start);
+      console.info('initSession()->autostart()', start);
       OSjs.API.launchList(start, null, null, cb);
     }
 
@@ -436,6 +456,8 @@
    * Wrapper for initializing OS.js
    */
   function init() {
+    console.debug('init()');
+
     var config = OSjs.Core.getConfig();
 
     initLayout();
@@ -446,23 +468,29 @@
       initPreload(config, function() {
         OSjs.API.triggerHook('onInited');
 
-        initVFS(config, function() {
-          initWindowManager(config, function() {
-            OSjs.API.triggerHook('onWMInited');
+        initSettingsManager(config, function() {
 
-            OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+          initVFS(config, function() {
+            initWindowManager(config, function() {
+              OSjs.API.triggerHook('onWMInited');
 
-            initEvents();
-            var wm = OSjs.Core.getWindowManager();
-            wm._fullyLoaded = true;
+              OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
 
-            initSession(config, function() {
-              OSjs.API.triggerHook('onSessionLoaded');
-            });
-          });
-        });
-      });
-    });
+              initEvents();
+              var wm = OSjs.Core.getWindowManager();
+              wm._fullyLoaded = true;
+
+              initSession(config, function() {
+                OSjs.API.triggerHook('onSessionLoaded');
+              });
+            }); // wm
+          }); // vfs
+
+        }); // settings
+
+      }); // preload
+
+    }); // handler
   }
 
   /////////////////////////////////////////////////////////////////////////////

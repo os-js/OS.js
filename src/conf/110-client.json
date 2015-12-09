@@ -1,23 +1,21 @@
 {
   "client" : {
-    "RootURI":      "/",
-    "APIURI":       "/API",
-    "FSURI":        "/FS",
-    "MetadataURI":  "/packages.js",
-    "ThemeURI":     "/themes/styles",
-    "SoundURI":     "/themes/sounds",
-    "IconURI":      "/themes/icons",
-    "PackageURI":   "/packages",
+    "Connection": {
+      "Type": "%CONNECTION%",
+      "Handler": "%HANDLER%",
 
-    "Home":          "home:///",
-    "UserPackages":  "home:///.packages",
-    "UserMetadata":  "home:///.packages/packages.json",
+      "RootURI":      "/",
+      "APIURI":       "/API",
+      "FSURI":        "/FS",
+      "MetadataURI":  "/packages.js",
+      "ThemeURI":     "/themes/styles",
+      "SoundURI":     "/themes/sounds",
+      "IconURI":      "/themes/icons",
+      "PackageURI":   "/packages"
+    },
 
-    "Handler":          "%HANDLER%",
-    "Connection":       "%CONNECTION%",
     "Locale":           "en_EN",
     "BugReporting":     true,
-    "MaxUploadSize":    2097152,
     "VersionAppend":    "",
     "ShowQuitWarning":  false,
 
@@ -30,7 +28,24 @@
     "MIME":      {},
     "WM":        {},
 
+    "PackageManager": {
+      "UserPackages":  "home:///.packages",
+      "UserMetadata":  "home:///.packages/packages.json"
+    },
+
+    "SettingsManager": {
+      "VFS": {
+        "scandir": {
+          "showHiddenFiles": true,
+          "showFileExtensions": true
+        }
+      }
+    },
+
     "VFS": {
+      "MaxUploadSize": 2097152,
+      "Home": "home:///",
+
       "GoogleDrive": {
         "Enabled": false
       },
@@ -42,13 +57,6 @@
       "Dropbox": {
         "Enabled": false,
         "ClientKey": ""
-      },
-
-      "Globals": {
-        "scandir": {
-          "showHiddenFiles": true,
-          "showFileExtensions": true
-        }
       },
 
       "Mountpoints": {

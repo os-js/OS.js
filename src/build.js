@@ -520,7 +520,7 @@
       jsonSettings.extensions = loadExtensions;
 
       try {
-        jsonSettings.MaxUpload = cfg.client.MaxUploadSize;
+        jsonSettings.vfs.maxuploadsize = cfg.client.VFS.MaxUploadSize;
       } catch ( e ) {}
 
       Object.keys(jsonSettings.vfs).forEach(function(key) {
@@ -574,10 +574,9 @@
       settings.Icons = icons;
       settings.Sounds = sounds;
       settings.Fonts.list = fonts.concat(settings.Fonts.list);
-      settings.MIME = mime.descriptions;
-      settings.EXTMIME = mime.mapping;
+      settings.MIME = mime;
       settings.Preloads = preloads;
-      settings.Dist = dist;
+      settings.Connection.Dist = dist;
 
       // Write
       var tpl = getTemplate('dist/settings.js');

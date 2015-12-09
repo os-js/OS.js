@@ -151,7 +151,7 @@
     scandir(tagName, dir, opts, function(error, result, summary) {
       done(error, result, summary);
     }, function(iter) {
-      var mimeConfig = OSjs.Core.getConfig().EXTMIME;
+      var mimeConfig = OSjs.Core.getConfig().MIME.mapping;
 
       function removeExtension(str) {
         if ( opts.extensions === false ) {
@@ -367,7 +367,9 @@
           var dir = args.path || OSjs.API.getDefaultPath();
 
           readdir(el, dir, function(error, result, summary) {
-            if ( !error ) {
+            if ( error ) {
+              API.error(API._('ERR_VFSMODULE_XHR_ERROR'), API._('ERR_VFSMODULE_SCANDIR_FMT', dir), error);
+            } else {
               t.clear();
               t.add(result);
             }

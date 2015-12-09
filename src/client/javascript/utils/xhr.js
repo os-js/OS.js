@@ -218,8 +218,8 @@
    * ]
    *
    * @param   Array     list              The list of resources
-   * @param   Function  callback          Callback when done
-   * @param   Function  callbackProgress  Callback on progress
+   * @param   Function  callback          Callback when done => fn(totalCount, failedArray, successArray)
+   * @param   Function  callbackProgress  Callback on progress => fn(currentNumber, totalNumber)
    *
    * @return  void
    *
@@ -228,7 +228,7 @@
   OSjs.Utils.preload = (function() {
     var _LOADED = {};
 
-    function isLoaded(path) {
+    function isCSSLoaded(path) {
       var result = false;
       (document.styleSheet || []).forEach(function(iter, i) {
         if ( iter.href.indexOf(path) !== -1 ) {
@@ -262,7 +262,7 @@
       */
 
       OSjs.Utils.$createCSS(src);
-      if ( opts.check === false || (typeof document.styleSheet === 'undefined') || isLoaded(src) ) {
+      if ( opts.check === false || (typeof document.styleSheet === 'undefined') || isCSSLoaded(src) ) {
         _finished(true);
         return;
       }
@@ -270,7 +270,7 @@
       var tries = opts.maxTries;
       var ival = setInterval(function() {
         console.debug('Preloader->createStyle()', 'check', src);
-        if ( isLoaded(src) || (tries <= 0) ) {
+        if ( isCSSLoaded(src) || (tries <= 0) ) {
           ival = clearInterval(ival);
           _finished(tries > 0);
           return;
@@ -279,7 +279,7 @@
       }, opts.interval);
     }
 
-    var createScript = function(src, callback) {
+     function createScript(src, callback) {
       var _finished = function(result) {
         _LOADED[src] = result;
         console.info('Preloader->createScript()', result ? 'success' : 'error', src);
@@ -301,65 +301,51 @@
         loaded = true;
         _finished(false);
       });
-    };
+    }
 
     return function(list, callback, callbackProgress) {
-      list              = list              || [];
+      list              = (list || []).slice();
       callback          = callback          || function() {};
       callbackProgress  = callbackProgress  || function() {};
 
-      // Make a copy!
-      var newList = [];
-      list.forEach(function(iter, i) {
-        newList.push(iter);
-      });
+      console.log('Utils::preload()', list.length, 'files...', list);
 
-      var count       = newList.length;
-      var successes   = 0;
-      var progress    = 0;
-      var failed      = [];
+      var successes  = [];
+      var failed     = [];
+      var index      = 0;
 
-      function _finished() {
-        callback(count, failed.length, failed);
-      }
-
-      function _loaded(success, src) {
-        progress++;
-
-        callbackProgress(progress, count);
-
-        if ( success ) {
-          successes++;
-        } else {
-          failed.push(src);
+      (function _next() {
+        if ( index >= list.length ) {
+          callback(list.length, failed, successes);
+          return;
         }
 
+        function _loaded(success, src) {
+          index++;
 
-        _next();
-      }
+          callbackProgress(index, list.length);
+          (success ? successes : failed).push(src);
+          _next();
+        }
 
-      function _next() {
-        if ( newList.length ) {
-          var item = newList.shift();
+        var item = list[index];
+        if ( item ) {
           if ( (item.force !== true) && _LOADED[item.src] === true ) {
             _loaded(true);
             return;
           }
+
           var src = item.src;
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
           } else if ( item.type.match(/script$/) ) {
             createScript(src, _loaded);
           }
-          return;
+        } else {
+          _next();
         }
 
-        _finished();
-      }
-
-      console.log('Preloader', count, 'file(s)', newList);
-
-      _next();
+      })();
     };
   })();
 
