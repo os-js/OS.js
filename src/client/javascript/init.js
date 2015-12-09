@@ -558,8 +558,11 @@
    *
    * THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
    *
+   * You should use 'OSjs.API.getConfig()' to get a setting
+   *
    * @return  Object
    *
+   * @see     OSjs.API.getConfig()
    * @api     OSjs.Core.getConfig()
    */
   OSjs.Core.getConfig = OSjs.Core.getConfig || function() {
