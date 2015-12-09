@@ -255,7 +255,7 @@
     /**
      * Task: Create a new package
      */
-    grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type]', function(arg1, arg2) {
+    grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type] (types: application, iframe, service, extension)', function(arg1, arg2) {
       grunt.log.writeln('Creating package...');
       _build.createPackage(grunt, arg1, arg2);
     });
