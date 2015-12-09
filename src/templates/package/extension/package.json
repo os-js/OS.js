@@ -1,11 +1,14 @@
 {
   "className":  "ApplicationEXAMPLE",
-  "name":       "EXAMPLE",
-  "mime":       null,
-  "icon":       "categories/applications-system.png",
+  "type":       "extension",
+  "build":      {
+    "copy": [
+      "package.json",
+      "extension.js"
+    ]
+  },
   "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+    {"src": "extension.js", "type": "javascript"}
   ]
 }
 
