@@ -195,7 +195,11 @@
         return row;
       }
 
-      var filesize = iter.size ? Utils.humanFileSize(iter.size) : '';
+      var filesize = '';
+      if ( iter.type !== 'dir' && iter.size ) {
+        filesize = Utils.humanFileSize(iter.size);
+      }
+
       var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, filesize, iter.mime || '');
       if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
         return _createEntry();
