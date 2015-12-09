@@ -21,16 +21,16 @@ git clone https://github.com/dropbox/dropbox-js.git vendor/dropbox-js
 <pre class="code">
 {
   "client" : {
-    "Core" : {
-      "Preloads": {
-        "dropbox": {"type": "javascript", "src": "/vendor/dropbox.js"}
-      },
-      "VFS": {
-        "Dropbox": {
-          "Enabled": true,
-          "ClientKey": "INSERT YOUR CLIENT ID HERE"
-        }
+    "Preloads": {
+      "dropbox": {"type": "javascript", "src": "/vendor/dropbox.js"}
+    },
+    "VFS": {
+      "Dropbox": {
+        "Enabled": true
       }
+    }
+    "DropboxAPI": {
+      "ClientKey": "INSERT YOUR CLIENT ID HERE"
     }
   }
 }
