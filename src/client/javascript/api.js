@@ -815,11 +815,12 @@
    * @api     OSjs.API.getThemeCSS()
    */
   function doGetThemeCSS(name) {
+    var root = OSjs.API.getConfig('Connection.RootURI', '/');
     if ( name === null ) {
-      var root = OSjs.API.getConfig('Connection.RootURI', '/');
-      return blank + 'blank.css';
+      return root + 'blank.css';
     }
-    var root = OSjs.API.getConfig('Connection.ThemeURI');
+
+    root = OSjs.API.getConfig('Connection.ThemeURI');
     return OSjs.Utils.checkdir(root + '/' + name + '.css');
   }
 
