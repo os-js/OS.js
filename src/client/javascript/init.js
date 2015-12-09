@@ -462,15 +462,16 @@
 
     initLayout();
 
-    initHandler(config, function() {
+    initPreload(config, function() {
       OSjs.API.triggerHook('onInitialize');
 
-      initPreload(config, function() {
-        OSjs.API.triggerHook('onInited');
+      initHandler(config, function() {
 
         initSettingsManager(config, function() {
 
           initVFS(config, function() {
+            OSjs.API.triggerHook('onInited');
+
             initWindowManager(config, function() {
               OSjs.API.triggerHook('onWMInited');
 

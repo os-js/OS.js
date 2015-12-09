@@ -6,8 +6,8 @@ With the *example* handler you can enable a login prompt for OS.js.
 # Change `handler` to `example`
 $ edit src/conf/000-base.json
 
-# Update configuration and template files
-$ grunt config dist-index dist-dev-index
+# Update configurations
+$ grunt config
 
 # Rebuild (only required if you use `dist`)
 # grunt core

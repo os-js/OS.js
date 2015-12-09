@@ -543,6 +543,13 @@
       var icons = {};
       var fonts = themes.fonts;
 
+      if ( dist === 'dist-dev' ) {
+        preloads.push({
+          type: 'javascript',
+          src: _path.join('/', 'client', 'javascript', 'handlers', cfg.handler, 'handler.js')
+        });
+      }
+
       if ( settings.Preloads ) {
         Object.keys(settings.Preloads).forEach(function(k) {
           preloads.push(settings.Preloads[k]);
@@ -626,7 +633,9 @@
       addScript('locales.js');
     } else {
       cfg.javascript.forEach(function(i) {
-        addScript(i.replace('src/client/javascript', 'client/javascript'));
+        if ( !i.match(/handlers\/(\w+)\/handler\.js$/) ) { // handler scripts are automatically preloaded by config!
+          addScript(i.replace('src/client/javascript', 'client/javascript'));
+        }
       });
       cfg.locales.forEach(function(i) {
         addScript(i.replace('src/client/javascript', 'client/javascript'));
