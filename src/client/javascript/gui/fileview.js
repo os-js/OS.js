@@ -151,7 +151,7 @@
     scandir(tagName, dir, opts, function(error, result, summary) {
       done(error, result, summary);
     }, function(iter) {
-      var mimeConfig = OSjs.Core.getConfig().EXTMIME;
+      var mimeConfig = OSjs.Core.getConfig().MIME.mapping;
 
       function removeExtension(str) {
         if ( opts.extensions === false ) {

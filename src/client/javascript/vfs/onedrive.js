@@ -102,7 +102,7 @@
 
     return function(iter) {
       if ( !EXTs ) {
-        EXTs = OSjs.Core.getConfig().EXTMIME || {};
+        EXTs = OSjs.Core.getConfig().MIME.mapping || {};
       }
       var mime = null;
       if ( getItemType(iter) !== 'dir' ) {

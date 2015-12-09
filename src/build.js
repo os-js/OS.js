@@ -574,8 +574,7 @@
       settings.Icons = icons;
       settings.Sounds = sounds;
       settings.Fonts.list = fonts.concat(settings.Fonts.list);
-      settings.MIME = mime.descriptions;
-      settings.EXTMIME = mime.mapping;
+      settings.MIME = mime;
       settings.Preloads = preloads;
       settings.Connection.Dist = dist;
 
