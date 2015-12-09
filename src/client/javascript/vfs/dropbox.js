@@ -42,10 +42,10 @@
   var _cachedClient;
   var _isMounted = false;
 
-  function _getConfig(cfg) {
+  function _getConfig(cfg, isVFS) {
     var config = OSjs.Core.getConfig();
     try {
-      return config.VFS.Dropbox[cfg];
+      return isVFS ? config.VFS.Dropbox[cfg] : config.DropboxAPI[cfg];
     } catch ( e ) {
       console.warn('OSjs.VFS.Modules.Dropbox::enabled()', e, e.stack);
     }
@@ -360,7 +360,7 @@
       if ( !window.Dropbox ) {
         return false;
       }
-      return _getConfig('Enabled') || false;
+      return _getConfig('Enabled', true) || false;
     },
     root: 'dropbox:///',
     icon: 'places/dropbox.png',

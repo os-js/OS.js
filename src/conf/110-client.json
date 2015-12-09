@@ -55,8 +55,7 @@
       },
 
       "Dropbox": {
-        "Enabled": false,
-        "ClientKey": ""
+        "Enabled": false
       },
 
       "Mountpoints": {
@@ -66,6 +65,10 @@
           "icon":        "places/folder-publicshare.png"
         }
       }
+    },
+
+    "DropboxAPI": {
+      "ClientKey": ""
     },
 
     "GoogleAPI": {
