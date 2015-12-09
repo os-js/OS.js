@@ -86,8 +86,7 @@
     console.info('Handler::init()');
 
     var self = this;
-    var config = OSjs.Core.getConfig();
-    API.setLocale(config.Locale);
+    API.setLocale(API.getConfig('Locale'));
 
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.addEventListener('offline', function(ev) {
@@ -140,9 +139,9 @@
     var self = this;
     console.info('Handler::boot()');
 
-    var root = OSjs.Core.getConfig().Connection.RootURI;
+    var root = API.getConfig('Connection.RootURI');
     var url = root + 'client/dialogs.html';
-    if ( OSjs.Core.getConfig().Connection.Dist === 'dist' ) {
+    if ( API.getConfig('Connection.Dist') === 'dist' ) {
       url = root + 'dialogs.html';
     }
 
@@ -297,9 +296,8 @@
     console.log('Arguments', args);
     console.groupEnd();
 
-    var config = OSjs.Core.getConfig();
     var data = {
-      url: config.Connection.APIURI,
+      url: API.getConfig('Connection.APIURI'),
       method: 'POST',
       json: true,
       body: {
@@ -349,7 +347,7 @@
 
     // Ensure we get the user-selected locale configured from WM
     function getUserLocale() {
-      var curLocale = Utils.getUserLocale() || OSjs.Core.getConfig().Locale;
+      var curLocale = Utils.getUserLocale() || API.getConfig('Locale');
       var result = OSjs.Core.getSettingsManager().get('Core');
       if ( !result ) {
         try {

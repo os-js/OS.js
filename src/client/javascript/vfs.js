@@ -276,11 +276,10 @@
    * Wrapper for internal file uploads
    */
   function internalUpload(file, dest, callback) {
-    var config = OSjs.Core.getConfig();
-    var fsuri  = config.Connection.FSURI || '/';
+    var fsuri  = API.getConfig('Connection.FSURI', '/');
 
     if ( typeof file.size !== 'undefined' ) {
-      var maxSize = config.VFS.MaxUploadSize;
+      var maxSize = API.getConfig('VFS.MaxUploadSize');
       if ( maxSize > 0 ) {
         var bytes = file.size;
         if ( bytes > maxSize ) {
@@ -605,11 +604,10 @@
     if ( MountsRegistered ) { return; }
     MountsRegistered = true;
 
-    var settings = OSjs.Core.getConfig();
     var config = null;
 
     try {
-      config = settings.VFS.Mountpoints;
+      config = API.getConfig('VFS.Mountpoints');
     } catch ( e ) {
       console.warn('mountpoints.js initialization error', e, e.stack);
     }

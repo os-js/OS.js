@@ -198,8 +198,7 @@
       if ( signingOut ) { return; }
 
       try {
-        var config = OSjs.Core.getConfig();
-        if ( config.ShowQuitWarning ) {
+        if ( OSjs.API.getConfig('ShowQuitWarning') ) {
           return OSjs.API._('MSG_SESSION_WARNING');
         }
       } catch ( e ) {}
@@ -258,10 +257,9 @@
   function initLayout() {
     console.debug('initLayout()');
 
-    var config = OSjs.Core.getConfig();
-    var append = config.VersionAppend;
+    var append = OSjs.API.getConfig('VersionAppend');
 
-    var ver = config.Version || 'unknown verion';
+    var ver = OSjs.API.getConfig('Version', 'unknown version');
     var cop = 'Copyright © 2011-2015 ';
     var lnk = document.createElement('a');
     lnk.href = 'mailto:andersevenrud@gmail.com';
@@ -421,7 +419,6 @@
     var wm = OSjs.Core.getWindowManager();
 
     function autostart(cb) {
-      var config = OSjs.Core.getConfig();
       var start = [];
 
       try {

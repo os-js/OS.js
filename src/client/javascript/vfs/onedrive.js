@@ -102,7 +102,7 @@
 
     return function(iter) {
       if ( !EXTs ) {
-        EXTs = OSjs.Core.getConfig().MIME.mapping || {};
+        EXTs = API.getConfig('MIME.mapping', {});
       }
       var mime = null;
       if ( getItemType(iter) !== 'dir' ) {
@@ -648,9 +648,8 @@
       return _isMounted;
     },
     enabled: function() {
-      var config = OSjs.Core.getConfig();
       try {
-        if ( config.VFS.OneDrive.Enabled ) {
+        if ( API.getConfig('VFS.OneDrive.Enabled') ) {
           return true;
         }
       } catch ( e ) {

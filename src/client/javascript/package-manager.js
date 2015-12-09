@@ -51,8 +51,7 @@
    * @class
    */
   function PackageManager() {
-    var config = OSjs.Core.getConfig();
-    var uri = Utils.checkdir(config.Connection.MetadataURI);
+    var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
 
     this.packages = {};
     this.uri = uri;
@@ -115,7 +114,7 @@
     }
 
     function _loadUserMetadata(cb) {
-      var path = OSjs.Core.getConfig().PackageManager.UserMetadata;
+      var path = API.getConfig('PackageManager.UserMetadata');
       var file = new OSjs.VFS.File(path, 'application/json');
       OSjs.VFS.exists(file, function(err, exists) {
         if ( err || !exists ) {
@@ -159,7 +158,7 @@
    * @method PackageManager::generateUserMetadata()
    */
   PackageManager.prototype.generateUserMetadata = function(callback) {
-    var dir = new OSjs.VFS.File(OSjs.Core.getConfig().PackageManager.UserPackages);
+    var dir = new OSjs.VFS.File(API.getConfig('PackageManager.UserPackages'));
     var found = {};
     var queue = [];
     var self = this;
@@ -248,7 +247,7 @@
     function _writeMetadata(cb) {
       console.debug('PackageManager::generateUserMetadata()', '_writeMetadata()');
 
-      var path = OSjs.Core.getConfig().PackageManager.UserMetadata;
+      var path = API.getConfig('PackageManager.UserMetadata');
       var file = new OSjs.VFS.File(path, 'application/json');
       var meta = JSON.stringify(found, null, 4);
       OSjs.VFS.write(file, meta, function() {
@@ -318,8 +317,7 @@
    * @method PackageManager::install()
    */
   PackageManager.prototype.install = function(file, cb) {
-    var config = OSjs.Core.getConfig();
-    var root = config.PackageManager.UserPackages;
+    var root = API.getConfig('PackageManager.UserPackages');
     var dest = Utils.pathJoin(root, file.filename.replace(/\.zip$/i, ''));
 
     VFS.mkdir(new VFS.File(root), function() {

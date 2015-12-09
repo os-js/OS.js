@@ -61,7 +61,7 @@
   var DemoHandler = function() {
     OSjs.Core._Handler.apply(this, arguments);
 
-    var curr = OSjs.Core.getConfig().Version;
+    var curr = API.getConfig('Version');
     var version = localStorage.getItem('__version__');
     if ( curr !== version ) {
       console.warn('DemoHandler()', 'You are running', version, 'version is', curr, 'flushing for compability!');

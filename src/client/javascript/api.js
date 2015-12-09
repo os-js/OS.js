@@ -784,19 +784,18 @@
     }
 
     function getResourcePath() {
-      var dir = new OSjs.VFS.File(OSjs.Core.getConfig());
       var appname = getName();
       var path = '';
 
       if ( appname ) {
         var root;
         if ( appname.match(/^(.*)\/(.*)$/) ) {
-          root = OSjs.Core.getConfig().Connection.PackageURI;
+          root = OSjs.API.getConfig('Connection.PackageURI');
           path = root + '/' + appname + '/' + name;
         } else {
-          var config = OSjs.Core.getConfig();
-          root = config.Connection.FSURI;
-          path = root + OSjs.Utils.pathJoin(config.PackageManager.UserPackages, appname, name);
+          root = OSjs.API.getConfig('Connection.FSURI');
+          var sub = OSjs.API.getConfig('PackageManager.UserPackages');
+          path = root + OSjs.Utils.pathJoin(sub, appname, name);
         }
       }
 
@@ -817,10 +816,10 @@
    */
   function doGetThemeCSS(name) {
     if ( name === null ) {
-      var blank = OSjs.Core.getConfig().Connection.RootURI || '/';
+      var root = OSjs.API.getConfig('Connection.RootURI', '/');
       return blank + 'blank.css';
     }
-    var root = OSjs.Core.getConfig().Connection.ThemeURI;
+    var root = OSjs.API.getConfig('Connection.ThemeURI');
     return OSjs.Utils.checkdir(root + '/' + name + '.css');
   }
 
@@ -919,7 +918,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.Core.getConfig().Connection.ThemeURI;
+      var root = OSjs.API.getConfig('Connection.ThemeURI');
       name = getName(name, theme);
     }
 
@@ -940,7 +939,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getSoundTheme() : 'default';
-      var root = OSjs.Core.getConfig().Connection.SoundURI;
+      var root = OSjs.API.getConfig('Connection.SoundURI');
       var compability = OSjs.Utils.getCompability();
       if ( !name.match(/^\//) ) {
         var ext = 'oga';
@@ -990,7 +989,7 @@
     if ( name && !name.match(/^(http|\/\/)/) ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getIconTheme() : 'default';
-      var root = OSjs.Core.getConfig().Connection.IconURI;
+      var root = OSjs.API.getConfig('Connection.IconURI');
       var chk = checkIcon();
       if ( chk !== null ) {
         return chk;
@@ -998,6 +997,44 @@
     }
 
     return OSjs.Utils.checkdir(name);
+  }
+
+  /**
+   * Method for getting a config parameter by path (Ex: "VFS.Mountpoints.shared.enabled")
+   *
+   * @param   String    path              (Optional) Path
+   * @param   Mixed     defaultValue      (Optional) Default value if undefined
+   *
+   * @return  Mixed             Parameter value or entire tree on no path
+   *
+   * @see     OSjs.Core.getConfig()
+   * @api     OSjs.API.getConfig()
+   */
+  function doGetConfig(path, defaultValue) {
+    var config = OSjs.Utils.cloneObject(OSjs.Core.getConfig());
+    if ( typeof path === 'string' ) {
+      var result = window.undefined;
+      var queue = path.split(/\./);
+      var ns = config;
+
+      queue.forEach(function(k, i) {
+        if ( i >= queue.length-1 ) {
+          result = ns[k];
+        } else {
+          ns = ns[k];
+        }
+      });
+
+      if ( typeof result === 'undefined' ) {
+        return defaultValue;
+      }
+      if ( typeof defaultValue !== 'undefined' ) {
+        return result || defaultValue;
+      }
+
+      return result;
+    }
+    return config;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1013,11 +1050,10 @@
    * @api     OSjs.API.getDefaultPath()
    */
   function doGetDefaultPath(fallback) {
-    var config = OSjs.Core.getConfig();
     if ( fallback && fallback.match(/^\//) ) {
       fallback = null;
     }
-    return config.VFS.Home || fallback || 'osjs:///';
+    return OSjs.API.getConfig('VFS.Home') || fallback || 'osjs:///';
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1324,8 +1360,7 @@
    * @api     OSjs.API.error()
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
-    var config = OSjs.Core.getConfig();
-    if ( config.BugReporting ) {
+    if ( OSjs.API.getConfig('BugReporting') ) {
       bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
     } else {
       bugreport = false;
@@ -1539,6 +1574,7 @@
   OSjs.API.getFileIcon            = doGetFileIcon;
   OSjs.API.getThemeResource       = doGetThemeResource;
   OSjs.API.getSound               = doGetSound;
+  OSjs.API.getConfig              = doGetConfig;
 
   OSjs.API.getDefaultPath         = doGetDefaultPath;
 

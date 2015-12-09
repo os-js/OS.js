@@ -136,8 +136,7 @@
 
   _NullModule.url = function(item, callback) {
     var path    = typeof item === 'string' ? item : item.path;
-    var config  = OSjs.Core.getConfig();
-    var fsuri   = config.Connection.FSURI;
+    var fsuri   = API.getConfig('Connection.FSURI');
     callback(false, path ? (fsuri + path) : fsuri);
   };
 
