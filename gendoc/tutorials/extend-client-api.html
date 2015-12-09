@@ -45,35 +45,11 @@
 <p>
   Just create a new package:
 </p>
-<ol>
-  <li>Create a new package with <b>grunt create-package:MyModule</b></li>
-  <li>Delete everything except package.json</li>
-  <li>Change package.json to look like example below</li>
-  <li>Add extension.js file as example below</li>
-  <li>Rebuild with <b>grunt packages config</b> (dist), or <b>grunt config</b> (dist-dev)</li>
-</ol>
-
-<h3>package.json</h3>
 <pre class="code">
-{
-  "className": "ExtensionMyModule",
-  "type": "extension",
-  "build": {
-    "copy" : [
-      "package.json",
-      "extension.js"
-    ]
-  },
-  "sources": [
-    {"type": "javascript", "src": "extension.js"}
-  ]
-}
+grunt create-package:default/MyExtension:extension
+edit src/packages/default/MyExtension/extension.js
+grunt config packages # packages only required on 'dist'
 </pre>
-
-<h3>extension.js</h3>
-<p>
-  Use the same code as in <i>Method 1</i>.
-</p>
 
 <div class="adddshere">
   <ins class="adsbygoogle"
