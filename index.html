@@ -2,10 +2,10 @@
 <html itemscope itemtype="http://schema.org/Product" lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" href="styles.css" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="apple-touch-icon-precomposed" href="favicon.png" />
+    <title></title>
     <title>OS.js - JavaScript Cloud/Web Desktop Platform</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -13,9 +13,6 @@
     <meta name="keywords" content="OS.js,Web Desktop,Cloud Desktop,Desktop,JavaScript OS,Operating System,JavaScript,OS,Window Manager" />
     <link rel="author" href="https://plus.google.com/101576798387217383063" />
     <link rel="publisher" href="https://plus.google.com/101576798387217383063" />
-<!--
-    <link rel="canonical" href="http://os.js.org/" />
--->
 
     <!-- Facebook -->
     <meta property="og:url" content="http://os.js.org/" />
@@ -24,12 +21,12 @@
     <meta property="og:title" content="OS.js" />
     <meta property="og:site_name" content="OS.js" />
     <meta property="og:see_also" content="http://osjsv2.0o.no/" />
-    <meta property="og:image" content="http://os.js.org/social-logo.png" />
+    <meta property="og:image" content="http://os.js.org/images/social-logo.png" />
 
     <!-- Google+ -->
     <meta itemprop="name" content="OS.js" />
     <meta itemprop="description" content="JavaScript Cloud/Web Desktop Platform" />
-    <meta itemprop="image" content="http://os.js.org/social-logo.png" />
+    <meta itemprop="image" content="http://os.js.org/images/social-logo.png" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary" />
@@ -43,12 +40,15 @@
         window.location = '//os.js.org' + window.location.pathname.replace(/\/OS\.js-v2/, '');
       }
     </script>
+
+    <link href="/stylesheets/normalize.css" rel="stylesheet" type="text/css" /><link href="/stylesheets/home.css" rel="stylesheet" type="text/css" />
   </head>
-  <body>
-    <header>
+  <body class="index">
+
+        <header>
       <div class="wrapper">
         <h1>OS.js</h1>
-        <img alt="logo" src="logo-header.png" />
+        <img alt="logo" src="/images/logo-header.png" />
         <h1>JavaScript Cloud/Web Desktop Platform</h1>
       </div>
     </header>
@@ -237,7 +237,7 @@
 
     <footer>
       <div class="wrapper">
-        <img alt="footer-logo" src="logo-footer.png" />
+        <img alt="footer-logo" src="images/logo-footer.png" />
         <p>
           OS.js &copy; Anders Evenrud 2011-2015
           <br />
@@ -245,6 +245,7 @@
         </p>
       </div>
     </footer>
+
 
     <div id="fb-root"></div>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
