@@ -1,49 +1,10 @@
-@font-face {
-  font-family: OSjsFont;
-  src: url('/fonts/SourceSansPro-Regular.eot');
-  src: url('/fonts/SourceSansPro-Regular.eot?#iefix') format('embedded-opentype'), url('/fonts/SourceSansPro-Regular.svg#karla') format('svg'), url('/fonts/SourceSansPro-Regular.woff') format('woff'), url('/fonts/SourceSansPro-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: OSjsFont;
-  src: url('/fonts/SourceSansPro-Bold.eot');
-  src: url('/fonts/SourceSansPro-Bold.eot?#iefix') format('embedded-opentype'), url('/fonts/SourceSansPro-Bold.svg#karla_bold') format('svg'), url('/fonts/SourceSansPro-Bold.woff') format('woff'), url('/fonts/SourceSansPro-Bold.ttf') format('truetype');
-  font-weight: bold;
-}
-@font-face {
-  font-family: OSjsFont;
-  src: url('/fonts/SourceSansPro-It.eot');
-  src: url('/fonts/SourceSansPro-It.eot?#iefix') format('embedded-opentype'), url('/fonts/SourceSansPro-It.svg#karla_italic') format('svg'), url('/fonts/SourceSansPro-It.woff') format('woff'), url('/fonts/SourceSansPro-It.ttf') format('truetype');
-  font-style: italic;
-}
-@font-face {
-  font-family: OSjsFont;
-  src: url('/fonts/SourceSansPro-It.eot');
-  src: url('/fonts/SourceSansPro-It.eot?#iefix') format('embedded-opentype'), url('/fonts/SourceSansPro-It.svg#karla_italic') format('svg'), url('/fonts/SourceSansPro-It.woff') format('woff'), url('/fonts/SourceSansPro-It.ttf') format('truetype');
-  font-style: oblique;
-}
-@font-face {
-  font-family: OSjsFont;
-  src: url('/fonts/SourceSansPro-BoldIt.eot');
-  src: url('/fonts/SourceSansPro-BoldIt.eot?#iefix') format('embedded-opentype'), url('/fonts/SourceSansPro-BoldIt.svg#karla_bolditalic') format('svg'), url('/fonts/SourceSansPro-BoldIt.woff') format('woff'), url('/fonts/SourceSansPro-BoldIt.ttf') format('truetype');
-  font-style: italic;
-  font-style: italic;
-}
-@font-face {
-  font-family: OSjsFont;
-  src: url('/fonts/Karla-BoldItalic.eot');
-  src: url('/fonts/Karla-BoldItalic.eot?#iefix') format('embedded-opentype'), url('/fonts/Karla-BoldItalic.svg#karla_bolditalic') format('svg'), url('/fonts/Karla-BoldItalic.woff') format('woff'), url('/fonts/Karla-BoldItalic.ttf') format('truetype');
-  font-style: italic;
-  font-style: oblique;
-}
 html, body {
   margin : 0;
   padding : 0;
 }
 
 body {
-  font-family: OSjsFont;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 18px;
   color: #4D4545;
   line-height: 26px;

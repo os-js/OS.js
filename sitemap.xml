@@ -320,8 +320,4 @@
     <loc>http://os.js.org/</loc>
     <priority>0.7</priority>
   </url>
-  <url>
-    <loc>http://os.js.org/test/curl-example.html</loc>
-    <priority>0.7</priority>
-  </url>
 </urlset>
