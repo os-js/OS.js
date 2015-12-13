@@ -37,7 +37,8 @@
       "VFS": {
         "scandir": {
           "showHiddenFiles": true,
-          "showFileExtensions": true
+          "showFileExtensions": true,
+          "columns": ["filename", "mime", "size"]
         }
       }
     },

@@ -114,7 +114,7 @@
       GUI.Helpers.setFlexbox(cel, null, null, null, cols[x]);
 
       var icon = cel.getAttribute('data-icon');
-      if ( icon ) {
+      if ( icon && icon !== 'null' ) {
         Utils.$addClass(cel, 'gui-has-image');
         cel.style.backgroundImage = 'url(' + icon + ')';
       }

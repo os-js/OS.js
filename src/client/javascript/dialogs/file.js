@@ -118,6 +118,7 @@
     var view = this.scheme.find(this, 'FileView');
     view.set('filter', this.args.filter);
     view.set('filetype', this.args.select || '');
+    view.set('defaultcolumns', 'true');
 
     var filename = this.scheme.find(this, 'Filename');
     var home = this.scheme.find(this, 'HomeButton');
