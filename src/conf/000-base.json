@@ -5,7 +5,7 @@
   "repositories": ["default"],
 
   "client" : {
-    "Version" : "2.0-alpha69"
+    "Version" : "2.0-alpha70"
   },
 
   "mime": {
