@@ -27,6 +27,7 @@ Remember: Run `grunt` after updating
 * server-node: Cleanups, Split of files
 * server-node: VFS fileinfo() now returns relative path
 * server-node: Now possible to disable logging
+* server-node: Added 'node supervisor' support
 * server-php: VFS fileinfo() now returns relative path
 * config: Cleaned up configuration tree entirely
 * build: Added 'dist' task (shortcut)

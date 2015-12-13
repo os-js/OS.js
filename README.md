@@ -1,14 +1,8 @@
 ![Logo](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo-horizontal.png)
 
-OS.js is a desktop implementation for your browser with a fully-fledged window manager, Application APIs, GUI toolkits and filesystem abstraction.
+[OS.js](http://os.js.org/) is a [open-source](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE) desktop implementation for your browser with a fully-fledged window manager, Application APIs, GUI toolkits and filesystem abstraction.
 
 Works in any modern browser and can be deployed on any platform using Node or PHP.
-
-Is available under the [BSD-2-Clause](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
-
-You can read more on [the official homepage](http://os.js.org/)
-
-Current version: [Alpha](https://github.com/andersevenrud/OS.js-v2/wiki/Current-Version)
 
 [![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2)
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
