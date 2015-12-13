@@ -146,7 +146,7 @@
    * @method IFrameApplicationWindow::postMessage()
    */
   IFrameApplicationWindow.prototype.postMessage = function(message) {
-    if ( this._iwin ) {
+    if ( this._iwin && this._app ) {
       console.debug('IFrameApplicationWindow::postMessage()', message);
       this._iwin.postMessage({
         message: message,
