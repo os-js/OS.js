@@ -63,17 +63,23 @@ OS.js has two build directories.
 <p>
   To build simply do:
 </p>
-<pre>grunt all</pre>
+<pre>grunt</pre>
+<p>
+  Or alternatively:
+</p>
+<pre>grunt dist</pre>
 
 <h2>dist-dev</h1>
 
 <p>
-  This is what you should use when developing or testing changes.
+  This is what you should use when developing or testing changes. It will load all files directly from source (with exception of config and theme files).
 </p>
 
 <p>
-  You don't need to run any commands to update source files, since they are loaded directly.
+  This command is a shortcut to perform all tasks that dist-dev requires:
 </p>
+
+<pre>grunt dist-dev</pre>
 
 
       <div class="adddshere">
