@@ -1029,16 +1029,17 @@ gui-list-view {
     background-color : @gui_background_color;
   }
       gui-list-view-row {
-        padding : @gui_base_padding;
       }
       gui-list-view[data-zebra="true"] gui-list-view-body gui-list-view-row:nth-child(2n) {
         background-color : @gui_zebra_background_color;
         color : @gui_zebra_foreground_color;
       }
       gui-list-view-column {
+        padding : @gui_base_padding;
       }
       gui-list-view-column.gui-has-image {
         padding-left : 24px;
+        background-position : @gui_base_padding;
       }
       gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
         padding-left : 40px;
