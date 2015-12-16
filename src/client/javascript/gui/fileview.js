@@ -76,6 +76,20 @@
     };
   })();
 
+  function getDateFromStamp(stamp) {
+    if ( typeof stamp === 'string' ) {
+      var date = null;
+      try {
+        date = new Date(stamp.replace('T', ' ').replace(/\..+/, ''));
+      } catch ( e ) {}
+
+      if ( date ) {
+        return OSjs.Helpers.Date.format(date);
+      }
+    }
+    return stamp;
+  }
+
   function getListViewColumns(iter, opts) {
     opts = opts || {};
 
@@ -101,22 +115,22 @@
       },
       mtime: {
         label: 'Modified',
-        basis: '100px',
+        basis: '160px',
         icon: function() {
           return null;
         },
         value: function() {
-          return iter.mtime;
+          return getDateFromStamp(iter.mtime);
         }
       },
       ctime: {
         label: 'Created',
-        basis: '100px',
+        basis: '160px',
         icon: function() {
           return null;
         },
         value: function() {
-          return iter.ctime;
+          return getDateFromStamp(iter.ctime);
         }
       },
       size: {
@@ -160,6 +174,7 @@
           basis: map.basis || 'auto',
           grow: grow,
           shrink: shrink,
+          resizable: true,
           textalign: idx === 0 ? 'left' : 'right'
         });
       }
