@@ -90,6 +90,11 @@ application-window-content * {
   overflow : hidden;
 }
 
+.gui-has-emblem {
+  background-repeat : no-repeat;
+  background-position : right center;
+}
+
 .gui-focus-element {
   -webkit-appearance: none;
      -moz-appearance: none;
