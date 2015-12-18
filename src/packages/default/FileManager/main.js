@@ -285,15 +285,25 @@
   ApplicationFileManagerWindow.prototype.renderSideView = function() {
     var sideViewItems = [];
     VFS.getModules({special: true}).forEach(function(m, i) {
+      var classNames = [m.module.mounted() ? 'mounted' : 'unmounted'];
+      if ( m.module.readOnly ) {
+        classNames.push('readonly gui-has-emblem');
+      }
+
       sideViewItems.push({
         value: m.module,
-        className: m.module.mounted() ? 'mounted' : 'unmounted',
+        className: classNames.join(' '),
         columns: [
           {
-            label: m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
-            icon: API.getIcon(m.module.icon),
+            label: m.module.description,
+            icon: API.getIcon(m.module.icon)
           }
-        ]
+        ],
+        onCreated: function(nel) {
+          if ( m.module.readOnly ) {
+            nel.style.backgroundImage = 'url(' + API.getIcon('emblems/emblem-readonly.png', '16x16') + ')';
+          }
+        }
       });
     });
 
