@@ -347,7 +347,7 @@
         }
 
         var value = params[k];
-        if ( typeof value !== 'undefined' ) {
+        if ( typeof value !== 'undefined' && typeof value !== 'function' ) {
           if ( classMap[k] ) {
             classMap[k](value);
             return;
