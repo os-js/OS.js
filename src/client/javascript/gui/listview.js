@@ -69,7 +69,6 @@
   }
 
   function createResizers(el) {
-    // TODO: These do not work properly :/
     var head = el.querySelector('gui-list-view-head');
     var body = el.querySelector('gui-list-view-body');
     var cols = head.querySelectorAll('gui-list-view-column');
@@ -84,15 +83,32 @@
         var resizer = document.createElement('gui-list-view-column-resizer');
         col.appendChild(resizer);
 
-        var startWidth = 0;
-        var maxWidth   = 0;
+        var startWidth   = 0;
+        var maxWidth     = 0;
+        var widthOffset  = 16;
+        var minWidth     = widthOffset;
+        var tmpEl        = null;
+
+        /*
+        function calculateWidth() {
+          tmpEl = Utils.$remove(tmpEl);
+          tmpEl = document.createElement('span');
+          tmpEl.style.visibility = 'hidden';
+          tmpEl.innerHTML = col.innerHTML;
+          document.body.appendChild(tmpEl);
+
+          return tmpEl.offsetWidth || minWidth;
+        }
+        */
 
         GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = col.offsetWidth;
-          maxWidth = el.offsetWidth * 0.85; // FIXME
+          minWidth = widthOffset;//calculateWidth();
+          maxWidth = el.offsetWidth - (el.children.length * widthOffset);
+          console.warn("XXX", startWidth, minWidth, maxWidth);
         }, function(ev, diff) {
-          var newWidth = startWidth + diff.x;
-          if ( !isNaN(newWidth) ) { //&& newWidth > 0 && newWidth < maxWidth ) {
+          var newWidth = startWidth - diff.x;
+          if ( !isNaN(newWidth) && newWidth > minWidth && newWidth < maxWidth ) {
             resize(col, newWidth);
 
             // FIXME: Super slow!
@@ -100,6 +116,8 @@
               resize(row.children[idx], newWidth);
             });
           }
+
+          tmpEl = Utils.$remove(tmpEl);
         });
       }
     });

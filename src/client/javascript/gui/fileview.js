@@ -174,7 +174,7 @@
           basis: map.basis || 'auto',
           grow: grow,
           shrink: shrink,
-          //resizable: true,
+          resizable: idx > 0,
           textalign: idx === 0 ? 'left' : 'right'
         });
       }
