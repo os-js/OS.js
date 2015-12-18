@@ -98,9 +98,10 @@
   /**
    * Window Class
    *
-   * @param   String                    name      Window name (unique)
-   * @param   Object                    opts      List of options
-   * @param   OSjs.Core.Application     appRef    Application Reference
+   * @param   String                    name        Window name (unique)
+   * @param   Object                    opts        List of options
+   * @param   OSjs.Core.Application     appRef      Application Reference
+   * @param   OSjs.GUI.Scheme           schemeRef   GUI Scheme Reference
    *
    * @option  opts     String          title             Window Title
    * @option  opts     String          icon              Window Icon
@@ -1297,7 +1298,9 @@
    */
   Window.prototype._toggleDisabled = function(t) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleDisabled()', t);
-    this._$disabled.style.display = t ? 'block' : 'none';
+    if ( this._$disabled ) {
+      this._$disabled.style.display = t ? 'block' : 'none';
+    }
     this._disabled = t ? true : false;
   };
 
@@ -1312,7 +1315,9 @@
    */
   Window.prototype._toggleLoading = function(t) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleLoading()', t);
-    this._$loading.style.display = t ? 'block' : 'none';
+    if ( this._$loading ) {
+      this._$loading.style.display = t ? 'block' : 'none';
+    }
   };
 
   /**
