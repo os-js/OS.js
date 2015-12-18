@@ -68,8 +68,8 @@
             id: p.__pid,
             columns: [
               {label: p.__pname},
-              {label: p.__pid.toString()},
-              {label: alive.toString()}
+              {label: p.__pid.toString(), textalign: 'right'},
+              {label: alive.toString(), textalign: 'right'}
             ]
           };
 
@@ -81,9 +81,9 @@
     }
 
     view.set('columns', [
-      {label: 'Name', basis: '100px'},
-      {label: 'PID', basis: '30px'},
-      {label: 'Alive'}
+      {label: 'Name', basis: '100px', grow: 1, shrink: 1},
+      {label: 'PID', basis: '60px', grow: 0, shrink: 0, textalign: 'right'},
+      {label: 'Alive', basis: '60px', grow: 0, shrink: 0, textalign: 'right'}
     ]);
 
     scheme.find(this, 'ButtonKill').on('click', function() {
