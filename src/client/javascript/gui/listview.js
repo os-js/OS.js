@@ -45,6 +45,7 @@
 
   function createEntry(v, head) {
     var label = v.label || '';
+
     if ( v.label ) {
       delete v.label;
     }
@@ -55,6 +56,7 @@
         v[k] = checks[k];
       }
     });
+
 
     var nel = GUI.Helpers.createElement('gui-list-view-column', v);
     if ( typeof label === 'function' ) {
@@ -142,6 +144,7 @@
 
       e.columns.forEach(function(se) {
         row.appendChild(createEntry(se));
+
       });
 
       return row;
@@ -241,11 +244,14 @@
       var body = el.querySelector('gui-list-view-body');
       if ( method === 'add' ) {
         GUI.Elements._dataview.add(el, args, function(e) {
+          var cbCreated = e.onCreated || function() {};
           var row = createRow(e);
           if ( row ) {
             body.appendChild(row);
             initRow(el, row);
           }
+
+          cbCreated(row);
         });
       } else if ( method === 'remove' ) {
         GUI.Elements._dataview.remove(el, args, 'gui-list-view-row');
