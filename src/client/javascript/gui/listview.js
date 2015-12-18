@@ -105,7 +105,6 @@
           startWidth = col.offsetWidth;
           minWidth = widthOffset;//calculateWidth();
           maxWidth = el.offsetWidth - (el.children.length * widthOffset);
-          console.warn("XXX", startWidth, minWidth, maxWidth);
         }, function(ev, diff) {
           var newWidth = startWidth - diff.x;
           if ( !isNaN(newWidth) && newWidth > minWidth && newWidth < maxWidth ) {
