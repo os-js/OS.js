@@ -1,7 +1,7 @@
 /*!
  * OS.js - JavaScript Operating System
  *
- * Example Handler: Login screen and session/settings handling via database
+ * Mysql Handler: Login screen and session/settings handling via database
  * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
@@ -32,7 +32,7 @@
  */
 
 /*
-See doc/example-handler.txt
+See doc/mysql-handler.txt
 */
 
 (function(API, Utils, VFS) {
@@ -49,17 +49,17 @@ See doc/example-handler.txt
    * @extends OSjs.Core._Handler
    * @class
    */
-  var ExampleHandler = function() {
+  var MysqlHandler = function() {
     OSjs.Core._Handler.apply(this, arguments);
     this._saveTimeout = null;
   };
 
-  ExampleHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
+  MysqlHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
 
   /**
    * Override default init() method
    */
-  ExampleHandler.prototype.init = function(callback) {
+  MysqlHandler.prototype.init = function(callback) {
     // Located in src/client/javasript/hander.js
     var self = this;
     this.initLoginScreen(function() {
@@ -68,10 +68,10 @@ See doc/example-handler.txt
   };
 
   /**
-   * Example login api call
+   * Mysql login api call
    */
-  ExampleHandler.prototype.login = function(username, password, callback) {
-    console.debug('OSjs::Handlers::ExampleHandler::login()');
+  MysqlHandler.prototype.login = function(username, password, callback) {
+    console.debug('OSjs::Handlers::MysqlHandler::login()');
     var opts = {username: username, password: password};
     this.callAPI('login', opts, function(response) {
       if ( response.result ) { // This contains an object with user data
@@ -86,10 +86,10 @@ See doc/example-handler.txt
   };
 
   /**
-   * Example logout api call
+   * Mysql logout api call
    */
-  ExampleHandler.prototype.logout = function(save, callback) {
-    console.debug('OSjs::Handlers::ExampleHandler::logout()', save);
+  MysqlHandler.prototype.logout = function(save, callback) {
+    console.debug('OSjs::Handlers::MysqlHandler::logout()', save);
     var self = this;
 
     function _finished() {
@@ -112,7 +112,7 @@ See doc/example-handler.txt
   /**
    * Override default settings saving
    */
-  ExampleHandler.prototype.saveSettings = function(pool, storage, callback) {
+  MysqlHandler.prototype.saveSettings = function(pool, storage, callback) {
     console.debug('OSjs::Handlers::DemoHandler::saveSettings()');
 
     var self = this;
@@ -120,14 +120,14 @@ See doc/example-handler.txt
 
     function _save() {
       self.callAPI('settings', opts, function(response) {
-        console.debug('ExampleHandler::syncSettings()', response);
+        console.debug('MysqlHandler::syncSettings()', response);
         if ( response.result ) {
           callback.call(self, true);
         } else {
           callback.call(self, false);
         }
       }, function(error) {
-        console.warn('ExampleHandler::syncSettings()', 'Call error', error);
+        console.warn('MysqlHandler::syncSettings()', 'Call error', error);
         callback.call(self, false);
       });
     }
@@ -143,6 +143,6 @@ See doc/example-handler.txt
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Handler = ExampleHandler;
+  OSjs.Core.Handler = MysqlHandler;
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

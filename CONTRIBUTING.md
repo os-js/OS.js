@@ -17,6 +17,9 @@ You can also submit patches and questions directly to me via [email](mailto:ande
 * [Documentation](http://os.js.org/doc/)
 * [FAQ and discussion](https://github.com/andersevenrud/OS.js-v2/issues/49)
 * [Chat room](https://gitter.im/andersevenrud/OS.js-v2)
+* [Subreddit](https://www.reddit.com/r/osjs)
+* [PayPal donation](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
+* [Gratipay donation](https://gratipay.com/os-js/)
 
 # Source Code
 
