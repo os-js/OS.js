@@ -1251,6 +1251,14 @@ gui-statusbar {
   position : relative;
   display : block;
   min-height : 16px;
+  overflow : hidden;
+  white-space : nowrap;
+
+  -webkit-text-overflow: ellipsis;
+     -moz-text-overflow: ellipsis;
+      -ms-text-overflow: ellipsis;
+       -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
 }
 
 /**
