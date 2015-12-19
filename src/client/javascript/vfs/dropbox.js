@@ -94,9 +94,19 @@
   }
 
   DropboxVFS.prototype.init = function(callback) {
+    var timedOut = false;
+
+    var timeout = setTimeout(function() {
+      timedOut = true;
+      callback(API._('ERR_OPERATION_TIMEOUT_FMT', '60s'));
+    }, 60*1000);
+
     this.client.authenticate(function(error, client) {
-      console.warn('DropboxVFS::construct()', error, client);
-      callback(error);
+      if ( !timedOut ) {
+        console.warn('DropboxVFS::construct()', error, client);
+        timeout = clearTimeout(timeout);
+        callback(error);
+      }
     });
   };
 
@@ -272,7 +282,7 @@
       _cachedClient.init(function(error) {
         if ( error ) {
           console.error('Failed to initialize dropbox VFS', error);
-          callback(null);
+          callback(null, error);
           return;
         }
 
@@ -326,9 +336,9 @@
     args = args || [];
     callback = callback || function() {};
 
-    getDropbox(function(instance) {
+    getDropbox(function(instance, error) {
       if ( !instance ) {
-        callback('No Dropbox VFS API Instance was ever created. Possible intialization error');
+        callback('No Dropbox VFS API Instance was ever created. Possible intialization error' + (error ? ': ' + error : ''));
         return;
       }
       var fargs = args;
