@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Tutorial - Create your own Theme | OS.js Documentation</title>
+    <title>Setting up multi-user environment | OS.js Documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <meta name="description" content="OS.js -- Tutorial - Create your own Theme" />
+    <meta name="description" content="OS.js -- Setting up multi-user environment" />
     <meta name="keywords" content="OS.js,Documentation,Client,Server,API,Tutorial,Tutorials,Manual,Manuals" />
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -36,61 +36,42 @@
 
     <main>
 
-<h1>Tutorial: Create your own Theme</h1>
+<h1>Setting up multi-user environment</h1>
+<p>
+  OS.js supports <i>multiple user environments</i> and <i>authentication</i>.
+</p>
 
-<h2>Create your own Style theme</h2>
+<h2>Included handlers</h2>
 
 <p>
-  Simply copy the default theme and modify how you want it:
+  The <i>Handler</i> is what handles authentication and other sets of user functions. You can <a href="/doc/tutorials/create-handler.html">create your own</a>, or use one of the included ones:
 </p>
-<pre>
-cp -r src/themes/styles/default src/themes/styles/mytheme
-edit src/themes/styles/mytheme/metadata.json
-edit src/themes/styles/mytheme/style.less
-edit src/conf/112-themes.json # Or http://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:styles:mytheme
+
+<h3>Demo (demo)</h3>
+<p>
+  The default handler. Does not have any authentication and the user data lives entirely within the browser (except VFS files). This means that if a user clears the browser cache, all data is lost.
+</p>
+
+<h3>Mysql (mysql)</h3>
+<p>
+  Handles authentication via mysql. This is more of an example/template, but can be used out of the box for a simple multi-user environment.
+</p>
+
+<h3>PAM (pam)</h3>
+<p>
+</p>
+
+<h2>Choosing a handler</h2>
+
+<p>
+  Simply change the <a href="/doc/manuals/man-configuration.html">configuration</a> entry named "handler"  (src/conf/000-base.json) and run:
+</p>
+<pre class="code">
+grunt config
+
+# if you use 'dist'
+grunt dist
 </pre>
-<p>
-  Then update the theme manifest and LESS manually
-</p>
-
-<h2>Create your own Icon theme</h2>
-<p>
-  Simply copy the default theme and modify how you want it (remember to change the manifest file):
-</p>
-<pre>
-cp -r src/themes/icons/default src/themes/icons/mytheme
-edit src/themes/icons/mytheme/metadata.json
-edit src/conf/112-themes.json # Or http://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:resources
-</pre>
-
-<h2>Create your own Sound theme</h2>
-<p>
-  Simply copy the default theme and modify how you want it (remember to change the manifest file):
-</p>
-<pre>
-cp -r src/themes/sounds/default src/themes/sound/mytheme
-edit src/themes/sound/mytheme/metadata.json
-edit src/conf/112-themes.json # Or http://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:resources
-</pre>
-
-
-<h2>Create your own Font theme</h2>
-<p>
-  Just add your fonts in a sub-folder like <b>Karla</b>. Then update the included stylesheet with correct name(s).
-</p>
-<pre>
-edit src/conf/112-themes.json # Or http://os.js.org/doc/manuals/man-configuration.html
-grunt config themes:fonts
-</pre>
-
-
-<h1>Update your changes</h1>
-<p>
-  Just run the same grunt commands as when you created the themes :)
-</p>
 
 
       <div class="adddshere">

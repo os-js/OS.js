@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>OS.js Client API Documentation || src/client/javascript/application.js</title>
+    <title>src/client/javascript/application.js | OS.js Client API Documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <meta name="description" content="OS.js -- src/client/javascript/application.js" />
@@ -65,6 +65,7 @@
 <li><a href="#application-_getwindowsbyname">_getWindowsByName()</a></li>
 <li><a href="#application-_getwindowsbytag">_getWindowsByTag()</a></li>
 <li><a href="#application-_getwindows">_getWindows()</a></li>
+<li><a href="#application-_getmainwindow">_getMainWindow()</a></li>
 <li><a href="#application-_getsettings">_getSettings()</a></li>
 <li><a href="#application-_setsetting">_setSetting()</a></li>
 <li><a href="#application-_setscheme">_setScheme()</a></li>
@@ -286,7 +287,7 @@ Removes given Window
 
 </div>
 <div class="section-method" id="application-_getwindow">
-<h3 id="application-_getwindow-checkfor-key-">Application::_getWindow(checkfor, key)</h3>
+<h3 id="application-_getwindow-value-key-">Application::_getWindow(value, key)</h3>
 <pre>
 Gets a Window by X
 
@@ -309,14 +310,14 @@ If you specify 'null' it will try to return the 'main' window.
 </thead>
 <tbody>
 <tr>
-<td>checkfor</td>
+<td>value</td>
 <td>String</td>
-<td>The argument to check for</td>
+<td>The value</td>
 </tr>
 <tr>
 <td>key</td>
 <td>Mixed</td>
-<td>What to match against</td>
+<td>The key to check for</td>
 </tr>
 </tbody>
 </table>
@@ -361,6 +362,18 @@ Get a list of all windows
 </pre>
 
 
+
+</div>
+<div class="section-method" id="application-_getmainwindow">
+<h3 id="application-_getmainwindow-">Application::_getMainWindow()</h3>
+<pre>
+Get the "main" window
+</pre>
+
+
+
+<h4 id="returns">Returns</h4>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>OSjs.Core.Window</u></p>
 
 </div>
 <div class="section-method" id="application-_getsettings">
