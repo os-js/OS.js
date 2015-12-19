@@ -2,11 +2,12 @@
 
 These are some of the ways you can contribute to OS.js
 
-* **Open issues** You can find a list of open issues on [Github](https://github.com/andersevenrud/OS.js-v2/issues)
+* **Open issues** You can post any issues to [Github](https://github.com/andersevenrud/OS.js-v2/issues)
 * **New features** Create a [pull request](https://github.com/andersevenrud/OS.js-v2/pulls) or open a new issue if you have any ideas for new features
 * **Translating** Language support is a bit lacking, so any help appreciated!
 * **Testing** Things are always changing, and automated tests are not enough to ensure everything is working 100%.
 * **Documentation** Found something in the documentation that does not seem right ?
+* **Commuinty** Join in our [Gitter](https://gitter.im/andersevenrud/OS.js-v2) chat room for fun- and tech talk!
 
 You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using Github is preferred.
 
