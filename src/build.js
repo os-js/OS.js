@@ -62,6 +62,7 @@
     /**
      * Output
      */
+    out_custom_config:        _path.join(ROOT, 'src', 'conf', '900-custom.json'),
     out_server_config:        _path.join(ROOT, 'src', 'server', 'settings.json'),
     out_client_js:            _path.join(ROOT, 'dist', 'osjs.js'),
     out_client_css:           _path.join(ROOT, 'dist', 'osjs.css'),
@@ -166,6 +167,29 @@
     console.log('!!!', e);
   }
 
+  /**
+   * Merges two objects together
+   */
+  function mergeObject(into, from) {
+    function mergeJSON(obj1, obj2) {
+      for ( var p in obj2 ) {
+        if ( obj2.hasOwnProperty(p) ) {
+          try {
+            if ( obj2[p].constructor === Object ) {
+              obj1[p] = mergeJSON(obj1[p], obj2[p]);
+            } else {
+              obj1[p] = obj2[p];
+            }
+          } catch(e) {
+            obj1[p] = obj2[p];
+          }
+        }
+      }
+      return obj1;
+    }
+    return mergeJSON(into, from);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -223,6 +247,78 @@
   }
 
   /**
+   * Sets a config variable
+   */
+  var setConfigPath = (function() {
+    function getNewTree(key, value) {
+      var queue = key.split(/\./);
+      var resulted = {};
+      var ns = resulted;
+
+      queue.forEach(function(k, i) {
+        if ( i >= queue.length-1 ) {
+          ns[k] = value;
+        } else {
+          if ( typeof ns[k] === 'undefined' ) {
+            ns[k] = {};
+          }
+          ns = ns[k];
+        }
+      });
+
+      return resulted;
+    }
+
+    return function(grunt, key, value) {
+
+      var newTree = getNewTree(key, value);
+      var oldTree = {};
+
+      try {
+        oldTree = JSON.parse(readFile(PATHS.out_custom_config));
+      } catch ( e ) {
+        oldTree = {};
+      }
+
+      var result = mergeObject(oldTree, newTree);
+
+      var str = JSON.stringify(result, null, 2);
+      writeFile(PATHS.out_custom_config, str);
+
+      return result;
+    };
+  })();
+
+  /**
+   * Gets a config variable
+   */
+  var getConfigPath = (function() {
+    return function(grunt, path) {
+      var config = generateBuildConfig(grunt);
+      if ( typeof path === 'string' ) {
+        var result = null;
+        var queue = path.split(/\./);
+        var ns = config;
+
+        queue.forEach(function(k, i) {
+          if ( i >= queue.length-1 ) {
+            result = ns[k];
+          } else {
+            ns = ns[k];
+          }
+        });
+
+        if ( typeof result === 'undefined' ) {
+          return null;
+        }
+
+        return result;
+      }
+      return config;
+    };
+  })();
+
+  /**
    * Compile `src/conf` into an object
    */
   var generateBuildConfig = (function generateBuildConfig() {
@@ -238,30 +334,16 @@
       return list;
     }
 
-    function mergeObject(into, from) {
-      function mergeJSON(obj1, obj2) {
-        for ( var p in obj2 ) {
-          if ( obj2.hasOwnProperty(p) ) {
-            try {
-              if ( obj2[p].constructor === Object ) {
-                obj1[p] = mergeJSON(obj1[p], obj2[p]);
-              } else {
-                obj1[p] = obj2[p];
-              }
-            } catch(e) {
-              obj1[p] = obj2[p];
-            }
-          }
-        }
-        return obj1;
-      }
-      return mergeJSON(into, from);
-    }
+    function getBuildConfig(grunt, ignores) {
+      ignores = ignores || [];
 
-    function getBuildConfig(grunt) {
       var config = {};
       var files = getConfigFiles(PATHS.conf);
       files.forEach(function(iter) {
+        if ( ignores.indexOf(_path.basename(iter)) >= 0 ) {
+          return;
+        }
+
         try {
           var json = JSON.parse(_fs.readFileSync(iter));
           var tjson = JSON.parse(JSON.stringify(config));
@@ -274,9 +356,10 @@
       return JSON.parse(JSON.stringify(config));
     }
 
-    return function(grunt) {
+    return function(grunt, ignores) {
+
       if ( !_cache ) {
-        var json = getBuildConfig(grunt);
+        var json = getBuildConfig(grunt, ignores);
         var build = JSON.stringify(json, null, 2).toString();
 
         var handler    = json.handler    || 'demo';
@@ -1297,7 +1380,9 @@
     createNginxConfig:        createNginxConfig,
     createPackage:            createPackage,
 
-    viewConfig: generateBuildConfig,
+    getConfig: generateBuildConfig,
+    getConfigPath: getConfigPath,
+    setConfigPath: setConfigPath,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,

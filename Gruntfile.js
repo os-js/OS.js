@@ -147,16 +147,33 @@
     /**
      * Task: Build config
      */
-    grunt.registerTask('config', 'Build config files', function(arg) {
+    grunt.registerTask('config', 'Build config files, or get/set config value (`set:path.to.key:value` and `get:path.to.key`)', function(fn, key, value) {
+      if ( fn ) {
+        grunt.log.writeln('Path: ' + key);
+        var result;
+        if ( fn === 'get' ) {
+          result = _build.getConfigPath(grunt, key);
+          grunt.log.writeln('Type: ' + typeof result);
+          console.log(result);
+          console.log();
+        } else if ( fn === 'set' ) {
+          result = _build.setConfigPath(grunt, key, value);
+          console.log(result);
+        } else {
+          throw new TypeError('Invalid config operation \'' + fn + '\'');
+        }
+        return;
+      }
+
       grunt.log.writeln('Writing configuration files...');
-      _build.createConfigurationFiles(grunt, arg);
+      _build.createConfigurationFiles(grunt, fn);
     });
 
     /**
      * Task: View config
      */
     grunt.registerTask('view-config', '(Pre)view the generated config file', function(arg) {
-      console.log(JSON.stringify(_build.viewConfig(grunt), null, 4));
+      console.log(JSON.stringify(_build.getConfig(grunt), null, 4));
     });
 
     /**
