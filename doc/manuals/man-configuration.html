@@ -42,13 +42,31 @@
   You can find all the configuration files in <b>src/conf</b> directory.
 </p>
 <p>
-You can create your own files to override these. Just create (ex) <b>900-custom.json</b> and place which settings there (<a href="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/src/templates/conf/900-custom.json">example</a>).
+  The files are loaded in alphabetical order (that is why they are prefixed with a number) and merged togheter into one final map.
+</p>
+<p>
+  It is highly encouraged that you write your own files instead of modifiying the provided ones (because they may be affected by updates).
+</p>
+<p>
+  I provide a <a href="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/src/templates/conf/900-custom.json">example</a> in the repository.
 </p>
 
 <p>
-  If you make any changes, issue this command to rebuild configuration files:
+  If you make any changes, issue this command to rebuild configuration files (not needed if you run "grunt watch"):
 </p>
 <pre>grunt config</pre>
+
+<h1>Setting\Getting configuration via Grunt</h1>
+<p>
+  You can also set (and get) configration via Grunt.
+</p>
+<pre class="code">
+grunt config:get:client.Connection.RootURI
+
+grunt config:set:client.Connection.RootRUI:/custom/path
+
+grunt config # rebuild config files
+</pre>
 
 <h1>Building OS.js</h1>
 
