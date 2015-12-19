@@ -269,7 +269,21 @@
       return resulted;
     }
 
+    function guessValue(value) {
+      if ( value === 'true' ) {
+        return true;
+      } else if ( value === 'false' ) {
+        return false;
+      } else if ( value.match(/^\d+$/) ) {
+        return parseInt(value, 10);
+      } else if ( value.match(/^\d{0,2}(\.\d{0,2}){0,1}$/) ) {
+        return parseFloat(value);
+      }
+      return value;
+    }
+
     return function(grunt, key, value) {
+      value = guessValue(value);
 
       var newTree = getNewTree(key, value);
       var oldTree = {};
