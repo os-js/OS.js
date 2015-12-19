@@ -148,11 +148,11 @@
       }
 
       if ( appRef && !(appRef instanceof OSjs.Core.Application) ) {
-        throw new Error('appRef given was not instance of Application');
+        throw new TypeError('appRef given was not instance of Core.Application');
       }
 
       if ( schemeRef && !(schemeRef instanceof OSjs.GUI.Scheme) ) {
-        throw new Error('schemeRef given was not instance of Scheme');
+        throw new TypeError('schemeRef given was not instance of GUI.Scheme');
       }
 
       opts = Utils.argumentDefaults(opts, {
@@ -762,14 +762,14 @@
   /**
    * Get a Window child by X
    *
-   * @param   String      id      Value to look for
+   * @param   String      value   Value to look for
    * @param   String      key     Key to look for
    *
    * @return  Window              Resulted Window or 'null'
    *
    * @method  Window::_getChild()
    */
-  Window.prototype._getChild = function(id, key) {
+  Window.prototype._getChild = function(value, key) {
     key = key || 'wid';
 
     var result = key === 'tag' ? [] : null;
@@ -778,7 +778,7 @@
         if ( key === 'tag' ) {
           result.push(child);
         } else {
-          if ( child['_' + key] === id ) {
+          if ( child['_' + key] === value ) {
             result = child;
             return false;
           }

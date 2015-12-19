@@ -93,7 +93,6 @@
   Application.prototype.init = function(settings, metadata) {
     console.debug('Application::init()', this.__pname);
 
-
     this.__settings.set(null, settings);
 
     if ( this.__windows.length ) {
@@ -125,22 +124,23 @@
   Application.prototype.destroy = function(kill) {
     if ( this.__destroyed ) { return true; }
     this.__destroyed = true;
-    this.__settings = null;
 
     console.debug('Application::destroy()', this.__pname);
 
     if ( this.__scheme ) {
       this.__scheme.destroy();
     }
-    this.__scheme = null;
 
-    var i;
-    while ( this.__windows.length ) {
-      i = this.__windows.pop();
-      if ( i ) {
-        i.destroy();
+    this.__windows.forEach(function(w) {
+      if ( w ) {
+        w.destroy();
       }
-    }
+    });
+
+    this.__mainwindow = null;
+    this.__settings = {};
+    this.__windows = [];
+    this.__scheme = null;
 
     return Process.prototype.destroy.apply(this, arguments);
   };
@@ -167,10 +167,8 @@
       }
 
     } else if ( msg === 'attention' ) {
-      if ( this.__windows.length ) {
-        if ( this.__windows[0] ) {
-          this.__windows[0]._focus();
-        }
+      if ( this.__windows.length && this.__windows[0] ) {
+        this.__windows[0]._focus();
       }
     }
   };
@@ -189,17 +187,23 @@
    * @method  Application::_addWindow()
    */
   Application.prototype._addWindow = function(w, cb, setmain) {
-    cb = cb || function() {};
+    if ( !(w instanceof OSjs.Core.Window) ) {
+      throw new TypeError('Application::_addWindow() expects Core.Window');
+    }
 
-    if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_addWindow() expects Window'); }
     console.debug('Application::_addWindow()');
+
     this.__windows.push(w);
+    if ( setmain || this.__windows.length === 1 ) {
+      this.__mainwindow = w._name;
+    }
 
     var wm = OSjs.Core.getWindowManager();
     if ( this.__inited ) {
       if ( wm ) {
         wm.addWindow(w);
       }
+
       if ( w._properties.start_focused ) {
         setTimeout(function() {
           w._focus();
@@ -207,11 +211,7 @@
       }
     }
 
-    if ( setmain || this.__windows.length === 1 ) {
-      this.__mainwindow = w._name;
-    }
-
-    cb(w, wm);
+    (cb || function() {})(w, wm);
 
     return w;
   };
@@ -226,7 +226,9 @@
    * @method  Application::_removeWindow()
    */
   Application.prototype._removeWindow = function(w) {
-    if ( !(w instanceof OSjs.Core.Window) ) { throw new Error('Application::_removeWindow() expects Window'); }
+    if ( !(w instanceof OSjs.Core.Window) ) {
+      throw new TypeError('Application::_removeWindow() expects Core.Window');
+    }
 
     var self = this;
     this.__windows.forEach(function(win, i) {
@@ -234,7 +236,7 @@
         if ( win._wid === w._wid ) {
           console.debug('Application::_removeWindow()', w._wid);
           win.destroy();
-          //this.__windows[i] = null;
+
           self.__windows.splice(i, 1);
 
           return false;
@@ -252,23 +254,23 @@
    *
    * If you specify 'null' it will try to return the 'main' window.
    *
-   * @param   String    checkfor      The argument to check for
-   * @param   Mixed     key           What to match against
+   * @param   String    value      The value
+   * @param   Mixed     key        The key to check for
    *
-   * @return  Window                  Or null on error or nothing
+   * @return  Window               Or null on error or nothing
    *
    * @method  Application::_getWindow()
    */
-  Application.prototype._getWindow = function(checkfor, key) {
+  Application.prototype._getWindow = function(value, key) {
     key = key || 'name';
-    if ( checkfor === null ) {
-      checkfor = this.__mainwindow;
+    if ( value === null ) {
+      value = this.__mainwindow;
     }
 
     var result = key === 'tag' ? [] : null;
     this.__windows.forEach(function(win, i) {
       if ( win ) {
-        if ( win['_' + key] === checkfor ) {
+        if ( win['_' + key] === value ) {
           if ( key === 'tag' ) {
             result.push(win);
           } else {
@@ -315,6 +317,16 @@
    */
   Application.prototype._getWindows = function() {
     return this.__windows;
+  };
+
+  /**
+   * Get the "main" window
+   *
+   * @method  Application::_getMainWindow()
+   * @return OSjs.Core.Window
+   */
+  Application.prototype._getMainWindow = function() {
+    return this.__mainwindow;
   };
 
   /**
