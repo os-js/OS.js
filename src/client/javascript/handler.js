@@ -73,7 +73,7 @@
   };
 
   /**
-   * Called upon window loaded from 'main.js'
+   * Initializes the handler
    *
    * @param   Function      callback        Callback function
    *
@@ -128,7 +128,7 @@
   };
 
   /**
-   * Called when booting in `init.js`
+   * Called after the Handler is initialized
    *
    * @param   Function      callback        Callback function
    *
@@ -160,6 +160,7 @@
 
   /**
    * Default login method
+   *
    * NOTE: This is just a placeholder.
    *       To implement your own login handler, see the Wiki :)
    *
@@ -184,7 +185,7 @@
    * NOTE: You should call this in your implemented handler
    *       or else your data will not be stored
    *
-   * @parm    boolean   save          Save session?
+   * @param   boolean   save          Save session?
    * @param   Function  callback      Callback function
    *
    * @return  void
@@ -272,7 +273,9 @@
 
   /**
    * Default method to perform a call to the backend (API)
-   * Use this shorthand method: API.call() instead :)
+   *
+   * Please note that this function is internal, and if you want to make
+   * a actual API call, use "API.call()" instead.
    *
    * @see OSjs.API.call()
    *
@@ -387,7 +390,7 @@
   /**
    * When browser goes online
    *
-   * @method _Handler::onOnline();
+   * @method _Handler::onOnline()
    */
   _Handler.prototype.onOnline = function() {
     console.warn('Handler::onOnline()', 'Going online...');
@@ -402,7 +405,7 @@
   /**
    * When browser goes offline
    *
-   * @method _Handler::onOffline();
+   * @method _Handler::onOffline()
    */
   _Handler.prototype.onOffline = function() {
     console.warn('Handler::onOffline()', 'Going offline...');
@@ -421,7 +424,7 @@
    * @param   Object      storage     Storage tree
    * @param   Function    callback    Callback function
    *
-   * @method _Handler::saveSettings();
+   * @method _Handler::saveSettings()
    */
   _Handler.prototype.saveSettings = function(pool, storage, callback) {
     callback();
