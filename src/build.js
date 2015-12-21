@@ -250,6 +250,21 @@
    * Sets a config variable
    */
   var setConfigPath = (function() {
+    function removeNulls(obj){
+      var isArray = obj instanceof Array;
+      for (var k in obj){
+        if ( obj[k] === null ) {
+          if ( isArray ) {
+            obj.splice(k, 1);
+          } else {
+            delete obj[k];
+          }
+        } else if ( typeof obj[k] === 'object') {
+          removeNulls(obj[k]);
+        }
+      }
+    }
+
     function getNewTree(key, value) {
       var queue = key.split(/\./);
       var resulted = {};
@@ -274,6 +289,8 @@
         return true;
       } else if ( value === 'false' ) {
         return false;
+      } else if ( value === 'null' ) {
+        return null;
       } else if ( value.match(/^\d+$/) ) {
         return parseInt(value, 10);
       } else if ( value.match(/^\d{0,2}(\.\d{0,2}){0,1}$/) ) {
@@ -295,6 +312,7 @@
       }
 
       var result = mergeObject(oldTree, newTree);
+      removeNulls(result);
 
       var str = JSON.stringify(result, null, 2);
       writeFile(PATHS.out_custom_config, str);
