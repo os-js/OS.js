@@ -7,6 +7,7 @@ Works in any modern browser and can be deployed on any platform using Node or PH
 [![bitHound Score](https://www.bithound.io/github/andersevenrud/OS.js-v2/badges/score.svg)](https://www.bithound.io/github/andersevenrud/OS.js-v2)
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/andersevenrud/OS.js-v2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Travis CI Build Status](https://img.shields.io/travis/andersevenrud/OS.js-v2.svg)](https://travis-ci.org/andersevenrud/OS.js-v2)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/61677f92d80d446ca37f7b6ab2fae032)](https://www.codacy.com/app/andersevenrud/OS-js-v2)
 [![Built with Grunt](https://img.shields.io/badge/built%20with-GRUNT-orange.svg)](http://gruntjs.com/)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE)
 [![Documentation](https://img.shields.io/badge/official-docs-yellow.svg)](http://os.js.org/doc/)
