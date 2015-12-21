@@ -543,7 +543,7 @@
         timeout = clearTimeout(timeout);
 
         if ( !wasContextMenu ) {
-          if ( wasClicked = !wasMoved ) {
+          if ( wasClicked == !wasMoved ) {
             ev.stopPropagation();
             callback(ev, pos, true);
           }
