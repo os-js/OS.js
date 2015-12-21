@@ -1,4 +1,6 @@
-![Logo](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo-horizontal.png)
+<p align="center">
+  <img alt="OS.js Logo" src="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo-horizontal.png" />
+</p>
 
 [OS.js](http://os.js.org/) is a [open-source](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE) desktop implementation for your browser with a fully-fledged window manager, Application APIs, GUI toolkits and filesystem abstraction.
 
