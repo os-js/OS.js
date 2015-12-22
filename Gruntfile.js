@@ -244,29 +244,29 @@
     /**
      * Task: Generate Apache vhost
      */
-    grunt.registerTask('apache-vhost', 'Generate Apache vhost configuration file', function(arg) {
-      _build.createApacheVhost(grunt, arg);
+    grunt.registerTask('apache-vhost', 'Generate Apache vhost configuration file', function(dist, outfile) {
+      _build.createApacheVhost(grunt, dist, outfile);
     });
 
     /**
      * Task: Generate Apache htaccess
      */
-    grunt.registerTask('apache-htaccess', 'Generate Apache htaccess file', function(arg) {
-      _build.createApacheHtaccess(grunt, arg);
+    grunt.registerTask('apache-htaccess', 'Generate Apache htaccess file', function(dist, outfile) {
+      _build.createApacheHtaccess(grunt, dist, outfile);
     });
 
     /**
      * Task: Generate Lighttpd config
      */
-    grunt.registerTask('lighttpd-config', 'Generate Lighttpd configuration file', function(arg) {
-      _build.createLighttpdConfig(grunt, arg);
+    grunt.registerTask('lighttpd-config', 'Generate Lighttpd configuration file', function(dist, outfile) {
+      _build.createLighttpdConfig(grunt, dist, outfile);
     });
 
     /**
      * Task: Generate Nginx config
      */
-    grunt.registerTask('nginx-config', 'Generate Nginx configuration file', function(arg) {
-      _build.createNginxConfig(grunt, arg);
+    grunt.registerTask('nginx-config', 'Generate Nginx configuration file', function(dist, outfile) {
+      _build.createNginxConfig(grunt, dist, outfile);
     });
 
     /**

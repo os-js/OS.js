@@ -778,21 +778,29 @@
   // WEB SERVER CONFIGS
   /////////////////////////////////////////////////////////////////////////////
 
+  function _webServerConfigDump(tpl, outfile) {
+    if ( outfile ) {
+      writeFile(outfile, tpl);
+      return;
+    }
+    console.log(tpl);
+  }
+
   /**
    * Create Apache vhost
    */
-  function createApacheVhost(grunt, arg) {
+  function createApacheVhost(grunt, dist, outfile) {
     var src = _path.join(PATHS.templates, 'apache/vhost.conf');
-    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+    var tpl = createWebserverConfig(grunt, dist, src, function(mime) {
       return '';
     });
-    console.log(tpl);
+    _webServerConfigDump(tpl, outfile);
   }
 
   /**
    * Create Apache htaccess
    */
-  function createApacheHtaccess(grunt, arg) {
+  function createApacheHtaccess(grunt, dist, outfile) {
     var mimes = [];
     var mime = generateBuildConfig(grunt).mime;
 
@@ -810,8 +818,8 @@
       writeFile(dst, tpl);
     }
 
-    if ( arg ) {
-      generate_htaccess('apache/prod-htaccess.conf', arg);
+    if ( dist ) {
+      generate_htaccess('apache/prod-htaccess.conf', dist);
     } else {
       generate_htaccess('apache/prod-htaccess.conf', 'dist');
       generate_htaccess('apache/dev-htaccess.conf', 'dist-dev');
@@ -821,9 +829,9 @@
   /**
    * Create Lighttpd config
    */
-  function createLighttpdConfig(grunt, arg) {
+  function createLighttpdConfig(grunt, dist, outfile) {
     var src = _path.join(PATHS.templates, 'lighttpd.conf');
-    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+    var tpl = createWebserverConfig(grunt, dist, src, function(mime) {
       var mimes = [];
       Object.keys(mime.mapping).forEach(function(i) {
         if ( !i.match(/^\./) ) { return; }
@@ -831,15 +839,15 @@
       });
       return mimes.join(',\n');
     });
-    console.log(tpl);
+    _webServerConfigDump(tpl, outfile);
   }
 
   /**
    * Create Nginx config
    */
-  function createNginxConfig(grunt, arg) {
+  function createNginxConfig(grunt, dist, outfile) {
     var src = _path.join(PATHS.templates, 'nginx.conf');
-    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+    var tpl = createWebserverConfig(grunt, dist, src, function(mime) {
       var mimes = [];
       Object.keys(mime.mapping).forEach(function(i) {
         if ( i.match(/^\./) ) {
@@ -848,7 +856,7 @@
       });
       return mimes.join('\n');
     });
-    console.log(tpl);
+    _webServerConfigDump(tpl, outfile);
   }
 
   /////////////////////////////////////////////////////////////////////////////
