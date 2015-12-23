@@ -87,6 +87,26 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Will transform the argument to a FileMetadata instance
+   * or throw an error depending on input
+   */
+  function checkMetadataArgument(item, err) {
+    if ( typeof item === 'string' ) {
+      item = new FileMetadata(item);
+    } else if ( typeof item === 'object' ) {
+      if ( item.path ) {
+        item = new FileMetadata(item);
+      }
+    }
+
+    if ( !(item instanceof FileMetadata) ) {
+      throw new TypeError(err || API._('ERR_VFS_EXPECT_FILE'));
+    }
+
+    return item;
+  }
+
+  /**
    * Check if given path is an internal module
    */
   function isInternalModule(test) {
@@ -527,7 +547,7 @@
       this.setData(arg);
     } else if ( typeof arg === 'string' ) {
       this.path = arg;
-      this.filename = Utils.filename(arg);
+      this.setData();
     }
 
     if ( mime ) {
@@ -537,11 +557,17 @@
 
   FileMetadata.prototype.setData = function(o) {
     var self = this;
-    Object.keys(o).forEach(function(k) {
-      if ( k !== '_element' ) {
-        self[k] = o[k];
-      }
-    });
+    if ( o ) {
+      Object.keys(o).forEach(function(k) {
+        if ( k !== '_element' ) {
+          self[k] = o[k];
+        }
+      });
+    }
+
+    if ( !this.filename ) {
+      this.filename = Utils.filename(this.path);
+    }
   };
 
   FileMetadata.prototype.getData = function() {
@@ -686,7 +712,8 @@
   OSjs.VFS.write = function(item, data, callback, options, appRef) {
     console.info('VFS::write()', item, options);
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
 
     function _finished(error, result) {
       if ( error ) {
@@ -745,7 +772,8 @@
   OSjs.VFS.read = function(item, callback, options) {
     console.info('VFS::read()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
 
     options = options || {};
 
@@ -799,8 +827,9 @@
   OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
     console.info('VFS::copy()', src, dest, options);
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(src instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_SRC_FILE')); }
-    if ( !(dest instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_DST_FILE')); }
+
+    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
+    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     options = Utils.argumentDefaults(options, {
       type: 'binary',
@@ -885,8 +914,8 @@
   OSjs.VFS.move = function(src, dest, callback, options, appRef) {
     console.info('VFS::move()', src, dest, options);
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(src instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_SRC_FILE')); }
-    if ( !(dest instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_DST_FILE')); }
+    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
+    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     var self = this;
 
@@ -956,7 +985,9 @@
   OSjs.VFS.unlink = function(item, callback, options, appRef) {
     console.info('VFS::unlink()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
+
     function _finished(error, result) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
@@ -987,7 +1018,8 @@
   OSjs.VFS.mkdir = function(item, callback, options, appRef) {
     console.info('VFS::mkdir()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
 
     function doRequest() {
       function _finished(error, result) {
@@ -1022,7 +1054,7 @@
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
     request(item.path, 'exists', [item], callback);
   };
 
@@ -1038,7 +1070,8 @@
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
+
     request(item.path, 'fileinfo', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_FILEINFO_FMT', error);
@@ -1059,9 +1092,7 @@
   OSjs.VFS.url = function(item, callback) {
     console.info('VFS::url()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( typeof item === 'string' ) {
-      item = new FileMetadata(item);
-    }
+    item = checkMetadataArgument(item);
     request(item.path, 'url', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_URL_FMT', error);
@@ -1188,6 +1219,7 @@
       if ( !args.path ) {
         throw new Error(API._('ERR_VFS_DOWNLOAD_NO_FILE'));
       }
+      args = checkMetadataArgument(args);
 
       var lname = 'DownloadFile_' + _didx;
       _didx++;
@@ -1255,7 +1287,7 @@
   OSjs.VFS.trash = function(item, callback) {
     console.info('VFS::trash()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
 
     request(item.path, 'trash', [item], function(error, response) {
       if ( error ) {
@@ -1279,7 +1311,7 @@
   OSjs.VFS.untrash = function(item, callback) {
     console.info('VFS::untrash()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
 
     request(item.path, 'untrash', [item], function(error, response) {
       if ( error ) {
