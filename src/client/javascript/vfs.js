@@ -700,7 +700,7 @@
    *
    * This function currently have no options.
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   [File]          data      File Data (see supported types)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
@@ -760,7 +760,7 @@
   /**
    * Read File
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    *
@@ -813,8 +813,8 @@
   /**
    * Copy File
    *
-   * @param   OSjs.VFS.File   src       Source File Metadata
-   * @param   OSjs.VFS.File   dest      Destination File Metadata
+   * @param   OSjs.VFS.File   src       Source File Metadata (you can also provide a string)
+   * @param   OSjs.VFS.File   dest      Destination File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -900,8 +900,8 @@
   /**
    * Move File
    *
-   * @param   OSjs.VFS.File   src       Source File Metadata
-   * @param   OSjs.VFS.File   dest      Destination File Metadata
+   * @param   OSjs.VFS.File   src       Source File Metadata (you can also provide a string)
+   * @param   OSjs.VFS.File   dest      Destination File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -974,7 +974,7 @@
    *
    * This function currently have no options.
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -1005,7 +1005,7 @@
   /**
    * Create Directory
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -1045,7 +1045,7 @@
   /**
    * Check if file exists
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1061,7 +1061,7 @@
   /**
    * Get file info
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1083,7 +1083,7 @@
   /**
    * Get file URL
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1201,7 +1201,7 @@
   /**
    * Download a file
    *
-   * @param   OSjs.VFS.File   args      File Metadata
+   * @param   OSjs.VFS.File   args      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1278,7 +1278,7 @@
    *
    * THIS IS NOT USED FOR INTERNAL MODULES
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1302,7 +1302,7 @@
    *
    * THIS IS NOT USED FOR INTERNAL MODULES
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
