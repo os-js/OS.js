@@ -123,7 +123,7 @@
     if (ev.keyCode in specialKeyTable) {
       var r = specialKeyTable[ev.keyCode];
       var flags = 0;
-      if (typeof r != 'number') {
+      if (typeof r !== 'number') {
         flags = r[1];
         r = r[0];
       }
@@ -265,7 +265,7 @@
     return String.fromCharCode(this.u8[this.pos++]);
   };
   BinCommands.prototype.get_bool = function() {
-    return this.u8[this.pos++] != 0;
+    return this.u8[this.pos++] !== 0;
   };
   BinCommands.prototype.get_flags = function() {
     return this.u8[this.pos++];
@@ -743,11 +743,11 @@
    * Get GDK button mask from DOM Event
    */
   function getButtonMask (button) {
-    if (button == 1) return GDK_BUTTON1_MASK;
-    if (button == 2) return GDK_BUTTON2_MASK;
-    if (button == 3) return GDK_BUTTON3_MASK;
-    if (button == 4) return GDK_BUTTON4_MASK;
-    if (button == 5) return GDK_BUTTON5_MASK;
+    if (button === 1) return GDK_BUTTON1_MASK;
+    if (button === 2) return GDK_BUTTON2_MASK;
+    if (button === 3) return GDK_BUTTON3_MASK;
+    if (button === 4) return GDK_BUTTON4_MASK;
+    if (button === 5) return GDK_BUTTON5_MASK;
     return 0;
   }
 

@@ -1,3 +1,48 @@
+# 2.0.0-alpha70
+
+Tons of improvments to build system, bugfixes and general improvements.
+
+Also added proper server-side Unit Testing via Mocha :)
+
+Remember: Run `grunt` after updating
+
+* CoreWM: Prevent error in init() for some plugins
+* CoreWM: Clock now has static with (calculated)
+* CoreWM: Fixed animations (stylesheet was wrong)
+* Settings: Added dummy API for testing purposes
+* FileManager: Prevent exessive VFS::scandir() calls
+* Window: Now has _loaded attribute
+* GUI: Improvments to Menu touch handling
+* GUI: Added Scheme::findDOM()
+* GUI: FileView now triggers error on VFS::scandir() failure
+* GUI: FileView no longer shows 'null B'
+* VFS: Added VFS::getRootFromPath() to get xxx:/// from path
+* VFS: Fixed VFS::scandir() for applications:///
+* API: Added API::getConfig() shortcut to get by path (ex: VFS.mountpoints.shared.enabled)
+* Utils: Cleaned up Utils::preload()
+* Dialogs: File dialog now checks for what buttons to bind to prevent error logs
+* Dialogs: File dialog now resets dropdown properly on errors
+* SettingsManager: You can load pools from src/conf
+* windows-live-api: Properly handle errors on initialization
+* server-node: Cleanups, Split of files
+* server-node: VFS fileinfo() now returns relative path
+* server-node: Now possible to disable logging
+* server-node: Added 'node supervisor' support
+* server-php: VFS fileinfo() now returns relative path
+* config: Cleaned up configuration tree entirely
+* build: Added 'dist' task (shortcut)
+* build: Added 'dist-dev' task (shortcut)
+* build: Added 'watch' task support
+* build: Grunt now fails with error when failing parsing of src/conf
+* build: Handler is now preloaded effectively removing need for updating index.html
+* build: Added 'iframe' type to 'create-package' task
+* build: Added server-side unit testing with Mocha JS
+* doc: Updated docs
+* doc: Removed deprecated template files
+* doc: Updated README
+* doc: Updated INSTALL
+* misc: jshint
+
 # 2.0.0-alpha69
 
 * CoreWM: Notification Icon improvments

@@ -65,10 +65,8 @@
   FileUploadDialog.prototype.init = function() {
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
-    var config = OSjs.Core.getConfig();
-
     var message = this.scheme.find(this, 'Message');
-    var maxSize = config.VFS.MaxUploadSize;
+    var maxSize = API.getConfig('VFS.MaxUploadSize');
 
     message.set('value', API._('DIALOG_UPLOAD_DESC', this.args.dest, maxSize), true);
 

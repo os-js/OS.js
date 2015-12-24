@@ -147,16 +147,33 @@
     /**
      * Task: Build config
      */
-    grunt.registerTask('config', 'Build config files', function(arg) {
+    grunt.registerTask('config', 'Build config files, or get/set config value (`set:path.to.key:value` and `get:path.to.key`)', function(fn, key, value) {
+      if ( fn ) {
+        grunt.log.writeln('Path: ' + key);
+        var result;
+        if ( fn === 'get' ) {
+          result = _build.getConfigPath(grunt, key);
+          grunt.log.writeln('Type: ' + typeof result);
+          console.log(result);
+          console.log();
+        } else if ( fn === 'set' ) {
+          result = _build.setConfigPath(grunt, key, value);
+          console.log(result);
+        } else {
+          throw new TypeError('Invalid config operation \'' + fn + '\'');
+        }
+        return;
+      }
+
       grunt.log.writeln('Writing configuration files...');
-      _build.createConfigurationFiles(grunt, arg);
+      _build.createConfigurationFiles(grunt, fn);
     });
 
     /**
      * Task: View config
      */
     grunt.registerTask('view-config', '(Pre)view the generated config file', function(arg) {
-      console.log(JSON.stringify(_build.viewConfig(grunt), null, 4));
+      console.log(JSON.stringify(_build.getConfig(grunt), null, 4));
     });
 
     /**
@@ -227,35 +244,35 @@
     /**
      * Task: Generate Apache vhost
      */
-    grunt.registerTask('apache-vhost', 'Generate Apache vhost configuration file', function(arg) {
-      _build.createApacheVhost(grunt, arg);
+    grunt.registerTask('apache-vhost', 'Generate Apache vhost configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
+      _build.createApacheVhost(grunt, dist, outfile);
     });
 
     /**
      * Task: Generate Apache htaccess
      */
-    grunt.registerTask('apache-htaccess', 'Generate Apache htaccess file', function(arg) {
-      _build.createApacheHtaccess(grunt, arg);
+    grunt.registerTask('apache-htaccess', 'Generate Apache htaccess file (arguments: [:dist/dist-dev])', function(dist, outfile) {
+      _build.createApacheHtaccess(grunt, dist, outfile);
     });
 
     /**
      * Task: Generate Lighttpd config
      */
-    grunt.registerTask('lighttpd-config', 'Generate Lighttpd configuration file', function(arg) {
-      _build.createLighttpdConfig(grunt, arg);
+    grunt.registerTask('lighttpd-config', 'Generate Lighttpd configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
+      _build.createLighttpdConfig(grunt, dist, outfile);
     });
 
     /**
      * Task: Generate Nginx config
      */
-    grunt.registerTask('nginx-config', 'Generate Nginx configuration file', function(arg) {
-      _build.createNginxConfig(grunt, arg);
+    grunt.registerTask('nginx-config', 'Generate Nginx configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
+      _build.createNginxConfig(grunt, dist, outfile);
     });
 
     /**
      * Task: Create a new package
      */
-    grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type]', function(arg1, arg2) {
+    grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type] (types: application, iframe, service, extension)', function(arg1, arg2) {
       grunt.log.writeln('Creating package...');
       _build.createPackage(grunt, arg1, arg2);
     });

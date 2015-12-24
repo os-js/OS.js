@@ -411,9 +411,8 @@
     }
 
     var clientId = null;
-    var config = OSjs.Core.getConfig();
     try {
-      clientId = config.GoogleAPI.ClientId;
+      clientId = API.getConfig('GoogleAPI.ClientId');
     } catch ( e ) {
       console.warn('getGoogleAPI()', e, e.stack);
     }

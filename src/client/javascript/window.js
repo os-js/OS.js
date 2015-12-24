@@ -98,9 +98,10 @@
   /**
    * Window Class
    *
-   * @param   String                    name      Window name (unique)
-   * @param   Object                    opts      List of options
-   * @param   OSjs.Core.Application     appRef    Application Reference
+   * @param   String                    name        Window name (unique)
+   * @param   Object                    opts        List of options
+   * @param   OSjs.Core.Application     appRef      Application Reference
+   * @param   OSjs.GUI.Scheme           schemeRef   GUI Scheme Reference
    *
    * @option  opts     String          title             Window Title
    * @option  opts     String          icon              Window Icon
@@ -147,11 +148,11 @@
       }
 
       if ( appRef && !(appRef instanceof OSjs.Core.Application) ) {
-        throw new Error('appRef given was not instance of Application');
+        throw new TypeError('appRef given was not instance of Core.Application');
       }
 
       if ( schemeRef && !(schemeRef instanceof OSjs.GUI.Scheme) ) {
-        throw new Error('schemeRef given was not instance of Scheme');
+        throw new TypeError('schemeRef given was not instance of GUI.Scheme');
       }
 
       opts = Utils.argumentDefaults(opts, {
@@ -761,14 +762,14 @@
   /**
    * Get a Window child by X
    *
-   * @param   String      id      Value to look for
+   * @param   String      value   Value to look for
    * @param   String      key     Key to look for
    *
    * @return  Window              Resulted Window or 'null'
    *
    * @method  Window::_getChild()
    */
-  Window.prototype._getChild = function(id, key) {
+  Window.prototype._getChild = function(value, key) {
     key = key || 'wid';
 
     var result = key === 'tag' ? [] : null;
@@ -777,7 +778,7 @@
         if ( key === 'tag' ) {
           result.push(child);
         } else {
-          if ( child['_' + key] === id ) {
+          if ( child['_' + key] === value ) {
             result = child;
             return false;
           }
@@ -1297,7 +1298,9 @@
    */
   Window.prototype._toggleDisabled = function(t) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleDisabled()', t);
-    this._$disabled.style.display = t ? 'block' : 'none';
+    if ( this._$disabled ) {
+      this._$disabled.style.display = t ? 'block' : 'none';
+    }
     this._disabled = t ? true : false;
   };
 
@@ -1312,7 +1315,9 @@
    */
   Window.prototype._toggleLoading = function(t) {
     console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleLoading()', t);
-    this._$loading.style.display = t ? 'block' : 'none';
+    if ( this._$loading ) {
+      this._$loading.style.display = t ? 'block' : 'none';
+    }
   };
 
   /**

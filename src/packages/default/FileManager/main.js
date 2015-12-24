@@ -118,7 +118,12 @@
       MenuShowSidebar:    function() { viewSide = self.toggleSidebar(!viewSide, true); },
       MenuShowNavigation: function() { viewNav = self.toggleNavbar(!viewNav, true); },
       MenuShowHidden:     function() { viewHidden = self.toggleHidden(!viewHidden, true); },
-      MenuShowExtension:  function() { viewExtension = self.toggleExtension(!viewExtension, true); }
+      MenuShowExtension:  function() { viewExtension = self.toggleExtension(!viewExtension, true); },
+      MenuColumnFilename: function() { self.toggleColumn('filename', true); },
+      MenuColumnMIME:     function() { self.toggleColumn('mime', true); },
+      MenuColumnCreated:  function() { self.toggleColumn('ctime', true); },
+      MenuColumnModified: function() { self.toggleColumn('mtime', true); },
+      MenuColumnSize:     function() { self.toggleColumn('size', true); },
     };
 
     function menuEvent(ev) {
@@ -197,6 +202,7 @@
     this.toggleNavbar(viewNav, false);
 
     this.changePath(this.currentPath);
+    this.toggleColumn();
 
     return root;
   };
@@ -279,15 +285,25 @@
   ApplicationFileManagerWindow.prototype.renderSideView = function() {
     var sideViewItems = [];
     VFS.getModules({special: true}).forEach(function(m, i) {
+      var classNames = [m.module.mounted() ? 'mounted' : 'unmounted'];
+      if ( m.module.readOnly ) {
+        classNames.push('readonly gui-has-emblem');
+      }
+
       sideViewItems.push({
         value: m.module,
-        className: m.module.mounted() ? 'mounted' : 'unmounted',
+        className: classNames.join(' '),
         columns: [
           {
-            label: m.module.description + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
-            icon: API.getIcon(m.module.icon),
+            label: m.module.description,
+            icon: API.getIcon(m.module.icon)
           }
-        ]
+        ],
+        onCreated: function(nel) {
+          if ( m.module.readOnly ) {
+            nel.style.backgroundImage = 'url(' + API.getIcon('emblems/emblem-readonly.png', '16x16') + ')';
+          }
+        }
       });
     });
 
@@ -467,6 +483,32 @@
     }
 
     return toggle;
+  };
+
+  ApplicationFileManagerWindow.prototype.toggleColumn = function(col, set) {
+    var vfsOptions     = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+    var scandirOptions = vfsOptions.scandir || {};
+    var viewColumns    = scandirOptions.columns || ['filename', 'mime', 'size'];
+
+    if ( col ) {
+      var found = viewColumns.indexOf(col);
+      if ( found >= 0 ) {
+        viewColumns.splice(found, 1);
+      } else {
+        viewColumns.push(col);
+      }
+
+      scandirOptions.columns = viewColumns;
+
+      OSjs.Core.getSettingsManager().set('VFS', 'scandir', scandirOptions, set);
+    }
+
+    var viewMenu = this._scheme.find(this, 'SubmenuView');
+    viewMenu.set('checked', 'MenuColumnFilename', viewColumns.indexOf('filename') >= 0);
+    viewMenu.set('checked', 'MenuColumnMIME', viewColumns.indexOf('mime') >= 0);
+    viewMenu.set('checked', 'MenuColumnCreated', viewColumns.indexOf('ctime') >= 0);
+    viewMenu.set('checked', 'MenuColumnModified', viewColumns.indexOf('mtime') >= 0);
+    viewMenu.set('checked', 'MenuColumnSize', viewColumns.indexOf('size') >= 0);
   };
 
   ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {

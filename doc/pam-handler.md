@@ -16,7 +16,7 @@ $ edit /etc/osjs/groups.json
 $ edit src/conf/000-base.json
 
 # Update configuration and template files
-$ grunt config dist-index dist-dev-index
+$ grunt config
 
 # Rebuild (only required if you use `dist`)
 # grunt core
@@ -27,6 +27,8 @@ $ grunt config dist-index dist-dev-index
 **NOTE:** On some systems you might have to install `authenticate-pam` with `npm install -g` or else you might get a *Error in service module* upon request.
 
 **NOTE:** Also, on some systems you might have to run OS.js server as an administrator (`sudo`) depending on the PAM setup.
+
+**NOTE:** Instead of editing the provided config file, you should [create your own](http://os.js.org/doc/manuals/man-configuration.html)
 
 
 ### groups.json

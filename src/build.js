@@ -62,6 +62,7 @@
     /**
      * Output
      */
+    out_custom_config:        _path.join(ROOT, 'src', 'conf', '900-custom.json'),
     out_server_config:        _path.join(ROOT, 'src', 'server', 'settings.json'),
     out_client_js:            _path.join(ROOT, 'dist', 'osjs.js'),
     out_client_css:           _path.join(ROOT, 'dist', 'osjs.css'),
@@ -166,6 +167,29 @@
     console.log('!!!', e);
   }
 
+  /**
+   * Merges two objects together
+   */
+  function mergeObject(into, from) {
+    function mergeJSON(obj1, obj2) {
+      for ( var p in obj2 ) {
+        if ( obj2.hasOwnProperty(p) ) {
+          try {
+            if ( obj2[p].constructor === Object ) {
+              obj1[p] = mergeJSON(obj1[p], obj2[p]);
+            } else {
+              obj1[p] = obj2[p];
+            }
+          } catch(e) {
+            obj1[p] = obj2[p];
+          }
+        }
+      }
+      return obj1;
+    }
+    return mergeJSON(into, from);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -223,6 +247,110 @@
   }
 
   /**
+   * Sets a config variable
+   */
+  var setConfigPath = (function() {
+    function removeNulls(obj){
+      var isArray = obj instanceof Array;
+      for (var k in obj){
+        if ( obj[k] === null ) {
+          if ( isArray ) {
+            obj.splice(k, 1);
+          } else {
+            delete obj[k];
+          }
+        } else if ( typeof obj[k] === 'object') {
+          removeNulls(obj[k]);
+        }
+      }
+    }
+
+    function getNewTree(key, value) {
+      var queue = key.split(/\./);
+      var resulted = {};
+      var ns = resulted;
+
+      queue.forEach(function(k, i) {
+        if ( i >= queue.length-1 ) {
+          ns[k] = value;
+        } else {
+          if ( typeof ns[k] === 'undefined' ) {
+            ns[k] = {};
+          }
+          ns = ns[k];
+        }
+      });
+
+      return resulted;
+    }
+
+    function guessValue(value) {
+      if ( value === 'true' ) {
+        return true;
+      } else if ( value === 'false' ) {
+        return false;
+      } else if ( value === 'null' ) {
+        return null;
+      } else if ( value.match(/^\d+$/) ) {
+        return parseInt(value, 10);
+      } else if ( value.match(/^\d{0,2}(\.\d{0,2}){0,1}$/) ) {
+        return parseFloat(value);
+      }
+      return value;
+    }
+
+    return function(grunt, key, value) {
+      value = guessValue(value);
+
+      var newTree = getNewTree(key, value);
+      var oldTree = {};
+
+      try {
+        oldTree = JSON.parse(readFile(PATHS.out_custom_config));
+      } catch ( e ) {
+        oldTree = {};
+      }
+
+      var result = mergeObject(oldTree, newTree);
+      removeNulls(result);
+
+      var str = JSON.stringify(result, null, 2);
+      writeFile(PATHS.out_custom_config, str);
+
+      return result;
+    };
+  })();
+
+  /**
+   * Gets a config variable
+   */
+  var getConfigPath = (function() {
+    return function(grunt, path) {
+      var config = generateBuildConfig(grunt);
+      if ( typeof path === 'string' ) {
+        var result = null;
+        var queue = path.split(/\./);
+        var ns = config;
+
+        queue.forEach(function(k, i) {
+          if ( i >= queue.length-1 ) {
+            result = ns[k];
+          } else {
+            ns = ns[k];
+          }
+        });
+
+        if ( typeof result === 'undefined' ) {
+          return null;
+        }
+
+        return result;
+      }
+      return config;
+    };
+  })();
+
+  /**
    * Compile `src/conf` into an object
    */
   var generateBuildConfig = (function generateBuildConfig() {
@@ -238,30 +366,16 @@
       return list;
     }
 
-    function mergeObject(into, from) {
-      function mergeJSON(obj1, obj2) {
-        for ( var p in obj2 ) {
-          if ( obj2.hasOwnProperty(p) ) {
-            try {
-              if ( obj2[p].constructor === Object ) {
-                obj1[p] = mergeJSON(obj1[p], obj2[p]);
-              } else {
-                obj1[p] = obj2[p];
-              }
-            } catch(e) {
-              obj1[p] = obj2[p];
-            }
-          }
-        }
-        return obj1;
-      }
-      return mergeJSON(into, from);
-    }
+    function getBuildConfig(grunt, ignores) {
+      ignores = ignores || [];
 
-    function getBuildConfig(grunt) {
       var config = {};
       var files = getConfigFiles(PATHS.conf);
       files.forEach(function(iter) {
+        if ( ignores.indexOf(_path.basename(iter)) >= 0 ) {
+          return;
+        }
+
         try {
           var json = JSON.parse(_fs.readFileSync(iter));
           var tjson = JSON.parse(JSON.stringify(config));
@@ -274,9 +388,10 @@
       return JSON.parse(JSON.stringify(config));
     }
 
-    return function(grunt) {
+    return function(grunt, ignores) {
+
       if ( !_cache ) {
-        var json = getBuildConfig(grunt);
+        var json = getBuildConfig(grunt, ignores);
         var build = JSON.stringify(json, null, 2).toString();
 
         var handler    = json.handler    || 'demo';
@@ -543,6 +658,13 @@
       var icons = {};
       var fonts = themes.fonts;
 
+      if ( dist === 'dist-dev' ) {
+        preloads.push({
+          type: 'javascript',
+          src: _path.join('/', 'client', 'javascript', 'handlers', cfg.handler, 'handler.js')
+        });
+      }
+
       if ( settings.Preloads ) {
         Object.keys(settings.Preloads).forEach(function(k) {
           preloads.push(settings.Preloads[k]);
@@ -626,7 +748,9 @@
       addScript('locales.js');
     } else {
       cfg.javascript.forEach(function(i) {
-        addScript(i.replace('src/client/javascript', 'client/javascript'));
+        if ( !i.match(/handlers\/(\w+)\/handler\.js$/) ) { // handler scripts are automatically preloaded by config!
+          addScript(i.replace('src/client/javascript', 'client/javascript'));
+        }
       });
       cfg.locales.forEach(function(i) {
         addScript(i.replace('src/client/javascript', 'client/javascript'));
@@ -654,21 +778,29 @@
   // WEB SERVER CONFIGS
   /////////////////////////////////////////////////////////////////////////////
 
+  function _webServerConfigDump(tpl, outfile) {
+    if ( outfile ) {
+      writeFile(outfile, tpl);
+      return;
+    }
+    console.log(tpl);
+  }
+
   /**
    * Create Apache vhost
    */
-  function createApacheVhost(grunt, arg) {
+  function createApacheVhost(grunt, dist, outfile) {
     var src = _path.join(PATHS.templates, 'apache/vhost.conf');
-    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+    var tpl = createWebserverConfig(grunt, dist, src, function(mime) {
       return '';
     });
-    console.log(tpl);
+    _webServerConfigDump(tpl, outfile);
   }
 
   /**
    * Create Apache htaccess
    */
-  function createApacheHtaccess(grunt, arg) {
+  function createApacheHtaccess(grunt, dist, outfile) {
     var mimes = [];
     var mime = generateBuildConfig(grunt).mime;
 
@@ -686,8 +818,8 @@
       writeFile(dst, tpl);
     }
 
-    if ( arg ) {
-      generate_htaccess('apache/prod-htaccess.conf', arg);
+    if ( dist ) {
+      generate_htaccess('apache/prod-htaccess.conf', dist);
     } else {
       generate_htaccess('apache/prod-htaccess.conf', 'dist');
       generate_htaccess('apache/dev-htaccess.conf', 'dist-dev');
@@ -697,9 +829,9 @@
   /**
    * Create Lighttpd config
    */
-  function createLighttpdConfig(grunt, arg) {
+  function createLighttpdConfig(grunt, dist, outfile) {
     var src = _path.join(PATHS.templates, 'lighttpd.conf');
-    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+    var tpl = createWebserverConfig(grunt, dist, src, function(mime) {
       var mimes = [];
       Object.keys(mime.mapping).forEach(function(i) {
         if ( !i.match(/^\./) ) { return; }
@@ -707,15 +839,15 @@
       });
       return mimes.join(',\n');
     });
-    console.log(tpl);
+    _webServerConfigDump(tpl, outfile);
   }
 
   /**
    * Create Nginx config
    */
-  function createNginxConfig(grunt, arg) {
+  function createNginxConfig(grunt, dist, outfile) {
     var src = _path.join(PATHS.templates, 'nginx.conf');
-    var tpl = createWebserverConfig(grunt, arg, src, function(mime) {
+    var tpl = createWebserverConfig(grunt, dist, src, function(mime) {
       var mimes = [];
       Object.keys(mime.mapping).forEach(function(i) {
         if ( i.match(/^\./) ) {
@@ -724,7 +856,7 @@
       });
       return mimes.join('\n');
     });
-    console.log(tpl);
+    _webServerConfigDump(tpl, outfile);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -742,6 +874,10 @@
 
 
     var typemap = {
+      iframe: {
+        src: 'iframe-application',
+        cpy: ['main.js', 'package.json']
+      },
       application: {
         src: 'application',
         cpy: ['main.js', 'main.css', 'package.json', 'scheme.html']
@@ -1284,7 +1420,9 @@
     createNginxConfig:        createNginxConfig,
     createPackage:            createPackage,
 
-    viewConfig: generateBuildConfig,
+    getConfig: generateBuildConfig,
+    getConfigPath: getConfigPath,
+    setConfigPath: setConfigPath,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,

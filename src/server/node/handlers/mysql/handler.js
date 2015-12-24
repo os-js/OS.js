@@ -1,7 +1,7 @@
 /*!
  * OS.js - JavaScript Operating System
  *
- * Example Handler: Login screen and session/settings handling via database
+ * Mysql Handler: Login screen and session/settings handling via database
  * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>

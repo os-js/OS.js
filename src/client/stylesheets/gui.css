@@ -90,6 +90,11 @@ application-window-content * {
   overflow : hidden;
 }
 
+.gui-has-emblem {
+  background-repeat : no-repeat;
+  background-position : right center;
+}
+
 .gui-focus-element {
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -1246,6 +1251,14 @@ gui-statusbar {
   position : relative;
   display : block;
   min-height : 16px;
+  overflow : hidden;
+  white-space : nowrap;
+
+  -webkit-text-overflow: ellipsis;
+     -moz-text-overflow: ellipsis;
+      -ms-text-overflow: ellipsis;
+       -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
 }
 
 /**
@@ -1400,9 +1413,6 @@ gui-list-view {
            -o-flex-direction: row;
               flex-direction: row;
     }
-    gui-list-view-head gui-list-view-column {
-      overflow : visible;
-    }
     gui-list-view-column {
       position : relative;
       display : inline-block;
@@ -1451,7 +1461,7 @@ gui-list-view {
       position : absolute;
       top : 0px;
       bottom : 0px;
-      right : 0px;
+      left : 0px;
       z-index : 999999999;
     }
       gui-list-view-column-resizer:after {
@@ -1491,9 +1501,12 @@ gui-tree-view {
       background-position : left center;
       display : inline-block;
       vertical-align : middle;
-      text-overflow: ellipsis;
-      -o-text-overflow: ellipsis;
-      white-space : nowrap;
+
+      -webkit-text-overflow: ellipsis;
+         -moz-text-overflow: ellipsis;
+          -ms-text-overflow: ellipsis;
+           -o-text-overflow: ellipsis;
+              text-overflow: ellipsis;
     }
     gui-tree-view-entry > div > span.gui-has-image {
     }

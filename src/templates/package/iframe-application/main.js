@@ -27,80 +27,34 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(Application, GUI, Dialogs, Utils, API, VFS) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
-
   /////////////////////////////////////////////////////////////////////////////
-  // API
+  // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WRAPPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
-
-    function getFiles() {
-      var metadata = OSjs.Core.getPackageManager().getPackages();
-      var files = [];
-
-      Object.keys(metadata).forEach(function(m) {
-        var iter = metadata[m];
-        if ( iter.type !== 'extension' ) {
-          files.push(new OSjs.VFS.File({
-            filename: iter.name,
-            icon: {
-              filename: iter.icon,
-              application: m
-            },
-            type: 'application',
-            path: 'applications:///' + m,
-            mime: 'osjs/application'
-          }));
-        }
-      });
-
-      return files;
-    }
-
-    if ( name === 'scandir' ) {
-      var files = getFiles();
-      callback(false, files);
-      return;
-    }
-
-    return callback(API._('ERR_VFS_UNAVAILABLE'));
+  function ApplicationEXAMPLE(args, metadata) {
+    Application.apply(this, ['ApplicationEXAMPLE', args, metadata, {
+      src: 'data/index.html',
+      title: metadata.name,
+      icon: metadata.icon,
+      width: 640,
+      height: 480,
+      allow_resize: false,
+      allow_restore: false,
+      allow_maximize: false
+    }]);
   }
+
+  ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Modules.Apps = OSjs.VFS.Modules.Apps || {
-    readOnly: true,
-    description: 'Applications',
-    root: 'applications:///',
-    match: /^applications\:\/\//,
-    icon: 'places/user-bookmarks.png',
-    special: true,
-    visible: true,
-    internal: true,
-    unmount: function(cb) {
-      OSjs.VFS._NullModule.unmount(cb);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
-    request: makeRequest
-  };
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
+  OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.Helpers.IFrameApplication, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);

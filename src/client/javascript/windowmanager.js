@@ -518,7 +518,7 @@
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
       console.warn('WindowManager::addWindow()', 'Got', w);
-      throw new Error('addWindow() expects a "Window" class');
+      throw new TypeError('given argument was not instance of Core.Window');
     }
     console.debug('WindowManager::addWindow()');
 
@@ -549,7 +549,7 @@
     var self = this;
     if ( !(w instanceof Window) ) {
       console.warn('WindowManager::removeWindow()', 'Got', w);
-      throw new Error('removeWindow() expects a "Window" class');
+      throw new TypeError('given argument was not instance of Core.Window');
     }
     console.debug('WindowManager::removeWindow()', w._wid);
 
@@ -849,8 +849,7 @@
    * @method  WindowManager::getStyleThemes()
    */
   WindowManager.prototype.getStyleThemes = function() {
-    var config = OSjs.Core.getConfig();
-    return config.Styles || [];
+    return API.getConfig('Styles', []);
   };
 
   /**
@@ -861,8 +860,7 @@
    * @method  WindowManager::getSoundThemes()
    */
   WindowManager.prototype.getSoundThemes = function() {
-    var config = OSjs.Core.getConfig();
-    return config.Sounds || [];
+    return API.getConfig('Sounds', []);
   };
 
   /**
@@ -873,8 +871,7 @@
    * @method  WindowManager::getIconThemes()
    */
   WindowManager.prototype.getIconThemes = function() {
-    var config = OSjs.Core.getConfig();
-    return config.Icons || [];
+    return API.getConfig('Icons', []);
   };
 
   /**

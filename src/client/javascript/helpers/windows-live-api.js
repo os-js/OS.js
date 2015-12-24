@@ -351,9 +351,8 @@
     }
 
     var clientId = null;
-    var config = OSjs.Core.getConfig();
     try {
-      clientId = config.WindowsLiveAPI.ClientId;
+      clientId = API.getConfig('WindowsLiveAPI.ClientId');
     } catch ( e ) {
       console.warn('getWindowsLiveAPI()', e, e.stack);
     }

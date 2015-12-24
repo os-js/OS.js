@@ -106,6 +106,7 @@
 
     // Forces width of the element by calculating the length of the string in pixels
     // It is not perfect, but works in most cases.
+    /*
     var tst = OSjs.Helpers.Date.format(new Date(), fmt).replace(/[A-z0-9]/g, '8');
     var tstEl = document.createElement('span');
     tstEl.style.visibility = 'hidden';
@@ -117,6 +118,7 @@
       clock.style.width = '';
     }
     tstEl = Utils.$remove(tstEl);
+    */
 
     create(this._settings.get('interval'));
     update();

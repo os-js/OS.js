@@ -38,6 +38,151 @@
     return el.children[0];
   }
 
+  function getFileIcon(iter, size) {
+    if ( iter.icon && typeof iter.icon === 'object' ) {
+      return API.getIcon(iter.icon.filename, size, iter.icon.application);
+    }
+
+    var icon = 'status/gtk-dialog-question.png';
+    return API.getFileIcon(iter, size, icon);
+  }
+
+  function getFileSize(iter) {
+    var filesize = '';
+    if ( iter.type !== 'dir' && iter.size ) {
+      filesize = Utils.humanFileSize(iter.size);
+    }
+    return filesize;
+  }
+
+  var removeExtension = (function() {
+    var mimeConfig;
+
+    return function (str, opts) {
+      if ( !mimeConfig ) {
+        mimeConfig = API.getConfig('MIME.mapping');
+      }
+
+      if ( opts.extensions === false ) {
+        var ext = Utils.filext(str);
+        if ( ext ) {
+          ext = '.' + ext;
+          if ( mimeConfig[ext] ) {
+            str = str.substr(0, str.length - ext.length);
+          }
+        }
+      }
+      return str;
+    };
+  })();
+
+  function getDateFromStamp(stamp) {
+    if ( typeof stamp === 'string' ) {
+      var date = null;
+      try {
+        date = new Date(stamp.replace('T', ' ').replace(/\..+/, ''));
+      } catch ( e ) {}
+
+      if ( date ) {
+        return OSjs.Helpers.Date.format(date);
+      }
+    }
+    return stamp;
+  }
+
+  function getListViewColumns(iter, opts) {
+    opts = opts || {};
+
+    var columnMapping = {
+      filename: {
+        label: 'LBL_FILENAME',
+        icon: function() {
+          return getFileIcon(iter);
+        },
+        value: function() {
+          return removeExtension(iter.filename, opts);
+        }
+      },
+      mime: {
+        label: 'LBL_MIME',
+        basis: '100px',
+        icon: function() {
+          return null;
+        },
+        value: function() {
+          return iter.mime;
+        }
+      },
+      mtime: {
+        label: 'Modified',
+        basis: '160px',
+        icon: function() {
+          return null;
+        },
+        value: function() {
+          return getDateFromStamp(iter.mtime);
+        }
+      },
+      ctime: {
+        label: 'Created',
+        basis: '160px',
+        icon: function() {
+          return null;
+        },
+        value: function() {
+          return getDateFromStamp(iter.ctime);
+        }
+      },
+      size: {
+        label: 'LBL_SIZE',
+        basis: '120px',
+        icon: function() {
+          return null;
+        },
+        value: function() {
+          return getFileSize(iter);
+        }
+      }
+    };
+
+    var defColumns = ['filename', 'mime', 'size'];
+    var useColumns = defColumns;
+
+    if ( !opts.defaultcolumns ) {
+      var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
+      var scandirOptions = vfsOptions.scandir || {};
+      useColumns = scandirOptions.columns || defColumns;
+    }
+
+    var columns = [];
+
+    useColumns.forEach(function(key, idx) {
+      var map = columnMapping[key];
+
+      if ( iter ) {
+        columns.push({
+          label: map.value(),
+          icon: map.icon(),
+          textalign: idx === 0 ? 'left' : 'right'
+        });
+      } else {
+        var grow = idx === 0 ? 1 : 0;
+        var shrink = grow;
+
+        columns.push({
+          label: API._(map.label),
+          basis: map.basis || 'auto',
+          grow: grow,
+          shrink: shrink,
+          resizable: idx > 0,
+          textalign: idx === 0 ? 'left' : 'right'
+        });
+      }
+    });
+
+    return columns;
+  }
+
   function buildChildView(el) {
     var type = el.getAttribute('data-type') || 'list-view';
     if ( !type.match(/^gui\-/) ) {
@@ -60,14 +205,7 @@
       el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
     });
 
-    if ( type === 'gui-list-view' ) {
-      nel.set('zebra', true);
-      nel.set('columns', [
-        {label: API._('LBL_FILENAME'), grow: 1, shrink: 1},
-        {label: API._('LBL_MIME'), basis: '100px', grow: 0, shrink: 0, textalign: 'right'},
-        {label: API._('LBL_SIZE'), basis: '120px', grow: 0, shrink: 0, textalign: 'right'}
-      ]);
-    } else if ( type === 'gui-tree-view' ) {
+    if ( type === 'gui-tree-view' ) {
       nel.on('expand', function(ev) {
         el.dispatchEvent(new CustomEvent('_expand', {detail: ev.detail}));
       });
@@ -142,6 +280,9 @@
     setOption('data-filetype', 'filetype', function(val) {
       return val;
     });
+    setOption('data-defaultcolumns', 'defaultcolumns', function(val) {
+      return val === 'true';
+    });
 
     try {
       opts.filter = JSON.parse(el.getAttribute('data-filter'));
@@ -149,39 +290,21 @@
     }
 
     scandir(tagName, dir, opts, function(error, result, summary) {
+      if ( tagName === 'gui-list-view' ) {
+        GUI.Elements[tagName].set(target, 'zebra', true);
+        GUI.Elements[tagName].set(target, 'columns', getListViewColumns(null, opts));
+      }
+
       done(error, result, summary);
     }, function(iter) {
-      var mimeConfig = OSjs.Core.getConfig().MIME.mapping;
-
-      function removeExtension(str) {
-        if ( opts.extensions === false ) {
-          var ext = Utils.filext(str);
-          if ( ext ) {
-            ext = '.' + ext;
-            if ( mimeConfig[ext] ) {
-              str = str.substr(0, str.length - ext.length);
-            }
-          }
-        }
-        return str;
-      }
-
-      function _getIcon(iter, size) {
-        if ( iter.icon && typeof iter.icon === 'object' ) {
-          return API.getIcon(iter.icon.filename, size, iter.icon.application);
-        }
-
-        var icon = 'status/gtk-dialog-question.png';
-        return API.getFileIcon(iter, size, icon);
-      }
 
       function _createEntry() {
         var row = {
           value: iter,
-          id: iter.id || removeExtension(iter.filename),
+          id: iter.id || removeExtension(iter.filename, opts),
           label: iter.filename,
           tooltip: tooltip,
-          icon: _getIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
+          icon: getFileIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
         };
 
         if ( tagName === 'gui-tree-view' && iter.type === 'dir' ) {
@@ -195,8 +318,7 @@
         return row;
       }
 
-      var filesize = Utils.humanFileSize(iter.size);
-      var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, filesize, iter.mime || '');
+      var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, getFileSize(iter), iter.mime || '');
       if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
         return _createEntry();
       }
@@ -205,11 +327,7 @@
         value: iter,
         id: iter.id || iter.filename,
         tooltip: tooltip,
-        columns: [
-          {label: removeExtension(iter.filename), icon: _getIcon(iter)},
-          {label: iter.mime, textalign: 'right'},
-          {label: filesize, textalign: 'right'}
-        ]
+        columns: getListViewColumns(iter, opts)
       };
     });
   }
@@ -295,7 +413,7 @@
           });
         }
         return true;
-      } else if ( (['filter', 'dotfiles', 'filetype', 'extensions']).indexOf(param) >= 0 ) {
+      } else if ( (['filter', 'dotfiles', 'filetype', 'extensions', 'defaultcolumns']).indexOf(param) >= 0 ) {
         GUI.Helpers.setProperty(el, param, value);
         return true;
       }

@@ -87,6 +87,26 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Will transform the argument to a FileMetadata instance
+   * or throw an error depending on input
+   */
+  function checkMetadataArgument(item, err) {
+    if ( typeof item === 'string' ) {
+      item = new FileMetadata(item);
+    } else if ( typeof item === 'object' ) {
+      if ( item.path ) {
+        item = new FileMetadata(item);
+      }
+    }
+
+    if ( !(item instanceof FileMetadata) ) {
+      throw new TypeError(err || API._('ERR_VFS_EXPECT_FILE'));
+    }
+
+    return item;
+  }
+
+  /**
    * Check if given path is an internal module
    */
   function isInternalModule(test) {
@@ -276,11 +296,10 @@
    * Wrapper for internal file uploads
    */
   function internalUpload(file, dest, callback) {
-    var config = OSjs.Core.getConfig();
-    var fsuri  = config.Connection.FSURI || '/';
+    var fsuri  = API.getConfig('Connection.FSURI', '/');
 
     if ( typeof file.size !== 'undefined' ) {
-      var maxSize = config.VFS.MaxUploadSize;
+      var maxSize = API.getConfig('VFS.MaxUploadSize');
       if ( maxSize > 0 ) {
         var bytes = file.size;
         if ( bytes > maxSize ) {
@@ -528,7 +547,7 @@
       this.setData(arg);
     } else if ( typeof arg === 'string' ) {
       this.path = arg;
-      this.filename = Utils.filename(arg);
+      this.setData();
     }
 
     if ( mime ) {
@@ -538,11 +557,17 @@
 
   FileMetadata.prototype.setData = function(o) {
     var self = this;
-    Object.keys(o).forEach(function(k) {
-      if ( k !== '_element' ) {
-        self[k] = o[k];
-      }
-    });
+    if ( o ) {
+      Object.keys(o).forEach(function(k) {
+        if ( k !== '_element' ) {
+          self[k] = o[k];
+        }
+      });
+    }
+
+    if ( !this.filename ) {
+      this.filename = Utils.filename(this.path);
+    }
   };
 
   FileMetadata.prototype.getData = function() {
@@ -605,11 +630,10 @@
     if ( MountsRegistered ) { return; }
     MountsRegistered = true;
 
-    var settings = OSjs.Core.getConfig();
     var config = null;
 
     try {
-      config = settings.VFS.Mountpoints;
+      config = API.getConfig('VFS.Mountpoints');
     } catch ( e ) {
       console.warn('mountpoints.js initialization error', e, e.stack);
     }
@@ -676,7 +700,7 @@
    *
    * This function currently have no options.
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   [File]          data      File Data (see supported types)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
@@ -688,7 +712,8 @@
   OSjs.VFS.write = function(item, data, callback, options, appRef) {
     console.info('VFS::write()', item, options);
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
 
     function _finished(error, result) {
       if ( error ) {
@@ -735,7 +760,7 @@
   /**
    * Read File
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    *
@@ -747,7 +772,8 @@
   OSjs.VFS.read = function(item, callback, options) {
     console.info('VFS::read()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
 
     options = options || {};
 
@@ -787,8 +813,8 @@
   /**
    * Copy File
    *
-   * @param   OSjs.VFS.File   src       Source File Metadata
-   * @param   OSjs.VFS.File   dest      Destination File Metadata
+   * @param   OSjs.VFS.File   src       Source File Metadata (you can also provide a string)
+   * @param   OSjs.VFS.File   dest      Destination File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -801,8 +827,9 @@
   OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
     console.info('VFS::copy()', src, dest, options);
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(src instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_SRC_FILE')); }
-    if ( !(dest instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_DST_FILE')); }
+
+    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
+    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     options = Utils.argumentDefaults(options, {
       type: 'binary',
@@ -873,8 +900,8 @@
   /**
    * Move File
    *
-   * @param   OSjs.VFS.File   src       Source File Metadata
-   * @param   OSjs.VFS.File   dest      Destination File Metadata
+   * @param   OSjs.VFS.File   src       Source File Metadata (you can also provide a string)
+   * @param   OSjs.VFS.File   dest      Destination File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -887,8 +914,8 @@
   OSjs.VFS.move = function(src, dest, callback, options, appRef) {
     console.info('VFS::move()', src, dest, options);
     if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(src instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_SRC_FILE')); }
-    if ( !(dest instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_DST_FILE')); }
+    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
+    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     var self = this;
 
@@ -947,7 +974,7 @@
    *
    * This function currently have no options.
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -958,7 +985,9 @@
   OSjs.VFS.unlink = function(item, callback, options, appRef) {
     console.info('VFS::unlink()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
+
     function _finished(error, result) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
@@ -976,7 +1005,7 @@
   /**
    * Create Directory
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    * @param   Application     appRef    Optional reference to an Application
@@ -989,7 +1018,8 @@
   OSjs.VFS.mkdir = function(item, callback, options, appRef) {
     console.info('VFS::mkdir()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+
+    item = checkMetadataArgument(item);
 
     function doRequest() {
       function _finished(error, result) {
@@ -1015,7 +1045,7 @@
   /**
    * Check if file exists
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1024,14 +1054,14 @@
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
     request(item.path, 'exists', [item], callback);
   };
 
   /**
    * Get file info
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1040,7 +1070,8 @@
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
+
     request(item.path, 'fileinfo', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_FILEINFO_FMT', error);
@@ -1052,7 +1083,7 @@
   /**
    * Get file URL
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1061,9 +1092,7 @@
   OSjs.VFS.url = function(item, callback) {
     console.info('VFS::url()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( typeof item === 'string' ) {
-      item = new FileMetadata(item);
-    }
+    item = checkMetadataArgument(item);
     request(item.path, 'url', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_URL_FMT', error);
@@ -1172,7 +1201,7 @@
   /**
    * Download a file
    *
-   * @param   OSjs.VFS.File   args      File Metadata
+   * @param   OSjs.VFS.File   args      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1190,6 +1219,7 @@
       if ( !args.path ) {
         throw new Error(API._('ERR_VFS_DOWNLOAD_NO_FILE'));
       }
+      args = checkMetadataArgument(args);
 
       var lname = 'DownloadFile_' + _didx;
       _didx++;
@@ -1248,7 +1278,7 @@
    *
    * THIS IS NOT USED FOR INTERNAL MODULES
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1257,7 +1287,7 @@
   OSjs.VFS.trash = function(item, callback) {
     console.info('VFS::trash()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
 
     request(item.path, 'trash', [item], function(error, response) {
       if ( error ) {
@@ -1272,7 +1302,7 @@
    *
    * THIS IS NOT USED FOR INTERNAL MODULES
    *
-   * @param   OSjs.VFS.File   item      File Metadata
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
    * @param   Function        callback  Callback function => fn(error, result)
    *
    * @return  void
@@ -1281,7 +1311,7 @@
   OSjs.VFS.untrash = function(item, callback) {
     console.info('VFS::untrash()', item);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
 
     request(item.path, 'untrash', [item], function(error, response) {
       if ( error ) {

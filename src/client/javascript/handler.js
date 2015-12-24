@@ -51,6 +51,7 @@
    * OSjs.Core.getHandler();
    *
    * @api   OSjs.Core._Handler
+   * @link http://os.js.org/doc/manuals/man-multiuser.html
    * @link http://os.js.org/doc/tutorials/create-handler.html
    * @class _Handler
    */
@@ -72,7 +73,7 @@
   };
 
   /**
-   * Called upon window loaded from 'main.js'
+   * Initializes the handler
    *
    * @param   Function      callback        Callback function
    *
@@ -86,8 +87,7 @@
     console.info('Handler::init()');
 
     var self = this;
-    var config = OSjs.Core.getConfig();
-    API.setLocale(config.Locale);
+    API.setLocale(API.getConfig('Locale'));
 
     if ( typeof navigator.onLine !== 'undefined' ) {
       window.addEventListener('offline', function(ev) {
@@ -128,7 +128,7 @@
   };
 
   /**
-   * Called when booting in `init.js`
+   * Called after the Handler is initialized
    *
    * @param   Function      callback        Callback function
    *
@@ -140,9 +140,9 @@
     var self = this;
     console.info('Handler::boot()');
 
-    var root = OSjs.Core.getConfig().Connection.RootURI;
+    var root = API.getConfig('Connection.RootURI');
     var url = root + 'client/dialogs.html';
-    if ( OSjs.Core.getConfig().Connection.Dist === 'dist' ) {
+    if ( API.getConfig('Connection.Dist') === 'dist' ) {
       url = root + 'dialogs.html';
     }
 
@@ -160,6 +160,7 @@
 
   /**
    * Default login method
+   *
    * NOTE: This is just a placeholder.
    *       To implement your own login handler, see the Wiki :)
    *
@@ -184,7 +185,7 @@
    * NOTE: You should call this in your implemented handler
    *       or else your data will not be stored
    *
-   * @parm    boolean   save          Save session?
+   * @param   boolean   save          Save session?
    * @param   Function  callback      Callback function
    *
    * @return  void
@@ -272,7 +273,9 @@
 
   /**
    * Default method to perform a call to the backend (API)
-   * Use this shorthand method: API.call() instead :)
+   *
+   * Please note that this function is internal, and if you want to make
+   * a actual API call, use "API.call()" instead.
    *
    * @see OSjs.API.call()
    *
@@ -297,9 +300,8 @@
     console.log('Arguments', args);
     console.groupEnd();
 
-    var config = OSjs.Core.getConfig();
     var data = {
-      url: config.Connection.APIURI,
+      url: API.getConfig('Connection.APIURI'),
       method: 'POST',
       json: true,
       body: {
@@ -349,7 +351,7 @@
 
     // Ensure we get the user-selected locale configured from WM
     function getUserLocale() {
-      var curLocale = Utils.getUserLocale() || OSjs.Core.getConfig().Locale;
+      var curLocale = Utils.getUserLocale() || API.getConfig('Locale');
       var result = OSjs.Core.getSettingsManager().get('Core');
       if ( !result ) {
         try {
@@ -388,7 +390,7 @@
   /**
    * When browser goes online
    *
-   * @method _Handler::onOnline();
+   * @method _Handler::onOnline()
    */
   _Handler.prototype.onOnline = function() {
     console.warn('Handler::onOnline()', 'Going online...');
@@ -403,7 +405,7 @@
   /**
    * When browser goes offline
    *
-   * @method _Handler::onOffline();
+   * @method _Handler::onOffline()
    */
   _Handler.prototype.onOffline = function() {
     console.warn('Handler::onOffline()', 'Going offline...');
@@ -422,7 +424,7 @@
    * @param   Object      storage     Storage tree
    * @param   Function    callback    Callback function
    *
-   * @method _Handler::saveSettings();
+   * @method _Handler::saveSettings()
    */
   _Handler.prototype.saveSettings = function(pool, storage, callback) {
     callback();

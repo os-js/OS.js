@@ -118,6 +118,7 @@
     var view = this.scheme.find(this, 'FileView');
     view.set('filter', this.args.filter);
     view.set('filetype', this.args.select || '');
+    view.set('defaultcolumns', 'true');
 
     var filename = this.scheme.find(this, 'Filename');
     var home = this.scheme.find(this, 'HomeButton');
@@ -208,7 +209,10 @@
     var rootPath = VFS.getRootFromPath(this.path);
     var modules = [];
     VFS.getModules().forEach(function(m) {
-      modules.push({label: m.name, value: m.module.root});
+      modules.push({
+        label: m.name + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
+        value: m.module.root
+      });
     });
     mlist.clear().add(modules).set('value', rootPath);
     mlist.on('change', function(ev) {

@@ -64,7 +64,7 @@ class MIME
 class FS
 {
 
-  const DATE_FORMAT = "D, d M Y H:i:s T";
+  const DATE_FORMAT = "Y-m-d\TH:i:s.Z\Z";
 
   public static function scandir($scandir, Array $opts = Array()) {
     list($dirname, $root, $protocol) = getRealPath($scandir);

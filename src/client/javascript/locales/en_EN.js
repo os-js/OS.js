@@ -65,6 +65,9 @@
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Missing argument: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Unknown error',
 
+    'ERR_OPERATION_TIMEOUT'       : 'Operation Timeout',
+    'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Timeout ({0})',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'You already have a Window named \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimize',
