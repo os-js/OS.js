@@ -66,9 +66,9 @@
 <li><a href="#_handler-callapi">callAPI()</a></li>
 <li><a href="#_handler-onlogin">onLogin()</a></li>
 <li><a href="#_handler-onvfsrequest">onVFSRequest()</a></li>
-<li><a href="#_handler-ononline">onOnline();</a></li>
-<li><a href="#_handler-onoffline">onOffline();</a></li>
-<li><a href="#_handler-savesettings">saveSettings();</a></li>
+<li><a href="#_handler-ononline">onOnline()</a></li>
+<li><a href="#_handler-onoffline">onOffline()</a></li>
+<li><a href="#_handler-savesettings">saveSettings()</a></li>
 <li><a href="#_handler-getuserdata">getUserData()</a></li>
 <li><a href="#_handler-initloginscreen">initLoginScreen()</a></li>
 </ul>
@@ -115,7 +115,7 @@ OSjs.Core.getHandler();
 <div class="section-method" id="_handler-init">
 <h3 id="_handler-init-callback-">_Handler::init(callback)</h3>
 <pre>
-Called upon window loaded from 'main.js'
+Initializes the handler
 </pre>
 
 
@@ -159,7 +159,7 @@ Destroy the handler
 <div class="section-method" id="_handler-boot">
 <h3 id="_handler-boot-callback-">_Handler::boot(callback)</h3>
 <pre>
-Called when booting in `init.js`
+Called after the Handler is initialized
 </pre>
 
 
@@ -227,15 +227,13 @@ NOTE: This is just a placeholder.
 
 </div>
 <div class="section-method" id="_handler-logout">
-<h3 id="_handler-logout-callback-">_Handler::logout(callback)</h3>
+<h3 id="_handler-logout-save-callback-">_Handler::logout(save, callback)</h3>
 <pre>
 Default logout method
 
 NOTE: You should call this in your implemented handler
 
  or else your data will not be stored
-
-@parm boolean save Save session?
 </pre>
 
 
@@ -249,6 +247,11 @@ NOTE: You should call this in your implemented handler
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>save</td>
+<td>boolean</td>
+<td>Save session?</td>
+</tr>
 <tr>
 <td>callback</td>
 <td>Function</td>
@@ -293,7 +296,9 @@ Default method to restore last running session
 <pre>
 Default method to perform a call to the backend (API)
 
-Use this shorthand method: API.call() instead :)
+Please note that this function is internal, and if you want to make
+
+a actual API call, use "API.call()" instead.
 </pre>
 
 
@@ -387,7 +392,7 @@ You can use this to interrupt operations
 
 </div>
 <div class="section-method" id="_handler-ononline">
-<h3 id="_handler-ononline-">_Handler::onOnline();</h3>
+<h3 id="_handler-ononline-">_Handler::onOnline()</h3>
 <pre>
 When browser goes online
 </pre>
@@ -396,7 +401,7 @@ When browser goes online
 
 </div>
 <div class="section-method" id="_handler-onoffline">
-<h3 id="_handler-onoffline-">_Handler::onOffline();</h3>
+<h3 id="_handler-onoffline-">_Handler::onOffline()</h3>
 <pre>
 When browser goes offline
 </pre>
@@ -405,7 +410,7 @@ When browser goes offline
 
 </div>
 <div class="section-method" id="_handler-savesettings">
-<h3 id="_handler-savesettings-pool-storage-callback-">_Handler::saveSettings(pool, storage, callback);</h3>
+<h3 id="_handler-savesettings-pool-storage-callback-">_Handler::saveSettings(pool, storage, callback)</h3>
 <pre>
 Method for saving your settings
 </pre>
