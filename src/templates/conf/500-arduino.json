@@ -23,6 +23,7 @@
     },
 
     "AutoStart": ["ArduinoService"],
+    "ShowQuitWarning": true,
 
     "VFS": {
       "MaxUploadSize": 1073741824,
