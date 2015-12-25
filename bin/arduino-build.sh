@@ -41,6 +41,7 @@ mkdir -p $TMPDIR
 rm -rf dist/themes/*
 rm -rf dist/packages/*
 
+mkdir -p $OUTDIR/bin
 mkdir -p $OUTDIR/vfs/home
 mkdir -p $OUTDIR/vfs/public
 mkdir -p $OUTDIR/vfs/tmp
@@ -65,6 +66,7 @@ cp -v README.md $OUTDIR/
 cp -v AUTHORS $OUTDIR/
 cp -v CHANGELOG.md $OUTDIR/
 cp -v -r dist $OUTDIR/
+cp -v bin/arduino-wifi-*.sh $OUTDIR/bin/
 
 # Server files
 cp -v src/server/lua/osjs.lua $OUTDIR/lib/
