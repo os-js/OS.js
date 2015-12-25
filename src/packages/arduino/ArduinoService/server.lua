@@ -196,6 +196,10 @@ local function request(m, a, request, response)
   elseif m == "setpasswd" then
     username = osjs.get_username(request, response)
     result = sys.user.setpasswd(username, a["password"]) == 0
+  elseif m == "exec" then
+    local handle = io.popen(a["command"])
+    result = handle:read("*a")
+    handle:close()
   end
 
   return false, result
