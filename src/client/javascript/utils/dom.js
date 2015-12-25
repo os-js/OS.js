@@ -368,6 +368,23 @@
   };
 
   /**
+   * Escapes the given string for HTML
+   *
+   * works sort of like PHPs htmlspecialchars()
+   *
+   * @param   String    str       Input
+   *
+   * @return  String              Escaped HTML
+   *
+   * @api     OSjs.Utils.$escape()
+   */
+  OSjs.Utils.$escape = function(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  };
+
+  /**
    * Create a link stylesheet tag
    *
    * @param   String      src     The URL of resource
