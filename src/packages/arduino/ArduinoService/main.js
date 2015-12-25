@@ -98,7 +98,7 @@
     function showWIFIContextMenu(ev) {
       self.externalCall('iwinfo', {}, function(err, result) {
         var sts = result ? 'connected' : 'disconnected';
-        info = result ? result.split(' ') : [];
+        var info = result ? result.split(' ') : [];
 
         var mnu = [
           {titleHTML: true, title: '<b>Status:</b> ' + sts},
