@@ -448,6 +448,8 @@ function api_request(request, response, meth, iargs)
     error, data = app_request(request, response, iargs)
   elseif meth == "fs" then
     error, data = fs_request(request, response, iargs["method"], iargs["arguments"])
+  elseif meth == "reboot" then
+    data = os.execute("reboot >/dev/null 2>&1")
   else
     error = "Invalid API method"
   end
