@@ -74,12 +74,22 @@
       var user = OSjs.Core.getHandler().getUserData();
 
       function displayMenu(ev) {
-        OSjs.API.createMenu([{
-          title: API._('TITLE_SIGN_OUT'),
-          onClick: function() {
-            OSjs.API.signOut();
-          }
-        }], ev);
+        OSjs.API.createMenu([
+          {
+            title: API._('TITLE_SIGN_OUT'),
+            onClick: function() {
+              OSjs.API.signOut();
+            }
+          },
+          {
+            title: API._('Reboot Device'),
+            onClick: function() {
+              OSjs.API.call('reboot', {}, function() {
+                window.location.reload();
+              });
+            }
+          },
+        ], ev);
 
         return false;
       }
