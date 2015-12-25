@@ -96,12 +96,21 @@
     }
 
     function showWIFIContextMenu(ev) {
-      var mnu = [
-        {titleHTML: true, title: '<b>Status:</b> null'},
-        {titleHTML: true, title: '<b>SSID:</b> null'},
-        {titleHTML: true, title: '<b>Security:</b> null'}
-      ];
-      OSjs.API.createMenu(mnu, ev);
+      self.externalCall('iwinfo', {}, function(err, result) {
+        var sts = result ? 'connected' : 'disconnected';
+        info = result ? result.split(' ') : [];
+
+        var mnu = [
+          {titleHTML: true, title: '<b>Status:</b> ' + sts},
+          {titleHTML: true, title: '<b>AP:</b> ' + String(info[0] || null)},
+          {titleHTML: true, title: '<b>SSID:</b> ' + String(info[1] || null)},
+          {titleHTML: true, title: '<b>Security:</b> ' + String(info[2] || null)},
+          {titleHTML: true, title: '<b>Security:</b> ' + String(info[3] || 0) + ' ' + (info[4] || 'dBm')}
+        ];
+
+        OSjs.API.createMenu(mnu, ev);
+      });
+
     }
 
     function showContextMenu(ev) {

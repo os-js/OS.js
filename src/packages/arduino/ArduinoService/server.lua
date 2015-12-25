@@ -180,8 +180,11 @@ local function request(m, a, request, response)
       arptable = sys.net.arptable()
     }
   elseif m == "iwinfo" then
-    local device = a["device"] or "wlan0"
-    result = sys.wifi.getiwinfo(device)
+    -- local device = a["device"] or "wlan0"
+    -- result = sys.wifi.getiwinfo(device)
+    local handle = io.popen("sh /opt/osjs/bin/arduino-wifi-info.sh")
+    result = handle:read("*a")
+    handle:close()
   elseif m == "iwscan" then
     local device = a["device"] or "radio0"
     result = get_wlans(device)
