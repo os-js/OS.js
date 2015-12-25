@@ -108,7 +108,7 @@
           var val = info[idx] || null;
           menuItems.push({
             titleHTML: true,
-            title: Utils.format('<b>{0}:</b> {1}', key, String(val))
+            title: Utils.format('<b>{0}:</b> {1}', key, Utils.$escape(String(val)))
           });
         });
 
