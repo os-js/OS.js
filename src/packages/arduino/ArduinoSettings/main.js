@@ -277,7 +277,15 @@
     scheme.find(this, 'ButtonNetworkDeviceRefresh').on('click', function() {
       renderNetworkInfo(selectNetworkDevice.get('value'));
     });
-
+    scheme.find(this, 'ButtonArduinoConfigureWIFI').on('click', function() {
+      callAPI('wifi', {
+        ssid: wifiInput.get('value'),
+        security: wifiSelectEncrypt.get('value'),
+        password: wifiPassword.get('value')
+      }, function() {
+        wm.notification({title: 'Arduino', message: 'You will be notified when your wifi settings have been applied', icon: 'arduino.png' });
+      });
+    });
 
     renderDeviceInfo(function() {
       renderNetworkDevices();

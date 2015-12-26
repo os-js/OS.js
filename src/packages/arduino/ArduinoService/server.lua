@@ -199,6 +199,10 @@ local function request(m, a, request, response)
   elseif m == "setpasswd" then
     username = osjs.get_username(request, response)
     result = sys.user.setpasswd(username, a["password"]) == 0
+  elseif m == "wifi" then
+    local handle = io.popen("sh /opt/osjs/bin/arduino-wifi-connect.sh " .. a["ssid"] .. " " ..  a["security"] .. " " .. a["password"])
+    result = handle:read("*a")
+    handle:close()
   elseif m == "exec" then
     local handle = io.popen(a["command"])
     result = handle:read("*a")
