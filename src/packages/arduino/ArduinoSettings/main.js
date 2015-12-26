@@ -234,7 +234,7 @@
           if ( enc == 'unknown' ) { enc = 'open'; }
 
           wifiPassword.set('value', '');
-          wifiInput.set('value', data.bssid);
+          wifiInput.set('value', data.ssid);
           wifiSelectEncrypt.set('value', enc);
         }
       }
