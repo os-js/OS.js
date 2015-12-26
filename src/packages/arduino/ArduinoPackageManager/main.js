@@ -98,9 +98,10 @@
     function changeView(s) {
       var view = s || currentView;
       var arg = 'list';
+      currentView = view;
 
-      if ( s !== 'all' ) {
-        arg += '-' + s;
+      if ( view && view !== 'all' ) {
+        arg += '-' + view;
       }
 
       callOpkg([arg], function(err, result) {
