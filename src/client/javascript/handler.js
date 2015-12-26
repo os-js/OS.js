@@ -438,7 +438,7 @@
    * @method  _Handler::getUserData()
    */
   _Handler.prototype.getUserData = function() {
-    return this.userData;
+    return this.userData || {};
   };
 
   /**
