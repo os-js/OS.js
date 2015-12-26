@@ -37,11 +37,7 @@
   function ArduinoService(args, metadata) {
     Service.apply(this, ['ArduinoService', args, metadata]);
 
-    this.pollingNetwork = false;
-    this.pollingInterval = null;
-    this.cache = {
-      devices: {}
-    };
+    this.busy = false;
   }
 
   ArduinoService.prototype = Object.create(Service.prototype);
@@ -55,9 +51,6 @@
       wm.destroyNotificationIcon('_ArduinoWIFINotification');
     }
 
-    this.cache = {};
-    this.pollingInterval = clearInterval(this._pollingInteval);
-
     return Service.prototype.destroy.apply(this, arguments);
   };
 
@@ -69,9 +62,8 @@
 
     function showNetworkContextMenu(ev) {
       var mnu = [];
-      var devs = self.cache.devices;
 
-      function createSubItem(d, idx) {
+      function createSubItem(devs, d, idx) {
         if ( idx > 0 ) {
           mnu.push({title: '<hr />', titleHTML: true});
         }
@@ -88,33 +80,26 @@
         });
       }
 
-      Object.keys(devs).forEach(function(d, idx) {
-        createSubItem(d, idx);
+      self.pollNetwork(function(devs) {
+        Object.keys(devs).forEach(function(d, idx) {
+          createSubItem(devs, d, idx);
+        });
+        OSjs.API.createMenu(mnu, ev);
       });
-
-      OSjs.API.createMenu(mnu, ev);
     }
 
     function showWIFIContextMenu(ev) {
-      self.externalCall('iwinfo', {}, function(err, result) {
-        var info = (result || '').split(' ');
-        var keys = ['ap', 'ssid', 'security', 'signal'];
-        var sts = info[0] !== '00:00:00:00:00:00' ? 'connected' : 'disconnected';
-        var menuItems = [
-          {titleHTML: true, title: '<b>Status:</b> ' + sts}
-        ];
-
-        keys.forEach(function(key, idx) {
-          var val = info[idx] || null;
+      self.pollWireless(function(result) {
+        var menuItems = [];
+        Object.keys(result).forEach(function(k) {
+          var val = result[k];
           menuItems.push({
             titleHTML: true,
-            title: Utils.format('<b>{0}:</b> {1}', key, Utils.$escape(String(val)))
+            title: Utils.format('<b>{0}:</b> {1}', k, Utils.$escape(String(val)))
           });
         });
-
         OSjs.API.createMenu(menuItems, ev);
       });
-
     }
 
     function showContextMenu(ev) {
@@ -146,12 +131,6 @@
       onClick: showWIFIContextMenu
     });
 
-    this.pollingInterval = setInterval(function() {
-      self.pollNetwork();
-    }, 15000);
-
-    this.pollNetwork();
-
     onInited();
   };
 
@@ -161,12 +140,42 @@
     }
   };
 
-  ArduinoService.prototype.pollNetwork = function() {
+  ArduinoService.prototype.pollWireless = function(cb) {
+    var self = this;
+    if ( this.busy ) {
+      return;
+    }
+    this.busy = true;
+
+    function isConnected(tst) {
+      tst = tst || '00:00:00:00:00:00';
+      return tst !== '00:00:00:00:00:00' ? 'connected' : 'disconnected'
+    }
+
+    this.externalCall('iwinfo', {}, function(err, result) {
+      var info = (result || '').split(' ');
+      var keys = ['ap', 'ssid', 'security', 'signal'];
+      var list = {
+        'status': isConnected(info[0])
+      };
+
+      keys.forEach(function(key, idx) {
+        list[key] = info[idx] || null;
+      });
+
+      self.busy = false;
+
+      cb(list);
+    });
+  };
+
+  ArduinoService.prototype.pollNetwork = function(cb) {
     var self = this;
 
-    this.pollingNetwork = true;
-
-    this.cache.devices = {};
+    if ( this.busy ) {
+      return;
+    }
+    this.busy = true;
 
     function getArpTable(table, dev) {
       var result = null;
@@ -187,6 +196,7 @@
         console.warn('Error parsing devices', e);
       }
 
+      var list = {};
       devs.forEach(function(dev) {
         var arp =  getArpTable(result.arptable, dev) || {};
         var details = {
@@ -194,8 +204,12 @@
           'Mask': arp['Mask'] || '',
           'MAC': arp['HW address'] || ''
         };
-        self.cache.devices[dev] = details;
+        list[dev] = details;
       });
+
+      self.busy = false;
+
+      cb(list);
     });
   };
 
