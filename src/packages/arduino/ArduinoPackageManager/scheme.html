@@ -1,0 +1,25 @@
+<application-window data-id="ArduinoPackageManagerWindow">
+
+  <gui-vbox>
+    <gui-vbox-container data-grow="1" data-fill="true">
+      <gui-list-view data-id="PackageView" data-multiple="false">
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar>
+        <gui-select data-id="SelectView">
+          <gui-select-option data-value="all">List</gui-select-option>
+          <gui-select-option data-value="installed">List installed</gui-select-option>
+          <gui-select-option data-value="upgradable">List upgradeable</gui-select-option>
+        </gui-select>
+        <gui-button data-id="ButtonRefresh">LBL_REFRESH</gui-button>
+        <gui-button data-id="ButtonInstall">LBL_INSTALL</gui-button>
+        <gui-button data-id="ButtonUpdate">LBL_UPDATE</gui-button>
+        <gui-button data-id="ButtonRemove">LBL_REMOVE</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+
+</application-window>
