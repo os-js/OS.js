@@ -326,7 +326,7 @@
    * @return OSjs.Core.Window
    */
   Application.prototype._getMainWindow = function() {
-    return this.__mainwindow;
+    return this._getWindow(this.__mainwindow, 'name');
   };
 
   /**
