@@ -208,15 +208,15 @@ local function request(m, a, request, response)
     result = console("sh /opt/osjs/bin/arduino-wifi-connect.sh " .. a["ssid"] .. " " ..  a["security"] .. " " .. a["password"])
   elseif m == "opkg" then
     if a["command"] == "list" then
-      if a["category"] == "all" then
+      if a["args"]["category"] == "all" then
         result = console("opkg list")
-      elseif a["category"] == "installed" then
+      elseif a["args"]["category"] == "installed" then
         result = console("opkg list-installed")
       else
         result = console("opkg list-upgradable")
       end
     elseif m == "install" then
-      local rpath = osjs.get_real_path(request, response, a["filename"])
+      local rpath = osjs.get_real_path(request, response, a["args"]["filename"])
       result = console("opkg install " .. rpath)
     end
   elseif m == "exec" then
