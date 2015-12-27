@@ -218,7 +218,7 @@
   };
 
   ApplicationArduinoPackageManager.prototype.callOpkg = function(name, args, cb) {
-    this.callAPI('okg', {command: name, args: args}, function(err, stdout) {
+    this.callAPI('opkg', {command: name, args: args}, function(err, stdout) {
       cb(err, (stdout || '').split('\n'));
     });
   };
