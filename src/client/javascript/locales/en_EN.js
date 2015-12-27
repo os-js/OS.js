@@ -371,7 +371,10 @@
     'LBL_OK' : 'OK',
     'LBL_DIRECTORY' : 'Directory',
     'LBL_CREATE' : 'Create',
-    'LBL_BUGREPORT' : 'Bugreport'
+    'LBL_BUGREPORT' : 'Bugreport',
+    'LBL_INSTALL' : 'Install',
+    'LBL_UPDATE' : 'Update',
+    'LBL_REMOVE' : 'Remove'
   };
 
 })();
