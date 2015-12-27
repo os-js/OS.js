@@ -41,6 +41,9 @@
       width: 450,
       height: 400
     }, app, scheme]);
+
+    this.currentView = 'all';
+    this.currentPackage = null;
   }
 
   ApplicationArduinoPackageManagerWindow.prototype = Object.create(Window.prototype);
@@ -53,88 +56,105 @@
     // Load and set up scheme (GUI) here
     scheme.render(this, 'ArduinoPackageManagerWindow', root);
 
-    var packageView = scheme.find(this, 'PackageView');
-    packageView.set('columns', [
-      {label: 'Name', basis: '100px', grow: 1, shrink: 1},
-      {label: 'Version', basis: '60px', grow: 0, shrink: 0, textalign: 'right'}
-    ]);
-
-    function callAPI(fn, args, cb) {
-      var proc = API.getProcess('ArduinoService', true);
-      if ( proc ) {
-        self._toggleLoading(true);
-        proc.externalCall(fn, args, function(err, response) {
-          self._toggleLoading(false);
-          return cb(err, response);
-        });
-      }
-    }
-
-    function renderView(data) {
-      var rows = [];
-
-      (data || []).forEach(function(iter) {
-        var spl = iter.split(' - ');
-        rows.push({
-          columns: [
-            {label: spl[0]},
-            {label: spl[1], textalign: 'right'}
-          ]
-        });
-      });
-
-      packageView.clear();
-      packageView.add(rows);
-    }
-
-    function callOpkg(args, cb) {
-      var cmd = 'opkg ' + args.join(' ');
-      callAPI('exec', {command: cmd}, function(err, stdout) {
-        cb(err, (stdout || '').split('\n'));
-      });
-    }
-
-    var currentView = 'all';
-    function changeView(s) {
-      var view = s || currentView;
-      var arg = 'list';
-      currentView = view;
-
-      if ( view && view !== 'all' ) {
-        arg += '-' + view;
-      }
-
-      callOpkg([arg], function(err, result) {
-        renderView(result);
-      });
-    }
-
     scheme.find(this, 'SelectView').on('change', function(ev) {
-      changeView(ev.detail);
-    });
-    scheme.find(this, 'ButtonRefresh').on('click', function() {
-      changeView();
-    });
-    scheme.find(this, 'ButtonInstall').on('click', function() {
-      changeView();
-    });
-    scheme.find(this, 'ButtonUpdate').on('click', function() {
-      changeView();
-    });
-    scheme.find(this, 'ButtonRemove').on('click', function() {
-      changeView();
-    });
-    scheme.find(this, 'ButtonRefresh').on('click', function() {
-      changeView();
+      self.selectView(ev.detail);
     });
 
-    changeView();
+    scheme.find(this, 'PackageView').on('select', function(ev) {
+      self.selectPackage(ev.detail.entries[0].data);
+    });
+
+    scheme.find(this, 'ButtonRefresh').on('click', function() {
+      self.selectView();
+    });
+
+    scheme.find(this, 'ButtonInstall').on('click', function() {
+      self.selectView();
+    }).set('disabled', true);
+
+    scheme.find(this, 'ButtonImport').on('click', function() {
+      app.openDialog();
+    });
+
+    scheme.find(this, 'ButtonUpdate').on('click', function() {
+      self.selectView();
+    }).set('disabled', true);
+
+    scheme.find(this, 'ButtonRemove').on('click', function() {
+      self.selectView();
+    }).set('disabled', true);
+
+    scheme.find(this, 'ButtonRefresh').on('click', function() {
+      self.selectView();
+    });
+
+    this.selectView();
 
     return root;
   };
 
   ApplicationArduinoPackageManagerWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationArduinoPackageManagerWindow.prototype.selectView = function(s) {
+    var self = this;
+    var view = s || this.currentView;
+
+    this.currentView = view;
+    this.currentPackage = null;
+
+    this._app.callOpkg('list', {category: view}, function(err, result) {
+      self.renderView(result);
+    });
+  };
+
+  ApplicationArduinoPackageManagerWindow.prototype.selectPackage = function(pkg) {
+    this.currentPackage = pkg;
+
+    var buttonInstall = this._scheme.find(this, 'ButtonInstall').set('disabled', true);
+    var buttonUpdate = this._scheme.find(this, 'ButtonUpdate').set('disabled', true);
+    var buttonRemove = this._scheme.find(this, 'ButtonRemove').set('disabled', true);
+
+    if ( this.currentView === 'all' ) {
+      buttonInstall.set('disabled', false);
+    } else if ( this.currentView === 'installed' ) {
+      buttonUpdate.set('disabled', false);
+      buttonRemove.set('disabled', false);
+    } else {
+      buttonUpdate.set('disabled', false);
+      buttonRemove.set('disabled', false);
+    }
+  };
+
+  ApplicationArduinoPackageManagerWindow.prototype.renderView = function(data) {
+    var packageView = this._scheme.find(this, 'PackageView');
+    var rows = [];
+
+    (data || []).forEach(function(iter) {
+      var spl = iter.split(' - ');
+      rows.push({
+        value: spl[0],
+        columns: [
+          {label: spl[0]},
+          {label: spl[1], textalign: 'right'}
+        ]
+      });
+    });
+
+    packageView.clear();
+    packageView.set('columns', [
+      {label: 'Name', basis: '100px', grow: 1, shrink: 1},
+      {label: 'Version', basis: '60px', grow: 0, shrink: 0, textalign: 'right'}
+    ]);
+    packageView.add(rows);
+
+    var buttonInstall = this._scheme.find(this, 'ButtonInstall');
+    buttonInstall.set('disabled', true);
+    var buttonUpdate = this._scheme.find(this, 'ButtonUpdate');
+    buttonUpdate.set('disabled', true);
+    var buttonRemove = this._scheme.find(this, 'ButtonRemove');
+    buttonRemove.set('disabled', true);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -164,6 +184,50 @@
     });
 
     this._setScheme(scheme);
+  };
+
+  ApplicationArduinoPackageManager.prototype.openDialog = function(cb) {
+    var self = this;
+    var win = this._getMainWindow();
+
+    win._toggleDisabled(true);
+
+    API.createDialog('File', {
+      path: 'home:///',
+      filter: self.__metadata.mime
+    }, function(ev, button, result) {
+      win._toggleDisabled(false);
+
+      if ( button === 'ok' && result ) {
+        self.openPackage(result);
+      }
+    }, win);
+  };
+
+  ApplicationArduinoPackageManager.prototype.callAPI = function(fn, args, cb) {
+    var win = this._getMainWindow();
+    var proc = API.getProcess('ArduinoService', true);
+
+    if ( proc ) {
+      win._toggleLoading(true);
+      proc.externalCall(fn, args, function(err, response) {
+        win._toggleLoading(false);
+        return cb(err, response);
+      });
+    }
+  };
+
+  ApplicationArduinoPackageManager.prototype.callOpkg = function(name, args, cb) {
+    this.callAPI('okg', {command: name, args: args}, function(err, stdout) {
+      cb(err, (stdout || '').split('\n'));
+    });
+  };
+
+  ApplicationArduinoPackageManager.prototype.openPackage = function(file) {
+    this.callOpkg('install', {filename: file.path}, function(err, result) {
+      console.warn(result);
+      self.renderView(result);
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////

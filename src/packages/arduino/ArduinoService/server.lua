@@ -145,6 +145,13 @@ local function request(m, a, request, response)
 
   local result = false
 
+  local function console(cmd)
+    local handle = io.popen(cmd)
+    local result = handle:read("*a")
+    handle:close()
+    return result
+  end
+
   if m == "sysinfo" then
     local timezone = fs.readfile("/etc/TZ") or "UTC"
     timezone = timezone:gsub('%W', '')
@@ -182,9 +189,7 @@ local function request(m, a, request, response)
   elseif m == "iwinfo" then
     -- local device = a["device"] or "wlan0"
     -- result = sys.wifi.getiwinfo(device)
-    local handle = io.popen("sh /opt/osjs/bin/arduino-wifi-info.sh")
-    result = handle:read("*a")
-    handle:close()
+    result = console("sh /opt/osjs/bin/arduino-wifi-info.sh")
   elseif m == "iwscan" then
     local device = a["device"] or "radio0"
     result = get_wlans(device)
@@ -200,13 +205,22 @@ local function request(m, a, request, response)
     username = osjs.get_username(request, response)
     result = sys.user.setpasswd(username, a["password"]) == 0
   elseif m == "wifi" then
-    local handle = io.popen("sh /opt/osjs/bin/arduino-wifi-connect.sh " .. a["ssid"] .. " " ..  a["security"] .. " " .. a["password"])
-    result = handle:read("*a")
-    handle:close()
+    result = console("sh /opt/osjs/bin/arduino-wifi-connect.sh " .. a["ssid"] .. " " ..  a["security"] .. " " .. a["password"])
+  elseif m == "opkg" then
+    if a["command"] == "list" then
+      if a["category"] == "all" then
+        result = console("opkg list")
+      elseif a["category"] == "installed" then
+        result = console("opkg list-installed")
+      else
+        result = console("opkg list-upgradable")
+      end
+    elseif m == "install" then
+      local rpath = osjs.get_real_path(request, response, a["filename"])
+      result = console("opkg install " .. rpath)
+    end
   elseif m == "exec" then
-    local handle = io.popen(a["command"])
-    result = handle:read("*a")
-    handle:close()
+    result = console(a["command"])
   end
 
   return false, result
