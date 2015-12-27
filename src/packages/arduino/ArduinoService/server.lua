@@ -215,7 +215,7 @@ local function request(m, a, request, response)
       else
         result = console("opkg list-upgradable")
       end
-    elseif m == "install" then
+    elseif a["command"] == "install" then
       local rpath = osjs.get_real_path(request, response, a["args"]["filename"])
       result = console("opkg install " .. rpath)
     end

@@ -224,9 +224,10 @@
   };
 
   ApplicationArduinoPackageManager.prototype.openPackage = function(file) {
+    var win = this._getMainWindow();
     this.callOpkg('install', {filename: file.path}, function(err, result) {
       console.warn(result);
-      self.renderView(result);
+      win.selectView();
     });
   };
 
