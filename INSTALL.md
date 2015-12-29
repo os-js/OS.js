@@ -19,7 +19,7 @@ For more general information look at the [README](README.md) file or in the [off
   3. Containers and Virtual Machines
     * [Vagrant](#vagrant)
     * [Docker](#docker)
-* [Setting up a Server](#setting-up-a-server)
+* [Setting up a server and running](#user-content-setting-up-a-server-and-running)
   1. [Standalone](#standalone)
   2. [Node](#node)
   3. PHP
@@ -107,9 +107,11 @@ You can also use [Docker](https://www.docker.com/) to set up an environment.
 You can grab a configuration from the [community repo](https://registry.hub.docker.com/u/junland/osjs-dev/) 
 (you can also find detailed instructions here), or generate one yourself with `./bin/build-docker-image.sh`.
 
-# Setting up a server
+# Setting up a server and running
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
+
+After you have started a server, simply navigate to http://localhost:8000 (port 8000 is default).
 
 ## Standalone
 
