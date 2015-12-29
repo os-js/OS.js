@@ -73,6 +73,10 @@
     this.buttonClicked = false;
 
     this.closeCallback = function(ev, button, result) {
+      if ( self._destroyed ) {
+        return;
+      }
+
       self.buttonClicked = true;
       callback.apply(self, arguments);
       self._close();
