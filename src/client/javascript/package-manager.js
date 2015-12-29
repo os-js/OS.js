@@ -284,17 +284,16 @@
 
     keys.forEach(function(i) {
       var newIter = Utils.cloneObject(result[i]);
-      if ( typeof newIter.names !== 'undefined' ) {
-        if ( newIter.names[currLocale] ) {
-          newIter.name = newIter.names[currLocale];
-        }
-      }
-      if ( typeof newIter.descriptions !== 'undefined' ) {
-        if ( newIter.descriptions[currLocale] ) {
-          newIter.description = newIter.descriptions[currLocale];
-        }
+      if ( typeof newIter !== 'object' ) {
+        return;
       }
 
+      if ( typeof newIter.names !== 'undefined' && newIter.names[currLocale] ) {
+        newIter.name = newIter.names[currLocale];
+      }
+      if ( typeof newIter.descriptions !== 'undefined' && newIter.descriptions[currLocale] ) {
+        newIter.description = newIter.descriptions[currLocale];
+      }
       if ( !newIter.description ) {
         newIter.description = newIter.name;
       }
