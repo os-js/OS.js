@@ -125,7 +125,10 @@
     var mlist = this.scheme.find(this, 'ModuleSelect');
 
     function checkEmptyInput() {
-      var disable = !filename.get('value').length;
+      var disable = false;
+      if ( self.args.select !== 'dir' ) {
+        disable = !filename.get('value').length;
+      }
       self.scheme.find(self, 'ButtonOK').set('disabled', disable);
     }
 
@@ -151,7 +154,7 @@
           if ( self.selected.type !== 'dir' ) {
             filename.set('value', self.selected.filename);
           }
-          self.checkSelection(ev);
+          self.checkSelection(ev, true);
         }
       }
     });
@@ -294,12 +297,15 @@
     };
   };
 
-  FileDialog.prototype.checkSelection = function(ev) {
+  FileDialog.prototype.checkSelection = function(ev, wasActivated) {
     var self = this;
 
     if ( this.selected && this.selected.type === 'dir' ) {
-      this.changePath(this.selected.path);
-      return false;
+      if ( wasActivated ) {
+       // this.args.select !== 'dir' && 
+        this.changePath(this.selected.path);
+        return false;
+      }
     }
 
     if ( this.args.type === 'save' ) {
@@ -339,12 +345,17 @@
 
       });
     } else {
-      if ( !this.selected ) {
+      if ( !this.selected && this.args.select !== 'dir' ) {
         API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_SELECTION'));
         return false;
       }
 
-      this.closeCallback(ev, 'ok', this.selected);
+      var res = this.selected;
+      if ( !res && this.args.select === 'dir' ) {
+        res = new VFS.File(this.path);
+      }
+
+      this.closeCallback(ev, 'ok', res);
     }
 
     return true;
