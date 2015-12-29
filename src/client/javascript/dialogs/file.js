@@ -352,7 +352,11 @@
 
       var res = this.selected;
       if ( !res && this.args.select === 'dir' ) {
-        res = new VFS.File(this.path);
+        res = new VFS.File({
+          filename: Utils.filename(this.path),
+          path: this.path,
+          type: 'dir'
+        });
       }
 
       this.closeCallback(ev, 'ok', res);
