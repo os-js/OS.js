@@ -352,13 +352,13 @@
     // Ensure we get the user-selected locale configured from WM
     function getUserLocale() {
       var curLocale = Utils.getUserLocale() || API.getConfig('Locale');
-      var result = OSjs.Core.getSettingsManager().get('Core');
+      var result = OSjs.Core.getSettingsManager().get('CoreWM');
       if ( !result ) {
         try {
-          result = userSettings.Core;
+          result = userSettings.CoreWM;
         } catch ( e )  {}
       }
-      return result ? (result.Locale || curLocale) : curLocale;
+      return result ? (result.language || curLocale) : curLocale;
     }
 
     document.getElementById('LoadingScreen').style.display = 'block';
