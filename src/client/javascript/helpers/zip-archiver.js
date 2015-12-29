@@ -55,7 +55,6 @@
     }, onprogress);
   }
 
-
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -169,10 +168,13 @@
   /**
    * Add a entry to the ZIP file
    *
+   * TODO: Adding directory does not actually add files inside dirs yet
+   *
    * @param   OSjs.VFS.File     file          Archive File
    * @param   OSjs.VFS.File     add           File to add
    * @param   Object            args          Arguments
    *
+   * @option  args    String      path            Root path to add to (default='/')
    * @option  args    Function    onprogress      Callback on progress => fn(state[, args, ...])
    * @option  args    Function    oncomplete      Callback on complete => fn(error, result)
    *
@@ -213,7 +215,19 @@
     function checkIfExists(entries, done) {
       console.log('-->', 'checkIfExists()');
 
-      done(false);
+      var found = false;
+      var chk = Utils.filename(add.path);
+
+      entries.forEach(function(i) {
+        if ( i.filename === chk ) {
+          if ( !i.directory || (i.directory && add.type === 'dir') ) {
+            found = true;
+          }
+        }
+        return !found;
+      });
+
+      done(found ? 'File is already in archive' : false);
     }
 
     function createZip(done) {
@@ -259,7 +273,7 @@
       var filename = add instanceof window.File ? add.name : add.filename;
       var type = add instanceof window.File ? 'file' : (add.type || 'file');
 
-      console.log('-->', 'addFile()', filename, type);
+      console.log('-->', 'addFile()', filename, type, add);
 
       filename = ((currentDir || '/').replace(/\/$/, '') + '/' + filename).replace(/^\//, '');
 
@@ -321,7 +335,7 @@
     openFile(function(err, entries) {
       if ( err ) { finished(err); return; }
 
-      checkIfExists(entries, function(err, result) {
+      checkIfExists(entries, function(err) {
         if ( err ) { finished(err); return; }
 
         createZip(function(err, writer) {
@@ -337,22 +351,6 @@
       });
     });
 
-  };
-
-  /**
-   * Creates a new directory inside ZIP file
-   *
-   * TODO
-   *
-   * @param   OSjs.VFS.File     file          Archive File
-   * @param   String            path          Path
-   * @param   Function          cb            Callback function => fn(err, result)
-   *
-   * @return  void
-   * @method  ZipArchiver::mkdir()
-   */
-  ZipArchiver.prototype.mkdir = function(file, path, cb) {
-    cb('Not implemented yet');
   };
 
   /**
