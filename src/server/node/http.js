@@ -156,11 +156,16 @@
     var srcPath = files.upload.path;
     var tmpPath = (fields.path + '/' + files.upload.name).replace('////', '///'); // FIXME
     var dstPath = _vfs.getRealPath(tmpPath, CONFIG, request).root;
+    var overwrite = false;
+
+    if ( fields.overwrite ) {
+      overwrite = String(fields.overwrite) === 'true';
+    }
 
     _fs.exists(srcPath, function(exists) {
       if ( exists ) {
         _fs.exists(dstPath, function(exists) {
-          if ( exists ) {
+          if ( exists && !overwrite ) {
             respond('Target already exist!', "text/plain", response, null, 500);
           } else {
             _fs.rename(srcPath, dstPath, function(error, data) {
