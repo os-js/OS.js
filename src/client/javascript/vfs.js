@@ -295,7 +295,9 @@
   /**
    * Wrapper for internal file uploads
    */
-  function internalUpload(file, dest, callback) {
+  function internalUpload(file, dest, callback, options) {
+    options = options || {};
+
     var fsuri  = API.getConfig('Connection.FSURI', '/');
 
     if ( typeof file.size !== 'undefined' ) {
@@ -313,6 +315,11 @@
     var fd  = new FormData();
     fd.append('upload', 1);
     fd.append('path', dest);
+
+    Object.keys(options).forEach(function(key) {
+      fd.append(key, String(options[key]));
+    });
+
     addFormFile(fd, 'upload', file);
 
     OSjs.Utils.ajax({
@@ -1180,7 +1187,7 @@
           } else if ( type !== 'progress' ) {
             callback(arg);
           }
-        });
+        }, options);
       }
     }
 
