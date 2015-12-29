@@ -160,7 +160,7 @@
           }
           writer = null;
 
-          cb(type === error ? ev : false, !!error);
+          cb(type === 'error' ? ev : false, type !== 'error');
         }, {overwrite: true});
       });
     });
@@ -188,9 +188,9 @@
     console.log('Archive', file);
     console.log('Add', file);
 
-    function finished() {
+    function finished(err, res) {
       console.groupEnd();
-      cb.apply(this, arguments);
+      cb(err, res);
     }
 
     function openFile(done) {
@@ -394,9 +394,9 @@
     console.log('Archive', file);
     console.log('Destination', destination);
 
-    function finished() {
+    function finished(error, warnings, result) {
       console.groupEnd();
-      args.oncomplete.apply(this, arguments);
+      args.oncomplete(error, warnings, result);
     }
 
     var extracted = [];
