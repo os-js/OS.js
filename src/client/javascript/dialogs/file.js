@@ -322,25 +322,31 @@
       VFS.exists(this.selected, function(error, result) {
         self._toggleDisabled(false);
 
-        if ( error ) {
-          API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
+        if ( self._destroyed ) {
           return;
         }
 
-        if ( result ) {
-          self._toggleDisabled(true);
-          API.createDialog('Confirm', {
-            buttons: ['yes', 'no'],
-            message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
-          }, function(ev, button) {
-            self._toggleDisabled(false);
-
-            if ( button === 'yes' || button === 'ok' ) {
-              self.closeCallback(ev, 'ok', self.selected);
-            }
-          }, self);
+        if ( error ) {
+          API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
         } else {
-          self.closeCallback(ev, 'ok', self.selected);
+          if ( result ) {
+            self._toggleDisabled(true);
+
+            if ( this.selected ) {
+              API.createDialog('Confirm', {
+                buttons: ['yes', 'no'],
+                message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
+              }, function(ev, button) {
+                self._toggleDisabled(false);
+
+                if ( button === 'yes' || button === 'ok' ) {
+                  self.closeCallback(ev, 'ok', self.selected);
+                }
+              }, self);
+            }
+          } else {
+            self.closeCallback(ev, 'ok', self.selected);
+          }
         }
 
       });
