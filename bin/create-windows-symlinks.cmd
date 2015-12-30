@@ -1,3 +1,7 @@
+@ECHO OFF
+for %%B in (%~dp0\.) do set c=%%~dpB
+cd "%c%"
+
 cd dist-dev
 
 del client
