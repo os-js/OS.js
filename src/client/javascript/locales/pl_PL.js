@@ -38,39 +38,39 @@
     // CORE
     //
 
-    'ERR_FILE_OPEN'             : 'Błąd otwieranie pliku',
-    'ERR_WM_NOT_RUNNING'        : 'Manager okien nie jest włączony',
+    'ERR_FILE_OPEN'             : 'Błąd otwierania pliku',
+    'ERR_WM_NOT_RUNNING'        : 'Menadżer okien nie jest włączony',
     'ERR_FILE_OPEN_FMT'         : 'Nie można otworzyć \'<span>{0}</span>\'',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Nie można znaleźć aplikacji wspierającej \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Błąd otwierania aplikacji',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Błąd podczas uruchamiania aplikacji: {0}',
-    'ERR_APP_CONSTRUCT_FAILED_FMT'  : 'Application \'{0}\' construct failed: {1}',
-    'ERR_APP_INIT_FAILED_FMT'       : 'Application \'{0}\' init() failed: {1}',
-    'ERR_APP_RESOURCES_MISSING_FMT' : 'Application resources missing for \'{0}\' or it failed to load!',
-    'ERR_APP_PRELOAD_FAILED_FMT'    : 'Application \'{0}\' preloading failed: \n{1}',
-    'ERR_APP_LAUNCH_ALREADY_RUNNING_FMT'    : 'Aplikacja \'{0}\' została juz otwarta, a nie może być uruchomiona wielokrotnie !',
-    'ERR_APP_LAUNCH_MANIFEST_FAILED_FMT'    : 'Nie można otworzyć \'{0}\'. Application manifest data not found!',
+    'ERR_APP_CONSTRUCT_FAILED_FMT'  : 'Konstruowanie aplikacji \'{0}\' nie powiodło się: {1}',
+    'ERR_APP_INIT_FAILED_FMT'       : 'init() aplikacji \'{0}\' nie powiodło się: {1}',
+    'ERR_APP_RESOURCES_MISSING_FMT' : 'Brakuje zasobów dla aplikacji \'{0}\' lub ładowanie nie powiodło się!',
+    'ERR_APP_PRELOAD_FAILED_FMT'    : 'Wstępne ładowanie aplikacji \'{0}\' nie powiodło się: \n{1}',
+    'ERR_APP_LAUNCH_ALREADY_RUNNING_FMT'    : 'Aplikacja \'{0}\' została juz otwarta, a nie może być uruchomiona wielokrotnie!',
+    'ERR_APP_LAUNCH_MANIFEST_FAILED_FMT'    : 'Nie można otworzyć \'{0}\'. Nie znaleziono danych manifestu aplikacji!',
     'ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT' : 'Nie można otworzyć \'{0}\'. Twoja przeglądarka nie wspiera: {1}',
 
-    'ERR_NO_WM_RUNNING'         : 'No window manager is running',
-    'ERR_CORE_INIT_FAILED'      : 'Nie można zinicjalizować OS.js',
+    'ERR_NO_WM_RUNNING'         : 'Menadżer okien nie został uruchomiony',
+    'ERR_CORE_INIT_FAILED'      : 'Nie można zainicjalizować OS.js',
     'ERR_CORE_INIT_FAILED_DESC' : 'Błąd podczas inicjalizacji OS.js',
-    'ERR_CORE_INIT_NO_WM'       : 'Nie można uruchomić OS.js: Nie ma wybranego managera okien!',
-    'ERR_CORE_INIT_WM_FAILED_FMT'   : 'Nie można uruchomić OS.js: Błąd uruchamiania Managera Okien: {0}',
+    'ERR_CORE_INIT_NO_WM'       : 'Nie można uruchomić OS.js: Nie wybrano Menadżera Okien!',
+    'ERR_CORE_INIT_WM_FAILED_FMT'   : 'Nie można uruchomić OS.js: Błąd uruchamiania Menadżera Okien: {0}',
     'ERR_CORE_INIT_PRELOAD_FAILED'  : 'Nie można uruchomić OS.js: Błąd przeładowywania plików...',
     'ERR_JAVASCRIPT_EXCEPTION'      : 'Błąd Javascript',
     'ERR_JAVACSRIPT_EXCEPTION_DESC' : 'Nieznany błąd.',
 
     'ERR_APP_API_ERROR'           : 'Błąd API Aplikacji',
-    'ERR_APP_API_ERROR_DESC_FMT'  : 'Aplikacja {0} nie można wykonać operacji \'{1}\'',
-    'ERR_APP_MISSING_ARGUMENT_FMT': 'Brakujący argiment: {0}',
+    'ERR_APP_API_ERROR_DESC_FMT'  : 'Aplikacja {0} nie może wykonać operacji \'{1}\'',
+    'ERR_APP_MISSING_ARGUMENT_FMT': 'Brakujący argument: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Nieznany błąd',
 
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Masz już uruchomione Okno z nazwą \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimalizuj',
     'WINDOW_MAXIMIZE' : 'Maksymalizuj',
-    'WINDOW_RESTORE'  : 'Przywroc',
+    'WINDOW_RESTORE'  : 'Przywroć',
     'WINDOW_CLOSE'    : 'Zamknij',
     'WINDOW_ONTOP_ON' : 'U Góry (Włączone)',
     'WINDOW_ONTOP_OFF': 'U Góry (Wyłączone)',
@@ -80,10 +80,10 @@
     'TITLE_SIGNED_IN_AS_FMT' : 'Zalogowano jako: {0}',
 
     // Service
-    'BUGREPORT_MSG' : 'Prosze, zreportuj to jesli uwazasz, ze jest to błąd.\nDołącz opis błędu',
+    'BUGREPORT_MSG' : 'Wyślij proszę raport błędu jesli uważasz, że jest to błąd.\nDołącz opis błędu',
 
     // API
-    'SERVICENOTIFICATION_TOOLTIP' : 'Zalogowano w zewnetrznych serwisach: {0}',
+    'SERVICENOTIFICATION_TOOLTIP' : 'Zalogowano w zewnętrznych serwisach: {0}',
 
     // Utils
     'ERR_UTILS_XHR_FATAL' : 'Błąd krytyczny',
@@ -93,7 +93,7 @@
     // DIALOGS
     //
     'DIALOG_LOGOUT_TITLE' : 'Wylogowywanie (Exit)', // Actually located in session.js
-    'DIALOG_LOGOUT_MSG_FMT' : 'Wylogowywanie \'{0}\'.\nCzy chcesz zapisac sesje?',
+    'DIALOG_LOGOUT_MSG_FMT' : 'Wylogowywanie \'{0}\'.\nCzy chcesz zapisać sesję?',
 
     'DIALOG_CLOSE' : 'Zamknij',
     'DIALOG_CANCEL': 'Anuluj',
@@ -112,11 +112,11 @@
 
     'DIALOG_ERROR_MESSAGE'   : 'Wiadomość',
     'DIALOG_ERROR_SUMMARY'   : '',
-    'DIALOG_ERROR_TRACE'     : 'Trace',
-    'DIALOG_ERROR_BUGREPORT' : 'Report błędu',
+    'DIALOG_ERROR_TRACE'     : 'Śledzenie',
+    'DIALOG_ERROR_BUGREPORT' : 'Raport błędu',
 
     'DIALOG_FILE_SAVE'      : 'Zapisz',
-    'DIALOG_FILE_OPEN'      : 'Otworz',
+    'DIALOG_FILE_OPEN'      : 'Otwórz',
     'DIALOG_FILE_MKDIR'     : 'Nowy folder',
     'DIALOG_FILE_MKDIR_MSG' : 'Nowy folder w <span>{0}</span>',
     'DIALOG_FILE_OVERWRITE' : 'Czy chcesz nadpisać plik \'{0}\'?',
@@ -125,8 +125,8 @@
     'DIALOG_FILE_MNU_TREEVIEW' : 'Drzewo',
     'DIALOG_FILE_MNU_ICONVIEW' : 'Ikony',
     'DIALOG_FILE_ERROR'        : 'Błąd okna dialogowego pliku',
-    'DIALOG_FILE_ERROR_SCANDIR': 'Failed listing directory \'{0}\' because an error occured',
-    'DIALOG_FILE_MISSING_FILENAME' : 'Zaznacz plik albo wpisz nazwe nowego pliku!',
+    'DIALOG_FILE_ERROR_SCANDIR': 'Nie udało się wylistować katalogu \'{0}\' z powodu wystąpienia błędu',
+    'DIALOG_FILE_MISSING_FILENAME' : 'Zaznacz plik albo wpisz nazwę nowego pliku!',
     'DIALOG_FILE_MISSING_SELECTION': 'Zaznacz plik!',
 
     'DIALOG_FILEINFO_TITLE'   : 'Informacje',
@@ -137,38 +137,38 @@
 
     'DIALOG_INPUT_TITLE' : 'Wprowadzanie',
 
-    'DIALOG_FILEPROGRESS_TITLE'   : 'Postep',
+    'DIALOG_FILEPROGRESS_TITLE'   : 'Postęp',
     'DIALOG_FILEPROGRESS_LOADING' : 'Ładowanie...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Wysyłanie',
     'DIALOG_UPLOAD_DESC'    : 'Wysyłanie pliku do <span>{0}</span>.<br />Maksymalny rozmiar: {1} bitów',
     'DIALOG_UPLOAD_MSG_FMT' : 'Wysyłanie \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Wysyłanie pliku...',
-    'DIALOG_UPLOAD_FAILED'  : 'Błąd wywyłania',
-    'DIALOG_UPLOAD_FAILED_MSG'      : 'Wywyłanie nie powiodło się',
-    'DIALOG_UPLOAD_FAILED_UNKNOWN'  : 'Reason unknown...',
+    'DIALOG_UPLOAD_FAILED'  : 'Błąd wywołania',
+    'DIALOG_UPLOAD_FAILED_MSG'      : 'Wywołanie nie powiodło się',
+    'DIALOG_UPLOAD_FAILED_UNKNOWN'  : 'Powód nieznany...',
     'DIALOG_UPLOAD_FAILED_CANCELLED': 'Anulowane przez użytkownika...',
     'DIALOG_UPLOAD_TOO_BIG': 'Plik jest za duży',
     'DIALOG_UPLOAD_TOO_BIG_FMT': 'Plik jest za duży, przekracza {0}',
 
     'DIALOG_FONT_TITLE' : 'Czcionka',
 
-    'DIALOG_APPCHOOSER_TITLE' : 'Wybierz aplikacje',
-    'DIALOG_APPCHOOSER_MSG'   : 'Wybierz aplikacje do otwarcia',
-    'DIALOG_APPCHOOSER_NO_SELECTION' : 'Wybierz aplikacje',
-    'DIALOG_APPCHOOSER_SET_DEFAULT'  : 'Używaj jako domyślną aplikacje do {0}',
+    'DIALOG_APPCHOOSER_TITLE' : 'Wybierz aplikację',
+    'DIALOG_APPCHOOSER_MSG'   : 'Wybierz aplikację do otwarcia',
+    'DIALOG_APPCHOOSER_NO_SELECTION' : 'Wybierz aplikację',
+    'DIALOG_APPCHOOSER_SET_DEFAULT'  : 'Używaj jako domyślną aplikację do {0}',
 
     //
     // HELPERS
     //
 
     // GoogleAPI
-    'GAPI_DISABLED'           : 'Moduł GoogleAPI jest nie skonfigurowany albo wyłączony',
+    'GAPI_DISABLED'           : 'Moduł GoogleAPI jest nie skonfigurowany albo jest wyłączony',
     'GAPI_SIGN_OUT'           : 'Wyloguj z Serwisu Google API',
     'GAPI_REVOKE'             : 'Odwołaj uprawnienia i wyloguj',
-    'GAPI_AUTH_FAILURE'       : 'Google API Authentication failed or did not take place',
+    'GAPI_AUTH_FAILURE'       : 'Autentykacja Google API nie powiodła się lub nie miała miejsca',
     'GAPI_AUTH_FAILURE_FMT'   : 'Nie można uwierzytelnić: {0}:{1}',
-    'GAPI_LOAD_FAILURE'       : 'Nie można załadowac Google API',
+    'GAPI_LOAD_FAILURE'       : 'Nie można załadować Google API',
 
     // Windows Live API
     'WLAPI_DISABLED'          : 'Moduł Windows Live API nie jest skonfigurowany albo jest wyłączony',
@@ -176,40 +176,40 @@
     'WLAPI_LOAD_FAILURE'      : 'Nie można załadować Windows Live API',
     'WLAPI_LOGIN_FAILED'      : 'Nie można zalogować do Windows Live API',
     'WLAPI_LOGIN_FAILED_FMT'  : 'Nie można zalogować do Windows Live API: {0}',
-    'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API returned {0} status',
+    'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API zwróciło status {0}',
 
     // IndexedDB
-    'IDB_MISSING_DBNAME' : 'Cannot create IndexedDB without Database Name',
-    'IDB_NO_SUCH_ITEM'   : 'No such item',
+    'IDB_MISSING_DBNAME' : 'Nie mozna utworzyć IndexedDB bez Nazwy Bazy Danych',
+    'IDB_NO_SUCH_ITEM'   : 'Brak takiego elementu',
 
     //
     // VFS
     //
     'ERR_VFS_FATAL'           : 'Błąd krytyczny',
-    'ERR_VFS_UNAVAILABLE'     : 'Nie dostępne',
-    'ERR_VFS_FILE_ARGS'       : 'Plik oczekuje co najmniej jeden argument',
+    'ERR_VFS_UNAVAILABLE'     : 'Niedostępne',
+    'ERR_VFS_FILE_ARGS'       : 'Plik oczekuje co najmniej jednego argumentu',
     'ERR_VFS_NUM_ARGS'        : 'Za mało argumentów',
-    'ERR_VFS_EXPECT_FILE'     : 'Expects a file-object',
-    'ERR_VFS_EXPECT_SRC_FILE' : 'Expects a source file-object',
-    'ERR_VFS_EXPECT_DST_FILE' : 'Expects a destination file-object',
+    'ERR_VFS_EXPECT_FILE'     : 'Oczekuje obiektu-pliku',
+    'ERR_VFS_EXPECT_SRC_FILE' : 'Oczekuje źródłowego obiektu-pliku',
+    'ERR_VFS_EXPECT_DST_FILE' : 'Oczekuje docelowego obiektu-pliku',
     'ERR_VFS_FILE_EXISTS'     : 'Plik docelowy istnieje',
-    'ERR_VFS_TRANSFER_FMT'    : 'An error occured while transfering between storage: {0}',
-    'ERR_VFS_UPLOAD_NO_DEST'  : 'Cannot upload a file without a destination',
-    'ERR_VFS_UPLOAD_NO_FILES' : 'Cannot upload without any files defined',
-    'ERR_VFS_UPLOAD_FAIL_FMT' : 'Wysyłanie pliku: {0} nie powiodło sie',
+    'ERR_VFS_TRANSFER_FMT'    : 'Wystąpił błąd podczas transferu pomiędzy magazynem: {0}',
+    'ERR_VFS_UPLOAD_NO_DEST'  : 'Nie można wysłać pliku bez celu',
+    'ERR_VFS_UPLOAD_NO_FILES' : 'Nie można wysłać bez okreslenia plików',
+    'ERR_VFS_UPLOAD_FAIL_FMT' : 'Wysyłanie pliku: {0} nie powiodło się',
     'ERR_VFS_UPLOAD_CANCELLED': 'Wysyłanie pliku zostało anulowane',
-    'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
-    'ERR_VFS_DOWNLOAD_FAILED' : 'An error occured while downloading: {0}',
+    'ERR_VFS_DOWNLOAD_NO_FILE': 'Nie można pobrać ścieżki bez wskazania ścieżki',
+    'ERR_VFS_DOWNLOAD_FAILED' : 'Wystąpił błąd podczas pobierania: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'Odpowiedź była pusta',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Pobieranie pliku',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'Błąd XHR',
-    'ERR_VFSMODULE_ROOT_ID'        : 'Failed to find root folder id',
+    'ERR_VFSMODULE_ROOT_ID'        : 'Nie odnaleziono id głównego folderu',
     'ERR_VFSMODULE_NOSUCH'         : 'Nie ma takiego pliku',
-    'ERR_VFSMODULE_PARENT'         : 'No such parent',
-    'ERR_VFSMODULE_PARENT_FMT'     : 'Failed to look up parent: {0}',
-    'ERR_VFSMODULE_SCANDIR'        : 'Nie udało się przeskanować folder',
-    'ERR_VFSMODULE_SCANDIR_FMT'    : 'Nie udało się przeskanować folder: {0}',
+    'ERR_VFSMODULE_PARENT'         : 'Nie ma takiego rodzica',
+    'ERR_VFSMODULE_PARENT_FMT'     : 'Nie odnaleziono rodzica: {0}',
+    'ERR_VFSMODULE_SCANDIR'        : 'Nie udało się przeskanować folderu',
+    'ERR_VFSMODULE_SCANDIR_FMT'    : 'Nie udało się przeskanować folderu: {0}',
     'ERR_VFSMODULE_READ'           : 'Nie udało się odczytać pliku',
     'ERR_VFSMODULE_READ_FMT'       : 'Nie udało się odczytać pliku: {0}',
     'ERR_VFSMODULE_WRITE'          : 'Nie udało się zapisać pliku',
@@ -237,7 +237,7 @@
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Jesteś zalogowany do Dropbox API',
-    'DROPBOX_SIGN_OUT'           : 'Wylogowano z serwisu Google API',
+    'DROPBOX_SIGN_OUT'           : 'Wylogowano z serwisu Dropbox API',
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Nie znaleziono pozycji',
@@ -246,7 +246,7 @@
     // DefaultApplication
     //
     'ERR_FILE_APP_OPEN'         : 'Nie można otworzyć',
-    'ERR_FILE_APP_OPEN_FMT'     : 'Plik {0} nie może zostać otwarty ,ponieważ mime {1} jest nie wspierane',
+    'ERR_FILE_APP_OPEN_FMT'     : 'Plik {0} nie może zostać otwarty ,ponieważ mime {1} nie jest wspierane',
     'ERR_FILE_APP_OPEN_ALT_FMT' : 'Plik {0} nie może zostać otwarty',
     'ERR_FILE_APP_SAVE_ALT_FMT' : 'Plik {0} nie może zostać zapisany',
     'ERR_GENERIC_APP_FMT'       : '{0} Błąd Aplikacji',
@@ -257,7 +257,7 @@
     'MSG_GENERIC_APP_DISCARD'   : 'Odrzucić zmiany?',
     'MSG_FILE_CHANGED'          : 'Plik został zmieniony. Przeładować?',
     'MSG_APPLICATION_WARNING'   : 'Ostrzeżenie Aplikacji',
-    'MSG_MIME_OVERRIDE'         : 'Typ pliku  "{0}" nie jest wspierany, używając "{1}" instead.',
+    'MSG_MIME_OVERRIDE'         : 'Typ pliku  "{0}" nie jest wspierany, używając w zamian "{1}".',
 
     //
     // General
@@ -279,8 +279,8 @@
     'LBL_COMMENT'      : 'Komentarz',
     'LBL_ACCOUNT'      : 'Konto',
     'LBL_CONNECT'      : 'Połącz',
-    'LBL_ONLINE'       : 'Online',
-    'LBL_OFFLINE'      : 'Offline',
+    'LBL_ONLINE'       : 'Połączono',
+    'LBL_OFFLINE'      : 'Rozłączono',
     'LBL_AWAY'         : 'Zaraz wracam',
     'LBL_BUSY'         : 'Zajęty',
     'LBL_CHAT'         : 'Chat',
@@ -306,7 +306,7 @@
     'LBL_CENTER'       : 'Środek',
     'LBL_FILE'         : 'Plik',
     'LBL_NEW'          : 'Nowy',
-    'LBL_OPEN'         : 'Otworz',
+    'LBL_OPEN'         : 'Otwórz',
     'LBL_SAVE'         : 'Zapisz',
     'LBL_SAVEAS'       : 'Zapisz jako...',
     'LBL_CLOSE'        : 'Zamknij',
@@ -326,11 +326,11 @@
     'LBL_ITALIC'       : 'Kursywa',
     'LBL_UNDERLINE'    : 'Podkreślenie',
     'LBL_REGULAR'      : 'Regularne',
-    'LBL_STRIKE'       : 'Strike',
-    'LBL_INDENT'       : 'Indent',
-    'LBL_OUTDENT'      : 'Nie aktualne',
+    'LBL_STRIKE'       : 'Przekreślenie',
+    'LBL_INDENT'       : 'Wcięcie',
+    'LBL_OUTDENT'      : 'Outdent',
     'LBL_UNDO'         : 'Cofnij',
-    'LBL_REDO'         : 'Przywróc',
+    'LBL_REDO'         : 'Przywróć',
     'LBL_CUT'          : 'Wytnij',
     'LBL_UNLINK'       : 'Odlinkuj',
     'LBL_COPY'         : 'Kopiuj',
@@ -349,7 +349,7 @@
     'LBL_ORDERED_LIST'  : 'Lista',
     'LBL_BACKGROUND_IMAGE' : 'Tapeta',
     'LBL_BACKGROUND_COLOR' : 'Kolor tła',
-    'LBL_UNORDERED_LIST'   : 'Unordered List',
+    'LBL_UNORDERED_LIST'   : 'Lista nieuporządkowana',
     'LBL_STATUS'   : 'Status',
     'LBL_READONLY' : 'Tylko-odczyt',
     'LBL_CREATED' : 'Utworzono',
