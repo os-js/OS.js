@@ -196,12 +196,17 @@ body[data-attention="true"]:after {
   line-height : 20px;
   z-index : 2;
   opacity : .7;
+  -webkit-user-select : none;
+  -moz-user-select : none;
+  user-select : none;
+  cursor : default;
 }
 
   #DebugNotice a {
     color : #fff;
     text-decoration : underline;
     font-weight : normal;
+    cursor : pointer;
   }
 
 /**
