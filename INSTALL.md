@@ -6,6 +6,8 @@ Installation is done in a few simple steps and only takes a minute to get runnin
 
 For more general information look at the [README](README.md) file or in the [official documentation](http://os.js.org/doc/).
 
+I have also made a [simplified installation guide](http://os.js.org/doc/manuals/man-install.html) so you don't have to read this entire thing.
+
 #### Table of Contents
 
 * [Dependencies](#dependencies)

@@ -31,6 +31,8 @@ Windows: http://os.js.org/installer.exe
 
 Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
 
+Or head over to the official documentation for a [simplified installation guide](http://os.js.org/doc/manuals/man-install.html).
+
 ## How to contribute
 
 Read the official [contribution docs](https://github.com/andersevenrud/OS.js-v2/blob/master/CONTRIBUTING.md) for more information.
