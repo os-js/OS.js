@@ -203,7 +203,9 @@
     this.currentFile = file || null;
     this.hasChanged = false;
 
-    this._scheme.find(this, 'MenuSave').set('disabled', !file);
+    if ( this._scheme ) {
+      this._scheme.find(this, 'MenuSave').set('disabled', !file);
+    }
 
     if ( file ) {
       this._setTitle(file.filename, true);
